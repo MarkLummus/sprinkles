@@ -79,23 +79,6 @@ The alternative (React + `@babel/standalone` from CDN, no build) was considered 
 the project accepts losing the "open `index.html` and it runs" property in exchange for real
 bundling and HMR.
 
-## Hard constraints
-
-**Do not copy files, directory layouts, or conventions from `../icecream/`.** That project
-is a separate codebase with its own history; this one starts clean. Referencing it for
-domain understanding is fine only if explicitly asked.
-
-**Do not use gstack in this project.** The `/qa`, `/ship`, `/review`, `/autoplan`,
-`/context-save`, `/plan-*-review`, `/browse`, and other gstack skills may appear in the
-available-skills list because they are installed globally. They are out of scope here —
-do not invoke them, or use any other gstack scaffolding. If a task seems to call for one,
-do the work directly instead.
-
-## Commands
-
-**Web app:** none yet. Once the Vite project is scaffolded these become `npm run dev` and 
-`npm run build`. Record them here as they become real.
-
 ## Working agreement
 
 Build this incrementally, a bit at a time. Prefer small, reviewable steps over large

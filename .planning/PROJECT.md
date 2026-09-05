@@ -101,6 +101,9 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 | Ingredient seed dataset decided during phase planning | Three candidates disagree on coefficients; the data model should be designed first | — Pending |
 | Codebase map deferred until real code exists | Mockups are design evidence, not implementation | — Pending |
 | GSD owns delivery; Impeccable owns design; register owns product | Per packet handoff rules | — Pending |
+| Brand: only the name "Sprinkles" is binding; the Cupping Form world and cone/scoop mockups are incumbent evidence for Impeccable to preserve, expand, or replace with Mark's approval | D13 confirmation, 2026-09-05 | — Pending |
+| Operating context: desktop formulates, paper works the kitchen, phone transcribes | Binder evidence; confirmed 2026-09-05 | — Pending |
+| Accessibility standard left undecided in the product record; UX1-01 still tests AA text contrast for milestone 1 | Mark declined to fix the standard yet; requirement was approved separately | ⚠️ Revisit |
 
 ## Evolution
 

@@ -90,35 +90,38 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REC1-01 | — | Pending |
-| REC1-02 | — | Pending |
-| REC1-03 | — | Pending |
-| REC1-04 | — | Pending |
-| REC1-05 | — | Pending |
-| FORM1-01 | — | Pending |
-| FORM1-02 | — | Pending |
-| FORM1-03 | — | Pending |
-| FORM2-01 | — | Pending |
-| FORM2-02 | — | Pending |
-| BATCH1-01 | — | Pending |
-| BATCH1-02 | — | Pending |
-| BATCH2-01 | — | Pending |
-| BATCH2-02 | — | Pending |
-| OBS1-01 | — | Pending |
-| PRINT-01 | — | Pending |
-| PRINT-02 | — | Pending |
-| PRINT-03 | — | Pending |
-| PRINT-04 | — | Pending |
-| PRINT-05 | — | Pending |
-| UX1-01 | — | Pending |
-| UX1-02 | — | Pending |
-| UX1-03 | — | Pending |
+| REC1-01 | Phase 1 | Pending |
+| REC1-02 | Phase 3 | Pending |
+| REC1-03 | Phase 3 | Pending |
+| REC1-04 | Phase 3 | Pending |
+| REC1-05 | Phase 3 | Pending |
+| FORM1-01 | Phase 1 | Pending |
+| FORM1-02 | Phase 1 | Pending |
+| FORM1-03 | Phase 3 | Pending |
+| FORM2-01 | Phase 3 | Pending |
+| FORM2-02 | Phase 3 | Pending |
+| BATCH1-01 | Phase 2 | Pending |
+| BATCH1-02 | Phase 2 | Pending |
+| BATCH2-01 | Phase 2 | Pending |
+| BATCH2-02 | Phase 2 | Pending |
+| OBS1-01 | Phase 2 | Pending |
+| PRINT-01 | Phase 4 | Pending |
+| PRINT-02 | Phase 4 | Pending |
+| PRINT-03 | Phase 4 | Pending |
+| PRINT-04 | Phase 4 | Pending |
+| PRINT-05 | Phase 4 | Pending |
+| UX1-01 | Phase 4 | Pending |
+| UX1-02 | Phase 4 | Pending |
+| UX1-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 23 total
-- Mapped to phases: 0
-- Unmapped: 23 ⚠️
+- Mapped to phases: 23 ✓
+- Unmapped: 0
+
+Per phase: Phase 1 — 3, Phase 2 — 5, Phase 3 — 7, Phase 4 — 8. Each requirement maps to exactly one phase.
+UX1-01–UX1-03 are verified end-to-end in Phase 4 (first point where the whole loop exists) but are build constraints in every phase.
 
 ---
 *Requirements defined: 2026-09-05*
-*Last updated: 2026-09-05 after initial definition*
+*Last updated: 2026-09-05 after roadmap creation (traceability mapped)*

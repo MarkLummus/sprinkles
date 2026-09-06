@@ -107,3 +107,31 @@ Product-specific truth the surface must show, not claim: plan, actual, and resul
 - A rating control.
 - Any sensory claim in derived advice.
 - A colour that carries state.
+
+## Direction contract
+
+Written at build start, before any visual token exists in code, per Impeccable's new-work flow. Converts § 3's confirmed direction into the values a builder implements. Ink and pen blue reuse the pinned Cupping Form roles § 3 names as visual authority (D13 incumbent evidence); everything else below is new to this surface.
+
+**1. Type.** Text face (headnote, method prose — true italics for emphasis and asides): `Georgia, 'Iowan Old Style', 'Times New Roman', serif`. Grotesk (ingredient table, every figure — tabular numerals on): `-apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif`, with `font-variant-numeric: tabular-nums` applied wherever it renders a table cell or a figure value. Both are system stacks; no font file is fetched. Type scale (grotesk unless noted):
+| Role | Size | Face |
+|---|---|---|
+| Running head | 0.75rem, uppercase, tracked | grotesk |
+| Recipe name | 2rem | text face |
+| Version line | 1.125rem | text face |
+| Headnote prose | 1rem | text face |
+| Table body | 0.9375rem, tabular | grotesk |
+| Figure value | 1.25rem, tabular, bold | grotesk |
+| Deviation words | 0.8125rem | grotesk |
+| Small print | 0.75rem | grotesk |
+
+**2. Colour, four roles only.** Ground `#F7F7F4` (cool text-paper). Ink `#141414` (print black). Pen blue `#1F3D7A` (everything recorded; unused on screen in this phase — Phase 2 is the first to paint with it). Bookcloth `#33513B` (a muted bottle green, the book's identifying colour in running heads and section tabs; a third hue so it is never mistaken for the pen). No fifth colour is defined. The scheme is light only because the scene forces it: a kitchen table in the evening and a black-only laser printer. Colour never signals status, verdict, or uncertainty anywhere on this surface — a figure's standing against its band is stated in words, never in hue.
+
+**3. Spacing scale.** `--gap-hair: 2px`, `--gap-xs: 6px`, `--gap-s: 12px`, `--gap-m: 20px`, `--gap-l: 32px`, `--gap-xl: 48px`. `--gap-l` separates the spread's regions (headnote from the table, the table from the method column, the method from the margin); `--gap-xl` is the page's outer margin.
+
+**4. Rule drawing.** Graduated rule baseline: 1.5px, ink. Graduations (the tick marks along the rule): 1px, ink. Band edges (the authored target band's two boundary lines): 1px, ink. The tick (the computed value's mark): 2.5px, ink. Hatch (fills an authored target band): 45°, 4px pitch, 1.2px stroke, ink.
+
+**5. Focus treatment.** Focusing a balance figure and its contributing ingredient rows changes only stroke weight (heavier) and adds an outline (1px, ink, offset 2px) to the focused elements. Nothing changes position and nothing changes colour; hover and selection never move an element, per the brief's carried raise.
+
+**6. Plain-language block names.** Headnote. Ingredient table. Formulation note. Method. Margin. Each region wears its name as a visible running head in the block's own type scale role.
+
+**7. What stays open after this contract.** Whether authored notes copy into a child version by default or by explicit choice — Phase 3 decides, weighing the binder's Mexican Chocolate v3 failure mode of silent copying. Whether the version strip shows the batch count per version — Phase 2 decides. The product-level text-contrast standard above the AA floor UX1-01 already tests — undecided at the product level (PRODUCT.md).

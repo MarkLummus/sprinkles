@@ -1,0 +1,43 @@
+/* The Formulation Cookbook — the direction contract in
+   .impeccable/surfaces/route-recipe.md, implemented as tokens.
+   Every value here is decided there; nothing here decides anything new. */
+:root {
+  /* Colour — four roles only (contract § 2) */
+  --ground: #f7f7f4;
+  --ink: #141414;
+  --pen-blue: #1f3d7a; /* everything recorded — unused on screen this phase */
+  --bookcloth: #33513b;
+
+  /* Type — two stacks, system only (contract § 1) */
+  --face-text: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --face-grotesk: -apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --size-running-head: 0.75rem;
+  --size-recipe-name: 2rem;
+  --size-version-line: 1.125rem;
+  --size-headnote-prose: 1rem;
+  --size-table-body: 0.9375rem;
+  --size-figure-value: 1.25rem;
+  --size-deviation-words: 0.8125rem;
+  --size-small-print: 0.75rem;
+
+  /* Spacing scale (contract § 3) */
+  --gap-hair: 2px;
+  --gap-xs: 6px;
+  --gap-s: 12px;
+  --gap-m: 20px;
+  --gap-l: 32px;
+  --gap-xl: 48px;
+
+  /* Rule drawing (contract § 4) */
+  --rule-baseline: 1.5px;
+  --rule-graduation: 1px;
+  --rule-band-edge: 1px;
+  --rule-tick: 2.5px;
+  --hatch-pitch: 4px;
+  --hatch-stroke: 1.2px;
+
+  /* Focus treatment (contract § 5) */
+  --focus-outline-width: 1px;
+  --focus-outline-offset: 2px;
+}

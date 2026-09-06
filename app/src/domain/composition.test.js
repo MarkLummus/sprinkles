@@ -4,7 +4,7 @@
 // boundary. The one exception is the olive-oil share of fat, which the sheet prints
 // as a whole number (28%): asserted within 0.5.
 import { describe, it, expect } from 'vitest';
-import { computeBalance, weakestBasis } from './composition.js';
+import { computeBalance, weakestBasis, formatShareOfBatch } from './composition.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { library } from '../data/library.js';
 
@@ -82,6 +82,32 @@ describe('weakestBasis', () => {
       { grams: 0, ingredient: { composition: { fat: 0.1 }, basis: { fat: 'inherited' } } },
     ];
     expect(weakestBasis(rows, 'fat')).toBe('stated');
+  });
+});
+
+describe('formatShareOfBatch', () => {
+  it('returns trace strictly below 0.05% (0.0200%)', () => {
+    expect(formatShareOfBatch(0.16, 799.68)).toBe('trace');
+  });
+
+  it('keeps one decimal at 0.0600%, above the threshold', () => {
+    expect(formatShareOfBatch(0.48, 799.68)).toBe('0.1%');
+  });
+
+  it('keeps one decimal at 0.1301%', () => {
+    expect(formatShareOfBatch(1.04, 799.68)).toBe('0.1%');
+  });
+
+  it('reads 46.3% for whole milk against the seeded mass', () => {
+    expect(formatShareOfBatch(370.4, 799.68)).toBe('46.3%');
+  });
+
+  it('the threshold is exclusive: exactly 0.05% is not trace', () => {
+    expect(formatShareOfBatch(0.5, 1000)).toBe('0.1%');
+  });
+
+  it('returns the em-dash placeholder for a zero or invalid mass, never NaN% or Infinity%', () => {
+    expect(formatShareOfBatch(1, 0)).toBe('—');
   });
 });
 

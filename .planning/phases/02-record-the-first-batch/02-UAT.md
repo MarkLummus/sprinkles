@@ -1,9 +1,9 @@
 ---
-status: partial
+status: diagnosed
 phase: 02-record-the-first-batch
 source: [02-VERIFICATION.md]
 started: 2026-09-06T20:35:00Z
-updated: 2026-09-06T23:15:22Z
+updated: 2026-09-06T23:33:37Z
 ---
 
 ## Current Test
@@ -79,8 +79,19 @@ blocked: 1
   reason: "User reported: I don't see anything on the list page or the recipe page that says anything close to \"Record a Batch\". What I see is the recorded batch."
   severity: major
   test: 1
-  artifacts: []  # Filled by diagnosis
-  missing: []    # Filled by diagnosis
+  root_cause: "BatchMargin.jsx renders the Record a batch control (sole caller of onStartRecording) only in the fallthrough branch reached when openBatch is falsy; the existing-batch branch offers only Amend and Add a tasting. seed.js always writes the 2 Aug batch and RecipePage auto-opens the most recent batch, so the zero-batch branch is unreachable on any store a maker can reach. Plan-level gap: 02-01-PLAN.md:237 gives Record a batch to the 'no batch yet' state alone and 02-03-PLAN.md:316 never designs a second-batch entry; the requirement lives only in verification prose. Side effect: a URL with a nonexistent batch id renders the empty state and wrongly says 'No batch recorded against this version yet.'"
+  artifacts:
+    - path: "app/src/ui/BatchMargin.jsx"
+      issue: "if (openBatch) reading branch (lines 239-313) has no new-batch control; Record a batch stranded in fallthrough (316-324)"
+    - path: "app/src/ui/RecipePage.jsx"
+      issue: "lines 121-129 make openBatch non-null whenever a batch exists; handleStartRecording (131-144) unreachable in that state and does not reset amendingBatchId"
+    - path: "app/src/store/seed.js"
+      issue: "line 13 seeds a batch unconditionally, so the zero-batch state never occurs"
+  missing:
+    - "A Record a batch control in the saved-batch reading branch of the margin, worded distinctly from Amend (D-06: a correction is never a new event)"
+    - "handleStartRecording explicitly sets amendingBatchId to null"
+    - "Correct empty-state wording (or redirect) when the URL names a batch id that does not exist"
+  debug_session: ".planning/debug/record-a-batch-entry-missing.md"
 
 
 - gap_id: G-02-3
@@ -89,8 +100,16 @@ blocked: 1
   reason: "User reported: \"Skipped\" on method step 1 is struck-thru like rest of step. seems like SKIPPED would not have strike-thru style applied."
   severity: cosmetic
   test: 3
-  artifacts: []  # Filled by diagnosis
-  missing: []    # Filled by diagnosis
+  root_cause: "Method.jsx:48 renders the Skipped label as a span nested inside the lead paragraph that carries .method-step__lead--struck, and app.css:249-251 puts text-decoration: line-through on that paragraph. Per CSS Text Decoration L3, a decoration on a block propagates to all in-flow inline descendants and cannot be switched off by them, so the label is struck by construction; text-decoration: none on the label would be a no-op. 02-02-PLAN.md:154 asked for the label 'beside' the struck prose; it was placed inside. The automated gate only checked string presence."
+  artifacts:
+    - path: "app/src/ui/Method.jsx"
+      issue: "line 48: Skipped span is a child of the struck <p>, inside the strike's propagation scope"
+    - path: "app/src/styles/app.css"
+      issue: "lines 249-251: line-through declared on the ancestor paragraph rather than scoped to the prose"
+  missing:
+    - "Render the Skipped label outside the struck element (sibling after the paragraph) or scope the strike to an inner span around the prose only"
+    - "A component-level check that the label is not inside a line-through ancestor"
+  debug_session: ".planning/debug/skipped-label-struck-through.md"
 
 - gap_id: G-02-4
   truth: "While recording or amending a batch, the maker can see how to abandon the edit (a cancel control) and can readily find Save batch"
@@ -98,8 +117,24 @@ blocked: 1
   reason: "User reported: when Amending, no cancel button is visible and Save batch button is hard to find."
   severity: major
   test: 4
-  artifacts: []  # Filled by diagnosis
-  missing: []    # Filled by diagnosis
+  root_cause: "(1) No cancel was ever designed: route-recipe-batch.md:102 specifies abandonment only for document unload (native leave-warning), its In list names save and no cancel, and D-24 answered draft-loss-on-unload, not an in-app way out. setMode('reading') exists only inside saveBatch().then() at RecipePage.jsx:249 and :260, so recording mode has no non-saving exit; no Link/nav renders while recording and mode is not URL-derived (D-19), so Back does not leave it either. (2) Save batch is hard to find because (a) the brief's 'binder's button style' is never defined in the direction contract, so tokens.css has no button token and the only button rule is app.css:442 (margin-top only), leaving Save batch as bare UA chrome identical to every other button; and (b) the margin sits below the formulation note and BasisNote in a 2fr/1fr grid's narrow column, with seven recording fields above the button, so it lands at the foot of the page's longest column."
+  artifacts:
+    - path: "app/src/ui/BatchMargin.jsx"
+      issue: "recording branch (155-237) renders no cancel and no navigation; Save batch at line 232 is an unclassed button"
+    - path: "app/src/ui/RecipePage.jsx"
+      issue: "no handleCancelRecording; both setMode('reading') calls are inside save callbacks (249, 260)"
+    - path: "app/src/styles/app.css"
+      issue: "line 442 is the only button rule (spacing only); 53-62 and 104-109 place the margin under the formulation note"
+    - path: "app/src/styles/tokens.css"
+      issue: "no button/control token because the direction contract defines none"
+    - path: ".impeccable/surfaces/route-recipe-batch.md"
+      issue: "lines 54, 70, 72, 102: cancel neither In nor Out; cites an undefined 'binder's button style'"
+  missing:
+    - "Product decision: abandoning a recording/amendment discards silently or confirms (D-24 did not answer this)"
+    - "A cancel control in the recording branch with a handler that returns to reading (and restores the amended batch's URL state)"
+    - "A button/control item in the direction contract resolving to a token so Save batch can carry primary-action weight"
+    - "A layout decision for the recording state (e.g. collapse the formulation note while the pen layer is open; see Deferred Follow-Ups test 4)"
+  debug_session: ".planning/debug/pen-layer-no-cancel-save-hard-to-find.md"
 
 - gap_id: G-02-6
   truth: "While composing a tasting, a mark placed on an axis can be cleared again so the axis returns to unmarked before saving"
@@ -107,8 +142,20 @@ blocked: 1
   reason: "User reported: once a mark is made, it cannot be removed. otherwise pass"
   severity: major
   test: 6
-  artifacts: []  # Filled by diagnosis
-  missing: []    # Filled by diagnosis
+  root_cause: "Clearing a mark is unimplemented because it was never specified. AxisMark.jsx offers nine set-only radio stops (MARK_STOPS has no unmarked sentinel); as a controlled component it cannot return undefined, and clicking the checked stop fires no onChange. handleChangeTastingMark (RecipePage.jsx:285-287) is set-only with no delete branch. D-16 and brief §6 fix only setting behaviours; 02-RESEARCH.md Pattern 3 chose native radios and inherited their one-way latch silently. 02-03-SUMMARY.md:201 records the omission as a deliberate decision. Aggravating: isTastingSaveable flips true on the first mark and TastingForm has no Cancel, so one misclick leaves reload (discarding the whole draft) as the only escape; AxisMark is the only one-way control in the pen layer."
+  artifacts:
+    - path: "app/src/ui/AxisMark.jsx"
+      issue: "nine set-only radio stops; no clear affordance, no unmarked stop, no click-again handler"
+    - path: "app/src/ui/RecipePage.jsx"
+      issue: "lines 282-287: handleChangeTastingMark writes only; no delete branch"
+    - path: "app/src/domain/axes.js"
+      issue: "MARK_STOPS has no null/unmarked sentinel"
+    - path: "app/src/ui/BatchMargin.jsx"
+      issue: "TastingForm (44-125) has no Cancel/Discard control"
+  missing:
+    - "Design decision (route past Impeccable): a tenth Unmarked stop at the left of the group, a per-axis Clear control, or click-again-to-clear (the last requires the role=radiogroup fallback from 02-RESEARCH A1)"
+    - "A delete branch in handleChangeTastingMark so isTastingSaveable and the hint text return to their pre-mark state"
+  debug_session: ".planning/debug/tasting-mark-cannot-be-cleared.md"
 
 ## Deferred Follow-Ups
 

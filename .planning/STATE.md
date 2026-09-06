@@ -97,7 +97,11 @@ None yet.
   - [Phase 2 carry] The ingredient table stretches to its full column; size it to content with right-aligned numeric columns when the as-made column lands.
   - [Phase 3 carry] The recipe page has no link back to the list and "No recipe found" is a dead end; add the running head with the product name as the link home when the version strip lands under the headnote.
   - [Phase 4 carry, UX1-01] Headnote and Margin region names are paragraphs, not headings; the row-level aria-label carrying "contributing to" is unlikely to be announced, so the focus trace is silent to screen readers; the deviation words are not in the rule's accessible name; the ordered method list with list-style none needs an explicit list role; the tab title should lead with the recipe name.
-  - [Polish carry] Headnote prose and basis note run ~168 and ~146 characters per line (max-width near 65ch); target chips have zero vertical inset; adjacent marked-row outlines collide with row rules; the rule has no hover state.
+  - [Polish carry] Target chips have zero vertical inset and a 2px label-to-value gap that fuses at a glance; adjacent marked-row outlines collide with row rules; the rule has no hover state. (Prose measure fixed 2026-09-06.)
+- [Critique 2026-09-06, second run, 25/40] Snapshot `.impeccable/critique/2026-09-06T14-02-09Z__app-src-ui-recipepage-jsx.md`. Spread revised by Mark (note beside the table, method beneath); table shift on focus and the stranded margin fixed the same day. Deferred:
+  - [Phase 2 carry] No total row (rows sum to 799.7 g against a stated 800 g) and 0.16 g lambda carrageenan shows "0.0%"; add a total row and a further decimal below 0.05% or the word "trace" when the as-made column lands. Also the short-window caveat: at a 714px-tall viewport, focusing Total solids scrolls 487px and only 5 of 12 marked rows stay visible; the six rules stack to ~1000px, so tighten the note's vertical rhythm.
+  - [List page carry] `/` has no page margin, default buttons, no title or running head, and a link with no underline or focus treatment; out of the recipe brief's scope, for whichever phase next touches the list.
+  - [Phase 4 carry, UX1-01] No live announcement when a rule marks its rows; PAC, POD, MSNF carry no plain-language gloss (D11).
 
 ### Quick Tasks Completed
 

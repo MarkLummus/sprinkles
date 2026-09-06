@@ -57,24 +57,29 @@ export function RecipePage() {
         )}
       </section>
 
-      <section className="formulation-note-region" aria-label="Formulation note">
-        <FormulationNote
-          version={version}
-          onFocusFigure={setFocusedFigureKey}
-          onBlurFigure={() => setFocusedFigureKey(null)}
-        />
-        <BasisNote version={version} />
-      </section>
-
       <section className="method-region" aria-label="Method">
         <Method steps={version.method} />
       </section>
 
-      <aside className="margin-region" aria-label="Margin">
-        <p className="region-name">Margin</p>
-        <Authored carriedForward={version.authored.carriedForward} beforeYouStart={version.authored.beforeYouStart} />
-        <div className="advisory-slot" aria-label="Advisories" />
-      </aside>
+      {/* Column two, what the sheet does not print: the formulation note
+          beside the table, then the margin beneath it. One flow, so the
+          method's height never separates the two. */}
+      <div className="side-region">
+        <section className="formulation-note-region" aria-label="Formulation note">
+          <FormulationNote
+            version={version}
+            onFocusFigure={setFocusedFigureKey}
+            onBlurFigure={() => setFocusedFigureKey(null)}
+          />
+          <BasisNote version={version} />
+        </section>
+
+        <aside className="margin-region" aria-label="Margin">
+          <p className="region-name">Margin</p>
+          <Authored carriedForward={version.authored.carriedForward} beforeYouStart={version.authored.beforeYouStart} />
+          <div className="advisory-slot" aria-label="Advisories" />
+        </aside>
+      </div>
     </article>
   );
 }

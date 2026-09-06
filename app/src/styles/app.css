@@ -55,9 +55,8 @@ body {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     'headnote headnote'
-    'ingredients formulation'
-    'method formulation'
-    'method margin';
+    'ingredients side'
+    'method side';
   gap: var(--gap-l);
   padding: var(--gap-xl);
 }
@@ -66,8 +65,10 @@ body {
    then method. Column two is what the sheet does not print — the
    formulation note beside the table so the six rules share the table's
    viewport and the focus trace is a glance, not a scroll — followed by the
-   margin (route-recipe.md § 3, revised 2026-09-06). Whichever column runs
-   longer leaves its void at the bottom. */
+   margin (route-recipe.md § 3, revised 2026-09-06). The two columns flow
+   independently: column two is one region so the margin follows the note
+   by one gap however tall the method runs. Whichever column runs longer
+   leaves its void at the bottom. */
 
 .headnote {
   grid-area: headnote;
@@ -100,16 +101,19 @@ body {
   grid-area: method;
 }
 
-.formulation-note-region {
-  grid-area: formulation;
-}
-
-.margin-region {
-  grid-area: margin;
+.side-region {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
 }
 
 .ingredient-table {
   border-collapse: collapse;
+  /* Fixed layout so a marked row's bold weight never reflows the columns
+     (direction contract § 5: nothing changes position). Column widths are
+     equal until Phase 2 sizes them with the as-made column. */
+  table-layout: fixed;
   width: 100%;
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);

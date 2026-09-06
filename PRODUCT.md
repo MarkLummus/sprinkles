@@ -54,6 +54,7 @@ Sprinkles connects what was planned (the recipe), what was actually done (the ba
 - Derived advice is structural; it must not predict sensory outcomes.
 - Printing is not a batch trigger; a batch is created on return.
 - No external model calls or network import without a stated policy (TRUST-01).
+- Outcome dimensions are four fixed core axes — hardness, scoopability, smoothness, sweetness — plus the axes each recipe declares for itself (Mark, 2026-09-06, in `.impeccable/surfaces/route-recipe-batch.md`).
 
 **Explicitly undecided (do not settle in design work):**
 
@@ -62,7 +63,6 @@ Sprinkles connects what was planned (the recipe), what was actually done (the ba
 - Ingredient seed dataset (three candidates disagree on coefficients); chosen in GSD Phase 1 planning.
 - Accessibility standard: WCAG 2.2 AA is proposed and not yet confirmed as the product standard. GSD requirement UX1-01 tests text contrast at AA for milestone 1.
 - Supported equipment families beyond the working case.
-- Which outcome dimensions are fixed versus recipe-declared (prior work fixed four; the domain guide lists ten; D12 leaves this open).
 
 ## Brand Commitments
 

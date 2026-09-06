@@ -75,6 +75,14 @@ describe('weakestBasis', () => {
   it('returns stated for a field no row contributes', () => {
     expect(weakestBasis(oliveOilVersion.rows, 'nonexistentField')).toBe('stated');
   });
+
+  it('ignores a struck (0 g) row even when its composition basis is the worst rank', () => {
+    const rows = [
+      { grams: 100, ingredient: { composition: { fat: 0.1 }, basis: { fat: 'stated' } } },
+      { grams: 0, ingredient: { composition: { fat: 0.1 }, basis: { fat: 'inherited' } } },
+    ];
+    expect(weakestBasis(rows, 'fat')).toBe('stated');
+  });
 });
 
 describe('embedded-coefficient invariant', () => {

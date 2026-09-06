@@ -68,7 +68,7 @@ const BASIS_RANK = { stated: 0, derived: 1, estimated: 2, inherited: 3 };
 export function weakestBasis(rows, field) {
   let worst = 'stated';
   for (const row of rows) {
-    if (!(row.ingredient.composition[field] > 0)) continue;
+    if (!((row.ingredient.composition[field] ?? 0) * row.grams > 0)) continue;
     const basis = row.ingredient.basis?.[field] ?? 'inherited';
     if (BASIS_RANK[basis] > BASIS_RANK[worst]) worst = basis;
   }

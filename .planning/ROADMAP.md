@@ -7,6 +7,7 @@ Milestone 1 delivers one outcome (D14): Mark can develop and prepare the next ve
 ## Phases
 
 **Phase Numbering:**
+
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
@@ -20,21 +21,35 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Read the churned recipe
+
 **Goal**: Maker can open the churned olive oil recipe in Sprinkles and read it whole — twelve ingredient rows, method, target bands, authored notes — with its balance figures and the basis they rest on
 **Mode:** mvp
 **Depends on**: Nothing (first phase)
 **Requirements**: REC1-01, FORM1-01, FORM1-02
 **Success Criteria** (what must be TRUE):
+
   1. Maker opens the churned olive oil recipe (50 g oil, 800 g) from the seeded transcription and sees all twelve ingredient rows with grams, % of batch, and step allocation, alongside its method, its target bands, and its authored notes.
   2. For that recipe the maker sees PAC, POD, total fat with milkfat and added fat separately, MSNF, sugar solids, and total solids per 100 g, each shown against its target band with the calculation basis stated.
   3. A figure resting on estimated or unreviewed ingredient data is flagged where the figure is shown, not only in a separate note.
   4. The figures on screen agree with the churned bench sheet's own figures for the same twelve rows, so the maker can work from the app instead of the printout.
+
 **Plans**: 4 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — Walking skeleton: the churned recipe opens from IndexedDB through the repository seam and its twelve-row formula reads, with the printed-sheet fixture green
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — The Impeccable direction contract, the token layer, and the sheet's method and authored notes on the spread
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 01-03-PLAN.md — Six balance figures against their authored bands, deviation in words, with the calculation basis stated
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 01-04-PLAN.md — Estimated data flagged at the row and at the figure, contributor tracing, validated store export/import, and the landed structure recorded
 
 **UI hint**: yes
@@ -42,48 +57,57 @@ Plans:
 **Phase notes**: Establishes the app shell, the framework-free balance module, the seeded recipe content, and the provisional local store behind a repository seam. Ratifies the provisional React + Vite + JSX stack on real code. The ingredient seed dataset is chosen in this phase's planning, after the recipe data model is designed; whichever is chosen, coefficients must be snapshottable (D04, D09).
 
 ### Phase 2: Record the first batch
+
 **Goal**: Maker can record the 2 Aug batch against the churned version — what was actually done, what was measured, and how it turned out in their own words — and reopen it later unchanged
 **Mode:** mvp
 **Depends on**: Phase 1
 **Requirements**: BATCH1-01, BATCH1-02, BATCH2-01, BATCH2-02, OBS1-01
 **Success Criteria** (what must be TRUE):
+
   1. Maker records a batch against the churned version with its churn date, an as-made amount per row where it differed from the plan, and changed or skipped steps, all kept visibly separate from the recipe's planned values.
   2. Maker records come-up time, draw temperature, overrun, and meltdown; a field left blank stays visibly unknown and is never filled in from the recipe.
   3. Maker records how the batch turned out in their own words, optionally adding structured dimensions and a next-time note, and can save with nothing but the words.
   4. Maker reopens the batch and sees it together with the recipe version it used, its measured values, and its result.
   5. The batch holds the recipe rows and ingredient coefficients it was computed with; later edits to the recipe or to ingredient data do not change what the batch shows.
+
 **Plans**: TBD
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the batch record surface (BRIEF-02 seed is unapproved input, not authority)
 **Phase notes**: Criterion 5 is the known data hazard from PROJECT.md — coefficient drift silently corrupted historical batches before. No automated diagnosis: Mark interprets the notes (D14).
 
 ### Phase 3: Develop the next version
+
 **Goal**: Maker can create version 2 from the churned version, adjust it, and see exactly what changed and what it did to the balance — with the churned version and its recorded batch untouched
 **Mode:** mvp
 **Depends on**: Phase 2
 **Requirements**: REC1-02, REC1-03, REC1-04, REC1-05, FORM1-03, FORM2-01, FORM2-02
 **Success Criteria** (what must be TRUE):
+
   1. Maker creates a new version from the churned version; the new version records its parent, and the churned version and its recorded batch are unchanged afterwards.
   2. Maker edits the new version's ingredient amounts, removes or restores any of its twelve rows, and edits method steps and their targets.
   3. Maker records why the version changed as free text citing the batch that motivated it, and the saved version reopens with the same values after the app is reloaded.
   4. Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure.
   5. Structural advisories show the basis they were computed from — sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, estimated-data exposure — and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success.
+
 **Plans**: TBD
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the version editing and comparison surface
 **Phase notes**: Balance is an assessment under assumptions, never a gate (D06). Batch size stays 800 g and ingredient handling stays within the recipe's existing twelve rows; scaling and library editing are later milestones.
 
 ### Phase 4: Prepare the next version for making
+
 **Goal**: Maker can print the new version as a bench sheet, carry it to the kitchen, and match the printed sheet back to its version — with the whole develop loop operable by keyboard and recoverable
 **Mode:** mvp
 **Depends on**: Phase 3
 **Requirements**: PRINT-01, PRINT-02, PRINT-03, PRINT-04, PRINT-05, UX1-01, UX1-02, UX1-03
 **Success Criteria** (what must be TRUE):
+
   1. Maker prints the new version from the browser as a formula page showing ingredient, grams, % of batch, step allocation, a mise-en-place box, and a blank as-made column, with a unit on every printed value.
   2. The printed sheet carries the method with typed targets (temperature, time, amount) beside each prose instruction, plus a blank batch-log page with churn date, measured fields, result, dimensions, and next-time lines.
   3. The sheet carries a human-readable short code for the printed version and the maker can use that code in the app to reach the same version; printing captures a saved version only, never unsaved edits, and never creates a batch record.
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
+
 **Plans**: TBD
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the bench sheet (print) surface

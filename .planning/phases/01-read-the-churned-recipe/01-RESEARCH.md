@@ -445,7 +445,7 @@ Note: `toBeCloseTo(want, 1)` checks precision to 1 decimal place (difference < 0
 
 **If this table is empty:** N/A — see entries above; none of them touch a compliance, retention, or security-relevant decision, so none block planning, but all three are cheap to confirm during Phase 1 execution.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Exact repository-interface method set for Phases 1-4**
    - What we know: Phase 1 needs `listRecipes`, `getVersion`, `saveVersion`, `exportAll`, `importAll` at minimum (D-06, D-07).

@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-06T12:55:32.025Z",
+  "title": "Design System: Sprinkles",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Print Ink",
+        "canonical": "oklch(19.1% 0 90)",
+        "contrastOnGround": "17.16:1",
+        "tonalRamp": [
+          "oklch(15% 0 90)",
+          "oklch(25% 0 90)",
+          "oklch(35% 0 90)",
+          "oklch(45% 0 90)",
+          "oklch(55% 0 90)",
+          "oklch(65% 0 90)",
+          "oklch(75% 0 90)",
+          "oklch(85% 0 90)"
+        ]
+      },
+      "pen-blue": {
+        "role": "secondary",
+        "displayName": "Pen Blue",
+        "canonical": "oklch(37.3% 0.110 263)",
+        "contrastOnGround": "9.75:1",
+        "tonalRamp": [
+          "oklch(15% 0.110 263)",
+          "oklch(25% 0.110 263)",
+          "oklch(35% 0.110 263)",
+          "oklch(45% 0.110 263)",
+          "oklch(55% 0.110 263)",
+          "oklch(65% 0.110 263)",
+          "oklch(75% 0.110 263)",
+          "oklch(85% 0.110 263)"
+        ]
+      },
+      "bookcloth": {
+        "role": "tertiary",
+        "displayName": "Bookcloth",
+        "canonical": "oklch(40.4% 0.052 152)",
+        "contrastOnGround": "8.22:1",
+        "tonalRamp": [
+          "oklch(15% 0.052 152)",
+          "oklch(25% 0.052 152)",
+          "oklch(35% 0.052 152)",
+          "oklch(45% 0.052 152)",
+          "oklch(55% 0.052 152)",
+          "oklch(65% 0.052 152)",
+          "oklch(75% 0.052 152)",
+          "oklch(85% 0.052 152)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Text Paper",
+        "canonical": "oklch(97.5% 0.004 106)",
+        "tonalRamp": [
+          "oklch(15% 0.004 106)",
+          "oklch(25% 0.004 106)",
+          "oklch(35% 0.004 106)",
+          "oklch(45% 0.004 106)",
+          "oklch(55% 0.004 106)",
+          "oklch(65% 0.004 106)",
+          "oklch(75% 0.004 106)",
+          "oklch(85% 0.004 106)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Recipe name",
+        "purpose": "The recipe name, once per page, in the headnote."
+      },
+      "headline": {
+        "displayName": "Version line",
+        "purpose": "The version line under the name. Units keep their case."
+      },
+      "body": {
+        "displayName": "Prose",
+        "purpose": "Headnote prose, method instructions, authored notes. True italics for purpose and aside."
+      },
+      "label": {
+        "displayName": "Running head",
+        "purpose": "Region names, table headers, the authored legend. Uppercase, tracked 0.04em."
+      },
+      "table": {
+        "displayName": "Table body",
+        "purpose": "Ingredient table cells and the graduated rule label. Tabular numerals. The page default."
+      },
+      "figure": {
+        "displayName": "Figure value",
+        "purpose": "The value beside each graduated rule and the method step number."
+      },
+      "deviation": {
+        "displayName": "Deviation words",
+        "purpose": "The words under a rule stating its standing against its band."
+      },
+      "small-print": {
+        "displayName": "Small print",
+        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, import errors."
+      }
+    },
+    "rules": {
+      "baseline": "1.5px",
+      "graduation": "1px",
+      "bandEdge": "1px",
+      "tick": "2.5px",
+      "hatchPitch": "4px",
+      "hatchStroke": "1.2px",
+      "hatchAngle": "45deg",
+      "purpose": "Stroke weights for the graduated rule and the table. Depth is rule weight; nothing else conveys it."
+    },
+    "focus": {
+      "outlineWidth": "1px",
+      "outlineOffset": "2px",
+      "color": "var(--ink)",
+      "purpose": "The one focus treatment: outline and weight, never colour, never position."
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Region name",
+      "kind": "custom",
+      "refersTo": "region-name",
+      "description": "The plain-language running head every region wears; the only place bookcloth appears.",
+      "html": "<h2 class=\"ds-region-name\">Formulation note</h2>",
+      "css": ".ds-region-name{font-family:var(--face-grotesk);font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);font-weight:400;margin:0 0 var(--gap-xs)}"
+    },
+    {
+      "name": "Ingredient table",
+      "kind": "custom",
+      "refersTo": "table-cell",
+      "description": "Rows in authored order, ink rules under each, an exception-only Data column, and a marked state for rows a focused figure rests on.",
+      "html": "<table class=\"ds-ingredient-table\"><thead><tr><th>Ingredient</th><th>Grams</th><th>% of batch</th><th>Step</th><th>Data</th></tr></thead><tbody><tr><td>Whole milk</td><td>370.4 g</td><td>46.3%</td><td>2 + 3</td><td>estimated</td></tr><tr class=\"is-marked\"><td>Heavy cream</td><td>252.8 g</td><td>31.6%</td><td>3</td><td>estimated</td></tr><tr><td>Sucrose</td><td>76 g</td><td>9.5%</td><td>2 + 3</td><td></td></tr></tbody></table>",
+      "css": ".ds-ingredient-table{border-collapse:collapse;width:100%;font-family:var(--face-grotesk);font-size:var(--size-table-body);font-variant-numeric:tabular-nums;color:var(--ink)}.ds-ingredient-table th,.ds-ingredient-table td{text-align:left;padding:var(--gap-xs) var(--gap-s);border-bottom:var(--rule-baseline) solid var(--ink)}.ds-ingredient-table th{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;font-weight:400}.ds-ingredient-table tr.is-marked{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset);font-weight:700}"
+    },
+    {
+      "name": "Graduated rule",
+      "kind": "custom",
+      "refersTo": "figure-value",
+      "description": "One figure as a printed scale: hatched target band, tick at the value, deviation in words. A focusable button; focus outlines it and marks contributing rows.",
+      "html": "<button type=\"button\" class=\"ds-graduated-rule\" aria-label=\"PAC, 24.1, target 22–26, estimated: Whole milk, Heavy cream\"><div class=\"ds-graduated-rule__head\" aria-hidden=\"true\"><span>PAC</span><span class=\"ds-graduated-rule__value\">24.1</span></div><p class=\"ds-graduated-rule__basis\" aria-hidden=\"true\">estimated: Whole milk, Heavy cream</p><svg viewBox=\"0 0 320 30\" width=\"100%\" height=\"30\" aria-hidden=\"true\"><defs><pattern id=\"ds-hatch\" width=\"4\" height=\"4\" patternTransform=\"rotate(45)\" patternUnits=\"userSpaceOnUse\"><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"4\" stroke=\"var(--ink)\" stroke-width=\"1.2\"/></pattern></defs><rect x=\"176\" y=\"4\" width=\"32\" height=\"14\" fill=\"url(#ds-hatch)\"/><line x1=\"176\" y1=\"2\" x2=\"176\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"208\" y1=\"2\" x2=\"208\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"0\" y1=\"18\" x2=\"320\" y2=\"18\" stroke=\"var(--ink)\" stroke-width=\"1.5\"/><line x1=\"0\" y1=\"18\" x2=\"0\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"32\" y1=\"18\" x2=\"32\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"64\" y1=\"18\" x2=\"64\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"96\" y1=\"18\" x2=\"96\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"128\" y1=\"18\" x2=\"128\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"160\" y1=\"18\" x2=\"160\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"192\" y1=\"18\" x2=\"192\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"224\" y1=\"18\" x2=\"224\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"256\" y1=\"18\" x2=\"256\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"288\" y1=\"18\" x2=\"288\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"320\" y1=\"18\" x2=\"320\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"193\" y1=\"0\" x2=\"193\" y2=\"22\" stroke=\"var(--ink)\" stroke-width=\"2.5\"/></svg><div class=\"ds-graduated-rule__anchors\" aria-hidden=\"true\"><span>0</span><span class=\"ds-graduated-rule__deviation\">inside 22–26</span><span>40</span></div></button>",
+      "css": ".ds-graduated-rule{display:block;width:100%;max-width:320px;padding:0;border:none;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;outline:none;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-graduated-rule:focus-visible,.ds-graduated-rule:focus{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-graduated-rule__head{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--size-table-body)}.ds-graduated-rule__value{font-size:var(--size-figure-value);font-weight:700}.ds-graduated-rule__basis{font-size:var(--size-small-print);margin:var(--gap-hair) 0 0}.ds-graduated-rule__anchors{display:flex;justify-content:space-between;font-size:var(--size-small-print);margin-top:var(--gap-hair)}.ds-graduated-rule__deviation{font-size:var(--size-deviation-words)}"
+    },
+    {
+      "name": "Target chip",
+      "kind": "chip",
+      "refersTo": "target-chip",
+      "description": "A typed target on a method step. Hairline ink border, no fill, never a control.",
+      "html": "<span class=\"ds-target-chip\"><span>temp</span><span>85 °C</span></span> <span class=\"ds-target-chip\"><span>hold</span><span>2 min</span></span>",
+      "css": ".ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--size-small-print);font-variant-numeric:tabular-nums;color:var(--ink)}"
+    },
+    {
+      "name": "Method step",
+      "kind": "custom",
+      "refersTo": "step-number",
+      "description": "Step number in a fixed margin column; bold lead-in and prose in the text face; targets as chips; purpose and aside in italic.",
+      "html": "<ol class=\"ds-method-steps\"><li class=\"ds-method-step\"><span class=\"ds-method-step__n\" aria-hidden=\"true\">2</span><div><p class=\"ds-method-step__lead\"><b>Gum slurry — the only high-heat step.</b> Toss 1.68 g of the gum blend with ~12 g of the sucrose. Whisk into 120 g of the milk in a small saucepan. Heat, whisking constantly, then pull off.</p><p class=\"ds-method-step__targets\"><span class=\"ds-target-chip\"><span>temp</span><span>85 °C</span></span><span class=\"ds-target-chip\"><span>hold</span><span>2 min</span></span></p><p class=\"ds-method-step__aside\">At 120 g this is a thin layer in the pan. It scorches and evaporates faster than a larger volume would.</p></div></li></ol>",
+      "css": ".ds-method-steps{list-style:none;margin:0;padding:0;color:var(--ink)}.ds-method-step{display:grid;grid-template-columns:auto 1fr;gap:var(--gap-s)}.ds-method-step__n{font-family:var(--face-grotesk);font-size:var(--size-figure-value);font-variant-numeric:tabular-nums}.ds-method-step__lead{font-family:var(--face-text);font-size:var(--size-headnote-prose);margin:0}.ds-method-step__targets{display:flex;flex-wrap:wrap;gap:var(--gap-xs);margin:var(--gap-xs) 0 0}.ds-method-step__aside{font-family:var(--face-text);font-style:italic;font-size:var(--size-deviation-words);margin:var(--gap-xs) 0 0}.ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--size-small-print);font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Authored block",
+      "kind": "custom",
+      "refersTo": "region-name",
+      "description": "The maker's own notes, with a legend naming the block and the word \"authored\" so it stays apart from anything derived.",
+      "html": "<div class=\"ds-authored\"><p class=\"ds-authored__legend\"><span>Carried forward</span><span>authored</span></p><ul class=\"ds-authored__notes\"><li>No glucose syrup — less costly at 13% milkfat than it would be at 8%.</li><li>This is the low anchor, not the oil-forward target.</li></ul></div>",
+      "css": ".ds-authored{color:var(--ink)}.ds-authored__legend{display:flex;justify-content:space-between;font-family:var(--face-grotesk);font-size:var(--size-small-print);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--size-headnote-prose)}"
+    },
+    {
+      "name": "Headnote",
+      "kind": "custom",
+      "refersTo": "region-name",
+      "description": "Recipe name in the text face, the version line beneath, then prose. The one display-size element on the page.",
+      "html": "<header class=\"ds-headnote\"><p class=\"ds-region-name\">Headnote</p><h1>Olive Oil Ice Cream</h1><p class=\"ds-headnote__version\">50 g oil · 800 g</p><p class=\"ds-headnote__prose\">Scaled 0.8× from the 1 kg formula. All ratios unchanged.</p></header>",
+      "css": ".ds-headnote{color:var(--ink)}.ds-headnote .ds-region-name{font-family:var(--face-grotesk);font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);margin:0 0 var(--gap-xs)}.ds-headnote h1{font-family:var(--face-text);font-size:var(--size-recipe-name);margin:0}.ds-headnote__version{font-family:var(--face-text);font-size:var(--size-version-line);margin:var(--gap-xs) 0 0}.ds-headnote__prose{font-family:var(--face-text);font-size:var(--size-headnote-prose);margin:var(--gap-s) 0 0}"
+    },
+    {
+      "name": "Recipe list link",
+      "kind": "nav",
+      "refersTo": "table-cell",
+      "description": "The only navigation: name in the text face, version and mass in the grotesk, inheriting ink, no underline.",
+      "html": "<ul class=\"ds-recipe-list\"><li><a href=\"#\"><span class=\"ds-recipe-list__name\">Olive Oil Ice Cream</span><span>50 g oil · 800 g</span><span>799.7 g</span></a></li></ul>",
+      "css": ".ds-recipe-list{list-style:none;margin:0;padding:0;font-family:var(--face-grotesk);font-size:var(--size-table-body);color:var(--ink)}.ds-recipe-list li+li{margin-top:var(--gap-s)}.ds-recipe-list a{display:flex;gap:var(--gap-m);color:inherit;text-decoration:none;font-variant-numeric:tabular-nums}.ds-recipe-list a:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-recipe-list__name{font-family:var(--face-text)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Formulation Cookbook",
+    "overview": "A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread: headnote top left, the ingredient table beneath it, the numbered method on the right, the formulation note under the table, and a margin for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.\n\nThe world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. What the Cookbook adds is a text face with true italics for headnote and method prose, a grotesk with tabular numerals for every table and figure, and one bookcloth green that names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.\n\nDensity is generous. One heavy element per view, wide gutters between regions, and no motion on entrance. State changes weight and outline, never position and never hue.",
+    "keyCharacteristics": [
+      "Book-spread layout: headnote, ingredient table, formulation note, method, margin, each wearing its plain-language name as a running head.",
+      "Four colour roles and nothing else: paper, ink, pen, bookcloth.",
+      "Serif for prose, grotesk with tabular numerals for anything counted.",
+      "Balance stated as a tick on a graduated rule and a deviation in words; no colour verdict.",
+      "Print-native: what the screen shows is what the sheet prints, minus the instruments.",
+      "Focus and marking change stroke weight and outline only; nothing moves."
+    ],
+    "rules": [
+      {
+        "name": "The Two-Ink Rule",
+        "body": "Printed matter is ink black; recorded matter is pen blue; the two never mix on one element. A value that is half plan and half record is two values.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Verdict Rule",
+        "body": "No colour anywhere carries pass, fail, warning, or uncertainty. A figure's standing against its band is stated in words beside the figure, and estimated or unreviewed data says so as a word in the Data column.",
+        "section": "colors"
+      },
+      {
+        "name": "The Bookcloth Rule",
+        "body": "Bookcloth appears only on the running heads that name a region. If a new element wants green, it is either a region name or it is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Counted-in-Grotesk Rule",
+        "body": "Any value that can be weighed, measured, or compared sits in the grotesk with tabular numerals. Prose sits in the text face. The step number is a figure, so it is grotesk.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lowercase-Unit Rule",
+        "body": "Units keep their case everywhere, including inside uppercase running heads.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper-Is-Flat Rule",
+        "body": "Nothing floats above the page. If an element needs to stand apart, it gets a heavier rule or an ink outline, never a shadow, never a fill.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do read every colour, face, size, gap, and rule weight through a custom property in app/src/styles/tokens.css. No literal anywhere else.",
+      "Do put every number in the grotesk with tabular numerals and every sentence in the text face.",
+      "Do give every region a running head in bookcloth naming it in plain language.",
+      "Do state a figure's standing in words beside the figure (inside 22–26, 1.4 over target) and its basis as a word (estimated, unreviewed).",
+      "Do carry state by weight and outline: bold plus a 1px ink outline offset 2px, in place.",
+      "Do keep ingredient rows in authored order; strike a removed row rather than deleting it.",
+      "Do paint anything the maker recorded or is editing in pen blue, and return it to ink when it is saved as a version."
+    ],
+    "donts": [
+      "Don't colour anything to mean pass, fail, warning, or uncertainty. No green tick, no red figure, no amber badge.",
+      "Don't use bookcloth on anything but a region name.",
+      "Don't add a fifth colour, a grey, a tint, a shadow, a gradient, or a second background.",
+      "Don't round a corner without first adding a radius token, and never on a table, rule, chip, or anything that prints.",
+      "Don't move an element on hover, focus, or selection, and don't animate an entrance.",
+      "Don't put a hero image, a card, a gauge, a progress ring, a sparkline, or an icon on the page.",
+      "Don't uppercase a unit or set a number in the text face."
+    ]
+  }
+}

@@ -4,6 +4,14 @@
 // is a real as-made value, distinct from absent), D-18 (a measured or
 // as-made value is stored as typed, never rounded), D-20 (the batch's
 // opaque id), and BATCH2-01 (the snapshot, taken once and never retaken).
+//
+// Precision contract (D-18): a value the maker typed is stored as a plain
+// JavaScript number and is never rounded, never re-formatted, and never
+// passed through the rounding convention the balance figures use. That
+// convention belongs to computed figures only — a measured or as-made
+// number shows what was entered. asMadeTotals below is the one computed
+// figure this module produces; rounding it for display is the table's
+// decision, made once, at the point of presentation, not here.
 
 export const BATCH_SCHEMA_VERSION = 1;
 
@@ -81,4 +89,23 @@ export function hasAsMade(batch, rowId) {
  */
 export function asMadeFor(batch, rowId) {
   return hasAsMade(batch, rowId) ? batch.churn.asMade[rowId] : null;
+}
+
+/**
+ * asMadeTotals(rows, asMade) -> { planTotal, asMadeTotal }. planTotal sums
+ * every row's plan grams. asMadeTotal sums the as-made value where the
+ * row's key is present (a written 0 contributes zero — D-11) and the
+ * row's plan grams where it is not (the plan fills the gap, never the
+ * reverse). Presence is decided by an own-property check, never
+ * truthiness. Neither total is rounded here — see the precision contract
+ * above.
+ */
+export function asMadeTotals(rows, asMade) {
+  let planTotal = 0;
+  let asMadeTotal = 0;
+  for (const row of rows) {
+    planTotal += row.grams;
+    asMadeTotal += Object.prototype.hasOwnProperty.call(asMade, row.id) ? asMade[row.id] : row.grams;
+  }
+  return { planTotal, asMadeTotal };
 }

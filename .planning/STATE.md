@@ -4,10 +4,10 @@ current_phase: 2
 current_phase_name: Record the first batch
 status: planning
 stopped_at: Phase 01 complete, ready to plan Phase 2
-last_updated: "2026-09-06T13:27:32.452Z"
+last_updated: "2026-09-06T13:44:48.953Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 01 complete, transitioned to Phase 2
-state_head: dcec0d3a260dd76e400477915a93bbf92d375ab6
+state_head: 5671c722e5ccf6bc26b5831f1c7de3214b3e96ab
 progress:
   total_phases: 4
   completed_phases: 1
@@ -106,6 +106,7 @@ None yet.
 | 260906-chn | Commit the two design files written by /impeccable document: DESIGN.md and .impeccable/design.json | 2026-09-06 | 17bd91f | [260906-chn-commit-the-two-design-files-written-by-i](./quick/260906-chn-commit-the-two-design-files-written-by-i/) |
 | 2 | Fix the stale "No DESIGN.md yet" line in STATE.md Blockers/Concerns | 2026-09-06 | ea4a14d | — |
 | 3 | Fix the recipe page grid (note follows table) and cap the graduated rule width; record critique carries | 2026-09-06 | dcec0d3 | — |
+| 4 | Recipe page grid: note beside the table, method beneath; prose measure capped at 65ch | 2026-09-06 | 5671c72 | — |
 
 ## Deferred Items
 

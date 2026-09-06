@@ -40,6 +40,16 @@ export function createRepository() {
       const db = await dbPromise;
       return db.put('batches', batch);
     },
+    async getAllBatches() {
+      const db = await dbPromise;
+      return db.getAll('batches');
+    },
+    async putAllBatches(batches) {
+      const db = await dbPromise;
+      const tx = db.transaction('batches', 'readwrite');
+      await Promise.all(batches.map((batch) => tx.store.put(batch)));
+      return tx.done;
+    },
   };
 }
 

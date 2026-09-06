@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 Phase: 2 — Record the first batch
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-06 - Completed quick task 260906-chn: Commit the two design files written by /impeccable document: DESIGN.md and .impeccable/design.json
+Last activity: 2026-09-06 - Completed quick task 260906-gh9: Record the confirmed batch-capture brief in STATE.md and move the outcome-dimensions decision in PRODUCT.md from undecided to decided
 
 Progress: [███░░░░░░░] 25% (1/4 phases; 4/4 plans)
 
@@ -114,6 +114,7 @@ None yet.
 | 5 | Record the revised recipe spread in the surface brief and DESIGN.md | 2026-09-06 | d99ec8d | — |
 | 6 | Recipe page: fixed table layout and column-two wrapper; second critique carries | 2026-09-06 | a413362 | — |
 | 7 | Recipe table: fixed leading and wider name column so marked rows never move the method | 2026-09-06 | a6db02e | — |
+| 260906-gh9 | Record the confirmed batch-capture brief in STATE.md and move the outcome-dimensions decision in PRODUCT.md from undecided to decided | 2026-09-06 | 18cdcbb | [260906-gh9-record-the-confirmed-batch-capture-brief](./quick/260906-gh9-record-the-confirmed-batch-capture-brief/) |
 
 ## Deferred Items
 

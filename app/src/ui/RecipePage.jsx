@@ -5,6 +5,7 @@ import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
+import { BasisNote } from './BasisNote.jsx';
 
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The advisory slot in the margin renders nothing
@@ -44,6 +45,7 @@ export function RecipePage() {
 
       <section className="formulation-note-region" aria-label="Formulation note">
         <FormulationNote version={version} />
+        <BasisNote version={version} />
       </section>
 
       <section className="method-region" aria-label="Method">

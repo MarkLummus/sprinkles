@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 current_phase: 01
 current_phase_name: Read the churned recipe
-status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-09-06T02:29:31.770Z"
+status: verifying
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-09-06T02:46:18.526Z"
 last_activity: 2026-09-05
 last_activity_desc: Phase 01 execution started
-state_head: 7538e793d8fca91cfc5a03cfe5ad2cf30e018f75
+state_head: 73b1f5d58bf659219aaeae3c9de8ca65fa0816d3
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 
 Phase: 01 (Read the churned recipe) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-05 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P01 | 12min | 3 tasks | 20 files |
 | Phase 01 P02 | 11min | 3 tasks | 9 files |
 | Phase 01 P03 | 5min | 3 tasks | 7 files |
+| Phase 01 P04 | 13min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,10 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 01]: Bookcloth colour chosen as a muted bottle green (#33513B), a third hue distinct from ink and pen blue, used only for plain-language block-name running heads — every block wears its name per the brief's carried raise; bookcloth identifies the book in running heads/section tabs and never carries state, so it needed a hue that could never be mistaken for status.
 - [Phase 01]: [Phase 01, Plan 03]: PAC and POD figures list msnf among their contributing fields so the basis they report never under-states the lactose term's dairy MSNF dependency; a figure's basis is the worst basis across all its contributing fields, not just its own.
 - [Phase 01]: [Phase 01, Plan 03]: Fixed two arithmetically inconsistent describeDeviation examples in the 01-03 plan's own test spec (value/band pairs that could not produce the stated words) rather than encoding impossible expectations into the test; documented as Rule 1 deviations in the plan's SUMMARY.
+- [Phase 01]: The ingredient table's Data column is headed "Data" — no name was assigned by the direction contract for this specific column.
+- [Phase 01]: Row and figure accessible names are built explicitly (aria-label) so the estimated flag and contributor trace are provably in the accessible name, not only the visual rendering.
+- [Phase 01]: GraduatedRule became a native <button> with one aria-label carrying its full sentence; inner markup is aria-hidden.
+- [Phase 01]: Hover-as-alternate-trigger for figure focus was not implemented — the plan only requires keyboard focus; hover was optional and would add cross-row state reconciliation not asked for.
 
 ### Pending Todos
 
@@ -99,6 +104,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T02:29:31.758Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-09-06T02:46:18.514Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None

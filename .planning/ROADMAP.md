@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A figure resting on estimated or unreviewed ingredient data is flagged where the figure is shown, not only in a separate note.
   4. The figures on screen agree with the churned bench sheet's own figures for the same twelve rows, so the maker can work from the app instead of the printout.
 
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans executed
 
 Plans:
 **Wave 1**
@@ -50,7 +50,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-04-PLAN.md — Estimated data flagged at the row and at the figure, contributor tracing, validated store export/import, and the landed structure recorded
+- [x] 01-04-PLAN.md — Estimated data flagged at the row and at the figure, contributor tracing, validated store export/import, and the landed structure recorded
 
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the recipe review surface (the first surface to shape; may be shaped together with the bench sheet)
@@ -131,7 +131,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Read the churned recipe | 3/4 | In Progress|  |
+| 1. Read the churned recipe | 4/4 | In Progress|  |
 | 2. Record the first batch | 0/TBD | Not started | - |
 | 3. Develop the next version | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |

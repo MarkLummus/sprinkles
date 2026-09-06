@@ -20,7 +20,7 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 ### Formulation — from FORM-01 and FORM-02
 
 - [x] **FORM1-01**: For any version, maker sees PAC, POD, total fat with milkfat and added fat separately, MSNF, sugar solids, and total solids per 100 g, each against its target band, with the calculation basis stated.
-- [ ] **FORM1-02**: A figure that rests on estimated or unreviewed ingredient data is flagged where it is shown.
+- [x] **FORM1-02**: A figure that rests on estimated or unreviewed ingredient data is flagged where it is shown.
 - [ ] **FORM1-03**: A version outside a target band can still be saved and printed, and no figure is labeled as guaranteeing success.
 - [ ] **FORM2-01**: Maker can compare the new version with the churned version: per-row change in grams and in % of batch, and the change in each balance figure.
 - [ ] **FORM2-02**: Derived structural advisories are shown with the basis they were computed from: sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, and estimated-data exposure. None predicts a sensory outcome and none blocks saving or printing.
@@ -101,7 +101,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REC1-04 | Phase 3 | Pending |
 | REC1-05 | Phase 3 | Pending |
 | FORM1-01 | Phase 1 | Complete |
-| FORM1-02 | Phase 1 | Pending |
+| FORM1-02 | Phase 1 | Complete |
 | FORM1-03 | Phase 3 | Pending |
 | FORM2-01 | Phase 3 | Pending |
 | FORM2-02 | Phase 3 | Pending |

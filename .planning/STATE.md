@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Record the first batch
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-09-06T19:28:55.810Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-09-06T19:47:37.339Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 02 execution started
-state_head: 299a13aa61024eaaf5b8dc94386c86cdb8caa193
+state_head: 8755a9cd3b1c4c90d6b92a5ed2b97ed19933d8c0
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 7
-  completed_plans: 5
+  completed_plans: 6
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 ## Current Position
 
 Phase: 02 (Record the first batch) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-09-06 — Phase 02 execution started
 
@@ -63,6 +63,7 @@ Progress: [███░░░░░░░] 25% (1/4 phases; 4/4 plans)
 | Phase 01 P03 | 5min | 3 tasks | 7 files |
 | Phase 01 P04 | 13min | 3 tasks | 10 files |
 | Phase 02 P01 | 62 min | 3 tasks | 14 files |
+| Phase 02 P02 | 62 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 01]: Hover-as-alternate-trigger for figure focus was not implemented — the plan only requires keyboard focus; hover was optional and would add cross-row state reconciliation not asked for.
 - [Phase 02]: [Phase 2, Plan 01]: Added formatGrams(grams) to domain/composition.js alongside formatShareOfBatch, not in the plan's stated composition.js export list, to satisfy the plan's own gate forbidding a literal toFixed(1) in IngredientTable.jsx for the total row's grams figures (Rule 3 deviation).
 - [Phase 02]: [Phase 2, Plan 01]: The tracer feedback gate's human-check (Task 1) and Task 3's human-check were deferred to end-of-phase UAT at the user's explicit request; all automated verification for both was re-run and passes.
+- [Phase 02]: [Phase 2, Plan 02] A schemaVersion 1 store file still imports as a store with no batches; a schemaVersion 1 file carrying a non-empty batches array is refused as malformed. Export always writes schemaVersion 2.
+- [Phase 02]: [Phase 2, Plan 02] readMeasured and the six churn measurement/note fields on createBatch (Task 2's domain scope) were implemented in Task 1's GREEN commit, since both extend the same churnFields object in one coherent edit; Task 2's domain-level RED tests passed immediately rather than genuinely failing first (documented, not a Rule 1-4 deviation).
 
 ### Pending Todos
 
@@ -129,6 +132,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T19:28:55.768Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-09-06T19:47:37.297Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

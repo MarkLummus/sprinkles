@@ -70,7 +70,7 @@ Plans:
   4. Maker reopens the batch and sees it together with the recipe version it used, its measured values, and its result.
   5. The batch holds the recipe rows and ingredient coefficients it was computed with; later edits to the recipe or to ingredient data do not change what the batch shows.
 
-**Plans**: 1/3 plans executed
+**Plans**: 2/3 plans executed
 
 Plans:
 **Wave 1**
@@ -79,7 +79,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — The pen on the method and in the margin: per-step strike and changed line, the churn section's measured values with unknown in words, and the store file carrying batches
+- [x] 02-02-PLAN.md — The pen on the method and in the margin: per-step strike and changed line, the churn section's measured values with unknown in words, and the store file carrying batches
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -146,7 +146,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
-| 2. Record the first batch | 1/3 | In Progress|  |
+| 2. Record the first batch | 2/3 | In Progress|  |
 | 3. Develop the next version | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 

@@ -102,3 +102,84 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* Every block wears its plain-language name (direction contract § 6),
+   in the bookcloth colour that identifies the book, never a status. */
+.region-name {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bookcloth);
+  margin: 0 0 var(--gap-xs);
+}
+
+.method-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.method-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--gap-s);
+}
+
+.method-step + .method-step {
+  margin-top: var(--gap-m);
+}
+
+.method-step__n {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-figure-value);
+  font-variant-numeric: tabular-nums;
+}
+
+.method-step__lead {
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+  margin: 0;
+}
+
+.method-step__targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  margin: var(--gap-xs) 0 0;
+}
+
+.target-chip {
+  display: inline-flex;
+  gap: var(--gap-hair);
+  border: var(--rule-graduation) solid var(--ink);
+  padding: 0 var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+}
+
+.method-step__purpose,
+.method-step__aside {
+  font-family: var(--face-text);
+  font-style: italic;
+  font-size: var(--size-deviation-words);
+  margin: var(--gap-xs) 0 0;
+}
+
+.authored__legend {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: var(--gap-m) 0 0;
+}
+
+.authored__notes {
+  margin: var(--gap-xs) 0 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+}

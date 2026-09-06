@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-06T12:55:32.025Z",
+  "generatedAt": "2026-09-06T15:44:00.230Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -120,7 +120,13 @@
     },
     "shadows": [],
     "motion": [],
-    "breakpoints": []
+    "breakpoints": [],
+    "table": {
+      "leading": "1.2",
+      "nameColumnWidth": "40%",
+      "layout": "fixed",
+      "purpose": "The ingredient table's layout is fixed and its leading constant so a marked row's bold weight moves nothing."
+    }
   },
   "components": [
     {
@@ -135,9 +141,9 @@
       "name": "Ingredient table",
       "kind": "custom",
       "refersTo": "table-cell",
-      "description": "Rows in authored order, ink rules under each, an exception-only Data column, and a marked state for rows a focused figure rests on.",
+      "description": "Rows in authored order, ink rules under each, an exception-only Data column, and a marked state for rows a focused figure rests on. Fixed layout and leading so marking moves nothing.",
       "html": "<table class=\"ds-ingredient-table\"><thead><tr><th>Ingredient</th><th>Grams</th><th>% of batch</th><th>Step</th><th>Data</th></tr></thead><tbody><tr><td>Whole milk</td><td>370.4 g</td><td>46.3%</td><td>2 + 3</td><td>estimated</td></tr><tr class=\"is-marked\"><td>Heavy cream</td><td>252.8 g</td><td>31.6%</td><td>3</td><td>estimated</td></tr><tr><td>Sucrose</td><td>76 g</td><td>9.5%</td><td>2 + 3</td><td></td></tr></tbody></table>",
-      "css": ".ds-ingredient-table{border-collapse:collapse;width:100%;font-family:var(--face-grotesk);font-size:var(--size-table-body);font-variant-numeric:tabular-nums;color:var(--ink)}.ds-ingredient-table th,.ds-ingredient-table td{text-align:left;padding:var(--gap-xs) var(--gap-s);border-bottom:var(--rule-baseline) solid var(--ink)}.ds-ingredient-table th{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;font-weight:400}.ds-ingredient-table tr.is-marked{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset);font-weight:700}"
+      "css": ".ds-ingredient-table{border-collapse:collapse;table-layout:fixed;width:100%;font-family:var(--face-grotesk);font-size:var(--size-table-body);font-variant-numeric:tabular-nums;color:var(--ink)}.ds-ingredient-table th,.ds-ingredient-table td{text-align:left;padding:var(--gap-xs) var(--gap-s);line-height:var(--leading-table,1.2);border-bottom:var(--rule-baseline) solid var(--ink)}.ds-ingredient-table th{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;font-weight:400}.ds-ingredient-table tr.is-marked{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset);font-weight:700}.ds-ingredient-table th:first-child{width:var(--col-ingredient,40%)}"
     },
     {
       "name": "Graduated rule",
@@ -190,7 +196,7 @@
   ],
   "narrative": {
     "northStar": "The Formulation Cookbook",
-    "overview": "A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread: headnote top left, the ingredient table beneath it, the numbered method on the right, the formulation note under the table, and a margin for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.\n\nThe world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. What the Cookbook adds is a text face with true italics for headnote and method prose, a grotesk with tabular numerals for every table and figure, and one bookcloth green that names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.\n\nDensity is generous. One heavy element per view, wide gutters between regions, and no motion on entrance. State changes weight and outline, never position and never hue.",
+    "overview": "A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread: headnote across the top, the ingredient table beneath it with the formulation note beside it, the numbered method under the table, and a margin under the note for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.\n\nThe world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. What the Cookbook adds is a text face with true italics for headnote and method prose, a grotesk with tabular numerals for every table and figure, and one bookcloth green that names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.\n\nDensity is generous. One heavy element per view, wide gutters between regions, and no motion on entrance. State changes weight and outline, never position and never hue.",
     "keyCharacteristics": [
       "Book-spread layout: headnote, ingredient table, formulation note, method, margin, each wearing its plain-language name as a running head.",
       "Four colour roles and nothing else: paper, ink, pen, bookcloth.",
@@ -238,6 +244,7 @@
       "Do state a figure's standing in words beside the figure (inside 22–26, 1.4 over target) and its basis as a word (estimated, unreviewed).",
       "Do carry state by weight and outline: bold plus a 1px ink outline offset 2px, in place.",
       "Do keep ingredient rows in authored order; strike a removed row rather than deleting it.",
+      "Do fix a table's layout and leading before giving any row a heavier weight, so marking moves nothing.",
       "Do paint anything the maker recorded or is editing in pen blue, and return it to ink when it is saved as a version."
     ],
     "donts": [

@@ -28,6 +28,7 @@ typography:
     fontFamily: "-apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 400
+    lineHeight: 1.2
     fontFeature: "tabular-nums"
   figure:
     fontFamily: "-apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif"
@@ -83,7 +84,7 @@ Recorded from the shipped code in `app/src/styles/tokens.css`, `app/src/styles/a
 
 **Creative North Star: "The Formulation Cookbook"**
 
-A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread: headnote top left, the ingredient table beneath it, the numbered method on the right, the formulation note under the table, and a margin for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.
+A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread: headnote across the top, the ingredient table beneath it with the formulation note beside it, the numbered method under the table, and a margin under the note for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.
 
 The world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. What the Cookbook adds is a text face with true italics for headnote and method prose, a grotesk with tabular numerals for every table and figure, and one bookcloth green that names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.
 
@@ -132,7 +133,7 @@ Four roles, each with one job, and no fifth colour anywhere in the system.
 - **Display** (700, 2rem): the recipe name, once per page, in the headnote.
 - **Headline** (400, 1.125rem): the version line under the name, e.g. `50 g oil · 800 g`. Units are never uppercased.
 - **Body** (400, 1rem): headnote prose, method instructions, authored notes. Method lead-ins are bold within the same size.
-- **Table** (400, 0.9375rem, tabular): ingredient table body and the graduated rule's label. The page default.
+- **Table** (400, 0.9375rem, tabular, leading 1.2): ingredient table body and the graduated rule's label. The page default. The leading is fixed so a marked row's bold weight cannot change its height.
 - **Figure** (700, 1.25rem, tabular): the value beside each graduated rule, and the step number in the method's margin column.
 - **Deviation** (400, 0.8125rem): the words under a rule (`inside 22–26`, `1.4 over target`) and, in italic text face, a step's purpose and aside.
 - **Label** (400, 0.75rem, 0.04em tracking, uppercase): running heads, region names, table headers, the authored legend.
@@ -145,7 +146,7 @@ Four roles, each with one job, and no fifth colour anywhere in the system.
 
 ## Layout
 
-The recipe page is a two-column grid at a 2:1 ratio with four named rows: the headnote spans both columns; column one is the recipe as written in the sheet's page order, the ingredient table then the method; column two is what the sheet does not print, the formulation note beside the table so its six rules share the table's viewport, then the margin beneath. Whichever column runs longer leaves its void at the bottom. Regions are separated by the large gap (32px) and the page carries the extra-large gap (48px) as its outer margin. The recipe list is a single column of links, each a flex row of name, version line, and batch mass.
+The recipe page is a two-column grid at a 2:1 ratio with three named areas: the headnote spans both columns; column one is the recipe as written in the sheet's page order, the ingredient table then the method; column two is a single region that flows on its own, the formulation note beside the table so its six rules share the table's viewport, then the margin following the note by one large gap however tall the method runs. Whichever column runs longer leaves its void at the bottom. Regions are separated by the large gap (32px) and the page carries the extra-large gap (48px) as its outer margin. The recipe list is a single column of links, each a flex row of name, version line, and batch mass.
 
 The spacing scale is six steps: hair (2px) for the gap inside a chip and under a rule; xs (6px) for cell padding and the space under a region name; s (12px) for cell horizontal padding, step gutters, and list rhythm; m (20px) between method steps, between graduated rules, and above the basis note; l (32px) between regions; xl (48px) for the page margin.
 
@@ -179,6 +180,7 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Type:** header in the label role uppercase; body in the table role with tabular numerals; left-aligned throughout.
 - **Padding:** 6px vertical, 12px horizontal per cell.
 - **Data column:** an exception-only word (`estimated`, `unreviewed`) in ink; blank when there is nothing to say.
+- **Layout:** fixed table layout, the ingredient column at 40% of the table's width, and the table role's fixed 1.2 leading, so a marked row's bold weight can widen no column and change no row's height. The remaining columns share the width equally until the as-made column arrives and sizes them.
 - **Marked state:** when a figure is focused, its contributing rows take a 1px ink outline offset 2px and bold weight. Unmarked rows are untouched, never dimmed.
 
 ### Graduated rule (signature)
@@ -216,6 +218,7 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Do** state a figure's standing in words beside the figure (`inside 22–26`, `1.4 over target`) and its basis as a word (`estimated`, `unreviewed`).
 - **Do** carry state by weight and outline: bold plus a 1px ink outline offset 2px, in place.
 - **Do** keep ingredient rows in authored order; strike a removed row rather than deleting it.
+- **Do** fix a table's layout and leading before giving any row a heavier weight, so marking moves nothing.
 - **Do** paint anything the maker recorded or is editing in pen blue, and return it to ink when it is saved as a version.
 
 ### Don't:

@@ -34,6 +34,7 @@
   --rule-graduation: 1px;
   --rule-band-edge: 1px;
   --rule-tick: 2.5px;
+  --rule-width: 320px; /* the drawing's native width; GraduatedRule.jsx WIDTH must agree */
   --hatch-pitch: 4px;
   --hatch-stroke: 1.2px;
 

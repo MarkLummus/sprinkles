@@ -56,10 +56,17 @@ body {
   grid-template-areas:
     'headnote headnote'
     'ingredients method'
+    'formulation method'
     'formulation margin';
   gap: var(--gap-l);
   padding: var(--gap-xl);
 }
+
+/* The left column is one reading path — table, then its formulation note —
+   and the method's height must never push the note away from the table
+   (route-recipe.md § 3, the focal moment). The method spans two rows so the
+   note starts one gap below the table's last rule; the margin follows the
+   method. Whichever column runs longer leaves its void at the bottom. */
 
 .headnote {
   grid-area: headnote;
@@ -236,6 +243,9 @@ body {
   text-align: left;
   cursor: pointer;
   outline: none;
+  /* Capped at the drawing's native width so the SVG fills the button exactly
+     and the anchors under it sit at the baseline's ends, not the column's. */
+  max-width: var(--rule-width);
 }
 
 .graduated-rule:focus {

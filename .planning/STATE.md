@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 Phase: 2 — Record the first batch
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-05 — Phase 01 complete, transitioned to Phase 2
+Last activity: 2026-09-06 - Completed quick task 260906-chn: Commit the two design files written by /impeccable document: DESIGN.md and .impeccable/design.json
 
 Progress: [██░░░░░░░░] 25% (1/4 phases; 4/4 plans)
 
@@ -93,6 +93,12 @@ None yet.
 - [Phase 2] Working-case batch facts (2 Aug churn, as-made amounts, tasting figures) are an unconfirmed transcription. Mark confirms them in Phase 2 discussion.
 - [Phase 1 carry] Hover-as-alternate-trigger for figure focus was not built (keyboard only); revisit if a pointer-first review surface needs it.
 - [Phase 1 carry] UI audit recommends checking the book-spread grid below 1280px and measuring running-head contrast against AA; UX1-01 verifies end-to-end in Phase 4.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260906-chn | Commit the two design files written by /impeccable document: DESIGN.md and .impeccable/design.json | 2026-09-06 | 17bd91f | [260906-chn-commit-the-two-design-files-written-by-i](./quick/260906-chn-commit-the-two-design-files-written-by-i/) |
 
 ## Deferred Items
 

@@ -2,7 +2,17 @@
 // BATCH2-01). Runs under Vitest's default node environment — imports no
 // store, no component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { createBatch, formatRecordDate, hasAsMade, asMadeFor, asMadeTotals, BATCH_SCHEMA_VERSION } from './batch.js';
+import {
+  createBatch,
+  formatRecordDate,
+  hasAsMade,
+  asMadeFor,
+  asMadeTotals,
+  stepChangeFor,
+  isStruck,
+  changedLineFor,
+  BATCH_SCHEMA_VERSION,
+} from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 // A plain in-memory double for the repository seam's batch methods — the
@@ -172,6 +182,55 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
 
     expect(batch.snapshot.rows).toHaveLength(12);
     expect(batch.snapshot.coefficientSetId).toBe('2026.1-slice-transcription');
+  });
+});
+
+// Method: strike or change, one line per step (02-02 task 1, D-10, D-11, D-13).
+describe('stepChangeFor / isStruck / changedLineFor', () => {
+  const stepChanges = {
+    '1': { struck: true, line: null },
+    '8': { struck: false, line: 'blend 60 s' },
+  };
+  const batch = createBatch(
+    oliveOilVersion,
+    { churnDate: '2026-08-02', asMade: {}, stepChanges },
+    { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+  );
+
+  it('stepChangeFor returns null for a step the maker did not touch', () => {
+    expect(stepChangeFor(batch, 3)).toBe(null);
+  });
+
+  it('isStruck is true only for a struck step; an untouched step is not struck and is not "done as written"', () => {
+    expect(isStruck(batch, 1)).toBe(true);
+    expect(isStruck(batch, 8)).toBe(false);
+    expect(isStruck(batch, 3)).toBe(false);
+  });
+
+  it('changedLineFor returns the line, or null when the step has none', () => {
+    expect(changedLineFor(batch, 8)).toBe('blend 60 s');
+    expect(changedLineFor(batch, 1)).toBe(null);
+    expect(changedLineFor(batch, 3)).toBe(null);
+  });
+
+  it('a step may be struck and carry a line at once', () => {
+    const both = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-08-02', asMade: {}, stepChanges: { '1': { struck: true, line: 'skipped, drizzled instead' } } },
+      { id: 'b-2', now: '2026-08-04T09:00:00.000Z' },
+    );
+    expect(isStruck(both, 1)).toBe(true);
+    expect(changedLineFor(both, 1)).toBe('skipped, drizzled instead');
+  });
+
+  it('presence is decided by an own-property check, not a special case for step 0', () => {
+    const zeroKeyed = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-08-02', asMade: {}, stepChanges: { '0': { struck: true, line: null } } },
+      { id: 'b-3', now: '2026-08-04T09:00:00.000Z' },
+    );
+    expect(isStruck(zeroKeyed, 0)).toBe(true);
+    expect(stepChangeFor(zeroKeyed, 1)).toBe(null);
   });
 });
 

@@ -30,6 +30,21 @@ function isDraftDirty(mode, draft) {
   );
 }
 
+// The same presence-over-truthiness dirty check, extended to an
+// in-progress tasting (D-24's "unsaved ink" applies to a tasting draft
+// exactly as it does to the churn draft above).
+function isTastingDraftDirty(tastingDraft) {
+  if (!tastingDraft) return false;
+  return (
+    tastingDraft.date !== '' ||
+    Object.keys(tastingDraft.marks).length > 0 ||
+    tastingDraft.tastingTempC !== '' ||
+    tastingDraft.meltdownLossG !== '' ||
+    tastingDraft.words !== '' ||
+    tastingDraft.nextTimeNote !== ''
+  );
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The advisory slot in the margin renders nothing
 // visible until the plan that fills it lands — no placeholder text.
@@ -84,7 +99,7 @@ export function RecipePage() {
   // removed as soon as it does not — no invented dialog, no draft
   // persistence across a reload (that is UX1-02, Phase 4).
   useEffect(() => {
-    if (!isDraftDirty(mode, draft)) return undefined;
+    if (!isDraftDirty(mode, draft) && !isTastingDraftDirty(tastingDraft)) return undefined;
     const handleBeforeUnload = (event) => {
       event.preventDefault();
     };
@@ -92,7 +107,7 @@ export function RecipePage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [mode, draft]);
+  }, [mode, draft, tastingDraft]);
 
   if (version === undefined) return null;
   if (version === null) return <p>No recipe found for this version.</p>;

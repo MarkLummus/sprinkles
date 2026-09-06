@@ -145,11 +145,11 @@ Four roles, each with one job, and no fifth colour anywhere in the system.
 
 ## Layout
 
-The recipe page is a two-column grid at a 2:1 ratio with three named rows: the headnote spans both columns, the ingredient table sits left with the method right, and the formulation note sits left with the margin right. Regions are separated by the large gap (32px) and the page carries the extra-large gap (48px) as its outer margin. The recipe list is a single column of links, each a flex row of name, version line, and batch mass.
+The recipe page is a two-column grid at a 2:1 ratio with four named rows: the headnote spans both columns; column one is the recipe as written in the sheet's page order, the ingredient table then the method; column two is what the sheet does not print, the formulation note beside the table so its six rules share the table's viewport, then the margin beneath. Whichever column runs longer leaves its void at the bottom. Regions are separated by the large gap (32px) and the page carries the extra-large gap (48px) as its outer margin. The recipe list is a single column of links, each a flex row of name, version line, and batch mass.
 
 The spacing scale is six steps: hair (2px) for the gap inside a chip and under a rule; xs (6px) for cell padding and the space under a region name; s (12px) for cell horizontal padding, step gutters, and list rhythm; m (20px) between method steps, between graduated rules, and above the basis note; l (32px) between regions; xl (48px) for the page margin.
 
-The method's step number sits in a fixed auto-width margin column so numbers stay put as prose reflows. The ingredient table is full width of its column and its rows are never sorted, grouped, or reordered from the authored order.
+Prose never runs past a 65ch measure: headnote prose, method instruction, purpose, aside, and the basis note all read the one measure token. The method's step number sits in a fixed auto-width margin column so numbers stay put as prose reflows. The ingredient table is full width of its column and its rows are never sorted, grouped, or reordered from the authored order.
 
 No breakpoint exists in code yet. The brief expects the spread at 1280 and wider, the table stacking over the method below that, and the phone receiving the same page read-only in feel, table first. Until a media query lands, the grid holds at every width.
 
@@ -182,7 +182,7 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Marked state:** when a figure is focused, its contributing rows take a 1px ink outline offset 2px and bold weight. Unmarked rows are untouched, never dimmed.
 
 ### Graduated rule (signature)
-- **What it is:** one figure's assessment: label and value on a baseline, a 320×30 SVG scale with a 1.5px baseline and eleven 1px graduations, the authored target band as a hatched rectangle bracketed by 1px edges, and a 2.5px tick at the value. Beneath, the domain's two anchors and the deviation in words.
+- **What it is:** one figure's assessment, capped at the drawing's native 320px width so the anchors sit at the scale's ends: label and value on a baseline, a 320×30 SVG scale with a 1.5px baseline and eleven 1px graduations, the authored target band as a hatched rectangle bracketed by 1px edges, and a 2.5px tick at the value. Beneath, the domain's two anchors and the deviation in words.
 - **Basis line:** when a figure rests on estimated or unreviewed rows it says so in small print between the head and the scale, naming the rows.
 - **Control:** the whole rule is a button whose accessible name is the full sentence. Focus draws a 1px ink outline offset 2px and marks the contributing table rows. Nothing moves and nothing changes colour.
 - **Rule:** the deviation is words; the band is hatch; the value is a tick. No fill, no colour, no score.

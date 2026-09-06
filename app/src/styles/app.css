@@ -427,6 +427,18 @@ body {
   margin-top: var(--gap-xs);
 }
 
+/* A measured value in the reading state, unit on the label, its reading
+   (or "unknown") in pen blue beside it — never a value from the recipe. */
+.batch-margin__measured {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  font-variant-numeric: tabular-nums;
+  margin: var(--gap-xs) 0 0;
+}
+
 .batch-margin button {
   margin-top: var(--gap-s);
 }

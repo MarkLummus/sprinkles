@@ -10,6 +10,26 @@ import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchMargin } from './BatchMargin.jsx';
 
+// D-24's dirty check: true only while recording holds ink the maker has
+// actually typed. Every field is tested against '' / {} rather than
+// truthiness, so a written 0 (draft.overrunPercent === '0') still counts as
+// dirty — matching the presence-over-truthiness discipline domain/batch.js
+// already applies to the stored record.
+function isDraftDirty(mode, draft) {
+  if (mode !== 'recording' || !draft) return false;
+  return (
+    draft.churnDate !== '' ||
+    Object.keys(draft.asMade).length > 0 ||
+    Object.keys(draft.stepChanges).length > 0 ||
+    draft.comeUpMinutes !== '' ||
+    draft.drawTempC !== '' ||
+    draft.overrunPercent !== '' ||
+    draft.drawNotes !== '' ||
+    draft.ingredientNotes !== '' ||
+    draft.nextTimeNote !== ''
+  );
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The advisory slot in the margin renders nothing
 // visible until the plan that fills it lands — no placeholder text.
@@ -50,6 +70,21 @@ export function RecipePage() {
     };
   }, [id]);
 
+  // D-24: leaving the page with unsaved ink uses the browser's own leave
+  // warning only, registered while recording holds a dirty draft and
+  // removed as soon as it does not — no invented dialog, no draft
+  // persistence across a reload (that is UX1-02, Phase 4).
+  useEffect(() => {
+    if (!isDraftDirty(mode, draft)) return undefined;
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [mode, draft]);
+
   if (version === undefined) return null;
   if (version === null) return <p>No recipe found for this version.</p>;
 
@@ -78,8 +113,27 @@ export function RecipePage() {
   }
 
   function handleStartRecording() {
-    setDraft({ churnDate: '', asMade: {}, stepChanges: {} });
+    setDraft({
+      churnDate: '',
+      asMade: {},
+      stepChanges: {},
+      comeUpMinutes: '',
+      drawTempC: '',
+      overrunPercent: '',
+      drawNotes: '',
+      ingredientNotes: '',
+      nextTimeNote: '',
+    });
     setMode('recording');
+  }
+
+  // A generic setter for the churn section's remaining fields (D-17, D-18):
+  // each stores the raw string the maker typed while recording, exactly as
+  // the as-made column already does, so the maker's typed precision is
+  // never lost to an early Number() coercion — the conversion (and the
+  // '' -> null discipline) happens once, at save time.
+  function handleChangeChurnField(field, value) {
+    setDraft((prev) => ({ ...prev, [field]: value }));
   }
 
   // Clearing both the strike and the line for a step removes that step's
@@ -123,10 +177,18 @@ export function RecipePage() {
     for (const [rowId, rawValue] of Object.entries(draft.asMade)) {
       asMade[rowId] = Number(rawValue);
     }
+    const toNumberOrNull = (raw) => (raw === '' ? null : Number(raw));
+    const toTextOrNull = (raw) => (raw === '' ? null : raw);
     const churnFields = {
       churnDate: draft.churnDate === '' ? null : draft.churnDate,
       asMade,
       stepChanges: draft.stepChanges,
+      comeUpMinutes: toNumberOrNull(draft.comeUpMinutes),
+      drawTempC: toNumberOrNull(draft.drawTempC),
+      overrunPercent: toNumberOrNull(draft.overrunPercent),
+      drawNotes: toTextOrNull(draft.drawNotes),
+      ingredientNotes: toTextOrNull(draft.ingredientNotes),
+      nextTimeNote: toTextOrNull(draft.nextTimeNote),
     };
     const record = createBatch(version, churnFields, { id: crypto.randomUUID(), now: new Date().toISOString() });
 
@@ -195,6 +257,7 @@ export function RecipePage() {
             draft={draft}
             onStartRecording={handleStartRecording}
             onChangeChurnDate={handleChangeChurnDate}
+            onChangeChurnField={handleChangeChurnField}
             onSaveBatch={handleSaveBatch}
           />
           <Authored carriedForward={version.authored.carriedForward} beforeYouStart={version.authored.beforeYouStart} />

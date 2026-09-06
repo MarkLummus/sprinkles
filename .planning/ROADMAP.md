@@ -13,7 +13,7 @@ Milestone 1 delivers one outcome (D14): Mark can develop and prepare the next ve
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Read the churned recipe** - The churned olive oil recipe and its balance figures are legible in the app instead of on paper
+- [x] **Phase 1: Read the churned recipe** - The churned olive oil recipe and its balance figures are legible in the app instead of on paper (completed 2026-09-05)
 - [ ] **Phase 2: Record the first batch** - The 2 Aug batch enters Sprinkles as what actually happened, snapshotted against the version it used
 - [ ] **Phase 3: Develop the next version** - Version 2 is created, adjusted, and compared against the churned version without disturbing it
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
@@ -131,7 +131,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Read the churned recipe | 4/4 | In Progress|  |
+| 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
 | 2. Record the first batch | 0/TBD | Not started | - |
 | 3. Develop the next version | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |

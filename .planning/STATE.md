@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
-current_phase: 01
-current_phase_name: Read the churned recipe
-status: verifying
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-09-06T02:46:18.526Z"
+current_phase: 2
+current_phase_name: Record the first batch
+status: planning
+stopped_at: Phase 01 complete, ready to plan Phase 2
+last_updated: "2026-09-06T03:51:52.598Z"
 last_activity: 2026-09-05
-last_activity_desc: Phase 01 execution started
-state_head: 73b1f5d58bf659219aaeae3c9de8ca65fa0816d3
+last_activity_desc: Phase 01 complete, transitioned to Phase 2
+state_head: 95914a0580fb83c228e1d1fd397c9cc2cbc770a9
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
   completed_plans: 4
-  percent: 0
+  percent: 25
 ---
 
 # Project State
@@ -23,22 +23,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-05)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 01 — Read the churned recipe
+**Current focus:** Phase 02 — Record the first batch
 
 ## Current Position
 
-Phase: 01 (Read the churned recipe) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Last activity: 2026-09-05 — Phase 01 execution started
+Phase: 2 — Record the first batch
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-05 — Phase 01 complete, transitioned to Phase 2
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 25% (1/4 phases; 4/4 plans)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 4
 - Average duration: —
 - Total execution time: —
 
@@ -46,7 +46,7 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01 | 4 | - | - |
 
 **Recent Trend:**
 
@@ -90,9 +90,9 @@ None yet.
 ### Blockers/Concerns
 
 - Impeccable initialized 2026-09-05: `PRODUCT.md` written; surface brief for the recipe surface and bench sheet confirmed by Mark (`.impeccable/surfaces/`, direction "The Formulation Cookbook" expanding the Cupping Form, seed d1a5d80a, code-led). Phase 1, 3, and 4 prerequisites met. No DESIGN.md yet: it is written at finish from the built world. Phase 2 still needs the batch-record brief.
-- Ingredient seed dataset undecided — three candidates disagree on coefficients (dextrose PAC 174.8 vs 190; salt 586 vs 580). Chosen in Phase 1 planning after the recipe data model exists.
-- Working-case batch facts (2 Aug churn, as-made amounts, tasting figures) are an unconfirmed transcription. Mark confirms them in Phase 2 discussion.
-- Stack (React + Vite + JSX) is provisional until Phase 1 ships; testing framework is unchosen and must be surfaced, not assumed.
+- [Phase 2] Working-case batch facts (2 Aug churn, as-made amounts, tasting figures) are an unconfirmed transcription. Mark confirms them in Phase 2 discussion.
+- [Phase 1 carry] Hover-as-alternate-trigger for figure focus was not built (keyboard only); revisit if a pointer-first review surface needs it.
+- [Phase 1 carry] UI audit recommends checking the book-spread grid below 1280px and measuring running-head contrast against AA; UX1-01 verifies end-to-end in Phase 4.
 
 ## Deferred Items
 
@@ -104,6 +104,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T02:46:18.514Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-09-06T03:52:54Z
+Stopped at: Phase 01 complete, ready to plan Phase 2
 Resume file: None

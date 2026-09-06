@@ -14,13 +14,13 @@ Make something you like, understand how it turned out, and know what to keep or 
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Review the churned olive oil recipe (50 g oil, 800 g) inside Sprinkles: twelve rows, method, authored notes, six balance figures against their bands with the basis stated, estimated data flagged at row and figure — REC1-01, FORM1-01, FORM1-02 — Phase 1
 
 ### Active
 
 Milestone 1 — **Develop the next olive oil recipe** (accepted D14). Requirement IDs are the packet's (`product-requirements/04-requirements.md`); their detailed acceptance criteria remain draft until reviewed in phase discussion.
 
-- [ ] Review the churned olive oil recipe (50 g oil, 800 g) and its first-batch notes inside Sprinkles — REC-01, BATCH-01, OBS-01
+- [ ] Review the first-batch notes inside Sprinkles alongside the churned recipe — BATCH-01, OBS-01
 - [ ] Record the first batch as an actual attempt against that recipe state, including as-made deviations and the maker's own-words result — BATCH-01, BATCH-02, OBS-01
 - [ ] Explore adjustments with before/after balance figures, stated assumptions, and no promise of success — FORM-01, FORM-02
 - [ ] Preserve the churned version and the new version as distinct, with lineage; editing the new one never rewrites the old batch — REC-01, BATCH-02
@@ -75,14 +75,14 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 
 **Old-sprinkles conflicts with the accepted register.** Its `CLAUDE.md` and `PRODUCT.md` state storage was "resolved 22 Aug 2026" as hosted Postgres with one account; accepted D16 (2026-09-05) keeps storage open and governs. Its surface briefs fix four outcome axes; accepted D12 leaves rating and label choices open. Its brand section says none of the prior branding is binding; accepted D13 says existing branding is incumbent evidence to confirm. None of these are resolved here.
 
-**Repo state.** No app code, no `package.json`. The product-requirements reorganization is uncommitted in git.
+**Repo state.** Phase 1 shipped the `app/` workspace (React 19 + Vite 8 + JSX, react-router 8, idb 8, Vitest 5) with the recipe read surface, the framework-free balance module, and the provisional IndexedDB store behind a repository seam. Both CLAUDE.md files describe it.
 
 ## Constraints
 
 - **Product authority**: The decision register governs; Mark approves scope and design. Neither framework may resolve an open decision by running first.
-- **Tech stack (provisional)**: React with JSX, bundled by Vite, as recorded in `CLAUDE.md` — kept provisional through Phase 1 and ratified after it ships. TypeScript is not adopted. Domain math lives in framework-free modules.
+- **Tech stack (ratified)**: React with JSX, bundled by Vite, tested with Vitest, as recorded in `CLAUDE.md` — ratified in Phase 1 on real code. TypeScript is not adopted. Domain math lives in framework-free modules.
 - **Persistence (provisional)**: A local store behind a small repository seam, labeled provisional, so D16 stays open and the backend can be replaced without touching the domain.
-- **Ingredient data**: The seed dataset is undecided; it is chosen in phase planning after the recipe data model is designed. Batches snapshot coefficients regardless.
+- **Ingredient data**: The old-sprinkles transcription (twelve rows, per-field basis) is the seed dataset, chosen in Phase 1 planning (D-01). Versions embed a copy of their rows' coefficients; batches snapshot them regardless.
 - **Codebase mapping**: Deferred until real code lands in this repo; the JSX mockups are not a codebase.
 - **Privacy**: No external model calls or network import without a stated policy (TRUST-01, IMP-01).
 - **Design**: Impeccable owns design decisions and design QA; GSD phases consume approved surface briefs. Existing mockups and the old-sprinkles visual world are evidence until Mark confirms their authority (D13).
@@ -95,14 +95,17 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 |----------|-----------|---------|
 | D01–D16 accepted as recorded in `product-requirements/03-decision-register.md` | Product direction settled by Mark on 2026-09-05; not reopened here | ✓ Good |
 | Initialize with `gsd-new-project`, packet as discovery input | Keeps human gates on requirements and roadmap; avoids copying every draft criterion into scope | — Pending |
-| Stack React + Vite + JSX, provisional through Phase 1 | All inspected code points this way; ratify on real code rather than on mockups | — Pending |
-| Milestone 1 persistence: provisional local store behind a repository seam | Preserves versions without settling D16; backend swappable later | — Pending |
-| Reuse the old-sprinkles transcribed olive oil data (not its code) | Verified transcription of the churned sheet; rebuilding it adds nothing | — Pending |
-| Ingredient seed dataset decided during phase planning | Three candidates disagree on coefficients; the data model should be designed first | — Pending |
-| Codebase map deferred until real code exists | Mockups are design evidence, not implementation | — Pending |
+| Stack React + Vite + JSX, provisional through Phase 1 | All inspected code points this way; ratify on real code rather than on mockups | ✓ Good — ratified Phase 1; Vitest chosen as the test runner |
+| Milestone 1 persistence: provisional local store behind a repository seam | Preserves versions without settling D16; backend swappable later | ✓ Good — idb over IndexedDB behind `createRepository`, grep-enforced (Phase 1) |
+| Reuse the old-sprinkles transcribed olive oil data (not its code) | Verified transcription of the churned sheet; rebuilding it adds nothing | ✓ Good — all nine printed-sheet figures reproduced within tolerance (Phase 1) |
+| Ingredient seed dataset decided during phase planning | Three candidates disagree on coefficients; the data model should be designed first | ✓ Good — old-sprinkles transcription chosen (dextrose PAC 190, salt PAC 580), Phase 1 |
+| Codebase map deferred until real code exists | Mockups are design evidence, not implementation | — Pending (real code now exists; map when useful) |
 | GSD owns delivery; Impeccable owns design; register owns product | Per packet handoff rules | — Pending |
 | Brand: only the name "Sprinkles" is binding; the Cupping Form world and cone/scoop mockups are incumbent evidence for Impeccable to preserve, expand, or replace with Mark's approval | D13 confirmation, 2026-09-05 | — Pending |
 | Operating context: desktop formulates, paper works the kitchen, phone transcribes | Binder evidence; confirmed 2026-09-05 | — Pending |
+| Version-embedded ingredient rows are the identity model; a shared library is a source copied at authoring time, never a render-time authority | Coefficient drift silently corrupted historical batches; a stored version's figures must not move when the library changes (D04, D09) | ✓ Good — invariant proven by test, Phase 1 |
+| No third-party origins: system font stacks, no fetched assets, no network API under `app/src` | TRUST-01/IMP-01 with the fewest moving parts; verified by grep gates and the Phase 1 security review | ✓ Good — Phase 1 |
+| Colour never carries status; deviation, estimated data, and contributor marks are text, outline, and weight | The Formulation Cookbook direction contract; a reader who cannot perceive colour loses nothing | ✓ Good — confirmed in Phase 1 UAT |
 | Accessibility standard left undecided in the product record; UX1-01 still tests AA text contrast for milestone 1 | Mark declined to fix the standard yet; requirement was approved separately | ⚠️ Revisit |
 
 ## Evolution
@@ -123,4 +126,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-05 after initialization*
+*Last updated: 2026-09-05 after Phase 1*

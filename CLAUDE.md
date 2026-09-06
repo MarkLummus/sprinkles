@@ -60,12 +60,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
-## Status
+## Where the code lives
 
-The web app has not been started — no `index.html`, no CSS, no JS, no `package.json` at the root.
-That part of this file is still the agreed starting shape, not a description of existing code.
-
-**Remove the Status section from this file as real structure lands; do not let it drift into describing things that don't exist.**
+`app/` holds the Vite workspace (`app/package.json`, `app/index.html`, `app/src/`).
+Commands: `npm --prefix app run dev`, `npm --prefix app run build`, `npm --prefix app test`.
 
 ## What this is
 
@@ -78,6 +76,7 @@ React with JSX, bundled by Vite — `npm run dev` / `npm run build`.
 The alternative (React + `@babel/standalone` from CDN, no build) was considered and rejected;
 the project accepts losing the "open `index.html` and it runs" property in exchange for real
 bundling and HMR.
+This stack shipped on real code in Phase 1 and is now ratified; TypeScript remains not adopted.
 
 ## Working agreement
 

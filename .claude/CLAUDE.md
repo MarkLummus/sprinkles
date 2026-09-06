@@ -13,7 +13,7 @@ Product truth lives in `product-requirements/` (read `README.md` first). This fi
 ### Constraints
 
 - **Product authority**: The decision register governs; Mark approves scope and design. Neither framework may resolve an open decision by running first.
-- **Tech stack (provisional)**: React with JSX, bundled by Vite, as recorded in `CLAUDE.md` — kept provisional through Phase 1 and ratified after it ships. TypeScript is not adopted. Domain math lives in framework-free modules.
+- **Tech stack (ratified)**: React with JSX, bundled by Vite, as recorded in `CLAUDE.md` — ratified in Phase 1 on real code. TypeScript is not adopted. Domain math lives in framework-free modules.
 - **Persistence (provisional)**: A local store behind a small repository seam, labeled provisional, so D16 stays open and the backend can be replaced without touching the domain.
 - **Ingredient data**: The seed dataset is undecided; it is chosen in phase planning after the recipe data model is designed. Batches snapshot coefficients regardless.
 - **Codebase mapping**: Deferred until real code lands in this repo; the JSX mockups are not a codebase.
@@ -28,21 +28,28 @@ Product truth lives in `product-requirements/` (read `README.md` first). This fi
 
 ## Technology Stack
 
-Technology stack not yet documented. Will populate after codebase mapping or first phase.
+React 19.2.8 + Vite 8.2.2 (JSX), bundled with `@vitejs/plugin-react` 6.1.1; react-router 8.3.1 for routing; `idb` 8.0.3 over IndexedDB for persistence; Vitest 5.0.0 for tests. Ratified in Phase 1 on real code — no longer provisional. TypeScript is not adopted.
+
+The workspace lives in `app/`. Commands: `npm --prefix app run dev`, `npm --prefix app run build`, `npm --prefix app test`.
 <!-- GSD:stack-end -->
 
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 
 ## Conventions
 
-Conventions not yet established. Will populate as patterns emerge during development.
+- Domain math lives in framework-free modules under `app/src/domain/` — no framework, DOM, or store import; the domain test suite runs under Vitest's `node` environment to keep that provable.
+- Every store access goes through the repository seam (`app/src/store/repository.js`); no other module under `app/src` imports `idb`.
+- Every visual value (colour, face, size, spacing, rule weight) reads through a CSS custom property defined in `app/src/styles/tokens.css`; no component or stylesheet carries a literal.
+- Notes and prose render as text, never as markup — no `dangerouslySetInnerHTML` anywhere under `app/src`.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
 
 ## Architecture
 
-Architecture not yet mapped. Follow existing patterns found in the codebase.
+`app/src/main.jsx` bootstraps the app, seeds the store on an empty database (`app/src/store/seed.js`), and mounts the router (`app/src/router.jsx`). Routed components (`app/src/ui/`) read through the repository seam (`app/src/store/repository.js`), the sole path to IndexedDB (`app/src/store/db.js`). Domain modules (`app/src/domain/`) compute balance figures from a version's rows and never touch the store or the DOM.
+
+A version record embeds its own ingredient rows' coefficients and basis — a `structuredClone` of the shared library entry, taken at authoring time — so a later edit to the shared library never moves an already-stored version's computed figures.
 <!-- GSD:architecture-end -->
 
 <!-- GSD:skills-start source:skills/ -->

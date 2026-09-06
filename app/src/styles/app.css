@@ -32,6 +32,24 @@ body {
   font-family: var(--face-text);
 }
 
+.recipe-list__transfer {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-s);
+  margin-bottom: var(--gap-m);
+}
+
+.recipe-list__file-input {
+  display: none;
+}
+
+.recipe-list__import-errors {
+  margin: 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
 .recipe-page {
   display: grid;
   grid-template-columns: 2fr 1fr;

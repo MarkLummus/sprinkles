@@ -1,0 +1,24 @@
+id,tier,case,primary_test,secondary_test,status
+1o6l2mw,1-structured,Black sesame ice cream,Triple-stated quantities,Mid-quantity salt caveat,selected_unannotated
+1ue4ui6,1-structured,Banana bread ice cream,Metric happy path,Temperatures and method,selected_unannotated
+1up8lrf,1-structured,Cream cheese ice cream,Mixed-unit happy path,Unicode fraction,selected_unannotated
+1vems2c,1-structured,PB&J troubleshooting,Multiple components,Source recipes and actual modifications,selected_unannotated
+1vhk21n,1-structured,Bubblegum ice cream,External link and mixed units,Stated yield,selected_unannotated
+1nzwckl,2-listed,Fig leaf and passion fruit curd,Named base plus delta,Sub-recipe and HTML entities,selected_unannotated
+1o6h5wb,2-listed,Mocha with fudge ripple,Base plus ripple,Long mixed method,selected_unannotated
+1vk4ms3,2-listed,Coffee chocolate machine problem,Recipe embedded in troubleshooting,Abbreviated cups and update text,selected_unannotated
+1vnc04k,2-listed,Ultra-low-fat vanilla,Large technical ingredient list,Instructions mixed into quantities,selected_unannotated
+1vwa3js,2-listed,Nutella Philadelphia style,High quantity-token count,Published style and troubleshooting,selected_unannotated
+1vwa8mw,2-listed,Traditional vanilla gelato,Abbreviated cups and mixed units,HTML entities and emoji,selected_unannotated
+1mkys1l,3-prose,Champagne grape sorbet,Dual-stated quantities,Trailing yield,selected_unannotated
+1mn1u2n,3-prose,Very peachy peach,Recipe boundaries in long narrative,US volumetric units,selected_unannotated
+1ni6ft2,3-prose,Ice cream update,Sparse quantities in narrative,Percentage and temperature,selected_unannotated
+1pcrv2c,3-prose,Banana pudding,Abbreviated cups,Published custard-base reference,selected_unannotated
+1ulzjvr,3-prose,Peach custard failure,Recipe inside troubleshooting narrative,Separate fruit component,selected_unannotated
+1vdh6i8,3-prose,Disappointing first recipe,Minimal partial recipe,Misspellings and missing method,selected_unannotated
+1nahsio,4-comment,Pop-up menu,False-positive recipe detection,Must reject or request clarification,selected_unannotated
+1nhunne,4-comment,Pumpkin spice latte,Conversational preamble,Subsections and optional ingredient,selected_unannotated
+1ni2ka0,4-comment,Lucky Charms cereal milk,External-base reference and substitution,Emoji and conversational context,selected_unannotated
+1solgcr,4-comment,Lingonberry sorbet,High-detail comment recipe,Mixed units and temperature,selected_unannotated
+1uqutwe,4-comment,Failed birthday batch,Outcome narrative before recipe,Distinguish recovery story from method,selected_unannotated
+1vxbbvw,4-comment,Crunchy cone no machine,Very long comment recipe,Subsections and HTML entities,selected_unannotated

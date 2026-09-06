@@ -1,0 +1,17 @@
+id,case,primary_outcome,cause_scope,why_selected,status
+1jexccu,Butter-based green tea gelato,Buttery or fatty flavor,ingredient+emulsification,Complete gram formula and strong disagreement in comments,selected_unannotated
+1vems2c,PB&J ice cream,Rock hard at serving,recipe+components,Complete multi-component recipe with published-source adaptations,selected_unannotated
+1vnc04k,Ultra-low-fat vanilla,Mochi-like gummy texture,recipe+process,Technical formula with stabilizer already reduced,selected_unannotated
+1ulzjvr,Peach custard,Won't churn plus iciness,machine+process+recipe,Two batches from one base produced different results,selected_unannotated
+1ro3tub,Rosemary honey lemon gelato,Grainy or micro-icy,recipe+machine+hardening,Complete one-kilogram recipe and ambiguous outcome language,selected_unannotated
+1vtxxub,Musso smoothness experiment,Fine micro-crystals,machine+process,Explicit draw-temperature versus residence-time tradeoff,selected_unannotated
+1vgexwu,Honey Nut Cheerio ice cream,Soggy mix-ins,component+storage,Base succeeds while inclusion fails,selected_unannotated
+1vuj4gg,Potato chip infusion,Absorbed base and low yield,ingredient+process,Transformation and yield-loss problem rather than balance,selected_unannotated
+1t6jpnm,Small machine batch,Sidewall buildup and yield loss,machine+batch_size,Scaling changes process behavior while recipe is unchanged,selected_unannotated
+1vif32e,Salt & Straw in freezer-bowl machine,Icy and under-frozen,machine+process+storage,Includes measured pre/post temperatures and freezer temperature,selected_unannotated
+1vmdgyy,One-kilogram gelato in ICE-100,Climbs sidewall and spills,machine+capacity+viscosity,Calculator reports green while process fails,selected_unannotated
+1vk4ms3,Coffee chocolate Philadelphia base,Dasher stalls and wall freezes,machine+recipe+procedure,Contains successful update that can grade the recommendation,selected_unannotated
+1veutum,Recipes soft in Whynter compressor,Too soft after hardening,machine+recipe+storage,Same symptom across multiple recipes but frozen yogurt succeeds,selected_unannotated
+1vpanes,Chocolate hazelnut base,Dense and won't churn,recipe+process,Explicit validated-clean-but-failed case with missing formula,selected_unannotated
+1vdh6i8,First vanilla batch,Fat coating and aftertaste,recipe,Minimal recipe tests whether system asks before over-diagnosing,selected_unannotated
+1vqrng2,Xanthan heating question,Gummy-risk uncertainty,ingredient+process,Tests evidence handling rather than a completed failed batch,selected_unannotated

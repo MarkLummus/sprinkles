@@ -36,6 +36,8 @@ function makeVersion(overrides = {}) {
         ingredient: { composition: { fat: 0.035, msnf: 0.088 } },
       },
     ],
+    method: [],
+    authored: { carriedForward: [], beforeYouStart: [] },
     ...overrides,
   };
 }
@@ -126,6 +128,29 @@ describe('validateStoreFile', () => {
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('grams'))).toBe(true);
+  });
+
+  it('rejects a version with no method', () => {
+    const version = makeVersion();
+    delete version.method;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method'))).toBe(true);
+  });
+
+  it('rejects a version with no authored', () => {
+    const version = makeVersion();
+    delete version.authored;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.authored'))).toBe(true);
+  });
+
+  it('rejects a version whose authored is missing carriedForward or beforeYouStart', () => {
+    const version = makeVersion({ authored: { carriedForward: [] } });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.authored'))).toBe(true);
   });
 
   it('reports two errors for a payload with two distinct faults, not only the first', () => {

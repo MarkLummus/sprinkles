@@ -71,6 +71,16 @@ function validateVersion(version, path, errors) {
   } else {
     version.rows.forEach((row, index) => validateRow(row, `${path}.rows[${index}]`, errors));
   }
+  if (!Array.isArray(version.method)) {
+    errors.push(`${path}.method: expected an array`);
+  }
+  if (
+    !isPlainObject(version.authored) ||
+    !Array.isArray(version.authored.carriedForward) ||
+    !Array.isArray(version.authored.beforeYouStart)
+  ) {
+    errors.push(`${path}.authored: expected { carriedForward: [], beforeYouStart: [] }`);
+  }
 }
 
 /**

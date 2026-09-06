@@ -61,4 +61,121 @@ export const oliveOilVersion = {
   // overrun as ranges (method targets); these scalar slots stay null rather
   // than being filled with an invented midpoint.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
+  // The axes this recipe declares for itself. Carried on the record now so
+  // Phase 2's observation surface has them; nothing in Phase 1 renders them.
+  declaredAxes: ['Olive oil character', 'Bitterness'],
+  // Prose instruction with typed targets beside it. Purpose is why the step
+  // exists — diagnostic input. Aside is what to watch while doing it. They
+  // are different fields, omitted (not blank) when the sheet has neither.
+  method: [
+    {
+      n: 1,
+      leadIn: 'Lecithin into the oil',
+      instruction: 'Whisk 1.2 g soy lecithin into the 40 g of Drizzle. Cover, leave at room temperature.',
+      targets: [{ label: 'temp', value: 'room' }],
+      purpose: "It's lipophilic — it disperses poorly if added to the water phase.",
+    },
+    {
+      n: 2,
+      leadIn: 'Gum slurry — the only high-heat step',
+      instruction:
+        'Toss 1.68 g of the gum blend with ~12 g of the sucrose. Whisk into 120 g of the milk in a small saucepan. Heat, whisking constantly, then pull off.',
+      targets: [
+        { label: 'temp', value: '85 °C' },
+        { label: 'hold', value: '2 min' },
+      ],
+      aside:
+        'At 120 g this is a thin layer in the pan. It scorches and evaporates faster than a larger volume would — keep whisking and don’t walk away.',
+    },
+    {
+      n: 3,
+      leadIn: 'Build the base',
+      instruction:
+        'Whisk the remaining sucrose (~64 g), plus 22.4 g SMP, 12 g dextrose and 3.2 g salt, into the remaining milk (~250 g) and all 252.8 g of cream. Add the hot gum slurry. Immersion blend.',
+      targets: [{ label: 'blend', value: '60 s' }],
+    },
+    {
+      n: 4,
+      leadIn: 'Divide',
+      instruction: 'Tare, pour, check.',
+      targets: [{ label: 'per jar', value: '379 g' }],
+      purpose:
+        'Mismatched jars hit core temperature at different times and you would be timing off the wrong one.',
+      aside:
+        'Two-piece lids finger-tight only — the headspace air expands and needs to vent rather than build pressure.',
+    },
+    {
+      n: 5,
+      leadIn: 'Pasteurise in the circulator',
+      instruction: 'Start the clock when the jar core reaches temperature.',
+      targets: [
+        { label: 'temp', value: '69 °C' },
+        { label: 'hold', value: '40 min' },
+        { label: 'come-up', value: '10–12 min' },
+      ],
+      purpose:
+        'With 379 g in a squat wide-mouth jar the come-up is much faster than a single large vessel.',
+      aside: 'Probe the core rather than trusting the estimate. Invert each jar once or twice partway through.',
+    },
+    {
+      n: 6,
+      leadIn: 'Allulose in, then crash-cool',
+      instruction:
+        'Combine both jars, stir in the 20 g allulose off the heat until dissolved, then straight into an ice bath.',
+      targets: [{ label: 'to', value: 'below 5 °C' }],
+      aside: 'Allulose skips the hold — it browns readily with milk proteins.',
+    },
+    {
+      n: 7,
+      leadIn: 'Age',
+      instruction: 'Hold covered in the fridge.',
+      targets: [
+        { label: 'temp', value: '4 °C' },
+        { label: 'time', value: '12–24 h' },
+      ],
+    },
+    {
+      n: 8,
+      leadIn: 'Emulsify the oil, cold',
+      instruction:
+        'Mix still at 4 °C. Pour the lecithin-oil blend in a thin stream under a running immersion blender.',
+      targets: [
+        { label: 'temp', value: '4 °C' },
+        { label: 'blend', value: '45 s' },
+      ],
+      aside: 'Never heat this oil.',
+    },
+    {
+      n: 9,
+      leadIn: 'Churn',
+      instruction: 'Freeze immediately.',
+      targets: [{ label: 'overrun', value: '25–30%' }],
+    },
+    {
+      n: 10,
+      leadIn: 'Harden, and serve warm',
+      instruction: 'Harden, then temper before serving.',
+      targets: [
+        { label: 'harden', value: '−20 °C, 4+ h' },
+        { label: 'serve', value: '−11 to −12 °C' },
+      ],
+    },
+  ],
+  // Authored, not derived — judgement the app cannot reach. The sheet also
+  // prints an ultra-pasteurised-dairy note under "Carried forward" and a
+  // machine-minimum-fill note under "Before you start"; both are *derived*
+  // structural advisories Phase 3 computes (FORM2-02) and are deliberately
+  // held here — restating a derived figure as authored judgement is exactly
+  // the mixing the brief separates.
+  authored: {
+    carriedForward: [
+      'Gellan in the cream — roughly 0.03–0.09 g at this cream weight, an estimate with no published spec. Below anything you would taste, against 1.68 g of deliberate stabiliser.',
+      'No glucose syrup — less costly at 13% milkfat than it would be at 8%, since the milkfat is carrying structure the DE42 would have provided.',
+      'This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.',
+    ],
+    beforeYouStart: [
+      'Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.',
+      'Check the cream’s actual butterfat. The carton states a 36% minimum, which is a floor.',
+    ],
+  },
 };

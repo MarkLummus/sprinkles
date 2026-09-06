@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { formatRecordDate, readMeasured, sortedTastings, hasTasting, isTastingSaveable } from '../domain/batch.js';
 import { axesForBatch, markKeyFor } from '../domain/axes.js';
 import { AxisMark } from './AxisMark.jsx';
@@ -135,10 +136,12 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, o
 // becomes the word "unknown" — never a value read from the recipe.
 export function BatchMargin({
   version,
+  batches = [],
   openBatch,
   mode,
   draft,
   onStartRecording,
+  onStartAmending,
   onChangeChurnDate,
   onChangeChurnField,
   onSaveBatch,
@@ -238,10 +241,25 @@ export function BatchMargin({
     // saves before typing one — read the same as any other blank measured
     // field (D-03's "date unknown" wording, applied here).
     const churnDateWords = openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown';
+    // The latest amendment only (task 3, D-06) — the full list lives in
+    // the record, not the reading state.
+    const latestAmendment =
+      openBatch.amendedAt.length > 0 ? openBatch.amendedAt[openBatch.amendedAt.length - 1] : null;
+    // A version with more than one batch is listed by churn date,
+    // undated last, each a link to its own URL (task 3, D-20, D-21).
+    const sortedBatches = [...batches].sort((a, b) => {
+      const aDate = a.churn.churnDate;
+      const bDate = b.churn.churnDate;
+      if (aDate === bDate) return 0;
+      if (aDate === null) return 1;
+      if (bDate === null) return -1;
+      return aDate < bDate ? 1 : -1;
+    });
     return (
       <div className="batch-margin">
         <p className="batch-margin__legend">Batch</p>
         <p className="ink-text">{churnDateWords}</p>
+        {latestAmendment && <p className="ink-text">{`amended ${formatRecordDate(latestAmendment)}`}</p>}
         <p className="batch-margin__measured">
           <span>Come-up, min</span>
           <span className="ink-text">{readMeasured(openBatch.churn.comeUpMinutes)}</span>
@@ -260,6 +278,21 @@ export function BatchMargin({
         <p className="ink-text">
           {`recorded ${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
         </p>
+        <button type="button" onClick={() => onStartAmending(openBatch)}>
+          Amend
+        </button>
+
+        {sortedBatches.length > 1 && (
+          <ul className="batch-margin__list">
+            {sortedBatches.map((batch) => (
+              <li key={batch.id} className={batch.id === openBatch.id ? 'is-open' : undefined}>
+                <Link to={`/recipe/${version.id}/batch/${batch.id}`}>
+                  {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
 
         {sortedTastings(openBatch).map((tasting) => (
           <TastingReading key={tasting.id} tasting={tasting} axes={axesForBatch(openBatch)} />

@@ -443,6 +443,27 @@ body {
   margin-top: var(--gap-s);
 }
 
+.batch-margin__list {
+  list-style: none;
+  margin: var(--gap-xs) 0 0;
+  padding: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.batch-margin__list li + li {
+  margin-top: var(--gap-hair);
+}
+
+/* The open batch in the list, distinguished by weight and outline, never
+   by hue (No-Verdict Rule) — the same convention IngredientTable's
+   .is-marked rows use. */
+.batch-margin__list li.is-open {
+  font-weight: 700;
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
 /* A dated tasting section, reading or writing, follows the same legend +
    measured-row shape as the churn section above it (D-01: its own event,
    never folded into the churn). */

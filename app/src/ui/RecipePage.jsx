@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
-import { createBatch, addTasting } from '../domain/batch.js';
+import { createBatch, addTasting, recordAmendment, latestChurnDate, formatRecordDate } from '../domain/batch.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
@@ -53,6 +53,11 @@ export function RecipePage() {
   // above (task 1). A tasting is added to an already-saved batch, so this
   // is independent of `mode`/`draft`, which are the churn recording state.
   const [tastingDraft, setTastingDraft] = useState(null);
+  // Non-null while `mode === 'recording'` means the pen layer is amending
+  // this existing batch's churn fields, rather than recording a new one
+  // (task 3, D-06). Amending pre-fills the fields from the batch, never
+  // from the version, and saving calls recordAmendment, never createBatch.
+  const [amendingBatchId, setAmendingBatchId] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -174,8 +179,37 @@ export function RecipePage() {
     });
   }
 
+  // "Amend" reopens the pen layer with the record's own values in the
+  // fields — the as-made column, the step strikes and lines, and the
+  // churn section, all pre-filled from the batch, never from the version
+  // (task 3). Every draft field is the string form the recording inputs
+  // already expect, matching handleStartRecording's shape.
+  function handleStartAmending(batch) {
+    const asMade = {};
+    for (const [rowId, value] of Object.entries(batch.churn.asMade)) {
+      asMade[rowId] = String(value);
+    }
+    const toDraftString = (value) => (value == null ? '' : String(value));
+    setDraft({
+      churnDate: batch.churn.churnDate ?? '',
+      asMade,
+      stepChanges: structuredClone(batch.churn.stepChanges),
+      comeUpMinutes: toDraftString(batch.churn.comeUpMinutes),
+      drawTempC: toDraftString(batch.churn.drawTempC),
+      overrunPercent: toDraftString(batch.churn.overrunPercent),
+      drawNotes: batch.churn.drawNotes ?? '',
+      ingredientNotes: batch.churn.ingredientNotes ?? '',
+      nextTimeNote: batch.churn.nextTimeNote ?? '',
+    });
+    setAmendingBatchId(batch.id);
+    setMode('recording');
+  }
+
   // The two impure calls (a fresh id, the current instant) live here, in
   // the one save handler — every domain function stays deterministic.
+  // Amending (amendingBatchId set) calls recordAmendment on the batch
+  // being amended instead of createBatch — a correction is never a new
+  // event and never retakes the snapshot (D-06).
   function handleSaveBatch() {
     const asMade = {};
     for (const [rowId, rawValue] of Object.entries(draft.asMade)) {
@@ -194,6 +228,20 @@ export function RecipePage() {
       ingredientNotes: toTextOrNull(draft.ingredientNotes),
       nextTimeNote: toTextOrNull(draft.nextTimeNote),
     };
+
+    if (amendingBatchId) {
+      const batchBeingAmended = batches.find((batch) => batch.id === amendingBatchId);
+      const amendedAt = new Date().toISOString().slice(0, 10);
+      const record = recordAmendment(batchBeingAmended, churnFields, amendedAt);
+      repository.saveBatch(record).then(() => {
+        setBatches((prev) => prev.map((batch) => (batch.id === record.id ? record : batch)));
+        setMode('reading');
+        setDraft(null);
+        setAmendingBatchId(null);
+      });
+      return;
+    }
+
     const record = createBatch(version, churnFields, { id: crypto.randomUUID(), now: new Date().toISOString() });
 
     repository.saveBatch(record).then(() => {
@@ -255,12 +303,19 @@ export function RecipePage() {
     });
   }
 
+  // The version line under the recipe name carries the latest batch's
+  // churn date only — never a count and never the print date (D-21).
+  const latestChurn = latestChurnDate(batches);
+
   return (
     <article className="recipe-page">
       <header className="headnote">
         <p className="region-name">Headnote</p>
         <h1>{version.recipeName}</h1>
-        <p className="headnote__version">{version.versionLabel}</p>
+        <p className="headnote__version">
+          {version.versionLabel}
+          {latestChurn && ` · churned ${formatRecordDate(latestChurn)}`}
+        </p>
         <p className="headnote__prose">{version.headnote}</p>
       </header>
 
@@ -307,10 +362,12 @@ export function RecipePage() {
           <p className="region-name">Margin</p>
           <BatchMargin
             version={version}
+            batches={batches}
             openBatch={openBatch}
             mode={mode}
             draft={draft}
             onStartRecording={handleStartRecording}
+            onStartAmending={handleStartAmending}
             onChangeChurnDate={handleChangeChurnDate}
             onChangeChurnField={handleChangeChurnField}
             onSaveBatch={handleSaveBatch}

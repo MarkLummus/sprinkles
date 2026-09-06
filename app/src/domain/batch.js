@@ -238,3 +238,36 @@ export function addTasting(batch, tastingFields, { id }) {
     tastings: [...batch.tastings, tasting],
   };
 }
+
+/**
+ * recordAmendment(batch, churnFields, amendedAt) -> a new batch whose
+ * churn is the supplied fields and whose amendedAt has amendedAt
+ * appended. Leaves recordedAt, tastings and snapshot exactly as they
+ * were — prior field values are not kept (D-06): the record shows what
+ * it now says, plus the dates on which it was corrected. This function
+ * and addTasting above are deliberately separate and neither may ever do
+ * the other's job: a second tasting is not a correction, and a
+ * correction is not an event.
+ */
+export function recordAmendment(batch, churnFields, amendedAt) {
+  return {
+    ...batch,
+    churn: { ...churnFields },
+    amendedAt: [...batch.amendedAt, amendedAt],
+  };
+}
+
+/**
+ * latestChurnDate(batches) -> the most recent churn.churnDate across a
+ * list of batches, or null when none of them carries one. Undated
+ * batches are ignored rather than treated as recent.
+ */
+export function latestChurnDate(batches) {
+  let latest = null;
+  for (const batch of batches) {
+    const date = batch.churn.churnDate;
+    if (date == null) continue;
+    if (latest == null || date > latest) latest = date;
+  }
+  return latest;
+}

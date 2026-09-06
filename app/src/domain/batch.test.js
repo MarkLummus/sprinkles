@@ -12,6 +12,10 @@ import {
   isStruck,
   changedLineFor,
   readMeasured,
+  isTastingSaveable,
+  sortedTastings,
+  hasTasting,
+  addTasting,
   BATCH_SCHEMA_VERSION,
 } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -306,5 +310,110 @@ describe('asMadeTotals', () => {
     const withZero = asMadeTotals(oliveOilVersion.rows, { 'row-09': 0 }).asMadeTotal;
     const withoutEntry = asMadeTotals(oliveOilVersion.rows, {}).asMadeTotal;
     expect(withoutEntry - withZero).toBeCloseTo(1.2, 2);
+  });
+});
+
+// A tasting is its own dated event on the batch (02-03 task 1, D-01, D-02,
+// D-03, D-06, OBS1-01). Never an amendment, never retakes the snapshot.
+describe('isTastingSaveable', () => {
+  it('words with content is saveable', () => {
+    expect(isTastingSaveable({ words: 'thin, oil forward' })).toBe(true);
+  });
+
+  it('an empty words string is not saveable', () => {
+    expect(isTastingSaveable({ words: '' })).toBe(false);
+  });
+
+  it('no words and no marks is not saveable', () => {
+    expect(isTastingSaveable({})).toBe(false);
+  });
+
+  it('whitespace-only words is not saveable: the gate trims first', () => {
+    expect(isTastingSaveable({ words: '   ' })).toBe(false);
+    expect(isTastingSaveable({ words: '\t\n' })).toBe(false);
+    expect(isTastingSaveable({ words: ' ' })).toBe(false);
+  });
+
+  it('a single emoji is saveable words, even though it occupies two UTF-16 code units', () => {
+    expect(isTastingSaveable({ words: '🍦' })).toBe(true);
+  });
+
+  it('a marks object with at least one own key is saveable', () => {
+    expect(isTastingSaveable({ marks: { sweetness: 4 } })).toBe(true);
+  });
+
+  it('an empty marks object is not saveable', () => {
+    expect(isTastingSaveable({ marks: {} })).toBe(false);
+  });
+
+  it('a mark of 0 is saveable: presence of the key is what counts, not the value', () => {
+    expect(isTastingSaveable({ marks: { sweetness: 0 } })).toBe(true);
+  });
+});
+
+describe('sortedTastings / hasTasting', () => {
+  it('an empty tastings array sorts to empty and hasTasting is false', () => {
+    const batch = { tastings: [] };
+    expect(sortedTastings(batch)).toEqual([]);
+    expect(hasTasting(batch)).toBe(false);
+  });
+
+  it('a batch with exactly one tasting returns that one and hasTasting is true', () => {
+    const tasting = { id: 't-1', date: '2026-08-04' };
+    const batch = { tastings: [tasting] };
+    expect(sortedTastings(batch)).toEqual([tasting]);
+    expect(hasTasting(batch)).toBe(true);
+  });
+
+  it('orders four tastings by date ascending, undated last', () => {
+    const t1 = { id: 't-1', date: '2026-08-05' };
+    const t2 = { id: 't-2', date: '2026-08-03' };
+    const t3 = { id: 't-3', date: null };
+    const t4 = { id: 't-4', date: '2026-08-04' };
+    const batch = { tastings: [t1, t2, t3, t4] };
+    expect(sortedTastings(batch).map((t) => t.id)).toEqual(['t-2', 't-4', 't-1', 't-3']);
+  });
+
+  it('two undated tastings keep the order they were added', () => {
+    const t1 = { id: 't-1', date: null };
+    const t2 = { id: 't-2', date: null };
+    const batch = { tastings: [t1, t2] };
+    expect(sortedTastings(batch).map((t) => t.id)).toEqual(['t-1', 't-2']);
+  });
+
+  it('does not sort the batch tastings array in place', () => {
+    const t1 = { id: 't-1', date: '2026-08-05' };
+    const t2 = { id: 't-2', date: '2026-08-03' };
+    const batch = { tastings: [t1, t2] };
+    sortedTastings(batch);
+    expect(batch.tastings).toEqual([t1, t2]);
+  });
+});
+
+describe('addTasting', () => {
+  it('appends a tasting and leaves snapshot, recordedAt, amendedAt unchanged (never an amendment, D-06)', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-08-02', asMade: {} },
+      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+    );
+    const updated = addTasting(batch, { words: 'thin' }, { id: 't-1' });
+    expect(updated.tastings).toHaveLength(1);
+    expect(updated.tastings[0].id).toBe('t-1');
+    expect(updated.tastings[0].words).toBe('thin');
+    expect(updated.snapshot).toBe(batch.snapshot);
+    expect(updated.recordedAt).toBe(batch.recordedAt);
+    expect(updated.amendedAt).toBe(batch.amendedAt);
+  });
+
+  it('does not mutate the original batch tastings array', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-08-02', asMade: {} },
+      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+    );
+    const originalLength = batch.tastings.length;
+    addTasting(batch, { words: 'thin' }, { id: 't-1' });
+    expect(batch.tastings).toHaveLength(originalLength);
   });
 });

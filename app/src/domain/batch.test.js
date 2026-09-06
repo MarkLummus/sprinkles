@@ -314,6 +314,26 @@ describe('asMadeTotals', () => {
     const withoutEntry = asMadeTotals(oliveOilVersion.rows, {}).asMadeTotal;
     expect(withoutEntry - withZero).toBeCloseTo(1.2, 2);
   });
+
+  // The recording draft stores as-made values as typed strings until save
+  // (D-18) — IngredientTable.jsx feeds that draft straight into
+  // asMadeTotals. A string summed with += concatenates rather than adds,
+  // so this reproduces the crash a maker hit on the very first keystroke
+  // into any as-made cell (and immediately on Amend for an already-recorded
+  // batch): before the fix, asMadeTotal came out as the string '0383241450'
+  // instead of the number 804.28, and the sum below is not a number at all.
+  it('sums the 2 Aug as-made entries when they arrive as the recording draft\'s strings', () => {
+    const asMade = { 'row-01': '383', 'row-02': '241', 'row-03': '45', 'row-09': '0' };
+    const { planTotal, asMadeTotal } = asMadeTotals(oliveOilVersion.rows, asMade);
+    expect(planTotal).toBeCloseTo(799.68, 2);
+    expect(asMadeTotal).toBeCloseTo(804.28, 2);
+  });
+
+  it('treats a non-numeric as-made string as absent, falling back to the row plan grams', () => {
+    const withGarbage = asMadeTotals(oliveOilVersion.rows, { 'row-01': 'abc' }).asMadeTotal;
+    const withoutEntry = asMadeTotals(oliveOilVersion.rows, {}).asMadeTotal;
+    expect(withGarbage).toBeCloseTo(withoutEntry, 2);
+  });
 });
 
 // A tasting is its own dated event on the batch (02-03 task 1, D-01, D-02,

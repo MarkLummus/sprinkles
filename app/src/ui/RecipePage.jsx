@@ -226,9 +226,13 @@ export function RecipePage() {
   // being amended instead of createBatch — a correction is never a new
   // event and never retakes the snapshot (D-06).
   function handleSaveBatch() {
+    // Non-numeric ink (a stray letter, a lone space) is dropped rather than
+    // persisted — a row that fails to parse is treated the same as a row
+    // the maker never touched, never as a stored NaN (D-11, D-18).
     const asMade = {};
     for (const [rowId, rawValue] of Object.entries(draft.asMade)) {
-      asMade[rowId] = Number(rawValue);
+      const parsed = Number(rawValue);
+      if (Number.isFinite(parsed)) asMade[rowId] = parsed;
     }
     const toNumberOrNull = (raw) => (raw === '' ? null : Number(raw));
     const toTextOrNull = (raw) => (raw === '' ? null : raw);

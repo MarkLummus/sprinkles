@@ -27,11 +27,11 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 
 ### Batch record — from BATCH-01, BATCH-02, and OBS-01
 
-- [ ] **BATCH1-01**: Maker can record a batch against the churned version with its churn date, an as-made amount per row where it differed from the plan, and process deviations (changed or skipped steps), kept separate from the recipe's planned values.
+- [x] **BATCH1-01**: Maker can record a batch against the churned version with its churn date, an as-made amount per row where it differed from the plan, and process deviations (changed or skipped steps), kept separate from the recipe's planned values.
 - [x] **BATCH1-02**: Maker can record measured values (come-up time, draw temperature, overrun, meltdown); a field left blank stays unknown and is never filled from the recipe.
 - [x] **BATCH2-01**: A batch stores a snapshot of the recipe rows and the ingredient coefficients it was computed with; later edits to the recipe or ingredient data do not change what the batch shows.
-- [ ] **BATCH2-02**: Maker can reopen a batch and see it together with the recipe version it used, its measured values, and its result.
-- [ ] **OBS1-01**: Maker can record how the batch turned out in their own words, and optionally add structured dimensions (for example oil character, bitterness, sweetness) and a next-time note, with no required field beyond the words. Any rating control is a design decision left open by D12.
+- [x] **BATCH2-02**: Maker can reopen a batch and see it together with the recipe version it used, its measured values, and its result.
+- [x] **OBS1-01**: Maker can record how the batch turned out in their own words, and optionally add structured dimensions (for example oil character, bitterness, sweetness) and a next-time note, with no required field beyond the words. Any rating control is a design decision left open by D12.
 
 ### Review and print — from REC-01 (review/print capability)
 
@@ -105,11 +105,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FORM1-03 | Phase 3 | Pending |
 | FORM2-01 | Phase 3 | Pending |
 | FORM2-02 | Phase 3 | Pending |
-| BATCH1-01 | Phase 2 | Pending |
+| BATCH1-01 | Phase 2 | Complete |
 | BATCH1-02 | Phase 2 | Complete |
 | BATCH2-01 | Phase 2 | Complete |
-| BATCH2-02 | Phase 2 | Pending |
-| OBS1-01 | Phase 2 | Pending |
+| BATCH2-02 | Phase 2 | Complete |
+| OBS1-01 | Phase 2 | Complete |
 | PRINT-01 | Phase 4 | Pending |
 | PRINT-02 | Phase 4 | Pending |
 | PRINT-03 | Phase 4 | Pending |

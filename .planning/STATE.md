@@ -2,17 +2,17 @@
 gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Record the first batch
-status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-09-06T19:47:37.339Z"
+status: verifying
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-09-06T20:07:31.111Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 02 execution started
-state_head: 8755a9cd3b1c4c90d6b92a5ed2b97ed19933d8c0
+state_head: 2d010c0fe8a5b75e0367e5efd398d1a9bda33475
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 7
-  completed_plans: 6
+  completed_plans: 7
   percent: 25
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 
 Phase: 02 (Record the first batch) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-06 — Phase 02 execution started
 
 Progress: [███░░░░░░░] 25% (1/4 phases; 4/4 plans)
@@ -64,6 +64,7 @@ Progress: [███░░░░░░░] 25% (1/4 phases; 4/4 plans)
 | Phase 01 P04 | 13min | 3 tasks | 10 files |
 | Phase 02 P01 | 62 min | 3 tasks | 14 files |
 | Phase 02 P02 | 62 min | 3 tasks | 9 files |
+| Phase 02 P03 | 68min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 02]: [Phase 2, Plan 01]: The tracer feedback gate's human-check (Task 1) and Task 3's human-check were deferred to end-of-phase UAT at the user's explicit request; all automated verification for both was re-run and passes.
 - [Phase 02]: [Phase 2, Plan 02] A schemaVersion 1 store file still imports as a store with no batches; a schemaVersion 1 file carrying a non-empty batches array is refused as malformed. Export always writes schemaVersion 2.
 - [Phase 02]: [Phase 2, Plan 02] readMeasured and the six churn measurement/note fields on createBatch (Task 2's domain scope) were implemented in Task 1's GREEN commit, since both extend the same churnFields object in one coherent edit; Task 2's domain-level RED tests passed immediately rather than genuinely failing first (documented, not a Rule 1-4 deviation).
+- [Phase 02]: [Phase 2, Plan 03] Tasting recording is scoped entirely to an already-saved batch; recordAmendment and addTasting are kept as two distinct domain functions with two distinct UI call sites (never a single patch-shaped updater), and the AxisMark control has no un-mark affordance, matching native grouped radios.
+- [Phase 02]: [Phase 2, Plan 03] Extended the beforeunload leave-warning dirty check to cover an in-progress tasting draft (Rule 2 deviation) — D-24's unsaved-ink principle applies to a tasting exactly as it does to the churn draft.
 
 ### Pending Todos
 
@@ -132,6 +135,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T19:47:37.297Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-09-06T20:07:31.068Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None

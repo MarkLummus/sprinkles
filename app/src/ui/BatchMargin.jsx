@@ -1,4 +1,100 @@
-import { formatRecordDate, readMeasured } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, sortedTastings, hasTasting, isTastingSaveable } from '../domain/batch.js';
+
+const AS_EXPECTED_WORDS = 'As expected, nothing to note';
+
+// A tasting in the reading state (task 1): headed by its date or "date
+// unknown" (D-03), then its measured fields through readMeasured — never
+// a value from the recipe — the words as plain prose, and the next-time
+// note labelled as intention. Marks render in task 2.
+function TastingReading({ tasting }) {
+  const dateWords = tasting.date ? formatRecordDate(tasting.date) : 'date unknown';
+  return (
+    <div className="tasting">
+      <p className="batch-margin__legend">{dateWords}</p>
+      <p className="batch-margin__measured">
+        <span>Tasting temperature, °C</span>
+        <span className="ink-text">{readMeasured(tasting.tastingTempC, { signed: true })}</span>
+      </p>
+      <p className="batch-margin__measured">
+        <span>Meltdown at 20 min, g</span>
+        <span className="ink-text">{readMeasured(tasting.meltdownLossG)}</span>
+      </p>
+      {tasting.words && <p className="ink-text">{tasting.words}</p>}
+      {tasting.nextTimeNote && <p className="ink-text">Next time: {tasting.nextTimeNote}</p>}
+    </div>
+  );
+}
+
+// A tasting being written (task 1): the same fields as ink fields, all
+// empty — the date field is never supplied by the app, and the tasting
+// temperature field never reads the version's serve target (D-07). Save
+// tasting is gated on isTastingSaveable, its disabled state explained in
+// text, never by colour alone.
+function TastingForm({ draft, onChangeTastingField, onUseAsExpectedShortcut, onSaveTasting }) {
+  const saveable = isTastingSaveable({ words: draft.words, marks: draft.marks });
+  return (
+    <div className="tasting tasting--recording">
+      <label className="batch-margin__field">
+        <span>Tasting date</span>
+        <input
+          type="date"
+          className="ink-field"
+          value={draft.date}
+          onChange={(event) => onChangeTastingField('date', event.target.value)}
+        />
+      </label>
+      <label className="batch-margin__field">
+        <span>Tasting temperature, °C</span>
+        <input
+          type="number"
+          step="0.5"
+          inputMode="decimal"
+          className="ink-field"
+          value={draft.tastingTempC}
+          aria-label="Tasting temperature, degrees Celsius"
+          onChange={(event) => onChangeTastingField('tastingTempC', event.target.value)}
+        />
+      </label>
+      <label className="batch-margin__field">
+        <span>Meltdown at 20 min, g</span>
+        <input
+          type="number"
+          step="1"
+          inputMode="decimal"
+          className="ink-field"
+          value={draft.meltdownLossG}
+          aria-label="Meltdown loss, grams"
+          onChange={(event) => onChangeTastingField('meltdownLossG', event.target.value)}
+        />
+      </label>
+      <label className="batch-margin__field">
+        <span>Words</span>
+        <textarea
+          className="ink-field"
+          rows="2"
+          value={draft.words}
+          onChange={(event) => onChangeTastingField('words', event.target.value)}
+        />
+      </label>
+      <button type="button" onClick={onUseAsExpectedShortcut}>
+        {AS_EXPECTED_WORDS}
+      </button>
+      <label className="batch-margin__field">
+        <span>Next time</span>
+        <textarea
+          className="ink-field"
+          rows="2"
+          value={draft.nextTimeNote}
+          onChange={(event) => onChangeTastingField('nextTimeNote', event.target.value)}
+        />
+      </label>
+      <button type="button" onClick={onSaveTasting} disabled={!saveable}>
+        Save tasting
+      </button>
+      {!saveable && <p className="batch-margin__hint">Write words or mark at least one axis to save.</p>}
+    </div>
+  );
+}
 
 // The batch-log block leads the margin (route-recipe-batch.md § 3), above
 // the advisories and the authored notes, in the printed page's order.
@@ -20,6 +116,11 @@ export function BatchMargin({
   onChangeChurnDate,
   onChangeChurnField,
   onSaveBatch,
+  tastingDraft,
+  onStartTasting,
+  onChangeTastingField,
+  onUseAsExpectedShortcut,
+  onSaveTasting,
 }) {
   if (mode === 'recording') {
     return (
@@ -132,6 +233,27 @@ export function BatchMargin({
         <p className="ink-text">
           {`recorded ${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
         </p>
+
+        {sortedTastings(openBatch).map((tasting) => (
+          <TastingReading key={tasting.id} tasting={tasting} />
+        ))}
+
+        {!hasTasting(openBatch) && (
+          <p>This batch has not been tasted yet.</p>
+        )}
+
+        {tastingDraft ? (
+          <TastingForm
+            draft={tastingDraft}
+            onChangeTastingField={onChangeTastingField}
+            onUseAsExpectedShortcut={onUseAsExpectedShortcut}
+            onSaveTasting={onSaveTasting}
+          />
+        ) : (
+          <button type="button" onClick={onStartTasting}>
+            Add a tasting
+          </button>
+        )}
       </div>
     );
   }

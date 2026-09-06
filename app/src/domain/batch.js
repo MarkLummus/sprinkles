@@ -168,3 +168,73 @@ export function asMadeTotals(rows, asMade) {
   }
   return { planTotal, asMadeTotal };
 }
+
+/**
+ * isTastingSaveable(tasting) -> boolean. OBS1-01's gate and D-02's rule in
+ * code: true when the tasting's words is a string with content after
+ * trim, or when its marks object has at least one own key. Nothing else
+ * is required — not a date, not a temperature, not a meltdown loss.
+ *
+ * Words: String.prototype.trim strips Unicode whitespace, including the
+ * non-breaking space (U+00A0) and the ideographic space (U+3000), so a
+ * field holding only invisible characters is not words. Length is counted
+ * in UTF-16 code units, so a single emoji is words even though it
+ * occupies two of them (a surrogate pair).
+ *
+ * Marks: presence is decided by an own-key count, never a truthiness scan
+ * over the values — a mark of 0 is not a legal stop today, but the gate
+ * must not be the thing that decides that.
+ */
+export function isTastingSaveable(tasting) {
+  const hasWords = typeof tasting.words === 'string' && tasting.words.trim().length > 0;
+  const hasMarks = tasting.marks != null && Object.keys(tasting.marks).length > 0;
+  return hasWords || hasMarks;
+}
+
+/**
+ * sortedTastings(batch) -> a new array of the batch's tastings ordered by
+ * date ascending, undated tastings last (D-03). Never sorts in place —
+ * batch.tastings itself is untouched. Array.prototype.sort is stable, so
+ * two tastings that compare equal (both dated the same day, or both
+ * undated) keep the order they were added.
+ */
+export function sortedTastings(batch) {
+  return [...batch.tastings].sort((a, b) => {
+    if (a.date === b.date) return 0;
+    if (a.date === null) return 1;
+    if (b.date === null) return -1;
+    return a.date < b.date ? -1 : 1;
+  });
+}
+
+/** hasTasting(batch) -> whether the batch has at least one tasting — the test behind "not yet evaluated" (D-05). */
+export function hasTasting(batch) {
+  return batch.tastings.length > 0;
+}
+
+/**
+ * addTasting(batch, tastingFields, { id }) -> a new batch with the tasting
+ * appended, carrying the supplied id. Does not validate — the caller
+ * gates on isTastingSaveable, matching this module's existing habit of
+ * returning facts rather than throwing. Leaves snapshot, recordedAt and
+ * amendedAt untouched: adding a tasting is never an amendment, and the
+ * snapshot is never retaken (D-06). This function and recordAmendment
+ * below are deliberately separate and neither may ever do the other's
+ * job — a second tasting is not a correction, and a correction is not an
+ * event (see recordAmendment).
+ */
+export function addTasting(batch, tastingFields, { id }) {
+  const tasting = {
+    id,
+    date: tastingFields.date != null ? tastingFields.date : null,
+    tastingTempC: tastingFields.tastingTempC != null ? tastingFields.tastingTempC : null,
+    marks: tastingFields.marks ? { ...tastingFields.marks } : {},
+    meltdownLossG: tastingFields.meltdownLossG != null ? tastingFields.meltdownLossG : null,
+    words: tastingFields.words ? tastingFields.words : null,
+    nextTimeNote: tastingFields.nextTimeNote ? tastingFields.nextTimeNote : null,
+  };
+  return {
+    ...batch,
+    tastings: [...batch.tastings, tasting],
+  };
+}

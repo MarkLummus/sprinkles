@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
-import { createBatch } from '../domain/batch.js';
+import { createBatch, addTasting } from '../domain/batch.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
@@ -49,6 +49,10 @@ export function RecipePage() {
   // control asks for it (D-19).
   const [mode, setMode] = useState('reading');
   const [draft, setDraft] = useState(null);
+  // The in-progress tasting's own draft state, alongside the churn draft
+  // above (task 1). A tasting is added to an already-saved batch, so this
+  // is independent of `mode`/`draft`, which are the churn recording state.
+  const [tastingDraft, setTastingDraft] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -200,6 +204,49 @@ export function RecipePage() {
     });
   }
 
+  function handleStartTasting() {
+    setTastingDraft({
+      date: '',
+      tastingTempC: '',
+      marks: {},
+      meltdownLossG: '',
+      words: '',
+      nextTimeNote: '',
+    });
+  }
+
+  function handleChangeTastingField(field, value) {
+    setTastingDraft((prev) => ({ ...prev, [field]: value }));
+  }
+
+  // D-05's shortcut: writes exactly those words into the tasting's words
+  // field and sets nothing else.
+  function handleUseAsExpectedShortcut() {
+    setTastingDraft((prev) => ({ ...prev, words: 'As expected, nothing to note' }));
+  }
+
+  // The two impure calls live here, in the one save handler — addTasting
+  // itself stays deterministic. Reloads the version's batch list after the
+  // write so the margin re-reads what is stored.
+  function handleSaveTasting() {
+    const toNumberOrNull = (raw) => (raw === '' ? null : Number(raw));
+    const toTextOrNull = (raw) => (raw === '' ? null : raw);
+    const tastingFields = {
+      date: tastingDraft.date === '' ? null : tastingDraft.date,
+      tastingTempC: toNumberOrNull(tastingDraft.tastingTempC),
+      marks: tastingDraft.marks,
+      meltdownLossG: toNumberOrNull(tastingDraft.meltdownLossG),
+      words: toTextOrNull(tastingDraft.words),
+      nextTimeNote: toTextOrNull(tastingDraft.nextTimeNote),
+    };
+    const updated = addTasting(openBatch, tastingFields, { id: crypto.randomUUID() });
+
+    repository.saveBatch(updated).then(() => repository.listBatchesForVersion(id)).then((reloaded) => {
+      setBatches(reloaded);
+      setTastingDraft(null);
+    });
+  }
+
   return (
     <article className="recipe-page">
       <header className="headnote">
@@ -259,6 +306,11 @@ export function RecipePage() {
             onChangeChurnDate={handleChangeChurnDate}
             onChangeChurnField={handleChangeChurnField}
             onSaveBatch={handleSaveBatch}
+            tastingDraft={tastingDraft}
+            onStartTasting={handleStartTasting}
+            onChangeTastingField={handleChangeTastingField}
+            onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
+            onSaveTasting={handleSaveTasting}
           />
           <Authored carriedForward={version.authored.carriedForward} beforeYouStart={version.authored.beforeYouStart} />
           <div className="advisory-slot" aria-label="Advisories" />

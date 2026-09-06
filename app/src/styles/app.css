@@ -442,3 +442,18 @@ body {
 .batch-margin button {
   margin-top: var(--gap-s);
 }
+
+/* A dated tasting section, reading or writing, follows the same legend +
+   measured-row shape as the churn section above it (D-01: its own event,
+   never folded into the churn). */
+.tasting {
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--ink);
+}
+
+.batch-margin__hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}

@@ -62,7 +62,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- Impeccable is not initialized in this repo (no PRODUCT.md, no DESIGN.md). Every phase is UI-bearing and needs an approved surface brief before execution; the recipe review and bench-sheet surface is first.
+- Impeccable initialized 2026-09-05: `PRODUCT.md` written; surface brief for the recipe surface and bench sheet confirmed by Mark (`.impeccable/surfaces/`, direction "The Formulation Cookbook" expanding the Cupping Form, seed d1a5d80a, code-led). Phase 1, 3, and 4 prerequisites met. No DESIGN.md yet: it is written at finish from the built world. Phase 2 still needs the batch-record brief.
 - Ingredient seed dataset undecided — three candidates disagree on coefficients (dextrose PAC 174.8 vs 190; salt 586 vs 580). Chosen in Phase 1 planning after the recipe data model exists.
 - Working-case batch facts (2 Aug churn, as-made amounts, tasting figures) are an unconfirmed transcription. Mark confirms them in Phase 2 discussion.
 - Stack (React + Vite + JSX) is provisional until Phase 1 ships; testing framework is unchosen and must be surfaced, not assumed.

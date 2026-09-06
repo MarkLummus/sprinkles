@@ -18,8 +18,17 @@ const HATCH_STROKE = 1.2;
 
 const clamp = (value, lo, hi) => Math.max(lo, Math.min(hi, value));
 
+// "a, b, and c" — same joining rule BasisNote uses for its own estimated-rows
+// clause; duplicated locally rather than imported, since BasisNote is a
+// component, not a shared utility module.
+function joinNames(names) {
+  if (names.length === 0) return '';
+  if (names.length === 1) return names[0];
+  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+}
+
 export function GraduatedRule({ figure }) {
-  const { key, label, value, unit, decimals, domain, band, deviation } = figure;
+  const { key, label, value, unit, decimals, domain, band, deviation, basis, estimatedRowNames } = figure;
   const [lo, hi] = domain;
   const toX = (v) => ((clamp(v, lo, hi) - lo) / (hi - lo)) * WIDTH;
 
@@ -40,7 +49,14 @@ export function GraduatedRule({ figure }) {
   }
 
   const targetText = band ? `target ${band[0]}–${band[1]}${unit}` : 'no target set';
-  const accessibleName = `${label}, ${value.toFixed(decimals)}${unit}, ${targetText}`;
+  // A figure resting on estimated or unreviewed data says so beside itself
+  // (D-04), naming the rows it rests on — never as a colour, only as text,
+  // in the rendering and in the accessible name alike.
+  const basisWord = basis === 'estimated' ? 'estimated' : basis === 'inherited' ? 'unreviewed' : null;
+  const basisText = basisWord ? `${basisWord}: ${joinNames(estimatedRowNames)}` : null;
+  const accessibleName = basisText
+    ? `${label}, ${value.toFixed(decimals)}${unit}, ${targetText}, ${basisText}`
+    : `${label}, ${value.toFixed(decimals)}${unit}, ${targetText}`;
   const hatchId = `hatch-${key}`;
 
   return (
@@ -52,6 +68,7 @@ export function GraduatedRule({ figure }) {
           {unit}
         </span>
       </div>
+      {basisText && <p className="graduated-rule__basis">{basisText}</p>}
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} width="100%" height={HEIGHT} role="img" aria-label={accessibleName}>
         {band && (
           <>

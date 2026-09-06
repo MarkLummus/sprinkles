@@ -225,6 +225,12 @@ body {
   font-size: var(--size-deviation-words);
 }
 
+.graduated-rule__basis {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
 .basis-note {
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);

@@ -29,7 +29,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. For that recipe the maker sees PAC, POD, total fat with milkfat and added fat separately, MSNF, sugar solids, and total solids per 100 g, each shown against its target band with the calculation basis stated.
   3. A figure resting on estimated or unreviewed ingredient data is flagged where the figure is shown, not only in a separate note.
   4. The figures on screen agree with the churned bench sheet's own figures for the same twelve rows, so the maker can work from the app instead of the printout.
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Walking skeleton: the churned recipe opens from IndexedDB through the repository seam and its twelve-row formula reads, with the printed-sheet fixture green
+- [ ] 01-02-PLAN.md — The Impeccable direction contract, the token layer, and the sheet's method and authored notes on the spread
+- [ ] 01-03-PLAN.md — Six balance figures against their authored bands, deviation in words, with the calculation basis stated
+- [ ] 01-04-PLAN.md — Estimated data flagged at the row and at the figure, contributor tracing, validated store export/import, and the landed structure recorded
+
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the recipe review surface (the first surface to shape; may be shaped together with the bench sheet)
 **Phase notes**: Establishes the app shell, the framework-free balance module, the seeded recipe content, and the provisional local store behind a repository seam. Ratifies the provisional React + Vite + JSX stack on real code. The ingredient seed dataset is chosen in this phase's planning, after the recipe data model is designed; whichever is chosen, coefficients must be snapshottable (D04, D09).
@@ -100,7 +107,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Read the churned recipe | 0/TBD | Not started | - |
+| 1. Read the churned recipe | 0/4 | Planned | - |
 | 2. Record the first batch | 0/TBD | Not started | - |
 | 3. Develop the next version | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |

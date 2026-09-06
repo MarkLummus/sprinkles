@@ -11,7 +11,7 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 
 ### Recipe and versions — from REC-01
 
-- [ ] **REC1-01**: Maker can open the churned olive oil recipe, loaded from the transcribed seed content, and see its ingredients with grams, % of batch, and step allocation, its method, its target bands, and its authored notes.
+- [x] **REC1-01**: Maker can open the churned olive oil recipe, loaded from the transcribed seed content, and see its ingredients with grams, % of batch, and step allocation, its method, its target bands, and its authored notes.
 - [ ] **REC1-02**: Maker can create a new version from the churned version; the new version records its parent and the churned version is unchanged afterwards.
 - [ ] **REC1-03**: Maker can edit the new version's ingredient amounts, remove or restore any of its twelve rows, and edit method steps and their targets.
 - [ ] **REC1-04**: Maker can record why the version changed as free text that cites the batch that motivated it.
@@ -19,7 +19,7 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 
 ### Formulation — from FORM-01 and FORM-02
 
-- [ ] **FORM1-01**: For any version, maker sees PAC, POD, total fat with milkfat and added fat separately, MSNF, sugar solids, and total solids per 100 g, each against its target band, with the calculation basis stated.
+- [x] **FORM1-01**: For any version, maker sees PAC, POD, total fat with milkfat and added fat separately, MSNF, sugar solids, and total solids per 100 g, each against its target band, with the calculation basis stated.
 - [ ] **FORM1-02**: A figure that rests on estimated or unreviewed ingredient data is flagged where it is shown.
 - [ ] **FORM1-03**: A version outside a target band can still be saved and printed, and no figure is labeled as guaranteeing success.
 - [ ] **FORM2-01**: Maker can compare the new version with the churned version: per-row change in grams and in % of batch, and the change in each balance figure.
@@ -52,21 +52,26 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 Deferred to later milestones. Tracked here so they are not lost; packet IDs are the reference.
 
 ### Import (D03)
+
 - **IMP-01**, **IMP-02**, **IMP-03**: Pasted-text import with explicit unknowns — the accepted first import channel; not needed to develop the olive oil recipe.
 
 ### Ingredients (D09)
+
 - **ING-01**: Library editing, adding ingredients from the seed dataset, per-field provenance editing.
 - **ING-02**: Bounded transformation calculations.
 
 ### Recipe structure
+
 - **REC-02**: Components (base, ripple, sauce, inclusion).
 - **SCALE-01**: Change batch size with mix mass, yield, and capacity kept distinct.
 
 ### Learning (D07)
+
 - **DIAG-01**, **DIAG-02**: Explain plausible causes; plan a manageable experiment.
 - **LEARN-01**: Compare attempts across batches.
 
 ### Trust
+
 - **TRUST-01**: Data-transfer, retention, and credential policy before any live external-model use.
 
 ## Out of Scope
@@ -90,12 +95,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REC1-01 | Phase 1 | Pending |
+| REC1-01 | Phase 1 | Complete |
 | REC1-02 | Phase 3 | Pending |
 | REC1-03 | Phase 3 | Pending |
 | REC1-04 | Phase 3 | Pending |
 | REC1-05 | Phase 3 | Pending |
-| FORM1-01 | Phase 1 | Pending |
+| FORM1-01 | Phase 1 | Complete |
 | FORM1-02 | Phase 1 | Pending |
 | FORM1-03 | Phase 3 | Pending |
 | FORM2-01 | Phase 3 | Pending |
@@ -115,6 +120,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UX1-03 | Phase 4 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 23 total
 - Mapped to phases: 23 ✓
 - Unmapped: 0

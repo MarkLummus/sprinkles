@@ -55,18 +55,19 @@ body {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     'headnote headnote'
-    'ingredients method'
-    'formulation method'
-    'formulation margin';
+    'ingredients formulation'
+    'method formulation'
+    'method margin';
   gap: var(--gap-l);
   padding: var(--gap-xl);
 }
 
-/* The left column is one reading path — table, then its formulation note —
-   and the method's height must never push the note away from the table
-   (route-recipe.md § 3, the focal moment). The method spans two rows so the
-   note starts one gap below the table's last rule; the margin follows the
-   method. Whichever column runs longer leaves its void at the bottom. */
+/* Column one is the recipe as written, in the sheet's page order: table,
+   then method. Column two is what the sheet does not print — the
+   formulation note beside the table so the six rules share the table's
+   viewport and the focus trace is a glance, not a scroll — followed by the
+   margin (route-recipe.md § 3, revised 2026-09-06). Whichever column runs
+   longer leaves its void at the bottom. */
 
 .headnote {
   grid-area: headnote;
@@ -87,6 +88,7 @@ body {
 .headnote__prose {
   font-family: var(--face-text);
   font-size: var(--size-headnote-prose);
+  max-width: var(--measure-prose);
   margin: var(--gap-s) 0 0;
 }
 
@@ -173,6 +175,7 @@ body {
 .method-step__lead {
   font-family: var(--face-text);
   font-size: var(--size-headnote-prose);
+  max-width: var(--measure-prose);
   margin: 0;
 }
 
@@ -198,6 +201,7 @@ body {
   font-family: var(--face-text);
   font-style: italic;
   font-size: var(--size-deviation-words);
+  max-width: var(--measure-prose);
   margin: var(--gap-xs) 0 0;
 }
 
@@ -292,5 +296,6 @@ body {
 .basis-note {
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
+  max-width: var(--measure-prose);
   margin: var(--gap-m) 0 0;
 }

@@ -78,8 +78,26 @@ export function RecipePage() {
   }
 
   function handleStartRecording() {
-    setDraft({ churnDate: '', asMade: {} });
+    setDraft({ churnDate: '', asMade: {}, stepChanges: {} });
     setMode('recording');
+  }
+
+  // Clearing both the strike and the line for a step removes that step's
+  // key from the draft entirely (D-13/BATCH1-01): an untouched step must
+  // never rest at { struck: false, line: null }, which would be
+  // indistinguishable from a step the maker deliberately marked as
+  // unchanged — a fact this record never states.
+  function handleChangeStepChange(stepNumber, patch) {
+    setDraft((prev) => {
+      const stepChanges = { ...prev.stepChanges };
+      const key = String(stepNumber);
+      if (!patch.struck && !patch.line) {
+        delete stepChanges[key];
+      } else {
+        stepChanges[key] = { struck: patch.struck, line: patch.line };
+      }
+      return { ...prev, stepChanges };
+    });
   }
 
   function handleChangeChurnDate(value) {
@@ -105,7 +123,11 @@ export function RecipePage() {
     for (const [rowId, rawValue] of Object.entries(draft.asMade)) {
       asMade[rowId] = Number(rawValue);
     }
-    const churnFields = { churnDate: draft.churnDate === '' ? null : draft.churnDate, asMade };
+    const churnFields = {
+      churnDate: draft.churnDate === '' ? null : draft.churnDate,
+      asMade,
+      stepChanges: draft.stepChanges,
+    };
     const record = createBatch(version, churnFields, { id: crypto.randomUUID(), now: new Date().toISOString() });
 
     repository.saveBatch(record).then(() => {
@@ -143,7 +165,12 @@ export function RecipePage() {
       </section>
 
       <section className="method-region" aria-label="Method">
-        <Method steps={version.method} />
+        <Method
+          steps={version.method}
+          stepChanges={mode === 'recording' ? draft.stepChanges : openBatch ? openBatch.churn.stepChanges : {}}
+          mode={mode}
+          onChangeStepChange={handleChangeStepChange}
+        />
       </section>
 
       {/* Column two, what the sheet does not print: the formulation note

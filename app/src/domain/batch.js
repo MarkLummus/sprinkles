@@ -46,6 +46,13 @@ export function createBatch(version, churnFields, { id, now }) {
     }
   }
 
+  const stepChanges = {};
+  if (churnFields.stepChanges) {
+    for (const stepKey of Object.keys(churnFields.stepChanges)) {
+      stepChanges[stepKey] = churnFields.stepChanges[stepKey];
+    }
+  }
+
   return {
     schemaVersion: BATCH_SCHEMA_VERSION,
     id,
@@ -61,13 +68,19 @@ export function createBatch(version, churnFields, { id, now }) {
     churn: {
       churnDate: churnFields.churnDate ? churnFields.churnDate : null,
       asMade,
-      stepChanges: {},
-      comeUpMinutes: null,
-      drawTempC: null,
-      overrunPercent: null,
-      drawNotes: null,
-      ingredientNotes: null,
-      nextTimeNote: null,
+      stepChanges,
+      // Each of the six churn measurements/notes is read from churnFields
+      // when supplied and defaults to null otherwise. The three numeric
+      // fields use an explicit != null check (never `||`/truthiness) so a
+      // written 0 or 0% survives as a real value (D-11, D-18, BATCH1-02);
+      // the three text fields use presence-of-content, since an empty
+      // string and an absent note are the same fact for free text.
+      comeUpMinutes: churnFields.comeUpMinutes != null ? churnFields.comeUpMinutes : null,
+      drawTempC: churnFields.drawTempC != null ? churnFields.drawTempC : null,
+      overrunPercent: churnFields.overrunPercent != null ? churnFields.overrunPercent : null,
+      drawNotes: churnFields.drawNotes ? churnFields.drawNotes : null,
+      ingredientNotes: churnFields.ingredientNotes ? churnFields.ingredientNotes : null,
+      nextTimeNote: churnFields.nextTimeNote ? churnFields.nextTimeNote : null,
     },
     tastings: [],
   };
@@ -89,6 +102,52 @@ export function hasAsMade(batch, rowId) {
  */
 export function asMadeFor(batch, rowId) {
   return hasAsMade(batch, rowId) ? batch.churn.asMade[rowId] : null;
+}
+
+/**
+ * stepChangeFor(batch, n) -> the step's { struck, line } entry, or null.
+ * Presence is decided by an own-property check on the step number as a
+ * string key. An absent key means the maker wrote nothing about that step —
+ * and that is *not* the same fact as the step having been done as written
+ * (BATCH1-01's anti-goal): no function in this module has a "done as
+ * written" return value at all.
+ */
+export function stepChangeFor(batch, n) {
+  const key = String(n);
+  return Object.prototype.hasOwnProperty.call(batch.churn.stepChanges, key) ? batch.churn.stepChanges[key] : null;
+}
+
+/** isStruck(batch, n) -> the step's struck flag, or false when untouched. */
+export function isStruck(batch, n) {
+  const entry = stepChangeFor(batch, n);
+  return entry ? entry.struck : false;
+}
+
+/** changedLineFor(batch, n) -> the maker's line, or null when there is none. */
+export function changedLineFor(batch, n) {
+  const entry = stepChangeFor(batch, n);
+  return entry ? entry.line : null;
+}
+
+/**
+ * readMeasured(value, options) -> the string a maker reads for a measured
+ * field. This is BATCH1-02's contract in code: a blank measurement (value
+ * null or absent) reads the word `unknown`, and there is no code path here
+ * by which the recipe's own target can reach this function — every caller
+ * passes a stored churn/tasting field, never version.targets, version.process,
+ * or version.iceEd. A written value is converted to a string exactly as
+ * stored — no toFixed, no Math.round, no locale-dependent formatter — so a
+ * value typed finer than the field's stated precision (D-18) survives
+ * unchanged. options.signed prefixes a non-zero value with '+' (positive) or
+ * the Unicode minus sign U+2212 (negative); a signed zero carries no sign.
+ */
+export function readMeasured(value, options = {}) {
+  if (value == null) return 'unknown';
+  if (options.signed) {
+    if (value > 0) return `+${value}`;
+    if (value < 0) return `−${Math.abs(value)}`;
+  }
+  return `${value}`;
 }
 
 /**

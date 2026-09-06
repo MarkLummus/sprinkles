@@ -243,6 +243,52 @@ body {
   margin: var(--gap-xs) 0 0;
 }
 
+/* A struck step reads struck, its prose intact — weight and a strike, never
+   a colour (route-recipe-batch.md § 6, No-Verdict Rule). The text label
+   beside it is the requirement; the drawn line alone is a decoration. */
+.method-step__lead--struck {
+  text-decoration: line-through;
+}
+
+.method-step__skipped-label {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* The maker's one line per changed step, in pen blue, following the same
+   render-only-when-present convention as .method-step__purpose/__aside. */
+.method-step__changed {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-xs) 0 0;
+}
+
+.method-step__recording {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-xs);
+}
+
+.method-step__strike-control {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.method-step__line-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
 .authored__legend {
   display: flex;
   justify-content: space-between;

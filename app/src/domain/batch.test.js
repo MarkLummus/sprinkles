@@ -11,6 +11,7 @@ import {
   stepChangeFor,
   isStruck,
   changedLineFor,
+  readMeasured,
   BATCH_SCHEMA_VERSION,
 } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -231,6 +232,59 @@ describe('stepChangeFor / isStruck / changedLineFor', () => {
     );
     expect(isStruck(zeroKeyed, 0)).toBe(true);
     expect(stepChangeFor(zeroKeyed, 1)).toBe(null);
+  });
+});
+
+// The churn section's measured values: unit-on-the-label reading, unknown
+// in words, never rounded (02-02 task 2, D-17, D-18, BATCH1-02).
+describe('readMeasured', () => {
+  it('a blank measurement reads unknown for both null and undefined', () => {
+    expect(readMeasured(null)).toBe('unknown');
+    expect(readMeasured(undefined)).toBe('unknown');
+  });
+
+  it('a written zero is a value, not unknown', () => {
+    expect(readMeasured(0)).toBe('0');
+  });
+
+  it('an unsigned value reads exactly as stored', () => {
+    expect(readMeasured(20)).toBe('20');
+  });
+
+  it('a signed value carries a leading + or the Unicode minus sign U+2212', () => {
+    expect(readMeasured(-6, { signed: true })).toBe('−6');
+    expect(readMeasured(4, { signed: true })).toBe('+4');
+  });
+
+  it('a signed zero carries no sign', () => {
+    expect(readMeasured(0, { signed: true })).toBe('0');
+  });
+
+  it('never rounds, however fine the typed precision', () => {
+    expect(readMeasured(6.25, { signed: true })).toBe('+6.25');
+    expect(readMeasured(20.5)).toBe('20.5');
+  });
+});
+
+describe('the churn section round trip: unrounded, and overrunPercent stays null rather than 0', () => {
+  it('stores exactly what createBatch was given for the working case', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      {
+        churnDate: '2026-08-02',
+        asMade: {},
+        comeUpMinutes: 20,
+        drawTempC: -6,
+        overrunPercent: null,
+        drawNotes: 'Soft, not greasy',
+      },
+      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+    );
+    expect(batch.churn.comeUpMinutes).toBe(20);
+    expect(batch.churn.drawTempC).toBe(-6);
+    expect(batch.churn.overrunPercent).toBe(null);
+    expect(batch.churn.drawNotes).toBe('Soft, not greasy');
+    expect(readMeasured(batch.churn.overrunPercent)).toBe('unknown');
   });
 });
 

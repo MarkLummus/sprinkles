@@ -50,4 +50,8 @@
   --rule-ink-field: 1px;
   --size-ink-field: 0.9375rem;
   --col-numeric: 88px;
+
+  /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
+  --gap-mark-stop: var(--gap-xs);
+  --size-mark-stop: 0.8125rem;
 }

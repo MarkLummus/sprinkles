@@ -1,12 +1,17 @@
 import { formatRecordDate, readMeasured, sortedTastings, hasTasting, isTastingSaveable } from '../domain/batch.js';
+import { axesForBatch, markKeyFor } from '../domain/axes.js';
+import { AxisMark } from './AxisMark.jsx';
 
 const AS_EXPECTED_WORDS = 'As expected, nothing to note';
 
-// A tasting in the reading state (task 1): headed by its date or "date
-// unknown" (D-03), then its measured fields through readMeasured — never
-// a value from the recipe — the words as plain prose, and the next-time
-// note labelled as intention. Marks render in task 2.
-function TastingReading({ tasting }) {
+// A tasting in the reading state (task 1, task 2): headed by its date or
+// "date unknown" (D-03), then its measured fields through readMeasured —
+// never a value from the recipe — the marks against their anchors (an
+// unmarked axis reads "unmarked" so a reader can see it existed and was
+// not judged), the words as plain prose, and the next-time note labelled
+// as intention. No aggregate, average, or overall figure is ever derived
+// from the marks.
+function TastingReading({ tasting, axes }) {
   const dateWords = tasting.date ? formatRecordDate(tasting.date) : 'date unknown';
   return (
     <div className="tasting">
@@ -15,6 +20,16 @@ function TastingReading({ tasting }) {
         <span>Tasting temperature, °C</span>
         <span className="ink-text">{readMeasured(tasting.tastingTempC, { signed: true })}</span>
       </p>
+      {axes.map((axis) => {
+        const key = markKeyFor(axis);
+        const hasMark = Object.prototype.hasOwnProperty.call(tasting.marks, key);
+        return (
+          <p key={key} className="batch-margin__measured">
+            <span>{`${axis.label} (${axis.low} … ${axis.high})`}</span>
+            <span className="ink-text">{hasMark ? tasting.marks[key] : 'unmarked'}</span>
+          </p>
+        );
+      })}
       <p className="batch-margin__measured">
         <span>Meltdown at 20 min, g</span>
         <span className="ink-text">{readMeasured(tasting.meltdownLossG)}</span>
@@ -30,7 +45,7 @@ function TastingReading({ tasting }) {
 // temperature field never reads the version's serve target (D-07). Save
 // tasting is gated on isTastingSaveable, its disabled state explained in
 // text, never by colour alone.
-function TastingForm({ draft, onChangeTastingField, onUseAsExpectedShortcut, onSaveTasting }) {
+function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, onUseAsExpectedShortcut, onSaveTasting }) {
   const saveable = isTastingSaveable({ words: draft.words, marks: draft.marks });
   return (
     <div className="tasting tasting--recording">
@@ -55,6 +70,17 @@ function TastingForm({ draft, onChangeTastingField, onUseAsExpectedShortcut, onS
           onChange={(event) => onChangeTastingField('tastingTempC', event.target.value)}
         />
       </label>
+      {axes.map((axis) => {
+        const key = markKeyFor(axis);
+        return (
+          <AxisMark
+            key={key}
+            axis={axis}
+            value={Object.prototype.hasOwnProperty.call(draft.marks, key) ? draft.marks[key] : undefined}
+            onChange={(stop) => onChangeTastingMark(key, stop)}
+          />
+        );
+      })}
       <label className="batch-margin__field">
         <span>Meltdown at 20 min, g</span>
         <input
@@ -119,6 +145,7 @@ export function BatchMargin({
   tastingDraft,
   onStartTasting,
   onChangeTastingField,
+  onChangeTastingMark,
   onUseAsExpectedShortcut,
   onSaveTasting,
 }) {
@@ -235,7 +262,7 @@ export function BatchMargin({
         </p>
 
         {sortedTastings(openBatch).map((tasting) => (
-          <TastingReading key={tasting.id} tasting={tasting} />
+          <TastingReading key={tasting.id} tasting={tasting} axes={axesForBatch(openBatch)} />
         ))}
 
         {!hasTasting(openBatch) && (
@@ -245,7 +272,9 @@ export function BatchMargin({
         {tastingDraft ? (
           <TastingForm
             draft={tastingDraft}
+            axes={axesForBatch(openBatch)}
             onChangeTastingField={onChangeTastingField}
+            onChangeTastingMark={onChangeTastingMark}
             onUseAsExpectedShortcut={onUseAsExpectedShortcut}
             onSaveTasting={onSaveTasting}
           />

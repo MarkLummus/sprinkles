@@ -219,6 +219,14 @@ export function RecipePage() {
     setTastingDraft((prev) => ({ ...prev, [field]: value }));
   }
 
+  // Marking an axis writes the stop's numeric value under its mark key
+  // (D-16); there is no control to clear a mark once set, matching native
+  // grouped radios' own behavior — an axis simply stays unmarked until
+  // the maker clicks a stop.
+  function handleChangeTastingMark(axisKey, stop) {
+    setTastingDraft((prev) => ({ ...prev, marks: { ...prev.marks, [axisKey]: stop } }));
+  }
+
   // D-05's shortcut: writes exactly those words into the tasting's words
   // field and sets nothing else.
   function handleUseAsExpectedShortcut() {
@@ -309,6 +317,7 @@ export function RecipePage() {
             tastingDraft={tastingDraft}
             onStartTasting={handleStartTasting}
             onChangeTastingField={handleChangeTastingField}
+            onChangeTastingMark={handleChangeTastingMark}
             onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
             onSaveTasting={handleSaveTasting}
           />

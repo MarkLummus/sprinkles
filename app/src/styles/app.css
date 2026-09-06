@@ -457,3 +457,58 @@ body {
   font-size: var(--size-small-print);
   margin: var(--gap-hair) 0 0;
 }
+
+/* The nine-stop mark control (D-16, route-recipe-batch.md § 6). The
+   checked stop is distinguished by weight and outline, never by hue
+   alone — every rule below reads through an existing token. */
+.axis-mark {
+  border: none;
+  padding: 0;
+  margin: var(--gap-xs) 0 0;
+}
+
+.axis-mark__legend {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  padding: 0;
+}
+
+.axis-mark__row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-mark-stop);
+  flex-wrap: wrap;
+}
+
+.axis-mark__anchor {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-mark-stop);
+}
+
+.axis-mark__stop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-mark-stop);
+  font-variant-numeric: tabular-nums;
+}
+
+.axis-mark__stop input[type='radio'] {
+  appearance: none;
+  width: var(--size-mark-stop);
+  height: var(--size-mark-stop);
+  margin: 0;
+  border: var(--rule-graduation) solid var(--ink);
+  border-radius: 0;
+  background: none;
+}
+
+.axis-mark__stop input[type='radio']:checked {
+  background: var(--ink);
+}
+
+.axis-mark__stop input[type='radio']:focus {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}

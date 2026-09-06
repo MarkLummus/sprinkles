@@ -6,7 +6,12 @@ import { repository } from './store/repository.js';
 import { seedIfEmpty } from './store/seed.js';
 import { App } from './router.jsx';
 
-await seedIfEmpty(repository);
+try {
+  await seedIfEmpty(repository);
+} catch (err) {
+  document.getElementById('root').textContent = 'Could not open the local store. Try reloading.';
+  throw err;
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

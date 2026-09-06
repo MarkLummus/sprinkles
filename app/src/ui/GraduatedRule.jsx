@@ -27,7 +27,7 @@ function joinNames(names) {
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
-export function GraduatedRule({ figure }) {
+export function GraduatedRule({ figure, onFocusFigure, onBlurFigure }) {
   const { key, label, value, unit, decimals, domain, band, deviation, basis, estimatedRowNames } = figure;
   const [lo, hi] = domain;
   const toX = (v) => ((clamp(v, lo, hi) - lo) / (hi - lo)) * WIDTH;
@@ -60,16 +60,31 @@ export function GraduatedRule({ figure }) {
   const hatchId = `hatch-${key}`;
 
   return (
-    <div className="graduated-rule">
-      <div className="graduated-rule__head">
+    // A focusable control, not a decoration: focusing it (keyboard or
+    // pointer) is the brief's signature trace, marking the ingredient rows
+    // this figure rests on (route-recipe.md § 3, § 5). The whole sentence —
+    // label, value, target, basis and its rows — is this button's one
+    // accessible name; its children are presentation only.
+    <button
+      type="button"
+      className="graduated-rule"
+      aria-label={accessibleName}
+      onFocus={() => onFocusFigure?.(key)}
+      onBlur={() => onBlurFigure?.()}
+    >
+      <div className="graduated-rule__head" aria-hidden="true">
         <span className="graduated-rule__label">{label}</span>
         <span className="graduated-rule__value">
           {value.toFixed(decimals)}
           {unit}
         </span>
       </div>
-      {basisText && <p className="graduated-rule__basis">{basisText}</p>}
-      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} width="100%" height={HEIGHT} role="img" aria-label={accessibleName}>
+      {basisText && (
+        <p className="graduated-rule__basis" aria-hidden="true">
+          {basisText}
+        </p>
+      )}
+      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} width="100%" height={HEIGHT} aria-hidden="true">
         {band && (
           <>
             <defs>
@@ -92,11 +107,11 @@ export function GraduatedRule({ figure }) {
         {graduations}
         <line x1={toX(value)} y1={0} x2={toX(value)} y2={22} stroke="var(--ink)" strokeWidth={RULE_TICK} />
       </svg>
-      <div className="graduated-rule__anchors">
+      <div className="graduated-rule__anchors" aria-hidden="true">
         <span>{lo}</span>
         <span className="graduated-rule__deviation">{deviation.words}</span>
         <span>{hi}</span>
       </div>
-    </div>
+    </button>
   );
 }

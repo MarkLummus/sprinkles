@@ -103,6 +103,15 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* Marked by a focused figure's trace (direction contract § 5): outline and
+   weight only, so nothing shifts position when focus moves. Unmarked rows
+   are untouched — never dimmed, never a different colour. */
+.ingredient-table tbody tr.is-marked {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+  font-weight: 700;
+}
+
 /* Every block wears its plain-language name (direction contract § 6),
    in the bookcloth colour that identifies the book, never a status. */
 .region-name {
@@ -193,6 +202,27 @@ body {
   font-size: var(--size-small-print);
   font-variant-numeric: tabular-nums;
   margin: var(--gap-xs) 0 0;
+}
+
+/* The rule is a focusable control (route-recipe.md § 3, § 5): reset the
+   native button chrome so it reads exactly as the drawing did, then apply
+   the contract's own focus treatment — an ink outline, nothing coloured. */
+.graduated-rule {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+.graduated-rule:focus {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
 }
 
 .graduated-rule__head {

@@ -23,15 +23,18 @@ function dataFlagFor(row) {
   return '';
 }
 
-function rowAccessibleLabel(row, dataFlag) {
+function rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel) {
   const parts = [row.ingredientName, `${row.grams} g`];
   if (dataFlag) parts.push(dataFlag);
+  if (isMarked) parts.push(`contributing to ${markedFigureLabel}`);
   return parts.join(', ');
 }
 
 // The twelve rows in the version's authored order — the printed sheet's
-// order. Never sort, never re-order, never group.
-export function IngredientTable({ rows }) {
+// order. Never sort, never re-order, never group. `markedRowIds` is the
+// focused figure's contributorRowIds (route-recipe.md § 3, § 5) — marking
+// changes only outline and weight, and moves nothing.
+export function IngredientTable({ rows, markedRowIds = [], markedFigureLabel = '' }) {
   const balance = computeBalance(rows);
 
   return (
@@ -48,8 +51,13 @@ export function IngredientTable({ rows }) {
       <tbody>
         {rows.map((row) => {
           const dataFlag = dataFlagFor(row);
+          const isMarked = markedRowIds.includes(row.id);
           return (
-            <tr key={row.id} aria-label={rowAccessibleLabel(row, dataFlag)}>
+            <tr
+              key={row.id}
+              className={isMarked ? 'is-marked' : undefined}
+              aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel)}
+            >
               <td>{row.ingredientName}</td>
               <td>{row.grams} g</td>
               <td>{balance ? `${((100 * row.grams) / balance.mass).toFixed(1)}%` : '—'}</td>

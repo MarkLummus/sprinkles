@@ -65,6 +65,34 @@ export function computeBalance(rows) {
 /** The weakest basis present wins, so a figure never claims more than its worst input. */
 const BASIS_RANK = { stated: 0, derived: 1, estimated: 2, inherited: 3 };
 
+/**
+ * formatShareOfBatch(grams, mass) -> the printed share of batch, as a
+ * string (D-22). Below 0.05% of batch — the resolution a kitchen scale
+ * cannot hold — reads the word "trace" rather than a near-zero percentage;
+ * the threshold is exclusive, so exactly 0.05% keeps its one-decimal
+ * reading. The word was chosen over a further decimal because a maker
+ * reading a formula wants to know a row is below what the scale can show,
+ * not two more digits (D11: plain words over notation). A zero or
+ * non-positive mass returns the table's existing em-dash placeholder,
+ * never NaN% or Infinity%.
+ */
+export function formatShareOfBatch(grams, mass) {
+  if (!(mass > 0)) return '—';
+  const share = (100 * grams) / mass;
+  if (share < 0.05) return 'trace';
+  return `${share.toFixed(1)}%`;
+}
+
+/**
+ * formatGrams(grams) -> a computed grams figure at one decimal, with unit
+ * (e.g. `799.7 g`). For computed totals only — the plan total and the
+ * as-made total (D-22) — never for a measured or as-made value itself,
+ * which the precision contract in domain/batch.js forbids rounding.
+ */
+export function formatGrams(grams) {
+  return `${grams.toFixed(1)} g`;
+}
+
 export function weakestBasis(rows, field) {
   let worst = 'stated';
   for (const row of rows) {

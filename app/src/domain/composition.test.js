@@ -4,7 +4,7 @@
 // boundary. The one exception is the olive-oil share of fat, which the sheet prints
 // as a whole number (28%): asserted within 0.5.
 import { describe, it, expect } from 'vitest';
-import { computeBalance, weakestBasis, formatShareOfBatch } from './composition.js';
+import { computeBalance, weakestBasis, formatShareOfBatch, formatGrams } from './composition.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { library } from '../data/library.js';
 
@@ -108,6 +108,13 @@ describe('formatShareOfBatch', () => {
 
   it('returns the em-dash placeholder for a zero or invalid mass, never NaN% or Infinity%', () => {
     expect(formatShareOfBatch(1, 0)).toBe('—');
+  });
+});
+
+describe('formatGrams', () => {
+  it('formats a computed total to one decimal with a unit', () => {
+    expect(formatGrams(799.68)).toBe('799.7 g');
+    expect(formatGrams(804.28)).toBe('804.3 g');
   });
 });
 

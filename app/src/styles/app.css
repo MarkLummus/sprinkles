@@ -132,11 +132,40 @@ body {
   width: var(--col-ingredient);
 }
 
+/* The as-made column's arrival sizes the three numeric columns to their
+   content and right-aligns them, rather than stretching to fill (D-22,
+   Phase 1 critique carry). */
+.ingredient-table th:nth-child(2),
+.ingredient-table th:nth-child(3),
+.ingredient-table th:nth-child(4),
+.ingredient-table td:nth-child(2),
+.ingredient-table td:nth-child(3),
+.ingredient-table td:nth-child(4) {
+  width: var(--col-numeric);
+  text-align: right;
+}
+
+.ingredient-table .ink-field {
+  text-align: right;
+}
+
 .ingredient-table th {
   font-family: var(--face-grotesk);
   font-size: var(--size-running-head);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.ingredient-table tfoot td {
+  border-bottom: none;
+  border-top: var(--rule-baseline) solid var(--ink);
+  font-weight: 700;
+}
+
+.table-small-print {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
 }
 
 /* Marked by a focused figure's trace (direction contract § 5): outline and

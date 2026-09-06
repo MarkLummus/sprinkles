@@ -4,10 +4,10 @@ current_phase: 2
 current_phase_name: Record the first batch
 status: planning
 stopped_at: Phase 01 complete, ready to plan Phase 2
-last_updated: "2026-09-06T13:44:48.953Z"
+last_updated: "2026-09-06T13:45:18.265Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 01 complete, transitioned to Phase 2
-state_head: 5671c722e5ccf6bc26b5831f1c7de3214b3e96ab
+state_head: d99ec8df73454e42eed4b560d4e29e4def899710
 progress:
   total_phases: 4
   completed_phases: 1
@@ -107,6 +107,7 @@ None yet.
 | 2 | Fix the stale "No DESIGN.md yet" line in STATE.md Blockers/Concerns | 2026-09-06 | ea4a14d | — |
 | 3 | Fix the recipe page grid (note follows table) and cap the graduated rule width; record critique carries | 2026-09-06 | dcec0d3 | — |
 | 4 | Recipe page grid: note beside the table, method beneath; prose measure capped at 65ch | 2026-09-06 | 5671c72 | — |
+| 5 | Record the revised recipe spread in the surface brief and DESIGN.md | 2026-09-06 | d99ec8d | — |
 
 ## Deferred Items
 

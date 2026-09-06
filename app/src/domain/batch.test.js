@@ -16,9 +16,12 @@ import {
   sortedTastings,
   hasTasting,
   addTasting,
+  recordAmendment,
+  latestChurnDate,
   BATCH_SCHEMA_VERSION,
 } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 // A plain in-memory double for the repository seam's batch methods — the
 // domain suite must not import store/repository.js, which touches idb.
@@ -415,5 +418,119 @@ describe('addTasting', () => {
     const originalLength = batch.tastings.length;
     addTasting(batch, { words: 'thin' }, { id: 't-1' });
     expect(batch.tastings).toHaveLength(originalLength);
+  });
+});
+
+// Amend, and the version's latest churn date (02-03 task 3, D-06, D-21).
+describe('recordAmendment', () => {
+  const newChurn = {
+    churnDate: '2026-08-02',
+    asMade: { 'row-01': 400 },
+    stepChanges: {},
+    comeUpMinutes: 22,
+    drawTempC: -6,
+    overrunPercent: null,
+    drawNotes: 'ok',
+    ingredientNotes: null,
+    nextTimeNote: null,
+  };
+
+  it('replaces the churn fields, appends amendedAt, leaves recordedAt/tastings/snapshot unchanged', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-08-02', asMade: {} },
+      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+    );
+    const amended = recordAmendment(batch, newChurn, '2026-09-06');
+    expect(amended.churn).toEqual(newChurn);
+    expect(amended.amendedAt).toEqual(['2026-09-06']);
+    expect(amended.recordedAt).toBe(batch.recordedAt);
+    expect(amended.tastings).toBe(batch.tastings);
+    expect(amended.snapshot).toBe(batch.snapshot);
+  });
+
+  it('appends two dates in order across two amendments, without mutating the original', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-08-02', asMade: {} },
+      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+    );
+    const once = recordAmendment(batch, newChurn, '2026-09-01');
+    const twice = recordAmendment(once, newChurn, '2026-09-06');
+    expect(twice.amendedAt).toEqual(['2026-09-01', '2026-09-06']);
+    expect(batch.amendedAt).toEqual([]);
+  });
+});
+
+describe('latestChurnDate', () => {
+  it('returns the most recent churn date across batches, ignoring undated ones', () => {
+    const batches = [
+      { churn: { churnDate: '2026-08-02' } },
+      { churn: { churnDate: '2026-09-01' } },
+      { churn: { churnDate: null } },
+    ];
+    expect(latestChurnDate(batches)).toBe('2026-09-01');
+  });
+
+  it('returns null for an empty list', () => {
+    expect(latestChurnDate([])).toBe(null);
+  });
+
+  it('returns null when every batch is undated', () => {
+    expect(latestChurnDate([{ churn: { churnDate: null } }, { churn: { churnDate: null } }])).toBe(null);
+  });
+});
+
+// The 2 Aug 2026 working case, confirmed by Mark (02-CONTEXT.md D-10 to
+// D-13), built through createBatch and addTasting.
+describe('augustSecondBatch (the 2 Aug 2026 working case)', () => {
+  it('churns against the seeded version with the confirmed as-made amounts', () => {
+    expect(augustSecondBatch.versionId).toBe('olive-oil-ice-cream-v1');
+    expect(augustSecondBatch.churn.churnDate).toBe('2026-08-02');
+    expect(augustSecondBatch.churn.asMade).toEqual({
+      'row-01': 383,
+      'row-02': 241,
+      'row-03': 45,
+      'row-09': 0,
+    });
+    expect(Object.keys(augustSecondBatch.churn.asMade)).toHaveLength(4);
+  });
+
+  it('carries the confirmed measured churn values, overrun stored absent not zero', () => {
+    expect(augustSecondBatch.churn.comeUpMinutes).toBe(20);
+    expect(augustSecondBatch.churn.drawTempC).toBe(-6);
+    expect(augustSecondBatch.churn.overrunPercent).toBe(null);
+    expect(augustSecondBatch.churn.drawNotes).toBe('Soft, not greasy');
+    expect(augustSecondBatch.amendedAt).toEqual([]);
+  });
+
+  it('step 1 is struck, steps 8 and 9 carry their changed lines, step 3 carries nothing', () => {
+    expect(isStruck(augustSecondBatch, 1)).toBe(true);
+    expect(isStruck(augustSecondBatch, 8)).toBe(false);
+    expect(changedLineFor(augustSecondBatch, 8)).toBe('blend 60 s');
+    expect(changedLineFor(augustSecondBatch, 9)).toContain('Speed Δ @ 20 min');
+    expect(stepChangeFor(augustSecondBatch, 3)).toBe(null);
+  });
+
+  it('carries exactly one undated tasting with the confirmed marks', () => {
+    expect(augustSecondBatch.tastings).toHaveLength(1);
+    const tasting = augustSecondBatch.tastings[0];
+    expect(tasting.date).toBe(null);
+    expect(tasting.tastingTempC).toBe(-12);
+    expect(tasting.meltdownLossG).toBe(3);
+    expect(tasting.words).toBe(null);
+    expect(Object.keys(tasting.marks)).toHaveLength(3);
+    expect(tasting.marks['Olive oil character']).toBe(4.5);
+    expect(tasting.marks.Bitterness).toBe(5);
+    expect(tasting.marks.sweetness).toBe(4);
+    expect(tasting.marks).not.toHaveProperty('hardness');
+    expect(tasting.marks).not.toHaveProperty('scoopability');
+    expect(tasting.marks).not.toHaveProperty('smoothness');
+  });
+
+  it('has a fixed id and recorded-on date so the seeded URL and reading line are stable', () => {
+    expect(augustSecondBatch.id).toBe('b8cc3566-48a4-4b23-b6e5-749a332afe89');
+    expect(augustSecondBatch.recordedAt).toBe('2026-08-04T00:00:00.000Z');
+    expect(formatRecordDate(augustSecondBatch.recordedAt)).toBe('4 Aug 2026');
   });
 });

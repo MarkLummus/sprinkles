@@ -4,10 +4,10 @@ current_phase: 2
 current_phase_name: Record the first batch
 status: planning
 stopped_at: Phase 01 complete, ready to plan Phase 2
-last_updated: "2026-09-06T14:10:46.841Z"
+last_updated: "2026-09-06T14:19:09.907Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 01 complete, transitioned to Phase 2
-state_head: a4133627c5520b675ddde40030ab876604f60277
+state_head: a6db02e2b91b2f48a61c6da80fbc5f8a02dedf57
 progress:
   total_phases: 4
   completed_phases: 1
@@ -113,6 +113,7 @@ None yet.
 | 4 | Recipe page grid: note beside the table, method beneath; prose measure capped at 65ch | 2026-09-06 | 5671c72 | — |
 | 5 | Record the revised recipe spread in the surface brief and DESIGN.md | 2026-09-06 | d99ec8d | — |
 | 6 | Recipe page: fixed table layout and column-two wrapper; second critique carries | 2026-09-06 | a413362 | — |
+| 7 | Recipe table: fixed leading and wider name column so marked rows never move the method | 2026-09-06 | a6db02e | — |
 
 ## Deferred Items
 

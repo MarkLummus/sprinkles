@@ -36,6 +36,8 @@
   --rule-tick: 2.5px;
   --rule-width: 320px; /* the drawing's native width; GraduatedRule.jsx WIDTH must agree */
   --measure-prose: 65ch; /* longest line for prose: headnote, method, basis note */
+  --leading-table: 1.2; /* fixed so a marked row's bold weight cannot change its height */
+  --col-ingredient: 40%; /* the name column; wide enough that no bold name wraps */
   --hatch-pitch: 4px;
   --hatch-stroke: 1.2px;
 

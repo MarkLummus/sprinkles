@@ -124,7 +124,12 @@ body {
 .ingredient-table td {
   text-align: left;
   padding: var(--gap-xs) var(--gap-s);
+  line-height: var(--leading-table);
   border-bottom: var(--rule-baseline) solid var(--ink);
+}
+
+.ingredient-table th:first-child {
+  width: var(--col-ingredient);
 }
 
 .ingredient-table th {

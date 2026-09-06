@@ -120,7 +120,12 @@ describe('describeDeviation', () => {
   });
 
   it('a value below the band reads the amount below the lower bound', () => {
-    expect(describeDeviation(15.4, [12, 16], 1, '').words).toBe('0.6 below 16');
+    // The plan pairs value 15.4 with band [12, 16], but 15.4 sits inside
+    // that band — the words template is "<amount> below <lo>", which only
+    // resolves to "0.6 below 16" when lo is 16. Corrected to band [16, 20]
+    // (the fat band), the pairing the plan's own template implies.
+    // Documented as a Rule 1 deviation in SUMMARY.
+    expect(describeDeviation(15.4, [16, 20], 1, '').words).toBe('0.6 below 16');
   });
 
   it('a percent figure appends the unit to both the amount and the bound', () => {

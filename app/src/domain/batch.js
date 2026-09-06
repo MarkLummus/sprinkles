@@ -158,13 +158,25 @@ export function readMeasured(value, options = {}) {
  * reverse). Presence is decided by an own-property check, never
  * truthiness. Neither total is rounded here — see the precision contract
  * above.
+ *
+ * A present value is coerced with Number() before summing, since the live
+ * recording draft holds as-made values as typed strings until save
+ * (D-18) — without this, `+=` would concatenate rather than add. A value
+ * that does not parse to a finite number (an in-progress or invalid
+ * keystroke) is treated the same as an absent key: the plan fills the
+ * gap, never NaN.
  */
 export function asMadeTotals(rows, asMade) {
   let planTotal = 0;
   let asMadeTotal = 0;
   for (const row of rows) {
     planTotal += row.grams;
-    asMadeTotal += Object.prototype.hasOwnProperty.call(asMade, row.id) ? asMade[row.id] : row.grams;
+    let contribution = row.grams;
+    if (Object.prototype.hasOwnProperty.call(asMade, row.id)) {
+      const value = Number(asMade[row.id]);
+      if (Number.isFinite(value)) contribution = value;
+    }
+    asMadeTotal += contribution;
   }
   return { planTotal, asMadeTotal };
 }

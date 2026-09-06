@@ -181,3 +181,10 @@ None - no external service configuration required.
 ---
 *Phase: 01-read-the-churned-recipe*
 *Completed: 2026-09-06*
+
+## Self-Check: PASSED
+
+- All 20 key files verified present on disk (`[ -f ]`).
+- All 4 commits verified in git log: `4b96b8d`, `e78e130`, `e5446f8`, `7bd592f`.
+- All 9 printed-sheet acceptance figures re-verified passing via `npm --prefix app test` (18/18 tests, 0 failures).
+- Plan-level `<verification>` re-run: `npm --prefix app run build` exits 0 ("built in" line present); `npm --prefix app test` exits 0 with 18 passing tests; no browser network API under `app/src`; exactly `app/src/store/db.js` imports `idb`.

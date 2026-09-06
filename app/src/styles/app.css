@@ -1,0 +1,63 @@
+/* Structural layout only — the spread, the table, the regions. No type
+   faces, no palette, no spacing scale: the Impeccable direction contract
+   has not been written yet. */
+
+body {
+  margin: 0;
+}
+
+.recipe-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recipe-list li + li {
+  margin-top: 0.5em;
+}
+
+.recipe-list a {
+  display: flex;
+  gap: 1em;
+}
+
+.recipe-page {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    'headnote headnote'
+    'ingredients method'
+    'formulation margin';
+  gap: 1em;
+}
+
+.headnote {
+  grid-area: headnote;
+}
+
+.ingredient-table-region {
+  grid-area: ingredients;
+}
+
+.method-region {
+  grid-area: method;
+}
+
+.formulation-note-region {
+  grid-area: formulation;
+}
+
+.margin-region {
+  grid-area: margin;
+}
+
+.ingredient-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.ingredient-table th,
+.ingredient-table td {
+  text-align: left;
+  padding: 0.25em 0.5em;
+}

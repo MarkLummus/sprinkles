@@ -1,0 +1,105 @@
+// Ingredient records. Every value carries its own basis; qualifiers are first-class.
+// basis: stated (label, database, or own scale) · derived (computed from stated values)
+//        estimated (model or rule of thumb) · inherited (seed data, never reviewed)
+//
+// Transcribed verbatim from the old-sprinkles slice's library.js (read, not imported).
+
+export const library = {
+  wholeMilk: {
+    name: 'Whole milk, 3.5% fat',
+    category: 'dairy',
+    dairy: true,
+    heatTreatment: 'ultra-pasteurised',
+    densityGPerMl: 1.03,
+    composition: { fat: 0.035, msnf: 0.088 },
+    basis: { fat: 'stated', msnf: 'estimated' },
+    source: { fat: 'carton panel', msnf: 'typical whole-milk SNF' },
+    note: 'Carton states 3.5%. A previous carton computed to 3.28% from the panel — worth re-reading each time.',
+  },
+  heavyCream: {
+    name: 'Heavy cream, 36% fat',
+    category: 'dairy',
+    dairy: true,
+    heatTreatment: 'ultra-pasteurised',
+    densityGPerMl: 0.994,
+    composition: { fat: 0.36, msnf: 0.054 },
+    basis: { fat: 'derived', msnf: 'estimated' },
+    source: { fat: 'panel reconciled three ways against a 36% regulatory floor' },
+    note: 'Panel implied 40%, 37% and 37% by three routes. Carton says "36% minimum", which is a floor, not a value. Contains gellan gum at an unpublished level — roughly 0.03–0.09 g at this cream weight, an estimate with no published spec.',
+  },
+  oliveOil: {
+    name: 'Graza Drizzle extra virgin olive oil',
+    category: 'fat',
+    composition: { fat: 1 },
+    basis: { fat: 'stated' },
+    source: { fat: 'label' },
+    note: 'Liquid at serving temperature, so it cannot join the fat crystal network that stabilises air cells.',
+  },
+  skimMilkPowder: {
+    name: 'Skim milk powder',
+    category: 'dairy',
+    dairy: true,
+    composition: { fat: 0.01, msnf: 0.97 },
+    basis: { fat: 'stated', msnf: 'stated' },
+    source: { fat: 'panel', msnf: 'panel' },
+    note: 'Heat class is never printed on US retail packaging and materially affects flavour.',
+  },
+  sucrose: {
+    name: 'Sucrose',
+    category: 'sugar',
+    densityGPerMl: 0.85,
+    packedState: 'granulated, loose',
+    composition: { sugar: 1, pac: 100, pod: 100 },
+    basis: { sugar: 'stated', pac: 'stated', pod: 'stated' },
+    source: { pac: 'reference basis — sucrose defines 100' },
+  },
+  allulose: {
+    name: 'Allulose',
+    category: 'sugar',
+    composition: { sugar: 1, pac: 190, pod: 70 },
+    basis: { sugar: 'stated', pac: 'estimated', pod: 'estimated' },
+    source: { pac: 'reasoned from molecular weight', pod: 'published ratios range 0.6–0.7' },
+    note: 'The least certain constant in this formula. Browns with milk proteins, so it goes in after the heat step.',
+  },
+  dextrose: {
+    name: 'Dextrose',
+    category: 'sugar',
+    composition: { sugar: 1, pac: 190, pod: 70 },
+    basis: { sugar: 'stated', pac: 'stated', pod: 'stated' },
+    source: { pac: 'coefficient set 2026.1' },
+    note: 'PAC moved from 1.9 to 1.66 between generations of the predecessor app, and nothing on any page recorded that it had.',
+  },
+  salt: {
+    name: 'Fine sea salt',
+    category: 'other',
+    composition: { other: 1, pac: 580 },
+    basis: { other: 'stated', pac: 'estimated' },
+    source: { pac: 'colligative estimate' },
+  },
+  lecithin: {
+    name: 'Soy lecithin powder',
+    category: 'emulsifier',
+    composition: { emulsifier: 1 },
+    basis: { emulsifier: 'stated' },
+  },
+  locustBeanGum: {
+    name: 'Locust bean gum',
+    category: 'stabilizer',
+    hydrationC: 82,
+    composition: { stabilizer: 1 },
+    basis: { stabilizer: 'stated' },
+    source: { hydrationC: 'commonly cited 80–85 °C, varies by grade' },
+  },
+  guarGum: {
+    name: 'Guar gum',
+    category: 'stabilizer',
+    composition: { stabilizer: 1 },
+    basis: { stabilizer: 'stated' },
+  },
+  carrageenan: {
+    name: 'Lambda carrageenan',
+    category: 'stabilizer',
+    composition: { stabilizer: 1 },
+    basis: { stabilizer: 'stated' },
+  },
+};

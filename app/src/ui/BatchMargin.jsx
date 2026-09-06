@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { formatRecordDate, readMeasured, sortedTastings, hasTasting, isTastingSaveable } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, sortedTastings, sortedBatches, hasTasting, isTastingSaveable } from '../domain/batch.js';
 import { axesForBatch, markKeyFor } from '../domain/axes.js';
 import { AxisMark } from './AxisMark.jsx';
 
@@ -247,14 +247,7 @@ export function BatchMargin({
       openBatch.amendedAt.length > 0 ? openBatch.amendedAt[openBatch.amendedAt.length - 1] : null;
     // A version with more than one batch is listed by churn date,
     // undated last, each a link to its own URL (task 3, D-20, D-21).
-    const sortedBatches = [...batches].sort((a, b) => {
-      const aDate = a.churn.churnDate;
-      const bDate = b.churn.churnDate;
-      if (aDate === bDate) return 0;
-      if (aDate === null) return 1;
-      if (bDate === null) return -1;
-      return aDate < bDate ? 1 : -1;
-    });
+    const orderedBatches = sortedBatches(batches);
     return (
       <div className="batch-margin">
         <p className="batch-margin__legend">Batch</p>
@@ -282,9 +275,9 @@ export function BatchMargin({
           Amend
         </button>
 
-        {sortedBatches.length > 1 && (
+        {orderedBatches.length > 1 && (
           <ul className="batch-margin__list">
-            {sortedBatches.map((batch) => (
+            {orderedBatches.map((batch) => (
               <li key={batch.id} className={batch.id === openBatch.id ? 'is-open' : undefined}>
                 <Link to={`/recipe/${version.id}/batch/${batch.id}`}>
                   {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}

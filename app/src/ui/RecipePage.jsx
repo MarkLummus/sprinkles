@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
-import { createBatch, addTasting, recordAmendment, latestChurnDate, formatRecordDate } from '../domain/batch.js';
+import { createBatch, addTasting, recordAmendment, latestChurnDate, formatRecordDate, sortedBatches } from '../domain/batch.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
@@ -125,15 +125,7 @@ export function RecipePage() {
   if (batchId) {
     openBatch = batches.find((batch) => batch.id === batchId) ?? null;
   } else if (batches.length > 0) {
-    const sorted = [...batches].sort((a, b) => {
-      const aDate = a.churn.churnDate;
-      const bDate = b.churn.churnDate;
-      if (aDate === bDate) return 0;
-      if (aDate === null) return 1;
-      if (bDate === null) return -1;
-      return aDate < bDate ? 1 : -1;
-    });
-    openBatch = sorted[0];
+    openBatch = sortedBatches(batches)[0];
   }
 
   function handleStartRecording() {

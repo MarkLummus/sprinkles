@@ -219,6 +219,24 @@ export function sortedTastings(batch) {
   });
 }
 
+/**
+ * sortedBatches(batches) -> a new array of batches ordered by churn date
+ * descending, undated batches last — the same tie-break rule
+ * sortedTastings applies to a batch's tastings, applied here to a
+ * version's batches (route-recipe.md "most recent batch" default, and
+ * the batch list in its margin). Never sorts in place.
+ */
+export function sortedBatches(batches) {
+  return [...batches].sort((a, b) => {
+    const aDate = a.churn.churnDate;
+    const bDate = b.churn.churnDate;
+    if (aDate === bDate) return 0;
+    if (aDate === null) return 1;
+    if (bDate === null) return -1;
+    return aDate < bDate ? 1 : -1;
+  });
+}
+
 /** hasTasting(batch) -> whether the batch has at least one tasting — the test behind "not yet evaluated" (D-05). */
 export function hasTasting(batch) {
   return batch.tastings.length > 0;

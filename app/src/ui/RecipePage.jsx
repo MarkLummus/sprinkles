@@ -4,11 +4,11 @@ import { repository } from '../store/repository.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
+import { FormulationNote } from './FormulationNote.jsx';
 
 // The brief's book spread, in semantic regions, each wearing its
-// plain-language name. The formulation note and the advisory slot in the
-// margin render nothing visible until the plans that fill them land — no
-// placeholder text.
+// plain-language name. The advisory slot in the margin renders nothing
+// visible until the plan that fills it lands — no placeholder text.
 export function RecipePage() {
   const { id } = useParams();
   const [version, setVersion] = useState(undefined);
@@ -42,7 +42,9 @@ export function RecipePage() {
         {hasRows ? <IngredientTable rows={version.rows} /> : <p>This version has no ingredient rows.</p>}
       </section>
 
-      <section className="formulation-note-region" aria-label="Formulation note" />
+      <section className="formulation-note-region" aria-label="Formulation note">
+        <FormulationNote version={version} />
+      </section>
 
       <section className="method-region" aria-label="Method">
         <Method steps={version.method} />

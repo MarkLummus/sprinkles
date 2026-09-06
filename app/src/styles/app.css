@@ -183,3 +183,50 @@ body {
   font-family: var(--face-text);
   font-size: var(--size-headnote-prose);
 }
+
+.formulation-note__rule + .formulation-note__rule {
+  margin-top: var(--gap-m);
+}
+
+.formulation-note__fat-breakdown {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+  margin: var(--gap-xs) 0 0;
+}
+
+.graduated-rule__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--face-grotesk);
+  font-variant-numeric: tabular-nums;
+}
+
+.graduated-rule__label {
+  font-size: var(--size-table-body);
+}
+
+.graduated-rule__value {
+  font-size: var(--size-figure-value);
+  font-weight: 700;
+}
+
+.graduated-rule__anchors {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--gap-hair);
+}
+
+.graduated-rule__deviation {
+  font-size: var(--size-deviation-words);
+}
+
+.basis-note {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-m) 0 0;
+}

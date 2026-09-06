@@ -70,7 +70,21 @@ Plans:
   4. Maker reopens the batch and sees it together with the recipe version it used, its measured values, and its result.
   5. The batch holds the recipe rows and ingredient coefficients it was computed with; later edits to the recipe or to ingredient data do not change what the batch shows.
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Tracer: the as-made column written, saved as a batch, and reopened by URL, with the snapshot proven not to move
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — The pen on the method and in the margin: per-step strike and changed line, the churn section's measured values with unknown in words, and the store file carrying batches
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — Tastings with words and marks, amendment, the margin's batch list, and the 2 Aug record seeded
+
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the batch record surface (BRIEF-02 seed is unapproved input, not authority)
 **Phase notes**: Criterion 5 is the known data hazard from PROJECT.md — coefficient drift silently corrupted historical batches before. No automated diagnosis: Mark interprets the notes (D14).
@@ -132,7 +146,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
-| 2. Record the first batch | 0/TBD | Not started | - |
+| 2. Record the first batch | 0/3 | Planned     | - |
 | 3. Develop the next version | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 

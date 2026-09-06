@@ -308,3 +308,50 @@ body {
   max-width: var(--measure-prose);
   margin: var(--gap-m) 0 0;
 }
+
+/* The pen layer (route-recipe-batch.md § 3): everything the maker types,
+   and the saved record's own text, reads pen blue against the black plan.
+   Saving never changes colour (No-Verdict Rule) — only the field's
+   outline disappears, form giving way to plain text. */
+.ink-field {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-ink-field);
+  font-variant-numeric: tabular-nums;
+  color: var(--pen-blue);
+  border: var(--rule-ink-field) solid var(--ink);
+  border-radius: 0;
+  background: none;
+  padding: var(--gap-hair) var(--gap-xs);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ink-field:focus {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.ink-text {
+  color: var(--pen-blue);
+}
+
+.batch-margin__legend {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--gap-xs);
+}
+
+.batch-margin__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  margin-top: var(--gap-xs);
+}
+
+.batch-margin button {
+  margin-top: var(--gap-s);
+}

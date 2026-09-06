@@ -61,9 +61,14 @@ export const oliveOilVersion = {
   // overrun as ranges (method targets); these scalar slots stay null rather
   // than being filled with an invented midpoint.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
-  // The axes this recipe declares for itself. Carried on the record now so
-  // Phase 2's observation surface has them; nothing in Phase 1 renders them.
-  declaredAxes: ['Olive oil character', 'Bitterness'],
+  // The axes this recipe declares for itself, each carrying its own
+  // behavioural anchor words authored on the version (D-15), so a tasting's
+  // marks always have something to read against. 02-03 renders them;
+  // nothing here changes when it does.
+  declaredAxes: [
+    { name: 'Olive oil character', low: "can't find it", high: 'tastes of oil first' },
+    { name: 'Bitterness', low: 'none', high: 'catches the throat' },
+  ],
   // Prose instruction with typed targets beside it. Purpose is why the step
   // exists — diagnostic input. Aside is what to watch while doing it. They
   // are different fields, omitted (not blank) when the sheet has neither.

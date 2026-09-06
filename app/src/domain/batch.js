@@ -1,21 +1,84 @@
-// Pure. No framework, no DOM, no store import. RED stub — batch.test.js
-// exercises these signatures before they are implemented (plan 02-01,
-// task 1). See the GREEN commit for the real bodies.
+// Pure. No framework, no DOM, no store import. The batch record's shape
+// and its rules: create, snapshot, and as-made read/write discipline — see
+// 02-CONTEXT.md D-01 (one churn event owning a list of tastings), D-11 (0
+// is a real as-made value, distinct from absent), D-18 (a measured or
+// as-made value is stored as typed, never rounded), D-20 (the batch's
+// opaque id), and BATCH2-01 (the snapshot, taken once and never retaken).
 
 export const BATCH_SCHEMA_VERSION = 1;
 
-export function formatRecordDate() {
-  throw new Error('not implemented');
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/**
+ * formatRecordDate(iso) -> 'D Mon YYYY', built from the leading
+ * YYYY-MM-DD of any ISO 8601 string against a fixed month table. Never
+ * constructs a Date and never calls a locale- or timezone-dependent
+ * formatter — the same record must read the same on every machine and in
+ * every test run.
+ */
+export function formatRecordDate(iso) {
+  const [year, month, day] = iso.slice(0, 10).split('-');
+  const monthName = MONTHS[Number(month) - 1];
+  return `${Number(day)} ${monthName} ${year}`;
 }
 
-export function createBatch() {
-  throw new Error('not implemented');
+/**
+ * createBatch(version, churnFields, { id, now }) -> a new batch record.
+ * Pure: id and now are supplied by the caller — this function never reaches
+ * for crypto.randomUUID() or new Date() itself (that impurity lives in the
+ * one save handler that calls this). The snapshot is a structuredClone of
+ * the version's rows and declaredAxes, taken once here and never retaken
+ * by any later function (BATCH2-01).
+ */
+export function createBatch(version, churnFields, { id, now }) {
+  const asMade = {};
+  if (churnFields.asMade) {
+    for (const rowId of Object.keys(churnFields.asMade)) {
+      asMade[rowId] = churnFields.asMade[rowId];
+    }
+  }
+
+  return {
+    schemaVersion: BATCH_SCHEMA_VERSION,
+    id,
+    versionId: version.id,
+    recordedAt: now,
+    amendedAt: [],
+    snapshot: {
+      coefficientSetId: version.coefficientSetId,
+      versionLabel: version.versionLabel,
+      rows: structuredClone(version.rows),
+      declaredAxes: structuredClone(version.declaredAxes),
+    },
+    churn: {
+      churnDate: churnFields.churnDate ? churnFields.churnDate : null,
+      asMade,
+      stepChanges: {},
+      comeUpMinutes: null,
+      drawTempC: null,
+      overrunPercent: null,
+      drawNotes: null,
+      ingredientNotes: null,
+      nextTimeNote: null,
+    },
+    tastings: [],
+  };
 }
 
-export function hasAsMade() {
-  throw new Error('not implemented');
+/**
+ * hasAsMade(batch, rowId) -> whether the maker wrote something for this
+ * row. Presence is tested with an own-property check, in the manner
+ * figures.js already uses for authored bands — never truthiness — so a
+ * written 0 (D-11) is distinguishable from an absent entry.
+ */
+export function hasAsMade(batch, rowId) {
+  return Object.prototype.hasOwnProperty.call(batch.churn.asMade, rowId);
 }
 
-export function asMadeFor() {
-  throw new Error('not implemented');
+/**
+ * asMadeFor(batch, rowId) -> the written number, or null when absent —
+ * never the plan's number. The plan never leaks into the as-made reading.
+ */
+export function asMadeFor(batch, rowId) {
+  return hasAsMade(batch, rowId) ? batch.churn.asMade[rowId] : null;
 }

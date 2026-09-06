@@ -44,4 +44,10 @@
   /* Focus treatment (contract § 5) */
   --focus-outline-width: 1px;
   --focus-outline-offset: 2px;
+
+  /* The pen layer (route-recipe-batch.md § 3) — pen blue was defined above
+     and unpainted until now. */
+  --rule-ink-field: 1px;
+  --size-ink-field: 0.9375rem;
+  --col-numeric: 88px;
 }

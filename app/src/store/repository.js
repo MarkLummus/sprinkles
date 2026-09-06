@@ -28,6 +28,18 @@ export function createRepository() {
       await Promise.all(versions.map((version) => tx.store.put(version)));
       return tx.done;
     },
+    async listBatchesForVersion(versionId) {
+      const db = await dbPromise;
+      return db.getAllFromIndex('batches', 'by-version', versionId);
+    },
+    async getBatch(id) {
+      const db = await dbPromise;
+      return db.get('batches', id);
+    },
+    async saveBatch(batch) {
+      const db = await dbPromise;
+      return db.put('batches', batch);
+    },
   };
 }
 

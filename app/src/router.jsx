@@ -9,6 +9,7 @@ import { RecipePage } from './ui/RecipePage.jsx';
 export const router = createBrowserRouter([
   { path: '/', Component: RecipeList },
   { path: '/recipe/:id', Component: RecipePage },
+  { path: '/recipe/:id/batch/:batchId', Component: RecipePage },
 ]);
 
 export function App() {

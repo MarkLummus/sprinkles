@@ -64,7 +64,10 @@ describe('oliveOilVersion.authored', () => {
 });
 
 describe('oliveOilVersion.declaredAxes', () => {
-  it("equals ['Olive oil character', 'Bitterness']", () => {
-    expect(oliveOilVersion.declaredAxes).toEqual(['Olive oil character', 'Bitterness']);
+  it('is two entries, each carrying its own name, low and high anchor words (D-15)', () => {
+    expect(oliveOilVersion.declaredAxes).toEqual([
+      { name: 'Olive oil character', low: "can't find it", high: 'tastes of oil first' },
+      { name: 'Bitterness', low: 'none', high: 'catches the throat' },
+    ]);
   });
 });

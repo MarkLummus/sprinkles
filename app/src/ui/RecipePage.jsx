@@ -5,7 +5,7 @@ import { buildFigures } from '../domain/figures.js';
 import { createBatch, addTasting, recordAmendment, sortedBatches } from '../domain/batch.js';
 import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
-import { createChildVersion, saveOverVersion, versionLineUnique } from '../domain/lineage.js';
+import { createChildVersion, saveOverVersion, versionsForRecipe, blockedSaveMessage } from '../domain/lineage.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
@@ -138,6 +138,26 @@ export function RecipePage() {
       cancelled = true;
     };
   }, [id]);
+
+  // The cited batch this version's lineage line names (route-recipe-version.md
+  // § 3): citedBatchId is an id only — the batch itself lives on the
+  // parent, never copied onto the child — so its churn date is read once
+  // per version here, purely to render the lineage line's date-linked
+  // clause.
+  const [citedBatch, setCitedBatch] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!version || !version.citedBatchId) {
+      setCitedBatch(null);
+      return undefined;
+    }
+    repository.getBatch(version.citedBatchId).then((result) => {
+      if (!cancelled) setCitedBatch(result ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [version]);
 
   // D-24: leaving the page with unsaved ink uses the browser's own leave
   // warning only, registered while recording, tasting, or the plan's pen
@@ -581,31 +601,23 @@ export function RecipePage() {
     }));
   }
 
-  // Shared by both save paths: the version line and every row the draft
-  // itself does not mark removed must have a grams amount, and the line
-  // must be unique within the recipe (D-04) — blocked in words, never a
-  // dialog. A row removed in the draft needs no amount: removal, not the
-  // baseline's own removed flag, decides which rows this checks (a row can
-  // be removed here even though it was active on the version the pen
-  // opened on). Returns null when blocked, or the pen's fields coerced for
-  // the domain constructor (rows' grams strings are Number()'d here, at
-  // save time, never on keystroke — Pitfall 5).
+  // Shared by both save paths: the one message that blocks the save is
+  // computed by the tested domain function (D-04) — the same sentence can
+  // never drift between the two save controls. `excludeId` scopes the
+  // uniqueness check: null for a fresh child (compared against every
+  // version of the recipe, including the one the pen opened on), the
+  // current version's own id for a save-over (so keeping its own line
+  // never reads as a collision with itself). Returns null when blocked, or
+  // the pen's fields coerced for the domain constructor (rows' grams
+  // strings are Number()'d here, at save time, never on keystroke —
+  // Pitfall 5). A reason of nothing but whitespace is treated as blank and
+  // stored as null, exactly as an empty reason already was.
   function buildPenFields(excludeId) {
-    if (penDraft.versionLabel === '') {
-      setBlockedMessage('a version needs a line');
+    const scopedVersions = versionsForRecipe(versions, version.recipeId).filter((v) => v.id !== excludeId);
+    const message = blockedSaveMessage(penDraft, version, scopedVersions);
+    if (message) {
+      setBlockedMessage(message);
       return null;
-    }
-    if (!versionLineUnique(versions, penDraft.versionLabel, excludeId)) {
-      setBlockedMessage('another version already has this line');
-      return null;
-    }
-    for (const row of version.rows) {
-      const draftRow = penDraft.rows[row.id];
-      if (draftRow.removed) continue;
-      if (draftRow.grams === undefined || draftRow.grams === '') {
-        setBlockedMessage(`${row.ingredientName} needs an amount, or remove the row`);
-        return null;
-      }
     }
     const rows = version.rows.map((row) => {
       const draftRow = penDraft.rows[row.id];
@@ -619,7 +631,7 @@ export function RecipePage() {
     });
     return {
       versionLabel: penDraft.versionLabel,
-      reason: penDraft.reason === '' ? null : penDraft.reason,
+      reason: penDraft.reason.trim() === '' ? null : penDraft.reason,
       citedBatchId: penDraft.citedBatchId,
       rows,
       method: penDraft.method,
@@ -644,9 +656,12 @@ export function RecipePage() {
     });
   }
 
-  // Available only on a version with zero batches (D-01) — a churned
-  // version's own record is never written to (D04).
+  // Available only on a version with zero batches (D-01). The control's
+  // absence from the headnote is the design; this re-check is the
+  // guarantee — a churned version's own record is never written to (D04)
+  // even if this handler were somehow reached with the control hidden.
   function handleSaveOverVersion() {
+    if (batches.length > 0) return;
     const penFields = buildPenFields(version.id);
     if (!penFields) return;
     const updated = saveOverVersion(version, penFields, { now: new Date().toISOString() });
@@ -668,6 +683,7 @@ export function RecipePage() {
         penDraft={penDraft}
         openBatch={openBatch}
         batches={batches}
+        citedBatch={citedBatch}
         blockedMessage={blockedMessage}
         onChangeChurnDate={handleChangeChurnDate}
         onStartDeveloping={handleStartDeveloping}

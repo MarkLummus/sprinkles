@@ -6,6 +6,8 @@
 // version's record and its batches are never written when a child is
 // saved).
 
+import { sortedBatches } from './batch.js';
+
 /**
  * sortedVersions(versions) -> a new array ordered by createdAt, most
  * recent first, with a null createdAt last — the same tie-break shape
@@ -117,4 +119,45 @@ export function saveOverVersion(version, penFields) {
     headnote: penFields.headnote,
     authored: structuredClone(penFields.authored),
   };
+}
+
+/**
+ * citableBatches(batches) -> the parent's batches, most-recent-first, for
+ * the ceremony's citation list (route-recipe-version.md § 3) — a thin
+ * wrapper over domain/batch.js's sortedBatches, so the component never
+ * chooses an order of its own.
+ */
+export function citableBatches(batches) {
+  return sortedBatches(batches);
+}
+
+/**
+ * blockedSaveMessage(penFields, version, versions) -> the one message
+ * that blocks the save, or `null` when nothing does, checked in a fixed
+ * order so the maker is told about one thing at a time
+ * (route-recipe-version.md § 3, § 6, D-04): a blank or whitespace-only
+ * version line; a line that collides through versionLineUnique; then the
+ * first active row (in the version's own authored order) whose grams
+ * field is empty. `penFields` carries `versionLabel` (a string) and
+ * `rows` (a map keyed by row id holding { grams, removed } — the pen
+ * draft's own shape); a row the draft marks removed needs no amount.
+ * `versions` is the list to check uniqueness against, already scoped by
+ * the caller to the recipe and to exclude the version being saved over
+ * when that applies, so this function never takes an excludeId of its
+ * own. Never looks at a band, a deviation or an advisory — FORM1-03 is
+ * discharged by that absence, not by a rule that permits it.
+ */
+export function blockedSaveMessage(penFields, version, versions) {
+  if (penFields.versionLabel.trim() === '') return 'a version needs a line';
+  if (!versionLineUnique(versions, penFields.versionLabel, null)) {
+    return 'another version already has this line';
+  }
+  for (const row of version.rows) {
+    const draftRow = penFields.rows[row.id];
+    if (draftRow.removed) continue;
+    if (draftRow.grams === undefined || draftRow.grams === '') {
+      return `${row.ingredientName} needs an amount, or remove the row`;
+    }
+  }
+  return null;
 }

@@ -9,7 +9,10 @@ import {
   versionLineUnique,
   createChildVersion,
   saveOverVersion,
+  citableBatches,
+  blockedSaveMessage,
 } from './lineage.js';
+import { sortedBatches } from './batch.js';
 import { liftVersionRecord } from '../store/versionLift.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
@@ -92,6 +95,18 @@ describe('versionLineUnique', () => {
   it('never case-folds: differing case is unique', () => {
     expect(versionLineUnique(versions, '50 g Oil · 800 g', null)).toBe(true);
   });
+
+  it('an accented character round-trips through the comparison unchanged: an exact match collides, a case change does not', () => {
+    const accented = [{ id: 'v1', versionLabel: '50 g crème brûlée · 800 g' }];
+    expect(versionLineUnique(accented, '50 g crème brûlée · 800 g', null)).toBe(false);
+    expect(versionLineUnique(accented, '50 g CRÈME BRÛLÉE · 800 g', null)).toBe(true);
+  });
+
+  it('an emoji round-trips through the comparison unchanged: an exact match collides, a differing line does not', () => {
+    const withEmoji = [{ id: 'v1', versionLabel: '50 g oil · 800 g 🍦' }];
+    expect(versionLineUnique(withEmoji, '50 g oil · 800 g 🍦', null)).toBe(false);
+    expect(versionLineUnique(withEmoji, '50 g oil · 800 g', null)).toBe(true);
+  });
 });
 
 describe('createChildVersion', () => {
@@ -123,6 +138,16 @@ describe('createChildVersion', () => {
       { id: 'v2', now: '2026-09-07T10:00:00.000Z' },
     );
     expect(parent).toEqual(before);
+  });
+
+  it('an accented character and an emoji typed into the version line and the reason round-trip unchanged', () => {
+    const child = createChildVersion(
+      oliveOilVersion,
+      { ...penFields, versionLabel: '50 g crème · 800 g 🍦', reason: 'raised the crème 🍦 slightly' },
+      { id: 'v3', now: '2026-09-07T10:00:00.000Z' },
+    );
+    expect(child.versionLabel).toBe('50 g crème · 800 g 🍦');
+    expect(child.reason).toBe('raised the crème 🍦 slightly');
   });
 
   it('shares no structure with the parent: mutating the parent afterwards leaves the child unchanged', () => {
@@ -172,6 +197,81 @@ describe('saveOverVersion', () => {
     expect(updated.reason).toBe('raised the oil again');
     expect(updated.citedBatchId).toBe('b-1');
     expect(updated.headnote).toBe('new headnote');
+  });
+});
+
+describe('citableBatches', () => {
+  const batchA = { id: 'b-1', churn: { churnDate: '2026-08-02' } };
+  const batchB = { id: 'b-2', churn: { churnDate: '2026-08-20' } };
+  const undatedBatch = { id: 'b-3', churn: { churnDate: null } };
+
+  it('orders the parent batches exactly as sortedBatches does — most recent first, undated last', () => {
+    const batches = [batchA, undatedBatch, batchB];
+    expect(citableBatches(batches)).toEqual(sortedBatches(batches));
+    expect(citableBatches(batches).map((batch) => batch.id)).toEqual(['b-2', 'b-1', 'b-3']);
+  });
+
+  it('returns an empty array for a parent with no batches', () => {
+    expect(citableBatches([])).toEqual([]);
+  });
+});
+
+describe('blockedSaveMessage', () => {
+  // A full, valid rows map: every row of oliveOilVersion, unremoved, with
+  // its own grams as a string — the shape penDraft.rows takes.
+  function validRows(overrides = {}) {
+    const rows = {};
+    for (const row of oliveOilVersion.rows) {
+      rows[row.id] = { grams: String(row.grams), removed: false };
+    }
+    return { ...rows, ...overrides };
+  }
+
+  const noVersions = [];
+
+  it('returns null when nothing blocks the save', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('returns "a version needs a line" for a blank version line', () => {
+    const penFields = { versionLabel: '', reason: '', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('a version needs a line');
+  });
+
+  it('returns "a version needs a line" for a whitespace-only version line', () => {
+    const penFields = { versionLabel: '   ', reason: '', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('a version needs a line');
+  });
+
+  it('returns "another version already has this line" for a colliding line, checked before the grams rule', () => {
+    const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: false } }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, versions)).toBe('another version already has this line');
+  });
+
+  it('returns the first active row\'s own message, in the version\'s authored order, when its grams field is empty', () => {
+    const penFields = {
+      versionLabel: '60 g oil · 800 g',
+      reason: '',
+      rows: validRows({ 'row-01': { grams: '', removed: false }, 'row-04': { grams: '', removed: false } }),
+    };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+  });
+
+  it('a row the draft marks removed needs no amount', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: true } }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('never blocks on a whitespace-only reason — a reason of nothing but whitespace is treated exactly as a blank one', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '   ', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('never looks at a band, a deviation or an advisory', () => {
+    const source = blockedSaveMessage.toString();
+    expect(source).not.toMatch(/band|deviation|advisor/i);
   });
 });
 

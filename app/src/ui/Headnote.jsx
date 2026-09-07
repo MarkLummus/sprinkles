@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { formatRecordDate, sortedBatches } from '../domain/batch.js';
+import { Link } from 'react-router';
+import { formatRecordDate } from '../domain/batch.js';
+import { citableBatches } from '../domain/lineage.js';
 
 // The headnote region, extracted verbatim from RecipePage.jsx (route-recipe-version.md
 // § 3, "The ceremony in the headnote") and then given the save ceremony. RecipePage
@@ -12,6 +14,7 @@ export function Headnote({
   penDraft,
   openBatch,
   batches,
+  citedBatch,
   blockedMessage,
   onChangeChurnDate,
   onStartDeveloping,
@@ -82,7 +85,7 @@ export function Headnote({
               }
             >
               <option value="">no batch cited</option>
-              {sortedBatches(batches).map((batch) => (
+              {citableBatches(batches).map((batch) => (
                 <option key={batch.id} value={batch.id}>
                   {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
                 </option>
@@ -153,6 +156,27 @@ export function Headnote({
           </>
         )}
       </p>
+      {/* The lineage line (route-recipe-version.md § 3): a saved child's
+          parent and cited batch, each a link, followed by the reason as a
+          headnote paragraph. A version with no parentVersionId (the seed)
+          carries no lineage line at all — nothing here is derived when
+          that field is absent. */}
+      {version.parentVersionId && (
+        <>
+          <p className="headnote__lineage">
+            from <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
+            {version.citedBatchId && citedBatch && (
+              <>
+                , after the batch of{' '}
+                <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
+                  {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
+                </Link>
+              </>
+            )}
+          </p>
+          <p className="headnote__reason">{version.reason ? version.reason : 'no reason recorded'}</p>
+        </>
+      )}
       {/* D-01: this wording on every version, churned or not — disabled
           while mode === 'recording' so the two pens stay mutually
           exclusive (03-CONTEXT.md D-10, RESEARCH.md Pitfall 4). */}

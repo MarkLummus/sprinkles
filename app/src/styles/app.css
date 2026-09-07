@@ -131,6 +131,34 @@ body {
   margin-bottom: var(--gap-hair);
 }
 
+/* The reason field's typed text (route-recipe-version.md § 6: "prose in
+   the text face") — the labelling span above stays in the grotesk. */
+.headnote__reason-field textarea.ink-field {
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+  width: 100%;
+  max-width: var(--measure-prose);
+  box-sizing: border-box;
+}
+
+/* The lineage line (route-recipe-version.md § 3): "from <parent link>,
+   after the batch of <date link>", in the text face beneath the version
+   line. The reason that follows it reads as a headnote paragraph — the
+   same face and size as the recipe's own headnote prose. */
+.headnote__lineage {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-hair) 0 0;
+}
+
+.headnote__reason {
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+  max-width: var(--measure-prose);
+  margin: var(--gap-xs) 0 0;
+}
+
 .headnote__citation {
   display: flex;
   align-items: center;

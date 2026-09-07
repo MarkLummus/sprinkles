@@ -3,8 +3,8 @@
 // D-16). Runs under Vitest's default node environment — imports no store,
 // no component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { CORE_AXES, MARK_STOPS, axesForBatch, markKeyFor } from './axes.js';
-import { createBatch } from './batch.js';
+import { CORE_AXES, MARK_STOPS, axesForBatch, markKeyFor, setMark } from './axes.js';
+import { createBatch, isTastingSaveable } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 describe('CORE_AXES', () => {
@@ -89,5 +89,58 @@ describe('markKeyFor', () => {
     const declaredHardness = { name: 'Hardness', low: 'x', high: 'y' };
     expect(markKeyFor(declaredHardness)).toBe('Hardness');
     expect(markKeyFor(declaredHardness)).not.toBe(markKeyFor(CORE_AXES[0]));
+  });
+});
+
+// setMark is the one rule for writing AND clearing a mark on a marks
+// object (G-02-6): a mark placed by mistake must be removable, and clearing
+// the last one must return isTastingSaveable to false — the state the
+// clear control exists to reach.
+describe('setMark', () => {
+  it('sets on an empty object: the only own key is the axis, holding the given stop', () => {
+    const result = setMark({}, 'sweetness', 4);
+    expect(Object.keys(result)).toEqual(['sweetness']);
+    expect(result.sweetness).toBe(4);
+  });
+
+  it('replaces an existing mark, still one key', () => {
+    const result = setMark({ sweetness: 4 }, 'sweetness', 4.5);
+    expect(Object.keys(result)).toEqual(['sweetness']);
+    expect(result.sweetness).toBe(4.5);
+  });
+
+  it('clears a mark: the axis has no own key, and the object has zero own keys', () => {
+    const result = setMark({ sweetness: 4 }, 'sweetness', null);
+    expect(Object.prototype.hasOwnProperty.call(result, 'sweetness')).toBe(false);
+    expect(Object.keys(result)).toHaveLength(0);
+  });
+
+  it('clears one of several, leaving exactly the other untouched', () => {
+    const result = setMark({ sweetness: 4, hardness: 3 }, 'sweetness', null);
+    expect(Object.keys(result)).toEqual(['hardness']);
+    expect(result.hardness).toBe(3);
+  });
+
+  it('clearing an axis that was never marked returns the other axis and creates no key for the cleared one', () => {
+    const result = setMark({ hardness: 3 }, 'sweetness', null);
+    expect(Object.keys(result)).toEqual(['hardness']);
+    expect(result.hardness).toBe(3);
+    expect(Object.prototype.hasOwnProperty.call(result, 'sweetness')).toBe(false);
+  });
+
+  it('never mutates the object it is given', () => {
+    const original = { sweetness: 4, hardness: 3 };
+    const originalKeys = Object.keys(original);
+    const originalSnapshot = { ...original };
+    setMark(original, 'sweetness', 4.5);
+    setMark(original, 'sweetness', null);
+    setMark(original, 'scoopability', 2);
+    expect(Object.keys(original)).toEqual(originalKeys);
+    expect(original).toEqual(originalSnapshot);
+  });
+
+  it('clearing the last mark returns isTastingSaveable to false, asserted across the two pure modules', () => {
+    expect(isTastingSaveable({ marks: { sweetness: 4 } })).toBe(true);
+    expect(isTastingSaveable({ marks: setMark({ sweetness: 4 }, 'sweetness', null) })).toBe(false);
   });
 });

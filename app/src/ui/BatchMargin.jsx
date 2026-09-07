@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate, readMeasured, sortedTastings, sortedBatches, hasTasting, isTastingSaveable } from '../domain/batch.js';
 import { axesForBatch, markKeyFor } from '../domain/axes.js';
@@ -46,15 +47,17 @@ function TastingReading({ tasting, axes }) {
 // temperature field never reads the version's serve target (D-07). Save
 // tasting is gated on isTastingSaveable, its disabled state explained in
 // text, never by colour alone.
-function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, onUseAsExpectedShortcut, onSaveTasting }) {
+function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, onUseAsExpectedShortcut, onSaveTasting, onCancelTasting }) {
   const saveable = isTastingSaveable({ words: draft.words, marks: draft.marks });
   return (
     <div className="tasting tasting--recording">
+      <p className="batch-margin__legend">Tasting</p>
       <label className="batch-margin__field">
         <span>Tasting date</span>
         <input
           type="date"
           className="ink-field"
+          autoFocus
           value={draft.date}
           onChange={(event) => onChangeTastingField('date', event.target.value)}
         />
@@ -118,6 +121,9 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, o
       <button type="button" onClick={onSaveTasting} disabled={!saveable}>
         Save tasting
       </button>
+      <button type="button" onClick={onCancelTasting}>
+        Cancel
+      </button>
       {!saveable && <p className="batch-margin__hint">Write words or mark at least one axis to save.</p>}
     </div>
   );
@@ -152,8 +158,28 @@ export function BatchMargin({
   onChangeTastingMark,
   onUseAsExpectedShortcut,
   onSaveTasting,
+  onCancelTasting,
   onCancelRecording,
 }) {
+  // Focus-return for the tasting form (D-4): tastingWasOpenRef starts false
+  // so the effect is a no-op on first mount, and only fires the actual
+  // focus() call on the transition from open to closed — by cancel or by
+  // save, either one clears tastingDraft the same way. The ref must sit
+  // above every conditional return below; the component has three return
+  // branches, and a hook placed lower would be conditional and illegal.
+  const addTastingButtonRef = useRef(null);
+  const tastingWasOpenRef = useRef(false);
+  useEffect(() => {
+    if (tastingDraft) {
+      tastingWasOpenRef.current = true;
+      return;
+    }
+    if (tastingWasOpenRef.current) {
+      tastingWasOpenRef.current = false;
+      addTastingButtonRef.current?.focus();
+    }
+  }, [tastingDraft]);
+
   if (mode === 'recording') {
     return (
       <div className="batch-margin">
@@ -303,9 +329,10 @@ export function BatchMargin({
             onChangeTastingMark={onChangeTastingMark}
             onUseAsExpectedShortcut={onUseAsExpectedShortcut}
             onSaveTasting={onSaveTasting}
+            onCancelTasting={onCancelTasting}
           />
         ) : (
-          <button type="button" onClick={onStartTasting}>
+          <button type="button" ref={addTastingButtonRef} onClick={onStartTasting}>
             Add a tasting
           </button>
         )}

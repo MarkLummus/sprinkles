@@ -296,6 +296,15 @@ export function RecipePage() {
     });
   }
 
+  // Discards silently, exactly as the churn Cancel does (handleCancelRecording
+  // above): the brief forbids a dialog of the app's own for leaving with
+  // unsaved ink (route-recipe-batch.md § 6). The beforeunload guard needs no
+  // change here — isTastingDraftDirty(null) is already false, so the effect
+  // above removes the listener on its own once tastingDraft goes null.
+  function handleCancelTasting() {
+    setTastingDraft(null);
+  }
+
   function handleChangeTastingField(field, value) {
     setTastingDraft((prev) => ({ ...prev, [field]: value }));
   }
@@ -432,6 +441,7 @@ export function RecipePage() {
             onChangeTastingMark={handleChangeTastingMark}
             onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
             onSaveTasting={handleSaveTasting}
+            onCancelTasting={handleCancelTasting}
           />
           <Authored carriedForward={version.authored.carriedForward} beforeYouStart={version.authored.beforeYouStart} />
           <div className="advisory-slot" aria-label="Advisories" />

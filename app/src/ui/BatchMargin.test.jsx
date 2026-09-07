@@ -30,6 +30,7 @@ function renderMargin(props) {
       onChangeTastingMark={noop}
       onUseAsExpectedShortcut={noop}
       onSaveTasting={noop}
+      onCancelTasting={noop}
       {...props}
     />,
   );
@@ -124,5 +125,59 @@ describe('BatchMargin — the churn date moved to the headnote (D-01)', () => {
     });
     expect(markup).not.toContain('2 Aug 2026');
     expect(markup).toContain('4 Aug 2026');
+  });
+});
+
+const emptyTastingDraft = {
+  date: '',
+  tastingTempC: '',
+  marks: {},
+  meltdownLossG: '',
+  words: '',
+  nextTimeNote: '',
+};
+
+describe('BatchMargin — the tasting form can be abandoned (D-1 through D-4)', () => {
+  it('heads the open form the way a read tasting is headed', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: emptyTastingDraft,
+    });
+    expect(markup).toContain('<p class="batch-margin__legend">Tasting</p>');
+  });
+
+  it('lands the caret in the tasting date field without a click', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: emptyTastingDraft,
+    });
+    const dateInput = markup.match(/<input[^>]*type="date"[^>]*\/>/)[0];
+    expect(dateInput).toContain('autofocus=""');
+  });
+
+  it('offers both a way to save and a way to leave without writing', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: emptyTastingDraft,
+    });
+    expect(markup).toContain('Save tasting');
+    expect(markup).toMatch(/<button[^>]*>Cancel<\/button>/);
+  });
+
+  it('offers the way back in once the form is closed', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: null,
+    });
+    expect(markup).toContain('Add a tasting');
+    expect(markup).not.toContain('Save tasting');
   });
 });

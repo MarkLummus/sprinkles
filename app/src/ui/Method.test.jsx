@@ -301,6 +301,91 @@ describe('Method — developing mode', () => {
     expect(markup).toContain('remove this step');
   });
 
+  it('renders a coverage cue naming the covered rows and the covering step, and no cross-flag or remove-this-step control, for a removed step whose rows are all still used elsewhere (D-UAT-3)', () => {
+    const baselineVersion = makeBaselineVersion();
+    baselineVersion.method.push({
+      n: 2,
+      leadIn: 'Lead two',
+      instruction: 'Do two things.',
+      removed: false,
+      uses: ['row-a'], // shares row-a with step 1
+    });
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].removed = true; // step 1, uses row-a; step 2 still uses it
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('method-step__flag');
+    expect(markup).toContain('Row A');
+    expect(markup).toContain('still used by step 2');
+    expect(markup).not.toContain('remove this step');
+  });
+
+  it('renders no coverage cue for a removed step whose rows are covered by nothing — the table already carries that answer', () => {
+    const baselineVersion = makeBaselineVersion(); // one step, row-a used only by step 1
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].removed = true;
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).not.toContain('method-step__flag');
+  });
+
+  it('renders exactly one control on a removed step, reading restore', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].removed = true;
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    const buttonMatches = markup.match(/<button[^>]*>[^<]*<\/button>/g) ?? [];
+    expect(buttonMatches).toHaveLength(1);
+    expect(buttonMatches[0]).toContain('restore');
+  });
+
+  it("renders the removed-row cross-flag exactly as before on an active step that uses a removed row, unaffected by the coverage cue", () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.rows[0].removed = true; // row-a, used by active step 1
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('uses Row A, which is removed');
+    expect(markup).toContain('remove this step');
+  });
+
   it("renders the stale-amount flag's 'amounts changed:' clause only when visibility is on", () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);

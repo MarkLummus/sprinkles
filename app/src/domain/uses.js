@@ -28,11 +28,39 @@ export function stepsUsingRow(version, rowId) {
 /**
  * removedRowsUsedBy(version, step) -> the rows named in step's `uses` that
  * are removed, in the version's row order. This is what raises the flag
- * beneath a step ("uses soy lecithin, which is removed").
+ * beneath a step ("uses soy lecithin, which is removed"). Returns []
+ * for a step that is itself removed — a removed step is not asking the
+ * question any more; its own removal is what its "removed" label carries.
  */
 export function removedRowsUsedBy(version, step) {
+  if (step.removed) return [];
   const uses = usesOf(step);
   return version.rows.filter((row) => row.removed && uses.includes(row.id));
+}
+
+/**
+ * coveredRowsFor(version, step) -> for a removed `step`, the rows it used
+ * that at least one other non-removed step still uses, as
+ * { id, ingredientName, coveringSteps }, in the version's own row order,
+ * each entry's `coveringSteps` in the version's own method order. This is
+ * `orphanedRows`' complement: that function names the rows a removal
+ * orphaned, this names the rows it did not — together they account for
+ * every row the removed step used (D-UAT-3). A row that is itself removed
+ * is covered by nothing and is not returned. Returns [] for a step that
+ * is not removed; the question only means something once a step is gone.
+ */
+export function coveredRowsFor(version, step) {
+  if (!step.removed) return [];
+  const uses = usesOf(step);
+  const entries = [];
+  for (const row of version.rows) {
+    if (row.removed || !uses.includes(row.id)) continue;
+    const coveringSteps = stepsUsingRow(version, row.id);
+    if (coveringSteps.length > 0) {
+      entries.push({ id: row.id, ingredientName: row.ingredientName, coveringSteps });
+    }
+  }
+  return entries;
 }
 
 /**

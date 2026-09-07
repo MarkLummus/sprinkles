@@ -4,7 +4,7 @@
 // fixture is a structuredClone of the seeded olive oil version, edited per
 // test; the version already carries D-08's authored `uses` lists.
 import { describe, it, expect } from 'vitest';
-import { stepsUsingRow, removedRowsUsedBy, orphanedRows, stepsWithStaleAmounts } from './uses.js';
+import { stepsUsingRow, removedRowsUsedBy, orphanedRows, stepsWithStaleAmounts, coveredRowsFor } from './uses.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 function clone() {
@@ -47,6 +47,85 @@ describe('removedRowsUsedBy', () => {
 
     findRow(version, 'row-09').removed = true;
     expect(removedRowsUsedBy(version, findStep(version, 1)).map((row) => row.id)).toEqual(['row-09']);
+  });
+
+  it('returns [] for a step that is itself removed, even when it uses a removed row', () => {
+    const version = clone();
+    findRow(version, 'row-09').removed = true;
+    findStep(version, 1).removed = true;
+    expect(removedRowsUsedBy(version, findStep(version, 1))).toEqual([]);
+  });
+});
+
+describe('coveredRowsFor (03-09, D-UAT-3)', () => {
+  it("names both of step 1's rows as covered by step 8 when step 1 is removed", () => {
+    const version = clone();
+    findStep(version, 1).removed = true;
+
+    const covered = coveredRowsFor(version, findStep(version, 1));
+    expect(covered.map((entry) => entry.id)).toEqual(['row-03', 'row-09']);
+    for (const entry of covered) {
+      expect(entry.coveringSteps.map((step) => step.n)).toEqual([8]);
+    }
+  });
+
+  it('names sucrose and whole milk as covered by step 3 when step 2 is removed, and omits the three gums', () => {
+    const version = clone();
+    findStep(version, 2).removed = true;
+
+    const covered = coveredRowsFor(version, findStep(version, 2));
+    const coveredIds = covered.map((entry) => entry.id);
+    expect(coveredIds).toEqual(expect.arrayContaining(['row-05', 'row-01']));
+    expect(coveredIds).not.toContain('row-10');
+    expect(coveredIds).not.toContain('row-11');
+    expect(coveredIds).not.toContain('row-12');
+    for (const entry of covered) {
+      expect(entry.coveringSteps.map((step) => step.n)).toEqual([3]);
+    }
+  });
+
+  it('partitions a removed step\'s rows with orphanedRows: every row step 2 used is in exactly one of the two answers', () => {
+    const version = clone();
+    findStep(version, 2).removed = true;
+
+    const covered = coveredRowsFor(version, findStep(version, 2));
+    const orphaned = orphanedRows(version);
+    const step2Rows = findStep(version, 2).uses;
+
+    for (const rowId of step2Rows) {
+      const inCovered = covered.some((entry) => entry.id === rowId);
+      const inOrphaned = orphaned.some((row) => row.id === rowId);
+      expect(inCovered !== inOrphaned).toBe(true); // exactly one, never both, never neither
+    }
+  });
+
+  it('never returns a row that is itself removed', () => {
+    const version = clone();
+    findStep(version, 1).removed = true;
+    findRow(version, 'row-09').removed = true;
+
+    const covered = coveredRowsFor(version, findStep(version, 1));
+    expect(covered.map((entry) => entry.id)).not.toContain('row-09');
+  });
+
+  it("returns an empty coverage answer when both step 1 and step 8 are removed, and both of step 1's rows appear in orphanedRows", () => {
+    const version = clone();
+    findStep(version, 1).removed = true;
+    findStep(version, 8).removed = true;
+
+    expect(coveredRowsFor(version, findStep(version, 1))).toEqual([]);
+    const orphaned = orphanedRows(version).map((row) => row.id);
+    expect(orphaned).toEqual(expect.arrayContaining(['row-03', 'row-09']));
+  });
+
+  it('yields an empty coverage answer rather than throwing for a step with no uses key at all', () => {
+    const version = { method: [{ n: 1, removed: true }], rows: [{ id: 'row-01', ingredientName: 'A', removed: false }] };
+    expect(coveredRowsFor(version, version.method[0])).toEqual([]);
+  });
+
+  it('returns [] for a step that is not removed', () => {
+    const version = clone();
+    expect(coveredRowsFor(version, findStep(version, 1))).toEqual([]);
   });
 });
 

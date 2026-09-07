@@ -1,6 +1,40 @@
 import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
-import { removedRowsUsedBy, stepsWithStaleAmounts } from '../domain/uses.js';
+import { removedRowsUsedBy, coveredRowsFor, stepsWithStaleAmounts } from '../domain/uses.js';
 import { buildDiff } from '../domain/diff.js';
+
+// The step number a cross-reference names — one place, so 03-10's derived
+// display numbering only has to change here, not at every inline `.n`.
+function stepDisplayNumber(step) {
+  return step.n;
+}
+
+function joinWithAnd(items) {
+  if (items.length <= 1) return items[0] ?? '';
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+}
+
+// The coverage cue (route-recipe-version.md § 3, D-UAT-3): stated as a fact
+// in the maker's own vocabulary, never as reassurance or an instruction.
+// Joins rows and steps the way the removed-row flag beside it joins its
+// own, so the cross-flag sentences on this page read as one family. Rows
+// sharing the identical set of covering steps are named together, once.
+function coverageSentence(coveredRows) {
+  const groups = [];
+  for (const entry of coveredRows) {
+    const key = entry.coveringSteps.map((step) => stepDisplayNumber(step)).join(',');
+    const group = groups.find((candidate) => candidate.key === key);
+    if (group) group.rows.push(entry);
+    else groups.push({ key, rows: [entry], coveringSteps: entry.coveringSteps });
+  }
+  return groups
+    .map((group) => {
+      const rowNames = joinWithAnd(group.rows.map((entry) => entry.ingredientName));
+      const stepNames = joinWithAnd(group.coveringSteps.map((step) => `step ${stepDisplayNumber(step)}`));
+      const verb = group.rows.length > 1 ? 'are' : 'is';
+      return `${rowNames} ${verb} still used by ${stepNames}`;
+    })
+    .join('; ');
+}
 
 // The numbered method, in the sheet's order. The step number sits in a
 // fixed margin column so a Phase 2 batch record can point at exactly one
@@ -64,6 +98,7 @@ export function Method({
             const draftStep = draftVersion.method.find((candidate) => candidate.n === step.n);
             const stepDiff = activeDiff.steps.find((candidate) => candidate.n === step.n);
             const flaggedRows = removedRowsUsedBy(draftVersion, draftStep);
+            const coveredRows = coveredRowsFor(draftVersion, draftStep);
             const staleEntry = activeStaleSteps.find((entry) => entry.n === step.n);
             // Driven only by the two fields this paragraph actually shows
             // (03-09, T-03-52). Unlike GramsCell's forced strike on a
@@ -200,11 +235,15 @@ export function Method({
                   </fieldset>
 
                   {/* The removed-row cross-flag (route-recipe-version.md
-                      § 3): beneath the step, naming the removed row(s) it
-                      still names in its own uses list, with one
+                      § 3): beneath an ACTIVE step, naming the removed
+                      row(s) it still names in its own uses list, with one
                       "remove this step" control. One tap, that step only —
-                      removal never cascades. */}
-                  {flaggedRows.length > 0 && (
+                      removal never cascades. Gated on the step not itself
+                      being removed: on an already-removed step this
+                      control's "remove this step" label lied — the same
+                      handler restores (T-03-53) — so an already-removed
+                      step gets the coverage cue in its place, below. */}
+                  {!draftStep.removed && flaggedRows.length > 0 && (
                     <p className="method-step__flag">
                       {`uses ${flaggedRows.map((row) => row.ingredientName).join(', ')}, which ${
                         flaggedRows.length > 1 ? 'are' : 'is'
@@ -213,6 +252,18 @@ export function Method({
                         remove this step
                       </button>
                     </p>
+                  )}
+
+                  {/* The coverage cue (D-UAT-3): on a removed step, names
+                      the rows it used that another step still covers, so
+                      correct silence (nothing orphaned) is legible rather
+                      than indistinguishable from a broken flag. The rows
+                      this removal DID orphan already announce themselves
+                      beside their own names in the ingredient table — this
+                      cue does not repeat them, and renders nothing when
+                      the step covers none of its own rows. */}
+                  {draftStep.removed && coveredRows.length > 0 && (
+                    <p className="method-step__flag">{coverageSentence(coveredRows)}</p>
                   )}
 
                   <button type="button" onClick={() => onTogglePenStepRemoved(step.n)}>

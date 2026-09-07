@@ -198,6 +198,37 @@ describe('Headnote — the show-changes toggle (D-02, D-10)', () => {
   });
 });
 
+describe('Headnote — the one-pen interlock reads openPen, not mode (D-10, D-UAT-1)', () => {
+  it('disables Develop the next version and states its reason while a batch is being recorded — the fifth leak, where the control renders a bare disabled attribute today', () => {
+    const markup = renderHeadnote({
+      mode: 'reading',
+      openPen: 'record',
+      penReason: 'a batch is being recorded',
+    });
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Develop the next version<\/button>/);
+    expect(markup).toContain('a batch is being recorded');
+  });
+
+  it('disables Develop the next version while a tasting is being written — the Develop half of RC2', () => {
+    const markup = renderHeadnote({
+      mode: 'reading',
+      openPen: 'tasting',
+      penReason: 'a tasting is being written',
+    });
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Develop the next version<\/button>/);
+  });
+
+  it('renders no disabled attribute and no reason line with no pen open', () => {
+    const markup = renderHeadnote({
+      mode: 'reading',
+      openPen: null,
+      penReason: null,
+    });
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Develop the next version<\/button>/);
+    expect(markup).not.toContain('unavailable while');
+  });
+});
+
 describe('Headnote — a figure outside its band changes nothing about the ceremony', () => {
   it('renders exactly the same controls whether the version is inside or outside its bands', () => {
     const outOfBand = {

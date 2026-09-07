@@ -20,6 +20,8 @@ function renderMargin(props) {
       openBatch={null}
       mode="reading"
       draft={null}
+      openPen={null}
+      penReason={null}
       onStartRecording={noop}
       onStartAmending={noop}
       onChangeChurnField={noop}
@@ -179,5 +181,63 @@ describe('BatchMargin — the tasting form can be abandoned (D-1 through D-4)', 
     });
     expect(markup).toContain('Add a tasting');
     expect(markup).not.toContain('Save tasting');
+  });
+});
+
+// The one-pen interlock (D-10, D-UAT-1), asserted where the diagnosis found
+// it missing: RC2 is that Add a tasting had no disabled condition at all,
+// and this component's own test file only ever asserted its presence
+// (line 180's ancestor). openPen is the one derivation every opener here
+// reads; none of them tests `mode` or `tastingDraft` directly any more.
+describe('BatchMargin — the one-pen interlock reads openPen, not mode', () => {
+  it('disables Amend, Record another batch and Add a tasting while the plan pen is open — this is the assertion that would have caught RC2', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      openPen: 'plan',
+      penReason: 'the plan is being developed',
+    });
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Amend<\/button>/);
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Record another batch<\/button>/);
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Add a tasting<\/button>/);
+  });
+
+  it('disables Amend and Record another batch while a tasting is being written, even though the tasting form itself is not rendered here', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: null,
+      openPen: 'tasting',
+      penReason: 'a tasting is being written',
+    });
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Amend<\/button>/);
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Record another batch<\/button>/);
+  });
+
+  it('disables none of the three with no pen open', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      openPen: null,
+      penReason: null,
+    });
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Amend<\/button>/);
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Record another batch<\/button>/);
+    expect(markup).not.toMatch(/disabled=""[^>]*>Add a tasting<\/button>/);
+  });
+
+  it('disables Record a batch in the no-batch branch while the plan pen is open, and states the reason', () => {
+    const markup = renderMargin({
+      openBatch: null,
+      batches: [],
+      mode: 'reading',
+      openPen: 'plan',
+      penReason: 'the plan is being developed',
+    });
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Record a batch<\/button>/);
+    expect(markup).toContain('the plan is being developed');
   });
 });

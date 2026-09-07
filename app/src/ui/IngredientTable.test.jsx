@@ -7,6 +7,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { IngredientTable } from './IngredientTable.jsx';
 import { buildDiff } from '../domain/diff.js';
+import { displayNumbers } from '../domain/stepNumbers.js';
 
 function makeRow(id, name, grams, step, overrides = {}) {
   return {
@@ -211,5 +212,211 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
 
     expect(markup).not.toContain('>As made<');
     assertCellCountsAgree(markup);
+  });
+});
+
+// The step column, the selector, the flags and the accessible names all
+// name a step by the derived display number (03-10, G-03-3 S3), never the
+// stored key. A three-step method — with the second step removed either
+// at baseline (pre-existing) or during the pen session — is enough to
+// prove position and key have diverged.
+function makeThreeStepMethod() {
+  return [
+    { n: 1, leadIn: 'Warm', instruction: 'Warm the milk.' },
+    { n: 2, leadIn: 'Cool', instruction: 'Cool it down.' },
+    { n: 3, leadIn: 'Churn', instruction: 'Churn until set.' },
+  ];
+}
+
+describe('IngredientTable — the selector keeps a removed step in its list (G-03-3 S3, 03-10)', () => {
+  it("renders an option matching a row's own removed allocation, disabled and marked removed, carrying its pre-removal number", () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 2)]); // allocated to step 2
+    version.method = makeThreeStepMethod();
+    const draftVersion = structuredClone(version);
+    draftVersion.method[1].removed = true; // step 2 removed in the pen
+    const penDraft = { rows: { a: { grams: '10', step: 2, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method); // 1->1, 3->2
+    const baselineStepNumbers = displayNumbers(version.method); // 1->1, 2->2, 3->3
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    // The removed step's own option: present, disabled, carrying the
+    // number it had before removal (2) and the word "removed" — the whole
+    // fix for S3, since the row's bound value (2) now has a home.
+    expect(markup).toMatch(/<option value="2" disabled(="")?[^>]*>2\. Cool \(removed\)<\/option>/);
+    // React marks the option matching the select's own value as selected,
+    // even though it is disabled — the control shows the row's own
+    // allocation, never falling back to the first non-disabled option.
+    expect(markup).toMatch(/<option value="2"[^>]*selected(="")?[^>]*>/);
+  });
+
+  it("carries display numbers on the active options' labels, not the stored key", () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
+    version.method = makeThreeStepMethod();
+    const draftVersion = structuredClone(version);
+    draftVersion.method[1].removed = true; // step 2 removed; step 3 is now position 2
+    const penDraft = { rows: { a: { grams: '10', step: 1, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method);
+    const baselineStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    expect(markup).toContain('>2. Churn<');
+    expect(markup).not.toContain('>3. Churn<');
+  });
+
+  it("writes the stored key, not the display position, when a different step is chosen — every option's value is the stored key", () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
+    version.method = makeThreeStepMethod();
+    const draftVersion = structuredClone(version);
+    draftVersion.method[1].removed = true;
+    const penDraft = { rows: { a: { grams: '10', step: 1, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method);
+    const baselineStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    expect(markup).toContain('<option value="1"');
+    expect(markup).toContain('<option value="2"');
+    expect(markup).toContain('<option value="3"');
+  });
+});
+
+describe('IngredientTable — the step column resolves references through the maps (03-10)', () => {
+  it('reads unallocated for a row named only by a removed step, the surviving reference alone for a split row, and both joined for two survivors', () => {
+    const version = makeVersion([
+      makeRow('a', 'Row A', 10, 2), // allocated only to the removed step 2
+      makeRow('b', 'Row B', 10, 2, { splitStep: 3 }), // split across the removed step and surviving step 3
+      makeRow('c', 'Row C', 10, 1, { splitStep: 3 }), // two surviving steps
+    ]);
+    version.method = makeThreeStepMethod();
+    version.method[1].removed = true; // step 2 already removed in this reading
+    const currentStepNumbers = displayNumbers(version.method); // 1->1, 3->2
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" currentStepNumbers={currentStepNumbers} />,
+    );
+
+    const stepCells = [
+      ...sectionMarkup(markup, 'tbody').matchAll(/<td class="ingredient-table__col-step">([^<]*)<\/td>/g),
+    ].map((match) => match[1]);
+    expect(stepCells).toEqual(['unallocated', '2', '1 + 2']);
+  });
+
+  it("shows the baseline's display number, not the stored key, in the pen's struck baseline beside a changed selector", () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 3)]); // allocated to step 3
+    version.method = makeThreeStepMethod();
+    version.method[0].removed = true; // step 1 already removed at baseline — step 3's baseline position is 2
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: { grams: '10', step: 2, removed: false } }, asMade: {} }; // reallocated to step 2
+    const currentStepNumbers = displayNumbers(draftVersion.method);
+    const baselineStepNumbers = displayNumbers(version.method); // 2->1, 3->2
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    expect(markup).toContain('<span class="struck-value">2</span>');
+    expect(markup).not.toContain('<span class="struck-value">3</span>');
+  });
+
+  it("in show-changes, shows the parent's display number struck before the child's own, and the accessible name reads the same two numbers", () => {
+    const parentVersion = makeVersion([makeRow('a', 'Row A', 10, 2)]);
+    parentVersion.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
+      { n: 3, leadIn: 'Three', instruction: 'Do three.' },
+      { n: 4, leadIn: 'Four', instruction: 'Do four.' },
+    ];
+    const currentVersion = structuredClone(parentVersion);
+    currentVersion.method[0].removed = true; // step 1 removed in the child
+    currentVersion.rows[0].step = 4; // reallocated to step 4 in the child
+
+    const diff = buildDiff(currentVersion, parentVersion);
+    const currentStepNumbers = displayNumbers(currentVersion.method); // 2->1, 3->2, 4->3
+    const baselineStepNumbers = displayNumbers(parentVersion.method); // 1->1, 2->2, 3->3, 4->4
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={currentVersion.rows}
+        diff={diff}
+        showingChanges
+        mode="reading"
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    expect(markup).toContain('<span class="struck-value">2</span>3');
+    expect(markup).toContain('was step 2, now step 3');
+  });
+});
+
+describe('IngredientTable — the orphaned-row flag names a removed step by its pre-removal number (03-10)', () => {
+  it("names the causing step by the number it had before removal, not its stored key", () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 3)]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.', removed: true }, // already removed at baseline
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', uses: ['a'] }, // will be removed this session
+      { n: 3, leadIn: 'Three', instruction: 'Do three.' },
+    ];
+    const draftVersion = structuredClone(version);
+    draftVersion.method[1].removed = true; // step 2 removed — orphans row a
+    const penDraft = { rows: { a: { grams: '10', step: 3, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method); // 3->1
+    const baselineStepNumbers = displayNumbers(version.method); // 2->1, 3->2
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    expect(markup).toContain('step 1, Two');
+    expect(markup).not.toContain('step 2, Two');
   });
 });

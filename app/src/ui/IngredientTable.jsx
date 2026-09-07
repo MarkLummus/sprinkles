@@ -1,7 +1,45 @@
 import { computeBalance, formatShareOfBatch, formatGrams } from '../domain/composition.js';
 import { hasAsMade, asMadeFor, asMadeTotals } from '../domain/batch.js';
-import { activeRows, activeSteps } from '../domain/rows.js';
+import { activeRows } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
+import { displayNumberOf } from '../domain/stepNumbers.js';
+
+// The one place a stored step key resolves to the number the reader sees
+// (03-10): its position in the current map if it has one, otherwise its
+// position in the baseline map — the number it had before it was removed
+// — otherwise null. Every step reference in this file (the selector's
+// options, the struck baseline, the show-changes from-and-to, both
+// accessible-name builders, and the orphaned-row flag) reads through this
+// one function so none of them can disagree.
+function resolveStepNumber(n, currentMap, baselineMap) {
+  const current = safeDisplayNumberOf(currentMap, n);
+  if (current != null) return current;
+  return safeDisplayNumberOf(baselineMap, n);
+}
+
+// A "was"/"now" or struck-baseline site names a step from exactly one
+// side of the comparison (the baseline it was, or the current it is now)
+// — never blended with the other side's numbering the way
+// resolveStepNumber's fallback is. A null map (no baseline/current state
+// applies) reads as no number, never a thrown error.
+function safeDisplayNumberOf(map, n) {
+  return map ? displayNumberOf(map, n) : null;
+}
+
+// The step column's own rendering rule (remap-on-read, not migration): a
+// row's one or two step references, resolved through the maps and joined
+// as they are joined today; the single word `unallocated` when neither
+// resolves — the dangling number a step's removal used to leave behind.
+function formatStepReferences(currentMap, baselineMap, primary, splitStep) {
+  const parts = [];
+  const primaryNumber = resolveStepNumber(primary, currentMap, baselineMap);
+  if (primaryNumber != null) parts.push(primaryNumber);
+  if (splitStep != null) {
+    const splitNumber = resolveStepNumber(splitStep, currentMap, baselineMap);
+    if (splitNumber != null) parts.push(splitNumber);
+  }
+  return parts.length > 0 ? parts.join(' + ') : 'unallocated';
+}
 
 // A row's weakest basis is the worst basis across every composition field it
 // contributes a non-zero amount of — the same stated -> derived -> estimated
@@ -86,31 +124,50 @@ function GramsCell({ row, mode, penDraft, onChangePenGrams }) {
   );
 }
 
-// The step-allocation cell (route-recipe-version.md § 3, § 6): a <select>
-// over the draft version's non-removed steps while developing, bound to
-// the pen's own value for the row. A row with a splitStep (whole milk,
-// sucrose each go into two steps) keeps both — only the primary
-// allocation is a choice here; splitStep is rendered untouched, since
-// editing a split allocation is out of this milestone's scope and the row
-// must not lose its second step by being edited.
-function StepCell({ row, penDraft, stepOptions, onChangePenRowStep }) {
+// The step-allocation cell (route-recipe-version.md § 3, § 6, G-03-3 S3):
+// a <select> over EVERY step of the draft version, not only the active
+// ones (03-10) — a row's bound value must always match an option, or
+// React falls back to selecting the first non-disabled option and shows
+// the maker a step the data does not hold. A removed step's own option
+// stays present, disabled, carries the number it had before the removal,
+// and says so in words; option VALUES are always the stored keys, since
+// the change handler, the row's own reference, the comparison, the pen's
+// handlers and a batch's step changes all match on them — a value that
+// were a position would break every one of them. A row with a splitStep
+// (whole milk, sucrose each go into two steps) keeps both — only the
+// primary allocation is a choice here; splitStep is rendered untouched,
+// since editing a split allocation is out of this milestone's scope, but
+// its own number is still resolved through the maps like every other
+// reference.
+function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStepNumbers, onChangePenRowStep }) {
   const draftRow = penDraft.rows[row.id];
   const changed = draftRow.removed || draftRow.step !== row.step;
+  const baselineStepDisplay = safeDisplayNumberOf(baselineStepNumbers, row.step);
+  const splitStepDisplay =
+    row.splitStep != null ? resolveStepNumber(row.splitStep, currentStepNumbers, baselineStepNumbers) : null;
   return (
     <span className="ingredient-table__step-cell">
-      {changed && <span className="struck-value">{row.step}</span>}
+      {changed && <span className="struck-value">{baselineStepDisplay}</span>}
       <select
         className="ink-field"
         value={draftRow.step}
         aria-label={`${row.ingredientName}, step`}
         onChange={(event) => onChangePenRowStep(row.id, Number(event.target.value))}
       >
-        {stepOptions.map((step) => (
-          <option key={step.n} value={step.n}>{`${step.n}. ${step.leadIn}`}</option>
-        ))}
+        {stepOptions.map((step) => {
+          const displayNumber = resolveStepNumber(step.n, currentStepNumbers, baselineStepNumbers);
+          const label = step.removed
+            ? `${displayNumber != null ? `${displayNumber}. ` : ''}${step.leadIn} (removed)`
+            : `${displayNumber}. ${step.leadIn}`;
+          return (
+            <option key={step.n} value={step.n} disabled={step.removed}>
+              {label}
+            </option>
+          );
+        })}
       </select>
       {row.splitStep != null && (
-        <span className="ink-text ingredient-table__split-step">{` + ${row.splitStep}`}</span>
+        <span className="ink-text ingredient-table__split-step">{` + ${splitStepDisplay}`}</span>
       )}
     </span>
   );
@@ -157,12 +214,18 @@ function DiffGramsCell({ rowDiff }) {
   );
 }
 
-function DiffStepCell({ rowDiff }) {
+// The show-changes from-and-to (03-10): the parent's display number struck
+// before the child's own — each read from the map matching the side it
+// names, never blended, so the strike can never disagree with the margin
+// beside it.
+function DiffStepCell({ rowDiff, currentStepNumbers, baselineStepNumbers }) {
   const changed = rowDiff.removed || rowDiff.stepChanged;
+  const stepFromDisplay = safeDisplayNumberOf(baselineStepNumbers, rowDiff.stepFrom);
+  const stepToDisplay = safeDisplayNumberOf(currentStepNumbers, rowDiff.stepTo);
   return (
     <>
-      {changed && rowDiff.stepFrom != null && <span className="struck-value">{rowDiff.stepFrom}</span>}
-      {rowDiff.stepTo}
+      {changed && stepFromDisplay != null && <span className="struck-value">{stepFromDisplay}</span>}
+      {stepToDisplay}
     </>
   );
 }
@@ -188,7 +251,16 @@ function DiffShareCell({ rowDiff }) {
 // rowAccessibleLabel above, `row` here is the CURRENT (child) version's own
 // row — its own grams/step already equal rowDiff's "to" values — so the
 // phrasing reads directly off the diff descriptor, never off `row` itself.
-function rowDiffAccessibleLabel(row, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue) {
+function rowDiffAccessibleLabel(
+  row,
+  rowDiff,
+  dataFlag,
+  isMarked,
+  markedFigureLabel,
+  asMadeValue,
+  currentStepNumbers,
+  baselineStepNumbers,
+) {
   const gramsPhrase =
     (rowDiff.removed || rowDiff.gramsChanged) && rowDiff.gramsFrom != null
       ? `was ${rowDiff.gramsFrom} g, now ${rowDiff.gramsTo} g`
@@ -198,7 +270,9 @@ function rowDiffAccessibleLabel(row, rowDiff, dataFlag, isMarked, markedFigureLa
     parts.push(`was ${rowDiff.shareFrom}, now ${rowDiff.shareTo}`);
   }
   if ((rowDiff.removed || rowDiff.stepChanged) && rowDiff.stepFrom != null) {
-    parts.push(`was step ${rowDiff.stepFrom}, now step ${rowDiff.stepTo}`);
+    const stepFromDisplay = safeDisplayNumberOf(baselineStepNumbers, rowDiff.stepFrom);
+    const stepToDisplay = safeDisplayNumberOf(currentStepNumbers, rowDiff.stepTo);
+    parts.push(`was step ${stepFromDisplay}, now step ${stepToDisplay}`);
   }
   if (dataFlag) parts.push(dataFlag);
   if (isMarked) parts.push(`contributing to ${markedFigureLabel}`);
@@ -221,14 +295,21 @@ function removedStepsUsing(draftVersion, rowId) {
 }
 
 // The orphaned-row flag (route-recipe-version.md § 3): beside the row's
-// name when orphanedRows names it, naming the removed step(s) by number
-// and lead-in, with one "remove this row" control. Tapping it removes the
-// row — one tap, nothing else. It clears the moment the step that caused
-// it is restored, because it is derived, not stored.
-function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
+// name when orphanedRows names it, naming the removed step(s) by the
+// number they had before the removal and lead-in — the fallback
+// resolveStepNumber always takes for a removed step, since it never has a
+// current position — with one "remove this row" control. Where a causing
+// step has no position in either version (already removed when the pen
+// opened), it is named by its lead-in alone. Tapping it removes the row —
+// one tap, nothing else. It clears the moment the step that caused it is
+// restored, because it is derived, not stored.
+function OrphanedRowFlag({ row, draftVersion, currentStepNumbers, baselineStepNumbers, onTogglePenRowRemoved }) {
   const causingSteps = removedStepsUsing(draftVersion, row.id);
   if (causingSteps.length === 0) return null;
-  const descriptions = causingSteps.map((step) => `step ${step.n}, ${step.leadIn}`);
+  const descriptions = causingSteps.map((step) => {
+    const displayNumber = resolveStepNumber(step.n, currentStepNumbers, baselineStepNumbers);
+    return displayNumber != null ? `step ${displayNumber}, ${step.leadIn}` : step.leadIn;
+  });
   const joined =
     descriptions.length === 1
       ? descriptions[0]
@@ -290,6 +371,13 @@ export function IngredientTable({
   draft = null,
   penDraft = null,
   openBatch = null,
+  // The two maps RecipePage computes once through domain/stepNumbers.js
+  // (03-10), the same pair Method reads: currentStepNumbers from the
+  // method the page is showing, baselineStepNumbers from the record a
+  // struck or removed step's number comes from — null wherever neither
+  // the pen nor show-changes applies.
+  currentStepNumbers = null,
+  baselineStepNumbers = null,
   onChangeAsMade = () => {},
   onChangePenGrams = () => {},
   onChangePenRowStep = () => {},
@@ -313,7 +401,11 @@ export function IngredientTable({
   const currentActiveRows = isDeveloping ? activeRows(draftVersion) : activeRowsOnly;
   const currentBalance = isDeveloping ? computeBalance(currentActiveRows) : baselineBalance;
   const currentMass = currentBalance ? currentBalance.mass : 0;
-  const stepOptions = isDeveloping ? activeSteps(draftVersion) : [];
+  // Every step of the draft version, not only the active ones (03-10,
+  // G-03-3 S3): a removed step's own option must stay in the list,
+  // disabled, so a row still allocated to it always has a matching option
+  // — see StepCell's own comment for why.
+  const stepOptions = isDeveloping ? draftVersion.method : [];
   const orphanedRowIds = isDeveloping ? new Set(orphanedRows(draftVersion).map((row) => row.id)) : new Set();
 
   // The as-made total appears only while an as-made layer is showing —
@@ -366,11 +458,22 @@ export function IngredientTable({
 
             if (isShowingChanges) {
               const rowDiff = diff.rows.find((entry) => entry.id === row.id);
+              const splitStepDisplay =
+                row.splitStep != null ? resolveStepNumber(row.splitStep, currentStepNumbers, baselineStepNumbers) : null;
               return (
                 <tr
                   key={row.id}
                   className={isMarked ? 'is-marked' : undefined}
-                  aria-label={rowDiffAccessibleLabel(row, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
+                  aria-label={rowDiffAccessibleLabel(
+                    row,
+                    rowDiff,
+                    dataFlag,
+                    isMarked,
+                    markedFigureLabel,
+                    asMadeValue,
+                    currentStepNumbers,
+                    baselineStepNumbers,
+                  )}
                 >
                   <td className="ingredient-table__col-name">
                     {rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
@@ -387,8 +490,8 @@ export function IngredientTable({
                     <DiffShareCell rowDiff={rowDiff} />
                   </td>
                   <td className="ingredient-table__col-step">
-                    <DiffStepCell rowDiff={rowDiff} />
-                    {row.splitStep != null && ` + ${row.splitStep}`}
+                    <DiffStepCell rowDiff={rowDiff} currentStepNumbers={currentStepNumbers} baselineStepNumbers={baselineStepNumbers} />
+                    {row.splitStep != null && ` + ${splitStepDisplay}`}
                   </td>
                   <td className="ingredient-table__col-data">{dataFlag}</td>
                 </tr>
@@ -413,7 +516,7 @@ export function IngredientTable({
                   )}
                   <td className="ingredient-table__col-numeric">{baselineShare}</td>
                   <td className="ingredient-table__col-step">
-                    {row.splitStep ? `${row.step} + ${row.splitStep}` : row.step}
+                    {formatStepReferences(currentStepNumbers, baselineStepNumbers, row.step, row.splitStep)}
                   </td>
                   <td className="ingredient-table__col-data">{dataFlag}</td>
                 </tr>
@@ -430,7 +533,13 @@ export function IngredientTable({
             const currentShare = removed ? null : formatShareOfBatch(currentGramsValue, currentMass);
             const changedGrams = draftRow.grams !== String(row.grams) ? draftRow.grams : null;
             const changedShare = !removed && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
-            const changedStep = draftRow.step !== row.step ? { from: row.step, to: draftRow.step } : null;
+            const changedStep =
+              draftRow.step !== row.step
+                ? {
+                    from: safeDisplayNumberOf(baselineStepNumbers, row.step),
+                    to: safeDisplayNumberOf(currentStepNumbers, draftRow.step),
+                  }
+                : null;
             // orphanedRows never names an already-removed row (uses.js), so
             // this flag only ever applies to an active row here.
             const flagged = orphanedRowIds.has(row.id);
@@ -454,7 +563,13 @@ export function IngredientTable({
                 <td className="ingredient-table__col-name">
                   {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
                   {flagged && (
-                    <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
+                    <OrphanedRowFlag
+                      row={row}
+                      draftVersion={draftVersion}
+                      currentStepNumbers={currentStepNumbers}
+                      baselineStepNumbers={baselineStepNumbers}
+                      onTogglePenRowRemoved={onTogglePenRowRemoved}
+                    />
                   )}
                 </td>
                 <td className="ingredient-table__col-numeric">
@@ -473,7 +588,14 @@ export function IngredientTable({
                   )}
                 </td>
                 <td className="ingredient-table__col-step">
-                  <StepCell row={row} penDraft={penDraft} stepOptions={stepOptions} onChangePenRowStep={onChangePenRowStep} />
+                  <StepCell
+                    row={row}
+                    penDraft={penDraft}
+                    stepOptions={stepOptions}
+                    currentStepNumbers={currentStepNumbers}
+                    baselineStepNumbers={baselineStepNumbers}
+                    onChangePenRowStep={onChangePenRowStep}
+                  />
                 </td>
                 <td className="ingredient-table__col-data">{dataFlag}</td>
                 <td className="ingredient-table__col-remove">

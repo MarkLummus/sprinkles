@@ -996,6 +996,8 @@ export function RecipePage() {
               draft={draft}
               penDraft={penDraft}
               openBatch={openBatch}
+              currentStepNumbers={currentStepNumbers}
+              baselineStepNumbers={baselineStepNumbers}
               onChangeAsMade={handleChangeAsMade}
               onChangePenGrams={handleChangePenGrams}
               onChangePenRowStep={handleChangePenRowStep}

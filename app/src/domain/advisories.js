@@ -11,6 +11,7 @@
 import { computeBalance, formatGrams } from './composition.js';
 import { buildFigures } from './figures.js';
 import { activeRows, activeSteps } from './rows.js';
+import { displayNumbers, displayNumberOf } from './stepNumbers.js';
 
 // A target's value is free text with no grammar (method[].targets[].value).
 // Only a string that is nothing but a leading decimal number followed by
@@ -105,13 +106,16 @@ function findHydrationStep(steps, neededC) {
 }
 
 /**
- * hydrationAdvisory(rows, steps, process) -> { key, words, basis } | null.
- * Names every active gum whose recorded hydration temperature exceeds the
- * version's pasteurisation hold, and — when one can be read — the first
- * active step whose typed target reaches it. A target the parser cannot
- * read degrades to no step clause rather than throwing or guessing.
+ * hydrationAdvisory(rows, steps, process, stepNumbers) -> { key, words,
+ * basis } | null. Names every active gum whose recorded hydration
+ * temperature exceeds the version's pasteurisation hold, and — when one
+ * can be read — the first active step whose typed target reaches it,
+ * named by the number the reader sees (03-10), not its stored key. A
+ * target the parser cannot read degrades to no step clause rather than
+ * throwing or guessing. `matched.step` is always one of `steps`
+ * (activeSteps), so it always holds a position in `stepNumbers`.
  */
-function hydrationAdvisory(rows, steps, process) {
+function hydrationAdvisory(rows, steps, process, stepNumbers) {
   const hold = process.pasteuriseC;
   const unmet = rows.filter(
     (row) => row.grams > 0 && row.ingredient.hydrationC != null && row.ingredient.hydrationC > hold,
@@ -124,7 +128,7 @@ function hydrationAdvisory(rows, steps, process) {
   const names = unmet.map((row) => `${row.ingredientName} hydrates at ${row.ingredient.hydrationC} °C`).join(' and ');
 
   let words = `${names}, above the ${hold} °C pasteurisation hold.`;
-  if (matched) words += ` Step ${matched.step.n} targets ${matched.target.value}.`;
+  if (matched) words += ` Step ${displayNumberOf(stepNumbers, matched.step.n)} targets ${matched.target.value}.`;
 
   let basis = "the ingredient's recorded hydration temperature and the version's pasteurisation setting";
   basis += matched ? "; the step's typed target." : '.';
@@ -167,10 +171,12 @@ export function buildAdvisories(version) {
   const balance = computeBalance(rows);
   if (!balance) return [];
 
+  const stepNumbers = displayNumbers(version.method);
+
   return [
     subScaleAdvisory(rows, version.equipment),
     ultraPasteurisedAdvisory(rows, balance.mass),
-    hydrationAdvisory(rows, steps, version.process),
+    hydrationAdvisory(rows, steps, version.process, stepNumbers),
     estimatedExposureAdvisory(rows, version.targets),
   ].filter(Boolean);
 }

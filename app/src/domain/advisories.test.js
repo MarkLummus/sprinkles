@@ -155,6 +155,19 @@ describe('buildAdvisories — gum hydration against the hold', () => {
     const advisory = buildAdvisories(version).find((a) => a.key === 'hydration');
     expect(advisory).toBeUndefined();
   });
+
+  // 03-10, G-03-6: on the unmodified seed above, position and stored key
+  // coincide — exactly why the pinned "Step 2" assertion passed while the
+  // dangling-key defect was live. This is the regression that assertion
+  // could not catch: removing an earlier step shifts step 2's position to
+  // 1, and the clause must follow the position, not the stored key.
+  it('names the same step at its new position when an earlier step is removed', () => {
+    const version = clone();
+    findStep(version, 1).removed = true;
+    const advisory = buildAdvisories(version).find((a) => a.key === 'hydration');
+    expect(advisory.words).toContain('Step 1');
+    expect(advisory.words).not.toContain('Step 2');
+  });
 });
 
 describe('buildAdvisories — estimated-data exposure', () => {

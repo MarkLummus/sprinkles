@@ -111,7 +111,29 @@ Plans:
   4. Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure.
   5. Structural advisories show the basis they were computed from — sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, estimated-data exposure — and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success.
 
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Tracer: the pen opens on the churned version, one changed gram saves as a child version at its own URL, and the store moves under it (database version 3, the shared lift, the store file, the seed's uses lists)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — The pen in full: the comparison and the uses cross-flags as domain modules, then every row's amount, allocation and presence and every step's words, targets, uses and presence, with the inherited-note marker
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 03-03-PLAN.md — The ceremony in the headnote (version line, reason, citation, the two saves), the lineage line, the version strip, one row per recipe on the list, and the running head as the link home
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 03-04-PLAN.md — Show changes: the addressable state, the live parent read, and the struck-beside grammar in the table, the rules with their hollow ticks, the method and the notes
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 03-05-PLAN.md — The four derived structural advisories with their basis lines, in the margin's block between the batch record and the authored notes
+
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the version editing and comparison surface
 **Phase notes**: Balance is an assessment under assumptions, never a gate (D06). Batch size stays 800 g and ingredient handling stays within the recipe's existing twelve rows; scaling and library editing are later milestones.
@@ -155,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
-| 3. Develop the next version | 0/TBD | Not started | - |
+| 3. Develop the next version | 0/5 | Planned      | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

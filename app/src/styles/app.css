@@ -846,6 +846,18 @@ body {
   margin: var(--gap-hair) 0 0;
 }
 
+/* The words half of D-10: a disabled control states its reason, never
+   only appears dim. Carries the same treatment as .batch-margin__hint
+   above, but named for the pen layer rather than any one region — the
+   batch margin's three regions and the headnote's Develop control all
+   render this sentence now that one derivation (openPen) decides
+   availability everywhere (D-UAT-1). */
+.pen-hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
 /* The nine-stop mark control (D-16, route-recipe-batch.md § 6). The
    checked stop is distinguished by weight and outline, never by hue
    alone — every rule below reads through an existing token. */

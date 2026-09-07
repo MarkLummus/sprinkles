@@ -18,6 +18,8 @@ export function Headnote({
   parentVersion = null,
   showingChanges = false,
   blockedMessage,
+  openPen = null,
+  penReason = null,
   onChangeChurnDate,
   onStartDeveloping,
   onCancelDeveloping,
@@ -201,11 +203,18 @@ export function Headnote({
         </>
       )}
       {/* D-01: this wording on every version, churned or not — disabled
-          while mode === 'recording' so the two pens stay mutually
-          exclusive (03-CONTEXT.md D-10, RESEARCH.md Pitfall 4). */}
-      <button type="button" ref={developButtonRef} onClick={onStartDeveloping} disabled={mode === 'recording'}>
+          whenever any pen is open (03-CONTEXT.md D-10, D-UAT-1,
+          RESEARCH.md Pitfall 4), reading openPen rather than the mode this
+          control happens to know about. The existing blockedMessage
+          channel cannot serve here: it renders only inside the developing
+          branch above, which by definition is not showing when this
+          control is — so the reason is stated beside it directly. This is
+          the fifth leak: the control used to disable correctly while
+          reading nothing but a bare disabled attribute. */}
+      <button type="button" ref={developButtonRef} onClick={onStartDeveloping} disabled={openPen !== null}>
         Develop the next version
       </button>
+      {openPen && <p className="pen-hint">Developing the next version is unavailable while {penReason}.</p>}
       <p className="headnote__prose">{version.headnote}</p>
     </header>
   );

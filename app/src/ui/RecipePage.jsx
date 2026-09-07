@@ -72,6 +72,34 @@ function isPenDraftDirty(mode, penDraft, version) {
   });
 }
 
+// "A pen is open" used to live in two unrelated states — `mode`
+// ('reading'|'recording'|'developing') and `tastingDraft` (null|object) —
+// and every disabled condition in Headnote and BatchMargin hand-rolled its
+// own subset of those two. Neither could see the tasting pen at all, since
+// `tastingDraft` was never folded into `mode` or threaded to Headnote
+// (D-UAT-1). This is the one derivation: `openPen` names which of the four
+// pens — `plan`, `record`, `amend`, `tasting` — currently holds the page,
+// or is `null` when none does; `reason` is the words-form counterpart D-10
+// requires beside every control that pen disables ("never just visually
+// implied"). An if-chain, not a lookup table (T-02-32's discipline against
+// a bare bracket read against a key), so the four reason strings stay
+// visible at the site that decides them.
+export function derivePenState({ mode, amendingBatchId, tastingDraft }) {
+  if (mode === 'developing') {
+    return { openPen: 'plan', reason: 'the plan is being developed' };
+  }
+  if (mode === 'recording') {
+    if (amendingBatchId) {
+      return { openPen: 'amend', reason: 'a batch is being amended' };
+    }
+    return { openPen: 'record', reason: 'a batch is being recorded' };
+  }
+  if (tastingDraft) {
+    return { openPen: 'tasting', reason: 'a tasting is being written' };
+  }
+  return { openPen: null, reason: null };
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The margin's derived-advisories block (FORM2-02)
 // renders nothing visible when the version has none — no placeholder text.
@@ -102,8 +130,10 @@ export function RecipePage() {
   const [mode, setMode] = useState('reading');
   const [draft, setDraft] = useState(null);
   // The in-progress tasting's own draft state, alongside the churn draft
-  // above (task 1). A tasting is added to an already-saved batch, so this
-  // is independent of `mode`/`draft`, which are the churn recording state.
+  // above (task 1). A tasting is added to an already-saved batch, so
+  // setting it never touches `mode`/`draft`, the churn recording state —
+  // but it is no longer treated as separate from them: derivePenState
+  // above folds all three into the one "a pen is open" fact (D-UAT-1).
   const [tastingDraft, setTastingDraft] = useState(null);
   // Non-null while `mode === 'recording'` means the pen layer is amending
   // this existing batch's churn fields, rather than recording a new one
@@ -244,6 +274,11 @@ export function RecipePage() {
       </>
     );
   }
+
+  // The one call site (D-UAT-1): every control that disables while a pen
+  // is open reads openPen/penReason from here, never mode or tastingDraft
+  // directly.
+  const { openPen, reason: penReason } = derivePenState({ mode, amendingBatchId, tastingDraft });
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -532,8 +567,9 @@ export function RecipePage() {
   // Seeds penDraft from the version the pen opened on — grams as strings
   // (Pitfall 5), everything else the maker's own to write, never defaulted
   // from the parent (D-10: no default reason, citation, or version line).
-  // Never touches draft or amendingBatchId — the two pens are exclusive
-  // through mode alone (RESEARCH.md Pattern 4).
+  // Never touches draft or amendingBatchId — mode alone still decides
+  // which of developing/recording is live; derivePenState above is what
+  // now decides availability everywhere else (RESEARCH.md Pattern 4).
   function handleStartDeveloping() {
     const rows = {};
     for (const row of version.rows) {
@@ -783,6 +819,8 @@ export function RecipePage() {
           parentVersion={parentVersion}
           showingChanges={showingChanges}
           blockedMessage={blockedMessage}
+          openPen={openPen}
+          penReason={penReason}
           onChangeChurnDate={handleChangeChurnDate}
           onStartDeveloping={handleStartDeveloping}
           onCancelDeveloping={handleCancelDeveloping}
@@ -866,6 +904,8 @@ export function RecipePage() {
               openBatch={openBatch}
               mode={mode}
               draft={draft}
+              openPen={openPen}
+              penReason={penReason}
               onStartRecording={handleStartRecording}
               onStartAmending={handleStartAmending}
               onChangeChurnField={handleChangeChurnField}

@@ -148,6 +148,8 @@ export function BatchMargin({
   openBatch,
   mode,
   draft,
+  openPen = null,
+  penReason = null,
   onStartRecording,
   onStartAmending,
   onChangeChurnField,
@@ -287,26 +289,32 @@ export function BatchMargin({
         <p className="ink-text">
           {`recorded ${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
         </p>
-        {/* The plan's pen and the batch's pen are never open together
-            (03-CONTEXT.md D-10, RESEARCH.md Pitfall 4): the reason is
-            stated in words, never only by the disabled state. */}
-        {mode === 'developing' && (
-          <p className="batch-margin__hint">Batch controls are unavailable while the plan is being developed.</p>
-        )}
-        <button type="button" onClick={() => onStartAmending(openBatch)} disabled={mode === 'developing'}>
+        {/* No two of the four pens are ever open together (03-CONTEXT.md
+            D-10, D-UAT-1, RESEARCH.md Pitfall 4): every batch-side opener
+            disables uniformly on `openPen !== null`, not on any one pen it
+            happens to know about, and the reason is stated in words here,
+            never only by the disabled state. */}
+        {openPen && <p className="pen-hint">Batch controls are unavailable while {penReason}.</p>}
+        <button type="button" onClick={() => onStartAmending(openBatch)} disabled={openPen !== null}>
           Amend
         </button>
 
         {orderedBatches.length > 1 && (
-          <ul className="batch-margin__list">
-            {orderedBatches.map((batch) => (
-              <li key={batch.id} className={batch.id === openBatch.id ? 'is-open' : undefined}>
-                <Link to={`/recipe/${version.id}/batch/${batch.id}`}>
-                  {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <>
+            {/* The list's own links stay unguarded here (03-07's scope);
+                this sentence speaks the same words as the rest of the pen
+                layer so all four regions read as one language. */}
+            {openPen && <p className="pen-hint">Another batch cannot be opened while {penReason}.</p>}
+            <ul className="batch-margin__list">
+              {orderedBatches.map((batch) => (
+                <li key={batch.id} className={batch.id === openBatch.id ? 'is-open' : undefined}>
+                  <Link to={`/recipe/${version.id}/batch/${batch.id}`}>
+                    {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
 
         {/* Version-scoped: adds a batch to the list above, distinct from
@@ -315,7 +323,7 @@ export function BatchMargin({
             before the tastings, so the margin reads: this batch, this
             version's batches, a way to add to that list, this batch's
             tastings. */}
-        <button type="button" onClick={onStartRecording} disabled={mode === 'developing'}>
+        <button type="button" onClick={onStartRecording} disabled={openPen !== null}>
           Record another batch
         </button>
 
@@ -338,7 +346,7 @@ export function BatchMargin({
             onCancelTasting={onCancelTasting}
           />
         ) : (
-          <button type="button" ref={addTastingButtonRef} onClick={onStartTasting}>
+          <button type="button" ref={addTastingButtonRef} onClick={onStartTasting} disabled={openPen !== null}>
             Add a tasting
           </button>
         )}
@@ -350,12 +358,10 @@ export function BatchMargin({
     <div className="batch-margin">
       <p className="batch-margin__legend">Batch</p>
       <p>{batches.length > 0 ? 'No batch of this version has that address.' : 'No batch recorded against this version yet.'}</p>
-      <button type="button" onClick={onStartRecording} disabled={mode === 'developing'}>
+      <button type="button" onClick={onStartRecording} disabled={openPen !== null}>
         Record a batch
       </button>
-      {mode === 'developing' && (
-        <p className="batch-margin__hint">Batch controls are unavailable while the plan is being developed.</p>
-      )}
+      {openPen && <p className="pen-hint">Batch controls are unavailable while {penReason}.</p>}
     </div>
   );
 }

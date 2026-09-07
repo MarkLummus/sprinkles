@@ -111,7 +111,7 @@ Plans:
   4. Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure.
   5. Structural advisories show the basis they were computed from — sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, estimated-data exposure — and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success.
 
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans executed
 
 Plans:
 **Wave 1**
@@ -132,7 +132,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 03-05-PLAN.md — The four derived structural advisories with their basis lines, in the margin's block between the batch record and the authored notes
+- [x] 03-05-PLAN.md — The four derived structural advisories with their basis lines, in the margin's block between the batch record and the authored notes
 
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the version editing and comparison surface
@@ -177,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
-| 3. Develop the next version | 4/5 | In Progress|  |
+| 3. Develop the next version | 5/5 | In Progress|  |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

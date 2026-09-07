@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 03
 current_phase_name: Develop the next version
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-09-07T18:08:31.519Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-09-07T18:43:03.020Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 03 execution started
-state_head: 4e8591f2d990a901b40d6a12b2ccf2760bd19f8a
+state_head: 578f0b866008469d37fd6c3af5042b0b24085844
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 10
+  completed_plans: 11
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07)
 ## Current Position
 
 Phase: 03 (Develop the next version) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 03 execution started
 
@@ -69,6 +69,7 @@ Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 | Phase 02 P04 | 15min | 2 tasks | 3 files |
 | Phase 02 P05 | 15min | 2 tasks | 8 files |
 | Phase 03 P01 | 31min | 3 tasks | 22 files |
+| Phase 03 P02 | 20min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 01] liftVersionRecord is applied on import to both schemaVersion 1 and 2 files (not only schemaVersion 2), since the stricter validator requires the new fields regardless of which file version carries an old-shaped record.
 - [Phase 03]: [Phase 3, Plan 01] createChildVersion carries schemaVersion forward from the parent rather than importing VERSION_SCHEMA_VERSION into domain/lineage.js, keeping the domain module's no-store-import rule exact.
 - [Phase 03]: [Phase 3, Plan 01] Deviation: modified app/src/ui/BatchMargin.jsx (omitted from the plan's files_modified frontmatter) to disable batch-starting controls while developing, per the plan's own action text and D-10's mutual-exclusivity constraint.
+- [Phase 03]: [Phase 3, Plan 02] Built one draftVersion per render in RecipePage — the pen's own tables, the two removal cross-flags (uses.js) and buildDiff all read it, replacing the earlier ad hoc liveVersion reconstruction; removal is always a single flag flip (never a cascade), with both cross-flags recomputed live so restoring clears a flag without anything having stored one.
+- [Phase 03]: [Phase 3, Plan 02] penDraft.rows changed shape from a bare grams string to { grams, step, removed } per row; buildPenFields validates grams only for rows the draft itself does not mark removed. A removed authored note is deleted outright (no struck-in-place treatment, since notes carry no uses-list cross-flag concern); a note's inheritedFrom marker is recomputed eagerly in the text-change handler by comparing against the original inherited text.
 
 ### Pending Todos
 
@@ -162,6 +165,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-07T18:08:31.466Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-09-07T18:42:54.055Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None

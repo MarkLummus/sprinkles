@@ -70,7 +70,7 @@ Plans:
   4. Maker reopens the batch and sees it together with the recipe version it used, its measured values, and its result.
   5. The batch holds the recipe rows and ingredient coefficients it was computed with; later edits to the recipe or to ingredient data do not change what the batch shows.
 
-**Plans**: 4/5 plans executed (02-04 and 02-05 close UAT gaps)
+**Plans**: 5/5 plans executed (02-04 and 02-05 close UAT gaps)
 
 Plans:
 **Wave 1**
@@ -91,7 +91,7 @@ Plans:
 
 **Gap closure wave 2** *(blocked on gap closure wave 1)*
 
-- [ ] 02-05-PLAN.md — Marks that can be read and taken back: the Skipped label clear of the strike, and a per-axis clear on a tasting mark (G-02-3, G-02-6)
+- [x] 02-05-PLAN.md — Marks that can be read and taken back: the Skipped label clear of the strike, and a per-axis clear on a tasting mark (G-02-3, G-02-6)
 
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the batch record surface (BRIEF-02 seed is unapproved input, not authority)
@@ -154,7 +154,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
-| 2. Record the first batch | 4/5 | In Progress|  |
+| 2. Record the first batch | 5/5 | In Progress|  |
 | 3. Develop the next version | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 

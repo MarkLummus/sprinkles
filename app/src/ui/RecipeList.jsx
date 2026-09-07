@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { repository } from '../store/repository.js';
 import { computeBalance } from '../domain/composition.js';
 import { activeRows } from '../domain/rows.js';
+import { latestVersionPerRecipe } from '../domain/lineage.js';
 import { exportStore, importStore } from '../store/transfer.js';
 
 // The arrival the brief calls "departing from the list" (D-13). One item
@@ -90,20 +91,33 @@ export function RecipeList() {
           </ul>
         )}
       </div>
-      <ul className="recipe-list">
-        {versions.map((version) => {
-          const balance = computeBalance(activeRows(version));
-          return (
-            <li key={version.id}>
-              <Link to={`/recipe/${version.id}`}>
-                <span className="recipe-list__name">{version.recipeName}</span>
-                <span className="recipe-list__version">{version.versionLabel}</span>
-                <span className="recipe-list__mass">{balance ? `${balance.mass.toFixed(1)} g` : 'no ingredient rows'}</span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <RecipeRows versions={versions} />
     </>
+  );
+}
+
+// The list itself, split out as a presentational component over an array
+// (the same convention VersionStrip.jsx establishes) so it is testable
+// without driving RecipeList's own fetch effect. One row per recipe, at
+// its most recently created version (route-recipe-version.md § 3,
+// 03-03) — hides nothing permanently: every superseded version stays
+// reachable through the strip on the recipe page (VersionStrip.jsx).
+// This is only honest while that stays true.
+export function RecipeRows({ versions }) {
+  return (
+    <ul className="recipe-list">
+      {latestVersionPerRecipe(versions).map((version) => {
+        const balance = computeBalance(activeRows(version));
+        return (
+          <li key={version.id}>
+            <Link to={`/recipe/${version.id}`}>
+              <span className="recipe-list__name">{version.recipeName}</span>
+              <span className="recipe-list__version">{version.versionLabel}</span>
+              <span className="recipe-list__mass">{balance ? `${balance.mass.toFixed(1)} g` : 'no ingredient rows'}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

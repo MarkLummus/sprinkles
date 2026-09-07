@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
 import { createBatch, addTasting, recordAmendment, sortedBatches } from '../domain/batch.js';
@@ -193,7 +193,23 @@ export function RecipePage() {
   }, [mode, draft, tastingDraft, penDraft, version]);
 
   if (version === undefined) return null;
-  if (version === null) return <p>No recipe found for this version.</p>;
+  // The running head is the way home in every state, including this one
+  // (route-recipe-version.md § 4): it identifies the book, never carries
+  // status, and never changes with state. A mistyped or since-removed
+  // version id is no longer a dead end.
+  if (version === null) {
+    return (
+      <>
+        <p className="running-head">
+          <Link to="/">Sprinkles</Link>
+        </p>
+        <div className="not-found">
+          <p>No recipe found for this version.</p>
+          <Link to="/">Back to the recipe list</Link>
+        </div>
+      </>
+    );
+  }
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -691,115 +707,123 @@ export function RecipePage() {
   }
 
   return (
-    <article className="recipe-page">
-      <Headnote
-        version={version}
-        mode={mode}
-        draft={draft}
-        penDraft={penDraft}
-        openBatch={openBatch}
-        batches={batches}
-        citedBatch={citedBatch}
-        blockedMessage={blockedMessage}
-        onChangeChurnDate={handleChangeChurnDate}
-        onStartDeveloping={handleStartDeveloping}
-        onCancelDeveloping={handleCancelDeveloping}
-        onChangePenField={handleChangePenField}
-        onSaveAsNewVersion={handleSaveAsNewVersion}
-        onSaveOverVersion={handleSaveOverVersion}
-      />
-
-      <VersionStrip
-        versions={versions}
-        recipeId={version.recipeId}
-        currentId={version.id}
-        versionIdsWithBatches={versionIdsWithBatches}
-      />
-
-      <section className="ingredient-table-region" aria-label="Ingredient table">
-        <h2 className="region-name">Ingredient table</h2>
-        {hasRows ? (
-          <IngredientTable
-            rows={mode === 'developing' ? version.rows : readingVersion.rows}
-            draftVersion={draftVersion}
-            markedRowIds={markedRowIds}
-            markedFigureLabel={markedFigureLabel}
-            mode={mode}
-            draft={draft}
-            penDraft={penDraft}
-            openBatch={openBatch}
-            onChangeAsMade={handleChangeAsMade}
-            onChangePenGrams={handleChangePenGrams}
-            onChangePenRowStep={handleChangePenRowStep}
-            onTogglePenRowRemoved={handleTogglePenRowRemoved}
-          />
-        ) : (
-          <p>This version has no ingredient rows.</p>
-        )}
-      </section>
-
-      <section className="method-region" aria-label="Method">
-        <Method
-          steps={mode === 'developing' ? version.method : readingVersion.method}
-          stepChanges={mode === 'recording' ? draft.stepChanges : openBatch ? openBatch.churn.stepChanges : {}}
+    <>
+      {/* The running head (route-recipe-version.md § 4): the way home in
+          every state, identifying the book, never the recipe's name and
+          never changing with state. */}
+      <p className="running-head">
+        <Link to="/">Sprinkles</Link>
+      </p>
+      <article className="recipe-page">
+        <Headnote
+          version={version}
           mode={mode}
-          onChangeStepChange={handleChangeStepChange}
-          rows={version.rows}
-          draftVersion={draftVersion}
-          baselineVersion={version}
-          staleFlagVisible={mode === 'developing'}
-          onChangePenStepField={handleChangePenStepField}
-          onChangePenStepTarget={handleChangePenStepTarget}
-          onTogglePenStepUses={handleTogglePenStepUses}
-          onTogglePenStepRemoved={handleTogglePenStepRemoved}
+          draft={draft}
+          penDraft={penDraft}
+          openBatch={openBatch}
+          batches={batches}
+          citedBatch={citedBatch}
+          blockedMessage={blockedMessage}
+          onChangeChurnDate={handleChangeChurnDate}
+          onStartDeveloping={handleStartDeveloping}
+          onCancelDeveloping={handleCancelDeveloping}
+          onChangePenField={handleChangePenField}
+          onSaveAsNewVersion={handleSaveAsNewVersion}
+          onSaveOverVersion={handleSaveOverVersion}
         />
-      </section>
 
-      {/* Column two, what the sheet does not print: the formulation note
-          beside the table, then the margin beneath it. One flow, so the
-          method's height never separates the two. */}
-      <div className="side-region">
-        <section className="formulation-note-region" aria-label="Formulation note">
-          <FormulationNote
-            version={liveVersion}
-            mode={mode}
-            onFocusFigure={setFocusedFigureKey}
-            onBlurFigure={() => setFocusedFigureKey(null)}
-          />
-          <BasisNote version={liveVersion} />
+        <VersionStrip
+          versions={versions}
+          recipeId={version.recipeId}
+          currentId={version.id}
+          versionIdsWithBatches={versionIdsWithBatches}
+        />
+
+        <section className="ingredient-table-region" aria-label="Ingredient table">
+          <h2 className="region-name">Ingredient table</h2>
+          {hasRows ? (
+            <IngredientTable
+              rows={mode === 'developing' ? version.rows : readingVersion.rows}
+              draftVersion={draftVersion}
+              markedRowIds={markedRowIds}
+              markedFigureLabel={markedFigureLabel}
+              mode={mode}
+              draft={draft}
+              penDraft={penDraft}
+              openBatch={openBatch}
+              onChangeAsMade={handleChangeAsMade}
+              onChangePenGrams={handleChangePenGrams}
+              onChangePenRowStep={handleChangePenRowStep}
+              onTogglePenRowRemoved={handleTogglePenRowRemoved}
+            />
+          ) : (
+            <p>This version has no ingredient rows.</p>
+          )}
         </section>
 
-        <aside className="margin-region" aria-label="Margin">
-          <p className="region-name">Margin</p>
-          <BatchMargin
-            version={version}
-            batches={batches}
-            openBatch={openBatch}
+        <section className="method-region" aria-label="Method">
+          <Method
+            steps={mode === 'developing' ? version.method : readingVersion.method}
+            stepChanges={mode === 'recording' ? draft.stepChanges : openBatch ? openBatch.churn.stepChanges : {}}
             mode={mode}
-            draft={draft}
-            onStartRecording={handleStartRecording}
-            onStartAmending={handleStartAmending}
-            onChangeChurnField={handleChangeChurnField}
-            onSaveBatch={handleSaveBatch}
-            onCancelRecording={handleCancelRecording}
-            tastingDraft={tastingDraft}
-            onStartTasting={handleStartTasting}
-            onChangeTastingField={handleChangeTastingField}
-            onChangeTastingMark={handleChangeTastingMark}
-            onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
-            onSaveTasting={handleSaveTasting}
-            onCancelTasting={handleCancelTasting}
+            onChangeStepChange={handleChangeStepChange}
+            rows={version.rows}
+            draftVersion={draftVersion}
+            baselineVersion={version}
+            staleFlagVisible={mode === 'developing'}
+            onChangePenStepField={handleChangePenStepField}
+            onChangePenStepTarget={handleChangePenStepTarget}
+            onTogglePenStepUses={handleTogglePenStepUses}
+            onTogglePenStepRemoved={handleTogglePenStepRemoved}
           />
-          <Authored
-            carriedForward={mode === 'developing' && penDraft ? penDraft.authored.carriedForward : version.authored.carriedForward}
-            beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
-            mode={mode}
-            onChangeNoteText={handleChangePenNoteText}
-            onRemoveNote={handleRemovePenNote}
-          />
-          <div className="advisory-slot" aria-label="Advisories" />
-        </aside>
-      </div>
-    </article>
+        </section>
+
+        {/* Column two, what the sheet does not print: the formulation note
+            beside the table, then the margin beneath it. One flow, so the
+            method's height never separates the two. */}
+        <div className="side-region">
+          <section className="formulation-note-region" aria-label="Formulation note">
+            <FormulationNote
+              version={liveVersion}
+              mode={mode}
+              onFocusFigure={setFocusedFigureKey}
+              onBlurFigure={() => setFocusedFigureKey(null)}
+            />
+            <BasisNote version={liveVersion} />
+          </section>
+
+          <aside className="margin-region" aria-label="Margin">
+            <p className="region-name">Margin</p>
+            <BatchMargin
+              version={version}
+              batches={batches}
+              openBatch={openBatch}
+              mode={mode}
+              draft={draft}
+              onStartRecording={handleStartRecording}
+              onStartAmending={handleStartAmending}
+              onChangeChurnField={handleChangeChurnField}
+              onSaveBatch={handleSaveBatch}
+              onCancelRecording={handleCancelRecording}
+              tastingDraft={tastingDraft}
+              onStartTasting={handleStartTasting}
+              onChangeTastingField={handleChangeTastingField}
+              onChangeTastingMark={handleChangeTastingMark}
+              onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
+              onSaveTasting={handleSaveTasting}
+              onCancelTasting={handleCancelTasting}
+            />
+            <Authored
+              carriedForward={mode === 'developing' && penDraft ? penDraft.authored.carriedForward : version.authored.carriedForward}
+              beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
+              mode={mode}
+              onChangeNoteText={handleChangePenNoteText}
+              onRemoveNote={handleRemovePenNote}
+            />
+            <div className="advisory-slot" aria-label="Advisories" />
+          </aside>
+        </div>
+      </article>
+    </>
   );
 }

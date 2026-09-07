@@ -10,6 +10,35 @@ body {
   font-size: var(--size-table-body);
 }
 
+/* The running head (route-recipe-version.md § 4, § 6): the way home on
+   the recipe page, in ink — never bookcloth, which identifies a block by
+   its plain-language name, not a link. */
+.running-head {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+  padding: var(--gap-m) var(--gap-xl) 0;
+}
+
+.running-head a {
+  color: inherit;
+}
+
+/* The real "no recipe found" state (route-recipe-version.md § 4): the
+   running head above it, and a second link back to the list, so a
+   mistyped or since-removed version id is no longer a dead end. */
+.not-found {
+  padding: var(--gap-m) var(--gap-xl);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.not-found a {
+  color: inherit;
+}
+
 .recipe-list {
   list-style: none;
   margin: 0;
@@ -151,6 +180,13 @@ body {
   font-size: var(--size-deviation-words);
   max-width: var(--measure-prose);
   margin: var(--gap-hair) 0 0;
+}
+
+/* The lineage line's two links are ink, never the browser's default link
+   colour (the Two-Ink Rule: ink and pen blue only) — the same "focusable
+   in ink" treatment the strip's links get. */
+.headnote__lineage a {
+  color: inherit;
 }
 
 .headnote__reason {

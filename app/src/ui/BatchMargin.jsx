@@ -287,6 +287,16 @@ export function BatchMargin({
           </ul>
         )}
 
+        {/* Version-scoped: adds a batch to the list above, distinct from
+            Amend directly above it — Amend corrects this open record,
+            this starts a new one (D-06). Placed after the batch list and
+            before the tastings, so the margin reads: this batch, this
+            version's batches, a way to add to that list, this batch's
+            tastings. */}
+        <button type="button" onClick={onStartRecording}>
+          Record another batch
+        </button>
+
         {sortedTastings(openBatch).map((tasting) => (
           <TastingReading key={tasting.id} tasting={tasting} axes={axesForBatch(openBatch)} />
         ))}
@@ -316,7 +326,7 @@ export function BatchMargin({
   return (
     <div className="batch-margin">
       <p className="batch-margin__legend">Batch</p>
-      <p>No batch recorded against this version yet.</p>
+      <p>{batches.length > 0 ? 'No batch of this version has that address.' : 'No batch recorded against this version yet.'}</p>
       <button type="button" onClick={onStartRecording}>
         Record a batch
       </button>

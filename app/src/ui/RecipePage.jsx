@@ -128,7 +128,14 @@ export function RecipePage() {
     openBatch = sortedBatches(batches)[0];
   }
 
+  // Clearing the amend target here is load-bearing, not redundant: without
+  // it, a maker who amends and then starts a fresh recording would leave
+  // amendingBatchId set from the earlier amendment, so handleSaveBatch
+  // would take the amend path — overwriting the amended batch's churn and
+  // stamping a false amendment date on it, while the new batch is never
+  // created (T-02-24).
   function handleStartRecording() {
+    setAmendingBatchId(null);
     setDraft({
       churnDate: '',
       asMade: {},

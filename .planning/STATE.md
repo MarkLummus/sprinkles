@@ -4,10 +4,10 @@ current_phase: 3
 current_phase_name: Develop the next version
 status: planning
 stopped_at: Phase 02 complete, ready to plan Phase 3
-last_updated: "2026-09-07T02:09:18.409Z"
+last_updated: "2026-09-07T14:13:39.352Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 02 complete, transitioned to Phase 3
-state_head: fc805ad7dc2c954d3fb584439381a90ef1997894
+state_head: db7214f4a404da2cc1df4cb12a55558ffa984830
 progress:
   total_phases: 4
   completed_phases: 2
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-07)
 Phase: 3 — Develop the next version
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-06 - Completed quick task 260906-w9g: Impeccable harden: tasting form gets a Cancel, a "Tasting" head, focus on its date when opened and back to "Add a tasting" when closed (critique 2026-09-07 second P1)
+Last activity: 2026-09-07 - Completed quick task 260907-dyn: Commit the confirmed Phase 3 surface brief, revise route-recipe.md § 3 and § 6 to retire the translucent overlay and point at it, and record the confirmed brief in STATE.md
 
 Progress: [█████░░░░░] 50% (2/4 phases; 9/9 plans)
 
@@ -110,10 +110,13 @@ None yet.
 
 ### Blockers/Concerns
 
-- Impeccable initialized 2026-09-05: `PRODUCT.md` written; surface brief for the recipe surface and bench sheet confirmed by Mark (`.impeccable/surfaces/`, direction "The Formulation Cookbook" expanding the Cupping Form, seed d1a5d80a, code-led). Phase 1, 3, and 4 prerequisites met. `DESIGN.md` and `.impeccable/design.json` written 2026-09-06 by `/impeccable document` from the Phase 1 build (commit 17bd91f); North Star "The Formulation Cookbook". The batch-capture brief for Phase 2 is confirmed: `.impeccable/surfaces/route-recipe-batch.md`, shaped and confirmed by Mark 2026-09-06 and committed in e23d798, so the Phase 2 prerequisite is met.
+- Impeccable initialized 2026-09-05: `PRODUCT.md` written; surface brief for the recipe surface and bench sheet confirmed by Mark (`.impeccable/surfaces/`, direction "The Formulation Cookbook" expanding the Cupping Form, seed d1a5d80a, code-led). Phase 1, 3, and 4 prerequisites met. `DESIGN.md` and `.impeccable/design.json` written 2026-09-06 by `/impeccable document` from the Phase 1 build (commit 17bd91f); North Star "The Formulation Cookbook". The batch-capture brief for Phase 2 is confirmed: `.impeccable/surfaces/route-recipe-batch.md`, shaped and confirmed by Mark 2026-09-06 and committed in e23d798, so the Phase 2 prerequisite is met. The Phase 3 brief is confirmed: `.impeccable/surfaces/route-recipe-version.md` ("Developing the next version"), shaped and confirmed by Mark 2026-09-07, so the Phase 3 prerequisite is met.
 - [Phase 2 → 3] Security: T-02-32 (medium, non-blocking) is open in `02-SECURITY.md`. `setMark`'s write path at `app/src/domain/axes.js:71` is a plain bracket assignment rather than the own-property-only write the plan committed to; a `__proto__` axis name today drops the mark silently and does not pollute. Close with an own-property-only write or a `__proto__` test, or re-disposition to accept with the numeric-stops rationale.
 - [Phase 2 design debt, Impeccable-owned] `Save batch` is hard to find: no button-weight token in the direction contract and the control sits at the foot of the page's longest column (UAT G-02-4 second half, UI review 22/24). The UI review also notes `Amend` and `Record another batch` share identical styling and differ only by label.
 - [Phase 3 input] The UI review asks whether a tasting saved with some axes marked and others unmarked is incomplete; the batch brief treats an unmarked axis as a valid silence. Decide in Phase 3 discussion, not in code.
+- [Phase 3 input] `.impeccable/surfaces/route-recipe-version.md` leaves five things to the Phase 3 discussion, not to a builder: the label of the control that opens the pen ("Develop the next version" is the working name); whether the show-changes state is URL-addressable; whether a fifth advisory, the batch mass against the machine's minimum fill, joins the four FORM2-02 advisories; the partly marked tasting question in the bullet above; and the store's schema move and what a schemaVersion 2 export does when imported after it.
+- [Milestone 2 backlog, Mark 2026-09-07] Held objections from the Phase 3 shaping, recorded rather than dropped: editing target bands; adding a step; adding a row from the seed library (needs REQUIREMENTS.md's twelve-row limit lifted).
+- [After Phase 3, Impeccable-owned] Re-run `/impeccable document` so `DESIGN.md` records the pen layer's components from Phases 2 and 3 together (field, strike, marks control, button, hollow tick, show-changes control) and the Strike Rule; `DESIGN.md` still says pen blue is unused on screen and no input exists.
 - [Housekeeping] Four `.planning/debug/*.md` sessions (record-a-batch-entry-missing, pen-layer-no-cancel-save-hard-to-find, skipped-label-struck-through, tasting-mark-cannot-be-cleared) still read `status: diagnosed` although their gaps closed in 02-04 and 02-05; mark them resolved.
 - [Phase 1 carry] Hover-as-alternate-trigger for figure focus was not built (keyboard only); revisit if a pointer-first review surface needs it.
 - [Phase 1 carry] UI audit recommends checking the book-spread grid below 1280px and measuring running-head contrast against AA; UX1-01 verifies end-to-end in Phase 4.
@@ -141,6 +144,7 @@ None yet.
 | 260906-gh9 | Record the confirmed batch-capture brief in STATE.md and move the outcome-dimensions decision in PRODUCT.md from undecided to decided | 2026-09-06 | 18cdcbb | [260906-gh9-record-the-confirmed-batch-capture-brief](./quick/260906-gh9-record-the-confirmed-batch-capture-brief/) |
 | 260906-vsn | Impeccable layout fix: churn date into the headnote slot, graduated rules out of the recording tab path, batch brief revised (critique 2026-09-07 P1) | 2026-09-06 | 681e239 | [260906-vsn-impeccable-layout-fix-for-the-batch-reco](./quick/260906-vsn-impeccable-layout-fix-for-the-batch-reco/) |
 | 260906-w9g | Impeccable harden: tasting form gets a Cancel, a "Tasting" head, focus on its date when opened and back to "Add a tasting" when closed (critique 2026-09-07 second P1) | 2026-09-06 | 0ad36e8 | [260906-w9g-impeccable-harden-for-the-batch-margin-s](./quick/260906-w9g-impeccable-harden-for-the-batch-margin-s/) |
+| 260907-dyn | Commit the confirmed Phase 3 surface brief, revise route-recipe.md § 3 and § 6 to retire the translucent overlay and point at it, and record the confirmed brief in STATE.md | 2026-09-07 | db7214f | [260907-dyn-commit-the-confirmed-phase-3-surface-bri](./quick/260907-dyn-commit-the-confirmed-phase-3-surface-bri/) |
 
 ## Deferred Items
 

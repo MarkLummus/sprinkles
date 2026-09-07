@@ -7,7 +7,7 @@ related_targets: ["route:/print/recipe-sheet"]
 
 # Surface brief — Recipe and the bench sheet
 
-**Mode:** Operate, both halves. **Status:** shaped 2026-09-05; confirmed by Mark 2026-09-05. **Targets:** `route:/recipe` (review, version editing, comparison) and `route:/print/recipe-sheet` (the bench sheet). The batch-capture flow is a separate brief (GSD Phase 2). This brief feeds GSD Phases 1, 3, and 4.
+**Mode:** Operate, both halves. **Status:** shaped 2026-09-05; confirmed by Mark 2026-09-05; revised 2026-09-07: the version-editing and comparison direction is superseded by `route-recipe-version.md` (confirmed by Mark 2026-09-07). **Targets:** `route:/recipe` (review, version editing, comparison) and `route:/print/recipe-sheet` (the bench sheet). The batch-capture flow is a separate brief (GSD Phase 2). This brief feeds GSD Phases 1, 3, and 4.
 
 Product truth: `PRODUCT.md` and `product-requirements/03-decision-register.md`. Requirement IDs: `.planning/REQUIREMENTS.md`.
 
@@ -41,12 +41,12 @@ Product-specific truth the surface must show, not claim: plan, actual, and resul
 - **World.** Cool text-paper ground, print ink, pen blue for everything recorded, one bookcloth colour that identifies the book (running heads, section tabs) and never carries state. Light only, forced by the scene: a kitchen table in the evening and a black-only laser printer. Type: a working text face with true italics for headnote and method prose, a grotesk with tabular numerals for tables and figures; exact faces chosen at build under the calibration rules, never the bookish defaults.
 - **Structural thesis.** One surface for developing; making is a departure to paper. The page is a book spread: headnote (name, version line, authored notes) top left; the ingredient table beneath it with grams, % of batch, and the step each row goes into; the numbered method beneath the table, in the sheet's page order, with bold lead-ins, prose instructions, and typed targets (temperature, time, amount) as small chips in the margin. Balance figures sit beside the table as a formulation note in the right-hand column, so the six rules share the table's viewport and focusing one marks its rows in view: six graduated rules (PAC, POD, fat with milkfat and added fat, MSNF, sugar solids, total solids) with a tick and the deviation in words. (Revised 2026-09-06 by Mark after the first critique; the note was originally under the table with the method on the right.) Derived advisories are margin small-print, each citing its basis; authored notes sit apart, labelled as authored.
 - **The record in the margin.** When the latest version has a batch, an as-made column appears beside grams in pen blue and the batch's dated result reads as a marginal note in the same blue. Plan stays black.
-- **Versions.** Version 2 reads clean. "What changed" lays a translucent sheet over the page: per-row deltas in grams and % of batch, and the change in each figure, with the reason and the cited batch at the top of the sheet. Every version stays reachable in one strip under the headnote.
+- **Versions.** Version 2 reads clean. Changes read as tracked changes: the parent's value struck in ink beside the current one, always visible while the pen is open and laid back on the page by one version-level "show changes" control after save; the translucent sheet is retired (Mark, 2026-09-07). Every version stays reachable in one strip under the headnote. The full direction is in `route-recipe-version.md`.
 - **Focal moment.** The spread with the ingredient table and its formulation note: how the recipe reads and how far it sits from target, on one page.
 - **Signature interaction, the pen.** Editing an amount turns it blue until it is saved as a version; saving is a ceremony that returns the page to black. Focusing any balance figure highlights the rows that carry it, so an assumption is one hover from the number it moves.
 - **Raises carried from the round.** Overlay comparison (Exposure Record); figures trace to contributors (Force Diagram); every superseded version reachable in one strip (Cutting Bench); generous void, one heavy element per view (Console Fog); state changes weight and outline, never position (Telop Captions); every block wears its plain-language name (Quote Grammar).
 - **The sheet.** The spread reflowed to letter portrait: formula page with the table, a mise-en-place box per row, the step column, and a blank as-made column; method page with the targets beside the prose; a blank batch-log page last with fixed geometry; a human-readable short code in the header of every page. The blue layer prints as blank space for a real pen. Balance rules and the freezing curve do not print.
-- **Implementation consequence.** Screen and sheet render from one component tree with print CSS reflowing the spread; no component may carry status by colour; the overlay is a layer over the same page, not a route; printing captures a saved version and never the live DOM.
+- **Implementation consequence.** Screen and sheet render from one component tree with print CSS reflowing the spread; no component may carry status by colour; show-changes is a state of the same page, not a route; printing captures a saved version and never the live DOM.
 
 ## 4. Scope and boundaries
 
@@ -79,7 +79,7 @@ Product-specific truth the surface must show, not claim: plan, actual, and resul
 - **Topology:** one page per recipe, no tabs and no mode toggle; a version strip under the headnote; the overlay for comparison; the browser's print for the sheet.
 - **Editing:** amounts edit inline and turn blue while dirty; rows strike rather than vanish and can be restored; steps and targets edit in place. Save as version is explicit and asks for the reason, offering the recorded batch as the citation.
 - **Printing:** prints the saved version. With unsaved edits, the maker chooses to save a version first or print the last saved one, and the page says which it printed.
-- **Feedback:** figures recompute live and state their deviation in words; nothing moves on selection or hover; the overlay fades in and out; no entrance motion.
+- **Feedback:** figures recompute live and state their deviation in words; nothing moves on selection or hover; no entrance motion.
 - **Responsiveness:** desktop leads at 1280 and wider as a spread; narrower widths stack table, formulation note, method, margin in one column; the phone gets the same page, read-only in feel, table first.
 - **Keyboard:** the table is navigable row by row; every control has a visible label and focus; the short code is selectable text.
 
@@ -98,7 +98,7 @@ Product-specific truth the surface must show, not claim: plan, actual, and resul
 - The ingredient seed dataset (Phase 1 planning) decides which coefficients the figures rest on and which are flagged estimated.
 
 **Open, to decide during build, not to be invented silently**
-- Whether authored notes copy into a child version by default or by explicit choice (the binder's Mexican Chocolate v3 shows the failure mode of silent copying).
+- Whether authored notes copy into a child version by default or by explicit choice (the binder's Mexican Chocolate v3 shows the failure mode of silent copying) — decided in `route-recipe-version.md` (2026-09-07): they copy with a persistent "from …" marker until edited on the child.
 - Exact type faces, within the direction's rules.
 - Whether the version strip shows the batch count per version.
 

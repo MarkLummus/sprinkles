@@ -1,0 +1,141 @@
+---
+version: 1
+slug: "route-recipe-version"
+primary_target: "route:/recipe/version"
+related_targets: ["route:/recipe","route:/recipe/batch","route:/print/recipe-sheet"]
+---
+
+# Surface brief — Developing the next version
+
+**Mode:** Operate. **Status:** shaped 2026-09-07; revised the same day after Mark chose tracked changes over an overlay, then again after the discussion of step links, the stale flag, and editability; confirmed by Mark 2026-09-07. **Target:** the plan's pen on `route:/recipe`, the version strip and lineage line in its headnote, the show-changes state of the page, and the margin's derived advisories. Related: `route:/recipe` (the reading state this extends; its brief is `route-recipe.md`, whose § 3 "Versions" paragraph this brief supersedes), `route:/recipe/batch` (the record the change reason cites; `route-recipe-batch.md`), and `route:/print/recipe-sheet` (Phase 4 prints what this brief saves). This brief feeds GSD Phase 3.
+
+Product truth: `PRODUCT.md` and `product-requirements/03-decision-register.md`. Requirement IDs: `.planning/REQUIREMENTS.md`. Primary evidence: the 2 Aug 2026 batch as recorded in the app, the churn-log audit (`Ice Cream Log Pages/sprinkles-churn-log-binder-audit.md`), and the earlier attempt's advisory definitions (`~/Documents/projects/old-sprinkles/src/domain/advisories.js`, read as evidence, not built on).
+
+## 1. Job and audience
+
+Mark, at the desktop, weeks after the 2 Aug churn, with the batch record open in the margin: 383 beside 370.4, 45 beside 40, lecithin at 0 and step 1 struck, drawn at −6 °C, "soft, not greasy", oil character 4.5, bitterness 5, sweetness 4, and the headnote's own verdict that 50 g oil "is the low anchor, not the oil-forward target". He is deciding what to change, and the binder says what happens next if the page does not help: the reason for a change is almost never on the page that makes the change, and the one time the app gave him a field he wrote a properly formed delta with the previous value in it. The job is to turn that decision into a saved next version with its reason on the page that makes it, without touching the churned version or its record.
+
+Two more arrivals: reading a saved next version beside the one it came from, to see exactly what changed and what it did to the balance; and exploring two fixes for the same batch at once (Mark, 2026-09-07), so forking is never gated on churning.
+
+Desktop only (PRODUCT.md: desktop formulates). The page stacks below 1280 as it does today; the phone receives no design here.
+
+## 2. Outcome and proof
+
+Primary task: from the churned version, open the pen on the plan, change amounts, rows, steps and targets, watch the figures and advisories answer, and save the result as a new version that names its parent, its reason, and the batch that motivated it. Second task: show the saved version's changes from its parent and read every change in grams, in % of batch, and in each figure.
+
+Success is the roadmap's Phase 3 criteria: REC1-02, REC1-03, REC1-04, REC1-05, FORM1-03, FORM2-01, FORM2-02, plus UX1-01 for keyboard and contrast.
+
+Proof content is real: the seeded churned version (twelve rows, ten steps, five target bands, three carried-forward notes, two before-you-start notes) and its 2 Aug batch. The next version's numbers are Mark's to decide; the brief's illustration of oil raised from 40 g is illustrative and no recipe decision. What the data already supports, so no advisory is invented: the kitchen scale reads to 1 g and the equipment profile blends four batches ahead; whole milk and heavy cream carry `ultra-pasteurised`; locust bean gum carries a hydration temperature of 82 °C against a 69 °C hold, and step 2 targets 85 °C; per-field bases mark whole milk and cream MSNF, allulose PAC and POD, and salt PAC as estimated.
+
+Product-specific truth the surface must show, not claim: the churned version and its batch read unchanged after a child exists; a change and its reason sit on the same page; a figure outside its band saves without ceremony and says so in words; an advisory states what it was computed from and never what the ice cream will taste like; an inherited note is never mistaken for a fresh judgement.
+
+## 3. Selected direction
+
+**Visual authority:** `DESIGN.md` as recorded from Phases 1 and 2, the Formulation Cookbook, with the Two-Ink, No-Verdict, Bookcloth and Paper-Is-Flat rules binding. This extends the recipe surface inside its established world: no new world, no new hue, no new face, no shadow, no tonal layer. The recipe brief's "translucent sheet" for comparison is retired (Mark, 2026-09-07) in favour of tracked changes in the page's own grammar; nothing in `DESIGN.md` changes.
+
+**Thesis: developing the next version is striking the old value and writing the new one beside it.** This is how the binder was kept (six pages of hand-overwritten grams), how Phase 2's record already reads (a struck step, the as-made beside the plan), and how a word processor tracks changes (Mark, 2026-09-07). The pen that Phase 2 gave the record is now given to the plan: while the pen is open, every changed value shows the parent's value struck in ink with the new value beside it in pen blue, so the comparison is born while the version is written. A saved version reads clean, and one control lays the same grammar back on the page. The surface refuses the recipe-app "duplicate recipe" that produces a nameless copy with no reason and no parent, and the calculator's live spreadsheet where a change has no author, no date, and no "why". It refuses, just as firmly, a wizard, a modal, a side-by-side diff viewer, and a translucent sheet laid over the page.
+
+**Structural thesis, four parts.**
+
+- **The pen on the plan.** One control in the headnote, "Develop the next version" (its exact label is settled in GSD discussion, not by a builder), opens the pen on every version, churned or not (Mark, 2026-09-07). Grams become fields in place: pen blue inside a hairline ink outline, right-aligned in their column, accepting what the precision scale reads (two decimals), kept as typed. The moment a value differs from the parent's, the parent's value appears struck in ink immediately before the field, so the cell reads "~~40~~ 48" as a struck printed figure and a blue written one; the % of batch column does the same on its own ("~~5.0~~ 6.0"). Changes are always visible while the pen is open; there is nothing to toggle. Each row gains a text control, "remove", that strikes the whole row (name, grams and share struck, contributing nothing to the totals or the figures) and becomes "restore". Each step's lead-in, instruction, purpose and aside edit as text in the text face; once a step's text differs from the parent's, the parent's text reads struck beneath the field, because a paragraph has no room beside. Each target chip's label and value edit as text, and a changed chip shows the old one struck before it ("~~blend 45 s~~ blend 60 s"). Each step gains "remove" and "restore" the same way as a row. Each row's step allocation (the step it goes into, the sheet's step column) edits as a choice among the version's steps (Mark, 2026-09-07). Each step carries a "uses" list, the rows it handles, chosen from the twelve and editable in the pen (Mark, 2026-09-07); allocation and uses are different facts and both are kept: lecithin goes in at step 8 and is used by steps 1 and 8. The headnote prose edits as text with the same struck-beneath treatment. Authored notes edit as text and can be removed per note. While the pen is open on a churned version, the open batch's as-made column and record stay in reading form beside the fields, because they are the evidence the maker edits from; the batch's own pen and the plan's pen are never open together. Not editable in milestone 1, and named: target bands, adding a step, adding a row (REQUIREMENTS.md limits ingredient handling to the recipe's twelve rows), and batch size (there is no scaling; the total row shows the sum of the rows as they are). Mark holds his objection to all three for the next milestone (2026-09-07); they are recorded in § 7, not silently dropped.
+- **Removing a row and a step together.** The 2 Aug batch struck step 1 and used no lecithin; on the plan those are two removals, linked through "uses". Removing a row flags every step that uses it, in words beneath the step ("uses soy lecithin, which is removed"), with "remove this step" offered there; removing a step flags every row it used that no remaining step uses, in words beside the row's name, with "remove this row" offered there. Removal never cascades: a maker may keep step 1 and put something else in the oil, so the second removal is always the maker's own tap. Restoring either clears the flag it caused.
+- **The figures and the advisories answer live.** Every keystroke recomputes the six figures; the deviation words update; once a figure differs from the parent's, the parent's value reads struck before the current one in the rule's head ("~~24.1~~ 24.7") and the parent's tick stays on the scale drawn hollow (outline, not filled) beside the current solid tick, form carrying state, no colour. The margin's derived advisories recompute the same way. A step that uses a row whose grams differ from the parent's, and whose own text is unchanged from the parent's, reads "amounts changed: skim milk powder 22.4 → 24 g" in ink small print beneath its targets (Mark, 2026-09-07: plain prose now, flag stale amounts). The flag rests on the step's "uses" list, never on parsing the prose. It is a derived reading of the difference from the parent, so it needs no clearing control: it shows while the pen is open and in the show-changes state, and never in the clean reading, because there it would be noise on every version whose amounts moved (Mark, 2026-09-07).
+- **The ceremony in the headnote.** Saving lives where the version is named, at the top of the page, not at the foot of the longest column (the Phase 2 design debt). While the pen is open the headnote carries: the version line as a field (blank; the parent's line beneath as "was 50 g oil · 800 g"; required, because a version needs a name); a reason field in the text face, blank, optional (a blank reason saves and the lineage line then reads "no reason recorded", so silence is visible, never filled); a citation, the parent's batches listed by churn date with none chosen by default and one tap to cite, or "no batch to cite" in ink when the parent has none; then the save controls and "Cancel". On a version with no batch recorded against it, two saves are offered and both are labelled by what they do: "Save over this version" and "Save as a new version". On a churned version only "Save as a new version" exists, so the record's version is never written to (D04). Saving as new writes a child record with its parent's id and a snapshot of the parent's version line, the reason, the cited batch, and a creation date, then lands on the child's own URL with the page returned to black. Saving over keeps the id and the lineage and replaces the content. Cancel discards with no dialog of the app's own; leaving with unsaved ink gets the browser's own warning, as in Phase 2. A figure outside its band changes nothing about the ceremony (FORM1-03): the words beside the figure already say so.
+- **Lineage, the strip, and what changed.** A saved child's headnote carries a lineage line under its version line, in the text face: "from 50 g oil · 800 g, after the batch of 2 Aug 2026", the parent and the batch each a link, followed by the reason as a headnote paragraph. Beneath the headnote a version strip lists every version of the recipe in creation order by its version line, the current one carried by weight and outline, each a link; a churned version wears the word "churned" in small print (no count, per Phase 2's D-21). A saved version reads clean: no strikes, no old values, removed rows and steps absent, because this is the page that prints and is made from. The lineage line holds one toggle, "show changes from 50 g oil · 800 g", which lays the pen's grammar back on the page as a state of it, in place, with no motion (Mark, 2026-09-07: one version-level control; element and section toggles are not built). In that state every changed value reads as the parent's struck before the current one, both in ink because both are printed matter now ("~~40~~ 48" in grams, "~~5.0~~ 6.0" in % of batch; a row whose grams held but whose share moved shows the share alone); removed rows and steps reappear whole and struck; the total row shows the parent's total struck before the current one; each graduated rule shows the parent's value struck in its head and the parent's hollow tick on its scale; a changed step shows the parent's text struck beneath, a changed target chip shows the old chip struck before it; an inherited note wears its marker. Form alone says which is old: adjacency and the strike, never a colour. A version compares against its parent only; siblings and batches are later milestones (LEARN-01).
+
+**Inherited notes (deciding the recipe brief's open item).** Authored notes copy into the pen's draft, each wearing "from 50 g oil · 800 g" in small print until edited on this version; the marker persists on the saved child so a reader knows the judgement was inherited, and it clears only when the note is edited here. This is the audit's staleness marking: Mexican Chocolate v3 read as evaluated because a field persisted silently. Batch results never copy at all; they live on the batch.
+
+**Derived advisories (FORM2-02).** In the margin, after the batch record and before the authored notes, in the printed page's order: a block with the legend "derived" at right, parallel to the authored block's "authored", holding small-print paragraphs in ink, each ending in a "basis:" line, each naming the rows it rests on. Four, present only when true of the version as it stands:
+
+- **Sub-scale amounts.** Rows under the kitchen scale's resolution (guar gum 0.48 g, lambda carrageenan 0.16 g), the master-blend multiple from the equipment profile (four batches ahead), the blend's parts and total, and the take for this batch (1.68 g). Basis: the scale reads to 1 g; the equipment profile blends four batches ahead.
+- **Ultra-pasteurised mass.** The grams of the batch that carry an ultra-pasteurised treatment (623.2 g of 800: whole milk, heavy cream). Basis: heat treatment recorded on each ingredient.
+- **Gum hydration against the hold.** Each gum whose hydration temperature exceeds the pasteurisation hold (locust bean gum, 82 °C against 69 °C), and, when a method step carries a temperature target at or above it, that step ("step 2 targets 85 °C"). Basis: hydration temperature recorded on the ingredient; the version's pasteurisation setting; the step's typed target.
+- **Estimated-data exposure.** Which figures rest on estimated data and through which rows (PAC and POD through allulose and salt; MSNF, PAC and POD through whole milk and heavy cream). Basis: per-field basis recorded on each ingredient.
+
+None blocks, none colours, none predicts a sensory outcome, and none is worded as a verdict: no "correct", no "fixed", no "guaranteed", no "safe".
+
+**Focal moment.** The pen open on the churned version: 40 struck in ink with 48 written beside it in blue, the record's 45 still beside them in its own blue, the fat rule's head reading its old figure struck before the new one with a hollow tick where the solid one was, and in the headnote a reason half-written that names the batch of 2 Aug.
+
+**Raises carried:** state changes weight and outline, never position or hue; every block wears its plain-language name; nothing moves on focus; one heavy element per view; every superseded version reachable in one strip.
+
+**Implementation consequence.** One component tree: the plan's pen is a second mode of the recipe page's regions beside the batch's, exclusive with it. A version record gains a parent label snapshot, a reason, a cited batch id, and a creation date; rows and steps gain a removed flag (kept on the record so show-changes can strike them, absent from the clean reading); steps gain a "uses" list of row ids, authored on the seed for the ten steps; authored notes gain an inherited-from marker; the store's schema version and the transfer validator move with it. The parent record is never written when a child is saved, and show-changes reads the parent record live, never a copy of it stored on the child. The child's rows carry their own `structuredClone` of the parent's coefficients, as every version does. The strike-and-beside marks live in the page's own structure, in the table's cells, the rule's head, the step's body, so the DOM order, the keyboard path, and the screen reader read a table with an old and a new value, never marks floating over one. Phase 4 prints the clean reading: no strikes, no removed rows or steps, no advisory.
+
+## 4. Scope and boundaries
+
+**Fidelity:** production-ready. **Breadth:** the plan's pen on the recipe page, the save ceremony, the version record and its lineage, the strip, the show-changes state, the four advisories, the stale-amount flag, the inherited-note marker, the running head as the link home, and the recipe list showing each recipe once at its most recently created version. **Interactivity:** full flow (open the pen, edit with changes visible, save as new or save over, cancel, reopen after reload, show changes, fork again from any version).
+
+**In:** grams per row; step allocation per row; remove and restore a row; step text, purpose, aside, target chips, and the step's "uses" list; remove and restore a step; the removal cross-flags in both directions; headnote prose; authored notes with inheritance markers; version line, reason, and citation; save as new; save over an unchurned version; cancel; the lineage line; the strip; the show-changes state; the four advisories with their basis lines; the stale-amount flag; the running head "Sprinkles" in ink as the link home (the Phase 1 critique's carry) and a real "no recipe found" that links back to the list.
+
+**Out, and named:** adding rows or steps and editing target bands (held objections, § 7); scaling (SCALE-01); the ingredient library (ING-01); comparing siblings, or a version against a batch's as-made (LEARN-01; the batch layer already shows as-made per row); as-made ticks on the rules and a blue "actual" per chip (still deferred); step amounts referencing rows (Mark, 2026-09-07: deferred beyond this milestone); diagnosis (D07); printing (Phase 4); draft persistence of unsaved ink across a reload (UX1-02, Phase 4); phone design and testing; deleting a version.
+
+**Anti-goals:** no copy of a version without a name and a parent; no reason or citation pre-filled by the app; no batch result copied into a version; no colour, icon, or badge on a deviation, a change, a removed row, or an advisory; no advisory that blocks or warns in the imperative; no confirmation dialog for saving out of band; no wizard, stepper, modal, side-by-side diff, or translucent sheet; no toggle to hide changes while the pen is open; no per-element or per-section show-changes controls; no editing of a churned version in place; no automatic rebalancing to 800 g.
+
+## 5. States and ranges
+
+| | Realistic range |
+|---|---|
+| Versions per recipe | 1–6 in milestone 1; the working case has 1 and will have 2 or 3 |
+| Children per version | 0–3; two alternates from one batch is the named case |
+| Rows changed per child | 0–12; the illustration changes 1 |
+| Rows removed per child | 0–3 |
+| Steps changed per child | 0–10; steps removed 0–2 |
+| Figures crossing a band edge while editing | 0–6 |
+| Advisories shown | 0–4; the working case shows 4 |
+| Reason | blank, one line, or a short paragraph |
+| Cited batches | 0–1, from 0–3 offered |
+| Inherited notes | 0–5; the working case carries 5 |
+
+**Material states:** pen closed, reading the churned version · pen open on a churned version (fork only) · pen open on an unchurned version (save over or fork) · a value differing from the parent, struck old beside blue new · a row removed in the draft · a row restored · a step removed · a row removed that a step still uses, flagged · a step removed whose rows nothing else uses, flagged · a row's step allocation changed · a step's "uses" list changed · a step's text edited · a target edited · a figure crossing its band live · an advisory appearing or disappearing as values change · a stale-amount flag on a step in the pen · the same flag in show-changes · the clean reading with no flag · an inherited note untouched · an inherited note edited, marker cleared · version line blank at save (blocked, in words) · reason blank at save (allowed) · no batch cited · parent with no batch to cite · saved child, reading, in black · show changes open · show changes with a removed row and a moved share · a version with two children in the strip · a child of a child, comparing to its own parent · cancel with ink · leaving with ink · reload after save (REC1-05) · the churned version and its batch after a child exists, unchanged · the recipe list with two versions of one recipe.
+
+## 6. Interaction and layout
+
+- **Hierarchy in the pen:** the headnote's ceremony (version line, reason, citation, saves, cancel); the ingredient table's grams fields and remove controls; the method's text fields and targets; the formulation note answering live; the margin's advisories answering live; the authored notes. Reading order is the page's order and the tab order follows it: the headnote fields, then the save controls, then the table row by row (grams, then remove), then each step top to bottom (text, targets, uses, remove), then the authored notes. A row's allocation control follows its grams field. The six graduated rules leave the tab path while the pen is open, as they do while recording a batch.
+- **Topology:** one page; the pen and show-changes are states of it; a saved version has a URL, `/recipe/:id`; no route for the pen; whether the show-changes state gets a URL is decided in GSD discussion, not by a builder.
+- **Fields:** hairline ink outline, no fill, no radius; grams in the grotesk with tabular numerals, right-aligned; prose in the text face; every typed value pen blue until saved, then ink. A grams field accepts two decimals and keeps what was typed; a field emptied reads as 0 g only if the maker types 0, otherwise the save is blocked in words ("whole milk needs an amount, or remove the row").
+- **Strike and beside:** the parent's value struck in ink immediately before the field or the current value; the strike is the same stroke the batch layer uses on a struck step; prose that changed shows the old text struck beneath, not beside; the parent's tick on a rule is drawn as an outline at the same weight as the solid tick; every mark appears only where the value differs. The strike is never the only carrier: the accessible name of a changed cell reads "was 40 g, now 48 g".
+- **Show-changes state:** one toggle in the lineage line, pressed state by weight and outline, `aria-pressed`; the marks are ink; nothing fades and nothing moves. The table reflows once when the marks arrive, as it does when the as-made column arrives; the numeric columns must be sized so a struck value and a current value fit on one line at the working case's widths.
+- **Feedback:** saving lands on the child in black with its lineage line and the strip showing both versions; no toast. A blocked save says why in words beside the control. Removing a row or step strikes it in place with the control now reading "restore".
+- **Leaving with unsaved ink:** the browser's own leave warning; no invented dialog.
+- **Responsiveness:** designed and tested at 1280 and wider; below that the page stacks as it does today.
+- **Keyboard and contrast:** every field has a visible label and the shared focus outline; the remove, restore, save, cancel and show-changes controls have text labels; the strip and the lineage links are focusable in ink; pen blue on ground meets AA (9.75:1).
+
+## 7. Constraints and open decisions
+
+**Binding**
+- The Two-Ink, No-Verdict, Bookcloth and Paper-Is-Flat rules from `DESIGN.md`.
+- A churned version's record and its batches are never written when a child is saved (D04, REC1-02); a child carries its own snapshot of coefficients.
+- Balance is an assessment under assumptions: a version outside any band saves, and no wording claims correctness or success (D06, FORM1-03).
+- Every advisory states its basis and is structural only (FORM2-02).
+- Forking is never gated on churning; a version with no batch can also be saved over (Mark, 2026-09-07).
+- Step amounts stay prose; a step that uses a changed row and whose text is unchanged is flagged in words, in the pen and in show-changes only (Mark, 2026-09-07).
+- **The Strike Rule** (to be recorded in `DESIGN.md` at the next documentation pass): a strike means not in force, and what sits beside it says why. Beside a skipped step, the word "skipped" (the batch layer); beside a superseded value, its replacement; beside a removed row or step, the word "removed". The stroke is the same in all three, ink on printed matter, and it is never the only carrier. No builder adds a fourth meaning.
+- Editing, then saving as a version, is how a version is born; there is no record of a version until it is saved (Mark, 2026-09-07).
+- Batch size stays 800 g in the sense that no scaling exists; the total row reports the rows' sum.
+- Keyboard-operable with visible labels and focus; text contrast at AA (UX1-01).
+- Desktop only.
+
+**Decided with Mark (2026-09-07):** changes read as tracked changes, the old value struck beside the new, always visible while the pen is open and shown by one version-level control after save; the recipe brief's translucent overlay and its fade are retired; `DESIGN.md` is unchanged.
+
+**Decided with Mark (2026-09-07), second round:** each step declares the rows it uses; removal cross-flags through that list and never cascades; the stale-amount flag is derived and confined to the pen and show-changes; step allocation is editable; the save ceremony in the headnote, the inherited-note marker, and the blank reason and citation are confirmed.
+
+**Decided here:** advisories sit after the batch record and before the authored notes.
+
+**Held objections (Mark, 2026-09-07), for the next milestone's requirements, not for a builder:** editing target bands; adding a step; adding a row from the seed library (needs REQUIREMENTS.md's twelve-row limit lifted).
+
+**Follow-ups this brief creates**
+- Revise `route-recipe.md` § 3 and § 6 to retire the translucent overlay and its fade and point here; record this brief in `STATE.md` (one GSD quick task, with the confirmation).
+- After the Phase 3 build lands, re-run the documenter so `DESIGN.md` records the pen layer's components from Phases 2 and 3 together (field, strike, marks control, button, hollow tick, show-changes control) and the Strike Rule; it still says pen blue is unused and no input exists.
+
+**To resolve in the GSD Phase 3 discussion, not in code**
+- The label of the control that opens the pen ("Develop the next version" is the working name).
+- Whether the show-changes state is URL-addressable.
+- Whether a fifth advisory, the batch mass against the machine's minimum fill (the sheet's "confirm 800 g clears your machine's minimum fill"; the equipment profile carries 700 g), joins the four FORM2-02 names.
+- Whether a tasting with some axes marked and others unmarked is incomplete (the Phase 2 review's question; the batch brief treats an unmarked axis as valid silence).
+- The store's schema move and what a schemaVersion 2 export does when imported after it.
+
+**Must not be invented by a builder**
+- Labels for stars, Optimize, Scale, Template (D12); a rating control.
+- A default reason, citation, or version line.
+- A colour, icon, or badge that says a change, a removed row, a stale step, or an advisory is good, bad, or a problem.
+- Any sensory claim in an advisory or a deviation line.
+- Rebalancing, scaling, or rounding the maker's typed grams.

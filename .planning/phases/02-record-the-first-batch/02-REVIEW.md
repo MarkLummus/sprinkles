@@ -1,150 +1,124 @@
 ---
 phase: 02-record-the-first-batch
-reviewed: 2026-09-06T00:00:00Z
+reviewed: 2026-09-07T00:21:40Z
 depth: standard
-files_reviewed: 22
+files_reviewed: 12
 files_reviewed_list:
-  - app/src/data/batch-2026-08-02.js
-  - app/src/data/olive-oil.js
-  - app/src/data/olive-oil.test.js
   - app/src/domain/axes.js
   - app/src/domain/axes.test.js
   - app/src/domain/batch.js
   - app/src/domain/batch.test.js
-  - app/src/domain/composition.js
-  - app/src/domain/composition.test.js
-  - app/src/router.jsx
-  - app/src/store/db.js
-  - app/src/store/repository.js
-  - app/src/store/seed.js
-  - app/src/store/seed.test.js
-  - app/src/store/transfer.js
-  - app/src/store/transfer.test.js
   - app/src/styles/app.css
-  - app/src/styles/tokens.css
   - app/src/ui/AxisMark.jsx
+  - app/src/ui/AxisMark.test.jsx
   - app/src/ui/BatchMargin.jsx
-  - app/src/ui/IngredientTable.jsx
+  - app/src/ui/BatchMargin.test.jsx
   - app/src/ui/Method.jsx
+  - app/src/ui/Method.test.jsx
   - app/src/ui/RecipePage.jsx
 findings:
-  critical: 2
-  warning: 2
+  critical: 1
+  warning: 1
   info: 2
-  total: 6
+  total: 4
 status: issues_found
 ---
 
 # Phase 02: Code Review Report
 
-**Reviewed:** 2026-09-06T00:00:00Z
+**Reviewed:** 2026-09-07T00:21:40Z
 **Depth:** standard
-**Files Reviewed:** 22
+**Files Reviewed:** 12
 **Status:** issues_found
 
 ## Summary
 
-The domain layer (`domain/batch.js`, `domain/axes.js`, `domain/composition.js`) is careful and well-tested against the presence-vs-truthiness discipline the phase set out to build (blank vs. zero, plan-never-leaks, snapshot immutability). Its unit tests are thorough and pass strings of numeric fixtures exactly matching the invariants documented in the code comments.
+This is an incremental review of gap-closure plans 02-04 (`Record another batch` / `Cancel`) and 02-05 (the struck-label fix and the per-axis `Clear` control), diffed against `520d880c` — the commit the prior `02-REVIEW.md` covered.
 
-The defect is at the seam between that domain layer and the new UI code in `IngredientTable.jsx`/`RecipePage.jsx`: the as-made draft is stored and passed around as raw strings (exactly as the code comments say it should be, to preserve typed precision until save), but `IngredientTable` feeds that raw-string draft directly into `asMadeTotals`/`formatGrams`, which assume numeric input. This is a real, easily reproduced crash in the batch-recording feature this phase delivers — see CR-01. It is compounded by a second gap (CR-02): the as-made input is unconstrained free text with no validation before it is coerced with `Number()` at save time, so garbage input becomes a silently-persisted `NaN` in a record that IndexedDB will happily store and no export/import path guards against until an import attempt on a different machine refuses the file.
+The previous review's two Critical findings are both resolved by this diff: `asMadeTotals` now coerces string input with `Number()`/`Number.isFinite` before summing (`domain/batch.js`), and `RecipePage.jsx`'s `handleSaveBatch` now drops unparsable as-made entries instead of persisting `NaN`, with new tests in `batch.test.js` exercising the string-typed path the live UI actually produces. The previous review's WR-01 (duplicated batch-sort comparator) is resolved by extracting `sortedBatches` into `domain/batch.js`, used by both `RecipePage.jsx` and `BatchMargin.jsx`. WR-02 (the string-input test gap) is resolved by the new `asMadeTotals`/`readMeasured`-adjacent tests. The struck-label fix (Method.jsx) and the `setMark`/`Clear` control (axes.js, AxisMark.jsx) are both implemented as specified, each backed by a new, well-targeted render/unit test, and both correctly avoid the CSS-decoration-propagation and marks-mutation pitfalls called out in the plan.
 
-Neither of the two domain-test suites (`batch.test.js`, `composition.test.js`) ever exercises `asMadeTotals`/`formatGrams` with the string-typed values the live recording UI actually produces — every fixture passes numbers — which is why this went uncaught. No component-level tests exist for the new UI files at all (no test renderer is even installed in `app/package.json`).
+This pass found one new Critical defect introduced by plan 02-04's "Record another batch" control: an in-progress tasting draft is not cleared or scoped to the batch it was started against, so creating and saving a new batch while a tasting is being composed silently re-attaches that tasting to the new batch instead of the one the maker was actually describing. It also found one Warning: `setMark`'s write path does not carry the same prototype-safety property its own doc comment and the plan's T-02-32 threat-mitigation claim for it — verified by a runtime repro. Two pre-existing Info items are carried forward for completeness; neither was touched by this diff.
 
 ## Critical Issues
 
-### CR-01: Recording a batch's as-made value crashes the ingredient table (string concatenation, not addition)
+### CR-01: An in-progress tasting draft silently reattaches to the wrong batch after "Record another batch"
 
-**File:** `app/src/ui/IngredientTable.jsx:78-82`
-**Issue:**
+**File:** `app/src/ui/RecipePage.jsx:138-152` (`handleStartRecording`), `app/src/ui/RecipePage.jsx:264-272` (`handleSaveBatch`, create path), `app/src/ui/RecipePage.jsx:322-339` (`handleSaveTasting`)
+**Issue:** `tastingDraft` is independent React state, not scoped to `openBatch.id`, and nothing in this diff resets it when the batch on screen changes. Plan 02-04's own threat model states this explicitly about the page's component state in general (02-04-PLAN.md: "Which save path runs — create or amend — is decided by one piece of component state that **survives across openings of the pen layer**") — the same survival applies to `tastingDraft`, which no handler added by 02-04/02-05 accounts for.
+
+Sequence that reproduces it:
+1. On batch A's page, click "Add a tasting" and mark an axis or type words — `tastingDraft` is now populated and rendered against `openBatch = A` (`axesForBatch(openBatch)` inside `BatchMargin.jsx`'s reading branch).
+2. Without saving or discarding that tasting, click the new "Record another batch" control (`BatchMargin.jsx:300-302`). `handleStartRecording` sets `mode = 'recording'` and resets `draft`/`amendingBatchId`, but does not touch `tastingDraft` (`RecipePage.jsx:138-152`).
+3. Fill in the new batch's churn fields and click "Save batch". `handleSaveBatch`'s create path (`RecipePage.jsx:264-272`) creates batch B, adds it to `batches`, and calls `navigate('/recipe/:id/batch/:B-id')`. Because both `/recipe/:id` route entries in `router.jsx` render the same `RecipePage` component, this is a param change on the same route, not a remount — `tastingDraft` (and every other `useState`) survives untouched.
+4. `openBatch` now recomputes to batch B (`batchId` param now names B). The still-populated `tastingDraft` renders as if composed for B (`BatchMargin.jsx`'s `tastingDraft ? <TastingForm axes={axesForBatch(openBatch)} .../> : ...` — `openBatch` is B here).
+5. Clicking "Save tasting" calls `addTasting(openBatch, tastingFields, ...)` (`RecipePage.jsx:333`) — `openBatch` is B. The tasting the maker composed while looking at batch A is persisted against batch B, with no warning, no confirmation, and no code path that ever mentions batch A again.
+
+This is a genuine data-misattribution bug, not merely a UX rough edge: the record ends up asserting that a tasting happened for a churn event it was never actually about, which is exactly the connection ("what was actually done... how the result was experienced") this phase exists to keep truthful. No test exercises this interaction — `BatchMargin.test.jsx` always renders with `tastingDraft: null`, and there is no `RecipePage.test.jsx` at all, so nothing in the suite renders the sequence above.
+
+**Fix:** Clear `tastingDraft` wherever the open batch is about to change out from under it — at minimum in `handleStartRecording` (mirroring the existing `setAmendingBatchId(null)` reset added by this same plan for the analogous stale-state hazard):
 ```js
-const asMadeSource = mode === 'recording' ? draft.asMade : openBatch ? openBatch.churn.asMade : {};
-const { planTotal, asMadeTotal } = asMadeTotals(rows, asMadeSource);
-const planTotalText = formatGrams(planTotal);
-const asMadeTotalText = formatGrams(asMadeTotal);
-```
-While `mode === 'recording'`, `asMadeSource` is `draft.asMade` — and every value in `draft.asMade` is a **string**, exactly as designed in `RecipePage.jsx`'s `handleChangeAsMade` (`asMade[rowId] = rawValue` where `rawValue` is `event.target.value`) and in `handleStartAmending` (`asMade[rowId] = String(value)`). `domain/batch.js`'s `asMadeTotals` does:
-```js
-asMadeTotal += Object.prototype.hasOwnProperty.call(asMade, row.id) ? asMade[row.id] : row.grams;
-```
-`asMadeTotal` starts as the number `0`. As soon as one row has a string in `asMade`, `+=` performs **string concatenation**, not numeric addition (`0 + "383"` → `"0383"`), and every subsequent `+=` in the loop (numeric or not) concatenates onto that string. `asMadeTotal` ends up a string. `formatGrams` then calls `grams.toFixed(1)` on it — `String.prototype.toFixed` does not exist, so this throws `TypeError: grams.toFixed is not a function` during render.
-
-This is not an edge case: the seeded 2 Aug 2026 batch (`data/batch-2026-08-02.js`) already has four as-made entries. Clicking **Amend** on that batch calls `handleStartAmending`, which populates `draft.asMade` with those four values as strings *before the maker types anything*, and the table crashes immediately on the next render. Recording a brand-new batch crashes as soon as the maker types a single character into any as-made cell.
-
-**Fix:** Coerce the recording-mode source to numbers before summing (and decide how to treat unparsable/blank entries, see CR-02):
-```js
-const asMadeSource =
-  mode === 'recording'
-    ? Object.fromEntries(Object.entries(draft.asMade).map(([id, raw]) => [id, Number(raw)]))
-    : openBatch
-      ? openBatch.churn.asMade
-      : {};
-```
-
-### CR-02: As-made cell accepts free text with no validation, so `NaN` can be silently persisted to the stored batch record
-
-**File:** `app/src/ui/IngredientTable.jsx:44-52` (the input), `app/src/ui/RecipePage.jsx:229-232` (the save conversion)
-**Issue:** `AsMadeCell`'s input is `type="text"` (not `type="number"` like every other numeric field in this phase — come-up minutes, draw temperature, overrun percent, tasting temperature, meltdown loss all use `type="number"`), so the browser applies no numeric constraint:
-```jsx
-<input type="text" inputMode="decimal" className="ink-field" value={draftValue} ... />
-```
-At save time, `RecipePage.jsx`'s `handleSaveBatch` converts every entry unconditionally:
-```js
-for (const [rowId, rawValue] of Object.entries(draft.asMade)) {
-  asMade[rowId] = Number(rawValue);
+function handleStartRecording() {
+  setAmendingBatchId(null);
+  setTastingDraft(null); // the tasting being composed belongs to the batch on screen now, not to whichever batch is open after this save
+  setDraft({ ... });
+  setMode('recording');
 }
 ```
-If the maker types anything non-numeric ("abc", "1,234", or even a lone space, which `Number()` coerces to `0` unnoticed), the row either silently becomes `0` or becomes `NaN`. A `NaN` written this way passes straight into `createBatch`/`recordAmendment` and gets persisted via `repository.saveBatch` — there is no write-time gate (the only numeric validation in the codebase, `store/transfer.js`'s `validateStoreFile`, only runs on **import**, not on save). Once persisted, `readMeasured`/`asMadeFor` render it as the literal string `"NaN"` to the maker, `asMadeTotals` propagates it into the batch total (and, via CR-01's coercion fix, would poison the numeric total the moment one row is `NaN`), and a later export → import round trip of that record would be silently refused (`isFiniteNumber(NaN)` is `false` in `validateRow`), destroying the ability to move that batch between installs.
-
-**Fix:** Either constrain the input the same way the other numeric churn fields are constrained (`type="number"`), or validate before conversion and refuse to save (or drop the offending entry) when `Number.isFinite(Number(rawValue))` is false, e.g.:
-```js
-for (const [rowId, rawValue] of Object.entries(draft.asMade)) {
-  const parsed = Number(rawValue);
-  if (!Number.isFinite(parsed)) { /* surface an error and stop the save */ }
-  asMade[rowId] = parsed;
-}
-```
+Consider also including `tastingDraft` in the dirty check that gates the "Record another batch"/"Amend" controls (or warning before discarding it), since this silently drops/misroutes maker-entered ink the same way an unguarded cancel would.
 
 ## Warnings
 
-### WR-01: "Most recent batch" ordering is duplicated verbatim in two files
+### WR-01: `setMark`'s write path does not have the prototype-chain safety its comment and the plan's threat mitigation (T-02-32) claim
 
-**File:** `app/src/ui/RecipePage.jsx:127-136` and `app/src/ui/BatchMargin.jsx:249-257`
-**Issue:** Both files independently implement the same batch comparator (churn date descending, undated last):
+**File:** `app/src/domain/axes.js:66-74`
+**Issue:** The doc comment states the function is "built with object spread and delete, which write only the object's own properties, never through an assignment path that could walk a prototype chain reached by a hand-edited version's axis key (T-02-32)." That claim holds for the *delete* branch (`delete next[axisKey]`) but not for the *write* branch:
 ```js
-const sorted = [...batches].sort((a, b) => {
-  const aDate = a.churn.churnDate;
-  const bDate = b.churn.churnDate;
-  if (aDate === bDate) return 0;
-  if (aDate === null) return 1;
-  if (bDate === null) return -1;
-  return aDate < bDate ? 1 : -1;
-});
+export function setMark(marks, axisKey, stop) {
+  const next = { ...marks };
+  if (stop === null) {
+    delete next[axisKey];
+  } else {
+    next[axisKey] = stop;   // <-- not spread; a plain bracket assignment
+  }
+  return next;
+}
 ```
-`RecipePage.jsx` uses it to pick the default `openBatch`; `BatchMargin.jsx` uses it (independently) to render the batch list. `domain/batch.js` already has a `sortedTastings` helper for the analogous tastings-ordering problem, but no equivalent for batches, so this logic was reinvented twice instead of factored into the domain module. A future change to the tie-break rule (e.g., "undated first" instead of "undated last") would need to be made in both places and could silently drift.
-**Fix:** Add a `sortedBatches(batches)` export to `domain/batch.js` alongside `sortedTastings`, and have both UI call sites use it.
-
-### WR-02: `asMadeTotals` / `formatGrams` are exercised only with numeric fixtures; the string-valued path the UI actually uses is untested
-
-**File:** `app/src/domain/batch.test.js:298-317`, `app/src/domain/composition.test.js:114-119`
-**Issue:** Every `asMadeTotals` test in `batch.test.js` passes an `asMade` object whose values are already numbers (e.g. `{ 'row-01': 383, ... }`), and `formatGrams` is only ever tested with numeric literals. The actual production caller, `IngredientTable.jsx` in recording mode, passes `draft.asMade`, whose values are strings by design (see CR-01). No test in the suite reproduces that shape, which is exactly why CR-01 was not caught before merge.
-**Fix:** Add a test that calls `asMadeTotals`/`formatGrams` (or an integration-level check on `IngredientTable`) with string-typed as-made values, asserting either a numeric result or an explicit, intentional rejection — whichever the fix for CR-01/CR-02 settles on.
+`next[axisKey] = stop` is a normal property assignment, not `CreateDataProperty` the way spread is. For `axisKey === '__proto__'` this invokes `Object.prototype`'s `__proto__` accessor rather than creating an own key. Verified directly:
+```
+$ node -e "
+function setMark(marks, axisKey, stop) {
+  const next = { ...marks };
+  if (stop === null) delete next[axisKey]; else next[axisKey] = stop;
+  return next;
+}
+const r = setMark({}, '__proto__', 4.5);
+console.log(Object.keys(r), JSON.stringify(r));
+"
+[] {}
+```
+A mark placed on an axis whose declared name is literally `__proto__` (reachable via `markKeyFor` on a hand-edited version's `declaredAxes`, the exact scenario T-02-31/T-02-32 already flag as a going-in threat) silently vanishes — `setMark` reports success but the returned object has no own key for it, so `isTastingSaveable`/`TastingReading` will show the axis as unmarked even though the maker clicked a stop. This does not achieve broad prototype pollution (the object mutated is a fresh per-call clone whose own prototype is what changes, not `Object.prototype` itself, and `stop` is always a plain number in the app's own call sites, so the accessor's assignment is a no-op rather than actually swapping `next`'s prototype) — but the code's own claimed invariant ("write only the object's own properties") is false for this branch, and the practical effect is silent, undetected data loss for that one axis.
+**Fix:** Make the write branch use the same own-property-only mechanism as the rest of the function, e.g.:
+```js
+Object.defineProperty(next, axisKey, { value: stop, writable: true, enumerable: true, configurable: true });
+```
+or reject/guard `axisKey === '__proto__'` explicitly, or switch the marks representation to a `Map` (already suggested as future-proofing by the presence-over-truthiness discipline elsewhere in this module).
 
 ## Info
 
-### IN-01: The "as expected" tasting shortcut text is duplicated as a literal in two files
+### IN-01: Whitespace-only numeric input is silently treated as `0`, not as absent/unparsable
 
-**File:** `app/src/ui/BatchMargin.jsx:6`, `app/src/ui/RecipePage.jsx:296`
-**Issue:** `BatchMargin.jsx` defines `const AS_EXPECTED_WORDS = 'As expected, nothing to note';` for the button's label, but `RecipePage.jsx`'s `handleUseAsExpectedShortcut` independently hardcodes the identical string for the value actually written to the tasting. The constant is not exported, so the two copies can only be kept in sync by a human noticing both spots exist.
-**Fix:** Export `AS_EXPECTED_WORDS` from `BatchMargin.jsx` (or move it to a shared module) and have `RecipePage.jsx` import it instead of restating the string.
+**File:** `app/src/domain/batch.js:169-182` (`asMadeTotals`), `app/src/ui/RecipePage.jsx:237, 323` (`toNumberOrNull`)
+**Issue:** `Number(' ')` (and any whitespace-only string) evaluates to `0`, which is `Number.isFinite`-true, so both `asMadeTotals`'s coercion and `toNumberOrNull` treat a stray space the same as a deliberately typed `0` rather than as unparsable/absent ink — contradicting the stated contract ("a value that does not parse to a finite number... is treated the same as an absent key"). In practice this is not currently reachable through the app's own UI: every affected field (`comeUpMinutes`, `drawTempC`, `overrunPercent`, the as-made cells) is a `type="number"` input, and browsers normalize such an input's `.value` to either a parseable numeral or the empty string, never a bare space — so this is latent rather than an active bug today. Flagging it because both functions are exported/reused (`asMadeTotals` in particular is exercised in the domain suite with hand-built fixtures, not only through the UI), so a future caller feeding raw text (paste, a differently-typed input, an import path) would hit it silently.
+**Fix:** If defending against this is worth the line, trim before the finiteness check (`Number(String(rawValue).trim())`), or note explicitly in the doc comment that only exactly `''` is treated as absent and any other unparsable string other than pure whitespace already falls back correctly — whichever is intended.
 
-### IN-02: `tokens.css`'s `--pen-blue` comment is now stale
+### IN-02: `AS_EXPECTED_WORDS` duplication (carried forward, pre-existing, not touched by this diff)
 
-**File:** `app/src/styles/tokens.css:8`
-**Issue:** The token is defined with the comment `/* everything recorded — unused on screen this phase */`, but this very phase's diff adds `.ink-field`/`.ink-text` in `app.css`, both of which paint `--pen-blue` on screen (and the same file's own new comment at line 49 says "pen blue was defined above and unpainted **until now**" — i.e., acknowledging it is now painted). The original comment on line 8 was not updated and now contradicts the code beneath it.
-**Fix:** Update or remove the "unused on screen this phase" clause on line 8.
+**File:** `app/src/ui/BatchMargin.jsx:6`, `app/src/ui/RecipePage.jsx:316`
+**Issue:** Still present from the prior review (previously IN-01 in `02-REVIEW.md`): `BatchMargin.jsx` defines `const AS_EXPECTED_WORDS = 'As expected, nothing to note'` for the button's label, while `RecipePage.jsx`'s `handleUseAsExpectedShortcut` independently hardcodes the identical literal for the value actually written. Neither plan 02-04 nor 02-05 touched either line, so this is unchanged and still open; noted here only so it isn't lost between review passes.
+**Fix:** Unchanged from before — export the constant from one module and import it in the other.
 
 ---
 
-_Reviewed: 2026-09-06T00:00:00Z_
+_Reviewed: 2026-09-07T00:21:40Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_

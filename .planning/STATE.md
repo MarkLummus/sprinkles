@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-07)
 Phase: 3 — Develop the next version
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-06 - Completed quick task 260906-vsn: Impeccable layout fix: churn date into the headnote slot, graduated rules out of the recording tab path, batch brief revised (critique 2026-09-07 P1)
+Last activity: 2026-09-06 - Completed quick task 260906-w9g: Impeccable harden: tasting form gets a Cancel, a "Tasting" head, focus on its date when opened and back to "Add a tasting" when closed (critique 2026-09-07 second P1)
 
 Progress: [█████░░░░░] 50% (2/4 phases; 9/9 plans)
 
@@ -140,6 +140,7 @@ None yet.
 | 7 | Recipe table: fixed leading and wider name column so marked rows never move the method | 2026-09-06 | a6db02e | — |
 | 260906-gh9 | Record the confirmed batch-capture brief in STATE.md and move the outcome-dimensions decision in PRODUCT.md from undecided to decided | 2026-09-06 | 18cdcbb | [260906-gh9-record-the-confirmed-batch-capture-brief](./quick/260906-gh9-record-the-confirmed-batch-capture-brief/) |
 | 260906-vsn | Impeccable layout fix: churn date into the headnote slot, graduated rules out of the recording tab path, batch brief revised (critique 2026-09-07 P1) | 2026-09-06 | 681e239 | [260906-vsn-impeccable-layout-fix-for-the-batch-reco](./quick/260906-vsn-impeccable-layout-fix-for-the-batch-reco/) |
+| 260906-w9g | Impeccable harden: tasting form gets a Cancel, a "Tasting" head, focus on its date when opened and back to "Add a tasting" when closed (critique 2026-09-07 second P1) | 2026-09-06 | 0ad36e8 | [260906-w9g-impeccable-harden-for-the-batch-margin-s](./quick/260906-w9g-impeccable-harden-for-the-batch-margin-s/) |
 
 ## Deferred Items
 

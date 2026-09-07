@@ -1,0 +1,33 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": null,
+  "phases": [
+    {
+      "number": "1",
+      "name": "Read the churned recipe",
+      "status": "complete"
+    },
+    {
+      "number": "2",
+      "name": "Record the first batch",
+      "status": "complete"
+    },
+    {
+      "number": "3",
+      "name": "Develop the next version",
+      "status": "pending"
+    },
+    {
+      "number": "4",
+      "name": "Prepare the next version for making",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step (plan phase 3)",
+    "reason": "Phase 3 of 4 — needs a plan"
+  },
+  "updated_at": "2026-09-07T02:09:18.421Z"
+}

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
-import { createBatch, addTasting, recordAmendment, latestChurnDate, formatRecordDate, sortedBatches } from '../domain/batch.js';
+import { createBatch, addTasting, recordAmendment, formatRecordDate, sortedBatches } from '../domain/batch.js';
 import { setMark } from '../domain/axes.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
@@ -338,10 +338,6 @@ export function RecipePage() {
     });
   }
 
-  // The version line under the recipe name carries the latest batch's
-  // churn date only — never a count and never the print date (D-21).
-  const latestChurn = latestChurnDate(batches);
-
   return (
     <article className="recipe-page">
       <header className="headnote">
@@ -349,7 +345,30 @@ export function RecipePage() {
         <h1>{version.recipeName}</h1>
         <p className="headnote__version">
           {version.versionLabel}
-          {latestChurn && ` · churned ${formatRecordDate(latestChurn)}`}
+          {(mode === 'recording' || openBatch) && (
+            <>
+              {' · '}
+              {mode === 'recording' ? (
+                <label>
+                  churned{' '}
+                  <input
+                    type="date"
+                    className="ink-field headnote__churn-field"
+                    autoFocus
+                    value={draft.churnDate}
+                    onChange={(event) => handleChangeChurnDate(event.target.value)}
+                  />
+                </label>
+              ) : (
+                <>
+                  churned{' '}
+                  <span className="ink-text">
+                    {openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}
+                  </span>
+                </>
+              )}
+            </>
+          )}
         </p>
         <p className="headnote__prose">{version.headnote}</p>
       </header>
@@ -403,7 +422,6 @@ export function RecipePage() {
             draft={draft}
             onStartRecording={handleStartRecording}
             onStartAmending={handleStartAmending}
-            onChangeChurnDate={handleChangeChurnDate}
             onChangeChurnField={handleChangeChurnField}
             onSaveBatch={handleSaveBatch}
             onCancelRecording={handleCancelRecording}

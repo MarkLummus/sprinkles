@@ -410,6 +410,14 @@ body {
   outline-offset: var(--focus-outline-offset);
 }
 
+/* The headnote's churn slot (route-recipe-batch.md § 3, revised
+   2026-09-07): an .ink-field sitting inline in the version line's prose,
+   rather than filling a form field's container. */
+.headnote__churn-field {
+  width: auto;
+  display: inline-block;
+}
+
 .ink-text {
   color: var(--pen-blue);
 }

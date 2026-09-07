@@ -130,10 +130,12 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, o
 // discretion (02-CONTEXT.md, "Claude's Discretion").
 //
 // The churn section's field order, top to bottom, is the sheet's own order
-// (route-recipe-batch.md § 3, § 6): churn date; come-up; draw temperature;
-// overrun; draw notes; ingredient notes; next time. Every measured field in
-// the reading state renders through readMeasured — the one place a blank
-// becomes the word "unknown" — never a value read from the recipe.
+// minus the churn date, which now lives in the headnote's version line
+// (route-recipe-batch.md § 3, § 6, revised 2026-09-07): come-up; draw
+// temperature; overrun; draw notes; ingredient notes; next time. Every
+// measured field in the reading state renders through readMeasured — the
+// one place a blank becomes the word "unknown" — never a value read from
+// the recipe.
 export function BatchMargin({
   version,
   batches = [],
@@ -142,7 +144,6 @@ export function BatchMargin({
   draft,
   onStartRecording,
   onStartAmending,
-  onChangeChurnDate,
   onChangeChurnField,
   onSaveBatch,
   tastingDraft,
@@ -157,16 +158,6 @@ export function BatchMargin({
     return (
       <div className="batch-margin">
         <p className="batch-margin__legend">Batch</p>
-        <label className="batch-margin__field">
-          <span>Churn date</span>
-          <input
-            type="date"
-            className="ink-field"
-            autoFocus
-            value={draft.churnDate}
-            onChange={(event) => onChangeChurnDate(event.target.value)}
-          />
-        </label>
         <label className="batch-margin__field">
           <span>Come-up, min</span>
           <input
@@ -241,10 +232,6 @@ export function BatchMargin({
   }
 
   if (openBatch) {
-    // A blank churn date is not on the sheet, but is possible if the maker
-    // saves before typing one — read the same as any other blank measured
-    // field (D-03's "date unknown" wording, applied here).
-    const churnDateWords = openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown';
     // The latest amendment only (task 3, D-06) — the full list lives in
     // the record, not the reading state.
     const latestAmendment =
@@ -255,7 +242,6 @@ export function BatchMargin({
     return (
       <div className="batch-margin">
         <p className="batch-margin__legend">Batch</p>
-        <p className="ink-text">{churnDateWords}</p>
         {latestAmendment && <p className="ink-text">{`amended ${formatRecordDate(latestAmendment)}`}</p>}
         <p className="batch-margin__measured">
           <span>Come-up, min</span>

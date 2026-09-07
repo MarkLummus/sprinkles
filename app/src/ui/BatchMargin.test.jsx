@@ -22,7 +22,6 @@ function renderMargin(props) {
       draft={null}
       onStartRecording={noop}
       onStartAmending={noop}
-      onChangeChurnDate={noop}
       onChangeChurnField={noop}
       onSaveBatch={noop}
       tastingDraft={null}
@@ -98,5 +97,32 @@ describe('BatchMargin — reading state offers no way to abandon an edit that is
   it('does not render the cancel wording', () => {
     const markup = renderMargin({ openBatch: null, batches: [], mode: 'reading' });
     expect(markup).not.toContain('Cancel');
+  });
+});
+
+describe('BatchMargin — the churn date moved to the headnote (D-01)', () => {
+  it('renders no date input and no field labelled for the churn date while recording', () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    expect(markup).not.toMatch(/type="date"/);
+    expect(markup).not.toContain('Churn date');
+  });
+
+  it('opens the recording churn section at come-up, not the churn date', () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    const comeUpIndex = markup.indexOf('Come-up');
+    const drawTempIndex = markup.indexOf('Draw temperature');
+    expect(comeUpIndex).toBeGreaterThan(-1);
+    expect(drawTempIndex).toBeGreaterThan(-1);
+    expect(comeUpIndex).toBeLessThan(drawTempIndex);
+  });
+
+  it('no longer prints the churn date in the reading state, while the recorded-on line still does', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+    });
+    expect(markup).not.toContain('2 Aug 2026');
+    expect(markup).toContain('4 Aug 2026');
   });
 });

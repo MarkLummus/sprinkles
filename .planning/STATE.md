@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 03
 current_phase_name: Develop the next version
 status: executing
-stopped_at: Completed 03-09-PLAN.md
-last_updated: "2026-09-07T23:14:33.829Z"
+stopped_at: Completed 03-07-PLAN.md
+last_updated: "2026-09-07T23:26:58.064Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 03 execution started
-state_head: 714624b1ef1cca6e0ddd873c5a335d8b3a6193c6
+state_head: 6fd832464321ea64f960953de2d1e0efaf1b6135
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 19
-  completed_plans: 16
+  completed_plans: 17
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07)
 ## Current Position
 
 Phase: 03 (Develop the next version) — EXECUTING
-Plan: 3 of 10
+Plan: 4 of 10
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 03 execution started
 
@@ -75,6 +75,7 @@ Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 | Phase 03 P05 | 31min | 2 tasks | 6 files |
 | Phase 03 P06 | 20min | 3 tasks | 8 files |
 | Phase 03 P09 | 35min | 3 tasks | 6 files |
+| Phase 03 P07 | 25min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -124,6 +125,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 05] DerivedAdvisories reads RecipePage's existing liveVersion rather than a new variable, since it already implements the required pen's-draft-while-open/readingVersion-otherwise semantics; no new --size-advisory token was added since --size-small-print already carries the block's size.
 - [Phase 03]: [Phase 3, Plan 06] One derivation (derivePenState) replaces the two hand-rolled pen states; a route-keyed RecipePage backstop, not a reset effect, so pen state cannot cross a version/batch change — Closes G-03-9's RC1, RC2 and the state-preservation half of RC3, plus the fifth leak (Develop excluded silently, with no reason in words); RC4 and the in-app navigation policy remain for 03-07
 - [Phase 03]: [Phase 3, Plan 09] buildStepDiff's per-field change flags (leadInChanged/instructionChanged/purposeChanged/asideChanged) replace the forced strike-on-removed device; an absent purpose/aside and an empty-string one compare equal on both sides. uses.js's coveredRowsFor partitions a removed step's rows with orphanedRows (unchanged), and the coverage cue reads its step numbers through one stepDisplayNumber function for 03-10 to thread through.
+- [Phase 03]: [Phase 3, Plan 07] The strip, batch list, and lineage links suppress their Link elements (rendering the same label as text plus a pen-hint reason) while any pen is open, closing G-03-9's RC3 navigation-policy half; isPenDraftDirty extended to method/headnote/authored and isDraftDirty gained an optional baseline argument compared against handleStartAmending's own pre-fill instead of blank, closing RC4.
 
 ### Pending Todos
 
@@ -178,6 +180,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-07T23:14:33.766Z
-Stopped at: Completed 03-09-PLAN.md
+Last session: 2026-09-07T23:26:58.005Z
+Stopped at: Completed 03-07-PLAN.md
 Resume file: None

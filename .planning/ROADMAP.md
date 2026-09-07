@@ -111,7 +111,7 @@ Plans:
   4. Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure.
   5. Structural advisories show the basis they were computed from — sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, estimated-data exposure — and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success.
 
-**Plans**: 7/10 plans executed (03-06 to 03-10 close UAT gaps)
+**Plans**: 8/10 plans executed (03-06 to 03-10 close UAT gaps)
 
 Plans:
 **Wave 1**
@@ -141,7 +141,7 @@ Plans:
 
 **Gap closure wave 2** *(blocked on gap closure wave 1)*
 
-- [ ] 03-07-PLAN.md — The version strip, the batch list and the lineage links state why they will not move while ink is wet, and both dirty checks tell the truth (G-03-9)
+- [x] 03-07-PLAN.md — The version strip, the batch list and the lineage links state why they will not move while ink is wet, and both dirty checks tell the truth (G-03-9)
 - [ ] 03-08-PLAN.md — Columns sized by which column they are, a step selector that fits its cell, and an As made column only where there is an as-made layer (G-03-1)
 
 **Gap closure wave 3** *(blocked on gap closure wave 2)*
@@ -191,7 +191,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
-| 3. Develop the next version | 7/10 | In Progress|  |
+| 3. Develop the next version | 8/10 | In Progress|  |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

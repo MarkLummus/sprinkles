@@ -336,6 +336,12 @@ export function IngredientTable({
         ? `Total, plan ${totalDisplayText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
         : `Total, plan ${totalDisplayText.replace(' g', ' grams')}`;
 
+  // This table carries two conditional columns: As made, in the middle,
+  // governed by hasAsMadeLayer; and Remove, at the end, governed by
+  // isDeveloping. Each is gated at exactly four sites — the header and
+  // all three body branches — plus the total row, so a future third
+  // conditional column should follow this same shape (one named
+  // predicate, four-plus-one gated sites) rather than inventing its own.
   return (
     <>
       <table className="ingredient-table">
@@ -343,7 +349,7 @@ export function IngredientTable({
           <tr>
             <th scope="col" className="ingredient-table__col-name">Ingredient</th>
             <th scope="col" className="ingredient-table__col-numeric">Grams</th>
-            <th scope="col" className="ingredient-table__col-numeric">As made</th>
+            {hasAsMadeLayer && <th scope="col" className="ingredient-table__col-numeric">As made</th>}
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
             <th scope="col" className="ingredient-table__col-step">Step</th>
             <th scope="col" className="ingredient-table__col-data">Data</th>
@@ -372,9 +378,11 @@ export function IngredientTable({
                   <td className="ingredient-table__col-numeric">
                     <DiffGramsCell rowDiff={rowDiff} />
                   </td>
-                  <td className="ingredient-table__col-numeric">
-                    <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
-                  </td>
+                  {hasAsMadeLayer && (
+                    <td className="ingredient-table__col-numeric">
+                      <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+                    </td>
+                  )}
                   <td className="ingredient-table__col-numeric">
                     <DiffShareCell rowDiff={rowDiff} />
                   </td>
@@ -398,9 +406,11 @@ export function IngredientTable({
                   <td className="ingredient-table__col-numeric">
                     <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
                   </td>
-                  <td className="ingredient-table__col-numeric">
-                    <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
-                  </td>
+                  {hasAsMadeLayer && (
+                    <td className="ingredient-table__col-numeric">
+                      <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+                    </td>
+                  )}
                   <td className="ingredient-table__col-numeric">{baselineShare}</td>
                   <td className="ingredient-table__col-step">
                     {row.splitStep ? `${row.step} + ${row.splitStep}` : row.step}
@@ -450,9 +460,11 @@ export function IngredientTable({
                 <td className="ingredient-table__col-numeric">
                   <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
                 </td>
-                <td className="ingredient-table__col-numeric">
-                  <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
-                </td>
+                {hasAsMadeLayer && (
+                  <td className="ingredient-table__col-numeric">
+                    <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+                  </td>
+                )}
                 <td className="ingredient-table__col-numeric">
                   {removed ? (
                     <span className="struck-value">{baselineShare}</span>
@@ -481,7 +493,7 @@ export function IngredientTable({
               {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.from}</span>}
               {totalDisplayText}
             </td>
-            <td className="ingredient-table__col-numeric">{hasAsMadeLayer ? asMadeTotalText : ''}</td>
+            {hasAsMadeLayer && <td className="ingredient-table__col-numeric">{asMadeTotalText}</td>}
             <td className="ingredient-table__col-numeric"></td>
             <td className="ingredient-table__col-step"></td>
             <td className="ingredient-table__col-data"></td>

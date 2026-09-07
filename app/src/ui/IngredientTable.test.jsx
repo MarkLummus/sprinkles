@@ -99,3 +99,117 @@ describe('IngredientTable — the show-changes state', () => {
     expect(markup).not.toContain('ink-text');
   });
 });
+
+// G-03-1 finding (b): hasAsMadeLayer (IngredientTable.jsx) already governed
+// the total-row cell and the legend; these tests pin the header and body
+// cells it was never wired to, plus the structural invariant that makes a
+// conditional middle column safe — header, body and total row must always
+// agree on how many cells they carry.
+function makeBatch(asMade = {}) {
+  return { churn: { asMade } };
+}
+
+function sectionMarkup(markup, tag) {
+  const start = markup.indexOf(`<${tag}`);
+  const end = markup.indexOf(`</${tag}>`) + `</${tag}>`.length;
+  return markup.slice(start, end);
+}
+
+function countTag(markup, tag) {
+  return (markup.match(new RegExp(`<${tag}[ >]`, 'g')) || []).length;
+}
+
+function assertCellCountsAgree(markup) {
+  const headerCount = countTag(sectionMarkup(markup, 'thead'), 'th');
+  const bodyCount = countTag(sectionMarkup(markup, 'tbody'), 'td');
+  const totalCount = countTag(sectionMarkup(markup, 'tfoot'), 'td');
+  expect(headerCount).toBe(bodyCount);
+  expect(bodyCount).toBe(totalCount);
+}
+
+describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 finding b)', () => {
+  it('reading a version with no batch in view: no As made header, no legend', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={null} />);
+
+    expect(markup).not.toContain('>As made<');
+    expect(markup).not.toContain('As made totals what was written');
+    assertCellCountsAgree(markup);
+  });
+
+  it('reading a version with a saved batch in view: As made header and legend both present', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const openBatch = makeBatch();
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
+
+    expect(markup).toContain('>As made<');
+    expect(markup).toContain('As made totals what was written');
+    assertCellCountsAgree(markup);
+  });
+
+  it('recording: As made header present', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const draft = { asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="recording" draft={draft} openBatch={null} />,
+    );
+
+    expect(markup).toContain('>As made<');
+    assertCellCountsAgree(markup);
+  });
+
+  it('developing on a version with no batch: As made header absent — the exact case the maker reported', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const draftVersion = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const penDraft = { rows: { a: { grams: '40', step: 1, removed: false } }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+      />,
+    );
+
+    expect(markup).not.toContain('>As made<');
+    assertCellCountsAgree(markup);
+  });
+
+  it('developing on a version with a saved batch in view: As made header present — openBatch is not cleared while developing', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const draftVersion = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const penDraft = { rows: { a: { grams: '40', step: 1, removed: false } }, asMade: {} };
+    const openBatch = makeBatch({ a: 38 });
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={openBatch}
+      />,
+    );
+
+    expect(markup).toContain('>As made<');
+    assertCellCountsAgree(markup);
+  });
+
+  it('show-changes with no batch in view: As made header absent', () => {
+    const baseline = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const current = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+    const diff = buildDiff(current, baseline);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" openBatch={null} />,
+    );
+
+    expect(markup).not.toContain('>As made<');
+    assertCellCountsAgree(markup);
+  });
+});

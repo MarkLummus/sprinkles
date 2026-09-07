@@ -8,6 +8,7 @@ import { activeRows, activeSteps } from '../domain/rows.js';
 import { createChildVersion, saveOverVersion, versionsForRecipe, blockedSaveMessage } from '../domain/lineage.js';
 import { buildDiff } from '../domain/diff.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
+import { displayNumbers } from '../domain/stepNumbers.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
@@ -451,6 +452,22 @@ export function RecipePage() {
   const changeDiff =
     showingChanges && version.parentVersionId && parentVersion ? buildDiff(version, parentVersion) : null;
   const changeStaleSteps = changeDiff ? stepsWithStaleAmounts(version, parentVersion) : [];
+
+  // The two step-position maps (domain/stepNumbers.js, 03-10), computed
+  // once here and threaded to every region that names a step, the same
+  // shape changeDiff already follows: one comparison, computed once, so no
+  // two regions can derive a different answer. `current` is built from the
+  // method the page is showing — the draft's while the pen is open, the
+  // version's own otherwise; a removed step is absent from it by
+  // construction, so the same call serves the reading state (where the
+  // method handed down is already filtered) and the pen/show-changes
+  // (where it is not). `baseline` is what a struck or removed step's
+  // number comes from: the record the pen opened on (D-03) while
+  // developing, or the live parent while showing changes — null wherever
+  // neither state applies, and null in show-changes when the parent could
+  // not be read, the same condition that already makes the toggle absent.
+  const currentStepNumbers = displayNumbers(mode === 'developing' && draftVersion ? draftVersion.method : version.method);
+  const baselineStepNumbers = mode === 'developing' ? displayNumbers(version.method) : changeDiff ? displayNumbers(parentVersion.method) : null;
 
   // The batch this page shows: the one the URL names, or — with no batch
   // named in the URL — the version's most recent batch by churn date,
@@ -1002,6 +1019,8 @@ export function RecipePage() {
             changeDiff={changeDiff}
             staleSteps={changeStaleSteps}
             staleFlagVisible={mode === 'developing' || showingChanges}
+            currentStepNumbers={currentStepNumbers}
+            baselineStepNumbers={baselineStepNumbers}
             onChangePenStepField={handleChangePenStepField}
             onChangePenStepTarget={handleChangePenStepTarget}
             onTogglePenStepUses={handleTogglePenStepUses}

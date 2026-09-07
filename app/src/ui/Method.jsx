@@ -1,12 +1,7 @@
 import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
 import { removedRowsUsedBy, coveredRowsFor, stepsWithStaleAmounts } from '../domain/uses.js';
 import { buildDiff } from '../domain/diff.js';
-
-// The step number a cross-reference names — one place, so 03-10's derived
-// display numbering only has to change here, not at every inline `.n`.
-function stepDisplayNumber(step) {
-  return step.n;
-}
+import { displayNumberOf } from '../domain/stepNumbers.js';
 
 function joinWithAnd(items) {
   if (items.length <= 1) return items[0] ?? '';
@@ -18,10 +13,13 @@ function joinWithAnd(items) {
 // Joins rows and steps the way the removed-row flag beside it joins its
 // own, so the cross-flag sentences on this page read as one family. Rows
 // sharing the identical set of covering steps are named together, once.
-function coverageSentence(coveredRows) {
+// Names each covering step by the number the reader sees (03-10) — a
+// covering step is never itself removed, so it always holds a position in
+// currentStepNumbers.
+function coverageSentence(coveredRows, currentStepNumbers) {
   const groups = [];
   for (const entry of coveredRows) {
-    const key = entry.coveringSteps.map((step) => stepDisplayNumber(step)).join(',');
+    const key = entry.coveringSteps.map((step) => displayNumberOf(currentStepNumbers, step.n)).join(',');
     const group = groups.find((candidate) => candidate.key === key);
     if (group) group.rows.push(entry);
     else groups.push({ key, rows: [entry], coveringSteps: entry.coveringSteps });
@@ -29,7 +27,9 @@ function coverageSentence(coveredRows) {
   return groups
     .map((group) => {
       const rowNames = joinWithAnd(group.rows.map((entry) => entry.ingredientName));
-      const stepNames = joinWithAnd(group.coveringSteps.map((step) => `step ${stepDisplayNumber(step)}`));
+      const stepNames = joinWithAnd(
+        group.coveringSteps.map((step) => `step ${displayNumberOf(currentStepNumbers, step.n)}`),
+      );
       const verb = group.rows.length > 1 ? 'are' : 'is';
       return `${rowNames} ${verb} still used by ${stepNames}`;
     })
@@ -80,6 +80,13 @@ export function Method({
   onChangePenStepTarget = () => {},
   onTogglePenStepUses = () => {},
   onTogglePenStepRemoved = () => {},
+  // The two maps RecipePage computes once through domain/stepNumbers.js
+  // (03-10): currentStepNumbers from the method this component is showing
+  // (the draft's while developing, the version's own otherwise);
+  // baselineStepNumbers from the record a struck or removed step's number
+  // comes from — null wherever neither the pen nor show-changes applies.
+  currentStepNumbers = null,
+  baselineStepNumbers = null,
 }) {
   const batchLike = { churn: { stepChanges } };
   const isDeveloping = mode === 'developing' && draftVersion != null && baselineVersion != null;
@@ -88,6 +95,28 @@ export function Method({
   const isShowingChanges = !isDeveloping && showingChanges && changeDiff != null;
   const activeDiff = isDeveloping ? penDiff : changeDiff;
   const activeStaleSteps = isDeveloping ? penStaleSteps : staleSteps;
+
+  // The one place a step's displayed number is resolved (D-UAT-4): its
+  // position in the current map if it has one; otherwise its position in
+  // the baseline map, the number it had before it was removed; otherwise
+  // none. Every margin number, field label, and the coverage cue above
+  // reads through this one helper (or the map it closes over) so the
+  // branches below cannot drift.
+  function displayNumberFor(step) {
+    const current = currentStepNumbers ? displayNumberOf(currentStepNumbers, step.n) : null;
+    if (current != null) return current;
+    return baselineStepNumbers ? displayNumberOf(baselineStepNumbers, step.n) : null;
+  }
+
+  // A field label names the step's own live position; a removed step's
+  // fields say so in words instead of claiming a position they no longer
+  // hold — unlike the margin number below, which still prints the
+  // pre-removal number beside the "removed" label, because a hand-drawn
+  // margin number and a screen-reader field name are different sites with
+  // different rules (03-10).
+  function fieldLabel(step, removed, name) {
+    return removed ? `Removed step, ${name}` : `Step ${displayNumberFor(step)}, ${name}`;
+  }
 
   return (
     <>
@@ -115,7 +144,7 @@ export function Method({
             return (
               <li key={step.n} id={`method-step-${step.n}`} className="method-step">
                 <span className="method-step__n" aria-hidden="true">
-                  {step.n}
+                  {displayNumberFor(step)}
                 </span>
                 <div className="method-step__body">
                   <label className="method-step__field">
@@ -124,7 +153,7 @@ export function Method({
                       type="text"
                       className="ink-field"
                       value={draftStep.leadIn}
-                      aria-label={`Step ${step.n}, lead-in`}
+                      aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
                       onChange={(event) => onChangePenStepField(step.n, 'leadIn', event.target.value)}
                     />
                   </label>
@@ -134,7 +163,7 @@ export function Method({
                       className="ink-field"
                       rows="2"
                       value={draftStep.instruction}
-                      aria-label={`Step ${step.n}, instruction`}
+                      aria-label={fieldLabel(step, draftStep.removed, 'instruction')}
                       onChange={(event) => onChangePenStepField(step.n, 'instruction', event.target.value)}
                     />
                   </label>
@@ -164,14 +193,14 @@ export function Method({
                               type="text"
                               className="ink-field target-chip__label-field"
                               value={target.label}
-                              aria-label={`Step ${step.n}, target ${index + 1}, label`}
+                              aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
                               onChange={(event) => onChangePenStepTarget(step.n, index, 'label', event.target.value)}
                             />
                             <input
                               type="text"
                               className="ink-field target-chip__value-field"
                               value={target.value}
-                              aria-label={`Step ${step.n}, target ${index + 1}, value`}
+                              aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
                               onChange={(event) => onChangePenStepTarget(step.n, index, 'value', event.target.value)}
                             />
                           </span>
@@ -200,7 +229,7 @@ export function Method({
                       className="ink-field"
                       rows="2"
                       value={draftStep.purpose ?? ''}
-                      aria-label={`Step ${step.n}, purpose`}
+                      aria-label={fieldLabel(step, draftStep.removed, 'purpose')}
                       onChange={(event) => onChangePenStepField(step.n, 'purpose', event.target.value)}
                     />
                   </label>
@@ -214,7 +243,7 @@ export function Method({
                       className="ink-field"
                       rows="2"
                       value={draftStep.aside ?? ''}
-                      aria-label={`Step ${step.n}, aside`}
+                      aria-label={fieldLabel(step, draftStep.removed, 'aside')}
                       onChange={(event) => onChangePenStepField(step.n, 'aside', event.target.value)}
                     />
                   </label>
@@ -263,7 +292,7 @@ export function Method({
                       cue does not repeat them, and renders nothing when
                       the step covers none of its own rows. */}
                   {draftStep.removed && coveredRows.length > 0 && (
-                    <p className="method-step__flag">{coverageSentence(coveredRows)}</p>
+                    <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
                   )}
 
                   <button type="button" onClick={() => onTogglePenStepRemoved(step.n)}>
@@ -289,7 +318,7 @@ export function Method({
             return (
               <li key={step.n} id={`method-step-${step.n}`} className="method-step">
                 <span className="method-step__n" aria-hidden="true">
-                  {step.n}
+                  {displayNumberFor(step)}
                 </span>
                 <div className="method-step__body">
                   <p className="method-step__lead">
@@ -368,7 +397,7 @@ export function Method({
           return (
             <li key={step.n} id={`method-step-${step.n}`} className="method-step">
               <span className="method-step__n" aria-hidden="true">
-                {step.n}
+                {displayNumberFor(step)}
               </span>
               <div className="method-step__body">
                 <p className="method-step__lead">
@@ -410,7 +439,7 @@ export function Method({
                         type="text"
                         className="ink-field"
                         value={entry && entry.line ? entry.line : ''}
-                        aria-label={`Step ${step.n}, what was done differently`}
+                        aria-label={fieldLabel(step, false, 'what was done differently')}
                         onChange={handleChangeLine}
                       />
                     </label>

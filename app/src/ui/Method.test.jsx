@@ -9,6 +9,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Method } from './Method.jsx';
 import { buildDiff } from '../domain/diff.js';
+import { displayNumbers } from '../domain/stepNumbers.js';
 
 const struckStep = { n: 1, leadIn: 'Steep', instruction: 'Warm the milk and steep the zest.' };
 const unstruckStep = { n: 2, leadIn: 'Chill', instruction: 'Cool the base overnight.' };
@@ -320,12 +321,17 @@ describe('Method — developing mode', () => {
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
         rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
       />,
     );
 
     expect(markup).toContain('method-step__flag');
     expect(markup).toContain('Row A');
-    expect(markup).toContain('still used by step 2');
+    // Step 2 is the covering step's stored key, but once step 1 is removed
+    // it is the only active step left — its displayed position is 1
+    // (03-10), not its stored key.
+    expect(markup).toContain('still used by step 1');
     expect(markup).not.toContain('remove this step');
   });
 
@@ -559,5 +565,258 @@ describe('Method — developing mode', () => {
       />,
     );
     expect(markup).not.toContain('amounts changed:');
+  });
+});
+
+// The derived step position (03-10, G-03-6, D-UAT-4): a ten-step method,
+// none removed unless a test marks one, so a stored key and its baseline
+// position coincide except where a test deliberately shifts them.
+function makeTenStepMethod() {
+  const method = [];
+  for (let n = 1; n <= 10; n += 1) {
+    method.push({ n, leadIn: `Lead ${n}`, instruction: `Do thing ${n}.` });
+  }
+  return method;
+}
+
+// One entry per rendered <li>, in document order: the step's own stored
+// key (from the anchor id, never renumbered), its margin number (null
+// when the margin renders nothing), and whether it carries the removed
+// label — read from the markup rather than re-deriving it, so these tests
+// assert what actually rendered.
+function extractStepEntries(markup) {
+  const entries = [];
+  const liRegex = /<li id="method-step-(\d+)" class="method-step">([\s\S]*?)<\/li>/g;
+  let match;
+  while ((match = liRegex.exec(markup))) {
+    const stepKey = Number(match[1]);
+    const body = match[2];
+    const numberMatch = /method-step__n" aria-hidden="true">(\d*)</.exec(body);
+    const marginNumber = numberMatch && numberMatch[1] !== '' ? Number(numberMatch[1]) : null;
+    entries.push({ stepKey, marginNumber, removed: body.includes('method-step__skipped-label') });
+  }
+  return entries;
+}
+
+describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
+  it('renders the margin numbers 1 through 9 with no gap in the reading state when the second step is removed', () => {
+    const method = makeTenStepMethod();
+    method[1].removed = true; // step 2
+    const activeMethod = method.filter((step) => !step.removed);
+
+    const markup = renderToStaticMarkup(
+      <Method steps={activeMethod} mode="reading" rows={[]} currentStepNumbers={displayNumbers(method)} />,
+    );
+
+    const numbers = extractStepEntries(markup).map((entry) => entry.marginNumber);
+    expect(numbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+
+  it('renders the margin numbers 1 through 8 with no gap in the reading state when the second and fifth steps are removed', () => {
+    const method = makeTenStepMethod();
+    method[1].removed = true; // step 2
+    method[4].removed = true; // step 5
+    const activeMethod = method.filter((step) => !step.removed);
+
+    const markup = renderToStaticMarkup(
+      <Method steps={activeMethod} mode="reading" rows={[]} currentStepNumbers={displayNumbers(method)} />,
+    );
+
+    const numbers = extractStepEntries(markup).map((entry) => entry.marginNumber);
+    expect(numbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+  });
+
+  it("prints the pen's live steps 1 through 9 with no gap, and the removed step's pre-removal number beside its removed label, when the second step is removed", () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[1].removed = true; // step 2
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    const entries = extractStepEntries(markup);
+    const liveNumbers = entries.filter((entry) => !entry.removed).map((entry) => entry.marginNumber);
+    expect(liveNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    const removedEntry = entries.find((entry) => entry.removed);
+    expect(removedEntry.stepKey).toBe(2);
+    expect(removedEntry.marginNumber).toBe(2); // the number it had before removal
+  });
+
+  it('prints no margin number for a step already removed in the record the pen opened on and still removed in the draft', () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    baselineVersion.method[1].removed = true; // already removed at baseline
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    const entries = extractStepEntries(markup);
+    const removedEntry = entries.find((entry) => entry.stepKey === 2);
+    expect(removedEntry.removed).toBe(true);
+    expect(removedEntry.marginNumber).toBeNull();
+  });
+
+  it("names a live step's field by the same number the margin prints, not the stored key, once a removal has shifted its position", () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[1].removed = true; // step 2 removed; step 3 is now position 2
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    // Step 3 (the survivor now sitting at position 2) names its lead-in
+    // field "Step 2" — the position, not its own stored key — and its own
+    // value proves which field this is, since another step legitimately
+    // reads "Step 3" at its own (different) position.
+    expect(markup).toContain('aria-label="Step 2, lead-in" value="Lead 3"');
+    expect(markup).not.toContain('aria-label="Step 3, lead-in" value="Lead 3"');
+  });
+
+  it('does not claim a live position on a removed step\'s field labels', () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[1].removed = true; // step 2
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    // Step 2's own value ("Lead 2") proves which field this is — it names
+    // itself as removed, never as claiming the position ("Step 2") a
+    // survivor might legitimately hold.
+    expect(markup).toContain('aria-label="Removed step, lead-in" value="Lead 2"');
+    expect(markup).not.toContain('aria-label="Step 2, lead-in" value="Lead 2"');
+  });
+
+  it('names the coverage cue\'s covering step by its displayed position, not its stored key', () => {
+    const baselineVersion = {
+      rows: [makeRow('row-a', 'Row A', 10)],
+      method: [
+        { n: 1, leadIn: 'Lead one', instruction: 'Do one.', uses: ['row-a'] },
+        { n: 2, leadIn: 'Lead two', instruction: 'Do two.', uses: [] },
+        { n: 3, leadIn: 'Lead three', instruction: 'Do three.', uses: ['row-a'] },
+      ],
+    };
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].removed = true; // step 1 removed; step 3 (now position 2) still covers row-a
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    expect(markup).toContain('still used by step 2');
+    expect(markup).not.toContain('still used by step 3');
+  });
+
+  it('in show-changes, prints the live steps 1 through 9 and the struck step at the number it had in the parent (D-UAT-4)', () => {
+    const parentVersion = { rows: [], method: makeTenStepMethod() };
+    const currentVersion = structuredClone(parentVersion);
+    currentVersion.method[1].removed = true; // step 2, removed in this child
+
+    const changeDiff = buildDiff(currentVersion, parentVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={currentVersion.method}
+        mode="reading"
+        showingChanges
+        changeDiff={changeDiff}
+        staleSteps={[]}
+        rows={currentVersion.rows}
+        currentStepNumbers={displayNumbers(currentVersion.method)}
+        baselineStepNumbers={displayNumbers(parentVersion.method)}
+      />,
+    );
+
+    const entries = extractStepEntries(markup);
+    const liveNumbers = entries.filter((entry) => !entry.removed).map((entry) => entry.marginNumber);
+    expect(liveNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    const struckEntry = entries.find((entry) => entry.removed);
+    expect(struckEntry.stepKey).toBe(2);
+    expect(struckEntry.marginNumber).toBe(2);
+  });
+
+  it('in show-changes, prints no number for a step with no position in either version — the parent had already removed it too', () => {
+    const parentVersion = { rows: [], method: makeTenStepMethod() };
+    parentVersion.method[1].removed = true; // already removed in the parent
+    const currentVersion = structuredClone(parentVersion); // the grandchild inherits the removal
+
+    const changeDiff = buildDiff(currentVersion, parentVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={currentVersion.method}
+        mode="reading"
+        showingChanges
+        changeDiff={changeDiff}
+        staleSteps={[]}
+        rows={currentVersion.rows}
+        currentStepNumbers={displayNumbers(currentVersion.method)}
+        baselineStepNumbers={displayNumbers(parentVersion.method)}
+      />,
+    );
+
+    const entries = extractStepEntries(markup);
+    const removedEntry = entries.find((entry) => entry.stepKey === 2);
+    expect(removedEntry.removed).toBe(true);
+    expect(removedEntry.marginNumber).toBeNull();
+  });
+
+  it('leaves the anchor id on the stored key regardless of position', () => {
+    const method = makeTenStepMethod();
+    method[1].removed = true;
+    const activeMethod = method.filter((step) => !step.removed);
+
+    const markup = renderToStaticMarkup(
+      <Method steps={activeMethod} mode="reading" rows={[]} currentStepNumbers={displayNumbers(method)} />,
+    );
+
+    // The survivor that now sits at position 2 (stored key 3) still anchors
+    // on its own key, never on the position the margin prints beside it.
+    expect(markup).toContain('id="method-step-3"');
+    expect(markup).not.toContain('id="method-step-2"');
   });
 });

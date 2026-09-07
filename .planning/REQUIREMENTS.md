@@ -15,7 +15,7 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 - [ ] **REC1-02**: Maker can create a new version from the churned version; the new version records its parent and the churned version is unchanged afterwards.
 - [ ] **REC1-03**: Maker can edit the new version's ingredient amounts, remove or restore any of its twelve rows, and edit method steps and their targets.
 - [ ] **REC1-04**: Maker can record why the version changed as free text that cites the batch that motivated it.
-- [ ] **REC1-05**: A saved version reopens with the same values after the app is reloaded (provisional local store).
+- [x] **REC1-05**: A saved version reopens with the same values after the app is reloaded (provisional local store).
 
 ### Formulation — from FORM-01 and FORM-02
 
@@ -99,7 +99,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REC1-02 | Phase 3 | Pending |
 | REC1-03 | Phase 3 | Pending |
 | REC1-04 | Phase 3 | Pending |
-| REC1-05 | Phase 3 | Pending |
+| REC1-05 | Phase 3 | Complete |
 | FORM1-01 | Phase 1 | Complete |
 | FORM1-02 | Phase 1 | Complete |
 | FORM1-03 | Phase 3 | Pending |

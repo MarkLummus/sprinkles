@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 03
 current_phase_name: Develop the next version
 status: executing
-stopped_at: Phase 3 context gathered
-last_updated: "2026-09-07T17:21:35.211Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-09-07T18:08:31.519Z"
 last_activity: 2026-09-07
-last_activity_desc: Phase 02 complete, transitioned to Phase 3
-state_head: a77d7fd9ee731406760c2508044d4ea75d45fea3
+last_activity_desc: Phase 03 execution started
+state_head: 4e8591f2d990a901b40d6a12b2ccf2760bd19f8a
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 9
+  completed_plans: 10
   percent: 25
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-07)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 3 — Develop the next version
+**Current focus:** Phase 03 — Develop the next version
 
 ## Current Position
 
-Phase: 03 (Develop the next version) — READY TO EXECUTE
-Plan: Not started
+Phase: 03 (Develop the next version) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-09-07 - Completed quick task 260907-dyn: Commit the confirmed Phase 3 surface brief, revise route-recipe.md § 3 and § 6 to retire the translucent overlay and point at it, and record the confirmed brief in STATE.md
+Last activity: 2026-09-07 — Phase 03 execution started
 
 Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 
@@ -68,6 +68,7 @@ Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 | Phase 02 P03 | 68min | 3 tasks | 12 files |
 | Phase 02 P04 | 15min | 2 tasks | 3 files |
 | Phase 02 P05 | 15min | 2 tasks | 8 files |
+| Phase 03 P01 | 31min | 3 tasks | 22 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,10 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 2: tastings are recorded only against an already-saved batch; cancel discards a draft with no dialog of the app's own (D-24), the native leave-warning fires only while a draft is dirty.
 - Phase 2: store export writes `schemaVersion` 2; a v1 file imports as a store with no batches, a v1 file carrying batches is refused.
 - Phase 2 (02-CONTEXT D-13): method step amounts should be driven by the ingredient table (replacement macros) so amounts and their changes stay in sync; deferred to Phase 3 as a decision input.
+- [Phase 03]: [Phase 3, Plan 01] The version record's new shape (parentVersionId/parentVersionLabel/reason/citedBatchId/createdAt, per-row/step removed flags, per-step uses lists, per-note inheritedFrom markers) arrived via a one-time IndexedDB upgrade to DB_VERSION 3, proven against a real IndexedDB with fake-indexeddb; the shared liftVersionRecord function is called by both db.js's upgrade and transfer.js's import, never a second ladder.
+- [Phase 03]: [Phase 3, Plan 01] liftVersionRecord is applied on import to both schemaVersion 1 and 2 files (not only schemaVersion 2), since the stricter validator requires the new fields regardless of which file version carries an old-shaped record.
+- [Phase 03]: [Phase 3, Plan 01] createChildVersion carries schemaVersion forward from the parent rather than importing VERSION_SCHEMA_VERSION into domain/lineage.js, keeping the domain module's no-store-import rule exact.
+- [Phase 03]: [Phase 3, Plan 01] Deviation: modified app/src/ui/BatchMargin.jsx (omitted from the plan's files_modified frontmatter) to disable batch-starting controls while developing, per the plan's own action text and D-10's mutual-exclusivity constraint.
 
 ### Pending Todos
 
@@ -123,12 +128,13 @@ None yet.
 - [Critique 2026-09-06, 23/40] Snapshot `.impeccable/critique/2026-09-06T13-15-16Z__app-src-ui-recipepage-jsx.md`. Grid fixed the same day (formulation note now follows the table; graduated rule capped at its 320px drawing width). Deferred by phase:
   - [Phase 2 carry — done in 02-01] Numeric columns right-aligned and sized to `--col-numeric`; total row added; shares below 0.05% read `trace`.
   - [Phase 3 carry] The recipe page has no link back to the list and "No recipe found" is a dead end; add the running head with the product name as the link home when the version strip lands under the headnote.
-  - [Phase 4 carry, UX1-01] Headnote and Margin region names are paragraphs, not headings; the row-level aria-label carrying "contributing to" is unlikely to be announced, so the focus trace is silent to screen readers; the deviation words are not in the rule's accessible name; the ordered method list with list-style none needs an explicit list role; the tab title should lead with the recipe name.
+  - [Phase 4 carry, UX1-01] Headnote and Margin region names are paragraphs, not headings; the row-level aria-label carrying "contributing to" is unlikely to be announced, so the focus trace is silent to screen readers; the deviation words are not in the rule's accessible name; the ordered method list with list-style needs an explicit list role; the tab title should lead with the recipe name.
   - [Polish carry] Target chips have zero vertical inset and a 2px label-to-value gap that fuses at a glance; adjacent marked-row outlines collide with row rules; the rule has no hover state. (Prose measure fixed 2026-09-06.)
 - [Critique 2026-09-06, second run, 25/40] Snapshot `.impeccable/critique/2026-09-06T14-02-09Z__app-src-ui-recipepage-jsx.md`. Spread revised by Mark (note beside the table, method beneath); table shift on focus and the stranded margin fixed the same day. Deferred:
   - [Phase 2 carry — total row and `trace` done in 02-01; rhythm caveat still open] The short-window caveat: at a 714px-tall viewport, focusing Total solids scrolls 487px and only 5 of 12 marked rows stay visible; the six rules stack to ~1000px, so tighten the note's vertical rhythm.
   - [List page carry] `/` has no page margin, default buttons, no title or running head, and a link with no underline or focus treatment; out of the recipe brief's scope, for whichever phase next touches the list.
   - [Phase 4 carry, UX1-01] No live announcement when a rule marks its rows; PAC, POD, MSNF carry no plain-language gloss (D11).
+- [Phase 3, Plan 01] Task 1's tracer feedback gate human-check (open the pen, type 48 over 40, watch the strike and six figures move, save, reload) was deferred to end-of-phase UAT per Mark's standing preference (MEMORY.md, Phase 2 Plan 01 precedent). All automated verification (build/test/greps) passed.
 
 ### Quick Tasks Completed
 
@@ -156,6 +162,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-07T15:20:51.082Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-develop-the-next-version/03-CONTEXT.md
+Last session: 2026-09-07T18:08:31.466Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: None

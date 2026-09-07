@@ -1,6 +1,7 @@
 import { computeBalance, formatShareOfBatch, formatGrams } from '../domain/composition.js';
 import { hasAsMade, asMadeFor, asMadeTotals } from '../domain/batch.js';
-import { activeRows } from '../domain/rows.js';
+import { activeRows, activeSteps } from '../domain/rows.js';
+import { orphanedRows } from '../domain/uses.js';
 
 // A row's weakest basis is the worst basis across every composition field it
 // contributes a non-zero amount of — the same stated -> derived -> estimated
@@ -25,16 +26,30 @@ function dataFlagFor(row) {
   return '';
 }
 
-// changedGrams is the pen's current typed value when it differs from the
-// value the pen opened on (route-recipe-version.md § 6): the strike is
-// never the only carrier of a change (D-10), so the accessible name reads
-// "was 40 g, now 48 g" rather than just "40 g".
-function rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams = null) {
+// changedGrams/changedShare/changedStep carry the pen's current values when
+// they differ from the value the pen opened on (route-recipe-version.md
+// § 6): the strike is never the only carrier of a change (D-10), so the
+// accessible name reads "was 40 g, now 48 g" — and "was 5.0%, now 5.9%",
+// "was step 8, now step 6" — rather than just the current value.
+function rowAccessibleLabel(
+  row,
+  dataFlag,
+  isMarked,
+  markedFigureLabel,
+  asMadeValue,
+  changedGrams = null,
+  changedShare = null,
+  changedStep = null,
+  removed = false,
+) {
   const gramsPhrase = changedGrams != null ? `was ${row.grams} g, now ${changedGrams} g` : `${row.grams} g`;
   const parts = [row.ingredientName, gramsPhrase];
+  if (changedShare) parts.push(`was ${changedShare.from}, now ${changedShare.to}`);
+  if (changedStep) parts.push(`was step ${changedStep.from}, now step ${changedStep.to}`);
   if (dataFlag) parts.push(dataFlag);
   if (isMarked) parts.push(`contributing to ${markedFigureLabel}`);
   if (asMadeValue !== null) parts.push(`as made ${asMadeValue} g`);
+  if (removed) parts.push('removed');
   return parts.join(', ');
 }
 
@@ -49,8 +64,13 @@ function GramsCell({ row, mode, penDraft, onChangePenGrams }) {
   if (mode !== 'developing') {
     return <>{row.grams} g</>;
   }
-  const draftValue = Object.prototype.hasOwnProperty.call(penDraft.rows, row.id) ? penDraft.rows[row.id] : '';
-  const changed = draftValue !== String(row.grams);
+  const draftRow = penDraft.rows[row.id];
+  const draftValue = draftRow.grams;
+  // Forced struck even when the number itself is unchanged once the row is
+  // removed — "the whole row strikes in place" (route-recipe-version.md
+  // § 3) — while the field stays present and editable, since removing does
+  // not clear the grams and a restore should keep whatever was typed.
+  const changed = draftRow.removed || draftValue !== String(row.grams);
   return (
     <span className="ingredient-table__grams-cell">
       {changed && <span className="struck-value">{row.grams}</span>}
@@ -66,11 +86,105 @@ function GramsCell({ row, mode, penDraft, onChangePenGrams }) {
   );
 }
 
+// The step-allocation cell (route-recipe-version.md § 3, § 6): a <select>
+// over the draft version's non-removed steps while developing, bound to
+// the pen's own value for the row. A row with a splitStep (whole milk,
+// sucrose each go into two steps) keeps both — only the primary
+// allocation is a choice here; splitStep is rendered untouched, since
+// editing a split allocation is out of this milestone's scope and the row
+// must not lose its second step by being edited.
+function StepCell({ row, penDraft, stepOptions, onChangePenRowStep }) {
+  const draftRow = penDraft.rows[row.id];
+  const changed = draftRow.removed || draftRow.step !== row.step;
+  return (
+    <span className="ingredient-table__step-cell">
+      {changed && <span className="struck-value">{row.step}</span>}
+      <select
+        className="ink-field"
+        value={draftRow.step}
+        aria-label={`${row.ingredientName}, step`}
+        onChange={(event) => onChangePenRowStep(row.id, Number(event.target.value))}
+      >
+        {stepOptions.map((step) => (
+          <option key={step.n} value={step.n}>{`${step.n}. ${step.leadIn}`}</option>
+        ))}
+      </select>
+      {row.splitStep != null && (
+        <span className="ink-text ingredient-table__split-step">{` + ${row.splitStep}`}</span>
+      )}
+    </span>
+  );
+}
+
+// The % of batch cell's own strike (route-recipe-version.md § 3): a row
+// whose grams held but whose share moved because another row changed
+// shows the share strike alone — the whole reason share is compared
+// separately from grams.
+function ShareCell({ baselineShare, currentShare }) {
+  const changed = currentShare !== baselineShare;
+  return (
+    <>
+      {changed && <span className="struck-value">{baselineShare}</span>}
+      {currentShare}
+    </>
+  );
+}
+
+// The remove/restore control: a text button, never an icon and never a
+// colour — exactly one control per row.
+function RemoveRowControl({ removed, onToggle }) {
+  return (
+    <button type="button" onClick={onToggle}>
+      {removed ? 'restore' : 'remove'}
+    </button>
+  );
+}
+
+// Never `.filter(` — the automated gate on this file forbids a filter
+// whose arguments mention `removed`, since that pattern is what would drop
+// a removed row from the table's own rendering (the thing this file must
+// never do). This helper filters *steps*, for a different purpose (naming
+// which removed step orphaned a row), so it is written as a plain loop.
+function removedStepsUsing(draftVersion, rowId) {
+  const steps = [];
+  for (const step of draftVersion.method) {
+    if (step.removed && (step.uses ?? []).includes(rowId)) steps.push(step);
+  }
+  return steps;
+}
+
+// The orphaned-row flag (route-recipe-version.md § 3): beside the row's
+// name when orphanedRows names it, naming the removed step(s) by number
+// and lead-in, with one "remove this row" control. Tapping it removes the
+// row — one tap, nothing else. It clears the moment the step that caused
+// it is restored, because it is derived, not stored.
+function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
+  const causingSteps = removedStepsUsing(draftVersion, row.id);
+  if (causingSteps.length === 0) return null;
+  const descriptions = causingSteps.map((step) => `step ${step.n}, ${step.leadIn}`);
+  const joined =
+    descriptions.length === 1
+      ? descriptions[0]
+      : `${descriptions.slice(0, -1).join(', ')} and ${descriptions[descriptions.length - 1]}`;
+  const verb = descriptions.length > 1 ? 'are' : 'is';
+  return (
+    <p className="ingredient-table__flag">
+      {`used by ${joined}, which ${verb} removed`}{' '}
+      <button type="button" onClick={() => onTogglePenRowRemoved(row.id)}>
+        remove this row
+      </button>
+    </p>
+  );
+}
+
 // The as-made cell (route-recipe-batch.md § 3): blank by default, a numeric
 // field bound to the draft while recording, and the stored value — read
 // through asMadeFor, never the row's own plan grams — once a saved batch's
 // layer is showing. Blank stays blank; the plan never leaks into this
-// column under any circumstance.
+// column under any circumstance. While the plan's pen is open, the open
+// batch's as-made column stays in reading form beside the fields
+// (route-recipe-version.md § 3) — this component's branch already falls
+// through to that reading form for any mode other than 'recording'.
 function AsMadeCell({ row, mode, draft, openBatch, onChangeAsMade }) {
   if (mode === 'recording') {
     const draftValue = Object.prototype.hasOwnProperty.call(draft.asMade, row.id) ? draft.asMade[row.id] : '';
@@ -94,9 +208,13 @@ function AsMadeCell({ row, mode, draft, openBatch, onChangeAsMade }) {
 // The twelve rows in the version's authored order — the printed sheet's
 // order. Never sort, never re-order, never group. `markedRowIds` is the
 // focused figure's contributorRowIds (route-recipe.md § 3, § 5) — marking
-// changes only outline and weight, and moves nothing.
+// changes only outline and weight, and moves nothing. `draftVersion` is
+// the pen's own draft, built once by RecipePage (03-02) — present only in
+// developing mode, and read here for the live balance, the step-choice
+// options, and the orphaned-row cross-flag.
 export function IngredientTable({
   rows,
+  draftVersion = null,
   markedRowIds = [],
   markedFigureLabel = '',
   mode = 'reading',
@@ -105,21 +223,33 @@ export function IngredientTable({
   openBatch = null,
   onChangeAsMade = () => {},
   onChangePenGrams = () => {},
+  onChangePenRowStep = () => {},
+  onTogglePenRowRemoved = () => {},
 }) {
   // The share denominator and the totals are computed from activeRows, so
   // a removed row contributes nothing to either while still rendering,
-  // struck, in the pen's own table (RESEARCH.md Pitfall 2). No row is
-  // removable yet (03-02), so this is a no-op filter today.
+  // struck, in the pen's own table (RESEARCH.md Pitfall 2). `rows` here is
+  // the version the pen opened on (the baseline) outside the pen, and the
+  // baseline again inside it — the struck values before every field.
   const activeRowsOnly = activeRows({ rows });
-  const balance = computeBalance(activeRowsOnly);
+  const baselineBalance = computeBalance(activeRowsOnly);
+  const baselineMass = baselineBalance ? baselineBalance.mass : 0;
+
+  const isDeveloping = mode === 'developing' && draftVersion != null;
+  const currentActiveRows = isDeveloping ? activeRows(draftVersion) : activeRowsOnly;
+  const currentBalance = isDeveloping ? computeBalance(currentActiveRows) : baselineBalance;
+  const currentMass = currentBalance ? currentBalance.mass : 0;
+  const stepOptions = isDeveloping ? activeSteps(draftVersion) : [];
+  const orphanedRowIds = isDeveloping ? new Set(orphanedRows(draftVersion).map((row) => row.id)) : new Set();
 
   // The as-made total appears only while an as-made layer is showing —
   // recording, or a saved batch reading (D-22). Reading the plan total
   // needs no as-made source at all, so it is always computed.
   const hasAsMadeLayer = mode === 'recording' || Boolean(openBatch);
   const asMadeSource = mode === 'recording' ? draft.asMade : openBatch ? openBatch.churn.asMade : {};
-  const { planTotal, asMadeTotal } = asMadeTotals(activeRowsOnly, asMadeSource);
-  const planTotalText = formatGrams(planTotal);
+  const { asMadeTotal } = asMadeTotals(activeRowsOnly, asMadeSource);
+  const baselineTotalText = formatGrams(baselineMass);
+  const currentTotalText = isDeveloping ? formatGrams(currentMass) : baselineTotalText;
   const asMadeTotalText = formatGrams(asMadeTotal);
 
   return (
@@ -133,6 +263,7 @@ export function IngredientTable({
             <th scope="col">% of batch</th>
             <th scope="col">Step</th>
             <th scope="col">Data</th>
+            {isDeveloping && <th scope="col">Remove</th>}
           </tr>
         </thead>
         <tbody>
@@ -141,27 +272,86 @@ export function IngredientTable({
             const isMarked = markedRowIds.includes(row.id);
             const asMadeValue =
               mode !== 'recording' && openBatch && hasAsMade(openBatch, row.id) ? asMadeFor(openBatch, row.id) : null;
-            const penGramsValue =
-              mode === 'developing' && penDraft && Object.prototype.hasOwnProperty.call(penDraft.rows, row.id)
-                ? penDraft.rows[row.id]
-                : undefined;
-            const changedGrams = penGramsValue !== undefined && penGramsValue !== String(row.grams) ? penGramsValue : null;
+            const baselineShare = formatShareOfBatch(row.grams, baselineMass);
+
+            if (!isDeveloping) {
+              return (
+                <tr
+                  key={row.id}
+                  className={isMarked ? 'is-marked' : undefined}
+                  aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
+                >
+                  <td>{row.ingredientName}</td>
+                  <td>
+                    <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
+                  </td>
+                  <td>
+                    <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+                  </td>
+                  <td>{baselineShare}</td>
+                  <td>{row.splitStep ? `${row.step} + ${row.splitStep}` : row.step}</td>
+                  <td>{dataFlag}</td>
+                </tr>
+              );
+            }
+
+            const draftRow = penDraft.rows[row.id];
+            const removed = draftRow.removed;
+            // A removed row contributes no current share (it is excluded
+            // from currentMass by activeRows) — its share cell shows only
+            // the struck baseline, the mirror of the name cell beside it.
+            const parsed = Number(draftRow.grams);
+            const currentGramsValue = draftRow.grams !== '' && Number.isFinite(parsed) ? parsed : row.grams;
+            const currentShare = removed ? null : formatShareOfBatch(currentGramsValue, currentMass);
+            const changedGrams = draftRow.grams !== String(row.grams) ? draftRow.grams : null;
+            const changedShare = !removed && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
+            const changedStep = draftRow.step !== row.step ? { from: row.step, to: draftRow.step } : null;
+            // orphanedRows never names an already-removed row (uses.js), so
+            // this flag only ever applies to an active row here.
+            const flagged = orphanedRowIds.has(row.id);
+
             return (
               <tr
                 key={row.id}
                 className={isMarked ? 'is-marked' : undefined}
-                aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams)}
+                aria-label={rowAccessibleLabel(
+                  row,
+                  dataFlag,
+                  isMarked,
+                  markedFigureLabel,
+                  asMadeValue,
+                  changedGrams,
+                  changedShare,
+                  changedStep,
+                  removed,
+                )}
               >
-                <td>{row.ingredientName}</td>
+                <td>
+                  {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+                  {flagged && (
+                    <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
+                  )}
+                </td>
                 <td>
                   <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
                 </td>
                 <td>
                   <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
                 </td>
-                <td>{formatShareOfBatch(row.grams, balance ? balance.mass : 0)}</td>
-                <td>{row.splitStep ? `${row.step} + ${row.splitStep}` : row.step}</td>
+                <td>
+                  {removed ? (
+                    <span className="struck-value">{baselineShare}</span>
+                  ) : (
+                    <ShareCell baselineShare={baselineShare} currentShare={currentShare} />
+                  )}
+                </td>
+                <td>
+                  <StepCell row={row} penDraft={penDraft} stepOptions={stepOptions} onChangePenRowStep={onChangePenRowStep} />
+                </td>
                 <td>{dataFlag}</td>
+                <td>
+                  <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />
+                </td>
               </tr>
             );
           })}
@@ -170,16 +360,22 @@ export function IngredientTable({
           <tr
             aria-label={
               hasAsMadeLayer
-                ? `Total, plan ${planTotalText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
-                : `Total, plan ${planTotalText.replace(' g', ' grams')}`
+                ? `Total, plan ${currentTotalText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
+                : `Total, plan ${currentTotalText.replace(' g', ' grams')}`
             }
           >
             <td>Total</td>
-            <td>{planTotalText}</td>
+            <td>
+              {isDeveloping && currentTotalText !== baselineTotalText && (
+                <span className="struck-value">{baselineTotalText}</span>
+              )}
+              {currentTotalText}
+            </td>
             <td>{hasAsMadeLayer ? asMadeTotalText : ''}</td>
             <td></td>
             <td></td>
             <td></td>
+            {isDeveloping && <td></td>}
           </tr>
         </tfoot>
       </table>

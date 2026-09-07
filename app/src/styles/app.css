@@ -235,6 +235,32 @@ body {
   margin-right: var(--gap-strike);
 }
 
+/* The step-allocation cell's pen-open state (03-02): the same
+   struck-baseline-beside-field arrangement the grams cell uses. */
+.ingredient-table__step-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gap-strike);
+}
+
+.ingredient-table__step-cell select.ink-field {
+  width: auto;
+}
+
+.ingredient-table__split-step {
+  white-space: nowrap;
+}
+
+/* The orphaned-row flag (route-recipe-version.md § 3, 03-02): small print
+   beside the row's name, naming the removed step that left it unused,
+   with its own remove-this-row control. */
+.ingredient-table__flag {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-cross-flag);
+  margin: var(--gap-hair) 0 0;
+}
+
 .ingredient-table th {
   font-family: var(--face-grotesk);
   font-size: var(--size-running-head);

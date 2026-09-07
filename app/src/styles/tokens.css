@@ -61,4 +61,9 @@
      row or step (03-02). */
   --rule-strike: 1.2px;
   --gap-strike: var(--gap-hair);
+
+  /* The removal cross-flags (route-recipe-version.md § 3, 03-02): small
+     print beside a flagged row or beneath a flagged step, naming what
+     removal orphaned — state carried in words, never in colour. */
+  --size-cross-flag: var(--size-small-print);
 }

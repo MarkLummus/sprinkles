@@ -53,12 +53,19 @@ function isTastingDraftDirty(tastingDraft) {
 // "unsaved ink" principle carried to the plan's pen): every field tested
 // against '' / null / the version's own values, never truthiness, so a
 // grams field typed back to the version's own value counts as clean again.
+// A row's draft entry is { grams, step, removed } (03-02) — dirty if any
+// of the three differs from the row the pen opened on.
 function isPenDraftDirty(mode, penDraft, version) {
   if (mode !== 'developing' || !penDraft || !version) return false;
   if (penDraft.versionLabel !== '') return true;
   if (penDraft.reason !== '') return true;
   if (penDraft.citedBatchId !== null) return true;
-  return version.rows.some((row) => penDraft.rows[row.id] !== String(row.grams));
+  return version.rows.some((row) => {
+    const draftRow = penDraft.rows[row.id];
+    return (
+      draftRow.grams !== String(row.grams) || draftRow.step !== row.step || draftRow.removed !== (row.removed ?? false)
+    );
+  });
 }
 
 // The brief's book spread, in semantic regions, each wearing its
@@ -158,23 +165,39 @@ export function RecipePage() {
   // Pattern 2) — a removed row must never reach buildFigures/computeBalance.
   const readingVersion = { ...version, rows: activeRows(version), method: activeSteps(version) };
 
-  // While developing, the six rules and the basis note answer live against
-  // the maker's typed grams (route-recipe-version.md § 3). A draft string
-  // that fails to parse, or is blank mid-keystroke, keeps the baseline's
-  // own grams rather than becoming 0 or NaN.
-  const liveVersion =
+  // The draft version (route-recipe-version.md § 3, 03-02): built once,
+  // from the version the pen opened on with the draft's values applied, so
+  // the pen's own table, the cross-flags (uses.js) and buildDiff all read
+  // the same object rather than each reassembling it. A draft grams string
+  // that fails to parse, or is blank mid-keystroke, keeps the row's own
+  // grams rather than becoming 0 or NaN. Unfiltered — a removed row or
+  // step still appears here, struck, for the pen's own table; readers that
+  // want the clean figures filter through activeRows/activeSteps first.
+  const draftVersion =
     mode === 'developing' && penDraft
       ? {
           ...version,
-          rows: activeRows({
-            rows: version.rows.map((row) => {
-              const raw = penDraft.rows[row.id];
-              if (raw === undefined || raw === '') return row;
-              const parsed = Number(raw);
-              return Number.isFinite(parsed) ? { ...row, grams: parsed } : row;
-            }),
+          rows: version.rows.map((row) => {
+            const draftRow = penDraft.rows[row.id];
+            const parsed = Number(draftRow.grams);
+            return {
+              ...row,
+              grams: draftRow.grams !== '' && Number.isFinite(parsed) ? parsed : row.grams,
+              step: draftRow.step,
+              removed: draftRow.removed,
+            };
           }),
+          method: penDraft.method,
+          headnote: penDraft.headnote,
+          authored: penDraft.authored,
         }
+      : null;
+
+  // While developing, the six rules and the basis note answer live against
+  // the maker's typed grams and removed rows (route-recipe-version.md § 3).
+  const liveVersion =
+    mode === 'developing' && draftVersion
+      ? { ...draftVersion, rows: activeRows(draftVersion), method: activeSteps(draftVersion) }
       : readingVersion;
 
   const figures = buildFigures(liveVersion);
@@ -418,7 +441,7 @@ export function RecipePage() {
   function handleStartDeveloping() {
     const rows = {};
     for (const row of version.rows) {
-      rows[row.id] = String(row.grams);
+      rows[row.id] = { grams: String(row.grams), step: row.step, removed: row.removed ?? false };
     }
     setPenDraft({
       versionLabel: '',
@@ -448,15 +471,39 @@ export function RecipePage() {
 
   function handleChangePenGrams(rowId, value) {
     setBlockedMessage(null);
-    setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: value } }));
+    setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], grams: value } } }));
   }
 
-  // Shared by both save paths: the version line and every active row's
-  // grams must be present, and the line must be unique within the recipe
-  // (D-04) — blocked in words, never a dialog. Returns null when blocked,
-  // or the pen's fields coerced for the domain constructor (rows'
-  // grams strings are Number()'d here, at save time, never on keystroke —
-  // Pitfall 5).
+  // A row's step allocation (the sheet's step column) is a choice among
+  // the version's own steps (route-recipe-version.md § 3) — a different
+  // fact from a step's `uses` list, and both are kept.
+  function handleChangePenRowStep(rowId, stepNumber) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], step: stepNumber } } }));
+  }
+
+  // Removing sets only the draft row's removed flag — it does not clear
+  // the grams and does not touch any step (route-recipe-version.md § 3).
+  // The same handler restores: removal never cascades, so this is always
+  // the maker's own tap, whether flipping a row's own control or the
+  // orphaned-row flag's "remove this row" control.
+  function handleTogglePenRowRemoved(rowId) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({
+      ...prev,
+      rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], removed: !prev.rows[rowId].removed } },
+    }));
+  }
+
+  // Shared by both save paths: the version line and every row the draft
+  // itself does not mark removed must have a grams amount, and the line
+  // must be unique within the recipe (D-04) — blocked in words, never a
+  // dialog. A row removed in the draft needs no amount: removal, not the
+  // baseline's own removed flag, decides which rows this checks (a row can
+  // be removed here even though it was active on the version the pen
+  // opened on). Returns null when blocked, or the pen's fields coerced for
+  // the domain constructor (rows' grams strings are Number()'d here, at
+  // save time, never on keystroke — Pitfall 5).
   function buildPenFields(excludeId) {
     if (penDraft.versionLabel === '') {
       setBlockedMessage('a version needs a line');
@@ -466,14 +513,24 @@ export function RecipePage() {
       setBlockedMessage('another version already has this line');
       return null;
     }
-    for (const row of activeRows(version)) {
-      const raw = penDraft.rows[row.id];
-      if (raw === undefined || raw === '') {
+    for (const row of version.rows) {
+      const draftRow = penDraft.rows[row.id];
+      if (draftRow.removed) continue;
+      if (draftRow.grams === undefined || draftRow.grams === '') {
         setBlockedMessage(`${row.ingredientName} needs an amount, or remove the row`);
         return null;
       }
     }
-    const rows = version.rows.map((row) => ({ ...row, grams: Number(penDraft.rows[row.id]) }));
+    const rows = version.rows.map((row) => {
+      const draftRow = penDraft.rows[row.id];
+      const parsed = Number(draftRow.grams);
+      return {
+        ...row,
+        grams: Number.isFinite(parsed) ? parsed : row.grams,
+        step: draftRow.step,
+        removed: draftRow.removed,
+      };
+    });
     return {
       versionLabel: penDraft.versionLabel,
       reason: penDraft.reason === '' ? null : penDraft.reason,
@@ -539,6 +596,7 @@ export function RecipePage() {
         {hasRows ? (
           <IngredientTable
             rows={mode === 'developing' ? version.rows : readingVersion.rows}
+            draftVersion={draftVersion}
             markedRowIds={markedRowIds}
             markedFigureLabel={markedFigureLabel}
             mode={mode}
@@ -547,6 +605,8 @@ export function RecipePage() {
             openBatch={openBatch}
             onChangeAsMade={handleChangeAsMade}
             onChangePenGrams={handleChangePenGrams}
+            onChangePenRowStep={handleChangePenRowStep}
+            onTogglePenRowRemoved={handleTogglePenRowRemoved}
           />
         ) : (
           <p>This version has no ingredient rows.</p>

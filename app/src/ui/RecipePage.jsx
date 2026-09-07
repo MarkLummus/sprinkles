@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
 import { createBatch, addTasting, recordAmendment, sortedBatches } from '../domain/batch.js';
 import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
 import { createChildVersion, saveOverVersion, versionsForRecipe, blockedSaveMessage } from '../domain/lineage.js';
+import { buildDiff } from '../domain/diff.js';
+import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
@@ -75,6 +77,15 @@ function isPenDraftDirty(mode, penDraft, version) {
 export function RecipePage() {
   const { id, batchId } = useParams();
   const navigate = useNavigate();
+  // The show-changes state (D-02): on when the `changes` key is present in
+  // the URL's search parameters at all — its value is never consulted, so
+  // presence is the whole signal. Composes with both /recipe/:id and
+  // /recipe/:id/batch/:batchId with no new route, since both already
+  // resolve to this component. setSearchParams's default history behaviour
+  // (a push, not a replace) is left alone: that is what makes the browser's
+  // own back button return to the clean reading, with no extra code.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const showingChanges = searchParams.has('changes');
   const [version, setVersion] = useState(undefined);
   const [versions, setVersions] = useState([]);
   const [batches, setBatches] = useState([]);
@@ -154,6 +165,28 @@ export function RecipePage() {
     }
     repository.getBatch(version.citedBatchId).then((result) => {
       if (!cancelled) setCitedBatch(result ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [version]);
+
+  // The live parent read (T-03-23, T-03-24): show-changes reads the parent
+  // record through the repository at render time, never a copy stored on
+  // the child, so a parent saved over afterwards is reflected rather than
+  // frozen. Held as null when the version has no parent, or when the read
+  // comes back with nothing — either way the toggle is absent and the
+  // lineage line still names the parent from the child's own
+  // parentVersionLabel snapshot (D-10).
+  const [parentVersion, setParentVersion] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!version || !version.parentVersionId) {
+      setParentVersion(null);
+      return undefined;
+    }
+    repository.getVersion(version.parentVersionId).then((result) => {
+      if (!cancelled) setParentVersion(result ?? null);
     });
     return () => {
       cancelled = true;
@@ -256,6 +289,16 @@ export function RecipePage() {
   const focusedFigure = figures.find((figure) => figure.key === focusedFigureKey) ?? null;
   const markedRowIds = focusedFigure?.contributorRowIds ?? [];
   const markedFigureLabel = focusedFigure?.label ?? '';
+
+  // The show-changes diff (route-recipe-version.md § 3, § 6; D-02, T-03-23):
+  // one buildDiff of the version against its live parent — the same
+  // function the pen uses against its own baseline — computed once here and
+  // threaded into every region (the table, the six rules, the method).
+  // Absent whenever the toggle itself would be absent: no parent, the
+  // parent record unread, or the parameter not present.
+  const changeDiff =
+    showingChanges && version.parentVersionId && parentVersion ? buildDiff(version, parentVersion) : null;
+  const changeStaleSteps = changeDiff ? stepsWithStaleAmounts(version, parentVersion) : [];
 
   // The batch this page shows: the one the URL names, or — with no batch
   // named in the URL — the version's most recent batch by churn date,
@@ -508,6 +551,19 @@ export function RecipePage() {
     setMode('developing');
   }
 
+  // The show-changes toggle (D-02): adds or deletes the `changes` key,
+  // building a new URLSearchParams from the previous one rather than
+  // mutating it, and leaving setSearchParams's default push behaviour
+  // alone so the browser's own back button returns to the clean reading.
+  function handleToggleShowChanges() {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (next.has('changes')) next.delete('changes');
+      else next.set('changes', '');
+      return next;
+    });
+  }
+
   // Discards with no dialog of the app's own (D-10) — mirrors
   // handleCancelRecording exactly.
   function handleCancelDeveloping() {
@@ -723,6 +779,8 @@ export function RecipePage() {
           openBatch={openBatch}
           batches={batches}
           citedBatch={citedBatch}
+          parentVersion={parentVersion}
+          showingChanges={showingChanges}
           blockedMessage={blockedMessage}
           onChangeChurnDate={handleChangeChurnDate}
           onStartDeveloping={handleStartDeveloping}
@@ -730,6 +788,7 @@ export function RecipePage() {
           onChangePenField={handleChangePenField}
           onSaveAsNewVersion={handleSaveAsNewVersion}
           onSaveOverVersion={handleSaveOverVersion}
+          onToggleShowChanges={handleToggleShowChanges}
         />
 
         <VersionStrip
@@ -743,8 +802,10 @@ export function RecipePage() {
           <h2 className="region-name">Ingredient table</h2>
           {hasRows ? (
             <IngredientTable
-              rows={mode === 'developing' ? version.rows : readingVersion.rows}
+              rows={mode === 'developing' || showingChanges ? version.rows : readingVersion.rows}
               draftVersion={draftVersion}
+              diff={changeDiff}
+              showingChanges={showingChanges}
               markedRowIds={markedRowIds}
               markedFigureLabel={markedFigureLabel}
               mode={mode}
@@ -763,14 +824,17 @@ export function RecipePage() {
 
         <section className="method-region" aria-label="Method">
           <Method
-            steps={mode === 'developing' ? version.method : readingVersion.method}
+            steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
             stepChanges={mode === 'recording' ? draft.stepChanges : openBatch ? openBatch.churn.stepChanges : {}}
             mode={mode}
             onChangeStepChange={handleChangeStepChange}
             rows={version.rows}
             draftVersion={draftVersion}
             baselineVersion={version}
-            staleFlagVisible={mode === 'developing'}
+            showingChanges={showingChanges}
+            changeDiff={changeDiff}
+            staleSteps={changeStaleSteps}
+            staleFlagVisible={mode === 'developing' || showingChanges}
             onChangePenStepField={handleChangePenStepField}
             onChangePenStepTarget={handleChangePenStepTarget}
             onTogglePenStepUses={handleTogglePenStepUses}
@@ -786,6 +850,7 @@ export function RecipePage() {
             <FormulationNote
               version={liveVersion}
               mode={mode}
+              diff={changeDiff}
               onFocusFigure={setFocusedFigureKey}
               onBlurFigure={() => setFocusedFigureKey(null)}
             />

@@ -15,6 +15,8 @@ export function Headnote({
   openBatch,
   batches,
   citedBatch,
+  parentVersion = null,
+  showingChanges = false,
   blockedMessage,
   onChangeChurnDate,
   onStartDeveloping,
@@ -22,6 +24,7 @@ export function Headnote({
   onChangePenField,
   onSaveAsNewVersion,
   onSaveOverVersion,
+  onToggleShowChanges = () => {},
 }) {
   // Focus-return for the pen (Phase 2 precedent, BatchMargin's tasting
   // focus-return): closing the pen returns focus to "Develop the next
@@ -171,6 +174,26 @@ export function Headnote({
                 <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
                   {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
                 </Link>
+              </>
+            )}
+            {/* The show-changes toggle (route-recipe-version.md § 3, § 6;
+                D-02): the one control the lineage line gains, absent
+                whenever there is nothing to compare against — no parent, or
+                the parent record could not be read (D-10, T-03-24). Its
+                pressed state is carried by weight and outline (app.css),
+                never by a label change: the text stays "show changes from
+                <parent line>" whether pressed or not. */}
+            {parentVersion && (
+              <>
+                {' '}
+                <button
+                  type="button"
+                  className="headnote__show-changes"
+                  aria-pressed={showingChanges}
+                  onClick={onToggleShowChanges}
+                >
+                  {`show changes from ${version.parentVersionLabel}`}
+                </button>
               </>
             )}
           </p>

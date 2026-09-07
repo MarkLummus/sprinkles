@@ -189,6 +189,20 @@ body {
   color: inherit;
 }
 
+/* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04): the
+   pressed state is carried by weight and outline, never by hue or a label
+   change — the same convention .version-strip__item.is-current uses. */
+.headnote__show-changes {
+  font: inherit;
+  margin-left: var(--gap-xs);
+}
+
+.headnote__show-changes[aria-pressed='true'] {
+  font-weight: 700;
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
 .headnote__reason {
   font-family: var(--face-text);
   font-size: var(--size-headnote-prose);

@@ -152,6 +152,52 @@ describe('Headnote — the saved child reads its lineage', () => {
   });
 });
 
+describe('Headnote — the show-changes toggle (D-02, D-10)', () => {
+  const childWithReason = {
+    ...oliveOilVersion,
+    id: 'v2',
+    parentVersionId: 'olive-oil-ice-cream-v1',
+    parentVersionLabel: '50 g oil · 800 g',
+    citedBatchId: augustSecondBatch.id,
+    reason: 'raised the oil to taste less of the milk',
+    versionLabel: '60 g oil · 800 g',
+  };
+
+  it('renders one toggle carrying aria-pressed and the parent line, when the parent record is read', () => {
+    const markup = renderHeadnote({
+      version: childWithReason,
+      mode: 'reading',
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+      showingChanges: false,
+    });
+    expect(markup).toMatch(/aria-pressed="false"[^>]*>show changes from 50 g oil · 800 g<\/button>/);
+  });
+
+  it('carries aria-pressed="true" once the state is on', () => {
+    const markup = renderHeadnote({
+      version: childWithReason,
+      mode: 'reading',
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+      showingChanges: true,
+    });
+    expect(markup).toMatch(/aria-pressed="true"[^>]*>show changes from 50 g oil · 800 g<\/button>/);
+  });
+
+  it('omits the toggle when the parent record cannot be read, and still names the parent from parentVersionLabel', () => {
+    const markup = renderHeadnote({
+      version: childWithReason,
+      mode: 'reading',
+      citedBatch: augustSecondBatch,
+      parentVersion: null,
+    });
+    expect(markup).not.toContain('show changes from');
+    expect(markup).not.toContain('headnote__show-changes');
+    expect(markup).toContain('50 g oil · 800 g');
+  });
+});
+
 describe('Headnote — a figure outside its band changes nothing about the ceremony', () => {
   it('renders exactly the same controls whether the version is inside or outside its bands', () => {
     const outOfBand = {

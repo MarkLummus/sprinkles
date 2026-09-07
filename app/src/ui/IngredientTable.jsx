@@ -140,6 +140,73 @@ function RemoveRowControl({ removed, onToggle }) {
   );
 }
 
+// The show-changes state's grams cell (route-recipe-version.md § 3, § 6,
+// 03-04): both the struck parent value and the current value read through
+// ink, never pen blue — a saved version's marks are never still being
+// typed, so nothing here reads through .ink-field or .ink-text. Driven
+// entirely by the row's own buildDiff descriptor; a removed row forces the
+// strike even when the number itself did not move, the same forced-strike
+// discipline GramsCell already applies in the pen.
+function DiffGramsCell({ rowDiff }) {
+  const changed = rowDiff.removed || rowDiff.gramsChanged;
+  return (
+    <>
+      {changed && rowDiff.gramsFrom != null && <span className="struck-value">{rowDiff.gramsFrom} g</span>}
+      {rowDiff.gramsTo} g
+    </>
+  );
+}
+
+function DiffStepCell({ rowDiff }) {
+  const changed = rowDiff.removed || rowDiff.stepChanged;
+  return (
+    <>
+      {changed && rowDiff.stepFrom != null && <span className="struck-value">{rowDiff.stepFrom}</span>}
+      {rowDiff.stepTo}
+    </>
+  );
+}
+
+// A removed row has no current share at all — the mirror of the name
+// cell's forced strike — so only the struck baseline renders, exactly as
+// the pen's own removed-row share cell does.
+function DiffShareCell({ rowDiff }) {
+  if (rowDiff.removed) {
+    return <span className="struck-value">{rowDiff.shareFrom}</span>;
+  }
+  return (
+    <>
+      {rowDiff.shareChanged && rowDiff.shareFrom != null && <span className="struck-value">{rowDiff.shareFrom}</span>}
+      {rowDiff.shareTo}
+    </>
+  );
+}
+
+// The show-changes state's accessible name (route-recipe-version.md § 6):
+// the strike is never the only carrier, so a changed cell's row still
+// reads "was 40 g, now 48 g" even with no pen field to attach it to. Unlike
+// rowAccessibleLabel above, `row` here is the CURRENT (child) version's own
+// row — its own grams/step already equal rowDiff's "to" values — so the
+// phrasing reads directly off the diff descriptor, never off `row` itself.
+function rowDiffAccessibleLabel(row, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue) {
+  const gramsPhrase =
+    (rowDiff.removed || rowDiff.gramsChanged) && rowDiff.gramsFrom != null
+      ? `was ${rowDiff.gramsFrom} g, now ${rowDiff.gramsTo} g`
+      : `${rowDiff.gramsTo} g`;
+  const parts = [row.ingredientName, gramsPhrase];
+  if (!rowDiff.removed && rowDiff.shareChanged && rowDiff.shareFrom != null) {
+    parts.push(`was ${rowDiff.shareFrom}, now ${rowDiff.shareTo}`);
+  }
+  if ((rowDiff.removed || rowDiff.stepChanged) && rowDiff.stepFrom != null) {
+    parts.push(`was step ${rowDiff.stepFrom}, now step ${rowDiff.stepTo}`);
+  }
+  if (dataFlag) parts.push(dataFlag);
+  if (isMarked) parts.push(`contributing to ${markedFigureLabel}`);
+  if (asMadeValue !== null) parts.push(`as made ${asMadeValue} g`);
+  if (rowDiff.removed) parts.push('removed');
+  return parts.join(', ');
+}
+
 // Never `.filter(` — the automated gate on this file forbids a filter
 // whose arguments mention `removed`, since that pattern is what would drop
 // a removed row from the table's own rendering (the thing this file must
@@ -215,6 +282,8 @@ function AsMadeCell({ row, mode, draft, openBatch, onChangeAsMade }) {
 export function IngredientTable({
   rows,
   draftVersion = null,
+  diff = null,
+  showingChanges = false,
   markedRowIds = [],
   markedFigureLabel = '',
   mode = 'reading',
@@ -236,6 +305,11 @@ export function IngredientTable({
   const baselineMass = baselineBalance ? baselineBalance.mass : 0;
 
   const isDeveloping = mode === 'developing' && draftVersion != null;
+  // The show-changes state (route-recipe-version.md § 3, § 6; D-02, 03-04):
+  // never while the pen is open — its own always-visible grammar owns that
+  // state — and only once the diff itself exists (no parent, or an unread
+  // parent, and there is nothing to mark).
+  const isShowingChanges = !isDeveloping && showingChanges && diff != null;
   const currentActiveRows = isDeveloping ? activeRows(draftVersion) : activeRowsOnly;
   const currentBalance = isDeveloping ? computeBalance(currentActiveRows) : baselineBalance;
   const currentMass = currentBalance ? currentBalance.mass : 0;
@@ -251,6 +325,16 @@ export function IngredientTable({
   const baselineTotalText = formatGrams(baselineMass);
   const currentTotalText = isDeveloping ? formatGrams(currentMass) : baselineTotalText;
   const asMadeTotalText = formatGrams(asMadeTotal);
+  // The total row's show-changes reading (route-recipe-version.md § 3, § 6):
+  // the parent's total struck before the current one, read straight off
+  // buildDiff's own total rather than recomputed here.
+  const totalDisplayText = isShowingChanges ? diff.total.to : currentTotalText;
+  const totalAriaLabel =
+    isShowingChanges && diff.total.changed
+      ? `Total, plan was ${diff.total.from.replace(' g', ' grams')}, now ${diff.total.to.replace(' g', ' grams')}`
+      : hasAsMadeLayer
+        ? `Total, plan ${totalDisplayText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
+        : `Total, plan ${totalDisplayText.replace(' g', ' grams')}`;
 
   return (
     <>
@@ -273,6 +357,33 @@ export function IngredientTable({
             const asMadeValue =
               mode !== 'recording' && openBatch && hasAsMade(openBatch, row.id) ? asMadeFor(openBatch, row.id) : null;
             const baselineShare = formatShareOfBatch(row.grams, baselineMass);
+
+            if (isShowingChanges) {
+              const rowDiff = diff.rows.find((entry) => entry.id === row.id);
+              return (
+                <tr
+                  key={row.id}
+                  className={isMarked ? 'is-marked' : undefined}
+                  aria-label={rowDiffAccessibleLabel(row, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
+                >
+                  <td>{rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}</td>
+                  <td>
+                    <DiffGramsCell rowDiff={rowDiff} />
+                  </td>
+                  <td>
+                    <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+                  </td>
+                  <td>
+                    <DiffShareCell rowDiff={rowDiff} />
+                  </td>
+                  <td>
+                    <DiffStepCell rowDiff={rowDiff} />
+                    {row.splitStep != null && ` + ${row.splitStep}`}
+                  </td>
+                  <td>{dataFlag}</td>
+                </tr>
+              );
+            }
 
             if (!isDeveloping) {
               return (
@@ -357,19 +468,14 @@ export function IngredientTable({
           })}
         </tbody>
         <tfoot>
-          <tr
-            aria-label={
-              hasAsMadeLayer
-                ? `Total, plan ${currentTotalText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
-                : `Total, plan ${currentTotalText.replace(' g', ' grams')}`
-            }
-          >
+          <tr aria-label={totalAriaLabel}>
             <td>Total</td>
             <td>
               {isDeveloping && currentTotalText !== baselineTotalText && (
                 <span className="struck-value">{baselineTotalText}</span>
               )}
-              {currentTotalText}
+              {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.from}</span>}
+              {totalDisplayText}
             </td>
             <td>{hasAsMadeLayer ? asMadeTotalText : ''}</td>
             <td></td>

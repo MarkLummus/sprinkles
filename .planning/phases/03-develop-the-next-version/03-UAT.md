@@ -3,7 +3,7 @@ status: diagnosed
 phase: 03-develop-the-next-version
 source: [03-VERIFICATION.md]
 started: 2026-09-07T20:01:13.243Z
-updated: 2026-09-07T21:54:55.378Z
+updated: 2026-09-07T22:12:30.711Z
 ---
 
 ## Current Test
@@ -165,6 +165,15 @@ blocked: 0
     - "Fix both dirty checks: include method, headnote and authored in isPenDraftDirty; compare an amend draft against the batch it was pre-filled from"
     - "Add a RecipePage-level test seam (the interlock owner has no test file)"
   debug_session: .planning/debug/one-pen-rule-leaks.md
+
+## Decisions (Mark, 2026-09-07, after diagnosis)
+
+- **D-UAT-1 (G-03-9):** Writing a tasting IS a pen. Add a tasting is disabled while developing or recording; Develop the next version, Amend and Record (another) batch are disabled while a tasting is being written. Every disabled opener states its reason in words.
+- **D-UAT-2 (G-03-9):** While any pen is open, the version strip, the batch list and the lineage links are disabled with a stated reason (no app dialog, per D-10); pen state also resets on any route id or batchId change as a backstop so the amend-save crash and the cross-version write cannot occur.
+- **D-UAT-3 (G-03-3 S2):** Keep the brief rule in uses.js (a removed step flags only rows no remaining step uses). Add a cue on the removed step naming, in words, which of its rows are still covered by another step, so silence is legible.
+- **D-UAT-4 (G-03-6):** In show-changes a struck step keeps the parent number it had, struck; live steps read 1, 2, 3 in their new order. n stays immutable identity; display numbers are derived.
+- **Assumed (G-03-1 b), not objected:** the As Made column is shown only while recording or with a saved batch in view.
+- **Assumed (G-03-6 data), not objected:** saved children whose rows still name a removed step are remapped on read for display; no migration.
 
 ## Deferred Follow-Ups
 

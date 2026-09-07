@@ -39,12 +39,18 @@ export function Method({ steps, stepChanges = {}, mode = 'reading', onChangeStep
                 {step.n}
               </span>
               <div className="method-step__body">
-                <p className={struck ? 'method-step__lead method-step__lead--struck' : 'method-step__lead'}>
-                  <b>{step.leadIn}.</b> {step.instruction}
+                <p className="method-step__lead">
+                  <span className={struck ? 'method-step__prose--struck' : undefined}>
+                    <b>{step.leadIn}.</b> {step.instruction}
+                  </span>
                   {/* The strike's requirement is a text label, not a drawn
                       line alone (route-recipe-batch.md § 6): a reader who
                       cannot see the line still reads that the step was
-                      skipped. */}
+                      skipped. The label is a sibling of the struck span,
+                      never a descendant of it — a decoration propagated
+                      from an ancestor cannot be switched off by a
+                      descendant (CSS Text Decoration L3), so being outside
+                      the struck element is what keeps this label legible. */}
                   {struck && <span className="method-step__skipped-label"> Skipped</span>}
                 </p>
                 {step.targets?.length > 0 && (

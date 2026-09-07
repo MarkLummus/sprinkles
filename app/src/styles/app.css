@@ -245,8 +245,12 @@ body {
 
 /* A struck step reads struck, its prose intact — weight and a strike, never
    a colour (route-recipe-batch.md § 6, No-Verdict Rule). The text label
-   beside it is the requirement; the drawn line alone is a decoration. */
-.method-step__lead--struck {
+   beside it is the requirement; the drawn line alone is a decoration. The
+   decoration is scoped to the prose span, not the paragraph, so the label
+   beside it stays legible — moving it back onto the paragraph would strike
+   the label again, since a decoration propagates to every in-flow inline
+   descendant and cannot be cancelled by them. */
+.method-step__prose--struck {
   text-decoration: line-through;
 }
 

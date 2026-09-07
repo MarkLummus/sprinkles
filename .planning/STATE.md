@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 03
 current_phase_name: Develop the next version
 status: executing
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-09-07T18:43:03.020Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-09-07T19:08:49.136Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 03 execution started
-state_head: 578f0b866008469d37fd6c3af5042b0b24085844
+state_head: 88b41f1b2e72a6970cb82d336cc77e933a900113
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 11
+  completed_plans: 12
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07)
 ## Current Position
 
 Phase: 03 (Develop the next version) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 03 execution started
 
@@ -70,6 +70,7 @@ Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 | Phase 02 P05 | 15min | 2 tasks | 8 files |
 | Phase 03 P01 | 31min | 3 tasks | 22 files |
 | Phase 03 P02 | 20min | 3 tasks | 12 files |
+| Phase 03 P03 | 40min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -111,6 +112,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 01] Deviation: modified app/src/ui/BatchMargin.jsx (omitted from the plan's files_modified frontmatter) to disable batch-starting controls while developing, per the plan's own action text and D-10's mutual-exclusivity constraint.
 - [Phase 03]: [Phase 3, Plan 02] Built one draftVersion per render in RecipePage — the pen's own tables, the two removal cross-flags (uses.js) and buildDiff all read it, replacing the earlier ad hoc liveVersion reconstruction; removal is always a single flag flip (never a cascade), with both cross-flags recomputed live so restoring clears a flag without anything having stored one.
 - [Phase 03]: [Phase 3, Plan 02] penDraft.rows changed shape from a bare grams string to { grams, step, removed } per row; buildPenFields validates grams only for rows the draft itself does not mark removed. A removed authored note is deleted outright (no struck-in-place treatment, since notes carry no uses-list cross-flag concern); a note's inheritedFrom marker is recomputed eagerly in the text-change handler by comparing against the original inherited text.
+- [Phase 03]: [Phase 3, Plan 03] blockedSaveMessage(penFields, version, versions) takes versions already scoped by the caller (recipe-filtered, self-excluded for a save-over) rather than an excludeId of its own.
+- [Phase 03]: [Phase 3, Plan 03] RecipeList.jsx's row rendering is split into an exported RecipeRows presentational component (mirroring VersionStrip.jsx's shape), tested with the repository module stubbed via vi.mock since importing RecipeList.jsx otherwise opens a real IndexedDB at module load.
+- [Phase 03]: [Phase 3, Plan 03] A reason of nothing but whitespace is trimmed to null at save time, the same treatment an empty reason already got; the cited batch's churn date is read via one repository.getBatch(citedBatchId) call.
 
 ### Pending Todos
 
@@ -165,6 +169,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-07T18:42:54.055Z
-Stopped at: Completed 03-02-PLAN.md
+Last session: 2026-09-07T19:08:49.079Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None

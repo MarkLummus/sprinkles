@@ -13,6 +13,7 @@ import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchMargin } from './BatchMargin.jsx';
 import { Headnote } from './Headnote.jsx';
+import { VersionStrip } from './VersionStrip.jsx';
 
 // D-24's dirty check: true only while recording holds ink the maker has
 // actually typed. Every field is tested against '' / {} rather than
@@ -158,6 +159,21 @@ export function RecipePage() {
       cancelled = true;
     };
   }, [version]);
+
+  // The version ids that have at least one batch, for the strip's
+  // "churned" word (route-recipe-version.md § 3, 03-03) — one
+  // repository.getAllBatches() read, not a query per version, since the
+  // realistic range is 1–6 versions per recipe this milestone.
+  const [versionIdsWithBatches, setVersionIdsWithBatches] = useState(new Set());
+  useEffect(() => {
+    let cancelled = false;
+    repository.getAllBatches().then((allBatches) => {
+      if (!cancelled) setVersionIdsWithBatches(new Set(allBatches.map((batch) => batch.versionId)));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   // D-24: leaving the page with unsaved ink uses the browser's own leave
   // warning only, registered while recording, tasting, or the plan's pen
@@ -691,6 +707,13 @@ export function RecipePage() {
         onChangePenField={handleChangePenField}
         onSaveAsNewVersion={handleSaveAsNewVersion}
         onSaveOverVersion={handleSaveOverVersion}
+      />
+
+      <VersionStrip
+        versions={versions}
+        recipeId={version.recipeId}
+        currentId={version.id}
+        versionIdsWithBatches={versionIdsWithBatches}
       />
 
       <section className="ingredient-table-region" aria-label="Ingredient table">

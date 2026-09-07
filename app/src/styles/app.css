@@ -55,6 +55,7 @@ body {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     'headnote headnote'
+    'strip strip'
     'ingredients side'
     'method side';
   gap: var(--gap-l);
@@ -198,6 +199,43 @@ body {
   width: 100%;
   max-width: var(--measure-prose);
   box-sizing: border-box;
+}
+
+/* The version strip (route-recipe-version.md § 3, § 6, 03-03): ink on
+   ground, in the grotesk at small-print size — beneath the headnote,
+   above the ingredient table, so the reading order and the tab order
+   both run headnote, strip, table. */
+.version-strip {
+  grid-area: strip;
+}
+
+.version-strip__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-strip);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-strip-line);
+}
+
+.version-strip__item a {
+  color: inherit;
+}
+
+/* The current version, carried by weight and outline, never by hue or
+   position — the same convention batch-margin__list's is-open uses. */
+.version-strip__item.is-current {
+  font-weight: 700;
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.version-strip__churned {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin-left: var(--gap-hair);
 }
 
 .ingredient-table-region {

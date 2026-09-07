@@ -152,3 +152,6 @@ None - no external service configuration required.
 ---
 *Phase: 03-develop-the-next-version*
 *Completed: 2026-09-07*
+
+## Self-Check: PASSED
+All key files (RecipePage.jsx, RecipePage.test.jsx, Headnote.jsx, Headnote.test.jsx, BatchMargin.jsx, BatchMargin.test.jsx, router.jsx, app.css) confirmed present on disk. All 5 commits (010cf31, a10d44b, b8e59f1, 444680d, 3b86b06) confirmed in git log. `npm --prefix app test` passes 385/385; `npm --prefix app run build` exits 0.

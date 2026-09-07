@@ -301,18 +301,20 @@ export function BatchMargin({
 
         {orderedBatches.length > 1 && (
           <>
-            {/* The list's own links stay unguarded here (03-07's scope);
-                this sentence speaks the same words as the rest of the pen
-                layer so all four regions read as one language. */}
+            {/* D-UAT-2: while any pen is open, the batch list is not a way
+                off the page either — each entry's date words render as
+                text, the is-open marker on the batch already showing is
+                untouched, and this sentence names the pen holding it. */}
             {openPen && <p className="pen-hint">Another batch cannot be opened while {penReason}.</p>}
             <ul className="batch-margin__list">
-              {orderedBatches.map((batch) => (
-                <li key={batch.id} className={batch.id === openBatch.id ? 'is-open' : undefined}>
-                  <Link to={`/recipe/${version.id}/batch/${batch.id}`}>
-                    {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
-                  </Link>
-                </li>
-              ))}
+              {orderedBatches.map((batch) => {
+                const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
+                return (
+                  <li key={batch.id} className={batch.id === openBatch.id ? 'is-open' : undefined}>
+                    {openPen ? dateWords : <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{dateWords}</Link>}
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}

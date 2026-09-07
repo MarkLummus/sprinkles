@@ -241,3 +241,55 @@ describe('Headnote — a figure outside its band changes nothing about the cerem
     expect(inBandMarkup).toBe(outOfBandMarkup);
   });
 });
+
+describe('Headnote — the lineage line is not a way off the page while a pen is open (D-UAT-2)', () => {
+  const childWithReason = {
+    ...oliveOilVersion,
+    id: 'v2',
+    parentVersionId: 'olive-oil-ice-cream-v1',
+    parentVersionLabel: '50 g oil · 800 g',
+    citedBatchId: augustSecondBatch.id,
+    reason: 'raised the oil to taste less of the milk',
+    versionLabel: '60 g oil · 800 g',
+  };
+
+  it('renders no anchor for the lineage line while a pen is open, still reads the parent line and the cited batch date in words, and carries the reason', () => {
+    const markup = renderHeadnote({
+      version: childWithReason,
+      mode: 'reading',
+      citedBatch: augustSecondBatch,
+      openPen: 'plan',
+      penReason: 'the plan is being developed',
+    });
+    expect(markup).not.toContain('<a ');
+    expect(markup).toContain('50 g oil · 800 g');
+    expect(markup).toContain('after the batch of');
+    expect(markup).toContain('These links are unavailable while the plan is being developed.');
+  });
+
+  it('still renders the show-changes toggle while a pen is open, since it is not a way off the page', () => {
+    const markup = renderHeadnote({
+      version: childWithReason,
+      mode: 'reading',
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+      showingChanges: false,
+      openPen: 'plan',
+      penReason: 'the plan is being developed',
+    });
+    expect(markup).toMatch(/aria-pressed="false"[^>]*>show changes from 50 g oil · 800 g<\/button>/);
+  });
+
+  it('renders the lineage line with its two links exactly as today with no pen open', () => {
+    const markup = renderHeadnote({
+      version: childWithReason,
+      mode: 'reading',
+      citedBatch: augustSecondBatch,
+      openPen: null,
+      penReason: null,
+    });
+    expect(markup).toContain('href="/recipe/olive-oil-ice-cream-v1"');
+    expect(markup).toContain(`href="/recipe/olive-oil-ice-cream-v1/batch/${augustSecondBatch.id}"`);
+    expect(markup).not.toContain('unavailable while');
+  });
+});

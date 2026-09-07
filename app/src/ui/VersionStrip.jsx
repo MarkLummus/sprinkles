@@ -7,7 +7,7 @@ import { sortedVersions, versionsForRecipe } from '../domain/lineage.js';
 // order is always sortedVersions(versionsForRecipe(...)) — creation
 // order, most recently created first — never the store's own key order
 // and never a sort of its own.
-export function VersionStrip({ versions, recipeId, currentId, versionIdsWithBatches }) {
+export function VersionStrip({ versions, recipeId, currentId, versionIdsWithBatches, openPen = null, penReason = null }) {
   const ordered = sortedVersions(versionsForRecipe(versions, recipeId));
 
   // A strip of one is not a strip (route-recipe-version.md § 3).
@@ -25,13 +25,18 @@ export function VersionStrip({ versions, recipeId, currentId, versionIdsWithBatc
               key={version.id}
               className={isCurrent ? 'version-strip__item is-current' : 'version-strip__item'}
             >
-              <Link to={`/recipe/${version.id}`}>{version.versionLabel}</Link>
+              {/* D-UAT-2: while a pen is open, the strip is not a way off
+                  the page — every version's label renders as plain text,
+                  the current-version class stays, and the reason beneath
+                  the list (not per-item) names the pen holding it. */}
+              {openPen ? version.versionLabel : <Link to={`/recipe/${version.id}`}>{version.versionLabel}</Link>}
               {/* D-21: the word only, no count. */}
               {churned && <span className="version-strip__churned">churned</span>}
             </li>
           );
         })}
       </ul>
+      {openPen && <p className="pen-hint">Another version cannot be opened while {penReason}.</p>}
     </nav>
   );
 }

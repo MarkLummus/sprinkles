@@ -169,13 +169,27 @@ export function Headnote({
       {version.parentVersionId && (
         <>
           <p className="headnote__lineage">
-            from <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
+            {/* D-UAT-2: while any pen is open, the lineage line's two links
+                (the parent, the cited batch) are not a way off the page —
+                both read as plain text in the same sentence, and only the
+                show-changes toggle beside them (never a way off the page)
+                keeps working. */}
+            from{' '}
+            {openPen ? (
+              version.parentVersionLabel
+            ) : (
+              <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
+            )}
             {version.citedBatchId && citedBatch && (
               <>
                 , after the batch of{' '}
-                <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
-                  {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
-                </Link>
+                {openPen ? (
+                  citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
+                ) : (
+                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
+                    {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
+                  </Link>
+                )}
               </>
             )}
             {/* The show-changes toggle (route-recipe-version.md § 3, § 6;
@@ -199,6 +213,7 @@ export function Headnote({
               </>
             )}
           </p>
+          {openPen && <p className="pen-hint">These links are unavailable while {penReason}.</p>}
           <p className="headnote__reason">{version.reason ? version.reason : 'no reason recorded'}</p>
         </>
       )}

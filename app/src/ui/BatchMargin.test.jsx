@@ -6,6 +6,7 @@
 // than one).
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router';
 import { BatchMargin } from './BatchMargin.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
@@ -239,5 +240,70 @@ describe('BatchMargin — the one-pen interlock reads openPen, not mode', () => 
     });
     expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Record a batch<\/button>/);
     expect(markup).toContain('the plan is being developed');
+  });
+});
+
+// D-UAT-2: the batch list itself (rendered only when a version has more
+// than one batch) is not a way off the page while a pen is open.
+const secondBatch = {
+  ...structuredClone(augustSecondBatch),
+  id: 'a-second-batch-id',
+  churn: { ...structuredClone(augustSecondBatch.churn), churnDate: '2026-08-10' },
+};
+
+describe('BatchMargin — the batch list is not a way off the page while a pen is open (D-UAT-2)', () => {
+  it('renders no anchor for the batch list while a pen is open, still reads each date in words, and carries the reason', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, secondBatch],
+      mode: 'reading',
+      openPen: 'plan',
+      penReason: 'the plan is being developed',
+    });
+    expect(markup).not.toContain('<a ');
+    expect(markup).toContain('2 Aug 2026');
+    expect(markup).toContain('10 Aug 2026');
+    expect(markup).toContain('Another batch cannot be opened while the plan is being developed.');
+  });
+
+  it('still marks the batch already showing with is-open while a pen is open', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, secondBatch],
+      mode: 'reading',
+      openPen: 'plan',
+      penReason: 'the plan is being developed',
+    });
+    expect(markup).toMatch(/<li class="is-open">2 Aug 2026<\/li>/);
+  });
+
+  it('renders the batch list as links exactly as today with no pen open', () => {
+    const markup = renderToStaticMarkup(
+      <MemoryRouter>
+        <BatchMargin
+          version={oliveOilVersion}
+          batches={[augustSecondBatch, secondBatch]}
+          openBatch={augustSecondBatch}
+          mode="reading"
+          draft={null}
+          openPen={null}
+          penReason={null}
+          onStartRecording={() => {}}
+          onStartAmending={() => {}}
+          onChangeChurnField={() => {}}
+          onSaveBatch={() => {}}
+          tastingDraft={null}
+          onStartTasting={() => {}}
+          onChangeTastingField={() => {}}
+          onChangeTastingMark={() => {}}
+          onUseAsExpectedShortcut={() => {}}
+          onSaveTasting={() => {}}
+          onCancelTasting={() => {}}
+        />
+      </MemoryRouter>,
+    );
+    expect(markup).toMatch(/<a href="\/recipe\/[^"]+\/batch\/[^"]+"[^>]*>2 Aug 2026<\/a>/);
+    expect(markup).toMatch(/<a href="\/recipe\/[^"]+\/batch\/[^"]+"[^>]*>10 Aug 2026<\/a>/);
+    expect(markup).not.toContain('cannot be opened while');
   });
 });

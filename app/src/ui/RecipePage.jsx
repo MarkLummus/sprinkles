@@ -835,6 +835,8 @@ export function RecipePage() {
           recipeId={version.recipeId}
           currentId={version.id}
           versionIdsWithBatches={versionIdsWithBatches}
+          openPen={openPen}
+          penReason={penReason}
         />
 
         <section className="ingredient-table-region" aria-label="Ingredient table">

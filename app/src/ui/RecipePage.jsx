@@ -18,23 +18,66 @@ import { Headnote } from './Headnote.jsx';
 import { VersionStrip } from './VersionStrip.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
+// Two maps compared by key set and by value — the as-made column's shape,
+// where every value is the raw string the maker typed (Pitfall 5).
+function stringMapsDiffer(a, b) {
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return true;
+  return aKeys.some((key) => !Object.prototype.hasOwnProperty.call(b, key) || a[key] !== b[key]);
+}
+
+// The step-changes map compared by key set and by both fields of each
+// entry — an untouched step never rests at a key at all (D-13/BATCH1-01),
+// so a key-set difference alone is already a real change.
+function stepChangesDiffer(a, b) {
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return true;
+  return aKeys.some((key) => {
+    if (!Object.prototype.hasOwnProperty.call(b, key)) return true;
+    return a[key].struck !== b[key].struck || a[key].line !== b[key].line;
+  });
+}
+
 // D-24's dirty check: true only while recording holds ink the maker has
 // actually typed. Every field is tested against '' / {} rather than
 // truthiness, so a written 0 (draft.overrunPercent === '0') still counts as
 // dirty — matching the presence-over-truthiness discipline domain/batch.js
 // already applies to the stored record.
-function isDraftDirty(mode, draft) {
+//
+// `baseline` is the draft-shaped object handleStartAmending pre-filled the
+// draft from, or null for a fresh recording (03-07, T-03-43): comparing an
+// amend draft against blank made it read dirty the instant Amend opened,
+// training the maker to dismiss a warning that fires on nothing. With a
+// baseline, every field is compared against it instead of against blank —
+// the same presence-over-truthiness discipline, applied to the record the
+// draft actually started from.
+export function isDraftDirty(mode, draft, baseline = null) {
   if (mode !== 'recording' || !draft) return false;
+  if (!baseline) {
+    return (
+      draft.churnDate !== '' ||
+      Object.keys(draft.asMade).length > 0 ||
+      Object.keys(draft.stepChanges).length > 0 ||
+      draft.comeUpMinutes !== '' ||
+      draft.drawTempC !== '' ||
+      draft.overrunPercent !== '' ||
+      draft.drawNotes !== '' ||
+      draft.ingredientNotes !== '' ||
+      draft.nextTimeNote !== ''
+    );
+  }
   return (
-    draft.churnDate !== '' ||
-    Object.keys(draft.asMade).length > 0 ||
-    Object.keys(draft.stepChanges).length > 0 ||
-    draft.comeUpMinutes !== '' ||
-    draft.drawTempC !== '' ||
-    draft.overrunPercent !== '' ||
-    draft.drawNotes !== '' ||
-    draft.ingredientNotes !== '' ||
-    draft.nextTimeNote !== ''
+    draft.churnDate !== baseline.churnDate ||
+    draft.comeUpMinutes !== baseline.comeUpMinutes ||
+    draft.drawTempC !== baseline.drawTempC ||
+    draft.overrunPercent !== baseline.overrunPercent ||
+    draft.drawNotes !== baseline.drawNotes ||
+    draft.ingredientNotes !== baseline.ingredientNotes ||
+    draft.nextTimeNote !== baseline.nextTimeNote ||
+    stringMapsDiffer(draft.asMade, baseline.asMade) ||
+    stepChangesDiffer(draft.stepChanges, baseline.stepChanges)
   );
 }
 
@@ -53,23 +96,85 @@ function isTastingDraftDirty(tastingDraft) {
   );
 }
 
+// An absent optional field and an empty-string one are the same fact —
+// nothing written — normalised on both sides before comparing, exactly as
+// diff.js's buildStepDiff does for the same two fields (03-09, T-03-54): a
+// first keystroke into an empty purpose/aside, deleted again, must not
+// read as ink.
+function normalizedText(value) {
+  return value ?? '';
+}
+
+// A uses list compared as a set — order is not a fact the maker authored
+// (route-recipe-version.md § 3).
+function usesListsDiffer(a = [], b = []) {
+  if (a.length !== b.length) return true;
+  const bSet = new Set(b);
+  return a.some((rowId) => !bSet.has(rowId));
+}
+
+// Targets compared by position, on both label and value — matching
+// handleChangePenStepTarget's own matching rule (by index, not by label).
+function targetsDiffer(a = [], b = []) {
+  if (a.length !== b.length) return true;
+  return a.some((target, index) => target.label !== b[index].label || target.value !== b[index].value);
+}
+
+// A step is ink the instant any of its seven writers has moved it: the
+// four text fields, its removed flag, its uses list, or a target.
+function isStepDirty(draftStep, baseStep) {
+  return (
+    draftStep.leadIn !== baseStep.leadIn ||
+    draftStep.instruction !== baseStep.instruction ||
+    normalizedText(draftStep.purpose) !== normalizedText(baseStep.purpose) ||
+    normalizedText(draftStep.aside) !== normalizedText(baseStep.aside) ||
+    (draftStep.removed ?? false) !== (baseStep.removed ?? false) ||
+    usesListsDiffer(draftStep.uses, baseStep.uses) ||
+    targetsDiffer(draftStep.targets, baseStep.targets)
+  );
+}
+
+// An authored list is ink when its length differs or any note's text
+// differs at the same index — inheritedFrom is not compared: the page
+// derives it from the text (handleChangePenNoteText), so text equality
+// already decides it.
+function isAuthoredListDirty(draftList, baseList) {
+  if (draftList.length !== baseList.length) return true;
+  return draftList.some((note, index) => note.text !== baseList[index].text);
+}
+
 // The pen's own dirty check (route-recipe-version.md § 6, D-24's
 // "unsaved ink" principle carried to the plan's pen): every field tested
 // against '' / null / the version's own values, never truthiness, so a
 // grams field typed back to the version's own value counts as clean again.
 // A row's draft entry is { grams, step, removed } (03-02) — dirty if any
 // of the three differs from the row the pen opened on.
-function isPenDraftDirty(mode, penDraft, version) {
+//
+// Extended (03-07, T-03-42) to the three fields the pen spends most of its
+// time editing — method, headnote, authored — which this check omitted
+// entirely: a maker who rewrote a step's prose or an authored note and
+// then reloaded lost it with no warning of any kind.
+export function isPenDraftDirty(mode, penDraft, version) {
   if (mode !== 'developing' || !penDraft || !version) return false;
   if (penDraft.versionLabel !== '') return true;
   if (penDraft.reason !== '') return true;
   if (penDraft.citedBatchId !== null) return true;
-  return version.rows.some((row) => {
+  if (penDraft.headnote !== version.headnote) return true;
+  const rowsDirty = version.rows.some((row) => {
     const draftRow = penDraft.rows[row.id];
     return (
       draftRow.grams !== String(row.grams) || draftRow.step !== row.step || draftRow.removed !== (row.removed ?? false)
     );
   });
+  if (rowsDirty) return true;
+  const methodDirty = version.method.some((step) => {
+    const draftStep = penDraft.method.find((candidate) => candidate.n === step.n);
+    return isStepDirty(draftStep, step);
+  });
+  if (methodDirty) return true;
+  if (isAuthoredListDirty(penDraft.authored.carriedForward, version.authored.carriedForward)) return true;
+  if (isAuthoredListDirty(penDraft.authored.beforeYouStart, version.authored.beforeYouStart)) return true;
+  return false;
 }
 
 // "A pen is open" used to live in two unrelated states — `mode`
@@ -140,6 +245,13 @@ export function RecipePage() {
   // (task 3, D-06). Amending pre-fills the fields from the batch, never
   // from the version, and saving calls recordAmendment, never createBatch.
   const [amendingBatchId, setAmendingBatchId] = useState(null);
+  // The draft-shaped object handleStartAmending pre-filled `draft` from
+  // (03-07, T-03-43) — the baseline isDraftDirty compares an amend draft
+  // against, instead of blank. Cleared everywhere amendingBatchId is
+  // cleared, for the same class of reason (T-02-24): a stale baseline left
+  // over from a prior amendment would make a fresh recording's own dirty
+  // check compare against the wrong record.
+  const [amendBaseline, setAmendBaseline] = useState(null);
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
   // reason, citation and headnote start blank/null — never defaulted from
   // the parent — while rows is a map keyed by row id holding the raw
@@ -244,7 +356,11 @@ export function RecipePage() {
   // holds a dirty draft, and removed as soon as none does — no invented
   // dialog, no draft persistence across a reload (that is UX1-02, Phase 4).
   useEffect(() => {
-    if (!isDraftDirty(mode, draft) && !isTastingDraftDirty(tastingDraft) && !isPenDraftDirty(mode, penDraft, version)) {
+    if (
+      !isDraftDirty(mode, draft, amendBaseline) &&
+      !isTastingDraftDirty(tastingDraft) &&
+      !isPenDraftDirty(mode, penDraft, version)
+    ) {
       return undefined;
     }
     const handleBeforeUnload = (event) => {
@@ -254,7 +370,7 @@ export function RecipePage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [mode, draft, tastingDraft, penDraft, version]);
+  }, [mode, draft, amendBaseline, tastingDraft, penDraft, version]);
 
   if (version === undefined) return null;
   // The running head is the way home in every state, including this one
@@ -354,6 +470,7 @@ export function RecipePage() {
   // created (T-02-24).
   function handleStartRecording() {
     setAmendingBatchId(null);
+    setAmendBaseline(null);
     setDraft({
       churnDate: '',
       asMade: {},
@@ -422,7 +539,7 @@ export function RecipePage() {
       asMade[rowId] = String(value);
     }
     const toDraftString = (value) => (value == null ? '' : String(value));
-    setDraft({
+    const filledDraft = {
       churnDate: batch.churn.churnDate ?? '',
       asMade,
       stepChanges: structuredClone(batch.churn.stepChanges),
@@ -432,7 +549,13 @@ export function RecipePage() {
       drawNotes: batch.churn.drawNotes ?? '',
       ingredientNotes: batch.churn.ingredientNotes ?? '',
       nextTimeNote: batch.churn.nextTimeNote ?? '',
-    });
+    };
+    setDraft(filledDraft);
+    // The baseline isDraftDirty compares against (03-07, T-03-43) — a
+    // separate clone, not the same object setDraft was just given, so a
+    // later edit to draft (always a new object via setDraft's own spread)
+    // can never be mistaken for a mutation of the baseline itself.
+    setAmendBaseline(structuredClone(filledDraft));
     setAmendingBatchId(batch.id);
     setMode('recording');
   }
@@ -474,6 +597,7 @@ export function RecipePage() {
         setMode('reading');
         setDraft(null);
         setAmendingBatchId(null);
+        setAmendBaseline(null);
       });
       return;
     }
@@ -484,6 +608,7 @@ export function RecipePage() {
       setBatches((prev) => [...prev, record]);
       setMode('reading');
       setDraft(null);
+      setAmendBaseline(null);
       navigate(`/recipe/${id}/batch/${record.id}`);
     });
   }
@@ -500,6 +625,7 @@ export function RecipePage() {
     setMode('reading');
     setDraft(null);
     setAmendingBatchId(null);
+    setAmendBaseline(null);
   }
 
   function handleStartTasting() {

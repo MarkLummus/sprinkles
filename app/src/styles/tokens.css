@@ -74,4 +74,9 @@
      ground, in the grotesk at small-print size. */
   --size-strip-line: var(--size-small-print);
   --gap-strip: var(--gap-m);
+
+  /* The parent's hollow tick on a graduated rule's scale
+     (route-recipe-version.md § 3, § 6, 03-04): an outline of the solid
+     tick's own shape, at the graduation weight. */
+  --rule-tick-hollow: 1px;
 }

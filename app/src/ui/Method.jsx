@@ -34,6 +34,14 @@ export function Method({
   draftVersion = null,
   baselineVersion = null,
   staleFlagVisible = false,
+  // The show-changes state's precomputed comparison (route-recipe-version.md
+  // § 3, § 6, 03-04): RecipePage's own one buildDiff of the version against
+  // its live parent, and the stale-amount entries derived from it — never
+  // recomputed here, so this state can never disagree with what the table
+  // and the rules show elsewhere on the same page.
+  changeDiff = null,
+  staleSteps = [],
+  showingChanges = false,
   onChangePenStepField = () => {},
   onChangePenStepTarget = () => {},
   onTogglePenStepUses = () => {},
@@ -41,8 +49,11 @@ export function Method({
 }) {
   const batchLike = { churn: { stepChanges } };
   const isDeveloping = mode === 'developing' && draftVersion != null && baselineVersion != null;
-  const diff = isDeveloping ? buildDiff(draftVersion, baselineVersion) : null;
-  const staleSteps = isDeveloping ? stepsWithStaleAmounts(draftVersion, baselineVersion) : [];
+  const penDiff = isDeveloping ? buildDiff(draftVersion, baselineVersion) : null;
+  const penStaleSteps = isDeveloping ? stepsWithStaleAmounts(draftVersion, baselineVersion) : [];
+  const isShowingChanges = !isDeveloping && showingChanges && changeDiff != null;
+  const activeDiff = isDeveloping ? penDiff : changeDiff;
+  const activeStaleSteps = isDeveloping ? penStaleSteps : staleSteps;
 
   return (
     <>
@@ -51,9 +62,9 @@ export function Method({
         {steps.map((step) => {
           if (isDeveloping) {
             const draftStep = draftVersion.method.find((candidate) => candidate.n === step.n);
-            const stepDiff = diff.steps.find((candidate) => candidate.n === step.n);
+            const stepDiff = activeDiff.steps.find((candidate) => candidate.n === step.n);
             const flaggedRows = removedRowsUsedBy(draftVersion, draftStep);
-            const staleEntry = staleSteps.find((entry) => entry.n === step.n);
+            const staleEntry = activeStaleSteps.find((entry) => entry.n === step.n);
             // Forced struck even when the text itself is unchanged once the
             // step is removed — "its prose struck" — while the fields stay
             // present and editable, mirroring GramsCell's forced strike on
@@ -196,6 +207,70 @@ export function Method({
                   <button type="button" onClick={() => onTogglePenStepRemoved(step.n)}>
                     {draftStep.removed ? 'restore' : 'remove'}
                   </button>
+                </div>
+              </li>
+            );
+          }
+
+          if (isShowingChanges) {
+            const stepDiff = activeDiff.steps.find((candidate) => candidate.n === step.n);
+            const staleEntry = activeStaleSteps.find((entry) => entry.n === step.n);
+            // Forced struck even when the text itself is unchanged once the
+            // step is removed — the mirror of the pen's own forced strike,
+            // above.
+            const showStruckBeneath = stepDiff.textChanged || step.removed;
+
+            return (
+              <li key={step.n} id={`method-step-${step.n}`} className="method-step">
+                <span className="method-step__n" aria-hidden="true">
+                  {step.n}
+                </span>
+                <div className="method-step__body">
+                  <p className="method-step__lead">
+                    <b>{step.leadIn}.</b> {step.instruction}
+                  </p>
+                  {/* The strike sits below the prose, never beside it — the
+                      same reason the pen's own struck-beneath treatment
+                      does, above; the "removed" label is a sibling of the
+                      struck element, never nested inside it. */}
+                  {showStruckBeneath && (
+                    <p className="prose-struck-beneath">
+                      <b>{stepDiff.textFrom.leadIn}.</b> {stepDiff.textFrom.instruction}
+                    </p>
+                  )}
+                  {step.removed && <span className="method-step__skipped-label"> removed</span>}
+
+                  {step.targets?.length > 0 && (
+                    <p className="method-step__targets">
+                      {step.targets.map((target, index) => {
+                        const targetDiff = stepDiff.targets[index];
+                        return (
+                          <span className="target-chip" key={target.label}>
+                            {targetDiff?.changed && targetDiff.from != null && (
+                              <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
+                            )}
+                            <span className="target-chip__label">{target.label}</span>
+                            <span className="target-chip__value">{target.value}</span>
+                          </span>
+                        );
+                      })}
+                    </p>
+                  )}
+
+                  {/* The stale-amount flag, in the show-changes state too
+                      (route-recipe-version.md § 3): the same visibility
+                      prop the pen uses, and the same entries — never a
+                      second derivation. */}
+                  {staleFlagVisible && staleEntry && (
+                    <p className="method-step__stale-flag">
+                      {`amounts changed: ${staleEntry.changes
+                        .map((change) => `${change.ingredientName} ${change.from} → ${change.to} g`)
+                        .join('; ')}`}
+                    </p>
+                  )}
+
+                  {step.purpose && <p className="method-step__purpose">{step.purpose}</p>}
+                  {step.aside && <p className="method-step__aside">{step.aside}</p>}
                 </div>
               </li>
             );

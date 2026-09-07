@@ -15,6 +15,11 @@ const RULE_GRADUATION = 1;
 const RULE_BAND_EDGE = 1;
 const RULE_TICK = 2.5;
 const HATCH_STROKE = 1.2;
+// The parent's hollow tick (route-recipe-version.md § 3, § 6, 03-04): an
+// outline of the solid tick's own shape, at the graduation weight — its own
+// named constant, mirroring --rule-tick-hollow, so a future change to this
+// outline's weight never accidentally couples to the graduation lines'.
+const RULE_TICK_HOLLOW = 1;
 
 const clamp = (value, lo, hi) => Math.max(lo, Math.min(hi, value));
 
@@ -27,7 +32,7 @@ function joinNames(names) {
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
-export function GraduatedRule({ figure, tabIndex, onFocusFigure, onBlurFigure }) {
+export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFigure, onBlurFigure }) {
   const { key, label, value, unit, decimals, domain, band, deviation, basis, estimatedRowNames } = figure;
   const [lo, hi] = domain;
   const toX = (v) => ((clamp(v, lo, hi) - lo) / (hi - lo)) * WIDTH;
@@ -54,9 +59,15 @@ export function GraduatedRule({ figure, tabIndex, onFocusFigure, onBlurFigure })
   // in the rendering and in the accessible name alike.
   const basisWord = basis === 'estimated' ? 'estimated' : basis === 'inherited' ? 'unreviewed' : null;
   const basisText = basisWord ? `${basisWord}: ${joinNames(estimatedRowNames)}` : null;
-  const accessibleName = basisText
-    ? `${label}, ${value.toFixed(decimals)}${unit}, ${targetText}, ${basisText}`
-    : `${label}, ${value.toFixed(decimals)}${unit}, ${targetText}`;
+  // The show-changes state's struck head (route-recipe-version.md § 3, § 6,
+  // 03-04): the rule computes no comparison of its own — figureDelta is the
+  // one descriptor buildDiff already produced. The strike is never the only
+  // carrier: the sentence gains "was X, now Y" in the exact spot the plain
+  // value would otherwise sit, before the target clause.
+  const changed = Boolean(figureDelta?.changed);
+  const changePhrase = changed ? `was ${figureDelta.from.toFixed(decimals)}${unit}, now ${value.toFixed(decimals)}${unit}` : null;
+  const valuePhrase = changePhrase ?? `${value.toFixed(decimals)}${unit}`;
+  const accessibleName = [label, valuePhrase, targetText, basisText].filter(Boolean).join(', ');
   const hatchId = `hatch-${key}`;
 
   return (
@@ -79,6 +90,12 @@ export function GraduatedRule({ figure, tabIndex, onFocusFigure, onBlurFigure })
       <div className="graduated-rule__head" aria-hidden="true">
         <span className="graduated-rule__label">{label}</span>
         <span className="graduated-rule__value">
+          {changed && (
+            <span className="struck-value">
+              {figureDelta.from.toFixed(decimals)}
+              {unit}
+            </span>
+          )}
           {value.toFixed(decimals)}
           {unit}
         </span>
@@ -109,6 +126,17 @@ export function GraduatedRule({ figure, tabIndex, onFocusFigure, onBlurFigure })
         )}
         <line x1="0" y1={18} x2={WIDTH} y2={18} stroke="var(--ink)" strokeWidth={RULE_BASELINE} />
         {graduations}
+        {changed && (
+          <rect
+            x={toX(figureDelta.from) - RULE_TICK / 2}
+            y={0}
+            width={RULE_TICK}
+            height={22}
+            fill="none"
+            stroke="var(--ink)"
+            strokeWidth={RULE_TICK_HOLLOW}
+          />
+        )}
         <line x1={toX(value)} y1={0} x2={toX(value)} y2={22} stroke="var(--ink)" strokeWidth={RULE_TICK} />
       </svg>
       <div className="graduated-rule__anchors" aria-hidden="true">

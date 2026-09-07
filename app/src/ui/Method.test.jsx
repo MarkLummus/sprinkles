@@ -8,6 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Method } from './Method.jsx';
+import { buildDiff } from '../domain/diff.js';
 
 const struckStep = { n: 1, leadIn: 'Steep', instruction: 'Warm the milk and steep the zest.' };
 const unstruckStep = { n: 2, leadIn: 'Chill', instruction: 'Cool the base overnight.' };
@@ -201,6 +202,86 @@ describe('Method — developing mode', () => {
       />,
     );
     expect(hidden).not.toContain('amounts changed:');
+  });
+
+  it('renders read-only, in ink, driven by the precomputed changeDiff — the show-changes state', () => {
+    const baselineVersion = makeBaselineVersion();
+    const currentVersion = structuredClone(baselineVersion);
+    currentVersion.method[0].instruction = 'Do a different thing.';
+    currentVersion.method[0].removed = false;
+    const changeDiff = buildDiff(currentVersion, baselineVersion);
+    const staleSteps = [];
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={currentVersion.method}
+        mode="reading"
+        showingChanges
+        changeDiff={changeDiff}
+        staleSteps={staleSteps}
+        staleFlagVisible
+        rows={currentVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('prose-struck-beneath');
+    expect(markup).toContain('Do one thing.');
+    expect(markup).toContain('Do a different thing.');
+    expect(markup).not.toContain('ink-field');
+    expect(markup).not.toContain('<input');
+    expect(markup).not.toContain('<textarea');
+  });
+
+  it('renders "removed" as a sibling of the struck span for a removed step in show-changes, never inside it', () => {
+    const baselineVersion = makeBaselineVersion();
+    const currentVersion = structuredClone(baselineVersion);
+    currentVersion.method[0].removed = true;
+    const changeDiff = buildDiff(currentVersion, baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={currentVersion.method}
+        mode="reading"
+        showingChanges
+        changeDiff={changeDiff}
+        staleSteps={[]}
+        rows={currentVersion.rows}
+      />,
+    );
+
+    const struckIndex = markup.indexOf('prose-struck-beneath');
+    const labelIndex = markup.indexOf('method-step__skipped-label');
+    expect(struckIndex).toBeGreaterThan(-1);
+    expect(labelIndex).toBeGreaterThan(-1);
+    const closingParagraphIndex = markup.indexOf('</p>', struckIndex);
+    expect(closingParagraphIndex).toBeGreaterThan(-1);
+    expect(closingParagraphIndex).toBeLessThan(labelIndex);
+  });
+
+  it('the clean reading renders no strike, no stale flag and no removed-step markup, even if a changeDiff happens to be supplied', () => {
+    const baselineVersion = makeBaselineVersion();
+    const currentVersion = structuredClone(baselineVersion);
+    currentVersion.method[0].instruction = 'Do a different thing.';
+    const changeDiff = buildDiff(currentVersion, baselineVersion);
+
+    // showingChanges is false — the gate itself, not the presence of a
+    // diff, is what decides the clean reading.
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={currentVersion.method}
+        mode="reading"
+        showingChanges={false}
+        changeDiff={changeDiff}
+        staleSteps={[{ n: 1, changes: [{ rowId: 'row-a', ingredientName: 'Row A', from: 10, to: 12 }] }]}
+        staleFlagVisible
+        rows={currentVersion.rows}
+      />,
+    );
+
+    expect(markup).not.toContain('prose-struck-beneath');
+    expect(markup).not.toContain('struck-value');
+    expect(markup).not.toContain('method-step__stale-flag');
+    expect(markup).not.toContain('method-step__skipped-label');
   });
 
   it('renders no stale-amount flag for a step whose own text was edited', () => {

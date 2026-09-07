@@ -2,17 +2,17 @@
 gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Record the first batch
-status: verifying
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-09-06T20:07:31.111Z"
+status: executing
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-09-07T00:04:20.093Z"
 last_activity: 2026-09-06
 last_activity_desc: Phase 02 execution started
-state_head: 2d010c0fe8a5b75e0367e5efd398d1a9bda33475
+state_head: 01ba390f24634abce14d39f77de7f7d13619f3f7
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
   percent: 25
 ---
 
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-09-05)
 ## Current Position
 
 Phase: 02 (Record the first batch) — EXECUTING
-Plan: 3 of 3
-Status: Phase complete — ready for verification
+Plan: 2 of 5
+Status: Ready to execute
 Last activity: 2026-09-06 — Phase 02 execution started
 
 Progress: [███░░░░░░░] 25% (1/4 phases; 4/4 plans)
@@ -65,6 +65,7 @@ Progress: [███░░░░░░░] 25% (1/4 phases; 4/4 plans)
 | Phase 02 P01 | 62 min | 3 tasks | 14 files |
 | Phase 02 P02 | 62 min | 3 tasks | 9 files |
 | Phase 02 P03 | 68min | 3 tasks | 12 files |
+| Phase 02 P04 | 15min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 02]: [Phase 2, Plan 02] readMeasured and the six churn measurement/note fields on createBatch (Task 2's domain scope) were implemented in Task 1's GREEN commit, since both extend the same churnFields object in one coherent edit; Task 2's domain-level RED tests passed immediately rather than genuinely failing first (documented, not a Rule 1-4 deviation).
 - [Phase 02]: [Phase 2, Plan 03] Tasting recording is scoped entirely to an already-saved batch; recordAmendment and addTasting are kept as two distinct domain functions with two distinct UI call sites (never a single patch-shaped updater), and the AxisMark control has no un-mark affordance, matching native grouped radios.
 - [Phase 02]: [Phase 2, Plan 03] Extended the beforeunload leave-warning dirty check to cover an in-progress tasting draft (Rule 2 deviation) — D-24's unsaved-ink principle applies to a tasting exactly as it does to the churn draft.
+- [Phase 02]: Record another batch is worded distinctly from Amend and sits after the batch list, before the tastings (A-2). — D-06 requires a correction to never read like a new event; the version-scoped control is placed with the version's batches.
+- [Phase 02]: Cancel discards immediately with no confirmation dialog (A-1); no button style or layout change was added for it (A-3). — The brief forbids an invented dialog (D-24); button weight and recording-layout findability remain open design decisions for Impeccable.
 
 ### Pending Todos
 
@@ -135,6 +138,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-06T20:07:31.068Z
-Stopped at: Completed 02-03-PLAN.md
+Last session: 2026-09-07T00:04:12.463Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None

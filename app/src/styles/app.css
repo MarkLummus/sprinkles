@@ -537,3 +537,14 @@ body {
   outline: var(--focus-outline-width) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
 }
+
+/* The clear control (G-02-6), beside the stops rather than styled as a
+   tenth one. Written with the .batch-margin ancestor because the standing
+   .batch-margin button rule (two selector components) otherwise outranks
+   a lone class (one selector component) and would win the cascade,
+   leaving the control sitting low in this vertically-centred flex row. */
+.batch-margin .axis-mark__clear {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-mark-stop);
+  margin-top: 0;
+}

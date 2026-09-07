@@ -49,3 +49,26 @@ export function axesForBatch(batch) {
 export function markKeyFor(axis) {
   return axis.key !== undefined ? axis.key : axis.name;
 }
+
+/**
+ * setMark(marks, axisKey, stop) -> a new marks object, never mutating the
+ * one it is given. A `stop` of `null` removes axisKey's own key; any other
+ * value writes it. This is the one rule for both directions (G-02-6): a
+ * marks object holds a key only for a marked axis, the same
+ * presence-over-truthiness discipline domain/batch.js applies to the
+ * stored record and handleChangeStepChange applies to the step strikes —
+ * so an axis returned to unmarked is indistinguishable from one that was
+ * never touched, which is what makes a misclick cost nothing. The result
+ * is built with object spread and delete, which write only the object's
+ * own properties, never through an assignment path that could walk a
+ * prototype chain reached by a hand-edited version's axis key (T-02-32).
+ */
+export function setMark(marks, axisKey, stop) {
+  const next = { ...marks };
+  if (stop === null) {
+    delete next[axisKey];
+  } else {
+    next[axisKey] = stop;
+  }
+  return next;
+}

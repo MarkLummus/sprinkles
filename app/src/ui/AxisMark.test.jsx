@@ -23,8 +23,9 @@ describe('AxisMark — a marked axis', () => {
     expect(markup).toContain('axis-mark__clear');
     const stopIndex = markup.indexOf('value="4.5"');
     expect(stopIndex).toBeGreaterThan(-1);
-    const stopTagEnd = markup.indexOf('/>', stopIndex);
-    expect(markup.slice(stopIndex, stopTagEnd)).toContain('checked');
+    const tagStart = markup.lastIndexOf('<input', stopIndex);
+    const tagEnd = markup.indexOf('/>', stopIndex);
+    expect(markup.slice(tagStart, tagEnd)).toContain('checked');
   });
 
   it('names its axis in the clear control\'s accessible name, so six on one form are told apart', () => {

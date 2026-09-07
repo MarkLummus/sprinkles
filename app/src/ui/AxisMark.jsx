@@ -6,11 +6,16 @@ import { MARK_STOPS, markKeyFor } from '../domain/axes.js';
 // Space setting, and a single accessible name. No keydown handler, no
 // manual focus-index, and no hand-rolled radiogroup div — restyling the
 // native inputs (tokens.css) gets the hairline-ink look without
-// reimplementing keyboard semantics.
+// reimplementing keyboard semantics. That is untouched by the clear
+// control below: it is a separate control beside the group, sharing the
+// group's own onChange, not a tenth stop inside it.
 //
 // No stop is checked by default: `value` is `undefined` for an unmarked
 // axis, which matches no stop, so nothing renders checked (D-16 — a half
 // step is a value, not a rounding, and an unmarked axis is not a three).
+// While a mark is present, a small text control offers to clear it
+// (G-02-6) — the only reversal path a mark has, since a controlled radio
+// group can never itself return to undefined.
 export function AxisMark({ axis, value, onChange }) {
   const groupName = `axis-${markKeyFor(axis)}`;
   return (
@@ -33,6 +38,16 @@ export function AxisMark({ axis, value, onChange }) {
         <span className="axis-mark__anchor" aria-hidden="true">
           {axis.high}
         </span>
+        {value !== undefined && (
+          <button
+            type="button"
+            className="axis-mark__clear"
+            aria-label={`Clear ${axis.label} mark`}
+            onClick={() => onChange(null)}
+          >
+            Clear
+          </button>
+        )}
       </div>
     </fieldset>
   );

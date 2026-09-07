@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
 import { createBatch, addTasting, recordAmendment, latestChurnDate, formatRecordDate, sortedBatches } from '../domain/batch.js';
+import { setMark } from '../domain/axes.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
@@ -299,12 +300,14 @@ export function RecipePage() {
     setTastingDraft((prev) => ({ ...prev, [field]: value }));
   }
 
-  // Marking an axis writes the stop's numeric value under its mark key
-  // (D-16); there is no control to clear a mark once set, matching native
-  // grouped radios' own behavior — an axis simply stays unmarked until
-  // the maker clicks a stop.
+  // Clearing is a first-class move on this control (G-02-6), not an
+  // omission: setMark writes the draft's marks through the one rule that
+  // handles both the set and the clear, so this handler gains a delete
+  // path without gaining a branch. A marks object holds a key only for a
+  // marked axis, so clearing the last mark is what returns the save gate
+  // (isTastingSaveable) and its hint to their pre-mark state.
   function handleChangeTastingMark(axisKey, stop) {
-    setTastingDraft((prev) => ({ ...prev, marks: { ...prev.marks, [axisKey]: stop } }));
+    setTastingDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, stop) }));
   }
 
   // D-05's shortcut: writes exactly those words into the tasting's words

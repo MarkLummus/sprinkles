@@ -1,9 +1,14 @@
-// Whole-store JSON transfer (D-06), behind the repository seam. Neither
-// export nor import touches the store library — see repository.js for the
-// only path to IndexedDB. validateStoreFile is the one gate before a write:
-// a malformed file is refused with every error found, never half-applied
-// (T-04-01) and never used to reach past an object's own properties into
-// its prototype chain (T-04-02).
+// Whole-store JSON transfer (D-06, D-07), behind the repository seam.
+// Neither export nor import touches the store library — see repository.js
+// for the only path to IndexedDB. validateStoreFile is the one gate before
+// a write: a malformed file is refused with every error found, never
+// half-applied (T-04-01) and never used to reach past an object's own
+// properties into its prototype chain (T-04-02). importStore lifts every
+// version record with versionLift.js's liftVersionRecord — the same
+// function db.js's upgrade calls — before validating them, so a
+// schemaVersion 1 or 2 file's old-shaped versions are checked against the
+// current shape rather than growing a second ladder that could drift.
+import { liftVersionRecord } from './versionLift.js';
 
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
@@ -17,6 +22,10 @@ function isFiniteNumber(value) {
 
 function isNonEmptyString(value) {
   return typeof value === 'string' && value.length > 0;
+}
+
+function isStringOrNull(value) {
+  return value === null || typeof value === 'string';
 }
 
 // Reads only — never assigns through a key, so an own "__proto__" property
@@ -55,6 +64,47 @@ function validateRow(row, path, errors) {
         errors.push(`${path}.ingredient.composition.${field}: expected a finite number, got ${JSON.stringify(value)}`);
       }
     }
+  }
+  if (typeof row.removed !== 'boolean') {
+    errors.push(`${path}.removed: expected a boolean, got ${JSON.stringify(row.removed)}`);
+  }
+}
+
+/**
+ * validateStep(step, path, errors) -> void, in the same collect-all-errors,
+ * name-the-path style as validateRow. `uses` is checked as an array of
+ * non-empty strings — the row ids a step "uses" (D-06, D-08) — never as a
+ * scan over the prose, matching the removal cross-flags' own derivation
+ * rule.
+ */
+function validateStep(step, path, errors) {
+  if (!isPlainObject(step)) {
+    errors.push(`${path}: expected an object`);
+    return;
+  }
+  if (typeof step.removed !== 'boolean') {
+    errors.push(`${path}.removed: expected a boolean, got ${JSON.stringify(step.removed)}`);
+  }
+  if (!Array.isArray(step.uses) || !step.uses.every(isNonEmptyString)) {
+    errors.push(`${path}.uses: expected an array of non-empty strings, got ${JSON.stringify(step.uses)}`);
+  }
+}
+
+/**
+ * validateAuthoredNote(note, path, errors) -> void. D-06's note shape:
+ * { text, inheritedFrom }, inheritedFrom a string (the parent's version
+ * line) or null.
+ */
+function validateAuthoredNote(note, path, errors) {
+  if (!isPlainObject(note)) {
+    errors.push(`${path}: expected an object`);
+    return;
+  }
+  if (typeof note.text !== 'string') {
+    errors.push(`${path}.text: expected a string, got ${JSON.stringify(note.text)}`);
+  }
+  if (!isStringOrNull(note.inheritedFrom)) {
+    errors.push(`${path}.inheritedFrom: expected a string or null, got ${JSON.stringify(note.inheritedFrom)}`);
   }
 }
 
@@ -183,6 +233,8 @@ function validateVersion(version, path, errors) {
   }
   if (!Array.isArray(version.method)) {
     errors.push(`${path}.method: expected an array`);
+  } else {
+    version.method.forEach((step, index) => validateStep(step, `${path}.method[${index}]`, errors));
   }
   if (
     !isPlainObject(version.authored) ||
@@ -190,6 +242,25 @@ function validateVersion(version, path, errors) {
     !Array.isArray(version.authored.beforeYouStart)
   ) {
     errors.push(`${path}.authored: expected { carriedForward: [], beforeYouStart: [] }`);
+  } else {
+    version.authored.carriedForward.forEach((note, index) =>
+      validateAuthoredNote(note, `${path}.authored.carriedForward[${index}]`, errors),
+    );
+    version.authored.beforeYouStart.forEach((note, index) =>
+      validateAuthoredNote(note, `${path}.authored.beforeYouStart[${index}]`, errors),
+    );
+  }
+
+  // D-06's lineage fields — every one a string or null, never required to
+  // be present as a truthy value (a blank reason and an unforked version's
+  // parentVersionId are both legitimately null).
+  for (const field of ['parentVersionId', 'parentVersionLabel', 'reason', 'citedBatchId']) {
+    if (!isStringOrNull(version[field])) {
+      errors.push(`${path}.${field}: expected a string or null, got ${JSON.stringify(version[field])}`);
+    }
+  }
+  if (!isNonEmptyString(version.createdAt)) {
+    errors.push(`${path}.createdAt: expected a non-empty string, got ${JSON.stringify(version.createdAt)}`);
   }
 }
 
@@ -197,16 +268,20 @@ function validateVersion(version, path, errors) {
  * validateStoreFile(parsed) -> { ok, errors }. The only gate before a write.
  * Collects every error found — never stops at the first — and names the
  * offending path in each message so the maker can see what was wrong.
+ * Pure: it has no repository parameter and makes no store call — the D-09
+ * parent-resolves check, which needs to know what the store already
+ * holds, lives in importStore below, after this gate and before any write.
  *
- * Stated decision (Claude's discretion, 02-CONTEXT.md): a schemaVersion 1
- * file still imports, as a store with no batches. An export taken during
- * Phase 1 predates the batches store; the version 1 shape is a strict
- * subset of version 2, so accepting it costs one branch and refusing it
- * would destroy a file the app itself wrote. A version 1 file that
- * nonetheless carries a non-empty batches array is malformed rather than
- * old, and is refused. Export always writes 2 — there is no way to ask for
- * an older file, because a downgrade path would be a second format to keep
- * true.
+ * Stated decision (Claude's discretion, 02-CONTEXT.md, extended by D-07): a
+ * schemaVersion 1 file still imports, as a store with no batches. An
+ * export taken during Phase 1 predates the batches store; the version 1
+ * shape is a strict subset of version 2, so accepting it costs one branch
+ * and refusing it would destroy a file the app itself wrote. A version 1
+ * file that nonetheless carries a non-empty batches array is malformed
+ * rather than old, and is refused. A schemaVersion 2 file is a real Phase
+ * 2 backup, lifted by importStore before it reaches this function (D-07).
+ * Export always writes 3 — there is no way to ask for an older file,
+ * because a downgrade path would be a second format to keep true.
  */
 export function validateStoreFile(parsed) {
   const errors = [];
@@ -220,8 +295,8 @@ export function validateStoreFile(parsed) {
   if (parsed.app !== 'sprinkles') {
     errors.push(`$.app: expected "sprinkles", got ${JSON.stringify(parsed.app)}`);
   }
-  if (parsed.schemaVersion !== 1 && parsed.schemaVersion !== 2) {
-    errors.push(`$.schemaVersion: expected 1 or 2, got ${JSON.stringify(parsed.schemaVersion)}`);
+  if (parsed.schemaVersion !== 1 && parsed.schemaVersion !== 2 && parsed.schemaVersion !== 3) {
+    errors.push(`$.schemaVersion: expected 1, 2 or 3, got ${JSON.stringify(parsed.schemaVersion)}`);
   }
   if (!Array.isArray(parsed.versions)) {
     errors.push('$.versions: expected an array');
@@ -229,7 +304,7 @@ export function validateStoreFile(parsed) {
     parsed.versions.forEach((version, index) => validateVersion(version, `$.versions[${index}]`, errors));
   }
 
-  if (parsed.schemaVersion === 2) {
+  if (parsed.schemaVersion === 2 || parsed.schemaVersion === 3) {
     if (!Array.isArray(parsed.batches)) {
       errors.push('$.batches: expected an array');
     } else {
@@ -250,7 +325,7 @@ export async function exportStore(repository) {
   const batches = await repository.getAllBatches();
   return {
     app: 'sprinkles',
-    schemaVersion: 2,
+    schemaVersion: 3,
     exportedAt: new Date().toISOString(),
     versions,
     batches,
@@ -258,17 +333,45 @@ export async function exportStore(repository) {
 }
 
 /**
- * importStore(repository, parsed) -> { ok, errors }. Validates first and
- * writes nothing on failure — a partially applied import is worse than a
- * refused one (see the threat register, T-04-01, T-02-08).
+ * importStore(repository, parsed) -> { ok, errors }. A schemaVersion 1 or
+ * 2 file's version records are lifted with the shared liftVersionRecord
+ * (D-07) before anything else runs — the same function db.js's upgrade
+ * calls, never a second ladder — so validateStoreFile always checks the
+ * current shape. Validates next, and writes nothing on failure — a
+ * partially applied import is worse than a refused one (T-04-01, T-02-08).
+ * The D-09 parent-resolves gate runs after validation and before any
+ * write, in the same two-step "validate then write" shape: a version
+ * whose parentVersionId does not resolve to another version in this file
+ * or an id already in the store refuses the whole import.
  */
 export async function importStore(repository, parsed) {
-  const { ok, errors } = validateStoreFile(parsed);
+  let toImport = parsed;
+  if (isPlainObject(parsed) && Array.isArray(parsed.versions) && (parsed.schemaVersion === 1 || parsed.schemaVersion === 2)) {
+    toImport = {
+      ...parsed,
+      versions: parsed.versions.map((version) => (isPlainObject(version) ? liftVersionRecord(version) : version)),
+    };
+  }
+
+  const { ok, errors } = validateStoreFile(toImport);
   if (!ok) return { ok: false, errors };
 
-  await repository.putAll(parsed.versions);
-  if (parsed.schemaVersion === 2) {
-    await repository.putAllBatches(parsed.batches);
+  const fileIds = new Set(toImport.versions.map((version) => version.id));
+  const storeVersions = await repository.getAll();
+  const storeIds = new Set(storeVersions.map((version) => version.id));
+  const parentErrors = [];
+  toImport.versions.forEach((version, index) => {
+    if (version.parentVersionId !== null && !fileIds.has(version.parentVersionId) && !storeIds.has(version.parentVersionId)) {
+      parentErrors.push(
+        `$.versions[${index}].parentVersionId: refers to a version not present in this file or the store, ${JSON.stringify(version.parentVersionId)}`,
+      );
+    }
+  });
+  if (parentErrors.length > 0) return { ok: false, errors: parentErrors };
+
+  await repository.putAll(toImport.versions);
+  if (toImport.schemaVersion === 2 || toImport.schemaVersion === 3) {
+    await repository.putAllBatches(toImport.batches);
   }
   return { ok: true, errors: [] };
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { exportStore, importStore, validateStoreFile } from './transfer.js';
+import { liftVersionRecord } from './versionLift.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's putAll/putAllBatches:
@@ -48,21 +49,43 @@ function createInMemoryRepository(initialVersions = [], initialBatches = []) {
   };
 }
 
+// Schema 3-shaped by default (D-06): every version validateStoreFile sees
+// in production is either authored fresh (createChildVersion/liftVersionRecord
+// always set these) or lifted on the way in (importStore, before
+// validation) — so a well-formed fixture carries them from the start.
 function makeVersion(overrides = {}) {
   return {
     id: 'v1',
+    schemaVersion: 2,
     recipeName: 'Test recipe',
     coefficientSetId: 'set-1',
+    parentVersionId: null,
+    parentVersionLabel: null,
+    reason: null,
+    citedBatchId: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
     rows: [
       {
         id: 'row-1',
         ingredientName: 'Whole milk',
         grams: 100,
         ingredient: { composition: { fat: 0.035, msnf: 0.088 } },
+        removed: false,
       },
     ],
     method: [],
     authored: { carriedForward: [], beforeYouStart: [] },
+    ...overrides,
+  };
+}
+
+function makeStep(overrides = {}) {
+  return {
+    n: 1,
+    leadIn: 'Step',
+    instruction: 'Do it',
+    removed: false,
+    uses: [],
     ...overrides,
   };
 }
@@ -83,6 +106,7 @@ function makeBatch(overrides = {}) {
           ingredientName: 'Whole milk',
           grams: 100,
           ingredient: { composition: { fat: 0.035, msnf: 0.088 } },
+          removed: false,
         },
       ],
       declaredAxes: [],
@@ -112,11 +136,11 @@ function makeStoreFileV2(versions = [makeVersion()], batches = [makeBatch()]) {
 }
 
 describe('exportStore', () => {
-  it('returns app sprinkles, schemaVersion 2, and every version and batch the repository held', async () => {
+  it('returns app sprinkles, schemaVersion 3, and every version and batch the repository held', async () => {
     const repository = createInMemoryRepository([makeVersion(), makeVersion({ id: 'v2' })], [makeBatch()]);
     const exported = await exportStore(repository);
     expect(exported.app).toBe('sprinkles');
-    expect(exported.schemaVersion).toBe(2);
+    expect(exported.schemaVersion).toBe(3);
     expect(exported.versions).toHaveLength(2);
     expect(exported.batches).toHaveLength(1);
   });
@@ -147,8 +171,8 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('app'))).toBe(true);
   });
 
-  it('rejects a payload whose schemaVersion is 3, naming the field', () => {
-    const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: 3 });
+  it('rejects a payload whose schemaVersion is 4, naming the field', () => {
+    const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: 4 });
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(true);
   });
@@ -221,7 +245,7 @@ describe('validateStoreFile', () => {
   });
 
   it('reports two errors for a payload with two distinct faults, not only the first', () => {
-    const result = validateStoreFile({ ...makeStoreFile(), app: 'other', schemaVersion: 3 });
+    const result = validateStoreFile({ ...makeStoreFile(), app: 'other', schemaVersion: 4 });
     expect(result.ok).toBe(false);
     expect(result.errors).toHaveLength(2);
   });
@@ -299,7 +323,7 @@ describe('importStore', () => {
     const repository = createInMemoryRepository([makeVersion({ id: 'existing' })]);
     const before = [...repository.versions];
 
-    const result = await importStore(repository, { ...makeStoreFile(), app: 'other', schemaVersion: 3 });
+    const result = await importStore(repository, { ...makeStoreFile(), app: 'other', schemaVersion: 4 });
 
     expect(result.ok).toBe(false);
     expect(result.errors).toHaveLength(2);
@@ -334,5 +358,185 @@ describe('importStore', () => {
     expect(repository.putAllBatchesCalls).toBe(0);
     expect(repository.versions).toEqual([]);
     expect(repository.batches).toEqual([]);
+  });
+});
+
+// D-06/D-07: the schema move — schemaVersion 3 accepted natively, a
+// schemaVersion 2 file's version records lifted on the way in with the
+// same liftVersionRecord db.js's upgrade calls, and a schemaVersion 1
+// file keeping its Phase 2 treatment even though its old-shaped version
+// is lifted too (never a second ladder — RESEARCH.md's explicit
+// anti-pattern).
+function makeStoreFileV3(versions = [makeVersion()], batches = [makeBatch()]) {
+  return { app: 'sprinkles', schemaVersion: 3, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches };
+}
+
+// A pre-Phase-3-shaped version: every field this phase adds stripped back
+// out, mirroring app/tests/db-migration.test.js's own fixture builder.
+function makeOldShapedVersion(overrides = {}) {
+  const version = makeVersion(overrides);
+  delete version.parentVersionLabel;
+  delete version.reason;
+  delete version.citedBatchId;
+  delete version.createdAt;
+  version.rows = version.rows.map(({ removed, ...rest }) => rest);
+  return version;
+}
+
+describe('the schema move (D-06, D-07)', () => {
+  it('accepts and round-trips a schemaVersion 3 file carrying the new lineage fields untouched', async () => {
+    const child = makeVersion({
+      id: 'child',
+      parentVersionId: 'v1',
+      parentVersionLabel: 'line',
+      reason: 'raised the oil',
+      citedBatchId: 'batch-1',
+      createdAt: '2026-09-07T10:00:00.000Z',
+    });
+    const repository = createInMemoryRepository([makeVersion()], []);
+    const result = await importStore(repository, makeStoreFileV3([child], [makeBatch()]));
+    expect(result.ok).toBe(true);
+    const stored = repository.versions.find((version) => version.id === 'child');
+    expect(stored.parentVersionId).toBe('v1');
+    expect(stored.parentVersionLabel).toBe('line');
+    expect(stored.reason).toBe('raised the oil');
+    expect(stored.citedBatchId).toBe('batch-1');
+    expect(stored.createdAt).toBe('2026-09-07T10:00:00.000Z');
+  });
+
+  it("lifts a schemaVersion 2 file's version records on import, read back in the new shape", async () => {
+    const oldShaped = makeOldShapedVersion();
+    const repository = createInMemoryRepository([]);
+    const result = await importStore(repository, makeStoreFileV2([oldShaped]));
+    expect(result.ok).toBe(true);
+    const stored = repository.versions[0];
+    expect(stored.parentVersionLabel).toBeNull();
+    expect(stored.reason).toBeNull();
+    expect(stored.citedBatchId).toBeNull();
+    expect(typeof stored.createdAt).toBe('string');
+    expect(stored.rows[0].removed).toBe(false);
+    // Matches liftVersionRecord exactly — never a second ladder.
+    expect(stored).toEqual(liftVersionRecord(oldShaped));
+  });
+
+  it("a schemaVersion 1 file's old-shaped version is also lifted, still importing as a store with no batches", async () => {
+    const oldShaped = makeOldShapedVersion();
+    const repository = createInMemoryRepository([]);
+    const result = await importStore(repository, makeStoreFile([oldShaped]));
+    expect(result.ok).toBe(true);
+    expect(repository.versions[0].rows[0].removed).toBe(false);
+    expect(repository.batches).toEqual([]);
+  });
+
+  it('still refuses a schemaVersion 1 file that carries a non-empty batches array, naming $.batches', async () => {
+    const repository = createInMemoryRepository([]);
+    const result = await importStore(repository, { ...makeStoreFile([makeOldShapedVersion()]), batches: [makeBatch()] });
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.batches'))).toBe(true);
+    expect(repository.versions).toEqual([]);
+  });
+});
+
+// D-09: an imported file carrying a child version whose parent is neither
+// in the file nor already in the store is refused whole.
+describe('the D-09 parent-resolves gate', () => {
+  it('accepts a file whose child version names a parent present in the same file', async () => {
+    const parent = makeVersion({ id: 'parent' });
+    const child = makeVersion({ id: 'child', parentVersionId: 'parent', parentVersionLabel: 'line' });
+    const repository = createInMemoryRepository([]);
+    const result = await importStore(repository, makeStoreFile([parent, child]));
+    expect(result.ok).toBe(true);
+    expect(repository.versions.map((version) => version.id).sort()).toEqual(['child', 'parent']);
+  });
+
+  it('accepts a file whose child version names a parent already in the store', async () => {
+    const child = makeVersion({ id: 'child', parentVersionId: 'v1', parentVersionLabel: 'line' });
+    const repository = createInMemoryRepository([makeVersion({ id: 'v1' })]);
+    const result = await importStore(repository, makeStoreFile([child]));
+    expect(result.ok).toBe(true);
+  });
+
+  it('refuses whole a file whose child version names a parent in neither the file nor the store — nothing is written', async () => {
+    const child = makeVersion({ id: 'child', parentVersionId: 'unknown-parent', parentVersionLabel: 'line' });
+    const repository = createInMemoryRepository([]);
+    const result = await importStore(repository, makeStoreFile([child]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('parentVersionId'))).toBe(true);
+    expect(repository.putAllCalls).toBe(0);
+    expect(repository.versions).toEqual([]);
+  });
+
+  it('validateStoreFile stays pure: it accepts the same unresolvable-parent file with no error, since the gate lives in importStore', () => {
+    const child = makeVersion({ id: 'child', parentVersionId: 'unknown-parent', parentVersionLabel: 'line' });
+    expect(validateStoreFile(makeStoreFile([child]))).toEqual({ ok: true, errors: [] });
+  });
+});
+
+// The new per-field checks validateVersion gained this phase.
+describe('validateVersion, the new fields (D-06)', () => {
+  it('rejects a version whose reason is a number, naming the field', () => {
+    const version = makeVersion({ reason: 42 });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.reason'))).toBe(true);
+  });
+
+  it('rejects a version whose createdAt is missing, naming the field', () => {
+    const version = makeVersion();
+    delete version.createdAt;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.createdAt'))).toBe(true);
+  });
+
+  it("rejects a row whose removed is missing, naming the field", () => {
+    const version = makeVersion();
+    delete version.rows[0].removed;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.rows[0].removed'))).toBe(true);
+  });
+
+  it('rejects a step whose removed is missing, naming the path', () => {
+    const version = makeVersion({ method: [makeStep()] });
+    delete version.method[0].removed;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method[0].removed'))).toBe(true);
+  });
+
+  it('rejects a step whose uses array holds a number rather than a string, naming the path', () => {
+    const version = makeVersion({ method: [makeStep({ uses: [42] })] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method[0].uses'))).toBe(true);
+  });
+
+  it('rejects an authored note with no text field, naming the path', () => {
+    const version = makeVersion({ authored: { carriedForward: [{ inheritedFrom: null }], beforeYouStart: [] } });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.authored.carriedForward[0].text'))).toBe(true);
+  });
+
+  it('accepts a well-formed authored note carrying an inheritedFrom string', () => {
+    const version = makeVersion({
+      authored: { carriedForward: [{ text: 'note', inheritedFrom: '50 g oil · 800 g' }], beforeYouStart: [] },
+    });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it("rejects a file carrying __proto__ on a method step — the uses array's containing object — via the existing scanner", () => {
+    const malicious = JSON.parse(
+      '{"app":"sprinkles","schemaVersion":1,"versions":[{"id":"v1","schemaVersion":2,"recipeName":"x","coefficientSetId":"c",' +
+        '"parentVersionId":null,"parentVersionLabel":null,"reason":null,"citedBatchId":null,"createdAt":"2026-01-01T00:00:00.000Z",' +
+        '"rows":[{"id":"r1","ingredientName":"x","grams":1,"ingredient":{"composition":{"fat":1}},"removed":false}],' +
+        '"method":[{"n":1,"leadIn":"x","instruction":"x","removed":false,"uses":[],"__proto__":{"polluted":true}}],' +
+        '"authored":{"carriedForward":[],"beforeYouStart":[]}}]}',
+    );
+    const result = validateStoreFile(malicious);
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('__proto__'))).toBe(true);
+    expect({}.polluted).toBeUndefined();
   });
 });

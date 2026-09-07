@@ -143,4 +143,21 @@ describe('setMark', () => {
     expect(isTastingSaveable({ marks: { sweetness: 4 } })).toBe(true);
     expect(isTastingSaveable({ marks: setMark({ sweetness: 4 }, 'sweetness', null) })).toBe(false);
   });
+
+  // T-02-32 (Phase 2, closed here in Phase 3): a hand-edited version could
+  // in principle name an axis '__proto__'. setMark's write path is
+  // `next[axisKey] = stop`, a plain bracket assignment rather than an
+  // own-property-only write — but every stop this app ever passes is a
+  // number (MARK_STOPS), and JavaScript's own __proto__ accessor setter on
+  // Object.prototype silently ignores a non-object assignment, so the
+  // result is safe by the numeric-stops rationale rather than by the
+  // write's own shape. This regression case pins that: the mark is
+  // dropped, the result's own prototype is untouched, and nothing leaks
+  // onto Object.prototype.
+  it("dropping a '__proto__' axis mark neither changes the result's prototype nor pollutes Object.prototype", () => {
+    const result = setMark({}, '__proto__', 4);
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect(Object.prototype.hasOwnProperty.call(result, '__proto__')).toBe(false);
+    expect({}.polluted).toBeUndefined();
+  });
 });

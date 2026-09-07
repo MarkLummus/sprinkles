@@ -495,6 +495,92 @@ export function RecipePage() {
     }));
   }
 
+  // A step field setter for leadIn/instruction/purpose/aside (03-02):
+  // `field` is always one of these four literal strings supplied by this
+  // file's own call sites, never a maker-influenced key, so a computed
+  // property name here carries no T-02-32 risk.
+  function handleChangePenStepField(stepN, field, value) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({
+      ...prev,
+      method: prev.method.map((step) => (step.n === stepN ? { ...step, [field]: value } : step)),
+    }));
+  }
+
+  // A target chip's label or value, matched by its index within the
+  // step's own targets array rather than by label — a label can itself be
+  // mid-edit, so matching by index avoids two chips momentarily colliding
+  // on the same label while the maker types.
+  function handleChangePenStepTarget(stepN, targetIndex, field, value) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({
+      ...prev,
+      method: prev.method.map((step) => {
+        if (step.n !== stepN) return step;
+        const targets = step.targets.map((target, index) => (index === targetIndex ? { ...target, [field]: value } : target));
+        return { ...step, targets };
+      }),
+    }));
+  }
+
+  // The step's uses list, written through a filter and a concat
+  // (route-recipe-version.md § 3), never a bare bracket write — a
+  // different fact from the row's own step allocation, and both are kept.
+  function handleTogglePenStepUses(stepN, rowId) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({
+      ...prev,
+      method: prev.method.map((step) => {
+        if (step.n !== stepN) return step;
+        const uses = step.uses ?? [];
+        const nextUses = uses.includes(rowId) ? uses.filter((id) => id !== rowId) : uses.concat(rowId);
+        return { ...step, uses: nextUses };
+      }),
+    }));
+  }
+
+  // Removing sets only the draft step's removed flag — removal never
+  // cascades, so this is always the maker's own tap, whether flipping a
+  // step's own control or the removed-row cross-flag's "remove this step"
+  // control.
+  function handleTogglePenStepRemoved(stepN) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({
+      ...prev,
+      method: prev.method.map((step) => (step.n === stepN ? { ...step, removed: !step.removed } : step)),
+    }));
+  }
+
+  // An authored note's text, and the inherited-from marker it carries
+  // (route-recipe-version.md, "Inherited notes"): the marker persists when
+  // the edited text still equals the text this version inherited it with,
+  // and clears the instant it differs — computed once, here, so every
+  // reader (Authored.jsx included) can read `note.inheritedFrom` directly
+  // rather than re-deriving it.
+  function handleChangePenNoteText(listKey, index, value) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => {
+      const originalNote = version.authored[listKey][index];
+      const notes = prev.authored[listKey].map((note, i) =>
+        i === index
+          ? { ...note, text: value, inheritedFrom: value === originalNote.text ? originalNote.inheritedFrom : null }
+          : note,
+      );
+      return { ...prev, authored: { ...prev.authored, [listKey]: notes } };
+    });
+  }
+
+  // A note can be removed per note (route-recipe-version.md § 3) — an
+  // outright removal from the list, not a struck-in-place flag: an
+  // authored note carries no cross-flag concern the way a row or step does.
+  function handleRemovePenNote(listKey, index) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({
+      ...prev,
+      authored: { ...prev.authored, [listKey]: prev.authored[listKey].filter((_, i) => i !== index) },
+    }));
+  }
+
   // Shared by both save paths: the version line and every row the draft
   // itself does not mark removed must have a grams amount, and the line
   // must be unique within the recipe (D-04) — blocked in words, never a
@@ -615,10 +701,18 @@ export function RecipePage() {
 
       <section className="method-region" aria-label="Method">
         <Method
-          steps={readingVersion.method}
+          steps={mode === 'developing' ? version.method : readingVersion.method}
           stepChanges={mode === 'recording' ? draft.stepChanges : openBatch ? openBatch.churn.stepChanges : {}}
           mode={mode}
           onChangeStepChange={handleChangeStepChange}
+          rows={version.rows}
+          draftVersion={draftVersion}
+          baselineVersion={version}
+          staleFlagVisible={mode === 'developing'}
+          onChangePenStepField={handleChangePenStepField}
+          onChangePenStepTarget={handleChangePenStepTarget}
+          onTogglePenStepUses={handleTogglePenStepUses}
+          onTogglePenStepRemoved={handleTogglePenStepRemoved}
         />
       </section>
 
@@ -657,7 +751,13 @@ export function RecipePage() {
             onSaveTasting={handleSaveTasting}
             onCancelTasting={handleCancelTasting}
           />
-          <Authored carriedForward={version.authored.carriedForward} beforeYouStart={version.authored.beforeYouStart} />
+          <Authored
+            carriedForward={mode === 'developing' && penDraft ? penDraft.authored.carriedForward : version.authored.carriedForward}
+            beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
+            mode={mode}
+            onChangeNoteText={handleChangePenNoteText}
+            onRemoveNote={handleRemovePenNote}
+          />
           <div className="advisory-slot" aria-label="Advisories" />
         </aside>
       </div>

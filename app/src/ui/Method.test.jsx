@@ -59,3 +59,166 @@ describe('Method — a step carrying a changed line, in the reading state', () =
     expect(markup).toContain('Used vanilla instead');
   });
 });
+
+// Developing-mode fixtures (03-02): minimal version-shaped objects — a row
+// needs only what computeBalance/buildFigures touch (grams, an ingredient
+// with a composition block), since these tests assert markup, not figures.
+function makeRow(id, name, grams, removed = false) {
+  return { id, ingredientName: name, grams, removed, ingredient: { composition: {} } };
+}
+
+function makeBaselineVersion() {
+  return {
+    versionLabel: 'v1',
+    headnote: 'Baseline headnote.',
+    targets: {},
+    rows: [makeRow('row-a', 'Row A', 10), makeRow('row-b', 'Row B', 20)],
+    method: [
+      {
+        n: 1,
+        leadIn: 'Lead one',
+        instruction: 'Do one thing.',
+        targets: [{ label: 'temp', value: '10 C' }],
+        removed: false,
+        uses: ['row-a'],
+      },
+    ],
+  };
+}
+
+describe('Method — developing mode', () => {
+  it("renders the baseline's text struck beneath the field for a changed step", () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].instruction = 'Do a different thing.';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('prose-struck-beneath');
+    expect(markup).toContain('Do one thing.');
+    expect(markup).toContain('Do a different thing.');
+  });
+
+  it('renders the old chip struck before a changed target chip', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].targets[0].value = '20 C';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('struck-value');
+    expect(markup).toContain('temp 10 C');
+    expect(markup).toContain('value="20 C"');
+  });
+
+  it('renders "removed" as a sibling of the struck span for a removed step, never inside it', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].removed = true;
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    const struckIndex = markup.indexOf('prose-struck-beneath');
+    const labelIndex = markup.indexOf('method-step__skipped-label');
+    expect(struckIndex).toBeGreaterThan(-1);
+    expect(labelIndex).toBeGreaterThan(-1);
+    const closingParagraphIndex = markup.indexOf('</p>', struckIndex);
+    expect(closingParagraphIndex).toBeGreaterThan(-1);
+    expect(closingParagraphIndex).toBeLessThan(labelIndex);
+    expect(markup).toContain('removed');
+  });
+
+  it("renders the removed-row cross-flag with its 'remove this step' control", () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.rows[0].removed = true; // row-a, used by step 1
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('method-step__flag');
+    expect(markup).toContain('Row A');
+    expect(markup).toContain('remove this step');
+  });
+
+  it("renders the stale-amount flag's 'amounts changed:' clause only when visibility is on", () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.rows[0].grams = 12; // row-a, used by step 1, step 1's own text untouched
+
+    const visible = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        staleFlagVisible
+      />,
+    );
+    expect(visible).toContain('amounts changed:');
+    expect(visible).toContain('Row A');
+
+    const hidden = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        staleFlagVisible={false}
+      />,
+    );
+    expect(hidden).not.toContain('amounts changed:');
+  });
+
+  it('renders no stale-amount flag for a step whose own text was edited', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.rows[0].grams = 12;
+    draftVersion.method[0].instruction = 'A rewritten instruction.';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        staleFlagVisible
+      />,
+    );
+    expect(markup).not.toContain('amounts changed:');
+  });
+});

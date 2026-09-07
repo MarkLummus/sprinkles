@@ -104,7 +104,20 @@ export function Headnote({
           </button>
         </div>
         {blockedMessage && <p className="headnote__blocked">{blockedMessage}</p>}
-        <p className="headnote__prose">{version.headnote}</p>
+        {/* The headnote prose (route-recipe-version.md § 3): a text field
+            in developing mode, with the baseline's prose struck beneath it
+            once it differs — the same treatment a step's text gets. */}
+        <label className="headnote__prose-field">
+          <span>Headnote prose</span>
+          <textarea
+            className="ink-field"
+            rows="3"
+            value={penDraft.headnote}
+            aria-label="Headnote prose"
+            onChange={(event) => onChangePenField('headnote', event.target.value)}
+          />
+        </label>
+        {penDraft.headnote !== version.headnote && <p className="prose-struck-beneath">{version.headnote}</p>}
       </header>
     );
   }

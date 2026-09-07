@@ -66,4 +66,7 @@
      print beside a flagged row or beneath a flagged step, naming what
      removal orphaned — state carried in words, never in colour. */
   --size-cross-flag: var(--size-small-print);
+
+  /* The uses control's checkboxes (route-recipe-version.md § 3, 03-02). */
+  --gap-uses-chip: var(--gap-xs);
 }

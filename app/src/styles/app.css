@@ -152,6 +152,26 @@ body {
   margin: var(--gap-xs) 0 0;
 }
 
+/* The headnote prose field (03-02): the same labelled-field shape the
+   ceremony's other fields use. */
+.headnote__prose-field {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  margin-top: var(--gap-m);
+}
+
+.headnote__prose-field span {
+  display: block;
+  margin-bottom: var(--gap-hair);
+}
+
+.headnote__prose-field textarea.ink-field {
+  width: 100%;
+  max-width: var(--measure-prose);
+  box-sizing: border-box;
+}
+
 .ingredient-table-region {
   grid-area: ingredients;
 }
@@ -233,6 +253,20 @@ body {
   text-decoration: line-through;
   text-decoration-thickness: var(--rule-strike);
   margin-right: var(--gap-strike);
+}
+
+/* The Strike Rule's below-placed form (route-recipe-version.md § 7): the
+   one place the strike sits beneath rather than beside, because a
+   paragraph has no room beside — a changed step's prose (03-02) and the
+   changed headnote prose (03-02) both use this, sharing --rule-strike
+   with .struck-value so no builder adds a fourth meaning. */
+.prose-struck-beneath {
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+  max-width: var(--measure-prose);
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+  margin: var(--gap-strike) 0 0;
 }
 
 /* The step-allocation cell's pen-open state (03-02): the same
@@ -389,6 +423,60 @@ body {
   margin-top: var(--gap-xs);
 }
 
+/* The pen's own step fields (03-02): the same labelled-field shape the
+   headnote's ceremony fields already use. */
+.method-step__field {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  margin-top: var(--gap-xs);
+}
+
+.method-step__field span {
+  display: block;
+  margin-bottom: var(--gap-hair);
+}
+
+.target-chip__label-field,
+.target-chip__value-field {
+  width: auto;
+}
+
+/* The uses control (03-02): a checkbox per row, over the twelve. */
+.method-step__uses {
+  border: none;
+  padding: 0;
+  margin: var(--gap-xs) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-uses-chip);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.method-step__uses legend {
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
+  padding: 0;
+}
+
+.method-step__uses-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-hair);
+}
+
+/* The removed-row cross-flag and the stale-amount flag (03-02): small
+   print, state carried in words, never in colour. */
+.method-step__flag,
+.method-step__stale-flag {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-cross-flag);
+  margin: var(--gap-hair) 0 0;
+}
+
 .method-step__strike-control {
   display: flex;
   align-items: center;
@@ -420,6 +508,25 @@ body {
   padding-left: var(--gap-m);
   font-family: var(--face-text);
   font-size: var(--size-headnote-prose);
+}
+
+/* A note's pen-open field and its remove control (03-02). */
+.authored__note-field {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+}
+
+.authored__note-field textarea.ink-field {
+  flex: 1 1 auto;
+}
+
+/* The inherited-from marker (03-02): a trailing qualifier on the note's
+   own line, in small print — an inherited note is still authored prose,
+   just carrying provenance, so this is not a second legend. */
+.authored__inherited {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
 }
 
 .formulation-note__rule + .formulation-note__rule {

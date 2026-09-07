@@ -72,3 +72,31 @@ describe('BatchMargin — the two entry states are distinguishable', () => {
     expect(zeroBatch).not.toBe(unknownAddress);
   });
 });
+
+const emptyDraft = {
+  churnDate: '',
+  asMade: {},
+  stepChanges: {},
+  comeUpMinutes: '',
+  drawTempC: '',
+  overrunPercent: '',
+  drawNotes: '',
+  ingredientNotes: '',
+  nextTimeNote: '',
+};
+
+describe('BatchMargin — recording state offers a way out that does not save', () => {
+  it('offers both Save batch and Cancel, Cancel as a real button', () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    expect(markup).toContain('Save batch');
+    expect(markup).toContain('Cancel');
+    expect(markup).toMatch(/<button[^>]*>Cancel<\/button>/);
+  });
+});
+
+describe('BatchMargin — reading state offers no way to abandon an edit that is not happening', () => {
+  it('does not render the cancel wording', () => {
+    const markup = renderMargin({ openBatch: null, batches: [], mode: 'reading' });
+    expect(markup).not.toContain('Cancel');
+  });
+});

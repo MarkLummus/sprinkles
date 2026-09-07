@@ -341,13 +341,13 @@ export function IngredientTable({
       <table className="ingredient-table">
         <thead>
           <tr>
-            <th scope="col">Ingredient</th>
-            <th scope="col">Grams</th>
-            <th scope="col">As made</th>
-            <th scope="col">% of batch</th>
-            <th scope="col">Step</th>
-            <th scope="col">Data</th>
-            {isDeveloping && <th scope="col">Remove</th>}
+            <th scope="col" className="ingredient-table__col-name">Ingredient</th>
+            <th scope="col" className="ingredient-table__col-numeric">Grams</th>
+            <th scope="col" className="ingredient-table__col-numeric">As made</th>
+            <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
+            <th scope="col" className="ingredient-table__col-step">Step</th>
+            <th scope="col" className="ingredient-table__col-data">Data</th>
+            {isDeveloping && <th scope="col" className="ingredient-table__col-remove">Remove</th>}
           </tr>
         </thead>
         <tbody>
@@ -366,21 +366,23 @@ export function IngredientTable({
                   className={isMarked ? 'is-marked' : undefined}
                   aria-label={rowDiffAccessibleLabel(row, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
                 >
-                  <td>{rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}</td>
-                  <td>
+                  <td className="ingredient-table__col-name">
+                    {rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+                  </td>
+                  <td className="ingredient-table__col-numeric">
                     <DiffGramsCell rowDiff={rowDiff} />
                   </td>
-                  <td>
+                  <td className="ingredient-table__col-numeric">
                     <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
                   </td>
-                  <td>
+                  <td className="ingredient-table__col-numeric">
                     <DiffShareCell rowDiff={rowDiff} />
                   </td>
-                  <td>
+                  <td className="ingredient-table__col-step">
                     <DiffStepCell rowDiff={rowDiff} />
                     {row.splitStep != null && ` + ${row.splitStep}`}
                   </td>
-                  <td>{dataFlag}</td>
+                  <td className="ingredient-table__col-data">{dataFlag}</td>
                 </tr>
               );
             }
@@ -392,16 +394,18 @@ export function IngredientTable({
                   className={isMarked ? 'is-marked' : undefined}
                   aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
                 >
-                  <td>{row.ingredientName}</td>
-                  <td>
+                  <td className="ingredient-table__col-name">{row.ingredientName}</td>
+                  <td className="ingredient-table__col-numeric">
                     <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
                   </td>
-                  <td>
+                  <td className="ingredient-table__col-numeric">
                     <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
                   </td>
-                  <td>{baselineShare}</td>
-                  <td>{row.splitStep ? `${row.step} + ${row.splitStep}` : row.step}</td>
-                  <td>{dataFlag}</td>
+                  <td className="ingredient-table__col-numeric">{baselineShare}</td>
+                  <td className="ingredient-table__col-step">
+                    {row.splitStep ? `${row.step} + ${row.splitStep}` : row.step}
+                  </td>
+                  <td className="ingredient-table__col-data">{dataFlag}</td>
                 </tr>
               );
             }
@@ -437,30 +441,30 @@ export function IngredientTable({
                   removed,
                 )}
               >
-                <td>
+                <td className="ingredient-table__col-name">
                   {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
                   {flagged && (
                     <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
                   )}
                 </td>
-                <td>
+                <td className="ingredient-table__col-numeric">
                   <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
                 </td>
-                <td>
+                <td className="ingredient-table__col-numeric">
                   <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
                 </td>
-                <td>
+                <td className="ingredient-table__col-numeric">
                   {removed ? (
                     <span className="struck-value">{baselineShare}</span>
                   ) : (
                     <ShareCell baselineShare={baselineShare} currentShare={currentShare} />
                   )}
                 </td>
-                <td>
+                <td className="ingredient-table__col-step">
                   <StepCell row={row} penDraft={penDraft} stepOptions={stepOptions} onChangePenRowStep={onChangePenRowStep} />
                 </td>
-                <td>{dataFlag}</td>
-                <td>
+                <td className="ingredient-table__col-data">{dataFlag}</td>
+                <td className="ingredient-table__col-remove">
                   <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />
                 </td>
               </tr>
@@ -469,19 +473,19 @@ export function IngredientTable({
         </tbody>
         <tfoot>
           <tr aria-label={totalAriaLabel}>
-            <td>Total</td>
-            <td>
+            <td className="ingredient-table__col-name">Total</td>
+            <td className="ingredient-table__col-numeric">
               {isDeveloping && currentTotalText !== baselineTotalText && (
                 <span className="struck-value">{baselineTotalText}</span>
               )}
               {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.from}</span>}
               {totalDisplayText}
             </td>
-            <td>{hasAsMadeLayer ? asMadeTotalText : ''}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            {isDeveloping && <td></td>}
+            <td className="ingredient-table__col-numeric">{hasAsMadeLayer ? asMadeTotalText : ''}</td>
+            <td className="ingredient-table__col-numeric"></td>
+            <td className="ingredient-table__col-step"></td>
+            <td className="ingredient-table__col-data"></td>
+            {isDeveloping && <td className="ingredient-table__col-remove"></td>}
           </tr>
         </tfoot>
       </table>

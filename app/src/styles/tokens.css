@@ -51,6 +51,21 @@
   --size-ink-field: 0.9375rem;
   --col-numeric: 88px;
 
+  /* The step-allocation column's own width (G-03-1 finding a): derived,
+     not guessed. At a 1280px viewport the recipe page's 2fr/1fr grid
+     (48px padding, 32px gap) gives the ingredient table roughly 768px.
+     The name column takes --col-ingredient (40%, ~307px); the table's
+     widest state — a churned version open in the pen — shows all three
+     numeric columns at once, each --col-numeric (88px), 3*88 = 264px.
+     That leaves 768 - 307 - 264 = ~197px for Step, Data and Remove, which
+     today split it three ways unsized (~66px each). Naming Step's own
+     share explicitly at that same ~66px leaves Data and Remove to keep
+     splitting what remains between the two of them (~65px each, the same
+     room they already had) rather than an equal-thirds split that
+     silently re-shrinks every time a column beside them becomes
+     conditional (T-03-49). */
+  --col-step: 66px;
+
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);
   --size-mark-stop: 0.8125rem;

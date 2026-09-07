@@ -323,21 +323,23 @@ body {
   border-bottom: var(--rule-baseline) solid var(--ink);
 }
 
-.ingredient-table th:first-child {
+.ingredient-table__col-name {
   width: var(--col-ingredient);
 }
 
 /* The as-made column's arrival sizes the three numeric columns to their
    content and right-aligns them, rather than stretching to fill (D-22,
-   Phase 1 critique carry). */
-.ingredient-table th:nth-child(2),
-.ingredient-table th:nth-child(3),
-.ingredient-table th:nth-child(4),
-.ingredient-table td:nth-child(2),
-.ingredient-table td:nth-child(3),
-.ingredient-table td:nth-child(4) {
+   Phase 1 critique carry). Sized by column identity, not position (G-03-1
+   task 1): a column named by its own class keeps its width when a
+   different column in the row becomes conditional, where a positional
+   nth-child selector would not. */
+.ingredient-table__col-numeric {
   width: var(--col-numeric);
   text-align: right;
+}
+
+.ingredient-table__col-step {
+  width: var(--col-step);
 }
 
 .ingredient-table .ink-field {
@@ -386,7 +388,7 @@ body {
 }
 
 /* The step-allocation cell's pen-open state (03-02): the same
-   struck-baseline-beside-field arrangement the grams cell uses. */
+   struck-baseline-beside-field flex arrangement the grams cell uses. */
 .ingredient-table__step-cell {
   display: flex;
   align-items: center;
@@ -394,8 +396,20 @@ body {
   gap: var(--gap-strike);
 }
 
+/* Load-bearing (G-03-1 finding a): `flex: 1 1 auto` lets the select shrink
+   inside the flex line instead of holding its content size, and
+   `min-width: 0` overrides a flex item's default `min-width: auto` — a
+   select's automatic minimum size is its min-content width (the widest
+   <option> string, ~280px here), so without this pair the control cannot
+   shrink below that width and overflows leftward across three columns
+   under this table's fixed layout. The flex arrangement above is shared
+   with the grams cell, but the arrangement alone was never the guard —
+   this pair is what the grams cell's field also carries and the step
+   cell's select was missing. */
 .ingredient-table__step-cell select.ink-field {
   width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .ingredient-table__split-step {

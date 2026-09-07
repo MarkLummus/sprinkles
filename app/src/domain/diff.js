@@ -103,6 +103,10 @@ function buildStepDiff(step, baseStep) {
     return {
       n: step.n,
       textChanged: true,
+      leadInChanged: true,
+      instructionChanged: true,
+      purposeChanged: true,
+      asideChanged: true,
       textFrom: null,
       targets: buildTargetDiff(step.targets ?? [], []),
       usesChanged: true,
@@ -110,22 +114,30 @@ function buildStepDiff(step, baseStep) {
       removedChanged: true,
     };
   }
+  // An absent optional field and an empty-string one are the same fact —
+  // nothing written — and must compare equal on both sides: a first
+  // keystroke into an empty purpose/aside, deleted again, must not read as
+  // a change from nothing to empty (03-09, T-03-54).
   const textFrom = {
     leadIn: baseStep.leadIn,
     instruction: baseStep.instruction,
-    purpose: baseStep.purpose ?? null,
-    aside: baseStep.aside ?? null,
+    purpose: baseStep.purpose ?? '',
+    aside: baseStep.aside ?? '',
   };
-  const textChanged =
-    step.leadIn !== baseStep.leadIn ||
-    step.instruction !== baseStep.instruction ||
-    (step.purpose ?? null) !== textFrom.purpose ||
-    (step.aside ?? null) !== textFrom.aside;
+  const leadInChanged = step.leadIn !== baseStep.leadIn;
+  const instructionChanged = step.instruction !== baseStep.instruction;
+  const purposeChanged = (step.purpose ?? '') !== textFrom.purpose;
+  const asideChanged = (step.aside ?? '') !== textFrom.aside;
+  const textChanged = leadInChanged || instructionChanged || purposeChanged || asideChanged;
   const removed = step.removed ?? false;
   const baseRemoved = baseStep.removed ?? false;
   return {
     n: step.n,
     textChanged,
+    leadInChanged,
+    instructionChanged,
+    purposeChanged,
+    asideChanged,
     textFrom,
     targets: buildTargetDiff(step.targets ?? [], baseStep.targets ?? []),
     usesChanged: !sameSet(step.uses ?? [], baseStep.uses ?? []),
@@ -143,10 +155,18 @@ function buildStepDiff(step, baseStep) {
  * descriptor per row of `current`, in `current.rows` order — a row absent
  * from `baseline` reports every `From` as null and every `Changed` as
  * true. `steps` is one descriptor per step of `current`, in
- * `current.method`'s own order (already ascending n); `textFrom` carries
- * the baseline's four text fields so a component can render the parent's
- * text struck beneath the field without re-reading the baseline itself.
- * `figures` zips `buildFigures` over each side — each side filtered
+ * `current.method`'s own order (already ascending n); each step descriptor
+ * carries `leadInChanged`/`instructionChanged`/`purposeChanged`/
+ * `asideChanged`, one per text field, with `textChanged` computed as their
+ * disjunction — never a separate four-way expression, so the aggregate can
+ * never disagree with its parts. `textFrom` carries the baseline's four
+ * text fields so a component can render the parent's text struck beneath
+ * the field without re-reading the baseline itself; an absent `purpose` or
+ * `aside` on the baseline carries as `''` on `textFrom`, and an absent
+ * optional field compares equal to an empty-string one on both sides — a
+ * first keystroke into an empty field, deleted again, is not a change.
+ * `textFrom` stays `null` when there is no baseline step at all. `figures`
+ * zips `buildFigures` over each side — each side filtered
  * through `activeRows`/`activeSteps` first, so a removed row or step never
  * reaches `computeBalance` — matched by `key`, in `FIGURE_SPECS` order; the
  * figure math is never re-derived. `total` compares each side's active

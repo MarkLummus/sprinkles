@@ -184,6 +184,157 @@ describe('buildDiff — steps, text', () => {
   });
 });
 
+describe('buildDiff — steps, per-field change flags (03-09)', () => {
+  it('reports only leadInChanged for a step whose lead-in changed', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 3).leadIn = 'A rewritten lead-in.';
+
+    const diff = buildDiff(current, baseline);
+    const step3Diff = diff.steps.find((step) => step.n === 3);
+    expect(step3Diff.leadInChanged).toBe(true);
+    expect(step3Diff.instructionChanged).toBe(false);
+    expect(step3Diff.purposeChanged).toBe(false);
+    expect(step3Diff.asideChanged).toBe(false);
+  });
+
+  it('reports only instructionChanged for a step whose instruction changed', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 3).instruction = 'A rewritten instruction.';
+
+    const diff = buildDiff(current, baseline);
+    const step3Diff = diff.steps.find((step) => step.n === 3);
+    expect(step3Diff.leadInChanged).toBe(false);
+    expect(step3Diff.instructionChanged).toBe(true);
+    expect(step3Diff.purposeChanged).toBe(false);
+    expect(step3Diff.asideChanged).toBe(false);
+  });
+
+  it('reports only purposeChanged for a step whose purpose changed', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 1).purpose = 'A rewritten purpose.'; // step 1 has no aside
+
+    const diff = buildDiff(current, baseline);
+    const step1Diff = diff.steps.find((step) => step.n === 1);
+    expect(step1Diff.leadInChanged).toBe(false);
+    expect(step1Diff.instructionChanged).toBe(false);
+    expect(step1Diff.purposeChanged).toBe(true);
+    expect(step1Diff.asideChanged).toBe(false);
+  });
+
+  it('reports only asideChanged for a step whose aside changed', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 2).aside = 'A rewritten aside.'; // step 2 has no purpose
+
+    const diff = buildDiff(current, baseline);
+    const step2Diff = diff.steps.find((step) => step.n === 2);
+    expect(step2Diff.leadInChanged).toBe(false);
+    expect(step2Diff.instructionChanged).toBe(false);
+    expect(step2Diff.purposeChanged).toBe(false);
+    expect(step2Diff.asideChanged).toBe(true);
+  });
+
+  it('reports all four flags true for a step with all four fields changed', () => {
+    const baseline = clone();
+    const current = clone();
+    const step4 = findStep(current, 4); // step 4 has both purpose and aside
+    step4.leadIn = 'A rewritten lead-in.';
+    step4.instruction = 'A rewritten instruction.';
+    step4.purpose = 'A rewritten purpose.';
+    step4.aside = 'A rewritten aside.';
+
+    const diff = buildDiff(current, baseline);
+    const step4Diff = diff.steps.find((step) => step.n === 4);
+    expect(step4Diff.leadInChanged).toBe(true);
+    expect(step4Diff.instructionChanged).toBe(true);
+    expect(step4Diff.purposeChanged).toBe(true);
+    expect(step4Diff.asideChanged).toBe(true);
+    expect(step4Diff.textChanged).toBe(true);
+  });
+
+  it('textChanged is the disjunction of the four flags — true for any one, false for none', () => {
+    const baseline = clone();
+    const identity = buildDiff(baseline, baseline);
+    expect(identity.steps.every((step) => !step.textChanged)).toBe(true);
+
+    const current = clone();
+    findStep(current, 3).leadIn = 'A rewritten lead-in.';
+    const diff = buildDiff(current, baseline);
+    const step3Diff = diff.steps.find((step) => step.n === 3);
+    expect(step3Diff.textChanged).toBe(step3Diff.leadInChanged || step3Diff.instructionChanged || step3Diff.purposeChanged || step3Diff.asideChanged);
+  });
+
+  it('reports purposeChanged false for an absent baseline purpose against a current empty-string purpose', () => {
+    const baseline = clone(); // step 2 has no purpose key
+    const current = clone();
+    findStep(current, 2).purpose = '';
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.steps.find((step) => step.n === 2).purposeChanged).toBe(false);
+  });
+
+  it('reports purposeChanged false for an empty-string baseline purpose against a current absent purpose', () => {
+    const baseline = clone();
+    findStep(baseline, 2).purpose = '';
+    const current = clone(); // step 2 has no purpose key
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.steps.find((step) => step.n === 2).purposeChanged).toBe(false);
+  });
+
+  it('reports asideChanged false for an absent baseline aside against a current empty-string aside', () => {
+    const baseline = clone(); // step 1 has no aside key
+    const current = clone();
+    findStep(current, 1).aside = '';
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.steps.find((step) => step.n === 1).asideChanged).toBe(false);
+  });
+
+  it('reports asideChanged false for an empty-string baseline aside against a current absent aside', () => {
+    const baseline = clone();
+    findStep(baseline, 1).aside = '';
+    const current = clone(); // step 1 has no aside key
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.steps.find((step) => step.n === 1).asideChanged).toBe(false);
+  });
+
+  it('reports purposeChanged true for an absent baseline purpose against real current text', () => {
+    const baseline = clone(); // step 2 has no purpose key
+    const current = clone();
+    findStep(current, 2).purpose = 'A real purpose, freshly written.';
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.steps.find((step) => step.n === 2).purposeChanged).toBe(true);
+  });
+
+  it('reports all four flags true and textFrom null for a step present in current but absent from baseline', () => {
+    const baseline = clone();
+    const current = clone();
+    current.method.push({
+      n: 99,
+      leadIn: 'New step',
+      instruction: 'A brand new instruction.',
+      purpose: 'A brand new purpose.',
+      aside: 'A brand new aside.',
+      removed: false,
+      uses: [],
+    });
+
+    const diff = buildDiff(current, baseline);
+    const newStepDiff = diff.steps.find((step) => step.n === 99);
+    expect(newStepDiff.leadInChanged).toBe(true);
+    expect(newStepDiff.instructionChanged).toBe(true);
+    expect(newStepDiff.purposeChanged).toBe(true);
+    expect(newStepDiff.asideChanged).toBe(true);
+    expect(newStepDiff.textFrom).toBe(null);
+  });
+});
+
 describe('buildDiff — targets', () => {
   it("reports step 8's blend chip from '45 s' to '60 s', changed true, and the other chip unchanged", () => {
     const baseline = clone();

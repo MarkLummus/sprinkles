@@ -406,6 +406,7 @@ export function RecipePage() {
         <section className="formulation-note-region" aria-label="Formulation note">
           <FormulationNote
             version={version}
+            mode={mode}
             onFocusFigure={setFocusedFigureKey}
             onBlurFigure={() => setFocusedFigureKey(null)}
           />

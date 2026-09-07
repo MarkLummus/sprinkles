@@ -27,7 +27,7 @@ function joinNames(names) {
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
-export function GraduatedRule({ figure, onFocusFigure, onBlurFigure }) {
+export function GraduatedRule({ figure, tabIndex, onFocusFigure, onBlurFigure }) {
   const { key, label, value, unit, decimals, domain, band, deviation, basis, estimatedRowNames } = figure;
   const [lo, hi] = domain;
   const toX = (v) => ((clamp(v, lo, hi) - lo) / (hi - lo)) * WIDTH;
@@ -64,11 +64,15 @@ export function GraduatedRule({ figure, onFocusFigure, onBlurFigure }) {
     // pointer) is the brief's signature trace, marking the ingredient rows
     // this figure rests on (route-recipe.md § 3, § 5). The whole sentence —
     // label, value, target, basis and its rows — is this button's one
-    // accessible name; its children are presentation only.
+    // accessible name; its children are presentation only. tabIndex is
+    // conditional (route-recipe-batch.md § 6, revised 2026-09-07): while
+    // recording, the sheet's page order skips these six rules, but they
+    // stay clickable and keep this focus treatment.
     <button
       type="button"
       className="graduated-rule"
       aria-label={accessibleName}
+      tabIndex={tabIndex}
       onFocus={() => onFocusFigure?.(key)}
       onBlur={() => onBlurFigure?.()}
     >

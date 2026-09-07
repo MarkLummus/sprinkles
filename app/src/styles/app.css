@@ -609,6 +609,26 @@ body {
   font-size: var(--size-table-body);
 }
 
+/* The margin's derived-advisories block (FORM2-02, 03-05): small-print
+   paragraphs in ink under a legend parallel to the authored block's own,
+   at the same reading weight as the authored notes beside it — no colour,
+   no icon, no badge. */
+.derived-advisories__legend {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: var(--gap-m) 0 0;
+}
+
+.derived-advisories__item {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-xs) 0 0;
+}
+
 .authored__legend {
   display: flex;
   justify-content: space-between;

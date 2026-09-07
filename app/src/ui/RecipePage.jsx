@@ -16,6 +16,7 @@ import { BasisNote } from './BasisNote.jsx';
 import { BatchMargin } from './BatchMargin.jsx';
 import { Headnote } from './Headnote.jsx';
 import { VersionStrip } from './VersionStrip.jsx';
+import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
 // D-24's dirty check: true only while recording holds ink the maker has
 // actually typed. Every field is tested against '' / {} rather than
@@ -72,8 +73,8 @@ function isPenDraftDirty(mode, penDraft, version) {
 }
 
 // The brief's book spread, in semantic regions, each wearing its
-// plain-language name. The advisory slot in the margin renders nothing
-// visible until the plan that fills it lands — no placeholder text.
+// plain-language name. The margin's derived-advisories block (FORM2-02)
+// renders nothing visible when the version has none — no placeholder text.
 export function RecipePage() {
   const { id, batchId } = useParams();
   const navigate = useNavigate();
@@ -878,6 +879,7 @@ export function RecipePage() {
               onSaveTasting={handleSaveTasting}
               onCancelTasting={handleCancelTasting}
             />
+            <DerivedAdvisories version={liveVersion} />
             <Authored
               carriedForward={mode === 'developing' && penDraft ? penDraft.authored.carriedForward : version.authored.carriedForward}
               beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
@@ -885,7 +887,6 @@ export function RecipePage() {
               onChangeNoteText={handleChangePenNoteText}
               onRemoveNote={handleRemovePenNote}
             />
-            <div className="advisory-slot" aria-label="Advisories" />
           </aside>
         </div>
       </article>

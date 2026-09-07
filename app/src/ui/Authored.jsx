@@ -1,6 +1,8 @@
 // The maker's own judgement, kept visibly apart from anything the app
 // derives. Each list carries a legend naming the block and the word
-// "authored" so a reader can tell at a glance which is which.
+// "authored" so a reader can tell at a glance which is which. Each note is
+// now { text, inheritedFrom } (D-06): keyed by index rather than by the
+// note string, since two notes may carry the same text.
 export function Authored({ carriedForward, beforeYouStart }) {
   return (
     <div className="authored">
@@ -9,8 +11,8 @@ export function Authored({ carriedForward, beforeYouStart }) {
         <span>authored</span>
       </p>
       <ul className="authored__notes">
-        {carriedForward.map((note) => (
-          <li key={note}>{note}</li>
+        {carriedForward.map((note, index) => (
+          <li key={index}>{note.text}</li>
         ))}
       </ul>
 
@@ -19,8 +21,8 @@ export function Authored({ carriedForward, beforeYouStart }) {
         <span>authored</span>
       </p>
       <ul className="authored__notes">
-        {beforeYouStart.map((note) => (
-          <li key={note}>{note}</li>
+        {beforeYouStart.map((note, index) => (
+          <li key={index}>{note.text}</li>
         ))}
       </ul>
     </div>

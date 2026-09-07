@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { repository } from '../store/repository.js';
 import { computeBalance } from '../domain/composition.js';
+import { activeRows } from '../domain/rows.js';
 import { exportStore, importStore } from '../store/transfer.js';
 
 // The arrival the brief calls "departing from the list" (D-13). One item
@@ -91,7 +92,7 @@ export function RecipeList() {
       </div>
       <ul className="recipe-list">
         {versions.map((version) => {
-          const balance = computeBalance(version.rows);
+          const balance = computeBalance(activeRows(version));
           return (
             <li key={version.id}>
               <Link to={`/recipe/${version.id}`}>

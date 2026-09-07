@@ -54,4 +54,11 @@
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);
   --size-mark-stop: 0.8125rem;
+
+  /* The Strike Rule (route-recipe-version.md § 7): one stroke, in ink, for
+     every "not in force, replaced by what sits beside it" meaning — a
+     skipped step (Phase 2), a superseded value (this phase), a removed
+     row or step (03-02). */
+  --rule-strike: 1.2px;
+  --gap-strike: var(--gap-hair);
 }

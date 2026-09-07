@@ -287,7 +287,13 @@ export function BatchMargin({
         <p className="ink-text">
           {`recorded ${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
         </p>
-        <button type="button" onClick={() => onStartAmending(openBatch)}>
+        {/* The plan's pen and the batch's pen are never open together
+            (03-CONTEXT.md D-10, RESEARCH.md Pitfall 4): the reason is
+            stated in words, never only by the disabled state. */}
+        {mode === 'developing' && (
+          <p className="batch-margin__hint">Batch controls are unavailable while the plan is being developed.</p>
+        )}
+        <button type="button" onClick={() => onStartAmending(openBatch)} disabled={mode === 'developing'}>
           Amend
         </button>
 
@@ -309,7 +315,7 @@ export function BatchMargin({
             before the tastings, so the margin reads: this batch, this
             version's batches, a way to add to that list, this batch's
             tastings. */}
-        <button type="button" onClick={onStartRecording}>
+        <button type="button" onClick={onStartRecording} disabled={mode === 'developing'}>
           Record another batch
         </button>
 
@@ -344,9 +350,12 @@ export function BatchMargin({
     <div className="batch-margin">
       <p className="batch-margin__legend">Batch</p>
       <p>{batches.length > 0 ? 'No batch of this version has that address.' : 'No batch recorded against this version yet.'}</p>
-      <button type="button" onClick={onStartRecording}>
+      <button type="button" onClick={onStartRecording} disabled={mode === 'developing'}>
         Record a batch
       </button>
+      {mode === 'developing' && (
+        <p className="batch-margin__hint">Batch controls are unavailable while the plan is being developed.</p>
+      )}
     </div>
   );
 }

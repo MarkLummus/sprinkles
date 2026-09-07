@@ -3,6 +3,7 @@
 // (read, not imported). Method and authored notes are added by plan 01-02;
 // this shape does not change when they arrive.
 import { library } from './library.js';
+import { SEED_CREATED_AT, VERSION_SCHEMA_VERSION } from '../store/versionLift.js';
 
 // Deep-copy the ingredient record onto the row so a stored version is
 // self-contained (D-05): a later edit to the shared `library` must never
@@ -16,10 +17,14 @@ function embed(ingredientName, ingredient, fields) {
 }
 
 export const oliveOilVersion = {
-  schemaVersion: 1,
+  schemaVersion: VERSION_SCHEMA_VERSION,
   id: 'olive-oil-ice-cream-v1',
   recipeId: 'olive-oil-ice-cream',
   parentVersionId: null,
+  parentVersionLabel: null,
+  reason: null,
+  citedBatchId: null,
+  createdAt: SEED_CREATED_AT,
   recipeName: 'Olive Oil Ice Cream',
   versionLabel: '50 g oil · 800 g',
   coefficientSetId: '2026.1-slice-transcription',
@@ -27,18 +32,18 @@ export const oliveOilVersion = {
   headnote:
     'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
   rows: [
-    { id: 'row-01', ...embed('Whole milk', library.wholeMilk, { grams: 370.4, step: 2, splitStep: 3 }) },
-    { id: 'row-02', ...embed('Heavy cream', library.heavyCream, { grams: 252.8, step: 3 }) },
-    { id: 'row-03', ...embed('Graza Drizzle', library.oliveOil, { grams: 40, step: 8 }) },
-    { id: 'row-04', ...embed('Skim milk powder', library.skimMilkPowder, { grams: 22.4, step: 3 }) },
-    { id: 'row-05', ...embed('Sucrose', library.sucrose, { grams: 76, step: 2, splitStep: 3 }) },
-    { id: 'row-06', ...embed('Allulose', library.allulose, { grams: 20, step: 6 }) },
-    { id: 'row-07', ...embed('Dextrose', library.dextrose, { grams: 12, step: 3 }) },
-    { id: 'row-08', ...embed('Fine sea salt', library.salt, { grams: 3.2, step: 3 }) },
-    { id: 'row-09', ...embed('Soy lecithin', library.lecithin, { grams: 1.2, step: 8 }) },
-    { id: 'row-10', ...embed('Locust bean gum', library.locustBeanGum, { grams: 1.04, step: 2 }) },
-    { id: 'row-11', ...embed('Guar gum', library.guarGum, { grams: 0.48, step: 2 }) },
-    { id: 'row-12', ...embed('Lambda carrageenan', library.carrageenan, { grams: 0.16, step: 2 }) },
+    { id: 'row-01', ...embed('Whole milk', library.wholeMilk, { grams: 370.4, step: 2, splitStep: 3, removed: false }) },
+    { id: 'row-02', ...embed('Heavy cream', library.heavyCream, { grams: 252.8, step: 3, removed: false }) },
+    { id: 'row-03', ...embed('Graza Drizzle', library.oliveOil, { grams: 40, step: 8, removed: false }) },
+    { id: 'row-04', ...embed('Skim milk powder', library.skimMilkPowder, { grams: 22.4, step: 3, removed: false }) },
+    { id: 'row-05', ...embed('Sucrose', library.sucrose, { grams: 76, step: 2, splitStep: 3, removed: false }) },
+    { id: 'row-06', ...embed('Allulose', library.allulose, { grams: 20, step: 6, removed: false }) },
+    { id: 'row-07', ...embed('Dextrose', library.dextrose, { grams: 12, step: 3, removed: false }) },
+    { id: 'row-08', ...embed('Fine sea salt', library.salt, { grams: 3.2, step: 3, removed: false }) },
+    { id: 'row-09', ...embed('Soy lecithin', library.lecithin, { grams: 1.2, step: 8, removed: false }) },
+    { id: 'row-10', ...embed('Locust bean gum', library.locustBeanGum, { grams: 1.04, step: 2, removed: false }) },
+    { id: 'row-11', ...embed('Guar gum', library.guarGum, { grams: 0.48, step: 2, removed: false }) },
+    { id: 'row-12', ...embed('Lambda carrageenan', library.carrageenan, { grams: 0.16, step: 2, removed: false }) },
   ],
   // No `sugar` key: the sheet authored no band for sugar solids (D-10).
   targets: {
@@ -79,6 +84,9 @@ export const oliveOilVersion = {
       instruction: 'Whisk 1.2 g soy lecithin into the 40 g of Drizzle. Cover, leave at room temperature.',
       targets: [{ label: 'temp', value: 'room' }],
       purpose: "It's lipophilic — it disperses poorly if added to the water phase.",
+      removed: false,
+      // D-08, confirmed by Mark: soy lecithin, Graza Drizzle.
+      uses: ['row-09', 'row-03'],
     },
     {
       n: 2,
@@ -91,6 +99,9 @@ export const oliveOilVersion = {
       ],
       aside:
         'At 120 g this is a thin layer in the pan. It scorches and evaporates faster than a larger volume would — keep whisking and don’t walk away.',
+      removed: false,
+      // D-08: locust bean gum, guar gum, lambda carrageenan, sucrose, whole milk.
+      uses: ['row-10', 'row-11', 'row-12', 'row-05', 'row-01'],
     },
     {
       n: 3,
@@ -98,6 +109,9 @@ export const oliveOilVersion = {
       instruction:
         'Whisk the remaining sucrose (~64 g), plus 22.4 g SMP, 12 g dextrose and 3.2 g salt, into the remaining milk (~250 g) and all 252.8 g of cream. Add the hot gum slurry. Immersion blend.',
       targets: [{ label: 'blend', value: '60 s' }],
+      removed: false,
+      // D-08: sucrose, skim milk powder, dextrose, fine sea salt, whole milk, heavy cream.
+      uses: ['row-05', 'row-04', 'row-07', 'row-08', 'row-01', 'row-02'],
     },
     {
       n: 4,
@@ -108,6 +122,8 @@ export const oliveOilVersion = {
         'Mismatched jars hit core temperature at different times and you would be timing off the wrong one.',
       aside:
         'Two-piece lids finger-tight only — the headspace air expands and needs to vent rather than build pressure.',
+      removed: false,
+      uses: [],
     },
     {
       n: 5,
@@ -121,6 +137,8 @@ export const oliveOilVersion = {
       purpose:
         'With 379 g in a squat wide-mouth jar the come-up is much faster than a single large vessel.',
       aside: 'Probe the core rather than trusting the estimate. Invert each jar once or twice partway through.',
+      removed: false,
+      uses: [],
     },
     {
       n: 6,
@@ -129,6 +147,9 @@ export const oliveOilVersion = {
         'Combine both jars, stir in the 20 g allulose off the heat until dissolved, then straight into an ice bath.',
       targets: [{ label: 'to', value: 'below 5 °C' }],
       aside: 'Allulose skips the hold — it browns readily with milk proteins.',
+      removed: false,
+      // D-08: allulose.
+      uses: ['row-06'],
     },
     {
       n: 7,
@@ -138,6 +159,8 @@ export const oliveOilVersion = {
         { label: 'temp', value: '4 °C' },
         { label: 'time', value: '12–24 h' },
       ],
+      removed: false,
+      uses: [],
     },
     {
       n: 8,
@@ -149,12 +172,17 @@ export const oliveOilVersion = {
         { label: 'blend', value: '45 s' },
       ],
       aside: 'Never heat this oil.',
+      removed: false,
+      // D-08: Graza Drizzle, soy lecithin.
+      uses: ['row-03', 'row-09'],
     },
     {
       n: 9,
       leadIn: 'Churn',
       instruction: 'Freeze immediately.',
       targets: [{ label: 'overrun', value: '25–30%' }],
+      removed: false,
+      uses: [],
     },
     {
       n: 10,
@@ -164,6 +192,8 @@ export const oliveOilVersion = {
         { label: 'harden', value: '−20 °C, 4+ h' },
         { label: 'serve', value: '−11 to −12 °C' },
       ],
+      removed: false,
+      uses: [],
     },
   ],
   // Authored, not derived — judgement the app cannot reach. The sheet also
@@ -171,16 +201,33 @@ export const oliveOilVersion = {
   // machine-minimum-fill note under "Before you start"; both are *derived*
   // structural advisories Phase 3 computes (FORM2-02) and are deliberately
   // held here — restating a derived figure as authored judgement is exactly
-  // the mixing the brief separates.
+  // the mixing the brief separates. Each note is { text, inheritedFrom }:
+  // inheritedFrom is null on a version's own authored notes, and carries a
+  // parent's version line on a note a child inherited unedited (D-10).
   authored: {
     carriedForward: [
-      'Gellan in the cream — roughly 0.03–0.09 g at this cream weight, an estimate with no published spec. Below anything you would taste, against 1.68 g of deliberate stabiliser.',
-      'No glucose syrup — less costly at 13% milkfat than it would be at 8%, since the milkfat is carrying structure the DE42 would have provided.',
-      'This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.',
+      {
+        text: 'Gellan in the cream — roughly 0.03–0.09 g at this cream weight, an estimate with no published spec. Below anything you would taste, against 1.68 g of deliberate stabiliser.',
+        inheritedFrom: null,
+      },
+      {
+        text: 'No glucose syrup — less costly at 13% milkfat than it would be at 8%, since the milkfat is carrying structure the DE42 would have provided.',
+        inheritedFrom: null,
+      },
+      {
+        text: 'This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.',
+        inheritedFrom: null,
+      },
     ],
     beforeYouStart: [
-      'Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.',
-      'Check the cream’s actual butterfat. The carton states a 36% minimum, which is a floor.',
+      {
+        text: 'Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.',
+        inheritedFrom: null,
+      },
+      {
+        text: 'Check the cream’s actual butterfat. The carton states a 36% minimum, which is a floor.',
+        inheritedFrom: null,
+      },
     ],
   },
 };

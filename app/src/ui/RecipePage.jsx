@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
-import { createBatch, addTasting, recordAmendment, formatRecordDate, sortedBatches } from '../domain/batch.js';
+import { createBatch, addTasting, recordAmendment, sortedBatches } from '../domain/batch.js';
 import { setMark } from '../domain/axes.js';
+import { activeRows, activeSteps } from '../domain/rows.js';
+import { createChildVersion, saveOverVersion, versionLineUnique } from '../domain/lineage.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchMargin } from './BatchMargin.jsx';
+import { Headnote } from './Headnote.jsx';
 
 // D-24's dirty check: true only while recording holds ink the maker has
 // actually typed. Every field is tested against '' / {} rather than
@@ -46,6 +49,18 @@ function isTastingDraftDirty(tastingDraft) {
   );
 }
 
+// The pen's own dirty check (route-recipe-version.md § 6, D-24's
+// "unsaved ink" principle carried to the plan's pen): every field tested
+// against '' / null / the version's own values, never truthiness, so a
+// grams field typed back to the version's own value counts as clean again.
+function isPenDraftDirty(mode, penDraft, version) {
+  if (mode !== 'developing' || !penDraft || !version) return false;
+  if (penDraft.versionLabel !== '') return true;
+  if (penDraft.reason !== '') return true;
+  if (penDraft.citedBatchId !== null) return true;
+  return version.rows.some((row) => penDraft.rows[row.id] !== String(row.grams));
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The advisory slot in the margin renders nothing
 // visible until the plan that fills it lands — no placeholder text.
@@ -53,16 +68,17 @@ export function RecipePage() {
   const { id, batchId } = useParams();
   const navigate = useNavigate();
   const [version, setVersion] = useState(undefined);
+  const [versions, setVersions] = useState([]);
   const [batches, setBatches] = useState([]);
   // The signature trace (route-recipe.md § 3, § 5): focusing a balance
   // figure marks the ingredient rows it rests on. This page is the shared
   // parent of the figures and the table, so it is the one place the
   // focused figure's key can live.
   const [focusedFigureKey, setFocusedFigureKey] = useState(null);
-  // The pen layer's state (route-recipe-batch.md § 3): a mode, either
-  // 'reading' or 'recording', and the draft form state it is recorded
-  // into. mode is never derived from the URL — only the margin's own
-  // control asks for it (D-19).
+  // The pen layer's state (route-recipe-batch.md § 3): a mode, one of
+  // 'reading' | 'recording' | 'developing', and the draft form state it is
+  // recorded into. mode is never derived from the URL — only the margin's
+  // own control, and now the headnote's, ask for it (D-19).
   const [mode, setMode] = useState('reading');
   const [draft, setDraft] = useState(null);
   // The in-progress tasting's own draft state, alongside the churn draft
@@ -74,6 +90,14 @@ export function RecipePage() {
   // (task 3, D-06). Amending pre-fills the fields from the batch, never
   // from the version, and saving calls recordAmendment, never createBatch.
   const [amendingBatchId, setAmendingBatchId] = useState(null);
+  // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
+  // reason, citation and headnote start blank/null — never defaulted from
+  // the parent — while rows is a map keyed by row id holding the raw
+  // string the maker typed for grams, the draft.asMade precedent (never
+  // Number() on keystroke, so a value typed finer than the display
+  // survives, RESEARCH.md Pitfall 5).
+  const [penDraft, setPenDraft] = useState(null);
+  const [blockedMessage, setBlockedMessage] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,12 +119,27 @@ export function RecipePage() {
     };
   }, [id]);
 
-  // D-24: leaving the page with unsaved ink uses the browser's own leave
-  // warning only, registered while recording holds a dirty draft and
-  // removed as soon as it does not — no invented dialog, no draft
-  // persistence across a reload (that is UX1-02, Phase 4).
+  // Every stored version, loaded once beside the two effects above — the
+  // strip (03-03) and the version-line uniqueness check (D-04) both read
+  // this list.
   useEffect(() => {
-    if (!isDraftDirty(mode, draft) && !isTastingDraftDirty(tastingDraft)) return undefined;
+    let cancelled = false;
+    repository.listVersions().then((result) => {
+      if (!cancelled) setVersions(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  // D-24: leaving the page with unsaved ink uses the browser's own leave
+  // warning only, registered while recording, tasting, or the plan's pen
+  // holds a dirty draft, and removed as soon as none does — no invented
+  // dialog, no draft persistence across a reload (that is UX1-02, Phase 4).
+  useEffect(() => {
+    if (!isDraftDirty(mode, draft) && !isTastingDraftDirty(tastingDraft) && !isPenDraftDirty(mode, penDraft, version)) {
+      return undefined;
+    }
     const handleBeforeUnload = (event) => {
       event.preventDefault();
     };
@@ -108,13 +147,37 @@ export function RecipePage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [mode, draft, tastingDraft]);
+  }, [mode, draft, tastingDraft, penDraft, version]);
 
   if (version === undefined) return null;
   if (version === null) return <p>No recipe found for this version.</p>;
 
   const hasRows = version.rows.length > 0;
-  const figures = buildFigures(version);
+  // The clean reading: every reader that is not the pen's own table takes
+  // this, with every removed row and step already absent (RESEARCH.md
+  // Pattern 2) — a removed row must never reach buildFigures/computeBalance.
+  const readingVersion = { ...version, rows: activeRows(version), method: activeSteps(version) };
+
+  // While developing, the six rules and the basis note answer live against
+  // the maker's typed grams (route-recipe-version.md § 3). A draft string
+  // that fails to parse, or is blank mid-keystroke, keeps the baseline's
+  // own grams rather than becoming 0 or NaN.
+  const liveVersion =
+    mode === 'developing' && penDraft
+      ? {
+          ...version,
+          rows: activeRows({
+            rows: version.rows.map((row) => {
+              const raw = penDraft.rows[row.id];
+              if (raw === undefined || raw === '') return row;
+              const parsed = Number(raw);
+              return Number.isFinite(parsed) ? { ...row, grams: parsed } : row;
+            }),
+          }),
+        }
+      : readingVersion;
+
+  const figures = buildFigures(liveVersion);
   const focusedFigure = figures.find((figure) => figure.key === focusedFigureKey) ?? null;
   const markedRowIds = focusedFigure?.contributorRowIds ?? [];
   const markedFigureLabel = focusedFigure?.label ?? '';
@@ -347,52 +410,143 @@ export function RecipePage() {
     });
   }
 
+  // Seeds penDraft from the version the pen opened on — grams as strings
+  // (Pitfall 5), everything else the maker's own to write, never defaulted
+  // from the parent (D-10: no default reason, citation, or version line).
+  // Never touches draft or amendingBatchId — the two pens are exclusive
+  // through mode alone (RESEARCH.md Pattern 4).
+  function handleStartDeveloping() {
+    const rows = {};
+    for (const row of version.rows) {
+      rows[row.id] = String(row.grams);
+    }
+    setPenDraft({
+      versionLabel: '',
+      reason: '',
+      citedBatchId: null,
+      headnote: version.headnote,
+      rows,
+      method: structuredClone(version.method),
+      authored: structuredClone(version.authored),
+    });
+    setBlockedMessage(null);
+    setMode('developing');
+  }
+
+  // Discards with no dialog of the app's own (D-10) — mirrors
+  // handleCancelRecording exactly.
+  function handleCancelDeveloping() {
+    setMode('reading');
+    setPenDraft(null);
+    setBlockedMessage(null);
+  }
+
+  function handleChangePenField(field, value) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function handleChangePenGrams(rowId, value) {
+    setBlockedMessage(null);
+    setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: value } }));
+  }
+
+  // Shared by both save paths: the version line and every active row's
+  // grams must be present, and the line must be unique within the recipe
+  // (D-04) — blocked in words, never a dialog. Returns null when blocked,
+  // or the pen's fields coerced for the domain constructor (rows'
+  // grams strings are Number()'d here, at save time, never on keystroke —
+  // Pitfall 5).
+  function buildPenFields(excludeId) {
+    if (penDraft.versionLabel === '') {
+      setBlockedMessage('a version needs a line');
+      return null;
+    }
+    if (!versionLineUnique(versions, penDraft.versionLabel, excludeId)) {
+      setBlockedMessage('another version already has this line');
+      return null;
+    }
+    for (const row of activeRows(version)) {
+      const raw = penDraft.rows[row.id];
+      if (raw === undefined || raw === '') {
+        setBlockedMessage(`${row.ingredientName} needs an amount, or remove the row`);
+        return null;
+      }
+    }
+    const rows = version.rows.map((row) => ({ ...row, grams: Number(penDraft.rows[row.id]) }));
+    return {
+      versionLabel: penDraft.versionLabel,
+      reason: penDraft.reason === '' ? null : penDraft.reason,
+      citedBatchId: penDraft.citedBatchId,
+      rows,
+      method: penDraft.method,
+      headnote: penDraft.headnote,
+      authored: penDraft.authored,
+    };
+  }
+
+  // The two impure calls (a fresh id, the current instant) live here, in
+  // the one save handler — createChildVersion stays deterministic. The
+  // parent is never passed to repository.saveVersion (D04, T-03-03).
+  function handleSaveAsNewVersion() {
+    const penFields = buildPenFields(null);
+    if (!penFields) return;
+    const child = createChildVersion(version, penFields, { id: crypto.randomUUID(), now: new Date().toISOString() });
+    repository.saveVersion(child).then(() => {
+      setVersions((prev) => [...prev, child]);
+      setMode('reading');
+      setPenDraft(null);
+      setBlockedMessage(null);
+      navigate(`/recipe/${child.id}`);
+    });
+  }
+
+  // Available only on a version with zero batches (D-01) — a churned
+  // version's own record is never written to (D04).
+  function handleSaveOverVersion() {
+    const penFields = buildPenFields(version.id);
+    if (!penFields) return;
+    const updated = saveOverVersion(version, penFields, { now: new Date().toISOString() });
+    repository.saveVersion(updated).then(() => {
+      setVersion(updated);
+      setVersions((prev) => prev.map((existing) => (existing.id === updated.id ? updated : existing)));
+      setMode('reading');
+      setPenDraft(null);
+      setBlockedMessage(null);
+    });
+  }
+
   return (
     <article className="recipe-page">
-      <header className="headnote">
-        <p className="region-name">Headnote</p>
-        <h1>{version.recipeName}</h1>
-        <p className="headnote__version">
-          {version.versionLabel}
-          {(mode === 'recording' || openBatch) && (
-            <>
-              {' · '}
-              {mode === 'recording' ? (
-                <label>
-                  churned{' '}
-                  <input
-                    type="date"
-                    className="ink-field headnote__churn-field"
-                    autoFocus
-                    value={draft.churnDate}
-                    onChange={(event) => handleChangeChurnDate(event.target.value)}
-                  />
-                </label>
-              ) : (
-                <>
-                  churned{' '}
-                  <span className="ink-text">
-                    {openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}
-                  </span>
-                </>
-              )}
-            </>
-          )}
-        </p>
-        <p className="headnote__prose">{version.headnote}</p>
-      </header>
+      <Headnote
+        version={version}
+        mode={mode}
+        draft={draft}
+        penDraft={penDraft}
+        openBatch={openBatch}
+        batches={batches}
+        blockedMessage={blockedMessage}
+        onChangeChurnDate={handleChangeChurnDate}
+        onStartDeveloping={handleStartDeveloping}
+        onCancelDeveloping={handleCancelDeveloping}
+        onChangePenField={handleChangePenField}
+        onSaveAsNewVersion={handleSaveAsNewVersion}
+        onSaveOverVersion={handleSaveOverVersion}
+      />
 
       <section className="ingredient-table-region" aria-label="Ingredient table">
         <h2 className="region-name">Ingredient table</h2>
         {hasRows ? (
           <IngredientTable
-            rows={version.rows}
+            rows={mode === 'developing' ? version.rows : readingVersion.rows}
             markedRowIds={markedRowIds}
             markedFigureLabel={markedFigureLabel}
             mode={mode}
             draft={draft}
+            penDraft={penDraft}
             openBatch={openBatch}
             onChangeAsMade={handleChangeAsMade}
+            onChangePenGrams={handleChangePenGrams}
           />
         ) : (
           <p>This version has no ingredient rows.</p>
@@ -401,7 +555,7 @@ export function RecipePage() {
 
       <section className="method-region" aria-label="Method">
         <Method
-          steps={version.method}
+          steps={readingVersion.method}
           stepChanges={mode === 'recording' ? draft.stepChanges : openBatch ? openBatch.churn.stepChanges : {}}
           mode={mode}
           onChangeStepChange={handleChangeStepChange}
@@ -414,12 +568,12 @@ export function RecipePage() {
       <div className="side-region">
         <section className="formulation-note-region" aria-label="Formulation note">
           <FormulationNote
-            version={version}
+            version={liveVersion}
             mode={mode}
             onFocusFigure={setFocusedFigureKey}
             onBlurFigure={() => setFocusedFigureKey(null)}
           />
-          <BasisNote version={version} />
+          <BasisNote version={liveVersion} />
         </section>
 
         <aside className="margin-region" aria-label="Margin">

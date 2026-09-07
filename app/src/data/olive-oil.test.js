@@ -3,6 +3,7 @@
 // notes, transcribed verbatim from the printed sheet (see plan 01-02).
 import { describe, it, expect } from 'vitest';
 import { oliveOilVersion } from './olive-oil.js';
+import { SEED_USES } from '../store/versionLift.js';
 
 function targetValue(step, label) {
   return step.targets?.find((t) => t.label === label)?.value;
@@ -57,9 +58,57 @@ describe('oliveOilVersion.authored', () => {
   });
 
   it('mentions neither ultra-pasteurised mass nor machine minimum fill — both are derived, not authored', () => {
-    const allNotes = [...oliveOilVersion.authored.carriedForward, ...oliveOilVersion.authored.beforeYouStart].join(' ').toLowerCase();
+    const allNotes = [...oliveOilVersion.authored.carriedForward, ...oliveOilVersion.authored.beforeYouStart]
+      .map((note) => note.text)
+      .join(' ')
+      .toLowerCase();
     expect(allNotes).not.toMatch(/ultra-pasteuris/);
     expect(allNotes).not.toMatch(/minimum fill/);
+  });
+
+  it('is three carried-forward and two before-you-start note objects, each with a text string and inheritedFrom null', () => {
+    for (const note of [...oliveOilVersion.authored.carriedForward, ...oliveOilVersion.authored.beforeYouStart]) {
+      expect(typeof note.text).toBe('string');
+      expect(note.inheritedFrom).toBeNull();
+    }
+  });
+
+  it('carries the exact authored wording for the low-anchor and Graza-tasting notes', () => {
+    const carriedForwardTexts = oliveOilVersion.authored.carriedForward.map((note) => note.text);
+    const beforeYouStartTexts = oliveOilVersion.authored.beforeYouStart.map((note) => note.text);
+    expect(carriedForwardTexts).toContain('This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.');
+    expect(beforeYouStartTexts).toContain(
+      'Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.',
+    );
+  });
+});
+
+describe('oliveOilVersion.method uses (D-08)', () => {
+  it('every one of the ten steps has a uses array', () => {
+    for (const step of oliveOilVersion.method) {
+      expect(Array.isArray(step.uses)).toBe(true);
+    }
+  });
+
+  it('the six non-empty uses lists match SEED_USES exactly, by step n', () => {
+    for (const step of oliveOilVersion.method) {
+      expect(step.uses).toEqual(SEED_USES[step.n]);
+    }
+  });
+
+  it('every row id named in any step\'s uses exists in oliveOilVersion.rows', () => {
+    const rowIds = new Set(oliveOilVersion.rows.map((row) => row.id));
+    for (const step of oliveOilVersion.method) {
+      for (const rowId of step.uses) {
+        expect(rowIds.has(rowId)).toBe(true);
+      }
+    }
+  });
+
+  it('every step carries removed: false', () => {
+    for (const step of oliveOilVersion.method) {
+      expect(step.removed).toBe(false);
+    }
   });
 });
 

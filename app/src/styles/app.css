@@ -93,6 +93,65 @@ body {
   margin: var(--gap-s) 0 0;
 }
 
+/* The save ceremony (route-recipe-version.md § 3, "The ceremony in the
+   headnote"): the version line, the reason, the citation, and the save
+   controls, all at the top of the page where the version is named, not
+   at the foot of the longest column (the Phase 2 design debt). */
+.headnote__version-field {
+  display: block;
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  margin: var(--gap-xs) 0 0;
+}
+
+.headnote__version-field span {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
+}
+
+.headnote__version-was {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  margin: var(--gap-hair) 0 0;
+}
+
+.headnote__reason-field {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  margin-top: var(--gap-s);
+}
+
+.headnote__reason-field span {
+  display: block;
+  margin-bottom: var(--gap-hair);
+}
+
+.headnote__citation {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  margin-top: var(--gap-s);
+}
+
+.headnote__ceremony {
+  display: flex;
+  gap: var(--gap-s);
+  margin-top: var(--gap-m);
+}
+
+.headnote__blocked {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-xs) 0 0;
+}
+
 .ingredient-table-region {
   grid-area: ingredients;
 }
@@ -147,6 +206,33 @@ body {
 
 .ingredient-table .ink-field {
   text-align: right;
+}
+
+/* The grams cell's pen-open state (route-recipe-version.md § 3, § 6): the
+   struck baseline sits beside the field as a sibling span, never an
+   ancestor of it — the same reason Method.jsx's Skipped label sits
+   outside its struck span. */
+.ingredient-table__grams-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gap-strike);
+}
+
+.ingredient-table__grams-cell .ink-field {
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The Strike Rule (route-recipe-version.md § 7): a struck value in ink,
+   immediately before the value that replaced it. One stroke for every
+   "not in force" meaning across the app — a skipped step, a superseded
+   value, a removed row or step — so no builder adds a fourth. */
+.struck-value {
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+  margin-right: var(--gap-strike);
 }
 
 .ingredient-table th {

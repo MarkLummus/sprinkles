@@ -87,6 +87,16 @@ function makeBaselineVersion() {
   };
 }
 
+// A baseline whose one step already carries purpose and aside — needed to
+// test each field's own struck-beneath line independently (03-09), since
+// makeBaselineVersion's step has neither.
+function makeBaselineVersionWithProse() {
+  const version = makeBaselineVersion();
+  version.method[0].purpose = 'Original purpose.';
+  version.method[0].aside = 'Original aside.';
+  return version;
+}
+
 describe('Method — developing mode', () => {
   it("renders the baseline's text struck beneath the field for a changed step", () => {
     const baselineVersion = makeBaselineVersion();
@@ -128,7 +138,7 @@ describe('Method — developing mode', () => {
     expect(markup).toContain('value="20 C"');
   });
 
-  it('renders "removed" as a sibling of the struck span for a removed step, never inside it', () => {
+  it('renders no struck-beneath paragraph at all for a step removed with none of its text touched, and renders the removed label (S1, T-03-52)', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[0].removed = true;
@@ -143,13 +153,131 @@ describe('Method — developing mode', () => {
       />,
     );
 
-    const struckIndex = markup.indexOf('prose-struck-beneath');
-    const labelIndex = markup.indexOf('method-step__skipped-label');
-    expect(struckIndex).toBeGreaterThan(-1);
-    expect(labelIndex).toBeGreaterThan(-1);
-    const closingParagraphIndex = markup.indexOf('</p>', struckIndex);
-    expect(closingParagraphIndex).toBeGreaterThan(-1);
-    expect(closingParagraphIndex).toBeLessThan(labelIndex);
+    expect(markup).not.toContain('prose-struck-beneath');
+    expect(markup).toContain('method-step__skipped-label');
+    expect(markup).toContain('removed');
+    // The fields stay present and editable — removing does not take them away.
+    expect(markup).toContain('value="Lead one"');
+    expect(markup).toContain('Do one thing.');
+  });
+
+  it("renders one struck-beneath paragraph for a step whose lead-in alone changed", () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].leadIn = 'A rewritten lead-in';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
+    expect(markup).toContain('Lead one');
+  });
+
+  it("renders one struck-beneath paragraph for a step whose instruction alone changed", () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].instruction = 'Do a different thing.';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
+    expect(markup).toContain('Do one thing.');
+  });
+
+  it("strikes the parent's purpose beneath the purpose field for a purpose-only edit, and renders no lead-in/instruction struck-beneath paragraph (S1's second route)", () => {
+    const baselineVersion = makeBaselineVersionWithProse();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].purpose = 'A rewritten purpose.';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
+    expect(markup).toContain('Original purpose.');
+    // The lead-in/instruction pair did not change — its struck-beneath
+    // paragraph must not render, and "Do one thing." (the instruction)
+    // appears only in the live field, not struck a second time.
+    expect(markup).not.toContain('<b>Lead one.</b>');
+  });
+
+  it('strikes the parent\'s aside beneath the aside field for an aside-only edit, and renders no lead-in/instruction struck-beneath paragraph', () => {
+    const baselineVersion = makeBaselineVersionWithProse();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].aside = 'A rewritten aside.';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
+    expect(markup).toContain('Original aside.');
+    expect(markup).not.toContain('<b>Lead one.</b>');
+  });
+
+  it('renders no struck purpose line for a purpose that was absent in the record and now carries text — there is nothing to strike', () => {
+    const baselineVersion = makeBaselineVersion(); // step 1 has no purpose key
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].purpose = 'A brand new purpose.';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).not.toContain('prose-struck-beneath');
+  });
+
+  it('renders exactly one struck-beneath paragraph, not two, for a step both removed and text-changed, and still renders the removed label', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].removed = true;
+    draftVersion.method[0].leadIn = 'A rewritten lead-in';
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
+    expect(markup).toContain('method-step__skipped-label');
     expect(markup).toContain('removed');
   });
 
@@ -232,7 +360,7 @@ describe('Method — developing mode', () => {
     expect(markup).not.toContain('<textarea');
   });
 
-  it('renders "removed" as a sibling of the struck span for a removed step in show-changes, never inside it', () => {
+  it('renders a removed step\'s prose struck in place, carries the removed label, and renders no struck-beneath paragraph, in show-changes (S1, T-03-52)', () => {
     const baselineVersion = makeBaselineVersion();
     const currentVersion = structuredClone(baselineVersion);
     currentVersion.method[0].removed = true;
@@ -249,13 +377,58 @@ describe('Method — developing mode', () => {
       />,
     );
 
-    const struckIndex = markup.indexOf('prose-struck-beneath');
+    expect(markup).not.toContain('prose-struck-beneath');
+    const struckIndex = markup.indexOf('method-step__prose--struck');
     const labelIndex = markup.indexOf('method-step__skipped-label');
     expect(struckIndex).toBeGreaterThan(-1);
     expect(labelIndex).toBeGreaterThan(-1);
-    const closingParagraphIndex = markup.indexOf('</p>', struckIndex);
-    expect(closingParagraphIndex).toBeGreaterThan(-1);
-    expect(closingParagraphIndex).toBeLessThan(labelIndex);
+    const closingSpanIndex = markup.indexOf('</span>', struckIndex);
+    expect(closingSpanIndex).toBeGreaterThan(-1);
+    expect(closingSpanIndex).toBeLessThan(labelIndex);
+    expect(markup).toContain('removed');
+  });
+
+  it('renders one struck-beneath paragraph and does not strike its own prose in place for an instruction-only edit in show-changes — the two treatments never both apply', () => {
+    const baselineVersion = makeBaselineVersion();
+    const currentVersion = structuredClone(baselineVersion);
+    currentVersion.method[0].instruction = 'Do a different thing.';
+    const changeDiff = buildDiff(currentVersion, baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={currentVersion.method}
+        mode="reading"
+        showingChanges
+        changeDiff={changeDiff}
+        staleSteps={[]}
+        rows={currentVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('prose-struck-beneath');
+    expect(markup).not.toContain('method-step__prose--struck');
+  });
+
+  it('strikes the parent\'s purpose beneath the purpose field for a purpose-only edit in show-changes, identically to the pen', () => {
+    const baselineVersion = makeBaselineVersionWithProse();
+    const currentVersion = structuredClone(baselineVersion);
+    currentVersion.method[0].purpose = 'A rewritten purpose.';
+    const changeDiff = buildDiff(currentVersion, baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={currentVersion.method}
+        mode="reading"
+        showingChanges
+        changeDiff={changeDiff}
+        staleSteps={[]}
+        rows={currentVersion.rows}
+      />,
+    );
+
+    expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
+    expect(markup).toContain('Original purpose.');
+    expect(markup).not.toContain('method-step__prose--struck');
   });
 
   it('the clean reading renders no strike, no stale flag and no removed-step markup, even if a changeDiff happens to be supplied', () => {

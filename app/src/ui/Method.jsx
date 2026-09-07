@@ -65,11 +65,17 @@ export function Method({
             const stepDiff = activeDiff.steps.find((candidate) => candidate.n === step.n);
             const flaggedRows = removedRowsUsedBy(draftVersion, draftStep);
             const staleEntry = activeStaleSteps.find((entry) => entry.n === step.n);
-            // Forced struck even when the text itself is unchanged once the
-            // step is removed — "its prose struck" — while the fields stay
-            // present and editable, mirroring GramsCell's forced strike on
-            // a removed row (03-02).
-            const showStruckBeneath = stepDiff.textChanged || draftStep.removed;
+            // Driven only by the two fields this paragraph actually shows
+            // (03-09, T-03-52). Unlike GramsCell's forced strike on a
+            // removed row — where the number may ALSO have changed, so the
+            // struck baseline value is still informative — a removed step's
+            // prose has not changed at all; forcing the strike here printed
+            // the same sentence twice. Removal is marked by the "removed"
+            // label alone, a sibling of this paragraph, never by reusing
+            // the changed-text device.
+            const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
+            const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
+            const showAsideStruck = stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
 
             return (
               <li key={step.n} id={`method-step-${step.n}`} className="method-step">
@@ -163,6 +169,10 @@ export function Method({
                       onChange={(event) => onChangePenStepField(step.n, 'purpose', event.target.value)}
                     />
                   </label>
+                  {/* Each of the four text fields strikes only its own
+                      parent value, beneath itself, when that field moved —
+                      never the lead-in/instruction pair (03-09). */}
+                  {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
                   <label className="method-step__field">
                     <span>Aside</span>
                     <textarea
@@ -173,6 +183,7 @@ export function Method({
                       onChange={(event) => onChangePenStepField(step.n, 'aside', event.target.value)}
                     />
                   </label>
+                  {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
 
                   <fieldset className="method-step__uses">
                     <legend>Uses</legend>
@@ -215,10 +226,14 @@ export function Method({
           if (isShowingChanges) {
             const stepDiff = activeDiff.steps.find((candidate) => candidate.n === step.n);
             const staleEntry = activeStaleSteps.find((entry) => entry.n === step.n);
-            // Forced struck even when the text itself is unchanged once the
-            // step is removed — the mirror of the pen's own forced strike,
-            // above.
-            const showStruckBeneath = stepDiff.textChanged || step.removed;
+            // Driven only by the two fields this paragraph shows (03-09,
+            // T-03-52), the same rule the pen uses above. Removal here is
+            // marked the way the reading state already marks a skipped
+            // step — the step's own prose struck in place — not by forcing
+            // this paragraph, which would print the same sentence twice.
+            const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
+            const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
+            const showAsideStruck = stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
 
             return (
               <li key={step.n} id={`method-step-${step.n}`} className="method-step">
@@ -227,18 +242,26 @@ export function Method({
                 </span>
                 <div className="method-step__body">
                   <p className="method-step__lead">
-                    <b>{step.leadIn}.</b> {step.instruction}
+                    {/* A removed step's own prose strikes in place — the
+                        same treatment the reading state's skipped step
+                        uses, below — while a rewritten-but-not-removed
+                        step's prose stays plain and gets its struck-beneath
+                        paragraph instead: two different facts, two
+                        different marks, never both on the same text. The
+                        "removed" label is a sibling of the struck element,
+                        never nested inside it, for the same reason the
+                        reading state's "Skipped" label sits outside its
+                        struck span. */}
+                    <span className={step.removed ? 'method-step__prose--struck' : undefined}>
+                      <b>{step.leadIn}.</b> {step.instruction}
+                    </span>
+                    {step.removed && <span className="method-step__skipped-label"> removed</span>}
                   </p>
-                  {/* The strike sits below the prose, never beside it — the
-                      same reason the pen's own struck-beneath treatment
-                      does, above; the "removed" label is a sibling of the
-                      struck element, never nested inside it. */}
                   {showStruckBeneath && (
                     <p className="prose-struck-beneath">
                       <b>{stepDiff.textFrom.leadIn}.</b> {stepDiff.textFrom.instruction}
                     </p>
                   )}
-                  {step.removed && <span className="method-step__skipped-label"> removed</span>}
 
                   {step.targets?.length > 0 && (
                     <p className="method-step__targets">
@@ -270,7 +293,9 @@ export function Method({
                   )}
 
                   {step.purpose && <p className="method-step__purpose">{step.purpose}</p>}
+                  {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
                   {step.aside && <p className="method-step__aside">{step.aside}</p>}
+                  {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
                 </div>
               </li>
             );

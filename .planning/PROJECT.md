@@ -15,13 +15,13 @@ Make something you like, understand how it turned out, and know what to keep or 
 ### Validated
 
 - ✓ Review the churned olive oil recipe (50 g oil, 800 g) inside Sprinkles: twelve rows, method, authored notes, six balance figures against their bands with the basis stated, estimated data flagged at row and figure — REC1-01, FORM1-01, FORM1-02 — Phase 1
+- ✓ Review the first-batch notes inside Sprinkles alongside the churned recipe: the 2 Aug batch seeded as a record with its as-made column, struck and changed method steps, churn measurements, and tasting marks — BATCH-01, OBS-01 — Phase 2
+- ✓ Record the first batch as an actual attempt against that recipe state: as-made deviations in a pen layer, a snapshot of the version's rows and coefficients taken once and proven not to move, blank kept distinct from zero, unknown written as a word, tastings and amendments as separate records, a way in and a way out of the pen layer — BATCH-01, BATCH-02, OBS-01 — Phase 2
 
 ### Active
 
 Milestone 1 — **Develop the next olive oil recipe** (accepted D14). Requirement IDs are the packet's (`product-requirements/04-requirements.md`); their detailed acceptance criteria remain draft until reviewed in phase discussion.
 
-- [ ] Review the first-batch notes inside Sprinkles alongside the churned recipe — BATCH-01, OBS-01
-- [ ] Record the first batch as an actual attempt against that recipe state, including as-made deviations and the maker's own-words result — BATCH-01, BATCH-02, OBS-01
 - [ ] Explore adjustments with before/after balance figures, stated assumptions, and no promise of success — FORM-01, FORM-02
 - [ ] Preserve the churned version and the new version as distinct, with lineage; editing the new one never rewrites the old batch — REC-01, BATCH-02
 - [ ] Prepare the next version for making through the review/print experience (bench sheet) — REC-01 (review/print capability)
@@ -75,7 +75,7 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 
 **Old-sprinkles conflicts with the accepted register.** Its `CLAUDE.md` and `PRODUCT.md` state storage was "resolved 22 Aug 2026" as hosted Postgres with one account; accepted D16 (2026-09-05) keeps storage open and governs. Its surface briefs fix four outcome axes; accepted D12 leaves rating and label choices open. Its brand section says none of the prior branding is binding; accepted D13 says existing branding is incumbent evidence to confirm. None of these are resolved here.
 
-**Repo state.** Phase 1 shipped the `app/` workspace (React 19 + Vite 8 + JSX, react-router 8, idb 8, Vitest 5) with the recipe read surface, the framework-free balance module, and the provisional IndexedDB store behind a repository seam. Both CLAUDE.md files describe it.
+**Repo state.** Phase 1 shipped the `app/` workspace (React 19 + Vite 8 + JSX, react-router 8, idb 8, Vitest 5) with the recipe read surface, the framework-free balance module, and the provisional IndexedDB store behind a repository seam. Both CLAUDE.md files describe it. Phase 2 added the batch record: a `batches` object store (schema v2) behind the same seam, framework-free `domain/batch.js` and `domain/axes.js`, the pen layer on the recipe page (as-made column, per-step strike and changed line, churn section, tastings with marks, amendment), batch URLs, and store files at `schemaVersion` 2.
 
 ## Constraints
 
@@ -107,6 +107,12 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 | No third-party origins: system font stacks, no fetched assets, no network API under `app/src` | TRUST-01/IMP-01 with the fewest moving parts; verified by grep gates and the Phase 1 security review | ✓ Good — Phase 1 |
 | Colour never carries status; deviation, estimated data, and contributor marks are text, outline, and weight | The Formulation Cookbook direction contract; a reader who cannot perceive colour loses nothing | ✓ Good — confirmed in Phase 1 UAT |
 | Accessibility standard left undecided in the product record; UX1-01 still tests AA text contrast for milestone 1 | Mark declined to fix the standard yet; requirement was approved separately | ⚠️ Revisit |
+| A batch snapshots the version's rows and coefficients once, by `structuredClone` in `createBatch`, and never retakes it; amendment and tasting are separate functions that never touch the snapshot | Coefficient drift corrupted historical batches; a correction must not silently re-snapshot (D04, D09, BATCH-02) | ✓ Good — proven by identity tests, Phase 2 |
+| Blank is the absence of a key and a written `0` is a value; a blank measured field reads the word `unknown` and is never filled from the plan | The binder audit's finding: silence must stay legible as silence, and a record that reported the plan as a measurement would be false | ✓ Good — Phase 2 |
+| Tastings are recorded only against an already-saved batch, never in the churn-recording session | Keeps the churn record and the later tasting as distinct events with their own dates | ✓ Good — Phase 2 |
+| Cancel discards an unsaved draft with no confirmation dialog; the native leave-warning fires only while a draft is dirty | The brief forbids an invented dialog (D-24); draft persistence is Phase 4 UX1-02 | ✓ Good — confirmed in Phase 2 UAT |
+| Store export writes `schemaVersion` 2; a v1 file still imports as a store with no batches, and a v1 file carrying batches is refused as malformed | Old exports keep working; a file that lies about its version is not trusted | ✓ Good — Phase 2 |
+| `Save batch` weight and placement remain open against Impeccable; no button token was invented in Phase 2 | Design decisions belong to Impeccable, not to a gap-closure plan | ⚠️ Revisit — design debt (UAT G-02-4 half, UI review) |
 
 ## Evolution
 
@@ -126,4 +132,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-05 after Phase 1*
+*Last updated: 2026-09-07 after Phase 2*

@@ -1,10 +1,10 @@
 ---
 phase: 02-record-the-first-batch
 verified: 2026-09-07T00:30:00Z
-status: human_needed
+status: passed
 score: 5/5 must-haves verified
 covered_files: [".planning/REQUIREMENTS.md", ".planning/phases/02-record-the-first-batch/02-01-PLAN.md", ".planning/phases/02-record-the-first-batch/02-01-SUMMARY.md", ".planning/phases/02-record-the-first-batch/02-02-PLAN.md", ".planning/phases/02-record-the-first-batch/02-02-SUMMARY.md", ".planning/phases/02-record-the-first-batch/02-03-PLAN.md", ".planning/phases/02-record-the-first-batch/02-03-SUMMARY.md", ".planning/phases/02-record-the-first-batch/02-04-PLAN.md", ".planning/phases/02-record-the-first-batch/02-04-SUMMARY.md", ".planning/phases/02-record-the-first-batch/02-05-PLAN.md", ".planning/phases/02-record-the-first-batch/02-05-SUMMARY.md", ".planning/phases/02-record-the-first-batch/02-UAT.md", "app/src/domain/axes.js", "app/src/domain/axes.test.js", "app/src/styles/app.css", "app/src/ui/AxisMark.jsx", "app/src/ui/AxisMark.test.jsx", "app/src/ui/BatchMargin.jsx", "app/src/ui/BatchMargin.test.jsx", "app/src/ui/Method.jsx", "app/src/ui/Method.test.jsx", "app/src/ui/RecipePage.jsx"]
-covered_digest: "v1:sha256:9d31cd9d1489a32be05149f3db6a71084b1c3b4a2ed5b38f21efc796c0631aa5"
+covered_digest: "v1:sha256:dd71d07a9cc2747f3c46b2d50bc1074aef12f89e5abdf0a66ce5592d1e3e2587"
 behavior_unverified: 0
 overrides_applied: 0
 re_verification:
@@ -20,6 +20,7 @@ re_verification:
 behavior_unverified_items: []
 coincidental_reliance_items: []
 human_verification:
+
   - test: "The new-batch door and the unknown-address wording (02-04 task 1 human-check, deferred to end-of-phase UAT): on the churned recipe with the 2 Aug batch showing, confirm the margin offers a way to record another batch worded so it cannot be read as a correction of the open batch; visit /recipe/olive-oil-ice-cream-v1/batch/does-not-exist and confirm the margin says no batch of this version has that address (not that the version has no batch)."
     expected: "\"Record another batch\" appears after the batch list, reads distinctly from \"Amend\", and opens the pen layer with an empty draft. The unknown-batch-id URL shows the 'No batch of this version has that address.' sentence, never the zero-batch sentence."
     why_human: "Visual/interactive click-through and real browser URL navigation; component test proves the markup strings render correctly but not that a human reads them as intended or that the click actually opens the pen layer."

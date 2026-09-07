@@ -151,6 +151,7 @@ export function BatchMargin({
   onChangeTastingMark,
   onUseAsExpectedShortcut,
   onSaveTasting,
+  onCancelRecording,
 }) {
   if (mode === 'recording') {
     return (
@@ -231,6 +232,9 @@ export function BatchMargin({
         </label>
         <button type="button" onClick={onSaveBatch}>
           Save batch
+        </button>
+        <button type="button" onClick={onCancelRecording}>
+          Cancel
         </button>
       </div>
     );

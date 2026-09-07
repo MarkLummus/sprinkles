@@ -270,6 +270,20 @@ export function RecipePage() {
     });
   }
 
+  // The deliberate, in-app abandonment path (A-1): returns to reading,
+  // drops the draft, and clears the amend target, writing nothing. This is
+  // distinct from D-24's beforeunload warning, which only guards
+  // accidental loss on document unload — the brief conflated the two, but
+  // they are different requirements (see pen-layer-no-cancel-save-hard-to-find.md).
+  // Nothing needs to navigate: the batch on screen is derived from the URL
+  // and the loaded batch list, never from the draft, so the page already
+  // shows the right thing once mode returns to reading.
+  function handleCancelRecording() {
+    setMode('reading');
+    setDraft(null);
+    setAmendingBatchId(null);
+  }
+
   function handleStartTasting() {
     setTastingDraft({
       date: '',
@@ -389,6 +403,7 @@ export function RecipePage() {
             onChangeChurnDate={handleChangeChurnDate}
             onChangeChurnField={handleChangeChurnField}
             onSaveBatch={handleSaveBatch}
+            onCancelRecording={handleCancelRecording}
             tastingDraft={tastingDraft}
             onStartTasting={handleStartTasting}
             onChangeTastingField={handleChangeTastingField}

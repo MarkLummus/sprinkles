@@ -143,3 +143,6 @@ None - no external service configuration required.
 ---
 *Phase: 03-develop-the-next-version*
 *Completed: 2026-09-07*
+
+## Self-Check: PASSED
+All key files (diff.js, diff.test.js, uses.js, uses.test.js, Method.jsx, Method.test.jsx, this SUMMARY) confirmed present on disk. All 4 commits (3e4e607, 237fb71, e605c11, a6599a3) confirmed in git log. `npm --prefix app test` passes 417/417 (up from 385 baseline); `npm --prefix app run build` exits 0.

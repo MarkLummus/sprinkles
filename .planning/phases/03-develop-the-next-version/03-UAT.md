@@ -3,7 +3,7 @@ status: diagnosed
 phase: 03-develop-the-next-version
 source: [03-VERIFICATION.md, 03-VERIFICATION.md (gap-closure re-verification, 2026-09-08)]
 started: 2026-09-07T20:01:13.243Z
-updated: 2026-09-08T01:04:33.000Z
+updated: 2026-09-08T01:49:50.000Z
 ---
 
 ## Current Test
@@ -261,6 +261,11 @@ blocked: 0
 - **D-UAT-4 (G-03-6):** In show-changes a struck step keeps the parent number it had, struck; live steps read 1, 2, 3 in their new order. n stays immutable identity; display numbers are derived.
 - **Assumed (G-03-1 b), not objected:** the As Made column is shown only while recording or with a saved batch in view.
 - **Assumed (G-03-6 data), not objected:** saved children whose rows still name a removed step are remapped on read for display; no migration.
+
+## Decisions (Mark, 2026-09-07, after re-verification diagnosis)
+
+- **D-UAT-5 (G-03-14):** A removed step's margin number is struck in show-changes (it keeps the parent number it had, struck, per D-UAT-4) and suppressed in the pen (empty margin, the treatment the pen already uses for a step removed before it opened). Live steps read 1, 2, 3 in their new order in both. The coverage cue keeps naming the covering step by its current display number. The step selector option and the orphan flag must not present a removed step's number as if it were a live one.
+- **D-UAT-6 (G-03-11):** Below about 1250px the numeric columns yield: shrink --col-numeric toward its real widest content (the '% of batch' header, about 81px) and tighten this table's cell padding. Ingredient names stay unwrapped at 1280 and above; a wrap below about 1100 is accepted. Declared column widths become padding-inclusive, Data and Remove get their own tokens and width rules, and the name column is the single unsized column that absorbs the remainder.
 
 ## Deferred Follow-Ups
 

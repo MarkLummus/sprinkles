@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 03
 current_phase_name: Develop the next version
 status: executing
-stopped_at: Completed 03-08-PLAN.md
-last_updated: "2026-09-07T23:36:13.976Z"
+stopped_at: Completed 03-10-PLAN.md
+last_updated: "2026-09-08T00:02:39.506Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 03 execution started
-state_head: 15dbb7665bf9beb0924d6bfc016bbddccf7ea610
+state_head: f36b38362d28449127d0bfbaa95637b2a940677c
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 19
-  completed_plans: 17
+  completed_plans: 19
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07)
 ## Current Position
 
 Phase: 03 (Develop the next version) — EXECUTING
-Plan: 5 of 10
+Plan: 6 of 10
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 03 execution started
 
@@ -77,6 +77,7 @@ Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 | Phase 03 P09 | 35min | 3 tasks | 6 files |
 | Phase 03 P07 | 25min | 2 tasks | 8 files |
 | Phase 03 P08 | 10min | 2 tasks | 4 files |
+| Phase 03 P10 | 30min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -129,6 +130,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 07] The strip, batch list, and lineage links suppress their Link elements (rendering the same label as text plus a pen-hint reason) while any pen is open, closing G-03-9's RC3 navigation-policy half; isPenDraftDirty extended to method/headnote/authored and isDraftDirty gained an optional baseline argument compared against handleStartAmending's own pre-fill instead of blank, closing RC4.
 - [Phase 03]: [Phase 3, Plan 08] Sized the ingredient table's Step, As made, and % of batch columns by a per-column class (ingredient-table__col-*) rather than nth-child position, before making the As made column conditional -- so the middle column's removal on a batchless version can never shift widths onto the wrong neighbour.
 - [Phase 03]: [Phase 3, Plan 08] Introduced --col-step (66px) derived from the same 1280px-viewport arithmetic the debug session used, chosen so today's rendered layout is unchanged by the column-identity refactor alone; the As made column's conditional removal (task 2) is what actually returns width to its neighbours.
+- [Phase 03]: [Phase 3, Plan 10] One derived stepNumbers.js module (displayNumbers/displayNumberOf) threaded through Method.jsx and IngredientTable.jsx as two page-level maps (current, baseline), closing G-03-6 and G-03-3 S3 without renumbering any stored step key.
 
 ### Pending Todos
 
@@ -183,6 +185,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-07T23:36:06.668Z
-Stopped at: Completed 03-08-PLAN.md
+Last session: 2026-09-08T00:02:39.444Z
+Stopped at: Completed 03-10-PLAN.md
 Resume file: None

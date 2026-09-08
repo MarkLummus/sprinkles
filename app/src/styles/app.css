@@ -317,8 +317,15 @@ body {
 
 .ingredient-table th,
 .ingredient-table td {
+  /* Border-box (G-03-11): under this table's fixed layout, a content-box
+     cell's declared width is a CONTENT width and the padding below is
+     added on top of every one of them — measured,
+     getComputedStyle(th).width read 88px while the rendered box measured
+     112px. Border-box is what makes a --col-* token in tokens.css mean
+     the number the screen actually shows. */
+  box-sizing: border-box;
   text-align: left;
-  padding: var(--gap-xs) var(--gap-s);
+  padding: var(--gap-xs) var(--table-cell-pad-x);
   line-height: var(--leading-table);
   border-bottom: var(--rule-baseline) solid var(--ink);
 }

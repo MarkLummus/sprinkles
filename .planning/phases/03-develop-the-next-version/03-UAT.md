@@ -1,14 +1,18 @@
 ---
-status: diagnosed
+status: testing
 phase: 03-develop-the-next-version
-source: [03-VERIFICATION.md]
+source: [03-VERIFICATION.md, 03-VERIFICATION.md (gap-closure re-verification, 2026-09-08)]
 started: 2026-09-07T20:01:13.243Z
-updated: 2026-09-07T22:12:30.711Z
+updated: 2026-09-08T00:11:27.603Z
 ---
 
 ## Current Test
 
-[testing complete]
+number: 10
+name: Open the churned olive oil version, press Amend on its batch, then press the browser's back button or type another version's URL, and confirm the page arrives with no pen open and no ink in the fields. Repeat with Develop the next version open and a changed gram, landing on a sibling version: the sibling must read clean.
+expected: |
+  The route-keyed remount (app/src/router.jsx) resets all pen state on any id/batchId change; neither the amend-save TypeError nor the cross-version write (both traced in .planning/debug/one-pen-rule-leaks.md) is reachable, including by the browser's own back/forward.
+awaiting: user response
 
 ## Tests
 
@@ -57,12 +61,36 @@ result: issue
 reported: "when developing, the batch controls are disabled, but the add tasting controls are not disabled. Develop button is disabled when Amending or Batch Recording, but not when Adding a tasting. Amend and Batch recording buttons are also enabled while adding a tasting. I was able to select another version while amending."
 severity: major
 
+### 10. Open the churned olive oil version, press Amend on its batch, then press the browser's back button or type another version's URL, and confirm the page arrives with no pen open and no ink in the fields. Repeat with Develop the next version open and a changed gram, landing on a sibling version: the sibling must read clean.
+expected: The route-keyed remount (app/src/router.jsx) resets all pen state on any id/batchId change; neither the amend-save TypeError nor the cross-version write (both traced in .planning/debug/one-pen-rule-leaks.md) is reachable, including by the browser's own back/forward.
+result: [pending]
+
+### 11. With the dev server running at a normal desktop width (about 1280-1440px), open the churned olive oil version and press Develop the next version. The step selector must sit wholly inside the Step column, with the Grams, As made and % of batch values readable beside it and nothing painted over them. Narrow the window and confirm it still holds.
+expected: The class-based column sizing and the step select's shrink guard (app/src/styles/app.css, app/src/styles/tokens.css's --col-step) keep the control inside its own cell at every width tested.
+result: [pending]
+
+### 12. Open the churned olive oil version: the As made column is present, because its 2 Aug batch is in view. Develop the next version and save it as a child, then read the child: the As made column is gone entirely — no header, no empty cells, no empty total — and the remaining columns are legible with nothing shifted onto the wrong one.
+expected: hasAsMadeLayer correctly gates the column's presence in a real render, and the class-based sizing means its removal does not shift width onto a neighboring column.
+result: [pending]
+
+### 13. In the pen on the churned olive oil version, remove the Soy lecithin row and then remove step 1. Step 1's Lead-in and Instruction fields must still show their text once, with no struck copy beneath them, and the removed label beside them. Then restore step 1 and type into its Purpose field only: the lead-in and instruction must not become struck.
+expected: The struck-beneath device renders only for the field that actually changed, never for a step's removed flag alone.
+result: [pending]
+
+### 14. In the pen, remove step 1 and read what it now says: it must name soy lecithin and Graza Drizzle as still used by step 8, and must offer only a restore control, with no second control claiming to remove it. Then remove step 2 and confirm the three gums flag beside their own names in the table while sucrose and whole milk are named on the step as covered by step 3.
+expected: coveredRowsFor's coverage cue renders in words on a removed step whose rows are all still covered, and the cross-flag/remove-this-step control disappears from an already-removed step.
+result: [pending]
+
+### 15. In the pen on the churned olive oil version, remove step 2. The three gum rows must flag beside their names, and each flagged row's selector must still show its own allocation — the removed step, marked removed and unselectable — never step 1. Save the child and read it: its method reads 1 to 9 with no gap, and the rows that were only in the removed step read as unallocated. Press show changes: the live steps read 1 to 9 and the struck step reads 2.
+expected: The selector's option list (built from every step, not just active ones) keeps the bound value matched to a real option; the saved child's reading and show-changes states both renumber per stepNumbers.js's derivation.
+result: [pending]
+
 ## Summary
 
-total: 9
+total: 15
 passed: 5
 issues: 4
-pending: 0
+pending: 6
 skipped: 0
 blocked: 0
 

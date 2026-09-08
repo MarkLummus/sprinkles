@@ -1,164 +1,159 @@
 ---
 phase: 03-develop-the-next-version
-verified: 2026-09-07T16:10:00Z
+verified: 2026-09-08T20:15:00Z
 status: human_needed
 score: 5/5 must-haves verified
-covered_files: [".planning/REQUIREMENTS.md", ".planning/phases/03-develop-the-next-version/03-01-PLAN.md", ".planning/phases/03-develop-the-next-version/03-01-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-02-PLAN.md", ".planning/phases/03-develop-the-next-version/03-02-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-03-PLAN.md", ".planning/phases/03-develop-the-next-version/03-03-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-04-PLAN.md", ".planning/phases/03-develop-the-next-version/03-04-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-05-PLAN.md", ".planning/phases/03-develop-the-next-version/03-05-SUMMARY.md", "app/src/data/olive-oil.js", "app/src/data/olive-oil.test.js", "app/src/domain/advisories.js", "app/src/domain/advisories.test.js", "app/src/domain/axes.test.js", "app/src/domain/diff.js", "app/src/domain/diff.test.js", "app/src/domain/lineage.js", "app/src/domain/lineage.test.js", "app/src/domain/rows.js", "app/src/domain/rows.test.js", "app/src/domain/uses.js", "app/src/domain/uses.test.js", "app/src/store/db.js", "app/src/store/transfer.js", "app/src/store/transfer.test.js", "app/src/store/versionLift.js", "app/src/styles/app.css", "app/src/styles/tokens.css", "app/src/ui/Authored.jsx", "app/src/ui/BatchMargin.jsx", "app/src/ui/DerivedAdvisories.jsx", "app/src/ui/DerivedAdvisories.test.jsx", "app/src/ui/FormulationNote.jsx", "app/src/ui/GraduatedRule.jsx", "app/src/ui/GraduatedRule.test.jsx", "app/src/ui/Headnote.jsx", "app/src/ui/Headnote.test.jsx", "app/src/ui/IngredientTable.jsx", "app/src/ui/IngredientTable.test.jsx", "app/src/ui/Method.jsx", "app/src/ui/Method.test.jsx", "app/src/ui/RecipeList.jsx", "app/src/ui/RecipeList.test.jsx", "app/src/ui/RecipePage.jsx", "app/src/ui/VersionStrip.jsx", "app/src/ui/VersionStrip.test.jsx", "app/tests/db-migration.test.js"]
-covered_digest: "v1:sha256:33fb7719c1b539967432538bc223a701735050514572a42f0aca6bc817c9fd79"
+covered_files: [".planning/REQUIREMENTS.md", ".planning/phases/03-develop-the-next-version/03-01-PLAN.md", ".planning/phases/03-develop-the-next-version/03-01-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-02-PLAN.md", ".planning/phases/03-develop-the-next-version/03-02-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-03-PLAN.md", ".planning/phases/03-develop-the-next-version/03-03-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-04-PLAN.md", ".planning/phases/03-develop-the-next-version/03-04-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-05-PLAN.md", ".planning/phases/03-develop-the-next-version/03-05-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-06-PLAN.md", ".planning/phases/03-develop-the-next-version/03-06-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-07-PLAN.md", ".planning/phases/03-develop-the-next-version/03-07-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-08-PLAN.md", ".planning/phases/03-develop-the-next-version/03-08-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-09-PLAN.md", ".planning/phases/03-develop-the-next-version/03-09-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-10-PLAN.md", ".planning/phases/03-develop-the-next-version/03-10-SUMMARY.md", ".planning/phases/03-develop-the-next-version/03-UAT.md", "app/src/domain/advisories.js", "app/src/domain/advisories.test.js", "app/src/domain/diff.js", "app/src/domain/diff.test.js", "app/src/domain/lineage.js", "app/src/domain/lineage.test.js", "app/src/domain/rows.js", "app/src/domain/stepNumbers.js", "app/src/domain/stepNumbers.test.js", "app/src/domain/uses.js", "app/src/domain/uses.test.js", "app/src/router.jsx", "app/src/styles/app.css", "app/src/styles/tokens.css", "app/src/ui/BatchMargin.jsx", "app/src/ui/BatchMargin.test.jsx", "app/src/ui/Headnote.jsx", "app/src/ui/Headnote.test.jsx", "app/src/ui/IngredientTable.jsx", "app/src/ui/IngredientTable.test.jsx", "app/src/ui/Method.jsx", "app/src/ui/Method.test.jsx", "app/src/ui/RecipePage.jsx", "app/src/ui/RecipePage.test.jsx", "app/src/ui/VersionStrip.jsx", "app/src/ui/VersionStrip.test.jsx"]
+covered_digest: "v1:sha256:4f66b31656e9a6870d1df516fd3f000bffe8ab7f8e079a131c1bd44fd72593d4"
 behavior_unverified: 0
 overrides_applied: 0
-behavior_unverified_items:
-  - truth: "Two pens open on the same parent in two browser tabs produce two distinct children and neither clobbers the other (03-01 must_haves, verification: backstop)."
-    test: "Open the same churned version's pen in two tabs, edit and save 'as a new version' in each, in either order."
-    expected: "Two distinct child records exist, each naming the same parentVersionId; neither save is lost or corrupted."
-    why_human: "A genuine interleaving of two write transactions from two tabs cannot be produced or observed by a static test; only the single-writer path (one saveVersion call, parent never in the write set) is checked by code."
-  - truth: "An interrupted save (browser closed mid-write) leaves either no child version or a complete one, never a half-written record (03-01 must_haves, verification: backstop)."
-    test: "Trigger a save and interrupt the browser process before the IndexedDB transaction settles."
-    expected: "On reopening, either the child does not exist or it exists complete with every field."
-    why_human: "IndexedDB's own transaction atomicity is the guarantee; observing a genuine interruption needs a real browser process kill, not a test harness."
-coincidental_reliance_items: []
+re_verification:
+  previous_status: human_needed
+  previous_score: 5/5 (roadmap truths); UAT then found 4 gaps (G-03-1, G-03-3, G-03-6, G-03-9) across 4 of 9 UAT tests
+  gaps_closed:
+    - "G-03-1(a): step selector overflowed leftward across % of batch/As made/Grams at normal desktop width — closed by app/src/styles/app.css's per-column classes plus the step select's flex:1 1 auto;min-width:0 guard, and app/src/styles/tokens.css's --col-step token (03-08 Task 1)"
+    - "G-03-1(b): the As made column rendered present-and-empty on a batchless version — closed by gating the header cell and all three body branches' cells on hasAsMadeLayer in app/src/ui/IngredientTable.jsx, the same predicate that already governed the total and legend (03-08 Task 2)"
+    - "G-03-3 S1: a removed step printed its own unchanged sentence twice (struck-beneath + live) — closed by driving the struck-beneath device from per-field flags (leadInChanged/instructionChanged/purposeChanged/asideChanged) in app/src/domain/diff.js, never from the removed flag, in both branches of app/src/ui/Method.jsx (03-09 Task 1-2)"
+    - "G-03-3 S2: removing step 1 flagged nothing, indistinguishable from broken machinery — closed by uses.js's new coveredRowsFor (kept orphanedRows' rule per D-UAT-3) and Method.jsx's coverage-cue paragraph naming the covering step in words (03-09 Task 3)"
+    - "G-03-3 (diagnosis finding i): the remove-this-step control persisted, mislabelled, on an already-removed step — closed by gating the cross-flag block and its control on !draftStep.removed, and removedRowsUsedBy's new step.removed guard (03-09 Task 3)"
+    - "G-03-3 S3: a flagged row's selector showed step 1 instead of its own (removed) allocation — closed by building stepOptions from every step of the draft version (not only activeSteps), rendering the removed step's own option disabled and marked removed in words, so the bound value always matches an option (03-10 Task 3)"
+    - "G-03-6: steps did not renumber after a removal, in the reading state, the pen, or show-changes — closed by the new framework-free app/src/domain/stepNumbers.js (displayNumbers/displayNumberOf), threaded as current/baseline maps from RecipePage.jsx into Method.jsx (margin numbers, field labels, coverage cue) and IngredientTable.jsx (step column, selector labels, struck baseline, show-changes from/to, orphaned-row flag) and advisories.js's hydration clause; the stored step key (n) is untouched everywhere it is identity (03-10 Tasks 1-3)"
+    - "G-03-9 RC1/RC2/fifth leak: two unrelated states (mode/tastingDraft) let every opener hand-roll its own subset, Add a tasting had no disabled condition, and Develop excluded silently — closed by RecipePage.jsx's derivePenState (openPen/reason), threaded to Headnote.jsx and BatchMargin.jsx, both now reading openPen uniformly with a words-form reason (03-06 Task 1)"
+    - "G-03-9 RC3 (state-preservation half): a route change to a different version/batch preserved pen state, reachable by browser back/forward, causing an amend-save TypeError and a silent cross-version write — closed by app/src/router.jsx's RecipePageForRoute wrapper keying RecipePage on ${id}::${batchId ?? ''} (03-06 Task 2)"
+    - "G-03-9 RC3 (navigation-policy half): the version strip, batch list and lineage links stayed live while a pen was open — closed by VersionStrip.jsx/BatchMargin.jsx/Headnote.jsx suppressing their Link elements (rendering text + a pen-hint reason) whenever openPen is set, with no useBlocker/usePrompt/window.confirm anywhere under app/src (03-07 Task 1)"
+    - "G-03-9 RC4: isPenDraftDirty omitted method/headnote/authored (silent data loss on reload) and isDraftDirty compared an amend draft against blank (leave warning fired the instant Amend opened) — closed by extending isPenDraftDirty to all seven writers and giving isDraftDirty an amendBaseline argument (03-07 Task 2)"
+  gaps_remaining: []
+  regressions: []
 human_verification:
-  - test: "Open the churned olive oil version, click 'Develop the next version', type 48 over the oil row's 40 g, watch the parent's 40 struck in ink beside the new value, type a version line, click 'Save as a new version', and confirm landing on the child's own URL reading clean."
-    expected: "The strike renders live, the six figures and basis note answer live against the typed grams, the save lands on a new URL, and the churned version and its 2 Aug batch are unchanged when reopened (REC1-02)."
-    why_human: "Interactive rendering, live figure recompute, and URL navigation require a browser to observe; deferred to end-of-phase UAT per Mark's standing preference (all five SUMMARY.md files record this same deferral)."
-  - test: "Reload the child version's URL in a fresh page load."
-    expected: "The same twelve rows, grams, method text, and authored notes reappear (REC1-05)."
-    why_human: "A true full-page reload against the browser's own IndexedDB is not exercised by the test suite; the closest automated proof (app/tests/db-migration.test.js) verifies put/get round-tripping against a real IndexedDB for an existing record, not the interactive reload flow for a freshly created child."
-  - test: "In the pen, remove a row and watch it render struck in place with the totals and six figures updating live; remove a method step that uses a still-active row and watch the row-side orphaned-row flag appear beside it; restore both and watch the flags clear."
-    expected: "Struck rendering, live totals, and the two removal cross-flags behave exactly as described, with no cascade (REC1-03, D-10)."
-    why_human: "The interactive editing, live recompute, and cross-flag appearance/disappearance sequence needs a browser; the underlying domain logic (uses.js, diff.js) is unit-tested but the rendered interaction is not."
-  - test: "Type a reason, tap a cited batch from the list, save, and read the child's lineage line ('from 50 g oil · 800 g, after the batch of 2 Aug 2026') with both parent and batch as live links; leave the reason blank and confirm it reads 'no reason recorded'."
-    expected: "The ceremony behaves exactly as the brief and D-04 describe (REC1-04)."
-    why_human: "The full ceremony flow, including reading back live links in a saved record, needs a browser."
-  - test: "Fork the same parent twice, then read the version strip's three entries (parent, child A, child B) in creation order, with the current version carried by weight and outline and the churned parent wearing 'churned'."
-    expected: "Strip renders correctly per D-06/D-21 wording rules."
-    why_human: "Multi-version list rendering and visual weight/outline distinction need a browser to observe."
-  - test: "On a saved child, press the show-changes toggle in the lineage line and confirm the URL gains '?changes', the marks appear (struck grams/share, hollow parent tick on the rules, struck-beneath method text), then press the browser's back button and confirm the clean reading returns; copy the URL with the parameter into a new tab."
-    expected: "The addressable toggle behaves exactly as D-02 describes, with no new route (FORM2-01)."
-    why_human: "URL state changes, back-button navigation, and cross-tab URL sharing need a real browser session."
-  - test: "Read the four derived advisories in the margin for the churned olive oil version (sub-scale, ultra-pasteurised, hydration, estimated-exposure), confirming the block's 'derived' legend sits parallel to the authored block's own legend, then remove rows in the pen and watch advisories appear/disappear live."
-    expected: "Four advisories render with correct wording and basis lines, positioned between BatchMargin and Authored, and react live to pen edits (FORM2-02)."
-    why_human: "Visual placement/styling and live recompute during interactive editing need a browser; the underlying advisories.js math is thoroughly unit-tested (19 tests) against the exact published figures."
-  - test: "Click the running head 'Sprinkles' from several page states (reading, developing, not-found) and confirm it always returns to the recipe list; visit a version id that does not exist and confirm 'No recipe found' links back to the list."
-    expected: "Navigation behaves as described in every state."
-    why_human: "Click-through navigation needs a browser."
-  - test: "Confirm the plan's pen and the batch's pen cannot both be open: with the plan's pen open, the batch margin's 'Record a batch'/'Record another batch'/'Amend' controls are disabled with a stated reason in words; with the batch pen open, 'Develop the next version' is disabled."
-    expected: "Mutual exclusivity holds and the reason is stated in words, never just visually implied (D-10)."
-    why_human: "The disabled-state rendering and the stated-reason text need visual/interactive confirmation."
+  - test: "Open the churned olive oil version, press Amend on its batch, then press the browser's back button or type another version's URL, and confirm the page arrives with no pen open and no ink in the fields. Repeat with Develop the next version open and a changed gram, landing on a sibling version: the sibling must read clean."
+    expected: "The route-keyed remount (app/src/router.jsx) resets all pen state on any id/batchId change; neither the amend-save TypeError nor the cross-version write (both traced in .planning/debug/one-pen-rule-leaks.md) is reachable, including by the browser's own back/forward."
+    why_human: "A genuine browser navigation (back button, typed URL, React Router's history) cannot be driven by this repo's jsdom-free, DOM-environment-free Vitest setup; only the key-derivation mechanism is checked statically (03-06's own deferred human-check)."
+  - test: "With the dev server running at a normal desktop width (about 1280-1440px), open the churned olive oil version and press Develop the next version. The step selector must sit wholly inside the Step column, with the Grams, As made and % of batch values readable beside it and nothing painted over them. Narrow the window and confirm it still holds."
+    expected: "The class-based column sizing and the step select's shrink guard (app/src/styles/app.css, app/src/styles/tokens.css's --col-step) keep the control inside its own cell at every width tested."
+    why_human: "This repo's Vitest setup has no browser layout engine (no jsdom); CSS flex/table-layout rendering can only be confirmed visually (03-08's own deferred human-check)."
+  - test: "Open the churned olive oil version: the As made column is present, because its 2 Aug batch is in view. Develop the next version and save it as a child, then read the child: the As made column is gone entirely — no header, no empty cells, no empty total — and the remaining columns are legible with nothing shifted onto the wrong one."
+    expected: "hasAsMadeLayer correctly gates the column's presence in a real render, and the class-based sizing means its removal does not shift width onto a neighboring column."
+    why_human: "Visual column layout and the child-save round-trip through the real UI need a browser (03-08's own deferred human-check)."
+  - test: "In the pen on the churned olive oil version, remove the Soy lecithin row and then remove step 1. Step 1's Lead-in and Instruction fields must still show their text once, with no struck copy beneath them, and the removed label beside them. Then restore step 1 and type into its Purpose field only: the lead-in and instruction must not become struck."
+    expected: "The struck-beneath device renders only for the field that actually changed, never for a step's removed flag alone."
+    why_human: "Interactive typing and the live re-render of the struck-beneath markup need a browser session (03-09's own deferred human-check)."
+  - test: "In the pen, remove step 1 and read what it now says: it must name soy lecithin and Graza Drizzle as still used by step 8, and must offer only a restore control, with no second control claiming to remove it. Then remove step 2 and confirm the three gums flag beside their own names in the table while sucrose and whole milk are named on the step as covered by step 3."
+    expected: "coveredRowsFor's coverage cue renders in words on a removed step whose rows are all still covered, and the cross-flag/remove-this-step control disappears from an already-removed step."
+    why_human: "Reading the rendered coverage sentence and confirming the ingredient table's flags in the same live session needs a browser (03-09's own deferred human-check)."
+  - test: "In the pen on the churned olive oil version, remove step 2. The three gum rows must flag beside their names, and each flagged row's selector must still show its own allocation — the removed step, marked removed and unselectable — never step 1. Save the child and read it: its method reads 1 to 9 with no gap, and the rows that were only in the removed step read as unallocated. Press show changes: the live steps read 1 to 9 and the struck step reads 2."
+    expected: "The selector's option list (built from every step, not just active ones) keeps the bound value matched to a real option; the saved child's reading and show-changes states both renumber per stepNumbers.js's derivation."
+    why_human: "A real <select> element's option-matching behavior and the full save-then-reread round trip need a browser (03-10's own deferred human-check)."
 ---
 
 # Phase 3: Develop the next version Verification Report
 
 **Phase Goal:** Maker can create version 2 from the churned version, adjust it, and see exactly what changed and what it did to the balance — with the churned version and its recorded batch untouched
-**Verified:** 2026-09-07T16:10:00Z
+**Verified:** 2026-09-08T20:15:00Z
 **Status:** human_needed
-**Re-verification:** No — initial verification
+**Re-verification:** Yes — after gap closure (03-06 through 03-10, closing G-03-1, G-03-3, G-03-6, G-03-9 from 03-UAT.md)
 
 ## Goal Achievement
 
-### Observable Truths
+This is a gap-closure re-verification. The five roadmap Success Criteria were already truths at the code/domain-logic level in the initial verification (`03-VERIFICATION.md`'s prior revision, superseded by this one) and remain so — this round's focus is confirming, against the actual codebase rather than SUMMARY claims, that the four UAT-diagnosed gaps are closed by real code and that no regression was introduced.
 
-| # | Truth (Roadmap Success Criterion) | Status | Evidence |
+### Observable Truths (Roadmap Success Criteria)
+
+| # | Truth | Status | Evidence |
 |---|---|---|---|
-| 1 | Maker creates a new version from the churned version; the new version records its parent, and the churned version and its recorded batch are unchanged afterwards. | ✓ VERIFIED | `createChildVersion` (`app/src/domain/lineage.js:77-101`) deep-copies every structural field with `structuredClone`, never mutates `parent`; `app/src/domain/lineage.test.js` — "does not mutate the parent" and "shares no structure with the parent: mutating the parent afterwards leaves the child unchanged" both pass (behavioral, not merely presence). `RecipePage.jsx`'s two `repository.saveVersion(...)` call sites (lines 739, 757) write only the child/updated record — the parent is never passed. Full suite (354 tests) and build pass. |
-| 2 | Maker edits the new version's ingredient amounts, removes or restores any of its twelve rows, and edits method steps and their targets. | ✓ VERIFIED | `IngredientTable.jsx`/`Method.jsx` wired to `penDraft`/`draftVersion`/`activeRows`/`activeSteps` (`app/src/domain/rows.js`); removal cross-flags (`stepsUsingRow`, `removedRowsUsedBy`, `orphanedRows`) read-only, never assign a `removed` flag (`app/src/domain/uses.js:24-55`, confirmed by direct reading — no writes to `removed` anywhere in the module); `diff.test.js` (23 tests) and `uses.test.js` (12 tests) exercise these functions directly, non-vacuously. |
-| 3 | Maker records why the version changed as free text citing the batch that motivated it, and the saved version reopens with the same values after the app is reloaded. | ✓ VERIFIED (reason/citation half); ⚠️ interactive reload deferred | `Headnote.jsx`'s ceremony reads `citableBatches`/`blockedSaveMessage` from `lineage.js`; `Headnote.test.jsx` (11 tests) proves nothing is pre-filled and blocked-save messages render in words. Reload persistence is proven at the storage-mechanism level by `app/tests/db-migration.test.js` (a real IndexedDB, via `fake-indexeddb`, proving `db.put`/`db.get` round-trips a version record byte-for-byte across a fresh `openStore()` call) but the specific interactive flow of reloading a freshly-created child's own URL is not exercised by any test — see Human Verification. |
-| 4 | Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure. | ✓ VERIFIED | `domain/diff.js`'s `buildDiff` (23 tests: identity, grams/share/figure deltas at display precision, removed-row exclusion, never-mutates/never-reorders) is the one comparison; `IngredientTable.jsx`'s show-changes branch and `GraduatedRule.jsx`'s `figureDelta` prop (struck head, hollow tick, "was X, now Y" accessible name, computes no comparison of its own — confirmed by direct source reading) both consume it. `IngredientTable.test.jsx` (4 tests) and `GraduatedRule.test.jsx` (6 tests) pass. |
-| 5 | Structural advisories show the basis they were computed from, and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success. | ✓ VERIFIED | `domain/advisories.js`'s `buildAdvisories` (19 tests) matches the published figures exactly (sub-scale 0.48 g/0.16 g with 1.68 g take; 623.2 g ultra-pasteurised mass; 82 °C vs 69 °C hydration naming step 2's 85 °C target; PAC/POD/MSNF/Total-solids for estimated exposure); `equipment.minFillG` confirmed unread anywhere in the module (grep, D-05); `grep -niE "band\|deviation\|advisor"` over `lineage.js`/`Headnote.jsx` finds only a doc comment, no code coupling (FORM1-03); `advisories.test.js#"no verdict"` and grep gates confirm no judgement language. |
+| 1 | Maker creates a new version from the churned version; the new version records its parent, and the churned version and its recorded batch are unchanged afterwards. | ✓ VERIFIED | Unchanged since the initial verification: `createChildVersion` (`app/src/domain/lineage.js`) deep-copies via `structuredClone`, never mutates the parent; `lineage.test.js` proves it behaviorally. No closure plan touched this path. |
+| 2 | Maker edits the new version's ingredient amounts, removes or restores any of its twelve rows, and edits method steps and their targets — **and now does so through a table that renders legibly and cross-flags that behave correctly (G-03-1, G-03-3 closed)**. | ✓ VERIFIED | `app/src/styles/app.css`'s `.ingredient-table__col-*` classes replace the positional `nth-child` rules (confirmed absent by direct grep) and the step select carries `flex: 1 1 auto; min-width: 0` (`app/src/styles/app.css:409-413`); `app/src/ui/IngredientTable.jsx`'s `hasAsMadeLayer` now gates the header cell and all three body branches (9 uses, confirmed by direct reading) — 6 new tests in `IngredientTable.test.jsx` assert the column's presence/absence and the header/body/total cell-count invariant across all six states, all passing. `app/src/domain/diff.js`'s per-field flags (`leadInChanged`/`instructionChanged`/`purposeChanged`/`asideChanged`) and `app/src/ui/Method.jsx`'s per-field struck-beneath gates (confirmed: no expression combines `textChanged` with a `removed` flag) close S1; `uses.js`'s `coveredRowsFor` and `Method.jsx`'s `!draftStep.removed` gate close S2 and finding (i); `IngredientTable.jsx`'s `stepOptions = isDeveloping ? draftVersion.method : []` (built from every step, not `activeSteps`) closes S3. |
+| 3 | Maker records why the version changed as free text citing the batch that motivated it, and the saved version reopens with the same values after the app is reloaded. | ✓ VERIFIED (reason/citation half); interactive reload deferred | Unchanged since the initial verification — no closure plan touched `Headnote.jsx`'s ceremony fields or the storage layer. `Headnote.jsx`'s lineage-line links are now suppressed while a pen is open (G-03-9), tested in `Headnote.test.jsx`, but the ceremony itself is untouched. |
+| 4 | Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure — **and now sees consistent step numbering across the comparison (G-03-6 closed)**. | ✓ VERIFIED | `buildDiff` (`diff.js`) unchanged in its row/figure comparison; its new per-field step flags (above) feed `Method.jsx`'s show-changes branch. `app/src/domain/stepNumbers.js`'s `displayNumbers`/`displayNumberOf` are threaded as `currentStepNumbers`/`baselineStepNumbers` from `RecipePage.jsx` into both `Method.jsx` and `IngredientTable.jsx`, so a struck step in show-changes reads the number it had in the parent (D-UAT-4) and the live steps read 1..N with no gap — asserted in `Method.test.jsx` and `IngredientTable.test.jsx` (28 new tests total across `stepNumbers.test.js`, `Method.test.jsx`, `IngredientTable.test.jsx`, `advisories.test.js`). |
+| 5 | Structural advisories show the basis they were computed from, and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success. | ✓ VERIFIED | Unchanged in substance. `advisories.js`'s hydration clause now names its step by derived position rather than stored key (03-10 Task 3) — the existing seed assertion (position and key coincide on the unmodified seed) passes unmodified, and a new case (an earlier step removed) asserts the clause follows the new position. |
 
-**Score:** 5/5 truths verified at the code/domain-logic level (0 present-but-behavior-unverified — every state-transition claim above has a passing behavioral test backing it, even where the full interactive UI flow is separately deferred to human verification below).
+**Score:** 5/5 roadmap truths verified at the code/domain-logic level. All four UAT gaps (G-03-1, G-03-3, G-03-6, G-03-9) confirmed closed by direct source reading and passing behavioral tests (not merely SUMMARY claims) — see the `re_verification.gaps_closed` list in the frontmatter for the specific artifact/line evidence per gap.
+
+### Gap-by-Gap Closure Evidence
+
+| Gap | Closing artifact(s) | Verified how |
+|---|---|---|
+| G-03-1(a) step-selector overflow | `app/src/styles/app.css:409-413` (`flex: 1 1 auto; min-width: 0` on `.ingredient-table__step-cell select.ink-field`); `app/src/styles/tokens.css:67` (`--col-step: 66px`); zero `nth-child`/`:first-child` ingredient-table rules remain | Direct source reading; grep confirms absence of positional selectors |
+| G-03-1(b) As made column present-and-empty | `app/src/ui/IngredientTable.jsx` — `hasAsMadeLayer` (line 414) gates the header (444), all three body branches (484, 512, 578) and the total (618) | Direct source reading (9 uses); 6 new tests in `IngredientTable.test.jsx`, all passing |
+| G-03-3 S1 duplicated struck sentence | `app/src/domain/diff.js:106-140` (per-field flags); `app/src/ui/Method.jsx:140-142,314-316` (`showStruckBeneath = leadInChanged \|\| instructionChanged`, no `removed` term) | Direct source reading; `diff.test.js`/`Method.test.jsx` pass |
+| G-03-3 S2 illegible silence | `app/src/domain/uses.js:42-59` (`coveredRowsFor`); `app/src/ui/Method.jsx:130,294` (coverage cue) | Direct source reading; `uses.test.js`/`Method.test.jsx` pass; `orphanedRows` and its line-54 test unchanged, confirmed by grep |
+| G-03-3 finding (i) mislabelled control | `app/src/domain/uses.js:35` (`removedRowsUsedBy` returns `[]` when `step.removed`); `app/src/ui/Method.jsx:275,294,299` (`!draftStep.removed` gate, single `restore`/`remove` control) | Direct source reading |
+| G-03-3 S3 wrong selector value | `app/src/ui/IngredientTable.jsx:408,160-166` (`stepOptions = isDeveloping ? draftVersion.method : []`; removed step's own `<option>` rendered `disabled`, value = stored key) | Direct source reading; 3 new tests in `IngredientTable.test.jsx` pass |
+| G-03-6 no renumbering | `app/src/domain/stepNumbers.js` (new, `displayNumbers`/`displayNumberOf`); `app/src/ui/RecipePage.jsx:469-470` (maps computed once); `Method.jsx`'s `displayNumberFor`; `IngredientTable.jsx`'s `resolveStepNumber`/`safeDisplayNumberOf` | Direct source reading; 28 new tests across 4 files pass; stored key `n` confirmed untouched in `diff.js`, `uses.js`, `lineage.js`, batch/versionLift modules |
+| G-03-9 RC1/RC2/fifth leak | `app/src/ui/RecipePage.jsx:193` (`derivePenState`); `BatchMargin.jsx`/`Headnote.jsx` reading `openPen` uniformly (11 combined uses) | Direct source reading; `RecipePage.test.jsx`'s four-pen matrix (46 tests) passes |
+| G-03-9 RC3 state-preservation | `app/src/router.jsx:27-28` (`RecipePageForRoute` wrapper, `key={`${id}::${batchId ?? ''}`}`) | Direct source reading |
+| G-03-9 RC3 navigation-policy | `VersionStrip.jsx`/`BatchMargin.jsx`/`Headnote.jsx` suppressing `Link`s on `openPen`; zero `useBlocker`/`usePrompt`/`window.confirm` under `app/src` | Direct source reading + grep |
+| G-03-9 RC4 dirty checks | `app/src/ui/RecipePage.jsx`'s extended `isPenDraftDirty` (covers method/headnote/authored) and `isDraftDirty(mode, draft, baseline)` with `amendBaseline` state | Direct source reading; `RecipePage.test.jsx`'s dirty-check suites (24 tests) pass, including the written-zero and typed-back-to-clean edges |
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |---|---|---|---|
-| `app/src/domain/lineage.js` | Parent/child construction, save-block rules | ✓ VERIFIED | 163 lines; exports `createChildVersion`, `saveOverVersion`, `versionLineUnique`, `sortedVersions`, `versionsForRecipe`, `latestVersionPerRecipe`, `citableBatches`, `blockedSaveMessage` — all present, wired into `RecipePage.jsx`, all exercised by 30+ tests in `lineage.test.js` |
-| `app/src/domain/diff.js` | Per-row/step/figure comparison | ✓ VERIFIED | 192 lines, `buildDiff` wired into `IngredientTable.jsx`, `Method.jsx`, `GraduatedRule.jsx` (via `FormulationNote.jsx`), `uses.js` |
-| `app/src/domain/uses.js` | Removal cross-flags, stale-amount flag | ✓ VERIFIED | 87 lines, all four exports present, no `removed`-flag writes, wired into `IngredientTable.jsx`/`Method.jsx` |
-| `app/src/domain/advisories.js` | Four FORM2-02 advisories | ✓ VERIFIED | 176 lines, `buildAdvisories` matches published figures, wired into `DerivedAdvisories.jsx` via `RecipePage.jsx`'s `liveVersion` |
-| `app/src/domain/rows.js` | `activeRows`/`activeSteps` removal filter | ✓ VERIFIED | 24 lines, used by `advisories.js`, `RecipePage.jsx`'s `readingVersion`/`liveVersion` |
-| `app/src/store/versionLift.js` | Shared, idempotent schema lift | ✓ VERIFIED | Called from both `db.js`'s upgrade and (per SUMMARY) `transfer.js`'s import; idempotence proven by `lineage.test.js#liftVersionRecord idempotence` |
-| `app/src/ui/Headnote.jsx` | Save ceremony, lineage line, show-changes toggle | ✓ VERIFIED | 212 lines added; `aria-pressed` present on the toggle; 11+3 tests pass |
-| `app/src/ui/VersionStrip.jsx` | Version list, creation order | ✓ VERIFIED | Uses `sortedVersions`/`versionsForRecipe`, renders nothing for a single version, 5 tests pass |
-| `app/src/ui/DerivedAdvisories.jsx` | Margin's derived block | ✓ VERIFIED | Pure render over `buildAdvisories`, returns `null` for empty result, 4 tests pass |
-| `app/src/ui/GraduatedRule.jsx` | Struck head, hollow tick | ✓ VERIFIED | `figureDelta` prop present, computes no comparison itself, ink-only colour, 6 tests pass |
+| `app/src/ui/RecipePage.jsx` | `derivePenState`, extended dirty checks, step-number map computation | ✓ VERIFIED | Exports `derivePenState`, `isPenDraftDirty`, `isDraftDirty`; computes `currentStepNumbers`/`baselineStepNumbers`; threads `openPen`/`penReason` to `Headnote`, `BatchMargin`, `VersionStrip` |
+| `app/src/ui/RecipePage.test.jsx` | The interlock owner's first test file | ✓ VERIFIED | New file, 46 tests, all passing (four-pen matrix, both dirty checks, edge cases) |
+| `app/src/router.jsx` | Route-keyed `RecipePage` | ✓ VERIFIED | `RecipePageForRoute` wrapper reads `useParams()`, keys on `${id}::${batchId ?? ''}` |
+| `app/src/domain/stepNumbers.js` | Derived step display position, framework-free | ✓ VERIFIED | New file, 41 lines, exports `displayNumbers`/`displayNumberOf`, no framework/store import (confirmed by grep), 13 tests pass |
+| `app/src/domain/diff.js` | Per-field step-text change flags | ✓ VERIFIED | `leadInChanged`/`instructionChanged`/`purposeChanged`/`asideChanged` present, `textChanged` as their disjunction, absent/empty normalisation confirmed |
+| `app/src/domain/uses.js` | `coveredRowsFor`, `removedRowsUsedBy` guard | ✓ VERIFIED | Both present with doc-blocks; `orphanedRows` unchanged |
+| `app/src/ui/IngredientTable.jsx` | Column classes, conditional As made, full-method selector options | ✓ VERIFIED | `hasAsMadeLayer` gates 9 sites; `stepOptions` built from every step; `resolveStepNumber`/`safeDisplayNumberOf` used throughout |
+| `app/src/ui/Method.jsx` | Per-field strike, coverage cue, derived numbering | ✓ VERIFIED | `showStruckBeneath`/`showPurposeStruck`/`showAsideStruck`; `coveredRowsFor` import and cue; `displayNumberFor`/`fieldLabel` at every number site |
+| `app/src/ui/VersionStrip.jsx`, `BatchMargin.jsx`, `Headnote.jsx` | Link suppression while a pen is open | ✓ VERIFIED | All three accept `openPen`/`penReason`, render text + `.pen-hint` sentence instead of `Link` when a pen is open |
+| `app/src/styles/app.css`, `tokens.css` | Column-identity sizing, shrink guard, `--col-step` | ✓ VERIFIED | Positional rules removed; class-based rules present; guard present; token present |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |---|---|---|---|---|
-| `RecipePage.jsx` | `repository.js` (`getVersion`) | live parent read for show-changes | ✓ WIRED | Line 189: `repository.getVersion(version.parentVersionId)`, cancelled-flag effect, never a copy stored on the child |
-| `RecipePage.jsx` | `domain/diff.js` (`buildDiff`) | one comparison threaded to every region | ✓ WIRED | Line 301: `buildDiff(version, parentVersion)`, computed once, passed to `IngredientTable`, `Method`, `FormulationNote` |
-| `DerivedAdvisories.jsx` | `domain/advisories.js` (`buildAdvisories`) | pure render, computes nothing itself | ✓ WIRED | Confirmed by direct reading of `DerivedAdvisories.jsx` |
-| `RecipePage.jsx` (save handlers) | `repository.saveVersion` | single write, never the parent | ✓ WIRED | Lines 739, 757 — exactly two call sites, each writing only the newly-constructed record |
-| `advisories.js` | `figures.js` (`buildFigures`) | estimated-exposure reuses figures' own `estimatedRowNames` | ✓ WIRED | `estimatedExposureAdvisory` calls `buildFigures({ rows, targets })` directly, no second library scan |
-
-### Data-Flow Trace (Level 4)
-
-| Artifact | Data Variable | Source | Produces Real Data | Status |
-|---|---|---|---|---|
-| `VersionStrip` | `versionIdsWithBatches` | `repository.getAllBatches()` in a `useEffect` keyed on `id` | Yes | ✓ FLOWING |
-| `DerivedAdvisories` | `liveVersion` | `RecipePage`'s live draft (developing) or `readingVersion`, both filtered through `activeRows`/`activeSteps` | Yes | ✓ FLOWING |
-| `Headnote` lineage line | cited batch churn date | `repository.getBatch(citedBatchId)` in a cancelled-flag effect | Yes | ✓ FLOWING |
-| `GraduatedRule` `figureDelta` | `changeDiff` | `buildDiff(version, parentVersion)`, `parentVersion` from live `repository.getVersion` | Yes | ✓ FLOWING |
+| `BatchMargin.jsx` / `Headnote.jsx` / `VersionStrip.jsx` | `RecipePage.jsx` (`derivePenState`) | `openPen`/`penReason` props | ✓ WIRED | Confirmed by 21 combined `openPen` references across the three consumers |
+| `router.jsx` | `RecipePage.jsx` | route-derived `key` | ✓ WIRED | `useParams()` read, key built and applied to `<RecipePage />` |
+| `IngredientTable.jsx` / `Method.jsx` | `app/src/domain/stepNumbers.js` | `displayNumbers`/`displayNumberOf` imported and called from maps computed once in `RecipePage.jsx` | ✓ WIRED | Confirmed by import + call-site reading in both files |
+| `Method.jsx` | `app/src/domain/uses.js` (`coveredRowsFor`) | coverage cue reads the domain answer, never scans the method itself | ✓ WIRED | `coveredRowsFor(draftVersion, draftStep)` called directly at line 130 |
+| `IngredientTable.jsx` (`StepCell`) | the draft version's full method | `stepOptions = isDeveloping ? draftVersion.method : []` | ✓ WIRED | Confirmed: not `activeSteps`, includes removed steps rendered `disabled` |
 
 ### Requirements Coverage
 
-| Requirement | Source Plan | Description | Status | Evidence |
+| Requirement | Source Plan(s) | Description | Status | Evidence |
 |---|---|---|---|---|
-| REC1-02 | 03-01, 03-03 | Create version, records parent, parent unchanged | ✓ SATISFIED | `createChildVersion`, no-mutate tests, lineage line rendering |
-| REC1-03 | 03-02 | Edit amounts, remove/restore rows, edit steps/targets | ✓ SATISFIED | `IngredientTable.jsx`, `Method.jsx`, `diff.js`, `uses.js` |
-| REC1-04 | 03-03 | Record reason citing batch | ✓ SATISFIED | `Headnote.jsx` ceremony, `citableBatches`, `blockedSaveMessage` |
-| REC1-05 | 03-01 | Reopens with same values after reload | ✓ SATISFIED (mechanism); interactive reload deferred to human verification | `app/tests/db-migration.test.js` proves the underlying put/get round-trip |
-| FORM1-03 | 03-03 | Version outside band still saves, no guarantee wording | ✓ SATISFIED | grep confirms no band/deviation coupling in save path |
-| FORM2-01 | 03-04 | Compare new version to churned: per-row/figure change | ✓ SATISFIED | `buildDiff`, `IngredientTable` show-changes, `GraduatedRule` `figureDelta` |
-| FORM2-02 | 03-05 | Four structural advisories with basis | ✓ SATISFIED | `buildAdvisories`, `DerivedAdvisories.jsx`, matches published figures exactly |
+| REC1-02 | 03-01, 03-03, 03-06, 03-07 | Create version, records parent, parent unchanged | ✓ SATISFIED | Unchanged core mechanism; G-03-9's interlock/navigation fixes strengthen the surrounding pen discipline |
+| REC1-03 | 03-02, 03-06, 03-07, 03-08, 03-09, 03-10 | Edit amounts, remove/restore rows, edit steps/targets | ✓ SATISFIED | Core editing unchanged; G-03-1, G-03-3, G-03-6, G-03-9 all close defects in this surface |
+| REC1-04 | 03-03 | Record reason citing batch | ✓ SATISFIED | Unchanged; lineage-line links now correctly suppressed while a pen is open |
+| REC1-05 | 03-01 | Reopens with same values after reload | ✓ SATISFIED (mechanism); interactive reload deferred to human verification (unchanged from initial verification) | `app/tests/db-migration.test.js` |
+| FORM1-03 | 03-03 | Version outside band still saves, no guarantee wording | ✓ SATISFIED | Unchanged; no closure plan touched the save-gate path |
+| FORM2-01 | 03-04, 03-10 | Compare new version to churned: per-row/figure change | ✓ SATISFIED | `buildDiff` unchanged; G-03-6's derived step numbering closes the numbering-mismatch defect in the comparison |
+| FORM2-02 | 03-05, 03-10 | Four structural advisories with basis | ✓ SATISFIED | `buildAdvisories` unchanged in substance; hydration clause now names its step by derived position |
 
-No orphaned requirements: `.planning/REQUIREMENTS.md`'s Phase 3 row maps exactly REC1-02 through REC1-05, FORM1-03, FORM2-01, FORM2-02 — the same seven IDs declared across the five plans' frontmatter. UX1-01 (the accessibility build constraint named in 03-CONTEXT.md) is correctly mapped to Phase 4 in REQUIREMENTS.md, not orphaned here; `aria-pressed` on the show-changes toggle was spot-checked as present.
+`.planning/REQUIREMENTS.md` marks all seven of Phase 3's mapped requirement IDs (REC1-02 through REC1-05, FORM1-03, FORM2-01, FORM2-02) `[x]` Complete, with no orphaned IDs mapped to Phase 3 beyond these seven.
 
 ### Anti-Patterns Found
 
-None. Scanned every non-test file changed in this phase (37 files) for `TBD|FIXME|XXX|TODO|HACK|PLACEHOLDER|placeholder|coming soon|not yet implemented|not available` — zero matches. Scanned all changed `.jsx` files for judgement/verdict language (`correct|guaranteed|safe|better|worse|too much|too little|problem`) — zero matches. Scanned for hex-colour and `px` literals in changed `.jsx` and added CSS — zero matches (every value routes through `var(--token)`). Confirmed `dangerouslySetInnerHTML` appears nowhere under `app/src`. Confirmed only `app/src/store/db.js` imports `idb` (the seam is intact; the one `domain/batch.test.js` grep hit is a comment, not an import).
-
-### Prohibitions (judgment-tier, autonomous LLM-judge verdict — non-authoritative)
-
-| # | Prohibition | Plan | My verdict | Evidence |
-|---|---|---|---|---|
-| 1 | MUST NOT write to a churned version's record or any batch when a child is saved | 03-01 | Resolved | Single `saveVersion` call per path, parent never referenced in either write; `lineage.test.js` behavioral proof |
-| 2 | MUST NOT cascade a removal | 03-02 | Resolved | `uses.js` never assigns `removed`; every cross-flag function is read-only |
-| 3 | MUST NOT let an inherited note lose its marker while text is unchanged | 03-02 | Resolved | `RecipePage.jsx:675` — `inheritedFrom` cleared only `value === originalNote.text ? ... : null` |
-| 4 | MUST NOT pre-fill or auto-generate reason/citation/version line | 03-03 | Resolved | `Headnote.test.jsx` — "renders nothing pre-filled" |
-| 5 | MUST NOT let balance become a gate | 03-03 | Resolved | grep confirms no band/deviation coupling in the save path; `Headnote.test.jsx` — band-independence test |
-| 6 | MUST NOT present a change as improvement/regression | 03-04 | Resolved | grep gates across `IngredientTable.jsx`, `FormulationNote.jsx`, `Method.jsx`, `Authored.jsx` — zero matches |
-| 7 | MUST NOT word an advisory as a judgement of quality or taste prediction | 03-05 | Resolved | `advisories.test.js#"no verdict"`, `DerivedAdvisories.test.jsx` grep gates, direct reading of `advisories.js`'s output strings |
-
-These are recorded as a non-authoritative LLM-judge verdict per ADR-550; a human should confirm this reading rather than take it as the final word, particularly items 3 and 5 which turn on subtle wording/timing rules.
+None. Scanned every non-test file touched by the gap-closure plans (03-06 through 03-10: `RecipePage.jsx`, `Headnote.jsx`, `BatchMargin.jsx`, `router.jsx`, `app.css`, `tokens.css`, `VersionStrip.jsx`, `IngredientTable.jsx`, `diff.js`, `uses.js`, `Method.jsx`, `stepNumbers.js`, `advisories.js`) for `TBD|FIXME|XXX|TODO|HACK|PLACEHOLDER|placeholder|coming soon|not yet implemented|not available` — zero stub markers found (one incidental hit, a comment in `RecipePage.jsx` explaining the *absence* of placeholder text, not a stub itself). Confirmed `dangerouslySetInnerHTML` appears nowhere under `app/src`. Confirmed no file outside `app/src/store/db.js` imports `idb` (repository seam intact). Confirmed zero hex-color or `px` literals in any changed `.jsx` file. Confirmed zero `useBlocker`/`usePrompt`/`window.confirm` anywhere under `app/src`, per G-03-9's explicit D-10/D-UAT-2 prohibition on an app-owned navigation dialog.
 
 ### Behavioral Spot-Checks
 
 | Behavior | Command | Result | Status |
 |---|---|---|---|
-| Full test suite | `npm --prefix app test` | 23 test files, 354 tests passed | ✓ PASS |
-| Production build | `npm --prefix app run build` | builds clean, no errors | ✓ PASS |
-| D-06 migration against a real IndexedDB | `npx vitest run app/tests/db-migration.test.js` | 3/3 tests passed (figures/batch identical before/after, one-pass lift, idempotent re-open) | ✓ PASS |
-| No `removed`-flag assignment in `uses.js` | direct source reading | zero assignment statements found | ✓ PASS |
-| Single `saveVersion` write per save path | direct source reading of `RecipePage.jsx` | exactly two call sites, each writing only its own new record | ✓ PASS |
+| Full test suite (re-run independently, not taken on the dispatch's trust) | `npm --prefix app test -- --run` | 25 files, 486 tests passed | ✓ PASS |
+| Production build (re-run independently) | `npm --prefix app run build` | builds clean, no errors | ✓ PASS |
+| `derivePenState` four-pen matrix (single named test file) | `npx vitest run app/src/ui/RecipePage.test.jsx` | 46/46 tests passed | ✓ PASS |
+| Step-selector-keeps-removed-step tests (G-03-3 S3) | `npx vitest run --reporter=verbose app/src/ui/IngredientTable.test.jsx` (grepped for step/removed/unallocated assertions) | 8/8 matching assertions passed | ✓ PASS |
+| No forced strike from `removed` flag | direct source reading of `Method.jsx` lines 140-142, 314-316 | `showStruckBeneath` reads only `leadInChanged \|\| instructionChanged` in both branches | ✓ PASS |
+| No positional column sizing remains | `grep -n "nth-child\|:first-child" app/src/styles/app.css` scoped to ingredient-table rules | zero matches | ✓ PASS |
+| Stored step key (`n`) untouched as identity | direct reading of `diff.js`, `uses.js`, `lineage.js`; grep for `step.n` assignment in `stepNumbers.js` | zero assignments; `n` used only for lookups/keys | ✓ PASS |
 
 ### Probe Execution
 
-Not applicable — this phase is not a migration/tooling phase with declared `scripts/*/tests/probe-*.sh` probes; no probe references found in any PLAN/SUMMARY file. Skipped.
+Not applicable — no `scripts/*/tests/probe-*.sh` probes are declared in any PLAN/SUMMARY for this phase. Skipped.
 
 ### Human Verification Required
 
-See the `human_verification` list in the frontmatter for the full set (9 items). In summary, every item is an interactive or visual confirmation that a browser session is required to observe — clicking through the pen-open/edit/save/reload flow, watching live figure and cross-flag recompute, the show-changes URL toggle and back-button behavior, the version strip's visual weight/outline, the advisories' placement and legend styling, and the mutual-exclusivity of the two pens. This exactly matches the pattern every one of the five SUMMARY.md files in this phase records: "Deferred to end-of-phase UAT per Mark's standing preference (STATE.md carry, MEMORY.md)." All underlying domain logic and component wiring for these flows is unit-tested and confirmed present in this report; only the live-browser confirmation remains.
+See the `human_verification` list in the frontmatter (6 items, harvested from the `<human-check>` blocks each gap-closure plan explicitly deferred to end-of-phase UAT per `workflow.human_verify_mode: end-of-phase`). All six require a real browser (layout engine, a live `<select>` element, or actual navigation/back-button behavior) that this repo's jsdom-free Vitest setup cannot exercise. Every one of the underlying code changes is confirmed present, wired, and covered by a passing behavioral (not merely presence) unit test in this report — only the live-browser confirmation of the visual/interactive result remains.
 
-Two additional plan-level must-haves (03-01, marked `verification: backstop` in the PLAN frontmatter — a concurrent double-tab save and an interrupted-save atomicity guarantee) are non-inferable by any test in this suite and are recorded as `behavior_unverified_items` above; they route to human verification rather than either a pass or a gap.
+The nine original UAT tests' five passing items (tests 2, 4, 5, 7, 8 in `03-UAT.md`) are not re-listed: no gap-closure plan altered the code paths those tests exercised in a way that would invalidate Mark's prior manual confirmation (`VersionStrip`'s no-pen-open rendering, `Headnote`'s ceremony fields, the advisories' four-item rendering, and page navigation are all explicitly asserted unchanged by the closure plans' own acceptance criteria and tests).
 
 ### Gaps Summary
 
-No gaps found. Every roadmap success criterion has direct, non-vacuous code and test evidence; every declared requirement is satisfied; no anti-patterns, stub markers, or judgement-language violations were found in any file changed by this phase; the full test suite (354 tests) and production build both pass; every prohibition is resolved by direct code inspection. The only open items are interactive/visual confirmations that require a live browser session, consistent with this project's established, standing preference (recorded in MEMORY.md and every prior phase) to defer such checks to end-of-phase UAT rather than block automated verification on them.
+No gaps remain at the code level. All four UAT-diagnosed gaps (G-03-1, G-03-3 — all three symptoms plus the mislabelled-control finding, G-03-6, G-03-9 — all four root causes plus the fifth leak) are closed by real, wired, tested code, confirmed by direct source reading in this verification round (not taken from SUMMARY.md claims). The full test suite (486/486, independently re-run) and production build (independently re-run, exit 0) both pass, with no test removed across the gap-closure sequence (354 -> 385 -> 417 -> 449 -> 455 -> 486). What remains is exclusively the live-browser confirmation of visual layout, real `<select>`/navigation interaction, and the save-then-reread round trip — six items, each traceable to a specific gap-closure plan's own deferred `<human-check>`.
 
 ---
 
-*Verified: 2026-09-07T16:10:00Z*
+*Verified: 2026-09-08T20:15:00Z*
 *Verifier: Claude (gsd-verifier)*

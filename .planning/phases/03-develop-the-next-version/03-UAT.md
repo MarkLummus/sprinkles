@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 03-develop-the-next-version
 source: [03-VERIFICATION.md, 03-VERIFICATION.md (gap-closure re-verification, 2026-09-08)]
 started: 2026-09-07T20:01:13.243Z
-updated: 2026-09-08T00:44:44.000Z
+updated: 2026-09-08T01:04:33.000Z
 ---
 
 ## Current Test
@@ -211,10 +211,21 @@ blocked: 0
   reason: "User reported: that part passes, but the Remove column and buttons occlude the values in the Data column."
   severity: major
   test: 11
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Width-allocation fault, not paint order. IngredientTable.jsx emits ingredient-table__col-data and ingredient-table__col-remove but no rule or token styles either class, so under table-layout:fixed they split the remainder; every declared --col-* width costs 24px more than tokens.css's derivation assumed because cells are content-box with 6px 12px padding (88px numeric measures 112px, 66px step measures 90px), so at 1280px the remainder for Data and Remove is 10.81px, not ~197px, and each gets 5.41px (0px at 1024/1152). The Data flag word 'estimated' (66px, unbreakable) and the bare native remove button (60px) cannot shrink; the button overflows its cell 67px to the right and, painted later, covers the Data word (60px overlap, header reads 'DAEMOVE') and intrudes 35px into the side region. Clears only above ~1570px. Not a 03-08 regression: Remove has been unstyled since 03-02 (3dc7812); 03-08's 90px used step width shrank Data/Remove from 33.6px to 5.41px. Second unreported instance: in the reading state at 1280 the Data column is 10.8px and its flag word spills 35px into the Formulation Note (test 12 passed only because the child has no As made column)."
+  artifacts:
+    - path: "app/src/styles/app.css"
+      issue: "line 311 table-layout:fixed; lines 318-324 content-box th/td padding adds 24px to every declared width; lines 326-343 width rules stop at __col-step, no __col-data or __col-remove rule; zero overflow and zero @media rules"
+    - path: "app/src/styles/tokens.css"
+      issue: "lines 54-66 --col-step derivation subtracts padding from the remainder instead of adding it to each declared width; line 67 --col-step 66px really costs 90px; no --col-data or --col-remove tokens"
+    - path: "app/src/ui/IngredientTable.jsx"
+      issue: "lines 447/496/521/600/621 emit __col-data and 448/601/622 emit __col-remove, matched by nothing; lines 192-198 RemoveRowControl is a bare native button with UA chrome and no shrink guard"
+  missing:
+    - "Make declared widths padding-inclusive: box-sizing:border-box on .ingredient-table th/td, or rewrite --col-* tokens; correct the derivation comment at tokens.css:54-66"
+    - "Add --col-data and --col-remove tokens plus matching width rules, sized from measured minimums (Data >= 66px content, check 'unreviewed'; Remove >= 60px content)"
+    - "Give __col-name width:auto so it is the single unsized column absorbing the remainder as conditional columns come and go (measured: overlap -24.9px at 1024-1440)"
+    - "Mark to rule what yields below ~1250px: tighter cell padding for this table, narrower --col-numeric (widest content is the 80.6px '% of batch' header), or an accepted name wrap"
+    - "Verify the fix in the reading state too, where the Data column already overflows at 1280"
+  debug_session: .planning/debug/remove-column-occludes-values.md
 
 - gap_id: G-03-14
   truth: "In the pen, a removed step's number is visibly struck or marked so it cannot be read as the same number as the next live step, and the coverage cue on a removed step names the covering step by a number the reader can find on the page without ambiguity."
@@ -222,10 +233,25 @@ blocked: 0
   reason: "User reported: it says that they are used by step 7, not 8.\nremove step 1, first 2 steps are numbered 1. remove second step and steps numbers start over at 1 on third step - probably need to strike the step number on the removed steps or something else.\nit says \"Whole milk and Sucrose are still used by step 1\" not step 3."
   severity: minor
   test: 14
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Two reference frames in one typographic voice. displayNumberFor (Method.jsx:105-109) numbers a live step by its position in the current map and a removed step by its position in the baseline map, returning a bare integer that records which frame answered; both the pen (:146-148) and show-changes (:320-322) emit that integer into an identical .method-step__n span with no removed/struck modifier (app.css:483-487 has none), while the ' removed' label sits in the other grid column below the edit fields. Removing the step at baseline position k shifts the next live step into current position k, so the two numerals are always equal and adjacent; only removing the last step avoids it. Show-changes is identically affected (a saved child that removed step 1 renders 1,1,2,...) and test 15 passed only because its expectation restates D-UAT-4. The coverage cue is not at fault: it names the covering step by current display number, which is correct; it is the victim because it is the one text asking the reader to find a numbered step. Shipped because 03-10-PLAN.md:178/:199 read D-UAT-4's 'struck' as the prose being struck and called the margin number decorative, so no criterion or test required a mark on the number; Method.test.jsx:647/:775 assert live and removed numbers separately and never check the union for duplicates. The pen already renders a step removed before the pen opened with an empty margin, a second treatment beside the unmarked one."
+  artifacts:
+    - path: "app/src/ui/Method.jsx"
+      issue: "105-109 displayNumberFor blends two frames behind a bare integer; 146-148 and 320-322 emit it unmarked; 181 removed label in the body column; 117-119 fieldLabel drops the number for AT"
+    - path: "app/src/styles/app.css"
+      issue: "483-487 .method-step__n has no removed/struck variant; 366-374 .struck-value already names a removed row or step as a meaning it carries; 475-478 two-column grid"
+    - path: "app/src/styles/tokens.css"
+      issue: "77-78 --rule-strike and --gap-strike already exist; no new token needed"
+    - path: "app/src/ui/IngredientTable.jsx"
+      issue: "159-163 option list carries the same duplicate number differentiated only by a trailing (removed); 145-147 two steps both numbered 2 inside one cell; 310-320 orphan flag names a removed step by an unmarked number"
+    - path: "app/src/ui/Method.test.jsx"
+      issue: "583-600, 647, 775 assert live and removed numbers separately, never the union"
+  missing:
+    - "Have displayNumberFor report whether it fell back to the baseline map, and render a removed step's number with a struck (or otherwise marked) modifier on .method-step__n via --rule-strike/--gap-strike, in both the pen and show-changes branches"
+    - "Have a removed step's field labels name the number it had so assistive technology learns which step is removed"
+    - "Carry the same mark to IngredientTable's option label and orphan flag so the page agrees with itself"
+    - "Add a test that the union of live and removed margin numbers is unambiguous (no two identically-rendered numerals)"
+    - "Mark to rule: what mark the number wears (strike, bracket, dash, weight); whether the pen matches show-changes; whether to suppress instead (existing empty-margin treatment), which discards D-UAT-4's 'keeps the parent number'; whether the selector option and orphan flag adopt the mark or keep the trailing (removed) word"
+  debug_session: .planning/debug/removed-step-number-ambiguous-in-pen.md
 
 ## Decisions (Mark, 2026-09-07, after diagnosis)
 

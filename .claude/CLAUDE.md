@@ -21,6 +21,7 @@ Product truth lives in `product-requirements/` (read `README.md` first). This fi
 - **Design**: Impeccable owns design decisions and design QA; GSD phases consume approved surface briefs. Existing mockups and the old-sprinkles visual world are evidence until Mark confirms their authority (D13).
 - **Language**: Familiar words by default, technical depth available (D11); open labels stay open (D12).
 - **Working agreement**: Small reviewable steps; surface structural choices (routing, state, testing framework) rather than assuming them.
+- **Impeccable and GSD in sync**: Impeccable evaluates and decides (`shape`, `critique`, `audit`, `document`, `init` write `.impeccable/`, `DESIGN.md`, `PRODUCT.md`); every edit under `app/` goes through a GSD command. Impeccable's refine, enhance and fix commands describe work for `/gsd-quick`, `/gsd-quick-batch` or a phase plan and never edit `app/` directly. The loop is critique → brief revision → GSD plan/execute → re-critique; a critique snapshot self-closes when its target file changes.
 
 <!-- GSD:project-end -->
 

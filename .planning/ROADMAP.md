@@ -111,7 +111,7 @@ Plans:
   4. Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure.
   5. Structural advisories show the basis they were computed from — sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, estimated-data exposure — and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success.
 
-**Plans**: 10/10 plans executed (03-06 to 03-10 close UAT gaps)
+**Plans**: 12 plans (10/12 executed; 03-06 to 03-12 close UAT gaps)
 
 Plans:
 **Wave 1**
@@ -147,6 +147,14 @@ Plans:
 **Gap closure wave 3** *(blocked on gap closure wave 2)*
 
 - [x] 03-10-PLAN.md — The derived step number: the method renumbers itself, a struck step keeps the number it had, and a flagged row's selector shows its own allocation (G-03-6, G-03-3 S3)
+
+**Gap closure wave 4** *(from the 03-UAT re-verification; blocked on gap closure wave 3)*
+
+- [ ] 03-11-PLAN.md — Honest column widths: border-box cells, a tighter cell padding, tokens and rules for Data and Remove, the name column as the single unsized one, and a test that computes the budget (G-03-11)
+
+**Gap closure wave 5** *(blocked on gap closure wave 4)*
+
+- [ ] 03-12-PLAN.md — A removed step's number: empty in the pen, struck in show-changes, absent from the selector and the orphan flag, with the union of margin numbers asserted duplicate-free (G-03-14)
 
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the version editing and comparison surface

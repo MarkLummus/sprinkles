@@ -1,24 +1,21 @@
 ---
-status: testing
+status: complete
 phase: 03-develop-the-next-version
 source: [03-VERIFICATION.md, 03-VERIFICATION.md (gap-closure re-verification, 2026-09-08), 03-VERIFICATION.md (second gap-closure re-verification, 03-11/03-12, 2026-09-08)]
 started: 2026-09-07T20:01:13.243Z
-updated: 2026-09-08T02:50:39Z
+updated: 2026-09-08T11:42:31Z
 ---
 
 ## Current Test
 
-number: 16
-name: With the dev server running, open the churned olive oil version at 1280px and press Develop the next version. The remove buttons sit much closer to the table's right edge than before; nothing moves in the reading state except tighter gaps between columns, and the '% of batch' header still sits on one line.
-expected: |
-  The remove buttons sit closer to the table's right edge in the pen; nothing moves in the reading state except tighter column gaps; '% of batch' stays on one line (03-11 Task 1, closes G-03-11 with test 17).
-awaiting: user response
+[testing complete]
 
 ## Tests
 
 ### 1. Open the churned olive oil version, click 'Develop the next version', type 48 over the oil row's 40 g, watch the parent's 40 struck in ink beside the new value, type a version line, click 'Save as a new version', and confirm landing on the child's own URL reading clean.
 expected: The strike renders live, the six figures and basis note answer live against the typed grams, the save lands on a new URL, and the churned version and its 2 Aug batch are unchanged when reopened (REC1-02).
-result: issue
+result: pass
+resolved_by: "G-03-1 closed by 03-08 and re-tested by tests 11 (first half), 12, 16, 17"
 reported: "pass with these observations: - the visual display of the ingredient table is broken: at a normal browser width, the step selector control is overlapping the Grams, As Made, and % of Batch column values. - when viewing the version (not a batch), the \"As Made\" column is visible in the ingredient table - should it be?"
 severity: major
 
@@ -28,7 +25,8 @@ result: pass
 
 ### 3. In the pen, remove a row and watch it render struck in place with the totals and six figures updating live; remove a method step that uses a still-active row and watch the row-side orphaned-row flag appear beside it; restore both and watch the flags clear.
 expected: Struck rendering, live totals, and the two removal cross-flags behave exactly as described, with no cascade (REC1-03, D-10).
-result: issue
+result: pass
+resolved_by: "G-03-3 closed by 03-09/03-10 and re-tested by tests 13, 15"
 reported: "when I removed the Soy Lecithin row, I see a note under the step 1 and a \"remove this step\" button. The free form text edit boxes for the Lead-in and Instruction are still shown with the original text and there is a strike-thru version beneath them, which looks odd. when I removed step 1, neither ingredient row is flagged (there are 2 ingredients checked). when I removed step 2, the flags appeared (with a remove this row button) in the ingredient column, but the step selector for the row now shows Step 1 as selected, which is wrong."
 severity: major
 
@@ -42,7 +40,8 @@ result: pass
 
 ### 6. On a saved child, press the show-changes toggle in the lineage line and confirm the URL gains '?changes', the marks appear (struck grams/share, hollow parent tick on the rules, struck-beneath method text), then press the browser's back button and confirm the clean reading returns; copy the URL with the parameter into a new tab.
 expected: The addressable toggle behaves exactly as D-02 describes, with no new route (FORM2-01).
-result: issue
+result: pass
+resolved_by: "G-03-6 closed by 03-10 and re-tested by tests 15, 18"
 reported: "when a step is removed, the step numbers don't renumber automatically. otherwise pass."
 severity: minor
 
@@ -57,7 +56,8 @@ note: "User: \"No recipe found\" is not a link; the Sprinkles running head and t
 
 ### 9. Confirm the plan's pen and the batch's pen cannot both be open: with the plan's pen open, the batch margin's 'Record a batch'/'Record another batch'/'Amend' controls are disabled with a stated reason in words; with the batch pen open, 'Develop the next version' is disabled.
 expected: Mutual exclusivity holds and the reason is stated in words, never just visually implied (D-10).
-result: issue
+result: pass
+resolved_by: "G-03-9 closed by 03-06/03-07 and re-tested by test 10"
 reported: "when developing, the batch controls are disabled, but the add tasting controls are not disabled. Develop button is disabled when Amending or Batch Recording, but not when Adding a tasting. Amend and Batch recording buttons are also enabled while adding a tasting. I was able to select another version while amending."
 severity: major
 
@@ -68,7 +68,8 @@ note: "User: after clicking Amend (or Develop the next version) the browser's ba
 
 ### 11. With the dev server running at a normal desktop width (about 1280-1440px), open the churned olive oil version and press Develop the next version. The step selector must sit wholly inside the Step column, with the Grams, As made and % of batch values readable beside it and nothing painted over them. Narrow the window and confirm it still holds.
 expected: The class-based column sizing and the step select's shrink guard (app/src/styles/app.css, app/src/styles/tokens.css's --col-step) keep the control inside its own cell at every width tested.
-result: issue
+result: pass
+resolved_by: "G-03-11 closed by 03-11 and re-tested by tests 16, 17"
 reported: "that part passes, but the Remove column and buttons occlude the values in the Data column."
 severity: major
 
@@ -82,7 +83,8 @@ result: pass
 
 ### 14. In the pen, remove step 1 and read what it now says: it must name soy lecithin and Graza Drizzle as still used by step 8, and must offer only a restore control, with no second control claiming to remove it. Then remove step 2 and confirm the three gums flag beside their own names in the table while sucrose and whole milk are named on the step as covered by step 3.
 expected: coveredRowsFor's coverage cue renders in words on a removed step whose rows are all still covered, and the cross-flag/remove-this-step control disappears from an already-removed step.
-result: issue
+result: pass
+resolved_by: "G-03-14 closed by 03-12 and re-tested by test 18"
 reported: "it says that they are used by step 7, not 8.\nremove step 1, first 2 steps are numbered 1. remove second step and steps numbers start over at 1 on third step - probably need to strike the step number on the removed steps or something else.\nit says \"Whole milk and Sucrose are still used by step 1\" not step 3."
 severity: minor
 note: "The numbers the cue prints are the derived display numbers (old step 8 reads 7 once step 1 is removed; old step 3 reads 1 once steps 1 and 2 are removed), so the cue is consistent with D-UAT-4 renumbering. What the pen lacks is a struck or otherwise marked number on a removed step, so a removed step and the next live step both read 1 and the cue becomes ambiguous."
@@ -94,22 +96,25 @@ note: "User: the 3 unallocated rows have nothing in Step column. Expected per th
 
 ### 16. With the dev server running, open the churned olive oil version at 1280px and press Develop the next version. The remove buttons sit much closer to the table's right edge than before; nothing moves in the reading state except tighter gaps between columns, and the '% of batch' header still sits on one line.
 expected: The border-box cells and tighter cell padding land visibly in the pen before the Data/Remove columns get their own widths; 03-11 Task 1's deferred human-check. Re-tests G-03-11 (test 11's second half).
-result: [pending]
+result: pass
 
 ### 17. Open the churned olive oil version and check the ingredient table at 1024, 1152, 1280, 1366 and 1440px, in both the reading state (2 Aug batch's As made column in view) and with Develop the next version pressed. The Data column's basis word ('estimated') is fully readable with no remove button touching it, the header reads 'Data' and 'Remove' as two separate words, nothing paints over the Formulation Note, no numeric header wraps, and ingredient names sit on one line at 1280/1366/1440 (a wrap is expected and accepted at 1024). Then press show changes on a saved child and confirm a struck grams value and its replacement still read clearly.
 expected: G-03-11 is closed at every width the UAT names, in both states, with no clipping or hiding used to fake the fix; 03-11 Task 2's deferred human-check.
-result: [pending]
+result: pass
+note: "User: the Total row grams value doesn't need to wrap to the column; currently total is shown on 2 rows when show changes mode is on. Cosmetic; noted, not logged as a gap at Mark's 'pass'." 
 
 ### 18. In the pen on the churned olive oil version, remove step 1. Its margin must be empty, and the coverage cue beside it must name a step number that appears exactly once on the page — follow it and land on the step it means. Its field labels must name the step it was (check with VoiceOver or by reading the markup). Remove step 2 as well: two empty margins, live steps reading 1 upward, the cue on each removed step resolving to one step. Open a flagged row's step selector: the removed step's option shows its lead-in and says it is removed, with no number, and no two options start with the same number. Save the child and press show changes: the struck steps wear their parent numbers with a stroke through them, the live steps read 1 to 9, and no numeral appears twice in the same form.
 expected: G-03-14 is closed: a removed step's number can never be mistaken for the live step's beside it, in either state, and the coverage cue always resolves to exactly one findable step; 03-12's deferred human-check. Re-tests test 14.
-result: [pending]
+result: pass
+note: "User: if I remove 2 steps, then the live steps read 1 to 8, not 1 to 9. The test text was wrong (ten steps minus two is eight); the behaviour is correct." 
 
 ## Summary
 
 total: 18
-passed: 9
-issues: 6
-pending: 3
+passed: 18
+issues: 0
+resolved_issues: 6
+pending: 0
 skipped: 0
 blocked: 0
 
@@ -223,7 +228,9 @@ blocked: 0
 
 - gap_id: G-03-11
   truth: "While developing, every ingredient-table control sits inside its own column: the step selector inside Step, and the row-remove control inside its own column, with the Grams, As made and % of batch values readable beside them and nothing painted over them, at desktop and narrow widths."
-  status: failed
+  status: resolved
+  resolved_by: 03-11-PLAN.md
+  resolved_at: 2026-09-08
   reason: "User reported: that part passes, but the Remove column and buttons occlude the values in the Data column."
   severity: major
   test: 11
@@ -245,7 +252,9 @@ blocked: 0
 
 - gap_id: G-03-14
   truth: "In the pen, a removed step's number is visibly struck or marked so it cannot be read as the same number as the next live step, and the coverage cue on a removed step names the covering step by a number the reader can find on the page without ambiguity."
-  status: failed
+  status: resolved
+  resolved_by: 03-12-PLAN.md
+  resolved_at: 2026-09-08
   reason: "User reported: it says that they are used by step 7, not 8.\nremove step 1, first 2 steps are numbered 1. remove second step and steps numbers start over at 1 on third step - probably need to strike the step number on the removed steps or something else.\nit says \"Whole milk and Sucrose are still used by step 1\" not step 3."
   severity: minor
   test: 14

@@ -7,13 +7,14 @@ import { displayNumberOf } from '../domain/stepNumbers.js';
 // The one place a stored step key resolves to the number the reader sees
 // (03-10): its position in the current map if it has one, otherwise its
 // position in the baseline map — the number it had before it was removed
-// — otherwise null. Still serves the split-step reference and the reading
-// state's step column (formatStepReferences) — both of which name a step
-// that is currently live, or nothing at all, never a step this file is
-// naming as removed. The selector's option label and the orphaned-row
-// flag (G-03-14, D-UAT-5) no longer call this for a removed step: the pen
-// names a removed step by its lead-in alone, never by a number that would
-// read as live, so this function's own baseline branch has no remaining
+// — otherwise null. Still serves the reading state's step column
+// (formatStepReferences) — which names a step that is currently live, or
+// nothing at all, never a step this file is naming as removed. The
+// selector's option label, the orphaned-row flag (G-03-14, D-UAT-5), and
+// the pen's/show-changes' own split-step suffix (G-03-14 CR-01 gap
+// closure) no longer call this for a removed step: a removed step's
+// number — primary or split — is never shown, this file's one rule
+// stated once, so this function's own baseline branch has no remaining
 // caller that can reach it through a removed step today. Left in place
 // rather than deleted — it is still the correct rule for a site naming a
 // step that might be either currently active or currently removed, should
@@ -153,8 +154,14 @@ function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStep
   const draftRow = penDraft.rows[row.id];
   const changed = draftRow.removed || draftRow.step !== row.step;
   const baselineStepDisplay = safeDisplayNumberOf(baselineStepNumbers, row.step);
+  // A removed splitStep renders no numeral (G-03-14 CR-01 gap closure):
+  // resolving through resolveStepNumber's baseline fallback would show a
+  // removed step's stale pre-removal position, unmarked, which can collide
+  // with a different, currently-live step that renumbering has moved into
+  // that same position — the same self-contradiction the option label
+  // above already closes for a removed primary allocation.
   const splitStepDisplay =
-    row.splitStep != null ? resolveStepNumber(row.splitStep, currentStepNumbers, baselineStepNumbers) : null;
+    row.splitStep != null ? safeDisplayNumberOf(currentStepNumbers, row.splitStep) : null;
   return (
     <span className="ingredient-table__step-cell">
       {changed && <span className="struck-value">{baselineStepDisplay}</span>}
@@ -180,7 +187,7 @@ function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStep
           );
         })}
       </select>
-      {row.splitStep != null && (
+      {splitStepDisplay != null && (
         <span className="ink-text ingredient-table__split-step">{` + ${splitStepDisplay}`}</span>
       )}
     </span>
@@ -468,8 +475,10 @@ export function IngredientTable({
 
             if (isShowingChanges) {
               const rowDiff = diff.rows.find((entry) => entry.id === row.id);
+              // A removed splitStep renders no numeral here either (G-03-14
+              // CR-01 gap closure) — see StepCell's own comment for why.
               const splitStepDisplay =
-                row.splitStep != null ? resolveStepNumber(row.splitStep, currentStepNumbers, baselineStepNumbers) : null;
+                row.splitStep != null ? safeDisplayNumberOf(currentStepNumbers, row.splitStep) : null;
               return (
                 <tr
                   key={row.id}
@@ -501,7 +510,7 @@ export function IngredientTable({
                   </td>
                   <td className="ingredient-table__col-step">
                     <DiffStepCell rowDiff={rowDiff} currentStepNumbers={currentStepNumbers} baselineStepNumbers={baselineStepNumbers} />
-                    {row.splitStep != null && ` + ${splitStepDisplay}`}
+                    {splitStepDisplay != null && ` + ${splitStepDisplay}`}
                   </td>
                   <td className="ingredient-table__col-data">{dataFlag}</td>
                 </tr>

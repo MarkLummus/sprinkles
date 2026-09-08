@@ -305,6 +305,39 @@ describe('IngredientTable — the selector keeps a removed step in its list (G-0
     expect(markup).toContain('ingredient-table__split-step"> + 2</span>');
   });
 
+  it('renders no numeral for a splitStep referencing a removed step — the mirror of the primary case above (CR-01 gap closure)', () => {
+    // The mirror of Whole milk's case: a row's primary allocation is live,
+    // and its splitStep is the removed step — step 3 still renumbers into
+    // the removed step's old position, so a stale splitStep numeral would
+    // still collide with a currently-live step's own numeral.
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1, { splitStep: 2 })]);
+    version.method = makeThreeStepMethod();
+    const draftVersion = structuredClone(version);
+    draftVersion.method[1].removed = true; // step 2 removed; step 3 is now position 2
+    const penDraft = { rows: { a: { grams: '10', step: 1, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method); // 1->1, 3->2
+    const baselineStepNumbers = displayNumbers(version.method); // 1->1, 2->2, 3->3
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    // The row's own cell: the live primary option shows its own numeral
+    // "1", and the split-step span is absent entirely — never showing the
+    // removed step's stale "2", which would collide with step 3's own
+    // live "2." option in the same select.
+    expect(markup).toMatch(/<option value="1"[^>]*selected(="")?[^>]*>1\. Warm<\/option>/);
+    expect(markup).not.toContain('ingredient-table__split-step');
+  });
+
   it("carries display numbers on the active options' labels, not the stored key", () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
     version.method = makeThreeStepMethod();

@@ -95,11 +95,31 @@ function resolveTokenPx(props, name) {
   return parsePxLiteral(raw);
 }
 
+// The flat, non-nesting brace matcher below cannot parse an @-rule
+// (WR-02): it would treat the at-rule's own opening brace as a selector
+// and everything up to the first *inner* rule's closing brace as its
+// "declarations," silently misattributing every rule inside and after
+// the block to the wrong selector. Rather than write a nesting-aware
+// parser this suite does not otherwise need, fail loudly the moment an
+// at-rule appears, so adding one is forced to address this parser
+// instead of silently trusting stale results.
+function assertNoAtRules(css) {
+  const atRule =
+    /@(media|supports|keyframes|font-face|import|charset|page|document|layer|container|property|scope|starting-style|namespace|counter-style|font-feature-values)\b/i;
+  if (atRule.test(css)) {
+    throw new Error(
+      "columns.test.js's readAllRules is a flat, non-nesting brace matcher and cannot parse an @-rule. " +
+        'Update readAllRules to handle nested at-rules before adding one to app.css (see WR-02, 03-REVIEW.md).',
+    );
+  }
+}
+
 // Returns [{ selector, declarations }] for every top-level rule in the
 // comment-stripped source — used both for the per-column rule reader and
 // the broader ingredient-table rule scan task 2 adds.
 function readAllRules(css) {
   const stripped = stripCssComments(css);
+  assertNoAtRules(stripped);
   const rules = [];
   const re = /([^{}]+)\{([^{}]*)\}/g;
   let match;

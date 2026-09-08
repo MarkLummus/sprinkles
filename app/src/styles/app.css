@@ -514,6 +514,20 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* The Strike Rule (above, "one stroke for every 'not in force' meaning
+   across the app — a skipped step, a superseded value, a removed row or
+   step"), applied here to the margin number itself (D-UAT-5, D-UAT-4,
+   G-03-14): the number a removed step had in the parent, in show-changes
+   only. The pen deliberately does not use this modifier — its own margin
+   suppresses the number entirely instead (Method.jsx) — because in the
+   pen the step's prose sits in live editable fields, so a strike on the
+   number would be the page's only strike and would read as a state of
+   the fields rather than of the step. */
+.method-step__n--struck {
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+}
+
 .method-step__lead {
   font-family: var(--face-text);
   font-size: var(--size-headnote-prose);

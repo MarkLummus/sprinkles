@@ -96,26 +96,36 @@ export function Method({
   const activeDiff = isDeveloping ? penDiff : changeDiff;
   const activeStaleSteps = isDeveloping ? penStaleSteps : staleSteps;
 
-  // The one place a step's displayed number is resolved (D-UAT-4): its
-  // position in the current map if it has one; otherwise its position in
-  // the baseline map, the number it had before it was removed; otherwise
-  // none. Every margin number, field label, and the coverage cue above
-  // reads through this one helper (or the map it closes over) so the
-  // branches below cannot drift.
+  // The one place a step's displayed number is resolved (D-UAT-4,
+  // D-UAT-5, G-03-14): its position in the current map if it has one,
+  // else its position in the baseline map — the number it had before it
+  // was removed — else none. The return value now carries WHICH frame
+  // answered alongside the number: a bare integer let the pen and
+  // show-changes print two different reference frames (a live step's
+  // current position and a removed step's baseline one) in one
+  // indistinguishable voice, which is the whole defect this closes. Every
+  // call site below reads the frame and must not discard it — it is what
+  // lets a removed step's number render differently from a live one
+  // instead of the two blending together.
   function displayNumberFor(step) {
     const current = currentStepNumbers ? displayNumberOf(currentStepNumbers, step.n) : null;
-    if (current != null) return current;
-    return baselineStepNumbers ? displayNumberOf(baselineStepNumbers, step.n) : null;
+    if (current != null) return { number: current, frame: 'current' };
+    const baseline = baselineStepNumbers ? displayNumberOf(baselineStepNumbers, step.n) : null;
+    if (baseline != null) return { number: baseline, frame: 'baseline' };
+    return { number: null, frame: null };
   }
 
   // A field label names the step's own live position; a removed step's
-  // fields say so in words instead of claiming a position they no longer
-  // hold — unlike the margin number below, which still prints the
-  // pre-removal number beside the "removed" label, because a hand-drawn
-  // margin number and a screen-reader field name are different sites with
-  // different rules (03-10).
+  // fields now name the number it had before removal too (G-03-14,
+  // D-UAT-5) — closing the ink-versus-announcement disagreement 03-10
+  // closed for live steps and left open for removed ones, where a screen
+  // reader learned a step was removed but never which one. A step with no
+  // position in either version (already removed when the pen opened)
+  // still names none — there is nothing to name.
   function fieldLabel(step, removed, name) {
-    return removed ? `Removed step, ${name}` : `Step ${displayNumberFor(step)}, ${name}`;
+    const { number } = displayNumberFor(step);
+    if (removed) return number != null ? `Removed step ${number}, ${name}` : `Removed step, ${name}`;
+    return `Step ${number}, ${name}`;
   }
 
   return (
@@ -140,11 +150,22 @@ export function Method({
             const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
             const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
             const showAsideStruck = stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
+            // The margin (D-UAT-5, G-03-14): a number that came from the
+            // BASELINE frame — a removed step — is not printed here. The
+            // span still renders so the two-column grid never shifts, but
+            // stays empty, which is what the pen already does for a step
+            // removed before it opened; that treatment stops being one of
+            // two side by side and becomes the pen's single rule. The pen
+            // suppresses where show-changes marks (below) because in the
+            // pen the step's prose sits in live editable fields — a strike
+            // on the number would be the page's only strike and would read
+            // as a state of the fields, not of the step.
+            const marginInfo = displayNumberFor(step);
 
             return (
               <li key={step.n} id={`method-step-${step.n}`} className="method-step">
                 <span className="method-step__n" aria-hidden="true">
-                  {displayNumberFor(step)}
+                  {marginInfo.frame === 'current' ? marginInfo.number : null}
                 </span>
                 <div className="method-step__body">
                   <label className="method-step__field">
@@ -314,11 +335,20 @@ export function Method({
             const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
             const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
             const showAsideStruck = stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
+            // The margin (D-UAT-5, G-03-14): a number that came from the
+            // BASELINE frame — the number the step had in the parent — is
+            // printed here, unlike in the pen above, and carries the
+            // struck modifier of its own class. A number from the CURRENT
+            // frame renders unmarked as it does today.
+            const marginInfo = displayNumberFor(step);
 
             return (
               <li key={step.n} id={`method-step-${step.n}`} className="method-step">
-                <span className="method-step__n" aria-hidden="true">
-                  {displayNumberFor(step)}
+                <span
+                  className={marginInfo.frame === 'baseline' ? 'method-step__n method-step__n--struck' : 'method-step__n'}
+                  aria-hidden="true"
+                >
+                  {marginInfo.number}
                 </span>
                 <div className="method-step__body">
                   <p className="method-step__lead">
@@ -397,7 +427,7 @@ export function Method({
           return (
             <li key={step.n} id={`method-step-${step.n}`} className="method-step">
               <span className="method-step__n" aria-hidden="true">
-                {displayNumberFor(step)}
+                {displayNumberFor(step).number}
               </span>
               <div className="method-step__body">
                 <p className="method-step__lead">

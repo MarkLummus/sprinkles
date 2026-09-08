@@ -581,9 +581,13 @@ function makeTenStepMethod() {
 
 // One entry per rendered <li>, in document order: the step's own stored
 // key (from the anchor id, never renumbered), its margin number (null
-// when the margin renders nothing), and whether it carries the removed
-// label — read from the markup rather than re-deriving it, so these tests
-// assert what actually rendered.
+// when the margin renders nothing), whether that number carries the
+// struck modifier, and whether it carries the removed label — read from
+// the markup rather than re-deriving it, so these tests assert what
+// actually rendered. The class-capturing regex (G-03-14) reads the WHOLE
+// class attribute rather than assuming it ends at the base class — a
+// modifier appended after `method-step__n` (the struck form) made every
+// margin read as absent under the old anchored pattern.
 function extractStepEntries(markup) {
   const entries = [];
   const liRegex = /<li id="method-step-(\d+)" class="method-step">([\s\S]*?)<\/li>/g;
@@ -591,11 +595,27 @@ function extractStepEntries(markup) {
   while ((match = liRegex.exec(markup))) {
     const stepKey = Number(match[1]);
     const body = match[2];
-    const numberMatch = /method-step__n" aria-hidden="true">(\d*)</.exec(body);
-    const marginNumber = numberMatch && numberMatch[1] !== '' ? Number(numberMatch[1]) : null;
-    entries.push({ stepKey, marginNumber, removed: body.includes('method-step__skipped-label') });
+    const numberMatch = /<span class="([^"]*method-step__n[^"]*)" aria-hidden="true">(\d*)</.exec(body);
+    const marginNumber = numberMatch && numberMatch[2] !== '' ? Number(numberMatch[2]) : null;
+    const marked = Boolean(numberMatch) && numberMatch[1].includes('method-step__n--struck');
+    entries.push({ stepKey, marginNumber, marked, removed: body.includes('method-step__skipped-label') });
   }
   return entries;
+}
+
+// The union assertion (G-03-14, D-UAT-5): a render's every margin, live
+// and removed together, as a pair of (numeral, mark). Two entries with an
+// identical pair are byte-identical spans on the page — the collision
+// this plan closes. A null numeral (nothing printed) is never a
+// collision with anything, including another null.
+function assertNoDuplicateMargins(entries) {
+  const seen = new Set();
+  for (const entry of entries) {
+    if (entry.marginNumber == null) continue;
+    const key = `${entry.marginNumber}:${entry.marked}`;
+    expect(seen.has(key)).toBe(false);
+    seen.add(key);
+  }
 }
 
 describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
@@ -626,7 +646,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     expect(numbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
   });
 
-  it("prints the pen's live steps 1 through 9 with no gap, and the removed step's pre-removal number beside its removed label, when the second step is removed", () => {
+  it("prints the pen's live steps 1 through 9 with no gap, and NO margin numeral at all for the step removed this session, when the second step is removed (D-UAT-5, G-03-14)", () => {
     const baselineVersion = { rows: [], method: makeTenStepMethod() };
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[1].removed = true; // step 2
@@ -648,10 +668,17 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     expect(liveNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     const removedEntry = entries.find((entry) => entry.removed);
     expect(removedEntry.stepKey).toBe(2);
-    expect(removedEntry.marginNumber).toBe(2); // the number it had before removal
+    // The pen suppresses a removed step's number rather than marking it
+    // (D-UAT-5) — no numeral at all, not the pre-removal number unmarked,
+    // which is the byte-identical-to-a-live-step collision this closes.
+    expect(removedEntry.marginNumber).toBeNull();
+    expect(removedEntry.marked).toBe(false);
+    // The union of every margin the pen renders, live and removed
+    // together, holds no duplicate pair of numeral and mark.
+    assertNoDuplicateMargins(entries);
   });
 
-  it('prints no margin number for a step already removed in the record the pen opened on and still removed in the draft', () => {
+  it('prints no margin number for a step already removed in the record the pen opened on and still removed in the draft — the same empty margin the removed-this-session case now renders (D-UAT-5, G-03-14)', () => {
     const baselineVersion = { rows: [], method: makeTenStepMethod() };
     baselineVersion.method[1].removed = true; // already removed at baseline
     const draftVersion = structuredClone(baselineVersion);
@@ -672,6 +699,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     const removedEntry = entries.find((entry) => entry.stepKey === 2);
     expect(removedEntry.removed).toBe(true);
     expect(removedEntry.marginNumber).toBeNull();
+    expect(removedEntry.marked).toBe(false);
   });
 
   it("names a live step's field by the same number the margin prints, not the stored key, once a removal has shifted its position", () => {
@@ -699,7 +727,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     expect(markup).not.toContain('aria-label="Step 3, lead-in" value="Lead 3"');
   });
 
-  it('does not claim a live position on a removed step\'s field labels', () => {
+  it("names the number a removed step's field labels held before removal, closing the ink-versus-announcement disagreement 03-10 closed for live steps and left open for removed ones (G-03-14)", () => {
     const baselineVersion = { rows: [], method: makeTenStepMethod() };
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[1].removed = true; // step 2
@@ -717,10 +745,33 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     );
 
     // Step 2's own value ("Lead 2") proves which field this is — it names
-    // itself as removed, never as claiming the position ("Step 2") a
-    // survivor might legitimately hold.
-    expect(markup).toContain('aria-label="Removed step, lead-in" value="Lead 2"');
+    // itself as removed AND by the number it had (2), never as claiming a
+    // live position ("Step 2") a survivor might legitimately hold.
+    expect(markup).toContain('aria-label="Removed step 2, lead-in" value="Lead 2"');
+    expect(markup).not.toContain('aria-label="Removed step, lead-in" value="Lead 2"');
     expect(markup).not.toContain('aria-label="Step 2, lead-in" value="Lead 2"');
+  });
+
+  it('invents no number on a removed step\'s field labels when it has no position in either version', () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    baselineVersion.method[1].removed = true; // already removed at baseline
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    // Neither map holds a position for this step, so its labels say only
+    // that it is removed — nothing invented.
+    expect(markup).toContain('aria-label="Removed step, lead-in" value="Lead 2"');
   });
 
   it('names the coverage cue\'s covering step by its displayed position, not its stored key', () => {
@@ -749,9 +800,16 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
 
     expect(markup).toContain('still used by step 2');
     expect(markup).not.toContain('still used by step 3');
+    // The cue's correctness is only useful if its referent is unique
+    // (G-03-14): the numeral it names must appear exactly once, unmarked,
+    // on the page.
+    const entries = extractStepEntries(markup);
+    const unmarkedTwos = entries.filter((entry) => entry.marginNumber === 2 && !entry.marked);
+    expect(unmarkedTwos.length).toBe(1);
+    assertNoDuplicateMargins(entries);
   });
 
-  it('in show-changes, prints the live steps 1 through 9 and the struck step at the number it had in the parent (D-UAT-4)', () => {
+  it('in show-changes, prints the live steps 1 through 9 unmarked and the struck step at the number it had in the parent carrying the struck modifier (D-UAT-4, D-UAT-5, G-03-14)', () => {
     const parentVersion = { rows: [], method: makeTenStepMethod() };
     const currentVersion = structuredClone(parentVersion);
     currentVersion.method[1].removed = true; // step 2, removed in this child
@@ -772,14 +830,23 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     );
 
     const entries = extractStepEntries(markup);
-    const liveNumbers = entries.filter((entry) => !entry.removed).map((entry) => entry.marginNumber);
-    expect(liveNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    const liveEntries = entries.filter((entry) => !entry.removed);
+    expect(liveEntries.map((entry) => entry.marginNumber)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(liveEntries.every((entry) => !entry.marked)).toBe(true);
     const struckEntry = entries.find((entry) => entry.removed);
     expect(struckEntry.stepKey).toBe(2);
     expect(struckEntry.marginNumber).toBe(2);
+    expect(struckEntry.marked).toBe(true);
+    // The mark on the number is added to the step's own struck prose and
+    // its removed label, never instead of them (03-09).
+    expect(markup).toContain('method-step__prose--struck');
+    expect(markup).toContain('method-step__skipped-label');
+    // The union of every margin show-changes renders, live and removed
+    // together, holds no duplicate pair of numeral and mark.
+    assertNoDuplicateMargins(entries);
   });
 
-  it('in show-changes, prints no number for a step with no position in either version — the parent had already removed it too', () => {
+  it('in show-changes, prints no number and no mark for a step with no position in either version — the parent had already removed it too', () => {
     const parentVersion = { rows: [], method: makeTenStepMethod() };
     parentVersion.method[1].removed = true; // already removed in the parent
     const currentVersion = structuredClone(parentVersion); // the grandchild inherits the removal
@@ -803,6 +870,56 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     const removedEntry = entries.find((entry) => entry.stepKey === 2);
     expect(removedEntry.removed).toBe(true);
     expect(removedEntry.marginNumber).toBeNull();
+    expect(removedEntry.marked).toBe(false);
+  });
+
+  it('holds no duplicate margin pair in the pen for a non-adjacent double removal (steps 1 and 5), the case the diagnosis showed as genuinely unresolvable', () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[0].removed = true; // step 1
+    draftVersion.method[4].removed = true; // step 5
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    const entries = extractStepEntries(markup);
+    const removedEntries = entries.filter((entry) => entry.removed);
+    expect(removedEntries.map((entry) => entry.stepKey)).toEqual([1, 5]);
+    expect(removedEntries.every((entry) => entry.marginNumber === null)).toBe(true);
+    assertNoDuplicateMargins(entries);
+  });
+
+  it('holds no duplicate margin pair in the pen when the removed step is the last one, the one case that never collided', () => {
+    const baselineVersion = { rows: [], method: makeTenStepMethod() };
+    const draftVersion = structuredClone(baselineVersion);
+    draftVersion.method[9].removed = true; // step 10, the last one
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(baselineVersion.method)}
+      />,
+    );
+
+    const entries = extractStepEntries(markup);
+    const removedEntry = entries.find((entry) => entry.removed);
+    expect(removedEntry.stepKey).toBe(10);
+    expect(removedEntry.marginNumber).toBeNull();
+    assertNoDuplicateMargins(entries);
   });
 
   it('leaves the anchor id on the stored key regardless of position', () => {

@@ -1,44 +1,44 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 03
-current_phase_name: Develop the next version
-status: executing
-stopped_at: Completed 03-12-PLAN.md
-last_updated: "2026-09-08T02:41:13.308Z"
-last_activity: 2026-09-07
-last_activity_desc: Phase 03 execution started
-state_head: 4767da38c46649ff0cd934cfde406c1e375b93d0
+current_phase: 4
+current_phase_name: Prepare the next version for making
+status: planning
+stopped_at: Phase 03 complete, ready to plan Phase 4
+last_updated: "2026-09-08T12:10:16.936Z"
+last_activity: 2026-09-08
+last_activity_desc: Phase 03 complete, transitioned to Phase 4
+state_head: 23ed345830481041e971865979748eba3c82f608
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 21
   completed_plans: 21
-  percent: 25
+  percent: 50
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-07)
+See: .planning/PROJECT.md (updated 2026-09-08)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03 — Develop the next version
+**Current focus:** Phase 4 — Prepare the next version for making
 
 ## Current Position
 
-Phase: 03 (Develop the next version) — EXECUTING
-Plan: 3 of 12
-Status: Ready to execute
-Last activity: 2026-09-07 — Phase 03 execution started
+Phase: 4 — Prepare the next version for making
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-08 — Phase 03 complete, transitioned to Phase 4
 
-Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
+Progress: [███████░░░] 75% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 9
+- Total plans completed: 21
 - Average duration: —
 - Total execution time: —
 
@@ -48,6 +48,7 @@ Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 |-------|-------|-------|----------|
 | 01 | 4 | - | - |
 | 02 | 5 | - | - |
+| 03 | 12 | - | - |
 
 **Recent Trend:**
 
@@ -134,6 +135,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 08] Introduced --col-step (66px) derived from the same 1280px-viewport arithmetic the debug session used, chosen so today's rendered layout is unchanged by the column-identity refactor alone; the As made column's conditional removal (task 2) is what actually returns width to its neighbours.
 - [Phase 03]: [Phase 3, Plan 10] One derived stepNumbers.js module (displayNumbers/displayNumberOf) threaded through Method.jsx and IngredientTable.jsx as two page-level maps (current, baseline), closing G-03-6 and G-03-3 S3 without renumbering any stored step key.
 - [Phase 03]: [Phase 3, Plan 11] Ingredient-table cells made border-box with a new --table-cell-pad-x token (6px, half the old 12px); tokens.css derivation rewritten to add cell padding to each declared width instead of subtracting it from the remainder; --col-data and --col-remove tokens added and --col-ingredient retired in favor of width:auto on the name column (D-UAT-6, closes G-03-11).
+- Phase 3 UAT (Mark, 2026-09-07/08): D-UAT-1/2 writing a tasting is a pen and every opener, strip link, batch link and lineage link disables with its reason in words, no dialog; D-UAT-3 the orphaned-row rule stays and a removed step names in words which rows another step still covers; D-UAT-4/5 `n` is immutable identity, live steps renumber, a removed step's number is empty in the pen and struck in show-changes; D-UAT-6 padding-inclusive column tokens, Data and Remove sized, name column absorbs and may wrap below ~1140px. As made column shown only with a batch in view; saved children naming a removed step are remapped on read.
 - [Phase 03]: [Phase 3, Plan 12] The pen suppresses a removed step's margin number entirely (D-UAT-5); show-changes marks it struck via a new .method-step__n--struck rule reading --rule-strike (D-UAT-4). The step selector's option and the orphaned-row flag both drop a removed step's number outright, naming it by lead-in alone — closing G-03-14's collision between a removed step's number and the live step that inherited its position.
 
 ### Pending Todos
@@ -143,10 +145,11 @@ None yet.
 ### Blockers/Concerns
 
 - Impeccable initialized 2026-09-05: `PRODUCT.md` written; surface brief for the recipe surface and bench sheet confirmed by Mark (`.impeccable/surfaces/`, direction "The Formulation Cookbook" expanding the Cupping Form, seed d1a5d80a, code-led). Phase 1, 3, and 4 prerequisites met. `DESIGN.md` and `.impeccable/design.json` written 2026-09-06 by `/impeccable document` from the Phase 1 build (commit 17bd91f); North Star "The Formulation Cookbook". The batch-capture brief for Phase 2 is confirmed: `.impeccable/surfaces/route-recipe-batch.md`, shaped and confirmed by Mark 2026-09-06 and committed in e23d798, so the Phase 2 prerequisite is met. The Phase 3 brief is confirmed: `.impeccable/surfaces/route-recipe-version.md` ("Developing the next version"), shaped and confirmed by Mark 2026-09-07, so the Phase 3 prerequisite is met.
-- [Phase 2 → 3] Security: T-02-32 (medium, non-blocking) is open in `02-SECURITY.md`. `setMark`'s write path at `app/src/domain/axes.js:71` is a plain bracket assignment rather than the own-property-only write the plan committed to; a `__proto__` axis name today drops the mark silently and does not pollute. Close with an own-property-only write or a `__proto__` test, or re-disposition to accept with the numeric-stops rationale.
+- [Phase 3 → 4] Security: T-03-10 (medium, non-blocking) is open in `03-SECURITY.md`. The pen draft's seeding path at `app/src/ui/RecipePage.jsx:719` (`rows[row.id] = {...}` in `handleStartDeveloping`) is a bare bracket write against a stored row id; an imported `{"id": "__proto__"}` passes the transfer validator and corrupts the local draft object (not `Object.prototype`). Close with `Object.fromEntries` or re-disposition to accept with the local-only rationale. T-02-32 is closed by T-03-06.
+- [Phase 3 → 4] Code review WR-01 (skipped, needs a browser): measure the rendered width of the Data column's flag word `unreviewed` at 1024–1440 against `--col-data`'s 74px content width (`tokens.css:114-117`) and adjust the token or confirm the estimate as measured.
+- [Phase 3 → 4] `inheritedFrom` on authored notes is rendered, preserved-or-cleared and carried to the child, but nothing yet originates it (seed notes are null); a child developed from the seed shows no provenance. Backlog for whichever phase next touches notes (03-SECURITY.md observation 1).
+- [Phase 3 UAT notes, cosmetic] In show-changes the Total row's grams value wraps to two lines (UAT test 17). Deferred follow-ups from UAT test 2: a slug-based child URL from the version line; a pure version view when a version has batches (today the newest batch is always in view), possibly a tree of versions with batches beneath.
 - [Phase 2 design debt, Impeccable-owned] `Save batch` is hard to find: no button-weight token in the direction contract and the control sits at the foot of the page's longest column (UAT G-02-4 second half, UI review 22/24). The UI review also notes `Amend` and `Record another batch` share identical styling and differ only by label.
-- [Phase 3 input] The UI review asks whether a tasting saved with some axes marked and others unmarked is incomplete; the batch brief treats an unmarked axis as a valid silence. Decide in Phase 3 discussion, not in code.
-- [Phase 3 input] `.impeccable/surfaces/route-recipe-version.md` leaves five things to the Phase 3 discussion, not to a builder: the label of the control that opens the pen ("Develop the next version" is the working name); whether the show-changes state is URL-addressable; whether a fifth advisory, the batch mass against the machine's minimum fill, joins the four FORM2-02 advisories; the partly marked tasting question in the bullet above; and the store's schema move and what a schemaVersion 2 export does when imported after it.
 - [Milestone 2 backlog, Mark 2026-09-07] Held objections from the Phase 3 shaping, recorded rather than dropped: editing target bands; adding a step; adding a row from the seed library (needs REQUIREMENTS.md's twelve-row limit lifted).
 - [After Phase 3, Impeccable-owned] Re-run `/impeccable document` so `DESIGN.md` records the pen layer's components from Phases 2 and 3 together (field, strike, marks control, button, hollow tick, show-changes control) and the Strike Rule; `DESIGN.md` still says pen blue is unused on screen and no input exists.
 - [Housekeeping] Four `.planning/debug/*.md` sessions (record-a-batch-entry-missing, pen-layer-no-cancel-save-hard-to-find, skipped-label-struck-through, tasting-mark-cannot-be-cleared) still read `status: diagnosed` although their gaps closed in 02-04 and 02-05; mark them resolved.
@@ -154,14 +157,12 @@ None yet.
 - [Phase 1 carry] UI audit recommends checking the book-spread grid below 1280px and measuring running-head contrast against AA; UX1-01 verifies end-to-end in Phase 4.
 - [Critique 2026-09-06, 23/40] Snapshot `.impeccable/critique/2026-09-06T13-15-16Z__app-src-ui-recipepage-jsx.md`. Grid fixed the same day (formulation note now follows the table; graduated rule capped at its 320px drawing width). Deferred by phase:
   - [Phase 2 carry — done in 02-01] Numeric columns right-aligned and sized to `--col-numeric`; total row added; shares below 0.05% read `trace`.
-  - [Phase 3 carry] The recipe page has no link back to the list and "No recipe found" is a dead end; add the running head with the product name as the link home when the version strip lands under the headnote.
   - [Phase 4 carry, UX1-01] Headnote and Margin region names are paragraphs, not headings; the row-level aria-label carrying "contributing to" is unlikely to be announced, so the focus trace is silent to screen readers; the deviation words are not in the rule's accessible name; the ordered method list with list-style needs an explicit list role; the tab title should lead with the recipe name.
   - [Polish carry] Target chips have zero vertical inset and a 2px label-to-value gap that fuses at a glance; adjacent marked-row outlines collide with row rules; the rule has no hover state. (Prose measure fixed 2026-09-06.)
 - [Critique 2026-09-06, second run, 25/40] Snapshot `.impeccable/critique/2026-09-06T14-02-09Z__app-src-ui-recipepage-jsx.md`. Spread revised by Mark (note beside the table, method beneath); table shift on focus and the stranded margin fixed the same day. Deferred:
   - [Phase 2 carry — total row and `trace` done in 02-01; rhythm caveat still open] The short-window caveat: at a 714px-tall viewport, focusing Total solids scrolls 487px and only 5 of 12 marked rows stay visible; the six rules stack to ~1000px, so tighten the note's vertical rhythm.
   - [List page carry] `/` has no page margin, default buttons, no title or running head, and a link with no underline or focus treatment; out of the recipe brief's scope, for whichever phase next touches the list.
   - [Phase 4 carry, UX1-01] No live announcement when a rule marks its rows; PAC, POD, MSNF carry no plain-language gloss (D11).
-- [Phase 3, Plan 01] Task 1's tracer feedback gate human-check (open the pen, type 48 over 40, watch the strike and six figures move, save, reload) was deferred to end-of-phase UAT per Mark's standing preference (MEMORY.md, Phase 2 Plan 01 precedent). All automated verification (build/test/greps) passed.
 
 ### Quick Tasks Completed
 
@@ -189,6 +190,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T02:41:13.245Z
-Stopped at: Completed 03-12-PLAN.md
+Last session: 2026-09-08T12:10:16Z
+Stopped at: Phase 03 complete, ready to plan Phase 4
 Resume file: None

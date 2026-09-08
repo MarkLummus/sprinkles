@@ -1,141 +1,187 @@
 ---
 phase: 03-develop-the-next-version
-reviewed: 2026-09-07T19:55:59Z
+reviewed: 2026-09-08T00:08:56Z
 depth: standard
-files_reviewed: 40
+files_reviewed: 23
 files_reviewed_list:
-  - app/package-lock.json
-  - app/package.json
-  - app/src/data/olive-oil.js
-  - app/src/data/olive-oil.test.js
   - app/src/domain/advisories.js
   - app/src/domain/advisories.test.js
-  - app/src/domain/axes.test.js
   - app/src/domain/diff.js
   - app/src/domain/diff.test.js
-  - app/src/domain/lineage.js
-  - app/src/domain/lineage.test.js
-  - app/src/domain/rows.js
-  - app/src/domain/rows.test.js
+  - app/src/domain/stepNumbers.js
+  - app/src/domain/stepNumbers.test.js
   - app/src/domain/uses.js
   - app/src/domain/uses.test.js
-  - app/src/store/db.js
-  - app/src/store/transfer.js
-  - app/src/store/transfer.test.js
-  - app/src/store/versionLift.js
+  - app/src/router.jsx
   - app/src/styles/app.css
   - app/src/styles/tokens.css
-  - app/src/ui/Authored.jsx
   - app/src/ui/BatchMargin.jsx
-  - app/src/ui/DerivedAdvisories.jsx
-  - app/src/ui/DerivedAdvisories.test.jsx
-  - app/src/ui/FormulationNote.jsx
-  - app/src/ui/GraduatedRule.jsx
-  - app/src/ui/GraduatedRule.test.jsx
+  - app/src/ui/BatchMargin.test.jsx
   - app/src/ui/Headnote.jsx
   - app/src/ui/Headnote.test.jsx
   - app/src/ui/IngredientTable.jsx
   - app/src/ui/IngredientTable.test.jsx
   - app/src/ui/Method.jsx
   - app/src/ui/Method.test.jsx
-  - app/src/ui/RecipeList.jsx
-  - app/src/ui/RecipeList.test.jsx
   - app/src/ui/RecipePage.jsx
+  - app/src/ui/RecipePage.test.jsx
   - app/src/ui/VersionStrip.jsx
   - app/src/ui/VersionStrip.test.jsx
-  - app/tests/db-migration.test.js
 findings:
-  critical: 1
-  warning: 2
-  info: 1
-  total: 4
+  critical: 0
+  warning: 6
+  info: 4
+  total: 10
 status: issues_found
 ---
 
-# Phase 03: Code Review Report
+# Phase 03: Code Review Report (gap-closure re-review, plans 03-06 through 03-10)
 
-**Reviewed:** 2026-09-07T19:55:59Z
+**Reviewed:** 2026-09-08T00:08:56Z
 **Depth:** standard
-**Files Reviewed:** 40
+**Files Reviewed:** 23
 **Status:** issues_found
 
 ## Summary
 
-Reviewed the phase's domain modules (`advisories`, `diff`, `lineage`, `rows`, `uses`), the store's migration/transfer layer (`db.js`, `versionLift.js`, `transfer.js`), the seeded data fixture, and the UI layer (`Authored`, `BatchMargin`, `DerivedAdvisories`, `FormulationNote`, `GraduatedRule`, `Headnote`, `IngredientTable`, `Method`, `RecipeList`, `RecipePage`, `VersionStrip`), plus the two stylesheets and the lockfile/manifest.
+Scope is the fourteen commits since `85a02b5` (plans 03-06 to 03-10): the one-pen interlock (`derivePenState`, `openPen`/`penReason` threading, route-keyed `RecipePage`), the corrected dirty checks, per-field step-text flags with absent/empty normalisation, the D-UAT-3 coverage cue, the identity-based table column sizing, and the derived step-position module (`stepNumbers.js`) threaded through advisories, the table and the method. The full suite passes (25 files, 486 tests).
 
-The domain layer is careful and well-tested: 354 tests pass, the `activeRows`/`activeSteps` removal seam is applied consistently, `buildDiff`/`buildAdvisories`/`uses.js` never mutate their inputs, and the project's structural conventions hold under inspection — no module outside `db.js` imports `idb`, no domain module imports the store or DOM, and there is no `dangerouslySetInnerHTML` anywhere under `app/src`.
+Convention checks: no `dangerouslySetInnerHTML` under `app/src`; no `idb` import outside `store/db.js`; no listed domain module imports React, the DOM or the store; every new stylesheet rule (`.pen-hint`, `.ingredient-table__col-*`, the select shrink pair) and the new `--col-step` token read through custom properties. Router keying and the pen-state derivation are sound, and the domain modules (`stepNumbers.js`, the `diff.js` and `uses.js` additions) are correct against the fixtures I traced.
 
-One real defect was found and confirmed by direct reproduction: `importStore`'s pre-validation lift step (`transfer.js` calling `liftVersionRecord`) crashes with an uncaught `TypeError` on a schemaVersion 1/2 file whose version record is missing (or has a non-array) `rows` — exactly the kind of malformed, hand-edited, or truncated file `validateStoreFile` exists to catch gracefully. The crash happens *before* validation runs, and the only caller (`RecipeList.jsx`'s `handleImportChange`) has no try/catch around the `importStore` call, so this surfaces to the user as an unhandled promise rejection rather than the module's own designed "collect every error, refuse the whole file" behavior. Two lower-severity issues (a silently-discarded invalid grams edit, and a defensive-check gap in `blockedSaveMessage`) and one minor styling convention lapse round out the findings.
+The defects are all at the UI/domain seam. Two are new to this diff: the show-changes step cell now goes blank for a row still allocated to a step the child removed (where the reading state says "unallocated"), and both `Method` and `IngredientTable` default their step-number maps to `null` while their own contract comments say that is the expected value outside the pen, which silently renders every step reference as "unallocated" or a blank number. One is a contract gap: `diff.js` documents and tests a `textFrom: null` step descriptor that `Method.jsx` dereferences unguarded. Three are pre-existing defects in listed files that the new work touches or compounds (the `?changes` gate reading `showingChanges` rather than `changeDiff`, `buildPenFields` coercing a blank grams string to `0`, and the label-keyed target diff read by index in two consumers); each is labelled as such so the fixer can triage.
 
-## Critical Issues
-
-### CR-01: `importStore` crashes on a malformed schemaVersion 1/2 file instead of returning a validation error
-
-**File:** `app/src/store/transfer.js:347-354` (calling into `app/src/store/versionLift.js:63-92`)
-
-**Issue:** `importStore` lifts every version record of a schemaVersion 1 or 2 file with `liftVersionRecord` *before* `validateStoreFile` runs (by design, per the file's own header comment: "so `validateStoreFile` always checks the current shape"). But `liftVersionRecord` reads `raw.rows.map(...)` unconditionally, with no `??` fallback — unlike every other field it lifts (`method`, `authored`, `parentVersionId`, etc., which are all defaulted with `??`). A version object that is missing `rows` (or has `rows: null`), which is exactly the kind of malformed/hand-edited/truncated file this whole module exists to catch, throws an uncaught `TypeError: Cannot read properties of undefined (reading 'map')` instead of being reported as a validation error.
-
-This defeats the module's own stated guarantee ("a malformed file is refused with every error found, never half-applied", `transfer.js:3-5`) — the crash happens before that gate is even reached. Worse, the only production call site, `handleImportChange` in `app/src/ui/RecipeList.jsx:44-64`, wraps only the `JSON.parse` in a try/catch; the `await importStore(repository, parsed)` call below it is unguarded, so this exception becomes an unhandled promise rejection in the click handler rather than the friendly `importErrors` list the UI is built to show.
-
-Confirmed by direct reproduction:
-```
-$ node -e "import('./src/store/transfer.js').then(async ({importStore}) => {
-  const repo = { getAll: async()=>[], putAll: async()=>{}, getAllBatches: async()=>[], putAllBatches: async()=>{} };
-  const parsed = { app:'sprinkles', schemaVersion:1, versions:[{ id:'v1', recipeName:'x', coefficientSetId:'c' }] };
-  try { console.log(await importStore(repo, parsed)); } catch (e) { console.log('THREW:', e.message); }
-})"
-THREW: Cannot read properties of undefined (reading 'map')
-```
-
-**Fix:** Default `rows` the same way every other field in `liftVersionRecord` already is, and let `validateStoreFile`'s existing `!Array.isArray(version.rows) || version.rows.length === 0` check do its job:
-```js
-// app/src/store/versionLift.js
-rows: (raw.rows ?? []).map((row) => ({ ...row, removed: row.removed ?? false })),
-```
-As a defense-in-depth backstop (since the same lift path also feeds `db.js`'s migration, where a stored record's shape is trusted more), consider also guarding `importStore`'s lift step itself so a thrown error from a per-item `isPlainObject(version) ? liftVersionRecord(version) : version` map still degrades to a validation error rather than propagating.
+No security findings: all maker text renders as React text nodes, and the only impure calls (`crypto.randomUUID`, `new Date`) sit in the two save handlers as before.
 
 ## Warnings
 
-### WR-01: An unparseable grams edit is silently discarded at save with no feedback to the maker
+### WR-01: `Method.jsx` dereferences `stepDiff.textFrom` where `diff.js` documents it as `null`
 
-**File:** `app/src/domain/lineage.js:150-162` (`blockedSaveMessage`) and `app/src/ui/RecipePage.jsx:711-719` (`buildPenFields`)
-
-**Issue:** `blockedSaveMessage` only blocks a save when a row's draft grams field is `undefined` or `''` (line 158: `draftRow.grams === undefined || draftRow.grams === ''`). It does not check that the string actually parses as a number. If a maker types something non-numeric (e.g. a stray letter, or edits `"40"` into `"4o"` by mistake), the save proceeds unblocked. Then in `buildPenFields` (`RecipePage.jsx:711-719`):
-```js
-const parsed = Number(draftRow.grams);
-return { ...row, grams: Number.isFinite(parsed) ? parsed : row.grams, ... };
+**File:** `app/src/ui/Method.jsx:141-142`, `178`, `315-316`, `342`
+**Issue:** `buildStepDiff` returns `{ textFrom: null, leadInChanged: true, purposeChanged: true, ... }` for a step present in `current` but absent from `baseline` (`diff.js:101-116`), and `diff.test.js:315-335` pins that shape. Both `Method` branches then compute `stepDiff.purposeChanged && stepDiff.textFrom.purpose !== ''` and, when `leadInChanged` is true, render `stepDiff.textFrom.leadIn` — a `TypeError` on `null`. The pen never adds a step, so in-app authoring cannot produce this today; an imported store file or any future step-adding feature will, and the domain contract already says it may. A component that reads a documented shape must handle all of it.
+**Fix:** Guard on `textFrom` once per branch, so an unmatched step renders its own prose with nothing struck beneath:
+```jsx
+const textFrom = stepDiff.textFrom;
+const showStruckBeneath = textFrom != null && (stepDiff.leadInChanged || stepDiff.instructionChanged);
+const showPurposeStruck = textFrom != null && stepDiff.purposeChanged && textFrom.purpose !== '';
+const showAsideStruck = textFrom != null && stepDiff.asideChanged && textFrom.aside !== '';
 ```
-the unparseable value is silently replaced with the row's *original* grams — the maker's edit is discarded with no error message, no visual indication, and no console warning. They believe they changed an amount; the save reports success; nothing changed. This is inconsistent with the project's own stated discipline elsewhere (e.g. `handleSaveBatch`'s as-made parsing, which is also silently-drop-on-parse-failure, but for a field that is optional and blank-by-default rather than a required ingredient amount central to the recipe's balance).
+Apply at both sites (pen: 140-142; show-changes: 314-316).
 
-**Fix:** Either have `blockedSaveMessage` also reject a non-empty, non-numeric grams string (extending the existing `row.ingredientName} needs an amount, or remove the row` message, or a new one), or have `buildPenFields` flag/report when it falls back to the original value rather than silently substituting it.
+### WR-02: A `null` step-number map is documented as the normal outside-the-pen value, but rendering with it produces "unallocated" for every row and blank margin numbers
 
-### WR-02: `blockedSaveMessage` assumes every row has a matching draft entry with no defensive check
-
-**File:** `app/src/domain/lineage.js:155-160`
-
-**Issue:**
-```js
-for (const row of version.rows) {
-  const draftRow = penFields.rows[row.id];
-  if (draftRow.removed) continue;
-  ...
+**File:** `app/src/ui/IngredientTable.jsx:374-380`, `519`; `app/src/ui/Method.jsx:83-89`, `105-109`, `118`, `442`
+**Issue:** Both components default `currentStepNumbers = null` and their prop comments say "null wherever neither the pen nor show-changes applies". But the clean reading path *requires* the map: `formatStepReferences(null, null, row.step, row.splitStep)` returns `'unallocated'` for every row (line 41), `displayNumberFor(step)` returns `null` so the margin number renders empty (line 147/321/400), and the recording branch's `fieldLabel(step, false, ...)` yields `aria-label="Step null, what was done differently"` (line 118 with 442). `RecipePage` happens to always pass a non-null `currentStepNumbers` (line 469), so production is correct, but the contract is inverted: the safe default is the one that produces wrong output silently, and the existing reading-mode tests (`IngredientTable.test.jsx:135`, `Method.test.jsx:20`) already render that wrong output without asserting on it. A future caller (the Phase 4 print route, for instance) that follows the comment will ship a table reading "unallocated" throughout.
+**Fix:** Either derive the map inside the component when the caller does not supply one, or make it required. The first keeps the caller surface small:
+```jsx
+// IngredientTable / Method, before use:
+const currentMap = currentStepNumbers ?? displayNumbers(draftVersion ? draftVersion.method : stepsOrRowsSource);
 ```
-If `penFields.rows` is ever missing an entry for one of `version.rows` (e.g. a future caller that doesn't seed the draft as exhaustively as `handleStartDeveloping` currently does, or a version whose `rows` array is mutated between draft-seed time and save time), `draftRow` is `undefined` and `draftRow.removed` throws a `TypeError` from inside a pure domain function, with no named error message — a much worse failure mode than the "needs an amount" message this function exists to produce. All current call sites happen to satisfy the invariant, but the function has no guard and no test exercises the missing-entry case.
+For `Method` the source is `steps` (already the method being shown); for `IngredientTable` it would need the method passed in, so requiring the prop (and throwing or logging on `null` in dev) is the simpler honest option. In either case, correct the two prop comments to say the current map is required in every mode and only `baselineStepNumbers` may be `null`.
 
-**Fix:** Add a defensive check (`if (!draftRow) return \`${row.ingredientName} needs an amount, or remove the row\`;` or similar), or, if the invariant is meant to be enforced entirely by the caller, document that requirement explicitly in the docstring (currently the docstring describes the shape of `penFields.rows` but not what happens if an entry is absent).
+### WR-03: The `?changes` URL parameter switches the table and method to unfiltered rows/steps before, or without, a diff to render them with
+
+**File:** `app/src/ui/RecipePage.jsx:989`, `1013`, `1023`
+**Issue:** `rows`, `steps` and `staleFlagVisible` are gated on `showingChanges` (the raw search-param presence), while every consumer's show-changes branch is gated on `diff != null` / `changeDiff != null`. Whenever the two disagree — on every load of a child with `?changes` in the URL until the parent read resolves (`parentVersion` starts `null`, line 325), and permanently when the parent record cannot be read or the version has no parent — the components fall into their *reading* branches with unfiltered data: a removed row renders un-struck with a share computed against the active mass, and a removed step renders as an ordinary step with, since 03-10, an empty margin number and no "removed" label (its key is absent from `currentStepNumbers` and `baselineStepNumbers` is `null` at line 470). The gate itself predates this diff; the blank-number symptom is new.
+**Fix:** Gate on the diff, which is the fact the consumers actually branch on:
+```jsx
+const isShowingChanges = changeDiff != null;
+...
+rows={mode === 'developing' || isShowingChanges ? version.rows : readingVersion.rows}
+...
+steps={mode === 'developing' || isShowingChanges ? version.method : readingVersion.method}
+staleFlagVisible={mode === 'developing' || isShowingChanges}
+```
+and pass `showingChanges={isShowingChanges}` to `IngredientTable`/`Method`.
+
+### WR-04: In show-changes, the step cell reads blank for a row still allocated to a step the child removed, while the same row reads "unallocated" in the clean reading — and the split step on the same cell uses the opposite numbering policy
+
+**File:** `app/src/ui/IngredientTable.jsx:221-231`, `272-276`, `461-462`, `494`
+**Issue:** `DiffStepCell` resolves `stepTo` through `safeDisplayNumberOf(currentStepNumbers, ...)` only (line 224). A row whose allocation did not change but whose step the child removed (the seed's four step-2 rows after removing step 2, say) has `stepChanged: false` and no current position, so the cell renders nothing and `rowDiffAccessibleLabel` adds no step phrase (line 272 requires `stepChanged`). The clean reading of the same version renders "unallocated" for that row (line 41). Two states of one page give a reader two different answers for the same fact. Meanwhile the `splitStep` on the same cell (line 461-462, 494) resolves through `resolveStepNumber` with the baseline fallback, so a removed split step prints the parent's number beside a blank primary — exactly the "blended" numbering the file's own comment at lines 20-24 says a show-changes site must never do.
+**Fix:** Make the show-changes cell agree with the reading cell when the current side has no position, and make the split step follow the primary's policy:
+```jsx
+function DiffStepCell({ rowDiff, currentStepNumbers, baselineStepNumbers }) {
+  const changed = rowDiff.removed || rowDiff.stepChanged;
+  const stepFromDisplay = safeDisplayNumberOf(baselineStepNumbers, rowDiff.stepFrom);
+  const stepToDisplay = safeDisplayNumberOf(currentStepNumbers, rowDiff.stepTo);
+  return (
+    <>
+      {changed && stepFromDisplay != null && <span className="struck-value">{stepFromDisplay}</span>}
+      {stepToDisplay ?? 'unallocated'}
+    </>
+  );
+}
+```
+and at line 461-462 resolve `splitStepDisplay` with `safeDisplayNumberOf(currentStepNumbers, row.splitStep)` in the show-changes branch (dropping the reference when `null`, as `formatStepReferences` does), so the two references in one cell name the same side. Add the missing accessible phrase for the unallocated case in `rowDiffAccessibleLabel`.
+
+### WR-05: `buildPenFields` coerces a blank or whitespace-only grams string to `0 g` on save, diverging from the pen's own live preview (pre-existing, outside the 03-06..03-10 hunks)
+
+**File:** `app/src/ui/RecipePage.jsx:892-895` (compare `423`)
+**Issue:** `draftVersion` keeps `row.grams` when `draftRow.grams === ''` (line 423), but `buildPenFields` tests only `Number.isFinite(parsed)` — and `Number('')`, `Number('  ')` are both `0`, finite. Two consequences: (a) a row the maker removed and then cleared (the grams field stays editable on a removed row, `GramsCell` comment lines 107-110) passes `blockedSaveMessage` (removed rows are skipped, `lineage.js:157`) and is saved with `grams: 0`, so the amount the pen previewed is lost the moment a later version restores that row; (b) a whitespace-only grams on an active row passes `blockedSaveMessage` (`'  ' !== ''`, `lineage.js:158`) and is saved as `0 g` with no message. The preview and the record disagree on the same keystroke.
+**Fix:** Use the same predicate at both sites, and trim before the blank check in `blockedSaveMessage`:
+```js
+// RecipePage.jsx, buildPenFields:
+const raw = draftRow.grams.trim();
+const parsed = Number(raw);
+grams: raw !== '' && Number.isFinite(parsed) ? parsed : row.grams,
+```
+```js
+// lineage.js, blockedSaveMessage:
+if (draftRow.grams === undefined || draftRow.grams.trim() === '') {
+```
+
+### WR-06: Target chips are diffed by label but consumed by index, so a label collision mid-edit strikes the wrong chip (pre-existing; now three sites disagree)
+
+**File:** `app/src/domain/diff.js:84-99`; `app/src/ui/Method.jsx:186`, `349`; `app/src/ui/RecipePage.jsx:117-122`
+**Issue:** `buildTargetDiff` keys on `label`, de-duplicates labels, and appends baseline-only labels at the end. `Method.jsx` reads `stepDiff.targets[index]` positionally against `draftStep.targets`/`step.targets`, and the 03-07 dirty check `targetsDiffer` compares by index, explicitly "matching handleChangePenStepTarget's own matching rule (by index, not by label)". `RecipePage.jsx:798-801` acknowledges that labels collide while the maker types. Trace the seed's step 8 (`temp 4 °C`, `blend 45 s`) with the maker retyping chip 0's label to `blend`: the diff collapses to `[{blend, from '45 s', to '45 s', changed false}, {temp, from '4 °C', to null, changed true}]`, so chip 0 (value `4 °C`, actually changed) gets no strike and chip 1 (unchanged) is struck with `temp 4 °C`. Deleting a chip has the same misalignment for every chip after it.
+**Fix:** Diff targets by position, which is the identity every writer and reader already uses:
+```js
+function buildTargetDiff(currentTargets, baselineTargets) {
+  const length = Math.max(currentTargets.length, baselineTargets.length);
+  return Array.from({ length }, (_, index) => {
+    const current = currentTargets[index] ?? null;
+    const base = baselineTargets[index] ?? null;
+    const from = base ? base.value : null;
+    const to = current ? current.value : null;
+    return {
+      label: (current ?? base).label,
+      labelFrom: base ? base.label : null,
+      from,
+      to,
+      changed: from !== to || (base && current && base.label !== current.label),
+    };
+  });
+}
+```
+Update `diff.test.js:338-361` accordingly (the "chip present on only one side" case becomes a length difference).
 
 ## Info
 
-### IN-01: New `letter-spacing: 0.04em` literals continue a pre-existing token gap
+### IN-01: `.pen-hint` duplicates `.batch-margin__hint` declaration for declaration
 
-**File:** `app/src/styles/app.css:20, 142, 418, 448` (new in this phase's diff) and elsewhere
+**File:** `app/src/styles/app.css:869-873` (vs `857-861`)
+**Issue:** The two rules are byte-identical (`font-family`, `font-size`, `margin`). The comment justifies a new name; it does not need a second copy of the values.
+**Fix:** `.batch-margin__hint, .pen-hint { ... }` as one rule, or have `BatchMargin`'s tasting hint use `pen-hint` too.
 
-**Issue:** The project convention (`.claude/CLAUDE.md`) states "every visual value (colour, face, size, spacing, rule weight) reads through a CSS custom property defined in `app/src/styles/tokens.css`; no component or stylesheet carries a literal." `letter-spacing: 0.04em` appears as a bare literal five times in the pre-phase file and is joined by at least four more instances added in this phase's diff (`.running-head`, `.headnote__version-field span`, and others), still with no `--letter-spacing-caps`-style token in `tokens.css`. This is a pre-existing gap this phase's code perpetuates rather than introduces; flagged for visibility rather than as a regression.
+### IN-02: `coverageSentence` is not null-safe on `currentStepNumbers`, unlike every other step-number read in the file
 
-**Fix:** When convenient, introduce a `--letter-spacing-caps: 0.04em` token in `tokens.css` and replace all nine literal occurrences (five pre-existing, four new) at once, so the convention is exact going forward.
+**File:** `app/src/ui/Method.jsx:22`, `31`
+**Issue:** `displayNumberFor` guards `currentStepNumbers ? ... : null`; `coverageSentence` calls `displayNumberOf(currentStepNumbers, step.n)` directly and throws `Cannot read properties of null (reading 'has')` when the map is absent and a removed step has covered rows. The map is required in the pen (see WR-02), so this is a consistency gap rather than a reachable crash from `RecipePage`.
+**Fix:** Route through the same guard (`displayNumberFor`-style) or resolve WR-02 by making the map required and drop the guard from `displayNumberFor` too, so the file has one policy.
+
+### IN-03: The pen's step cell renders an empty `struck-value` span when the baseline has no position for the row's step
+
+**File:** `app/src/ui/IngredientTable.jsx:145`, `150`
+**Issue:** `baselineStepDisplay` is `null` when `row.step` names a step already removed in the record the pen opened on; reallocating that row then renders `<span class="struck-value"></span>` — an empty element with a strike margin and nothing struck.
+**Fix:** `{changed && baselineStepDisplay != null && <span className="struck-value">{baselineStepDisplay}</span>}`, matching `DiffStepCell`'s guard.
+
+### IN-04: Target chips keyed by `label` in the show-changes and reading branches collide when two chips share a label (pre-existing)
+
+**File:** `app/src/ui/Method.jsx:351`, `420`
+**Issue:** The pen branch keys by `index` (line 188) because labels are editable and may collide; the other two branches key by `target.label`, which produces React duplicate-key warnings and unstable reconciliation for a saved step carrying two same-labelled chips.
+**Fix:** Key all three by `index` — the chips are a positional list (see WR-06).
 
 ---
 
-_Reviewed: 2026-09-07T19:55:59Z_
+_Reviewed: 2026-09-08T00:08:56Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_

@@ -229,7 +229,7 @@ function makeThreeStepMethod() {
 }
 
 describe('IngredientTable — the selector keeps a removed step in its list (G-03-3 S3, 03-10)', () => {
-  it("renders an option matching a row's own removed allocation, disabled and marked removed, carrying its pre-removal number", () => {
+  it("renders an option matching a row's own removed allocation, disabled and marked removed, carrying NO number (G-03-14, D-UAT-5)", () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 2)]); // allocated to step 2
     version.method = makeThreeStepMethod();
     const draftVersion = structuredClone(version);
@@ -250,14 +250,59 @@ describe('IngredientTable — the selector keeps a removed step in its list (G-0
       />,
     );
 
-    // The removed step's own option: present, disabled, carrying the
-    // number it had before removal (2) and the word "removed" — the whole
-    // fix for S3, since the row's bound value (2) now has a home.
-    expect(markup).toMatch(/<option value="2" disabled(="")?[^>]*>2\. Cool \(removed\)<\/option>/);
+    // The removed step's own option: present, disabled, marked removed —
+    // still the whole fix for S3, since the row's bound value (2) now has
+    // a home — but carrying no number at all (G-03-14, D-UAT-5), since a
+    // numeral here could be mistaken for a live step's own.
+    expect(markup).toMatch(/<option value="2" disabled(="")?[^>]*>Cool \(removed\)<\/option>/);
+    expect(markup).not.toContain('2. Cool (removed)');
     // React marks the option matching the select's own value as selected,
     // even though it is disabled — the control shows the row's own
     // allocation, never falling back to the first non-disabled option.
     expect(markup).toMatch(/<option value="2"[^>]*selected(="")?[^>]*>/);
+  });
+
+  it('renders no two options with the same leading numeral, and the split-step cell for a row on a removed primary shows one number, not two', () => {
+    // Whole milk's kind of case (Evidence 9): a row's primary allocation
+    // is the removed step, and its splitStep is a live step now sitting
+    // at the same position the removed step used to hold — the "2 … + 2"
+    // self-contradiction.
+    const version = makeVersion([makeRow('a', 'Row A', 10, 2, { splitStep: 3 })]);
+    version.method = makeThreeStepMethod();
+    const draftVersion = structuredClone(version);
+    draftVersion.method[1].removed = true; // step 2 removed; step 3 is now position 2
+    const penDraft = { rows: { a: { grams: '10', step: 2, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method); // 1->1, 3->2
+    const baselineStepNumbers = displayNumbers(version.method); // 1->1, 2->2, 3->3
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    // Every option in the list: none of the live options duplicate a
+    // leading numeral — "1." and "2." (for step 3) appear exactly once
+    // each among the non-removed options, and the removed option carries
+    // none at all to collide with.
+    const optionLabels = [...markup.matchAll(/<option[^>]*>([^<]*)<\/option>/g)].map((match) => match[1]);
+    expect(optionLabels).toEqual(['1. Warm', 'Cool (removed)', '2. Churn']);
+    const leadingNumerals = optionLabels
+      .map((label) => /^(\d+)\./.exec(label))
+      .filter(Boolean)
+      .map((match) => match[1]);
+    expect(new Set(leadingNumerals).size).toBe(leadingNumerals.length);
+    // The row's own cell: the selected option (the removed primary) shows
+    // no numeral, and the split-step span shows exactly one — "+ 2" — so
+    // the cell reads one number, not the "2 … + 2" self-contradiction.
+    expect(markup).toMatch(/<option value="2"[^>]*selected(="")?[^>]*>Cool \(removed\)<\/option>/);
+    expect(markup).toContain('ingredient-table__split-step"> + 2</span>');
   });
 
   it("carries display numbers on the active options' labels, not the stored key", () => {
@@ -390,8 +435,8 @@ describe('IngredientTable — the step column resolves references through the ma
   });
 });
 
-describe('IngredientTable — the orphaned-row flag names a removed step by its pre-removal number (03-10)', () => {
-  it("names the causing step by the number it had before removal, not its stored key", () => {
+describe('IngredientTable — the orphaned-row flag names a removed step by its lead-in alone (G-03-14, D-UAT-5)', () => {
+  it('names the causing step by its lead-in, presenting no step number at all', () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 3)]);
     version.method = [
       { n: 1, leadIn: 'One', instruction: 'Do one.', removed: true }, // already removed at baseline
@@ -416,7 +461,37 @@ describe('IngredientTable — the orphaned-row flag names a removed step by its 
       />,
     );
 
-    expect(markup).toContain('step 1, Two');
+    expect(markup).toContain('used by Two, which is removed');
+    expect(markup).not.toContain('step 1, Two');
     expect(markup).not.toContain('step 2, Two');
+  });
+
+  it('names two causing steps the same way — by lead-in alone, joined — when two removed steps orphan one row', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 3)]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.', uses: ['a'] },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', uses: ['a'] },
+      { n: 3, leadIn: 'Three', instruction: 'Do three.' },
+    ];
+    const draftVersion = structuredClone(version);
+    draftVersion.method[0].removed = true; // step 1 removed
+    draftVersion.method[1].removed = true; // step 2 removed — both orphan row a
+    const penDraft = { rows: { a: { grams: '10', step: 3, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method);
+    const baselineStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    expect(markup).toContain('used by One and Two, which are removed');
   });
 });

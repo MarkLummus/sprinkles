@@ -7,10 +7,18 @@ import { displayNumberOf } from '../domain/stepNumbers.js';
 // The one place a stored step key resolves to the number the reader sees
 // (03-10): its position in the current map if it has one, otherwise its
 // position in the baseline map — the number it had before it was removed
-// — otherwise null. Every step reference in this file (the selector's
-// options, the struck baseline, the show-changes from-and-to, both
-// accessible-name builders, and the orphaned-row flag) reads through this
-// one function so none of them can disagree.
+// — otherwise null. Still serves the split-step reference and the reading
+// state's step column (formatStepReferences) — both of which name a step
+// that is currently live, or nothing at all, never a step this file is
+// naming as removed. The selector's option label and the orphaned-row
+// flag (G-03-14, D-UAT-5) no longer call this for a removed step: the pen
+// names a removed step by its lead-in alone, never by a number that would
+// read as live, so this function's own baseline branch has no remaining
+// caller that can reach it through a removed step today. Left in place
+// rather than deleted — it is still the correct rule for a site naming a
+// step that might be either currently active or currently removed, should
+// a future one arise, and safeDisplayNumberOf beside it is its one-sided
+// counterpart.
 function resolveStepNumber(n, currentMap, baselineMap) {
   const current = safeDisplayNumberOf(currentMap, n);
   if (current != null) return current;
@@ -129,8 +137,9 @@ function GramsCell({ row, mode, penDraft, onChangePenGrams }) {
 // ones (03-10) — a row's bound value must always match an option, or
 // React falls back to selecting the first non-disabled option and shows
 // the maker a step the data does not hold. A removed step's own option
-// stays present, disabled, carries the number it had before the removal,
-// and says so in words; option VALUES are always the stored keys, since
+// stays present and disabled, and says so in words, but carries NO number
+// (G-03-14, D-UAT-5) — the pen's one rule, stated once: a removed step has
+// no number, anywhere. Option VALUES are always the stored keys, since
 // the change handler, the row's own reference, the comparison, the pen's
 // handlers and a batch's step changes all match on them — a value that
 // were a position would break every one of them. A row with a splitStep
@@ -138,7 +147,8 @@ function GramsCell({ row, mode, penDraft, onChangePenGrams }) {
 // primary allocation is a choice here; splitStep is rendered untouched,
 // since editing a split allocation is out of this milestone's scope, but
 // its own number is still resolved through the maps like every other
-// reference.
+// live reference. A future pen surface naming a step should follow this
+// same rule rather than re-deriving it.
 function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStepNumbers, onChangePenRowStep }) {
   const draftRow = penDraft.rows[row.id];
   const changed = draftRow.removed || draftRow.step !== row.step;
@@ -155,10 +165,14 @@ function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStep
         onChange={(event) => onChangePenRowStep(row.id, Number(event.target.value))}
       >
         {stepOptions.map((step) => {
-          const displayNumber = resolveStepNumber(step.n, currentStepNumbers, baselineStepNumbers);
+          // A removed step's own option carries no number at all
+          // (G-03-14): only a live step's own display number is resolved
+          // here, so this option's numeral can never be mistaken for a
+          // live step's own — the "2 … + 2" self-contradiction this
+          // closes.
           const label = step.removed
-            ? `${displayNumber != null ? `${displayNumber}. ` : ''}${step.leadIn} (removed)`
-            : `${displayNumber}. ${step.leadIn}`;
+            ? `${step.leadIn} (removed)`
+            : `${resolveStepNumber(step.n, currentStepNumbers, baselineStepNumbers)}. ${step.leadIn}`;
           return (
             <option key={step.n} value={step.n} disabled={step.removed}>
               {label}
@@ -295,21 +309,17 @@ function removedStepsUsing(draftVersion, rowId) {
 }
 
 // The orphaned-row flag (route-recipe-version.md § 3): beside the row's
-// name when orphanedRows names it, naming the removed step(s) by the
-// number they had before the removal and lead-in — the fallback
-// resolveStepNumber always takes for a removed step, since it never has a
-// current position — with one "remove this row" control. Where a causing
-// step has no position in either version (already removed when the pen
-// opened), it is named by its lead-in alone. Tapping it removes the row —
+// name when orphanedRows names it, naming the removed step(s) by lead-in
+// alone, with one "remove this row" control (G-03-14, D-UAT-5) — every
+// causing step here is removed by construction (removedStepsUsing filters
+// on step.removed), so the number it once had would read as though it
+// were live; this flag never presents one. Tapping it removes the row —
 // one tap, nothing else. It clears the moment the step that caused it is
 // restored, because it is derived, not stored.
-function OrphanedRowFlag({ row, draftVersion, currentStepNumbers, baselineStepNumbers, onTogglePenRowRemoved }) {
+function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
   const causingSteps = removedStepsUsing(draftVersion, row.id);
   if (causingSteps.length === 0) return null;
-  const descriptions = causingSteps.map((step) => {
-    const displayNumber = resolveStepNumber(step.n, currentStepNumbers, baselineStepNumbers);
-    return displayNumber != null ? `step ${displayNumber}, ${step.leadIn}` : step.leadIn;
-  });
+  const descriptions = causingSteps.map((step) => step.leadIn);
   const joined =
     descriptions.length === 1
       ? descriptions[0]
@@ -566,8 +576,6 @@ export function IngredientTable({
                     <OrphanedRowFlag
                       row={row}
                       draftVersion={draftVersion}
-                      currentStepNumbers={currentStepNumbers}
-                      baselineStepNumbers={baselineStepNumbers}
                       onTogglePenRowRemoved={onTogglePenRowRemoved}
                     />
                   )}

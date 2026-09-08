@@ -18,19 +18,43 @@ import { describe, test, expect } from 'vitest';
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TOKENS_PATH = path.join(STYLES_DIR, 'tokens.css');
 const APP_CSS_PATH = path.join(STYLES_DIR, 'app.css');
+const INGREDIENT_TABLE_JSX_PATH = path.join(STYLES_DIR, '..', 'ui', 'IngredientTable.jsx');
 
 const tokensSource = readFileSync(TOKENS_PATH, 'utf8');
 const appCssSource = readFileSync(APP_CSS_PATH, 'utf8');
+const ingredientTableSource = readFileSync(INGREDIENT_TABLE_JSX_PATH, 'utf8');
 
 // Measured content minimums, every one attributed to the debug session
 // that measured it in a real browser
 // (.planning/debug/remove-column-occludes-values.md, phase-3 measurement,
 // "Content widths that set the real minimum for each column").
 const PERCENT_OF_BATCH_HEADER = 80.61; // the numeric columns' widest content
+const DATA_FLAG_ESTIMATED = 66.14; // "estimated" — the shorter of the two flag words
+// "unreviewed" is one letter longer than "estimated" and no seed row
+// currently carries it, so it was never measured. Reasoned rather than
+// guessed: "estimated" averages 66.14 / 9 = 7.35px per letter; scaled to
+// "unreviewed"'s 10 letters, that is ~73.5px — used as the Data column's
+// real minimum since it is the longer word the app can produce.
+const DATA_FLAG_UNREVIEWED_REASONED = 73.5;
+const REMOVE_BUTTON = 60.45; // the native remove/restore <button>, RemoveRowControl
+const WIDEST_INGREDIENT_NAME = 142.83; // "Lambda carrageenan"
 // The content share --col-step held before this plan (03-08), under the
 // old content-box accounting where the declared width WAS the content
 // width (padding was added on top, unmeasured by the token itself).
 const STEP_CONTENT_SHARE_03_08 = 66;
+
+// The page arithmetic (route-recipe-version.md's host page, .recipe-page
+// in app.css): a 2fr/1fr grid, --gap-xl (48px) padding on both sides, and
+// a --gap-l (32px) gap between the two columns. The ingredient table
+// lives in the 2fr column, two thirds of what the grid gap and padding
+// leave.
+const GAP_XL = 48;
+const GAP_L = 32;
+function tableWidthAt(viewport) {
+  return ((viewport - 2 * GAP_XL - GAP_L) * 2) / 3;
+}
+
+const UAT_WIDTHS = [1024, 1152, 1280, 1366, 1440];
 
 // --- Reading helpers -------------------------------------------------
 // Both tasks' assertions rest on these three: a comment stripper (so a
@@ -99,12 +123,23 @@ function readColumnRules(css) {
   return byColumn;
 }
 
+function emittedColumnClasses(jsx) {
+  const re = /ingredient-table__col-([\w-]+)/g;
+  const set = new Set();
+  let match;
+  while ((match = re.exec(jsx))) set.add(match[1]);
+  return set;
+}
+
 const tokens = readCustomProperties(tokensSource);
 const columnRules = readColumnRules(appCssSource);
+const emittedColumns = emittedColumnClasses(ingredientTableSource);
 
 const tableCellPadX = resolveTokenPx(tokens, '--table-cell-pad-x');
 const colNumeric = resolveTokenPx(tokens, '--col-numeric');
 const colStep = resolveTokenPx(tokens, '--col-step');
+const colData = resolveTokenPx(tokens, '--col-data');
+const colRemove = resolveTokenPx(tokens, '--col-remove');
 
 describe('reading helpers', () => {
   test('stripCssComments removes a comment block without touching the rule beside it', () => {
@@ -180,5 +215,93 @@ describe('task 1 — border-box accounting and a corrected derivation', () => {
     expect(content).toBeGreaterThanOrEqual(STEP_CONTENT_SHARE_03_08);
     // Restated, not re-grown: the same content share, not a new one.
     expect(content).toBeLessThanOrEqual(STEP_CONTENT_SHARE_03_08 + 2);
+  });
+});
+
+describe('task 2 — Data and Remove get columns of their own; the name column absorbs the remainder', () => {
+  test('the component emits exactly the five columns this table has', () => {
+    expect(emittedColumns).toEqual(new Set(['name', 'numeric', 'step', 'data', 'remove']));
+  });
+
+  test('every emitted column class is matched by a width rule in app.css — the gate a grep on one file could not express', () => {
+    for (const col of emittedColumns) {
+      expect(columnRules[col], `expected app.css to style .ingredient-table__col-${col}`).toBeTruthy();
+    }
+  });
+
+  test('exactly one column declares an automatic width, and it is the ingredient name', () => {
+    const autoColumns = Object.entries(columnRules)
+      .filter(([, decl]) => /width:\s*auto/.test(decl))
+      .map(([col]) => col);
+    expect(autoColumns).toEqual(['name']);
+  });
+
+  test('every other column reads its width through a --col-* token that resolves to a px value', () => {
+    for (const col of ['numeric', 'step', 'data', 'remove']) {
+      const decl = columnRules[col];
+      const match = decl.match(/width:\s*var\((--col-[\w-]+)\)/);
+      expect(match, `expected ${col} to read width from a --col-* token`).toBeTruthy();
+      expect(resolveTokenPx(tokens, match[1])).toBeTypeOf('number');
+    }
+  });
+
+  test('no ingredient-table rule declares a clipping or a stacking property', () => {
+    const rules = readAllRules(appCssSource);
+    const ingredientTableRules = rules.filter((r) => r.selector.includes('ingredient-table'));
+    expect(ingredientTableRules.length).toBeGreaterThan(0);
+    for (const rule of ingredientTableRules) {
+      expect(rule.declarations).not.toMatch(/overflow\s*:/);
+      expect(rule.declarations).not.toMatch(/clip(-path)?\s*:/);
+      expect(rule.declarations).not.toMatch(/z-index\s*:/);
+      expect(rule.declarations).not.toMatch(/position\s*:\s*(absolute|fixed|sticky)/);
+      expect(rule.declarations).not.toMatch(/text-overflow\s*:/);
+    }
+  });
+
+  test('each of the two new tokens, less the two paddings, clears its own measured minimum', () => {
+    expect(colData - 2 * tableCellPadX).toBeGreaterThanOrEqual(DATA_FLAG_UNREVIEWED_REASONED);
+    expect(colData - 2 * tableCellPadX).toBeGreaterThanOrEqual(DATA_FLAG_ESTIMATED);
+    expect(colRemove - 2 * tableCellPadX).toBeGreaterThanOrEqual(REMOVE_BUTTON);
+  });
+
+  describe('the width budget, computed from the tokens themselves at every width the UAT names', () => {
+    // The table's widest state: a churned version open in the pen, all
+    // three numeric columns plus Step, Data and Remove at once.
+    function sizedColumnsTotalWidestState() {
+      return 3 * colNumeric + colStep + colData + colRemove;
+    }
+
+    test.each(UAT_WIDTHS)('at %ipx, the sized columns never exceed the table width — no column is ever squeezed to nothing', (viewport) => {
+      expect(sizedColumnsTotalWidestState()).toBeLessThanOrEqual(tableWidthAt(viewport));
+    });
+
+    test.each([1280, 1366, 1440])('at %ipx and above, the name column clears the widest seed name (D-UAT-6: unwrapped at 1280+)', (viewport) => {
+      const remainder = tableWidthAt(viewport) - sizedColumnsTotalWidestState();
+      const nameContent = remainder - 2 * tableCellPadX;
+      expect(nameContent).toBeGreaterThanOrEqual(WIDEST_INGREDIENT_NAME);
+    });
+
+    test('at 1152px, the name column still clears the widest seed name', () => {
+      const remainder = tableWidthAt(1152) - sizedColumnsTotalWidestState();
+      const nameContent = remainder - 2 * tableCellPadX;
+      expect(nameContent).toBeGreaterThanOrEqual(WIDEST_INGREDIENT_NAME);
+    });
+
+    test('at 1024px, the name column stays positive — the accepted yield (D-UAT-6), not an oversight', () => {
+      const remainder = tableWidthAt(1024) - sizedColumnsTotalWidestState();
+      const nameContent = remainder - 2 * tableCellPadX;
+      expect(nameContent).toBeGreaterThan(0);
+      // And it is genuinely narrower than the widest name — this is the
+      // width at which D-UAT-6 accepts a wrap, not a second clearance.
+      expect(nameContent).toBeLessThan(WIDEST_INGREDIENT_NAME);
+    });
+
+    test("the reading state's widest shape (no Remove column) still fits at 1280px — the unreported second instance", () => {
+      const readingStateTotal = 3 * colNumeric + colStep + colData;
+      expect(readingStateTotal).toBeLessThanOrEqual(tableWidthAt(1280));
+      // The Data column gets its whole declared width — nothing steals
+      // from it because the total including it still fits.
+      expect(readingStateTotal).toBeGreaterThanOrEqual(colData);
+    });
   });
 });

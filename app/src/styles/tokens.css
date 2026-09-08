@@ -37,7 +37,17 @@
   --rule-width: 320px; /* the drawing's native width; GraduatedRule.jsx WIDTH must agree */
   --measure-prose: 65ch; /* longest line for prose: headnote, method, basis note */
   --leading-table: 1.2; /* fixed so a marked row's bold weight cannot change its height */
-  --col-ingredient: 40%; /* the name column; wide enough that no bold name wraps */
+  /* --col-ingredient retired (G-03-11, D-UAT-6). The name column is now
+     the single unsized column (app.css, .ingredient-table__col-name:
+     width: auto), absorbing whatever the five sized columns below leave
+     rather than claiming a fixed share that had to be renegotiated every
+     time a conditional column (As made, Remove) arrived or left. Its
+     former promise — that the column is "wide enough that no bold name
+     wraps" — no longer holds at every width: names stay unwrapped at
+     1280px and above; below about 1146px they begin to wrap, which
+     D-UAT-6 accepts as the yield rather than squeezing a sized column to
+     nothing. An automatic width is a keyword, not a visual value, so
+     nothing replaces this token. */
   --hatch-pitch: 4px;
   --hatch-stroke: 1.2px;
 
@@ -101,6 +111,13 @@
     03-08 derived (then a content-box width read on its own, no padding
     counted), restated padding-inclusive under the accounting above:
     66 + 12 = 78. */
+  --col-data: 86px; /* content: 86 - 12 = 74px, against "estimated"
+    (66.14px) and the reasoned-longer "unreviewed" (~73.5px, no seed row
+    produces it yet) — sized to the longer, unmeasured word rather than
+    to what happens to sit on screen today (G-03-11). */
+  --col-remove: 78px; /* content: 78 - 12 = 66px, a little slack over the
+    60.45px native remove/restore <button> — a bare button has no shrink
+    guard, unlike the step select's flex + min-width:0 pair (03-08). */
 
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);

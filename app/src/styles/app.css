@@ -330,8 +330,16 @@ body {
   border-bottom: var(--rule-baseline) solid var(--ink);
 }
 
+/* The single unsized column (G-03-11, D-UAT-6): under this table's fixed
+   layout, an automatic width receives exactly what the five sized
+   columns below leave — the same "sized by identity, not position"
+   reasoning 03-08 applied to the columns, extended to the remainder
+   itself, so the two conditional columns (As made, Remove) can come and
+   go without any other column's width moving. Its former fixed share
+   (--col-ingredient, 40%) is retired; see tokens.css for the retirement
+   note and where names now begin to wrap. */
 .ingredient-table__col-name {
-  width: var(--col-ingredient);
+  width: auto;
 }
 
 /* The as-made column's arrival sizes the three numeric columns to their
@@ -347,6 +355,19 @@ body {
 
 .ingredient-table__col-step {
   width: var(--col-step);
+}
+
+/* The Data and Remove columns (G-03-11): unstyled since 03-02/03-08, so
+   under this table's fixed layout they split whatever the sized columns
+   above left — 5.41px each at a 1280px viewport, which is why the Remove
+   column's button painted over the Data column's flag word. Both now
+   read their own token (tokens.css). */
+.ingredient-table__col-data {
+  width: var(--col-data);
+}
+
+.ingredient-table__col-remove {
+  width: var(--col-remove);
 }
 
 .ingredient-table .ink-field {

@@ -63,7 +63,7 @@ created: "2026-09-07"
 | T-02-29 | Tampering | `app/src/ui/RecipePage.jsx`, `app/src/domain/axes.js` | high | mitigate | `setMark` delete path (`axes.js:69`); handler `RecipePage.jsx:309-311`; `axes.test.js:112-142` including the save gate returning to `false` | closed |
 | T-02-30 | Information disclosure | `app/src/ui/AxisMark.jsx` | medium | mitigate | Text `<button>` "Clear" with `aria-label` naming its axis (`AxisMark.jsx:41-50`); `AxisMark.test.jsx:32` | closed |
 | T-02-31 | Tampering | `app/src/domain/axes.js` | low | accept | Carried from T-02-22; the control emits only nine stops or `null` (02-05-PLAN) | closed |
-| T-02-32 | Elevation of privilege | `app/src/domain/axes.js` | medium | mitigate | Planned control: own-property-only write. Delete path complies; the write path at `axes.js:71` is a plain bracket assignment (`next[axisKey] = stop`), and no `__proto__`-keyed test exists. Verified today: a `__proto__` axis name silently drops the mark and does not pollute, because stops are numbers or `null`; the safety is incidental, not the committed control. Close with an own-property-only write (or a `__proto__` test), or re-disposition to accept with the numeric-stops rationale. | open — below high threshold (non-blocking) |
+| T-02-32 | Elevation of privilege | `app/src/domain/axes.js` | medium | mitigate | Planned control: own-property-only write. Delete path complies; the write path at `axes.js:71` is a plain bracket assignment (`next[axisKey] = stop`), and no `__proto__`-keyed test exists. Verified today: a `__proto__` axis name silently drops the mark and does not pollute, because stops are numbers or `null`; the safety is incidental, not the committed control. Closed 2026-09-08 by Phase 03 T-03-06: `axes.js:66-74` now writes by spread plus delete and `axes.test.js:157-161` asserts a `__proto__` axis name leaves the prototype unchanged and drops the mark. | closed |
 | T-02-SC | Tampering | npm installs | high | mitigate | No package installed this phase: `app/package.json` holds 4 dependencies + 3 devDependencies, unchanged since Phase 1 commit `4b96b8d`; no lockfile commit in Phase 2 (`02-VERIFICATION.md:113`) | closed |
 
 *Status: open · closed · open — below high threshold (non-blocking)*
@@ -92,6 +92,7 @@ created: "2026-09-07"
 | Audit Date | Threats Total | Closed | Open | Run By |
 |------------|---------------|--------|------|--------|
 | 2026-09-07 | 33 | 32 | 1 (0 blocking; T-02-32 medium) | gsd-security-auditor (ASVS L1, block_on high); all 180 tests across 10 files passing at audit time |
+| 2026-09-08 | 33 | 33 | 0 | T-02-32 closed by reference to Phase 03 T-03-06 (secure-phase 03 audit) |
 
 ---
 
@@ -99,7 +100,7 @@ created: "2026-09-07"
 
 - [x] All threats have a disposition (mitigate / accept / transfer)
 - [x] Accepted risks documented in Accepted Risks Log
-- [x] `threats_open: 0` confirmed (T-02-32 remains open below the blocking threshold)
+- [x] `threats_open: 0` confirmed (T-02-32 closed 2026-09-08 by reference to 03-SECURITY.md T-03-06)
 - [x] `status: verified` set in frontmatter
 
 **Approval:** verified 2026-09-07

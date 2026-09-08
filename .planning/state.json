@@ -16,7 +16,7 @@
     {
       "number": "3",
       "name": "Develop the next version",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "4",
@@ -26,8 +26,8 @@
   ],
   "next": {
     "command": "/gsd:progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 03 of 4 · 25% · executing"
+    "label": "Advance to the next step (plan phase 4)",
+    "reason": "Phase 4 of 4 — needs a plan"
   },
-  "updated_at": "2026-09-07T19:08:22.937Z"
+  "updated_at": "2026-09-08T12:10:16.949Z"
 }

@@ -4,10 +4,10 @@ current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03 complete, ready to plan Phase 4
-last_updated: "2026-09-08T12:10:16.936Z"
+last_updated: "2026-09-08T14:34:02.522Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 03 complete, transitioned to Phase 4
-state_head: 23ed345830481041e971865979748eba3c82f608
+state_head: 03104fd753d71b06c34af916514ed19313cb075d
 progress:
   total_phases: 4
   completed_phases: 2
@@ -30,9 +30,9 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-08 — Phase 03 complete, transitioned to Phase 4
+Last activity: 2026-09-08 - Completed quick task 260908-eil: Record the 2026-09-08 Impeccable revisions
 
-Progress: [███████░░░] 75% (3/4 phases; 21/21 plans)
+Progress: [█████░░░░░] 50% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
@@ -137,6 +137,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 11] Ingredient-table cells made border-box with a new --table-cell-pad-x token (6px, half the old 12px); tokens.css derivation rewritten to add cell padding to each declared width instead of subtracting it from the remainder; --col-data and --col-remove tokens added and --col-ingredient retired in favor of width:auto on the name column (D-UAT-6, closes G-03-11).
 - Phase 3 UAT (Mark, 2026-09-07/08): D-UAT-1/2 writing a tasting is a pen and every opener, strip link, batch link and lineage link disables with its reason in words, no dialog; D-UAT-3 the orphaned-row rule stays and a removed step names in words which rows another step still covers; D-UAT-4/5 `n` is immutable identity, live steps renumber, a removed step's number is empty in the pen and struck in show-changes; D-UAT-6 padding-inclusive column tokens, Data and Remove sized, name column absorbs and may wrap below ~1140px. As made column shown only with a batch in view; saved children naming a removed step are remapped on read.
 - [Phase 03]: [Phase 3, Plan 12] The pen suppresses a removed step's margin number entirely (D-UAT-5); show-changes marks it struck via a new .method-step__n--struck rule reading --rule-strike (D-UAT-4). The step selector's option and the orphaned-row flag both drop a removed step's number outright, naming it by lead-in alone — closing G-03-14's collision between a removed step's number and the live step that inherited its position.
+- [Impeccable 2026-09-08] The three surface briefs (`route-recipe.md`, `route-recipe-version.md`, `route-recipe-batch.md`) were revised 2026-09-08 after the whole-page critique (25/40, `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md`) and confirmed by Mark 2026-09-08. Headline decisions: **the imprint** — a front-matter band beside the headnote that takes every control out of the printed spread (openers, version strip, lineage line and show-changes toggle, churned date, batch list, and each pen's save ceremony), with the pen's save/cancel pair repeated at the foot of the page; **the binder** — every control drawn in ink at hairline weight, no fill, no radius, no icon, a disabled control keeping its label and going from solid stroke to dashed with its reason in words, a pressed or current state as outline plus weight; **the pen keeps the page** — prose fields render as printed paragraphs with the hairline outline appearing only on focus, a step's purpose and aside appear on demand behind "add a purpose"/"add an aside", and the uses list reads as one line of names with a "change" control that opens the twelve checkboxes for that step alone; **native date inputs** kept for their validation and keyboard entry with the calendar icon hidden, the browser's segment highlight a named exception to the four-colour system; **Escape** closes only an untouched pen, returning focus to its opener, and does nothing once the draft holds ink, so Cancel is the one exit.
+- [Impeccable 2026-09-08] `.claude/CLAUDE.md` gains an "Impeccable and GSD in sync" constraint: Impeccable evaluates and decides (writing `.impeccable/`, `DESIGN.md`, `PRODUCT.md`), every edit under the app workspace goes through a GSD command, and Impeccable's refine, enhance and fix commands describe work for `/gsd-quick`, `/gsd-quick-batch` or a phase plan rather than editing the workspace directly.
 
 ### Pending Todos
 
@@ -163,6 +165,7 @@ None yet.
   - [Phase 2 carry — total row and `trace` done in 02-01; rhythm caveat still open] The short-window caveat: at a 714px-tall viewport, focusing Total solids scrolls 487px and only 5 of 12 marked rows stay visible; the six rules stack to ~1000px, so tighten the note's vertical rhythm.
   - [List page carry] `/` has no page margin, default buttons, no title or running head, and a link with no underline or focus treatment; out of the recipe brief's scope, for whichever phase next touches the list.
   - [Phase 4 carry, UX1-01] No live announcement when a rule marks its rows; PAC, POD, MSNF carry no plain-language gloss (D11).
+- [Impeccable 2026-09-08 -> new phase between 3 and 4] The code work for these confirmed revisions is to be planned as a phase inserted between Phase 3 and Phase 4, not as quick tasks: the imprint (front-matter band, every control out of the spread, the save pair repeated at the foot), the binder's control treatment and its new `--focus-outline-width` token, the pen's printed-paragraph prose fields with purpose and aside on demand and the uses line, native date inputs with the calendar icon hidden, and Escape closing only an untouched pen. Briefs: `.impeccable/surfaces/route-recipe.md` (§ 3 the imprint, § 6 the binder and § 8 Controls), `route-recipe-version.md`, `route-recipe-batch.md`; critique snapshot `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md` (25/40, three P1s).
 
 ### Quick Tasks Completed
 
@@ -179,6 +182,7 @@ None yet.
 | 260906-vsn | Impeccable layout fix: churn date into the headnote slot, graduated rules out of the recording tab path, batch brief revised (critique 2026-09-07 P1) | 2026-09-06 | 681e239 | [260906-vsn-impeccable-layout-fix-for-the-batch-reco](./quick/260906-vsn-impeccable-layout-fix-for-the-batch-reco/) |
 | 260906-w9g | Impeccable harden: tasting form gets a Cancel, a "Tasting" head, focus on its date when opened and back to "Add a tasting" when closed (critique 2026-09-07 second P1) | 2026-09-06 | 0ad36e8 | [260906-w9g-impeccable-harden-for-the-batch-margin-s](./quick/260906-w9g-impeccable-harden-for-the-batch-margin-s/) |
 | 260907-dyn | Commit the confirmed Phase 3 surface brief, revise route-recipe.md § 3 and § 6 to retire the translucent overlay and point at it, and record the confirmed brief in STATE.md | 2026-09-07 | db7214f | [260907-dyn-commit-the-confirmed-phase-3-surface-bri](./quick/260907-dyn-commit-the-confirmed-phase-3-surface-bri/) |
+| 260908-eil | Record the 2026-09-08 Impeccable revisions | 2026-09-08 | 03104fd | [260908-eil-record-the-2026-09-08-impeccable-revisio](./quick/260908-eil-record-the-2026-09-08-impeccable-revisio/) |
 
 ## Deferred Items
 

@@ -1,14 +1,18 @@
 ---
-status: diagnosed
+status: testing
 phase: 03-develop-the-next-version
-source: [03-VERIFICATION.md, 03-VERIFICATION.md (gap-closure re-verification, 2026-09-08)]
+source: [03-VERIFICATION.md, 03-VERIFICATION.md (gap-closure re-verification, 2026-09-08), 03-VERIFICATION.md (second gap-closure re-verification, 03-11/03-12, 2026-09-08)]
 started: 2026-09-07T20:01:13.243Z
-updated: 2026-09-08T01:49:50.000Z
+updated: 2026-09-08T02:50:39Z
 ---
 
 ## Current Test
 
-[testing complete]
+number: 16
+name: With the dev server running, open the churned olive oil version at 1280px and press Develop the next version. The remove buttons sit much closer to the table's right edge than before; nothing moves in the reading state except tighter gaps between columns, and the '% of batch' header still sits on one line.
+expected: |
+  The remove buttons sit closer to the table's right edge in the pen; nothing moves in the reading state except tighter column gaps; '% of batch' stays on one line (03-11 Task 1, closes G-03-11 with test 17).
+awaiting: user response
 
 ## Tests
 
@@ -88,12 +92,24 @@ expected: The selector's option list (built from every step, not just active one
 result: pass
 note: "User: the 3 unallocated rows have nothing in Step column. Expected per the test: rows that were only in the removed step read as unallocated."
 
+### 16. With the dev server running, open the churned olive oil version at 1280px and press Develop the next version. The remove buttons sit much closer to the table's right edge than before; nothing moves in the reading state except tighter gaps between columns, and the '% of batch' header still sits on one line.
+expected: The border-box cells and tighter cell padding land visibly in the pen before the Data/Remove columns get their own widths; 03-11 Task 1's deferred human-check. Re-tests G-03-11 (test 11's second half).
+result: [pending]
+
+### 17. Open the churned olive oil version and check the ingredient table at 1024, 1152, 1280, 1366 and 1440px, in both the reading state (2 Aug batch's As made column in view) and with Develop the next version pressed. The Data column's basis word ('estimated') is fully readable with no remove button touching it, the header reads 'Data' and 'Remove' as two separate words, nothing paints over the Formulation Note, no numeric header wraps, and ingredient names sit on one line at 1280/1366/1440 (a wrap is expected and accepted at 1024). Then press show changes on a saved child and confirm a struck grams value and its replacement still read clearly.
+expected: G-03-11 is closed at every width the UAT names, in both states, with no clipping or hiding used to fake the fix; 03-11 Task 2's deferred human-check.
+result: [pending]
+
+### 18. In the pen on the churned olive oil version, remove step 1. Its margin must be empty, and the coverage cue beside it must name a step number that appears exactly once on the page — follow it and land on the step it means. Its field labels must name the step it was (check with VoiceOver or by reading the markup). Remove step 2 as well: two empty margins, live steps reading 1 upward, the cue on each removed step resolving to one step. Open a flagged row's step selector: the removed step's option shows its lead-in and says it is removed, with no number, and no two options start with the same number. Save the child and press show changes: the struck steps wear their parent numbers with a stroke through them, the live steps read 1 to 9, and no numeral appears twice in the same form.
+expected: G-03-14 is closed: a removed step's number can never be mistaken for the live step's beside it, in either state, and the coverage cue always resolves to exactly one findable step; 03-12's deferred human-check. Re-tests test 14.
+result: [pending]
+
 ## Summary
 
-total: 15
+total: 18
 passed: 9
 issues: 6
-pending: 0
+pending: 3
 skipped: 0
 blocked: 0
 

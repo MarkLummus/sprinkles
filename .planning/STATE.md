@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 03
 current_phase_name: Develop the next version
 status: executing
-stopped_at: Completed 03-11-PLAN.md
-last_updated: "2026-09-08T02:26:26.786Z"
+stopped_at: Completed 03-12-PLAN.md
+last_updated: "2026-09-08T02:41:13.308Z"
 last_activity: 2026-09-07
 last_activity_desc: Phase 03 execution started
-state_head: d1cdffb8667b1e89bbaba1dd88d2ce2e7c61ec38
+state_head: 4767da38c46649ff0cd934cfde406c1e375b93d0
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 21
-  completed_plans: 20
+  completed_plans: 21
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-07)
 ## Current Position
 
 Phase: 03 (Develop the next version) — EXECUTING
-Plan: 2 of 12
+Plan: 3 of 12
 Status: Ready to execute
 Last activity: 2026-09-07 — Phase 03 execution started
 
@@ -79,6 +79,7 @@ Progress: [███░░░░░░░] 25% (2/4 phases; 9/9 plans)
 | Phase 03 P08 | 10min | 2 tasks | 4 files |
 | Phase 03 P10 | 30min | 3 tasks | 9 files |
 | Phase 03 P11 | 20min | 2 tasks | 3 files |
+| Phase 03 P12 | ~20min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -133,6 +134,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 08] Introduced --col-step (66px) derived from the same 1280px-viewport arithmetic the debug session used, chosen so today's rendered layout is unchanged by the column-identity refactor alone; the As made column's conditional removal (task 2) is what actually returns width to its neighbours.
 - [Phase 03]: [Phase 3, Plan 10] One derived stepNumbers.js module (displayNumbers/displayNumberOf) threaded through Method.jsx and IngredientTable.jsx as two page-level maps (current, baseline), closing G-03-6 and G-03-3 S3 without renumbering any stored step key.
 - [Phase 03]: [Phase 3, Plan 11] Ingredient-table cells made border-box with a new --table-cell-pad-x token (6px, half the old 12px); tokens.css derivation rewritten to add cell padding to each declared width instead of subtracting it from the remainder; --col-data and --col-remove tokens added and --col-ingredient retired in favor of width:auto on the name column (D-UAT-6, closes G-03-11).
+- [Phase 03]: [Phase 3, Plan 12] The pen suppresses a removed step's margin number entirely (D-UAT-5); show-changes marks it struck via a new .method-step__n--struck rule reading --rule-strike (D-UAT-4). The step selector's option and the orphaned-row flag both drop a removed step's number outright, naming it by lead-in alone — closing G-03-14's collision between a removed step's number and the live step that inherited its position.
 
 ### Pending Todos
 
@@ -187,6 +189,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T02:26:26.723Z
-Stopped at: Completed 03-11-PLAN.md
+Last session: 2026-09-08T02:41:13.245Z
+Stopped at: Completed 03-12-PLAN.md
 Resume file: None

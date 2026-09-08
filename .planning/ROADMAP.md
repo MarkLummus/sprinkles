@@ -111,7 +111,7 @@ Plans:
   4. Maker sees the new version beside the churned one: per-row change in grams and in % of batch, and the change in each balance figure.
   5. Structural advisories show the basis they were computed from — sub-scale amounts with a master-blend multiple, ultra-pasteurised mass, gum hydration temperature versus the pasteurisation hold, estimated-data exposure — and a version outside a target band still saves; no figure predicts a sensory outcome or is labeled as guaranteeing success.
 
-**Plans**: 11/12 plans executed (10/12 executed; 03-06 to 03-12 close UAT gaps)
+**Plans**: 12/12 plans executed (10/12 executed; 03-06 to 03-12 close UAT gaps)
 
 Plans:
 **Wave 1**
@@ -154,7 +154,7 @@ Plans:
 
 **Gap closure wave 5** *(blocked on gap closure wave 4)*
 
-- [ ] 03-12-PLAN.md — A removed step's number: empty in the pen, struck in show-changes, absent from the selector and the orphan flag, with the union of margin numbers asserted duplicate-free (G-03-14)
+- [x] 03-12-PLAN.md — A removed step's number: empty in the pen, struck in show-changes, absent from the selector and the orphan flag, with the union of margin numbers asserted duplicate-free (G-03-14)
 
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the version editing and comparison surface
@@ -199,7 +199,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
-| 3. Develop the next version | 11/12 | In Progress|  |
+| 3. Develop the next version | 12/12 | In Progress|  |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

@@ -4,10 +4,10 @@ current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03 complete, ready to plan Phase 4
-last_updated: "2026-09-08T14:34:02.522Z"
+last_updated: "2026-09-08T15:08:41.270Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 03 complete, transitioned to Phase 4
-state_head: 03104fd753d71b06c34af916514ed19313cb075d
+state_head: f1c33be2119a843885ab8a3e143b6a4ee62bb4b4
 progress:
   total_phases: 4
   completed_phases: 2
@@ -183,6 +183,7 @@ None yet.
 | 260906-w9g | Impeccable harden: tasting form gets a Cancel, a "Tasting" head, focus on its date when opened and back to "Add a tasting" when closed (critique 2026-09-07 second P1) | 2026-09-06 | 0ad36e8 | [260906-w9g-impeccable-harden-for-the-batch-margin-s](./quick/260906-w9g-impeccable-harden-for-the-batch-margin-s/) |
 | 260907-dyn | Commit the confirmed Phase 3 surface brief, revise route-recipe.md § 3 and § 6 to retire the translucent overlay and point at it, and record the confirmed brief in STATE.md | 2026-09-07 | db7214f | [260907-dyn-commit-the-confirmed-phase-3-surface-bri](./quick/260907-dyn-commit-the-confirmed-phase-3-surface-bri/) |
 | 260908-eil | Record the 2026-09-08 Impeccable revisions | 2026-09-08 | 03104fd | [260908-eil-record-the-2026-09-08-impeccable-revisio](./quick/260908-eil-record-the-2026-09-08-impeccable-revisio/) |
+| 13 | Ignore GSD phase-researcher web cache (.planning/research/.cache/) in .gitignore | 2026-09-08 | f1c33be | — |
 
 ## Deferred Items
 

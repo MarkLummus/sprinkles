@@ -5,4 +5,5 @@
 .DS_Store
 
 .gsd/
+.planning/research/.cache/
 node_modules/

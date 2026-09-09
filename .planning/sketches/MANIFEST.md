@@ -10,4 +10,6 @@ The book spread on `route:/recipe` as built through GSD phase 03.1; the right-ed
 
 | # | Name | Design Question | Winner | Tags |
 |---|------|----------------|--------|------|
-| 001 | pushed-tray | Can a pushed right-edge tray hold versions, batches and ceremonies at 1440 without breaking the table or hiding the formulation note? | C: tray in column two, no third column | layout, shell, tray |
+| 001 | pushed-tray | Can a pushed right-edge tray hold versions, batches and ceremonies at 1440 without breaking the table or hiding the formulation note? | C: tray in column two, no third column; the tray itself superseded by 003 | layout, shell, tray |
+| 002 | tray-at-top | With the tray at the top of column two, where does the batch record live: margin, tray, or both? | none: A–C kept the tray, D crammed the record into column two; superseded by 003 | layout, shell, tray, batches, tablet |
+| 003 | front-matter-rows | Does the front matter read as two stacked rows in column one, version then batch, with lists and the ceremony under their row? | B: rows across the whole page, table in step order, no tray | layout, shell, front-matter |

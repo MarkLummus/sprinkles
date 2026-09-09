@@ -172,11 +172,24 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 03.1-01-PLAN.md — Tracer: the front-matter band end to end — Develop opens the plan's pen in a new Versions region beside the recipe block, the pair repeats at the foot, and the running heads lose their book vocabulary
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 03.1-02-PLAN.md — Versions holds the version list, the labelled lineage, the batch list and all four ceremonies; the margin keeps the record's content and no control; focus returns to the opener and Escape closes only an untouched pen
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 03.1-03-PLAN.md — The binder: the control treatment as global element rules, the focus-versus-state outline split, the drawn chevron, square, spinners and calendar icon, and the stylesheet's own contract suite
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 03.1-04-PLAN.md — The pen keeps the page: prose edits as the printed paragraph, purpose and aside on demand, the uses line behind one control, the batch pen's per-step line on demand, and the step in every accessible name
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 03.1-05-PLAN.md — The three build gaps and the column arithmetic: the rules strike the parent figure and leave the tab path, a non-numeric grams field blocks the save, the total row prints its unit once, and both Two-Ink leaks read in ink
 
 ### Phase 4: Prepare the next version for making
@@ -212,13 +225,14 @@ These govern every phase and are not re-litigated during planning:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
+| 3.1. The imprint and the binder | 0/5 | Planned | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

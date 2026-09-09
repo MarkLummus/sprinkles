@@ -110,3 +110,11 @@ Decided by Mark on 2026-09-09 after the vocabulary audit was reviewed against th
 | Headnote | (no on-screen or accessible name) | Book vocabulary; the prose needs no label. |
 
 Kept as they are: Recipe, Version, Batch, Tasting, Add tasting, Record batch, Record another, Show changes, Next time, Done differently, Skipped, As made, Ingredient notes, Balance, basis, Ingredients, Method, Notes, Before you start, Carried forward, Uses.
+
+## Saying absence
+
+Decided by Mark on 2026-09-09. The batch brief's rule that a blank reads as unknown in words was earned by the binder (14 of 29 batches left no result) and applies to the record. It does not apply to structure.
+
+- Say absence in words only where silence would be ambiguous, or where the absence is the maker's own act: "skipped" on a step, "0 g" on an ingredient left out, "not measured" for a value the sheet asked for and did not get, "no tasting yet" on a churned batch.
+- Omit what does not apply. A first version has no "from" line and no Show changes control. A version with no batch has no batch line. A tasting with no words shows its marks and nothing else. A control that can never apply to the object in view is absent, not disabled; a control that is blocked right now keeps its label and states its reason.
+- In a pen, every field is present, because there a blank is a question the maker is being asked.

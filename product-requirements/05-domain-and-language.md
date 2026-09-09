@@ -81,3 +81,32 @@ Avoid “Your recipe is correct,” “This will fix it,” “In my experience,
 ## Labels still open
 
 Stars vs overall result controls; Optimize vs Adjust balance; Scale vs Change batch size; Template vs Base recipe in particular contexts. Test understanding and task success. Community word frequency alone cannot choose them.
+
+## Interface labels settled on the recipe page
+
+Decided by Mark on 2026-09-09 after the vocabulary audit was reviewed against the labels on `route:/recipe`. D11 shape throughout: the plain word first, the technical term beside it in small print, never hidden. These bind the recipe page's briefs and copy; D12's open labels (stars, Optimize, Scale, Template) stay open.
+
+| Was on screen | Now | Note |
+|---|---|---|
+| Version line | Version | The field that names a version; the placeholder shows the shape, e.g. "55 g oil · 800 g". |
+| Reason | Why | The maker's reason for a version, in their own words. |
+| Cites | From batch | The batch a version answers. |
+| Parent | From version | The version it came from. |
+| Develop | Next version | The opener on the version in view. "New version from …" where an earlier version is forked from a list. |
+| Amend | Correct | Fixing a saved record. |
+| (lists) | Later versions, Later batches | The lists behind the tip. "Other versions" may be needed where "later" is not the direction. |
+| Come-up | Time to temperature | |
+| Draw | Out of the machine, with "draw" as the detail | |
+| Overrun | Air, with "overrun %" as the detail | |
+| Draw notes | At the machine | |
+| Words | How did it turn out? | The guide's own question. |
+| Meltdown loss | Melt test | |
+| PAC | Freezing · PAC | Rule head on the balance note. |
+| POD | Sweetness · POD | |
+| MSNF | Milk solids · MSNF | |
+| Total fat, Sugar solids, Total solids | Fat, Sugar, Solids | |
+| Data (column head) | Source | The cell words "estimated", "unreviewed" stay. |
+| Advisories | Things to check | |
+| Headnote | (no on-screen or accessible name) | Book vocabulary; the prose needs no label. |
+
+Kept as they are: Recipe, Version, Batch, Tasting, Add tasting, Record batch, Record another, Show changes, Next time, Done differently, Skipped, As made, Ingredient notes, Balance, basis, Ingredients, Method, Notes, Before you start, Carried forward, Uses.

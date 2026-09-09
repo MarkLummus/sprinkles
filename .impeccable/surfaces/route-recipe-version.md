@@ -148,3 +148,7 @@ None blocks, none colours, none predicts a sensory outcome, and none is worded a
 - A colour, icon, or badge that says a change, a removed row, a stale step, or an advisory is good, bad, or a problem.
 - Any sensory claim in an advisory or a deviation line.
 - Rebalancing, scaling, or rounding the maker's typed grams.
+
+## Labels (revised 2026-09-09)
+
+Every label this brief names is superseded where `product-requirements/05-domain-and-language.md` § "Interface labels settled on the recipe page" says otherwise: Version line → Version; Reason → Why; Cites → From batch; Parent → From version; Develop → Next version; Amend → Correct; Come-up → Time to temperature; Draw → Out of the machine; Overrun → Air; Draw notes → At the machine; Words → How did it turn out?; Meltdown loss → Melt test; the rule heads read Freezing · PAC, Sweetness · POD, Fat, Milk solids · MSNF, Sugar, Solids; the Data column is Source; Advisories are Things to check; "headnote" is a name in this document only. Decided by Mark after the r/icecreamery vocabulary audit was reviewed against the page. The structural direction (imprint, tray, front matter) is under revision in `.planning/sketches/003-front-matter-rows/`; this section changes words only.

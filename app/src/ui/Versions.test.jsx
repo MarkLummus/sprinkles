@@ -31,11 +31,13 @@ function renderVersions(props) {
     <MemoryRouter>
       <Versions
         version={oliveOilVersion}
+        versions={[oliveOilVersion]}
         mode="reading"
         draft={null}
         penDraft={null}
         openBatch={null}
         batches={[]}
+        versionIdsWithBatches={new Set()}
         citedBatch={null}
         blockedMessage={null}
         openPen={null}
@@ -51,6 +53,19 @@ function renderVersions(props) {
     </MemoryRouter>,
   );
 }
+
+// A child version, for the lineage-line cases (D-08) — no fixture in
+// app/src/data carries a parent, so this is built inline, mirroring the
+// shape createChildVersion actually produces.
+const childVersion = {
+  ...oliveOilVersion,
+  id: 'olive-oil-ice-cream-v2',
+  parentVersionId: oliveOilVersion.id,
+  parentVersionLabel: oliveOilVersion.versionLabel,
+  reason: 'less oil after the batch of 2 Aug',
+  citedBatchId: augustSecondBatch.id,
+  versionLabel: '45 g oil · 800 g',
+};
 
 describe('Versions — the region head (D-01, D-02)', () => {
   it('renders an h2 reading Versions, with an aria-label to match', () => {
@@ -165,5 +180,112 @@ describe('Versions — one hint sentence for the whole block while the pen is op
   it('renders no hint sentence with no pen open', () => {
     const markup = renderVersions({ openPen: null });
     expect(markup).not.toContain('Links return after you save or cancel.');
+  });
+});
+
+describe('Versions — the version list, moved inside (D-07)', () => {
+  it('renders the version strip nav inside the region', () => {
+    const markup = renderVersions({ versions: [oliveOilVersion] });
+    expect(markup).toContain('version-strip');
+    expect(markup).toContain(oliveOilVersion.versionLabel);
+  });
+
+  it('renders a single version as a list, not nothing (no early return)', () => {
+    const markup = renderVersions({ versions: [oliveOilVersion] });
+    expect(markup).toMatch(/<ul class="version-strip__list">/);
+  });
+});
+
+describe('Versions — the lineage, as labelled lines (D-08)', () => {
+  it('renders no lineage at all for a root version', () => {
+    const markup = renderVersions({ version: oliveOilVersion });
+    expect(markup).not.toContain('versions__lineage');
+  });
+
+  it('renders Parent, Batch and Reason as labelled lines for a child version', () => {
+    const markup = renderVersions({
+      version: childVersion,
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    expect(markup).toContain('Parent');
+    expect(markup).toContain('Batch');
+    expect(markup).toContain('Reason');
+    expect(markup).toContain(childVersion.reason);
+    expect(markup).toContain(oliveOilVersion.versionLabel);
+  });
+
+  it('omits the Batch line when no batch was cited', () => {
+    const markup = renderVersions({
+      version: { ...childVersion, citedBatchId: null },
+      citedBatch: null,
+      parentVersion: oliveOilVersion,
+    });
+    expect(markup).toContain('Parent');
+    expect(markup).not.toContain('Batch');
+  });
+
+  it('reads "no reason recorded" when the child carries no reason', () => {
+    const markup = renderVersions({
+      version: { ...childVersion, reason: null },
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    expect(markup).toContain('no reason recorded');
+  });
+
+  it('renders Show changes only when the live parent was read', () => {
+    const withParent = renderVersions({
+      version: childVersion,
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    expect(withParent).toContain('Show changes');
+    expect(withParent).toContain('headnote__show-changes');
+
+    const withoutParent = renderVersions({ version: childVersion, citedBatch: augustSecondBatch, parentVersion: null });
+    expect(withoutParent).not.toContain('Show changes');
+  });
+
+  it('renders Parent and Batch as plain text, not links, while a pen is open', () => {
+    const markup = renderVersions({
+      version: childVersion,
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      batches: [],
+      canSaveOver: true,
+    });
+    expect(markup).not.toMatch(/<a[^>]*href="\/recipe\/olive-oil-ice-cream-v1"/);
+  });
+});
+
+describe('Versions — the batch list, always a list (D-09)', () => {
+  it('reads "no batch yet" with no batch recorded', () => {
+    const markup = renderVersions({ batches: [] });
+    expect(markup).toMatch(/<ul class="batch-margin__list"><li>no batch yet<\/li><\/ul>/);
+  });
+
+  it('renders a single batch as a list entry, "churned <date>", an ink link', () => {
+    const markup = renderVersions({ batches: [augustSecondBatch], openBatch: null });
+    expect(markup).toMatch(/<li[^>]*><a[^>]*href="\/recipe\/olive-oil-ice-cream-v1\/batch\/[^"]+"[^>]*>churned 2 Aug 2026<\/a><\/li>/);
+  });
+
+  it('renders the open batch as plain text with the is-open class, not a link', () => {
+    const markup = renderVersions({ batches: [augustSecondBatch], openBatch: augustSecondBatch });
+    expect(markup).toMatch(/<li class="is-open">churned 2 Aug 2026<\/li>/);
+  });
+
+  it('renders no links in the batch list while a pen is open', () => {
+    const markup = renderVersions({
+      batches: [augustSecondBatch],
+      openBatch: augustSecondBatch,
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      canSaveOver: true,
+    });
+    expect(markup).not.toMatch(/<a[^>]*\/batch\//);
+    expect(markup).toContain('churned 2 Aug 2026');
   });
 });

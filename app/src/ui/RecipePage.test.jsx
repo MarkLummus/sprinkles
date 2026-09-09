@@ -15,10 +15,8 @@ vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { derivePenState, isPenDraftDirty, isDraftDirty } from './RecipePage.jsx';
-import { BatchMargin } from './BatchMargin.jsx';
 import { Versions } from './Versions.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
-import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 const noop = () => {};
 
@@ -81,11 +79,13 @@ describe('derivePenState — the one derivation of "a pen is open"', () => {
   });
 });
 
-// The four-pen matrix, across the two components openPen actually reaches.
-// Table-driven so the correspondence between a pen and the openers it
-// disables reads as data, not as four hand-written near-duplicate tests —
-// exactly the shape that let RC1/RC2 hide, since no single test looked at
-// all four pens against all five openers at once.
+// The four-pen matrix, across the region openPen actually reaches now —
+// every batch-side opener (Amend, Record another batch, Record a batch,
+// Add a tasting) moved from BatchMargin into Versions in this plan
+// (D-04, D-09); BatchMargin itself renders no opener of any kind (see
+// BatchMargin.test.jsx). Table-driven so the correspondence between a pen
+// and the opener it hides reads as data, not as four hand-written
+// near-duplicate tests.
 const PEN_MATRIX = [
   { openPen: 'plan', reason: 'the plan is being developed' },
   { openPen: 'record', reason: 'a batch is being recorded' },
@@ -93,61 +93,12 @@ const PEN_MATRIX = [
   { openPen: 'tasting', reason: 'a tasting is being written' },
 ];
 
-function renderBatchMargin(openPen, reason) {
-  return renderToStaticMarkup(
-    <BatchMargin
-      version={oliveOilVersion}
-      batches={[augustSecondBatch]}
-      openBatch={augustSecondBatch}
-      mode="reading"
-      draft={null}
-      openPen={openPen}
-      penReason={reason}
-      onStartRecording={noop}
-      onStartAmending={noop}
-      onChangeChurnField={noop}
-      onSaveBatch={noop}
-      tastingDraft={null}
-      onStartTasting={noop}
-      onChangeTastingField={noop}
-      onChangeTastingMark={noop}
-      onUseAsExpectedShortcut={noop}
-      onSaveTasting={noop}
-      onCancelTasting={noop}
-    />,
-  );
-}
-
-function renderNoBatchMargin(openPen, reason) {
-  return renderToStaticMarkup(
-    <BatchMargin
-      version={oliveOilVersion}
-      batches={[]}
-      openBatch={null}
-      mode="reading"
-      draft={null}
-      openPen={openPen}
-      penReason={reason}
-      onStartRecording={noop}
-      onStartAmending={noop}
-      onChangeChurnField={noop}
-      onSaveBatch={noop}
-      tastingDraft={null}
-      onStartTasting={noop}
-      onChangeTastingField={noop}
-      onChangeTastingMark={noop}
-      onUseAsExpectedShortcut={noop}
-      onSaveTasting={noop}
-      onCancelTasting={noop}
-    />,
-  );
-}
-
 function renderVersionsReading(openPen, reason) {
   return renderToStaticMarkup(
     <MemoryRouter>
       <Versions
         version={oliveOilVersion}
+        versions={[oliveOilVersion]}
         mode="reading"
         draft={null}
         // The plan pen's own matrix row exercises openPen === 'plan',
@@ -156,6 +107,7 @@ function renderVersionsReading(openPen, reason) {
         penDraft={{ versionLabel: '', reason: '', citedBatchId: null, headnote: oliveOilVersion.headnote }}
         openBatch={null}
         batches={[]}
+        versionIdsWithBatches={new Set()}
         citedBatch={null}
         blockedMessage={null}
         openPen={openPen}
@@ -171,50 +123,20 @@ function renderVersionsReading(openPen, reason) {
   );
 }
 
-describe('The four-pen matrix — every opener disabled, every reason in words', () => {
-  it.each(PEN_MATRIX)('with the $openPen pen open, Amend and Record another batch disable and state the reason', ({ openPen, reason }) => {
-    const markup = renderBatchMargin(openPen, reason);
-    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Amend<\/button>/);
-    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Record another batch<\/button>/);
-    expect(markup).toContain(reason);
-  });
-
-  it.each(PEN_MATRIX.filter((row) => row.openPen !== 'tasting'))(
-    'with the $openPen pen open, Add a tasting disables (the tasting form itself replaces this button while the tasting pen is open)',
-    ({ openPen, reason }) => {
-      const markup = renderBatchMargin(openPen, reason);
-      expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Add a tasting<\/button>/);
-    },
-  );
-
-  it.each(PEN_MATRIX)('with the $openPen pen open, Record a batch (no-batch branch) disables and states the reason', ({ openPen, reason }) => {
-    const markup = renderNoBatchMargin(openPen, reason);
-    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Record a batch<\/button>/);
-    expect(markup).toContain(reason);
-  });
-
+describe('The four-pen matrix — Develop absent, every other opener\'s own coverage lives in Versions.test.jsx', () => {
   // D-05/D-06 narrows this from Phase 3's "every opener visible and
   // disabled with its reason" (D-UAT-1): Develop moved into Versions and
   // now renders only while openPen is null — while the plan's own pen is
   // open its ceremony replaces it (D-06), and the record's/tasting's own
-  // ceremonies (which would otherwise explain Develop's absence here)
-  // arrive in plan 02, so Develop is simply absent, not disabled, for
-  // every pen in this matrix.
+  // ceremonies replace it for the other three pens, so Develop is simply
+  // absent, not disabled, for every pen in this matrix.
   it.each(PEN_MATRIX)('with the $openPen pen open, Develop is absent from Versions', ({ openPen, reason }) => {
     const markup = renderVersionsReading(openPen, reason);
     expect(markup).not.toContain('>Develop<');
   });
 
-  it('with no pen open, none of the five openers disables and no reason line renders', () => {
-    const margin = renderBatchMargin(null, null);
-    const noBatchMargin = renderNoBatchMargin(null, null);
+  it('with no pen open, Develop renders', () => {
     const versions = renderVersionsReading(null, null);
-    expect(margin).not.toMatch(/<button[^>]*disabled=""[^>]*>Amend<\/button>/);
-    expect(margin).not.toMatch(/<button[^>]*disabled=""[^>]*>Record another batch<\/button>/);
-    expect(margin).not.toMatch(/<button[^>]*disabled=""[^>]*>Add a tasting<\/button>/);
-    expect(margin).not.toContain('unavailable while');
-    expect(noBatchMargin).not.toMatch(/<button[^>]*disabled=""[^>]*>Record a batch<\/button>/);
-    expect(noBatchMargin).not.toContain('unavailable while');
     expect(versions).toMatch(/<button[^>]*>Develop<\/button>/);
   });
 });

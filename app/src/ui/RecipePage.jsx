@@ -18,7 +18,6 @@ import { BatchMargin } from './BatchMargin.jsx';
 import { Headnote } from './Headnote.jsx';
 import { Versions } from './Versions.jsx';
 import { PenFoot } from './PenFoot.jsx';
-import { VersionStrip } from './VersionStrip.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
 // Two maps compared by key set and by value — the as-made column's shape,
@@ -971,20 +970,19 @@ export function RecipePage() {
           <Headnote
             version={version}
             mode={mode}
-            draft={draft}
             penDraft={penDraft}
-            openBatch={openBatch}
-            onChangeChurnDate={handleChangeChurnDate}
             onChangePenField={handleChangePenField}
           />
 
           <Versions
             version={version}
+            versions={versions}
             mode={mode}
             draft={draft}
             penDraft={penDraft}
             openBatch={openBatch}
             batches={batches}
+            versionIdsWithBatches={versionIdsWithBatches}
             citedBatch={citedBatch}
             parentVersion={parentVersion}
             showingChanges={showingChanges}
@@ -1000,15 +998,6 @@ export function RecipePage() {
             onToggleShowChanges={handleToggleShowChanges}
           />
         </div>
-
-        <VersionStrip
-          versions={versions}
-          recipeId={version.recipeId}
-          currentId={version.id}
-          versionIdsWithBatches={versionIdsWithBatches}
-          openPen={openPen}
-          penReason={penReason}
-        />
 
         <section className="ingredient-table-region" aria-label="Ingredients">
           <h2 className="region-name">Ingredients</h2>

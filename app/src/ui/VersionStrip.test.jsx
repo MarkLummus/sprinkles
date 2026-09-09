@@ -32,11 +32,12 @@ function renderStrip(props) {
   );
 }
 
-describe('VersionStrip — a strip of one is not a strip', () => {
-  it('renders nothing for a single version', () => {
+describe('VersionStrip — a list of one version is still a list (D-09 discipline, D-07)', () => {
+  it('renders the single version as a list entry, not nothing', () => {
     const versions = [makeVersion({ id: 'v1' })];
     const markup = renderStrip({ versions, currentId: 'v1' });
-    expect(markup).toBe('');
+    expect(markup).toMatch(/<ul class="version-strip__list">/);
+    expect(markup).toContain('line');
   });
 });
 
@@ -87,13 +88,12 @@ describe('VersionStrip — disabled while a pen is open (D-UAT-2)', () => {
     makeVersion({ id: 'c', versionLabel: 'third', createdAt: '2026-03-01T00:00:00.000Z' }),
   ];
 
-  it('renders no anchor at all while a pen is open, still reads every label in words, and carries the reason', () => {
+  it('renders no anchor at all while a pen is open, still reads every label in words', () => {
     const markup = renderStrip({ versions, currentId: 'a', openPen: 'plan', penReason: 'the plan is being developed' });
     expect(markup.match(/<a /g)).toBeNull();
     expect(markup).toContain('first');
     expect(markup).toContain('second');
     expect(markup).toContain('third');
-    expect(markup).toContain('the plan is being developed');
   });
 
   it('still marks the current version by its existing class while a pen is open', () => {
@@ -101,10 +101,11 @@ describe('VersionStrip — disabled while a pen is open (D-UAT-2)', () => {
     expect(markup).toContain('version-strip__item is-current');
   });
 
-  it('renders nothing for a single version whether or not a pen is open', () => {
+  it('renders the single version as text, not a link, while a pen is open', () => {
     const single = [makeVersion({ id: 'v1' })];
     const markup = renderStrip({ versions: single, currentId: 'v1', openPen: 'plan', penReason: 'the plan is being developed' });
-    expect(markup).toBe('');
+    expect(markup.match(/<a /g)).toBeNull();
+    expect(markup).toContain('line');
   });
 
   it('renders the same three anchors as today with no pen open', () => {

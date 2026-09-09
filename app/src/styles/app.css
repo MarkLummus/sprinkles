@@ -84,7 +84,6 @@ body {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     'band band'
-    'strip strip'
     'ingredients side'
     'method side'
     'foot foot';
@@ -181,24 +180,6 @@ body {
   box-sizing: border-box;
 }
 
-/* The lineage line (route-recipe-version.md § 3): "from <parent link>,
-   after the batch of <date link>", in the text face beneath the version
-   line. The reason that follows it reads as a headnote paragraph — the
-   same face and size as the recipe's own headnote prose. */
-.headnote__lineage {
-  font-family: var(--face-text);
-  font-size: var(--size-deviation-words);
-  max-width: var(--measure-prose);
-  margin: var(--gap-hair) 0 0;
-}
-
-/* The lineage line's two links are ink, never the browser's default link
-   colour (the Two-Ink Rule: ink and pen blue only) — the same "focusable
-   in ink" treatment the strip's links get. */
-.headnote__lineage a {
-  color: inherit;
-}
-
 /* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04): the
    pressed state is carried by weight and outline, never by hue or a label
    change — the same convention .version-strip__item.is-current uses. */
@@ -211,13 +192,6 @@ body {
   font-weight: 700;
   outline: var(--focus-outline-width) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
-}
-
-.headnote__reason {
-  font-family: var(--face-text);
-  font-size: var(--size-headnote-prose);
-  max-width: var(--measure-prose);
-  margin: var(--gap-xs) 0 0;
 }
 
 .headnote__citation {
@@ -289,14 +263,40 @@ body {
   margin-top: var(--gap-s);
 }
 
-/* The version strip (route-recipe-version.md § 3, § 6, 03-03): ink on
-   ground, in the grotesk at small-print size — beneath the headnote,
-   above the ingredient table, so the reading order and the tab order
-   both run headnote, strip, table. */
-.version-strip {
-  grid-area: strip;
+/* The lineage (route-recipe.md § 3 "The imprint", D-08): a label and its
+   value read as one line — the label in the grotesk at small-print size,
+   the value inheriting the block's own text-face size. */
+.versions__lineage {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-hair) 0 0;
 }
 
+.versions__lineage a {
+  color: inherit;
+}
+
+.versions__lineage-label {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* An amended batch's second line in the batch list (D-09), on its own
+   line beside the "churned" entry it belongs to. */
+.versions__batch-amended {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+/* The version strip (route-recipe-version.md § 3, § 6, 03-03): ink on
+   ground, in the grotesk at small-print size, nested inside Versions
+   beneath the openers — no grid area of its own now that it renders
+   inside that region rather than as a sibling grid row. */
 .version-strip__list {
   list-style: none;
   margin: 0;

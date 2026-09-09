@@ -1,28 +1,34 @@
 import { useEffect, useRef } from 'react';
-import { formatRecordDate } from '../domain/batch.js';
+import { Link } from 'react-router';
+import { formatRecordDate, sortedBatches } from '../domain/batch.js';
 import { citableBatches } from '../domain/lineage.js';
+import { VersionStrip } from './VersionStrip.jsx';
 
 // The Versions region (route-recipe.md § 3 "The imprint", renamed per
 // D-01): the front-matter band beside the recipe block that holds every
-// control and fact about the recipe that is not the recipe itself. This
-// plan (03.1-01, the phase's tracer) builds only the openers and the
-// plan's own pen ceremony (D-05, D-06) — the version list, the current
-// version's lineage, and the batch list still render elsewhere on the
-// page (VersionStrip, BatchMargin) and move inside this component in
-// plan 02.
+// control and fact about the recipe that is not the recipe itself.
+// Reading state, top to bottom (D-04): the openers, the version list, the
+// current version's lineage, the batch list — this plan (03.1-02) fills
+// all four; plan 01 built only the openers and the plan's own pen
+// ceremony.
 //
 // Every prop here is computed once by RecipePage (openPen/penReason by
 // the page's own one-pen derivation, canSaveOver beside it) and passed
 // straight through — this component never recomputes any of them;
 // re-deriving would reopen the bug class G-03-9 closed (RESEARCH.md
-// Anti-Patterns).
+// Anti-Patterns). The version list orders through VersionStrip's own
+// sortedVersions call and the batch list orders through sortedBatches —
+// this component chooses no order and formats no date of its own beyond
+// formatRecordDate.
 export function Versions({
   version,
+  versions,
   mode,
   draft,
   penDraft,
   openBatch,
   batches,
+  versionIdsWithBatches,
   citedBatch,
   parentVersion = null,
   showingChanges = false,
@@ -138,10 +144,6 @@ export function Versions({
             </div>
             {blockedMessage && <p className="headnote__blocked">{blockedMessage}</p>}
           </div>
-          {/* D-06: one hint sentence for the whole block, replacing the
-              per-control pen-hint sentences the links elsewhere on the
-              page still carry while a pen is open. */}
-          <p className="versions__hint">Links return after you save or cancel.</p>
         </>
       ) : openPen === null ? (
         <div className="versions__openers">
@@ -155,6 +157,85 @@ export function Versions({
           <div className="versions__opener-group" />
         </div>
       ) : null}
+      {/* D-06: one hint sentence for the whole block, replacing the
+          per-control pen-hint sentences every link below used to carry —
+          applies while any pen is open, not only the plan's own. */}
+      {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
+
+      <VersionStrip
+        versions={versions}
+        recipeId={version.recipeId}
+        currentId={version.id}
+        versionIdsWithBatches={versionIdsWithBatches}
+        openPen={openPen}
+        penReason={penReason}
+      />
+
+      {/* The lineage (D-08): labelled lines, a root version shows none of
+          them. Parent and Batch stay ink links while no pen is open, and
+          plain text while one is (the same link-suppression discipline
+          the version list above already carries). */}
+      {version.parentVersionId && (
+        <>
+          <p className="versions__lineage">
+            <span className="versions__lineage-label">Parent</span>
+            {openPen ? (
+              version.parentVersionLabel
+            ) : (
+              <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
+            )}
+          </p>
+          {version.citedBatchId && citedBatch && (
+            <p className="versions__lineage">
+              <span className="versions__lineage-label">Batch</span>
+              {openPen ? (
+                citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
+              ) : (
+                <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
+                  {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
+                </Link>
+              )}
+            </p>
+          )}
+          <p className="versions__lineage">
+            <span className="versions__lineage-label">Reason</span>
+            {version.reason ? version.reason : 'no reason recorded'}
+          </p>
+          {parentVersion && (
+            <p className="versions__lineage">
+              <button type="button" className="headnote__show-changes" aria-pressed={showingChanges} onClick={onToggleShowChanges}>
+                Show changes
+              </button>
+            </p>
+          )}
+        </>
+      )}
+
+      {/* The batch list (D-09): always a list, even with one batch and
+          with none — the "no batch yet" line is the list's own single
+          entry in that state, not a different element. */}
+      {batches.length === 0 ? (
+        <ul className="batch-margin__list">
+          <li>no batch yet</li>
+        </ul>
+      ) : (
+        <ul className="batch-margin__list">
+          {sortedBatches(batches).map((batch) => {
+            const isOpenBatch = openBatch && batch.id === openBatch.id;
+            const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
+            const label = `churned ${dateWords}`;
+            const latestAmendment = batch.amendedAt.length > 0 ? batch.amendedAt[batch.amendedAt.length - 1] : null;
+            return (
+              <li key={batch.id} className={isOpenBatch ? 'is-open' : undefined}>
+                {isOpenBatch || openPen ? label : <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{label}</Link>}
+                {latestAmendment && (
+                  <span className="versions__batch-amended">{`amended ${formatRecordDate(latestAmendment)}`}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </section>
   );
 }

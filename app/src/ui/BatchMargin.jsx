@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router';
-import { formatRecordDate, readMeasured, sortedTastings, sortedBatches, hasTasting, isTastingSaveable } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, sortedTastings, hasTasting, isTastingSaveable } from '../domain/batch.js';
 import { axesForBatch, markKeyFor } from '../domain/axes.js';
 import { AxisMark } from './AxisMark.jsx';
 
@@ -260,13 +259,11 @@ export function BatchMargin({
   }
 
   if (openBatch) {
-    // The latest amendment only (task 3, D-06) — the full list lives in
-    // the record, not the reading state.
+    // The latest amendment only (task 3, D-06) — the full list, the
+    // Amend/Record another openers, and the churn date all now live in
+    // Versions (D-04, D-09).
     const latestAmendment =
       openBatch.amendedAt.length > 0 ? openBatch.amendedAt[openBatch.amendedAt.length - 1] : null;
-    // A version with more than one batch is listed by churn date,
-    // undated last, each a link to its own URL (task 3, D-20, D-21).
-    const orderedBatches = sortedBatches(batches);
     return (
       <div className="batch-margin">
         <p className="batch-margin__legend">Batch</p>
@@ -289,45 +286,6 @@ export function BatchMargin({
         <p className="ink-text">
           {`recorded ${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
         </p>
-        {/* No two of the four pens are ever open together (03-CONTEXT.md
-            D-10, D-UAT-1, RESEARCH.md Pitfall 4): every batch-side opener
-            disables uniformly on `openPen !== null`, not on any one pen it
-            happens to know about, and the reason is stated in words here,
-            never only by the disabled state. */}
-        {openPen && <p className="pen-hint">Batch controls are unavailable while {penReason}.</p>}
-        <button type="button" onClick={() => onStartAmending(openBatch)} disabled={openPen !== null}>
-          Amend
-        </button>
-
-        {orderedBatches.length > 1 && (
-          <>
-            {/* D-UAT-2: while any pen is open, the batch list is not a way
-                off the page either — each entry's date words render as
-                text, the is-open marker on the batch already showing is
-                untouched, and this sentence names the pen holding it. */}
-            {openPen && <p className="pen-hint">Another batch cannot be opened while {penReason}.</p>}
-            <ul className="batch-margin__list">
-              {orderedBatches.map((batch) => {
-                const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
-                return (
-                  <li key={batch.id} className={batch.id === openBatch.id ? 'is-open' : undefined}>
-                    {openPen ? dateWords : <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{dateWords}</Link>}
-                  </li>
-                );
-              })}
-            </ul>
-          </>
-        )}
-
-        {/* Version-scoped: adds a batch to the list above, distinct from
-            Amend directly above it — Amend corrects this open record,
-            this starts a new one (D-06). Placed after the batch list and
-            before the tastings, so the margin reads: this batch, this
-            version's batches, a way to add to that list, this batch's
-            tastings. */}
-        <button type="button" onClick={onStartRecording} disabled={openPen !== null}>
-          Record another batch
-        </button>
 
         {sortedTastings(openBatch).map((tasting) => (
           <TastingReading key={tasting.id} tasting={tasting} axes={axesForBatch(openBatch)} />
@@ -337,7 +295,7 @@ export function BatchMargin({
           <p>This batch has not been tasted yet.</p>
         )}
 
-        {tastingDraft ? (
+        {tastingDraft && (
           <TastingForm
             draft={tastingDraft}
             axes={axesForBatch(openBatch)}
@@ -347,10 +305,6 @@ export function BatchMargin({
             onSaveTasting={onSaveTasting}
             onCancelTasting={onCancelTasting}
           />
-        ) : (
-          <button type="button" ref={addTastingButtonRef} onClick={onStartTasting} disabled={openPen !== null}>
-            Add a tasting
-          </button>
         )}
       </div>
     );
@@ -359,11 +313,7 @@ export function BatchMargin({
   return (
     <div className="batch-margin">
       <p className="batch-margin__legend">Batch</p>
-      <p>{batches.length > 0 ? 'No batch of this version has that address.' : 'No batch recorded against this version yet.'}</p>
-      <button type="button" onClick={onStartRecording} disabled={openPen !== null}>
-        Record a batch
-      </button>
-      {openPen && <p className="pen-hint">Batch controls are unavailable while {penReason}.</p>}
+      <p>{batches.length > 0 ? 'No batch of this version has that address.' : 'no batch yet'}</p>
     </div>
   );
 }

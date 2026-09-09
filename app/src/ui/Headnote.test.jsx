@@ -4,14 +4,13 @@
 // renderToStaticMarkup (react-dom/server), the node test environment, no
 // jsdom, no testing-library, no new dependency, no MemoryRouter — this
 // shrunk component renders no Link. Every case exercising the ceremony,
-// the lineage line, the show-changes toggle or the Develop opener moved
-// to Versions.test.jsx along with the markup itself (03.1-CONTEXT.md
-// D-04 to D-06).
+// the lineage line, the show-changes toggle, the Develop opener, or the
+// churned date moved to Versions.test.jsx along with the markup itself
+// (03.1-CONTEXT.md D-03, D-04 to D-06).
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Headnote } from './Headnote.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
-import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 const noop = () => {};
 
@@ -20,10 +19,7 @@ function renderHeadnote(props) {
     <Headnote
       version={oliveOilVersion}
       mode="reading"
-      draft={null}
       penDraft={null}
-      openBatch={null}
-      onChangeChurnDate={noop}
       onChangePenField={noop}
       {...props}
     />,
@@ -47,17 +43,10 @@ describe('Headnote — the recipe block alone (D-02, D-03)', () => {
     const markup = renderHeadnote({});
     expect(markup).toContain(oliveOilVersion.headnote);
   });
-});
 
-describe('Headnote — the churn-date slot stays here until plan 02 (D-03 closes across plans 01 and 02)', () => {
-  it('renders the churned date for an open batch', () => {
-    const markup = renderHeadnote({ openBatch: augustSecondBatch });
-    expect(markup).toContain('churned');
-  });
-
-  it('renders an editable date field while recording', () => {
-    const markup = renderHeadnote({ mode: 'recording', draft: { churnDate: '' } });
-    expect(markup).toMatch(/<input[^>]*type="date"[^>]*class="ink-field headnote__churn-field"/);
+  it('prints nothing recorded — the version line alone, no churned date (D-03)', () => {
+    const markup = renderHeadnote({});
+    expect(markup).toBe(`<header class="headnote"><h1>${oliveOilVersion.recipeName}</h1><p class="headnote__version">${oliveOilVersion.versionLabel}</p><p class="headnote__prose">${oliveOilVersion.headnote}</p></header>`);
   });
 });
 

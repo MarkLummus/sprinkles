@@ -43,22 +43,27 @@ function coverageSentence(coveredRows, currentStepNumbers) {
 // implementation of the same collapse-on-blur rule. The blur handler reads
 // the blur event's own value, never the draft, since the draft may not
 // have updated synchronously with the blur (RESEARCH.md Pitfall 4's own
-// caution, carried into this mechanism).
+// caution, carried into this mechanism). The focus effect only fires for a
+// field the maker's own press opened, so the version line's autoFocus wins
+// on mount instead of losing to whichever already-texted field renders last.
 function useOnDemandField(initialOpen, onCollapse) {
   const [isOpen, setIsOpen] = useState(initialOpen);
   const fieldRef = useRef(null);
+  const openedByUser = useRef(false);
 
   function openField() {
+    openedByUser.current = true;
     setIsOpen(true);
   }
 
   useEffect(() => {
-    if (isOpen) fieldRef.current?.focus();
+    if (isOpen && openedByUser.current) fieldRef.current?.focus();
   }, [isOpen]);
 
   function handleBlur(event) {
     if (event.target.value.trim() === '') {
       setIsOpen(false);
+      openedByUser.current = false;
       onCollapse();
     }
   }

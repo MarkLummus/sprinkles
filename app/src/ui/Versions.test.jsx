@@ -241,6 +241,21 @@ describe('Versions — a blocked save is stated in words beside the controls', (
     });
     expect(markup).toContain('a version needs a line');
   });
+
+  // The non-numeric grams sentence (critique P1 #3, D-21) reaches the
+  // ceremony through the same penHint prop every blocked-save sentence
+  // already reads — this is the wiring, not a second mechanism.
+  it("renders the row's own \"is not a number\" sentence when a grams field blocks the save", () => {
+    const markup = renderVersions({
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      batches: [],
+      canSaveOver: true,
+      penHint: "Whole milk's amount is not a number",
+    });
+    expect(markup).toContain('Whole milk');
+    expect(markup).toContain('amount is not a number');
+  });
 });
 
 describe('Versions — the record and amend ceremony (D-05, D-10)', () => {

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { computeBalance, formatShareOfBatch, formatGrams } from '../domain/composition.js';
 import { hasAsMade, asMadeFor, asMadeTotals } from '../domain/batch.js';
 import { activeRows } from '../domain/rows.js';
@@ -107,7 +108,7 @@ function rowAccessibleLabel(
 // save, RESEARCH.md Pitfall 5). The struck baseline is row.grams: the
 // value the pen opened on (D-03), rendered as a sibling of the field, not
 // its ancestor, so the strike can never bleed onto the field beside it.
-function GramsCell({ row, mode, penDraft, onChangePenGrams }) {
+function GramsCell({ row, mode, penDraft, onChangePenGrams, inputRef }) {
   if (mode !== 'developing') {
     return <>{row.grams} g</>;
   }
@@ -122,6 +123,7 @@ function GramsCell({ row, mode, penDraft, onChangePenGrams }) {
     <span className="ingredient-table__grams-cell">
       {changed && <span className="struck-value">{row.grams}</span>}
       <input
+        ref={inputRef}
         type="text"
         inputMode="decimal"
         className="ink-field"
@@ -384,6 +386,12 @@ export function IngredientTable({
   showingChanges = false,
   markedRowIds = [],
   markedFigureLabel = '',
+  // The row a blocked save names (critique P1 #3, D-21): the id
+  // blockedSaveRowId returned, or null — the row it names carries the
+  // same weight-and-outline treatment a figure's focus trace already
+  // gives a marked row, and its grams field receives focus once, when
+  // this id changes.
+  blockedRowId = null,
   mode = 'reading',
   draft = null,
   penDraft = null,
@@ -405,6 +413,22 @@ export function IngredientTable({
   // struck, in the pen's own table (RESEARCH.md Pitfall 2). `rows` here is
   // the version the pen opened on (the baseline) outside the pen, and the
   // baseline again inside it — the struck values before every field.
+  // The blocked-save focus target (critique P1 #3, D-21, T-03.1-20): a
+  // Map, never a bare object keyed by a stored row id (T-02-32's
+  // discipline), filled through each grams input's own ref callback.
+  // Moving focus is a real DOM effect, so it lives here rather than being
+  // asserted by a render test (RESEARCH.md Pitfall 4).
+  const gramsInputsRef = useRef(new Map());
+  useEffect(() => {
+    if (!blockedRowId) return;
+    gramsInputsRef.current.get(blockedRowId)?.focus();
+  }, [blockedRowId]);
+
+  function registerGramsInput(rowId, element) {
+    if (element) gramsInputsRef.current.set(rowId, element);
+    else gramsInputsRef.current.delete(rowId);
+  }
+
   const activeRowsOnly = activeRows({ rows });
   const baselineBalance = computeBalance(activeRowsOnly);
   const baselineMass = baselineBalance ? baselineBalance.mass : 0;
@@ -562,11 +586,15 @@ export function IngredientTable({
             // orphanedRows never names an already-removed row (uses.js), so
             // this flag only ever applies to an active row here.
             const flagged = orphanedRowIds.has(row.id);
+            // A blocked save's own row (critique P1 #3, D-21): the same
+            // weight-and-outline the focus trace's is-marked class already
+            // draws, never a second class for the same meaning.
+            const isBlocked = row.id === blockedRowId;
 
             return (
               <tr
                 key={row.id}
-                className={isMarked ? 'is-marked' : undefined}
+                className={isMarked || isBlocked ? 'is-marked' : undefined}
                 aria-label={rowAccessibleLabel(
                   row,
                   dataFlag,
@@ -590,7 +618,13 @@ export function IngredientTable({
                   )}
                 </td>
                 <td className="ingredient-table__col-numeric">
-                  <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
+                  <GramsCell
+                    row={row}
+                    mode={mode}
+                    penDraft={penDraft}
+                    onChangePenGrams={onChangePenGrams}
+                    inputRef={(element) => registerGramsInput(row.id, element)}
+                  />
                 </td>
                 {hasAsMadeLayer && (
                   <td className="ingredient-table__col-numeric">

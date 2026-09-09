@@ -468,6 +468,60 @@ describe('IngredientTable — the step column resolves references through the ma
   });
 });
 
+// A blocked save marks the row blockedSaveRowId named (critique P1 #3,
+// D-21) — the same weight-and-outline class the focus trace's is-marked
+// rows already carry, never a second one.
+describe('IngredientTable — a blocked save marks the offending row (critique P1 #3, D-21)', () => {
+  it('carries the marked-row class on exactly the blocked row and none of its neighbours', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1), makeRow('c', 'Row C', 5, 1)]);
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: {
+        a: { grams: '10', step: 1, removed: false },
+        b: { grams: '4o', step: 1, removed: false },
+        c: { grams: '5', step: 1, removed: false },
+      },
+      asMade: {},
+    };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        blockedRowId="b"
+      />,
+    );
+
+    function trContaining(text) {
+      const trRegex = /<tr[^>]*>[\s\S]*?<\/tr>/g;
+      let match;
+      while ((match = trRegex.exec(markup))) {
+        if (match[0].includes(text)) return match[0];
+      }
+      return null;
+    }
+
+    expect(trContaining('Row A')).not.toContain('class="is-marked"');
+    expect(trContaining('Row B')).toContain('class="is-marked"');
+    expect(trContaining('Row C')).not.toContain('class="is-marked"');
+  });
+
+  it('carries no marked-row class at all when nothing is blocked', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: { grams: '10', step: 1, removed: false } }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    expect(markup).not.toContain('class="is-marked"');
+  });
+});
+
 describe('IngredientTable — the orphaned-row flag names a removed step by its lead-in alone (G-03-14, D-UAT-5)', () => {
   it('names the causing step by its lead-in, presenting no step number at all', () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 3)]);

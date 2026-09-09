@@ -11,6 +11,7 @@ import {
   saveOverVersion,
   citableBatches,
   blockedSaveMessage,
+  blockedSaveRowId,
 } from './lineage.js';
 import { sortedBatches } from './batch.js';
 import { liftVersionRecord } from '../store/versionLift.js';
@@ -272,6 +273,71 @@ describe('blockedSaveMessage', () => {
   it('never looks at a band, a deviation or an advisory', () => {
     const source = blockedSaveMessage.toString();
     expect(source).not.toMatch(/band|deviation|advisor/i);
+  });
+
+  // A grams field holding anything that is not a non-negative number with
+  // up to two decimals blocks the save and names the row (critique P1 #3,
+  // D-21) — a typo can no longer save the parent's own value silently.
+  it('returns a message naming the row and ending in "is not a number" for "4o"', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '4o', removed: false } }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it('rejects a leading minus — "-5" is not a non-negative number', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '-5', removed: false } }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it('rejects more than two decimals — "1.234" is not accepted', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '1.234', removed: false } }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it('rejects surrounding whitespace — a value must be exactly what a valid number looks like', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: ' 5 ', removed: false } }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it.each(['0', '48', '0.48', '12.25'])('accepts %s as a valid grams value and does not block', (grams) => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams, removed: false } }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('checks blank before non-numeric, one thing at a time: an earlier blank row wins over a later row holding a letter', () => {
+    const penFields = {
+      versionLabel: '60 g oil · 800 g',
+      reason: '',
+      rows: validRows({ 'row-01': { grams: '', removed: false }, 'row-04': { grams: '4o', removed: false } }),
+    };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+  });
+
+  describe('blockedSaveRowId', () => {
+    it('returns the id of the row blockedSaveMessage names, for a blank grams field', () => {
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: false } }) };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-01');
+    });
+
+    it('returns the id of the row blockedSaveMessage names, for a non-numeric grams field', () => {
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-04': { grams: '4o', removed: false } }) };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-04');
+    });
+
+    it('returns null when nothing blocks the save', () => {
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows() };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBeNull();
+    });
+
+    it('returns null when the block is the version line\'s own — a blank line', () => {
+      const penFields = { versionLabel: '', reason: '', rows: validRows() };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBeNull();
+    });
+
+    it('returns null when the block is the version line\'s own — a colliding line', () => {
+      const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: false } }) };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, versions)).toBeNull();
+    });
   });
 });
 

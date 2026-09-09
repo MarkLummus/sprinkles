@@ -37,6 +37,11 @@ export function Versions({
   canSaveOver,
   penSaveDisabled = false,
   penHint = null,
+  // A blocked save whose block is the version line's own (critique P1 #3,
+  // D-21) — read from the page's own blockedSaveRowId-derived target so
+  // this component computes no rule of its own, and moves focus into the
+  // field once, when this flips true.
+  versionLineBlocked = false,
   onStartDeveloping,
   onCancelDeveloping,
   onChangePenField,
@@ -113,6 +118,15 @@ export function Versions({
     }
   }, [openPen]);
 
+  // The version-line field's own focus move on a blocked save (critique
+  // P1 #3, D-21): fires once, on the press of Save, never while the maker
+  // types (no live dashing) — the same discipline IngredientTable's own
+  // blocked-row focus follows.
+  const versionLineFieldRef = useRef(null);
+  useEffect(() => {
+    if (versionLineBlocked) versionLineFieldRef.current?.focus();
+  }, [versionLineBlocked]);
+
   return (
     <section className="versions" aria-label="Versions">
       <h2 className="region-name">Versions</h2>
@@ -127,6 +141,7 @@ export function Versions({
             <label className="headnote__version-field">
               <span>Version line</span>
               <input
+                ref={versionLineFieldRef}
                 type="text"
                 className="ink-field"
                 required

@@ -5,7 +5,13 @@ import { buildFigures } from '../domain/figures.js';
 import { createBatch, addTasting, recordAmendment, sortedBatches, isTastingSaveable } from '../domain/batch.js';
 import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
-import { createChildVersion, saveOverVersion, versionsForRecipe, blockedSaveMessage } from '../domain/lineage.js';
+import {
+  createChildVersion,
+  saveOverVersion,
+  versionsForRecipe,
+  blockedSaveMessage,
+  blockedSaveRowId,
+} from '../domain/lineage.js';
 import { buildDiff } from '../domain/diff.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
@@ -266,6 +272,13 @@ export function RecipePage() {
   // survives, RESEARCH.md Pitfall 5).
   const [penDraft, setPenDraft] = useState(null);
   const [blockedMessage, setBlockedMessage] = useState(null);
+  // The offending field a blocked save names (critique P1 #3, D-21): the
+  // version-line field, or a row's grams field by id — read by
+  // IngredientTable and Versions to mark and focus exactly the field
+  // blockedSaveMessage's own sentence names, and cleared everywhere
+  // blockedMessage is cleared so the two can never point at different
+  // fields.
+  const [blockedTarget, setBlockedTarget] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -795,6 +808,7 @@ export function RecipePage() {
       authored: structuredClone(version.authored),
     });
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setMode('developing');
   }
 
@@ -817,15 +831,18 @@ export function RecipePage() {
     setMode('reading');
     setPenDraft(null);
     setBlockedMessage(null);
+    setBlockedTarget(null);
   }
 
   function handleChangePenField(field, value) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({ ...prev, [field]: value }));
   }
 
   function handleChangePenGrams(rowId, value) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], grams: value } } }));
   }
 
@@ -834,6 +851,7 @@ export function RecipePage() {
   // fact from a step's `uses` list, and both are kept.
   function handleChangePenRowStep(rowId, stepNumber) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], step: stepNumber } } }));
   }
 
@@ -844,6 +862,7 @@ export function RecipePage() {
   // orphaned-row flag's "remove this row" control.
   function handleTogglePenRowRemoved(rowId) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({
       ...prev,
       rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], removed: !prev.rows[rowId].removed } },
@@ -856,6 +875,7 @@ export function RecipePage() {
   // property name here carries no T-02-32 risk.
   function handleChangePenStepField(stepN, field, value) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({
       ...prev,
       method: prev.method.map((step) => (step.n === stepN ? { ...step, [field]: value } : step)),
@@ -868,6 +888,7 @@ export function RecipePage() {
   // on the same label while the maker types.
   function handleChangePenStepTarget(stepN, targetIndex, field, value) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({
       ...prev,
       method: prev.method.map((step) => {
@@ -883,6 +904,7 @@ export function RecipePage() {
   // different fact from the row's own step allocation, and both are kept.
   function handleTogglePenStepUses(stepN, rowId) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({
       ...prev,
       method: prev.method.map((step) => {
@@ -900,6 +922,7 @@ export function RecipePage() {
   // control.
   function handleTogglePenStepRemoved(stepN) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({
       ...prev,
       method: prev.method.map((step) => (step.n === stepN ? { ...step, removed: !step.removed } : step)),
@@ -914,6 +937,7 @@ export function RecipePage() {
   // rather than re-deriving it.
   function handleChangePenNoteText(listKey, index, value) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => {
       const originalNote = version.authored[listKey][index];
       const notes = prev.authored[listKey].map((note, i) =>
@@ -930,6 +954,7 @@ export function RecipePage() {
   // authored note carries no cross-flag concern the way a row or step does.
   function handleRemovePenNote(listKey, index) {
     setBlockedMessage(null);
+    setBlockedTarget(null);
     setPenDraft((prev) => ({
       ...prev,
       authored: { ...prev.authored, [listKey]: prev.authored[listKey].filter((_, i) => i !== index) },
@@ -952,6 +977,12 @@ export function RecipePage() {
     const message = blockedSaveMessage(penDraft, version, scopedVersions);
     if (message) {
       setBlockedMessage(message);
+      // D-21: the same traversal that named the message also names the
+      // row it blocked on, so the two can never disagree (T-03.1-21) — a
+      // row id marks and focuses that row's grams field; no row id means
+      // the block is the version line's own.
+      const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
+      setBlockedTarget(rowId ? { kind: 'row', rowId } : { kind: 'versionLine' });
       return null;
     }
     const rows = version.rows.map((row) => {
@@ -987,6 +1018,7 @@ export function RecipePage() {
       setMode('reading');
       setPenDraft(null);
       setBlockedMessage(null);
+      setBlockedTarget(null);
       // D-27: focus lands on the child's Develop control on mount. The
       // router keys RecipePage by `${id}::${batchId}` (router.jsx), so
       // the child mounts fresh and this state is read exactly once.
@@ -1009,6 +1041,7 @@ export function RecipePage() {
       setMode('reading');
       setPenDraft(null);
       setBlockedMessage(null);
+      setBlockedTarget(null);
     });
   }
 
@@ -1053,6 +1086,7 @@ export function RecipePage() {
             canSaveOver={canSaveOver}
             penSaveDisabled={penSaveDisabled}
             penHint={penHint}
+            versionLineBlocked={blockedTarget?.kind === 'versionLine'}
             onStartDeveloping={handleStartDeveloping}
             onCancelDeveloping={handleCancelDeveloping}
             onChangePenField={handleChangePenField}
@@ -1082,6 +1116,7 @@ export function RecipePage() {
               draftVersion={draftVersion}
               diff={changeDiff}
               showingChanges={showingChanges}
+              blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
               markedRowIds={markedRowIds}
               markedFigureLabel={markedFigureLabel}
               mode={mode}

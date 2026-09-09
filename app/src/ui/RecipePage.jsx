@@ -1010,8 +1010,8 @@ export function RecipePage() {
           penReason={penReason}
         />
 
-        <section className="ingredient-table-region" aria-label="Ingredient table">
-          <h2 className="region-name">Ingredient table</h2>
+        <section className="ingredient-table-region" aria-label="Ingredients">
+          <h2 className="region-name">Ingredients</h2>
           {hasRows ? (
             <IngredientTable
               rows={mode === 'developing' || showingChanges ? version.rows : readingVersion.rows}
@@ -1062,7 +1062,7 @@ export function RecipePage() {
             beside the table, then the margin beneath it. One flow, so the
             method's height never separates the two. */}
         <div className="side-region">
-          <section className="formulation-note-region" aria-label="Formulation note">
+          <section className="formulation-note-region" aria-label="Balance">
             <FormulationNote
               version={liveVersion}
               mode={mode}
@@ -1073,8 +1073,8 @@ export function RecipePage() {
             <BasisNote version={liveVersion} />
           </section>
 
-          <aside className="margin-region" aria-label="Margin">
-            <p className="region-name">Margin</p>
+          <aside className="margin-region" aria-label="Notes">
+            <h2 className="region-name">Notes</h2>
             <BatchMargin
               version={version}
               batches={batches}

@@ -17,7 +17,7 @@ export function FormulationNote({ version, mode, diff = null, onFocusFigure, onB
 
   return (
     <div className="formulation-note">
-      <h2 className="region-name">Formulation note</h2>
+      <h2 className="region-name">Balance</h2>
       {figures.map((figure) => {
         // The show-changes state's per-figure delta (route-recipe-version.md
         // § 3, § 6, 03-04): matched by key from the one buildDiff RecipePage

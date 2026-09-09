@@ -12,6 +12,13 @@ function countOccurrences(markup, substring) {
   return markup.split(substring).length - 1;
 }
 
+describe('FormulationNote — the region head reads Balance, not the book vocabulary (D-01)', () => {
+  it('renders an h2 reading Balance', () => {
+    const markup = renderToStaticMarkup(<FormulationNote version={oliveOilVersion} mode="reading" />);
+    expect(markup).toMatch(/<h2[^>]*class="region-name"[^>]*>Balance<\/h2>/);
+  });
+});
+
 describe('FormulationNote — graduated rules leave the recording tab path (D-04)', () => {
   it('gives every graduated-rule button tabindex="-1" while recording', () => {
     const markup = renderToStaticMarkup(<FormulationNote version={oliveOilVersion} mode="recording" />);

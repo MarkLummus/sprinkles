@@ -140,6 +140,21 @@ describe('Versions — the openers, present only with no pen open (D-05)', () =>
     expect(markup).toContain('>Amend<');
     expect(markup).toContain('Add tasting');
   });
+
+  // D-27: after a fork saves and the page lands on the child's URL, focus
+  // goes to the child's own Develop control. renderToStaticMarkup cannot
+  // execute the actual focus transition (RESEARCH.md Pitfall 4) — this
+  // asserts only the static `autofocus=""` attribute the DOM reads on
+  // mount, the one focus-adjacent fact this test infrastructure can prove.
+  it('renders autofocus="" on Develop when focusDevelopOnMount is true, and no autofocus when it is false', () => {
+    const withFocus = renderVersions({ openPen: null, focusDevelopOnMount: true });
+    const developButton = withFocus.match(/<button[^>]*>Develop<\/button>/)[0];
+    expect(developButton).toContain('autofocus=""');
+
+    const withoutFocus = renderVersions({ openPen: null, focusDevelopOnMount: false });
+    const developButtonNoFocus = withoutFocus.match(/<button[^>]*>Develop<\/button>/)[0];
+    expect(developButtonNoFocus).not.toContain('autofocus');
+  });
 });
 
 describe('Versions — the ceremony renders nothing pre-filled', () => {
@@ -290,6 +305,26 @@ describe('Versions — the version list, moved inside (D-07)', () => {
   it('renders a single version as a list, not nothing (no early return)', () => {
     const markup = renderVersions({ versions: [oliveOilVersion] });
     expect(markup).toMatch(/<ul class="version-strip__list">/);
+  });
+
+  it('carries the current entry by the is-current class, weight and outline, and marks a churned version with the word "churned"', () => {
+    const markup = renderVersions({
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      versionIdsWithBatches: new Set([oliveOilVersion.id]),
+    });
+    expect(markup).toMatch(/<li class="version-strip__item is-current">/);
+    expect(markup).toContain('churned');
+  });
+
+  it('renders every version label as plain text, no links, while any pen is open', () => {
+    const markup = renderVersions({
+      versions: [oliveOilVersion, childVersion],
+      openPen: 'record',
+      draft: emptyChurnDraft,
+    });
+    expect(markup).not.toMatch(/<a href="\/recipe\/olive-oil-ice-cream-v1"/);
+    expect(markup).toContain(oliveOilVersion.versionLabel);
   });
 });
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
 import { createBatch, addTasting, recordAmendment, sortedBatches, isTastingSaveable } from '../domain/batch.js';
@@ -213,6 +213,10 @@ export function derivePenState({ mode, amendingBatchId, tastingDraft }) {
 export function RecipePage() {
   const { id, batchId } = useParams();
   const navigate = useNavigate();
+  // The fork's landing focus signal (D-27): read once, here, so Versions
+  // stays prop-driven and testable without a router state of its own.
+  const location = useLocation();
+  const focusDevelopOnMount = Boolean(location.state?.focusDevelop);
   // The show-changes state (D-02): on when the `changes` key is present in
   // the URL's search parameters at all — its value is never consulted, so
   // presence is the whole signal. Composes with both /recipe/:id and
@@ -373,6 +377,35 @@ export function RecipePage() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [mode, draft, amendBaseline, tastingDraft, penDraft, version]);
+
+  // Escape (D-27): closes only an untouched pen, and does nothing at all
+  // once the pen holds ink — Cancel is the one exit, so a stray key can
+  // never discard a sheet of transcription. Registered on `document`, not
+  // the article, so an Escape pressed while focus rests on `body` (the
+  // state the critique found batch Cancel leaving behind) still closes
+  // the pen. Reads the same three dirty checks the beforeunload guard
+  // above already reads — introducing no fourth notion of dirtiness.
+  // openPen is recomputed here via derivePenState (not read as an outer
+  // variable) because this effect must sit above the early returns below,
+  // where the page-level openPen constant does not exist yet.
+  useEffect(() => {
+    const { openPen: escapeOpenPen } = derivePenState({ mode, amendingBatchId, tastingDraft });
+    if (escapeOpenPen === null) return undefined;
+    function handleKeyDown(event) {
+      if (event.key !== 'Escape') return;
+      if (escapeOpenPen === 'plan' && !isPenDraftDirty(mode, penDraft, version)) {
+        handleCancelDeveloping();
+      } else if ((escapeOpenPen === 'record' || escapeOpenPen === 'amend') && !isDraftDirty(mode, draft, amendBaseline)) {
+        handleCancelRecording();
+      } else if (escapeOpenPen === 'tasting' && !isTastingDraftDirty(tastingDraft)) {
+        handleCancelTasting();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mode, amendingBatchId, tastingDraft, penDraft, version, draft, amendBaseline]);
 
   if (version === undefined) return null;
   // The running head is the way home in every state, including this one
@@ -943,7 +976,10 @@ export function RecipePage() {
       setMode('reading');
       setPenDraft(null);
       setBlockedMessage(null);
-      navigate(`/recipe/${child.id}`);
+      // D-27: focus lands on the child's Develop control on mount. The
+      // router keys RecipePage by `${id}::${batchId}` (router.jsx), so
+      // the child mounts fresh and this state is read exactly once.
+      navigate(`/recipe/${child.id}`, { state: { focusDevelop: true } });
     });
   }
 
@@ -1001,7 +1037,6 @@ export function RecipePage() {
             citedBatch={citedBatch}
             parentVersion={parentVersion}
             showingChanges={showingChanges}
-            blockedMessage={blockedMessage}
             openPen={openPen}
             penReason={penReason}
             canSaveOver={canSaveOver}
@@ -1024,6 +1059,7 @@ export function RecipePage() {
             onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
             onSaveTasting={handleSaveTasting}
             onCancelTasting={handleCancelTasting}
+            focusDevelopOnMount={focusDevelopOnMount}
           />
         </div>
 

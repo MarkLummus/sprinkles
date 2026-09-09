@@ -32,7 +32,6 @@ export function Versions({
   citedBatch,
   parentVersion = null,
   showingChanges = false,
-  blockedMessage,
   openPen = null,
   penReason = null,
   canSaveOver,
@@ -55,6 +54,7 @@ export function Versions({
   onUseAsExpectedShortcut,
   onSaveTasting,
   onCancelTasting,
+  focusDevelopOnMount = false,
 }) {
   // Focus-return for each of the four pens, one ref pair per opener,
   // moved verbatim from Headnote.jsx (the plan's pen, Phase 2 precedent)
@@ -256,7 +256,18 @@ export function Versions({
       ) : openPen === null ? (
         <div className="versions__openers">
           <div className="versions__opener-group">
-            <button type="button" ref={developButtonRef} onClick={onStartDeveloping}>
+            {/* D-27: after a fork saves and the page lands on the child's
+                URL, focus goes to the child's own Develop control —
+                autoFocus is the DOM's own mechanism for landing focus on
+                mount, which a ref-based effect (built for a same-page
+                open-to-closed transition) cannot reach across a
+                navigation to a freshly-mounted page. */}
+            <button
+              type="button"
+              ref={developButtonRef}
+              autoFocus={focusDevelopOnMount}
+              onClick={onStartDeveloping}
+            >
               Develop
             </button>
           </div>

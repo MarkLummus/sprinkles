@@ -818,18 +818,12 @@ textarea {
   margin-top: var(--gap-xs);
 }
 
-/* The pen's own step fields (03-02): the same labelled-field shape the
-   headnote's ceremony fields already use. */
+/* The pen's own step fields (03-02, 03.1-04): a prose field carries no
+   visible label word of its own any more, so this wrapper's only job now
+   is the vertical rhythm between fields. */
 .method-step__field {
   display: block;
-  font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
   margin-top: var(--gap-xs);
-}
-
-.method-step__field span {
-  display: block;
-  margin-bottom: var(--gap-hair);
 }
 
 .target-chip__label-field,
@@ -861,6 +855,25 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: var(--gap-hair);
+}
+
+/* The uses line (D-24): one line of names in small print, its "change"/
+   "done" control on the same line. */
+.method-step__uses-line {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-cross-flag);
+  margin: var(--gap-xs) 0 0;
+}
+
+.method-step__uses-line button {
+  margin-left: var(--gap-xs);
+}
+
+/* The on-demand text controls (D-23, D-25): "add purpose", "add aside",
+   "done differently" — sitting in the step's own flow, one per line. */
+.method-step__on-demand {
+  display: block;
+  margin-top: var(--gap-xs);
 }
 
 /* The removed-row cross-flag and the stale-amount flag (03-02): small

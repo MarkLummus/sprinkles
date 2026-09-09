@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
 import { removedRowsUsedBy, coveredRowsFor, stepsWithStaleAmounts } from '../domain/uses.js';
 import { buildDiff } from '../domain/diff.js';
@@ -34,6 +35,291 @@ function coverageSentence(coveredRows, currentStepNumbers) {
       return `${rowNames} ${verb} still used by ${stepNames}`;
     })
     .join('; ');
+}
+
+// The on-demand field mechanism (D-23, D-25): a boolean local to the field,
+// open when the value it starts with already carries text, closing itself
+// on an empty blur — write once here, reuse for purpose, aside, and the
+// batch pen's per-step "done differently" line, never a second
+// implementation of the same collapse-on-blur rule. The blur handler reads
+// the blur event's own value, never the draft, since the draft may not
+// have updated synchronously with the blur (RESEARCH.md Pitfall 4's own
+// caution, carried into this mechanism).
+function useOnDemandField(initialOpen, onCollapse) {
+  const [isOpen, setIsOpen] = useState(initialOpen);
+  const fieldRef = useRef(null);
+
+  function openField() {
+    setIsOpen(true);
+  }
+
+  useEffect(() => {
+    if (isOpen) fieldRef.current?.focus();
+  }, [isOpen]);
+
+  function handleBlur(event) {
+    if (event.target.value.trim() === '') {
+      setIsOpen(false);
+      onCollapse();
+    }
+  }
+
+  return { isOpen, openField, fieldRef, handleBlur };
+}
+
+// A step's body while the plan's pen is open (D-23, D-24, D-28): pulled out
+// of the steps.map() loop below so each step can own its own on-demand
+// state (purpose, aside, the uses checklist) via ordinary component-local
+// useState — this component is called once per step, in the same order
+// every render, since the method's own step count does not change within
+// a session.
+function StepPenBody({
+  step,
+  draftStep,
+  stepDiff,
+  rows,
+  flaggedRows,
+  coveredRows,
+  staleEntry,
+  staleFlagVisible,
+  currentStepNumbers,
+  fieldLabel,
+  onChangePenStepField,
+  onChangePenStepTarget,
+  onTogglePenStepUses,
+  onTogglePenStepRemoved,
+}) {
+  const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
+  const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
+  const showAsideStruck = stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
+
+  const purpose = useOnDemandField(Boolean(draftStep.purpose), () =>
+    onChangePenStepField(step.n, 'purpose', ''),
+  );
+  const aside = useOnDemandField(Boolean(draftStep.aside), () => onChangePenStepField(step.n, 'aside', ''));
+
+  // The uses line (D-24): closed by default, reading the names live off
+  // the draft on every render — never a snapshot — so the line above the
+  // checklist updates as boxes change while it is open.
+  const [usesOpen, setUsesOpen] = useState(false);
+  const usesControlRef = useRef(null);
+  const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).map((row) => row.ingredientName);
+
+  function handleUsesKeyDown(event) {
+    if (event.key !== 'Escape') return;
+    // Stops the page's own document-level Escape listener from also
+    // firing for this key press (planner decision 4) — one press closes
+    // the checklist only, the second reaches the pen.
+    event.stopPropagation();
+    setUsesOpen(false);
+    usesControlRef.current?.focus();
+  }
+
+  return (
+    <div className="method-step__body">
+      <label className="method-step__field">
+        <input
+          type="text"
+          className="prose-field prose-field--lead-in"
+          value={draftStep.leadIn}
+          aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
+          onChange={(event) => onChangePenStepField(step.n, 'leadIn', event.target.value)}
+        />
+      </label>
+      <label className="method-step__field">
+        <textarea
+          className="prose-field"
+          rows="2"
+          value={draftStep.instruction}
+          aria-label={fieldLabel(step, draftStep.removed, 'instruction')}
+          onChange={(event) => onChangePenStepField(step.n, 'instruction', event.target.value)}
+        />
+      </label>
+      {/* The one place the strike sits below rather than beside
+          the field, because a paragraph has no room beside
+          (route-recipe-version.md § 3). The "removed" label is
+          a sibling of the struck element, never nested inside
+          it — the same reason the reading branch's "Skipped"
+          label sits outside its struck span, below. */}
+      {showStruckBeneath && (
+        <p className="prose-struck-beneath">
+          <b>{stepDiff.textFrom.leadIn}.</b> {stepDiff.textFrom.instruction}
+        </p>
+      )}
+      {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
+
+      {draftStep.targets?.length > 0 && (
+        <p className="method-step__targets">
+          {draftStep.targets.map((target, index) => {
+            const targetDiff = stepDiff.targets[index];
+            return (
+              <span className="target-chip" key={index}>
+                {targetDiff?.changed && targetDiff.from != null && (
+                  <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
+                )}
+                <input
+                  type="text"
+                  className="ink-field target-chip__label-field"
+                  value={target.label}
+                  aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
+                  onChange={(event) => onChangePenStepTarget(step.n, index, 'label', event.target.value)}
+                />
+                <input
+                  type="text"
+                  className="ink-field target-chip__value-field"
+                  value={target.value}
+                  aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
+                  onChange={(event) => onChangePenStepTarget(step.n, index, 'value', event.target.value)}
+                />
+              </span>
+            );
+          })}
+        </p>
+      )}
+
+      {/* The stale-amount flag (route-recipe-version.md § 3):
+          derived from the step's uses list, never from parsing
+          the prose — shown in the pen and in show-changes only,
+          never in the clean reading. Visibility is decided by
+          the page, passed in as a prop, so this component does
+          not need to know which state the page is in. */}
+      {staleFlagVisible && staleEntry && (
+        <p className="method-step__stale-flag">
+          {`amounts changed: ${staleEntry.changes
+            .map((change) => `${change.ingredientName} ${change.from} → ${change.to} g`)
+            .join('; ')}`}
+        </p>
+      )}
+
+      {/* Purpose and aside on demand (D-23): a lowercase opener when the
+          field holds no text, the field itself once the maker asks for
+          one or it already carries a baseline value. */}
+      {purpose.isOpen ? (
+        <label className="method-step__field">
+          <textarea
+            ref={purpose.fieldRef}
+            className="prose-field"
+            rows="2"
+            value={draftStep.purpose ?? ''}
+            aria-label={fieldLabel(step, draftStep.removed, 'purpose')}
+            onChange={(event) => onChangePenStepField(step.n, 'purpose', event.target.value)}
+            onBlur={purpose.handleBlur}
+          />
+        </label>
+      ) : (
+        <button
+          type="button"
+          className="method-step__on-demand"
+          aria-label={fieldLabel(step, draftStep.removed, 'add purpose')}
+          onClick={purpose.openField}
+        >
+          add purpose
+        </button>
+      )}
+      {/* Each of the four text fields strikes only its own
+          parent value, beneath itself, when that field moved —
+          never the lead-in/instruction pair (03-09). */}
+      {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
+
+      {aside.isOpen ? (
+        <label className="method-step__field">
+          <textarea
+            ref={aside.fieldRef}
+            className="prose-field"
+            rows="2"
+            value={draftStep.aside ?? ''}
+            aria-label={fieldLabel(step, draftStep.removed, 'aside')}
+            onChange={(event) => onChangePenStepField(step.n, 'aside', event.target.value)}
+            onBlur={aside.handleBlur}
+          />
+        </label>
+      ) : (
+        <button
+          type="button"
+          className="method-step__on-demand"
+          aria-label={fieldLabel(step, draftStep.removed, 'add aside')}
+          onClick={aside.openField}
+        >
+          add aside
+        </button>
+      )}
+      {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
+
+      {/* The uses line (D-24): one line of names with a single "change"
+          control per step, rather than twelve checkboxes permanently on
+          screen. */}
+      <p className="method-step__uses-line">
+        {usesNames.length > 0 ? `uses ${usesNames.join(', ')}` : 'uses nothing yet'}{' '}
+        <button
+          type="button"
+          ref={usesControlRef}
+          aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change')}
+          onClick={() => setUsesOpen((open) => !open)}
+        >
+          {usesOpen ? 'done' : 'change'}
+        </button>
+      </p>
+      {usesOpen && (
+        <fieldset
+          className="method-step__uses"
+          aria-label={fieldLabel(step, draftStep.removed, 'uses')}
+          onKeyDown={handleUsesKeyDown}
+        >
+          <legend>Uses</legend>
+          {rows.map((row) => (
+            <label key={row.id} className="method-step__uses-item">
+              <input
+                type="checkbox"
+                checked={(draftStep.uses ?? []).includes(row.id)}
+                onChange={() => onTogglePenStepUses(step.n, row.id)}
+              />
+              <span>{row.ingredientName}</span>
+            </label>
+          ))}
+        </fieldset>
+      )}
+
+      {/* The removed-row cross-flag (route-recipe-version.md
+          § 3): beneath an ACTIVE step, naming the removed
+          row(s) it still names in its own uses list, with one
+          "remove this step" control. One tap, that step only —
+          removal never cascades. Gated on the step not itself
+          being removed: on an already-removed step this
+          control's "remove this step" label lied — the same
+          handler restores (T-03-53) — so an already-removed
+          step gets the coverage cue in its place, below. */}
+      {!draftStep.removed && flaggedRows.length > 0 && (
+        <p className="method-step__flag">
+          {`uses ${flaggedRows.map((row) => row.ingredientName).join(', ')}, which ${
+            flaggedRows.length > 1 ? 'are' : 'is'
+          } removed`}{' '}
+          <button type="button" onClick={() => onTogglePenStepRemoved(step.n)}>
+            remove this step
+          </button>
+        </p>
+      )}
+
+      {/* The coverage cue (D-UAT-3): on a removed step, names
+          the rows it used that another step still covers, so
+          correct silence (nothing orphaned) is legible rather
+          than indistinguishable from a broken flag. The rows
+          this removal DID orphan already announce themselves
+          beside their own names in the ingredient table — this
+          cue does not repeat them, and renders nothing when
+          the step covers none of its own rows. */}
+      {draftStep.removed && coveredRows.length > 0 && (
+        <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
+      )}
+
+      <button
+        type="button"
+        aria-label={fieldLabel(step, draftStep.removed, draftStep.removed ? 'restore' : 'remove')}
+        onClick={() => onTogglePenStepRemoved(step.n)}
+      >
+        {draftStep.removed ? 'restore' : 'remove'}
+      </button>
+    </div>
+  );
 }
 
 // The numbered method, in the sheet's order. The step number sits in a
@@ -139,17 +425,6 @@ export function Method({
             const flaggedRows = removedRowsUsedBy(draftVersion, draftStep);
             const coveredRows = coveredRowsFor(draftVersion, draftStep);
             const staleEntry = activeStaleSteps.find((entry) => entry.n === step.n);
-            // Driven only by the two fields this paragraph actually shows
-            // (03-09, T-03-52). Unlike GramsCell's forced strike on a
-            // removed row — where the number may ALSO have changed, so the
-            // struck baseline value is still informative — a removed step's
-            // prose has not changed at all; forcing the strike here printed
-            // the same sentence twice. Removal is marked by the "removed"
-            // label alone, a sibling of this paragraph, never by reusing
-            // the changed-text device.
-            const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
-            const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
-            const showAsideStruck = stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
             // The margin (D-UAT-5, G-03-14): a number that came from the
             // BASELINE frame — a removed step — is not printed here. The
             // span still renders so the two-column grid never shifts, but
@@ -167,155 +442,22 @@ export function Method({
                 <span className="method-step__n" aria-hidden="true">
                   {marginInfo.frame === 'current' ? marginInfo.number : null}
                 </span>
-                <div className="method-step__body">
-                  <label className="method-step__field">
-                    <input
-                      type="text"
-                      className="prose-field prose-field--lead-in"
-                      value={draftStep.leadIn}
-                      aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
-                      onChange={(event) => onChangePenStepField(step.n, 'leadIn', event.target.value)}
-                    />
-                  </label>
-                  <label className="method-step__field">
-                    <textarea
-                      className="prose-field"
-                      rows="2"
-                      value={draftStep.instruction}
-                      aria-label={fieldLabel(step, draftStep.removed, 'instruction')}
-                      onChange={(event) => onChangePenStepField(step.n, 'instruction', event.target.value)}
-                    />
-                  </label>
-                  {/* The one place the strike sits below rather than beside
-                      the field, because a paragraph has no room beside
-                      (route-recipe-version.md § 3). The "removed" label is
-                      a sibling of the struck element, never nested inside
-                      it — the same reason the reading branch's "Skipped"
-                      label sits outside its struck span, below. */}
-                  {showStruckBeneath && (
-                    <p className="prose-struck-beneath">
-                      <b>{stepDiff.textFrom.leadIn}.</b> {stepDiff.textFrom.instruction}
-                    </p>
-                  )}
-                  {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
-
-                  {draftStep.targets?.length > 0 && (
-                    <p className="method-step__targets">
-                      {draftStep.targets.map((target, index) => {
-                        const targetDiff = stepDiff.targets[index];
-                        return (
-                          <span className="target-chip" key={index}>
-                            {targetDiff?.changed && targetDiff.from != null && (
-                              <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
-                            )}
-                            <input
-                              type="text"
-                              className="ink-field target-chip__label-field"
-                              value={target.label}
-                              aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
-                              onChange={(event) => onChangePenStepTarget(step.n, index, 'label', event.target.value)}
-                            />
-                            <input
-                              type="text"
-                              className="ink-field target-chip__value-field"
-                              value={target.value}
-                              aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
-                              onChange={(event) => onChangePenStepTarget(step.n, index, 'value', event.target.value)}
-                            />
-                          </span>
-                        );
-                      })}
-                    </p>
-                  )}
-
-                  {/* The stale-amount flag (route-recipe-version.md § 3):
-                      derived from the step's uses list, never from parsing
-                      the prose — shown in the pen and in show-changes only,
-                      never in the clean reading. Visibility is decided by
-                      the page, passed in as a prop, so this component does
-                      not need to know which state the page is in. */}
-                  {staleFlagVisible && staleEntry && (
-                    <p className="method-step__stale-flag">
-                      {`amounts changed: ${staleEntry.changes
-                        .map((change) => `${change.ingredientName} ${change.from} → ${change.to} g`)
-                        .join('; ')}`}
-                    </p>
-                  )}
-
-                  <label className="method-step__field">
-                    <textarea
-                      className="prose-field"
-                      rows="2"
-                      value={draftStep.purpose ?? ''}
-                      aria-label={fieldLabel(step, draftStep.removed, 'purpose')}
-                      onChange={(event) => onChangePenStepField(step.n, 'purpose', event.target.value)}
-                    />
-                  </label>
-                  {/* Each of the four text fields strikes only its own
-                      parent value, beneath itself, when that field moved —
-                      never the lead-in/instruction pair (03-09). */}
-                  {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
-                  <label className="method-step__field">
-                    <textarea
-                      className="prose-field"
-                      rows="2"
-                      value={draftStep.aside ?? ''}
-                      aria-label={fieldLabel(step, draftStep.removed, 'aside')}
-                      onChange={(event) => onChangePenStepField(step.n, 'aside', event.target.value)}
-                    />
-                  </label>
-                  {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
-
-                  <fieldset className="method-step__uses">
-                    <legend>Uses</legend>
-                    {rows.map((row) => (
-                      <label key={row.id} className="method-step__uses-item">
-                        <input
-                          type="checkbox"
-                          checked={(draftStep.uses ?? []).includes(row.id)}
-                          onChange={() => onTogglePenStepUses(step.n, row.id)}
-                        />
-                        <span>{row.ingredientName}</span>
-                      </label>
-                    ))}
-                  </fieldset>
-
-                  {/* The removed-row cross-flag (route-recipe-version.md
-                      § 3): beneath an ACTIVE step, naming the removed
-                      row(s) it still names in its own uses list, with one
-                      "remove this step" control. One tap, that step only —
-                      removal never cascades. Gated on the step not itself
-                      being removed: on an already-removed step this
-                      control's "remove this step" label lied — the same
-                      handler restores (T-03-53) — so an already-removed
-                      step gets the coverage cue in its place, below. */}
-                  {!draftStep.removed && flaggedRows.length > 0 && (
-                    <p className="method-step__flag">
-                      {`uses ${flaggedRows.map((row) => row.ingredientName).join(', ')}, which ${
-                        flaggedRows.length > 1 ? 'are' : 'is'
-                      } removed`}{' '}
-                      <button type="button" onClick={() => onTogglePenStepRemoved(step.n)}>
-                        remove this step
-                      </button>
-                    </p>
-                  )}
-
-                  {/* The coverage cue (D-UAT-3): on a removed step, names
-                      the rows it used that another step still covers, so
-                      correct silence (nothing orphaned) is legible rather
-                      than indistinguishable from a broken flag. The rows
-                      this removal DID orphan already announce themselves
-                      beside their own names in the ingredient table — this
-                      cue does not repeat them, and renders nothing when
-                      the step covers none of its own rows. */}
-                  {draftStep.removed && coveredRows.length > 0 && (
-                    <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
-                  )}
-
-                  <button type="button" onClick={() => onTogglePenStepRemoved(step.n)}>
-                    {draftStep.removed ? 'restore' : 'remove'}
-                  </button>
-                </div>
+                <StepPenBody
+                  step={step}
+                  draftStep={draftStep}
+                  stepDiff={stepDiff}
+                  rows={rows}
+                  flaggedRows={flaggedRows}
+                  coveredRows={coveredRows}
+                  staleEntry={staleEntry}
+                  staleFlagVisible={staleFlagVisible}
+                  currentStepNumbers={currentStepNumbers}
+                  fieldLabel={fieldLabel}
+                  onChangePenStepField={onChangePenStepField}
+                  onChangePenStepTarget={onChangePenStepTarget}
+                  onTogglePenStepUses={onTogglePenStepUses}
+                  onTogglePenStepRemoved={onTogglePenStepRemoved}
+                />
               </li>
             );
           }

@@ -375,7 +375,12 @@ describe('Method — developing mode', () => {
     expect(markup).not.toContain('method-step__flag');
   });
 
-  it('renders exactly one control on a removed step, reading restore', () => {
+  // Was "renders exactly one control on a removed step" before 03.1-04:
+  // the step body now also carries the on-demand openers (add purpose,
+  // add aside) and the uses line's own control, closed by default — the
+  // remove/restore control is still the step's own last button, reading
+  // restore, but it is no longer the step's only one (D-23, D-24).
+  it('renders remove/restore as restore on a removed step, alongside the on-demand openers', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[0].removed = true;
@@ -391,8 +396,8 @@ describe('Method — developing mode', () => {
     );
 
     const buttonMatches = markup.match(/<button[^>]*>[^<]*<\/button>/g) ?? [];
-    expect(buttonMatches).toHaveLength(1);
-    expect(buttonMatches[0]).toContain('restore');
+    expect(buttonMatches[buttonMatches.length - 1]).toContain('restore');
+    expect(markup).not.toContain('>remove</button>');
   });
 
   it("renders the removed-row cross-flag exactly as before on an active step that uses a removed row, unaffected by the coverage cue", () => {
@@ -587,6 +592,117 @@ describe('Method — developing mode', () => {
       />,
     );
     expect(markup).not.toContain('amounts changed:');
+  });
+});
+
+describe('Method — purpose and aside on demand (D-23)', () => {
+  it('renders no purpose or aside field and renders both openers when the draft carries neither', () => {
+    const baselineVersion = makeBaselineVersion(); // no purpose/aside
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toMatch(/<button[^>]*>add purpose<\/button>/);
+    expect(markup).toMatch(/<button[^>]*>add aside<\/button>/);
+    expect(markup).not.toMatch(/aria-label="Step [^"]*, purpose"/);
+    expect(markup).not.toMatch(/aria-label="Step [^"]*, aside"/);
+  });
+
+  it('renders the purpose and aside fields, and no opener, when the draft already carries text', () => {
+    const baselineVersion = makeBaselineVersionWithProse();
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Step [^"]*, purpose"/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Step [^"]*, aside"/);
+    expect(markup).not.toMatch(/<button[^>]*>add purpose<\/button>/);
+    expect(markup).not.toMatch(/<button[^>]*>add aside<\/button>/);
+  });
+});
+
+describe('Method — the uses line, closed by default (D-24)', () => {
+  it('renders the row names as text and no checkbox, with no fieldset for uses in the default pen markup', () => {
+    const baselineVersion = makeBaselineVersion(); // step 1 uses row-a
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('uses Row A');
+    expect(markup).toMatch(/<button[^>]*>change<\/button>/);
+    expect(markup).not.toContain('<fieldset');
+    expect(markup).not.toContain('type="checkbox"');
+  });
+
+  it('reads "uses nothing yet" for a step with an empty uses list', () => {
+    const baselineVersion = makeBaselineVersion();
+    baselineVersion.method[0].uses = [];
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).toContain('uses nothing yet');
+  });
+});
+
+// The uses fieldset itself only renders once the maker presses "change"
+// (D-24) — a state transition renderToStaticMarkup cannot execute
+// (RESEARCH.md Pitfall 4), so its own "Step 3, uses" accessible name is a
+// UAT item (listed in this plan's SUMMARY), not asserted here as if
+// covered. What this test infrastructure CAN prove: the closed line's own
+// "change" control and the "add purpose"/"add aside" openers already
+// carry the step in their accessible names in the default (unopened) pen
+// markup.
+describe('Method — accessible names carry the step (D-28)', () => {
+  it('names the on-demand controls by the step\'s own position in the default pen markup', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+      />,
+    );
+
+    expect(markup).toContain('aria-label="Step 1, add purpose"');
+    expect(markup).toContain('aria-label="Step 1, change"');
   });
 });
 

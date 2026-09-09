@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.1"
 current_phase_name: The imprint and the binder (INSERTED)
 status: executing
-stopped_at: Completed 03.1-01-PLAN.md
-last_updated: "2026-09-09T02:14:06.269Z"
+stopped_at: Completed 03.1-02-PLAN.md
+last_updated: "2026-09-09T02:43:53.266Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 03.1 execution started
-state_head: 163e84873516501c715975acbafa4fabe046859c
+state_head: ab166921d8de0de6b25bfdbba9804b066fde2e0e
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 26
-  completed_plans: 22
+  completed_plans: 23
   percent: 20
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 ## Current Position
 
 Phase: 03.1 (The imprint and the binder (INSERTED)) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 03.1 execution started
 
@@ -82,6 +82,7 @@ Progress: [██░░░░░░░░] 20% (3/4 phases; 21/21 plans)
 | Phase 03 P11 | 20min | 2 tasks | 3 files |
 | Phase 03 P12 | ~20min | 2 tasks | 5 files |
 | Phase 03.1 P01 | ~35min | 2 tasks | 12 files |
+| Phase 03.1 P02 | 27min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -142,6 +143,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Impeccable 2026-09-08] `.claude/CLAUDE.md` gains an "Impeccable and GSD in sync" constraint: Impeccable evaluates and decides (writing `.impeccable/`, `DESIGN.md`, `PRODUCT.md`), every edit under the app workspace goes through a GSD command, and Impeccable's refine, enhance and fix commands describe work for `/gsd-quick`, `/gsd-quick-batch` or a phase plan rather than editing the workspace directly.
 - [Phase 03.1]: [Phase 03.1, Plan 01] Versions.jsx and PenFoot.jsx built as the imprint's tracer: Develop opens the plan's pen in Versions (replacing the openers), the ceremony's Cancel/Save pair repeats at a new foot band under a hairline rule, and Headnote.jsx shrinks to the recipe alone. Existing markup moved into Versions kept its pre-existing class names per the plan's own recorded decision; PenFoot gates strictly on openPen === 'plan' (not !== null) since this plan gives it no batch-pen handlers or penDraft — a literal !== null gate would crash on Save during a batch pen.
 - [Phase 03.1]: [Phase 03.1, Plan 01] Running heads renamed: Ingredient table -> Ingredients, Formulation note -> Balance, Margin -> Notes (now an h2, was a paragraph). Heading outline: h1 recipe name, h2 Versions, Ingredients, Balance, Method, Notes (D-01, D-02, D-28).
+- [Phase 03.1]: [Phase 03.1, Plan 02] Versions.jsx completed for reading state (version list, labelled lineage, always-a-list batch list) and all four pens' ceremonies (plan, record, amend, tasting) with a shared penSaveDisabled/penHint save-gate derivation; BatchMargin.jsx renders no control of any kind; PenFoot covers all four pens from the same shared gate.
+- [Phase 03.1]: [Phase 03.1, Plan 02] The keyboard contract: one document keydown listener for Escape, gated on each pen's own existing dirty check (isPenDraftDirty/isDraftDirty/isTastingDraftDirty); a fork's save carries router-state ({ state: { focusDevelop: true } }) so the child's Develop control gets autoFocus on mount. The tasting date field now renders twice (ceremony + margin content, both bound to the same draft) per the plan's own literal deletion scope — flagged for the re-critique.
 
 ### Pending Todos
 
@@ -202,6 +205,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-09T02:13:58.813Z
-Stopped at: Completed 03.1-01-PLAN.md
+Last session: 2026-09-09T02:43:53.197Z
+Stopped at: Completed 03.1-02-PLAN.md
 Resume file: None

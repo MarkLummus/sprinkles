@@ -45,8 +45,14 @@ coverage:
       - kind: human
         ref: "browser: press Develop — focus does not jump to a method field and the page does not scroll. Confirmed by Mark 2026-09-09."
         status: pass
+      - kind: human
+        ref: "browser: press an opener (add purpose / add aside) — focus lands in the new field, and returns to the opener on re-open. Confirmed by Mark 2026-09-09."
+        status: pass
+      - kind: human
+        ref: "browser: the batch pen's 'done differently' line, same hook — focus behaves the same. Confirmed by Mark 2026-09-09."
+        status: pass
     human_judgment: true
-    rationale: "The suite runs under Vitest's node environment via renderToStaticMarkup with no jsdom and no testing-library (project has ruled both out), so no automated test can assert document.activeElement or window.scrollY. The plan's own human-check had three parts. Mark confirmed the first on 2026-09-09: pressing Develop no longer steals focus. The other two — pressing an opener and confirming focus lands and returns on re-open, and the batch pen's 'done differently' line — are NOT yet confirmed and stay open for end-of-phase UAT."
+    rationale: "The suite runs under Vitest's node environment via renderToStaticMarkup with no jsdom and no testing-library (project has ruled both out), so no automated test can assert document.activeElement or window.scrollY. All three parts of the plan's human-check were confirmed by Mark in the browser on 2026-09-09: pressing Develop no longer steals focus; pressing an opener lands focus and returns it on re-open; the batch pen's 'done differently' line behaves the same. Nothing from this plan remains deferred."
 
 duration: 6min
 completed: 2026-09-09
@@ -89,7 +95,7 @@ None beyond the plan's own specification — implemented exactly as directed: gu
 
 None — plan executed exactly as written. `app/src/ui/Method.jsx` is the only file changed, and the diff is confined to `useOnDemandField`'s body plus one comment sentence, matching the plan's own `<done>` criteria.
 
-The plan's human-check (browser verification of `document.activeElement`/`window.scrollY` after Develop, and the opener/re-open/batch-pen-line focus checks) could not be run in this environment — this dispatch is a non-interactive execution round with no browser session, and the plan itself records that the automated suite cannot prove focus (no jsdom, no testing-library, both ruled out by the project). Per the constraint given for this dispatch and prior project precedent for deferring human-verify checkpoints, this human-check is deferred to end-of-phase UAT rather than dropped. **Resolved in part 2026-09-09:** Mark confirmed in the browser that pressing Develop no longer steals focus — the P0's own symptom. The opener press/re-open check and the batch pen's line remain unconfirmed. All automated verification (full suite green at 30/618, structural gate GATE PASS, single-file diff confirmed) passed.
+The plan's human-check (browser verification of `document.activeElement`/`window.scrollY` after Develop, and the opener/re-open/batch-pen-line focus checks) could not be run in this environment — this dispatch is a non-interactive execution round with no browser session, and the plan itself records that the automated suite cannot prove focus (no jsdom, no testing-library, both ruled out by the project). Per the constraint given for this dispatch and prior project precedent for deferring human-verify checkpoints, this human-check is deferred to end-of-phase UAT rather than dropped. **Resolved 2026-09-09:** Mark confirmed all three parts in the browser — Develop's focus and scroll, the opener press and re-open, and the batch pen's line. Nothing is carried forward. All automated verification (full suite green at 30/618, structural gate GATE PASS, single-file diff confirmed) passed.
 
 ## Issues Encountered
 None.
@@ -100,7 +106,7 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-The on-demand field focus bug (2026-09-09 recipe-page critique P0) is closed at the hook level, covering all three call sites (purpose, aside, batch pen's "done differently" line) with one fix. Mark confirmed in the browser on 2026-09-09 that pressing Develop no longer steals focus, which closes the P0 as reported. Two narrower checks from the same plan are still unconfirmed and should be carried into end-of-phase UAT: pressing an opener (focus lands, and returns on re-open), and the batch pen's "done differently" line.
+The on-demand field focus bug (2026-09-09 recipe-page critique P0) is closed at the hook level, covering all three call sites (purpose, aside, batch pen's "done differently" line) with one fix. Mark confirmed all three browser checks on 2026-09-09 — Develop no longer steals focus, an opener lands focus and returns it on re-open, and the batch pen's "done differently" line behaves the same. The critique's P0 is closed on evidence at every call site of the hook, and nothing from this plan is carried into UAT.
 
 ---
 *Phase: quick-260909-oov*

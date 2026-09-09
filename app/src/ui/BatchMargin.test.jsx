@@ -182,3 +182,64 @@ describe('BatchMargin — no opener of any kind renders here any more (D-04)', (
     expect(markup).not.toContain('<button');
   });
 });
+
+// The record's own prose reads in the text face, in both the margin and
+// the method (route-recipe-batch.md § 6, revised 2026-09-08); counted
+// values keep the grotesk (03.1-04, task 1).
+describe('BatchMargin — the record\'s own prose carries the text face (03.1-04)', () => {
+  it('renders the draw notes and ingredient notes with the prose-text class, in the reading state', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+    });
+    expect(markup).toMatch(/<p class="prose-text">Soft, not greasy<\/p>/);
+    expect(markup).toMatch(/<p class="prose-text">Oil bottle open date 24 Jul 2026<\/p>/);
+  });
+
+  it('keeps the measured churn fields in ink-text, not prose-text', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+    });
+    expect(markup).toMatch(/<span class="ink-text">20<\/span>/);
+  });
+
+  it("carries the prose-field treatment on the recording state's draw notes, ingredient notes, and next time — the measured fields beside them keep ink-field", () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Draw notes"/);
+    expect(markup).toMatch(/<input[^>]*class="prose-field"[^>]*aria-label="Ingredient notes"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Next time"/);
+    expect(markup).toMatch(/<input[^>]*class="ink-field"[^>]*aria-label="Come-up, minutes"/);
+  });
+
+  it('keeps the measured churn fields (come-up, draw temperature, overrun) in ink-field', () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    const comeUpInput = markup.match(/<input[^>]*aria-label="Come-up, minutes"[^>]*\/>/)[0];
+    expect(comeUpInput).toContain('class="ink-field"');
+  });
+});
+
+// Every churn and tasting field renders in every state of the record pen
+// (D-25) — none of them is on demand; only the batch pen's per-step line
+// (Method.jsx) is.
+describe('BatchMargin — every churn and tasting field is always present (D-25)', () => {
+  it('renders all six recording churn fields', () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    for (const label of ['Come-up', 'Draw temperature', 'Overrun', 'Draw notes', 'Ingredient notes', 'Next time']) {
+      expect(markup).toContain(label);
+    }
+  });
+
+  it('renders the tasting form\'s words and next-time fields with the prose-field treatment', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: emptyTastingDraft,
+    });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Words"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Next time"/);
+  });
+});

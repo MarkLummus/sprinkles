@@ -62,6 +62,49 @@ describe('Method — a step carrying a changed line, in the reading state', () =
   });
 });
 
+// The batch pen's per-step line, on demand (D-25): the Skipped checkbox is
+// always present; the "done differently" line sits behind its own opener,
+// following the same collapse-on-blur shape task 2 wrote for purpose and
+// aside. Amend's own baseline (a stepChanges entry that already holds a
+// line) is what opens the field with no click at all.
+describe('Method — the batch pen\'s per-step line, on demand (D-25)', () => {
+  it('renders the opener and no line field when the step\'s entry holds no line', () => {
+    const markup = renderToStaticMarkup(
+      <Method steps={[unstruckStep]} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} />,
+    );
+    expect(markup).toMatch(/<button[^>]*>done differently<\/button>/);
+    expect(markup).not.toMatch(/<input[^>]*aria-label="Step [^"]*, done differently"/);
+  });
+
+  it('renders the line field, not the opener, when the step\'s entry already holds a line (what Amend opens)', () => {
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={[unstruckStep]}
+        stepChanges={{ 2: { struck: false, line: 'Used vanilla instead' } }}
+        mode="recording"
+        onChangeStepChange={() => {}}
+      />,
+    );
+    expect(markup).toMatch(/<input[^>]*aria-label="Step [^"]*, done differently"[^>]*value="Used vanilla instead"/);
+    expect(markup).toContain('<span>Done differently</span>');
+    expect(markup).not.toMatch(/<button[^>]*>done differently<\/button>/);
+  });
+
+  it("names the Skipped checkbox's accessible name by the step's own number", () => {
+    const markup = renderToStaticMarkup(
+      <Method steps={[unstruckStep]} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} />,
+    );
+    expect(markup).toMatch(/<input type="checkbox"[^>]*aria-label="Step [^"]*, skipped"/);
+  });
+
+  it('renders no visible "What did you do differently?" wording (D-11)', () => {
+    const markup = renderToStaticMarkup(
+      <Method steps={[unstruckStep]} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} />,
+    );
+    expect(markup).not.toContain('What did you do differently?');
+  });
+});
+
 // Developing-mode fixtures (03-02): minimal version-shaped objects — a row
 // needs only what computeBalance/buildFigures touch (grams, an ingredient
 // with a composition block), since these tests assert markup, not figures.

@@ -322,6 +322,64 @@ function StepPenBody({
   );
 }
 
+// The batch pen's per-step controls (D-25, D-28): the Skipped checkbox is
+// always present; the "done differently" line reuses the same on-demand
+// mechanism StepPenBody's purpose/aside fields use, so it opens when the
+// step's own stepChanges entry already holds a line (what makes Amend
+// open the lines that hold text) and collapses back to its opener on an
+// empty blur.
+function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) {
+  const line = useOnDemandField(Boolean(entry && entry.line), () =>
+    onChangeStepChange(step.n, { struck: entry ? entry.struck : false, line: null }),
+  );
+
+  function handleChangeStruck(event) {
+    onChangeStepChange(step.n, { struck: event.target.checked, line: entry ? entry.line : null });
+  }
+
+  function handleChangeLine(event) {
+    const value = event.target.value;
+    onChangeStepChange(step.n, { struck: entry ? entry.struck : false, line: value === '' ? null : value });
+  }
+
+  return (
+    <div className="method-step__recording">
+      <label className="method-step__strike-control">
+        <input
+          type="checkbox"
+          checked={entry ? entry.struck : false}
+          aria-label={fieldLabel(step, false, 'skipped')}
+          onChange={handleChangeStruck}
+        />
+        <span>Skipped</span>
+      </label>
+      {line.isOpen ? (
+        <label className="method-step__line-control">
+          <span>Done differently</span>
+          <input
+            ref={line.fieldRef}
+            type="text"
+            className="prose-field"
+            value={entry && entry.line ? entry.line : ''}
+            aria-label={fieldLabel(step, false, 'done differently')}
+            onChange={handleChangeLine}
+            onBlur={line.handleBlur}
+          />
+        </label>
+      ) : (
+        <button
+          type="button"
+          className="method-step__on-demand"
+          aria-label={fieldLabel(step, false, 'done differently')}
+          onClick={line.openField}
+        >
+          done differently
+        </button>
+      )}
+    </div>
+  );
+}
+
 // The numbered method, in the sheet's order. The step number sits in a
 // fixed margin column so a Phase 2 batch record can point at exactly one
 // step, and so the numbers stay put as prose reflows. Purpose (why the step
@@ -553,15 +611,6 @@ export function Method({
           const changedLine = changedLineFor(batchLike, step.n);
           const entry = stepChangeFor(batchLike, step.n);
 
-          function handleChangeStruck(event) {
-            onChangeStepChange(step.n, { struck: event.target.checked, line: entry ? entry.line : null });
-          }
-
-          function handleChangeLine(event) {
-            const value = event.target.value;
-            onChangeStepChange(step.n, { struck: entry ? entry.struck : false, line: value === '' ? null : value });
-          }
-
           return (
             <li key={step.n} id={`method-step-${step.n}`} className="method-step">
               <span className="method-step__n" aria-hidden="true">
@@ -596,22 +645,12 @@ export function Method({
                 {step.aside && <p className="method-step__aside">{step.aside}</p>}
                 {mode !== 'recording' && changedLine && <p className="method-step__changed ink-text">{changedLine}</p>}
                 {mode === 'recording' && (
-                  <div className="method-step__recording">
-                    <label className="method-step__strike-control">
-                      <input type="checkbox" checked={entry ? entry.struck : false} onChange={handleChangeStruck} />
-                      <span>Skipped</span>
-                    </label>
-                    <label className="method-step__line-control">
-                      <span>What did you do differently?</span>
-                      <input
-                        type="text"
-                        className="ink-field"
-                        value={entry && entry.line ? entry.line : ''}
-                        aria-label={fieldLabel(step, false, 'what was done differently')}
-                        onChange={handleChangeLine}
-                      />
-                    </label>
-                  </div>
+                  <StepRecordingControls
+                    step={step}
+                    entry={entry}
+                    onChangeStepChange={onChangeStepChange}
+                    fieldLabel={fieldLabel}
+                  />
                 )}
               </div>
             </li>

@@ -299,6 +299,12 @@ textarea {
   margin-bottom: var(--gap-hair);
 }
 
+/* The version-line field (D-13 § 8, "Measure"): held to the prose measure
+   rather than the full width of the page. */
+.headnote__version-field .ink-field {
+  max-width: var(--measure-prose);
+}
+
 .headnote__version-was {
   font-family: var(--face-text);
   font-size: var(--size-deviation-words);
@@ -307,24 +313,7 @@ textarea {
 
 .headnote__reason-field {
   display: block;
-  font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
   margin-top: var(--gap-s);
-}
-
-.headnote__reason-field span {
-  display: block;
-  margin-bottom: var(--gap-hair);
-}
-
-/* The reason field's typed text (route-recipe-version.md § 6: "prose in
-   the text face") — the labelling span above stays in the grotesk. */
-.headnote__reason-field textarea.ink-field {
-  font-family: var(--face-text);
-  font-size: var(--size-headnote-prose);
-  width: 100%;
-  max-width: var(--measure-prose);
-  box-sizing: border-box;
 }
 
 /* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04): the
@@ -350,6 +339,12 @@ textarea {
   margin-top: var(--gap-s);
 }
 
+/* The citation select (D-13 § 8, "Measure"): held to the prose measure
+   alongside the version-line field above. */
+.headnote__citation select.ink-field {
+  max-width: var(--measure-prose);
+}
+
 .headnote__ceremony {
   display: flex;
   gap: var(--gap-s);
@@ -362,24 +357,12 @@ textarea {
   margin: var(--gap-xs) 0 0;
 }
 
-/* The headnote prose field (03-02): the same labelled-field shape the
-   ceremony's other fields use. */
+/* The headnote prose field (03-02, 03.1-04): its own visible label word
+   is gone (planner decision 2) — the wrapper's own spacing is all this
+   rule keeps. */
 .headnote__prose-field {
   display: block;
-  font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
   margin-top: var(--gap-m);
-}
-
-.headnote__prose-field span {
-  display: block;
-  margin-bottom: var(--gap-hair);
-}
-
-.headnote__prose-field textarea.ink-field {
-  width: 100%;
-  max-width: var(--measure-prose);
-  box-sizing: border-box;
 }
 
 /* Versions (route-recipe.md § 3 "The imprint", D-04 to D-06): the openers
@@ -949,7 +932,7 @@ textarea {
   gap: var(--gap-xs);
 }
 
-.authored__note-field textarea.ink-field {
+.authored__note-field textarea.prose-field {
   flex: 1 1 auto;
 }
 
@@ -1031,6 +1014,44 @@ textarea {
   font-size: var(--size-small-print);
   max-width: var(--measure-prose);
   margin: var(--gap-m) 0 0;
+}
+
+/* The prose family (route-recipe-version.md § 3, D-13 § 8): the intro
+   paragraph, each step's lead-in and instruction, purpose and aside, each
+   authored note, the reason, and the record's own prose all edit in place
+   as the printed paragraph — no border at rest; the hairline outline
+   the brief describes is the global :focus-visible rule above, appearing
+   only on focus (planner decision 1: one outline mechanism, not two).
+   font-size and line-height inherit from whichever block-level context
+   already sizes the paragraph this field replaces, rather than fixing a
+   size here that could disagree with it. */
+.prose-field {
+  font-family: var(--face-text);
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--pen-blue);
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: var(--measure-prose);
+  box-sizing: border-box;
+}
+
+/* The lead-in field (route-recipe-version.md § 3): reads bold in place of
+   the printed step's own <b>, the one prose field this weight applies to. */
+.prose-field--lead-in {
+  font-weight: 700;
+}
+
+/* The record's own prose, read-only (route-recipe-batch.md § 6, revised
+   2026-09-08): the same text face as the prose fields above, so a
+   tasting's words or a churn note does not change face between the
+   margin and the method. Counted values keep .ink-text's grotesk. */
+.prose-text {
+  font-family: var(--face-text);
+  color: var(--pen-blue);
 }
 
 /* The pen layer (route-recipe-batch.md § 3): everything the maker types,

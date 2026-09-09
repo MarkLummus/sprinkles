@@ -188,6 +188,17 @@ describe('Versions — the ceremony renders nothing pre-filled', () => {
   });
 });
 
+// The reason field carries the printed-paragraph treatment (03.1-04, D-13
+// § 8): no visible label word, its accessible name in aria-label instead.
+describe('Versions — the reason field reads as printed prose (03.1-04)', () => {
+  it('renders no visible "Reason" label and carries the accessible name in aria-label instead', () => {
+    const markup = renderVersions({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    expect(markup).not.toContain('<span>Reason</span>');
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Reason"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
+  });
+});
+
 describe('Versions — the save pair, Cancel first, gated by canSaveOver (D-10)', () => {
   it('a version with a batch (canSaveOver false) renders Cancel then Save, never Save as', () => {
     const markup = renderVersions({

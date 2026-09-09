@@ -21,7 +21,7 @@ function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote }) {
           {isDeveloping ? (
             <span className="authored__note-field">
               <textarea
-                className="ink-field"
+                className="prose-field"
                 rows="2"
                 value={note.text}
                 aria-label={`${listKey} note ${index + 1}`}

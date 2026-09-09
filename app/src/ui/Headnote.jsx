@@ -19,9 +19,8 @@ export function Headnote({ version, mode, penDraft, onChangePenField }) {
       {mode === 'developing' ? (
         <>
           <label className="headnote__prose-field">
-            <span>Headnote prose</span>
             <textarea
-              className="ink-field"
+              className="prose-field"
               rows="3"
               value={penDraft.headnote}
               aria-label="Headnote prose"

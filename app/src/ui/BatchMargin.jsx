@@ -32,8 +32,8 @@ function TastingReading({ tasting, axes }) {
         <span>Meltdown at 20 min, g</span>
         <span className="ink-text">{readMeasured(tasting.meltdownLossG)}</span>
       </p>
-      {tasting.words && <p className="ink-text">{tasting.words}</p>}
-      {tasting.nextTimeNote && <p className="ink-text">Next time: {tasting.nextTimeNote}</p>}
+      {tasting.words && <p className="prose-text">{tasting.words}</p>}
+      {tasting.nextTimeNote && <p className="prose-text">Next time: {tasting.nextTimeNote}</p>}
     </div>
   );
 }
@@ -91,20 +91,20 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark })
         />
       </label>
       <label className="batch-margin__field">
-        <span>Words</span>
         <textarea
-          className="ink-field"
+          className="prose-field"
           rows="2"
           value={draft.words}
+          aria-label="Words"
           onChange={(event) => onChangeTastingField('words', event.target.value)}
         />
       </label>
       <label className="batch-margin__field">
-        <span>Next time</span>
         <textarea
-          className="ink-field"
+          className="prose-field"
           rows="2"
           value={draft.nextTimeNote}
+          aria-label="Next time"
           onChange={(event) => onChangeTastingField('nextTimeNote', event.target.value)}
         />
       </label>
@@ -181,29 +181,29 @@ export function BatchMargin({
           />
         </label>
         <label className="batch-margin__field">
-          <span>Draw notes</span>
           <textarea
-            className="ink-field"
+            className="prose-field"
             rows="2"
             value={draft.drawNotes}
+            aria-label="Draw notes"
             onChange={(event) => onChangeChurnField('drawNotes', event.target.value)}
           />
         </label>
         <label className="batch-margin__field">
-          <span>Ingredient notes</span>
           <input
             type="text"
-            className="ink-field"
+            className="prose-field"
             value={draft.ingredientNotes}
+            aria-label="Ingredient notes"
             onChange={(event) => onChangeChurnField('ingredientNotes', event.target.value)}
           />
         </label>
         <label className="batch-margin__field">
-          <span>Next time</span>
           <textarea
-            className="ink-field"
+            className="prose-field"
             rows="2"
             value={draft.nextTimeNote}
+            aria-label="Next time"
             onChange={(event) => onChangeChurnField('nextTimeNote', event.target.value)}
           />
         </label>
@@ -233,9 +233,9 @@ export function BatchMargin({
           <span>Overrun, %</span>
           <span className="ink-text">{readMeasured(openBatch.churn.overrunPercent)}</span>
         </p>
-        {openBatch.churn.drawNotes && <p className="ink-text">{openBatch.churn.drawNotes}</p>}
-        {openBatch.churn.ingredientNotes && <p className="ink-text">{openBatch.churn.ingredientNotes}</p>}
-        {openBatch.churn.nextTimeNote && <p className="ink-text">Next time: {openBatch.churn.nextTimeNote}</p>}
+        {openBatch.churn.drawNotes && <p className="prose-text">{openBatch.churn.drawNotes}</p>}
+        {openBatch.churn.ingredientNotes && <p className="prose-text">{openBatch.churn.ingredientNotes}</p>}
+        {openBatch.churn.nextTimeNote && <p className="prose-text">Next time: {openBatch.churn.nextTimeNote}</p>}
         <p className="ink-text">
           {`recorded ${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
         </p>

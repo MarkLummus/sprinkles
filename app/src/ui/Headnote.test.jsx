@@ -59,6 +59,26 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
     expect(markup).toMatch(/<textarea[^>]*aria-label="Headnote prose"/);
   });
 
+  // Prose fields carry no visible label word (03.1-04, planner decision 2):
+  // the field's own accessible name is the one place "Headnote prose" is
+  // now spelled out.
+  it('renders no visible label word — the accessible name alone names the field', () => {
+    const markup = renderHeadnote({
+      mode: 'developing',
+      penDraft: { headnote: oliveOilVersion.headnote },
+    });
+    expect(markup).not.toContain('<span>Headnote prose</span>');
+  });
+
+  it('carries the printed-paragraph treatment, not the counted field\'s class', () => {
+    const markup = renderHeadnote({
+      mode: 'developing',
+      penDraft: { headnote: oliveOilVersion.headnote },
+    });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
+    expect(markup).not.toContain('ink-field');
+  });
+
   it('renders the baseline struck beneath once the field differs from it', () => {
     const markup = renderHeadnote({
       mode: 'developing',

@@ -169,19 +169,17 @@ export function Method({
                 </span>
                 <div className="method-step__body">
                   <label className="method-step__field">
-                    <span>Lead-in</span>
                     <input
                       type="text"
-                      className="ink-field"
+                      className="prose-field prose-field--lead-in"
                       value={draftStep.leadIn}
                       aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
                       onChange={(event) => onChangePenStepField(step.n, 'leadIn', event.target.value)}
                     />
                   </label>
                   <label className="method-step__field">
-                    <span>Instruction</span>
                     <textarea
-                      className="ink-field"
+                      className="prose-field"
                       rows="2"
                       value={draftStep.instruction}
                       aria-label={fieldLabel(step, draftStep.removed, 'instruction')}
@@ -245,9 +243,8 @@ export function Method({
                   )}
 
                   <label className="method-step__field">
-                    <span>Purpose</span>
                     <textarea
-                      className="ink-field"
+                      className="prose-field"
                       rows="2"
                       value={draftStep.purpose ?? ''}
                       aria-label={fieldLabel(step, draftStep.removed, 'purpose')}
@@ -259,9 +256,8 @@ export function Method({
                       never the lead-in/instruction pair (03-09). */}
                   {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
                   <label className="method-step__field">
-                    <span>Aside</span>
                     <textarea
-                      className="ink-field"
+                      className="prose-field"
                       rows="2"
                       value={draftStep.aside ?? ''}
                       aria-label={fieldLabel(step, draftStep.removed, 'aside')}

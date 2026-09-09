@@ -98,6 +98,28 @@ function makeBaselineVersionWithProse() {
   return version;
 }
 
+describe('Method — the lead-in and instruction fields read as printed prose (03.1-04, D-13 § 8)', () => {
+  it('renders no visible "Lead-in"/"Instruction" label word, and carries the prose-field treatment instead of ink-field', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    expect(markup).not.toContain('<span>Lead-in</span>');
+    expect(markup).not.toContain('<span>Instruction</span>');
+    expect(markup).toMatch(/<input[^>]*class="prose-field prose-field--lead-in"[^>]*aria-label="Step [^"]*, lead-in"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Step [^"]*, instruction"/);
+  });
+});
+
 describe('Method — developing mode', () => {
   it("renders the baseline's text struck beneath the field for a changed step", () => {
     const baselineVersion = makeBaselineVersion();

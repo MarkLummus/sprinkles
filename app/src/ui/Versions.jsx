@@ -142,12 +142,12 @@ export function Versions({
                 parent's words in ink"). */}
             <p className="headnote__version-was">was {version.versionLabel}</p>
             <label className="headnote__reason-field">
-              <span>Reason</span>
               <textarea
-                className="ink-field"
+                className="prose-field"
                 rows="2"
                 placeholder="e.g. less oil after the batch of 2 Aug"
                 value={penDraft.reason}
+                aria-label="Reason"
                 onChange={(event) => onChangePenField('reason', event.target.value)}
               />
             </label>

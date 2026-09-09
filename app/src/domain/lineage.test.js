@@ -12,6 +12,7 @@ import {
   citableBatches,
   blockedSaveMessage,
   blockedSaveRowId,
+  parseGramsDraft,
 } from './lineage.js';
 import { sortedBatches } from './batch.js';
 import { liftVersionRecord } from '../store/versionLift.js';
@@ -337,6 +338,46 @@ describe('blockedSaveMessage', () => {
       const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
       const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: false } }) };
       expect(blockedSaveRowId(penFields, oliveOilVersion, versions)).toBeNull();
+    });
+  });
+
+  describe('parseGramsDraft', () => {
+    it.each([
+      ['60', 60],
+      ['1.25', 1.25],
+      ['0.5', 0.5],
+    ])('parses %s as %s', (value, expected) => {
+      expect(parseGramsDraft(value)).toBe(expected);
+    });
+
+    it('a written zero is a value (D-11): it parses as 0, never null', () => {
+      expect(parseGramsDraft('0')).toBe(0);
+    });
+
+    it('an empty string is null', () => {
+      expect(parseGramsDraft('')).toBeNull();
+    });
+
+    it('undefined is null', () => {
+      expect(parseGramsDraft(undefined)).toBeNull();
+    });
+
+    it.each([
+      ['-5', 'a leading minus'],
+      ['1e3', 'exponent notation'],
+      ['1.2345', 'more than two decimals'],
+      ['4o', 'a stray letter'],
+      [' 5 ', 'surrounding whitespace'],
+    ])('%s is null (%s)', (value) => {
+      expect(parseGramsDraft(value)).toBeNull();
+    });
+
+    it('agrees with blockedSaveMessage: every value parseGramsDraft rejects is also the value blockedSaveMessage blocks the save on', () => {
+      for (const value of ['-5', '1e3', '1.2345', '4o', ' 5 ']) {
+        expect(parseGramsDraft(value)).toBeNull();
+        const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: value, removed: false } }) };
+        expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toMatch(/'s amount is not a number$/);
+      }
     });
   });
 });

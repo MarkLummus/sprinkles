@@ -138,6 +138,19 @@ export function citableBatches(batches) {
 const NUMERIC_GRAMS_PATTERN = /^\d+(\.\d{1,2})?$/;
 
 /**
+ * parseGramsDraft(value) -> the number a draft grams field holds, or
+ * `null` when it does not hold one — the one rule every draft-grams
+ * reader takes, so the figure on screen and the sentence that blocks the
+ * save can never disagree (260909-oow). Built on NUMERIC_GRAMS_PATTERN,
+ * this predicate's only reader: a non-negative number with up to two
+ * decimals, kept exactly as typed. `''` and `undefined` reach `null`
+ * through the pattern itself, needing no branch of their own.
+ */
+export function parseGramsDraft(value) {
+  return NUMERIC_GRAMS_PATTERN.test(value) ? Number(value) : null;
+}
+
+/**
  * findBlockedRow(penFields, version) -> { row, message } for the first
  * active row (in the version's own authored order) whose grams field
  * blocks the save, or `null` when no row does. Checked one row at a
@@ -154,7 +167,7 @@ function findBlockedRow(penFields, version) {
     if (draftRow.grams === undefined || draftRow.grams === '') {
       return { row, message: `${row.ingredientName} needs an amount, or remove the row` };
     }
-    if (!NUMERIC_GRAMS_PATTERN.test(draftRow.grams)) {
+    if (parseGramsDraft(draftRow.grams) === null) {
       return { row, message: `${row.ingredientName}'s amount is not a number` };
     }
   }

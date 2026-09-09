@@ -14,7 +14,7 @@ import { describe, it, expect, vi } from 'vitest';
 vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { derivePenState, isPenDraftDirty, isDraftDirty } from './RecipePage.jsx';
+import { derivePenState, isPenDraftDirty, isDraftDirty, toNumberOrNull } from './RecipePage.jsx';
 import { Versions } from './Versions.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
@@ -445,5 +445,32 @@ describe('isDraftDirty — the churn check, against what it was filled from (T-0
     const baselineWithZero = makeAmendBaseline({ overrunPercent: '0' });
     const draftAlsoZero = structuredClone(baselineWithZero);
     expect(isDraftDirty('recording', draftAlsoZero, baselineWithZero)).toBe(false);
+  });
+});
+
+describe('toNumberOrNull — nothing written and unparsable ink are the same fact, never a stored NaN (260909-oox)', () => {
+  it('reads nothing written as null', () => {
+    expect(toNumberOrNull('')).toBe(null);
+  });
+
+  it('reads a written figure as that figure', () => {
+    expect(toNumberOrNull('20')).toBe(20);
+  });
+
+  it('keeps the sign of a negative reading — the batch drew at -6 °C, and out of the machine is legitimately negative', () => {
+    expect(toNumberOrNull('-6')).toBe(-6);
+  });
+
+  it('reads a written zero as the value 0, not as an absence (presence over truthiness)', () => {
+    expect(toNumberOrNull('0')).toBe(0);
+  });
+
+  it('reads unparsable ink as nothing written, never as a stored NaN', () => {
+    expect(toNumberOrNull('4o')).toBe(null);
+    expect(toNumberOrNull('abc')).toBe(null);
+  });
+
+  it('reads an infinite figure as nothing written either', () => {
+    expect(toNumberOrNull('Infinity')).toBe(null);
   });
 });

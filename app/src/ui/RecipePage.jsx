@@ -214,6 +214,17 @@ export function derivePenState({ mode, amendingBatchId, tastingDraft }) {
   return { openPen: null, reason: null };
 }
 
+// A field the maker left blank and a field holding ink that is not a
+// number are the same fact — nothing written — and neither may become a
+// stored NaN, which readMeasured would print as the word "NaN" in the
+// record forever. A written 0 is a value, not an absence, and still
+// returns 0 (260909-oox).
+export function toNumberOrNull(raw) {
+  if (raw === '') return null;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The margin's derived-advisories block (FORM2-02)
 // renders nothing visible when the version has none — no placeholder text.
@@ -673,7 +684,6 @@ export function RecipePage() {
       const parsed = parseGramsDraft(rawValue);
       if (parsed !== null) asMade[rowId] = parsed;
     }
-    const toNumberOrNull = (raw) => (raw === '' ? null : Number(raw));
     const toTextOrNull = (raw) => (raw === '' ? null : raw);
     const churnFields = {
       churnDate: draft.churnDate === '' ? null : draft.churnDate,
@@ -771,7 +781,6 @@ export function RecipePage() {
   // itself stays deterministic. Reloads the version's batch list after the
   // write so the margin re-reads what is stored.
   function handleSaveTasting() {
-    const toNumberOrNull = (raw) => (raw === '' ? null : Number(raw));
     const toTextOrNull = (raw) => (raw === '' ? null : raw);
     const tastingFields = {
       date: tastingDraft.date === '' ? null : tastingDraft.date,

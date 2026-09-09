@@ -1,4 +1,4 @@
-// Component test for the foot band — the plan's pen's Cancel/Save pair,
+// Component test for the foot band — every pen's own Cancel/Save pair,
 // repeated once at the foot of the page under a hairline rule
 // (route-recipe.md § 3 "The imprint"; D-26). In the existing house style:
 // renderToStaticMarkup (react-dom/server), the node test environment, no
@@ -15,24 +15,23 @@ function renderPenFoot(props) {
     <PenFoot
       openPen={null}
       canSaveOver={true}
-      blockedMessage={null}
+      penSaveDisabled={false}
+      penHint={null}
       onCancelDeveloping={noop}
       onSaveAsNewVersion={noop}
       onSaveOverVersion={noop}
+      onCancelRecording={noop}
+      onSaveBatch={noop}
+      onCancelTasting={noop}
+      onSaveTasting={noop}
       {...props}
-    />,
+    />
   );
 }
 
-describe('PenFoot — renders only while the plan pen is open', () => {
+describe('PenFoot — renders only while a pen is open', () => {
   it('renders nothing when openPen is null', () => {
     expect(renderPenFoot({ openPen: null })).toBe('');
-  });
-
-  it('renders nothing for a pen this plan does not yet wire (record/amend/tasting arrive in plan 02)', () => {
-    expect(renderPenFoot({ openPen: 'record' })).toBe('');
-    expect(renderPenFoot({ openPen: 'amend' })).toBe('');
-    expect(renderPenFoot({ openPen: 'tasting' })).toBe('');
   });
 
   it('renders the rule and the pair when openPen is "plan"', () => {
@@ -43,7 +42,7 @@ describe('PenFoot — renders only while the plan pen is open', () => {
   });
 });
 
-describe('PenFoot — the pair matches the ceremony, Cancel first, gated by canSaveOver (D-10, D-26)', () => {
+describe('PenFoot — the plan pair matches the ceremony, Cancel first, gated by canSaveOver (D-10, D-26)', () => {
   it('renders Cancel then Save, never Save as, when canSaveOver is false', () => {
     const markup = renderPenFoot({ openPen: 'plan', canSaveOver: false });
     expect(markup).not.toContain('Save as');
@@ -64,14 +63,61 @@ describe('PenFoot — the pair matches the ceremony, Cancel first, gated by canS
   });
 });
 
-describe('PenFoot — the blocked-save sentence beside the pair', () => {
+describe('PenFoot — the record and amend branch (D-05, D-10)', () => {
+  it('renders Cancel then Save, bound to onCancelRecording/onSaveBatch, for the record pen', () => {
+    const markup = renderPenFoot({ openPen: 'record' });
+    const cancelIndex = markup.indexOf('Cancel');
+    const saveIndex = markup.indexOf('>Save<');
+    expect(cancelIndex).toBeGreaterThanOrEqual(0);
+    expect(saveIndex).toBeGreaterThan(cancelIndex);
+    expect(markup).not.toContain('Save as');
+  });
+
+  it('renders the same pair for the amend pen', () => {
+    const markup = renderPenFoot({ openPen: 'amend' });
+    expect(markup).toContain('Cancel');
+    expect(markup).toContain('>Save<');
+  });
+});
+
+describe('PenFoot — the tasting branch, disabled Save with its hint (D-05, D-10, T-03.1-08)', () => {
+  it('renders Cancel then Save, bound to onCancelTasting/onSaveTasting', () => {
+    const markup = renderPenFoot({ openPen: 'tasting' });
+    const cancelIndex = markup.indexOf('Cancel');
+    const saveIndex = markup.indexOf('>Save<');
+    expect(cancelIndex).toBeGreaterThanOrEqual(0);
+    expect(saveIndex).toBeGreaterThan(cancelIndex);
+  });
+
+  it('disables Save and shows the hint when penSaveDisabled is true', () => {
+    const markup = renderPenFoot({
+      openPen: 'tasting',
+      penSaveDisabled: true,
+      penHint: 'Write words or mark at least one axis to save.',
+    });
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Save<\/button>/);
+    expect(markup).toContain('Write words or mark at least one axis to save.');
+  });
+
+  it('leaves Save enabled with no penSaveDisabled set', () => {
+    const markup = renderPenFoot({ openPen: 'tasting', penSaveDisabled: false });
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Save<\/button>/);
+  });
+
+  it('never recomputes the save gate itself — reads penSaveDisabled/penHint only (RESEARCH.md Anti-Patterns, T-03.1-08)', () => {
+    const markup = renderPenFoot({ openPen: 'tasting' });
+    expect(markup).not.toContain('isTastingSaveable');
+  });
+});
+
+describe('PenFoot — penHint beside the pair', () => {
   it('renders the message when set', () => {
-    const markup = renderPenFoot({ openPen: 'plan', blockedMessage: 'a version needs a line' });
+    const markup = renderPenFoot({ openPen: 'plan', penHint: 'a version needs a line' });
     expect(markup).toContain('a version needs a line');
   });
 
   it('renders no blocked-save paragraph when unset', () => {
-    const markup = renderPenFoot({ openPen: 'plan', blockedMessage: null });
+    const markup = renderPenFoot({ openPen: 'plan', penHint: null });
     expect(markup).not.toContain('pen-foot__blocked');
   });
 });

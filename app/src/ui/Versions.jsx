@@ -36,16 +36,30 @@ export function Versions({
   openPen = null,
   penReason = null,
   canSaveOver,
+  penSaveDisabled = false,
+  penHint = null,
   onStartDeveloping,
   onCancelDeveloping,
   onChangePenField,
   onSaveAsNewVersion,
   onSaveOverVersion,
   onToggleShowChanges = () => {},
+  onStartRecording,
+  onStartAmending,
+  onChangeChurnDate,
+  onCancelRecording,
+  onSaveBatch,
+  tastingDraft,
+  onStartTasting,
+  onChangeTastingField,
+  onUseAsExpectedShortcut,
+  onSaveTasting,
+  onCancelTasting,
 }) {
-  // Focus-return for the plan's pen, moved verbatim from Headnote.jsx
-  // (Phase 2 precedent, BatchMargin's tasting focus-return): closing the
-  // pen returns focus to Develop. developButtonRef must sit above the
+  // Focus-return for each of the four pens, one ref pair per opener,
+  // moved verbatim from Headnote.jsx (the plan's pen, Phase 2 precedent)
+  // and BatchMargin.jsx (the tasting opener): closing a pen returns focus
+  // to the control that opened it. Every ref must sit above the
   // conditional render below — hooks cannot be called conditionally.
   const developButtonRef = useRef(null);
   const wasDevelopingRef = useRef(false);
@@ -59,6 +73,45 @@ export function Versions({
       developButtonRef.current?.focus();
     }
   }, [mode]);
+
+  const recordButtonRef = useRef(null);
+  const wasRecordingRef = useRef(false);
+  useEffect(() => {
+    if (openPen === 'record') {
+      wasRecordingRef.current = true;
+      return;
+    }
+    if (wasRecordingRef.current) {
+      wasRecordingRef.current = false;
+      recordButtonRef.current?.focus();
+    }
+  }, [openPen]);
+
+  const amendButtonRef = useRef(null);
+  const wasAmendingRef = useRef(false);
+  useEffect(() => {
+    if (openPen === 'amend') {
+      wasAmendingRef.current = true;
+      return;
+    }
+    if (wasAmendingRef.current) {
+      wasAmendingRef.current = false;
+      amendButtonRef.current?.focus();
+    }
+  }, [openPen]);
+
+  const addTastingButtonRef = useRef(null);
+  const wasTastingRef = useRef(false);
+  useEffect(() => {
+    if (openPen === 'tasting') {
+      wasTastingRef.current = true;
+      return;
+    }
+    if (wasTastingRef.current) {
+      wasTastingRef.current = false;
+      addTastingButtonRef.current?.focus();
+    }
+  }, [openPen]);
 
   return (
     <section className="versions" aria-label="Versions">
@@ -142,9 +195,64 @@ export function Versions({
                 </button>
               )}
             </div>
-            {blockedMessage && <p className="headnote__blocked">{blockedMessage}</p>}
+            {penHint && <p className="headnote__blocked">{penHint}</p>}
           </div>
         </>
+      ) : openPen === 'record' || openPen === 'amend' ? (
+        // The record and amend ceremony (D-05, D-10, D-11): the churn
+        // date is the identifying field for this event, so it sits here
+        // exactly as the plan's own version line does, moved from the
+        // headnote's old inline slot. Amend pre-fills draft.churnDate
+        // from the batch (RecipePage's handleStartAmending); a fresh
+        // recording opens it blank.
+        <div className="versions__ceremony">
+          <label className="versions__ceremony-field">
+            churned{' '}
+            <input
+              type="date"
+              className="ink-field"
+              autoFocus
+              value={draft.churnDate}
+              onChange={(event) => onChangeChurnDate(event.target.value)}
+            />
+          </label>
+          <div className="headnote__ceremony">
+            <button type="button" onClick={onCancelRecording}>
+              Cancel
+            </button>
+            <button type="button" onClick={onSaveBatch}>
+              Save
+            </button>
+          </div>
+        </div>
+      ) : openPen === 'tasting' ? (
+        // The tasting ceremony (D-05, D-10, D-11): the shortcut moves
+        // here from the margin's TastingForm, since the margin may hold
+        // no control at all (D-04) — see the planner decision above.
+        <div className="versions__ceremony">
+          <label className="versions__ceremony-field">
+            <span>Tasting date</span>
+            <input
+              type="date"
+              className="ink-field"
+              autoFocus
+              value={tastingDraft.date}
+              onChange={(event) => onChangeTastingField('date', event.target.value)}
+            />
+          </label>
+          <button type="button" className="versions__ceremony-shortcut" onClick={onUseAsExpectedShortcut}>
+            As expected, nothing to note
+          </button>
+          <div className="headnote__ceremony">
+            <button type="button" onClick={onCancelTasting}>
+              Cancel
+            </button>
+            <button type="button" onClick={onSaveTasting} disabled={penSaveDisabled}>
+              Save
+            </button>
+          </div>
+          {penHint && <p className="batch-margin__hint">{penHint}</p>}
+        </div>
       ) : openPen === null ? (
         <div className="versions__openers">
           <div className="versions__opener-group">
@@ -152,9 +260,25 @@ export function Versions({
               Develop
             </button>
           </div>
-          {/* Record batch/Record another, Amend, Add tasting arrive in
-              plan 02 — this group stays present and empty until then. */}
-          <div className="versions__opener-group" />
+          {/* D-05: Record batch when the version has no batch; Record
+              another, Amend and Add tasting when a batch is in view —
+              the same conditions the margin used (batches, openBatch),
+              read here rather than invented anew. */}
+          <div className="versions__opener-group">
+            <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
+              {openBatch ? 'Record another' : 'Record batch'}
+            </button>
+            {openBatch && (
+              <button type="button" ref={amendButtonRef} onClick={() => onStartAmending(openBatch)}>
+                Amend
+              </button>
+            )}
+            {openBatch && (
+              <button type="button" ref={addTastingButtonRef} onClick={onStartTasting}>
+                Add tasting
+              </button>
+            )}
+          </div>
         </div>
       ) : null}
       {/* D-06: one hint sentence for the whole block, replacing the

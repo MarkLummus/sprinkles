@@ -26,6 +26,27 @@ function emptyPenDraft(overrides = {}) {
   };
 }
 
+const emptyChurnDraft = {
+  churnDate: '',
+  asMade: {},
+  stepChanges: {},
+  comeUpMinutes: '',
+  drawTempC: '',
+  overrunPercent: '',
+  drawNotes: '',
+  ingredientNotes: '',
+  nextTimeNote: '',
+};
+
+const emptyTastingDraft = {
+  date: '',
+  tastingTempC: '',
+  marks: {},
+  meltdownLossG: '',
+  words: '',
+  nextTimeNote: '',
+};
+
 function renderVersions(props) {
   return renderToStaticMarkup(
     <MemoryRouter>
@@ -43,11 +64,24 @@ function renderVersions(props) {
         openPen={null}
         penReason={null}
         canSaveOver={true}
+        penSaveDisabled={false}
+        penHint={null}
         onStartDeveloping={noop}
         onCancelDeveloping={noop}
         onChangePenField={noop}
         onSaveAsNewVersion={noop}
         onSaveOverVersion={noop}
+        onStartRecording={noop}
+        onStartAmending={noop}
+        onChangeChurnDate={noop}
+        onCancelRecording={noop}
+        onSaveBatch={noop}
+        tastingDraft={null}
+        onStartTasting={noop}
+        onChangeTastingField={noop}
+        onUseAsExpectedShortcut={noop}
+        onSaveTasting={noop}
+        onCancelTasting={noop}
         {...props}
       />
     </MemoryRouter>,
@@ -81,20 +115,30 @@ describe('Versions — the openers, present only with no pen open (D-05)', () =>
     expect(markup).toMatch(/<button[^>]*>Develop<\/button>/);
   });
 
-  it('renders the second opener group present and empty, for plan 02', () => {
-    const markup = renderVersions({ openPen: null });
-    const groupCount = (markup.match(/versions__opener-group/g) || []).length;
-    expect(groupCount).toBe(2);
-  });
-
-  it('renders no Develop opener while a batch pen is open — the ceremony for that pen arrives in plan 02', () => {
-    const markup = renderVersions({ openPen: 'record', penReason: 'a batch is being recorded' });
+  it('renders no Develop opener while a batch pen is open — the record ceremony replaces it (D-06)', () => {
+    const markup = renderVersions({ openPen: 'record', penReason: 'a batch is being recorded', draft: emptyChurnDraft });
     expect(markup).not.toContain('>Develop<');
   });
 
   it('renders no Develop opener while the plan pen is open — the ceremony replaces it (D-06)', () => {
     const markup = renderVersions({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
     expect(markup).not.toContain('>Develop<');
+  });
+
+  it('renders "Record batch" when the version has no batch', () => {
+    const markup = renderVersions({ openPen: null, openBatch: null, batches: [] });
+    expect(markup).toContain('Record batch');
+    expect(markup).not.toContain('Record another');
+    expect(markup).not.toContain('>Amend<');
+    expect(markup).not.toContain('Add tasting');
+  });
+
+  it('renders "Record another", Amend and Add tasting when a batch is in view', () => {
+    const markup = renderVersions({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(markup).toContain('Record another');
+    expect(markup).not.toContain('Record batch');
+    expect(markup).toContain('>Amend<');
+    expect(markup).toContain('Add tasting');
   });
 });
 
@@ -156,9 +200,62 @@ describe('Versions — a blocked save is stated in words beside the controls', (
       penDraft: emptyPenDraft(),
       batches: [],
       canSaveOver: true,
-      blockedMessage: 'a version needs a line',
+      penHint: 'a version needs a line',
     });
     expect(markup).toContain('a version needs a line');
+  });
+});
+
+describe('Versions — the record and amend ceremony (D-05, D-10)', () => {
+  it('renders the churn-date field and Cancel then Save, bound to onCancelRecording/onSaveBatch', () => {
+    const markup = renderVersions({ openPen: 'record', draft: { ...emptyChurnDraft, churnDate: '2026-08-09' } });
+    expect(markup).toMatch(/<input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/);
+    const cancelIndex = markup.indexOf('Cancel');
+    const saveIndex = markup.indexOf('>Save<');
+    expect(cancelIndex).toBeGreaterThanOrEqual(0);
+    expect(saveIndex).toBeGreaterThan(cancelIndex);
+  });
+
+  it('renders the same ceremony while amending', () => {
+    const markup = renderVersions({ openPen: 'amend', draft: { ...emptyChurnDraft, churnDate: '2026-08-02' } });
+    expect(markup).toMatch(/<input[^>]*type="date"[^>]*value="2026-08-02"/);
+    expect(markup).toContain('Cancel');
+    expect(markup).toContain('>Save<');
+  });
+});
+
+describe('Versions — the tasting ceremony (D-05, D-10)', () => {
+  it('renders the tasting-date field, the As expected shortcut, then Cancel then Save', () => {
+    const markup = renderVersions({ openPen: 'tasting', tastingDraft: emptyTastingDraft });
+    expect(markup).toMatch(/<input[^>]*type="date"[^>]*class="ink-field"[^>]*autofocus=""/);
+    expect(markup).toContain('As expected, nothing to note');
+    const shortcutIndex = markup.indexOf('As expected, nothing to note');
+    const cancelIndex = markup.indexOf('Cancel');
+    const saveIndex = markup.indexOf('>Save<');
+    expect(cancelIndex).toBeGreaterThan(shortcutIndex);
+    expect(saveIndex).toBeGreaterThan(cancelIndex);
+  });
+
+  it('disables Save and shows the hint when the tasting is not saveable', () => {
+    const markup = renderVersions({
+      openPen: 'tasting',
+      tastingDraft: emptyTastingDraft,
+      penSaveDisabled: true,
+      penHint: 'Write words or mark at least one axis to save.',
+    });
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Save<\/button>/);
+    expect(markup).toContain('Write words or mark at least one axis to save.');
+  });
+
+  it('leaves Save enabled with no hint when the tasting is saveable', () => {
+    const markup = renderVersions({
+      openPen: 'tasting',
+      tastingDraft: { ...emptyTastingDraft, words: 'Good batch' },
+      penSaveDisabled: false,
+      penHint: null,
+    });
+    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Save<\/button>/);
+    expect(markup).not.toContain('Write words or mark at least one axis to save.');
   });
 });
 

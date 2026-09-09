@@ -100,11 +100,23 @@ function renderVersionsReading(openPen, reason) {
         version={oliveOilVersion}
         versions={[oliveOilVersion]}
         mode="reading"
-        draft={null}
-        // The plan pen's own matrix row exercises openPen === 'plan',
-        // which renders the ceremony and needs a real penDraft shape —
-        // the other three rows never read it.
+        // Every row in PEN_MATRIX exercises a different ceremony, each
+        // reading a different one of these three drafts — supplying all
+        // three unconditionally keeps this one render function usable
+        // for the whole matrix.
+        draft={{
+          churnDate: '',
+          asMade: {},
+          stepChanges: {},
+          comeUpMinutes: '',
+          drawTempC: '',
+          overrunPercent: '',
+          drawNotes: '',
+          ingredientNotes: '',
+          nextTimeNote: '',
+        }}
         penDraft={{ versionLabel: '', reason: '', citedBatchId: null, headnote: oliveOilVersion.headnote }}
+        tastingDraft={{ date: '', tastingTempC: '', marks: {}, meltdownLossG: '', words: '', nextTimeNote: '' }}
         openBatch={null}
         batches={[]}
         versionIdsWithBatches={new Set()}
@@ -118,6 +130,16 @@ function renderVersionsReading(openPen, reason) {
         onChangePenField={noop}
         onSaveAsNewVersion={noop}
         onSaveOverVersion={noop}
+        onStartRecording={noop}
+        onStartAmending={noop}
+        onChangeChurnDate={noop}
+        onCancelRecording={noop}
+        onSaveBatch={noop}
+        onStartTasting={noop}
+        onChangeTastingField={noop}
+        onUseAsExpectedShortcut={noop}
+        onSaveTasting={noop}
+        onCancelTasting={noop}
       />
     </MemoryRouter>,
   );

@@ -1,9 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { formatRecordDate, readMeasured, sortedTastings, hasTasting, isTastingSaveable } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, sortedTastings, hasTasting } from '../domain/batch.js';
 import { axesForBatch, markKeyFor } from '../domain/axes.js';
 import { AxisMark } from './AxisMark.jsx';
-
-const AS_EXPECTED_WORDS = 'As expected, nothing to note';
 
 // A tasting in the reading state (task 1, task 2): headed by its date or
 // "date unknown" (D-03), then its measured fields through readMeasured —
@@ -41,13 +38,11 @@ function TastingReading({ tasting, axes }) {
   );
 }
 
-// A tasting being written (task 1): the same fields as ink fields, all
-// empty — the date field is never supplied by the app, and the tasting
-// temperature field never reads the version's serve target (D-07). Save
-// tasting is gated on isTastingSaveable, its disabled state explained in
-// text, never by colour alone.
-function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, onUseAsExpectedShortcut, onSaveTasting, onCancelTasting }) {
-  const saveable = isTastingSaveable({ words: draft.words, marks: draft.marks });
+// A tasting being written (task 1, shortcut and saves moved to Versions'
+// own ceremony in task 2): the same fields as ink fields, all empty — the
+// date field is never supplied by the app, and the tasting temperature
+// field never reads the version's serve target (D-07).
+function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark }) {
   return (
     <div className="tasting tasting--recording">
       <p className="batch-margin__legend">Tasting</p>
@@ -56,7 +51,6 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, o
         <input
           type="date"
           className="ink-field"
-          autoFocus
           value={draft.date}
           onChange={(event) => onChangeTastingField('date', event.target.value)}
         />
@@ -105,9 +99,6 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, o
           onChange={(event) => onChangeTastingField('words', event.target.value)}
         />
       </label>
-      <button type="button" onClick={onUseAsExpectedShortcut}>
-        {AS_EXPECTED_WORDS}
-      </button>
       <label className="batch-margin__field">
         <span>Next time</span>
         <textarea
@@ -117,70 +108,38 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark, o
           onChange={(event) => onChangeTastingField('nextTimeNote', event.target.value)}
         />
       </label>
-      <button type="button" onClick={onSaveTasting} disabled={!saveable}>
-        Save tasting
-      </button>
-      <button type="button" onClick={onCancelTasting}>
-        Cancel
-      </button>
-      {!saveable && <p className="batch-margin__hint">Write words or mark at least one axis to save.</p>}
     </div>
   );
 }
 
-// The batch-log block leads the margin (route-recipe-batch.md § 3), above
-// the advisories and the authored notes, in the printed page's order.
-// Three states this task delivers: no batch yet, recording, and a saved
-// batch's reading state. Wording beyond what the brief fixes is Claude's
-// discretion (02-CONTEXT.md, "Claude's Discretion").
+// The record's content, and only its content (route-recipe.md § 3 "The
+// imprint", D-04): the batch-log block above the advisories and the
+// authored notes, in the printed page's order. Every opener, every save
+// and every cancel now live in Versions.jsx — this component renders no
+// button element at all. Three states this task delivers: no batch yet,
+// recording, and a saved batch's reading state.
 //
 // The churn section's field order, top to bottom, is the sheet's own order
-// minus the churn date, which now lives in the headnote's version line
-// (route-recipe-batch.md § 3, § 6, revised 2026-09-07): come-up; draw
-// temperature; overrun; draw notes; ingredient notes; next time. Every
-// measured field in the reading state renders through readMeasured — the
-// one place a blank becomes the word "unknown" — never a value read from
-// the recipe.
+// minus the churn date, which now lives in Versions' own record/amend
+// ceremony (D-04, D-09): come-up; draw temperature; overrun; draw notes;
+// ingredient notes; next time. Every measured field in the reading state
+// renders through readMeasured — the one place a blank becomes the word
+// "unknown" — never a value read from the recipe. The tasting's own date
+// field carries no autoFocus here — that lands in the ceremony's own
+// tasting-date field instead (Rule 1: two autofocus attributes in the same
+// page is undefined browser behaviour); this field stays editable as
+// printed content, per D-25's "outline on focus only" pattern.
 export function BatchMargin({
   version,
   batches = [],
   openBatch,
   mode,
   draft,
-  openPen = null,
-  penReason = null,
-  onStartRecording,
-  onStartAmending,
   onChangeChurnField,
-  onSaveBatch,
   tastingDraft,
-  onStartTasting,
   onChangeTastingField,
   onChangeTastingMark,
-  onUseAsExpectedShortcut,
-  onSaveTasting,
-  onCancelTasting,
-  onCancelRecording,
 }) {
-  // Focus-return for the tasting form (D-4): tastingWasOpenRef starts false
-  // so the effect is a no-op on first mount, and only fires the actual
-  // focus() call on the transition from open to closed — by cancel or by
-  // save, either one clears tastingDraft the same way. The ref must sit
-  // above every conditional return below; the component has three return
-  // branches, and a hook placed lower would be conditional and illegal.
-  const addTastingButtonRef = useRef(null);
-  const tastingWasOpenRef = useRef(false);
-  useEffect(() => {
-    if (tastingDraft) {
-      tastingWasOpenRef.current = true;
-      return;
-    }
-    if (tastingWasOpenRef.current) {
-      tastingWasOpenRef.current = false;
-      addTastingButtonRef.current?.focus();
-    }
-  }, [tastingDraft]);
-
   if (mode === 'recording') {
     return (
       <div className="batch-margin">
@@ -248,12 +207,6 @@ export function BatchMargin({
             onChange={(event) => onChangeChurnField('nextTimeNote', event.target.value)}
           />
         </label>
-        <button type="button" onClick={onSaveBatch}>
-          Save batch
-        </button>
-        <button type="button" onClick={onCancelRecording}>
-          Cancel
-        </button>
       </div>
     );
   }
@@ -301,9 +254,6 @@ export function BatchMargin({
             axes={axesForBatch(openBatch)}
             onChangeTastingField={onChangeTastingField}
             onChangeTastingMark={onChangeTastingMark}
-            onUseAsExpectedShortcut={onUseAsExpectedShortcut}
-            onSaveTasting={onSaveTasting}
-            onCancelTasting={onCancelTasting}
           />
         )}
       </div>

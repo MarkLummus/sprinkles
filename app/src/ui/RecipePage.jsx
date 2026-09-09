@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
-import { createBatch, addTasting, recordAmendment, sortedBatches } from '../domain/batch.js';
+import { createBatch, addTasting, recordAmendment, sortedBatches, isTastingSaveable } from '../domain/batch.js';
 import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
 import { createChildVersion, saveOverVersion, versionsForRecipe, blockedSaveMessage } from '../domain/lineage.js';
@@ -404,6 +404,21 @@ export function RecipePage() {
   // and passed to both Versions' ceremony and PenFoot's repeated pair —
   // never twice (RESEARCH.md Pattern 2).
   const canSaveOver = batches.length === 0;
+
+  // The save gate, one derivation beside canSaveOver (T-03.1-08): the
+  // tasting pen's Save is gated on isTastingSaveable, exactly as
+  // TastingForm computed it locally before this plan; every other pen's
+  // Save stays enabled (D-21's own blocked-but-enabled rule covers the
+  // plan pen; the batch pen has never gated its Save). penHint carries
+  // the tasting's own hint sentence while that gate is active, and
+  // blockedMessage (the plan pen's own blocked-save sentence) otherwise —
+  // both are passed to Versions' ceremony and to PenFoot, so the two
+  // screen positions can never disagree (RESEARCH.md Anti-Patterns).
+  const penSaveDisabled =
+    openPen === 'tasting' && tastingDraft
+      ? !isTastingSaveable({ words: tastingDraft.words, marks: tastingDraft.marks })
+      : false;
+  const penHint = penSaveDisabled ? 'Write words or mark at least one axis to save.' : blockedMessage;
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -990,12 +1005,25 @@ export function RecipePage() {
             openPen={openPen}
             penReason={penReason}
             canSaveOver={canSaveOver}
+            penSaveDisabled={penSaveDisabled}
+            penHint={penHint}
             onStartDeveloping={handleStartDeveloping}
             onCancelDeveloping={handleCancelDeveloping}
             onChangePenField={handleChangePenField}
             onSaveAsNewVersion={handleSaveAsNewVersion}
             onSaveOverVersion={handleSaveOverVersion}
             onToggleShowChanges={handleToggleShowChanges}
+            onStartRecording={handleStartRecording}
+            onStartAmending={handleStartAmending}
+            onChangeChurnDate={handleChangeChurnDate}
+            onCancelRecording={handleCancelRecording}
+            onSaveBatch={handleSaveBatch}
+            tastingDraft={tastingDraft}
+            onStartTasting={handleStartTasting}
+            onChangeTastingField={handleChangeTastingField}
+            onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
+            onSaveTasting={handleSaveTasting}
+            onCancelTasting={handleCancelTasting}
           />
         </div>
 
@@ -1070,20 +1098,10 @@ export function RecipePage() {
               openBatch={openBatch}
               mode={mode}
               draft={draft}
-              openPen={openPen}
-              penReason={penReason}
-              onStartRecording={handleStartRecording}
-              onStartAmending={handleStartAmending}
               onChangeChurnField={handleChangeChurnField}
-              onSaveBatch={handleSaveBatch}
-              onCancelRecording={handleCancelRecording}
               tastingDraft={tastingDraft}
-              onStartTasting={handleStartTasting}
               onChangeTastingField={handleChangeTastingField}
               onChangeTastingMark={handleChangeTastingMark}
-              onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
-              onSaveTasting={handleSaveTasting}
-              onCancelTasting={handleCancelTasting}
             />
             <DerivedAdvisories version={liveVersion} />
             <Authored
@@ -1099,10 +1117,15 @@ export function RecipePage() {
         <PenFoot
           openPen={openPen}
           canSaveOver={canSaveOver}
-          blockedMessage={blockedMessage}
+          penSaveDisabled={penSaveDisabled}
+          penHint={penHint}
           onCancelDeveloping={handleCancelDeveloping}
           onSaveAsNewVersion={handleSaveAsNewVersion}
           onSaveOverVersion={handleSaveOverVersion}
+          onCancelRecording={handleCancelRecording}
+          onSaveBatch={handleSaveBatch}
+          onCancelTasting={handleCancelTasting}
+          onSaveTasting={handleSaveTasting}
         />
       </article>
     </>

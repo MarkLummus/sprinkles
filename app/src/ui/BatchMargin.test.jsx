@@ -20,19 +20,10 @@ function renderMargin(props) {
       openBatch={null}
       mode="reading"
       draft={null}
-      openPen={null}
-      penReason={null}
-      onStartRecording={noop}
-      onStartAmending={noop}
       onChangeChurnField={noop}
-      onSaveBatch={noop}
       tastingDraft={null}
-      onStartTasting={noop}
       onChangeTastingField={noop}
       onChangeTastingMark={noop}
-      onUseAsExpectedShortcut={noop}
-      onSaveTasting={noop}
-      onCancelTasting={noop}
       {...props}
     />,
   );
@@ -87,19 +78,11 @@ const emptyDraft = {
   nextTimeNote: '',
 };
 
-describe('BatchMargin — recording state offers a way out that does not save', () => {
-  it('offers both Save batch and Cancel, Cancel as a real button', () => {
+describe('BatchMargin — recording state offers no control of its own (D-04: the save pair moved to Versions)', () => {
+  it('renders the churn fields with no Save or Cancel button', () => {
     const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
-    expect(markup).toContain('Save batch');
-    expect(markup).toContain('Cancel');
-    expect(markup).toMatch(/<button[^>]*>Cancel<\/button>/);
-  });
-});
-
-describe('BatchMargin — reading state offers no way to abandon an edit that is not happening', () => {
-  it('does not render the cancel wording', () => {
-    const markup = renderMargin({ openBatch: null, batches: [], mode: 'reading' });
-    expect(markup).not.toContain('Cancel');
+    expect(markup).not.toContain('<button');
+    expect(markup).toContain('Come-up');
   });
 });
 
@@ -150,7 +133,7 @@ describe('BatchMargin — the tasting form can be abandoned (D-1 through D-4)', 
     expect(markup).toContain('<p class="batch-margin__legend">Tasting</p>');
   });
 
-  it('lands the caret in the tasting date field without a click', () => {
+  it('renders the tasting date field with no autoFocus — that lands in the ceremony instead (Rule 1: two autofocus elements is undefined behaviour)', () => {
     const markup = renderMargin({
       openBatch: augustSecondBatch,
       batches: [augustSecondBatch],
@@ -158,18 +141,19 @@ describe('BatchMargin — the tasting form can be abandoned (D-1 through D-4)', 
       tastingDraft: emptyTastingDraft,
     });
     const dateInput = markup.match(/<input[^>]*type="date"[^>]*\/>/)[0];
-    expect(dateInput).toContain('autofocus=""');
+    expect(dateInput).not.toContain('autofocus');
   });
 
-  it('offers both a way to save and a way to leave without writing', () => {
+  it('renders no Save or Cancel control at all — those and the shortcut moved to Versions (D-04)', () => {
     const markup = renderMargin({
       openBatch: augustSecondBatch,
       batches: [augustSecondBatch],
       mode: 'reading',
       tastingDraft: emptyTastingDraft,
     });
-    expect(markup).toContain('Save tasting');
-    expect(markup).toMatch(/<button[^>]*>Cancel<\/button>/);
+    expect(markup).not.toContain('Save tasting');
+    expect(markup).not.toContain('<button');
+    expect(markup).not.toContain('As expected, nothing to note');
   });
 
   it('renders no tasting form at all once it is closed — the opener that reopens it lives in Versions now (D-04)', () => {

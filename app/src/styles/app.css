@@ -257,6 +257,27 @@ body {
   margin-top: var(--gap-xs);
 }
 
+/* The record/amend and tasting ceremonies' own date field (D-05, D-10):
+   the same labelled-field shape the plan pen's fields already use. */
+.versions__ceremony-field {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.versions__ceremony-field span {
+  display: block;
+  margin-bottom: var(--gap-hair);
+}
+
+/* The tasting ceremony's shortcut, between its date field and its save
+   pair — every adjacent control here is separated by --gap-s, never a
+   space character. */
+.versions__ceremony-shortcut {
+  display: block;
+  margin-top: var(--gap-s);
+}
+
 .versions__hint {
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);

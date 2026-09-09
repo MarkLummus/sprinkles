@@ -131,6 +131,7 @@ export function Versions({
                 className="ink-field"
                 required
                 autoFocus
+                placeholder="e.g. 55 g oil · 800 g"
                 value={penDraft.versionLabel}
                 aria-label="Version line"
                 onChange={(event) => onChangePenField('versionLabel', event.target.value)}
@@ -145,6 +146,7 @@ export function Versions({
               <textarea
                 className="ink-field"
                 rows="2"
+                placeholder="e.g. less oil after the batch of 2 Aug"
                 value={penDraft.reason}
                 onChange={(event) => onChangePenField('reason', event.target.value)}
               />

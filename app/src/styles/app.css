@@ -78,6 +78,86 @@ a:visited {
   color: var(--ink);
 }
 
+/* The select's chevron (D-17): appearance: none above already removed the
+   browser's own arrow in every engine; this draws its replacement as two
+   ink triangles, one combined rule for the bare element and the two
+   selects that also carry .ink-field, whose own background: none would
+   otherwise beat a lone `select` rule (a class always outranks a bare
+   element). The dropdown list itself stays the browser's — this is the
+   closed-state chrome only. */
+select,
+select.ink-field {
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--inset-select-chevron-x)) calc(50% - var(--inset-select-chevron-y)),
+    calc(100% - var(--inset-select-chevron-x) + var(--size-select-chevron))
+      calc(50% - var(--inset-select-chevron-y));
+  background-size:
+    var(--size-select-chevron) var(--size-select-chevron),
+    var(--size-select-chevron) var(--size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+}
+
+/* The checkbox (D-13): the same drawing the radio stop below already
+   proves, so the uses checklist and the Skipped checkbox pick this up
+   with no markup change. */
+input[type='checkbox'] {
+  appearance: none;
+  width: var(--size-mark-stop);
+  height: var(--size-mark-stop);
+  margin: 0;
+  border: var(--rule-graduation) solid var(--ink);
+  border-radius: 0;
+  background: none;
+}
+
+input[type='checkbox']:checked {
+  background: var(--ink);
+}
+
+/* Number spinners (D-19): the cross-browser pair — Chromium/WebKit hide
+   the spin-button pseudo-elements, Firefox switches to the textfield
+   appearance. The type stays "number" on every field that has it. */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* The date input's calendar icon (D-13's named exception): hidden in
+   Chromium and WebKit. Firefox exposes no styling hook for it — the
+   selector below simply matches nothing there, and the gap is accepted
+   and recorded (03.1-03-PLAN.md planner decision 1), not worked around
+   with a hand-built picker. The segment highlight is left alone in every
+   engine, the second named exception beside the select's own dropdown. */
+input[type='date']::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Prose fields (D-13 § 8): grow with their typed text and carry no
+   resize grip. field-sizing degrades to the rows attribute already on
+   every textarea where an engine does not yet support it, so no
+   @supports guard is written; resize: none is unconditional. */
+textarea {
+  field-sizing: content;
+  resize: none;
+}
+
+/* The two named placeholders (D-20): an example in ink small print, never
+   a default — a blank field still saves as blank. */
+::placeholder {
+  color: var(--ink);
+  font-size: var(--size-small-print);
+  opacity: 1;
+}
+
 /* The running head (route-recipe-version.md § 4, § 6): the way home on
    the recipe page, in ink — never bookcloth, which identifies a block by
    its plain-language name, not a link. */

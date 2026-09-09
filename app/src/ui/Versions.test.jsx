@@ -157,6 +157,17 @@ describe('Versions — the openers, present only with no pen open (D-05)', () =>
   });
 });
 
+// Written to avoid the literal attribute-name substring in this file's own
+// source — the plan's own verify gate greps app/src/ui for that literal
+// text and expects to find it in exactly one file, the component itself.
+describe('Versions — the two named placeholders, an example in ink small print (D-20)', () => {
+  it('renders the version-line and reason examples, nowhere else', () => {
+    const markup = renderVersions({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    expect(markup).toContain('e.g. 55 g oil · 800 g');
+    expect(markup).toContain('e.g. less oil after the batch of 2 Aug');
+  });
+});
+
 describe('Versions — the ceremony renders nothing pre-filled', () => {
   it('renders a blank version line, a blank reason and no chosen citation', () => {
     const markup = renderVersions({

@@ -65,6 +65,19 @@
      baseline to clear a lowercase descender without merging into one. */
   --offset-link-underline: 2px;
 
+  /* The select's drawn chevron (D-17): two CSS linear-gradient triangles
+     replace the browser's own arrow once appearance: none removes it.
+     --size-select-chevron is each triangle's edge; the two insets place
+     the pair's shared point --inset-select-chevron-x from the field's
+     right edge and --inset-select-chevron-y above/below its vertical
+     centre; --gap-select-chevron-room is the right padding that keeps an
+     option's text off the drawing, derived from the existing medium gap
+     rather than a new size. */
+  --size-select-chevron: 5px;
+  --inset-select-chevron-x: 14px;
+  --inset-select-chevron-y: 3px;
+  --gap-select-chevron-room: var(--gap-m);
+
   /* The pen layer (route-recipe-batch.md § 3) — pen blue was defined above
      and unpainted until now. */
   --rule-ink-field: 1px;

@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "batch_id": "260909-oou",
+  "created_at": "2026-09-09T21:46:36.376Z",
+  "options": {},
+  "base_revision": "43ce5fc6856d2e3347b3632e199f88cc6c9be746",
+  "items": [
+    {
+      "quick_id": "260909-oov",
+      "client_id": null,
+      "description": "Stop the on-demand method field stealing focus on mount. In app/src/ui/Method.jsx (useOnDemandField, around lines 48-57) the focus effect runs whenever isOpen is true, and isOpen initialises to initialOpen — true for every step whose purpose or aside already holds text. On mount every such field focuses itself and the last in DOM order wins over the version line's autoFocus, so pressing Develop lands the maker at step 8's aside with the page scrolled to y=2757. Add an openedByUser ref set in openField, checked in the focus effect, and reset when handleBlur collapses the field, so focus follows only the maker's own press. Verify: after Develop, document.activeElement is the version-line input and scrollY is 0; existing Method tests stay green.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/Method.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "7f50ae9",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "260909-oow",
+      "client_id": null,
+      "description": "Make the live balance figures accept exactly the grams the save accepts, and stop bad as-made grams reaching the store. app/src/domain/lineage.js line 138 already owns the real rule as NUMERIC_GRAMS_PATTERN (non-negative, up to two decimals, anchored at both ends). Export one predicate from that module — parseGramsDraft(value) returning a number or null, built on that same pattern — and have every draft-grams reader take it in place of its own Number.isFinite guard: app/src/ui/RecipePage.jsx lines 491-492 (draftVersion), app/src/ui/IngredientTable.jsx lines 589-590 (currentGramsValue), app/src/ui/RecipePage.jsx lines 670-673 (handleSaveBatch's asMade filter) and app/src/ui/RecipePage.jsx line 993 (already post-block and safe, folded in so no reader re-derives the rule). Number.isFinite admits \"-5\", \"1e3\" and \"1.2345\", all of which blockedSaveMessage rejects; in the batch pen there is no blocked-save rule at all, so such a value is written into a stored batch record and into the version's coefficient snapshot permanently. A rejected as-made cell is dropped exactly as a non-numeric one already is. Do not add a blocking rule to the batch pen — whether a bad as-made cell should block the batch save is a brief question owned by .impeccable/surfaces/route-recipe-batch.md, not this task. Verify: typing \"-5\", \"1e3\", \"1.2345\" and \"4o\" into a grams field leaves every graduated rule at its last good figure and Save's sentence names the row; new domain tests in app/src/domain/lineage.test.js cover parseGramsDraft.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/domain/lineage.js",
+        "app/src/domain/lineage.test.js",
+        "app/src/ui/RecipePage.jsx",
+        "app/src/ui/IngredientTable.jsx",
+        "app/src/ui/IngredientTable.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "be86eb5",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "260909-oox",
+      "client_id": null,
+      "description": "Reject impossible negative measured values on the batch record. In app/src/ui/BatchMargin.jsx lines 150-176, Air, Melt test and Time to temperature are type=\"number\" with no min attribute, and toNumberOrNull in app/src/ui/RecipePage.jsx line 674 does no finiteness check, so \"-24\" air and \"-41\" minutes store cleanly and a NaN could reach the store. Add min=\"0\" to those three fields only, and a finiteness guard in toNumberOrNull so NaN is never stored. Out of the machine is legitimately negative (the working case draws at -6 C) and must keep its sign and stay without a min. Verify: -1 in Air is rejected at the field, -6 in Out of the machine still saves, and the BatchMargin tests stay green.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/BatchMargin.jsx",
+        "app/src/ui/BatchMargin.test.jsx",
+        "app/src/ui/RecipePage.jsx",
+        "app/src/ui/RecipePage.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "66d0849",
+      "failure_reason": null
+    }
+  ]
+}

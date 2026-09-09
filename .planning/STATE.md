@@ -195,6 +195,9 @@ None yet.
 | 260907-dyn | Commit the confirmed Phase 3 surface brief, revise route-recipe.md § 3 and § 6 to retire the translucent overlay and point at it, and record the confirmed brief in STATE.md | 2026-09-07 | db7214f | [260907-dyn-commit-the-confirmed-phase-3-surface-bri](./quick/260907-dyn-commit-the-confirmed-phase-3-surface-bri/) |
 | 260908-eil | Record the 2026-09-08 Impeccable revisions | 2026-09-08 | 03104fd | [260908-eil-record-the-2026-09-08-impeccable-revisio](./quick/260908-eil-record-the-2026-09-08-impeccable-revisio/) |
 | 13 | Ignore GSD phase-researcher web cache (.planning/research/.cache/) in .gitignore | 2026-09-08 | f1c33be | — |
+| 260909-oov | Stop the on-demand method field stealing focus on mount | 2026-09-09 | 7f50ae9 | .planning/quick/260909-oov-stop-the-on-demand-method-field-stealing |
+| 260909-oow | Make the live balance figures accept exactly the grams the save accepts, and stop bad as-made grams reaching the store | 2026-09-09 | be86eb5 | .planning/quick/260909-oow-make-the-live-balance-figures-accept-exa |
+| 260909-oox | Reject impossible negative measured values on the batch record | 2026-09-09 | 66d0849 | .planning/quick/260909-oox-reject-impossible-negative-measured-valu |
 
 ### Roadmap Evolution
 

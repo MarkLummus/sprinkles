@@ -34,3 +34,44 @@ Mark chose **B, rows across the whole page, with the table in step order**. The 
 - C: Balance beside the version row means the rules sit beside the reason for the version; is that a good neighbour or a distraction?
 - Develop: the ceremony takes the metadata cell's place in the version row; the table's struck 40 and the fat rule's strike should be on the same screen.
 - 1024 and 834: the rows stack; does the batch row's cell grid reflow cleanly?
+
+## Handoff to `/impeccable shape route:/recipe` (2026-09-09)
+
+The decisions in this section were made in conversation with Mark and are recorded nowhere else. The critique that started the round is `.impeccable/critique/2026-09-09T11-54-37Z__app-src-ui-recipepage-jsx.md`; the labels and the "Saying absence" rule are in `product-requirements/05-domain-and-language.md`.
+
+### The jobs, and where each one lives now
+
+| Job | Object | Where on the page | Control |
+|---|---|---|---|
+| Read the recipe as a recipe | Version | The spread | none |
+| Read plan and reality together | Batch on version | As-made column, struck steps, the batch row | none |
+| Know which version I am on and reach the others | Recipe's versions | Version row | "N later versions" opens the list under the row |
+| Know where this version came from and why | Version | Version row | From version, Why, From batch, Show changes |
+| Pick which batch I am reading | Version's batches | Batch row | "N later batches" opens the list under the row |
+| Put the sheet's ink in against the version I churned | New batch | Record another on the version row; ink in place; ceremony under the row and repeated at the foot | Record another, churn date, Save, Cancel |
+| Add a tasting later | Tasting on batch | Batch row | Add tasting |
+| Fix a misread record | Batch | Batch row | Correct |
+| Make the next version with its reason on the page | New version | Next version on the version row; pen in the spread; ceremony under the row and at the foot | Next version, Version, Why, From batch, Save as new version, Cancel |
+| Fork twice for the same batch | New version | Same; also "New version from …" in the later-versions list | |
+| See what changed and what it did | Version pair | Version row; strikes in the spread | Show changes |
+| Correct an unchurned plan without forking | Version | Ceremony | Save over |
+| Print the sheet | Version | Version row, Phase 4 | Print |
+
+### Decisions carried
+
+- The page holds the tip: the latest version and its latest batch. Earlier ones are one control away. This follows the binder (29 sheets, one line of work) and Mark's own account of how he works.
+- Version and batch stay separate records (D04; the same plan churned twice is two batches of one version). The words merge: a version with no batch reads "not yet churned", one with a batch "churned 2 Aug 2026", a repeated one "churned twice". "Draft" is acceptable for the unchurned state.
+- The two rows stay two because their acts differ: Next version and Record another act on the plan; Correct and Add tasting act on one churn. Putting them on one row is how the imprint got overloaded.
+- The tray (sketch 001) is superseded. Ingredient management and import are pages of their own, in the same material, not spreads and not trays.
+- Step order is the table's order and the sheet's. An ingredient is the formula's row (one total, one share, one snapshot); a portion is what is weighed for one step; as-made is recorded per portion and the total derived. The Step column disappears in step order; the step's lead-in heads each group.
+- "Before you start" notes head the Method, before step 1. Things to check and the carried-forward Notes sit under Balance in column two.
+- The per-step controls in the pen are a read-only method with one "edit this step" text control per step (Mark, 2026-09-09, from the critique's question).
+- The Balance note stays level with Ingredients; nothing in column two sits above it.
+
+### Still open for shape
+
+- Whether the written order survives on screen once step order is the sheet's order.
+- Editing a split ingredient in the pen: portions edited, total derived; not sketched.
+- The later-versions list beyond four entries; three across at 1440 worked.
+- Print's place on the version row (Phase 4).
+- Tablet: the page stacks below 1100 with the front matter first; Phase 4 owns the breakpoint.

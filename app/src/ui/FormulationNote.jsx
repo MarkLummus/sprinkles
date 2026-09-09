@@ -12,8 +12,11 @@ export function FormulationNote({ version, mode, diff = null, onFocusFigure, onB
   // D-03/D-04: while recording, the sheet's page order runs churn date,
   // as-made, method, then the churn section — the six rules are not on
   // that path, so their tab stop is off (they stay clickable and keep
-  // their focus treatment).
-  const tabIndex = mode === 'recording' ? -1 : undefined;
+  // their focus treatment). The plan's own pen keeps the page the same
+  // way (critique P1 #2, D-28): while developing, the pen's own fields are
+  // the tab path and the six rules are reachable only by click, exactly as
+  // they already are while recording a batch.
+  const tabIndex = mode === 'recording' || mode === 'developing' ? -1 : undefined;
 
   return (
     <div className="formulation-note">

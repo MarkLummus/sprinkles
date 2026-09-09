@@ -509,6 +509,17 @@ export function RecipePage() {
     showingChanges && version.parentVersionId && parentVersion ? buildDiff(version, parentVersion) : null;
   const changeStaleSteps = changeDiff ? stepsWithStaleAmounts(version, parentVersion) : [];
 
+  // The pen's own live diff (critique P1 #2, build gap 1): the draft
+  // against the version the plan's pen opened on, computed once here —
+  // never in Method, never in FormulationNote — from the same buildDiff
+  // the show-changes comparison above already uses. This is what lets the
+  // rule heads strike the parent figure and draw the hollow tick while the
+  // maker is still typing, and what Method reads instead of computing its
+  // own comparison a second time per keystroke (RESEARCH.md Don't
+  // Hand-Roll).
+  const penDiff = mode === 'developing' && draftVersion ? buildDiff(draftVersion, version) : null;
+  const penStaleSteps = penDiff ? stepsWithStaleAmounts(draftVersion, version) : [];
+
   // The two step-position maps (domain/stepNumbers.js, 03-10), computed
   // once here and threaded to every region that names a step, the same
   // shape changeDiff already follows: one comparison, computed once, so no
@@ -1098,6 +1109,8 @@ export function RecipePage() {
             rows={version.rows}
             draftVersion={draftVersion}
             baselineVersion={version}
+            penDiff={penDiff}
+            penStaleSteps={penStaleSteps}
             showingChanges={showingChanges}
             changeDiff={changeDiff}
             staleSteps={changeStaleSteps}
@@ -1119,7 +1132,7 @@ export function RecipePage() {
             <FormulationNote
               version={liveVersion}
               mode={mode}
-              diff={changeDiff}
+              diff={mode === 'developing' ? penDiff : changeDiff}
               onFocusFigure={setFocusedFigureKey}
               onBlurFigure={() => setFocusedFigureKey(null)}
             />

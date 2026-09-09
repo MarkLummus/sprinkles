@@ -9,6 +9,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Method } from './Method.jsx';
 import { buildDiff } from '../domain/diff.js';
+import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 
 const struckStep = { n: 1, leadIn: 'Steep', instruction: 'Warm the milk and steep the zest.' };
@@ -152,6 +153,7 @@ describe('Method — the lead-in and instruction fields read as printed prose (0
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -175,6 +177,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -195,6 +198,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -215,6 +219,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -238,6 +243,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -257,6 +263,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -276,6 +283,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -299,6 +307,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -319,6 +328,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -338,6 +348,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -358,6 +369,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -385,6 +397,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -411,6 +424,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -434,6 +448,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -454,6 +469,7 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -473,6 +489,8 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
+        penStaleSteps={stepsWithStaleAmounts(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         staleFlagVisible
       />,
@@ -486,6 +504,8 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
+        penStaleSteps={stepsWithStaleAmounts(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         staleFlagVisible={false}
       />,
@@ -630,6 +650,8 @@ describe('Method — developing mode', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
+        penStaleSteps={stepsWithStaleAmounts(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         staleFlagVisible
       />,
@@ -649,6 +671,7 @@ describe('Method — purpose and aside on demand (D-23)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -669,6 +692,7 @@ describe('Method — purpose and aside on demand (D-23)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -691,6 +715,7 @@ describe('Method — the uses line, closed by default (D-24)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -712,6 +737,7 @@ describe('Method — the uses line, closed by default (D-24)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
       />,
     );
@@ -739,6 +765,7 @@ describe('Method — accessible names carry the step (D-28)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
       />,
@@ -838,6 +865,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -870,6 +898,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -894,6 +923,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -919,6 +949,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -944,6 +975,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -973,6 +1005,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -1066,6 +1099,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}
@@ -1090,6 +1124,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         mode="developing"
         draftVersion={draftVersion}
         baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
         rows={baselineVersion.rows}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         baselineStepNumbers={displayNumbers(baselineVersion.method)}

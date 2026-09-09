@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
-import { removedRowsUsedBy, coveredRowsFor, stepsWithStaleAmounts } from '../domain/uses.js';
-import { buildDiff } from '../domain/diff.js';
+import { removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 
 function joinWithAnd(items) {
@@ -401,8 +400,10 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
 // § 3). `steps` is the baseline (unfiltered) method in that mode, so a
 // removed step still renders, struck, in its original place; `draftVersion`
 // carries the maker's current edits and `baselineVersion` is the record the
-// pen opened on (D-03) — buildDiff(draftVersion, baselineVersion) is the
-// one comparison, never re-derived per field.
+// pen opened on (D-03) — `penDiff` is RecipePage's own one
+// buildDiff(draftVersion, baselineVersion), computed once on the page and
+// passed down here and to FormulationNote, never re-derived per field
+// (critique P1 #2, RESEARCH.md Don't Hand-Roll).
 export function Method({
   steps,
   stepChanges = {},
@@ -412,6 +413,12 @@ export function Method({
   draftVersion = null,
   baselineVersion = null,
   staleFlagVisible = false,
+  // The pen's own precomputed comparison (critique P1 #2, build gap 1):
+  // RecipePage's one buildDiff(draftVersion, baselineVersion) and the
+  // stale-amount entries derived from it — computed once on the page, read
+  // here and by FormulationNote's graduated rules, never recomputed.
+  penDiff = null,
+  penStaleSteps = [],
   // The show-changes state's precomputed comparison (route-recipe-version.md
   // § 3, § 6, 03-04): RecipePage's own one buildDiff of the version against
   // its live parent, and the stale-amount entries derived from it — never
@@ -434,8 +441,6 @@ export function Method({
 }) {
   const batchLike = { churn: { stepChanges } };
   const isDeveloping = mode === 'developing' && draftVersion != null && baselineVersion != null;
-  const penDiff = isDeveloping ? buildDiff(draftVersion, baselineVersion) : null;
-  const penStaleSteps = isDeveloping ? stepsWithStaleAmounts(draftVersion, baselineVersion) : [];
   const isShowingChanges = !isDeveloping && showingChanges && changeDiff != null;
   const activeDiff = isDeveloping ? penDiff : changeDiff;
   const activeStaleSteps = isDeveloping ? penStaleSteps : staleSteps;

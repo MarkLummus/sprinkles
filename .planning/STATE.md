@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 4
-current_phase_name: Prepare the next version for making
+current_phase: "03.1"
+current_phase_name: The imprint and the binder
 status: planning
-stopped_at: Phase 03 complete, ready to plan Phase 4
-last_updated: "2026-09-08T15:08:41.270Z"
+stopped_at: Phase 03.1 context gathered
+last_updated: "2026-09-09T00:39:10.969Z"
 last_activity: 2026-09-08
-last_activity_desc: Phase 03 complete, transitioned to Phase 4
-state_head: f1c33be2119a843885ab8a3e143b6a4ee62bb4b4
+last_activity_desc: "Inserted Phase 03.1: The imprint and the binder"
+state_head: dc0f1387c773cf6594208591b03a17f1d89518f0
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 2
   total_plans: 21
   completed_plans: 21
-  percent: 50
+  percent: 40
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-08)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 4 — Prepare the next version for making
+**Current focus:** Phase 03.1 — The imprint and the binder
 
 ## Current Position
 
-Phase: 4 — Prepare the next version for making
+Phase: 03.1 — The imprint and the binder
 Plan: Not started
-Status: Ready to plan
-Last activity: 2026-09-08 - Completed quick task 260908-eil: Record the 2026-09-08 Impeccable revisions
+Status: planning
+Last activity: 2026-09-08 - Inserted Phase 03.1: The imprint and the binder
 
-Progress: [█████░░░░░] 50% (3/4 phases; 21/21 plans)
+Progress: [████░░░░░░] 40% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
@@ -185,6 +185,10 @@ None yet.
 | 260908-eil | Record the 2026-09-08 Impeccable revisions | 2026-09-08 | 03104fd | [260908-eil-record-the-2026-09-08-impeccable-revisio](./quick/260908-eil-record-the-2026-09-08-impeccable-revisio/) |
 | 13 | Ignore GSD phase-researcher web cache (.planning/research/.cache/) in .gitignore | 2026-09-08 | f1c33be | — |
 
+### Roadmap Evolution
+
+- Phase 03.1 inserted after Phase 3: The imprint and the binder — the 2026-09-08 Impeccable brief revisions: front-matter band, controls out of the spread, the pen reads as the page, the binder's control treatment, rules strike the parent figure, columns hold in every state (URGENT)
+
 ## Deferred Items
 
 Items acknowledged and deferred at milestone close, most recent first:
@@ -195,6 +199,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-08T12:10:16Z
-Stopped at: Phase 03 complete, ready to plan Phase 4
-Resume file: None
+Last session: 2026-09-09T00:39:10.803Z
+Stopped at: Phase 03.1 context gathered
+Resume file: .planning/phases/03.1-the-imprint-and-the-binder/03.1-CONTEXT.md

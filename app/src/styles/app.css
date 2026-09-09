@@ -580,6 +580,13 @@ textarea {
   width: var(--col-step);
 }
 
+/* The Step column widens in the pen alone (D-22): scoped through the
+   table's own is-developing class so the reading and show-changes states
+   keep --col-step unmoved. */
+.ingredient-table.is-developing .ingredient-table__col-step {
+  width: var(--col-step-pen);
+}
+
 /* The Data and Remove columns (G-03-11): unstyled since 03-02/03-08, so
    under this table's fixed layout they split whatever the sized columns
    above left — 5.41px each at a 1280px viewport, which is why the Remove
@@ -687,6 +694,14 @@ textarea {
   border-bottom: none;
   border-top: var(--rule-baseline) solid var(--ink);
   font-weight: 700;
+}
+
+/* The total row's own numeric cell never wraps to two lines (D-22,
+   critique P2 #2, Phase 3 UAT test 17) — scoped to the total row alone
+   through the tfoot context, never to every numeric cell, so a wide
+   as-typed grams figure elsewhere in the table is still free to wrap. */
+.ingredient-table tfoot .ingredient-table__col-numeric {
+  white-space: nowrap;
 }
 
 .table-small-print {

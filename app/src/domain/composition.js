@@ -84,13 +84,26 @@ export function formatShareOfBatch(grams, mass) {
 }
 
 /**
+ * formatGramsValue(grams) -> the bare computed grams figure at one
+ * decimal, with no unit (e.g. `799.7`). formatGrams (below) is defined in
+ * terms of this, so the two can never print a different number for the
+ * same value. For a render site that strikes a bare number beside an
+ * already-unit-suffixed current value — the ingredient table's total row
+ * — this is the first-class case: composing two already-unit-suffixed
+ * strings is what printed the unit twice (critique P2 #2).
+ */
+export function formatGramsValue(grams) {
+  return grams.toFixed(1);
+}
+
+/**
  * formatGrams(grams) -> a computed grams figure at one decimal, with unit
  * (e.g. `799.7 g`). For computed totals only — the plan total and the
  * as-made total (D-22) — never for a measured or as-made value itself,
  * which the precision contract in domain/batch.js forbids rounding.
  */
 export function formatGrams(grams) {
-  return `${grams.toFixed(1)} g`;
+  return `${formatGramsValue(grams)} g`;
 }
 
 export function weakestBasis(rows, field) {

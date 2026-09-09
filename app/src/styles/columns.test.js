@@ -43,6 +43,12 @@ const WIDEST_INGREDIENT_NAME = 142.83; // "Lambda carrageenan"
 // old content-box accounting where the declared width WAS the content
 // width (padding was added on top, unmeasured by the token itself).
 const STEP_CONTENT_SHARE_03_08 = 66;
+// The pen's own Step column reading target, "3. Build the base" (D-22,
+// 03.1-05, tokens.css's own --col-step-pen comment): seventeen characters,
+// reasoned the same way DATA_FLAG_UNREVIEWED_REASONED above is — scaled
+// from DATA_FLAG_ESTIMATED's measured 66.14px / 9 letters (~7.35px per
+// letter at the table body size) to seventeen characters.
+const STEP_OPTION_ESTIMATE_17_CHARS = (DATA_FLAG_ESTIMATED / 9) * 17;
 
 // The page arithmetic (route-recipe-version.md's host page, .recipe-page
 // in app.css): a 2fr/1fr grid, --gap-xl (48px) padding on both sides, and
@@ -95,6 +101,8 @@ const colNumeric = resolveTokenPx(tokens, '--col-numeric');
 const colStep = resolveTokenPx(tokens, '--col-step');
 const colData = resolveTokenPx(tokens, '--col-data');
 const colRemove = resolveTokenPx(tokens, '--col-remove');
+const colStepPen = resolveTokenPx(tokens, '--col-step-pen');
+const chevronRoom = resolveTokenPx(tokens, '--gap-select-chevron-room');
 
 describe('reading helpers', () => {
   test('stripCssComments removes a comment block without touching the rule beside it', () => {
@@ -258,5 +266,35 @@ describe('task 2 — Data and Remove get columns of their own; the name column a
       // from it because the total including it still fits.
       expect(readingStateTotal).toBeGreaterThanOrEqual(colData);
     });
+  });
+});
+
+describe('the pen state — the widened Step column, budgeted the same way (D-22, 03.1-05)', () => {
+  test('--col-step-pen is declared through a token, is a px value, and is wider than the reading state\'s --col-step', () => {
+    expect(colStepPen).toBeTypeOf('number');
+    expect(colStepPen).toBeGreaterThan(colStep);
+  });
+
+  test('the Step column is styled for the pen through app.css\'s own is-developing scope', () => {
+    expect(appCssSource).toContain('col-step-pen');
+  });
+
+  test('--col-step-pen, less its own two paddings and the select\'s chevron room, clears the seventeen-character step-option estimate', () => {
+    expect(chevronRoom).toBeTypeOf('number');
+    const content = colStepPen - 2 * tableCellPadX - chevronRoom;
+    expect(content).toBeGreaterThanOrEqual(STEP_OPTION_ESTIMATE_17_CHARS);
+  });
+
+  // The widest pen state: three numeric columns, the widened Step, Data
+  // and Remove all at once — the same shape the reading-state budget
+  // above asserts, with --col-step-pen standing in for --col-step.
+  function sizedColumnsTotalWidestPenState() {
+    return 3 * colNumeric + colStepPen + colData + colRemove;
+  }
+
+  test.each([1280, 1366, 1440])('at %ipx and above, the pen\'s widest state still clears the widest seed name (D-22)', (viewport) => {
+    const remainder = tableWidthAt(viewport) - sizedColumnsTotalWidestPenState();
+    const nameContent = remainder - 2 * tableCellPadX;
+    expect(nameContent).toBeGreaterThanOrEqual(WIDEST_INGREDIENT_NAME);
   });
 });

@@ -7,7 +7,7 @@
 // records, or method steps, and never sorts: the row descriptors follow
 // current.rows order and the step descriptors follow current.method's own
 // order (already ascending n).
-import { computeBalance, formatShareOfBatch, formatGrams } from './composition.js';
+import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
 import { buildFigures } from './figures.js';
 import { activeRows, activeSteps } from './rows.js';
 
@@ -170,8 +170,12 @@ function buildStepDiff(step, baseStep) {
  * through `activeRows`/`activeSteps` first, so a removed row or step never
  * reaches `computeBalance` — matched by `key`, in `FIGURE_SPECS` order; the
  * figure math is never re-derived. `total` compares each side's active
- * mass through `formatGrams`. Never mutates either version, its rows,
- * their embedded ingredient records, or method steps, and never sorts.
+ * mass through `formatGrams`, and carries `fromValue`/`toValue` — the same
+ * two masses through the bare-number `formatGramsValue` — so a render
+ * site striking one beside an already-unit-suffixed current value never
+ * has to compose two already-suffixed strings (critique P2 #2). Never
+ * mutates either version, its rows, their embedded ingredient records, or
+ * method steps, and never sorts.
  */
 export function buildDiff(current, baseline) {
   const currentMass = activeMass(current);
@@ -197,6 +201,11 @@ export function buildDiff(current, baseline) {
   const total = {
     from: formatGrams(baselineMass),
     to: formatGrams(currentMass),
+    // The bare-number pair the total row strikes (critique P2 #2): built
+    // from the same formatGramsValue formatGrams is itself defined in
+    // terms of, so from/fromValue and to/toValue can never disagree.
+    fromValue: formatGramsValue(baselineMass),
+    toValue: formatGramsValue(currentMass),
     changed: formatGrams(baselineMass) !== formatGrams(currentMass),
   };
 

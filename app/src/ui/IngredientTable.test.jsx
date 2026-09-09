@@ -582,3 +582,133 @@ describe('IngredientTable — the orphaned-row flag names a removed step by its 
     expect(markup).toContain('used by One and Two, which are removed');
   });
 });
+
+// The total row prints its unit once, on one line, in every state (D-22,
+// critique P2 #2): the struck baseline reads through the bare-number
+// formatter — formatGramsValue in the pen, diff.total.fromValue in
+// show-changes — never a second already-unit-suffixed string composed
+// beside the current reading.
+describe('IngredientTable — the total row prints its unit once (D-22, critique P2 #2)', () => {
+  it('in the pen: the struck baseline carries no unit of its own, and the unit appears exactly once', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const draftVersion = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+    const penDraft = { rows: { a: { grams: '48', step: 1, removed: false } }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    // The total's own numeric cell alone — never the aria-label, which
+    // spells the unit as "grams" and would falsely inflate an " g"
+    // substring count.
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-numeric">([\s\S]*?)<\/td>/.exec(markup);
+    const totalCellMarkup = totalCellMatch[1];
+    expect(totalCellMarkup).toContain('<span class="struck-value">40.0</span>');
+    expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);
+  });
+
+  it("in show-changes: the struck baseline reads the diff's own bare fromValue, and the unit appears exactly once", () => {
+    const baseline = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const current = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+    const diff = buildDiff(current, baseline);
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" />);
+
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-numeric">([\s\S]*?)<\/td>/.exec(markup);
+    const totalCellMarkup = totalCellMatch[1];
+    expect(totalCellMarkup).toContain(`<span class="struck-value">${diff.total.fromValue}</span>`);
+    expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);
+  });
+});
+
+// `unallocated` never dangles (critique P2 #2): a row whose primary step
+// is removed and whose splitStep survives reads the word followed by the
+// suffix, never a bare " + 3" with nothing naming the primary.
+describe('IngredientTable — the show-changes step cell prints unallocated rather than a dangling suffix (critique P2 #2)', () => {
+  it('reads "unallocated + 2" for a row whose primary step is removed and whose split survives', () => {
+    const baseline = makeVersion([makeRow('a', 'Row A', 10, 2, { splitStep: 3 })]);
+    baseline.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
+      { n: 3, leadIn: 'Three', instruction: 'Do three.' },
+    ];
+    const current = structuredClone(baseline);
+    current.method[1].removed = true; // step 2 removed; step 3 is now position 2
+    const diff = buildDiff(current, baseline);
+    const currentStepNumbers = displayNumbers(current.method);
+    const baselineStepNumbers = displayNumbers(baseline.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={current.rows}
+        diff={diff}
+        showingChanges
+        mode="reading"
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    const stepCellMatch = /<td class="ingredient-table__col-step">([\s\S]*?)<\/td>/.exec(markup);
+    const stepCellMarkup = stepCellMatch[1];
+    expect(stepCellMarkup).not.toMatch(/^\s*\+ 2/);
+    expect(stepCellMarkup.replace(/<[^>]*>/g, '')).toBe('unallocated + 2');
+  });
+
+  it('reads "unallocated" alone for a row named by neither side', () => {
+    const baseline = makeVersion([makeRow('a', 'Row A', 10, 2)]);
+    baseline.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', removed: true },
+    ];
+    const current = structuredClone(baseline);
+    const diff = buildDiff(current, baseline);
+    const currentStepNumbers = displayNumbers(current.method);
+    const baselineStepNumbers = displayNumbers(baseline.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={current.rows}
+        diff={diff}
+        showingChanges
+        mode="reading"
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    const stepCellMatch = /<td class="ingredient-table__col-step">([\s\S]*?)<\/td>/.exec(markup);
+    expect(stepCellMatch[1].replace(/<[^>]*>/g, '')).toBe('unallocated');
+  });
+});
+
+// The split-step suffix reads in ink, not pen blue — it is printed matter,
+// never the maker's own draft (critique P2 #1, D-30).
+describe('IngredientTable — the split-step suffix reads in ink (critique P2 #1, D-30)', () => {
+  it('carries the ingredient-table__split-step class alone, with no ink-text class beside it', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1, { splitStep: 2 })]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
+    ];
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: { grams: '10', step: 1, removed: false } }, asMade: {} };
+    const currentStepNumbers = displayNumbers(draftVersion.method);
+    const baselineStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={currentStepNumbers}
+        baselineStepNumbers={baselineStepNumbers}
+      />,
+    );
+
+    expect(markup).toContain('class="ingredient-table__split-step"');
+    expect(markup).not.toContain('class="ink-text ingredient-table__split-step"');
+  });
+});

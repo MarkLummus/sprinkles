@@ -4,7 +4,7 @@
 // boundary. The one exception is the olive-oil share of fat, which the sheet prints
 // as a whole number (28%): asserted within 0.5.
 import { describe, it, expect } from 'vitest';
-import { computeBalance, weakestBasis, formatShareOfBatch, formatGrams } from './composition.js';
+import { computeBalance, weakestBasis, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { library } from '../data/library.js';
 
@@ -111,10 +111,21 @@ describe('formatShareOfBatch', () => {
   });
 });
 
+describe('formatGramsValue', () => {
+  it('formats a computed total to one decimal, no unit (critique P2 #2)', () => {
+    expect(formatGramsValue(799.68)).toBe('799.7');
+    expect(formatGramsValue(804.28)).toBe('804.3');
+  });
+});
+
 describe('formatGrams', () => {
-  it('formats a computed total to one decimal with a unit', () => {
+  it('formats a computed total to one decimal with a unit — byte-identical to before formatGramsValue existed', () => {
     expect(formatGrams(799.68)).toBe('799.7 g');
     expect(formatGrams(804.28)).toBe('804.3 g');
+  });
+
+  it('appends the unit to exactly what formatGramsValue returns, so the two can never disagree', () => {
+    expect(formatGrams(799.68)).toBe(`${formatGramsValue(799.68)} g`);
   });
 });
 

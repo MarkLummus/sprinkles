@@ -142,6 +142,19 @@
     60.45px native remove/restore <button> — a bare button has no shrink
     guard, unlike the step select's flex + min-width:0 pair (03-08). */
 
+  /* The Step column in the pen (D-22, 03.1-05): --col-step above stays the
+     reading state's width; this is the pen's own, wider, so each option
+     reads its number and lead-in ("3. Build the base"). Derivation:
+     columns.test.js's own measured 66.14px for the Data column's nine
+     letters ("estimated") gives ~7.35px per letter at the table body
+     size; "3. Build the base" is seventeen characters, ~124.93px; plus
+     the select's own chevron room (--gap-select-chevron-room, 20px,
+     plan 03) and twice this table's own cell padding
+     (--table-cell-pad-x, 6px each, 12px) — 124.93 + 20 + 12 = 156.93,
+     rounded up to 160px so the arithmetic clears the estimate with a
+     few px of slack rather than sitting exactly on it. */
+  --col-step-pen: 160px;
+
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);
   --size-mark-stop: 0.8125rem;

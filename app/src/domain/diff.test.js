@@ -140,6 +140,21 @@ describe('buildDiff — the total', () => {
     expect(diff.total.to).toBe('807.7 g');
     expect(diff.total.changed).toBe(true);
   });
+
+  // The bare-number pair (critique P2 #2): the total row's own struck
+  // value reads fromValue rather than composing a second unit onto
+  // `from`, which already carries one.
+  it('carries fromValue/toValue as the bare numbers from/to already print with a unit', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-03').grams = 48;
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.total.fromValue).toBe('799.7');
+    expect(diff.total.toValue).toBe('807.7');
+    expect(diff.total.from).toBe(`${diff.total.fromValue} g`);
+    expect(diff.total.to).toBe(`${diff.total.toValue} g`);
+  });
 });
 
 describe('buildDiff — steps, text', () => {
@@ -442,6 +457,6 @@ describe('buildDiff — empty', () => {
     const diff = buildDiff(current, baseline);
     expect(diff.rows).toEqual([]);
     expect(diff.figures).toEqual([]);
-    expect(diff.total).toEqual({ from: '0.0 g', to: '0.0 g', changed: false });
+    expect(diff.total).toEqual({ from: '0.0 g', to: '0.0 g', fromValue: '0.0', toValue: '0.0', changed: false });
   });
 });

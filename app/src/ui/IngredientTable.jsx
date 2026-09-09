@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { computeBalance, formatShareOfBatch, formatGrams } from '../domain/composition.js';
+import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from '../domain/composition.js';
 import { hasAsMade, asMadeFor, asMadeTotals } from '../domain/batch.js';
 import { activeRows } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
@@ -189,8 +189,11 @@ function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStep
           );
         })}
       </select>
+      {/* The split-step suffix is printed matter, not the maker's own draft
+          — it reads in ink, never pen blue (critique P2 #1, D-30, "The
+          parent's words in ink"). */}
       {splitStepDisplay != null && (
-        <span className="ink-text ingredient-table__split-step">{` + ${splitStepDisplay}`}</span>
+        <span className="ingredient-table__split-step">{` + ${splitStepDisplay}`}</span>
       )}
     </span>
   );
@@ -240,7 +243,12 @@ function DiffGramsCell({ rowDiff }) {
 // The show-changes from-and-to (03-10): the parent's display number struck
 // before the child's own — each read from the map matching the side it
 // names, never blended, so the strike can never disagree with the margin
-// beside it.
+// beside it. The primary always prints something (critique P2 #2): the
+// resolved current number when it resolves, otherwise the word
+// `unallocated` — the same word the clean reading's own
+// formatStepReferences uses — so a row whose primary step was removed and
+// whose splitStep survives reads "unallocated + 3" rather than the caller's
+// appended split suffix dangling with no primary word before it.
 function DiffStepCell({ rowDiff, currentStepNumbers, baselineStepNumbers }) {
   const changed = rowDiff.removed || rowDiff.stepChanged;
   const stepFromDisplay = safeDisplayNumberOf(baselineStepNumbers, rowDiff.stepFrom);
@@ -248,7 +256,7 @@ function DiffStepCell({ rowDiff, currentStepNumbers, baselineStepNumbers }) {
   return (
     <>
       {changed && stepFromDisplay != null && <span className="struck-value">{stepFromDisplay}</span>}
-      {stepToDisplay}
+      {stepToDisplay ?? 'unallocated'}
     </>
   );
 }
@@ -477,7 +485,10 @@ export function IngredientTable({
   // predicate, four-plus-one gated sites) rather than inventing its own.
   return (
     <>
-      <table className="ingredient-table">
+      {/* is-developing widens the Step column in the pen alone (D-22) —
+          app.css scopes --col-step-pen through this class, so no other
+          state's Step column moves. */}
+      <table className={isDeveloping ? 'ingredient-table is-developing' : 'ingredient-table'}>
         <thead>
           <tr>
             <th scope="col" className="ingredient-table__col-name">Ingredient</th>
@@ -485,7 +496,11 @@ export function IngredientTable({
             {hasAsMadeLayer && <th scope="col" className="ingredient-table__col-numeric">As made</th>}
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
             <th scope="col" className="ingredient-table__col-step">Step</th>
-            <th scope="col" className="ingredient-table__col-data">Data</th>
+            {/* The Data column goes blank-headed in the pen (D-22): the
+                column stays, its head goes, making room for the widened
+                Step column above without moving any other column's
+                token. */}
+            <th scope="col" className="ingredient-table__col-data">{isDeveloping ? '' : 'Data'}</th>
             {isDeveloping && <th scope="col" className="ingredient-table__col-remove">Remove</th>}
           </tr>
         </thead>
@@ -659,11 +674,16 @@ export function IngredientTable({
         <tfoot>
           <tr aria-label={totalAriaLabel}>
             <td className="ingredient-table__col-name">Total</td>
+            {/* The unit prints once (D-22, critique P2 #2): the struck
+                baseline reads the bare-number formatter — the pen's own
+                through formatGramsValue, show-changes' through
+                diff.total.fromValue — never composing a second unit onto
+                what totalDisplayText already carries after it. */}
             <td className="ingredient-table__col-numeric">
               {isDeveloping && currentTotalText !== baselineTotalText && (
-                <span className="struck-value">{baselineTotalText}</span>
+                <span className="struck-value">{formatGramsValue(baselineMass)}</span>
               )}
-              {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.from}</span>}
+              {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.fromValue}</span>}
               {totalDisplayText}
             </td>
             {hasAsMadeLayer && <td className="ingredient-table__col-numeric">{asMadeTotalText}</td>}

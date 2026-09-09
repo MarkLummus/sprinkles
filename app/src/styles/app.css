@@ -143,8 +143,8 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
 /* Prose fields (D-13 § 8): grow with their typed text and carry no
    resize grip. field-sizing degrades to the rows attribute already on
-   every textarea where an engine does not yet support it, so no
-   @supports guard is written; resize: none is unconditional. */
+   every textarea where an engine does not yet support it, so no feature
+   query is written; resize: none is unconditional. */
 textarea {
   field-sizing: content;
   resize: none;

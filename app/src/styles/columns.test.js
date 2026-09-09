@@ -14,6 +14,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { describe, test, expect } from 'vitest';
+import { stripCssComments, readCustomProperties, resolveTokenPx, readAllRules } from './css-source.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TOKENS_PATH = path.join(STYLES_DIR, 'tokens.css');
@@ -57,77 +58,11 @@ function tableWidthAt(viewport) {
 const UAT_WIDTHS = [1024, 1152, 1280, 1366, 1440];
 
 // --- Reading helpers -------------------------------------------------
-// Both tasks' assertions rest on these three: a comment stripper (so a
-// rule can never be satisfied by prose about it), a token reader (values
-// from tokens.css, one level of var() indirection resolved), and a rule
-// reader (declarations for a given selector in app.css).
-
-function stripCssComments(css) {
-  return css.replace(/\/\*[\s\S]*?\*\//g, '');
-}
-
-function readCustomProperties(css) {
-  const stripped = stripCssComments(css);
-  const props = {};
-  const re = /(--[\w-]+)\s*:\s*([^;]+);/g;
-  let match;
-  while ((match = re.exec(stripped))) {
-    props[match[1]] = match[2].trim();
-  }
-  return props;
-}
-
-function parsePxLiteral(value) {
-  const match = value.match(/^(-?\d+(?:\.\d+)?)px$/);
-  return match ? Number(match[1]) : undefined;
-}
-
-// Resolves a custom property's value to a px number, following at most
-// one level of var(--other) indirection — enough for every token this
-// table's columns use, since none of them chains a var of a var.
-function resolveTokenPx(props, name) {
-  const raw = props[name];
-  if (raw == null) return undefined;
-  const varMatch = raw.match(/^var\((--[\w-]+)\)$/);
-  if (varMatch) {
-    return parsePxLiteral(props[varMatch[1]]);
-  }
-  return parsePxLiteral(raw);
-}
-
-// The flat, non-nesting brace matcher below cannot parse an @-rule
-// (WR-02): it would treat the at-rule's own opening brace as a selector
-// and everything up to the first *inner* rule's closing brace as its
-// "declarations," silently misattributing every rule inside and after
-// the block to the wrong selector. Rather than write a nesting-aware
-// parser this suite does not otherwise need, fail loudly the moment an
-// at-rule appears, so adding one is forced to address this parser
-// instead of silently trusting stale results.
-function assertNoAtRules(css) {
-  const atRule =
-    /@(media|supports|keyframes|font-face|import|charset|page|document|layer|container|property|scope|starting-style|namespace|counter-style|font-feature-values)\b/i;
-  if (atRule.test(css)) {
-    throw new Error(
-      "columns.test.js's readAllRules is a flat, non-nesting brace matcher and cannot parse an @-rule. " +
-        'Update readAllRules to handle nested at-rules before adding one to app.css (see WR-02, 03-REVIEW.md).',
-    );
-  }
-}
-
-// Returns [{ selector, declarations }] for every top-level rule in the
-// comment-stripped source — used both for the per-column rule reader and
-// the broader ingredient-table rule scan task 2 adds.
-function readAllRules(css) {
-  const stripped = stripCssComments(css);
-  assertNoAtRules(stripped);
-  const rules = [];
-  const re = /([^{}]+)\{([^{}]*)\}/g;
-  let match;
-  while ((match = re.exec(stripped))) {
-    rules.push({ selector: match[1].trim().replace(/\s+/g, ' '), declarations: match[2] });
-  }
-  return rules;
-}
+// Both tasks' assertions rest on these: a comment stripper (so a rule can
+// never be satisfied by prose about it), a token reader (values from
+// tokens.css, one level of var() indirection resolved), and a rule reader
+// (declarations for a given selector in app.css) — all read through
+// css-source.js so this suite and binder.test.js can never drift apart.
 
 // Returns { numeric: '...', step: '...', ... } mapping each
 // ingredient-table__col-* class to its declarations text, for rules whose

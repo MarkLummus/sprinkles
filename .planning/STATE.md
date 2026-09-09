@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.1"
 current_phase_name: The imprint and the binder (INSERTED)
 status: executing
-stopped_at: Completed 03.1-03-PLAN.md
-last_updated: "2026-09-09T02:59:55.689Z"
+stopped_at: Completed 03.1-04-PLAN.md
+last_updated: "2026-09-09T03:22:43.382Z"
 last_activity: 2026-09-08
 last_activity_desc: Phase 03.1 execution started
-state_head: 606dfef66f6fc251d12d6b00e66f95861ceca9a2
+state_head: d6bbc2260db59f80acc127268867ca61a9775f33
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 26
-  completed_plans: 24
+  completed_plans: 25
   percent: 20
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 ## Current Position
 
 Phase: 03.1 (The imprint and the binder (INSERTED)) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-09-08 — Phase 03.1 execution started
 
@@ -84,6 +84,7 @@ Progress: [██░░░░░░░░] 20% (3/4 phases; 21/21 plans)
 | Phase 03.1 P01 | ~35min | 2 tasks | 12 files |
 | Phase 03.1 P02 | 27min | 3 tasks | 13 files |
 | Phase 03.1 P03 | ~25min | 3 tasks | 7 files |
+| Phase 03.1 P04 | 30min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -148,6 +149,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.1]: [Phase 03.1, Plan 02] The keyboard contract: one document keydown listener for Escape, gated on each pen's own existing dirty check (isPenDraftDirty/isDraftDirty/isTastingDraftDirty); a fork's save carries router-state ({ state: { focusDevelop: true } }) so the child's Develop control gets autoFocus on mount. The tasting date field now renders twice (ceremony + margin content, both bound to the same draft) per the plan's own literal deletion scope — flagged for the re-critique.
 - [Phase 03.1]: [Phase 03.1, Plan 03] The binder built as global element rules (button, select, :focus-visible, checkbox, date/number input, textarea, a) in app.css, every value through a token; the outline split repoints --focus-outline-width to --rule-baseline (1.5px) and the four state sites to --rule-graduation (1px) explicitly, retiring three bespoke :focus rules for one global :focus-visible rule.
 - [Phase 03.1]: [Phase 03.1, Plan 03] select.ink-field needs its own chevron background, not just its own padding: .ink-field's class-level background:none outranks a bare select rule regardless of source order, which would have silently blanked the chevron on the app's only two real selects. Fixed by drawing the chevron on a combined select, select.ink-field selector, keeping exactly two linear-gradient() calls in the file.
+- [Phase 03.1]: Plan 04: shared useOnDemandField hook (Method.jsx) implements the collapse-on-blur mechanism once for purpose, aside, and the batch pen's per-step line; per-step pen rendering extracted into StepPenBody/StepRecordingControls so each step owns genuine component-local useState. — Avoids reimplementing the same open/collapse-on-blur logic three times and avoids calling hooks inside a bare .map() callback.
 
 ### Pending Todos
 
@@ -208,6 +210,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-09T02:59:55.618Z
-Stopped at: Completed 03.1-03-PLAN.md
+Last session: 2026-09-09T03:22:43.313Z
+Stopped at: Completed 03.1-04-PLAN.md
 Resume file: None

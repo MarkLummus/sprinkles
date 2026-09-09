@@ -10,6 +10,74 @@ body {
   font-size: var(--size-table-body);
 }
 
+/* The binder (route-recipe.md § 6, D-13): every control drawn by the page,
+   not the browser — ink at hairline weight, no fill, no radius, no icon.
+   Written as bare element rules so every control, including the list
+   page's own buttons and links, inherits it without being designed. */
+
+/* One focus rule (D-14): retires the three bespoke :focus rules this file
+   used to carry (.graduated-rule, .ink-field, the radio stop) in favour of
+   a single rule at the browser's own :focus-visible boundary. */
+:focus-visible {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+button,
+select {
+  appearance: none;
+  border: var(--rule-ink-field) solid var(--ink);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  box-sizing: border-box;
+  cursor: pointer;
+  /* Rest-state padding (D-15, D-16): the hairline border plus this padding
+     sums to exactly what the hover border plus its own padding sums to
+     below, so the box never changes size when the border thickens on
+     hover — binder.test.js asserts the equality. */
+  padding: calc(var(--gap-xs) + var(--rule-baseline) - var(--rule-ink-field));
+}
+
+button:hover,
+select:hover {
+  border-width: var(--rule-baseline);
+  padding: var(--gap-xs);
+}
+
+button:disabled,
+select:disabled {
+  border-style: dashed;
+  color: inherit;
+  background: none;
+  cursor: default;
+}
+
+/* A lone `select` selector loses the cascade to the pre-existing
+   `.ink-field` class rule (a class always outranks a bare element,
+   whatever the source order) — this compound selector keeps the two
+   selects that carry both `select` and `.ink-field` from being dragged
+   back to the field's own padding. */
+select.ink-field {
+  padding: var(--gap-xs);
+}
+
+/* Links (D-18): every link carries a hairline ink underline, visited the
+   same as unvisited; text that is not a link is never underlined. */
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+  cursor: pointer;
+}
+
+a:visited {
+  color: var(--ink);
+}
+
 /* The running head (route-recipe-version.md § 4, § 6): the way home on
    the recipe page, in ink — never bookcloth, which identifies a block by
    its plain-language name, not a link. */
@@ -53,7 +121,6 @@ body {
   display: flex;
   gap: var(--gap-m);
   color: inherit;
-  text-decoration: none;
   font-variant-numeric: tabular-nums;
 }
 
@@ -190,7 +257,7 @@ body {
 
 .headnote__show-changes[aria-pressed='true'] {
   font-weight: 700;
-  outline: var(--focus-outline-width) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -337,7 +404,7 @@ body {
    position — the same convention batch-margin__list's is-open uses. */
 .version-strip__item.is-current {
   font-weight: 700;
-  outline: var(--focus-outline-width) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -569,7 +636,7 @@ body {
    weight only, so nothing shifts position when focus moves. Unmarked rows
    are untouched — never dimmed, never a different colour. */
 .ingredient-table tbody tr.is-marked {
-  outline: var(--focus-outline-width) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
   font-weight: 700;
 }
@@ -838,15 +905,9 @@ body {
   color: inherit;
   text-align: left;
   cursor: pointer;
-  outline: none;
   /* Capped at the drawing's native width so the SVG fills the button exactly
      and the anchors under it sit at the baseline's ends, not the column's. */
   max-width: var(--rule-width);
-}
-
-.graduated-rule:focus {
-  outline: var(--focus-outline-width) solid var(--ink);
-  outline-offset: var(--focus-outline-offset);
 }
 
 .graduated-rule__head {
@@ -907,11 +968,6 @@ body {
   padding: var(--gap-hair) var(--gap-xs);
   width: 100%;
   box-sizing: border-box;
-}
-
-.ink-field:focus {
-  outline: var(--focus-outline-width) solid var(--ink);
-  outline-offset: var(--focus-outline-offset);
 }
 
 /* The headnote's churn slot (route-recipe-batch.md § 3, revised
@@ -976,7 +1032,7 @@ body {
    .is-marked rows use. */
 .batch-margin__list li.is-open {
   font-weight: 700;
-  outline: var(--focus-outline-width) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -1055,11 +1111,6 @@ body {
 
 .axis-mark__stop input[type='radio']:checked {
   background: var(--ink);
-}
-
-.axis-mark__stop input[type='radio']:focus {
-  outline: var(--focus-outline-width) solid var(--ink);
-  outline-offset: var(--focus-outline-offset);
 }
 
 /* The clear control (G-02-6), beside the stops rather than styled as a

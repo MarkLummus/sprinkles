@@ -51,9 +51,19 @@
   --hatch-pitch: 4px;
   --hatch-stroke: 1.2px;
 
-  /* Focus treatment (contract § 5) */
-  --focus-outline-width: 1px;
+  /* Focus treatment (contract § 5, D-14): focus reads heavier than state
+     now that the two meanings are split — --focus-outline-width points at
+     --rule-baseline (1.5px), so every focusable element's real focus ring
+     is provably heavier than a pressed/current/open/marked element's own
+     outline, which reads --rule-graduation (1px) directly at each of its
+     four sites in app.css. A focused element that is also stateful reads
+     both. */
+  --focus-outline-width: var(--rule-baseline);
   --focus-outline-offset: 2px;
+
+  /* Links (D-18): a hairline ink underline, offset far enough below the
+     baseline to clear a lowercase descender without merging into one. */
+  --offset-link-underline: 2px;
 
   /* The pen layer (route-recipe-batch.md § 3) — pen blue was defined above
      and unpainted until now. */

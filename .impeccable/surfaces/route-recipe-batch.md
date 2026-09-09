@@ -127,6 +127,17 @@ Product-specific truth the surface must show, not claim: the plan is never edite
 - The batch's id is opaque; its URL is nested under the version; the version line shows the latest churn date and no count.
 - A blue "actual" beside each target chip is deferred until method amounts reference the rows (Phase 3).
 
+**Open, to decide in this brief — the unreadable value (added 2026-09-09)**
+
+One question with two faces, and they must be answered together: **what happens to an as-made amount the maker types that the app cannot read?**
+
+- The plan pen already has an answer. `blockedSaveMessage` refuses the save, names the row, outlines it and focuses it, so a value the app cannot read is always a value the maker is told about. Its predicate (`parseGramsDraft`, non-negative, up to two decimals, nothing else) is strict precisely because that sentence exists.
+- The batch pen has no such rule, by decision — this brief has never asked for one. So the same predicate cannot simply be reused here: the strict pattern rejects `.5` and `45.` as well as `-5` and `4o`, and with nothing to say so, a maker transcribing half a gram from the sheet would get no warning and an as-made total that quietly read the plan's number instead. A rule that silently substitutes the plan for the record inverts the Two-Ink Rule, which exists to keep the two apart.
+- Today the batch pen is loose in both directions: `asMadeTotals` (`app/src/domain/batch.js`) keeps any finite number, so a typed `-5` moves the live as-made total, while the save path drops it (260909-oow, `be86eb5`) so nothing impossible is ever stored. Nothing persists; a total is briefly wrong while an unreadable value is on screen.
+- A quick fix that pushed the plan pen's predicate down into `asMadeTotals` was planned and withdrawn on 2026-09-09 (`ed03f93`, reverted in `d74d01d`) for exactly this reason.
+
+What this brief has to settle, in the maker's terms rather than the predicate's: does an unreadable as-made amount block the save the way an unreadable plan amount does; or is it kept as typed and marked unread, the way an absent value is already marked; or is negative mass the only thing refused, since it is the only one that cannot have happened? Whichever it is, the answer decides what the as-made total may do with a value it cannot read — silence is not available to it.
+
 **Must not be invented by a builder**
 - A rating control or an overall score (D12).
 - A colour, icon, or badge that says a deviation or a blank is good, bad, or a problem.

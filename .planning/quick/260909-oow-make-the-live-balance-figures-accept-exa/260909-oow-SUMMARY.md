@@ -65,6 +65,8 @@ None - plan executed exactly as written.
 ## Found-and-left observations (scope boundary)
 
 1. **`asMadeTotals` (app/src/domain/batch.js:169)** — a fifth reader of draft grams (in recording mode `IngredientTable.jsx` feeds it `draft.asMade`'s typed strings at its own bracket write), carrying the same loose `Number.isFinite` guard. Left alone because it also serves stored batch records whose as-made values are already numbers; converting it would change how an existing record's total reads.
+
+   **Resolved 2026-09-09: not a code follow-up.** Routing it through `parseGramsDraft` was planned (`ed03f93`) and withdrawn before execution (`d74d01d`). The plan pen's predicate is strict because a blocked save tells the maker which row is wrong; the batch pen has no such rule, so the same predicate there would silently substitute the plan's number for the maker's record on values like `.5`. The question is now an open decision in `.impeccable/surfaces/route-recipe-batch.md` — what an unreadable as-made amount does — and is answered there, with the batch pen's blocking rule, before any code changes.
 2. **`toNumberOrNull` (`app/src/ui/RecipePage.jsx`)** — quick item `260909-oox`'s work. Left exactly as found.
 
 ## Named Consequence (accepted, not fixed)

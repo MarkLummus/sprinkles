@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 001: the pushed tray</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+/* ---------- sketch chrome (not the design) ---------- */
+html { background: #e9e9e4; }
+body { margin: 0; padding-top: 48px; font-family: var(--face-grotesk); color: var(--ink); }
+#variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: #1c1c1c; color: #eee; display: flex; align-items: center; gap: 6px; padding: 8px 14px; font: 12px/1.3 system-ui; }
+#variant-nav .sep { width: 1px; height: 22px; background: #555; margin: 0 6px; }
+#variant-nav button { font: inherit; background: #333; color: #ddd; border: 1px solid #555; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
+#variant-nav button:hover { background: #444; }
+#variant-nav button.active { background: #f7f7f4; color: #141414; border-color: #f7f7f4; }
+#variant-nav .note { color: #aaa; margin-left: auto; }
+#sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font: 12px/1.4 system-ui; background: rgba(0,0,0,0.78); color: #fff; padding: 8px 12px; border-radius: 8px; opacity: 0.55; transition: opacity 0.2s; max-width: 340px; }
+#sketch-tools:hover { opacity: 1; }
+#sketch-tools button, #sketch-tools select { font: inherit; background: #333; color: #ddd; border: 1px solid #555; padding: 2px 7px; border-radius: 3px; cursor: pointer; }
+#sketch-tools button.active { background: #fff; color: #000; }
+#measure { margin-top: 6px; white-space: pre; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #cfe; }
+.frame { margin: 0 auto; background: var(--ground); outline: 1px dashed #b5b5ae; transition: width 0.15s ease; min-height: calc(100vh - 48px); }
+
+/* ---------- the world ---------- */
+.app { position: relative; font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: 1.35; color: var(--ink); background: var(--ground); }
+.app *:focus-visible { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
+button { font: inherit; }
+.btn { font-family: var(--face-grotesk); font-size: var(--size-table-body); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-width: 1.5px; padding: 5.5px 11.5px; }
+.btn[disabled] { border-style: dashed; cursor: default; }
+.btn[disabled]:hover { border-width: 1px; padding: 6px 12px; }
+.text-control { font-family: var(--face-grotesk); font-size: var(--size-small-print); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.text-control:hover { text-decoration-thickness: 1.5px; }
+.text-control[disabled] { text-decoration-style: dashed; cursor: default; }
+.reason { font-size: var(--size-small-print); }
+.running-head, .region-name { font-family: var(--face-grotesk); font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; color: var(--bookcloth); margin: 0 0 var(--gap-xs); font-weight: 400; }
+.small { font-size: var(--size-small-print); }
+.pen { color: var(--pen-blue); }
+.strike { text-decoration: line-through; text-decoration-thickness: var(--rule-strike); margin-right: var(--gap-xs); }
+.ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--pen-blue); border: var(--rule-ink-field) solid var(--ink); border-radius: 0; background: none; padding: 2px 6px; }
+.prose-field { font-family: var(--face-text); font-size: var(--size-headnote-prose); color: var(--pen-blue); border: 0; border-bottom: var(--rule-graduation) solid var(--ink); background: none; padding: 0; width: 100%; resize: none; line-height: 1.4; }
+.prose-field:focus { outline: none; border-bottom-width: var(--rule-baseline); }
+select.ink-field { appearance: none; -webkit-appearance: none; padding-right: 20px; background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%); background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+/* ---------- the spread ---------- */
+.page { display: grid; gap: var(--gap-l); padding: var(--gap-xl); box-sizing: border-box; align-items: start; transition: grid-template-columns 0.15s ease, padding 0.15s ease, gap 0.15s ease; }
+.band { grid-area: band; }
+.ingredients { grid-area: ingredients; }
+.method { grid-area: method; }
+.side { grid-area: side; }
+.tray { grid-area: tray; }
+.headnote { max-width: var(--measure-prose); }
+.headnote h1 { font-family: var(--face-text); font-size: var(--size-recipe-name); font-weight: 700; margin: 0; line-height: 1.1; }
+.headnote .version { font-family: var(--face-text); font-size: var(--size-version-line); margin: var(--gap-xs) 0 0; }
+.headnote .prose { font-family: var(--face-text); font-size: var(--size-headnote-prose); margin: var(--gap-s) 0 0; line-height: 1.45; }
+
+table { border-collapse: collapse; width: 100%; table-layout: fixed; font-variant-numeric: tabular-nums; line-height: var(--leading-table); }
+th, td { padding: 4px 6px; box-sizing: border-box; text-align: left; vertical-align: baseline; border-bottom: var(--rule-graduation) solid var(--ink); }
+th { font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 400; border-bottom-width: var(--rule-baseline); }
+th.u { text-transform: none; letter-spacing: 0; }
+td.num, th.num { text-align: right; }
+col.c-num { width: 94px; } col.c-step { width: 78px; } col.c-data { width: 86px; }
+[data-pen="develop"] col.c-g { width: 150px; }
+tr.total td { border-bottom: 0; border-top: var(--rule-baseline) solid var(--ink); font-weight: 700; }
+td .field { display: none; width: 72px; text-align: right; }
+[data-pen="develop"] td .field { display: inline-block; }
+[data-pen="develop"] td .plan { display: none; }
+td .was { display: none; text-decoration: line-through; text-decoration-thickness: var(--rule-strike); margin-right: var(--gap-xs); }
+td .was.on { display: inline; }
+.name.marked { font-weight: 700; }
+tr.marked td { font-weight: 700; }
+
+/* the six rules */
+.note .rule { margin: 0 0 var(--gap-m); }
+.rule .head { display: flex; align-items: baseline; gap: var(--gap-s); }
+.rule .label { font-size: var(--size-table-body); }
+.rule .value { font-size: var(--size-figure-value); font-weight: 700; margin-left: auto; }
+.rule .value .was { display: none; font-weight: 400; }
+.rule .value .was.on { display: inline; }
+.rule .scale { position: relative; height: 14px; margin: 4px 0 2px; border-bottom: var(--rule-baseline) solid var(--ink); max-width: var(--rule-width); }
+.rule .band-hatch { position: absolute; top: 2px; bottom: 0; background: repeating-linear-gradient(135deg, var(--ink) 0 var(--hatch-stroke), transparent var(--hatch-stroke) var(--hatch-pitch)); opacity: 1; }
+.rule .tick { position: absolute; top: 0; bottom: -1px; width: var(--rule-tick); background: var(--ink); transform: translateX(-50%); transition: left 0.15s ease; }
+.rule .tick.hollow { display: none; background: none; border: 1px solid var(--ink); width: 2.5px; box-sizing: border-box; }
+.rule .tick.hollow.on { display: block; }
+.rule .anchors { display: flex; justify-content: space-between; font-size: var(--size-small-print); max-width: var(--rule-width); }
+.rule .deviation { font-size: var(--size-deviation-words); margin: 2px 0 0; }
+.rule .basis { font-size: var(--size-small-print); margin: 0; }
+.basis-note { font-family: var(--face-text); font-size: var(--size-deviation-words); margin: 0 0 var(--gap-m); max-width: var(--rule-width); }
+
+/* the margin */
+.margin { margin-top: var(--gap-l); }
+.margin p { margin: 0 0 var(--gap-xs); }
+.margin .record { color: var(--pen-blue); }
+.margin dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px var(--gap-s); margin: 0 0 var(--gap-s); }
+.margin dt { font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; }
+.margin dd { margin: 0; color: var(--pen-blue); font-variant-numeric: tabular-nums; }
+.authored { margin-top: var(--gap-l); font-family: var(--face-text); }
+.authored p { margin: 0 0 var(--gap-s); font-size: var(--size-deviation-words); line-height: 1.45; }
+
+/* the method */
+.method ol { list-style: none; margin: 0; padding: 0; max-width: var(--measure-prose); }
+.method li { display: grid; grid-template-columns: 2ch 1fr; gap: var(--gap-s); margin: 0 0 var(--gap-m); font-family: var(--face-text); }
+.method .n { font-family: var(--face-grotesk); font-size: var(--size-figure-value); font-weight: 700; line-height: 1.2; }
+.method .lead { font-weight: 700; }
+.method .instr { margin: 2px 0 0; line-height: 1.45; }
+.method .aside { font-style: italic; font-size: var(--size-deviation-words); margin: 2px 0 0; }
+.method .chips { margin: 4px 0 0; font-family: var(--face-grotesk); font-size: var(--size-small-print); display: flex; gap: var(--gap-xs); flex-wrap: wrap; }
+.method .chip { border: var(--rule-graduation) solid var(--ink); padding: 0 6px; }
+.method .line { color: var(--pen-blue); font-family: var(--face-grotesk); font-size: var(--size-small-print); margin: 4px 0 0; }
+.method li.skipped .lead, .method li.skipped .instr { text-decoration: line-through; text-decoration-thickness: var(--rule-strike); }
+.method li.skipped .skipped { color: var(--pen-blue); font-family: var(--face-grotesk); font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; }
+.method .edit { display: none; }
+[data-pen="develop"] .method .edit { display: inline; margin-top: 4px; }
+
+/* ---------- the tray ---------- */
+.tray { min-width: 0; box-sizing: border-box; }
+.tabs { display: flex; gap: 0; }
+.tab { font-family: var(--face-grotesk); font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; color: var(--ground); background: var(--bookcloth); border: 0; padding: 10px 8px; cursor: pointer; }
+.tab.current { background: var(--ground); color: var(--bookcloth); outline: var(--rule-graduation) solid var(--bookcloth); outline-offset: -1px; }
+.tab[disabled] { cursor: default; outline: 1px dashed var(--ground); outline-offset: -4px; }
+.panel { display: none; }
+.panel.current { display: block; }
+.tray .body { box-sizing: border-box; }
+.vlist { list-style: none; margin: 0; padding: 0; }
+.vlist > li { padding: var(--gap-xs) 0; border-bottom: var(--rule-graduation) solid var(--ink); }
+.vlist > li:last-child { border-bottom: 0; }
+.vlist .vline { font-family: var(--face-text); font-size: var(--size-version-line); }
+.vlist .vline.current { font-weight: 700; }
+.vlist .meta { font-size: var(--size-small-print); margin: 2px 0 0; }
+.vlist .batch { margin: var(--gap-xs) 0 0 var(--gap-m); font-size: var(--size-small-print); font-variant-numeric: tabular-nums; }
+.vlist .batch .acts { margin-left: var(--gap-s); }
+.vlist .acts .text-control + .text-control { margin-left: var(--gap-s); }
+.openers { margin: var(--gap-m) 0 0; display: flex; gap: var(--gap-s); flex-wrap: wrap; }
+.lineage { margin: var(--gap-m) 0 0; font-size: var(--size-small-print); }
+.lineage p { margin: 0 0 4px; }
+.ceremony label { display: block; margin: 0 0 var(--gap-s); }
+.ceremony label span { display: block; font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.ceremony .ink-field { width: 100%; box-sizing: border-box; font-family: var(--face-text); font-size: var(--size-version-line); }
+.ceremony select.ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); }
+.ceremony .was { font-family: var(--face-text); font-size: var(--size-deviation-words); margin: 2px 0 0; }
+.ceremony .saves { display: flex; gap: var(--gap-s); margin-top: var(--gap-m); }
+.ceremony .blocked { font-size: var(--size-small-print); margin: var(--gap-xs) 0 0; min-height: 1.2em; }
+.tray .hint { font-family: var(--face-text); font-size: var(--size-deviation-words); margin: var(--gap-s) 0 0; }
+
+/* ---- variant A: full push, 360px, gutters untouched ---- */
+.app[data-variant="A"] .page, .app[data-variant="B"] .page { grid-template-areas: 'band band tray' 'ingredients side tray' 'method side tray'; }
+.app[data-variant="A"] .page { grid-template-columns: 2fr 1fr 0px; padding-right: calc(var(--gap-xl) + var(--tab-strip-w)); }
+.app[data-variant="A"][data-tray="open"] .page { grid-template-columns: 2fr 1fr var(--tray-w-full); }
+.app[data-variant="A"] .tabs, .app[data-variant="B"] .tabs { position: fixed; top: 48px; right: 0; bottom: 0; width: var(--tab-strip-w); flex-direction: column; background: var(--bookcloth); z-index: 5; }
+.app[data-variant="A"] .tab, .app[data-variant="B"] .tab { writing-mode: vertical-rl; padding: 14px 0; text-align: left; width: var(--tab-strip-w); box-sizing: border-box; }
+.app[data-variant="A"] .tray, .app[data-variant="B"] .tray { overflow: hidden; }
+.app[data-variant="A"] .tray .body, .app[data-variant="B"] .tray .body { width: var(--tray-w-full); border-left: var(--rule-graduation) solid var(--ink); padding-left: var(--gap-m); }
+.app[data-variant="B"] .tray .body { width: var(--tray-w-narrow); }
+
+/* ---- variant B: narrow push, 300px, tight gutters, column two pinned to the rule ---- */
+.app[data-variant="B"] .page { grid-template-columns: 1fr 340px 0px; padding: var(--gap-m) calc(var(--gap-m) + var(--tab-strip-w)) var(--gap-m) var(--gap-m); gap: var(--gap-m); }
+.app[data-variant="B"][data-tray="open"] .page { grid-template-columns: 1fr 340px var(--tray-w-narrow); }
+
+/* ---- variant C: the tray takes column two's top, above the formulation note ---- */
+.app[data-variant="C"] .page { grid-template-columns: 2fr 1fr; grid-template-areas: 'band band' 'ingredients tray' 'ingredients side' 'method side'; }
+.app[data-variant="C"] .tray { margin-bottom: calc(-1 * var(--gap-l) + var(--gap-m)); }
+.app[data-variant="C"] .tabs { position: static; flex-direction: row; }
+.app[data-variant="C"] .tab { padding: 8px 12px; }
+.app[data-variant="C"] .tray .body { display: none; border: var(--rule-graduation) solid var(--bookcloth); border-top: 0; padding: var(--gap-s) var(--gap-m) var(--gap-m); }
+.app[data-variant="C"][data-tray="open"] .tray .body { display: block; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <button class="variant-tab active" data-v="A" onclick="setVariant('A')">A: Full push, 360px</button>
+  <button class="variant-tab" data-v="B" onclick="setVariant('B')">B: Narrow push, 300px, tight gutters</button>
+  <button class="variant-tab" data-v="C" onclick="setVariant('C')">C: Tray in column two ★ Selected</button>
+  <span class="sep"></span>
+  <button data-s="reading" onclick="setState('reading')">Reading</button>
+  <button data-s="versions" onclick="setState('versions')">Versions open</button>
+  <button data-s="develop" onclick="setState('develop')">Develop open</button>
+  <span class="note">Esc closes an untouched tray · type in Graza's grams to move the rules</span>
+</div>
+
+<div class="frame" id="frame" style="width:1440px">
+<div class="app" id="app" data-variant="A" data-tray="closed" data-pen="none">
+<div class="page" id="page">
+
+  <header class="band">
+    <div class="headnote">
+      <p class="running-head">Olive oil ice cream</p>
+      <h1>Olive oil ice cream</h1>
+      <p class="version" id="version-line">50 g oil · 800 g <span class="small" id="churned-mark">· churned 2 Aug 2026</span></p>
+      <p class="prose">Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.</p>
+    </div>
+  </header>
+
+  <section class="ingredients" aria-label="Ingredients">
+    <h2 class="region-name">Ingredients</h2>
+    <table id="table">
+      <colgroup><col class="c-name"><col class="c-num c-g"><col class="c-num"><col class="c-num"><col class="c-step"><col class="c-data"></colgroup>
+      <thead><tr><th>Ingredient</th><th class="num u">g</th><th class="num u">as made</th><th class="num">% of batch</th><th>Step</th><th>Data</th></tr></thead>
+      <tbody id="rows"></tbody>
+      <tfoot><tr class="total"><td>Batch</td><td class="num"><span class="was" id="mass-was">799.7</span><span id="mass">799.7</span></td><td class="num pen">795.6</td><td class="num">100%</td><td></td><td></td></tr></tfoot>
+    </table>
+  </section>
+
+  <aside class="side">
+    <section class="note" aria-label="Balance">
+      <h2 class="region-name">Balance</h2>
+      <p class="basis-note">Figures are an assessment under the library's coefficients. Whole milk, heavy cream, allulose and salt carry estimated values.</p>
+      <div id="rules"></div>
+    </section>
+
+    <section class="margin" aria-label="Batch">
+      <h2 class="region-name">Batch</h2>
+      <p class="record">Churned 2 Aug 2026</p>
+      <dl>
+        <dt>Come-up</dt><dd>20 min <span class="small" style="color:var(--ink)">(plan 10–12)</span></dd>
+        <dt>Draw</dt><dd>−6 °C</dd>
+        <dt>Overrun</dt><dd>unknown</dd>
+      </dl>
+      <p class="record">Soft, not greasy</p>
+      <p class="record small">Oil bottle open date 24 Jul 2026</p>
+      <p class="running-head" style="margin-top:var(--gap-s)">Tasting</p>
+      <p class="record">at −12 °C · date unknown</p>
+      <dl>
+        <dt>Oil character</dt><dd>4.5 <span class="small" style="color:var(--ink)">of 5</span></dd>
+        <dt>Bitterness</dt><dd>5</dd>
+        <dt>Sweetness</dt><dd>4</dd>
+        <dt>Meltdown</dt><dd>3 g lost at 20 min</dd>
+      </dl>
+      <p class="record small">no words</p>
+    </section>
+
+    <section class="authored" aria-label="Notes">
+      <h2 class="region-name">Notes</h2>
+      <p>Gellan in the cream — roughly 0.03–0.09 g at this cream weight, an estimate with no published spec. Below anything you would taste, against 1.68 g of deliberate stabiliser.</p>
+      <p>No glucose syrup — less costly at 13% milkfat than it would be at 8%, since the milkfat is carrying structure the DE42 would have provided.</p>
+      <p>This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.</p>
+    </section>
+  </aside>
+
+  <section class="method" aria-label="Method">
+    <h2 class="region-name">Method</h2>
+    <ol id="steps"></ol>
+  </section>
+
+  <aside class="tray" id="tray" aria-label="Versions and batches">
+    <div class="tabs" role="tablist">
+      <button class="tab current" id="tab-versions" onclick="toggleTray('versions')">Versions</button>
+      <button class="tab" disabled title="Phase 4">Print</button>
+    </div>
+    <div class="body">
+      <section class="panel current" id="panel-versions">
+        <h2 class="region-name">Versions</h2>
+        <ul class="vlist" id="vlist">
+          <li>
+            <p class="vline current" id="v1-line">50 g oil · 800 g <span class="small" style="font-family:var(--face-grotesk);font-weight:400">· current</span></p>
+            <p class="meta">root · 6 Aug 2026</p>
+            <p class="batch"><span class="pen">churned 2 Aug 2026</span> <span class="small">· in view</span><span class="acts"><button class="text-control" onclick="flash(this,'Amend opens the record\'s pen on the page')">Amend</button><button class="text-control" onclick="flash(this,'Add tasting opens the tasting\'s pen in the margin')">Add tasting</button></span></p>
+            <p class="batch"><button class="text-control" onclick="flash(this,'Record another opens the record\'s pen')">Record another</button></p>
+          </li>
+        </ul>
+        <div class="openers">
+          <button class="btn" id="develop-btn" onclick="openDevelop()">Develop</button>
+        </div>
+        <div class="lineage">
+          <p><strong>Parent</strong> none · this is the root</p>
+          <p><button class="text-control" disabled>Show changes</button> <span class="reason">nothing to show: no parent</span></p>
+        </div>
+      </section>
+
+      <section class="panel ceremony" id="panel-develop">
+        <h2 class="region-name">Develop · from 50 g oil · 800 g</h2>
+        <label><span>Version line</span><input class="ink-field" id="f-vline" value="" placeholder="e.g. 48 g oil · 800 g" oninput="touch()"></label>
+        <p class="was">was 50 g oil · 800 g</p>
+        <label><span>Reason</span><textarea class="prose-field" id="f-reason" rows="2" placeholder="e.g. more oil after the batch of 2 Aug" oninput="touch()"></textarea></label>
+        <label><span>Cites</span><select class="ink-field" id="f-cite"><option>the batch of 2 Aug 2026</option><option>no batch</option></select></label>
+        <div class="saves">
+          <button class="btn" onclick="cancelDevelop()">Cancel</button>
+          <button class="btn" id="save-btn" onclick="saveDevelop()">Save as new version</button>
+        </div>
+        <p class="blocked" id="blocked"></p>
+        <p class="hint">The table and the method take the pen; the rules answer as you type.</p>
+      </section>
+    </div>
+  </aside>
+
+</div>
+</div>
+</div>
+
+<div id="sketch-tools">
+  <div>
+    Viewport
+    <button data-w="1280" onclick="setWidth(1280)">1280</button>
+    <button data-w="1440" class="active" onclick="setWidth(1440)">1440</button>
+    <button data-w="1680" onclick="setWidth(1680)">1680</button>
+    <button data-w="0" onclick="setWidth(0)">full</button>
+    <select onchange="document.querySelector('link[href*=themes]').href='../themes/'+this.value+'.css'"><option value="default">Cookbook</option></select>
+    <button onclick="resetAll()">Reset</button>
+  </div>
+  <div id="measure"></div>
+</div>
+
+<script>
+// ---------- data, from app/src/data/olive-oil.js and batch-2026-08-02.js ----------
+const ROWS = [
+  ['Whole milk', 370.4, 383, '2, 3', 'estimated'], ['Heavy cream', 252.8, 241, '3', 'estimated'],
+  ['Graza Drizzle', 40, 45, '8', ''], ['Skim milk powder', 22.4, null, '3', ''],
+  ['Sucrose', 76, null, '2, 3', ''], ['Allulose', 20, null, '6', 'estimated'],
+  ['Dextrose', 12, null, '3', ''], ['Fine sea salt', 3.2, null, '3', 'estimated'],
+  ['Soy lecithin', 1.2, 0, '8', ''], ['Locust bean gum', 1.04, null, '2', ''],
+  ['Guar gum', 0.48, null, '2', ''], ['Lambda carrageenan', 0.16, null, '2', ''],
+];
+const M0 = 799.68;
+// figures at v1 (domain: buildFigures). Oil is 100% fat and 100% solids; everything else scales with mass.
+const FIG = [
+  { key:'pac', label:'PAC', unit:'', v:24.06, band:[22,26], dom:[0,40], basis:'estimated: whole milk, heavy cream, allulose, fine sea salt', kind:'dilute' },
+  { key:'pod', label:'POD', unit:'', v:13.05, band:[12,16], dom:[0,30], basis:'estimated: whole milk, heavy cream, allulose', kind:'dilute' },
+  { key:'fat', label:'Total fat', unit:'%', v:18.03, band:[16,20], dom:[0,30], basis:'derived: milkfat 13.0%, added fat 5.0%', kind:'add' },
+  { key:'msnf', label:'MSNF', unit:'%', v:8.5, band:[7.5,10], dom:[0,15], basis:'estimated: whole milk, heavy cream', kind:'dilute' },
+  { key:'sugar', label:'Sugar solids', unit:'%', v:13.5, band:null, dom:[0,25], basis:'stated', kind:'dilute' },
+  { key:'solids', label:'Total solids', unit:'%', v:40.8, band:[38,42], dom:[25,55], basis:'estimated: whole milk, heavy cream, allulose, fine sea salt', kind:'add' },
+];
+const STEPS = [
+  ['Lecithin into the oil', 'Whisk 1.2 g soy lecithin into the 40 g of Drizzle. Cover, leave at room temperature.', ['temp room'], "It's lipophilic — it disperses poorly if added to the water phase.", true, null],
+  ['Gum slurry — the only high-heat step', 'Disperse the gums in the reserved sugar, whisk into the reserved milk, bring to 85 °C and hold.', ['temp 85 °C','hold 2 min'], null, false, null],
+  ['Build the base', 'Blend the milk, cream, powders and the slurry.', ['blend 60 s'], null, false, null],
+  ['Divide', 'Tare, pour, check.', ['per jar 379 g'], null, false, null],
+  ['Pasteurise in the circulator', 'Start the clock when the jar core reaches temperature.', ['temp 69 °C','hold 40 min','come-up 10–12 min'], 'Probe the core rather than trusting the estimate. Invert each jar once or twice partway through.', false, null],
+  ['Allulose in, then crash-cool', 'Whisk the allulose in off the heat, then into an ice bath.', ['to below 5 °C'], 'Allulose skips the hold — it browns readily with milk proteins.', false, null],
+  ['Age', 'Hold covered in the fridge.', ['temp 4 °C','time 12–24 h'], null, false, null],
+  ['Emulsify the oil, cold', 'Blend the oil into the aged base.', ['temp 4 °C','blend 45 s'], 'Never heat this oil.', false, 'blend 60 s'],
+  ['Churn', 'Freeze immediately.', ['overrun 25–30%'], null, false, 'Fast, Soft, Prechill 15 min. Speed Δ @ 20 min, really thick @ 24, full churn 30'],
+  ['Harden, and serve warm', 'Harden, then temper before serving.', ['harden −20 °C, 4+ h','serve −11 to −12 °C'], null, false, null],
+];
+const fmt = (g) => g >= 100 ? g.toFixed(1) : g < 1 ? g.toFixed(2) : String(g);
+const share = (g, m) => { const p = g / m * 100; return p < 0.05 ? 'trace' : p.toFixed(1) + '%'; };
+
+// ---------- render ----------
+const rows = document.getElementById('rows');
+ROWS.forEach(([name, g, made, step, data], i) => {
+  const tr = document.createElement('tr'); tr.id = 'row-' + i;
+  tr.innerHTML = `<td class="name">${name}</td>
+    <td class="num"><span class="was" id="gw-${i}">${fmt(g)}</span><span class="plan">${fmt(g)}</span><input class="ink-field field" id="gf-${i}" value="${g}" ${i===2?'oninput="oilInput(this.value)"':''}></td>
+    <td class="num pen">${made === null ? '' : made}</td>
+    <td class="num"><span class="was" id="sw-${i}">${share(g, M0)}</span><span id="s-${i}">${share(g, M0)}</span></td>
+    <td>${step}</td><td class="small">${data}</td>`;
+  rows.appendChild(tr);
+});
+const rulesEl = document.getElementById('rules');
+FIG.forEach(f => {
+  const [d0, d1] = f.dom; const pos = v => ((v - d0) / (d1 - d0) * 100).toFixed(2) + '%';
+  const band = f.band ? `<div class="band-hatch" style="left:${pos(f.band[0])};width:${((f.band[1]-f.band[0])/(d1-d0)*100).toFixed(2)}%"></div>` : '';
+  const div = document.createElement('div'); div.className = 'rule'; div.id = 'rule-' + f.key;
+  div.innerHTML = `<div class="head"><span class="label">${f.label}</span><span class="value"><span class="was strike" id="fw-${f.key}"></span><span id="fv-${f.key}">${f.v.toFixed(1)}${f.unit}</span></span></div>
+    <div class="scale">${band}<div class="tick hollow" id="th-${f.key}" style="left:${pos(f.v)}"></div><div class="tick" id="tk-${f.key}" style="left:${pos(f.v)}"></div></div>
+    <div class="anchors"><span>${d0}${f.unit}</span><span>${d1}${f.unit}</span></div>
+    <p class="deviation" id="fd-${f.key}">${dev(f, f.v)}</p><p class="basis">basis: ${f.basis}</p>`;
+  rulesEl.appendChild(div);
+});
+function dev(f, v) {
+  if (!f.band) return 'no target set';
+  const [lo, hi] = f.band; const u = f.unit;
+  if (v < lo) return (lo - v).toFixed(1) + ' under ' + lo + '–' + hi + u;
+  if (v > hi) return (v - hi).toFixed(1) + ' over ' + lo + '–' + hi + u;
+  return 'inside ' + lo + '–' + hi + u;
+}
+const stepsEl = document.getElementById('steps');
+STEPS.forEach(([lead, instr, chips, aside, skipped, line], i) => {
+  const li = document.createElement('li'); if (skipped) li.className = 'skipped';
+  li.innerHTML = `<span class="n">${i+1}</span><div>
+    <span class="lead">${lead}</span>${skipped ? ' <span class="skipped">skipped</span>' : ''}
+    <p class="instr">${instr}</p>${aside ? `<p class="aside">${aside}</p>` : ''}
+    <p class="chips">${chips.map(c => `<span class="chip">${c}</span>`).join('')}</p>
+    ${line ? `<p class="line">${line}</p>` : ''}
+    <button class="text-control edit" onclick="flash(this,'opens this step\'s fields, on demand')">edit this step</button></div>`;
+  stepsEl.appendChild(li);
+});
+
+// ---------- state ----------
+const app = document.getElementById('app');
+let touched = false;
+function setVariant(v) { app.dataset.variant = v; document.querySelectorAll('.variant-tab').forEach(b => b.classList.toggle('active', b.dataset.v === v)); measure(); }
+function setState(s) {
+  if (s === 'reading') { closeTray(); app.dataset.pen = 'none'; oilInput(40, true); showPanel('versions'); }
+  if (s === 'versions') { app.dataset.pen = 'none'; oilInput(40, true); showPanel('versions'); app.dataset.tray = 'open'; }
+  if (s === 'develop') { app.dataset.tray = 'open'; openDevelop(); document.getElementById('gf-2').value = 48; oilInput(48); document.getElementById('f-vline').value = '48 g oil · 800 g'; }
+  document.querySelectorAll('#variant-nav [data-s]').forEach(b => b.classList.toggle('active', b.dataset.s === s));
+  measure();
+}
+function showPanel(p) { document.querySelectorAll('.panel').forEach(el => el.classList.toggle('current', el.id === 'panel-' + p)); }
+function toggleTray() { app.dataset.tray = app.dataset.tray === 'open' ? 'closed' : 'open'; if (app.dataset.tray === 'closed' && app.dataset.pen !== 'none') app.dataset.tray = 'open'; measure(); }
+function closeTray() { app.dataset.tray = 'closed'; }
+function openDevelop() { app.dataset.pen = 'develop'; app.dataset.tray = 'open'; showPanel('develop'); touched = false; document.getElementById('blocked').textContent = ''; setTimeout(() => document.getElementById('f-vline').focus(), 160); measure(); }
+function cancelDevelop() { app.dataset.pen = 'none'; document.getElementById('gf-2').value = 40; oilInput(40, true); document.getElementById('f-vline').value = ''; document.getElementById('f-reason').value = ''; showPanel('versions'); touched = false; document.getElementById('develop-btn').focus(); measure(); }
+function touch() { touched = true; }
+function saveDevelop() {
+  const vl = document.getElementById('f-vline').value.trim();
+  const oil = Number(document.getElementById('gf-2').value);
+  if (!vl) { document.getElementById('blocked').textContent = 'The version line needs a name before this saves.'; document.getElementById('f-vline').focus(); return; }
+  if (!Number.isFinite(oil) || oil < 0) { document.getElementById('blocked').textContent = "Graza Drizzle's amount is not a number."; document.getElementById('gf-2').focus(); return; }
+  const list = document.getElementById('vlist');
+  list.querySelector('.vline.current').classList.remove('current');
+  list.querySelector('.vline').innerHTML = list.querySelector('.vline').innerHTML.replace('· current', '');
+  const li = document.createElement('li');
+  li.innerHTML = `<p class="vline current">${vl} <span class="small" style="font-family:var(--face-grotesk);font-weight:400">· current</span></p><p class="meta">from 50 g oil · 800 g · cites the batch of 2 Aug 2026 · today</p><p class="batch"><span class="small">not churned</span> <span class="acts"><button class="text-control" onclick="flash(this,'Record batch opens the record\\'s pen')">Record batch</button></span></p>`;
+  list.prepend(li);
+  document.querySelector('.lineage').innerHTML = `<p><strong>Parent</strong> <a href="#">50 g oil · 800 g</a> · cites <a href="#">the batch of 2 Aug 2026</a></p><p><button class="text-control" onclick="flash(this,'lays the strikes back on the page')">Show changes</button></p>`;
+  document.getElementById('version-line').innerHTML = vl + ' <span class="small">· not churned</span>';
+  app.dataset.pen = 'none'; oilInput(oil, true, true); showPanel('versions'); touched = false; measure();
+}
+function flash(btn, msg) { const old = btn.textContent; btn.textContent = msg; btn.disabled = true; setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1400); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && app.dataset.tray === 'open' && !touched) { if (app.dataset.pen !== 'none') cancelDevelop(); else closeTray(); measure(); } });
+
+// the rules answer: oil is 100% fat and 100% solids; everything else dilutes or concentrates with mass
+function oilInput(val, silent, keep) {
+  const oil = Number(val); if (!Number.isFinite(oil) || oil < 0) return;
+  if (!silent) touched = true;
+  const d = oil - 40, m = M0 + d, changed = d !== 0 && !keep;
+  document.getElementById('gw-2').classList.toggle('on', changed); document.getElementById('sw-2').classList.toggle('on', changed);
+  document.getElementById('s-2').textContent = share(oil, m);
+  document.getElementById('mass-was').classList.toggle('on', changed); document.getElementById('mass').textContent = m.toFixed(1);
+  if (keep) { document.getElementById('gf-2').value = oil; document.getElementById('row-2').querySelector('.plan').textContent = fmt(oil); }
+  ROWS.forEach((r, i) => { if (i !== 2) document.getElementById('s-' + i).textContent = share(r[1], m); });
+  FIG.forEach(f => {
+    const base = f.kind === 'add' ? f.v / 100 * M0 : f.v * M0; // grams of fat/solids, or figure×mass
+    const nv = f.kind === 'add' ? (base + d) / m * 100 : base / m;
+    const [d0, d1] = f.dom; const pos = v => ((v - d0) / (d1 - d0) * 100).toFixed(2) + '%';
+    document.getElementById('fv-' + f.key).textContent = nv.toFixed(1) + f.unit;
+    const w = document.getElementById('fw-' + f.key); w.textContent = f.v.toFixed(1) + f.unit; w.classList.toggle('on', changed && nv.toFixed(1) !== f.v.toFixed(1));
+    document.getElementById('tk-' + f.key).style.left = pos(nv);
+    document.getElementById('th-' + f.key).classList.toggle('on', changed && nv.toFixed(1) !== f.v.toFixed(1));
+    document.getElementById('fd-' + f.key).textContent = dev(f, nv);
+    document.getElementById('rule-' + f.key).classList.toggle('marked', false);
+  });
+  if (keep) FIG.forEach(f => { f.v = Number(document.getElementById('fv-' + f.key).textContent); });
+}
+
+// ---------- sketch tools ----------
+function setWidth(w) { document.getElementById('frame').style.width = w ? w + 'px' : '100%'; document.querySelector('.tabs').style.right = (w ? Math.max(0, (window.innerWidth - w) / 2) : 0) + 'px'; document.querySelectorAll('#sketch-tools [data-w]').forEach(b => b.classList.toggle('active', Number(b.dataset.w) === w)); measure(); }
+function resetAll() { location.reload(); }
+function measure() {
+  requestAnimationFrame(() => {
+    const px = el => Math.round(el.getBoundingClientRect().width);
+    const c1 = px(document.querySelector('.ingredients')), c2 = px(document.querySelector('.side')), tr = px(document.getElementById('tray'));
+    const nameCells = [...document.querySelectorAll('#table td.name')];
+    const wrapped = nameCells.filter(td => { const r = document.createRange(); r.selectNodeContents(td); return r.getClientRects().length > 1; }).map(td => td.textContent);
+    const scale = document.querySelector('.rule .scale');
+    document.getElementById('measure').textContent =
+      `frame ${px(document.getElementById('frame'))}  variant ${app.dataset.variant}  tray ${app.dataset.tray}\n` +
+      `col one ${c1}  col two ${c2}  tray ${tr}\n` +
+      `name column ${px(nameCells[0])}  rule ${px(scale)} of 320\n` +
+      (wrapped.length ? `names wrapped: ${wrapped.join(', ')}` : 'no name wraps');
+  });
+}
+window.addEventListener('resize', () => { const w = parseInt(document.getElementById('frame').style.width) || 0; document.querySelector('.tabs').style.right = (w ? Math.max(0, (window.innerWidth - w) / 2) : 0) + 'px'; measure(); });
+document.getElementById('page').addEventListener('transitionend', measure);
+setState('reading'); measure();
+</script>
+</body>
+</html>

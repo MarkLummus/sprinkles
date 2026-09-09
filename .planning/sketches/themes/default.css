@@ -1,0 +1,46 @@
+/* Sketch theme: the Formulation Cookbook, copied from app/src/styles/tokens.css
+   and DESIGN.md. Values only; no component styles. */
+:root {
+  --ground: #f7f7f4;
+  --ink: #141414;
+  --pen-blue: #1f3d7a;
+  --bookcloth: #33513b;
+
+  --face-text: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --face-grotesk: -apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --size-running-head: 0.75rem;
+  --size-recipe-name: 2rem;
+  --size-version-line: 1.125rem;
+  --size-headnote-prose: 1rem;
+  --size-table-body: 0.9375rem;
+  --size-figure-value: 1.25rem;
+  --size-deviation-words: 0.8125rem;
+  --size-small-print: 0.75rem;
+  --size-ink-field: 0.9375rem;
+
+  --gap-hair: 2px;
+  --gap-xs: 6px;
+  --gap-s: 12px;
+  --gap-m: 20px;
+  --gap-l: 32px;
+  --gap-xl: 48px;
+
+  --rule-baseline: 1.5px;
+  --rule-graduation: 1px;
+  --rule-tick: 2.5px;
+  --rule-strike: 1.2px;
+  --rule-ink-field: 1px;
+  --rule-width: 320px;
+  --measure-prose: 65ch;
+  --leading-table: 1.2;
+  --hatch-pitch: 4px;
+  --hatch-stroke: 1.2px;
+  --focus-outline-width: var(--rule-baseline);
+  --focus-outline-offset: 2px;
+
+  /* Sketch-only: the tray's own sizes, the thing under test. */
+  --tray-w-full: 360px;
+  --tray-w-narrow: 300px;
+  --tab-strip-w: 36px;
+}

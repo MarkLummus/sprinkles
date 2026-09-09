@@ -4,6 +4,7 @@ import { hasAsMade, asMadeFor, asMadeTotals } from '../domain/batch.js';
 import { activeRows } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
+import { parseGramsDraft } from '../domain/lineage.js';
 
 // The one place a stored step key resolves to the number the reader sees
 // (03-10): its position in the current map if it has one, otherwise its
@@ -586,8 +587,7 @@ export function IngredientTable({
             // A removed row contributes no current share (it is excluded
             // from currentMass by activeRows) — its share cell shows only
             // the struck baseline, the mirror of the name cell beside it.
-            const parsed = Number(draftRow.grams);
-            const currentGramsValue = draftRow.grams !== '' && Number.isFinite(parsed) ? parsed : row.grams;
+            const currentGramsValue = parseGramsDraft(draftRow.grams) ?? row.grams;
             const currentShare = removed ? null : formatShareOfBatch(currentGramsValue, currentMass);
             const changedGrams = draftRow.grams !== String(row.grams) ? draftRow.grams : null;
             const changedShare = !removed && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;

@@ -522,6 +522,66 @@ describe('IngredientTable — a blocked save marks the offending row (critique P
   });
 });
 
+describe('IngredientTable — a rejected draft grams value holds the parent share (260909-oow)', () => {
+  // Three rows summing to a round 100g mass, so Row B's parent share is
+  // exactly 50.0% — draftVersion is a clone of the version, unmoved by
+  // the pen, so this is the "parent's own stored grams" the plan-pen
+  // figures must hold at when the pen's typed value is rejected.
+  function trContaining(markup, text) {
+    const trRegex = /<tr[^>]*>[\s\S]*?<\/tr>/g;
+    let match;
+    while ((match = trRegex.exec(markup))) {
+      if (match[0].includes(text)) return match[0];
+    }
+    return null;
+  }
+
+  function renderWithRowBGrams(rowBGrams) {
+    const version = makeVersion([makeRow('a', 'Row A', 25, 1), makeRow('b', 'Row B', 50, 1), makeRow('c', 'Row C', 25, 1)]);
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: {
+        a: { grams: '25', step: 1, removed: false },
+        b: { grams: rowBGrams, step: 1, removed: false },
+        c: { grams: '25', step: 1, removed: false },
+      },
+      asMade: {},
+    };
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+    return trContaining(markup, 'Row B');
+  }
+
+  it.each(['-5', '1e3', '1.2345', '4o'])(
+    'holds Row B at the parent\'s own share, 50.0%%, when the pen holds %s',
+    (rejectedValue) => {
+      const rowBTr = renderWithRowBGrams(rejectedValue);
+      expect(rowBTr).toContain('50.0%');
+      expect(rowBTr).not.toContain('trace');
+      expect(rowBTr).not.toContain('1000.0%');
+      expect(rowBTr).not.toContain('1.2%');
+    },
+  );
+
+  it('a written zero still takes effect: Row B\'s live share reads trace, not 50.0%', () => {
+    const rowBTr = renderWithRowBGrams('0');
+    // The share cell legitimately carries the parent's 50.0% as a struck
+    // history value alongside the live one — strip that struck span
+    // before asserting on the live figure, so the assertion is about
+    // what changed, not about the history the change is shown against.
+    const shareCell = rowBTr.match(/<td class="ingredient-table__col-numeric">[\s\S]*?<\/td>/g)[1];
+    const liveShareText = shareCell.replace(/<span class="struck-value">[^<]*<\/span>/, '');
+    expect(liveShareText).toContain('trace');
+    expect(liveShareText).not.toContain('50.0%');
+  });
+
+  it('a valid value still takes effect: Row B reads 25.0%', () => {
+    const rowBTr = renderWithRowBGrams('25');
+    expect(rowBTr).toContain('25.0%');
+  });
+});
+
 describe('IngredientTable — the orphaned-row flag names a removed step by its lead-in alone (G-03-14, D-UAT-5)', () => {
   it('names the causing step by its lead-in, presenting no step number at all', () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 3)]);

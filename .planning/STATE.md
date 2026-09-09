@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.1"
-current_phase_name: The imprint and the binder
+current_phase_name: The imprint and the binder (INSERTED)
 status: executing
-stopped_at: Phase 03.1 context gathered
-last_updated: "2026-09-09T01:42:00.937Z"
+stopped_at: Completed 03.1-01-PLAN.md
+last_updated: "2026-09-09T02:14:06.269Z"
 last_activity: 2026-09-08
-last_activity_desc: "Inserted Phase 03.1: The imprint and the binder"
-state_head: 70070eab0768ca8bda057860a2e02645abd6722a
+last_activity_desc: Phase 03.1 execution started
+state_head: 163e84873516501c715975acbafa4fabe046859c
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 1
   total_plans: 26
-  completed_plans: 21
-  percent: 40
+  completed_plans: 22
+  percent: 20
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-08)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.1 — The imprint and the binder
+**Current focus:** Phase 03.1 — The imprint and the binder (INSERTED)
 
 ## Current Position
 
-Phase: 03.1 (The imprint and the binder) — READY TO EXECUTE
-Plan: Not started
+Phase: 03.1 (The imprint and the binder (INSERTED)) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-09-08 - Inserted Phase 03.1: The imprint and the binder
+Last activity: 2026-09-08 — Phase 03.1 execution started
 
-Progress: [████░░░░░░] 40% (3/4 phases; 21/21 plans)
+Progress: [██░░░░░░░░] 20% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
@@ -81,6 +81,7 @@ Progress: [████░░░░░░] 40% (3/4 phases; 21/21 plans)
 | Phase 03 P10 | 30min | 3 tasks | 9 files |
 | Phase 03 P11 | 20min | 2 tasks | 3 files |
 | Phase 03 P12 | ~20min | 2 tasks | 5 files |
+| Phase 03.1 P01 | ~35min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -139,6 +140,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 12] The pen suppresses a removed step's margin number entirely (D-UAT-5); show-changes marks it struck via a new .method-step__n--struck rule reading --rule-strike (D-UAT-4). The step selector's option and the orphaned-row flag both drop a removed step's number outright, naming it by lead-in alone — closing G-03-14's collision between a removed step's number and the live step that inherited its position.
 - [Impeccable 2026-09-08] The three surface briefs (`route-recipe.md`, `route-recipe-version.md`, `route-recipe-batch.md`) were revised 2026-09-08 after the whole-page critique (25/40, `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md`) and confirmed by Mark 2026-09-08. Headline decisions: **the imprint** — a front-matter band beside the headnote that takes every control out of the printed spread (openers, version strip, lineage line and show-changes toggle, churned date, batch list, and each pen's save ceremony), with the pen's save/cancel pair repeated at the foot of the page; **the binder** — every control drawn in ink at hairline weight, no fill, no radius, no icon, a disabled control keeping its label and going from solid stroke to dashed with its reason in words, a pressed or current state as outline plus weight; **the pen keeps the page** — prose fields render as printed paragraphs with the hairline outline appearing only on focus, a step's purpose and aside appear on demand behind "add a purpose"/"add an aside", and the uses list reads as one line of names with a "change" control that opens the twelve checkboxes for that step alone; **native date inputs** kept for their validation and keyboard entry with the calendar icon hidden, the browser's segment highlight a named exception to the four-colour system; **Escape** closes only an untouched pen, returning focus to its opener, and does nothing once the draft holds ink, so Cancel is the one exit.
 - [Impeccable 2026-09-08] `.claude/CLAUDE.md` gains an "Impeccable and GSD in sync" constraint: Impeccable evaluates and decides (writing `.impeccable/`, `DESIGN.md`, `PRODUCT.md`), every edit under the app workspace goes through a GSD command, and Impeccable's refine, enhance and fix commands describe work for `/gsd-quick`, `/gsd-quick-batch` or a phase plan rather than editing the workspace directly.
+- [Phase 03.1]: [Phase 03.1, Plan 01] Versions.jsx and PenFoot.jsx built as the imprint's tracer: Develop opens the plan's pen in Versions (replacing the openers), the ceremony's Cancel/Save pair repeats at a new foot band under a hairline rule, and Headnote.jsx shrinks to the recipe alone. Existing markup moved into Versions kept its pre-existing class names per the plan's own recorded decision; PenFoot gates strictly on openPen === 'plan' (not !== null) since this plan gives it no batch-pen handlers or penDraft — a literal !== null gate would crash on Save during a batch pen.
+- [Phase 03.1]: [Phase 03.1, Plan 01] Running heads renamed: Ingredient table -> Ingredients, Formulation note -> Balance, Margin -> Notes (now an h2, was a paragraph). Heading outline: h1 recipe name, h2 Versions, Ingredients, Balance, Method, Notes (D-01, D-02, D-28).
 
 ### Pending Todos
 
@@ -199,6 +202,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-09T00:39:10.803Z
-Stopped at: Phase 03.1 context gathered
-Resume file: .planning/phases/03.1-the-imprint-and-the-binder/03.1-CONTEXT.md
+Last session: 2026-09-09T02:13:58.813Z
+Stopped at: Completed 03.1-01-PLAN.md
+Resume file: None

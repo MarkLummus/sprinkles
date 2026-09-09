@@ -243,3 +243,43 @@ describe('BatchMargin — every churn and tasting field is always present (D-25)
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Next time"/);
   });
 });
+
+// A floor on the three measured fields that have no meaning below zero;
+// no floor on the two that are legitimately negative (260909-oox).
+describe('BatchMargin — a floor on the measured fields that cannot go below zero (260909-oox)', () => {
+  it('gives the two unsigned churn fields (come-up, overrun) a floor of zero', () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    const comeUpInput = markup.match(/<input[^>]*aria-label="Come-up, minutes"[^>]*\/>/)[0];
+    const overrunInput = markup.match(/<input[^>]*aria-label="Overrun, percent"[^>]*\/>/)[0];
+    expect(comeUpInput).toContain('min="0"');
+    expect(overrunInput).toContain('min="0"');
+  });
+
+  it('gives draw temperature no floor — the working case draws at -6 °C, and a floor would reject the real reading', () => {
+    const markup = renderMargin({ mode: 'recording', draft: emptyDraft });
+    const drawTempInput = markup.match(/<input[^>]*aria-label="Draw temperature, degrees Celsius"[^>]*\/>/)[0];
+    expect(drawTempInput).not.toContain('min=');
+  });
+
+  it('gives the melt test a floor of zero', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: emptyTastingDraft,
+    });
+    const meltdownInput = markup.match(/<input[^>]*aria-label="Meltdown loss, grams"[^>]*\/>/)[0];
+    expect(meltdownInput).toContain('min="0"');
+  });
+
+  it('gives tasting temperature no floor — ice cream is tasted below zero too', () => {
+    const markup = renderMargin({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      mode: 'reading',
+      tastingDraft: emptyTastingDraft,
+    });
+    const tastingTempInput = markup.match(/<input[^>]*aria-label="Tasting temperature, degrees Celsius"[^>]*\/>/)[0];
+    expect(tastingTempInput).not.toContain('min=');
+  });
+});

@@ -83,6 +83,7 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark })
         <input
           type="number"
           step="1"
+          min="0"
           inputMode="decimal"
           className="ink-field"
           value={draft.meltdownLossG}
@@ -144,11 +145,15 @@ export function BatchMargin({
     return (
       <div className="batch-margin">
         <p className="batch-margin__legend">Batch</p>
+        {/* Come-up, overrun and meltdown loss have no meaning below zero and
+            carry a floor; draw temperature and tasting temperature keep
+            their sign — the working case draws at −6 °C. */}
         <label className="batch-margin__field">
           <span>Come-up, min</span>
           <input
             type="number"
             step="1"
+            min="0"
             inputMode="decimal"
             className="ink-field"
             value={draft.comeUpMinutes}
@@ -173,6 +178,7 @@ export function BatchMargin({
           <input
             type="number"
             step="1"
+            min="0"
             inputMode="decimal"
             className="ink-field"
             value={draft.overrunPercent}

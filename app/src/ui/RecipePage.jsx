@@ -16,6 +16,8 @@ import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchMargin } from './BatchMargin.jsx';
 import { Headnote } from './Headnote.jsx';
+import { Versions } from './Versions.jsx';
+import { PenFoot } from './PenFoot.jsx';
 import { VersionStrip } from './VersionStrip.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
@@ -396,6 +398,13 @@ export function RecipePage() {
   // is open reads openPen/penReason from here, never mode or tastingDraft
   // directly.
   const { openPen, reason: penReason } = derivePenState({ mode, amendingBatchId, tastingDraft });
+
+  // D-01: on any version with no batch recorded, both saves are offered;
+  // on a churned version only Save (a fork) exists, so a churned
+  // version's own record is never written to (D04). Computed once here
+  // and passed to both Versions' ceremony and PenFoot's repeated pair —
+  // never twice (RESEARCH.md Pattern 2).
+  const canSaveOver = batches.length === 0;
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -951,27 +960,46 @@ export function RecipePage() {
         <Link to="/">Sprinkles</Link>
       </p>
       <article className="recipe-page">
-        <Headnote
-          version={version}
-          mode={mode}
-          draft={draft}
-          penDraft={penDraft}
-          openBatch={openBatch}
-          batches={batches}
-          citedBatch={citedBatch}
-          parentVersion={parentVersion}
-          showingChanges={showingChanges}
-          blockedMessage={blockedMessage}
-          openPen={openPen}
-          penReason={penReason}
-          onChangeChurnDate={handleChangeChurnDate}
-          onStartDeveloping={handleStartDeveloping}
-          onCancelDeveloping={handleCancelDeveloping}
-          onChangePenField={handleChangePenField}
-          onSaveAsNewVersion={handleSaveAsNewVersion}
-          onSaveOverVersion={handleSaveOverVersion}
-          onToggleShowChanges={handleToggleShowChanges}
-        />
+        {/* The top band (route-recipe.md § 3, D-04): the recipe block at
+            the prose measure on the left, Versions beside it — the
+            band's own two-track grid is what makes this seam land at the
+            prose measure rather than the spread's 2fr/1fr seam below
+            (app.css .recipe-band). Recipe block first in DOM order, so
+            the intro paragraph field precedes every save in the tab
+            order (D-28). */}
+        <div className="recipe-band">
+          <Headnote
+            version={version}
+            mode={mode}
+            draft={draft}
+            penDraft={penDraft}
+            openBatch={openBatch}
+            onChangeChurnDate={handleChangeChurnDate}
+            onChangePenField={handleChangePenField}
+          />
+
+          <Versions
+            version={version}
+            mode={mode}
+            draft={draft}
+            penDraft={penDraft}
+            openBatch={openBatch}
+            batches={batches}
+            citedBatch={citedBatch}
+            parentVersion={parentVersion}
+            showingChanges={showingChanges}
+            blockedMessage={blockedMessage}
+            openPen={openPen}
+            penReason={penReason}
+            canSaveOver={canSaveOver}
+            onStartDeveloping={handleStartDeveloping}
+            onCancelDeveloping={handleCancelDeveloping}
+            onChangePenField={handleChangePenField}
+            onSaveAsNewVersion={handleSaveAsNewVersion}
+            onSaveOverVersion={handleSaveOverVersion}
+            onToggleShowChanges={handleToggleShowChanges}
+          />
+        </div>
 
         <VersionStrip
           versions={versions}
@@ -1078,6 +1106,15 @@ export function RecipePage() {
             />
           </aside>
         </div>
+
+        <PenFoot
+          openPen={openPen}
+          canSaveOver={canSaveOver}
+          blockedMessage={blockedMessage}
+          onCancelDeveloping={handleCancelDeveloping}
+          onSaveAsNewVersion={handleSaveAsNewVersion}
+          onSaveOverVersion={handleSaveOverVersion}
+        />
       </article>
     </>
   );

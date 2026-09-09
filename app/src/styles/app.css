@@ -83,12 +83,26 @@ body {
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
-    'headnote headnote'
+    'band band'
     'strip strip'
     'ingredients side'
-    'method side';
+    'method side'
+    'foot foot';
   gap: var(--gap-l);
   padding: var(--gap-xl);
+}
+
+/* The top band (route-recipe.md § 3, D-04): the recipe block and Versions,
+   in a grid of their own so their seam lands at the prose measure, not at
+   the spread's 2fr/1fr seam below. Recipe block first in DOM order, so it
+   occupies the first column automatically — no area names needed inside
+   this band. */
+.recipe-band {
+  grid-area: band;
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure-prose)) 1fr;
+  gap: var(--gap-l);
+  align-items: start;
 }
 
 /* Column one is the recipe as written, in the sheet's page order: table,
@@ -99,10 +113,6 @@ body {
    independently: column two is one region so the margin follows the note
    by one gap however tall the method runs. Whichever column runs longer
    leaves its void at the bottom. */
-
-.headnote {
-  grid-area: headnote;
-}
 
 .headnote h1 {
   font-family: var(--face-text);
@@ -251,6 +261,34 @@ body {
   box-sizing: border-box;
 }
 
+/* Versions (route-recipe.md § 3 "The imprint", D-04 to D-06): the openers
+   in two rows, --gap-m between the two groups and --gap-s between
+   adjacent controls within a group; the ceremony (D-06's own plan-pen
+   markup keeps the headnote__* classes above, per 03.1-CONTEXT.md's
+   planner decision 1 — this rule only spaces the wrapper it moved into)
+   and its one hint sentence, in small print. */
+.versions__openers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  margin-top: var(--gap-xs);
+}
+
+.versions__opener-group {
+  display: flex;
+  gap: var(--gap-s);
+}
+
+.versions__ceremony {
+  margin-top: var(--gap-xs);
+}
+
+.versions__hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin-top: var(--gap-s);
+}
+
 /* The version strip (route-recipe-version.md § 3, § 6, 03-03): ink on
    ground, in the grotesk at small-print size — beneath the headnote,
    above the ingredient table, so the reading order and the tab order
@@ -301,6 +339,40 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--gap-l);
+}
+
+/* The foot band (route-recipe.md § 3 "The imprint"; D-26): shown only
+   while a pen is open — a hairline rule across the whole page, then the
+   pair right-aligned under the Notes column, the blocked-save sentence
+   beside it. Its own two-column grid matches .recipe-page's so the pair
+   lands under column two without being fenced to the page's own grid
+   tracks by name. */
+.pen-foot {
+  grid-area: foot;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--gap-l);
+}
+
+.pen-foot__rule {
+  grid-column: 1 / -1;
+  border: 0;
+  border-top: var(--rule-foot-band) solid var(--ink);
+  margin: 0;
+}
+
+.pen-foot__controls {
+  grid-column: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: var(--gap-s);
+  margin-top: var(--gap-m);
+}
+
+.pen-foot__blocked {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
 }
 
 .ingredient-table {

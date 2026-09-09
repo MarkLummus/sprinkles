@@ -1,138 +1,16 @@
-import { useEffect, useRef } from 'react';
-import { Link } from 'react-router';
 import { formatRecordDate } from '../domain/batch.js';
-import { citableBatches } from '../domain/lineage.js';
 
-// The headnote region, extracted verbatim from RecipePage.jsx (route-recipe-version.md
-// § 3, "The ceremony in the headnote") and then given the save ceremony. RecipePage
-// stays the controller and keeps every handler; this component only renders the
-// two states — reading/recording (unchanged from Phase 1/2) and developing (new).
-export function Headnote({
-  version,
-  mode,
-  draft,
-  penDraft,
-  openBatch,
-  batches,
-  citedBatch,
-  parentVersion = null,
-  showingChanges = false,
-  blockedMessage,
-  openPen = null,
-  penReason = null,
-  onChangeChurnDate,
-  onStartDeveloping,
-  onCancelDeveloping,
-  onChangePenField,
-  onSaveAsNewVersion,
-  onSaveOverVersion,
-  onToggleShowChanges = () => {},
-}) {
-  // Focus-return for the pen (Phase 2 precedent, BatchMargin's tasting
-  // focus-return): closing the pen returns focus to "Develop the next
-  // version". developButtonRef must sit above the conditional return
-  // below — hooks cannot be called conditionally.
-  const developButtonRef = useRef(null);
-  const wasDevelopingRef = useRef(false);
-  useEffect(() => {
-    if (mode === 'developing') {
-      wasDevelopingRef.current = true;
-      return;
-    }
-    if (wasDevelopingRef.current) {
-      wasDevelopingRef.current = false;
-      developButtonRef.current?.focus();
-    }
-  }, [mode]);
-
-  if (mode === 'developing') {
-    // D-01: on any version with no batch recorded, both saves are offered;
-    // on a churned version only "Save as a new version" exists, so a
-    // churned version's own record is never written to (D04).
-    const canSaveOver = batches.length === 0;
-    return (
-      <header className="headnote">
-        <p className="region-name">Headnote</p>
-        <h1>{version.recipeName}</h1>
-        <label className="headnote__version-field">
-          <span>Version line</span>
-          <input
-            type="text"
-            className="ink-field"
-            required
-            autoFocus
-            value={penDraft.versionLabel}
-            aria-label="Version line"
-            onChange={(event) => onChangePenField('versionLabel', event.target.value)}
-          />
-        </label>
-        <p className="headnote__version-was ink-text">was {version.versionLabel}</p>
-        <label className="headnote__reason-field">
-          <span>Reason</span>
-          <textarea
-            className="ink-field"
-            rows="2"
-            value={penDraft.reason}
-            onChange={(event) => onChangePenField('reason', event.target.value)}
-          />
-        </label>
-        <div className="headnote__citation">
-          <span>Cites</span>
-          {batches.length === 0 ? (
-            <span className="ink-text">no batch to cite</span>
-          ) : (
-            <select
-              className="ink-field"
-              value={penDraft.citedBatchId ?? ''}
-              aria-label="Cite a batch"
-              onChange={(event) =>
-                onChangePenField('citedBatchId', event.target.value === '' ? null : event.target.value)
-              }
-            >
-              <option value="">no batch cited</option>
-              {citableBatches(batches).map((batch) => (
-                <option key={batch.id} value={batch.id}>
-                  {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-        <div className="headnote__ceremony">
-          <button type="button" onClick={onSaveAsNewVersion}>
-            Save as a new version
-          </button>
-          {canSaveOver && (
-            <button type="button" onClick={onSaveOverVersion}>
-              Save over this version
-            </button>
-          )}
-          <button type="button" onClick={onCancelDeveloping}>
-            Cancel
-          </button>
-        </div>
-        {blockedMessage && <p className="headnote__blocked">{blockedMessage}</p>}
-        {/* The headnote prose (route-recipe-version.md § 3): a text field
-            in developing mode, with the baseline's prose struck beneath it
-            once it differs — the same treatment a step's text gets. */}
-        <label className="headnote__prose-field">
-          <span>Headnote prose</span>
-          <textarea
-            className="ink-field"
-            rows="3"
-            value={penDraft.headnote}
-            aria-label="Headnote prose"
-            onChange={(event) => onChangePenField('headnote', event.target.value)}
-          />
-        </label>
-        {penDraft.headnote !== version.headnote && <p className="prose-struck-beneath">{version.headnote}</p>}
-      </header>
-    );
-  }
-
+// The recipe block (route-recipe.md § 3 "The imprint", revised
+// 2026-09-08; D-02, D-03): the recipe's own name, version line and intro
+// paragraph — nothing else. Every control, the lineage line, the churned
+// date's move to Versions (arriving in plan 02), and the plan's own save
+// ceremony now live in Versions.jsx (D-04 to D-06); this component
+// renders no button and needs none of that state. The recipe name in
+// 2rem is the block's own head — it wears no running head of its own
+// (D-02).
+export function Headnote({ version, mode, draft, penDraft, openBatch, onChangeChurnDate, onChangePenField }) {
   return (
     <header className="headnote">
-      <p className="region-name">Headnote</p>
       <h1>{version.recipeName}</h1>
       <p className="headnote__version">
         {version.versionLabel}
@@ -161,76 +39,26 @@ export function Headnote({
           </>
         )}
       </p>
-      {/* The lineage line (route-recipe-version.md § 3): a saved child's
-          parent and cited batch, each a link, followed by the reason as a
-          headnote paragraph. A version with no parentVersionId (the seed)
-          carries no lineage line at all — nothing here is derived when
-          that field is absent. */}
-      {version.parentVersionId && (
+      {/* The intro paragraph (route-recipe-version.md § 3): a text field
+          in developing mode, with the baseline's prose struck beneath it
+          once it differs — the same treatment a step's text gets. */}
+      {mode === 'developing' ? (
         <>
-          <p className="headnote__lineage">
-            {/* D-UAT-2: while any pen is open, the lineage line's two links
-                (the parent, the cited batch) are not a way off the page —
-                both read as plain text in the same sentence, and only the
-                show-changes toggle beside them (never a way off the page)
-                keeps working. */}
-            from{' '}
-            {openPen ? (
-              version.parentVersionLabel
-            ) : (
-              <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
-            )}
-            {version.citedBatchId && citedBatch && (
-              <>
-                , after the batch of{' '}
-                {openPen ? (
-                  citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
-                ) : (
-                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
-                    {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
-                  </Link>
-                )}
-              </>
-            )}
-            {/* The show-changes toggle (route-recipe-version.md § 3, § 6;
-                D-02): the one control the lineage line gains, absent
-                whenever there is nothing to compare against — no parent, or
-                the parent record could not be read (D-10, T-03-24). Its
-                pressed state is carried by weight and outline (app.css),
-                never by a label change: the text stays "show changes from
-                <parent line>" whether pressed or not. */}
-            {parentVersion && (
-              <>
-                {' '}
-                <button
-                  type="button"
-                  className="headnote__show-changes"
-                  aria-pressed={showingChanges}
-                  onClick={onToggleShowChanges}
-                >
-                  {`show changes from ${version.parentVersionLabel}`}
-                </button>
-              </>
-            )}
-          </p>
-          {openPen && <p className="pen-hint">These links are unavailable while {penReason}.</p>}
-          <p className="headnote__reason">{version.reason ? version.reason : 'no reason recorded'}</p>
+          <label className="headnote__prose-field">
+            <span>Headnote prose</span>
+            <textarea
+              className="ink-field"
+              rows="3"
+              value={penDraft.headnote}
+              aria-label="Headnote prose"
+              onChange={(event) => onChangePenField('headnote', event.target.value)}
+            />
+          </label>
+          {penDraft.headnote !== version.headnote && <p className="prose-struck-beneath">{version.headnote}</p>}
         </>
+      ) : (
+        <p className="headnote__prose">{version.headnote}</p>
       )}
-      {/* D-01: this wording on every version, churned or not — disabled
-          whenever any pen is open (03-CONTEXT.md D-10, D-UAT-1,
-          RESEARCH.md Pitfall 4), reading openPen rather than the mode this
-          control happens to know about. The existing blockedMessage
-          channel cannot serve here: it renders only inside the developing
-          branch above, which by definition is not showing when this
-          control is — so the reason is stated beside it directly. This is
-          the fifth leak: the control used to disable correctly while
-          reading nothing but a bare disabled attribute. */}
-      <button type="button" ref={developButtonRef} onClick={onStartDeveloping} disabled={openPen !== null}>
-        Develop the next version
-      </button>
-      {openPen && <p className="pen-hint">Developing the next version is unavailable while {penReason}.</p>}
-      <p className="headnote__prose">{version.headnote}</p>
     </header>
   );
 }

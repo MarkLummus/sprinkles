@@ -147,4 +147,10 @@
      (route-recipe-version.md § 3, § 6, 03-04): an outline of the solid
      tick's own shape, at the graduation weight. */
   --rule-tick-hollow: 1px;
+
+  /* The foot band's own hairline rule (route-recipe.md § 3, D-26): its
+     own name, reading --rule-ink-field today, so the band's rule can
+     move independently of every field's border later without moving
+     both at once. */
+  --rule-foot-band: var(--rule-ink-field);
 }

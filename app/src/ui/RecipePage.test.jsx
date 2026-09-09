@@ -1,21 +1,22 @@
 // The one-pen interlock's own unit tests (D-10, D-UAT-1): derivePenState is
-// the single derivation every opener in BatchMargin and Headnote now reads,
-// replacing the two unrelated states (`mode`, `tastingDraft`) each control
-// used to hand-roll its own subset of. This file renders nothing of
-// RecipePage itself — it reads the repository at module load (D-06), so
+// the single derivation every opener in BatchMargin and Versions now reads
+// (Develop moved from Headnote into Versions, 03.1-CONTEXT.md D-04 to
+// D-06), replacing the two unrelated states (`mode`, `tastingDraft`) each
+// control used to hand-roll its own subset of. This file renders nothing
+// of RecipePage itself — it reads the repository at module load (D-06), so
 // that import is stubbed here at the one seam it goes through, exactly as
 // RecipeList.test.jsx already does. What this file DOES render, through
 // renderToStaticMarkup in the existing node environment (no jsdom, no
 // testing library, no click driver — the point is the derivation and the
-// disabled markup it feeds, not an interaction), is the four-pen matrix
-// across the two components the derivation actually reaches.
+// disabled/absent markup it feeds, not an interaction), is the four-pen
+// matrix across the two components the derivation actually reaches.
 import { describe, it, expect, vi } from 'vitest';
 vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { derivePenState, isPenDraftDirty, isDraftDirty } from './RecipePage.jsx';
 import { BatchMargin } from './BatchMargin.jsx';
-import { Headnote } from './Headnote.jsx';
+import { Versions } from './Versions.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
@@ -142,21 +143,24 @@ function renderNoBatchMargin(openPen, reason) {
   );
 }
 
-function renderHeadnoteReading(openPen, reason) {
+function renderVersionsReading(openPen, reason) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <Headnote
+      <Versions
         version={oliveOilVersion}
         mode="reading"
         draft={null}
-        penDraft={null}
+        // The plan pen's own matrix row exercises openPen === 'plan',
+        // which renders the ceremony and needs a real penDraft shape —
+        // the other three rows never read it.
+        penDraft={{ versionLabel: '', reason: '', citedBatchId: null, headnote: oliveOilVersion.headnote }}
         openBatch={null}
         batches={[]}
         citedBatch={null}
         blockedMessage={null}
         openPen={openPen}
         penReason={reason}
-        onChangeChurnDate={noop}
+        canSaveOver={true}
         onStartDeveloping={noop}
         onCancelDeveloping={noop}
         onChangePenField={noop}
@@ -189,24 +193,29 @@ describe('The four-pen matrix — every opener disabled, every reason in words',
     expect(markup).toContain(reason);
   });
 
-  it.each(PEN_MATRIX)('with the $openPen pen open, Develop the next version disables and states the reason', ({ openPen, reason }) => {
-    const markup = renderHeadnoteReading(openPen, reason);
-    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Develop the next version<\/button>/);
-    expect(markup).toContain(reason);
+  // D-05/D-06 narrows this from Phase 3's "every opener visible and
+  // disabled with its reason" (D-UAT-1): Develop moved into Versions and
+  // now renders only while openPen is null — while the plan's own pen is
+  // open its ceremony replaces it (D-06), and the record's/tasting's own
+  // ceremonies (which would otherwise explain Develop's absence here)
+  // arrive in plan 02, so Develop is simply absent, not disabled, for
+  // every pen in this matrix.
+  it.each(PEN_MATRIX)('with the $openPen pen open, Develop is absent from Versions', ({ openPen, reason }) => {
+    const markup = renderVersionsReading(openPen, reason);
+    expect(markup).not.toContain('>Develop<');
   });
 
   it('with no pen open, none of the five openers disables and no reason line renders', () => {
     const margin = renderBatchMargin(null, null);
     const noBatchMargin = renderNoBatchMargin(null, null);
-    const headnote = renderHeadnoteReading(null, null);
+    const versions = renderVersionsReading(null, null);
     expect(margin).not.toMatch(/<button[^>]*disabled=""[^>]*>Amend<\/button>/);
     expect(margin).not.toMatch(/<button[^>]*disabled=""[^>]*>Record another batch<\/button>/);
     expect(margin).not.toMatch(/<button[^>]*disabled=""[^>]*>Add a tasting<\/button>/);
     expect(margin).not.toContain('unavailable while');
     expect(noBatchMargin).not.toMatch(/<button[^>]*disabled=""[^>]*>Record a batch<\/button>/);
     expect(noBatchMargin).not.toContain('unavailable while');
-    expect(headnote).not.toMatch(/<button[^>]*disabled=""[^>]*>Develop the next version<\/button>/);
-    expect(headnote).not.toContain('unavailable while');
+    expect(versions).toMatch(/<button[^>]*>Develop<\/button>/);
   });
 });
 

@@ -20,10 +20,10 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-08)
+See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.2 — The portion and the reset (INSERTED)
+**Current focus:** Phase 03.3 — The front-matter rows and the page in step order (INSERTED)
 
 ## Current Position
 

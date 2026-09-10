@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { exportStore, importStore, validateStoreFile } from './transfer.js';
-import { liftVersionRecord } from './versionLift.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's putAll/putAllBatches:
@@ -49,14 +48,14 @@ function createInMemoryRepository(initialVersions = [], initialBatches = []) {
   };
 }
 
-// Schema 3-shaped by default (D-06): every version validateStoreFile sees
-// in production is either authored fresh (createChildVersion/liftVersionRecord
-// always set these) or lifted on the way in (importStore, before
-// validation) — so a well-formed fixture carries them from the start.
+// Schema 4-shaped by default (D-08): every version validateStoreFile sees
+// in production is authored fresh (createChildVersion, or the seed) — there
+// is no lift branch left to fill these in on the way in, so a well-formed
+// fixture carries them from the start.
 function makeVersion(overrides = {}) {
   return {
     id: 'v1',
-    schemaVersion: 2,
+    schemaVersion: 3,
     recipeName: 'Test recipe',
     coefficientSetId: 'set-1',
     parentVersionId: null,
@@ -68,7 +67,7 @@ function makeVersion(overrides = {}) {
       {
         id: 'row-1',
         ingredientName: 'Whole milk',
-        grams: 100,
+        portions: [{ step: 1, grams: 100 }],
         ingredient: { composition: { fat: 0.035, msnf: 0.088 } },
         removed: false,
       },
@@ -104,7 +103,7 @@ function makeBatch(overrides = {}) {
         {
           id: 'row-1',
           ingredientName: 'Whole milk',
-          grams: 100,
+          portions: [{ step: 1, grams: 100 }],
           ingredient: { composition: { fat: 0.035, msnf: 0.088 } },
           removed: false,
         },
@@ -127,20 +126,19 @@ function makeBatch(overrides = {}) {
   };
 }
 
-function makeStoreFile(versions = [makeVersion()]) {
-  return { app: 'sprinkles', schemaVersion: 1, exportedAt: '2026-01-01T00:00:00.000Z', versions };
-}
-
-function makeStoreFileV2(versions = [makeVersion()], batches = [makeBatch()]) {
-  return { app: 'sprinkles', schemaVersion: 2, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches };
+// The one accepted shape (D-08): schemaVersion 4, batches always present
+// (an array, never absent) — there is no longer a schema number under
+// which batches may be omitted.
+function makeStoreFile(versions = [makeVersion()], batches = []) {
+  return { app: 'sprinkles', schemaVersion: 4, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches };
 }
 
 describe('exportStore', () => {
-  it('returns app sprinkles, schemaVersion 3, and every version and batch the repository held', async () => {
+  it('returns app sprinkles, schemaVersion 4, and every version and batch the repository held', async () => {
     const repository = createInMemoryRepository([makeVersion(), makeVersion({ id: 'v2' })], [makeBatch()]);
     const exported = await exportStore(repository);
     expect(exported.app).toBe('sprinkles');
-    expect(exported.schemaVersion).toBe(3);
+    expect(exported.schemaVersion).toBe(4);
     expect(exported.versions).toHaveLength(2);
     expect(exported.batches).toHaveLength(1);
   });
@@ -171,11 +169,21 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('app'))).toBe(true);
   });
 
-  it('rejects a payload whose schemaVersion is 4, naming the field', () => {
-    const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: 4 });
-    expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(true);
+  it('accepts a payload whose schemaVersion is 4 — the schema number flips from refused to accepted (D-08)', () => {
+    const result = validateStoreFile(makeStoreFile());
+    expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(false);
   });
+
+  it.each([1, 2, 3])(
+    'rejects a payload whose schemaVersion is %i, naming the path and both the expected and received value',
+    (oldSchemaVersion) => {
+      const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
+      expect(result.ok).toBe(false);
+      const error = result.errors.find((message) => message.includes('$.schemaVersion'));
+      expect(error).toContain('expected 4');
+      expect(error).toContain(String(oldSchemaVersion));
+    },
+  );
 
   it('rejects a payload whose versions is not an array', () => {
     const result = validateStoreFile({ ...makeStoreFile(), versions: {} });
@@ -197,28 +205,36 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('rows'))).toBe(true);
   });
 
-  it('rejects a row whose grams is the string "370.4"', () => {
+  it('rejects a row whose portions array is empty, naming the path (D-01)', () => {
     const version = makeVersion();
-    version.rows[0].grams = '370.4';
+    version.rows[0].portions = [];
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('grams'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('.rows[0].portions'))).toBe(true);
   });
 
-  it('rejects a row whose grams is negative', () => {
+  it('rejects a row whose portion grams is the string "370.4"', () => {
     const version = makeVersion();
-    version.rows[0].grams = -1;
+    version.rows[0].portions[0].grams = '370.4';
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('grams'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('.rows[0].portions[0].grams'))).toBe(true);
   });
 
-  it('rejects a row whose grams is not finite', () => {
+  it('rejects a row whose portion carries a negative amount, refused at its own indexed path', () => {
     const version = makeVersion();
-    version.rows[0].grams = Infinity;
+    version.rows[0].portions[0].grams = -1;
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('grams'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('.rows[0].portions[0].grams'))).toBe(true);
+  });
+
+  it('rejects a row whose portion grams is not finite', () => {
+    const version = makeVersion();
+    version.rows[0].portions[0].grams = Infinity;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.rows[0].portions[0].grams'))).toBe(true);
   });
 
   it('rejects a version with no method', () => {
@@ -245,7 +261,7 @@ describe('validateStoreFile', () => {
   });
 
   it('reports two errors for a payload with two distinct faults, not only the first', () => {
-    const result = validateStoreFile({ ...makeStoreFile(), app: 'other', schemaVersion: 4 });
+    const result = validateStoreFile({ ...makeStoreFile(), app: 'other', schemaVersion: 3 });
     expect(result.ok).toBe(false);
     expect(result.errors).toHaveLength(2);
   });
@@ -262,30 +278,20 @@ describe('validateStoreFile', () => {
     expect({}.polluted).toBeUndefined();
   });
 
-  // schemaVersion 2 and the batch record (02-02 task 3, BATCH2-01).
-  it('accepts schemaVersion 2 with one version and one well-formed batch', () => {
-    expect(validateStoreFile(makeStoreFileV2())).toEqual({ ok: true, errors: [] });
-  });
-
-  it('accepts a schemaVersion 1 file with no batches key, importing the versions and no batches', () => {
-    expect(validateStoreFile(makeStoreFile())).toEqual({ ok: true, errors: [] });
-  });
-
-  it('rejects a schemaVersion 1 file that carries a non-empty batches array, naming $.batches', () => {
-    const result = validateStoreFile({ ...makeStoreFile(), batches: [makeBatch()] });
-    expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('$.batches'))).toBe(true);
+  it('accepts a well-formed file with one version and one well-formed batch, reporting ok', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [makeBatch()]));
+    expect(result).toEqual({ ok: true, errors: [] });
   });
 
   it('accepts a written 0 in a batch as-made map — a truthiness test would wrongly reject it', () => {
     const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-09': 0 } } });
-    const result = validateStoreFile(makeStoreFileV2([makeVersion()], [batch]));
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result).toEqual({ ok: true, errors: [] });
   });
 
   it('rejects a non-numeric as-made value, naming the offending path', () => {
     const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-01': '383' } } });
-    const result = validateStoreFile(makeStoreFileV2([makeVersion()], [batch]));
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('$.batches[0].churn.asMade.row-01'))).toBe(true);
   });
@@ -296,9 +302,16 @@ describe('validateStoreFile', () => {
       snapshot: { ...makeBatch().snapshot, rows: [] },
       churn: { ...makeBatch().churn, drawTempC: 'cold' },
     });
-    const result = validateStoreFile(makeStoreFileV2([makeVersion()], [batch]));
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result.ok).toBe(false);
     expect(result.errors).toHaveLength(3);
+  });
+
+  it('rejects a batch whose declaredAxes element is a bare string, refused at its own indexed path (D-07a)', () => {
+    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: ['Olive oil character'] } });
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.snapshot.declaredAxes[0]'))).toBe(true);
   });
 
   it('rejects a batch carrying an own __proto__ key, and leaves a fresh object unpolluted', () => {
@@ -323,24 +336,16 @@ describe('importStore', () => {
     const repository = createInMemoryRepository([makeVersion({ id: 'existing' })]);
     const before = [...repository.versions];
 
-    const result = await importStore(repository, { ...makeStoreFile(), app: 'other', schemaVersion: 4 });
+    const result = await importStore(repository, { ...makeStoreFile(), app: 'other', schemaVersion: 3 });
 
     expect(result.ok).toBe(false);
     expect(result.errors).toHaveLength(2);
     expect(repository.versions).toEqual(before);
   });
 
-  it('writes through repository.putAll on a valid schemaVersion 1 payload', async () => {
-    const repository = createInMemoryRepository([]);
-    const result = await importStore(repository, makeStoreFile());
-    expect(result.ok).toBe(true);
-    expect(repository.versions).toEqual([makeVersion()]);
-    expect(repository.batches).toEqual([]);
-  });
-
-  it('writes through repository.putAll and putAllBatches on a valid schemaVersion 2 payload', async () => {
+  it('imports a well-formed schemaVersion 4 file with a batch, round-tripping through putAll and putAllBatches', async () => {
     const repository = createInMemoryRepository([], []);
-    const result = await importStore(repository, makeStoreFileV2());
+    const result = await importStore(repository, makeStoreFile([makeVersion()], [makeBatch()]));
     expect(result.ok).toBe(true);
     expect(repository.versions).toEqual([makeVersion()]);
     expect(repository.batches).toEqual([makeBatch()]);
@@ -351,89 +356,13 @@ describe('importStore', () => {
     const goodBatch = makeBatch({ id: 'good' });
     const badBatch = makeBatch({ id: 'bad', versionId: undefined });
 
-    const result = await importStore(repository, makeStoreFileV2([makeVersion()], [goodBatch, badBatch]));
+    const result = await importStore(repository, makeStoreFile([makeVersion()], [goodBatch, badBatch]));
 
     expect(result.ok).toBe(false);
     expect(repository.putAllCalls).toBe(0);
     expect(repository.putAllBatchesCalls).toBe(0);
     expect(repository.versions).toEqual([]);
     expect(repository.batches).toEqual([]);
-  });
-});
-
-// D-06/D-07: the schema move — schemaVersion 3 accepted natively, a
-// schemaVersion 2 file's version records lifted on the way in with the
-// same liftVersionRecord db.js's upgrade calls, and a schemaVersion 1
-// file keeping its Phase 2 treatment even though its old-shaped version
-// is lifted too (never a second ladder — RESEARCH.md's explicit
-// anti-pattern).
-function makeStoreFileV3(versions = [makeVersion()], batches = [makeBatch()]) {
-  return { app: 'sprinkles', schemaVersion: 3, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches };
-}
-
-// A pre-Phase-3-shaped version: every field this phase adds stripped back
-// out, mirroring app/tests/db-migration.test.js's own fixture builder.
-function makeOldShapedVersion(overrides = {}) {
-  const version = makeVersion(overrides);
-  delete version.parentVersionLabel;
-  delete version.reason;
-  delete version.citedBatchId;
-  delete version.createdAt;
-  version.rows = version.rows.map(({ removed, ...rest }) => rest);
-  return version;
-}
-
-describe('the schema move (D-06, D-07)', () => {
-  it('accepts and round-trips a schemaVersion 3 file carrying the new lineage fields untouched', async () => {
-    const child = makeVersion({
-      id: 'child',
-      parentVersionId: 'v1',
-      parentVersionLabel: 'line',
-      reason: 'raised the oil',
-      citedBatchId: 'batch-1',
-      createdAt: '2026-09-07T10:00:00.000Z',
-    });
-    const repository = createInMemoryRepository([makeVersion()], []);
-    const result = await importStore(repository, makeStoreFileV3([child], [makeBatch()]));
-    expect(result.ok).toBe(true);
-    const stored = repository.versions.find((version) => version.id === 'child');
-    expect(stored.parentVersionId).toBe('v1');
-    expect(stored.parentVersionLabel).toBe('line');
-    expect(stored.reason).toBe('raised the oil');
-    expect(stored.citedBatchId).toBe('batch-1');
-    expect(stored.createdAt).toBe('2026-09-07T10:00:00.000Z');
-  });
-
-  it("lifts a schemaVersion 2 file's version records on import, read back in the new shape", async () => {
-    const oldShaped = makeOldShapedVersion();
-    const repository = createInMemoryRepository([]);
-    const result = await importStore(repository, makeStoreFileV2([oldShaped]));
-    expect(result.ok).toBe(true);
-    const stored = repository.versions[0];
-    expect(stored.parentVersionLabel).toBeNull();
-    expect(stored.reason).toBeNull();
-    expect(stored.citedBatchId).toBeNull();
-    expect(typeof stored.createdAt).toBe('string');
-    expect(stored.rows[0].removed).toBe(false);
-    // Matches liftVersionRecord exactly — never a second ladder.
-    expect(stored).toEqual(liftVersionRecord(oldShaped));
-  });
-
-  it("a schemaVersion 1 file's old-shaped version is also lifted, still importing as a store with no batches", async () => {
-    const oldShaped = makeOldShapedVersion();
-    const repository = createInMemoryRepository([]);
-    const result = await importStore(repository, makeStoreFile([oldShaped]));
-    expect(result.ok).toBe(true);
-    expect(repository.versions[0].rows[0].removed).toBe(false);
-    expect(repository.batches).toEqual([]);
-  });
-
-  it('still refuses a schemaVersion 1 file that carries a non-empty batches array, naming $.batches', async () => {
-    const repository = createInMemoryRepository([]);
-    const result = await importStore(repository, { ...makeStoreFile([makeOldShapedVersion()]), batches: [makeBatch()] });
-    expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('$.batches'))).toBe(true);
-    expect(repository.versions).toEqual([]);
   });
 });
 
@@ -528,11 +457,11 @@ describe('validateVersion, the new fields (D-06)', () => {
 
   it("rejects a file carrying __proto__ on a method step — the uses array's containing object — via the existing scanner", () => {
     const malicious = JSON.parse(
-      '{"app":"sprinkles","schemaVersion":1,"versions":[{"id":"v1","schemaVersion":2,"recipeName":"x","coefficientSetId":"c",' +
+      '{"app":"sprinkles","schemaVersion":4,"versions":[{"id":"v1","schemaVersion":3,"recipeName":"x","coefficientSetId":"c",' +
         '"parentVersionId":null,"parentVersionLabel":null,"reason":null,"citedBatchId":null,"createdAt":"2026-01-01T00:00:00.000Z",' +
-        '"rows":[{"id":"r1","ingredientName":"x","grams":1,"ingredient":{"composition":{"fat":1}},"removed":false}],' +
+        '"rows":[{"id":"r1","ingredientName":"x","portions":[{"step":1,"grams":1}],"ingredient":{"composition":{"fat":1}},"removed":false}],' +
         '"method":[{"n":1,"leadIn":"x","instruction":"x","removed":false,"uses":[],"__proto__":{"polluted":true}}],' +
-        '"authored":{"carriedForward":[],"beforeYouStart":[]}}]}',
+        '"authored":{"carriedForward":[],"beforeYouStart":[]}}],"batches":[]}',
     );
     const result = validateStoreFile(malicious);
     expect(result.ok).toBe(false);

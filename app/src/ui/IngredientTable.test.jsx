@@ -195,7 +195,7 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
     const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
     const draftVersion = makeVersion([makeRow('a', 'Row A', 40, 1)]);
     const penDraft = { rows: { a: onePortionDraftRow(1, '40') }, asMade: {} };
-    const openBatch = makeBatch({ a: 38 });
+    const openBatch = makeBatch({ a: [38] });
 
     const markup = renderToStaticMarkup(
       <IngredientTable
@@ -222,6 +222,56 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
 
     expect(markup).not.toContain('>As made<');
     assertCellCountsAgree(markup);
+  });
+});
+
+describe('IngredientTable — the As made column reads and records per portion (D-10, D-18)', () => {
+  it("a saved batch's split row reads its two as-made values joined", () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
+    ]);
+    const openBatch = makeBatch({ a: [120, 263] });
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
+
+    expect(markup).toContain('120 + 263 g');
+  });
+
+  it("a split row with one written portion renders the placeholder for the other and never that portion's plan amount", () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
+    ]);
+    const openBatch = makeBatch({ a: [120, null] });
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
+
+    expect(markup).toContain('120');
+    expect(markup).not.toContain('250.4');
+  });
+
+  it('recording a split row renders two as-made fields with distinct accessible names', () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
+    ]);
+    const draft = { asMade: { a: ['120', ''] } };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="recording" draft={draft} openBatch={null} />,
+    );
+
+    expect(markup).toContain('aria-label="Whole milk, as made, grams, portion 1"');
+    expect(markup).toContain('aria-label="Whole milk, as made, grams, portion 2"');
+  });
+
+  it('the total row still reads the as-made total', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1), makeRow('b', 'Row B', 20, 1)]);
+    // Row A's as-made (45) replaces its plan (40); Row B has no as-made
+    // key, so its own plan (20) fills the gap — the as-made total is 65 g.
+    const openBatch = makeBatch({ a: [45] });
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
+
+    expect(markup).toContain('65.0 g');
   });
 });
 

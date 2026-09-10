@@ -368,7 +368,7 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
 function makeAmendBaseline(overrides = {}) {
   return {
     churnDate: '2026-08-02',
-    asMade: { 'row-1': '100' },
+    asMade: { 'row-1': ['100'] },
     stepChanges: { 1: { struck: true, line: null } },
     comeUpMinutes: '20',
     drawTempC: '-6',
@@ -429,8 +429,17 @@ describe('isDraftDirty — the churn check, against what it was filled from (T-0
   it('is dirty when an as-made amount is added that the batch did not have', () => {
     const baseline = makeAmendBaseline();
     const draft = structuredClone(baseline);
-    draft.asMade['row-2'] = '50';
+    draft.asMade['row-2'] = ['50'];
     expect(isDraftDirty('recording', draft, baseline)).toBe(true);
+  });
+
+  it('is dirty when a single portion within an existing as-made row changes, and clean again when reverted — an array-length match alone must not read as equal (D-10)', () => {
+    const baseline = makeAmendBaseline({ asMade: { 'row-1': ['120', '263'] } });
+    const draft = structuredClone(baseline);
+    draft.asMade['row-1'][1] = '999';
+    expect(isDraftDirty('recording', draft, baseline)).toBe(true);
+    draft.asMade['row-1'][1] = '263';
+    expect(isDraftDirty('recording', draft, baseline)).toBe(false);
   });
 
   it('is dirty when a step strike or its line changes', () => {

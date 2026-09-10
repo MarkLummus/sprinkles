@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef } from 'react';
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from '../domain/composition.js';
-import { hasAsMade, asMadeFor, asMadeTotals } from '../domain/batch.js';
+import { hasAsMade, asMadeForPortion, asMadeTotals } from '../domain/batch.js';
 import { activeRows, rowGrams } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
@@ -405,30 +405,63 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
   );
 }
 
-// The as-made cell (route-recipe-batch.md § 3): blank by default, a numeric
-// field bound to the draft while recording, and the stored value — read
-// through asMadeFor, never the row's own plan grams — once a saved batch's
-// layer is showing. Blank stays blank; the plan never leaks into this
-// column under any circumstance. While the plan's pen is open, the open
-// batch's as-made column stays in reading form beside the fields
+// formatAsMadeReading(row, batch) -> the reading state's per-portion
+// as-made string ("120 + 263"), joined in portion order, or null when the
+// row carries no as-made key at all. A portion the maker wrote nothing
+// beside contributes the empty string — the table's existing absent
+// placeholder — never that portion's own plan amount (D-10, D-18). Shared
+// between AsMadeCell's own rendering and the row's accessible name, so the
+// two readings can never disagree.
+function formatAsMadeReading(row, batch) {
+  if (!batch || !hasAsMade(batch, row.id)) return null;
+  return row.portions
+    .map((_, i) => {
+      const value = asMadeForPortion(batch, row.id, i);
+      return value !== null ? `${value}` : '';
+    })
+    .join(' + ');
+}
+
+// The as-made cell (route-recipe-batch.md § 3, D-10): blank by default, one
+// text field per portion bound to the draft's own array element while
+// recording, and the stored per-portion reading — through
+// formatAsMadeReading, never the row's own plan grams — once a saved
+// batch's layer is showing. Blank stays blank; the plan never leaks into
+// this column under any circumstance. While the plan's pen is open, the
+// open batch's as-made column stays in reading form beside the fields
 // (route-recipe-version.md § 3) — this component's branch already falls
-// through to that reading form for any mode other than 'recording'.
+// through to that reading form for any mode other than 'recording'. The
+// portion count mirrors GramsCell's own fixed-split discipline this
+// milestone: exactly as many fields as row.portions has entries.
 function AsMadeCell({ row, mode, draft, openBatch, onChangeAsMade }) {
   if (mode === 'recording') {
-    const draftValue = Object.prototype.hasOwnProperty.call(draft.asMade, row.id) ? draft.asMade[row.id] : '';
+    const draftValues = Object.prototype.hasOwnProperty.call(draft.asMade, row.id) ? draft.asMade[row.id] : null;
+    const multiPortion = row.portions.length > 1;
     return (
-      <input
-        type="text"
-        inputMode="decimal"
-        className="ink-field"
-        value={draftValue}
-        aria-label={`${row.ingredientName}, as made, grams`}
-        onChange={(event) => onChangeAsMade(row.id, event.target.value)}
-      />
+      <span className="ingredient-table__grams-cell">
+        {row.portions.map((_, i) => (
+          <Fragment key={i}>
+            {i > 0 && <span className="ingredient-table__split-step"> + </span>}
+            <input
+              type="text"
+              inputMode="decimal"
+              className="ink-field"
+              value={draftValues ? draftValues[i] : ''}
+              aria-label={
+                multiPortion
+                  ? `${row.ingredientName}, as made, grams, portion ${i + 1}`
+                  : `${row.ingredientName}, as made, grams`
+              }
+              onChange={(event) => onChangeAsMade(row.id, i, event.target.value)}
+            />
+          </Fragment>
+        ))}
+      </span>
     );
   }
-  if (openBatch && hasAsMade(openBatch, row.id)) {
-    return <span className="ink-text">{`${asMadeFor(openBatch, row.id)} g`}</span>;
+  const reading = formatAsMadeReading(row, openBatch);
+  if (reading !== null) {
+    return <span className="ink-text">{`${reading} g`}</span>;
   }
   return null;
 }
@@ -561,8 +594,7 @@ export function IngredientTable({
           {rows.map((row) => {
             const dataFlag = dataFlagFor(row);
             const isMarked = markedRowIds.includes(row.id);
-            const asMadeValue =
-              mode !== 'recording' && openBatch && hasAsMade(openBatch, row.id) ? asMadeFor(openBatch, row.id) : null;
+            const asMadeValue = mode !== 'recording' ? formatAsMadeReading(row, openBatch) : null;
             const baselineShare = formatShareOfBatch(rowGrams(row), baselineMass);
 
             if (isShowingChanges) {

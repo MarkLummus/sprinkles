@@ -27,13 +27,23 @@ import { Versions } from './Versions.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
-// Two maps compared by key set and by value — the as-made column's shape,
-// where every value is the raw string the maker typed (Pitfall 5).
-function stringMapsDiffer(a, b) {
+// Two as-made maps compared by key set and, for a shared key, by their
+// arrays element-wise (D-10) — the same presence-over-truthiness
+// discipline the rest of this file applies: a row present in one draft
+// and absent in the other is a difference, and a portion differing at
+// any index is a difference, even when the two arrays share the same
+// length (Pitfall 5, every value the raw string the maker typed).
+function asMadeMapsDiffer(a, b) {
   const aKeys = Object.keys(a);
   const bKeys = Object.keys(b);
   if (aKeys.length !== bKeys.length) return true;
-  return aKeys.some((key) => !Object.prototype.hasOwnProperty.call(b, key) || a[key] !== b[key]);
+  return aKeys.some((key) => {
+    if (!Object.prototype.hasOwnProperty.call(b, key)) return true;
+    const aValues = a[key];
+    const bValues = b[key];
+    if (aValues.length !== bValues.length) return true;
+    return aValues.some((value, i) => value !== bValues[i]);
+  });
 }
 
 // The step-changes map compared by key set and by both fields of each
@@ -85,7 +95,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
     draft.drawNotes !== baseline.drawNotes ||
     draft.ingredientNotes !== baseline.ingredientNotes ||
     draft.nextTimeNote !== baseline.nextTimeNote ||
-    stringMapsDiffer(draft.asMade, baseline.asMade) ||
+    asMadeMapsDiffer(draft.asMade, baseline.asMade) ||
     stepChangesDiffer(draft.stepChanges, baseline.stepChanges)
   );
 }
@@ -631,13 +641,24 @@ export function RecipePage() {
     setDraft((prev) => ({ ...prev, churnDate: value }));
   }
 
-  function handleChangeAsMade(rowId, rawValue) {
+  // Writes one portion's raw string (D-10). A row with no key yet is
+  // seeded with an array of empty strings the length of that row's own
+  // portions first, so the array is always aligned with row.portions —
+  // the same alignment contract asMadeForPortion reads. Once every
+  // portion of a row is back to an empty string, the row's key is deleted
+  // entirely — the existing "an empty field means nothing was written"
+  // rule (D-13/BATCH1-01), applied at the row level as it is today.
+  function handleChangeAsMade(rowId, portionIndex, rawValue) {
     setDraft((prev) => {
       const asMade = { ...prev.asMade };
-      if (rawValue === '') {
+      const row = version.rows.find((candidate) => candidate.id === rowId);
+      const existing = Object.prototype.hasOwnProperty.call(asMade, rowId) ? asMade[rowId] : null;
+      const next = existing ? [...existing] : new Array(row.portions.length).fill('');
+      next[portionIndex] = rawValue;
+      if (next.every((value) => value === '')) {
         delete asMade[rowId];
       } else {
-        asMade[rowId] = rawValue;
+        asMade[rowId] = next;
       }
       return { ...prev, asMade };
     });
@@ -650,8 +671,8 @@ export function RecipePage() {
   // already expect, matching handleStartRecording's shape.
   function handleStartAmending(batch) {
     const asMade = {};
-    for (const [rowId, value] of Object.entries(batch.churn.asMade)) {
-      asMade[rowId] = String(value);
+    for (const [rowId, values] of Object.entries(batch.churn.asMade)) {
+      asMade[rowId] = values.map((value) => (value === null ? '' : String(value)));
     }
     const toDraftString = (value) => (value == null ? '' : String(value));
     const filledDraft = {
@@ -681,15 +702,17 @@ export function RecipePage() {
   // being amended instead of createBatch — a correction is never a new
   // event and never retakes the snapshot (D-06).
   function handleSaveBatch() {
-    // A value the grams rule rejects (a stray letter, a lone space, a
-    // leading minus, exponent notation, more than two decimals) is dropped
-    // rather than persisted — a row that fails to parse is treated the
-    // same as a row the maker never touched, never as a stored NaN
-    // (D-11, D-18).
+    // Each portion parses through parseGramsDraft (D-10): a value the
+    // grams rule rejects (a stray letter, a lone space, a leading minus,
+    // exponent notation, more than two decimals) or a blank portion
+    // becomes null — the same fact as a portion the maker never touched,
+    // never a stored NaN (D-11, D-18). A row whose every portion resolves
+    // to null drops its key entirely, preserving the existing rule that a
+    // row that fails to parse reads exactly like a row never touched.
     const asMade = {};
-    for (const [rowId, rawValue] of Object.entries(draft.asMade)) {
-      const parsed = parseGramsDraft(rawValue);
-      if (parsed !== null) asMade[rowId] = parsed;
+    for (const [rowId, rawValues] of Object.entries(draft.asMade)) {
+      const parsedValues = rawValues.map((rawValue) => parseGramsDraft(rawValue));
+      if (parsedValues.some((value) => value !== null)) asMade[rowId] = parsedValues;
     }
     const toTextOrNull = (raw) => (raw === '' ? null : raw);
     const churnFields = {

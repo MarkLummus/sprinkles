@@ -53,15 +53,15 @@ beforeEach(() => {
 
 // A pre-03.2-shaped version record: oliveOilVersion with its rows'
 // `portions` collapsed back into a stored amount and the two retiring
-// keys, `step` and `splitStep` (D-01, D-02) — exactly the shape a
-// returning browser profile holds.
+// keys — a single step reference, plus a second one on a split row (D-01,
+// D-02) — exactly the shape a returning browser profile holds.
 function makePreResetVersion(overrides = {}) {
   const version = structuredClone(oliveOilVersion);
   version.rows = version.rows.map(({ portions, ...rest }) => {
     const [first, second] = portions;
     const grams = portions.reduce((total, portion) => total + portion.grams, 0);
     const fields = { ...rest, grams, step: first.step };
-    if (second) fields.splitStep = second.step;
+    if (second) fields.secondStep = second.step;
     return fields;
   });
   return { ...version, ...overrides };

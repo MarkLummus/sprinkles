@@ -110,7 +110,7 @@ describe('Method — the batch pen\'s per-step line, on demand (D-25)', () => {
 // needs only what computeBalance/buildFigures touch (grams, an ingredient
 // with a composition block), since these tests assert markup, not figures.
 function makeRow(id, name, grams, removed = false) {
-  return { id, ingredientName: name, grams, removed, ingredient: { composition: {} } };
+  return { id, ingredientName: name, portions: [{ step: 1, grams }], removed, ingredient: { composition: {} } };
 }
 
 function makeBaselineVersion() {
@@ -481,7 +481,7 @@ describe('Method — developing mode', () => {
   it("renders the stale-amount flag's 'amounts changed:' clause only when visibility is on", () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
-    draftVersion.rows[0].grams = 12; // row-a, used by step 1, step 1's own text untouched
+    draftVersion.rows[0].portions[0].grams = 12; // row-a, used by step 1, step 1's own text untouched
 
     const visible = renderToStaticMarkup(
       <Method
@@ -641,7 +641,7 @@ describe('Method — developing mode', () => {
   it('renders no stale-amount flag for a step whose own text was edited', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
-    draftVersion.rows[0].grams = 12;
+    draftVersion.rows[0].portions[0].grams = 12;
     draftVersion.method[0].instruction = 'A rewritten instruction.';
 
     const markup = renderToStaticMarkup(

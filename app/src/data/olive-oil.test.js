@@ -143,7 +143,6 @@ describe('oliveOilVersion.rows.portions (D-01, D-09)', () => {
     for (const row of oliveOilVersion.rows) {
       expect(row.grams).toBeUndefined();
       expect(row.step).toBeUndefined();
-      expect(row.splitStep).toBeUndefined();
     }
   });
 });

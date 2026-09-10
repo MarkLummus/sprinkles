@@ -192,20 +192,20 @@ function GramsCell({ row, mode, penDraft, onChangePenGrams, inputRef }) {
 // no number, anywhere. Option VALUES are always the stored keys, since
 // the change handler, the row's own reference, the comparison, the pen's
 // handlers and a batch's step changes all match on them — a value that
-// were a position would break every one of them. A row with a splitStep
-// (whole milk, sucrose each go into two steps) keeps both — only the
-// primary allocation is a choice here; splitStep is rendered untouched,
-// since editing a split allocation is out of this milestone's scope, but
-// its own number is still resolved through the maps like every other
-// live reference. A future pen surface naming a step should follow this
-// same rule rather than re-deriving it.
+// were a position would break every one of them. A row with more than one
+// portion (whole milk, sucrose each go into two steps) keeps all of them —
+// only the FIRST portion's allocation is a choice here; every later
+// portion is rendered untouched, since editing the split is out of this
+// milestone's scope, but its own number is still resolved through the
+// maps like every other live reference. A future pen surface naming a
+// step should follow this same rule rather than re-deriving it.
 //
 // The selector still chooses ONE step: the row's FIRST portion's, bound to
 // draftRow.portions[0].step (CONTEXT.md phase boundary — the portion count
 // is fixed this milestone; amounts edit, the split does not). Every
 // portion after the first renders its own suffix, printed matter beside
-// the selector, exactly as the single splitStep suffix did before portions
-// arrived — only the primary allocation is a choice here.
+// the selector, exactly as the single split suffix did before the portion
+// count could exceed two — only the primary allocation is a choice here.
 function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStepNumbers, onChangePenRowStep }) {
   const draftRow = penDraft.rows[row.id];
   const changed = draftRow.removed || draftRow.portions[0].step !== row.portions[0].step;

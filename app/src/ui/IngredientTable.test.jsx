@@ -274,9 +274,9 @@ describe('IngredientTable — the selector keeps a removed step in its list (G-0
 
   it('renders no two options with the same leading numeral, and the split-step cell for a row on a removed primary shows one number, not two', () => {
     // Whole milk's kind of case (Evidence 9): a row's primary allocation
-    // is the removed step, and its splitStep is a live step now sitting
-    // at the same position the removed step used to hold — the "2 … + 2"
-    // self-contradiction.
+    // is the removed step, and its second portion is a live step now
+    // sitting at the same position the removed step used to hold — the
+    // "2 … + 2" self-contradiction.
     const version = makeVersion([makeRow('a', 'Row A', 10, 2, { portions: [{ step: 2, grams: 5 }, { step: 3, grams: 5 }] })]);
     version.method = makeThreeStepMethod();
     const draftVersion = structuredClone(version);
@@ -318,10 +318,10 @@ describe('IngredientTable — the selector keeps a removed step in its list (G-0
     expect(markup).toContain('ingredient-table__split-step"> + 2</span>');
   });
 
-  it('renders no numeral for a splitStep referencing a removed step — the mirror of the primary case above (CR-01 gap closure)', () => {
+  it('renders no numeral for a second portion referencing a removed step — the mirror of the primary case above (CR-01 gap closure)', () => {
     // The mirror of Whole milk's case: a row's primary allocation is live,
-    // and its splitStep is the removed step — step 3 still renumbers into
-    // the removed step's old position, so a stale splitStep numeral would
+    // and its second portion is the removed step — step 3 still renumbers
+    // into the removed step's old position, so a stale numeral would
     // still collide with a currently-live step's own numeral.
     const version = makeVersion([makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] })]);
     version.method = makeThreeStepMethod();
@@ -701,8 +701,8 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
 });
 
 // `unallocated` never dangles (critique P2 #2): a row whose primary step
-// is removed and whose splitStep survives reads the word followed by the
-// suffix, never a bare " + 3" with nothing naming the primary.
+// is removed and whose second portion survives reads the word followed by
+// the suffix, never a bare " + 3" with nothing naming the primary.
 describe('IngredientTable — the show-changes step cell prints unallocated rather than a dangling suffix (critique P2 #2)', () => {
   it('reads "unallocated + 2" for a row whose primary step is removed and whose split survives', () => {
     const baseline = makeVersion([makeRow('a', 'Row A', 10, 2, { portions: [{ step: 2, grams: 5 }, { step: 3, grams: 5 }] })]);

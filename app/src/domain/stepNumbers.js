@@ -1,9 +1,9 @@
 // Pure. No framework, no DOM, no store import. The step's stored key (n)
 // is its identity: diff.js's baselineStepByN pairs parent to child on it,
-// RecipePage.jsx's four pen step handlers match on it, a row's
-// step/splitStep reference names it, a batch's stepChanges keys on it, and
-// the seed's per-step uses lists key on it — it must never move. The
-// display number is a different fact: a step's position among the active
+// RecipePage.jsx's four pen step handlers match on it, a row's own
+// portions each name it, a batch's stepChanges keys on it, and the seed's
+// per-step uses lists key on it — it must never move. The display number
+// is a different fact: a step's position among the active
 // steps, derived fresh on every read from whichever method array the
 // caller is showing, never stored and never written back. Renumbering the
 // stored key was tested directly and rejected: it makes eight of the nine

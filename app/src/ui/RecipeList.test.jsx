@@ -16,6 +16,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { RecipeRows } from './RecipeList.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { rowGrams } from '../domain/rows.js';
 
 function makeVersion(overrides = {}) {
   return {
@@ -69,8 +70,8 @@ describe('RecipeRows — one row per recipe, at its most recently created versio
   });
 
   it('reports a mass that excludes a removed row', () => {
-    const fullMass = oliveOilVersion.rows.reduce((total, row) => total + row.grams, 0);
-    const removedRowGrams = oliveOilVersion.rows[0].grams;
+    const fullMass = oliveOilVersion.rows.reduce((total, row) => total + rowGrams(row), 0);
+    const removedRowGrams = rowGrams(oliveOilVersion.rows[0]);
     const versionWithRemoval = makeVersion({
       rows: oliveOilVersion.rows.map((row, index) => (index === 0 ? { ...row, removed: true } : row)),
     });

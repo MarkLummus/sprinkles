@@ -73,7 +73,7 @@ describe('FormulationNote — the rule heads strike the parent figure once given
   it('renders a struck head figure when a diff reporting a changed figure is supplied', () => {
     const baseline = structuredClone(oliveOilVersion);
     const current = structuredClone(oliveOilVersion);
-    current.rows.find((row) => row.id === 'row-03').grams = 48; // Graza Drizzle, oil: 40 -> 48
+    current.rows.find((row) => row.id === 'row-03').portions[0].grams = 48; // Graza Drizzle, oil: 40 -> 48
     const diff = buildDiff(current, baseline);
 
     const markup = renderToStaticMarkup(<FormulationNote version={current} mode="developing" diff={diff} />);

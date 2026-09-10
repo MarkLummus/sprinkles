@@ -261,11 +261,24 @@ Plans:
 - Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
 - Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
 
-**Plans:** 0 plans
+**Plans:** 4 plans
 
 Plans:
+**Wave 1**
 
-- [ ] TBD (run /gsd-plan-phase 03.3 to break down)
+- [ ] 03.3-01-PLAN.md — The tracer: `Versions.jsx` splits into `VersionRow.jsx` and `BatchRow.jsx`, `BatchMargin.jsx` retires, the front matter stacks into two full-width rows with no running head, column two becomes Balance → Things to check → Notes, "Before you start" heads the Method, the three blank prose fields rule a hairline baseline, focus-return relocates and WR-01's version-line half takes an attempt counter — the fork's landing focus deferred to human verify
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03.3-02-PLAN.md — The table in step order: portions grouped under each step's lead-in across all three states, the Step column gone, a split ingredient's `120 g of 370.4 g · 46.3% in all` sub-line from `formatPortionLine` in `composition.js`, the pen's step select removed (LD-02, a recorded regression), the `--col-step` tokens dropped, WR-01's table half fixed
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 03.3-03-PLAN.md — The pen's method opens read-only: one `edit this step` text control per step on `useOnDemandField`, `.text-control` opts the named per-step and per-row controls out of the binder rule — the uses checklist's scoped Escape deferred to human verify
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 03.3-04-PLAN.md — The thirteen labels verbatim across the rows, the advisories and the table head; `figures.js`'s label becomes a word + term pair rendered as two spans in `GraduatedRule.jsx`, with `figureLabelText` guarding its two hidden string consumers
 
 ### Phase 4: Prepare the next version for making
 

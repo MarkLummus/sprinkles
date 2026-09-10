@@ -261,7 +261,7 @@ Plans:
 - Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
 - Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
 
-**Plans:** 4/4 plans executed
+**Plans:** 4/4 plans executed; 3 gap-closure plans planned (05–07, from 03.3-UAT.md G-03.3-1..4)
 
 Plans:
 **Wave 1**
@@ -279,6 +279,17 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [x] 03.3-04-PLAN.md — The thirteen labels verbatim across the rows, the advisories and the table head; `figures.js`'s label becomes a word + term pair rendered as two spans in `GraduatedRule.jsx`, with `figureLabelText` guarding its two hidden string consumers
+
+**Gap closure** *(after UAT 2026-09-10; run with `--gaps-only`)*
+
+**Gap wave 1**
+
+- [ ] 03.3-05-PLAN.md — G-03.3-2: the uses checklist's Escape handler moves to a wrapper around the `change` control and the fieldset, gated on the checklist being open, so the first Escape closes only the checklist and the second reaches the pen
+- [ ] 03.3-06-PLAN.md — G-03.3-1 + the version row of G-03.3-4: `descendantVersions` in `lineage.js`; the version row's right-hand stack (Version, Written, Why, From batch, Later) rebuilt against sketch 003 variant B; Record another moves into the version row; fork focus lands by a deterministic effect instead of `autoFocus`
+
+**Gap wave 2** *(blocked on 03.3-06)*
+
+- [ ] 03.3-07-PLAN.md — G-03.3-3 + the batch row of G-03.3-4: `targetValueFor` in `rows.js`; one head line, measured cells with plain-word labels, units beside figures and a plan sub-line, "not measured"; tasting shows marked axes only; Correct and Add tasting become text controls at the foot; the duplicate "no batch yet" paragraph goes
 
 ### Phase 4: Prepare the next version for making
 

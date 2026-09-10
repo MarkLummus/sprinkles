@@ -2,7 +2,7 @@
 // Runs under Vitest's default node environment — imports no store, no
 // component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { activeRows, activeSteps, rowGrams } from './rows.js';
+import { activeRows, activeSteps, rowGrams, targetValueFor } from './rows.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 describe('activeRows', () => {
@@ -57,6 +57,28 @@ describe('rowGrams', () => {
   it('120 + 250.4 is the same double as the literal 370.4, so no figure can move in its last decimal', () => {
     const row = { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] };
     expect(rowGrams(row)).toBe(370.4);
+  });
+});
+
+// targetValueFor (03.3-07, G-03.3-4's batch-row plan sub-line): the value
+// of the first active step's own target carrying the given label.
+describe('targetValueFor', () => {
+  it("returns the pasteurisation step's own come-up target on the seeded olive-oil version", () => {
+    expect(targetValueFor(oliveOilVersion, 'come-up')).toBe('10–12 min');
+  });
+
+  it('returns null when no active step carries a target with that label', () => {
+    expect(targetValueFor(oliveOilVersion, 'no-such-label')).toBeNull();
+  });
+
+  it("never reads a removed step's own targets", () => {
+    const version = {
+      method: [
+        { n: 1, removed: true, targets: [{ label: 'come-up', value: 'should not be read' }] },
+        { n: 2, targets: [{ label: 'other', value: '5 min' }] },
+      ],
+    };
+    expect(targetValueFor(version, 'come-up')).toBeNull();
   });
 });
 

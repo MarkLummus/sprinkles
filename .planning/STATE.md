@@ -2,17 +2,17 @@
 gsd_state_version: "1.0"
 current_phase: "03.2"
 current_phase_name: The portion and the reset (INSERTED)
-status: executing
-stopped_at: Completed 03.2-03-PLAN.md
-last_updated: "2026-09-10T03:59:52.467Z"
+status: verifying
+stopped_at: Completed 03.2-04-PLAN.md
+last_updated: "2026-09-10T04:17:57.442Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 03.2 execution resumed (wave continue)
-state_head: 93fe7a16817bfa8450212eefeb935e3e54a8b9a2
+state_head: fbc07cb72296883f1c41a562ebb5b9f5aab0563f
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 30
-  completed_plans: 29
+  completed_plans: 30
   percent: 14
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 
 Phase: 03.2 (The portion and the reset (INSERTED)) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-09 — Phase 03.2 execution resumed (wave continue)
 
 Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
@@ -88,6 +88,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | Phase 03.1 P04 | 30min | 3 tasks | 11 files |
 | Phase 03.2 P02 | 25min | 2 tasks | 4 files |
 | Phase 03.2 P03 | 55min | 3 tasks | 10 files |
+| Phase 03.2 P04 | 15min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -156,6 +157,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.2]: [Phase 03.2] transfer.js narrows to schemaVersion 4 alone; validateRow gates a row on its portions array, validateBatch validates each declaredAxes element shape (D-07a); importStore lost its lift branch entirely.
 - [Phase 03.2]: [Phase 03.2, Plan 02] versionLift.js deleted along with its last consumer (lineage.test.js's liftVersionRecord idempotence block); the round trip through exportStore/importStore is proven against the real seeded olive oil version and its 2 Aug batch, serialised through JSON.parse(JSON.stringify(...)).
 - [Phase 03.2]: [Phase 03.2, Plan 03] IngredientTable.jsx and RecipePage.jsx read row.portions in all three states; the pen renders one amount field per portion with distinct accessible names on a split row, and the step selector still chooses only the first portion's step.
+- [Phase 03.2]: Phase 3.2: as-made moves to a per-portion array (churn.asMade[rowId] aligned with row.portions), BATCH_SCHEMA_VERSION 1->2; AsMadeCell/handleChangeAsMade/handleSaveBatch carry a portionIndex end to end; the phase closes with three regression guards (six independent axes, the derived-total invariant, a reseeded batch read out of a real IndexedDB) at a reconciled 673 tests.
 
 ### Pending Todos
 
@@ -221,6 +223,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T03:59:52.398Z
-Stopped at: Completed 03.2-03-PLAN.md
+Last session: 2026-09-10T04:17:57.364Z
+Stopped at: Completed 03.2-04-PLAN.md
 Resume file: None

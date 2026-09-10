@@ -430,6 +430,23 @@ textarea {
 .versions__opener-group {
   display: flex;
   gap: var(--gap-s);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* The fork's landing focus, made visible (03.3-06 checkpoint feedback,
+   G-03.3-1): the page-level effect that focuses the child's own Next
+   version button on a fresh fork-save mount follows a mouse-driven Save
+   click, so the page's one :focus-visible rule above draws no ring for
+   it (Chrome tracks the last input modality). VersionRow.jsx adds this
+   class only for that one landing and clears it on blur — an explicit
+   :focus rule, not :focus-visible, scoped to this one class so every
+   other interaction with this button keeps reading the page's ordinary
+   rule. binder.test.js's "exactly one rule" assertion is updated to name
+   this as the one documented exception. */
+.is-landing-focus:focus {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
 }
 
 .versions__ceremony {
@@ -498,6 +515,28 @@ textarea {
 
 .version-row__meta-list dd {
   margin: 0;
+}
+
+/* The ceremony and the Later-versions disclosure, as full-width rows of
+   their own (sketch 003 variant B, index.html:95-96, 107-108, 230,
+   03.3-06 checkpoint fix): siblings of .vmeta inside
+   .recipe-band__row-version's grid, spanning both of its columns rather
+   than being squeezed into vmeta's own narrow one. */
+.recipe-band__full-row {
+  grid-column: 1 / -1;
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--bookcloth);
+}
+
+/* The ceremony's own two-column split (sketch 003 variant B,
+   index.html:107): version line + why on the left, citation + saves on
+   the right — the same measure/1fr split .recipe-band__row-version
+   itself uses one grid level up. */
+.versions__ceremony-row {
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure-prose)) 1fr;
+  gap: var(--gap-l);
 }
 
 /* An amended batch's second line in the batch list (D-09), on its own

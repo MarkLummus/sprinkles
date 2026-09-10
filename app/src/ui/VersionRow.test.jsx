@@ -409,3 +409,50 @@ describe('VersionRow — no batch list rendered here any more (D-09, moved to Ba
     expect(markup).not.toContain('batch-margin__list');
   });
 });
+
+// 03.3-06 checkpoint feedback (Mark, 2026-09-10): the pen ceremony and the
+// acts group were squeezed into the row-version grid's narrow right
+// column, and the acts group rendered ABOVE the dl instead of below it.
+// Fixed by returning a Fragment: a `.vmeta` section (h2, dl, then the acts
+// group) plus, as its OWN full-width sibling sections, the ceremony (while
+// developing) and the Later disclosure (while open) — matching sketch 003
+// variant B's own `.vmeta`/`.ceremony`/`.list` siblings (index.html:208-233).
+describe('VersionRow — the vmeta column, the ceremony, and the Later row are separate full-width siblings (03.3-06 checkpoint fix)', () => {
+  it('wraps the reading-mode stack in a "vmeta" section, the sketch\'s own class name', () => {
+    const markup = renderVersionRow({});
+    expect(markup).toMatch(/<section class="vmeta" aria-label="Version">/);
+  });
+
+  it('renders the acts group (Next version, Record, Show changes) AFTER the dl, matching the sketch\'s own dl-then-acts order', () => {
+    const markup = renderVersionRow({
+      openPen: null,
+      openBatch: null,
+      version: childVersion,
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    const dlIndex = markup.indexOf('version-row__meta-list');
+    const actsIndex = markup.indexOf('versions__opener-group');
+    const showChangesIndex = markup.lastIndexOf('Show changes');
+    expect(dlIndex).toBeGreaterThanOrEqual(0);
+    expect(actsIndex).toBeGreaterThan(dlIndex);
+    expect(showChangesIndex).toBeGreaterThan(actsIndex);
+  });
+
+  it('renders the ceremony as its own full-width `<section aria-label="Next version">`, carrying the sketch\'s "Next version · from …" heading — not nested inside vmeta', () => {
+    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    expect(markup).toMatch(/<section class="recipe-band__full-row versions__ceremony-row" aria-label="Next version">/);
+    expect(markup).toContain(`Next version · from ${oliveOilVersion.versionLabel}`);
+    // The ceremony section must open AFTER the vmeta section closes, not
+    // appear as content inside it (the squeezed-column bug).
+    const vmetaOpenIndex = markup.indexOf('<section class="vmeta"');
+    const vmetaCloseIndex = markup.indexOf('</section>', vmetaOpenIndex);
+    const ceremonyIndex = markup.indexOf('aria-label="Next version"');
+    expect(ceremonyIndex).toBeGreaterThan(vmetaCloseIndex);
+  });
+
+  it('renders no ceremony section with no pen open', () => {
+    const markup = renderVersionRow({ openPen: null });
+    expect(markup).not.toContain('versions__ceremony-row');
+  });
+});

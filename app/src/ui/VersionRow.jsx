@@ -76,8 +76,18 @@ export function VersionRow({
   // record/amend/tasting ceremony autoFocuses only render while a pen is
   // open, and VersionStrip's current-version Link carries no .focus()
   // call.
+  //
+  // landingFocusVisible (03.3-06 checkpoint feedback, G-03.3-1): the
+  // .focus() call below lands focus, but follows a mouse-driven Save
+  // click, so Chrome's :focus-visible heuristic draws no ring for it —
+  // this flag opts the button into an explicit :focus rule (app.css) for
+  // exactly this one landing, cleared on the button's own blur.
+  const [landingFocusVisible, setLandingFocusVisible] = useState(false);
   useEffect(() => {
-    if (focusDevelopOnMount) developButtonRef.current?.focus();
+    if (focusDevelopOnMount) {
+      developButtonRef.current?.focus();
+      setLandingFocusVisible(true);
+    }
   }, [focusDevelopOnMount]);
 
   // Focus-return for the Record opener, relocated verbatim from
@@ -117,18 +127,126 @@ export function VersionRow({
   const laterCount = descendants.length;
 
   return (
-    <section className="version-row" aria-label="Version">
-      {/* The sketch's own visible "Version" region-name heading
-          (G-03.3-4) — the section's aria-label already carries "Version"
-          as an accessible name; this adds the same word as a visible
-          label, matching the "Batch" legend BatchRow.jsx already prints. */}
-      <h2 className="region-name">Version</h2>
-      {openPen === 'plan' ? (
-        <>
-          {/* The plan's pen ceremony (D-06): replaces the Develop opener.
-              Markup moved verbatim from Versions.jsx, keeping its
-              existing class names. */}
-          <div className="versions__ceremony">
+    <>
+      <section className="vmeta" aria-label="Version">
+        {/* The sketch's own visible "Version" region-name heading
+            (G-03.3-4) — the section's aria-label already carries "Version"
+            as an accessible name; this adds the same word as a visible
+            label, matching the "Batch" legend BatchRow.jsx already prints. */}
+        <h2 className="region-name">Version</h2>
+
+        {/* The version's own right-hand stack (D-08, sketch 003 variant B,
+            G-03.3-4): a Written/From-version+date line, a Why line always
+            present, a From-batch line where cited, and a Later disclosure
+            fed by this version's own descendants. Parent and Batch stay
+            ink links while no pen is open, and plain text while one is
+            (the same link-suppression discipline the version list used to
+            carry). Sits ABOVE the acts group, matching the sketch's own
+            dl-then-acts order (index.html:208-216) — the checkpoint
+            feedback's reading-layout fix. */}
+        <dl className="version-row__meta-list">
+          {!version.parentVersionId ? (
+            <>
+              <dt className="versions__lineage-label">Written</dt>
+              <dd className="versions__lineage">{formatRecordDate(version.createdAt)}</dd>
+            </>
+          ) : (
+            <>
+              <dt className="versions__lineage-label">From version</dt>
+              <dd className="versions__lineage">
+                {openPen ? (
+                  version.parentVersionLabel
+                ) : (
+                  <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
+                )}
+                {' · written '}
+                {formatRecordDate(version.createdAt)}
+              </dd>
+            </>
+          )}
+          <dt className="versions__lineage-label">Why</dt>
+          <dd className="versions__lineage">{version.reason ? version.reason : 'no reason recorded'}</dd>
+          {version.citedBatchId && citedBatch && (
+            <>
+              <dt className="versions__lineage-label">From batch</dt>
+              <dd className="versions__lineage">
+                {openPen ? (
+                  citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
+                ) : (
+                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
+                    {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
+                  </Link>
+                )}
+              </dd>
+            </>
+          )}
+          {laterCount > 0 && (
+            <>
+              <dt className="versions__lineage-label">Later</dt>
+              <dd className="versions__lineage">
+                <button
+                  type="button"
+                  className="text-control"
+                  aria-expanded={laterVersionsOpen}
+                  onClick={() => setLaterVersionsOpen((open) => !open)}
+                >
+                  {laterCount} later version{laterCount === 1 ? '' : 's'}
+                </button>
+              </dd>
+            </>
+          )}
+        </dl>
+
+        {/* The acts group (sketch 003 variant B, index.html:215, 479):
+            Next version, then Record another/Record batch, then Show
+            changes (once a parent exists) — one row, below the dl, only
+            while no pen is open. */}
+        {openPen === null && (
+          <div className="versions__openers">
+            <div className="versions__opener-group">
+              <button
+                type="button"
+                ref={developButtonRef}
+                className={landingFocusVisible ? 'is-landing-focus' : undefined}
+                onClick={onStartDeveloping}
+                onBlur={() => setLandingFocusVisible(false)}
+              >
+                Next version
+              </button>
+              <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
+                {openBatch ? 'Record another' : 'Record batch'}
+              </button>
+              {parentVersion && (
+                <button
+                  type="button"
+                  className="headnote__show-changes"
+                  aria-pressed={showingChanges}
+                  onClick={onToggleShowChanges}
+                >
+                  Show changes
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+        {/* D-06: one hint sentence for this row — applies while any pen is
+            open, not only the plan's own, since opening a batch pen
+            suppresses this row's own links exactly as opening the plan's
+            own pen does. */}
+        {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
+      </section>
+
+      {openPen === 'plan' && (
+        // The plan's pen ceremony (D-06, sketch 003 variant B,
+        // index.html:217-229): a full-width row of its own, spanning both
+        // page columns between the headnote/vmeta row and the batch row
+        // — not squeezed into vmeta's own narrow column (03.3-06
+        // checkpoint feedback). Two fields-columns inside, matching the
+        // sketch's own split: version line + why on the left, citation +
+        // saves on the right.
+        <section className="recipe-band__full-row versions__ceremony-row" aria-label="Next version">
+          <div>
+            <h2 className="region-name">Next version · from {version.versionLabel}</h2>
             <label className="headnote__version-field">
               <span>Version</span>
               <input
@@ -157,6 +275,8 @@ export function VersionRow({
                 onChange={(event) => onChangePenField('reason', event.target.value)}
               />
             </label>
+          </div>
+          <div>
             <div className="headnote__citation">
               <span>From batch</span>
               {batches.length === 0 ? (
@@ -205,87 +325,14 @@ export function VersionRow({
             </div>
             {penHint && <p className="headnote__blocked">{penHint}</p>}
           </div>
-        </>
-      ) : openPen === null ? (
-        <div className="versions__openers">
-          <div className="versions__opener-group">
-            <button type="button" ref={developButtonRef} onClick={onStartDeveloping}>
-              Next version
-            </button>
-            <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
-              {openBatch ? 'Record another' : 'Record batch'}
-            </button>
-          </div>
-        </div>
-      ) : null}
-      {/* D-06: one hint sentence for this row — applies while any pen is
-          open, not only the plan's own, since opening a batch pen
-          suppresses this row's own links exactly as opening the plan's
-          own pen does. */}
-      {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
-
-      {/* The version's own right-hand stack (D-08, sketch 003 variant B,
-          G-03.3-4): a Written/From-version+date line, a Why line always
-          present, a From-batch line where cited, and a Later disclosure
-          fed by this version's own descendants. Parent and Batch stay ink
-          links while no pen is open, and plain text while one is (the
-          same link-suppression discipline the version list used to
-          carry). */}
-      <dl className="version-row__meta-list">
-        {!version.parentVersionId ? (
-          <>
-            <dt className="versions__lineage-label">Written</dt>
-            <dd className="versions__lineage">{formatRecordDate(version.createdAt)}</dd>
-          </>
-        ) : (
-          <>
-            <dt className="versions__lineage-label">From version</dt>
-            <dd className="versions__lineage">
-              {openPen ? (
-                version.parentVersionLabel
-              ) : (
-                <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
-              )}
-              {' · written '}
-              {formatRecordDate(version.createdAt)}
-            </dd>
-          </>
-        )}
-        <dt className="versions__lineage-label">Why</dt>
-        <dd className="versions__lineage">{version.reason ? version.reason : 'no reason recorded'}</dd>
-        {version.citedBatchId && citedBatch && (
-          <>
-            <dt className="versions__lineage-label">From batch</dt>
-            <dd className="versions__lineage">
-              {openPen ? (
-                citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
-              ) : (
-                <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
-                  {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
-                </Link>
-              )}
-            </dd>
-          </>
-        )}
-        {laterCount > 0 && (
-          <>
-            <dt className="versions__lineage-label">Later</dt>
-            <dd className="versions__lineage">
-              <button
-                type="button"
-                className="text-control"
-                aria-expanded={laterVersionsOpen}
-                onClick={() => setLaterVersionsOpen((open) => !open)}
-              >
-                {laterCount} later version{laterCount === 1 ? '' : 's'}
-              </button>
-            </dd>
-          </>
-        )}
-      </dl>
+        </section>
+      )}
 
       {laterVersionsOpen && (
-        <section aria-label="Later versions">
+        // The Later-versions disclosure (sketch 003 variant B,
+        // index.html:230-233): a full-width row, not nested in vmeta's
+        // own narrow column (03.3-06 checkpoint feedback).
+        <section className="recipe-band__full-row" aria-label="Later versions">
           <h2 className="region-name">Later versions</h2>
           <VersionStrip
             versions={descendants}
@@ -297,14 +344,6 @@ export function VersionRow({
           />
         </section>
       )}
-
-      {parentVersion && (
-        <p className="versions__lineage">
-          <button type="button" className="headnote__show-changes" aria-pressed={showingChanges} onClick={onToggleShowChanges}>
-            Show changes
-          </button>
-        </p>
-      )}
-    </section>
+    </>
   );
 }

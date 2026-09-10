@@ -40,10 +40,15 @@ function ruleFor(selector) {
 }
 
 describe('the outline split — focus reads heavier than state (D-14)', () => {
-  test('exactly one rule declares outline through --focus-outline-width, and it is the global :focus-visible rule (D-14)', () => {
+  test('exactly two rules declare outline through --focus-outline-width: the global :focus-visible rule and the landing-focus exception (D-14, 03.3-06, G-03.3-1)', () => {
+    // `.is-landing-focus:focus` is a documented, self-clearing exception
+    // (VersionRow.jsx): the fork's landing .focus() call follows a
+    // mouse-driven Save click, so Chrome's :focus-visible heuristic draws
+    // no ring for it — this is the one other place the page's focus
+    // weight is declared, scoped to a class the component adds only for
+    // that one landing and removes on blur.
     const matches = rules.filter((r) => /outline:\s*var\(--focus-outline-width\)/.test(r.declarations));
-    expect(matches).toHaveLength(1);
-    expect(matches[0].selector).toBe(':focus-visible');
+    expect(matches.map((r) => r.selector)).toEqual([':focus-visible', '.is-landing-focus:focus']);
   });
 
   test('--focus-outline-width resolves to the same px value as --rule-baseline, strictly heavier than --rule-graduation (D-14)', () => {

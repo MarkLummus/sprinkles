@@ -171,14 +171,14 @@ describe('buildAdvisories — gum hydration against the hold', () => {
 });
 
 describe('buildAdvisories — estimated-data exposure', () => {
-  it('names PAC, POD, MSNF and Total solids, and never Total fat or Sugar solids', () => {
+  it('names PAC, POD, MSNF and Solids, and never Fat or Sugar', () => {
     const advisory = buildAdvisories(clone()).find((a) => a.key === 'estimated');
     expect(advisory.words).toContain('PAC');
     expect(advisory.words).toContain('POD');
     expect(advisory.words).toContain('MSNF');
-    expect(advisory.words).toContain('Total solids');
-    expect(advisory.words).not.toContain('Total fat');
-    expect(advisory.words).not.toContain('Sugar solids');
+    expect(advisory.words).toContain('Solids');
+    expect(advisory.words).not.toContain('Fat');
+    expect(advisory.words).not.toContain('Sugar');
     expect(advisory.basis).toContain('per-field basis');
   });
 

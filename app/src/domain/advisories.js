@@ -9,7 +9,7 @@
 // 03-CONTEXT.md D-05 and route-recipe-version.md § 3 "Derived
 // advisories".
 import { computeBalance, formatGrams } from './composition.js';
-import { buildFigures } from './figures.js';
+import { buildFigures, figureLabelText } from './figures.js';
 import { activeRows, activeSteps, rowGrams } from './rows.js';
 import { displayNumbers, displayNumberOf } from './stepNumbers.js';
 
@@ -149,7 +149,7 @@ function estimatedExposureAdvisory(rows, targets) {
   if (shaky.length === 0) return null;
 
   const words = `${shaky
-    .map((figure) => `${figure.label} through ${figure.estimatedRowNames.join(', ')}`)
+    .map((figure) => `${figureLabelText(figure.label)} through ${figure.estimatedRowNames.join(', ')}`)
     .join('; ')}.`;
   const basis = 'the per-field basis recorded on each ingredient.';
 

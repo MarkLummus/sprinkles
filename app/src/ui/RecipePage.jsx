@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { repository } from '../store/repository.js';
-import { buildFigures } from '../domain/figures.js';
+import { buildFigures, figureLabelText } from '../domain/figures.js';
 import { createBatch, addTasting, recordAmendment, sortedBatches, isTastingSaveable } from '../domain/batch.js';
 import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
@@ -543,7 +543,7 @@ export function RecipePage() {
   const figures = buildFigures(liveVersion);
   const focusedFigure = figures.find((figure) => figure.key === focusedFigureKey) ?? null;
   const markedRowIds = focusedFigure?.contributorRowIds ?? [];
-  const markedFigureLabel = focusedFigure?.label ?? '';
+  const markedFigureLabel = focusedFigure ? figureLabelText(focusedFigure.label) : '';
 
   // The show-changes diff (route-recipe-version.md § 3, § 6; D-02, T-03-23):
   // one buildDiff of the version against its live parent — the same

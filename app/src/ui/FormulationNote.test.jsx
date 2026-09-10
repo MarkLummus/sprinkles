@@ -7,7 +7,7 @@ import { FormulationNote } from './FormulationNote.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
-const FIGURE_LABELS = ['PAC', 'POD', 'Total fat', 'MSNF', 'Sugar solids', 'Total solids'];
+const FIGURE_LABELS = ['Freezing', 'Sweetness', 'Fat', 'Milk solids', 'Sugar', 'Solids'];
 
 function countOccurrences(markup, substring) {
   return markup.split(substring).length - 1;

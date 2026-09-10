@@ -73,7 +73,7 @@ export function VersionRow({
               existing class names. */}
           <div className="versions__ceremony">
             <label className="headnote__version-field">
-              <span>Version line</span>
+              <span>Version</span>
               <input
                 ref={versionLineFieldRef}
                 type="text"
@@ -82,7 +82,7 @@ export function VersionRow({
                 autoFocus
                 placeholder="e.g. 55 g oil · 800 g"
                 value={penDraft.versionLabel}
-                aria-label="Version line"
+                aria-label="Version"
                 onChange={(event) => onChangePenField('versionLabel', event.target.value)}
               />
             </label>
@@ -96,12 +96,12 @@ export function VersionRow({
                 rows="2"
                 placeholder="e.g. less oil after the batch of 2 Aug"
                 value={penDraft.reason}
-                aria-label="Reason"
+                aria-label="Why"
                 onChange={(event) => onChangePenField('reason', event.target.value)}
               />
             </label>
             <div className="headnote__citation">
-              <span>Cites</span>
+              <span>From batch</span>
               {batches.length === 0 ? (
                 <span className="ink-text">no batch to cite</span>
               ) : (
@@ -164,7 +164,7 @@ export function VersionRow({
               autoFocus={focusDevelopOnMount}
               onClick={onStartDeveloping}
             >
-              Develop
+              Next version
             </button>
           </div>
         </div>
@@ -191,7 +191,7 @@ export function VersionRow({
       {version.parentVersionId && (
         <>
           <p className="versions__lineage">
-            <span className="versions__lineage-label">Parent</span>
+            <span className="versions__lineage-label">From version</span>
             {openPen ? (
               version.parentVersionLabel
             ) : (
@@ -200,7 +200,7 @@ export function VersionRow({
           </p>
           {version.citedBatchId && citedBatch && (
             <p className="versions__lineage">
-              <span className="versions__lineage-label">Batch</span>
+              <span className="versions__lineage-label">From batch</span>
               {openPen ? (
                 citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
               ) : (
@@ -211,7 +211,7 @@ export function VersionRow({
             </p>
           )}
           <p className="versions__lineage">
-            <span className="versions__lineage-label">Reason</span>
+            <span className="versions__lineage-label">Why</span>
             {version.reason ? version.reason : 'no reason recorded'}
           </p>
           {parentVersion && (

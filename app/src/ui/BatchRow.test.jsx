@@ -87,22 +87,22 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     const markup = renderBatchRow({ openPen: null, openBatch: null, batches: [] });
     expect(markup).toContain('Record batch');
     expect(markup).not.toContain('Record another');
-    expect(markup).not.toContain('>Amend<');
+    expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
   });
 
-  it('renders "Record another", Amend and Add tasting when a batch is in view', () => {
+  it('renders "Record another", Correct and Add tasting when a batch is in view', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).toContain('Record another');
     expect(markup).not.toContain('Record batch');
-    expect(markup).toContain('>Amend<');
+    expect(markup).toContain('>Correct<');
     expect(markup).toContain('Add tasting');
   });
 
   it('renders no openers while the plan pen is open — this row renders nothing at the top for a pen it does not own', () => {
     const markup = renderBatchRow({ openPen: 'plan', openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).not.toContain('Record another');
-    expect(markup).not.toContain('>Amend<');
+    expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
   });
 });
@@ -165,14 +165,14 @@ describe('BatchRow — one hint sentence while the pen is open (D-06)', () => {
 describe('BatchRow — recording state', () => {
   it('renders all six recording churn fields', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyChurnDraft });
-    for (const label of ['Come-up', 'Draw temperature', 'Overrun', 'Draw notes', 'Ingredient notes', 'Next time']) {
+    for (const label of ['Time to temperature', 'Draw temperature', 'Air, overrun %', 'At the machine', 'Ingredient notes', 'Next time']) {
       expect(markup).toContain(label);
     }
   });
 
   it('keeps the measured churn fields (come-up, draw temperature, overrun) in ink-field', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyChurnDraft });
-    const comeUpInput = markup.match(/<input[^>]*aria-label="Come-up, minutes"[^>]*\/>/)[0];
+    const comeUpInput = markup.match(/<input[^>]*aria-label="Time to temperature, minutes"[^>]*\/>/)[0];
     expect(comeUpInput).toContain('class="ink-field"');
   });
 
@@ -181,7 +181,7 @@ describe('BatchRow — recording state', () => {
       mode: 'recording',
       draft: { ...emptyChurnDraft, drawNotes: 'Soft', ingredientNotes: 'Oil open', nextTimeNote: 'Less oil' },
     });
-    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Draw notes"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="At the machine"/);
     expect(markup).toMatch(/<input[^>]*class="prose-field"[^>]*aria-label="Ingredient notes"/);
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Next time"/);
   });
@@ -193,7 +193,7 @@ describe('BatchRow — recording state', () => {
 describe('BatchRow — the three named prose fields carry a hairline rule when empty (03.1 Gap 2)', () => {
   it('applies prose-field--empty to draw notes, ingredient notes and next time when each is blank', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyChurnDraft });
-    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"[^>]*aria-label="Draw notes"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"[^>]*aria-label="At the machine"/);
     expect(markup).toMatch(/<input[^>]*class="prose-field prose-field--empty"[^>]*aria-label="Ingredient notes"/);
     expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"[^>]*aria-label="Next time"/);
   });
@@ -203,9 +203,9 @@ describe('BatchRow — the three named prose fields carry a hairline rule when e
       mode: 'recording',
       draft: { ...emptyChurnDraft, drawNotes: 'Soft', ingredientNotes: 'Oil open', nextTimeNote: 'Less oil' },
     });
-    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Draw notes"/);
-    expect(markup).not.toMatch(/aria-label="Draw notes"[^>]*class="prose-field prose-field--empty"/);
-    const drawNotesField = markup.match(/<textarea[^>]*aria-label="Draw notes"[^>]*>/)[0];
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="At the machine"/);
+    expect(markup).not.toMatch(/aria-label="At the machine"[^>]*class="prose-field prose-field--empty"/);
+    const drawNotesField = markup.match(/<textarea[^>]*aria-label="At the machine"[^>]*>/)[0];
     expect(drawNotesField).not.toContain('prose-field--empty');
     const ingredientNotesField = markup.match(/<input[^>]*aria-label="Ingredient notes"[^>]*\/>/)[0];
     expect(ingredientNotesField).not.toContain('prose-field--empty');
@@ -219,13 +219,13 @@ describe('BatchRow — the record\'s reading state, measured values as cells (sk
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain('batch-row__cells');
     expect(markup).toMatch(
-      /<div class="batch-row__cell"><span class="batch-row__cell-label">Come-up, min<\/span><span class="batch-row__cell-value">20<\/span><\/div>/,
+      /<div class="batch-row__cell"><span class="batch-row__cell-label">Time to temperature, min<\/span><span class="batch-row__cell-value">20<\/span><\/div>/,
     );
     expect(markup).toMatch(
       /<div class="batch-row__cell"><span class="batch-row__cell-label">Draw temperature, °C<\/span><span class="batch-row__cell-value">−6<\/span><\/div>/,
     );
     expect(markup).toMatch(
-      /<div class="batch-row__cell"><span class="batch-row__cell-label">Overrun, %<\/span><span class="batch-row__cell-value">unknown<\/span><\/div>/,
+      /<div class="batch-row__cell"><span class="batch-row__cell-label">Air, overrun %<\/span><span class="batch-row__cell-value">unknown<\/span><\/div>/,
     );
   });
 
@@ -253,7 +253,7 @@ describe('BatchRow — a tasting\'s own measured/mark rows also read as cells', 
       /<span class="batch-row__cell-label">Tasting temperature, °C<\/span><span class="batch-row__cell-value">−12<\/span>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Meltdown at 20 min, g<\/span><span class="batch-row__cell-value">3<\/span>/,
+      /<span class="batch-row__cell-label">Melt test, g<\/span><span class="batch-row__cell-value">3<\/span>/,
     );
     expect(markup).toContain('>unmarked<');
   });

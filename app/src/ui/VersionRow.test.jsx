@@ -76,17 +76,17 @@ describe('VersionRow — no page-level running head (ROADMAP Scope bullet 1)', (
 describe('VersionRow — the Develop opener, present only with no pen open (D-05)', () => {
   it('renders Develop on its own line in the opener group', () => {
     const markup = renderVersionRow({ openPen: null });
-    expect(markup).toMatch(/<button[^>]*>Develop<\/button>/);
+    expect(markup).toMatch(/<button[^>]*>Next version<\/button>/);
   });
 
   it('renders no Develop opener while the plan pen is open — the ceremony replaces it (D-06)', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).not.toContain('>Develop<');
+    expect(markup).not.toContain('>Next version<');
   });
 
   it('renders no Develop opener while a batch pen is open — this row renders nothing at the top for a pen it does not own', () => {
     const markup = renderVersionRow({ openPen: 'record', penReason: 'a batch is being recorded' });
-    expect(markup).not.toContain('>Develop<');
+    expect(markup).not.toContain('>Next version<');
   });
 
   it('renders no Record another/Amend/Add tasting group — those live in BatchRow now', () => {
@@ -103,11 +103,11 @@ describe('VersionRow — the Develop opener, present only with no pen open (D-05
   // `autofocus=""` attribute the DOM reads on mount.
   it('renders autofocus="" on Develop when focusDevelopOnMount is true, and no autofocus when it is false', () => {
     const withFocus = renderVersionRow({ openPen: null, focusDevelopOnMount: true });
-    const developButton = withFocus.match(/<button[^>]*>Develop<\/button>/)[0];
+    const developButton = withFocus.match(/<button[^>]*>Next version<\/button>/)[0];
     expect(developButton).toContain('autofocus=""');
 
     const withoutFocus = renderVersionRow({ openPen: null, focusDevelopOnMount: false });
-    const developButtonNoFocus = withoutFocus.match(/<button[^>]*>Develop<\/button>/)[0];
+    const developButtonNoFocus = withoutFocus.match(/<button[^>]*>Next version<\/button>/)[0];
     expect(developButtonNoFocus).not.toContain('autofocus');
   });
 });
@@ -128,7 +128,7 @@ describe('VersionRow — the ceremony renders nothing pre-filled', () => {
       batches: [augustSecondBatch],
       canSaveOver: false,
     });
-    expect(markup).toMatch(/<input[^>]*aria-label="Version line"[^>]*value=""/);
+    expect(markup).toMatch(/<input[^>]*aria-label="Version"[^>]*value=""/);
     expect(markup).toContain('<textarea');
     expect(markup).not.toContain('value="60 g oil');
     expect(markup).toMatch(/<option value="" selected="">no batch cited<\/option>/);
@@ -144,7 +144,7 @@ describe('VersionRow — the reason field reads as printed prose (03.1-04)', () 
   it('renders no visible "Reason" label and carries the accessible name in aria-label instead', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
     expect(markup).not.toContain('<span>Reason</span>');
-    expect(markup).toMatch(/<textarea[^>]*aria-label="Reason"/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Why"/);
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
   });
 });
@@ -209,7 +209,7 @@ describe('VersionRow — the version-line blocked-save focus keys on an attempt 
       canSaveOver: true,
       versionLineBlockedAttempt: 1,
     });
-    expect(firstAttempt).toMatch(/<input[^>]*aria-label="Version line"/);
+    expect(firstAttempt).toMatch(/<input[^>]*aria-label="Version"/);
 
     const secondAttempt = renderVersionRow({
       openPen: 'plan',
@@ -218,7 +218,7 @@ describe('VersionRow — the version-line blocked-save focus keys on an attempt 
       canSaveOver: true,
       versionLineBlockedAttempt: 2,
     });
-    expect(secondAttempt).toMatch(/<input[^>]*aria-label="Version line"/);
+    expect(secondAttempt).toMatch(/<input[^>]*aria-label="Version"/);
   });
 
   it('accepts null (no block in effect) with no error', () => {
@@ -229,7 +229,7 @@ describe('VersionRow — the version-line blocked-save focus keys on an attempt 
       canSaveOver: true,
       versionLineBlockedAttempt: null,
     });
-    expect(markup).toMatch(/<input[^>]*aria-label="Version line"/);
+    expect(markup).toMatch(/<input[^>]*aria-label="Version"/);
   });
 });
 
@@ -297,27 +297,27 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).not.toContain('versions__lineage');
   });
 
-  it('renders Parent, Batch and Reason as labelled lines for a child version', () => {
+  it('renders From version, From batch and Why as labelled lines for a child version', () => {
     const markup = renderVersionRow({
       version: childVersion,
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    expect(markup).toContain('Parent');
-    expect(markup).toContain('Batch');
-    expect(markup).toContain('Reason');
+    expect(markup).toContain('From version');
+    expect(markup).toContain('From batch');
+    expect(markup).toContain('Why');
     expect(markup).toContain(childVersion.reason);
     expect(markup).toContain(oliveOilVersion.versionLabel);
   });
 
-  it('omits the Batch line when no batch was cited', () => {
+  it('omits the From batch line when no batch was cited', () => {
     const markup = renderVersionRow({
       version: { ...childVersion, citedBatchId: null },
       citedBatch: null,
       parentVersion: oliveOilVersion,
     });
-    expect(markup).toContain('Parent');
-    expect(markup).not.toContain('Batch');
+    expect(markup).toContain('From version');
+    expect(markup).not.toContain('From batch');
   });
 
   it('reads "no reason recorded" when the child carries no reason', () => {

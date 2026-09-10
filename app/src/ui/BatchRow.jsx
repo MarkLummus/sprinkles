@@ -30,7 +30,7 @@ function TastingReading({ tasting, axes }) {
           );
         })}
         <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Meltdown at 20 min, g</span>
+          <span className="batch-row__cell-label">Melt test, g</span>
           <span className="batch-row__cell-value">{readMeasured(tasting.meltdownLossG)}</span>
         </div>
       </div>
@@ -81,7 +81,7 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark })
         );
       })}
       <label className="batch-margin__field">
-        <span>Meltdown at 20 min, g</span>
+        <span>Melt test, g</span>
         <input
           type="number"
           step="1"
@@ -89,7 +89,7 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark })
           inputMode="decimal"
           className="ink-field"
           value={draft.meltdownLossG}
-          aria-label="Meltdown loss, grams"
+          aria-label="Melt test, grams"
           onChange={(event) => onChangeTastingField('meltdownLossG', event.target.value)}
         />
       </label>
@@ -98,7 +98,7 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark })
           className="prose-field"
           rows="2"
           value={draft.words}
-          aria-label="Words"
+          aria-label="How did it turn out?"
           onChange={(event) => onChangeTastingField('words', event.target.value)}
         />
       </label>
@@ -255,7 +255,7 @@ export function BatchRow({
             </button>
             {openBatch && (
               <button type="button" ref={amendButtonRef} onClick={() => onStartAmending(openBatch)}>
-                Amend
+                Correct
               </button>
             )}
             {openBatch && (
@@ -279,7 +279,7 @@ export function BatchRow({
                 temperature keep their sign — the working case draws at
                 −6 °C. */}
             <label className="batch-margin__field">
-              <span>Come-up, min</span>
+              <span>Time to temperature, min</span>
               <input
                 type="number"
                 step="1"
@@ -287,7 +287,7 @@ export function BatchRow({
                 inputMode="decimal"
                 className="ink-field"
                 value={draft.comeUpMinutes}
-                aria-label="Come-up, minutes"
+                aria-label="Time to temperature, minutes"
                 onChange={(event) => onChangeChurnField('comeUpMinutes', event.target.value)}
               />
             </label>
@@ -304,7 +304,7 @@ export function BatchRow({
               />
             </label>
             <label className="batch-margin__field">
-              <span>Overrun, %</span>
+              <span>Air, overrun %</span>
               <input
                 type="number"
                 step="1"
@@ -312,7 +312,7 @@ export function BatchRow({
                 inputMode="decimal"
                 className="ink-field"
                 value={draft.overrunPercent}
-                aria-label="Overrun, percent"
+                aria-label="Air, overrun percent"
                 onChange={(event) => onChangeChurnField('overrunPercent', event.target.value)}
               />
             </label>
@@ -324,7 +324,7 @@ export function BatchRow({
                 className={draft.drawNotes === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 rows="2"
                 value={draft.drawNotes}
-                aria-label="Draw notes"
+                aria-label="At the machine"
                 onChange={(event) => onChangeChurnField('drawNotes', event.target.value)}
               />
             </label>
@@ -352,7 +352,7 @@ export function BatchRow({
             {latestAmendment && <p className="ink-text">{`amended ${formatRecordDate(latestAmendment)}`}</p>}
             <div className="batch-row__cells">
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Come-up, min</span>
+                <span className="batch-row__cell-label">Time to temperature, min</span>
                 <span className="batch-row__cell-value">{readMeasured(openBatch.churn.comeUpMinutes)}</span>
               </div>
               <div className="batch-row__cell">
@@ -362,7 +362,7 @@ export function BatchRow({
                 </span>
               </div>
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Overrun, %</span>
+                <span className="batch-row__cell-label">Air, overrun %</span>
                 <span className="batch-row__cell-value">{readMeasured(openBatch.churn.overrunPercent)}</span>
               </div>
             </div>

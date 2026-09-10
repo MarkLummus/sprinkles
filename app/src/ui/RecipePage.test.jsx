@@ -127,12 +127,12 @@ describe('The four-pen matrix — Develop absent, every other opener\'s own cove
   // Develop is simply absent, not disabled, for every pen in this matrix.
   it.each(PEN_MATRIX)('with the $openPen pen open, Develop is absent from VersionRow', ({ openPen, reason }) => {
     const markup = renderVersionsReading(openPen, reason);
-    expect(markup).not.toContain('>Develop<');
+    expect(markup).not.toContain('>Next version<');
   });
 
   it('with no pen open, Develop renders', () => {
     const versions = renderVersionsReading(null, null);
-    expect(versions).toMatch(/<button[^>]*>Develop<\/button>/);
+    expect(versions).toMatch(/<button[^>]*>Next version<\/button>/);
   });
 });
 

@@ -1381,6 +1381,24 @@ textarea {
   margin-top: var(--gap-hair);
 }
 
+/* The Tasting head line's inline meta span (sketch 003 variant B,
+   index.html:246, 03.3-07): undoes .region-name's own uppercase/
+   letter-spacing for this one inline span. */
+.batch-row__tasting-meta {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--pen-blue);
+}
+
+/* Correct/Add tasting, relocated to the row's foot as text controls
+   (sketch 003 variant B, index.html:255, 03.3-07, G-03.3-4). */
+.batch-row__acts {
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  margin-top: var(--gap-s);
+}
+
 /* The "Batches of this version" disclosure (sketch 003 variant B,
    index.html:256-262, 03.3-07, G-03.3-4): a full-width panel under the
    row, opened by the head line's own count control. */

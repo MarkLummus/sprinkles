@@ -14,34 +14,45 @@ function churnMeasured(value, options) {
   return result === 'unknown' ? 'not measured' : result;
 }
 
-// A tasting in the reading state: headed by its date or "date unknown"
-// (D-03), then its measured fields and marks as labelled cells at figure
-// size (sketch 003 variant B), an unmarked axis reading "unmarked" so a
-// reader can see it existed and was not judged. No aggregate, average, or
-// overall figure is ever derived from the marks.
+// A tasting in the reading state: headed by one line naming the tasting
+// temperature and its date (sketch 003 variant B, 03.3-07), then only the
+// axes the maker actually marked, as labelled cells at figure size — an
+// axis absent from tasting.marks is dropped entirely, not shown as a
+// blank judgment. No aggregate, average, or overall figure is ever
+// derived from the marks.
 function TastingReading({ tasting, axes }) {
   const dateWords = tasting.date ? formatRecordDate(tasting.date) : 'date unknown';
+  const markedAxes = axes.filter((axis) => Object.prototype.hasOwnProperty.call(tasting.marks, markKeyFor(axis)));
+  const tastingTempWords =
+    tasting.tastingTempC != null ? `${churnMeasured(tasting.tastingTempC, { signed: true })} °C` : 'not measured';
   return (
     <div className="tasting">
-      <p className="batch-margin__legend">{dateWords}</p>
+      <p className="region-name">
+        Tasting{' '}
+        <span className="batch-row__tasting-meta">{`· at ${tastingTempWords} · ${dateWords}`}</span>
+      </p>
       <div className="batch-row__cells">
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Tasting temperature, °C</span>
-          <span className="batch-row__cell-value">{readMeasured(tasting.tastingTempC, { signed: true })}</span>
-        </div>
-        {axes.map((axis) => {
+        {markedAxes.map((axis) => {
           const key = markKeyFor(axis);
-          const hasMark = Object.prototype.hasOwnProperty.call(tasting.marks, key);
           return (
             <div key={key} className="batch-row__cell">
-              <span className="batch-row__cell-label">{`${axis.label} (${axis.low} … ${axis.high})`}</span>
-              <span className="batch-row__cell-value">{hasMark ? tasting.marks[key] : 'unmarked'}</span>
+              <span className="batch-row__cell-label">{axis.label}</span>
+              <span className="batch-row__cell-value">{tasting.marks[key]}</span>
             </div>
           );
         })}
         <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Melt test, g</span>
-          <span className="batch-row__cell-value">{readMeasured(tasting.meltdownLossG)}</span>
+          <span className="batch-row__cell-label">Melt test</span>
+          <span className="batch-row__cell-value">
+            {tasting.meltdownLossG != null ? (
+              <>
+                {churnMeasured(tasting.meltdownLossG)}
+                <span className="batch-row__unit"> g at 20 min</span>
+              </>
+            ) : (
+              <span className="batch-row__unit">not measured</span>
+            )}
+          </span>
         </div>
       </div>
       {tasting.words && <p className="prose-text">{tasting.words}</p>}
@@ -250,24 +261,6 @@ export function BatchRow({
           </div>
           {penHint && <p className="batch-margin__hint">{penHint}</p>}
         </div>
-      ) : openPen === null ? (
-        <div className="versions__openers">
-          {/* D-05: Amend and Add tasting when a batch is in view — Record
-              another/Record batch now lives in VersionRow's own acts
-              group, beside Next version (03.3-06, G-03.3-4). */}
-          <div className="versions__opener-group">
-            {openBatch && (
-              <button type="button" ref={amendButtonRef} onClick={() => onStartAmending(openBatch)}>
-                Correct
-              </button>
-            )}
-            {openBatch && (
-              <button type="button" ref={addTastingButtonRef} onClick={onStartTasting}>
-                Add tasting
-              </button>
-            )}
-          </div>
-        </div>
       ) : null}
       {/* D-06: one hint sentence for this row — applies while any pen is
           open, not only this row's own. */}
@@ -450,6 +443,25 @@ export function BatchRow({
           batches.length > 0 && <p>No batch of this version has that address.</p>
         )}
       </div>
+
+      {/* Correct/Add tasting, relocated to the row's foot as underlined
+          text controls (sketch 003 variant B, G-03.3-4) — present only
+          with no pen open and a batch in view. */}
+      {openPen === null && openBatch && (
+        <div className="batch-row__acts">
+          <button
+            type="button"
+            ref={amendButtonRef}
+            className="text-control"
+            onClick={() => onStartAmending(openBatch)}
+          >
+            Correct
+          </button>
+          <button type="button" ref={addTastingButtonRef} className="text-control" onClick={onStartTasting}>
+            Add tasting
+          </button>
+        </div>
+      )}
 
       {/* The batch list (D-09): always a list with zero batches, since
           there is no count to disclose. With one or more, it becomes the

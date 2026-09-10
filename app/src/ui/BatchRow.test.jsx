@@ -128,11 +128,19 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(markup).not.toContain('Add tasting');
   });
 
-  it('renders Correct and Add tasting when a batch is in view', () => {
+  it('renders Correct and Add tasting when a batch is in view, as text controls at the row\'s foot (sketch 003 variant B, G-03.3-4)', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).not.toContain('Record another');
     expect(markup).toContain('>Correct<');
     expect(markup).toContain('Add tasting');
+    const actsIndex = markup.indexOf('class="batch-row__acts"');
+    const batchMarginCloseIndex = markup.indexOf('</div><div class="batch-row__acts"');
+    expect(actsIndex).toBeGreaterThan(-1);
+    expect(batchMarginCloseIndex).toBeGreaterThan(-1);
+    const correctButton = markup.match(/<button[^>]*>Correct<\/button>/)[0];
+    const addTastingButton = markup.match(/<button[^>]*>Add tasting<\/button>/)[0];
+    expect(correctButton).toContain('class="text-control"');
+    expect(addTastingButton).toContain('class="text-control"');
   });
 
   it('renders no openers while the plan pen is open — this row renders nothing at the top for a pen it does not own', () => {
@@ -286,16 +294,30 @@ describe('BatchRow — the record\'s reading state, measured values as cells (sk
   });
 });
 
-describe('BatchRow — a tasting\'s own measured/mark rows also read as cells', () => {
-  it('renders the tasting temperature and meltdown as batch-row__cells, an unmarked axis reading "unmarked"', () => {
+describe('BatchRow — the tasting head line and marked-axes-only cells (sketch 003 variant B, G-03.3-4)', () => {
+  it('renders one Tasting head line naming the temperature and date', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Tasting temperature, °C<\/span><span class="batch-row__cell-value">−12<\/span>/,
+      /<p class="region-name">Tasting <span class="batch-row__tasting-meta">· at −12 °C · date unknown<\/span><\/p>/,
     );
+    expect(markup).not.toContain('Tasting temperature, °C');
+  });
+
+  it('renders only marked axes as cells; no unmarked-axis cell renders', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toContain('>Olive oil character<');
+    expect(markup).toContain('>Bitterness<');
+    expect(markup).toContain('>Sweetness<');
+    expect(markup).not.toContain('>Hardness<');
+    expect(markup).not.toContain('>Scoopability<');
+    expect(markup).not.toContain('>Smoothness<');
+  });
+
+  it('renders the melt-test cell with a static "g at 20 min" unit', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Melt test, g<\/span><span class="batch-row__cell-value">3<\/span>/,
+      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g at 20 min<\/span><\/span>/,
     );
-    expect(markup).toContain('>unmarked<');
   });
 });
 

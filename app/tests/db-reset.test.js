@@ -29,6 +29,8 @@ import { augustSecondBatch } from '../src/data/batch-2026-08-02.js';
 import { buildFigures } from '../src/domain/figures.js';
 import { computeBalance, formatGrams } from '../src/domain/composition.js';
 import { activeRows } from '../src/domain/rows.js';
+import { asMadeTotals, asMadeForPortion } from '../src/domain/batch.js';
+import { axesForBatch } from '../src/domain/axes.js';
 
 // idb's wrapper reaches for these IDB constructors on the global object,
 // not only `indexedDB` itself (Node has none of them natively) — set once,
@@ -132,6 +134,27 @@ describe('the D-05 reset, against a real IndexedDB', () => {
 
     const balance = computeBalance(activeRows(seeded));
     expect(formatGrams(balance.mass)).toBe('799.7 g');
+
+    // Guard 3 (D-05, D-10): the batch survives the reset too, read back
+    // through the repository seam — whole milk's as-made still reads the
+    // sheet's own two lines, both totals are unmoved, and the reseeded
+    // batch's snapshot still carries the two declared axes in the object
+    // shape axesForBatch reads.
+    const batches = await repository.listBatchesForVersion(seeded.id);
+    expect(batches).toHaveLength(1);
+    const [seededBatch] = batches;
+
+    expect(asMadeForPortion(seededBatch, 'row-01', 0)).toBe(120);
+    expect(asMadeForPortion(seededBatch, 'row-01', 1)).toBe(263);
+
+    const totals = asMadeTotals(seeded.rows, seededBatch.churn.asMade);
+    expect(totals.planTotal).toBeCloseTo(799.68, 2);
+    expect(totals.asMadeTotal).toBeCloseTo(804.28, 2);
+
+    const axes = axesForBatch(seededBatch);
+    expect(axes).toHaveLength(6);
+    expect(axes[4].label).toBe('Olive oil character');
+    expect(axes[5].label).toBe('Bitterness');
   });
 
   it('a brand-new profile (no prior database) opens at version 4 with both stores present and empty, and nothing was dropped', async () => {

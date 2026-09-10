@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { CORE_AXES, MARK_STOPS, axesForBatch, markKeyFor, setMark } from './axes.js';
 import { createBatch, isTastingSaveable } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 describe('CORE_AXES', () => {
   it('has exactly four entries in fixed order: hardness, scoopability, smoothness, sweetness', () => {
@@ -159,5 +160,53 @@ describe('setMark', () => {
     expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
     expect(Object.prototype.hasOwnProperty.call(result, '__proto__')).toBe(false);
     expect({}.polluted).toBeUndefined();
+  });
+});
+
+// Guard 1 (phase Done-when, D-07): the six tasting axes each take a mark
+// independently, asserted against the real seeded version and the real
+// 2 Aug batch — a regression guard on behaviour that already works, not
+// new work. If any of these fail, the seed's declaredAxes shape has
+// regressed; the fix is never to author or convert declaredAxes here.
+describe('the six-axes independence guard (phase Done-when, D-07)', () => {
+  it('returns exactly six axes for the real seeded batch: the four core in fixed order, then the two declared, each carrying a non-empty label and non-empty low/high anchors', () => {
+    const axes = axesForBatch(augustSecondBatch);
+    expect(axes).toHaveLength(6);
+    expect(axes.slice(0, 4).map((axis) => axis.key)).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness']);
+    expect(axes[4].label).toBe('Olive oil character');
+    expect(axes[5].label).toBe('Bitterness');
+    for (const axis of axes) {
+      expect(typeof axis.label).toBe('string');
+      expect(axis.label.length).toBeGreaterThan(0);
+      expect(typeof axis.low).toBe('string');
+      expect(axis.low.length).toBeGreaterThan(0);
+      expect(typeof axis.high).toBe('string');
+      expect(axis.high.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('the six mark keys are six distinct values, with no collision between a declared axis and any core key', () => {
+    const axes = axesForBatch(augustSecondBatch);
+    const keys = axes.map(markKeyFor);
+    expect(new Set(keys).size).toBe(6);
+  });
+
+  it('marking each of the six axes in turn holds exactly that one key, and all six independently without displacing one another', () => {
+    const axes = axesForBatch(augustSecondBatch);
+    const keys = axes.map(markKeyFor);
+
+    for (const key of keys) {
+      const marks = setMark({}, key, 4);
+      expect(Object.keys(marks)).toEqual([key]);
+    }
+
+    let allSix = {};
+    for (const key of keys) {
+      allSix = setMark(allSix, key, 3.5);
+    }
+    expect(Object.keys(allSix).sort()).toEqual([...keys].sort());
+    for (const key of keys) {
+      expect(allSix[key]).toBe(3.5);
+    }
   });
 });

@@ -13,6 +13,7 @@ import {
   blockedSaveMessage,
   blockedSaveRowId,
   parseGramsDraft,
+  descendantVersions,
 } from './lineage.js';
 import { sortedBatches } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -45,6 +46,40 @@ describe('sortedVersions', () => {
     const versions = [makeVersion({ id: 'a', createdAt: '2026-01-01T00:00:00.000Z' }), makeVersion({ id: 'b', createdAt: '2026-02-01T00:00:00.000Z' })];
     const before = [...versions];
     sortedVersions(versions);
+    expect(versions).toEqual(before);
+  });
+});
+
+// descendantVersions (03.3-06, gap closure G-03.3-1/G-03.3-4): the version
+// row's "Later" count and disclosure need the whole subtree below a
+// version, not just its direct children — mirroring the sketch's own
+// renderTree, which discloses the whole subtree flat.
+describe('descendantVersions', () => {
+  it('returns all descendants of a 3-generation tree (root -> child -> grandchild), regardless of input order', () => {
+    const root = makeVersion({ id: 'root', parentVersionId: null });
+    const child = makeVersion({ id: 'child', parentVersionId: 'root' });
+    const grandchild = makeVersion({ id: 'grandchild', parentVersionId: 'child' });
+
+    const inOrder = descendantVersions([root, child, grandchild], 'root');
+    expect(inOrder.map((v) => v.id).sort()).toEqual(['child', 'grandchild']);
+
+    const reordered = descendantVersions([grandchild, root, child], 'root');
+    expect(reordered.map((v) => v.id).sort()).toEqual(['child', 'grandchild']);
+  });
+
+  it('returns an empty array for a version with no children', () => {
+    const root = makeVersion({ id: 'root', parentVersionId: null });
+    const other = makeVersion({ id: 'other', parentVersionId: null });
+    expect(descendantVersions([root, other], 'root')).toEqual([]);
+  });
+
+  it('never mutates or reorders its versions argument', () => {
+    const root = makeVersion({ id: 'root', parentVersionId: null });
+    const child = makeVersion({ id: 'child', parentVersionId: 'root' });
+    const grandchild = makeVersion({ id: 'grandchild', parentVersionId: 'child' });
+    const versions = [grandchild, root, child];
+    const before = [...versions];
+    descendantVersions(versions, 'root');
     expect(versions).toEqual(before);
   });
 });

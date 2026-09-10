@@ -64,12 +64,16 @@ const childVersion = {
   versionLabel: '45 g oil · 800 g',
 };
 
-describe('VersionRow — no page-level running head (ROADMAP Scope bullet 1)', () => {
-  it('renders the section with an aria-label of Version and no region-name heading', () => {
+// The section itself still carries no page-level running head of its own
+// (ROADMAP Scope bullet 1) — but per sketch 003 variant B (the confirmed
+// design, G-03.3-4), the vmeta stack this section renders now carries its
+// own visible "Version" region-name heading, matching the "Batch" legend
+// BatchRow.jsx already prints in this same phase.
+describe('VersionRow — the Version region-name heading (sketch 003 variant B, G-03.3-4)', () => {
+  it('renders the section with an aria-label of Version and a visible "Version" region-name heading', () => {
     const markup = renderVersionRow({});
     expect(markup).toContain('aria-label="Version"');
-    expect(markup).not.toContain('className="region-name"');
-    expect(markup).not.toMatch(/<h2[^>]*class="region-name"/);
+    expect(markup).toMatch(/<h2 class="region-name">Version<\/h2>/);
   });
 });
 
@@ -259,55 +263,81 @@ describe('VersionRow — one hint sentence while the pen is open (D-06)', () => 
   });
 });
 
-describe('VersionRow — the version list, rendered inside (D-07)', () => {
-  it('renders the version strip nav inside the row', () => {
-    const markup = renderVersionRow({ versions: [oliveOilVersion] });
-    expect(markup).toContain('version-strip');
-    expect(markup).toContain(oliveOilVersion.versionLabel);
-  });
-
-  it('renders a single version as a list, not nothing (no early return)', () => {
-    const markup = renderVersionRow({ versions: [oliveOilVersion] });
-    expect(markup).toMatch(/<ul class="version-strip__list">/);
-  });
-
-  it('carries the current entry by the is-current class, weight and outline, and marks a churned version with the word "churned"', () => {
+// The version strip now renders only inside the "Later" disclosure (sketch
+// 003 variant B, G-03.3-4), closed by default — renderToStaticMarkup
+// cannot exercise the open state (Method.test.jsx's own "closed by
+// default" precedent for a click-driven disclosure, cited in
+// 03.3-PATTERNS.md), so this coverage asserts only the closed state: the
+// Later button with the correct count, and no version-strip markup at
+// all. The open state's own list rendering (is-current, churned, link
+// suppression while a pen is open) is VersionStrip's own coverage in
+// VersionStrip.test.jsx, unaffected by this plan.
+describe('VersionRow — the Later-versions disclosure, closed by default (D-07, sketch 003 variant B, G-03.3-4)', () => {
+  it('renders the Later button with the descendant count and no version-strip markup while closed', () => {
     const markup = renderVersionRow({
-      version: childVersion,
+      version: oliveOilVersion,
       versions: [oliveOilVersion, childVersion],
-      versionIdsWithBatches: new Set([oliveOilVersion.id]),
     });
-    expect(markup).toMatch(/<li class="version-strip__item is-current">/);
-    expect(markup).toContain('churned');
+    expect(markup).toMatch(/<button[^>]*class="text-control"[^>]*>1 later version<\/button>/);
+    expect(markup).not.toContain('version-strip');
   });
 
-  it('renders every version label as plain text, no links, while any pen is open', () => {
+  it('renders the plural count for more than one descendant', () => {
+    const grandchildVersion = {
+      ...childVersion,
+      id: 'olive-oil-ice-cream-v3',
+      parentVersionId: childVersion.id,
+      parentVersionLabel: childVersion.versionLabel,
+    };
     const markup = renderVersionRow({
-      versions: [oliveOilVersion, childVersion],
-      openPen: 'record',
+      version: oliveOilVersion,
+      versions: [oliveOilVersion, childVersion, grandchildVersion],
     });
-    expect(markup).not.toMatch(/<a href="\/recipe\/olive-oil-ice-cream-v1"/);
-    expect(markup).toContain(oliveOilVersion.versionLabel);
+    expect(markup).toContain('2 later versions');
+  });
+
+  it('renders no Later dt/dd and no version-strip markup when there are no descendants', () => {
+    const markup = renderVersionRow({ version: oliveOilVersion, versions: [oliveOilVersion] });
+    expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
+    expect(markup).not.toContain('later version');
+    expect(markup).not.toContain('version-strip');
   });
 });
 
 describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
-  it('renders no lineage at all for a root version', () => {
-    const markup = renderVersionRow({ version: oliveOilVersion });
-    expect(markup).not.toContain('versions__lineage');
+  // Sketch 003 variant B, G-03.3-4: a root version's dl now reads
+  // "Written" (the version's own createdAt) rather than rendering no
+  // lineage at all, and "Why" is unconditional across root and child —
+  // superseding the earlier gap-closure decision to omit the whole block
+  // for a root version.
+  it('renders Written and "no reason recorded" for a root version with no later versions, and no Later dt/dd', () => {
+    const markup = renderVersionRow({ version: oliveOilVersion, versions: [oliveOilVersion] });
+    expect(markup).toMatch(/<dt[^>]*>Written<\/dt>/);
+    expect(markup).toContain('no reason recorded');
+    expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
   });
 
-  it('renders From version, From batch and Why as labelled lines for a child version', () => {
+  it('renders From version (never bare "From"), folded with the written date, From batch, Why, and the Later count for a child version', () => {
+    const grandchildVersion = {
+      ...childVersion,
+      id: 'olive-oil-ice-cream-v3',
+      parentVersionId: childVersion.id,
+      parentVersionLabel: childVersion.versionLabel,
+    };
     const markup = renderVersionRow({
       version: childVersion,
+      versions: [oliveOilVersion, childVersion, grandchildVersion],
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    expect(markup).toContain('From version');
+    expect(markup).toMatch(/<dt[^>]*>From version<\/dt>/);
+    expect(markup).not.toMatch(/<dt[^>]*>From<\/dt>/);
+    expect(markup).toContain('· written');
     expect(markup).toContain('From batch');
     expect(markup).toContain('Why');
     expect(markup).toContain(childVersion.reason);
     expect(markup).toContain(oliveOilVersion.versionLabel);
+    expect(markup).toContain('1 later version');
   });
 
   it('omits the From batch line when no batch was cited', () => {

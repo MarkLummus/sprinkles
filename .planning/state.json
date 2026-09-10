@@ -26,7 +26,7 @@
     {
       "number": "3.2",
       "name": "The portion and the reset",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "3.3",
@@ -42,7 +42,7 @@
   "next": {
     "command": "/gsd:progress --next",
     "label": "Advance to the next step",
-    "reason": "Phase 03.2 of 7 · 14% · executing"
+    "reason": "Phase 03.3 of 7 · 14% · executing"
   },
-  "updated_at": "2026-09-10T10:57:03.435Z"
+  "updated_at": "2026-09-10T14:42:13.473Z"
 }

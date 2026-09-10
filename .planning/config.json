@@ -90,5 +90,8 @@
     "source_grounding_authority": "grep"
   },
   "mode": "interactive",
-  "granularity": "coarse"
+  "granularity": "coarse",
+  "models": {
+    "planning": "sonnet"
+  }
 }

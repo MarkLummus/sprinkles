@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.2"
-current_phase_name: The portion and the reset
+current_phase_name: The portion and the reset (INSERTED)
 status: executing
-stopped_at: Phase 03.1 complete; 03.2 and 03.3 inserted, ready to plan 03.2
-last_updated: "2026-09-10T02:50:37.051Z"
+stopped_at: Completed 03.2-02-PLAN.md
+last_updated: "2026-09-10T03:38:27.780Z"
 last_activity: 2026-09-09
-last_activity_desc: 03.2 re-cut as the stored-shape phase; 03.3 added for the page rebuild
-state_head: 8242b5fad647a41684fc0781d713fea8746c626e
+last_activity_desc: Phase 03.2 execution resumed (wave continue)
+state_head: e464334625579e6febda54523f7dd795d0d2f069
 progress:
   total_phases: 7
-  completed_phases: 2
+  completed_phases: 1
   total_plans: 30
-  completed_plans: 26
-  percent: 29
+  completed_plans: 28
+  percent: 14
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-08)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.1 — The imprint and the binder (INSERTED)
+**Current focus:** Phase 03.2 — The portion and the reset (INSERTED)
 
 ## Current Position
 
-Phase: 03.2 (The portion and the reset) — READY TO EXECUTE
-Plan: Not started
+Phase: 03.2 (The portion and the reset (INSERTED)) — EXECUTING
+Plan: 3 of 4
 Status: Ready to execute
-Last activity: 2026-09-09 — Phase 03.2 inserted after 03.1
+Last activity: 2026-09-09 — Phase 03.2 execution resumed (wave continue)
 
-Progress: [███░░░░░░░] 29% (3/4 phases; 21/21 plans)
+Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ Progress: [███░░░░░░░] 29% (3/4 phases; 21/21 plans)
 | Phase 03.1 P02 | 27min | 3 tasks | 13 files |
 | Phase 03.1 P03 | ~25min | 3 tasks | 7 files |
 | Phase 03.1 P04 | 30min | 3 tasks | 11 files |
+| Phase 03.2 P02 | 25min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -151,6 +152,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.1]: [Phase 03.1, Plan 03] The binder built as global element rules (button, select, :focus-visible, checkbox, date/number input, textarea, a) in app.css, every value through a token; the outline split repoints --focus-outline-width to --rule-baseline (1.5px) and the four state sites to --rule-graduation (1px) explicitly, retiring three bespoke :focus rules for one global :focus-visible rule.
 - [Phase 03.1]: [Phase 03.1, Plan 03] select.ink-field needs its own chevron background, not just its own padding: .ink-field's class-level background:none outranks a bare select rule regardless of source order, which would have silently blanked the chevron on the app's only two real selects. Fixed by drawing the chevron on a combined select, select.ink-field selector, keeping exactly two linear-gradient() calls in the file.
 - [Phase 03.1]: Plan 04: shared useOnDemandField hook (Method.jsx) implements the collapse-on-blur mechanism once for purpose, aside, and the batch pen's per-step line; per-step pen rendering extracted into StepPenBody/StepRecordingControls so each step owns genuine component-local useState. — Avoids reimplementing the same open/collapse-on-blur logic three times and avoids calling hooks inside a bare .map() callback.
+- [Phase 03.2]: [Phase 03.2] transfer.js narrows to schemaVersion 4 alone; validateRow gates a row on its portions array, validateBatch validates each declaredAxes element shape (D-07a); importStore lost its lift branch entirely.
+- [Phase 03.2]: [Phase 03.2, Plan 02] versionLift.js deleted along with its last consumer (lineage.test.js's liftVersionRecord idempotence block); the round trip through exportStore/importStore is proven against the real seeded olive oil version and its 2 Aug batch, serialised through JSON.parse(JSON.stringify(...)).
 
 ### Pending Todos
 
@@ -216,6 +219,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-09T03:22:43.313Z
-Stopped at: Phase 03.1 complete; 03.2 and 03.3 inserted, ready to plan 03.2
+Last session: 2026-09-10T03:38:17.663Z
+Stopped at: Completed 03.2-02-PLAN.md
 Resume file: None

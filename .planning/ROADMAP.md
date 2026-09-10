@@ -217,16 +217,16 @@ Plans:
 
 **Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved — whole milk still 370.4 g, batch mass still 800 g; the batch's as-made whole milk reads `120 + 263` and still totals 383; the six tasting axes each take a mark independently; a profile carrying the old shape reseeds clean rather than throwing; and a store exported after the change imports after it.
 
-**Plans:** 4 plans
+**Plans:** 2/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 03.2-01-PLAN.md — The portion, end to end: `portions` on every row, the derived total, the seed's authored split, the prose losing its amounts, and the store reset proven against a real IndexedDB
+- [x] 03.2-01-PLAN.md — The portion, end to end: `portions` on every row, the derived total, the seed's authored split, the prose losing its amounts, and the store reset proven against a real IndexedDB
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03.2-02-PLAN.md — The ladder retires and the store file narrows: `transfer.js` accepts one schema, `versionLift.js` is deleted, and the surviving round trip is proven
+- [x] 03.2-02-PLAN.md — The ladder retires and the store file narrows: `transfer.js` accepts one schema, `versionLift.js` is deleted, and the surviving round trip is proven
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -304,7 +304,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
-| 3.2. The portion and the reset | 0/TBD | Not started | - |
+| 3.2. The portion and the reset | 2/4 | In Progress|  |
 | 3.3. The front-matter rows and the page in step order | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 

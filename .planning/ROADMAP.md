@@ -194,27 +194,28 @@ Plans:
 
 - [x] 03.1-05-PLAN.md — The three build gaps and the column arithmetic: the rules strike the parent figure and leave the tab path, a non-numeric grams field blocks the save, the total row prints its unit once, and both Two-Ink leaks read in ink
 
-### Phase 03.2: The portion and the lift (INSERTED)
+### Phase 03.2: The portion and the reset (INSERTED)
 
-**Goal:** A row's portions become what the maker authors and its total derives as their sum; `step`/`splitStep` retire; every stored record lifts to the new shape through the one lift, with the three version numbers moved in lockstep — and the churned version and its 2 Aug batch reopen unmoved.
+**Goal:** A row's portions become what the maker authors and its total derives as their sum; `step`/`splitStep` retire; and the store is reset to the new shape rather than migrated to it — the seed is rewritten, a returning profile reseeds clean, and the churned version and its 2 Aug batch reopen with every figure unmoved.
 **Depends on:** Phase 03.1
 **Requirements**: None new — builds `route-recipe.md` § 3 "The portion is the authored amount" and "Split-step prose carries no amounts", both confirmed by Mark 2026-09-09
 **UI hint**: no — the existing table renders from the new shape; the arrangement is Phase 03.3's
 **Prerequisite**: Settled with Mark 2026-09-09 — the seed's split amounts are authored, never inferred from the method prose. **Authored portions** (version 1): whole milk `120 + 250.4 = 370.4 g`; sucrose `12 + 64 = 76 g`. Both match their existing row totals exactly, so no balance figure moves. **As-made portions** (the 2 Aug batch): whole milk `120 + 263 = 383 g`, which is the sheet's own line and what `batch-2026-08-02.js:18` currently stores as a single 383; sucrose is not split in the record because it matched the plan. Note the trap this settles: `120 + 263` is the as-made, not the authored — writing it as the authored split would take whole milk to 383 g, batch mass to 812.6 g, and move every figure on the churned version.
-**Phase notes**: Split out of the original 03.2 (2026-09-09) so the stored-shape migration is verified on its own rather than alongside a page rebuild. It is the one hard-to-reverse piece of the rebuild — it rewrites stored records — and `declaredAxes` is the standing proof of what a missed lift entry costs. Shape lands before arrangement because everything Phase 03.3 renders reads the new shape; layout first would build the step-order table against `step`/`splitStep` and then rebuild it against `portions`. There are **two** lift call sites, not one: `db.js`'s upgrade cursor and `transfer.js`'s `importStore`. The portion count is fixed in milestone 1 — amounts edit, the split does not; splitting in the pen is milestone 2.
+**Phase notes**: Re-scoped 2026-09-09, second pass. The phase was written as a migration; Mark confirmed there is no stored data worth keeping — his profile holds the seed and throwaway test records only — so the store resets instead. That is the cheaper half of a choice, not a shortcut: the seed lives in `data/olive-oil.js` and `data/batch-2026-08-02.js` as hand-authored source, and rewriting those two files to the new shape was already the bulk of this phase under either approach. What the reset drops is compatibility with records held outside source — an older browser profile, an older export file — and that is worth nothing while no such record exists. The `declaredAxes` P0 goes with it: it was a *missing lift entry*, and with no ladder the axes are simply authored correctly in the seed. Shape still lands before arrangement, because everything Phase 03.3 renders reads the new shape; layout first would build the step-order table against `step`/`splitStep` and then rebuild it against `portions`. The portion count is fixed in milestone 1 — amounts edit, the split does not; splitting in the pen is milestone 2. The migration discipline is not abandoned, only deferred: it starts paying at the first record Mark actually cares about, and the next shape change after this one is expected to lift rather than reset.
 
 **Scope:**
 
 - `portions` on a row (`[{step, grams}, …]`), the total derived as their sum; an unsplit ingredient is a one-portion row, so one rule covers split and unsplit with no second case
-- `step` / `splitStep` retire; `stepNumbers.js` and `IngredientTable.jsx`'s sixteen `splitStep` references follow
+- `step` / `splitStep` retire; `stepNumbers.js` and `IngredientTable.jsx`'s references follow — 31 across four files
 - Split-step prose loses its amounts — the number lives in one place; amounts for unsplit ingredients stay in the prose as written
-- The `declaredAxes` lift, the P0 the re-critique found: `liftVersionRecord` gains the entry it never had, mapping a string to `{name, low: null, high: null}`, idempotent by `typeof`, alongside the identical `authored` lift twelve lines above it
-- `VERSION_SCHEMA_VERSION`, `DB_VERSION` and the store file's `schemaVersion` moved in lockstep, batch snapshots (`batch.snapshot.declaredAxes`, and each row's portions) lifted too
-- The seed's split amounts, authored above
-- As-made recorded per portion, its total deriving the same way — the 2 Aug batch's lump `'row-01': 383` becomes `120 + 263`, matching the sheet line for line. The batch snapshot's lift therefore handles as-made portions as well as authored ones
+- The store resets: `DB_VERSION` bumps and the upgrade drops and recreates both object stores, so a returning profile comes back empty and reseeds through the existing `seedIfEmpty` path. No cursor, no per-record rewrite
+- `versionLift.js`'s ladder retires. Its seed facts (`SEED_USES`, `SEED_CREATED_AT`) belong with the seed and move there; `VERSION_SCHEMA_VERSION` survives as a constant
+- `transfer.js` narrows to the new shape alone — export writes it, `validateStoreFile` accepts it and refuses 1, 2 and 3, and `importStore` loses its lift branch
+- The seed's split amounts, authored above; `declaredAxes` authored in its object shape rather than lifted into one
+- As-made recorded per portion, its total deriving the same way — the 2 Aug batch's lump `'row-01': 383` becomes `120 + 263`, matching the sheet line for line
 - Balance reads the derived total; the coefficient snapshot stays per ingredient, never per portion
 
-**Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved — whole milk still 370.4 g, batch mass still 800 g; the batch's as-made whole milk reads `120 + 263` and still totals 383; the six tasting axes each take a mark independently; and a store exported before the change imports after it.
+**Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved — whole milk still 370.4 g, batch mass still 800 g; the batch's as-made whole milk reads `120 + 263` and still totals 383; the six tasting axes each take a mark independently; a profile carrying the old shape reseeds clean rather than throwing; and a store exported after the change imports after it.
 
 **Plans:** 0 plans
 

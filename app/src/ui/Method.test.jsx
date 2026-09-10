@@ -142,8 +142,8 @@ function makeBaselineVersionWithProse() {
   return version;
 }
 
-describe('Method — the lead-in and instruction fields read as printed prose (03.1-04, D-13 § 8)', () => {
-  it('renders no visible "Lead-in"/"Instruction" label word, and carries the prose-field treatment instead of ink-field', () => {
+describe('Method — the lead-in and instruction fields read as printed prose behind edit this step (03.1-04, 03.3-03, D-13 § 8)', () => {
+  it('renders no <input>/<textarea> by default, and the plain lead-in/instruction text as prose inside method-step__lead', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
 
@@ -158,10 +158,15 @@ describe('Method — the lead-in and instruction fields read as printed prose (0
       />,
     );
 
-    expect(markup).not.toContain('<span>Lead-in</span>');
-    expect(markup).not.toContain('<span>Instruction</span>');
-    expect(markup).toMatch(/<input[^>]*class="prose-field prose-field--lead-in"[^>]*aria-label="Step [^"]*, lead-in"/);
-    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Step [^"]*, instruction"/);
+    expect(markup).not.toContain('<input');
+    expect(markup).not.toContain('<textarea');
+    expect(markup).toContain('method-step__lead');
+    expect(markup).toContain('<b>Lead one.</b>');
+    expect(markup).toContain('Do one thing.');
+    // The field-level input markup (prose-field prose-field--lead-in,
+    // unchanged since before this plan) is verified once the step is
+    // revealed via "edit this step" — a UAT item, not asserted here
+    // (renderToStaticMarkup cannot simulate the click that opens it).
   });
 });
 
@@ -205,7 +210,7 @@ describe('Method — developing mode', () => {
 
     expect(markup).toContain('struck-value');
     expect(markup).toContain('temp 10 C');
-    expect(markup).toContain('value="20 C"');
+    expect(markup).toContain('<span class="target-chip__value">20 C</span>');
   });
 
   it('renders no struck-beneath paragraph at all for a step removed with none of its text touched, and renders the removed label (S1, T-03-52)', () => {
@@ -227,8 +232,10 @@ describe('Method — developing mode', () => {
     expect(markup).not.toContain('prose-struck-beneath');
     expect(markup).toContain('method-step__skipped-label');
     expect(markup).toContain('removed');
-    // The fields stay present and editable — removing does not take them away.
-    expect(markup).toContain('value="Lead one"');
+    // The step's own content stays present — removing does not take the
+    // prose away, it just reads plain (03.3-03: the closed state shows
+    // this text unconditionally, not as an input value).
+    expect(markup).toContain('<b>Lead one.</b>');
     expect(markup).toContain('Do one thing.');
   });
 
@@ -290,10 +297,11 @@ describe('Method — developing mode', () => {
 
     expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
     expect(markup).toContain('Original purpose.');
-    // The lead-in/instruction pair did not change — its struck-beneath
-    // paragraph must not render, and "Do one thing." (the instruction)
-    // appears only in the live field, not struck a second time.
-    expect(markup).not.toContain('<b>Lead one.</b>');
+    // The lead-in/instruction pair did not change — its own struck-beneath
+    // paragraph must not render, proved above by the count being exactly
+    // 1 (the purpose's own struck line, not a second one for the
+    // lead-in). The closed state's unconditional <b>Lead one.</b> (its
+    // normal, unstruck prose, 03.3-03) is not a duplicate strike of it.
   });
 
   it('strikes the parent\'s aside beneath the aside field for an aside-only edit, and renders no lead-in/instruction struck-beneath paragraph', () => {
@@ -314,7 +322,9 @@ describe('Method — developing mode', () => {
 
     expect(markup.split('prose-struck-beneath').length - 1).toBe(1);
     expect(markup).toContain('Original aside.');
-    expect(markup).not.toContain('<b>Lead one.</b>');
+    // Same reasoning as the purpose-only case above: the count of 1
+    // proves the lead-in/instruction pair rendered no struck-beneath
+    // paragraph of its own.
   });
 
   it('renders no struck purpose line for a purpose that was absent in the record and now carries text — there is nothing to strike', () => {
@@ -358,7 +368,7 @@ describe('Method — developing mode', () => {
     expect(markup).toContain('removed');
   });
 
-  it("renders the removed-row cross-flag with its 'remove this step' control", () => {
+  it("renders no removed-row cross-flag in the default closed markup — it now lives inside edit this step (03.3-03, option B)", () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.rows[0].removed = true; // row-a, used by step 1
@@ -374,9 +384,14 @@ describe('Method — developing mode', () => {
       />,
     );
 
-    expect(markup).toContain('method-step__flag');
-    expect(markup).toContain('Row A');
-    expect(markup).toContain('remove this step');
+    expect(markup).not.toContain('method-step__flag');
+    expect(markup).not.toContain('remove this step');
+    expect(markup).toContain('edit this step');
+    // The cross-flag's own content and control (route-recipe-version.md
+    // § 3), unchanged by this plan, now render only inside the revealed
+    // form — a state transition renderToStaticMarkup cannot execute (no
+    // click simulation; this file's uses-checklist comment states the
+    // same limitation), so it is a UAT item, not asserted here.
   });
 
   it('renders a coverage cue naming the covered rows and the covering step, and no cross-flag or remove-this-step control, for a removed step whose rows are all still used elsewhere (D-UAT-3)', () => {
@@ -411,6 +426,10 @@ describe('Method — developing mode', () => {
     // (03-10), not its stored key.
     expect(markup).toContain('still used by step 1');
     expect(markup).not.toContain('remove this step');
+    // The coverage cue stays on the closed step (03.3-03, option B), but
+    // remove/restore now lives only inside the reveal — the closed
+    // markup carries neither button.
+    expect(markup).not.toMatch(/>restore<\/button>/);
   });
 
   it('renders no coverage cue for a removed step whose rows are covered by nothing — the table already carries that answer', () => {
@@ -432,12 +451,12 @@ describe('Method — developing mode', () => {
     expect(markup).not.toContain('method-step__flag');
   });
 
-  // Was "renders exactly one control on a removed step" before 03.1-04:
-  // the step body now also carries the on-demand openers (add purpose,
-  // add aside) and the uses line's own control, closed by default — the
-  // remove/restore control is still the step's own last button, reading
-  // restore, but it is no longer the step's only one (D-23, D-24).
-  it('renders remove/restore as restore on a removed step, alongside the on-demand openers', () => {
+  // Was "renders exactly one control on a removed step" before 03.1-04,
+  // then "remove/restore alongside the on-demand openers" before 03.3-03:
+  // the step body now opens read-only by default (D-23, D-24, 03.3-03) —
+  // restore/remove/add purpose/add aside all moved inside the reveal, so
+  // the default closed markup carries none of them, only edit this step.
+  it('renders no restore/remove/add purpose/add aside controls by default on a removed step — only edit this step, until revealed', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[0].removed = true;
@@ -454,11 +473,12 @@ describe('Method — developing mode', () => {
     );
 
     const buttonMatches = markup.match(/<button[^>]*>[^<]*<\/button>/g) ?? [];
-    expect(buttonMatches[buttonMatches.length - 1]).toContain('restore');
-    expect(markup).not.toContain('>remove</button>');
+    expect(buttonMatches.every((button) => !/>restore<|>remove<|>add purpose<|>add aside</.test(button))).toBe(true);
+    expect(markup.match(/>edit this step<\/button>/g)?.length).toBe(1);
+    expect(markup).toContain('aria-label="Removed step, edit this step"');
   });
 
-  it("renders the removed-row cross-flag exactly as before on an active step that uses a removed row, unaffected by the coverage cue", () => {
+  it("renders no cross-flag content by default on an active step that uses a removed row, and no coverage cue either — the step is not removed (03.3-03)", () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.rows[0].removed = true; // row-a, used by active step 1
@@ -474,8 +494,11 @@ describe('Method — developing mode', () => {
       />,
     );
 
-    expect(markup).toContain('uses Row A, which is removed');
-    expect(markup).toContain('remove this step');
+    expect(markup).not.toContain('uses Row A, which is removed');
+    expect(markup).not.toContain('remove this step');
+    expect(markup).toContain('edit this step');
+    // Unchanged behaviour (route-recipe-version.md § 3), now reachable
+    // only inside the reveal — a UAT item, not asserted here.
   });
 
   it("renders the stale-amount flag's 'amounts changed:' clause only when visibility is on", () => {
@@ -660,8 +683,8 @@ describe('Method — developing mode', () => {
   });
 });
 
-describe('Method — purpose and aside on demand (D-23)', () => {
-  it('renders no purpose or aside field and renders both openers when the draft carries neither', () => {
+describe('Method — purpose and aside on demand, behind edit this step (D-23, 03.3-03)', () => {
+  it('renders neither a purpose/aside paragraph nor an add purpose/add aside button by default when the draft carries neither', () => {
     const baselineVersion = makeBaselineVersion(); // no purpose/aside
     const draftVersion = structuredClone(baselineVersion);
 
@@ -676,13 +699,13 @@ describe('Method — purpose and aside on demand (D-23)', () => {
       />,
     );
 
-    expect(markup).toMatch(/<button[^>]*>add purpose<\/button>/);
-    expect(markup).toMatch(/<button[^>]*>add aside<\/button>/);
-    expect(markup).not.toMatch(/aria-label="Step [^"]*, purpose"/);
-    expect(markup).not.toMatch(/aria-label="Step [^"]*, aside"/);
+    expect(markup).not.toContain('method-step__purpose');
+    expect(markup).not.toContain('method-step__aside');
+    expect(markup).not.toMatch(/<button[^>]*>add purpose<\/button>/);
+    expect(markup).not.toMatch(/<button[^>]*>add aside<\/button>/);
   });
 
-  it('renders the purpose and aside fields, and no opener, when the draft already carries text', () => {
+  it('renders draftStep.purpose/aside as plain text by default when the draft already carries them', () => {
     const baselineVersion = makeBaselineVersionWithProse();
     const draftVersion = structuredClone(baselineVersion);
 
@@ -697,15 +720,17 @@ describe('Method — purpose and aside on demand (D-23)', () => {
       />,
     );
 
-    expect(markup).toMatch(/<textarea[^>]*aria-label="Step [^"]*, purpose"/);
-    expect(markup).toMatch(/<textarea[^>]*aria-label="Step [^"]*, aside"/);
-    expect(markup).not.toMatch(/<button[^>]*>add purpose<\/button>/);
-    expect(markup).not.toMatch(/<button[^>]*>add aside<\/button>/);
+    expect(markup).toContain('<p class="method-step__purpose">Original purpose.</p>');
+    expect(markup).toContain('<p class="method-step__aside">Original aside.</p>');
+    // The on-demand opener/field toggle itself (unchanged from before
+    // this plan) is verified once the step is revealed via "edit this
+    // step" — a UAT item, not asserted here (renderToStaticMarkup cannot
+    // simulate the click that opens it).
   });
 });
 
-describe('Method — the uses line, closed by default (D-24)', () => {
-  it('renders the row names as text and no checkbox, with no fieldset for uses in the default pen markup', () => {
+describe('Method — the uses line, now behind edit this step too (D-24, 03.3-03)', () => {
+  it('renders neither the uses line nor its change control, no fieldset, no checkbox, in the default closed markup', () => {
     const baselineVersion = makeBaselineVersion(); // step 1 uses row-a
     const draftVersion = structuredClone(baselineVersion);
 
@@ -720,13 +745,13 @@ describe('Method — the uses line, closed by default (D-24)', () => {
       />,
     );
 
-    expect(markup).toContain('uses Row A');
-    expect(markup).toMatch(/<button[^>]*>change<\/button>/);
+    expect(markup).not.toContain('uses Row A');
+    expect(markup).not.toMatch(/<button[^>]*>change<\/button>/);
     expect(markup).not.toContain('<fieldset');
     expect(markup).not.toContain('type="checkbox"');
   });
 
-  it('reads "uses nothing yet" for a step with an empty uses list', () => {
+  it('renders no "uses nothing yet" text either, in the default closed markup, for a step with an empty uses list', () => {
     const baselineVersion = makeBaselineVersion();
     baselineVersion.method[0].uses = [];
     const draftVersion = structuredClone(baselineVersion);
@@ -742,20 +767,19 @@ describe('Method — the uses line, closed by default (D-24)', () => {
       />,
     );
 
-    expect(markup).toContain('uses nothing yet');
+    expect(markup).not.toContain('uses nothing yet');
   });
 });
 
-// The uses fieldset itself only renders once the maker presses "change"
-// (D-24) — a state transition renderToStaticMarkup cannot execute
-// (RESEARCH.md Pitfall 4), so its own "Step 3, uses" accessible name is a
-// UAT item (listed in this plan's SUMMARY), not asserted here as if
-// covered. What this test infrastructure CAN prove: the closed line's own
-// "change" control and the "add purpose"/"add aside" openers already
-// carry the step in their accessible names in the default (unopened) pen
-// markup.
+// The uses line's own visibility, and its checklist's "change" opener,
+// now sit TWO gates deep (03.3-03): edit this step, then change — a
+// state transition renderToStaticMarkup cannot execute (RESEARCH.md
+// Pitfall 4), so both the line's own default appearance once revealed
+// and the checklist's own "Step 3, uses" accessible name are UAT items
+// (listed in this plan's SUMMARY as the deferred checkpoint, LD-03), not
+// asserted here as if covered.
 describe('Method — accessible names carry the step (D-28)', () => {
-  it('names the on-demand controls by the step\'s own position in the default pen markup', () => {
+  it("names the edit this step control by the step's own position in the default pen markup (03.3-03)", () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
 
@@ -771,8 +795,7 @@ describe('Method — accessible names carry the step (D-28)', () => {
       />,
     );
 
-    expect(markup).toContain('aria-label="Step 1, add purpose"');
-    expect(markup).toContain('aria-label="Step 1, change"');
+    expect(markup).toContain('aria-label="Step 1, edit this step"');
   });
 });
 
@@ -930,12 +953,14 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
       />,
     );
 
-    // Step 3 (the survivor now sitting at position 2) names its lead-in
-    // field "Step 2" — the position, not its own stored key — and its own
-    // value proves which field this is, since another step legitimately
-    // reads "Step 3" at its own (different) position.
-    expect(markup).toContain('aria-label="Step 2, lead-in" value="Lead 3"');
-    expect(markup).not.toContain('aria-label="Step 3, lead-in" value="Lead 3"');
+    // Step 3 (the survivor now sitting at position 2, stored key 3) names
+    // its edit this step control "Step 2" — the position, not its own
+    // stored key (03.3-03: the field-level lead-in aria-label this test
+    // checked before this plan is now inside the reveal — a UAT item —
+    // but fieldLabel's own number resolution is the same function
+    // feeding both, so the edit this step control proves it here).
+    const li3 = markup.match(/<li id="method-step-3" class="method-step">([\s\S]*?)<\/li>/)[1];
+    expect(li3).toContain('aria-label="Step 2, edit this step"');
   });
 
   it("names the number a removed step's field labels held before removal, closing the ink-versus-announcement disagreement 03-10 closed for live steps and left open for removed ones (G-03-14)", () => {
@@ -956,12 +981,15 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
       />,
     );
 
-    // Step 2's own value ("Lead 2") proves which field this is — it names
-    // itself as removed AND by the number it had (2), never as claiming a
-    // live position ("Step 2") a survivor might legitimately hold.
-    expect(markup).toContain('aria-label="Removed step 2, lead-in" value="Lead 2"');
-    expect(markup).not.toContain('aria-label="Removed step, lead-in" value="Lead 2"');
-    expect(markup).not.toContain('aria-label="Step 2, lead-in" value="Lead 2"');
+    // Step 2's own edit this step control names itself as removed AND by
+    // the number it had (2), never as claiming a live position ("Step 2")
+    // a survivor might legitimately hold (03.3-03: same fieldLabel
+    // resolution the pre-plan lead-in field asserted, now proved through
+    // the control that survives in the closed default markup).
+    const li2 = markup.match(/<li id="method-step-2" class="method-step">([\s\S]*?)<\/li>/)[1];
+    expect(li2).toContain('aria-label="Removed step 2, edit this step"');
+    expect(li2).not.toContain('aria-label="Removed step, edit this step"');
+    expect(li2).not.toContain('aria-label="Step 2, edit this step"');
   });
 
   it('invents no number on a removed step\'s field labels when it has no position in either version', () => {
@@ -982,9 +1010,12 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
       />,
     );
 
-    // Neither map holds a position for this step, so its labels say only
-    // that it is removed — nothing invented.
-    expect(markup).toContain('aria-label="Removed step, lead-in" value="Lead 2"');
+    // Neither map holds a position for this step, so its edit this step
+    // control's label says only that it is removed — nothing invented
+    // (03.3-03: same fieldLabel resolution, proved through the surviving
+    // control).
+    const li2 = markup.match(/<li id="method-step-2" class="method-step">([\s\S]*?)<\/li>/)[1];
+    expect(li2).toContain('aria-label="Removed step, edit this step"');
   });
 
   it('names the coverage cue\'s covering step by its displayed position, not its stored key', () => {

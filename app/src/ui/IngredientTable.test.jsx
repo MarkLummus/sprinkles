@@ -761,6 +761,24 @@ describe('IngredientTable — the pen renders no step-choice control anywhere (L
   });
 });
 
+// RemoveRowControl's own remove/restore control (03.3-03, 03.1 Gap 1
+// override): the one per-row control surviving plan 02's rebuild that
+// this plan reclasses as a text control, an underline-only opt-out from
+// the button/select binder.
+describe('IngredientTable — the pen\'s remove/restore control carries .text-control (03.3-03, 03.1 Gap 1 override)', () => {
+  it("renders RemoveRowControl's own button with className=\"text-control\"", () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: onePortionDraftRow(1, '10') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    expect(markup).toMatch(/<button type="button" class="text-control"[^>]*>remove<\/button>/);
+  });
+});
+
 // blockedRowAttempt's own dependency-array wiring (WR-01) is a
 // source-level property of the useEffect call itself, not something
 // renderToStaticMarkup can observe: this file's own top comment already

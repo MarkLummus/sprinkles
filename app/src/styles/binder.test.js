@@ -183,9 +183,36 @@ describe('links — a hairline underline everywhere, visited reads the same (D-1
     expect(rule.declarations).toMatch(/color:\s*var\(--ink\)/);
   });
 
-  test('no selector other than `a`/`a:visited` declares an underline (D-18)', () => {
+  test('no selector other than `a`/`a:visited`/`.text-control` declares an underline (D-18, 03.1 Gap 1 override)', () => {
     const underlineRules = rules.filter((r) => /text-decoration:\s*underline/.test(r.declarations));
-    expect(underlineRules.map((r) => r.selector)).toEqual(['a']);
+    expect(underlineRules.map((r) => r.selector)).toEqual(['.text-control', 'a']);
+  });
+});
+
+// The underline-only opt-out from the button/select binder above (sketch
+// 003 variant B, 03.1 Gap 1 override): no border, an ink underline
+// reading the same token pair the `a` rule already uses for its own.
+describe('.text-control — the underline-only opt-out from the binder (03.1 Gap 1 override)', () => {
+  test('the `.text-control` rule declares no border and an underline at --rule-ink-field', () => {
+    const rule = ruleFor('.text-control');
+    expect(rule, 'expected a `.text-control` rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/border:\s*none/);
+    expect(rule.declarations).toMatch(/text-decoration:\s*underline/);
+    expect(rule.declarations).toMatch(/text-decoration-thickness:\s*var\(--rule-ink-field\)/);
+  });
+
+  test('`.text-control:hover` thickens its underline to --rule-baseline, mirroring the button/select hover step', () => {
+    const rule = ruleFor('.text-control:hover');
+    expect(rule, 'expected a `.text-control:hover` rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/text-decoration-thickness:\s*var\(--rule-baseline\)/);
+  });
+
+  test('`.text-control:disabled` declares a dashed underline and repeats border: none / padding: 0 for specificity', () => {
+    const rule = ruleFor('.text-control:disabled');
+    expect(rule, 'expected a `.text-control:disabled` rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/text-decoration-style:\s*dashed/);
+    expect(rule.declarations).toMatch(/border:\s*none/);
+    expect(rule.declarations).toMatch(/padding:\s*0/);
   });
 });
 

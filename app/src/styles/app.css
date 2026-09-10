@@ -238,17 +238,32 @@ textarea {
   padding: var(--gap-xl);
 }
 
-/* The top band (route-recipe.md § 3, D-04): the recipe block and Versions,
-   in a grid of their own so their seam lands at the prose measure, not at
-   the spread's 2fr/1fr seam below. Recipe block first in DOM order, so it
-   occupies the first column automatically — no area names needed inside
-   this band. */
+/* The front matter (sketch 003 variant B, 03.3-01): two full-width
+   stacked rows — the version's row, then the batch's row — closed by a
+   baseline-weight rule above Ingredients. Each row keeps its own internal
+   layout (.recipe-band__row-version below); this rule only stacks the
+   two and draws the closing rule. */
 .recipe-band {
   grid-area: band;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  border-bottom: var(--rule-baseline) solid var(--ink);
+  padding-bottom: var(--gap-m);
+}
+
+/* The version row's own two-column split (carried forward unchanged from
+   the retired side-by-side .recipe-band): the recipe block at the prose
+   measure on the left, VersionRow's metadata and acts on the right,
+   closed by a graduation-weight rule separating it from the batch row
+   beneath. */
+.recipe-band__row-version {
   display: grid;
   grid-template-columns: minmax(0, var(--measure-prose)) 1fr;
   gap: var(--gap-l);
   align-items: start;
+  padding-bottom: var(--gap-m);
+  border-bottom: var(--rule-graduation) solid var(--ink);
 }
 
 /* Column one is the recipe as written, in the sheet's page order: table,
@@ -730,6 +745,16 @@ textarea {
   margin: 0 0 var(--gap-xs);
 }
 
+/* "Before you start" (03.3-01, moved out of Authored.jsx to head the
+   Method, before step 1): the same prose measure as the recipe block,
+   closed by a graduation-weight rule before the step list. */
+.method__before {
+  max-width: var(--measure-prose);
+  padding-bottom: var(--gap-m);
+  margin-bottom: var(--gap-m);
+  border-bottom: var(--rule-graduation) solid var(--ink);
+}
+
 .method-steps {
   list-style: none;
   margin: 0;
@@ -1067,6 +1092,13 @@ textarea {
   box-sizing: border-box;
 }
 
+/* The hairline-baseline fix for a blank named prose field (03.1 Gap 2
+   override, 03.3-01): a rule until the field holds text — no visible
+   label word. */
+.prose-field--empty {
+  border-bottom: var(--rule-graduation) solid var(--ink);
+}
+
 /* The lead-in field (route-recipe-version.md § 3): reads bold in place of
    the printed step's own <b>, the one prose field this weight applies to. */
 .prose-field--lead-in {
@@ -1128,16 +1160,36 @@ textarea {
   margin-top: var(--gap-xs);
 }
 
-/* A measured value in the reading state, unit on the label, its reading
-   (or "unknown") in pen blue beside it — never a value from the recipe. */
-.batch-margin__measured {
+/* The batch row's measured values, as labelled cells at figure size
+   (sketch 003 variant B, 03.3-01) — replaces the old .batch-margin__measured
+   list rendering, which had no consumer left once BatchMargin.jsx's
+   content moved here. */
+.batch-row__cells {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--col-batch-cell-min), max-content));
+  gap: var(--gap-s) var(--gap-l);
+  margin: var(--gap-s) 0 0;
+}
+
+.batch-row__cell {
   display: flex;
-  justify-content: space-between;
-  gap: var(--gap-xs);
+  flex-direction: column;
+  gap: var(--gap-hair);
+}
+
+.batch-row__cell-label {
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.batch-row__cell-value {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-figure-value);
+  font-weight: 700;
+  color: var(--pen-blue);
   font-variant-numeric: tabular-nums;
-  margin: var(--gap-xs) 0 0;
 }
 
 .batch-margin button {

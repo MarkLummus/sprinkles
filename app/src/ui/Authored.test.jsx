@@ -14,7 +14,6 @@ function renderAuthored(props) {
   return renderToStaticMarkup(
     <Authored
       carriedForward={oliveOilVersion.authored.carriedForward}
-      beforeYouStart={oliveOilVersion.authored.beforeYouStart}
       mode="reading"
       onChangeNoteText={noop}
       onRemoveNote={noop}
@@ -60,7 +59,6 @@ describe('Authored — the inherited-from marker survives both states (D-06)', (
   it('renders the marker in the reading state', () => {
     const markup = renderAuthored({
       carriedForward: [{ text: 'A carried note.', inheritedFrom: '50 g oil · 800 g' }],
-      beforeYouStart: [],
       mode: 'reading',
     });
     expect(markup).toContain('authored__inherited');
@@ -70,7 +68,6 @@ describe('Authored — the inherited-from marker survives both states (D-06)', (
   it('renders the marker beside the field while developing', () => {
     const markup = renderAuthored({
       carriedForward: [{ text: 'A carried note.', inheritedFrom: '50 g oil · 800 g' }],
-      beforeYouStart: [],
       mode: 'developing',
     });
     expect(markup).toContain('authored__inherited');

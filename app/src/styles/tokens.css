@@ -189,4 +189,9 @@
      move independently of every field's border later without moving
      both at once. */
   --rule-foot-band: var(--rule-ink-field);
+
+  /* The batch row's measured-cell grid (sketch 003 variant B, 03.3-01):
+     the minimum a cell may shrink to before the grid wraps another onto
+     its own line. */
+  --col-batch-cell-min: 96px;
 }

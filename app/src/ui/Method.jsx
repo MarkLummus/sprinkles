@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
 import { removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
+import { NoteList } from './Authored.jsx';
 
 function joinWithAnd(items) {
   if (items.length <= 1) return items[0] ?? '';
@@ -415,6 +416,12 @@ export function Method({
   mode = 'reading',
   onChangeStepChange = () => {},
   rows = [],
+  // "Before you start" (03.3-01, moved out of Authored.jsx): the same
+  // NoteList shape carriedForward already uses, headed at the top of the
+  // Method rather than in column two.
+  beforeYouStart = [],
+  onChangeNoteText = () => {},
+  onRemoveNote = () => {},
   draftVersion = null,
   baselineVersion = null,
   staleFlagVisible = false,
@@ -485,6 +492,16 @@ export function Method({
   return (
     <>
       <h2 className="region-name">Method</h2>
+      <div className="method__before">
+        <p className="region-name">Before you start</p>
+        <NoteList
+          listKey="beforeYouStart"
+          notes={beforeYouStart}
+          mode={mode}
+          onChangeNoteText={onChangeNoteText}
+          onRemoveNote={onRemoveNote}
+        />
+      </div>
       <ol className="method-steps">
         {steps.map((step) => {
           if (isDeveloping) {

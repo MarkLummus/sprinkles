@@ -1153,3 +1153,56 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
     expect(markup).not.toContain('id="method-step-2"');
   });
 });
+
+// "Before you start" (03.3-01): moved out of Authored.jsx to head the
+// Method, before step 1 — the same NoteList shape carriedForward already
+// uses (Authored.test.jsx keeps that shared component's own coverage).
+describe('Method — "Before you start" heads the Method (03.3-01, 03.1 Overrides Accepted Gap)', () => {
+  it('renders between the Method heading and the step list', () => {
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={[unstruckStep]}
+        beforeYouStart={[{ text: 'Taste the oil straight.', inheritedFrom: null }]}
+        mode="reading"
+      />,
+    );
+    const headingIndex = markup.indexOf('Method</h2>');
+    const beforeIndex = markup.indexOf('Before you start');
+    const stepsIndex = markup.indexOf('method-steps');
+    expect(headingIndex).toBeGreaterThanOrEqual(0);
+    expect(beforeIndex).toBeGreaterThan(headingIndex);
+    expect(stepsIndex).toBeGreaterThan(beforeIndex);
+    expect(markup).toContain('Taste the oil straight.');
+  });
+
+  it('renders the note as plain prose while reading', () => {
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={[unstruckStep]}
+        beforeYouStart={[{ text: 'Taste the oil straight.', inheritedFrom: null }]}
+        mode="reading"
+      />,
+    );
+    expect(markup).not.toContain('<textarea');
+  });
+
+  it('renders the note as an editable field, with a remove control, while developing', () => {
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={[unstruckStep]}
+        beforeYouStart={[{ text: 'Taste the oil straight.', inheritedFrom: null }]}
+        mode="developing"
+        onChangeNoteText={() => {}}
+        onRemoveNote={() => {}}
+      />,
+    );
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="beforeYouStart note 1"/);
+    expect(markup).toMatch(/<button[^>]*>remove<\/button>/);
+  });
+
+  it('renders no method__before block content when the list is empty', () => {
+    const markup = renderToStaticMarkup(<Method steps={[unstruckStep]} mode="reading" />);
+    expect(markup).toContain('method__before');
+    expect(markup).toContain('Before you start');
+  });
+});

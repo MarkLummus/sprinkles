@@ -15,7 +15,7 @@ vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { derivePenState, isPenDraftDirty, isDraftDirty, toNumberOrNull } from './RecipePage.jsx';
-import { Versions } from './Versions.jsx';
+import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 const noop = () => {};
@@ -81,11 +81,11 @@ describe('derivePenState — the one derivation of "a pen is open"', () => {
 
 // The four-pen matrix, across the region openPen actually reaches now —
 // every batch-side opener (Amend, Record another batch, Record a batch,
-// Add a tasting) moved from BatchMargin into Versions in this plan
-// (D-04, D-09); BatchMargin itself renders no opener of any kind (see
-// BatchMargin.test.jsx). Table-driven so the correspondence between a pen
-// and the opener it hides reads as data, not as four hand-written
-// near-duplicate tests.
+// Add a tasting) moved into BatchRow (03.3-01, splitting Versions.jsx into
+// VersionRow.jsx and BatchRow.jsx); BatchRow itself renders no Develop
+// opener of any kind (see BatchRow.test.jsx). Table-driven so the
+// correspondence between a pen and the opener it hides reads as data, not
+// as four hand-written near-duplicate tests.
 const PEN_MATRIX = [
   { openPen: 'plan', reason: 'the plan is being developed' },
   { openPen: 'record', reason: 'a batch is being recorded' },
@@ -96,32 +96,14 @@ const PEN_MATRIX = [
 function renderVersionsReading(openPen, reason) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <Versions
+      <VersionRow
         version={oliveOilVersion}
         versions={[oliveOilVersion]}
         mode="reading"
-        // Every row in PEN_MATRIX exercises a different ceremony, each
-        // reading a different one of these three drafts — supplying all
-        // three unconditionally keeps this one render function usable
-        // for the whole matrix.
-        draft={{
-          churnDate: '',
-          asMade: {},
-          stepChanges: {},
-          comeUpMinutes: '',
-          drawTempC: '',
-          overrunPercent: '',
-          drawNotes: '',
-          ingredientNotes: '',
-          nextTimeNote: '',
-        }}
         penDraft={{ versionLabel: '', reason: '', citedBatchId: null, headnote: oliveOilVersion.headnote }}
-        tastingDraft={{ date: '', tastingTempC: '', marks: {}, meltdownLossG: '', words: '', nextTimeNote: '' }}
-        openBatch={null}
         batches={[]}
         versionIdsWithBatches={new Set()}
         citedBatch={null}
-        blockedMessage={null}
         openPen={openPen}
         penReason={reason}
         canSaveOver={true}
@@ -130,29 +112,20 @@ function renderVersionsReading(openPen, reason) {
         onChangePenField={noop}
         onSaveAsNewVersion={noop}
         onSaveOverVersion={noop}
-        onStartRecording={noop}
-        onStartAmending={noop}
-        onChangeChurnDate={noop}
-        onCancelRecording={noop}
-        onSaveBatch={noop}
-        onStartTasting={noop}
-        onChangeTastingField={noop}
-        onUseAsExpectedShortcut={noop}
-        onSaveTasting={noop}
-        onCancelTasting={noop}
+        onToggleShowChanges={noop}
       />
     </MemoryRouter>,
   );
 }
 
-describe('The four-pen matrix — Develop absent, every other opener\'s own coverage lives in Versions.test.jsx', () => {
+describe('The four-pen matrix — Develop absent, every other opener\'s own coverage lives in VersionRow.test.jsx/BatchRow.test.jsx', () => {
   // D-05/D-06 narrows this from Phase 3's "every opener visible and
-  // disabled with its reason" (D-UAT-1): Develop moved into Versions and
+  // disabled with its reason" (D-UAT-1): Develop moved into VersionRow and
   // now renders only while openPen is null — while the plan's own pen is
   // open its ceremony replaces it (D-06), and the record's/tasting's own
-  // ceremonies replace it for the other three pens, so Develop is simply
-  // absent, not disabled, for every pen in this matrix.
-  it.each(PEN_MATRIX)('with the $openPen pen open, Develop is absent from Versions', ({ openPen, reason }) => {
+  // ceremonies (now in BatchRow) replace it for the other three pens, so
+  // Develop is simply absent, not disabled, for every pen in this matrix.
+  it.each(PEN_MATRIX)('with the $openPen pen open, Develop is absent from VersionRow', ({ openPen, reason }) => {
     const markup = renderVersionsReading(openPen, reason);
     expect(markup).not.toContain('>Develop<');
   });

@@ -1,6 +1,7 @@
 // Pure. No framework, no DOM, no store import. Reimplemented (not imported)
 // from the old-sprinkles slice's composition.js — verified against the
 // printed sheet: Olive Oil Ice Cream, 800 g, churned 2 Aug 2026.
+import { rowGrams } from './rows.js';
 
 export const LACTOSE_FRACTION_OF_MSNF = 0.545;
 
@@ -17,12 +18,12 @@ export const COEFFICIENT_SET = {
 
 const sumBy = (rows, get) => rows.reduce((total, row) => total + get(row), 0);
 
-/** rows: [{ ingredient, grams }] where ingredient carries a `composition` block. */
+/** rows: [{ ingredient, portions }] where ingredient carries a `composition` block and a row's total derives as rowGrams(row) (D-01). */
 export function computeBalance(rows) {
-  const mass = sumBy(rows, (r) => r.grams);
+  const mass = sumBy(rows, (r) => rowGrams(r));
   if (mass === 0) return null;
 
-  const part = (key) => sumBy(rows, (r) => r.grams * (r.ingredient.composition[key] ?? 0));
+  const part = (key) => sumBy(rows, (r) => rowGrams(r) * (r.ingredient.composition[key] ?? 0));
 
   const fat = part('fat');
   const msnf = part('msnf');
@@ -35,7 +36,7 @@ export function computeBalance(rows) {
   const solids = fat + msnf + sugar + other + emulsifier + stabilizer;
 
   const milkfat = sumBy(rows, (r) =>
-    r.ingredient.dairy ? r.grams * (r.ingredient.composition.fat ?? 0) : 0,
+    r.ingredient.dairy ? rowGrams(r) * (r.ingredient.composition.fat ?? 0) : 0,
   );
   const addedFat = fat - milkfat;
 
@@ -109,7 +110,7 @@ export function formatGrams(grams) {
 export function weakestBasis(rows, field) {
   let worst = 'stated';
   for (const row of rows) {
-    if (!((row.ingredient.composition[field] ?? 0) * row.grams > 0)) continue;
+    if (!((row.ingredient.composition[field] ?? 0) * rowGrams(row) > 0)) continue;
     const basis = row.ingredient.basis?.[field] ?? 'inherited';
     if (BASIS_RANK[basis] > BASIS_RANK[worst]) worst = basis;
   }

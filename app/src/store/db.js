@@ -1,14 +1,23 @@
 import { openDB } from 'idb';
-import { liftVersionRecord } from './versionLift.js';
 
 export const DB_NAME = 'sprinkles';
-export const DB_VERSION = 3;
+export const DB_VERSION = 4;
 
 // The only module under app/src that touches the store library — every
 // other module reaches the store through repository.js's seam (D-06).
 export function openStore() {
   return openDB(DB_NAME, DB_VERSION, {
-    async upgrade(db, oldVersion, newVersion, transaction) {
+    upgrade(db, oldVersion, newVersion, transaction) {
+      // D-05: the store resets rather than lifts — drop both stores before
+      // the two guarded creates below recreate them, so a returning profile
+      // comes back with both stores present and empty and reseeds through
+      // seedIfEmpty. Order is load-bearing: for a returning profile both
+      // guards below would skip (the stores already exist), so the drop
+      // must run first or nothing would recreate them.
+      if (oldVersion > 0 && oldVersion < DB_VERSION) {
+        if (db.objectStoreNames.contains('versions')) db.deleteObjectStore('versions');
+        if (db.objectStoreNames.contains('batches')) db.deleteObjectStore('batches');
+      }
       // Both guards are load-bearing: this callback runs cumulatively from
       // whatever version a returning browser profile actually holds, so an
       // unguarded createObjectStore for 'versions' throws for anyone who
@@ -20,20 +29,10 @@ export function openStore() {
         const batches = db.createObjectStore('batches', { keyPath: 'id' });
         batches.createIndex('by-version', 'versionId');
       }
-      // D-06: lift every stored version record to the current shape in
-      // place. The only awaited expressions in this branch are
-      // store.openCursor() and cursor.continue() — both IDB-native
-      // requests on this same versionchange transaction; liftVersionRecord
-      // itself is synchronous, so nothing here can auto-commit the
-      // transaction early (RESEARCH.md Pitfall 1).
-      if (oldVersion < 3) {
-        const store = transaction.objectStore('versions');
-        let cursor = await store.openCursor();
-        while (cursor) {
-          cursor.update(liftVersionRecord(cursor.value));
-          cursor = await cursor.continue();
-        }
-      }
+      // This callback holds no async keyword at all: deleteObjectStore and
+      // createObjectStore are synchronous, which is strictly stronger than
+      // the previous IDB-native-only rule for what this callback could pause
+      // on — nothing here can auto-commit the versionchange transaction early.
     },
   });
 }

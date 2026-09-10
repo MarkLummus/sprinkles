@@ -4,6 +4,7 @@
 // computeBalance/weakestBasis already compute; only reads, ranks, and
 // words their output.
 import { computeBalance, weakestBasis } from './composition.js';
+import { rowGrams } from './rows.js';
 
 // key/label/unit/decimals/domain/targetKey/fields — in the fixed render
 // order, which never varies. `domain` is the rule's printed scale (the
@@ -105,7 +106,7 @@ export function buildFigures(version) {
     const contributorRowIds = [];
     const estimatedRowNames = [];
     for (const row of version.rows) {
-      const contributes = spec.fields.some((field) => (row.ingredient.composition[field] ?? 0) * row.grams > 0);
+      const contributes = spec.fields.some((field) => (row.ingredient.composition[field] ?? 0) * rowGrams(row) > 0);
       if (!contributes) continue;
       contributorRowIds.push(row.id);
 

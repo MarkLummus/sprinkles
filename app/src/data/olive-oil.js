@@ -3,7 +3,33 @@
 // (read, not imported). Method and authored notes are added by plan 01-02;
 // this shape does not change when they arrive.
 import { library } from './library.js';
-import { SEED_CREATED_AT, VERSION_SCHEMA_VERSION } from '../store/versionLift.js';
+
+// The version record's own bookkeeping number — distinct from DB_VERSION
+// (db.js) and from the store file's schemaVersion (transfer.js). Bumped to
+// 3 this phase because the row shape changed (D-01, D-06).
+export const VERSION_SCHEMA_VERSION = 3;
+
+// A fixed constant, not a live timestamp: two machines seeding this
+// version on different days must agree on its createdAt, so it is never
+// derived from new Date() or from any batch — a version can exist with
+// zero batches. Reads as "before this field existed."
+export const SEED_CREATED_AT = '2026-07-01T00:00:00.000Z';
+
+// D-08, confirmed by Mark: the seeded olive oil version's per-step row
+// ids. Keyed by step n; steps 4, 5, 7, 9 and 10 use no rows. Split rows
+// (whole milk, sucrose) appear in both steps 2 and 3.
+export const SEED_USES = {
+  1: ['row-09', 'row-03'],
+  2: ['row-10', 'row-11', 'row-12', 'row-05', 'row-01'],
+  3: ['row-05', 'row-04', 'row-07', 'row-08', 'row-01', 'row-02'],
+  4: [],
+  5: [],
+  6: ['row-06'],
+  7: [],
+  8: ['row-03', 'row-09'],
+  9: [],
+  10: [],
+};
 
 // Deep-copy the ingredient record onto the row so a stored version is
 // self-contained (D-05): a later edit to the shared `library` must never
@@ -32,18 +58,18 @@ export const oliveOilVersion = {
   headnote:
     'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
   rows: [
-    { id: 'row-01', ...embed('Whole milk', library.wholeMilk, { grams: 370.4, step: 2, splitStep: 3, removed: false }) },
-    { id: 'row-02', ...embed('Heavy cream', library.heavyCream, { grams: 252.8, step: 3, removed: false }) },
-    { id: 'row-03', ...embed('Graza Drizzle', library.oliveOil, { grams: 40, step: 8, removed: false }) },
-    { id: 'row-04', ...embed('Skim milk powder', library.skimMilkPowder, { grams: 22.4, step: 3, removed: false }) },
-    { id: 'row-05', ...embed('Sucrose', library.sucrose, { grams: 76, step: 2, splitStep: 3, removed: false }) },
-    { id: 'row-06', ...embed('Allulose', library.allulose, { grams: 20, step: 6, removed: false }) },
-    { id: 'row-07', ...embed('Dextrose', library.dextrose, { grams: 12, step: 3, removed: false }) },
-    { id: 'row-08', ...embed('Fine sea salt', library.salt, { grams: 3.2, step: 3, removed: false }) },
-    { id: 'row-09', ...embed('Soy lecithin', library.lecithin, { grams: 1.2, step: 8, removed: false }) },
-    { id: 'row-10', ...embed('Locust bean gum', library.locustBeanGum, { grams: 1.04, step: 2, removed: false }) },
-    { id: 'row-11', ...embed('Guar gum', library.guarGum, { grams: 0.48, step: 2, removed: false }) },
-    { id: 'row-12', ...embed('Lambda carrageenan', library.carrageenan, { grams: 0.16, step: 2, removed: false }) },
+    { id: 'row-01', ...embed('Whole milk', library.wholeMilk, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }], removed: false }) },
+    { id: 'row-02', ...embed('Heavy cream', library.heavyCream, { portions: [{ step: 3, grams: 252.8 }], removed: false }) },
+    { id: 'row-03', ...embed('Graza Drizzle', library.oliveOil, { portions: [{ step: 8, grams: 40 }], removed: false }) },
+    { id: 'row-04', ...embed('Skim milk powder', library.skimMilkPowder, { portions: [{ step: 3, grams: 22.4 }], removed: false }) },
+    { id: 'row-05', ...embed('Sucrose', library.sucrose, { portions: [{ step: 2, grams: 12 }, { step: 3, grams: 64 }], removed: false }) },
+    { id: 'row-06', ...embed('Allulose', library.allulose, { portions: [{ step: 6, grams: 20 }], removed: false }) },
+    { id: 'row-07', ...embed('Dextrose', library.dextrose, { portions: [{ step: 3, grams: 12 }], removed: false }) },
+    { id: 'row-08', ...embed('Fine sea salt', library.salt, { portions: [{ step: 3, grams: 3.2 }], removed: false }) },
+    { id: 'row-09', ...embed('Soy lecithin', library.lecithin, { portions: [{ step: 8, grams: 1.2 }], removed: false }) },
+    { id: 'row-10', ...embed('Locust bean gum', library.locustBeanGum, { portions: [{ step: 2, grams: 1.04 }], removed: false }) },
+    { id: 'row-11', ...embed('Guar gum', library.guarGum, { portions: [{ step: 2, grams: 0.48 }], removed: false }) },
+    { id: 'row-12', ...embed('Lambda carrageenan', library.carrageenan, { portions: [{ step: 2, grams: 0.16 }], removed: false }) },
   ],
   // No `sugar` key: the sheet authored no band for sugar solids (D-10).
   targets: {
@@ -92,7 +118,7 @@ export const oliveOilVersion = {
       n: 2,
       leadIn: 'Gum slurry — the only high-heat step',
       instruction:
-        'Toss 1.68 g of the gum blend with ~12 g of the sucrose. Whisk into 120 g of the milk in a small saucepan. Heat, whisking constantly, then pull off.',
+        'Toss 1.68 g of the gum blend with the sucrose. Whisk into the milk in a small saucepan. Heat, whisking constantly, then pull off.',
       targets: [
         { label: 'temp', value: '85 °C' },
         { label: 'hold', value: '2 min' },
@@ -107,7 +133,7 @@ export const oliveOilVersion = {
       n: 3,
       leadIn: 'Build the base',
       instruction:
-        'Whisk the remaining sucrose (~64 g), plus 22.4 g SMP, 12 g dextrose and 3.2 g salt, into the remaining milk (~250 g) and all 252.8 g of cream. Add the hot gum slurry. Immersion blend.',
+        'Whisk the remaining sucrose, plus 22.4 g SMP, 12 g dextrose and 3.2 g salt, into the remaining milk and all 252.8 g of cream. Add the hot gum slurry. Immersion blend.',
       targets: [{ label: 'blend', value: '60 s' }],
       removed: false,
       // D-08: sucrose, skim milk powder, dextrose, fine sea salt, whole milk, heavy cream.

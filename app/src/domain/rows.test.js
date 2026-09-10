@@ -2,7 +2,7 @@
 // Runs under Vitest's default node environment — imports no store, no
 // component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { activeRows, activeSteps } from './rows.js';
+import { activeRows, activeSteps, rowGrams } from './rows.js';
 
 describe('activeRows', () => {
   it('filters out a row carrying removed: true, keeping a row with no removed key', () => {
@@ -39,5 +39,22 @@ describe('activeSteps', () => {
     activeSteps({ method });
     expect(method).toHaveLength(before.length);
     expect(method).toEqual(before);
+  });
+});
+
+describe('rowGrams', () => {
+  it('is the portion\'s own grams for a one-portion row', () => {
+    const row = { portions: [{ step: 3, grams: 252.8 }] };
+    expect(rowGrams(row)).toBe(252.8);
+  });
+
+  it('is the sum of a two-portion row\'s portions', () => {
+    const row = { portions: [{ step: 2, grams: 12 }, { step: 3, grams: 64 }] };
+    expect(rowGrams(row)).toBe(76);
+  });
+
+  it('120 + 250.4 is the same double as the literal 370.4, so no figure can move in its last decimal', () => {
+    const row = { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] };
+    expect(rowGrams(row)).toBe(370.4);
   });
 });

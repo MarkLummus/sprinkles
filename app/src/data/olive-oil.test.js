@@ -2,8 +2,8 @@
 // steps in the sheet's order, their typed targets, and the five authored
 // notes, transcribed verbatim from the printed sheet (see plan 01-02).
 import { describe, it, expect } from 'vitest';
-import { oliveOilVersion } from './olive-oil.js';
-import { SEED_USES } from '../store/versionLift.js';
+import { oliveOilVersion, SEED_USES } from './olive-oil.js';
+import { rowGrams } from '../domain/rows.js';
 
 function targetValue(step, label) {
   return step.targets?.find((t) => t.label === label)?.value;
@@ -118,5 +118,53 @@ describe('oliveOilVersion.declaredAxes', () => {
       { name: 'Olive oil character', low: "can't find it", high: 'tastes of oil first' },
       { name: 'Bitterness', low: 'none', high: 'catches the throat' },
     ]);
+  });
+});
+
+describe('oliveOilVersion.rows.portions (D-01, D-09)', () => {
+  const rowById = (id) => oliveOilVersion.rows.find((row) => row.id === id);
+
+  it('the two split rows carry their portions in step order, deriving their existing totals exactly', () => {
+    const wholeMilk = rowById('row-01');
+    const sucrose = rowById('row-05');
+    expect(wholeMilk.portions).toEqual([
+      { step: 2, grams: 120 },
+      { step: 3, grams: 250.4 },
+    ]);
+    expect(sucrose.portions).toEqual([
+      { step: 2, grams: 12 },
+      { step: 3, grams: 64 },
+    ]);
+    expect(rowGrams(wholeMilk)).toBe(370.4);
+    expect(rowGrams(sucrose)).toBe(76);
+  });
+
+  it('no row carries a stored total or a step reference outside its portions (D-01, D-02)', () => {
+    for (const row of oliveOilVersion.rows) {
+      expect(row.grams).toBeUndefined();
+      expect(row.step).toBeUndefined();
+      expect(row.splitStep).toBeUndefined();
+    }
+  });
+});
+
+describe('the split-step prose carries no amounts (D-03)', () => {
+  it("step 2's and step 3's instructions state no digit-plus-g amount for the milk or the sucrose", () => {
+    const step2 = oliveOilVersion.method[1];
+    const step3 = oliveOilVersion.method[2];
+    // The gum blend (step 2's own unsplit amount, 1.68 g) and the SMP,
+    // dextrose, salt and cream amounts (step 3's unsplit amounts) are
+    // deliberately still present — the sentence stays an instruction. Only
+    // the milk's and the sucrose's own grams (12 g / 120 g at step 2,
+    // ~64 g / ~250 g at step 3) are checked absent, since the portion now
+    // says them.
+    expect(step2.instruction).toBe(
+      'Toss 1.68 g of the gum blend with the sucrose. Whisk into the milk in a small saucepan. Heat, whisking constantly, then pull off.',
+    );
+    expect(step3.instruction).toBe(
+      'Whisk the remaining sucrose, plus 22.4 g SMP, 12 g dextrose and 3.2 g salt, into the remaining milk and all 252.8 g of cream. Add the hot gum slurry. Immersion blend.',
+    );
+    expect(step2.instruction).not.toMatch(/~?12\s*g|~?120\s*g/);
+    expect(step3.instruction).not.toMatch(/~?64\s*g\)?|~?250\s*g\)?/);
   });
 });

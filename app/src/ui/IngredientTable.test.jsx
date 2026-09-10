@@ -276,11 +276,16 @@ describe('IngredientTable — the As made column reads and records per portion (
 
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
-    // No as-made key at all reads no ink-text reading span and no "as
-    // made" clause in the accessible name — the same reading a row with no
-    // as-made key at all gets.
-    expect(markup).not.toContain('ink-text');
-    expect(markup).not.toContain('as made');
+    // Scoped to the row's own tbody markup, not the whole table: the total
+    // row legitimately carries its own "as made X grams" phrase whenever
+    // an as-made layer is showing at all (hasAsMadeLayer), which is true
+    // here purely because openBatch is non-null — that phrase is correct
+    // and unrelated to this row's own reading, so asserting against the
+    // whole markup would fail on a clause this scenario never claimed to
+    // test (found running Task 2's green pass; recorded in the SUMMARY).
+    const bodyMarkup = sectionMarkup(markup, 'tbody');
+    expect(bodyMarkup).not.toContain('ink-text');
+    expect(bodyMarkup).not.toContain('as made');
   });
 
   it('the pen announces the amount it would save for a portion field left blank', () => {

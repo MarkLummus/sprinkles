@@ -407,19 +407,21 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
 
 // formatAsMadeReading(row, batch) -> the reading state's per-portion
 // as-made string ("120 + 263"), joined in portion order, or null when the
-// row carries no as-made key at all. A portion the maker wrote nothing
-// beside contributes the empty string — the table's existing absent
-// placeholder — never that portion's own plan amount (D-10, D-18). Shared
-// between AsMadeCell's own rendering and the row's accessible name, so the
-// two readings can never disagree.
+// row carries no as-made key at all OR nothing was written beside any of
+// its portions. An unwritten portion contributes NOTHING to the reading —
+// it is dropped before joining, never filled with that portion's own plan
+// amount (D-10, D-18) — so a partially-recorded split row reads a clean
+// value (e.g. "120") instead of a dangling "120 + ". The explicit
+// `!== null` test through asMadeForPortion is kept so a written 0 survives
+// the filter (D-11). Shared between AsMadeCell's own rendering and the
+// row's accessible name, so the two readings can never disagree.
 function formatAsMadeReading(row, batch) {
   if (!batch || !hasAsMade(batch, row.id)) return null;
-  return row.portions
-    .map((_, i) => {
-      const value = asMadeForPortion(batch, row.id, i);
-      return value !== null ? `${value}` : '';
-    })
-    .join(' + ');
+  const written = row.portions
+    .map((_, i) => asMadeForPortion(batch, row.id, i))
+    .filter((value) => value !== null)
+    .map((value) => `${value}`);
+  return written.length > 0 ? written.join(' + ') : null;
 }
 
 // The as-made cell (route-recipe-batch.md § 3, D-10): blank by default, one
@@ -671,13 +673,23 @@ export function IngredientTable({
             // stored amount when the string is blank or does not parse — a
             // blank or unparseable keystroke keeps the portion's own
             // number rather than becoming 0 or NaN, applied per portion.
+            // The announced value (D-01) agrees with this same rule: a
+            // portion field left blank announces that portion's own stored
+            // amount as text, rather than an empty join entry, since a
+            // blank field means "keep this portion's own amount", not
+            // "nothing here" — the opposite of the As-made column's blank
+            // rule above, and exactly what this fallback already computes.
             const currentGramsValue = draftRow.portions.reduce(
               (total, portion, i) => total + (parseGramsDraft(portion.grams) ?? row.portions[i].grams),
               0,
             );
             const currentShare = removed ? null : formatShareOfBatch(currentGramsValue, currentMass);
             const gramsDirty = draftRow.portions.some((portion, i) => portion.grams !== String(row.portions[i].grams));
-            const changedGrams = gramsDirty ? draftRow.portions.map((portion) => portion.grams).join(' + ') : null;
+            const changedGrams = gramsDirty
+              ? draftRow.portions
+                  .map((portion, i) => (portion.grams.trim() === '' ? String(row.portions[i].grams) : portion.grams))
+                  .join(' + ')
+              : null;
             const changedShare = !removed && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
             const changedStep =
               draftRow.portions[0].step !== row.portions[0].step

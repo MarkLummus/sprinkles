@@ -120,6 +120,9 @@ Boundaries come from the accepted decisions; reasons are recorded so they are no
 | Column widths are padding-inclusive tokens; Data and Remove get their own widths; the ingredient name is the single unsized column and may wrap below about 1140px (D-UAT-6) | The Remove column had no width rule since 03-02 and painted over the Data column; honest arithmetic in tokens.css plus a test that recomputes the budget | ✓ Good — confirmed in Phase 3 UAT at 1024–1440 |
 | Show-changes is URL-addressable by a `?changes` query parameter, no new route (Phase 3 D-02) | Composes with the batch route and the back button; the print route ignores it | ✓ Good — Phase 3 |
 | Four derived advisories ship, not five; batch mass against the machine's minimum fill is held for SCALE-01 (Phase 3 D-05) | The packet gives machine capacity to SCALE-01 and forbids asserting a safe fit | ✓ Good — Phase 3 |
+| A row's `portions` (`[{step, grams}, …]`) are what the maker authors and the row total derives as their sum; an unsplit ingredient is a one-portion row, so one rule covers split and unsplit; `step`/`splitStep` retire and split-step prose loses its amounts | The amount lived in two places that could disagree; deriving the total from the authored portions leaves one place for the number, and a one-portion row removes the second case rather than special-casing it | ✓ Good — Phase 03.2, every figure on the churned version and its 2 Aug batch provably unmoved |
+| The store resets to the new shape rather than migrating to it: `DB_VERSION` bumps, the upgrade drops and recreates both object stores, a returning profile reseeds clean, and `versionLift.js` is deleted | Mark confirmed no stored record worth keeping — his profile held the seed and throwaway tests only. What a reset drops is compatibility with records held outside source, worth nothing while none exist. The discipline is deferred, not abandoned; the next shape change is expected to lift | ✓ Good — Phase 03.2, proven against a real IndexedDB |
+| A blank portion means opposite things in the two places it is read, and the two are deliberately not routed through a shared helper: in the As-made column a blank contributes nothing to the reading and is never filled from the plan (D-10); in the pen a blank field keeps that portion's own stored amount, matching what the save path writes (D-01) | A helper would carry one filtering rule for two different meanings, and its second caller would be doing something the helper's name could not honestly describe | ✓ Good — Phase 03.2 gap closure; both readings asserted in full so a joined-string regression cannot pass green |
 
 ## Evolution
 
@@ -139,4 +142,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-08 after Phase 3*
+*Last updated: 2026-09-10 after Phase 03.2*

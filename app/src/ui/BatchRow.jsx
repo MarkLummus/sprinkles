@@ -1,8 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate, readMeasured, sortedBatches, sortedTastings, hasTasting } from '../domain/batch.js';
+import { targetValueFor } from '../domain/rows.js';
 import { axesForBatch, markKeyFor } from '../domain/axes.js';
 import { AxisMark } from './AxisMark.jsx';
+
+// A display-only override of readMeasured's own "unknown" wording (D-18),
+// scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
+// measured" instead, matching sketch 003 variant B. readMeasured itself,
+// and every other call site of it in this codebase, are untouched.
+function churnMeasured(value, options) {
+  const result = readMeasured(value, options);
+  return result === 'unknown' ? 'not measured' : result;
+}
 
 // A tasting in the reading state: headed by its date or "date unknown"
 // (D-03), then its measured fields and marks as labelled cells at figure
@@ -115,11 +125,11 @@ function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark })
   );
 }
 
-// The batch's own row (sketch 003 variant B, 03.3-01): the front matter's
-// second stacked row, merging Versions.jsx's batch-owning openers/ceremony
-// with BatchMargin.jsx's content wholesale — BatchMargin.jsx is deleted.
-// No page-level running head here (ROADMAP Scope bullet 1); the "Batch"
-// legend prints once, not per state.
+// The batch's own row (sketch 003 variant B, 03.3-01, rebuilt against the
+// sketch's own `.row-batch` markup in 03.3-07, G-03.3-3/G-03.3-4): the
+// front matter's second stacked row. One head line (Batch label, churned
+// date, later-batches count) replaces the old per-state "Batch" legend;
+// the measured cells, tasting, and foot controls follow it in that order.
 export function BatchRow({
   version,
   batches = [],
@@ -174,6 +184,13 @@ export function BatchRow({
       addTastingButtonRef.current?.focus();
     }
   }, [openPen]);
+
+  // The later-batches disclosure (sketch 003 variant B, G-03.3-4): closed
+  // by default, matching the same convention VersionRow's own Later
+  // disclosure uses (03.3-06) — the count and the list it discloses are
+  // fed by the same computed value, never two divergent queries.
+  const [laterBatchesOpen, setLaterBatchesOpen] = useState(false);
+  const laterBatchesCount = batches.length - (openBatch ? 1 : 0);
 
   const latestAmendment =
     openBatch && openBatch.amendedAt.length > 0 ? openBatch.amendedAt[openBatch.amendedAt.length - 1] : null;
@@ -256,8 +273,26 @@ export function BatchRow({
           open, not only this row's own. */}
       {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
 
+      <div className="batch-row__head">
+        <h2 className="region-name">Batch</h2>
+        {openBatch && (
+          <span className="batch-row__date">
+            {`churned ${openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}`}
+          </span>
+        )}
+        {laterBatchesCount > 0 && (
+          <button
+            type="button"
+            className="text-control"
+            aria-expanded={laterBatchesOpen}
+            onClick={() => setLaterBatchesOpen((open) => !open)}
+          >
+            {`${laterBatchesCount} later batch${laterBatchesCount === 1 ? '' : 'es'}`}
+          </button>
+        )}
+      </div>
+
       <div className="batch-margin">
-        <p className="batch-margin__legend">Batch</p>
         {mode === 'recording' ? (
           <>
             {/* Come-up, overrun and meltdown loss have no meaning below
@@ -335,29 +370,66 @@ export function BatchRow({
           </>
         ) : openBatch ? (
           <>
-            {latestAmendment && <p className="ink-text">{`amended ${formatRecordDate(latestAmendment)}`}</p>}
             <div className="batch-row__cells">
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Time to temperature, min</span>
-                <span className="batch-row__cell-value">{readMeasured(openBatch.churn.comeUpMinutes)}</span>
+                <span className="batch-row__cell-label">Time to temperature</span>
+                <span className="batch-row__cell-value">
+                  {openBatch.churn.comeUpMinutes != null ? (
+                    <>
+                      {churnMeasured(openBatch.churn.comeUpMinutes)}
+                      <span className="batch-row__unit"> min</span>
+                    </>
+                  ) : (
+                    <span className="batch-row__unit">not measured</span>
+                  )}
+                </span>
+                {targetValueFor(version, 'come-up') && (
+                  <span className="batch-row__plan">{`plan ${targetValueFor(version, 'come-up')}`}</span>
+                )}
               </div>
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Draw temperature, °C</span>
+                <span className="batch-row__cell-label">Draw temperature</span>
                 <span className="batch-row__cell-value">
-                  {readMeasured(openBatch.churn.drawTempC, { signed: true })}
+                  {openBatch.churn.drawTempC != null ? (
+                    <>
+                      {churnMeasured(openBatch.churn.drawTempC, { signed: true })}
+                      <span className="batch-row__unit"> °C</span>
+                    </>
+                  ) : (
+                    <span className="batch-row__unit">not measured</span>
+                  )}
                 </span>
               </div>
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Air, overrun %</span>
-                <span className="batch-row__cell-value">{readMeasured(openBatch.churn.overrunPercent)}</span>
+                <span className="batch-row__cell-label">Air</span>
+                <span className="batch-row__cell-value">
+                  {openBatch.churn.overrunPercent != null ? (
+                    <>
+                      {churnMeasured(openBatch.churn.overrunPercent)}
+                      <span className="batch-row__unit"> %</span>
+                    </>
+                  ) : (
+                    <span className="batch-row__unit">not measured</span>
+                  )}
+                </span>
+                <span className="batch-row__plan">overrun</span>
+              </div>
+              {latestAmendment && (
+                <div className="batch-row__cell">
+                  <span className="batch-row__cell-label">Amended</span>
+                  <span className="batch-row__cell-value">{formatRecordDate(latestAmendment)}</span>
+                </div>
+              )}
+              <div className="batch-row__cell">
+                <span className="batch-row__cell-label">Recorded</span>
+                <span className="batch-row__cell-value">
+                  {`${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
+                </span>
               </div>
             </div>
             {openBatch.churn.drawNotes && <p className="prose-text">{openBatch.churn.drawNotes}</p>}
             {openBatch.churn.ingredientNotes && <p className="prose-text">{openBatch.churn.ingredientNotes}</p>}
             {openBatch.churn.nextTimeNote && <p className="prose-text">Next time: {openBatch.churn.nextTimeNote}</p>}
-            <p className="ink-text">
-              {`recorded ${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
-            </p>
 
             {sortedTastings(openBatch).map((tasting) => (
               <TastingReading key={tasting.id} tasting={tasting} axes={axesForBatch(openBatch)} />
@@ -375,35 +447,57 @@ export function BatchRow({
             )}
           </>
         ) : (
-          <p>{batches.length > 0 ? 'No batch of this version has that address.' : 'no batch yet'}</p>
+          batches.length > 0 && <p>No batch of this version has that address.</p>
         )}
       </div>
 
-      {/* The batch list (D-09): always a list, even with one batch and
-          with none — the "no batch yet" line is the list's own single
-          entry in that state, not a different element. */}
+      {/* The batch list (D-09): always a list with zero batches, since
+          there is no count to disclose. With one or more, it becomes the
+          "Batches of this version" panel the head's own count control
+          opens (sketch 003 variant B, G-03.3-4) — closed by default. */}
       {batches.length === 0 ? (
         <ul className="batch-margin__list">
           <li>no batch yet</li>
         </ul>
       ) : (
-        <ul className="batch-margin__list">
-          {sortedBatches(batches).map((batch) => {
-            const isOpenBatch = openBatch && batch.id === openBatch.id;
-            const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
-            const label = `churned ${dateWords}`;
-            const latestBatchAmendment =
-              batch.amendedAt.length > 0 ? batch.amendedAt[batch.amendedAt.length - 1] : null;
-            return (
-              <li key={batch.id} className={isOpenBatch ? 'is-open' : undefined}>
-                {isOpenBatch || openPen ? label : <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{label}</Link>}
-                {latestBatchAmendment && (
-                  <span className="versions__batch-amended">{`amended ${formatRecordDate(latestBatchAmendment)}`}</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        laterBatchesOpen && (
+          <section className="batch-row__later" aria-label="Batches of this version">
+            <h2 className="region-name">Batches of this version</h2>
+            <ul className="batch-row__later-list">
+              {sortedBatches(batches).map((batch) => {
+                const isOpenBatch = openBatch && batch.id === openBatch.id;
+                const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
+                const metaParts = [];
+                if (batch.churn.drawTempC != null) {
+                  metaParts.push(`drawn ${churnMeasured(batch.churn.drawTempC, { signed: true })} °C`);
+                }
+                if (batch.churn.drawNotes) metaParts.push(batch.churn.drawNotes);
+                const tastingCount = batch.tastings.length;
+                if (tastingCount > 0) {
+                  const tastedWords =
+                    tastingCount === 1 ? 'once' : tastingCount === 2 ? 'twice' : `${tastingCount} times`;
+                  metaParts.push(`tasted ${tastedWords}`);
+                }
+                return (
+                  <li key={batch.id}>
+                    <p className="batch-row__later-date">
+                      {isOpenBatch ? (
+                        <>
+                          <strong>{dateWords}</strong> <span className="batch-row__later-small">· in view</span>
+                        </>
+                      ) : openPen ? (
+                        dateWords
+                      ) : (
+                        <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{dateWords}</Link>
+                      )}
+                    </p>
+                    {metaParts.length > 0 && <p className="batch-row__later-meta">{metaParts.join(' · ')}</p>}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )
       )}
     </section>
   );

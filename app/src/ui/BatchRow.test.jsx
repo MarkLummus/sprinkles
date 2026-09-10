@@ -67,17 +67,55 @@ function renderBatchRow(props) {
   );
 }
 
-describe('BatchRow — no page-level running head (ROADMAP Scope bullet 1)', () => {
-  it('renders the section with an aria-label of Batch and no region-name heading', () => {
+describe('BatchRow — the Batch region-name head line (sketch 003 variant B, G-03.3-4)', () => {
+  it('renders the section with an aria-label of Batch and a visible "Batch" region-name heading', () => {
     const markup = renderBatchRow({});
     expect(markup).toContain('aria-label="Batch"');
-    expect(markup).not.toContain('className="region-name"');
+    expect(markup).toContain('class="region-name">Batch<');
   });
 
-  it('prints the "Batch" legend exactly once', () => {
+  it('prints the "Batch" region-name heading exactly once', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    const occurrences = markup.split('batch-margin__legend">Batch<').length - 1;
+    const occurrences = markup.split('class="region-name">Batch<').length - 1;
     expect(occurrences).toBe(1);
+  });
+});
+
+describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
+  it('renders "churned <date>" beside the Batch heading when a batch is in view', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
+  });
+
+  it('renders no churned-date span when no batch is in view', () => {
+    const markup = renderBatchRow({ openBatch: null, batches: [] });
+    expect(markup).not.toContain('batch-row__date');
+  });
+
+  it('renders the later-batches count, closed by default, with no list content rendered', () => {
+    const markup = renderBatchRow({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+    });
+    expect(markup).toContain('>1 later batch<');
+    expect(markup).not.toContain('Batches of this version');
+  });
+
+  it('renders the plural count for more than one later batch', () => {
+    const markup = renderBatchRow({
+      openBatch: null,
+      batches: [
+        augustSecondBatch,
+        { ...augustSecondBatch, id: 'other-batch-1' },
+        { ...augustSecondBatch, id: 'other-batch-2' },
+      ],
+    });
+    expect(markup).toContain('>3 later batches<');
+  });
+
+  it('renders no later-batches control when there are none beyond the one in view', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(markup).not.toContain('later batch');
   });
 });
 
@@ -213,17 +251,17 @@ describe('BatchRow — the three named prose fields carry a hairline rule when e
 });
 
 describe('BatchRow — the record\'s reading state, measured values as cells (sketch 003 variant B)', () => {
-  it('renders the churn triple (come-up, draw temperature, overrun) inside batch-row__cells', () => {
+  it('renders the churn triple (come-up, draw temperature, air) with plain-word labels and units beside the figures', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain('batch-row__cells');
     expect(markup).toMatch(
-      /<div class="batch-row__cell"><span class="batch-row__cell-label">Time to temperature, min<\/span><span class="batch-row__cell-value">20<\/span><\/div>/,
+      /<span class="batch-row__cell-label">Time to temperature<\/span><span class="batch-row__cell-value">20<span class="batch-row__unit"> min<\/span><\/span><span class="batch-row__plan">plan 10–12 min<\/span>/,
     );
     expect(markup).toMatch(
-      /<div class="batch-row__cell"><span class="batch-row__cell-label">Draw temperature, °C<\/span><span class="batch-row__cell-value">−6<\/span><\/div>/,
+      /<span class="batch-row__cell-label">Draw temperature<\/span><span class="batch-row__cell-value">−6<span class="batch-row__unit"> °C<\/span><\/span><\/div>/,
     );
     expect(markup).toMatch(
-      /<div class="batch-row__cell"><span class="batch-row__cell-label">Air, overrun %<\/span><span class="batch-row__cell-value">unknown<\/span><\/div>/,
+      /<span class="batch-row__cell-label">Air<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span><span class="batch-row__plan">overrun<\/span>/,
     );
   });
 
@@ -232,9 +270,13 @@ describe('BatchRow — the record\'s reading state, measured values as cells (sk
     expect(markup).not.toContain('batch-margin__measured');
   });
 
-  it('renders the record content — measured fields and the recorded-against line', () => {
+  it('renders the recorded-against and amended facts as figure cells, not prose sentences', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toContain('recorded 4 Aug 2026');
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Recorded<\/span><span class="batch-row__cell-value">4 Aug 2026 against 50 g oil · 800 g<\/span>/,
+    );
+    expect(markup).not.toContain('class="ink-text">recorded');
+    expect(markup).not.toContain('class="ink-text">amended');
   });
 
   it('renders the draw notes and ingredient notes with the prose-text class', () => {
@@ -270,31 +312,21 @@ describe('BatchRow — zero-batch and unknown-address states', () => {
   });
 });
 
-describe('BatchRow — the batch list, always a list (D-09)', () => {
+describe('BatchRow — the batch list, always a list only with zero batches; a closed-by-default disclosure otherwise (D-09, sketch 003 variant B, G-03.3-4)', () => {
   it('reads "no batch yet" with no batch recorded', () => {
     const markup = renderBatchRow({ batches: [] });
     expect(markup).toMatch(/<ul class="batch-margin__list"><li>no batch yet<\/li><\/ul>/);
   });
 
-  it('renders a single batch as a list entry, "churned <date>", an ink link', () => {
-    const markup = renderBatchRow({ batches: [augustSecondBatch], openBatch: null });
-    expect(markup).toMatch(/<li[^>]*><a[^>]*href="\/recipe\/olive-oil-ice-cream-v1\/batch\/[^"]+"[^>]*>churned 2 Aug 2026<\/a><\/li>/);
-  });
-
-  it('renders the open batch as plain text with the is-open class, not a link', () => {
+  it('renders no "Batches of this version" section by default when a batch exists — the disclosure is closed by default', () => {
     const markup = renderBatchRow({ batches: [augustSecondBatch], openBatch: augustSecondBatch });
-    expect(markup).toMatch(/<li class="is-open">churned 2 Aug 2026<\/li>/);
+    expect(markup).not.toContain('Batches of this version');
+    expect(markup).not.toContain('batch-margin__list');
   });
 
-  it('renders no links in the batch list while a pen is open', () => {
-    const markup = renderBatchRow({
-      batches: [augustSecondBatch],
-      openBatch: augustSecondBatch,
-      openPen: 'record',
-      draft: emptyChurnDraft,
-    });
-    expect(markup).not.toMatch(/<a[^>]*\/batch\//);
-    expect(markup).toContain('churned 2 Aug 2026');
+  it('renders no "Batches of this version" section by default with an address that matches no batch', () => {
+    const markup = renderBatchRow({ batches: [augustSecondBatch], openBatch: null });
+    expect(markup).not.toContain('Batches of this version');
   });
 });
 

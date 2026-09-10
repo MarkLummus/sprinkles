@@ -34,3 +34,19 @@ export function activeSteps(version) {
 export function rowGrams(row) {
   return row.portions.reduce((total, portion) => total + portion.grams, 0);
 }
+
+/**
+ * targetValueFor(version, label) -> the value of the first active step's
+ * target whose label strictly equals the given label, or null when no
+ * active step carries one (03.3-07, G-03.3-4's batch-row plan sub-line).
+ * Built on activeSteps, so a removed step's own targets are never read —
+ * the same removal discipline activeRows/activeSteps already keep.
+ */
+export function targetValueFor(version, label) {
+  for (const step of activeSteps(version)) {
+    for (const target of step.targets || []) {
+      if (target.label === label) return target.value;
+    }
+  }
+  return null;
+}

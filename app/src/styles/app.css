@@ -1345,6 +1345,76 @@ textarea {
   font-variant-numeric: tabular-nums;
 }
 
+/* The batch row's head line (sketch 003 variant B, index.html:83-85,
+   03.3-07, G-03.3-4): the region-name label, the churned date, and the
+   later-batches disclosure control read as one baseline-aligned line. */
+.batch-row__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+
+.batch-row__head .region-name {
+  margin: 0;
+}
+
+.batch-row__date {
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  color: var(--pen-blue);
+}
+
+/* A measured cell's own unit, set lighter than its figure (sketch
+   003 variant B, index.html:89, 03.3-07): also carries the cell's
+   "not measured" wording alone when the value is absent. */
+.batch-row__unit {
+  font-size: var(--size-deviation-words);
+  font-weight: 400;
+}
+
+/* A measured cell's plan/technical-term sub-line (sketch 003 variant B,
+   index.html:90, 03.3-07). */
+.batch-row__plan {
+  display: block;
+  font-size: var(--size-small-print);
+  margin-top: var(--gap-hair);
+}
+
+/* The "Batches of this version" disclosure (sketch 003 variant B,
+   index.html:256-262, 03.3-07, G-03.3-4): a full-width panel under the
+   row, opened by the head line's own count control. */
+.batch-row__later {
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--ink);
+}
+
+.batch-row__later-list {
+  list-style: none;
+  margin: var(--gap-xs) 0 0;
+  padding: 0;
+  display: flex;
+  gap: var(--gap-l);
+  flex-wrap: wrap;
+}
+
+.batch-row__later-date {
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  margin: 0;
+}
+
+.batch-row__later-small {
+  font-family: var(--face-grotesk);
+  color: var(--ink);
+}
+
+.batch-row__later-meta {
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
 .batch-margin button {
   margin-top: var(--gap-s);
 }

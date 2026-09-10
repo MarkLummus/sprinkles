@@ -156,8 +156,9 @@ function isAuthoredListDirty(draftList, baseList) {
 // "unsaved ink" principle carried to the plan's pen): every field tested
 // against '' / null / the version's own values, never truthiness, so a
 // grams field typed back to the version's own value counts as clean again.
-// A row's draft entry is { grams, step, removed } (03-02) — dirty if any
-// of the three differs from the row the pen opened on.
+// A row's draft entry is { portions: [{ step, grams }], removed } (D-01,
+// D-02) — dirty if the removed flag differs, or if any portion's raw
+// string or step differs from that portion's own value, in order.
 //
 // Extended (03-07, T-03-42) to the three fields the pen spends most of its
 // time editing — method, headnote, authored — which this check omitted
@@ -171,9 +172,11 @@ export function isPenDraftDirty(mode, penDraft, version) {
   if (penDraft.headnote !== version.headnote) return true;
   const rowsDirty = version.rows.some((row) => {
     const draftRow = penDraft.rows[row.id];
-    return (
-      draftRow.grams !== String(row.grams) || draftRow.step !== row.step || draftRow.removed !== (row.removed ?? false)
-    );
+    if (draftRow.removed !== (row.removed ?? false)) return true;
+    return row.portions.some((portion, i) => {
+      const draftPortion = draftRow.portions[i];
+      return draftPortion.grams !== String(portion.grams) || draftPortion.step !== portion.step;
+    });
   });
   if (rowsDirty) return true;
   const methodDirty = version.method.some((step) => {
@@ -487,11 +490,13 @@ export function RecipePage() {
   // The draft version (route-recipe-version.md § 3, 03-02): built once,
   // from the version the pen opened on with the draft's values applied, so
   // the pen's own table, the cross-flags (uses.js) and buildDiff all read
-  // the same object rather than each reassembling it. A draft grams string
-  // that fails to parse, or is blank mid-keystroke, keeps the row's own
-  // grams rather than becoming 0 or NaN. Unfiltered — a removed row or
-  // step still appears here, struck, for the pen's own table; readers that
-  // want the clean figures filter through activeRows/activeSteps first.
+  // the same object rather than each reassembling it. A row's portions
+  // become the draft's portions with each `grams` parsed through
+  // parseGramsDraft, falling back to that portion's own stored amount when
+  // the string is blank or does not parse — never 0 or NaN, applied per
+  // portion. Unfiltered — a removed row or step still appears here,
+  // struck, for the pen's own table; readers that want the clean figures
+  // filter through activeRows/activeSteps first.
   const draftVersion =
     mode === 'developing' && penDraft
       ? {
@@ -500,8 +505,10 @@ export function RecipePage() {
             const draftRow = penDraft.rows[row.id];
             return {
               ...row,
-              grams: parseGramsDraft(draftRow.grams) ?? row.grams,
-              step: draftRow.step,
+              portions: row.portions.map((portion, i) => {
+                const draftPortion = draftRow.portions[i];
+                return { step: draftPortion.step, grams: parseGramsDraft(draftPortion.grams) ?? portion.grams };
+              }),
               removed: draftRow.removed,
             };
           }),
@@ -798,16 +805,20 @@ export function RecipePage() {
     });
   }
 
-  // Seeds penDraft from the version the pen opened on — grams as strings
-  // (Pitfall 5), everything else the maker's own to write, never defaulted
-  // from the parent (D-10: no default reason, citation, or version line).
-  // Never touches draft or amendingBatchId — mode alone still decides
-  // which of developing/recording is live; derivePenState above is what
-  // now decides availability everywhere else (RESEARCH.md Pattern 4).
+  // Seeds penDraft from the version the pen opened on — a row's own
+  // portions mapped to { step, grams }, each grams a string (Pitfall 5),
+  // everything else the maker's own to write, never defaulted from the
+  // parent (D-10: no default reason, citation, or version line). Never
+  // touches draft or amendingBatchId — mode alone still decides which of
+  // developing/recording is live; derivePenState above is what now
+  // decides availability everywhere else (RESEARCH.md Pattern 4).
   function handleStartDeveloping() {
     const rows = {};
     for (const row of version.rows) {
-      rows[row.id] = { grams: String(row.grams), step: row.step, removed: row.removed ?? false };
+      rows[row.id] = {
+        portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams) })),
+        removed: row.removed ?? false,
+      };
     }
     setPenDraft({
       versionLabel: '',
@@ -851,19 +862,45 @@ export function RecipePage() {
     setPenDraft((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleChangePenGrams(rowId, value) {
+  // Writes exactly one portion's raw typed string, leaving every other
+  // portion and the removed flag untouched — the pen's amounts edit, the
+  // split does not (CONTEXT.md phase boundary).
+  function handleChangePenGrams(rowId, portionIndex, value) {
     setBlockedMessage(null);
     setBlockedTarget(null);
-    setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], grams: value } } }));
+    setPenDraft((prev) => ({
+      ...prev,
+      rows: {
+        ...prev.rows,
+        [rowId]: {
+          ...prev.rows[rowId],
+          portions: prev.rows[rowId].portions.map((portion, i) =>
+            i === portionIndex ? { ...portion, grams: value } : portion,
+          ),
+        },
+      },
+    }));
   }
 
   // A row's step allocation (the sheet's step column) is a choice among
   // the version's own steps (route-recipe-version.md § 3) — a different
-  // fact from a step's `uses` list, and both are kept.
+  // fact from a step's `uses` list, and both are kept. Writes only the
+  // FIRST portion's step; every remaining portion's own allocation is not
+  // editable this milestone — the portion count is fixed, amounts edit,
+  // the split does not (CONTEXT.md phase boundary).
   function handleChangePenRowStep(rowId, stepNumber) {
     setBlockedMessage(null);
     setBlockedTarget(null);
-    setPenDraft((prev) => ({ ...prev, rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], step: stepNumber } } }));
+    setPenDraft((prev) => ({
+      ...prev,
+      rows: {
+        ...prev.rows,
+        [rowId]: {
+          ...prev.rows[rowId],
+          portions: prev.rows[rowId].portions.map((portion, i) => (i === 0 ? { ...portion, step: stepNumber } : portion)),
+        },
+      },
+    }));
   }
 
   // Removing sets only the draft row's removed flag — it does not clear
@@ -1000,8 +1037,10 @@ export function RecipePage() {
       const draftRow = penDraft.rows[row.id];
       return {
         ...row,
-        grams: parseGramsDraft(draftRow.grams) ?? row.grams,
-        step: draftRow.step,
+        portions: row.portions.map((portion, i) => {
+          const draftPortion = draftRow.portions[i];
+          return { step: draftPortion.step, grams: parseGramsDraft(draftPortion.grams) ?? portion.grams };
+        }),
         removed: draftRow.removed,
       };
     });

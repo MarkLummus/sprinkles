@@ -174,8 +174,8 @@ function makeBaselineVersion(overrides = {}) {
     recipeId: 'r1',
     headnote: 'Baseline headnote.',
     rows: [
-      { id: 'row-1', grams: 100, step: 1, removed: false },
-      { id: 'row-2', grams: 50, step: 2, removed: false },
+      { id: 'row-1', portions: [{ step: 1, grams: 100 }], removed: false },
+      { id: 'row-2', portions: [{ step: 2, grams: 50 }], removed: false },
     ],
     method: [
       {
@@ -205,13 +205,17 @@ function makeBaselineVersion(overrides = {}) {
   };
 }
 
-// Mirrors handleStartDeveloping's own seeding exactly — grams as strings,
-// method/authored a structuredClone — so "nothing touched" is genuinely
-// the shape the pen opens with.
+// Mirrors handleStartDeveloping's own seeding exactly — a row's own
+// portions mapped to { step, grams } with grams a string, method/authored
+// a structuredClone — so "nothing touched" is genuinely the shape the pen
+// opens with.
 function makeCleanPenDraft(version) {
   const rows = {};
   for (const row of version.rows) {
-    rows[row.id] = { grams: String(row.grams), step: row.step, removed: row.removed ?? false };
+    rows[row.id] = {
+      portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams) })),
+      removed: row.removed ?? false,
+    };
   }
   return {
     versionLabel: '',
@@ -329,16 +333,27 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
 
   it('the three the check already caught still work: a changed gram, a changed step allocation, a removed row', () => {
     const gramsDraft = makeCleanPenDraft(version);
-    gramsDraft.rows['row-1'].grams = '999';
+    gramsDraft.rows['row-1'].portions[0].grams = '999';
     expect(isPenDraftDirty('developing', gramsDraft, version)).toBe(true);
 
     const stepDraft = makeCleanPenDraft(version);
-    stepDraft.rows['row-1'].step = 2;
+    stepDraft.rows['row-1'].portions[0].step = 2;
     expect(isPenDraftDirty('developing', stepDraft, version)).toBe(true);
 
     const removedDraft = makeCleanPenDraft(version);
     removedDraft.rows['row-1'].removed = true;
     expect(isPenDraftDirty('developing', removedDraft, version)).toBe(true);
+  });
+
+  it('is dirty when a two-portion row\'s SECOND portion alone changes, and clean again typed back — the split is not the pen\'s own to edit, only the amounts are (CONTEXT.md phase boundary)', () => {
+    const splitVersion = makeBaselineVersion({
+      rows: [{ id: 'row-1', portions: [{ step: 1, grams: 20 }, { step: 2, grams: 30 }], removed: false }],
+    });
+    const draft = makeCleanPenDraft(splitVersion);
+    draft.rows['row-1'].portions[1].grams = '999';
+    expect(isPenDraftDirty('developing', draft, splitVersion)).toBe(true);
+    draft.rows['row-1'].portions[1].grams = '30';
+    expect(isPenDraftDirty('developing', draft, splitVersion)).toBe(false);
   });
 
   it('is never dirty when the mode is not developing, or when the version or the draft is absent', () => {

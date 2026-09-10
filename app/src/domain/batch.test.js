@@ -7,6 +7,7 @@ import {
   formatRecordDate,
   hasAsMade,
   asMadeFor,
+  asMadeForPortion,
   asMadeTotals,
   stepChangeFor,
   isStruck,
@@ -45,7 +46,7 @@ describe('createBatch', () => {
   it('returns a record with the supplied id, versionId, recordedAt, empty amendedAt and tastings', () => {
     const batch = createBatch(
       oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-01': 383 } },
+      { churnDate: '2026-08-02', asMade: { 'row-01': [383] } },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
     expect(batch.schemaVersion).toBe(BATCH_SCHEMA_VERSION);
@@ -99,14 +100,14 @@ describe('createBatch', () => {
     const repository = createRepositoryDouble();
     const batch = createBatch(
       oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-01': 383 } },
+      { churnDate: '2026-08-02', asMade: { 'row-01': [383] } },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
 
     await repository.saveBatch(batch);
 
     const reloaded = await repository.getBatch('b-1');
-    expect(reloaded.churn.asMade['row-01']).toBe(383);
+    expect(reloaded.churn.asMade['row-01']).toEqual([383]);
 
     const listed = await repository.listBatchesForVersion('olive-oil-ice-cream-v1');
     expect(listed).toEqual([batch]);
@@ -128,22 +129,24 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
   it('blank is absent: an untouched row has no key, hasAsMade is false, asMadeFor is null', () => {
     const batch = createBatch(
       oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-01': 383 } },
+      { churnDate: '2026-08-02', asMade: { 'row-01': [383] } },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
     expect(hasAsMade(batch, 'row-02')).toBe(false);
     expect(asMadeFor(batch, 'row-02')).toBe(null);
+    expect(asMadeForPortion(batch, 'row-02', 0)).toBe(null);
     expect('row-02' in batch.churn.asMade).toBe(false);
   });
 
   it('zero is a value: a written 0 is present and reads back as 0, not null', () => {
     const batch = createBatch(
       oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-09': 0 } },
+      { churnDate: '2026-08-02', asMade: { 'row-09': [0] } },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
     expect(hasAsMade(batch, 'row-09')).toBe(true);
-    expect(asMadeFor(batch, 'row-09')).toBe(0);
+    expect(asMadeFor(batch, 'row-09')).toEqual([0]);
+    expect(asMadeForPortion(batch, 'row-09', 0)).toBe(0);
   });
 
   it('the plan never leaks: an untouched row with grams still reads asMadeFor as null', () => {
@@ -168,7 +171,7 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
 
   it('a full as-made on all twelve rows produces twelve keys', () => {
     const asMade = {};
-    for (const row of oliveOilVersion.rows) asMade[row.id] = 1;
+    for (const row of oliveOilVersion.rows) asMade[row.id] = [1];
     const batch = createBatch(oliveOilVersion, { churnDate: '2026-08-02', asMade }, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
     expect(Object.keys(batch.churn.asMade)).toHaveLength(12);
   });
@@ -176,10 +179,10 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
   it('an as-made value is never rounded, however fine its precision', () => {
     const batch = createBatch(
       oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-01': 383.25 } },
+      { churnDate: '2026-08-02', asMade: { 'row-01': [383.25] } },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
-    expect(asMadeFor(batch, 'row-01')).toBe(383.25);
+    expect(asMadeForPortion(batch, 'row-01', 0)).toBe(383.25);
   });
 
   it('the snapshot survives a whole-version edit made after createBatch', () => {
@@ -303,15 +306,16 @@ describe('asMadeTotals', () => {
     expect(asMadeTotal).toBeCloseTo(799.68, 2);
   });
 
-  it('sums the 2 Aug as-made entries, counting the written 0 on row-09', () => {
-    const asMade = { 'row-01': 383, 'row-02': 241, 'row-03': 45, 'row-09': 0 };
-    const { planTotal, asMadeTotal } = asMadeTotals(oliveOilVersion.rows, asMade);
+  // The seeded batch's own as-made map (D-10): whole milk's two portions
+  // both written (120 + 263), counting the written 0 on soy lecithin.
+  it("sums the seeded batch's own as-made entries, counting the written 0 on row-09", () => {
+    const { planTotal, asMadeTotal } = asMadeTotals(oliveOilVersion.rows, augustSecondBatch.churn.asMade);
     expect(planTotal).toBeCloseTo(799.68, 2);
     expect(asMadeTotal).toBeCloseTo(804.28, 2);
   });
 
   it('removing the written 0 raises the as-made total by the row plan grams', () => {
-    const withZero = asMadeTotals(oliveOilVersion.rows, { 'row-09': 0 }).asMadeTotal;
+    const withZero = asMadeTotals(oliveOilVersion.rows, { 'row-09': [0] }).asMadeTotal;
     const withoutEntry = asMadeTotals(oliveOilVersion.rows, {}).asMadeTotal;
     expect(withoutEntry - withZero).toBeCloseTo(1.2, 2);
   });
@@ -321,19 +325,37 @@ describe('asMadeTotals', () => {
   // asMadeTotals. A string summed with += concatenates rather than adds,
   // so this reproduces the crash a maker hit on the very first keystroke
   // into any as-made cell (and immediately on Amend for an already-recorded
-  // batch): before the fix, asMadeTotal came out as the string '0383241450'
+  // batch): before the fix, asMadeTotal came out as a concatenated string
   // instead of the number 804.28, and the sum below is not a number at all.
   it('sums the 2 Aug as-made entries when they arrive as the recording draft\'s strings', () => {
-    const asMade = { 'row-01': '383', 'row-02': '241', 'row-03': '45', 'row-09': '0' };
+    const asMade = { 'row-01': ['120', '263'], 'row-02': ['241'], 'row-03': ['45'], 'row-09': ['0'] };
     const { planTotal, asMadeTotal } = asMadeTotals(oliveOilVersion.rows, asMade);
     expect(planTotal).toBeCloseTo(799.68, 2);
     expect(asMadeTotal).toBeCloseTo(804.28, 2);
   });
 
-  it('treats a non-numeric as-made string as absent, falling back to the row plan grams', () => {
-    const withGarbage = asMadeTotals(oliveOilVersion.rows, { 'row-01': 'abc' }).asMadeTotal;
+  it('treats a non-numeric as-made element as absent, falling back to that portion\'s own plan grams', () => {
+    const withGarbage = asMadeTotals(oliveOilVersion.rows, { 'row-01': ['abc', 'abc'] }).asMadeTotal;
     const withoutEntry = asMadeTotals(oliveOilVersion.rows, {}).asMadeTotal;
     expect(withGarbage).toBeCloseTo(withoutEntry, 2);
+  });
+
+  it('a row whose key is present with one written portion and one null portion takes the written value for the first and the plan amount for the second', () => {
+    const rows = [{ id: 'r', portions: [{ step: 1, grams: 10 }, { step: 2, grams: 20 }] }];
+    const { asMadeTotal } = asMadeTotals(rows, { r: [15, null] });
+    expect(asMadeTotal).toBe(15 + 20);
+  });
+
+  it('a row with no as-made key contributes its whole plan total, summed across every one of its portions', () => {
+    const rows = [{ id: 'r', portions: [{ step: 1, grams: 10 }, { step: 2, grams: 20 }] }];
+    const { asMadeTotal } = asMadeTotals(rows, {});
+    expect(asMadeTotal).toBe(30);
+  });
+});
+
+describe('asMadeForPortion', () => {
+  it("returns 0, not null, for the soy lecithin's written zero", () => {
+    expect(asMadeForPortion(augustSecondBatch, 'row-09', 0)).toBe(0);
   });
 });
 
@@ -509,10 +531,10 @@ describe('augustSecondBatch (the 2 Aug 2026 working case)', () => {
     expect(augustSecondBatch.versionId).toBe('olive-oil-ice-cream-v1');
     expect(augustSecondBatch.churn.churnDate).toBe('2026-08-02');
     expect(augustSecondBatch.churn.asMade).toEqual({
-      'row-01': 383,
-      'row-02': 241,
-      'row-03': 45,
-      'row-09': 0,
+      'row-01': [120, 263],
+      'row-02': [241],
+      'row-03': [45],
+      'row-09': [0],
     });
     expect(Object.keys(augustSecondBatch.churn.asMade)).toHaveLength(4);
   });

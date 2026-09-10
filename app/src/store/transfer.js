@@ -224,12 +224,24 @@ function validateBatch(batch, path, errors) {
     errors.push(`${path}.churn: expected an object`);
   } else {
     const churn = batch.churn;
+    // D-10: a row's as-made value is an array aligned index-for-index with
+    // that row's portions, each element a finite number or null (never a
+    // stored total). A scalar value here is refused at the row's own path,
+    // never coerced — the shape a pre-reset record could carry.
     if (!isPlainObject(churn.asMade)) {
       errors.push(`${path}.churn.asMade: expected an object`);
     } else {
-      for (const [rowId, value] of Object.entries(churn.asMade)) {
-        if (!isFiniteNumber(value)) {
-          errors.push(`${path}.churn.asMade.${rowId}: expected a finite number, got ${JSON.stringify(value)}`);
+      for (const [rowId, values] of Object.entries(churn.asMade)) {
+        if (!Array.isArray(values)) {
+          errors.push(`${path}.churn.asMade.${rowId}: expected an array, got ${JSON.stringify(values)}`);
+        } else {
+          values.forEach((value, index) => {
+            if (value !== null && !isFiniteNumber(value)) {
+              errors.push(
+                `${path}.churn.asMade.${rowId}[${index}]: expected a finite number or null, got ${JSON.stringify(value)}`,
+              );
+            }
+          });
         }
       }
     }

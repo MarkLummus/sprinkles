@@ -14,7 +14,7 @@
 // decision, made once, at the point of presentation, not here.
 import { rowGrams } from './rows.js';
 
-export const BATCH_SCHEMA_VERSION = 1;
+export const BATCH_SCHEMA_VERSION = 2;
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -42,8 +42,12 @@ export function formatRecordDate(iso) {
 export function createBatch(version, churnFields, { id, now }) {
   const asMade = {};
   if (churnFields.asMade) {
+    // A shallow copy of each row's own array (D-10), not a shared
+    // reference — the caller's own churnFields.asMade arrays must never be
+    // the same array the stored record holds, so a later mutation of the
+    // caller's object can never move an already-saved batch.
     for (const rowId of Object.keys(churnFields.asMade)) {
-      asMade[rowId] = churnFields.asMade[rowId];
+      asMade[rowId] = [...churnFields.asMade[rowId]];
     }
   }
 
@@ -98,11 +102,25 @@ export function hasAsMade(batch, rowId) {
 }
 
 /**
- * asMadeFor(batch, rowId) -> the written number, or null when absent —
- * never the plan's number. The plan never leaks into the as-made reading.
+ * asMadeFor(batch, rowId) -> the written array, aligned index-for-index
+ * with that row's portions, or null when absent — never the plan's
+ * numbers. The plan never leaks into the as-made reading.
  */
 export function asMadeFor(batch, rowId) {
   return hasAsMade(batch, rowId) ? batch.churn.asMade[rowId] : null;
+}
+
+/**
+ * asMadeForPortion(batch, rowId, index) -> the written value at that
+ * portion, or null when the row key is absent, the element itself is
+ * null, or the index does not resolve to an element at all. The same
+ * explicit-null discipline the rest of this module uses (D-11): a written
+ * 0 at that index is a real value, distinguishable from an absent one.
+ */
+export function asMadeForPortion(batch, rowId, index) {
+  if (!hasAsMade(batch, rowId)) return null;
+  const value = batch.churn.asMade[rowId][index];
+  return value === undefined ? null : value;
 }
 
 /**
@@ -153,31 +171,41 @@ export function readMeasured(value, options = {}) {
 
 /**
  * asMadeTotals(rows, asMade) -> { planTotal, asMadeTotal }. planTotal sums
- * every row's plan grams. asMadeTotal sums the as-made value where the
- * row's key is present (a written 0 contributes zero — D-11) and the
- * row's plan grams where it is not (the plan fills the gap, never the
- * reverse). Presence is decided by an own-property check, never
- * truthiness. Neither total is rounded here — see the precision contract
- * above.
+ * every row's plan grams (rowGrams). asMadeTotal sums, per portion: the
+ * as-made element where the row's key is present and that element parses
+ * (a written 0 contributes zero — D-11), and that portion's own plan
+ * grams otherwise — whether because the row's key is absent, the element
+ * is null, or the element does not parse (D-10, "the plan fills the gap,
+ * never the reverse", now applied one portion at a time). Presence is
+ * decided by an own-property check on the row, never truthiness. Neither
+ * total is rounded here — see the precision contract above.
  *
- * A present value is coerced with Number() before summing, since the live
- * recording draft holds as-made values as typed strings until save
- * (D-18) — without this, `+=` would concatenate rather than add. A value
- * that does not parse to a finite number (an in-progress or invalid
- * keystroke) is treated the same as an absent key: the plan fills the
- * gap, never NaN.
+ * A present element is coerced with Number() before summing, since the
+ * live recording draft holds as-made values as typed strings until save
+ * (D-18) — without this, `+=` would concatenate rather than add. An
+ * element that is null, an empty string (a portion within an otherwise
+ * written row that the maker has not yet typed into), or does not parse
+ * to a finite number is treated the same as an absent element: the
+ * portion's own plan grams fills the gap, never NaN.
  */
 export function asMadeTotals(rows, asMade) {
   let planTotal = 0;
   let asMadeTotal = 0;
   for (const row of rows) {
     planTotal += rowGrams(row);
-    let contribution = rowGrams(row);
-    if (Object.prototype.hasOwnProperty.call(asMade, row.id)) {
-      const value = Number(asMade[row.id]);
-      if (Number.isFinite(value)) contribution = value;
+    const hasRow = Object.prototype.hasOwnProperty.call(asMade, row.id);
+    const values = hasRow ? asMade[row.id] : null;
+    for (const [i, portion] of row.portions.entries()) {
+      let contribution = portion.grams;
+      if (hasRow) {
+        const raw = values[i];
+        if (raw !== null && raw !== undefined && raw !== '') {
+          const value = Number(raw);
+          if (Number.isFinite(value)) contribution = value;
+        }
+      }
+      asMadeTotal += contribution;
     }
-    asMadeTotal += contribution;
   }
   return { planTotal, asMadeTotal };
 }

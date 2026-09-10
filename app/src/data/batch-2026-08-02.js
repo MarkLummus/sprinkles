@@ -15,10 +15,10 @@ const TASTING_ID = 'f2f6f9c1-6c9f-4b8a-9c1e-2a1f7e6d9a02';
 const churnFields = {
   churnDate: '2026-08-02',
   asMade: {
-    'row-01': 383, // whole milk, the sheet's 120 g + 263 g
-    'row-02': 241, // heavy cream
-    'row-03': 45, // Graza Drizzle — "Actually 45 g", written during the churn (D-12)
-    'row-09': 0, // soy lecithin skipped (D-11): a real 0, distinct from an untouched row
+    'row-01': [120, 263], // whole milk, the sheet's own two lines
+    'row-02': [241], // heavy cream
+    'row-03': [45], // Graza Drizzle — "Actually 45 g", written during the churn (D-12)
+    'row-09': [0], // soy lecithin skipped (D-11): a real 0, distinct from an untouched row
   },
   // Sucrose and the gums matched the plan, so nothing was written beside
   // them and nothing is written for them here.

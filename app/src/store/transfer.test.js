@@ -304,17 +304,32 @@ describe('validateStoreFile', () => {
     expect(result).toEqual({ ok: true, errors: [] });
   });
 
-  it('accepts a written 0 in a batch as-made map — a truthiness test would wrongly reject it', () => {
-    const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-09': 0 } } });
+  it('accepts a written 0 in a batch as-made array — a truthiness test would wrongly reject it', () => {
+    const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-09': [0] } } });
     const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result).toEqual({ ok: true, errors: [] });
   });
 
-  it('rejects a non-numeric as-made value, naming the offending path', () => {
-    const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-01': '383' } } });
+  it('accepts null as an as-made array element — an untouched portion within an otherwise written row (D-10)', () => {
+    const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-01': [383, null] } } });
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+    expect(result).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a scalar (non-array) as-made value, naming the row\'s own path (D-10)', () => {
+    const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-01': 383 } } });
     const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('$.batches[0].churn.asMade.row-01'))).toBe(true);
+    const error = result.errors.find((message) => message.includes('$.batches[0].churn.asMade.row-01'));
+    expect(error).toBeDefined();
+    expect(error).not.toContain('row-01[0]');
+  });
+
+  it('rejects an array element that is neither a finite number nor null, naming its own indexed path', () => {
+    const batch = makeBatch({ churn: { ...makeBatch().churn, asMade: { 'row-01': ['383'] } } });
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.batches[0].churn.asMade.row-01[0]'))).toBe(true);
   });
 
   it('collects three errors in one call: missing versionId, empty snapshot.rows, non-numeric drawTempC', () => {

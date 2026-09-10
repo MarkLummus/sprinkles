@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.3"
 current_phase_name: The front-matter rows and the page in step order (INSERTED)
 status: executing
-stopped_at: Completed 03.3-02-PLAN.md
-last_updated: "2026-09-10T17:45:48.825Z"
+stopped_at: Completed 03.3-03-PLAN.md
+last_updated: "2026-09-10T18:03:08.724Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 03.3 execution started
-state_head: 82ce11b71a1e3369f6ede44e9d76f9697b6852e4
+state_head: 73297718e1031dd9081447e680be2d68772149d5
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 35
-  completed_plans: 33
+  completed_plans: 34
   percent: 14
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03.3 (The front-matter rows and the page in step order (INSERTED)) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-09-10 — Phase 03.3 execution started
 
@@ -92,6 +92,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | Phase 03.2 P04 | 15min | 3 tasks | 12 files |
 | Phase 03.2 P05 | 20min | 2 tasks | 2 files |
 | Phase 03.3 P02 | 21min | 3 tasks | 8 files |
+| Phase 03.3 P03 | 25min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -165,6 +166,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.2]: The all-blank-portions test assertion was scoped to the row's own tbody markup rather than the whole table, since the total row legitimately carries its own 'as made X grams' phrase whenever an as-made layer is showing at all.
 - [Phase 03.3]: [Phase 03.3, Plan 02] Kept rowAccessibleLabel's grams/share phrase row-level (the row's own stored total) while making asMadeValue portion-scoped, since the sub-line makes the row total visible on every portion-tr but no row-level joined as-made summary exists anywhere in the new design.
 - [Phase 03.3]: [Phase 03.3, Plan 02] formatPortionLine's rowTotalGrams argument stays rowGrams(row) (the stored/baseline total) across reading, pen, and show-changes; only portionGrams and mass vary by branch.
+- [Phase 03.3]: [Phase 03.3, Plan 03] Followed Mark's 2026-09-10 option-B resolution: the removed-row cross-flag moves inside the edit-this-step reveal with the rest of the form; the coverage cue (plain prose, no control) stays on the closed step.
+- [Phase 03.3]: [Phase 03.3, Plan 03] Rewrote Method.test.jsx assertions invalidated by StepPenBody's closed-by-default rewrite to test the new closed markup, following the file's own established "UAT item, not asserted here" precedent, rather than adding jsdom/testing-library to simulate the reveal click.
 
 ### Pending Todos
 
@@ -230,6 +233,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T17:45:48.753Z
-Stopped at: Completed 03.3-02-PLAN.md
+Last session: 2026-09-10T18:02:59.645Z
+Stopped at: Completed 03.3-03-PLAN.md
 Resume file: None

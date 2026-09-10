@@ -33,7 +33,7 @@ function renderVersionRow(props) {
         mode="reading"
         penDraft={null}
         batches={[]}
-        versionIdsWithBatches={new Set()}
+        allBatches={[]}
         citedBatch={null}
         openPen={null}
         penReason={null}
@@ -161,12 +161,38 @@ describe('VersionRow — the ceremony renders nothing pre-filled', () => {
   });
 });
 
-describe('VersionRow — the reason field reads as printed prose (03.1-04)', () => {
-  it('renders no visible "Reason" label and carries the accessible name in aria-label instead', () => {
+// 03.1-04 read the reason field with no visible label at all; 03.3-06
+// checkpoint feedback (Mark, 2026-09-10, sketch 003 variant B,
+// index.html:222) supersedes that for a visible "Why" label matching
+// Version's own — never the retired "Reason" wording — while the field
+// itself still carries its own accessible name in aria-label.
+describe('VersionRow — the reason field carries a visible "Why" label (03.1-04, superseded by 03.3-06 checkpoint feedback)', () => {
+  it('renders a visible "Why" label, never "Reason", alongside the aria-label', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
     expect(markup).not.toContain('<span>Reason</span>');
+    expect(markup).toMatch(/<label class="headnote__reason-field"><span>Why<\/span>/);
     expect(markup).toMatch(/<textarea[^>]*aria-label="Why"/);
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
+  });
+});
+
+// 03.3-06 checkpoint feedback (sketch 003 variant B, index.html:225): the
+// citation reads as a label over its control, the same shape Version and
+// Why use, not a label beside its control on one line.
+describe('VersionRow — the citation reads label-over-control, like Version and Why (03.3-06 checkpoint feedback)', () => {
+  it('wraps "From batch" and its select in one label, the control after the visible span', () => {
+    const markup = renderVersionRow({
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      batches: [augustSecondBatch],
+      canSaveOver: false,
+    });
+    expect(markup).toMatch(/<label class="headnote__citation"><span>From batch<\/span><select/);
+  });
+
+  it('wraps "no batch to cite" in the same label-over-control shape when the version has no batch', () => {
+    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    expect(markup).toMatch(/<label class="headnote__citation"><span>From batch<\/span><span class="ink-text">no batch to cite<\/span><\/label>/);
   });
 });
 
@@ -387,6 +413,17 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
 
     const withoutParent = renderVersionRow({ version: childVersion, citedBatch: augustSecondBatch, parentVersion: null });
     expect(withoutParent).not.toContain('Show changes');
+  });
+
+  // 03.3-06 checkpoint feedback (sketch 003 variant B, index.html:479):
+  // Show changes reads as a text control, not a bordered button.
+  it('renders Show changes carrying the text-control class', () => {
+    const markup = renderVersionRow({
+      version: childVersion,
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    expect(markup).toMatch(/<button[^>]*class="headnote__show-changes text-control"[^>]*>Show changes<\/button>/);
   });
 
   it('renders Parent and Batch as plain text, not links, while a pen is open', () => {

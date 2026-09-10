@@ -17,7 +17,7 @@ export function VersionRow({
   mode,
   penDraft,
   batches,
-  versionIdsWithBatches,
+  allBatches = [],
   citedBatch,
   parentVersion = null,
   showingChanges = false,
@@ -219,7 +219,7 @@ export function VersionRow({
               {parentVersion && (
                 <button
                   type="button"
-                  className="headnote__show-changes"
+                  className="headnote__show-changes text-control"
                   aria-pressed={showingChanges}
                   onClick={onToggleShowChanges}
                 >
@@ -266,6 +266,7 @@ export function VersionRow({
                 parent's words in ink"). */}
             <p className="headnote__version-was">was {version.versionLabel}</p>
             <label className="headnote__reason-field">
+              <span>Why</span>
               <textarea
                 className="prose-field"
                 rows="2"
@@ -277,7 +278,7 @@ export function VersionRow({
             </label>
           </div>
           <div>
-            <div className="headnote__citation">
+            <label className="headnote__citation">
               <span>From batch</span>
               {batches.length === 0 ? (
                 <span className="ink-text">no batch to cite</span>
@@ -298,7 +299,7 @@ export function VersionRow({
                   ))}
                 </select>
               )}
-            </div>
+            </label>
             {/* D-10: Cancel first always. A churned version (canSaveOver
                 false) offers one Save, bound to onSaveAsNewVersion since a
                 churned version's own record is never written to (D04). An
@@ -338,7 +339,7 @@ export function VersionRow({
             versions={descendants}
             recipeId={version.recipeId}
             currentId={version.id}
-            versionIdsWithBatches={versionIdsWithBatches}
+            allBatches={allBatches}
             openPen={openPen}
             penReason={penReason}
           />

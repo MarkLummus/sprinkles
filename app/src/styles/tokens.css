@@ -164,9 +164,10 @@
   --gap-uses-chip: var(--gap-xs);
 
   /* The version strip (route-recipe-version.md § 3, § 6, 03-03): ink on
-     ground, in the grotesk at small-print size. */
+     ground, in the grotesk at small-print size. Its card grid (03.3-06
+     checkpoint feedback) reads --gap-s/--gap-l directly, the same pair
+     the sketch's own .vtree rule uses — no gap token of its own. */
   --size-strip-line: var(--size-small-print);
-  --gap-strip: var(--gap-m);
 
   /* The parent's hollow tick on a graduated rule's scale
      (route-recipe-version.md § 3, § 6, 03-04): an outline of the solid

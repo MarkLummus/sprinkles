@@ -102,7 +102,7 @@ function renderVersionsReading(openPen, reason) {
         mode="reading"
         penDraft={{ versionLabel: '', reason: '', citedBatchId: null, headnote: oliveOilVersion.headnote }}
         batches={[]}
-        versionIdsWithBatches={new Set()}
+        allBatches={[]}
         citedBatch={null}
         openPen={openPen}
         penReason={reason}

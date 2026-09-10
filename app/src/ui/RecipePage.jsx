@@ -385,15 +385,16 @@ export function RecipePage() {
     };
   }, [version]);
 
-  // The version ids that have at least one batch, for the strip's
-  // "churned" word (route-recipe-version.md § 3, 03-03) — one
+  // Every batch in the store, for the Later disclosure's own cards
+  // (03.3-06 checkpoint feedback, G-03.3-4): each descendant's "churned"
+  // date and its cited batch's date both come out of this one read — one
   // repository.getAllBatches() read, not a query per version, since the
   // realistic range is 1–6 versions per recipe this milestone.
-  const [versionIdsWithBatches, setVersionIdsWithBatches] = useState(new Set());
+  const [allBatches, setAllBatches] = useState([]);
   useEffect(() => {
     let cancelled = false;
-    repository.getAllBatches().then((allBatches) => {
-      if (!cancelled) setVersionIdsWithBatches(new Set(allBatches.map((batch) => batch.versionId)));
+    repository.getAllBatches().then((result) => {
+      if (!cancelled) setAllBatches(result);
     });
     return () => {
       cancelled = true;
@@ -1135,7 +1136,7 @@ export function RecipePage() {
               mode={mode}
               penDraft={penDraft}
               batches={batches}
-              versionIdsWithBatches={versionIdsWithBatches}
+              allBatches={allBatches}
               citedBatch={citedBatch}
               parentVersion={parentVersion}
               showingChanges={showingChanges}

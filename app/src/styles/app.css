@@ -365,11 +365,26 @@ textarea {
   margin-top: var(--gap-s);
 }
 
+/* The "Why" label word (03.3-06 checkpoint feedback, sketch 003 variant
+   B, index.html:222): the same visible-label style
+   .headnote__version-field span already carries above, so Version and
+   Why read as the same kind of thing. */
+.headnote__reason-field span {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
+}
+
 /* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04): the
    pressed state is carried by weight and outline, never by hue or a label
-   change — the same convention .version-strip__item.is-current uses. */
+   change — the same convention .version-strip__item.is-current uses.
+   Reads .text-control (03.3-06 checkpoint feedback, sketch 003 variant B,
+   index.html:479) for its border-less, underlined rest state; this rule
+   now only carries the spacing this button needs beside its siblings. */
 .headnote__show-changes {
-  font: inherit;
   margin-left: var(--gap-xs);
 }
 
@@ -379,13 +394,23 @@ textarea {
   outline-offset: var(--focus-outline-offset);
 }
 
+/* The "From batch" label-over-control (03.3-06 checkpoint feedback,
+   sketch 003 variant B, index.html:225): stacked like Version and Why
+   above it, not the inline "label beside control" row this used to be. */
 .headnote__citation {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-xs);
+  display: block;
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);
   margin-top: var(--gap-s);
+}
+
+.headnote__citation span {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
 }
 
 /* The citation select (D-13 § 8, "Measure"): held to the prose measure
@@ -547,19 +572,25 @@ textarea {
   font-size: var(--size-small-print);
 }
 
-/* The version strip (route-recipe-version.md § 3, § 6, 03-03): ink on
-   ground, in the grotesk at small-print size, nested inside Versions
-   beneath the openers — no grid area of its own now that it renders
-   inside that region rather than as a sibling grid row. */
+/* The version strip (route-recipe-version.md § 3, § 6, 03-03; rebuilt as
+   a card grid against sketch 003 variant B's own `.vtree`,
+   index.html:97-103, for the Later disclosure — 03.3-06 checkpoint
+   feedback): a card per descendant, wrapping to as many columns as the
+   row's width allows, the same auto-fill discipline the sketch's own
+   rule uses. */
 .version-strip__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--gap-strip);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--gap-s) var(--gap-l);
   font-family: var(--face-grotesk);
   font-size: var(--size-strip-line);
+}
+
+.version-strip__item {
+  padding: var(--gap-xs) 0;
 }
 
 .version-strip__item a {
@@ -574,10 +605,33 @@ textarea {
   outline-offset: var(--focus-outline-offset);
 }
 
+/* The card's own three lines (sketch 003 variant B, index.html:99-102):
+   the version line in the text face at version-line size, then the meta
+   line and the batch line both in small print. */
+.version-strip__vline {
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  margin: 0;
+}
+
+.version-strip__meta {
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
+.version-strip__batch {
+  margin: var(--gap-hair) 0 0;
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+}
+
+.version-strip__batch .text-control {
+  margin-left: var(--gap-s);
+}
+
 .version-strip__churned {
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
-  margin-left: var(--gap-hair);
 }
 
 .ingredient-table-region {

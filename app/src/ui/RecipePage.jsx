@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures } from '../domain/figures.js';
@@ -21,9 +21,9 @@ import { Method } from './Method.jsx';
 import { Authored } from './Authored.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
-import { BatchMargin } from './BatchMargin.jsx';
+import { BatchRow } from './BatchRow.jsx';
 import { Headnote } from './Headnote.jsx';
-import { Versions } from './Versions.jsx';
+import { VersionRow } from './VersionRow.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
@@ -304,6 +304,11 @@ export function RecipePage() {
   // blockedMessage is cleared so the two can never point at different
   // fields.
   const [blockedTarget, setBlockedTarget] = useState(null);
+  // WR-01's fix (03.1 REVIEW.md, Versions.jsx's half): an incrementing
+  // counter, stamped onto blockedTarget on every blocked buildPenFields
+  // call, so a second consecutive blocked save on the same field re-fires
+  // VersionRow's focus-return effect — a value-equal boolean cannot.
+  const blockedAttemptRef = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -1051,9 +1056,14 @@ export function RecipePage() {
       // D-21: the same traversal that named the message also names the
       // row it blocked on, so the two can never disagree (T-03.1-21) — a
       // row id marks and focuses that row's grams field; no row id means
-      // the block is the version line's own.
+      // the block is the version line's own. blockedAttemptRef increments
+      // on every blocked press (WR-01) so a second consecutive block on
+      // the same field still moves focus.
       const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
-      setBlockedTarget(rowId ? { kind: 'row', rowId } : { kind: 'versionLine' });
+      blockedAttemptRef.current += 1;
+      setBlockedTarget(
+        rowId ? { kind: 'row', rowId, attempt: blockedAttemptRef.current } : { kind: 'versionLine', attempt: blockedAttemptRef.current },
+      );
       return null;
     }
     const rows = version.rows.map((row) => {
@@ -1126,57 +1136,68 @@ export function RecipePage() {
         <Link to="/">Sprinkles</Link>
       </p>
       <article className="recipe-page">
-        {/* The top band (route-recipe.md § 3, D-04): the recipe block at
-            the prose measure on the left, Versions beside it — the
-            band's own two-track grid is what makes this seam land at the
-            prose measure rather than the spread's 2fr/1fr seam below
-            (app.css .recipe-band). Recipe block first in DOM order, so
-            the intro paragraph field precedes every save in the tab
+        {/* The front matter (sketch 003 variant B, 03.3-01): two
+            full-width stacked rows — the version's row, then the batch's
+            row (app.css .recipe-band). Recipe block first in DOM order,
+            so the intro paragraph field precedes every save in the tab
             order (D-28). */}
         <div className="recipe-band">
-          <Headnote
-            version={version}
-            mode={mode}
-            penDraft={penDraft}
-            onChangePenField={handleChangePenField}
-          />
+          <div className="recipe-band__row-version">
+            <Headnote
+              version={version}
+              mode={mode}
+              penDraft={penDraft}
+              onChangePenField={handleChangePenField}
+            />
 
-          <Versions
+            <VersionRow
+              version={version}
+              versions={versions}
+              mode={mode}
+              penDraft={penDraft}
+              batches={batches}
+              versionIdsWithBatches={versionIdsWithBatches}
+              citedBatch={citedBatch}
+              parentVersion={parentVersion}
+              showingChanges={showingChanges}
+              openPen={openPen}
+              penReason={penReason}
+              canSaveOver={canSaveOver}
+              penHint={penHint}
+              versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
+              onStartDeveloping={handleStartDeveloping}
+              onCancelDeveloping={handleCancelDeveloping}
+              onChangePenField={handleChangePenField}
+              onSaveAsNewVersion={handleSaveAsNewVersion}
+              onSaveOverVersion={handleSaveOverVersion}
+              onToggleShowChanges={handleToggleShowChanges}
+              focusDevelopOnMount={focusDevelopOnMount}
+            />
+          </div>
+
+          <BatchRow
             version={version}
-            versions={versions}
+            batches={batches}
+            openBatch={openBatch}
             mode={mode}
             draft={draft}
-            penDraft={penDraft}
-            openBatch={openBatch}
-            batches={batches}
-            versionIdsWithBatches={versionIdsWithBatches}
-            citedBatch={citedBatch}
-            parentVersion={parentVersion}
-            showingChanges={showingChanges}
+            onChangeChurnField={handleChangeChurnField}
+            tastingDraft={tastingDraft}
+            onChangeTastingField={handleChangeTastingField}
+            onChangeTastingMark={handleChangeTastingMark}
             openPen={openPen}
             penReason={penReason}
-            canSaveOver={canSaveOver}
             penSaveDisabled={penSaveDisabled}
             penHint={penHint}
-            versionLineBlocked={blockedTarget?.kind === 'versionLine'}
-            onStartDeveloping={handleStartDeveloping}
-            onCancelDeveloping={handleCancelDeveloping}
-            onChangePenField={handleChangePenField}
-            onSaveAsNewVersion={handleSaveAsNewVersion}
-            onSaveOverVersion={handleSaveOverVersion}
-            onToggleShowChanges={handleToggleShowChanges}
             onStartRecording={handleStartRecording}
             onStartAmending={handleStartAmending}
             onChangeChurnDate={handleChangeChurnDate}
             onCancelRecording={handleCancelRecording}
             onSaveBatch={handleSaveBatch}
-            tastingDraft={tastingDraft}
             onStartTasting={handleStartTasting}
-            onChangeTastingField={handleChangeTastingField}
             onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
             onSaveTasting={handleSaveTasting}
             onCancelTasting={handleCancelTasting}
-            focusDevelopOnMount={focusDevelopOnMount}
           />
         </div>
 
@@ -1248,17 +1269,6 @@ export function RecipePage() {
 
           <aside className="margin-region" aria-label="Notes">
             <h2 className="region-name">Notes</h2>
-            <BatchMargin
-              version={version}
-              batches={batches}
-              openBatch={openBatch}
-              mode={mode}
-              draft={draft}
-              onChangeChurnField={handleChangeChurnField}
-              tastingDraft={tastingDraft}
-              onChangeTastingField={handleChangeTastingField}
-              onChangeTastingMark={handleChangeTastingMark}
-            />
             <DerivedAdvisories version={liveVersion} />
             <Authored
               carriedForward={mode === 'developing' && penDraft ? penDraft.authored.carriedForward : version.authored.carriedForward}

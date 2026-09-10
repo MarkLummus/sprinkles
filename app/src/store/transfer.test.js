@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { exportStore, importStore, validateStoreFile } from './transfer.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
+import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. Mirrors createRepository's putAll/putAllBatches:
@@ -155,6 +157,25 @@ describe('export then import round trip', () => {
     expect(result.ok).toBe(true);
     expect(target.versions).toEqual(source.versions);
     expect(target.batches).toEqual(source.batches);
+  });
+
+  // The phase's Done-when (D-08): a store exported after this change
+  // imports after it, proven against the real seeded olive oil version and
+  // its real 2 Aug batch, not a fixture. JSON.parse(JSON.stringify(...))
+  // carries a genuinely serialised payload, the same as a file on disk,
+  // rather than a live object graph the two repositories could share by
+  // reference.
+  it('carries the real seeded olive oil version and its 2 Aug batch intact', async () => {
+    const source = createInMemoryRepository([oliveOilVersion], [augustSecondBatch]);
+    const exported = await exportStore(source);
+    const serialised = JSON.parse(JSON.stringify(exported));
+
+    const target = createInMemoryRepository([], []);
+    const result = await importStore(target, serialised);
+
+    expect(result.ok).toBe(true);
+    expect(target.versions).toEqual([oliveOilVersion]);
+    expect(target.batches).toEqual([augustSecondBatch]);
   });
 });
 

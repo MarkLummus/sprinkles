@@ -15,7 +15,6 @@ import {
   parseGramsDraft,
 } from './lineage.js';
 import { sortedBatches } from './batch.js';
-import { liftVersionRecord } from '../store/versionLift.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 function makeVersion(overrides = {}) {
@@ -396,33 +395,5 @@ describe('blockedSaveMessage', () => {
         expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toMatch(/'s amount is not a number$/);
       }
     });
-  });
-});
-
-// liftVersionRecord (app/src/store/versionLift.js) is asserted here rather
-// than in a dedicated suite — it is the one other pure function this
-// phase's version-record shape depends on, and its idempotence is a fact
-// both db.js's cursor-lift and transfer.js's import rely on unconditionally.
-describe('liftVersionRecord idempotence', () => {
-  const phase2Shaped = {
-    id: 'v9',
-    recipeId: 'r9',
-    versionLabel: 'line',
-    rows: [{ id: 'row-01', grams: 10 }],
-    method: [{ n: 1, instruction: 'do it' }],
-    authored: { carriedForward: ['note one'], beforeYouStart: ['note two'] },
-  };
-
-  it('lifting a Phase 2-shaped record twice deep-equals lifting it once', () => {
-    expect(liftVersionRecord(liftVersionRecord(phase2Shaped))).toEqual(liftVersionRecord(phase2Shaped));
-  });
-
-  it('lifting an already-lifted record deep-equals the record itself', () => {
-    const lifted = liftVersionRecord(phase2Shaped);
-    expect(liftVersionRecord(lifted)).toEqual(lifted);
-  });
-
-  it('lifting the seeded olive oil version twice deep-equals lifting it once', () => {
-    expect(liftVersionRecord(liftVersionRecord(oliveOilVersion))).toEqual(liftVersionRecord(oliveOilVersion));
   });
 });

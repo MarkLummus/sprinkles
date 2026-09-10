@@ -7,6 +7,8 @@
 // (route-recipe.md § 4 / tokens.css --rule-*), expressed as plain numbers
 // because SVG presentation attributes read user-space units, not CSS
 // lengths. Colour is never a literal — every stroke reads var(--ink).
+import { figureLabelText } from '../domain/figures.js';
+
 const WIDTH = 320;
 const HEIGHT = 30;
 const GRADUATION_COUNT = 10;
@@ -67,7 +69,7 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
   const changed = Boolean(figureDelta?.changed);
   const changePhrase = changed ? `was ${figureDelta.from.toFixed(decimals)}${unit}, now ${value.toFixed(decimals)}${unit}` : null;
   const valuePhrase = changePhrase ?? `${value.toFixed(decimals)}${unit}`;
-  const accessibleName = [label, valuePhrase, targetText, basisText].filter(Boolean).join(', ');
+  const accessibleName = [figureLabelText(label), valuePhrase, targetText, basisText].filter(Boolean).join(', ');
   const hatchId = `hatch-${key}`;
 
   return (
@@ -88,7 +90,10 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
       onBlur={() => onBlurFigure?.()}
     >
       <div className="graduated-rule__head" aria-hidden="true">
-        <span className="graduated-rule__label">{label}</span>
+        <span className="graduated-rule__label">
+          <span className="graduated-rule__label-word">{label.word}</span>
+          {label.term && <span className="graduated-rule__label-term"> · {label.term}</span>}
+        </span>
         <span className="graduated-rule__value">
           {changed && (
             <span className="struck-value">

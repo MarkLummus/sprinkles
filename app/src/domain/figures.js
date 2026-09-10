@@ -15,14 +15,54 @@ import { rowGrams } from './rows.js';
 // is MSNF x 0.545. Reporting only a figure's own field would under-report
 // the uncertainty a figure actually rests on.
 export const FIGURE_SPECS = [
-  { key: 'pac', label: 'PAC', unit: '', decimals: 1, domain: [0, 40], targetKey: 'pac', fields: ['pac', 'msnf'] },
-  { key: 'pod', label: 'POD', unit: '', decimals: 1, domain: [0, 30], targetKey: 'pod', fields: ['pod', 'msnf'] },
-  { key: 'fat', label: 'Total fat', unit: '%', decimals: 1, domain: [0, 30], targetKey: 'fat', fields: ['fat'] },
-  { key: 'msnf', label: 'MSNF', unit: '%', decimals: 1, domain: [0, 15], targetKey: 'msnf', fields: ['msnf'] },
-  { key: 'sugar', label: 'Sugar solids', unit: '%', decimals: 1, domain: [0, 25], targetKey: 'sugar', fields: ['sugar'] },
+  {
+    key: 'pac',
+    label: { word: 'Freezing', term: 'PAC' },
+    unit: '',
+    decimals: 1,
+    domain: [0, 40],
+    targetKey: 'pac',
+    fields: ['pac', 'msnf'],
+  },
+  {
+    key: 'pod',
+    label: { word: 'Sweetness', term: 'POD' },
+    unit: '',
+    decimals: 1,
+    domain: [0, 30],
+    targetKey: 'pod',
+    fields: ['pod', 'msnf'],
+  },
+  {
+    key: 'fat',
+    label: { word: 'Fat', term: null },
+    unit: '%',
+    decimals: 1,
+    domain: [0, 30],
+    targetKey: 'fat',
+    fields: ['fat'],
+  },
+  {
+    key: 'msnf',
+    label: { word: 'Milk solids', term: 'MSNF' },
+    unit: '%',
+    decimals: 1,
+    domain: [0, 15],
+    targetKey: 'msnf',
+    fields: ['msnf'],
+  },
+  {
+    key: 'sugar',
+    label: { word: 'Sugar', term: null },
+    unit: '%',
+    decimals: 1,
+    domain: [0, 25],
+    targetKey: 'sugar',
+    fields: ['sugar'],
+  },
   {
     key: 'solids',
-    label: 'Total solids',
+    label: { word: 'Solids', term: null },
     unit: '%',
     decimals: 1,
     domain: [25, 55],
@@ -30,6 +70,18 @@ export const FIGURE_SPECS = [
     fields: ['fat', 'msnf', 'sugar', 'other', 'emulsifier', 'stabilizer'],
   },
 ];
+
+/**
+ * figureLabelText(label) -> the plain word first, the technical term beside
+ * it in small print, never hidden (D11). Flattens a figure's structured
+ * `{ word, term }` label to one string — `${word} · ${term}` when a term is
+ * present, else `word` alone. The one place this join rule lives; every
+ * other consumer of a figure's label as plain text calls this rather than
+ * re-implementing the join (03.3-04).
+ */
+export function figureLabelText(label) {
+  return label.term ? `${label.word} · ${label.term}` : label.word;
+}
 
 const BASIS_ORDER = ['stated', 'derived', 'estimated', 'inherited'];
 const worseBasis = (a, b) => (BASIS_ORDER.indexOf(b) > BASIS_ORDER.indexOf(a) ? b : a);

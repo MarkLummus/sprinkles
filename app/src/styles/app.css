@@ -1075,6 +1075,10 @@ textarea {
   font-size: var(--size-table-body);
 }
 
+.graduated-rule__label-term {
+  font-size: var(--size-small-print);
+}
+
 .graduated-rule__value {
   font-size: var(--size-figure-value);
   font-weight: 700;

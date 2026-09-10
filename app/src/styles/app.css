@@ -591,17 +591,6 @@ textarea {
   text-align: right;
 }
 
-.ingredient-table__col-step {
-  width: var(--col-step);
-}
-
-/* The Step column widens in the pen alone (D-22): scoped through the
-   table's own is-developing class so the reading and show-changes states
-   keep --col-step unmoved. */
-.ingredient-table.is-developing .ingredient-table__col-step {
-  width: var(--col-step-pen);
-}
-
 /* The Data and Remove columns (G-03-11): unstyled since 03-02/03-08, so
    under this table's fixed layout they split whatever the sized columns
    above left — 5.41px each at a 1280px viewport, which is why the Remove
@@ -660,35 +649,6 @@ textarea {
   margin: var(--gap-strike) 0 0;
 }
 
-/* The step-allocation cell's pen-open state (03-02): the same
-   struck-baseline-beside-field flex arrangement the grams cell uses. */
-.ingredient-table__step-cell {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--gap-strike);
-}
-
-/* Load-bearing (G-03-1 finding a): `flex: 1 1 auto` lets the select shrink
-   inside the flex line instead of holding its content size, and
-   `min-width: 0` overrides a flex item's default `min-width: auto` — a
-   select's automatic minimum size is its min-content width (the widest
-   <option> string, ~280px here), so without this pair the control cannot
-   shrink below that width and overflows leftward across three columns
-   under this table's fixed layout. The flex arrangement above is shared
-   with the grams cell, but the arrangement alone was never the guard —
-   this pair is what the grams cell's field also carries and the step
-   cell's select was missing. */
-.ingredient-table__step-cell select.ink-field {
-  width: auto;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.ingredient-table__split-step {
-  white-space: nowrap;
-}
-
 /* The orphaned-row flag (route-recipe-version.md § 3, 03-02): small print
    beside the row's name, naming the removed step that left it unused,
    with its own remove-this-row control. */
@@ -696,6 +656,40 @@ textarea {
   font-family: var(--face-grotesk);
   font-size: var(--size-cross-flag);
   margin: var(--gap-hair) 0 0;
+}
+
+/* The step-grouped table's own group-head row (LD-01, sketch 003 variant
+   B, index.html lines 126-131): the step's own running-head treatment,
+   naming which step the entries beneath it belong to, then the step's
+   lead-in text in a lighter, smaller-print register beside it. Letter-
+   spacing here is the bare 0.04em/0 pair this table's own header rule
+   (below) already carries unquoted — letter-spacing has never been part
+   of this project's token discipline (colour, face, size, spacing, rule
+   weight per CLAUDE.md), so this is the established precedent, not a new
+   literal. */
+.ingredient-table__step-head td {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-top: var(--gap-s);
+  border-bottom-width: var(--rule-baseline);
+}
+
+.ingredient-table__step-head-lead {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  margin-left: var(--gap-s);
+}
+
+/* The split-ingredient sub-line (LD-01): beneath the ingredient's name on
+   every occurrence, naming its share of the row's own total
+   (formatPortionLine, domain/composition.js). */
+.ingredient-table__portion-note {
+  display: block;
+  font-size: var(--size-small-print);
 }
 
 .ingredient-table th {

@@ -130,10 +130,12 @@
     every px given to a sized column here comes out of the name column's
     remainder. Shrunk from 88px (sized to the field, never the header) per
     D-UAT-6. */
-  --col-step: 78px; /* content: 78 - 12 = 66px — the same content share
-    03-08 derived (then a content-box width read on its own, no padding
-    counted), restated padding-inclusive under the accounting above:
-    66 + 12 = 78. */
+  /* --col-step and --col-step-pen retired (03.3-02, LD-01/LD-02): the
+     Step column itself was removed from the ingredient table — it now
+     groups by step instead of naming one in a cell — so neither the
+     reading state's own width nor the pen's wider variant has a column
+     left to size. Every rule that consumed either token was removed in
+     the same plan. */
   --col-data: 86px; /* content: 86 - 12 = 74px, against "estimated"
     (66.14px) and the reasoned-longer "unreviewed" (~73.5px, no seed row
     produces it yet) — sized to the longer, unmeasured word rather than
@@ -141,19 +143,6 @@
   --col-remove: 78px; /* content: 78 - 12 = 66px, a little slack over the
     60.45px native remove/restore <button> — a bare button has no shrink
     guard, unlike the step select's flex + min-width:0 pair (03-08). */
-
-  /* The Step column in the pen (D-22, 03.1-05): --col-step above stays the
-     reading state's width; this is the pen's own, wider, so each option
-     reads its number and lead-in ("3. Build the base"). Derivation:
-     columns.test.js's own measured 66.14px for the Data column's nine
-     letters ("estimated") gives ~7.35px per letter at the table body
-     size; "3. Build the base" is seventeen characters, ~124.93px; plus
-     the select's own chevron room (--gap-select-chevron-room, 20px,
-     plan 03) and twice this table's own cell padding
-     (--table-cell-pad-x, 6px each, 12px) — 124.93 + 20 + 12 = 156.93,
-     rounded up to 160px so the arithmetic clears the estimate with a
-     few px of slack rather than sitting exactly on it. */
-  --col-step-pen: 160px;
 
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);

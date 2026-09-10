@@ -4,7 +4,7 @@
 // the "percent figure appends the unit" test below and the plan SUMMARY's
 // Deviations section for why.
 import { describe, it, expect } from 'vitest';
-import { buildFigures, describeDeviation, FIGURE_SPECS } from './figures.js';
+import { buildFigures, describeDeviation, figureLabelText, FIGURE_SPECS } from './figures.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 const closeTo = (actual, expected, tolerance = 0.1) => Math.abs(actual - expected) < tolerance;
@@ -19,6 +19,37 @@ describe('FIGURE_SPECS', () => {
     const pod = FIGURE_SPECS.find((spec) => spec.key === 'pod');
     expect(pac.fields).toContain('msnf');
     expect(pod.fields).toContain('msnf');
+  });
+
+  it('pac/pod/msnf each carry a non-null label.term; fat/sugar/solids each carry label.term === null', () => {
+    const byKey = Object.fromEntries(FIGURE_SPECS.map((spec) => [spec.key, spec]));
+    expect(byKey.pac.label.term).not.toBeNull();
+    expect(byKey.pod.label.term).not.toBeNull();
+    expect(byKey.msnf.label.term).not.toBeNull();
+    expect(byKey.fat.label.term).toBeNull();
+    expect(byKey.sugar.label.term).toBeNull();
+    expect(byKey.solids.label.term).toBeNull();
+  });
+
+  it('carries the settled word value for all six figures, in fixed order (D11)', () => {
+    expect(FIGURE_SPECS.map((spec) => spec.label.word)).toEqual([
+      'Freezing',
+      'Sweetness',
+      'Fat',
+      'Milk solids',
+      'Sugar',
+      'Solids',
+    ]);
+  });
+});
+
+describe('figureLabelText', () => {
+  it('flattens a label with a term to "word · term"', () => {
+    expect(figureLabelText({ word: 'Freezing', term: 'PAC' })).toBe('Freezing · PAC');
+  });
+
+  it('flattens a label with no term to the word alone, no trailing separator', () => {
+    expect(figureLabelText({ word: 'Fat', term: null })).toBe('Fat');
   });
 });
 

@@ -9,7 +9,7 @@ import { GraduatedRule } from './GraduatedRule.jsx';
 
 const figure = {
   key: 'fat',
-  label: 'Total fat',
+  label: { word: 'Fat', term: null },
   value: 18.8,
   unit: '%',
   decimals: 1,
@@ -34,7 +34,7 @@ describe('GraduatedRule — no figureDelta', () => {
 });
 
 describe('GraduatedRule — a changed figureDelta', () => {
-  const figureDelta = { key: 'fat', label: 'Total fat', unit: '%', decimals: 1, from: 18.0, to: 18.8, changed: true };
+  const figureDelta = { key: 'fat', label: { word: 'Fat', term: null }, unit: '%', decimals: 1, from: 18.0, to: 18.8, changed: true };
 
   it('renders a struck head carrying the parent\'s value and a hollow tick element with fill="none"', () => {
     const markup = renderToStaticMarkup(<GraduatedRule figure={figure} figureDelta={figureDelta} />);
@@ -56,7 +56,7 @@ describe('GraduatedRule — a changed figureDelta', () => {
 });
 
 describe('GraduatedRule — an unchanged figureDelta', () => {
-  const figureDelta = { key: 'fat', label: 'Total fat', unit: '%', decimals: 1, from: 18.8, to: 18.8, changed: false };
+  const figureDelta = { key: 'fat', label: { word: 'Fat', term: null }, unit: '%', decimals: 1, from: 18.8, to: 18.8, changed: false };
 
   it('renders neither the struck head nor the hollow tick', () => {
     const markup = renderToStaticMarkup(<GraduatedRule figure={figure} figureDelta={figureDelta} />);
@@ -69,5 +69,24 @@ describe('GraduatedRule — an unchanged figureDelta', () => {
     const labelMatch = markup.match(/aria-label="([^"]*)"/);
     expect(labelMatch[1]).not.toMatch(/\bwas\b/);
     expect(labelMatch[1]).not.toMatch(/\bnow\b/);
+  });
+});
+
+describe('GraduatedRule — the two-part label (D11)', () => {
+  it('renders both a graduated-rule__label-word and a graduated-rule__label-term span when the label carries a term, and the accessible name begins with "word · term, "', () => {
+    const withTerm = { ...figure, label: { word: 'Freezing', term: 'PAC' } };
+    const markup = renderToStaticMarkup(<GraduatedRule figure={withTerm} />);
+    expect(markup).toMatch(/<span class="graduated-rule__label-word">Freezing<\/span>/);
+    expect(markup).toMatch(/<span class="graduated-rule__label-term"> · PAC<\/span>/);
+    const labelMatch = markup.match(/aria-label="([^"]*)"/);
+    expect(labelMatch[1]).toMatch(/^Freezing · PAC, /);
+  });
+
+  it('renders only graduated-rule__label-word — no graduated-rule__label-term anywhere — when the label carries no term, and the accessible name begins with "word, "', () => {
+    const markup = renderToStaticMarkup(<GraduatedRule figure={figure} />);
+    expect(markup).toMatch(/<span class="graduated-rule__label-word">Fat<\/span>/);
+    expect(markup).not.toContain('graduated-rule__label-term');
+    const labelMatch = markup.match(/aria-label="([^"]*)"/);
+    expect(labelMatch[1]).toMatch(/^Fat, /);
   });
 });

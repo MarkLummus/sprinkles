@@ -217,11 +217,14 @@ Plans:
 
 **Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved — whole milk still 370.4 g, batch mass still 800 g; the batch's as-made whole milk reads `120 + 263` and still totals 383; the six tasting axes each take a mark independently; a profile carrying the old shape reseeds clean rather than throwing; and a store exported after the change imports after it.
 
-**Plans:** 0 plans
+**Plans:** 4 plans
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 03.2 to break down)
+- [ ] 03.2-01-PLAN.md — The portion, end to end: `portions` on every row, the derived total, the seed's authored split, the prose losing its amounts, and the store reset proven against a real IndexedDB
+- [ ] 03.2-02-PLAN.md — The ladder retires and the store file narrows: `transfer.js` accepts one schema, `versionLift.js` is deleted, and the surviving round trip is proven
+- [ ] 03.2-03-PLAN.md — The table and the pen read the portion: one amount field per portion, the step column joined, the show-changes state on the plural descriptors — the suite back to green
+- [ ] 03.2-04-PLAN.md — As made, per portion: the 2 Aug batch's `120 + 263`, and the phase's three regression guards
 
 ### Phase 03.3: The front-matter rows and the page in step order (INSERTED)
 

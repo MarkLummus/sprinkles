@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate } from '../domain/batch.js';
-import { citableBatches } from '../domain/lineage.js';
+import { citableBatches, descendantVersions, versionsForRecipe } from '../domain/lineage.js';
 import { VersionStrip } from './VersionStrip.jsx';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
@@ -64,8 +64,22 @@ export function VersionRow({
     if (versionLineBlockedAttempt != null) versionLineFieldRef.current?.focus();
   }, [versionLineBlockedAttempt]);
 
+  // The Later-versions disclosure (sketch 003 variant B, G-03.3-4): closed
+  // by default, revealing the CURRENT version's own descendants — the
+  // whole subtree below it, not the recipe's full version list (that
+  // full-list rendering retired to this disclosure's own use, replacing
+  // the unconditional strip call this file used to make below).
+  const [laterVersionsOpen, setLaterVersionsOpen] = useState(false);
+  const descendants = descendantVersions(versionsForRecipe(versions, version.recipeId), version.id);
+  const laterCount = descendants.length;
+
   return (
     <section className="version-row" aria-label="Version">
+      {/* The sketch's own visible "Version" region-name heading
+          (G-03.3-4) — the section's aria-label already carries "Version"
+          as an accessible name; this adds the same word as a visible
+          label, matching the "Batch" legend BatchRow.jsx already prints. */}
+      <h2 className="region-name">Version</h2>
       {openPen === 'plan' ? (
         <>
           {/* The plan's pen ceremony (D-06): replaces the Develop opener.
@@ -175,32 +189,39 @@ export function VersionRow({
           own pen does. */}
       {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
 
-      <VersionStrip
-        versions={versions}
-        recipeId={version.recipeId}
-        currentId={version.id}
-        versionIdsWithBatches={versionIdsWithBatches}
-        openPen={openPen}
-        penReason={penReason}
-      />
-
-      {/* The lineage (D-08): labelled lines, a root version shows none of
-          them. Parent and Batch stay ink links while no pen is open, and
-          plain text while one is (the same link-suppression discipline
-          the version list above already carries). */}
-      {version.parentVersionId && (
-        <>
-          <p className="versions__lineage">
-            <span className="versions__lineage-label">From version</span>
-            {openPen ? (
-              version.parentVersionLabel
-            ) : (
-              <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
-            )}
-          </p>
-          {version.citedBatchId && citedBatch && (
-            <p className="versions__lineage">
-              <span className="versions__lineage-label">From batch</span>
+      {/* The version's own right-hand stack (D-08, sketch 003 variant B,
+          G-03.3-4): a Written/From-version+date line, a Why line always
+          present, a From-batch line where cited, and a Later disclosure
+          fed by this version's own descendants. Parent and Batch stay ink
+          links while no pen is open, and plain text while one is (the
+          same link-suppression discipline the version list used to
+          carry). */}
+      <dl className="version-row__meta-list">
+        {!version.parentVersionId ? (
+          <>
+            <dt className="versions__lineage-label">Written</dt>
+            <dd className="versions__lineage">{formatRecordDate(version.createdAt)}</dd>
+          </>
+        ) : (
+          <>
+            <dt className="versions__lineage-label">From version</dt>
+            <dd className="versions__lineage">
+              {openPen ? (
+                version.parentVersionLabel
+              ) : (
+                <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
+              )}
+              {' · written '}
+              {formatRecordDate(version.createdAt)}
+            </dd>
+          </>
+        )}
+        <dt className="versions__lineage-label">Why</dt>
+        <dd className="versions__lineage">{version.reason ? version.reason : 'no reason recorded'}</dd>
+        {version.citedBatchId && citedBatch && (
+          <>
+            <dt className="versions__lineage-label">From batch</dt>
+            <dd className="versions__lineage">
               {openPen ? (
                 citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
               ) : (
@@ -208,20 +229,46 @@ export function VersionRow({
                   {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
                 </Link>
               )}
-            </p>
-          )}
-          <p className="versions__lineage">
-            <span className="versions__lineage-label">Why</span>
-            {version.reason ? version.reason : 'no reason recorded'}
-          </p>
-          {parentVersion && (
-            <p className="versions__lineage">
-              <button type="button" className="headnote__show-changes" aria-pressed={showingChanges} onClick={onToggleShowChanges}>
-                Show changes
+            </dd>
+          </>
+        )}
+        {laterCount > 0 && (
+          <>
+            <dt className="versions__lineage-label">Later</dt>
+            <dd className="versions__lineage">
+              <button
+                type="button"
+                className="text-control"
+                aria-expanded={laterVersionsOpen}
+                onClick={() => setLaterVersionsOpen((open) => !open)}
+              >
+                {laterCount} later version{laterCount === 1 ? '' : 's'}
               </button>
-            </p>
-          )}
-        </>
+            </dd>
+          </>
+        )}
+      </dl>
+
+      {laterVersionsOpen && (
+        <section aria-label="Later versions">
+          <h2 className="region-name">Later versions</h2>
+          <VersionStrip
+            versions={descendants}
+            recipeId={version.recipeId}
+            currentId={version.id}
+            versionIdsWithBatches={versionIdsWithBatches}
+            openPen={openPen}
+            penReason={penReason}
+          />
+        </section>
+      )}
+
+      {parentVersion && (
+        <p className="versions__lineage">
+          <button type="button" className="headnote__show-changes" aria-pressed={showingChanges} onClick={onToggleShowChanges}>
+            Show changes
+          </button>
+        </p>
       )}
     </section>
   );

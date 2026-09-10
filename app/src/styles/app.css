@@ -485,6 +485,21 @@ textarea {
   letter-spacing: 0.04em;
 }
 
+/* The version row's meta stack as a definition list (sketch 003 variant
+   B, index.html:75-77, G-03.3-4): a label column beside its value column,
+   reusing .versions__lineage/-label on the dt/dd pairs it wraps so the
+   rules above keep working unchanged. */
+.version-row__meta-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--gap-hair) var(--gap-s);
+  margin: 0;
+}
+
+.version-row__meta-list dd {
+  margin: 0;
+}
+
 /* An amended batch's second line in the batch list (D-09), on its own
    line beside the "churned" entry it belongs to. */
 .versions__batch-amended {

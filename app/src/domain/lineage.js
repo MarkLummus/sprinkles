@@ -31,6 +31,19 @@ export function versionsForRecipe(versions, recipeId) {
 }
 
 /**
+ * descendantVersions(versions, versionId) -> every version in `versions`
+ * transitively descended from versionId via parentVersionId links (a
+ * version's direct children, then each child's own descendants, flat) —
+ * mirroring the sketch's own renderTree, which discloses the whole
+ * subtree, not just direct children (03.3-06, G-03.3-1/G-03.3-4). Pure:
+ * never mutates or reorders the `versions` argument.
+ */
+export function descendantVersions(versions, versionId) {
+  const children = versions.filter((version) => version.parentVersionId === versionId);
+  return children.flatMap((child) => [child, ...descendantVersions(versions, child.id)]);
+}
+
+/**
  * latestVersionPerRecipe(versions) -> one version per recipeId, the
  * greatest createdAt for that recipe; on a tie keeps the first version
  * encountered, so the result is stable. The assumption-delta invariant

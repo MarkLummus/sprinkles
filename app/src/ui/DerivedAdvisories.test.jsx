@@ -17,7 +17,8 @@ describe('DerivedAdvisories — the churned version', () => {
   it('renders the word derived in a legend parallel to the authored block', () => {
     const markup = renderToStaticMarkup(<DerivedAdvisories version={oliveOilVersion} />);
     expect(markup).toContain('derived');
-    expect(markup).toContain('Advisories');
+    expect(markup).toContain('Things to check');
+    expect(markup).not.toContain('Advisories');
   });
 
   it('never renders a verdict or a sensory word', () => {

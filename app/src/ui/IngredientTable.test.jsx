@@ -720,6 +720,16 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
   });
 });
 
+describe('IngredientTable — the Data column head reads Source (03.3-04)', () => {
+  it('renders "Source" in the reading-state header, not "Data"', () => {
+    const version = makeVersion([makeRow('a', 'Whole milk', 120, 1)]);
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" steps={version.method} />);
+    expect(markup).toMatch(/<th[^>]*class="ingredient-table__col-data"[^>]*>Source<\/th>/);
+    const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).not.toContain('Data');
+  });
+});
+
 // LD-02: the pen offers NO control anywhere to change which step a
 // portion belongs to — the step-choice <select> is removed outright, not
 // relocated. This is a table-wide check (every branch, not just one row),

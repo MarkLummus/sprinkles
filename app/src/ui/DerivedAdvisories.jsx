@@ -15,7 +15,7 @@ export function DerivedAdvisories({ version }) {
   return (
     <div className="derived-advisories">
       <p className="derived-advisories__legend">
-        <span>Advisories</span>
+        <span>Things to check</span>
         <span>derived</span>
       </p>
       {advisories.map((advisory) => (

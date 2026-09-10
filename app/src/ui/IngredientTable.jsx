@@ -605,7 +605,7 @@ export function IngredientTable({
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
             {/* The Data column goes blank-headed in the pen (D-22): the
                 column stays, its head goes. */}
-            <th scope="col" className="ingredient-table__col-data">{isDeveloping ? '' : 'Data'}</th>
+            <th scope="col" className="ingredient-table__col-data">{isDeveloping ? '' : 'Source'}</th>
             {isDeveloping && <th scope="col" className="ingredient-table__col-remove">Remove</th>}
           </tr>
         </thead>

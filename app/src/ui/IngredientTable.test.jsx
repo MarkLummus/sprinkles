@@ -130,9 +130,16 @@ function countTag(markup, tag) {
   return (markup.match(new RegExp(`<${tag}[ >]`, 'g')) || []).length;
 }
 
+// A group-head <tr> carries a single colspanned <td> (Task 2) — stripped
+// before counting, since its one cell would otherwise violate the
+// header/body/total column-count invariant this helper checks.
+function stripStepHeadRows(tbodyMarkup) {
+  return tbodyMarkup.replace(/<tr class="ingredient-table__step-head">[\s\S]*?<\/tr>/g, '');
+}
+
 function assertCellCountsAgree(markup) {
   const headerCount = countTag(sectionMarkup(markup, 'thead'), 'th');
-  const bodyCount = countTag(sectionMarkup(markup, 'tbody'), 'td');
+  const bodyCount = countTag(stripStepHeadRows(sectionMarkup(markup, 'tbody')), 'td');
   const totalCount = countTag(sectionMarkup(markup, 'tfoot'), 'td');
   expect(headerCount).toBe(bodyCount);
   expect(bodyCount).toBe(totalCount);
@@ -226,7 +233,16 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
 });
 
 describe('IngredientTable — the As made column reads and records per portion (D-10, D-18)', () => {
-  it("a saved batch's split row reads its two as-made values joined", () => {
+  // Task 2 (LD-01) supersedes the old joined-cell design these three tests
+  // used to pin: a split row's portions now render as separate <tr>s, one
+  // per step it participates in, so there is no cell left that would ever
+  // join two portions' as-made readings with " + ". Each portion's own
+  // as-made value (or the absence of one) is named on that portion's own
+  // line alone; the row's OTHER portion's plan amount is now always
+  // visible too, in that portion's own sub-line (formatPortionLine) —
+  // the opposite of the old design's "never that portion's plan amount"
+  // hiding, which the step-grouped table's whole point is to stop doing.
+  it("a saved batch's split row reads each portion's own as-made value, each on its own portion line", () => {
     const version = makeVersion([
       makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
     ]);
@@ -234,10 +250,14 @@ describe('IngredientTable — the As made column reads and records per portion (
 
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
-    expect(markup).toContain('120 + 263 g');
+    expect(markup).not.toContain('120 + 263');
+    expect(markup).toContain('<span class="ink-text">120 g</span>');
+    expect(markup).toContain('<span class="ink-text">263 g</span>');
+    expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 120 g"');
+    expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 263 g"');
   });
 
-  it("a split row with one written portion renders the placeholder for the other and never that portion's plan amount", () => {
+  it("a split row with one written portion shows that portion's own as-made value; the unwritten portion's own line names no as-made value at all, though its own plan amount is visible in its own sub-line", () => {
     const version = makeVersion([
       makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
     ]);
@@ -251,10 +271,16 @@ describe('IngredientTable — the As made column reads and records per portion (
     // name is the only way this class of regression cannot pass green.
     expect(markup).toContain('<span class="ink-text">120 g</span>');
     expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 120 g"');
-    expect(markup).not.toContain('250.4');
+    // The unwritten portion's own line: no as-made phrase and no ink-text —
+    // full-string, so it cannot pass on a dangling accessible name either.
+    expect(markup).toContain(
+      'aria-label="Whole milk, 370.4 g"><td class="ingredient-table__col-name">Whole milk' +
+        '<span class="ingredient-table__portion-note">250.4 g of 370.4 g · 100.0% in all</span>' +
+        '</td><td class="ingredient-table__col-numeric">250.4 g</td><td class="ingredient-table__col-numeric"></td>',
+    );
   });
 
-  it('a three-portion row with a blank middle portion joins only what was written', () => {
+  it('a three-portion row with a blank middle portion: each written portion shows its own as-made value on its own line; the unwritten middle portion carries no as-made phrase at all', () => {
     const version = makeVersion([
       makeRow('a', 'Row A', null, null, {
         portions: [{ step: 2, grams: 100 }, { step: 3, grams: 20 }, { step: 4, grams: 50 }],
@@ -264,8 +290,14 @@ describe('IngredientTable — the As made column reads and records per portion (
 
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
-    expect(markup).toContain('<span class="ink-text">100 + 50 g</span>');
-    expect(markup).toContain('aria-label="Row A, 170 g, as made 100 + 50 g"');
+    expect(markup).toContain('<span class="ink-text">100 g</span>');
+    expect(markup).toContain('<span class="ink-text">50 g</span>');
+    expect(markup).toContain('aria-label="Row A, 170 g, as made 100 g"');
+    expect(markup).toContain('aria-label="Row A, 170 g, as made 50 g"');
+    expect(markup).toContain(
+      'aria-label="Row A, 170 g"><td class="ingredient-table__col-name">Row A' +
+        '<span class="ingredient-table__portion-note">20 g of 170.0 g · 100.0% in all</span>',
+    );
   });
 
   it('a row whose as-made key holds no written portion reads as no as-made at all', () => {
@@ -337,271 +369,6 @@ describe('IngredientTable — the As made column reads and records per portion (
   });
 });
 
-// The step column, the selector, the flags and the accessible names all
-// name a step by the derived display number (03-10, G-03-3 S3), never the
-// stored key. A three-step method — with the second step removed either
-// at baseline (pre-existing) or during the pen session — is enough to
-// prove position and key have diverged.
-function makeThreeStepMethod() {
-  return [
-    { n: 1, leadIn: 'Warm', instruction: 'Warm the milk.' },
-    { n: 2, leadIn: 'Cool', instruction: 'Cool it down.' },
-    { n: 3, leadIn: 'Churn', instruction: 'Churn until set.' },
-  ];
-}
-
-describe('IngredientTable — the selector keeps a removed step in its list (G-03-3 S3, 03-10)', () => {
-  it("renders an option matching a row's own removed allocation, disabled and marked removed, carrying NO number (G-03-14, D-UAT-5)", () => {
-    const version = makeVersion([makeRow('a', 'Row A', 10, 2)]); // allocated to step 2
-    version.method = makeThreeStepMethod();
-    const draftVersion = structuredClone(version);
-    draftVersion.method[1].removed = true; // step 2 removed in the pen
-    const penDraft = { rows: { a: onePortionDraftRow(2, '10') }, asMade: {} };
-    const currentStepNumbers = displayNumbers(draftVersion.method); // 1->1, 3->2
-    const baselineStepNumbers = displayNumbers(version.method); // 1->1, 2->2, 3->3
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={version.rows}
-        draftVersion={draftVersion}
-        mode="developing"
-        penDraft={penDraft}
-        openBatch={null}
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    // The removed step's own option: present, disabled, marked removed —
-    // still the whole fix for S3, since the row's bound value (2) now has
-    // a home — but carrying no number at all (G-03-14, D-UAT-5), since a
-    // numeral here could be mistaken for a live step's own.
-    expect(markup).toMatch(/<option value="2" disabled(="")?[^>]*>Cool \(removed\)<\/option>/);
-    expect(markup).not.toContain('2. Cool (removed)');
-    // React marks the option matching the select's own value as selected,
-    // even though it is disabled — the control shows the row's own
-    // allocation, never falling back to the first non-disabled option.
-    expect(markup).toMatch(/<option value="2"[^>]*selected(="")?[^>]*>/);
-  });
-
-  it('renders no two options with the same leading numeral, and the split-step cell for a row on a removed primary shows one number, not two', () => {
-    // Whole milk's kind of case (Evidence 9): a row's primary allocation
-    // is the removed step, and its second portion is a live step now
-    // sitting at the same position the removed step used to hold — the
-    // "2 … + 2" self-contradiction.
-    const version = makeVersion([makeRow('a', 'Row A', 10, 2, { portions: [{ step: 2, grams: 5 }, { step: 3, grams: 5 }] })]);
-    version.method = makeThreeStepMethod();
-    const draftVersion = structuredClone(version);
-    draftVersion.method[1].removed = true; // step 2 removed; step 3 is now position 2
-    const penDraft = {
-      rows: { a: { portions: [{ step: 2, grams: '5' }, { step: 3, grams: '5' }], removed: false } },
-      asMade: {},
-    };
-    const currentStepNumbers = displayNumbers(draftVersion.method); // 1->1, 3->2
-    const baselineStepNumbers = displayNumbers(version.method); // 1->1, 2->2, 3->3
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={version.rows}
-        draftVersion={draftVersion}
-        mode="developing"
-        penDraft={penDraft}
-        openBatch={null}
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    // Every option in the list: none of the live options duplicate a
-    // leading numeral — "1." and "2." (for step 3) appear exactly once
-    // each among the non-removed options, and the removed option carries
-    // none at all to collide with.
-    const optionLabels = [...markup.matchAll(/<option[^>]*>([^<]*)<\/option>/g)].map((match) => match[1]);
-    expect(optionLabels).toEqual(['1. Warm', 'Cool (removed)', '2. Churn']);
-    const leadingNumerals = optionLabels
-      .map((label) => /^(\d+)\./.exec(label))
-      .filter(Boolean)
-      .map((match) => match[1]);
-    expect(new Set(leadingNumerals).size).toBe(leadingNumerals.length);
-    // The row's own cell: the selected option (the removed primary) shows
-    // no numeral, and the split-step span shows exactly one — "+ 2" — so
-    // the cell reads one number, not the "2 … + 2" self-contradiction.
-    expect(markup).toMatch(/<option value="2"[^>]*selected(="")?[^>]*>Cool \(removed\)<\/option>/);
-    expect(markup).toContain('ingredient-table__split-step"> + 2</span>');
-  });
-
-  it('renders no numeral for a second portion referencing a removed step — the mirror of the primary case above (CR-01 gap closure)', () => {
-    // The mirror of Whole milk's case: a row's primary allocation is live,
-    // and its second portion is the removed step — step 3 still renumbers
-    // into the removed step's old position, so a stale numeral would
-    // still collide with a currently-live step's own numeral.
-    const version = makeVersion([makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] })]);
-    version.method = makeThreeStepMethod();
-    const draftVersion = structuredClone(version);
-    draftVersion.method[1].removed = true; // step 2 removed; step 3 is now position 2
-    const penDraft = {
-      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }], removed: false } },
-      asMade: {},
-    };
-    const currentStepNumbers = displayNumbers(draftVersion.method); // 1->1, 3->2
-    const baselineStepNumbers = displayNumbers(version.method); // 1->1, 2->2, 3->3
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={version.rows}
-        draftVersion={draftVersion}
-        mode="developing"
-        penDraft={penDraft}
-        openBatch={null}
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    // The row's own STEP cell: the live primary option shows its own
-    // numeral "1", and the split-step suffix is absent entirely — never
-    // showing the removed step's stale "2", which would collide with step
-    // 3's own live "2." option in the same select. Scoped to the step
-    // cell's own markup, since the grams cell now legitimately carries the
-    // same join-marker class between the row's two amount fields.
-    expect(markup).toMatch(/<option value="1"[^>]*selected(="")?[^>]*>1\. Warm<\/option>/);
-    const stepCellMatch = /<td class="ingredient-table__col-step">([\s\S]*?)<\/td>/.exec(markup);
-    expect(stepCellMatch[1]).not.toContain('ingredient-table__split-step');
-  });
-
-  it("carries display numbers on the active options' labels, not the stored key", () => {
-    const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
-    version.method = makeThreeStepMethod();
-    const draftVersion = structuredClone(version);
-    draftVersion.method[1].removed = true; // step 2 removed; step 3 is now position 2
-    const penDraft = { rows: { a: onePortionDraftRow(1, '10') }, asMade: {} };
-    const currentStepNumbers = displayNumbers(draftVersion.method);
-    const baselineStepNumbers = displayNumbers(version.method);
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={version.rows}
-        draftVersion={draftVersion}
-        mode="developing"
-        penDraft={penDraft}
-        openBatch={null}
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    expect(markup).toContain('>2. Churn<');
-    expect(markup).not.toContain('>3. Churn<');
-  });
-
-  it("writes the stored key, not the display position, when a different step is chosen — every option's value is the stored key", () => {
-    const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
-    version.method = makeThreeStepMethod();
-    const draftVersion = structuredClone(version);
-    draftVersion.method[1].removed = true;
-    const penDraft = { rows: { a: onePortionDraftRow(1, '10') }, asMade: {} };
-    const currentStepNumbers = displayNumbers(draftVersion.method);
-    const baselineStepNumbers = displayNumbers(version.method);
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={version.rows}
-        draftVersion={draftVersion}
-        mode="developing"
-        penDraft={penDraft}
-        openBatch={null}
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    expect(markup).toContain('<option value="1"');
-    expect(markup).toContain('<option value="2"');
-    expect(markup).toContain('<option value="3"');
-  });
-});
-
-describe('IngredientTable — the step column resolves references through the maps (03-10)', () => {
-  it('reads unallocated for a row named only by a removed step, the surviving reference alone for a split row, and both joined for two survivors', () => {
-    const version = makeVersion([
-      makeRow('a', 'Row A', 10, 2), // allocated only to the removed step 2
-      makeRow('b', 'Row B', 10, 2, { portions: [{ step: 2, grams: 5 }, { step: 3, grams: 5 }] }), // split across the removed step and surviving step 3
-      makeRow('c', 'Row C', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 3, grams: 5 }] }), // two surviving steps
-    ]);
-    version.method = makeThreeStepMethod();
-    version.method[1].removed = true; // step 2 already removed in this reading
-    const currentStepNumbers = displayNumbers(version.method); // 1->1, 3->2
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable rows={version.rows} mode="reading" currentStepNumbers={currentStepNumbers} />,
-    );
-
-    const stepCells = [
-      ...sectionMarkup(markup, 'tbody').matchAll(/<td class="ingredient-table__col-step">([^<]*)<\/td>/g),
-    ].map((match) => match[1]);
-    expect(stepCells).toEqual(['unallocated', '2', '1 + 2']);
-  });
-
-  it("shows the baseline's display number, not the stored key, in the pen's struck baseline beside a changed selector", () => {
-    const version = makeVersion([makeRow('a', 'Row A', 10, 3)]); // allocated to step 3
-    version.method = makeThreeStepMethod();
-    version.method[0].removed = true; // step 1 already removed at baseline — step 3's baseline position is 2
-    const draftVersion = structuredClone(version);
-    const penDraft = { rows: { a: onePortionDraftRow(2, '10') }, asMade: {} }; // reallocated to step 2
-    const currentStepNumbers = displayNumbers(draftVersion.method);
-    const baselineStepNumbers = displayNumbers(version.method); // 2->1, 3->2
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={version.rows}
-        draftVersion={draftVersion}
-        mode="developing"
-        penDraft={penDraft}
-        openBatch={null}
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    expect(markup).toContain('<span class="struck-value">2</span>');
-    expect(markup).not.toContain('<span class="struck-value">3</span>');
-  });
-
-  it("in show-changes, shows the parent's display number struck before the child's own, and the accessible name reads the same two numbers", () => {
-    const parentVersion = makeVersion([makeRow('a', 'Row A', 10, 2)]);
-    parentVersion.method = [
-      { n: 1, leadIn: 'One', instruction: 'Do one.' },
-      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
-      { n: 3, leadIn: 'Three', instruction: 'Do three.' },
-      { n: 4, leadIn: 'Four', instruction: 'Do four.' },
-    ];
-    const currentVersion = structuredClone(parentVersion);
-    currentVersion.method[0].removed = true; // step 1 removed in the child
-    currentVersion.rows[0].portions[0].step = 4; // reallocated to step 4 in the child
-
-    const diff = buildDiff(currentVersion, parentVersion);
-    const currentStepNumbers = displayNumbers(currentVersion.method); // 2->1, 3->2, 4->3
-    const baselineStepNumbers = displayNumbers(parentVersion.method); // 1->1, 2->2, 3->3, 4->4
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={currentVersion.rows}
-        diff={diff}
-        showingChanges
-        mode="reading"
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    expect(markup).toContain('<span class="struck-value">2</span>3');
-    expect(markup).toContain('was step 2, now step 3');
-  });
-});
-
-// A blocked save marks the row blockedSaveRowId named (critique P1 #3,
-// D-21) — the same weight-and-outline class the focus trace's is-marked
-// rows already carry, never a second one.
 describe('IngredientTable — a blocked save marks the offending row (critique P1 #3, D-21)', () => {
   it('carries the marked-row class on exactly the blocked row and none of its neighbours', () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1), makeRow('c', 'Row C', 5, 1)]);
@@ -812,124 +579,6 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
   });
 });
 
-// `unallocated` never dangles (critique P2 #2): a row whose primary step
-// is removed and whose second portion survives reads the word followed by
-// the suffix, never a bare " + 3" with nothing naming the primary.
-describe('IngredientTable — the show-changes step cell prints unallocated rather than a dangling suffix (critique P2 #2)', () => {
-  it('reads "unallocated + 2" for a row whose primary step is removed and whose split survives', () => {
-    const baseline = makeVersion([makeRow('a', 'Row A', 10, 2, { portions: [{ step: 2, grams: 5 }, { step: 3, grams: 5 }] })]);
-    baseline.method = [
-      { n: 1, leadIn: 'One', instruction: 'Do one.' },
-      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
-      { n: 3, leadIn: 'Three', instruction: 'Do three.' },
-    ];
-    const current = structuredClone(baseline);
-    current.method[1].removed = true; // step 2 removed; step 3 is now position 2
-    const diff = buildDiff(current, baseline);
-    const currentStepNumbers = displayNumbers(current.method);
-    const baselineStepNumbers = displayNumbers(baseline.method);
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={current.rows}
-        diff={diff}
-        showingChanges
-        mode="reading"
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    const stepCellMatch = /<td class="ingredient-table__col-step">([\s\S]*?)<\/td>/.exec(markup);
-    const stepCellMarkup = stepCellMatch[1];
-    expect(stepCellMarkup).not.toMatch(/^\s*\+ 2/);
-    expect(stepCellMarkup.replace(/<[^>]*>/g, '')).toBe('unallocated + 2');
-  });
-
-  it('reads "unallocated" alone for a row named by neither side', () => {
-    const baseline = makeVersion([makeRow('a', 'Row A', 10, 2)]);
-    baseline.method = [
-      { n: 1, leadIn: 'One', instruction: 'Do one.' },
-      { n: 2, leadIn: 'Two', instruction: 'Do two.', removed: true },
-    ];
-    const current = structuredClone(baseline);
-    const diff = buildDiff(current, baseline);
-    const currentStepNumbers = displayNumbers(current.method);
-    const baselineStepNumbers = displayNumbers(baseline.method);
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={current.rows}
-        diff={diff}
-        showingChanges
-        mode="reading"
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    const stepCellMatch = /<td class="ingredient-table__col-step">([\s\S]*?)<\/td>/.exec(markup);
-    expect(stepCellMatch[1].replace(/<[^>]*>/g, '')).toBe('unallocated');
-  });
-});
-
-// The split-step suffix reads in ink, not pen blue — it is printed matter,
-// never the maker's own draft (critique P2 #1, D-30).
-describe('IngredientTable — the split-step suffix reads in ink (critique P2 #1, D-30)', () => {
-  it('carries the ingredient-table__split-step class alone, with no ink-text class beside it', () => {
-    const version = makeVersion([makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] })]);
-    version.method = [
-      { n: 1, leadIn: 'One', instruction: 'Do one.' },
-      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
-    ];
-    const draftVersion = structuredClone(version);
-    const penDraft = {
-      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }], removed: false } },
-      asMade: {},
-    };
-    const currentStepNumbers = displayNumbers(draftVersion.method);
-    const baselineStepNumbers = displayNumbers(version.method);
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable
-        rows={version.rows}
-        draftVersion={draftVersion}
-        mode="developing"
-        penDraft={penDraft}
-        openBatch={null}
-        currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
-      />,
-    );
-
-    expect(markup).toContain('class="ingredient-table__split-step"');
-    expect(markup).not.toContain('class="ink-text ingredient-table__split-step"');
-  });
-});
-
-// D-01, D-02: a row's portion count is not fixed at one or two — the
-// reading state's Step column joins however many the row carries, in
-// portion order.
-describe("IngredientTable — a row's portion step references join in portion order, regardless of count", () => {
-  it('reads all three portions joined for a three-portion row', () => {
-    const version = makeVersion([
-      makeRow('a', 'Row A', 30, 1, {
-        portions: [{ step: 1, grams: 10 }, { step: 2, grams: 10 }, { step: 3, grams: 10 }],
-      }),
-    ]);
-    version.method = makeThreeStepMethod();
-    const currentStepNumbers = displayNumbers(version.method);
-
-    const markup = renderToStaticMarkup(
-      <IngredientTable rows={version.rows} mode="reading" currentStepNumbers={currentStepNumbers} />,
-    );
-
-    const stepCells = [
-      ...sectionMarkup(markup, 'tbody').matchAll(/<td class="ingredient-table__col-step">([^<]*)<\/td>/g),
-    ].map((match) => match[1]);
-    expect(stepCells).toEqual(['1 + 2 + 3']);
-  });
-});
 
 // The pen's own field count (D-01, CONTEXT.md phase boundary): amounts
 // edit, the split does not — a two-portion row gets two amount fields,
@@ -966,7 +615,9 @@ describe("IngredientTable — the pen's grams cell carries one field per portion
     expect(markup).toContain('aria-label="Row A, grams, portion 1"');
     expect(markup).toContain('aria-label="Row A, grams, portion 2"');
     expect((markup.match(/aria-label="Row A, grams/g) || []).length).toBe(2);
-    expect((markup.match(/<select /g) || []).length).toBe(1);
+    // LD-02: zero step-choice selects anywhere, not one — the pen offers no
+    // control at all to change which step a portion belongs to.
+    expect((markup.match(/<select /g) || []).length).toBe(0);
   });
 
   it("keeps a one-portion row's field name unqualified, exactly as before", () => {
@@ -989,36 +640,134 @@ describe("IngredientTable — the pen's grams cell carries one field per portion
   });
 });
 
-// The regression the deleted caller-side suffix (03.2-01 -> 03.2-03) would
-// otherwise cause: every portion after the first is now rendered inside
-// DiffStepCell itself, so the show-changes state must never print a
-// surviving portion's number twice.
-describe('IngredientTable — show-changes prints each portion exactly once (03.2-03 regression guard)', () => {
-  it('prints a two-portion row\'s surviving step numbers once each, not twice', () => {
-    const baseline = makeVersion([
-      makeRow('a', 'Row A', 20, 1, { portions: [{ step: 1, grams: 10 }, { step: 2, grams: 10 }] }),
+// LD-01, ROADMAP Scope bullet 3: the reading state groups portions by
+// step, the step's lead-in text heading each group, in ascending display
+// order.
+describe('IngredientTable — the reading state groups portions by step (LD-01, ROADMAP Scope bullet 3)', () => {
+  it('renders one step-head per step actually used, in ascending display order, each carrying its own lead-in text', () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
+      makeRow('b', 'Heavy cream', 429.28, 3),
     ]);
-    baseline.method = [
+    version.method = [
+      { n: 1, leadIn: 'Warm the milk.', instruction: 'Warm.' },
+      { n: 2, leadIn: 'Weigh the base.', instruction: 'Weigh.' },
+      { n: 3, leadIn: 'Churn.', instruction: 'Churn.' },
+    ];
+    const currentStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={currentStepNumbers} />,
+    );
+
+    // Step 1 has no portion at all, so no group-head renders for it — only
+    // the two steps actually used by a portion get one, in order.
+    expect(markup).not.toContain('Step 1<span');
+    const step2Index = markup.indexOf('Step 2<span class="ingredient-table__step-head-lead">Weigh the base.</span>');
+    const step3Index = markup.indexOf('Step 3<span class="ingredient-table__step-head-lead">Churn.</span>');
+    expect(step2Index).toBeGreaterThan(-1);
+    expect(step3Index).toBeGreaterThan(-1);
+    expect(step2Index).toBeLessThan(step3Index);
+  });
+
+  it("prints a split ingredient's sub-line on every occurrence, in the sketch's exact format", () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
+      makeRow('b', 'Heavy cream', 429.28, 3),
+    ]);
+    version.method = [
+      { n: 1, leadIn: 'Warm the milk.', instruction: 'Warm.' },
+      { n: 2, leadIn: 'Weigh the base.', instruction: 'Weigh.' },
+      { n: 3, leadIn: 'Churn.', instruction: 'Churn.' },
+    ];
+    const currentStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={currentStepNumbers} />,
+    );
+
+    expect(markup).toContain('<span class="ingredient-table__portion-note">120 g of 370.4 g · 46.3% in all</span>');
+    expect(markup).toContain('<span class="ingredient-table__portion-note">250.4 g of 370.4 g · 46.3% in all</span>');
+    // The unsplit row (Heavy cream, one portion) carries no sub-line at all.
+    const heavyCreamStart = markup.indexOf('Heavy cream');
+    const heavyCreamCell = markup.slice(heavyCreamStart, markup.indexOf('</td>', heavyCreamStart));
+    expect(heavyCreamCell).not.toContain('ingredient-table__portion-note');
+  });
+
+  it('groups a portion whose step was removed under a trailing "Unallocated" head, positioned after every numbered group, never dropped', () => {
+    const version = makeVersion([
+      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] }),
+    ]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', removed: true },
+    ];
+    const currentStepNumbers = displayNumbers(version.method); // 1->1; step 2 absent
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={currentStepNumbers} />,
+    );
+
+    const step1Index = markup.indexOf('Step 1<span');
+    const unallocatedIndex = markup.indexOf('>Unallocated<');
+    expect(step1Index).toBeGreaterThan(-1);
+    expect(unallocatedIndex).toBeGreaterThan(step1Index);
+    // The removed-step portion still renders, under Unallocated — never
+    // silently dropped (RESEARCH.md Pitfall 4, extended from rows to
+    // portions).
+    const unallocatedSection = markup.slice(unallocatedIndex);
+    expect(unallocatedSection).toContain('5 g of 10.0 g · 100.0% in all');
+  });
+});
+
+// LD-02: the pen offers NO control anywhere to change which step a
+// portion belongs to — the step-choice <select> is removed outright, not
+// relocated. This is a table-wide check (every branch, not just one row),
+// unlike the single-row check the "grams cell" describe block above
+// already covers for its own fixture.
+describe('IngredientTable — the pen renders no step-choice control anywhere (LD-02)', () => {
+  it('renders zero <select> elements across a multi-row, multi-portion pen', () => {
+    const version = makeVersion([
+      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] }),
+      makeRow('b', 'Row B', 20, 2),
+    ]);
+    version.method = [
       { n: 1, leadIn: 'One', instruction: 'Do one.' },
       { n: 2, leadIn: 'Two', instruction: 'Do two.' },
     ];
-    const current = structuredClone(baseline);
-    const diff = buildDiff(current, baseline);
-    const currentStepNumbers = displayNumbers(current.method);
-    const baselineStepNumbers = displayNumbers(baseline.method);
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: {
+        a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }], removed: false },
+        b: onePortionDraftRow(2, '20'),
+      },
+      asMade: {},
+    };
+    const currentStepNumbers = displayNumbers(draftVersion.method);
 
     const markup = renderToStaticMarkup(
       <IngredientTable
-        rows={current.rows}
-        diff={diff}
-        showingChanges
-        mode="reading"
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        steps={draftVersion.method}
         currentStepNumbers={currentStepNumbers}
-        baselineStepNumbers={baselineStepNumbers}
       />,
     );
 
-    const stepCellMatch = /<td class="ingredient-table__col-step">([\s\S]*?)<\/td>/.exec(markup);
-    expect(stepCellMatch[1].replace(/<[^>]*>/g, '')).toBe('1 + 2');
+    expect((markup.match(/<select/g) || []).length).toBe(0);
   });
 });
+
+// blockedRowAttempt's own dependency-array wiring (WR-01) is a
+// source-level property of the useEffect call itself, not something
+// renderToStaticMarkup can observe: this file's own top comment already
+// states it runs under node with no DOM, and moving focus is a real DOM
+// effect that a static-markup render never fires. Task 2's own
+// <acceptance_criteria> greps (`grep -n 'blockedRowAttempt'` /
+// `grep -n '\[blockedRowId\]'` against IngredientTable.jsx) are what prove
+// the fix landed — deliberately not duplicated here as a render test that
+// could never actually exercise the effect.
+

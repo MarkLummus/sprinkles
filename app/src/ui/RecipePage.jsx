@@ -910,27 +910,6 @@ export function RecipePage() {
     }));
   }
 
-  // A row's step allocation (the sheet's step column) is a choice among
-  // the version's own steps (route-recipe-version.md § 3) — a different
-  // fact from a step's `uses` list, and both are kept. Writes only the
-  // FIRST portion's step; every remaining portion's own allocation is not
-  // editable this milestone — the portion count is fixed, amounts edit,
-  // the split does not (CONTEXT.md phase boundary).
-  function handleChangePenRowStep(rowId, stepNumber) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
-    setPenDraft((prev) => ({
-      ...prev,
-      rows: {
-        ...prev.rows,
-        [rowId]: {
-          ...prev.rows[rowId],
-          portions: prev.rows[rowId].portions.map((portion, i) => (i === 0 ? { ...portion, step: stepNumber } : portion)),
-        },
-      },
-    }));
-  }
-
   // Removing sets only the draft row's removed flag — it does not clear
   // the grams and does not touch any step (route-recipe-version.md § 3).
   // The same handler restores: removal never cascades, so this is always
@@ -1210,17 +1189,17 @@ export function RecipePage() {
               diff={changeDiff}
               showingChanges={showingChanges}
               blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
+              blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
               markedRowIds={markedRowIds}
               markedFigureLabel={markedFigureLabel}
               mode={mode}
               draft={draft}
               penDraft={penDraft}
               openBatch={openBatch}
+              steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
               currentStepNumbers={currentStepNumbers}
-              baselineStepNumbers={baselineStepNumbers}
               onChangeAsMade={handleChangeAsMade}
               onChangePenGrams={handleChangePenGrams}
-              onChangePenRowStep={handleChangePenRowStep}
               onTogglePenRowRemoved={handleTogglePenRowRemoved}
             />
           ) : (

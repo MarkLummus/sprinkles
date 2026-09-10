@@ -1,79 +1,45 @@
 import { Fragment, useEffect, useRef } from 'react';
-import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from '../domain/composition.js';
-import { hasAsMade, asMadeForPortion, asMadeTotals } from '../domain/batch.js';
+import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, formatPortionLine } from '../domain/composition.js';
+import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
 import { activeRows, rowGrams } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { parseGramsDraft } from '../domain/lineage.js';
 
-// The one place a stored step key resolves to the number the reader sees
-// (03-10): its position in the current map if it has one, otherwise its
-// position in the baseline map — the number it had before it was removed
-// — otherwise null. Still serves the reading state's step column
-// (formatStepReferences) — which names a step that is currently live, or
-// nothing at all, never a step this file is naming as removed. The
-// selector's option label, the orphaned-row flag (G-03-14, D-UAT-5), and
-// the pen's/show-changes' own split-step suffix (G-03-14 CR-01 gap
-// closure) no longer call this for a removed step: a removed step's
-// number — primary or split — is never shown, this file's one rule
-// stated once, so this function's own baseline branch has no remaining
-// caller that can reach it through a removed step today. Left in place
-// rather than deleted — it is still the correct rule for a site naming a
-// step that might be either currently active or currently removed, should
-// a future one arise, and safeDisplayNumberOf beside it is its one-sided
-// counterpart.
-function resolveStepNumber(n, currentMap, baselineMap) {
-  const current = safeDisplayNumberOf(currentMap, n);
-  if (current != null) return current;
-  return safeDisplayNumberOf(baselineMap, n);
-}
-
-// A "was"/"now" or struck-baseline site names a step from exactly one
-// side of the comparison (the baseline it was, or the current it is now)
-// — never blended with the other side's numbering the way
-// resolveStepNumber's fallback is. A null map (no baseline/current state
-// applies) reads as no number, never a thrown error.
-function safeDisplayNumberOf(map, n) {
-  return map ? displayNumberOf(map, n) : null;
-}
-
-// The step column's own rendering rule (remap-on-read, not migration): a
-// row's portion step references, resolved through the maps and joined in
-// portion order; the single word `unallocated` when none resolves — the
-// dangling number a step's removal used to leave behind.
-function formatStepReferences(currentMap, baselineMap, portions) {
-  const parts = [];
-  for (const portion of portions) {
-    const number = resolveStepNumber(portion.step, currentMap, baselineMap);
-    if (number != null) parts.push(number);
+// The table's step-grouping (LD-01, ROADMAP Scope bullet 3): resolves
+// every portion's step through the active stepNumberMap via
+// displayNumberOf alone — never a hand-rolled filter mentioning `removed`
+// (domain/rows.js's own discipline, extended here from rows to portions).
+// A portion whose step does not resolve (a null map, or a step this map
+// has no entry for — its step was removed) is never dropped: it joins one
+// trailing "Unallocated" group instead (RESEARCH.md Pitfall 4). Groups
+// sort by display number, with Unallocated (when non-empty) always last;
+// entries within a group keep `rows`' own iteration order, then portion
+// order — never re-sorted, matching the sketch's own ING.forEach
+// iteration (index.html:390-406).
+function groupPortionsByStep(rows, steps, stepNumberMap) {
+  const numbered = new Map();
+  const unallocated = [];
+  for (const row of rows) {
+    row.portions.forEach((portion, portionIndex) => {
+      const displayNumber = stepNumberMap ? displayNumberOf(stepNumberMap, portion.step) : null;
+      const entry = { row, portion, portionIndex };
+      if (displayNumber == null) {
+        unallocated.push(entry);
+        return;
+      }
+      if (!numbered.has(displayNumber)) {
+        const step = steps.find((candidate) => candidate.n === portion.step);
+        numbered.set(displayNumber, { displayNumber, leadIn: step ? step.leadIn : '', entries: [] });
+      }
+      numbered.get(displayNumber).entries.push(entry);
+    });
   }
-  return parts.length > 0 ? parts.join(' + ') : 'unallocated';
-}
-
-// The show-changes counterpart of formatStepReferences above: a row's step
-// references from ONE side of a comparison — a diff descriptor's
-// stepsFrom or stepsTo, resolved through the map matching that side alone,
-// never blended across sides. `null` when the side itself carries no
-// reference at all (no baseline row to compare against), so a caller can
-// skip rendering entirely rather than striking a fact that never existed.
-// The FIRST portion always prints something — its own resolved number, or
-// the word `unallocated` when it does not resolve — the same rule the
-// primary allocation always carried before portions arrived (critique P2
-// #2: a row whose first portion's step was removed never dangles a bare
-// " + 3" with nothing naming it). Every portion after the first is dropped
-// silently when it does not resolve, exactly as StepCell's own suffixes
-// are (G-03-14 CR-01): only the first position needs a word standing in
-// for a missing number, since it is the one a reader expects to see first.
-function formatDiffSteps(steps, map) {
-  if (steps == null) return null;
-  const [primary, ...rest] = steps;
-  const primaryDisplay = primary != null ? safeDisplayNumberOf(map, primary) : null;
-  const parts = [primaryDisplay ?? 'unallocated'];
-  for (const step of rest) {
-    const display = safeDisplayNumberOf(map, step);
-    if (display != null) parts.push(display);
+  const groups = [...numbered.values()].sort((a, b) => a.displayNumber - b.displayNumber);
+  if (unallocated.length > 0) {
+    groups.push({ displayNumber: null, leadIn: null, entries: unallocated });
   }
-  return parts.join(' + ');
+  return groups;
 }
 
 // A row's weakest basis is the worst basis across every composition field it
@@ -99,11 +65,13 @@ function dataFlagFor(row) {
   return '';
 }
 
-// changedGrams/changedShare/changedStep carry the pen's current values when
-// they differ from the value the pen opened on (route-recipe-version.md
-// § 6): the strike is never the only carrier of a change (D-10), so the
-// accessible name reads "was 40 g, now 48 g" — and "was 5.0%, now 5.9%",
-// "was step 8, now step 6" — rather than just the current value.
+// changedGrams/changedShare carry the pen's current values when they differ
+// from the value the pen opened on (route-recipe-version.md § 6): the
+// strike is never the only carrier of a change (D-10), so the accessible
+// name reads "was 40 g, now 48 g" and "was 5.0%, now 5.9%" rather than just
+// the current value. Per LD-02, a portion's step is no longer editable in
+// the pen, so this label carries no step phrase at all — a fact this file
+// can no longer produce.
 function rowAccessibleLabel(
   row,
   dataFlag,
@@ -112,13 +80,11 @@ function rowAccessibleLabel(
   asMadeValue,
   changedGrams = null,
   changedShare = null,
-  changedStep = null,
   removed = false,
 ) {
   const gramsPhrase = changedGrams != null ? `was ${rowGrams(row)} g, now ${changedGrams} g` : `${rowGrams(row)} g`;
   const parts = [row.ingredientName, gramsPhrase];
   if (changedShare) parts.push(`was ${changedShare.from}, now ${changedShare.to}`);
-  if (changedStep) parts.push(`was step ${changedStep.from}, now step ${changedStep.to}`);
   if (dataFlag) parts.push(dataFlag);
   if (isMarked) parts.push(`contributing to ${markedFigureLabel}`);
   if (asMadeValue !== null) parts.push(`as made ${asMadeValue} g`);
@@ -127,131 +93,44 @@ function rowAccessibleLabel(
 }
 
 // The grams cell (route-recipe-version.md § 3, § 6): plain text outside the
-// pen, one controlled text field per portion bound to the pen's raw typed
-// string while developing — the same branch-by-mode shape AsMadeCell
-// already uses, and the same never-round-mid-keystroke discipline (never
-// Number() until save, RESEARCH.md Pitfall 5). The struck baseline is
-// rowGrams(row): the row's derived total as the pen opened on it (D-03),
-// rendered as a sibling of the fields, not their ancestor, so the strike
-// can never bleed onto a field beside it. The portion count is fixed this
-// milestone (CONTEXT.md phase boundary): amounts edit, the split does not
-// — so this cell always renders exactly as many fields as row.portions has
-// entries, never more, never fewer.
-function GramsCell({ row, mode, penDraft, onChangePenGrams, inputRef }) {
+// pen, one controlled text field while developing — scoped to exactly ONE
+// named portion now (Task 2), not a loop joining every portion inside one
+// cell, since each portion is its own <tr> once the table groups by step.
+// The struck baseline is that portion's own stored amount, rendered as a
+// sibling of the field, not its ancestor, so the strike can never bleed
+// onto the field beside it.
+function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef }) {
   if (mode !== 'developing') {
-    return <>{rowGrams(row)} g</>;
+    return <>{row.portions[portionIndex].grams} g</>;
   }
   const draftRow = penDraft.rows[row.id];
+  const portion = row.portions[portionIndex];
+  const draftPortion = draftRow.portions[portionIndex];
   // Forced struck even when the number itself is unchanged once the row is
   // removed — "the whole row strikes in place" (route-recipe-version.md
-  // § 3) — while the fields stay present and editable, since removing does
-  // not clear the amounts and a restore should keep whatever was typed.
-  const changed =
-    draftRow.removed ||
-    draftRow.portions.some((portion, i) => portion.grams !== String(row.portions[i].grams));
+  // § 3) — while the field stays present and editable, since removing does
+  // not clear the amount and a restore should keep whatever was typed.
+  const changed = draftRow.removed || draftPortion.grams !== String(portion.grams);
   // Accessible name, stated once (T-03.2-13): a one-portion row keeps
   // today's unqualified name unchanged; a row with more than one portion
   // names each field by its own portion index, since two fields sharing
   // one accessible name would be two controls a screen reader cannot tell
   // apart.
-  const multiPortion = draftRow.portions.length > 1;
+  const multiPortion = row.portions.length > 1;
   return (
     <span className="ingredient-table__grams-cell">
-      {changed && <span className="struck-value">{rowGrams(row)}</span>}
-      {draftRow.portions.map((portion, i) => (
-        <Fragment key={i}>
-          {/* The join marker between two adjacent fields is printed
-              matter, not the maker's own draft — it reads in ink, never
-              pen blue, the same treatment the step cell's split suffix
-              already gets, sharing its class. */}
-          {i > 0 && <span className="ingredient-table__split-step"> + </span>}
-          <input
-            ref={i === 0 ? inputRef : undefined}
-            type="text"
-            inputMode="decimal"
-            className="ink-field"
-            value={portion.grams}
-            aria-label={
-              multiPortion ? `${row.ingredientName}, grams, portion ${i + 1}` : `${row.ingredientName}, grams`
-            }
-            onChange={(event) => onChangePenGrams(row.id, i, event.target.value)}
-          />
-        </Fragment>
-      ))}
-    </span>
-  );
-}
-
-// The step-allocation cell (route-recipe-version.md § 3, § 6, G-03-3 S3):
-// a <select> over EVERY step of the draft version, not only the active
-// ones (03-10) — a row's bound value must always match an option, or
-// React falls back to selecting the first non-disabled option and shows
-// the maker a step the data does not hold. A removed step's own option
-// stays present and disabled, and says so in words, but carries NO number
-// (G-03-14, D-UAT-5) — the pen's one rule, stated once: a removed step has
-// no number, anywhere. Option VALUES are always the stored keys, since
-// the change handler, the row's own reference, the comparison, the pen's
-// handlers and a batch's step changes all match on them — a value that
-// were a position would break every one of them. A row with more than one
-// portion (whole milk, sucrose each go into two steps) keeps all of them —
-// only the FIRST portion's allocation is a choice here; every later
-// portion is rendered untouched, since editing the split is out of this
-// milestone's scope, but its own number is still resolved through the
-// maps like every other live reference. A future pen surface naming a
-// step should follow this same rule rather than re-deriving it.
-//
-// The selector still chooses ONE step: the row's FIRST portion's, bound to
-// draftRow.portions[0].step (CONTEXT.md phase boundary — the portion count
-// is fixed this milestone; amounts edit, the split does not). Every
-// portion after the first renders its own suffix, printed matter beside
-// the selector, exactly as the single split suffix did before the portion
-// count could exceed two — only the primary allocation is a choice here.
-function StepCell({ row, penDraft, stepOptions, currentStepNumbers, baselineStepNumbers, onChangePenRowStep }) {
-  const draftRow = penDraft.rows[row.id];
-  const changed = draftRow.removed || draftRow.portions[0].step !== row.portions[0].step;
-  const baselineStepDisplay = safeDisplayNumberOf(baselineStepNumbers, row.portions[0].step);
-  return (
-    <span className="ingredient-table__step-cell">
-      {changed && <span className="struck-value">{baselineStepDisplay}</span>}
-      <select
+      {changed && <span className="struck-value">{portion.grams}</span>}
+      <input
+        ref={inputRef}
+        type="text"
+        inputMode="decimal"
         className="ink-field"
-        value={draftRow.portions[0].step}
-        aria-label={`${row.ingredientName}, step`}
-        onChange={(event) => onChangePenRowStep(row.id, Number(event.target.value))}
-      >
-        {stepOptions.map((step) => {
-          // A removed step's own option carries no number at all
-          // (G-03-14): only a live step's own display number is resolved
-          // here, so this option's numeral can never be mistaken for a
-          // live step's own — the "2 … + 2" self-contradiction this
-          // closes.
-          const label = step.removed
-            ? `${step.leadIn} (removed)`
-            : `${resolveStepNumber(step.n, currentStepNumbers, baselineStepNumbers)}. ${step.leadIn}`;
-          return (
-            <option key={step.n} value={step.n} disabled={step.removed}>
-              {label}
-            </option>
-          );
-        })}
-      </select>
-      {/* Every portion after the first renders its own suffix, printed
-          matter, not the maker's own draft — it reads in ink, never pen
-          blue (critique P2 #1, D-30, "The parent's words in ink"),
-          resolved through the CURRENT map alone, never the baseline
-          fallback (G-03-14 CR-01 gap closure): resolving a removed
-          portion's stale pre-removal position, unmarked, could collide
-          with a different, currently-live step that renumbering has moved
-          into that same position — the same self-contradiction the option
-          label above already closes for a removed primary allocation. A
-          portion whose step does not resolve renders no numeral at all. */}
-      {row.portions.slice(1).map((portion, i) => {
-        const display = safeDisplayNumberOf(currentStepNumbers, portion.step);
-        if (display == null) return null;
-        return (
-          <span key={i + 1} className="ingredient-table__split-step">{` + ${display}`}</span>
-        );
-      })}
+        value={draftPortion.grams}
+        aria-label={
+          multiPortion ? `${row.ingredientName}, grams, portion ${portionIndex + 1}` : `${row.ingredientName}, grams`
+        }
+        onChange={(event) => onChangePenGrams(row.id, portionIndex, event.target.value)}
+      />
     </span>
   );
 }
@@ -286,7 +165,11 @@ function RemoveRowControl({ removed, onToggle }) {
 // typed, so nothing here reads through .ink-field or .ink-text. Driven
 // entirely by the row's own buildDiff descriptor; a removed row forces the
 // strike even when the number itself did not move, the same forced-strike
-// discipline GramsCell already applies in the pen.
+// discipline GramsCell already applies in the pen. Only valid for a
+// single-portion row — diff.js's rowDiff carries ROW-level totals alone, so
+// it cannot attribute a struck comparison to one portion of a split row
+// (Task 2's own show-changes branch renders a split row's grams plainly
+// instead, with no strike).
 function DiffGramsCell({ rowDiff }) {
   const changed = rowDiff.removed || rowDiff.gramsChanged;
   return (
@@ -297,26 +180,10 @@ function DiffGramsCell({ rowDiff }) {
   );
 }
 
-// The show-changes from-and-to (03-10, D-02): the parent's portion step
-// references struck before the child's own — each side read from the map
-// matching it alone, through formatDiffSteps, never blended, so the strike
-// can never disagree with the margin beside it. Every portion is inside
-// this one cell now — the caller renders no suffix of its own.
-function DiffStepCell({ rowDiff, currentStepNumbers, baselineStepNumbers }) {
-  const changed = rowDiff.removed || rowDiff.stepsChanged;
-  const stepsFromText = formatDiffSteps(rowDiff.stepsFrom, baselineStepNumbers);
-  const stepsToText = formatDiffSteps(rowDiff.stepsTo, currentStepNumbers) ?? 'unallocated';
-  return (
-    <>
-      {changed && stepsFromText != null && <span className="struck-value">{stepsFromText}</span>}
-      {stepsToText}
-    </>
-  );
-}
-
 // A removed row has no current share at all — the mirror of the name
 // cell's forced strike — so only the struck baseline renders, exactly as
-// the pen's own removed-row share cell does.
+// the pen's own removed-row share cell does. Single-portion only — see
+// DiffGramsCell's own comment.
 function DiffShareCell({ rowDiff }) {
   if (rowDiff.removed) {
     return <span className="struck-value">{rowDiff.shareFrom}</span>;
@@ -333,30 +200,22 @@ function DiffShareCell({ rowDiff }) {
 // the strike is never the only carrier, so a changed cell's row still
 // reads "was 40 g, now 48 g" even with no pen field to attach it to. Unlike
 // rowAccessibleLabel above, `row` here is the CURRENT (child) version's own
-// row — its own grams/step already equal rowDiff's "to" values — so the
-// phrasing reads directly off the diff descriptor, never off `row` itself.
-function rowDiffAccessibleLabel(
-  row,
-  rowDiff,
-  dataFlag,
-  isMarked,
-  markedFigureLabel,
-  asMadeValue,
-  currentStepNumbers,
-  baselineStepNumbers,
-) {
-  const gramsPhrase =
-    (rowDiff.removed || rowDiff.gramsChanged) && rowDiff.gramsFrom != null
+// row — its own grams already equals rowDiff's "to" value for a
+// single-portion row — so the phrasing reads directly off the diff
+// descriptor, never off `row` itself. `isSplit` selects the same fork the
+// visible cell takes: a struck "was/now" comparison for a single-portion
+// row, or that portion's own plain current value for a split row (diff.js
+// carries no per-portion comparison to strike against). Per LD-02, no step
+// phrase is ever produced here.
+function rowDiffAccessibleLabel(row, portion, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue, isSplit) {
+  const gramsPhrase = isSplit
+    ? `${portion.grams} g`
+    : (rowDiff.removed || rowDiff.gramsChanged) && rowDiff.gramsFrom != null
       ? `was ${rowDiff.gramsFrom} g, now ${rowDiff.gramsTo} g`
       : `${rowDiff.gramsTo} g`;
   const parts = [row.ingredientName, gramsPhrase];
-  if (!rowDiff.removed && rowDiff.shareChanged && rowDiff.shareFrom != null) {
+  if (!isSplit && !rowDiff.removed && rowDiff.shareChanged && rowDiff.shareFrom != null) {
     parts.push(`was ${rowDiff.shareFrom}, now ${rowDiff.shareTo}`);
-  }
-  if ((rowDiff.removed || rowDiff.stepsChanged) && rowDiff.stepsFrom != null) {
-    const stepsFromText = formatDiffSteps(rowDiff.stepsFrom, baselineStepNumbers) ?? 'unallocated';
-    const stepsToText = formatDiffSteps(rowDiff.stepsTo, currentStepNumbers) ?? 'unallocated';
-    parts.push(`was step ${stepsFromText}, now step ${stepsToText}`);
   }
   if (dataFlag) parts.push(dataFlag);
   if (isMarked) parts.push(`contributing to ${markedFigureLabel}`);
@@ -385,7 +244,8 @@ function removedStepsUsing(draftVersion, rowId) {
 // on step.removed), so the number it once had would read as though it
 // were live; this flag never presents one. Tapping it removes the row —
 // one tap, nothing else. It clears the moment the step that caused it is
-// restored, because it is derived, not stored.
+// restored, because it is derived, not stored. Rendered once per row
+// (Task 2: only on the row's first portion line), never once per portion.
 function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
   const causingSteps = removedStepsUsing(draftVersion, row.id);
   if (causingSteps.length === 0) return null;
@@ -405,76 +265,54 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
   );
 }
 
-// formatAsMadeReading(row, batch) -> the reading state's per-portion
-// as-made string ("120 + 263"), joined in portion order, or null when the
-// row carries no as-made key at all OR nothing was written beside any of
-// its portions. An unwritten portion contributes NOTHING to the reading —
-// it is dropped before joining, never filled with that portion's own plan
-// amount (D-10, D-18) — so a partially-recorded split row reads a clean
-// value (e.g. "120") instead of a dangling "120 + ". The explicit
-// `!== null` test through asMadeForPortion is kept so a written 0 survives
-// the filter (D-11). Shared between AsMadeCell's own rendering and the
-// row's accessible name, so the two readings can never disagree.
-function formatAsMadeReading(row, batch) {
-  if (!batch || !hasAsMade(batch, row.id)) return null;
-  const written = row.portions
-    .map((_, i) => asMadeForPortion(batch, row.id, i))
-    .filter((value) => value !== null)
-    .map((value) => `${value}`);
-  return written.length > 0 ? written.join(' + ') : null;
-}
-
 // The as-made cell (route-recipe-batch.md § 3, D-10): blank by default, one
-// text field per portion bound to the draft's own array element while
-// recording, and the stored per-portion reading — through
-// formatAsMadeReading, never the row's own plan grams — once a saved
+// text field while recording, and the stored per-portion reading —
+// through asMadeForPortion, never the row's own plan grams — once a saved
 // batch's layer is showing. Blank stays blank; the plan never leaks into
-// this column under any circumstance. While the plan's pen is open, the
-// open batch's as-made column stays in reading form beside the fields
-// (route-recipe-version.md § 3) — this component's branch already falls
-// through to that reading form for any mode other than 'recording'. The
-// portion count mirrors GramsCell's own fixed-split discipline this
-// milestone: exactly as many fields as row.portions has entries.
-function AsMadeCell({ row, mode, draft, openBatch, onChangeAsMade }) {
+// this column under any circumstance. Scoped to exactly ONE named portion
+// now (Task 2), replacing the row-level formatAsMadeReading join entirely:
+// each portion is its own <tr>, so there is no cell left that would ever
+// join two portions' readings together.
+function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade }) {
   if (mode === 'recording') {
     const draftValues = Object.prototype.hasOwnProperty.call(draft.asMade, row.id) ? draft.asMade[row.id] : null;
     const multiPortion = row.portions.length > 1;
     return (
-      <span className="ingredient-table__grams-cell">
-        {row.portions.map((_, i) => (
-          <Fragment key={i}>
-            {i > 0 && <span className="ingredient-table__split-step"> + </span>}
-            <input
-              type="text"
-              inputMode="decimal"
-              className="ink-field"
-              value={draftValues ? draftValues[i] : ''}
-              aria-label={
-                multiPortion
-                  ? `${row.ingredientName}, as made, grams, portion ${i + 1}`
-                  : `${row.ingredientName}, as made, grams`
-              }
-              onChange={(event) => onChangeAsMade(row.id, i, event.target.value)}
-            />
-          </Fragment>
-        ))}
-      </span>
+      <input
+        type="text"
+        inputMode="decimal"
+        className="ink-field"
+        value={draftValues ? draftValues[portionIndex] : ''}
+        aria-label={
+          multiPortion
+            ? `${row.ingredientName}, as made, grams, portion ${portionIndex + 1}`
+            : `${row.ingredientName}, as made, grams`
+        }
+        onChange={(event) => onChangeAsMade(row.id, portionIndex, event.target.value)}
+      />
     );
   }
-  const reading = formatAsMadeReading(row, openBatch);
-  if (reading !== null) {
-    return <span className="ink-text">{`${reading} g`}</span>;
+  const value = openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
+  if (value !== null) {
+    return <span className="ink-text">{`${value} g`}</span>;
   }
   return null;
 }
 
-// The twelve rows in the version's authored order — the printed sheet's
-// order. Never sort, never re-order, never group. `markedRowIds` is the
-// focused figure's contributorRowIds (route-recipe.md § 3, § 5) — marking
-// changes only outline and weight, and moves nothing. `draftVersion` is
-// the pen's own draft, built once by RecipePage (03-02) — present only in
-// developing mode, and read here for the live balance, the step-choice
-// options, and the orphaned-row cross-flag.
+// The table now groups by step (LD-01, ROADMAP Scope bullet 3) rather than
+// rendering one <tr> per ingredient in the version's authored order — a
+// step-head <tr> per group (its lead-in text looked up from `steps`, or
+// the pen's own live `draftVersion.method`), then one <tr> per portion
+// under its resolved step, a split ingredient's name repeated once per
+// step it participates in with a sub-line naming its share of the row
+// (formatPortionLine, domain/composition.js). A portion whose step cannot
+// be resolved groups under a trailing "Unallocated" head instead of being
+// dropped. `markedRowIds` is the focused figure's contributorRowIds
+// (route-recipe.md § 3, § 5) — marking changes only outline and weight,
+// and moves nothing. `draftVersion` is the pen's own draft, built once by
+// RecipePage (03-02) — present only in developing mode, and read here for
+// the live balance and the orphaned-row cross-flag. Per LD-02, the pen
+// offers no control at all to change which step a portion belongs to.
 export function IngredientTable({
   rows,
   draftVersion = null,
@@ -485,23 +323,35 @@ export function IngredientTable({
   // The row a blocked save names (critique P1 #3, D-21): the id
   // blockedSaveRowId returned, or null — the row it names carries the
   // same weight-and-outline treatment a figure's focus trace already
-  // gives a marked row, and its grams field receives focus once, when
-  // this id changes.
+  // gives a marked row, and its grams field receives focus once, on every
+  // blocked attempt (WR-01: keyed on blockedRowAttempt below, not on this
+  // id alone, so a second consecutive blocked press on the same row still
+  // re-fires the effect).
   blockedRowId = null,
+  // The incrementing attempt number RecipePage stamps onto blockedTarget
+  // on every blocked buildPenFields call (WR-01, IngredientTable.jsx:518-521
+  // pre-Task-2): a value-equal blockedRowId alone does not re-fire a
+  // useEffect across two consecutive blocked presses on the same row,
+  // since React's dependency comparison sees no change — this attempt
+  // counter differs on every press even when blockedRowId repeats.
+  blockedRowAttempt = null,
   mode = 'reading',
   draft = null,
   penDraft = null,
   openBatch = null,
+  // The method array supplying each numbered group's lead-in text in the
+  // reading and show-changes states — the same expression Method.jsx's own
+  // `steps` prop already computes. The pen branch uses draftVersion.method
+  // instead (below), since it is the live, unsaved method a step removal
+  // mid-session must be reflected against, not this stale baseline.
+  steps = [],
   // The two maps RecipePage computes once through domain/stepNumbers.js
-  // (03-10), the same pair Method reads: currentStepNumbers from the
-  // method the page is showing, baselineStepNumbers from the record a
-  // struck or removed step's number comes from — null wherever neither
-  // the pen nor show-changes applies.
+  // (03-10): currentStepNumbers from the method the page is showing (the
+  // draft's while developing, the version's own otherwise) — this is what
+  // the grouping helper resolves every portion's step through.
   currentStepNumbers = null,
-  baselineStepNumbers = null,
   onChangeAsMade = () => {},
   onChangePenGrams = () => {},
-  onChangePenRowStep = () => {},
   onTogglePenRowRemoved = () => {},
 }) {
   // The share denominator and the totals are computed from activeRows, so
@@ -516,9 +366,9 @@ export function IngredientTable({
   // asserted by a render test (RESEARCH.md Pitfall 4).
   const gramsInputsRef = useRef(new Map());
   useEffect(() => {
-    if (!blockedRowId) return;
+    if (blockedRowAttempt == null || !blockedRowId) return;
     gramsInputsRef.current.get(blockedRowId)?.focus();
-  }, [blockedRowId]);
+  }, [blockedRowAttempt]);
 
   function registerGramsInput(rowId, element) {
     if (element) gramsInputsRef.current.set(rowId, element);
@@ -538,11 +388,6 @@ export function IngredientTable({
   const currentActiveRows = isDeveloping ? activeRows(draftVersion) : activeRowsOnly;
   const currentBalance = isDeveloping ? computeBalance(currentActiveRows) : baselineBalance;
   const currentMass = currentBalance ? currentBalance.mass : 0;
-  // Every step of the draft version, not only the active ones (03-10,
-  // G-03-3 S3): a removed step's own option must stay in the list,
-  // disabled, so a row still allocated to it always has a matching option
-  // — see StepCell's own comment for why.
-  const stepOptions = isDeveloping ? draftVersion.method : [];
   const orphanedRowIds = isDeveloping ? new Set(orphanedRows(draftVersion).map((row) => row.id)) : new Set();
 
   // The as-made total appears only while an as-made layer is showing —
@@ -571,11 +416,186 @@ export function IngredientTable({
   // all three body branches — plus the total row, so a future third
   // conditional column should follow this same shape (one named
   // predicate, four-plus-one gated sites) rather than inventing its own.
+  const columnCount = 4 + (hasAsMadeLayer ? 1 : 0) + (isDeveloping ? 1 : 0);
+
+  // The method array the grouping helper reads lead-in text from: the
+  // pen's own live draftVersion.method while developing (its own comment
+  // above states why), the `steps` prop everywhere else.
+  const stepsForGrouping = isDeveloping ? draftVersion.method : steps;
+  const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers);
+
+  function renderReadingEntry(row, portion, portionIndex) {
+    const dataFlag = dataFlagFor(row);
+    const isMarked = markedRowIds.includes(row.id);
+    const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
+    const isSplit = row.portions.length > 1;
+    return (
+      <tr
+        key={`${row.id}:${portionIndex}`}
+        className={isMarked ? 'is-marked' : undefined}
+        aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
+      >
+        <td className="ingredient-table__col-name">
+          {row.ingredientName}
+          {isSplit && (
+            <span className="ingredient-table__portion-note">
+              {formatPortionLine(portion.grams, rowGrams(row), baselineMass)}
+            </span>
+          )}
+        </td>
+        <td className="ingredient-table__col-numeric">
+          <GramsCell row={row} portionIndex={portionIndex} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
+        </td>
+        {hasAsMadeLayer && (
+          <td className="ingredient-table__col-numeric">
+            <AsMadeCell row={row} portionIndex={portionIndex} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+          </td>
+        )}
+        <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
+        <td className="ingredient-table__col-data">{dataFlag}</td>
+      </tr>
+    );
+  }
+
+  function renderShowChangesEntry(row, portion, portionIndex) {
+    const rowDiff = diff.rows.find((entry) => entry.id === row.id);
+    const dataFlag = dataFlagFor(row);
+    const isMarked = markedRowIds.includes(row.id);
+    const asMadeValue = openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
+    const isSplit = row.portions.length > 1;
+    return (
+      <tr
+        key={`${row.id}:${portionIndex}`}
+        className={isMarked ? 'is-marked' : undefined}
+        aria-label={rowDiffAccessibleLabel(row, portion, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue, isSplit)}
+      >
+        <td className="ingredient-table__col-name">
+          {rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+          {isSplit && (
+            <span className="ingredient-table__portion-note">
+              {formatPortionLine(portion.grams, rowGrams(row), baselineMass)}
+            </span>
+          )}
+        </td>
+        <td className="ingredient-table__col-numeric">
+          {isSplit ? <>{portion.grams} g</> : <DiffGramsCell rowDiff={rowDiff} />}
+        </td>
+        {hasAsMadeLayer && (
+          <td className="ingredient-table__col-numeric">
+            <AsMadeCell row={row} portionIndex={portionIndex} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+          </td>
+        )}
+        <td className="ingredient-table__col-numeric">
+          {isSplit ? formatShareOfBatch(portion.grams, baselineMass) : <DiffShareCell rowDiff={rowDiff} />}
+        </td>
+        <td className="ingredient-table__col-data">{dataFlag}</td>
+      </tr>
+    );
+  }
+
+  function renderDevelopingEntry(row, portion, portionIndex) {
+    const draftRow = penDraft.rows[row.id];
+    const removed = draftRow.removed;
+    const dataFlag = dataFlagFor(row);
+    const isMarked = markedRowIds.includes(row.id);
+    const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
+    const isSplit = row.portions.length > 1;
+
+    // Row-level current grams/share (route-recipe-version.md § 3): the
+    // same values every portion-line of this row's own sub-line and
+    // accessible name report, since removing/restoring and the row's own
+    // total are whole-row facts, unchanged by which portion a given <tr>
+    // is naming. The current grams value: the sum over the draft's
+    // portions of the parsed raw string, falling back to that portion's
+    // own stored amount when the string is blank or does not parse — a
+    // blank or unparseable keystroke keeps the portion's own number rather
+    // than becoming 0 or NaN, applied per portion.
+    const baselineShare = formatShareOfBatch(rowGrams(row), baselineMass);
+    const currentGramsValue = draftRow.portions.reduce(
+      (total, draftPortion, i) => total + (parseGramsDraft(draftPortion.grams) ?? row.portions[i].grams),
+      0,
+    );
+    const currentShare = removed ? null : formatShareOfBatch(currentGramsValue, currentMass);
+    const gramsDirty = draftRow.portions.some((draftPortion, i) => draftPortion.grams !== String(row.portions[i].grams));
+    const changedGrams = gramsDirty
+      ? draftRow.portions
+          .map((draftPortion, i) => (draftPortion.grams.trim() === '' ? String(row.portions[i].grams) : draftPortion.grams))
+          .join(' + ')
+      : null;
+    const changedShare = !removed && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
+    // orphanedRows never names an already-removed row (uses.js), so this
+    // flag only ever applies to an active row here.
+    const flagged = orphanedRowIds.has(row.id);
+    // A blocked save's own row (critique P1 #3, D-21): the same
+    // weight-and-outline the focus trace's is-marked class already draws,
+    // never a second class for the same meaning. Applies to every portion
+    // line of the blocked row — the row itself is what is blocked, not
+    // one portion of it.
+    const isBlocked = row.id === blockedRowId;
+
+    // This portion's own current/baseline values, for the portion-scoped
+    // % of batch cell and the split-ingredient sub-line — the pen's own
+    // live values (Task 2's action text), not the row-level ones above.
+    const draftPortion = draftRow.portions[portionIndex];
+    const livePortionGrams = parseGramsDraft(draftPortion.grams) ?? portion.grams;
+    const portionBaselineShare = formatShareOfBatch(portion.grams, baselineMass);
+    const portionCurrentShare = removed ? null : formatShareOfBatch(livePortionGrams, currentMass);
+
+    return (
+      <tr
+        key={`${row.id}:${portionIndex}`}
+        className={isMarked || isBlocked ? 'is-marked' : undefined}
+        aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams, changedShare, removed)}
+      >
+        <td className="ingredient-table__col-name">
+          {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+          {isSplit && (
+            <span className="ingredient-table__portion-note">
+              {formatPortionLine(livePortionGrams, rowGrams(row), currentMass)}
+            </span>
+          )}
+          {portionIndex === 0 && flagged && (
+            <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
+          )}
+        </td>
+        <td className="ingredient-table__col-numeric">
+          <GramsCell
+            row={row}
+            portionIndex={portionIndex}
+            mode={mode}
+            penDraft={penDraft}
+            onChangePenGrams={onChangePenGrams}
+            inputRef={portionIndex === 0 ? (element) => registerGramsInput(row.id, element) : undefined}
+          />
+        </td>
+        {hasAsMadeLayer && (
+          <td className="ingredient-table__col-numeric">
+            <AsMadeCell row={row} portionIndex={portionIndex} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+          </td>
+        )}
+        <td className="ingredient-table__col-numeric">
+          {removed ? (
+            <span className="struck-value">{portionBaselineShare}</span>
+          ) : (
+            <ShareCell baselineShare={portionBaselineShare} currentShare={portionCurrentShare} />
+          )}
+        </td>
+        <td className="ingredient-table__col-data">{dataFlag}</td>
+        <td className="ingredient-table__col-remove">
+          {portionIndex === 0 && <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />}
+        </td>
+      </tr>
+    );
+  }
+
+  function renderEntry({ row, portion, portionIndex }) {
+    if (isShowingChanges) return renderShowChangesEntry(row, portion, portionIndex);
+    if (isDeveloping) return renderDevelopingEntry(row, portion, portionIndex);
+    return renderReadingEntry(row, portion, portionIndex);
+  }
+
   return (
     <>
-      {/* is-developing widens the Step column in the pen alone (D-22) —
-          app.css scopes --col-step-pen through this class, so no other
-          state's Step column moves. */}
       <table className={isDeveloping ? 'ingredient-table is-developing' : 'ingredient-table'}>
         <thead>
           <tr>
@@ -583,193 +603,30 @@ export function IngredientTable({
             <th scope="col" className="ingredient-table__col-numeric">Grams</th>
             {hasAsMadeLayer && <th scope="col" className="ingredient-table__col-numeric">As made</th>}
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
-            <th scope="col" className="ingredient-table__col-step">Step</th>
             {/* The Data column goes blank-headed in the pen (D-22): the
-                column stays, its head goes, making room for the widened
-                Step column above without moving any other column's
-                token. */}
+                column stays, its head goes. */}
             <th scope="col" className="ingredient-table__col-data">{isDeveloping ? '' : 'Data'}</th>
             {isDeveloping && <th scope="col" className="ingredient-table__col-remove">Remove</th>}
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => {
-            const dataFlag = dataFlagFor(row);
-            const isMarked = markedRowIds.includes(row.id);
-            const asMadeValue = mode !== 'recording' ? formatAsMadeReading(row, openBatch) : null;
-            const baselineShare = formatShareOfBatch(rowGrams(row), baselineMass);
-
-            if (isShowingChanges) {
-              const rowDiff = diff.rows.find((entry) => entry.id === row.id);
-              return (
-                <tr
-                  key={row.id}
-                  className={isMarked ? 'is-marked' : undefined}
-                  aria-label={rowDiffAccessibleLabel(
-                    row,
-                    rowDiff,
-                    dataFlag,
-                    isMarked,
-                    markedFigureLabel,
-                    asMadeValue,
-                    currentStepNumbers,
-                    baselineStepNumbers,
-                  )}
-                >
-                  <td className="ingredient-table__col-name">
-                    {rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
-                  </td>
-                  <td className="ingredient-table__col-numeric">
-                    <DiffGramsCell rowDiff={rowDiff} />
-                  </td>
-                  {hasAsMadeLayer && (
-                    <td className="ingredient-table__col-numeric">
-                      <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
-                    </td>
-                  )}
-                  <td className="ingredient-table__col-numeric">
-                    <DiffShareCell rowDiff={rowDiff} />
-                  </td>
-                  <td className="ingredient-table__col-step">
-                    <DiffStepCell rowDiff={rowDiff} currentStepNumbers={currentStepNumbers} baselineStepNumbers={baselineStepNumbers} />
-                  </td>
-                  <td className="ingredient-table__col-data">{dataFlag}</td>
-                </tr>
-              );
-            }
-
-            if (!isDeveloping) {
-              return (
-                <tr
-                  key={row.id}
-                  className={isMarked ? 'is-marked' : undefined}
-                  aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
-                >
-                  <td className="ingredient-table__col-name">{row.ingredientName}</td>
-                  <td className="ingredient-table__col-numeric">
-                    <GramsCell row={row} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
-                  </td>
-                  {hasAsMadeLayer && (
-                    <td className="ingredient-table__col-numeric">
-                      <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
-                    </td>
-                  )}
-                  <td className="ingredient-table__col-numeric">{baselineShare}</td>
-                  <td className="ingredient-table__col-step">
-                    {formatStepReferences(currentStepNumbers, baselineStepNumbers, row.portions)}
-                  </td>
-                  <td className="ingredient-table__col-data">{dataFlag}</td>
-                </tr>
-              );
-            }
-
-            const draftRow = penDraft.rows[row.id];
-            const removed = draftRow.removed;
-            // A removed row contributes no current share (it is excluded
-            // from currentMass by activeRows) — its share cell shows only
-            // the struck baseline, the mirror of the name cell beside it.
-            // The current grams value: the sum over the draft's portions of
-            // the parsed raw string, falling back to that portion's own
-            // stored amount when the string is blank or does not parse — a
-            // blank or unparseable keystroke keeps the portion's own
-            // number rather than becoming 0 or NaN, applied per portion.
-            // The announced value (D-01) agrees with this same rule: a
-            // portion field left blank announces that portion's own stored
-            // amount as text, rather than an empty join entry, since a
-            // blank field means "keep this portion's own amount", not
-            // "nothing here" — the opposite of the As-made column's blank
-            // rule above, and exactly what this fallback already computes.
-            const currentGramsValue = draftRow.portions.reduce(
-              (total, portion, i) => total + (parseGramsDraft(portion.grams) ?? row.portions[i].grams),
-              0,
-            );
-            const currentShare = removed ? null : formatShareOfBatch(currentGramsValue, currentMass);
-            const gramsDirty = draftRow.portions.some((portion, i) => portion.grams !== String(row.portions[i].grams));
-            const changedGrams = gramsDirty
-              ? draftRow.portions
-                  .map((portion, i) => (portion.grams.trim() === '' ? String(row.portions[i].grams) : portion.grams))
-                  .join(' + ')
-              : null;
-            const changedShare = !removed && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
-            const changedStep =
-              draftRow.portions[0].step !== row.portions[0].step
-                ? {
-                    from: safeDisplayNumberOf(baselineStepNumbers, row.portions[0].step),
-                    to: safeDisplayNumberOf(currentStepNumbers, draftRow.portions[0].step),
-                  }
-                : null;
-            // orphanedRows never names an already-removed row (uses.js), so
-            // this flag only ever applies to an active row here.
-            const flagged = orphanedRowIds.has(row.id);
-            // A blocked save's own row (critique P1 #3, D-21): the same
-            // weight-and-outline the focus trace's is-marked class already
-            // draws, never a second class for the same meaning.
-            const isBlocked = row.id === blockedRowId;
-
-            return (
-              <tr
-                key={row.id}
-                className={isMarked || isBlocked ? 'is-marked' : undefined}
-                aria-label={rowAccessibleLabel(
-                  row,
-                  dataFlag,
-                  isMarked,
-                  markedFigureLabel,
-                  asMadeValue,
-                  changedGrams,
-                  changedShare,
-                  changedStep,
-                  removed,
-                )}
-              >
-                <td className="ingredient-table__col-name">
-                  {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
-                  {flagged && (
-                    <OrphanedRowFlag
-                      row={row}
-                      draftVersion={draftVersion}
-                      onTogglePenRowRemoved={onTogglePenRowRemoved}
-                    />
-                  )}
-                </td>
-                <td className="ingredient-table__col-numeric">
-                  <GramsCell
-                    row={row}
-                    mode={mode}
-                    penDraft={penDraft}
-                    onChangePenGrams={onChangePenGrams}
-                    inputRef={(element) => registerGramsInput(row.id, element)}
-                  />
-                </td>
-                {hasAsMadeLayer && (
-                  <td className="ingredient-table__col-numeric">
-                    <AsMadeCell row={row} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
-                  </td>
-                )}
-                <td className="ingredient-table__col-numeric">
-                  {removed ? (
-                    <span className="struck-value">{baselineShare}</span>
+          {groups.map((group) => (
+            <Fragment key={group.displayNumber ?? 'unallocated'}>
+              <tr className="ingredient-table__step-head">
+                <td colSpan={columnCount}>
+                  {group.displayNumber != null ? (
+                    <>
+                      {`Step ${group.displayNumber}`}
+                      <span className="ingredient-table__step-head-lead">{group.leadIn}</span>
+                    </>
                   ) : (
-                    <ShareCell baselineShare={baselineShare} currentShare={currentShare} />
+                    'Unallocated'
                   )}
-                </td>
-                <td className="ingredient-table__col-step">
-                  <StepCell
-                    row={row}
-                    penDraft={penDraft}
-                    stepOptions={stepOptions}
-                    currentStepNumbers={currentStepNumbers}
-                    baselineStepNumbers={baselineStepNumbers}
-                    onChangePenRowStep={onChangePenRowStep}
-                  />
-                </td>
-                <td className="ingredient-table__col-data">{dataFlag}</td>
-                <td className="ingredient-table__col-remove">
-                  <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />
                 </td>
               </tr>
-            );
-          })}
+              {group.entries.map((entry) => renderEntry(entry))}
+            </Fragment>
+          ))}
         </tbody>
         <tfoot>
           <tr aria-label={totalAriaLabel}>
@@ -788,7 +645,6 @@ export function IngredientTable({
             </td>
             {hasAsMadeLayer && <td className="ingredient-table__col-numeric">{asMadeTotalText}</td>}
             <td className="ingredient-table__col-numeric"></td>
-            <td className="ingredient-table__col-step"></td>
             <td className="ingredient-table__col-data"></td>
             {isDeveloping && <td className="ingredient-table__col-remove"></td>}
           </tr>

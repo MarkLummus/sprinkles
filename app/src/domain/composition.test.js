@@ -4,7 +4,14 @@
 // boundary. The one exception is the olive-oil share of fat, which the sheet prints
 // as a whole number (28%): asserted within 0.5.
 import { describe, it, expect } from 'vitest';
-import { computeBalance, weakestBasis, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
+import {
+  computeBalance,
+  weakestBasis,
+  formatShareOfBatch,
+  formatGrams,
+  formatGramsValue,
+  formatPortionLine,
+} from './composition.js';
 import { rowGrams } from './rows.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { library } from '../data/library.js';
@@ -136,6 +143,20 @@ describe('formatGrams', () => {
 
   it('appends the unit to exactly what formatGramsValue returns, so the two can never disagree', () => {
     expect(formatGrams(799.68)).toBe(`${formatGramsValue(799.68)} g`);
+  });
+});
+
+describe('formatPortionLine', () => {
+  it("reads the sketch's own worked example (120 g of whole milk's 370.4 g row, seeded mass)", () => {
+    expect(formatPortionLine(120, 370.4, 799.68)).toBe('120 g of 370.4 g · 46.3% in all');
+  });
+
+  it("both portions of the same split row report the SAME 'of X g · Y% in all' tail — it names the row total, not the portion", () => {
+    expect(formatPortionLine(250.4, 370.4, 799.68)).toBe('250.4 g of 370.4 g · 46.3% in all');
+  });
+
+  it('reads trace in the tail for a sub-0.05%-share row, reusing formatShareOfBatch\'s own trace fixture', () => {
+    expect(formatPortionLine(0.16, 0.16, 799.68)).toBe('0.16 g of 0.2 g · trace in all');
   });
 });
 

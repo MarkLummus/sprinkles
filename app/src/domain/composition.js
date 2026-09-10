@@ -107,6 +107,23 @@ export function formatGrams(grams) {
   return `${formatGramsValue(grams)} g`;
 }
 
+/**
+ * formatPortionLine(portionGrams, rowTotalGrams, mass) -> the split-
+ * ingredient sub-line printed beneath a portion's own occurrence in the
+ * step-grouped table (sketch 003 variant B, ROADMAP Scope bullet 3):
+ * `"120 g of 370.4 g · 46.3% in all"`. Composes formatGrams (the "of X g"
+ * segment) and formatShareOfBatch (the "Y% in all" segment) rather than
+ * reimplementing their rounding or trace-threshold rules — the row's own
+ * total and its share of the batch, never recomputed here. portionGrams
+ * prints exactly as given, with NO `.toFixed()` applied: it is a stored or
+ * typed amount, not a computed total, so the never-round-a-stored-amount
+ * discipline formatGrams's own doc comment states applies to it too — a
+ * future reader must not "fix" this into formatGramsValue(portionGrams).
+ */
+export function formatPortionLine(portionGrams, rowTotalGrams, mass) {
+  return `${portionGrams} g of ${formatGrams(rowTotalGrams)} · ${formatShareOfBatch(rowTotalGrams, mass)} in all`;
+}
+
 export function weakestBasis(rows, field) {
   let worst = 'stated';
   for (const row of rows) {

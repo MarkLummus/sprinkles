@@ -217,7 +217,7 @@ Plans:
 
 **Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved — whole milk still 370.4 g, batch mass still 800 g; the batch's as-made whole milk reads `120 + 263` and still totals 383; the six tasting axes each take a mark independently; a profile carrying the old shape reseeds clean rather than throwing; and a store exported after the change imports after it.
 
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 **Wave 1**
@@ -230,7 +230,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 03.2-03-PLAN.md — The table and the pen read the portion: one amount field per portion, the step column joined, the show-changes state on the plural descriptors — the suite back to green
+- [x] 03.2-03-PLAN.md — The table and the pen read the portion: one amount field per portion, the step column joined, the show-changes state on the plural descriptors — the suite back to green
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -304,7 +304,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
-| 3.2. The portion and the reset | 2/4 | In Progress|  |
+| 3.2. The portion and the reset | 3/4 | In Progress|  |
 | 3.3. The front-matter rows and the page in step order | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.2"
 current_phase_name: The portion and the reset (INSERTED)
 status: executing
-stopped_at: Completed 03.2-02-PLAN.md
-last_updated: "2026-09-10T03:38:27.780Z"
+stopped_at: Completed 03.2-03-PLAN.md
+last_updated: "2026-09-10T03:59:52.467Z"
 last_activity: 2026-09-09
 last_activity_desc: Phase 03.2 execution resumed (wave continue)
-state_head: e464334625579e6febda54523f7dd795d0d2f069
+state_head: 93fe7a16817bfa8450212eefeb935e3e54a8b9a2
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 30
-  completed_plans: 28
+  completed_plans: 29
   percent: 14
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 ## Current Position
 
 Phase: 03.2 (The portion and the reset (INSERTED)) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-09-09 — Phase 03.2 execution resumed (wave continue)
 
@@ -87,6 +87,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | Phase 03.1 P03 | ~25min | 3 tasks | 7 files |
 | Phase 03.1 P04 | 30min | 3 tasks | 11 files |
 | Phase 03.2 P02 | 25min | 2 tasks | 4 files |
+| Phase 03.2 P03 | 55min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -154,6 +155,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.1]: Plan 04: shared useOnDemandField hook (Method.jsx) implements the collapse-on-blur mechanism once for purpose, aside, and the batch pen's per-step line; per-step pen rendering extracted into StepPenBody/StepRecordingControls so each step owns genuine component-local useState. — Avoids reimplementing the same open/collapse-on-blur logic three times and avoids calling hooks inside a bare .map() callback.
 - [Phase 03.2]: [Phase 03.2] transfer.js narrows to schemaVersion 4 alone; validateRow gates a row on its portions array, validateBatch validates each declaredAxes element shape (D-07a); importStore lost its lift branch entirely.
 - [Phase 03.2]: [Phase 03.2, Plan 02] versionLift.js deleted along with its last consumer (lineage.test.js's liftVersionRecord idempotence block); the round trip through exportStore/importStore is proven against the real seeded olive oil version and its 2 Aug batch, serialised through JSON.parse(JSON.stringify(...)).
+- [Phase 03.2]: [Phase 03.2, Plan 03] IngredientTable.jsx and RecipePage.jsx read row.portions in all three states; the pen renders one amount field per portion with distinct accessible names on a split row, and the step selector still chooses only the first portion's step.
 
 ### Pending Todos
 
@@ -219,6 +221,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T03:38:17.663Z
-Stopped at: Completed 03.2-02-PLAN.md
+Last session: 2026-09-10T03:59:52.398Z
+Stopped at: Completed 03.2-03-PLAN.md
 Resume file: None

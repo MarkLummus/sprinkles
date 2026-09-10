@@ -291,45 +291,49 @@ export function BatchRow({
             {/* Come-up, overrun and meltdown loss have no meaning below
                 zero and carry a floor; draw temperature and tasting
                 temperature keep their sign — the working case draws at
-                −6 °C. */}
-            <label className="batch-margin__field">
-              <span>Time to temperature, min</span>
-              <input
-                type="number"
-                step="1"
-                min="0"
-                inputMode="decimal"
-                className="ink-field"
-                value={draft.comeUpMinutes}
-                aria-label="Time to temperature, minutes"
-                onChange={(event) => onChangeChurnField('comeUpMinutes', event.target.value)}
-              />
-            </label>
-            <label className="batch-margin__field">
-              <span>Draw temperature, °C</span>
-              <input
-                type="number"
-                step="0.5"
-                inputMode="decimal"
-                className="ink-field"
-                value={draft.drawTempC}
-                aria-label="Draw temperature, degrees Celsius"
-                onChange={(event) => onChangeChurnField('drawTempC', event.target.value)}
-              />
-            </label>
-            <label className="batch-margin__field">
-              <span>Air, overrun %</span>
-              <input
-                type="number"
-                step="1"
-                min="0"
-                inputMode="decimal"
-                className="ink-field"
-                value={draft.overrunPercent}
-                aria-label="Air, overrun percent"
-                onChange={(event) => onChangeChurnField('overrunPercent', event.target.value)}
-              />
-            </label>
+                −6 °C. Laid out side by side in the reading state's own
+                cells grid (2026-09-10 checkpoint feedback, G-03.3-4): each
+                field now sized to its expected input, not the full row. */}
+            <div className="batch-row__cells">
+              <label className="batch-margin__field">
+                <span>Time to temperature, min</span>
+                <input
+                  type="number"
+                  step="1"
+                  min="0"
+                  inputMode="decimal"
+                  className="ink-field"
+                  value={draft.comeUpMinutes}
+                  aria-label="Time to temperature, minutes"
+                  onChange={(event) => onChangeChurnField('comeUpMinutes', event.target.value)}
+                />
+              </label>
+              <label className="batch-margin__field">
+                <span>Draw temperature, °C</span>
+                <input
+                  type="number"
+                  step="0.5"
+                  inputMode="decimal"
+                  className="ink-field"
+                  value={draft.drawTempC}
+                  aria-label="Draw temperature, degrees Celsius"
+                  onChange={(event) => onChangeChurnField('drawTempC', event.target.value)}
+                />
+              </label>
+              <label className="batch-margin__field">
+                <span>Air, overrun %</span>
+                <input
+                  type="number"
+                  step="1"
+                  min="0"
+                  inputMode="decimal"
+                  className="ink-field"
+                  value={draft.overrunPercent}
+                  aria-label="Air, overrun percent"
+                  onChange={(event) => onChangeChurnField('overrunPercent', event.target.value)}
+                />
+              </label>
+            </div>
             {/* The hairline-baseline fix (03.1 Gap 2 override): a blank
                 named prose field carries a graduation-weight rule until
                 it holds text — no visible label word is added. */}

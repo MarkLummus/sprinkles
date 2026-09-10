@@ -83,6 +83,13 @@
   --rule-ink-field: 1px;
   --size-ink-field: 0.9375rem;
 
+  /* The record pen's field widths (2026-09-10 checkpoint feedback): a
+     date or short figure field reads at the width its own input actually
+     needs, not the full page-width row it inherited once 03.3-06/07
+     widened the batch row to span the page. */
+  --field-w-date: 12ch;
+  --field-w-figure: 6ch;
+
   /* This table's own horizontal cell padding (G-03-11, D-UAT-6): tightened
      to half of what the general small gap gave it before (--gap-s, 12px),
      as its own token so it can be adjusted for this table alone without

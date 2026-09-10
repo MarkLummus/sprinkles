@@ -6,12 +6,16 @@
 // list renders Link elements. Several cases here are moved verbatim from
 // Versions.test.jsx and BatchMargin.test.jsx, narrowed/merged to the
 // batch-owning half.
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { BatchRow } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { readCustomProperties, readAllRules } from '../styles/css-source.js';
 
 const noop = () => {};
 
@@ -228,6 +232,54 @@ describe('BatchRow — recording state', () => {
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="At the machine"/);
     expect(markup).toMatch(/<input[^>]*class="prose-field"[^>]*aria-label="Ingredient notes"/);
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Next time"/);
+  });
+});
+
+// The record pen's field widths (2026-09-10 checkpoint feedback,
+// G-03.3-4): the churned date and the three churn number fields read at
+// the width their own input needs, not the full page-width row they
+// inherited once 03.3-06/07 widened the batch row to span the page. Read
+// through css-source.js, the same stylesheet reader columns.test.js and
+// binder.test.js already use — a rule can never be satisfied by prose
+// about it.
+describe("BatchRow — the record pen's field widths (2026-09-10 checkpoint feedback)", () => {
+  const STYLES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'styles');
+  const tokensSource = readFileSync(path.join(STYLES_DIR, 'tokens.css'), 'utf8');
+  const appCssSource = readFileSync(path.join(STYLES_DIR, 'app.css'), 'utf8');
+  const tokens = readCustomProperties(tokensSource);
+  const rules = readAllRules(appCssSource);
+
+  it('tokens.css declares a date-width and a figure-width token, each a ch value', () => {
+    expect(tokens['--field-w-date']).toMatch(/^\d+(\.\d+)?ch$/);
+    expect(tokens['--field-w-figure']).toMatch(/^\d+(\.\d+)?ch$/);
+  });
+
+  it('app.css sizes the ceremony date field and the recording number fields through those tokens, never a literal', () => {
+    const dateRule = rules.find((r) => r.selector === ".versions__ceremony-field .ink-field[type='date']");
+    const figureRule = rules.find((r) => r.selector === ".batch-margin__field .ink-field[type='number']");
+    expect(dateRule, 'expected a rule sizing the ceremony date field').toBeTruthy();
+    expect(dateRule.declarations).toMatch(/width:\s*var\(--field-w-date\)/);
+    expect(figureRule, 'expected a rule sizing the recording number fields').toBeTruthy();
+    expect(figureRule.declarations).toMatch(/width:\s*var\(--field-w-figure\)/);
+  });
+
+  it('renders the churned-date field inside its sized ceremony wrapper', () => {
+    const markup = renderBatchRow({ openPen: 'record', draft: { ...emptyChurnDraft, churnDate: '2026-08-09' } });
+    expect(markup).toMatch(
+      /<label class="versions__ceremony-field">churned <input type="date" class="ink-field"/,
+    );
+  });
+
+  it('lays the three number fields side by side in the same cells grid the reading state uses', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: emptyChurnDraft });
+    const cellsIndex = markup.indexOf('batch-row__cells');
+    expect(cellsIndex).toBeGreaterThanOrEqual(0);
+    const machineIndex = markup.indexOf('At the machine');
+    expect(machineIndex).toBeGreaterThan(cellsIndex);
+    const cellsBlock = markup.slice(cellsIndex, machineIndex);
+    expect(cellsBlock).toContain('Time to temperature');
+    expect(cellsBlock).toContain('Draw temperature');
+    expect(cellsBlock).toContain('Air, overrun %');
   });
 });
 

@@ -490,6 +490,15 @@ textarea {
   font-size: var(--size-table-body);
 }
 
+/* The churned/tasting date field, sized to a date rather than the full
+   row (2026-09-10 checkpoint feedback, G-03.3-4): both ceremonies this
+   wrapper serves hold a date field only, so scoping by [type='date']
+   costs nothing and reads self-documenting beside .ink-field's own
+   width: 100%. */
+.versions__ceremony-field .ink-field[type='date'] {
+  width: var(--field-w-date);
+}
+
 .versions__ceremony-field span {
   display: block;
   margin-bottom: var(--gap-hair);
@@ -1311,6 +1320,15 @@ textarea {
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);
   margin-top: var(--gap-xs);
+}
+
+/* The three churn number fields (Time to temperature, Draw temperature,
+   Air), sized to a short figure rather than the full row (2026-09-10
+   checkpoint feedback, G-03.3-4): scoped by [type='number'] so the three
+   prose fields beside them (textarea/text input, no .ink-field class)
+   stay at their own measure, untouched. */
+.batch-margin__field .ink-field[type='number'] {
+  width: var(--field-w-figure);
 }
 
 /* The batch row's measured values, as labelled cells at figure size

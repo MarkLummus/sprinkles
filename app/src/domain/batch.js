@@ -12,6 +12,7 @@
 // number shows what was entered. asMadeTotals below is the one computed
 // figure this module produces; rounding it for display is the table's
 // decision, made once, at the point of presentation, not here.
+import { rowGrams } from './rows.js';
 
 export const BATCH_SCHEMA_VERSION = 1;
 
@@ -170,8 +171,8 @@ export function asMadeTotals(rows, asMade) {
   let planTotal = 0;
   let asMadeTotal = 0;
   for (const row of rows) {
-    planTotal += row.grams;
-    let contribution = row.grams;
+    planTotal += rowGrams(row);
+    let contribution = rowGrams(row);
     if (Object.prototype.hasOwnProperty.call(asMade, row.id)) {
       const value = Number(asMade[row.id]);
       if (Number.isFinite(value)) contribution = value;

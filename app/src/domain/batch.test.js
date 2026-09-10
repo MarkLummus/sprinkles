@@ -22,6 +22,7 @@ import {
 } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { rowGrams } from './rows.js';
 
 // A plain in-memory double for the repository seam's batch methods — the
 // domain suite must not import store/repository.js, which touches idb.
@@ -72,13 +73,13 @@ describe('createBatch', () => {
       { churnDate: '2026-08-02', asMade: {} },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
-    const originalGrams = version.rows[0].grams;
+    const originalGrams = version.rows[0].portions[0].grams;
     const originalFat = version.rows[0].ingredient.composition.fat;
 
-    version.rows[0].grams = 999;
+    version.rows[0].portions[0].grams = 999;
     version.rows[0].ingredient.composition.fat = 999;
 
-    expect(batch.snapshot.rows[0].grams).toBe(originalGrams);
+    expect(batch.snapshot.rows[0].portions[0].grams).toBe(originalGrams);
     expect(batch.snapshot.rows[0].ingredient.composition.fat).toBe(originalFat);
   });
 
@@ -151,7 +152,7 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
       { churnDate: '2026-08-02', asMade: {} },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
-    expect(oliveOilVersion.rows.find((row) => row.id === 'row-01').grams).toBeGreaterThan(0);
+    expect(rowGrams(oliveOilVersion.rows.find((row) => row.id === 'row-01'))).toBeGreaterThan(0);
     expect(asMadeFor(batch, 'row-01')).toBe(null);
   });
 

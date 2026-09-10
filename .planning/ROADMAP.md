@@ -217,7 +217,7 @@ Plans:
 
 **Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved — whole milk still 370.4 g, batch mass still 800 g; the batch's as-made whole milk reads `120 + 263` and still totals 383; the six tasting axes each take a mark independently; a profile carrying the old shape reseeds clean rather than throwing; and a store exported after the change imports after it.
 
-**Plans:** 4/4 plans executed
+**Plans:** 5 plans — 4/4 executed, plus one gap-closure plan from verification
 
 Plans:
 **Wave 1**
@@ -235,6 +235,10 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [x] 03.2-04-PLAN.md — As made, per portion: the 2 Aug batch's `120 + 263`, and the phase's three regression guards
+
+**Wave 5** *(gap closure — blocked on Wave 4 completion)*
+
+- [ ] 03.2-05-PLAN.md — The As-made reading, coherent for any recording pattern: both unfiltered joins fixed, and the test asserting the full rendered string
 
 ### Phase 03.3: The front-matter rows and the page in step order (INSERTED)
 

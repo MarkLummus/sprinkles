@@ -245,8 +245,65 @@ describe('IngredientTable — the As made column reads and records per portion (
 
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
-    expect(markup).toContain('120');
+    // Full-string assertions (03.2-05, CR-01): a toContain('120') substring
+    // check is satisfied by a dangling '120 +  g' just as much as by a
+    // clean '120 g' — asserting the whole cell and the whole accessible
+    // name is the only way this class of regression cannot pass green.
+    expect(markup).toContain('<span class="ink-text">120 g</span>');
+    expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 120 g"');
     expect(markup).not.toContain('250.4');
+  });
+
+  it('a three-portion row with a blank middle portion joins only what was written', () => {
+    const version = makeVersion([
+      makeRow('a', 'Row A', null, null, {
+        portions: [{ step: 2, grams: 100 }, { step: 3, grams: 20 }, { step: 4, grams: 50 }],
+      }),
+    ]);
+    const openBatch = makeBatch({ a: [100, null, 50] });
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
+
+    expect(markup).toContain('<span class="ink-text">100 + 50 g</span>');
+    expect(markup).toContain('aria-label="Row A, 170 g, as made 100 + 50 g"');
+  });
+
+  it('a row whose as-made key holds no written portion reads as no as-made at all', () => {
+    const version = makeVersion([
+      makeRow('a', 'Row A', null, null, { portions: [{ step: 2, grams: 40 }, { step: 3, grams: 60 }] }),
+    ]);
+    const openBatch = makeBatch({ a: [null, null] });
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
+
+    // No as-made key at all reads no ink-text reading span and no "as
+    // made" clause in the accessible name — the same reading a row with no
+    // as-made key at all gets.
+    expect(markup).not.toContain('ink-text');
+    expect(markup).not.toContain('as made');
+  });
+
+  it('the pen announces the amount it would save for a portion field left blank', () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] }),
+    ]);
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: { a: { portions: [{ step: 2, grams: '120' }, { step: 3, grams: '' }], removed: false } },
+      asMade: {},
+    };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+      />,
+    );
+
+    expect(markup).toContain('aria-label="Whole milk, was 370.4 g, now 120 + 250.4 g"');
   });
 
   it('recording a split row renders two as-made fields with distinct accessible names', () => {

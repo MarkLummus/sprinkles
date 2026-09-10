@@ -12,7 +12,7 @@
 // whether that marker still applies, by clearing it in the draft the
 // instant the note's text differs from the text it was inherited with
 // (route-recipe-version.md, "Inherited notes").
-function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote }) {
+export function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote }) {
   const isDeveloping = mode === 'developing';
   return (
     <ul className="authored__notes">
@@ -43,7 +43,6 @@ function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote }) {
 
 export function Authored({
   carriedForward,
-  beforeYouStart,
   mode = 'reading',
   onChangeNoteText = () => {},
   onRemoveNote = () => {},
@@ -57,18 +56,6 @@ export function Authored({
       <NoteList
         listKey="carriedForward"
         notes={carriedForward}
-        mode={mode}
-        onChangeNoteText={onChangeNoteText}
-        onRemoveNote={onRemoveNote}
-      />
-
-      <p className="authored__legend">
-        <span>Before you start</span>
-        <span>authored</span>
-      </p>
-      <NoteList
-        listKey="beforeYouStart"
-        notes={beforeYouStart}
         mode={mode}
         onChangeNoteText={onChangeNoteText}
         onRemoveNote={onRemoveNote}

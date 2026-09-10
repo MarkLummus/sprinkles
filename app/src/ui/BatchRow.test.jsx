@@ -176,11 +176,41 @@ describe('BatchRow — recording state', () => {
     expect(comeUpInput).toContain('class="ink-field"');
   });
 
-  it('carries the prose-field treatment on draw notes, ingredient notes, and next time', () => {
-    const markup = renderBatchRow({ mode: 'recording', draft: emptyChurnDraft });
+  it('carries the prose-field treatment on draw notes, ingredient notes, and next time (a written value drops the empty modifier — see the dedicated describe block below)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyChurnDraft, drawNotes: 'Soft', ingredientNotes: 'Oil open', nextTimeNote: 'Less oil' },
+    });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Draw notes"/);
     expect(markup).toMatch(/<input[^>]*class="prose-field"[^>]*aria-label="Ingredient notes"/);
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Next time"/);
+  });
+});
+
+// The hairline-baseline fix (03.1 Gap 2 override, 03.3-01): a blank named
+// prose field carries prose-field--empty until it holds text; a written
+// field drops the modifier — no visible label word is ever added.
+describe('BatchRow — the three named prose fields carry a hairline rule when empty (03.1 Gap 2)', () => {
+  it('applies prose-field--empty to draw notes, ingredient notes and next time when each is blank', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: emptyChurnDraft });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"[^>]*aria-label="Draw notes"/);
+    expect(markup).toMatch(/<input[^>]*class="prose-field prose-field--empty"[^>]*aria-label="Ingredient notes"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"[^>]*aria-label="Next time"/);
+  });
+
+  it('drops prose-field--empty once each field holds text', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyChurnDraft, drawNotes: 'Soft', ingredientNotes: 'Oil open', nextTimeNote: 'Less oil' },
+    });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="Draw notes"/);
+    expect(markup).not.toMatch(/aria-label="Draw notes"[^>]*class="prose-field prose-field--empty"/);
+    const drawNotesField = markup.match(/<textarea[^>]*aria-label="Draw notes"[^>]*>/)[0];
+    expect(drawNotesField).not.toContain('prose-field--empty');
+    const ingredientNotesField = markup.match(/<input[^>]*aria-label="Ingredient notes"[^>]*\/>/)[0];
+    expect(ingredientNotesField).not.toContain('prose-field--empty');
+    const nextTimeField = markup.match(/<textarea[^>]*aria-label="Next time"[^>]*>/)[0];
+    expect(nextTimeField).not.toContain('prose-field--empty');
   });
 });
 

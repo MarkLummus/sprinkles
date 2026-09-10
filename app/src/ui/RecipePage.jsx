@@ -1249,6 +1249,9 @@ export function RecipePage() {
             onChangePenStepTarget={handleChangePenStepTarget}
             onTogglePenStepUses={handleTogglePenStepUses}
             onTogglePenStepRemoved={handleTogglePenStepRemoved}
+            beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
+            onChangeNoteText={handleChangePenNoteText}
+            onRemoveNote={handleRemovePenNote}
           />
         </section>
 
@@ -1267,17 +1270,15 @@ export function RecipePage() {
             <BasisNote version={liveVersion} />
           </section>
 
-          <aside className="margin-region" aria-label="Notes">
-            <h2 className="region-name">Notes</h2>
+          <div className="margin-region">
             <DerivedAdvisories version={liveVersion} />
             <Authored
               carriedForward={mode === 'developing' && penDraft ? penDraft.authored.carriedForward : version.authored.carriedForward}
-              beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
               mode={mode}
               onChangeNoteText={handleChangePenNoteText}
               onRemoveNote={handleRemovePenNote}
             />
-          </aside>
+          </div>
         </div>
 
         <PenFoot

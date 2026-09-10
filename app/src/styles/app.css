@@ -745,6 +745,16 @@ textarea {
   margin: 0 0 var(--gap-xs);
 }
 
+/* "Before you start" (03.3-01, moved out of Authored.jsx to head the
+   Method, before step 1): the same prose measure as the recipe block,
+   closed by a graduation-weight rule before the step list. */
+.method__before {
+  max-width: var(--measure-prose);
+  padding-bottom: var(--gap-m);
+  margin-bottom: var(--gap-m);
+  border-bottom: var(--rule-graduation) solid var(--ink);
+}
+
 .method-steps {
   list-style: none;
   margin: 0;
@@ -1080,6 +1090,13 @@ textarea {
   width: 100%;
   max-width: var(--measure-prose);
   box-sizing: border-box;
+}
+
+/* The hairline-baseline fix for a blank named prose field (03.1 Gap 2
+   override, 03.3-01): a rule until the field holds text — no visible
+   label word. */
+.prose-field--empty {
+  border-bottom: var(--rule-graduation) solid var(--ink);
 }
 
 /* The lead-in field (route-recipe-version.md § 3): reads bold in place of

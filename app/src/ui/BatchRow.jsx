@@ -316,9 +316,12 @@ export function BatchRow({
                 onChange={(event) => onChangeChurnField('overrunPercent', event.target.value)}
               />
             </label>
+            {/* The hairline-baseline fix (03.1 Gap 2 override): a blank
+                named prose field carries a graduation-weight rule until
+                it holds text — no visible label word is added. */}
             <label className="batch-margin__field">
               <textarea
-                className="prose-field"
+                className={draft.drawNotes === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 rows="2"
                 value={draft.drawNotes}
                 aria-label="Draw notes"
@@ -328,7 +331,7 @@ export function BatchRow({
             <label className="batch-margin__field">
               <input
                 type="text"
-                className="prose-field"
+                className={draft.ingredientNotes === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 value={draft.ingredientNotes}
                 aria-label="Ingredient notes"
                 onChange={(event) => onChangeChurnField('ingredientNotes', event.target.value)}
@@ -336,7 +339,7 @@ export function BatchRow({
             </label>
             <label className="batch-margin__field">
               <textarea
-                className="prose-field"
+                className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 rows="2"
                 value={draft.nextTimeNote}
                 aria-label="Next time"

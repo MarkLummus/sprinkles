@@ -261,12 +261,12 @@ Plans:
 - Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
 - Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 03.3-01-PLAN.md — The tracer: `Versions.jsx` splits into `VersionRow.jsx` and `BatchRow.jsx`, `BatchMargin.jsx` retires, the front matter stacks into two full-width rows with no running head, column two becomes Balance → Things to check → Notes, "Before you start" heads the Method, the three blank prose fields rule a hairline baseline, focus-return relocates and WR-01's version-line half takes an attempt counter — the fork's landing focus deferred to human verify
+- [x] 03.3-01-PLAN.md — The tracer: `Versions.jsx` splits into `VersionRow.jsx` and `BatchRow.jsx`, `BatchMargin.jsx` retires, the front matter stacks into two full-width rows with no running head, column two becomes Balance → Things to check → Notes, "Before you start" heads the Method, the three blank prose fields rule a hairline baseline, focus-return relocates and WR-01's version-line half takes an attempt counter — the fork's landing focus deferred to human verify
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -322,7 +322,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
-| 3.3. The front-matter rows and the page in step order | 0/TBD | Not started | - |
+| 3.3. The front-matter rows and the page in step order | 1/4 | In Progress|  |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

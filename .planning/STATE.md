@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 4
-current_phase_name: Prepare the next version for making
+current_phase: "03.2"
+current_phase_name: The front-matter rows and the table in step order
 status: planning
-stopped_at: Phase 03.1 complete, ready to plan Phase 4
-last_updated: "2026-09-10T01:40:07.983Z"
+stopped_at: Phase 03.1 complete; Phase 03.2 inserted, ready to plan
+last_updated: "2026-09-10T01:44:40.821Z"
 last_activity: 2026-09-09
-last_activity_desc: Phase 03.1 complete, transitioned to Phase 4
-state_head: f6dc620d1a1464ffd438a53a36ab0ad3f971b4c1
+last_activity_desc: Phase 03.2 inserted after 03.1
+state_head: 7f4f575a515e559015afca99dc03793c33c2db91
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 2
   total_plans: 26
   completed_plans: 26
-  percent: 40
+  percent: 33
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 
 ## Current Position
 
-Phase: 4 — Prepare the next version for making
+Phase: 03.2 — The front-matter rows and the table in step order
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-09 — Phase 03.1 complete, transitioned to Phase 4
+Last activity: 2026-09-09 — Phase 03.2 inserted after 03.1
 
-Progress: [████░░░░░░] 40% (3/4 phases; 21/21 plans)
+Progress: [███░░░░░░░] 33% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
@@ -203,6 +203,7 @@ None yet.
 ### Roadmap Evolution
 
 - Phase 03.1 inserted after Phase 3: The imprint and the binder — the 2026-09-08 Impeccable brief revisions: front-matter band, controls out of the spread, the pen reads as the page, the binder's control treatment, rules strike the parent figure, columns hold in every state (URGENT)
+- Phase 03.2 inserted after Phase 03.1: The front-matter rows and the table in step order — route-recipe.md revised twice on 2026-09-09 retires the imprint and the tray that Phase 03.1 built (URGENT)
 
 ## Deferred Items
 
@@ -215,5 +216,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-09T03:22:43.313Z
-Stopped at: Phase 03.1 complete, ready to plan Phase 4
+Stopped at: Phase 03.1 complete; Phase 03.2 inserted, ready to plan
 Resume file: None

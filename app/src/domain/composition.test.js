@@ -5,6 +5,7 @@
 // as a whole number (28%): asserted within 0.5.
 import { describe, it, expect } from 'vitest';
 import { computeBalance, weakestBasis, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
+import { rowGrams } from './rows.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { library } from '../data/library.js';
 
@@ -58,8 +59,17 @@ describe('computeBalance — edge cases', () => {
   it('reports a single row as 100% of batch', () => {
     const row = oliveOilVersion.rows[0];
     const balance = computeBalance([row]);
-    expect(balance.mass).toBe(row.grams);
-    expect((100 * row.grams) / balance.mass).toBe(100);
+    expect(balance.mass).toBe(rowGrams(row));
+    expect((100 * rowGrams(row)) / balance.mass).toBe(100);
+  });
+
+  it('mass over a two-portion row is the same double rowGrams derives, so a split row cannot move a figure', () => {
+    const twoPortionRow = {
+      portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }],
+      ingredient: { composition: {} },
+    };
+    expect(computeBalance([twoPortionRow]).mass).toBe(rowGrams(twoPortionRow));
+    expect(computeBalance([twoPortionRow]).mass).toBe(370.4);
   });
 });
 
@@ -78,8 +88,8 @@ describe('weakestBasis', () => {
 
   it('ignores a struck (0 g) row even when its composition basis is the worst rank', () => {
     const rows = [
-      { grams: 100, ingredient: { composition: { fat: 0.1 }, basis: { fat: 'stated' } } },
-      { grams: 0, ingredient: { composition: { fat: 0.1 }, basis: { fat: 'inherited' } } },
+      { portions: [{ step: 1, grams: 100 }], ingredient: { composition: { fat: 0.1 }, basis: { fat: 'stated' } } },
+      { portions: [{ step: 1, grams: 0 }], ingredient: { composition: { fat: 0.1 }, basis: { fat: 'inherited' } } },
     ];
     expect(weakestBasis(rows, 'fat')).toBe('stated');
   });

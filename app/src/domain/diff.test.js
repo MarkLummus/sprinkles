@@ -23,7 +23,7 @@ describe('buildDiff — identity', () => {
     const version = clone();
     const diff = buildDiff(version, version);
 
-    expect(diff.rows.every((row) => !row.gramsChanged && !row.shareChanged && !row.stepChanged && !row.removedChanged)).toBe(true);
+    expect(diff.rows.every((row) => !row.gramsChanged && !row.shareChanged && !row.stepsChanged && !row.removedChanged)).toBe(true);
     expect(diff.steps.every((step) => !step.textChanged && !step.usesChanged && !step.removedChanged)).toBe(true);
     expect(diff.steps.every((step) => step.targets.every((target) => !target.changed))).toBe(true);
     expect(diff.figures.every((figure) => !figure.changed)).toBe(true);
@@ -38,7 +38,7 @@ describe('buildDiff — grams', () => {
   it('reports gramsFrom/gramsTo/gramsChanged for the one row that moved, and false for every other row', () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-03').grams = 48; // Graza Drizzle, oil: 40 -> 48
+    findRow(current, 'row-03').portions[0].grams = 48; // Graza Drizzle, oil: 40 -> 48
 
     const diff = buildDiff(current, baseline);
     const oilDiff = diff.rows.find((row) => row.id === 'row-03');
@@ -53,11 +53,47 @@ describe('buildDiff — grams', () => {
   });
 });
 
+describe('buildDiff — steps (portions, D-02)', () => {
+  it('reports stepsFrom/stepsTo/stepsChanged for a row reallocated between its two steps, with gramsChanged staying false', () => {
+    const baseline = clone();
+    const current = clone();
+    // Whole milk's total (370.4) is unchanged; only its split between step
+    // 2 and step 3 moves.
+    findRow(current, 'row-01').portions = [
+      { step: 2, grams: 100 },
+      { step: 3, grams: 270.4 },
+    ];
+
+    const diff = buildDiff(current, baseline);
+    const wholeMilkDiff = diff.rows.find((row) => row.id === 'row-01');
+    expect(wholeMilkDiff.stepsFrom).toEqual([2, 3]);
+    expect(wholeMilkDiff.stepsTo).toEqual([2, 3]);
+    expect(wholeMilkDiff.gramsChanged).toBe(false);
+    expect(wholeMilkDiff.stepsChanged).toBe(false);
+  });
+
+  it('reports stepsChanged true for a row whose portions reorder to different steps, even though the array members are the same set', () => {
+    const baseline = clone();
+    const current = clone();
+    // Reverse the two steps a portion is attached to — same two step
+    // numbers, different order, so an order-insensitive comparison (like
+    // uses' sameSet) would wrongly report no change.
+    findRow(current, 'row-01').portions = [
+      { step: 3, grams: 120 },
+      { step: 2, grams: 250.4 },
+    ];
+
+    const diff = buildDiff(current, baseline);
+    const wholeMilkDiff = diff.rows.find((row) => row.id === 'row-01');
+    expect(wholeMilkDiff.stepsChanged).toBe(true);
+  });
+});
+
 describe('buildDiff — share follows grams even where grams did not move', () => {
   it("whole milk's gramsChanged is false while its shareChanged is true, 46.3% against 45.9%", () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-03').grams = 48; // total mass 799.68 -> 807.68
+    findRow(current, 'row-03').portions[0].grams = 48; // total mass 799.68 -> 807.68
 
     const diff = buildDiff(current, baseline);
     const wholeMilkDiff = diff.rows.find((row) => row.id === 'row-01');
@@ -72,7 +108,7 @@ describe('buildDiff — share compared at display precision', () => {
   it('reports shareChanged false for a grams change too small to move the one-decimal share', () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-08').grams = 3.2001; // fine sea salt, a tenth-of-a-milligram edit
+    findRow(current, 'row-08').portions[0].grams = 3.2001; // fine sea salt, a tenth-of-a-milligram edit
 
     const diff = buildDiff(current, baseline);
     const saltDiff = diff.rows.find((row) => row.id === 'row-08');
@@ -86,7 +122,7 @@ describe('buildDiff — figures compared at display precision', () => {
   it('reports total fat from 18.0 to 18.8, changed true, for the oil row moved 40 -> 48', () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-03').grams = 48;
+    findRow(current, 'row-03').portions[0].grams = 48;
 
     const diff = buildDiff(current, baseline);
     const fatDiff = diff.figures.find((figure) => figure.key === 'fat');
@@ -101,7 +137,7 @@ describe('buildDiff — figures compared at display precision', () => {
     // Guar gum has no fat contribution; a hundredth-of-a-gram edit moves
     // total mass (the fat percentage's denominator) by an amount far below
     // half of fat's own printed decimal (0.05 percentage points).
-    findRow(current, 'row-11').grams = 0.4801;
+    findRow(current, 'row-11').portions[0].grams = 0.4801;
 
     const diff = buildDiff(current, baseline);
     const fatDiff = diff.figures.find((figure) => figure.key === 'fat');
@@ -133,7 +169,7 @@ describe('buildDiff — the total', () => {
   it("reads 'from' 799.7 g, 'to' 807.7 g, changed true with the oil row at 48", () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-03').grams = 48;
+    findRow(current, 'row-03').portions[0].grams = 48;
 
     const diff = buildDiff(current, baseline);
     expect(diff.total.from).toBe('799.7 g');
@@ -147,7 +183,7 @@ describe('buildDiff — the total', () => {
   it('carries fromValue/toValue as the bare numbers from/to already print with a unit', () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-03').grams = 48;
+    findRow(current, 'row-03').portions[0].grams = 48;
 
     const diff = buildDiff(current, baseline);
     expect(diff.total.fromValue).toBe('799.7');
@@ -427,7 +463,7 @@ describe('buildDiff — removal', () => {
 describe('buildDiff — never mutates, never reorders', () => {
   it('leaves both arguments deep-equal a structuredClone taken before the call', () => {
     const current = clone();
-    findRow(current, 'row-03').grams = 48;
+    findRow(current, 'row-03').portions[0].grams = 48;
     const baseline = clone();
     const currentBefore = structuredClone(current);
     const baselineBefore = structuredClone(baseline);

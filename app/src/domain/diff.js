@@ -9,7 +9,7 @@
 // order (already ascending n).
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
 import { buildFigures } from './figures.js';
-import { activeRows, activeSteps } from './rows.js';
+import { activeRows, activeSteps, rowGrams } from './rows.js';
 
 function activeMass(version) {
   const balance = computeBalance(activeRows(version));
@@ -39,40 +39,56 @@ function bandsEqual(a, b) {
   });
 }
 
+// A row's step references, in portion order — the array buildRowDiff
+// reports as stepsFrom/stepsTo.
+function stepsOf(row) {
+  return row.portions.map((portion) => portion.step);
+}
+
+// Order-sensitive: portions are stored in step order, so a reordering is a
+// real change. Deliberately not sameSet (above), which is order-insensitive
+// and belongs to a step's uses list, not a row's portions.
+function stepsDiffer(a, b) {
+  if (a.length !== b.length) return true;
+  return a.some((step, index) => step !== b[index]);
+}
+
 function buildRowDiff(row, baseRow, currentMass, baselineMass) {
   if (!baseRow) {
     return {
       id: row.id,
       ingredientName: row.ingredientName,
       gramsFrom: null,
-      gramsTo: row.grams,
+      gramsTo: rowGrams(row),
       gramsChanged: true,
       shareFrom: null,
-      shareTo: formatShareOfBatch(row.grams, currentMass),
+      shareTo: formatShareOfBatch(rowGrams(row), currentMass),
       shareChanged: true,
-      stepFrom: null,
-      stepTo: row.step,
-      stepChanged: true,
+      stepsFrom: null,
+      stepsTo: stepsOf(row),
+      stepsChanged: true,
       removed: row.removed ?? false,
       removedChanged: true,
     };
   }
-  const shareFrom = formatShareOfBatch(baseRow.grams, baselineMass);
-  const shareTo = formatShareOfBatch(row.grams, currentMass);
+  const rowTotal = rowGrams(row);
+  const baseRowTotal = rowGrams(baseRow);
+  const shareFrom = formatShareOfBatch(baseRowTotal, baselineMass);
+  const shareTo = formatShareOfBatch(rowTotal, currentMass);
   const removed = row.removed ?? false;
   const baseRemoved = baseRow.removed ?? false;
   return {
     id: row.id,
     ingredientName: row.ingredientName,
-    gramsFrom: baseRow.grams,
-    gramsTo: row.grams,
-    gramsChanged: row.grams !== baseRow.grams,
+    gramsFrom: baseRowTotal,
+    gramsTo: rowTotal,
+    gramsChanged: rowTotal !== baseRowTotal,
     shareFrom,
     shareTo,
     shareChanged: shareTo !== shareFrom,
-    stepFrom: baseRow.step,
-    stepTo: row.step,
-    stepChanged: row.step !== baseRow.step,
+    stepsFrom: stepsOf(baseRow),
+    stepsTo: stepsOf(row),
+    stepsChanged: stepsDiffer(stepsOf(row), stepsOf(baseRow)),
     removed,
     removedChanged: removed !== baseRemoved,
   };
@@ -154,7 +170,12 @@ function buildStepDiff(step, baseStep) {
  * string, figures compare value.toFixed(decimals). `rows` is one
  * descriptor per row of `current`, in `current.rows` order — a row absent
  * from `baseline` reports every `From` as null and every `Changed` as
- * true. `steps` is one descriptor per step of `current`, in
+ * true. `gramsFrom`/`gramsTo` are each row's derived total (rowGrams);
+ * `stepsFrom`/`stepsTo` are each row's portions' step references, as
+ * arrays in portion order, and `stepsChanged` is an order-sensitive
+ * comparison of those two arrays — a reallocation between the same two
+ * steps is a real change, since portions are stored in step order.
+ * `steps` is one descriptor per step of `current`, in
  * `current.method`'s own order (already ascending n); each step descriptor
  * carries `leadInChanged`/`instructionChanged`/`purposeChanged`/
  * `asideChanged`, one per text field, with `textChanged` computed as their

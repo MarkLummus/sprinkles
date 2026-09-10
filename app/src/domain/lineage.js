@@ -154,21 +154,25 @@ export function parseGramsDraft(value) {
  * findBlockedRow(penFields, version) -> { row, message } for the first
  * active row (in the version's own authored order) whose grams field
  * blocks the save, or `null` when no row does. Checked one row at a
- * time, blank before non-numeric, so within a single row the maker is
- * told about one thing at a time; the walk then moves to the next row.
- * The one traversal both blockedSaveMessage and blockedSaveRowId read,
- * so the sentence on screen and the row it names can never disagree
+ * time, walking the row's own portions in order, blank before
+ * non-numeric within each portion, so within a single row the maker is
+ * told about one thing at a time; the first blocking portion of the
+ * first blocking row wins, and the walk then moves to the next row. The
+ * one traversal both blockedSaveMessage and blockedSaveRowId read, so
+ * the sentence on screen and the row it names can never disagree
  * (T-03.1-21).
  */
 function findBlockedRow(penFields, version) {
   for (const row of version.rows) {
     const draftRow = penFields.rows[row.id];
     if (draftRow.removed) continue;
-    if (draftRow.grams === undefined || draftRow.grams === '') {
-      return { row, message: `${row.ingredientName} needs an amount, or remove the row` };
-    }
-    if (parseGramsDraft(draftRow.grams) === null) {
-      return { row, message: `${row.ingredientName}'s amount is not a number` };
+    for (const draftPortion of draftRow.portions) {
+      if (draftPortion.grams === undefined || draftPortion.grams === '') {
+        return { row, message: `${row.ingredientName} needs an amount, or remove the row` };
+      }
+      if (parseGramsDraft(draftPortion.grams) === null) {
+        return { row, message: `${row.ingredientName}'s amount is not a number` };
+      }
     }
   }
   return null;
@@ -184,9 +188,10 @@ function findBlockedRow(penFields, version) {
  * authored order) that blocks — a blank grams field, or a grams field
  * holding anything that is not a non-negative number with up to two
  * decimals (critique P1 #3). `penFields` carries `versionLabel` (a
- * string) and `rows` (a map keyed by row id holding { grams, removed } —
- * the pen draft's own shape); a row the draft marks removed needs no
- * amount. `versions` is the list to check uniqueness against, already
+ * string) and `rows` (a map keyed by row id holding { portions, removed }
+ * — the pen draft's own shape, `portions` an array of { grams } parallel
+ * to the stored row's own portions); a row the draft marks removed needs
+ * no amount. `versions` is the list to check uniqueness against, already
  * scoped by the caller to the recipe and to exclude the version being
  * saved over when that applies, so this function never takes an
  * excludeId of its own. Never looks at a band, a deviation or an

@@ -168,7 +168,7 @@ describe('stepsWithStaleAmounts', () => {
   it('returns one entry for step 3 when skim milk powder moves from 22.4 to 24 and step 3 is untouched', () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-04').grams = 24;
+    findRow(current, 'row-04').portions[0].grams = 24;
 
     const entries = stepsWithStaleAmounts(current, baseline);
     expect(entries).toEqual([
@@ -179,7 +179,7 @@ describe('stepsWithStaleAmounts', () => {
   it('is suppressed when the step whose row moved also has its own text edited', () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-04').grams = 24;
+    findRow(current, 'row-04').portions[0].grams = 24;
     findStep(current, 3).instruction = 'A rewritten instruction.';
 
     expect(stepsWithStaleAmounts(current, baseline)).toEqual([]);
@@ -188,7 +188,7 @@ describe('stepsWithStaleAmounts', () => {
   it("rests on uses, not on prose: moving allulose flags step 6 and not step 3", () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-06').grams = 22; // allulose, used only by step 6
+    findRow(current, 'row-06').portions[0].grams = 22; // allulose, used only by step 6
 
     const entries = stepsWithStaleAmounts(current, baseline);
     expect(entries.map((entry) => entry.n)).toEqual([6]);
@@ -197,7 +197,7 @@ describe('stepsWithStaleAmounts', () => {
   it('never flags a removed step', () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-04').grams = 24;
+    findRow(current, 'row-04').portions[0].grams = 24;
     findStep(current, 3).removed = true;
 
     expect(stepsWithStaleAmounts(current, baseline)).toEqual([]);
@@ -206,7 +206,7 @@ describe('stepsWithStaleAmounts', () => {
   it("never raises a flag from a removed row's grams change", () => {
     const baseline = clone();
     const current = clone();
-    findRow(current, 'row-04').grams = 24;
+    findRow(current, 'row-04').portions[0].grams = 24;
     findRow(current, 'row-04').removed = true;
 
     expect(stepsWithStaleAmounts(current, baseline)).toEqual([]);

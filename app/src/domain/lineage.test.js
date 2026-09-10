@@ -159,9 +159,9 @@ describe('createChildVersion', () => {
       { ...penFields, rows: parent.rows, method: parent.method, authored: parent.authored },
       { id: 'v2', now: '2026-09-07T10:00:00.000Z' },
     );
-    parent.rows[0].grams = 999;
+    parent.rows[0].portions[0].grams = 999;
     parent.rows[0].ingredient.composition.fat = 999;
-    expect(child.rows[0].grams).not.toBe(999);
+    expect(child.rows[0].portions[0].grams).not.toBe(999);
     expect(child.rows[0].ingredient.composition.fat).not.toBe(999);
   });
 });
@@ -220,13 +220,21 @@ describe('citableBatches', () => {
 
 describe('blockedSaveMessage', () => {
   // A full, valid rows map: every row of oliveOilVersion, unremoved, with
-  // its own grams as a string — the shape penDraft.rows takes.
+  // its own portions' grams each as a string — the shape penDraft.rows
+  // takes. An override supplies its own `portions` array (a single-entry
+  // one is enough for a test that only cares about one blocking amount);
+  // findBlockedRow walks whatever portions array the draft carries, so an
+  // override need not match the row's own real portion count.
   function validRows(overrides = {}) {
     const rows = {};
     for (const row of oliveOilVersion.rows) {
-      rows[row.id] = { grams: String(row.grams), removed: false };
+      rows[row.id] = { portions: row.portions.map((portion) => ({ grams: String(portion.grams) })), removed: false };
     }
     return { ...rows, ...overrides };
+  }
+
+  function onePortionOverride(grams, removed = false) {
+    return { portions: [{ grams }], removed };
   }
 
   const noVersions = [];
@@ -248,7 +256,7 @@ describe('blockedSaveMessage', () => {
 
   it('returns "another version already has this line" for a colliding line, checked before the grams rule', () => {
     const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
-    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: false } }) };
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', false) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, versions)).toBe('another version already has this line');
   });
 
@@ -256,13 +264,13 @@ describe('blockedSaveMessage', () => {
     const penFields = {
       versionLabel: '60 g oil · 800 g',
       reason: '',
-      rows: validRows({ 'row-01': { grams: '', removed: false }, 'row-04': { grams: '', removed: false } }),
+      rows: validRows({ 'row-01': onePortionOverride('', false), 'row-04': onePortionOverride('', false) }),
     };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
   });
 
   it('a row the draft marks removed needs no amount', () => {
-    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: true } }) };
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', true) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
   });
 
@@ -280,47 +288,56 @@ describe('blockedSaveMessage', () => {
   // up to two decimals blocks the save and names the row (critique P1 #3,
   // D-21) — a typo can no longer save the parent's own value silently.
   it('returns a message naming the row and ending in "is not a number" for "4o"', () => {
-    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '4o', removed: false } }) };
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('4o', false) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
   });
 
   it('rejects a leading minus — "-5" is not a non-negative number', () => {
-    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '-5', removed: false } }) };
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('-5', false) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
   });
 
   it('rejects more than two decimals — "1.234" is not accepted', () => {
-    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '1.234', removed: false } }) };
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('1.234', false) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
   });
 
   it('rejects surrounding whitespace — a value must be exactly what a valid number looks like', () => {
-    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: ' 5 ', removed: false } }) };
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride(' 5 ', false) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
   });
 
   it.each(['0', '48', '0.48', '12.25'])('accepts %s as a valid grams value and does not block', (grams) => {
-    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams, removed: false } }) };
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride(grams, false) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('a two-portion row with one blank portion blocks the save and names the ingredient (D-01)', () => {
+    const penFields = {
+      versionLabel: '60 g oil · 800 g',
+      reason: '',
+      rows: validRows({ 'row-01': { portions: [{ grams: '120' }, { grams: '' }], removed: false } }),
+    };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
   });
 
   it('checks blank before non-numeric, one thing at a time: an earlier blank row wins over a later row holding a letter', () => {
     const penFields = {
       versionLabel: '60 g oil · 800 g',
       reason: '',
-      rows: validRows({ 'row-01': { grams: '', removed: false }, 'row-04': { grams: '4o', removed: false } }),
+      rows: validRows({ 'row-01': onePortionOverride('', false), 'row-04': onePortionOverride('4o', false) }),
     };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
   });
 
   describe('blockedSaveRowId', () => {
     it('returns the id of the row blockedSaveMessage names, for a blank grams field', () => {
-      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: false } }) };
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', false) }) };
       expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-01');
     });
 
     it('returns the id of the row blockedSaveMessage names, for a non-numeric grams field', () => {
-      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-04': { grams: '4o', removed: false } }) };
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-04': onePortionOverride('4o', false) }) };
       expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-04');
     });
 
@@ -336,7 +353,7 @@ describe('blockedSaveMessage', () => {
 
     it('returns null when the block is the version line\'s own — a colliding line', () => {
       const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
-      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: '', removed: false } }) };
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', false) }) };
       expect(blockedSaveRowId(penFields, oliveOilVersion, versions)).toBeNull();
     });
   });
@@ -375,7 +392,7 @@ describe('blockedSaveMessage', () => {
     it('agrees with blockedSaveMessage: every value parseGramsDraft rejects is also the value blockedSaveMessage blocks the save on', () => {
       for (const value of ['-5', '1e3', '1.2345', '4o', ' 5 ']) {
         expect(parseGramsDraft(value)).toBeNull();
-        const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': { grams: value, removed: false } }) };
+        const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride(value, false) }) };
         expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toMatch(/'s amount is not a number$/);
       }
     });

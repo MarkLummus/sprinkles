@@ -22,3 +22,15 @@ export function activeRows(version) {
 export function activeSteps(version) {
   return version.method.filter((step) => !step.removed);
 }
+
+/**
+ * rowGrams(row) -> a row's total, as the sum of its `portions`' grams
+ * (D-01). A row's total is derived from its portions and is never stored
+ * — a stored total and a portion list are two places for one number and
+ * they drift. An unsplit ingredient is a one-portion row, so this is the
+ * one rule every reader takes for both cases. Never mutates or reorders
+ * `row.portions`.
+ */
+export function rowGrams(row) {
+  return row.portions.reduce((total, portion) => total + portion.grams, 0);
+}

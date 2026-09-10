@@ -10,7 +10,7 @@
 // advisories".
 import { computeBalance, formatGrams } from './composition.js';
 import { buildFigures } from './figures.js';
-import { activeRows, activeSteps } from './rows.js';
+import { activeRows, activeSteps, rowGrams } from './rows.js';
 import { displayNumbers, displayNumberOf } from './stepNumbers.js';
 
 // A target's value is free text with no grammar (method[].targets[].value).
@@ -44,19 +44,19 @@ function formatScaleGrams(grams) {
  * builds that fifth advisory.
  */
 function subScaleAdvisory(rows, equipment) {
-  const under = rows.filter((row) => row.grams > 0 && row.grams < equipment.scaleResolutionG);
+  const under = rows.filter((row) => rowGrams(row) > 0 && rowGrams(row) < equipment.scaleResolutionG);
   if (under.length === 0) return null;
 
-  const blend = rows.filter((row) => row.ingredient.category === 'stabilizer' && row.grams > 0);
+  const blend = rows.filter((row) => row.ingredient.category === 'stabilizer' && rowGrams(row) > 0);
   if (blend.length === 0) return null;
 
   const multiple = equipment.batchesAhead;
-  const take = blend.reduce((total, row) => total + row.grams, 0);
+  const take = blend.reduce((total, row) => total + rowGrams(row), 0);
   const blendTotal = take * multiple;
 
-  const underWords = under.map((row) => `${row.ingredientName} at ${formatScaleGrams(row.grams)}`).join(' and ');
+  const underWords = under.map((row) => `${row.ingredientName} at ${formatScaleGrams(rowGrams(row))}`).join(' and ');
   const partsWords = blend
-    .map((row) => `${row.ingredientName} ${formatScaleGrams(row.grams * multiple)}`)
+    .map((row) => `${row.ingredientName} ${formatScaleGrams(rowGrams(row) * multiple)}`)
     .join(', ');
   const verb = under.length > 1 ? 'are' : 'is';
 
@@ -81,8 +81,8 @@ function ultraPasteurisedAdvisory(rows, mass) {
   const treated = rows.filter((row) => row.ingredient.heatTreatment === 'ultra-pasteurised');
   if (treated.length === 0) return null;
 
-  const grams = treated.reduce((total, row) => total + row.grams, 0);
-  const names = treated.map((row) => `${row.ingredientName} at ${formatGrams(row.grams)}`).join(' and ');
+  const grams = treated.reduce((total, row) => total + rowGrams(row), 0);
+  const names = treated.map((row) => `${row.ingredientName} at ${formatGrams(rowGrams(row))}`).join(' and ');
 
   const words = `${names} carry an ultra-pasteurised heat treatment: ${formatGrams(grams)} of the batch's ${formatGrams(mass)}.`;
   const basis = 'heat treatment recorded on each ingredient.';
@@ -118,7 +118,7 @@ function findHydrationStep(steps, neededC) {
 function hydrationAdvisory(rows, steps, process, stepNumbers) {
   const hold = process.pasteuriseC;
   const unmet = rows.filter(
-    (row) => row.grams > 0 && row.ingredient.hydrationC != null && row.ingredient.hydrationC > hold,
+    (row) => rowGrams(row) > 0 && row.ingredient.hydrationC != null && row.ingredient.hydrationC > hold,
   );
   if (unmet.length === 0) return null;
 

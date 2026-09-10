@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.2"
-current_phase_name: The front-matter rows and the table in step order
+current_phase_name: The portion and the lift
 status: planning
-stopped_at: Phase 03.1 complete; Phase 03.2 inserted, ready to plan
-last_updated: "2026-09-10T01:44:40.821Z"
+stopped_at: Phase 03.1 complete; 03.2 and 03.3 inserted, ready to plan 03.2
+last_updated: "2026-09-10T01:50:52.068Z"
 last_activity: 2026-09-09
-last_activity_desc: Phase 03.2 inserted after 03.1
-state_head: 7f4f575a515e559015afca99dc03793c33c2db91
+last_activity_desc: 03.2 re-cut as the stored-shape phase; 03.3 added for the page rebuild
+state_head: c912e40e75bd20943ad4d1ae2fb7a4179696b4f5
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 2
   total_plans: 26
   completed_plans: 26
-  percent: 33
+  percent: 29
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 
 ## Current Position
 
-Phase: 03.2 — The front-matter rows and the table in step order
+Phase: 03.2 — The portion and the lift
 Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-09 — Phase 03.2 inserted after 03.1
 
-Progress: [███░░░░░░░] 33% (3/4 phases; 21/21 plans)
+Progress: [███░░░░░░░] 29% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
@@ -203,7 +203,8 @@ None yet.
 ### Roadmap Evolution
 
 - Phase 03.1 inserted after Phase 3: The imprint and the binder — the 2026-09-08 Impeccable brief revisions: front-matter band, controls out of the spread, the pen reads as the page, the binder's control treatment, rules strike the parent figure, columns hold in every state (URGENT)
-- Phase 03.2 inserted after Phase 03.1: The front-matter rows and the table in step order — route-recipe.md revised twice on 2026-09-09 retires the imprint and the tray that Phase 03.1 built (URGENT)
+- Phase 03.2 inserted after Phase 03.1: The portion and the lift — route-recipe.md revised twice on 2026-09-09; re-cut 2026-09-09 as the stored-shape half, the page rebuild moving to 03.3 (URGENT)
+- Phase 03.3 inserted after Phase 03.2: The front-matter rows and the page in step order — split out of the original 03.2 so the stored-shape migration is verified on its own (URGENT)
 
 ## Deferred Items
 
@@ -216,5 +217,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-09T03:22:43.313Z
-Stopped at: Phase 03.1 complete; Phase 03.2 inserted, ready to plan
+Stopped at: Phase 03.1 complete; 03.2 and 03.3 inserted, ready to plan 03.2
 Resume file: None

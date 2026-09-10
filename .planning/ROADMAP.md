@@ -17,7 +17,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Record the first batch** - The 2 Aug batch enters Sprinkles as what actually happened, snapshotted against the version it used (completed 2026-09-06)
 - [x] **Phase 3: Develop the next version** - Version 2 is created, adjusted, and compared against the churned version without disturbing it (completed 2026-09-08)
 - [x] **Phase 03.1: The imprint and the binder** (INSERTED) - The recipe page gains its front-matter band and every control leaves the printed spread; the pen reads as the page; the binder replaces browser chrome (completed 2026-09-09)
-- [ ] **Phase 03.2: The front-matter rows and the table in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order with portions; the pen's method opens read-only
+- [ ] **Phase 03.2: The portion and the lift** (INSERTED) - Portions become the authored amount and the total derives; every stored record lifts, with declaredAxes fixed in the same pass
+- [ ] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
 
 ## Phase Details
@@ -193,32 +194,59 @@ Plans:
 
 - [x] 03.1-05-PLAN.md — The three build gaps and the column arithmetic: the rules strike the parent figure and leave the tab path, a non-numeric grams field blocks the save, the total row prints its unit once, and both Two-Ink leaks read in ink
 
-### Phase 03.2: The front-matter rows and the table in step order (INSERTED)
+### Phase 03.2: The portion and the lift (INSERTED)
 
-**Goal:** The imprint and the tray retire into two front-matter rows spanning the page; the margin retires as a region; the ingredient table reads in step order with portions as the authored amount; the pen's method opens read-only; and a blank prose line is ruled.
+**Goal:** A row's portions become what the maker authors and its total derives as their sum; `step`/`splitStep` retire; every stored record lifts to the new shape through the one lift, with the three version numbers moved in lockstep — and the churned version and its 2 Aug batch reopen unmoved.
 **Depends on:** Phase 03.1
-**Requirements**: None new — builds the two 2026-09-09 Impeccable revisions of `route-recipe.md` (sketch 003 variant B, then "the portion is the authored amount"), both confirmed by Mark 2026-09-09
-**UI hint**: yes
-**Prerequisite**: `.impeccable/surfaces/route-recipe.md` as revised twice on 2026-09-09; `.planning/sketches/003-front-matter-rows/` (variant B); the re-critique baseline `.impeccable/critique/2026-09-10T00-26-25Z__app-src-ui-recipepage-jsx.md` (28/40)
-**Phase notes**: Supersedes Phase 03.1's front-matter layout — the imprint and the tray are both retired. Carries the three accepted overrides and eight further items recorded in `.planning/phases/03.1-the-imprint-and-the-binder/03.1-VERIFICATION.md` § Overrides Accepted. Two stored-shape changes must move in lockstep (`liftVersionRecord`, `VERSION_SCHEMA_VERSION`, `DB_VERSION`, batch snapshots included): retiring `step`/`splitStep` for `portions`, and the `declaredAxes` lift that broke in exactly this way. The seed's split amounts must be authored with Mark, never inferred from the method prose. The sub-1280 stack remains Phase 4's (UX1-01).
+**Requirements**: None new — builds `route-recipe.md` § 3 "The portion is the authored amount" and "Split-step prose carries no amounts", both confirmed by Mark 2026-09-09
+**UI hint**: no — the existing table renders from the new shape; the arrangement is Phase 03.3's
+**Prerequisite**: The seed's split amounts for whole milk and sucrose are authored with Mark before planning. The method prose says `~64 g` and `~250 g`; the sheet records an exact `120 g + 263 g`. They are never inferred from the prose.
+**Phase notes**: Split out of the original 03.2 (2026-09-09) so the stored-shape migration is verified on its own rather than alongside a page rebuild. It is the one hard-to-reverse piece of the rebuild — it rewrites stored records — and `declaredAxes` is the standing proof of what a missed lift entry costs. Shape lands before arrangement because everything Phase 03.3 renders reads the new shape; layout first would build the step-order table against `step`/`splitStep` and then rebuild it against `portions`. There are **two** lift call sites, not one: `db.js`'s upgrade cursor and `transfer.js`'s `importStore`. The portion count is fixed in milestone 1 — amounts edit, the split does not; splitting in the pen is milestone 2.
 
-**Scope carried in:**
+**Scope:**
 
-- Two front-matter rows across the page (version row, batch row); the imprint, the tray and the margin-as-region all retire; column two becomes Balance, Things to check, Notes
-- The table in step order, grouped by step, Step column gone; portions authored and the total derived; one-portion rows for unsplit ingredients; split-step prose loses its amounts
-- The pen's method opens read-only with one `edit this step` text control per step; per-step and per-row controls become text controls, not bordered buttons (03.1 Gap 1 override)
-- A blank prose line carries a hairline ink baseline and no label — closes the three invisible batch fields (03.1 Gap 2 override)
-- Save returns focus to its opener on every pen (03.1 Gap 3 override, D-27), and the blocked-save focus effect fires on every press, not only the first (03.1 REVIEW.md WR-01)
-- The `declaredAxes` lift P0, with the schema and DB versions moved in lockstep
-- The thirteen labels Mark settled 2026-09-09 13:31
-- Two live behaviours still unconfirmed either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
-- Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
+- `portions` on a row (`[{step, grams}, …]`), the total derived as their sum; an unsplit ingredient is a one-portion row, so one rule covers split and unsplit with no second case
+- `step` / `splitStep` retire; `stepNumbers.js` and `IngredientTable.jsx`'s sixteen `splitStep` references follow
+- Split-step prose loses its amounts — the number lives in one place; amounts for unsplit ingredients stay in the prose as written
+- The `declaredAxes` lift, the P0 the re-critique found: `liftVersionRecord` gains the entry it never had, mapping a string to `{name, low: null, high: null}`, idempotent by `typeof`, alongside the identical `authored` lift twelve lines above it
+- `VERSION_SCHEMA_VERSION`, `DB_VERSION` and the store file's `schemaVersion` moved in lockstep, batch snapshots (`batch.snapshot.declaredAxes`, and each row's portions) lifted too
+- The seed's split amounts, authored with Mark
+- Balance reads the derived total; the coefficient snapshot stays per ingredient, never per portion
+
+**Done when:** the churned olive oil version and its 2 Aug batch reopen with every figure unmoved; the six tasting axes each take a mark independently; and a store exported before the change imports after it.
 
 **Plans:** 0 plans
 
 Plans:
 
 - [ ] TBD (run /gsd-plan-phase 03.2 to break down)
+
+### Phase 03.3: The front-matter rows and the page in step order (INSERTED)
+
+**Goal:** The imprint and the tray retire into two front-matter rows spanning the page; the margin retires as a region; the ingredient table reads in step order; the pen's method opens read-only; and a blank prose line is ruled.
+**Depends on:** Phase 03.2
+**Requirements**: None new — builds the 2026-09-09 Impeccable revision of `route-recipe.md` (sketch 003 variant B), confirmed by Mark 2026-09-09
+**UI hint**: yes
+**Prerequisite**: Phase 03.2's shape is landed — the table groups by step and reads portions. `.planning/sketches/003-front-matter-rows/` (variant B); re-critique baseline `.impeccable/critique/2026-09-10T00-26-25Z__app-src-ui-recipepage-jsx.md` (28/40)
+**Phase notes**: Supersedes Phase 03.1's front-matter layout — the imprint and the tray are both retired. Carries the three overrides accepted at 03.1's close and the further items recorded in `.planning/phases/03.1-the-imprint-and-the-binder/03.1-VERIFICATION.md` § Overrides Accepted. The sub-1280 stack remains Phase 4's (UX1-01).
+
+**Scope:**
+
+- Two front-matter rows across the page — the version row (name, version line, headnote prose; From version, Why, From batch; Next version, Show changes, the later-versions count) and the batch row (churn line, the maker's words; the measured cells at figure size; tasting marks; Record another, Add tasting, Correct, the later-batches count). No running head on either
+- The margin retires as a region: the record's content moves up into the batch row, Things to check and the carried-forward Notes move down under Balance. Column two becomes Balance, Things to check, Notes
+- The table groups by step with the step's lead-in as the group head; the Step column disappears; a split ingredient appears once per step with `120 g of 370.4 g · 46.3% in all` beneath its name. "Before you start" notes leave the headnote and head the Method
+- The pen's method opens read-only with one `edit this step` text control per step; per-step and per-row controls become text controls, not the binder's bordered buttons (03.1 Gap 1 override)
+- A blank prose line carries a hairline ink baseline and no label — closes the three invisible batch fields (03.1 Gap 2 override)
+- Save returns focus to its opener on every pen (03.1 Gap 3 override, D-27); the blocked-save focus effect fires on every press, not only the first (03.1 REVIEW.md WR-01)
+- The thirteen labels Mark settled 2026-09-09 13:31
+- Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
+- Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
+
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 03.3 to break down)
 
 ### Phase 4: Prepare the next version for making
 
@@ -253,7 +281,7 @@ These govern every phase and are not re-litigated during planning:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -261,7 +289,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 4
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
-| 3.2. The front-matter rows and the table in step order | 0/TBD | Not started | - |
+| 3.2. The portion and the lift | 0/TBD | Not started | - |
+| 3.3. The front-matter rows and the page in step order | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

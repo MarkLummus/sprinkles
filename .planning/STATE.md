@@ -1,7 +1,7 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.2"
-current_phase_name: The portion and the lift
+current_phase_name: The portion and the reset
 status: planning
 stopped_at: Phase 03.1 complete; 03.2 and 03.3 inserted, ready to plan 03.2
 last_updated: "2026-09-10T01:50:52.068Z"
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 
 ## Current Position
 
-Phase: 03.2 — The portion and the lift
+Phase: 03.2 — The portion and the reset
 Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-09 — Phase 03.2 inserted after 03.1

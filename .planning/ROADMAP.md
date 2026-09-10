@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Record the first batch** - The 2 Aug batch enters Sprinkles as what actually happened, snapshotted against the version it used (completed 2026-09-06)
 - [x] **Phase 3: Develop the next version** - Version 2 is created, adjusted, and compared against the churned version without disturbing it (completed 2026-09-08)
 - [x] **Phase 03.1: The imprint and the binder** (INSERTED) - The recipe page gains its front-matter band and every control leaves the printed spread; the pen reads as the page; the binder replaces browser chrome (completed 2026-09-09)
-- [ ] **Phase 03.2: The portion and the lift** (INSERTED) - Portions become the authored amount and the total derives; every stored record lifts, with declaredAxes fixed in the same pass
+- [ ] **Phase 03.2: The portion and the reset** (INSERTED) - Portions become the authored amount and the total derives; `step`/`splitStep` retire; the store resets to the new shape and the seed is rewritten, rather than migrating
 - [ ] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
 
@@ -201,7 +201,7 @@ Plans:
 **Requirements**: None new — builds `route-recipe.md` § 3 "The portion is the authored amount" and "Split-step prose carries no amounts", both confirmed by Mark 2026-09-09
 **UI hint**: no — the existing table renders from the new shape; the arrangement is Phase 03.3's
 **Prerequisite**: Settled with Mark 2026-09-09 — the seed's split amounts are authored, never inferred from the method prose. **Authored portions** (version 1): whole milk `120 + 250.4 = 370.4 g`; sucrose `12 + 64 = 76 g`. Both match their existing row totals exactly, so no balance figure moves. **As-made portions** (the 2 Aug batch): whole milk `120 + 263 = 383 g`, which is the sheet's own line and what `batch-2026-08-02.js:18` currently stores as a single 383; sucrose is not split in the record because it matched the plan. Note the trap this settles: `120 + 263` is the as-made, not the authored — writing it as the authored split would take whole milk to 383 g, batch mass to 812.6 g, and move every figure on the churned version.
-**Phase notes**: Re-scoped 2026-09-09, second pass. The phase was written as a migration; Mark confirmed there is no stored data worth keeping — his profile holds the seed and throwaway test records only — so the store resets instead. That is the cheaper half of a choice, not a shortcut: the seed lives in `data/olive-oil.js` and `data/batch-2026-08-02.js` as hand-authored source, and rewriting those two files to the new shape was already the bulk of this phase under either approach. What the reset drops is compatibility with records held outside source — an older browser profile, an older export file — and that is worth nothing while no such record exists. The `declaredAxes` P0 goes with it: it was a *missing lift entry*, and with no ladder the axes are simply authored correctly in the seed. Shape still lands before arrangement, because everything Phase 03.3 renders reads the new shape; layout first would build the step-order table against `step`/`splitStep` and then rebuild it against `portions`. The portion count is fixed in milestone 1 — amounts edit, the split does not; splitting in the pen is milestone 2. The migration discipline is not abandoned, only deferred: it starts paying at the first record Mark actually cares about, and the next shape change after this one is expected to lift rather than reset.
+**Phase notes**: Re-scoped 2026-09-09, second pass. The phase was written as a migration; Mark confirmed there is no stored data worth keeping — his profile holds the seed and throwaway test records only — so the store resets instead. That is the cheaper half of a choice, not a shortcut: the seed lives in `data/olive-oil.js` and `data/batch-2026-08-02.js` as hand-authored source, and rewriting those two files to the new shape was already the bulk of this phase under either approach. What the reset drops is compatibility with records held outside source — an older browser profile, an older export file — and that is worth nothing while no such record exists. The `declaredAxes` P0 goes with it: it was a *missing lift entry*, not a source defect — the seed already declares its axes in the object shape and `createBatch` clones them into the snapshot, so with no ladder there is nothing left to fix. Shape still lands before arrangement, because everything Phase 03.3 renders reads the new shape; layout first would build the step-order table against `step`/`splitStep` and then rebuild it against `portions`. The portion count is fixed in milestone 1 — amounts edit, the split does not; splitting in the pen is milestone 2. The migration discipline is not abandoned, only deferred: it starts paying at the first record Mark actually cares about, and the next shape change after this one is expected to lift rather than reset.
 
 **Scope:**
 
@@ -211,7 +211,7 @@ Plans:
 - The store resets: `DB_VERSION` bumps and the upgrade drops and recreates both object stores, so a returning profile comes back empty and reseeds through the existing `seedIfEmpty` path. No cursor, no per-record rewrite
 - `versionLift.js`'s ladder retires. Its seed facts (`SEED_USES`, `SEED_CREATED_AT`) belong with the seed and move there; `VERSION_SCHEMA_VERSION` survives as a constant
 - `transfer.js` narrows to the new shape alone — export writes it, `validateStoreFile` accepts it and refuses 1, 2 and 3, and `importStore` loses its lift branch
-- The seed's split amounts, authored above; `declaredAxes` authored in its object shape rather than lifted into one
+- The seed's split amounts, authored above. **No `declaredAxes` work**: source already carries the object shape (`data/olive-oil.js:73`), `createBatch` clones it into the snapshot, and the P0 only ever affected records stored under the old string shape — the ones the reset discards. The six-axes clause in Done-when is a regression guard, not new work
 - As-made recorded per portion, its total deriving the same way — the 2 Aug batch's lump `'row-01': 383` becomes `120 + 263`, matching the sheet line for line
 - Balance reads the derived total; the coefficient snapshot stays per ingredient, never per portion
 
@@ -291,7 +291,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
-| 3.2. The portion and the lift | 0/TBD | Not started | - |
+| 3.2. The portion and the reset | 0/TBD | Not started | - |
 | 3.3. The front-matter rows and the page in step order | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 

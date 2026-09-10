@@ -55,6 +55,40 @@ select:disabled {
   cursor: default;
 }
 
+/* .text-control (sketch 003 variant B, index.html:32-34; 03.1 Gap 1
+   override): the underline-only opt-out from the button/select binder
+   above, for the named per-step/per-row controls RESEARCH.md calls out as
+   text controls rather than bordered buttons — no border, an ink
+   underline reading the same token pair the `a` rule below already uses
+   for its own underline. */
+.text-control {
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  color: var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+
+.text-control:hover {
+  text-decoration-thickness: var(--rule-baseline);
+  padding: 0;
+}
+
+.text-control:disabled {
+  text-decoration-style: dashed;
+  color: inherit;
+  cursor: default;
+  border: none;
+  padding: 0;
+}
+
 /* A lone `select` selector loses the cascade to the pre-existing
    `.ink-field` class rule (a class always outranks a bare element,
    whatever the source order) — this compound selector keeps the two
@@ -906,6 +940,15 @@ textarea {
 /* The on-demand text controls (D-23, D-25): "add purpose", "add aside",
    "done differently" — sitting in the step's own flow, one per line. */
 .method-step__on-demand {
+  display: block;
+  margin-top: var(--gap-xs);
+}
+
+/* The "edit this step" control's own layout rule (03.3-03, 03.1 Gap 1
+   override): same shape as .method-step__on-demand above — the control's
+   visual style comes entirely from the .text-control class applied
+   alongside it. */
+.method-step__edit {
   display: block;
   margin-top: var(--gap-xs);
 }

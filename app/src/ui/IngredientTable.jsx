@@ -153,7 +153,7 @@ function ShareCell({ baselineShare, currentShare }) {
 // colour — exactly one control per row.
 function RemoveRowControl({ removed, onToggle }) {
   return (
-    <button type="button" onClick={onToggle}>
+    <button type="button" className="text-control" onClick={onToggle}>
       {removed ? 'restore' : 'remove'}
     </button>
   );

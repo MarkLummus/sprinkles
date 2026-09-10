@@ -103,6 +103,16 @@ function StepPenBody({
   );
   const aside = useOnDemandField(Boolean(draftStep.aside), () => onChangePenStepField(step.n, 'aside', ''));
 
+  // The whole-step reveal gate (03.3-03, 03.1 Gap 1 override): the same
+  // useOnDemandField primitive purpose/aside already use above, called a
+  // third time — here at the whole-step level instead of the per-field
+  // level, per PATTERNS.md's own recommendation, never a second
+  // implementation. Only isOpen/openField are read below; no
+  // auto-focus-on-reveal is built (fieldRef/handleBlur stay unused for
+  // this call), since nothing in scope asks for it — a stated boundary,
+  // not an oversight.
+  const stepReveal = useOnDemandField(false, () => {});
+
   // The uses line (D-24): closed by default, reading the names live off
   // the draft on every render — never a snapshot — so the line above the
   // checklist updates as boxes change while it is open.
@@ -120,7 +130,15 @@ function StepPenBody({
     usesControlRef.current?.focus();
   }
 
-  return (
+  // The whole-step reveal gate (03.3-03, 03.1 Gap 1 override): the pen
+  // opens each step read-only by default — the closed branch below
+  // transcribes the show-changes branch's own read-only JSX
+  // (Method.jsx's isShowingChanges branch), fed draftStep/stepDiff
+  // instead of step/stepDiff — with one "edit this step" text control
+  // revealing this same, unmodified open form. Both branches keep the
+  // outer method-step__body wrapper so its grid/spacing rule applies
+  // uniformly regardless of state.
+  return stepReveal.isOpen ? (
     <div className="method-step__body">
       <label className="method-step__field">
         <input
@@ -214,7 +232,7 @@ function StepPenBody({
       ) : (
         <button
           type="button"
-          className="method-step__on-demand"
+          className="method-step__on-demand text-control"
           aria-label={fieldLabel(step, draftStep.removed, 'add purpose')}
           onClick={purpose.openField}
         >
@@ -241,7 +259,7 @@ function StepPenBody({
       ) : (
         <button
           type="button"
-          className="method-step__on-demand"
+          className="method-step__on-demand text-control"
           aria-label={fieldLabel(step, draftStep.removed, 'add aside')}
           onClick={aside.openField}
         >
@@ -257,6 +275,7 @@ function StepPenBody({
         {usesNames.length > 0 ? `uses ${usesNames.join(', ')}` : 'uses nothing yet'}{' '}
         <button
           type="button"
+          className="text-control"
           ref={usesControlRef}
           aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change')}
           onClick={() => setUsesOpen((open) => !open)}
@@ -318,10 +337,78 @@ function StepPenBody({
 
       <button
         type="button"
+        className="text-control"
         aria-label={fieldLabel(step, draftStep.removed, draftStep.removed ? 'restore' : 'remove')}
         onClick={() => onTogglePenStepRemoved(step.n)}
       >
         {draftStep.removed ? 'restore' : 'remove'}
+      </button>
+    </div>
+  ) : (
+    // The closed-state form (03.3-03, 03.1 Gap 1 override): transcribed
+    // from the isShowingChanges branch's own read-only JSX below, fed
+    // draftStep/stepDiff instead of step/stepDiff — this branch's own
+    // data is the maker's live edit, not the baseline `steps` prop.
+    // Renders nothing for flaggedRows/the uses line/remove-restore; that
+    // content lives only in the revealed form above (Mark, 2026-09-10,
+    // option B).
+    <div className="method-step__body">
+      <p className="method-step__lead">
+        <span className={draftStep.removed ? 'method-step__prose--struck' : undefined}>
+          <b>{draftStep.leadIn}.</b> {draftStep.instruction}
+        </span>
+        {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
+      </p>
+      {showStruckBeneath && (
+        <p className="prose-struck-beneath">
+          <b>{stepDiff.textFrom.leadIn}.</b> {stepDiff.textFrom.instruction}
+        </p>
+      )}
+
+      {draftStep.targets?.length > 0 && (
+        <p className="method-step__targets">
+          {draftStep.targets.map((target, index) => {
+            const targetDiff = stepDiff.targets[index];
+            return (
+              <span className="target-chip" key={index}>
+                {targetDiff?.changed && targetDiff.from != null && (
+                  <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
+                )}
+                <span className="target-chip__label">{target.label}</span>
+                <span className="target-chip__value">{target.value}</span>
+              </span>
+            );
+          })}
+        </p>
+      )}
+
+      {staleFlagVisible && staleEntry && (
+        <p className="method-step__stale-flag">
+          {`amounts changed: ${staleEntry.changes
+            .map((change) => `${change.ingredientName} ${change.from} → ${change.to} g`)
+            .join('; ')}`}
+        </p>
+      )}
+
+      {draftStep.purpose && <p className="method-step__purpose">{draftStep.purpose}</p>}
+      {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
+      {draftStep.aside && <p className="method-step__aside">{draftStep.aside}</p>}
+      {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
+
+      {/* The coverage cue (D-UAT-3, option B): stays on the closed step
+          — plain prose, no control, so it does not breach "one edit
+          this step text control per step." */}
+      {draftStep.removed && coveredRows.length > 0 && (
+        <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
+      )}
+
+      <button
+        type="button"
+        className="text-control method-step__edit"
+        aria-label={fieldLabel(step, draftStep.removed, 'edit this step')}
+        onClick={stepReveal.openField}
+      >
+        edit this step
       </button>
     </div>
   );
@@ -398,7 +485,11 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
 // shaped like the object those functions expect (route-recipe-batch.md § 3,
 // § 6; 02-CONTEXT.md D-13, D-23).
 //
-// While developing (03-02), a second render path takes over per step: text
+// While developing (03-02), a second render path takes over per step,
+// opening read-only by default (03.3-03, 03.1 Gap 1 override): the
+// step's prose, targets, purpose/aside and — on a removed step — the
+// coverage cue render as plain text, with one "edit this step" text
+// control revealing the step's existing, unchanged editable form — text
 // fields for leadIn/instruction/purpose/aside and each target chip, a
 // "uses" checkbox list over the version's rows, a remove/restore control,
 // the removed-row cross-flag, and the stale-amount flag — all read through

@@ -121,6 +121,10 @@ function StepPenBody({
   const usesNames = rows.filter((row) => (draftStep.uses ?? []).includes(row.id)).map((row) => row.ingredientName);
 
   function handleUsesKeyDown(event) {
+    // Gated on usesOpen (G-03.3-2 fix, gap plan 05): a closed checklist's
+    // Escape must no-op here so the keydown keeps bubbling to the page's
+    // own document-level Escape listener, unchanged.
+    if (!usesOpen) return;
     if (event.key !== 'Escape') return;
     // Stops the page's own document-level Escape listener from also
     // firing for this key press (planner decision 4) — one press closes
@@ -270,38 +274,39 @@ function StepPenBody({
 
       {/* The uses line (D-24): one line of names with a single "change"
           control per step, rather than twelve checkboxes permanently on
-          screen. */}
-      <p className="method-step__uses-line">
-        {usesNames.length > 0 ? `uses ${usesNames.join(', ')}` : 'uses nothing yet'}{' '}
-        <button
-          type="button"
-          className="text-control"
-          ref={usesControlRef}
-          aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change')}
-          onClick={() => setUsesOpen((open) => !open)}
-        >
-          {usesOpen ? 'done' : 'change'}
-        </button>
-      </p>
-      {usesOpen && (
-        <fieldset
-          className="method-step__uses"
-          aria-label={fieldLabel(step, draftStep.removed, 'uses')}
-          onKeyDown={handleUsesKeyDown}
-        >
-          <legend>Uses</legend>
-          {rows.map((row) => (
-            <label key={row.id} className="method-step__uses-item">
-              <input
-                type="checkbox"
-                checked={(draftStep.uses ?? []).includes(row.id)}
-                onChange={() => onTogglePenStepUses(step.n, row.id)}
-              />
-              <span>{row.ingredientName}</span>
-            </label>
-          ))}
-        </fieldset>
-      )}
+          screen. The wrapper below (G-03.3-2 fix, gap plan 05) covers both
+          this line's "change"/"done" button and the fieldset, so an
+          Escape pressed while focus is on the button (not just inside the
+          fieldset) is caught by the same usesOpen-gated handler. */}
+      <div onKeyDown={handleUsesKeyDown}>
+        <p className="method-step__uses-line">
+          {usesNames.length > 0 ? `uses ${usesNames.join(', ')}` : 'uses nothing yet'}{' '}
+          <button
+            type="button"
+            className="text-control"
+            ref={usesControlRef}
+            aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change')}
+            onClick={() => setUsesOpen((open) => !open)}
+          >
+            {usesOpen ? 'done' : 'change'}
+          </button>
+        </p>
+        {usesOpen && (
+          <fieldset className="method-step__uses" aria-label={fieldLabel(step, draftStep.removed, 'uses')}>
+            <legend>Uses</legend>
+            {rows.map((row) => (
+              <label key={row.id} className="method-step__uses-item">
+                <input
+                  type="checkbox"
+                  checked={(draftStep.uses ?? []).includes(row.id)}
+                  onChange={() => onTogglePenStepUses(step.n, row.id)}
+                />
+                <span>{row.ingredientName}</span>
+              </label>
+            ))}
+          </fieldset>
+        )}
+      </div>
 
       {/* The removed-row cross-flag (route-recipe-version.md
           § 3): beneath an ACTIVE step, naming the removed

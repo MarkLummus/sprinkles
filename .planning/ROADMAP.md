@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Read the churned recipe** - The churned olive oil recipe and its balance figures are legible in the app instead of on paper (completed 2026-09-05)
 - [x] **Phase 2: Record the first batch** - The 2 Aug batch enters Sprinkles as what actually happened, snapshotted against the version it used (completed 2026-09-06)
 - [x] **Phase 3: Develop the next version** - Version 2 is created, adjusted, and compared against the churned version without disturbing it (completed 2026-09-08)
-- [ ] **Phase 03.1: The imprint and the binder** (INSERTED) - The recipe page gains its front-matter band and every control leaves the printed spread; the pen reads as the page; the binder replaces browser chrome
+- [x] **Phase 03.1: The imprint and the binder** (INSERTED) - The recipe page gains its front-matter band and every control leaves the printed spread; the pen reads as the page; the binder replaces browser chrome (completed 2026-09-09)
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
 
 ## Phase Details
@@ -169,7 +169,7 @@ Plans:
 **UI hint**: yes
 **Prerequisite**: The three revised briefs are confirmed (2026-09-08); the whole-page critique snapshot `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md` is the re-critique baseline
 **Phase notes**: Inserted between Phase 3 and Phase 4 per the 260908-eil decision. The imprint's running-head label ("Imprint" or "Versions and batches") is settled in phase discussion. The third-voice colour question (system words like "unknown") stays open; the built colour stands. The sub-1280 stack remains Phase 4's (UX1-01).
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 **Wave 1**
@@ -190,7 +190,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 03.1-05-PLAN.md — The three build gaps and the column arithmetic: the rules strike the parent figure and leave the tab path, a non-numeric grams field blocks the save, the total row prints its unit once, and both Two-Ink leaks read in ink
+- [x] 03.1-05-PLAN.md — The three build gaps and the column arithmetic: the rules strike the parent figure and leave the tab path, a non-numeric grams field blocks the save, the total row prints its unit once, and both Two-Ink leaks read in ink
 
 ### Phase 4: Prepare the next version for making
 
@@ -232,7 +232,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 4
 | 1. Read the churned recipe | 4/4 | Complete    | 2026-09-05 |
 | 2. Record the first batch | 5/5 | Complete    | 2026-09-06 |
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
-| 3.1. The imprint and the binder | 4/5 | In Progress|  |
+| 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

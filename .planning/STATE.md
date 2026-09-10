@@ -1,18 +1,18 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.2"
-current_phase_name: the-portion-and-the-reset
+current_phase_name: The portion and the reset (INSERTED)
 status: executing
-stopped_at: Completed 03.2-04-PLAN.md
-last_updated: "2026-09-10T10:57:03.423Z"
-last_activity: 2026-09-09
-last_activity_desc: Phase 03.2 execution resumed (wave continue)
-state_head: 614945b61c31143d3da000a3474123c7e10a9139
+stopped_at: Completed 03.2-05-PLAN.md
+last_updated: "2026-09-10T11:11:14.113Z"
+last_activity: 2026-09-10
+last_activity_desc: Phase 03.2 execution started
+state_head: c012fc9e12b561549784dfa55083bc436fc1cf5e
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 31
-  completed_plans: 30
+  completed_plans: 31
   percent: 14
 ---
 
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 
 ## Current Position
 
-Phase: 03.2 (the-portion-and-the-reset) — READY TO EXECUTE
-Plan: 4 of 4
+Phase: 03.2 (The portion and the reset (INSERTED)) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-09-09 — Phase 03.2 execution resumed (wave continue)
+Last activity: 2026-09-10 — Phase 03.2 execution started
 
 Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 
@@ -89,6 +89,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | Phase 03.2 P02 | 25min | 2 tasks | 4 files |
 | Phase 03.2 P03 | 55min | 3 tasks | 10 files |
 | Phase 03.2 P04 | 15min | 3 tasks | 12 files |
+| Phase 03.2 P05 | 20min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -158,6 +159,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.2]: [Phase 03.2, Plan 02] versionLift.js deleted along with its last consumer (lineage.test.js's liftVersionRecord idempotence block); the round trip through exportStore/importStore is proven against the real seeded olive oil version and its 2 Aug batch, serialised through JSON.parse(JSON.stringify(...)).
 - [Phase 03.2]: [Phase 03.2, Plan 03] IngredientTable.jsx and RecipePage.jsx read row.portions in all three states; the pen renders one amount field per portion with distinct accessible names on a split row, and the step selector still chooses only the first portion's step.
 - [Phase 03.2]: Phase 3.2: as-made moves to a per-portion array (churn.asMade[rowId] aligned with row.portions), BATCH_SCHEMA_VERSION 1->2; AsMadeCell/handleChangeAsMade/handleSaveBatch carry a portionIndex end to end; the phase closes with three regression guards (six independent axes, the derived-total invariant, a reseeded batch read out of a real IndexedDB) at a reconciled 673 tests.
+- [Phase 03.2]: No shared helper for the two IngredientTable.jsx join sites — the As-made column filters an unwritten portion out (D-10), the pen substitutes the stored amount in (D-01); one helper would carry one rule for two different meanings.
+- [Phase 03.2]: The all-blank-portions test assertion was scoped to the row's own tbody markup rather than the whole table, since the total row legitimately carries its own 'as made X grams' phrase whenever an as-made layer is showing at all.
 
 ### Pending Todos
 
@@ -223,6 +226,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T04:17:57.364Z
-Stopped at: Completed 03.2-04-PLAN.md
+Last session: 2026-09-10T11:11:14.039Z
+Stopped at: Completed 03.2-05-PLAN.md
 Resume file: None

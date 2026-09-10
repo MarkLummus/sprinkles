@@ -37,6 +37,11 @@ export function VersionRow({
   onSaveOverVersion,
   onToggleShowChanges = () => {},
   focusDevelopOnMount = false,
+  // The Record opener this row now owns beside Next version (sketch 003
+  // variant B, G-03.3-4) — openBatch/onStartRecording are the same
+  // references RecipePage.jsx already computes and passes to BatchRow.
+  openBatch = null,
+  onStartRecording,
 }) {
   // Focus-return for the Develop opener: closing the plan's pen returns
   // focus to the control that opened it. Must sit above the conditional
@@ -53,6 +58,44 @@ export function VersionRow({
       developButtonRef.current?.focus();
     }
   }, [mode]);
+
+  // D-27: after a fork saves and the page lands on the child's own URL,
+  // focus goes to the child's own Next version button. A page-level
+  // useEffect — not the native autoFocus DOM attribute — drives this fix
+  // for G-03.3-1: router.jsx keys RecipePage by `${id}::${batchId}`, so
+  // the child mounts fresh (wrapped in StrictMode by main.jsx, and
+  // RecipePage returns null until its async repository.getVersion call
+  // resolves) — autoFocus's exact firing point relative to React's commit
+  // phases is subtle across that remount. This effect fires only after
+  // the full real tree (the child's own data) is committed and is the
+  // last thing this component does in that commit, so it is deterministic
+  // regardless of that timing and cannot be pre-empted by anything else in
+  // the same render. Confirmed by grep across app/src: no other
+  // .focus()/autoFocus call is reachable on this openPen === null mount
+  // path — the plan-pen ceremony's own autoFocus and BatchRow's
+  // record/amend/tasting ceremony autoFocuses only render while a pen is
+  // open, and VersionStrip's current-version Link carries no .focus()
+  // call.
+  useEffect(() => {
+    if (focusDevelopOnMount) developButtonRef.current?.focus();
+  }, [focusDevelopOnMount]);
+
+  // Focus-return for the Record opener, relocated verbatim from
+  // BatchRow.jsx (03.3-06, G-03.3-4) since this row now owns the button
+  // beside Next version — must sit above the conditional render below,
+  // same as every other ref/effect pair here.
+  const recordButtonRef = useRef(null);
+  const wasRecordingRef = useRef(false);
+  useEffect(() => {
+    if (openPen === 'record') {
+      wasRecordingRef.current = true;
+      return;
+    }
+    if (wasRecordingRef.current) {
+      wasRecordingRef.current = false;
+      recordButtonRef.current?.focus();
+    }
+  }, [openPen]);
 
   // The version-line field's own focus move on a blocked save (critique
   // P1 #3, D-21, WR-01): fires once, on the press of Save, never while
@@ -166,19 +209,11 @@ export function VersionRow({
       ) : openPen === null ? (
         <div className="versions__openers">
           <div className="versions__opener-group">
-            {/* D-27: after a fork saves and the page lands on the child's
-                URL, focus goes to the child's own Develop control —
-                autoFocus is the DOM's own mechanism for landing focus on
-                mount, which a ref-based effect (built for a same-page
-                open-to-closed transition) cannot reach across a
-                navigation to a freshly-mounted page. */}
-            <button
-              type="button"
-              ref={developButtonRef}
-              autoFocus={focusDevelopOnMount}
-              onClick={onStartDeveloping}
-            >
+            <button type="button" ref={developButtonRef} onClick={onStartDeveloping}>
               Next version
+            </button>
+            <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
+              {openBatch ? 'Record another' : 'Record batch'}
             </button>
           </div>
         </div>

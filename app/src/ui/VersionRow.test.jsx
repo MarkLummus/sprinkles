@@ -93,22 +93,39 @@ describe('VersionRow — the Develop opener, present only with no pen open (D-05
     expect(markup).not.toContain('>Next version<');
   });
 
-  it('renders no Record another/Amend/Add tasting group — those live in BatchRow now', () => {
+  it('renders no Amend/Add tasting group — those still live in BatchRow', () => {
     const markup = renderVersionRow({ openPen: null });
-    expect(markup).not.toContain('Record another');
-    expect(markup).not.toContain('Record batch');
     expect(markup).not.toContain('>Amend<');
     expect(markup).not.toContain('Add tasting');
   });
 
-  // D-27: after a fork saves and the page lands on the child's URL, focus
-  // goes to the child's own Develop control. renderToStaticMarkup cannot
-  // execute the actual focus transition — this asserts only the static
-  // `autofocus=""` attribute the DOM reads on mount.
-  it('renders autofocus="" on Develop when focusDevelopOnMount is true, and no autofocus when it is false', () => {
+  // G-03.3-4: the Record opener moved beside Next version, into this
+  // row's own acts group — reading openBatch the same way BatchRow's own
+  // opener used to.
+  it('renders Record batch beside Next version when the version has no batch', () => {
+    const markup = renderVersionRow({ openPen: null, openBatch: null });
+    expect(markup).toContain('Next version');
+    expect(markup).toContain('Record batch');
+    expect(markup).not.toContain('Record another');
+  });
+
+  it('renders Record another beside Next version when a batch is in view', () => {
+    const markup = renderVersionRow({ openPen: null, openBatch: augustSecondBatch });
+    expect(markup).toContain('Next version');
+    expect(markup).toContain('Record another');
+    expect(markup).not.toContain('Record batch');
+  });
+
+  // G-03.3-1: the fork's landing focus is now driven by a page-level
+  // useEffect keyed on focusDevelopOnMount, not the native autoFocus DOM
+  // attribute — renderToStaticMarkup cannot execute the actual focus
+  // transition (Method.test.jsx's own precedent for a live-DOM-only
+  // effect), so this asserts only what a static render CAN prove: no
+  // autofocus attribute on Next version, for either value.
+  it('renders no autofocus attribute on Next version, whether or not focusDevelopOnMount is true', () => {
     const withFocus = renderVersionRow({ openPen: null, focusDevelopOnMount: true });
     const developButton = withFocus.match(/<button[^>]*>Next version<\/button>/)[0];
-    expect(developButton).toContain('autofocus=""');
+    expect(developButton).not.toContain('autofocus');
 
     const withoutFocus = renderVersionRow({ openPen: null, focusDevelopOnMount: false });
     const developButtonNoFocus = withoutFocus.match(/<button[^>]*>Next version<\/button>/)[0];

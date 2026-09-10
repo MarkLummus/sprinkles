@@ -134,7 +134,6 @@ export function BatchRow({
   penReason = null,
   penSaveDisabled = false,
   penHint = null,
-  onStartRecording,
   onStartAmending,
   onChangeChurnDate,
   onCancelRecording,
@@ -144,23 +143,12 @@ export function BatchRow({
   onSaveTasting,
   onCancelTasting,
 }) {
-  // Focus-return for the three openers this row owns, one ref pair per
+  // Focus-return for the two openers this row owns, one ref pair per
   // opener — closing a pen returns focus to the control that opened it.
   // Every ref must sit above the conditional render below — hooks cannot
-  // be called conditionally.
-  const recordButtonRef = useRef(null);
-  const wasRecordingRef = useRef(false);
-  useEffect(() => {
-    if (openPen === 'record') {
-      wasRecordingRef.current = true;
-      return;
-    }
-    if (wasRecordingRef.current) {
-      wasRecordingRef.current = false;
-      recordButtonRef.current?.focus();
-    }
-  }, [openPen]);
-
+  // be called conditionally. The Record opener's own ref/effect pair
+  // moved to VersionRow.jsx (03.3-06, G-03.3-4) since that row now owns
+  // the button beside Next version.
   const amendButtonRef = useRef(null);
   const wasAmendingRef = useRef(false);
   useEffect(() => {
@@ -247,12 +235,10 @@ export function BatchRow({
         </div>
       ) : openPen === null ? (
         <div className="versions__openers">
-          {/* D-05: Record batch when the version has no batch; Record
-              another, Amend and Add tasting when a batch is in view. */}
+          {/* D-05: Amend and Add tasting when a batch is in view — Record
+              another/Record batch now lives in VersionRow's own acts
+              group, beside Next version (03.3-06, G-03.3-4). */}
           <div className="versions__opener-group">
-            <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
-              {openBatch ? 'Record another' : 'Record batch'}
-            </button>
             {openBatch && (
               <button type="button" ref={amendButtonRef} onClick={() => onStartAmending(openBatch)}>
                 Correct

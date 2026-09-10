@@ -1151,6 +1151,8 @@ export function RecipePage() {
               onSaveOverVersion={handleSaveOverVersion}
               onToggleShowChanges={handleToggleShowChanges}
               focusDevelopOnMount={focusDevelopOnMount}
+              openBatch={openBatch}
+              onStartRecording={handleStartRecording}
             />
           </div>
 
@@ -1168,7 +1170,6 @@ export function RecipePage() {
             penReason={penReason}
             penSaveDisabled={penSaveDisabled}
             penHint={penHint}
-            onStartRecording={handleStartRecording}
             onStartAmending={handleStartAmending}
             onChangeChurnDate={handleChangeChurnDate}
             onCancelRecording={handleCancelRecording}

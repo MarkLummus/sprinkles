@@ -53,7 +53,6 @@ function renderBatchRow(props) {
         penReason={null}
         penSaveDisabled={false}
         penHint={null}
-        onStartRecording={noop}
         onStartAmending={noop}
         onChangeChurnDate={noop}
         onCancelRecording={noop}
@@ -83,18 +82,17 @@ describe('BatchRow — no page-level running head (ROADMAP Scope bullet 1)', () 
 });
 
 describe('BatchRow — the openers, present only with no pen open (D-05)', () => {
-  it('renders "Record batch" when the version has no batch', () => {
+  it('renders no Correct or Add tasting when the version has no batch — Record now lives in VersionRow (G-03.3-4)', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: null, batches: [] });
-    expect(markup).toContain('Record batch');
     expect(markup).not.toContain('Record another');
+    expect(markup).not.toContain('Record batch');
     expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
   });
 
-  it('renders "Record another", Correct and Add tasting when a batch is in view', () => {
+  it('renders Correct and Add tasting when a batch is in view', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    expect(markup).toContain('Record another');
-    expect(markup).not.toContain('Record batch');
+    expect(markup).not.toContain('Record another');
     expect(markup).toContain('>Correct<');
     expect(markup).toContain('Add tasting');
   });

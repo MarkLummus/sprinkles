@@ -404,7 +404,11 @@ textarea {
   margin-top: var(--gap-s);
 }
 
-.headnote__citation span {
+/* :first-child, not a bare "span" selector: .headnote__citation has a
+   second sibling span (.ink-text, the no-batch absence text) when the
+   version has no batch to cite, and that one must read in the ordinary
+   field face, not the label's small-print uppercase treatment. */
+.headnote__citation span:first-child {
   display: block;
   font-family: var(--face-grotesk);
   font-size: var(--size-running-head);

@@ -155,9 +155,9 @@ describe('VersionRow — the ceremony renders nothing pre-filled', () => {
     expect(markup).toMatch(/<option value="" selected="">no batch cited<\/option>/);
   });
 
-  it('renders "no batch to cite" when the version has no batch', () => {
+  it('renders "no batch" when the version has no batch', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toContain('no batch to cite');
+    expect(markup).toContain('no batch');
   });
 });
 
@@ -190,9 +190,9 @@ describe('VersionRow — the citation reads label-over-control, like Version and
     expect(markup).toMatch(/<label class="headnote__citation"><span>From batch<\/span><select/);
   });
 
-  it('wraps "no batch to cite" in the same label-over-control shape when the version has no batch', () => {
+  it('wraps "no batch" in the same label-over-control shape when the version has no batch', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toMatch(/<label class="headnote__citation"><span>From batch<\/span><span class="ink-text">no batch to cite<\/span><\/label>/);
+    expect(markup).toMatch(/<label class="headnote__citation"><span>From batch<\/span><span class="ink-text">no batch<\/span><\/label>/);
   });
 });
 

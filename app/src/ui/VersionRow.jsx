@@ -281,7 +281,7 @@ export function VersionRow({
             <label className="headnote__citation">
               <span>From batch</span>
               {batches.length === 0 ? (
-                <span className="ink-text">no batch to cite</span>
+                <span className="ink-text">no batch</span>
               ) : (
                 <select
                   className="ink-field"

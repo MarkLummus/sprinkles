@@ -31,7 +31,7 @@
     {
       "number": "3.3",
       "name": "The front-matter rows and the page in step order",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "4",
@@ -44,5 +44,5 @@
     "label": "Advance to the next step",
     "reason": "Phase 03.3 of 7 · 14% · executing"
   },
-  "updated_at": "2026-09-10T17:00:22.310Z"
+  "updated_at": "2026-09-10T17:45:38.089Z"
 }

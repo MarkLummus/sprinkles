@@ -261,7 +261,7 @@ Plans:
 - Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
 - Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 **Wave 1**
@@ -270,7 +270,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03.3-02-PLAN.md — The table in step order: portions grouped under each step's lead-in across all three states, the Step column gone, a split ingredient's `120 g of 370.4 g · 46.3% in all` sub-line from `formatPortionLine` in `composition.js`, the pen's step select removed (LD-02, a recorded regression), the `--col-step` tokens dropped, WR-01's table half fixed
+- [x] 03.3-02-PLAN.md — The table in step order: portions grouped under each step's lead-in across all three states, the Step column gone, a split ingredient's `120 g of 370.4 g · 46.3% in all` sub-line from `formatPortionLine` in `composition.js`, the pen's step select removed (LD-02, a recorded regression), the `--col-step` tokens dropped, WR-01's table half fixed
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -322,7 +322,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
-| 3.3. The front-matter rows and the page in step order | 1/4 | In Progress|  |
+| 3.3. The front-matter rows and the page in step order | 2/4 | In Progress|  |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

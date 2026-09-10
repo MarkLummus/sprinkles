@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.3"
 current_phase_name: The front-matter rows and the page in step order (INSERTED)
 status: executing
-stopped_at: Phase 03.2 complete, ready to plan Phase 03.3
-last_updated: "2026-09-10T17:00:22.296Z"
+stopped_at: Completed 03.3-02-PLAN.md
+last_updated: "2026-09-10T17:45:48.825Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 03.3 execution started
-state_head: 552052cf0862f1018cc86164c710f1b9b8848062
+state_head: 82ce11b71a1e3369f6ede44e9d76f9697b6852e4
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 35
-  completed_plans: 31
+  completed_plans: 33
   percent: 14
 ---
 
@@ -28,8 +28,8 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03.3 (The front-matter rows and the page in step order (INSERTED)) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 03.3
+Plan: 2 of 4
+Status: Ready to execute
 Last activity: 2026-09-10 — Phase 03.3 execution started
 
 Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
@@ -91,6 +91,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | Phase 03.2 P03 | 55min | 3 tasks | 10 files |
 | Phase 03.2 P04 | 15min | 3 tasks | 12 files |
 | Phase 03.2 P05 | 20min | 2 tasks | 2 files |
+| Phase 03.3 P02 | 21min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -162,6 +163,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.2]: Phase 3.2: as-made moves to a per-portion array (churn.asMade[rowId] aligned with row.portions), BATCH_SCHEMA_VERSION 1->2; AsMadeCell/handleChangeAsMade/handleSaveBatch carry a portionIndex end to end; the phase closes with three regression guards (six independent axes, the derived-total invariant, a reseeded batch read out of a real IndexedDB) at a reconciled 673 tests.
 - [Phase 03.2]: No shared helper for the two IngredientTable.jsx join sites — the As-made column filters an unwritten portion out (D-10), the pen substitutes the stored amount in (D-01); one helper would carry one rule for two different meanings.
 - [Phase 03.2]: The all-blank-portions test assertion was scoped to the row's own tbody markup rather than the whole table, since the total row legitimately carries its own 'as made X grams' phrase whenever an as-made layer is showing at all.
+- [Phase 03.3]: [Phase 03.3, Plan 02] Kept rowAccessibleLabel's grams/share phrase row-level (the row's own stored total) while making asMadeValue portion-scoped, since the sub-line makes the row total visible on every portion-tr but no row-level joined as-made summary exists anywhere in the new design.
+- [Phase 03.3]: [Phase 03.3, Plan 02] formatPortionLine's rowTotalGrams argument stays rowGrams(row) (the stored/baseline total) across reading, pen, and show-changes; only portionGrams and mass vary by branch.
 
 ### Pending Todos
 
@@ -227,6 +230,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T11:11:14.039Z
-Stopped at: Phase 03.2 complete, ready to plan Phase 03.3
+Last session: 2026-09-10T17:45:48.753Z
+Stopped at: Completed 03.3-02-PLAN.md
 Resume file: None

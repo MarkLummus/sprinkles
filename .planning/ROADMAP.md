@@ -220,10 +220,20 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 03.2-01-PLAN.md — The portion, end to end: `portions` on every row, the derived total, the seed's authored split, the prose losing its amounts, and the store reset proven against a real IndexedDB
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 03.2-02-PLAN.md — The ladder retires and the store file narrows: `transfer.js` accepts one schema, `versionLift.js` is deleted, and the surviving round trip is proven
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 03.2-03-PLAN.md — The table and the pen read the portion: one amount field per portion, the step column joined, the show-changes state on the plural descriptors — the suite back to green
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 03.2-04-PLAN.md — As made, per portion: the 2 Aug batch's `120 + 263`, and the phase's three regression guards
 
 ### Phase 03.3: The front-matter rows and the page in step order (INSERTED)

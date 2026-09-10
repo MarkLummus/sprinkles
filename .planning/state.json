@@ -24,6 +24,16 @@
       "status": "complete"
     },
     {
+      "number": "3.2",
+      "name": "The portion and the reset",
+      "status": "pending"
+    },
+    {
+      "number": "3.3",
+      "name": "The front-matter rows and the page in step order",
+      "status": "pending"
+    },
+    {
       "number": "4",
       "name": "Prepare the next version for making",
       "status": "pending"
@@ -31,8 +41,8 @@
   ],
   "next": {
     "command": "/gsd:progress --next",
-    "label": "Advance to the next step (plan phase 4)",
-    "reason": "Phase 4 of 5 — needs a plan"
+    "label": "Advance to the next step",
+    "reason": "Phase 03.2 of 7 · 29% · executing"
   },
-  "updated_at": "2026-09-10T01:43:07.113Z"
+  "updated_at": "2026-09-10T02:50:37.063Z"
 }

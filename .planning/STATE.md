@@ -1,18 +1,18 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.3"
-current_phase_name: the-front-matter-rows-and-the-page-in-step-order
+current_phase_name: The front-matter rows and the page in step order (INSERTED)
 status: executing
-stopped_at: Completed 03.3-04-PLAN.md
-last_updated: "2026-09-10T19:41:14.598Z"
+stopped_at: Completed 03.3-05-PLAN.md
+last_updated: "2026-09-10T20:06:35.295Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 03.3 execution started
-state_head: ffc065f67390052d858845a55ce1f56a859b3036
+state_head: d257cff1c8faefd874d01588e336ba49a40b01a1
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 38
-  completed_plans: 35
+  completed_plans: 36
   percent: 14
 ---
 
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 03.3 (the-front-matter-rows-and-the-page-in-step-order) — READY TO EXECUTE
-Plan: 4 of 4
+Phase: 03.3 (The front-matter rows and the page in step order (INSERTED)) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
 Last activity: 2026-09-10 — Phase 03.3 execution started
 
@@ -94,6 +94,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | Phase 03.3 P02 | 21min | 3 tasks | 8 files |
 | Phase 03.3 P03 | 25min | 3 tasks | 6 files |
 | Phase 03.3 P04 | 15min | 4 tasks | 18 files |
+| Phase 03.3 P05 | 5min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -171,6 +172,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.3]: [Phase 03.3, Plan 03] Rewrote Method.test.jsx assertions invalidated by StepPenBody's closed-by-default rewrite to test the new closed markup, following the file's own established "UAT item, not asserted here" precedent, rather than adding jsdom/testing-library to simulate the reveal click.
 - [Phase 03.3]: [Phase 03.3, Plan 04] Kept 'From version' (not the sketch's bare 'From') for the lineage's Parent-line rename, per Mark's 2026-09-10 resolution: it pairs with 'From batch' so the two lineage labels read as parallel.
 - [Phase 03.3]: [Phase 03.3, Plan 04] figures.js's figure label became a structured { word, term } pair (D11), flattened everywhere else through one new figureLabelText function — GraduatedRule.jsx renders it as two sibling spans, never an HTML string.
+- [Phase 03.3]: [Phase 03.3, Plan 05] Closed G-03.3-2: the uses checklist's Escape handler moved off the fieldset alone onto a wrapper div covering the change/done button and the fieldset, gated on usesOpen so a closed checklist's Escape no-ops and bubbles unchanged to the pen's own document-level listener; confirmed live by Mark 2026-09-10.
 
 ### Pending Todos
 
@@ -236,6 +238,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T18:18:46.924Z
-Stopped at: Completed 03.3-04-PLAN.md
+Last session: 2026-09-10T20:06:35.210Z
+Stopped at: Completed 03.3-05-PLAN.md
 Resume file: None

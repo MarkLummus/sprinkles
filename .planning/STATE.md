@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: "03.2"
-current_phase_name: The portion and the reset (INSERTED)
-status: executing
-stopped_at: Completed 03.2-05-PLAN.md
-last_updated: "2026-09-10T11:11:14.113Z"
+current_phase: "03.3"
+current_phase_name: The front-matter rows and the page in step order
+status: planning
+stopped_at: Phase 03.2 complete, ready to plan Phase 03.3
+last_updated: "2026-09-10T11:25:12.660Z"
 last_activity: 2026-09-10
-last_activity_desc: Phase 03.2 execution started
-state_head: c012fc9e12b561549784dfa55083bc436fc1cf5e
+last_activity_desc: Phase 03.2 complete, transitioned to Phase 03.3
+state_head: 8a97bf1be2f2724ced8f7165bbf877fcb5f184b0
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 31
   completed_plans: 31
-  percent: 14
+  percent: 29
 ---
 
 # Project State
@@ -27,18 +27,18 @@ See: .planning/PROJECT.md (updated 2026-09-08)
 
 ## Current Position
 
-Phase: 03.2 (The portion and the reset (INSERTED)) — EXECUTING
-Plan: 2 of 5
-Status: Ready to execute
-Last activity: 2026-09-10 — Phase 03.2 execution started
+Phase: 03.3 — The front-matter rows and the page in step order
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-09-10 — Phase 03.2 complete, transitioned to Phase 03.3
 
-Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
+Progress: [███░░░░░░░] 29% (3/4 phases; 21/21 plans)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 26
+- Total plans completed: 31
 - Average duration: —
 - Total execution time: —
 
@@ -50,6 +50,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | 02 | 5 | - | - |
 | 03 | 12 | - | - |
 | 03.1 | 5 | - | - |
+| 03.2 | 5 | - | - |
 
 **Recent Trend:**
 
@@ -227,5 +228,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-10T11:11:14.039Z
-Stopped at: Completed 03.2-05-PLAN.md
+Stopped at: Phase 03.2 complete, ready to plan Phase 03.3
 Resume file: None

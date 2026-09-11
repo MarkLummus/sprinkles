@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.3"
 current_phase_name: The front-matter rows and the page in step order (INSERTED)
 status: executing
-stopped_at: Completed 03.3-06-PLAN.md
-last_updated: "2026-09-10T21:57:06.214Z"
+stopped_at: Completed 03.3-07-PLAN.md
+last_updated: "2026-09-11T00:32:55.781Z"
 last_activity: 2026-09-10
 last_activity_desc: Phase 03.3 execution started
-state_head: 466d9bde7fa92fa1c056ead4189897ec258bfbc7
+state_head: 63c4383bcc1e87651eb713d4cdac8d6b72b0a81c
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 38
-  completed_plans: 37
+  completed_plans: 38
   percent: 14
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03.3 (The front-matter rows and the page in step order (INSERTED)) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-09-10 — Phase 03.3 execution started
 
@@ -96,6 +96,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 21/21 plans)
 | Phase 03.3 P04 | 15min | 4 tasks | 18 files |
 | Phase 03.3 P05 | 5min | 2 tasks | 1 files |
 | Phase 03.3 P06 | ~1h54m elapsed (~15min automated) | 3 tasks | 10 files |
+| Phase 03.3 P07 | ~1h58m | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -176,6 +177,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.3]: [Phase 03.3, Plan 05] Closed G-03.3-2: the uses checklist's Escape handler moved off the fieldset alone onto a wrapper div covering the change/done button and the fieldset, gated on usesOpen so a closed checklist's Escape no-ops and bubbles unchanged to the pen's own document-level listener; confirmed live by Mark 2026-09-10.
 - [Phase 03.3]: [Phase 03.3, Plan 06] Closed G-03.3-1 (fork landing focus via explicit useEffect, not autoFocus) and the version-row half of G-03.3-4 (right-hand stack, acts group, and pen fields match sketch 003 variant B); the pen's From batch absence text reads "no batch" in the ordinary field face after a CSS selector was scoped to the label span alone (:first-child), per Mark's live review of 0a416f0.
 - [Phase 03.3]: [Phase 03.3, Plan 06] Deferred to Impeccable: how a maker expresses "edit this version" versus "fork this version" — the opener and save nomenclature (Next version / Cancel-Save as-Save) is unresolved as of 2026-09-10; not touched by this plan.
+- [Phase 03.3]: [Phase 03.3, Plan 07] Declined to invent a new "Oil bottle open" stored batch field, per the plan's own reversibility note; deferred to Impeccable.
+- [Phase 03.3]: [Phase 03.3, Plan 07] Closed G-03.3-3 (one "no batch yet" line) and the batch-row half of G-03.3-4 (head line, measured cells, tasting, foot controls match sketch 003 variant B); two checkpoint-feedback fixes (record-pen field sizing, churn-date/foot relocation) applied live during Task 3, confirmed by Mark 2026-09-10.
 
 ### Pending Todos
 
@@ -241,6 +244,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-10T21:57:06.128Z
-Stopped at: Completed 03.3-06-PLAN.md
+Last session: 2026-09-11T00:32:55.701Z
+Stopped at: Completed 03.3-07-PLAN.md
 Resume file: None

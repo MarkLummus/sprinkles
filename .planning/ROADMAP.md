@@ -261,7 +261,7 @@ Plans:
 - Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
 - Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
 
-**Plans:** 6/7 plans executed; 3 gap-closure plans planned (05–07, from 03.3-UAT.md G-03.3-1..4)
+**Plans:** 7/7 plans executed; 3 gap-closure plans planned (05–07, from 03.3-UAT.md G-03.3-1..4)
 
 Plans:
 **Wave 1**
@@ -289,7 +289,7 @@ Plans:
 
 **Gap wave 2** *(blocked on 03.3-06)*
 
-- [ ] 03.3-07-PLAN.md — G-03.3-3 + the batch row of G-03.3-4: `targetValueFor` in `rows.js`; one head line, measured cells with plain-word labels, units beside figures and a plan sub-line, "not measured"; tasting shows marked axes only; Correct and Add tasting become text controls at the foot; the duplicate "no batch yet" paragraph goes
+- [x] 03.3-07-PLAN.md — G-03.3-3 + the batch row of G-03.3-4: `targetValueFor` in `rows.js`; one head line, measured cells with plain-word labels, units beside figures and a plan sub-line, "not measured"; tasting shows marked axes only; Correct and Add tasting become text controls at the foot; the duplicate "no batch yet" paragraph goes
 
 ### Phase 4: Prepare the next version for making
 
@@ -333,7 +333,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
-| 3.3. The front-matter rows and the page in step order | 6/7 | In Progress|  |
+| 3.3. The front-matter rows and the page in step order | 7/7 | In Progress|  |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

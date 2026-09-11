@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 004: tiered tastings</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+/* ---------- sketch chrome (not the design) ---------- */
+html { background: #e9e9e4; }
+body { margin: 0; padding-top: 48px; font-family: var(--face-grotesk); color: var(--ink); }
+#variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: #1c1c1c; color: #eee; display: flex; align-items: center; gap: 6px; padding: 8px 14px; font: 12px/1.3 system-ui; flex-wrap: wrap; }
+#variant-nav .sep { width: 1px; height: 22px; background: #555; margin: 0 6px; }
+#variant-nav button { font: inherit; background: #333; color: #ddd; border: 1px solid #555; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
+#variant-nav button:hover { background: #444; }
+#variant-nav button.active { background: #f7f7f4; color: #141414; border-color: #f7f7f4; }
+#variant-nav .note { color: #aaa; margin-left: auto; }
+#sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font: 12px/1.4 system-ui; background: rgba(0,0,0,0.78); color: #fff; padding: 8px 12px; border-radius: 8px; opacity: 0.55; transition: opacity 0.2s; max-width: 360px; }
+#sketch-tools:hover { opacity: 1; }
+#sketch-tools button, #sketch-tools select { font: inherit; background: #333; color: #ddd; border: 1px solid #555; padding: 2px 7px; border-radius: 3px; cursor: pointer; }
+#sketch-tools button.active { background: #fff; color: #000; }
+.frame { margin: 24px auto; background: var(--ground); outline: 1px dashed #b5b5ae; transition: width 0.15s ease; padding: var(--gap-xl); box-sizing: border-box; }
+
+/* ---------- the world ---------- */
+.app { font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: 1.35; color: var(--ink); background: var(--ground); }
+.app *:focus-visible { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
+button { font: inherit; }
+.btn { font-family: var(--face-grotesk); font-size: var(--size-table-body); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-width: 1.5px; padding: 5.5px 11.5px; }
+.text-control { font-family: var(--face-grotesk); font-size: var(--size-small-print); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.text-control:hover { text-decoration-thickness: 1.5px; }
+.text-control[disabled] { text-decoration-style: dashed; cursor: default; }
+.running-head, .region-name { font-family: var(--face-grotesk); font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; color: var(--bookcloth); margin: 0 0 var(--gap-xs); font-weight: 400; }
+.small { font-size: var(--size-small-print); }
+.pen { color: var(--pen-blue); }
+
+/* ---------- the batch row shell (from sketch 003) ---------- */
+.row-batch { max-width: 640px; }
+.row-batch .head { display: flex; align-items: baseline; gap: var(--gap-s); flex-wrap: wrap; }
+.row-batch .head .region-name { margin: 0; }
+.row-batch .head .date { font-family: var(--face-text); font-size: var(--size-version-line); color: var(--pen-blue); }
+.cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, max-content)); gap: var(--gap-s) var(--gap-l); margin: var(--gap-s) 0 0; }
+.cell .k { display: block; font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; }
+.cell .v { font-family: var(--face-grotesk); font-size: var(--size-figure-value); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--pen-blue); }
+.cell .u { font-size: var(--size-deviation-words); font-weight: 400; }
+.cell .plan { display: block; font-size: var(--size-small-print); }
+.words { font-family: var(--face-text); color: var(--pen-blue); font-size: var(--size-headnote-prose); margin: var(--gap-s) 0 0; max-width: 65ch; }
+.tasting { margin-top: var(--gap-m); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink); }
+.tasting .cells { margin-top: var(--gap-xs); }
+.acts { display: flex; gap: var(--gap-s); flex-wrap: wrap; align-items: center; margin-top: var(--gap-m); }
+
+/* ---------- A: same treatment, smaller instance ---------- */
+[data-variant="A"] .light-tasting { margin-top: var(--gap-m); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink); }
+[data-variant="A"] .light-tasting .running-head { margin-bottom: 2px; }
+[data-variant="A"] .light-tasting .cells { grid-template-columns: repeat(auto-fit, minmax(72px, max-content)); gap: var(--gap-xs) var(--gap-m); margin-top: 4px; }
+[data-variant="A"] .light-tasting .cell .v { font-size: var(--size-ink-field); }
+[data-variant="A"] .light-tasting .note-line { font-family: var(--face-text); font-size: var(--size-deviation-words); color: var(--pen-blue); margin: 4px 0 0; max-width: 65ch; }
+
+/* ---------- B: one-line log entries ---------- */
+[data-variant="B"] .also-tasted { margin-top: var(--gap-m); padding-top: var(--gap-s); border-top: var(--rule-graduation) solid var(--ink); }
+[data-variant="B"] .also-tasted .running-head { margin-bottom: var(--gap-xs); }
+[data-variant="B"] .log-line { font-size: var(--size-deviation-words); margin: 0 0 var(--gap-xs); font-variant-numeric: tabular-nums; }
+[data-variant="B"] .log-line .date { font-family: var(--face-text); font-variant-numeric: normal; color: var(--pen-blue); }
+[data-variant="B"] .log-line .marks { color: var(--pen-blue); }
+[data-variant="B"] .log-line .note { font-family: var(--face-text); color: var(--pen-blue); }
+[data-variant="B"] .log-line .sep { color: var(--ink); margin: 0 4px; }
+
+/* ---------- C: compact ledger table ---------- */
+[data-variant="C"] .ledger-wrap { margin-top: var(--gap-m); padding-top: var(--gap-s); border-top: var(--rule-graduation) solid var(--ink); }
+[data-variant="C"] .ledger-wrap .running-head { margin-bottom: var(--gap-xs); }
+[data-variant="C"] table.ledger { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+[data-variant="C"] table.ledger td { padding: 3px 10px 3px 0; vertical-align: baseline; font-size: var(--size-deviation-words); border-bottom: 0; }
+[data-variant="C"] table.ledger tr + tr td { border-top: var(--rule-graduation) dotted #999; }
+[data-variant="C"] table.ledger td.date { font-family: var(--face-text); color: var(--pen-blue); white-space: nowrap; }
+[data-variant="C"] table.ledger td.marks { color: var(--pen-blue); white-space: nowrap; }
+[data-variant="C"] table.ledger td.note { font-family: var(--face-text); color: var(--pen-blue); }
+
+.empty-note { font-family: var(--face-text); font-size: var(--size-headnote-prose); margin: var(--gap-s) 0 0; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <button class="variant-tab active" data-v="A" onclick="setVariant('A')">A: Same cell-grid, smaller instance</button>
+  <button class="variant-tab" data-v="B" onclick="setVariant('B')">B: One-line log entries</button>
+  <button class="variant-tab" data-v="C" onclick="setVariant('C')">C: Compact ledger table</button>
+  <span class="sep"></span>
+  <button data-n="0" onclick="setCount(0)">Not yet evaluated</button>
+  <button data-n="1" class="active" onclick="setCount(1)">Primary only</button>
+  <button data-n="2" onclick="setCount(2)">Primary + 1</button>
+  <button data-n="3" onclick="setCount(3)">Primary + 2</button>
+  <button data-n="4" onclick="setCount(4)">Primary + 3 (capped)</button>
+  <span class="note">No color, no icons — form and weight only</span>
+</div>
+
+<div class="frame" style="width:720px">
+<div class="app" id="app" data-variant="A">
+<div class="row row-batch">
+  <div class="head"><h2 class="region-name">Batch</h2><span class="date">churned 2 Aug 2026</span><button class="text-control" onclick="flash(this)">1 later batch</button></div>
+  <div class="cells">
+    <div class="cell"><span class="k">Time to temperature</span><span class="v">20 <span class="u">min</span></span><span class="plan">plan 10–12</span></div>
+    <div class="cell"><span class="k">Out of the machine</span><span class="v">−6 <span class="u">°C</span></span></div>
+    <div class="cell"><span class="k">Air</span><span class="v"><span class="u">not measured</span></span></div>
+  </div>
+  <p class="words">Soft, not greasy.</p>
+
+  <div id="tasting-zone"></div>
+
+  <div class="acts">
+    <button class="text-control" onclick="flash(this)">Correct</button>
+    <button class="text-control" id="add-light" onclick="addLight()">Taste again</button>
+  </div>
+</div>
+</div>
+</div>
+
+<div id="sketch-tools">
+  <div>004 · tiered tastings</div>
+</div>
+
+<script>
+const PRIMARY = {
+  date: '4 Aug 2026', temp: '−12 °C',
+  cells: [
+    ['Oil character', '4.5', 'of 5'],
+    ['Bitterness', '5', ''],
+    ['Sweetness', '4', ''],
+    ['Melt test', '3', 'g at 20 min'],
+  ]
+};
+const LIGHT = [
+  { date: '9 Aug 2026', marks: [['Oil character', '4'], ['Sweetness', '4']], note: 'Still good after a week in the freezer.' },
+  { date: '16 Aug 2026', marks: [['Bitterness', '4.5']], note: 'Bitterness fading a bit — expected.' },
+  { date: '30 Aug 2026', marks: [['Oil character', '3.5']], note: 'Oil flavor noticeably softer a month out.' },
+];
+const marksLabel = (marks) => marks.map(([k, v]) => `${k.toLowerCase()} ${v}`).join(', ');
+
+let variant = 'A';
+let count = 1; // 0=no primary, 1..4 = primary + (count-1) light
+
+function primaryBlockHTML() {
+  return `
+    <div class="tasting">
+      <p class="running-head" style="margin:0">Tasting <span style="text-transform:none;letter-spacing:0;color:var(--pen-blue)">· at ${PRIMARY.temp} · ${PRIMARY.date}</span></p>
+      <div class="cells">
+        ${PRIMARY.cells.map(([k,v,u]) => `<div class="cell"><span class="k">${k}</span><span class="v">${v}${u ? ` <span class="u">${u}</span>` : ''}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function lightItemsA(items) {
+  if (!items.length) return '';
+  return items.map(t => `
+    <div class="light-tasting">
+      <p class="running-head" style="margin:0">Also tasted <span style="text-transform:none;letter-spacing:0;color:var(--pen-blue)">· ${t.date}</span></p>
+      <div class="cells">${t.marks.map(([k, v]) => `<div class="cell"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('')}</div>
+      <p class="note-line">${t.note}</p>
+    </div>`).join('');
+}
+
+function lightItemsB(items) {
+  if (!items.length) return '';
+  return `
+    <div class="also-tasted">
+      <h3 class="running-head">Also tasted</h3>
+      ${items.map(t => `<p class="log-line"><span class="date">${t.date}</span><span class="sep">—</span><span class="marks">${marksLabel(t.marks)}</span><span class="sep">—</span><span class="note">"${t.note}"</span></p>`).join('')}
+    </div>`;
+}
+
+function lightItemsC(items) {
+  if (!items.length) return '';
+  return `
+    <div class="ledger-wrap">
+      <h3 class="running-head">Also tasted</h3>
+      <table class="ledger"><tbody>
+        ${items.map(t => `<tr><td class="date">${t.date}</td><td class="marks">${marksLabel(t.marks)}</td><td class="note">${t.note}</td></tr>`).join('')}
+      </tbody></table>
+    </div>`;
+}
+
+function render() {
+  document.getElementById('app').dataset.variant = variant;
+  document.querySelectorAll('.variant-tab').forEach(b => b.classList.toggle('active', b.dataset.v === variant));
+  document.querySelectorAll('[data-n]').forEach(b => b.classList.toggle('active', Number(b.dataset.n) === count));
+
+  const zone = document.getElementById('tasting-zone');
+  const addBtn = document.getElementById('add-light');
+
+  if (count === 0) {
+    zone.innerHTML = '<p class="empty-note pen">Not yet evaluated.</p>';
+    addBtn.style.display = 'none';
+    return;
+  }
+
+  const lightSlice = LIGHT.slice(0, count - 1);
+  const fn = variant === 'A' ? lightItemsA : variant === 'B' ? lightItemsB : lightItemsC;
+  zone.innerHTML = primaryBlockHTML() + fn(lightSlice);
+
+  if (count >= 4) {
+    addBtn.style.display = 'none';
+  } else {
+    addBtn.style.display = '';
+    addBtn.textContent = 'Taste again';
+  }
+}
+
+function setVariant(v) { variant = v; render(); }
+function setCount(n) { count = n; render(); }
+function addLight() {
+  if (count < 4) { count++; render(); }
+}
+function flash(el) {
+  const orig = el.textContent;
+  el.textContent = '(opens in place)';
+  setTimeout(() => { el.textContent = orig; }, 900);
+}
+
+render();
+</script>
+</body>
+</html>

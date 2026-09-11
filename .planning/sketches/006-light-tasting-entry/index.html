@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 006: light tasting entry</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+/* ---------- sketch chrome (not the design) ---------- */
+html { background: #e9e9e4; }
+body { margin: 0; padding-top: 48px; font-family: var(--face-grotesk); color: var(--ink); }
+#variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: #1c1c1c; color: #eee; display: flex; align-items: center; gap: 6px; padding: 8px 14px; font: 12px/1.3 system-ui; flex-wrap: wrap; }
+#variant-nav .sep { width: 1px; height: 22px; background: #555; margin: 0 6px; }
+#variant-nav button { font: inherit; background: #333; color: #ddd; border: 1px solid #555; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
+#variant-nav button:hover { background: #444; }
+#variant-nav button.active { background: #f7f7f4; color: #141414; border-color: #f7f7f4; }
+#variant-nav .note { color: #aaa; margin-left: auto; }
+#sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font: 12px/1.4 system-ui; background: rgba(0,0,0,0.78); color: #fff; padding: 8px 12px; border-radius: 8px; opacity: 0.55; transition: opacity 0.2s; max-width: 380px; }
+#sketch-tools:hover { opacity: 1; }
+.frame { margin: 24px auto; background: var(--ground); outline: 1px dashed #b5b5ae; padding: var(--gap-xl); box-sizing: border-box; }
+.ruler { position: absolute; right: -1px; top: 0; width: 1px; background: repeating-linear-gradient(to bottom, #c66 0 1px, transparent 1px 100px); }
+.ruler .mark { position: absolute; right: 4px; font: 10px/1 ui-monospace, Menlo, monospace; color: #c66; transform: translateY(-50%); }
+
+/* ---------- the world ---------- */
+.app { font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: 1.35; color: var(--ink); background: var(--ground); position: relative; }
+.app *:focus-visible { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
+button, input, textarea { font: inherit; }
+.btn { font-family: var(--face-grotesk); font-size: var(--size-table-body); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-width: 1.5px; padding: 5.5px 11.5px; }
+.text-control { font-family: var(--face-grotesk); font-size: var(--size-small-print); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.text-control:hover { text-decoration-thickness: 1.5px; }
+.text-control[disabled] { text-decoration-style: dashed; cursor: default; }
+.region-name { font-family: var(--face-grotesk); font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; color: var(--bookcloth); margin: 0 0 var(--gap-s); font-weight: 400; }
+.ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--pen-blue); border: var(--rule-ink-field) solid var(--ink); border-radius: 0; background: none; padding: 2px 6px; }
+.prose-field { font-family: var(--face-text); font-size: var(--size-headnote-prose); color: var(--pen-blue); border: 0; border-bottom: var(--rule-graduation) solid var(--ink); background: none; padding: 2px 0; width: 100%; resize: none; line-height: 1.4; box-sizing: border-box; }
+label { display: block; margin: 0 0 var(--gap-s); }
+label > span.lbl { display: block; font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.field-row { display: flex; gap: var(--gap-l); flex-wrap: wrap; }
+.field-row label { flex: 0 0 auto; }
+.num-field { width: 88px; text-align: right; }
+
+.pen { max-width: 480px; }
+.pen .saves { display: flex; gap: var(--gap-s); margin-top: var(--gap-m); }
+.pen .hint { font-size: var(--size-small-print); margin: 4px 0 0; }
+
+.stops { display: flex; gap: 3px; }
+.stop { width: 16px; height: 16px; border: 1px solid var(--ink); background: none; padding: 0; cursor: pointer; }
+.stop.on { background: var(--pen-blue); border-color: var(--pen-blue); }
+
+/* ---------- A: full stacked treatment, same as the primary ---------- */
+[data-variant="A"] .axis-full { margin: 0 0 var(--gap-s); }
+[data-variant="A"] .axis-full .lbl { display: flex; justify-content: space-between; font-size: var(--size-small-print); margin-bottom: 3px; }
+[data-variant="A"] .axis-full .lbl .name { text-transform: uppercase; letter-spacing: 0.04em; }
+[data-variant="A"] .axis-full .lbl .anchors { font-style: italic; font-family: var(--face-text); text-transform: none; letter-spacing: 0; color: #555; }
+
+/* ---------- B: one compact row per axis, no anchor words ---------- */
+[data-variant="B"] .axis-row { display: flex; align-items: center; gap: var(--gap-s); margin: 0 0 6px; }
+[data-variant="B"] .axis-row .name { font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; width: 110px; flex: 0 0 auto; }
+
+/* ---------- C: pick which axes apply, then only those expand ---------- */
+[data-variant="C"] .chip { border: var(--rule-ink-field) solid var(--ink); padding: 3px 10px; background: none; cursor: pointer; font-size: var(--size-small-print); }
+[data-variant="C"] .chip.picked { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); }
+[data-variant="C"] .chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: var(--gap-s); }
+[data-variant="C"] .axis-row { display: none; align-items: center; gap: var(--gap-s); margin: 0 0 6px; }
+[data-variant="C"] .axis-row.picked { display: flex; }
+[data-variant="C"] .axis-row .name { font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; width: 110px; flex: 0 0 auto; }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <button class="variant-tab active" data-v="A" onclick="setVariant('A')">A: Same full treatment as the primary</button>
+  <button class="variant-tab" data-v="B" onclick="setVariant('B')">B: One compact row per axis, no anchors</button>
+  <button class="variant-tab" data-v="C" onclick="setVariant('C')">C: Pick which axes apply, then mark those</button>
+  <span class="sep"></span>
+  <button onclick="toggleRuler()">Toggle 100px ruler</button>
+  <span class="note">This is "Taste again" opened in place — a 4th field: date, marks, one note line, Save</span>
+</div>
+
+<div class="frame" style="width:520px">
+<div class="app" id="app" data-variant="A">
+  <div class="ruler" id="ruler" style="display:none"></div>
+
+  <div class="pen">
+    <h2 class="region-name">Taste again</h2>
+
+    <div class="field-row">
+      <label><span class="lbl">Tasted</span><input class="ink-field num-field" type="date"></label>
+    </div>
+
+    <div id="chip-row-slot"></div>
+
+    <div id="marks-slot"></div>
+
+    <label><span class="lbl">A word on it</span><textarea class="prose-field" rows="2" placeholder="one line — how it's changed, or what to try next"></textarea></label>
+
+    <div class="saves">
+      <button class="btn" onclick="flash(this,'cancelled')">Cancel</button>
+      <button class="btn" onclick="flash(this,'saved')">Save tasting</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="sketch-tools">
+  <div>006 · light tasting entry — how compact can "Taste again" be?</div>
+</div>
+
+<script>
+const AXES = [
+  ['Hardness', "spoon sinks … spoon won't enter"],
+  ['Scoopability', 'crumbles … rolls clean'],
+  ['Smoothness', 'grainy … no crystal felt'],
+  ['Sweetness', 'flat … dominant'],
+  ['Oil character', "can't find it … tastes of oil first"],
+  ['Bitterness', 'none … catches the throat'],
+];
+
+function stopsHTML() {
+  let html = '<div class="stops">';
+  for (let i = 0; i < 9; i++) html += `<button class="stop" onclick="this.classList.toggle('on')"></button>`;
+  return html + '</div>';
+}
+
+function renderA() {
+  document.getElementById('chip-row-slot').innerHTML = '';
+  document.getElementById('marks-slot').innerHTML = AXES.map(([name, anchors]) => `
+    <div class="axis-full">
+      <div class="lbl"><span class="name">${name}</span><span class="anchors">${anchors}</span></div>
+      ${stopsHTML()}
+    </div>`).join('');
+}
+
+function renderB() {
+  document.getElementById('chip-row-slot').innerHTML = '';
+  document.getElementById('marks-slot').innerHTML = AXES.map(([name]) => `
+    <div class="axis-row"><span class="name">${name}</span>${stopsHTML()}</div>`).join('');
+}
+
+function renderC() {
+  document.getElementById('chip-row-slot').innerHTML = `
+    <p class="lbl" style="margin-bottom:4px">Mark which axes changed</p>
+    <div class="chip-row">
+      ${AXES.map(([name], i) => `<button class="chip" data-axis="${i}" onclick="toggleChip(${i})">${name}</button>`).join('')}
+    </div>`;
+  document.getElementById('marks-slot').innerHTML = AXES.map(([name], i) => `
+    <div class="axis-row" id="axis-row-${i}"><span class="name">${name}</span>${stopsHTML()}</div>`).join('');
+}
+
+function toggleChip(i) {
+  document.querySelector(`.chip[data-axis="${i}"]`).classList.toggle('picked');
+  document.getElementById(`axis-row-${i}`).classList.toggle('picked');
+  updateRuler();
+}
+
+let variant = 'A';
+function setVariant(v) {
+  variant = v;
+  document.getElementById('app').dataset.variant = v;
+  document.querySelectorAll('.variant-tab').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+  if (v === 'A') renderA();
+  else if (v === 'B') renderB();
+  else renderC();
+  updateRuler();
+}
+let rulerOn = false;
+function updateRuler() {
+  if (!rulerOn) return;
+  const app = document.getElementById('app');
+  const ruler = document.getElementById('ruler');
+  const h = app.offsetHeight;
+  ruler.style.height = h + 'px';
+  let marks = '';
+  for (let y = 0; y <= h; y += 100) marks += `<span class="mark" style="top:${y}px">${y}</span>`;
+  ruler.innerHTML = marks;
+}
+function toggleRuler() {
+  rulerOn = !rulerOn;
+  document.getElementById('ruler').style.display = rulerOn ? 'block' : 'none';
+  updateRuler();
+}
+function flash(el, word) {
+  const orig = el.textContent;
+  el.textContent = word;
+  setTimeout(() => { el.textContent = orig; }, 900);
+}
+
+renderA();
+</script>
+</body>
+</html>

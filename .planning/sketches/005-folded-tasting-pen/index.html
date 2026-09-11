@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 005: folded tasting pen</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+/* ---------- sketch chrome (not the design) ---------- */
+html { background: #e9e9e4; }
+body { margin: 0; padding-top: 48px; font-family: var(--face-grotesk); color: var(--ink); }
+#variant-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 9998; background: #1c1c1c; color: #eee; display: flex; align-items: center; gap: 6px; padding: 8px 14px; font: 12px/1.3 system-ui; flex-wrap: wrap; }
+#variant-nav .sep { width: 1px; height: 22px; background: #555; margin: 0 6px; }
+#variant-nav button { font: inherit; background: #333; color: #ddd; border: 1px solid #555; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
+#variant-nav button:hover { background: #444; }
+#variant-nav button.active { background: #f7f7f4; color: #141414; border-color: #f7f7f4; }
+#variant-nav .note { color: #aaa; margin-left: auto; }
+#sketch-tools { position: fixed; bottom: 12px; right: 12px; z-index: 9999; font: 12px/1.4 system-ui; background: rgba(0,0,0,0.78); color: #fff; padding: 8px 12px; border-radius: 8px; opacity: 0.55; transition: opacity 0.2s; max-width: 380px; }
+#sketch-tools:hover { opacity: 1; }
+.frame { margin: 24px auto; background: var(--ground); outline: 1px dashed #b5b5ae; padding: var(--gap-xl); box-sizing: border-box; }
+
+/* ---------- the world ---------- */
+.app { font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: 1.35; color: var(--ink); background: var(--ground); }
+.app *:focus-visible { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
+button, input, textarea { font: inherit; }
+.btn { font-family: var(--face-grotesk); font-size: var(--size-table-body); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-width: 1.5px; padding: 5.5px 11.5px; }
+.text-control { font-family: var(--face-grotesk); font-size: var(--size-small-print); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.text-control:hover { text-decoration-thickness: 1.5px; }
+.region-name { font-family: var(--face-grotesk); font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; color: var(--bookcloth); margin: 0 0 var(--gap-s); font-weight: 400; }
+.ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--pen-blue); border: var(--rule-ink-field) solid var(--ink); border-radius: 0; background: none; padding: 2px 6px; }
+.prose-field { font-family: var(--face-text); font-size: var(--size-headnote-prose); color: var(--pen-blue); border: 0; border-bottom: var(--rule-graduation) solid var(--ink); background: none; padding: 2px 0; width: 100%; resize: none; line-height: 1.4; box-sizing: border-box; }
+label { display: block; margin: 0 0 var(--gap-s); }
+label > span.lbl { display: block; font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.field-row { display: flex; gap: var(--gap-s); flex-wrap: nowrap; align-items: flex-end; }
+.field-row label { flex: 0 0 auto; }
+.field-row label > span.lbl { white-space: normal; line-height: 1.2; min-height: 2.4em; }
+.num-field { width: 100%; box-sizing: border-box; text-align: right; }
+.f-date { width: 128px; }
+.field-unit { display: flex; align-items: baseline; gap: 4px; }
+.field-unit .num-field { width: 48px; flex: 0 0 auto; }
+.field-unit .u { font-size: var(--size-deviation-words); white-space: nowrap; }
+
+/* ---------- pen shell ---------- */
+.pen { max-width: 640px; }
+.pen section + section, .pen section + .next-time-shared { margin-top: var(--gap-l); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink); }
+.pen .saves { display: flex; gap: var(--gap-s); margin-top: var(--gap-l); }
+.pen .hint { font-size: var(--size-small-print); margin: 4px 0 0; }
+
+/* ---------- axis marks: compact row of stops ---------- */
+.axis { margin: 0 0 var(--gap-s); }
+.axis .lbl { display: flex; justify-content: space-between; font-size: var(--size-small-print); margin-bottom: 3px; }
+.axis .lbl .name { text-transform: uppercase; letter-spacing: 0.04em; }
+.axis .lbl .anchors { font-style: italic; font-family: var(--face-text); text-transform: none; letter-spacing: 0; color: #555; }
+.stops { display: flex; gap: 3px; }
+.stop { width: 16px; height: 16px; border: 1px solid var(--ink); background: none; padding: 0; cursor: pointer; }
+.stop.on { background: var(--pen-blue); border-color: var(--pen-blue); }
+
+/* ---------- toggle rows: hidden unless their variant is active and not yet opened ---------- */
+#tasting-toggle-row, #detail-toggle-row { display: none; }
+
+/* ---------- B: progressive disclosure of the whole tasting section ---------- */
+[data-variant="B"] #tasting-body { display: none; }
+[data-variant="B"].tasting-open #tasting-body { display: block; }
+[data-variant="B"]:not(.tasting-open) #tasting-toggle-row { display: block; }
+
+/* ---------- C: quick marks visible, detail behind "More" ---------- */
+[data-variant="C"] #tasting-detail { display: none; }
+[data-variant="C"].detail-open #tasting-detail { display: block; }
+[data-variant="C"]:not(.detail-open) #detail-toggle-row { display: block; margin-top: var(--gap-s); }
+</style>
+</head>
+<body>
+
+<div id="variant-nav">
+  <button class="variant-tab active" data-v="A" onclick="setVariant('A')">A: Everything open</button>
+  <button class="variant-tab" data-v="B" onclick="setVariant('B')">B: Tasting collapsed behind one toggle</button>
+  <button class="variant-tab" data-v="C" onclick="setVariant('C')">C: Quick marks open, detail behind "More"</button>
+  <span class="sep"></span>
+  <span class="note">This is the whole recording pen for one sitting — churn fields, then the primary tasting, one Save</span>
+</div>
+
+<div class="frame" style="width:720px">
+<div class="app" id="app" data-variant="A">
+<div class="pen" id="pen">
+
+  <section class="churn">
+    <h2 class="region-name">Batch — churned</h2>
+    <div class="field-row">
+      <label class="f-date"><span class="lbl">Churn date</span><input class="ink-field num-field" type="date" value="2026-08-02"></label>
+      <label><span class="lbl">Time to temp.</span><span class="field-unit"><input class="ink-field num-field" value="20"><span class="u">min</span></span></label>
+      <label><span class="lbl">Out of machine</span><span class="field-unit"><input class="ink-field num-field" value="−6"><span class="u">°C</span></span></label>
+      <label><span class="lbl">Air</span><span class="field-unit"><input class="ink-field num-field" value=""><span class="u">%</span></span></label>
+    </div>
+    <label><span class="lbl">At the machine</span><textarea class="prose-field" rows="2">Soft, not greasy.</textarea></label>
+    <label><span class="lbl">Ingredient notes</span><input class="ink-field" style="width:100%;box-sizing:border-box" placeholder="e.g. oil bottle opened 24 Jul"></label>
+  </section>
+
+  <section class="tasting" id="tasting-section">
+    <h2 class="region-name">Tasting</h2>
+
+    <div id="tasting-toggle-row">
+      <button class="btn" onclick="openTasting()">Add the tasting</button>
+      <p class="hint">Optional — the batch saves either way. "Not yet evaluated" shows until this is filled in.</p>
+    </div>
+
+    <div id="tasting-body">
+      <div class="field-row">
+        <label class="f-date"><span class="lbl">Tasted</span><input class="ink-field num-field" type="date"></label>
+        <label><span class="lbl">Temperature</span><span class="field-unit"><input class="ink-field num-field" value="−12"><span class="u">°C</span></span></label>
+        <label><span class="lbl">Melt test</span><span class="field-unit"><input class="ink-field num-field" value="3"><span class="u">g at 20 min</span></span></label>
+      </div>
+
+      <div id="quick-marks"></div>
+
+      <div id="detail-toggle-row">
+        <button class="text-control" onclick="openDetail()">More — words</button>
+      </div>
+
+      <div id="tasting-detail">
+        <label><span class="lbl">How did it turn out?</span><textarea class="prose-field" rows="2" placeholder="or: as expected, nothing to note"></textarea></label>
+        <button class="text-control" style="margin:2px 0 var(--gap-s)" onclick="fillAsExpected(this)">as expected, nothing to note</button>
+      </div>
+    </div>
+  </section>
+
+  <label class="next-time-shared"><span class="lbl">Next time</span><textarea class="prose-field" rows="2" placeholder="optional — for the batch, the tasting, or both"></textarea></label>
+
+  <div class="saves">
+    <button class="btn" onclick="flash(this,'cancelled')">Cancel</button>
+    <button class="btn" onclick="flash(this,'saved')">Save batch</button>
+  </div>
+
+</div>
+</div>
+</div>
+
+<div id="sketch-tools">
+  <div>005 · folded tasting pen — one sitting, one Save</div>
+</div>
+
+<script>
+const AXES = [
+  ['Hardness', "spoon sinks … spoon won't enter", null],
+  ['Scoopability', 'crumbles … rolls clean', null],
+  ['Smoothness', 'grainy … no crystal felt', null],
+  ['Sweetness', 'flat … dominant', 8],
+  ['Oil character', "can't find it … tastes of oil first", 9],
+  ['Bitterness', 'none … catches the throat', 4],
+];
+
+function stopsHTML(onIndex) {
+  let html = '<div class="stops">';
+  for (let i = 0; i < 9; i++) {
+    html += `<button class="stop${i === onIndex ? ' on' : ''}" onclick="this.classList.toggle('on')"></button>`;
+  }
+  return html + '</div>';
+}
+
+document.getElementById('quick-marks').innerHTML = AXES.map(([name, anchors, onIndex]) => `
+  <div class="axis">
+    <div class="lbl"><span class="name">${name}</span><span class="anchors">${anchors}</span></div>
+    ${stopsHTML(onIndex)}
+  </div>`).join('');
+
+let variant = 'A';
+function setVariant(v) {
+  variant = v;
+  const app = document.getElementById('app');
+  app.dataset.variant = v;
+  app.classList.remove('tasting-open', 'detail-open');
+  document.querySelectorAll('.variant-tab').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+}
+function openTasting() { document.getElementById('app').classList.add('tasting-open'); }
+function openDetail() { document.getElementById('app').classList.add('detail-open'); }
+function fillAsExpected(btn) {
+  const ta = btn.previousElementSibling;
+  ta.value = 'As expected, nothing to note.';
+}
+function flash(el, word) {
+  const orig = el.textContent;
+  el.textContent = word;
+  setTimeout(() => { el.textContent = orig; }, 900);
+}
+</script>
+</body>
+</html>

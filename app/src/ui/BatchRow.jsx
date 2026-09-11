@@ -208,35 +208,14 @@ export function BatchRow({
 
   return (
     <section className="batch-row" aria-label="Batch">
-      {openPen === 'record' || openPen === 'amend' ? (
-        // The record and amend ceremony (D-05, D-10, D-11): the churn
-        // date is the identifying field for this event. Amend pre-fills
-        // draft.churnDate from the batch (RecipePage's handleStartAmending);
-        // a fresh recording opens it blank.
-        <div className="versions__ceremony">
-          <label className="versions__ceremony-field">
-            churned{' '}
-            <input
-              type="date"
-              className="ink-field"
-              autoFocus
-              value={draft.churnDate}
-              onChange={(event) => onChangeChurnDate(event.target.value)}
-            />
-          </label>
-          <div className="headnote__ceremony">
-            <button type="button" onClick={onCancelRecording}>
-              Cancel
-            </button>
-            <button type="button" onClick={onSaveBatch}>
-              Save
-            </button>
-          </div>
-        </div>
-      ) : openPen === 'tasting' ? (
-        // The tasting ceremony (D-05, D-10, D-11): the shortcut moves here
-        // from the margin's TastingForm, since the margin may hold no
-        // control at all (D-04).
+      {/* The tasting ceremony (D-05, D-10, D-11): the shortcut moves here
+          from the margin's TastingForm, since the margin may hold no
+          control at all (D-04). The record/amend ceremony used to render
+          here too; its churn-date field and Cancel/Save moved into the
+          pen's own field grid and foot respectively (2026-09-10
+          checkpoint feedback, G-03.3-4) — this row's top is now reserved
+          for the ceremony that has nowhere else to live. */}
+      {openPen === 'tasting' && (
         <div className="versions__ceremony">
           <label className="versions__ceremony-field">
             <span>Tasting date</span>
@@ -261,19 +240,24 @@ export function BatchRow({
           </div>
           {penHint && <p className="batch-margin__hint">{penHint}</p>}
         </div>
-      ) : null}
+      )}
       {/* D-06: one hint sentence for this row — applies while any pen is
           open, not only this row's own. */}
       {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
 
+      {/* The date and later-batches control name the batch IN VIEW — a
+          different batch than the one being recorded while
+          openPen === 'record' (Mark, 2026-09-10 live review, G-03.3-4):
+          showing them there read as the wrong batch's date. Amending
+          keeps both, since amend corrects the very batch in view. */}
       <div className="batch-row__head">
         <h2 className="region-name">Batch</h2>
-        {openBatch && (
+        {openPen !== 'record' && openBatch && (
           <span className="batch-row__date">
             {`churned ${openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}`}
           </span>
         )}
-        {laterBatchesCount > 0 && (
+        {openPen !== 'record' && laterBatchesCount > 0 && (
           <button
             type="button"
             className="text-control"
@@ -295,6 +279,23 @@ export function BatchRow({
                 cells grid (2026-09-10 checkpoint feedback, G-03.3-4): each
                 field now sized to its expected input, not the full row. */}
             <div className="batch-row__cells">
+              {/* The churned date, this event's identifying field
+                  (D-05, D-10, D-11), as the grid's first cell, labelled
+                  like the three measured cells beside it (2026-09-10
+                  live review, G-03.3-4) — not a stray line atop the
+                  row. Amend pre-fills it from the batch (RecipePage's
+                  handleStartAmending); a fresh recording opens it
+                  blank. */}
+              <label className="batch-margin__field">
+                <span>churned</span>
+                <input
+                  type="date"
+                  className="ink-field"
+                  autoFocus
+                  value={draft.churnDate}
+                  onChange={(event) => onChangeChurnDate(event.target.value)}
+                />
+              </label>
               <label className="batch-margin__field">
                 <span>Time to temperature, min</span>
                 <input
@@ -364,6 +365,18 @@ export function BatchRow({
                 onChange={(event) => onChangeChurnField('nextTimeNote', event.target.value)}
               />
             </label>
+            {/* Cancel/Save, at the pen's own foot after its fields
+                (2026-09-10 live review, G-03.3-4) — the same
+                batch-row__acts row the reading state uses for
+                Correct/Add tasting. */}
+            <div className="batch-row__acts">
+              <button type="button" onClick={onCancelRecording}>
+                Cancel
+              </button>
+              <button type="button" onClick={onSaveBatch}>
+                Save
+              </button>
+            </div>
           </>
         ) : openBatch ? (
           <>

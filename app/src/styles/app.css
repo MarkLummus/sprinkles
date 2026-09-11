@@ -1331,6 +1331,13 @@ textarea {
   width: var(--field-w-figure);
 }
 
+/* The churned date, sized like the ceremony's own date field (2026-09-10
+   live review, G-03.3-4): it moved into this grid as the pen field's
+   first cell, so it reads through the same date-width token. */
+.batch-margin__field .ink-field[type='date'] {
+  width: var(--field-w-date);
+}
+
 /* The batch row's measured values, as labelled cells at figure size
    (sketch 003 variant B, 03.3-01) — replaces the old .batch-margin__measured
    list rendering, which had no consumer left once BatchMargin.jsx's

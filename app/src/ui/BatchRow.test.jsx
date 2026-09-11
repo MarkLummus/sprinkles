@@ -121,6 +121,30 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).not.toContain('later batch');
   });
+
+  it('renders no churned-date span and no later-batches control while recording a new batch — that date names the batch in view, not the one being recorded (Mark, 2026-09-10 live review, G-03.3-4)', () => {
+    const markup = renderBatchRow({
+      openPen: 'record',
+      mode: 'recording',
+      draft: emptyChurnDraft,
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+    });
+    expect(markup).not.toContain('batch-row__date');
+    expect(markup).not.toContain('later batch');
+  });
+
+  it('keeps the churned-date span and later-batches control while amending the batch in view', () => {
+    const markup = renderBatchRow({
+      openPen: 'amend',
+      mode: 'recording',
+      draft: { ...emptyChurnDraft, churnDate: '2026-08-02' },
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+    });
+    expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
+    expect(markup).toContain('>1 later batch<');
+  });
 });
 
 describe('BatchRow — the openers, present only with no pen open (D-05)', () => {
@@ -156,18 +180,34 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
 });
 
 describe('BatchRow — the record and amend ceremony (D-05, D-10)', () => {
-  it('renders the churn-date field and Cancel then Save, bound to onCancelRecording/onSaveBatch', () => {
-    const markup = renderBatchRow({ openPen: 'record', draft: { ...emptyChurnDraft, churnDate: '2026-08-09' } });
-    expect(markup).toMatch(/<input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/);
+  it('renders the churn-date field as the field grid\'s first cell, ahead of the measured cells and prose fields, then Cancel and Save at the foot (Mark, 2026-09-10 live review, G-03.3-4)', () => {
+    const markup = renderBatchRow({
+      openPen: 'record',
+      mode: 'recording',
+      draft: { ...emptyChurnDraft, churnDate: '2026-08-09' },
+    });
+    expect(markup).toMatch(
+      /<label class="batch-margin__field"><span>churned<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
+    );
+    const churnDateIndex = markup.indexOf('<span>churned</span>');
+    const timeToTempIndex = markup.indexOf('Time to temperature');
+    const proseIndex = markup.indexOf('At the machine');
     const cancelIndex = markup.indexOf('Cancel');
     const saveIndex = markup.indexOf('>Save<');
-    expect(cancelIndex).toBeGreaterThanOrEqual(0);
+    expect(churnDateIndex).toBeGreaterThanOrEqual(0);
+    expect(timeToTempIndex).toBeGreaterThan(churnDateIndex);
+    expect(proseIndex).toBeGreaterThan(timeToTempIndex);
+    expect(cancelIndex).toBeGreaterThan(proseIndex);
     expect(saveIndex).toBeGreaterThan(cancelIndex);
   });
 
-  it('renders the same ceremony while amending', () => {
-    const markup = renderBatchRow({ openPen: 'amend', draft: { ...emptyChurnDraft, churnDate: '2026-08-02' } });
-    expect(markup).toMatch(/<input[^>]*type="date"[^>]*value="2026-08-02"/);
+  it('renders the same field-grid-then-foot placement while amending', () => {
+    const markup = renderBatchRow({
+      openPen: 'amend',
+      mode: 'recording',
+      draft: { ...emptyChurnDraft, churnDate: '2026-08-02' },
+    });
+    expect(markup).toMatch(/<span>churned<\/span><input[^>]*type="date"[^>]*value="2026-08-02"/);
     expect(markup).toContain('Cancel');
     expect(markup).toContain('>Save<');
   });
@@ -254,19 +294,26 @@ describe("BatchRow — the record pen's field widths (2026-09-10 checkpoint feed
     expect(tokens['--field-w-figure']).toMatch(/^\d+(\.\d+)?ch$/);
   });
 
-  it('app.css sizes the ceremony date field and the recording number fields through those tokens, never a literal', () => {
-    const dateRule = rules.find((r) => r.selector === ".versions__ceremony-field .ink-field[type='date']");
+  it('app.css sizes the tasting ceremony date field, the churned-date field in the recording grid, and the recording number fields through those tokens, never a literal', () => {
+    const tastingDateRule = rules.find((r) => r.selector === ".versions__ceremony-field .ink-field[type='date']");
+    const churnDateRule = rules.find((r) => r.selector === ".batch-margin__field .ink-field[type='date']");
     const figureRule = rules.find((r) => r.selector === ".batch-margin__field .ink-field[type='number']");
-    expect(dateRule, 'expected a rule sizing the ceremony date field').toBeTruthy();
-    expect(dateRule.declarations).toMatch(/width:\s*var\(--field-w-date\)/);
+    expect(tastingDateRule, 'expected a rule sizing the tasting ceremony date field').toBeTruthy();
+    expect(tastingDateRule.declarations).toMatch(/width:\s*var\(--field-w-date\)/);
+    expect(churnDateRule, 'expected a rule sizing the churned-date field in the recording grid').toBeTruthy();
+    expect(churnDateRule.declarations).toMatch(/width:\s*var\(--field-w-date\)/);
     expect(figureRule, 'expected a rule sizing the recording number fields').toBeTruthy();
     expect(figureRule.declarations).toMatch(/width:\s*var\(--field-w-figure\)/);
   });
 
-  it('renders the churned-date field inside its sized ceremony wrapper', () => {
-    const markup = renderBatchRow({ openPen: 'record', draft: { ...emptyChurnDraft, churnDate: '2026-08-09' } });
+  it("renders the churned-date field inside the pen's own field grid, in the same label style as the other three (Mark, 2026-09-10 live review, G-03.3-4)", () => {
+    const markup = renderBatchRow({
+      openPen: 'record',
+      mode: 'recording',
+      draft: { ...emptyChurnDraft, churnDate: '2026-08-09' },
+    });
     expect(markup).toMatch(
-      /<label class="versions__ceremony-field">churned <input type="date" class="ink-field"/,
+      /<label class="batch-margin__field"><span>churned<\/span><input type="date" class="ink-field"/,
     );
   });
 

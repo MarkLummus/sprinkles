@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Develop the next version** - Version 2 is created, adjusted, and compared against the churned version without disturbing it (completed 2026-09-08)
 - [x] **Phase 03.1: The imprint and the binder** (INSERTED) - The recipe page gains its front-matter band and every control leaves the printed spread; the pen reads as the page; the binder replaces browser chrome (completed 2026-09-09)
 - [x] **Phase 03.2: The portion and the reset** (INSERTED) - Portions become the authored amount and the total derives; `step`/`splitStep` retire; the store resets to the new shape and the seed is rewritten, rather than migrating (completed 2026-09-10)
-- [ ] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only
+- [x] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only (completed 2026-09-10)
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
 
 ## Phase Details
@@ -261,7 +261,7 @@ Plans:
 - Confirm the two behaviours 03.1 left unproven either way: the fork's landing focus, and the uses checklist's open/close with its scoped Escape
 - Open, not necessarily closed here: the fifth loose grams reader (open decision, `6af7a6e`); the Firefox calendar icon (no CSS hook); the parent's version line printing twice
 
-**Plans:** 7/7 plans executed; 3 gap-closure plans planned (05–07, from 03.3-UAT.md G-03.3-1..4)
+**Plans:** 7/7 plans complete
 
 Plans:
 **Wave 1**
@@ -333,7 +333,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 3. Develop the next version | 12/12 | Complete    | 2026-09-08 |
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
-| 3.3. The front-matter rows and the page in step order | 7/7 | In Progress|  |
+| 3.3. The front-matter rows and the page in step order | 7/7 | Complete    | 2026-09-10 |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

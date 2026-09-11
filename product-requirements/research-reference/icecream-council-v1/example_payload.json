@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0",
+  "ingredients": [
+    {
+      "ingredient_id": "milk_whole_3_25",
+      "name": "Whole Milk",
+      "category": "dairy",
+      "composition_basis": "per_100g",
+      "composition": {
+        "water_pct": 87.7,
+        "fat_pct": 3.25,
+        "protein_pct": 3.15,
+        "lactose_pct": 4.8,
+        "sucrose_pct": 0,
+        "glucose_pct": 0,
+        "fructose_pct": 0,
+        "allulose_pct": 0,
+        "other_sugars_pct": 0,
+        "other_carbohydrate_pct": 0.4,
+        "fiber_pct": 0,
+        "ash_pct": 0.7,
+        "alcohol_pct": 0,
+        "stabilizer_pct": 0,
+        "emulsifier_pct": 0,
+        "other_solids_pct": 0
+      },
+      "functional": {
+        "sweetness_factor": null,
+        "freezing_point_factor": null
+      },
+      "provenance": {
+        "source_type": "manufacturer",
+        "source_name": "Example dairy label/reference",
+        "source_reference": null,
+        "confidence": "high",
+        "notes": null
+      },
+      "notes": null
+    },
+    {
+      "ingredient_id": "sucrose",
+      "name": "Sucrose",
+      "category": "sugar",
+      "composition_basis": "per_100g",
+      "composition": {
+        "water_pct": 0,
+        "fat_pct": 0,
+        "protein_pct": 0,
+        "lactose_pct": 0,
+        "sucrose_pct": 100,
+        "glucose_pct": 0,
+        "fructose_pct": 0,
+        "allulose_pct": 0,
+        "other_sugars_pct": 0,
+        "other_carbohydrate_pct": 0,
+        "fiber_pct": 0,
+        "ash_pct": 0,
+        "alcohol_pct": 0,
+        "stabilizer_pct": 0,
+        "emulsifier_pct": 0,
+        "other_solids_pct": 0
+      },
+      "functional": {
+        "sweetness_factor": 1.0,
+        "freezing_point_factor": 1.0
+      },
+      "provenance": {
+        "source_type": "reference_book",
+        "source_name": "Canonical reference value",
+        "source_reference": null,
+        "confidence": "high",
+        "notes": null
+      },
+      "notes": null
+    }
+  ],
+  "recipes": [
+    {
+      "recipe_id": "dark_chocolate",
+      "name": "Dark Chocolate Ice Cream",
+      "product_type": "ice_cream",
+      "description": "Example formulation"
+    }
+  ],
+  "recipe_versions": [
+    {
+      "recipe_version_id": "dark_chocolate_v1",
+      "recipe_id": "dark_chocolate",
+      "version": 1,
+      "created_at": "2026-09-11T13:00:00-04:00",
+      "targets": {
+        "batch_mass_g": 1000,
+        "serving_temp_c": -17,
+        "sweetness_level": "low",
+        "texture_target": "dense_creamy",
+        "overrun_pct": 25
+      },
+      "ingredients": [
+        {
+          "ingredient_id": "milk_whole_3_25",
+          "mass_g": 800
+        },
+        {
+          "ingredient_id": "sucrose",
+          "mass_g": 80
+        }
+      ],
+      "calculated": {
+        "engine_version": "1.0",
+        "water_pct": null,
+        "total_solids_pct": null,
+        "fat_pct": null,
+        "protein_pct": null,
+        "msnf_pct": null,
+        "stabilizer_pct": null,
+        "emulsifier_pct": null,
+        "sugars": {
+          "total_pct": null,
+          "sucrose_pct": null,
+          "glucose_pct": null,
+          "fructose_pct": null,
+          "lactose_pct": null,
+          "allulose_pct": null,
+          "other_sugars_pct": null
+        },
+        "sweetness": {
+          "relative_index": null,
+          "model_name": null
+        },
+        "freezing": {
+          "pac_heuristic": null,
+          "model_name": null,
+          "frozen_water_curve": null
+        }
+      },
+      "notes": "Illustrative only; ingredient list is intentionally incomplete."
+    }
+  ],
+  "batches": [
+    {
+      "batch_id": "batch_2026_09_11_001",
+      "recipe_version_id": "dark_chocolate_v1",
+      "made_at": "2026-09-11T18:00:00-04:00",
+      "actual_batch_mass_g": null,
+      "actual_ingredients": null,
+      "process": {
+        "mix_max_temp_c": 82,
+        "homogenization_method": "immersion_blender",
+        "aging_hours": 12,
+        "aging_temp_c": 4,
+        "machine_id": "home_machine_01",
+        "draw_temp_c": -6.4,
+        "measured_overrun_pct": null,
+        "hardening_temp_c": -22,
+        "storage_temp_c": -18,
+        "storage_hours_before_test": 24,
+        "process_notes": null
+      },
+      "notes": null
+    }
+  ],
+  "observations": [
+    {
+      "observation_id": "obs_2026_09_12_001",
+      "batch_id": "batch_2026_09_11_001",
+      "observed_at": "2026-09-12T18:00:00-04:00",
+      "test_conditions": {
+        "product_temp_c": -17,
+        "storage_age_hours": 24
+      },
+      "sensory": {
+        "sweetness": 5,
+        "hardness": 7,
+        "scoopability": 5,
+        "creaminess": 8,
+        "iciness": 2,
+        "gumminess": 3,
+        "chewiness": 4,
+        "flavor_intensity": 8,
+        "meltdown": 5
+      },
+      "notes": "Example observation."
+    }
+  ]
+}

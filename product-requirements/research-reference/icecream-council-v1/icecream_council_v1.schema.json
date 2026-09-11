@@ -1,0 +1,880 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/icecream-council-v1.schema.json",
+  "title": "Ice Cream Council Data Contract v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "ingredients",
+    "recipes",
+    "recipe_versions",
+    "batches",
+    "observations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "ingredients": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ingredient"
+      }
+    },
+    "recipes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recipe"
+      }
+    },
+    "recipe_versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recipeVersion"
+      }
+    },
+    "batches": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/batch"
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/observation"
+      }
+    }
+  },
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "manufacturer",
+            "usda",
+            "scientific_literature",
+            "reference_book",
+            "user_measured",
+            "user_estimated",
+            "calculated",
+            "default",
+            "unknown"
+          ]
+        },
+        "source_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "source_type",
+        "confidence"
+      ]
+    },
+    "composition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "water_pct",
+        "fat_pct",
+        "protein_pct",
+        "lactose_pct",
+        "sucrose_pct",
+        "glucose_pct",
+        "fructose_pct",
+        "allulose_pct",
+        "other_sugars_pct",
+        "other_carbohydrate_pct",
+        "fiber_pct",
+        "ash_pct",
+        "alcohol_pct",
+        "stabilizer_pct",
+        "emulsifier_pct",
+        "other_solids_pct"
+      ],
+      "properties": {
+        "water_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fat_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "protein_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "lactose_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "sucrose_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "glucose_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fructose_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "allulose_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "other_sugars_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "other_carbohydrate_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "fiber_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "ash_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "alcohol_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "stabilizer_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "emulsifier_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "other_solids_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "ingredient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ingredient_id",
+        "name",
+        "category",
+        "composition_basis",
+        "composition",
+        "provenance"
+      ],
+      "properties": {
+        "ingredient_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "dairy",
+            "sugar",
+            "fat",
+            "stabilizer",
+            "emulsifier",
+            "cocoa",
+            "fruit",
+            "nut",
+            "flavoring",
+            "alcohol",
+            "inclusion",
+            "other"
+          ]
+        },
+        "composition_basis": {
+          "const": "per_100g"
+        },
+        "composition": {
+          "$ref": "#/$defs/composition"
+        },
+        "functional": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sweetness_factor": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "freezing_point_factor": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recipe_id",
+        "name",
+        "product_type"
+      ],
+      "properties": {
+        "recipe_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product_type": {
+          "type": "string",
+          "enum": [
+            "ice_cream",
+            "gelato",
+            "sorbet",
+            "sherbet",
+            "frozen_yogurt",
+            "non_dairy_frozen_dessert",
+            "other"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "recipeIngredient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ingredient_id",
+        "mass_g"
+      ],
+      "properties": {
+        "ingredient_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mass_g": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "recipeTargets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "batch_mass_g": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "serving_temp_c": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -40,
+          "maximum": 20
+        },
+        "sweetness_level": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "very_low",
+            "low",
+            "moderate",
+            "high",
+            "very_high",
+            null
+          ]
+        },
+        "texture_target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "overrun_pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 200
+        }
+      }
+    },
+    "calculated": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "engine_version": {
+          "type": "string"
+        },
+        "water_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "total_solids_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "fat_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "protein_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "msnf_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "stabilizer_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "emulsifier_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "sugars": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "total_pct": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "sucrose_pct": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "glucose_pct": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "fructose_pct": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "lactose_pct": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "allulose_pct": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "other_sugars_pct": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          }
+        },
+        "sweetness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "relative_index": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "model_name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "freezing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pac_heuristic": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "model_name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "frozen_water_curve": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "temp_c",
+                  "frozen_water_pct"
+                ],
+                "properties": {
+                  "temp_c": {
+                    "type": "number"
+                  },
+                  "frozen_water_pct": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "recipeVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recipe_version_id",
+        "recipe_id",
+        "version",
+        "ingredients"
+      ],
+      "properties": {
+        "recipe_version_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recipe_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "targets": {
+          "$ref": "#/$defs/recipeTargets"
+        },
+        "ingredients": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/recipeIngredient"
+          }
+        },
+        "calculated": {
+          "$ref": "#/$defs/calculated"
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "actualIngredient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ingredient_id",
+        "mass_g"
+      ],
+      "properties": {
+        "ingredient_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mass_g": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mix_max_temp_c": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -10,
+          "maximum": 120
+        },
+        "homogenization_method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "aging_hours": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "aging_temp_c": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -10,
+          "maximum": 30
+        },
+        "machine_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "draw_temp_c": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -30,
+          "maximum": 20
+        },
+        "measured_overrun_pct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 300
+        },
+        "hardening_temp_c": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -60,
+          "maximum": 20
+        },
+        "storage_temp_c": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -60,
+          "maximum": 20
+        },
+        "storage_hours_before_test": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "process_notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch_id",
+        "recipe_version_id"
+      ],
+      "properties": {
+        "batch_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recipe_version_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "made_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "actual_batch_mass_g": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "actual_ingredients": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/actualIngredient"
+          }
+        },
+        "process": {
+          "$ref": "#/$defs/process"
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "sensory": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sweetness": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "hardness": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "scoopability": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "creaminess": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "iciness": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "gumminess": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "chewiness": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "flavor_intensity": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        },
+        "meltdown": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 10
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_id",
+        "batch_id"
+      ],
+      "properties": {
+        "observation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "batch_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "test_conditions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "product_temp_c": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -40,
+              "maximum": 20
+            },
+            "storage_age_hours": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        "sensory": {
+          "$ref": "#/$defs/sensory"
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

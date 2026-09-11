@@ -63,6 +63,7 @@ Sprinkles connects what was planned (the recipe), what was actually done (the ba
 - Ingredient seed dataset (three candidates disagree on coefficients); chosen in GSD Phase 1 planning.
 - Accessibility standard: WCAG 2.2 AA is proposed and not yet confirmed as the product standard. GSD requirement UX1-01 tests text contrast at AA for milestone 1.
 - Supported equipment families beyond the working case.
+- Whether/how a "proposed next attempt" entity gets built — named in the product's own separation of recipe/version/batch/observation/proposed-next-attempt but never implemented (today, developing and saving a next version are the same action). Surfaced concretely by the council data-contract exchange (`product-requirements/research-reference/sprinkles-council-data-contract-v1.1.md`): an accepted council experiment needs two landing spots — a proposed new version, or a proposed recording protocol on the *existing* version when no formula changes — neither of which exists yet.
 
 ## Brand Commitments
 
@@ -82,6 +83,7 @@ Voice (from the brief): knowledgeable, welcoming, precise; respects experimentat
 - Prior review/print implementation in `~/Documents/projects/old-sprinkles/src` (React + Vite slice, verified 13/13 against the sheet). Reference only; not built on.
 - Decision histories for stack/storage and print/batch/QR in `~/Downloads/` — directional, not binding.
 - Ice Ed, Mark's existing web app, for clarification of legacy behaviour.
+- `product-requirements/research-reference/sprinkles-council-data-contract-v1.1.md` — a settled interop policy (10 governing principles) negotiated with an external "ice cream council" for a future "ask an expert" feature (recipe design, troubleshooting, experimentation), with the council's original v1 contract filed alongside it in `icecream-council-v1/`. Directional, not binding: nothing here is scoped or built; adopting it is its own future product decision (TRUST-01 policy, D16-adjacent storage question).
 
 Absent, and not to be fabricated: user interviews beyond Mark, testimonials, customers, pricing, benchmarks, deployment, and any validated numerical success target.
 

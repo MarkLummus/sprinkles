@@ -168,6 +168,17 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 .field-error { font-size: var(--type-control); font-weight: 400; line-height: 1.4; text-transform: none; letter-spacing: 0; }
 #form-status { font-size: var(--type-control); line-height: 1.5; max-width: 70ch; }
 
+/* Touch targets on the transcription device: grow toward 44px below the desktop step-down.
+   Track arithmetic scales with the stops: 5 × 40px + 4 × 4px = 216px. */
+@media (max-width: 760px) {
+  .axis .stop5 { width: 40px; height: 44px; flex: 0 0 40px; }
+  .axis .stops5, .axis .anchors5 { width: 216px; }
+  .chip-toggle, .seg .opt { min-height: 44px; }
+  .text-control { min-height: 44px; }
+  .btn { min-height: 44px; }
+  .ink-field { min-height: 44px; }
+}
+
 </style>
 </head>
 <body>
@@ -225,13 +236,15 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 
       <div class="saves" style="align-items:baseline" id="churn-saves">
         <button class="btn" onclick="announce('This is a sketch. Your entries have been kept; nothing was saved.')">Cancel</button>
-        <button class="btn" onclick="previewSave(this)">Save batch</button>
+        <button class="btn" onclick="previewSave(this)">Save batch only</button>
       </div>
     </section>
 
     <section class="tasting">
       <div class="head" style="margin-bottom:var(--gap-s)">
         <h2 class="region-name" style="margin-bottom:0">Tasting <span class="helper">· optional</span> <span class="helper" id="tasting-hint">— leave anything you did not record blank</span></h2>
+        <span class="helper" id="tasting-status" role="status" aria-live="polite"></span>
+        <span id="undo-head-slot"><button id="undo-tasting" class="text-control" hidden onclick="undoTasting()">Undo clear tasting</button></span>
         <button class="text-control clear" id="tasting-toggle-btn" style="margin-left:auto" onclick="removeTasting()">Clear tasting</button>
       </div>
       <div id="tasting-body">
@@ -261,7 +274,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
               <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Sandy, gritty</button>
               <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Gummy, elastic</button>
               <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Greasy film</button>
-              <button class="chip-toggle declared-flaw" aria-pressed="false" onclick="toggleChip(this)">Bitter</button>
+              <button class="chip-toggle declared-flaw" aria-pressed="false" aria-label="Declared for this recipe: Bitter" onclick="toggleChip(this)">Bitter <span class="helper">· declared</span></button>
             </div>
           </div>
         </div>
@@ -289,7 +302,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
       <button class="btn" onclick="announce('This is a sketch. Your entries have been kept; nothing was saved.')">Cancel</button>
       <button id="save-combined" class="btn" onclick="previewSave(this)">Save batch &amp; tasting</button>
       <button class="text-control" id="add-tasting-closed" hidden onclick="addTasting()">Add tasting</button>
-      <button id="undo-tasting" class="text-control" hidden onclick="undoTasting()">Undo clear tasting</button>
+      <span id="undo-footer-slot"></span>
     </div>
   </div>
 </div>
@@ -310,9 +323,9 @@ function announce(message) {
 }
 
 let statusTimer = null;
-function announceTransient(message) {
-  const status = document.getElementById('form-status');
-  announce(message);
+function announceTransient(message, targetId = 'form-status') {
+  const status = document.getElementById(targetId);
+  status.textContent = message;
   clearTimeout(statusTimer);
   statusTimer = setTimeout(() => { if (status.textContent === message) status.textContent = ''; }, 5000);
 }
@@ -471,6 +484,12 @@ function addTasting() {
   document.querySelector('#tasting-body input, #tasting-body textarea')?.focus();
   announce('');
 }
+function placeUndo() {
+  const undo = document.getElementById('undo-tasting');
+  const closed = tastingMode === 'hidden' && !tastingOpen;
+  const slot = document.getElementById(closed ? 'undo-footer-slot' : 'undo-head-slot');
+  if (slot && undo.parentElement !== slot) slot.appendChild(undo);
+}
 function renderTastingVisibility() {
   const closed = tastingMode === 'hidden' && !tastingOpen;
   document.querySelector('.tasting').hidden = closed;
@@ -479,6 +498,7 @@ function renderTastingVisibility() {
   const btn = document.getElementById('tasting-toggle-btn');
   btn.textContent = tastingMode === 'hidden' ? 'Remove tasting' : 'Clear tasting';
   btn.onclick = removeTasting;
+  placeUndo();
   updateSaveLabel();
   updateRuler();
 }
@@ -493,27 +513,37 @@ function resizeNote(field) {
 function removeTasting() {
   const body = document.getElementById('tasting-body');
   const hasData = [...body.querySelectorAll('input, textarea')].some(f => f.value) || body.querySelector('.on');
-  if (hasData) {
-    clearedTasting = {
-      fields: [...body.querySelectorAll('input, textarea')].map(f => [f, f.value]),
-      selected: [...body.querySelectorAll('.on')]
-    };
-    body.querySelectorAll('input, textarea').forEach(f => { f.value = ''; clearError(f); });
-    body.querySelectorAll('[role="radiogroup"]').forEach(group => selectRadio(group, null));
-    body.querySelectorAll('.chip-toggle').forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); });
-    body.querySelectorAll('textarea').forEach(resizeNote);
-    document.getElementById('undo-tasting').hidden = false;
-    updateSaveLabel();
-  } else if (tastingMode !== 'hidden') {
+  if (!hasData && tastingMode !== 'hidden') {
+    announceTransient('Nothing recorded to clear.', 'tasting-status');
     return;
   }
+  if (!hasData) {
+    // hidden mode, empty tasting: collapse; there is nothing to undo
+    tastingOpen = false;
+    renderTastingVisibility();
+    document.getElementById('add-tasting-closed').focus();
+    announceTransient('Tasting removed.', 'form-status');
+    updateRuler();
+    return;
+  }
+  clearedTasting = {
+    fields: [...body.querySelectorAll('input, textarea')].map(f => [f, f.value]),
+    selected: [...body.querySelectorAll('.on')]
+  };
+  body.querySelectorAll('input, textarea').forEach(f => { f.value = ''; clearError(f); });
+  body.querySelectorAll('[role="radiogroup"]').forEach(group => selectRadio(group, null));
+  body.querySelectorAll('.chip-toggle').forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); });
+  body.querySelectorAll('textarea').forEach(resizeNote);
+  document.getElementById('undo-tasting').hidden = false;
+  updateSaveLabel();
   if (tastingMode === 'hidden') {
     tastingOpen = false;
     renderTastingVisibility();
     document.getElementById('add-tasting-closed').focus();
-    announceTransient(hasData ? 'Tasting removed. You can undo this.' : 'Tasting removed.');
+    announceTransient('Tasting removed. You can undo this.', 'form-status');
   } else {
-    announceTransient('Tasting cleared. You can undo this.');
+    document.getElementById('undo-tasting').focus();
+    announceTransient('Tasting cleared. You can undo this.', 'tasting-status');
   }
   updateRuler();
 }
@@ -530,7 +560,7 @@ function undoTasting() {
   document.getElementById('tasting-toggle-btn').focus();
   clearedTasting = null;
   updateSaveLabel();
-  announceTransient('Tasting restored.');
+  announceTransient('Tasting restored.', 'tasting-status');
   updateRuler();
 }
 function clearError(field) {

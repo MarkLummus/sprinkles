@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-12T16:50:31.861Z",
+  "phase": null,
+  "phase_name": null,
+  "phase_dir": null,
+  "context": "sketch",
+  "sketch": "007-full-battery",
+  "sketch_dir": ".planning/sketches/007-full-battery",
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "Fix field-row caption bottom-align (single-line captions had ~21px gap vs 6-7px elsewhere)", "status": "done"},
+    {"id": 2, "name": "Ingredient notes: switch from .ink-field to .prose-field, match other text fields", "status": "done"},
+    {"id": 3, "name": "Prose-field underline weight bumped 1px->2px to distinguish from section-break rule", "status": "done"},
+    {"id": 4, "name": "Add field-sizing:content to prose-field so all four text fields size to content, not fixed rows=2", "status": "done"},
+    {"id": 5, "name": "Convert Ingredient notes input to textarea (consistency: all prose-fields are textareas)", "status": "done"},
+    {"id": 6, "name": "Fix .axis .clear margin-left:auto (was stranded far from its own stops in 2/3-col layouts)", "status": "done"},
+    {"id": 7, "name": "Split 'Any problems? Select all that apply' into short caption + muted hint (matches other hint pattern)", "status": "done"},
+    {"id": 8, "name": "Combine Exit consistency + Airiness onto one row (measured: fits in 640px)", "status": "done"},
+    {"id": 9, "name": "Fix double-margin bug: defects-standalone mb + melt-block mt both firing (40px where 20px intended), fixed across both variants A and C", "status": "done"},
+    {"id": 10, "name": "Fix stray browser-default <p> margin-top (12px) on 'Any problems?' paragraph; added .app p { margin:0 } reset", "status": "done"},
+    {"id": 11, "name": "Shorten 'Density / body' -> 'Body' and 'Oil character' -> 'Oil' to stop wrapping in 3-column axis grid", "status": "done"},
+    {"id": 12, "name": "Ran /impeccable layout — mechanical scan clean, manual assessment clean, no changes needed", "status": "done"},
+    {"id": 13, "name": "Answered 'should Next time be its own section?' — Mark chose to leave it as a shared field, not a section", "status": "done"},
+    {"id": 14, "name": "Ran /impeccable critique sketch007 (dual-agent A+B) — scored 25/36, persisted snapshot, trend 22->25", "status": "done"},
+    {"id": 15, "name": "Added 'Tasting: always visible' vs 'Tasting: hidden until added' toolbar toggle + add/remove/undo state machine", "status": "done"}
+  ],
+  "remaining_tasks": [
+    {"id": 16, "name": "Critique P1: pre-filled numeric/text fields (churn section + tasting-in-visible-mode) still render pen-blue on load, indistinguishable from real maker data", "status": "not_started"},
+    {"id": 17, "name": "Critique P1: no visual sub-grouping between the 4 fixed-core axes (Hardness/Scoopability/Smoothness/Sweetness) and the 2 recipe-declared axes (Body/Oil)", "status": "not_started"},
+    {"id": 18, "name": "Critique P2: all-caps-body detector finding on 'Any problems?' is patched via child text-transform:none override, not fixed at the source rule (parent <p class=\"lbl\"> still declares uppercase over the full sentence)", "status": "not_started"},
+    {"id": 19, "name": "Critique P2: responsive clipping below 760px — Mark independently added @media(max-width:600px) + fluid grid changes after the critique ran; needs a re-check to see if this is now resolved", "status": "not_started"},
+    {"id": 20, "name": "Critique P3: 'Remove tasting' in always-visible mode has no confirmation/undo-visible-consequence the way hidden-mode's collapse does", "status": "not_started"},
+    {"id": 21, "name": "Decide whether 'hidden until added' becomes the primary default or stays a comparison toggle", "status": "not_started"},
+    {"id": 22, "name": "Re-run /impeccable critique once Mark's typography/hardening edits + hidden-until-added exploration settle, to see if score moves from 25/36", "status": "not_started"}
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Decide on axis sub-grouping visual treatment (core vs. recipe-declared)", "context": "Critique P1 finding; needs a design decision on how to show hierarchy without a color-as-verdict violation", "blocking": false},
+    {"action": "Decide on pre-filled demo value policy", "context": "Critique P1 finding; sketch's own 'blank stays blank' rule is violated by demo values in churn fields and in tasting's always-visible mode", "blocking": false},
+    {"action": "Decide whether hidden-until-added tasting becomes the primary interaction model", "context": "New exploration this session, not yet a settled decision", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "Variant A (note before Texture & flavor) + 3-column axes is Mark's current preference", "rationale": "Stated directly by Mark; set as the toolbar's default init state", "phase": null},
+    {"decision": "'Next time' stays a shared field outside both sections, not promoted to its own <section>", "rationale": "It's explicitly cross-cutting (batch, tasting, or both) per its own placeholder; promoting it would spend the Bookcloth Rule's region-name color on one textarea and reintroduce a double-rule problem already fixed once", "phase": null},
+    {"decision": "'Density / body' -> 'Body', 'Oil character' -> 'Oil'", "rationale": "Both wrapped to two lines in 3-column mode, dragging that row taller than the others; anchors (thin/heavy, faint/strong) already carried the meaning", "phase": null},
+    {"decision": "prose-field underline uses a flat 2px (not 1.5px) to distinguish from the 1px section-break rule", "rationale": "Fractional border-width doesn't render reliably on <input>/<textarea> in Chrome — measured it snapping back to 1px", "phase": null}
+  ],
+  "uncommitted_files": [
+    "M .planning/sketches/007-full-battery/README.md",
+    "M .planning/sketches/007-full-battery/index.html",
+    "M .planning/state.json",
+    "?? .impeccable/critique/2026-09-11T22-19-21Z__planning-sketches-007-full-battery-index-html.md",
+    "?? .impeccable/critique/2026-09-12T12-51-03Z__planning-sketches-007-full-battery-index-html.md",
+    "?? .impeccable/live/",
+    "?? phase-0-audit-2026-09-11/"
+  ],
+  "next_action": "Ask Mark whether to tackle the critique's two P1s (pre-filled values, axis sub-grouping) next, or keep exploring the hidden-until-added tasting interaction he just asked for.",
+  "context_notes": "This whole session was direct sketch iteration on .planning/sketches/007-full-battery/index.html (not a GSD phase). Mark made substantial edits himself mid-session (full a11y pass: radiogroups, aria-live, field validation, undo, field-sizing auto-resize, responsive @media block, forced-colors support, and a new local type scale under .app { --type-* }) — those are accepted as current state, not reverted. A dual-agent /impeccable critique ran and is persisted at .impeccable/critique/2026-09-12T12-51-03Z__planning-sketches-007-full-battery-index-html.md. The live-mode picker (/impeccable live) was tried earlier and abandoned after two wrong-file scaffold matches (once matched a different sketch, once matched real production app/src/ui/BatchRow.jsx) — reverted safely both times; direct chat-driven editing has been the working mode since."
+}

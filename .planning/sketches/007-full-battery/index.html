@@ -242,7 +242,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
         </div>
 
         <div class="note-block">
-          <label><span class="lbl">How did it turn out?</span><textarea class="prose-field" rows="2" placeholder="e.g. there's a metallic aftertaste"></textarea></label>
+          <label><span class="lbl">How did it turn out?</span><textarea class="prose-field" rows="2" placeholder="e.g. flavor, texture, anything that stood out"></textarea></label>
         </div>
 
         <div class="texture-block">
@@ -332,17 +332,18 @@ function selectRadio(group, selected) {
 
 function wireRadioGroup(group) {
   const buttons = [...group.querySelectorAll('button')];
+  const inTasting = !!group.closest('#tasting-body');
   group.setAttribute('role', 'radiogroup');
   buttons.forEach((button, index) => {
     button.setAttribute('role', 'radio');
     button.setAttribute('aria-checked', 'false');
     button.tabIndex = index === 0 ? 0 : -1;
-    button.addEventListener('click', () => { forgetUndo(); selectRadio(group, button.classList.contains('on') ? null : button); });
+    button.addEventListener('click', () => { if (inTasting) forgetUndo(); selectRadio(group, button.classList.contains('on') ? null : button); });
     button.addEventListener('keydown', event => {
       const moves = {ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1};
       if (!(event.key in moves) && event.key !== 'Home' && event.key !== 'End') return;
       event.preventDefault();
-      forgetUndo();
+      if (inTasting) forgetUndo();
       const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (index + moves[event.key] + buttons.length) % buttons.length;
       selectRadio(group, buttons[next]);
       buttons[next].focus();
@@ -382,7 +383,8 @@ function renderAxes() {
   const axisMarkup = (index) => {
     const [name, lo, mid, hi] = AXES[index];
     const words = [lo, `leaning ${lo}`, mid, `leaning ${hi}`, hi];
-    return `<div class="axis${index >= 4 ? ' axis--declared' : ''}">
+    const cue = index === 4 ? '<p class="lbl" style="margin:0 0 var(--gap-xs)">Declared for this recipe</p>' : '';
+    return `<div class="axis${index >= 4 ? ' axis--declared' : ''}">${cue}
       <div class="head"><span class="name" id="axis-${index}">${name}</span>
       <span class="state unmarked">(Not recorded)</span>
       <button class="text-control clear" hidden aria-label="Clear ${name}" onclick="clearAxis(this)">Clear</button></div>

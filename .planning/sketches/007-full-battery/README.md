@@ -154,6 +154,20 @@ Mark couldn't find the Undo after removing a tasting. Live reproduction with rea
 - **Marks survive re-renders.** Column toggles and breakpoint crossings rebuild the stop buttons; marked stops are carried across by axis id and re-applied (verified: a Hardness mark survived 3-col → 2-col → 393px → 768px). A pending undo retires on re-render — its captured button references go stale.
 - **"Tasting restored." is a toast too.** Undo's announcement now self-clears like the removal toast.
 
+## Re-critique and undo completion (2026-09-12, evening)
+
+Mark re-ran the critique on the settled sketch: **25/36 again, but zero P1s** — both earlier P1s confirmed resolved, and the previous P3's undo coverage acknowledged ("Remove tasting really collapses the section"). Remaining findings:
+
+- **[P2] Churn segmented controls still retired the undo — fixed.** The fifth round scoped forgetUndo to tasting *fields*, but wireRadioGroup's click/keydown handlers still called it unconditionally, wired as they are for Exit consistency and Airiness in the churn section. The scoping now covers radios too (`inTasting`), verified live against the critique's exact reproduction: note → remove → Smooth ribbon → undo survives; Airiness too; undo restores; a tasting-side radio (melt style) still retires it.
+- **[P2] The note placeholder biases toward defects** — "e.g. there's a metallic aftertaste" prompts a fault as the first response. Open: neutral prompt ("Flavor, texture, anything that stood out…") or blank — Mark's call.
+- **[P3] The grouping signal is silent about its meaning** — the vertical rule and the Bitter gap mark a distinction without naming it. Open: compact group cue or an accessible description, keeping rule-only visually — Mark's call.
+- Minor, for the phase plan: the two save scopes (churn-only vs combined) need an explicit persistence contract when this becomes functional; the churn date stays example content by design.
+
+Both open findings settled with Mark the same evening and applied:
+
+- **The note prompt is neutral** — placeholder now reads "e.g. flavor, texture, anything that stood out" instead of the metallic-aftertaste fault example.
+- **The declared group is named** — a compact caption-face cue, "Declared for this recipe" (the vocabulary the Bitter toggle already uses), sits inside Body's box above its head: right of the vertical hairline in 3-column mode, under the horizontal rule when stacked. Rule-only visuals kept; no repeated headings per cell. Screen readers hear it as part of Body's box. Verified live in both arrangements; tab order unchanged.
+
 Also fixed same day, per Mark's go-ahead: the "Any problems?" all-caps finding at the source — "Select all that apply." is now a sibling helper paragraph, so `.lbl`'s uppercase rule only ever wraps its short caption (critique P2, first of the two).
 
 Still open from the critique: the responsive clipping re-check (P2) — partially addressed by a new ≤720px rule that stacks the axis groups, but the rest of the page still needs the resize check; "Remove tasting" in always-visible mode lacking visible consequence (P3). The re-run of the critique is on hold per Mark.

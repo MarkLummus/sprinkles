@@ -245,6 +245,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-11T00:32:55.701Z
-Stopped at: Phase 03.3 complete, ready to plan Phase 4
-Resume file: None
+Last session: 2026-09-12 (sketch 007)
+Stopped at: Three design questions settled with Mark and applied to sketch 007 (axes-split rule, blanked demo values, hidden-until-added primary); checkpoint at `.planning/sketches/.continue-here.md`
+Resume file: `.planning/sketches/.continue-here.md`

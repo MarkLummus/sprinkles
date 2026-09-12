@@ -31,7 +31,7 @@
     {
       "number": "3.3",
       "name": "The front-matter rows and the page in step order",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "4",
@@ -41,8 +41,8 @@
   ],
   "next": {
     "command": "/gsd:progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 03.3 of 7 · 14% · executing"
+    "label": "Advance to the next step (plan phase 4)",
+    "reason": "Phase 4 of 7 — needs a plan"
   },
-  "updated_at": "2026-09-10T18:18:22.996Z"
+  "updated_at": "2026-09-11T00:40:52.762Z"
 }

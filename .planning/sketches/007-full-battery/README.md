@@ -89,3 +89,71 @@ Mark's note: the 5-point control is settled, but a single stacked column of six 
 - In C, does bridging defects into the words field help (structured tags feeding a free-text account) or does it just visually crowd the one place on the page that's supposed to be the maker's own unstructured account?
 - Try 1, 2, and 3 columns — at what point do the anchor words start feeling cramped against the 5 stops? Does 3 columns save real height, or does it stop being scannable?
 - Given how long this reads even before any disclosure, is "fold everything into one pen" (sketch 005's premise) still viable at this field count, or does the churn/tasting split need to become two separate steps again — not two pens, but two moments within one flow?
+
+## Hardening pass — 2026-09-12
+
+Option A now opens with three axes columns at desktop width. The grid reflows as space narrows, rating buttons are 32px tall, and selected/unselected headings reserve the same height. Variant C also moves the actual note/texture DOM order so keyboard order follows the displayed order.
+
+Ratings and categorical choices expose named radio groups, checked states and roving keyboard focus (arrows, Home and End); defects expose pressed state. Clicking a selected choice still clears it. Individual Clear returns focus to the scale. The always-visible tasting action is now Clear tasting, with an undo action; subsequent editing retires that undo so it cannot overwrite newer entries. Empty tastings change the footer to Save batch.
+
+Long notes grow without clipping and accept multilingual/RTL text. Measurement previews accept blank values, signed temperatures and decimal point/comma input; malformed values remain in place with inline feedback and focus on the first error. Save/Cancel remain sketch-only and explicitly say that nothing was persisted.
+
+Verified in browser: default 1280px three-column geometry and stable selected-state alignment; keyboard 3→4 with checked state; clear and undo restoring ratings/measurements; malformed number feedback and decimal comma acceptance; 390px reflow with no horizontal overflow; long accented, Japanese, Arabic and emoji notes without clipping. Detector flags remain for sketch chrome/ruler, short uppercase labels and repeated compact control spacing; these were reviewed rather than used to change the established style. No backend or real persistence was added.
+
+## Typography pass — 2026-09-12
+
+Preserved the notebook's system-sans/Georgia families, Option A and three-column desktop default. Added local type roles: section headings 14px/600; compact field labels 12px/500 and axis names 12px/600; actionable choices and helper text 13px; written notes 16px with 24px leading and a 70ch maximum. Status text now uses consistent regular sans instead of changing from italic serif to sans when selected. Placeholder prose is italic; entered prose stays roman blue. Adjusted categorical-choice horizontal padding to retain the side-by-side desktop groups with larger text.
+
+Live verification: all six 192px axis headers stay 24px tall in both selected and unselected states; three-column axes height is approximately 202px (previously 203px). At 390px the page has no horizontal overflow, axes become one column, and long accented/Japanese/emoji notes grow without clipping. Existing local font stacks require no new downloads. Type detector retains one explained uppercase-label warning, with no other type findings. This pass changes typography only, not field meanings or save behavior.
+
+## Three decisions settled (2026-09-12)
+
+Mark's calls on the three open design questions, after the 25/36 critique:
+
+- **Core vs. declared axes: the groups split side by side.** The four fixed core axes sit left; the recipe-declared pair (Body, Oil) sits right of a vertical hairline (graduation weight, the declared group's left border) — naming the distinction PRODUCT.md already makes, without spending region-name color or adding words. Revised same day on Mark's call: a first pass used a full-width horizontal rule under a ragged 3+1 core row; he preferred the groups side by side, which also removes the ragged cell. In 3-column mode (the default) the core group runs 2×2 and the declared group stacks one column; in 1/2-column modes and below a 720px viewport the groups stack and the split reverts to a horizontal rule.
+- **Pre-filled demo values are gone.** The six example measurements (Time to draw temp. 20, Out of machine −6, Churn duration 30, Tempering 8, Tasting temperature −12, Melt test 3) and the "Soft, not greasy." note prose were examples rendered in pen-blue — indistinguishable from authored data, contradicting the sketch's own blank-stays-blank rule. All blanked; the record now opens the way a fresh one would. Churn date keeps 2026-08-02 — the working case's real date, not an example. Side effect: on load the footer save reads "Save batch" (empty tastings change it), which the hardening pass already specified.
+- **Hidden-until-added becomes the primary tasting mode.** The default flips: the record opens with the tasting section collapsed to "Not added yet." + "Add tasting", the shorter first impression for churn-only recording. Always-visible stays in the toolbar as the comparison mode. The critique's praise for decoupled saving is unaffected — both modes keep the separate Save batch path and the Clear/Add/Remove controls. (Refined same day — see Second-round refinements.)
+
+## Second-round refinements (2026-09-12)
+
+- **"select all that apply" sits beside "Any problems?" again.** Mark wanted the hint inline like the Tasting headline hints, not stacked. The two now share one baseline row (a `.head` flex wrapper) as sibling elements — the hint reads lowercase "select all that apply" like "· optional", and `.lbl`'s uppercase still only wraps its short caption, so the all-caps source fix survives.
+- **A responsive ladder for the axis split.** The side-by-side split needs the pen's full 640px width; at ~736px the vertical rule was touching the middle column's #5 stop. Below 760px viewport the 3-column mode now steps down to the 2-column arrangement (core 2×2 and Body/Oil side by side, groups stacked on the horizontal rule) instead of collapsing straight to one column; auto-fit collapses each group further once two 280px columns no longer fit. The explicit 1/2-column toolbar modes are untouched — only the default 3-column mode steps down.
+- **The hidden tasting mode hides the whole section.** When "hidden until added" is active and nothing is recorded, the entire Tasting section is gone — no headline, no "Not added yet." line, no section rule. Remove tasting puts focus on the Add tasting control after collapsing; undo still restores and reopens. (The Add tasting control's placement was refined same day — see Third round.)
+
+## Third round (2026-09-12)
+
+- **One save ceremony when there is no tasting.** With the Tasting section absent, the churn row's own Save batch went too — it duplicated the footer's Save batch. The no-tasting flow now reads Ingredient notes → Next time → the footer: Cancel | Save batch | Add tasting. When the Tasting section is visible, the current order is kept: the churn section ends with its own Save batch and the footer reads Cancel | Save batch & tasting. The "You can add a tasting later." helper is gone entirely — the Add tasting link says it.
+
+## Fourth round (2026-09-12)
+
+- **The churn ceremony gains its Cancel.** The churn row now reads Cancel | Save batch — both pens' ceremonies carry the pair (Cancel first, per the page's own rule).
+- **The footer label is state-based, not content-based.** updateSaveLabel no longer sniffs whether tasting fields hold values: with the Tasting section on the page the footer reads a fixed "Save batch & tasting"; with the section absent it reads "Save batch" (the batch-only save, Add tasting beside it). This retires the hardening pass's "empty tastings change the footer to Save batch" flip — an empty-but-visible tasting no longer relabels the button.
+- **No "Tasting added." message.** Adding a tasting is its own evidence — the section opens and focus lands on the Tasted date — so the announcement is gone; the status line is cleared instead, so a stale "Tasting removed." cannot linger beside a visible section.
+- **"Tasting removed." is a toast, not a line on the page.** Remove/clear feedback now self-clears after five seconds (guarded so it never wipes a newer message written in the meantime); the Undo control is the lasting affordance, retiring on the next edit as before. Fixes the lingering message between Next time and Cancel while the Tasting section was hidden.
+
+## Browser verification (2026-09-12, gsd-browser)
+
+All of today's rounds measured in a live browser against the real DOM:
+
+- **Closed default:** Tasting section fully absent; all churn fields blank (churn date 2026-08-02 kept); footer reads Cancel | Save batch | Add tasting; empty status line; Undo hidden.
+- **Open:** churn row Cancel | Save batch; footer Save batch & tasting; the split renders core 2×2 (two 197px columns) left of Body/Oil stacked (200px column) with the vertical hairline, minimum clearance from any stop to the rule 12px — the collision at ~736px is gone.
+- **Removal:** empty tasting → "Tasting removed." toast, no Undo, focus on Add tasting. Tasting with data → "Tasting removed. You can undo this." + Undo; after five seconds the toast clears while Undo persists; Undo restores the section with its values (tasted date, tempering) and re-hides itself.
+- **Widths:** iPad Mini 768 keeps the side-by-side split (12px clearance, no overflow) — the ≤760px threshold holds; iPhone 15 393 shows the stepped-down arrangement (groups stacked on the horizontal rule, single 329px columns), zero horizontal overflow, every control inside the viewport. The critique's responsive P2 (clipping below 760px) is resolved and verified.
+- The "Any problems?" hint sits on the caption's line, after it, in lowercase — measured same-top, right-of-caption.
+
+## Fifth round (2026-09-12)
+
+Mark couldn't find the Undo after removing a tasting. Live reproduction with real input events found the undo does appear with data, but two things buried it:
+
+- **Undo moves into the footer action row.** It was a lone text link floating between Next time and the footer — now it trails the footer row (Cancel | Save batch | Add tasting | Undo clear tasting), where the page's actions live.
+- **Retirement is scoped to tasting edits.** The input listeners called forgetUndo on every field on the page — one keystroke in the churn section or Next time erased the undo. Now only edits inside the tasting retire it; the restore touches nothing else, so churn edits can't conflict with it. Verified live: churn edit after removal keeps the undo; a tasting edit after re-adding retires it; removing an empty tasting still shows no undo (nothing to restore).
+
+## Sixth round (2026-09-12)
+
+- **Tab order follows the eye in 3-column mode.** Mark's finding: in the side-by-side split, tab went block-order (all four core axes, then Body/Oil) — focus jumped *up* from Sweetness to Body. One DOM order can't serve both arrangements: row-major (Hardness, Scoopability, Body, Smoothness, Sweetness, Oil) is right when the groups sit side by side; core-then-declared is right when they stack. So the axes now re-render per arrangement: 3-column at desktop renders one flat row-major grid (a positioned hairline draws the core/declared boundary between columns 2 and 3), and the stacked arrangements (1/2-column toolbar modes, and 3-column below the 760px step-down via a matchMedia listener) render the grouped two-container DOM. In React this per-arrangement order is a trivial conditional render — the sketch records it as the intended structure.
+- **Marks survive re-renders.** Column toggles and breakpoint crossings rebuild the stop buttons; marked stops are carried across by axis id and re-applied (verified: a Hardness mark survived 3-col → 2-col → 393px → 768px). A pending undo retires on re-render — its captured button references go stale.
+- **"Tasting restored." is a toast too.** Undo's announcement now self-clears like the removal toast.
+
+Also fixed same day, per Mark's go-ahead: the "Any problems?" all-caps finding at the source — "Select all that apply." is now a sibling helper paragraph, so `.lbl`'s uppercase rule only ever wraps its short caption (critique P2, first of the two).
+
+Still open from the critique: the responsive clipping re-check (P2) — partially addressed by a new ≤720px rule that stacks the axis groups, but the rest of the page still needs the resize check; "Remove tasting" in always-visible mode lacking visible consequence (P3). The re-run of the critique is on hold per Mark.

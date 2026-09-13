@@ -29,7 +29,7 @@ The page is a book spread: a 2fr/1fr grid whose front matter — the latest vers
 | Area | Reference | Key Decision |
 |------|-----------|--------------|
 | Page shell & front matter | references/page-shell-front-matter.md | Front-matter rows span the whole page; no tray, no third column; table in step order with portions |
-| Batch record & tasting battery | references/batch-record-tasting-battery.md | 5-point numbered goldilocks axes with core/declared split; standalone defects; note before texture (A); decoupled saves; hidden tasting default |
+| Batch record & tasting battery | references/batch-record-tasting-battery.md; structural contract: references/batch-record-tasting-battery-structure.md | 5-point numbered goldilocks axes with core/declared split; standalone defects; note before texture (A); decoupled saves; hidden tasting default |
 | Cross-cutting type, spacing & feedback | references/cross-cutting-type-spacing-feedback.md | Type roles, 6px caption gap, 44px targets below 760px, toast+undo conventions, measure-the-DOM verification |
 
 ## Theme

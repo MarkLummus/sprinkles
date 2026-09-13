@@ -110,3 +110,156 @@ describe('the stylesheet reader sees a media block (parser round-trip, css-sourc
     expect(() => assertNoAtRules('@media (max-width: 500px) { .a { color: red; } }')).not.toThrow();
   });
 });
+
+describe('type roles — the four validated sizes mapped onto tokens', () => {
+  test('the role tokens carry the sketch\'s values, by value string (resolveTokenPx is px-only)', () => {
+    expect(tokens['--type-section']).toBe('0.875rem');
+    expect(tokens['--leading-section']).toBe('1.35');
+    expect(tokens['--type-label']).toBe('0.75rem');
+    expect(tokens['--type-control']).toBe('0.8125rem');
+    expect(tokens['--type-note']).toBe('1rem');
+    expect(tokens['--leading-note']).toBe('1.5');
+  });
+
+  test('the four section-heading rules read the section role at weight 600 and leading 1.35', () => {
+    for (const selector of ['.region-name', '.batch-margin__legend', '.authored__legend', '.derived-advisories__legend']) {
+      const rule = ruleFor(selector);
+      expect(rule, `expected ${selector} to carry the section role`).toBeTruthy();
+      expect(rule.declarations).toMatch(/font-size:\s*var\(--type-section\)/);
+      expect(rule.declarations).toMatch(/font-weight:\s*600/);
+      expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-section\)/);
+    }
+  });
+
+  test('.region-name keeps its ratified surface traits — bookcloth colour and the uppercase/letter-spacing transform', () => {
+    const rule = ruleFor('.region-name');
+    expect(rule.declarations).toMatch(/color:\s*var\(--bookcloth\)/);
+    expect(rule.declarations).toMatch(/text-transform:\s*uppercase/);
+    expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
+  });
+
+  test('the eight caption rules read --type-label at weight 500', () => {
+    for (const selector of [
+      '.headnote__version-field span',
+      '.headnote__reason-field span',
+      '.headnote__citation span:first-child',
+      '.versions__ceremony-field span',
+      '.batch-row__cell-label',
+      '.method-step__uses legend',
+      '.method-step__skipped-label',
+      '.versions__lineage-label',
+    ]) {
+      const rule = ruleFor(selector);
+      expect(rule, `expected ${selector} to carry the caption role`).toBeTruthy();
+      expect(rule.declarations).toMatch(/font-size:\s*var\(--type-label\)/);
+      expect(rule.declarations).toMatch(/font-weight:\s*500/);
+    }
+  });
+
+  test('the axis name is the finding\'s named exception: --type-label at weight 600, down from 15px weight 400', () => {
+    const rule = ruleFor('.axis-mark__legend');
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-label\)/);
+    expect(rule.declarations).toMatch(/font-weight:\s*600/);
+    expect(rule.declarations).not.toMatch(/var\(--size-table-body\)/);
+  });
+
+  test('the five helper and status sentences read the control role (13px)', () => {
+    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint', '.headnote__blocked', '.pen-foot__blocked']) {
+      const rule = ruleFor(selector);
+      expect(rule, `expected ${selector} to read the helper/status role`).toBeTruthy();
+      expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+    }
+  });
+
+  test('helper and status text keeps one grotesk face, sentence case — no transform, so no state-change face flip', () => {
+    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint', '.headnote__blocked', '.pen-foot__blocked']) {
+      const rule = ruleFor(selector);
+      expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+      expect(rule.declarations).not.toMatch(/text-transform/);
+      expect(rule.declarations).not.toMatch(/font-style/);
+    }
+  });
+
+  test('.authored__notes reads the note role and the note leading', () => {
+    const rule = ruleFor('.authored__notes');
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+  });
+
+  test('.prose-text reads the note leading and keeps its deliberate size inherit (no font-size of its own)', () => {
+    const rule = ruleFor('.prose-text');
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+    expect(rule.declarations).not.toMatch(/font-size:/);
+  });
+
+  test('.prose-field keeps its deliberate size/leading inherit, untouched', () => {
+    const rule = ruleFor('.prose-field');
+    expect(rule.declarations).toMatch(/font-size:\s*inherit/);
+    expect(rule.declarations).toMatch(/line-height:\s*inherit/);
+  });
+});
+
+describe('placeholders italic, entered prose roman pen-blue', () => {
+  test('::placeholder declares font-style: italic', () => {
+    const rule = ruleFor('::placeholder');
+    expect(rule.declarations).toMatch(/font-style:\s*italic/);
+  });
+
+  test('entered prose carries no italic of its own — .prose-field and .prose-text stay roman pen-blue', () => {
+    expect(ruleFor('.prose-field').declarations).toMatch(/color:\s*var\(--pen-blue\)/);
+    expect(ruleFor('.prose-field').declarations).not.toMatch(/font-style/);
+    expect(ruleFor('.prose-text').declarations).toMatch(/color:\s*var\(--pen-blue\)/);
+    expect(ruleFor('.prose-text').declarations).not.toMatch(/font-style/);
+  });
+
+  test('the purpose/aside display italic stays its own separate ratified register (text face, italic, untouched here)', () => {
+    const rule = ruleFor('.method-step__purpose, .method-step__aside');
+    expect(rule.declarations).toMatch(/font-style:\s*italic/);
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-text\)/);
+  });
+});
+
+describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption and its content share one label', () => {
+  test('the eight existing sites read their caption-to-content distance through var(--gap-xs)', () => {
+    for (const selector of [
+      '.headnote__version-field span',
+      '.headnote__reason-field span',
+      '.headnote__citation span:first-child',
+      '.versions__ceremony-field span',
+      '.method-step__uses legend',
+    ]) {
+      const rule = ruleFor(selector);
+      expect(rule, `expected ${selector} to carry the 6px caption gap`).toBeTruthy();
+      expect(rule.declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
+    }
+    for (const selector of ['.batch-margin__field', '.batch-row__cell', '.method-step__line-control']) {
+      const rule = ruleFor(selector);
+      expect(rule, `expected ${selector} to carry the 6px caption gap`).toBeTruthy();
+      expect(rule.declarations).toMatch(/gap:\s*var\(--gap-xs\)/);
+    }
+  });
+
+  test('the axis legend picks up the same gap for the first time', () => {
+    expect(ruleFor('.axis-mark__legend').declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
+  });
+});
+
+describe('exclusion guards — registers the finding deliberately leaves in place', () => {
+  test("the ingredient table's internal type keeps its measured register (columns.test.js's browser-measured column minimums depend on these sizes)", () => {
+    expect(ruleFor('.ingredient-table th').declarations).toMatch(/font-size:\s*var\(--size-running-head\)/);
+    expect(ruleFor('.table-small-print').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+    expect(ruleFor('.ingredient-table__flag').declarations).toMatch(/font-size:\s*var\(--size-cross-flag\)/);
+    // a --size-cross-flag consumer outside the table stays there too
+    expect(ruleFor('.method-step__uses-line').declarations).toMatch(/font-size:\s*var\(--size-cross-flag\)/);
+  });
+
+  test('.running-head keeps its wayfinding register', () => {
+    expect(ruleFor('.running-head').declarations).toMatch(/font-size:\s*var\(--size-running-head\)/);
+  });
+
+  test("the batch row's measured-cell small print keeps its ratified registers", () => {
+    expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+    expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--size-deviation-words\)/);
+    expect(ruleFor('.batch-row__later-meta').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+  });
+});

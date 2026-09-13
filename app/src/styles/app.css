@@ -185,10 +185,13 @@ textarea {
 }
 
 /* The two named placeholders (D-20): an example in ink small print, never
-   a default — a blank field still saves as blank. */
+   a default — a blank field still saves as blank. Italic (sketch
+   findings, cross-cutting feedback): a placeholder reads as
+   not-yet-entered text, against entered prose's roman pen-blue. */
 ::placeholder {
   color: var(--ink);
   font-size: var(--size-small-print);
+  font-style: italic;
   opacity: 1;
 }
 
@@ -342,10 +345,11 @@ textarea {
 .headnote__version-field span {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-running-head);
+  font-size: var(--type-label);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-bottom: var(--gap-hair);
+  margin-bottom: var(--gap-xs);
 }
 
 /* The version-line field (D-13 § 8, "Measure"): held to the prose measure
@@ -372,10 +376,11 @@ textarea {
 .headnote__reason-field span {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-running-head);
+  font-size: var(--type-label);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-bottom: var(--gap-hair);
+  margin-bottom: var(--gap-xs);
 }
 
 /* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04): the
@@ -411,10 +416,11 @@ textarea {
 .headnote__citation span:first-child {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-running-head);
+  font-size: var(--type-label);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-bottom: var(--gap-hair);
+  margin-bottom: var(--gap-xs);
 }
 
 /* The citation select (D-13 § 8, "Measure"): held to the prose measure
@@ -431,7 +437,7 @@ textarea {
 
 .headnote__blocked {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-control);
   margin: var(--gap-xs) 0 0;
 }
 
@@ -501,7 +507,9 @@ textarea {
 
 .versions__ceremony-field span {
   display: block;
-  margin-bottom: var(--gap-hair);
+  font-size: var(--type-label);
+  font-weight: 500;
+  margin-bottom: var(--gap-xs);
 }
 
 /* The tasting ceremony's shortcut, between its date field and its save
@@ -514,7 +522,7 @@ textarea {
 
 .versions__hint {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-control);
   margin-top: var(--gap-s);
 }
 
@@ -535,7 +543,8 @@ textarea {
 .versions__lineage-label {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-label);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -693,7 +702,7 @@ textarea {
 
 .pen-foot__blocked {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-control);
 }
 
 .ingredient-table {
@@ -887,7 +896,9 @@ textarea {
    in the bookcloth colour that identifies the book, never a status. */
 .region-name {
   font-family: var(--face-grotesk);
-  font-size: var(--size-running-head);
+  font-size: var(--type-section);
+  font-weight: 600;
+  line-height: var(--leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--bookcloth);
@@ -986,7 +997,8 @@ textarea {
 
 .method-step__skipped-label {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-label);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -1034,9 +1046,11 @@ textarea {
 
 .method-step__uses legend {
   width: 100%;
+  font-size: var(--type-label);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-bottom: var(--gap-hair);
+  margin-bottom: var(--gap-xs);
   padding: 0;
 }
 
@@ -1094,7 +1108,7 @@ textarea {
 .method-step__line-control {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-hair);
+  gap: var(--gap-xs);
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);
 }
@@ -1107,7 +1121,9 @@ textarea {
   display: flex;
   justify-content: space-between;
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-section);
+  font-weight: 600;
+  line-height: var(--leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: var(--gap-m) 0 0;
@@ -1123,7 +1139,9 @@ textarea {
   display: flex;
   justify-content: space-between;
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-section);
+  font-weight: 600;
+  line-height: var(--leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: var(--gap-m) 0 0;
@@ -1133,7 +1151,8 @@ textarea {
   margin: var(--gap-xs) 0 0;
   padding-left: var(--gap-m);
   font-family: var(--face-text);
-  font-size: var(--size-headnote-prose);
+  font-size: var(--type-note);
+  line-height: var(--leading-note);
 }
 
 /* A note's pen-open field and its remove control (03-02). */
@@ -1273,6 +1292,7 @@ textarea {
    margin and the method. Counted values keep .ink-text's grotesk. */
 .prose-text {
   font-family: var(--face-text);
+  line-height: var(--leading-note);
   color: var(--pen-blue);
 }
 
@@ -1307,7 +1327,9 @@ textarea {
 
 .batch-margin__legend {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-section);
+  font-weight: 600;
+  line-height: var(--leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: 0 0 var(--gap-xs);
@@ -1316,7 +1338,7 @@ textarea {
 .batch-margin__field {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-hair);
+  gap: var(--gap-xs);
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);
   margin-top: var(--gap-xs);
@@ -1352,12 +1374,13 @@ textarea {
 .batch-row__cell {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-hair);
+  gap: var(--gap-xs);
 }
 
 .batch-row__cell-label {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-label);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -1494,7 +1517,7 @@ textarea {
 
 .batch-margin__hint {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-control);
   margin: var(--gap-hair) 0 0;
 }
 
@@ -1506,7 +1529,7 @@ textarea {
    availability everywhere (D-UAT-1). */
 .pen-hint {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-control);
   margin: var(--gap-hair) 0 0;
 }
 
@@ -1519,10 +1542,16 @@ textarea {
   margin: var(--gap-xs) 0 0;
 }
 
+/* The axis name is the finding's named caption exception: it drops from
+   the table-body register (15px, weight 400) to the caption role at
+   weight 600, and picks up the same 6px caption-to-content gap the other
+   caption sites carry. */
 .axis-mark__legend {
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--type-label);
+  font-weight: 600;
   padding: 0;
+  margin-bottom: var(--gap-xs);
 }
 
 .axis-mark__row {

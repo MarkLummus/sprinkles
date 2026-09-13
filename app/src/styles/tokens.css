@@ -21,6 +21,23 @@
   --size-deviation-words: 0.8125rem;
   --size-small-print: 0.75rem;
 
+  /* Type roles (sketch-findings-sprinkles,
+     references/cross-cutting-type-spacing-feedback.md, "Type Roles"): the
+     sketch's validated sizes, mapped onto this app's own faces — the
+     sketch tuned values, not typefaces. Each role carries the weight and
+     leading that travel with it, named in its comment; all rem-valued, so
+     the contract suites assert these by value string (resolveTokenPx is
+     px-only). One reconciliation, recorded per the finding: the note
+     role's sketch value of a 70ch maximum is not adopted — --measure-prose
+     (65ch) below is the ratified measure in the direction contract, and
+     the note role reads it. */
+  --type-section: 0.875rem; /* section headings: 14px, weight 600, leading 1.35 */
+  --leading-section: 1.35;
+  --type-label: 0.75rem; /* compact field captions: 12px, weight 500 (axis names 600) */
+  --type-control: 0.8125rem; /* actionable choices, helper text, status: 13px */
+  --type-note: 1rem; /* written notes: 16px, leading 1.5, at --measure-prose */
+  --leading-note: 1.5;
+
   /* Spacing scale (contract § 3) */
   --gap-hair: 2px;
   --gap-xs: 6px;

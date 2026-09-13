@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { formatRecordDate, readMeasured, sortedBatches, sortedTastings, hasTasting } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, sortedBatches } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
-import { axesForBatch, markKeyFor } from '../domain/axes.js';
-import { AxisMark } from './AxisMark.jsx';
+import { BATTERY_FIELDS, SEGMENT_OPTIONS } from '../domain/battery.js';
+import { SaveCeremony } from './PenFoot.jsx';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -14,162 +14,116 @@ function churnMeasured(value, options) {
   return result === 'unknown' ? 'not measured' : result;
 }
 
-// A tasting in the reading state: headed by one line naming the tasting
-// temperature and its date (sketch 003 variant B, 03.3-07), then only the
-// axes the maker actually marked, as labelled cells at figure size — an
-// axis absent from tasting.marks is dropped entirely, not shown as a
-// blank judgment. No aggregate, average, or overall figure is ever
-// derived from the marks.
-function TastingReading({ tasting, axes }) {
-  const dateWords = tasting.date ? formatRecordDate(tasting.date) : 'date unknown';
-  const markedAxes = axes.filter((axis) => Object.prototype.hasOwnProperty.call(tasting.marks, markKeyFor(axis)));
-  const tastingTempWords =
-    tasting.tastingTempC != null ? `${churnMeasured(tasting.tastingTempC, { signed: true })} °C` : 'not measured';
+// The three churn-section battery fields, in the contract's own DOM order
+// — BATTERY_FIELDS lists the churn numerics before the tasting ones
+// (domain/battery.js), so a straight filter preserves that order without
+// hard-coding index positions.
+const CHURN_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
+  ['timeToDrawTempMinutes', 'outOfMachineTempC', 'churnDurationMinutes'].includes(field.key),
+);
+
+// aria-label spells the unit out in words (matching the codebase's own
+// established convention — "Time to temperature, minutes" — over the
+// visible label's abbreviated "min"/"°C").
+function unitWords(unit) {
+  if (unit === 'min') return 'minutes';
+  if (unit === '°C') return 'degrees Celsius';
+  return unit;
+}
+
+// One battery measured field (contract "Controls spec"): text-mode,
+// inputMode="decimal" — never type="number", so a malformed value stays
+// in place rather than being rejected before validation runs. The
+// .field-error line, aria-invalid and aria-describedby wiring, and the
+// first-invalid-field focus move are Task 2's build (03.3.1-02); Task 1's
+// own minimum is storing the error and aborting the save, with no
+// field-level UI wired yet.
+function ChurnMeasuredField({ field, value, onChange }) {
   return (
-    <div className="tasting">
-      <p className="region-name">
-        Tasting{' '}
-        <span className="batch-row__tasting-meta">{`· at ${tastingTempWords} · ${dateWords}`}</span>
-      </p>
-      <div className="batch-row__cells">
-        {markedAxes.map((axis) => {
-          const key = markKeyFor(axis);
-          return (
-            <div key={key} className="batch-row__cell">
-              <span className="batch-row__cell-label">{axis.label}</span>
-              <span className="batch-row__cell-value">{tasting.marks[key]}</span>
-            </div>
-          );
-        })}
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Melt test</span>
-          <span className="batch-row__cell-value">
-            {tasting.meltdownLossG != null ? (
-              <>
-                {churnMeasured(tasting.meltdownLossG)}
-                <span className="batch-row__unit"> g at 20 min</span>
-              </>
-            ) : (
-              <span className="batch-row__unit">not measured</span>
-            )}
-          </span>
-        </div>
+    <label className="batch-margin__field">
+      <span>{`${field.label}, ${field.unit}`}</span>
+      <input
+        type="text"
+        inputMode="decimal"
+        className="ink-field"
+        aria-label={`${field.label}, ${unitWords(field.unit)}`}
+        value={value}
+        onChange={(event) => onChange(field.key, event.target.value)}
+      />
+    </label>
+  );
+}
+
+// One of the battery's three segmented controls (contract "Controls
+// spec"): a role="radiogroup" of native radio inputs, restyled — the
+// codebase's own established pattern for keyboard semantics it gets free
+// (AxisMark.jsx's header comment). Clicking the checked option again
+// clears it (D-10 "Blank stays blank"): a native radio's onChange does not
+// re-fire for a click that leaves its value unchanged, so the clear-on-
+// reclick logic lives in onClick, with a no-op onChange to keep React's
+// controlled-input contract happy.
+function SegmentedField({ legend, options, value, onPick }) {
+  const groupName = `segment-${legend.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
+  return (
+    <fieldset className="batch-margin__field">
+      <legend>{legend}</legend>
+      <div className="segmented" role="radiogroup" aria-label={legend}>
+        {options.map((option) => (
+          <label key={option} className="segmented__option">
+            <input
+              type="radio"
+              name={groupName}
+              value={option}
+              checked={value === option}
+              onChange={() => {}}
+              onClick={() => onPick(option)}
+            />
+            <span>{option}</span>
+          </label>
+        ))}
       </div>
-      {tasting.words && <p className="prose-text">{tasting.words}</p>}
-      {tasting.nextTimeNote && <p className="prose-text">Next time: {tasting.nextTimeNote}</p>}
-    </div>
+    </fieldset>
   );
 }
 
-// A tasting being written (shortcut and saves live in this row's own
-// ceremony): the same fields as ink fields, all empty — the date field is
-// never supplied by the app, and the tasting temperature field never
-// reads the version's serve target (D-07).
-function TastingForm({ draft, axes, onChangeTastingField, onChangeTastingMark }) {
-  return (
-    <div className="tasting tasting--recording">
-      <p className="batch-margin__legend">Tasting</p>
-      <label className="batch-margin__field">
-        <span>Tasting date</span>
-        <input
-          type="date"
-          className="ink-field"
-          value={draft.date}
-          onChange={(event) => onChangeTastingField('date', event.target.value)}
-        />
-      </label>
-      <label className="batch-margin__field">
-        <span>Tasting temperature, °C</span>
-        <input
-          type="number"
-          step="0.5"
-          inputMode="decimal"
-          className="ink-field"
-          value={draft.tastingTempC}
-          aria-label="Tasting temperature, degrees Celsius"
-          onChange={(event) => onChangeTastingField('tastingTempC', event.target.value)}
-        />
-      </label>
-      {axes.map((axis) => {
-        const key = markKeyFor(axis);
-        return (
-          <AxisMark
-            key={key}
-            axis={axis}
-            value={Object.prototype.hasOwnProperty.call(draft.marks, key) ? draft.marks[key] : undefined}
-            onChange={(stop) => onChangeTastingMark(key, stop)}
-          />
-        );
-      })}
-      <label className="batch-margin__field">
-        <span>Melt test, g</span>
-        <input
-          type="number"
-          step="1"
-          min="0"
-          inputMode="decimal"
-          className="ink-field"
-          value={draft.meltdownLossG}
-          aria-label="Melt test, grams"
-          onChange={(event) => onChangeTastingField('meltdownLossG', event.target.value)}
-        />
-      </label>
-      <label className="batch-margin__field">
-        <textarea
-          className="prose-field"
-          rows="2"
-          value={draft.words}
-          aria-label="How did it turn out?"
-          onChange={(event) => onChangeTastingField('words', event.target.value)}
-        />
-      </label>
-      <label className="batch-margin__field">
-        <textarea
-          className="prose-field"
-          rows="2"
-          value={draft.nextTimeNote}
-          aria-label="Next time"
-          onChange={(event) => onChangeTastingField('nextTimeNote', event.target.value)}
-        />
-      </label>
-    </div>
-  );
+// Textareas grow with their content (contract "Textareas"): height re-fits
+// to the scroll height on every input, rather than clipping or scrolling
+// internally.
+function autoGrow(event) {
+  const el = event.target;
+  el.style.height = 'auto';
+  el.style.height = `${el.scrollHeight}px`;
 }
 
-// The batch's own row (sketch 003 variant B, 03.3-01, rebuilt against the
-// sketch's own `.row-batch` markup in 03.3-07, G-03.3-3/G-03.3-4): the
-// front matter's second stacked row. One head line (Batch label, churned
-// date, later-batches count) replaces the old per-state "Batch" legend;
-// the measured cells, tasting, and foot controls follow it in that order.
+// The batch's own row (sketch 003 variant B, 03.3-01; rebuilt to the full
+// battery in 03.3.1-02): the front matter's second stacked row. One head
+// line (Batch label, churned date, later-batches count) precedes the
+// churn section, the read view, and the foot controls, in that order. The
+// tasting section (its own ceremony, its own fields) is not built here —
+// the draft already carries every tasting field (RecipePage.jsx), but no
+// control opens or renders it until plan 03.
 export function BatchRow({
   version,
   batches = [],
   openBatch,
   mode,
   draft,
-  onChangeChurnField,
-  tastingDraft,
-  onChangeTastingField,
-  onChangeTastingMark,
+  onChangeRecordField,
+  onChangeSegment,
   openPen = null,
   penReason = null,
-  penSaveDisabled = false,
-  penHint = null,
   onStartAmending,
-  onChangeChurnDate,
   onCancelRecording,
   onSaveBatch,
-  onStartTasting,
-  onUseAsExpectedShortcut,
-  onSaveTasting,
-  onCancelTasting,
 }) {
-  // Focus-return for the two openers this row owns, one ref pair per
-  // opener — closing a pen returns focus to the control that opened it.
-  // Every ref must sit above the conditional render below — hooks cannot
-  // be called conditionally. The Record opener's own ref/effect pair
-  // moved to VersionRow.jsx (03.3-06, G-03.3-4) since that row now owns
-  // the button beside Next version.
+  // Focus-return for the Correct opener this row owns — closing the pen
+  // returns focus to the control that opened it. Must sit above the
+  // conditional render below — hooks cannot be called conditionally. The
+  // Record opener's own ref/effect pair lives in VersionRow.jsx; the Add
+  // tasting opener's pair retires with the tasting pen (03.3.1-02) and
+  // returns in plan 03 keyed on tastingOpen rather than a pen state. The
+  // churn date's own press-to-block focus and the first-invalid-field
+  // focus (D-05, contract "Controls spec") are Task 2's build.
   const amendButtonRef = useRef(null);
   const wasAmendingRef = useRef(false);
   useEffect(() => {
@@ -183,19 +137,6 @@ export function BatchRow({
     }
   }, [openPen]);
 
-  const addTastingButtonRef = useRef(null);
-  const wasTastingRef = useRef(false);
-  useEffect(() => {
-    if (openPen === 'tasting') {
-      wasTastingRef.current = true;
-      return;
-    }
-    if (wasTastingRef.current) {
-      wasTastingRef.current = false;
-      addTastingButtonRef.current?.focus();
-    }
-  }, [openPen]);
-
   // The later-batches disclosure (sketch 003 variant B, G-03.3-4): closed
   // by default, matching the same convention VersionRow's own Later
   // disclosure uses (03.3-06) — the count and the list it discloses are
@@ -203,44 +144,8 @@ export function BatchRow({
   const [laterBatchesOpen, setLaterBatchesOpen] = useState(false);
   const laterBatchesCount = batches.length - (openBatch ? 1 : 0);
 
-  const latestAmendment =
-    openBatch && openBatch.amendedAt.length > 0 ? openBatch.amendedAt[openBatch.amendedAt.length - 1] : null;
-
   return (
     <section className="batch-row" aria-label="Batch">
-      {/* The tasting ceremony (D-05, D-10, D-11): the shortcut moves here
-          from the margin's TastingForm, since the margin may hold no
-          control at all (D-04). The record/amend ceremony used to render
-          here too; its churn-date field and Cancel/Save moved into the
-          pen's own field grid and foot respectively (2026-09-10
-          checkpoint feedback, G-03.3-4) — this row's top is now reserved
-          for the ceremony that has nowhere else to live. */}
-      {openPen === 'tasting' && (
-        <div className="versions__ceremony">
-          <label className="versions__ceremony-field">
-            <span>Tasting date</span>
-            <input
-              type="date"
-              className="ink-field"
-              autoFocus
-              value={tastingDraft.date}
-              onChange={(event) => onChangeTastingField('date', event.target.value)}
-            />
-          </label>
-          <button type="button" className="versions__ceremony-shortcut" onClick={onUseAsExpectedShortcut}>
-            As expected, nothing to note
-          </button>
-          <div className="headnote__ceremony">
-            <button type="button" onClick={onCancelTasting}>
-              Cancel
-            </button>
-            <button type="button" onClick={onSaveTasting} disabled={penSaveDisabled}>
-              Save
-            </button>
-          </div>
-          {penHint && <p className="batch-margin__hint">{penHint}</p>}
-        </div>
-      )}
       {/* D-06: one hint sentence for this row — applies while any pen is
           open, not only this row's own. */}
       {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
@@ -272,20 +177,10 @@ export function BatchRow({
       <div className="batch-margin">
         {mode === 'recording' ? (
           <>
-            {/* Come-up, overrun and meltdown loss have no meaning below
-                zero and carry a floor; draw temperature and tasting
-                temperature keep their sign — the working case draws at
-                −6 °C. Laid out side by side in the reading state's own
-                cells grid (2026-09-10 checkpoint feedback, G-03.3-4): each
-                field now sized to its expected input, not the full row. */}
+            {/* The churned date, this event's identifying field (D-05),
+                as the grid's first cell, then the three numeric churn
+                measurements beside it (contract "DOM order inventory"). */}
             <div className="batch-row__cells">
-              {/* The churned date, this event's identifying field
-                  (D-05, D-10, D-11), as the grid's first cell, labelled
-                  like the three measured cells beside it (2026-09-10
-                  live review, G-03.3-4) — not a stray line atop the
-                  row. Amend pre-fills it from the batch (RecipePage's
-                  handleStartAmending); a fresh recording opens it
-                  blank. */}
               <label className="batch-margin__field">
                 <span>churned</span>
                 <input
@@ -293,100 +188,81 @@ export function BatchRow({
                   className="ink-field"
                   autoFocus
                   value={draft.churnDate}
-                  onChange={(event) => onChangeChurnDate(event.target.value)}
+                  onChange={(event) => onChangeRecordField('churnDate', event.target.value)}
                 />
               </label>
-              <label className="batch-margin__field">
-                <span>Time to temperature, min</span>
-                <input
-                  type="number"
-                  step="1"
-                  min="0"
-                  inputMode="decimal"
-                  className="ink-field"
-                  value={draft.comeUpMinutes}
-                  aria-label="Time to temperature, minutes"
-                  onChange={(event) => onChangeChurnField('comeUpMinutes', event.target.value)}
-                />
-              </label>
-              <label className="batch-margin__field">
-                <span>Draw temperature, °C</span>
-                <input
-                  type="number"
-                  step="0.5"
-                  inputMode="decimal"
-                  className="ink-field"
-                  value={draft.drawTempC}
-                  aria-label="Draw temperature, degrees Celsius"
-                  onChange={(event) => onChangeChurnField('drawTempC', event.target.value)}
-                />
-              </label>
-              <label className="batch-margin__field">
-                <span>Air, overrun %</span>
-                <input
-                  type="number"
-                  step="1"
-                  min="0"
-                  inputMode="decimal"
-                  className="ink-field"
-                  value={draft.overrunPercent}
-                  aria-label="Air, overrun percent"
-                  onChange={(event) => onChangeChurnField('overrunPercent', event.target.value)}
-                />
-              </label>
+              {CHURN_MEASURED_FIELDS.map((field) => (
+                <ChurnMeasuredField key={field.key} field={field} value={draft[field.key]} onChange={onChangeRecordField} />
+              ))}
             </div>
+            <SegmentedField
+              legend="Exit consistency"
+              options={SEGMENT_OPTIONS.exitConsistency}
+              value={draft.exitConsistency}
+              onPick={(option) => onChangeSegment('exitConsistency', option)}
+            />
+            <SegmentedField
+              legend="Airiness (estimated)"
+              options={SEGMENT_OPTIONS.airiness}
+              value={draft.airiness}
+              onPick={(option) => onChangeSegment('airiness', option)}
+            />
             {/* The hairline-baseline fix (03.1 Gap 2 override): a blank
                 named prose field carries a graduation-weight rule until
                 it holds text — no visible label word is added. */}
             <label className="batch-margin__field">
               <textarea
-                className={draft.drawNotes === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+                className={draft.atTheMachine === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+                dir="auto"
                 rows="2"
-                value={draft.drawNotes}
+                value={draft.atTheMachine}
                 aria-label="At the machine"
-                onChange={(event) => onChangeChurnField('drawNotes', event.target.value)}
-              />
-            </label>
-            <label className="batch-margin__field">
-              <input
-                type="text"
-                className={draft.ingredientNotes === '' ? 'prose-field prose-field--empty' : 'prose-field'}
-                value={draft.ingredientNotes}
-                aria-label="Ingredient notes"
-                onChange={(event) => onChangeChurnField('ingredientNotes', event.target.value)}
+                onChange={(event) => onChangeRecordField('atTheMachine', event.target.value)}
+                onInput={autoGrow}
               />
             </label>
             <label className="batch-margin__field">
               <textarea
-                className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+                className={draft.ingredientNotes === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+                dir="auto"
                 rows="2"
-                value={draft.nextTimeNote}
-                aria-label="Next time"
-                onChange={(event) => onChangeChurnField('nextTimeNote', event.target.value)}
+                placeholder="e.g. oil bottle opened 24 Jul"
+                value={draft.ingredientNotes}
+                aria-label="Ingredient notes"
+                onChange={(event) => onChangeRecordField('ingredientNotes', event.target.value)}
+                onInput={autoGrow}
               />
             </label>
-            {/* Cancel/Save, at the pen's own foot after its fields
-                (2026-09-10 live review, G-03.3-4) — the same
-                batch-row__acts row the reading state uses for
-                Correct/Add tasting. */}
-            <div className="batch-row__acts">
-              <button type="button" onClick={onCancelRecording}>
-                Cancel
-              </button>
-              <button type="button" onClick={onSaveBatch}>
-                Save
-              </button>
-            </div>
+            {/* Ceremony A (D-01): after the churn section while the
+                tasting section is absent, just above the shared Next
+                time. Its hint slot renders the record pen's own
+                blocked-date sentence once Task 2 wires D-05; Task 1 has
+                no such state yet, so the hint is always absent here. */}
+            <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={null} />
+            <label className="batch-margin__field">
+              <textarea
+                className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+                dir="auto"
+                rows="2"
+                placeholder="optional — for the batch, the tasting, or both"
+                value={draft.nextTimeNote}
+                aria-label="Next time"
+                onChange={(event) => onChangeRecordField('nextTimeNote', event.target.value)}
+                onInput={autoGrow}
+              />
+            </label>
+            {/* The form-status live region (contract "DOM order
+                inventory") is Task 2's build. */}
           </>
         ) : openBatch ? (
           <>
             <div className="batch-row__cells">
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Time to temperature</span>
+                <span className="batch-row__cell-label">Time to draw temp.</span>
                 <span className="batch-row__cell-value">
-                  {openBatch.churn.comeUpMinutes != null ? (
+                  {openBatch.churn.timeToDrawTempMinutes != null ? (
                     <>
-                      {churnMeasured(openBatch.churn.comeUpMinutes)}
+                      {churnMeasured(openBatch.churn.timeToDrawTempMinutes)}
                       <span className="batch-row__unit"> min</span>
                     </>
                   ) : (
@@ -398,11 +274,11 @@ export function BatchRow({
                 )}
               </div>
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Draw temperature</span>
+                <span className="batch-row__cell-label">Out of machine</span>
                 <span className="batch-row__cell-value">
-                  {openBatch.churn.drawTempC != null ? (
+                  {openBatch.churn.outOfMachineTempC != null ? (
                     <>
-                      {churnMeasured(openBatch.churn.drawTempC, { signed: true })}
+                      {churnMeasured(openBatch.churn.outOfMachineTempC, { signed: true })}
                       <span className="batch-row__unit"> °C</span>
                     </>
                   ) : (
@@ -411,25 +287,30 @@ export function BatchRow({
                 </span>
               </div>
               <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Air</span>
+                <span className="batch-row__cell-label">Churn duration</span>
                 <span className="batch-row__cell-value">
-                  {openBatch.churn.overrunPercent != null ? (
+                  {openBatch.churn.churnDurationMinutes != null ? (
                     <>
-                      {churnMeasured(openBatch.churn.overrunPercent)}
-                      <span className="batch-row__unit"> %</span>
+                      {churnMeasured(openBatch.churn.churnDurationMinutes)}
+                      <span className="batch-row__unit"> min</span>
                     </>
                   ) : (
                     <span className="batch-row__unit">not measured</span>
                   )}
                 </span>
-                <span className="batch-row__plan">overrun</span>
               </div>
-              {latestAmendment && (
-                <div className="batch-row__cell">
-                  <span className="batch-row__cell-label">Amended</span>
-                  <span className="batch-row__cell-value">{formatRecordDate(latestAmendment)}</span>
-                </div>
-              )}
+              <div className="batch-row__cell">
+                <span className="batch-row__cell-label">Exit consistency</span>
+                <span className="batch-row__cell-value">
+                  {openBatch.churn.exitConsistency ?? <span className="batch-row__unit">not measured</span>}
+                </span>
+              </div>
+              <div className="batch-row__cell">
+                <span className="batch-row__cell-label">Airiness</span>
+                <span className="batch-row__cell-value">
+                  {openBatch.churn.airiness ?? <span className="batch-row__unit">not measured</span>}
+                </span>
+              </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Recorded</span>
                 <span className="batch-row__cell-value">
@@ -437,33 +318,24 @@ export function BatchRow({
                 </span>
               </div>
             </div>
-            {openBatch.churn.drawNotes && <p className="prose-text">{openBatch.churn.drawNotes}</p>}
+            {openBatch.churn.atTheMachine && <p className="prose-text">{openBatch.churn.atTheMachine}</p>}
             {openBatch.churn.ingredientNotes && <p className="prose-text">{openBatch.churn.ingredientNotes}</p>}
             {openBatch.churn.nextTimeNote && <p className="prose-text">Next time: {openBatch.churn.nextTimeNote}</p>}
 
-            {sortedTastings(openBatch).map((tasting) => (
-              <TastingReading key={tasting.id} tasting={tasting} axes={axesForBatch(openBatch)} />
-            ))}
-
-            {!hasTasting(openBatch) && <p>This batch has not been tasted yet.</p>}
-
-            {tastingDraft && (
-              <TastingForm
-                draft={tastingDraft}
-                axes={axesForBatch(openBatch)}
-                onChangeTastingField={onChangeTastingField}
-                onChangeTastingMark={onChangeTastingMark}
-              />
-            )}
+            {/* The tasting battery's own read view (marks, defects, melt
+                block, the summary line) is plan 05's build; this plan
+                only carries the silence-is-a-value sentence forward. */}
+            {!openBatch.tasting && <p>This batch has not been tasted yet.</p>}
           </>
         ) : (
           batches.length > 0 && <p>No batch of this version has that address.</p>
         )}
       </div>
 
-      {/* Correct/Add tasting, relocated to the row's foot as underlined
-          text controls (sketch 003 variant B, G-03.3-4) — present only
-          with no pen open and a batch in view. */}
+      {/* Correct, relocated to the row's foot as an underlined text
+          control (sketch 003 variant B, G-03.3-4) — present only with no
+          pen open and a batch in view. Add tasting returns in plan 03,
+          once the tasting section has somewhere to open into. */}
       {openPen === null && openBatch && (
         <div className="batch-row__acts">
           <button
@@ -473,9 +345,6 @@ export function BatchRow({
             onClick={() => onStartAmending(openBatch)}
           >
             Correct
-          </button>
-          <button type="button" ref={addTastingButtonRef} className="text-control" onClick={onStartTasting}>
-            Add tasting
           </button>
         </div>
       )}
@@ -497,16 +366,11 @@ export function BatchRow({
                 const isOpenBatch = openBatch && batch.id === openBatch.id;
                 const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
                 const metaParts = [];
-                if (batch.churn.drawTempC != null) {
-                  metaParts.push(`drawn ${churnMeasured(batch.churn.drawTempC, { signed: true })} °C`);
+                if (batch.churn.outOfMachineTempC != null) {
+                  metaParts.push(`out of machine ${churnMeasured(batch.churn.outOfMachineTempC, { signed: true })} °C`);
                 }
-                if (batch.churn.drawNotes) metaParts.push(batch.churn.drawNotes);
-                const tastingCount = batch.tastings.length;
-                if (tastingCount > 0) {
-                  const tastedWords =
-                    tastingCount === 1 ? 'once' : tastingCount === 2 ? 'twice' : `${tastingCount} times`;
-                  metaParts.push(`tasted ${tastedWords}`);
-                }
+                if (batch.churn.atTheMachine) metaParts.push(batch.churn.atTheMachine);
+                if (batch.tasting) metaParts.push('tasted');
                 return (
                   <li key={batch.id}>
                     <p className="batch-row__later-date">

@@ -1,12 +1,16 @@
 // Component test for the foot band — every pen's own Cancel/Save pair,
 // repeated once at the foot of the page under a hairline rule
-// (route-recipe.md § 3 "The imprint"; D-26). In the existing house style:
+// (route-recipe.md § 3 "The imprint"; D-26). Rebuilt for 03.3.1-02's
+// one-save model: the record and amend pens now share the exported
+// SaveCeremony component with BatchRow's own end-of-record mount (D-01),
+// and the tasting pen's own branch (its gated Save, its own hint) retires
+// with the tasting pen itself. In the existing house style:
 // renderToStaticMarkup (react-dom/server), the node test environment, no
 // jsdom, no testing-library, no click driver — only what static markup
 // can prove (RESEARCH.md Pitfall 4).
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { PenFoot } from './PenFoot.jsx';
+import { PenFoot, SaveCeremony } from './PenFoot.jsx';
 
 const noop = () => {};
 
@@ -15,15 +19,12 @@ function renderPenFoot(props) {
     <PenFoot
       openPen={null}
       canSaveOver={true}
-      penSaveDisabled={false}
       penHint={null}
       onCancelDeveloping={noop}
       onSaveAsNewVersion={noop}
       onSaveOverVersion={noop}
       onCancelRecording={noop}
       onSaveBatch={noop}
-      onCancelTasting={noop}
-      onSaveTasting={noop}
       {...props}
     />
   );
@@ -63,54 +64,43 @@ describe('PenFoot — the plan pair matches the ceremony, Cancel first, gated by
   });
 });
 
-describe('PenFoot — the record and amend branch (D-05, D-10)', () => {
-  it('renders Cancel then Save, bound to onCancelRecording/onSaveBatch, for the record pen', () => {
+describe('PenFoot — the record and amend branch, the one save ceremony (D-01, D-02, D-05)', () => {
+  it('renders Cancel then Save batch, bound to onCancelRecording/onSaveBatch, for the record pen', () => {
     const markup = renderPenFoot({ openPen: 'record' });
+    expect(markup).toContain('class="save-ceremony"');
     const cancelIndex = markup.indexOf('Cancel');
-    const saveIndex = markup.indexOf('>Save<');
+    const saveIndex = markup.indexOf('Save batch');
     expect(cancelIndex).toBeGreaterThanOrEqual(0);
     expect(saveIndex).toBeGreaterThan(cancelIndex);
     expect(markup).not.toContain('Save as');
   });
 
-  it('renders the same pair for the amend pen', () => {
+  it('renders the same ceremony for the amend pen', () => {
     const markup = renderPenFoot({ openPen: 'amend' });
+    expect(markup).toContain('class="save-ceremony"');
     expect(markup).toContain('Cancel');
-    expect(markup).toContain('>Save<');
-  });
-});
-
-describe('PenFoot — the tasting branch, disabled Save with its hint (D-05, D-10, T-03.1-08)', () => {
-  it('renders Cancel then Save, bound to onCancelTasting/onSaveTasting', () => {
-    const markup = renderPenFoot({ openPen: 'tasting' });
-    const cancelIndex = markup.indexOf('Cancel');
-    const saveIndex = markup.indexOf('>Save<');
-    expect(cancelIndex).toBeGreaterThanOrEqual(0);
-    expect(saveIndex).toBeGreaterThan(cancelIndex);
+    expect(markup).toContain('Save batch');
   });
 
-  it('disables Save and shows the hint when penSaveDisabled is true', () => {
-    const markup = renderPenFoot({
-      openPen: 'tasting',
-      penSaveDisabled: true,
-      penHint: 'Write words or mark at least one axis to save.',
-    });
-    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>Save<\/button>/);
-    expect(markup).toContain('Write words or mark at least one axis to save.');
+  it('never disables Save batch — the record pen has no completeness gate (D-02)', () => {
+    const markup = renderPenFoot({ openPen: 'record' });
+    expect(markup).not.toContain('disabled=""');
   });
 
-  it('leaves Save enabled with no penSaveDisabled set', () => {
-    const markup = renderPenFoot({ openPen: 'tasting', penSaveDisabled: false });
-    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*>Save<\/button>/);
+  it('renders the record pen\'s own blocked-date sentence as the ceremony\'s hint when set (D-05)', () => {
+    const markup = renderPenFoot({ openPen: 'record', penHint: 'Enter the date you churned.' });
+    expect(markup).toContain('class="save-ceremony__hint"');
+    expect(markup).toContain('Enter the date you churned.');
   });
 
-  it('never recomputes the save gate itself — reads penSaveDisabled/penHint only (RESEARCH.md Anti-Patterns, T-03.1-08)', () => {
-    const markup = renderPenFoot({ openPen: 'tasting' });
+  it('renders no tasting branch at all — the tasting pen retires with 03.3.1-02', () => {
+    const markup = renderPenFoot({ openPen: 'record' });
     expect(markup).not.toContain('isTastingSaveable');
+    expect(markup).not.toContain('Save tasting');
   });
 });
 
-describe('PenFoot — penHint beside the pair', () => {
+describe('PenFoot — penHint beside the plan pair', () => {
   it('renders the message when set', () => {
     const markup = renderPenFoot({ openPen: 'plan', penHint: 'a version needs a line' });
     expect(markup).toContain('a version needs a line');
@@ -119,5 +109,33 @@ describe('PenFoot — penHint beside the pair', () => {
   it('renders no blocked-save paragraph when unset', () => {
     const markup = renderPenFoot({ openPen: 'plan', penHint: null });
     expect(markup).not.toContain('pen-foot__blocked');
+  });
+});
+
+describe('SaveCeremony — the one component both mounts share (D-01)', () => {
+  function renderCeremony(props) {
+    return renderToStaticMarkup(<SaveCeremony onCancel={noop} onSave={noop} hint={null} {...props} />);
+  }
+
+  it('renders Cancel before Save batch, with no hint paragraph when hint is unset', () => {
+    const markup = renderCeremony({});
+    const cancelIndex = markup.indexOf('Cancel');
+    const saveIndex = markup.indexOf('Save batch');
+    expect(cancelIndex).toBeGreaterThanOrEqual(0);
+    expect(saveIndex).toBeGreaterThan(cancelIndex);
+    expect(markup).not.toContain('save-ceremony__hint');
+  });
+
+  it('renders the hint paragraph before Cancel when hint is set', () => {
+    const markup = renderCeremony({ hint: 'Enter the date you churned.' });
+    const hintIndex = markup.indexOf('save-ceremony__hint');
+    const cancelIndex = markup.indexOf('Cancel');
+    expect(hintIndex).toBeGreaterThanOrEqual(0);
+    expect(hintIndex).toBeLessThan(cancelIndex);
+  });
+
+  it('never renders a disabled Save batch button — no ceremony mount carries a completeness gate (D-02)', () => {
+    const markup = renderCeremony({});
+    expect(markup).not.toContain('disabled=""');
   });
 });

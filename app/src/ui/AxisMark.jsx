@@ -1,6 +1,7 @@
-import { MARK_STOPS, markKeyFor } from '../domain/axes.js';
+import { STOPS, markKeyFor } from '../domain/axes.js';
 
-// The nine-stop keyboard mark group (D-16, 02-RESEARCH.md Pattern 3).
+// The five-stop keyboard mark group (D-16, 02-RESEARCH.md Pattern 3;
+// STOPS narrowed to five whole values by 03.3.1-01's battery rewrite).
 // Native grouped radios are the whole mechanism: the browser already gives
 // the group arrow-key movement between stops, Home and End, one-click and
 // Space setting, and a single accessible name. No keydown handler, no
@@ -29,7 +30,7 @@ export function AxisMark({ axis, value, onChange }) {
         <span className="axis-mark__anchor" aria-hidden="true">
           {axis.low}
         </span>
-        {MARK_STOPS.map((stop) => (
+        {STOPS.map((stop) => (
           <label key={stop} className="axis-mark__stop">
             <input type="radio" name={groupName} value={stop} checked={value === stop} onChange={() => onChange(stop)} />
             <span className="axis-mark__stop-label">{stop}</span>

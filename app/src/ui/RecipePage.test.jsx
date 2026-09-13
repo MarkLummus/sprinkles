@@ -2,57 +2,69 @@
 // the single derivation every opener in BatchMargin and Versions now reads
 // (Develop moved from Headnote into Versions, 03.1-CONTEXT.md D-04 to
 // D-06), replacing the two unrelated states (`mode`, `tastingDraft`) each
-// control used to hand-roll its own subset of. This file renders nothing
-// of RecipePage itself — it reads the repository at module load (D-06), so
-// that import is stubbed here at the one seam it goes through, exactly as
-// RecipeList.test.jsx already does. What this file DOES render, through
-// renderToStaticMarkup in the existing node environment (no jsdom, no
+// control used to hand-roll its own subset of. The tasting pen retires
+// with 03.3.1-02 (D-01/D-03): the derivation's own pens narrow to exactly
+// three — plan, record, amend — and the tasting section folds into the
+// one record draft behind a `tastingOpen` flag, tested below through the
+// pure helpers this file exports rather than through a fourth pen state.
+// This file renders nothing of RecipePage itself — it reads the
+// repository at module load (D-06), so that import is stubbed here at the
+// one seam it goes through, exactly as RecipeList.test.jsx already does.
+// What this file DOES render, through renderToStaticMarkup
+// (react-dom/server) in the existing node environment (no jsdom, no
 // testing library, no click driver — the point is the derivation and the
-// disabled/absent markup it feeds, not an interaction), is the four-pen
-// matrix across the two components the derivation actually reaches.
+// disabled/absent markup it feeds, not an interaction), is the pen matrix
+// across the one component the derivation still reaches this way
+// (VersionRow) — BatchRow's own coverage lives in BatchRow.test.jsx.
 import { describe, it, expect, vi } from 'vitest';
 vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { derivePenState, isPenDraftDirty, isDraftDirty, toNumberOrNull } from './RecipePage.jsx';
+import {
+  derivePenState,
+  isPenDraftDirty,
+  isDraftDirty,
+  draftFromBatch,
+  tastingHasInk,
+  parseAllMeasuredFields,
+  buildChurnFieldsFromDraft,
+  buildTastingFieldsFromDraft,
+} from './RecipePage.jsx';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { createBatch, completeRecord } from '../domain/batch.js';
+import { BATTERY_FIELDS } from '../domain/battery.js';
 
 const noop = () => {};
 
-describe('derivePenState — the one derivation of "a pen is open"', () => {
+describe('derivePenState — the one derivation of "a pen is open" (D-01/D-03: three pens, the tasting pen retired)', () => {
   it('reports the plan pen while developing', () => {
-    const { openPen } = derivePenState({ mode: 'developing', amendingBatchId: null, tastingDraft: null });
+    const { openPen } = derivePenState({ mode: 'developing', amendingBatchId: null });
     expect(openPen).toBe('plan');
   });
 
   it('reports the record pen while recording with no amend target', () => {
-    const { openPen } = derivePenState({ mode: 'recording', amendingBatchId: null, tastingDraft: null });
+    const { openPen } = derivePenState({ mode: 'recording', amendingBatchId: null });
     expect(openPen).toBe('record');
   });
 
   it('reports the amend pen while recording with an amend target', () => {
-    const { openPen } = derivePenState({ mode: 'recording', amendingBatchId: 'batch-1', tastingDraft: null });
+    const { openPen } = derivePenState({ mode: 'recording', amendingBatchId: 'batch-1' });
     expect(openPen).toBe('amend');
   });
 
-  it('reports the tasting pen while reading with a tasting draft', () => {
-    const { openPen } = derivePenState({ mode: 'reading', amendingBatchId: null, tastingDraft: {} });
-    expect(openPen).toBe('tasting');
-  });
-
   it('reports no pen open while reading with nothing in progress', () => {
-    const { openPen, reason } = derivePenState({ mode: 'reading', amendingBatchId: null, tastingDraft: null });
+    const { openPen, reason } = derivePenState({ mode: 'reading', amendingBatchId: null });
     expect(openPen).toBe(null);
     expect(reason).toBe(null);
   });
 
-  it('gives each of the four open states its own distinct, non-empty reason', () => {
+  it('gives each of the three open states its own distinct, non-empty reason', () => {
     const reasons = [
-      derivePenState({ mode: 'developing', amendingBatchId: null, tastingDraft: null }).reason,
-      derivePenState({ mode: 'recording', amendingBatchId: null, tastingDraft: null }).reason,
-      derivePenState({ mode: 'recording', amendingBatchId: 'batch-1', tastingDraft: null }).reason,
-      derivePenState({ mode: 'reading', amendingBatchId: null, tastingDraft: {} }).reason,
+      derivePenState({ mode: 'developing', amendingBatchId: null }).reason,
+      derivePenState({ mode: 'recording', amendingBatchId: null }).reason,
+      derivePenState({ mode: 'recording', amendingBatchId: 'batch-1' }).reason,
     ];
     for (const reason of reasons) {
       expect(typeof reason).toBe('string');
@@ -61,36 +73,26 @@ describe('derivePenState — the one derivation of "a pen is open"', () => {
     expect(new Set(reasons).size).toBe(reasons.length);
   });
 
-  // Presence, never truthiness of its contents — the same discipline
-  // isTastingDraftDirty already applies to a tasting draft. An empty
-  // object is a pen that has been opened and not yet typed into.
-  it('treats an empty tasting draft object as an open pen, not an unopened one', () => {
-    const { openPen } = derivePenState({ mode: 'reading', amendingBatchId: null, tastingDraft: {} });
-    expect(openPen).toBe('tasting');
-  });
-
   // amendingBatchId can be left over from a prior amendment once mode
   // returns to 'reading' (handleCancelRecording clears it, but nothing else
   // asserts it stays clear) — this must never be read as an open amend pen.
   it('reports no pen open when amendingBatchId is stale but mode has returned to reading', () => {
-    const { openPen, reason } = derivePenState({ mode: 'reading', amendingBatchId: 'batch-1', tastingDraft: null });
+    const { openPen, reason } = derivePenState({ mode: 'reading', amendingBatchId: 'batch-1' });
     expect(openPen).toBe(null);
     expect(reason).toBe(null);
   });
 });
 
-// The four-pen matrix, across the region openPen actually reaches now —
-// every batch-side opener (Amend, Record another batch, Record a batch,
-// Add a tasting) moved into BatchRow (03.3-01, splitting Versions.jsx into
-// VersionRow.jsx and BatchRow.jsx); BatchRow itself renders no Develop
-// opener of any kind (see BatchRow.test.jsx). Table-driven so the
+// The pen matrix, across the region openPen still reaches on VersionRow —
+// every batch-side opener (Correct, Record another batch, Record a batch)
+// lives in BatchRow (see BatchRow.test.jsx); VersionRow itself renders no
+// Develop opener of any kind while any pen is open. Table-driven so the
 // correspondence between a pen and the opener it hides reads as data, not
-// as four hand-written near-duplicate tests.
+// as three hand-written near-duplicate tests.
 const PEN_MATRIX = [
   { openPen: 'plan', reason: 'the plan is being developed' },
   { openPen: 'record', reason: 'a batch is being recorded' },
   { openPen: 'amend', reason: 'a batch is being amended' },
-  { openPen: 'tasting', reason: 'a tasting is being written' },
 ];
 
 function renderVersionsReading(openPen, reason) {
@@ -118,13 +120,7 @@ function renderVersionsReading(openPen, reason) {
   );
 }
 
-describe('The four-pen matrix — Develop absent, every other opener\'s own coverage lives in VersionRow.test.jsx/BatchRow.test.jsx', () => {
-  // D-05/D-06 narrows this from Phase 3's "every opener visible and
-  // disabled with its reason" (D-UAT-1): Develop moved into VersionRow and
-  // now renders only while openPen is null — while the plan's own pen is
-  // open its ceremony replaces it (D-06), and the record's/tasting's own
-  // ceremonies (now in BatchRow) replace it for the other three pens, so
-  // Develop is simply absent, not disabled, for every pen in this matrix.
+describe('The pen matrix — Develop absent whenever any pen is open; every other opener\'s own coverage lives in VersionRow.test.jsx/BatchRow.test.jsx', () => {
   it.each(PEN_MATRIX)('with the $openPen pen open, Develop is absent from VersionRow', ({ openPen, reason }) => {
     const markup = renderVersionsReading(openPen, reason);
     expect(markup).not.toContain('>Next version<');
@@ -216,92 +212,12 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('developing', draft, version)).toBe(false);
   });
 
-  it('is dirty when a step instruction changes, and clean again typed back', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.method[0].instruction = 'Changed instruction';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[0].instruction = 'Instruction one';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('is dirty when a step purpose changes, and clean again typed back', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.method[0].purpose = 'Changed purpose';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[0].purpose = 'Purpose one';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('is dirty when a step aside changes, and clean again typed back', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.method[0].aside = 'Changed aside';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[0].aside = 'Aside one';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('a first keystroke into an absent purpose/aside, deleted again, reads clean (absent compares equal to empty)', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.method[1].purpose = 'x';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[1].purpose = '';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('is dirty when a step target label or value changes, and clean again typed back', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.method[0].targets[0].label = 'changed-label';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[0].targets[0].label = 'temp';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-
-    draft.method[0].targets[0].value = 'changed-value';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[0].targets[0].value = '10 C';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('is dirty when a row is toggled into or out of a step uses list, and clean again toggled back', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.method[0].uses = draft.method[0].uses.filter((id) => id !== 'row-1');
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[0].uses = ['row-1'];
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-
-    draft.method[1].uses = ['row-1'];
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[1].uses = [];
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('is dirty when a step is removed or restored', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.method[0].removed = true;
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.method[0].removed = false;
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
   it('is dirty when the headnote prose changes, and clean again typed back', () => {
     const draft = makeCleanPenDraft(version);
     draft.headnote = 'Changed headnote.';
     expect(isPenDraftDirty('developing', draft, version)).toBe(true);
     draft.headnote = 'Baseline headnote.';
     expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('is dirty when an authored note text changes, and clean again typed back', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.authored.carriedForward[0].text = 'Changed note text';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.authored.carriedForward[0].text = 'Carried note';
-    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
-  });
-
-  it('is dirty when an authored note is removed', () => {
-    const draft = makeCleanPenDraft(version);
-    draft.authored.beforeYouStart = [];
-    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
   });
 
   it('the three the check already caught still work: a changed gram, a changed step allocation, a removed row', () => {
@@ -318,17 +234,6 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('developing', removedDraft, version)).toBe(true);
   });
 
-  it('is dirty when a two-portion row\'s SECOND portion alone changes, and clean again typed back — the split is not the pen\'s own to edit, only the amounts are (CONTEXT.md phase boundary)', () => {
-    const splitVersion = makeBaselineVersion({
-      rows: [{ id: 'row-1', portions: [{ step: 1, grams: 20 }, { step: 2, grams: 30 }], removed: false }],
-    });
-    const draft = makeCleanPenDraft(splitVersion);
-    draft.rows['row-1'].portions[1].grams = '999';
-    expect(isPenDraftDirty('developing', draft, splitVersion)).toBe(true);
-    draft.rows['row-1'].portions[1].grams = '30';
-    expect(isPenDraftDirty('developing', draft, splitVersion)).toBe(false);
-  });
-
   it('is never dirty when the mode is not developing, or when the version or the draft is absent', () => {
     const draft = makeCleanPenDraft(version);
     draft.headnote = 'Changed headnote.';
@@ -338,136 +243,278 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
   });
 });
 
-function makeAmendBaseline(overrides = {}) {
+// blankRecordDraft's own shape, inlined here rather than imported (it is
+// not exported — every caller of it lives inside RecipePage.jsx itself);
+// every field named in the 03.3.1-02 artifacts list, so a fixture drift
+// between this file and the module under test shows up as a failing
+// isDraftDirty('recording', blank) assertion rather than silently testing
+// the wrong shape.
+function makeBlankRecordDraft() {
   return {
-    churnDate: '2026-08-02',
-    asMade: { 'row-1': ['100'] },
-    stepChanges: { 1: { struck: true, line: null } },
-    comeUpMinutes: '20',
-    drawTempC: '-6',
-    overrunPercent: '5',
-    drawNotes: 'Soft, not greasy',
-    ingredientNotes: 'Oil bottle open date 24 Jul',
-    nextTimeNote: 'Next time note',
-    ...overrides,
+    churnDate: '',
+    asMade: {},
+    stepChanges: {},
+    timeToDrawTempMinutes: '',
+    outOfMachineTempC: '',
+    churnDurationMinutes: '',
+    exitConsistency: '',
+    airiness: '',
+    atTheMachine: '',
+    ingredientNotes: '',
+    nextTimeNote: '',
+    tastingOpen: false,
+    tastedDate: '',
+    temperingMinutes: '',
+    tastingTempC: '',
+    marks: {},
+    note: '',
+    defects: [],
+    bitterDeclared: false,
+    meltTestG: '',
+    meltStyle: '',
   };
 }
 
-describe('isDraftDirty — the churn check, against what it was filled from (T-03-43)', () => {
+describe('isDraftDirty — the record pen\'s check, extended to every battery field (03.3.1-02 Task 1)', () => {
   it('a fresh recording draft with nothing typed is not dirty', () => {
-    const blank = {
-      churnDate: '',
-      asMade: {},
-      stepChanges: {},
-      comeUpMinutes: '',
-      drawTempC: '',
-      overrunPercent: '',
-      drawNotes: '',
-      ingredientNotes: '',
-      nextTimeNote: '',
-    };
-    expect(isDraftDirty('recording', blank)).toBe(false);
+    expect(isDraftDirty('recording', makeBlankRecordDraft())).toBe(false);
   });
 
-  it('a fresh recording draft is dirty the instant any one field is typed', () => {
-    const blank = {
-      churnDate: '',
-      asMade: {},
-      stepChanges: {},
-      comeUpMinutes: '',
-      drawTempC: '',
-      overrunPercent: '',
-      drawNotes: '',
-      ingredientNotes: '',
-      nextTimeNote: '',
-    };
-    expect(isDraftDirty('recording', { ...blank, drawNotes: 'x' })).toBe(true);
+  it('a fresh recording draft is dirty the instant any one churn field is typed', () => {
+    expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), atTheMachine: 'x' })).toBe(true);
   });
 
   it('an amend draft, pre-filled and untouched, is NOT dirty against its baseline', () => {
-    const baseline = makeAmendBaseline();
+    const baseline = draftFromBatch(augustSecondBatch);
     const draft = structuredClone(baseline);
     expect(isDraftDirty('recording', draft, baseline)).toBe(false);
   });
 
   it('the same amend draft with one churn field changed IS dirty, and clean again changed back', () => {
-    const baseline = makeAmendBaseline();
+    const baseline = draftFromBatch(augustSecondBatch);
     const draft = structuredClone(baseline);
-    draft.drawNotes = 'Different notes';
+    draft.atTheMachine = 'Different notes';
     expect(isDraftDirty('recording', draft, baseline)).toBe(true);
-    draft.drawNotes = baseline.drawNotes;
+    draft.atTheMachine = baseline.atTheMachine;
     expect(isDraftDirty('recording', draft, baseline)).toBe(false);
-  });
-
-  it('is dirty when an as-made amount is added that the batch did not have', () => {
-    const baseline = makeAmendBaseline();
-    const draft = structuredClone(baseline);
-    draft.asMade['row-2'] = ['50'];
-    expect(isDraftDirty('recording', draft, baseline)).toBe(true);
-  });
-
-  it('is dirty when a single portion within an existing as-made row changes, and clean again when reverted — an array-length match alone must not read as equal (D-10)', () => {
-    const baseline = makeAmendBaseline({ asMade: { 'row-1': ['120', '263'] } });
-    const draft = structuredClone(baseline);
-    draft.asMade['row-1'][1] = '999';
-    expect(isDraftDirty('recording', draft, baseline)).toBe(true);
-    draft.asMade['row-1'][1] = '263';
-    expect(isDraftDirty('recording', draft, baseline)).toBe(false);
-  });
-
-  it('is dirty when a step strike or its line changes', () => {
-    const baseline = makeAmendBaseline();
-    const struckDraft = structuredClone(baseline);
-    struckDraft.stepChanges[1].struck = false;
-    expect(isDraftDirty('recording', struckDraft, baseline)).toBe(true);
-
-    const lineDraft = structuredClone(baseline);
-    lineDraft.stepChanges[1].line = 'a new line';
-    expect(isDraftDirty('recording', lineDraft, baseline)).toBe(true);
   });
 
   it('is dirty when a field the batch had a value in is cleared — a deletion is ink too', () => {
-    const baseline = makeAmendBaseline();
+    const baseline = draftFromBatch(augustSecondBatch);
     const draft = structuredClone(baseline);
-    draft.drawNotes = '';
+    draft.atTheMachine = '';
     expect(isDraftDirty('recording', draft, baseline)).toBe(true);
   });
 
-  it('a written zero counts: 0 where the batch held 5 is dirty, 0 where the batch held 0 is clean', () => {
-    const baselineWithFive = makeAmendBaseline({ overrunPercent: '5' });
-    const draftWithZero = structuredClone(baselineWithFive);
-    draftWithZero.overrunPercent = '0';
-    expect(isDraftDirty('recording', draftWithZero, baselineWithFive)).toBe(true);
+  it('a written zero counts: 0 where the baseline held nothing is dirty', () => {
+    const baseline = makeBlankRecordDraft();
+    const draft = { ...baseline, churnDurationMinutes: '0' };
+    expect(isDraftDirty('recording', draft, baseline)).toBe(true);
+  });
 
-    const baselineWithZero = makeAmendBaseline({ overrunPercent: '0' });
-    const draftAlsoZero = structuredClone(baselineWithZero);
-    expect(isDraftDirty('recording', draftAlsoZero, baselineWithZero)).toBe(false);
+  it('an untouched open-but-empty tasting section (tastingOpen true, nothing else changed) is not dirty against its own baseline — Escape/Cancel close it as no ink (RESEARCH.md Open Question 4)', () => {
+    const baseline = { ...makeBlankRecordDraft(), tastingOpen: true };
+    const draft = structuredClone(baseline);
+    expect(isDraftDirty('recording', draft, baseline)).toBe(false);
+  });
+
+  it('marks are compared by own-key count and defects by length (03.3.1-02-PLAN.md Task 1) — no interactive path in this plan edits either', () => {
+    const baseline = { ...makeBlankRecordDraft(), marks: { hardness: 3 }, defects: ['Coarse, icy'] };
+    const sameCounts = { ...makeBlankRecordDraft(), marks: { hardness: 3 }, defects: ['Coarse, icy'] };
+    expect(isDraftDirty('recording', sameCounts, baseline)).toBe(false);
+    const differentCounts = { ...makeBlankRecordDraft(), marks: {}, defects: [] };
+    expect(isDraftDirty('recording', differentCounts, baseline)).toBe(true);
+  });
+
+  it('is never dirty outside the recording mode, or with no draft', () => {
+    expect(isDraftDirty('reading', makeBlankRecordDraft())).toBe(false);
+    expect(isDraftDirty('recording', null)).toBe(false);
   });
 });
 
-describe('toNumberOrNull — nothing written and unparsable ink are the same fact, never a stored NaN (260909-oox)', () => {
-  it('reads nothing written as null', () => {
-    expect(toNumberOrNull('')).toBe(null);
+describe('draftFromBatch — Correct reopens everything the record holds (D-03, task 3)', () => {
+  it('pre-fills every churn field and tastingOpen from the seeded batch\'s own values', () => {
+    const draft = draftFromBatch(augustSecondBatch);
+    expect(draft.churnDate).toBe('2026-08-02');
+    expect(draft.timeToDrawTempMinutes).toBe('20');
+    expect(draft.outOfMachineTempC).toBe('-6');
+    expect(draft.churnDurationMinutes).toBe('30');
+    expect(draft.atTheMachine).toBe('Soft, not greasy');
+    expect(draft.tastingOpen).toBe(true);
+    expect(draft.tastingTempC).toBe('-12');
+    expect(draft.marks).toEqual({ sweetness: 4, oil: 4 });
+    expect(draft.bitterDeclared).toBe(true);
+    expect(draft.meltTestG).toBe('3');
   });
 
-  it('reads a written figure as that figure', () => {
-    expect(toNumberOrNull('20')).toBe(20);
+  it('pre-fills tastingOpen false and every tasting field blank for a batch with no tasting', () => {
+    const untasted = { ...augustSecondBatch, tasting: null };
+    const draft = draftFromBatch(untasted);
+    expect(draft.tastingOpen).toBe(false);
+    expect(draft.tastingTempC).toBe('');
+    expect(draft.marks).toEqual({});
+    expect(draft.bitterDeclared).toBe(false);
+    expect(draft.defects).toEqual([]);
   });
 
-  it('keeps the sign of a negative reading — the batch drew at -6 °C, and out of the machine is legitimately negative', () => {
-    expect(toNumberOrNull('-6')).toBe(-6);
+  it('reads blank churn measurements as the empty string, never the literal "null"', () => {
+    const blankChurnBatch = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-09-01', asMade: {}, stepChanges: {} },
+      null,
+      { id: 'blank-1', now: '2026-09-01T00:00:00.000Z' },
+    );
+    const draft = draftFromBatch(blankChurnBatch);
+    expect(draft.timeToDrawTempMinutes).toBe('');
+    expect(draft.outOfMachineTempC).toBe('');
+    expect(draft.exitConsistency).toBe('');
+    expect(draft.airiness).toBe('');
+  });
+});
+
+describe('tastingHasInk — D-02: a save with the section open but empty persists no tasting', () => {
+  it('reads no ink on a blank draft with the section open', () => {
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), tastingOpen: true })).toBe(false);
   });
 
-  it('reads a written zero as the value 0, not as an absence (presence over truthiness)', () => {
-    expect(toNumberOrNull('0')).toBe(0);
+  it('reads ink from a mark alone', () => {
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), marks: { hardness: 3 } })).toBe(true);
   });
 
-  it('reads unparsable ink as nothing written, never as a stored NaN', () => {
-    expect(toNumberOrNull('4o')).toBe(null);
-    expect(toNumberOrNull('abc')).toBe(null);
+  it('reads ink from a defect alone', () => {
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), defects: ['Coarse, icy'] })).toBe(true);
   });
 
-  it('reads an infinite figure as nothing written either', () => {
-    expect(toNumberOrNull('Infinity')).toBe(null);
+  it('reads ink from the declared-flaw toggle alone', () => {
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), bitterDeclared: true })).toBe(true);
+  });
+
+  it('reads ink from any single non-empty tasting field', () => {
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), note: 'x' })).toBe(true);
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), tastedDate: '2026-08-03' })).toBe(true);
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), temperingMinutes: '5' })).toBe(true);
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), tastingTempC: '-12' })).toBe(true);
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), meltTestG: '3' })).toBe(true);
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), meltStyle: 'Creamy puddle' })).toBe(true);
+  });
+});
+
+describe('parseAllMeasuredFields — 03.3.1-02 Task 1\'s own minimum: record per-field errors and abort (the churn-date press-to-block and the field-level UI wiring are Task 2\'s build)', () => {
+  it('reads a clean, complete draft as valid', () => {
+    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09' };
+    const result = parseAllMeasuredFields(draft);
+    expect(result.hasErrors).toBe(false);
+    expect(result.fieldErrors).toEqual({});
+  });
+
+  it('names every invalid field with its own verbatim contract sentence', () => {
+    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', outOfMachineTempC: '4o' };
+    const result = parseAllMeasuredFields(draft);
+    const field = BATTERY_FIELDS.find((f) => f.key === 'outOfMachineTempC');
+    expect(result.hasErrors).toBe(true);
+    expect(result.fieldErrors.outOfMachineTempC).toBe(field.error);
+  });
+
+  it('rejects a negative value on an unsigned field, and accepts the same magnitude signed', () => {
+    const negativeUnsigned = parseAllMeasuredFields({ ...makeBlankRecordDraft(), churnDurationMinutes: '-5' });
+    expect(negativeUnsigned.hasErrors).toBe(true);
+    const negativeSigned = parseAllMeasuredFields({ ...makeBlankRecordDraft(), outOfMachineTempC: '-6' });
+    expect(negativeSigned.hasErrors).toBe(false);
+  });
+
+  it('the two error strings are character-identical to BATTERY_FIELDS\' own contract sentences', () => {
+    const timeField = BATTERY_FIELDS.find((f) => f.key === 'timeToDrawTempMinutes');
+    const tempField = BATTERY_FIELDS.find((f) => f.key === 'outOfMachineTempC');
+    const unsigned = parseAllMeasuredFields({ ...makeBlankRecordDraft(), timeToDrawTempMinutes: 'x' });
+    const signed = parseAllMeasuredFields({ ...makeBlankRecordDraft(), outOfMachineTempC: 'x' });
+    expect(unsigned.fieldErrors.timeToDrawTempMinutes).toBe(timeField.error);
+    expect(signed.fieldErrors.outOfMachineTempC).toBe(tempField.error);
+  });
+});
+
+describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save assembly (D-02, D-10)', () => {
+  it('assembles the churn fields from a valid draft, blank-is-absent on every optional field', () => {
+    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', timeToDrawTempMinutes: '20' };
+    const { parsed } = parseAllMeasuredFields(draft);
+    const churnFields = buildChurnFieldsFromDraft(draft, parsed);
+    expect(churnFields.churnDate).toBe('2026-08-09');
+    expect(churnFields.timeToDrawTempMinutes).toBe(20);
+    expect(churnFields.outOfMachineTempC).toBe(null);
+    expect(churnFields.exitConsistency).toBe(null);
+    expect(churnFields.atTheMachine).toBe(null);
+  });
+
+  it('parses as-made through parseGramsDraft, dropping a row whose every portion fails to parse', () => {
+    const draft = {
+      ...makeBlankRecordDraft(),
+      churnDate: '2026-08-09',
+      asMade: { 'row-01': ['120', '263'], 'row-09': ['abc'] },
+    };
+    const { parsed } = parseAllMeasuredFields(draft);
+    const churnFields = buildChurnFieldsFromDraft(draft, parsed);
+    expect(churnFields.asMade['row-01']).toEqual([120, 263]);
+    expect(churnFields.asMade).not.toHaveProperty('row-09');
+  });
+
+  it('assembles the tasting fields from a valid draft', () => {
+    const draft = { ...makeBlankRecordDraft(), tastingTempC: '-12', marks: { oil: 4 }, bitterDeclared: true, meltTestG: '3' };
+    const { parsed } = parseAllMeasuredFields(draft);
+    const tastingFields = buildTastingFieldsFromDraft(draft, parsed);
+    expect(tastingFields.tastingTempC).toBe(-12);
+    expect(tastingFields.marks).toEqual({ oil: 4 });
+    expect(tastingFields.bitterDeclared).toBe(true);
+    expect(tastingFields.meltTestG).toBe(3);
+    expect(tastingFields.defects).toBe(null);
+  });
+
+  it('feeds createBatch a null tasting when the section holds no ink, and a real one when it does (D-02)', () => {
+    const churnOnlyDraft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09' };
+    const { parsed: churnOnlyParsed } = parseAllMeasuredFields(churnOnlyDraft);
+    const churnOnlyTasting =
+      churnOnlyDraft.tastingOpen && tastingHasInk(churnOnlyDraft)
+        ? buildTastingFieldsFromDraft(churnOnlyDraft, churnOnlyParsed)
+        : null;
+    const churnOnlyBatch = createBatch(oliveOilVersion, buildChurnFieldsFromDraft(churnOnlyDraft, churnOnlyParsed), churnOnlyTasting, {
+      id: 'churn-only-1',
+      now: '2026-08-09T00:00:00.000Z',
+    });
+    expect(churnOnlyBatch.tasting).toBe(null);
+
+    const withTastingDraft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', tastingOpen: true, tastingTempC: '-12' };
+    const { parsed: withTastingParsed } = parseAllMeasuredFields(withTastingDraft);
+    const withTasting =
+      withTastingDraft.tastingOpen && tastingHasInk(withTastingDraft)
+        ? buildTastingFieldsFromDraft(withTastingDraft, withTastingParsed)
+        : null;
+    const withTastingBatch = createBatch(oliveOilVersion, buildChurnFieldsFromDraft(withTastingDraft, withTastingParsed), withTasting, {
+      id: 'with-tasting-1',
+      now: '2026-08-09T00:00:00.000Z',
+    });
+    expect(withTastingBatch.tasting.tastingTempC).toBe(-12);
+  });
+
+  it('feeds completeRecord a null tasting to remove a stored one, stamping changed (RESEARCH.md Assumption A3, D-04)', () => {
+    const removalDraft = draftFromBatch(augustSecondBatch);
+    removalDraft.tastingOpen = false;
+    const { parsed } = parseAllMeasuredFields(removalDraft);
+    const churnFields = buildChurnFieldsFromDraft(removalDraft, parsed);
+    const tasting = removalDraft.tastingOpen && tastingHasInk(removalDraft) ? buildTastingFieldsFromDraft(removalDraft, parsed) : null;
+    const record = completeRecord(augustSecondBatch, churnFields, tasting, { now: '2026-08-10T00:00:00.000Z' });
+    expect(record.tasting).toBe(null);
+    expect(record.changed).toBe('2026-08-10T00:00:00.000Z');
+    expect(record.recordedAt).toBe(augustSecondBatch.recordedAt);
+    expect(record.snapshot).toBe(augustSecondBatch.snapshot);
+  });
+
+  it('completeRecord without edits stamps changed and leaves recordedAt/snapshot untouched (task 3 acceptance)', () => {
+    const draft = draftFromBatch(augustSecondBatch);
+    const { parsed } = parseAllMeasuredFields(draft);
+    const churnFields = buildChurnFieldsFromDraft(draft, parsed);
+    const tasting = draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null;
+    const record = completeRecord(augustSecondBatch, churnFields, tasting, { now: '2026-08-10T00:00:00.000Z' });
+    expect(record.changed).toBe('2026-08-10T00:00:00.000Z');
+    expect(record.recordedAt).toBe(augustSecondBatch.recordedAt);
+    expect(record.churn.timeToDrawTempMinutes).toBe(20);
+    expect(record.tasting.tastingTempC).toBe(-12);
   });
 });

@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures, figureLabelText } from '../domain/figures.js';
-import { createBatch, addTasting, recordAmendment, sortedBatches, isTastingSaveable } from '../domain/batch.js';
-import { setMark } from '../domain/axes.js';
+import { createBatch, completeRecord, sortedBatches } from '../domain/batch.js';
+import { BATTERY_FIELDS, parseMeasuredDraft } from '../domain/battery.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
 import {
   createChildVersion,
@@ -59,19 +59,24 @@ function stepChangesDiffer(a, b) {
   });
 }
 
-// D-24's dirty check: true only while recording holds ink the maker has
-// actually typed. Every field is tested against '' / {} rather than
-// truthiness, so a written 0 (draft.overrunPercent === '0') still counts as
-// dirty — matching the presence-over-truthiness discipline domain/batch.js
-// already applies to the stored record.
+// D-24's dirty check: true only while the record pen holds ink the maker
+// has actually typed. Every field is tested against '' / {} / [] / false
+// rather than truthiness (03.3.1-02 Task 1), so a written 0 (a battery
+// field read as the string '0') still counts as dirty — matching the
+// presence-over-truthiness discipline domain/batch.js already applies to
+// the stored record. marks is compared by its own-key count and defects
+// by its length (03.3.1-02-PLAN.md Task 1) — no interactive path in this
+// plan edits either one, so a key-count/length check is the whole
+// discipline this plan exercises; a deep comparison is plan 03/04's to add
+// once the tasting section is actually writable.
 //
 // `baseline` is the draft-shaped object handleStartAmending pre-filled the
-// draft from, or null for a fresh recording (03-07, T-03-43): comparing an
-// amend draft against blank made it read dirty the instant Amend opened,
-// training the maker to dismiss a warning that fires on nothing. With a
-// baseline, every field is compared against it instead of against blank —
-// the same presence-over-truthiness discipline, applied to the record the
-// draft actually started from.
+// draft from (draftFromBatch below), or null for a fresh recording
+// (03-07, T-03-43): comparing an amend draft against blank made it read
+// dirty the instant Amend opened, training the maker to dismiss a warning
+// that fires on nothing. With a baseline, every field is compared against
+// it instead of against blank — the same presence-over-truthiness
+// discipline, applied to the record the draft actually started from.
 export function isDraftDirty(mode, draft, baseline = null) {
   if (mode !== 'recording' || !draft) return false;
   if (!baseline) {
@@ -79,39 +84,48 @@ export function isDraftDirty(mode, draft, baseline = null) {
       draft.churnDate !== '' ||
       Object.keys(draft.asMade).length > 0 ||
       Object.keys(draft.stepChanges).length > 0 ||
-      draft.comeUpMinutes !== '' ||
-      draft.drawTempC !== '' ||
-      draft.overrunPercent !== '' ||
-      draft.drawNotes !== '' ||
+      draft.timeToDrawTempMinutes !== '' ||
+      draft.outOfMachineTempC !== '' ||
+      draft.churnDurationMinutes !== '' ||
+      draft.exitConsistency !== '' ||
+      draft.airiness !== '' ||
+      draft.atTheMachine !== '' ||
       draft.ingredientNotes !== '' ||
-      draft.nextTimeNote !== ''
+      draft.nextTimeNote !== '' ||
+      draft.tastingOpen !== false ||
+      draft.tastedDate !== '' ||
+      draft.temperingMinutes !== '' ||
+      draft.tastingTempC !== '' ||
+      Object.keys(draft.marks).length > 0 ||
+      draft.note !== '' ||
+      draft.defects.length > 0 ||
+      draft.bitterDeclared !== false ||
+      draft.meltTestG !== '' ||
+      draft.meltStyle !== ''
     );
   }
   return (
     draft.churnDate !== baseline.churnDate ||
-    draft.comeUpMinutes !== baseline.comeUpMinutes ||
-    draft.drawTempC !== baseline.drawTempC ||
-    draft.overrunPercent !== baseline.overrunPercent ||
-    draft.drawNotes !== baseline.drawNotes ||
+    draft.timeToDrawTempMinutes !== baseline.timeToDrawTempMinutes ||
+    draft.outOfMachineTempC !== baseline.outOfMachineTempC ||
+    draft.churnDurationMinutes !== baseline.churnDurationMinutes ||
+    draft.exitConsistency !== baseline.exitConsistency ||
+    draft.airiness !== baseline.airiness ||
+    draft.atTheMachine !== baseline.atTheMachine ||
     draft.ingredientNotes !== baseline.ingredientNotes ||
     draft.nextTimeNote !== baseline.nextTimeNote ||
+    draft.tastingOpen !== baseline.tastingOpen ||
+    draft.tastedDate !== baseline.tastedDate ||
+    draft.temperingMinutes !== baseline.temperingMinutes ||
+    draft.tastingTempC !== baseline.tastingTempC ||
+    draft.note !== baseline.note ||
+    draft.bitterDeclared !== baseline.bitterDeclared ||
+    draft.meltTestG !== baseline.meltTestG ||
+    draft.meltStyle !== baseline.meltStyle ||
+    Object.keys(draft.marks).length !== Object.keys(baseline.marks).length ||
+    draft.defects.length !== baseline.defects.length ||
     asMadeMapsDiffer(draft.asMade, baseline.asMade) ||
     stepChangesDiffer(draft.stepChanges, baseline.stepChanges)
-  );
-}
-
-// The same presence-over-truthiness dirty check, extended to an
-// in-progress tasting (D-24's "unsaved ink" applies to a tasting draft
-// exactly as it does to the churn draft above).
-function isTastingDraftDirty(tastingDraft) {
-  if (!tastingDraft) return false;
-  return (
-    tastingDraft.date !== '' ||
-    Object.keys(tastingDraft.marks).length > 0 ||
-    tastingDraft.tastingTempC !== '' ||
-    tastingDraft.meltdownLossG !== '' ||
-    tastingDraft.words !== '' ||
-    tastingDraft.nextTimeNote !== ''
   );
 }
 
@@ -202,16 +216,15 @@ export function isPenDraftDirty(mode, penDraft, version) {
 // "A pen is open" used to live in two unrelated states — `mode`
 // ('reading'|'recording'|'developing') and `tastingDraft` (null|object) —
 // and every disabled condition in Headnote and BatchMargin hand-rolled its
-// own subset of those two. Neither could see the tasting pen at all, since
-// `tastingDraft` was never folded into `mode` or threaded to Headnote
-// (D-UAT-1). This is the one derivation: `openPen` names which of the four
-// pens — `plan`, `record`, `amend`, `tasting` — currently holds the page,
-// or is `null` when none does; `reason` is the words-form counterpart D-10
-// requires beside every control that pen disables ("never just visually
-// implied"). An if-chain, not a lookup table (T-02-32's discipline against
-// a bare bracket read against a key), so the four reason strings stay
-// visible at the site that decides them.
-export function derivePenState({ mode, amendingBatchId, tastingDraft }) {
+// own subset of those two. The tasting pen retires with 03.3.1-02 (D-01,
+// D-03): the tasting section folds into the one record draft behind a
+// `tastingOpen` flag, so the pens this derivation reports are now exactly
+// three — `plan`, `record`, `amend` — never a fourth. `reason` is the
+// words-form counterpart D-10 requires beside every control that pen
+// disables ("never just visually implied"). An if-chain, not a lookup
+// table (T-02-32's discipline against a bare bracket read against a key),
+// so the three reason strings stay visible at the site that decides them.
+export function derivePenState({ mode, amendingBatchId }) {
   if (mode === 'developing') {
     return { openPen: 'plan', reason: 'the plan is being developed' };
   }
@@ -221,21 +234,176 @@ export function derivePenState({ mode, amendingBatchId, tastingDraft }) {
     }
     return { openPen: 'record', reason: 'a batch is being recorded' };
   }
-  if (tastingDraft) {
-    return { openPen: 'tasting', reason: 'a tasting is being written' };
-  }
   return { openPen: null, reason: null };
 }
 
-// A field the maker left blank and a field holding ink that is not a
-// number are the same fact — nothing written — and neither may become a
-// stored NaN, which readMeasured would print as the word "NaN" in the
-// record forever. A written 0 is a value, not an absence, and still
-// returns 0 (260909-oox).
-export function toNumberOrNull(raw) {
-  if (raw === '') return null;
-  const parsed = Number(raw);
-  return Number.isFinite(parsed) ? parsed : null;
+// blankRecordDraft() -> the one record draft's fresh shape (03.3.1-02
+// artifacts list): every churn and tasting field blank, tastingOpen false.
+// The tasting fields ride along even though this plan renders no control
+// for them yet (plan 03 opens the tasting section) — so the draft's shape
+// never has to change again when that section arrives, and the dirty
+// check and the save assembly below already know every field's name.
+function blankRecordDraft() {
+  return {
+    churnDate: '',
+    asMade: {},
+    stepChanges: {},
+    timeToDrawTempMinutes: '',
+    outOfMachineTempC: '',
+    churnDurationMinutes: '',
+    exitConsistency: '',
+    airiness: '',
+    atTheMachine: '',
+    ingredientNotes: '',
+    nextTimeNote: '',
+    tastingOpen: false,
+    tastedDate: '',
+    temperingMinutes: '',
+    tastingTempC: '',
+    marks: {},
+    note: '',
+    defects: [],
+    bitterDeclared: false,
+    meltTestG: '',
+    meltStyle: '',
+  };
+}
+
+// draftFromBatch(batch) -> the record draft handleStartAmending pre-fills
+// from ("Correct reopens the same pen with everything editable", D-03).
+// Every read is an own-property read off the batch's own churn/tasting
+// objects — never a computed-key write against a stored key (the T-03-10
+// adjacency rule this plan's threat model names) — the asMade copy below
+// mirrors buildChurn's own already-reviewed shallow-copy-by-own-keys
+// pattern (domain/batch.js). Exported so 03.3.1-02's Task 3 acceptance
+// criteria (the seeded batch's exact pre-filled values) can be asserted
+// directly, the same way this file's other pure helpers already are.
+export function draftFromBatch(batch) {
+  const churn = batch.churn;
+  const tasting = batch.tasting;
+  const asMade = {};
+  for (const [rowId, values] of Object.entries(churn.asMade)) {
+    asMade[rowId] = values.map((value) => (value === null ? '' : String(value)));
+  }
+  const toDraftString = (value) => (value == null ? '' : String(value));
+  return {
+    churnDate: churn.churnDate ?? '',
+    asMade,
+    stepChanges: structuredClone(churn.stepChanges),
+    timeToDrawTempMinutes: toDraftString(churn.timeToDrawTempMinutes),
+    outOfMachineTempC: toDraftString(churn.outOfMachineTempC),
+    churnDurationMinutes: toDraftString(churn.churnDurationMinutes),
+    exitConsistency: churn.exitConsistency ?? '',
+    airiness: churn.airiness ?? '',
+    atTheMachine: churn.atTheMachine ?? '',
+    ingredientNotes: churn.ingredientNotes ?? '',
+    nextTimeNote: churn.nextTimeNote ?? '',
+    tastingOpen: tasting != null,
+    tastedDate: tasting ? (tasting.tastedDate ?? '') : '',
+    temperingMinutes: tasting ? toDraftString(tasting.temperingMinutes) : '',
+    tastingTempC: tasting ? toDraftString(tasting.tastingTempC) : '',
+    marks: tasting ? { ...tasting.marks } : {},
+    note: tasting ? (tasting.note ?? '') : '',
+    defects: tasting && tasting.defects ? [...tasting.defects] : [],
+    bitterDeclared: tasting ? tasting.bitterDeclared === true : false,
+    meltTestG: tasting ? toDraftString(tasting.meltTestG) : '',
+    meltStyle: tasting ? (tasting.meltStyle ?? '') : '',
+  };
+}
+
+// tastingHasInk(draft) -> whether the tasting side of the draft holds
+// anything the maker wrote (D-02: "what a save persists is everything the
+// record currently holds" — a tasting section open but empty persists no
+// tasting at all). Any own-key mark, any picked chip, the declared toggle,
+// or any non-empty tasting field counts.
+export function tastingHasInk(draft) {
+  return (
+    Object.keys(draft.marks).length > 0 ||
+    draft.defects.length > 0 ||
+    draft.bitterDeclared === true ||
+    draft.tastedDate !== '' ||
+    draft.temperingMinutes !== '' ||
+    draft.tastingTempC !== '' ||
+    draft.note !== '' ||
+    draft.meltTestG !== '' ||
+    draft.meltStyle !== ''
+  );
+}
+
+// parseAllMeasuredFields(draft) -> { fieldErrors, hasErrors, parsed }.
+// Pure: walks BATTERY_FIELDS, parsing each field through
+// parseMeasuredDraft. A malformed value's own contract sentence
+// (BATTERY_FIELDS' own `error` string, verbatim) lands in fieldErrors;
+// `parsed` is every field's own { ok, value }, reused by the save
+// assembly below so a field is never parsed twice. 03.3.1-02 Task 1's own
+// scope: "if any field is malformed, record per-field errors and abort —
+// storing the errors and aborting is enough." The full field-level UI
+// wiring (aria-invalid/describedby, the field-error line, focus-on-first-
+// invalid) and the churn-date press-to-block (D-05) are Task 2's build.
+export function parseAllMeasuredFields(draft) {
+  const fieldErrors = {};
+  const parsed = {};
+  let hasErrors = false;
+  for (const field of BATTERY_FIELDS) {
+    const result = parseMeasuredDraft(draft[field.key], { signed: field.signed });
+    parsed[field.key] = result;
+    if (!result.ok) {
+      fieldErrors[field.key] = field.error;
+      hasErrors = true;
+    }
+  }
+  return { fieldErrors, hasErrors, parsed };
+}
+
+function toTextOrNull(raw) {
+  return raw === '' ? null : raw;
+}
+
+// buildChurnFieldsFromDraft(draft, parsed) -> the churnFields object
+// createBatch/completeRecord both take. `parsed` is
+// parseAllMeasuredFields' own per-field result — reused here so a save
+// never re-parses a field it has already validated. asMade parses through
+// parseGramsDraft exactly as
+// the plan pen's own as-made column already does (D-10): a value that
+// rule rejects, or a blank portion, becomes null, the same fact as a
+// portion never touched; a row whose every portion resolves to null drops
+// its key entirely.
+export function buildChurnFieldsFromDraft(draft, parsed) {
+  const asMade = {};
+  for (const [rowId, rawValues] of Object.entries(draft.asMade)) {
+    const parsedValues = rawValues.map((rawValue) => parseGramsDraft(rawValue));
+    if (parsedValues.some((value) => value !== null)) asMade[rowId] = parsedValues;
+  }
+  return {
+    churnDate: draft.churnDate === '' ? null : draft.churnDate,
+    asMade,
+    stepChanges: draft.stepChanges,
+    timeToDrawTempMinutes: parsed.timeToDrawTempMinutes.value,
+    outOfMachineTempC: parsed.outOfMachineTempC.value,
+    churnDurationMinutes: parsed.churnDurationMinutes.value,
+    exitConsistency: draft.exitConsistency === '' ? null : draft.exitConsistency,
+    airiness: draft.airiness === '' ? null : draft.airiness,
+    atTheMachine: toTextOrNull(draft.atTheMachine),
+    ingredientNotes: toTextOrNull(draft.ingredientNotes),
+    nextTimeNote: toTextOrNull(draft.nextTimeNote),
+  };
+}
+
+// buildTastingFieldsFromDraft(draft, parsed) -> the tastingFields object
+// createBatch/completeRecord take when the tasting side holds ink
+// (tastingHasInk above decides whether this is even called).
+export function buildTastingFieldsFromDraft(draft, parsed) {
+  return {
+    tastedDate: draft.tastedDate === '' ? null : draft.tastedDate,
+    temperingMinutes: parsed.temperingMinutes.value,
+    tastingTempC: parsed.tastingTempC.value,
+    marks: draft.marks,
+    note: toTextOrNull(draft.note),
+    defects: draft.defects.length > 0 ? draft.defects : null,
+    bitterDeclared: draft.bitterDeclared === true ? true : null,
+    meltTestG: parsed.meltTestG.value,
+    meltStyle: draft.meltStyle === '' ? null : draft.meltStyle,
+  };
 }
 
 // The brief's book spread, in semantic regions, each wearing its
@@ -271,16 +439,10 @@ export function RecipePage() {
   // own control, and now the headnote's, ask for it (D-19).
   const [mode, setMode] = useState('reading');
   const [draft, setDraft] = useState(null);
-  // The in-progress tasting's own draft state, alongside the churn draft
-  // above (task 1). A tasting is added to an already-saved batch, so
-  // setting it never touches `mode`/`draft`, the churn recording state —
-  // but it is no longer treated as separate from them: derivePenState
-  // above folds all three into the one "a pen is open" fact (D-UAT-1).
-  const [tastingDraft, setTastingDraft] = useState(null);
   // Non-null while `mode === 'recording'` means the pen layer is amending
-  // this existing batch's churn fields, rather than recording a new one
+  // this existing batch's record, rather than recording a new one
   // (task 3, D-06). Amending pre-fills the fields from the batch, never
-  // from the version, and saving calls recordAmendment, never createBatch.
+  // from the version, and saving calls completeRecord, never createBatch.
   const [amendingBatchId, setAmendingBatchId] = useState(null);
   // The draft-shaped object handleStartAmending pre-filled `draft` from
   // (03-07, T-03-43) — the baseline isDraftDirty compares an amend draft
@@ -289,6 +451,12 @@ export function RecipePage() {
   // over from a prior amendment would make a fresh recording's own dirty
   // check compare against the wrong record.
   const [amendBaseline, setAmendBaseline] = useState(null);
+  // The record pen's own blocked-save state (03.3.1-02 Task 1's own
+  // minimum: "record per-field errors and abort"): fieldErrors keys a
+  // battery field to its own contract sentence. The churn-date
+  // press-to-block (D-05), the first-invalid-field focus target, and the
+  // form-status live region text are Task 2's build.
+  const [fieldErrors, setFieldErrors] = useState({});
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
   // reason, citation and headnote start blank/null — never defaulted from
   // the parent — while rows is a map keyed by row id holding the raw
@@ -402,15 +570,13 @@ export function RecipePage() {
   }, [id]);
 
   // D-24: leaving the page with unsaved ink uses the browser's own leave
-  // warning only, registered while recording, tasting, or the plan's pen
-  // holds a dirty draft, and removed as soon as none does — no invented
-  // dialog, no draft persistence across a reload (that is UX1-02, Phase 4).
+  // warning only, registered while recording or the plan's pen holds a
+  // dirty draft, and removed as soon as neither does — no invented dialog,
+  // no draft persistence across a reload (that is UX1-02, Phase 4). The
+  // tasting pen's own dirty check folded into isDraftDirty above with the
+  // tasting pen's retirement (03.3.1-02).
   useEffect(() => {
-    if (
-      !isDraftDirty(mode, draft, amendBaseline) &&
-      !isTastingDraftDirty(tastingDraft) &&
-      !isPenDraftDirty(mode, penDraft, version)
-    ) {
+    if (!isDraftDirty(mode, draft, amendBaseline) && !isPenDraftDirty(mode, penDraft, version)) {
       return undefined;
     }
     const handleBeforeUnload = (event) => {
@@ -420,20 +586,24 @@ export function RecipePage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [mode, draft, amendBaseline, tastingDraft, penDraft, version]);
+  }, [mode, draft, amendBaseline, penDraft, version]);
 
   // Escape (D-27): closes only an untouched pen, and does nothing at all
   // once the pen holds ink — Cancel is the one exit, so a stray key can
   // never discard a sheet of transcription. Registered on `document`, not
   // the article, so an Escape pressed while focus rests on `body` (the
   // state the critique found batch Cancel leaving behind) still closes
-  // the pen. Reads the same three dirty checks the beforeunload guard
-  // above already reads — introducing no fourth notion of dirtiness.
-  // openPen is recomputed here via derivePenState (not read as an outer
-  // variable) because this effect must sit above the early returns below,
-  // where the page-level openPen constant does not exist yet.
+  // the pen. Reads the same two dirty checks the beforeunload guard above
+  // already reads — introducing no third notion of dirtiness. An open but
+  // empty tasting section (tastingOpen true, nothing else touched) counts
+  // as no ink under isDraftDirty's own baseline/blank comparisons above,
+  // so Escape closes it exactly as it closes any other untouched pen
+  // (RESEARCH.md Open Question 4). openPen is recomputed here via
+  // derivePenState (not read as an outer variable) because this effect
+  // must sit above the early returns below, where the page-level openPen
+  // constant does not exist yet.
   useEffect(() => {
-    const { openPen: escapeOpenPen } = derivePenState({ mode, amendingBatchId, tastingDraft });
+    const { openPen: escapeOpenPen } = derivePenState({ mode, amendingBatchId });
     if (escapeOpenPen === null) return undefined;
     function handleKeyDown(event) {
       if (event.key !== 'Escape') return;
@@ -441,15 +611,13 @@ export function RecipePage() {
         handleCancelDeveloping();
       } else if ((escapeOpenPen === 'record' || escapeOpenPen === 'amend') && !isDraftDirty(mode, draft, amendBaseline)) {
         handleCancelRecording();
-      } else if (escapeOpenPen === 'tasting' && !isTastingDraftDirty(tastingDraft)) {
-        handleCancelTasting();
       }
     }
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [mode, amendingBatchId, tastingDraft, penDraft, version, draft, amendBaseline]);
+  }, [mode, amendingBatchId, penDraft, version, draft, amendBaseline]);
 
   if (version === undefined) return null;
   // The running head is the way home in every state, including this one
@@ -471,9 +639,8 @@ export function RecipePage() {
   }
 
   // The one call site (D-UAT-1): every control that disables while a pen
-  // is open reads openPen/penReason from here, never mode or tastingDraft
-  // directly.
-  const { openPen, reason: penReason } = derivePenState({ mode, amendingBatchId, tastingDraft });
+  // is open reads openPen/penReason from here, never mode directly.
+  const { openPen, reason: penReason } = derivePenState({ mode, amendingBatchId });
 
   // D-01: on any version with no batch recorded, both saves are offered;
   // on a churned version only Save (a fork) exists, so a churned
@@ -482,20 +649,12 @@ export function RecipePage() {
   // never twice (RESEARCH.md Pattern 2).
   const canSaveOver = batches.length === 0;
 
-  // The save gate, one derivation beside canSaveOver (T-03.1-08): the
-  // tasting pen's Save is gated on isTastingSaveable, exactly as
-  // TastingForm computed it locally before this plan; every other pen's
-  // Save stays enabled (D-21's own blocked-but-enabled rule covers the
-  // plan pen; the batch pen has never gated its Save). penHint carries
-  // the tasting's own hint sentence while that gate is active, and
-  // blockedMessage (the plan pen's own blocked-save sentence) otherwise —
-  // both are passed to Versions' ceremony and to PenFoot, so the two
-  // screen positions can never disagree (RESEARCH.md Anti-Patterns).
-  const penSaveDisabled =
-    openPen === 'tasting' && tastingDraft
-      ? !isTastingSaveable({ words: tastingDraft.words, marks: tastingDraft.marks })
-      : false;
-  const penHint = penSaveDisabled ? 'Write words or mark at least one axis to save.' : blockedMessage;
+  // The plan pen's own blocked-save sentence (RESEARCH.md Pattern 2) —
+  // VersionRow and PenFoot both read this one derivation. The record/amend
+  // pen's own blocked-date sentence (D-05) joins this derivation in Task 2;
+  // neither pen has a completeness gate (D-02 retires the tasting save
+  // gate) — the record pen's Save is never disabled.
+  const penHint = blockedMessage;
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -596,33 +755,35 @@ export function RecipePage() {
   // Clearing the amend target here is load-bearing, not redundant: without
   // it, a maker who amends and then starts a fresh recording would leave
   // amendingBatchId set from the earlier amendment, so handleSaveBatch
-  // would take the amend path — overwriting the amended batch's churn and
-  // stamping a false amendment date on it, while the new batch is never
+  // would take the amend path — overwriting the amended batch's record and
+  // stamping a false changed date on it, while the new batch is never
   // created (T-02-24).
   function handleStartRecording() {
     setAmendingBatchId(null);
     setAmendBaseline(null);
-    setDraft({
-      churnDate: '',
-      asMade: {},
-      stepChanges: {},
-      comeUpMinutes: '',
-      drawTempC: '',
-      overrunPercent: '',
-      drawNotes: '',
-      ingredientNotes: '',
-      nextTimeNote: '',
-    });
+    setDraft(blankRecordDraft());
+    setFieldErrors({});
     setMode('recording');
   }
 
-  // A generic setter for the churn section's remaining fields (D-17, D-18):
-  // each stores the raw string the maker typed while recording, exactly as
-  // the as-made column already does, so the maker's typed precision is
-  // never lost to an early Number() coercion — the conversion (and the
-  // '' -> null discipline) happens once, at save time.
-  function handleChangeChurnField(field, value) {
+  // The one generic setter for every raw-text/date/tasting field the
+  // record pen holds (03.3.1-02 artifacts: handleChangeRecordField):
+  // stores the raw string the maker typed, exactly as the as-made column
+  // already does, so typed precision is never lost to an early Number()
+  // coercion — the conversion happens once, at save time
+  // (buildChurnFieldsFromDraft/buildTastingFieldsFromDraft).
+  function handleChangeRecordField(field, value) {
     setDraft((prev) => ({ ...prev, [field]: value }));
+  }
+
+  // The three segmented controls (exit consistency, airiness, melt style)
+  // share one handler: clicking the already-picked option clears it
+  // (contract "Blank stays blank" — click-again clears), clicking any
+  // other option picks it. BatchRow calls this from each option's onClick,
+  // never onChange, since a native radio's onChange does not re-fire on a
+  // click that leaves its value unchanged.
+  function handleChangeSegment(field, value) {
+    setDraft((prev) => ({ ...prev, [field]: prev[field] === value ? '' : value }));
   }
 
   // Clearing both the strike and the line for a step removes that step's
@@ -641,10 +802,6 @@ export function RecipePage() {
       }
       return { ...prev, stepChanges };
     });
-  }
-
-  function handleChangeChurnDate(value) {
-    setDraft((prev) => ({ ...prev, churnDate: value }));
   }
 
   // Writes one portion's raw string (D-10). A row with no key yet is
@@ -670,28 +827,12 @@ export function RecipePage() {
     });
   }
 
-  // "Amend" reopens the pen layer with the record's own values in the
-  // fields — the as-made column, the step strikes and lines, and the
-  // churn section, all pre-filled from the batch, never from the version
-  // (task 3). Every draft field is the string form the recording inputs
-  // already expect, matching handleStartRecording's shape.
+  // "Correct" reopens the record pen with everything the record holds in
+  // the fields — the churn side and, when the batch carries one, the
+  // tasting side too (D-03) — pre-filled from the batch, never from the
+  // version (task 3, draftFromBatch above).
   function handleStartAmending(batch) {
-    const asMade = {};
-    for (const [rowId, values] of Object.entries(batch.churn.asMade)) {
-      asMade[rowId] = values.map((value) => (value === null ? '' : String(value)));
-    }
-    const toDraftString = (value) => (value == null ? '' : String(value));
-    const filledDraft = {
-      churnDate: batch.churn.churnDate ?? '',
-      asMade,
-      stepChanges: structuredClone(batch.churn.stepChanges),
-      comeUpMinutes: toDraftString(batch.churn.comeUpMinutes),
-      drawTempC: toDraftString(batch.churn.drawTempC),
-      overrunPercent: toDraftString(batch.churn.overrunPercent),
-      drawNotes: batch.churn.drawNotes ?? '',
-      ingredientNotes: batch.churn.ingredientNotes ?? '',
-      nextTimeNote: batch.churn.nextTimeNote ?? '',
-    };
+    const filledDraft = draftFromBatch(batch);
     setDraft(filledDraft);
     // The baseline isDraftDirty compares against (03-07, T-03-43) — a
     // separate clone, not the same object setDraft was just given, so a
@@ -699,44 +840,40 @@ export function RecipePage() {
     // can never be mistaken for a mutation of the baseline itself.
     setAmendBaseline(structuredClone(filledDraft));
     setAmendingBatchId(batch.id);
+    setFieldErrors({});
     setMode('recording');
   }
 
-  // The two impure calls (a fresh id, the current instant) live here, in
-  // the one save handler — every domain function stays deterministic.
-  // Amending (amendingBatchId set) calls recordAmendment on the batch
-  // being amended instead of createBatch — a correction is never a new
-  // event and never retakes the snapshot (D-06).
+  // The one save (D-01/D-02/D-03/D-04): every battery measurement
+  // validates first — a malformed value records its own contract sentence
+  // and aborts (03.3.1-02 Task 1's own minimum; the field-level UI wiring
+  // and the churn-date press-to-block, D-05, are Task 2's build). Only
+  // once every measurement parses does the two impure calls (a fresh id,
+  // the current instant) run, here, in the one save handler — createBatch
+  // and completeRecord stay deterministic. Amending (amendingBatchId set)
+  // calls completeRecord on the batch being amended instead of createBatch
+  // — a correction is never a new event and never retakes the snapshot
+  // (BATCH2-01), and every completing save stamps `changed` (D-04). A
+  // tasting object is assembled only when the section is open and holds
+  // ink (D-02); a null tasting on completeRecord removes a stored one
+  // (RESEARCH.md Assumption A3 — surfaced in this plan's SUMMARY for
+  // end-of-phase UAT).
   function handleSaveBatch() {
-    // Each portion parses through parseGramsDraft (D-10): a value the
-    // grams rule rejects (a stray letter, a lone space, a leading minus,
-    // exponent notation, more than two decimals) or a blank portion
-    // becomes null — the same fact as a portion the maker never touched,
-    // never a stored NaN (D-11, D-18). A row whose every portion resolves
-    // to null drops its key entirely, preserving the existing rule that a
-    // row that fails to parse reads exactly like a row never touched.
-    const asMade = {};
-    for (const [rowId, rawValues] of Object.entries(draft.asMade)) {
-      const parsedValues = rawValues.map((rawValue) => parseGramsDraft(rawValue));
-      if (parsedValues.some((value) => value !== null)) asMade[rowId] = parsedValues;
+    const { fieldErrors: errors, hasErrors, parsed } = parseAllMeasuredFields(draft);
+
+    if (hasErrors) {
+      setFieldErrors(errors);
+      return;
     }
-    const toTextOrNull = (raw) => (raw === '' ? null : raw);
-    const churnFields = {
-      churnDate: draft.churnDate === '' ? null : draft.churnDate,
-      asMade,
-      stepChanges: draft.stepChanges,
-      comeUpMinutes: toNumberOrNull(draft.comeUpMinutes),
-      drawTempC: toNumberOrNull(draft.drawTempC),
-      overrunPercent: toNumberOrNull(draft.overrunPercent),
-      drawNotes: toTextOrNull(draft.drawNotes),
-      ingredientNotes: toTextOrNull(draft.ingredientNotes),
-      nextTimeNote: toTextOrNull(draft.nextTimeNote),
-    };
+    setFieldErrors({});
+
+    const now = new Date().toISOString();
+    const churnFields = buildChurnFieldsFromDraft(draft, parsed);
+    const tasting = draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null;
 
     if (amendingBatchId) {
       const batchBeingAmended = batches.find((batch) => batch.id === amendingBatchId);
-      const amendedAt = new Date().toISOString().slice(0, 10);
-      const record = recordAmendment(batchBeingAmended, churnFields, amendedAt);
+      const record = completeRecord(batchBeingAmended, churnFields, tasting, { now });
       repository.saveBatch(record).then(() => {
         setBatches((prev) => prev.map((batch) => (batch.id === record.id ? record : batch)));
         setMode('reading');
@@ -747,7 +884,7 @@ export function RecipePage() {
       return;
     }
 
-    const record = createBatch(version, churnFields, { id: crypto.randomUUID(), now: new Date().toISOString() });
+    const record = createBatch(version, churnFields, tasting, { id: crypto.randomUUID(), now: new Date().toISOString() });
 
     repository.saveBatch(record).then(() => {
       setBatches((prev) => [...prev, record]);
@@ -759,79 +896,20 @@ export function RecipePage() {
   }
 
   // The deliberate, in-app abandonment path (A-1): returns to reading,
-  // drops the draft, and clears the amend target, writing nothing. This is
-  // distinct from D-24's beforeunload warning, which only guards
-  // accidental loss on document unload — the brief conflated the two, but
-  // they are different requirements (see pen-layer-no-cancel-save-hard-to-find.md).
-  // Nothing needs to navigate: the batch on screen is derived from the URL
-  // and the loaded batch list, never from the draft, so the page already
-  // shows the right thing once mode returns to reading.
+  // drops the draft, and clears the amend target and every field error,
+  // writing nothing. This is distinct from D-24's beforeunload warning,
+  // which only guards accidental loss on document unload — the brief
+  // conflated the two, but they are different requirements (see
+  // pen-layer-no-cancel-save-hard-to-find.md). Nothing needs to navigate:
+  // the batch on screen is derived from the URL and the loaded batch list,
+  // never from the draft, so the page already shows the right thing once
+  // mode returns to reading.
   function handleCancelRecording() {
     setMode('reading');
     setDraft(null);
     setAmendingBatchId(null);
     setAmendBaseline(null);
-  }
-
-  function handleStartTasting() {
-    setTastingDraft({
-      date: '',
-      tastingTempC: '',
-      marks: {},
-      meltdownLossG: '',
-      words: '',
-      nextTimeNote: '',
-    });
-  }
-
-  // Discards silently, exactly as the churn Cancel does (handleCancelRecording
-  // above): the brief forbids a dialog of the app's own for leaving with
-  // unsaved ink (route-recipe-batch.md § 6). The beforeunload guard needs no
-  // change here — isTastingDraftDirty(null) is already false, so the effect
-  // above removes the listener on its own once tastingDraft goes null.
-  function handleCancelTasting() {
-    setTastingDraft(null);
-  }
-
-  function handleChangeTastingField(field, value) {
-    setTastingDraft((prev) => ({ ...prev, [field]: value }));
-  }
-
-  // Clearing is a first-class move on this control (G-02-6), not an
-  // omission: setMark writes the draft's marks through the one rule that
-  // handles both the set and the clear, so this handler gains a delete
-  // path without gaining a branch. A marks object holds a key only for a
-  // marked axis, so clearing the last mark is what returns the save gate
-  // (isTastingSaveable) and its hint to their pre-mark state.
-  function handleChangeTastingMark(axisKey, stop) {
-    setTastingDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, stop) }));
-  }
-
-  // D-05's shortcut: writes exactly those words into the tasting's words
-  // field and sets nothing else.
-  function handleUseAsExpectedShortcut() {
-    setTastingDraft((prev) => ({ ...prev, words: 'As expected, nothing to note' }));
-  }
-
-  // The two impure calls live here, in the one save handler — addTasting
-  // itself stays deterministic. Reloads the version's batch list after the
-  // write so the margin re-reads what is stored.
-  function handleSaveTasting() {
-    const toTextOrNull = (raw) => (raw === '' ? null : raw);
-    const tastingFields = {
-      date: tastingDraft.date === '' ? null : tastingDraft.date,
-      tastingTempC: toNumberOrNull(tastingDraft.tastingTempC),
-      marks: tastingDraft.marks,
-      meltdownLossG: toNumberOrNull(tastingDraft.meltdownLossG),
-      words: toTextOrNull(tastingDraft.words),
-      nextTimeNote: toTextOrNull(tastingDraft.nextTimeNote),
-    };
-    const updated = addTasting(openBatch, tastingFields, { id: crypto.randomUUID() });
-
-    repository.saveBatch(updated).then(() => repository.listBatchesForVersion(id)).then((reloaded) => {
-      setBatches(reloaded);
-      setTastingDraft(null);
-    });
+    setFieldErrors({});
   }
 
   // Seeds penDraft from the version the pen opened on — a row's own
@@ -1163,22 +1241,14 @@ export function RecipePage() {
             openBatch={openBatch}
             mode={mode}
             draft={draft}
-            onChangeChurnField={handleChangeChurnField}
-            tastingDraft={tastingDraft}
-            onChangeTastingField={handleChangeTastingField}
-            onChangeTastingMark={handleChangeTastingMark}
+            fieldErrors={fieldErrors}
+            onChangeRecordField={handleChangeRecordField}
+            onChangeSegment={handleChangeSegment}
             openPen={openPen}
             penReason={penReason}
-            penSaveDisabled={penSaveDisabled}
-            penHint={penHint}
             onStartAmending={handleStartAmending}
-            onChangeChurnDate={handleChangeChurnDate}
             onCancelRecording={handleCancelRecording}
             onSaveBatch={handleSaveBatch}
-            onStartTasting={handleStartTasting}
-            onUseAsExpectedShortcut={handleUseAsExpectedShortcut}
-            onSaveTasting={handleSaveTasting}
-            onCancelTasting={handleCancelTasting}
           />
         </div>
 
@@ -1265,15 +1335,12 @@ export function RecipePage() {
         <PenFoot
           openPen={openPen}
           canSaveOver={canSaveOver}
-          penSaveDisabled={penSaveDisabled}
           penHint={penHint}
           onCancelDeveloping={handleCancelDeveloping}
           onSaveAsNewVersion={handleSaveAsNewVersion}
           onSaveOverVersion={handleSaveOverVersion}
           onCancelRecording={handleCancelRecording}
           onSaveBatch={handleSaveBatch}
-          onCancelTasting={handleCancelTasting}
-          onSaveTasting={handleSaveTasting}
         />
       </article>
     </>

@@ -19,9 +19,9 @@ describe('AxisMark — an unmarked axis', () => {
 
 describe('AxisMark — a marked axis', () => {
   it('renders the clear control, and checks the input whose value is the mark', () => {
-    const markup = renderToStaticMarkup(<AxisMark axis={hardnessAxis} value={4.5} onChange={() => {}} />);
+    const markup = renderToStaticMarkup(<AxisMark axis={hardnessAxis} value={4} onChange={() => {}} />);
     expect(markup).toContain('axis-mark__clear');
-    const stopIndex = markup.indexOf('value="4.5"');
+    const stopIndex = markup.indexOf('value="4"');
     expect(stopIndex).toBeGreaterThan(-1);
     const tagStart = markup.lastIndexOf('<input', stopIndex);
     const tagEnd = markup.indexOf('/>', stopIndex);
@@ -29,7 +29,7 @@ describe('AxisMark — a marked axis', () => {
   });
 
   it('names its axis in the clear control\'s accessible name, so six on one form are told apart', () => {
-    const markup = renderToStaticMarkup(<AxisMark axis={hardnessAxis} value={4.5} onChange={() => {}} />);
+    const markup = renderToStaticMarkup(<AxisMark axis={hardnessAxis} value={4} onChange={() => {}} />);
     const clearIndex = markup.indexOf('axis-mark__clear');
     const tagStart = markup.lastIndexOf('<', clearIndex);
     const tagEnd = markup.indexOf('>', clearIndex);

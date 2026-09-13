@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-10 — Phase 03.3 complete, transitioned to Phase 4
+Last activity: 2026-09-13 — Completed quick task 260912-ti1: Apply the sketch's cross-cutting findings to the real app
 
 Progress: [███░░░░░░░] 29% (3/4 phases; 21/21 plans)
 
@@ -187,6 +187,7 @@ None yet.
 
 ### Blockers/Concerns
 
+- [260912-ti1 carry] The recipe page still overflows horizontally at 393px (scrollWidth 608 vs 393) — pre-existing, proven unchanged when the task's media block was removed live; the below-760px page arrangement (the ladder) that resolves it belongs to the page-shell finding (`.claude/skills/sketch-findings-sprinkles/references/page-shell-front-matter.md`). Recorded in `.planning/quick/260912-ti1-apply-cross-cutting-sketch-findings-to-t/deferred-items.md`. Task 3's browser measurements (44px targets, 40x44 stops, 6px gaps, compact 768px) are recorded in the task SUMMARY for end-of-phase UAT confirmation.
 - Impeccable initialized 2026-09-05: `PRODUCT.md` written; surface brief for the recipe surface and bench sheet confirmed by Mark (`.impeccable/surfaces/`, direction "The Formulation Cookbook" expanding the Cupping Form, seed d1a5d80a, code-led). Phase 1, 3, and 4 prerequisites met. `DESIGN.md` and `.impeccable/design.json` written 2026-09-06 by `/impeccable document` from the Phase 1 build (commit 17bd91f); North Star "The Formulation Cookbook". The batch-capture brief for Phase 2 is confirmed: `.impeccable/surfaces/route-recipe-batch.md`, shaped and confirmed by Mark 2026-09-06 and committed in e23d798, so the Phase 2 prerequisite is met. The Phase 3 brief is confirmed: `.impeccable/surfaces/route-recipe-version.md` ("Developing the next version"), shaped and confirmed by Mark 2026-09-07, so the Phase 3 prerequisite is met.
 - [Phase 3 → 4] Security: T-03-10 (medium, non-blocking) is open in `03-SECURITY.md`. The pen draft's seeding path at `app/src/ui/RecipePage.jsx:719` (`rows[row.id] = {...}` in `handleStartDeveloping`) is a bare bracket write against a stored row id; an imported `{"id": "__proto__"}` passes the transfer validator and corrupts the local draft object (not `Object.prototype`). Close with `Object.fromEntries` or re-disposition to accept with the local-only rationale. T-02-32 is closed by T-03-06.
 - [Phase 3 → 4] Code review WR-01 (skipped, needs a browser): measure the rendered width of the Data column's flag word `unreviewed` at 1024–1440 against `--col-data`'s 74px content width (`tokens.css:114-117`) and adjust the token or confirm the estimate as measured.
@@ -228,6 +229,7 @@ None yet.
 | 260909-oov | Stop the on-demand method field stealing focus on mount | 2026-09-09 | 7f50ae9 | .planning/quick/260909-oov-stop-the-on-demand-method-field-stealing |
 | 260909-oow | Make the live balance figures accept exactly the grams the save accepts, and stop bad as-made grams reaching the store | 2026-09-09 | be86eb5 | .planning/quick/260909-oow-make-the-live-balance-figures-accept-exa |
 | 260909-oox | Reject impossible negative measured values on the batch record | 2026-09-09 | 66d0849 | .planning/quick/260909-oox-reject-impossible-negative-measured-valu |
+| 260912-ti1 | Apply the sketch's cross-cutting findings to the real app: 44px touch targets below 760px through the first @media block, the four type-role tokens, the 6px caption gap at all nine sites, italic placeholders, an at-rule-aware stylesheet reader, and a third style-contract suite | 2026-09-13 | 011dc09 | [260912-ti1-apply-cross-cutting-sketch-findings-to-t](./quick/260912-ti1-apply-cross-cutting-sketch-findings-to-t/) |
 
 ### Roadmap Evolution
 

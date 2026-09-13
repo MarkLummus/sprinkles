@@ -34,11 +34,11 @@ function unitWords(unit) {
 // One battery measured field (contract "Controls spec"): text-mode,
 // inputMode="decimal" — never type="number", so a malformed value stays
 // in place rather than being rejected before validation runs. The
-// .field-error line, aria-invalid and aria-describedby wiring, and the
-// first-invalid-field focus move are Task 2's build (03.3.1-02); Task 1's
-// own minimum is storing the error and aborting the save, with no
-// field-level UI wired yet.
-function ChurnMeasuredField({ field, value, onChange }) {
+// .field-error line renders inside the label and is wired by
+// aria-describedby exactly as the contract specifies; aria-invalid tracks
+// the same fact.
+function ChurnMeasuredField({ field, value, error, onChange, inputRef }) {
+  const errorId = `field-error-${field.key}`;
   return (
     <label className="batch-margin__field">
       <span>{`${field.label}, ${field.unit}`}</span>
@@ -47,9 +47,17 @@ function ChurnMeasuredField({ field, value, onChange }) {
         inputMode="decimal"
         className="ink-field"
         aria-label={`${field.label}, ${unitWords(field.unit)}`}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? errorId : undefined}
         value={value}
+        ref={inputRef}
         onChange={(event) => onChange(field.key, event.target.value)}
       />
+      {error && (
+        <span id={errorId} className="field-error">
+          {error}
+        </span>
+      )}
     </label>
   );
 }
@@ -108,6 +116,11 @@ export function BatchRow({
   openBatch,
   mode,
   draft,
+  fieldErrors = {},
+  invalidFieldTarget = null,
+  blockedDateMessage = null,
+  blockedDateAttempt = null,
+  formStatus = '',
   onChangeRecordField,
   onChangeSegment,
   openPen = null,
@@ -121,9 +134,7 @@ export function BatchRow({
   // conditional render below — hooks cannot be called conditionally. The
   // Record opener's own ref/effect pair lives in VersionRow.jsx; the Add
   // tasting opener's pair retires with the tasting pen (03.3.1-02) and
-  // returns in plan 03 keyed on tastingOpen rather than a pen state. The
-  // churn date's own press-to-block focus and the first-invalid-field
-  // focus (D-05, contract "Controls spec") are Task 2's build.
+  // returns in plan 03 keyed on tastingOpen rather than a pen state.
   const amendButtonRef = useRef(null);
   const wasAmendingRef = useRef(false);
   useEffect(() => {
@@ -136,6 +147,24 @@ export function BatchRow({
       amendButtonRef.current?.focus();
     }
   }, [openPen]);
+
+  // The churn date's own press-to-block focus (D-05): fires once per
+  // press, keyed on the attempt counter so a second consecutive block on
+  // an untouched date still re-fires (the VersionRow/WR-01 pattern,
+  // single-target variant).
+  const churnDateRef = useRef(null);
+  useEffect(() => {
+    if (blockedDateAttempt != null) churnDateRef.current?.focus();
+  }, [blockedDateAttempt]);
+
+  // The first-invalid-measurement focus (contract "Controls spec"): a ref
+  // per battery field key, keyed by the constants in BATTERY_FIELDS —
+  // never a maker-influenced key (T-02-32) — so the same attempt-keyed
+  // pattern can move focus to whichever field the traversal named.
+  const fieldRefs = useRef({});
+  useEffect(() => {
+    if (invalidFieldTarget) fieldRefs.current[invalidFieldTarget.key]?.focus();
+  }, [invalidFieldTarget]);
 
   // The later-batches disclosure (sketch 003 variant B, G-03.3-4): closed
   // by default, matching the same convention VersionRow's own Later
@@ -187,12 +216,22 @@ export function BatchRow({
                   type="date"
                   className="ink-field"
                   autoFocus
+                  ref={churnDateRef}
                   value={draft.churnDate}
                   onChange={(event) => onChangeRecordField('churnDate', event.target.value)}
                 />
               </label>
               {CHURN_MEASURED_FIELDS.map((field) => (
-                <ChurnMeasuredField key={field.key} field={field} value={draft[field.key]} onChange={onChangeRecordField} />
+                <ChurnMeasuredField
+                  key={field.key}
+                  field={field}
+                  value={draft[field.key]}
+                  error={fieldErrors[field.key]}
+                  onChange={onChangeRecordField}
+                  inputRef={(el) => {
+                    fieldRefs.current[field.key] = el;
+                  }}
+                />
               ))}
             </div>
             <SegmentedField
@@ -235,10 +274,10 @@ export function BatchRow({
             </label>
             {/* Ceremony A (D-01): after the churn section while the
                 tasting section is absent, just above the shared Next
-                time. Its hint slot renders the record pen's own
-                blocked-date sentence once Task 2 wires D-05; Task 1 has
-                no such state yet, so the hint is always absent here. */}
-            <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={null} />
+                time. Its hint is the record pen's own blocked-date
+                sentence — the same state ceremony B (PenFoot) reads, so
+                the two can never disagree. */}
+            <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={blockedDateMessage} />
             <label className="batch-margin__field">
               <textarea
                 className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
@@ -252,7 +291,11 @@ export function BatchRow({
               />
             </label>
             {/* The form-status live region (contract "DOM order
-                inventory") is Task 2's build. */}
+                inventory"): the record body's last element, directly
+                above PenFoot's ceremony B — its one home for the phase. */}
+            <p className="form-status" role="status" aria-live="polite">
+              {formStatus}
+            </p>
           </>
         ) : openBatch ? (
           <>

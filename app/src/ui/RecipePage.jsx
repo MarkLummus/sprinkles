@@ -27,6 +27,16 @@ import { VersionRow } from './VersionRow.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
+// The record pen's blocked-date sentence (D-05) — one constant, read from
+// both handleSaveBatch (via validateRecordDraft) and the ceremony's own
+// hint prop, so the "one state, two renderings" grep (03.3.1-02 Task 2
+// acceptance) can never find it typed out a second time.
+export const CHURN_DATE_BLOCKED_MESSAGE = 'Enter the date you churned.';
+
+// The contract's verbatim form-status sentence for a malformed measurement
+// ("Controls spec"), read from handleSaveBatch's own announce() call.
+export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entries have been kept.';
+
 // Two as-made maps compared by key set and, for a shared key, by their
 // arrays element-wise (D-10) — the same presence-over-truthiness
 // discipline the rest of this file applies: a row present in one draft
@@ -355,6 +365,26 @@ export function parseAllMeasuredFields(draft) {
   return { fieldErrors, hasErrors, parsed };
 }
 
+// validateRecordDraft(draft) -> { fieldErrors, invalidFieldKey,
+// blockedDateMessage, parsed }. Pure (03.3.1-02 Task 2): the record pen's
+// one save gate. Every measurement validates first (RESEARCH.md Open
+// Question 3), via parseAllMeasuredFields above; only once every
+// measurement is clean does the churn date get its own press-to-block
+// check (D-05) — the two blocks never fire together, so a sentence and
+// its target can never disagree (one traversal). invalidFieldKey names
+// the first invalid field in BATTERY_FIELDS order — Object.keys on a
+// plain object preserves string-key insertion order, and fieldErrors is
+// built by iterating BATTERY_FIELDS in that same order, so the first key
+// is the first field the traversal found invalid.
+export function validateRecordDraft(draft) {
+  const { fieldErrors, hasErrors, parsed } = parseAllMeasuredFields(draft);
+  if (hasErrors) {
+    return { fieldErrors, invalidFieldKey: Object.keys(fieldErrors)[0], blockedDateMessage: null, parsed };
+  }
+  const blockedDateMessage = draft.churnDate === '' ? CHURN_DATE_BLOCKED_MESSAGE : null;
+  return { fieldErrors: {}, invalidFieldKey: null, blockedDateMessage, parsed };
+}
+
 function toTextOrNull(raw) {
   return raw === '' ? null : raw;
 }
@@ -451,12 +481,22 @@ export function RecipePage() {
   // over from a prior amendment would make a fresh recording's own dirty
   // check compare against the wrong record.
   const [amendBaseline, setAmendBaseline] = useState(null);
-  // The record pen's own blocked-save state (03.3.1-02 Task 1's own
-  // minimum: "record per-field errors and abort"): fieldErrors keys a
-  // battery field to its own contract sentence. The churn-date
-  // press-to-block (D-05), the first-invalid-field focus target, and the
-  // form-status live region text are Task 2's build.
+  // The record pen's own blocked-save state (D-05, contract "Controls
+  // spec"): fieldErrors keys a battery field to its own contract sentence;
+  // invalidFieldTarget names the first invalid field in BATTERY_FIELDS
+  // order plus an attempt counter (WR-01's pattern) so a second
+  // consecutive block on the same field still moves focus; blockedDate*
+  // are the churn-date press-to-block's own message and attempt counter,
+  // read by BOTH ceremonies (D-05: "a sentence beside both save sets");
+  // formStatus is the form-status live region's own text.
   const [fieldErrors, setFieldErrors] = useState({});
+  const [invalidFieldTarget, setInvalidFieldTarget] = useState(null);
+  const invalidFieldAttemptRef = useRef(0);
+  const [blockedDateMessage, setBlockedDateMessage] = useState(null);
+  const [blockedDateAttempt, setBlockedDateAttempt] = useState(null);
+  const dateBlockedAttemptRef = useRef(0);
+  const [formStatus, setFormStatus] = useState('');
+  const formStatusTimerRef = useRef(null);
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
   // reason, citation and headnote start blank/null — never defaulted from
   // the parent — while rows is a map keyed by row id holding the raw
@@ -649,12 +689,12 @@ export function RecipePage() {
   // never twice (RESEARCH.md Pattern 2).
   const canSaveOver = batches.length === 0;
 
-  // The plan pen's own blocked-save sentence (RESEARCH.md Pattern 2) —
-  // VersionRow and PenFoot both read this one derivation. The record/amend
-  // pen's own blocked-date sentence (D-05) joins this derivation in Task 2;
-  // neither pen has a completeness gate (D-02 retires the tasting save
-  // gate) — the record pen's Save is never disabled.
-  const penHint = blockedMessage;
+  // The one hint derivation (RESEARCH.md Pattern 2): whichever pen is open
+  // owns the hint both VersionRow and PenFoot render — the plan pen's own
+  // blocked-save sentence, or the record/amend pen's own blocked-date
+  // sentence (D-05). Neither pen has a completeness gate (D-02 retires the
+  // tasting save gate) — the record pen's Save is never disabled.
+  const penHint = openPen === 'record' || openPen === 'amend' ? blockedDateMessage : blockedMessage;
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -752,6 +792,23 @@ export function RecipePage() {
     openBatch = sortedBatches(batches)[0];
   }
 
+  // announce(message, { selfClear }) -> writes the form-status live
+  // region's text (contract "Feedback and undo lifecycle"). Validation and
+  // block statuses never self-clear; a future toast-bearing status
+  // (plan 04's tasting removal/undo) passes selfClear: true and gets the
+  // guarded five-second clear — it clears only if the text on screen is
+  // still the message it wrote, so a newer message is never wiped
+  // (RESEARCH.md Code Example 5).
+  function announce(message, { selfClear = false } = {}) {
+    setFormStatus(message);
+    if (formStatusTimerRef.current) clearTimeout(formStatusTimerRef.current);
+    if (selfClear) {
+      formStatusTimerRef.current = setTimeout(() => {
+        setFormStatus((current) => (current === message ? '' : current));
+      }, 5000);
+    }
+  }
+
   // Clearing the amend target here is load-bearing, not redundant: without
   // it, a maker who amends and then starts a fresh recording would leave
   // amendingBatchId set from the earlier amendment, so handleSaveBatch
@@ -763,6 +820,10 @@ export function RecipePage() {
     setAmendBaseline(null);
     setDraft(blankRecordDraft());
     setFieldErrors({});
+    setInvalidFieldTarget(null);
+    setBlockedDateMessage(null);
+    setBlockedDateAttempt(null);
+    setFormStatus('');
     setMode('recording');
   }
 
@@ -771,8 +832,14 @@ export function RecipePage() {
   // stores the raw string the maker typed, exactly as the as-made column
   // already does, so typed precision is never lost to an early Number()
   // coercion — the conversion happens once, at save time
-  // (buildChurnFieldsFromDraft/buildTastingFieldsFromDraft).
+  // (buildChurnFieldsFromDraft/buildTastingFieldsFromDraft). Clears the
+  // blocked-date sentence and every field error first (the 888-892
+  // pattern) — the record the maker is now editing may no longer be the
+  // one either sentence described.
   function handleChangeRecordField(field, value) {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setFormStatus('');
     setDraft((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -783,6 +850,9 @@ export function RecipePage() {
   // never onChange, since a native radio's onChange does not re-fire on a
   // click that leaves its value unchanged.
   function handleChangeSegment(field, value) {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setFormStatus('');
     setDraft((prev) => ({ ...prev, [field]: prev[field] === value ? '' : value }));
   }
 
@@ -792,6 +862,9 @@ export function RecipePage() {
   // indistinguishable from a step the maker deliberately marked as
   // unchanged — a fact this record never states.
   function handleChangeStepChange(stepNumber, patch) {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setFormStatus('');
     setDraft((prev) => {
       const stepChanges = { ...prev.stepChanges };
       const key = String(stepNumber);
@@ -812,6 +885,9 @@ export function RecipePage() {
   // entirely — the existing "an empty field means nothing was written"
   // rule (D-13/BATCH1-01), applied at the row level as it is today.
   function handleChangeAsMade(rowId, portionIndex, rawValue) {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setFormStatus('');
     setDraft((prev) => {
       const asMade = { ...prev.asMade };
       const row = version.rows.find((candidate) => candidate.id === rowId);
@@ -841,14 +917,18 @@ export function RecipePage() {
     setAmendBaseline(structuredClone(filledDraft));
     setAmendingBatchId(batch.id);
     setFieldErrors({});
+    setInvalidFieldTarget(null);
+    setBlockedDateMessage(null);
+    setBlockedDateAttempt(null);
+    setFormStatus('');
     setMode('recording');
   }
 
   // The one save (D-01/D-02/D-03/D-04): every battery measurement
-  // validates first — a malformed value records its own contract sentence
-  // and aborts (03.3.1-02 Task 1's own minimum; the field-level UI wiring
-  // and the churn-date press-to-block, D-05, are Task 2's build). Only
-  // once every measurement parses does the two impure calls (a fresh id,
+  // validates first (RESEARCH.md Open Question 3), then the churn date
+  // (D-05) — Save stays enabled through both blocks, never disabled
+  // (validateRecordDraft is the one traversal both blocks flow through).
+  // Only once the draft is clean does the two impure calls (a fresh id,
   // the current instant) run, here, in the one save handler — createBatch
   // and completeRecord stay deterministic. Amending (amendingBatchId set)
   // calls completeRecord on the batch being amended instead of createBatch
@@ -859,13 +939,26 @@ export function RecipePage() {
   // (RESEARCH.md Assumption A3 — surfaced in this plan's SUMMARY for
   // end-of-phase UAT).
   function handleSaveBatch() {
-    const { fieldErrors: errors, hasErrors, parsed } = parseAllMeasuredFields(draft);
+    const { fieldErrors: errors, invalidFieldKey, blockedDateMessage: dateMessage, parsed } = validateRecordDraft(draft);
 
-    if (hasErrors) {
+    if (invalidFieldKey !== null) {
       setFieldErrors(errors);
+      invalidFieldAttemptRef.current += 1;
+      setInvalidFieldTarget({ key: invalidFieldKey, attempt: invalidFieldAttemptRef.current });
+      setBlockedDateMessage(null);
+      announce(MEASURED_INVALID_STATUS);
       return;
     }
     setFieldErrors({});
+    setInvalidFieldTarget(null);
+
+    if (dateMessage) {
+      dateBlockedAttemptRef.current += 1;
+      setBlockedDateMessage(dateMessage);
+      setBlockedDateAttempt(dateBlockedAttemptRef.current);
+      return;
+    }
+    setBlockedDateMessage(null);
 
     const now = new Date().toISOString();
     const churnFields = buildChurnFieldsFromDraft(draft, parsed);
@@ -880,6 +973,7 @@ export function RecipePage() {
         setDraft(null);
         setAmendingBatchId(null);
         setAmendBaseline(null);
+        setFormStatus('');
       });
       return;
     }
@@ -891,15 +985,16 @@ export function RecipePage() {
       setMode('reading');
       setDraft(null);
       setAmendBaseline(null);
+      setFormStatus('');
       navigate(`/recipe/${id}/batch/${record.id}`);
     });
   }
 
   // The deliberate, in-app abandonment path (A-1): returns to reading,
-  // drops the draft, and clears the amend target and every field error,
-  // writing nothing. This is distinct from D-24's beforeunload warning,
-  // which only guards accidental loss on document unload — the brief
-  // conflated the two, but they are different requirements (see
+  // drops the draft, and clears the amend target and every blocked/error
+  // state, writing nothing. This is distinct from D-24's beforeunload
+  // warning, which only guards accidental loss on document unload — the
+  // brief conflated the two, but they are different requirements (see
   // pen-layer-no-cancel-save-hard-to-find.md). Nothing needs to navigate:
   // the batch on screen is derived from the URL and the loaded batch list,
   // never from the draft, so the page already shows the right thing once
@@ -910,6 +1005,10 @@ export function RecipePage() {
     setAmendingBatchId(null);
     setAmendBaseline(null);
     setFieldErrors({});
+    setInvalidFieldTarget(null);
+    setBlockedDateMessage(null);
+    setBlockedDateAttempt(null);
+    setFormStatus('');
   }
 
   // Seeds penDraft from the version the pen opened on — a row's own
@@ -1242,6 +1341,10 @@ export function RecipePage() {
             mode={mode}
             draft={draft}
             fieldErrors={fieldErrors}
+            invalidFieldTarget={invalidFieldTarget}
+            blockedDateMessage={blockedDateMessage}
+            blockedDateAttempt={blockedDateAttempt}
+            formStatus={formStatus}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
             openPen={openPen}

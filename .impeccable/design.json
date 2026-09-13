@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-06T15:44:00.230Z",
+  "generatedAt": "2026-09-12T21:45:00.000Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -81,9 +81,21 @@
         "displayName": "Prose",
         "purpose": "Headnote prose, method instructions, authored notes. True italics for purpose and aside."
       },
+      "section": {
+        "displayName": "Section heading",
+        "purpose": "Region names and block legends. 600 weight uppercase, superseded the 0.75rem region name in the 260912-ti1 type-role pass."
+      },
       "label": {
-        "displayName": "Running head",
-        "purpose": "Region names, table headers, the authored legend. Uppercase, tracked 0.04em."
+        "displayName": "Running head / table header",
+        "purpose": "Table headers and running heads. Uppercase, tracked 0.04em, weight 400."
+      },
+      "caption": {
+        "displayName": "Field caption",
+        "purpose": "Compact field captions (Version, Why, From batch, batch cell labels), 500 weight. Axis names carry it at 600."
+      },
+      "control": {
+        "displayName": "Control / status",
+        "purpose": "Actionable choices, helper text, hint and status sentences."
       },
       "table": {
         "displayName": "Table body",
@@ -91,15 +103,19 @@
       },
       "figure": {
         "displayName": "Figure value",
-        "purpose": "The value beside each graduated rule and the method step number."
+        "purpose": "The value beside each graduated rule, the step number, the batch row's measured cells."
       },
       "deviation": {
         "displayName": "Deviation words",
-        "purpose": "The words under a rule stating its standing against its band."
+        "purpose": "The words under a rule stating its standing against its band; a step's purpose and aside in italic."
+      },
+      "note": {
+        "displayName": "Written note",
+        "purpose": "Written notes, typed or saved: 16px at 1.5 leading, at the 65ch measure."
       },
       "small-print": {
         "displayName": "Small print",
-        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, import errors."
+        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, plan sub-lines, import errors."
       }
     },
     "rules": {
@@ -107,25 +123,34 @@
       "graduation": "1px",
       "bandEdge": "1px",
       "tick": "2.5px",
+      "strike": "1.2px",
+      "inkField": "1px",
       "hatchPitch": "4px",
       "hatchStroke": "1.2px",
       "hatchAngle": "45deg",
-      "purpose": "Stroke weights for the graduated rule and the table. Depth is rule weight; nothing else conveys it."
+      "purpose": "Stroke weights for the graduated rule, the table, the strike, and the drawn controls. Depth is rule weight; nothing else conveys it."
     },
     "focus": {
-      "outlineWidth": "1px",
+      "outlineWidth": "1.5px",
       "outlineOffset": "2px",
       "color": "var(--ink)",
-      "purpose": "The one focus treatment: outline and weight, never colour, never position."
+      "boundary": ":focus-visible",
+      "purpose": "The one focus treatment, provably heavier than the 1px outline any pressed/open/current/marked element carries. Never colour, never position."
     },
     "shadows": [],
     "motion": [],
-    "breakpoints": [],
+    "breakpoints": [
+      {
+        "name": "touch-step-down",
+        "value": "760px",
+        "purpose": "The app's only media block (max-width: 759.98px): buttons, selects and ink fields grow to a 44px minimum height, rating stops to a validated 40x44 box. Nothing else changes."
+      }
+    ],
     "table": {
       "leading": "1.2",
-      "nameColumnWidth": "40%",
+      "nameColumnWidth": "auto",
       "layout": "fixed",
-      "purpose": "The ingredient table's layout is fixed and its leading constant so a marked row's bold weight moves nothing."
+      "purpose": "The ingredient table's layout is fixed and its leading constant so a marked row's bold weight moves nothing. The name column is the single unsized column, absorbing what the sized columns leave; rows read in step order under step-group heads."
     }
   },
   "components": [
@@ -133,25 +158,49 @@
       "name": "Region name",
       "kind": "custom",
       "refersTo": "region-name",
-      "description": "The plain-language running head every region wears; the only place bookcloth appears.",
+      "description": "The plain-language running head every region wears; the only place bookcloth appears. Section role since 260912-ti1.",
       "html": "<h2 class=\"ds-region-name\">Formulation note</h2>",
-      "css": ".ds-region-name{font-family:var(--face-grotesk);font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);font-weight:400;margin:0 0 var(--gap-xs)}"
+      "css": ".ds-region-name{font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);margin:0 0 var(--gap-xs)}"
+    },
+    {
+      "name": "Binder button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Every control drawn by the page: square, hairline ink border, no fill, no icon. Hover thickens the border to baseline weight with compensating padding so the box never changes size.",
+      "html": "<button type=\"button\" class=\"ds-btn\">Save</button> <button type=\"button\" class=\"ds-btn\" disabled>Save</button> <button type=\"button\" class=\"ds-text-control\">Remove tasting</button>",
+      "css": ".ds-btn{appearance:none;border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--size-table-body);box-sizing:border-box;cursor:pointer;padding:calc(var(--gap-xs) + var(--rule-baseline) - var(--rule-ink-field))}.ds-btn:hover{border-width:var(--rule-baseline);padding:var(--gap-xs)}.ds-btn:disabled{border-style:dashed;color:inherit;background:none;cursor:default}.ds-btn:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-text-control{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--size-small-print);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-control:hover{text-decoration-thickness:var(--rule-baseline)}"
+    },
+    {
+      "name": "Ink field",
+      "kind": "input",
+      "refersTo": "ink-field",
+      "description": "Anything counted that the maker types: hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, sized to what it holds. Focus is the one global :focus-visible outline.",
+      "html": "<input class=\"ds-ink-field\" style=\"width:9ch\" value=\"383\" aria-label=\"As made, grams\"/> <input class=\"ds-ink-field\" style=\"width:12ch\" type=\"date\" value=\"2026-08-02\" aria-label=\"Churn date\"/>",
+      "css": ".ds-ink-field{font-family:var(--face-grotesk);font-size:var(--size-ink-field);font-variant-numeric:tabular-nums;color:var(--pen-blue);border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;padding:var(--gap-hair) var(--gap-xs);box-sizing:border-box}.ds-ink-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}"
+    },
+    {
+      "name": "Prose field",
+      "kind": "input",
+      "refersTo": "prose-field",
+      "description": "The maker's words editing in place as the printed paragraph: no border at rest, pen blue text face, grows with its text. A blank named field carries a hairline baseline.",
+      "html": "<textarea class=\"ds-prose-field\" rows=\"2\">Soft, not greasy.</textarea>",
+      "css": ".ds-prose-field{font-family:var(--face-text);font-size:inherit;line-height:inherit;color:var(--pen-blue);border:none;background:none;padding:0;margin:0;width:100%;max-width:var(--measure-prose);box-sizing:border-box;field-sizing:content;resize:none}.ds-prose-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}"
     },
     {
       "name": "Ingredient table",
       "kind": "custom",
       "refersTo": "table-cell",
-      "description": "Rows in authored order, ink rules under each, an exception-only Data column, and a marked state for rows a focused figure rests on. Fixed layout and leading so marking moves nothing.",
-      "html": "<table class=\"ds-ingredient-table\"><thead><tr><th>Ingredient</th><th>Grams</th><th>% of batch</th><th>Step</th><th>Data</th></tr></thead><tbody><tr><td>Whole milk</td><td>370.4 g</td><td>46.3%</td><td>2 + 3</td><td>estimated</td></tr><tr class=\"is-marked\"><td>Heavy cream</td><td>252.8 g</td><td>31.6%</td><td>3</td><td>estimated</td></tr><tr><td>Sucrose</td><td>76 g</td><td>9.5%</td><td>2 + 3</td><td></td></tr></tbody></table>",
-      "css": ".ds-ingredient-table{border-collapse:collapse;table-layout:fixed;width:100%;font-family:var(--face-grotesk);font-size:var(--size-table-body);font-variant-numeric:tabular-nums;color:var(--ink)}.ds-ingredient-table th,.ds-ingredient-table td{text-align:left;padding:var(--gap-xs) var(--gap-s);line-height:var(--leading-table,1.2);border-bottom:var(--rule-baseline) solid var(--ink)}.ds-ingredient-table th{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;font-weight:400}.ds-ingredient-table tr.is-marked{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset);font-weight:700}.ds-ingredient-table th:first-child{width:var(--col-ingredient,40%)}"
+      "description": "Rows in step order under step-group heads, ink rules under each, an exception-only Data column, a marked state for rows a focused figure rests on. Fixed layout and leading so marking moves nothing.",
+      "html": "<table class=\"ds-ingredient-table\"><thead><tr><th>Ingredient</th><th>Grams</th><th>% of batch</th><th>Data</th></tr></thead><tbody><tr><td colspan=\"4\" class=\"ds-ingredient-table__step-head\">Step 3 — <span>Gum slurry</span></td></tr><tr><td>Whole milk</td><td>370.4 g</td><td>46.3%</td><td>estimated</td></tr><tr class=\"is-marked\"><td>Heavy cream</td><td>252.8 g</td><td>31.6%</td><td>estimated</td></tr></tbody><tfoot><tr><td>Total</td><td>800 g</td><td>100%</td><td></td></tr></tfoot></table>",
+      "css": ".ds-ingredient-table{border-collapse:collapse;table-layout:fixed;width:100%;font-family:var(--face-grotesk);font-size:var(--size-table-body);font-variant-numeric:tabular-nums;color:var(--ink)}.ds-ingredient-table th,.ds-ingredient-table td{text-align:left;box-sizing:border-box;padding:var(--gap-xs) var(--table-cell-pad-x);line-height:var(--leading-table,1.2);border-bottom:var(--rule-baseline) solid var(--ink)}.ds-ingredient-table th{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;font-weight:400}.ds-ingredient-table__step-head{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em}.ds-ingredient-table__step-head span{text-transform:none;letter-spacing:0;font-size:var(--size-small-print)}.ds-ingredient-table tfoot td{border-bottom:none;border-top:var(--rule-baseline) solid var(--ink);font-weight:700}.ds-ingredient-table tr.is-marked{outline:var(--rule-graduation) solid var(--ink);outline-offset:var(--focus-outline-offset);font-weight:700}"
     },
     {
       "name": "Graduated rule",
       "kind": "custom",
       "refersTo": "figure-value",
       "description": "One figure as a printed scale: hatched target band, tick at the value, deviation in words. A focusable button; focus outlines it and marks contributing rows.",
-      "html": "<button type=\"button\" class=\"ds-graduated-rule\" aria-label=\"PAC, 24.1, target 22–26, estimated: Whole milk, Heavy cream\"><div class=\"ds-graduated-rule__head\" aria-hidden=\"true\"><span>PAC</span><span class=\"ds-graduated-rule__value\">24.1</span></div><p class=\"ds-graduated-rule__basis\" aria-hidden=\"true\">estimated: Whole milk, Heavy cream</p><svg viewBox=\"0 0 320 30\" width=\"100%\" height=\"30\" aria-hidden=\"true\"><defs><pattern id=\"ds-hatch\" width=\"4\" height=\"4\" patternTransform=\"rotate(45)\" patternUnits=\"userSpaceOnUse\"><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"4\" stroke=\"var(--ink)\" stroke-width=\"1.2\"/></pattern></defs><rect x=\"176\" y=\"4\" width=\"32\" height=\"14\" fill=\"url(#ds-hatch)\"/><line x1=\"176\" y1=\"2\" x2=\"176\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"208\" y1=\"2\" x2=\"208\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"0\" y1=\"18\" x2=\"320\" y2=\"18\" stroke=\"var(--ink)\" stroke-width=\"1.5\"/><line x1=\"0\" y1=\"18\" x2=\"0\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"32\" y1=\"18\" x2=\"32\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"64\" y1=\"18\" x2=\"64\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"96\" y1=\"18\" x2=\"96\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"128\" y1=\"18\" x2=\"128\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"160\" y1=\"18\" x2=\"160\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"192\" y1=\"18\" x2=\"192\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"224\" y1=\"18\" x2=\"224\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"256\" y1=\"18\" x2=\"256\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"288\" y1=\"18\" x2=\"288\" y2=\"21\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"320\" y1=\"18\" x2=\"320\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"193\" y1=\"0\" x2=\"193\" y2=\"22\" stroke=\"var(--ink)\" stroke-width=\"2.5\"/></svg><div class=\"ds-graduated-rule__anchors\" aria-hidden=\"true\"><span>0</span><span class=\"ds-graduated-rule__deviation\">inside 22–26</span><span>40</span></div></button>",
-      "css": ".ds-graduated-rule{display:block;width:100%;max-width:320px;padding:0;border:none;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;outline:none;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-graduated-rule:focus-visible,.ds-graduated-rule:focus{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-graduated-rule__head{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--size-table-body)}.ds-graduated-rule__value{font-size:var(--size-figure-value);font-weight:700}.ds-graduated-rule__basis{font-size:var(--size-small-print);margin:var(--gap-hair) 0 0}.ds-graduated-rule__anchors{display:flex;justify-content:space-between;font-size:var(--size-small-print);margin-top:var(--gap-hair)}.ds-graduated-rule__deviation{font-size:var(--size-deviation-words)}"
+      "html": "<button type=\"button\" class=\"ds-graduated-rule\" aria-label=\"PAC, 24.1, target 22–26, estimated: Whole milk, Heavy cream\"><div class=\"ds-graduated-rule__head\" aria-hidden=\"true\"><span>PAC</span><span class=\"ds-graduated-rule__value\">24.1</span></div><p class=\"ds-graduated-rule__basis\" aria-hidden=\"true\">estimated: Whole milk, Heavy cream</p><svg viewBox=\"0 0 320 30\" width=\"100%\" height=\"30\" aria-hidden=\"true\"><defs><pattern id=\"ds-hatch\" width=\"4\" height=\"4\" patternTransform=\"rotate(45)\" patternUnits=\"userSpaceOnUse\"><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"4\" stroke=\"var(--ink)\" stroke-width=\"1.2\"/></pattern></defs><rect x=\"176\" y=\"4\" width=\"32\" height=\"14\" fill=\"url(#ds-hatch)\"/><line x1=\"176\" y1=\"2\" x2=\"176\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"208\" y1=\"2\" x2=\"208\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"0\" y1=\"18\" x2=\"320\" y2=\"18\" stroke=\"var(--ink)\" stroke-width=\"1.5\"/><line x1=\"0\" y1=\"18\" x2=\"0\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"160\" y1=\"18\" x2=\"160\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"320\" y1=\"18\" x2=\"320\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"193\" y1=\"0\" x2=\"193\" y2=\"22\" stroke=\"var(--ink)\" stroke-width=\"2.5\"/></svg><div class=\"ds-graduated-rule__anchors\" aria-hidden=\"true\"><span>0</span><span class=\"ds-graduated-rule__deviation\">inside 22–26</span><span>40</span></div></button>",
+      "css": ".ds-graduated-rule{display:block;width:100%;max-width:320px;padding:0;border:none;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-graduated-rule:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-graduated-rule__head{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--size-table-body)}.ds-graduated-rule__value{font-size:var(--size-figure-value);font-weight:700}.ds-graduated-rule__basis{font-size:var(--size-small-print);margin:var(--gap-hair) 0 0}.ds-graduated-rule__anchors{display:flex;justify-content:space-between;font-size:var(--size-small-print);margin-top:var(--gap-hair)}.ds-graduated-rule__deviation{font-size:var(--size-deviation-words)}"
     },
     {
       "name": "Target chip",
@@ -167,7 +216,15 @@
       "refersTo": "step-number",
       "description": "Step number in a fixed margin column; bold lead-in and prose in the text face; targets as chips; purpose and aside in italic.",
       "html": "<ol class=\"ds-method-steps\"><li class=\"ds-method-step\"><span class=\"ds-method-step__n\" aria-hidden=\"true\">2</span><div><p class=\"ds-method-step__lead\"><b>Gum slurry — the only high-heat step.</b> Toss 1.68 g of the gum blend with ~12 g of the sucrose. Whisk into 120 g of the milk in a small saucepan. Heat, whisking constantly, then pull off.</p><p class=\"ds-method-step__targets\"><span class=\"ds-target-chip\"><span>temp</span><span>85 °C</span></span><span class=\"ds-target-chip\"><span>hold</span><span>2 min</span></span></p><p class=\"ds-method-step__aside\">At 120 g this is a thin layer in the pan. It scorches and evaporates faster than a larger volume would.</p></div></li></ol>",
-      "css": ".ds-method-steps{list-style:none;margin:0;padding:0;color:var(--ink)}.ds-method-step{display:grid;grid-template-columns:auto 1fr;gap:var(--gap-s)}.ds-method-step__n{font-family:var(--face-grotesk);font-size:var(--size-figure-value);font-variant-numeric:tabular-nums}.ds-method-step__lead{font-family:var(--face-text);font-size:var(--size-headnote-prose);margin:0}.ds-method-step__targets{display:flex;flex-wrap:wrap;gap:var(--gap-xs);margin:var(--gap-xs) 0 0}.ds-method-step__aside{font-family:var(--face-text);font-style:italic;font-size:var(--size-deviation-words);margin:var(--gap-xs) 0 0}.ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--size-small-print);font-variant-numeric:tabular-nums}"
+      "css": ".ds-method-steps{list-style:none;margin:0;padding:0;color:var(--ink)}.ds-method-step{display:grid;grid-template-columns:auto 1fr;gap:var(--gap-s)}.ds-method-step+.ds-method-step{margin-top:var(--gap-m)}.ds-method-step__n{font-family:var(--face-grotesk);font-size:var(--size-figure-value);font-variant-numeric:tabular-nums}.ds-method-step__lead{font-family:var(--face-text);font-size:var(--size-headnote-prose);max-width:var(--measure-prose);margin:0}.ds-method-step__targets{display:flex;flex-wrap:wrap;gap:var(--gap-xs);margin:var(--gap-xs) 0 0}.ds-method-step__aside{font-family:var(--face-text);font-style:italic;font-size:var(--size-deviation-words);margin:var(--gap-xs) 0 0}.ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--size-small-print);font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Batch row measured cell",
+      "kind": "custom",
+      "refersTo": "figure-value",
+      "description": "The batch row's read view of a measured field: caption label, pen blue figure, lighter unit, plan sub-line in small print.",
+      "html": "<div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Out of the machine</span><span class=\"ds-batch-cell__value\">−6 <span class=\"ds-batch-cell__unit\">°C</span></span><span class=\"ds-batch-cell__plan\">plan −5 to −7 °C</span></div><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Air</span><span class=\"ds-batch-cell__value ds-batch-cell__value--absent\">not measured</span></div>",
+      "css": ".ds-batch-cell{display:flex;flex-direction:column;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-batch-cell__label{font-size:var(--type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);margin-bottom:var(--gap-xs)}.ds-batch-cell__value{font-size:var(--size-figure-value);font-weight:700;color:var(--pen-blue)}.ds-batch-cell__value--absent{color:var(--ink);font-weight:400;font-size:var(--size-deviation-words)}.ds-batch-cell__unit{font-size:var(--size-deviation-words);font-weight:400}.ds-batch-cell__plan{font-size:var(--size-small-print);margin-top:var(--gap-hair);color:var(--ink)}"
     },
     {
       "name": "Authored block",
@@ -175,7 +232,7 @@
       "refersTo": "region-name",
       "description": "The maker's own notes, with a legend naming the block and the word \"authored\" so it stays apart from anything derived.",
       "html": "<div class=\"ds-authored\"><p class=\"ds-authored__legend\"><span>Carried forward</span><span>authored</span></p><ul class=\"ds-authored__notes\"><li>No glucose syrup — less costly at 13% milkfat than it would be at 8%.</li><li>This is the low anchor, not the oil-forward target.</li></ul></div>",
-      "css": ".ds-authored{color:var(--ink)}.ds-authored__legend{display:flex;justify-content:space-between;font-family:var(--face-grotesk);font-size:var(--size-small-print);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--size-headnote-prose)}"
+      "css": ".ds-authored{color:var(--ink)}.ds-authored__legend{display:flex;justify-content:space-between;font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--size-headnote-prose)}"
     },
     {
       "name": "Headnote",
@@ -183,32 +240,33 @@
       "refersTo": "region-name",
       "description": "Recipe name in the text face, the version line beneath, then prose. The one display-size element on the page.",
       "html": "<header class=\"ds-headnote\"><p class=\"ds-region-name\">Headnote</p><h1>Olive Oil Ice Cream</h1><p class=\"ds-headnote__version\">50 g oil · 800 g</p><p class=\"ds-headnote__prose\">Scaled 0.8× from the 1 kg formula. All ratios unchanged.</p></header>",
-      "css": ".ds-headnote{color:var(--ink)}.ds-headnote .ds-region-name{font-family:var(--face-grotesk);font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);margin:0 0 var(--gap-xs)}.ds-headnote h1{font-family:var(--face-text);font-size:var(--size-recipe-name);margin:0}.ds-headnote__version{font-family:var(--face-text);font-size:var(--size-version-line);margin:var(--gap-xs) 0 0}.ds-headnote__prose{font-family:var(--face-text);font-size:var(--size-headnote-prose);margin:var(--gap-s) 0 0}"
+      "css": ".ds-headnote{color:var(--ink)}.ds-headnote .ds-region-name{font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);margin:0 0 var(--gap-xs)}.ds-headnote h1{font-family:var(--face-text);font-size:var(--size-recipe-name);margin:0}.ds-headnote__version{font-family:var(--face-text);font-size:var(--size-version-line);margin:var(--gap-xs) 0 0}.ds-headnote__prose{font-family:var(--face-text);font-size:var(--size-headnote-prose);margin:var(--gap-s) 0 0;max-width:var(--measure-prose)}"
     },
     {
       "name": "Recipe list link",
       "kind": "nav",
       "refersTo": "table-cell",
-      "description": "The only navigation: name in the text face, version and mass in the grotesk, inheriting ink, no underline.",
+      "description": "The only navigation: name in the text face, version and mass in the grotesk, inheriting ink, the hairline underline every link carries.",
       "html": "<ul class=\"ds-recipe-list\"><li><a href=\"#\"><span class=\"ds-recipe-list__name\">Olive Oil Ice Cream</span><span>50 g oil · 800 g</span><span>799.7 g</span></a></li></ul>",
-      "css": ".ds-recipe-list{list-style:none;margin:0;padding:0;font-family:var(--face-grotesk);font-size:var(--size-table-body);color:var(--ink)}.ds-recipe-list li+li{margin-top:var(--gap-s)}.ds-recipe-list a{display:flex;gap:var(--gap-m);color:inherit;text-decoration:none;font-variant-numeric:tabular-nums}.ds-recipe-list a:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-recipe-list__name{font-family:var(--face-text)}"
+      "css": ".ds-recipe-list{list-style:none;margin:0;padding:0;font-family:var(--face-grotesk);font-size:var(--size-table-body);color:var(--ink)}.ds-recipe-list li+li{margin-top:var(--gap-s)}.ds-recipe-list a{display:flex;gap:var(--gap-m);color:inherit;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline);font-variant-numeric:tabular-nums}.ds-recipe-list a:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-recipe-list__name{font-family:var(--face-text)}"
     }
   ],
   "narrative": {
     "northStar": "The Formulation Cookbook",
-    "overview": "A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread: headnote across the top, the ingredient table beneath it with the formulation note beside it, the numbered method under the table, and a margin under the note for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.\n\nThe world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. What the Cookbook adds is a text face with true italics for headnote and method prose, a grotesk with tabular numerals for every table and figure, and one bookcloth green that names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.\n\nDensity is generous. One heavy element per view, wide gutters between regions, and no motion on entrance. State changes weight and outline, never position and never hue.",
+    "overview": "A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread opened by a front-matter band: two stacked rows — the version's row, then the batch's row — closed by a baseline rule, then the ingredient table with the formulation note beside it, the numbered method under the table, and a margin under the note for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.\n\nThe world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. The text face carries true italics for headnote and method prose; the grotesk carries tabular numerals for every table and figure; one bookcloth green names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.\n\nSince the contract was written, the page has grown its instruments and they all obey the binder: every control is drawn by the page — ink at hairline weight, no fill, no radius, no icon — never inherited from the browser. State is carried three proven ways and no others: a picked or open thing turns weight and outline; a recorded thing turns pen blue; and the maker's not-in-force things take one ink strike. Below 760px the page's one media block grows interactive targets toward 44px; it changes nothing else. Density is generous. One heavy element per view, wide gutters between regions, and no motion on entrance.",
     "keyCharacteristics": [
-      "Book-spread layout: headnote, ingredient table, formulation note, method, margin, each wearing its plain-language name as a running head.",
+      "Book-spread layout behind a two-row front-matter band, each block wearing its plain-language name as a running head.",
       "Four colour roles and nothing else: paper, ink, pen, bookcloth.",
       "Serif for prose, grotesk with tabular numerals for anything counted.",
+      "The binder: page-drawn controls, hairline ink, no fill, no radius, no icon.",
+      "State is weight and outline; the record is pen blue; \"not in force\" is one strike.",
       "Balance stated as a tick on a graduated rule and a deviation in words; no colour verdict.",
-      "Print-native: what the screen shows is what the sheet prints, minus the instruments.",
-      "Focus and marking change stroke weight and outline only; nothing moves."
+      "Print-native: what the screen shows is what the sheet prints, minus the instruments."
     ],
     "rules": [
       {
         "name": "The Two-Ink Rule",
-        "body": "Printed matter is ink black; recorded matter is pen blue; the two never mix on one element. A value that is half plan and half record is two values.",
+        "body": "Printed matter is ink black; recorded matter is pen blue; the two never mix on one element. A value that is half plan and half record is two values. The record keeps its blue after saving — it is the maker's, and saving changes form, not ink.",
         "section": "colors"
       },
       {
@@ -232,8 +290,23 @@
         "section": "typography"
       },
       {
+        "name": "The Placeholder Rule",
+        "body": "A placeholder is an example in ink small print, italic — never a default, never pen blue. A blank field still saves as blank.",
+        "section": "typography"
+      },
+      {
+        "name": "The Caption Rule",
+        "body": "Every caption that sits atop its own content — field captions, axis names, segmented captions — carries one 6px gap (var(--gap-xs)) to it, whatever it captions. One rule for every caption site.",
+        "section": "layout"
+      },
+      {
         "name": "The Paper-Is-Flat Rule",
         "body": "Nothing floats above the page. If an element needs to stand apart, it gets a heavier rule or an ink outline, never a shadow, never a fill.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Focus-Heavier-than-State Rule",
+        "body": "One focus rule at the browser's own :focus-visible boundary draws a 1.5px ink outline offset 2px — provably heavier than the 1px outline any pressed, open, current, or marked element carries, so the two meanings never read as each other. A focused element that is also stateful reads both.",
         "section": "elevation"
       }
     ],
@@ -242,10 +315,12 @@
       "Do put every number in the grotesk with tabular numerals and every sentence in the text face.",
       "Do give every region a running head in bookcloth naming it in plain language.",
       "Do state a figure's standing in words beside the figure (inside 22–26, 1.4 over target) and its basis as a word (estimated, unreviewed).",
-      "Do carry state by weight and outline: bold plus a 1px ink outline offset 2px, in place.",
-      "Do keep ingredient rows in authored order; strike a removed row rather than deleting it.",
+      "Do carry picked, open, current, and marked states by weight and outline: bold plus a 1px ink outline offset 2px, in place. Focus alone reads the heavier 1.5px.",
+      "Do paint anything the maker records — typed or saved — in pen blue; only a value returning to the plan (a version edit saved as the plan) returns to ink.",
+      "Do strike with one ink stroke (1.2px) for every \"not in force\" meaning: a skipped step, a superseded value, a removed row or step. Never invent a second strike form.",
+      "Do keep ingredient rows in step order under their step heads; strike a removed row rather than deleting it.",
       "Do fix a table's layout and leading before giving any row a heavier weight, so marking moves nothing.",
-      "Do paint anything the maker recorded or is editing in pen blue, and return it to ink when it is saved as a version."
+      "Do give every caption-with-inline-content the same 6px gap."
     ],
     "donts": [
       "Don't colour anything to mean pass, fail, warning, or uncertainty. No green tick, no red figure, no amber badge.",
@@ -253,7 +328,9 @@
       "Don't add a fifth colour, a grey, a tint, a shadow, a gradient, or a second background.",
       "Don't round a corner without first adding a radius token, and never on a table, rule, chip, or anything that prints.",
       "Don't move an element on hover, focus, or selection, and don't animate an entrance.",
-      "Don't put a hero image, a card, a gauge, a progress ring, a sparkline, or an icon on the page.",
+      "Don't put a hero image, a card, a gauge, a progress ring, a sparkline, or an icon on the page (the select's drawn chevron is closed-state chrome, not an icon).",
+      "Don't accept browser chrome where the page can draw it — no spinners, no calendar icon, no default select arrow. The dropdown list and date segments stay the browser's; those are the named exceptions.",
+      "Don't pre-fill a default on any control; a placeholder is an italic ink example, never pen blue, never a value.",
       "Don't uppercase a unit or set a number in the text face."
     ]
   }

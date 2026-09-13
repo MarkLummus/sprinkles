@@ -27,6 +27,8 @@ import {
   draftFromBatch,
   tastingHasInk,
   tastingPayloadFromDraft,
+  restoreDraftFromUndo,
+  isTastingBodyField,
   parseAllMeasuredFields,
   validateRecordDraft,
   buildChurnFieldsFromDraft,
@@ -35,6 +37,7 @@ import {
   MEASURED_INVALID_STATUS,
   TASTING_REMOVED_EMPTY_STATUS,
   TASTING_REMOVED_DATA_STATUS,
+  TASTING_RESTORED_STATUS,
 } from './RecipePage.jsx';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -478,6 +481,105 @@ describe('tastingPayloadFromDraft — the undo payload, a plain-object copy (Tas
     draft.defects.push('Sandy, gritty');
     expect(payload.marks).toEqual({ hardness: 3 });
     expect(payload.defects).toEqual(['Coarse, icy']);
+  });
+});
+
+describe('TASTING_RESTORED_STATUS — the contract\'s own verbatim restore sentence (Task 2)', () => {
+  it('is character-identical to the contract\'s own string', () => {
+    expect(TASTING_RESTORED_STATUS).toBe('Tasting restored.');
+  });
+});
+
+describe('isTastingBodyField — the retirement scope\'s own boundary (Task 2, contract "Feedback and undo lifecycle": "any edit inside the tasting body retires a pending undo... never a churn-section edit or a Next-time edit")', () => {
+  it('reports true for every tasting-body field the generic setters share with a churn field', () => {
+    for (const field of ['tastedDate', 'temperingMinutes', 'tastingTempC', 'note', 'meltTestG', 'meltStyle']) {
+      expect(isTastingBodyField(field)).toBe(true);
+    }
+  });
+
+  it('reports false for every churn field and the shared Next time — a churn edit never retires a pending undo', () => {
+    for (const field of [
+      'churnDate',
+      'timeToDrawTempMinutes',
+      'outOfMachineTempC',
+      'churnDurationMinutes',
+      'exitConsistency',
+      'airiness',
+      'atTheMachine',
+      'ingredientNotes',
+      'nextTimeNote',
+    ]) {
+      expect(isTastingBodyField(field)).toBe(false);
+    }
+  });
+});
+
+describe('restoreDraftFromUndo — the restore sequence\'s field write-back (Task 2, contract "Feedback and undo lifecycle", threat T-03.3.1-10)', () => {
+  it('reopens the section and writes every tasting field back from the payload, leaving the churn side untouched', () => {
+    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', atTheMachine: 'Soft', tastingOpen: false };
+    const pendingUndo = {
+      tastedDate: '2026-08-11',
+      temperingMinutes: '5',
+      tastingTempC: '-12',
+      marks: { hardness: 3 },
+      note: 'Grainy',
+      defects: ['Coarse, icy'],
+      bitterDeclared: true,
+      meltTestG: '4',
+      meltStyle: 'Creamy puddle',
+    };
+    const restored = restoreDraftFromUndo(draft, pendingUndo);
+    expect(restored.tastingOpen).toBe(true);
+    expect(restored.tastedDate).toBe('2026-08-11');
+    expect(restored.temperingMinutes).toBe('5');
+    expect(restored.tastingTempC).toBe('-12');
+    expect(restored.marks).toEqual({ hardness: 3 });
+    expect(restored.note).toBe('Grainy');
+    expect(restored.defects).toEqual(['Coarse, icy']);
+    expect(restored.bitterDeclared).toBe(true);
+    expect(restored.meltTestG).toBe('4');
+    expect(restored.meltStyle).toBe('Creamy puddle');
+    expect(restored.churnDate).toBe('2026-08-09');
+    expect(restored.atTheMachine).toBe('Soft');
+  });
+
+  it('never mutates the draft or the payload it is given', () => {
+    const draft = { ...makeBlankRecordDraft() };
+    const pendingUndo = {
+      tastedDate: '2026-08-11',
+      temperingMinutes: '',
+      tastingTempC: '',
+      marks: { hardness: 3 },
+      note: '',
+      defects: [],
+      bitterDeclared: false,
+      meltTestG: '',
+      meltStyle: '',
+    };
+    const draftClone = structuredClone(draft);
+    const payloadClone = structuredClone(pendingUndo);
+    restoreDraftFromUndo(draft, pendingUndo);
+    expect(draft).toEqual(draftClone);
+    expect(pendingUndo).toEqual(payloadClone);
+  });
+
+  it('writes marks/defects by value, not by reference — mutating the restored draft never reaches the payload that produced it', () => {
+    const original = { ...makeBlankRecordDraft(), marks: { hardness: 3 }, defects: ['Coarse, icy'] };
+    const payload = tastingPayloadFromDraft(original);
+    const restored = restoreDraftFromUndo(makeBlankRecordDraft(), payload);
+    restored.marks.hardness = 5;
+    restored.defects.push('Sandy, gritty');
+    expect(payload.marks).toEqual({ hardness: 3 });
+    expect(payload.defects).toEqual(['Coarse, icy']);
+  });
+});
+
+describe('tastingPayloadFromDraft — the resize-survival guarantee (Task 2, RESEARCH.md A4: "React realization of the carried edges")', () => {
+  it('is a plain, structuredClone-safe object — never a captured DOM reference, so it survives the axes re-render a breakpoint crossing triggers (the carried undo-retired-on-resize edge this plan closes)', () => {
+    const draft = { ...makeBlankRecordDraft(), marks: { hardness: 3, oil: 5 }, note: 'Grainy', defects: ['Coarse, icy'] };
+    const payload = tastingPayloadFromDraft(draft);
+    expect(() => structuredClone(payload)).not.toThrow();
+    expect(structuredClone(payload)).toEqual(payload);
   });
 });
 

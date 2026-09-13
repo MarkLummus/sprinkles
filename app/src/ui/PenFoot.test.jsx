@@ -132,6 +132,51 @@ describe('PenFoot — Add tasting beside the foot ceremony while the section is 
   });
 });
 
+describe('PenFoot — the undo footer slot, trailing Add tasting while a removal is pending and the section is absent (Task 2, contract "Feedback and undo lifecycle", "Undo placement rule")', () => {
+  it('renders no undo control at all with no removal pending', () => {
+    const markup = renderPenFoot({ openPen: 'record', tastingOpen: false, pendingUndo: null });
+    expect(markup).not.toContain('Undo clear tasting');
+  });
+
+  it('renders "Undo clear tasting" trailing Add tasting when a removal is pending and the section is absent', () => {
+    const markup = renderPenFoot({
+      openPen: 'record',
+      tastingOpen: false,
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).toContain('Undo clear tasting');
+    const addTastingIndex = markup.indexOf('Add tasting');
+    const undoIndex = markup.indexOf('Undo clear tasting');
+    expect(undoIndex).toBeGreaterThan(addTastingIndex);
+  });
+
+  it('renders the same footer undo for the amend pen', () => {
+    const markup = renderPenFoot({
+      openPen: 'amend',
+      tastingOpen: false,
+      pendingUndo: { tastedDate: '', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).toContain('Undo clear tasting');
+  });
+
+  it('renders no footer undo control while the tasting section is open — the undo moves to the head slot instead (the real DOM move)', () => {
+    const markup = renderPenFoot({
+      openPen: 'record',
+      tastingOpen: true,
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).not.toContain('Undo clear tasting');
+  });
+
+  it('renders no undo control for the plan pen even with a pendingUndo value', () => {
+    const markup = renderPenFoot({
+      openPen: 'plan',
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).not.toContain('Undo clear tasting');
+  });
+});
+
 describe('PenFoot — penHint beside the plan pair', () => {
   it('renders the message when set', () => {
     const markup = renderPenFoot({ openPen: 'plan', penHint: 'a version needs a line' });

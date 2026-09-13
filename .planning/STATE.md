@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-13 — Completed quick task 260912-ti1: Apply the sketch's cross-cutting findings to the real app
+Last activity: 2026-09-13 — Completed quick task 260912-vni: Sketch 007 structural contract (planner/executor read it instead of the sketch HTML; roadmap 03.3.1 requires per-task citation)
 
 Progress: [███░░░░░░░] 29% (3/4 phases; 21/21 plans)
 
@@ -214,6 +214,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260906-chn | Commit the two design files written by /impeccable document: DESIGN.md and .impeccable/design.json | 2026-09-06 | 17bd91f | [260906-chn-commit-the-two-design-files-written-by-i](./quick/260906-chn-commit-the-two-design-files-written-by-i/) |
+| 260912-vni | Sketch 007 structural contract: write the self-sufficient reference file the Phase 03.3.1 planner, executors and checker read in place of the sketch HTML, and amend the 03.3.1 roadmap notes to require per-task citation of it | 2026-09-12 | 599c4eb | [260912-vni-sketch-007-structural-contract-write-the](./quick/260912-vni-sketch-007-structural-contract-write-the/) |
 | 2 | Fix the stale "No DESIGN.md yet" line in STATE.md Blockers/Concerns | 2026-09-06 | ea4a14d | — |
 | 3 | Fix the recipe page grid (note follows table) and cap the graduated rule width; record critique carries | 2026-09-06 | dcec0d3 | — |
 | 4 | Recipe page grid: note beside the table, method beneath; prose measure capped at 65ch | 2026-09-06 | 5671c72 | — |

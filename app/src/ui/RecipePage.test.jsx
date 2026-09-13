@@ -26,12 +26,15 @@ import {
   isDraftDirty,
   draftFromBatch,
   tastingHasInk,
+  tastingPayloadFromDraft,
   parseAllMeasuredFields,
   validateRecordDraft,
   buildChurnFieldsFromDraft,
   buildTastingFieldsFromDraft,
   CHURN_DATE_BLOCKED_MESSAGE,
   MEASURED_INVALID_STATUS,
+  TASTING_REMOVED_EMPTY_STATUS,
+  TASTING_REMOVED_DATA_STATUS,
 } from './RecipePage.jsx';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -426,6 +429,55 @@ describe('tastingHasInk — D-02: a save with the section open but empty persist
     expect(tastingHasInk({ ...makeBlankRecordDraft(), tastingTempC: '-12' })).toBe(true);
     expect(tastingHasInk({ ...makeBlankRecordDraft(), meltTestG: '3' })).toBe(true);
     expect(tastingHasInk({ ...makeBlankRecordDraft(), meltStyle: 'Creamy puddle' })).toBe(true);
+  });
+});
+
+describe('TASTING_REMOVED_EMPTY_STATUS / TASTING_REMOVED_DATA_STATUS — the contract\'s own verbatim removal sentences, each written once (Task 1)', () => {
+  it('are character-identical to the contract\'s "Feedback and undo lifecycle" strings', () => {
+    expect(TASTING_REMOVED_EMPTY_STATUS).toBe('Tasting removed.');
+    expect(TASTING_REMOVED_DATA_STATUS).toBe('Tasting removed. You can undo this.');
+  });
+});
+
+describe('tastingPayloadFromDraft — the undo payload, a plain-object copy (Task 1, RESEARCH.md A4)', () => {
+  it('copies every tasting-body field, and nothing from the churn side', () => {
+    const draft = {
+      ...makeBlankRecordDraft(),
+      churnDate: '2026-08-09',
+      atTheMachine: 'Soft',
+      tastedDate: '2026-08-11',
+      temperingMinutes: '5',
+      tastingTempC: '-12',
+      marks: { hardness: 3, oil: 5 },
+      note: 'Grainy at first',
+      defects: ['Coarse, icy'],
+      bitterDeclared: true,
+      meltTestG: '4',
+      meltStyle: 'Creamy puddle',
+    };
+    const payload = tastingPayloadFromDraft(draft);
+    expect(payload).toEqual({
+      tastedDate: '2026-08-11',
+      temperingMinutes: '5',
+      tastingTempC: '-12',
+      marks: { hardness: 3, oil: 5 },
+      note: 'Grainy at first',
+      defects: ['Coarse, icy'],
+      bitterDeclared: true,
+      meltTestG: '4',
+      meltStyle: 'Creamy puddle',
+    });
+    expect(payload).not.toHaveProperty('churnDate');
+    expect(payload).not.toHaveProperty('atTheMachine');
+  });
+
+  it('copies marks and defects by value — a later mutation of the draft\'s own objects never reaches the payload (never a captured reference)', () => {
+    const draft = { ...makeBlankRecordDraft(), marks: { hardness: 3 }, defects: ['Coarse, icy'] };
+    const payload = tastingPayloadFromDraft(draft);
+    draft.marks.hardness = 5;
+    draft.defects.push('Sandy, gritty');
+    expect(payload.marks).toEqual({ hardness: 3 });
+    expect(payload.defects).toEqual(['Coarse, icy']);
   });
 });
 

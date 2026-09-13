@@ -38,6 +38,15 @@ export const CHURN_DATE_BLOCKED_MESSAGE = 'Enter the date you churned.';
 // ("Controls spec"), read from handleSaveBatch's own announce() call.
 export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entries have been kept.';
 
+// The contract's verbatim form-status sentences for the record pen's own
+// two hidden-mode removal paths (contract "Feedback and undo lifecycle",
+// the removal path matrix — Pitfall 6: the always-visible mode's two rows
+// ("Nothing recorded to clear.", "Tasting cleared. You can undo this.")
+// are never built). Each written once, read from handleRemoveTasting below
+// and from tests directly, so neither can drift from the other.
+export const TASTING_REMOVED_EMPTY_STATUS = 'Tasting removed.';
+export const TASTING_REMOVED_DATA_STATUS = 'Tasting removed. You can undo this.';
+
 // Two as-made maps compared by key set and, for a shared key, by their
 // arrays element-wise (D-10) — the same presence-over-truthiness
 // discipline the rest of this file applies: a row present in one draft
@@ -264,6 +273,25 @@ export function derivePenState({ mode, amendingBatchId }) {
   return { openPen: null, reason: null };
 }
 
+// blankTastingFields() -> the tasting side's own blank shape: every
+// tasting-body field reset to its own blank/false/empty value. Shared by
+// blankRecordDraft below (a fresh record's tasting side) and
+// handleRemoveTasting (Remove tasting's own effect on the draft) — one
+// dictionary of the tasting body's field names, never duplicated.
+function blankTastingFields() {
+  return {
+    tastedDate: '',
+    temperingMinutes: '',
+    tastingTempC: '',
+    marks: {},
+    note: '',
+    defects: [],
+    bitterDeclared: false,
+    meltTestG: '',
+    meltStyle: '',
+  };
+}
+
 // blankRecordDraft() -> the one record draft's fresh shape (03.3.1-02
 // artifacts list): every churn and tasting field blank, tastingOpen false.
 // The tasting fields ride along even though this plan renders no control
@@ -284,15 +312,7 @@ function blankRecordDraft() {
     ingredientNotes: '',
     nextTimeNote: '',
     tastingOpen: false,
-    tastedDate: '',
-    temperingMinutes: '',
-    tastingTempC: '',
-    marks: {},
-    note: '',
-    defects: [],
-    bitterDeclared: false,
-    meltTestG: '',
-    meltStyle: '',
+    ...blankTastingFields(),
   };
 }
 
@@ -355,6 +375,28 @@ export function tastingHasInk(draft) {
     draft.meltTestG !== '' ||
     draft.meltStyle !== ''
   );
+}
+
+// tastingPayloadFromDraft(draft) -> a plain-object copy of the tasting
+// side's own current values (contract "Feedback and undo lifecycle";
+// RESEARCH.md A4, "React realization of the carried edges") — never a
+// captured DOM reference, so the payload survives the per-arrangement
+// axes re-render a breakpoint crossing triggers (the carried
+// undo-retired-on-resize edge this plan closes). The threat model's own
+// mitigation (T-03.3.1-10): this is the pen's own draft copy, never a
+// stored record's raw object.
+export function tastingPayloadFromDraft(draft) {
+  return {
+    tastedDate: draft.tastedDate,
+    temperingMinutes: draft.temperingMinutes,
+    tastingTempC: draft.tastingTempC,
+    marks: { ...draft.marks },
+    note: draft.note,
+    defects: [...draft.defects],
+    bitterDeclared: draft.bitterDeclared,
+    meltTestG: draft.meltTestG,
+    meltStyle: draft.meltStyle,
+  };
 }
 
 // parseAllMeasuredFields(draft) -> { fieldErrors, hasErrors, parsed }.
@@ -519,6 +561,22 @@ export function RecipePage() {
   const addTastingAttemptRef = useRef(0);
   const [formStatus, setFormStatus] = useState('');
   const formStatusTimerRef = useRef(null);
+  // The tasting-status channel (contract "Feedback and undo lifecycle"):
+  // in this build the only announcement it ever carries is "Tasting
+  // restored." (Task 2's handleUndoRemove) — the always-visible mode's own
+  // two tasting-status strings are never built (Pitfall 6). pendingUndo
+  // holds the removed tasting's own values as a plain object (Task 2's
+  // restore reads it), or null while no removal is pending — "an undo
+  // exists" is exactly pendingUndo !== null.
+  const [tastingStatus, setTastingStatus] = useState('');
+  const tastingStatusTimerRef = useRef(null);
+  const [pendingUndo, setPendingUndo] = useState(null);
+  // Remove tasting's own focus landing (D-01, contract "Focus landings":
+  // both hidden-mode removal paths move focus to Add tasting) — the same
+  // WR-01 attempt-counter pattern as addTastingAttempt above, consumed by
+  // PenFoot's own focus effect on the Add tasting control.
+  const [removeTastingAttempt, setRemoveTastingAttempt] = useState(null);
+  const removeTastingAttemptRef = useRef(0);
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
   // reason, citation and headnote start blank/null — never defaulted from
   // the parent — while rows is a map keyed by row id holding the raw
@@ -846,6 +904,9 @@ export function RecipePage() {
     setBlockedDateMessage(null);
     setBlockedDateAttempt(null);
     setAddTastingAttempt(null);
+    setPendingUndo(null);
+    setTastingStatus('');
+    setRemoveTastingAttempt(null);
     setFormStatus('');
     setMode('recording');
   }
@@ -995,6 +1056,9 @@ export function RecipePage() {
     setBlockedDateMessage(null);
     setBlockedDateAttempt(null);
     setAddTastingAttempt(null);
+    setPendingUndo(null);
+    setTastingStatus('');
+    setRemoveTastingAttempt(null);
     setFormStatus('');
     setMode('recording');
   }
@@ -1006,9 +1070,35 @@ export function RecipePage() {
   // only the status line is cleared here, never written to.
   function handleAddTasting() {
     setFormStatus('');
+    // A stale "Tasting restored." announcement must never linger beside a
+    // freshly reopened section (Rule 2): tastingStatus is React state, not
+    // tied to the tasting body's own mount/unmount, so it would otherwise
+    // survive from an earlier restore into this unrelated reopen.
+    setTastingStatus('');
     addTastingAttemptRef.current += 1;
     setAddTastingAttempt(addTastingAttemptRef.current);
     setDraft((prev) => ({ ...prev, tastingOpen: true }));
+  }
+
+  // The two hidden-mode removal paths (contract "Feedback and undo
+  // lifecycle", the removal path matrix — Pitfall 6: the always-visible
+  // mode's two rows are never built): a Remove press with no ink
+  // (tastingHasInk false) collapses the section, blanks the tasting side,
+  // writes the empty-removal sentence with no undo; a Remove press with
+  // ink does the same but captures the tasting's own values in
+  // pendingUndo first (tastingPayloadFromDraft, Task 2's restore reads
+  // it) and writes the data-removal sentence with its undo clause. Both
+  // sentences self-clear after five seconds (plan 02's guarded announce
+  // helper) and both move focus to Add tasting — the opener PenFoot
+  // renders the instant tastingOpen goes false.
+  function handleRemoveTasting() {
+    setTastingStatus('');
+    const hasInk = tastingHasInk(draft);
+    setPendingUndo(hasInk ? tastingPayloadFromDraft(draft) : null);
+    setDraft((prev) => ({ ...prev, tastingOpen: false, ...blankTastingFields() }));
+    announce(hasInk ? TASTING_REMOVED_DATA_STATUS : TASTING_REMOVED_EMPTY_STATUS, { selfClear: true });
+    removeTastingAttemptRef.current += 1;
+    setRemoveTastingAttempt(removeTastingAttemptRef.current);
   }
 
   // The one save (D-01/D-02/D-03/D-04): every battery measurement
@@ -1096,6 +1186,9 @@ export function RecipePage() {
     setBlockedDateMessage(null);
     setBlockedDateAttempt(null);
     setAddTastingAttempt(null);
+    setPendingUndo(null);
+    setTastingStatus('');
+    setRemoveTastingAttempt(null);
     setFormStatus('');
   }
 
@@ -1434,12 +1527,15 @@ export function RecipePage() {
             blockedDateAttempt={blockedDateAttempt}
             addTastingAttempt={addTastingAttempt}
             formStatus={formStatus}
+            tastingStatus={tastingStatus}
+            pendingUndo={pendingUndo}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
             onChangeRecordMark={handleChangeRecordMark}
             onClearAxisMark={handleClearAxisMark}
             onChangeDefect={handleChangeDefect}
             onToggleBitter={handleToggleBitter}
+            onRemoveTasting={handleRemoveTasting}
             openPen={openPen}
             penReason={penReason}
             onStartAmending={handleStartAmending}
@@ -1533,6 +1629,7 @@ export function RecipePage() {
           canSaveOver={canSaveOver}
           penHint={penHint}
           tastingOpen={draft?.tastingOpen ?? false}
+          removeTastingAttempt={removeTastingAttempt}
           onCancelDeveloping={handleCancelDeveloping}
           onSaveAsNewVersion={handleSaveAsNewVersion}
           onSaveOverVersion={handleSaveOverVersion}

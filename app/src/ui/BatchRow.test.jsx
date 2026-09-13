@@ -64,6 +64,8 @@ function renderBatchRow(props) {
         onClearAxisMark={noop}
         onChangeDefect={noop}
         onToggleBitter={noop}
+        onRemoveTasting={noop}
+        onUndoRemove={noop}
         openPen={null}
         penReason={null}
         onStartAmending={noop}
@@ -265,11 +267,10 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     expect(markup).toContain('— leave anything you did not record blank');
   });
 
-  it('renders no Remove tasting control and no undo slots — those are plan 04\'s (D-01)', () => {
+  it('renders the Remove tasting control, verbatim — the hidden-mode label only (Pitfall 6, contract "DOM order inventory")', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).not.toContain('Remove tasting');
-    expect(markup).not.toContain('undo-head-slot');
-    expect(markup).not.toContain('undo-footer-slot');
+    expect(markup).toContain('>Remove tasting<');
+    expect(markup).not.toContain('Clear tasting');
   });
 
   it('renders Tempering only inside the tasting section, never the churn section (contract "Where sources disagree" § 1)', () => {
@@ -304,6 +305,51 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     const ingredientNotesIndex = markup.indexOf('aria-label="Ingredient notes"');
     const ceremonyIndex = markup.indexOf('class="save-ceremony"');
     expect(ceremonyIndex).toBeGreaterThan(ingredientNotesIndex);
+  });
+});
+
+describe('BatchRow — the tasting-status channel and the Remove/undo head slot (contract "Feedback and undo lifecycle", "DOM order inventory")', () => {
+  it('renders the tasting-status region as role=status/aria-live=polite, after the heading and before the undo/Remove controls', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+      tastingStatus: 'Tasting restored.',
+    });
+    expect(markup).toMatch(/<p class="tasting-status" role="status" aria-live="polite">Tasting restored\.<\/p>/);
+    const headIndex = markup.indexOf('<h3>Tasting');
+    const statusIndex = markup.indexOf('class="tasting-status"');
+    const removeIndex = markup.indexOf('>Remove tasting<');
+    expect(statusIndex).toBeGreaterThan(headIndex);
+    expect(removeIndex).toBeGreaterThan(statusIndex);
+  });
+
+  it('renders the tasting-status region empty (no text node) when tastingStatus is blank', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toMatch(/<p class="tasting-status" role="status" aria-live="polite"><\/p>/);
+  });
+
+  it('carries two aria-live="polite" regions total — tasting-status in the head, form-status at the foot (this plan\'s own verify)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const occurrences = markup.split('aria-live="polite"').length - 1;
+    expect(occurrences).toBe(2);
+  });
+
+  it('renders no undo control at all with no removal pending', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).not.toContain('undo-control');
+    expect(markup).not.toContain('Undo clear tasting');
+  });
+
+  it('renders the Undo control in the tasting head — the contract\'s own static mount — while the section is visible and a removal is pending (a reopened section after a data removal)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).toContain('Undo clear tasting');
+    const undoIndex = markup.indexOf('Undo clear tasting');
+    const removeIndex = markup.indexOf('>Remove tasting<');
+    expect(removeIndex).toBeGreaterThan(undoIndex);
   });
 });
 

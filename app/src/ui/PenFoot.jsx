@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 // The one save ceremony (D-01, 03.3.1-02): Cancel | Save batch, same
 // markup and same label wherever it mounts — the record pen's foot
 // (this file's own PenFoot below) and the end of the record (BatchRow,
@@ -42,6 +44,7 @@ export function PenFoot({
   canSaveOver,
   penHint,
   tastingOpen,
+  removeTastingAttempt = null,
   onCancelDeveloping,
   onSaveAsNewVersion,
   onSaveOverVersion,
@@ -49,6 +52,17 @@ export function PenFoot({
   onSaveBatch,
   onAddTasting,
 }) {
+  // Remove tasting's own focus landing (D-01, contract "Focus landings":
+  // both hidden-mode removal paths move focus to Add tasting) — the same
+  // WR-01 attempt-counter pattern as BatchRow's own churnDateRef/
+  // tastedDateRef effects, so a second consecutive removal still re-fires
+  // even though Add tasting was already on screen. Must sit above the
+  // early return below — hooks cannot be called conditionally.
+  const addTastingRef = useRef(null);
+  useEffect(() => {
+    if (removeTastingAttempt != null) addTastingRef.current?.focus();
+  }, [removeTastingAttempt]);
+
   if (openPen === null) return null;
 
   return (
@@ -81,7 +95,7 @@ export function PenFoot({
           <>
             <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={penHint} />
             {!tastingOpen && (
-              <button type="button" className="text-control" onClick={onAddTasting}>
+              <button type="button" className="text-control" ref={addTastingRef} onClick={onAddTasting}>
                 Add tasting
               </button>
             )}

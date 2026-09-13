@@ -210,12 +210,16 @@ export function BatchRow({
   blockedDateAttempt = null,
   addTastingAttempt = null,
   formStatus = '',
+  tastingStatus = '',
+  pendingUndo = null,
   onChangeRecordField,
   onChangeSegment,
   onChangeRecordMark,
   onClearAxisMark,
   onChangeDefect,
   onToggleBitter,
+  onRemoveTasting,
+  onUndoRemove,
   openPen = null,
   penReason = null,
   onStartAmending,
@@ -386,11 +390,32 @@ export function BatchRow({
                 block (Task 3). */}
             {draft.tastingOpen && (
               <>
+                {/* The tasting head (contract "DOM order inventory"): the
+                    heading, the tasting-status live region beside the
+                    action, the undo head slot — the contract's own static
+                    mount; in hidden mode a removal always collapses the
+                    section, so this slot renders in practice only on a
+                    reopened section (Add tasting pressed again) while a
+                    prior removal's undo is still pending — then the
+                    Remove/Clear control, "Remove tasting" verbatim in
+                    hidden mode (Pitfall 6: the always-visible mode's
+                    "Clear tasting" label is never built). */}
                 <div className="tasting-head">
                   <h3>
                     Tasting <span className="tasting-head__helper">· optional</span>{' '}
                     <span className="tasting-head__helper">— leave anything you did not record blank</span>
                   </h3>
+                  <p className="tasting-status" role="status" aria-live="polite">
+                    {tastingStatus}
+                  </p>
+                  {pendingUndo && (
+                    <button type="button" className="text-control undo-control" onClick={onUndoRemove}>
+                      Undo clear tasting
+                    </button>
+                  )}
+                  <button type="button" className="text-control" onClick={onRemoveTasting}>
+                    Remove tasting
+                  </button>
                 </div>
                 <div className="tasting-field-row">
                   <label className="batch-margin__field">

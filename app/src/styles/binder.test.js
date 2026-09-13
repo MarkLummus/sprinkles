@@ -188,9 +188,22 @@ describe('links — a hairline underline everywhere, visited reads the same (D-1
     expect(rule.declarations).toMatch(/color:\s*var\(--ink\)/);
   });
 
-  test('no selector other than `a`/`a:visited`/`.text-control` declares an underline (D-18, 03.1 Gap 1 override)', () => {
+  test('no selector other than `a`/`a:visited`/`.text-control`/the battery\'s picked-state selectors declares an underline (D-18, 03.1 Gap 1 override; 03.3.1-06 carried P3)', () => {
+    // The battery's checked/pressed states (contract "Controls spec";
+    // sketch-findings-sprinkles CSS Patterns) are the one other place
+    // underline carries meaning — bold plus underline plus outline on a
+    // picked stop, segmented option, or defect chip, never a fill
+    // (No-Verdict Rule). The carried P3 (drop the underline on FILLED
+    // controls) stays satisfied by omission: none of these three
+    // selectors ever matches an .ink-field.
     const underlineRules = rules.filter((r) => /text-decoration:\s*underline/.test(r.declarations));
-    expect(underlineRules.map((r) => r.selector)).toEqual(['.text-control', 'a']);
+    expect(underlineRules.map((r) => r.selector)).toEqual([
+      '.text-control',
+      'a',
+      ".axis-mark__stop:has(input[type='radio']:checked)",
+      ".segmented__option input[type='radio']:checked ~ span",
+      ".chip-toggle[aria-pressed='true']",
+    ]);
   });
 });
 

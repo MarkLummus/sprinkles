@@ -1533,60 +1533,120 @@ textarea {
   margin: var(--gap-hair) 0 0;
 }
 
-/* The nine-stop mark control (D-16, route-recipe-batch.md § 6). The
-   checked stop is distinguished by weight and outline, never by hue
-   alone — every rule below reads through an existing token. */
+/* The battery's axis-mark control (contract "Axes spec"/"Controls spec";
+   sketch-findings-sprinkles references/batch-record-tasting-battery.md
+   "CSS Patterns"; 03.3.1-06 Task 1): replaces the nine-stop D-16 rules
+   this selector once carried — AxisMark.jsx was rebuilt to the battery's
+   six-axis shape in 03.3.1-03 Task 2, and this is the first plan to
+   style that shape. The checked stop is distinguished by weight,
+   underline and outline, never by hue alone (No-Verdict Rule) — every
+   rule below reads through an existing token or one of this plan's own
+   battery tokens (tokens.css). */
 .axis-mark {
   border: none;
   padding: 0;
-  margin: var(--gap-xs) 0 0;
+  margin: var(--gap-m) 0 0;
+}
+
+.axis-mark__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-xs);
+  margin-bottom: var(--gap-xs);
 }
 
 /* The axis name is the finding's named caption exception: it drops from
    the table-body register (15px, weight 400) to the caption role at
-   weight 600, and picks up the same 6px caption-to-content gap the other
-   caption sites carry. */
-.axis-mark__legend {
+   weight 600 — unchanged from the retired .axis-mark__legend rule this
+   replaces; only the selector moved, to match AxisMark.jsx's own
+   .axis-mark__name. */
+.axis-mark__name {
   font-family: var(--face-grotesk);
   font-size: var(--type-label);
   font-weight: 600;
-  padding: 0;
-  margin-bottom: var(--gap-xs);
 }
 
-.axis-mark__row {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-mark-stop);
-  flex-wrap: wrap;
-}
-
-.axis-mark__anchor {
+/* Inline state text (contract "Axes spec"): "(3)" reads pen-blue once
+   marked, "(Not recorded)" reads muted italic. AxisMark.jsx renders both
+   strings under the one .axis-mark__state class with no marked/unmarked
+   modifier of its own, so the marked case is read structurally instead:
+   only a marked axis renders the sibling Clear control (the component's
+   own `isMarked &&` guard), so :has(~ .axis-mark__clear) restates that
+   same fact in CSS rather than opening a second source of truth. */
+.axis-mark__state {
   font-family: var(--face-grotesk);
-  font-size: var(--size-mark-stop);
+  font-size: var(--type-control);
+  font-style: italic;
+}
+
+.axis-mark__state:has(~ .axis-mark__clear) {
+  color: var(--pen-blue);
+  font-style: normal;
+}
+
+/* Five numbered stops on the battery's own track (contract "Responsive
+   ladder": 34x32 on the 186px track, 5 x 34 + 4 x 4, 4px gaps). The
+   label is the drawn box; the native radio input is stretched over it,
+   invisible, so click and keyboard target the whole box while the
+   browser's own grouped-radio semantics keep doing all the keyboard work
+   (AxisMark.jsx's header comment) — nothing here changes that mechanism,
+   only how it looks. */
+.axis-mark__stops {
+  display: flex;
+  gap: var(--stop-gap);
+  width: var(--track-stop);
 }
 
 .axis-mark__stop {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--gap-hair);
+  justify-content: center;
+  width: var(--stop-w);
+  height: var(--stop-h);
+  border: var(--rule-ink-field) solid var(--ink);
+  border-radius: 0;
   font-family: var(--face-grotesk);
-  font-size: var(--size-mark-stop);
   font-variant-numeric: tabular-nums;
+  cursor: pointer;
 }
 
 .axis-mark__stop input[type='radio'] {
   appearance: none;
-  width: var(--size-mark-stop);
-  height: var(--size-mark-stop);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
-  border: var(--rule-graduation) solid var(--ink);
-  border-radius: 0;
-  background: none;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.axis-mark__stop input[type='radio']:checked {
-  background: var(--ink);
+/* The picked-state affordance (sketch-findings-sprinkles CSS Patterns;
+   03.3.1-06 carried P3): bold plus underline plus outline, read off the
+   label's own :has() — never a fill. Pen blue never paints a control's
+   background (No-Verdict Rule); only a recorded VALUE reads pen blue,
+   and a stop's own digit is drawn ink, not a value of its own. */
+.axis-mark__stop:has(input[type='radio']:checked) {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: var(--offset-link-underline);
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* The anchors row (contract "Axes spec"): the three anchor words only,
+   matched to the stops' own track width so the low/mid/high words sit
+   under their own end/middle of the scale. */
+.axis-mark__anchors {
+  display: flex;
+  justify-content: space-between;
+  width: var(--track-stop);
+  margin-top: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+  font-style: italic;
+  white-space: nowrap;
 }
 
 /* The clear control (G-02-6), beside the stops rather than styled as a
@@ -1598,6 +1658,129 @@ textarea {
   font-family: var(--face-grotesk);
   font-size: var(--size-mark-stop);
   margin-top: 0;
+}
+
+/* The battery's one 3-way segmented control (Segmented.jsx; contract
+   "Controls spec"): a role="radiogroup" of native radios, restyled — the
+   label is the drawn, bordered option; the input is stretched over it,
+   invisible, so the browser's own grouped-radio keyboard semantics carry
+   the mechanism (Segmented.jsx's header comment). Adjacent options share
+   one hairline border (the negative margin's classic overlap trick), and
+   the picked state reads bold plus underline on the option's own text
+   plus an outline on the option box — never a fill (No-Verdict Rule). */
+.segmented {
+  display: flex;
+}
+
+.segmented__option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--rule-ink-field) solid var(--ink);
+  border-radius: 0;
+  padding: var(--gap-xs) var(--gap-s);
+  margin-right: calc(-1 * var(--rule-ink-field));
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  cursor: pointer;
+}
+
+.segmented__option:last-child {
+  margin-right: 0;
+}
+
+.segmented__option input[type='radio'] {
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.segmented__option input[type='radio']:checked ~ span {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: var(--offset-link-underline);
+}
+
+.segmented__option:has(input[type='radio']:checked) {
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+  z-index: 1;
+}
+
+/* The defect chips (BatchRow.jsx; contract "Controls spec"): native
+   toggle buttons, so the global `button` rule already draws the hairline
+   box with no fill — this section only sizes the row and the picked
+   state. The declared Bitter chip trails after the wider
+   --declared-flaw-gap, "marking it as a different kind of thing". */
+.defects-row__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-chip-row);
+}
+
+.chip-toggle {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.chip-toggle[aria-pressed='true'] {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: var(--offset-link-underline);
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.chip-toggle--declared {
+  margin-left: var(--declared-flaw-gap);
+}
+
+.chip-toggle__helper {
+  font-size: var(--size-small-print);
+  font-style: italic;
+}
+
+/* The one save ceremony (PenFoot.jsx's SaveCeremony; D-01): one rule
+   read by both mounts — the record body's own end-of-record ceremony
+   (BatchRow.jsx) and the foot's ceremony (PenFoot.jsx) — so the two can
+   never drift apart. Mirrors .pen-foot__controls/.pen-foot__blocked's
+   own shape: the hint is a plain flex item, first in DOM order. */
+.save-ceremony {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  margin-top: var(--gap-m);
+}
+
+.save-ceremony__hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+}
+
+/* The record body's own live region (contract "DOM order inventory"),
+   directly above PenFoot's ceremony. */
+.form-status {
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+  margin: var(--gap-m) 0 0;
+}
+
+/* A malformed measurement's own sentence (contract "Controls spec"),
+   appended inside the field's label and wired by aria-describedby — the
+   system's own words, in the grotesk, at small-print size; no colour of
+   its own (No-Verdict Rule — the field's aria-invalid is the fact, not a
+   red line). */
+.field-error {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin-top: var(--gap-hair);
 }
 
 /* Touch targets below the 760px step-down (sketch-findings-sprinkles,

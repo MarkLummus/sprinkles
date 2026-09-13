@@ -157,7 +157,11 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
   });
 
   test('the axis name is the finding\'s named exception: --type-label at weight 600, down from 15px weight 400', () => {
-    const rule = ruleFor('.axis-mark__legend');
+    // .axis-mark__legend is retired (03.3.1-06 Task 1): AxisMark.jsx was
+    // rebuilt to the battery's shape in 03.3.1-03 Task 2, and its own
+    // caption span reads .axis-mark__name — the same weight/size
+    // exception this test has always named, on its current selector.
+    const rule = ruleFor('.axis-mark__name');
     expect(rule.declarations).toMatch(/font-size:\s*var\(--type-label\)/);
     expect(rule.declarations).toMatch(/font-weight:\s*600/);
     expect(rule.declarations).not.toMatch(/var\(--size-table-body\)/);
@@ -239,8 +243,12 @@ describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption 
     }
   });
 
-  test('the axis legend picks up the same gap for the first time', () => {
-    expect(ruleFor('.axis-mark__legend').declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
+  test('the axis head row picks up the same 6px caption-to-content gap, ahead of the stops (03.3.1-06 Task 1)', () => {
+    // The rebuilt axis-mark stacks three rows (head, stops, anchors)
+    // rather than the retired .axis-mark__legend's single caption-above-
+    // content shape, so the 6px gap now belongs to the head row as a
+    // whole (name + inline state + Clear), not the name span alone.
+    expect(ruleFor('.axis-mark__head').declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
   });
 });
 

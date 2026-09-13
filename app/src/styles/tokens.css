@@ -220,4 +220,45 @@
      app.css's @media (max-width: 759.98px) block. */
   --touch-min: 44px;
   --touch-stop-width: 40px;
+
+  /* The battery's geometry (sketch-findings-sprinkles,
+     references/batch-record-tasting-battery-structure.md, "Responsive
+     ladder"/"Axes spec"; 03.3.1-06): every verified number from the
+     structural contract, named so app.css never carries the literal. The
+     breakpoint literals themselves (759.98px, 600px) stay in app.css's
+     own @media preludes, the one sanctioned exception the touch block
+     above already established.
+     --pen-w is declared for the contract's own "the pen is 640px wide"
+     truth but is NOT YET applied to a selector in this plan's two CSS
+     tasks: the record pen and the batch's read view currently share one
+     container (.batch-margin, BatchRow.jsx) with no mode-scoped class to
+     hang a width cap on, and capping that container unconditionally
+     would also shrink the already-shipped, full-width read view (page-
+     shell-front-matter.md's "front matter spans the whole page" rule).
+     Applying it safely needs a small JSX change (a recording-mode class)
+     outside this plan's CSS-only task scope — flagged here for the
+     browser-conformance task to confirm against the real pen and decide
+     whether that follow-up is needed. */
+  --pen-w: 640px;
+  --track-stop: 186px;
+  --track-stop-narrow: 216px;
+  --stop-w: 34px;
+  --stop-h: 32px;
+  --stop-gap: 4px;
+  /* The stop's own grown height below 760px: rides the existing touch
+     block's 44px (the --rule-foot-band pattern above) so the stop's
+     height and every other control's min-height can never drift apart
+     while reading its own name at the call site. */
+  --touch-stop-height: var(--touch-min);
+  --gap-chip-row: var(--gap-s);
+  /* The wider gap trailing the declared Bitter chip (contract "Controls
+     spec": "trailing the row after a wider gap ... marking it as a
+     different kind of thing") — a section-level gap, not a row-internal
+     one, so it reads --gap-l rather than --gap-chip-row above it. */
+  --declared-flaw-gap: var(--gap-l);
+  /* The 12px minimum clearance the contract verifies between a desktop
+     axis-mark stop and the core/declared hairline (Responsive ladder):
+     the axes grid's own column-gap, so the clearance is exactly this
+     token's arithmetic, never a second number. */
+  --axes-cols-clearance: 12px;
 }

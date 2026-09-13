@@ -46,34 +46,43 @@ function mediaRuleFor(selector) {
   return rules.find((r) => r.media !== undefined && r.selector === selector);
 }
 
-describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch findings)', () => {
-  test('the two touch tokens resolve through resolveTokenPx to 44 and 40', () => {
+describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch findings; 03.3.1-06 Task 2)', () => {
+  test('the touch tokens resolve through resolveTokenPx to 44 and 40, and the stop-height alias rides --touch-min', () => {
     expect(resolveTokenPx(tokens, '--touch-min')).toBe(44);
     expect(resolveTokenPx(tokens, '--touch-stop-width')).toBe(40);
+    expect(resolveTokenPx(tokens, '--touch-stop-height')).toBe(44);
   });
 
-  test("inside the media block, `button, select, .ink-field` declares min-height reading --touch-min", () => {
-    const rule = mediaRuleFor('button, select, .ink-field');
+  test("inside the media block, `button, select, .ink-field, .segmented__option` declares min-height reading --touch-min", () => {
+    const rule = mediaRuleFor('button, select, .ink-field, .segmented__option');
     expect(rule, 'expected the media-block control rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 759.98px)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
     expect(rule.declarations).not.toMatch(/:\s*-?\d+(?:\.\d+)?px/);
   });
 
-  test("inside the media block, the radio-stop rule declares the validated 40x44 box", () => {
-    const rule = mediaRuleFor(".axis-mark__stop input[type='radio']");
-    expect(rule, 'expected the media-block radio-stop rule').toBeTruthy();
+  test('inside the media block, the axis-mark stop box declares the validated 40x44 dimensions (03.3.1-06 Task 1 moved the box from the input to the label)', () => {
+    const rule = mediaRuleFor('.axis-mark__stop');
+    expect(rule, 'expected the media-block axis-mark__stop rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 759.98px)');
     expect(rule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
-    expect(rule.declarations).toMatch(/height:\s*var\(--touch-min\)/);
+    expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
     expect(rule.declarations).not.toMatch(/:\s*-?\d+(?:\.\d+)?px/);
   });
 
-  test('the media block carries exactly the two rules the finding names', () => {
-    const mediaRules = rules.filter((r) => r.media !== undefined);
+  test('inside the media block, the stops and anchors tracks both widen to the 216px --track-stop-narrow', () => {
+    const rule = mediaRuleFor('.axis-mark__stops, .axis-mark__anchors');
+    expect(rule, 'expected the media-block track-width rule').toBeTruthy();
+    expect(rule.media).toBe('(max-width: 759.98px)');
+    expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
+  });
+
+  test('the media block carries exactly the three rules 03.3.1-06 Task 2 names', () => {
+    const mediaRules = rules.filter((r) => r.media !== undefined && r.media === '(max-width: 759.98px)');
     expect(mediaRules.map((r) => r.selector)).toEqual([
-      'button, select, .ink-field',
-      ".axis-mark__stop input[type='radio']",
+      'button, select, .ink-field, .segmented__option',
+      '.axis-mark__stops, .axis-mark__anchors',
+      '.axis-mark__stop',
     ]);
   });
 
@@ -82,6 +91,34 @@ describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch 
     // height and padding-based growth would wreck its flow.
     const controlRules = rules.filter((r) => r.media !== undefined && r.selector.includes('.text-control'));
     expect(controlRules).toEqual([]);
+  });
+});
+
+describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () => {
+  test('.recipe-page carries its own reduced padding in the 600px block', () => {
+    const rule = mediaRuleFor('.recipe-page');
+    expect(rule, 'expected a media-scoped .recipe-page rule').toBeTruthy();
+    expect(rule.media).toBe('(max-width: 600px)');
+    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-m\)/);
+  });
+
+  test('the record field text drops to the control role in the 600px block', () => {
+    const rule = mediaRuleFor('.batch-margin__field, .ink-field');
+    expect(rule, 'expected a media-scoped field-text rule').toBeTruthy();
+    expect(rule.media).toBe('(max-width: 600px)');
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+  });
+
+  test('both save ceremonies wrap through one rule (D-01)', () => {
+    const rule = mediaRuleFor('.save-ceremony, .pen-foot__controls');
+    expect(rule, 'expected a media-scoped save-ceremony/pen-foot wrap rule').toBeTruthy();
+    expect(rule.media).toBe('(max-width: 600px)');
+    expect(rule.declarations).toMatch(/flex-wrap:\s*wrap/);
+  });
+
+  test('app.css carries exactly two top-level @media blocks, at the two named breakpoints', () => {
+    const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
+    expect(mediaConditions.sort()).toEqual(['(max-width: 600px)', '(max-width: 759.98px)']);
   });
 });
 

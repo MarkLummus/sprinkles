@@ -1783,31 +1783,133 @@ textarea {
   margin-top: var(--gap-hair);
 }
 
+/* The axes grid's desktop row-major arrangement (AxesGrid, BatchRow.jsx;
+   contract "Axes spec"/"Responsive ladder"): a real DOM swap, not a
+   media-scoped layout — AxesGrid only ever renders this markup (no
+   `--stacked` modifier) while `below` is false, so the 3-column grid
+   needs no media guard of its own; the stacked arrangement below is a
+   different DOM shape entirely, gated by 03.3.1-06 Task 2's own
+   extension of the touch-step media block further down this file. The
+   hairline sits at the contract's own calc position, independent of the
+   column gap; --axes-cols-clearance is that gap, so the verified 12px
+   stop-to-rule clearance is this one token's arithmetic, never a second
+   number (Responsive ladder). */
+.axes-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--axes-cols-clearance);
+  row-gap: var(--gap-m);
+}
+
+.axes-rule {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(200% / 3);
+  border-left: var(--rule-graduation) solid var(--ink);
+  pointer-events: none;
+}
+
+/* "Declared for this recipe" (contract "Axes spec"): rendered once
+   inside Body's own axis-mark box on desktop (AxisMark.jsx's
+   declaredCaption prop) and once as its own line above the stacked
+   declared group below — the same caption, the same rule either way. */
+.axes-declared-caption {
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+  font-style: italic;
+  margin: 0 0 var(--gap-xs);
+}
+
+/* The stacked arrangement below 760px (AxesGrid's `below` branch;
+   contract "Responsive ladder"): core and declared render as two
+   grouped containers on a horizontal rule, each its own auto-fit grid —
+   "collapsing further once two 280px columns no longer fit" is exactly
+   what minmax(min(100%, 280px), 1fr) does at any container width,
+   including 393px, with no second breakpoint needed. */
+.axes-grid--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+}
+
+.axes-grid__group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: var(--gap-m);
+}
+
+.axes-grid__group--declared {
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--ink);
+}
+
 /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
    references/cross-cutting-type-spacing-feedback.md): the app's first
    at-rule, placed after every existing rule so css-source.js's first-match
-   rule lookups keep finding every top-level rule first. Buttons, selects
-   and ink fields grow to a 44px minimum height (--touch-min) and the
-   axis-mark radio stops to the validated 40x44 box (--touch-stop-width
-   over --touch-min); every desktop rule above is untouched — everything
-   here lives inside this block, whose --touch-min flex-row stops wrap
-   rather than overflow (the .axis-mark__row already wraps). The 759.98px
-   prelude is the one sanctioned breakpoint literal in the file: a prelude,
-   not a declaration, so binder.test.js's no-bare-px gate never sees it,
-   and the fractional value keeps exactly 760px on the desktop side of the
+   rule lookups keep finding every top-level rule first. Buttons, selects,
+   ink fields and segmented options grow to a 44px minimum height
+   (--touch-min) and the axis-mark stop box to the validated 40x44 box
+   (--touch-stop-width over --touch-stop-height, 03.3.1-06 Task 2 — the
+   box moved from the input to the label in Task 1's rebuild, so this is
+   the label's own override now, not the input's); the stops' and
+   anchors' shared track widens to the 216px --track-stop-narrow. Every
+   desktop rule above is untouched — everything here lives inside this
+   block, whose --touch-min flex-row stops wrap rather than overflow (the
+   .axis-mark__stops row already wraps). The 759.98px prelude is the one
+   sanctioned breakpoint literal in the file: a prelude, not a
+   declaration, so binder.test.js's no-bare-px gate never sees it, and
+   the fractional value keeps exactly 760px on the desktop side of the
    boundary, matching the finding's verified-at-768 desktop compactness.
    The .text-control controls are inline underlined text and deliberately
    take no min-height: an inline box takes no height, and padding-based
-   growth would wreck their flow. */
+   growth would wreck their flow (unchanged by this plan). */
 @media (max-width: 759.98px) {
   button,
   select,
-  .ink-field {
+  .ink-field,
+  .segmented__option {
     min-height: var(--touch-min);
   }
 
-  .axis-mark__stop input[type='radio'] {
+  .axis-mark__stops,
+  .axis-mark__anchors {
+    width: var(--track-stop-narrow);
+  }
+
+  .axis-mark__stop {
     width: var(--touch-stop-width);
-    height: var(--touch-min);
+    height: var(--touch-stop-height);
+  }
+}
+
+/* The 600px block (contract "Responsive ladder"): a second, narrower
+   step below the 760px stack — the page's own frame padding shrinks
+   (the sketch's own .pen frame has no analogue in this codebase; the
+   page shell, .recipe-page, is what actually frames the record at every
+   width), the record's field text drops a size, and both save
+   ceremonies (one rule, D-01 — .save-ceremony is the one component both
+   PenFoot.jsx and BatchRow.jsx mount) are allowed to wrap rather than
+   force a single overflowing row. A second top-level @media block,
+   sibling to the one above — never nested inside it (css-source.js's
+   one-level contract, WR-02). This codebase's fields already stack
+   label-above-input (.batch-margin__field's own flex-direction: column),
+   so the contract's "field-row label widths" tweak has no side-by-side
+   label to narrow here; the font-size step covers the same "the record
+   reads comfortably at 600px" goal in this layout. */
+@media (max-width: 600px) {
+  .recipe-page {
+    padding: var(--gap-m);
+  }
+
+  .batch-margin__field,
+  .ink-field {
+    font-size: var(--type-control);
+  }
+
+  .save-ceremony,
+  .pen-foot__controls {
+    flex-wrap: wrap;
   }
 }

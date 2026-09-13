@@ -8,11 +8,18 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { BatchRow } from './BatchRow.jsx';
+import { BatchRow, AxesGrid } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { axesForBatch } from '../domain/axes.js';
 
 const noop = () => {};
+
+// The olive oil version's own declared pair (Body, Oil) resolved into the
+// six-axis list AxesGrid renders — the same reuse-of-axesForBatch trick
+// BatchRow.jsx itself takes for a version that has not been snapshotted
+// yet (03.3.1-03 Task 2).
+const batteryAxes = axesForBatch({ snapshot: { declaredAxes: oliveOilVersion.declaredAxes } });
 
 const emptyRecordDraft = {
   churnDate: '',
@@ -53,6 +60,8 @@ function renderBatchRow(props) {
         draft={null}
         onChangeRecordField={noop}
         onChangeSegment={noop}
+        onChangeRecordMark={noop}
+        onClearAxisMark={noop}
         openPen={null}
         penReason={null}
         onStartAmending={noop}
@@ -293,6 +302,112 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     const ingredientNotesIndex = markup.indexOf('aria-label="Ingredient notes"');
     const ceremonyIndex = markup.indexOf('class="save-ceremony"');
     expect(ceremonyIndex).toBeGreaterThan(ingredientNotesIndex);
+  });
+});
+
+describe('AxesGrid — the two DOM orders, one per arrangement (contract "Keyboard and tab order")', () => {
+  function nameIdIndex(markup, key) {
+    return markup.indexOf(`id="axis-name-${key}"`);
+  }
+
+  it('renders the desktop row-major order — Hardness, Scoopability, Body, Smoothness, Sweetness, Oil — when below is false', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const order = ['hardness', 'scoopability', 'body', 'smoothness', 'sweetness', 'oil'];
+    let lastIndex = -1;
+    for (const key of order) {
+      const index = nameIdIndex(markup, key);
+      expect(index).toBeGreaterThan(lastIndex);
+      lastIndex = index;
+    }
+  });
+
+  it('renders the stacked core-then-declared order — Hardness, Scoopability, Smoothness, Sweetness, then Body, Oil — when below is true', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={true} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const order = ['hardness', 'scoopability', 'smoothness', 'sweetness', 'body', 'oil'];
+    let lastIndex = -1;
+    for (const key of order) {
+      const index = nameIdIndex(markup, key);
+      expect(index).toBeGreaterThan(lastIndex);
+      lastIndex = index;
+    }
+  });
+
+  it('renders the vertical hairline only in the desktop arrangement', () => {
+    const desktopMarkup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    expect(desktopMarkup).toContain('class="axes-rule"');
+    const stackedMarkup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={true} onChangeMark={noop} onClearMark={noop} />,
+    );
+    expect(stackedMarkup).not.toContain('axes-rule');
+  });
+
+  it('renders the "Declared for this recipe" caption exactly once, in both arrangements', () => {
+    for (const below of [false, true]) {
+      const markup = renderToStaticMarkup(
+        <AxesGrid axes={batteryAxes} marks={{}} below={below} onChangeMark={noop} onClearMark={noop} />,
+      );
+      const occurrences = markup.split('axes-declared-caption').length - 1;
+      expect(occurrences).toBe(1);
+      expect(markup).toContain('Declared for this recipe');
+    }
+  });
+
+  it('reads marks from the given map, keyed by axis key, in either arrangement (marks survive by construction)', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{ hardness: 3, oil: 5 }} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const hardnessIndex = nameIdIndex(markup, 'hardness');
+    const scoopabilityIndex = nameIdIndex(markup, 'scoopability');
+    const hardnessChunk = markup.slice(hardnessIndex, scoopabilityIndex);
+    expect(hardnessChunk).toContain('(3)');
+    const oilIndex = nameIdIndex(markup, 'oil');
+    const oilChunk = markup.slice(oilIndex);
+    expect(oilChunk).toContain('(5)');
+  });
+
+  it('renders every axis unmarked, "(Not recorded)", with an empty marks map', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const occurrences = markup.split('(Not recorded)').length - 1;
+    expect(occurrences).toBe(6);
+  });
+});
+
+describe('BatchRow — the axes grid does not crash under Vitest\'s node environment (no window.matchMedia, this plan\'s own critical note)', () => {
+  it('renders the tasting section with no window in scope, with no error thrown', () => {
+    expect(() =>
+      renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } }),
+    ).not.toThrow();
+  });
+
+  it('renders the desktop row-major arrangement by default under node (matchMedia unavailable → below760 is false)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toContain('class="axes-rule"');
+  });
+
+  it('renders the six goldilocks axes inside the tasting section, after the note block (contract "DOM order inventory")', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const noteIndex = markup.indexOf('note-block');
+    const axesIndex = markup.indexOf('class="axes-grid"');
+    expect(axesIndex).toBeGreaterThan(noteIndex);
+    for (const name of ['Hardness', 'Scoopability', 'Smoothness', 'Sweetness', 'Body', 'Oil']) {
+      expect(markup).toContain(`id="axis-name-`);
+    }
+  });
+
+  it('wires a mark in the draft to the checked stop when the tasting section renders through BatchRow itself', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true, marks: { hardness: 2 } },
+    });
+    expect(markup).toContain('(2)');
   });
 });
 

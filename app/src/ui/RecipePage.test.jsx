@@ -321,11 +321,19 @@ describe('isDraftDirty — the record pen\'s check, extended to every battery fi
     expect(isDraftDirty('recording', draft, baseline)).toBe(false);
   });
 
-  it('marks are compared by own-key count and defects by length (03.3.1-02-PLAN.md Task 1) — no interactive path in this plan edits either', () => {
-    const baseline = { ...makeBlankRecordDraft(), marks: { hardness: 3 }, defects: ['Coarse, icy'] };
-    const sameCounts = { ...makeBlankRecordDraft(), marks: { hardness: 3 }, defects: ['Coarse, icy'] };
+  it('marks compare value-wise now that the axes are interactive (03.3.1-03 Task 2, a Rule 1 fix): the same value is clean, a changed value is dirty even with the same key count', () => {
+    const baseline = { ...makeBlankRecordDraft(), marks: { hardness: 3 } };
+    const sameValue = { ...makeBlankRecordDraft(), marks: { hardness: 3 } };
+    expect(isDraftDirty('recording', sameValue, baseline)).toBe(false);
+    const changedValue = { ...makeBlankRecordDraft(), marks: { hardness: 4 } };
+    expect(isDraftDirty('recording', changedValue, baseline)).toBe(true);
+  });
+
+  it('defects are still compared by length alone (03.3.1-02-PLAN.md Task 1) — Task 3 makes them interactive and upgrades this', () => {
+    const baseline = { ...makeBlankRecordDraft(), defects: ['Coarse, icy'] };
+    const sameCounts = { ...makeBlankRecordDraft(), defects: ['Coarse, icy'] };
     expect(isDraftDirty('recording', sameCounts, baseline)).toBe(false);
-    const differentCounts = { ...makeBlankRecordDraft(), marks: {}, defects: [] };
+    const differentCounts = { ...makeBlankRecordDraft(), defects: [] };
     expect(isDraftDirty('recording', differentCounts, baseline)).toBe(true);
   });
 

@@ -27,8 +27,11 @@ import {
   draftFromBatch,
   tastingHasInk,
   parseAllMeasuredFields,
+  validateRecordDraft,
   buildChurnFieldsFromDraft,
   buildTastingFieldsFromDraft,
+  CHURN_DATE_BLOCKED_MESSAGE,
+  MEASURED_INVALID_STATUS,
 } from './RecipePage.jsx';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -429,6 +432,53 @@ describe('parseAllMeasuredFields — 03.3.1-02 Task 1\'s own minimum: record per
     const signed = parseAllMeasuredFields({ ...makeBlankRecordDraft(), outOfMachineTempC: 'x' });
     expect(unsigned.fieldErrors.timeToDrawTempMinutes).toBe(timeField.error);
     expect(signed.fieldErrors.outOfMachineTempC).toBe(tempField.error);
+  });
+});
+
+// Task 2 (tdd="true"): the record pen's full save gate — measurements
+// validate first (RESEARCH.md Open Question 3), then the churn date
+// (D-05). validateRecordDraft is the one derivation both blocks flow
+// through; CHURN_DATE_BLOCKED_MESSAGE/MEASURED_INVALID_STATUS are the
+// contract's own verbatim sentences, each written once.
+describe('validateRecordDraft — the one traversal: measurements first, then the churn date (RESEARCH.md Open Question 3, D-05)', () => {
+  it('reads a clean, complete draft as valid with no blocked date', () => {
+    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09' };
+    const result = validateRecordDraft(draft);
+    expect(result.invalidFieldKey).toBe(null);
+    expect(result.fieldErrors).toEqual({});
+    expect(result.blockedDateMessage).toBe(null);
+  });
+
+  it('blocks on a blank churn date only once every measurement is clean', () => {
+    const draft = makeBlankRecordDraft();
+    const result = validateRecordDraft(draft);
+    expect(result.blockedDateMessage).toBe(CHURN_DATE_BLOCKED_MESSAGE);
+    expect(result.invalidFieldKey).toBe(null);
+  });
+
+  it('names the first invalid field in BATTERY_FIELDS order and carries its own verbatim contract sentence', () => {
+    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', outOfMachineTempC: '4o' };
+    const result = validateRecordDraft(draft);
+    const field = BATTERY_FIELDS.find((f) => f.key === 'outOfMachineTempC');
+    expect(result.invalidFieldKey).toBe('outOfMachineTempC');
+    expect(result.fieldErrors.outOfMachineTempC).toBe(field.error);
+  });
+
+  it('validates measurements before the churn date: a blank date AND a malformed measurement reports the measurement, not the date', () => {
+    const draft = { ...makeBlankRecordDraft(), churnDurationMinutes: 'x' };
+    const result = validateRecordDraft(draft);
+    expect(result.invalidFieldKey).toBe('churnDurationMinutes');
+    expect(result.blockedDateMessage).toBe(null);
+  });
+});
+
+describe('MEASURED_INVALID_STATUS and CHURN_DATE_BLOCKED_MESSAGE — the contract\'s own verbatim sentences, each written once (D-05)', () => {
+  it('matches the contract\'s own status sentence', () => {
+    expect(MEASURED_INVALID_STATUS).toBe('Check the marked measurements. Your entries have been kept.');
+  });
+
+  it('matches the working blocked-date sentence', () => {
+    expect(CHURN_DATE_BLOCKED_MESSAGE).toBe('Enter the date you churned.');
   });
 });
 

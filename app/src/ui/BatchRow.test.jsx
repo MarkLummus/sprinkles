@@ -245,15 +245,78 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
     expect(markup).toContain('aria-label="Out of machine, degrees Celsius"');
   });
 
-  // The .field-error line, aria-invalid, aria-describedby wiring and the
-  // first-invalid-field focus move are Task 2's build (03.3.1-02); Task 1
-  // renders no error state on the field itself yet — see RecipePage.test.jsx's
-  // own coverage of parseAllMeasuredFields for "storing the errors and
-  // aborting" (Task 1's own minimum).
-  it('renders no aria-invalid or field-error markup yet — Task 1 stores errors and aborts the save without wiring the field-level UI', () => {
-    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, outOfMachineTempC: '4o' } });
+  it('carries no aria-invalid or field-error when the draft holds no errors', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft, fieldErrors: {} });
     expect(markup).not.toContain('aria-invalid');
     expect(markup).not.toContain('field-error');
+  });
+
+  it('marks an invalid field with aria-invalid and aria-describedby, and prints the contract\'s own error sentence verbatim (Task 2, D-05)', () => {
+    const outOfMachineError = 'Enter a temperature, such as −6, or leave blank.';
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, outOfMachineTempC: '4o' },
+      fieldErrors: { outOfMachineTempC: outOfMachineError },
+    });
+    expect(markup).toContain('aria-invalid="true"');
+    expect(markup).toContain('aria-describedby="field-error-outOfMachineTempC"');
+    expect(markup).toMatch(
+      /<span id="field-error-outOfMachineTempC" class="field-error">Enter a temperature, such as −6, or leave blank\.<\/span>/,
+    );
+  });
+
+  it('leaves an untouched field with no aria-invalid while a sibling field is invalid (Task 2)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, outOfMachineTempC: '4o' },
+      fieldErrors: { outOfMachineTempC: 'Enter a temperature, such as −6, or leave blank.' },
+    });
+    const timeToDrawInput = markup.match(/<input[^>]*aria-label="Time to draw temp\., minutes"[^>]*\/>/)[0];
+    expect(timeToDrawInput).not.toContain('aria-invalid');
+  });
+});
+
+// Task 2 (tdd="true"): D-05's press-to-block sentence, read by ceremony A
+// from the one RecipePage state also fed to ceremony B (PenFoot) — the two
+// can never disagree. The form-status live region is the record body's
+// own last element (contract "DOM order inventory").
+describe('BatchRow — the record pen\'s own blocked-date sentence, beside ceremony A (D-05)', () => {
+  it('renders the sentence in ceremony A\'s hint slot when set', () => {
+    const markup = renderBatchRow({
+      openPen: 'record',
+      mode: 'recording',
+      draft: emptyRecordDraft,
+      blockedDateMessage: 'Enter the date you churned.',
+    });
+    expect(markup).toContain('class="save-ceremony__hint"');
+    expect(markup).toContain('Enter the date you churned.');
+  });
+
+  it('renders no hint paragraph when the message is unset', () => {
+    const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft, blockedDateMessage: null });
+    expect(markup).not.toContain('save-ceremony__hint');
+  });
+});
+
+describe('BatchRow — the form-status live region (contract "DOM order inventory", Task 2)', () => {
+  it('renders a role="status" region as the record body\'s own last element, after the shared Next time field', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: emptyRecordDraft,
+      formStatus: 'Check the marked measurements. Your entries have been kept.',
+    });
+    expect(markup).toContain('class="form-status"');
+    expect(markup).toContain('role="status"');
+    expect(markup).toContain('aria-live="polite"');
+    expect(markup).toContain('Check the marked measurements. Your entries have been kept.');
+    const nextTimeIndex = markup.indexOf('aria-label="Next time"');
+    const formStatusIndex = markup.indexOf('class="form-status"');
+    expect(formStatusIndex).toBeGreaterThan(nextTimeIndex);
+  });
+
+  it('renders the region empty (no text node) when formStatus is blank', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft, formStatus: '' });
+    expect(markup).toMatch(/<p class="form-status" role="status" aria-live="polite"><\/p>/);
   });
 });
 

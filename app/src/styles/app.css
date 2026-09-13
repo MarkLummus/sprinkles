@@ -1485,6 +1485,14 @@ textarea {
   margin-top: var(--gap-s);
 }
 
+/* The record pen's frame (contract "Responsive ladder": "the pen is
+   640px wide") — a recording-mode class, never the bare .batch-margin
+   rule, so the read view sharing this container keeps its own
+   already-shipped full width (VERIFICATION.md gap, 03.3.1). */
+.batch-margin--pen {
+  max-width: var(--pen-w);
+}
+
 .batch-margin__list {
   list-style: none;
   margin: var(--gap-xs) 0 0;

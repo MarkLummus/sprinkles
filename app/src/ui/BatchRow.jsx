@@ -419,7 +419,12 @@ export function BatchRow({
         )}
       </div>
 
-      <div className="batch-margin">
+      {/* recording-mode caps the frame at --pen-w (640px, contract
+          "Responsive ladder") — the read view below shares this same
+          container and must keep its own already-shipped full width, so
+          the cap is conditional on mode rather than the class's own rule
+          (VERIFICATION.md gap, 03.3.1). */}
+      <div className={mode === 'recording' ? 'batch-margin batch-margin--pen' : 'batch-margin'}>
         {mode === 'recording' ? (
           <>
             {/* The churned date, this event's identifying field (D-05),

@@ -495,6 +495,11 @@ export function RecipePage() {
   const [blockedDateMessage, setBlockedDateMessage] = useState(null);
   const [blockedDateAttempt, setBlockedDateAttempt] = useState(null);
   const dateBlockedAttemptRef = useRef(0);
+  // Add tasting's own attempt counter (D-01, contract "Focus landings"):
+  // the same WR-01 pattern as blockedDateAttempt above, so BatchRow's own
+  // focus effect re-fires even on a second press.
+  const [addTastingAttempt, setAddTastingAttempt] = useState(null);
+  const addTastingAttemptRef = useRef(0);
   const [formStatus, setFormStatus] = useState('');
   const formStatusTimerRef = useRef(null);
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
@@ -823,6 +828,7 @@ export function RecipePage() {
     setInvalidFieldTarget(null);
     setBlockedDateMessage(null);
     setBlockedDateAttempt(null);
+    setAddTastingAttempt(null);
     setFormStatus('');
     setMode('recording');
   }
@@ -920,8 +926,21 @@ export function RecipePage() {
     setInvalidFieldTarget(null);
     setBlockedDateMessage(null);
     setBlockedDateAttempt(null);
+    setAddTastingAttempt(null);
     setFormStatus('');
     setMode('recording');
+  }
+
+  // Add tasting (D-01, contract "Focus landings"): opens the tasting
+  // section and moves focus to the Tasted date — the section opening and
+  // the focus landing are themselves the evidence (contract "Feedback and
+  // undo lifecycle": "Adding a tasting writes no announcement at all"), so
+  // only the status line is cleared here, never written to.
+  function handleAddTasting() {
+    setFormStatus('');
+    addTastingAttemptRef.current += 1;
+    setAddTastingAttempt(addTastingAttemptRef.current);
+    setDraft((prev) => ({ ...prev, tastingOpen: true }));
   }
 
   // The one save (D-01/D-02/D-03/D-04): every battery measurement
@@ -1008,6 +1027,7 @@ export function RecipePage() {
     setInvalidFieldTarget(null);
     setBlockedDateMessage(null);
     setBlockedDateAttempt(null);
+    setAddTastingAttempt(null);
     setFormStatus('');
   }
 
@@ -1344,6 +1364,7 @@ export function RecipePage() {
             invalidFieldTarget={invalidFieldTarget}
             blockedDateMessage={blockedDateMessage}
             blockedDateAttempt={blockedDateAttempt}
+            addTastingAttempt={addTastingAttempt}
             formStatus={formStatus}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
@@ -1439,11 +1460,13 @@ export function RecipePage() {
           openPen={openPen}
           canSaveOver={canSaveOver}
           penHint={penHint}
+          tastingOpen={draft?.tastingOpen ?? false}
           onCancelDeveloping={handleCancelDeveloping}
           onSaveAsNewVersion={handleSaveAsNewVersion}
           onSaveOverVersion={handleSaveOverVersion}
           onCancelRecording={handleCancelRecording}
           onSaveBatch={handleSaveBatch}
+          onAddTasting={handleAddTasting}
         />
       </article>
     </>

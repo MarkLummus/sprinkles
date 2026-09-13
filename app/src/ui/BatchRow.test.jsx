@@ -215,6 +215,87 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
   });
 });
 
+describe('BatchRow — the tasting section, hidden until added (D-01, contract "Settled defaults")', () => {
+  it('renders no tasting section at all on a fresh record pen', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
+    expect(markup).not.toContain('tasting-head');
+    expect(markup).not.toContain('tasting-field-row');
+    expect(markup).not.toContain('note-block');
+    expect(markup).not.toContain('>Tasting<');
+    expect(markup).not.toContain('Tempering');
+    expect(markup).not.toContain('Tasting temperature');
+    expect(markup).not.toContain('How did it turn out?');
+  });
+
+  it('renders the head, field-row, and note block once tastingOpen is true, in variant A\'s order (contract "DOM order inventory")', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    const headIndex = markup.indexOf('tasting-head');
+    const tastedIndex = markup.indexOf('<span>Tasted</span>');
+    const temperingIndex = markup.indexOf('Tempering');
+    const tastingTempIndex = markup.indexOf('Tasting temperature');
+    const noteIndex = markup.indexOf('note-block');
+    const eyebrowIndex = markup.indexOf('How did it turn out?');
+    const ceremonyIndex = markup.indexOf('class="save-ceremony"');
+    expect(headIndex).toBeGreaterThanOrEqual(0);
+    expect(tastedIndex).toBeGreaterThan(headIndex);
+    expect(temperingIndex).toBeGreaterThan(tastedIndex);
+    expect(tastingTempIndex).toBeGreaterThan(temperingIndex);
+    expect(noteIndex).toBeGreaterThan(tastingTempIndex);
+    expect(eyebrowIndex).toBeGreaterThan(noteIndex);
+    expect(ceremonyIndex).toBeGreaterThan(eyebrowIndex);
+  });
+
+  it('renders the heading word and both helper strings verbatim', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toMatch(/<h3>Tasting <span class="tasting-head__helper">· optional<\/span>/);
+    expect(markup).toContain('— leave anything you did not record blank');
+  });
+
+  it('renders no Remove tasting control and no undo slots — those are plan 04\'s (D-01)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).not.toContain('Remove tasting');
+    expect(markup).not.toContain('undo-head-slot');
+    expect(markup).not.toContain('undo-footer-slot');
+  });
+
+  it('renders Tempering only inside the tasting section, never the churn section (contract "Where sources disagree" § 1)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const headIndex = markup.indexOf('tasting-head');
+    const firstTemperingIndex = markup.indexOf('Tempering');
+    expect(firstTemperingIndex).toBeGreaterThan(headIndex);
+    const churnSectionMarkup = markup.slice(0, headIndex);
+    expect(churnSectionMarkup).not.toContain('Tempering');
+  });
+
+  it('renders the note block\'s eyebrow and the contract\'s own verbatim placeholder, dir="auto"', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toMatch(/<p class="note-block__eyebrow">How did it turn out\?<\/p>/);
+    const noteTextarea = markup.match(/<textarea[^>]*aria-label="How did it turn out\?"[^>]*>/)[0];
+    expect(noteTextarea).toContain('dir="auto"');
+    expect(noteTextarea).toContain('placeholder="e.g. flavor, texture, anything that stood out"');
+  });
+
+  it('renders the Tasted date input, and Tempering/Tasting temperature as measured fields with their own units', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toMatch(/<label class="batch-margin__field"><span>Tasted<\/span><input[^>]*type="date"/);
+    expect(markup).toContain('aria-label="Tempering, minutes"');
+    expect(markup).toContain('aria-label="Tasting temperature, degrees Celsius"');
+  });
+
+  it('keeps ceremony A after the churn section when the tasting section is absent', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, churnDate: '2026-08-09' },
+    });
+    const ingredientNotesIndex = markup.indexOf('aria-label="Ingredient notes"');
+    const ceremonyIndex = markup.indexOf('class="save-ceremony"');
+    expect(ceremonyIndex).toBeGreaterThan(ingredientNotesIndex);
+  });
+});
+
 describe('BatchRow — one hint sentence while the pen is open (D-06)', () => {
   it('renders the hint sentence exactly once while a batch pen is open', () => {
     const markup = renderBatchRow({ openPen: 'record', draft: emptyRecordDraft });

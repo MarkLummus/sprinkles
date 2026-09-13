@@ -4,6 +4,7 @@ import { formatRecordDate, readMeasured, sortedBatches } from '../domain/batch.j
 import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS } from '../domain/battery.js';
 import { SaveCeremony } from './PenFoot.jsx';
+import { Segmented } from './Segmented.jsx';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -22,6 +23,18 @@ const CHURN_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
   ['timeToDrawTempMinutes', 'outOfMachineTempC', 'churnDurationMinutes'].includes(field.key),
 );
 
+// The tasting field-row's two measured fields (contract "DOM order
+// inventory" § tasting body): Tempering, unit min — "Where sources
+// disagree (HTML wins)" § 1 places it here, never in the churn section,
+// however D-10's own wording groups it.
+// Tasting temperature, unit °C, signed — the field-row's other measured
+// field, beside Tempering. Melt test (meltTestG) is also a BATTERY_FIELDS
+// entry but belongs to the melt block at the tasting body's foot
+// (03.3.1-03 Task 3), not this field-row.
+const TASTING_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
+  ['temperingMinutes', 'tastingTempC'].includes(field.key),
+);
+
 // aria-label spells the unit out in words (matching the codebase's own
 // established convention — "Time to temperature, minutes" — over the
 // visible label's abbreviated "min"/"°C").
@@ -36,8 +49,10 @@ function unitWords(unit) {
 // in place rather than being rejected before validation runs. The
 // .field-error line renders inside the label and is wired by
 // aria-describedby exactly as the contract specifies; aria-invalid tracks
-// the same fact.
-function ChurnMeasuredField({ field, value, error, onChange, inputRef }) {
+// the same fact. Shared by both sections — the three churn measurements
+// and the tasting field-row's own two (03.3.1-03 Task 1) — since the
+// contract's rule is identical either side of the churn/tasting line.
+function MeasuredField({ field, value, error, onChange, inputRef }) {
   const errorId = `field-error-${field.key}`;
   return (
     <label className="batch-margin__field">
@@ -63,33 +78,18 @@ function ChurnMeasuredField({ field, value, error, onChange, inputRef }) {
 }
 
 // One of the battery's three segmented controls (contract "Controls
-// spec"): a role="radiogroup" of native radio inputs, restyled — the
-// codebase's own established pattern for keyboard semantics it gets free
-// (AxisMark.jsx's header comment). Clicking the checked option again
-// clears it (D-10 "Blank stays blank"): a native radio's onChange does not
-// re-fire for a click that leaves its value unchanged, so the clear-on-
-// reclick logic lives in onClick, with a no-op onChange to keep React's
-// controlled-input contract happy.
+// spec"), wrapped in its own labelled field — the visible legend is this
+// wrapper's own job; Segmented.jsx (one home, three uses: Exit
+// consistency, Airiness (estimated), Melt style (optional)) owns the
+// radiogroup itself, including click-again-clears. `onPick` receives
+// whatever Segmented passes through — the picked option, or null when the
+// checked option was clicked again — so the caller decides how a null is
+// stored (D-10 "Blank stays blank").
 function SegmentedField({ legend, options, value, onPick }) {
-  const groupName = `segment-${legend.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
   return (
     <fieldset className="batch-margin__field">
       <legend>{legend}</legend>
-      <div className="segmented" role="radiogroup" aria-label={legend}>
-        {options.map((option) => (
-          <label key={option} className="segmented__option">
-            <input
-              type="radio"
-              name={groupName}
-              value={option}
-              checked={value === option}
-              onChange={() => {}}
-              onClick={() => onPick(option)}
-            />
-            <span>{option}</span>
-          </label>
-        ))}
-      </div>
+      <Segmented groupLabel={legend} options={options} value={value} onChange={onPick} />
     </fieldset>
   );
 }
@@ -104,12 +104,11 @@ function autoGrow(event) {
 }
 
 // The batch's own row (sketch 003 variant B, 03.3-01; rebuilt to the full
-// battery in 03.3.1-02): the front matter's second stacked row. One head
-// line (Batch label, churned date, later-batches count) precedes the
-// churn section, the read view, and the foot controls, in that order. The
-// tasting section (its own ceremony, its own fields) is not built here —
-// the draft already carries every tasting field (RecipePage.jsx), but no
-// control opens or renders it until plan 03.
+// battery in 03.3.1-02, the tasting section added in 03.3.1-03): the front
+// matter's second stacked row. One head line (Batch label, churned date,
+// later-batches count) precedes the churn section, the tasting section
+// (hidden until Add tasting opens it, D-01), the read view, and the foot
+// controls, in that order.
 export function BatchRow({
   version,
   batches = [],
@@ -120,6 +119,7 @@ export function BatchRow({
   invalidFieldTarget = null,
   blockedDateMessage = null,
   blockedDateAttempt = null,
+  addTastingAttempt = null,
   formStatus = '',
   onChangeRecordField,
   onChangeSegment,
@@ -132,9 +132,7 @@ export function BatchRow({
   // Focus-return for the Correct opener this row owns — closing the pen
   // returns focus to the control that opened it. Must sit above the
   // conditional render below — hooks cannot be called conditionally. The
-  // Record opener's own ref/effect pair lives in VersionRow.jsx; the Add
-  // tasting opener's pair retires with the tasting pen (03.3.1-02) and
-  // returns in plan 03 keyed on tastingOpen rather than a pen state.
+  // Record opener's own ref/effect pair lives in VersionRow.jsx.
   const amendButtonRef = useRef(null);
   const wasAmendingRef = useRef(false);
   useEffect(() => {
@@ -156,6 +154,16 @@ export function BatchRow({
   useEffect(() => {
     if (blockedDateAttempt != null) churnDateRef.current?.focus();
   }, [blockedDateAttempt]);
+
+  // Add tasting's own focus landing (D-01, contract "Focus landings"):
+  // fires once per press, keyed on the attempt counter (the same
+  // WR-01/single-target pattern as the churn date's own block above) so a
+  // second press still moves focus even though the section is already
+  // open by then.
+  const tastedDateRef = useRef(null);
+  useEffect(() => {
+    if (addTastingAttempt != null) tastedDateRef.current?.focus();
+  }, [addTastingAttempt]);
 
   // The first-invalid-measurement focus (contract "Controls spec"): a ref
   // per battery field key, keyed by the constants in BATTERY_FIELDS —
@@ -222,7 +230,7 @@ export function BatchRow({
                 />
               </label>
               {CHURN_MEASURED_FIELDS.map((field) => (
-                <ChurnMeasuredField
+                <MeasuredField
                   key={field.key}
                   field={field}
                   value={draft[field.key]}
@@ -272,11 +280,65 @@ export function BatchRow({
                 onInput={autoGrow}
               />
             </label>
-            {/* Ceremony A (D-01): after the churn section while the
-                tasting section is absent, just above the shared Next
-                time. Its hint is the record pen's own blocked-date
-                sentence — the same state ceremony B (PenFoot) reads, so
-                the two can never disagree. */}
+            {/* The tasting section (D-01, contract "Settled defaults"):
+                hidden until Add tasting opens it (PenFoot renders that
+                control) — the record opens with no heading, no helper, no
+                rule at all. Variant A's own order once open: the
+                field-row, then the note (before the texture block, which
+                arrives in Task 2), then the defects row and the melt
+                block (Task 3). */}
+            {draft.tastingOpen && (
+              <>
+                <div className="tasting-head">
+                  <h3>
+                    Tasting <span className="tasting-head__helper">· optional</span>{' '}
+                    <span className="tasting-head__helper">— leave anything you did not record blank</span>
+                  </h3>
+                </div>
+                <div className="tasting-field-row">
+                  <label className="batch-margin__field">
+                    <span>Tasted</span>
+                    <input
+                      type="date"
+                      className="ink-field"
+                      ref={tastedDateRef}
+                      value={draft.tastedDate}
+                      onChange={(event) => onChangeRecordField('tastedDate', event.target.value)}
+                    />
+                  </label>
+                  {TASTING_MEASURED_FIELDS.map((field) => (
+                    <MeasuredField
+                      key={field.key}
+                      field={field}
+                      value={draft[field.key]}
+                      error={fieldErrors[field.key]}
+                      onChange={onChangeRecordField}
+                      inputRef={(el) => {
+                        fieldRefs.current[field.key] = el;
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="note-block">
+                  <p className="note-block__eyebrow">How did it turn out?</p>
+                  <textarea
+                    className={draft.note === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+                    dir="auto"
+                    rows="2"
+                    placeholder="e.g. flavor, texture, anything that stood out"
+                    value={draft.note}
+                    aria-label="How did it turn out?"
+                    onChange={(event) => onChangeRecordField('note', event.target.value)}
+                    onInput={autoGrow}
+                  />
+                </div>
+              </>
+            )}
+            {/* Ceremony A (D-01): after the tasting section when it is
+                open, after the churn section when it is not, just above
+                the shared Next time. Its hint is the record pen's own
+                blocked-date sentence — the same state ceremony B
+                (PenFoot) reads, so the two can never disagree. */}
             <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={blockedDateMessage} />
             <label className="batch-margin__field">
               <textarea

@@ -32,16 +32,22 @@ export function SaveCeremony({ onCancel, onSave, hint }) {
 // given are the same ones the ceremony calls, and penHint is the page's
 // own one derivation (RecipePage, beside canSaveOver) — so there is one
 // save path and one save hint per pen, never a second copy (RESEARCH.md
-// Pattern 2, T-03.1-03).
+// Pattern 2, T-03.1-03). Add tasting (D-01, 03.3.1-03) mounts beside this
+// ceremony, in the same controls block, exactly while `tastingOpen` is
+// false — the contract's own footer order ("Cancel | Save batch | Add
+// tasting"); it hides itself the instant the section opens, since the
+// record then already offers the section it names.
 export function PenFoot({
   openPen,
   canSaveOver,
   penHint,
+  tastingOpen,
   onCancelDeveloping,
   onSaveAsNewVersion,
   onSaveOverVersion,
   onCancelRecording,
   onSaveBatch,
+  onAddTasting,
 }) {
   if (openPen === null) return null;
 
@@ -72,7 +78,14 @@ export function PenFoot({
           </>
         )}
         {(openPen === 'record' || openPen === 'amend') && (
-          <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={penHint} />
+          <>
+            <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={penHint} />
+            {!tastingOpen && (
+              <button type="button" className="text-control" onClick={onAddTasting}>
+                Add tasting
+              </button>
+            )}
+          </>
         )}
       </div>
     </footer>

@@ -20,11 +20,13 @@ function renderPenFoot(props) {
       openPen={null}
       canSaveOver={true}
       penHint={null}
+      tastingOpen={false}
       onCancelDeveloping={noop}
       onSaveAsNewVersion={noop}
       onSaveOverVersion={noop}
       onCancelRecording={noop}
       onSaveBatch={noop}
+      onAddTasting={noop}
       {...props}
     />
   );
@@ -97,6 +99,36 @@ describe('PenFoot — the record and amend branch, the one save ceremony (D-01, 
     const markup = renderPenFoot({ openPen: 'record' });
     expect(markup).not.toContain('isTastingSaveable');
     expect(markup).not.toContain('Save tasting');
+  });
+});
+
+describe('PenFoot — Add tasting beside the foot ceremony while the section is absent (D-01, 03.3.1-03)', () => {
+  it('renders Add tasting for the record pen when tastingOpen is false', () => {
+    const markup = renderPenFoot({ openPen: 'record', tastingOpen: false });
+    expect(markup).toContain('Add tasting');
+  });
+
+  it('renders Add tasting for the amend pen when tastingOpen is false', () => {
+    const markup = renderPenFoot({ openPen: 'amend', tastingOpen: false });
+    expect(markup).toContain('Add tasting');
+  });
+
+  it('renders no Add tasting control once the section is open', () => {
+    const markup = renderPenFoot({ openPen: 'record', tastingOpen: true });
+    expect(markup).not.toContain('Add tasting');
+  });
+
+  it('renders Add tasting after the save ceremony, not before (the contract\'s own footer order)', () => {
+    const markup = renderPenFoot({ openPen: 'record', tastingOpen: false });
+    const ceremonyIndex = markup.indexOf('class="save-ceremony"');
+    const addTastingIndex = markup.indexOf('Add tasting');
+    expect(ceremonyIndex).toBeGreaterThanOrEqual(0);
+    expect(addTastingIndex).toBeGreaterThan(ceremonyIndex);
+  });
+
+  it('renders no Add tasting control for the plan pen', () => {
+    const markup = renderPenFoot({ openPen: 'plan', tastingOpen: false });
+    expect(markup).not.toContain('Add tasting');
   });
 });
 

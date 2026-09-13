@@ -1,16 +1,15 @@
-// The 2 Aug 2026 working case, confirmed by Mark in the Phase 2 discussion
-// (02-CONTEXT.md D-10 to D-13). Built through createBatch and addTasting —
-// the same functions a maker's own save calls — so the stored record is
-// indistinguishable from one that was typed. The id and recordedAt below
-// are fixed so the seeded batch's URL and recorded-on line are stable
-// across installs; every batch the maker records still gets a fresh
-// crypto.randomUUID() and new Date() from the one save handler that calls
-// these functions.
-import { createBatch, addTasting } from '../domain/batch.js';
+// The 2 Aug 2026 working case, confirmed by Mark (03.3.1-CONTEXT.md D-07)
+// — the sheet's own values transcribed onto the battery. Built through one
+// createBatch call, the same function a maker's own save calls, so the
+// stored record is indistinguishable from one that was typed. The id and
+// recordedAt below are fixed so the seeded batch's URL and recorded-on
+// line are stable across installs; every batch the maker records still
+// gets a fresh crypto.randomUUID() and new Date() from the one save
+// handler that calls createBatch.
+import { createBatch } from '../domain/batch.js';
 import { oliveOilVersion } from './olive-oil.js';
 
 const BATCH_ID = 'b8cc3566-48a4-4b23-b6e5-749a332afe89';
-const TASTING_ID = 'f2f6f9c1-6c9f-4b8a-9c1e-2a1f7e6d9a02';
 
 const churnFields = {
   churnDate: '2026-08-02',
@@ -35,37 +34,36 @@ const churnFields = {
     // Step 3 carries nothing: its amounts changed only because the table
     // did, and the as-made column already says so (D-13).
   },
-  comeUpMinutes: 20,
-  drawTempC: -6,
-  // The sheet wrote a question mark: unmeasured, stored absent, never 0.
-  overrunPercent: null,
-  drawNotes: 'Soft, not greasy',
-  ingredientNotes: 'Oil bottle open date 24 Jul 2026',
+  timeToDrawTempMinutes: 20,
+  outOfMachineTempC: -6,
+  churnDurationMinutes: 30,
+  // Neither was a number on the sheet — the overrun "?" was never
+  // measured, so both segmented picks stay absent rather than guessed.
+  exitConsistency: null,
+  airiness: null,
+  atTheMachine: 'Soft, not greasy',
+  ingredientNotes: 'oil bottle opened 24 Jul',
   nextTimeNote: null,
 };
 
-const batchBeforeTasting = createBatch(oliveOilVersion, churnFields, {
+// One tasting, undated, so it reads "date unknown": tasting temperature
+// −12 °C, melt test 3 g at 20 min, no note, oil character 4 and sweetness
+// 4 marked — hardness, scoopability, smoothness and body left unmarked —
+// and bitterness 5 on the sheet has no whole stop on the battery, so it
+// becomes the "Bitter · declared" toggle (D-07).
+const tastingFields = {
+  tastedDate: null,
+  temperingMinutes: null,
+  tastingTempC: -12,
+  marks: { sweetness: 4, oil: 4 },
+  note: null,
+  defects: null,
+  bitterDeclared: true,
+  meltTestG: 3,
+  meltStyle: null,
+};
+
+export const augustSecondBatch = createBatch(oliveOilVersion, churnFields, tastingFields, {
   id: BATCH_ID,
   now: '2026-08-04T00:00:00.000Z',
 });
-
-// One tasting, undated, so it reads "date unknown": tasting temperature
-// −12 °C, meltdown loss 3 g at 20 min, no words, and marks of olive oil
-// character 4.5, bitterness 5, sweetness 4 — hardness, scoopability and
-// smoothness left unmarked.
-export const augustSecondBatch = addTasting(
-  batchBeforeTasting,
-  {
-    date: null,
-    tastingTempC: -12,
-    marks: {
-      'Olive oil character': 4.5,
-      Bitterness: 5,
-      sweetness: 4,
-    },
-    meltdownLossG: 3,
-    words: null,
-    nextTimeNote: null,
-  },
-  { id: TASTING_ID },
-);

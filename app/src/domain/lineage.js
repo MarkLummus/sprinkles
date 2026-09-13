@@ -116,10 +116,11 @@ export function createChildVersion(parent, penFields, { id, now }) {
 /**
  * saveOverVersion(version, penFields) -> a new record with the same id,
  * parentVersionId, parentVersionLabel and createdAt, and the pen's edited
- * content in their place — a correction, never a new event, mirroring
- * domain/batch.js's recordAmendment. Callers may pass a third { now }
- * argument for signature symmetry with createChildVersion; this record's
- * own createdAt is never retaken, so it is unused here.
+ * content in their place — a correction, never a new event, the same
+ * shape domain/batch.js's completeRecord applies to a batch. Callers may
+ * pass a third { now } argument for signature symmetry with
+ * createChildVersion; this record's own createdAt is never retaken, so it
+ * is unused here.
  */
 export function saveOverVersion(version, penFields) {
   return {

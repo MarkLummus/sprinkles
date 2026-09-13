@@ -1,53 +1,62 @@
-// Pure. No framework, no DOM, no store import. The four core axes with
-// their behavioural anchors, the nine mark stops, and the per-batch axis
-// list built from the batch's own snapshot — see 02-CONTEXT.md D-14 (the
-// anchors, behavioural, never adjectival), D-15 (declared axes carry
-// anchors authored on the version), and D-16 (nine stops, arrow keys, any
-// axis may stay unmarked).
+// Pure. No framework, no DOM, no store import. The battery's fixed
+// six-axis table (sketch 007's settled AXES array), the five whole
+// goldilocks stops, and the per-batch axis list built from the batch's
+// own snapshot — see 03.3.1-CONTEXT.md D-07/D-10 and the structural
+// contract's "Axes spec". Every axis is fixed now: there is no longer a
+// free-form declared axis authored on the version, only a declared name
+// naming one of these six rows (Pitfall 3).
 
 /**
- * CORE_AXES: fixed order, always present in every tasting. Anchors are
- * transcribed verbatim from the earlier attempt's CORE_AXES
- * (old-sprinkles/src/data/olive-oil.js) — behavioural, describing what the
- * spoon does, never adjectival. That distinction is the whole reason the
- * signed scale centred on "Good" was rejected (D-14).
+ * AXES: the six fixed axes, verbatim from the contract's "Axes spec",
+ * in order. The first four (group 'core') are always present in every
+ * tasting; the last two (group 'declared', Body and Oil) are the pair a
+ * recipe may declare for itself. `low`/`high` are the two anchor words;
+ * the middle anchor is the fixed word "right" for every axis, so it is
+ * not stored per row.
  */
-export const CORE_AXES = [
-  { key: 'hardness', label: 'Hardness', low: 'spoon sinks', high: "spoon won't enter" },
-  { key: 'scoopability', label: 'Scoopability', low: 'crumbles', high: 'rolls clean' },
-  { key: 'smoothness', label: 'Smoothness', low: 'grainy', high: 'no crystal felt' },
-  { key: 'sweetness', label: 'Sweetness', low: 'flat', high: 'dominant' },
+export const AXES = [
+  { key: 'hardness', name: 'Hardness', low: 'soft', high: 'hard', group: 'core' },
+  { key: 'scoopability', name: 'Scoopability', low: 'crumbly', high: 'gummy', group: 'core' },
+  { key: 'smoothness', name: 'Smoothness', low: 'grainy', high: 'smooth', group: 'core' },
+  { key: 'sweetness', name: 'Sweetness', low: 'less', high: 'more', group: 'core' },
+  { key: 'body', name: 'Body', low: 'thin', high: 'heavy', group: 'declared' },
+  { key: 'oil', name: 'Oil', low: 'faint', high: 'strong', group: 'declared' },
 ];
 
-/** MARK_STOPS: the nine stops a mark may take, 1 to 5 by halves (D-16). */
-export const MARK_STOPS = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+/** STOPS: the five whole stops a mark may take (D-07, sketch 007's goldilocks scale). */
+export const STOPS = [1, 2, 3, 4, 5];
+
+/** CORE_AXIS_COUNT: how many of AXES's leading rows are always present. */
+export const CORE_AXIS_COUNT = 4;
 
 /**
- * axesForBatch(batch) -> the four core axes followed by the batch's
- * declared axes, each in the same { key, label, low, high } shape. Reads
- * declaredAxes from batch.snapshot only, and from nowhere else: the
- * snapshot is what protects a stored mark from a later rename of the
- * version's axes (D-15). Reaching for a live version record here would be
- * exactly the drift this phase exists to prevent.
+ * stopWordsFor(axis) -> the five stop words in order, per the contract:
+ * the low anchor, "leaning {low}", "right", "leaning {high}", the high
+ * anchor. e.g. for Hardness: soft, leaning soft, right, leaning hard, hard.
  */
-export function axesForBatch(batch) {
-  const declared = batch.snapshot.declaredAxes.map((axis) => ({
-    key: axis.name,
-    label: axis.name,
-    low: axis.low,
-    high: axis.high,
-  }));
-  return [...CORE_AXES, ...declared];
+export function stopWordsFor(axis) {
+  return [axis.low, `leaning ${axis.low}`, 'right', `leaning ${axis.high}`, axis.high];
 }
 
 /**
- * markKeyFor(axis) -> the mark key: the fixed lowercase key for a core
- * axis, the name verbatim for a declared one, so the two namespaces
- * cannot collide — a version that declares an axis named "Hardness"
- * produces the key "Hardness", distinct from the core "hardness".
+ * axesForBatch(batch) -> the four core axes followed by the batch's
+ * declared axes, resolved by name against AXES. Reads
+ * batch.snapshot.declaredAxes only, and from nowhere else — the snapshot
+ * is what protects a stored mark from a later change to the recipe's
+ * declared pair, and reaching for a live version record here would be
+ * exactly the drift this module exists to prevent.
  */
+export function axesForBatch(batch) {
+  const core = AXES.slice(0, CORE_AXIS_COUNT);
+  const declared = batch.snapshot.declaredAxes
+    .map((name) => AXES.find((axis) => axis.name === name))
+    .filter((axis) => axis != null);
+  return [...core, ...declared];
+}
+
+/** markKeyFor(axis) -> the axis's fixed key. Every axis is fixed now (D-07). */
 export function markKeyFor(axis) {
-  return axis.key !== undefined ? axis.key : axis.name;
+  return axis.key;
 }
 
 /**

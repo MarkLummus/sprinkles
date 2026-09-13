@@ -112,12 +112,17 @@ describe('oliveOilVersion.method uses (D-08)', () => {
   });
 });
 
-describe('oliveOilVersion.declaredAxes', () => {
-  it('is two entries, each carrying its own name, low and high anchor words (D-15)', () => {
-    expect(oliveOilVersion.declaredAxes).toEqual([
-      { name: 'Olive oil character', low: "can't find it", high: 'tastes of oil first' },
-      { name: 'Bitterness', low: 'none', high: 'catches the throat' },
-    ]);
+describe('oliveOilVersion.declaredAxes and declaredFlaw (03.3.1-CONTEXT.md D-07)', () => {
+  it('declares the battery\'s Body and Oil pair by name', () => {
+    expect(oliveOilVersion.declaredAxes).toEqual(['Body', 'Oil']);
+  });
+
+  it('declares Bitter as the recipe\'s declared flaw', () => {
+    expect(oliveOilVersion.declaredFlaw).toBe('Bitter');
+  });
+
+  it('carries VERSION_SCHEMA_VERSION 4', () => {
+    expect(oliveOilVersion.schemaVersion).toBe(4);
   });
 });
 

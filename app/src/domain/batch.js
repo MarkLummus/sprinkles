@@ -1,20 +1,22 @@
 // Pure. No framework, no DOM, no store import. The batch record's shape
-// and its rules: create, snapshot, and as-made read/write discipline — see
-// 02-CONTEXT.md D-01 (one churn event owning a list of tastings), D-11 (0
-// is a real as-made value, distinct from absent), D-18 (a measured or
-// as-made value is stored as typed, never rounded), D-20 (the batch's
-// opaque id), and BATCH2-01 (the snapshot, taken once and never retaken).
+// and its rules under the one-save model: create, complete, snapshot, and
+// as-made read/write discipline — see 03.3.1-CONTEXT.md D-01 through D-04
+// (one save action, a batch carries zero or one tasting, `changed` replaces
+// the amendment list), D-07 (the battery's new field names), D-09/D-10
+// (blank-is-absent on every new field), and BATCH2-01 (the snapshot, taken
+// once and never retaken).
 //
-// Precision contract (D-18): a value the maker typed is stored as a plain
-// JavaScript number and is never rounded, never re-formatted, and never
-// passed through the rounding convention the balance figures use. That
-// convention belongs to computed figures only — a measured or as-made
-// number shows what was entered. asMadeTotals below is the one computed
-// figure this module produces; rounding it for display is the table's
-// decision, made once, at the point of presentation, not here.
+// Precision contract (D-18, carried from Phase 2): a value the maker typed
+// is stored as a plain JavaScript number and is never rounded, never
+// re-formatted, and never passed through the rounding convention the
+// balance figures use. That convention belongs to computed figures only —
+// a measured or as-made number shows what was entered. asMadeTotals below
+// is the one computed figure this module produces; rounding it for display
+// is the table's decision, made once, at the point of presentation, not
+// here.
 import { rowGrams } from './rows.js';
 
-export const BATCH_SCHEMA_VERSION = 2;
+export const BATCH_SCHEMA_VERSION = 3;
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -32,20 +34,21 @@ export function formatRecordDate(iso) {
 }
 
 /**
- * createBatch(version, churnFields, { id, now }) -> a new batch record.
- * Pure: id and now are supplied by the caller — this function never reaches
- * for crypto.randomUUID() or new Date() itself (that impurity lives in the
- * one save handler that calls this). The snapshot is a structuredClone of
- * the version's rows and declaredAxes, taken once here and never retaken
- * by any later function (BATCH2-01).
+ * buildChurn(churnFields) -> the churn object both createBatch and
+ * completeRecord write, replaced wholesale on every save (D-02). Every
+ * numeric field uses an explicit `!= null` check (never `||`/truthiness)
+ * so a written 0 survives as a real value (D-10, BATCH1-02); every text
+ * field uses presence-of-content, since an empty string and an absent
+ * note are the same fact for free text.
  */
-export function createBatch(version, churnFields, { id, now }) {
+function buildChurn(churnFields) {
   const asMade = {};
   if (churnFields.asMade) {
-    // A shallow copy of each row's own array (D-10), not a shared
-    // reference — the caller's own churnFields.asMade arrays must never be
-    // the same array the stored record holds, so a later mutation of the
-    // caller's object can never move an already-saved batch.
+    // A shallow copy of each row's own array (D-10, carried from Phase 2),
+    // not a shared reference — the caller's own churnFields.asMade arrays
+    // must never be the same array the stored record holds, so a later
+    // mutation of the caller's object can never move an already-saved
+    // batch.
     for (const rowId of Object.keys(churnFields.asMade)) {
       asMade[rowId] = [...churnFields.asMade[rowId]];
     }
@@ -59,35 +62,89 @@ export function createBatch(version, churnFields, { id, now }) {
   }
 
   return {
+    churnDate: churnFields.churnDate ? churnFields.churnDate : null,
+    asMade,
+    stepChanges,
+    timeToDrawTempMinutes: churnFields.timeToDrawTempMinutes != null ? churnFields.timeToDrawTempMinutes : null,
+    outOfMachineTempC: churnFields.outOfMachineTempC != null ? churnFields.outOfMachineTempC : null,
+    churnDurationMinutes: churnFields.churnDurationMinutes != null ? churnFields.churnDurationMinutes : null,
+    exitConsistency: churnFields.exitConsistency != null ? churnFields.exitConsistency : null,
+    airiness: churnFields.airiness != null ? churnFields.airiness : null,
+    atTheMachine: churnFields.atTheMachine ? churnFields.atTheMachine : null,
+    ingredientNotes: churnFields.ingredientNotes ? churnFields.ingredientNotes : null,
+    nextTimeNote: churnFields.nextTimeNote ? churnFields.nextTimeNote : null,
+  };
+}
+
+/**
+ * buildTasting(tastingFields) -> null when tastingFields is null/absent
+ * (D-02: an empty tasting section persists no tasting at all), otherwise
+ * the single tasting object. marks is copied with a shallow own-key spread
+ * (setMark's own discipline — axes.js), so an unmarked axis stays absent
+ * rather than becoming a manufactured zero (D-10). defects is a copy of
+ * the supplied array, or null when none was supplied. bitterDeclared is
+ * true-or-null, never false — the toggle is either declared or absent.
+ */
+function buildTasting(tastingFields) {
+  if (tastingFields == null) return null;
+  return {
+    tastedDate: tastingFields.tastedDate != null ? tastingFields.tastedDate : null,
+    temperingMinutes: tastingFields.temperingMinutes != null ? tastingFields.temperingMinutes : null,
+    tastingTempC: tastingFields.tastingTempC != null ? tastingFields.tastingTempC : null,
+    marks: tastingFields.marks ? { ...tastingFields.marks } : {},
+    note: tastingFields.note ? tastingFields.note : null,
+    defects: tastingFields.defects ? [...tastingFields.defects] : null,
+    bitterDeclared: tastingFields.bitterDeclared === true ? true : null,
+    meltTestG: tastingFields.meltTestG != null ? tastingFields.meltTestG : null,
+    meltStyle: tastingFields.meltStyle != null ? tastingFields.meltStyle : null,
+  };
+}
+
+/**
+ * createBatch(version, churnFields, tastingFields, { id, now }) -> a new
+ * batch record. Pure: id and now are supplied by the caller — this
+ * function never reaches for crypto.randomUUID() or new Date() itself
+ * (that impurity lives in the one save handler that calls this). The
+ * snapshot is a structuredClone of the version's rows, declaredAxes and
+ * declaredFlaw, taken once here and never retaken by any later function
+ * (BATCH2-01). tastingFields is zero-or-one: pass null for a fresh
+ * churn-only record.
+ */
+export function createBatch(version, churnFields, tastingFields, { id, now }) {
+  return {
     schemaVersion: BATCH_SCHEMA_VERSION,
     id,
     versionId: version.id,
     recordedAt: now,
-    amendedAt: [],
+    changed: null,
     snapshot: {
       coefficientSetId: version.coefficientSetId,
       versionLabel: version.versionLabel,
       rows: structuredClone(version.rows),
       declaredAxes: structuredClone(version.declaredAxes),
+      declaredFlaw: version.declaredFlaw != null ? version.declaredFlaw : null,
     },
-    churn: {
-      churnDate: churnFields.churnDate ? churnFields.churnDate : null,
-      asMade,
-      stepChanges,
-      // Each of the six churn measurements/notes is read from churnFields
-      // when supplied and defaults to null otherwise. The three numeric
-      // fields use an explicit != null check (never `||`/truthiness) so a
-      // written 0 or 0% survives as a real value (D-11, D-18, BATCH1-02);
-      // the three text fields use presence-of-content, since an empty
-      // string and an absent note are the same fact for free text.
-      comeUpMinutes: churnFields.comeUpMinutes != null ? churnFields.comeUpMinutes : null,
-      drawTempC: churnFields.drawTempC != null ? churnFields.drawTempC : null,
-      overrunPercent: churnFields.overrunPercent != null ? churnFields.overrunPercent : null,
-      drawNotes: churnFields.drawNotes ? churnFields.drawNotes : null,
-      ingredientNotes: churnFields.ingredientNotes ? churnFields.ingredientNotes : null,
-      nextTimeNote: churnFields.nextTimeNote ? churnFields.nextTimeNote : null,
-    },
-    tastings: [],
+    churn: buildChurn(churnFields),
+    tasting: buildTasting(tastingFields),
+  };
+}
+
+/**
+ * completeRecord(batch, churnFields, tasting, { now }) -> a new batch
+ * whose churn is replaced wholesale and whose tasting is the supplied
+ * zero-or-one object — a null tasting argument removes a stored tasting
+ * (RESEARCH.md Assumption A3, D-02's literal reading: what a save
+ * persists is everything the record currently holds). `changed` is
+ * stamped with `now` on every completeRecord call, since a completing
+ * save is always a save after the first (D-04). recordedAt, snapshot and
+ * id are untouched — the snapshot is never retaken (BATCH2-01).
+ */
+export function completeRecord(batch, churnFields, tasting, { now }) {
+  return {
+    ...batch,
+    churn: buildChurn(churnFields),
+    tasting: buildTasting(tasting),
+    changed: now,
   };
 }
 
@@ -211,49 +268,8 @@ export function asMadeTotals(rows, asMade) {
 }
 
 /**
- * isTastingSaveable(tasting) -> boolean. OBS1-01's gate and D-02's rule in
- * code: true when the tasting's words is a string with content after
- * trim, or when its marks object has at least one own key. Nothing else
- * is required — not a date, not a temperature, not a meltdown loss.
- *
- * Words: String.prototype.trim strips Unicode whitespace, including the
- * non-breaking space (U+00A0) and the ideographic space (U+3000), so a
- * field holding only invisible characters is not words. Length is counted
- * in UTF-16 code units, so a single emoji is words even though it
- * occupies two of them (a surrogate pair).
- *
- * Marks: presence is decided by an own-key count, never a truthiness scan
- * over the values — a mark of 0 is not a legal stop today, but the gate
- * must not be the thing that decides that.
- */
-export function isTastingSaveable(tasting) {
-  const hasWords = typeof tasting.words === 'string' && tasting.words.trim().length > 0;
-  const hasMarks = tasting.marks != null && Object.keys(tasting.marks).length > 0;
-  return hasWords || hasMarks;
-}
-
-/**
- * sortedTastings(batch) -> a new array of the batch's tastings ordered by
- * date ascending, undated tastings last (D-03). Never sorts in place —
- * batch.tastings itself is untouched. Array.prototype.sort is stable, so
- * two tastings that compare equal (both dated the same day, or both
- * undated) keep the order they were added.
- */
-export function sortedTastings(batch) {
-  return [...batch.tastings].sort((a, b) => {
-    if (a.date === b.date) return 0;
-    if (a.date === null) return 1;
-    if (b.date === null) return -1;
-    return a.date < b.date ? -1 : 1;
-  });
-}
-
-/**
  * sortedBatches(batches) -> a new array of batches ordered by churn date
- * descending, undated batches last — the same tie-break rule
- * sortedTastings applies to a batch's tastings, applied here to a
- * version's batches (route-recipe.md "most recent batch" default, and
- * the batch list in its margin). Never sorts in place.
+ * descending, undated batches last. Never sorts in place.
  */
 export function sortedBatches(batches) {
   return [...batches].sort((a, b) => {
@@ -264,56 +280,6 @@ export function sortedBatches(batches) {
     if (bDate === null) return -1;
     return aDate < bDate ? 1 : -1;
   });
-}
-
-/** hasTasting(batch) -> whether the batch has at least one tasting — the test behind "not yet evaluated" (D-05). */
-export function hasTasting(batch) {
-  return batch.tastings.length > 0;
-}
-
-/**
- * addTasting(batch, tastingFields, { id }) -> a new batch with the tasting
- * appended, carrying the supplied id. Does not validate — the caller
- * gates on isTastingSaveable, matching this module's existing habit of
- * returning facts rather than throwing. Leaves snapshot, recordedAt and
- * amendedAt untouched: adding a tasting is never an amendment, and the
- * snapshot is never retaken (D-06). This function and recordAmendment
- * below are deliberately separate and neither may ever do the other's
- * job — a second tasting is not a correction, and a correction is not an
- * event (see recordAmendment).
- */
-export function addTasting(batch, tastingFields, { id }) {
-  const tasting = {
-    id,
-    date: tastingFields.date != null ? tastingFields.date : null,
-    tastingTempC: tastingFields.tastingTempC != null ? tastingFields.tastingTempC : null,
-    marks: tastingFields.marks ? { ...tastingFields.marks } : {},
-    meltdownLossG: tastingFields.meltdownLossG != null ? tastingFields.meltdownLossG : null,
-    words: tastingFields.words ? tastingFields.words : null,
-    nextTimeNote: tastingFields.nextTimeNote ? tastingFields.nextTimeNote : null,
-  };
-  return {
-    ...batch,
-    tastings: [...batch.tastings, tasting],
-  };
-}
-
-/**
- * recordAmendment(batch, churnFields, amendedAt) -> a new batch whose
- * churn is the supplied fields and whose amendedAt has amendedAt
- * appended. Leaves recordedAt, tastings and snapshot exactly as they
- * were — prior field values are not kept (D-06): the record shows what
- * it now says, plus the dates on which it was corrected. This function
- * and addTasting above are deliberately separate and neither may ever do
- * the other's job: a second tasting is not a correction, and a
- * correction is not an event.
- */
-export function recordAmendment(batch, churnFields, amendedAt) {
-  return {
-    ...batch,
-    churn: { ...churnFields },
-    amendedAt: [...batch.amendedAt, amendedAt],
-  };
 }
 
 /**

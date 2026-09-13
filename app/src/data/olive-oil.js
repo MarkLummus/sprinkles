@@ -6,8 +6,11 @@ import { library } from './library.js';
 
 // The version record's own bookkeeping number — distinct from DB_VERSION
 // (db.js) and from the store file's schemaVersion (transfer.js). Bumped to
-// 3 this phase because the row shape changed (D-01, D-06).
-export const VERSION_SCHEMA_VERSION = 3;
+// 4 this phase because the declared-axes model changed: a version now
+// declares its pair by name against the battery's fixed AXES table,
+// rather than authoring its own anchor words (03.3.1-CONTEXT.md D-07,
+// Pitfall 3).
+export const VERSION_SCHEMA_VERSION = 4;
 
 // A fixed constant, not a live timestamp: two machines seeding this
 // version on different days must agree on its createdAt, so it is never
@@ -92,14 +95,13 @@ export const oliveOilVersion = {
   // overrun as ranges (method targets); these scalar slots stay null rather
   // than being filled with an invented midpoint.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
-  // The axes this recipe declares for itself, each carrying its own
-  // behavioural anchor words authored on the version (D-15), so a tasting's
-  // marks always have something to read against. 02-03 renders them;
-  // nothing here changes when it does.
-  declaredAxes: [
-    { name: 'Olive oil character', low: "can't find it", high: 'tastes of oil first' },
-    { name: 'Bitterness', low: 'none', high: 'catches the throat' },
-  ],
+  // The declared pair this recipe names from the battery's fixed AXES
+  // table (domain/axes.js), plus the one declared flaw. D-07: this
+  // recipe declares Body and Oil, and Bitter as the flaw the maker can
+  // toggle on a tasting. No anchors are authored here anymore — the six
+  // axes' anchor words are fixed on the battery, not on the version.
+  declaredAxes: ['Body', 'Oil'],
+  declaredFlaw: 'Bitter',
   // Prose instruction with typed targets beside it. Purpose is why the step
   // exists — diagnostic input. Aside is what to watch while doing it. They
   // are different fields, omitted (not blank) when the sheet has neither.

@@ -1,9 +1,11 @@
-// Domain suite for the batch record (02-CONTEXT.md D-01, D-11, D-18, D-20,
-// BATCH2-01). Runs under Vitest's default node environment — imports no
-// store, no component, and no framework.
+// Domain suite for the battery's one-save batch record
+// (03.3.1-CONTEXT.md D-01 through D-04, D-07, D-09, D-10; BATCH2-01).
+// Runs under Vitest's default node environment — imports no store, no
+// component, and no framework.
 import { describe, it, expect } from 'vitest';
 import {
   createBatch,
+  completeRecord,
   formatRecordDate,
   hasAsMade,
   asMadeFor,
@@ -13,11 +15,7 @@ import {
   isStruck,
   changedLineFor,
   readMeasured,
-  isTastingSaveable,
-  sortedTastings,
-  hasTasting,
-  addTasting,
-  recordAmendment,
+  sortedBatches,
   latestChurnDate,
   BATCH_SCHEMA_VERSION,
 } from './batch.js';
@@ -42,67 +40,63 @@ function createRepositoryDouble() {
   };
 }
 
+const CHURN_ONLY = { churnDate: '2026-08-02', asMade: { 'row-01': [383] } };
+
 describe('createBatch', () => {
-  it('returns a record with the supplied id, versionId, recordedAt, empty amendedAt and tastings', () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-01': [383] } },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
+  it('returns a record with the supplied id, versionId, recordedAt, changed null and tasting null when tastingFields is null', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
     expect(batch.schemaVersion).toBe(BATCH_SCHEMA_VERSION);
     expect(batch.id).toBe('b-1');
     expect(batch.versionId).toBe('olive-oil-ice-cream-v1');
     expect(batch.recordedAt).toBe('2026-08-04T09:00:00.000Z');
-    expect(batch.amendedAt).toEqual([]);
-    expect(batch.tastings).toEqual([]);
+    expect(batch.changed).toBe(null);
+    expect(batch.tasting).toBe(null);
   });
 
-  it("snapshots twelve rows and the version's coefficient set id", () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: {} },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
+  it("snapshots twelve rows, the version's coefficient set id, declared axes, and declared flaw", () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
     expect(batch.snapshot.rows).toHaveLength(12);
     expect(batch.snapshot.coefficientSetId).toBe('2026.1-slice-transcription');
+    expect(batch.snapshot.declaredAxes).toEqual(['Body', 'Oil']);
+    expect(batch.snapshot.declaredFlaw).toBe('Bitter');
   });
 
-  it('the snapshot does not move when the version is edited afterwards', () => {
+  it('the snapshot does not move when the version is edited afterwards (BATCH2-01)', () => {
     const version = structuredClone(oliveOilVersion);
-    const batch = createBatch(
-      version,
-      { churnDate: '2026-08-02', asMade: {} },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
+    const batch = createBatch(version, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
     const originalGrams = version.rows[0].portions[0].grams;
     const originalFat = version.rows[0].ingredient.composition.fat;
 
     version.rows[0].portions[0].grams = 999;
     version.rows[0].ingredient.composition.fat = 999;
+    version.declaredAxes = [];
+    version.declaredFlaw = null;
 
     expect(batch.snapshot.rows[0].portions[0].grams).toBe(originalGrams);
     expect(batch.snapshot.rows[0].ingredient.composition.fat).toBe(originalFat);
+    expect(batch.snapshot.declaredAxes).toEqual(['Body', 'Oil']);
+    expect(batch.snapshot.declaredFlaw).toBe('Bitter');
   });
 
-  it('snapshots the declared axes as two { name, low, high } entries', () => {
+  it('a zero-or-one tasting: passing tastingFields builds the single tasting object', () => {
     const batch = createBatch(
       oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: {} },
+      CHURN_ONLY,
+      { marks: { sweetness: 4 } },
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
-    expect(batch.snapshot.declaredAxes).toHaveLength(2);
-    expect(batch.snapshot.declaredAxes[0]).toHaveProperty('name');
-    expect(batch.snapshot.declaredAxes[0]).toHaveProperty('low');
-    expect(batch.snapshot.declaredAxes[0]).toHaveProperty('high');
+    expect(batch.tasting).not.toBe(null);
+    expect(batch.tasting.marks).toEqual({ sweetness: 4 });
+  });
+
+  it('a null tastingFields manufactures no empty tasting record', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    expect(batch.tasting).toBe(null);
   });
 
   it('round-trips through a plain repository double', async () => {
     const repository = createRepositoryDouble();
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-01': [383] } },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
 
     await repository.saveBatch(batch);
 
@@ -124,14 +118,10 @@ describe('formatRecordDate', () => {
   });
 });
 
-// Blank, zero, and the snapshot that does not move (02-01 task 2).
+// Blank, zero, and the snapshot that does not move.
 describe('the blank/zero/plan-never-leaks discipline', () => {
   it('blank is absent: an untouched row has no key, hasAsMade is false, asMadeFor is null', () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: { 'row-01': [383] } },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
     expect(hasAsMade(batch, 'row-02')).toBe(false);
     expect(asMadeFor(batch, 'row-02')).toBe(null);
     expect(asMadeForPortion(batch, 'row-02', 0)).toBe(null);
@@ -142,6 +132,7 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
     const batch = createBatch(
       oliveOilVersion,
       { churnDate: '2026-08-02', asMade: { 'row-09': [0] } },
+      null,
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
     expect(hasAsMade(batch, 'row-09')).toBe(true);
@@ -150,18 +141,68 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
   });
 
   it('the plan never leaks: an untouched row with grams still reads asMadeFor as null', () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: {} },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
+    const batch = createBatch(oliveOilVersion, { churnDate: '2026-08-02', asMade: {} }, null, {
+      id: 'b-1',
+      now: '2026-08-04T09:00:00.000Z',
+    });
     expect(rowGrams(oliveOilVersion.rows.find((row) => row.id === 'row-01'))).toBeGreaterThan(0);
     expect(asMadeFor(batch, 'row-01')).toBe(null);
   });
 
+  it('every new churn field is absent, never zero, when not supplied', () => {
+    const batch = createBatch(oliveOilVersion, { churnDate: '2026-08-02', asMade: {} }, null, {
+      id: 'b-1',
+      now: '2026-08-04T09:00:00.000Z',
+    });
+    expect(batch.churn.timeToDrawTempMinutes).toBe(null);
+    expect(batch.churn.outOfMachineTempC).toBe(null);
+    expect(batch.churn.churnDurationMinutes).toBe(null);
+    expect(batch.churn.exitConsistency).toBe(null);
+    expect(batch.churn.airiness).toBe(null);
+    expect(batch.churn.atTheMachine).toBe(null);
+  });
+
+  it('a written 0 melt test survives as a real value, not absent', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      CHURN_ONLY,
+      { marks: {}, meltTestG: 0 },
+      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+    );
+    expect(batch.tasting.meltTestG).toBe(0);
+  });
+
+  it('an unmarked axis is absent from marks, never zero', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      CHURN_ONLY,
+      { marks: { sweetness: 4 } },
+      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
+    );
+    expect(batch.tasting.marks).not.toHaveProperty('hardness');
+    expect(Object.keys(batch.tasting.marks)).toEqual(['sweetness']);
+  });
+
+  it('bitterDeclared is true-or-null, never false', () => {
+    const declared = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {}, bitterDeclared: true }, { id: 'b-1', now: 'x' });
+    const undeclared = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {} }, { id: 'b-2', now: 'x' });
+    expect(declared.tasting.bitterDeclared).toBe(true);
+    expect(undeclared.tasting.bitterDeclared).toBe(null);
+  });
+
+  it('defects is a copy of the supplied array, or null when none', () => {
+    const withDefects = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {}, defects: ['Sandy, gritty'] }, { id: 'b-1', now: 'x' });
+    const withoutDefects = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {} }, { id: 'b-2', now: 'x' });
+    expect(withDefects.tasting.defects).toEqual(['Sandy, gritty']);
+    expect(withoutDefects.tasting.defects).toBe(null);
+  });
+
   it('empty as-made round-trips through the repository double unchanged', async () => {
     const repository = createRepositoryDouble();
-    const batch = createBatch(oliveOilVersion, { churnDate: '2026-08-02', asMade: {} }, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    const batch = createBatch(oliveOilVersion, { churnDate: '2026-08-02', asMade: {} }, null, {
+      id: 'b-1',
+      now: '2026-08-04T09:00:00.000Z',
+    });
     expect(Object.keys(batch.churn.asMade)).toHaveLength(0);
 
     await repository.saveBatch(batch);
@@ -172,7 +213,10 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
   it('a full as-made on all twelve rows produces twelve keys', () => {
     const asMade = {};
     for (const row of oliveOilVersion.rows) asMade[row.id] = [1];
-    const batch = createBatch(oliveOilVersion, { churnDate: '2026-08-02', asMade }, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    const batch = createBatch(oliveOilVersion, { churnDate: '2026-08-02', asMade }, null, {
+      id: 'b-1',
+      now: '2026-08-04T09:00:00.000Z',
+    });
     expect(Object.keys(batch.churn.asMade)).toHaveLength(12);
   });
 
@@ -180,24 +224,14 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
     const batch = createBatch(
       oliveOilVersion,
       { churnDate: '2026-08-02', asMade: { 'row-01': [383.25] } },
+      null,
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
     expect(asMadeForPortion(batch, 'row-01', 0)).toBe(383.25);
   });
-
-  it('the snapshot survives a whole-version edit made after createBatch', () => {
-    const version = structuredClone(oliveOilVersion);
-    const batch = createBatch(version, { churnDate: '2026-08-02', asMade: {} }, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
-
-    version.rows = [];
-    version.coefficientSetId = 'some-other-set';
-
-    expect(batch.snapshot.rows).toHaveLength(12);
-    expect(batch.snapshot.coefficientSetId).toBe('2026.1-slice-transcription');
-  });
 });
 
-// Method: strike or change, one line per step (02-02 task 1, D-10, D-11, D-13).
+// Method: strike or change, one line per step.
 describe('stepChangeFor / isStruck / changedLineFor', () => {
   const stepChanges = {
     '1': { struck: true, line: null },
@@ -206,6 +240,7 @@ describe('stepChangeFor / isStruck / changedLineFor', () => {
   const batch = createBatch(
     oliveOilVersion,
     { churnDate: '2026-08-02', asMade: {}, stepChanges },
+    null,
     { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
   );
 
@@ -229,6 +264,7 @@ describe('stepChangeFor / isStruck / changedLineFor', () => {
     const both = createBatch(
       oliveOilVersion,
       { churnDate: '2026-08-02', asMade: {}, stepChanges: { '1': { struck: true, line: 'skipped, drizzled instead' } } },
+      null,
       { id: 'b-2', now: '2026-08-04T09:00:00.000Z' },
     );
     expect(isStruck(both, 1)).toBe(true);
@@ -239,6 +275,7 @@ describe('stepChangeFor / isStruck / changedLineFor', () => {
     const zeroKeyed = createBatch(
       oliveOilVersion,
       { churnDate: '2026-08-02', asMade: {}, stepChanges: { '0': { struck: true, line: null } } },
+      null,
       { id: 'b-3', now: '2026-08-04T09:00:00.000Z' },
     );
     expect(isStruck(zeroKeyed, 0)).toBe(true);
@@ -246,8 +283,6 @@ describe('stepChangeFor / isStruck / changedLineFor', () => {
   });
 });
 
-// The churn section's measured values: unit-on-the-label reading, unknown
-// in words, never rounded (02-02 task 2, D-17, D-18, BATCH1-02).
 describe('readMeasured', () => {
   it('a blank measurement reads unknown for both null and undefined', () => {
     expect(readMeasured(null)).toBe('unknown');
@@ -277,25 +312,26 @@ describe('readMeasured', () => {
   });
 });
 
-describe('the churn section round trip: unrounded, and overrunPercent stays null rather than 0', () => {
+describe('the churn section round trip: unrounded, and blank battery fields stay null rather than 0', () => {
   it('stores exactly what createBatch was given for the working case', () => {
     const batch = createBatch(
       oliveOilVersion,
       {
         churnDate: '2026-08-02',
         asMade: {},
-        comeUpMinutes: 20,
-        drawTempC: -6,
-        overrunPercent: null,
-        drawNotes: 'Soft, not greasy',
+        timeToDrawTempMinutes: 20,
+        outOfMachineTempC: -6,
+        churnDurationMinutes: null,
+        atTheMachine: 'Soft, not greasy',
       },
+      null,
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
-    expect(batch.churn.comeUpMinutes).toBe(20);
-    expect(batch.churn.drawTempC).toBe(-6);
-    expect(batch.churn.overrunPercent).toBe(null);
-    expect(batch.churn.drawNotes).toBe('Soft, not greasy');
-    expect(readMeasured(batch.churn.overrunPercent)).toBe('unknown');
+    expect(batch.churn.timeToDrawTempMinutes).toBe(20);
+    expect(batch.churn.outOfMachineTempC).toBe(-6);
+    expect(batch.churn.churnDurationMinutes).toBe(null);
+    expect(batch.churn.atTheMachine).toBe('Soft, not greasy');
+    expect(readMeasured(batch.churn.churnDurationMinutes)).toBe('unknown');
   });
 });
 
@@ -306,8 +342,6 @@ describe('asMadeTotals', () => {
     expect(asMadeTotal).toBeCloseTo(799.68, 2);
   });
 
-  // The seeded batch's own as-made map (D-10): whole milk's two portions
-  // both written (120 + 263), counting the written 0 on soy lecithin.
   it("sums the seeded batch's own as-made entries, counting the written 0 on row-09", () => {
     const { planTotal, asMadeTotal } = asMadeTotals(oliveOilVersion.rows, augustSecondBatch.churn.asMade);
     expect(planTotal).toBeCloseTo(799.68, 2);
@@ -320,13 +354,6 @@ describe('asMadeTotals', () => {
     expect(withoutEntry - withZero).toBeCloseTo(1.2, 2);
   });
 
-  // The recording draft stores as-made values as typed strings until save
-  // (D-18) — IngredientTable.jsx feeds that draft straight into
-  // asMadeTotals. A string summed with += concatenates rather than adds,
-  // so this reproduces the crash a maker hit on the very first keystroke
-  // into any as-made cell (and immediately on Amend for an already-recorded
-  // batch): before the fix, asMadeTotal came out as a concatenated string
-  // instead of the number 804.28, and the sum below is not a number at all.
   it('sums the 2 Aug as-made entries when they arrive as the recording draft\'s strings', () => {
     const asMade = { 'row-01': ['120', '263'], 'row-02': ['241'], 'row-03': ['45'], 'row-09': ['0'] };
     const { planTotal, asMadeTotal } = asMadeTotals(oliveOilVersion.rows, asMade);
@@ -359,149 +386,66 @@ describe('asMadeForPortion', () => {
   });
 });
 
-// A tasting is its own dated event on the batch (02-03 task 1, D-01, D-02,
-// D-03, D-06, OBS1-01). Never an amendment, never retakes the snapshot.
-describe('isTastingSaveable', () => {
-  it('words with content is saveable', () => {
-    expect(isTastingSaveable({ words: 'thin, oil forward' })).toBe(true);
+describe('completeRecord', () => {
+  it('replaces churn wholesale and stamps changed with now', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    const newChurn = { churnDate: '2026-08-02', asMade: { 'row-01': [400] }, atTheMachine: 'ok' };
+    const updated = completeRecord(batch, newChurn, null, { now: '2026-09-06' });
+    expect(updated.churn.asMade['row-01']).toEqual([400]);
+    expect(updated.churn.atTheMachine).toBe('ok');
+    expect(updated.changed).toBe('2026-09-06');
   });
 
-  it('an empty words string is not saveable', () => {
-    expect(isTastingSaveable({ words: '' })).toBe(false);
+  it('a completing save with tasting data assembles churn plus tasting in one save', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    const updated = completeRecord(batch, CHURN_ONLY, { marks: { sweetness: 4 } }, { now: '2026-08-05' });
+    expect(updated.tasting.marks).toEqual({ sweetness: 4 });
+    expect(updated.changed).toBe('2026-08-05');
   });
 
-  it('no words and no marks is not saveable', () => {
-    expect(isTastingSaveable({})).toBe(false);
+  it('a null tasting argument removes a stored tasting (D-02\'s literal reading)', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, { marks: { sweetness: 4 } }, { id: 'b-1', now: 'x' });
+    expect(batch.tasting).not.toBe(null);
+    const updated = completeRecord(batch, CHURN_ONLY, null, { now: '2026-08-05' });
+    expect(updated.tasting).toBe(null);
   });
 
-  it('whitespace-only words is not saveable: the gate trims first', () => {
-    expect(isTastingSaveable({ words: '   ' })).toBe(false);
-    expect(isTastingSaveable({ words: '\t\n' })).toBe(false);
-    expect(isTastingSaveable({ words: ' ' })).toBe(false);
-  });
-
-  it('a single emoji is saveable words, even though it occupies two UTF-16 code units', () => {
-    expect(isTastingSaveable({ words: '🍦' })).toBe(true);
-  });
-
-  it('a marks object with at least one own key is saveable', () => {
-    expect(isTastingSaveable({ marks: { sweetness: 4 } })).toBe(true);
-  });
-
-  it('an empty marks object is not saveable', () => {
-    expect(isTastingSaveable({ marks: {} })).toBe(false);
-  });
-
-  it('a mark of 0 is saveable: presence of the key is what counts, not the value', () => {
-    expect(isTastingSaveable({ marks: { sweetness: 0 } })).toBe(true);
-  });
-});
-
-describe('sortedTastings / hasTasting', () => {
-  it('an empty tastings array sorts to empty and hasTasting is false', () => {
-    const batch = { tastings: [] };
-    expect(sortedTastings(batch)).toEqual([]);
-    expect(hasTasting(batch)).toBe(false);
-  });
-
-  it('a batch with exactly one tasting returns that one and hasTasting is true', () => {
-    const tasting = { id: 't-1', date: '2026-08-04' };
-    const batch = { tastings: [tasting] };
-    expect(sortedTastings(batch)).toEqual([tasting]);
-    expect(hasTasting(batch)).toBe(true);
-  });
-
-  it('orders four tastings by date ascending, undated last', () => {
-    const t1 = { id: 't-1', date: '2026-08-05' };
-    const t2 = { id: 't-2', date: '2026-08-03' };
-    const t3 = { id: 't-3', date: null };
-    const t4 = { id: 't-4', date: '2026-08-04' };
-    const batch = { tastings: [t1, t2, t3, t4] };
-    expect(sortedTastings(batch).map((t) => t.id)).toEqual(['t-2', 't-4', 't-1', 't-3']);
-  });
-
-  it('two undated tastings keep the order they were added', () => {
-    const t1 = { id: 't-1', date: null };
-    const t2 = { id: 't-2', date: null };
-    const batch = { tastings: [t1, t2] };
-    expect(sortedTastings(batch).map((t) => t.id)).toEqual(['t-1', 't-2']);
-  });
-
-  it('does not sort the batch tastings array in place', () => {
-    const t1 = { id: 't-1', date: '2026-08-05' };
-    const t2 = { id: 't-2', date: '2026-08-03' };
-    const batch = { tastings: [t1, t2] };
-    sortedTastings(batch);
-    expect(batch.tastings).toEqual([t1, t2]);
-  });
-});
-
-describe('addTasting', () => {
-  it('appends a tasting and leaves snapshot, recordedAt, amendedAt unchanged (never an amendment, D-06)', () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: {} },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
-    const updated = addTasting(batch, { words: 'thin' }, { id: 't-1' });
-    expect(updated.tastings).toHaveLength(1);
-    expect(updated.tastings[0].id).toBe('t-1');
-    expect(updated.tastings[0].words).toBe('thin');
-    expect(updated.snapshot).toBe(batch.snapshot);
+  it('leaves recordedAt, snapshot and id untouched — the snapshot is never retaken (BATCH2-01)', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    const updated = completeRecord(batch, CHURN_ONLY, null, { now: '2026-08-05' });
+    expect(updated.id).toBe(batch.id);
     expect(updated.recordedAt).toBe(batch.recordedAt);
-    expect(updated.amendedAt).toBe(batch.amendedAt);
+    expect(updated.snapshot).toBe(batch.snapshot);
   });
 
-  it('does not mutate the original batch tastings array', () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: {} },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
-    const originalLength = batch.tastings.length;
-    addTasting(batch, { words: 'thin' }, { id: 't-1' });
-    expect(batch.tastings).toHaveLength(originalLength);
+  it('does not mutate the original batch', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    const originalChanged = batch.changed;
+    completeRecord(batch, CHURN_ONLY, null, { now: '2026-08-05' });
+    expect(batch.changed).toBe(originalChanged);
+  });
+
+  it('changed is stamped only by completeRecord, never by createBatch', () => {
+    const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
+    expect(batch.changed).toBe(null);
   });
 });
 
-// Amend, and the version's latest churn date (02-03 task 3, D-06, D-21).
-describe('recordAmendment', () => {
-  const newChurn = {
-    churnDate: '2026-08-02',
-    asMade: { 'row-01': 400 },
-    stepChanges: {},
-    comeUpMinutes: 22,
-    drawTempC: -6,
-    overrunPercent: null,
-    drawNotes: 'ok',
-    ingredientNotes: null,
-    nextTimeNote: null,
-  };
-
-  it('replaces the churn fields, appends amendedAt, leaves recordedAt/tastings/snapshot unchanged', () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: {} },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
-    const amended = recordAmendment(batch, newChurn, '2026-09-06');
-    expect(amended.churn).toEqual(newChurn);
-    expect(amended.amendedAt).toEqual(['2026-09-06']);
-    expect(amended.recordedAt).toBe(batch.recordedAt);
-    expect(amended.tastings).toBe(batch.tastings);
-    expect(amended.snapshot).toBe(batch.snapshot);
+describe('sortedBatches', () => {
+  it('orders by churn date descending, undated last', () => {
+    const batches = [
+      { churn: { churnDate: '2026-08-02' } },
+      { churn: { churnDate: '2026-09-01' } },
+      { churn: { churnDate: null } },
+    ];
+    expect(sortedBatches(batches).map((b) => b.churn.churnDate)).toEqual(['2026-09-01', '2026-08-02', null]);
   });
 
-  it('appends two dates in order across two amendments, without mutating the original', () => {
-    const batch = createBatch(
-      oliveOilVersion,
-      { churnDate: '2026-08-02', asMade: {} },
-      { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
-    );
-    const once = recordAmendment(batch, newChurn, '2026-09-01');
-    const twice = recordAmendment(once, newChurn, '2026-09-06');
-    expect(twice.amendedAt).toEqual(['2026-09-01', '2026-09-06']);
-    expect(batch.amendedAt).toEqual([]);
+  it('does not sort in place', () => {
+    const batches = [{ churn: { churnDate: '2026-08-02' } }, { churn: { churnDate: '2026-09-01' } }];
+    const original = [...batches];
+    sortedBatches(batches);
+    expect(batches).toEqual(original);
   });
 });
 
@@ -524,9 +468,9 @@ describe('latestChurnDate', () => {
   });
 });
 
-// The 2 Aug 2026 working case, confirmed by Mark (02-CONTEXT.md D-10 to
-// D-13), built through createBatch and addTasting.
-describe('augustSecondBatch (the 2 Aug 2026 working case)', () => {
+// The 2 Aug 2026 working case, confirmed by Mark (03.3.1-CONTEXT.md D-07),
+// built through one createBatch call.
+describe('augustSecondBatch (the 2 Aug 2026 working case, on the battery)', () => {
   it('churns against the seeded version with the confirmed as-made amounts', () => {
     expect(augustSecondBatch.versionId).toBe('olive-oil-ice-cream-v1');
     expect(augustSecondBatch.churn.churnDate).toBe('2026-08-02');
@@ -539,12 +483,15 @@ describe('augustSecondBatch (the 2 Aug 2026 working case)', () => {
     expect(Object.keys(augustSecondBatch.churn.asMade)).toHaveLength(4);
   });
 
-  it('carries the confirmed measured churn values, overrun stored absent not zero', () => {
-    expect(augustSecondBatch.churn.comeUpMinutes).toBe(20);
-    expect(augustSecondBatch.churn.drawTempC).toBe(-6);
-    expect(augustSecondBatch.churn.overrunPercent).toBe(null);
-    expect(augustSecondBatch.churn.drawNotes).toBe('Soft, not greasy');
-    expect(augustSecondBatch.amendedAt).toEqual([]);
+  it('carries the confirmed measured churn values', () => {
+    expect(augustSecondBatch.churn.timeToDrawTempMinutes).toBe(20);
+    expect(augustSecondBatch.churn.outOfMachineTempC).toBe(-6);
+    expect(augustSecondBatch.churn.churnDurationMinutes).toBe(30);
+    expect(augustSecondBatch.churn.exitConsistency).toBe(null);
+    expect(augustSecondBatch.churn.airiness).toBe(null);
+    expect(augustSecondBatch.churn.atTheMachine).toBe('Soft, not greasy');
+    expect(augustSecondBatch.churn.ingredientNotes).toBe('oil bottle opened 24 Jul');
+    expect(augustSecondBatch.changed).toBe(null);
   });
 
   it('step 1 is struck, steps 8 and 9 carry their changed lines, step 3 carries nothing', () => {
@@ -555,20 +502,24 @@ describe('augustSecondBatch (the 2 Aug 2026 working case)', () => {
     expect(stepChangeFor(augustSecondBatch, 3)).toBe(null);
   });
 
-  it('carries exactly one undated tasting with the confirmed marks', () => {
-    expect(augustSecondBatch.tastings).toHaveLength(1);
-    const tasting = augustSecondBatch.tastings[0];
-    expect(tasting.date).toBe(null);
+  it('carries exactly one tasting with the confirmed marks and battery fields', () => {
+    expect(augustSecondBatch.tasting).not.toBe(null);
+    const tasting = augustSecondBatch.tasting;
+    expect(tasting.tastedDate).toBe(null);
     expect(tasting.tastingTempC).toBe(-12);
-    expect(tasting.meltdownLossG).toBe(3);
-    expect(tasting.words).toBe(null);
-    expect(Object.keys(tasting.marks)).toHaveLength(3);
-    expect(tasting.marks['Olive oil character']).toBe(4.5);
-    expect(tasting.marks.Bitterness).toBe(5);
+    expect(tasting.temperingMinutes).toBe(null);
+    expect(tasting.meltTestG).toBe(3);
+    expect(tasting.meltStyle).toBe(null);
+    expect(tasting.note).toBe(null);
+    expect(tasting.defects).toBe(null);
+    expect(tasting.bitterDeclared).toBe(true);
+    expect(Object.keys(tasting.marks)).toHaveLength(2);
     expect(tasting.marks.sweetness).toBe(4);
+    expect(tasting.marks.oil).toBe(4);
     expect(tasting.marks).not.toHaveProperty('hardness');
     expect(tasting.marks).not.toHaveProperty('scoopability');
     expect(tasting.marks).not.toHaveProperty('smoothness');
+    expect(tasting.marks).not.toHaveProperty('body');
   });
 
   it('has a fixed id and recorded-on date so the seeded URL and reading line are stable', () => {

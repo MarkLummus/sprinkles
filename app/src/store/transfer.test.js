@@ -78,6 +78,8 @@ function makeVersion(overrides = {}) {
     authored: { carriedForward: [], beforeYouStart: [] },
     declaredAxes: ['Body', 'Oil'],
     declaredFlaw: 'Bitter',
+    versionLabel: 'v1 label',
+    headnote: '',
     ...overrides,
   };
 }
@@ -87,6 +89,7 @@ function makeStep(overrides = {}) {
     n: 1,
     leadIn: 'Step',
     instruction: 'Do it',
+    targets: [],
     removed: false,
     uses: [],
     ...overrides,
@@ -617,6 +620,50 @@ describe('validateVersion, the fields', () => {
     expect(result.errors.some((error) => error.includes('.method[0].uses'))).toBe(true);
   });
 
+  // WR-01 (code review): validateStep previously checked only removed/uses,
+  // leaving n/leadIn/instruction/targets — every one UI-facing — unvalidated.
+  it('rejects a step whose n is not a number, naming the path', () => {
+    const version = makeVersion({ method: [makeStep({ n: '1' })] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method[0].n'))).toBe(true);
+  });
+
+  it('rejects a step whose leadIn is blank, naming the path', () => {
+    const version = makeVersion({ method: [makeStep({ leadIn: '' })] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method[0].leadIn'))).toBe(true);
+  });
+
+  it('rejects a step whose instruction is null, naming the path', () => {
+    const version = makeVersion({ method: [makeStep({ instruction: null })] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method[0].instruction'))).toBe(true);
+  });
+
+  it('rejects a step whose targets is not an array, naming the path', () => {
+    const version = makeVersion({ method: [makeStep({ targets: 'not an array' })] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method[0].targets'))).toBe(true);
+  });
+
+  it('rejects a step whose targets entry is missing a value, naming the path', () => {
+    const version = makeVersion({ method: [makeStep({ targets: [{ label: 'temp' }] })] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.method[0].targets[0]'))).toBe(true);
+  });
+
+  it('accepts a well-formed step carrying n/leadIn/instruction/targets', () => {
+    const version = makeVersion({
+      method: [makeStep({ n: 1, leadIn: 'Step', instruction: 'Do it', targets: [{ label: 'temp', value: '69 °C' }] })],
+    });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
   it('rejects an authored note with no text field, naming the path', () => {
     const version = makeVersion({ authored: { carriedForward: [{ inheritedFrom: null }], beforeYouStart: [] } });
     const result = validateStoreFile(makeStoreFile([version]));
@@ -638,6 +685,36 @@ describe('validateVersion, the fields', () => {
 
   it('accepts a null declaredFlaw and an empty declaredAxes array', () => {
     const version = makeVersion({ declaredAxes: [], declaredFlaw: null });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  // WR-01 (code review): versionLabel and headnote are read directly by the
+  // UI (the version-line uniqueness check, the headnote's own rendering)
+  // but were never checked here.
+  it('rejects a version whose versionLabel is blank, naming the field', () => {
+    const version = makeVersion({ versionLabel: '' });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.versionLabel'))).toBe(true);
+  });
+
+  it('rejects a version whose versionLabel is missing, naming the field', () => {
+    const version = makeVersion();
+    delete version.versionLabel;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.versionLabel'))).toBe(true);
+  });
+
+  it('rejects a version whose headnote is not a string, naming the field', () => {
+    const version = makeVersion({ headnote: null });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.headnote'))).toBe(true);
+  });
+
+  it('accepts a version whose headnote is a blank string', () => {
+    const version = makeVersion({ headnote: '' });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 

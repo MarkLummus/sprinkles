@@ -566,8 +566,21 @@ export function BatchRow({
                     onInput={autoGrow}
                   />
                 </div>
+                {/* axesForBatch's own contract (domain/axes.js) reads
+                    batch.snapshot.declaredAxes only, never a live version —
+                    the snapshot is what protects a stored mark from a
+                    later change to the recipe's declared pair (WR-04 code
+                    review). Amending an existing batch reads its own
+                    snapshot; a genuinely fresh record has no snapshot yet
+                    (it is written at save time), so the live version is
+                    the only source available and is not the drift the
+                    contract guards against. */}
                 <AxesGrid
-                  axes={axesForBatch({ snapshot: { declaredAxes: version.declaredAxes } })}
+                  axes={axesForBatch(
+                    openPen === 'amend' && openBatch
+                      ? openBatch
+                      : { snapshot: { declaredAxes: version.declaredAxes } },
+                  )}
                   marks={draft.marks}
                   below={below760}
                   onChangeMark={onChangeRecordMark}

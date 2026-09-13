@@ -114,6 +114,28 @@ function validateStep(step, path, errors) {
   if (!Array.isArray(step.uses) || !step.uses.every(isNonEmptyString)) {
     errors.push(`${path}.uses: expected an array of non-empty strings, got ${JSON.stringify(step.uses)}`);
   }
+  // WR-01 (code review): a step is a UI-facing record (its number, lead-in
+  // and instruction render directly), same as a row — check them with the
+  // same thoroughness validateRow already gives every ingredient field.
+  if (!isFiniteNumber(step.n)) {
+    errors.push(`${path}.n: expected a finite number, got ${JSON.stringify(step.n)}`);
+  }
+  if (!isNonEmptyString(step.leadIn)) {
+    errors.push(`${path}.leadIn: expected a non-empty string, got ${JSON.stringify(step.leadIn)}`);
+  }
+  if (!isNonEmptyString(step.instruction)) {
+    errors.push(`${path}.instruction: expected a non-empty string, got ${JSON.stringify(step.instruction)}`);
+  }
+  if (!Array.isArray(step.targets)) {
+    errors.push(`${path}.targets: expected an array, got ${JSON.stringify(step.targets)}`);
+  } else {
+    step.targets.forEach((target, index) => {
+      const targetPath = `${path}.targets[${index}]`;
+      if (!isPlainObject(target) || !isNonEmptyString(target.label) || !isNonEmptyString(target.value)) {
+        errors.push(`${targetPath}: expected { label: non-empty string, value: non-empty string }, got ${JSON.stringify(target)}`);
+      }
+    });
+  }
 }
 
 /**
@@ -358,6 +380,18 @@ function validateVersion(version, path, errors) {
   validateDeclaredAxes(version.declaredAxes, `${path}.declaredAxes`, errors);
   if (!isAbsentOrNull(version.declaredFlaw) && typeof version.declaredFlaw !== 'string') {
     errors.push(`${path}.declaredFlaw: expected a string or null, got ${JSON.stringify(version.declaredFlaw)}`);
+  }
+  // WR-01 (code review): both fields are read directly by the UI (the
+  // version-line uniqueness check, the headnote's own rendering) but were
+  // never checked here. versionLabel must be non-empty — the app's own
+  // save gate (lineage.js blockedSaveMessage) never lets a blank one
+  // through — while headnote is legitimately blank prose (an authored
+  // version can have none), so only its type is checked.
+  if (!isNonEmptyString(version.versionLabel)) {
+    errors.push(`${path}.versionLabel: expected a non-empty string, got ${JSON.stringify(version.versionLabel)}`);
+  }
+  if (typeof version.headnote !== 'string') {
+    errors.push(`${path}.headnote: expected a string, got ${JSON.stringify(version.headnote)}`);
   }
 }
 

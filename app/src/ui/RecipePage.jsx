@@ -992,7 +992,15 @@ export function RecipePage() {
   // pattern) — the record the maker is now editing may no longer be the
   // one either sentence described.
   function handleChangeRecordField(field, value) {
-    setFieldErrors({});
+    // Only this field's own entry clears (WR-03): a Save that reported two
+    // malformed measurements must not have fixing one silently un-flag the
+    // other, still-invalid one.
+    setFieldErrors((prev) => {
+      if (!(field in prev)) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
     setBlockedDateMessage(null);
     setFormStatus('');
     // The retirement scope (contract "Feedback and undo lifecycle"): this
@@ -1010,7 +1018,9 @@ export function RecipePage() {
   // never onChange, since a native radio's onChange does not re-fire on a
   // click that leaves its value unchanged.
   function handleChangeSegment(field, value) {
-    setFieldErrors({});
+    // No BATTERY_FIELDS entry is ever keyed by a segment field (WR-03) —
+    // nothing of this field's own to clear, and clearing the whole map
+    // would silently un-flag an unrelated still-invalid measurement.
     setBlockedDateMessage(null);
     setFormStatus('');
     // Same retirement boundary as handleChangeRecordField above: only
@@ -1028,7 +1038,8 @@ export function RecipePage() {
   // so a mark change always retires a pending undo (Task 2's retirement
   // scope) — unconditionally, unlike the two generic setters above.
   function handleChangeRecordMark(axisKey, stop) {
-    setFieldErrors({});
+    // An axis key is never a BATTERY_FIELDS key (WR-03) — nothing of
+    // this field's own to clear.
     setBlockedDateMessage(null);
     setFormStatus('');
     setPendingUndo(null);
@@ -1044,7 +1055,6 @@ export function RecipePage() {
   // state and the announcement. Retires a pending undo unconditionally,
   // same as every other tasting-body edit (Task 2).
   function handleClearAxisMark(axisKey, axisName) {
-    setFieldErrors({});
     setBlockedDateMessage(null);
     setPendingUndo(null);
     setDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, null) }));
@@ -1057,7 +1067,6 @@ export function RecipePage() {
   // The defects row is inside the tasting body, so a toggle always
   // retires a pending undo (Task 2).
   function handleChangeDefect(defect) {
-    setFieldErrors({});
     setBlockedDateMessage(null);
     setFormStatus('');
     setPendingUndo(null);
@@ -1074,7 +1083,6 @@ export function RecipePage() {
   // flip, same as every other declared control. Inside the tasting body,
   // so it always retires a pending undo (Task 2).
   function handleToggleBitter() {
-    setFieldErrors({});
     setBlockedDateMessage(null);
     setFormStatus('');
     setPendingUndo(null);
@@ -1087,7 +1095,8 @@ export function RecipePage() {
   // indistinguishable from a step the maker deliberately marked as
   // unchanged — a fact this record never states.
   function handleChangeStepChange(stepNumber, patch) {
-    setFieldErrors({});
+    // A step-change key is never a BATTERY_FIELDS key (WR-03) — nothing
+    // of this field's own to clear.
     setBlockedDateMessage(null);
     setFormStatus('');
     setDraft((prev) => {
@@ -1110,7 +1119,8 @@ export function RecipePage() {
   // entirely — the existing "an empty field means nothing was written"
   // rule (D-13/BATCH1-01), applied at the row level as it is today.
   function handleChangeAsMade(rowId, portionIndex, rawValue) {
-    setFieldErrors({});
+    // An as-made row key is never a BATTERY_FIELDS key (WR-03) — nothing
+    // of this field's own to clear.
     setBlockedDateMessage(null);
     setFormStatus('');
     setDraft((prev) => {
@@ -1262,7 +1272,7 @@ export function RecipePage() {
       return;
     }
 
-    const record = createBatch(version, churnFields, tasting, { id: crypto.randomUUID(), now: new Date().toISOString() });
+    const record = createBatch(version, churnFields, tasting, { id: crypto.randomUUID(), now });
 
     repository.saveBatch(record).then(() => {
       setBatches((prev) => [...prev, record]);

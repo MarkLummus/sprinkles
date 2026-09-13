@@ -1,0 +1,3 @@
+# API Coverage — Phase 03.3.1
+
+No external API integration: the phase rebuilds a local React/IndexedDB record pen against the project's own ratified stack (React 19, Vite, idb 8, Vitest) — every dependency is already installed, no package is installed, and the only platform APIs touched (`matchMedia`, `role="status"` live regions, native date inputs, the repository seam over IndexedDB) are local browser platform surfaces with no service, endpoint, or network boundary. The `api-coverage` detector's own scan of the phase scope returned `detected: false` (no verbs/nouns in its vocabulary matched the phase's ROADMAP section).

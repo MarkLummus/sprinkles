@@ -43,6 +43,7 @@ The workspace lives in `app/`. Commands: `npm --prefix app run dev`, `npm --pref
 - Every store access goes through the repository seam (`app/src/store/repository.js`); no other module under `app/src` imports `idb`.
 - Every visual value (colour, face, size, spacing, rule weight) reads through a CSS custom property defined in `app/src/styles/tokens.css`; no component or stylesheet carries a literal.
 - Notes and prose render as text, never as markup — no `dangerouslySetInnerHTML` anywhere under `app/src`.
+- Agent-facing prose, git commit messages, and browser-test input values are English — pinned against language drift in agent runs.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->

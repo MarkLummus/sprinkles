@@ -1609,6 +1609,11 @@ textarea {
   font-family: var(--face-grotesk);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
+  /* A label, not a button/select — the global border-box rule above
+     doesn't reach it, so the border was adding onto the declared
+     --stop-w/--stop-h instead of being drawn inside them (measured live,
+     03.3.1-06 Task 3: 40x46 instead of the contract's 40x44 below 760px). */
+  box-sizing: border-box;
 }
 
 .axis-mark__stop input[type='radio'] {

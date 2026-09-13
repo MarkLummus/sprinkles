@@ -43,9 +43,9 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 
 ### Usability — from UX-01
 
-- [ ] **UX1-01**: Recipe editing, batch recording, and printing are operable by keyboard, with visible labels and focus, and text contrast meets WCAG 2.2 AA.
+- [x] **UX1-01**: Recipe editing, batch recording, and printing are operable by keyboard, with visible labels and focus, and text contrast meets WCAG 2.2 AA.
 - [ ] **UX1-02**: Entered data survives a recoverable failure such as a reload mid-edit.
-- [ ] **UX1-03**: Uncertainty, estimated data, and errors are never conveyed by color alone.
+- [x] **UX1-03**: Uncertainty, estimated data, and errors are never conveyed by color alone.
 
 ## v2 Requirements
 
@@ -115,9 +115,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PRINT-03 | Phase 4 | Pending |
 | PRINT-04 | Phase 4 | Pending |
 | PRINT-05 | Phase 4 | Pending |
-| UX1-01 | Phase 4 | Pending |
+| UX1-01 | Phase 4 | Complete |
 | UX1-02 | Phase 4 | Pending |
-| UX1-03 | Phase 4 | Pending |
+| UX1-03 | Phase 4 | Complete |
 
 **Coverage:**
 

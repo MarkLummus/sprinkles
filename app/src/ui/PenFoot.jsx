@@ -45,12 +45,14 @@ export function PenFoot({
   penHint,
   tastingOpen,
   removeTastingAttempt = null,
+  pendingUndo = null,
   onCancelDeveloping,
   onSaveAsNewVersion,
   onSaveOverVersion,
   onCancelRecording,
   onSaveBatch,
   onAddTasting,
+  onUndoRemove,
 }) {
   // Remove tasting's own focus landing (D-01, contract "Focus landings":
   // both hidden-mode removal paths move focus to Add tasting) — the same
@@ -97,6 +99,16 @@ export function PenFoot({
             {!tastingOpen && (
               <button type="button" className="text-control" ref={addTastingRef} onClick={onAddTasting}>
                 Add tasting
+              </button>
+            )}
+            {/* The undo footer slot (contract "Undo placement rule"):
+                trailing Add tasting, while a removal is pending and the
+                section is absent — the DOM move's other home is the
+                tasting head slot (BatchRow), while the section is
+                visible. */}
+            {pendingUndo && !tastingOpen && (
+              <button type="button" className="text-control undo-control" onClick={onUndoRemove}>
+                Undo clear tasting
               </button>
             )}
           </>

@@ -47,6 +47,34 @@ export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entr
 export const TASTING_REMOVED_EMPTY_STATUS = 'Tasting removed.';
 export const TASTING_REMOVED_DATA_STATUS = 'Tasting removed. You can undo this.';
 
+// The contract's verbatim tasting-status sentence after a restore (Task 2,
+// contract "Feedback and undo lifecycle") — the one announcement this
+// build ever writes to tasting-status (Pitfall 6: the always-visible
+// mode's own two tasting-status strings are never built).
+export const TASTING_RESTORED_STATUS = 'Tasting restored.';
+
+// TASTING_BODY_FIELD_KEYS / isTastingBodyField(field) — the retirement
+// scope's own boundary (contract "Feedback and undo lifecycle": "any edit
+// inside the tasting body retires a pending undo... never a churn-section
+// edit or a Next-time edit"). handleChangeRecordField and
+// handleChangeSegment both share one generic setter across the churn/
+// tasting line, so this is the one dictionary either reads to decide
+// whether the field it was just given retires a pending undo — marks,
+// defects, and the declared toggle route through their own dedicated
+// handlers and retire unconditionally, so they need no entry here.
+const TASTING_BODY_FIELD_KEYS = new Set([
+  'tastedDate',
+  'temperingMinutes',
+  'tastingTempC',
+  'note',
+  'meltTestG',
+  'meltStyle',
+]);
+
+export function isTastingBodyField(field) {
+  return TASTING_BODY_FIELD_KEYS.has(field);
+}
+
 // Two as-made maps compared by key set and, for a shared key, by their
 // arrays element-wise (D-10) — the same presence-over-truthiness
 // discipline the rest of this file applies: a row present in one draft
@@ -399,6 +427,30 @@ export function tastingPayloadFromDraft(draft) {
   };
 }
 
+// restoreDraftFromUndo(draft, pendingUndo) -> the draft with the tasting
+// side written back from the undo payload and the section reopened
+// (contract's own restore sequence). Pure — the two impure bits of the
+// restore (the focus move, the announcement) stay in handleUndoRemove.
+// Field-by-field, never a computed key (T-03.3.1-10: the payload is the
+// pen's own draft copy, never a stored record's raw object); marks and
+// defects are copied again here rather than assigned by reference, so a
+// later edit to the restored draft can never reach back into pendingUndo.
+export function restoreDraftFromUndo(draft, pendingUndo) {
+  return {
+    ...draft,
+    tastingOpen: true,
+    tastedDate: pendingUndo.tastedDate,
+    temperingMinutes: pendingUndo.temperingMinutes,
+    tastingTempC: pendingUndo.tastingTempC,
+    marks: { ...pendingUndo.marks },
+    note: pendingUndo.note,
+    defects: [...pendingUndo.defects],
+    bitterDeclared: pendingUndo.bitterDeclared,
+    meltTestG: pendingUndo.meltTestG,
+    meltStyle: pendingUndo.meltStyle,
+  };
+}
+
 // parseAllMeasuredFields(draft) -> { fieldErrors, hasErrors, parsed }.
 // Pure: walks BATTERY_FIELDS, parsing each field through
 // parseMeasuredDraft. A malformed value's own contract sentence
@@ -577,6 +629,12 @@ export function RecipePage() {
   // PenFoot's own focus effect on the Add tasting control.
   const [removeTastingAttempt, setRemoveTastingAttempt] = useState(null);
   const removeTastingAttemptRef = useRef(0);
+  // The restore sequence's own focus landing (contract "Focus landings":
+  // "undo after restore → the Clear/Remove control") — the same
+  // attempt-counter pattern, consumed by BatchRow's own focus effect on
+  // the Remove tasting control.
+  const [restoreAttempt, setRestoreAttempt] = useState(null);
+  const restoreAttemptRef = useRef(0);
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
   // reason, citation and headnote start blank/null — never defaulted from
   // the parent — while rows is a map keyed by row id holding the raw
@@ -872,14 +930,26 @@ export function RecipePage() {
     openBatch = sortedBatches(batches)[0];
   }
 
-  // announce(message, { selfClear }) -> writes the form-status live
-  // region's text (contract "Feedback and undo lifecycle"). Validation and
-  // block statuses never self-clear; a future toast-bearing status
-  // (plan 04's tasting removal/undo) passes selfClear: true and gets the
-  // guarded five-second clear — it clears only if the text on screen is
-  // still the message it wrote, so a newer message is never wiped
-  // (RESEARCH.md Code Example 5).
-  function announce(message, { selfClear = false } = {}) {
+  // announce(message, { selfClear, target }) -> writes one of the two
+  // live regions' text (contract "Feedback and undo lifecycle"): form
+  // (the default) or tasting — the channel handleUndoRemove's own restore
+  // announcement writes to. Validation and block statuses never
+  // self-clear; the tasting removal/undo toasts pass selfClear: true and
+  // get the guarded five-second clear — it clears only if the text on
+  // screen is still the message it wrote, so a newer message is never
+  // wiped (RESEARCH.md Code Example 5). Both channels share the one
+  // guard shape, each against its own timer ref.
+  function announce(message, { selfClear = false, target = 'form' } = {}) {
+    if (target === 'tasting') {
+      setTastingStatus(message);
+      if (tastingStatusTimerRef.current) clearTimeout(tastingStatusTimerRef.current);
+      if (selfClear) {
+        tastingStatusTimerRef.current = setTimeout(() => {
+          setTastingStatus((current) => (current === message ? '' : current));
+        }, 5000);
+      }
+      return;
+    }
     setFormStatus(message);
     if (formStatusTimerRef.current) clearTimeout(formStatusTimerRef.current);
     if (selfClear) {
@@ -907,6 +977,7 @@ export function RecipePage() {
     setPendingUndo(null);
     setTastingStatus('');
     setRemoveTastingAttempt(null);
+    setRestoreAttempt(null);
     setFormStatus('');
     setMode('recording');
   }
@@ -924,6 +995,11 @@ export function RecipePage() {
     setFieldErrors({});
     setBlockedDateMessage(null);
     setFormStatus('');
+    // The retirement scope (contract "Feedback and undo lifecycle"): this
+    // generic setter serves both churn fields and tasting-body fields, so
+    // it only retires a pending undo when the field it was just given is
+    // one of the tasting-body's own (isTastingBodyField, Task 2).
+    if (isTastingBodyField(field)) setPendingUndo(null);
     setDraft((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -937,6 +1013,10 @@ export function RecipePage() {
     setFieldErrors({});
     setBlockedDateMessage(null);
     setFormStatus('');
+    // Same retirement boundary as handleChangeRecordField above: only
+    // Melt style is a tasting-body field among the three this handler
+    // shares (Exit consistency and Airiness are churn-section fields).
+    if (isTastingBodyField(field)) setPendingUndo(null);
     setDraft((prev) => ({ ...prev, [field]: prev[field] === value ? '' : value }));
   }
 
@@ -944,11 +1024,14 @@ export function RecipePage() {
   // presence-over-truthiness discipline handles both marking and
   // click-again-clears (stop === null) — this handler never announces,
   // since re-clicking a stop is a silent clear (only the per-axis Clear
-  // control announces, below).
+  // control announces, below). Every axis lives inside the tasting body,
+  // so a mark change always retires a pending undo (Task 2's retirement
+  // scope) — unconditionally, unlike the two generic setters above.
   function handleChangeRecordMark(axisKey, stop) {
     setFieldErrors({});
     setBlockedDateMessage(null);
     setFormStatus('');
+    setPendingUndo(null);
     setDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, stop) }));
   }
 
@@ -958,10 +1041,12 @@ export function RecipePage() {
   // kept out of handleChangeRecordMark above so a stop's own click-again
   // never also announces. Focus return to the axis's first stop is
   // AxisMark's own concern (it holds the DOM ref); this handler owns only
-  // state and the announcement.
+  // state and the announcement. Retires a pending undo unconditionally,
+  // same as every other tasting-body edit (Task 2).
   function handleClearAxisMark(axisKey, axisName) {
     setFieldErrors({});
     setBlockedDateMessage(null);
+    setPendingUndo(null);
     setDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, null) }));
     announce(`${axisName} cleared.`);
   }
@@ -969,10 +1054,13 @@ export function RecipePage() {
   // A defect chip's own toggle (contract "Controls spec"): a picked chip
   // joins the draft's defects list, an unpicked one leaves it — no default
   // ever, click-again clears exactly like every other battery control.
+  // The defects row is inside the tasting body, so a toggle always
+  // retires a pending undo (Task 2).
   function handleChangeDefect(defect) {
     setFieldErrors({});
     setBlockedDateMessage(null);
     setFormStatus('');
+    setPendingUndo(null);
     setDraft((prev) => ({
       ...prev,
       defects: prev.defects.includes(defect)
@@ -983,11 +1071,13 @@ export function RecipePage() {
 
   // The declared-flaw toggle (contract "Controls spec"): Bitter is a
   // presence/severity toggle, not a goldilocks axis — a plain boolean
-  // flip, same as every other declared control.
+  // flip, same as every other declared control. Inside the tasting body,
+  // so it always retires a pending undo (Task 2).
   function handleToggleBitter() {
     setFieldErrors({});
     setBlockedDateMessage(null);
     setFormStatus('');
+    setPendingUndo(null);
     setDraft((prev) => ({ ...prev, bitterDeclared: !prev.bitterDeclared }));
   }
 
@@ -1059,6 +1149,7 @@ export function RecipePage() {
     setPendingUndo(null);
     setTastingStatus('');
     setRemoveTastingAttempt(null);
+    setRestoreAttempt(null);
     setFormStatus('');
     setMode('recording');
   }
@@ -1099,6 +1190,22 @@ export function RecipePage() {
     announce(hasInk ? TASTING_REMOVED_DATA_STATUS : TASTING_REMOVED_EMPTY_STATUS, { selfClear: true });
     removeTastingAttemptRef.current += 1;
     setRemoveTastingAttempt(removeTastingAttemptRef.current);
+  }
+
+  // The restore sequence (contract "Feedback and undo lifecycle"):
+  // reopens the section and writes the payload back field-by-field
+  // (restoreDraftFromUndo, T-03.3.1-10), clears pendingUndo, focuses the
+  // Remove control, and announces "Tasting restored." to tasting-status —
+  // the one path that writes to that channel in this build (Pitfall 6:
+  // the always-visible mode's own tasting-status announcements are never
+  // built). The restore toast self-clears after five seconds, the same
+  // guarded five-second clear the removal toasts already carry.
+  function handleUndoRemove() {
+    setDraft((prev) => restoreDraftFromUndo(prev, pendingUndo));
+    setPendingUndo(null);
+    announce(TASTING_RESTORED_STATUS, { selfClear: true, target: 'tasting' });
+    restoreAttemptRef.current += 1;
+    setRestoreAttempt(restoreAttemptRef.current);
   }
 
   // The one save (D-01/D-02/D-03/D-04): every battery measurement
@@ -1189,6 +1296,7 @@ export function RecipePage() {
     setPendingUndo(null);
     setTastingStatus('');
     setRemoveTastingAttempt(null);
+    setRestoreAttempt(null);
     setFormStatus('');
   }
 
@@ -1529,6 +1637,7 @@ export function RecipePage() {
             formStatus={formStatus}
             tastingStatus={tastingStatus}
             pendingUndo={pendingUndo}
+            restoreAttempt={restoreAttempt}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
             onChangeRecordMark={handleChangeRecordMark}
@@ -1536,6 +1645,7 @@ export function RecipePage() {
             onChangeDefect={handleChangeDefect}
             onToggleBitter={handleToggleBitter}
             onRemoveTasting={handleRemoveTasting}
+            onUndoRemove={handleUndoRemove}
             openPen={openPen}
             penReason={penReason}
             onStartAmending={handleStartAmending}
@@ -1630,12 +1740,14 @@ export function RecipePage() {
           penHint={penHint}
           tastingOpen={draft?.tastingOpen ?? false}
           removeTastingAttempt={removeTastingAttempt}
+          pendingUndo={pendingUndo}
           onCancelDeveloping={handleCancelDeveloping}
           onSaveAsNewVersion={handleSaveAsNewVersion}
           onSaveOverVersion={handleSaveOverVersion}
           onCancelRecording={handleCancelRecording}
           onSaveBatch={handleSaveBatch}
           onAddTasting={handleAddTasting}
+          onUndoRemove={handleUndoRemove}
         />
       </article>
     </>

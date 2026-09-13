@@ -212,6 +212,7 @@ export function BatchRow({
   formStatus = '',
   tastingStatus = '',
   pendingUndo = null,
+  restoreAttempt = null,
   onChangeRecordField,
   onChangeSegment,
   onChangeRecordMark,
@@ -261,6 +262,14 @@ export function BatchRow({
   useEffect(() => {
     if (addTastingAttempt != null) tastedDateRef.current?.focus();
   }, [addTastingAttempt]);
+
+  // The restore sequence's own focus landing (contract "Focus landings":
+  // "undo after restore → the Clear/Remove control") — the same
+  // attempt-counter pattern as the two focus effects above.
+  const removeTastingButtonRef = useRef(null);
+  useEffect(() => {
+    if (restoreAttempt != null) removeTastingButtonRef.current?.focus();
+  }, [restoreAttempt]);
 
   // The axes' own arrangement (contract "Keyboard and tab order") — see
   // useBelow760's own header comment for the node-environment guard.
@@ -413,7 +422,12 @@ export function BatchRow({
                       Undo clear tasting
                     </button>
                   )}
-                  <button type="button" className="text-control" onClick={onRemoveTasting}>
+                  <button
+                    type="button"
+                    className="text-control"
+                    ref={removeTastingButtonRef}
+                    onClick={onRemoveTasting}
+                  >
                     Remove tasting
                   </button>
                 </div>

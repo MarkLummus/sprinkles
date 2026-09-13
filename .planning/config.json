@@ -94,5 +94,6 @@
   "graphify": {
     "enabled": true,
     "auto_update": true
-  }
+  },
+  "response_language": "en"
 }

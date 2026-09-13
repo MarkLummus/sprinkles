@@ -291,6 +291,25 @@ Plans:
 
 - [x] 03.3-07-PLAN.md — G-03.3-3 + the batch row of G-03.3-4: `targetValueFor` in `rows.js`; one head line, measured cells with plain-word labels, units beside figures and a plan sub-line, "not measured"; tasting shows marked axes only; Correct and Add tasting become text controls at the foot; the duplicate "no batch yet" paragraph goes
 
+### Phase 03.3.1: The full battery: the record pen rebuilt from sketch 007 (INSERTED)
+
+**Goal:** The batch record pen rebuilds to the settled sketch 007 battery — the 5-point goldilocks axes with the core/declared split, the new churn-phase and tasting-phase fields, the standalone defects checklist, the note before texture, and decoupled churn/tasting saves — with the store shape extended to carry it and the batch row reading the new record.
+**Depends on:** Phase 03.3
+**Requirements**: None new — builds the settled design in `.planning/sketches/007-full-battery/` (winner A: note before texture), confirmed by Mark across eight rounds 2026-09-11/12; source of truth packaged in `.claude/skills/sketch-findings-sprinkles/references/batch-record-tasting-battery.md`
+**UI hint**: yes
+**Prerequisite**: Impeccable surface brief approved for the record pen, derived from the settled sketch (design authority is Impeccable's). The sketch's settled state is the input: variant A, 3-column axes, hidden-tasting default, neutral note prompt, named "Declared for this recipe" cue — all browser-verified 2026-09-12 (33/40, zero P1s)
+**Phase notes**: This lands before Phase 4 so the printed batch-log page (PRINT-02) is built against the full battery's field set, not the old record. The data model changes: batches gain churn-phase fields (duration, exit consistency, airiness, tempering time) and tasting-phase fields (melt style, melt test); tasting axes move to the 5-point goldilocks scale; the defects checklist and the recipe-declared flaw toggle are new records. Per the no-live-data rule, check whether any real stored records exist before planning — prefer reset over migration while Mark is the only user. Carried from the sketch for the phase plan: the two P3s (drop the underline on filled controls; name the two Cancels' scopes — in the real product Cancel discards the whole pen draft, D-24), the persistence contract for the two save scopes, the undo-retired-on-resize edge, the matchMedia-under-emulation caveat, and the read-view summary line ("Soft (2) · grainy · bitter") belongs to the batch read view, not the pen. The goldilocks-vs-descriptive-anchors question stays closed unless Mark reopens it; Scoopability's anchor wording rides that decision. UX1-01–UX1-03 remain build constraints on every surface this phase touches.
+
+**Scope:**
+
+- The record pen rebuilt to sketch 007 variant A: churn section (date, time to draw temp, out of machine, churn duration, exit consistency, airiness, tempering time) with its own Cancel | Save batch; tasting section hidden until added (Add tasting opens it, focuses the Tasted date), carrying tasted date, tasting temperature, the six axis rows, the note before Texture & flavor, "Any problems? select all that apply" with the four defect chips plus the declared "Bitter · declared" toggle, the melt block (melt style, melt test) at the foot, and the shared Next time field
+- Axes as numbered 5-point goldilocks stops (1–5 on the stop, inline state beside the name, per-axis Clear, click-again clears) on the 186px track; core group (Sweetness, Hardness, Smoothness, Scoopability) left, declared group (Density/body, Oil character) right of the vertical hairline, captioned "Declared for this recipe"; tab order follows the eye in the 3-column arrangement, grouped DOM when stacked
+- Decoupled saves with state-based labels: footer reads "Save batch" with the tasting section absent, "Save batch & tasting" with it present; Clear/Remove tasting → toast + scoped Undo (tasting edits only retire it); feedback lives where the action is
+- Blank stays visibly blank: no defaults on any stop or segmented option; malformed numbers stay in place with inline feedback; decimal point/comma both accepted
+- The store: batches carry the new fields; a marked axis stores its 1–5 value; defects and declared flaws are stored records; the existing seeded/old-shape records handled per the reset-over-migration call made in planning
+- The batch row's read side updates to the new battery: the measured cells for the new fields, the axis marks read as 1–5 goldilocks marks, the defects read, and absence labels per the Saying-absence rule
+- Print is Phase 4's, not this phase's — but the phase plan names which record fields Phase 4's batch-log page must print so PRINT's planning reads the final shape
+
 ### Phase 4: Prepare the next version for making
 
 **Goal**: Maker can print the new version as a bench sheet, carry it to the kitchen, and match the printed sheet back to its version — with the whole develop loop operable by keyboard and recoverable
@@ -324,7 +343,7 @@ These govern every phase and are not re-litigated during planning:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -334,6 +353,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 4
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
 | 3.3. The front-matter rows and the page in step order | 7/7 | Complete    | 2026-09-10 |
+| 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 0/TBD | Not started | - |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

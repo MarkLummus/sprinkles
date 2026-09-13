@@ -273,6 +273,23 @@ function TastingReading({ batch }) {
   );
 }
 
+// laterBatchMetaFor(batch) -> the later-batches list's own meta small
+// print parts (D-04, D-09): the drawn temperature and At-the-machine
+// prose, unchanged, plus "changed {date}" when the batch carries a
+// changed value — replacing the retired tasted-count wording (Pitfall 7:
+// a batch is tasted zero or one, never plural). Exported for direct
+// testing, since the disclosure that renders this has no prop to open it
+// from a render-only test (this file's own AxesGrid precedent).
+export function laterBatchMetaFor(batch) {
+  const metaParts = [];
+  if (batch.churn.outOfMachineTempC != null) {
+    metaParts.push(`out of machine ${churnMeasured(batch.churn.outOfMachineTempC, { signed: true })} °C`);
+  }
+  if (batch.churn.atTheMachine) metaParts.push(batch.churn.atTheMachine);
+  if (batch.changed) metaParts.push(`changed ${formatRecordDate(batch.changed)}`);
+  return metaParts;
+}
+
 // The batch's own row (sketch 003 variant B, 03.3-01; rebuilt to the full
 // battery in 03.3.1-02, the tasting section added in 03.3.1-03): the front
 // matter's second stacked row. One head line (Batch label, churned date,
@@ -709,6 +726,15 @@ export function BatchRow({
                   {`${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
                 </span>
               </div>
+              {/* D-04: churned, tasted, changed — only the latest change
+                  ever shows, since every save after the first replaces
+                  this one stored value (never a list). */}
+              {openBatch.changed && (
+                <div className="batch-row__cell">
+                  <span className="batch-row__cell-label">Changed</span>
+                  <span className="batch-row__cell-value">{formatRecordDate(openBatch.changed)}</span>
+                </div>
+              )}
             </div>
             {openBatch.churn.atTheMachine && <p className="prose-text">{openBatch.churn.atTheMachine}</p>}
             {openBatch.churn.ingredientNotes && <p className="prose-text">{openBatch.churn.ingredientNotes}</p>}
@@ -762,12 +788,7 @@ export function BatchRow({
               {sortedBatches(batches).map((batch) => {
                 const isOpenBatch = openBatch && batch.id === openBatch.id;
                 const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
-                const metaParts = [];
-                if (batch.churn.outOfMachineTempC != null) {
-                  metaParts.push(`out of machine ${churnMeasured(batch.churn.outOfMachineTempC, { signed: true })} °C`);
-                }
-                if (batch.churn.atTheMachine) metaParts.push(batch.churn.atTheMachine);
-                if (batch.tasting) metaParts.push('tasted');
+                const metaParts = laterBatchMetaFor(batch);
                 return (
                   <li key={batch.id}>
                     <p className="batch-row__later-date">

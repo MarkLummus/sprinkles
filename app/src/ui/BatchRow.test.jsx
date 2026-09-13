@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { BatchRow, AxesGrid } from './BatchRow.jsx';
+import { BatchRow, AxesGrid, laterBatchMetaFor } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { axesForBatch } from '../domain/axes.js';
@@ -745,6 +745,23 @@ describe("BatchRow — the record's reading state, measured values as cells (con
     expect(markup).not.toContain('>Amended<');
   });
 
+  // D-04: churned, tasted, changed — only the latest change shows.
+  describe('the record\'s dates: churned, tasted, changed (D-04)', () => {
+    it('renders no Changed cell when the batch has never been changed', () => {
+      const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+      expect(markup).not.toContain('>Changed<');
+    });
+
+    it('renders exactly one Changed cell, via formatRecordDate, when the batch carries a changed date', () => {
+      const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
+      const markup = renderBatchRow({ openBatch: changedBatch, batches: [changedBatch], mode: 'reading' });
+      expect(markup).toMatch(
+        /<span class="batch-row__cell-label">Changed<\/span><span class="batch-row__cell-value">10 Aug 2026<\/span>/,
+      );
+      expect(markup.split('class="batch-row__cell-label">Changed<').length - 1).toBe(1);
+    });
+  });
+
   it('renders the recorded-against fact as a figure cell, not a prose sentence', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toMatch(
@@ -922,5 +939,37 @@ describe('BatchRow — the batch list, always a list only with zero batches; a c
   it('renders no "Batches of this version" section by default with an address that matches no batch', () => {
     const markup = renderBatchRow({ batches: [augustSecondBatch], openBatch: null });
     expect(markup).not.toContain('Batches of this version');
+  });
+});
+
+// laterBatchMetaFor (D-04, D-09, Pitfall 7): the later-batches list's own
+// meta small print — "changed {date}" replaces the retired tasted-count
+// wording; the drawn temperature and At-the-machine parts are unchanged.
+describe('laterBatchMetaFor — the later-batches list\'s meta small print (D-04)', () => {
+  it("reads \"changed {date}\" when the batch carries a changed date", () => {
+    const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
+    expect(laterBatchMetaFor(changedBatch)).toContain('changed 10 Aug 2026');
+  });
+
+  it('carries no "changed" part when the batch has never been changed', () => {
+    expect(laterBatchMetaFor(augustSecondBatch).some((part) => part.startsWith('changed '))).toBe(false);
+  });
+
+  it('never reads "tasted" — the tasted-count wording is retired (Pitfall 7)', () => {
+    const tastedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
+    expect(laterBatchMetaFor(tastedBatch).join(' · ')).not.toMatch(/\btasted\b/);
+  });
+
+  it('keeps the drawn-temperature and At-the-machine parts', () => {
+    expect(laterBatchMetaFor(augustSecondBatch)).toEqual(['out of machine −6 °C', 'Soft, not greasy']);
+  });
+
+  it('returns an empty list when the batch carries none of the three facts', () => {
+    const bareBatch = {
+      ...augustSecondBatch,
+      changed: null,
+      churn: { ...augustSecondBatch.churn, outOfMachineTempC: null, atTheMachine: null },
+    };
+    expect(laterBatchMetaFor(bareBatch)).toEqual([]);
   });
 });

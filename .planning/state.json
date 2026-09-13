@@ -34,6 +34,11 @@
       "status": "complete"
     },
     {
+      "number": "3.3.1",
+      "name": "The full battery: the record pen rebuilt from sketch 007",
+      "status": "pending"
+    },
+    {
       "number": "4",
       "name": "Prepare the next version for making",
       "status": "pending"
@@ -41,8 +46,8 @@
   ],
   "next": {
     "command": "/gsd:progress --next",
-    "label": "Advance to the next step (plan phase 4)",
-    "reason": "Phase 4 of 7 — needs a plan"
+    "label": "Advance to the next step",
+    "reason": "Phase 03.3.1 of 8 · 13% · executing"
   },
-  "updated_at": "2026-09-13T02:04:03.495Z"
+  "updated_at": "2026-09-13T14:54:37.336Z"
 }

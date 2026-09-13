@@ -1,0 +1,84 @@
+{
+  "seed": {
+    "mass": 799.6800000000001,
+    "water": 473.4296000000001,
+    "grams": {
+      "fat": 144.19599999999997,
+      "milkfat": 104.196,
+      "addedFat": 39.99999999999997,
+      "msnf": 67.9744,
+      "sugar": 108,
+      "solids": 326.25039999999996,
+      "lactose": 37.046048000000006
+    },
+    "percent": {
+      "fat": 18.031712685074023,
+      "milkfat": 13.029711884753901,
+      "addedFat": 5.002000800320125,
+      "msnf": 8.500200080032013,
+      "sugar": 13.505402160864344,
+      "solids": 40.797619047619044
+    },
+    "addedFatShareOfFat": 27.740020527615176,
+    "pac": 24.060380152060823,
+    "pod": 13.046139415766307
+  },
+  "unknownFat": {
+    "mass": 1000,
+    "water": 905,
+    "grams": {
+      "fat": 95,
+      "milkfat": 0,
+      "addedFat": 95,
+      "msnf": 0,
+      "sugar": 0,
+      "solids": 95,
+      "lactose": 0
+    },
+    "percent": {
+      "fat": 9.5,
+      "milkfat": 0,
+      "addedFat": 9.5,
+      "msnf": 0,
+      "sugar": 0,
+      "solids": 9.5
+    },
+    "addedFatShareOfFat": 100,
+    "pac": 0,
+    "pod": 0
+  },
+  "missingBasis": "stated",
+  "pureSucrose1000g": {
+    "mass": 1000,
+    "water": 900,
+    "grams": {
+      "fat": 0,
+      "milkfat": 0,
+      "addedFat": 0,
+      "msnf": 0,
+      "sugar": 100,
+      "solids": 100,
+      "lactose": 0
+    },
+    "percent": {
+      "fat": 0,
+      "milkfat": 0,
+      "addedFat": 0,
+      "msnf": 0,
+      "sugar": 10,
+      "solids": 10
+    },
+    "addedFatShareOfFat": 0,
+    "pac": 10,
+    "pod": 10
+  },
+  "missingActual": {
+    "planTotal": 100,
+    "asMadeTotal": 100
+  },
+  "saltPacInLegacyUnits": 2.3209283713485394,
+  "seedScalingOnly": {
+    "pacPer1000g": 240.60380152060822,
+    "prsPer1000g": 130.46139415766308
+  }
+}

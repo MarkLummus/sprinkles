@@ -1,0 +1,6 @@
+{
+  "source_files_compared_to_isolated_test_copy": 69,
+  "changed_files": [],
+  "git_status_before_after_equal": true,
+  "scope": "Source-copy comparison plus Git status; no claim of a pre-audit hash baseline for every untracked file."
+}

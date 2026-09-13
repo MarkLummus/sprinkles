@@ -1,0 +1,9 @@
+
+ RUN  v5.0.0 /Users/mark/Documents/projects/sprinkles/phase-0-audit-2026-09-11/tmp/app
+
+
+ Test Files  13 passed (13)
+      Tests  374 passed (374)
+   Start at  18:29:14
+   Duration  202ms (transform 75%, import 15%, tests 8%, worker 3%)
+

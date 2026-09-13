@@ -1,0 +1,1572 @@
+/* The Formulation Cookbook, applied. Every colour, face, size, spacing
+   value, and rule weight reads through a custom property defined in
+   tokens.css — none is a literal here. */
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+/* The binder (route-recipe.md § 6, D-13): every control drawn by the page,
+   not the browser — ink at hairline weight, no fill, no radius, no icon.
+   Written as bare element rules so every control, including the list
+   page's own buttons and links, inherits it without being designed. */
+
+/* One focus rule (D-14): retires the three bespoke :focus rules this file
+   used to carry (.graduated-rule, .ink-field, the radio stop) in favour of
+   a single rule at the browser's own :focus-visible boundary. */
+:focus-visible {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+button,
+select {
+  appearance: none;
+  border: var(--rule-ink-field) solid var(--ink);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  box-sizing: border-box;
+  cursor: pointer;
+  /* Rest-state padding (D-15, D-16): the hairline border plus this padding
+     sums to exactly what the hover border plus its own padding sums to
+     below, so the box never changes size when the border thickens on
+     hover — binder.test.js asserts the equality. */
+  padding: calc(var(--gap-xs) + var(--rule-baseline) - var(--rule-ink-field));
+}
+
+button:hover,
+select:hover {
+  border-width: var(--rule-baseline);
+  padding: var(--gap-xs);
+}
+
+button:disabled,
+select:disabled {
+  border-style: dashed;
+  color: inherit;
+  background: none;
+  cursor: default;
+}
+
+/* .text-control (sketch 003 variant B, index.html:32-34; 03.1 Gap 1
+   override): the underline-only opt-out from the button/select binder
+   above, for the named per-step/per-row controls RESEARCH.md calls out as
+   text controls rather than bordered buttons — no border, an ink
+   underline reading the same token pair the `a` rule below already uses
+   for its own underline. */
+.text-control {
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  color: var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+
+.text-control:hover {
+  text-decoration-thickness: var(--rule-baseline);
+  padding: 0;
+}
+
+.text-control:disabled {
+  text-decoration-style: dashed;
+  color: inherit;
+  cursor: default;
+  border: none;
+  padding: 0;
+}
+
+/* A lone `select` selector loses the cascade to the pre-existing
+   `.ink-field` class rule (a class always outranks a bare element,
+   whatever the source order) — this compound selector keeps the two
+   selects that carry both `select` and `.ink-field` from being dragged
+   back to the field's own padding. */
+select.ink-field {
+  padding: var(--gap-xs);
+}
+
+/* Links (D-18): every link carries a hairline ink underline, visited the
+   same as unvisited; text that is not a link is never underlined. */
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+  cursor: pointer;
+}
+
+a:visited {
+  color: var(--ink);
+}
+
+/* The select's chevron (D-17): appearance: none above already removed the
+   browser's own arrow in every engine; this draws its replacement as two
+   ink triangles, one combined rule for the bare element and the two
+   selects that also carry .ink-field, whose own background: none would
+   otherwise beat a lone `select` rule (a class always outranks a bare
+   element). The dropdown list itself stays the browser's — this is the
+   closed-state chrome only. */
+select,
+select.ink-field {
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--inset-select-chevron-x)) calc(50% - var(--inset-select-chevron-y)),
+    calc(100% - var(--inset-select-chevron-x) + var(--size-select-chevron))
+      calc(50% - var(--inset-select-chevron-y));
+  background-size:
+    var(--size-select-chevron) var(--size-select-chevron),
+    var(--size-select-chevron) var(--size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+}
+
+/* The checkbox (D-13): the same drawing the radio stop below already
+   proves, so the uses checklist and the Skipped checkbox pick this up
+   with no markup change. */
+input[type='checkbox'] {
+  appearance: none;
+  width: var(--size-mark-stop);
+  height: var(--size-mark-stop);
+  margin: 0;
+  border: var(--rule-graduation) solid var(--ink);
+  border-radius: 0;
+  background: none;
+}
+
+input[type='checkbox']:checked {
+  background: var(--ink);
+}
+
+/* Number spinners (D-19): the cross-browser pair — Chromium/WebKit hide
+   the spin-button pseudo-elements, Firefox switches to the textfield
+   appearance. The type stays "number" on every field that has it. */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* The date input's calendar icon (D-13's named exception): hidden in
+   Chromium and WebKit. Firefox exposes no styling hook for it — the
+   selector below simply matches nothing there, and the gap is accepted
+   and recorded (03.1-03-PLAN.md planner decision 1), not worked around
+   with a hand-built picker. The segment highlight is left alone in every
+   engine, the second named exception beside the select's own dropdown. */
+input[type='date']::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Prose fields (D-13 § 8): grow with their typed text and carry no
+   resize grip. field-sizing degrades to the rows attribute already on
+   every textarea where an engine does not yet support it, so no feature
+   query is written; resize: none is unconditional. */
+textarea {
+  field-sizing: content;
+  resize: none;
+}
+
+/* The two named placeholders (D-20): an example in ink small print, never
+   a default — a blank field still saves as blank. */
+::placeholder {
+  color: var(--ink);
+  font-size: var(--size-small-print);
+  opacity: 1;
+}
+
+/* The running head (route-recipe-version.md § 4, § 6): the way home on
+   the recipe page, in ink — never bookcloth, which identifies a block by
+   its plain-language name, not a link. */
+.running-head {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+  padding: var(--gap-m) var(--gap-xl) 0;
+}
+
+.running-head a {
+  color: inherit;
+}
+
+/* The real "no recipe found" state (route-recipe-version.md § 4): the
+   running head above it, and a second link back to the list, so a
+   mistyped or since-removed version id is no longer a dead end. */
+.not-found {
+  padding: var(--gap-m) var(--gap-xl);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.not-found a {
+  color: inherit;
+}
+
+.recipe-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recipe-list li + li {
+  margin-top: var(--gap-s);
+}
+
+.recipe-list a {
+  display: flex;
+  gap: var(--gap-m);
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.recipe-list__name {
+  font-family: var(--face-text);
+}
+
+.recipe-list__transfer {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-s);
+  margin-bottom: var(--gap-m);
+}
+
+.recipe-list__file-input {
+  display: none;
+}
+
+.recipe-list__import-errors {
+  margin: 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.recipe-page {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'method side'
+    'foot foot';
+  gap: var(--gap-l);
+  padding: var(--gap-xl);
+}
+
+/* The front matter (sketch 003 variant B, 03.3-01): two full-width
+   stacked rows — the version's row, then the batch's row — closed by a
+   baseline-weight rule above Ingredients. Each row keeps its own internal
+   layout (.recipe-band__row-version below); this rule only stacks the
+   two and draws the closing rule. */
+.recipe-band {
+  grid-area: band;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  border-bottom: var(--rule-baseline) solid var(--ink);
+  padding-bottom: var(--gap-m);
+}
+
+/* The version row's own two-column split (carried forward unchanged from
+   the retired side-by-side .recipe-band): the recipe block at the prose
+   measure on the left, VersionRow's metadata and acts on the right,
+   closed by a graduation-weight rule separating it from the batch row
+   beneath. */
+.recipe-band__row-version {
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure-prose)) 1fr;
+  gap: var(--gap-l);
+  align-items: start;
+  padding-bottom: var(--gap-m);
+  border-bottom: var(--rule-graduation) solid var(--ink);
+}
+
+/* Column one is the recipe as written, in the sheet's page order: table,
+   then method. Column two is what the sheet does not print — the
+   formulation note beside the table so the six rules share the table's
+   viewport and the focus trace is a glance, not a scroll — followed by the
+   margin (route-recipe.md § 3, revised 2026-09-06). The two columns flow
+   independently: column two is one region so the margin follows the note
+   by one gap however tall the method runs. Whichever column runs longer
+   leaves its void at the bottom. */
+
+.headnote h1 {
+  font-family: var(--face-text);
+  font-size: var(--size-recipe-name);
+  margin: 0;
+}
+
+.headnote__version {
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  margin: var(--gap-xs) 0 0;
+}
+
+.headnote__prose {
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+  max-width: var(--measure-prose);
+  margin: var(--gap-s) 0 0;
+}
+
+/* The save ceremony (route-recipe-version.md § 3, "The ceremony in the
+   headnote"): the version line, the reason, the citation, and the save
+   controls, all at the top of the page where the version is named, not
+   at the foot of the longest column (the Phase 2 design debt). */
+.headnote__version-field {
+  display: block;
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  margin: var(--gap-xs) 0 0;
+}
+
+.headnote__version-field span {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
+}
+
+/* The version-line field (D-13 § 8, "Measure"): held to the prose measure
+   rather than the full width of the page. */
+.headnote__version-field .ink-field {
+  max-width: var(--measure-prose);
+}
+
+.headnote__version-was {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  margin: var(--gap-hair) 0 0;
+}
+
+.headnote__reason-field {
+  display: block;
+  margin-top: var(--gap-s);
+}
+
+/* The "Why" label word (03.3-06 checkpoint feedback, sketch 003 variant
+   B, index.html:222): the same visible-label style
+   .headnote__version-field span already carries above, so Version and
+   Why read as the same kind of thing. */
+.headnote__reason-field span {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
+}
+
+/* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04): the
+   pressed state is carried by weight and outline, never by hue or a label
+   change — the same convention .version-strip__item.is-current uses.
+   Reads .text-control (03.3-06 checkpoint feedback, sketch 003 variant B,
+   index.html:479) for its border-less, underlined rest state; this rule
+   now only carries the spacing this button needs beside its siblings. */
+.headnote__show-changes {
+  margin-left: var(--gap-xs);
+}
+
+.headnote__show-changes[aria-pressed='true'] {
+  font-weight: 700;
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* The "From batch" label-over-control (03.3-06 checkpoint feedback,
+   sketch 003 variant B, index.html:225): stacked like Version and Why
+   above it, not the inline "label beside control" row this used to be. */
+.headnote__citation {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  margin-top: var(--gap-s);
+}
+
+/* :first-child, not a bare "span" selector: .headnote__citation has a
+   second sibling span (.ink-text, the no-batch absence text) when the
+   version has no batch to cite, and that one must read in the ordinary
+   field face, not the label's small-print uppercase treatment. */
+.headnote__citation span:first-child {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
+}
+
+/* The citation select (D-13 § 8, "Measure"): held to the prose measure
+   alongside the version-line field above. */
+.headnote__citation select.ink-field {
+  max-width: var(--measure-prose);
+}
+
+.headnote__ceremony {
+  display: flex;
+  gap: var(--gap-s);
+  margin-top: var(--gap-m);
+}
+
+.headnote__blocked {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-xs) 0 0;
+}
+
+/* The headnote prose field (03-02, 03.1-04): its own visible label word
+   is gone (planner decision 2) — the wrapper's own spacing is all this
+   rule keeps. */
+.headnote__prose-field {
+  display: block;
+  margin-top: var(--gap-m);
+}
+
+/* Versions (route-recipe.md § 3 "The imprint", D-04 to D-06): the openers
+   in two rows, --gap-m between the two groups and --gap-s between
+   adjacent controls within a group; the ceremony (D-06's own plan-pen
+   markup keeps the headnote__* classes above, per 03.1-CONTEXT.md's
+   planner decision 1 — this rule only spaces the wrapper it moved into)
+   and its one hint sentence, in small print. */
+.versions__openers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  margin-top: var(--gap-xs);
+}
+
+.versions__opener-group {
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* The fork's landing focus, made visible (03.3-06 checkpoint feedback,
+   G-03.3-1): the page-level effect that focuses the child's own Next
+   version button on a fresh fork-save mount follows a mouse-driven Save
+   click, so the page's one :focus-visible rule above draws no ring for
+   it (Chrome tracks the last input modality). VersionRow.jsx adds this
+   class only for that one landing and clears it on blur — an explicit
+   :focus rule, not :focus-visible, scoped to this one class so every
+   other interaction with this button keeps reading the page's ordinary
+   rule. binder.test.js's "exactly one rule" assertion is updated to name
+   this as the one documented exception. */
+.is-landing-focus:focus {
+  outline: var(--focus-outline-width) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.versions__ceremony {
+  margin-top: var(--gap-xs);
+}
+
+/* The record/amend and tasting ceremonies' own date field (D-05, D-10):
+   the same labelled-field shape the plan pen's fields already use. */
+.versions__ceremony-field {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+/* The churned/tasting date field, sized to a date rather than the full
+   row (2026-09-10 checkpoint feedback, G-03.3-4): both ceremonies this
+   wrapper serves hold a date field only, so scoping by [type='date']
+   costs nothing and reads self-documenting beside .ink-field's own
+   width: 100%. */
+.versions__ceremony-field .ink-field[type='date'] {
+  width: var(--field-w-date);
+}
+
+.versions__ceremony-field span {
+  display: block;
+  margin-bottom: var(--gap-hair);
+}
+
+/* The tasting ceremony's shortcut, between its date field and its save
+   pair — every adjacent control here is separated by --gap-s, never a
+   space character. */
+.versions__ceremony-shortcut {
+  display: block;
+  margin-top: var(--gap-s);
+}
+
+.versions__hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin-top: var(--gap-s);
+}
+
+/* The lineage (route-recipe.md § 3 "The imprint", D-08): a label and its
+   value read as one line — the label in the grotesk at small-print size,
+   the value inheriting the block's own text-face size. */
+.versions__lineage {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-hair) 0 0;
+}
+
+.versions__lineage a {
+  color: inherit;
+}
+
+.versions__lineage-label {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* The version row's meta stack as a definition list (sketch 003 variant
+   B, index.html:75-77, G-03.3-4): a label column beside its value column,
+   reusing .versions__lineage/-label on the dt/dd pairs it wraps so the
+   rules above keep working unchanged. */
+.version-row__meta-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--gap-hair) var(--gap-s);
+  margin: 0;
+}
+
+.version-row__meta-list dd {
+  margin: 0;
+}
+
+/* The ceremony and the Later-versions disclosure, as full-width rows of
+   their own (sketch 003 variant B, index.html:95-96, 107-108, 230,
+   03.3-06 checkpoint fix): siblings of .vmeta inside
+   .recipe-band__row-version's grid, spanning both of its columns rather
+   than being squeezed into vmeta's own narrow one. */
+.recipe-band__full-row {
+  grid-column: 1 / -1;
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--bookcloth);
+}
+
+/* The ceremony's own two-column split (sketch 003 variant B,
+   index.html:107): version line + why on the left, citation + saves on
+   the right — the same measure/1fr split .recipe-band__row-version
+   itself uses one grid level up. */
+.versions__ceremony-row {
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure-prose)) 1fr;
+  gap: var(--gap-l);
+}
+
+/* An amended batch's second line in the batch list (D-09), on its own
+   line beside the "churned" entry it belongs to. */
+.versions__batch-amended {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+/* The version strip (route-recipe-version.md § 3, § 6, 03-03; rebuilt as
+   a card grid against sketch 003 variant B's own `.vtree`,
+   index.html:97-103, for the Later disclosure — 03.3-06 checkpoint
+   feedback): a card per descendant, wrapping to as many columns as the
+   row's width allows, the same auto-fill discipline the sketch's own
+   rule uses. */
+.version-strip__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--gap-s) var(--gap-l);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-strip-line);
+}
+
+.version-strip__item {
+  padding: var(--gap-xs) 0;
+}
+
+.version-strip__item a {
+  color: inherit;
+}
+
+/* The current version, carried by weight and outline, never by hue or
+   position — the same convention batch-margin__list's is-open uses. */
+.version-strip__item.is-current {
+  font-weight: 700;
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* The card's own three lines (sketch 003 variant B, index.html:99-102):
+   the version line in the text face at version-line size, then the meta
+   line and the batch line both in small print. */
+.version-strip__vline {
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  margin: 0;
+}
+
+.version-strip__meta {
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
+.version-strip__batch {
+  margin: var(--gap-hair) 0 0;
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+}
+
+.version-strip__batch .text-control {
+  margin-left: var(--gap-s);
+}
+
+.version-strip__churned {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.ingredient-table-region {
+  grid-area: ingredients;
+}
+
+.method-region {
+  grid-area: method;
+}
+
+.side-region {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+}
+
+/* The foot band (route-recipe.md § 3 "The imprint"; D-26): shown only
+   while a pen is open — a hairline rule across the whole page, then the
+   pair right-aligned under the Notes column, the blocked-save sentence
+   beside it. Its own two-column grid matches .recipe-page's so the pair
+   lands under column two without being fenced to the page's own grid
+   tracks by name. */
+.pen-foot {
+  grid-area: foot;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--gap-l);
+}
+
+.pen-foot__rule {
+  grid-column: 1 / -1;
+  border: 0;
+  border-top: var(--rule-foot-band) solid var(--ink);
+  margin: 0;
+}
+
+.pen-foot__controls {
+  grid-column: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: var(--gap-s);
+  margin-top: var(--gap-m);
+}
+
+.pen-foot__blocked {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.ingredient-table {
+  border-collapse: collapse;
+  /* Fixed layout so a marked row's bold weight never reflows the columns
+     (direction contract § 5: nothing changes position). Column widths are
+     equal until Phase 2 sizes them with the as-made column. */
+  table-layout: fixed;
+  width: 100%;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.ingredient-table th,
+.ingredient-table td {
+  /* Border-box (G-03-11): under this table's fixed layout, a content-box
+     cell's declared width is a CONTENT width and the padding below is
+     added on top of every one of them — measured,
+     getComputedStyle(th).width read 88px while the rendered box measured
+     112px. Border-box is what makes a --col-* token in tokens.css mean
+     the number the screen actually shows. */
+  box-sizing: border-box;
+  text-align: left;
+  padding: var(--gap-xs) var(--table-cell-pad-x);
+  line-height: var(--leading-table);
+  border-bottom: var(--rule-baseline) solid var(--ink);
+}
+
+/* The single unsized column (G-03-11, D-UAT-6): under this table's fixed
+   layout, an automatic width receives exactly what the five sized
+   columns below leave — the same "sized by identity, not position"
+   reasoning 03-08 applied to the columns, extended to the remainder
+   itself, so the two conditional columns (As made, Remove) can come and
+   go without any other column's width moving. Its former fixed share
+   (--col-ingredient, 40%) is retired; see tokens.css for the retirement
+   note and where names now begin to wrap. */
+.ingredient-table__col-name {
+  width: auto;
+}
+
+/* The as-made column's arrival sizes the three numeric columns to their
+   content and right-aligns them, rather than stretching to fill (D-22,
+   Phase 1 critique carry). Sized by column identity, not position (G-03-1
+   task 1): a column named by its own class keeps its width when a
+   different column in the row becomes conditional, where a positional
+   nth-child selector would not. */
+.ingredient-table__col-numeric {
+  width: var(--col-numeric);
+  text-align: right;
+}
+
+/* The Data and Remove columns (G-03-11): unstyled since 03-02/03-08, so
+   under this table's fixed layout they split whatever the sized columns
+   above left — 5.41px each at a 1280px viewport, which is why the Remove
+   column's button painted over the Data column's flag word. Both now
+   read their own token (tokens.css). */
+.ingredient-table__col-data {
+  width: var(--col-data);
+}
+
+.ingredient-table__col-remove {
+  width: var(--col-remove);
+}
+
+.ingredient-table .ink-field {
+  text-align: right;
+}
+
+/* The grams cell's pen-open state (route-recipe-version.md § 3, § 6): the
+   struck baseline sits beside the field as a sibling span, never an
+   ancestor of it — the same reason Method.jsx's Skipped label sits
+   outside its struck span. */
+.ingredient-table__grams-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gap-strike);
+}
+
+.ingredient-table__grams-cell .ink-field {
+  width: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The Strike Rule (route-recipe-version.md § 7): a struck value in ink,
+   immediately before the value that replaced it. One stroke for every
+   "not in force" meaning across the app — a skipped step, a superseded
+   value, a removed row or step — so no builder adds a fourth. */
+.struck-value {
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+  margin-right: var(--gap-strike);
+}
+
+/* The Strike Rule's below-placed form (route-recipe-version.md § 7): the
+   one place the strike sits beneath rather than beside, because a
+   paragraph has no room beside — a changed step's prose (03-02) and the
+   changed headnote prose (03-02) both use this, sharing --rule-strike
+   with .struck-value so no builder adds a fourth meaning. */
+.prose-struck-beneath {
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+  max-width: var(--measure-prose);
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+  margin: var(--gap-strike) 0 0;
+}
+
+/* The orphaned-row flag (route-recipe-version.md § 3, 03-02): small print
+   beside the row's name, naming the removed step that left it unused,
+   with its own remove-this-row control. */
+.ingredient-table__flag {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-cross-flag);
+  margin: var(--gap-hair) 0 0;
+}
+
+/* The step-grouped table's own group-head row (LD-01, sketch 003 variant
+   B, index.html lines 126-131): the step's own running-head treatment,
+   naming which step the entries beneath it belong to, then the step's
+   lead-in text in a lighter, smaller-print register beside it. Letter-
+   spacing here is the bare 0.04em/0 pair this table's own header rule
+   (below) already carries unquoted — letter-spacing has never been part
+   of this project's token discipline (colour, face, size, spacing, rule
+   weight per CLAUDE.md), so this is the established precedent, not a new
+   literal. */
+.ingredient-table__step-head td {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-top: var(--gap-s);
+  border-bottom-width: var(--rule-baseline);
+}
+
+.ingredient-table__step-head-lead {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  margin-left: var(--gap-s);
+}
+
+/* The split-ingredient sub-line (LD-01): beneath the ingredient's name on
+   every occurrence, naming its share of the row's own total
+   (formatPortionLine, domain/composition.js). */
+.ingredient-table__portion-note {
+  display: block;
+  font-size: var(--size-small-print);
+}
+
+.ingredient-table th {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ingredient-table tfoot td {
+  border-bottom: none;
+  border-top: var(--rule-baseline) solid var(--ink);
+  font-weight: 700;
+}
+
+/* The total row's own numeric cell never wraps to two lines (D-22,
+   critique P2 #2, Phase 3 UAT test 17) — scoped to the total row alone
+   through the tfoot context, never to every numeric cell, so a wide
+   as-typed grams figure elsewhere in the table is still free to wrap. */
+.ingredient-table tfoot .ingredient-table__col-numeric {
+  white-space: nowrap;
+}
+
+.table-small-print {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
+/* Marked by a focused figure's trace (direction contract § 5): outline and
+   weight only, so nothing shifts position when focus moves. Unmarked rows
+   are untouched — never dimmed, never a different colour. */
+.ingredient-table tbody tr.is-marked {
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+  font-weight: 700;
+}
+
+/* Every block wears its plain-language name (direction contract § 6),
+   in the bookcloth colour that identifies the book, never a status. */
+.region-name {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--bookcloth);
+  margin: 0 0 var(--gap-xs);
+}
+
+/* "Before you start" (03.3-01, moved out of Authored.jsx to head the
+   Method, before step 1): the same prose measure as the recipe block,
+   closed by a graduation-weight rule before the step list. */
+.method__before {
+  max-width: var(--measure-prose);
+  padding-bottom: var(--gap-m);
+  margin-bottom: var(--gap-m);
+  border-bottom: var(--rule-graduation) solid var(--ink);
+}
+
+.method-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.method-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--gap-s);
+}
+
+.method-step + .method-step {
+  margin-top: var(--gap-m);
+}
+
+.method-step__n {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-figure-value);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The Strike Rule (above, "one stroke for every 'not in force' meaning
+   across the app — a skipped step, a superseded value, a removed row or
+   step"), applied here to the margin number itself (D-UAT-5, D-UAT-4,
+   G-03-14): the number a removed step had in the parent, in show-changes
+   only. The pen deliberately does not use this modifier — its own margin
+   suppresses the number entirely instead (Method.jsx) — because in the
+   pen the step's prose sits in live editable fields, so a strike on the
+   number would be the page's only strike and would read as a state of
+   the fields rather than of the step. */
+.method-step__n--struck {
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+}
+
+.method-step__lead {
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+  max-width: var(--measure-prose);
+  margin: 0;
+}
+
+.method-step__targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  margin: var(--gap-xs) 0 0;
+}
+
+.target-chip {
+  display: inline-flex;
+  gap: var(--gap-hair);
+  border: var(--rule-graduation) solid var(--ink);
+  padding: 0 var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+}
+
+.method-step__purpose,
+.method-step__aside {
+  font-family: var(--face-text);
+  font-style: italic;
+  font-size: var(--size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-xs) 0 0;
+}
+
+/* A struck step reads struck, its prose intact — weight and a strike, never
+   a colour (route-recipe-batch.md § 6, No-Verdict Rule). The text label
+   beside it is the requirement; the drawn line alone is a decoration. The
+   decoration is scoped to the prose span, not the paragraph, so the label
+   beside it stays legible — moving it back onto the paragraph would strike
+   the label again, since a decoration propagates to every in-flow inline
+   descendant and cannot be cancelled by them. */
+.method-step__prose--struck {
+  text-decoration: line-through;
+}
+
+.method-step__skipped-label {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* The maker's one line per changed step, in pen blue, following the same
+   render-only-when-present convention as .method-step__purpose/__aside. */
+.method-step__changed {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-xs) 0 0;
+}
+
+.method-step__recording {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-xs);
+}
+
+/* The pen's own step fields (03-02, 03.1-04): a prose field carries no
+   visible label word of its own any more, so this wrapper's only job now
+   is the vertical rhythm between fields. */
+.method-step__field {
+  display: block;
+  margin-top: var(--gap-xs);
+}
+
+.target-chip__label-field,
+.target-chip__value-field {
+  width: auto;
+}
+
+/* The uses control (03-02): a checkbox per row, over the twelve. */
+.method-step__uses {
+  border: none;
+  padding: 0;
+  margin: var(--gap-xs) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-uses-chip);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.method-step__uses legend {
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-hair);
+  padding: 0;
+}
+
+.method-step__uses-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-hair);
+}
+
+/* The uses line (D-24): one line of names in small print, its "change"/
+   "done" control on the same line. */
+.method-step__uses-line {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-cross-flag);
+  margin: var(--gap-xs) 0 0;
+}
+
+.method-step__uses-line button {
+  margin-left: var(--gap-xs);
+}
+
+/* The on-demand text controls (D-23, D-25): "add purpose", "add aside",
+   "done differently" — sitting in the step's own flow, one per line. */
+.method-step__on-demand {
+  display: block;
+  margin-top: var(--gap-xs);
+}
+
+/* The "edit this step" control's own layout rule (03.3-03, 03.1 Gap 1
+   override): same shape as .method-step__on-demand above — the control's
+   visual style comes entirely from the .text-control class applied
+   alongside it. */
+.method-step__edit {
+  display: block;
+  margin-top: var(--gap-xs);
+}
+
+/* The removed-row cross-flag and the stale-amount flag (03-02): small
+   print, state carried in words, never in colour. */
+.method-step__flag,
+.method-step__stale-flag {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-cross-flag);
+  margin: var(--gap-hair) 0 0;
+}
+
+.method-step__strike-control {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.method-step__line-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+/* The margin's derived-advisories block (FORM2-02, 03-05): small-print
+   paragraphs in ink under a legend parallel to the authored block's own,
+   at the same reading weight as the authored notes beside it — no colour,
+   no icon, no badge. */
+.derived-advisories__legend {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: var(--gap-m) 0 0;
+}
+
+.derived-advisories__item {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-xs) 0 0;
+}
+
+.authored__legend {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: var(--gap-m) 0 0;
+}
+
+.authored__notes {
+  margin: var(--gap-xs) 0 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-text);
+  font-size: var(--size-headnote-prose);
+}
+
+/* A note's pen-open field and its remove control (03-02). */
+.authored__note-field {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+}
+
+.authored__note-field textarea.prose-field {
+  flex: 1 1 auto;
+}
+
+/* The inherited-from marker (03-02): a trailing qualifier on the note's
+   own line, in small print — an inherited note is still authored prose,
+   just carrying provenance, so this is not a second legend. */
+.authored__inherited {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.formulation-note__rule + .formulation-note__rule {
+  margin-top: var(--gap-m);
+}
+
+.formulation-note__fat-breakdown {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+  margin: var(--gap-xs) 0 0;
+}
+
+/* The rule is a focusable control (route-recipe.md § 3, § 5): reset the
+   native button chrome so it reads exactly as the drawing did, then apply
+   the contract's own focus treatment — an ink outline, nothing coloured. */
+.graduated-rule {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* Capped at the drawing's native width so the SVG fills the button exactly
+     and the anchors under it sit at the baseline's ends, not the column's. */
+  max-width: var(--rule-width);
+}
+
+.graduated-rule__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--face-grotesk);
+  font-variant-numeric: tabular-nums;
+}
+
+.graduated-rule__label {
+  font-size: var(--size-table-body);
+}
+
+.graduated-rule__label-term {
+  font-size: var(--size-small-print);
+}
+
+.graduated-rule__value {
+  font-size: var(--size-figure-value);
+  font-weight: 700;
+}
+
+.graduated-rule__anchors {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--gap-hair);
+}
+
+.graduated-rule__deviation {
+  font-size: var(--size-deviation-words);
+}
+
+.graduated-rule__basis {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
+.basis-note {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  max-width: var(--measure-prose);
+  margin: var(--gap-m) 0 0;
+}
+
+/* The prose family (route-recipe-version.md § 3, D-13 § 8): the intro
+   paragraph, each step's lead-in and instruction, purpose and aside, each
+   authored note, the reason, and the record's own prose all edit in place
+   as the printed paragraph — no border at rest; the hairline outline
+   the brief describes is the global :focus-visible rule above, appearing
+   only on focus (planner decision 1: one outline mechanism, not two).
+   font-size and line-height inherit from whichever block-level context
+   already sizes the paragraph this field replaces, rather than fixing a
+   size here that could disagree with it. */
+.prose-field {
+  font-family: var(--face-text);
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--pen-blue);
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: var(--measure-prose);
+  box-sizing: border-box;
+}
+
+/* The hairline-baseline fix for a blank named prose field (03.1 Gap 2
+   override, 03.3-01): a rule until the field holds text — no visible
+   label word. */
+.prose-field--empty {
+  border-bottom: var(--rule-graduation) solid var(--ink);
+}
+
+/* The lead-in field (route-recipe-version.md § 3): reads bold in place of
+   the printed step's own <b>, the one prose field this weight applies to. */
+.prose-field--lead-in {
+  font-weight: 700;
+}
+
+/* The record's own prose, read-only (route-recipe-batch.md § 6, revised
+   2026-09-08): the same text face as the prose fields above, so a
+   tasting's words or a churn note does not change face between the
+   margin and the method. Counted values keep .ink-text's grotesk. */
+.prose-text {
+  font-family: var(--face-text);
+  color: var(--pen-blue);
+}
+
+/* The pen layer (route-recipe-batch.md § 3): everything the maker types,
+   and the saved record's own text, reads pen blue against the black plan.
+   Saving never changes colour (No-Verdict Rule) — only the field's
+   outline disappears, form giving way to plain text. */
+.ink-field {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-ink-field);
+  font-variant-numeric: tabular-nums;
+  color: var(--pen-blue);
+  border: var(--rule-ink-field) solid var(--ink);
+  border-radius: 0;
+  background: none;
+  padding: var(--gap-hair) var(--gap-xs);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* The headnote's churn slot (route-recipe-batch.md § 3, revised
+   2026-09-07): an .ink-field sitting inline in the version line's prose,
+   rather than filling a form field's container. */
+.headnote__churn-field {
+  width: auto;
+  display: inline-block;
+}
+
+.ink-text {
+  color: var(--pen-blue);
+}
+
+.batch-margin__legend {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--gap-xs);
+}
+
+.batch-margin__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  margin-top: var(--gap-xs);
+}
+
+/* The three churn number fields (Time to temperature, Draw temperature,
+   Air), sized to a short figure rather than the full row (2026-09-10
+   checkpoint feedback, G-03.3-4): scoped by [type='number'] so the three
+   prose fields beside them (textarea/text input, no .ink-field class)
+   stay at their own measure, untouched. */
+.batch-margin__field .ink-field[type='number'] {
+  width: var(--field-w-figure);
+}
+
+/* The churned date, sized like the ceremony's own date field (2026-09-10
+   live review, G-03.3-4): it moved into this grid as the pen field's
+   first cell, so it reads through the same date-width token. */
+.batch-margin__field .ink-field[type='date'] {
+  width: var(--field-w-date);
+}
+
+/* The batch row's measured values, as labelled cells at figure size
+   (sketch 003 variant B, 03.3-01) — replaces the old .batch-margin__measured
+   list rendering, which had no consumer left once BatchMargin.jsx's
+   content moved here. */
+.batch-row__cells {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--col-batch-cell-min), max-content));
+  gap: var(--gap-s) var(--gap-l);
+  margin: var(--gap-s) 0 0;
+}
+
+.batch-row__cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+}
+
+.batch-row__cell-label {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.batch-row__cell-value {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-figure-value);
+  font-weight: 700;
+  color: var(--pen-blue);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The batch row's head line (sketch 003 variant B, index.html:83-85,
+   03.3-07, G-03.3-4): the region-name label, the churned date, and the
+   later-batches disclosure control read as one baseline-aligned line. */
+.batch-row__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+
+.batch-row__head .region-name {
+  margin: 0;
+}
+
+.batch-row__date {
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  color: var(--pen-blue);
+}
+
+/* A measured cell's own unit, set lighter than its figure (sketch
+   003 variant B, index.html:89, 03.3-07): also carries the cell's
+   "not measured" wording alone when the value is absent. */
+.batch-row__unit {
+  font-size: var(--size-deviation-words);
+  font-weight: 400;
+}
+
+/* A measured cell's plan/technical-term sub-line (sketch 003 variant B,
+   index.html:90, 03.3-07). */
+.batch-row__plan {
+  display: block;
+  font-size: var(--size-small-print);
+  margin-top: var(--gap-hair);
+}
+
+/* The Tasting head line's inline meta span (sketch 003 variant B,
+   index.html:246, 03.3-07): undoes .region-name's own uppercase/
+   letter-spacing for this one inline span. */
+.batch-row__tasting-meta {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--pen-blue);
+}
+
+/* Correct/Add tasting, relocated to the row's foot as text controls
+   (sketch 003 variant B, index.html:255, 03.3-07, G-03.3-4). */
+.batch-row__acts {
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  margin-top: var(--gap-s);
+}
+
+/* The "Batches of this version" disclosure (sketch 003 variant B,
+   index.html:256-262, 03.3-07, G-03.3-4): a full-width panel under the
+   row, opened by the head line's own count control. */
+.batch-row__later {
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--ink);
+}
+
+.batch-row__later-list {
+  list-style: none;
+  margin: var(--gap-xs) 0 0;
+  padding: 0;
+  display: flex;
+  gap: var(--gap-l);
+  flex-wrap: wrap;
+}
+
+.batch-row__later-date {
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  margin: 0;
+}
+
+.batch-row__later-small {
+  font-family: var(--face-grotesk);
+  color: var(--ink);
+}
+
+.batch-row__later-meta {
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
+.batch-margin button {
+  margin-top: var(--gap-s);
+}
+
+.batch-margin__list {
+  list-style: none;
+  margin: var(--gap-xs) 0 0;
+  padding: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.batch-margin__list li + li {
+  margin-top: var(--gap-hair);
+}
+
+/* The open batch in the list, distinguished by weight and outline, never
+   by hue (No-Verdict Rule) — the same convention IngredientTable's
+   .is-marked rows use. */
+.batch-margin__list li.is-open {
+  font-weight: 700;
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* A dated tasting section, reading or writing, follows the same legend +
+   measured-row shape as the churn section above it (D-01: its own event,
+   never folded into the churn). */
+.tasting {
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--ink);
+}
+
+.batch-margin__hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
+/* The words half of D-10: a disabled control states its reason, never
+   only appears dim. Carries the same treatment as .batch-margin__hint
+   above, but named for the pen layer rather than any one region — the
+   batch margin's three regions and the headnote's Develop control all
+   render this sentence now that one derivation (openPen) decides
+   availability everywhere (D-UAT-1). */
+.pen-hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+
+/* The nine-stop mark control (D-16, route-recipe-batch.md § 6). The
+   checked stop is distinguished by weight and outline, never by hue
+   alone — every rule below reads through an existing token. */
+.axis-mark {
+  border: none;
+  padding: 0;
+  margin: var(--gap-xs) 0 0;
+}
+
+.axis-mark__legend {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+  padding: 0;
+}
+
+.axis-mark__row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-mark-stop);
+  flex-wrap: wrap;
+}
+
+.axis-mark__anchor {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-mark-stop);
+}
+
+.axis-mark__stop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-mark-stop);
+  font-variant-numeric: tabular-nums;
+}
+
+.axis-mark__stop input[type='radio'] {
+  appearance: none;
+  width: var(--size-mark-stop);
+  height: var(--size-mark-stop);
+  margin: 0;
+  border: var(--rule-graduation) solid var(--ink);
+  border-radius: 0;
+  background: none;
+}
+
+.axis-mark__stop input[type='radio']:checked {
+  background: var(--ink);
+}
+
+/* The clear control (G-02-6), beside the stops rather than styled as a
+   tenth one. Written with the .batch-margin ancestor because the standing
+   .batch-margin button rule (two selector components) otherwise outranks
+   a lone class (one selector component) and would win the cascade,
+   leaving the control sitting low in this vertically-centred flex row. */
+.batch-margin .axis-mark__clear {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-mark-stop);
+  margin-top: 0;
+}

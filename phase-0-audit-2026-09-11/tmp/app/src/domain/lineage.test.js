@@ -1,0 +1,434 @@
+// Domain suite for parent/child version construction and the version-line
+// rules (03-CONTEXT.md D-01, D-04, D-06, D-10). Runs under Vitest's default
+// node environment — imports no store, no component, and no framework.
+import { describe, it, expect } from 'vitest';
+import {
+  sortedVersions,
+  versionsForRecipe,
+  latestVersionPerRecipe,
+  versionLineUnique,
+  createChildVersion,
+  saveOverVersion,
+  citableBatches,
+  blockedSaveMessage,
+  blockedSaveRowId,
+  parseGramsDraft,
+  descendantVersions,
+} from './lineage.js';
+import { sortedBatches } from './batch.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
+
+function makeVersion(overrides = {}) {
+  return {
+    id: 'v1',
+    recipeId: 'r1',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    versionLabel: 'line',
+    ...overrides,
+  };
+}
+
+describe('sortedVersions', () => {
+  it('orders by createdAt, most recent first', () => {
+    const a = makeVersion({ id: 'a', createdAt: '2026-01-01T00:00:00.000Z' });
+    const b = makeVersion({ id: 'b', createdAt: '2026-03-01T00:00:00.000Z' });
+    const c = makeVersion({ id: 'c', createdAt: '2026-02-01T00:00:00.000Z' });
+    expect(sortedVersions([a, b, c]).map((v) => v.id)).toEqual(['b', 'c', 'a']);
+  });
+
+  it('puts a null createdAt last', () => {
+    const a = makeVersion({ id: 'a', createdAt: null });
+    const b = makeVersion({ id: 'b', createdAt: '2026-01-01T00:00:00.000Z' });
+    expect(sortedVersions([a, b]).map((v) => v.id)).toEqual(['b', 'a']);
+  });
+
+  it('never sorts in place', () => {
+    const versions = [makeVersion({ id: 'a', createdAt: '2026-01-01T00:00:00.000Z' }), makeVersion({ id: 'b', createdAt: '2026-02-01T00:00:00.000Z' })];
+    const before = [...versions];
+    sortedVersions(versions);
+    expect(versions).toEqual(before);
+  });
+});
+
+// descendantVersions (03.3-06, gap closure G-03.3-1/G-03.3-4): the version
+// row's "Later" count and disclosure need the whole subtree below a
+// version, not just its direct children — mirroring the sketch's own
+// renderTree, which discloses the whole subtree flat.
+describe('descendantVersions', () => {
+  it('returns all descendants of a 3-generation tree (root -> child -> grandchild), regardless of input order', () => {
+    const root = makeVersion({ id: 'root', parentVersionId: null });
+    const child = makeVersion({ id: 'child', parentVersionId: 'root' });
+    const grandchild = makeVersion({ id: 'grandchild', parentVersionId: 'child' });
+
+    const inOrder = descendantVersions([root, child, grandchild], 'root');
+    expect(inOrder.map((v) => v.id).sort()).toEqual(['child', 'grandchild']);
+
+    const reordered = descendantVersions([grandchild, root, child], 'root');
+    expect(reordered.map((v) => v.id).sort()).toEqual(['child', 'grandchild']);
+  });
+
+  it('returns an empty array for a version with no children', () => {
+    const root = makeVersion({ id: 'root', parentVersionId: null });
+    const other = makeVersion({ id: 'other', parentVersionId: null });
+    expect(descendantVersions([root, other], 'root')).toEqual([]);
+  });
+
+  it('never mutates or reorders its versions argument', () => {
+    const root = makeVersion({ id: 'root', parentVersionId: null });
+    const child = makeVersion({ id: 'child', parentVersionId: 'root' });
+    const grandchild = makeVersion({ id: 'grandchild', parentVersionId: 'child' });
+    const versions = [grandchild, root, child];
+    const before = [...versions];
+    descendantVersions(versions, 'root');
+    expect(versions).toEqual(before);
+  });
+});
+
+describe('versionsForRecipe', () => {
+  it('filters to one recipeId', () => {
+    const versions = [makeVersion({ id: 'a', recipeId: 'r1' }), makeVersion({ id: 'b', recipeId: 'r2' })];
+    expect(versionsForRecipe(versions, 'r1').map((v) => v.id)).toEqual(['a']);
+  });
+});
+
+describe('latestVersionPerRecipe', () => {
+  it('returns exactly one version per recipeId, the greatest createdAt for each, over three versions of two recipes', () => {
+    const versions = [
+      makeVersion({ id: 'a', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' }),
+      makeVersion({ id: 'b', recipeId: 'r1', createdAt: '2026-02-01T00:00:00.000Z' }),
+      makeVersion({ id: 'c', recipeId: 'r2', createdAt: '2026-01-15T00:00:00.000Z' }),
+    ];
+    const result = latestVersionPerRecipe(versions);
+    expect(result).toHaveLength(2);
+    expect(result.map((v) => v.id).sort()).toEqual(['b', 'c']);
+  });
+
+  it('returns [] for an empty array', () => {
+    expect(latestVersionPerRecipe([])).toEqual([]);
+  });
+
+  it('returns the one version given', () => {
+    const version = makeVersion();
+    expect(latestVersionPerRecipe([version])).toEqual([version]);
+  });
+});
+
+describe('versionLineUnique', () => {
+  const versions = [{ id: 'v1', versionLabel: '50 g oil · 800 g' }];
+
+  it('is false when the candidate line matches an existing version', () => {
+    expect(versionLineUnique(versions, '50 g oil · 800 g', null)).toBe(false);
+  });
+
+  it('is true when the only colliding version is excluded by id', () => {
+    expect(versionLineUnique(versions, '50 g oil · 800 g', 'v1')).toBe(true);
+  });
+
+  it('trims both sides before comparing', () => {
+    expect(versionLineUnique(versions, '  50 g oil · 800 g  ', null)).toBe(false);
+  });
+
+  it('never case-folds: differing case is unique', () => {
+    expect(versionLineUnique(versions, '50 g Oil · 800 g', null)).toBe(true);
+  });
+
+  it('an accented character round-trips through the comparison unchanged: an exact match collides, a case change does not', () => {
+    const accented = [{ id: 'v1', versionLabel: '50 g crème brûlée · 800 g' }];
+    expect(versionLineUnique(accented, '50 g crème brûlée · 800 g', null)).toBe(false);
+    expect(versionLineUnique(accented, '50 g CRÈME BRÛLÉE · 800 g', null)).toBe(true);
+  });
+
+  it('an emoji round-trips through the comparison unchanged: an exact match collides, a differing line does not', () => {
+    const withEmoji = [{ id: 'v1', versionLabel: '50 g oil · 800 g 🍦' }];
+    expect(versionLineUnique(withEmoji, '50 g oil · 800 g 🍦', null)).toBe(false);
+    expect(versionLineUnique(withEmoji, '50 g oil · 800 g', null)).toBe(true);
+  });
+});
+
+describe('createChildVersion', () => {
+  const penFields = {
+    versionLabel: '60 g oil · 800 g',
+    reason: null,
+    citedBatchId: null,
+    rows: oliveOilVersion.rows,
+    method: oliveOilVersion.method,
+    headnote: oliveOilVersion.headnote,
+    authored: oliveOilVersion.authored,
+  };
+
+  it('carries the supplied id, the parent identity, the supplied createdAt, and the parent recipeId', () => {
+    const child = createChildVersion(oliveOilVersion, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(child.id).toBe('v2');
+    expect(child.parentVersionId).toBe('olive-oil-ice-cream-v1');
+    expect(child.parentVersionLabel).toBe('50 g oil · 800 g');
+    expect(child.createdAt).toBe('2026-09-07T10:00:00.000Z');
+    expect(child.recipeId).toBe('olive-oil-ice-cream');
+  });
+
+  it('does not mutate the parent', () => {
+    const parent = structuredClone(oliveOilVersion);
+    const before = structuredClone(parent);
+    createChildVersion(
+      parent,
+      { ...penFields, rows: parent.rows, method: parent.method, authored: parent.authored },
+      { id: 'v2', now: '2026-09-07T10:00:00.000Z' },
+    );
+    expect(parent).toEqual(before);
+  });
+
+  it('an accented character and an emoji typed into the version line and the reason round-trip unchanged', () => {
+    const child = createChildVersion(
+      oliveOilVersion,
+      { ...penFields, versionLabel: '50 g crème · 800 g 🍦', reason: 'raised the crème 🍦 slightly' },
+      { id: 'v3', now: '2026-09-07T10:00:00.000Z' },
+    );
+    expect(child.versionLabel).toBe('50 g crème · 800 g 🍦');
+    expect(child.reason).toBe('raised the crème 🍦 slightly');
+  });
+
+  it('shares no structure with the parent: mutating the parent afterwards leaves the child unchanged', () => {
+    const parent = structuredClone(oliveOilVersion);
+    const child = createChildVersion(
+      parent,
+      { ...penFields, rows: parent.rows, method: parent.method, authored: parent.authored },
+      { id: 'v2', now: '2026-09-07T10:00:00.000Z' },
+    );
+    parent.rows[0].portions[0].grams = 999;
+    parent.rows[0].ingredient.composition.fat = 999;
+    expect(child.rows[0].portions[0].grams).not.toBe(999);
+    expect(child.rows[0].ingredient.composition.fat).not.toBe(999);
+  });
+});
+
+describe('saveOverVersion', () => {
+  it('keeps id, parentVersionId, parentVersionLabel and createdAt, and replaces the content', () => {
+    const child = {
+      id: 'v2',
+      parentVersionId: 'olive-oil-ice-cream-v1',
+      parentVersionLabel: '50 g oil · 800 g',
+      createdAt: '2026-09-07T10:00:00.000Z',
+      versionLabel: '60 g oil · 800 g',
+      reason: null,
+      citedBatchId: null,
+      rows: oliveOilVersion.rows,
+      method: oliveOilVersion.method,
+      headnote: 'old headnote',
+      authored: oliveOilVersion.authored,
+    };
+    const penFields = {
+      versionLabel: '65 g oil · 800 g',
+      reason: 'raised the oil again',
+      citedBatchId: 'b-1',
+      rows: oliveOilVersion.rows,
+      method: oliveOilVersion.method,
+      headnote: 'new headnote',
+      authored: oliveOilVersion.authored,
+    };
+    const updated = saveOverVersion(child, penFields, { now: '2026-09-08T00:00:00.000Z' });
+    expect(updated.id).toBe('v2');
+    expect(updated.parentVersionId).toBe('olive-oil-ice-cream-v1');
+    expect(updated.parentVersionLabel).toBe('50 g oil · 800 g');
+    expect(updated.createdAt).toBe('2026-09-07T10:00:00.000Z');
+    expect(updated.versionLabel).toBe('65 g oil · 800 g');
+    expect(updated.reason).toBe('raised the oil again');
+    expect(updated.citedBatchId).toBe('b-1');
+    expect(updated.headnote).toBe('new headnote');
+  });
+});
+
+describe('citableBatches', () => {
+  const batchA = { id: 'b-1', churn: { churnDate: '2026-08-02' } };
+  const batchB = { id: 'b-2', churn: { churnDate: '2026-08-20' } };
+  const undatedBatch = { id: 'b-3', churn: { churnDate: null } };
+
+  it('orders the parent batches exactly as sortedBatches does — most recent first, undated last', () => {
+    const batches = [batchA, undatedBatch, batchB];
+    expect(citableBatches(batches)).toEqual(sortedBatches(batches));
+    expect(citableBatches(batches).map((batch) => batch.id)).toEqual(['b-2', 'b-1', 'b-3']);
+  });
+
+  it('returns an empty array for a parent with no batches', () => {
+    expect(citableBatches([])).toEqual([]);
+  });
+});
+
+describe('blockedSaveMessage', () => {
+  // A full, valid rows map: every row of oliveOilVersion, unremoved, with
+  // its own portions' grams each as a string — the shape penDraft.rows
+  // takes. An override supplies its own `portions` array (a single-entry
+  // one is enough for a test that only cares about one blocking amount);
+  // findBlockedRow walks whatever portions array the draft carries, so an
+  // override need not match the row's own real portion count.
+  function validRows(overrides = {}) {
+    const rows = {};
+    for (const row of oliveOilVersion.rows) {
+      rows[row.id] = { portions: row.portions.map((portion) => ({ grams: String(portion.grams) })), removed: false };
+    }
+    return { ...rows, ...overrides };
+  }
+
+  function onePortionOverride(grams, removed = false) {
+    return { portions: [{ grams }], removed };
+  }
+
+  const noVersions = [];
+
+  it('returns null when nothing blocks the save', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('returns "a version needs a line" for a blank version line', () => {
+    const penFields = { versionLabel: '', reason: '', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('a version needs a line');
+  });
+
+  it('returns "a version needs a line" for a whitespace-only version line', () => {
+    const penFields = { versionLabel: '   ', reason: '', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('a version needs a line');
+  });
+
+  it('returns "another version already has this line" for a colliding line, checked before the grams rule', () => {
+    const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', false) }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, versions)).toBe('another version already has this line');
+  });
+
+  it('returns the first active row\'s own message, in the version\'s authored order, when its grams field is empty', () => {
+    const penFields = {
+      versionLabel: '60 g oil · 800 g',
+      reason: '',
+      rows: validRows({ 'row-01': onePortionOverride('', false), 'row-04': onePortionOverride('', false) }),
+    };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+  });
+
+  it('a row the draft marks removed needs no amount', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', true) }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('never blocks on a whitespace-only reason — a reason of nothing but whitespace is treated exactly as a blank one', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '   ', rows: validRows() };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('never looks at a band, a deviation or an advisory', () => {
+    const source = blockedSaveMessage.toString();
+    expect(source).not.toMatch(/band|deviation|advisor/i);
+  });
+
+  // A grams field holding anything that is not a non-negative number with
+  // up to two decimals blocks the save and names the row (critique P1 #3,
+  // D-21) — a typo can no longer save the parent's own value silently.
+  it('returns a message naming the row and ending in "is not a number" for "4o"', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('4o', false) }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it('rejects a leading minus — "-5" is not a non-negative number', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('-5', false) }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it('rejects more than two decimals — "1.234" is not accepted', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('1.234', false) }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it('rejects surrounding whitespace — a value must be exactly what a valid number looks like', () => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride(' 5 ', false) }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe("Whole milk's amount is not a number");
+  });
+
+  it.each(['0', '48', '0.48', '12.25'])('accepts %s as a valid grams value and does not block', (grams) => {
+    const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride(grams, false) }) };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('a two-portion row with one blank portion blocks the save and names the ingredient (D-01)', () => {
+    const penFields = {
+      versionLabel: '60 g oil · 800 g',
+      reason: '',
+      rows: validRows({ 'row-01': { portions: [{ grams: '120' }, { grams: '' }], removed: false } }),
+    };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+  });
+
+  it('checks blank before non-numeric, one thing at a time: an earlier blank row wins over a later row holding a letter', () => {
+    const penFields = {
+      versionLabel: '60 g oil · 800 g',
+      reason: '',
+      rows: validRows({ 'row-01': onePortionOverride('', false), 'row-04': onePortionOverride('4o', false) }),
+    };
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+  });
+
+  describe('blockedSaveRowId', () => {
+    it('returns the id of the row blockedSaveMessage names, for a blank grams field', () => {
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', false) }) };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-01');
+    });
+
+    it('returns the id of the row blockedSaveMessage names, for a non-numeric grams field', () => {
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-04': onePortionOverride('4o', false) }) };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-04');
+    });
+
+    it('returns null when nothing blocks the save', () => {
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows() };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBeNull();
+    });
+
+    it('returns null when the block is the version line\'s own — a blank line', () => {
+      const penFields = { versionLabel: '', reason: '', rows: validRows() };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBeNull();
+    });
+
+    it('returns null when the block is the version line\'s own — a colliding line', () => {
+      const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
+      const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', false) }) };
+      expect(blockedSaveRowId(penFields, oliveOilVersion, versions)).toBeNull();
+    });
+  });
+
+  describe('parseGramsDraft', () => {
+    it.each([
+      ['60', 60],
+      ['1.25', 1.25],
+      ['0.5', 0.5],
+    ])('parses %s as %s', (value, expected) => {
+      expect(parseGramsDraft(value)).toBe(expected);
+    });
+
+    it('a written zero is a value (D-11): it parses as 0, never null', () => {
+      expect(parseGramsDraft('0')).toBe(0);
+    });
+
+    it('an empty string is null', () => {
+      expect(parseGramsDraft('')).toBeNull();
+    });
+
+    it('undefined is null', () => {
+      expect(parseGramsDraft(undefined)).toBeNull();
+    });
+
+    it.each([
+      ['-5', 'a leading minus'],
+      ['1e3', 'exponent notation'],
+      ['1.2345', 'more than two decimals'],
+      ['4o', 'a stray letter'],
+      [' 5 ', 'surrounding whitespace'],
+    ])('%s is null (%s)', (value) => {
+      expect(parseGramsDraft(value)).toBeNull();
+    });
+
+    it('agrees with blockedSaveMessage: every value parseGramsDraft rejects is also the value blockedSaveMessage blocks the save on', () => {
+      for (const value of ['-5', '1e3', '1.2345', '4o', ' 5 ']) {
+        expect(parseGramsDraft(value)).toBeNull();
+        const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride(value, false) }) };
+        expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toMatch(/'s amount is not a number$/);
+      }
+    });
+  });
+});

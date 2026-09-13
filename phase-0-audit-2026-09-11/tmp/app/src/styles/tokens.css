@@ -1,0 +1,194 @@
+/* The Formulation Cookbook — the direction contract in
+   .impeccable/surfaces/route-recipe.md, implemented as tokens.
+   Every value here is decided there; nothing here decides anything new. */
+:root {
+  /* Colour — four roles only (contract § 2) */
+  --ground: #f7f7f4;
+  --ink: #141414;
+  --pen-blue: #1f3d7a; /* everything recorded — unused on screen this phase */
+  --bookcloth: #33513b;
+
+  /* Type — two stacks, system only (contract § 1) */
+  --face-text: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --face-grotesk: -apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --size-running-head: 0.75rem;
+  --size-recipe-name: 2rem;
+  --size-version-line: 1.125rem;
+  --size-headnote-prose: 1rem;
+  --size-table-body: 0.9375rem;
+  --size-figure-value: 1.25rem;
+  --size-deviation-words: 0.8125rem;
+  --size-small-print: 0.75rem;
+
+  /* Spacing scale (contract § 3) */
+  --gap-hair: 2px;
+  --gap-xs: 6px;
+  --gap-s: 12px;
+  --gap-m: 20px;
+  --gap-l: 32px;
+  --gap-xl: 48px;
+
+  /* Rule drawing (contract § 4) */
+  --rule-baseline: 1.5px;
+  --rule-graduation: 1px;
+  --rule-band-edge: 1px;
+  --rule-tick: 2.5px;
+  --rule-width: 320px; /* the drawing's native width; GraduatedRule.jsx WIDTH must agree */
+  --measure-prose: 65ch; /* longest line for prose: headnote, method, basis note */
+  --leading-table: 1.2; /* fixed so a marked row's bold weight cannot change its height */
+  /* --col-ingredient retired (G-03-11, D-UAT-6). The name column is now
+     the single unsized column (app.css, .ingredient-table__col-name:
+     width: auto), absorbing whatever the five sized columns below leave
+     rather than claiming a fixed share that had to be renegotiated every
+     time a conditional column (As made, Remove) arrived or left. Its
+     former promise — that the column is "wide enough that no bold name
+     wraps" — no longer holds at every width: names stay unwrapped at
+     1280px and above; below about 1146px they begin to wrap, which
+     D-UAT-6 accepts as the yield rather than squeezing a sized column to
+     nothing. An automatic width is a keyword, not a visual value, so
+     nothing replaces this token. */
+  --hatch-pitch: 4px;
+  --hatch-stroke: 1.2px;
+
+  /* Focus treatment (contract § 5, D-14): focus reads heavier than state
+     now that the two meanings are split — --focus-outline-width points at
+     --rule-baseline (1.5px), so every focusable element's real focus ring
+     is provably heavier than a pressed/current/open/marked element's own
+     outline, which reads --rule-graduation (1px) directly at each of its
+     four sites in app.css. A focused element that is also stateful reads
+     both. */
+  --focus-outline-width: var(--rule-baseline);
+  --focus-outline-offset: 2px;
+
+  /* Links (D-18): a hairline ink underline, offset far enough below the
+     baseline to clear a lowercase descender without merging into one. */
+  --offset-link-underline: 2px;
+
+  /* The select's drawn chevron (D-17): two CSS linear-gradient triangles
+     replace the browser's own arrow once appearance: none removes it.
+     --size-select-chevron is each triangle's edge; the two insets place
+     the pair's shared point --inset-select-chevron-x from the field's
+     right edge and --inset-select-chevron-y above/below its vertical
+     centre; --gap-select-chevron-room is the right padding that keeps an
+     option's text off the drawing, derived from the existing medium gap
+     rather than a new size. */
+  --size-select-chevron: 5px;
+  --inset-select-chevron-x: 14px;
+  --inset-select-chevron-y: 3px;
+  --gap-select-chevron-room: var(--gap-m);
+
+  /* The pen layer (route-recipe-batch.md § 3) — pen blue was defined above
+     and unpainted until now. */
+  --rule-ink-field: 1px;
+  --size-ink-field: 0.9375rem;
+
+  /* The record pen's field widths (2026-09-10 checkpoint feedback): a
+     date or short figure field reads at the width its own input actually
+     needs, not the full page-width row it inherited once 03.3-06/07
+     widened the batch row to span the page. */
+  --field-w-date: 12ch;
+  --field-w-figure: 6ch;
+
+  /* This table's own horizontal cell padding (G-03-11, D-UAT-6): tightened
+     to half of what the general small gap gave it before (--gap-s, 12px),
+     as its own token so it can be adjusted for this table alone without
+     moving --gap-s for everything else that reads it. Buys back 12px of
+     column per column in the table's widest state (6px on each side),
+     which is what lets --col-numeric below shrink toward its content
+     without the name column paying for the difference. */
+  --table-cell-pad-x: var(--gap-xs);
+
+  /* Ingredient-table column widths (G-03-11 corrects the derivation below;
+     D-UAT-6 sizes --col-numeric and the padding token above). Every token
+     here is now padding-inclusive: the table's cells are border-box
+     (app.css, the shared th/td rule), so a declared width IS the whole
+     column and a column's usable CONTENT is its token minus twice
+     --table-cell-pad-x (12px). Before this plan the cells were
+     content-box, so a declared width had that padding ADDED on top — the
+     derivation below used to subtract the padding from the remainder
+     instead, which is only correct the other way around; that mistake is
+     what let this bug through undetected (G-03-11 root cause 2).
+
+     The page arithmetic (unchanged by this plan): at a given viewport,
+     .recipe-page's 2fr/1fr grid, minus --gap-xl (48px) padding on both
+     sides and --gap-l (32px) gap between its two columns, leaves
+     (viewport - 128) for the two columns together; the ingredient table
+     lives in the 2fr column, two thirds of that —
+     (viewport - 128) * 2 / 3. That is 768px at a 1280px viewport and
+     597.33px at 1024px.
+
+     Measured content minimums
+     (.planning/debug/remove-column-occludes-values.md, phase-3
+     measurement): 80.61px for the "% of batch" header, the numeric
+     columns' widest content (wider than any numeric field); 66.14px for
+     the Data column's "estimated" flag word, with "unreviewed" reasoned
+     wider still though no seed row currently produces it; 60.45px for the
+     Remove column's native remove/restore button; 142.83px for "Lambda
+     carrageenan", the widest seed ingredient name.
+
+     The widest state this arithmetic must survive: a churned version open
+     in the pen, showing all three numeric columns plus Step, Data and
+     Remove at once — six sized columns, with the ingredient-name column
+     (app.css, .ingredient-table__col-name) absorbing whatever they
+     leave. */
+  --col-numeric: 94px; /* content: 94 - 12 = 82px, ~1.4px above the
+    80.61px "% of batch" header — a few px of slack and no more, since
+    every px given to a sized column here comes out of the name column's
+    remainder. Shrunk from 88px (sized to the field, never the header) per
+    D-UAT-6. */
+  /* --col-step and --col-step-pen retired (03.3-02, LD-01/LD-02): the
+     Step column itself was removed from the ingredient table — it now
+     groups by step instead of naming one in a cell — so neither the
+     reading state's own width nor the pen's wider variant has a column
+     left to size. Every rule that consumed either token was removed in
+     the same plan. */
+  --col-data: 86px; /* content: 86 - 12 = 74px, against "estimated"
+    (66.14px) and the reasoned-longer "unreviewed" (~73.5px, no seed row
+    produces it yet) — sized to the longer, unmeasured word rather than
+    to what happens to sit on screen today (G-03-11). */
+  --col-remove: 78px; /* content: 78 - 12 = 66px, a little slack over the
+    60.45px native remove/restore <button> — a bare button has no shrink
+    guard, unlike the step select's flex + min-width:0 pair (03-08). */
+
+  /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
+  --gap-mark-stop: var(--gap-xs);
+  --size-mark-stop: 0.8125rem;
+
+  /* The Strike Rule (route-recipe-version.md § 7): one stroke, in ink, for
+     every "not in force, replaced by what sits beside it" meaning — a
+     skipped step (Phase 2), a superseded value (this phase), a removed
+     row or step (03-02). */
+  --rule-strike: 1.2px;
+  --gap-strike: var(--gap-hair);
+
+  /* The removal cross-flags (route-recipe-version.md § 3, 03-02): small
+     print beside a flagged row or beneath a flagged step, naming what
+     removal orphaned — state carried in words, never in colour. */
+  --size-cross-flag: var(--size-small-print);
+
+  /* The uses control's checkboxes (route-recipe-version.md § 3, 03-02). */
+  --gap-uses-chip: var(--gap-xs);
+
+  /* The version strip (route-recipe-version.md § 3, § 6, 03-03): ink on
+     ground, in the grotesk at small-print size. Its card grid (03.3-06
+     checkpoint feedback) reads --gap-s/--gap-l directly, the same pair
+     the sketch's own .vtree rule uses — no gap token of its own. */
+  --size-strip-line: var(--size-small-print);
+
+  /* The parent's hollow tick on a graduated rule's scale
+     (route-recipe-version.md § 3, § 6, 03-04): an outline of the solid
+     tick's own shape, at the graduation weight. */
+  --rule-tick-hollow: 1px;
+
+  /* The foot band's own hairline rule (route-recipe.md § 3, D-26): its
+     own name, reading --rule-ink-field today, so the band's rule can
+     move independently of every field's border later without moving
+     both at once. */
+  --rule-foot-band: var(--rule-ink-field);
+
+  /* The batch row's measured-cell grid (sketch 003 variant B, 03.3-01):
+     the minimum a cell may shrink to before the grid wraps another onto
+     its own line. */
+  --col-batch-cell-min: 96px;
+}

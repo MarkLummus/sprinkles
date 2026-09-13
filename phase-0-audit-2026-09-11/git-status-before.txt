@@ -1,0 +1,5 @@
+ M .planning/sketches/007-full-battery/index.html
+ M .planning/state.json
+?? .impeccable/critique/2026-09-11T22-19-21Z__planning-sketches-007-full-battery-index-html.md
+?? .impeccable/live/
+?? phase-0-audit-2026-09-11/

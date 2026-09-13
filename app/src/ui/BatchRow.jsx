@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate, readMeasured, sortedBatches } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
-import { BATTERY_FIELDS, SEGMENT_OPTIONS } from '../domain/battery.js';
+import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
 import { axesForBatch } from '../domain/axes.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
@@ -36,6 +36,14 @@ const CHURN_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
 const TASTING_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
   ['temperingMinutes', 'tastingTempC'].includes(field.key),
 );
+
+// The melt block's own measured field (contract "DOM order inventory" §
+// tasting body's foot): the same BATTERY_FIELDS entry as every other
+// measured field, with "(optional)" appended to the visible label only —
+// BATTERY_FIELDS' own label ('Melt test') is domain/battery.js's, not this
+// plan's file to touch, and its stored key/unit/error stay exactly as
+// defined there.
+const MELT_TEST_FIELD = BATTERY_FIELDS.find((field) => field.key === 'meltTestG');
 
 // aria-label spells the unit out in words (matching the codebase's own
 // established convention — "Time to temperature, minutes" — over the
@@ -206,6 +214,8 @@ export function BatchRow({
   onChangeSegment,
   onChangeRecordMark,
   onClearAxisMark,
+  onChangeDefect,
+  onToggleBitter,
   openPen = null,
   penReason = null,
   onStartAmending,
@@ -426,6 +436,69 @@ export function BatchRow({
                   onChangeMark={onChangeRecordMark}
                   onClearMark={onClearAxisMark}
                 />
+                {/* The defects checklist, a standalone row after the axes
+                    grid (contract "Controls spec", "DOM order
+                    inventory"): the caption and its lowercase helper on
+                    one row, then the chip row — the four DEFECTS chips
+                    verbatim, then the declared Bitter chip trailing after
+                    a wider gap. Picked state is aria-pressed, never
+                    colour alone (UX1-03) — the bold-plus-underline
+                    affordance is plan 06's CSS. */}
+                <div className="defects-row" role="group" aria-label="Any problems? Select all that apply">
+                  <p className="defects-row__caption">
+                    Any problems? <span className="defects-row__helper">select all that apply</span>
+                  </p>
+                  <div className="defects-row__chips">
+                    {/* Each of the four DEFECTS chips is a native toggle
+                        button carrying its own aria-pressed — a picked
+                        chip's own boolean, read fresh per chip from the
+                        draft's defects list. */}
+                    {DEFECTS.map((defect) => (
+                      <button
+                        key={defect}
+                        type="button"
+                        className="chip-toggle"
+                        aria-pressed={draft.defects.includes(defect)}
+                        onClick={() => onChangeDefect(defect)}
+                      >
+                        {defect}
+                      </button>
+                    ))}
+                    {/* The declared chip: a fifth aria-pressed button,
+                        trailing the row after a wider gap, its own
+                        boolean read from bitterDeclared rather than the
+                        defects list. */}
+                    <button
+                      type="button"
+                      className="chip-toggle chip-toggle--declared"
+                      aria-pressed={draft.bitterDeclared}
+                      aria-label={`Declared for this recipe: ${DECLARED_FLAW}`}
+                      onClick={onToggleBitter}
+                    >
+                      {DECLARED_FLAW} <span className="chip-toggle__helper">· declared</span>
+                    </button>
+                  </div>
+                </div>
+                {/* The melt block, at the tasting body's foot (contract
+                    "DOM order inventory"): both fields optional, both
+                    describe the same behaviour. */}
+                <div className="melt-block">
+                  <MeasuredField
+                    field={{ ...MELT_TEST_FIELD, label: 'Melt test (optional)' }}
+                    value={draft.meltTestG}
+                    error={fieldErrors.meltTestG}
+                    onChange={onChangeRecordField}
+                    inputRef={(el) => {
+                      fieldRefs.current.meltTestG = el;
+                    }}
+                  />
+                  <SegmentedField
+                    legend="Melt style (optional)"
+                    options={SEGMENT_OPTIONS.meltStyle}
+                    value={draft.meltStyle}
+                    onPick={(option) => onChangeSegment('meltStyle', option)}
+                  />
+                </div>
               </>
             )}
             {/* Ceremony A (D-01): after the tasting section when it is

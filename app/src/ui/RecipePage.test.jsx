@@ -329,12 +329,14 @@ describe('isDraftDirty — the record pen\'s check, extended to every battery fi
     expect(isDraftDirty('recording', changedValue, baseline)).toBe(true);
   });
 
-  it('defects are still compared by length alone (03.3.1-02-PLAN.md Task 1) — Task 3 makes them interactive and upgrades this', () => {
+  it('defects compare set-wise now that the chips are interactive (03.3.1-03 Task 3, a Rule 1 fix): the same set is clean, a swapped defect at the same count is dirty', () => {
     const baseline = { ...makeBlankRecordDraft(), defects: ['Coarse, icy'] };
-    const sameCounts = { ...makeBlankRecordDraft(), defects: ['Coarse, icy'] };
-    expect(isDraftDirty('recording', sameCounts, baseline)).toBe(false);
-    const differentCounts = { ...makeBlankRecordDraft(), defects: [] };
-    expect(isDraftDirty('recording', differentCounts, baseline)).toBe(true);
+    const sameSet = { ...makeBlankRecordDraft(), defects: ['Coarse, icy'] };
+    expect(isDraftDirty('recording', sameSet, baseline)).toBe(false);
+    const differentCount = { ...makeBlankRecordDraft(), defects: [] };
+    expect(isDraftDirty('recording', differentCount, baseline)).toBe(true);
+    const swappedSameCount = { ...makeBlankRecordDraft(), defects: ['Sandy, gritty'] };
+    expect(isDraftDirty('recording', swappedSameCount, baseline)).toBe(true);
   });
 
   it('is never dirty outside the recording mode, or with no draft', () => {

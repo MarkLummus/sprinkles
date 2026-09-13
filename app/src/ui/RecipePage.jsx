@@ -147,7 +147,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
     draft.meltTestG !== baseline.meltTestG ||
     draft.meltStyle !== baseline.meltStyle ||
     marksDiffer(draft.marks, baseline.marks) ||
-    draft.defects.length !== baseline.defects.length ||
+    usesListsDiffer(draft.defects, baseline.defects) ||
     asMadeMapsDiffer(draft.asMade, baseline.asMade) ||
     stepChangesDiffer(draft.stepChanges, baseline.stepChanges)
   );
@@ -163,7 +163,10 @@ function normalizedText(value) {
 }
 
 // A uses list compared as a set — order is not a fact the maker authored
-// (route-recipe-version.md § 3).
+// (route-recipe-version.md § 3). Reused by isDraftDirty for the record
+// pen's own defects list (03.3.1-03 Task 3): picking chips in a different
+// order than they were unpicked is the same set, not a difference — the
+// same discipline this function already applies to a step's uses.
 function usesListsDiffer(a = [], b = []) {
   if (a.length !== b.length) return true;
   const bSet = new Set(b);
@@ -902,6 +905,31 @@ export function RecipePage() {
     announce(`${axisName} cleared.`);
   }
 
+  // A defect chip's own toggle (contract "Controls spec"): a picked chip
+  // joins the draft's defects list, an unpicked one leaves it — no default
+  // ever, click-again clears exactly like every other battery control.
+  function handleChangeDefect(defect) {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setFormStatus('');
+    setDraft((prev) => ({
+      ...prev,
+      defects: prev.defects.includes(defect)
+        ? prev.defects.filter((candidate) => candidate !== defect)
+        : [...prev.defects, defect],
+    }));
+  }
+
+  // The declared-flaw toggle (contract "Controls spec"): Bitter is a
+  // presence/severity toggle, not a goldilocks axis — a plain boolean
+  // flip, same as every other declared control.
+  function handleToggleBitter() {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setFormStatus('');
+    setDraft((prev) => ({ ...prev, bitterDeclared: !prev.bitterDeclared }));
+  }
+
   // Clearing both the strike and the line for a step removes that step's
   // key from the draft entirely (D-13/BATCH1-01): an untouched step must
   // never rest at { struck: false, line: null }, which would be
@@ -1410,6 +1438,8 @@ export function RecipePage() {
             onChangeSegment={handleChangeSegment}
             onChangeRecordMark={handleChangeRecordMark}
             onClearAxisMark={handleClearAxisMark}
+            onChangeDefect={handleChangeDefect}
+            onToggleBitter={handleToggleBitter}
             openPen={openPen}
             penReason={penReason}
             onStartAmending={handleStartAmending}

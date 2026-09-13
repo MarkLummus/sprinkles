@@ -62,6 +62,8 @@ function renderBatchRow(props) {
         onChangeSegment={noop}
         onChangeRecordMark={noop}
         onClearAxisMark={noop}
+        onChangeDefect={noop}
+        onToggleBitter={noop}
         openPen={null}
         penReason={null}
         onStartAmending={noop}
@@ -408,6 +410,89 @@ describe('BatchRow — the axes grid does not crash under Vitest\'s node environ
       draft: { ...emptyRecordDraft, tastingOpen: true, marks: { hardness: 2 } },
     });
     expect(markup).toContain('(2)');
+  });
+});
+
+describe('BatchRow — the defects checklist and the declared toggle (contract "Controls spec")', () => {
+  it('carries the group\'s own aria-label with five aria-pressed buttons', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toContain('role="group" aria-label="Any problems? Select all that apply"');
+    const pressedButtons = markup.match(/<button[^>]*aria-pressed="[^"]*"[^>]*>/g);
+    expect(pressedButtons.length).toBe(5);
+  });
+
+  it('renders the caption and its lowercase helper on one row', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toMatch(
+      /<p class="defects-row__caption">Any problems\? <span class="defects-row__helper">select all that apply<\/span><\/p>/,
+    );
+  });
+
+  it('renders the four DEFECTS chips character-for-character, comma-worded', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    for (const label of ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']) {
+      expect(markup).toContain(`>${label}<`);
+    }
+  });
+
+  it('renders the declared Bitter chip with its visible "· declared" helper and its own full aria-label', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toMatch(/aria-label="Declared for this recipe: Bitter"[^>]*>Bitter <span class="chip-toggle__helper">· declared<\/span>/);
+  });
+
+  it('checks no chip by default — nothing is pre-selected', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toMatch(/aria-pressed="false"[^>]*>Coarse, icy</);
+    expect(markup).toMatch(/aria-pressed="false"[^>]*>Bitter /);
+  });
+
+  it('marks a picked defect chip aria-pressed="true"', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true, defects: ['Sandy, gritty'] },
+    });
+    expect(markup).toMatch(/aria-pressed="true"[^>]*>Sandy, gritty</);
+    expect(markup).toMatch(/aria-pressed="false"[^>]*>Coarse, icy</);
+  });
+
+  it('marks the declared chip aria-pressed="true" when bitterDeclared is set', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true, bitterDeclared: true },
+    });
+    expect(markup).toMatch(/aria-pressed="true"[^>]*>Bitter /);
+  });
+});
+
+describe('BatchRow — the melt block (contract "DOM order inventory")', () => {
+  it('renders Melt test (optional) with its own unit, after the defects row', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const defectsIndex = markup.indexOf('defects-row');
+    const meltBlockIndex = markup.indexOf('melt-block');
+    expect(meltBlockIndex).toBeGreaterThan(defectsIndex);
+    expect(markup).toContain('Melt test (optional), g lost at 20 min');
+  });
+
+  it('renders Melt style (optional) as a radiogroup with the contract\'s own three options', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toContain('role="radiogroup" aria-label="Melt style (optional)"');
+    for (const option of ['Watery, weeping', 'Creamy puddle', 'Stable foam']) {
+      expect(markup).toContain(option);
+    }
+  });
+
+  it('renders the melt block before ceremony A, at the tasting body\'s foot', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const meltBlockIndex = markup.indexOf('melt-block');
+    const ceremonyIndex = markup.indexOf('class="save-ceremony"');
+    expect(ceremonyIndex).toBeGreaterThan(meltBlockIndex);
+  });
+
+  it('checks no melt style option by default, and no aria-invalid on a blank melt test', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const meltBlockMarkup = markup.slice(markup.indexOf('melt-block'));
+    expect(meltBlockMarkup).not.toContain('checked=""');
+    expect(meltBlockMarkup).not.toContain('aria-invalid');
   });
 });
 

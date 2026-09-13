@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 03.3.1 (The full battery: the record pen rebuilt from sketch 007 (INSERTED)) — READY TO EXECUTE
 Plan: Not started
 Status: Ready to execute
-Last activity: 2026-09-13 — Completed quick task 260912-vni: Sketch 007 structural contract (planner/executor read it instead of the sketch HTML; roadmap 03.3.1 requires per-task citation)
+Last activity: 2026-09-13 — Completed quick task 260913-far: Add the agent prose, commits, browser-test inputs in English convention to .claude/CLAUDE.md
 
 Progress: [█░░░░░░░░░] 13% (3/4 phases; 21/21 plans)
 
@@ -231,6 +231,7 @@ None yet.
 | 260909-oow | Make the live balance figures accept exactly the grams the save accepts, and stop bad as-made grams reaching the store | 2026-09-09 | be86eb5 | .planning/quick/260909-oow-make-the-live-balance-figures-accept-exa |
 | 260909-oox | Reject impossible negative measured values on the batch record | 2026-09-09 | 66d0849 | .planning/quick/260909-oox-reject-impossible-negative-measured-valu |
 | 260912-ti1 | Apply the sketch's cross-cutting findings to the real app: 44px touch targets below 760px through the first @media block, the four type-role tokens, the 6px caption gap at all nine sites, italic placeholders, an at-rule-aware stylesheet reader, and a third style-contract suite | 2026-09-13 | 011dc09 | [260912-ti1-apply-cross-cutting-sketch-findings-to-t](./quick/260912-ti1-apply-cross-cutting-sketch-findings-to-t/) |
+| 260913-far | Add the agent prose, commits, browser-test inputs in English convention to .claude/CLAUDE.md | 2026-09-13 | ec80399 | [260913-far-add-the-agent-prose-commits-browser-test](./quick/260913-far-add-the-agent-prose-commits-browser-test/) |
 
 ### Roadmap Evolution
 

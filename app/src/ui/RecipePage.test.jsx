@@ -333,6 +333,23 @@ describe('isDraftDirty — the record pen\'s check, extended to every battery fi
     expect(isDraftDirty('reading', makeBlankRecordDraft())).toBe(false);
     expect(isDraftDirty('recording', null)).toBe(false);
   });
+
+  // Task 3: removing the tasting section from an amend draft that started
+  // with one is a real edit — dirty against the baseline, so Escape does
+  // NOT close the pen and the beforeunload guard fires. This is the
+  // opposite case from the "open-but-empty on a fresh draft" test above:
+  // there, tastingOpen alone never differed from a null baseline (no
+  // baseline exists yet); here, the amend baseline already has
+  // tastingOpen true with ink, so collapsing it back to false is a
+  // deletion, and "a deletion is ink too" (this file's own established
+  // rule) applies to the tasting section exactly as it does to a churn
+  // field.
+  it('collapsing an amend draft\'s tasting section back to closed, against a baseline that had one, is dirty (a removal is ink, task 3)', () => {
+    const baseline = draftFromBatch(augustSecondBatch);
+    const draft = structuredClone(baseline);
+    draft.tastingOpen = false;
+    expect(isDraftDirty('recording', draft, baseline)).toBe(true);
+  });
 });
 
 describe('draftFromBatch — Correct reopens everything the record holds (D-03, task 3)', () => {

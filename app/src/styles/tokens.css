@@ -191,4 +191,16 @@
      the minimum a cell may shrink to before the grid wraps another onto
      its own line. */
   --col-batch-cell-min: 96px;
+
+  /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
+     references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
+     the Responsive Ladder"): below the 760px step-down, interactive
+     targets grow toward 44px — --touch-min is that minimum height for
+     buttons, selects and ink fields; --touch-stop-width is a rating
+     stop's grown width, its height reading --touch-min for the validated
+     40x44 box. Px literals, so the contract suites resolve them with
+     resolveTokenPx. Desktop stays compact — the growth lives only in
+     app.css's @media (max-width: 759.98px) block. */
+  --touch-min: 44px;
+  --touch-stop-width: 40px;
 }

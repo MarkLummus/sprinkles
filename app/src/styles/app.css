@@ -1570,3 +1570,32 @@ textarea {
   font-size: var(--size-mark-stop);
   margin-top: 0;
 }
+
+/* Touch targets below the 760px step-down (sketch-findings-sprinkles,
+   references/cross-cutting-type-spacing-feedback.md): the app's first
+   at-rule, placed after every existing rule so css-source.js's first-match
+   rule lookups keep finding every top-level rule first. Buttons, selects
+   and ink fields grow to a 44px minimum height (--touch-min) and the
+   axis-mark radio stops to the validated 40x44 box (--touch-stop-width
+   over --touch-min); every desktop rule above is untouched — everything
+   here lives inside this block, whose --touch-min flex-row stops wrap
+   rather than overflow (the .axis-mark__row already wraps). The 759.98px
+   prelude is the one sanctioned breakpoint literal in the file: a prelude,
+   not a declaration, so binder.test.js's no-bare-px gate never sees it,
+   and the fractional value keeps exactly 760px on the desktop side of the
+   boundary, matching the finding's verified-at-768 desktop compactness.
+   The .text-control controls are inline underlined text and deliberately
+   take no min-height: an inline box takes no height, and padding-based
+   growth would wreck their flow. */
+@media (max-width: 759.98px) {
+  button,
+  select,
+  .ink-field {
+    min-height: var(--touch-min);
+  }
+
+  .axis-mark__stop input[type='radio'] {
+    width: var(--touch-stop-width);
+    height: var(--touch-min);
+  }
+}

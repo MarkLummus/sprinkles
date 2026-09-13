@@ -232,10 +232,22 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     }
   });
 
-  test('assertNoAtRules passes on app.css — no at-rule was added', () => {
-    // Comment-stripped first, matching readAllRules' own internal call:
-    // an English comment can legitimately say "@supports" without that
-    // being a real at-rule (see this file's header comment above).
-    expect(() => assertNoAtRules(stripCssComments(appCssSource))).not.toThrow();
+  test('the only at-rule in app.css is exactly one @media (max-width: 759.98px) block (260912-ti1)', () => {
+    // Replaces the old "no at-rule was added" assertion (WR-02): the
+    // stylesheet reader (css-source.js) now parses one level of @media
+    // nesting, and this pins the file to that contract — exactly one
+    // media block, that one condition, and no other at-rule keyword
+    // anywhere (assertNoAtRules throws on a non-media at-rule and on
+    // anything nested inside the block). Comment-stripped first,
+    // matching readAllRules' own internal call: an English comment can
+    // legitimately say "@supports" without that being a real at-rule.
+    const stripped = stripCssComments(appCssSource);
+    expect(stripped.match(/@media\b/g)).toHaveLength(1);
+    expect(() => assertNoAtRules(stripped)).not.toThrow();
+    const mediaRules = rules.filter((r) => r.media !== undefined);
+    expect(mediaRules.length).toBeGreaterThan(0);
+    for (const rule of mediaRules) {
+      expect(rule.media).toBe('(max-width: 759.98px)');
+    }
   });
 });

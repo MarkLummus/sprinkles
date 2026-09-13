@@ -778,6 +778,122 @@ describe('BatchRow — silence stays a value for an untasted batch', () => {
   });
 });
 
+// TastingReading (contract "Axes spec"/"Controls spec", brief § 3): the
+// read view's own rendering of the single stored tasting — the seeded
+// batch marks sweetness and oil at stop 4, both high anchors, with Bitter
+// declared and no defects picked (D-07).
+describe('BatchRow — the tasting read view, goldilocks words and the summary line (contract "Axes spec", brief § 3)', () => {
+  it('renders only the marked axes as cells, each "{word} (n)" via readMarkWord — sweetness "more (4)", oil "strong (4)"', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Sweetness<\/span><span class="batch-row__cell-value">more \(4\)<\/span>/,
+    );
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Oil<\/span><span class="batch-row__cell-value">strong \(4\)<\/span>/,
+    );
+  });
+
+  it('renders no cell at all for an unmarked axis — dropped entirely, never a blank judgment', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    for (const name of ['Hardness', 'Scoopability', 'Smoothness', 'Body']) {
+      expect(markup).not.toContain(`class="batch-row__cell-label">${name}<`);
+    }
+  });
+
+  it('carries the tasting-head summary line: the marked axes\' tokens then the declared flaw\'s lowercase word, joined by " · "', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toContain('<span class="tasting-reading__summary"> · more (4) · strong (4) · bitter</span>');
+  });
+
+  it('renders no summary line span when nothing is marked and nothing is declared', () => {
+    const bareBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, marks: {}, bitterDeclared: null } };
+    const markup = renderBatchRow({ openBatch: bareBatch, batches: [bareBatch], mode: 'reading' });
+    expect(markup).not.toContain('tasting-reading__summary');
+    expect(markup).toMatch(/<h3>\s*Tasting\s*<\/h3>/);
+  });
+
+  it('reads the tasted date as "date unknown" when absent, never invented', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toContain('<p class="batch-row__dates">tasted date unknown</p>');
+  });
+
+  it('reads the tasted date via formatRecordDate when present', () => {
+    const datedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, tastedDate: '2026-08-03' } };
+    const markup = renderBatchRow({ openBatch: datedBatch, batches: [datedBatch], mode: 'reading' });
+    expect(markup).toContain('<p class="batch-row__dates">tasted 3 Aug 2026</p>');
+  });
+
+  it('reads the tasting temperature signed, and the melt test with its own unit', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C<\/span><\/span>/,
+    );
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min<\/span><\/span>/,
+    );
+  });
+
+  it('reads a blank tasting temperature, melt test and melt style as "not measured"', () => {
+    const blankBatch = {
+      ...augustSecondBatch,
+      tasting: { ...augustSecondBatch.tasting, tastingTempC: null, meltTestG: null, meltStyle: null },
+    };
+    const markup = renderBatchRow({ openBatch: blankBatch, batches: [blankBatch], mode: 'reading' });
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+    );
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+    );
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Melt style<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+    );
+  });
+
+  it('reads the melt style\'s picked words when set', () => {
+    const styledBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, meltStyle: 'Creamy puddle' } };
+    const markup = renderBatchRow({ openBatch: styledBatch, batches: [styledBatch], mode: 'reading' });
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Melt style<\/span><span class="batch-row__cell-value">Creamy puddle<\/span>/,
+    );
+  });
+
+  it('reads the declared flaw as "Bitter · declared" with no other defects picked (the seeded case)', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toMatch(/<p class="prose-text">Bitter · declared<\/p>/);
+  });
+
+  it('joins picked defect words with the declared flaw, comma-worded, when both are present', () => {
+    const flawedBatch = {
+      ...augustSecondBatch,
+      tasting: { ...augustSecondBatch.tasting, defects: ['Sandy, gritty', 'Greasy film'] },
+    };
+    const markup = renderBatchRow({ openBatch: flawedBatch, batches: [flawedBatch], mode: 'reading' });
+    expect(markup).toMatch(/<p class="prose-text">Sandy, gritty · Greasy film · Bitter · declared<\/p>/);
+  });
+
+  it('renders no defects line at all with no defects picked and no flaw declared', () => {
+    const cleanBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, defects: null, bitterDeclared: null } };
+    const markup = renderBatchRow({ openBatch: cleanBatch, batches: [cleanBatch], mode: 'reading' });
+    const readingMarkup = markup.slice(markup.indexOf('tasting-reading'));
+    expect(readingMarkup).not.toContain('declared');
+  });
+
+  it('renders the note as prose when written, and nothing when blank', () => {
+    const notedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, note: 'Soft set, clean finish' } };
+    const markup = renderBatchRow({ openBatch: notedBatch, batches: [notedBatch], mode: 'reading' });
+    expect(markup).toMatch(/<p class="prose-text">Soft set, clean finish<\/p>/);
+
+    const noNoteMarkup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(noNoteMarkup).not.toContain(augustSecondBatch.tasting.note ?? '__none__');
+  });
+
+  it('reads no code reference to the retired plural-tasting wording (Pitfall 7): never "once", "twice", or "times"', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).not.toMatch(/tasted once|tasted twice|\btimes\b/);
+  });
+});
+
 describe('BatchRow — zero-batch and unknown-address states', () => {
   it('reads "no batch yet" with no batch recorded', () => {
     const markup = renderBatchRow({ openBatch: null, batches: [] });

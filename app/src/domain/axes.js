@@ -60,6 +60,21 @@ export function markKeyFor(axis) {
 }
 
 /**
+ * readMarkWord(axis, stop) -> the word the read view prints beside a
+ * marked axis's number (the brief's "Soft (2)" rule, § 3): the axis's low
+ * anchor for stop 1 or 2, the fixed middle word "right" for stop 3, and
+ * the high anchor for stop 4 or 5. RESEARCH.md Assumption A2, resolved
+ * this way at planning — whether stops 2 and 4 should instead read their
+ * own "leaning {low/high}" stop word is an open wording question flagged
+ * for Mark's eyes at end-of-phase UAT, not reopened here.
+ */
+export function readMarkWord(axis, stop) {
+  if (stop <= 2) return axis.low;
+  if (stop >= 4) return axis.high;
+  return 'right';
+}
+
+/**
  * setMark(marks, axisKey, stop) -> a new marks object, never mutating the
  * one it is given. A `stop` of `null` removes axisKey's own key; any other
  * value writes it. This is the one rule for both directions (G-02-6): a

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { formatRecordDate, readMeasured, sortedBatches } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
-import { axesForBatch } from '../domain/axes.js';
+import { axesForBatch, readMarkWord } from '../domain/axes.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
 import { AxisMark } from './AxisMark.jsx';
@@ -188,6 +188,87 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark }) {
       {renderAxis(core[2])}
       {renderAxis(core[3])}
       {renderAxis(declared[1])}
+    </div>
+  );
+}
+
+// TastingReading (brief § 3 "The record reads as the battery", contract
+// "Axes spec"/"Controls spec"): the read view's own rendering of the
+// single stored tasting — only the marked axes, each as its goldilocks
+// word with the stop number (readMarkWord, "Soft (2)" style, D-04's
+// battery); the tasting-head summary line (the marked axes' tokens then
+// the declared flaw's lowercase word, joined by " · ", rendering only
+// when at least one token exists); the tasting's own measured cells
+// (temperature signed, melt test with its own unit, melt style as its
+// picked words); the defects as a line of the picked words with the
+// declared flaw carrying "· declared" (never a plain defect — Bitter is
+// never in the defects list itself); and the note as prose. No aggregate,
+// average, or overall figure is ever derived (D12) — an unmarked axis is
+// dropped entirely, never a blank judgment. The caller renders this only
+// while `batch.tasting` exists; a batch with none reads its own
+// silence-is-a-value sentence instead (BatchRow's read view, below).
+function TastingReading({ batch }) {
+  const axes = axesForBatch(batch);
+  const marks = batch.tasting.marks;
+  const markedAxes = axes.filter((axis) => marks[axis.key] != null);
+  const summaryTokens = markedAxes.map((axis) => `${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`);
+  if (batch.tasting.bitterDeclared) summaryTokens.push(DECLARED_FLAW.toLowerCase());
+  const summaryLine = summaryTokens.join(' · ');
+  const defectWords = [
+    ...(batch.tasting.defects ?? []),
+    ...(batch.tasting.bitterDeclared ? [`${DECLARED_FLAW} · declared`] : []),
+  ];
+  return (
+    <div className="tasting-reading">
+      <h3>
+        Tasting
+        {summaryLine && <span className="tasting-reading__summary"> · {summaryLine}</span>}
+      </h3>
+      <p className="batch-row__dates">
+        {`tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`}
+      </p>
+      <div className="batch-row__cells">
+        {markedAxes.map((axis) => (
+          <div className="batch-row__cell" key={axis.key}>
+            <span className="batch-row__cell-label">{axis.name}</span>
+            <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
+          </div>
+        ))}
+        <div className="batch-row__cell">
+          <span className="batch-row__cell-label">Tasting temperature</span>
+          <span className="batch-row__cell-value">
+            {batch.tasting.tastingTempC != null ? (
+              <>
+                {churnMeasured(batch.tasting.tastingTempC, { signed: true })}
+                <span className="batch-row__unit"> °C</span>
+              </>
+            ) : (
+              <span className="batch-row__unit">not measured</span>
+            )}
+          </span>
+        </div>
+        <div className="batch-row__cell">
+          <span className="batch-row__cell-label">Melt test</span>
+          <span className="batch-row__cell-value">
+            {batch.tasting.meltTestG != null ? (
+              <>
+                {churnMeasured(batch.tasting.meltTestG)}
+                <span className="batch-row__unit"> g lost at 20 min</span>
+              </>
+            ) : (
+              <span className="batch-row__unit">not measured</span>
+            )}
+          </span>
+        </div>
+        <div className="batch-row__cell">
+          <span className="batch-row__cell-label">Melt style</span>
+          <span className="batch-row__cell-value">
+            {batch.tasting.meltStyle ?? <span className="batch-row__unit">not measured</span>}
+          </span>
+        </div>
+      </div>
+      {defectWords.length > 0 && <p className="prose-text">{defectWords.join(' · ')}</p>}
+      {batch.tasting.note && <p className="prose-text">{batch.tasting.note}</p>}
     </div>
   );
 }
@@ -633,10 +714,15 @@ export function BatchRow({
             {openBatch.churn.ingredientNotes && <p className="prose-text">{openBatch.churn.ingredientNotes}</p>}
             {openBatch.churn.nextTimeNote && <p className="prose-text">Next time: {openBatch.churn.nextTimeNote}</p>}
 
-            {/* The tasting battery's own read view (marks, defects, melt
-                block, the summary line) is plan 05's build; this plan
-                only carries the silence-is-a-value sentence forward. */}
-            {!openBatch.tasting && <p>This batch has not been tasted yet.</p>}
+            {/* The tasting battery's own read view (contract "Axes spec",
+                brief § 3): TastingReading reads only the single stored
+                tasting; a batch with none reads its own
+                silence-is-a-value sentence instead. */}
+            {openBatch.tasting ? (
+              <TastingReading batch={openBatch} />
+            ) : (
+              <p>This batch has not been tasted yet.</p>
+            )}
           </>
         ) : (
           batches.length > 0 && <p>No batch of this version has that address.</p>

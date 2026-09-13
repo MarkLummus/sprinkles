@@ -3,7 +3,7 @@
 // the structural contract's "Axes spec"). Runs under Vitest's default
 // node environment — imports no store, no component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { AXES, STOPS, CORE_AXIS_COUNT, stopWordsFor, axesForBatch, markKeyFor, setMark } from './axes.js';
+import { AXES, STOPS, CORE_AXIS_COUNT, stopWordsFor, axesForBatch, markKeyFor, setMark, readMarkWord } from './axes.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
@@ -107,6 +107,32 @@ describe('axesForBatch', () => {
     const axes = axesForBatch(batch);
     expect(axes).toHaveLength(4);
     expect(axes.map((axis) => axis.key)).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness']);
+  });
+});
+
+// The read view's own "Soft (2)" rule (brief § 3, RESEARCH.md Assumption A2).
+describe('readMarkWord', () => {
+  it('maps stop 1 or 2 of Hardness to the low anchor "soft"', () => {
+    expect(readMarkWord(AXES[0], 1)).toBe('soft');
+    expect(readMarkWord(AXES[0], 2)).toBe('soft');
+  });
+
+  it('maps stop 3 of any axis to the fixed middle word "right"', () => {
+    for (const axis of AXES) {
+      expect(readMarkWord(axis, 3)).toBe('right');
+    }
+  });
+
+  it('maps stop 4 or 5 of Hardness to the high anchor "hard"', () => {
+    expect(readMarkWord(AXES[0], 4)).toBe('hard');
+    expect(readMarkWord(AXES[0], 5)).toBe('hard');
+  });
+
+  it("reproduces the working case's own tokens: Sweetness at 4 reads \"more\", Oil at 4 reads \"strong\"", () => {
+    const sweetness = AXES.find((axis) => axis.key === 'sweetness');
+    const oil = AXES.find((axis) => axis.key === 'oil');
+    expect(readMarkWord(sweetness, 4)).toBe('more');
+    expect(readMarkWord(oil, 4)).toBe('strong');
   });
 });
 

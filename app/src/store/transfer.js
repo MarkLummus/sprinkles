@@ -4,10 +4,14 @@
 // write: a malformed file is refused with every error found, never
 // half-applied (T-04-01) and never used to reach past an object's own
 // properties into its prototype chain (T-04-02). It now knows exactly one
-// shape — schemaVersion 4 — and refuses 1, 2 and 3 rather than lifting
+// shape — schemaVersion 5, the battery's stored shape
+// (03.3.1-CONTEXT.md D-09) — and refuses 1 through 4 rather than lifting
 // them; there is no ladder here anymore.
+import { AXES } from '../domain/axes.js';
+import { SEGMENT_OPTIONS, DEFECTS } from '../domain/battery.js';
 
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+const DECLARED_AXIS_NAMES = AXES.filter((axis) => axis.group === 'declared').map((axis) => axis.name);
 
 function isPlainObject(value) {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -23,6 +27,10 @@ function isNonEmptyString(value) {
 
 function isStringOrNull(value) {
   return value === null || typeof value === 'string';
+}
+
+function isEnumOrNull(value, options) {
+  return value === null || (typeof value === 'string' && options.includes(value));
 }
 
 // Reads only — never assigns through a key, so an own "__proto__" property
@@ -130,53 +138,82 @@ function isAbsentOrNull(value) {
   return value === undefined || value === null;
 }
 
-function validateTasting(tasting, path, errors) {
-  if (!isPlainObject(tasting)) {
+/**
+ * validateMarks(marks, path, errors) -> void. Every own value is a 1–5
+ * integer — never 0, never a half — an unmarked axis holds no key at all
+ * (D-10).
+ */
+function validateMarks(marks, path, errors) {
+  if (!isPlainObject(marks)) {
     errors.push(`${path}: expected an object`);
     return;
   }
-  if (!isNonEmptyString(tasting.id)) errors.push(`${path}.id: expected a non-empty string`);
-  if (!isAbsentOrNull(tasting.date) && typeof tasting.date !== 'string') {
-    errors.push(`${path}.date: expected a string or null`);
-  }
-  for (const field of ['tastingTempC', 'meltdownLossG']) {
-    const value = tasting[field];
-    if (!isAbsentOrNull(value) && !isFiniteNumber(value)) {
-      errors.push(`${path}.${field}: expected a finite number or absent, got ${JSON.stringify(value)}`);
-    }
-  }
-  if (!isPlainObject(tasting.marks)) {
-    errors.push(`${path}.marks: expected an object`);
-  } else {
-    for (const [axis, value] of Object.entries(tasting.marks)) {
-      if (!isFiniteNumber(value)) {
-        errors.push(`${path}.marks.${axis}: expected a finite number, got ${JSON.stringify(value)}`);
-      }
-    }
-  }
-  for (const field of ['words', 'nextTimeNote']) {
-    const value = tasting[field];
-    if (!isAbsentOrNull(value) && typeof value !== 'string') {
-      errors.push(`${path}.${field}: expected a string or null`);
+  for (const [axis, value] of Object.entries(marks)) {
+    if (!Number.isInteger(value) || value < 1 || value > 5) {
+      errors.push(`${path}.${axis}: expected an integer from 1 to 5, got ${JSON.stringify(value)}`);
     }
   }
 }
 
 /**
- * validateDeclaredAxis(axis, path, errors) -> void, in the same
- * collect-all-errors, name-the-path style as validateRow (D-07a). Refuses
- * exactly the bare-string form a pre-reset record could carry, which would
- * otherwise reach axesForBatch (domain/axes.js) as an axis whose key and
- * label are undefined.
+ * validateTasting(tasting, path, errors) -> void, in the same
+ * collect-all-errors, name-the-path style as validateBatch. A batch
+ * carries zero or one tasting (D-03); this validates the one object a
+ * batch may hold at $.tasting.
  */
-function validateDeclaredAxis(axis, path, errors) {
-  if (!isPlainObject(axis)) {
-    errors.push(`${path}: expected an object, got ${JSON.stringify(axis)}`);
+function validateTasting(tasting, path, errors) {
+  if (!isPlainObject(tasting)) {
+    errors.push(`${path}: expected an object`);
     return;
   }
-  if (!isNonEmptyString(axis.name)) errors.push(`${path}.name: expected a non-empty string, got ${JSON.stringify(axis.name)}`);
-  if (typeof axis.low !== 'string') errors.push(`${path}.low: expected a string, got ${JSON.stringify(axis.low)}`);
-  if (typeof axis.high !== 'string') errors.push(`${path}.high: expected a string, got ${JSON.stringify(axis.high)}`);
+  if (!isAbsentOrNull(tasting.tastedDate) && typeof tasting.tastedDate !== 'string') {
+    errors.push(`${path}.tastedDate: expected a string or null`);
+  }
+  for (const field of ['temperingMinutes', 'tastingTempC', 'meltTestG']) {
+    const value = tasting[field];
+    if (!isAbsentOrNull(value) && !isFiniteNumber(value)) {
+      errors.push(`${path}.${field}: expected a finite number or null, got ${JSON.stringify(value)}`);
+    }
+  }
+  if (!isPlainObject(tasting.marks)) {
+    errors.push(`${path}.marks: expected an object`);
+  } else {
+    validateMarks(tasting.marks, `${path}.marks`, errors);
+  }
+  if (!isAbsentOrNull(tasting.note) && typeof tasting.note !== 'string') {
+    errors.push(`${path}.note: expected a string or null`);
+  }
+  if (!isAbsentOrNull(tasting.defects) && (!Array.isArray(tasting.defects) || !tasting.defects.every((chip) => DEFECTS.includes(chip)))) {
+    errors.push(`${path}.defects: expected an array of known defect chips or null, got ${JSON.stringify(tasting.defects)}`);
+  }
+  if (tasting.bitterDeclared !== true && tasting.bitterDeclared !== null) {
+    errors.push(`${path}.bitterDeclared: expected true or null, got ${JSON.stringify(tasting.bitterDeclared)}`);
+  }
+  if (!isEnumOrNull(tasting.meltStyle, SEGMENT_OPTIONS.meltStyle)) {
+    errors.push(
+      `${path}.meltStyle: expected one of ${JSON.stringify(SEGMENT_OPTIONS.meltStyle)} or null, got ${JSON.stringify(tasting.meltStyle)}`,
+    );
+  }
+}
+
+/**
+ * validateDeclaredAxes(declaredAxes, path, errors) -> void, in the same
+ * collect-all-errors, name-the-path style as validateRow. Each entry is a
+ * non-empty string naming one of the battery's declared-pair axes
+ * (domain/axes.js's AXES, group 'declared') — refuses the pre-reset
+ * `{ name, low, high }` object shape, which would otherwise reach
+ * axesForBatch as a name that resolves to nothing.
+ */
+function validateDeclaredAxes(declaredAxes, path, errors) {
+  if (!Array.isArray(declaredAxes)) {
+    errors.push(`${path}: expected an array`);
+    return;
+  }
+  declaredAxes.forEach((name, index) => {
+    if (!isNonEmptyString(name) || !DECLARED_AXIS_NAMES.includes(name)) {
+      errors.push(`${path}[${index}]: expected one of ${JSON.stringify(DECLARED_AXIS_NAMES)}, got ${JSON.stringify(name)}`);
+    }
+  });
 }
 
 /**
@@ -196,8 +233,8 @@ function validateBatch(batch, path, errors) {
   if (!isNonEmptyString(batch.versionId)) errors.push(`${path}.versionId: expected a non-empty string`);
   if (!isFiniteNumber(batch.schemaVersion)) errors.push(`${path}.schemaVersion: expected a finite number`);
   if (!isNonEmptyString(batch.recordedAt)) errors.push(`${path}.recordedAt: expected a non-empty string`);
-  if (!Array.isArray(batch.amendedAt) || !batch.amendedAt.every(isNonEmptyString)) {
-    errors.push(`${path}.amendedAt: expected an array of non-empty strings`);
+  if (!isAbsentOrNull(batch.changed) && typeof batch.changed !== 'string') {
+    errors.push(`${path}.changed: expected a string or null, got ${JSON.stringify(batch.changed)}`);
   }
 
   if (!isPlainObject(batch.snapshot)) {
@@ -211,12 +248,9 @@ function validateBatch(batch, path, errors) {
     if (typeof batch.snapshot.coefficientSetId !== 'string') {
       errors.push(`${path}.snapshot.coefficientSetId: expected a string`);
     }
-    if (!Array.isArray(batch.snapshot.declaredAxes)) {
-      errors.push(`${path}.snapshot.declaredAxes: expected an array`);
-    } else {
-      batch.snapshot.declaredAxes.forEach((axis, index) =>
-        validateDeclaredAxis(axis, `${path}.snapshot.declaredAxes[${index}]`, errors),
-      );
+    validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors);
+    if (!isAbsentOrNull(batch.snapshot.declaredFlaw) && typeof batch.snapshot.declaredFlaw !== 'string') {
+      errors.push(`${path}.snapshot.declaredFlaw: expected a string or null, got ${JSON.stringify(batch.snapshot.declaredFlaw)}`);
     }
   }
 
@@ -248,13 +282,23 @@ function validateBatch(batch, path, errors) {
     if (!isPlainObject(churn.stepChanges)) {
       errors.push(`${path}.churn.stepChanges: expected an object`);
     }
-    for (const field of ['comeUpMinutes', 'drawTempC', 'overrunPercent']) {
+    for (const field of ['timeToDrawTempMinutes', 'outOfMachineTempC', 'churnDurationMinutes']) {
       const value = churn[field];
       if (!isAbsentOrNull(value) && !isFiniteNumber(value)) {
         errors.push(`${path}.churn.${field}: expected a finite number or null, got ${JSON.stringify(value)}`);
       }
     }
-    for (const field of ['churnDate', 'drawNotes', 'ingredientNotes', 'nextTimeNote']) {
+    if (!isEnumOrNull(churn.exitConsistency, SEGMENT_OPTIONS.exitConsistency)) {
+      errors.push(
+        `${path}.churn.exitConsistency: expected one of ${JSON.stringify(SEGMENT_OPTIONS.exitConsistency)} or null, got ${JSON.stringify(churn.exitConsistency)}`,
+      );
+    }
+    if (!isEnumOrNull(churn.airiness, SEGMENT_OPTIONS.airiness)) {
+      errors.push(
+        `${path}.churn.airiness: expected one of ${JSON.stringify(SEGMENT_OPTIONS.airiness)} or null, got ${JSON.stringify(churn.airiness)}`,
+      );
+    }
+    for (const field of ['churnDate', 'atTheMachine', 'ingredientNotes', 'nextTimeNote']) {
       const value = churn[field];
       if (!isAbsentOrNull(value) && typeof value !== 'string') {
         errors.push(`${path}.churn.${field}: expected a string or null, got ${JSON.stringify(value)}`);
@@ -262,10 +306,8 @@ function validateBatch(batch, path, errors) {
     }
   }
 
-  if (!Array.isArray(batch.tastings)) {
-    errors.push(`${path}.tastings: expected an array`);
-  } else {
-    batch.tastings.forEach((tasting, index) => validateTasting(tasting, `${path}.tastings[${index}]`, errors));
+  if (!isAbsentOrNull(batch.tasting)) {
+    validateTasting(batch.tasting, `${path}.tasting`, errors);
   }
 }
 
@@ -313,6 +355,10 @@ function validateVersion(version, path, errors) {
   if (!isNonEmptyString(version.createdAt)) {
     errors.push(`${path}.createdAt: expected a non-empty string, got ${JSON.stringify(version.createdAt)}`);
   }
+  validateDeclaredAxes(version.declaredAxes, `${path}.declaredAxes`, errors);
+  if (!isAbsentOrNull(version.declaredFlaw) && typeof version.declaredFlaw !== 'string') {
+    errors.push(`${path}.declaredFlaw: expected a string or null, got ${JSON.stringify(version.declaredFlaw)}`);
+  }
 }
 
 /**
@@ -323,12 +369,12 @@ function validateVersion(version, path, errors) {
  * parent-resolves check, which needs to know what the store already
  * holds, lives in importStore below, after this gate and before any write.
  *
- * D-08: the accepted schema is the single value 4. A store exported after
- * this change imports after it; a store exported before it — schemaVersion
- * 1, 2 or 3 — is refused as old rather than silently read as current.
- * Reinstating that older promise means restoring one lift branch in
- * importStore alone, never a second live-database ladder (CONTEXT.md
- * Deferred Ideas).
+ * D-09 (03.3.1-CONTEXT.md): the accepted schema is the single value 5, the
+ * battery's stored shape. A store exported after this change imports
+ * after it; a store exported before it — schemaVersion 1 through 4 — is
+ * refused as old rather than silently read as current. Reinstating that
+ * older promise means restoring one lift branch in importStore alone,
+ * never a second live-database ladder (CONTEXT.md Deferred Ideas).
  */
 export function validateStoreFile(parsed) {
   const errors = [];
@@ -342,8 +388,8 @@ export function validateStoreFile(parsed) {
   if (parsed.app !== 'sprinkles') {
     errors.push(`$.app: expected "sprinkles", got ${JSON.stringify(parsed.app)}`);
   }
-  if (parsed.schemaVersion !== 4) {
-    errors.push(`$.schemaVersion: expected 4, got ${JSON.stringify(parsed.schemaVersion)}`);
+  if (parsed.schemaVersion !== 5) {
+    errors.push(`$.schemaVersion: expected 5, got ${JSON.stringify(parsed.schemaVersion)}`);
   }
   if (!Array.isArray(parsed.versions)) {
     errors.push('$.versions: expected an array');
@@ -366,7 +412,7 @@ export async function exportStore(repository) {
   const batches = await repository.getAllBatches();
   return {
     app: 'sprinkles',
-    schemaVersion: 4,
+    schemaVersion: 5,
     exportedAt: new Date().toISOString(),
     versions,
     batches,
@@ -375,7 +421,7 @@ export async function exportStore(repository) {
 
 /**
  * importStore(repository, parsed) -> { ok, errors }. Validates parsed
- * directly — schemaVersion 4 is the only shape this function ever sees,
+ * directly — schemaVersion 5 is the only shape this function ever sees,
  * so there is no lift to run first. Writes nothing on failure — a
  * partially applied import is worse than a refused one (T-04-01, T-02-08).
  * The D-09 parent-resolves gate runs after validation and before any

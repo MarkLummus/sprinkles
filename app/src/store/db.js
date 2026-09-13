@@ -1,7 +1,7 @@
 import { openDB } from 'idb';
 
 export const DB_NAME = 'sprinkles';
-export const DB_VERSION = 4;
+export const DB_VERSION = 5;
 
 // The only module under app/src that touches the store library — every
 // other module reaches the store through repository.js's seam (D-06).

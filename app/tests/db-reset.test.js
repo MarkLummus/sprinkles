@@ -135,11 +135,11 @@ describe('the D-05 reset, against a real IndexedDB', () => {
     const balance = computeBalance(activeRows(seeded));
     expect(formatGrams(balance.mass)).toBe('799.7 g');
 
-    // Guard 3 (D-05, D-10): the batch survives the reset too, read back
-    // through the repository seam — whole milk's as-made still reads the
-    // sheet's own two lines, both totals are unmoved, and the reseeded
-    // batch's snapshot still carries the two declared axes in the object
-    // shape axesForBatch reads.
+    // Guard 3 (D-05, D-10, 03.3.1-CONTEXT.md D-07): the batch survives the
+    // reset too, read back through the repository seam — whole milk's
+    // as-made still reads the sheet's own two lines, both totals are
+    // unmoved, and the reseeded batch's snapshot still names the declared
+    // pair axesForBatch resolves against the battery's fixed AXES table.
     const batches = await repository.listBatchesForVersion(seeded.id);
     expect(batches).toHaveLength(1);
     const [seededBatch] = batches;
@@ -153,11 +153,11 @@ describe('the D-05 reset, against a real IndexedDB', () => {
 
     const axes = axesForBatch(seededBatch);
     expect(axes).toHaveLength(6);
-    expect(axes[4].label).toBe('Olive oil character');
-    expect(axes[5].label).toBe('Bitterness');
+    expect(axes[4].name).toBe('Body');
+    expect(axes[5].name).toBe('Oil');
   });
 
-  it('a brand-new profile (no prior database) opens at version 4 with both stores present and empty, and nothing was dropped', async () => {
+  it('a brand-new profile (no prior database) opens at version 5 with both stores present and empty, and nothing was dropped', async () => {
     const db = await openStore();
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);

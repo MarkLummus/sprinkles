@@ -50,14 +50,14 @@ function createInMemoryRepository(initialVersions = [], initialBatches = []) {
   };
 }
 
-// Schema 4-shaped by default (D-08): every version validateStoreFile sees
-// in production is authored fresh (createChildVersion, or the seed) — there
-// is no lift branch left to fill these in on the way in, so a well-formed
-// fixture carries them from the start.
+// Schema 5-shaped by default (D-09, 03.3.1-CONTEXT.md): every version
+// validateStoreFile sees in production is authored fresh (createChildVersion,
+// or the seed) — there is no lift branch left to fill these in on the way
+// in, so a well-formed fixture carries them from the start.
 function makeVersion(overrides = {}) {
   return {
     id: 'v1',
-    schemaVersion: 3,
+    schemaVersion: 4,
     recipeName: 'Test recipe',
     coefficientSetId: 'set-1',
     parentVersionId: null,
@@ -76,6 +76,8 @@ function makeVersion(overrides = {}) {
     ],
     method: [],
     authored: { carriedForward: [], beforeYouStart: [] },
+    declaredAxes: ['Body', 'Oil'],
+    declaredFlaw: 'Bitter',
     ...overrides,
   };
 }
@@ -93,11 +95,11 @@ function makeStep(overrides = {}) {
 
 function makeBatch(overrides = {}) {
   return {
-    schemaVersion: 1,
+    schemaVersion: 3,
     id: 'batch-1',
     versionId: 'v1',
     recordedAt: '2026-08-04T09:00:00.000Z',
-    amendedAt: [],
+    changed: null,
     snapshot: {
       coefficientSetId: 'set-1',
       versionLabel: 'Test recipe',
@@ -110,37 +112,54 @@ function makeBatch(overrides = {}) {
           removed: false,
         },
       ],
-      declaredAxes: [],
+      declaredAxes: ['Body', 'Oil'],
+      declaredFlaw: 'Bitter',
     },
     churn: {
       churnDate: '2026-08-02',
       asMade: {},
       stepChanges: {},
-      comeUpMinutes: null,
-      drawTempC: null,
-      overrunPercent: null,
-      drawNotes: null,
+      timeToDrawTempMinutes: null,
+      outOfMachineTempC: null,
+      churnDurationMinutes: null,
+      exitConsistency: null,
+      airiness: null,
+      atTheMachine: null,
       ingredientNotes: null,
       nextTimeNote: null,
     },
-    tastings: [],
+    tasting: null,
     ...overrides,
   };
 }
 
-// The one accepted shape (D-08): schemaVersion 4, batches always present
-// (an array, never absent) — there is no longer a schema number under
-// which batches may be omitted.
+function makeTasting(overrides = {}) {
+  return {
+    tastedDate: null,
+    temperingMinutes: null,
+    tastingTempC: null,
+    marks: {},
+    note: null,
+    defects: null,
+    bitterDeclared: null,
+    meltTestG: null,
+    meltStyle: null,
+    ...overrides,
+  };
+}
+
+// The one accepted shape (D-09): schemaVersion 5, batches always present
+// (an array, never absent).
 function makeStoreFile(versions = [makeVersion()], batches = []) {
-  return { app: 'sprinkles', schemaVersion: 4, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches };
+  return { app: 'sprinkles', schemaVersion: 5, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches };
 }
 
 describe('exportStore', () => {
-  it('returns app sprinkles, schemaVersion 4, and every version and batch the repository held', async () => {
+  it('returns app sprinkles, schemaVersion 5, and every version and batch the repository held', async () => {
     const repository = createInMemoryRepository([makeVersion(), makeVersion({ id: 'v2' })], [makeBatch()]);
     const exported = await exportStore(repository);
     expect(exported.app).toBe('sprinkles');
-    expect(exported.schemaVersion).toBe(4);
+    expect(exported.schemaVersion).toBe(5);
     expect(exported.versions).toHaveLength(2);
     expect(exported.batches).toHaveLength(1);
   });
@@ -159,7 +178,7 @@ describe('export then import round trip', () => {
     expect(target.batches).toEqual(source.batches);
   });
 
-  // The phase's Done-when (D-08): a store exported after this change
+  // The phase's Done-when (D-09): a store exported after this change
   // imports after it, proven against the real seeded olive oil version and
   // its real 2 Aug batch, not a fixture. JSON.parse(JSON.stringify(...))
   // carries a genuinely serialised payload, the same as a file on disk,
@@ -190,18 +209,18 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('app'))).toBe(true);
   });
 
-  it('accepts a payload whose schemaVersion is 4 — the schema number flips from refused to accepted (D-08)', () => {
+  it('accepts a payload whose schemaVersion is 5 — the schema number flips from refused to accepted (D-09)', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(false);
   });
 
-  it.each([1, 2, 3])(
+  it.each([1, 2, 3, 4])(
     'rejects a payload whose schemaVersion is %i, naming the path and both the expected and received value',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
       expect(result.ok).toBe(false);
       const error = result.errors.find((message) => message.includes('$.schemaVersion'));
-      expect(error).toContain('expected 4');
+      expect(error).toContain('expected 5');
       expect(error).toContain(String(oldSchemaVersion));
     },
   );
@@ -332,19 +351,28 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('$.batches[0].churn.asMade.row-01[0]'))).toBe(true);
   });
 
-  it('collects three errors in one call: missing versionId, empty snapshot.rows, non-numeric drawTempC', () => {
+  it('collects three errors in one call: missing versionId, empty snapshot.rows, non-numeric outOfMachineTempC', () => {
     const batch = makeBatch({
       versionId: undefined,
       snapshot: { ...makeBatch().snapshot, rows: [] },
-      churn: { ...makeBatch().churn, drawTempC: 'cold' },
+      churn: { ...makeBatch().churn, outOfMachineTempC: 'cold' },
     });
     const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result.ok).toBe(false);
     expect(result.errors).toHaveLength(3);
   });
 
-  it('rejects a batch whose declaredAxes element is a bare string, refused at its own indexed path (D-07a)', () => {
-    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: ['Olive oil character'] } });
+  it('rejects a batch whose declaredAxes element is the pre-reset { name, low, high } object shape, refused at its own indexed path', () => {
+    const batch = makeBatch({
+      snapshot: { ...makeBatch().snapshot, declaredAxes: [{ name: 'Olive oil character', low: 'x', high: 'y' }] },
+    });
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.snapshot.declaredAxes[0]'))).toBe(true);
+  });
+
+  it('rejects a batch whose declaredAxes names an axis outside the declared pair', () => {
+    const batch = makeBatch({ snapshot: { ...makeBatch().snapshot, declaredAxes: ['Hardness'] } });
     const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('.snapshot.declaredAxes[0]'))).toBe(true);
@@ -353,17 +381,129 @@ describe('validateStoreFile', () => {
   it('rejects a batch carrying an own __proto__ key, and leaves a fresh object unpolluted', () => {
     const malicious = JSON.parse(
       '{"app":"sprinkles","schemaVersion":2,"versions":[],"batches":[{"id":"b1","versionId":"v1",' +
-        '"schemaVersion":1,"recordedAt":"2026-08-04T09:00:00.000Z","amendedAt":[],' +
+        '"schemaVersion":1,"recordedAt":"2026-08-04T09:00:00.000Z","changed":null,' +
         '"snapshot":{"coefficientSetId":"c","versionLabel":"v","rows":[{"id":"r1","ingredientName":"x",' +
         '"grams":1,"ingredient":{"composition":{"fat":1}}}],"declaredAxes":[]},' +
-        '"churn":{"asMade":{},"stepChanges":{},"comeUpMinutes":null,"drawTempC":null,"overrunPercent":null,' +
-        '"drawNotes":null,"ingredientNotes":null,"nextTimeNote":null,"churnDate":null},' +
-        '"tastings":[],"__proto__":{"polluted":true}}]}',
+        '"churn":{"asMade":{},"stepChanges":{},"timeToDrawTempMinutes":null,"outOfMachineTempC":null,"churnDurationMinutes":null,' +
+        '"exitConsistency":null,"airiness":null,"atTheMachine":null,"ingredientNotes":null,"nextTimeNote":null,"churnDate":null},' +
+        '"tasting":null,"__proto__":{"polluted":true}}]}',
     );
     const result = validateStoreFile(malicious);
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('__proto__'))).toBe(true);
     expect({}.polluted).toBeUndefined();
+  });
+
+  // The battery's new churn fields (03.3.1-CONTEXT.md D-09, D-10).
+  describe('validateBatch, the battery\'s churn fields', () => {
+    it('rejects a non-numeric value under the new churn field names — the retired numeric fields are no longer checked at all', () => {
+      const batch = makeBatch({ churn: { ...makeBatch().churn, timeToDrawTempMinutes: 'cold' } });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('churn.timeToDrawTempMinutes'))).toBe(true);
+    });
+
+    it('accepts a written 0 churnDurationMinutes — a truthiness test would wrongly reject it', () => {
+      const batch = makeBatch({ churn: { ...makeBatch().churn, churnDurationMinutes: 0 } });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result).toEqual({ ok: true, errors: [] });
+    });
+
+    it('accepts a known exitConsistency/airiness option and rejects an unknown one, naming the path', () => {
+      const good = makeBatch({ churn: { ...makeBatch().churn, exitConsistency: 'Smooth ribbon', airiness: 'Low, dense' } });
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [good]))).toEqual({ ok: true, errors: [] });
+
+      const bad = makeBatch({ churn: { ...makeBatch().churn, exitConsistency: 'Runny' } });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [bad]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('churn.exitConsistency'))).toBe(true);
+    });
+  });
+
+  // The single zero-or-one tasting (D-03) and its own fields.
+  describe('validateBatch, the tasting object', () => {
+    it('accepts a batch whose tasting is null', () => {
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [makeBatch({ tasting: null })]))).toEqual({
+        ok: true,
+        errors: [],
+      });
+    });
+
+    it('accepts a well-formed tasting object', () => {
+      const batch = makeBatch({ tasting: makeTasting({ marks: { sweetness: 4, oil: 4 }, bitterDeclared: true, meltTestG: 3 }) });
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [batch]))).toEqual({ ok: true, errors: [] });
+    });
+
+    it('rejects a marks value of 0, naming the path', () => {
+      const batch = makeBatch({ tasting: makeTasting({ marks: { sweetness: 0 } }) });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('tasting.marks.sweetness'))).toBe(true);
+    });
+
+    it('rejects a marks value of 4.5, naming the path', () => {
+      const batch = makeBatch({ tasting: makeTasting({ marks: { oil: 4.5 } }) });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('tasting.marks.oil'))).toBe(true);
+    });
+
+    it('accepts a written 0 meltTestG — a truthiness test would wrongly reject it', () => {
+      const batch = makeBatch({ tasting: makeTasting({ meltTestG: 0 }) });
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [batch]))).toEqual({ ok: true, errors: [] });
+    });
+
+    it('rejects an unknown defect chip string, naming the path', () => {
+      const batch = makeBatch({ tasting: makeTasting({ defects: ['Watery mess'] }) });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('tasting.defects'))).toBe(true);
+    });
+
+    it('accepts a known defect chip and null defects', () => {
+      const withDefect = makeBatch({ tasting: makeTasting({ defects: ['Sandy, gritty'] }) });
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [withDefect]))).toEqual({ ok: true, errors: [] });
+      const withoutDefects = makeBatch({ tasting: makeTasting({ defects: null }) });
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [withoutDefects]))).toEqual({ ok: true, errors: [] });
+    });
+
+    it('rejects bitterDeclared: false, naming the path — the toggle is true or null, never a stored false', () => {
+      const batch = makeBatch({ tasting: makeTasting({ bitterDeclared: false }) });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('tasting.bitterDeclared'))).toBe(true);
+    });
+
+    it('rejects an unknown meltStyle, naming the path', () => {
+      const batch = makeBatch({ tasting: makeTasting({ meltStyle: 'Frozen solid' }) });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('tasting.meltStyle'))).toBe(true);
+    });
+  });
+
+  // The batch-level changed date (D-04), replacing the amendedAt list.
+  describe('validateBatch, the changed date', () => {
+    it('accepts a null changed date', () => {
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [makeBatch({ changed: null })]))).toEqual({
+        ok: true,
+        errors: [],
+      });
+    });
+
+    it('accepts a string changed date', () => {
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [makeBatch({ changed: '2026-09-06' })]))).toEqual({
+        ok: true,
+        errors: [],
+      });
+    });
+
+    it('rejects a non-string, non-null changed date, naming the path', () => {
+      const batch = makeBatch({ changed: 42 });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('.changed'))).toBe(true);
+    });
   });
 });
 
@@ -379,7 +519,7 @@ describe('importStore', () => {
     expect(repository.versions).toEqual(before);
   });
 
-  it('imports a well-formed schemaVersion 4 file with a batch, round-tripping through putAll and putAllBatches', async () => {
+  it('imports a well-formed schemaVersion 5 file with a batch, round-tripping through putAll and putAllBatches', async () => {
     const repository = createInMemoryRepository([], []);
     const result = await importStore(repository, makeStoreFile([makeVersion()], [makeBatch()]));
     expect(result.ok).toBe(true);
@@ -402,9 +542,9 @@ describe('importStore', () => {
   });
 });
 
-// D-09: an imported file carrying a child version whose parent is neither
-// in the file nor already in the store is refused whole.
-describe('the D-09 parent-resolves gate', () => {
+// An imported file carrying a child version whose parent is neither in the
+// file nor already in the store is refused whole.
+describe('the parent-resolves gate', () => {
   it('accepts a file whose child version names a parent present in the same file', async () => {
     const parent = makeVersion({ id: 'parent' });
     const child = makeVersion({ id: 'child', parentVersionId: 'parent', parentVersionLabel: 'line' });
@@ -437,8 +577,8 @@ describe('the D-09 parent-resolves gate', () => {
   });
 });
 
-// The new per-field checks validateVersion gained this phase.
-describe('validateVersion, the new fields (D-06)', () => {
+// The new per-field checks validateVersion carries.
+describe('validateVersion, the fields', () => {
   it('rejects a version whose reason is a number, naming the field', () => {
     const version = makeVersion({ reason: 42 });
     const result = validateStoreFile(makeStoreFile([version]));
@@ -491,10 +631,35 @@ describe('validateVersion, the new fields (D-06)', () => {
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
+  it('accepts the battery\'s declared pair and declared flaw', () => {
+    const version = makeVersion({ declaredAxes: ['Body', 'Oil'], declaredFlaw: 'Bitter' });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('accepts a null declaredFlaw and an empty declaredAxes array', () => {
+    const version = makeVersion({ declaredAxes: [], declaredFlaw: null });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a declaredAxes entry naming an axis outside the declared pair, naming the path', () => {
+    const version = makeVersion({ declaredAxes: ['Sweetness'] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.declaredAxes[0]'))).toBe(true);
+  });
+
+  it('rejects a non-string, non-null declaredFlaw, naming the path', () => {
+    const version = makeVersion({ declaredFlaw: 42 });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.declaredFlaw'))).toBe(true);
+  });
+
   it("rejects a file carrying __proto__ on a method step — the uses array's containing object — via the existing scanner", () => {
     const malicious = JSON.parse(
-      '{"app":"sprinkles","schemaVersion":4,"versions":[{"id":"v1","schemaVersion":3,"recipeName":"x","coefficientSetId":"c",' +
+      '{"app":"sprinkles","schemaVersion":5,"versions":[{"id":"v1","schemaVersion":4,"recipeName":"x","coefficientSetId":"c",' +
         '"parentVersionId":null,"parentVersionLabel":null,"reason":null,"citedBatchId":null,"createdAt":"2026-01-01T00:00:00.000Z",' +
+        '"declaredAxes":["Body","Oil"],"declaredFlaw":"Bitter",' +
         '"rows":[{"id":"r1","ingredientName":"x","portions":[{"step":1,"grams":1}],"ingredient":{"composition":{"fat":1}},"removed":false}],' +
         '"method":[{"n":1,"leadIn":"x","instruction":"x","removed":false,"uses":[],"__proto__":{"polluted":true}}],' +
         '"authored":{"carriedForward":[],"beforeYouStart":[]}}],"batches":[]}',

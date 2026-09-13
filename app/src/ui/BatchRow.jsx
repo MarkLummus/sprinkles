@@ -3,8 +3,10 @@ import { Link } from 'react-router';
 import { formatRecordDate, readMeasured, sortedBatches } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS } from '../domain/battery.js';
+import { axesForBatch } from '../domain/axes.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
+import { AxisMark } from './AxisMark.jsx';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -103,6 +105,85 @@ function autoGrow(event) {
   el.style.height = `${el.scrollHeight}px`;
 }
 
+// The axes' per-arrangement render (contract "Keyboard and tab order"): a
+// matchMedia listener on (max-width: 760px), re-rendering on crossing.
+// Node-guarded (RESEARCH.md Code Example 6, this plan's own critical
+// note): BatchRow's own static-markup tests run under Vitest's node
+// environment (renderToStaticMarkup, no jsdom), where `window` does not
+// exist — an unguarded read here would crash every existing static test
+// the instant this hook landed. With no window, or no
+// window.matchMedia, the hook answers the desktop arrangement and builds
+// no listener; the real subscription exists only in the browser.
+function useBelow760() {
+  const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 760px)').matches : false));
+  useEffect(() => {
+    if (!hasMatchMedia) return undefined;
+    const mediaQuery = window.matchMedia('(max-width: 760px)');
+    const onChange = (event) => setBelow(event.matches);
+    mediaQuery.addEventListener('change', onChange);
+    return () => mediaQuery.removeEventListener('change', onChange);
+  }, [hasMatchMedia]);
+  return below;
+}
+
+// AxesGrid: the six-axis battery in one of the contract's two DOM orders
+// per arrangement (contract "Keyboard and tab order") — desktop row-major
+// or stacked core-then-declared. `below` is an explicit boolean, never a
+// live matchMedia read, so BatchRow.test.jsx can render and assert both
+// arrangements directly, without stubbing matchMedia (this plan's own
+// critical note) — BatchRow's own useBelow760 above is the only thing
+// that reads the real matchMedia, and only where window supports it.
+// `marks` is the draft's own marks map, read by axis key, so a mark
+// crossing the boundary survives by construction (Pitfall 8).
+export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark }) {
+  const core = axes.filter((axis) => axis.group === 'core');
+  const declared = axes.filter((axis) => axis.group === 'declared');
+
+  function renderAxis(axis, declaredCaption = null) {
+    if (!axis) return null;
+    return (
+      <AxisMark
+        key={axis.key}
+        axis={axis}
+        value={marks[axis.key]}
+        onChange={(stop) => onChangeMark(axis.key, stop)}
+        onClear={() => onClearMark(axis.key, axis.name)}
+        declaredCaption={declaredCaption}
+      />
+    );
+  }
+
+  if (below) {
+    return (
+      <div className="axes-grid axes-grid--stacked">
+        <div className="axes-grid__group">{core.map((axis) => renderAxis(axis))}</div>
+        <div className="axes-grid__group axes-grid__group--declared">
+          <p className="axes-declared-caption">Declared for this recipe</p>
+          {declared.map((axis) => renderAxis(axis))}
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop row-major (contract "Axes spec"/"Keyboard and tab order"):
+  // Hardness, Scoopability, Body, Smoothness, Sweetness, Oil — the
+  // hairline sits between columns 2 and 3; the caption rides inside
+  // Body's own box (declared[0]), never a second, separate element
+  // (Pitfall 8: this order must never read as the stacked order).
+  return (
+    <div className="axes-grid">
+      <div className="axes-rule" aria-hidden="true" />
+      {renderAxis(core[0])}
+      {renderAxis(core[1])}
+      {renderAxis(declared[0], 'Declared for this recipe')}
+      {renderAxis(core[2])}
+      {renderAxis(core[3])}
+      {renderAxis(declared[1])}
+    </div>
+  );
+}
+
 // The batch's own row (sketch 003 variant B, 03.3-01; rebuilt to the full
 // battery in 03.3.1-02, the tasting section added in 03.3.1-03): the front
 // matter's second stacked row. One head line (Batch label, churned date,
@@ -123,6 +204,8 @@ export function BatchRow({
   formStatus = '',
   onChangeRecordField,
   onChangeSegment,
+  onChangeRecordMark,
+  onClearAxisMark,
   openPen = null,
   penReason = null,
   onStartAmending,
@@ -164,6 +247,10 @@ export function BatchRow({
   useEffect(() => {
     if (addTastingAttempt != null) tastedDateRef.current?.focus();
   }, [addTastingAttempt]);
+
+  // The axes' own arrangement (contract "Keyboard and tab order") — see
+  // useBelow760's own header comment for the node-environment guard.
+  const below760 = useBelow760();
 
   // The first-invalid-measurement focus (contract "Controls spec"): a ref
   // per battery field key, keyed by the constants in BATTERY_FIELDS —
@@ -332,6 +419,13 @@ export function BatchRow({
                     onInput={autoGrow}
                   />
                 </div>
+                <AxesGrid
+                  axes={axesForBatch({ snapshot: { declaredAxes: version.declaredAxes } })}
+                  marks={draft.marks}
+                  below={below760}
+                  onChangeMark={onChangeRecordMark}
+                  onClearMark={onClearAxisMark}
+                />
               </>
             )}
             {/* Ceremony A (D-01): after the tasting section when it is

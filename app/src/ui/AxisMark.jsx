@@ -1,55 +1,79 @@
-import { STOPS, markKeyFor } from '../domain/axes.js';
+import { useRef } from 'react';
+import { STOPS, stopWordsFor } from '../domain/axes.js';
 
-// The five-stop keyboard mark group (D-16, 02-RESEARCH.md Pattern 3;
-// STOPS narrowed to five whole values by 03.3.1-01's battery rewrite).
-// Native grouped radios are the whole mechanism: the browser already gives
-// the group arrow-key movement between stops, Home and End, one-click and
-// Space setting, and a single accessible name. No keydown handler, no
-// manual focus-index, and no hand-rolled radiogroup div — restyling the
-// native inputs (tokens.css) gets the hairline-ink look without
-// reimplementing keyboard semantics. That is untouched by the clear
-// control below: it is a separate control beside the group, sharing the
-// group's own onChange, not a tenth stop inside it.
+// The five-stop goldilocks track (D-16, contract "Axes spec"; rebuilt in
+// 03.3.1-03 Task 2 from the nine half-stop behavioural-anchor shape to the
+// battery's fixed six-axis table). Native grouped radios are the whole
+// mechanism: the browser already gives the group arrow-key movement
+// between stops, Home and End, one-click and Space setting, and a single
+// accessible name. No keydown handler, no manual focus-index, and no
+// hand-rolled radiogroup div — restyling the native inputs (tokens.css)
+// gets the hairline-ink look without reimplementing keyboard semantics
+// (Pitfall 5).
 //
-// No stop is checked by default: `value` is `undefined` for an unmarked
-// axis, which matches no stop, so nothing renders checked (D-16 — a half
-// step is a value, not a rounding, and an unmarked axis is not a three).
-// While a mark is present, a small text control offers to clear it
-// (G-02-6) — the only reversal path a mark has, since a controlled radio
-// group can never itself return to undefined.
-export function AxisMark({ axis, value, onChange }) {
-  const groupName = `axis-${markKeyFor(axis)}`;
+// `axis` is one row of domain/axes.js's AXES: { key, name, low, high,
+// group }. `value` is the marked stop (1–5) or `undefined` for an
+// unmarked axis — matching no stop, so nothing renders checked (D-16 — a
+// half step is retired; an unmarked axis is not a three). `onChange(stop)`
+// fires on a stop click: the same stop clicked again clears (click-again-
+// clears, contract "Blank stays blank"). `onClear()` fires only from the
+// explicit per-axis Clear control — the one path the contract's own
+// "{Axis name} cleared." announcement is wired to, kept out of onChange so
+// re-clicking a stop (a silent clear) can never also announce. Clear also
+// returns focus to the scale's first stop, held locally since this
+// component alone knows which DOM node that is.
+export function AxisMark({ axis, value, onChange, onClear, declaredCaption = null }) {
+  const nameId = `axis-name-${axis.key}`;
+  const groupName = `axis-${axis.key}`;
+  const words = stopWordsFor(axis);
+  const isMarked = value !== undefined;
+  const firstStopRef = useRef(null);
+
+  function handleStopClick(stop) {
+    onChange(value === stop ? null : stop);
+  }
+
+  function handleClear() {
+    onClear();
+    firstStopRef.current?.focus();
+  }
+
   return (
-    <fieldset className="axis-mark">
-      <legend className="axis-mark__legend">{axis.label}</legend>
-      <div
-        className="axis-mark__row"
-        role="group"
-        aria-label={`${axis.label}, ${axis.low} to ${axis.high}`}
-      >
-        <span className="axis-mark__anchor" aria-hidden="true">
-          {axis.low}
+    <div className="axis-mark">
+      {declaredCaption && <p className="axes-declared-caption">{declaredCaption}</p>}
+      <div className="axis-mark__head">
+        <span id={nameId} className="axis-mark__name">
+          {axis.name}
         </span>
-        {STOPS.map((stop) => (
-          <label key={stop} className="axis-mark__stop">
-            <input type="radio" name={groupName} value={stop} checked={value === stop} onChange={() => onChange(stop)} />
-            <span className="axis-mark__stop-label">{stop}</span>
-          </label>
-        ))}
-        <span className="axis-mark__anchor" aria-hidden="true">
-          {axis.high}
-        </span>
-        {value !== undefined && (
-          <button
-            type="button"
-            className="axis-mark__clear"
-            aria-label={`Clear ${axis.label} mark`}
-            onClick={() => onChange(null)}
-          >
+        <span className="axis-mark__state">{isMarked ? `(${value})` : '(Not recorded)'}</span>
+        {isMarked && (
+          <button type="button" className="axis-mark__clear" aria-label={`Clear ${axis.name}`} onClick={handleClear}>
             Clear
           </button>
         )}
       </div>
-    </fieldset>
+      <div className="axis-mark__stops" role="group" aria-labelledby={nameId}>
+        {STOPS.map((stop, index) => (
+          <label key={stop} className="axis-mark__stop">
+            <input
+              type="radio"
+              name={groupName}
+              value={stop}
+              checked={value === stop}
+              ref={index === 0 ? firstStopRef : undefined}
+              aria-label={`${stop}: ${words[index]}`}
+              onChange={() => {}}
+              onClick={() => handleStopClick(stop)}
+            />
+            <span aria-hidden="true">{stop}</span>
+          </label>
+        ))}
+      </div>
+      <div className="axis-mark__anchors" aria-hidden="true">
+        <span>{axis.low}</span>
+        <span>right</span>
+        <span>{axis.high}</span>
+      </div>
+    </div>
   );
 }

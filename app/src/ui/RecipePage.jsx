@@ -4,6 +4,7 @@ import { repository } from '../store/repository.js';
 import { buildFigures, figureLabelText } from '../domain/figures.js';
 import { createBatch, completeRecord, sortedBatches } from '../domain/batch.js';
 import { BATTERY_FIELDS, parseMeasuredDraft } from '../domain/battery.js';
+import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
 import {
   createChildVersion,
@@ -54,6 +55,19 @@ function asMadeMapsDiffer(a, b) {
     if (aValues.length !== bValues.length) return true;
     return aValues.some((value, i) => value !== bValues[i]);
   });
+}
+
+// The marks map compared by key set and, for a shared key, by its own
+// value (03.3.1-03 Task 2 — a Rule 1 fix to the key-count-only check
+// 03.3.1-02 shipped, back when no interactive path could ever change a
+// mark's value without also changing the key count): once the axes are
+// interactive, re-marking Hardness from 2 to 3 must read as ink even
+// though the marks object still holds exactly one key.
+function marksDiffer(a, b) {
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return true;
+  return aKeys.some((key) => !Object.prototype.hasOwnProperty.call(b, key) || a[key] !== b[key]);
 }
 
 // The step-changes map compared by key set and by both fields of each
@@ -132,7 +146,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
     draft.bitterDeclared !== baseline.bitterDeclared ||
     draft.meltTestG !== baseline.meltTestG ||
     draft.meltStyle !== baseline.meltStyle ||
-    Object.keys(draft.marks).length !== Object.keys(baseline.marks).length ||
+    marksDiffer(draft.marks, baseline.marks) ||
     draft.defects.length !== baseline.defects.length ||
     asMadeMapsDiffer(draft.asMade, baseline.asMade) ||
     stepChangesDiffer(draft.stepChanges, baseline.stepChanges)
@@ -862,6 +876,32 @@ export function RecipePage() {
     setDraft((prev) => ({ ...prev, [field]: prev[field] === value ? '' : value }));
   }
 
+  // An axis stop click (contract "Axes spec"): setMark's own
+  // presence-over-truthiness discipline handles both marking and
+  // click-again-clears (stop === null) — this handler never announces,
+  // since re-clicking a stop is a silent clear (only the per-axis Clear
+  // control announces, below).
+  function handleChangeRecordMark(axisKey, stop) {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setFormStatus('');
+    setDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, stop) }));
+  }
+
+  // The per-axis Clear control (contract "Axes spec", "Feedback and undo
+  // lifecycle"): clears the mark and announces "{Axis name} cleared." to
+  // form-status — the one path that writes this specific announcement,
+  // kept out of handleChangeRecordMark above so a stop's own click-again
+  // never also announces. Focus return to the axis's first stop is
+  // AxisMark's own concern (it holds the DOM ref); this handler owns only
+  // state and the announcement.
+  function handleClearAxisMark(axisKey, axisName) {
+    setFieldErrors({});
+    setBlockedDateMessage(null);
+    setDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, null) }));
+    announce(`${axisName} cleared.`);
+  }
+
   // Clearing both the strike and the line for a step removes that step's
   // key from the draft entirely (D-13/BATCH1-01): an untouched step must
   // never rest at { struck: false, line: null }, which would be
@@ -1368,6 +1408,8 @@ export function RecipePage() {
             formStatus={formStatus}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
+            onChangeRecordMark={handleChangeRecordMark}
+            onClearAxisMark={handleClearAxisMark}
             openPen={openPen}
             penReason={penReason}
             onStartAmending={handleStartAmending}

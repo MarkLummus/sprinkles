@@ -15,7 +15,7 @@ body { margin: 0; padding-top: 0; font-family: var(--face-grotesk); color: var(-
 #variant-nav button:hover { background: #444; }
 #variant-nav button.active { background: #f7f7f4; color: #141414; border-color: #f7f7f4; }
 #variant-nav .note { color: #aaa; margin-left: auto; }
-.frame { margin: 24px auto; background: var(--ground); outline: 1px dashed #b5b5ae; padding: var(--gap-xl); box-sizing: border-box; }
+.frame { margin: 24px auto; background: var(--ground); outline: 1px dashed #b5b5ae; padding: var(--gap-xl); box-sizing: border-box; } .recipe-placeholder { margin-top: var(--gap-l); padding: var(--gap-xl) var(--gap-m); border: 1px dashed #b5b5ae; color: #777; font: italic 12px/1.4 system-ui; text-align: center; } /* sketch chrome: stands in for the recipe between the record and the page foot */
 .ruler { position: absolute; right: -1px; top: 0; width: 1px; background: repeating-linear-gradient(to bottom, #c66 0 1px, transparent 1px 100px); }
 .ruler .mark { position: absolute; right: 4px; font: 10px/1 ui-monospace, Menlo, monospace; color: #c66; transform: translateY(-50%); }
 
@@ -51,18 +51,21 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 /* ---------- pen shell ---------- */
 .pen { max-width: 640px; }
 .pen section + section { margin-top: var(--gap-l); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink); }
-.pen section + .next-time-shared { margin-top: var(--gap-l); }
-.pen .saves { display: flex; gap: var(--gap-s); margin-top: var(--gap-l); }
+.pen section + .next-time-shared, .pen .saves + .next-time-shared { margin-top: var(--gap-l); }
+.pen .saves { display: flex; gap: var(--gap-s); margin-top: var(--gap-l); justify-content: flex-end; } /* right-aligned at every width (Mark, 2026-09-14) */ #undo-head-slot, #undo-record-slot { display: contents; } /* slots are not flex items: a hidden undo button leaves no gap */ #record-saves > #record-status { margin-right: auto; } /* the removal toast sits at the left of the end-of-record ceremony; Undo joins the right-aligned controls; the auto margin keeps them flush right even when the toast is empty */
 
 /* ---------- axis groups: core left, recipe-declared right of a vertical hairline ---------- */
 #axes { display: grid; grid-template-columns: 1fr; gap: 0 var(--gap-l); }
 .axes-core, .axes-declared { display: grid; grid-template-columns: 1fr; gap: 0 var(--gap-l); }
 .axes-declared { border-top: var(--rule-graduation) solid var(--ink); padding-top: var(--gap-s); }
+#axes .axes-cue { grid-column: 1 / -1; margin: 0 0 var(--gap-xs); } /* group captions span their group's grid */
 [data-cols="2"] .axes-core, [data-cols="2"] .axes-declared { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
 /* 3-column desktop: one row-major grid — tab order follows the eye; the declared column sits right of the hairline */
 @media (min-width: 761px) {
   [data-cols="3"] #axes { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0; position: relative; }
-  [data-cols="3"] .axis--declared { padding-left: var(--gap-s); }
+  [data-cols="3"] .axis--declared { padding-left: var(--gap-s); } [data-cols="3"] .axis:not(.axis--declared) { padding-right: var(--gap-m); } /* keeps a right-aligned Clear off the next column's caption */
+  [data-cols="3"] #axes .axes-cue--core { grid-column: 1 / 3; } [data-cols="3"] #axes .axes-cue--declared { grid-column: 3; padding-left: var(--gap-s); } /* caption row above the axes: columns 1–2 and column 3 */
+  [data-cols="3"] .defects-head { grid-column: 1 / 3; } [data-cols="3"] .defect-group--core { grid-column: 1 / 3; padding-right: var(--gap-m); } [data-cols="3"] .defect-group--declared { grid-column: 3; padding-left: var(--gap-s); border-top: 0; padding-top: 0; margin-top: 0; } /* the defects take the same columns as the axes */
   [data-cols="3"] .axes-rule { position: absolute; top: 0; bottom: 0; left: calc(200% / 3); border-left: var(--rule-graduation) solid var(--ink); pointer-events: none; }
 }
 
@@ -84,7 +87,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 .chip-toggle { border: var(--rule-ink-field) solid var(--ink); padding: 3px 10px; background: none; cursor: pointer; font-size: var(--size-small-print); margin: 0 6px 6px 0; }
 .chip-toggle.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); }
 .defect-chips { display: flex; flex-wrap: wrap; margin-top: 4px; }
-.declared-flaw { margin-left: var(--gap-m); }
+.defects-head { grid-column: 1 / -1; }
 
 /* ---------- tasting body: flex column, order toggled by variant ---------- */
 #tasting-body { display: flex; flex-direction: column; }
@@ -115,7 +118,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 .head { flex-wrap: wrap; }
 .category-row { display: flex; gap: var(--gap-l); flex-wrap: wrap; }
 .category { min-width: 0; max-width: 100%; }
-.seg { flex-wrap: wrap; }
+.seg { flex-wrap: wrap; row-gap: var(--gap-xs); } /* a wrapped option keeps clear of the row above (Mark, 2026-09-14) */
 .seg .opt { min-height: 32px; color: var(--ink); }
 .seg .opt.on { color: var(--ground); }
 .axis .stop5 { height: 32px; flex: 0 0 34px; }
@@ -124,8 +127,8 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 .prose-field::placeholder { color: var(--ink); opacity: 1; }
 .chip-toggle { min-height: 32px; color: var(--ink); }
 .chip-toggle.on { color: var(--ground); }
-[aria-checked="true"], [aria-pressed="true"].chip-toggle { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
-.text-control { min-height: 24px; }
+.defect-group--declared { border-top: var(--rule-graduation) solid var(--ink); padding-top: var(--gap-s); margin-top: calc(var(--gap-m) - 6px); } .defect-group .defect-chips { margin-top: 0; } /* 6px chip margin + 14px = the 20px the declared axes have above their rule */ /* stacked arrangements: the declared chips under the rule, like the declared axes; chips 6px under their cue */
+.text-control { min-height: 24px; } .axis .head .clear { margin-left: auto; margin-block: -4px; } /* right-aligned like Remove tasting; 24px hit box, 16px in flow, so the caption row never moves */
 [hidden] { display: none !important; }
 #form-status { margin-top: var(--gap-m); overflow-wrap: anywhere; }
 .field-error { display: block; max-width: 24ch; font-size: var(--size-small-print); margin-top: var(--gap-xs); }
@@ -152,7 +155,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 .region-name { font-size: var(--type-section); font-weight: 600; line-height: 1.35; letter-spacing: 0.035em; }
 .lbl { font-size: var(--type-label); font-weight: 500; line-height: 1.35; letter-spacing: 0.025em; }
 .axis .name { font-size: var(--type-label); font-weight: 600; letter-spacing: 0.025em; line-height: 1.35; }
-.axis .head { gap: var(--gap-xs); align-items: baseline; }
+.axis .head { gap: var(--gap-xs); align-items: center; }
 .axis .state, .axis .state.unmarked, .axis .state.pen {
   font-family: var(--face-grotesk); font-size: var(--type-label); font-style: normal;
   font-weight: 400; line-height: 1.35; font-variant-numeric: tabular-nums;
@@ -174,7 +177,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
   .axis .stop5 { width: 40px; height: 44px; flex: 0 0 40px; }
   .axis .stops5, .axis .anchors5 { width: 216px; }
   .chip-toggle, .seg .opt { min-height: 44px; }
-  .text-control { min-height: 44px; }
+  .text-control { min-height: 44px; } .axis .head .clear { margin-block: -10px; } /* 44px hit area, 24px in flow: picking a stop never moves the row */
   .btn { min-height: 44px; }
   .ink-field { min-height: 44px; }
 }
@@ -204,7 +207,7 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
 
   <div class="pen">
     <section class="churn">
-      <h2 class="region-name">Batch — churned</h2>
+      <h2 class="region-name">Batch</h2>
       <div class="field-row">
         <label class="f-date"><span class="lbl">Churn date</span><input class="ink-field num-field" type="date" value="2026-08-02"></label>
         <label><span class="lbl">Time to draw temp.</span><span class="field-unit"><input class="ink-field num-field"><span class="u">min</span></span></label>
@@ -231,20 +234,15 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
         </div>
       </div>
 
-      <label><span class="lbl">At the machine</span><textarea class="prose-field" rows="2"></textarea></label>
+      <label><span class="lbl">At the machine</span><textarea class="prose-field" rows="2" placeholder="e.g. bowl frozen overnight"></textarea></label>
       <label><span class="lbl">Ingredient notes</span><textarea class="prose-field" rows="2" placeholder="e.g. oil bottle opened 24 Jul"></textarea></label>
-
-      <div class="saves" style="align-items:baseline" id="churn-saves">
-        <button class="btn" onclick="announce('This is a sketch. Your entries have been kept; nothing was saved.')">Cancel</button>
-        <button class="btn" onclick="previewSave(this)">Save batch only</button>
-      </div>
     </section>
 
     <section class="tasting">
       <div class="head" style="margin-bottom:var(--gap-s)">
-        <h2 class="region-name" style="margin-bottom:0">Tasting <span class="helper">· optional</span> <span class="helper" id="tasting-hint">— leave anything you did not record blank</span></h2>
+        <h2 class="region-name" style="margin-bottom:0">Tasting</h2>
         <span class="helper" id="tasting-status" role="status" aria-live="polite"></span>
-        <span id="undo-head-slot"><button id="undo-tasting" class="text-control" hidden onclick="undoTasting()">Undo clear tasting</button></span>
+        <span id="undo-head-slot"><button id="undo-tasting" class="text-control" hidden onclick="undoTasting()">Restore tasting</button></span>
         <button class="text-control clear" id="tasting-toggle-btn" style="margin-left:auto" onclick="removeTasting()">Clear tasting</button>
       </div>
       <div id="tasting-body">
@@ -255,35 +253,40 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
         </div>
 
         <div class="note-block">
-          <label><span class="lbl">How did it turn out?</span><textarea class="prose-field" rows="2" placeholder="e.g. flavor, texture, anything that stood out"></textarea></label>
+          <label><span class="lbl">How did it turn out?</span><textarea class="prose-field" rows="2" placeholder="e.g. flavor, texture, what stood out"></textarea></label>
         </div>
 
         <div class="texture-block">
+          <!-- one grid for the axes and the defects: in the 3-column arrangement "This recipe only" is one column, rule and all, top to bottom (Mark, 2026-09-14) -->
           <div id="axes">
-            <div class="axes-core"></div>
-            <div class="axes-declared"></div>
-          </div>
-
-          <div class="defects-standalone">
-            <div class="head" style="margin-bottom:var(--gap-xs)">
-            <p class="lbl" style="margin:0">Any problems?</p>
-            <p class="helper" style="margin:0">select all that apply</p>
-          </div>
-            <div class="defect-chips" role="group" aria-label="Any problems? Select all that apply">
-              <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Coarse, icy</button>
-              <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Sandy, gritty</button>
-              <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Gummy, elastic</button>
-              <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Greasy film</button>
-              <button class="chip-toggle declared-flaw" aria-pressed="false" aria-label="Declared for this recipe: Bitter" onclick="toggleChip(this)">Bitter <span class="helper">· declared</span></button>
+            <div id="axes-rows" style="display:contents"></div>
+            <div class="head defects-head" style="margin-bottom:var(--gap-xs)">
+              <p class="lbl" style="margin:0" id="defects-caption">Any problems?</p>
+              <p class="helper" style="margin:0">select all that apply</p>
+            </div>
+            <div class="defect-group defect-group--core" role="group" aria-labelledby="defects-caption defects-core-cue">
+              <p class="lbl axes-cue" id="defects-core-cue">Every recipe</p>
+              <div class="defect-chips">
+                <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Coarse, icy</button>
+                <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Sandy, gritty</button>
+                <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Gummy, elastic</button>
+                <button class="chip-toggle" aria-pressed="false" onclick="toggleChip(this)">Greasy film</button>
+              </div>
+            </div>
+            <div class="defect-group defect-group--declared" role="group" aria-labelledby="defects-caption defects-declared-cue">
+              <p class="lbl axes-cue" id="defects-declared-cue">This recipe only</p>
+              <div class="defect-chips">
+                <button class="chip-toggle declared-flaw" aria-pressed="false" onclick="toggleChip(this)">Bitter</button>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="melt-block">
           <div class="field-row" style="align-items:flex-start">
-            <label><span class="lbl">Melt test (optional)</span><span class="field-unit"><input class="ink-field num-field"><span class="u">g lost at 20 min</span></span></label>
+            <label><span class="lbl">Melt test</span><span class="field-unit"><input class="ink-field num-field"><span class="u">g lost at 20 min</span></span></label>
             <div class="category">
-              <label><span class="lbl">Melt style (optional)</span></label>
+              <label><span class="lbl">Melt style</span></label>
               <div class="seg" id="seg-melt">
                 <button class="opt" data-v="weeping">Watery, weeping</button>
                 <button class="opt" data-v="puddle">Creamy puddle</button>
@@ -295,14 +298,19 @@ label:has(+ .seg) { margin-bottom: var(--gap-xs); }
       </div>
     </section>
 
-    <label class="next-time-shared"><span class="lbl">Next time</span><textarea class="prose-field" rows="2" placeholder="optional — for the batch, the tasting, or both"></textarea></label>
-
+    <!-- end-of-record ceremony (03.3.1 D-01): after the tasting when open, after the churn when not, just above Next time; identical to the foot set -->
+    <div class="saves" style="align-items:baseline" id="record-saves">
+      <span id="record-status" class="helper" role="status" aria-live="polite"></span><span id="undo-record-slot"></span>
+      <button class="text-control add-tasting" hidden onclick="addTasting()">Add tasting</button>
+      <button class="btn" onclick="announce('This is a sketch. Your entries have been kept; nothing was saved.')">Cancel</button> <button class="btn" onclick="previewSave(this)">Save batch</button>
+    </div>
+    <label class="next-time-shared"><span class="lbl">Next time</span><textarea class="prose-field" rows="2" placeholder="e.g. churn 2 min longer"></textarea></label>
+    <div class="recipe-placeholder" aria-hidden="true">the recipe — ingredients and steps — continues here; the ceremony below is the page foot</div>
     <p id="form-status" role="status" aria-live="polite"></p>
     <div class="saves" style="align-items:baseline">
+      <button class="text-control add-tasting" id="add-tasting-closed" hidden onclick="addTasting()">Add tasting</button>
       <button class="btn" onclick="announce('This is a sketch. Your entries have been kept; nothing was saved.')">Cancel</button>
-      <button id="save-combined" class="btn" onclick="previewSave(this)">Save batch &amp; tasting</button>
-      <button class="text-control" id="add-tasting-closed" hidden onclick="addTasting()">Add tasting</button>
-      <span id="undo-footer-slot"></span>
+      <button id="save-combined" class="btn" onclick="previewSave(this)">Save batch</button>
     </div>
   </div>
 </div>
@@ -396,8 +404,7 @@ function renderAxes() {
   const axisMarkup = (index) => {
     const [name, lo, mid, hi] = AXES[index];
     const words = [lo, `leaning ${lo}`, mid, `leaning ${hi}`, hi];
-    const cue = index === 4 ? '<p class="lbl" style="margin:0 0 var(--gap-xs)">Declared for this recipe</p>' : '';
-    return `<div class="axis${index >= 4 ? ' axis--declared' : ''}">${cue}
+    return `<div class="axis${index >= 4 ? ' axis--declared' : ''}">
       <div class="head"><span class="name" id="axis-${index}">${name}</span>
       <span class="state unmarked">(Not recorded)</span>
       <button class="text-control clear" hidden aria-label="Clear ${name}" onclick="clearAxis(this)">Clear</button></div>
@@ -405,9 +412,12 @@ function renderAxes() {
       <div class="anchors5" aria-hidden="true"><span>${lo}</span><span>${mid}</span><span>${hi}</span></div>
     </div>`;
   };
-  document.getElementById('axes').innerHTML = flat
-    ? [0, 1, 4, 2, 3, 5].map(axisMarkup).join('') + '<div class="axes-rule" aria-hidden="true"></div>'
-    : '<div class="axes-core">' + [0, 1, 2, 3].map(axisMarkup).join('') + '</div><div class="axes-declared">' + [4, 5].map(axisMarkup).join('') + '</div>';
+  // group captions on their own grid row, so no axis carries one and the first-row axes start level (Mark, 2026-09-14)
+  const cueCore = '<p class="lbl axes-cue axes-cue--core">Every recipe</p>';
+  const cueDeclared = '<p class="lbl axes-cue axes-cue--declared">This recipe only</p>';
+  document.getElementById('axes-rows').innerHTML = flat
+    ? cueCore + cueDeclared + [0, 1, 4, 2, 3, 5].map(axisMarkup).join('') + '<div class="axes-rule" aria-hidden="true"></div>'
+    : '<div class="axes-core">' + cueCore + [0, 1, 2, 3].map(axisMarkup).join('') + '</div><div class="axes-declared">' + cueDeclared + [4, 5].map(axisMarkup).join('') + '</div>';
   document.querySelectorAll('.stops5').forEach(wireRadioGroup);
   document.querySelectorAll('#axes .axis').forEach(axis => {
     const id = axis.querySelector('.name').id;
@@ -465,6 +475,13 @@ let clearedTasting = null;
 function forgetUndo() {
   clearedTasting = null;
   document.getElementById('undo-tasting').hidden = true;
+  renderAddTasting();
+}
+function renderAddTasting() {
+  // Add tasting stands beside both ceremonies while the tasting is absent (03.3.1.1 D-14) — except while a removed
+  // tasting can still be restored: Restore tasting takes its place, so the ceremony fits one row on a phone (Mark, 2026-09-14)
+  const closed = tastingMode === 'hidden' && !tastingOpen;
+  document.querySelectorAll('.add-tasting').forEach(b => { b.hidden = !closed || !!clearedTasting; });
 }
 let tastingMode = 'hidden';
 let tastingOpen = true;
@@ -483,18 +500,19 @@ function addTasting() {
   renderTastingVisibility();
   document.querySelector('#tasting-body input, #tasting-body textarea')?.focus();
   announce('');
+  document.getElementById('record-status').textContent = '';
 }
 function placeUndo() {
   const undo = document.getElementById('undo-tasting');
   const closed = tastingMode === 'hidden' && !tastingOpen;
-  const slot = document.getElementById(closed ? 'undo-footer-slot' : 'undo-head-slot');
+  const slot = document.getElementById(closed ? 'undo-record-slot' : 'undo-head-slot');
   if (slot && undo.parentElement !== slot) slot.appendChild(undo);
 }
 function renderTastingVisibility() {
   const closed = tastingMode === 'hidden' && !tastingOpen;
   document.querySelector('.tasting').hidden = closed;
-  document.getElementById('churn-saves').hidden = closed;
-  document.getElementById('add-tasting-closed').hidden = !closed;
+  // the end-of-record ceremony stays visible in every state (03.3.1 D-01)
+  renderAddTasting();
   const btn = document.getElementById('tasting-toggle-btn');
   btn.textContent = tastingMode === 'hidden' ? 'Remove tasting' : 'Clear tasting';
   btn.onclick = removeTasting;
@@ -504,7 +522,7 @@ function renderTastingVisibility() {
 }
 function updateSaveLabel() {
   const closed = tastingMode === 'hidden' && !tastingOpen;
-  document.getElementById('save-combined').textContent = closed ? 'Save batch' : 'Save batch & tasting';
+  // one save action, one label (03.3.1 D-01): both ceremonies read "Save batch" in every state; `closed` is kept for the callers
 }
 function resizeNote(field) {
   field.style.height = 'auto';
@@ -521,8 +539,8 @@ function removeTasting() {
     // hidden mode, empty tasting: collapse; there is nothing to undo
     tastingOpen = false;
     renderTastingVisibility();
-    document.getElementById('add-tasting-closed').focus();
-    announceTransient('Tasting removed.', 'form-status');
+    document.querySelector('.add-tasting').focus(); // the end-of-record ceremony's Add tasting, nearest the removed section
+    announceTransient('Tasting removed.', 'record-status');
     updateRuler();
     return;
   }
@@ -539,11 +557,11 @@ function removeTasting() {
   if (tastingMode === 'hidden') {
     tastingOpen = false;
     renderTastingVisibility();
-    document.getElementById('add-tasting-closed').focus();
-    announceTransient('Tasting removed. You can undo this.', 'form-status');
+    document.getElementById('undo-tasting').focus(); // Restore tasting stands where Add tasting was while the restore is pending
+    announceTransient('Tasting removed. You can restore it.', 'record-status');
   } else {
     document.getElementById('undo-tasting').focus();
-    announceTransient('Tasting cleared. You can undo this.', 'tasting-status');
+    announceTransient('Tasting cleared. You can restore it.', 'tasting-status');
   }
   updateRuler();
 }
@@ -559,6 +577,7 @@ function undoTasting() {
   document.getElementById('undo-tasting').hidden = true;
   document.getElementById('tasting-toggle-btn').focus();
   clearedTasting = null;
+  renderAddTasting();
   updateSaveLabel();
   announceTransient('Tasting restored.', 'tasting-status');
   updateRuler();
@@ -590,7 +609,7 @@ function previewSave(button) {
 }
 
 renderAxes();
-[['seg-exit', 'Exit consistency'], ['seg-overrun', 'Airiness (estimated)'], ['seg-melt', 'Melt style (optional)']].forEach(([id, label]) => {
+[['seg-exit', 'Exit consistency'], ['seg-overrun', 'Airiness (estimated)'], ['seg-melt', 'Melt style']].forEach(([id, label]) => {
   const group = document.getElementById(id);
   group.setAttribute('aria-label', label);
   wireRadioGroup(group);

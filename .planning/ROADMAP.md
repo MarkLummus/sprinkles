@@ -310,7 +310,7 @@ Plans:
 - The batch row's read side updates to the new battery: the measured cells for the new fields, the axis marks read as 1–5 goldilocks marks, the defects read, and absence labels per the Saying-absence rule
 - Print is Phase 4's, not this phase's — but the phase plan names which record fields Phase 4's batch-log page must print so PRINT's planning reads the final shape
 
-**Plans:** 6 plans
+**Plans:** 7 plans
 
 Plans:
 **Wave 1**
@@ -336,6 +336,10 @@ Plans:
 **Wave 6** *(blocked on Wave 5 completion)*
 
 - [ ] 03.3.1-06-PLAN.md — The responsive ladder as tokens and top-level @media blocks, the browser conformance pass against the structural contract at real widths, the P3 underline drop, and the print field list for Phase 4
+
+**Wave 7** *(gap closure, from 03.3.1-UAT.md)*
+
+- [ ] 03.3.1-07-PLAN.md — Gap closure (G-03.3.1-4): drop the tasting read view's caption summary span, which duplicated the per-axis cell grid immediately below it
 
 ### Phase 4: Prepare the next version for making
 

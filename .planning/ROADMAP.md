@@ -310,32 +310,32 @@ Plans:
 - The batch row's read side updates to the new battery: the measured cells for the new fields, the axis marks read as 1–5 goldilocks marks, the defects read, and absence labels per the Saying-absence rule
 - Print is Phase 4's, not this phase's — but the phase plan names which record fields Phase 4's batch-log page must print so PRINT's planning reads the final shape
 
-**Plans:** 6 plans
+**Plans:** 6/6 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 03.3.1-01-PLAN.md — The record's stored shape: the battery's AXES table and 5-stop words in `axes.js`, `battery.js` with `parseMeasuredDraft` and the field config, the one-save assembly (`createBatch` + `completeRecord`) replacing the retired tasting/amendment functions, `DB_VERSION` 5 and the narrowed validator, and the D-07 seed rewrite — with Mark's review of the rewritten records as the phase's blocking checkpoint (D-08)
+- [x] 03.3.1-01-PLAN.md — The record's stored shape: the battery's AXES table and 5-stop words in `axes.js`, `battery.js` with `parseMeasuredDraft` and the field config, the one-save assembly (`createBatch` + `completeRecord`) replacing the retired tasting/amendment functions, `DB_VERSION` 5 and the narrowed validator, and the D-07 seed rewrite — with Mark's review of the rewritten records as the phase's blocking checkpoint (D-08)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03.3.1-02-PLAN.md — The record pen's churn section and the one save: the pen state machine folds the tasting pen away, one save handler (create/complete, D-02/D-03/D-04), two identical ceremonies (D-01), press-to-block on the churn date (D-05), stay-in-place measured validation, the churn half of the read view
+- [x] 03.3.1-02-PLAN.md — The record pen's churn section and the one save: the pen state machine folds the tasting pen away, one save handler (create/complete, D-02/D-03/D-04), two identical ceremonies (D-01), press-to-block on the churn date (D-05), stay-in-place measured validation, the churn half of the read view
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 03.3.1-03-PLAN.md — The tasting section: Add tasting opens it focusing the Tasted date, variant A order, the six goldilocks axes with both arrangements and the matchMedia crossing, the defects chips with the declared toggle, the melt block
+- [x] 03.3.1-03-PLAN.md — The tasting section: Add tasting opens it focusing the Tasted date, variant A order, the six goldilocks axes with both arrangements and the matchMedia crossing, the defects chips with the declared toggle, the melt block
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 03.3.1-04-PLAN.md — Feedback and undo: the two live regions, the hidden-mode removal paths in the contract's words, the data-based undo that survives the axes re-render, scoped retirement, and the restore sequence
+- [x] 03.3.1-04-PLAN.md — Feedback and undo: the two live regions, the hidden-mode removal paths in the contract's words, the data-based undo that survives the axes re-render, scoped retirement, and the restore sequence
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 03.3.1-05-PLAN.md — The record reads as the battery: goldilocks read words "Soft (2)", the summary line, defects with the declared helper, the churned/tasted/changed dates, and the "changed" small print
+- [x] 03.3.1-05-PLAN.md — The record reads as the battery: goldilocks read words "Soft (2)", the summary line, defects with the declared helper, the churned/tasted/changed dates, and the "changed" small print
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 03.3.1-06-PLAN.md — The responsive ladder as tokens and top-level @media blocks, the browser conformance pass against the structural contract at real widths, the P3 underline drop, and the print field list for Phase 4
+- [x] 03.3.1-06-PLAN.md — The responsive ladder as tokens and top-level @media blocks, the browser conformance pass against the structural contract at real widths, the P3 underline drop, and the print field list for Phase 4
 
 ### Phase 4: Prepare the next version for making
 
@@ -380,7 +380,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
 | 3.3. The front-matter rows and the page in step order | 7/7 | Complete    | 2026-09-10 |
-| 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 0/TBD | Not started | - |
+| 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 6/6 | In Progress|  |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

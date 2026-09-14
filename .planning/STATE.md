@@ -3,17 +3,17 @@ gsd_state_version: "1.0"
 current_phase: 03.3.1
 current_phase_name: "The full battery: the record pen rebuilt from sketch 007 (INSERTED)"
 status: testing
-stopped_at: Phase 03.3.1 verified (human_needed) — awaiting Mark's UAT
-last_updated: "2026-09-13T19:15:00.000Z"
+stopped_at: Completed 03.3.1-07-PLAN.md (gap closure G-03.3.1-4)
+last_updated: "2026-09-14T01:00:39.180Z"
 last_activity: 2026-09-13
-last_activity_desc: Phase 03.3.1 all 6 plans executed, code review/security/UI-review gates passed, verified 28/29 (one gap closed post-verification, commit 2fb0aba); 4 human-verification items persisted to 03.3.1-UAT.md
-state_head: 40e366d
+last_activity_desc: Phase 03.3.1 all 6 plans executed, code review/security/UI-review gates passed, verified 28/29 (one gap closed post-verification, commit 2fb0aba); 4 human-verification items persisted to 03.3.1-UAT.md; gap G-03.3.1-4 (tasting caption's duplicate axis-word hint) closed via 03.3.1-07-PLAN.md, commit d8163c7
+state_head: d8163c75ef74ee5fe4026e920cc73e6d32db1614
 progress:
   total_phases: 8
   completed_phases: 1
-  total_plans: 50
+  total_plans: 44
   completed_plans: 44
-  percent: 14
+  percent: 13
 ---
 
 # Project State
@@ -30,9 +30,9 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 03.3.1 (The full battery: the record pen rebuilt from sketch 007 (INSERTED)) — AWAITING UAT
 Plan: 6 of 6 (all executed)
 Status: Verified (human_needed) — run /gsd-verify-work 03.3.1 to walk the 4 pending UAT items
-Last activity: 2026-09-13 — All 6 plans executed; code review (4 fixed, 1 false positive), security (15/15 threats closed), and UI review (15/20, advisory) gates passed; phase-goal verification scored 28/29 with one gap (pen width) found and fixed same-session (commit 2fb0aba); re-verified clean. 4 human-verification items (true-393px overflow, Add-tasting focus landing, D-02 removal-on-save reading, read-view stop-2/4 wording) persisted to 03.3.1-UAT.md, awaiting Mark.
+Last activity: 2026-09-13 — All 6 plans executed; code review (4 fixed, 1 false positive), security (15/15 threats closed), and UI review (15/20, advisory) gates passed; phase-goal verification scored 28/29 with one gap (pen width) found and fixed same-session (commit 2fb0aba); re-verified clean. 4 human-verification items (true-393px overflow, Add-tasting focus landing, D-02 removal-on-save reading, read-view stop-2/4 wording) persisted to 03.3.1-UAT.md, awaiting Mark. Gap closure G-03.3.1-4 (03.3.1-07-PLAN.md, from Mark's UAT rejection of the tasting caption's duplicate axis-word hint) executed and closed, commit d8163c7.
 
-Progress: [█░░░░░░░░░] 14% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
+Progress: [█░░░░░░░░░] 13% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
 ## Performance Metrics
 
@@ -98,6 +98,7 @@ Progress: [█░░░░░░░░░] 14% (3/4 phases; 27/27 plans in Phase
 | Phase 03.3 P05 | 5min | 2 tasks | 1 files |
 | Phase 03.3 P06 | ~1h54m elapsed (~15min automated) | 3 tasks | 10 files |
 | Phase 03.3 P07 | ~1h58m | 3 tasks | 6 files |
+| Phase 03.3.1 P07 | 15min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -180,6 +181,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.3]: [Phase 03.3, Plan 06] Deferred to Impeccable: how a maker expresses "edit this version" versus "fork this version" — the opener and save nomenclature (Next version / Cancel-Save as-Save) is unresolved as of 2026-09-10; not touched by this plan.
 - [Phase 03.3]: [Phase 03.3, Plan 07] Declined to invent a new "Oil bottle open" stored batch field, per the plan's own reversibility note; deferred to Impeccable.
 - [Phase 03.3]: [Phase 03.3, Plan 07] Closed G-03.3-3 (one "no batch yet" line) and the batch-row half of G-03.3-4 (head line, measured cells, tasting, foot controls match sketch 003 variant B); two checkpoint-feedback fixes (record-pen field sizing, churn-date/foot relocation) applied live during Task 3, confirmed by Mark 2026-09-10.
+- [Phase 03.3.1]: [Phase 03.3.1, Plan 07] Closed G-03.3.1-4: TastingReading's <h3> caption no longer derives a summary line from markedAxes/readMarkWord; the caption is bare 'Tasting' for every tasting, and the declared flaw still surfaces via the unchanged defects line.
 
 ### Pending Todos
 
@@ -249,6 +251,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-13T13:04:34.990Z
-Stopped at: Phase 03.3.1 context gathered
-Resume file: .planning/phases/03.3.1-the-full-battery-the-record-pen-rebuilt-from-sketch-007/03.3.1-CONTEXT.md
+Last session: 2026-09-14T01:00:39.074Z
+Stopped at: Completed 03.3.1-07-PLAN.md (gap closure G-03.3.1-4)
+Resume file: None

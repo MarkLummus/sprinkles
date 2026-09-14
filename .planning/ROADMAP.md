@@ -341,6 +341,39 @@ Plans:
 
 - [x] 03.3.1-07-PLAN.md — Gap closure (G-03.3.1-4): drop the tasting read view's caption summary span, which duplicated the per-axis cell grid immediately below it
 
+### Phase 03.3.1.1: Record pen conformance polish (INSERTED)
+
+**Goal:** Close the 18 untriaged UI gaps Mark logged during 03.3.1's UAT (393px-width session) between the shipped record pen/batch row and the sketch 007 / structural contract, without reopening any already-settled decision (D-01–D-24) or the just-closed G-03.3.1-4 caption fix.
+**Requirements**: None new — every item below is a conformance gap against `.claude/skills/sketch-findings-sprinkles/references/batch-record-tasting-battery-structure.md`, logged verbatim in `.planning/phases/03.3.1-the-full-battery-the-record-pen-rebuilt-from-sketch-007/03.3.1-UAT.md`'s "Untriaged Notes" section
+**Depends on:** Phase 03.3.1
+**Phase notes**: Source list (verbatim from 03.3.1-UAT.md, captured at the achieved ~579px width — the true 393px floor is a separate known page-shell issue, not in scope here):
+- Version section is too narrow; should flow between recipe description and Batch section
+- In Batch section, "Time to draw temp., min" caption wraps
+- Field text boxes for Time to draw temp, Out of machine, Churn duration are too big for the values
+- Exit consistency and Airiness segment controls have a hairline border not present in the sketch/contract; selected value is styled bold + underline instead of solid fill
+- The Add tasting opener is missing from the top Save ceremony section
+- On Tasting section caption, the hint is styled the same as "Tasting" (superseded — G-03.3.1-4 already dropped the hint entirely; verify no residual styling artifact remains)
+- Tempering min edit control is full width instead of sharing a row with Tasted date
+- Tasting temperature edit control is full width instead of sharing a row with Tasted date
+- Tabbing from "How did it turn out?" does not show focus on the first select under Hardness
+- Selected axis value (e.g. 1) is bold underline, unlike sketch/contract
+- Flaws under "Any problems?" are styled unlike sketch/contract
+- Melt test edit control is full width and should share a row with Melt Style
+- Melt style also has the outline — segmented control style is not like sketch/contract
+- Caption for "Next time?" is missing
+- In Ingredients section, the Ingredient section caption and Ingredients table heading overlap
+- Column 2 (notes) should flow after the ingredients table because the ingredient name column is too narrow and wraps too much
+- Batch row, Record Batch mode: sketch says "CHURN DATE", actual reads "Churned"
+- Batch row, Record Batch mode: sketch has the Remove tasting opener right-aligned on the row with the TASTING section caption; actual has it below the Tasting section caption, left-aligned
+- Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
+
+Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 03.3.1.1 to break down)
+
 ### Phase 4: Prepare the next version for making
 
 **Goal**: Maker can print the new version as a bench sheet, carry it to the kitchen, and match the printed sheet back to its version — with the whole develop loop operable by keyboard and recoverable

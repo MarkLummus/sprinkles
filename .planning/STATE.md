@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 4
-current_phase_name: Prepare the next version for making
+current_phase: 03.3.1.1
+current_phase_name: Record pen conformance polish
 status: planning
-stopped_at: Phase 03.3.1 complete, ready to plan Phase 4
-last_updated: "2026-09-14T01:14:32.176Z"
+stopped_at: Phase 03.3.1.1 inserted (urgent) - ready to plan
+last_updated: "2026-09-14T01:24:16.383Z"
 last_activity: 2026-09-13
-last_activity_desc: Phase 03.3.1 complete, transitioned to Phase 4
-state_head: a3b506323f5f7c610e87a261d99da1eaac9b25b0
+last_activity_desc: Inserted Phase 03.3.1.1 for untriaged UAT UI gaps; plan before resuming Phase 4
+state_head: 8b1c40a9fb620005a29b7ba18d6e0bf91361f3ef
 progress:
-  total_phases: 8
-  completed_phases: 2
+  total_phases: 9
+  completed_phases: 1
   total_plans: 45
   completed_plans: 45
-  percent: 25
+  percent: 11
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.3.1 — The full battery: the record pen rebuilt from sketch 007 (INSERTED)
+**Current focus:** Phase 03.3.1.1 — Record pen conformance polish (INSERTED)
 
 ## Current Position
 
-Phase: 4 — Prepare the next version for making
+Phase: 03.3.1.1 — Record pen conformance polish
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-13 — Phase 03.3.1 complete, transitioned to Phase 4
+Last activity: 2026-09-13 — Inserted Phase 03.3.1.1 for untriaged UAT UI gaps; plan before resuming Phase 4
 
-Progress: [███░░░░░░░] 25% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
+Progress: [█░░░░░░░░░] 11% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
 ## Performance Metrics
 
@@ -241,6 +241,7 @@ None yet.
 - Phase 03.1 inserted after Phase 3: The imprint and the binder — the 2026-09-08 Impeccable brief revisions: front-matter band, controls out of the spread, the pen reads as the page, the binder's control treatment, rules strike the parent figure, columns hold in every state (URGENT)
 - Phase 03.2 inserted after Phase 03.1: The portion and the lift — route-recipe.md revised twice on 2026-09-09; re-cut 2026-09-09 as the stored-shape half, the page rebuild moving to 03.3 (URGENT)
 - Phase 03.3 inserted after Phase 03.2: The front-matter rows and the page in step order — split out of the original 03.2 so the stored-shape migration is verified on its own (URGENT)
+- Phase 03.3.1.1 inserted after Phase 03.3.1: Record pen conformance polish: close the untriaged UI gaps from 03.3.1's UAT against sketch 007 (layout widths, control styling, caption casing/placement, missing captions, focus order) (URGENT)
 
 ## Deferred Items
 

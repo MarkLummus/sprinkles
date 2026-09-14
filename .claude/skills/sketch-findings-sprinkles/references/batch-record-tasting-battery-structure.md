@@ -327,3 +327,105 @@ Derived from the sketch HTML `.planning/sketches/007-full-battery/index.html` (6
 state applied by init at lines 608–610), the README's eight rounds (dated 2026-09-11/12, with
 browser verification the same days), and the sibling findings file
 `batch-record-tasting-battery.md`. Written 2026-09-12 for Phase 03.3.1.
+
+## Visual treatment (from the sketch CSS)
+
+Added 2026-09-14 by Phase 03.3.1.1 research (CONTEXT.md D-02). This section is the contract's
+visual layer: per control and caption, what the live sketch's `<style>` block declares, with
+`.planning/sketches/007-full-battery/index.html` line numbers (page shell lines are from
+`003-front-matter-rows/index.html` and say so). Since 03.3.1.1 D-01 the live sketch HTML — not
+this file — is the design authority; where a line below and the HTML ever disagree, the HTML
+governs. Line numbers are those of the working tree on 2026-09-14, which already carries the
+D-22 revision (see "Decided departures" at the end); every other line is unchanged from the
+committed sketch. The sketch's `<style>` block is a cascade: a later rule at equal or higher
+specificity overrides an earlier one, so each entry below gives the *computed* result and cites
+every line that contributes. Sketch chrome (`#variant-nav`, `.frame`, `.ruler`, lines 9–20, 106,
+133, 135) is not the design.
+
+**Tokens the sketch reads** (`.planning/sketches/themes/default.css`, a copy of the app's
+`tokens.css` values): `--ground #f7f7f4` (rgb 247 247 244), `--ink #141414` (rgb 20 20 20),
+`--pen-blue #1f3d7a` (rgb 31 61 122), `--bookcloth #33513b` (rgb 51 81 59); `--size-small-print`
+0.75rem, `--size-ink-field` 0.9375rem, `--size-table-body` 0.9375rem, `--size-deviation-words`
+0.8125rem, `--size-running-head` 0.75rem; `--gap-hair` 2px, `--gap-xs` 6px, `--gap-s` 12px,
+`--gap-m` 20px, `--gap-l` 32px, `--gap-xl` 48px; `--rule-ink-field` 1px, `--rule-graduation` 1px,
+`--rule-baseline` 1.5px; `--focus-outline-width` = `--rule-baseline`, `--focus-outline-offset` 2px.
+The sketch's own local type roles (lines 145–151): `--type-section` 0.875rem, `--type-label`
+0.75rem, `--type-control` 0.8125rem, `--type-note` 1rem, `--leading-note` 1.5. The app's
+`tokens.css` already carries all of these under the same names.
+
+**Universal rules:**
+
+- Focus ring (line 24): `.app *:focus-visible { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset) }` — 1.5px solid ink, 2px offset, on whatever element holds focus. Stops and segment options are `<button>`s in the sketch, so the ring draws on the visible box itself.
+- Forced colours (lines 140–142): `@media (forced-colors: active) { .on { outline: 2px solid Highlight } }` — the only outline any picked control ever carries.
+- `button, input, textarea { font: inherit }` (line 25): every control takes the `.app` face, size and line-height (grotesk, `--size-table-body`, 1.35; line 23) unless a rule below resizes it.
+- Transitions: none anywhere in the file (grep-verified 2026-09-14). Hover changes are instantaneous.
+- `[hidden] { display: none !important }` (line 129).
+
+**Captions:**
+
+- Field caption `.lbl` (line 36, overridden by line 153): `display: block`; `text-transform: uppercase`; `margin-bottom: var(--gap-xs)` (6px caption-to-content gap); computed `font-size: var(--type-label)` (12px), `font-weight: 500`, `line-height: 1.35`, `letter-spacing: 0.025em` (line 153 wins over line 36's 0.04em). Inside a `.field-row`, `.field-row label > span.lbl` (line 39, higher specificity) adds `display: flex; align-items: flex-end; white-space: normal; line-height: 1.2; min-height: 2.4em` — two lines of height are reserved so short and long captions in one row keep their fields on the same baseline.
+- Axis name `.axis .name` (line 73, overridden by line 154): uppercase; computed 12px (`--type-label`), weight 600, line-height 1.35, letter-spacing 0.025em.
+- Region name `.region-name` (line 31, overridden by line 152): grotesk; uppercase; `color: var(--bookcloth)`; `margin: 0 0 var(--gap-s)`; computed `font-size: var(--type-section)` (14px), weight 600, line-height 1.35, letter-spacing 0.035em. Used for "Batch — churned" (line 207) and "Tasting" (line 245, inline `margin-bottom: 0`).
+- Helper `.helper` (line 166): grotesk; `--type-control` (13px); line-height 1.4; weight 400; `font-style: normal`; `text-transform: none`; `letter-spacing: 0`; `color: var(--ink)`. Used for "· optional" and "— leave anything you did not record blank" (line 245), "select all that apply" (line 270), "· declared" (line 277), and the tasting status (line 246).
+- "Declared for this recipe" cue (line 399): a `p.lbl` with inline `margin: 0 0 var(--gap-xs)` — the same caption treatment as `.lbl` above.
+- Sketch 003 page-shell captions: `.cell .k` (003:87) `display: block; font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px` (weight inherits 400); `.vmeta dt` (003:76) small-print, uppercase, 0.04em, `padding-top: 2px`; table `th` (003:123) `--size-running-head`, uppercase, 0.04em, weight 400, `border-bottom-width: var(--rule-baseline)`; `.region-name` in 003 (003:36) is 0.04em weight 400 (007's typography pass, above, is the later value).
+
+**Field rows, date and numeric fields:**
+
+- `label` (line 34): `display: block; margin: 0 0 var(--gap-s)`. `label:has(+ .seg)` (line 35): `margin-bottom: var(--gap-xs)`.
+- `.field-row` (line 37): `display: flex; gap: var(--gap-s); flex-wrap: wrap; align-items: flex-end`. `.field-row label` (line 38): `flex: 0 0 auto` — every label sits at its own content width; a label that does not fit wraps to the next line whole. Below 600px (line 136): `.field-row label { max-width: 100% }`. The melt row overrides alignment inline: `style="align-items:flex-start"` (line 283).
+- `.f-date` (line 41): `width: 128px` on the *label*; its `input.num-field` (line 40: `width: 100%; box-sizing: border-box; text-align: right`) fills it, so the date field is 128px wide.
+- `.field-unit` (line 42): `display: flex; align-items: baseline; gap: 4px`. `.field-unit .num-field` (line 43): `width: 48px; flex: 0 0 auto`. `.field-unit .u` (line 44, 167): `font-size: var(--size-deviation-words)` (13px); `white-space: nowrap`; line-height 1.3. The unit word ("min", "°C", "g lost at 20 min") sits *after* the box, never in the caption.
+- `.ink-field` (line 32): grotesk; `--size-ink-field` (15px); tabular numerals; `color: var(--pen-blue)`; `border: var(--rule-ink-field) solid var(--ink)`; `border-radius: 0`; `background: none`; `padding: 2px 6px`. Below 600px (line 137): `font-size: 1rem`. Below 760px (line 179): `min-height: 44px`. No hover rule; focus is the universal ring.
+- Row grouping in the markup: churn row = Churn date (`.f-date`), Time to draw temp. (min), Out of machine (°C), Churn duration (min) in one `.field-row` (lines 208–213); tasting row = Tasted (`.f-date`), Tempering (min), Tasting temperature (°C) in one `.field-row` (lines 251–255); melt row = Melt test (g lost at 20 min) beside the Melt style `.category` in one `.field-row` (lines 283–293).
+- Malformed value: `[aria-invalid="true"]` (line 132) takes the focus ring's width/offset as an outline; `.field-error` (lines 131, 168): `display: block; max-width: 24ch; margin-top: var(--gap-xs)`, computed `--type-control`, weight 400, line-height 1.4, no transform.
+
+**Prose fields (`.prose-field`, lines 33, 123–124, 164–165, 137):** text face; `color: var(--pen-blue)`; `border: 0; border-bottom: 2px solid var(--ink)` (always, not only when empty); `background: none`; `padding: 2px 0`; `width: 100%`; `resize: none`; `box-sizing: border-box`; `field-sizing: content`; `overflow-wrap: anywhere`; `min-height: 1.4em`; `overflow-y: hidden`; computed `font-size: var(--type-note)` (16px), `line-height: var(--leading-note)` (1.5), `max-width: 70ch`; placeholder ink, opacity 1, italic. Below 600px: `font-size: 1rem`.
+
+**Buttons and text controls:**
+
+- `.btn` (line 27): grotesk; `--size-table-body`; ink; `background: none`; `border: var(--rule-ink-field) solid var(--ink)`; `border-radius: 0`; `padding: 6px 12px`. Hover (line 28): `border-width: 1.5px; padding: 5.5px 11.5px` (no layout shift). Below 760px (line 178): `min-height: 44px`. Used for Cancel / Save batch only (lines 238–239) and Cancel / Save batch & tasting (lines 302–303).
+- `.text-control` (lines 29–30, 128, 163, 177): grotesk; no background, border or padding; `text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px`; hover thickness 1.5px; `min-height: 24px`; computed `font-size: var(--type-control)` (13px), line-height 1.3, `white-space: nowrap`; below 760px `min-height: 44px`. Used for Remove tasting / Clear tasting (line 248, `style="margin-left:auto"` — right-aligned on the head row), Undo clear tasting (line 247), the per-axis Clear (line 403) and Add tasting (line 304).
+- Saves rows `.pen .saves` (line 55): `display: flex; gap: var(--gap-s); margin-top: var(--gap-l)`; inline `align-items: baseline` (lines 237, 301); below 600px `flex-wrap: wrap` (line 138).
+
+**Segmented options (`.seg .opt`):**
+
+- `.seg` (lines 47, 118): `display: flex; margin: 0 0 var(--gap-s); flex-wrap: wrap`.
+- `.seg .opt` (lines 48, 119, 161, 162): `border: var(--rule-ink-field) solid var(--ink)`; `background: none`; `margin-right: -1px` (adjacent options share one hairline); `min-height: 32px`; `color: var(--ink)`; computed `font-size: var(--type-control)` (13px), line-height 1.3, letter-spacing 0, `padding: 5px 8px` (line 48's `5px 10px` then line 162's `padding-inline: 8px`). No hover rule. Below 760px (line 176): `min-height: 44px`.
+- Picked `.seg .opt.on` (lines 49, 120): `background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); position: relative; z-index: 1` — the fill and the pen-blue border show edge to edge over the shared hairlines. No bold, no underline (line 127's former rule is gone; see departures).
+- The two churn categories sit side by side: `.category-row` (line 116) `display: flex; gap: var(--gap-l); flex-wrap: wrap`; `.category` (line 117) `min-width: 0; max-width: 100%` (markup lines 215–232). The caption above each is a `label > span.lbl` (lines 217, 225, 286) with the 6px gap from line 35.
+
+**Axis rows:**
+
+- `.axis` (line 71): `margin: 0 0 var(--gap-m); min-width: 0`. `.axis .head` (lines 72, 155; base `.head` line 70, wrap line 115): `display: flex; align-items: baseline; gap: var(--gap-xs); margin-bottom: var(--gap-xs); min-height: 24px; flex-wrap: wrap`.
+- State text `.axis .state` (lines 74–76, 122, 156–159): computed for *both* `.pen` and `.unmarked`: grotesk, `--type-label` (12px), `font-style: normal`, weight 400, line-height 1.35, tabular numerals. Marked "(N)" is `color: var(--pen-blue)` (line 75); unmarked "(Not recorded)" is `color: var(--ink)` (line 122 overrides line 76's `#777`) and *roman* (line 157 overrides line 76's italic). The older "muted italic" wording in this contract's "Axes spec" describes the pre-typography-pass sketch; the HTML's computed style is roman ink.
+- Track `.axis .stops5` (line 77): `display: flex; gap: 4px; width: 186px`; below 760px (line 175) `width: 216px`.
+- Stop `.axis .stop5` (lines 78, 121): `width: 34px; height: 32px` (line 121 raises line 78's 24px; `flex: 0 0 34px`); `box-sizing: border-box`; `border: 1px solid var(--ink)`; `background: none`; `padding: 0`; grotesk; `--size-ink-field` (15px); tabular numerals; `color: var(--ink)`. Hover (line 79): `border-width: 1.5px` (border-box, so no size change). Picked `.on` (line 80): `background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground)`. Below 760px (line 174): `width: 40px; height: 44px; flex: 0 0 40px`.
+- Anchors `.axis .anchors5` (lines 81, 122, 160, 175): `display: flex; justify-content: space-between; width: 186px` (216px below 760px); `margin-top: 2px`; `--size-deviation-words` (13px); `font-style: italic`; text face; `color: var(--ink)` (line 122 overrides `#555`); `white-space: nowrap`; line-height 1.3; letter-spacing 0.
+- Axes grid: desktop 3-column (lines 63–67, min-width 761px): `#axes { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0; position: relative }`; `.axis--declared { padding-left: var(--gap-s) }`; `.axes-rule` absolute, `left: calc(200% / 3)`, `border-left: var(--rule-graduation) solid var(--ink)`. Stacked (lines 58–61, 110–114): `.axes-core, .axes-declared { display: grid; gap: 0 var(--gap-l) }` with `grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr))`; `.axes-declared { border-top: var(--rule-graduation) solid var(--ink); padding-top: var(--gap-s) }`.
+
+**Defect chips and the declared toggle:**
+
+- `.defect-chips` (line 86): `display: flex; flex-wrap: wrap; margin-top: 4px`. Head row above it (lines 268–271): `.head` with inline `margin-bottom: var(--gap-xs)`; `p.lbl` and `p.helper` both `margin: 0`.
+- `.chip-toggle` (lines 84, 125, 161): `border: var(--rule-ink-field) solid var(--ink)`; `padding: 3px 10px`; `background: none`; `margin: 0 6px 6px 0` (6px between chips, 6px below each row); `min-height: 32px`; `color: var(--ink)`; computed `font-size: var(--type-control)` (13px), line-height 1.3, letter-spacing 0. No hover rule. Below 760px (line 176): `min-height: 44px`.
+- Pressed `.chip-toggle.on` (lines 85, 126): `background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground)`. No bold, no underline.
+- Declared toggle `.declared-flaw` (line 87): `margin-left: var(--gap-m)` (20px; with the preceding chip's 6px right margin the visible gap is 26px). Its text is "Bitter"; `aria-label="Declared for this recipe: Bitter"` (line 277).
+- The relocated helper (line 127, D-22): `.defect-chips > .helper { align-self: center; margin: 0 0 6px 0 }` — a sibling `<span class="helper">· declared</span>` immediately after the Bitter button (line 277), vertically centred on the chip row, no left margin.
+
+**Pen shell and section rhythm:**
+
+- `.pen` (line 52): `max-width: 640px`. `.pen section + section` (line 53): `margin-top: var(--gap-l); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink)`. `.pen section + .next-time-shared` (line 54): `margin-top: var(--gap-l)` and no rule above (the Next time field's own 2px underline is the only rule).
+- Tasting head (line 244): `.head` with inline `margin-bottom: var(--gap-s)`; the region name, its two helpers, the status span, the undo slot and the right-aligned toggle share one baseline row.
+- Tasting body (lines 90–95, 98–99): `#tasting-body { display: flex; flex-direction: column }`; variant A order: field-row (1), note block (2, `margin-bottom: var(--gap-m)`), texture block (3), melt block (5, `margin-top: var(--gap-m)`).
+- `#form-status` (lines 130, 169): `margin-top: var(--gap-m); overflow-wrap: anywhere`; computed `--type-control`, line-height 1.5, `max-width: 70ch`.
+
+**Touch targets below 760px (lines 171–180):** stops 40×44 on a 216px track; `.chip-toggle`, `.seg .opt`, `.text-control`, `.btn`, `.ink-field` all `min-height: 44px`. The 600px block (lines 134–139): frame padding `--gap-m`, `.field-row label { max-width: 100% }`, `.ink-field, .prose-field { font-size: 1rem }`, saves rows wrap.
+
+**Page shell (sketch 003, for the three page-shell items):** `.page` (003:47) `display: grid; grid-template-columns: 2fr 1fr; gap: var(--gap-l); padding: var(--gap-xl); align-items: start; grid-template-areas: 'front side-top' 'ingredients side' 'method side'`; stacked below a 1100px frame (003:48, toggled by `relayout()` at 003:510 when the frame is narrower than 1100): `grid-template-columns: 1fr; padding: var(--gap-m); gap: var(--gap-m); grid-template-areas: 'front' 'ingredients' 'side' 'method'` — column two follows the ingredient table, the method comes last. Every area carries `min-width: 0` (003:49–53). `.front` (003:49, 68): `container-type: inline-size; border-bottom: var(--rule-baseline) solid var(--ink); padding-bottom: var(--gap-m)`. `.row` (003:66–67): `padding-bottom: var(--gap-m); margin-bottom: var(--gap-m); border-bottom: var(--rule-graduation) solid var(--ink)`, none on the last row. `.row-version` (003:69): `grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr); gap: var(--gap-l); align-items: start`; `@container (max-width: 760px)` (003:71) collapses it and the open ceremony to `1fr`. `.headnote { max-width: var(--measure-prose) }` (003:70). `.vmeta dl` (003:75): `grid-template-columns: max-content 1fr; gap: var(--gap-hair) var(--gap-s)`; `.vmeta dd { min-width: 0 }` (003:81); `.acts` (003:79): flex, `gap: var(--gap-s)`, wrap, centre, `margin-top: var(--gap-s)`; `.btn, .text-control { white-space: nowrap }` (003:80). Batch cells `.cells` (003:86): `grid-template-columns: repeat(auto-fit, minmax(96px, max-content)); gap: var(--gap-s) var(--gap-l); margin: var(--gap-s) 0 0`; `.cell .v` (003:88) `--size-figure-value`, weight 700, pen blue, tabular; `.cell .v .u` (003:89) `--size-deviation-words`, weight 400; `.cell .plan` (003:90) block, small print, `margin-top: 2px`. Ingredients region: `h2.region-name` then the table (003:267–273); `table` (003:121) `border-collapse: collapse; width: 100%; table-layout: fixed`; `th, td` (003:122) `padding: 4px 6px; box-sizing: border-box; vertical-align: baseline; border-bottom: var(--rule-graduation) solid var(--ink)`; columns (003:126) `col.c-num 94px`, `col.c-step 78px`, `col.c-data 86px`, the name column unsized.
+
+**Decided departures (CONTEXT.md, Phase 03.3.1.1):** the live sketch already carries the first three (uncommitted working tree, 2026-09-14, pending Mark's review in the D-22 session):
+
+- **D-04** — the sketch's `[aria-checked="true"], [aria-pressed="true"].chip-toggle { font-weight: 700; text-decoration: underline; … }` rule (formerly line 127) is removed; picked or pressed state is the fill alone (lines 49, 80, 85), nothing bold, nothing underlined, app-wide. The "Keyboard and tab order" section's sentence "the pressed affordance is bold plus underline" is superseded by this.
+- **D-08** — the "· declared" helper is no longer inside the Bitter button; it is a sibling `<span class="helper">` after it (line 277), styled by line 127. The "Controls spec" wording "with the visible '· declared' helper suffix" now means this sibling.
+- **D-12** — "(optional)" is dropped from the Melt test and Melt style captions (lines 284, 286) and from the `seg-melt` aria-label (line 593): the captions read "Melt test" and "Melt style". The "DOM order inventory" and "Controls spec" strings "Melt test (optional)" / "Melt style (optional)" are superseded.
+- **Not a sketch change, but a known app-side difference the conformance pass must pre-declare** (03.3.1 D-01, closed): the sketch hides the churn saves row while the tasting section is absent (line 496) and labels the two saves "Save batch only" / "Save batch & tasting" while it is open (lines 239, 507); the app shows one identical "Cancel | Save batch" ceremony at both positions, with Add tasting beside both while the section is absent (03.3.1.1 D-14).

@@ -310,7 +310,7 @@ Plans:
 - The batch row's read side updates to the new battery: the measured cells for the new fields, the axis marks read as 1–5 goldilocks marks, the defects read, and absence labels per the Saying-absence rule
 - Print is Phase 4's, not this phase's — but the phase plan names which record fields Phase 4's batch-log page must print so PRINT's planning reads the final shape
 
-**Plans:** 7/7 plans executed
+**Plans:** 7/7 plans complete
 
 Plans:
 **Wave 1**
@@ -384,7 +384,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.1. The imprint and the binder | 5/5 | Complete    | 2026-09-09 |
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
 | 3.3. The front-matter rows and the page in step order | 7/7 | Complete    | 2026-09-10 |
-| 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 6/6 | In Progress|  |
+| 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 7/7 | Complete    | 2026-09-13 |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

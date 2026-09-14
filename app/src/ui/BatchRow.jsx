@@ -196,34 +196,26 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark }) {
 // "Axes spec"/"Controls spec"): the read view's own rendering of the
 // single stored tasting — only the marked axes, each as its goldilocks
 // word with the stop number (readMarkWord, "Soft (2)" style, D-04's
-// battery); the tasting-head summary line (the marked axes' tokens then
-// the declared flaw's lowercase word, joined by " · ", rendering only
-// when at least one token exists); the tasting's own measured cells
-// (temperature signed, melt test with its own unit, melt style as its
-// picked words); the defects as a line of the picked words with the
-// declared flaw carrying "· declared" (never a plain defect — Bitter is
-// never in the defects list itself); and the note as prose. No aggregate,
-// average, or overall figure is ever derived (D12) — an unmarked axis is
-// dropped entirely, never a blank judgment. The caller renders this only
-// while `batch.tasting` exists; a batch with none reads its own
-// silence-is-a-value sentence instead (BatchRow's read view, below).
+// battery); the tasting's own measured cells (temperature signed, melt
+// test with its own unit, melt style as its picked words); the defects as
+// a line of the picked words with the declared flaw carrying "· declared"
+// (never a plain defect — Bitter is never in the defects list itself);
+// and the note as prose. No aggregate, average, or overall figure is ever
+// derived (D12) — an unmarked axis is dropped entirely, never a blank
+// judgment. The caller renders this only while `batch.tasting` exists; a
+// batch with none reads its own silence-is-a-value sentence instead
+// (BatchRow's read view, below).
 function TastingReading({ batch }) {
   const axes = axesForBatch(batch);
   const marks = batch.tasting.marks;
   const markedAxes = axes.filter((axis) => marks[axis.key] != null);
-  const summaryTokens = markedAxes.map((axis) => `${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`);
-  if (batch.tasting.bitterDeclared) summaryTokens.push(DECLARED_FLAW.toLowerCase());
-  const summaryLine = summaryTokens.join(' · ');
   const defectWords = [
     ...(batch.tasting.defects ?? []),
     ...(batch.tasting.bitterDeclared ? [`${DECLARED_FLAW} · declared`] : []),
   ];
   return (
     <div className="tasting-reading">
-      <h3>
-        Tasting
-        {summaryLine && <span className="tasting-reading__summary"> · {summaryLine}</span>}
-      </h3>
+      <h3>Tasting</h3>
       <p className="batch-row__dates">
         {`tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`}
       </p>

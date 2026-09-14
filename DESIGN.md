@@ -129,7 +129,7 @@ A recipe reads as a recipe first. The formulation and the batch record are the s
 
 The world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. The text face carries true italics for headnote and method prose; the grotesk carries tabular numerals for every table and figure; one bookcloth green names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.
 
-Since the contract was written, the page has grown its instruments and they all obey the binder: every control is drawn by the page — ink at hairline weight, no fill, no radius, no icon — never inherited from the browser. State is carried three proven ways and no others: a picked or open thing turns **weight and outline** (pressed, current, marked); a recorded thing turns **pen blue**; and the maker's not-in-force things take **one ink strike**. Below 760px the page's one media block grows interactive targets toward 44px; it changes nothing else.
+Since the contract was written, the page has grown its instruments and they all obey the binder: every control is drawn by the page — ink at hairline weight, no fill at rest, no radius, no icon — never inherited from the browser. State is carried three proven ways and no others: a picked or pressed thing **fills pen blue** with the paper's colour for its text (a marked stop, a chosen segment, a pressed chip or toggle, a checked box) — the fill alone carries it, with no change of weight and no underline, and under forced colours, where backgrounds are stripped, an ink outline stands in; a recorded thing turns **pen blue**; and the maker's not-in-force things take **one ink strike**. (Revised 2026-09-14 with sketch 007, Phase 03.3.1.1: the earlier "weight and outline" picked state is retired everywhere; the record pen carries the rule first and the page's other pressed controls follow.) Below 760px the page's one media block grows interactive targets toward 44px; it changes nothing else.
 
 Density is generous. One heavy element per view, wide gutters between regions, and no motion on entrance.
 
@@ -137,8 +137,8 @@ Density is generous. One heavy element per view, wide gutters between regions, a
 - Book-spread layout behind a two-row front-matter band, each block wearing its plain-language name as a running head.
 - Four colour roles and nothing else: paper, ink, pen, bookcloth.
 - Serif for prose, grotesk with tabular numerals for anything counted.
-- The binder: page-drawn controls, hairline ink, no fill, no radius, no icon.
-- State is weight and outline; the record is pen blue; "not in force" is one strike.
+- The binder: page-drawn controls, hairline ink, no fill at rest, no radius, no icon.
+- A picked thing fills pen blue; the record is pen blue; "not in force" is one strike.
 - Balance stated as a tick on a graduated rule and a deviation in words; no colour verdict.
 - Print-native: what the screen shows is what the sheet prints, minus the instruments.
 
@@ -218,7 +218,7 @@ The convention is now proven across the page: a marked table row, the open batch
 
 ## Shapes
 
-Square everywhere. No radius token exists and no element carries a rounded corner. Borders are ink at hairline weight: buttons and fields carry a 1px border with no fill, the table has a 1.5px rule under every row and header, the focus outline is 1.5px ink offset 2px outside the element. The graduated rule is drawn in SVG as straight lines and a 45° hatch at 4px pitch with a 1.2px stroke.
+Square everywhere. No radius token exists and no element carries a rounded corner. Borders are ink at hairline weight: buttons and fields carry a 1px border with no fill at rest (a picked control fills pen blue edge to edge, its border turning pen blue with it), the table has a 1.5px rule under every row and header, the focus outline is 1.5px ink offset 2px outside the element. The graduated rule is drawn in SVG as straight lines and a 45° hatch at 4px pitch with a 1.2px stroke.
 
 The component character Mark chose is **working binder**: warmer and hand-touched, with room for the pen's blue wherever the maker's hand appears. Softer edges are permitted for future controls but not yet realised: there is no radius token, so a builder who wants one adds it to `tokens.css` first and applies it only to interactive elements, never to tables, rules, chips, or anything that prints.
 
@@ -226,22 +226,23 @@ Browser chrome is redrawn, not accepted: the select's arrow is replaced by two C
 
 ## Components
 
-Components feel like a working binder: printed pages a person actually writes on, with drawn controls in the margins. Every control is ink at hairline weight with no fill; state is a change of weight or an outline, and the record's own ink is pen blue.
+Components feel like a working binder: printed pages a person actually writes on, with drawn controls in the margins. Every control is ink at hairline weight with no fill at rest; a picked or pressed control fills pen blue with paper-coloured text, and the record's own ink is pen blue.
 
 ### Region name
 - **Style:** the section role in bookcloth, uppercase, tracked 0.04em, 6px beneath it. Every region (Headnote, Ingredients, Method, Balance, Batch) wears one as its first child.
 - **Rule:** the only place bookcloth appears.
 
 ### The binder (buttons, selects, checkboxes)
-- **Shape:** square, 1px ink border, no fill, no icon — drawn by the page, never inherited from the browser. Written as bare element rules so every control on every page inherits it without being designed.
+- **Shape:** square, 1px ink border, no fill at rest, no icon — drawn by the page, never inherited from the browser. Written as bare element rules so every control on every page inherits it without being designed.
+- **Picked / pressed:** the box fills pen blue, border and all, and its text turns the paper's colour; nothing else changes — no bold, no underline. Adjacent options of a segmented control share one hairline border and the picked one sits on top. Under `forced-colors: active` an ink outline replaces the fill.
 - **Hover:** the border thickens to the baseline weight (1.5px) with compensating padding, so the box never changes size. Weight, never position or hue.
 - **Disabled:** a dashed border, and a hint sentence in words beside the control stating why — a disabled control states its reason, never only appears dim.
-- **Text control** (`.text-control`): the underline-only opt-out for named per-step and per-row controls — no border, a 1px ink underline that thickens to 1.5px on hover, small print. The pressed state of a text-control toggle is bold plus the 1px outline.
+- **Text control** (`.text-control`): the underline-only opt-out for named per-step and per-row controls — no border, a 1px ink underline that thickens to 1.5px on hover, small print. The pressed state of a text-control toggle is the same pen-blue fill as every other picked thing (the earlier bold-plus-outline pressed state is retired; the page's existing text toggles follow after Phase 03.3.1.1).
 - **Select:** the binder box with a drawn two-triangle chevron; the dropdown list stays the browser's.
-- **Checkbox:** a 13px ink square, filled ink when checked; its label names it ("Step 3, skipped").
+- **Checkbox:** a 13px ink square, filled pen blue when checked; its label names it ("Step 3, skipped").
 
 ### Fields
-- **Ink field** (`.ink-field`): anything counted that the maker types. Hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, sized to what it holds — a date at 12ch, a short figure at 6ch — never the column.
+- **Ink field** (`.ink-field`): anything counted that the maker types. Hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, sized to what it holds — a date at the date-field width token (128px), a short figure at the numeric-field width token (48px) with its unit word set beside the box — never the column. A row of fields wraps as a flex row with the small gap, each label at its content's width.
 - **Prose field** (`.prose-field`): the maker's words editing in place as the printed paragraph — no border at rest, pen blue text in the text face at the paragraph's own size, growing with its text (`field-sizing: content`), no resize grip. A blank named prose field carries a hairline baseline so the writable spot is findable.
 - **Prose text** (`.prose-text`): the record's saved words, the same text face and leading as the field it was typed in, still pen blue.
 - **Focus:** the one global `:focus-visible` rule — 1.5px ink outline, offset 2px. Nothing moves.

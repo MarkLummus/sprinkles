@@ -799,7 +799,7 @@ describe('BatchRow — silence stays a value for an untasted batch', () => {
 // read view's own rendering of the single stored tasting — the seeded
 // batch marks sweetness and oil at stop 4, both high anchors, with Bitter
 // declared and no defects picked (D-07).
-describe('BatchRow — the tasting read view, goldilocks words and the summary line (contract "Axes spec", brief § 3)', () => {
+describe('BatchRow — the tasting read view, goldilocks words (contract "Axes spec", brief § 3)', () => {
   it('renders only the marked axes as cells, each "{word} (n)" via readMarkWord — sweetness "more (4)", oil "strong (4)"', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toMatch(
@@ -817,9 +817,10 @@ describe('BatchRow — the tasting read view, goldilocks words and the summary l
     }
   });
 
-  it('carries the tasting-head summary line: the marked axes\' tokens then the declared flaw\'s lowercase word, joined by " · "', () => {
+  it('renders the caption as bare "Tasting" with no summary span, even with marked axes and a declared flaw', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toContain('<span class="tasting-reading__summary"> · more (4) · strong (4) · bitter</span>');
+    expect(markup).not.toContain('tasting-reading__summary');
+    expect(markup).toMatch(/<h3>\s*Tasting\s*<\/h3>/);
   });
 
   it('renders no summary line span when nothing is marked and nothing is declared', () => {

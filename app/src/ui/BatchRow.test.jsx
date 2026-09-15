@@ -603,11 +603,13 @@ describe('BatchRow — the melt block (sketch 007 lines 285-297; UAT item 12; D-
     }
   });
 
-  it('renders the melt block as one top-aligned field row holding Melt test before the Melt style fieldset', () => {
+  it('renders the melt block as one top-aligned field row holding Melt test before the Melt style segmented field', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).toContain('class="field-row field-row--start"');
     const meltTestIndex = markup.indexOf('<span class="pen-caption">Melt test</span>');
-    const meltStyleIndex = markup.indexOf('<legend class="pen-caption">Melt style</legend>');
+    const meltStyleIndex = markup.indexOf(
+      '<span class="segmented-field__caption pen-caption" id="segment-melt-style-caption">Melt style</span>',
+    );
     expect(meltTestIndex).toBeGreaterThanOrEqual(0);
     expect(meltStyleIndex).toBeGreaterThan(meltTestIndex);
   });
@@ -757,6 +759,30 @@ describe('BatchRow — the two segmented controls (contract "Controls spec")', (
     });
     const checkedInput = markup.match(/<input[^>]*value="Wet, soupy"[^>]*\/>/)[0];
     expect(checkedInput).toContain('checked=""');
+  });
+
+  it('renders the caption line for all three segmented controls once the tasting is open, with no Clear until something is picked', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    const headOccurrences = markup.split('class="segmented-field__head"').length - 1;
+    expect(headOccurrences).toBe(3);
+    const captionSpans = markup.match(
+      /<span class="segmented-field__caption pen-caption" id="[^"]+">([^<]*)<\/span>/g,
+    ) ?? [];
+    const captionTexts = captionSpans.map((span) => span.replace(/^.*">/, '').replace('</span>', ''));
+    expect(captionTexts).toEqual(['Exit consistency', 'Airiness (estimated)', 'Melt style']);
+    expect(markup).not.toContain('segmented-field__clear');
+  });
+
+  it('renders the Clear control for Exit consistency exactly once, with its own aria-label, once picked', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true, exitConsistency: 'Wet, soupy' },
+    });
+    const occurrences = markup.split('aria-label="Clear Exit consistency"').length - 1;
+    expect(occurrences).toBe(1);
   });
 });
 

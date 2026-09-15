@@ -93,23 +93,6 @@ function MeasuredField({ field, value, error, onChange, inputRef }) {
   );
 }
 
-// One of the battery's three segmented controls (contract "Controls
-// spec"), wrapped in its own labelled field — the visible legend is this
-// wrapper's own job; Segmented.jsx (one home, three uses: Exit
-// consistency, Airiness (estimated), Melt style (optional)) owns the
-// radiogroup itself, including click-again-clears. `onPick` receives
-// whatever Segmented passes through — the picked option, or null when the
-// checked option was clicked again — so the caller decides how a null is
-// stored (D-10 "Blank stays blank").
-function SegmentedField({ legend, options, value, onPick }) {
-  return (
-    <fieldset className="batch-margin__field">
-      <legend className="pen-caption">{legend}</legend>
-      <Segmented groupLabel={legend} options={options} value={value} onChange={onPick} />
-    </fieldset>
-  );
-}
-
 // Textareas grow with their content (contract "Textareas"): height re-fits
 // to the scroll height on every input, rather than clipping or scrolling
 // internally.
@@ -311,6 +294,7 @@ export function BatchRow({
   restoreAttempt = null,
   onChangeRecordField,
   onChangeSegment,
+  onClearSegment,
   onChangeRecordMark,
   onClearAxisMark,
   onChangeDefect,
@@ -474,17 +458,19 @@ export function BatchRow({
                 />
               ))}
             </div>
-            <SegmentedField
-              legend="Exit consistency"
+            <Segmented
+              groupLabel="Exit consistency"
               options={SEGMENT_OPTIONS.exitConsistency}
               value={draft.exitConsistency}
-              onPick={(option) => onChangeSegment('exitConsistency', option)}
+              onChange={(option) => onChangeSegment('exitConsistency', option)}
+              onClear={() => onClearSegment('exitConsistency', 'Exit consistency')}
             />
-            <SegmentedField
-              legend="Airiness (estimated)"
+            <Segmented
+              groupLabel="Airiness (estimated)"
               options={SEGMENT_OPTIONS.airiness}
               value={draft.airiness}
-              onPick={(option) => onChangeSegment('airiness', option)}
+              onChange={(option) => onChangeSegment('airiness', option)}
+              onClear={() => onClearSegment('airiness', 'Airiness (estimated)')}
             />
             {/* The hairline-baseline fix (03.1 Gap 2 override): a blank
                 named prose field carries a graduation-weight rule until
@@ -678,11 +664,12 @@ export function BatchRow({
                         fieldRefs.current.meltTestG = el;
                       }}
                     />
-                    <SegmentedField
-                      legend="Melt style"
+                    <Segmented
+                      groupLabel="Melt style"
                       options={SEGMENT_OPTIONS.meltStyle}
                       value={draft.meltStyle}
-                      onPick={(option) => onChangeSegment('meltStyle', option)}
+                      onChange={(option) => onChangeSegment('meltStyle', option)}
+                      onClear={() => onClearSegment('meltStyle', 'Melt style')}
                     />
                   </div>
                 </div>

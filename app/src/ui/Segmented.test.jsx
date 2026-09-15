@@ -1,12 +1,13 @@
 // Segmented — the battery's one 3-way control (contract "Controls spec"),
-// shared by Exit consistency, Airiness (estimated), and Melt style
-// (optional): one component, three uses, per 03.3.1-03 Task 1's own
-// artifact list. In the existing house style: renderToStaticMarkup
-// (react-dom/server), the node test environment, no jsdom, no
-// testing-library, no click driver — a joined group is a radio
-// (007 @ 2a212be line 362), picking is final, and that is structural
-// (onClick, not onChange) and is verified in the browser (RESEARCH.md
-// Pitfall 4's sibling discipline for interaction-only behavior).
+// shared by Exit consistency, Airiness (estimated), and Melt style: one
+// component, three uses, now owning its own caption line and Clear too
+// (007 @ 2a212be lines 220, 228, 289; Plan 04). In the existing house
+// style: renderToStaticMarkup (react-dom/server), the node test
+// environment, no jsdom, no testing-library, no click driver — a joined
+// group is a radio (007 line 362), picking is final, and that is
+// structural (onClick, not onChange) and is verified in the browser
+// (RESEARCH.md Pitfall 4's sibling discipline for interaction-only
+// behavior).
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Segmented } from './Segmented.jsx';
@@ -61,5 +62,41 @@ describe('Segmented — the one component all three groups use (contract "Contro
     for (const option of MELT_OPTIONS) {
       expect(markup).toContain(option);
     }
+  });
+});
+
+describe('Segmented — the caption line with its Clear (007 lines 220, 228, 289; Pitfall 11)', () => {
+  it('opens with the caption line, then the radiogroup, in that DOM order', () => {
+    const markup = renderToStaticMarkup(
+      <Segmented groupLabel="Exit consistency" options={EXIT_OPTIONS} value="" onChange={noop} onClear={noop} />,
+    );
+    expect(markup.startsWith(
+      '<div class="segmented-field"><div class="segmented-field__head">' +
+        '<span class="segmented-field__caption pen-caption" id="segment-exit-consistency-caption">Exit consistency</span>',
+    )).toBe(true);
+    const headIndex = markup.indexOf('class="segmented-field__head"');
+    const radiogroupIndex = markup.indexOf('role="radiogroup"');
+    expect(radiogroupIndex).toBeGreaterThan(headIndex);
+  });
+
+  it('renders no Clear when nothing is picked', () => {
+    const markup = renderToStaticMarkup(
+      <Segmented groupLabel="Exit consistency" options={EXIT_OPTIONS} value="" onChange={noop} onClear={noop} />,
+    );
+    expect(markup).not.toContain('segmented-field__clear');
+  });
+
+  it('renders the Clear control, between the caption and the radiogroup, once an option is picked', () => {
+    const markup = renderToStaticMarkup(
+      <Segmented groupLabel="Exit consistency" options={EXIT_OPTIONS} value="Wet, soupy" onChange={noop} onClear={noop} />,
+    );
+    const clearMatch = markup.match(
+      /<button type="button" class="text-control segmented-field__clear" aria-label="Clear Exit consistency">Clear<\/button>/,
+    );
+    expect(clearMatch).not.toBeNull();
+    const captionIndex = markup.indexOf('segmented-field__caption');
+    const radiogroupIndex = markup.indexOf('role="radiogroup"');
+    expect(clearMatch.index).toBeGreaterThan(captionIndex);
+    expect(clearMatch.index).toBeLessThan(radiogroupIndex);
   });
 });

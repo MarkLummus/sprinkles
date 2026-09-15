@@ -368,11 +368,16 @@ Plans:
 - Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
 
 Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
-**Plans:** 0 plans
+**Plans:** 6 plans
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 03.3.1.1 to break down)
+- [ ] 03.3.1.1-01-PLAN.md — Page shell against sketch 003: the stack below 1100, the version row's collapse, the 393 overflow, Correct on the Batch head line, aria-controls, the recorded figure, text controls at the control size
+- [ ] 03.3.1.1-02-PLAN.md — The pen's captions, field rows, widths and words against sketch 007: uppercase captions, the churn/tasting/melt rows, 128px/56px fields with the unit beside, the bare tasting head, Next time, placeholders, no "(optional)"
+- [ ] 03.3.1.1-03-PLAN.md — The shared control rules: pen-blue fill when picked, 2px ring on the box, 2px hover, forced-colours fill, the defect as a square and a word, joined stops, the caption line that reserves Clear, and the radio rule
+- [ ] 03.3.1.1-04-PLAN.md — The segmented caption line with Clear on all three controls; the defects as two labelled groups inside the axes grid with the cue rows; the declared caption, helper and aria-label retired
+- [ ] 03.3.1.1-05-PLAN.md — Add tasting | Cancel | Save batch in both ceremonies, Restore tasting, the record-status live region and the sketch's focus landings
+- [ ] 03.3.1.1-06-PLAN.md — The orchestrator-run conformance pass (gating, autonomous: false): both tabs at the ten D-16 widths in the three states, written to 03.3.1.1-CONFORMANCE.md
 
 ### Phase 4: Prepare the next version for making
 

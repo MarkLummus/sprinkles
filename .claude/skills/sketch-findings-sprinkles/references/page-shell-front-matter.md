@@ -10,7 +10,7 @@ Validated by sketch 003 (winner B), building on 001–002's rejections.
 - **The batch record is page metadata, not a margin note.** The page holds the tip — the latest version and its latest batch — beside the headnote. Earlier versions/batches open on request beneath their row.
 - **Balance stays level with Ingredients.** The front matter is sized so the side region's Balance note starts level with the Ingredients region name.
 - **A baseline-weight rule (1.5px) closes the front matter** above Ingredients; inner row separators are 1px graduation weight.
-- **The ingredient table reads in step order** with a "Table as written" toggle for the written order. In step order: groups by step with the step's lead-in as a full-width head row; a split ingredient appears once per step as a portion line ("120 g of 370.4 g · 46.3% in all" beneath its name); the Step column disappears; portions carry their own share in the numeric column. As made is recorded per portion.
+- **The ingredient table reads in step order**, the only order — Phase 03.3 settled that there is no toggle; the sketch's "Table as written" toolbar button was a comparison aid, not a page control. In step order: groups by step with the step's lead-in as a full-width head row; a split ingredient appears once per step as a portion line ("120 g of 370.4 g · 46.3% in all" beneath its name); the Step column disappears; portions carry their own share in the numeric column. As made is recorded per portion.
 - **"Before you start" lives at the head of the Method**, before step 1. Things to check and carried-forward Notes sit under Balance.
 - **Absence labels follow the "Saying absence" guide rule** (e.g. "not churned yet" — say what isn't, plainly).
 

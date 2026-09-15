@@ -6,7 +6,7 @@
 <title>Sketch 008: the control sheet</title>
 <link rel="stylesheet" href="../themes/default.css">
 <style>
-/* ---------- sketch chrome (not the design): toolbar, frame, the sheet's own annotations ---------- */
+/* ---------- sketch chrome (not the design): toolbar, frame, the sheet's own captions ---------- */
 html { background: #e9e9e4; }
 body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
 #variant-nav { position: relative; z-index: 9998; background: #1c1c1c; color: #eee; display: flex; align-items: center; gap: 6px; padding: 8px 14px; font: 12px/1.3 system-ui; flex-wrap: wrap; }
@@ -20,9 +20,9 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
 .frame[data-w="393"] { width: 393px; padding: var(--gap-m); }
 .frame[data-w="768"] { width: 768px; }
 .frame[data-w="1280"] { width: 1280px; }
-/* the sheet's own captions ("rest", "hover", …) are chrome, kept in a mono grey so they never read as the design */
-.cap { display: block; font: 11px/1.3 ui-monospace, Menlo, monospace; color: #8a8a84; white-space: normal; }
-.cap b { font-weight: 600; color: #6a6a64; }
+/* the sheet's own captions ("rest", "hover", …) are chrome: a mono grey so they never read as the design, but large and dark enough to be read (Impeccable, 2026-09-14) */
+.cap { display: block; font: 12px/1.35 ui-monospace, Menlo, monospace; color: #55554f; white-space: normal; }
+.cap b { font-weight: 600; color: #2e2e2a; }
 #annotate { position: fixed; left: 12px; bottom: 12px; z-index: 9999; background: rgba(0,0,0,0.82); color: #cfe; font: 11px/1.4 ui-monospace, Menlo, monospace; padding: 8px 10px; border-radius: 6px; white-space: pre; max-width: 46ch; display: none; pointer-events: none; }
 #annotate.on { display: block; }
 
@@ -33,103 +33,105 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
   /* type roles (cross-cutting findings § Type roles; app tokens.css --type-*) */
   --type-section: 0.875rem; --leading-section: 1.35;
   --type-label: 0.75rem;
-  --type-control: 0.8125rem; --leading-control: 1.3; --leading-helper: 1.4;
+  --type-control: 0.8125rem; --leading-control: 1.3; --leading-helper: 1.4; --text-control-min: 24px; /* 007 line 128: a text control is 24px tall at desktop */
   --type-note: 1rem; --leading-note: 1.5;
-  --tracking-caption: 0.04em;          /* DESIGN.md caption/section tracking; 007 lines 152–154 read 0.035em/0.025em */
+  --tracking-caption: 0.04em;          /* DESIGN.md caption/section tracking; 007 lines 152–154 read 0.035em/0.025em (open) */
   --offset-underline: 2px;             /* app tokens.css --offset-link-underline; 007 line 29 literal */
-  /* hover compensation: the border grows by this and the padding shrinks by it, so the box holds */
-  --hover-comp: calc(var(--rule-baseline) - var(--rule-ink-field));
+  /* weights that render at DPR 1 (Impeccable, 2026-09-14): 1.5px borders and rings draw as 1px in Chrome, so hover and focus use a whole 2px */
+  --rule-hover: 2px;
+  --focus-outline-width: var(--rule-hover);
+  /* hover compensation: the border grows by this and the padding shrinks by it, so the box holds — a whole pixel now, so it holds exactly */
+  --hover-comp: calc(var(--rule-hover) - var(--rule-ink-field));
   /* the record pen's measured-field widths (DESIGN.md § Fields as amended; 007 lines 41, 43) */
   --field-w-date: 128px;
-  --field-w-figure: 48px;
+  --field-w-figure: 56px;              /* was 48px (007 line 43): 48px clipped "−12.5" and "120.5"; 56px holds both at 15px and 16px (measured 2026-09-14) */
   --gap-unit: 4px;                     /* 007 line 42: the gap between a figure box and its unit word */
   --caption-two-lines: 2.4em;          /* 007 line 39: field-row captions reserve two lines (D-03 flags it) */
   --measure-field-error: 24ch;         /* 007 line 131 */
-  /* the five-stop track (app tokens.css --stop-*, --track-stop; 007 lines 77–78, 121) */
-  --stop-w: 34px; --stop-h: 32px; --stop-gap: 4px; --track-stop: 186px;
+  /* the five-cell track (app tokens.css --stop-*, --track-stop; 007 lines 77–78, 121): joined, five 38px cells sharing four hairlines = the 186px track */
+  --stop-w: 38px; --stop-h: 32px; --track-stop: 186px;
+  --stop-w-apart: 34px; --stop-gap: 4px; /* the separated stops, earlier version */
   --axis-head-h: 24px;                 /* 007 line 72: the head reserves its height marked or not */
-  --control-h: var(--stop-h);          /* 007 lines 119, 125: segment options and chips share the stop's 32px */
+  --control-h: var(--stop-h);          /* 007 lines 119, 125: segment options, defects and the checkbox label share the cell's 32px */
   --pad-seg-x: 8px;                    /* 007 line 162 */
-  --pad-chip-x: 10px;                  /* 007 line 84 */
+  --pad-chip-x: 10px;                  /* 007 line 84, earlier version */
   --size-checkbox: 0.8125rem;          /* DESIGN.md "a 13px ink square"; app tokens.css --size-mark-stop */
-  --size-lead-mark: 0.6em;             /* variant B's alternative: a leading square scaled to the text */
-  --rule-invalid: var(--focus-outline-width);   /* 007 line 132 draws invalid at the focus ring's weight — its own name so it can move */
-  --rule-forced-outline: 2px;          /* 007 line 141: the forced-colors stand-in for a stripped fill */
-  /* touch sizes below 760px (app tokens.css --touch-*; 007 lines 173–180) */
-  --touch-min: 44px; --touch-stop-width: 40px; --track-stop-narrow: 216px;
+  --size-lead-mark: var(--size-checkbox); /* Show changes: the leading square is the checkbox's size (Mark, 2026-09-14) */
+  /* touch sizes below 760px (app tokens.css --touch-*; 007 lines 134–139, 173–180): joined, five 44px cells sharing four hairlines = 216px */
+  --touch-min: 44px; --touch-stop-width: 44px; --touch-stop-width-apart: 40px; --track-stop-narrow: 216px;
 }
 
 /* ---------- the world ---------- */
 .app { font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: var(--leading-section); color: var(--ink); background: var(--ground); }
-.app p, .app h1, .app h2, .app dl, .app dd { margin: 0; }
+.app p, .app h1, .app h2, .app dl, .app dd, .app ul { margin: 0; }
 button, input, textarea { font: inherit; }
-/* Focus: the one ring, live (:focus-visible inside a live cell) or drawn (.is-focus). Nothing moves. */
+/* Focus: the one ring, live (:focus-visible inside a live cell) or drawn (.is-focus). It means focus and nothing else. Nothing moves. */
 .app .live :focus-visible, .app .is-focus { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
 
 /* captions and type roles */
 .app .region-name { font-family: var(--face-grotesk); font-size: var(--type-section); font-weight: 600; line-height: var(--leading-section); text-transform: uppercase; letter-spacing: var(--tracking-caption); color: var(--bookcloth); margin: 0 0 var(--gap-xs); }
 .lbl { display: block; font-family: var(--face-grotesk); font-size: var(--type-label); font-weight: 500; line-height: var(--leading-section); text-transform: uppercase; letter-spacing: var(--tracking-caption); margin-bottom: var(--gap-xs); }
-.axis-name { font-family: var(--face-grotesk); font-size: var(--type-label); font-weight: 600; line-height: var(--leading-section); text-transform: uppercase; letter-spacing: var(--tracking-caption); }
+.axis-name { font-family: var(--face-grotesk); font-size: var(--type-label); font-weight: 500; /* the same weight as a field's caption: both label an input; 600 is for region names only (Mark, 2026-09-14) */ line-height: var(--leading-section); text-transform: uppercase; letter-spacing: var(--tracking-caption); }
 .helper { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-helper); font-weight: 400; font-style: normal; text-transform: none; letter-spacing: 0; color: var(--ink); }
 .deviation { font-family: var(--face-grotesk); font-size: var(--size-deviation-words); font-variant-numeric: tabular-nums; }
 .u { font-family: var(--face-grotesk); font-size: var(--size-deviation-words); line-height: var(--leading-control); white-space: nowrap; }
 .pen { color: var(--pen-blue); }
 
-/* the hairline button (.btn): table role, 1px ink, no fill; hover thickens to the baseline weight, padding compensates */
+/* ---------- actions ---------- */
+/* the hairline button (.btn): a lone box is an action. 1px ink, no fill; hover is 2px, padding gives the pixel back, so the box holds */
 .btn { font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: var(--leading-section); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: var(--gap-xs) var(--gap-s); cursor: pointer; box-sizing: border-box; white-space: nowrap; }
-.live .btn:hover, .btn.is-hover { border-width: var(--rule-baseline); padding: calc(var(--gap-xs) - var(--hover-comp)) calc(var(--gap-s) - var(--hover-comp)); }
-
-/* the underlined text control: no border, a 1px ink underline that thickens on hover */
-.text-control { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: var(--rule-ink-field); text-underline-offset: var(--offset-underline); white-space: nowrap; }
+.live .btn:hover, .btn.is-hover { border-width: var(--rule-hover); padding: calc(var(--gap-xs) - var(--hover-comp)) calc(var(--gap-s) - var(--hover-comp)); }
+/* the underlined text control: an underlined word is an inline action. 1px ink underline offset 2px, 1.5px on hover (underlines render at 1.5px) */
+.text-control { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: var(--rule-ink-field); text-underline-offset: var(--offset-underline); white-space: nowrap; min-height: var(--text-control-min); }
 .live .text-control:hover, .text-control.is-hover { text-decoration-thickness: var(--rule-baseline); }
 
-/* the inline text toggle — the variant question.
-   A (D-21 as written): pressed fills pen blue with ground text, no underline; a hair of inline padding
-   with a matching negative margin so the word does not move when it fills.
-   B: fill stays on boxed controls; a pressed text toggle carries the tick weight (2.5px) under it —
-   the third weight the page already owns (rest 1px, hover 1.5px, pressed 2.5px), ink only. */
-[data-variant="A"] .text-toggle.on { background: var(--pen-blue); color: var(--ground); text-decoration: none; padding-inline: var(--gap-hair); margin-inline: calc(-1 * var(--gap-hair)); }
-[data-variant="A"] .live .text-toggle.on:hover, [data-variant="A"] .text-toggle.on.is-hover { text-decoration: none; } /* a filled control shows no hover change (D-06) */
-[data-variant="B"] .text-toggle.on, [data-variant="B"] .live .text-toggle.on:hover, [data-variant="B"] .text-toggle.on.is-hover { text-decoration-thickness: var(--rule-tick); }
-/* B's alternative, drawn beside it: a leading ink square, hollow at rest, filled ink when pressed; the underline stays hairline */
-.text-toggle--mark::before { content: ''; display: inline-block; width: var(--size-lead-mark); height: var(--size-lead-mark); box-sizing: border-box; border: var(--rule-graduation) solid var(--ink); margin-right: var(--gap-xs); vertical-align: baseline; }
-.text-toggle--mark.on::before { background: var(--ink); }
-[data-variant="B"] .text-toggle--mark.on { text-decoration-thickness: var(--rule-ink-field); }
-[data-variant="A"] .b-only { display: none; }
+/* ---------- independent on/offs: square and word ----------
+   One rule for the checkbox, a defect and Show changes (Mark, 2026-09-14): the small square fills pen blue when on; focus rings the whole
+   control, square and word; on + focus shows both; nothing encloses the control at rest; hover thickens the square's border to 2px in place. */
+.text-toggle { min-height: var(--control-h); } /* 32px at desktop, 44px below 760px: the same target as the checkbox and a defect (Mark, 2026-09-14) */
+.text-toggle::before { content: ''; display: inline-block; width: var(--size-lead-mark); height: var(--size-lead-mark); box-sizing: border-box; border: var(--rule-graduation) solid var(--ink); margin-right: var(--gap-xs); vertical-align: baseline; }
+.text-toggle.on::before { background: var(--pen-blue); border-color: var(--pen-blue); }
+.text-toggle.on, .live .text-toggle.on:hover, .text-toggle.on.is-hover { text-decoration-thickness: var(--rule-ink-field); } /* the square carries the state; the underline stays hairline on a pressed toggle */
+.live .text-toggle:hover::before, .text-toggle.is-hover::before { border-width: var(--rule-hover); }
+.defects { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-xs) var(--gap-m); }
+.defect { display: inline-flex; align-items: center; gap: var(--gap-xs); font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); color: var(--ink); background: none; border: 0; border-radius: 0; padding: 0; min-height: var(--control-h); cursor: pointer; box-sizing: border-box; }
+.defect::before { content: ''; display: inline-block; width: var(--size-checkbox); height: var(--size-checkbox); box-sizing: border-box; border: var(--rule-graduation) solid var(--ink); flex: 0 0 auto; }
+.live .defect:hover::before, .defect.is-hover::before { border-width: var(--rule-hover); }
+.defect.on::before { background: var(--pen-blue); border-color: var(--pen-blue); }
+/* the defects are two captioned groups, "Every recipe" and "This recipe only", as 007 draws them (Mark, 2026-09-14); a second declared flaw lands in the second group */
+.defect-groups { display: flex; flex-wrap: wrap; gap: var(--gap-xs) var(--gap-l); align-items: flex-start; }
+.defect-group .lbl { margin-bottom: var(--gap-xs); }
+.check { display: inline-flex; align-items: center; gap: var(--gap-xs); font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); min-height: var(--control-h); cursor: pointer; }
+.app .live .check:focus-within { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
+.app .live .check input:focus-visible { outline: none; }
+input[type="checkbox"] { appearance: none; width: var(--size-checkbox); height: var(--size-checkbox); margin: 0; border: var(--rule-graduation) solid var(--ink); border-radius: 0; background: none; box-sizing: border-box; cursor: pointer; flex: 0 0 auto; }
+.live input[type="checkbox"]:hover, input[type="checkbox"].is-hover { border-width: var(--rule-hover); }
+input[type="checkbox"]:checked, input[type="checkbox"].on { background: var(--pen-blue); border-color: var(--pen-blue); }
 
-/* the 3-way segmented control: shared borders (margin-right −1px), the picked option fills edge to edge and sits on top */
+/* ---------- choose one from a set: joined boxes ----------
+   The segmented control and the five-cell axis share one structure; the content carries the difference — words at their own widths for a
+   category, five equal numbered cells with the name above and the anchors below for a rating. Boxes share a hairline (margin-right −1px);
+   the picked box fills pen blue and sits on top; a hovered box thickens to 2px and sits on top, so the seam thickens and nothing moves. */
+.segc { min-width: 0; }
+.segc .head .lbl { margin-bottom: 0; }
 .seg { display: flex; flex-wrap: wrap; }
 .seg .opt { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 0 var(--pad-seg-x); min-height: var(--control-h); margin-right: calc(-1 * var(--rule-ink-field)); cursor: pointer; box-sizing: border-box; }
 .seg .opt:last-child { margin-right: 0; }
 .seg .opt.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); position: relative; z-index: 1; }
-/* the binder's hover (border thickens, padding compensates) drawn for comparison only — D-06 gives options no hover rule */
-.seg .opt.is-hover { border-width: var(--rule-baseline); padding-inline: calc(var(--pad-seg-x) - var(--hover-comp)); margin-right: calc(-1 * var(--rule-baseline)); position: relative; z-index: 1; }
-
-/* the five-stop goldilocks axis: head (name, inline state, Clear), stops on the 186px track, anchors under the ends */
+.live .seg .opt:hover, .seg .opt.is-hover { border-width: var(--rule-hover); padding-inline: calc(var(--pad-seg-x) - var(--hover-comp)); position: relative; z-index: 2; }
 .axis { min-width: 0; }
-.axis .head { display: flex; align-items: baseline; gap: var(--gap-xs); margin-bottom: var(--gap-xs); min-height: var(--axis-head-h); flex-wrap: wrap; }
+/* the caption line: name, inline state (axis only) and Clear, which appears once something is picked — picking is final until Clear (Mark, 2026-09-14) */
+.axis .head, .segc .head { display: flex; align-items: center; gap: var(--gap-xs); margin-bottom: var(--gap-xs); min-height: var(--axis-head-h); flex-wrap: wrap; } /* centred, and the head reserves Clear's height at every size, so nothing below moves when Clear appears (Mark, 2026-09-14) */
 .axis .state { font-family: var(--face-grotesk); font-size: var(--type-label); line-height: var(--leading-section); font-variant-numeric: tabular-nums; }
-.axis .stops5 { display: flex; gap: var(--stop-gap); width: var(--track-stop); }
-.axis .stop5 { width: var(--stop-w); height: var(--stop-h); flex: 0 0 var(--stop-w); box-sizing: border-box; border: var(--rule-ink-field) solid var(--ink); background: none; padding: 0; cursor: pointer; font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--ink); }
-.live .stop5:hover, .stop5.is-hover { border-width: var(--rule-baseline); }
-.stop5.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); }
+.axis .stops5 { display: flex; width: var(--track-stop); }
+.axis .stop5 { width: var(--stop-w); height: var(--stop-h); flex: 0 0 var(--stop-w); box-sizing: border-box; border: var(--rule-ink-field) solid var(--ink); background: none; padding: 0; margin-right: calc(-1 * var(--rule-ink-field)); cursor: pointer; font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--ink); }
+.axis .stop5:last-child { margin-right: 0; }
+.live .stop5:hover, .stop5.is-hover { border-width: var(--rule-hover); position: relative; z-index: 2; }
+.stop5.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); position: relative; z-index: 1; }
 .axis .anchors5 { display: flex; justify-content: space-between; width: var(--track-stop); margin-top: var(--gap-hair); font-family: var(--face-text); font-style: italic; font-size: var(--size-deviation-words); line-height: var(--leading-control); white-space: nowrap; }
 
-/* the defect chips and the declared toggle, its "· declared" helper a sibling after the button */
-.defect-chips { display: flex; flex-wrap: wrap; align-items: flex-start; }
-.chip-toggle { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 0 var(--pad-chip-x); min-height: var(--control-h); margin: 0 var(--gap-xs) var(--gap-xs) 0; cursor: pointer; box-sizing: border-box; }
-.chip-toggle.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); }
-.chip-toggle.is-hover { border-width: var(--rule-baseline); padding-inline: calc(var(--pad-chip-x) - var(--hover-comp)); } /* comparison only — D-06 */
-.declared-flaw { margin-left: var(--gap-m); }
-.defect-chips > .helper { align-self: center; margin: 0 0 var(--gap-xs) 0; }
-
-/* the checkbox: a 13px ink square, hover thickens (border-box holds the size), checked fills pen blue */
-.check { display: inline-flex; align-items: center; gap: var(--gap-xs); font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); cursor: pointer; }
-input[type="checkbox"] { appearance: none; width: var(--size-checkbox); height: var(--size-checkbox); margin: 0; border: var(--rule-graduation) solid var(--ink); border-radius: 0; background: none; box-sizing: border-box; cursor: pointer; flex: 0 0 auto; }
-.live input[type="checkbox"]:hover, input[type="checkbox"].is-hover { border-width: var(--rule-baseline); }
-input[type="checkbox"]:checked, input[type="checkbox"].on { background: var(--pen-blue); border-color: var(--pen-blue); }
-
-/* fields: hairline ink box, no fill, pen-blue value in the grotesk with tabular numerals; a placeholder is an italic ink example */
+/* ---------- fields ---------- */
+/* hairline ink box, no fill, pen-blue value in the grotesk with tabular numerals; a placeholder is an italic ink example. Fields have no hover rule. */
 .ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); line-height: var(--leading-section); font-variant-numeric: tabular-nums; color: var(--pen-blue); border: var(--rule-ink-field) solid var(--ink); border-radius: 0; background: none; padding: var(--gap-hair) var(--gap-xs); box-sizing: border-box; }
 .ink-field::placeholder { color: var(--ink); opacity: 1; font-style: italic; }
 label.field { display: block; }
@@ -141,45 +143,76 @@ label.field { display: block; }
 .field-row { display: flex; gap: var(--gap-s); flex-wrap: wrap; align-items: flex-end; }
 .field-row label { flex: 0 0 auto; }
 .field-row label > .lbl { display: flex; align-items: flex-end; line-height: var(--leading-table); min-height: var(--caption-two-lines); }
+/* invalid: the value stays, a sentence beneath states the fault, and nothing rings the field — the ring means focus only (Impeccable, 2026-09-14) */
 .field-error { display: block; max-width: var(--measure-field-error); font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-helper); margin-top: var(--gap-xs); }
-[aria-invalid="true"] { outline: var(--rule-invalid) solid var(--ink); outline-offset: var(--focus-outline-offset); }
 .form-status { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-note); max-width: var(--measure-prose); overflow-wrap: anywhere; }
 
-/* forced colours, simulated: backgrounds are stripped, so the fill goes and an outline stands in.
-   Drawn in ink at the forced-outline weight and no offset, as 007 line 141 draws it; the live rule below uses Highlight. */
-.app .forced .on, .app .forced .seg .opt.on, .app .forced .text-toggle.on, .app .forced input[type="checkbox"].on { background: none; color: var(--ink); border-color: var(--ink); outline: var(--rule-forced-outline) solid var(--ink); outline-offset: 0; }
-.app[data-variant="A"] .forced .text-toggle.on { text-decoration: none; }
-.app[data-variant="B"] .forced .text-toggle.on { outline: none; } /* B's pressed underline survives forced colours on its own; no outline needed */
+/* ---------- high contrast (forced colours) ----------
+   Selection stays a fill, in the system's Highlight colour, kept through forced-color-adjust: none — the same shape as in normal colours, so
+   selection and the focus ring never share one outline. The .forced cells simulate it in ink on paper; real high-contrast rendering is untested. */
 @media (forced-colors: active) {
-  .on, input[type="checkbox"]:checked { outline: var(--rule-forced-outline) solid Highlight; }
+  .seg .opt.on, .stop5.on, .defect.on::before, .text-toggle.on::before, input[type="checkbox"]:checked { forced-color-adjust: none; background: Highlight; border-color: Highlight; color: HighlightText; }
+  /* forced-color-adjust: none also keeps the ring's authored ink, which vanishes on the forced canvas (Mark, 2026-09-14): a picked box's ring takes the system text colour */
+  .seg .opt.on:focus-visible, .seg .opt.on.is-focus, .stop5.on:focus-visible, .stop5.on.is-focus { outline-color: CanvasText; }
 }
+.app .forced .seg .opt.on, .app .forced .stop5.on { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+.app .forced .defect.on::before, .app .forced .text-toggle.on::before, .app .forced input[type="checkbox"].on { background: var(--ink); border-color: var(--ink); }
 
-/* touch sizes below 760px, drawn statically in the second block (007 lines 134–139, 173–180) */
+/* ---------- touch sizes below 760px (007 lines 134–139, 173–180) ---------- */
 .touch .stop5 { width: var(--touch-stop-width); height: var(--touch-min); flex-basis: var(--touch-stop-width); }
+.touch .stops5.apart .stop5 { width: var(--touch-stop-width-apart); flex-basis: var(--touch-stop-width-apart); }
 .touch .stops5, .touch .anchors5 { width: var(--track-stop-narrow); }
-.touch .chip-toggle, .touch .seg .opt, .touch .text-control, .touch .btn, .touch .ink-field { min-height: var(--touch-min); }
+.touch .chip-toggle, .touch .defect, .touch .check, .touch .seg .opt, .touch .text-control, .touch .btn, .touch .ink-field { min-height: var(--touch-min); }
 .touch .ink-field, .touch .prose-field { font-size: var(--type-note); }
+.touch .axis .head, .touch .segc .head { min-height: var(--touch-min); } /* Clear is 44px here, so the head reserves 44px marked or not */
+
+/* ---------- earlier versions, kept for the record and drawn only inside the disclosure ---------- */
+.va .text-toggle::before { content: none; }
+.va .text-toggle.on { background: var(--pen-blue); color: var(--ground); text-decoration: none; padding-inline: var(--gap-hair); margin-inline: calc(-1 * var(--gap-hair)); }
+.va .text-toggle.on:has(> .word) { background: none; color: var(--ink); padding-inline: 0; margin-inline: 0; } .va .text-toggle.on > .word { background: var(--pen-blue); color: var(--ground); padding-inline: var(--gap-hair); margin-inline: calc(-1 * var(--gap-hair)); }
+.defect-chips { display: flex; flex-wrap: wrap; align-items: flex-start; }
+.chip-toggle { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: var(--leading-control); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 0 var(--pad-chip-x); min-height: var(--control-h); margin: 0 var(--gap-xs) var(--gap-xs) 0; cursor: pointer; box-sizing: border-box; }
+.chip-toggle.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); }
+.chip-toggle.declared-flaw { margin-left: var(--gap-m); }
+.defect-chips > .helper { align-self: center; margin: 0 0 var(--gap-xs) 0; }
+.axis .stops5.apart { gap: var(--stop-gap); }
+.axis .stops5.apart .stop5 { width: var(--stop-w-apart); flex-basis: var(--stop-w-apart); margin-right: 0; }
+.seg .opt.no-hover.is-hover { border-width: var(--rule-ink-field); padding-inline: var(--pad-seg-x); z-index: auto; }
 
 /* ---------- the sheet's own layout ---------- */
 .sheet-head { max-width: var(--measure-prose); }
 .sheet-head .helper { margin-top: var(--gap-xs); }
-.sheet > section { margin-top: var(--gap-l); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink); }
-.sheet > section > .helper { margin: 0 0 var(--gap-s); max-width: var(--measure-prose); }
+.sheet-head .helper + .helper { margin-top: var(--gap-s); }
+.sheet-head .cap { margin-top: var(--gap-s); }
+.sheet section { margin-top: var(--gap-xl); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink); } /* every family, at both levels — the row sections had missed this rule */
+.sheet section > .helper { margin: 0 0 var(--gap-m); max-width: var(--measure-prose); }
+.sheet details { max-width: var(--measure-prose); margin-top: var(--gap-m); }
+.sheet details > summary { cursor: pointer; display: list-item; }
+.sheet details > .helper, .sheet details > .states { margin-top: var(--gap-s); }
+.sheet .open-list { padding-left: 1.2em; max-width: var(--measure-prose); }
+.sheet .open-list li { margin-bottom: var(--gap-xs); }
 .states { display: flex; flex-wrap: wrap; gap: var(--gap-m) var(--gap-l); align-items: flex-start; }
 .cell { display: flex; flex-direction: column; gap: var(--gap-xs); min-width: 0; max-width: 100%; }
 .cell .cap { margin-bottom: var(--gap-hair); }
 .roles { display: grid; grid-template-columns: max-content 1fr; gap: var(--gap-s) var(--gap-l); align-items: baseline; }
 .roles dd .cap { margin: 0; }
 @media (max-width: 600px) { .roles { grid-template-columns: 1fr; gap: var(--gap-xs); } .roles dd { margin-bottom: var(--gap-s); } }
+/* the side-by-side comparison: one grid, a row per state, a column per control family. Scrolls sideways inside its wrapper when narrow;
+   the state names stick to the left edge so a row stays readable while panning, and a cue says so */
+.box-wrap { overflow-x: auto; position: relative; }
+.box-grid { display: grid; width: max-content; grid-template-columns: max-content repeat(4, max-content); gap: var(--gap-s) var(--gap-m); align-items: center; } /* the grid box spans its content, so the sticky row labels have a containing block that does not scroll away */
+.box-grid .cap { margin: 0; max-width: 14ch; }
+.box-grid .colhead { align-self: end; }
+.box-grid .rowhead { position: sticky; left: 0; z-index: 3; background: var(--ground); align-self: stretch; display: flex; align-items: center; padding-right: var(--gap-xs); }
+.box-grid .defect-groups { max-width: 200px; } /* the defect groups wrap inside their column, as they would in a narrow pen */
+.scroll-cue { display: none; margin-bottom: var(--gap-xs); }
+.scrolls + .scroll-cue, .scroll-cue.on { display: block; }
 [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 
 <div id="variant-nav">
-  <button class="variant-tab active" data-v="A" onclick="setVariant('A')">A: fill every picked or pressed control, text toggles included</button>
-  <button class="variant-tab" data-v="B" onclick="setVariant('B')">B: fill boxed controls only; a pressed text toggle stays ink</button>
-  <span class="sep"></span>
   <button data-w="393" onclick="setWidth('393')">393</button>
   <button data-w="768" onclick="setWidth('768')">768</button>
   <button data-w="1280" onclick="setWidth('1280')">1280</button>
@@ -187,18 +220,26 @@ label.field { display: block; }
   <span class="sep"></span>
   <label>Theme <select id="theme-switcher" onchange="document.querySelector('link[href*=themes]').href='../themes/'+this.value+'.css'"><option value="default">Default</option></select></label>
   <button id="annotate-btn" onclick="toggleAnnotate()">Annotate on hover</button>
-  <span class="note">The first cell of every row is live — hover, tab into it, click. Every other cell is drawn with its state forced. The two variants differ only in the inline text toggle row.</span>
+  <span class="note">The first cell of every row is live — hover, tab into it, click. Every other cell is drawn with its state forced. At 393, or in a window 760px or narrower, the whole sheet takes the phone sizes.</span>
 </div>
 
 <div class="frame" id="frame" data-w="full">
-<div class="app sheet" id="app" data-variant="A">
+<div class="app sheet" id="app">
   <header class="sheet-head">
     <h1 class="region-name">Every control, every state</h1>
-    <p class="helper">Drawn from DESIGN.md as amended 2026-09-14: a picked or pressed control fills pen blue with the paper's colour for its text, with no change of weight and no underline; where backgrounds are stripped an outline stands in. Hover is weight, never position or hue. Focus is the one 1.5px ring, offset 2px. Measured fields are sized by their width tokens, not the column.</p>
-    <p class="cap"><b>cells, left to right:</b> rest (live) · hover · focus-visible · picked or pressed · picked + focus · forced colours, simulated (fill stripped, 2px outline). Invalid is drawn where a field can be. The second block repeats the controls at the sizes they take below 760px.</p>
+    <p class="helper">Three kinds of control. <b>Joined boxes</b> choose one from a set (a segmented control, the five-cell axis): the picked box fills pen blue. <b>A square and a word</b> record an independent yes or no (a checkbox, a defect, Show changes): the small square fills pen blue. <b>A lone hairline box or an underlined word</b> is an action; nothing fills.</p>
+    <p class="helper">A joined group is a radio: picking is final, and Clear appears in the caption line once something is picked, so an unrecorded answer is never mistaken for a middle one. Hover thickens a border to 2px in place; nothing moves. Focus is one 2px ring offset 2px around the whole control, and it means focus only. Invalid is a sentence beneath the field, never a ring. In high contrast, selection stays a fill in the system's Highlight colour. Measured fields take their width tokens, not the column.</p>
+    <p class="cap"><b>cells, left to right:</b> rest (live) · hover · focus · picked or on · picked + focus · high contrast, simulated · high contrast + focus. The last section shows the retired alternatives.</p>
   </header>
 
   <div id="rows"></div>
+
+  <section id="boxes">
+    <h2 class="region-name">Side by side</h2>
+    <p class="helper">The four families complete, one state per row, so each can be judged against the others in the same state.</p>
+    <p class="cap scroll-cue" id="scroll-cue"><b>scrolls sideways →</b> the state names stay put</p>
+    <div class="box-wrap" id="box-wrap"><div class="box-grid" id="box-grid"></div></div>
+  </section>
 
   <section>
     <h2 class="region-name">Captions and type roles</h2>
@@ -206,7 +247,7 @@ label.field { display: block; }
     <dl class="roles">
       <dt><span class="region-name" style="margin:0">Tasting</span></dt><dd><span class="cap"><b>region name</b> · section role 0.875rem/600 · uppercase · 0.04em · bookcloth · 6px beneath · the only place bookcloth appears</span></dd>
       <dt><span class="lbl" style="margin:0">Churn date</span></dt><dd><span class="cap"><b>.lbl caption</b> · label role 0.75rem/500 · uppercase · 0.04em · 6px to whatever it captions</span></dd>
-      <dt><span class="axis-name">Hardness</span> <span class="axis-state-demo"><span class="state pen" style="font-size:var(--type-label)">(3)</span></span></dt><dd><span class="cap"><b>axis name</b> · label role at 600 · inline state beside it: "(3)" in pen blue once marked, "(Not recorded)" in ink when not</span></dd>
+      <dt><span class="axis-name">Hardness</span> <span class="axis-state-demo"><span class="state pen" style="font-size:var(--type-label)">(3)</span></span></dt><dd><span class="cap"><b>axis name</b> · the .lbl caption's role and weight, 0.75rem/500 — it labels an input as Churn date does; 600 is for region names only · inline state beside it: "(3)" in pen blue once marked, "(Not recorded)" in ink when not</span></dd>
       <dt><span class="helper">select all that apply</span></dt><dd><span class="cap"><b>helper</b> · control role 0.8125rem/400 · sentence case · no tracking, no transform · a sibling element on the caption's line</span></dd>
       <dt><span class="deviation">1.4 over target</span> &nbsp; <span class="deviation">inside 22–26</span></dt><dd><span class="cap"><b>deviation words</b> · 0.8125rem/400 grotesk, tabular · a figure's standing stated in words, never a colour</span></dd>
       <dt><span class="u">°C</span> &nbsp; <span class="u">min</span> &nbsp; <span class="u">g lost at 20 min</span></dt><dd><span class="cap"><b>unit word</b> · deviation size · set beside the figure box, 4px off it · lowercase, never uppercased</span></dd>
@@ -216,8 +257,35 @@ label.field { display: block; }
 
   <section>
     <h2 class="region-name">Below 760px</h2>
-    <p class="helper">Interactive targets grow toward 44px: buttons, text controls, segment options, chips and fields to a 44px minimum height; stops to a 40×44 box on a 216px track. Nothing else changes.</p>
+    <p class="helper">Interactive targets grow to 44px: buttons, text controls, segment options, defects, the checkbox label and fields to a 44px minimum height; the axis to five joined 44×44 cells on a 216px track. Nothing else changes. At the 393 preset the whole sheet already takes these sizes; this block shows them at any width.</p>
     <div class="touch" id="touch"></div>
+  </section>
+
+  <section id="open">
+    <h2 class="region-name">Settled values</h2>
+    <p class="helper">Every value the sources disagreed on, decided 2026-09-14 and drawn above. The rule of thumb: small control text, comfortably sized targets, larger text for entering values and observations.</p>
+    <ul class="open-list helper">
+      <li>Pen blue for every on state. Blue fill = this choice is on; outer ring = keyboard focus; shape and grouping = how the choice behaves; label and place = what it affects.</li>
+      <li>0.04em tracking on every uppercase caption, labels and region names alike; none on sentence-case text. Field captions and axis names share 0.75rem at weight 500; 600 is reserved for region names.</li>
+      <li>6px beneath a region name; the larger gap above it; a helper keeps the 6px and takes its own gap before the controls.</li>
+      <li>Measured fields 128px (date) and 56px (numeric) through named tokens. 48px clipped "−12.5" and "120.5"; 56px holds both at 15px and 16px; "2026-08-02" fits the 128px date field in Chrome.</li>
+      <li>Text controls 0.8125rem (13px); segment options and defects the same. Target height and padding carry comfort, not larger type.</li>
+      <li>Prose field: hairline baseline, no thickening on focus; the ring is the focus signal.</li>
+      <li>Anchor words: text face, italic, short and consistent across axes.</li>
+      <li>Fields at 600px and below grow to 1rem.</li>
+      <li>Status line at the prose measure, 65ch.</li>
+      <li>Show changes 32px tall at desktop, 44px below 760px, as the checkbox and a defect.</li>
+      <li>Joined cells keep the 186px and 216px tracks: 38px cells at desktop, 44px below 760px.</li>
+      <li>Joined groups are radios: picking is final, Clear in the caption line is the way back, and the caption line reserves Clear's height so nothing moves.</li>
+    </ul>
+  </section>
+
+  <section id="earlier">
+    <h2 class="region-name">Earlier versions</h2>
+    <details>
+      <summary class="helper">Retired alternatives, kept for the record — none of these is the rule.</summary>
+      <div class="states" id="earlier-cells"></div>
+    </details>
   </section>
 </div>
 </div>
@@ -227,50 +295,59 @@ label.field { display: block; }
 <script>
 /* ---------- state vocabulary: which class each cell forces on its target element ---------- */
 const STATES = {
-  rest:        { cap: 'rest · live', live: true },
-  hover:       { cap: 'hover', hover: true },
-  hoverNone:   { cap: 'hover · no rule (D-06)', none: true },
-  hoverBinder: { cap: 'hover · the binder\'s 1.5px, for comparison', hover: true },
-  focus:       { cap: 'focus-visible', focus: true },
-  picked:      { cap: 'picked', on: true },
-  pressed:     { cap: 'pressed', on: true },
-  checked:     { cap: 'checked', on: true },
-  pickedFocus: { cap: 'picked + focus', on: true, focus: true },
-  pressedFocus:{ cap: 'pressed + focus', on: true, focus: true },
-  pressedHover:{ cap: 'pressed + hover', on: true, hover: true },
-  filled:      { cap: 'holding a value', value: true },
-  invalid:     { cap: 'invalid', value: true, invalid: true },
-  forced:      { cap: 'forced colours · simulated', on: true, forced: true },
-  forcedRest:  { cap: 'forced colours · nothing to strip', forced: true },
+  rest:         { cap: 'rest · live', live: true },
+  hover:        { cap: 'hover', hover: true },
+  focus:        { cap: 'focus', focus: true },
+  picked:       { cap: 'picked', on: true },
+  pressed:      { cap: 'on', on: true },
+  checked:      { cap: 'checked', on: true },
+  pickedFocus:  { cap: 'picked + focus', on: true, focus: true },
+  pressedFocus: { cap: 'on + focus', on: true, focus: true },
+  pressedHover: { cap: 'on + hover', on: true, hover: true },
+  filled:       { cap: 'holding a value', value: true },
+  invalid:      { cap: 'invalid · the sentence, no ring', value: true, invalid: true },
+  invalidFocus: { cap: 'invalid + focus · the ring means focus', value: true, invalid: true, focus: true },
+  forced:       { cap: 'high contrast · simulated', on: true, forced: true },
+  forcedFocus:  { cap: 'high contrast + focus', on: true, focus: true, forced: true },
+  forcedRest:   { cap: 'high contrast · nothing changes', forced: true },
 };
 const cls = (base, f) => base + (f.hover ? ' is-hover' : '') + (f.focus ? ' is-focus' : '') + (f.on ? ' on' : '');
 
-/* ---------- one template per control; `s` is the state, `f(i)` the flags for element i ---------- */
+/* ---------- one template per control; `s` is the state ---------- */
 const T = {
   btn: s => `<button type="button" class="${cls('btn', s)}">Save batch</button>`,
   textControl: s => `<button type="button" class="${cls('text-control', s)}">Add tasting</button>`,
-  textToggle: s => ['Show changes', 'Table as written'].map((w, i) => `<button type="button" class="${cls('text-control text-toggle', i === 0 ? s : {})}" aria-pressed="${i === 0 && !!s.on}">${w}</button>`).join(' &nbsp; '),
-  textToggleMark: () => `<button type="button" class="text-control text-toggle text-toggle--mark" aria-pressed="false">Show changes</button> &nbsp; <button type="button" class="text-control text-toggle text-toggle--mark on" aria-pressed="true">Show changes</button>`,
-  seg: s => {
+  textToggle: s => `<button type="button" class="${cls('text-control text-toggle', s)}" aria-pressed="${!!s.on}">Show changes</button>`,
+  textToggleWord: s => `<button type="button" class="${cls('text-control text-toggle', s)}" aria-pressed="${!!s.on}"><span class="word">Show changes</span></button>`,
+  seg: (s, noHover) => {
     const target = s.on ? 1 : 0;
-    return `<div class="seg" role="radiogroup" aria-label="Exit consistency">${['Smooth ribbon', 'Wet, soupy', 'Chunky, separated'].map((w, i) =>
-      `<button type="button" class="${cls('opt', i === target ? s : {})}" role="radio" aria-checked="${i === target && !!s.on}">${w}</button>`).join('')}</div>`;
+    return `<div class="segc"><div class="head"><span class="lbl" id="lbl-exit">Exit consistency</span><button type="button" class="text-control clear"${s.on ? '' : ' hidden'} aria-label="Clear Exit consistency">Clear</button></div>
+      <div class="seg" role="radiogroup" aria-labelledby="lbl-exit">${['Smooth ribbon', 'Wet, soupy', 'Chunky, separated'].map((w, i) =>
+      `<button type="button" class="${cls('opt' + (noHover ? ' no-hover' : ''), i === target ? s : {})}" role="radio" aria-checked="${i === target && !!s.on}">${w}</button>`).join('')}</div></div>`;
   },
-  axis: s => {
+  axis: (s, apart) => {
     const target = s.on ? 2 : 0;
     const words = ['soft', 'leaning soft', 'right', 'leaning hard', 'hard'];
     return `<div class="axis"><div class="head"><span class="axis-name">Hardness</span><span class="state${s.on ? ' pen' : ''}">${s.on ? '(3)' : '(Not recorded)'}</span><button type="button" class="text-control clear"${s.on ? '' : ' hidden'} aria-label="Clear Hardness">Clear</button></div>
-      <div class="stops5" role="radiogroup" aria-label="Hardness">${words.map((w, i) => `<button type="button" class="${cls('stop5', i === target ? s : {})}" role="radio" aria-checked="${i === target && !!s.on}" data-i="${i}" aria-label="${i + 1}: ${w}">${i + 1}</button>`).join('')}</div>
+      <div class="stops5${apart ? ' apart' : ''}" role="radiogroup" aria-label="Hardness">${words.map((w, i) => `<button type="button" class="${cls('stop5', i === target ? s : {})}" role="radio" aria-checked="${i === target && !!s.on}" data-i="${i}" aria-label="${i + 1}: ${w}">${i + 1}</button>`).join('')}</div>
       <div class="anchors5" aria-hidden="true"><span>soft</span><span>right</span><span>hard</span></div></div>`;
+  },
+  defects: s => {
+    const onSet = s.on ? [1, 3] : [];
+    const names = ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film'];
+    const flags = i => ({ hover: s.hover && i === 0, focus: s.focus && (s.on ? i === 1 : i === 0), on: onSet.includes(i) });
+    return `<div class="defect-groups" role="group" aria-label="Any problems? Select all that apply">
+      <div class="defect-group" role="group" aria-label="Every recipe"><p class="lbl">Every recipe</p><div class="defects">${names.map((n, i) =>
+      `<button type="button" class="${cls('defect', flags(i))}" aria-pressed="${onSet.includes(i)}">${n}</button>`).join('')}</div></div>
+      <div class="defect-group" role="group" aria-label="This recipe only"><p class="lbl">This recipe only</p><div class="defects"><button type="button" class="${cls('defect', { on: !!s.on })}" aria-pressed="${!!s.on}">Bitter</button></div></div></div>`;
   },
   chips: s => {
     const onSet = s.on ? [1, 3] : [];
     const names = ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film'];
-    const flags = i => ({ hover: s.hover && i === 0, focus: s.focus && (s.on ? i === 1 : i === 0), on: onSet.includes(i) });
     return `<div class="defect-chips" role="group" aria-label="Any problems? Select all that apply">${names.map((n, i) =>
-      `<button type="button" class="${cls('chip-toggle', flags(i))}" aria-pressed="${onSet.includes(i)}">${n}</button>`).join('')}<button type="button" class="${cls('chip-toggle declared-flaw', { on: !!s.on })}" aria-pressed="${!!s.on}" aria-label="Declared for this recipe: Bitter">Bitter</button><span class="helper">· declared</span></div>`;
+      `<button type="button" class="${cls('chip-toggle', { on: onSet.includes(i) })}" aria-pressed="${onSet.includes(i)}">${n}</button>`).join('')}<button type="button" class="${cls('chip-toggle declared-flaw', { on: !!s.on })}" aria-pressed="${!!s.on}" aria-label="Declared for this recipe: Bitter">Bitter</button><span class="helper">· declared</span></div>`;
   },
-  checkbox: s => `<label class="check"><input type="checkbox" class="${cls('', s).trim()}"${s.on ? ' checked' : ''} aria-label="Step 3, skipped"><span>Skipped</span></label>`,
+  checkbox: s => `<label class="check${s.focus ? ' is-focus' : ''}"><input type="checkbox" class="${cls('', { hover: s.hover, on: s.on }).trim()}"${s.on ? ' checked' : ''} aria-label="Step 3, skipped"><span>Skipped</span></label>`,
   dateField: s => `<label class="field f-date"><span class="lbl">Churn date</span><input type="date" class="${cls('ink-field', s)}"${s.value ? ' value="2026-08-02"' : ''}></label>`,
   numField: s => `<label class="field"><span class="lbl">Out of machine</span><span class="field-unit"><input type="text" inputmode="decimal" class="${cls('ink-field', s)}" value="${s.invalid ? 'cold' : s.value ? '−6' : ''}" aria-invalid="${!!s.invalid}"${s.invalid ? ' aria-describedby="err-out"' : ''}><span class="u">°C</span></span>${s.invalid ? '<span class="field-error" id="err-out">Enter a temperature, such as −6, or leave blank.</span>' : ''}</label>`,
   proseField: s => `<label class="field"><span class="lbl">How did it turn out?</span><textarea class="${cls('prose-field', s)}" rows="2" placeholder="e.g. flavor, texture, anything that stood out">${s.value ? 'Soft, not greasy. The oil comes through late, after the sweetness.' : ''}</textarea></label>`,
@@ -282,47 +359,105 @@ const T = {
   status: () => `<p class="form-status" role="status">Check the marked measurements. Your entries have been kept.</p>`,
 };
 
-/* ---------- the rows of the sheet ---------- */
+/* ---------- the rows of the sheet: one rule each; the history sits behind a disclosure ---------- */
+const ON = ['rest', 'hover', 'focus', 'pressed', 'pressedFocus', 'forced', 'forcedFocus'];
+const PICK = ['rest', 'hover', 'focus', 'picked', 'pickedFocus', 'forced', 'forcedFocus'];
 const ROWS = [
-  { name: 'Hairline button', note: '.btn — table role, 1px ink, no fill at rest; hover thickens the border to 1.5px with compensating padding, so the box never changes size. A plain action has no picked state.', states: ['rest', 'hover', 'focus', 'forcedRest'], make: T.btn },
-  { name: 'Text control', note: '.text-control — control size, no border, a 1px ink underline offset 2px that thickens to 1.5px on hover. The per-step and per-row actions: Add tasting, Clear, add purpose, edit this step.', states: ['rest', 'hover', 'focus', 'forcedRest'], make: T.textControl },
-  { name: 'Inline text toggle', id: 'row-toggle', note: '', states: ['rest', 'hover', 'focus', 'pressed', 'pressedHover', 'pressedFocus', 'forced'], make: T.textToggle, extra: { cap: 'B alternative · a leading ink square, hollow then filled — rest, pressed', make: T.textToggleMark, cls: 'b-only' } },
-  { name: 'Segmented control', note: 'Three options sharing one hairline border (margin-right −1px); the picked one fills pen blue edge to edge, its border pen blue, and sits on top. D-06 gives an option no hover rule; the binder\'s thickening is drawn beside it so both can be judged.', states: ['rest', 'hoverNone', 'hoverBinder', 'focus', 'picked', 'pickedFocus', 'forced'], make: T.seg },
-  { name: 'Goldilocks axis', note: 'The head reserves its height marked or not; the inline state turns pen blue and Clear appears when a stop is picked. Tabbing in lands on the first stop, or the picked one. Hover thickens a stop\'s border inside its own box.', states: ['rest', 'hover', 'focus', 'picked', 'pickedFocus', 'forced'], make: T.axis },
-  { name: 'Defect chips and the declared toggle', note: 'Four chips, then Bitter after the wider gap with "· declared" as a sibling helper after the button (D-08). No hover rule per D-06; the binder\'s thickening drawn beside it for comparison.', states: ['rest', 'hoverNone', 'hoverBinder', 'focus', 'pressed', 'pressedFocus', 'forced'], make: T.chips },
-  { name: 'Checkbox', note: 'The step\'s Skipped checkbox: a 13px ink square drawn by the page, hover thickens inside the box, checked fills pen blue. Its label names it ("Step 3, skipped").', states: ['rest', 'hover', 'focus', 'checked', 'pickedFocus', 'forced'], make: T.checkbox },
-  { name: 'Date field', note: 'An ink field at the date width (128px); the browser\'s segment highlight is a named exception. Fields have no hover rule.', states: ['rest', 'focus', 'filled'], make: T.dateField },
-  { name: 'Numeric field with its unit word', note: 'A short figure at the numeric width (48px), right-aligned, the unit word set 4px beside the box. Invalid keeps the value in place and states the fault in a sentence beneath; 007 draws the invalid ring at the focus ring\'s weight.', states: ['rest', 'focus', 'filled', 'invalid'], make: T.numField },
-  { name: 'Prose field', note: 'The maker\'s words in the text face at note size, pen blue, no border at rest but a hairline baseline so a blank field is findable; grows with its text.', states: ['rest', 'focus', 'filled'], make: T.proseField },
-  { name: 'Field row', note: 'Three captions and fields as a wrapping flex row with the small gap, bottom-aligned, each label at its content\'s width; a caption reserves two lines so a wrapped one does not push its field down.', states: ['rest'], make: T.fieldRow },
-  { name: 'Status line', note: 'The form\'s live region: control size, note leading, at the prose measure.', states: ['rest'], make: T.status },
+  { name: 'Hairline button', rule: 'A lone hairline box is an action. 1px ink, no fill, and no picked state; hover is a 2px border with the padding giving the pixel back, so the box holds.',
+    history: 'Hover was 1.5px with half-pixel compensation; at DPR 1 the border drew as 1px and the box came out a pixel smaller (Impeccable, 2026-09-14). Whole pixels now.',
+    states: ['rest', 'hover', 'focus', 'forcedRest'], make: T.btn },
+  { name: 'Text control', rule: 'An underlined word is an inline action: control size, no border, a 1px ink underline offset 2px that goes to 1.5px on hover; 24px tall, 44px below 760px. Add tasting, Clear, add purpose, edit this step.',
+    states: ['rest', 'hover', 'focus', 'forcedRest'], make: T.textControl },
+  { name: 'Show changes', rule: 'An independent on/off in prose: the checkbox\'s square before the word, hollow at rest, pen blue when on; the underline stays hairline; hover thickens the square; focus rings square and word together. 32px tall at desktop and 44px below 760px, the same target as the checkbox and a defect.',
+    history: 'Variant A filled the whole word pen blue (D-21 as written); B, the leading square, was chosen 2026-09-14 because a pressed A looked like a plain text control. Both A forms sit under Earlier versions.',
+    states: ['rest', 'hover', 'focus', 'pressed', 'pressedHover', 'pressedFocus', 'forced', 'forcedFocus'], make: T.textToggle },
+  { name: 'Segmented control', rule: 'Joined boxes choose one from a set: words at their own widths sharing one hairline; the picked box fills pen blue and sits on top; a hovered box thickens to 2px in place and sits on top. Picking is final; Clear appears in the caption line once something is picked.',
+    history: 'D-06 gave an option no hover; the critique of 2026-09-14 asked for one hover treatment on every box. The no-hover option sits under Earlier versions. Until 2026-09-14 the sheet let a second click unpick an option and the segmented control had no Clear; a radio that silently empties on a confirming click is a trap, so both joined groups now clear the same way.',
+    states: PICK, make: s => T.seg(s) },
+  { name: 'Axis', rule: 'The same joined structure chooses one rating: five equal numbered cells, the axis name above, the anchors below. The picked cell fills; picking is final; Clear in the caption line is the only way back to not recorded, so an unanswered rating is never the midpoint; the head reserves its height marked or not.',
+    history: 'The stops were separated 34px boxes 4px apart until 2026-09-14; joined, the 186px and 216px tracks are kept, so a cell is 38px at desktop and 44px below 760px. The separated stops sit under Earlier versions.',
+    states: PICK, make: s => T.axis(s) },
+  { name: 'Defects', rule: 'Independent on/offs: a square and a word, no box, the whole word the target; several can be on at once. Two captioned groups as 007 draws them, Every recipe and This recipe only, so a second declared flaw lands in the second group. A compact wrapping row.',
+    history: 'These were boxed chips until the critique of 2026-09-14: a chip read as either an action or a record, and a checkbox removes the doubt. The chips sit under Earlier versions, still with the "· declared" suffix the sheet carried until 007\'s group captions replaced it.',
+    states: ON, make: T.defects },
+  { name: 'Checkbox', rule: 'The step\'s Skipped: the same rule as a defect. A 13px ink square fills pen blue when checked; the label takes the control height; focus rings square and word together.',
+    history: 'Its ring sat on the 13px input until 2026-09-14, when the three on/offs were given one focus rule.',
+    states: ['rest', 'hover', 'focus', 'checked', 'pickedFocus', 'forced', 'forcedFocus'], make: T.checkbox },
+  { name: 'Date field', rule: 'An ink field at the date width (128px); the browser\'s segment highlight is a named exception. Fields have no hover rule.',
+    states: ['rest', 'focus', 'filled'], make: T.dateField },
+  { name: 'Numeric field with its unit word', history: '48px (007 line 43) clipped "−12.5" and "120.5" at both font sizes; 56px holds both (measured 2026-09-14). "−120.5" would need 64px and no field here expects it.', rule: 'A figure at the numeric width (56px), right-aligned, the unit word 4px beside the box. Invalid keeps the value in place and states the fault in a sentence beneath; nothing rings the field, so the ring means focus only.',
+    history: '007 line 132 drew invalid at the focus ring\'s weight and offset, so the ring carried two meanings (Impeccable, 2026-09-14). The app already drew none.',
+    states: ['rest', 'focus', 'filled', 'invalid', 'invalidFocus'], make: T.numField },
+  { name: 'Prose field', rule: 'The maker\'s words in the text face at note size, pen blue, no border but a hairline baseline so a blank field is findable; grows with its text.',
+    states: ['rest', 'focus', 'filled'], make: T.proseField },
+  { name: 'Field row', rule: 'Captions and fields as a wrapping row with the small gap, bottom-aligned, each label at its content\'s width; a caption reserves two lines so a wrapped one does not push its field down.',
+    states: ['rest'], make: T.fieldRow },
+  { name: 'Status line', rule: 'The form\'s live region: control size, note leading, at the prose measure.',
+    states: ['rest'], make: T.status },
 ];
+
+/* ---------- the side-by-side grid: the four families, every state ---------- */
+const BOX_COLS = [
+  ['button · an action', s => T.btn(s)],
+  ['segmented · one of a set', s => T.seg(s)],
+  ['defects · any that apply', s => T.defects(s)],
+  ['axis · one rating', s => T.axis(s)],
+];
+const BOX_ROWS = [
+  ['rest · live', {}, true],
+  ['hover', { hover: true }],
+  ['focus', { focus: true }],
+  ['picked · a button has none', { on: true }],
+  ['picked + focus', { on: true, focus: true }],
+  ['high contrast · simulated', { on: true, forced: true }],
+  ['high contrast + focus', { on: true, focus: true, forced: true }],
+];
+function renderBoxes() {
+  const head = '<span class="cap rowhead"></span>' + BOX_COLS.map(([cap]) => `<span class="cap colhead"><b>${cap}</b></span>`).join('');
+  const body = BOX_ROWS.map(([cap, s, live]) => `<span class="cap rowhead">${cap}</span>` + BOX_COLS.map(([, make], i) => {
+    let st = s;
+    if (i === 0 && st.on) st = { ...st, on: false };
+    return `<div class="cell${live ? ' live' : ''}${st.forced ? ' forced' : ''}">${make(st)}</div>`;
+  }).join('')).join('');
+  document.getElementById('box-grid').innerHTML = head + body;
+}
 
 function cell(stateKey, row) {
   const s = STATES[stateKey];
-  const live = s.live ? ' live' : '';
-  const forced = s.forced ? ' forced' : '';
-  return `<div class="cell${live}${forced}"><span class="cap">${s.cap}</span>${row.make(s.none ? {} : s)}</div>`;
+  return `<div class="cell${s.live ? ' live' : ''}${s.forced ? ' forced' : ''}"><span class="cap">${s.cap}</span>${row.make(s)}</div>`;
 }
 
 function renderRows() {
-  document.getElementById('rows').innerHTML = ROWS.map(row => `<section${row.id ? ` id="${row.id}"` : ''}>
+  document.getElementById('rows').innerHTML = ROWS.map(row => `<section>
     <h2 class="region-name">${row.name}</h2>
-    <p class="helper"${row.id ? ' data-note' : ''}>${row.note}</p>
-    <div class="states">${row.states.map(k => cell(k, row)).join('')}${row.extra ? `<div class="cell ${row.extra.cls}"><span class="cap">${row.extra.cap}</span>${row.extra.make({})}</div>` : ''}</div>
+    <p class="helper">${row.rule}</p>
+    <div class="states">${row.states.map(k => cell(k, row)).join('')}</div>
+    ${row.history ? `<details><summary class="cap">history</summary><p class="helper">${row.history}</p></details>` : ''}
   </section>`).join('');
 
   const touch = [
-    ['button · 44 min', T.btn], ['text control · 44 min', T.textControl], ['text toggle, pressed', s => T.textToggle({ ...s, on: true })],
-    ['segmented · 44 min', s => T.seg({ ...s, on: true })], ['axis · 40×44 stops on 216px', s => T.axis({ ...s, on: true })],
-    ['chips · 44 min', s => T.chips({ ...s, on: true })], ['checkbox · no touch rule in 007 or the app', s => T.checkbox({ ...s, on: true })],
+    ['button · 44 min', T.btn], ['text control · 44 min', T.textControl], ['Show changes, on · 44', s => T.textToggle({ ...s, on: true })],
+    ['segmented · 44 min', s => T.seg({ ...s, on: true })], ['axis · five 44×44 cells on 216px', s => T.axis({ ...s, on: true })],
+    ['defects · 44 min', s => T.defects({ ...s, on: true })], ['checkbox · 44 min', s => T.checkbox({ ...s, on: true })],
     ['date field · 44 min, 1rem', s => T.dateField({ ...s, value: true })], ['numeric field · 44 min, 1rem', s => T.numField({ ...s, value: true })],
   ];
   document.getElementById('touch').innerHTML = `<div class="states">${touch.map(([cap, make]) => `<div class="cell live"><span class="cap">${cap}</span>${make({})}</div>`).join('')}</div>`;
 
+  const earlier = [
+    ['Show changes, on · variant A, the word filled', 'va', () => T.textToggle({ on: true })],
+    ['Show changes, on · variant A, fill on the word only', 'va', () => T.textToggleWord({ on: true })],
+    ['defects · boxed chips, on', '', () => T.chips({ on: true })],
+    ['axis · separated stops, picked', '', () => T.axis({ on: true }, true)],
+    ['segmented · no hover on an option (D-06), hovered', '', () => T.seg({ hover: true }, true)],
+    ['numeric field · invalid ringed at the focus weight (007)', '', () => `<label class="field"><span class="lbl">Out of machine</span><span class="field-unit"><input type="text" class="ink-field is-focus" value="cold" aria-invalid="true"><span class="u">°C</span></span><span class="field-error">Enter a temperature, such as −6, or leave blank.</span></label>`],
+  ];
+  document.getElementById('earlier-cells').innerHTML = earlier.map(([cap, c, make]) => `<div class="cell ${c}"><span class="cap">${cap}</span>${make()}</div>`).join('');
+
+  renderBoxes();
+
   // static cells are drawings: nothing in them takes focus or changes on a click
   document.querySelectorAll('.cell:not(.live) button, .cell:not(.live) input, .cell:not(.live) textarea').forEach(el => { el.tabIndex = -1; });
-  setVariant(variant);
+  syncScrollCue();
 }
 
 /* ---------- the live cells respond ---------- */
@@ -333,22 +468,24 @@ document.addEventListener('click', event => {
   if (!live) return;
   const stop = event.target.closest('.stop5');
   const opt = event.target.closest('.seg .opt');
-  const chip = event.target.closest('.chip-toggle');
+  const chip = event.target.closest('.chip-toggle, .defect');
   const toggle = event.target.closest('.text-toggle');
-  const clear = event.target.closest('.axis .clear');
-  if (stop || clear) {
+  const clear = event.target.closest('.clear');
+  // a joined group is a radio: a click picks, a second click on the pick changes nothing; Clear is the only way back
+  if (stop || (clear && clear.closest('.axis'))) {
     const axis = event.target.closest('.axis');
-    const wasOn = stop && stop.classList.contains('on');
-    axis.querySelectorAll('.stop5').forEach(b => { const on = !wasOn && b === stop; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+    axis.querySelectorAll('.stop5').forEach(b => { const on = !clear && b === stop; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
     const picked = axis.querySelector('.stop5.on');
     const state = axis.querySelector('.state');
     state.textContent = picked ? `(${Number(picked.dataset.i) + 1})` : '(Not recorded)';
     state.classList.toggle('pen', !!picked);
     axis.querySelector('.clear').hidden = !picked;
-    if (clear) axis.querySelector('.stop5').focus();
-  } else if (opt) {
-    const wasOn = opt.classList.contains('on');
-    opt.parentElement.querySelectorAll('.opt').forEach(b => { const on = !wasOn && b === opt; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+    if (clear && event.detail === 0) axis.querySelector('.stop5').focus(); // keyboard Clear: focus lands on the first cell with its ring; a mouse Clear leaves the browser's tab position where Clear was, so the next Tab reaches the first cell
+  } else if (opt || (clear && clear.closest('.segc'))) {
+    const segc = event.target.closest('.segc');
+    segc.querySelectorAll('.opt').forEach(b => { const on = !clear && b === opt; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(on)); });
+    segc.querySelector('.clear').hidden = !segc.querySelector('.opt.on');
+    if (clear && event.detail === 0) segc.querySelector('.opt').focus();
   } else if (chip || toggle) {
     const el = chip || toggle;
     const on = el.getAttribute('aria-pressed') !== 'true';
@@ -358,23 +495,25 @@ document.addEventListener('click', event => {
 });
 document.addEventListener('input', event => { if (event.target.matches('.live .prose-field')) { event.target.style.height = 'auto'; event.target.style.height = event.target.scrollHeight + 'px'; } });
 
-/* ---------- variant, width, annotation ---------- */
-let variant = 'A';
-const TOGGLE_NOTES = {
-  A: 'The recipe page\'s Show changes and Table as written. Variant A, the D-21 rule as written: a pressed text toggle fills pen blue with ground text and drops its underline — a hair of inline padding, offset by a negative margin, so the word does not move. Under forced colours the fill is stripped and the 2px outline stands in.',
-  B: 'The recipe page\'s Show changes and Table as written. Variant B: fill stays on boxed controls; a pressed text toggle carries the tick weight (2.5px) under it, the third underline weight after rest (1px) and hover (1.5px), ink only — it reads as pressed inside prose without turning into a button, and needs no forced-colours fallback. The alternative cell beside it tries a leading ink square instead.',
-};
-function setVariant(v) {
-  variant = v;
-  document.getElementById('app').dataset.variant = v;
-  document.querySelectorAll('.variant-tab').forEach(b => { const on = b.dataset.v === v; b.classList.toggle('active', on); b.setAttribute('aria-pressed', String(on)); });
-  const note = document.querySelector('#row-toggle [data-note]');
-  if (note) note.textContent = TOGGLE_NOTES[v];
-}
+/* ---------- width, phone sizes, scroll cue, annotation ---------- */
 function setWidth(w) {
   document.getElementById('frame').dataset.w = w;
   document.querySelectorAll('[data-w]').forEach(b => { if (b.tagName === 'BUTTON') { const on = b.dataset.w === w; b.classList.toggle('active', on); b.setAttribute('aria-pressed', String(on)); } });
+  syncTouch();
+  syncScrollCue();
 }
+// The whole sheet takes the below-760px sizes under the 393 preset and at a real narrow viewport, so every row is honest at phone width (Mark, 2026-09-14)
+const narrowSheet = matchMedia('(max-width: 760px)');
+function syncTouch() { document.getElementById('app').classList.toggle('touch', document.getElementById('frame').dataset.w === '393' || narrowSheet.matches); }
+narrowSheet.addEventListener('change', () => { syncTouch(); syncScrollCue(); });
+syncTouch();
+function syncScrollCue() {
+  const wrap = document.getElementById('box-wrap');
+  const scrolls = wrap.scrollWidth > wrap.clientWidth + 1;
+  wrap.classList.toggle('scrolls', scrolls);
+  document.getElementById('scroll-cue').classList.toggle('on', scrolls);
+}
+addEventListener('resize', syncScrollCue);
 let annotating = false;
 function toggleAnnotate() {
   annotating = !annotating;

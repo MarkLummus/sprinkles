@@ -1668,6 +1668,7 @@ export function RecipePage() {
             onToggleBitter={handleToggleBitter}
             onRemoveTasting={handleRemoveTasting}
             onUndoRemove={handleUndoRemove}
+            onAddTasting={handleAddTasting}
             openPen={openPen}
             penReason={penReason}
             onStartAmending={handleStartAmending}

@@ -118,12 +118,23 @@ describe('PenFoot — Add tasting beside the foot ceremony while the section is 
     expect(markup).not.toContain('Add tasting');
   });
 
-  it('renders Add tasting after the save ceremony, not before (the contract\'s own footer order)', () => {
+  it('renders Add tasting inside the save ceremony, before Cancel — the ninth round\'s own order (D-14, 007 lines 301-306)', () => {
     const markup = renderPenFoot({ openPen: 'record', tastingOpen: false });
     const ceremonyIndex = markup.indexOf('class="save-ceremony"');
     const addTastingIndex = markup.indexOf('Add tasting');
+    const cancelIndex = markup.indexOf('Cancel');
     expect(ceremonyIndex).toBeGreaterThanOrEqual(0);
     expect(addTastingIndex).toBeGreaterThan(ceremonyIndex);
+    expect(cancelIndex).toBeGreaterThan(addTastingIndex);
+  });
+
+  it('renders no Add tasting while a restore is pending (the foot has no restore slot to fill its place)', () => {
+    const markup = renderPenFoot({
+      openPen: 'record',
+      tastingOpen: false,
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).not.toContain('Add tasting');
   });
 
   it('renders no Add tasting control for the plan pen', () => {
@@ -132,48 +143,50 @@ describe('PenFoot — Add tasting beside the foot ceremony while the section is 
   });
 });
 
-describe('PenFoot — the undo footer slot, trailing Add tasting while a removal is pending and the section is absent (Task 2, contract "Feedback and undo lifecycle", "Undo placement rule")', () => {
-  it('renders no undo control at all with no removal pending', () => {
+describe('PenFoot — the foot ceremony carries no restore control in any state (007 lines 310-314; the restore slot lives only on BatchRow\'s own mount, ceremony A)', () => {
+  it('renders no restore control at all with no removal pending', () => {
     const markup = renderPenFoot({ openPen: 'record', tastingOpen: false, pendingUndo: null });
-    expect(markup).not.toContain('Undo clear tasting');
+    expect(markup).not.toContain('Restore tasting');
+    expect(markup).not.toContain('undo-control');
+    expect(markup).not.toContain('save-ceremony__status');
   });
 
-  it('renders "Undo clear tasting" trailing Add tasting when a removal is pending and the section is absent', () => {
+  it('renders no Restore tasting even while a removal is pending and the section is absent', () => {
     const markup = renderPenFoot({
       openPen: 'record',
       tastingOpen: false,
       pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
     });
-    expect(markup).toContain('Undo clear tasting');
-    const addTastingIndex = markup.indexOf('Add tasting');
-    const undoIndex = markup.indexOf('Undo clear tasting');
-    expect(undoIndex).toBeGreaterThan(addTastingIndex);
+    expect(markup).not.toContain('Restore tasting');
+    expect(markup).not.toContain('undo-control');
+    expect(markup).not.toContain('save-ceremony__status');
   });
 
-  it('renders the same footer undo for the amend pen', () => {
+  it('renders no restore control for the amend pen either', () => {
     const markup = renderPenFoot({
       openPen: 'amend',
       tastingOpen: false,
       pendingUndo: { tastedDate: '', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
     });
-    expect(markup).toContain('Undo clear tasting');
+    expect(markup).not.toContain('Restore tasting');
   });
 
-  it('renders no footer undo control while the tasting section is open — the undo moves to the head slot instead (the real DOM move)', () => {
+  it('renders no restore control while the tasting section is open — the foot has no restore slot at any tastingOpen state', () => {
     const markup = renderPenFoot({
       openPen: 'record',
       tastingOpen: true,
       pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
     });
-    expect(markup).not.toContain('Undo clear tasting');
+    expect(markup).not.toContain('Restore tasting');
+    expect(markup).not.toContain('undo-control');
   });
 
-  it('renders no undo control for the plan pen even with a pendingUndo value', () => {
+  it('renders no restore control for the plan pen even with a pendingUndo value', () => {
     const markup = renderPenFoot({
       openPen: 'plan',
       pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
     });
-    expect(markup).not.toContain('Undo clear tasting');
+    expect(markup).not.toContain('Restore tasting');
   });
 });
 
@@ -214,5 +227,30 @@ describe('SaveCeremony — the one component both mounts share (D-01)', () => {
   it('never renders a disabled Save batch button — no ceremony mount carries a completeness gate (D-02)', () => {
     const markup = renderCeremony({});
     expect(markup).not.toContain('disabled=""');
+  });
+
+  it('renders Add tasting before Cancel before Save batch when onAddTasting is given (D-14, 007 lines 304-306)', () => {
+    const markup = renderCeremony({ onAddTasting: noop });
+    const addTastingIndex = markup.indexOf('Add tasting');
+    const cancelIndex = markup.indexOf('Cancel');
+    const saveIndex = markup.indexOf('Save batch');
+    expect(addTastingIndex).toBeGreaterThanOrEqual(0);
+    expect(cancelIndex).toBeGreaterThan(addTastingIndex);
+    expect(saveIndex).toBeGreaterThan(cancelIndex);
+  });
+
+  it('renders Restore tasting before Cancel, with no Add tasting, when onRestore is given and onAddTasting is not (D-14, 007 lines 245, 505-510)', () => {
+    const markup = renderCeremony({ onRestore: noop });
+    const restoreIndex = markup.indexOf('Restore tasting');
+    const cancelIndex = markup.indexOf('Cancel');
+    expect(restoreIndex).toBeGreaterThanOrEqual(0);
+    expect(cancelIndex).toBeGreaterThan(restoreIndex);
+    expect(markup).not.toContain('Add tasting');
+  });
+
+  it('renders neither Restore tasting nor Add tasting when neither prop is given', () => {
+    const markup = renderCeremony({});
+    expect(markup).not.toContain('Restore tasting');
+    expect(markup).not.toContain('Add tasting');
   });
 });

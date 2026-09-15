@@ -369,7 +369,7 @@ Plans:
 - Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
 
 Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
-**Plans:** 4/6 plans executed
+**Plans:** 5/6 plans executed
 
 Plans:
 **Wave 1**
@@ -390,7 +390,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 03.3.1.1-05-PLAN.md — Add tasting | Cancel | Save batch in both ceremonies, Restore tasting, the record-status live region and the sketch's focus landings
+- [x] 03.3.1.1-05-PLAN.md — Add tasting | Cancel | Save batch in both ceremonies, Restore tasting, the record-status live region and the sketch's focus landings
 
 **Wave 6** *(blocked on Wave 5 completion)*
 

@@ -227,7 +227,7 @@ label.field { display: block; }
 <div class="app sheet" id="app">
   <header class="sheet-head">
     <h1 class="region-name">Every control, every state</h1>
-    <p class="helper">Three kinds of control. <b>Joined boxes</b> choose one from a set (a segmented control, the five-cell axis): the picked box fills pen blue. <b>A square and a word</b> record an independent yes or no (a checkbox, a defect, Show changes): the small square fills pen blue. <b>A lone hairline box or an underlined word</b> is an action; nothing fills.</p>
+    <p class="helper">Three kinds of control. <b>Joined boxes</b> choose one from a set (a segmented control, the five-cell axis): the picked box fills pen blue. <b>A square and a word</b> record an independent yes or no (a checkbox, a defect, Show changes): the small square fills pen blue. <b>A lone hairline box or an underlined word</b> is an action; nothing fills. Which action gets which: a hairline box commits, discards, or starts a new record — it is the ceremony, and it stands apart (Save batch, Cancel, Next version, Record batch). An underlined word acts on what is already on the page, and stands beside the thing it acts on (Correct, Clear, Add tasting, Remove tasting, edit this step). An underlined word that opens a panel beneath it is a disclosure: the panel is its open state, the word does not change (3 later versions, 1 later batch).</p>
     <p class="helper">A joined group is a radio: picking is final, and Clear appears in the caption line once something is picked, so an unrecorded answer is never mistaken for a middle one. Hover thickens a border to 2px in place; nothing moves. Focus is one 2px ring offset 2px around the whole control, and it means focus only. Invalid is a sentence beneath the field, never a ring. In high contrast, selection stays a fill in the system's Highlight colour. Measured fields take their width tokens, not the column.</p>
     <p class="cap"><b>cells, left to right:</b> rest (live) · hover · focus · picked or on · picked + focus · high contrast, simulated · high contrast + focus. The last section shows the retired alternatives.</p>
   </header>
@@ -276,6 +276,7 @@ label.field { display: block; }
       <li>Status line at the prose measure, 65ch.</li>
       <li>Show changes 32px tall at desktop, 44px below 760px, as the checkbox and a defect.</li>
       <li>Joined cells keep the 186px and 216px tracks: 38px cells at desktop, 44px below 760px.</li>
+      <li>Box or word: a hairline box commits, discards, or starts a new record and stands apart; an underlined word acts on what is already on the page and stands beside it; a word that opens a panel beneath it is a disclosure whose open state is the panel. All nineteen controls across 003 and 007 fit with no exception (Mark, 2026-09-14).</li>
       <li>Joined groups are radios: picking is final, Clear in the caption line is the way back, and the caption line reserves Clear's height so nothing moves.</li>
     </ul>
   </section>

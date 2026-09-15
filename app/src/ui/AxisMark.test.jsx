@@ -3,11 +3,12 @@
 // before it is saved (G-02-6). Rebuilt in 03.3.1-03 Task 2 around the real
 // battery shape (domain/axes.js's AXES: { key, name, low, high, group })
 // and the five whole stops, with per-stop aria-labels, inline state text,
-// and a per-axis Clear that returns focus and announces through the
-// caller (never inside this leaf — the announcement is a page-level
-// live region, RecipePage's own form-status). Renders through
-// renderToStaticMarkup (react-dom/server) in the existing node Vitest
-// environment (A-4) — no click driver; click-again-clears and the actual
+// and a per-axis Clear that announces through the caller (never inside
+// this leaf — the announcement is a page-level live region, RecipePage's
+// own form-status) and returns focus only on a keyboard activation
+// (007 @ 2a212be line 379). Renders through renderToStaticMarkup
+// (react-dom/server) in the existing node Vitest environment (A-4) — no
+// click driver; a joined group is a radio (line 362) and the actual
 // focus/announce sequence are structural here, verified in the browser.
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';

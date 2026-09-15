@@ -4,9 +4,9 @@ current_phase: 03.3.1.1
 current_phase_name: Record pen conformance polish
 status: planning
 stopped_at: Phase 03.3.1.1 context gathered
-last_updated: "2026-09-15T03:12:47.000Z"
-last_activity: 2026-09-14
-last_activity_desc: The 008 rule carried into 007 (2a212be) and 003 (d89b758), DESIGN.md bridged (a0126a2); re-cite running, then plan
+last_updated: "2026-09-15T11:27:26.000Z"
+last_activity: 2026-09-15
+last_activity_desc: Control language carried into 007/003/DESIGN.md, figure settled (D), research re-cited; ready for /gsd-plan-phase 03.3.1.1
 state_head: d66030f5a70681bb0389fa6bc12caba431dd1166
 progress:
   total_phases: 9
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 03.3.1.1 — Record pen conformance polish
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-14 — the 008 rule carried into 007 (2a212be) and 003 (d89b758), DESIGN.md bridged (a0126a2); re-cite running, then plan
+Last activity: 2026-09-15 — control language carried into 007/003/DESIGN.md, the recorded figure settled (D), research re-cited (f531b39); ready to plan
 
 Progress: [█░░░░░░░░░] 11% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -253,6 +253,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-15T01:54:57.000Z
-Stopped at: Tasks 9 and 10 done; task 11 (re-cite against 2a212be / d89b758 / 3a5beed) running as a researcher agent; next /gsd-plan-phase 03.3.1.1
+Last session: 2026-09-15T11:27:26.000Z
+Stopped at: Tasks 9–11 done; paused before the planner at Mark's request. Next: /gsd-resume-work then /gsd-plan-phase 03.3.1.1, then /gsd-sketch --wrap-up
 Resume file: .planning/phases/03.3.1.1-record-pen-conformance-polish-close-the-untriaged-ui-gaps-fr/.continue-here.md

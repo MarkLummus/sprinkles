@@ -225,7 +225,7 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
-  test('the eight caption rules read --type-label at weight 500', () => {
+  test('the ten caption rules read --type-label at weight 500', () => {
     for (const selector of [
       '.headnote__version-field span',
       '.headnote__reason-field span',
@@ -235,6 +235,8 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
       '.method-step__uses legend',
       '.method-step__skipped-label',
       '.versions__lineage-label',
+      '.pen-caption',
+      '.axis-mark__name',
     ]) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to carry the caption role`).toBeTruthy();
@@ -243,15 +245,12 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     }
   });
 
-  test('the axis name is the finding\'s named exception: --type-label at weight 600, down from 15px weight 400', () => {
-    // .axis-mark__legend is retired (03.3.1-06 Task 1): AxisMark.jsx was
-    // rebuilt to the battery's shape in 03.3.1-03 Task 2, and its own
-    // caption span reads .axis-mark__name — the same weight/size
-    // exception this test has always named, on its current selector.
-    const rule = ruleFor('.axis-mark__name');
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-label\)/);
-    expect(rule.declarations).toMatch(/font-weight:\s*600/);
-    expect(rule.declarations).not.toMatch(/var\(--size-table-body\)/);
+  test('.pen-caption carries the sketch\'s own uppercase/tracking/gap declarations (sketch 007 @ 2a212be lines 36 + 156, D-10)', () => {
+    const rule = ruleFor('.pen-caption');
+    expect(rule, 'expected a .pen-caption rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/margin:\s*0 0 var\(--gap-xs\)/);
+    expect(rule.declarations).toMatch(/text-transform:\s*uppercase/);
+    expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
   test('the five helper and status sentences read the control role (13px)', () => {
@@ -306,6 +305,28 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
     expect(rule.declarations).toMatch(/min-height:\s*var\(--text-control-min\)/);
     expect(tokens['--text-control-min']).toBe('24px');
+  });
+});
+
+describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
+  test('.field-unit .ink-field reads the 56px figure width', () => {
+    const rule = ruleFor('.field-unit .ink-field');
+    expect(rule, 'expected a .field-unit .ink-field rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/width:\s*var\(--field-w-figure\)/);
+    expect(resolveTokenPx(tokens, '--field-w-figure')).toBe(56);
+  });
+
+  test('.field-row__label--date reads the 128px date width', () => {
+    const rule = ruleFor('.field-row__label--date');
+    expect(rule, 'expected a .field-row__label--date rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/width:\s*var\(--field-w-date\)/);
+    expect(resolveTokenPx(tokens, '--field-w-date')).toBe(128);
+  });
+
+  test('.field-row .pen-caption reserves the two-line caption height', () => {
+    const rule = ruleFor('.field-row .pen-caption');
+    expect(rule, 'expected a .field-row .pen-caption rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines\)/);
   });
 });
 

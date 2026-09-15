@@ -54,30 +54,37 @@ function unitWords(unit) {
   return unit;
 }
 
-// One battery measured field (contract "Controls spec"): text-mode,
-// inputMode="decimal" — never type="number", so a malformed value stays
-// in place rather than being rejected before validation runs. The
-// .field-error line renders inside the label and is wired by
-// aria-describedby exactly as the contract specifies; aria-invalid tracks
-// the same fact. Shared by both sections — the three churn measurements
-// and the tasting field-row's own two (03.3.1-03 Task 1) — since the
-// contract's rule is identical either side of the churn/tasting line.
+// One battery measured field (contract "Controls spec"; sketch 007 @
+// 2a212be lines 37-44; D-13): text-mode, inputMode="decimal" — never
+// type="number", so a malformed value stays in place rather than being
+// rejected before validation runs. The unit word is a sibling after the
+// input, never concatenated into the caption (007 lines 42-44: the root
+// cause of UAT item 2) — the aria-label keeps the spelled-out unit for
+// the field's accessible name. The .field-error line renders inside the
+// label and is wired by aria-describedby exactly as the contract
+// specifies; aria-invalid tracks the same fact. Shared by both sections —
+// the three churn measurements and the tasting field-row's own two
+// (03.3.1-03 Task 1) — since the contract's rule is identical either
+// side of the churn/tasting line.
 function MeasuredField({ field, value, error, onChange, inputRef }) {
   const errorId = `field-error-${field.key}`;
   return (
-    <label className="batch-margin__field">
-      <span>{`${field.label}, ${field.unit}`}</span>
-      <input
-        type="text"
-        inputMode="decimal"
-        className="ink-field"
-        aria-label={`${field.label}, ${unitWords(field.unit)}`}
-        aria-invalid={error ? 'true' : undefined}
-        aria-describedby={error ? errorId : undefined}
-        value={value}
-        ref={inputRef}
-        onChange={(event) => onChange(field.key, event.target.value)}
-      />
+    <label className="field-row__label">
+      <span className="pen-caption">{field.label}</span>
+      <span className="field-unit">
+        <input
+          type="text"
+          inputMode="decimal"
+          className="ink-field"
+          aria-label={`${field.label}, ${unitWords(field.unit)}`}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? errorId : undefined}
+          value={value}
+          ref={inputRef}
+          onChange={(event) => onChange(field.key, event.target.value)}
+        />
+        <span className="field-unit__unit">{field.unit}</span>
+      </span>
       {error && (
         <span id={errorId} className="field-error">
           {error}
@@ -436,12 +443,16 @@ export function BatchRow({
       <div className={mode === 'recording' ? 'batch-margin batch-margin--pen' : 'batch-margin'}>
         {mode === 'recording' ? (
           <>
-            {/* The churned date, this event's identifying field (D-05),
-                as the grid's first cell, then the three numeric churn
-                measurements beside it (contract "DOM order inventory"). */}
-            <div className="batch-row__cells">
-              <label className="batch-margin__field">
-                <span>churned</span>
+            {/* The churn row (sketch 007 @ 2a212be lines 210-216; D-12
+                "Churn date" replaces "churned"): a .field-row holding the
+                128px Churn date field, this event's identifying field
+                (D-05), then the three numeric churn measurements beside
+                it (contract "DOM order inventory"). .batch-row__cells
+                stays only for the read view below — the pen no longer
+                uses it. */}
+            <div className="field-row">
+              <label className="field-row__label field-row__label--date">
+                <span className="pen-caption">Churn date</span>
                 <input
                   type="date"
                   className="ink-field"

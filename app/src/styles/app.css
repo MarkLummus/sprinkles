@@ -1358,22 +1358,6 @@ textarea {
   margin-top: var(--gap-xs);
 }
 
-/* The three churn number fields (Time to temperature, Draw temperature,
-   Air), sized to a short figure rather than the full row (2026-09-10
-   checkpoint feedback, G-03.3-4): scoped by [type='number'] so the three
-   prose fields beside them (textarea/text input, no .ink-field class)
-   stay at their own measure, untouched. */
-.batch-margin__field .ink-field[type='number'] {
-  width: var(--field-w-figure);
-}
-
-/* The churned date, sized like the ceremony's own date field (2026-09-10
-   live review, G-03.3-4): it moved into this grid as the pen field's
-   first cell, so it reads through the same date-width token. */
-.batch-margin__field .ink-field[type='date'] {
-  width: var(--field-w-date);
-}
-
 /* The batch row's measured values, as labelled cells at figure size
    (sketch 003 variant B, 03.3-01) — replaces the old .batch-margin__measured
    list rendering, which had no consumer left once BatchMargin.jsx's
@@ -1570,6 +1554,88 @@ textarea {
   margin: var(--gap-hair) 0 0;
 }
 
+/* The pen's own caption role (sketch 007 @ 2a212be lines 36 + 156; contract
+   "Visual treatment" § "Captions"; D-10, D-11): the sketch's `.lbl`, copying
+   `.batch-row__cell-label`'s shape exactly (the same caption role already
+   proven in this file) — uppercase by text-transform so the source stays
+   sentence case for screen readers. Every field caption, axis name and
+   segmented caption in the record pen reads this role. */
+.pen-caption {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--type-label);
+  font-weight: 500;
+  line-height: var(--leading-section);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--gap-xs);
+}
+
+/* A helper sentence beside a caption, never inside it (sketch 007 @
+   2a212be line 169; cross-cutting § Type roles): plain lowercase sentence
+   case, always a SIBLING of the uppercase caption element. */
+.pen-helper {
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+  line-height: var(--leading-helper);
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* The sketch's field row (007 @ 2a212be lines 37-44; D-13): a label sits at
+   its own content width and wraps whole rather than being forced onto the
+   row's fixed grid; the numeric box's unit word is a sibling after the
+   input, never concatenated into the caption. */
+.field-row {
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.field-row__label {
+  display: block;
+  flex: 0 0 auto;
+  margin: 0 0 var(--gap-s);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-table-body);
+}
+
+.field-row__label--date {
+  width: var(--field-w-date);
+}
+
+/* Two lines reserved (007 line 39): a short and a long caption in the same
+   field row keep their fields bottom-aligned on one baseline. */
+.field-row .pen-caption {
+  display: flex;
+  align-items: flex-end;
+  line-height: var(--leading-table);
+  min-height: var(--caption-two-lines);
+}
+
+.field-unit {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-field-unit);
+}
+
+.field-unit .ink-field {
+  width: var(--field-w-figure);
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.field-unit__unit {
+  font-size: var(--size-deviation-words);
+  white-space: nowrap;
+  line-height: var(--leading-control);
+}
+
 /* The battery's axis-mark control (contract "Axes spec"/"Controls spec";
    sketch-findings-sprinkles references/batch-record-tasting-battery.md
    "CSS Patterns"; 03.3.1-06 Task 1): replaces the nine-stop D-16 rules
@@ -1592,15 +1658,18 @@ textarea {
   margin-bottom: var(--gap-xs);
 }
 
-/* The axis name is the finding's named caption exception: it drops from
-   the table-body register (15px, weight 400) to the caption role at
-   weight 600 — unchanged from the retired .axis-mark__legend rule this
-   replaces; only the selector moved, to match AxisMark.jsx's own
-   .axis-mark__name. */
+/* The axis name is a caption like any other (sketch 007 @ 2a212be line
+   157): the tenth round brought its weight down from 600 to 500 — "the
+   caption's weight: both label an input; 600 is for region names only"
+   (D-10; UAT item 19). The weight-600 "named exception" this rule used to
+   describe is retired; the axis name now reads .pen-caption's own role by
+   value, uppercase by transform so the source stays sentence case. */
 .axis-mark__name {
   font-family: var(--face-grotesk);
   font-size: var(--type-label);
-  font-weight: 600;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* Inline state text (contract "Axes spec"): "(3)" reads pen-blue once
@@ -1981,14 +2050,18 @@ textarea {
    PenFoot.jsx and BatchRow.jsx mount) are allowed to wrap rather than
    force a single overflowing row. A second top-level @media block,
    sibling to the one above — never nested inside it (css-source.js's
-   one-level contract, WR-02). This codebase's fields already stack
-   label-above-input (.batch-margin__field's own flex-direction: column),
-   so the contract's "field-row label widths" tweak has no side-by-side
-   label to narrow here; the font-size step covers the same "the record
-   reads comfortably at 600px" goal in this layout. */
+   one-level contract, WR-02). The sketch's own "field-row label widths"
+   tweak (007 line 139) now has a real side-by-side label to narrow —
+   .field-row__label — once Task 1's field-row family lands; the prose
+   fields keep their own .batch-margin__field, label-above-input shape,
+   untouched by this rule. */
 @media (max-width: 600px) {
   .recipe-page {
     padding: var(--gap-m);
+  }
+
+  .field-row__label {
+    max-width: 100%;
   }
 
   .batch-margin__field,

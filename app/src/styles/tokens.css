@@ -33,9 +33,10 @@
      the note role reads it. */
   --type-section: 0.875rem; /* section headings: 14px, weight 600, leading 1.35 */
   --leading-section: 1.35;
-  --type-label: 0.75rem; /* compact field captions: 12px, weight 500 (axis names 600) */
+  --type-label: 0.75rem; /* compact field captions: 12px, weight 500 — every caption, axis names included since the tenth round (007 line 157) */
   --type-control: 0.8125rem; /* actionable choices, helper text, status: 13px, and text controls (003 line 32) */
   --leading-control: 1.3; /* the control role's leading (sketch 003 @ d89b758 line 32, 007 lines 164-166, sketch 008 line 36) */
+  --leading-helper: 1.4; /* a helper sentence's own leading (007 line 169; sketch 008 line 36) */
   --leading-figure: 1.1; /* the recorded figure's own leading (003 line 88) — a leading is a size and reads a token */
   --text-control-min: 24px; /* an underlined word is an inline action (003 line 32; 007 line 131) — 24px tall at desktop; 44px below 760px rides --touch-min */
   --type-note: 1rem; /* written notes: 16px, leading 1.5, at --measure-prose */
@@ -103,12 +104,20 @@
   --rule-ink-field: 1px;
   --size-ink-field: 0.9375rem;
 
-  /* The record pen's field widths (2026-09-10 checkpoint feedback): a
-     date or short figure field reads at the width its own input actually
-     needs, not the full page-width row it inherited once 03.3-06/07
-     widened the batch row to span the page. */
-  --field-w-date: 12ch;
-  --field-w-figure: 6ch;
+  /* The record pen's field widths (sketch 007 @ 2a212be lines 41 + 43;
+     03.3.1.1 D-13 as amended by D-01/D-22): a date field reads at 128px,
+     the width its own input actually needs; a numeric field reads at
+     56px beside its unit word — "48px clipped '−12.5' and '120.5'; 56px
+     holds both" (the sketch's own comment, measured 2026-09-14). The
+     live HTML supersedes D-13's literal 48px call, per D-01. */
+  --field-w-date: 128px;
+  --field-w-figure: 56px;
+  /* The gap between a figure box and its unit word (007 line 42). */
+  --gap-field-unit: 4px;
+  /* A field-row caption reserves two lines of height so a short and a
+     long caption in one row keep their fields on one baseline (007 line
+     39; sketch 008 line 49 names this token). */
+  --caption-two-lines: 2.4em;
 
   /* This table's own horizontal cell padding (G-03-11, D-UAT-6): tightened
      to half of what the general small gap gave it before (--gap-s, 12px),

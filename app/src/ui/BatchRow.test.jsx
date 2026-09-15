@@ -205,9 +205,9 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       draft: { ...emptyRecordDraft, churnDate: '2026-08-09' },
     });
     expect(markup).toMatch(
-      /<label class="batch-margin__field"><span>churned<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
+      /<label class="field-row__label field-row__label--date"><span class="pen-caption">Churn date<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
     );
-    const churnDateIndex = markup.indexOf('<span>churned</span>');
+    const churnDateIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
     const timeToDrawIndex = markup.indexOf('Time to draw temp.');
     const outOfMachineIndex = markup.indexOf('Out of machine');
     const churnDurationIndex = markup.indexOf('Churn duration');
@@ -229,13 +229,41 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     expect(nextTimeIndex).toBeGreaterThan(ceremonyIndex);
   });
 
+  it('renders the unit word as a sibling after the box, never in the caption (sketch 007 lines 42-44, UAT item 2)', () => {
+    const markup = renderBatchRow({
+      openPen: 'record',
+      mode: 'recording',
+      draft: emptyRecordDraft,
+    });
+    expect(markup).toMatch(
+      /<span class="pen-caption">Time to draw temp\.<\/span><span class="field-unit"><input[^>]*aria-label="Time to draw temp\., minutes"[^>]*\/><span class="field-unit__unit">min<\/span><\/span>/,
+    );
+    expect(markup).not.toContain('Time to draw temp., min<');
+  });
+
+  it('renders the churn row as one field row holding the date label and the three measured labels (sketch 007 lines 210-216)', () => {
+    const markup = renderBatchRow({
+      openPen: 'record',
+      mode: 'recording',
+      draft: emptyRecordDraft,
+    });
+    const fieldRowIndex = markup.indexOf('<div class="field-row">');
+    const churnDateCaptionIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
+    const exitConsistencyIndex = markup.indexOf('Exit consistency');
+    expect(fieldRowIndex).toBeGreaterThanOrEqual(0);
+    expect(fieldRowIndex).toBeLessThan(churnDateCaptionIndex);
+    const churnRowSlice = markup.slice(fieldRowIndex, exitConsistencyIndex);
+    const labelCount = churnRowSlice.split('class="field-row__label').length - 1;
+    expect(labelCount).toBe(4);
+  });
+
   it('renders the same field-grid-then-ceremony placement while amending', () => {
     const markup = renderBatchRow({
       openPen: 'amend',
       mode: 'recording',
       draft: { ...emptyRecordDraft, churnDate: '2026-08-02' },
     });
-    expect(markup).toMatch(/<span>churned<\/span><input[^>]*type="date"[^>]*value="2026-08-02"/);
+    expect(markup).toMatch(/<span class="pen-caption">Churn date<\/span><input[^>]*type="date"[^>]*value="2026-08-02"/);
     expect(markup).toContain('class="save-ceremony"');
     expect(markup).toContain('Save batch');
   });
@@ -534,7 +562,8 @@ describe('BatchRow — the melt block (contract "DOM order inventory")', () => {
     const defectsIndex = markup.indexOf('defects-row');
     const meltBlockIndex = markup.indexOf('melt-block');
     expect(meltBlockIndex).toBeGreaterThan(defectsIndex);
-    expect(markup).toContain('Melt test (optional), g lost at 20 min');
+    expect(markup).toContain('<span class="pen-caption">Melt test (optional)</span>');
+    expect(markup).toContain('<span class="field-unit__unit">g lost at 20 min</span>');
   });
 
   it('renders Melt style (optional) as a radiogroup with the contract\'s own three options', () => {

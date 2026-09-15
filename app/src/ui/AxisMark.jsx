@@ -17,13 +17,15 @@ import { STOPS, stopWordsFor } from '../domain/axes.js';
 // group }. `value` is the marked stop (1–5) or `undefined` for an
 // unmarked axis — matching no stop, so nothing renders checked (D-16 — a
 // half step is retired; an unmarked axis is not a three). `onChange(stop)`
-// fires on a stop click: the same stop clicked again clears (click-again-
-// clears, contract "Blank stays blank"). `onClear()` fires only from the
-// explicit per-axis Clear control — the one path the contract's own
-// "{Axis name} cleared." announcement is wired to, kept out of onChange so
-// re-clicking a stop (a silent clear) can never also announce. Clear also
-// returns focus to the scale's first stop, held locally since this
-// component alone knows which DOM node that is.
+// fires on a stop click: a joined group is a radio (007 @ 2a212be line
+// 362) — a second click on the picked stop changes nothing; Clear is the
+// only way back. `onClear()` fires only from the explicit per-axis Clear
+// control — the one path the contract's own "{Axis name} cleared."
+// announcement is wired to. Clear also returns focus to the scale's first
+// stop, but only on a keyboard activation (line 379) — a mouse Clear
+// leaves the browser's sequential-focus starting point on Clear so the
+// next Tab reaches the first cell with its ring; a script-focused cell
+// after a pointer click would show no ring.
 export function AxisMark({ axis, value, onChange, onClear, declaredCaption = null }) {
   const nameId = `axis-name-${axis.key}`;
   const groupName = `axis-${axis.key}`;
@@ -33,19 +35,22 @@ export function AxisMark({ axis, value, onChange, onClear, declaredCaption = nul
   const stopRefs = useRef([]);
 
   function handleStopClick(stop) {
-    onChange(value === stop ? null : stop);
+    onChange(stop);
   }
 
-  function handleClear() {
+  // event.detail is the click count for a mouse click, and 0 for a
+  // keyboard activation (Enter/Space) — the one signal that tells the
+  // two apart. Moving focus unconditionally would fight the mouse's own
+  // focus placement (007 line 379).
+  function handleClear(event) {
     onClear();
-    firstStopRef.current?.focus();
+    if (event.detail === 0) firstStopRef.current?.focus();
   }
 
   // Home/End only — arrow-key movement is native. Focuses and selects the
-  // first/last stop directly (never via .click(), which would run
-  // handleStopClick's click-again-clears toggle — a move to an already-
-  // checked end must always select it, never clear it, matching arrow-key
-  // behavior).
+  // first/last stop directly (never via .click(), which would fight
+  // React's controlled-input contract) — a move to an already-checked end
+  // must always select it, matching arrow-key behavior.
   function handleStopsKeyDown(event) {
     if (event.key !== 'Home' && event.key !== 'End') return;
     event.preventDefault();

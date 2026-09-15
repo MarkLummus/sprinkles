@@ -1012,11 +1012,11 @@ export function RecipePage() {
   }
 
   // The three segmented controls (exit consistency, airiness, melt style)
-  // share one handler: clicking the already-picked option clears it
-  // (contract "Blank stays blank" — click-again clears), clicking any
-  // other option picks it. BatchRow calls this from each option's onClick,
-  // never onChange, since a native radio's onChange does not re-fire on a
-  // click that leaves its value unchanged.
+  // share one handler: a joined group is a radio (007 @ 2a212be line
+  // 362) — picking is final, so this always stores the clicked option.
+  // BatchRow calls this from each option's onClick, never onChange, since
+  // a native radio's onChange does not re-fire on a click that leaves its
+  // value unchanged.
   function handleChangeSegment(field, value) {
     // No BATTERY_FIELDS entry is ever keyed by a segment field (WR-03) —
     // nothing of this field's own to clear, and clearing the whole map
@@ -1027,16 +1027,15 @@ export function RecipePage() {
     // Melt style is a tasting-body field among the three this handler
     // shares (Exit consistency and Airiness are churn-section fields).
     if (isTastingBodyField(field)) setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, [field]: prev[field] === value ? '' : value }));
+    setDraft((prev) => ({ ...prev, [field]: value }));
   }
 
-  // An axis stop click (contract "Axes spec"): setMark's own
-  // presence-over-truthiness discipline handles both marking and
-  // click-again-clears (stop === null) — this handler never announces,
-  // since re-clicking a stop is a silent clear (only the per-axis Clear
-  // control announces, below). Every axis lives inside the tasting body,
-  // so a mark change always retires a pending undo (Task 2's retirement
-  // scope) — unconditionally, unlike the two generic setters above.
+  // An axis stop click (contract "Axes spec"; 007 line 362): a joined
+  // group is a radio — this handler always stores the clicked stop and
+  // never announces (only the per-axis Clear control announces, below).
+  // Every axis lives inside the tasting body, so a mark change always
+  // retires a pending undo (Task 2's retirement scope) — unconditionally,
+  // unlike the two generic setters above.
   function handleChangeRecordMark(axisKey, stop) {
     // An axis key is never a BATTERY_FIELDS key (WR-03) — nothing of
     // this field's own to clear.
@@ -1048,12 +1047,11 @@ export function RecipePage() {
 
   // The per-axis Clear control (contract "Axes spec", "Feedback and undo
   // lifecycle"): clears the mark and announces "{Axis name} cleared." to
-  // form-status — the one path that writes this specific announcement,
-  // kept out of handleChangeRecordMark above so a stop's own click-again
-  // never also announces. Focus return to the axis's first stop is
-  // AxisMark's own concern (it holds the DOM ref); this handler owns only
-  // state and the announcement. Retires a pending undo unconditionally,
-  // same as every other tasting-body edit (Task 2).
+  // form-status — the one path that writes this specific announcement.
+  // Focus return to the axis's first stop is AxisMark's own concern (it
+  // holds the DOM ref and gates the move on a keyboard activation); this
+  // handler owns only state and the announcement. Retires a pending undo
+  // unconditionally, same as every other tasting-body edit (Task 2).
   function handleClearAxisMark(axisKey, axisName) {
     setBlockedDateMessage(null);
     setPendingUndo(null);
@@ -1061,11 +1059,24 @@ export function RecipePage() {
     announce(`${axisName} cleared.`);
   }
 
+  // The per-segment Clear control (007 lines 220, 228, 289, 375-381; Plan
+  // 04 wires it): the same shape as handleClearAxisMark above — clears
+  // the field and announces "{caption} cleared." to form-status. Same
+  // retirement boundary as handleChangeSegment (only Melt style is a
+  // tasting-body field among the three).
+  function handleClearSegment(field, label) {
+    setBlockedDateMessage(null);
+    if (isTastingBodyField(field)) setPendingUndo(null);
+    setDraft((prev) => ({ ...prev, [field]: '' }));
+    announce(`${label} cleared.`);
+  }
+
   // A defect chip's own toggle (contract "Controls spec"): a picked chip
-  // joins the draft's defects list, an unpicked one leaves it — no default
-  // ever, click-again clears exactly like every other battery control.
-  // The defects row is inside the tasting body, so a toggle always
-  // retires a pending undo (Task 2).
+  // joins the draft's defects list, an unpicked one leaves it — no
+  // default ever; a defect is an independent on/off (007 line 428), so a
+  // second click on the same chip clears it, unlike a stop or segmented
+  // option. The defects row is inside the tasting body, so a toggle
+  // always retires a pending undo (Task 2).
   function handleChangeDefect(defect) {
     setBlockedDateMessage(null);
     setFormStatus('');
@@ -1650,6 +1661,7 @@ export function RecipePage() {
             restoreAttempt={restoreAttempt}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
+            onClearSegment={handleClearSegment}
             onChangeRecordMark={handleChangeRecordMark}
             onClearAxisMark={handleClearAxisMark}
             onChangeDefect={handleChangeDefect}

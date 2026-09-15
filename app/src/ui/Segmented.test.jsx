@@ -3,7 +3,8 @@
 // (optional): one component, three uses, per 03.3.1-03 Task 1's own
 // artifact list. In the existing house style: renderToStaticMarkup
 // (react-dom/server), the node test environment, no jsdom, no
-// testing-library, no click driver — click-again-clears is structural
+// testing-library, no click driver — a joined group is a radio
+// (007 @ 2a212be line 362), picking is final, and that is structural
 // (onClick, not onChange) and is verified in the browser (RESEARCH.md
 // Pitfall 4's sibling discipline for interaction-only behavior).
 import { describe, it, expect } from 'vitest';

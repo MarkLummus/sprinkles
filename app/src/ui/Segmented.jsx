@@ -3,15 +3,15 @@
 // established pattern for keyboard semantics it gets free (AxisMark.jsx's
 // header comment). One home for all three uses (Exit consistency,
 // Airiness (estimated), Melt style (optional)) rather than three
-// near-duplicate renderings. Clicking the checked option again clears it
-// (contract "Blank stays blank" — click-again clears): a native radio's
-// onChange does not re-fire for a click that leaves its value unchanged,
-// so the clear-on-reclick logic lives in onClick, with a no-op onChange to
-// keep React's controlled-input contract happy. onChange is called with
-// the picked option string, or null when the checked option is clicked
-// again — the caller decides how a null is stored (03.3.1-02's own
-// blank-is-absent discipline). No option is ever pre-picked: `value` is
-// expected to be '' (or any string matching no option) for a fresh field.
+// near-duplicate renderings. A joined group is a radio (007 @ 2a212be
+// line 362): picking is final — a second click on the picked option
+// changes nothing. Clear, in the control's own caption line (Plan 04
+// adds it), is the way back. The click stays on onClick, with a no-op
+// onChange to keep React's controlled-input contract happy: a native
+// radio's onChange does not re-fire for a click that leaves its value
+// unchanged, so onClick is the one path that always fires. No option is
+// ever pre-picked: `value` is expected to be '' (or any string matching
+// no option) for a fresh field.
 export function Segmented({ groupLabel, options, value, onChange }) {
   const groupName = `segment-${groupLabel.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
   return (
@@ -24,7 +24,7 @@ export function Segmented({ groupLabel, options, value, onChange }) {
             value={option}
             checked={value === option}
             onChange={() => {}}
-            onClick={() => onChange(value === option ? null : option)}
+            onClick={() => onChange(option)}
           />
           <span>{option}</span>
         </label>

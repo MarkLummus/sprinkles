@@ -215,7 +215,7 @@ function TastingReading({ batch }) {
   ];
   return (
     <div className="tasting-reading">
-      <h3>Tasting</h3>
+      <h3 className="region-name">Tasting</h3>
       <p className="batch-row__dates">
         {`tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`}
       </p>
@@ -235,7 +235,7 @@ function TastingReading({ batch }) {
                 <span className="batch-row__unit"> °C</span>
               </>
             ) : (
-              <span className="batch-row__unit">not measured</span>
+              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
             )}
           </span>
         </div>
@@ -248,14 +248,14 @@ function TastingReading({ batch }) {
                 <span className="batch-row__unit"> g lost at 20 min</span>
               </>
             ) : (
-              <span className="batch-row__unit">not measured</span>
+              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
             )}
           </span>
         </div>
         <div className="batch-row__cell">
           <span className="batch-row__cell-label">Melt style</span>
           <span className="batch-row__cell-value">
-            {batch.tasting.meltStyle ?? <span className="batch-row__unit">not measured</span>}
+            {batch.tasting.meltStyle ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
           </span>
         </div>
       </div>
@@ -702,7 +702,7 @@ export function BatchRow({
                       <span className="batch-row__unit"> min</span>
                     </>
                   ) : (
-                    <span className="batch-row__unit">not measured</span>
+                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
                   )}
                 </span>
                 {targetValueFor(version, 'come-up') && (
@@ -718,7 +718,7 @@ export function BatchRow({
                       <span className="batch-row__unit"> °C</span>
                     </>
                   ) : (
-                    <span className="batch-row__unit">not measured</span>
+                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
                   )}
                 </span>
               </div>
@@ -731,20 +731,20 @@ export function BatchRow({
                       <span className="batch-row__unit"> min</span>
                     </>
                   ) : (
-                    <span className="batch-row__unit">not measured</span>
+                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
                   )}
                 </span>
               </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Exit consistency</span>
                 <span className="batch-row__cell-value">
-                  {openBatch.churn.exitConsistency ?? <span className="batch-row__unit">not measured</span>}
+                  {openBatch.churn.exitConsistency ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
                 </span>
               </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Airiness</span>
                 <span className="batch-row__cell-value">
-                  {openBatch.churn.airiness ?? <span className="batch-row__unit">not measured</span>}
+                  {openBatch.churn.airiness ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
                 </span>
               </div>
               <div className="batch-row__cell">

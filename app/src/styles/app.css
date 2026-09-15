@@ -55,12 +55,15 @@ select:disabled {
   cursor: default;
 }
 
-/* .text-control (sketch 003 variant B, index.html:32-34; 03.1 Gap 1
-   override): the underline-only opt-out from the button/select binder
-   above, for the named per-step/per-row controls RESEARCH.md calls out as
-   text controls rather than bordered buttons — no border, an ink
-   underline reading the same token pair the `a` rule below already uses
-   for its own underline. */
+/* .text-control (sketch 003 @ d89b758 line 32; 007 line 131; D-15
+   supersession list, 03.1 Gap 1 override): the underline-only opt-out
+   from the button/select binder above, for the named per-step/per-row
+   controls RESEARCH.md calls out as text controls rather than bordered
+   buttons — no border, an ink underline reading the same token pair the
+   `a` rule below already uses for its own underline. An underlined word
+   is an inline action: the control role's size and leading, 24px tall at
+   desktop (--text-control-min; 44px below 760px, the 759.98px block
+   below). */
 .text-control {
   appearance: none;
   border: none;
@@ -69,7 +72,9 @@ select:disabled {
   padding: 0;
   color: var(--ink);
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--type-control);
+  line-height: var(--leading-control);
+  min-height: var(--text-control-min);
   cursor: pointer;
   text-decoration: underline;
   text-decoration-thickness: var(--rule-ink-field);
@@ -1394,10 +1399,17 @@ textarea {
   letter-spacing: 0.04em;
 }
 
+/* The recorded figure (sketch 003 @ d89b758 line 88; CONTEXT.md "The
+   recorded figure", candidate D, Mark 2026-09-14): a recorded value reads
+   at the weight of the maker's words — the note size at the prose
+   weight, in pen blue — not the balance figure's own 1.25rem/700, which
+   stays in ink as the page's one heavy element (.graduated-rule and
+   every figure rule are untouched). */
 .batch-row__cell-value {
   font-family: var(--face-grotesk);
-  font-size: var(--size-figure-value);
-  font-weight: 700;
+  font-size: var(--type-note);
+  font-weight: 400;
+  line-height: var(--leading-figure);
   color: var(--pen-blue);
   font-variant-numeric: tabular-nums;
 }
@@ -1428,6 +1440,13 @@ textarea {
 .batch-row__unit {
   font-size: var(--size-deviation-words);
   font-weight: 400;
+}
+
+/* An absence is not a record (sketch 003 @ d89b758 lines 88, 242: the
+   Air cell's `<span class="u absent">not measured</span>`; Impeccable
+   critique 2026-09-15, P2): ink, at the unit's own size. */
+.batch-row__unit--absent {
+  color: var(--ink);
 }
 
 /* A measured cell's plan/technical-term sub-line (sketch 003 variant B,
@@ -1921,11 +1940,11 @@ textarea {
    declaration, so binder.test.js's no-bare-px gate never sees it, and
    the fractional value keeps exactly 760px on the desktop side of the
    boundary, matching the finding's verified-at-768 desktop compactness.
-   The .text-control controls are inline underlined text and deliberately
-   take no min-height: an inline box takes no height, and padding-based
-   growth would wreck their flow (unchanged by this plan). The version
-   row also collapses to one column here (sketch 003 @ d89b758 line 71;
-   D-15; UAT item 1). */
+   The sketches' text controls are `<button>`s, inline-block, and take
+   24px tall at desktop and 44px here (sketch 003 @ d89b758 lines 32 and
+   178; 007 lines 131 and 180; settled on sketch 008, 2026-09-14). The
+   version row also collapses to one column here (sketch 003 @ d89b758
+   line 71; D-15; UAT item 1). */
 @media (max-width: 759.98px) {
   button,
   select,
@@ -1946,6 +1965,10 @@ textarea {
 
   .recipe-band__row-version {
     grid-template-columns: 1fr;
+  }
+
+  .text-control {
+    min-height: var(--touch-min);
   }
 }
 

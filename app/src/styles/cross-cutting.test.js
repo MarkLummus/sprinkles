@@ -77,21 +77,25 @@ describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch 
     expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
   });
 
-  test('the media block carries exactly the four rules 03.3.1-06 Task 2 and 03.3.1.1-01 Task 1 name', () => {
+  test('the media block carries exactly the five rules 03.3.1-06 Task 2 and 03.3.1.1-01 Tasks 1 and 3 name', () => {
     const mediaRules = rules.filter((r) => r.media !== undefined && r.media === '(max-width: 759.98px)');
     expect(mediaRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option',
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
       '.recipe-band__row-version',
+      '.text-control',
     ]);
   });
 
-  test('the .text-control exclusion is real: no media rule gives the inline controls a min-height', () => {
-    // .text-control is inline underlined text; an inline box takes no
-    // height and padding-based growth would wreck its flow.
-    const controlRules = rules.filter((r) => r.media !== undefined && r.selector.includes('.text-control'));
-    expect(controlRules).toEqual([]);
+  test('the 759.98px block gives .text-control its own min-height (sketch 003 line 178, 007 line 180; settled 2026-09-14)', () => {
+    // Superseded: .text-control controls are <button>s, inline-block, and
+    // do take a minimum height — 24px at desktop (the bare rule), 44px
+    // here, matching every other control in the block.
+    const rule = mediaRuleFor('.text-control');
+    expect(rule, 'expected a media-scoped .text-control rule').toBeTruthy();
+    expect(rule.media).toBe('(max-width: 759.98px)');
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
   });
 });
 
@@ -283,6 +287,25 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     const rule = ruleFor('.prose-field');
     expect(rule.declarations).toMatch(/font-size:\s*inherit/);
     expect(rule.declarations).toMatch(/line-height:\s*inherit/);
+  });
+
+  test('the recorded figure reads the note size at the prose weight, in pen blue (sketch 003 line 88, D-15)', () => {
+    const rule = ruleFor('.batch-row__cell-value');
+    expect(rule, 'expected a .batch-row__cell-value rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+    expect(rule.declarations).toMatch(/font-weight:\s*400/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--pen-blue\)/);
+    const absentRule = ruleFor('.batch-row__unit--absent');
+    expect(absentRule, 'expected a .batch-row__unit--absent rule').toBeTruthy();
+    expect(absentRule.declarations).toMatch(/color:\s*var\(--ink\)/);
+  });
+
+  test('.text-control reads the control role at a 24px minimum height (sketch 003 line 32, 007 line 131, D-15)', () => {
+    const rule = ruleFor('.text-control');
+    expect(rule, 'expected a .text-control rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--text-control-min\)/);
+    expect(tokens['--text-control-min']).toBe('24px');
   });
 });
 

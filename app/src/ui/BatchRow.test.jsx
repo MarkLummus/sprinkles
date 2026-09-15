@@ -751,10 +751,10 @@ describe("BatchRow — the record's reading state, measured values as cells (con
   it('reads exit consistency and airiness as "not measured" when the batch left them blank', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Exit consistency<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Exit consistency<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Airiness<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Airiness<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
     );
   });
 
@@ -838,14 +838,14 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   it('renders the caption as bare "Tasting" with no summary span, even with marked axes and a declared flaw', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).not.toContain('tasting-reading__summary');
-    expect(markup).toMatch(/<h3>\s*Tasting\s*<\/h3>/);
+    expect(markup).toMatch(/<h3 class="region-name">\s*Tasting\s*<\/h3>/);
   });
 
   it('renders no summary line span when nothing is marked and nothing is declared', () => {
     const bareBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, marks: {}, bitterDeclared: null } };
     const markup = renderBatchRow({ openBatch: bareBatch, batches: [bareBatch], mode: 'reading' });
     expect(markup).not.toContain('tasting-reading__summary');
-    expect(markup).toMatch(/<h3>\s*Tasting\s*<\/h3>/);
+    expect(markup).toMatch(/<h3 class="region-name">\s*Tasting\s*<\/h3>/);
   });
 
   it('reads the tasted date as "date unknown" when absent, never invented', () => {
@@ -876,13 +876,13 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     };
     const markup = renderBatchRow({ openBatch: blankBatch, batches: [blankBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Melt style<\/span><span class="batch-row__cell-value"><span class="batch-row__unit">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Melt style<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
     );
   });
 

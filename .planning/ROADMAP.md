@@ -369,7 +369,7 @@ Plans:
 - Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
 
 Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
-**Plans:** 1/6 plans executed
+**Plans:** 2/6 plans executed
 
 Plans:
 **Wave 1**
@@ -378,7 +378,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03.3.1.1-02-PLAN.md — The pen's captions, field rows, widths and words against sketch 007: uppercase captions, the churn/tasting/melt rows, 128px/56px fields with the unit beside, the bare tasting head, Next time, placeholders, no "(optional)"
+- [x] 03.3.1.1-02-PLAN.md — The pen's captions, field rows, widths and words against sketch 007: uppercase captions, the churn/tasting/melt rows, 128px/56px fields with the unit beside, the bare tasting head, Next time, placeholders, no "(optional)"
 
 **Wave 3** *(blocked on Wave 2 completion)*
 

@@ -347,6 +347,7 @@ Plans:
 **Requirements**: None new — every item below is a conformance gap against `.claude/skills/sketch-findings-sprinkles/references/batch-record-tasting-battery-structure.md`, logged verbatim in `.planning/phases/03.3.1-the-full-battery-the-record-pen-rebuilt-from-sketch-007/03.3.1-UAT.md`'s "Untriaged Notes" section
 **Depends on:** Phase 03.3.1
 **Phase notes**: Source list (verbatim from 03.3.1-UAT.md, captured at the achieved ~579px width — the true 393px floor is a separate known page-shell issue, not in scope here):
+
 - Version section is too narrow; should flow between recipe description and Batch section
 - In Batch section, "Time to draw temp., min" caption wraps
 - Field text boxes for Time to draw temp, Out of machine, Churn duration are too big for the values
@@ -371,12 +372,28 @@ Mark noted "many other errors" beyond this list — the phase plan should includ
 **Plans:** 6 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 03.3.1.1-01-PLAN.md — Page shell against sketch 003: the stack below 1100, the version row's collapse, the 393 overflow, Correct on the Batch head line, aria-controls, the recorded figure, text controls at the control size
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 03.3.1.1-02-PLAN.md — The pen's captions, field rows, widths and words against sketch 007: uppercase captions, the churn/tasting/melt rows, 128px/56px fields with the unit beside, the bare tasting head, Next time, placeholders, no "(optional)"
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 03.3.1.1-03-PLAN.md — The shared control rules: pen-blue fill when picked, 2px ring on the box, 2px hover, forced-colours fill, the defect as a square and a word, joined stops, the caption line that reserves Clear, and the radio rule
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 03.3.1.1-04-PLAN.md — The segmented caption line with Clear on all three controls; the defects as two labelled groups inside the axes grid with the cue rows; the declared caption, helper and aria-label retired
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 03.3.1.1-05-PLAN.md — Add tasting | Cancel | Save batch in both ceremonies, Restore tasting, the record-status live region and the sketch's focus landings
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
 - [ ] 03.3.1.1-06-PLAN.md — The orchestrator-run conformance pass (gating, autonomous: false): both tabs at the ten D-16 widths in the three states, written to 03.3.1.1-CONFORMANCE.md
 
 ### Phase 4: Prepare the next version for making

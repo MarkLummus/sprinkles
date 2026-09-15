@@ -369,7 +369,7 @@ Plans:
 - Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
 
 Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
-**Plans:** 2/6 plans executed
+**Plans:** 3/6 plans executed
 
 Plans:
 **Wave 1**
@@ -382,7 +382,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 03.3.1.1-03-PLAN.md — The shared control rules: pen-blue fill when picked, 2px ring on the box, 2px hover, forced-colours fill, the defect as a square and a word, joined stops, the caption line that reserves Clear, and the radio rule
+- [x] 03.3.1.1-03-PLAN.md — The shared control rules: pen-blue fill when picked, 2px ring on the box, 2px hover, forced-colours fill, the defect as a square and a word, joined stops, the caption line that reserves Clear, and the radio rule
 
 **Wave 4** *(blocked on Wave 3 completion)*
 

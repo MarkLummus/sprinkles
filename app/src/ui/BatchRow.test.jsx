@@ -66,6 +66,7 @@ function renderBatchRow(props) {
         onToggleBitter={noop}
         onRemoveTasting={noop}
         onUndoRemove={noop}
+        onAddTasting={noop}
         openPen={null}
         penReason={null}
         onStartAmending={noop}
@@ -389,26 +390,26 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
     expect(markup).toMatch(/<p class="tasting-status pen-helper" role="status" aria-live="polite"><\/p>/);
   });
 
-  it('carries two aria-live="polite" regions total — tasting-status in the head, form-status at the foot (this plan\'s own verify)', () => {
+  it('carries three aria-live="polite" regions total — tasting-status in the head, ceremony A\'s own record-status, form-status at the foot (Task 2\'s own addition of ceremony A\'s status region)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     const occurrences = markup.split('aria-live="polite"').length - 1;
-    expect(occurrences).toBe(2);
+    expect(occurrences).toBe(3);
   });
 
   it('renders no undo control at all with no removal pending', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).not.toContain('undo-control');
-    expect(markup).not.toContain('Undo clear tasting');
+    expect(markup).not.toContain('Restore tasting');
   });
 
-  it('renders the Undo control in the tasting head — the contract\'s own static mount — while the section is visible and a removal is pending (a reopened section after a data removal)', () => {
+  it('renders the Restore tasting control in the tasting head — the contract\'s own static mount — while the section is visible and a removal is pending (a reopened section after a data removal, 007 line 245)', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
       pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
     });
-    expect(markup).toContain('Undo clear tasting');
-    const undoIndex = markup.indexOf('Undo clear tasting');
+    expect(markup).toContain('Restore tasting');
+    const undoIndex = markup.indexOf('Restore tasting');
     const removeIndex = markup.indexOf('>Remove tasting<');
     expect(removeIndex).toBeGreaterThan(undoIndex);
   });
@@ -746,6 +747,71 @@ describe('BatchRow — the record pen\'s own blocked-date sentence, beside cerem
   it('renders no hint paragraph when the message is unset', () => {
     const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft, blockedDateMessage: null });
     expect(markup).not.toContain('save-ceremony__hint');
+  });
+});
+
+describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the ninth round\'s own order (D-14, 007 lines 301-306, 484, 505-510)', () => {
+  it('renders Add tasting after class="save-ceremony" and before Cancel when the section is absent and no restore is pending', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: false }, pendingUndo: null });
+    const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
+    const addTastingIndex = markup.indexOf('Add tasting', ceremonyIndex);
+    const cancelIndex = markup.indexOf('Cancel', ceremonyIndex);
+    expect(ceremonyIndex).toBeGreaterThanOrEqual(0);
+    expect(addTastingIndex).toBeGreaterThan(ceremonyIndex);
+    expect(cancelIndex).toBeGreaterThan(addTastingIndex);
+  });
+
+  it('renders Restore tasting before Cancel and no Add tasting when a restore is pending and the section is absent', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: false },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
+    const restoreIndex = markup.indexOf('Restore tasting', ceremonyIndex);
+    const cancelIndex = markup.indexOf('Cancel', ceremonyIndex);
+    expect(restoreIndex).toBeGreaterThan(ceremonyIndex);
+    expect(cancelIndex).toBeGreaterThan(restoreIndex);
+    const ceremonyMarkup = markup.slice(ceremonyIndex);
+    expect(ceremonyMarkup).not.toContain('Add tasting');
+  });
+
+  it('renders neither Add tasting nor Restore tasting in ceremony A while the section is open', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
+    const ceremonyMarkup = markup.slice(ceremonyIndex);
+    expect(ceremonyMarkup).not.toContain('Add tasting');
+    expect(ceremonyMarkup).not.toContain('Restore tasting');
+  });
+
+  it('renders the removal toast in ceremony A\'s own status region, before Restore tasting (007 lines 303, 561; Task 2)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: false },
+      recordStatus: 'Tasting removed. You can restore it.',
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).toMatch(
+      /<div class="save-ceremony"><p class="save-ceremony__status pen-helper" role="status" aria-live="polite">Tasting removed\. You can restore it\.<\/p>/,
+    );
+    const statusIndex = markup.indexOf('save-ceremony__status');
+    const restoreIndex = markup.indexOf('Restore tasting');
+    expect(restoreIndex).toBeGreaterThan(statusIndex);
+  });
+
+  it('renders the empty status paragraph first, even with no toast — the live region exists before it speaks (007 line 303)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: false },
+      recordStatus: '',
+    });
+    expect(markup).toMatch(
+      /<p class="save-ceremony__status pen-helper" role="status" aria-live="polite"><\/p>/,
+    );
   });
 });
 

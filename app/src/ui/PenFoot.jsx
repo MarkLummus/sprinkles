@@ -1,18 +1,44 @@
-import { useEffect, useRef } from 'react';
-
-// The one save ceremony (D-01, 03.3.1-02): Cancel | Save batch, same
-// markup and same label wherever it mounts — the record pen's foot
+// The one save ceremony (D-01, 03.3.1-02; the ninth round, D-14 — the
+// contract's footer order reversed): both mounts — the record pen's foot
 // (this file's own PenFoot below) and the end of the record (BatchRow,
-// ceremony A) both render this exact component, differing only in
-// placement. hint is the record pen's own blocked-date sentence (D-05),
-// read from the one RecipePage state both mounts share, so the two can
-// never disagree. Save is never disabled here — the tasting completeness
-// gate this ceremony's ancestor once carried is retired with D-02; the
-// only block either mount can show is the hint text beside it.
-export function SaveCeremony({ onCancel, onSave, hint }) {
+// ceremony A) — render this exact component and read, in DOM order, Add
+// tasting | Cancel | Save batch, right-aligned at every width (007 @
+// 109733d lines 55, 301-306, 310-314, 484). Restore tasting stands in the
+// opener's own place while a restore is pending (lines 245, 303, 505-510)
+// — the foot has no restore slot at all (lines 310-314), so only
+// ceremony A's own mount is ever given onRestore. hint is the record
+// pen's own blocked-date sentence (D-05), read from the one RecipePage
+// state both mounts share, so the two can never disagree. Save is never
+// disabled here — the tasting completeness gate this ceremony's ancestor
+// once carried is retired with D-02; the only block either mount can show
+// is the hint text beside it. status is ceremony A's own live region —
+// the removal toasts' home (007 line 303; the ninth round, Pattern 5) —
+// rendered FIRST so it reads before the hint or any control; the foot's
+// own mount passes no status, so it renders no region at all.
+export function SaveCeremony({
+  onCancel,
+  onSave,
+  hint,
+  status,
+  onAddTasting = null,
+  addTastingRef = null,
+  onRestore = null,
+  restoreRef = null,
+}) {
   return (
     <div className="save-ceremony">
+      {typeof status === 'string' && (
+        <p className="save-ceremony__status pen-helper" role="status" aria-live="polite">
+          {status}
+        </p>
+      )}
       {hint && <p className="save-ceremony__hint">{hint}</p>}
+      {onRestore && (
+        <button type="button" className="text-control undo-control" ref={restoreRef} onClick={onRestore}>Restore tasting</button>
+      )}
+      {onAddTasting && (
+        <button type="button" className="text-control save-ceremony__add-tasting" ref={addTastingRef} onClick={onAddTasting}>Add tasting</button>
+      )}
       <button type="button" onClick={onCancel}>
         Cancel
       </button>
@@ -34,17 +60,16 @@ export function SaveCeremony({ onCancel, onSave, hint }) {
 // given are the same ones the ceremony calls, and penHint is the page's
 // own one derivation (RecipePage, beside canSaveOver) — so there is one
 // save path and one save hint per pen, never a second copy (RESEARCH.md
-// Pattern 2, T-03.1-03). Add tasting (D-01, 03.3.1-03) mounts beside this
-// ceremony, in the same controls block, exactly while `tastingOpen` is
-// false — the contract's own footer order ("Cancel | Save batch | Add
-// tasting"); it hides itself the instant the section opens, since the
-// record then already offers the section it names.
+// Pattern 2, T-03.1-03). Add tasting (D-01, 03.3.1-03; reordered first by
+// the ninth round's D-14) mounts inside the ceremony itself, exactly while
+// `tastingOpen` and `pendingUndo` are both false — the foot renders no
+// restore slot at all (007 lines 310-314; that control lives only on
+// ceremony A's own mount, BatchRow.jsx).
 export function PenFoot({
   openPen,
   canSaveOver,
   penHint,
   tastingOpen,
-  removeTastingAttempt = null,
   pendingUndo = null,
   onCancelDeveloping,
   onSaveAsNewVersion,
@@ -54,17 +79,6 @@ export function PenFoot({
   onAddTasting,
   onUndoRemove,
 }) {
-  // Remove tasting's own focus landing (D-01, contract "Focus landings":
-  // both hidden-mode removal paths move focus to Add tasting) — the same
-  // WR-01 attempt-counter pattern as BatchRow's own churnDateRef/
-  // tastedDateRef effects, so a second consecutive removal still re-fires
-  // even though Add tasting was already on screen. Must sit above the
-  // early return below — hooks cannot be called conditionally.
-  const addTastingRef = useRef(null);
-  useEffect(() => {
-    if (removeTastingAttempt != null) addTastingRef.current?.focus();
-  }, [removeTastingAttempt]);
-
   if (openPen === null) return null;
 
   return (
@@ -94,24 +108,12 @@ export function PenFoot({
           </>
         )}
         {(openPen === 'record' || openPen === 'amend') && (
-          <>
-            <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={penHint} />
-            {!tastingOpen && (
-              <button type="button" className="text-control" ref={addTastingRef} onClick={onAddTasting}>
-                Add tasting
-              </button>
-            )}
-            {/* The undo footer slot (contract "Undo placement rule"):
-                trailing Add tasting, while a removal is pending and the
-                section is absent — the DOM move's other home is the
-                tasting head slot (BatchRow), while the section is
-                visible. */}
-            {pendingUndo && !tastingOpen && (
-              <button type="button" className="text-control undo-control" onClick={onUndoRemove}>
-                Undo clear tasting
-              </button>
-            )}
-          </>
+          <SaveCeremony
+            onCancel={onCancelRecording}
+            onSave={onSaveBatch}
+            hint={penHint}
+            onAddTasting={!tastingOpen && !pendingUndo ? onAddTasting : null}
+          />
         )}
       </div>
     </footer>

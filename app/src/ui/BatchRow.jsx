@@ -300,8 +300,10 @@ export function BatchRow({
   addTastingAttempt = null,
   formStatus = '',
   tastingStatus = '',
+  recordStatus = '',
   pendingUndo = null,
   restoreAttempt = null,
+  removeTastingAttempt = null,
   onChangeRecordField,
   onChangeSegment,
   onClearSegment,
@@ -311,6 +313,7 @@ export function BatchRow({
   onToggleBitter,
   onRemoveTasting,
   onUndoRemove,
+  onAddTasting,
   openPen = null,
   penReason = null,
   onStartAmending,
@@ -360,6 +363,21 @@ export function BatchRow({
   useEffect(() => {
     if (restoreAttempt != null) removeTastingButtonRef.current?.focus();
   }, [restoreAttempt]);
+
+  // The removal sequence's own focus landing (D-01, contract "Focus
+  // landings"; the ninth round, 007 lines 542, 560): fires once per
+  // removal attempt — the end-of-record ceremony's own Add tasting after
+  // an empty removal, Restore tasting after a data removal — reading
+  // pendingUndo from the same render that carried the attempt counter
+  // (RecipePage sets both in the same batch, so this effect never races;
+  // Pitfall 8 — these refs are ceremony A's own, never PenFoot's).
+  const addTastingRef = useRef(null);
+  const restoreRef = useRef(null);
+  useEffect(() => {
+    if (removeTastingAttempt == null) return;
+    if (pendingUndo) restoreRef.current?.focus();
+    else addTastingRef.current?.focus();
+  }, [removeTastingAttempt]);
 
   // The axes' own arrangement (contract "Keyboard and tab order") — see
   // useBelow760's own header comment for the node-environment guard.
@@ -510,39 +528,37 @@ export function BatchRow({
               />
             </label>
             {/* The tasting section (D-01, contract "Settled defaults"):
-                hidden until Add tasting opens it (PenFoot renders that
-                control) — the record opens with no heading, no helper, no
-                rule at all. Variant A's own order once open: the
-                field-row, then the note (before the texture block, which
-                arrives in Task 2), then the defects row and the melt
-                block (Task 3). */}
+                hidden until Add tasting opens it (SaveCeremony renders
+                that control, both mounts) — the record opens with no
+                heading, no helper, no rule at all. Variant A's own order
+                once open: the field-row, then the note (before the
+                texture block, which arrives in Task 2), then the defects
+                row and the melt block (Task 3). */}
             {draft.tastingOpen && (
               <>
-                {/* The tasting head (sketch 007 @ 2a212be lines 242-246;
+                {/* The tasting head (sketch 007 @ 109733d lines 242-246;
                     G-03.3.1-4; UAT items 6, 18): a bare region-name
                     "Tasting" — the two helper spans ("· optional",
                     "— leave anything you did not record blank") are gone,
                     a plain .head with no reserved caption-line height (that
                     reserve is the axes' and categories' own, not this
                     row's). The tasting-status live region beside the
-                    action, the undo head slot — the contract's own static
-                    mount; in hidden mode a removal always collapses the
-                    section, so this slot renders in practice only on a
+                    action, the Restore tasting slot — the contract's own
+                    static mount; in hidden mode a removal always collapses
+                    the section, so this slot renders in practice only on a
                     reopened section (Add tasting pressed again) while a
-                    prior removal's undo is still pending — then the
-                    Remove/Clear control, "Remove tasting" verbatim in
-                    hidden mode (Pitfall 6: the always-visible mode's
-                    "Clear tasting" label is never built), right-aligned
-                    (007 line 246, `margin-left: auto`). */}
+                    prior removal's own restore is still pending — then the
+                    Remove control, "Remove tasting" verbatim in hidden
+                    mode (Pitfall 6: the always-visible mode's "Clear
+                    tasting" label is never built), right-aligned (007 line
+                    246, `margin-left: auto`). */}
                 <div className="tasting-head">
                   <h3 className="region-name">Tasting</h3>
                   <p className="tasting-status pen-helper" role="status" aria-live="polite">
                     {tastingStatus}
                   </p>
                   {pendingUndo && (
-                    <button type="button" className="text-control undo-control" onClick={onUndoRemove}>
-                      Undo clear tasting
-                    </button>
+                    <button type="button" className="text-control undo-control" onClick={onUndoRemove}>Restore tasting</button>
                   )}
                   <button
                     type="button"
@@ -705,8 +721,26 @@ export function BatchRow({
                 open, after the churn section when it is not, just above
                 the shared Next time. Its hint is the record pen's own
                 blocked-date sentence — the same state ceremony B
-                (PenFoot) reads, so the two can never disagree. */}
-            <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={blockedDateMessage} />
+                (PenFoot) reads, so the two can never disagree. Add
+                tasting stands beside it exactly while the section is
+                absent and no restore is pending (007 line 484); Restore
+                tasting takes the opener's own place while a restore is
+                pending and the section is absent (007 lines 505-510) —
+                the head slot above carries it once the section reopens.
+                status is the end-of-record ceremony's own live region
+                (007 line 303) — the removal toasts' home (the ninth
+                round, Pattern 5); addTastingRef/restoreRef are the
+                removal focus landing's own refs (Pitfall 8). */}
+            <SaveCeremony
+              onCancel={onCancelRecording}
+              onSave={onSaveBatch}
+              hint={blockedDateMessage}
+              status={recordStatus}
+              onAddTasting={!draft.tastingOpen && !pendingUndo ? onAddTasting : null}
+              addTastingRef={addTastingRef}
+              onRestore={pendingUndo && !draft.tastingOpen ? onUndoRemove : null}
+              restoreRef={restoreRef}
+            />
             {/* Next time (sketch 007 line 307; UAT item 14; D-12): carries
                 its own visible caption and the sketch's e.g. placeholder,
                 verbatim. */}

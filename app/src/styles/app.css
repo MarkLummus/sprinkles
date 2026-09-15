@@ -287,16 +287,22 @@ textarea {
   gap: var(--gap-m);
   border-bottom: var(--rule-baseline) solid var(--ink);
   padding-bottom: var(--gap-m);
+  min-width: 0; /* sketch 003 @ d89b758 lines 49-53: every area gets
+     min-width: 0 so a wide table or long word cannot force a grid track
+     past the viewport — the direct cause of the 393 band overflow
+     STATE.md recorded (D-15). */
 }
 
-/* The version row's own two-column split (carried forward unchanged from
-   the retired side-by-side .recipe-band): the recipe block at the prose
-   measure on the left, VersionRow's metadata and acts on the right,
-   closed by a graduation-weight rule separating it from the batch row
-   beneath. */
+/* The version row's own two-column split: the headnote at 1.6fr on the
+   left, VersionRow's metadata at a 300px floor on the right (sketch 003 @
+   d89b758 line 69, `minmax(0, 1.6fr) minmax(300px, 1fr)`; D-15; UAT item
+   1) — the grid no longer clamps the headnote to the prose measure itself
+   (`.headnote` keeps its own `max-width`, 003 line 70), and the metadata
+   column can never be squeezed below its own floor. Closed by a
+   graduation-weight rule separating it from the batch row beneath. */
 .recipe-band__row-version {
   display: grid;
-  grid-template-columns: minmax(0, var(--measure-prose)) 1fr;
+  grid-template-columns: minmax(0, 1.6fr) minmax(var(--vmeta-min), 1fr);
   gap: var(--gap-l);
   align-items: start;
   padding-bottom: var(--gap-m);
@@ -658,10 +664,12 @@ textarea {
 
 .ingredient-table-region {
   grid-area: ingredients;
+  min-width: 0; /* sketch 003 @ d89b758 lines 49-53 (D-15) */
 }
 
 .method-region {
   grid-area: method;
+  min-width: 0; /* sketch 003 @ d89b758 lines 49-53 (D-15) */
 }
 
 .side-region {
@@ -669,6 +677,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: var(--gap-l);
+  min-width: 0; /* sketch 003 @ d89b758 lines 49-53 (D-15) */
 }
 
 /* The foot band (route-recipe.md § 3 "The imprint"; D-26): shown only
@@ -1858,6 +1867,42 @@ textarea {
   border-top: var(--rule-graduation) solid var(--ink);
 }
 
+/* The page-shell ladder's first step (sketch 003 @ d89b758 line 48;
+   D-15; UAT items 15, 16): below 1100px (the sketch's `relayout()`
+   threshold, line 511, `want < 1100`, expressed here as a viewport
+   max-width) the page stacks to one column — band, ingredients, side,
+   method, foot, side BEFORE method — and the column gap narrows to
+   --gap-m. This block changes columns and gap ONLY: the paper's 48px
+   page padding (--gap-xl) holds until the 600px block below shrinks it
+   to --gap-m (003 line 178) — no padding declaration lives here. The
+   foot band (.pen-foot) mirrors .recipe-page's own columns (desktop
+   rules above) and must collapse with it, or the ceremony would sit in
+   a phantom second column. The 1099.98px prelude is the one sanctioned
+   breakpoint literal in the file, alongside 759.98px below: a prelude,
+   not a declaration, so binder.test.js's no-bare-px gate never sees it,
+   and the fractional value keeps exactly 1100px on the desktop side of
+   the boundary. */
+@media (max-width: 1099.98px) {
+  .recipe-page {
+    grid-template-columns: 1fr;
+    gap: var(--gap-m);
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'method'
+      'foot';
+  }
+
+  .pen-foot {
+    grid-template-columns: 1fr;
+  }
+
+  .pen-foot__controls {
+    grid-column: 1;
+  }
+}
+
 /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
    references/cross-cutting-type-spacing-feedback.md): the app's first
    at-rule, placed after every existing rule so css-source.js's first-match
@@ -1877,7 +1922,9 @@ textarea {
    boundary, matching the finding's verified-at-768 desktop compactness.
    The .text-control controls are inline underlined text and deliberately
    take no min-height: an inline box takes no height, and padding-based
-   growth would wreck their flow (unchanged by this plan). */
+   growth would wreck their flow (unchanged by this plan). The version
+   row also collapses to one column here (sketch 003 @ d89b758 line 71;
+   D-15; UAT item 1). */
 @media (max-width: 759.98px) {
   button,
   select,
@@ -1894,6 +1941,10 @@ textarea {
   .axis-mark__stop {
     width: var(--touch-stop-width);
     height: var(--touch-stop-height);
+  }
+
+  .recipe-band__row-version {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1924,5 +1975,18 @@ textarea {
   .save-ceremony,
   .pen-foot__controls {
     flex-wrap: wrap;
+  }
+
+  /* At 393px the ingredient table's sized columns (--col-numeric x3 +
+     --col-data, tokens.css) sum past the content width the region has
+     left after the page's own padding, and table-layout: fixed cannot
+     shrink a sized column (RESEARCH.md Pitfall 7). The sketch draws no
+     rule for this width (003 was tested at 834/1024), so the table
+     scrolls inside its own region and the page itself never overflows —
+     D-15's acceptance criterion is zero PAGE overflow, not zero table
+     overflow (planner's call on RESEARCH Open Question 4, recorded for
+     Mark's acknowledgement). */
+  .ingredient-table-region {
+    overflow-x: auto;
   }
 }

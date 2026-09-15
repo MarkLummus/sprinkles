@@ -245,23 +245,28 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     }
   });
 
-  test('the only at-rules in app.css are the two named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2)', () => {
+  test('the only at-rules in app.css are the three named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2; 03.3.1.1-01 Task 1)', () => {
     // Replaces the old "no at-rule was added" assertion (WR-02): the
     // stylesheet reader (css-source.js) parses one level of @media
-    // nesting, and this pins the file to that contract — exactly the two
-    // sibling media blocks the responsive ladder needs (the 759.98px
-    // touch step and the 600px block, 03.3.1-06's own Task 2 addition,
-    // never nested inside the first — assertNoAtRules throws on a
-    // non-media at-rule and on anything nested inside a media block), and
-    // no other at-rule keyword anywhere. Comment-stripped first, matching
-    // readAllRules' own internal call: an English comment can
-    // legitimately say "@supports" without that being a real at-rule.
+    // nesting, and this pins the file to that contract — exactly the
+    // three sibling media blocks the responsive ladder needs (the
+    // 1099.98px page-shell stack, D-15; the 759.98px touch step; and the
+    // 600px block), never nested inside one another — assertNoAtRules
+    // throws on a non-media at-rule and on anything nested inside a media
+    // block — and no other at-rule keyword anywhere. Comment-stripped
+    // first, matching readAllRules' own internal call: an English comment
+    // can legitimately say "@supports" without that being a real
+    // at-rule.
     const stripped = stripCssComments(appCssSource);
-    expect(stripped.match(/@media\b/g)).toHaveLength(2);
+    expect(stripped.match(/@media\b/g)).toHaveLength(3);
     expect(() => assertNoAtRules(stripped)).not.toThrow();
     const mediaRules = rules.filter((r) => r.media !== undefined);
     expect(mediaRules.length).toBeGreaterThan(0);
-    const allowedMedia = ['(max-width: 759.98px)', '(max-width: 600px)'];
+    const allowedMedia = [
+      '(max-width: 1099.98px)',
+      '(max-width: 759.98px)',
+      '(max-width: 600px)',
+    ];
     for (const rule of mediaRules) {
       expect(allowedMedia).toContain(rule.media);
     }

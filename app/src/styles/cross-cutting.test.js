@@ -77,12 +77,13 @@ describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch 
     expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
   });
 
-  test('the media block carries exactly the three rules 03.3.1-06 Task 2 names', () => {
+  test('the media block carries exactly the four rules 03.3.1-06 Task 2 and 03.3.1.1-01 Task 1 name', () => {
     const mediaRules = rules.filter((r) => r.media !== undefined && r.media === '(max-width: 759.98px)');
     expect(mediaRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option',
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
+      '.recipe-band__row-version',
     ]);
   });
 
@@ -96,7 +97,11 @@ describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch 
 
 describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () => {
   test('.recipe-page carries its own reduced padding in the 600px block', () => {
-    const rule = mediaRuleFor('.recipe-page');
+    // mediaRuleFor is first-match by selector across all media blocks
+    // (PATTERNS.md caveat); .recipe-page now also has a rule in the
+    // 1099.98px block (03.3.1.1-01 Task 1), so this test filters by
+    // r.media directly instead.
+    const rule = rules.find((r) => r.selector === '.recipe-page' && r.media === '(max-width: 600px)');
     expect(rule, 'expected a media-scoped .recipe-page rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 600px)');
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-m\)/);
@@ -116,9 +121,50 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     expect(rule.declarations).toMatch(/flex-wrap:\s*wrap/);
   });
 
-  test('app.css carries exactly two top-level @media blocks, at the two named breakpoints', () => {
+  test('the ingredient table region scrolls inside itself at 600px and below (RESEARCH Pitfall 7, D-15)', () => {
+    const rule = rules.find(
+      (r) => r.selector === '.ingredient-table-region' && r.media === '(max-width: 600px)',
+    );
+    expect(rule, 'expected a media-scoped .ingredient-table-region rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
+  });
+
+  test('app.css carries exactly three top-level @media blocks, at the three named breakpoints (03.3.1.1-01 Task 1)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
-    expect(mediaConditions.sort()).toEqual(['(max-width: 600px)', '(max-width: 759.98px)']);
+    expect(mediaConditions.sort()).toEqual([
+      '(max-width: 1099.98px)',
+      '(max-width: 600px)',
+      '(max-width: 759.98px)',
+    ]);
+  });
+});
+
+describe('the 1099.98px block — the page stacks (sketch 003 line 48, D-15)', () => {
+  const stackRules = rules.filter((r) => r.media === '(max-width: 1099.98px)');
+
+  test('carries exactly .recipe-page, .pen-foot and .pen-foot__controls, in order', () => {
+    expect(stackRules.map((r) => r.selector)).toEqual([
+      '.recipe-page',
+      '.pen-foot',
+      '.pen-foot__controls',
+    ]);
+  });
+
+  test('.recipe-page stacks to one column in the band/ingredients/side/method/foot order, with no padding declaration', () => {
+    const rule = stackRules.find((r) => r.selector === '.recipe-page');
+    expect(rule, 'expected the media-scoped .recipe-page rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/grid-template-columns:\s*1fr/);
+    expect(rule.declarations).toMatch(/'band'\s*'ingredients'\s*'side'\s*'method'\s*'foot'/);
+    expect(rule.declarations).not.toMatch(/padding/);
+  });
+
+  test(".recipe-band__row-version's desktop columns read --vmeta-min at a 300px floor (sketch 003 line 69)", () => {
+    const rule = ruleFor('.recipe-band__row-version');
+    expect(rule, 'expected the desktop .recipe-band__row-version rule').toBeTruthy();
+    expect(rule.declarations).toMatch(
+      /minmax\(0, 1\.6fr\) minmax\(var\(--vmeta-min\), 1fr\)/,
+    );
+    expect(resolveTokenPx(tokens, '--vmeta-min')).toBe(300);
   });
 });
 

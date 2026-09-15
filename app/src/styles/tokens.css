@@ -209,6 +209,11 @@
      its own line. */
   --col-batch-cell-min: 96px;
 
+  /* The version row's metadata column floor (sketch 003 @ d89b758 line 69,
+     `minmax(300px, 1fr)`): the column never shrinks below this even as
+     the headnote's 1.6fr track claims the rest (D-15). */
+  --vmeta-min: 300px;
+
   /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
      references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
      the Responsive Ladder"): below the 760px step-down, interactive

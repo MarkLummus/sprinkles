@@ -44,7 +44,11 @@ const WIDEST_INGREDIENT_NAME = 142.83; // "Lambda carrageenan"
 // in app.css): a 2fr/1fr grid, --gap-xl (48px) padding on both sides, and
 // a --gap-l (32px) gap between the two columns. The ingredient table
 // lives in the 2fr column, two thirds of what the grid gap and padding
-// leave.
+// leave. From Phase 03.3.1.1 the page stacks to one column below 1100px
+// (app.css's 1099.98px block, D-15), so tableWidthAt(1024) below is a
+// conservative lower bound — the table has the whole content width at
+// that stacked viewport — and the widths at or above 1100 are the ones
+// this 2fr arithmetic still describes exactly.
 const GAP_XL = 48;
 const GAP_L = 32;
 function tableWidthAt(viewport) {

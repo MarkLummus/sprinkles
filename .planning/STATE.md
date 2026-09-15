@@ -4,9 +4,9 @@ current_phase: 03.3.1.1
 current_phase_name: Record pen conformance polish
 status: planning
 stopped_at: Phase 03.3.1.1 context gathered
-last_updated: "2026-09-14T13:37:34.532Z"
-last_activity: 2026-09-13
-last_activity_desc: Inserted Phase 03.3.1.1 for untriaged UAT UI gaps; plan before resuming Phase 4
+last_updated: "2026-09-15T01:47:07.000Z"
+last_activity: 2026-09-14
+last_activity_desc: Sketch 008 control language settled and committed (3ed0c0f); next carry the rule into 007 and 003, then plan
 state_head: d66030f5a70681bb0389fa6bc12caba431dd1166
 progress:
   total_phases: 9
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 03.3.1.1 — Record pen conformance polish
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-13 — Inserted Phase 03.3.1.1 for untriaged UAT UI gaps; plan before resuming Phase 4
+Last activity: 2026-09-14 — Sketch 008 control language settled and committed (3ed0c0f); carry into 007 and 003 next, then plan
 
 Progress: [█░░░░░░░░░] 11% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -253,6 +253,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-14T13:37:34.178Z
-Stopped at: Phase 03.3.1.1 context gathered
-Resume file: .planning/phases/03.3.1.1-record-pen-conformance-polish-close-the-untriaged-ui-gaps-fr/03.3.1.1-CONTEXT.md
+Last session: 2026-09-15T01:47:07.000Z
+Stopped at: Sketch 008 settled and committed (3ed0c0f); plan-phase still paused before the planner. Next: carry the rule into sketches 007 and 003, fix DESIGN.md lines ~212/~292, re-cite research, then /gsd-plan-phase 03.3.1.1
+Resume file: .planning/phases/03.3.1.1-record-pen-conformance-polish-close-the-untriaged-ui-gaps-fr/.continue-here.md

@@ -1,0 +1,137 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-15T01:50:19.251Z",
+  "phase": "03.3.1.1",
+  "phase_name": "Record pen conformance polish (INSERTED)",
+  "phase_dir": ".planning/phases/03.3.1.1-record-pen-conformance-polish-close-the-untriaged-ui-gaps-fr",
+  "plan": 0,
+  "task": 9,
+  "total_tasks": 13,
+  "status": "paused",
+  "completed_tasks": [
+    {
+      "id": 1,
+      "name": "D-21 DESIGN.md bridge edit",
+      "status": "done",
+      "commit": "fede1c8"
+    },
+    {
+      "id": 2,
+      "name": "Research (RESEARCH.md + contract visual-treatment section)",
+      "status": "done",
+      "commit": "978a507"
+    },
+    {
+      "id": 3,
+      "name": "Sketch 008 control sheet drafted",
+      "status": "done",
+      "commit": "4a8dff6"
+    },
+    {
+      "id": 4,
+      "name": "Pattern map (PATTERNS.md)",
+      "status": "done",
+      "commit": "b2c266e"
+    },
+    {
+      "id": 5,
+      "name": "Sketch 007 ninth round (D-22 revision), measured at 1188/393/360",
+      "status": "done",
+      "commit": "977846a"
+    },
+    {
+      "id": 6,
+      "name": "Research re-cited against sketch 007 @977846a",
+      "status": "done",
+      "commit": "9365383"
+    },
+    {
+      "id": 7,
+      "name": "Sketch 008 review with Mark and two Impeccable critiques: the control language settled, every state drawn, twelve values settled, high contrast checked in Chrome's emulation",
+      "status": "done",
+      "commit": "3ed0c0f"
+    },
+    {
+      "id": 8,
+      "name": "State bookkeeping after 008 (handoff consumed, checkpoint on the 007 carry-over)",
+      "status": "done",
+      "commit": "1a549e1"
+    }
+  ],
+  "remaining_tasks": [
+    {
+      "id": 9,
+      "name": "Carry the settled rule into sketch 007 (and 003's Skipped checkbox): square-and-word defects in the two captioned groups; joined stops on all six axes (38px cells on 186px, 44px on 216px); Clear on Exit consistency and Airiness in caption lines whose heads reserve 24px/44px; whole-label focus ring on Skipped and Show changes, Show changes 32px; 2px hover and ring with fixed outer dimensions; invalid without a ring; 0.04em captions with axis names at 500; 6px region gap; 56px numeric fields; Clear moves focus only from the keyboard. Measure at 1188/393/360, show Mark, commit 007 and 003 together",
+      "status": "not_started"
+    },
+    {
+      "id": 10,
+      "name": "Fix DESIGN.md's leftover 'bold plus a 1px ink outline' picked-state sentences (~212, ~292) as a docs commit",
+      "status": "not_started"
+    },
+    {
+      "id": 11,
+      "name": "Re-cite RESEARCH.md and the contract against the final sketch commits (fresh researcher, same brief, or /gsd-plan-phase 03.3.1.1 --research)",
+      "status": "not_started"
+    },
+    {
+      "id": 12,
+      "name": "/gsd-plan-phase 03.3.1.1 → planner (RESEARCH.md and PATTERNS.md exist) → plan checker → /gsd-execute-phase 03.3.1.1",
+      "status": "not_started"
+    },
+    {
+      "id": 13,
+      "name": "/gsd-sketch --wrap-up to refresh the skill's sources copies (D-20) after the sketch commits",
+      "status": "not_started"
+    }
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {
+      "action": "Review the 007 carry-over live before it is committed (Mark's loop: edit, measure, show, commit on his word)",
+      "context": "Every sketch change this phase has been shown and measured before commit",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Control language: joined boxes choose one from a set (segmented control, five-cell axis) and are radios — picking is final, Clear in the caption line is the only way back, the caption line reserves Clear's height (24px desktop, 44px touch); a square and a word record an independent on/off (checkbox, defects, Show changes) with one focus rule — the small square fills pen blue, the ring goes around square and word; a lone hairline box or an underlined word is an action",
+      "rationale": "Mark with two Impeccable critiques, 2026-09-14; sketch 008 README records every round",
+      "phase": "03.3.1.1"
+    },
+    {
+      "decision": "2px hover and 2px focus ring with fixed outer dimensions; joined seams handled by stacking (z-index), not margins; underlines keep 1.5px",
+      "rationale": "1.5px borders and rings render as 1px at DPR 1; half-pixel compensation shrank the box (Impeccable)",
+      "phase": "03.3.1.1"
+    },
+    {
+      "decision": "Invalid = the sentence beneath, the value kept, no ring; the ring means focus only",
+      "rationale": "the ring carried two meanings (Impeccable)",
+      "phase": "03.3.1.1"
+    },
+    {
+      "decision": "High contrast: selection stays a fill in the system Highlight colour through forced-color-adjust: none; a picked box's focus ring takes CanvasText; checked in Chrome's forced-colors emulation by Mark",
+      "rationale": "an outline stand-in collided with the focus ring",
+      "phase": "03.3.1.1"
+    },
+    {
+      "decision": "Twelve settled values on the sheet: pen blue for every on state; 0.04em on every uppercase caption, field captions and axis names at 500, 600 for region names only; 6px beneath a region name; 128px date / 56px numeric field tokens (48px clipped −12.5 and 120.5); 0.8125rem control, option and defect text; hairline prose baseline, no thickening on focus; text-face italic anchors; fields grow to 1rem at ≤600px; 65ch status line; Show changes 32px/44px; joined tracks keep 186px/216px",
+      "rationale": "Mark, 2026-09-14: small control text, comfortably sized targets, larger text for entering values",
+      "phase": "03.3.1.1"
+    },
+    {
+      "decision": "Defects are 007's two captioned groups, Every recipe / This recipe only; the '· declared' suffix is retired everywhere",
+      "rationale": "007 ninth round; the sheet had lagged",
+      "phase": "03.3.1.1"
+    },
+    {
+      "decision": "Clear moves focus programmatically only when activated by keyboard (event.detail === 0)",
+      "rationale": "Chrome shows no :focus-visible on script focus after a mouse click; Mark's recording showed focus 'skipping' the first cell",
+      "phase": "03.3.1.1"
+    }
+  ],
+  "uncommitted_files": [],
+  "next_action": "Restart the sketch server if it is down (cd .planning/sketches && python3 -m http.server 8077 --bind 127.0.0.1 &), open 008 and 007 side by side, then apply the task-9 carry-over to 007/index.html and 003's checkbox in one pass, measuring each change at 1188 (Mark's Chrome) and 393/360 (gsd-browser) before showing Mark; commit 007 and 003 together on his word",
+  "context_notes": "Sketch 008 (.planning/sketches/008-control-sheet, commit 3ed0c0f) is the reference: read its header rule, the 'Settled values' section and the README's rounds before touching 007. The loop that worked all day: edit the sketch, measure real DOM at both widths, screenshot in Mark's Chrome, show, he corrects, commit on his word. Mark reviews in his own Chrome tab, sometimes with DevTools forced-colors emulation; that tab can hold a stale file (no cache headers on 8077) — ask for a hard reload before debugging a 'fix didn't work'. Mark shares .mov recordings; extract frames with a Swift AVFoundation script (no ffmpeg). Two Impeccable critique snapshots for 008 are committed under .impeccable/critique/2026-09-15T00-05-21Z and 2026-09-15T00-38-40Z."
+}

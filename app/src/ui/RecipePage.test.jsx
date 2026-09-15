@@ -435,10 +435,10 @@ describe('tastingHasInk — D-02: a save with the section open but empty persist
   });
 });
 
-describe('TASTING_REMOVED_EMPTY_STATUS / TASTING_REMOVED_DATA_STATUS — the contract\'s own verbatim removal sentences, each written once (Task 1)', () => {
+describe('TASTING_REMOVED_EMPTY_STATUS / TASTING_REMOVED_DATA_STATUS — the contract\'s own verbatim removal sentences, each written once (the ninth round, 007 lines 543, 561)', () => {
   it('are character-identical to the contract\'s "Feedback and undo lifecycle" strings', () => {
     expect(TASTING_REMOVED_EMPTY_STATUS).toBe('Tasting removed.');
-    expect(TASTING_REMOVED_DATA_STATUS).toBe('Tasting removed. You can undo this.');
+    expect(TASTING_REMOVED_DATA_STATUS).toBe('Tasting removed. You can restore it.');
   });
 });
 

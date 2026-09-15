@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-
 // The one save ceremony (D-01, 03.3.1-02; the ninth round, D-14 — the
 // contract's footer order reversed): both mounts — the record pen's foot
 // (this file's own PenFoot below) and the end of the record (BatchRow,
@@ -13,11 +11,15 @@ import { useEffect, useRef } from 'react';
 // state both mounts share, so the two can never disagree. Save is never
 // disabled here — the tasting completeness gate this ceremony's ancestor
 // once carried is retired with D-02; the only block either mount can show
-// is the hint text beside it.
+// is the hint text beside it. status is ceremony A's own live region —
+// the removal toasts' home (007 line 303; the ninth round, Pattern 5) —
+// rendered FIRST so it reads before the hint or any control; the foot's
+// own mount passes no status, so it renders no region at all.
 export function SaveCeremony({
   onCancel,
   onSave,
   hint,
+  status,
   onAddTasting = null,
   addTastingRef = null,
   onRestore = null,
@@ -25,6 +27,11 @@ export function SaveCeremony({
 }) {
   return (
     <div className="save-ceremony">
+      {typeof status === 'string' && (
+        <p className="save-ceremony__status pen-helper" role="status" aria-live="polite">
+          {status}
+        </p>
+      )}
       {hint && <p className="save-ceremony__hint">{hint}</p>}
       {onRestore && (
         <button type="button" className="text-control undo-control" ref={restoreRef} onClick={onRestore}>Restore tasting</button>
@@ -63,7 +70,6 @@ export function PenFoot({
   canSaveOver,
   penHint,
   tastingOpen,
-  removeTastingAttempt = null,
   pendingUndo = null,
   onCancelDeveloping,
   onSaveAsNewVersion,
@@ -73,17 +79,6 @@ export function PenFoot({
   onAddTasting,
   onUndoRemove,
 }) {
-  // Remove tasting's own focus landing (D-01, contract "Focus landings":
-  // both hidden-mode removal paths move focus to Add tasting) — the same
-  // WR-01 attempt-counter pattern as BatchRow's own churnDateRef/
-  // tastedDateRef effects, so a second consecutive removal still re-fires
-  // even though Add tasting was already on screen. Must sit above the
-  // early return below — hooks cannot be called conditionally.
-  const addTastingRef = useRef(null);
-  useEffect(() => {
-    if (removeTastingAttempt != null) addTastingRef.current?.focus();
-  }, [removeTastingAttempt]);
-
   if (openPen === null) return null;
 
   return (
@@ -118,7 +113,6 @@ export function PenFoot({
             onSave={onSaveBatch}
             hint={penHint}
             onAddTasting={!tastingOpen && !pendingUndo ? onAddTasting : null}
-            addTastingRef={addTastingRef}
           />
         )}
       </div>

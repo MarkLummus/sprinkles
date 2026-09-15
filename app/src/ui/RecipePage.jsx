@@ -38,14 +38,17 @@ export const CHURN_DATE_BLOCKED_MESSAGE = 'Enter the date you churned.';
 // ("Controls spec"), read from handleSaveBatch's own announce() call.
 export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entries have been kept.';
 
-// The contract's verbatim form-status sentences for the record pen's own
+// The contract's verbatim record-status sentences for the record pen's own
 // two hidden-mode removal paths (contract "Feedback and undo lifecycle",
 // the removal path matrix — Pitfall 6: the always-visible mode's two rows
 // ("Nothing recorded to clear.", "Tasting cleared. You can undo this.")
-// are never built). Each written once, read from handleRemoveTasting below
-// and from tests directly, so neither can drift from the other.
+// are never built). Written to the end-of-record ceremony's own
+// record-status region, not formStatus (the ninth round; 007 @ 109733d
+// lines 303, 543, 561 — the toast lives where the action was). Each
+// written once, read from handleRemoveTasting below and from tests
+// directly, so neither can drift from the other.
 export const TASTING_REMOVED_EMPTY_STATUS = 'Tasting removed.';
-export const TASTING_REMOVED_DATA_STATUS = 'Tasting removed. You can undo this.';
+export const TASTING_REMOVED_DATA_STATUS = 'Tasting removed. You can restore it.';
 
 // The contract's verbatim tasting-status sentence after a restore (Task 2,
 // contract "Feedback and undo lifecycle") — the one announcement this
@@ -622,11 +625,20 @@ export function RecipePage() {
   // exists" is exactly pendingUndo !== null.
   const [tastingStatus, setTastingStatus] = useState('');
   const tastingStatusTimerRef = useRef(null);
+  // The end-of-record ceremony's own live region (007 @ 109733d line 303;
+  // the ninth round, Pattern 5) — the removal toasts' channel, since the
+  // toast lives where the action was: TASTING_REMOVED_EMPTY_STATUS and
+  // TASTING_REMOVED_DATA_STATUS both write here now, never to formStatus.
+  // formStatus stays the foot's own save/validation channel (line 309).
+  const [recordStatus, setRecordStatus] = useState('');
+  const recordStatusTimerRef = useRef(null);
   const [pendingUndo, setPendingUndo] = useState(null);
-  // Remove tasting's own focus landing (D-01, contract "Focus landings":
-  // both hidden-mode removal paths move focus to Add tasting) — the same
-  // WR-01 attempt-counter pattern as addTastingAttempt above, consumed by
-  // PenFoot's own focus effect on the Add tasting control.
+  // Remove tasting's own focus landing (D-01, contract "Focus landings";
+  // the ninth round, Pitfall 8): both hidden-mode removal paths move
+  // focus — the same WR-01 attempt-counter pattern as addTastingAttempt
+  // above, consumed by BatchRow's own focus effect, which reads
+  // pendingUndo to choose the end-of-record Add tasting (an empty
+  // removal) or Restore tasting (a data removal).
   const [removeTastingAttempt, setRemoveTastingAttempt] = useState(null);
   const removeTastingAttemptRef = useRef(0);
   // The restore sequence's own focus landing (contract "Focus landings":
@@ -930,15 +942,17 @@ export function RecipePage() {
     openBatch = sortedBatches(batches)[0];
   }
 
-  // announce(message, { selfClear, target }) -> writes one of the two
+  // announce(message, { selfClear, target }) -> writes one of the three
   // live regions' text (contract "Feedback and undo lifecycle"): form
-  // (the default) or tasting — the channel handleUndoRemove's own restore
-  // announcement writes to. Validation and block statuses never
-  // self-clear; the tasting removal/undo toasts pass selfClear: true and
-  // get the guarded five-second clear — it clears only if the text on
-  // screen is still the message it wrote, so a newer message is never
-  // wiped (RESEARCH.md Code Example 5). Both channels share the one
-  // guard shape, each against its own timer ref.
+  // (the default), tasting — the channel handleUndoRemove's own restore
+  // announcement writes to — or record — the end-of-record ceremony's own
+  // region, the removal toasts' channel (the ninth round, Pattern 5).
+  // Validation and block statuses never self-clear; the tasting/record
+  // removal/undo toasts pass selfClear: true and get the guarded
+  // five-second clear — it clears only if the text on screen is still the
+  // message it wrote, so a newer message is never wiped (RESEARCH.md Code
+  // Example 5). All three channels share the one guard shape, each
+  // against its own timer ref.
   function announce(message, { selfClear = false, target = 'form' } = {}) {
     if (target === 'tasting') {
       setTastingStatus(message);
@@ -946,6 +960,16 @@ export function RecipePage() {
       if (selfClear) {
         tastingStatusTimerRef.current = setTimeout(() => {
           setTastingStatus((current) => (current === message ? '' : current));
+        }, 5000);
+      }
+      return;
+    }
+    if (target === 'record') {
+      setRecordStatus(message);
+      if (recordStatusTimerRef.current) clearTimeout(recordStatusTimerRef.current);
+      if (selfClear) {
+        recordStatusTimerRef.current = setTimeout(() => {
+          setRecordStatus((current) => (current === message ? '' : current));
         }, 5000);
       }
       return;
@@ -976,6 +1000,7 @@ export function RecipePage() {
     setAddTastingAttempt(null);
     setPendingUndo(null);
     setTastingStatus('');
+    setRecordStatus('');
     setRemoveTastingAttempt(null);
     setRestoreAttempt(null);
     setFormStatus('');
@@ -1169,6 +1194,7 @@ export function RecipePage() {
     setAddTastingAttempt(null);
     setPendingUndo(null);
     setTastingStatus('');
+    setRecordStatus('');
     setRemoveTastingAttempt(null);
     setRestoreAttempt(null);
     setFormStatus('');
@@ -1187,6 +1213,7 @@ export function RecipePage() {
     // tied to the tasting body's own mount/unmount, so it would otherwise
     // survive from an earlier restore into this unrelated reopen.
     setTastingStatus('');
+    setRecordStatus('');
     addTastingAttemptRef.current += 1;
     setAddTastingAttempt(addTastingAttemptRef.current);
     setDraft((prev) => ({ ...prev, tastingOpen: true }));
@@ -1200,15 +1227,20 @@ export function RecipePage() {
   // ink does the same but captures the tasting's own values in
   // pendingUndo first (tastingPayloadFromDraft, Task 2's restore reads
   // it) and writes the data-removal sentence with its undo clause. Both
-  // sentences self-clear after five seconds (plan 02's guarded announce
-  // helper) and both move focus to Add tasting — the opener PenFoot
-  // renders the instant tastingOpen goes false.
+  // sentences write to record-status, the end-of-record ceremony's own
+  // region (the ninth round, 007 lines 543, 561 — the toast lives where
+  // the action was, not formStatus), self-clear after five seconds
+  // (plan 02's guarded announce helper), and move focus to the end-of-
+  // record ceremony's own Add tasting on the empty path or Restore
+  // tasting on the data path — BatchRow's own focus effect (007 lines
+  // 542, 560).
   function handleRemoveTasting() {
     setTastingStatus('');
+    setRecordStatus('');
     const hasInk = tastingHasInk(draft);
     setPendingUndo(hasInk ? tastingPayloadFromDraft(draft) : null);
     setDraft((prev) => ({ ...prev, tastingOpen: false, ...blankTastingFields() }));
-    announce(hasInk ? TASTING_REMOVED_DATA_STATUS : TASTING_REMOVED_EMPTY_STATUS, { selfClear: true });
+    announce(hasInk ? TASTING_REMOVED_DATA_STATUS : TASTING_REMOVED_EMPTY_STATUS, { selfClear: true, target: 'record' });
     removeTastingAttemptRef.current += 1;
     setRemoveTastingAttempt(removeTastingAttemptRef.current);
   }
@@ -1316,6 +1348,7 @@ export function RecipePage() {
     setAddTastingAttempt(null);
     setPendingUndo(null);
     setTastingStatus('');
+    setRecordStatus('');
     setRemoveTastingAttempt(null);
     setRestoreAttempt(null);
     setFormStatus('');
@@ -1657,8 +1690,10 @@ export function RecipePage() {
             addTastingAttempt={addTastingAttempt}
             formStatus={formStatus}
             tastingStatus={tastingStatus}
+            recordStatus={recordStatus}
             pendingUndo={pendingUndo}
             restoreAttempt={restoreAttempt}
+            removeTastingAttempt={removeTastingAttempt}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
             onClearSegment={handleClearSegment}
@@ -1762,7 +1797,6 @@ export function RecipePage() {
           canSaveOver={canSaveOver}
           penHint={penHint}
           tastingOpen={draft?.tastingOpen ?? false}
-          removeTastingAttempt={removeTastingAttempt}
           pendingUndo={pendingUndo}
           onCancelDeveloping={handleCancelDeveloping}
           onSaveAsNewVersion={handleSaveAsNewVersion}

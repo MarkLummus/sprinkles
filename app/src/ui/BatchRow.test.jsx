@@ -390,10 +390,10 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
     expect(markup).toMatch(/<p class="tasting-status pen-helper" role="status" aria-live="polite"><\/p>/);
   });
 
-  it('carries two aria-live="polite" regions total — tasting-status in the head, form-status at the foot (this plan\'s own verify)', () => {
+  it('carries three aria-live="polite" regions total — tasting-status in the head, ceremony A\'s own record-status, form-status at the foot (Task 2\'s own addition of ceremony A\'s status region)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     const occurrences = markup.split('aria-live="polite"').length - 1;
-    expect(occurrences).toBe(2);
+    expect(occurrences).toBe(3);
   });
 
   it('renders no undo control at all with no removal pending', () => {
@@ -786,6 +786,32 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
     const ceremonyMarkup = markup.slice(ceremonyIndex);
     expect(ceremonyMarkup).not.toContain('Add tasting');
     expect(ceremonyMarkup).not.toContain('Restore tasting');
+  });
+
+  it('renders the removal toast in ceremony A\'s own status region, before Restore tasting (007 lines 303, 561; Task 2)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: false },
+      recordStatus: 'Tasting removed. You can restore it.',
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+    });
+    expect(markup).toMatch(
+      /<div class="save-ceremony"><p class="save-ceremony__status pen-helper" role="status" aria-live="polite">Tasting removed\. You can restore it\.<\/p>/,
+    );
+    const statusIndex = markup.indexOf('save-ceremony__status');
+    const restoreIndex = markup.indexOf('Restore tasting');
+    expect(restoreIndex).toBeGreaterThan(statusIndex);
+  });
+
+  it('renders the empty status paragraph first, even with no toast — the live region exists before it speaks (007 line 303)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: false },
+      recordStatus: '',
+    });
+    expect(markup).toMatch(
+      /<p class="save-ceremony__status pen-helper" role="status" aria-live="polite"><\/p>/,
+    );
   });
 });
 

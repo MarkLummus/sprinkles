@@ -300,8 +300,10 @@ export function BatchRow({
   addTastingAttempt = null,
   formStatus = '',
   tastingStatus = '',
+  recordStatus = '',
   pendingUndo = null,
   restoreAttempt = null,
+  removeTastingAttempt = null,
   onChangeRecordField,
   onChangeSegment,
   onClearSegment,
@@ -361,6 +363,21 @@ export function BatchRow({
   useEffect(() => {
     if (restoreAttempt != null) removeTastingButtonRef.current?.focus();
   }, [restoreAttempt]);
+
+  // The removal sequence's own focus landing (D-01, contract "Focus
+  // landings"; the ninth round, 007 lines 542, 560): fires once per
+  // removal attempt — the end-of-record ceremony's own Add tasting after
+  // an empty removal, Restore tasting after a data removal — reading
+  // pendingUndo from the same render that carried the attempt counter
+  // (RecipePage sets both in the same batch, so this effect never races;
+  // Pitfall 8 — these refs are ceremony A's own, never PenFoot's).
+  const addTastingRef = useRef(null);
+  const restoreRef = useRef(null);
+  useEffect(() => {
+    if (removeTastingAttempt == null) return;
+    if (pendingUndo) restoreRef.current?.focus();
+    else addTastingRef.current?.focus();
+  }, [removeTastingAttempt]);
 
   // The axes' own arrangement (contract "Keyboard and tab order") — see
   // useBelow760's own header comment for the node-environment guard.
@@ -709,13 +726,20 @@ export function BatchRow({
                 absent and no restore is pending (007 line 484); Restore
                 tasting takes the opener's own place while a restore is
                 pending and the section is absent (007 lines 505-510) —
-                the head slot above carries it once the section reopens. */}
+                the head slot above carries it once the section reopens.
+                status is the end-of-record ceremony's own live region
+                (007 line 303) — the removal toasts' home (the ninth
+                round, Pattern 5); addTastingRef/restoreRef are the
+                removal focus landing's own refs (Pitfall 8). */}
             <SaveCeremony
               onCancel={onCancelRecording}
               onSave={onSaveBatch}
               hint={blockedDateMessage}
+              status={recordStatus}
               onAddTasting={!draft.tastingOpen && !pendingUndo ? onAddTasting : null}
+              addTastingRef={addTastingRef}
               onRestore={pendingUndo && !draft.tastingOpen ? onUndoRemove : null}
+              restoreRef={restoreRef}
             />
             {/* Next time (sketch 007 line 307; UAT item 14; D-12): carries
                 its own visible caption and the sketch's e.g. placeholder,

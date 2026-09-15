@@ -52,6 +52,13 @@
 
   /* Rule drawing (contract § 4) */
   --rule-baseline: 1.5px;
+  /* Hover borders and the picked-control focus ring are a whole 2px
+     (sketch 007 @ 2a212be lines 28, 50, 82, 88, 153; sketch 008 @ 0fa1015
+     lines 40-41): 1.5px renders as 1px at DPR 1 in Chrome, so a hover or
+     focus weight needs its own token. --rule-baseline keeps its 1.5px
+     for table rules and the text control's underline — an underline
+     does render at 1.5px (007 line 30). */
+  --rule-hover: 2px;
   --rule-graduation: 1px;
   --rule-band-edge: 1px;
   --rule-tick: 2.5px;
@@ -72,14 +79,18 @@
   --hatch-pitch: 4px;
   --hatch-stroke: 1.2px;
 
-  /* Focus treatment (contract § 5, D-14): focus reads heavier than state
-     now that the two meanings are split — --focus-outline-width points at
-     --rule-baseline (1.5px), so every focusable element's real focus ring
-     is provably heavier than a pressed/current/open/marked element's own
-     outline, which reads --rule-graduation (1px) directly at each of its
-     four sites in app.css. A focused element that is also stateful reads
-     both. */
-  --focus-outline-width: var(--rule-baseline);
+  /* Focus treatment (contract § 5, D-14; 03.3.1.1 tenth round, sketch 007
+     line 153): the ring means focus and nothing else — it is heavier
+     than every other rule weight (2 > 1.5 > 1) now that
+     --focus-outline-width points at --rule-hover (2px) instead of
+     --rule-baseline. A picked battery control (a stop, a segmented
+     option, a marked defect's square) carries no outline of its own at
+     all — its state is the fill alone (D-04/D-05). The four
+     --rule-graduation outline sites elsewhere in app.css
+     (pressed/current/open/marked) are a different, non-focus affordance
+     and are unaffected. resolveTokenPx follows one level of var(), so
+     nothing may point at --focus-outline-width in turn. */
+  --focus-outline-width: var(--rule-hover);
   --focus-outline-offset: 2px;
 
   /* Links (D-18): a hairline ink underline, offset far enough below the
@@ -262,12 +273,17 @@
      height and every other control's min-height can never drift apart
      while reading its own name at the call site. */
   --touch-stop-height: var(--touch-min);
-  --gap-chip-row: var(--gap-s);
-  /* The wider gap trailing the declared Bitter chip (contract "Controls
-     spec": "trailing the row after a wider gap ... marking it as a
-     different kind of thing") — a section-level gap, not a row-internal
-     one, so it reads --gap-l rather than --gap-chip-row above it. */
-  --declared-flaw-gap: var(--gap-l);
+  /* The segmented option's own padding (007 lines 48 + 165): the hover
+     padding (app.css) is derived from these by calc, never a second
+     literal. */
+  --seg-pad-y: 5px;
+  --seg-pad-x: 8px;
+  /* The defect's leading square (007 line 88): rides the app's existing
+     13px mark token rather than a new one. */
+  --size-defect-mark: var(--size-mark-stop);
+  /* 20px between a defect and the next (007 line 89) — the row's own
+     wrap gap is --gap-xs. */
+  --gap-defect-col: var(--gap-m);
   /* The 12px minimum clearance the contract verifies between a desktop
      axis-mark stop and the core/declared hairline (Responsive ladder):
      the axes grid's own column-gap, so the clearance is exactly this

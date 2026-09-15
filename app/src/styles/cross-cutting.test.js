@@ -133,9 +133,10 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
   });
 
-  test('app.css carries exactly three top-level @media blocks, at the three named breakpoints (03.3.1.1-01 Task 1)', () => {
+  test('app.css carries exactly four top-level @media blocks, at the four named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
+      '(forced-colors: active)',
       '(max-width: 1099.98px)',
       '(max-width: 600px)',
       '(max-width: 759.98px)',

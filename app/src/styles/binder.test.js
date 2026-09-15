@@ -39,24 +39,31 @@ function ruleFor(selector) {
   return rules.find((r) => r.selector === selector);
 }
 
-describe('the outline split — focus reads heavier than state (D-14)', () => {
-  test('exactly two rules declare outline through --focus-outline-width: the global :focus-visible rule and the landing-focus exception (D-14, 03.3-06, G-03.3-1)', () => {
+describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 tenth round)', () => {
+  test('exactly three rules declare outline through --focus-outline-width: the global :focus-visible rule, the landing-focus exception, and the battery\'s focus-on-box rule (D-14, D-07, 03.3-06, G-03.3-1)', () => {
     // `.is-landing-focus:focus` is a documented, self-clearing exception
     // (VersionRow.jsx): the fork's landing .focus() call follows a
     // mouse-driven Save click, so Chrome's :focus-visible heuristic draws
-    // no ring for it — this is the one other place the page's focus
-    // weight is declared, scoped to a class the component adds only for
-    // that one landing and removes on blur.
+    // no ring for it. The third is the ring drawn on a label-wrapped
+    // radio's visible box (D-07, 007 line 24): a stop or a segmented
+    // option is a <label>, so the ring reads through :has() on the
+    // opacity-0 radio's own :focus-visible, never on the input itself.
     const matches = rules.filter((r) => /outline:\s*var\(--focus-outline-width\)/.test(r.declarations));
-    expect(matches.map((r) => r.selector)).toEqual([':focus-visible', '.is-landing-focus:focus']);
+    expect(matches.map((r) => r.selector)).toEqual([
+      ':focus-visible',
+      '.is-landing-focus:focus',
+      ".axis-mark__stop:has(input[type='radio']:focus-visible), .segmented__option:has(input[type='radio']:focus-visible)",
+    ]);
   });
 
-  test('--focus-outline-width resolves to the same px value as --rule-baseline, strictly heavier than --rule-graduation (D-14)', () => {
+  test('--focus-outline-width resolves to --rule-hover (2), strictly heavier than --rule-baseline (1.5) and --rule-graduation (1) (D-14, 03.3.1.1 tenth round)', () => {
     const focusWidth = resolveTokenPx(tokens, '--focus-outline-width');
+    const hover = resolveTokenPx(tokens, '--rule-hover');
     const baseline = resolveTokenPx(tokens, '--rule-baseline');
     const graduation = resolveTokenPx(tokens, '--rule-graduation');
     expect(focusWidth).toBeTypeOf('number');
-    expect(focusWidth).toBe(baseline);
+    expect(focusWidth).toBe(hover);
+    expect(focusWidth).toBeGreaterThan(baseline);
     expect(focusWidth).toBeGreaterThan(graduation);
   });
 
@@ -116,16 +123,16 @@ describe('buttons and selects — ink hairline, no fill, no radius, dashed when 
 
     expect(rest.declarations).toMatch(/border:\s*var\(--rule-ink-field\)\s*solid\s*var\(--ink\)/);
     expect(rest.declarations).toMatch(
-      /padding:\s*calc\(var\(--gap-xs\)\s*\+\s*var\(--rule-baseline\)\s*-\s*var\(--rule-ink-field\)\)/,
+      /padding:\s*calc\(var\(--gap-xs\)\s*\+\s*var\(--rule-hover\)\s*-\s*var\(--rule-ink-field\)\)/,
     );
-    expect(hover.declarations).toMatch(/border-width:\s*var\(--rule-baseline\)/);
+    expect(hover.declarations).toMatch(/border-width:\s*var\(--rule-hover\)/);
     expect(hover.declarations).toMatch(/padding:\s*var\(--gap-xs\)/);
 
     const gapXs = resolveTokenPx(tokens, '--gap-xs');
-    const ruleBaseline = resolveTokenPx(tokens, '--rule-baseline');
+    const ruleHover = resolveTokenPx(tokens, '--rule-hover');
     const ruleInkField = resolveTokenPx(tokens, '--rule-ink-field');
-    const restTotal = ruleInkField + (gapXs + ruleBaseline - ruleInkField);
-    const hoverTotal = ruleBaseline + gapXs;
+    const restTotal = ruleInkField + (gapXs + ruleHover - ruleInkField);
+    const hoverTotal = ruleHover + gapXs;
     expect(restTotal).toBe(hoverTotal);
   });
 });
@@ -188,22 +195,13 @@ describe('links — a hairline underline everywhere, visited reads the same (D-1
     expect(rule.declarations).toMatch(/color:\s*var\(--ink\)/);
   });
 
-  test('no selector other than `a`/`a:visited`/`.text-control`/the battery\'s picked-state selectors declares an underline (D-18, 03.1 Gap 1 override; 03.3.1-06 carried P3)', () => {
-    // The battery's checked/pressed states (contract "Controls spec";
-    // sketch-findings-sprinkles CSS Patterns) are the one other place
-    // underline carries meaning — bold plus underline plus outline on a
-    // picked stop, segmented option, or defect chip, never a fill
-    // (No-Verdict Rule). The carried P3 (drop the underline on FILLED
-    // controls) stays satisfied by omission: none of these three
-    // selectors ever matches an .ink-field.
+  test('no selector other than `a`/`.text-control` declares an underline (D-18, D-04, 03.1 Gap 1 override; 03.3.1.1 tenth round)', () => {
+    // A picked control is a fill (D-04): the battery's checked/pressed
+    // states no longer carry bold plus underline plus outline — nothing
+    // is bold, nothing is underlined, no outline draws on a picked
+    // control. Only a link or a text control is underlined now.
     const underlineRules = rules.filter((r) => /text-decoration:\s*underline/.test(r.declarations));
-    expect(underlineRules.map((r) => r.selector)).toEqual([
-      '.text-control',
-      'a',
-      ".axis-mark__stop:has(input[type='radio']:checked)",
-      ".segmented__option input[type='radio']:checked ~ span",
-      ".chip-toggle[aria-pressed='true']",
-    ]);
+    expect(underlineRules.map((r) => r.selector)).toEqual(['.text-control', 'a']);
   });
 });
 
@@ -245,20 +243,20 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     }
   });
 
-  test('the only at-rules in app.css are the three named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2; 03.3.1.1-01 Task 1)', () => {
+  test('the only at-rules in app.css are the four named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2; 03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1)', () => {
     // Replaces the old "no at-rule was added" assertion (WR-02): the
     // stylesheet reader (css-source.js) parses one level of @media
     // nesting, and this pins the file to that contract — exactly the
-    // three sibling media blocks the responsive ladder needs (the
-    // 1099.98px page-shell stack, D-15; the 759.98px touch step; and the
-    // 600px block), never nested inside one another — assertNoAtRules
-    // throws on a non-media at-rule and on anything nested inside a media
-    // block — and no other at-rule keyword anywhere. Comment-stripped
-    // first, matching readAllRules' own internal call: an English comment
-    // can legitimately say "@supports" without that being a real
-    // at-rule.
+    // four sibling media blocks the responsive ladder and forced colours
+    // need (the 1099.98px page-shell stack, D-15; the 759.98px touch
+    // step; the 600px block; and forced-colors: active, last), never
+    // nested inside one another — assertNoAtRules throws on a non-media
+    // at-rule and on anything nested inside a media block — and no other
+    // at-rule keyword anywhere. Comment-stripped first, matching
+    // readAllRules' own internal call: an English comment can
+    // legitimately say "@supports" without that being a real at-rule.
     const stripped = stripCssComments(appCssSource);
-    expect(stripped.match(/@media\b/g)).toHaveLength(3);
+    expect(stripped.match(/@media\b/g)).toHaveLength(4);
     expect(() => assertNoAtRules(stripped)).not.toThrow();
     const mediaRules = rules.filter((r) => r.media !== undefined);
     expect(mediaRules.length).toBeGreaterThan(0);
@@ -266,9 +264,59 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
       '(max-width: 1099.98px)',
       '(max-width: 759.98px)',
       '(max-width: 600px)',
+      '(forced-colors: active)',
     ];
     for (const rule of mediaRules) {
       expect(allowedMedia).toContain(rule.media);
     }
+  });
+});
+
+describe('the picked state is a fill (D-04, sketch 007 lines 49 and 83)', () => {
+  test('the shared fill selector declares the pen-blue fill, ground text and z-index 1', () => {
+    const rule = ruleFor(
+      ".axis-mark__stop:has(input[type='radio']:checked), .segmented__option:has(input[type='radio']:checked)",
+    );
+    expect(rule, 'expected the grouped fill rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
+    expect(rule.declarations).toMatch(/border-color:\s*var\(--pen-blue\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--ground\)/);
+    expect(rule.declarations).toMatch(/z-index:\s*1/);
+  });
+
+  test('no rule declares both bold weight and an underline together', () => {
+    for (const rule of rules) {
+      const bold = /font-weight:\s*700/.test(rule.declarations);
+      const underlined = /text-decoration:\s*underline/.test(rule.declarations);
+      expect(bold && underlined).toBe(false);
+    }
+  });
+
+  test('no selector reads aria-invalid — invalid is a sentence, never a ring', () => {
+    for (const rule of rules) {
+      expect(rule.selector).not.toMatch(/aria-invalid/);
+    }
+  });
+
+  test('the forced-colors block keeps a fill and reserves CanvasText for the focus ring', () => {
+    const forcedRules = rules.filter((r) => r.media === '(forced-colors: active)');
+    expect(forcedRules.length).toBeGreaterThan(0);
+    const fillRule = forcedRules.find(
+      (r) => /forced-color-adjust:\s*none/.test(r.declarations) && /background:\s*Highlight/.test(r.declarations),
+    );
+    expect(fillRule, 'expected a forced-colors rule with forced-color-adjust: none and background: Highlight').toBeTruthy();
+    const ringRule = forcedRules.find((r) => /outline-color:\s*CanvasText/.test(r.declarations));
+    expect(ringRule, 'expected a forced-colors rule with outline-color: CanvasText').toBeTruthy();
+  });
+
+  test('a defect is a square and a word: the square fills pen blue when pressed, the button itself never does', () => {
+    const beforeRule = ruleFor('.chip-toggle::before');
+    expect(beforeRule, 'expected a .chip-toggle::before rule').toBeTruthy();
+    expect(beforeRule.declarations).toMatch(/width:\s*var\(--size-defect-mark\)/);
+    expect(beforeRule.declarations).toMatch(/border:\s*var\(--rule-graduation\)/);
+    const pressedBeforeRule = ruleFor(".chip-toggle[aria-pressed='true']::before");
+    expect(pressedBeforeRule, "expected a .chip-toggle[aria-pressed='true']::before rule").toBeTruthy();
+    expect(pressedBeforeRule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
+    expect(ruleFor(".chip-toggle[aria-pressed='true']")).toBeUndefined();
   });
 });

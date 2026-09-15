@@ -34,16 +34,17 @@ select {
   font-size: var(--size-table-body);
   box-sizing: border-box;
   cursor: pointer;
-  /* Rest-state padding (D-15, D-16): the hairline border plus this padding
-     sums to exactly what the hover border plus its own padding sums to
-     below, so the box never changes size when the border thickens on
-     hover — binder.test.js asserts the equality. */
-  padding: calc(var(--gap-xs) + var(--rule-baseline) - var(--rule-ink-field));
+  /* Rest-state padding (D-15, D-16; 007 line 28, 003 line 30): the
+     hairline border plus this padding sums to exactly what the hover
+     border plus its own padding sums to below, so the box never changes
+     size when the border thickens to a whole 2px on hover —
+     binder.test.js asserts the equality. */
+  padding: calc(var(--gap-xs) + var(--rule-hover) - var(--rule-ink-field));
 }
 
 button:hover,
 select:hover {
-  border-width: var(--rule-baseline);
+  border-width: var(--rule-hover);
   padding: var(--gap-xs);
 }
 
@@ -1666,13 +1667,16 @@ textarea {
 
 /* The battery's axis-mark control (contract "Axes spec"/"Controls spec";
    sketch-findings-sprinkles references/batch-record-tasting-battery.md
-   "CSS Patterns"; 03.3.1-06 Task 1): replaces the nine-stop D-16 rules
-   this selector once carried — AxisMark.jsx was rebuilt to the battery's
-   six-axis shape in 03.3.1-03 Task 2, and this is the first plan to
-   style that shape. The checked stop is distinguished by weight,
-   underline and outline, never by hue alone (No-Verdict Rule) — every
-   rule below reads through an existing token or one of this plan's own
-   battery tokens (tokens.css). */
+   "CSS Patterns"; 03.3.1-06 Task 1; 03.3.1.1 tenth round): replaces the
+   nine-stop D-16 rules this selector once carried — AxisMark.jsx was
+   rebuilt to the battery's six-axis shape in 03.3.1-03 Task 2, and this
+   is the first plan to style that shape. The checked stop is
+   distinguished by a pen-blue fill (D-04, D-21, sketch 008's settled
+   control language) — pen blue is the record's ink, not a verdict; the
+   No-Verdict Rule governs VERDICT colour, and a picked state is none of
+   uncertainty, estimate or error (UX1-03) — every rule below reads
+   through an existing token or one of this plan's own battery tokens
+   (tokens.css). */
 .axis-mark {
   border: none;
   padding: 0;
@@ -1761,17 +1765,36 @@ textarea {
   cursor: pointer;
 }
 
-/* The picked-state affordance (sketch-findings-sprinkles CSS Patterns;
-   03.3.1-06 carried P3): bold plus underline plus outline, read off the
-   label's own :has() — never a fill. Pen blue never paints a control's
-   background (No-Verdict Rule); only a recorded VALUE reads pen blue,
-   and a stop's own digit is drawn ink, not a value of its own. */
-.axis-mark__stop:has(input[type='radio']:checked) {
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: var(--offset-link-underline);
-  outline: var(--rule-graduation) solid var(--ink);
+/* The picked state is a fill (D-04, D-21, sketch 008's settled control
+   language; sketch 007 @ 2a212be lines 49, 83): pen blue is the
+   record's ink, not a verdict — the No-Verdict Rule governs VERDICT
+   colour, and a picked state is none of uncertainty, estimate or error
+   (UX1-03); `aria-checked`/`:checked` carry the fact. Both selectors
+   already carry position: relative — without z-index: 1 the picked
+   pen-blue border would hide under the neighbour's hairline
+   (Pitfall 2). */
+.axis-mark__stop:has(input[type='radio']:checked),
+.segmented__option:has(input[type='radio']:checked) {
+  background: var(--pen-blue);
+  border-color: var(--pen-blue);
+  color: var(--ground);
+  z-index: 1;
+}
+
+/* The focus ring draws on the visible box, not on the opacity-0 radio
+   (D-07; 007 lines 24 + 153): Chrome's :focus-visible heuristic keeps a
+   mouse click on the label ring-free. */
+.axis-mark__stop:has(input[type='radio']:focus-visible),
+.segmented__option:has(input[type='radio']:focus-visible) {
+  outline: var(--focus-outline-width) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
+}
+
+/* The stop's hover (007 line 82): the box is border-box (above), so
+   nothing moves. */
+.axis-mark__stop:hover {
+  border-width: var(--rule-hover);
+  z-index: 2;
 }
 
 /* The anchors row (contract "Axes spec"): the three anchor words only,
@@ -1800,15 +1823,18 @@ textarea {
 }
 
 /* The battery's one 3-way segmented control (Segmented.jsx; contract
-   "Controls spec"): a role="radiogroup" of native radios, restyled — the
-   label is the drawn, bordered option; the input is stretched over it,
-   invisible, so the browser's own grouped-radio keyboard semantics carry
-   the mechanism (Segmented.jsx's header comment). Adjacent options share
-   one hairline border (the negative margin's classic overlap trick), and
-   the picked state reads bold plus underline on the option's own text
-   plus an outline on the option box — never a fill (No-Verdict Rule). */
+   "Controls spec"; 03.3.1.1 tenth round): a role="radiogroup" of native
+   radios, restyled — the label is the drawn, bordered option; the input
+   is stretched over it, invisible, so the browser's own grouped-radio
+   keyboard semantics carry the mechanism (Segmented.jsx's header
+   comment). Adjacent options share one hairline border (the negative
+   margin's classic overlap trick), and the picked state reads a
+   pen-blue fill (the shared rule above) — never bold, never underlined
+   (D-04, D-09; UAT items 4, 13). */
 .segmented {
   display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--gap-xs);
 }
 
 .segmented__option {
@@ -1818,15 +1844,29 @@ textarea {
   justify-content: center;
   border: var(--rule-ink-field) solid var(--ink);
   border-radius: 0;
-  padding: var(--gap-xs) var(--gap-s);
   margin-right: calc(-1 * var(--rule-ink-field));
+  padding: var(--seg-pad-y) var(--seg-pad-x);
+  box-sizing: border-box;
+  min-height: var(--stop-h);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--type-control);
+  line-height: var(--leading-control);
+  color: var(--ink);
   cursor: pointer;
 }
 
 .segmented__option:last-child {
   margin-right: 0;
+}
+
+/* Hover thickens the border to a whole 2px in place, so the box holds
+   exactly (007 line 50 — 4px 7px, derived so the box never changes
+   size). D-06's "no hover on options" is superseded (RESEARCH 2c). */
+.segmented__option:hover {
+  border-width: var(--rule-hover);
+  padding: calc(var(--seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field)))
+    calc(var(--seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));
+  z-index: 2;
 }
 
 .segmented__option input[type='radio'] {
@@ -1840,49 +1880,62 @@ textarea {
   cursor: pointer;
 }
 
-.segmented__option input[type='radio']:checked ~ span {
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: var(--offset-link-underline);
-}
-
-.segmented__option:has(input[type='radio']:checked) {
-  outline: var(--rule-graduation) solid var(--ink);
-  outline-offset: var(--focus-outline-offset);
-  z-index: 1;
-}
-
-/* The defect chips (BatchRow.jsx; contract "Controls spec"): native
-   toggle buttons, so the global `button` rule already draws the hairline
-   box with no fill — this section only sizes the row and the picked
-   state. The declared Bitter chip trails after the wider
-   --declared-flaw-gap, "marking it as a different kind of thing". */
+/* Defects — a square and a word (sketch 007 @ 2a212be lines 86-89,
+   128-130, 164, 179; sketch 008 "independent on/offs: square and word";
+   the second half of D-04 as amended — only the square fills). */
 .defects-row__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--gap-chip-row);
+  align-items: center;
+  gap: var(--gap-xs) var(--gap-defect-col);
+  margin-top: 0;
 }
 
-.chip-toggle {
+/* Written with the .batch-margin ancestor (the precedent above) so it
+   outranks .batch-margin button { margin-top: var(--gap-s) } (0,1,1)
+   and the global `button` box (Pitfall 3). The pressed button itself
+   never changes colour (007 line 129) — the fill lives on ::before. */
+.batch-margin .chip-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  box-sizing: border-box;
+  min-height: var(--stop-h);
+  margin-top: 0;
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--type-control);
+  line-height: var(--leading-control);
+  letter-spacing: 0;
+  color: var(--ink);
+  cursor: pointer;
 }
 
-.chip-toggle[aria-pressed='true'] {
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: var(--offset-link-underline);
-  outline: var(--rule-graduation) solid var(--ink);
-  outline-offset: var(--focus-outline-offset);
+.batch-margin .chip-toggle:hover {
+  border: 0;
+  padding: 0;
 }
 
-.chip-toggle--declared {
-  margin-left: var(--declared-flaw-gap);
+.chip-toggle::before {
+  content: '';
+  display: inline-block;
+  width: var(--size-defect-mark);
+  height: var(--size-defect-mark);
+  box-sizing: border-box;
+  border: var(--rule-graduation) solid var(--ink);
+  flex: 0 0 auto;
 }
 
-.chip-toggle__helper {
-  font-size: var(--size-small-print);
-  font-style: italic;
+.chip-toggle:hover::before {
+  border-width: var(--rule-hover);
+}
+
+.chip-toggle[aria-pressed='true']::before {
+  background: var(--pen-blue);
+  border-color: var(--pen-blue);
 }
 
 /* The one save ceremony (PenFoot.jsx's SaveCeremony; D-01): one rule
@@ -2127,5 +2180,28 @@ textarea {
      Mark's acknowledgement). */
   .ingredient-table-region {
     overflow-x: auto;
+  }
+}
+
+/* Forced colours (007 @ 2a212be lines 143-145; CONTEXT D-05 as amended):
+   selection stays a FILL in the system Highlight colour, the same shape
+   as in normal colours, so state and focus never share one outline. A
+   fourth top-level @media block, sibling to the three above — never
+   nested inside them (css-source.js's one-level contract). Highlight /
+   HighlightText / CanvasText are system colour keywords, not hex — the
+   no-hex gate is unaffected. */
+@media (forced-colors: active) {
+  .axis-mark__stop:has(input[type='radio']:checked),
+  .segmented__option:has(input[type='radio']:checked),
+  .chip-toggle[aria-pressed='true']::before {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+
+  .axis-mark__stop:has(input[type='radio']:checked):has(input[type='radio']:focus-visible),
+  .segmented__option:has(input[type='radio']:checked):has(input[type='radio']:focus-visible) {
+    outline-color: CanvasText;
   }
 }

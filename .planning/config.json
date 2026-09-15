@@ -95,5 +95,13 @@
     "enabled": true,
     "auto_update": true
   },
-  "response_language": "en"
+  "response_language": "en",
+  "model_profile_overrides": {
+    "claude": {
+      "opus": "claude-opus-5[1m]"
+    }
+  },
+  "model_overrides": {
+    "gsd-plan-checker": "sonnet"
+  }
 }

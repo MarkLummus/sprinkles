@@ -26,7 +26,7 @@ import { STOPS, stopWordsFor } from '../domain/axes.js';
 // leaves the browser's sequential-focus starting point on Clear so the
 // next Tab reaches the first cell with its ring; a script-focused cell
 // after a pointer click would show no ring.
-export function AxisMark({ axis, value, onChange, onClear, declaredCaption = null }) {
+export function AxisMark({ axis, value, onChange, onClear }) {
   const nameId = `axis-name-${axis.key}`;
   const groupName = `axis-${axis.key}`;
   const words = stopWordsFor(axis);
@@ -61,7 +61,6 @@ export function AxisMark({ axis, value, onChange, onClear, declaredCaption = nul
 
   return (
     <div className={`axis-mark axis-mark--${axis.group}`}>
-      {declaredCaption && <p className="axes-declared-caption">{declaredCaption}</p>}
       <div className="axis-mark__head">
         <span id={nameId} className="axis-mark__name">
           {axis.name}

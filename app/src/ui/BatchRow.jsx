@@ -132,12 +132,17 @@ function useBelow760() {
 // critical note) — BatchRow's own useBelow760 above is the only thing
 // that reads the real matchMedia, and only where window supports it.
 // `marks` is the draft's own marks map, read by axis key, so a mark
-// crossing the boundary survives by construction (Pitfall 8).
-export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark }) {
+// crossing the boundary survives by construction (Pitfall 8). `children`
+// is the defects block (BatchRow's own markup, Plan 04): one grid for the
+// axes and the defects (007 @ 2a212be lines 58-70, 261-282), so the
+// defects share the axes' columns and the vertical hairline spans them.
+// No axis carries a caption any more (README "Group captions on their
+// own row") — the two cue rows head their columns instead.
+export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, children }) {
   const core = axes.filter((axis) => axis.group === 'core');
   const declared = axes.filter((axis) => axis.group === 'declared');
 
-  function renderAxis(axis, declaredCaption = null) {
+  function renderAxis(axis) {
     if (!axis) return null;
     return (
       <AxisMark
@@ -146,7 +151,6 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark }) {
         value={marks[axis.key]}
         onChange={(stop) => onChangeMark(axis.key, stop)}
         onClear={() => onClearMark(axis.key, axis.name)}
-        declaredCaption={declaredCaption}
       />
     );
   }
@@ -154,29 +158,35 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark }) {
   if (below) {
     return (
       <div className="axes-grid axes-grid--stacked">
-        <div className="axes-grid__group">{core.map((axis) => renderAxis(axis))}</div>
+        <div className="axes-grid__group">
+          <p className="pen-caption axes-cue">Every recipe</p>
+          {core.map((axis) => renderAxis(axis))}
+        </div>
         <div className="axes-grid__group axes-grid__group--declared">
-          <p className="axes-declared-caption">Declared for this recipe</p>
+          <p className="pen-caption axes-cue">This recipe only</p>
           {declared.map((axis) => renderAxis(axis))}
         </div>
+        {children}
       </div>
     );
   }
 
   // Desktop row-major (contract "Axes spec"/"Keyboard and tab order"):
-  // Hardness, Scoopability, Body, Smoothness, Sweetness, Oil — the
-  // hairline sits between columns 2 and 3; the caption rides inside
-  // Body's own box (declared[0]), never a second, separate element
-  // (Pitfall 8: this order must never read as the stacked order).
+  // the two cue rows, then Hardness, Scoopability, Body, Smoothness,
+  // Sweetness, Oil — the hairline sits between columns 2 and 3 (007 line
+  // 419).
   return (
     <div className="axes-grid">
       <div className="axes-rule" aria-hidden="true" />
+      <p className="pen-caption axes-cue axes-cue--core">Every recipe</p>
+      <p className="pen-caption axes-cue axes-cue--declared">This recipe only</p>
       {renderAxis(core[0])}
       {renderAxis(core[1])}
-      {renderAxis(declared[0], 'Declared for this recipe')}
+      {renderAxis(declared[0])}
       {renderAxis(core[2])}
       {renderAxis(core[3])}
       {renderAxis(declared[1])}
+      {children}
     </div>
   );
 }
@@ -603,50 +613,66 @@ export function BatchRow({
                   below={below760}
                   onChangeMark={onChangeRecordMark}
                   onClearMark={onClearAxisMark}
-                />
-                {/* The defects checklist, a standalone row after the axes
-                    grid (contract "Controls spec", "DOM order
-                    inventory"): the caption and its lowercase helper on
-                    one row, then the chip row — the four DEFECTS chips
-                    verbatim, then the declared Bitter chip trailing after
-                    a wider gap. Picked state is aria-pressed, never
-                    colour alone (UX1-03) — the bold-plus-underline
-                    affordance is plan 06's CSS. */}
-                <div className="defects-row" role="group" aria-label="Any problems? Select all that apply">
-                  <p className="defects-row__caption">
-                    Any problems? <span className="defects-row__helper">select all that apply</span>
-                  </p>
-                  <div className="defects-row__chips">
-                    {/* Each of the four DEFECTS chips is a native toggle
-                        button carrying its own aria-pressed — a picked
-                        chip's own boolean, read fresh per chip from the
-                        draft's defects list. */}
-                    {DEFECTS.map((defect) => (
-                      <button
-                        key={defect}
-                        type="button"
-                        className="chip-toggle"
-                        aria-pressed={draft.defects.includes(defect)}
-                        onClick={() => onChangeDefect(defect)}
-                      >
-                        {defect}
-                      </button>
-                    ))}
-                    {/* The declared chip: a fifth aria-pressed button,
-                        trailing the row after a wider gap, its own
-                        boolean read from bitterDeclared rather than the
-                        defects list. */}
-                    <button
-                      type="button"
-                      className="chip-toggle chip-toggle--declared"
-                      aria-pressed={draft.bitterDeclared}
-                      aria-label={`Declared for this recipe: ${DECLARED_FLAW}`}
-                      onClick={onToggleBitter}
-                    >
-                      {DECLARED_FLAW} <span className="chip-toggle__helper">· declared</span>
-                    </button>
+                >
+                  {/* The defects, inside the axes grid as its own two
+                      labelled groups (contract "Controls spec", "DOM
+                      order inventory"; 007 lines 263-281): the head
+                      carries the caption and its lowercase helper on one
+                      row, then "Every recipe" (the four DEFECTS chips
+                      verbatim) and "This recipe only" (Bitter, a plain
+                      defect with no helper and no aria-label — the group
+                      cue carries the meaning through aria-labelledby).
+                      Picked state is aria-pressed, never colour alone
+                      (UX1-03). */}
+                  <div className="defects-head">
+                    <p className="pen-caption" id="defects-caption">
+                      Any problems?
+                    </p>
+                    <p className="pen-helper defects-head__helper">select all that apply</p>
                   </div>
-                </div>
+                  <div
+                    className="defect-group defect-group--core"
+                    role="group"
+                    aria-labelledby="defects-caption defects-core-cue"
+                  >
+                    <p className="pen-caption axes-cue" id="defects-core-cue">
+                      Every recipe
+                    </p>
+                    <div className="defects-row__chips">
+                      {/* Each of the four DEFECTS chips is a native
+                          toggle button carrying its own aria-pressed — a
+                          picked chip's own boolean, read fresh per chip
+                          from the draft's defects list. */}
+                      {DEFECTS.map((defect) => (
+                        <button
+                          key={defect}
+                          type="button"
+                          className="chip-toggle"
+                          aria-pressed={draft.defects.includes(defect)}
+                          onClick={() => onChangeDefect(defect)}
+                        >
+                          {defect}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className="defect-group defect-group--declared"
+                    role="group"
+                    aria-labelledby="defects-caption defects-declared-cue"
+                  >
+                    <p className="pen-caption axes-cue" id="defects-declared-cue">This recipe only</p>
+                    <div className="defects-row__chips">
+                      {/* Bitter is a plain defect — no helper span, no
+                          aria-label of its own; its own boolean reads
+                          from bitterDeclared rather than the defects
+                          list. */}
+                      <button type="button" className="chip-toggle" aria-pressed={draft.bitterDeclared} onClick={onToggleBitter}>
+                        {DECLARED_FLAW}
+                      </button>
+                    </div>
+                  </div>
+                </AxesGrid>
                 {/* The melt block, at the tasting body's foot (sketch 007
                     lines 285-297; UAT item 12; D-12): a .field-row with
                     top alignment holding Melt test and the Melt style

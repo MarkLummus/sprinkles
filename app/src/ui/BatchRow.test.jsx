@@ -470,14 +470,41 @@ describe('AxesGrid — the two DOM orders, one per arrangement (contract "Keyboa
     expect(stackedMarkup).not.toContain('axes-rule');
   });
 
-  it('renders the "Declared for this recipe" caption exactly once, in both arrangements', () => {
+  it('renders the two cue rows before the axes on desktop — "Every recipe" then "This recipe only", then the first axis (contract "Axes spec")', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const coreCueIndex = markup.indexOf('>Every recipe<');
+    const declaredCueIndex = markup.indexOf('>This recipe only<');
+    const firstAxisIndex = markup.indexOf('class="axis-mark');
+    expect(markup).toContain('class="pen-caption axes-cue axes-cue--core"');
+    expect(markup).toContain('class="pen-caption axes-cue axes-cue--declared"');
+    expect(coreCueIndex).toBeGreaterThanOrEqual(0);
+    expect(declaredCueIndex).toBeGreaterThan(coreCueIndex);
+    expect(firstAxisIndex).toBeGreaterThan(declaredCueIndex);
+  });
+
+  it('heads each stacked group with its own cue — "Every recipe" inside the core group, "This recipe only" inside the declared group', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={true} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const coreGroupIndex = markup.indexOf('class="axes-grid__group"');
+    const declaredGroupIndex = markup.indexOf('class="axes-grid__group axes-grid__group--declared"');
+    const coreCueIndex = markup.indexOf('>Every recipe<');
+    const declaredCueIndex = markup.indexOf('>This recipe only<');
+    const firstAxisIndex = markup.indexOf('class="axis-mark');
+    expect(coreCueIndex).toBeGreaterThan(coreGroupIndex);
+    expect(coreCueIndex).toBeLessThan(firstAxisIndex);
+    expect(declaredCueIndex).toBeGreaterThan(declaredGroupIndex);
+  });
+
+  it('renders no "Declared for this recipe" text in either arrangement — the cue rows replaced it (ninth round)', () => {
     for (const below of [false, true]) {
       const markup = renderToStaticMarkup(
         <AxesGrid axes={batteryAxes} marks={{}} below={below} onChangeMark={noop} onClearMark={noop} />,
       );
-      const occurrences = markup.split('axes-declared-caption').length - 1;
-      expect(occurrences).toBe(1);
-      expect(markup).toContain('Declared for this recipe');
+      expect(markup).not.toContain('Declared for this recipe');
+      expect(markup).not.toContain('axes-declared-caption');
     }
   });
 
@@ -534,37 +561,38 @@ describe('BatchRow — the axes grid does not crash under Vitest\'s node environ
   });
 });
 
-describe('BatchRow — the defects checklist and the declared toggle (contract "Controls spec")', () => {
-  it('carries the group\'s own aria-label with five aria-pressed buttons', () => {
+describe('BatchRow — the defects, two labelled groups inside the axes grid (contract "Controls spec")', () => {
+  it('carries both group\'s aria-labelledby pairs, and five aria-pressed buttons in total', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toContain('role="group" aria-label="Any problems? Select all that apply"');
+    expect(markup).toContain('role="group" aria-labelledby="defects-caption defects-core-cue"');
+    expect(markup).toContain('role="group" aria-labelledby="defects-caption defects-declared-cue"');
     const pressedButtons = markup.match(/<button[^>]*aria-pressed="[^"]*"[^>]*>/g);
     expect(pressedButtons.length).toBe(5);
   });
 
-  it('renders the caption and its lowercase helper on one row', () => {
+  it('renders the head — the caption and its lowercase helper, as siblings, never one inside the other', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).toMatch(
-      /<p class="defects-row__caption">Any problems\? <span class="defects-row__helper">select all that apply<\/span><\/p>/,
+      /<div class="defects-head"><p class="pen-caption" id="defects-caption">Any problems\?<\/p><p class="pen-helper defects-head__helper">select all that apply<\/p><\/div>/,
     );
   });
 
-  it('renders the four DEFECTS chips character-for-character, comma-worded', () => {
+  it('renders the four DEFECTS chips character-for-character, comma-worded, inside the "Every recipe" group', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     for (const label of ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']) {
       expect(markup).toContain(`>${label}<`);
     }
   });
 
-  it('renders the declared Bitter chip with its visible "· declared" helper and its own full aria-label', () => {
+  it('renders Bitter as a plain defect — no helper, no aria-label of its own — inside the "This recipe only" group', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/aria-label="Declared for this recipe: Bitter"[^>]*>Bitter <span class="chip-toggle__helper">· declared<\/span>/);
+    expect(markup).toMatch(/<button type="button" class="chip-toggle" aria-pressed="false">Bitter<\/button>/);
   });
 
   it('checks no chip by default — nothing is pre-selected', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).toMatch(/aria-pressed="false"[^>]*>Coarse, icy</);
-    expect(markup).toMatch(/aria-pressed="false"[^>]*>Bitter /);
+    expect(markup).toContain('<button type="button" class="chip-toggle" aria-pressed="false">Bitter</button>');
   });
 
   it('marks a picked defect chip aria-pressed="true"', () => {
@@ -576,19 +604,28 @@ describe('BatchRow — the defects checklist and the declared toggle (contract "
     expect(markup).toMatch(/aria-pressed="false"[^>]*>Coarse, icy</);
   });
 
-  it('marks the declared chip aria-pressed="true" when bitterDeclared is set', () => {
+  it('marks the declared Bitter chip aria-pressed="true" when bitterDeclared is set', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true, bitterDeclared: true },
     });
-    expect(markup).toMatch(/aria-pressed="true"[^>]*>Bitter /);
+    expect(markup).toContain('<button type="button" class="chip-toggle" aria-pressed="true">Bitter</button>');
+  });
+
+  it('places the defects head after the last axis and before the melt block — inside the grid, after the axes', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const lastAnchorsIndex = markup.lastIndexOf('axis-mark__anchors');
+    const defectsHeadIndex = markup.indexOf('defects-head');
+    const meltBlockIndex = markup.indexOf('melt-block');
+    expect(defectsHeadIndex).toBeGreaterThan(lastAnchorsIndex);
+    expect(meltBlockIndex).toBeGreaterThan(defectsHeadIndex);
   });
 });
 
 describe('BatchRow — the melt block (sketch 007 lines 285-297; UAT item 12; D-12)', () => {
-  it('renders Melt test with its own unit, after the defects row — the "(optional)" suffix is dropped', () => {
+  it('renders Melt test with its own unit, after the defects head — the "(optional)" suffix is dropped', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    const defectsIndex = markup.indexOf('defects-row');
+    const defectsIndex = markup.indexOf('defects-head');
     const meltBlockIndex = markup.indexOf('melt-block');
     expect(meltBlockIndex).toBeGreaterThan(defectsIndex);
     expect(markup).toContain('<span class="pen-caption">Melt test</span>');

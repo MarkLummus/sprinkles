@@ -2059,15 +2059,44 @@ textarea {
   pointer-events: none;
 }
 
-/* "Declared for this recipe" (contract "Axes spec"): rendered once
-   inside Body's own axis-mark box on desktop (AxisMark.jsx's
-   declaredCaption prop) and once as its own line above the stacked
-   declared group below — the same caption, the same rule either way. */
-.axes-declared-caption {
-  font-family: var(--face-grotesk);
-  font-size: var(--type-control);
-  font-style: italic;
-  margin: 0 0 var(--gap-xs);
+/* One grid for the axes and the defects (sketch 007 @ 2a212be lines 61,
+   67-69, 90, 130, 263-281; ninth round, unchanged by the tenth): the
+   defects are grid items of the same grid as the axes, so the vertical
+   hairline above spans them too, and the two group cues ("Every recipe",
+   "This recipe only") each span their own group's columns — no axis or
+   defect group carries its own caption any more (README "Group captions
+   on their own row"). */
+.axes-grid__group > .axes-cue {
+  grid-column: 1 / -1;
+}
+
+.axes-grid:not(.axes-grid--stacked) > .axes-cue--core,
+.axes-grid:not(.axes-grid--stacked) > .defects-head,
+.axes-grid:not(.axes-grid--stacked) > .defect-group--core {
+  grid-column: 1 / 3;
+}
+
+.axes-grid:not(.axes-grid--stacked) > .defect-group--core {
+  padding-right: var(--gap-m);
+}
+
+.axes-grid:not(.axes-grid--stacked) > .axes-cue--declared,
+.axes-grid:not(.axes-grid--stacked) > .defect-group--declared {
+  grid-column: 3;
+  padding-left: var(--axes-cols-clearance);
+}
+
+.defects-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  margin-bottom: var(--gap-xs);
+}
+
+.defects-head > .pen-caption,
+.defects-head > .pen-helper {
+  margin: 0;
 }
 
 /* The stacked arrangement below 760px (AxesGrid's `below` branch;
@@ -2091,6 +2120,15 @@ textarea {
 .axes-grid__group--declared {
   padding-top: var(--gap-s);
   border-top: var(--rule-graduation) solid var(--ink);
+}
+
+/* The stacked declared defect group, under its own rule like the
+   declared axes (007 line 130) — the full 20px above the rule comes from
+   .axes-grid--stacked's own gap, the same distance the sketch draws with
+   a margin. */
+.axes-grid--stacked > .defect-group--declared {
+  border-top: var(--rule-graduation) solid var(--ink);
+  padding-top: var(--gap-s);
 }
 
 /* The page-shell ladder's first step (sketch 003 @ d89b758 line 48;

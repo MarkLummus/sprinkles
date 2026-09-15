@@ -16,7 +16,6 @@ import { AxisMark } from './AxisMark.jsx';
 import { AXES, stopWordsFor } from '../domain/axes.js';
 
 const hardnessAxis = AXES.find((axis) => axis.key === 'hardness');
-const bodyAxis = AXES.find((axis) => axis.key === 'body');
 const noop = () => {};
 
 describe('AxisMark — five stops, digits 1–5, per-stop aria-labels from stopWordsFor (contract "Axes spec")', () => {
@@ -96,25 +95,5 @@ describe('AxisMark — the anchors row, aria-hidden (contract "Axes spec")', () 
     expect(anchorsMarkup).toContain('soft');
     expect(anchorsMarkup).toContain('right');
     expect(anchorsMarkup).toContain('hard');
-  });
-});
-
-describe('AxisMark — the declared caption, inside the box, above the head (contract "Axes spec")', () => {
-  it('renders the caption when declaredCaption is given', () => {
-    const markup = renderToStaticMarkup(
-      <AxisMark axis={bodyAxis} value={undefined} onChange={noop} onClear={noop} declaredCaption="Declared for this recipe" />,
-    );
-    expect(markup).toContain('class="axes-declared-caption"');
-    expect(markup).toContain('Declared for this recipe');
-    const captionIndex = markup.indexOf('axes-declared-caption');
-    const headIndex = markup.indexOf('axis-mark__head');
-    expect(captionIndex).toBeLessThan(headIndex);
-  });
-
-  it('renders no caption element when declaredCaption is not given', () => {
-    const markup = renderToStaticMarkup(
-      <AxisMark axis={hardnessAxis} value={undefined} onChange={noop} onClear={noop} />,
-    );
-    expect(markup).not.toContain('axes-declared-caption');
   });
 });

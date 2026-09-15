@@ -85,7 +85,7 @@ a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2p
 .row-batch .head .date { font-family: var(--face-text); font-size: var(--size-version-line); color: var(--pen-blue); }
 .cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, max-content)); gap: var(--gap-s) var(--gap-l); margin: var(--gap-s) 0 0; }
 .cell .k { display: block; font-size: var(--type-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: var(--gap-xs); } /* 6px to what it captions (008, 2026-09-14) */
-.cell .v { font-size: var(--type-note); font-weight: 400; color: var(--pen-blue); font-variant-numeric: tabular-nums; line-height: 1.1; } /* the recorded figure: the note size at the prose weight — a recorded value, not the balance page's assessment (sketch 008 D, Mark, 2026-09-14) */
+.cell .v { font-size: var(--type-note); font-weight: 400; color: var(--pen-blue); font-variant-numeric: tabular-nums; line-height: 1.1; } /* the recorded figure: the note size at the prose weight — a recorded value, not the balance page's assessment (sketch 008 D, Mark, 2026-09-14) */ .cell .v .absent { color: var(--ink); } /* an absence is not a record: ink, at the unit's size (Impeccable critique, 2026-09-15) */
 .cell .v .u { font-size: var(--size-deviation-words); font-weight: 400; }
 .cell .plan { display: block; font-size: var(--size-small-print); margin-top: 2px; }
 .words { font-family: var(--face-text); color: var(--pen-blue); font-size: var(--size-headnote-prose); margin: var(--gap-s) 0 0; max-width: 65ch; }
@@ -239,7 +239,7 @@ td .was.on { display: inline; }
       <div class="cells">
         <div class="cell"><span class="k">Time to temperature</span><span class="v">20 <span class="u">min</span></span><span class="plan">plan 10–12</span></div>
         <div class="cell"><span class="k">Out of the machine</span><span class="v">−6 <span class="u">°C</span></span><span class="plan">draw temperature</span></div>
-        <div class="cell"><span class="k">Air</span><span class="v"><span class="u">not measured</span></span><span class="plan">overrun</span></div>
+        <div class="cell"><span class="k">Air</span><span class="v"><span class="u absent">not measured</span></span><span class="plan">overrun</span></div>
         <div class="cell"><span class="k">Oil bottle open</span><span class="v"><span class="u">24 Jul 2026</span></span></div>
       </div>
       <p class="words">Soft, not greasy.</p>

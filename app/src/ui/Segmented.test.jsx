@@ -45,7 +45,7 @@ describe('Segmented — the one component all three groups use (contract "Contro
 
   it('renders one native radio input per option, all sharing one name for a single tab stop', () => {
     const markup = renderToStaticMarkup(
-      <Segmented groupLabel="Melt style (optional)" options={MELT_OPTIONS} value="" onChange={noop} />,
+      <Segmented groupLabel="Melt style" options={MELT_OPTIONS} value="" onChange={noop} />,
     );
     const names = [...markup.matchAll(/name="([^"]+)"/g)].map((match) => match[1]);
     expect(names.length).toBe(MELT_OPTIONS.length);
@@ -54,9 +54,9 @@ describe('Segmented — the one component all three groups use (contract "Contro
 
   it('serves a third, independent group (Melt style) with its own aria-label and options', () => {
     const markup = renderToStaticMarkup(
-      <Segmented groupLabel="Melt style (optional)" options={MELT_OPTIONS} value="" onChange={noop} />,
+      <Segmented groupLabel="Melt style" options={MELT_OPTIONS} value="" onChange={noop} />,
     );
-    expect(markup).toContain('aria-label="Melt style (optional)"');
+    expect(markup).toContain('aria-label="Melt style"');
     for (const option of MELT_OPTIONS) {
       expect(markup).toContain(option);
     }

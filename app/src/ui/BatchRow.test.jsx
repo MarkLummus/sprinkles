@@ -292,7 +292,7 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
     const headIndex = markup.indexOf('tasting-head');
-    const tastedIndex = markup.indexOf('<span>Tasted</span>');
+    const tastedIndex = markup.indexOf('<span class="pen-caption">Tasted</span>');
     const temperingIndex = markup.indexOf('Tempering');
     const tastingTempIndex = markup.indexOf('Tasting temperature');
     const noteIndex = markup.indexOf('note-block');
@@ -307,10 +307,11 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     expect(ceremonyIndex).toBeGreaterThan(eyebrowIndex);
   });
 
-  it('renders the heading word and both helper strings verbatim', () => {
+  it('renders a bare "Tasting" region-name heading, with no residual helper spans (sketch 007 line 243; G-03.3.1-4; UAT items 6, 18)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/<h3>Tasting <span class="tasting-head__helper">· optional<\/span>/);
-    expect(markup).toContain('— leave anything you did not record blank');
+    expect(markup).toMatch(/<h3 class="region-name">Tasting<\/h3>/);
+    expect(markup).not.toContain('tasting-head__helper');
+    expect(markup).not.toContain('— leave anything you did not record blank');
   });
 
   it('renders the Remove tasting control, verbatim — the hidden-mode label only (Pitfall 6, contract "DOM order inventory")', () => {
@@ -328,19 +329,33 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     expect(churnSectionMarkup).not.toContain('Tempering');
   });
 
-  it('renders the note block\'s eyebrow and the contract\'s own verbatim placeholder, dir="auto"', () => {
+  it('renders the note block\'s eyebrow at the caption role and the sketch\'s own verbatim placeholder, dir="auto" (sketch 007 line 256)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/<p class="note-block__eyebrow">How did it turn out\?<\/p>/);
+    expect(markup).toMatch(/<p class="note-block__eyebrow pen-caption">How did it turn out\?<\/p>/);
     const noteTextarea = markup.match(/<textarea[^>]*aria-label="How did it turn out\?"[^>]*>/)[0];
     expect(noteTextarea).toContain('dir="auto"');
-    expect(noteTextarea).toContain('placeholder="e.g. flavor, texture, anything that stood out"');
+    expect(noteTextarea).toContain('placeholder="e.g. flavor, texture, what stood out"');
   });
 
   it('renders the Tasted date input, and Tempering/Tasting temperature as measured fields with their own units', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/<label class="batch-margin__field"><span>Tasted<\/span><input[^>]*type="date"/);
+    expect(markup).toMatch(
+      /<label class="field-row__label field-row__label--date"><span class="pen-caption">Tasted<\/span><input[^>]*type="date"/,
+    );
     expect(markup).toContain('aria-label="Tempering, minutes"');
     expect(markup).toContain('aria-label="Tasting temperature, degrees Celsius"');
+  });
+
+  it('renders the tasting row as one field row: the Tasted date label first, then Tempering and Tasting temperature, before the note (sketch 007 lines 249-253)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    const tastedIndex = markup.indexOf('<span class="pen-caption">Tasted</span>');
+    const temperingIndex = markup.indexOf('Tempering');
+    const tastingTempIndex = markup.indexOf('Tasting temperature');
+    const eyebrowIndex = markup.indexOf('How did it turn out?');
+    expect(tastedIndex).toBeGreaterThanOrEqual(0);
+    expect(temperingIndex).toBeGreaterThan(tastedIndex);
+    expect(tastingTempIndex).toBeGreaterThan(temperingIndex);
+    expect(eyebrowIndex).toBeGreaterThan(tastingTempIndex);
   });
 
   it('keeps ceremony A after the churn section when the tasting section is absent', () => {
@@ -361,9 +376,9 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
       draft: { ...emptyRecordDraft, tastingOpen: true },
       tastingStatus: 'Tasting restored.',
     });
-    expect(markup).toMatch(/<p class="tasting-status" role="status" aria-live="polite">Tasting restored\.<\/p>/);
-    const headIndex = markup.indexOf('<h3>Tasting');
-    const statusIndex = markup.indexOf('class="tasting-status"');
+    expect(markup).toMatch(/<p class="tasting-status pen-helper" role="status" aria-live="polite">Tasting restored\.<\/p>/);
+    const headIndex = markup.indexOf('<h3 class="region-name">Tasting');
+    const statusIndex = markup.indexOf('class="tasting-status pen-helper"');
     const removeIndex = markup.indexOf('>Remove tasting<');
     expect(statusIndex).toBeGreaterThan(headIndex);
     expect(removeIndex).toBeGreaterThan(statusIndex);
@@ -371,7 +386,7 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
 
   it('renders the tasting-status region empty (no text node) when tastingStatus is blank', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/<p class="tasting-status" role="status" aria-live="polite"><\/p>/);
+    expect(markup).toMatch(/<p class="tasting-status pen-helper" role="status" aria-live="polite"><\/p>/);
   });
 
   it('carries two aria-live="polite" regions total — tasting-status in the head, form-status at the foot (this plan\'s own verify)', () => {
@@ -396,6 +411,20 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
     const undoIndex = markup.indexOf('Undo clear tasting');
     const removeIndex = markup.indexOf('>Remove tasting<');
     expect(removeIndex).toBeGreaterThan(undoIndex);
+  });
+
+  it('renders Remove tasting as a right-aligned text control, the last child of the tasting head (sketch 007 line 246)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+      tastingStatus: 'Some status',
+    });
+    expect(markup).toMatch(
+      /<button type="button" class="text-control tasting-head__remove"[^>]*>Remove tasting<\/button>/,
+    );
+    const statusIndex = markup.indexOf('class="tasting-status pen-helper"');
+    const removeIndex = markup.indexOf('class="text-control tasting-head__remove"');
+    expect(removeIndex).toBeGreaterThan(statusIndex);
   });
 });
 
@@ -556,22 +585,31 @@ describe('BatchRow — the defects checklist and the declared toggle (contract "
   });
 });
 
-describe('BatchRow — the melt block (contract "DOM order inventory")', () => {
-  it('renders Melt test (optional) with its own unit, after the defects row', () => {
+describe('BatchRow — the melt block (sketch 007 lines 285-297; UAT item 12; D-12)', () => {
+  it('renders Melt test with its own unit, after the defects row — the "(optional)" suffix is dropped', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     const defectsIndex = markup.indexOf('defects-row');
     const meltBlockIndex = markup.indexOf('melt-block');
     expect(meltBlockIndex).toBeGreaterThan(defectsIndex);
-    expect(markup).toContain('<span class="pen-caption">Melt test (optional)</span>');
+    expect(markup).toContain('<span class="pen-caption">Melt test</span>');
     expect(markup).toContain('<span class="field-unit__unit">g lost at 20 min</span>');
   });
 
-  it('renders Melt style (optional) as a radiogroup with the contract\'s own three options', () => {
+  it('renders Melt style as a radiogroup with the contract\'s own three options — the "(optional)" suffix is dropped', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toContain('role="radiogroup" aria-label="Melt style (optional)"');
+    expect(markup).toContain('role="radiogroup" aria-label="Melt style"');
     for (const option of ['Watery, weeping', 'Creamy puddle', 'Stable foam']) {
       expect(markup).toContain(option);
     }
+  });
+
+  it('renders the melt block as one top-aligned field row holding Melt test before the Melt style fieldset', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup).toContain('class="field-row field-row--start"');
+    const meltTestIndex = markup.indexOf('<span class="pen-caption">Melt test</span>');
+    const meltStyleIndex = markup.indexOf('<legend class="pen-caption">Melt style</legend>');
+    expect(meltTestIndex).toBeGreaterThanOrEqual(0);
+    expect(meltStyleIndex).toBeGreaterThan(meltTestIndex);
   });
 
   it('renders the melt block before ceremony A, at the tasting body\'s foot', () => {
@@ -723,16 +761,17 @@ describe('BatchRow — the two segmented controls (contract "Controls spec")', (
 });
 
 describe('BatchRow — the textareas (contract "Textareas")', () => {
-  it('renders At the machine with no placeholder, and Ingredient notes with the contract\'s own placeholder', () => {
+  it('renders At the machine and Ingredient notes with the sketch\'s own verbatim placeholders (sketch 007 lines 237-238)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
     const atTheMachine = markup.match(/<textarea[^>]*aria-label="At the machine"[^>]*>/)[0];
-    expect(atTheMachine).not.toContain('placeholder');
+    expect(atTheMachine).toContain('placeholder="e.g. bowl frozen overnight"');
     expect(markup).toContain('placeholder="e.g. oil bottle opened 24 Jul"');
   });
 
-  it('renders the shared Next time textarea with the contract\'s own placeholder', () => {
+  it('renders the shared Next time textarea with its own caption and the sketch\'s verbatim placeholder (sketch 007 line 307; UAT item 14)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
-    expect(markup).toContain('placeholder="optional — for the batch, the tasting, or both"');
+    expect(markup).toContain('placeholder="e.g. churn 2 min longer"');
+    expect(markup).toMatch(/<label class="batch-margin__field"><span class="pen-caption">Next time<\/span>/);
   });
 
   it('carries dir="auto" on every textarea', () => {

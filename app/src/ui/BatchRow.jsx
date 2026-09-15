@@ -37,12 +37,11 @@ const TASTING_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
   ['temperingMinutes', 'tastingTempC'].includes(field.key),
 );
 
-// The melt block's own measured field (contract "DOM order inventory" §
-// tasting body's foot): the same BATTERY_FIELDS entry as every other
-// measured field, with "(optional)" appended to the visible label only —
-// BATTERY_FIELDS' own label ('Melt test') is domain/battery.js's, not this
-// plan's file to touch, and its stored key/unit/error stay exactly as
-// defined there.
+// The melt block's own measured field (sketch 007 line 287; D-12 drops
+// the "(optional)" suffix this field used to carry): the same
+// BATTERY_FIELDS entry as every other measured field, used unmodified —
+// domain/battery.js's own label ('Melt test') is already the sketch's
+// wording, so no override is needed here.
 const MELT_TEST_FIELD = BATTERY_FIELDS.find((field) => field.key === 'meltTestG');
 
 // aria-label spells the unit out in words (matching the codebase's own
@@ -105,7 +104,7 @@ function MeasuredField({ field, value, error, onChange, inputRef }) {
 function SegmentedField({ legend, options, value, onPick }) {
   return (
     <fieldset className="batch-margin__field">
-      <legend>{legend}</legend>
+      <legend className="pen-caption">{legend}</legend>
       <Segmented groupLabel={legend} options={options} value={value} onChange={onPick} />
     </fieldset>
   );
@@ -495,6 +494,7 @@ export function BatchRow({
                 className={draft.atTheMachine === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 dir="auto"
                 rows="2"
+                placeholder="e.g. bowl frozen overnight"
                 value={draft.atTheMachine}
                 aria-label="At the machine"
                 onChange={(event) => onChangeRecordField('atTheMachine', event.target.value)}
@@ -522,8 +522,13 @@ export function BatchRow({
                 block (Task 3). */}
             {draft.tastingOpen && (
               <>
-                {/* The tasting head (contract "DOM order inventory"): the
-                    heading, the tasting-status live region beside the
+                {/* The tasting head (sketch 007 @ 2a212be lines 242-246;
+                    G-03.3.1-4; UAT items 6, 18): a bare region-name
+                    "Tasting" — the two helper spans ("· optional",
+                    "— leave anything you did not record blank") are gone,
+                    a plain .head with no reserved caption-line height (that
+                    reserve is the axes' and categories' own, not this
+                    row's). The tasting-status live region beside the
                     action, the undo head slot — the contract's own static
                     mount; in hidden mode a removal always collapses the
                     section, so this slot renders in practice only on a
@@ -531,13 +536,11 @@ export function BatchRow({
                     prior removal's undo is still pending — then the
                     Remove/Clear control, "Remove tasting" verbatim in
                     hidden mode (Pitfall 6: the always-visible mode's
-                    "Clear tasting" label is never built). */}
+                    "Clear tasting" label is never built), right-aligned
+                    (007 line 246, `margin-left: auto`). */}
                 <div className="tasting-head">
-                  <h3>
-                    Tasting <span className="tasting-head__helper">· optional</span>{' '}
-                    <span className="tasting-head__helper">— leave anything you did not record blank</span>
-                  </h3>
-                  <p className="tasting-status" role="status" aria-live="polite">
+                  <h3 className="region-name">Tasting</h3>
+                  <p className="tasting-status pen-helper" role="status" aria-live="polite">
                     {tastingStatus}
                   </p>
                   {pendingUndo && (
@@ -547,16 +550,20 @@ export function BatchRow({
                   )}
                   <button
                     type="button"
-                    className="text-control"
+                    className="text-control tasting-head__remove"
                     ref={removeTastingButtonRef}
                     onClick={onRemoveTasting}
                   >
                     Remove tasting
                   </button>
                 </div>
-                <div className="tasting-field-row">
-                  <label className="batch-margin__field">
-                    <span>Tasted</span>
+                {/* The tasting field row (sketch 007 lines 249-253; UAT
+                    items 7, 8): a .field-row holding the 128px Tasted date
+                    then Tempering and Tasting temperature, MeasuredField's
+                    own field-row shape (Task 1). */}
+                <div className="field-row">
+                  <label className="field-row__label field-row__label--date">
+                    <span className="pen-caption">Tasted</span>
                     <input
                       type="date"
                       className="ink-field"
@@ -579,12 +586,12 @@ export function BatchRow({
                   ))}
                 </div>
                 <div className="note-block">
-                  <p className="note-block__eyebrow">How did it turn out?</p>
+                  <p className="note-block__eyebrow pen-caption">How did it turn out?</p>
                   <textarea
                     className={draft.note === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                     dir="auto"
                     rows="2"
-                    placeholder="e.g. flavor, texture, anything that stood out"
+                    placeholder="e.g. flavor, texture, what stood out"
                     value={draft.note}
                     aria-label="How did it turn out?"
                     onChange={(event) => onChangeRecordField('note', event.target.value)}
@@ -654,25 +661,30 @@ export function BatchRow({
                     </button>
                   </div>
                 </div>
-                {/* The melt block, at the tasting body's foot (contract
-                    "DOM order inventory"): both fields optional, both
-                    describe the same behaviour. */}
+                {/* The melt block, at the tasting body's foot (sketch 007
+                    lines 285-297; UAT item 12; D-12): a .field-row with
+                    top alignment holding Melt test and the Melt style
+                    category — the domain's own "Melt test" label (no
+                    "(optional)" override needed) and "Melt style" with the
+                    suffix dropped, both fields optional. */}
                 <div className="melt-block">
-                  <MeasuredField
-                    field={{ ...MELT_TEST_FIELD, label: 'Melt test (optional)' }}
-                    value={draft.meltTestG}
-                    error={fieldErrors.meltTestG}
-                    onChange={onChangeRecordField}
-                    inputRef={(el) => {
-                      fieldRefs.current.meltTestG = el;
-                    }}
-                  />
-                  <SegmentedField
-                    legend="Melt style (optional)"
-                    options={SEGMENT_OPTIONS.meltStyle}
-                    value={draft.meltStyle}
-                    onPick={(option) => onChangeSegment('meltStyle', option)}
-                  />
+                  <div className="field-row field-row--start">
+                    <MeasuredField
+                      field={MELT_TEST_FIELD}
+                      value={draft.meltTestG}
+                      error={fieldErrors.meltTestG}
+                      onChange={onChangeRecordField}
+                      inputRef={(el) => {
+                        fieldRefs.current.meltTestG = el;
+                      }}
+                    />
+                    <SegmentedField
+                      legend="Melt style"
+                      options={SEGMENT_OPTIONS.meltStyle}
+                      value={draft.meltStyle}
+                      onPick={(option) => onChangeSegment('meltStyle', option)}
+                    />
+                  </div>
                 </div>
               </>
             )}
@@ -682,12 +694,16 @@ export function BatchRow({
                 blocked-date sentence — the same state ceremony B
                 (PenFoot) reads, so the two can never disagree. */}
             <SaveCeremony onCancel={onCancelRecording} onSave={onSaveBatch} hint={blockedDateMessage} />
+            {/* Next time (sketch 007 line 307; UAT item 14; D-12): carries
+                its own visible caption and the sketch's e.g. placeholder,
+                verbatim. */}
             <label className="batch-margin__field">
+              <span className="pen-caption">Next time</span>
               <textarea
                 className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 dir="auto"
                 rows="2"
-                placeholder="optional — for the batch, the tasting, or both"
+                placeholder="e.g. churn 2 min longer"
                 value={draft.nextTimeNote}
                 aria-label="Next time"
                 onChange={(event) => onChangeRecordField('nextTimeNote', event.target.value)}

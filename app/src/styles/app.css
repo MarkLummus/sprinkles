@@ -1586,6 +1586,27 @@ textarea {
   margin: 0;
 }
 
+/* The tasting head (sketch 007 @ 2a212be line 242; UAT items 6, 18): a
+   plain .head, baseline-aligned, wrapping — NO reserved min-height, that
+   reserve belongs to .axis .head/.category .head alone (line 75). */
+.tasting-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  margin-bottom: var(--gap-xs);
+}
+
+.tasting-head .region-name {
+  margin: 0;
+}
+
+/* Remove tasting, right-aligned on the head row (007 line 246, inline
+   `style="margin-left:auto"`). */
+.tasting-head__remove {
+  margin-left: auto;
+}
+
 /* The sketch's field row (007 @ 2a212be lines 37-44; D-13): a label sits at
    its own content width and wraps whole rather than being forced onto the
    row's fixed grid; the numeric box's unit word is a sibling after the
@@ -1634,6 +1655,13 @@ textarea {
   font-size: var(--size-deviation-words);
   white-space: nowrap;
   line-height: var(--leading-control);
+}
+
+/* The melt row's own alignment override (007 line 286's inline
+   `style="align-items:flex-start"`): Melt test and the Melt style
+   category top-align, unlike every other field row's bottom alignment. */
+.field-row--start {
+  align-items: flex-start;
 }
 
 /* The battery's axis-mark control (contract "Axes spec"/"Controls spec";
@@ -1861,12 +1889,14 @@ textarea {
    read by both mounts — the record body's own end-of-record ceremony
    (BatchRow.jsx) and the foot's ceremony (PenFoot.jsx) — so the two can
    never drift apart. Mirrors .pen-foot__controls/.pen-foot__blocked's
-   own shape: the hint is a plain flex item, first in DOM order. */
+   own shape: the hint is a plain flex item, first in DOM order.
+   Right-aligned at every width (sketch 007 @ 2a212be line 55; D-14). */
 .save-ceremony {
   display: flex;
   align-items: baseline;
   gap: var(--gap-s);
   margin-top: var(--gap-m);
+  justify-content: flex-end;
 }
 
 .save-ceremony__hint {
@@ -1874,12 +1904,24 @@ textarea {
   font-size: var(--type-control);
 }
 
+/* The removal toast sits at the left of the ceremony row (007 line 55's
+   `#record-saves > #record-status` rule) — the auto margin keeps the
+   controls flush right even when the toast is empty. Plan 05 renders the
+   element itself. */
+.save-ceremony__status {
+  margin-right: auto;
+}
+
 /* The record body's own live region (contract "DOM order inventory"),
-   directly above PenFoot's ceremony. */
+   directly above PenFoot's ceremony, at the prose measure (sketch 007
+   line 172; D-15's settled-values bullet — 65ch, down from 70ch; the
+   prose field keeps its own 70ch). */
 .form-status {
   font-family: var(--face-grotesk);
   font-size: var(--type-control);
   margin: var(--gap-m) 0 0;
+  max-width: var(--measure-prose);
+  line-height: var(--leading-note);
 }
 
 /* A malformed measurement's own sentence (contract "Controls spec"),

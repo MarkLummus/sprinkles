@@ -46,10 +46,10 @@ function mediaRuleFor(selector) {
   return rules.find((r) => r.media !== undefined && r.selector === selector);
 }
 
-describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch findings; 03.3.1-06 Task 2)', () => {
-  test('the touch tokens resolve through resolveTokenPx to 44 and 40, and the stop-height alias rides --touch-min', () => {
+describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch findings; 03.3.1-06 Task 2; 03.3.1.1 tenth round)', () => {
+  test('the touch tokens resolve through resolveTokenPx to 44 and 44, and the stop-height alias rides --touch-min', () => {
     expect(resolveTokenPx(tokens, '--touch-min')).toBe(44);
-    expect(resolveTokenPx(tokens, '--touch-stop-width')).toBe(40);
+    expect(resolveTokenPx(tokens, '--touch-stop-width')).toBe(44);
     expect(resolveTokenPx(tokens, '--touch-stop-height')).toBe(44);
   });
 
@@ -61,12 +61,13 @@ describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch 
     expect(rule.declarations).not.toMatch(/:\s*-?\d+(?:\.\d+)?px/);
   });
 
-  test('inside the media block, the axis-mark stop box declares the validated 40x44 dimensions (03.3.1-06 Task 1 moved the box from the input to the label)', () => {
+  test('inside the media block, the axis-mark stop box declares the joined 44x44 cell, with a flex-basis so the joined row grows too (03.3.1-06 Task 1 moved the box from the input to the label; 03.3.1.1 tenth round)', () => {
     const rule = mediaRuleFor('.axis-mark__stop');
     expect(rule, 'expected the media-block axis-mark__stop rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 759.98px)');
     expect(rule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
     expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
+    expect(rule.declarations).toMatch(/flex-basis:\s*var\(--touch-stop-width\)/);
     expect(rule.declarations).not.toMatch(/:\s*-?\d+(?:\.\d+)?px/);
   });
 
@@ -77,7 +78,7 @@ describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch 
     expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
   });
 
-  test('the media block carries exactly the five rules 03.3.1-06 Task 2 and 03.3.1.1-01 Tasks 1 and 3 name', () => {
+  test('the media block carries exactly the six rules 03.3.1-06 Task 2, 03.3.1.1-01 Tasks 1 and 3, and 03.3.1.1-03 Task 2 name', () => {
     const mediaRules = rules.filter((r) => r.media !== undefined && r.media === '(max-width: 759.98px)');
     expect(mediaRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option',
@@ -85,6 +86,7 @@ describe('touch targets below the 760px step-down — 44px, stops 40x44 (sketch 
       '.axis-mark__stop',
       '.recipe-band__row-version',
       '.text-control',
+      '.axis-mark__head, .segmented-field__head',
     ]);
   });
 
@@ -371,12 +373,50 @@ describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption 
     }
   });
 
-  test('the axis head row picks up the same 6px caption-to-content gap, ahead of the stops (03.3.1-06 Task 1)', () => {
+  test('the axis/segmented head row picks up the same 6px caption-to-content gap, ahead of the stops, and reserves Clear\'s own height (03.3.1-06 Task 1; 03.3.1.1 tenth round)', () => {
     // The rebuilt axis-mark stacks three rows (head, stops, anchors)
     // rather than the retired .axis-mark__legend's single caption-above-
     // content shape, so the 6px gap now belongs to the head row as a
-    // whole (name + inline state + Clear), not the name span alone.
-    expect(ruleFor('.axis-mark__head').declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
+    // whole (name + inline state + Clear), not the name span alone. The
+    // tenth round grouped this rule with .segmented-field__head (Plan
+    // 04's markup) and gave it a reserved min-height so picking moves
+    // nothing (007 line 75).
+    const rule = ruleFor('.axis-mark__head, .segmented-field__head');
+    expect(rule, 'expected the grouped .axis-mark__head, .segmented-field__head rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-line-h\)/);
+    expect(rule.declarations).toMatch(/align-items:\s*center/);
+  });
+});
+
+describe('joined stops (007 @ 2a212be lines 80-81, 124)', () => {
+  test('.axis-mark__stops carries no gap — the cells share hairlines through a negative margin', () => {
+    const rule = ruleFor('.axis-mark__stops');
+    expect(rule, 'expected a .axis-mark__stops rule').toBeTruthy();
+    expect(rule.declarations).not.toMatch(/gap:/);
+  });
+
+  test('.axis-mark__stop reads a 38px flex-basis and a one-hairline negative right margin, reset on :last-child', () => {
+    const rule = ruleFor('.axis-mark__stop');
+    expect(rule, 'expected a .axis-mark__stop rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/flex:\s*0 0 var\(--stop-w\)/);
+    expect(rule.declarations).toMatch(/margin-right:\s*calc\(-1 \* var\(--rule-ink-field\)\)/);
+    const lastChildRule = ruleFor('.axis-mark__stop:last-child');
+    expect(lastChildRule, 'expected a .axis-mark__stop:last-child rule').toBeTruthy();
+    expect(lastChildRule.declarations).toMatch(/margin-right:\s*0/);
+  });
+
+  test('--stop-w resolves to 38 and --stop-gap is retired; the caption-line tokens resolve to 24 and 44', () => {
+    expect(resolveTokenPx(tokens, '--stop-w')).toBe(38);
+    expect(tokens['--stop-gap']).toBeUndefined();
+    expect(resolveTokenPx(tokens, '--caption-line-h')).toBe(24);
+    expect(resolveTokenPx(tokens, '--caption-line-h-touch')).toBe(44);
+  });
+
+  test('the axes grid reads column-gap: 0 — clearance now carried by padding on the flanking columns', () => {
+    const rule = ruleFor('.axes-grid');
+    expect(rule, 'expected a .axes-grid rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/column-gap:\s*0/);
   });
 });
 

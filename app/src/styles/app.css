@@ -1683,11 +1683,36 @@ textarea {
   margin: var(--gap-m) 0 0;
 }
 
-.axis-mark__head {
+/* The caption line (sketch 007 @ 2a212be lines 75, 118, 131, 158, 180 —
+   the tenth round's central geometry): reserves Clear's height marked
+   or not, so picking moves nothing (README tenth round: head 24 -> 24,
+   44 -> 44 before and after a pick). Shared with .segmented-field__head
+   (Plan 04's markup) so the three segmented controls' caption lines
+   reserve the same height. */
+.axis-mark__head,
+.segmented-field__head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--gap-xs);
   margin-bottom: var(--gap-xs);
+  min-height: var(--caption-line-h);
+  flex-wrap: wrap;
+}
+
+/* The record-pen field row's own head shape (007 line 120): a min-width
+   reset so a long caption's row can still shrink inside its flex
+   parent. Plan 04 renders .segmented-field; until then this rule
+   matches nothing. */
+.segmented-field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* The caption line itself carries the 6px gap to the options (007 line
+   35); must sit after .pen-caption in the file to win at equal
+   specificity. */
+.segmented-field__caption {
+  margin-bottom: 0;
 }
 
 /* The axis name is a caption like any other (sketch 007 @ 2a212be line
@@ -1722,16 +1747,16 @@ textarea {
   font-style: normal;
 }
 
-/* Five numbered stops on the battery's own track (contract "Responsive
-   ladder": 34x32 on the 186px track, 5 x 34 + 4 x 4, 4px gaps). The
-   label is the drawn box; the native radio input is stretched over it,
-   invisible, so click and keyboard target the whole box while the
-   browser's own grouped-radio semantics keep doing all the keyboard work
-   (AxisMark.jsx's header comment) — nothing here changes that mechanism,
-   only how it looks. */
+/* Five joined stops on the battery's own track (sketch 007 @ 2a212be
+   lines 80-81, 124: 38x32, joined, 5 x 38 - 4 x 1 = 186 — the four
+   shared hairlines). The label is the drawn box; the native radio input
+   is stretched over it, invisible, so click and keyboard target the
+   whole box while the browser's own grouped-radio semantics keep doing
+   all the keyboard work (AxisMark.jsx's header comment) — nothing here
+   changes that mechanism, only how it looks. The picked cell sits on
+   top (z-index 1, above) and a hovered one above it (z-index 2). */
 .axis-mark__stops {
   display: flex;
-  gap: var(--stop-gap);
   width: var(--track-stop);
 }
 
@@ -1740,8 +1765,9 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--stop-w);
+  flex: 0 0 var(--stop-w);
   height: var(--stop-h);
+  margin-right: calc(-1 * var(--rule-ink-field));
   border: var(--rule-ink-field) solid var(--ink);
   border-radius: 0;
   font-family: var(--face-grotesk);
@@ -1752,6 +1778,10 @@ textarea {
      --stop-w/--stop-h instead of being drawn inside them (measured live,
      03.3.1-06 Task 3: 40x46 instead of the contract's 40x44 below 760px). */
   box-sizing: border-box;
+}
+
+.axis-mark__stop:last-child {
+  margin-right: 0;
 }
 
 .axis-mark__stop input[type='radio'] {
@@ -1811,15 +1841,18 @@ textarea {
   white-space: nowrap;
 }
 
-/* The clear control (G-02-6), beside the stops rather than styled as a
-   tenth one. Written with the .batch-margin ancestor because the standing
+/* Clear, right-aligned on the caption line (007 line 131): no negative
+   block margin — the caption line above reserves its height instead.
+   Written with the .batch-margin ancestor because the standing
    .batch-margin button rule (two selector components) otherwise outranks
-   a lone class (one selector component) and would win the cascade,
-   leaving the control sitting low in this vertically-centred flex row. */
-.batch-margin .axis-mark__clear {
+   a lone class (one selector component) and would win the cascade.
+   Shared with .segmented-field__clear (Plan 04's markup). */
+.batch-margin .axis-mark__clear,
+.batch-margin .segmented-field__clear {
   font-family: var(--face-grotesk);
   font-size: var(--size-mark-stop);
   margin-top: 0;
+  margin-left: auto;
 }
 
 /* The battery's one 3-way segmented control (Segmented.jsx; contract
@@ -1990,22 +2023,31 @@ textarea {
 }
 
 /* The axes grid's desktop row-major arrangement (AxesGrid, BatchRow.jsx;
-   contract "Axes spec"/"Responsive ladder"): a real DOM swap, not a
-   media-scoped layout — AxesGrid only ever renders this markup (no
-   `--stacked` modifier) while `below` is false, so the 3-column grid
-   needs no media guard of its own; the stacked arrangement below is a
-   different DOM shape entirely, gated by 03.3.1-06 Task 2's own
-   extension of the touch-step media block further down this file. The
-   hairline sits at the contract's own calc position, independent of the
-   column gap; --axes-cols-clearance is that gap, so the verified 12px
-   stop-to-rule clearance is this one token's arithmetic, never a second
-   number (Responsive ladder). */
+   contract "Axes spec"/"Responsive ladder"; 03.3.1.1 tenth round, sketch
+   007 lines 65-68): a real DOM swap, not a media-scoped layout —
+   AxesGrid only ever renders this markup (no `--stacked` modifier) while
+   `below` is false, so the 3-column grid needs no media guard of its
+   own; the stacked arrangement below is a different DOM shape entirely,
+   gated by 03.3.1-06 Task 2's own extension of the touch-step media
+   block further down this file. The hairline sits at the contract's own
+   calc position. Clearance is now carried by padding on the two flanking
+   columns rather than column-gap — --axes-cols-clearance is the
+   declared column's own padding-left (007 line 66), so the verified
+   12px stop-to-rule clearance is still this one token's arithmetic. */
 .axes-grid {
   position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: var(--axes-cols-clearance);
+  column-gap: 0;
   row-gap: var(--gap-m);
+}
+
+.axes-grid:not(.axes-grid--stacked) > .axis-mark--core {
+  padding-right: var(--gap-m);
+}
+
+.axes-grid:not(.axes-grid--stacked) > .axis-mark--declared {
+  padding-left: var(--axes-cols-clearance);
 }
 
 .axes-rule {
@@ -2088,17 +2130,21 @@ textarea {
 }
 
 /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
-   references/cross-cutting-type-spacing-feedback.md): the app's first
-   at-rule, placed after every existing rule so css-source.js's first-match
-   rule lookups keep finding every top-level rule first. Buttons, selects,
-   ink fields and segmented options grow to a 44px minimum height
-   (--touch-min) and the axis-mark stop box to the validated 40x44 box
-   (--touch-stop-width over --touch-stop-height, 03.3.1-06 Task 2 — the
-   box moved from the input to the label in Task 1's rebuild, so this is
-   the label's own override now, not the input's); the stops' and
-   anchors' shared track widens to the 216px --track-stop-narrow. Every
-   desktop rule above is untouched — everything here lives inside this
-   block, whose --touch-min flex-row stops wrap rather than overflow (the
+   references/cross-cutting-type-spacing-feedback.md; 03.3.1.1 tenth
+   round): the app's first at-rule, placed after every existing rule so
+   css-source.js's first-match rule lookups keep finding every top-level
+   rule first. Buttons, selects, ink fields and segmented options grow
+   to a 44px minimum height (--touch-min) and the axis-mark stop box to
+   the joined 44x44 cell (--touch-stop-width over --touch-stop-height,
+   5 x 44 - 4 x 1 = 216 on --track-stop-narrow, sketch 007 lines
+   177-178) — the box moved from the input to the label in 03.3.1-06
+   Task 1's rebuild, so this is the label's own override now, not the
+   input's; flex-basis repeats the width so the joined-cell flex row
+   still grows correctly (the desktop rule's flex: 0 0 var(--stop-w)
+   would otherwise keep its 38px basis here); the stops' and anchors'
+   shared track widens to the 216px --track-stop-narrow. Every desktop
+   rule above is untouched — everything here lives inside this block,
+   whose --touch-min flex-row stops wrap rather than overflow (the
    .axis-mark__stops row already wraps). The 759.98px prelude is the one
    sanctioned breakpoint literal in the file: a prelude, not a
    declaration, so binder.test.js's no-bare-px gate never sees it, and
@@ -2106,9 +2152,10 @@ textarea {
    boundary, matching the finding's verified-at-768 desktop compactness.
    The sketches' text controls are `<button>`s, inline-block, and take
    24px tall at desktop and 44px here (sketch 003 @ d89b758 lines 32 and
-   178; 007 lines 131 and 180; settled on sketch 008, 2026-09-14). The
-   version row also collapses to one column here (sketch 003 @ d89b758
-   line 71; D-15; UAT item 1). */
+   178; 007 lines 131 and 180; settled on sketch 008, 2026-09-14) — the
+   caption line (.axis-mark__head, .segmented-field__head, above) grows
+   with it (007 line 180). The version row also collapses to one column
+   here (sketch 003 @ d89b758 line 71; D-15; UAT item 1). */
 @media (max-width: 759.98px) {
   button,
   select,
@@ -2125,6 +2172,7 @@ textarea {
   .axis-mark__stop {
     width: var(--touch-stop-width);
     height: var(--touch-stop-height);
+    flex-basis: var(--touch-stop-width);
   }
 
   .recipe-band__row-version {
@@ -2133,6 +2181,11 @@ textarea {
 
   .text-control {
     min-height: var(--touch-min);
+  }
+
+  .axis-mark__head,
+  .segmented-field__head {
+    min-height: var(--caption-line-h-touch);
   }
 }
 

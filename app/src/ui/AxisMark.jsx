@@ -55,7 +55,7 @@ export function AxisMark({ axis, value, onChange, onClear, declaredCaption = nul
   }
 
   return (
-    <div className="axis-mark">
+    <div className={`axis-mark axis-mark--${axis.group}`}>
       {declaredCaption && <p className="axes-declared-caption">{declaredCaption}</p>}
       <div className="axis-mark__head">
         <span id={nameId} className="axis-mark__name">

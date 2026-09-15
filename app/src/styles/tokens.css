@@ -239,40 +239,51 @@
 
   /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
      references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
-     the Responsive Ladder"): below the 760px step-down, interactive
-     targets grow toward 44px — --touch-min is that minimum height for
-     buttons, selects and ink fields; --touch-stop-width is a rating
-     stop's grown width, its height reading --touch-min for the validated
-     40x44 box. Px literals, so the contract suites resolve them with
-     resolveTokenPx. Desktop stays compact — the growth lives only in
-     app.css's @media (max-width: 759.98px) block. */
+     the Responsive Ladder"; 03.3.1.1 tenth round): below the 760px
+     step-down, interactive targets grow toward 44px — --touch-min is
+     that minimum height for buttons, selects and ink fields;
+     --touch-stop-width is a rating stop's grown width, joined with its
+     four siblings on the 216px --track-stop-narrow (5 x 44 - 4 x 1 =
+     216, sketch 007 @ 2a212be lines 177-178), its height reading
+     --touch-min for the 44x44 box. Px literals, so the contract suites
+     resolve them with resolveTokenPx. Desktop stays compact — the
+     growth lives only in app.css's @media (max-width: 759.98px) block. */
   --touch-min: 44px;
-  --touch-stop-width: 40px;
+  --touch-stop-width: 44px;
 
   /* The battery's geometry (sketch-findings-sprinkles,
      references/batch-record-tasting-battery-structure.md, "Responsive
-     ladder"/"Axes spec"; 03.3.1-06): every verified number from the
-     structural contract, named so app.css never carries the literal. The
-     breakpoint literals themselves (759.98px, 600px) stay in app.css's
-     own @media preludes, the one sanctioned exception the touch block
-     above already established.
+     ladder"/"Axes spec"; 03.3.1-06; 03.3.1.1 tenth round): every
+     verified number from the structural contract, named so app.css
+     never carries the literal. The breakpoint literals themselves
+     (759.98px, 600px) stay in app.css's own @media preludes, the one
+     sanctioned exception the touch block above already established.
      --pen-w caps the record pen's frame (contract "the pen is 640px
      wide") via .batch-margin--pen (app.css), a recording-mode class
      BatchRow.jsx applies only while mode === 'recording' — the read
      view keeps its own already-shipped full width on the same shared
      .batch-margin container (page-shell-front-matter.md's "front
-     matter spans the whole page" rule; VERIFICATION.md gap, 03.3.1). */
+     matter spans the whole page" rule; VERIFICATION.md gap, 03.3.1).
+     --stop-w is five joined cells sharing four hairlines on the
+     unchanged 186px --track-stop (5 x 38 - 4 x 1 = 186, sketch 007
+     lines 80-81, 124) — the cells share hairlines through a negative
+     margin (app.css), not a gap, so --stop-gap is retired. */
   --pen-w: 640px;
   --track-stop: 186px;
   --track-stop-narrow: 216px;
-  --stop-w: 34px;
+  --stop-w: 38px;
   --stop-h: 32px;
-  --stop-gap: 4px;
   /* The stop's own grown height below 760px: rides the existing touch
      block's 44px (the --rule-foot-band pattern above) so the stop's
      height and every other control's min-height can never drift apart
      while reading its own name at the call site. */
   --touch-stop-height: var(--touch-min);
+  /* The caption line reserves Clear's height, marked or not, so picking
+     moves nothing (sketch 007 line 75 — Clear is a text control, 24px;
+     line 180 — 44px below 760px; README tenth round: head 24 -> 24,
+     44 -> 44 before and after a pick). */
+  --caption-line-h: var(--text-control-min);
+  --caption-line-h-touch: var(--touch-min);
   /* The segmented option's own padding (007 lines 48 + 165): the hover
      padding (app.css) is derived from these by calc, never a second
      literal. */
@@ -285,8 +296,10 @@
      wrap gap is --gap-xs. */
   --gap-defect-col: var(--gap-m);
   /* The 12px minimum clearance the contract verifies between a desktop
-     axis-mark stop and the core/declared hairline (Responsive ladder):
-     the axes grid's own column-gap, so the clearance is exactly this
-     token's arithmetic, never a second number. */
+     axis-mark stop and the core/declared hairline (Responsive ladder;
+     03.3.1.1 tenth round, sketch 007 line 66): now the declared
+     column's own padding-left — the axes grid reads column-gap: 0
+     instead (app.css), so the clearance is exactly this token's
+     arithmetic on one side of the hairline, never a second number. */
   --axes-cols-clearance: 12px;
 }

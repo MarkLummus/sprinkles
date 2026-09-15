@@ -162,13 +162,31 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(markup).not.toContain('Add tasting');
   });
 
-  it('renders Correct, as a text control at the row\'s foot, when a batch is in view — no Add tasting yet (plan 03 opens the tasting section)', () => {
+  it('renders Correct on the Batch head line, right-aligned, when a batch is in view — no Add tasting yet (plan 03 opens the tasting section)', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).not.toContain('Record another');
     expect(markup).toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
-    const correctButton = markup.match(/<button[^>]*>Correct<\/button>/)[0];
-    expect(correctButton).toContain('class="text-control"');
+    expect(markup).not.toContain('batch-row__acts');
+    const headIndex = markup.indexOf('class="batch-row__head"');
+    const marginIndex = markup.indexOf('class="batch-margin');
+    const correctIndex = markup.indexOf('>Correct<');
+    expect(headIndex).toBeGreaterThan(-1);
+    expect(correctIndex).toBeGreaterThan(headIndex);
+    expect(correctIndex).toBeLessThan(marginIndex);
+    const correctButton = markup.match(/<button[^>]*class="text-control batch-row__correct"[^>]*>Correct<\/button>/)[0];
+    expect(correctButton).toBeTruthy();
+  });
+
+  it('names the later-batches panel by aria-controls on its count disclosure', () => {
+    const markup = renderBatchRow({
+      openPen: null,
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+    });
+    const countButton = markup.match(/<button[^>]*>1 later batch<\/button>/)[0];
+    expect(countButton).toContain('aria-expanded="false"');
+    expect(countButton).toContain('aria-controls="batch-row-later"');
   });
 
   it('renders no openers while the plan pen is open — this row renders nothing at the top for a pen it does not own', () => {

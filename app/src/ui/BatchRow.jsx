@@ -404,9 +404,26 @@ export function BatchRow({
             type="button"
             className="text-control"
             aria-expanded={laterBatchesOpen}
+            aria-controls="batch-row-later"
             onClick={() => setLaterBatchesOpen((open) => !open)}
           >
             {`${laterBatchesCount} later batch${laterBatchesCount === 1 ? '' : 'es'}`}
+          </button>
+        )}
+        {/* Correct: an underlined word standing on the head line that
+            names the record it acts on, right-aligned like Remove tasting
+            on 007's Tasting head (sketch 003 line 84, D-15) — present
+            only with no pen open and a batch in view. The row has no foot
+            acts and no read-view Add tasting (003 line 256): the pen is
+            the one door (03.3.1 D-01/D-03). */}
+        {openPen === null && openBatch && (
+          <button
+            type="button"
+            ref={amendButtonRef}
+            className="text-control batch-row__correct"
+            onClick={() => onStartAmending(openBatch)}
+          >
+            Correct
           </button>
         )}
       </div>
@@ -765,23 +782,6 @@ export function BatchRow({
         )}
       </div>
 
-      {/* Correct, relocated to the row's foot as an underlined text
-          control (sketch 003 variant B, G-03.3-4) — present only with no
-          pen open and a batch in view. Add tasting returns in plan 03,
-          once the tasting section has somewhere to open into. */}
-      {openPen === null && openBatch && (
-        <div className="batch-row__acts">
-          <button
-            type="button"
-            ref={amendButtonRef}
-            className="text-control"
-            onClick={() => onStartAmending(openBatch)}
-          >
-            Correct
-          </button>
-        </div>
-      )}
-
       {/* The batch list (D-09): always a list with zero batches, since
           there is no count to disclose. With one or more, it becomes the
           "Batches of this version" panel the head's own count control
@@ -792,7 +792,7 @@ export function BatchRow({
         </ul>
       ) : (
         laterBatchesOpen && (
-          <section className="batch-row__later" aria-label="Batches of this version">
+          <section id="batch-row-later" className="batch-row__later" aria-label="Batches of this version">
             <h2 className="region-name">Batches of this version</h2>
             <ul className="batch-row__later-list">
               {sortedBatches(batches).map((batch) => {

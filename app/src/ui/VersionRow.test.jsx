@@ -322,6 +322,8 @@ describe('VersionRow — the Later-versions disclosure, closed by default (D-07,
       versions: [oliveOilVersion, childVersion],
     });
     expect(markup).toMatch(/<button[^>]*class="text-control"[^>]*>1 later version<\/button>/);
+    const laterButton = markup.match(/<button[^>]*>1 later version<\/button>/)[0];
+    expect(laterButton).toContain('aria-controls="version-row-later"');
     expect(markup).not.toContain('version-strip');
   });
 

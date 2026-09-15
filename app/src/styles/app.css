@@ -1447,13 +1447,14 @@ textarea {
   color: var(--pen-blue);
 }
 
-/* Correct/Add tasting, relocated to the row's foot as text controls
-   (sketch 003 variant B, index.html:255, 03.3-07, G-03.3-4). */
-.batch-row__acts {
-  display: flex;
-  gap: var(--gap-s);
-  flex-wrap: wrap;
-  margin-top: var(--gap-s);
+/* Correct, on the batch head line (sketch 003 @ d89b758 line 84:
+   `.row-batch .head .correct { margin-left: auto }`; box-or-word rubric,
+   sketch 008 @ 3a5beed line 230 — Correct is an underlined word because
+   it acts on the record already in view). .batch-row__head is already
+   flex/baseline/wrap (003 line 83); this margin alone pushes Correct to
+   the line's right edge. */
+.batch-row__correct {
+  margin-left: auto;
 }
 
 /* The "Batches of this version" disclosure (sketch 003 variant B,

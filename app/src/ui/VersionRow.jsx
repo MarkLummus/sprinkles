@@ -188,6 +188,7 @@ export function VersionRow({
                   type="button"
                   className="text-control"
                   aria-expanded={laterVersionsOpen}
+                  aria-controls="version-row-later"
                   onClick={() => setLaterVersionsOpen((open) => !open)}
                 >
                   {laterCount} later version{laterCount === 1 ? '' : 's'}
@@ -333,7 +334,7 @@ export function VersionRow({
         // The Later-versions disclosure (sketch 003 variant B,
         // index.html:230-233): a full-width row, not nested in vmeta's
         // own narrow column (03.3-06 checkpoint feedback).
-        <section className="recipe-band__full-row" aria-label="Later versions">
+        <section id="version-row-later" className="recipe-band__full-row" aria-label="Later versions">
           <h2 className="region-name">Later versions</h2>
           <VersionStrip
             versions={descendants}

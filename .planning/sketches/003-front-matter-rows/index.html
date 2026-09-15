@@ -23,29 +23,29 @@ body { margin: 0; padding-top: 48px; font-family: var(--face-grotesk); color: va
 .frame { margin: 0 auto; background: var(--ground); outline: 1px dashed #b5b5ae; transition: width 0.15s ease; min-height: calc(100vh - 48px); }
 
 /* ---------- the world ---------- */
-.app { position: relative; font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: 1.35; color: var(--ink); background: var(--ground); }
+.app { position: relative; font-family: var(--face-grotesk); font-size: var(--size-table-body); line-height: 1.35; color: var(--ink); background: var(--ground); --focus-outline-width: 2px; /* a whole 2px: 1.5px renders as 1px at DPR 1 (008, 2026-09-14) */ --type-section: 0.875rem; --type-label: 0.75rem; --type-control: 0.8125rem; --type-note: 1rem; --leading-note: 1.5; /* the type roles 007 carries, so the shell and the pen share one scale (008, 2026-09-14) */ }
 .app *:focus-visible { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
 button { font: inherit; }
 .btn { font-family: var(--face-grotesk); font-size: var(--size-table-body); color: var(--ink); background: none; border: var(--rule-ink-field) solid var(--ink); border-radius: 0; padding: 6px 12px; cursor: pointer; }
-.btn:hover { border-width: 1.5px; padding: 5.5px 11.5px; }
+.btn:hover { border-width: 2px; padding: 5px 11px; } /* a whole 2px; the padding gives the pixel back, so the box holds (008, 2026-09-14) */
 .btn[disabled] { border-style: dashed; cursor: default; }
-.text-control { font-family: var(--face-grotesk); font-size: var(--size-small-print); color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
-.text-control:hover { text-decoration-thickness: 1.5px; }
+.text-control { font-family: var(--face-grotesk); font-size: var(--type-control); line-height: 1.3; min-height: 24px; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; } /* an underlined word is an inline action: control size, 24px tall (008, 2026-09-14) */
+.text-control:hover { text-decoration-thickness: 1.5px; } /* Show changes is a square and a word: an independent on/off in prose; the checkbox-sized square fills pen blue when on, the underline stays hairline, hover thickens the square (008, 2026-09-14) */ .text-toggle { min-height: 32px; } .text-toggle::before { content: ''; display: inline-block; width: 0.8125rem; height: 0.8125rem; box-sizing: border-box; border: var(--rule-graduation) solid var(--ink); margin-right: var(--gap-xs); vertical-align: baseline; } .text-toggle.on::before { background: var(--pen-blue); border-color: var(--pen-blue); } .text-toggle.on:hover { text-decoration-thickness: 1px; } .text-toggle:hover::before { border-width: 2px; }
 .text-control[disabled] { text-decoration-style: dashed; cursor: default; }
 .reason { font-size: var(--size-small-print); }
-.running-head, .region-name { font-family: var(--face-grotesk); font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; color: var(--bookcloth); margin: 0 0 var(--gap-xs); font-weight: 400; }
+.running-head, .region-name { font-family: var(--face-grotesk); font-size: var(--type-section); font-weight: 600; line-height: 1.35; text-transform: uppercase; letter-spacing: 0.04em; color: var(--bookcloth); margin: 0 0 var(--gap-xs); } /* the section role, 0.875rem at 600; 6px beneath (008, 2026-09-14) */
 .small { font-size: var(--size-small-print); }
 .pen { color: var(--pen-blue); }
 .strike { text-decoration: line-through; text-decoration-thickness: var(--rule-strike); margin-right: var(--gap-xs); }
-.ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--pen-blue); border: var(--rule-ink-field) solid var(--ink); border-radius: 0; background: none; padding: 2px 6px; }
-.prose-field { font-family: var(--face-text); font-size: var(--size-headnote-prose); color: var(--pen-blue); border: 0; border-bottom: var(--rule-graduation) solid var(--ink); background: none; padding: 0; width: 100%; resize: none; line-height: 1.4; }
-.prose-field:focus { outline: none; border-bottom-width: var(--rule-baseline); }
+.ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--pen-blue); border: var(--rule-ink-field) solid var(--ink); border-radius: 0; background: none; padding: 2px 6px; line-height: 1.35; } /* the section leading, so a field and a select stand the same height (008, 2026-09-14) */ .ink-field::placeholder, .prose-field::placeholder { color: var(--ink); opacity: 1; font-style: italic; } /* a placeholder is an italic ink example, never pen blue (008, 2026-09-14) */
+.prose-field { font-family: var(--face-text); font-size: var(--type-note); line-height: var(--leading-note); color: var(--pen-blue); border: 0; border-bottom: var(--rule-graduation) solid var(--ink); background: none; padding: 2px 0; width: 100%; max-width: var(--measure-prose); resize: none; box-sizing: border-box; field-sizing: content; min-height: calc(var(--leading-note) * 1em); overflow-y: hidden; overflow-wrap: anywhere; display: block; } /* the maker's words: note size and leading, sized to its text (008, 2026-09-14; the rule 007 carries) */
+/* the prose field's focus is the one ring; the baseline stays a hairline (008, 2026-09-14) */
 select.ink-field { appearance: none; -webkit-appearance: none; padding-right: 20px; background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%); background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
 a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 
 /* ---------- the page grid ---------- */
 .page { display: grid; grid-template-columns: 2fr 1fr; gap: var(--gap-l); padding: var(--gap-xl); box-sizing: border-box; align-items: start; grid-template-areas: 'front side-top' 'ingredients side' 'method side'; }
-.frame.narrow .page { grid-template-columns: 1fr; padding: var(--gap-m); gap: var(--gap-m); grid-template-areas: 'front' 'ingredients' 'side' 'method'; }
+.frame.narrow .page { grid-template-columns: 1fr; gap: var(--gap-m); grid-template-areas: 'front' 'ingredients' 'side' 'method'; } /* the stack keeps the paper's 48px margin; it shrinks to 20px at 600px and below, as 007 and the app do (Mark, 2026-09-14) */
 .front { grid-area: front; min-width: 0; container-type: inline-size; }
 .ingredients { grid-area: ingredients; min-width: 0; }
 .method { grid-area: method; min-width: 0; }
@@ -73,7 +73,7 @@ a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2p
 .headnote .version { font-family: var(--face-text); font-size: var(--size-version-line); margin: var(--gap-xs) 0 0; }
 .headnote .prose { font-family: var(--face-text); font-size: var(--size-headnote-prose); margin: var(--gap-s) 0 0; line-height: 1.45; }
 .vmeta dl { display: grid; grid-template-columns: max-content 1fr; gap: var(--gap-hair) var(--gap-s); margin: 0; }
-.vmeta dt { font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px; }
+.vmeta dt { font-size: var(--type-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px; } /* every caption 0.75rem at 500 (008, 2026-09-14) */
 .vmeta dd { margin: 0; }
 .vmeta .reason-text { font-family: var(--face-text); }
 .acts { display: flex; gap: var(--gap-s); flex-wrap: wrap; align-items: center; margin-top: var(--gap-s); }
@@ -81,10 +81,10 @@ a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2p
 .vmeta dd { min-width: 0; }
 .acts .text-control + .text-control { margin-left: 0; }
 .row-batch .head { display: flex; align-items: baseline; gap: var(--gap-s); flex-wrap: wrap; }
-.row-batch .head .region-name { margin: 0; }
+.row-batch .head .region-name { margin: 0; } .row-batch .head .correct { margin-left: auto; } /* Correct acts on the whole record, so it stands on the head line that names it, right-aligned as Remove tasting does on 007's Tasting head (Mark, 2026-09-14) */
 .row-batch .head .date { font-family: var(--face-text); font-size: var(--size-version-line); color: var(--pen-blue); }
 .cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, max-content)); gap: var(--gap-s) var(--gap-l); margin: var(--gap-s) 0 0; }
-.cell .k { display: block; font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.cell .k { display: block; font-size: var(--type-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: var(--gap-xs); } /* 6px to what it captions (008, 2026-09-14) */
 .cell .v { font-size: var(--size-figure-value); font-weight: 700; color: var(--pen-blue); font-variant-numeric: tabular-nums; line-height: 1.1; }
 .cell .v .u { font-size: var(--size-deviation-words); font-weight: 400; }
 .cell .plan { display: block; font-size: var(--size-small-print); margin-top: 2px; }
@@ -107,12 +107,12 @@ a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2p
 .ceremony { display: none; grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr); gap: var(--gap-l); grid-column: 1 / -1; }
 .ceremony.open { display: grid; }
 .ceremony label { display: block; margin: 0 0 var(--gap-s); }
-.ceremony label span { display: block; font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
-.ceremony .ink-field { width: 100%; box-sizing: border-box; font-family: var(--face-text); font-size: var(--size-version-line); }
+.ceremony label span { display: block; font-size: var(--type-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: var(--gap-xs); }
+.ceremony .ink-field { width: 100%; box-sizing: border-box; } /* the sheet's ink field: the grotesk at 0.9375rem; the version name is a short value, not prose (Mark, 2026-09-14) */
 .ceremony select.ink-field { font-family: var(--face-grotesk); font-size: var(--size-ink-field); }
 .ceremony .was { font-family: var(--face-text); font-size: var(--size-deviation-words); margin: 2px 0 0; }
 .ceremony .saves { display: flex; gap: var(--gap-s); margin-top: var(--gap-m); flex-wrap: wrap; }
-.ceremony .blocked { font-size: var(--size-small-print); margin: var(--gap-xs) 0 0; min-height: 1.2em; }
+.ceremony .blocked { font-size: var(--type-control); line-height: var(--leading-note); max-width: var(--measure-prose); margin: var(--gap-xs) 0 0; min-height: 1.5em; } /* the status line: control size, note leading, the prose measure (008, 2026-09-14) */
 [data-pen="develop"] .vmeta { display: none; }
 [data-pen="develop"] .row-version { grid-template-columns: 1fr; }
 [data-pen="develop"] .vmeta .acts { display: none; }
@@ -120,14 +120,14 @@ a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2p
 /* ---------- the table ---------- */
 table { border-collapse: collapse; width: 100%; table-layout: fixed; font-variant-numeric: tabular-nums; line-height: var(--leading-table); }
 th, td { padding: 4px 6px; box-sizing: border-box; text-align: left; vertical-align: baseline; border-bottom: var(--rule-graduation) solid var(--ink); }
-th { font-size: var(--size-running-head); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 400; border-bottom-width: var(--rule-baseline); }
+th { font-size: var(--type-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; border-bottom-width: var(--rule-baseline); }
 th.u { text-transform: none; letter-spacing: 0; }
 td.num, th.num { text-align: right; }
 col.c-num { width: 94px; } col.c-step { width: 78px; } col.c-data { width: 86px; }
 [data-pen="develop"] col.c-g { width: 150px; }
 table.step-order col.c-step { width: 0; }
 table.step-order th:nth-child(5), table.step-order td:nth-child(5) { display: none; }
-tr.step-head td { font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; padding-top: var(--gap-s); border-bottom-width: var(--rule-baseline); }
+tr.step-head td { font-size: var(--type-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; padding-top: var(--gap-s); border-bottom-width: var(--rule-baseline); }
 tr.step-head td .lead { text-transform: none; letter-spacing: 0; font-family: var(--face-text); font-size: var(--size-deviation-words); margin-left: var(--gap-s); }
 td .portion { display: block; font-size: var(--size-small-print); }
 tr.total td { border-bottom: 0; border-top: var(--rule-baseline) solid var(--ink); font-weight: 700; }
@@ -157,7 +157,7 @@ td .was.on { display: inline; }
 .advisories .basis { font-size: var(--size-small-print); }
 .before { font-family: var(--face-text); max-width: var(--measure-prose); margin: 0 0 var(--gap-m); padding: 0 0 var(--gap-m); border-bottom: var(--rule-graduation) solid var(--ink); }
 .before p { margin: 0 0 var(--gap-s); font-size: var(--size-headnote-prose); line-height: 1.45; }
-.before p.running-head { font-family: var(--face-grotesk); font-size: var(--size-running-head); line-height: 1.35; }
+.before p.running-head { font-family: var(--face-grotesk); font-size: var(--type-section); line-height: 1.35; }
 .authored { font-family: var(--face-text); }
 .authored p { margin: 0 0 var(--gap-s); font-size: var(--size-deviation-words); line-height: 1.45; }
 
@@ -175,6 +175,7 @@ td .was.on { display: inline; }
 .method li.skipped .skipped { color: var(--pen-blue); font-family: var(--face-grotesk); font-size: var(--size-small-print); text-transform: uppercase; letter-spacing: 0.04em; }
 .method .edit { display: none; }
 [data-pen="develop"] .method .edit { display: inline; margin-top: 4px; }
+/* touch sizes below 760px and field size at 600px and below, as the sheet draws them; 003's width presets narrow the frame, not the viewport, so these show only at a real narrow viewport (008, 2026-09-14) */ @media (max-width: 760px) { .btn, .text-control, .ink-field { min-height: 44px; } } @media (max-width: 600px) { .ink-field, .prose-field { font-size: var(--type-note); } .page, .frame.narrow .page { padding: var(--gap-m); } }
 </style>
 </head>
 <body>
@@ -210,7 +211,7 @@ td .was.on { display: inline; }
         <dl>
           <dt>Written</dt><dd>6 Aug 2026</dd>
           <dt>Why</dt><dd class="reason-text">First formula at 800 g.</dd>
-          <dt>Later</dt><dd><button class="text-control" onclick="toggleList('versions')">3 later versions</button></dd>
+          <dt>Later</dt><dd><button class="text-control" aria-expanded="false" aria-controls="list-versions" onclick="toggleList('versions')">3 later versions</button></dd>
         </dl>
         <div class="acts"><button class="btn" id="develop-btn" onclick="openDevelop()">Next version</button><button class="btn" onclick="flash(this,'opens the record\'s pen on the page')">Record another</button></div>
       </div>
@@ -234,7 +235,7 @@ td .was.on { display: inline; }
     </div>
 
     <div class="row row-batch">
-      <div class="head"><h2 class="region-name">Batch</h2><span class="date">churned 2 Aug 2026</span><button class="text-control" onclick="toggleList('batches')">1 later batch</button></div>
+      <div class="head"><h2 class="region-name">Batch</h2><span class="date">churned 2 Aug 2026</span><button class="text-control" aria-expanded="false" aria-controls="list-batches" onclick="toggleList('batches')">1 later batch</button><button class="text-control correct" onclick="flash(this,'opens the record\'s pen on the page')">Correct</button></div>
       <div class="cells">
         <div class="cell"><span class="k">Time to temperature</span><span class="v">20 <span class="u">min</span></span><span class="plan">plan 10–12</span></div>
         <div class="cell"><span class="k">Out of the machine</span><span class="v">−6 <span class="u">°C</span></span><span class="plan">draw temperature</span></div>
@@ -243,7 +244,7 @@ td .was.on { display: inline; }
       </div>
       <p class="words">Soft, not greasy.</p>
       <div class="tasting">
-        <p class="running-head" style="margin:0">Tasting <span style="text-transform:none;letter-spacing:0;color:var(--pen-blue)">· at −12 °C · date unknown</span></p>
+        <p class="running-head" style="margin:0">Tasting <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--pen-blue)">· at −12 °C · date unknown</span></p>
         <div class="cells">
           <div class="cell"><span class="k">Oil character</span><span class="v">4.5 <span class="u">of 5</span></span></div>
           <div class="cell"><span class="k">Bitterness</span><span class="v">5</span></div>
@@ -252,7 +253,7 @@ td .was.on { display: inline; }
           
         </div>
       </div>
-      <div class="acts"><button class="text-control" onclick="flash(this,'opens the record\'s pen on the page')">Correct</button><button class="text-control" onclick="flash(this,'opens the tasting\'s pen here')">Add tasting</button></div>
+      <!-- the row has no foot acts: Correct is on the head line; Add tasting is offered inside the reopened pen, beside its foot ceremony (03.3.1 D-01, D-03); the read view has one door, Correct (Mark, 2026-09-14) -->
       <section class="list" id="list-batches">
         <h2 class="region-name">Batches of this version</h2>
         <ul class="blist">
@@ -455,8 +456,8 @@ function setVariant(v) {
   if (v === 'C') document.getElementById('side-top').appendChild(note); else document.getElementById('side').prepend(note);
   measure();
 }
-function closeLists() { document.querySelectorAll('.list').forEach(l => l.classList.remove('open')); }
-function toggleList(which) { const el = document.getElementById('list-' + which); const was = el.classList.contains('open'); closeLists(); if (!was) el.classList.add('open'); measure(); }
+function closeLists() { document.querySelectorAll('.list').forEach(l => l.classList.remove('open')); document.querySelectorAll('[aria-controls^="list-"]').forEach(b => b.setAttribute('aria-expanded', 'false')); }
+function toggleList(which) { const el = document.getElementById('list-' + which); const was = el.classList.contains('open'); closeLists(); if (!was) el.classList.add('open'); document.querySelector('[aria-controls="' + el.id + '"]').setAttribute('aria-expanded', String(!was)); measure(); } // a disclosure: the panel beneath is its open state; the control's words do not change (Mark, 2026-09-14)
 function setState(s) {
   if (s === 'reading') { closeLists(); cancelDevelopQuiet(); }
   if (s === 'versions') { cancelDevelopQuiet(); closeLists(); document.getElementById('list-versions').classList.add('open'); }
@@ -476,11 +477,11 @@ function saveDevelop() {
   if (!Number.isFinite(oil) || oil < 0) { document.getElementById('blocked').textContent = "Graza Drizzle's amount is not a number."; document.getElementById('gf-2').focus(); return; }
   document.getElementById('version-line').textContent = vl;
   document.getElementById('vmeta').querySelector('dl').innerHTML = `<dt>From</dt><dd>version <a href="#" onclick="return false">50 g oil · 800 g</a> · written today</dd><dt>Why</dt><dd class="reason-text">${document.getElementById('f-reason').value || 'no reason given'}</dd><dt>From batch</dt><dd><a href="#" onclick="return false">${document.getElementById('f-cite').value}</a></dd>`;
-  document.getElementById('vmeta').querySelector('.acts').innerHTML = `<button class="btn" id="develop-btn" onclick="openDevelop()">Next version</button><button class="btn" onclick="flash(this,'opens the record\\'s pen on the page')">Record batch</button><button class="text-control" onclick="flash(this,'lays the strikes back on the page')">Show changes</button>`;
+  document.getElementById('vmeta').querySelector('.acts').innerHTML = `<button class="btn" id="develop-btn" onclick="openDevelop()">Next version</button><button class="btn" onclick="flash(this,'opens the record\\'s pen on the page')">Record batch</button><button class="text-control text-toggle" aria-pressed="false" onclick="toggleShowChanges(this)">Show changes</button>`;
   document.querySelector('.row-batch').remove();
   app.dataset.pen = 'none'; document.getElementById('ceremony').classList.remove('open'); oilInput(oil, true, true); touched = false; measure();
 }
-function flash(btn, msg) { const old = btn.textContent; btn.textContent = msg; btn.disabled = true; setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1400); }
+function flash(btn, msg) { const old = btn.textContent; btn.textContent = msg; btn.disabled = true; setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1400); } function toggleShowChanges(btn) { const on = btn.getAttribute('aria-pressed') !== 'true'; btn.setAttribute('aria-pressed', String(on)); btn.classList.toggle('on', on); } // the square carries the state; the strikes themselves are not drawn in this sketch
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !touched) { if (app.dataset.pen !== 'none') cancelDevelop(); else closeLists(); measure(); } });
 
 function oilInput(val, silent, keep) {

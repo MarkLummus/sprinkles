@@ -228,3 +228,5 @@ Sketch 008 settled the control language on 2026-09-14 (008 README, "Settled valu
 - **Below 760px.** Everything grows as before — 44px cells, options, defects, text controls, buttons and fields — plus the 44px caption lines above. At 360 Exit consistency's options wrap to two rows with the 6px row gap and the page stays at 360 (the widest element ends at 328 inside a 348 frame).
 
 Not carried, by design: the segmented controls keep 007's 5px block padding (the 32px minimum carries the height, as on the sheet); the prose field keeps its 70ch measure (the sheet's 65ch is the status line's rule); the checkbox has no place on this sketch.
+
+- **Tasting head gap, missed in the tenth round (2026-09-14, later):** the Tasting head row kept an inline 12px beneath it while the Batch region name took the settled 6px. Now 6px on both (line 242). Measured: 6px from the Tasting head line to the Tasted field row, 6px from the Batch region name to the Churn date row.

@@ -96,3 +96,6 @@ The paper's margin is one rule across 003, 007 and the app (Mark, 2026-09-14): 4
 
 Not carried, Mark's calls: the develop pen's gram fields stay 72px, a table-column width rather than the sheet's 56px numeric token; and the step list's ingredient tags are still hairline boxes — read-only labels that the sheet's language now reads as actions.
 
+
+## The recorded figure (Mark, 2026-09-14)
+The batch cells' figures borrowed the balance figure's role, 1.25rem at 700, so a row of seven read as loud as the balance page. Sketch 008 drew four candidates in context; Mark chose D: the note size (1rem) at the prose weight (400), pen blue, tabular, the unit word at the deviation size beside it, the plan sub-line beneath (line 88). The balance figures keep 1.25rem/700 in ink: the page's assessment stays the heavy element, the maker's record reads at the weight of the maker's words. The app's `.batch-row__cell-value` follows in the D-15 plan.

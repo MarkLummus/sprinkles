@@ -85,7 +85,7 @@ a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 2p
 .row-batch .head .date { font-family: var(--face-text); font-size: var(--size-version-line); color: var(--pen-blue); }
 .cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, max-content)); gap: var(--gap-s) var(--gap-l); margin: var(--gap-s) 0 0; }
 .cell .k { display: block; font-size: var(--type-label); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: var(--gap-xs); } /* 6px to what it captions (008, 2026-09-14) */
-.cell .v { font-size: var(--size-figure-value); font-weight: 700; color: var(--pen-blue); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.cell .v { font-size: var(--type-note); font-weight: 400; color: var(--pen-blue); font-variant-numeric: tabular-nums; line-height: 1.1; } /* the recorded figure: the note size at the prose weight — a recorded value, not the balance page's assessment (sketch 008 D, Mark, 2026-09-14) */
 .cell .v .u { font-size: var(--size-deviation-words); font-weight: 400; }
 .cell .plan { display: block; font-size: var(--size-small-print); margin-top: 2px; }
 .words { font-family: var(--face-text); color: var(--pen-blue); font-size: var(--size-headnote-prose); margin: var(--gap-s) 0 0; max-width: 65ch; }

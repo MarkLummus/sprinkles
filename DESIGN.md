@@ -203,22 +203,22 @@ The spacing scale is six steps: hair (2px) for the gap inside a chip, between st
 
 Prose never runs past a 65ch measure: headnote prose, method instruction, purpose, aside, the basis note, and written notes all read the one measure token. The method's step number sits in a fixed auto-width margin column so numbers stay put as prose reflows. The ingredient table is full width of its column, fixed-layout, and reads in **step order**: step-group rows name each step with its lead-in beside them, portions sit under their ingredient's name, and rows are never sorted, grouped, or reordered from the authored order.
 
-**The one breakpoint.** `@media (max-width: 759.98px)` is the app's only media block: buttons, selects, and ink fields grow to a 44px minimum height (`--touch-min`), rating stops to a validated 40×44 box, and nothing else changes. Desktop stays compact; text controls stay inline and take no height. Above 760px the grid holds at every width; the brief expects the spread at 1280 and wider and the table stacking over the method below that, still unbuilt.
+**The one breakpoint.** `@media (max-width: 759.98px)` is the app's only media block: buttons, selects, and ink fields grow to a 44px minimum height (`--touch-min`), rating stops to a validated 40×44 box, and nothing else changes. Desktop stays compact; text controls are 24px tall inline and grow to 44px with the rest (sketch 008, 2026-09-14). Above 760px the grid holds at every width; the brief expects the spread at 1280 and wider and the table stacking over the method below that, still unbuilt.
 
 ## Elevation & Depth
 
 Flat, and flat as a commitment rather than a default. There are no shadows, no tonal layers, no sunk or raised surfaces, and no second background colour. Depth is conveyed by rule weight alone: hairline graduations (1px), the table's row rules and a rule's baseline (1.5px), and the tick at a figure's value (2.5px). The one heavy element per view is the heaviest stroke on it, not a box with a shadow.
 
-The convention is now proven across the page: a marked table row, the open batch in the margin list, the current version in the version strip, and a pressed toggle all read **bold plus a 1px ink outline offset 2px**, in place.
+The convention is now proven across the page for content the page is pointing at: a marked table row, the open batch in the margin list and the current version in the version strip read **bold plus a 1px ink outline offset 2px**, in place. A pressed control is no longer in that list: it fills pen blue (§ The binder), and sketch 008 (2026-09-14) settled the hover and focus weights at a whole 2px, because 1.5px renders as 1px at DPR 1.
 
 ### Named Rules
 **The Paper-Is-Flat Rule.** Nothing floats above the page. If an element needs to stand apart, it gets a heavier rule or an ink outline, never a shadow, never a fill.
 
-**The Focus-Heavier-than-State Rule.** One focus rule at the browser's own `:focus-visible` boundary draws a 1.5px ink outline offset 2px — provably heavier than the 1px outline any pressed, open, current, or marked element carries, so the two meanings never read as each other. A focused element that is also stateful reads both.
+**The Focus-Heavier-than-State Rule.** One focus rule at the browser's own `:focus-visible` boundary draws a 2px ink outline offset 2px (sketch 008, 2026-09-14; 1.5px rendered as 1px at DPR 1) — provably heavier than the 1px outline any open, current, or marked element carries, and a different sign from a pressed control's fill, so the two meanings never read as each other. A focused element that is also stateful reads both.
 
 ## Shapes
 
-Square everywhere. No radius token exists and no element carries a rounded corner. Borders are ink at hairline weight: buttons and fields carry a 1px border with no fill at rest (a picked control fills pen blue edge to edge, its border turning pen blue with it), the table has a 1.5px rule under every row and header, the focus outline is 1.5px ink offset 2px outside the element. The graduated rule is drawn in SVG as straight lines and a 45° hatch at 4px pitch with a 1.2px stroke.
+Square everywhere. No radius token exists and no element carries a rounded corner. Borders are ink at hairline weight: buttons and fields carry a 1px border with no fill at rest (a picked control fills pen blue edge to edge, its border turning pen blue with it), the table has a 1.5px rule under every row and header, the focus outline is 2px ink offset 2px outside the element (sketch 008, 2026-09-14), and it means focus only — an invalid field is a sentence beneath it, never a ring. The graduated rule is drawn in SVG as straight lines and a 45° hatch at 4px pitch with a 1.2px stroke.
 
 The component character Mark chose is **working binder**: warmer and hand-touched, with room for the pen's blue wherever the maker's hand appears. Softer edges are permitted for future controls but not yet realised: there is no radius token, so a builder who wants one adds it to `tokens.css` first and applies it only to interactive elements, never to tables, rules, chips, or anything that prints.
 
@@ -235,9 +235,10 @@ Components feel like a working binder: printed pages a person actually writes on
 ### The binder (buttons, selects, checkboxes)
 - **Shape:** square, 1px ink border, no fill at rest, no icon — drawn by the page, never inherited from the browser. Written as bare element rules so every control on every page inherits it without being designed.
 - **Picked / pressed:** the box fills pen blue, border and all, and its text turns the paper's colour; nothing else changes — no bold, no underline. Adjacent options of a segmented control share one hairline border and the picked one sits on top. Under `forced-colors: active` an ink outline replaces the fill.
-- **Hover:** the border thickens to the baseline weight (1.5px) with compensating padding, so the box never changes size. Weight, never position or hue.
+- **Hover:** the border thickens to 2px with compensating padding, so the box never changes size (sketch 008, 2026-09-14: 1.5px renders as 1px at DPR 1). Joined boxes thicken in place and stack above their neighbours. Weight, never position or hue.
 - **Disabled:** a dashed border, and a hint sentence in words beside the control stating why — a disabled control states its reason, never only appears dim.
-- **Text control** (`.text-control`): the underline-only opt-out for named per-step and per-row controls — no border, a 1px ink underline that thickens to 1.5px on hover, small print. The pressed state of a text-control toggle is the same pen-blue fill as every other picked thing (the earlier bold-plus-outline pressed state is retired; the page's existing text toggles follow after Phase 03.3.1.1).
+- **Box or word** (sketch 008, 2026-09-14): a hairline box commits, discards, or starts a new record — it is the ceremony, and it stands apart (Save batch, Cancel, Next version, Record batch). An underlined word acts on what is already on the page, and stands beside the thing it acts on (Correct, Clear, Add tasting, Remove tasting, edit this step). An underlined word that opens a panel beneath it is a disclosure: the panel is its open state, the word does not change, `aria-expanded` carries it (3 later versions, 1 later batch).
+- **Text control** (`.text-control`): no border, a 1px ink underline offset 2px that thickens to 1.5px on hover, the control size (0.8125rem), 24px tall at desktop and 44px below 760px. A text control that is an independent on/off (Show changes) is a square and a word: the checkbox's 13px ink square before the word, filled pen blue when on, the underline staying hairline, the focus ring around square and word together (sketch 008; the earlier bold-plus-outline pressed state is retired).
 - **Select:** the binder box with a drawn two-triangle chevron; the dropdown list stays the browser's.
 - **Checkbox:** a 13px ink square, filled pen blue when checked; its label names it ("Step 3, skipped").
 
@@ -245,7 +246,7 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Ink field** (`.ink-field`): anything counted that the maker types. Hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, sized to what it holds — a date at the date-field width token (128px), a short figure at the numeric-field width token (48px) with its unit word set beside the box — never the column. A row of fields wraps as a flex row with the small gap, each label at its content's width.
 - **Prose field** (`.prose-field`): the maker's words editing in place as the printed paragraph — no border at rest, pen blue text in the text face at the paragraph's own size, growing with its text (`field-sizing: content`), no resize grip. A blank named prose field carries a hairline baseline so the writable spot is findable.
 - **Prose text** (`.prose-text`): the record's saved words, the same text face and leading as the field it was typed in, still pen blue.
-- **Focus:** the one global `:focus-visible` rule — 1.5px ink outline, offset 2px. Nothing moves.
+- **Focus:** the one global `:focus-visible` rule — 2px ink outline, offset 2px. Nothing moves.
 
 ### Ingredient table
 - **Shape:** square, borderless container; a 1.5px ink rule under every header and row, the total row's rule above it.
@@ -271,7 +272,7 @@ Components feel like a working binder: printed pages a person actually writes on
 
 ### Front matter and the batch row
 - **The band:** two stacked full-width rows above the spread, closed by a baseline rule. The version's row carries the recipe block and the Version/Why/From batch metadata with its acts; the batch's row carries the open batch.
-- **Batch row:** a region-name head line with the churned date in pen blue beside it, then a wrapping grid of measured cells — label in caption face, figure in pen blue at figure size, unit lighter, plan sub-line in small print. Correct/Add tasting sit at the foot as text controls; earlier batches open as a hairline-ruled panel beneath.
+- **Batch row:** a region-name head line with the churned date in pen blue beside it, then a wrapping grid of measured cells — label in caption face, figure in pen blue at figure size, unit lighter, plan sub-line in small print. Correct sits on the head line, right-aligned, as a text control (sketch 003, 2026-09-14; Add tasting lives inside the reopened pen, 03.3.1 D-01/D-03); earlier batches open as a hairline-ruled panel beneath.
 - **Axis mark:** the tasting's mark control — axis name in caption face at 600 with a 6px gap, then a wrapped row of nine labelled stops (an ink square, filled ink when checked) between anchor words, plus a per-axis clear text control.
 - **Version strip:** the Later disclosure's card grid, auto-fill at 260px minimum, one card per descendant — version line in the text face, meta and batch lines in small print; the current version reads bold plus the 1px outline.
 - **Pen foot:** while a pen is open, a hairline rule across the page and Cancel | Save right-aligned under the side column, the blocked-save sentence beside them.
@@ -289,7 +290,7 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Do** put every number in the grotesk with tabular numerals and every sentence in the text face.
 - **Do** give every region a running head in bookcloth naming it in plain language.
 - **Do** state a figure's standing in words beside the figure (`inside 22–26`, `1.4 over target`) and its basis as a word (`estimated`, `unreviewed`).
-- **Do** carry picked, open, current, and marked states by weight and outline: bold plus a 1px ink outline offset 2px, in place. Focus alone reads the heavier 1.5px.
+- **Do** carry open, current, and marked states on content by weight and outline: bold plus a 1px ink outline offset 2px, in place. A picked or pressed control fills pen blue instead (its square, when it is a square and a word). Focus alone reads the 2px ring offset 2px.
 - **Do** paint anything the maker records — typed or saved — in pen blue; only a value returning to the plan (a version edit saved as the plan) returns to ink.
 - **Do** strike with one ink stroke (1.2px) for every "not in force" meaning: a skipped step, a superseded value, a removed row or step. Never invent a second strike form.
 - **Do** keep ingredient rows in step order under their step heads; strike a removed row rather than deleting it.

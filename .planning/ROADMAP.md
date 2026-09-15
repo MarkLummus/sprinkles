@@ -369,12 +369,12 @@ Plans:
 - Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
 
 Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
-**Plans:** 6 plans
+**Plans:** 1/6 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 03.3.1.1-01-PLAN.md — Page shell against sketch 003: the stack below 1100, the version row's collapse, the 393 overflow, Correct on the Batch head line, aria-controls, the recorded figure, text controls at the control size
+- [x] 03.3.1.1-01-PLAN.md — Page shell against sketch 003: the stack below 1100, the version row's collapse, the 393 overflow, Correct on the Batch head line, aria-controls, the recorded figure, text controls at the control size
 
 **Wave 2** *(blocked on Wave 1 completion)*
 

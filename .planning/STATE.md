@@ -1,18 +1,18 @@
 ---
 gsd_state_version: "1.0"
 current_phase: 03.3.1.1
-current_phase_name: Record pen conformance polish
+current_phase_name: Record pen conformance polish (INSERTED)
 status: executing
-stopped_at: Phase 03.3.1.1 context gathered
-last_updated: "2026-09-15T12:46:46.667Z"
+stopped_at: Completed 03.3.1.1-01-PLAN.md
+last_updated: "2026-09-15T16:19:13.628Z"
 last_activity: 2026-09-15
-last_activity_desc: Control language carried into 007/003/DESIGN.md, figure settled (D), research re-cited; ready for /gsd-plan-phase 03.3.1.1
-state_head: 7c4f043df950a94fe7d09d82ac311f614ba387d7
+last_activity_desc: Phase 03.3.1.1 execution started
+state_head: 138cb611f761381ce8cb570b583a3c4eb9c94703
 progress:
   total_phases: 9
-  completed_phases: 1
+  completed_phases: 7
   total_plans: 51
-  completed_plans: 45
+  completed_plans: 46
   percent: 78
 ---
 
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 03.3.1.1 (Record pen conformance polish) — READY TO EXECUTE
-Plan: Not started
+Phase: 03.3.1.1 (Record pen conformance polish (INSERTED)) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-09-15 — control language carried into 007/003/DESIGN.md, the recorded figure settled (D), research re-cited (f531b39); ready to plan
+Last activity: 2026-09-15 — Phase 03.3.1.1 execution started
 
 Progress: [████████░░] 78% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -100,6 +100,7 @@ Progress: [████████░░] 78% (3/4 phases; 27/27 plans in Phase
 | Phase 03.3 P06 | ~1h54m elapsed (~15min automated) | 3 tasks | 10 files |
 | Phase 03.3 P07 | ~1h58m | 3 tasks | 6 files |
 | Phase 03.3.1 P07 | 15min | 1 tasks | 2 files |
+| Phase 03.3.1.1 P01 | 17min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -183,6 +184,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.3]: [Phase 03.3, Plan 07] Declined to invent a new "Oil bottle open" stored batch field, per the plan's own reversibility note; deferred to Impeccable.
 - [Phase 03.3]: [Phase 03.3, Plan 07] Closed G-03.3-3 (one "no batch yet" line) and the batch-row half of G-03.3-4 (head line, measured cells, tasting, foot controls match sketch 003 variant B); two checkpoint-feedback fixes (record-pen field sizing, churn-date/foot relocation) applied live during Task 3, confirmed by Mark 2026-09-10.
 - [Phase 03.3.1]: [Phase 03.3.1, Plan 07] Closed G-03.3.1-4: TastingReading's <h3> caption no longer derives a summary line from markedAxes/readMarkWord; the caption is bare 'Tasting' for every tasting, and the declared flaw still surfaces via the unchanged defects line.
+- [Phase 03.3.1.1]: [Phase 03.3.1.1, Plan 01] Open Question 4 resolved as overflow-x: auto on .ingredient-table-region (600px block), not narrower column tokens — The table scrolls inside its own region while the page never overflows, matching D-15's zero-PAGE-overflow acceptance criterion; not yet confirmed in a real browser (Plan 06's conformance pass does that)
+- [Phase 03.3.1.1]: [Phase 03.3.1.1, Plan 01] The three top-level @media blocks cascade 1099.98px, then 759.98px, then 600px in app.css — Narrower always wins on shared selectors by source order
 
 ### Pending Todos
 
@@ -253,6 +256,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-15T11:37:37.000Z
-Stopped at: Session resumed, proceeding to /gsd-plan-phase 03.3.1.1 (then /gsd-sketch --wrap-up)
-Resume file: .planning/phases/03.3.1.1-record-pen-conformance-polish-close-the-untriaged-ui-gaps-fr/.continue-here.md
+Last session: 2026-09-15T16:19:04.818Z
+Stopped at: Completed 03.3.1.1-01-PLAN.md
+Resume file: None

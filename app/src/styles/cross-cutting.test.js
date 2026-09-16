@@ -62,9 +62,11 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   });
 
   test('inside the media block, the axis-mark stop box declares the joined 44x44 cell, with a flex-basis so the joined row grows too (03.3.1-06 Task 1 moved the box from the input to the label; 03.3.1.1 tenth round)', () => {
-    const rule = mediaRuleFor('.axis-mark__stop');
-    expect(rule, 'expected the media-block axis-mark__stop rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px)');
+    // Resolved on media, not by mediaRuleFor's first match: since 260915-x6n
+    // the touch union carries an .axis-mark__stop rule too (decision C's
+    // height-only growth), and it comes first in source order.
+    const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(max-width: 759.98px)');
+    expect(rule, 'expected the width-only axis-mark__stop rule').toBeTruthy();
     expect(rule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
     expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
     expect(rule.declarations).toMatch(/flex-basis:\s*var\(--touch-stop-width\)/);
@@ -83,7 +85,17 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(touchRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle',
       '.text-control',
+      // M4 (sketch 009, Mark 2026-09-15): Clear in a caption line takes its
+      // 44px target as an overflowing hit area, so the line box never grows —
+      // which is what lets the melt row sit level against its neighbour while
+      // the axes still reserve Clear's height.
+      '.axis-mark__head .text-control, .segmented-field__head .text-control',
+      '.axis-mark__head .text-control::after, .segmented-field__head .text-control::after',
+      // Sketch 008 line 166, approved 2026-09-15.
+      '.ink-field, .prose-field',
       '.axis-mark__head, .segmented-field__head',
+      // Decision C: HEIGHT only. The width and the track stay width-keyed below.
+      '.axis-mark__stop',
     ]);
     // Track GEOMETRY stays width-only: a 216px track overflows the 213.3px
     // column of the wide-viewport axes grid (measured, Mark's iPad 1366 coarse).
@@ -93,6 +105,62 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
     ]);
+  });
+
+  test("decision C: the touch union grows the stop's HEIGHT only — the width and the track stay width-keyed (sketch 009, Mark 2026-09-15)", () => {
+    // The whole point of C. A 44px stop WIDTH makes a 216px track, and at a
+    // wide touch viewport the axes grid gives each axis 213.3px — so the track
+    // overflowed into its neighbour (measured on Mark's iPad, 1366 coarse).
+    // Growing only the height gives a 38x44 target on the unchanged 186px
+    // track. If a width or flex-basis ever appears here, that regression is
+    // back.
+    const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(rule, 'expected the touch-union axis-mark__stop rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
+    expect(rule.declarations).not.toMatch(/(^|[^-])width:/);
+    expect(rule.declarations).not.toMatch(/flex-basis/);
+  });
+
+  test('M4: Clear in a caption line takes its touch target as an overflowing hit area, not as line height (sketch 009, Mark 2026-09-15)', () => {
+    const box = rules.find((r) => r.selector === '.axis-mark__head .text-control, .segmented-field__head .text-control' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(box, 'expected the caption-line text-control rule').toBeTruthy();
+    // It must UNDO the blanket .text-control min-height above it, or the line
+    // grows and the melt row goes 15.2px out again.
+    expect(box.declarations).toMatch(/min-height:\s*0/);
+    expect(box.declarations).toMatch(/position:\s*relative/);
+
+    const hit = rules.find((r) => r.selector === '.axis-mark__head .text-control::after, .segmented-field__head .text-control::after' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(hit, 'expected the hit-area pseudo-element rule').toBeTruthy();
+    expect(hit.declarations).toMatch(/position:\s*absolute/);
+    expect(hit.declarations).toMatch(/height:\s*var\(--touch-min\)/);
+  });
+
+  test('M4: at touch the caption line reserves the same two lines the field-row caption beside it reserves (sketch 009, Mark 2026-09-15)', () => {
+    const rule = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(rule, 'expected the touch-union caption-line rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines\)/);
+    // The retired --caption-line-h-touch reserve is what caused the +15.2px
+    // melt-row misalignment; it must not come back on this rule.
+    expect(rule.declarations).not.toMatch(/--caption-line-h-touch/);
+  });
+
+  test("sketch 008's touch font bump reaches narrow widths too, after the 600px step drops it (260915-x6n)", () => {
+    const wide = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(wide, 'expected the touch-union font rule').toBeTruthy();
+    expect(wide.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+
+    // The 600px step sets .ink-field to --type-control, so without a later
+    // sibling block the bump would apply at every touch width EXCEPT the
+    // narrow ones — exactly where a phone's auto-zoom bites hardest.
+    const narrow = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 600px) and (pointer: coarse)');
+    expect(narrow, 'expected the narrow-touch font rule').toBeTruthy();
+    expect(narrow.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+
+    const all = rules.map((r, i) => ({ i, r }));
+    const sixHundred = all.find(({ r }) => r.media === '(max-width: 600px)' && r.selector.includes('.ink-field'));
+    const narrowTouch = all.find(({ r }) => r === narrow);
+    expect(sixHundred, 'expected the 600px .ink-field rule').toBeTruthy();
+    expect(narrowTouch.i).toBeGreaterThan(sixHundred.i);
   });
 
   test('the touch union gives .text-control its own min-height (sketch 003 line 178, 007 line 180; settled 2026-09-14)', () => {
@@ -140,12 +208,13 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
   });
 
-  test('app.css carries exactly five top-level @media blocks, at the five named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15)', () => {
+  test('app.css carries exactly six top-level @media blocks, at the six named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15; 260915-x6n touch font)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
       '(max-width: 1099.98px)',
       '(max-width: 600px)',
+      '(max-width: 600px) and (pointer: coarse)',
       '(max-width: 759.98px)',
       '(max-width: 759.98px), (pointer: coarse)',
     ]);
@@ -397,7 +466,14 @@ describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption 
     expect(rule, 'expected the grouped .axis-mark__head, .segmented-field__head rule').toBeTruthy();
     expect(rule.declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
     expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-line-h\)/);
-    expect(rule.declarations).toMatch(/align-items:\s*center/);
+    // M4 (sketch 009, Mark 2026-09-15): bottom-aligned, not centred, so the
+    // caption's baseline lands where the field-row caption beside it lands.
+    expect(rule.declarations).toMatch(/align-items:\s*flex-end/);
+    // ...and the head carries the caption's own font-size, so the em-based
+    // reserve resolves against 12px rather than the pen's inherited 16px.
+    // 2.4em of 16px is 38.4px against the caption's 28.8px, and that 9.6px was
+    // the whole residual misalignment while the head inherited.
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-label\)/);
   });
 });
 

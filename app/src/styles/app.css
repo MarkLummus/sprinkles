@@ -1704,11 +1704,18 @@ textarea {
 .axis-mark__head,
 .segmented-field__head {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: var(--gap-xs);
   margin-bottom: var(--gap-xs);
   min-height: var(--caption-line-h);
   flex-wrap: wrap;
+  /* M4 (sketch 009, settled by Mark 2026-09-15). The reserve below is written
+     in em, and an em means whatever the element's own font-size says. The head
+     inherits the pen's 16px while the caption inside it is 12px, so the same
+     `2.4em` resolved as 38.4px here against the caption's 28.8px — a 9.6px
+     step that was the entire remaining misalignment in a first draft. Carrying
+     the caption's own size makes the em mean one thing on both sides. */
+  font-size: var(--type-label);
 }
 
 /* The record-pen field row's own head shape (007 line 120): a min-width
@@ -2227,9 +2234,64 @@ textarea {
     min-height: var(--touch-min);
   }
 
+  /* M4 (sketch 009, settled by Mark 2026-09-15). Clear inside a caption line
+     is the one text control that must NOT take its target as line height. The
+     retired rule grew both heads to --caption-line-h-touch (44px) at touch,
+     which pushed Melt style's control 15.2px below Melt test's, because Melt
+     test's own .field-row__label caption does not grow with it. Measured on
+     the device: sketch 007 and the app on a desktop pointer both read -4.8;
+     only coarse read +15.2.
+
+     Clear keeps its 44px target as an overflowing hit area instead, so the
+     line box never changes height. That is what lets one shared rule serve
+     both heads: the axes still reserve Clear's height so picking moves
+     nothing, and the melt row still sits level against its neighbour. */
+  .axis-mark__head .text-control,
+  .segmented-field__head .text-control {
+    min-height: 0;
+    position: relative;
+  }
+
+  .axis-mark__head .text-control::after,
+  .segmented-field__head .text-control::after {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--gap-xs));
+    right: calc(-1 * var(--gap-xs));
+    top: 50%;
+    transform: translateY(-50%);
+    height: var(--touch-min);
+  }
+
+  /* Sketch 008 line 166, approved by Mark 2026-09-15, retiring the app's
+     pre-declared 13px departure. Besides matching the sketch, 16px is the
+     threshold below which iOS Safari zooms the page on field focus — so this
+     also stops the record jumping under the maker's thumb on the iPad. */
+  .ink-field,
+  .prose-field {
+    font-size: var(--type-note);
+  }
+
+  /* M4's other half: at touch the caption LINE reserves the same two lines the
+     field-row caption beside it reserves (--caption-two-lines, 007 line 39),
+     bottom-aligned by the base rule — so both caption bottoms land on one line
+     and both controls follow one gap below.
+
+     Touch only, deliberately. At a desktop pointer the app already matches
+     sketch 007 exactly (both read -4.8), and 007 is the authority there; 009
+     only ever drew the wide TOUCH case, so it may only speak for touch. */
   .axis-mark__head,
   .segmented-field__head {
-    min-height: var(--caption-line-h-touch);
+    min-height: var(--caption-two-lines);
+  }
+
+  /* Decision C (sketch 009, settled by Mark 2026-09-15): at touch the stop
+     grows in HEIGHT only. The width and --track-stop are deliberately absent
+     here and stay in the width-keyed block below, so the 186px track still
+     fits the 213.3px column a wide touch screen gives it. A 38x44 target,
+     not the 32px one a wide touch viewport got before. */
+  .axis-mark__stop {
+    height: var(--touch-stop-height);
   }
 }
 
@@ -2306,6 +2368,27 @@ textarea {
      Mark's acknowledgement). */
   .ingredient-table-region {
     overflow-x: auto;
+  }
+}
+
+/* The touch font bump, re-asserted below 600px. A fifth top-level block, and a
+   SIBLING of the 600px one above — never nested, per css-source.js's one-level
+   contract (WR-02).
+
+   It has to come after that block to win: the 600px step drops .ink-field to
+   --type-control (13px), and sketch 008's bump would otherwise apply at every
+   touch width except the narrow ones — which is precisely where a phone's
+   auto-zoom bites hardest. 008's own `.touch` class covers narrow widths, so
+   16px here is the faithful reading, not an extension of it.
+
+   Measured before taking it (2026-09-15, 393 coarse, real app): the page still
+   reports scrollWidth 393 against innerWidth 393, so the larger field text
+   costs no horizontal overflow. .batch-margin__field keeps the 600px step's
+   smaller size; only the pen's own ink and prose fields are raised. */
+@media (max-width: 600px) and (pointer: coarse) {
+  .ink-field,
+  .prose-field {
+    font-size: var(--type-note);
   }
 }
 

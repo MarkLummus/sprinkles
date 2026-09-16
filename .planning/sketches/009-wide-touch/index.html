@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 009: the battery on a wide touch screen</title>
+<link rel="stylesheet" href="../themes/default.css">
+<style>
+/* ---------- sketch chrome (not the design) ---------- */
+html { background: #e9e9e4; }
+body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
+#variant-nav { position: sticky; top: 0; z-index: 9998; background: #1c1c1c; color: #eee; display: flex; align-items: center; gap: 6px; padding: 8px 14px; font: 12px/1.3 system-ui; flex-wrap: wrap; }
+#variant-nav .sep { width: 1px; height: 22px; background: #555; margin: 0 6px; }
+#variant-nav button { font: inherit; background: #333; color: #ddd; border: 1px solid #555; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
+#variant-nav button:hover { background: #444; }
+#variant-nav button.active { background: #f7f7f4; color: #141414; border-color: #f7f7f4; }
+#variant-nav button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+#variant-nav .note { color: #aaa; margin-left: auto; max-width: 40ch; }
+#readout { position: fixed; right: 10px; bottom: 10px; z-index: 9999; background: rgba(0,0,0,0.85); color: #cfe; font: 11px/1.5 ui-monospace, Menlo, monospace; padding: 9px 11px; border-radius: 6px; white-space: pre; max-width: 44ch; }
+
+.sheet { margin: 0 auto; padding: var(--gap-l) var(--gap-m) var(--gap-xl); box-sizing: border-box; width: min(1366px, 100%); }
+.opt-block { background: var(--ground); outline: 1px dashed #b5b5ae; padding: var(--gap-l) var(--gap-m); margin-bottom: var(--gap-l); box-sizing: border-box; }
+.opt-block[hidden] { display: none; }
+.cap { display: block; font: 12px/1.4 ui-monospace, Menlo, monospace; color: #55554f; margin-bottom: var(--gap-s); }
+.cap b { font-weight: 600; color: #2e2e2a; }
+.cap .verdict { color: #7a2e2e; }
+.cap .verdict.ok { color: #2e5a2e; }
+.ruler { position: relative; height: 18px; margin-bottom: var(--gap-xs); }
+.ruler::before { content: ''; position: absolute; inset: 8px 0 auto 0; border-top: 1px dashed #b06; }
+.ruler span { position: absolute; top: 0; font: 10px/1 ui-monospace, monospace; color: #b06; background: var(--ground); padding: 0 3px; }
+.ruler .l { left: 0; } .ruler .r { right: 0; }
+
+/* ---------- the design's own tokens (mirrors sketch 008 lines 31-62) ---------- */
+.app {
+  --type-label: 0.75rem;
+  --type-control: 0.8125rem; --leading-control: 1.3;
+  --type-note: 1rem;
+  --tracking-caption: 0.04em;
+  --rule-hover: 2px;
+  --focus-outline-width: var(--rule-hover);
+  /* the desktop track: five joined 38px cells sharing four hairlines = 186px */
+  --stop-w: 38px; --stop-h: 32px; --track-stop: 186px;
+  --axis-head-h: 24px;
+  /* the narrow-touch track: five joined 44px cells sharing four hairlines = 216px */
+  --touch-min: 44px; --touch-stop-width: 44px; --track-stop-narrow: 216px;
+  /* 009's own proposal: the stop grows in HEIGHT only, so the track never moves */
+  --touch-stop-height: 44px;
+  --axes-cols-clearance: 12px;
+  font-family: var(--face-grotesk); color: var(--ink);
+}
+
+/* ---------- the axes grid, as the app builds it (app.css .axes-grid) ----------
+   THE FRAME IS THE POINT. The battery does not get the page width: it sits in
+   the batch row, inside the page's own column. Measured in the real app at a
+   1366 viewport with pointer:coarse (2026-09-15, playwright-core against the
+   cached Chromium, deviceScaleFactor 2):
+
+       .axes-grid            640px
+       grid-template-columns 213.328px 213.328px 213.328px
+       .axis-mark            213.3px
+       .axis-mark__stops     186px
+       .axis-mark__stop      38 x 32
+
+   Drawing this at full sheet width would give each axis 428.7px, every option
+   would "fit", and the sketch would hide the very problem it exists to answer.
+   So the grid is pinned to the measured 640px. */
+.axes-grid { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 0; row-gap: var(--gap-m); width: 640px; max-width: 100%; }
+.axes-grid > .axis--core { padding-right: var(--gap-m); }
+.axes-grid > .axis--declared { padding-left: var(--axes-cols-clearance); }
+.axes-rule { position: absolute; top: 0; bottom: 0; left: calc(200% / 3); border-left: var(--rule-graduation) solid var(--ink); pointer-events: none; }
+.axes-cue { margin: 0 0 calc(-1 * var(--gap-xs)); font-size: var(--type-label); letter-spacing: var(--tracking-caption); text-transform: uppercase; color: var(--ink); }
+.axes-cue--core { grid-column: 1 / 3; }
+.axes-cue--declared { grid-column: 3 / 4; padding-left: var(--axes-cols-clearance); }
+
+/* ---------- one axis ---------- */
+.axis .head { display: flex; align-items: baseline; gap: var(--gap-xs); min-height: var(--axis-head-h); }
+.axis-name { font-size: var(--type-label); letter-spacing: var(--tracking-caption); text-transform: uppercase; }
+.axis .state { font-family: var(--face-text); font-style: italic; font-size: var(--size-deviation-words); color: #6b6b64; }
+.axis .state.pen { color: var(--pen-blue); font-style: normal; }
+.axis .clear { margin-left: auto; font-family: var(--face-grotesk); font-size: var(--type-control); color: var(--ink); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.stops5 { display: flex; width: var(--track-stop); margin-top: var(--gap-xs); }
+.stop5 { width: var(--stop-w); height: var(--stop-h); flex: 0 0 var(--stop-w); box-sizing: border-box; border: var(--rule-ink-field) solid var(--ink); background: none; padding: 0; margin-right: calc(-1 * var(--rule-ink-field)); cursor: pointer; font-family: var(--face-grotesk); font-size: var(--size-ink-field); font-variant-numeric: tabular-nums; color: var(--ink); }
+.stop5.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); position: relative; z-index: 1; }
+.stop5:hover { border-width: var(--rule-hover); }
+.stop5:focus-visible { outline: var(--focus-outline-width) solid var(--ink); outline-offset: 2px; }
+.anchors5 { display: flex; justify-content: space-between; width: var(--track-stop); margin-top: var(--gap-hair); font-family: var(--face-text); font-style: italic; font-size: var(--size-deviation-words); line-height: var(--leading-control); white-space: nowrap; }
+
+/* ================= OPTION A — today: nothing grows ================= */
+#optA .app { }
+
+/* ================= OPTION B — the 216px track, as narrow touch draws it ================= */
+#optB .stop5 { width: var(--touch-stop-width); height: var(--touch-min); flex-basis: var(--touch-stop-width); }
+#optB .stops5, #optB .anchors5 { width: var(--track-stop-narrow); }
+
+/* ================= OPTION C — the stop grows in height only (009's proposal) ================= */
+#optC .stop5 { height: var(--touch-stop-height); }
+#optC .axis .head { min-height: var(--touch-min); align-items: center; }
+#optC .clear { min-height: var(--touch-min); display: inline-flex; align-items: center; }
+
+/* ================= OPTION D — one axis per row, full 44x44 ================= */
+#optD .axes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#optD .axes-grid > .axis--core { grid-column: 1 / 2; padding-right: var(--gap-l); }
+#optD .axes-grid > .axis--declared { grid-column: 2 / 3; padding-left: var(--gap-l); }
+#optD .axes-cue--core { grid-column: 1 / 2; }
+#optD .axes-cue--declared { grid-column: 2 / 3; padding-left: var(--gap-l); }
+#optD .axes-rule { left: 50%; }
+#optD .stop5 { width: var(--touch-stop-width); height: var(--touch-min); flex-basis: var(--touch-stop-width); }
+#optD .stops5, #optD .anchors5 { width: var(--track-stop-narrow); }
+#optD .axis .head { min-height: var(--touch-min); align-items: center; }
+</style>
+</head>
+<body>
+
+<nav id="variant-nav">
+  <button data-opt="A">A · today (32px)</button>
+  <button data-opt="B">B · 216px track</button>
+  <button data-opt="C" class="active">C · height only</button>
+  <button data-opt="D">D · two columns</button>
+  <span class="sep"></span>
+  <button id="all">show all</button>
+  <button id="mark">toggle marks</button>
+  <span class="note">Open on the iPad. The pink rule is the column edge — a track crossing it overflows. (In a desktop browser the readout says <code>coarse false</code>; on the iPad it reads true.)</span>
+</nav>
+
+<div class="sheet">
+
+  <div class="opt-block" id="optA">
+    <span class="cap"><b>A — today, after 99d84c3.</b> Geometry stays width-keyed, so at 1366 the stop is the desktop 38 × 32. The track fits with room to spare. <span class="verdict">The tap target is 32px tall — below the 44px the rest of the pen uses on touch.</span></span>
+    <div class="ruler"><span class="l">0</span><span class="r">column edge</span></div>
+    <div class="app"><div class="axes-grid" data-grid>
+      <p class="axes-cue axes-cue--core">Every recipe</p>
+      <p class="axes-cue axes-cue--declared">This recipe only</p>
+    </div></div>
+  </div>
+
+  <div class="opt-block" id="optB">
+    <span class="cap"><b>B — the narrow-touch track, used as-is.</b> Five 44px cells sharing four hairlines = a 216px track. <span class="verdict">216px does not fit the 213.3px column at 1366 — this is the overflow that put the axes on top of each other, fixed by reverting to A.</span></span>
+    <div class="ruler"><span class="l">0</span><span class="r">column edge</span></div>
+    <div class="app"><div class="axes-grid" data-grid>
+      <p class="axes-cue axes-cue--core">Every recipe</p>
+      <p class="axes-cue axes-cue--declared">This recipe only</p>
+    </div></div>
+  </div>
+
+  <div class="opt-block" id="optC">
+    <span class="cap"><b>C — the stop grows in height only.</b> Width stays 38px, so the track stays 186px and <b>no geometry moves at all</b>. Height goes to 44px, giving a 38 × 44 target. <span class="verdict ok">Fits the column with 27px spare. Obeys the phase's own rule: size may ride the pointer, geometry may not.</span></span>
+    <div class="ruler"><span class="l">0</span><span class="r">column edge</span></div>
+    <div class="app"><div class="axes-grid" data-grid>
+      <p class="axes-cue axes-cue--core">Every recipe</p>
+      <p class="axes-cue axes-cue--declared">This recipe only</p>
+    </div></div>
+  </div>
+
+  <div class="opt-block" id="optD">
+    <span class="cap"><b>D — two columns, full 44 × 44.</b> The grid drops from three columns to two on a wide touch screen, so each axis gets ~660px and the 216px track fits easily. <span class="verdict">A full 44 × 44 target, but it is a LAYOUT change riding the pointer — the thing that went wrong before — and the battery grows taller.</span></span>
+    <div class="ruler"><span class="l">0</span><span class="r">column edge</span></div>
+    <div class="app"><div class="axes-grid" data-grid>
+      <p class="axes-cue axes-cue--core">Every recipe</p>
+      <p class="axes-cue axes-cue--declared">This recipe only</p>
+    </div></div>
+  </div>
+
+</div>
+
+<div id="readout">measuring…</div>
+
+<script>
+/* The six axes exactly as the app renders them for the olive oil recipe —
+   names and anchor words read out of the live DOM at 1366/coarse
+   (2026-09-15), not invented. DOM order is the app's own: the grid flows
+   row-major as core, core, declared — so each row is two core axes and one
+   declared, with the hairline between columns 2 and 3. */
+const AXES = [
+  { name: 'Hardness',     anchors: ['soft', 'right', 'hard'],      kind: 'core',     mark: 3 },
+  { name: 'Scoopability', anchors: ['crumbly', 'right', 'gummy'],  kind: 'core',     mark: null },
+  { name: 'Body',         anchors: ['thin', 'right', 'heavy'],     kind: 'declared', mark: 4 },
+  { name: 'Smoothness',   anchors: ['grainy', 'right', 'smooth'],  kind: 'core',     mark: null },
+  { name: 'Sweetness',    anchors: ['less', 'right', 'more'],      kind: 'core',     mark: 2 },
+  { name: 'Oil',          anchors: ['faint', 'right', 'strong'],   kind: 'declared', mark: null },
+];
+let marked = true;
+
+function axisHTML(a) {
+  const on = marked && a.mark != null;
+  const stops = [1,2,3,4,5].map(i =>
+    `<button type="button" class="stop5${on && i === a.mark ? ' on' : ''}" role="radio" aria-checked="${on && i === a.mark}" aria-label="${i}: ${a.anchors[i < 3 ? 0 : i > 3 ? 2 : 1]}">${i}</button>`
+  ).join('');
+  return `<div class="axis axis--${a.kind}">
+    <div class="head">
+      <span class="axis-name">${a.name}</span>
+      <span class="state${on ? ' pen' : ''}">${on ? '(' + a.mark + ')' : '(Not recorded)'}</span>
+      ${on ? '<button type="button" class="clear">Clear</button>' : ''}
+    </div>
+    <div class="stops5" role="radiogroup" aria-label="${a.name}">${stops}</div>
+    <div class="anchors5" aria-hidden="true">${a.anchors.map(w => '<span>' + w + '</span>').join('')}</div>
+  </div>`;
+}
+
+function build() {
+  document.querySelectorAll('[data-grid]').forEach(grid => {
+    const cues = [...grid.querySelectorAll('.axes-cue')].map(n => n.outerHTML);
+    // DOM order is the app's: both cues, then the axes in their interleaved
+    // row-major order (core, core, declared per row) — not all core then all
+    // declared, which auto-flows into a different grid entirely.
+    grid.innerHTML = '<div class="axes-rule"></div>' + cues[0] + cues[1] + AXES.map(axisHTML).join('');
+  });
+  measure();
+}
+
+function show(opt) {
+  ['A','B','C','D'].forEach(o => document.getElementById('opt' + o).hidden = (opt !== 'all' && o !== opt));
+  document.querySelectorAll('#variant-nav [data-opt]').forEach(b => b.classList.toggle('active', b.dataset.opt === opt));
+  measure();
+}
+
+function measure() {
+  const lines = [];
+  lines.push('viewport ' + window.innerWidth + ' x ' + window.innerHeight);
+  lines.push('dpr ' + window.devicePixelRatio + '   coarse ' + window.matchMedia('(pointer: coarse)').matches);
+  ['A','B','C','D'].forEach(o => {
+    const block = document.getElementById('opt' + o);
+    if (block.hidden) return;
+    const axis = block.querySelector('.axis--core');
+    const track = block.querySelector('.stops5');
+    const stop = block.querySelector('.stop5');
+    if (!axis || !track || !stop) return;
+    const col = axis.getBoundingClientRect().width;
+    const tw = track.getBoundingClientRect().width;
+    const sr = stop.getBoundingClientRect();
+    const fits = tw <= col;
+    lines.push(o + ': stop ' + sr.width.toFixed(1) + 'x' + sr.height.toFixed(1)
+      + '  track ' + tw.toFixed(1) + '  col ' + col.toFixed(1)
+      + '  ' + (fits ? 'fits' : 'OVERFLOWS by ' + (tw - col).toFixed(1)));
+  });
+  document.getElementById('readout').textContent = lines.join('\n');
+  document.querySelectorAll('.ruler').forEach(r => {
+    const block = r.closest('.opt-block');
+    const axis = block.querySelector('.axis--core');
+    if (axis) r.style.width = axis.getBoundingClientRect().width + 'px';
+  });
+}
+
+document.querySelectorAll('#variant-nav [data-opt]').forEach(b => b.addEventListener('click', () => show(b.dataset.opt)));
+document.getElementById('all').addEventListener('click', () => show('all'));
+document.getElementById('mark').addEventListener('click', () => { marked = !marked; build(); });
+window.addEventListener('resize', measure);
+
+build();
+show('C');
+</script>
+</body>
+</html>

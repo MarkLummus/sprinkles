@@ -2198,7 +2198,8 @@ textarea {
   button,
   select,
   .ink-field,
-  .segmented__option {
+  .segmented__option,
+  .batch-margin .chip-toggle {
     min-height: var(--touch-min);
   }
 

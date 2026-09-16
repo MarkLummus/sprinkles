@@ -53,8 +53,8 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(resolveTokenPx(tokens, '--touch-stop-height')).toBe(44);
   });
 
-  test("inside the media block, `button, select, .ink-field, .segmented__option` declares min-height reading --touch-min", () => {
-    const rule = mediaRuleFor('button, select, .ink-field, .segmented__option');
+  test("inside the media block, `button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179)", () => {
+    const rule = mediaRuleFor('button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle');
     expect(rule, 'expected the media-block control rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 759.98px)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
@@ -81,7 +81,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('the media block carries exactly the six rules 03.3.1-06 Task 2, 03.3.1.1-01 Tasks 1 and 3, and 03.3.1.1-03 Task 2 name', () => {
     const mediaRules = rules.filter((r) => r.media !== undefined && r.media === '(max-width: 759.98px)');
     expect(mediaRules.map((r) => r.selector)).toEqual([
-      'button, select, .ink-field, .segmented__option',
+      'button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle',
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
       '.recipe-band__row-version',

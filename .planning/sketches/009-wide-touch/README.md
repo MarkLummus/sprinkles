@@ -71,7 +71,8 @@ the battery meaningfully taller.
 
 C gives a 38 × 44 target (1,672px²) against B and D's 44 × 44 (1,936px²). It
 clears WCAG 2.5.5's 44px in the vertical axis, where a stop is hardest to hit,
-and misses it by 6px horizontally. That trade is the open question for Mark.
+and misses it by 6px horizontally. Mark accepted that trade rather than pay D's
+layout change.
 
 ## The Melt row — answered, then reopened one level down
 

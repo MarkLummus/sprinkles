@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sketch 009: the battery on a wide touch screen</title>
+<title>Sketch 009: the battery on a wide touch screen (settled: C)</title>
 <link rel="stylesheet" href="../themes/default.css">
 <style>
 /* ---------- sketch chrome (not the design) ---------- */
@@ -97,6 +97,37 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
 #optC .axis .head { min-height: var(--touch-min); align-items: center; }
 #optC .clear { min-height: var(--touch-min); display: inline-flex; align-items: center; }
 
+/* ================= THE MELT ROW ================= */
+.melt-row { display: flex; gap: var(--gap-l); align-items: flex-start; }
+.melt-col { flex: 0 0 213.3px; }
+.melt-cap { display: block; font-size: var(--type-label); letter-spacing: var(--tracking-caption); text-transform: uppercase; }
+/* Melt test's caption reserves two lines (007 line 39); Melt style's reserves
+   Clear's height (03.3.1.1-03). At desktop both land at 24px and the controls
+   sit 4.8px apart — which is what sketch 007 draws. */
+.melt-field .melt-cap { min-height: 2.4em; }
+.melt-seg-head { display: flex; align-items: center; min-height: 24px; }
+.melt-seg-head .clear { margin-left: auto; font-size: var(--type-control); text-decoration: underline; text-underline-offset: 2px; background: none; border: 0; cursor: pointer; }
+.melt-ctrl { margin-top: var(--gap-xs); display: flex; }
+.melt-ctrl input { width: 56px; height: 32px; box-sizing: border-box; border: var(--rule-ink-field) solid var(--ink); font: inherit; font-size: var(--size-ink-field); }
+.melt-ctrl .unit { align-self: center; margin-left: 4px; font-family: var(--face-text); font-style: italic; font-size: var(--size-deviation-words); }
+.melt-opt { height: 32px; min-width: 64px; box-sizing: border-box; border: var(--rule-ink-field) solid var(--ink); margin-right: -1px; background: none; font-family: var(--face-grotesk); font-size: var(--type-control); cursor: pointer; }
+.melt-opt.on { background: var(--pen-blue); border-color: var(--pen-blue); color: var(--ground); }
+.melt-guide { position: absolute; left: 0; right: 0; border-top: 1px dashed #b06; pointer-events: none; }
+.melt-wrap { position: relative; }
+
+/* M1 — the seg head grows to 44 at touch (what the app does today) */
+#meltM1 .melt-seg-head { min-height: 44px; }
+#meltM1 .melt-opt, #meltM1 .melt-ctrl input { height: 44px; }
+
+/* M2 — neither caption line grows; Clear keeps its 24px line */
+#meltM2 .melt-seg-head { min-height: 24px; }
+#meltM2 .melt-opt, #meltM2 .melt-ctrl input { height: 44px; }
+
+/* M3 — both caption lines grow together */
+#meltM3 .melt-seg-head { min-height: 44px; }
+#meltM3 .melt-field .melt-cap { min-height: 44px; display: flex; align-items: flex-end; }
+#meltM3 .melt-opt, #meltM3 .melt-ctrl input { height: 44px; }
+
 /* ================= OPTION D — one axis per row, full 44x44 ================= */
 #optD .axes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 #optD .axes-grid > .axis--core { grid-column: 1 / 2; padding-right: var(--gap-l); }
@@ -112,9 +143,10 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
 <body>
 
 <nav id="variant-nav">
+  <button data-opt="C" class="active">C · SETTLED</button>
+  <span class="sep"></span>
   <button data-opt="A">A · today (32px)</button>
   <button data-opt="B">B · 216px track</button>
-  <button data-opt="C" class="active">C · height only</button>
   <button data-opt="D">D · two columns</button>
   <span class="sep"></span>
   <button id="all">show all</button>
@@ -143,7 +175,7 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
   </div>
 
   <div class="opt-block" id="optC">
-    <span class="cap"><b>C — the stop grows in height only.</b> Width stays 38px, so the track stays 186px and <b>no geometry moves at all</b>. Height goes to 44px, giving a 38 × 44 target. <span class="verdict ok">Fits the column with 27px spare. Obeys the phase's own rule: size may ride the pointer, geometry may not.</span></span>
+    <span class="cap"><b>C — SETTLED (Mark, 2026-09-15). The stop grows in height only.</b> Width stays 38px, so the track stays 186px and <b>no geometry moves at all</b>. Height goes to 44px, giving a 38 × 44 target. <span class="verdict ok">Fits the column with 27px spare. Obeys the phase's own rule: size may ride the pointer, geometry may not.</span> <b>This is what the app implements at a wide touch viewport.</b> A, B and D below are kept as the record of why, not as live alternatives.</span>
     <div class="ruler"><span class="l">0</span><span class="r">column edge</span></div>
     <div class="app"><div class="axes-grid" data-grid>
       <p class="axes-cue axes-cue--core">Every recipe</p>
@@ -158,6 +190,39 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
       <p class="axes-cue axes-cue--core">Every recipe</p>
       <p class="axes-cue axes-cue--declared">This recipe only</p>
     </div></div>
+  </div>
+
+  <div class="opt-block" id="meltSection">
+    <span class="cap"><b>THE MELT ROW at 1366 / coarse — a second, separate question.</b>
+    Measured 2026-09-15: sketch 007 puts Melt style's control <b>4.8px above</b> Melt test's, and the app matches that exactly on a desktop pointer. On a coarse pointer the app puts it <b>15.2px below</b> — a 20px swing. Cause: <code>.segmented-field__head</code> takes <code>--caption-line-h-touch</code> (44px) to reserve Clear's height, while Melt test's field-row caption does not grow. 24 → 44 = +20, and −4.8 + 20 = +15.2 exactly.
+    <span class="verdict">So this is an app defect, not a sketch round — 007 has no misalignment. But 007 never drew touch at a wide viewport, so it does not say which way to fix it either.</span>
+    The pink guide is Melt test's control top.</span>
+
+    <div style="display:flex; gap:var(--gap-xl); flex-wrap:wrap">
+      <div class="app melt-wrap" id="meltM1" style="flex:1 1 380px">
+        <span class="cap"><b>M1 — today.</b> Seg head grows to 44. <span class="verdict">15.2px out.</span></span>
+        <div class="melt-row">
+          <div class="melt-col melt-field"><span class="melt-cap">Melt test, g lost at 20 min</span><div class="melt-ctrl"><input value="12"><span class="unit">g</span></div></div>
+          <div class="melt-col"><div class="melt-seg-head"><span class="melt-cap">Melt style</span><button class="clear">Clear</button></div><div class="melt-ctrl"><button class="melt-opt on">Even</button><button class="melt-opt">Weeps</button></div></div>
+        </div>
+      </div>
+
+      <div class="app melt-wrap" id="meltM2" style="flex:1 1 380px">
+        <span class="cap"><b>M2 — the caption line stays 24.</b> Clear keeps a 24px line; only the controls grow. <span class="verdict ok">Matches the sketch's −4.8.</span></span>
+        <div class="melt-row">
+          <div class="melt-col melt-field"><span class="melt-cap">Melt test, g lost at 20 min</span><div class="melt-ctrl"><input value="12"><span class="unit">g</span></div></div>
+          <div class="melt-col"><div class="melt-seg-head"><span class="melt-cap">Melt style</span><button class="clear">Clear</button></div><div class="melt-ctrl"><button class="melt-opt on">Even</button><button class="melt-opt">Weeps</button></div></div>
+        </div>
+      </div>
+
+      <div class="app melt-wrap" id="meltM3" style="flex:1 1 380px">
+        <span class="cap"><b>M3 — both caption lines grow to 44.</b> They stay level, but the row gets 20px taller. <span class="verdict ok">Aligned, at a cost.</span></span>
+        <div class="melt-row">
+          <div class="melt-col melt-field"><span class="melt-cap">Melt test, g lost at 20 min</span><div class="melt-ctrl"><input value="12"><span class="unit">g</span></div></div>
+          <div class="melt-col"><div class="melt-seg-head"><span class="melt-cap">Melt style</span><button class="clear">Clear</button></div><div class="melt-ctrl"><button class="melt-opt on">Even</button><button class="melt-opt">Weeps</button></div></div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -209,6 +274,7 @@ function build() {
 
 function show(opt) {
   ['A','B','C','D'].forEach(o => document.getElementById('opt' + o).hidden = (opt !== 'all' && o !== opt));
+  document.getElementById('meltSection').hidden = false;
   document.querySelectorAll('#variant-nav [data-opt]').forEach(b => b.classList.toggle('active', b.dataset.opt === opt));
   measure();
 }
@@ -231,6 +297,18 @@ function measure() {
     lines.push(o + ': stop ' + sr.width.toFixed(1) + 'x' + sr.height.toFixed(1)
       + '  track ' + tw.toFixed(1) + '  col ' + col.toFixed(1)
       + '  ' + (fits ? 'fits' : 'OVERFLOWS by ' + (tw - col).toFixed(1)));
+  });
+  ['M1','M2','M3'].forEach(m => {
+    const w = document.getElementById('melt'+m);
+    if (!w) return;
+    const a = w.querySelector('.melt-field .melt-ctrl input');
+    const b = w.querySelector('.melt-col:last-child .melt-ctrl .melt-opt');
+    if (!a || !b) return;
+    const at = a.getBoundingClientRect().top, bt = b.getBoundingClientRect().top;
+    lines.push(m + ': melt-style control ' + (bt - at >= 0 ? '+' : '') + (bt - at).toFixed(1) + ' vs melt-test');
+    const g = w.querySelector('.melt-guide') || Object.assign(document.createElement('div'), { className: 'melt-guide' });
+    if (!g.parentElement) w.appendChild(g);
+    g.style.top = (at - w.getBoundingClientRect().top) + 'px';
   });
   document.getElementById('readout').textContent = lines.join('\n');
   document.querySelectorAll('.ruler').forEach(r => {

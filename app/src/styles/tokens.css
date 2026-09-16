@@ -138,6 +138,16 @@
      long caption in one row keep their fields on one baseline (007 line
      39; sketch 008 line 49 names this token). */
   --caption-two-lines: 2.4em;
+  /* The same two-line reserve, resolved against the caption's own size rather
+     than whatever the element inherits. An `em` means what the ELEMENT's
+     font-size says, so a caption line that holds a caption but is not itself
+     one — .axis-mark__head, .segmented-field__head — read 2.4em of the pen's
+     inherited 16px (38.4px) where the caption beside it read 28.8px, and that
+     9.6px step was the melt row's residual misalignment (M4, sketch 009).
+     Setting a font-size on the head fixed the arithmetic but made the head's
+     computed size differ from the sketch's for no rendered reason, so the
+     multiplication is done here instead and the head inherits normally. */
+  --caption-two-lines-abs: calc(2.4 * var(--type-label));
 
   /* This table's own horizontal cell padding (G-03-11, D-UAT-6): tightened
      to half of what the general small gap gave it before (--gap-s, 12px),

@@ -138,7 +138,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('M4: at touch the caption line reserves the same two lines the field-row caption beside it reserves (sketch 009, Mark 2026-09-15)', () => {
     const rule = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(rule, 'expected the touch-union caption-line rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines\)/);
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines-abs\)/);
     // The retired --caption-line-h-touch reserve is what caused the +15.2px
     // melt-row misalignment; it must not come back on this rule.
     expect(rule.declarations).not.toMatch(/--caption-line-h-touch/);
@@ -410,6 +410,9 @@ describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
   test('.field-row .pen-caption reserves the two-line caption height, excluding a segmented head sharing the row (Melt style; sketch 007 line 180)', () => {
     const rule = ruleFor('.field-row .pen-caption:not(.segmented-field__caption)');
     expect(rule, 'expected a .field-row .pen-caption rule').toBeTruthy();
+    // The em token, deliberately: this element IS a caption, so 2.4em resolves
+    // against its own 12px. The -abs companion exists for the caption LINE,
+    // which holds a caption without being one. Both must reach 28.8px.
     expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines\)/);
   });
 });
@@ -469,11 +472,12 @@ describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption 
     // M4 (sketch 009, Mark 2026-09-15): bottom-aligned, not centred, so the
     // caption's baseline lands where the field-row caption beside it lands.
     expect(rule.declarations).toMatch(/align-items:\s*flex-end/);
-    // ...and the head carries the caption's own font-size, so the em-based
-    // reserve resolves against 12px rather than the pen's inherited 16px.
-    // 2.4em of 16px is 38.4px against the caption's 28.8px, and that 9.6px was
-    // the whole residual misalignment while the head inherited.
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-label\)/);
+    // The head must NOT carry a font-size. An earlier M4 draft set one so the
+    // em-based reserve would resolve against 12px, which fixed the arithmetic
+    // but made the head's computed size differ from the sketch's for no
+    // rendered reason — nothing inside inherits it, every child sets its own.
+    // The multiplication moved into --caption-two-lines-abs instead.
+    expect(rule.declarations).not.toMatch(/font-size:/);
   });
 });
 

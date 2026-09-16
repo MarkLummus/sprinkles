@@ -1733,13 +1733,6 @@ textarea {
   margin-bottom: var(--gap-xs);
   min-height: var(--caption-line-h);
   flex-wrap: wrap;
-  /* M4 (sketch 009, settled by Mark 2026-09-15). The reserve below is written
-     in em, and an em means whatever the element's own font-size says. The head
-     inherits the pen's 16px while the caption inside it is 12px, so the same
-     `2.4em` resolved as 38.4px here against the caption's 28.8px — a 9.6px
-     step that was the entire remaining misalignment in a first draft. Carrying
-     the caption's own size makes the em mean one thing on both sides. */
-  font-size: var(--type-label);
 }
 
 /* The record-pen field row's own head shape (007 line 120): a min-width
@@ -2306,7 +2299,7 @@ textarea {
      only ever drew the wide TOUCH case, so it may only speak for touch. */
   .axis-mark__head,
   .segmented-field__head {
-    min-height: var(--caption-two-lines);
+    min-height: var(--caption-two-lines-abs);
   }
 
   /* Decision C (sketch 009, settled by Mark 2026-09-15): at touch the stop

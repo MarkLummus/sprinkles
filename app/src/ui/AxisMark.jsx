@@ -67,7 +67,12 @@ export function AxisMark({ axis, value, onChange, onClear }) {
         </span>
         <span className="axis-mark__state">{isMarked ? `(${value})` : '(Not recorded)'}</span>
         {isMarked && (
-          <button type="button" className="axis-mark__clear" aria-label={`Clear ${axis.name}`} onClick={handleClear}>
+          <button
+            type="button"
+            className="text-control axis-mark__clear"
+            aria-label={`Clear ${axis.name}`}
+            onClick={handleClear}
+          >
             Clear
           </button>
         )}

@@ -326,8 +326,8 @@ describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
     expect(resolveTokenPx(tokens, '--field-w-date')).toBe(128);
   });
 
-  test('.field-row .pen-caption reserves the two-line caption height', () => {
-    const rule = ruleFor('.field-row .pen-caption');
+  test('.field-row .pen-caption reserves the two-line caption height, excluding a segmented head sharing the row (Melt style; sketch 007 line 180)', () => {
+    const rule = ruleFor('.field-row .pen-caption:not(.segmented-field__caption)');
     expect(rule, 'expected a .field-row .pen-caption rule').toBeTruthy();
     expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines\)/);
   });

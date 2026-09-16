@@ -1632,8 +1632,11 @@ textarea {
 }
 
 /* Two lines reserved (007 line 39): a short and a long caption in the same
-   field row keep their fields bottom-aligned on one baseline. */
-.field-row .pen-caption {
+   field row keep their fields bottom-aligned on one baseline. A segmented
+   control sharing the row (Melt style) is a caption LINE, not a field
+   caption — the sketch holds its head at the reserved control height
+   (007 line 180), so it is excluded here. */
+.field-row .pen-caption:not(.segmented-field__caption) {
   display: flex;
   align-items: flex-end;
   line-height: var(--leading-table);

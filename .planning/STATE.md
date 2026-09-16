@@ -221,6 +221,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260906-chn | Commit the two design files written by /impeccable document: DESIGN.md and .impeccable/design.json | 2026-09-06 | 17bd91f | [260906-chn-commit-the-two-design-files-written-by-i](./quick/260906-chn-commit-the-two-design-files-written-by-i/) |
 | 260912-vni | Sketch 007 structural contract: write the self-sufficient reference file the Phase 03.3.1 planner, executors and checker read in place of the sketch HTML, and amend the 03.3.1 roadmap notes to require per-task citation of it | 2026-09-12 | 599c4eb | [260912-vni-sketch-007-structural-contract-write-the](./quick/260912-vni-sketch-007-structural-contract-write-the/) |
+| 260915-vvh | Close 03.3.1.1 verification gaps 1-3: the useBelow760 breakpoint mismatch (CR-01/WR-02), the batch-row__dates orphaned className (CR-02), and the missing align-self on .method-step__edit | 2026-09-15 | 748e0dc, c5085f4, 3c7a3cd | [260915-vvh-close-03-3-1-1-verification-gaps-1-3-the](./quick/260915-vvh-close-03-3-1-1-verification-gaps-1-3-the/) |
 | 2 | Fix the stale "No DESIGN.md yet" line in STATE.md Blockers/Concerns | 2026-09-06 | ea4a14d | — |
 | 3 | Fix the recipe page grid (note follows table) and cap the graduated rule width; record critique carries | 2026-09-06 | dcec0d3 | — |
 | 4 | Recipe page grid: note beside the table, method beneath; prose measure capped at 65ch | 2026-09-06 | 5671c72 | — |

@@ -103,7 +103,7 @@ function autoGrow(event) {
 }
 
 // The axes' per-arrangement render (contract "Keyboard and tab order"): a
-// matchMedia listener on (max-width: 760px), re-rendering on crossing.
+// matchMedia listener on (max-width: 759.98px), re-rendering on crossing.
 // Node-guarded (RESEARCH.md Code Example 6, this plan's own critical
 // note): BatchRow's own static-markup tests run under Vitest's node
 // environment (renderToStaticMarkup, no jsdom), where `window` does not
@@ -113,10 +113,10 @@ function autoGrow(event) {
 // no listener; the real subscription exists only in the browser.
 function useBelow760() {
   const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
-  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 760px)').matches : false));
+  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 759.98px)').matches : false));
   useEffect(() => {
     if (!hasMatchMedia) return undefined;
-    const mediaQuery = window.matchMedia('(max-width: 760px)');
+    const mediaQuery = window.matchMedia('(max-width: 759.98px)');
     const onChange = (event) => setBelow(event.matches);
     mediaQuery.addEventListener('change', onChange);
     return () => mediaQuery.removeEventListener('change', onChange);

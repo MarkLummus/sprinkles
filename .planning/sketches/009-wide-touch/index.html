@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sketch 009: the battery on a wide touch screen (settled: C)</title>
+<title>Sketch 009: the battery on a wide touch screen (settled: C + M4)</title>
 <link rel="stylesheet" href="../themes/default.css">
 <style>
 /* ---------- sketch chrome (not the design) ---------- */
@@ -216,7 +216,7 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
 
     <div style="display:flex; gap:var(--gap-xl); flex-wrap:wrap">
       <div class="app melt-wrap" id="meltM1" style="flex:1 1 380px">
-        <span class="cap"><b>M1 — today.</b> Seg head grows to 44. <span class="verdict">15.2px out.</span></span>
+        <span class="cap"><b>M1 — today (superseded by M4).</b> Seg head grows to 44. <span class="verdict">15.2px out.</span></span>
         <div class="melt-row">
           <div class="melt-col melt-field"><span class="melt-cap">Melt test, g lost at 20 min</span><div class="melt-ctrl"><input value="12"><span class="unit">g</span></div></div>
           <div class="melt-col"><div class="melt-seg-head"><span class="melt-cap">Melt style</span><button class="clear">Clear</button></div><div class="melt-ctrl"><button class="melt-opt on">Even</button><button class="melt-opt">Weeps</button></div></div>
@@ -224,7 +224,7 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
       </div>
 
       <div class="app melt-wrap" id="meltM2" style="flex:1 1 380px">
-        <span class="cap"><b>M2 — the caption line stays 24.</b> Clear keeps a 24px line; only the controls grow. <span class="verdict ok">Matches the sketch's −4.8.</span></span>
+        <span class="cap"><b>M2 — rejected.</b> Clear keeps a 24px line; only the controls grow. <span class="verdict ok">Matches the sketch's −4.8.</span></span>
         <div class="melt-row">
           <div class="melt-col melt-field"><span class="melt-cap">Melt test, g lost at 20 min</span><div class="melt-ctrl"><input value="12"><span class="unit">g</span></div></div>
           <div class="melt-col"><div class="melt-seg-head"><span class="melt-cap">Melt style</span><button class="clear">Clear</button></div><div class="melt-ctrl"><button class="melt-opt on">Even</button><button class="melt-opt">Weeps</button></div></div>
@@ -232,14 +232,14 @@ body { margin: 0; font-family: var(--face-grotesk); color: var(--ink); }
       </div>
 
       <div class="app melt-wrap" id="meltM3" style="flex:1 1 380px">
-        <span class="cap"><b>M3 — both caption lines grow to 44.</b> They stay level, but the row gets 20px taller. <span class="verdict ok">Aligned, at a cost.</span></span>
+        <span class="cap"><b>M3 — rejected.</b> They stay level, but the row gets 20px taller. <span class="verdict ok">Aligned, at a cost.</span></span>
         <div class="melt-row">
           <div class="melt-col melt-field"><span class="melt-cap">Melt test, g lost at 20 min</span><div class="melt-ctrl"><input value="12"><span class="unit">g</span></div></div>
           <div class="melt-col"><div class="melt-seg-head"><span class="melt-cap">Melt style</span><button class="clear">Clear</button></div><div class="melt-ctrl"><button class="melt-opt on">Even</button><button class="melt-opt">Weeps</button></div></div>
         </div>
       </div>
       <div class="app melt-wrap" id="meltM4" style="flex:1 1 380px; outline:2px solid #2e5a2e; padding:8px">
-        <span class="cap"><b>M4 — equal gaps.</b> Both caption lines reserve the same height and bottom-align their text, so both controls follow 6px below. Clear's 44px target is an overflowing hit area that does not grow the line. <span class="verdict ok">Captions level, controls level, both gaps 6px, Clear still 44px.</span></span>
+        <span class="cap"><b>M4 — SETTLED (Mark, 2026-09-15). Equal gaps.</b> Both caption lines reserve the same height and bottom-align their text, so both controls follow 6px below. Clear's 44px target is an overflowing hit area that does not grow the line. <span class="verdict ok">Captions level, controls level, both gaps 6px, Clear still 44px.</span></span>
         <div class="melt-row">
           <div class="melt-col melt-field"><span class="melt-cap">Melt test, g lost at 20 min</span><div class="melt-ctrl"><input value="12"><span class="unit">g</span></div></div>
           <div class="melt-col"><div class="melt-seg-head"><span class="melt-cap">Melt style</span><button class="clear">Clear</button></div><div class="melt-ctrl"><button class="melt-opt on">Even</button><button class="melt-opt">Weeps</button></div></div>

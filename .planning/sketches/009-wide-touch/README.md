@@ -1,6 +1,6 @@
 # Sketch 009 — the battery on a wide touch screen
 
-**Status:** axes SETTLED (C, Mark 2026-09-15) · Melt row open, to be picked on the iPad
+**Status:** SETTLED — axes C, Melt row M4 (Mark, 2026-09-15). Awaiting app implementation.
 **Drawn:** 2026-09-15
 **Question:** what should a rating stop be at a viewport that is wide *and*
 touch at the same time?
@@ -90,19 +90,31 @@ Clear's height, while Melt test's field-row caption does not grow. 24 → 44 is
 +20, and −4.8 + 20 = +15.2 exactly. Sketch 007 carries no misalignment — but it
 never drew touch at a wide viewport, so it does not say which way to fix it.
 
-**Still open:** which fix. Three are drawn and measured in the sketch.
+**The fix: M4** (Mark, 2026-09-15).
 
-| | delta | row height | Clear's target |
-|---|---|---|---|
-| **M1** today | +15.2 | 94.0 | 44px |
-| **M2** caption line stays 24 | −4.8 — matches 007 | 78.8 | 24px |
-| **M3** both caption lines grow | 0.0 — level | 94.0 | 44px |
+M1, M2 and M3 were drawn first and Mark rejected all three — "all look bad for
+different reasons". He was right, and the reason is that all three optimised the
+wrong quantity: they lined up the **control tops**, when the complaint was
+always about the **gap between a caption and its control**.
 
-M2 conforms to the sketch but leaves Clear a 24px target at touch, which is the
-reason the 44px rule exists at all. M3 keeps Clear at 44 and levels the
-controls, but costs 20px of height and makes Melt test's caption reserve space
-it does not need. **Mark is picking between M2 and M3 on the iPad** (2026-09-15)
-rather than from the numbers alone.
+| | melt-test gap | melt-style gap | captions | controls | row | Clear target |
+|---|---|---|---|---|---|---|
+| **M1** today | 6 | **21** | level | **15.2 out** | 94.0 | 44px |
+| **M2** caption line stays 24 | 6 | **11** | **9.8 out** | 4.8 out | 78.8 | 24px |
+| **M3** both lines grow to 44 | 6 | **21** | **15 out** | level | 94.0 | 44px |
+| **M4 — SETTLED** | 6 | **6** | level | level | **78.8** | 44px |
+
+M4 equalises the gap. Both caption lines reserve the same height and bottom-align
+their text, so both bottoms land on one line and both controls follow 6px below.
+Clear keeps its 44px target through an **overflowing `::after` hit area that does
+not grow the line box** — which dissolves the M2-vs-M3 tradeoff entirely: the
+compact row *and* the touch target, not one or the other.
+
+**A trap worth keeping.** A first draft of M4 set the head's `min-height: 2.4em`,
+which resolves against the body's 16px rather than the caption's 12px — 38.4px
+against 28.8px. That 9.6px was the entire remaining misalignment. The head now
+carries the caption's own `font-size` so the em means the same thing on both
+sides. Any shared vertical reserve expressed in `em` has this hazard.
 
 ## Also decided, not drawn here
 

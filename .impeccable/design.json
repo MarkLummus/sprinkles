@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-12T21:45:00.000Z",
+  "generatedAt": "2026-09-16T00:00:00.000Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -70,87 +70,137 @@
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Recipe name",
+        "displayName": "Display",
         "purpose": "The recipe name, once per page, in the headnote."
       },
       "headline": {
-        "displayName": "Version line",
-        "purpose": "The version line under the name. Units keep their case."
+        "displayName": "Headline",
+        "purpose": "The version line under the name; the batch row’s churned date; a later batch’s date."
       },
       "body": {
-        "displayName": "Prose",
-        "purpose": "Headnote prose, method instructions, authored notes. True italics for purpose and aside."
+        "displayName": "Body",
+        "purpose": "Headnote prose, method instructions, authored notes. Lead-ins bold within the same size."
       },
       "section": {
-        "displayName": "Section heading",
-        "purpose": "Region names and block legends. 600 weight uppercase, superseded the 0.75rem region name in the 260912-ti1 type-role pass."
+        "displayName": "Section",
+        "purpose": "Region names and block legends — a true heading weight, not a label."
       },
       "label": {
-        "displayName": "Running head / table header",
-        "purpose": "Table headers and running heads. Uppercase, tracked 0.04em, weight 400."
+        "displayName": "Label",
+        "purpose": "Table headers and the running head. The plain, unweighted sibling of Caption."
       },
       "caption": {
-        "displayName": "Field caption",
-        "purpose": "Compact field captions (Version, Why, From batch, batch cell labels), 500 weight. Axis names carry it at 600."
+        "displayName": "Caption",
+        "purpose": "Every caption that labels an input: field captions, batch cell labels, axis names, segmented captions, the two group cues. Uppercase by text-transform so the source stays sentence case."
       },
       "control": {
-        "displayName": "Control / status",
-        "purpose": "Actionable choices, helper text, hint and status sentences."
+        "displayName": "Control",
+        "purpose": "Actionable choices, text controls, segmented options, hint and status sentences."
+      },
+      "helper": {
+        "displayName": "Helper",
+        "purpose": "A helper sentence beside a caption, never inside it — sentence case, always a sibling of the uppercase caption element."
       },
       "table": {
         "displayName": "Table body",
-        "purpose": "Ingredient table cells and the graduated rule label. Tabular numerals. The page default."
+        "purpose": "Ingredient table cells, the graduated rule label, and every binder control’s own text. Tabular numerals. The page default."
       },
       "figure": {
         "displayName": "Figure value",
-        "purpose": "The value beside each graduated rule, the step number, the batch row's measured cells."
+        "purpose": "The value beside each graduated rule and the step number. The page’s one heavy element, and it stays in ink."
       },
       "deviation": {
         "displayName": "Deviation words",
-        "purpose": "The words under a rule stating its standing against its band; a step's purpose and aside in italic."
+        "purpose": "The words under a rule stating its standing against its band; a measured cell’s unit; a step’s purpose and aside in italic."
       },
       "note": {
         "displayName": "Written note",
-        "purpose": "Written notes, typed or saved: 16px at 1.5 leading, at the 65ch measure."
+        "purpose": "Written notes, typed or saved: 16px at 1.5 leading, at the 65ch measure. Also the size a recorded figure reads at, and the field size wherever the pointer is coarse."
       },
       "small-print": {
         "displayName": "Small print",
-        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, plan sub-lines, import errors."
+        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, plan sub-lines, cross-flags, version-strip meta, import errors."
       }
     },
     "rules": {
       "baseline": "1.5px",
       "graduation": "1px",
+      "hover": "2px",
       "bandEdge": "1px",
       "tick": "2.5px",
+      "tickHollow": "1px",
       "strike": "1.2px",
       "inkField": "1px",
       "hatchPitch": "4px",
       "hatchStroke": "1.2px",
       "hatchAngle": "45deg",
-      "purpose": "Stroke weights for the graduated rule, the table, the strike, and the drawn controls. Depth is rule weight; nothing else conveys it."
+      "purpose": "Stroke weights for the graduated rule, the table, the strike, and the drawn controls. Depth is rule weight; nothing else conveys it. Hover and focus carry their own 2px weight because 1.5px renders as 1px at DPR 1."
     },
     "focus": {
-      "outlineWidth": "1.5px",
+      "outlineWidth": "2px",
       "outlineOffset": "2px",
       "color": "var(--ink)",
       "boundary": ":focus-visible",
-      "purpose": "The one focus treatment, provably heavier than the 1px outline any pressed/open/current/marked element carries. Never colour, never position."
+      "exception": ".is-landing-focus:focus — a plain :focus rule for the fork’s landing focus after a mouse-driven Save, which Chrome’s modality tracking would otherwise leave ringless. The one documented exception.",
+      "purpose": "The one focus treatment, provably heavier than the 1px outline pointed-at content carries and a different sign from a picked control’s fill. Never colour, never position."
+    },
+    "state": {
+      "picked": "A picked or pressed CONTROL fills pen blue edge to edge, border and all, with paper-coloured text. No bold, no underline, no outline of its own. An independent on/off is a square and a word — only the 13px square fills.",
+      "pointedAt": "Content the page is pointing at — a marked table row, the open batch, the current version, a pressed Show changes — reads bold plus a 1px ink outline offset 2px, in place.",
+      "recorded": "Anything the maker typed or saved reads pen blue and keeps it after saving. An absence (“not measured”) is ink.",
+      "notInForce": "One ink strike at 1.2px — a skipped step, a superseded value, a removed row or step. Beside the replacement where there is room, beneath it for a paragraph.",
+      "forcedColors": "The picked fill survives as a fill, repainted in the system Highlight with HighlightText, so state and focus never collapse into the same outline. A focused picked control switches its ring to CanvasText."
     },
     "shadows": [],
     "motion": [],
     "breakpoints": [
       {
-        "name": "touch-step-down",
-        "value": "760px",
-        "purpose": "The app's only media block (max-width: 759.98px): buttons, selects and ink fields grow to a 44px minimum height, rating stops to a validated 40x44 box. Nothing else changes."
+        "name": "spread-collapse",
+        "value": "max-width: 1099.98px",
+        "purpose": "The two-column spread becomes one column in the order band, ingredients, side, method, foot — side BEFORE method, so the formulation note stays near its table. Page gap narrows to 20px; the pen foot collapses with it."
+      },
+      {
+        "name": "touch-union",
+        "value": "max-width: 759.98px, (pointer: coarse)",
+        "purpose": "Touch sizes. Buttons, selects, ink fields, segmented options, defect toggles and text controls take a 44px minimum height; an axis stop grows in HEIGHT only, to 38x44; .ink-field and .prose-field read 16px. A union, not a replacement: a narrowed desktop window still exercises touch mode, and a real touch device is caught however wide it is."
+      },
+      {
+        "name": "narrow-layout",
+        "value": "max-width: 759.98px",
+        "purpose": "Width only. The version row collapses to one column and the axis track takes its 216px geometry with 44x44 stops. Track geometry is deliberately NOT in the touch union: at 1366 the axes sit in three 213.3px columns, where a 216px track overflows into its neighbour."
+      },
+      {
+        "name": "phone",
+        "value": "max-width: 600px",
+        "purpose": "Page padding shrinks to 20px, the margin’s prose field drops to the control size, both save ceremonies may wrap, and the ingredient table scrolls inside its own region rather than overflowing the page."
+      },
+      {
+        "name": "wide-touch",
+        "value": "min-width: 760px and (pointer: coarse)",
+        "purpose": "A tablet held in the hand at a desktop width (sketch 009). Axis and segmented caption lines reserve two lines of caption height so they sit level with the field captions beside them, and Clear takes its 44px target as an overflowing ::after hit area so the line box never grows."
+      },
+      {
+        "name": "forced-colors",
+        "value": "forced-colors: active",
+        "purpose": "Repaints the picked fill in the system Highlight rather than removing it."
       }
     ],
     "table": {
       "leading": "1.2",
       "nameColumnWidth": "auto",
       "layout": "fixed",
-      "purpose": "The ingredient table's layout is fixed and its leading constant so a marked row's bold weight moves nothing. The name column is the single unsized column, absorbing what the sized columns leave; rows read in step order under step-group heads."
+      "boxSizing": "border-box",
+      "sizedColumns": "numeric 94px, data 86px, remove 78px",
+      "cellPadX": "6px",
+      "purpose": "The ingredient table’s layout is fixed and its leading constant so a marked row’s bold weight moves nothing. Cells are border-box, so a declared column width is the whole column. The name column is the single unsized column, absorbing what the sized columns leave; rows read in step order under step-group heads."
+    },
+    "battery": {
+      "penWidth": "640px",
+      "track": "186px desktop / 216px below 760px",
+      "stop": "38x32 desktop, 38x44 at coarse pointer, 44x44 below 760px",
+      "captionLine": "Reserves Clear’s height marked or not (24px desktop, 44px narrow touch, two caption lines at wide touch) so picking moves nothing.",
+      "clearance": "12px between a desktop axis stop and the core/declared hairline, carried as the declared column’s own padding-left rather than a column gap.",
+      "purpose": "The record pen’s own instrument: six axes in one grid with the defects, a 1px hairline at the two-thirds line, two cue rows heading the columns. A genuinely different DOM shape below 760px, not a media-scoped layout."
     }
   },
   "components": [
@@ -166,17 +216,17 @@
       "name": "Binder button",
       "kind": "button",
       "refersTo": "button",
-      "description": "Every control drawn by the page: square, hairline ink border, no fill, no icon. Hover thickens the border to baseline weight with compensating padding so the box never changes size.",
-      "html": "<button type=\"button\" class=\"ds-btn\">Save</button> <button type=\"button\" class=\"ds-btn\" disabled>Save</button> <button type=\"button\" class=\"ds-text-control\">Remove tasting</button>",
-      "css": ".ds-btn{appearance:none;border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--size-table-body);box-sizing:border-box;cursor:pointer;padding:calc(var(--gap-xs) + var(--rule-baseline) - var(--rule-ink-field))}.ds-btn:hover{border-width:var(--rule-baseline);padding:var(--gap-xs)}.ds-btn:disabled{border-style:dashed;color:inherit;background:none;cursor:default}.ds-btn:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-text-control{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--size-small-print);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-control:hover{text-decoration-thickness:var(--rule-baseline)}"
+      "description": "Every control drawn by the page: square, hairline ink border, no fill, no icon. Hover thickens the border to a whole 2px with compensating padding so the box never changes size. A disabled control is dashed and states its reason in words beside it. An underlined word (.ds-text-control) acts on what is already on the page.",
+      "html": "<button type=\"button\" class=\"ds-btn\">Save batch</button> <button type=\"button\" class=\"ds-btn\" disabled>Save batch</button> <button type=\"button\" class=\"ds-text-control\">Remove tasting</button>",
+      "css": ".ds-btn{appearance:none;border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--size-table-body);box-sizing:border-box;cursor:pointer;padding:calc(var(--gap-xs) + var(--rule-hover) - var(--rule-ink-field))}.ds-btn:hover{border-width:var(--rule-hover);padding:var(--gap-xs)}.ds-btn:disabled{border-style:dashed;color:inherit;background:none;cursor:default}.ds-btn:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-text-control{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);min-height:var(--text-control-min);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-control:hover{text-decoration-thickness:var(--rule-baseline)}.ds-text-control:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-btn,.ds-text-control{min-height:var(--touch-min)}}"
     },
     {
       "name": "Ink field",
       "kind": "input",
       "refersTo": "ink-field",
-      "description": "Anything counted that the maker types: hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, sized to what it holds. Focus is the one global :focus-visible outline.",
-      "html": "<input class=\"ds-ink-field\" style=\"width:9ch\" value=\"383\" aria-label=\"As made, grams\"/> <input class=\"ds-ink-field\" style=\"width:12ch\" type=\"date\" value=\"2026-08-02\" aria-label=\"Churn date\"/>",
-      "css": ".ds-ink-field{font-family:var(--face-grotesk);font-size:var(--size-ink-field);font-variant-numeric:tabular-nums;color:var(--pen-blue);border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;padding:var(--gap-hair) var(--gap-xs);box-sizing:border-box}.ds-ink-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}"
+      "description": "Anything counted that the maker types: hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, its own 1.35 leading and a 26px floor so an empty date input cannot collapse on WebKit. Sized to what it holds — a date at 128px, a short figure at 56px with its unit word beside the box as a sibling. 16px and 44px wherever the pointer is coarse.",
+      "html": "<span class=\"ds-field-unit\"><input class=\"ds-ink-field ds-ink-field--figure\" value=\"383\" aria-label=\"As made, grams\"/><span class=\"ds-field-unit__u\">g</span></span> <input class=\"ds-ink-field ds-ink-field--date\" type=\"date\" value=\"2026-08-02\" aria-label=\"Churn date\"/>",
+      "css": ".ds-ink-field{font-family:var(--face-grotesk);font-size:var(--size-ink-field);font-variant-numeric:tabular-nums;color:var(--pen-blue);border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;padding:var(--gap-hair) var(--gap-xs);line-height:var(--leading-field);min-height:var(--field-min-h);box-sizing:border-box}.ds-ink-field--figure{width:var(--field-w-figure);text-align:right}.ds-ink-field--date{width:var(--field-w-date);-webkit-appearance:none;appearance:none}.ds-ink-field::-webkit-calendar-picker-indicator{display:none;-webkit-appearance:none}.ds-ink-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-field-unit{display:inline-flex;align-items:baseline;gap:var(--gap-field-unit)}.ds-field-unit__u{font-family:var(--face-grotesk);font-size:var(--size-deviation-words);color:var(--ink);white-space:nowrap}@media (max-width:759.98px),(pointer:coarse){.ds-ink-field{min-height:var(--touch-min);font-size:var(--type-note)}}"
     },
     {
       "name": "Prose field",
@@ -219,12 +269,36 @@
       "css": ".ds-method-steps{list-style:none;margin:0;padding:0;color:var(--ink)}.ds-method-step{display:grid;grid-template-columns:auto 1fr;gap:var(--gap-s)}.ds-method-step+.ds-method-step{margin-top:var(--gap-m)}.ds-method-step__n{font-family:var(--face-grotesk);font-size:var(--size-figure-value);font-variant-numeric:tabular-nums}.ds-method-step__lead{font-family:var(--face-text);font-size:var(--size-headnote-prose);max-width:var(--measure-prose);margin:0}.ds-method-step__targets{display:flex;flex-wrap:wrap;gap:var(--gap-xs);margin:var(--gap-xs) 0 0}.ds-method-step__aside{font-family:var(--face-text);font-style:italic;font-size:var(--size-deviation-words);margin:var(--gap-xs) 0 0}.ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--size-small-print);font-variant-numeric:tabular-nums}"
     },
     {
+      "name": "Axis mark",
+      "kind": "custom",
+      "refersTo": "axis-stop",
+      "description": "The tasting battery’s per-axis control: a caption line (axis name, inline state, right-aligned Clear), five joined stops on a 186px track, three anchor words in italic. The drawn box is a label with an invisible native radio stretched over it, so the browser’s grouped-radio keyboard semantics do all the work. A picked stop fills pen blue; adjacent stops share one hairline through a negative margin and the picked cell lifts above its neighbours. The caption line reserves Clear’s height marked or not, so picking moves nothing.",
+      "html": "<fieldset class=\"ds-axis\"><div class=\"ds-axis__head\"><span class=\"ds-axis__name\">Hardness</span><span class=\"ds-axis__state\">(3)</span><button type=\"button\" class=\"ds-text-control ds-axis__clear\">Clear</button></div><div class=\"ds-axis__stops\"><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"1\"/><span>1</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"2\"/><span>2</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"3\" checked/><span>3</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"4\"/><span>4</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"5\"/><span>5</span></label></div><div class=\"ds-axis__anchors\"><span>Soft</span><span>Just right</span><span>Hard</span></div></fieldset>",
+      "css": ".ds-axis{border:none;padding:0;margin:0;color:var(--ink)}.ds-axis__head{display:flex;align-items:flex-end;gap:var(--gap-xs);margin-bottom:var(--gap-xs);min-height:var(--caption-line-h);flex-wrap:wrap}.ds-axis__name{font-family:var(--face-grotesk);font-size:var(--type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em}.ds-axis__state{font-family:var(--face-grotesk);font-size:var(--type-control);color:var(--pen-blue)}.ds-axis__clear{margin-left:auto;font-family:var(--face-grotesk);font-size:var(--size-mark-stop);appearance:none;border:none;background:none;padding:0;color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-axis__stops{display:flex;width:var(--track-stop)}.ds-axis__stop{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 var(--stop-w);height:var(--stop-h);margin-right:calc(-1 * var(--rule-ink-field));border:var(--rule-ink-field) solid var(--ink);border-radius:0;box-sizing:border-box;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums;cursor:pointer}.ds-axis__stop:last-child{margin-right:0}.ds-axis__stop input[type=\"radio\"]{appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.ds-axis__stop:has(input:checked){background:var(--pen-blue);border-color:var(--pen-blue);color:var(--ground);z-index:1}.ds-axis__stop:hover{border-width:var(--rule-hover);z-index:2}.ds-axis__stop:has(input:focus-visible){outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-axis__anchors{display:flex;justify-content:space-between;width:var(--track-stop);margin-top:var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--type-control);font-style:italic;white-space:nowrap}@media (max-width:759.98px),(pointer:coarse){.ds-axis__head{min-height:var(--caption-line-h-touch)}.ds-axis__stop{height:var(--touch-stop-height)}}@media (max-width:759.98px){.ds-axis__stops,.ds-axis__anchors{width:var(--track-stop-narrow)}.ds-axis__stop{width:var(--touch-stop-width);flex-basis:var(--touch-stop-width)}}@media (forced-colors:active){.ds-axis__stop:has(input:checked){forced-color-adjust:none;background:Highlight;border-color:Highlight;color:HighlightText}}"
+    },
+    {
+      "name": "Segmented control",
+      "kind": "custom",
+      "refersTo": "segmented-option",
+      "description": "The battery’s three-way control: a role=\"radiogroup\" of native radios restyled, adjacent options sharing one hairline. Its caption line is the component’s own head, with Clear as the last child. Picking is final — a joined group is a radio, and Clear is the only way back. The picked option fills pen blue; never bold, never underlined.",
+      "html": "<div class=\"ds-seg-field\"><div class=\"ds-seg-field__head\"><span class=\"ds-seg-field__caption\">Melt style</span><button type=\"button\" class=\"ds-seg-field__clear\">Clear</button></div><div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Melt style\"><label class=\"ds-seg__option\"><input type=\"radio\" name=\"ds-melt\" value=\"Creamy\"/><span>Creamy</span></label><label class=\"ds-seg__option\"><input type=\"radio\" name=\"ds-melt\" value=\"Foamy\" checked/><span>Foamy</span></label><label class=\"ds-seg__option\"><input type=\"radio\" name=\"ds-melt\" value=\"Watery\"/><span>Watery</span></label></div></div>",
+      "css": ".ds-seg-field{min-width:0;max-width:100%;color:var(--ink)}.ds-seg-field__head{display:flex;align-items:flex-end;gap:var(--gap-xs);margin-bottom:var(--gap-xs);min-height:var(--caption-line-h);flex-wrap:wrap}.ds-seg-field__caption{font-family:var(--face-grotesk);font-size:var(--type-label);font-weight:500;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em}.ds-seg-field__clear{margin-left:auto;appearance:none;border:none;background:none;padding:0;font-family:var(--face-grotesk);font-size:var(--size-mark-stop);color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-seg{display:flex;flex-wrap:wrap;row-gap:var(--gap-xs)}.ds-seg__option{position:relative;display:flex;align-items:center;justify-content:center;border:var(--rule-ink-field) solid var(--ink);border-radius:0;margin-right:calc(-1 * var(--rule-ink-field));padding:var(--seg-pad-y) var(--seg-pad-x);box-sizing:border-box;min-height:var(--stop-h);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);color:var(--ink);cursor:pointer}.ds-seg__option:last-child{margin-right:0}.ds-seg__option:hover{border-width:var(--rule-hover);padding:calc(var(--seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field))) calc(var(--seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));z-index:2}.ds-seg__option input[type=\"radio\"]{appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.ds-seg__option:has(input:checked){background:var(--pen-blue);border-color:var(--pen-blue);color:var(--ground);z-index:1}.ds-seg__option:has(input:focus-visible){outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-seg__option{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-seg__option:has(input:checked){forced-color-adjust:none;background:Highlight;border-color:Highlight;color:HighlightText}}"
+    },
+    {
+      "name": "Defect toggle",
+      "kind": "chip",
+      "refersTo": "chip-toggle",
+      "description": "An independent on/off, so it is a square and a word rather than a filled box: a 13px ink square before the word, filled pen blue when pressed, aria-pressed carrying the fact. The button itself never changes colour. Defects are grid items of the axes’ own grid, in two labelled groups, so the vertical hairline spans them too.",
+      "html": "<div class=\"ds-defects\"><button type=\"button\" class=\"ds-chip-toggle\" aria-pressed=\"true\">Icy</button><button type=\"button\" class=\"ds-chip-toggle\" aria-pressed=\"false\">Gummy</button><button type=\"button\" class=\"ds-chip-toggle\" aria-pressed=\"false\">Sandy</button></div>",
+      "css": ".ds-defects{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap-xs) var(--gap-defect-col)}.ds-chip-toggle{display:inline-flex;align-items:center;gap:var(--gap-xs);border:0;border-radius:0;padding:0;background:none;box-sizing:border-box;min-height:var(--stop-h);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);color:var(--ink);cursor:pointer}.ds-chip-toggle::before{content:\"\";display:inline-block;width:var(--size-defect-mark);height:var(--size-defect-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--ink);flex:0 0 auto}.ds-chip-toggle:hover::before{border-width:var(--rule-hover)}.ds-chip-toggle[aria-pressed=\"true\"]::before{background:var(--pen-blue);border-color:var(--pen-blue)}.ds-chip-toggle:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-chip-toggle{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-chip-toggle[aria-pressed=\"true\"]::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}}"
+    },
+    {
       "name": "Batch row measured cell",
       "kind": "custom",
-      "refersTo": "figure-value",
-      "description": "The batch row's read view of a measured field: caption label, pen blue figure, lighter unit, plan sub-line in small print.",
-      "html": "<div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Out of the machine</span><span class=\"ds-batch-cell__value\">−6 <span class=\"ds-batch-cell__unit\">°C</span></span><span class=\"ds-batch-cell__plan\">plan −5 to −7 °C</span></div><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Air</span><span class=\"ds-batch-cell__value ds-batch-cell__value--absent\">not measured</span></div>",
-      "css": ".ds-batch-cell{display:flex;flex-direction:column;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-batch-cell__label{font-size:var(--type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);margin-bottom:var(--gap-xs)}.ds-batch-cell__value{font-size:var(--size-figure-value);font-weight:700;color:var(--pen-blue)}.ds-batch-cell__value--absent{color:var(--ink);font-weight:400;font-size:var(--size-deviation-words)}.ds-batch-cell__unit{font-size:var(--size-deviation-words);font-weight:400}.ds-batch-cell__plan{font-size:var(--size-small-print);margin-top:var(--gap-hair);color:var(--ink)}"
+      "refersTo": "recorded-value",
+      "description": "The batch row’s read view of a measured field: caption label, then the figure in pen blue at the NOTE size and the prose weight — a recorded value reads at the weight of the maker’s words, not the balance figure’s 1.25rem/700. Lighter unit, plan sub-line in small print. An absent value reads \"not measured\" in ink: an absence is not a record.",
+      "html": "<div class=\"ds-batch-cells\"><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Out of the machine</span><span class=\"ds-batch-cell__value\">−6 <span class=\"ds-batch-cell__unit\">°C</span></span><span class=\"ds-batch-cell__plan\">plan −5 to −7 °C</span></div><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Air</span><span class=\"ds-batch-cell__unit ds-batch-cell__unit--absent\">not measured</span></div></div>",
+      "css": ".ds-batch-cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--col-batch-cell-min),max-content));gap:var(--gap-s) var(--gap-l)}.ds-batch-cell{display:flex;flex-direction:column;gap:var(--gap-xs);font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-batch-cell__label{font-size:var(--type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink)}.ds-batch-cell__value{font-size:var(--type-note);font-weight:400;line-height:var(--leading-figure);color:var(--pen-blue)}.ds-batch-cell__unit{font-size:var(--size-deviation-words);font-weight:400}.ds-batch-cell__unit--absent{color:var(--ink)}.ds-batch-cell__plan{font-size:var(--size-small-print);margin-top:var(--gap-hair);color:var(--ink)}"
     },
     {
       "name": "Authored block",
@@ -233,14 +307,6 @@
       "description": "The maker's own notes, with a legend naming the block and the word \"authored\" so it stays apart from anything derived.",
       "html": "<div class=\"ds-authored\"><p class=\"ds-authored__legend\"><span>Carried forward</span><span>authored</span></p><ul class=\"ds-authored__notes\"><li>No glucose syrup — less costly at 13% milkfat than it would be at 8%.</li><li>This is the low anchor, not the oil-forward target.</li></ul></div>",
       "css": ".ds-authored{color:var(--ink)}.ds-authored__legend{display:flex;justify-content:space-between;font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--size-headnote-prose)}"
-    },
-    {
-      "name": "Headnote",
-      "kind": "custom",
-      "refersTo": "region-name",
-      "description": "Recipe name in the text face, the version line beneath, then prose. The one display-size element on the page.",
-      "html": "<header class=\"ds-headnote\"><p class=\"ds-region-name\">Headnote</p><h1>Olive Oil Ice Cream</h1><p class=\"ds-headnote__version\">50 g oil · 800 g</p><p class=\"ds-headnote__prose\">Scaled 0.8× from the 1 kg formula. All ratios unchanged.</p></header>",
-      "css": ".ds-headnote{color:var(--ink)}.ds-headnote .ds-region-name{font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);margin:0 0 var(--gap-xs)}.ds-headnote h1{font-family:var(--face-text);font-size:var(--size-recipe-name);margin:0}.ds-headnote__version{font-family:var(--face-text);font-size:var(--size-version-line);margin:var(--gap-xs) 0 0}.ds-headnote__prose{font-family:var(--face-text);font-size:var(--size-headnote-prose);margin:var(--gap-s) 0 0;max-width:var(--measure-prose)}"
     },
     {
       "name": "Recipe list link",
@@ -253,15 +319,15 @@
   ],
   "narrative": {
     "northStar": "The Formulation Cookbook",
-    "overview": "A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread opened by a front-matter band: two stacked rows — the version's row, then the batch's row — closed by a baseline rule, then the ingredient table with the formulation note beside it, the numbered method under the table, and a margin under the note for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.\n\nThe world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. The text face carries true italics for headnote and method prose; the grotesk carries tabular numerals for every table and figure; one bookcloth green names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.\n\nSince the contract was written, the page has grown its instruments and they all obey the binder: every control is drawn by the page — ink at hairline weight, no fill, no radius, no icon — never inherited from the browser. State is carried three proven ways and no others: a picked or open thing turns weight and outline; a recorded thing turns pen blue; and the maker's not-in-force things take one ink strike. Below 760px the page's one media block grows interactive targets toward 44px; it changes nothing else. Density is generous. One heavy element per view, wide gutters between regions, and no motion on entrance.",
+    "overview": "A recipe reads as a recipe first. The formulation and the batch record are the same page's margins, never a dashboard laid over it. The page is a book spread opened by a front-matter band: two stacked rows — the version's row, then the batch's row — closed by a baseline rule, then the ingredient table with the formulation note beside it, the numbered method under the table, and a margin under the note for what the maker wrote. It refuses the recipe-app arrangement of hero photograph, rounded cards, and a green tick for balance, and it refuses the calculator's spreadsheet with coloured bars just as firmly. The mood is warm, precise, and welcoming: a well-set page on a kitchen table in the evening, next to a pen.\n\nThe world inherits three rules from the earlier Cupping Form attempt and keeps them binding. Everything the system prints is black. Everything the maker or the record contributes is one pen blue. Colour identifies and form carries state, so nothing on the page is ever coloured to mean good, bad, or uncertain. The text face carries true italics for headnote and method prose; the grotesk carries tabular numerals for every table and figure; one bookcloth green names the book's sections and does nothing else. Light only, because the scene forces it: the sheet that goes to the machine comes out of a black-only laser printer, and the screen is that sheet's sibling.\n\nSince the contract was written the page has grown its instruments, and they all obey the binder: every control is drawn by the page — ink at hairline weight, no fill at rest, no radius, no icon — never inherited from the browser. State is carried three proven ways and no others. A picked or pressed thing fills pen blue with the paper's colour for its text; the fill alone carries it, with no change of weight and no underline. A recorded thing turns pen blue. The maker's not-in-force things take one ink strike. Content the page is pointing at — a marked table row, the open batch, the current version — is the one thing still carried by bold plus a 1px ink outline, because it is content and not a control. Under forced-colors: active the fill survives as a fill, repainted in the system Highlight, so state and focus never collapse into the same outline.\n\nDensity is generous. One heavy element per view, wide gutters between regions, and no motion anywhere: the stylesheet contains no transition, no animation, no keyframes, no shadow and no radius. The printed bench sheet is not yet built — there is no @media print block and no print route — so nothing here has been verified on paper.",
     "keyCharacteristics": [
       "Book-spread layout behind a two-row front-matter band, each block wearing its plain-language name as a running head.",
       "Four colour roles and nothing else: paper, ink, pen, bookcloth.",
       "Serif for prose, grotesk with tabular numerals for anything counted.",
-      "The binder: page-drawn controls, hairline ink, no fill, no radius, no icon.",
-      "State is weight and outline; the record is pen blue; \"not in force\" is one strike.",
+      "The binder: page-drawn controls, hairline ink, no fill at rest, no radius, no icon.",
+      "A picked control fills pen blue; the record is pen blue; \"not in force\" is one strike; pointed-at content is bold plus a 1px outline.",
       "Balance stated as a tick on a graduated rule and a deviation in words; no colour verdict.",
-      "Print-native: what the screen shows is what the sheet prints, minus the instruments."
+      "Touch is a capability, not a width — the app asks pointer: coarse and grows its targets, at any viewport size."
     ],
     "rules": [
       {
@@ -271,12 +337,12 @@
       },
       {
         "name": "The No-Verdict Rule",
-        "body": "No colour anywhere carries pass, fail, warning, or uncertainty. A figure's standing against its band is stated in words beside the figure, and estimated or unreviewed data says so as a word in the Data column.",
+        "body": "No colour anywhere carries pass, fail, warning, or uncertainty. A figure's standing against its band is stated in words beside the figure; estimated or unreviewed data says so as a word in the Data column; a malformed measurement is a sentence under the field and aria-invalid, never a red line. A picked control's pen-blue fill is not a verdict — it is the record's own ink saying the maker chose this.",
         "section": "colors"
       },
       {
         "name": "The Bookcloth Rule",
-        "body": "Bookcloth appears only on the running heads that name a region. If a new element wants green, it is either a region name or it is wrong.",
+        "body": "Bookcloth appears only where a region is named. If a new element wants green, it is either a region name or it is wrong.",
         "section": "colors"
       },
       {
@@ -295,43 +361,73 @@
         "section": "typography"
       },
       {
+        "name": "The Caption-and-Helper Rule",
+        "body": "A caption is uppercase and labels exactly one input. A sentence that explains rather than labels is a helper, sentence-cased, and it sits beside the caption as a sibling — never folded into it, where text-transform would shout it.",
+        "section": "typography"
+      },
+      {
+        "name": "The 16px Field Rule",
+        "body": "Wherever the pointer is coarse, .ink-field and .prose-field read at the note size (16px). Below 16px iOS Safari zooms the page on field focus, which moves the record under the maker's thumb; the app's earlier 13px touch size is retired.",
+        "section": "typography"
+      },
+      {
         "name": "The Caption Rule",
-        "body": "Every caption that sits atop its own content — field captions, axis names, segmented captions — carries one 6px gap (var(--gap-xs)) to it, whatever it captions. One rule for every caption site.",
+        "body": "Every caption that sits atop its own content — field captions, axis names, segmented captions, group cues — carries one 6px gap (var(--gap-xs)) to it, whatever it captions. One rule for every caption site.",
+        "section": "layout"
+      },
+      {
+        "name": "The Drawn-For Rule",
+        "body": "A rule governs only the case it was drawn for. The touch union also matches every narrow width, where a 44px caption line was drawn and verified; applying the wide-touch reserve across the union silently overwrote that drawing at 680, 580, 480 and 393. When a new case appears, it gets its own condition — never a widened old one.",
+        "section": "layout"
+      },
+      {
+        "name": "The Capability Rule",
+        "body": "Touch sizes read the pointer. Touch layouts read the width. A height can grow anywhere safely; a track width cannot, because no layout has been drawn for touch-sized stops at desktop widths.",
         "section": "layout"
       },
       {
         "name": "The Paper-Is-Flat Rule",
-        "body": "Nothing floats above the page. If an element needs to stand apart, it gets a heavier rule or an ink outline, never a shadow, never a fill.",
+        "body": "Nothing floats above the page. If an element needs to stand apart, it gets a heavier rule, an ink outline, or the pen's fill — never a shadow.",
         "section": "elevation"
       },
       {
         "name": "The Focus-Heavier-than-State Rule",
-        "body": "One focus rule at the browser's own :focus-visible boundary draws a 1.5px ink outline offset 2px — provably heavier than the 1px outline any pressed, open, current, or marked element carries, so the two meanings never read as each other. A focused element that is also stateful reads both.",
+        "body": "One focus rule at the browser's own :focus-visible boundary draws a 2px ink outline offset 2px — heavier than the 1px outline any pointed-at content carries, and a different sign from a pressed control's fill. A focused element that is also stateful reads both. There is exactly one documented exception: .is-landing-focus:focus.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Hover-Is-Weight Rule",
+        "body": "Hover thickens a border from 1px to a whole 2px and removes exactly that much padding, so the box never changes size — 1.5px renders as 1px at DPR 1, which is why hover needs its own token. A joined control thickens in place and stacks above its neighbours. Weight, never position or hue.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do read every colour, face, size, gap, and rule weight through a custom property in app/src/styles/tokens.css. No literal anywhere else.",
+      "Do read every colour, face, size, gap, and rule weight through a custom property in app/src/styles/tokens.css. No literal anywhere else; the only sanctioned exceptions are the breakpoint values in an @media prelude.",
       "Do put every number in the grotesk with tabular numerals and every sentence in the text face.",
       "Do give every region a running head in bookcloth naming it in plain language.",
       "Do state a figure's standing in words beside the figure (inside 22–26, 1.4 over target) and its basis as a word (estimated, unreviewed).",
-      "Do carry picked, open, current, and marked states by weight and outline: bold plus a 1px ink outline offset 2px, in place. Focus alone reads the heavier 1.5px.",
-      "Do paint anything the maker records — typed or saved — in pen blue; only a value returning to the plan (a version edit saved as the plan) returns to ink.",
+      "Do fill a picked or pressed control pen blue, edge to edge, with paper-coloured text — and nothing else: no bold, no underline, no outline of its own.",
+      "Do carry open, current, and marked content by weight and outline: bold plus a 1px ink outline offset 2px, in place. Focus alone reads the 2px ring offset 2px.",
+      "Do paint anything the maker records — typed or saved — in pen blue; only a value returning to the plan (a version edit saved as the plan) returns to ink. An absence is ink.",
       "Do strike with one ink stroke (1.2px) for every \"not in force\" meaning: a skipped step, a superseded value, a removed row or step. Never invent a second strike form.",
       "Do keep ingredient rows in step order under their step heads; strike a removed row rather than deleting it.",
       "Do fix a table's layout and leading before giving any row a heavier weight, so marking moves nothing.",
-      "Do give every caption-with-inline-content the same 6px gap."
+      "Do give every caption-with-inline-content the same 6px gap, and put any explaining sentence beside the caption as a helper sibling.",
+      "Do ask the pointer, not the width, when the question is how big a target should be — and ask the width when the question is how a layout should sit.",
+      "Do give a new device case its own media condition rather than widening an existing one."
     ],
     "donts": [
-      "Don't colour anything to mean pass, fail, warning, or uncertainty. No green tick, no red figure, no amber badge.",
-      "Don't use bookcloth on anything but a region name.",
+      "Don't colour anything to mean pass, fail, warning, or uncertainty. No green tick, no red figure, no amber badge, no red invalid ring.",
+      "Don't use bookcloth on anything but a region name or the hairline that opens a band sub-row.",
       "Don't add a fifth colour, a grey, a tint, a shadow, a gradient, or a second background.",
       "Don't round a corner without first adding a radius token, and never on a table, rule, chip, or anything that prints.",
-      "Don't move an element on hover, focus, or selection, and don't animate an entrance.",
+      "Don't move an element on hover, focus, or selection, and don't animate anything — there is no motion in this system at all.",
       "Don't put a hero image, a card, a gauge, a progress ring, a sparkline, or an icon on the page (the select's drawn chevron is closed-state chrome, not an icon).",
-      "Don't accept browser chrome where the page can draw it — no spinners, no calendar icon, no default select arrow. The dropdown list and date segments stay the browser's; those are the named exceptions.",
+      "Don't accept browser chrome where the page can draw it — no spinners, no calendar icon, no default select arrow, no native date box. The dropdown list and date segments stay the browser's; those are the named exceptions.",
       "Don't pre-fill a default on any control; a placeholder is an italic ink example, never pen blue, never a value.",
-      "Don't uppercase a unit or set a number in the text face."
+      "Don't uppercase a unit or set a number in the text face.",
+      "Don't let a field fall below 16px where the pointer is coarse.",
+      "Don't nest a media block inside another; every one is a top-level sibling."
     ]
   }
 }

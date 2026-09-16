@@ -292,6 +292,10 @@
   --track-stop-narrow: 216px;
   --stop-w: 38px;
   --stop-h: 32px;
+  /* 32px: segment options, defects, the checkbox label and Show changes
+     share the cell height (sketch 008 line 55). --stop-h keeps its own
+     name and stays the axis stop's token. */
+  --control-h: var(--stop-h);
   /* The stop's own grown height below 760px: rides the existing touch
      block's 44px (the --rule-foot-band pattern above) so the stop's
      height and every other control's min-height can never drift apart

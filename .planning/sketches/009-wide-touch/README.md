@@ -1,6 +1,6 @@
 # Sketch 009 — the battery on a wide touch screen
 
-**Status:** open, awaiting Mark's pick
+**Status:** axes SETTLED (C, Mark 2026-09-15) · Melt row open, to be picked on the iPad
 **Drawn:** 2026-09-15
 **Question:** what should a rating stop be at a viewport that is wide *and*
 touch at the same time?
@@ -53,7 +53,10 @@ Each is drawn against the 213.3px column with the column edge marked.
 | **C** height only | 38 × 44 | 186 | fits, 27.3 spare | **proposed** |
 | **D** two columns | 44 × 44 | 216 | fits, 104 spare | layout rides the pointer; battery grows taller |
 
-### Why C is proposed
+**C is settled** (Mark, 2026-09-15). A, B and D are kept as the record of why,
+not as live alternatives.
+
+### Why C
 
 C grows the stop in **height only**. The width stays 38px, so the track stays
 186px and **no geometry moves at all** — it is a pure size change. That is
@@ -70,16 +73,35 @@ C gives a 38 × 44 target (1,672px²) against B and D's 44 × 44 (1,936px²). It
 clears WCAG 2.5.5's 44px in the vertical axis, where a stop is hardest to hit,
 and misses it by 6px horizontally. That trade is the open question for Mark.
 
-## Open questions for Mark
+## The Melt row — answered, then reopened one level down
 
-1. **Is 38 × 44 an acceptable target**, or does the full 44 × 44 matter enough to
-   pay D's layout change?
-2. **Do the axes stay 2 × 2 + 1 at wide touch**, or reflow?
-3. **The Melt row** — still to be drawn here. 03.3.1.1 measured it 15px out of
-   alignment at 1366/coarse (Melt test cap 28.8 / gap 6 / control top 1389.4;
-   Melt style cap 16.2 / gap 19.9 / control top 1404.6), and whether sketch 007
-   has the same misalignment is **unestablished**. That answer decides app-fix
-   versus sketch-round, so it is worth settling in the same session.
+**Answered:** it is an **app defect, not a sketch round.** Measured 2026-09-15
+at 1366:
+
+| | Melt style control vs Melt test |
+|---|---|
+| sketch 007 | **−4.8** (Melt style sits higher) |
+| app, desktop pointer | **−4.8** — matches the sketch exactly |
+| app, coarse pointer | **+15.2** |
+
+Cause: `.segmented-field__head` takes `--caption-line-h-touch` (44px) to reserve
+Clear's height, while Melt test's field-row caption does not grow. 24 → 44 is
++20, and −4.8 + 20 = +15.2 exactly. Sketch 007 carries no misalignment — but it
+never drew touch at a wide viewport, so it does not say which way to fix it.
+
+**Still open:** which fix. Three are drawn and measured in the sketch.
+
+| | delta | row height | Clear's target |
+|---|---|---|---|
+| **M1** today | +15.2 | 94.0 | 44px |
+| **M2** caption line stays 24 | −4.8 — matches 007 | 78.8 | 24px |
+| **M3** both caption lines grow | 0.0 — level | 94.0 | 44px |
+
+M2 conforms to the sketch but leaves Clear a 24px target at touch, which is the
+reason the 44px rule exists at all. M3 keeps Clear at 44 and levels the
+controls, but costs 20px of height and makes Melt test's caption reserve space
+it does not need. **Mark is picking between M2 and M3 on the iPad** (2026-09-15)
+rather than from the numbers alone.
 
 ## Also decided, not drawn here
 

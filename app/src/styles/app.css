@@ -2222,17 +2222,6 @@ textarea {
     min-height: var(--touch-min);
   }
 
-  .axis-mark__stops,
-  .axis-mark__anchors {
-    width: var(--track-stop-narrow);
-  }
-
-  .axis-mark__stop {
-    width: var(--touch-stop-width);
-    height: var(--touch-stop-height);
-    flex-basis: var(--touch-stop-width);
-  }
-
   .text-control {
     min-height: var(--touch-min);
   }
@@ -2243,12 +2232,32 @@ textarea {
   }
 }
 
-/* Layout at narrow widths — width ONLY, never pointer. The version row's
-   collapse is a D-15 layout decision (UAT item I-01): a wide tablet must keep
-   its two columns, so this rule must not ride the touch union above. */
+/* Layout and track GEOMETRY at narrow widths — width ONLY, never pointer.
+   Two different reasons, both measured:
+   - The version row's collapse is a D-15 layout decision (UAT item I-01): a
+     wide tablet must keep its two columns.
+   - The 216px --track-stop-narrow and the 44x44 stop are drawn for the
+     STACKED axes layout. At a wide viewport the axes sit in a three-column
+     grid whose columns measure 213.3px, so a 216px track overflows its column
+     into the next axis (measured on Mark's iPad, 1366 coarse, 2026-09-15:
+     Hardness's track ran 2.7px past its cell into Scoopability, and across the
+     grid's hairline). Touch HEIGHTS are safe to widen to the pointer; this
+     track geometry is not, because no layout has been drawn for touch-sized
+     stops at desktop widths — see the sketch question logged in CONTEXT. */
 @media (max-width: 759.98px) {
   .recipe-band__row-version {
     grid-template-columns: 1fr;
+  }
+
+  .axis-mark__stops,
+  .axis-mark__anchors {
+    width: var(--track-stop-narrow);
+  }
+
+  .axis-mark__stop {
+    width: var(--touch-stop-width);
+    height: var(--touch-stop-height);
+    flex-basis: var(--touch-stop-width);
   }
 }
 

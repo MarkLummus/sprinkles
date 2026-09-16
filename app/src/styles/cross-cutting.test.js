@@ -64,7 +64,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('inside the media block, the axis-mark stop box declares the joined 44x44 cell, with a flex-basis so the joined row grows too (03.3.1-06 Task 1 moved the box from the input to the label; 03.3.1.1 tenth round)', () => {
     const rule = mediaRuleFor('.axis-mark__stop');
     expect(rule, 'expected the media-block axis-mark__stop rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
+    expect(rule.media).toBe('(max-width: 759.98px)');
     expect(rule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
     expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
     expect(rule.declarations).toMatch(/flex-basis:\s*var\(--touch-stop-width\)/);
@@ -74,7 +74,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('inside the media block, the stops and anchors tracks both widen to the 216px --track-stop-narrow', () => {
     const rule = mediaRuleFor('.axis-mark__stops, .axis-mark__anchors');
     expect(rule, 'expected the media-block track-width rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
+    expect(rule.media).toBe('(max-width: 759.98px)');
     expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
   });
 
@@ -82,13 +82,17 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     const touchRules = rules.filter((r) => r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(touchRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle',
-      '.axis-mark__stops, .axis-mark__anchors',
-      '.axis-mark__stop',
       '.text-control',
       '.axis-mark__head, .segmented-field__head',
     ]);
+    // Track GEOMETRY stays width-only: a 216px track overflows the 213.3px
+    // column of the wide-viewport axes grid (measured, Mark's iPad 1366 coarse).
     const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
-    expect(widthOnly.map((r) => r.selector)).toEqual(['.recipe-band__row-version']);
+    expect(widthOnly.map((r) => r.selector)).toEqual([
+      '.recipe-band__row-version',
+      '.axis-mark__stops, .axis-mark__anchors',
+      '.axis-mark__stop',
+    ]);
   });
 
   test('the touch union gives .text-control its own min-height (sketch 003 line 178, 007 line 180; settled 2026-09-14)', () => {

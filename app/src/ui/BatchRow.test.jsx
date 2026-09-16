@@ -1059,13 +1059,13 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
 
   it('reads the tasted date as "date unknown" when absent, never invented', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toContain('<p class="batch-row__dates">tasted date unknown</p>');
+    expect(markup).toContain('<p class="batch-row__date">tasted date unknown</p>');
   });
 
   it('reads the tasted date via formatRecordDate when present', () => {
     const datedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, tastedDate: '2026-08-03' } };
     const markup = renderBatchRow({ openBatch: datedBatch, batches: [datedBatch], mode: 'reading' });
-    expect(markup).toContain('<p class="batch-row__dates">tasted 3 Aug 2026</p>');
+    expect(markup).toContain('<p class="batch-row__date">tasted 3 Aug 2026</p>');
   });
 
   it('reads the tasting temperature signed, and the melt test with its own unit', () => {

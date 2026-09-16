@@ -215,7 +215,7 @@ function TastingReading({ batch }) {
   return (
     <div className="tasting-reading">
       <h3 className="region-name">Tasting</h3>
-      <p className="batch-row__dates">
+      <p className="batch-row__date">
         {`tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`}
       </p>
       <div className="batch-row__cells">

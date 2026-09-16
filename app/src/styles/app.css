@@ -1330,6 +1330,8 @@ textarea {
   border-radius: 0;
   background: none;
   padding: var(--gap-hair) var(--gap-xs);
+  line-height: var(--leading-field);
+  min-height: var(--field-min-h);
   width: 100%;
   box-sizing: border-box;
 }

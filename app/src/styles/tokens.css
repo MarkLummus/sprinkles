@@ -64,6 +64,15 @@
   --rule-tick: 2.5px;
   --rule-width: 320px; /* the drawing's native width; GraduatedRule.jsx WIDTH must agree */
   --measure-prose: 65ch; /* longest line for prose: headnote, method, basis note */
+  /* The ink field's own leading and floor (SR-6, measured on Mark's iPad
+     2026-09-15). Without an explicit leading each engine picks its own:
+     Chromium renders the text box 23px, WebKit 28.5px. Without a floor an
+     EMPTY date input collapses to 6px on WebKit — padding plus border with
+     zero content height — because `appearance: none` strips the native
+     control and WebKit then gives it no intrinsic height. A filled date
+     renders 28px, which is why no completed record ever showed it. */
+  --leading-field: 1.35;
+  --field-min-h: 26px;
   --leading-table: 1.2; /* fixed so a marked row's bold weight cannot change its height */
   /* --col-ingredient retired (G-03-11, D-UAT-6). The name column is now
      the single unsized column (app.css, .ingredient-table__col-name:

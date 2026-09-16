@@ -412,20 +412,22 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     });
     expect(withParent).toContain('Show changes');
     expect(withParent).toContain('headnote__show-changes');
+    expect(withParent).toContain('text-toggle');
 
     const withoutParent = renderVersionRow({ version: childVersion, citedBatch: augustSecondBatch, parentVersion: null });
     expect(withoutParent).not.toContain('Show changes');
   });
 
   // 03.3-06 checkpoint feedback (sketch 003 variant B, index.html:479):
-  // Show changes reads as a text control, not a bordered button.
-  it('renders Show changes carrying the text-control class', () => {
+  // Show changes reads as a text control, not a bordered button. One fill
+  // for every on state (2026-09-16): it is also a square-and-word toggle.
+  it('renders Show changes carrying the text-control and text-toggle classes', () => {
     const markup = renderVersionRow({
       version: childVersion,
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    expect(markup).toMatch(/<button[^>]*class="headnote__show-changes text-control"[^>]*>Show changes<\/button>/);
+    expect(markup).toMatch(/<button[^>]*class="headnote__show-changes text-control text-toggle"[^>]*>Show changes<\/button>/);
   });
 
   it('renders Parent and Batch as plain text, not links, while a pen is open', () => {

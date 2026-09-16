@@ -67,10 +67,29 @@ describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 t
     expect(focusWidth).toBeGreaterThan(graduation);
   });
 
-  test("`.headnote__show-changes[aria-pressed='true']` declares its outline at --rule-graduation, not focus weight (D-14)", () => {
-    const rule = ruleFor(".headnote__show-changes[aria-pressed='true']");
-    expect(rule, 'expected the pressed show-changes rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
+  test("Show changes is a square and a word now, not bold-plus-outline: no `.headnote__show-changes[aria-pressed='true']` rule exists, the leading square fills pen blue, and the button itself never fills or bolds (one fill for every on state, 2026-09-16)", () => {
+    expect(ruleFor(".headnote__show-changes[aria-pressed='true']")).toBeUndefined();
+
+    const pressedBeforeRule = ruleFor(".text-toggle[aria-pressed='true']::before");
+    expect(pressedBeforeRule, "expected a .text-toggle[aria-pressed='true']::before rule").toBeTruthy();
+    expect(pressedBeforeRule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
+    expect(pressedBeforeRule.declarations).toMatch(/border-color:\s*var\(--pen-blue\)/);
+
+    // css-source.js stores a grouped selector as one normalised string, so
+    // the paired underline rule below is keyed as the whole comma-joined
+    // pair — an exact-match lookup on the bare selector would return
+    // undefined whether or not the rule exists. Filter instead.
+    const buttonRules = rules.filter(
+      (r) => r.selector.includes(".text-toggle[aria-pressed='true']") && !r.selector.includes('::before'),
+    );
+    expect(buttonRules).toHaveLength(1);
+    expect(buttonRules[0].selector).toBe(
+      ".text-toggle[aria-pressed='true'], .text-toggle[aria-pressed='true']:hover",
+    );
+    expect(buttonRules[0].declarations).toMatch(/text-decoration-thickness:\s*var\(--rule-ink-field\)/);
+    expect(buttonRules[0].declarations).not.toMatch(/background/);
+    expect(buttonRules[0].declarations).not.toMatch(/font-weight/);
+    expect(buttonRules[0].declarations).not.toMatch(/outline/);
   });
 
   test('`.version-strip__item.is-current` declares its outline at --rule-graduation, not focus weight (D-14)', () => {

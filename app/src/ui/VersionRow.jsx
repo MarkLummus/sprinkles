@@ -220,7 +220,7 @@ export function VersionRow({
               {parentVersion && (
                 <button
                   type="button"
-                  className="headnote__show-changes text-control"
+                  className="headnote__show-changes text-control text-toggle"
                   aria-pressed={showingChanges}
                   onClick={onToggleShowChanges}
                 >

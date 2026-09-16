@@ -170,6 +170,26 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
   });
+
+  test('.text-toggle sits before the touch union in source order, so .text-control wins min-height at a coarse pointer (one fill for every on state, 2026-09-16)', () => {
+    // readAllRules returns rules in source order (css-source.js walks the
+    // file linearly). .text-toggle must come after .text-control's own
+    // rules (desktop 32px over 24px) and before the touch union (so
+    // .text-control's later 44px min-height wins there) — reordering these
+    // two rules would silently change the touch target.
+    const toggleIndex = rules.findIndex((r) => r.selector === '.text-toggle' && r.media === undefined);
+    const touchTextControlIndex = rules.findIndex(
+      (r) => r.selector === '.text-control' && r.media === '(max-width: 759.98px), (pointer: coarse)',
+    );
+    expect(toggleIndex).toBeGreaterThanOrEqual(0);
+    expect(touchTextControlIndex).toBeGreaterThanOrEqual(0);
+    expect(toggleIndex).toBeLessThan(touchTextControlIndex);
+
+    // No .text-toggle rule exists inside any media block — the 44px can
+    // only come from .text-control winning by source order.
+    const mediaScopedToggle = rules.filter((r) => r.selector === '.text-toggle' && r.media !== undefined);
+    expect(mediaScopedToggle).toHaveLength(0);
+  });
 });
 
 describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () => {

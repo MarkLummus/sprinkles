@@ -95,6 +95,44 @@ select:disabled {
   padding: 0;
 }
 
+/* .text-toggle (sketch 008 lines 91-95; one-fill-for-every-on-state fix
+   brief, 2026-09-16): a square-and-word toggle, like the defect. The app
+   keys the pressed state on aria-pressed, not the sketch's .on class,
+   matching .chip-toggle's own pattern. .text-control and .text-toggle are
+   both (0,1,0) and both land on this element — .text-toggle must come
+   after .text-control's own rules to win min-height at desktop, and
+   before the touch union to lose it at a coarse pointer. */
+.text-toggle {
+  min-height: var(--control-h);
+}
+
+.text-toggle::before {
+  content: '';
+  display: inline-block;
+  width: var(--size-lead-mark);
+  height: var(--size-lead-mark);
+  box-sizing: border-box;
+  border: var(--rule-graduation) solid var(--ink);
+  margin-right: var(--gap-xs);
+  vertical-align: baseline;
+}
+
+.text-toggle[aria-pressed='true']::before {
+  background: var(--pen-blue);
+  border-color: var(--pen-blue);
+}
+
+/* the square carries the state; the underline stays hairline on a pressed
+   toggle (sketch 008 line 94) */
+.text-toggle[aria-pressed='true'],
+.text-toggle[aria-pressed='true']:hover {
+  text-decoration-thickness: var(--rule-ink-field);
+}
+
+.text-toggle:hover::before {
+  border-width: var(--rule-hover);
+}
+
 /* A lone `select` selector loses the cascade to the pre-existing
    `.ink-field` class rule (a class always outranks a bare element,
    whatever the source order) — this compound selector keeps the two
@@ -419,20 +457,15 @@ textarea {
   margin-bottom: var(--gap-xs);
 }
 
-/* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04): the
-   pressed state is carried by weight and outline, never by hue or a label
-   change — the same convention .version-strip__item.is-current uses.
-   Reads .text-control (03.3-06 checkpoint feedback, sketch 003 variant B,
-   index.html:479) for its border-less, underlined rest state; this rule
-   now only carries the spacing this button needs beside its siblings. */
+/* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04; one
+   fill for every on state, 2026-09-16): the square carries the pressed
+   state now (.text-toggle, sketch 008 lines 91-95), not weight or an
+   outline. Reads .text-control (03.3-06 checkpoint feedback, sketch 003
+   variant B, index.html:479) for its border-less, underlined rest state;
+   this rule now only carries the spacing this button needs beside its
+   siblings. */
 .headnote__show-changes {
   margin-left: var(--gap-xs);
-}
-
-.headnote__show-changes[aria-pressed='true'] {
-  font-weight: 700;
-  outline: var(--rule-graduation) solid var(--ink);
-  outline-offset: var(--focus-outline-offset);
 }
 
 /* The "From batch" label-over-control (03.3-06 checkpoint feedback,
@@ -2414,7 +2447,8 @@ textarea {
 @media (forced-colors: active) {
   .axis-mark__stop:has(input[type='radio']:checked),
   .segmented__option:has(input[type='radio']:checked),
-  .chip-toggle[aria-pressed='true']::before {
+  .chip-toggle[aria-pressed='true']::before,
+  .text-toggle[aria-pressed='true']::before {
     forced-color-adjust: none;
     background: Highlight;
     border-color: Highlight;

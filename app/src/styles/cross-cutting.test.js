@@ -80,11 +80,14 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
   });
 
-  test('the touch union carries the five sizing rules, and the width-only block keeps the version row (Mark, 2026-09-15: touch is a mode, the version row collapse is a width decision)', () => {
+  test('the touch union carries the six sizing rules, and the width-only block keeps the version row (Mark, 2026-09-15: touch is a mode, the version row collapse is a width decision)', () => {
     const touchRules = rules.filter((r) => r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(touchRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle',
       '.text-control',
+      // Sketch 008 line 260 grows the checkbox LABEL, not the square — the
+      // two flex labels holding the Skipped and Uses checkboxes.
+      '.method-step__uses-item, .method-step__strike-control',
       // The NARROW drawing (007 line 180, 008 line 167): Clear is 44px here,
       // so the caption line reserves 44px marked or not. Sketch 009 replaces
       // this at a wide touch viewport, in its own block — it cannot live here,

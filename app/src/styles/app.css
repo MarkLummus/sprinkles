@@ -180,7 +180,9 @@ select.ink-field {
 
 /* The checkbox (D-13): the same drawing the radio stop below already
    proves, so the uses checklist and the Skipped checkbox pick this up
-   with no markup change. */
+   with no markup change. The square fills pen blue when checked, like
+   every other on state (one fill for every on state, 2026-09-16;
+   sketch 008 lines 107-109). */
 input[type='checkbox'] {
   appearance: none;
   width: var(--size-mark-stop);
@@ -189,10 +191,18 @@ input[type='checkbox'] {
   border: var(--rule-graduation) solid var(--ink);
   border-radius: 0;
   background: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+input[type='checkbox']:hover {
+  border-width: var(--rule-hover);
 }
 
 input[type='checkbox']:checked {
-  background: var(--ink);
+  background: var(--pen-blue);
+  border-color: var(--pen-blue);
 }
 
 /* Number spinners (D-19): the cross-browser pair — Chromium/WebKit hide
@@ -2284,6 +2294,13 @@ textarea {
     min-height: var(--touch-min);
   }
 
+  /* Sketch 008 line 260 grows the checkbox LABEL, not the square — the
+     two flex labels that hold the Skipped and Uses checkboxes. */
+  .method-step__uses-item,
+  .method-step__strike-control {
+    min-height: var(--touch-min);
+  }
+
   /* The NARROW drawing's caption line (sketch 007 line 180, 008 line 167:
      "Clear is 44px here, so the head reserves 44px marked or not"). Sketch 009
      replaces this at a WIDE touch viewport — see the wide-touch block below —
@@ -2448,7 +2465,8 @@ textarea {
   .axis-mark__stop:has(input[type='radio']:checked),
   .segmented__option:has(input[type='radio']:checked),
   .chip-toggle[aria-pressed='true']::before,
-  .text-toggle[aria-pressed='true']::before {
+  .text-toggle[aria-pressed='true']::before,
+  input[type='checkbox']:checked {
     forced-color-adjust: none;
     background: Highlight;
     border-color: Highlight;

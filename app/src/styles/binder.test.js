@@ -157,17 +157,32 @@ describe('buttons and selects — ink hairline, no fill, no radius, dashed when 
 });
 
 describe('the drawn checkbox (D-13)', () => {
-  test("`input[type='checkbox']` declares appearance: none, drawn as an ink square (D-13)", () => {
+  test("`input[type='checkbox']` declares appearance: none, drawn as a square, border-box so the border never adds onto the declared 13px, and a shrink guard for the two flex labels that hold it (D-13)", () => {
     const rule = ruleFor("input[type='checkbox']");
     expect(rule, "expected an input[type='checkbox'] rule").toBeTruthy();
     expect(rule.declarations).toMatch(/appearance:\s*none/);
     expect(rule.declarations).toMatch(/border:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
+    expect(rule.declarations).toMatch(/flex:\s*0 0 auto/);
   });
 
-  test("`input[type='checkbox']:checked` declares an ink background (D-13)", () => {
+  test("`input[type='checkbox']:hover` thickens the border to --rule-hover", () => {
+    const rule = ruleFor("input[type='checkbox']:hover");
+    expect(rule, "expected an input[type='checkbox']:hover rule").toBeTruthy();
+    expect(rule.declarations).toMatch(/border-width:\s*var\(--rule-hover\)/);
+  });
+
+  test("a checked checkbox fills pen blue with a matching border, not ink (one fill for every on state, 2026-09-16)", () => {
     const rule = ruleFor("input[type='checkbox']:checked");
     expect(rule, "expected an input[type='checkbox']:checked rule").toBeTruthy();
-    expect(rule.declarations).toMatch(/background:\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
+    expect(rule.declarations).toMatch(/border-color:\s*var\(--pen-blue\)/);
+  });
+
+  test("a checked checkbox repaints in the forced-colors block", () => {
+    const forcedRules = rules.filter((r) => r.media === '(forced-colors: active)');
+    const fillRule = forcedRules.find((r) => r.selector.includes("input[type='checkbox']:checked"));
+    expect(fillRule, 'expected input[type=\'checkbox\']:checked among the forced-colors selectors').toBeTruthy();
   });
 });
 

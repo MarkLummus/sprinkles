@@ -326,6 +326,12 @@ describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
     expect(resolveTokenPx(tokens, '--field-w-date')).toBe(128);
   });
 
+  test('.method-step__on-demand sits at its own content width, not stretched by the column flex wrapper', () => {
+    const rule = ruleFor('.method-step__on-demand');
+    expect(rule, 'expected a .method-step__on-demand rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/align-self:\s*flex-start/);
+  });
+
   test('.field-row .pen-caption reserves the two-line caption height, excluding a segmented head sharing the row (Melt style; sketch 007 line 180)', () => {
     const rule = ruleFor('.field-row .pen-caption:not(.segmented-field__caption)');
     expect(rule, 'expected a .field-row .pen-caption rule').toBeTruthy();

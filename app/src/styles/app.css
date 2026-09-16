@@ -1091,6 +1091,12 @@ textarea {
    "done differently" — sitting in the step's own flow, one per line. */
 .method-step__on-demand {
   display: block;
+  /* The wrapper is a column flex, so a stretched item fills the whole
+     column. This is an inline text action (`.text-control` — an underlined
+     word, 003 line 32 / 007 line 131), so it sits at its own content
+     width instead. Measured on the device, 2026-09-15: intrinsic 119.7px,
+     stretched to the full 760.9px column before this rule. */
+  align-self: flex-start;
   margin-top: var(--gap-xs);
 }
 

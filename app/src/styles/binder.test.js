@@ -258,7 +258,7 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     }
   });
 
-  test('the only at-rules in app.css are the six named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2; 03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; 260915-x6n touch font)', () => {
+  test('the only at-rules in app.css are the six named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2; 03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; 260915-x6n; the 009 wide-touch block)', () => {
     // Replaces the old "no at-rule was added" assertion (WR-02): the
     // stylesheet reader (css-source.js) parses one level of @media
     // nesting, and this pins the file to that contract — exactly the
@@ -282,7 +282,7 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
       '(max-width: 1099.98px)',
       '(max-width: 759.98px)',
       '(max-width: 600px)',
-      '(max-width: 600px) and (pointer: coarse)',
+      '(min-width: 760px) and (pointer: coarse)',
       '(forced-colors: active)',
     ];
     for (const rule of mediaRules) {

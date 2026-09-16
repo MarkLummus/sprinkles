@@ -85,15 +85,13 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(touchRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle',
       '.text-control',
-      // M4 (sketch 009, Mark 2026-09-15): Clear in a caption line takes its
-      // 44px target as an overflowing hit area, so the line box never grows —
-      // which is what lets the melt row sit level against its neighbour while
-      // the axes still reserve Clear's height.
-      '.axis-mark__head .text-control, .segmented-field__head .text-control',
-      '.axis-mark__head .text-control::after, .segmented-field__head .text-control::after',
+      // The NARROW drawing (007 line 180, 008 line 167): Clear is 44px here,
+      // so the caption line reserves 44px marked or not. Sketch 009 replaces
+      // this at a wide touch viewport, in its own block — it cannot live here,
+      // because the union also matches every narrow width.
+      '.axis-mark__head, .segmented-field__head',
       // Sketch 008 line 166, approved 2026-09-15.
       '.ink-field, .prose-field',
-      '.axis-mark__head, .segmented-field__head',
       // Decision C: HEIGHT only. The width and the track stay width-keyed below.
       '.axis-mark__stop',
     ]);
@@ -122,45 +120,45 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   });
 
   test('M4: Clear in a caption line takes its touch target as an overflowing hit area, not as line height (sketch 009, Mark 2026-09-15)', () => {
-    const box = rules.find((r) => r.selector === '.axis-mark__head .text-control, .segmented-field__head .text-control' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    const box = rules.find((r) => r.selector === '.axis-mark__head .text-control, .segmented-field__head .text-control' && r.media === '(min-width: 760px) and (pointer: coarse)');
     expect(box, 'expected the caption-line text-control rule').toBeTruthy();
     // It must UNDO the blanket .text-control min-height above it, or the line
     // grows and the melt row goes 15.2px out again.
     expect(box.declarations).toMatch(/min-height:\s*0/);
     expect(box.declarations).toMatch(/position:\s*relative/);
 
-    const hit = rules.find((r) => r.selector === '.axis-mark__head .text-control::after, .segmented-field__head .text-control::after' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    const hit = rules.find((r) => r.selector === '.axis-mark__head .text-control::after, .segmented-field__head .text-control::after' && r.media === '(min-width: 760px) and (pointer: coarse)');
     expect(hit, 'expected the hit-area pseudo-element rule').toBeTruthy();
     expect(hit.declarations).toMatch(/position:\s*absolute/);
     expect(hit.declarations).toMatch(/height:\s*var\(--touch-min\)/);
   });
 
-  test('M4: at touch the caption line reserves the same two lines the field-row caption beside it reserves (sketch 009, Mark 2026-09-15)', () => {
-    const rule = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(max-width: 759.98px), (pointer: coarse)');
-    expect(rule, 'expected the touch-union caption-line rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines-abs\)/);
-    // The retired --caption-line-h-touch reserve is what caused the +15.2px
-    // melt-row misalignment; it must not come back on this rule.
-    expect(rule.declarations).not.toMatch(/--caption-line-h-touch/);
+  test('M4 is scoped to the WIDE touch viewport; the narrow drawing keeps its 44px caption line (sketches 007/008 vs 009)', () => {
+    // The re-measure caught this: applying M4 across the whole touch union
+    // overwrote 007/008's narrow drawing at 680, 580, 480 and 393, where the
+    // head read 28.8px against the sketch's 44px. Each drawing governs the
+    // case it was drawn for, and this test fails if they are merged again.
+    const wide = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(min-width: 760px) and (pointer: coarse)');
+    expect(wide, 'expected the wide-touch caption-line rule').toBeTruthy();
+    expect(wide.declarations).toMatch(/min-height:\s*var\(--caption-two-lines-abs\)/);
+
+    const narrow = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(narrow, 'expected the narrow caption-line rule').toBeTruthy();
+    expect(narrow.declarations).toMatch(/min-height:\s*var\(--caption-line-h-touch\)/);
   });
 
-  test("sketch 008's touch font bump reaches narrow widths too, after the 600px step drops it (260915-x6n)", () => {
-    const wide = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 759.98px), (pointer: coarse)');
-    expect(wide, 'expected the touch-union font rule').toBeTruthy();
-    expect(wide.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+  test("sketch 008's touch font bump survives the 600px step (260915-x6n)", () => {
+    const bump = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(bump, 'expected the touch-union font rule').toBeTruthy();
+    expect(bump.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
 
-    // The 600px step sets .ink-field to --type-control, so without a later
-    // sibling block the bump would apply at every touch width EXCEPT the
-    // narrow ones — exactly where a phone's auto-zoom bites hardest.
-    const narrow = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 600px) and (pointer: coarse)');
-    expect(narrow, 'expected the narrow-touch font rule').toBeTruthy();
-    expect(narrow.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
-
-    const all = rules.map((r, i) => ({ i, r }));
-    const sixHundred = all.find(({ r }) => r.media === '(max-width: 600px)' && r.selector.includes('.ink-field'));
-    const narrowTouch = all.find(({ r }) => r === narrow);
-    expect(sixHundred, 'expected the 600px .ink-field rule').toBeTruthy();
-    expect(narrowTouch.i).toBeGreaterThan(sixHundred.i);
+    // The 600px step used to pull .ink-field back down to --type-control,
+    // which is the pre-declared 13px departure 008 line 166 retires — and
+    // below 600 is exactly where a phone's auto-zoom bites. The step now
+    // names only the margin's own prose field.
+    const step = rules.find((r) => r.media === '(max-width: 600px)' && /font-size/.test(r.declarations) && r.selector.includes('batch-margin__field'));
+    expect(step, 'expected the 600px font-size rule').toBeTruthy();
+    expect(step.selector).not.toMatch(/\.ink-field/);
   });
 
   test('the touch union gives .text-control its own min-height (sketch 003 line 178, 007 line 180; settled 2026-09-14)', () => {
@@ -186,11 +184,17 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-m\)/);
   });
 
-  test('the record field text drops to the control role in the 600px block', () => {
-    const rule = mediaRuleFor('.batch-margin__field, .ink-field');
+  test("the margin's prose field drops to the control role in the 600px block — and .ink-field no longer goes with it (260915-x6n)", () => {
+    // .ink-field used to ride this rule. Sketch 008 line 166 retires that 13px
+    // as a pre-declared departure, and below 600 is exactly where a phone's
+    // auto-zoom bites, so the touch union's 16px must survive the step. The
+    // margin's own prose field is not what 008 speaks for, and keeps the
+    // smaller size.
+    const rule = mediaRuleFor('.batch-margin__field');
     expect(rule, 'expected a media-scoped field-text rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 600px)');
     expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+    expect(rule.selector).not.toMatch(/\.ink-field/);
   });
 
   test('both save ceremonies wrap through one rule (D-01)', () => {
@@ -214,9 +218,9 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
       '(forced-colors: active)',
       '(max-width: 1099.98px)',
       '(max-width: 600px)',
-      '(max-width: 600px) and (pointer: coarse)',
       '(max-width: 759.98px)',
       '(max-width: 759.98px), (pointer: coarse)',
+      '(min-width: 760px) and (pointer: coarse)',
     ]);
   });
 });

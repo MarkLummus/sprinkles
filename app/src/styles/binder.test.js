@@ -331,7 +331,7 @@ describe('the picked state is a fill (D-04, sketch 007 lines 49 and 83)', () => 
   test('a defect is a square and a word: the square fills pen blue when pressed, the button itself never does', () => {
     const beforeRule = ruleFor('.chip-toggle::before');
     expect(beforeRule, 'expected a .chip-toggle::before rule').toBeTruthy();
-    expect(beforeRule.declarations).toMatch(/width:\s*var\(--size-defect-mark\)/);
+    expect(beforeRule.declarations).toMatch(/width:\s*var\(--size-lead-mark\)/);
     expect(beforeRule.declarations).toMatch(/border:\s*var\(--rule-graduation\)/);
     const pressedBeforeRule = ruleFor(".chip-toggle[aria-pressed='true']::before");
     expect(pressedBeforeRule, "expected a .chip-toggle[aria-pressed='true']::before rule").toBeTruthy();

@@ -312,9 +312,10 @@
      literal. */
   --seg-pad-y: 5px;
   --seg-pad-x: 8px;
-  /* The defect's leading square (007 line 88): rides the app's existing
-     13px mark token rather than a new one. */
-  --size-defect-mark: var(--size-mark-stop);
+  /* The 13px leading square shared by the defect and Show changes
+     (sketch 008 line 59): rides the app's existing 13px mark token
+     rather than a new one. */
+  --size-lead-mark: var(--size-mark-stop);
   /* 20px between a defect and the next (007 line 89) — the row's own
      wrap gap is --gap-xs. */
   --gap-defect-col: var(--gap-m);

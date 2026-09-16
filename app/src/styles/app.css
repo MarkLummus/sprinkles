@@ -1991,8 +1991,8 @@ textarea {
 .chip-toggle::before {
   content: '';
   display: inline-block;
-  width: var(--size-defect-mark);
-  height: var(--size-defect-mark);
+  width: var(--size-lead-mark);
+  height: var(--size-lead-mark);
   box-sizing: border-box;
   border: var(--rule-graduation) solid var(--ink);
   flex: 0 0 auto;

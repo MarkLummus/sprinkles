@@ -181,6 +181,30 @@ input[type='date']::-webkit-calendar-picker-indicator {
   -webkit-appearance: none;
 }
 
+/* SR-6 (measured on Mark's iPad, 2026-09-16: iPadOS 18.7, WebKit 605.1.15,
+   1366 coarse, DPR 2). While a date input keeps `appearance: auto`, WebKit
+   renders it as a native control and ignores the author box model outright —
+   not one property of it. The churn date reported its OWN metrics rather than
+   .ink-field's: min-height 29px against the declared 44, content-box against
+   the declared border-box, and 142px wide against the declared 128. It sat
+   9px shorter than the three text fields beside it, all of which took 44px.
+
+   Chromium reports 44/44/border-box for all four fields, so it cannot see
+   this at all — which is why an earlier fix was called done off a probe page
+   and the real app never had it.
+
+   `appearance: none` is not a patch on any one of those properties. It is
+   what makes the existing .ink-field rule apply at all: border-box, the
+   --touch-min floor and width: 100% all land the moment the native control
+   stops overriding them. Forcing box-sizing alone was tested on the device
+   and changed nothing (candidate C: still 35px, still content-box). The
+   tapped date picker is unaffected — appearance governs the rendered box,
+   not the control's behaviour. */
+input[type='date'].ink-field {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* Prose fields (D-13 § 8): grow with their typed text and carry no
    resize grip. field-sizing degrades to the rows attribute already on
    every textarea where an engine does not yet support it, so no feature

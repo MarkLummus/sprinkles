@@ -173,6 +173,21 @@ describe('spinners, the calendar icon, and growing prose fields (D-19, D-13 § 8
     expect(rule.declarations).toMatch(/display:\s*none/);
   });
 
+  test('SR-6: the date ink-field drops the native control appearance, so the author box model applies on WebKit (260916-0d4)', () => {
+    // This assertion exists because the test engine cannot reproduce what it
+    // guards. Chromium reports the churn date at 44px/border-box with or
+    // without this rule; only WebKit renders the native control and discards
+    // the author box model wholesale. Measured on Mark's iPad (iPadOS 18.7,
+    // WebKit 605.1.15, 1366 coarse): without it the field read 35px tall,
+    // min-height 29px, content-box, 142px wide — 9px shorter than the three
+    // text fields beside it. Deleting this rule will not fail anything you
+    // can see locally; it will silently restore a defect only the device shows.
+    const rule = ruleFor("input[type='date'].ink-field");
+    expect(rule, "expected the input[type='date'].ink-field rule").toBeTruthy();
+    expect(rule.declarations).toMatch(/-webkit-appearance:\s*none/);
+    expect(rule.declarations).toMatch(/(^|[^-])appearance:\s*none/);
+  });
+
   test('`textarea` grows with its text and carries no resize grip (D-13 § 8)', () => {
     const rule = ruleFor('textarea');
     expect(rule, 'expected a `textarea` rule').toBeTruthy();

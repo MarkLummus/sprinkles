@@ -369,7 +369,7 @@ Plans:
 - Batch row, Record Batch mode: sketch has all captions upper case; actual is sentence case
 
 Mark noted "many other errors" beyond this list — the phase plan should include a fresh browser conformance pass against the structural contract, not just fix the enumerated items, so later-discovered gaps surface before this phase closes rather than spawning a 03.3.1.2.
-**Plans:** 6/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 **Wave 1**
@@ -440,7 +440,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.2. The portion and the reset | 5/5 | Complete    | 2026-09-10 |
 | 3.3. The front-matter rows and the page in step order | 7/7 | Complete    | 2026-09-10 |
 | 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 7/7 | Complete    | 2026-09-13 |
-| 3.3.1.1. Record pen conformance polish | 6/6 | Verifying   | -          |
+| 3.3.1.1. Record pen conformance polish | 6/6 | Complete    | 2026-09-16 |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 
 ## Coverage

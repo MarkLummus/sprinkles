@@ -56,7 +56,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test("inside the media block, `button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179)", () => {
     const rule = mediaRuleFor('button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle');
     expect(rule, 'expected the media-block control rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px)');
+    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
     expect(rule.declarations).not.toMatch(/:\s*-?\d+(?:\.\d+)?px/);
   });
@@ -64,7 +64,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('inside the media block, the axis-mark stop box declares the joined 44x44 cell, with a flex-basis so the joined row grows too (03.3.1-06 Task 1 moved the box from the input to the label; 03.3.1.1 tenth round)', () => {
     const rule = mediaRuleFor('.axis-mark__stop');
     expect(rule, 'expected the media-block axis-mark__stop rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px)');
+    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
     expect(rule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
     expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
     expect(rule.declarations).toMatch(/flex-basis:\s*var\(--touch-stop-width\)/);
@@ -74,29 +74,30 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('inside the media block, the stops and anchors tracks both widen to the 216px --track-stop-narrow', () => {
     const rule = mediaRuleFor('.axis-mark__stops, .axis-mark__anchors');
     expect(rule, 'expected the media-block track-width rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px)');
+    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
     expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
   });
 
-  test('the media block carries exactly the six rules 03.3.1-06 Task 2, 03.3.1.1-01 Tasks 1 and 3, and 03.3.1.1-03 Task 2 name', () => {
-    const mediaRules = rules.filter((r) => r.media !== undefined && r.media === '(max-width: 759.98px)');
-    expect(mediaRules.map((r) => r.selector)).toEqual([
+  test('the touch union carries the five sizing rules, and the width-only block keeps the version row (Mark, 2026-09-15: touch is a mode, the version row collapse is a width decision)', () => {
+    const touchRules = rules.filter((r) => r.media === '(max-width: 759.98px), (pointer: coarse)');
+    expect(touchRules.map((r) => r.selector)).toEqual([
       'button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle',
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
-      '.recipe-band__row-version',
       '.text-control',
       '.axis-mark__head, .segmented-field__head',
     ]);
+    const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
+    expect(widthOnly.map((r) => r.selector)).toEqual(['.recipe-band__row-version']);
   });
 
-  test('the 759.98px block gives .text-control its own min-height (sketch 003 line 178, 007 line 180; settled 2026-09-14)', () => {
+  test('the touch union gives .text-control its own min-height (sketch 003 line 178, 007 line 180; settled 2026-09-14)', () => {
     // Superseded: .text-control controls are <button>s, inline-block, and
     // do take a minimum height — 24px at desktop (the bare rule), 44px
     // here, matching every other control in the block.
     const rule = mediaRuleFor('.text-control');
     expect(rule, 'expected a media-scoped .text-control rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px)');
+    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
   });
 });
@@ -135,13 +136,14 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
   });
 
-  test('app.css carries exactly four top-level @media blocks, at the four named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1)', () => {
+  test('app.css carries exactly five top-level @media blocks, at the five named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
       '(max-width: 1099.98px)',
       '(max-width: 600px)',
       '(max-width: 759.98px)',
+      '(max-width: 759.98px), (pointer: coarse)',
     ]);
   });
 });

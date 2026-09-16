@@ -243,24 +243,27 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     }
   });
 
-  test('the only at-rules in app.css are the four named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2; 03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1)', () => {
+  test('the only at-rules in app.css are the five named top-level @media blocks (260912-ti1; 03.3.1-06 Task 2; 03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1)', () => {
     // Replaces the old "no at-rule was added" assertion (WR-02): the
     // stylesheet reader (css-source.js) parses one level of @media
     // nesting, and this pins the file to that contract — exactly the
-    // four sibling media blocks the responsive ladder and forced colours
-    // need (the 1099.98px page-shell stack, D-15; the 759.98px touch
-    // step; the 600px block; and forced-colors: active, last), never
+    // five sibling media blocks the responsive ladder and forced colours
+    // need (the 1099.98px page-shell stack, D-15; the touch union
+    // "(max-width: 759.98px), (pointer: coarse)"; the width-only 759.98px
+    // layout block the version row keeps; the 600px block; and
+    // forced-colors: active, last), never
     // nested inside one another — assertNoAtRules throws on a non-media
     // at-rule and on anything nested inside a media block — and no other
     // at-rule keyword anywhere. Comment-stripped first, matching
     // readAllRules' own internal call: an English comment can
     // legitimately say "@supports" without that being a real at-rule.
     const stripped = stripCssComments(appCssSource);
-    expect(stripped.match(/@media\b/g)).toHaveLength(4);
+    expect(stripped.match(/@media\b/g)).toHaveLength(5);
     expect(() => assertNoAtRules(stripped)).not.toThrow();
     const mediaRules = rules.filter((r) => r.media !== undefined);
     expect(mediaRules.length).toBeGreaterThan(0);
     const allowedMedia = [
+      '(max-width: 759.98px), (pointer: coarse)',
       '(max-width: 1099.98px)',
       '(max-width: 759.98px)',
       '(max-width: 600px)',

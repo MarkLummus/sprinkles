@@ -2205,7 +2205,15 @@ textarea {
    caption line (.axis-mark__head, .segmented-field__head, above) grows
    with it (007 line 180). The version row also collapses to one column
    here (sketch 003 @ d89b758 line 71; D-15; UAT item 1). */
-@media (max-width: 759.98px) {
+/* Touch mode (Mark, 2026-09-15). Sketch 008 lines 162-167 express touch as a
+   MODE (a `.touch` class), not a width; `syncTouch()` there toggles it from the
+   frame width only because a static sketch has no pointer to query. A browser
+   can ask directly, so the app reads the capability. The width arm stays, as a
+   union not a replacement, so a narrowed desktop window still exercises touch
+   mode for testing — and so nothing that worked before stops working.
+   Measured cause: Mark's iPad reports viewport 1366 with `pointer: coarse`, so
+   no width threshold meant for phones could ever have caught it. */
+@media (max-width: 759.98px), (pointer: coarse) {
   button,
   select,
   .ink-field,
@@ -2225,10 +2233,6 @@ textarea {
     flex-basis: var(--touch-stop-width);
   }
 
-  .recipe-band__row-version {
-    grid-template-columns: 1fr;
-  }
-
   .text-control {
     min-height: var(--touch-min);
   }
@@ -2236,6 +2240,15 @@ textarea {
   .axis-mark__head,
   .segmented-field__head {
     min-height: var(--caption-line-h-touch);
+  }
+}
+
+/* Layout at narrow widths — width ONLY, never pointer. The version row's
+   collapse is a D-15 layout decision (UAT item I-01): a wide tablet must keep
+   its two columns, so this rule must not ride the touch union above. */
+@media (max-width: 759.98px) {
+  .recipe-band__row-version {
+    grid-template-columns: 1fr;
   }
 }
 

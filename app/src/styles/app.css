@@ -1106,6 +1106,7 @@ textarea {
    alongside it. */
 .method-step__edit {
   display: block;
+  align-self: flex-start;
   margin-top: var(--gap-xs);
 }
 

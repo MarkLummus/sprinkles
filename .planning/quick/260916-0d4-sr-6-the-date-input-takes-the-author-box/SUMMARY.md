@@ -65,8 +65,22 @@ Not a patch on height, width or box-sizing. It is what makes the existing
 The minimum change that solves the problem, which is why A shipped and not B–E.
 
 The tapped date picker is unaffected: `appearance` governs the rendered box,
-not the control's behaviour. **Worth confirming on the device**, since that is
-the one claim here not yet measured.
+not the control's behaviour. **Confirmed by Mark on the device, 2026-09-16** —
+the picker still opens normally.
+
+## Confirmed in the shipped app
+
+Re-measured on the iPad after the commit, through the same rig. The **baseline**
+row — the app as it now ships, with nothing injected — reads:
+
+```
+PASS  baseline (no change)
+      h=44  w=128  minH=44px  box=border-box  appear=none  delta=0
+```
+
+against 35 / 142 / 29px / content-box / −9 before. This is the step the earlier
+attempt skipped: it confirmed a fix on a probe page and never checked the
+shipped app on the device.
 
 ## Test
 

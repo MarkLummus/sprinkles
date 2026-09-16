@@ -903,6 +903,18 @@ describe('BatchRow — the textareas (contract "Textareas")', () => {
     expect(markup).toMatch(/<label class="batch-margin__field"><span class="pen-caption">Next time<\/span>/);
   });
 
+  it("renders At the machine and Ingredient notes with their own visible captions (sketch 007 lines 237-238; supersedes the 03.1 Gap 2 override's label-less prose field)", () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
+    expect(markup).toMatch(
+      /<label class="batch-margin__field"><span class="pen-caption">At the machine<\/span>/,
+    );
+    expect(markup).toMatch(
+      /<label class="batch-margin__field"><span class="pen-caption">Ingredient notes<\/span>/,
+    );
+    expect(markup).toContain('placeholder="e.g. bowl frozen overnight"');
+    expect(markup).toContain('placeholder="e.g. oil bottle opened 24 Jul"');
+  });
+
   it('carries dir="auto" on every textarea', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
     const textareas = markup.match(/<textarea[^>]*>/g);

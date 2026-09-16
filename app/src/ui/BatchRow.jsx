@@ -500,10 +500,13 @@ export function BatchRow({
               onChange={(option) => onChangeSegment('airiness', option)}
               onClear={() => onClearSegment('airiness', 'Airiness (estimated)')}
             />
-            {/* The hairline-baseline fix (03.1 Gap 2 override): a blank
-                named prose field carries a graduation-weight rule until
-                it holds text — no visible label word is added. */}
+            {/* At the machine and Ingredient notes (sketch 007 lines 237-238):
+                each carries its own visible caption, as Next time does (I-14).
+                This supersedes the 03.1 Gap 2 override's "no visible label
+                word" — the sketch draws the caption, and the HTML governs
+                (D-01). The blank field keeps its graduation-weight rule. */}
             <label className="batch-margin__field">
+              <span className="pen-caption">At the machine</span>
               <textarea
                 className={draft.atTheMachine === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 dir="auto"
@@ -516,6 +519,7 @@ export function BatchRow({
               />
             </label>
             <label className="batch-margin__field">
+              <span className="pen-caption">Ingredient notes</span>
               <textarea
                 className={draft.ingredientNotes === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 dir="auto"

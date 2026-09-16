@@ -1,5 +1,5 @@
 ---
-status: investigating
+status: parked
 trigger: "Show changes ON hides the record pen's per-step controls. On a new version with no batches: clear Show changes, Record batch -> Skipped and 'done differently' shown and operational; enable Show changes, Record another -> Skipped and 'done differently' not visible. Same behaviour if selecting Correct instead of Record another. (Mark, 2026-09-16, UAT of quick task 260916-ch0.)"
 created: 2026-09-16T00:00:00Z
 updated: 2026-09-16T00:00:00Z
@@ -11,7 +11,20 @@ bug_class: Bohrbug (deterministic — reproduces every time the two states are b
 hypothesis: CONFIRMED — Method.jsx's `isShowingChanges` early return pre-empts the recording branch, because the guard excludes the plan pen but not the record pen
 test: read Method.jsx 552, 603, 646, 770 end to end; trace the three props to RecipePage; map every other consumer of the guard
 expecting: (met) with `showingChanges` true and `changeDiff` non-null the map returns at 646 and line 770 is never evaluated
-next_action: DEFERRED TO A SKETCH (Mark, 2026-09-16: "I think that we need to sketch this out"). The A/B/C call is NOT an agent's to make and is now NOT a code decision either — the show-changes view of the method has never been drawn in any sketch (see Evidence, sketch-authority entry). Draw it first, with the record pen open, then return here. No file under app/ is to be touched until a sketch settles the mark.
+next_action: PARKED by Mark, 2026-09-16. No sketch opened, no fix applied, nothing under app/ touched. The bug is pre-existing, needs a deliberate sequence to reach, and Phase 4 is the live work — so it waits rather than displacing it.
+
+  To resume: the A/B/C call is not an agent's to make, and it is not purely a code decision
+  either. The show-changes view of the method has never been drawn in any sketch (see the
+  sketch-authority Evidence entry), and option C in particular cannot be drawn from the
+  existing vocabulary because `--rule-strike` already carries two meanings in the method.
+  So the entry point is a sketch of the cross-state — the record pen open with Show changes
+  on — and only then `/gsd-debug continue show-changes-hides-pen`.
+
+  Attribution note: an earlier draft of this line quoted Mark as saying "I think that we
+  need to sketch this out". That quote reached the orchestrator only as a subagent's report
+  of his words, never as user input it received directly, and Mark did not confirm it when
+  asked. It is removed rather than left standing as a decision record. What he did say,
+  directly, was to park this.
 
 ## Symptoms
 

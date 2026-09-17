@@ -6,7 +6,7 @@ status: planning
 stopped_at: Phase 03.3.1.1 complete, ready to plan Phase 4
 last_updated: "2026-09-16T14:28:50.000Z"
 last_activity: 2026-09-16
-last_activity_desc: Completed quick task 260916-tai: revised route-recipe-batch.md for the save-ceremony and click-again-clears rulings
+last_activity_desc: Completed quick task 260916-ufq: end-of-record ceremony moved below the shared Next time field, sketch 007 revised first
 state_head: d4cf638f07c0d4c88c1dfa4b3cb2ee81676d218c
 progress:
   total_phases: 9
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-16 - Completed quick task 260916-tai: revised route-recipe-batch.md (twin Saves recorded as deliberate redundancy; click-again-clears struck)
+Last activity: 2026-09-16 - Completed quick task 260916-ufq: the end-of-record ceremony now sits below the shared Next time field (sketch 007 revised first, app follows)
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -112,6 +112,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Roadmap: Milestone 1 is four vertical slices on the olive oil working case (read → record → develop → print), not technical layers.
 - Roadmap: No storage/backend phase — D16 stays open, milestone 1 uses a provisional local store behind a repository seam.
 - Roadmap: UX1-01–UX1-03 are verified end-to-end in Phase 4 but are build constraints in every phase.
+- [03.3.1, 2026-09-16]: The end-of-record ceremony sits below the shared Next time field, not above it — the sketch 007 rule changes from "after whichever section is last" to "after all record content". Reverses the placement recorded at sketch 007 README:203 (attributed to 03.3.1 D-01 / 03.3.1.1 D-14). Reason: Next time is not a section but a field of the whole record, so the old rule placed a session-ending Save above the one field carrying the product's core value; with twin identical saves ratified the same day, the first save must still follow all record content. Sketch revised first, app followed.
+- [03.3.1, 2026-09-16]: Three feedback scopes govern announcements — field (the control), form (the pen, for reversible actions that leave it open), and page (a stable shell that survives the form and the route change). "Tasting removed" is form-scoped; "Batch saved" is page-scoped. Successful saves announce through a page-owned live region and move focus to the saved record heading; save failures stay field- or form-scoped beside the controls. Requires the app's first layout route — not yet built, captured as a pending todo.
 - [Phase 01]: Version-embedded ingredient row promoted as the primary identity model — a shared library is a future source a version copies from, never a render-time authority.
 - [Phase 01]: Reused old-sprinkles library.js/olive-oil.js transcription verbatim (dextrose PAC 190, salt PAC 580) rather than the competing 103-row seed database, per D-01.
 - [Phase 01]: Vitest defaults to environment:'node' so the domain suite is provably DOM-free; component tests opt into a DOM environment per-file.
@@ -245,6 +247,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260912-ti1 | Apply the sketch's cross-cutting findings to the real app: 44px touch targets below 760px through the first @media block, the four type-role tokens, the 6px caption gap at all nine sites, italic placeholders, an at-rule-aware stylesheet reader, and a third style-contract suite | 2026-09-13 | 011dc09 | [260912-ti1-apply-cross-cutting-sketch-findings-to-t](./quick/260912-ti1-apply-cross-cutting-sketch-findings-to-t/) |
 | 260913-far | Add the agent prose, commits, browser-test inputs in English convention to .claude/CLAUDE.md | 2026-09-13 | ec80399 | [260913-far-add-the-agent-prose-commits-browser-test](./quick/260913-far-add-the-agent-prose-commits-browser-test/) |
 | 260916-tai | Revise route-recipe-batch.md: record the twin Saves as deliberate redundancy and strike click-again-clears | 2026-09-16 | aa096d4 | [260916-tai-revise-route-recipe-batch-md-record-the-](./quick/260916-tai-revise-route-recipe-batch-md-record-the-/) |
+| 260916-ufq | Move the end-of-record ceremony below the shared Next time field — sketch 007 first, then the app | 2026-09-16 | 63d714a | [260916-ufq-move-the-end-of-record-ceremony-below-th](./quick/260916-ufq-move-the-end-of-record-ceremony-below-th/) |
 
 ### Roadmap Evolution
 

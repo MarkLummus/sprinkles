@@ -7,3 +7,6 @@
 .gsd/
 .planning/research/.cache/
 node_modules/
+
+# Design working files — bitmap mocks and references, not product artifacts
+design/

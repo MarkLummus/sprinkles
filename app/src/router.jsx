@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createBrowserRouter, useParams } from 'react-router';
+import { createBrowserRouter, Link, useParams } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
@@ -51,7 +51,17 @@ function RecipePageForRoute() {
 
   return (
     <>
-      <PageStatus message={pageStatus} />
+      {/* The running head lives here, in the routed shell, above the
+          keyed page, so the notice has a fixed band to anchor beneath
+          instead of a magic offset. RecipePage stays a sibling AFTER
+          this div, never inside it, so the band's height stays exactly
+          the head's height. */}
+      <div className="page-head">
+        <p className="running-head">
+          <Link to="/">Sprinkles</Link>
+        </p>
+        <PageStatus message={pageStatus} />
+      </div>
       <RecipePage key={`${id}::${batchId ?? ''}`} onPageStatus={announcePageStatus} />
     </>
   );

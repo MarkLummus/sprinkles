@@ -304,6 +304,16 @@ textarea {
   opacity: 1;
 }
 
+/* The head band (260917-ewf): the containing block for .page-status,
+   holding the running head and the notice and nothing else, so its
+   height is exactly the head's own height. That is what lets the
+   notice's inset-block-start: 100% land on the head's bottom edge
+   instead of a literal offset. No z-index here — one would make this a
+   stacking context and trap the notice inside it. */
+.page-head {
+  position: relative;
+}
+
 /* The running head (route-recipe-version.md § 4, § 6): the way home on
    the recipe page, in ink — never bookcloth, which identifies a block by
    its plain-language name, not a link. */

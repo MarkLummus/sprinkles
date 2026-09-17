@@ -716,6 +716,39 @@ describe('RecipePage.jsx — the version pen\'s refusal and failure route throug
   });
 });
 
+// Source-text ownership contract (260917-ewf Task 1), the same idiom the
+// describe above uses: router.jsx cannot be rendered under this suite's
+// node environment — createBrowserRouter runs at module scope and calls
+// createBrowserHistory, which needs `document` — so no markup test is
+// possible for the running head's new home. The repository mock above is
+// not the obstacle; this is a plain module-scope DOM dependency.
+describe('the running head is owned by the routed shell, not by RecipePage (260917-ewf)', () => {
+  const routerPath = fileURLToPath(new URL('../router.jsx', import.meta.url));
+  const routerSource = readFileSync(routerPath, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+  const thisFilesRecipePagePath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const thisFilesRecipePageSource = readFileSync(thisFilesRecipePagePath, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it('router.jsx renders the running head exactly once', () => {
+    expect(routerSource.match(/className="running-head"/g) ?? []).toHaveLength(1);
+  });
+
+  it('RecipePage.jsx renders the running head zero times', () => {
+    expect(thisFilesRecipePageSource.match(/className="running-head"/g)).toBeNull();
+  });
+
+  it('the notice precedes the keyed page — PageStatus outside RecipePage, key still on RecipePage', () => {
+    const statusIndex = routerSource.indexOf('<PageStatus');
+    const pageIndex = routerSource.indexOf('<RecipePage');
+    expect(statusIndex).toBeGreaterThanOrEqual(0);
+    expect(pageIndex).toBeGreaterThan(statusIndex);
+    expect(routerSource).toMatch(/<RecipePage\s+key=/);
+  });
+});
+
 describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save assembly (D-02, D-10)', () => {
   it('assembles the churn fields from a valid draft, blank-is-absent on every optional field', () => {
     const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', timeToDrawTempMinutes: '20' };

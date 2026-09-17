@@ -50,7 +50,7 @@ const churnFields = {
 // −12 °C, melt test 3 g at 20 min, no note, oil character 4 and sweetness
 // 4 marked — hardness, scoopability, smoothness and body left unmarked —
 // and bitterness 5 on the sheet has no whole stop on the battery, so it
-// becomes the "Bitter · declared" toggle (D-07).
+// becomes the Bitter toggle under "This recipe only" (D-07).
 const tastingFields = {
   tastedDate: null,
   temperingMinutes: null,

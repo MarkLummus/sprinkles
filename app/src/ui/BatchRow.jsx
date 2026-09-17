@@ -213,8 +213,9 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
 // word with the stop number (readMarkWord, "Soft (2)" style, D-04's
 // battery); the tasting's own measured cells (temperature signed, melt
 // test with its own unit, melt style as its picked words); the defects as
-// a line of the picked words with the declared flaw carrying "· declared"
-// (never a plain defect — Bitter is never in the defects list itself);
+// a line of the picked words, including the recipe-specific flaw by its
+// plain name (Bitter is stored separately, but the read view does not
+// repeat the entry form's "This recipe only" classification);
 // and the note as prose. No aggregate, average, or overall figure is ever
 // derived (D12) — an unmarked axis is dropped entirely, never a blank
 // judgment. The caller renders this only while `batch.tasting` exists; a
@@ -226,7 +227,7 @@ function TastingReading({ batch }) {
   const markedAxes = axes.filter((axis) => marks[axis.key] != null);
   const defectWords = [
     ...(batch.tasting.defects ?? []),
-    ...(batch.tasting.bitterDeclared ? [`${DECLARED_FLAW} · declared`] : []),
+    ...(batch.tasting.bitterDeclared ? [DECLARED_FLAW] : []),
   ];
   return (
     <div className="tasting-reading">

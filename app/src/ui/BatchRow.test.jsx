@@ -1196,9 +1196,9 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     );
   });
 
-  it('reads the declared flaw as "Bitter · declared" with no other defects picked (the seeded case)', () => {
+  it('reads the recipe-specific flaw by its plain name with no other defects picked (the seeded case)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Bitter · declared<\/p>/);
+    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Bitter<\/p>/);
   });
 
   it('joins picked defect words with the declared flaw, comma-worded, when both are present', () => {
@@ -1207,7 +1207,7 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
       tasting: { ...augustSecondBatch.tasting, defects: ['Sandy, gritty', 'Greasy film'] },
     };
     const markup = renderBatchRow({ openBatch: flawedBatch, batches: [flawedBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Sandy, gritty · Greasy film · Bitter · declared<\/p>/);
+    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Sandy, gritty · Greasy film · Bitter<\/p>/);
   });
 
   it('renders no defects line at all with no defects picked and no flaw declared', () => {

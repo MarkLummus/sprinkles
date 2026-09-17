@@ -3,14 +3,55 @@ created: 2026-09-17T01:41:00.000Z
 title: Page-owned feedback scope — the save announcement and its focus landing
 area: ui
 severity: major
+updated: 2026-09-17T16:10:00.000Z
 files:
-  - app/src/router.jsx:26
-  - app/src/ui/RecipePage.jsx:1278
-  - app/src/ui/RecipePage.jsx:1306
-  - app/src/ui/PenFoot.jsx:31
-  - app/src/ui/BatchRow.jsx:742
-  - app/src/ui/BatchRow.jsx:767
+  - app/src/ui/RecipePage.jsx
+  - app/src/router.jsx
   - .impeccable/critique/2026-09-16T18-58-36Z__app-src-ui-batchrow-jsx.md
+---
+
+## Status, 2026-09-17 — two thirds built, by a different route
+
+**Read this before the analysis below: most of the machinery this asked for now exists.** It
+arrived with the *version* pen rather than the batch pen, so the problem statement below still
+describes the batch save accurately while the "why the obvious fix does not work" section is now
+history rather than a live obstacle.
+
+**Done:**
+
+- **The page-owned region exists** — `PageStatus` in `router.jsx`, rendered in the routed shell
+  beside the running head and *outside* the keyed `RecipePage`, so it survives the route change
+  that remounts the page. Landed with the version-save work (`1333a7e`), then anchored beneath the
+  running head and kept off the printed sheet (`f0a12ce`, `8db14cc`, `d2f075b`, `0dd391e`).
+- **The scope discipline holds** — save *failures* stay field- or form-scoped, as this todo
+  requires. `260917-e5k` (`1c50cb7`) moved the version pen's refusal and all four of its storage
+  failures off the page channel. Only `VERSION_SAVED_STATUS` reaches the page today
+  (`RecipePage.jsx` ~1650 and ~1691), which is exactly the rule: the page speaks for a save that
+  ends the session.
+- **No layout route was needed after all.** This todo predicted "the app's first layout route (a
+  pathless route with `<Outlet/>`)". What shipped instead is a wrapper inside `RecipePageForRoute`
+  holding the running head and the notice, with `RecipePage` a keyed sibling after it. Same
+  property — outside the key, survives the navigation — without touching the route table.
+
+**Still open, and it is the part that matters most:**
+
+- **The batch save still says nothing, and still drops focus.** `handleSaveBatch` announces on both
+  of its refusal paths (`MEASURED_INVALID_STATUS`, `CHURN_DATE_BLOCKED_STATUS`) and then calls
+  `navigate()` with no `onPageStatus` and no focus landing. This is critique issue 1, unchanged: the
+  one irreversible act in the app is the one act with no feedback.
+
+**So what is left is narrow:** call the page channel on a completing batch save with the sentence
+`route-recipe-batch.md` § 6 already specifies — "recorded 4 Aug 2026 against 50 g oil · 800 g",
+buildable from `record.recordedAt` and `record.snapshot.versionLabel`, the shape `BatchRow` already
+prints in the read view — and land focus on the saved record's heading with `tabIndex="-1"`, carried
+through the navigation as route state the way `focusDevelop` already is. The amend path does not
+navigate and needs the same sentence written in place.
+
+**Also settled since this was written:** the page-shell brief this todo asked for (`/impeccable
+shape` before implementation) was never written, because the shell arrived incrementally under the
+version work instead. Whether the shell now wants its own brief retrospectively is Mark's call, not
+a blocker on the remaining piece.
+
 ---
 
 ## Problem

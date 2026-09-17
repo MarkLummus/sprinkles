@@ -360,8 +360,19 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
-  test('the three remaining helper and status sentences read the control role (13px)', () => {
-    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint']) {
+  // Three helper/status rules that nothing rendered were retired in quick task
+  // 260917-e5k (the last renderer, VersionRow's "Links return after you save or
+  // cancel." paragraph, was removed in 1333a7e). The live set below was established
+  // by grepping every className a component actually renders
+  // (`grep -rnoE "className=..." app/src`), not guessed: .page-status (router.jsx),
+  // .form-status (BatchRow.jsx / VersionRow.jsx), .save-ceremony__hint and .pen-helper
+  // (PenFoot.jsx). .save-ceremony__status and .tasting-status are live class names too,
+  // but carry no type rule of their own — their face and size arrive through
+  // .pen-helper on the same element — so they are not in this list.
+  const HELPER_STATUS_SELECTORS = ['.page-status', '.form-status', '.save-ceremony__hint', '.pen-helper'];
+
+  test('the four helper and status sentences read the control role (13px)', () => {
+    for (const selector of HELPER_STATUS_SELECTORS) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to read the helper/status role`).toBeTruthy();
       expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
@@ -369,11 +380,22 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
   });
 
   test('helper and status text keeps one grotesk face, sentence case — no transform, so no state-change face flip', () => {
-    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint']) {
+    for (const selector of HELPER_STATUS_SELECTORS) {
       const rule = ruleFor(selector);
       expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
-      expect(rule.declarations).not.toMatch(/text-transform/);
-      expect(rule.declarations).not.toMatch(/font-style/);
+      // .pen-helper states the guarantee positively (text-transform: none;
+      // font-style: normal) rather than by omission, so asserting absence would
+      // go red on the very rule that carries the guarantee most widely. Collect
+      // every declared value for each property and require sentence case (none)
+      // and upright (normal) wherever the property is declared at all.
+      const transforms = [...rule.declarations.matchAll(/text-transform:\s*([^;]+);/g)].map((m) => m[1].trim());
+      for (const value of transforms) {
+        expect(value).toBe('none');
+      }
+      const styles = [...rule.declarations.matchAll(/font-style:\s*([^;]+);/g)].map((m) => m[1].trim());
+      for (const value of styles) {
+        expect(value).toBe('normal');
+      }
     }
   });
 

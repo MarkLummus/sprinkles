@@ -295,9 +295,9 @@ describe('VersionRow — one hint sentence while the pen is open (D-06)', () => 
     expect(occurrences).toBe(1);
   });
 
-  it('renders the hint sentence while a batch pen is open too — this row still explains its own link suppression', () => {
+  it('leaves the hint to BatchRow while a batch pen is open, so the front matter never repeats it', () => {
     const markup = renderVersionRow({ openPen: 'record', penReason: 'a batch is being recorded' });
-    expect(markup).toContain('Links return after you save or cancel.');
+    expect(markup).not.toContain('Links return after you save or cancel.');
   });
 
   it('renders no hint sentence with no pen open', () => {

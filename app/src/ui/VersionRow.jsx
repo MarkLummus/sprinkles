@@ -230,11 +230,10 @@ export function VersionRow({
             </div>
           </div>
         )}
-        {/* D-06: one hint sentence for this row — applies while any pen is
-            open, not only the plan's own, since opening a batch pen
-            suppresses this row's own links exactly as opening the plan's
-            own pen does. */}
-        {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
+        {/* The hint belongs to the pen that is open. BatchRow carries it
+            for record/amend; this row carries it only for its own plan
+            pen, so the full front matter never repeats the sentence. */}
+        {openPen === 'plan' && <p className="versions__hint">Links return after you save or cancel.</p>}
       </section>
 
       {openPen === 'plan' && (

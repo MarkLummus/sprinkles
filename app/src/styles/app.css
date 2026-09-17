@@ -1383,6 +1383,7 @@ textarea {
   font-family: var(--face-text);
   line-height: var(--leading-note);
   color: var(--pen-blue);
+  overflow-wrap: anywhere;
 }
 
 /* The pen layer (route-recipe-batch.md § 3): everything the maker types,
@@ -1452,6 +1453,84 @@ textarea {
   grid-template-columns: repeat(auto-fit, minmax(var(--col-batch-cell-min), max-content));
   gap: var(--gap-s) var(--gap-l);
   margin: var(--gap-s) 0 0;
+}
+
+/* Read view hierarchy: conditions, observations and melt are related
+   groups, while the record's provenance is supporting metadata rather
+   than another measured value. The same spacing scale carries every
+   distinction; no additional container treatment is introduced. */
+.tasting-reading {
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--ink);
+}
+
+.tasting-reading__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+
+.tasting-reading__head .region-name,
+.tasting-reading__head .batch-row__date {
+  margin: 0;
+}
+
+.tasting-reading__note {
+  max-width: var(--measure-prose);
+  margin: var(--gap-m) 0 0;
+}
+
+.tasting-reading__group,
+.batch-row__conclusion {
+  margin-top: var(--gap-l);
+}
+
+.batch-row__group-label {
+  margin: 0 0 var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--type-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tasting-reading__group .batch-row__cells {
+  margin-top: 0;
+}
+
+.tasting-reading__problems,
+.batch-row__conclusion .prose-text {
+  margin: var(--gap-s) 0 0;
+}
+
+.batch-row__provenance {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs) var(--gap-l);
+  margin: var(--gap-l) 0 0;
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.batch-row__provenance > div {
+  display: flex;
+  gap: var(--gap-xs);
+}
+
+.batch-row__provenance dt {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.batch-row__provenance dd {
+  margin: 0;
+  color: var(--pen-blue);
+  overflow-wrap: anywhere;
 }
 
 .batch-row__cell {

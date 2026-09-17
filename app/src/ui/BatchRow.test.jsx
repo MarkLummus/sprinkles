@@ -1060,21 +1060,33 @@ describe("BatchRow — the record's reading state, measured values as cells (con
       expect(markup).not.toContain('>Changed<');
     });
 
-    it('renders exactly one Changed cell, via formatRecordDate, when the batch carries a changed date', () => {
+    it('renders exactly one supporting Changed fact, via formatRecordDate, when the batch carries a changed date', () => {
       const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
       const markup = renderBatchRow({ openBatch: changedBatch, batches: [changedBatch], mode: 'reading' });
-      expect(markup).toMatch(
-        /<span class="batch-row__cell-label">Changed<\/span><span class="batch-row__cell-value">10 Aug 2026<\/span>/,
-      );
-      expect(markup.split('class="batch-row__cell-label">Changed<').length - 1).toBe(1);
+      expect(markup).toMatch(/<dt>Changed<\/dt><dd>10 Aug 2026<\/dd>/);
+      expect(markup.split('<dt>Changed</dt>').length - 1).toBe(1);
     });
   });
 
-  it('renders the recorded-against fact as a figure cell, not a prose sentence', () => {
+  it('renders the recorded-against fact as supporting provenance, outside the measured-value grid', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Recorded<\/span><span class="batch-row__cell-value">4 Aug 2026 against 50 g oil · 800 g<\/span>/,
-    );
+    expect(markup).toMatch(/<dl class="batch-row__provenance"><div><dt>Recorded<\/dt><dd>4 Aug 2026 against 50 g oil · 800 g<\/dd>/);
+    const measuredEnd = markup.indexOf('</div>', markup.indexOf('class="batch-row__cells"'));
+    expect(markup.indexOf('<dt>Recorded</dt>')).toBeGreaterThan(measuredEnd);
+  });
+
+  it('keeps the whole-record Next time conclusion after tasting and before provenance', () => {
+    const batch = {
+      ...augustSecondBatch,
+      churn: { ...augustSecondBatch.churn, nextTimeNote: 'Use less oil.' },
+    };
+    const markup = renderBatchRow({ openBatch: batch, batches: [batch], mode: 'reading' });
+    const tastingIndex = markup.indexOf('class="tasting-reading"');
+    const nextTimeIndex = markup.indexOf('class="batch-row__conclusion"');
+    const provenanceIndex = markup.indexOf('class="batch-row__provenance"');
+    expect(tastingIndex).toBeGreaterThan(-1);
+    expect(nextTimeIndex).toBeGreaterThan(tastingIndex);
+    expect(provenanceIndex).toBeGreaterThan(nextTimeIndex);
   });
 
   it('renders the at-the-machine and ingredient notes prose with the prose-text class', () => {
@@ -1186,7 +1198,7 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
 
   it('reads the declared flaw as "Bitter · declared" with no other defects picked (the seeded case)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text">Bitter · declared<\/p>/);
+    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Bitter · declared<\/p>/);
   });
 
   it('joins picked defect words with the declared flaw, comma-worded, when both are present', () => {
@@ -1195,7 +1207,7 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
       tasting: { ...augustSecondBatch.tasting, defects: ['Sandy, gritty', 'Greasy film'] },
     };
     const markup = renderBatchRow({ openBatch: flawedBatch, batches: [flawedBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text">Sandy, gritty · Greasy film · Bitter · declared<\/p>/);
+    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Sandy, gritty · Greasy film · Bitter · declared<\/p>/);
   });
 
   it('renders no defects line at all with no defects picked and no flaw declared', () => {
@@ -1208,10 +1220,22 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   it('renders the note as prose when written, and nothing when blank', () => {
     const notedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, note: 'Soft set, clean finish' } };
     const markup = renderBatchRow({ openBatch: notedBatch, batches: [notedBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text">Soft set, clean finish<\/p>/);
+    expect(markup).toMatch(/<p class="prose-text tasting-reading__note">Soft set, clean finish<\/p>/);
 
     const noNoteMarkup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(noNoteMarkup).not.toContain(augustSecondBatch.tasting.note ?? '__none__');
+  });
+
+  it('reads conditions, then own words, then observations, then melt', () => {
+    const notedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, note: 'Soft set, clean finish' } };
+    const markup = renderBatchRow({ openBatch: notedBatch, batches: [notedBatch], mode: 'reading' });
+    const conditionsIndex = markup.indexOf('tasting-reading__conditions');
+    const noteIndex = markup.indexOf('tasting-reading__note');
+    const observationsIndex = markup.indexOf('>Observations<');
+    const meltIndex = markup.indexOf('>Melt<');
+    expect(noteIndex).toBeGreaterThan(conditionsIndex);
+    expect(observationsIndex).toBeGreaterThan(noteIndex);
+    expect(meltIndex).toBeGreaterThan(observationsIndex);
   });
 
   it('reads no code reference to the retired plural-tasting wording (Pitfall 7): never "once", "twice", or "times"', () => {

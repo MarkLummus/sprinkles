@@ -230,17 +230,26 @@ function TastingReading({ batch }) {
   ];
   return (
     <div className="tasting-reading">
-      <h3 className="region-name">Tasting</h3>
-      <p className="batch-row__date">
-        {`tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`}
-      </p>
-      <div className="batch-row__cells">
-        {markedAxes.map((axis) => (
-          <div className="batch-row__cell" key={axis.key}>
-            <span className="batch-row__cell-label">{axis.name}</span>
-            <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
-          </div>
-        ))}
+      <div className="tasting-reading__head">
+        <h3 className="region-name">Tasting</h3>
+        <p className="batch-row__date">
+          {`tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`}
+        </p>
+      </div>
+      <div className="batch-row__cells tasting-reading__conditions">
+        <div className="batch-row__cell">
+          <span className="batch-row__cell-label">Tempering</span>
+          <span className="batch-row__cell-value">
+            {batch.tasting.temperingMinutes != null ? (
+              <>
+                {churnMeasured(batch.tasting.temperingMinutes)}
+                <span className="batch-row__unit"> min</span>
+              </>
+            ) : (
+              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+            )}
+          </span>
+        </div>
         <div className="batch-row__cell">
           <span className="batch-row__cell-label">Tasting temperature</span>
           <span className="batch-row__cell-value">
@@ -254,28 +263,48 @@ function TastingReading({ batch }) {
             )}
           </span>
         </div>
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Melt test</span>
-          <span className="batch-row__cell-value">
-            {batch.tasting.meltTestG != null ? (
-              <>
-                {churnMeasured(batch.tasting.meltTestG)}
-                <span className="batch-row__unit"> g lost at 20 min</span>
-              </>
-            ) : (
-              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-            )}
-          </span>
+      </div>
+      {batch.tasting.note && <p className="prose-text tasting-reading__note">{batch.tasting.note}</p>}
+      {(markedAxes.length > 0 || defectWords.length > 0) && (
+        <div className="tasting-reading__group">
+          <h4 className="batch-row__group-label">Observations</h4>
+          {markedAxes.length > 0 && (
+            <div className="batch-row__cells tasting-reading__axes">
+              {markedAxes.map((axis) => (
+                <div className="batch-row__cell" key={axis.key}>
+                  <span className="batch-row__cell-label">{axis.name}</span>
+                  <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {defectWords.length > 0 && <p className="prose-text tasting-reading__problems">{defectWords.join(' · ')}</p>}
         </div>
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Melt style</span>
-          <span className="batch-row__cell-value">
-            {batch.tasting.meltStyle ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
-          </span>
+      )}
+      <div className="tasting-reading__group">
+        <h4 className="batch-row__group-label">Melt</h4>
+        <div className="batch-row__cells tasting-reading__melt">
+          <div className="batch-row__cell">
+            <span className="batch-row__cell-label">Melt test</span>
+            <span className="batch-row__cell-value">
+              {batch.tasting.meltTestG != null ? (
+                <>
+                  {churnMeasured(batch.tasting.meltTestG)}
+                  <span className="batch-row__unit"> g lost at 20 min</span>
+                </>
+              ) : (
+                <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+              )}
+            </span>
+          </div>
+          <div className="batch-row__cell">
+            <span className="batch-row__cell-label">Melt style</span>
+            <span className="batch-row__cell-value">
+              {batch.tasting.meltStyle ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
+            </span>
+          </div>
         </div>
       </div>
-      {defectWords.length > 0 && <p className="prose-text">{defectWords.join(' · ')}</p>}
-      {batch.tasting.note && <p className="prose-text">{batch.tasting.note}</p>}
     </div>
   );
 }
@@ -417,9 +446,12 @@ export function BatchRow({
 
   return (
     <section className="batch-row" aria-label="Batch">
-      {/* D-06: one hint sentence for this row — applies while any pen is
-          open, not only this row's own. */}
-      {openPen && <p className="versions__hint">Links return after you save or cancel.</p>}
+      {/* One hint sentence for the open pen. VersionRow carries its own
+          plan hint; this row carries record/amend so the page never
+          repeats the same sentence. */}
+      {(openPen === 'record' || openPen === 'amend') && (
+        <p className="versions__hint">Links return after you save or cancel.</p>
+      )}
 
       {/* The date and later-batches control name the batch IN VIEW — a
           different batch than the one being recorded while
@@ -858,25 +890,9 @@ export function BatchRow({
                   {openBatch.churn.airiness ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
                 </span>
               </div>
-              <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Recorded</span>
-                <span className="batch-row__cell-value">
-                  {`${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}
-                </span>
-              </div>
-              {/* D-04: churned, tasted, changed — only the latest change
-                  ever shows, since every save after the first replaces
-                  this one stored value (never a list). */}
-              {openBatch.changed && (
-                <div className="batch-row__cell">
-                  <span className="batch-row__cell-label">Changed</span>
-                  <span className="batch-row__cell-value">{formatRecordDate(openBatch.changed)}</span>
-                </div>
-              )}
             </div>
             {openBatch.churn.atTheMachine && <p className="prose-text">{openBatch.churn.atTheMachine}</p>}
             {openBatch.churn.ingredientNotes && <p className="prose-text">{openBatch.churn.ingredientNotes}</p>}
-            {openBatch.churn.nextTimeNote && <p className="prose-text">Next time: {openBatch.churn.nextTimeNote}</p>}
 
             {/* The tasting battery's own read view (contract "Axes spec",
                 brief § 3): TastingReading reads only the single stored
@@ -887,6 +903,27 @@ export function BatchRow({
             ) : (
               <p>This batch has not been tasted yet.</p>
             )}
+            {openBatch.churn.nextTimeNote && (
+              <div className="batch-row__conclusion">
+                <h3 className="batch-row__group-label">Next time</h3>
+                <p className="prose-text">{openBatch.churn.nextTimeNote}</p>
+              </div>
+            )}
+            <dl className="batch-row__provenance">
+              <div>
+                <dt>Recorded</dt>
+                <dd>{`${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}</dd>
+              </div>
+              {/* D-04: churned, tasted, changed — only the latest change
+                  ever shows, since every save after the first replaces
+                  this one stored value (never a list). */}
+              {openBatch.changed && (
+                <div>
+                  <dt>Changed</dt>
+                  <dd>{formatRecordDate(openBatch.changed)}</dd>
+                </div>
+              )}
+            </dl>
           </>
         ) : (
           batches.length > 0 && <p>No batch of this version has that address.</p>

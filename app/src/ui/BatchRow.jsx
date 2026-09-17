@@ -973,7 +973,7 @@ export function BatchRow({
                     <p className="batch-row__later-date">
                       {isOpenBatch ? (
                         <>
-                          <strong>{dateWords}</strong> <span className="batch-row__later-small">· in view</span>
+                          <strong>{dateWords}</strong> <span className="batch-row__later-small">· In view</span>
                         </>
                       ) : openPen ? (
                         dateWords

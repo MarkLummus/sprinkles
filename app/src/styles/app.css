@@ -748,10 +748,10 @@ textarea {
 
 /* The version strip (route-recipe-version.md § 3, § 6, 03-03; rebuilt as
    a card grid against sketch 003 variant B's own `.vtree`,
-   index.html:97-103, for the Later disclosure — 03.3-06 checkpoint
-   feedback): a card per descendant, wrapping to as many columns as the
-   row's width allows, the same auto-fill discipline the sketch's own
-   rule uses. */
+   index.html:97-103, for the Versions disclosure — 03.3-06 checkpoint
+   feedback): a card per version of the recipe, wrapping to as many
+   columns as the row's width allows, the same auto-fill discipline the
+   sketch's own rule uses. */
 .version-strip__list {
   list-style: none;
   margin: 0;
@@ -804,6 +804,16 @@ textarea {
 }
 
 .version-strip__churned {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+/* The position markers' type role (route-recipe.md § 3, 260917-odu;
+   DESIGN.md's Small print role): the same face and size as the churned
+   date beside them. They are words, not a style, because a marker that
+   exists only as a rule is invisible to a screen reader and under forced
+   colours; nothing here may move on focus, hover or selection. */
+.version-strip__marker {
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
 }

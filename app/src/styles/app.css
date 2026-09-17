@@ -1435,6 +1435,14 @@ textarea {
   margin-top: var(--gap-xs);
 }
 
+/* Next time is a field of the whole record, not of either section above it
+   (sketch 007 line 54's re-derived .pen section + .next-time-shared rule);
+   equal specificity with .batch-margin__field, so this must come after it
+   in source order for the 32px to win over the 6px (reversal, 2026-09-16). */
+.batch-margin__field--next-time {
+  margin-top: var(--gap-l);
+}
+
 /* The batch row's measured values, as labelled cells at figure size
    (sketch 003 variant B, 03.3-01) — replaces the old .batch-margin__measured
    list rendering, which had no consumer left once BatchMargin.jsx's

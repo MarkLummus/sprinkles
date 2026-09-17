@@ -199,7 +199,7 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
 });
 
 describe('BatchRow — the record and amend ceremony, the battery\'s churn section (D-01, contract "DOM order inventory")', () => {
-  it('renders the churn-date field first, then the three measured fields, the two segmented controls, the two textareas, then ceremony A, in that DOM order', () => {
+  it('renders the churn-date field first, then the three measured fields, the two segmented controls, the two textareas, then the shared Next time, then ceremony A, in that DOM order', () => {
     const markup = renderBatchRow({
       openPen: 'record',
       mode: 'recording',
@@ -226,8 +226,21 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     expect(airinessIndex).toBeGreaterThan(exitConsistencyIndex);
     expect(atTheMachineIndex).toBeGreaterThan(airinessIndex);
     expect(ingredientNotesIndex).toBeGreaterThan(atTheMachineIndex);
-    expect(ceremonyIndex).toBeGreaterThan(ingredientNotesIndex);
-    expect(nextTimeIndex).toBeGreaterThan(ceremonyIndex);
+    expect(nextTimeIndex).toBeGreaterThan(ingredientNotesIndex);
+    expect(ceremonyIndex).toBeGreaterThan(nextTimeIndex);
+  });
+
+  it('reaches Next time before the ceremony\'s own Cancel and Save in both tasting states — DOM order is tab order here because no element in the record pen carries a tabIndex override; browser confirmation of the tab path is a separate UAT step, not this gate', () => {
+    for (const tastingOpen of [true, false]) {
+      const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen } });
+      const nextTimeIndex = markup.indexOf('aria-label="Next time"');
+      const ceremonyIndex = markup.indexOf('class="save-ceremony"');
+      const cancelIndex = markup.indexOf('Cancel', ceremonyIndex);
+      const saveIndex = markup.indexOf('Save batch', ceremonyIndex);
+      expect(nextTimeIndex).toBeLessThan(ceremonyIndex);
+      expect(ceremonyIndex).toBeLessThan(cancelIndex);
+      expect(cancelIndex).toBeLessThan(saveIndex);
+    }
   });
 
   it('renders the unit word as a sibling after the box, never in the caption (sketch 007 lines 42-44, UAT item 2)', () => {
@@ -827,8 +840,10 @@ describe('BatchRow — the form-status live region (contract "DOM order inventor
     expect(markup).toContain('aria-live="polite"');
     expect(markup).toContain('Check the marked measurements. Your entries have been kept.');
     const nextTimeIndex = markup.indexOf('aria-label="Next time"');
+    const ceremonyIndex = markup.indexOf('class="save-ceremony"');
     const formStatusIndex = markup.indexOf('class="form-status"');
     expect(formStatusIndex).toBeGreaterThan(nextTimeIndex);
+    expect(formStatusIndex).toBeGreaterThan(ceremonyIndex);
   });
 
   it('renders the region empty (no text node) when formStatus is blank', () => {
@@ -900,7 +915,7 @@ describe('BatchRow — the textareas (contract "Textareas")', () => {
   it('renders the shared Next time textarea with its own caption and the sketch\'s verbatim placeholder (sketch 007 line 301; UAT item 14)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
     expect(markup).toContain('placeholder="e.g. churn 2 min longer"');
-    expect(markup).toMatch(/<label class="batch-margin__field"><span class="pen-caption">Next time<\/span>/);
+    expect(markup).toMatch(/<label class="batch-margin__field batch-margin__field--next-time"><span class="pen-caption">Next time<\/span>/);
   });
 
   it("renders At the machine and Ingredient notes with their own visible captions (sketch 007 lines 237-238; supersedes the 03.1 Gap 2 override's label-less prose field)", () => {

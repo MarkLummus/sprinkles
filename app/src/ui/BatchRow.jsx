@@ -721,9 +721,26 @@ export function BatchRow({
                 </div>
               </>
             )}
-            {/* Ceremony A (D-01): after the tasting section when it is
-                open, after the churn section when it is not, just above
-                the shared Next time. Its hint is the record pen's own
+            {/* Next time (sketch 007 line 301; UAT item 14; D-12): carries
+                its own visible caption and the sketch's e.g. placeholder,
+                verbatim. */}
+            <label className="batch-margin__field batch-margin__field--next-time">
+              <span className="pen-caption">Next time</span>
+              <textarea
+                className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+                dir="auto"
+                rows="2"
+                placeholder="e.g. churn 2 min longer"
+                value={draft.nextTimeNote}
+                aria-label="Next time"
+                onChange={(event) => onChangeRecordField('nextTimeNote', event.target.value)}
+                onInput={autoGrow}
+              />
+            </label>
+            {/* Ceremony A (D-01): closes the record body after all record
+                content, below the shared Next time, in every state
+                (placement revised 2026-09-16, sketch 007's eleventh
+                round). Its hint is the record pen's own
                 blocked-date sentence — the same state ceremony B
                 (PenFoot) reads, so the two can never disagree. Add
                 tasting stands beside it exactly while the section is
@@ -745,22 +762,6 @@ export function BatchRow({
               onRestore={pendingUndo && !draft.tastingOpen ? onUndoRemove : null}
               restoreRef={restoreRef}
             />
-            {/* Next time (sketch 007 line 301; UAT item 14; D-12): carries
-                its own visible caption and the sketch's e.g. placeholder,
-                verbatim. */}
-            <label className="batch-margin__field">
-              <span className="pen-caption">Next time</span>
-              <textarea
-                className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
-                dir="auto"
-                rows="2"
-                placeholder="e.g. churn 2 min longer"
-                value={draft.nextTimeNote}
-                aria-label="Next time"
-                onChange={(event) => onChangeRecordField('nextTimeNote', event.target.value)}
-                onInput={autoGrow}
-              />
-            </label>
             {/* The form-status live region (contract "DOM order
                 inventory"): the record body's last element, directly
                 above PenFoot's ceremony B — its one home for the phase. */}

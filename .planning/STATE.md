@@ -6,7 +6,7 @@ status: planning
 stopped_at: Phase 03.3.1.1 complete, ready to plan Phase 4
 last_updated: "2026-09-16T14:28:50.000Z"
 last_activity: 2026-09-16
-last_activity_desc: Completed quick task 260916-vv1: .prose-field added to the touch-union min-height floor; critique fixes 3 and 4 both closed
+last_activity_desc: Completed quick task 260916-wg0: axes core/declared cues named for assistive tech; critique fixes 3, 4 and 5 closed
 state_head: d4cf638f07c0d4c88c1dfa4b3cb2ee81676d218c
 progress:
   total_phases: 9
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-16 - Completed quick task 260916-vv1: .prose-field joined the touch-union 44px floor (critique fix 4); desktop height and the sketch departure captured as a todo
+Last activity: 2026-09-16 - Completed quick task 260916-wg0: each axis's stops group now names its core/declared cue (critique fix 5); fixes 3, 4 and 5 closed, design session committed
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -112,6 +112,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Roadmap: Milestone 1 is four vertical slices on the olive oil working case (read → record → develop → print), not technical layers.
 - Roadmap: No storage/backend phase — D16 stays open, milestone 1 uses a provisional local store behind a repository seam.
 - Roadmap: UX1-01–UX1-03 are verified end-to-end in Phase 4 but are build constraints in every phase.
+- [03.3.1, 2026-09-16]: Each axis's stops group names its own core/declared cue (`aria-labelledby="axis-name-{key} axes-{core|declared}-cue"`) rather than a group wrapper — the desktop arrangement renders the cues and six axes as flat siblings so CSS can place them row-major, so there is no wrapper to label. Both groups are labelled pending a screen-reader UAT on whether "Every recipe" across four core axes is too repetitive; dropping the core cue is a one-ternary change. This restores the unsuperseded requirement at `batch-record-tasting-battery-structure.md:158` — the cue-row redesign superseded the caption's location only, and moving it out of Body's box silently dropped the announcement.
 - [03.3.1, 2026-09-16]: The end-of-record ceremony sits below the shared Next time field, not above it — the sketch 007 rule changes from "after whichever section is last" to "after all record content". Reverses the placement recorded at sketch 007 README:203 (attributed to 03.3.1 D-01 / 03.3.1.1 D-14). Reason: Next time is not a section but a field of the whole record, so the old rule placed a session-ending Save above the one field carrying the product's core value; with twin identical saves ratified the same day, the first save must still follow all record content. Sketch revised first, app followed.
 - [03.3.1, 2026-09-16]: Three feedback scopes govern announcements — field (the control), form (the pen, for reversible actions that leave it open), and page (a stable shell that survives the form and the route change). "Tasting removed" is form-scoped; "Batch saved" is page-scoped. Successful saves announce through a page-owned live region and move focus to the saved record heading; save failures stay field- or form-scoped beside the controls. Requires the app's first layout route — not yet built, captured as a pending todo.
 - [Phase 01]: Version-embedded ingredient row promoted as the primary identity model — a shared library is a future source a version copies from, never a render-time authority.
@@ -250,6 +251,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260916-tai | Revise route-recipe-batch.md: record the twin Saves as deliberate redundancy and strike click-again-clears | 2026-09-16 | aa096d4 | [260916-tai-revise-route-recipe-batch-md-record-the-](./quick/260916-tai-revise-route-recipe-batch-md-record-the-/) |
 | 260916-ufq | Move the end-of-record ceremony below the shared Next time field — sketch 007 first, then the app | 2026-09-16 | 63d714a | [260916-ufq-move-the-end-of-record-ceremony-below-th](./quick/260916-ufq-move-the-end-of-record-ceremony-below-th/) |
 | 260916-vv1 | Add .prose-field to the touch-union min-height list so the four prose fields meet the 44px target on every coarse pointer | 2026-09-16 | 8987f85 | [260916-vv1-add-prose-field-to-the-touch-union-min-h](./quick/260916-vv1-add-prose-field-to-the-touch-union-min-h/) |
+| 260916-wg0 | Name the axes core/declared split for assistive tech — per-axis aria-labelledby on each stops group | 2026-09-16 | 8979e5e | [260916-wg0-name-the-axes-core-declared-split-for-as](./quick/260916-wg0-name-the-axes-core-declared-split-for-as/) |
 
 ### Roadmap Evolution
 

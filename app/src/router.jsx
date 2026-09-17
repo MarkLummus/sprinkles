@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createBrowserRouter, useParams } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { RecipeList } from './ui/RecipeList.jsx';
@@ -25,7 +26,43 @@ import { RecipePage } from './ui/RecipePage.jsx';
 // nothing else: no state, no fetch, just the parameters and the key.
 function RecipePageForRoute() {
   const { id, batchId } = useParams();
-  return <RecipePage key={`${id}::${batchId ?? ''}`} />;
+  const [pageStatus, setPageStatus] = useState('');
+  const pageStatusTimerRef = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (pageStatusTimerRef.current) clearTimeout(pageStatusTimerRef.current);
+    },
+    [],
+  );
+
+  // This region belongs to the routed page shell, outside the keyed
+  // RecipePage. It therefore survives /recipe/parent -> /recipe/child and
+  // can announce the save that caused that navigation.
+  const announcePageStatus = useCallback((message, { persist = false } = {}) => {
+    if (pageStatusTimerRef.current) clearTimeout(pageStatusTimerRef.current);
+    setPageStatus(message);
+    if (message && !persist) {
+      pageStatusTimerRef.current = setTimeout(() => {
+        setPageStatus((current) => (current === message ? '' : current));
+      }, 5000);
+    }
+  }, []);
+
+  return (
+    <>
+      <PageStatus message={pageStatus} />
+      <RecipePage key={`${id}::${batchId ?? ''}`} onPageStatus={announcePageStatus} />
+    </>
+  );
+}
+
+export function PageStatus({ message }) {
+  return (
+    <p className="page-status" role="status" aria-live="polite">
+      {message}
+    </p>
+  );
 }
 
 // D-14: URL-addressable routes for the list and the recipe page now, so

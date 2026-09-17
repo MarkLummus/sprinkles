@@ -262,6 +262,37 @@ textarea {
   resize: none;
 }
 
+.page-status {
+  position: fixed;
+  z-index: 10;
+  inset-block-end: var(--gap-m);
+  inset-inline-end: var(--gap-m);
+  max-width: min(var(--measure-prose), calc(100vw - 2 * var(--gap-m)));
+  margin: 0;
+  padding: var(--gap-xs) var(--gap-s);
+  border: var(--rule-baseline) solid var(--ink);
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+}
+
+.page-status:empty {
+  padding: 0;
+  border: 0;
+}
+
+.headnote,
+.vmeta {
+  min-width: 0;
+}
+
+.headnote h1,
+.headnote__prose,
+.versions__lineage {
+  overflow-wrap: anywhere;
+}
+
 /* The two named placeholders (D-20): an example in ink small print, never
    a default — a blank field still saves as blank. Italic (sketch
    findings, cross-cutting feedback): a placeholder reads as
@@ -387,6 +418,14 @@ textarea {
   border-bottom: var(--rule-graduation) solid var(--ink);
 }
 
+/* With the batch row distilled out of the plan pen, the band itself owns
+   the one closing rule. Do not leave the former inter-row divider behind
+   as an unexplained double rule. */
+.recipe-band__row-version:only-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
 /* Column one is the recipe as written, in the sheet's page order: table,
    then method. Column two is what the sheet does not print — the
    formulation note beside the table so the six rules share the table's
@@ -415,10 +454,9 @@ textarea {
   margin: var(--gap-s) 0 0;
 }
 
-/* The save ceremony (route-recipe-version.md § 3, "The ceremony in the
-   headnote"): the version line, the reason, the citation, and the save
-   controls, all at the top of the page where the version is named, not
-   at the foot of the longest column (the Phase 2 design debt). */
+/* While developing, the version field replaces the saved version line in
+   the recipe identity. The child's name therefore reads as part of the
+   front matter rather than as a second form below the parent's name. */
 .headnote__version-field {
   display: block;
   font-family: var(--face-text);
@@ -426,7 +464,7 @@ textarea {
   margin: var(--gap-xs) 0 0;
 }
 
-.headnote__version-field span {
+.headnote__version-field > .pen-caption {
   display: block;
   font-family: var(--face-grotesk);
   font-size: var(--type-label);
@@ -440,12 +478,6 @@ textarea {
    rather than the full width of the page. */
 .headnote__version-field .ink-field {
   max-width: var(--measure-prose);
-}
-
-.headnote__version-was {
-  font-family: var(--face-text);
-  font-size: var(--size-deviation-words);
-  margin: var(--gap-hair) 0 0;
 }
 
 .headnote__reason-field {
@@ -510,14 +542,9 @@ textarea {
 
 .headnote__ceremony {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--gap-s);
   margin-top: var(--gap-m);
-}
-
-.headnote__blocked {
-  font-family: var(--face-grotesk);
-  font-size: var(--type-control);
-  margin: var(--gap-xs) 0 0;
 }
 
 /* The headnote prose field (03-02, 03.1-04): its own visible label word
@@ -532,8 +559,7 @@ textarea {
    in two rows, --gap-m between the two groups and --gap-s between
    adjacent controls within a group; the ceremony (D-06's own plan-pen
    markup keeps the headnote__* classes above, per 03.1-CONTEXT.md's
-   planner decision 1 — this rule only spaces the wrapper it moved into)
-   and its one hint sentence, in small print. */
+   planner decision 1 — this rule only spaces the wrapper it moved into). */
 .versions__openers {
   display: flex;
   flex-direction: column;
@@ -643,26 +669,20 @@ textarea {
   margin: 0;
 }
 
-/* The ceremony and the Later-versions disclosure, as full-width rows of
-   their own (sketch 003 variant B, index.html:95-96, 107-108, 230,
-   03.3-06 checkpoint fix): siblings of .vmeta inside
-   .recipe-band__row-version's grid, spanning both of its columns rather
-   than being squeezed into vmeta's own narrow one. */
+/* Opening the plan pen turns the saved Version column into the child's
+   provenance and ceremony. Its first rule names the parent; reason,
+   citation and actions follow in the same compact reading order. */
+.vmeta--developing .version-row__meta-list {
+  margin-bottom: var(--gap-s);
+}
+
+/* The Later-versions disclosure spans both front-matter columns rather
+   than being squeezed into vmeta's narrow track. */
 .recipe-band__full-row {
   grid-column: 1 / -1;
   margin-top: var(--gap-m);
   padding-top: var(--gap-s);
   border-top: var(--rule-graduation) solid var(--bookcloth);
-}
-
-/* The ceremony's own two-column split (sketch 003 variant B,
-   index.html:107): version line + why on the left, citation + saves on
-   the right — the same measure/1fr split .recipe-band__row-version
-   itself uses one grid level up. */
-.versions__ceremony-row {
-  display: grid;
-  grid-template-columns: minmax(0, var(--measure-prose)) 1fr;
-  gap: var(--gap-l);
 }
 
 /* An amended batch's second line in the batch list (D-09), on its own
@@ -755,8 +775,8 @@ textarea {
 
 /* The foot band (route-recipe.md § 3 "The imprint"; D-26): shown only
    while a pen is open — a hairline rule across the whole page, then the
-   pair right-aligned under the Notes column, the blocked-save sentence
-   beside it. Its own two-column grid matches .recipe-page's so the pair
+   pair right-aligned under the Notes column. Its own two-column grid
+   matches .recipe-page's so the pair
    lands under column two without being fenced to the page's own grid
    tracks by name. */
 .pen-foot {
@@ -776,15 +796,11 @@ textarea {
 .pen-foot__controls {
   grid-column: 2;
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   align-items: baseline;
   gap: var(--gap-s);
   margin-top: var(--gap-m);
-}
-
-.pen-foot__blocked {
-  font-family: var(--face-grotesk);
-  font-size: var(--type-control);
 }
 
 .ingredient-table {
@@ -963,6 +979,18 @@ textarea {
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
   margin: var(--gap-hair) 0 0;
+}
+
+.ingredient-table__comparison {
+  caption-side: top;
+  color: var(--ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  margin-bottom: var(--gap-xs);
 }
 
 /* Marked by a focused figure's trace (direction contract § 5): outline and
@@ -1779,7 +1807,10 @@ textarea {
   display: flex;
   gap: var(--gap-s);
   flex-wrap: wrap;
-  align-items: flex-end;
+  /* Every caption already reserves the same two-line height below. Align
+     the field blocks from the top so a helper or wrapping error beneath
+     one control cannot pull its siblings down. */
+  align-items: flex-start;
 }
 
 .field-row__label {
@@ -1795,7 +1826,7 @@ textarea {
 }
 
 /* Two lines reserved (007 line 39): a short and a long caption in the same
-   field row keep their fields bottom-aligned on one baseline. A segmented
+   field row put their controls on one baseline. A segmented
    control sharing the row (Melt style) is a caption LINE, not a field
    caption — the sketch holds its head at the reserved control height
    (007 line 180), so it is excluded here. */
@@ -2140,8 +2171,7 @@ textarea {
 /* The one save ceremony (PenFoot.jsx's SaveCeremony; D-01): one rule
    read by both mounts — the record body's own end-of-record ceremony
    (BatchRow.jsx) and the foot's ceremony (PenFoot.jsx) — so the two can
-   never drift apart. Mirrors .pen-foot__controls/.pen-foot__blocked's
-   own shape: the hint is a plain flex item, first in DOM order.
+   never drift apart. The hint is a plain flex item, first in DOM order.
    Right-aligned at every width (sketch 007 @ 2a212be line 55; D-14). */
 .save-ceremony {
   display: flex;
@@ -2176,11 +2206,12 @@ textarea {
   line-height: var(--leading-note);
 }
 
-/* A malformed measurement's own sentence (contract "Controls spec"),
-   appended inside the field's label and wired by aria-describedby — the
-   system's own words, in the grotesk, at small-print size; no colour of
-   its own (No-Verdict Rule — the field's aria-invalid is the fact, not a
-   red line). */
+/* Required guidance and a malformed field's own sentence share one quiet
+   line beneath the control. The guidance gives way to the error rather
+   than moving the caption or growing a second message line. Errors are
+   wired by aria-describedby; native required semantics already announce
+   the requirement. Neither uses colour as a verdict. */
+.field-requirement,
 .field-error {
   display: block;
   font-family: var(--face-grotesk);

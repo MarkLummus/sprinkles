@@ -198,7 +198,7 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
     assertCellCountsAgree(markup);
   });
 
-  it('developing on a version with a saved batch in view: As made header present — openBatch is not cleared while developing', () => {
+  it('developing with an explicitly selected comparison batch: As made evidence is named and present', () => {
     const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
     const draftVersion = makeVersion([makeRow('a', 'Row A', 40, 1)]);
     const penDraft = { rows: { a: onePortionDraftRow(1, '40') }, asMade: {} };
@@ -211,10 +211,12 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
         mode="developing"
         penDraft={penDraft}
         openBatch={openBatch}
+        comparisonBatchLabel="Compared with batch · 2 Aug 2026"
       />,
     );
 
     expect(markup).toContain('>As made<');
+    expect(markup).toContain('<caption class="ingredient-table__comparison">Compared with batch · 2 Aug 2026</caption>');
     assertCellCountsAgree(markup);
   });
 
@@ -798,4 +800,3 @@ describe('IngredientTable — the pen\'s remove/restore control carries .text-co
 // `grep -n '\[blockedRowId\]'` against IngredientTable.jsx) are what prove
 // the fix landed — deliberately not duplicated here as a render test that
 // could never actually exercise the effect.
-

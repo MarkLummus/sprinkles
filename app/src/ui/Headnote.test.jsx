@@ -51,10 +51,23 @@ describe('Headnote — the recipe block alone (D-02, D-03)', () => {
 });
 
 describe('Headnote — the intro-paragraph field, while the plan pen is open (D-28: precedes every save in the tab order)', () => {
+  const developingDraft = {
+    versionLabel: '',
+    headnote: oliveOilVersion.headnote,
+  };
+
+  it('replaces the parent version line with the blank child version field', () => {
+    const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft });
+    expect(markup).toMatch(/<label class="headnote__version-field"><span class="pen-caption">Version<\/span><input/);
+    expect(markup).toMatch(/<input[^>]*aria-label="Version"[^>]*value=""/);
+    expect(markup).toContain('<span class="field-requirement" aria-hidden="true">Required</span>');
+    expect(markup).not.toContain(`<p class="headnote__version">${oliveOilVersion.versionLabel}</p>`);
+  });
+
   it('renders a text field bound to the pen draft', () => {
     const markup = renderHeadnote({
       mode: 'developing',
-      penDraft: { headnote: oliveOilVersion.headnote },
+      penDraft: developingDraft,
     });
     expect(markup).toMatch(/<textarea[^>]*aria-label="Headnote prose"/);
   });
@@ -65,7 +78,7 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
   it('renders no visible label word — the accessible name alone names the field', () => {
     const markup = renderHeadnote({
       mode: 'developing',
-      penDraft: { headnote: oliveOilVersion.headnote },
+      penDraft: developingDraft,
     });
     expect(markup).not.toContain('<span>Headnote prose</span>');
   });
@@ -73,16 +86,16 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
   it('carries the printed-paragraph treatment, not the counted field\'s class', () => {
     const markup = renderHeadnote({
       mode: 'developing',
-      penDraft: { headnote: oliveOilVersion.headnote },
+      penDraft: developingDraft,
     });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
-    expect(markup).not.toContain('ink-field');
+    expect(markup).not.toMatch(/<textarea[^>]*class="ink-field"/);
   });
 
   it('renders the baseline struck beneath once the field differs from it', () => {
     const markup = renderHeadnote({
       mode: 'developing',
-      penDraft: { headnote: 'a rewritten intro' },
+      penDraft: { ...developingDraft, headnote: 'a rewritten intro' },
     });
     expect(markup).toContain('prose-struck-beneath');
     expect(markup).toContain(oliveOilVersion.headnote);
@@ -91,8 +104,31 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
   it('renders no struck paragraph while the field still matches the baseline', () => {
     const markup = renderHeadnote({
       mode: 'developing',
-      penDraft: { headnote: oliveOilVersion.headnote },
+      penDraft: developingDraft,
     });
     expect(markup).not.toContain('prose-struck-beneath');
+  });
+
+  it('connects a blocked version field to its visible error and marks it invalid', () => {
+    const markup = renderHeadnote({
+      mode: 'developing',
+      penDraft: developingDraft,
+      versionLineError: 'Enter a version.',
+    });
+    expect(markup).toMatch(/<input[^>]*aria-invalid="true"[^>]*aria-describedby="version-field-error"/);
+    expect(markup).toContain('<span id="version-field-error" class="field-error">Enter a version.</span>');
+    expect(markup).not.toContain('field-requirement');
+  });
+
+  it('makes the saved version identity the programmatic landing after creating a child', () => {
+    const markup = renderHeadnote({ focusVersionOnMount: true });
+    expect(markup).toMatch(/<p[^>]*class="headnote__version"[^>]*tabindex="-1"[^>]*aria-label="Version 50 g oil · 800 g"/);
+    expect(markup).not.toContain('autofocus');
+  });
+
+  it('freezes the identity fields while a version save is in flight', () => {
+    const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft, isSaving: true });
+    expect(markup).toMatch(/<input[^>]*disabled=""/);
+    expect(markup).toMatch(/<textarea[^>]*disabled=""/);
   });
 });

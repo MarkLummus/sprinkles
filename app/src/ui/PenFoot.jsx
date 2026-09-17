@@ -51,16 +51,15 @@ export function SaveCeremony({
 
 // The foot band (route-recipe.md § 3 "The imprint"; D-26): shown only
 // while a pen is open — a hairline ink rule across the whole page, then
-// the open pen's own Cancel/Save. The plan pen keeps its own markup
-// (Save/Save as, gated by canSaveOver); the record and amend pens share
+// the open pen's own Cancel/Save. The plan pen keeps its own explicit
+// version actions, gated by canSaveOver; the record and amend pens share
 // the one SaveCeremony component with BatchRow's own end-of-record mount
 // (D-01) — the tasting pen's own branch retires with 03.3.1-02 (D-01/D-03:
 // the tasting section folds into the record pen, never a fourth pen).
 // It computes nothing and holds no state: the handler references it is
-// given are the same ones the ceremony calls, and penHint is the page's
-// own one derivation (RecipePage, beside canSaveOver) — so there is one
-// save path and one save hint per pen, never a second copy (RESEARCH.md
-// Pattern 2, T-03.1-03). Add tasting (D-01, 03.3.1-03; reordered first by
+// given are the same ones the ceremony calls. Version validation stays
+// with Headnote's Version field; the optional penHint belongs only to the
+// shared record ceremony. Add tasting (D-01, 03.3.1-03; reordered first by
 // the ninth round's D-14) mounts inside the ceremony itself, exactly while
 // `tastingOpen` and `pendingUndo` are both false — the foot renders no
 // restore slot at all (007 lines 310-314; that control lives only on
@@ -69,6 +68,7 @@ export function PenFoot({
   openPen,
   canSaveOver,
   penHint,
+  saveAction = null,
   tastingOpen,
   pendingUndo = null,
   onCancelDeveloping,
@@ -87,22 +87,21 @@ export function PenFoot({
       <div className="pen-foot__controls">
         {openPen === 'plan' && (
           <>
-            {penHint && <p className="pen-foot__blocked">{penHint}</p>}
-            <button type="button" onClick={onCancelDeveloping}>
+            <button type="button" disabled={saveAction !== null} onClick={onCancelDeveloping}>
               Cancel
             </button>
             {canSaveOver ? (
               <>
-                <button type="button" onClick={onSaveAsNewVersion}>
-                  Save as
+                <button type="button" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
+                  {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
                 </button>
-                <button type="button" onClick={onSaveOverVersion}>
-                  Save
+                <button type="button" disabled={saveAction !== null} onClick={onSaveOverVersion}>
+                  {saveAction === 'over' ? 'Saving this version…' : 'Save over this version'}
                 </button>
               </>
             ) : (
-              <button type="button" onClick={onSaveAsNewVersion}>
-                Save
+              <button type="button" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
+                {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
               </button>
             )}
           </>

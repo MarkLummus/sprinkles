@@ -278,20 +278,20 @@ describe('blockedSaveMessage', () => {
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
   });
 
-  it('returns "a version needs a line" for a blank version line', () => {
+  it('asks for a version when the Version field is blank', () => {
     const penFields = { versionLabel: '', reason: '', rows: validRows() };
-    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('a version needs a line');
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Enter a version.');
   });
 
-  it('returns "a version needs a line" for a whitespace-only version line', () => {
+  it('asks for a version when the Version field contains only whitespace', () => {
     const penFields = { versionLabel: '   ', reason: '', rows: validRows() };
-    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('a version needs a line');
+    expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Enter a version.');
   });
 
-  it('returns "another version already has this line" for a colliding line, checked before the grams rule', () => {
+  it('asks for a different version when one already exists, checked before the grams rule', () => {
     const versions = [{ id: 'v9', versionLabel: '60 g oil · 800 g' }];
     const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', false) }) };
-    expect(blockedSaveMessage(penFields, oliveOilVersion, versions)).toBe('another version already has this line');
+    expect(blockedSaveMessage(penFields, oliveOilVersion, versions)).toBe('This version already exists. Enter a different version.');
   });
 
   it('returns the first active row\'s own message, in the version\'s authored order, when its grams field is empty', () => {

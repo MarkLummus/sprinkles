@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { buildFigures, figureLabelText } from '../domain/figures.js';
-import { createBatch, completeRecord, sortedBatches } from '../domain/batch.js';
+import { createBatch, completeRecord, formatRecordDate, sortedBatches } from '../domain/batch.js';
 import { BATTERY_FIELDS, parseMeasuredDraft } from '../domain/battery.js';
 import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
+import { freshId } from '../domain/id.js';
 import {
   createChildVersion,
   saveOverVersion,
@@ -45,6 +46,9 @@ export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entr
 // so announcing CHURN_DATE_BLOCKED_MESSAGE here would print a second
 // visible copy of the field's own sentence.
 export const CHURN_DATE_BLOCKED_STATUS = 'Check the churn date. Your entries have been kept.';
+export const VERSION_SAVED_STATUS = 'Version saved.';
+export const VERSION_SAVE_ERROR = 'Couldn’t save the version. Try again.';
+export const VERSION_BLOCKED_STATUS = 'Check the version. Your changes have been kept.';
 
 // The contract's verbatim record-status sentences for the record pen's own
 // two hidden-mode removal paths (contract "Feedback and undo lifecycle",
@@ -561,13 +565,13 @@ export function buildTastingFieldsFromDraft(draft, parsed) {
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The margin's derived-advisories block (FORM2-02)
 // renders nothing visible when the version has none — no placeholder text.
-export function RecipePage() {
+export function RecipePage({ onPageStatus = () => {} }) {
   const { id, batchId } = useParams();
   const navigate = useNavigate();
-  // The fork's landing focus signal (D-27): read once, here, so Versions
-  // stays prop-driven and testable without a router state of its own.
+  // The fork's landing focus signal: read once here so the saved child
+  // can identify itself before offering another Next version action.
   const location = useLocation();
-  const focusDevelopOnMount = Boolean(location.state?.focusDevelop);
+  const focusVersionOnMount = Boolean(location.state?.focusVersion);
   // The show-changes state (D-02): on when the `changes` key is present in
   // the URL's search parameters at all — its value is never consulted, so
   // presence is the whole signal. Composes with both /recipe/:id and
@@ -663,6 +667,8 @@ export function RecipePage() {
   // survives, RESEARCH.md Pitfall 5).
   const [penDraft, setPenDraft] = useState(null);
   const [blockedMessage, setBlockedMessage] = useState(null);
+  const [versionSaveAction, setVersionSaveAction] = useState(null);
+  const versionSaveLockRef = useRef(false);
   // The offending field a blocked save names (critique P1 #3, D-21): the
   // version-line field, or a row's grams field by id — read by
   // IngredientTable and Versions to mark and focus exactly the field
@@ -673,7 +679,7 @@ export function RecipePage() {
   // WR-01's fix (03.1 REVIEW.md, Versions.jsx's half): an incrementing
   // counter, stamped onto blockedTarget on every blocked buildPenFields
   // call, so a second consecutive blocked save on the same field re-fires
-  // VersionRow's focus-return effect — a value-equal boolean cannot.
+  // Headnote's field-focus effect — a value-equal boolean cannot.
   const blockedAttemptRef = useRef(0);
 
   useEffect(() => {
@@ -847,15 +853,6 @@ export function RecipePage() {
   // never twice (RESEARCH.md Pattern 2).
   const canSaveOver = batches.length === 0;
 
-  // The one hint derivation (RESEARCH.md Pattern 2): whichever pen is open
-  // owns the hint both VersionRow and PenFoot render — the plan pen's own
-  // blocked-save sentence. The record/amend pen contributes none: the
-  // churn date's blocked-date sentence now renders once, in the date's
-  // own label (D-05), so PenFoot's ceremony carries nothing of it. Neither
-  // pen has a completeness gate (D-02 retires the tasting save gate) — the
-  // record pen's Save is never disabled.
-  const penHint = openPen === 'record' || openPen === 'amend' ? null : blockedMessage;
-
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
   // this, with every removed row and step already absent (RESEARCH.md
@@ -951,6 +948,19 @@ export function RecipePage() {
   } else if (batches.length > 0) {
     openBatch = sortedBatches(batches)[0];
   }
+
+  // A plan pen shows batch evidence only after the maker explicitly cites
+  // it. The route's open/latest batch remains the reading-state record;
+  // it must not masquerade as the draft's provenance while From batch is
+  // still "no batch cited".
+  const comparisonBatch =
+    mode === 'developing' && penDraft?.citedBatchId
+      ? batches.find((batch) => batch.id === penDraft.citedBatchId) ?? null
+      : null;
+  const evidenceBatch = mode === 'developing' ? comparisonBatch : openBatch;
+  const comparisonBatchLabel = comparisonBatch
+    ? `Compared with batch · ${comparisonBatch.churn.churnDate ? formatRecordDate(comparisonBatch.churn.churnDate) : 'date unknown'}`
+    : null;
 
   // announce(message, { selfClear, target }) -> writes one of the three
   // live regions' text (contract "Feedback and undo lifecycle"): form
@@ -1326,7 +1336,7 @@ export function RecipePage() {
       return;
     }
 
-    const record = createBatch(version, churnFields, tasting, { id: crypto.randomUUID(), now });
+    const record = createBatch(version, churnFields, tasting, { id: freshId(), now });
 
     repository.saveBatch(record).then(() => {
       setBatches((prev) => [...prev, record]);
@@ -1391,6 +1401,9 @@ export function RecipePage() {
     });
     setBlockedMessage(null);
     setBlockedTarget(null);
+    setVersionSaveAction(null);
+    versionSaveLockRef.current = false;
+    onPageStatus('');
     setMode('developing');
   }
 
@@ -1414,11 +1427,15 @@ export function RecipePage() {
     setPenDraft(null);
     setBlockedMessage(null);
     setBlockedTarget(null);
+    setVersionSaveAction(null);
+    versionSaveLockRef.current = false;
+    onPageStatus('');
   }
 
   function handleChangePenField(field, value) {
     setBlockedMessage(null);
     setBlockedTarget(null);
+    onPageStatus('');
     setPenDraft((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -1571,6 +1588,7 @@ export function RecipePage() {
       // on every blocked press (WR-01) so a second consecutive block on
       // the same field still moves focus.
       const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
+      if (!rowId) onPageStatus(VERSION_BLOCKED_STATUS);
       blockedAttemptRef.current += 1;
       setBlockedTarget(
         rowId ? { kind: 'row', rowId, attempt: blockedAttemptRef.current } : { kind: 'versionLine', attempt: blockedAttemptRef.current },
@@ -1603,19 +1621,35 @@ export function RecipePage() {
   // the one save handler — createChildVersion stays deterministic. The
   // parent is never passed to repository.saveVersion (D04, T-03-03).
   function handleSaveAsNewVersion() {
+    if (versionSaveLockRef.current) return;
     const penFields = buildPenFields(null);
     if (!penFields) return;
-    const child = createChildVersion(version, penFields, { id: crypto.randomUUID(), now: new Date().toISOString() });
-    repository.saveVersion(child).then(() => {
+    versionSaveLockRef.current = true;
+    setVersionSaveAction('new');
+    onPageStatus('');
+    let child;
+    try {
+      child = createChildVersion(version, penFields, { id: freshId(), now: new Date().toISOString() });
+    } catch {
+      versionSaveLockRef.current = false;
+      setVersionSaveAction(null);
+      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
+      return;
+    }
+    Promise.resolve().then(() => repository.saveVersion(child)).then(() => {
       setVersions((prev) => [...prev, child]);
       setMode('reading');
       setPenDraft(null);
       setBlockedMessage(null);
       setBlockedTarget(null);
-      // D-27: focus lands on the child's Develop control on mount. The
-      // router keys RecipePage by `${id}::${batchId}` (router.jsx), so
-      // the child mounts fresh and this state is read exactly once.
-      navigate(`/recipe/${child.id}`, { state: { focusDevelop: true } });
+      onPageStatus(VERSION_SAVED_STATUS);
+      // The child mounts fresh because router.jsx keys RecipePage by its
+      // route. Land on the saved identity before offering another fork.
+      navigate(`/recipe/${child.id}`, { state: { focusVersion: true } });
+    }).catch(() => {
+      versionSaveLockRef.current = false;
+      setVersionSaveAction(null);
+      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
     });
   }
 
@@ -1624,17 +1658,35 @@ export function RecipePage() {
   // guarantee — a churned version's own record is never written to (D04)
   // even if this handler were somehow reached with the control hidden.
   function handleSaveOverVersion() {
-    if (batches.length > 0) return;
+    if (batches.length > 0 || versionSaveLockRef.current) return;
     const penFields = buildPenFields(version.id);
     if (!penFields) return;
-    const updated = saveOverVersion(version, penFields, { now: new Date().toISOString() });
-    repository.saveVersion(updated).then(() => {
+    versionSaveLockRef.current = true;
+    setVersionSaveAction('over');
+    onPageStatus('');
+    let updated;
+    try {
+      updated = saveOverVersion(version, penFields, { now: new Date().toISOString() });
+    } catch {
+      versionSaveLockRef.current = false;
+      setVersionSaveAction(null);
+      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
+      return;
+    }
+    Promise.resolve().then(() => repository.saveVersion(updated)).then(() => {
       setVersion(updated);
       setVersions((prev) => prev.map((existing) => (existing.id === updated.id ? updated : existing)));
       setMode('reading');
       setPenDraft(null);
       setBlockedMessage(null);
       setBlockedTarget(null);
+      versionSaveLockRef.current = false;
+      setVersionSaveAction(null);
+      onPageStatus(VERSION_SAVED_STATUS);
+    }).catch(() => {
+      versionSaveLockRef.current = false;
+      setVersionSaveAction(null);
+      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
     });
   }
 
@@ -1646,7 +1698,7 @@ export function RecipePage() {
       <p className="running-head">
         <Link to="/">Sprinkles</Link>
       </p>
-      <article className="recipe-page">
+      <article className="recipe-page" aria-busy={versionSaveAction ? 'true' : undefined}>
         {/* The front matter (sketch 003 variant B, 03.3-01): two
             full-width stacked rows — the version's row, then the batch's
             row (app.css .recipe-band). Recipe block first in DOM order,
@@ -1659,6 +1711,10 @@ export function RecipePage() {
               mode={mode}
               penDraft={penDraft}
               onChangePenField={handleChangePenField}
+              versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
+              versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
+              isSaving={versionSaveAction !== null}
+              focusVersionOnMount={focusVersionOnMount}
             />
 
             <VersionRow
@@ -1674,53 +1730,53 @@ export function RecipePage() {
               openPen={openPen}
               penReason={penReason}
               canSaveOver={canSaveOver}
-              penHint={penHint}
-              versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
+              saveAction={versionSaveAction}
               onStartDeveloping={handleStartDeveloping}
               onCancelDeveloping={handleCancelDeveloping}
               onChangePenField={handleChangePenField}
               onSaveAsNewVersion={handleSaveAsNewVersion}
               onSaveOverVersion={handleSaveOverVersion}
               onToggleShowChanges={handleToggleShowChanges}
-              focusDevelopOnMount={focusDevelopOnMount}
               openBatch={openBatch}
               onStartRecording={handleStartRecording}
             />
           </div>
 
-          <BatchRow
-            version={version}
-            batches={batches}
-            openBatch={openBatch}
-            mode={mode}
-            draft={draft}
-            fieldErrors={fieldErrors}
-            invalidFieldTarget={invalidFieldTarget}
-            blockedDateMessage={blockedDateMessage}
-            blockedDateAttempt={blockedDateAttempt}
-            addTastingAttempt={addTastingAttempt}
-            formStatus={formStatus}
-            tastingStatus={tastingStatus}
-            recordStatus={recordStatus}
-            pendingUndo={pendingUndo}
-            restoreAttempt={restoreAttempt}
-            removeTastingAttempt={removeTastingAttempt}
-            onChangeRecordField={handleChangeRecordField}
-            onChangeSegment={handleChangeSegment}
-            onClearSegment={handleClearSegment}
-            onChangeRecordMark={handleChangeRecordMark}
-            onClearAxisMark={handleClearAxisMark}
-            onChangeDefect={handleChangeDefect}
-            onToggleBitter={handleToggleBitter}
-            onRemoveTasting={handleRemoveTasting}
-            onUndoRemove={handleUndoRemove}
-            onAddTasting={handleAddTasting}
-            openPen={openPen}
-            penReason={penReason}
-            onStartAmending={handleStartAmending}
-            onCancelRecording={handleCancelRecording}
-            onSaveBatch={handleSaveBatch}
-          />
+          {mode !== 'developing' && (
+            <BatchRow
+              version={version}
+              batches={batches}
+              openBatch={openBatch}
+              mode={mode}
+              draft={draft}
+              fieldErrors={fieldErrors}
+              invalidFieldTarget={invalidFieldTarget}
+              blockedDateMessage={blockedDateMessage}
+              blockedDateAttempt={blockedDateAttempt}
+              addTastingAttempt={addTastingAttempt}
+              formStatus={formStatus}
+              tastingStatus={tastingStatus}
+              recordStatus={recordStatus}
+              pendingUndo={pendingUndo}
+              restoreAttempt={restoreAttempt}
+              removeTastingAttempt={removeTastingAttempt}
+              onChangeRecordField={handleChangeRecordField}
+              onChangeSegment={handleChangeSegment}
+              onClearSegment={handleClearSegment}
+              onChangeRecordMark={handleChangeRecordMark}
+              onClearAxisMark={handleClearAxisMark}
+              onChangeDefect={handleChangeDefect}
+              onToggleBitter={handleToggleBitter}
+              onRemoveTasting={handleRemoveTasting}
+              onUndoRemove={handleUndoRemove}
+              onAddTasting={handleAddTasting}
+              openPen={openPen}
+              penReason={penReason}
+              onStartAmending={handleStartAmending}
+              onCancelRecording={handleCancelRecording}
+              onSaveBatch={handleSaveBatch}
+            />
+          )}
         </div>
 
         <section className="ingredient-table-region" aria-label="Ingredients">
@@ -1738,7 +1794,8 @@ export function RecipePage() {
               mode={mode}
               draft={draft}
               penDraft={penDraft}
-              openBatch={openBatch}
+              openBatch={evidenceBatch}
+              comparisonBatchLabel={comparisonBatchLabel}
               steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
               currentStepNumbers={currentStepNumbers}
               onChangeAsMade={handleChangeAsMade}
@@ -1753,7 +1810,7 @@ export function RecipePage() {
         <section className="method-region" aria-label="Method">
           <Method
             steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
-            stepChanges={mode === 'recording' ? draft.stepChanges : openBatch ? openBatch.churn.stepChanges : {}}
+            stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
             mode={mode}
             onChangeStepChange={handleChangeStepChange}
             rows={version.rows}
@@ -1806,7 +1863,7 @@ export function RecipePage() {
         <PenFoot
           openPen={openPen}
           canSaveOver={canSaveOver}
-          penHint={penHint}
+          saveAction={versionSaveAction}
           tastingOpen={draft?.tastingOpen ?? false}
           pendingUndo={pendingUndo}
           onCancelDeveloping={handleCancelDeveloping}

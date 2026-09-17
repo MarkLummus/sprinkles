@@ -45,24 +45,31 @@ describe('PenFoot — renders only while a pen is open', () => {
   });
 });
 
-describe('PenFoot — the plan pair matches the ceremony, Cancel first, gated by canSaveOver (D-10, D-26)', () => {
-  it('renders Cancel then Save, never Save as, when canSaveOver is false', () => {
+describe('PenFoot — the plan actions repeat their explicit versioning outcome', () => {
+  it('renders Cancel then Save as a new version when canSaveOver is false', () => {
     const markup = renderPenFoot({ openPen: 'plan', canSaveOver: false });
-    expect(markup).not.toContain('Save as');
     const cancelIndex = markup.indexOf('Cancel');
-    const saveIndex = markup.indexOf('>Save<');
+    const saveIndex = markup.indexOf('Save as a new version');
     expect(cancelIndex).toBeGreaterThanOrEqual(0);
     expect(saveIndex).toBeGreaterThan(cancelIndex);
+    expect(markup).not.toContain('Save over this version');
   });
 
-  it('renders Cancel, then Save as, then Save, when canSaveOver is true', () => {
+  it('renders Cancel, Save as a new version, then Save over this version when canSaveOver is true', () => {
     const markup = renderPenFoot({ openPen: 'plan', canSaveOver: true });
     const cancelIndex = markup.indexOf('Cancel');
-    const saveAsIndex = markup.indexOf('Save as');
-    const saveIndex = markup.lastIndexOf('>Save<');
+    const saveAsIndex = markup.indexOf('Save as a new version');
+    const saveIndex = markup.indexOf('Save over this version');
     expect(cancelIndex).toBeGreaterThanOrEqual(0);
     expect(saveAsIndex).toBeGreaterThan(cancelIndex);
     expect(saveIndex).toBeGreaterThan(saveAsIndex);
+  });
+
+  it('mirrors the in-flight child save and disables the repeated controls', () => {
+    const markup = renderPenFoot({ openPen: 'plan', canSaveOver: true, saveAction: 'new' });
+    expect(markup).toMatch(/<button type="button" disabled="">Cancel<\/button>/);
+    expect(markup).toMatch(/<button type="button" disabled="">Saving new version…<\/button>/);
+    expect(markup).toMatch(/<button type="button" disabled="">Save over this version<\/button>/);
   });
 });
 
@@ -190,15 +197,10 @@ describe('PenFoot — the foot ceremony carries no restore control in any state 
   });
 });
 
-describe('PenFoot — penHint beside the plan pair', () => {
-  it('renders the message when set', () => {
-    const markup = renderPenFoot({ openPen: 'plan', penHint: 'a version needs a line' });
-    expect(markup).toContain('a version needs a line');
-  });
-
-  it('renders no blocked-save paragraph when unset', () => {
-    const markup = renderPenFoot({ openPen: 'plan', penHint: null });
-    expect(markup).not.toContain('pen-foot__blocked');
+describe('PenFoot — Version validation stays with the Version field', () => {
+  it('does not repeat a plan error even when a hint prop is supplied', () => {
+    const markup = renderPenFoot({ openPen: 'plan', penHint: 'Enter a version.' });
+    expect(markup).not.toContain('Enter a version.');
   });
 });
 

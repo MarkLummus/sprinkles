@@ -334,7 +334,7 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
 
   test('the ten caption rules read --type-label at weight 500', () => {
     for (const selector of [
-      '.headnote__version-field span',
+      '.headnote__version-field > .pen-caption',
       '.headnote__reason-field span',
       '.headnote__citation span:first-child',
       '.versions__ceremony-field span',
@@ -360,8 +360,8 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
-  test('the five helper and status sentences read the control role (13px)', () => {
-    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint', '.headnote__blocked', '.pen-foot__blocked']) {
+  test('the three remaining helper and status sentences read the control role (13px)', () => {
+    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint']) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to read the helper/status role`).toBeTruthy();
       expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
@@ -369,7 +369,7 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
   });
 
   test('helper and status text keeps one grotesk face, sentence case — no transform, so no state-change face flip', () => {
-    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint', '.headnote__blocked', '.pen-foot__blocked']) {
+    for (const selector of ['.pen-hint', '.batch-margin__hint', '.versions__hint']) {
       const rule = ruleFor(selector);
       expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
       expect(rule.declarations).not.toMatch(/text-transform/);
@@ -416,6 +416,12 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
 });
 
 describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
+  test('field blocks top-align so helper and error height cannot move sibling controls', () => {
+    const rule = ruleFor('.field-row');
+    expect(rule, 'expected a .field-row rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/align-items:\s*flex-start/);
+  });
+
   test('.field-unit .ink-field reads the 56px figure width', () => {
     const rule = ruleFor('.field-unit .ink-field');
     expect(rule, 'expected a .field-unit .ink-field rule').toBeTruthy();
@@ -469,7 +475,7 @@ describe('placeholders italic, entered prose roman pen-blue', () => {
 describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption and its content share one label', () => {
   test('the eight existing sites read their caption-to-content distance through var(--gap-xs)', () => {
     for (const selector of [
-      '.headnote__version-field span',
+      '.headnote__version-field > .pen-caption',
       '.headnote__reason-field span',
       '.headnote__citation span:first-child',
       '.versions__ceremony-field span',

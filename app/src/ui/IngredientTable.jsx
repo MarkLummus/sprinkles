@@ -339,6 +339,7 @@ export function IngredientTable({
   draft = null,
   penDraft = null,
   openBatch = null,
+  comparisonBatchLabel = null,
   // The method array supplying each numbered group's lead-in text in the
   // reading and show-changes states — the same expression Method.jsx's own
   // `steps` prop already computes. The pen branch uses draftVersion.method
@@ -597,6 +598,7 @@ export function IngredientTable({
   return (
     <>
       <table className={isDeveloping ? 'ingredient-table is-developing' : 'ingredient-table'}>
+        {comparisonBatchLabel && <caption className="ingredient-table__comparison">{comparisonBatchLabel}</caption>}
         <thead>
           <tr>
             <th scope="col" className="ingredient-table__col-name">Ingredient</th>

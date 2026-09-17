@@ -213,9 +213,9 @@ function findBlockedRow(penFields, version) {
  * permits it.
  */
 export function blockedSaveMessage(penFields, version, versions) {
-  if (penFields.versionLabel.trim() === '') return 'a version needs a line';
+  if (penFields.versionLabel.trim() === '') return 'Enter a version.';
   if (!versionLineUnique(versions, penFields.versionLabel, null)) {
-    return 'another version already has this line';
+    return 'This version already exists. Enter a different version.';
   }
   const blocked = findBlockedRow(penFields, version);
   return blocked ? blocked.message : null;

@@ -206,9 +206,9 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       draft: { ...emptyRecordDraft, churnDate: '2026-08-09' },
     });
     expect(markup).toMatch(
-      /<label class="field-row__label field-row__label--date"><span class="pen-caption">Churn date, required<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
+      /<label class="field-row__label field-row__label--date"><span class="pen-caption">Churn date<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
     );
-    const churnDateIndex = markup.indexOf('<span class="pen-caption">Churn date, required</span>');
+    const churnDateIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
     const timeToDrawIndex = markup.indexOf('Time to draw temp.');
     const outOfMachineIndex = markup.indexOf('Out of machine');
     const churnDurationIndex = markup.indexOf('Churn duration');
@@ -262,7 +262,7 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       draft: emptyRecordDraft,
     });
     const fieldRowIndex = markup.indexOf('<div class="field-row">');
-    const churnDateCaptionIndex = markup.indexOf('<span class="pen-caption">Churn date, required</span>');
+    const churnDateCaptionIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
     const exitConsistencyIndex = markup.indexOf('Exit consistency');
     expect(fieldRowIndex).toBeGreaterThanOrEqual(0);
     expect(fieldRowIndex).toBeLessThan(churnDateCaptionIndex);
@@ -277,7 +277,7 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       mode: 'recording',
       draft: { ...emptyRecordDraft, churnDate: '2026-08-02' },
     });
-    expect(markup).toMatch(/<span class="pen-caption">Churn date, required<\/span><input[^>]*type="date"[^>]*value="2026-08-02"/);
+    expect(markup).toMatch(/<span class="pen-caption">Churn date<\/span><input[^>]*type="date"[^>]*value="2026-08-02"/);
     expect(markup).toContain('class="save-ceremony"');
     expect(markup).toContain('Save batch');
   });
@@ -720,15 +720,9 @@ describe('BatchRow — the melt block (sketch 007 lines 285-297; UAT item 12; D-
   });
 });
 
-describe('BatchRow — one hint sentence while the pen is open (D-06)', () => {
-  it('renders the hint sentence exactly once while a batch pen is open', () => {
+describe('BatchRow — no interface-policy hint while the pen is open', () => {
+  it('does not explain that links return after the batch pen closes', () => {
     const markup = renderBatchRow({ openPen: 'record', draft: emptyRecordDraft });
-    const occurrences = markup.split('Links return after you save or cancel.').length - 1;
-    expect(occurrences).toBe(1);
-  });
-
-  it('renders no hint sentence with no pen open', () => {
-    const markup = renderBatchRow({ openPen: null });
     expect(markup).not.toContain('Links return after you save or cancel.');
   });
 });
@@ -781,15 +775,14 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
   });
 });
 
-// route-recipe-batch.md § 3, "The churn date is named required before the
-// refusal, not only in it" — the churn date is the batch's name, not its
-// content, so it alone carries `required`/`aria-required`, and a refusal
-// renders once, inside the date's own label, exactly as MeasuredField
-// renders a malformed number. Neither ceremony carries a hint of it.
-describe('BatchRow — the churn date is named required before the refusal, and its refusal renders once, in its own label (§ 3)', () => {
-  it('names the date required before any refusal: the caption reads "Churn date, required" and the input carries required and aria-required', () => {
+// route-recipe-batch.md § 3: the date is the batch's name, not its
+// content, so it alone carries `required`/`aria-required` and a visible
+// helper before refusal. The helper gives way to the one local error.
+describe('BatchRow — Churn date states its requirement beneath the control and owns its refusal (§ 3)', () => {
+  it('keeps the caption to the field name, shows Required below, and carries native required semantics', () => {
     const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft });
-    expect(markup).toContain('<span class="pen-caption">Churn date, required</span>');
+    expect(markup).toContain('<span class="pen-caption">Churn date</span>');
+    expect(markup).toContain('<span class="field-requirement" aria-hidden="true">Required</span>');
     const dateInput = markup.match(/<input[^>]*type="date"[^>]*class="ink-field"[^>]*\/>/)[0];
     expect(dateInput).toContain('required=""');
     expect(dateInput).toContain('aria-required="true"');
@@ -807,6 +800,7 @@ describe('BatchRow — the churn date is named required before the refusal, and 
     expect(markup).toContain('<span id="field-error-churnDate" class="field-error">Enter the date you churned.</span>');
     expect(markup).toContain('aria-invalid="true"');
     expect(markup).toContain('aria-describedby="field-error-churnDate"');
+    expect(markup).not.toContain('field-requirement');
     expect(markup).not.toContain('save-ceremony__hint');
   });
 
@@ -815,6 +809,7 @@ describe('BatchRow — the churn date is named required before the refusal, and 
     expect(markup).not.toContain('field-error-churnDate');
     expect(markup).not.toContain('aria-invalid');
     expect(markup).not.toContain('save-ceremony__hint');
+    expect(markup).toContain('<span class="field-requirement" aria-hidden="true">Required</span>');
   });
 
   it('names nothing else in the record required — aria-required appears exactly once, on the churn date, with the tasted date rendered and provably not required', () => {

@@ -447,13 +447,6 @@ export function BatchRow({
 
   return (
     <section className="batch-row" aria-label="Batch">
-      {/* One hint sentence for the open pen. VersionRow carries its own
-          plan hint; this row carries record/amend so the page never
-          repeats the same sentence. */}
-      {(openPen === 'record' || openPen === 'amend') && (
-        <p className="versions__hint">Links return after you save or cancel.</p>
-      )}
-
       {/* The date and later-batches control name the batch IN VIEW — a
           different batch than the one being recorded while
           openPen === 'record' (Mark, 2026-09-10 live review, G-03.3-4):
@@ -510,12 +503,13 @@ export function BatchRow({
                 it (contract "DOM order inventory"). .batch-row__cells
                 stays only for the read view below — the pen no longer
                 uses it. Mark's 2026-09-16 ruling: the batch's name is not
-                the record's content, so the date is named required, and a
-                refusal renders here — once, beside the field focus lands
-                on — rather than at either ceremony. */}
+                the record's content, so the field names the requirement
+                before refusal. The quiet helper gives way to the error
+                here — once, beside the field focus lands on — rather than
+                at either ceremony. */}
             <div className="field-row">
               <label className="field-row__label field-row__label--date">
-                <span className="pen-caption">Churn date, required</span>
+                <span className="pen-caption">Churn date</span>
                 <input
                   type="date"
                   className="ink-field"
@@ -528,15 +522,14 @@ export function BatchRow({
                   value={draft.churnDate}
                   onChange={(event) => onChangeRecordField('churnDate', event.target.value)}
                 />
-                {/* The caption's visible word and aria-required's own
-                    announcement may both say "required" to a screen
-                    reader — accepted, not an oversight: the word is for
-                    the maker who never hears it, the attribute for the
-                    one who does. */}
-                {blockedDateMessage && (
+                {blockedDateMessage ? (
                   <span id={CHURN_DATE_ERROR_ID} className="field-error">
                     {blockedDateMessage}
                   </span>
+                ) : (
+                  // Native required semantics already announce this fact;
+                  // the visible helper is for the maker reading the sheet.
+                  <span className="field-requirement" aria-hidden="true">Required</span>
                 )}
               </label>
               {CHURN_MEASURED_FIELDS.map((field) => (

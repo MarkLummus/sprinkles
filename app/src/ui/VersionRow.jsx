@@ -24,19 +24,13 @@ export function VersionRow({
   openPen = null,
   penReason = null,
   canSaveOver,
-  penHint = null,
-  // A blocked save whose block is the version line's own (critique P1 #3,
-  // D-21, WR-01 fix): an incrementing attempt counter, not a boolean, so a
-  // second consecutive blocked press on the same field re-fires the focus
-  // effect below — a value-equal boolean cannot.
-  versionLineBlockedAttempt = null,
+  saveAction = null,
   onStartDeveloping,
   onCancelDeveloping,
   onChangePenField,
   onSaveAsNewVersion,
   onSaveOverVersion,
   onToggleShowChanges = () => {},
-  focusDevelopOnMount = false,
   // The Record opener this row now owns beside Next version (sketch 003
   // variant B, G-03.3-4) — openBatch/onStartRecording are the same
   // references RecipePage.jsx already computes and passes to BatchRow.
@@ -59,37 +53,6 @@ export function VersionRow({
     }
   }, [mode]);
 
-  // D-27: after a fork saves and the page lands on the child's own URL,
-  // focus goes to the child's own Next version button. A page-level
-  // useEffect — not the native autoFocus DOM attribute — drives this fix
-  // for G-03.3-1: router.jsx keys RecipePage by `${id}::${batchId}`, so
-  // the child mounts fresh (wrapped in StrictMode by main.jsx, and
-  // RecipePage returns null until its async repository.getVersion call
-  // resolves) — autoFocus's exact firing point relative to React's commit
-  // phases is subtle across that remount. This effect fires only after
-  // the full real tree (the child's own data) is committed and is the
-  // last thing this component does in that commit, so it is deterministic
-  // regardless of that timing and cannot be pre-empted by anything else in
-  // the same render. Confirmed by grep across app/src: no other
-  // .focus()/autoFocus call is reachable on this openPen === null mount
-  // path — the plan-pen ceremony's own autoFocus and BatchRow's
-  // record/amend/tasting ceremony autoFocuses only render while a pen is
-  // open, and VersionStrip's current-version Link carries no .focus()
-  // call.
-  //
-  // landingFocusVisible (03.3-06 checkpoint feedback, G-03.3-1): the
-  // .focus() call below lands focus, but follows a mouse-driven Save
-  // click, so Chrome's :focus-visible heuristic draws no ring for it —
-  // this flag opts the button into an explicit :focus rule (app.css) for
-  // exactly this one landing, cleared on the button's own blur.
-  const [landingFocusVisible, setLandingFocusVisible] = useState(false);
-  useEffect(() => {
-    if (focusDevelopOnMount) {
-      developButtonRef.current?.focus();
-      setLandingFocusVisible(true);
-    }
-  }, [focusDevelopOnMount]);
-
   // Focus-return for the Record opener, relocated verbatim from
   // BatchRow.jsx (03.3-06, G-03.3-4) since this row now owns the button
   // beside Next version — must sit above the conditional render below,
@@ -107,16 +70,6 @@ export function VersionRow({
     }
   }, [openPen]);
 
-  // The version-line field's own focus move on a blocked save (critique
-  // P1 #3, D-21, WR-01): fires once, on the press of Save, never while
-  // the maker types — keyed on the attempt counter, so a second
-  // consecutive block on the same field re-fires this effect exactly as
-  // the first one did.
-  const versionLineFieldRef = useRef(null);
-  useEffect(() => {
-    if (versionLineBlockedAttempt != null) versionLineFieldRef.current?.focus();
-  }, [versionLineBlockedAttempt]);
-
   // The Later-versions disclosure (sketch 003 variant B, G-03.3-4): closed
   // by default, revealing the CURRENT version's own descendants — the
   // whole subtree below it, not the recipe's full version list (that
@@ -128,7 +81,75 @@ export function VersionRow({
 
   return (
     <>
-      <section className="vmeta" aria-label="Version">
+      <section
+        className={`vmeta${openPen === 'plan' ? ' vmeta--developing' : ''}`}
+        aria-label={openPen === 'plan' ? 'Next version' : 'Version'}
+        aria-busy={saveAction ? 'true' : undefined}
+      >
+        {openPen === 'plan' ? (
+          <>
+            <h2 className="region-name">Next version</h2>
+            <dl className="version-row__meta-list">
+              <dt className="versions__lineage-label">From version</dt>
+              <dd className="versions__lineage">{version.versionLabel}</dd>
+            </dl>
+            <label className="headnote__reason-field">
+              <span>Why</span>
+              <textarea
+                className="prose-field"
+                rows="2"
+                disabled={saveAction !== null}
+                placeholder="e.g. less oil after the batch of 2 Aug"
+                value={penDraft.reason}
+                aria-label="Why"
+                onChange={(event) => onChangePenField('reason', event.target.value)}
+              />
+            </label>
+            <label className="headnote__citation">
+              <span>From batch</span>
+              {batches.length === 0 ? (
+                <span className="ink-text">no batch</span>
+              ) : (
+                <select
+                  className="ink-field"
+                  disabled={saveAction !== null}
+                  value={penDraft.citedBatchId ?? ''}
+                  aria-label="Cite a batch"
+                  onChange={(event) =>
+                    onChangePenField('citedBatchId', event.target.value === '' ? null : event.target.value)
+                  }
+                >
+                  <option value="">no batch cited</option>
+                  {citableBatches(batches).map((batch) => (
+                    <option key={batch.id} value={batch.id}>
+                      {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </label>
+            <div className="headnote__ceremony">
+              <button type="button" disabled={saveAction !== null} onClick={onCancelDeveloping}>
+                Cancel
+              </button>
+              {canSaveOver ? (
+                <>
+                  <button type="button" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
+                    {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
+                  </button>
+                  <button type="button" disabled={saveAction !== null} onClick={onSaveOverVersion}>
+                    {saveAction === 'over' ? 'Saving this version…' : 'Save over this version'}
+                  </button>
+                </>
+              ) : (
+                <button type="button" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
+                  {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
+                </button>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
         {/* The sketch's own visible "Version" region-name heading
             (G-03.3-4) — the section's aria-label already carries "Version"
             as an accessible name; this adds the same word as a visible
@@ -208,9 +229,7 @@ export function VersionRow({
               <button
                 type="button"
                 ref={developButtonRef}
-                className={landingFocusVisible ? 'is-landing-focus' : undefined}
                 onClick={onStartDeveloping}
-                onBlur={() => setLandingFocusVisible(false)}
               >
                 Next version
               </button>
@@ -230,104 +249,9 @@ export function VersionRow({
             </div>
           </div>
         )}
-        {/* The hint belongs to the pen that is open. BatchRow carries it
-            for record/amend; this row carries it only for its own plan
-            pen, so the full front matter never repeats the sentence. */}
-        {openPen === 'plan' && <p className="versions__hint">Links return after you save or cancel.</p>}
+          </>
+        )}
       </section>
-
-      {openPen === 'plan' && (
-        // The plan's pen ceremony (D-06, sketch 003 variant B,
-        // index.html:217-229): a full-width row of its own, spanning both
-        // page columns between the headnote/vmeta row and the batch row
-        // — not squeezed into vmeta's own narrow column (03.3-06
-        // checkpoint feedback). Two fields-columns inside, matching the
-        // sketch's own split: version line + why on the left, citation +
-        // saves on the right.
-        <section className="recipe-band__full-row versions__ceremony-row" aria-label="Next version">
-          <div>
-            <h2 className="region-name">Next version · from {version.versionLabel}</h2>
-            <label className="headnote__version-field">
-              <span>Version</span>
-              <input
-                ref={versionLineFieldRef}
-                type="text"
-                className="ink-field"
-                required
-                autoFocus
-                placeholder="e.g. 55 g oil · 800 g"
-                value={penDraft.versionLabel}
-                aria-label="Version"
-                onChange={(event) => onChangePenField('versionLabel', event.target.value)}
-              />
-            </label>
-            {/* The parent's own line, in ink — not the maker's draft
-                (D-30, critique P2 #1, route-recipe-version.md § 6 "The
-                parent's words in ink"). */}
-            <p className="headnote__version-was">was {version.versionLabel}</p>
-            <label className="headnote__reason-field">
-              <span>Why</span>
-              <textarea
-                className="prose-field"
-                rows="2"
-                placeholder="e.g. less oil after the batch of 2 Aug"
-                value={penDraft.reason}
-                aria-label="Why"
-                onChange={(event) => onChangePenField('reason', event.target.value)}
-              />
-            </label>
-          </div>
-          <div>
-            <label className="headnote__citation">
-              <span>From batch</span>
-              {batches.length === 0 ? (
-                <span className="ink-text">no batch</span>
-              ) : (
-                <select
-                  className="ink-field"
-                  value={penDraft.citedBatchId ?? ''}
-                  aria-label="Cite a batch"
-                  onChange={(event) =>
-                    onChangePenField('citedBatchId', event.target.value === '' ? null : event.target.value)
-                  }
-                >
-                  <option value="">no batch cited</option>
-                  {citableBatches(batches).map((batch) => (
-                    <option key={batch.id} value={batch.id}>
-                      {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </label>
-            {/* D-10: Cancel first always. A churned version (canSaveOver
-                false) offers one Save, bound to onSaveAsNewVersion since a
-                churned version's own record is never written to (D04). An
-                unchurned version offers both: Save as forks, Save writes
-                over. Supersedes Phase 3 D-01's outcome-at-the-end labels. */}
-            <div className="headnote__ceremony">
-              <button type="button" onClick={onCancelDeveloping}>
-                Cancel
-              </button>
-              {canSaveOver ? (
-                <>
-                  <button type="button" onClick={onSaveAsNewVersion}>
-                    Save as
-                  </button>
-                  <button type="button" onClick={onSaveOverVersion}>
-                    Save
-                  </button>
-                </>
-              ) : (
-                <button type="button" onClick={onSaveAsNewVersion}>
-                  Save
-                </button>
-              )}
-            </div>
-            {penHint && <p className="headnote__blocked">{penHint}</p>}
-          </div>
-        </section>
-      )}
 
       {laterVersionsOpen && (
         // The Later-versions disclosure (sketch 003 variant B,

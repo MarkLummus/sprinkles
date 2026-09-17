@@ -35,6 +35,7 @@ import {
   buildTastingFieldsFromDraft,
   CHURN_DATE_BLOCKED_MESSAGE,
   CHURN_DATE_BLOCKED_STATUS,
+  VERSION_BLOCKED_STATUS,
   MEASURED_INVALID_STATUS,
   TASTING_REMOVED_EMPTY_STATUS,
   TASTING_REMOVED_DATA_STATUS,
@@ -133,7 +134,7 @@ function renderVersionsReading(openPen, reason) {
 describe('The pen matrix — Develop absent whenever any pen is open; every other opener\'s own coverage lives in VersionRow.test.jsx/BatchRow.test.jsx', () => {
   it.each(PEN_MATRIX)('with the $openPen pen open, Develop is absent from VersionRow', ({ openPen, reason }) => {
     const markup = renderVersionsReading(openPen, reason);
-    expect(markup).not.toContain('>Next version<');
+    expect(markup).not.toMatch(/<button[^>]*>Next version<\/button>/);
   });
 
   it('with no pen open, Develop renders', () => {
@@ -665,6 +666,12 @@ describe('MEASURED_INVALID_STATUS, CHURN_DATE_BLOCKED_MESSAGE and CHURN_DATE_BLO
 
   it('matches the churn date\'s own form-scoped summary, the sibling of MEASURED_INVALID_STATUS', () => {
     expect(CHURN_DATE_BLOCKED_STATUS).toBe('Check the churn date. Your entries have been kept.');
+  });
+});
+
+describe('VERSION_BLOCKED_STATUS — the page-owned reassurance for a field-owned Version error', () => {
+  it('directs attention to Version and confirms the draft was kept', () => {
+    expect(VERSION_BLOCKED_STATUS).toBe('Check the version. Your changes have been kept.');
   });
 });
 

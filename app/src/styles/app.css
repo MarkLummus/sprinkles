@@ -277,7 +277,13 @@ textarea {
    arm was written for a box inset --gap-m from the RIGHT, and is
    geometrically stale for a box now inset var(--gap-xl) from the LEFT —
    the new arm is that same left inset plus one --gap-m of breathing
-   room on the right, tokens only. */
+   room on the right, tokens only. margin-block-start: var(--gap-xs)
+   (measured in Chrome at 1024px: the running head's underline box
+   bottom sits at y=34, the notice's top border at y=35 — a 1px
+   collision between two unrelated ink rules) opens air between the
+   head and the notice without reflowing anything: a margin on an
+   absolutely positioned box offsets only that box, never the head or
+   the page beneath it. */
 .page-status {
   position: absolute;
   z-index: 10;
@@ -285,6 +291,7 @@ textarea {
   inset-inline-start: var(--gap-xl);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-xl) - var(--gap-m)));
   margin: 0;
+  margin-block-start: var(--gap-xs);
   padding: var(--gap-xs) var(--gap-s);
   border: var(--rule-baseline) solid var(--ink);
   background: var(--ground);

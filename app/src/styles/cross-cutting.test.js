@@ -612,11 +612,12 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
     expect(ruleFor('.running-head').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-xl\)\s+0/);
   });
 
-  test('every other visual declaration on .page-status survives unchanged, and .page-status:empty still collapses', () => {
+  test('every other visual declaration on .page-status survives (margin-block-start added, 260917-ewf Task 4), and .page-status:empty still collapses', () => {
     const rule = ruleFor('.page-status');
     expect(rule.declarations).toMatch(/z-index:\s*10/);
     expect(rule.declarations).toMatch(/max-width:\s*min\(var\(--measure-prose\), calc\(100vw - var\(--gap-xl\) - var\(--gap-m\)\)\)/);
     expect(rule.declarations).toMatch(/margin:\s*0/);
+    expect(rule.declarations).toMatch(/margin-block-start:\s*var\(--gap-xs\)/);
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-xs\) var\(--gap-s\)/);
     expect(rule.declarations).toMatch(/border:\s*var\(--rule-baseline\) solid var\(--ink\)/);
     expect(rule.declarations).toMatch(/background:\s*var\(--ground\)/);

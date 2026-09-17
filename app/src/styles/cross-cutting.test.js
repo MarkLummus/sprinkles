@@ -26,14 +26,17 @@ import {
   resolveTokenPx,
   readAllRules,
   assertNoAtRules,
+  stripCssComments,
 } from './css-source.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TOKENS_PATH = path.join(STYLES_DIR, 'tokens.css');
 const APP_CSS_PATH = path.join(STYLES_DIR, 'app.css');
+const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
 
 const tokensSource = readFileSync(TOKENS_PATH, 'utf8');
 const appCssSource = readFileSync(APP_CSS_PATH, 'utf8');
+const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
 
 const tokens = readCustomProperties(tokensSource);
 const rules = readAllRules(appCssSource);
@@ -198,15 +201,21 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
 });
 
 describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () => {
-  test('.recipe-page carries its own reduced padding in the 600px block', () => {
+  test('the page gutter steps down through the shared property, not a per-element .recipe-page override (260917-gjo)', () => {
     // mediaRuleFor is first-match by selector across all media blocks
-    // (PATTERNS.md caveat); .recipe-page now also has a rule in the
-    // 1099.98px block (03.3.1.1-01 Task 1), so this test filters by
-    // r.media directly instead.
-    const rule = rules.find((r) => r.selector === '.recipe-page' && r.media === '(max-width: 600px)');
-    expect(rule, 'expected a media-scoped .recipe-page rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 600px)');
-    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-m\)/);
+    // (PATTERNS.md caveat); resolving by r.media directly is this file's
+    // own precedent, kept here even though .recipe-page no longer has a
+    // rule of its own in this block to disambiguate from the 1099.98px
+    // one (03.3.1.1-01 Task 1).
+    const rootStep = rules.find((r) => r.selector === ':root' && r.media === '(max-width: 600px)');
+    expect(rootStep, 'expected a media-scoped :root step-down rule').toBeTruthy();
+    expect(rootStep.declarations).toMatch(/--gap-page:\s*var\(--gap-m\)/);
+
+    // The rule this replaced is gone: the step now arrives through
+    // --gap-page alone, so restating it per-element here would be the
+    // exact double-declaration this task exists to remove.
+    const recipePage600 = rules.find((r) => r.selector === '.recipe-page' && r.media === '(max-width: 600px)');
+    expect(recipePage600, '.recipe-page should have no rule left in the 600px block').toBeUndefined();
   });
 
   test("the margin's prose field drops to the control role in the 600px block — and .ink-field no longer goes with it (260915-x6n)", () => {
@@ -607,15 +616,17 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
     expect(ruleFor('.page-status').declarations).toMatch(/inset-block-start:\s*100%/);
   });
 
-  test('the notice and the running head share one left edge — one contract across both rules, so neither can drift alone', () => {
-    expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-start:\s*var\(--gap-xl\)/);
-    expect(ruleFor('.running-head').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-xl\)\s+0/);
+  test('four boxes, one gutter — the notice, the running head, the page, and the "no recipe found" page all read the shared --gap-page, so none can drift alone (260917-gjo)', () => {
+    expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-start:\s*var\(--gap-page\)/);
+    expect(ruleFor('.running-head').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)\s+0/);
+    expect(ruleFor('.not-found').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)/);
+    expect(ruleFor('.recipe-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
   });
 
   test('every other visual declaration on .page-status survives (margin-block-start added, 260917-ewf Task 4), and .page-status:empty still collapses', () => {
     const rule = ruleFor('.page-status');
     expect(rule.declarations).toMatch(/z-index:\s*10/);
-    expect(rule.declarations).toMatch(/max-width:\s*min\(var\(--measure-prose\), calc\(100vw - var\(--gap-xl\) - var\(--gap-m\)\)\)/);
+    expect(rule.declarations).toMatch(/max-width:\s*min\(var\(--measure-prose\), calc\(100vw - var\(--gap-page\) - var\(--gap-m\)\)\)/);
     expect(rule.declarations).toMatch(/margin:\s*0/);
     expect(rule.declarations).toMatch(/margin-block-start:\s*var\(--gap-xs\)/);
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-xs\) var\(--gap-s\)/);
@@ -645,5 +656,48 @@ describe('the print layer suppresses only the page notice (260917-ewf Task 3)', 
     expect(printRules).toHaveLength(1);
     expect(printRules[0].selector).toBe('.page-status');
     expect(printRules[0].declarations).toMatch(/display:\s*none/);
+  });
+});
+
+describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepped once, read by four boxes', () => {
+  test('tokens.css defines --gap-page once, reading --gap-xl, and resolves to the desktop gutter', () => {
+    expect(tokens['--gap-page']).toBe('var(--gap-xl)');
+    expect(resolveTokenPx(tokens, '--gap-page')).toBe(48);
+  });
+
+  test('tokens.css still opens no at-rule — the breakpoint step-down lives only in app.css', () => {
+    // Comment-stripped, since tokens.css's own two @media mentions are
+    // prose about app.css's convention, not an at-rule of its own.
+    const stripped = stripCssComments(tokensSource);
+    expect(stripped).not.toMatch(/@media/);
+  });
+
+  test("main.jsx imports tokens.css before app.css — the cascade the shared gutter's step-down rests on", () => {
+    // Both --gap-page declarations sit on :root at equal specificity, and
+    // a media query adds none, so which one wins below 600px is decided
+    // purely by source order. That makes this import order a real
+    // contract the mechanism depends on, not incidental sequencing — if
+    // it ever flipped, the step-down would silently stop applying.
+    const tokensImportIndex = mainJsxSource.indexOf('./styles/tokens.css');
+    const appCssImportIndex = mainJsxSource.indexOf('./styles/app.css');
+    expect(tokensImportIndex).toBeGreaterThan(-1);
+    expect(appCssImportIndex).toBeGreaterThan(-1);
+    expect(tokensImportIndex).toBeLessThan(appCssImportIndex);
+  });
+
+  test('no media-scoped rule re-states an inline gutter for any of the four boxes — the step is declared once, on :root alone', () => {
+    const guardedSelectors = ['.recipe-page', '.running-head', '.not-found', '.page-status'];
+    const offenders = rules.filter(
+      (r) =>
+        r.media !== undefined &&
+        guardedSelectors.includes(r.selector) &&
+        /(^|\s)(padding|padding-inline|padding-left|inset-inline-start|inset-left):/.test(r.declarations),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  test('no app.css rule reads var(--gap-xl) any more — every one of the four consumers reads the shared --gap-page instead', () => {
+    const offenders = rules.filter((r) => /var\(--gap-xl\)/.test(r.declarations));
+    expect(offenders).toEqual([]);
   });
 });

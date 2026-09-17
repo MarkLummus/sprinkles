@@ -266,16 +266,15 @@ textarea {
    notice overlays the top of the page instead of reflowing it, and no
    blank line is reserved for it in either state. Both anchors read off
    .page-head: inset-block-start: 100% is that band's own bottom edge
-   (the running head's, since the band holds nothing else), and
-   inset-inline-start: var(--gap-xl) is the same token .running-head
-   reads for its own left padding, so head and notice share one left
-   edge. That edge only agrees with .recipe-page above 600px — below it
-   .recipe-page steps down to --gap-m while .running-head does not; that
-   is a pre-existing mismatch and is not resolved here. The viewport arm
-   of max-width was corrected (Mark, in session) from calc(100vw - 2 *
-   var(--gap-m)) to calc(100vw - var(--gap-xl) - var(--gap-m)): the old
+   (the running head's, since the band holds nothing else), and this
+   box's own left inset reads the same shared gutter, --gap-page, that
+   .running-head reads for its own left padding, so head and notice
+   share one left edge (260917-gjo) — at every width, since both read
+   the one property that steps together. The viewport arm of max-width
+   was corrected (Mark, in session) from calc(100vw - 2 *
+   var(--gap-m)) to calc(100vw - var(--gap-page) - var(--gap-m)): the old
    arm was written for a box inset --gap-m from the RIGHT, and is
-   geometrically stale for a box now inset var(--gap-xl) from the LEFT —
+   geometrically stale for a box now inset var(--gap-page) from the LEFT —
    the new arm is that same left inset plus one --gap-m of breathing
    room on the right, tokens only. margin-block-start: var(--gap-xs)
    (measured in Chrome at 1024px: the running head's underline box
@@ -288,8 +287,8 @@ textarea {
   position: absolute;
   z-index: 10;
   inset-block-start: 100%;
-  inset-inline-start: var(--gap-xl);
-  max-width: min(var(--measure-prose), calc(100vw - var(--gap-xl) - var(--gap-m)));
+  inset-inline-start: var(--gap-page);
+  max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
   margin: 0;
   margin-block-start: var(--gap-xs);
   padding: var(--gap-xs) var(--gap-s);
@@ -346,7 +345,7 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: 0;
-  padding: var(--gap-m) var(--gap-xl) 0;
+  padding: var(--gap-m) var(--gap-page) 0;
 }
 
 .running-head a {
@@ -357,7 +356,7 @@ textarea {
    running head above it, and a second link back to the list, so a
    mistyped or since-removed version id is no longer a dead end. */
 .not-found {
-  padding: var(--gap-m) var(--gap-xl);
+  padding: var(--gap-m) var(--gap-page);
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);
 }
@@ -414,7 +413,7 @@ textarea {
     'method side'
     'foot foot';
   gap: var(--gap-l);
-  padding: var(--gap-xl);
+  padding: var(--gap-page);
 }
 
 /* The front matter (sketch 003 variant B, 03.3-01): two full-width
@@ -2342,9 +2341,10 @@ textarea {
    threshold, line 511, `want < 1100`, expressed here as a viewport
    max-width) the page stacks to one column — band, ingredients, side,
    method, foot, side BEFORE method — and the column gap narrows to
-   --gap-m. This block changes columns and gap ONLY: the paper's 48px
-   page padding (--gap-xl) holds until the 600px block below shrinks it
-   to --gap-m (003 line 178) — no padding declaration lives here. The
+   --gap-m. This block changes columns and gap ONLY: the paper's page
+   padding reads the shared --gap-page (260917-gjo), which the 600px
+   block below steps for the whole page shell at once (003 line 178) —
+   no padding declaration lives here. The
    foot band (.pen-foot) mirrors .recipe-page's own columns (desktop
    rules above) and must collapse with it, or the ceremony would sit in
    a phantom second column. The 1099.98px prelude is the one sanctioned
@@ -2509,8 +2509,15 @@ textarea {
    fields keep their own .batch-margin__field, label-above-input shape,
    untouched by this rule. */
 @media (max-width: 600px) {
-  .recipe-page {
-    padding: var(--gap-m);
+  /* The one place the page's phone gutter is stated (260917-gjo): four
+     boxes step together below 600px because they all read one name,
+     --gap-page (tokens.css) — the page itself, the running head, the
+     "no recipe found" page, and the notice. The literal 600 stays here,
+     in app.css's own prelude, where the touch block above already put
+     it; it is deliberately not in tokens.css (see that file's comment
+     on --gap-page for why). No other declaration belongs in this rule. */
+  :root {
+    --gap-page: var(--gap-m);
   }
 
   .field-row__label {

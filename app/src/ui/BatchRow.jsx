@@ -138,6 +138,17 @@ function useBelow760() {
 // defects share the axes' columns and the vertical hairline spans them.
 // No axis carries a caption any more (README "Group captions on their
 // own row") — the two cue rows head their columns instead.
+//
+// The two cue ids below name the core/declared split for assistive tech
+// (Impeccable critique issue 5, 2026-09-16; Mark's per-axis decision): each
+// axis's stops group is qualified via AxisMark's cueId prop, so a screen
+// reader hears "{axis name}, Every recipe" / "{axis name}, This recipe
+// only". One pair suffices — AxesGrid renders exactly one arrangement, and
+// AxesGrid itself mounts once. Distinct from the defects section's own
+// `defects-core-cue` / `defects-declared-cue` ids below.
+const AXES_CORE_CUE_ID = 'axes-core-cue';
+const AXES_DECLARED_CUE_ID = 'axes-declared-cue';
+
 export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, children }) {
   const core = axes.filter((axis) => axis.group === 'core');
   const declared = axes.filter((axis) => axis.group === 'declared');
@@ -151,6 +162,7 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
         value={marks[axis.key]}
         onChange={(stop) => onChangeMark(axis.key, stop)}
         onClear={() => onClearMark(axis.key, axis.name)}
+        cueId={axis.group === 'declared' ? AXES_DECLARED_CUE_ID : AXES_CORE_CUE_ID}
       />
     );
   }
@@ -159,11 +171,11 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
     return (
       <div className="axes-grid axes-grid--stacked">
         <div className="axes-grid__group">
-          <p className="pen-caption axes-cue">Every recipe</p>
+          <p className="pen-caption axes-cue" id={AXES_CORE_CUE_ID}>Every recipe</p>
           {core.map((axis) => renderAxis(axis))}
         </div>
         <div className="axes-grid__group axes-grid__group--declared">
-          <p className="pen-caption axes-cue">This recipe only</p>
+          <p className="pen-caption axes-cue" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
           {declared.map((axis) => renderAxis(axis))}
         </div>
         {children}
@@ -178,8 +190,8 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
   return (
     <div className="axes-grid">
       <div className="axes-rule" aria-hidden="true" />
-      <p className="pen-caption axes-cue axes-cue--core">Every recipe</p>
-      <p className="pen-caption axes-cue axes-cue--declared">This recipe only</p>
+      <p className="pen-caption axes-cue axes-cue--core" id={AXES_CORE_CUE_ID}>Every recipe</p>
+      <p className="pen-caption axes-cue axes-cue--declared" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
       {renderAxis(core[0])}
       {renderAxis(core[1])}
       {renderAxis(declared[0])}

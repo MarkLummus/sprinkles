@@ -544,6 +544,46 @@ describe('AxesGrid — the two DOM orders, one per arrangement (contract "Keyboa
   });
 });
 
+describe('AxesGrid — the core/declared split reaches each axis\'s accessible name (Impeccable critique issue 5)', () => {
+  function expectPerAxisLabelling(markup) {
+    expect(markup.split('id="axes-core-cue"').length - 1).toBe(1);
+    expect(markup.split('id="axes-declared-cue"').length - 1).toBe(1);
+    for (const key of ['hardness', 'scoopability', 'smoothness', 'sweetness']) {
+      expect(markup).toContain(`aria-labelledby="axis-name-${key} axes-core-cue"`);
+    }
+    for (const key of ['body', 'oil']) {
+      expect(markup).toContain(`aria-labelledby="axis-name-${key} axes-declared-cue"`);
+    }
+  }
+
+  it('names every axis by its own name plus the matching cue, on desktop', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    expectPerAxisLabelling(markup);
+  });
+
+  it('names every axis by its own name plus the matching cue, stacked', () => {
+    const markup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={true} onChangeMark={noop} onClearMark={noop} />,
+    );
+    expectPerAxisLabelling(markup);
+  });
+
+  it('gives each cue <p> an id and nothing else — no role, same classes, both arrangements', () => {
+    const desktopMarkup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    const stackedMarkup = renderToStaticMarkup(
+      <AxesGrid axes={batteryAxes} marks={{}} below={true} onChangeMark={noop} onClearMark={noop} />,
+    );
+    expect(desktopMarkup).toContain('<p class="pen-caption axes-cue axes-cue--core" id="axes-core-cue">');
+    expect(desktopMarkup).toContain('<p class="pen-caption axes-cue axes-cue--declared" id="axes-declared-cue">');
+    expect(stackedMarkup).toContain('<p class="pen-caption axes-cue" id="axes-core-cue">');
+    expect(stackedMarkup).toContain('<p class="pen-caption axes-cue" id="axes-declared-cue">');
+  });
+});
+
 describe('BatchRow — the axes grid does not crash under Vitest\'s node environment (no window.matchMedia, this plan\'s own critical note)', () => {
   it('renders the tasting section with no window in scope, with no error thrown', () => {
     expect(() =>

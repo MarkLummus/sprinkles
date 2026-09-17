@@ -66,7 +66,7 @@ export function RecipeList() {
   if (versions === null) return null;
 
   return (
-    <>
+    <div className="list-page">
       <div className="recipe-list__transfer">
         <button type="button" onClick={handleExport}>
           Export
@@ -92,7 +92,7 @@ export function RecipeList() {
         )}
       </div>
       <RecipeRows versions={versions} />
-    </>
+    </div>
   );
 }
 

@@ -33,10 +33,12 @@ const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TOKENS_PATH = path.join(STYLES_DIR, 'tokens.css');
 const APP_CSS_PATH = path.join(STYLES_DIR, 'app.css');
 const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
+const RECIPE_LIST_JSX_PATH = path.join(STYLES_DIR, '..', 'ui', 'RecipeList.jsx');
 
 const tokensSource = readFileSync(TOKENS_PATH, 'utf8');
 const appCssSource = readFileSync(APP_CSS_PATH, 'utf8');
 const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
+const recipeListJsxSource = readFileSync(RECIPE_LIST_JSX_PATH, 'utf8');
 
 const tokens = readCustomProperties(tokensSource);
 const rules = readAllRules(appCssSource);
@@ -616,11 +618,12 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
     expect(ruleFor('.page-status').declarations).toMatch(/inset-block-start:\s*100%/);
   });
 
-  test('four boxes, one gutter — the notice, the running head, the page, and the "no recipe found" page all read the shared --gap-page, so none can drift alone (260917-gjo)', () => {
+  test('five boxes, one gutter — the notice, the running head, the page, the "no recipe found" page, and the list route\'s page body all read the shared --gap-page, so none can drift alone (260917-gjo; the fifth box added 260917-h83)', () => {
     expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-start:\s*var\(--gap-page\)/);
     expect(ruleFor('.running-head').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)\s+0/);
     expect(ruleFor('.not-found').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)/);
     expect(ruleFor('.recipe-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
+    expect(ruleFor('.list-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
   });
 
   test('every other visual declaration on .page-status survives (margin-block-start added, 260917-ewf Task 4), and .page-status:empty still collapses', () => {
@@ -659,7 +662,7 @@ describe('the print layer suppresses only the page notice (260917-ewf Task 3)', 
   });
 });
 
-describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepped once, read by four boxes', () => {
+describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepped once, read by five boxes (260917-h83 added the fifth)', () => {
   test('tokens.css defines --gap-page once, reading --gap-xl, and resolves to the desktop gutter', () => {
     expect(tokens['--gap-page']).toBe('var(--gap-xl)');
     expect(resolveTokenPx(tokens, '--gap-page')).toBe(48);
@@ -685,8 +688,14 @@ describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepp
     expect(tokensImportIndex).toBeLessThan(appCssImportIndex);
   });
 
-  test('no media-scoped rule re-states an inline gutter for any of the four boxes — the step is declared once, on :root alone', () => {
-    const guardedSelectors = ['.recipe-page', '.running-head', '.not-found', '.page-status'];
+  test('the gutter rule has a renderer — RecipeList.jsx renders .list-page exactly once, so the rule is never an orphan (260915-vvh CR-02 was a shipped rule nothing rendered)', () => {
+    expect(RECIPE_LIST_JSX_PATH).toBeTruthy();
+    const matches = recipeListJsxSource.match(/className="list-page"/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+
+  test('no media-scoped rule re-states an inline gutter for any of the five boxes — the step is declared once, on :root alone', () => {
+    const guardedSelectors = ['.recipe-page', '.running-head', '.not-found', '.page-status', '.list-page'];
     const offenders = rules.filter(
       (r) =>
         r.media !== undefined &&

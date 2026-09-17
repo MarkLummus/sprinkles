@@ -51,7 +51,7 @@ label { display: block; margin: 0 0 var(--gap-s); }
 /* ---------- pen shell ---------- */
 .pen { max-width: 640px; }
 .pen section + section { margin-top: var(--gap-l); padding-top: var(--gap-m); border-top: var(--rule-graduation) solid var(--ink); }
-.pen section + .next-time-shared, .pen .saves + .next-time-shared { margin-top: var(--gap-l); }
+.pen section + .next-time-shared { margin-top: var(--gap-l); } /* the ceremony now follows Next time; its own 32px comes from line 55 (reversal, 2026-09-16) */
 .pen .saves { display: flex; gap: var(--gap-s); margin-top: var(--gap-l); justify-content: flex-end; } /* right-aligned at every width (Mark, 2026-09-14) */ #undo-head-slot, #undo-record-slot { display: contents; } /* slots are not flex items: a hidden undo button leaves no gap */ #record-saves > #record-status { margin-right: auto; } /* the removal toast sits at the left of the end-of-record ceremony; Undo joins the right-aligned controls; the auto margin keeps them flush right even when the toast is empty */
 
 /* ---------- axis groups: core left, recipe-declared right of a vertical hairline ---------- */
@@ -298,13 +298,13 @@ label { display: block; margin: 0 0 var(--gap-s); }
       </div>
     </section>
 
-    <!-- end-of-record ceremony (03.3.1 D-01): after the tasting when open, after the churn when not, just above Next time; identical to the foot set -->
+    <label class="next-time-shared"><span class="lbl">Next time</span><textarea class="prose-field" rows="2" placeholder="e.g. churn 2 min longer"></textarea></label>
+    <!-- end-of-record ceremony (03.3.1 D-01): sits after all record content, below the shared Next time, in every state; identical to the foot set (revises the after-the-last-section placement, 2026-09-16) -->
     <div class="saves" style="align-items:baseline" id="record-saves">
       <span id="record-status" class="helper" role="status" aria-live="polite"></span><span id="undo-record-slot"></span>
       <button class="text-control add-tasting" hidden onclick="addTasting()">Add tasting</button>
       <button class="btn" onclick="announce('This is a sketch. Your entries have been kept; nothing was saved.')">Cancel</button> <button class="btn" onclick="previewSave(this)">Save batch</button>
     </div>
-    <label class="next-time-shared"><span class="lbl">Next time</span><textarea class="prose-field" rows="2" placeholder="e.g. churn 2 min longer"></textarea></label>
     <div class="recipe-placeholder" aria-hidden="true">the recipe — ingredients and steps — continues here; the ceremony below is the page foot</div>
     <p id="form-status" role="status" aria-live="polite"></p>
     <div class="saves" style="align-items:baseline">

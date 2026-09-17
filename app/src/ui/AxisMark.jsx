@@ -26,7 +26,13 @@ import { STOPS, stopWordsFor } from '../domain/axes.js';
 // leaves the browser's sequential-focus starting point on Clear so the
 // next Tab reaches the first cell with its ring; a script-focused cell
 // after a pointer click would show no ring.
-export function AxisMark({ axis, value, onChange, onClear }) {
+// `cueId` is the id of the core/declared cue row that qualifies this axis
+// (Impeccable critique issue 5, 2026-09-16; Mark's per-axis decision), so a
+// screen reader hears the qualifier as part of the axis itself — the
+// structure reference's "Screen readers hear the cue as part of Body's
+// box". Appended AFTER the axis name's own id, so the qualifier trails.
+// Optional: omitted, the stops group is named by the axis alone.
+export function AxisMark({ axis, value, onChange, onClear, cueId }) {
   const nameId = `axis-name-${axis.key}`;
   const groupName = `axis-${axis.key}`;
   const words = stopWordsFor(axis);
@@ -80,7 +86,7 @@ export function AxisMark({ axis, value, onChange, onClear }) {
       <div
         className="axis-mark__stops"
         role="group"
-        aria-labelledby={nameId}
+        aria-labelledby={cueId ? `${nameId} ${cueId}` : nameId}
         onKeyDown={handleStopsKeyDown}
       >
         {STOPS.map((stop, index) => (

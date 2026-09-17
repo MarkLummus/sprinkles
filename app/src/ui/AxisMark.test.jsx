@@ -51,6 +51,20 @@ describe('AxisMark — five stops, digits 1–5, per-stop aria-labels from stopW
     expect(markup).toContain(`id="${nameId}"`);
     expect(markup).toContain(`id="${nameId}" class="axis-mark__name">Hardness<`);
   });
+
+  it('with a cueId, names the stops group by the axis name followed by the cue, trailing (matching the defect groups\' own ordering)', () => {
+    const markup = renderToStaticMarkup(
+      <AxisMark axis={hardnessAxis} value={undefined} onChange={noop} onClear={noop} cueId="axes-core-cue" />,
+    );
+    expect(markup).toContain('aria-labelledby="axis-name-hardness axes-core-cue"');
+  });
+
+  it('without a cueId, names the stops group by the axis alone — existing call sites and tests keep rendering a valid group', () => {
+    const markup = renderToStaticMarkup(
+      <AxisMark axis={hardnessAxis} value={undefined} onChange={noop} onClear={noop} />,
+    );
+    expect(markup).toContain('aria-labelledby="axis-name-hardness"');
+  });
 });
 
 describe('AxisMark — inline state and the per-axis Clear (contract "Axes spec")', () => {

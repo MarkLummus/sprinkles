@@ -155,9 +155,20 @@ describe('VersionRow — the reason field carries a visible "Why" label (03.1-04
   it('renders a visible "Why" label, never "Reason", alongside the aria-label', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
     expect(markup).not.toContain('<span>Reason</span>');
-    expect(markup).toMatch(/<label class="headnote__reason-field"><span>Why<\/span>/);
+    expect(markup).toMatch(/<label class="headnote__reason-field"><span class="pen-caption">Why<\/span>/);
     expect(markup).toMatch(/<textarea[^>]*aria-label="Why"/);
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"/);
+  });
+
+  it('drops the empty baseline once the rationale holds prose', () => {
+    const markup = renderVersionRow({
+      openPen: 'plan',
+      penDraft: { ...emptyPenDraft(), reason: 'Less oil after the batch of 2 Aug.' },
+      batches: [],
+      canSaveOver: true,
+    });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
+    expect(markup).not.toContain('prose-field--empty');
   });
 });
 
@@ -321,6 +332,8 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     const markup = renderVersionRow({ version: oliveOilVersion, versions: [oliveOilVersion] });
     expect(markup).toMatch(/<dt[^>]*>Written<\/dt>/);
     expect(markup).toContain('no reason recorded');
+    expect(markup).toContain('class="versions__lineage-label version-row__reason-label">Why</dt>');
+    expect(markup).toContain('class="version-row__reason version-row__reason--empty">no reason recorded</dd>');
     expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
   });
 
@@ -343,6 +356,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).toContain('From batch');
     expect(markup).toContain('Why');
     expect(markup).toContain(childVersion.reason);
+    expect(markup).toContain('class="version-row__reason prose-text"');
     expect(markup).toContain(oliveOilVersion.versionLabel);
     expect(markup).toContain('1 later version');
   });

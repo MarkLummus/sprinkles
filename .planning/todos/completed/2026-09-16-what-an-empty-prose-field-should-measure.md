@@ -108,3 +108,17 @@ at 29px.
 four — `Headnote.jsx:23`, `Method.jsx:150/158/228/255/459`, `Authored.jsx:24`,
 `VersionRow.jsx:272`, plus `BatchRow.jsx:511/524/607/730`. Intended, since the token stays
 shared, but it visibly changes the recipe-version page too.
+
+## Completed 2026-09-17
+
+- Restored the sketch's shared note leading, hairline vertical inset, and one-line minimum
+  extent to the app's base `.prose-field` rule. Desktop fields no longer collapse to a
+  hairline; narrow and coarse-pointer contexts still override them with the 44px touch floor.
+- Drew the touch floor back into sketches 007 and 008 and updated the cross-cutting reference,
+  so the app and design evidence agree.
+- Kept `autoGrow` as a compatibility path for engines without native `field-sizing: content`.
+  In supporting browsers it is harmless; removing it would make the `rows` fallback fixed-height
+  rather than content-growing in older engines.
+- Added a style-contract assertion for the base prose-field geometry. The focused suite passed
+  62 tests, and a live 735px browser pass measured every visible prose field at 44px with no
+  horizontal page overflow.

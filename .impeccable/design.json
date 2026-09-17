@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-16T00:00:00.000Z",
+  "generatedAt": "2026-09-17T00:00:00.000Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -232,9 +232,17 @@
       "name": "Prose field",
       "kind": "input",
       "refersTo": "prose-field",
-      "description": "The maker's words editing in place as the printed paragraph: no border at rest, pen blue text face, grows with its text. A blank named field carries a hairline baseline.",
+      "description": "The maker's words editing in place as the printed paragraph: no border at rest, pen blue text face, note leading, a hairline vertical inset and a one-line minimum extent, growing with its text. A blank named field carries a hairline baseline. Narrow and coarse-pointer contexts raise it to the shared 44px touch floor and 16px text.",
       "html": "<textarea class=\"ds-prose-field\" rows=\"2\">Soft, not greasy.</textarea>",
-      "css": ".ds-prose-field{font-family:var(--face-text);font-size:inherit;line-height:inherit;color:var(--pen-blue);border:none;background:none;padding:0;margin:0;width:100%;max-width:var(--measure-prose);box-sizing:border-box;field-sizing:content;resize:none}.ds-prose-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}"
+      "css": ".ds-prose-field{font-family:var(--face-text);font-size:inherit;line-height:var(--leading-note);color:var(--pen-blue);border:none;background:none;padding:var(--gap-hair) 0;margin:0;min-height:calc(var(--leading-note) * 1em);width:100%;max-width:var(--measure-prose);box-sizing:border-box;field-sizing:content;resize:none}.ds-prose-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-prose-field{min-height:var(--touch-min);font-size:var(--type-note)}}"
+    },
+    {
+      "name": "Field feedback",
+      "kind": "custom",
+      "refersTo": "field-feedback",
+      "description": "One field-owned line beneath an editable field. Quiet Required guidance yields to the actionable error after invalid submission. Native required semantics own the requirement; aria-describedby connects the input to the error.",
+      "html": "<label><span class=\"ds-pen-caption\">Version</span><input class=\"ds-ink-field\" required aria-invalid=\"true\" aria-describedby=\"ds-field-error\"/><span id=\"ds-field-error\" class=\"ds-field-error\">Enter a version.</span></label>",
+      "css": ".ds-field-error,.ds-field-requirement{display:block;max-width:24ch;font-family:var(--face-grotesk);font-size:var(--type-control);font-weight:400;line-height:var(--leading-helper);color:var(--ink);margin-top:var(--gap-xs);text-transform:none;letter-spacing:0}"
     },
     {
       "name": "Ingredient table",

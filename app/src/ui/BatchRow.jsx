@@ -7,6 +7,7 @@ import { axesForBatch, readMarkWord } from '../domain/axes.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
 import { AxisMark } from './AxisMark.jsx';
+import { FieldFeedback } from './FieldFeedback.jsx';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -88,11 +89,7 @@ function MeasuredField({ field, value, error, onChange, inputRef }) {
         />
         <span className="field-unit__unit">{field.unit}</span>
       </span>
-      {error && (
-        <span id={errorId} className="field-error">
-          {error}
-        </span>
-      )}
+      <FieldFeedback error={error} errorId={errorId} />
     </label>
   );
 }
@@ -550,15 +547,13 @@ export function BatchRow({
                   value={draft.churnDate}
                   onChange={(event) => onChangeRecordField('churnDate', event.target.value)}
                 />
-                {blockedDateMessage ? (
-                  <span id={CHURN_DATE_ERROR_ID} className="field-error">
-                    {blockedDateMessage}
-                  </span>
-                ) : (
-                  // Native required semantics already announce this fact;
-                  // the visible helper is for the maker reading the sheet.
-                  <span className="field-requirement" aria-hidden="true">Required</span>
-                )}
+                {/* Native required semantics already announce this fact;
+                    the visible helper is for the maker reading the sheet. */}
+                <FieldFeedback
+                  error={blockedDateMessage}
+                  errorId={CHURN_DATE_ERROR_ID}
+                  required
+                />
               </label>
               {CHURN_MEASURED_FIELDS.map((field) => (
                 <MeasuredField

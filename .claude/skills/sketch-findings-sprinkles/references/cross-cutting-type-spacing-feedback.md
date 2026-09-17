@@ -34,7 +34,7 @@ App-wide rules validated in sketch 007's hardening/typography passes. **These ap
 
 ## Touch Targets & the Responsive Ladder
 
-- **Below the 760px step-down, interactive targets grow toward 44px**: rating stops 40×44 (track arithmetic scales: 5×40 + 4×4 = 216px, anchors re-aligned to match), chips and segmented options min-height 44, buttons and ink fields min-height 44. Desktop stays compact (34px stops on the 186px track, 34px buttons) — verified at 768px.
+- **Below the 760px step-down, interactive targets grow toward 44px**: rating stops 40×44 (track arithmetic scales: 5×40 + 4×4 = 216px, anchors re-aligned to match), chips and segmented options min-height 44, buttons, ink fields, and prose fields min-height 44. Desktop prose fields keep a one-line minimum extent with note leading and a hairline vertical inset; the rest stays compact (34px stops on the 186px track, 34px buttons) — verified at 768px.
 - **Ladder, not cliff:** a side-by-side arrangement needs the pen's full 640px; below ~760px step down to the intermediate arrangement (groups stacked on a horizontal rule, still 2-across); auto-fit collapses each group to one column once two 280px columns no longer fit. Below 600px: frame padding drops to gap-m, fields go to 1rem.
 - The default arrangement is responsive on its own; explicit toolbar modes (1/2/3 columns) are for comparison, not the product.
 - **Re-render per arrangement so tab order follows the eye** — one DOM order cannot serve both a row-major grid and stacked groups. Carry interaction state across re-renders by id, not by DOM reference.

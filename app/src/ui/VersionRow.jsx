@@ -95,9 +95,9 @@ export function VersionRow({
               <dd className="versions__lineage">{version.versionLabel}</dd>
             </dl>
             <label className="headnote__reason-field">
-              <span>Why</span>
+              <span className="pen-caption">Why</span>
               <textarea
-                className="prose-field"
+                className={penDraft.reason === '' ? 'prose-field prose-field--empty' : 'prose-field'}
                 rows="2"
                 disabled={saveAction !== null}
                 placeholder="e.g. less oil after the batch of 2 Aug"
@@ -194,8 +194,14 @@ export function VersionRow({
               </dd>
             </>
           )}
-          <dt className="versions__lineage-label">Why</dt>
-          <dd className="versions__lineage">{version.reason ? version.reason : 'no reason recorded'}</dd>
+          <dt className="versions__lineage-label version-row__reason-label">Why</dt>
+          <dd
+            className={version.reason
+              ? 'version-row__reason prose-text'
+              : 'version-row__reason version-row__reason--empty'}
+          >
+            {version.reason ? version.reason : 'no reason recorded'}
+          </dd>
           {version.citedBatchId && citedBatch && (
             <>
               <dt className="versions__lineage-label">From batch</dt>

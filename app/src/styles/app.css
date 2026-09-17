@@ -526,20 +526,6 @@ textarea {
   margin-top: var(--gap-s);
 }
 
-/* The "Why" label word (03.3-06 checkpoint feedback, sketch 003 variant
-   B, index.html:222): the same visible-label style
-   .headnote__version-field span already carries above, so Version and
-   Why read as the same kind of thing. */
-.headnote__reason-field span {
-  display: block;
-  font-family: var(--face-grotesk);
-  font-size: var(--type-label);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: var(--gap-xs);
-}
-
 /* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04; one
    fill for every on state, 2026-09-16): the square carries the pressed
    state now (.text-toggle, sketch 008 lines 91-95), not weight or an
@@ -605,7 +591,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: var(--gap-m);
-  margin-top: var(--gap-xs);
+  margin-top: var(--gap-m);
 }
 
 .versions__opener-group {
@@ -702,6 +688,31 @@ textarea {
 
 .version-row__meta-list dd {
   margin: 0;
+}
+
+/* Why is authored rationale, not a compact fact. It stays inside the
+   definition list for its label relationship, but spans both tracks and
+   reads with the same note role as the prose field that creates it. */
+.version-row__reason-label,
+.version-row__reason {
+  grid-column: 1 / -1;
+}
+
+.version-row__reason-label {
+  margin-top: var(--gap-s);
+}
+
+.version-row__reason {
+  max-width: var(--measure-prose);
+  font-size: var(--type-note);
+}
+
+/* An absence belongs to the printed system, not the maker's pen. */
+.version-row__reason--empty {
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+  line-height: var(--leading-helper);
+  color: var(--ink);
 }
 
 /* Opening the plan pen turns the saved Version column into the child's
@@ -1408,18 +1419,20 @@ textarea {
    as the printed paragraph — no border at rest; the hairline outline
    the brief describes is the global :focus-visible rule above, appearing
    only on focus (planner decision 1: one outline mechanism, not two).
-   font-size and line-height inherit from whichever block-level context
-   already sizes the paragraph this field replaces, rather than fixing a
-   size here that could disagree with it. */
+   Font size inherits from whichever block-level context already sizes the
+   paragraph this field replaces. The shared note leading and hairline inset
+   give even an empty field a readable one-line extent on pointer layouts;
+   touch mode raises that same field to the app-wide 44px floor below. */
 .prose-field {
   font-family: var(--face-text);
   font-size: inherit;
-  line-height: inherit;
+  line-height: var(--leading-note);
   color: var(--pen-blue);
   border: none;
   background: none;
-  padding: 0;
+  padding: var(--gap-hair) 0;
   margin: 0;
+  min-height: calc(var(--leading-note) * 1em);
   width: 100%;
   max-width: var(--measure-prose);
   box-sizing: border-box;
@@ -2422,10 +2435,8 @@ textarea {
      Mark approved 2026-09-16): the four record prose fields measured 560 x 19
      at every coarse pointer, under UX1-01. It takes the SHARED --touch-min
      declaration rather than a private rule — one value stays app-wide, and
-     neither a narrow window nor a wide iPad is a named exception. This goes
-     beyond sketch 008 line 166, which pairs .ink-field and .prose-field for
-     font-size (167) but not for min-height — a departure recorded in the
-     260916-vv1 SUMMARY for Mark to rationalise. */
+     neither a narrow window nor a wide iPad is a named exception. Sketches
+     007 and 008 now carry the same floor, closing the original departure. */
   button,
   select,
   .ink-field,

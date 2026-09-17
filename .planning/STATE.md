@@ -194,7 +194,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 ### Pending Todos
 
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
-- [2026-09-17] [ui] What an empty prose field should measure — desktop height, the sketch departure, and autoGrow — [todo file](.planning/todos/pending/2026-09-16-what-an-empty-prose-field-should-measure.md)
 
 ### Blockers/Concerns
 

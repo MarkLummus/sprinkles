@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { FieldFeedback } from './FieldFeedback.jsx';
 
 // The recipe block (route-recipe.md § 3 "The imprint", revised
 // 2026-09-17): the recipe's name, current/draft version line and intro.
@@ -22,6 +23,8 @@ export function Headnote({
   const versionLineFieldRef = useRef(null);
   const versionIdentityRef = useRef(null);
   const [landingFocusVisible, setLandingFocusVisible] = useState(false);
+  const descriptionIsEmpty = mode === 'developing' && penDraft.headnote === '';
+  const parentHasDescription = version.headnote !== '';
 
   useEffect(() => {
     if (versionLineBlockedAttempt != null) versionLineFieldRef.current?.focus();
@@ -57,13 +60,11 @@ export function Headnote({
             aria-describedby={versionLineError ? 'version-field-error' : undefined}
             onChange={(event) => onChangePenField('versionLabel', event.target.value)}
           />
-          {versionLineError ? (
-            <span id="version-field-error" className="field-error">
-              {versionLineError}
-            </span>
-          ) : (
-            <span className="field-requirement" aria-hidden="true">Required</span>
-          )}
+          <FieldFeedback
+            error={versionLineError}
+            errorId="version-field-error"
+            required
+          />
         </label>
       ) : (
         <p
@@ -83,15 +84,18 @@ export function Headnote({
         <>
           <label className="headnote__prose-field">
             <textarea
-              className="prose-field"
+              className={descriptionIsEmpty ? 'prose-field prose-field--empty' : 'prose-field'}
               rows="3"
               disabled={isSaving}
+              placeholder={parentHasDescription ? undefined : 'e.g. what this version changes'}
               value={penDraft.headnote}
-              aria-label="Headnote prose"
+              aria-label="Description"
               onChange={(event) => onChangePenField('headnote', event.target.value)}
             />
           </label>
-          {penDraft.headnote !== version.headnote && <p className="prose-struck-beneath">{version.headnote}</p>}
+          {penDraft.headnote !== version.headnote && parentHasDescription && (
+            <p className="prose-struck-beneath">{version.headnote}</p>
+          )}
         </>
       ) : (
         <p className="headnote__prose">{version.headnote}</p>

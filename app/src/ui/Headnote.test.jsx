@@ -69,11 +69,11 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
       mode: 'developing',
       penDraft: developingDraft,
     });
-    expect(markup).toMatch(/<textarea[^>]*aria-label="Headnote prose"/);
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Description"/);
   });
 
   // Prose fields carry no visible label word (03.1-04, planner decision 2):
-  // the field's own accessible name is the one place "Headnote prose" is
+  // the field's own accessible name is the one place "Description" is
   // now spelled out.
   it('renders no visible label word — the accessible name alone names the field', () => {
     const markup = renderHeadnote({
@@ -90,6 +90,42 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
     });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
     expect(markup).not.toMatch(/<textarea[^>]*class="ink-field"/);
+  });
+
+  it('shows an empty writing baseline and the struck parent when an inherited description is cleared', () => {
+    const markup = renderHeadnote({
+      mode: 'developing',
+      penDraft: { ...developingDraft, headnote: '' },
+    });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"/);
+    const descriptionField = markup.match(/<textarea[^>]*aria-label="Description"[^>]*>/)?.[0];
+    expect(descriptionField).toBeTruthy();
+    expect(descriptionField).not.toContain('placeholder=');
+    expect(markup).toContain(`<p class="prose-struck-beneath">${oliveOilVersion.headnote}</p>`);
+  });
+
+  it('uses an example hint when neither parent nor draft has a description', () => {
+    const version = { ...oliveOilVersion, headnote: '' };
+    const markup = renderHeadnote({
+      version,
+      mode: 'developing',
+      penDraft: { ...developingDraft, headnote: '' },
+    });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"/);
+    expect(markup).toContain('placeholder="e.g. what this version changes"');
+    expect(markup).not.toContain('prose-struck-beneath');
+  });
+
+  it('shows new prose without an empty strike when the parent had no description', () => {
+    const version = { ...oliveOilVersion, headnote: '' };
+    const markup = renderHeadnote({
+      version,
+      mode: 'developing',
+      penDraft: { ...developingDraft, headnote: 'A lighter olive-oil version.' },
+    });
+    expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
+    expect(markup).not.toContain('prose-field--empty');
+    expect(markup).not.toContain('prose-struck-beneath');
   });
 
   it('renders the baseline struck beneath once the field differs from it', () => {

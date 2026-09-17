@@ -114,7 +114,12 @@ components:
     backgroundColor: "transparent"
     textColor: "{colors.pen-blue}"
     typography: "{typography.body}"
-    padding: "0"
+    lineHeight: 1.5
+    padding: "2px 0"
+    minHeight: "1.5em"
+  prose-field-touch:
+    typography: "{typography.note}"
+    minHeight: "44px"
   pen-caption:
     textColor: "{colors.ink}"
     typography: "{typography.caption}"
@@ -176,7 +181,7 @@ components:
 
 # Design System: Sprinkles
 
-Recorded from the shipped code in `app/src/styles/tokens.css`, `app/src/styles/app.css`, and `app/src/ui/`, refreshed 2026-09-16 after Phases 2, 3, 03.1–03.3, 03.3.1 and 03.3.1.1, and the 260912-ti1, 260915-vvh, 260915-x6n and 260916-0d4 quick tasks. The direction contract that decided the world is `.impeccable/surfaces/route-recipe.md`; the record pen's own brief is `.impeccable/surfaces/route-recipe-batch.md`. This file describes what was built, not what was planned. The frontmatter is normative. The prose says where and why.
+Recorded from the shipped code in `app/src/styles/tokens.css`, `app/src/styles/app.css`, and `app/src/ui/`, refreshed 2026-09-17 after Phases 2, 3, 03.1–03.3, 03.3.1 and 03.3.1.1, and the 260912-ti1, 260915-vvh, 260915-x6n and 260916-0d4 quick tasks. The direction contract that decided the world is `.impeccable/surfaces/route-recipe.md`; the record pen's own brief is `.impeccable/surfaces/route-recipe-batch.md`. This file describes what was built, not what was planned. The frontmatter is normative. The prose says where and why.
 
 ## Overview
 
@@ -330,9 +335,9 @@ Components feel like a working binder: printed pages a person actually writes on
 ### Fields
 - **Ink field** (`.ink-field`): anything counted that the maker types. Hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, its own leading (1.35) and a 26px floor so an empty date input cannot collapse on WebKit. Sized to what it holds — a date at 128px, a short figure at 56px with its unit word set beside the box as a sibling — never the column.
 - **Field row** (`.field-row`): a wrapping flex row of labelled fields, bottom-aligned. Each caption reserves two lines of height so a short and a long caption in the same row keep their fields on one baseline. The melt row is the one row that top-aligns instead.
-- **Prose field** (`.prose-field`): the maker's words editing in place as the printed paragraph — no border at rest, pen blue text in the text face at the paragraph's own inherited size, growing with its text (`field-sizing: content`), no resize grip. A blank named prose field carries a hairline baseline so the writable spot is findable.
+- **Prose field** (`.prose-field`): the maker's words editing in place as the printed paragraph — no border at rest, pen blue text in the text face at the paragraph's own inherited size, note leading, a 2px vertical inset, and a one-line minimum extent, growing with its text (`field-sizing: content`) with no resize grip. A blank named prose field carries a hairline baseline so the writable spot is findable. Narrow and coarse-pointer contexts raise it to the shared 44px touch floor and 16px text.
 - **Prose text** (`.prose-text`): the record's saved words, the same text face and leading as the field it was typed in, still pen blue.
-- **Field error** (`.field-error`): the system's own sentence inside the field's label, wired by `aria-describedby`, in grotesk small print with no colour of its own.
+- **Field feedback** (`FieldFeedback.jsx`): the one line beneath an editable field. It shows quiet, visually-present `Required` guidance when requested; an actionable `.field-error` replaces that guidance after invalid submission. The input owns the error through `aria-describedby`, while native `required` semantics own the requirement. Version, Churn date, and every measured field share this component so their placement and priority cannot drift.
 - **Focus:** the one global `:focus-visible` rule — 2px ink outline, offset 2px. Nothing moves.
 
 ### Ingredient table
@@ -358,7 +363,7 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Pen state:** the strike control, the changed line in pen blue, on-demand "add purpose / add aside / done differently" text controls, and the uses checkboxes all read in place; a struck step reads struck with its prose intact, the strike scoped to the prose span so the label beside it stays legible.
 
 ### Front matter and the batch row
-- **The band:** two stacked full-width rows above the spread, closed by a baseline rule. The version's row carries the recipe block and the Version/Why/From batch metadata as a definition list, with the save ceremony and the Later disclosure as full-width sub-rows beneath, each opened by a bookcloth hairline.
+- **The band:** two stacked full-width rows above the spread, closed by a baseline rule. The version's row carries the recipe block and the compact factual metadata (Written, From version, From batch, Later) as a definition list. Why remains in that semantic list but spans both tracks and reads as authored prose at the note role; an absent reason stays quiet, in ink, at helper size. The save ceremony and Later disclosure sit as full-width sub-rows beneath, each opened by a bookcloth hairline.
 - **Batch row:** a region-name head line with the churned date in pen blue beside it, then a wrapping grid of measured cells (96px minimum) — label in the caption role, figure in pen blue at the note size and the prose weight, unit at the deviation size, plan sub-line in small print. An absent value reads "not measured" in **ink**, at the unit's size: an absence is not a record. Correct sits on the head line, right-aligned, as a text control; earlier batches open as a hairline-ruled panel beneath.
 - **Version strip:** the Later disclosure's card grid, auto-fill at 260px minimum, one card per descendant — version line in the text face, meta and batch lines in small print; the current version reads bold plus the 1px outline.
 

@@ -344,10 +344,9 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
-  test('the ten caption rules read --type-label at weight 500', () => {
+  test('the nine caption rules read --type-label at weight 500', () => {
     for (const selector of [
       '.headnote__version-field > .pen-caption',
-      '.headnote__reason-field span',
       '.headnote__citation span:first-child',
       '.versions__ceremony-field span',
       '.batch-row__cell-label',
@@ -423,10 +422,12 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).not.toMatch(/font-size:/);
   });
 
-  test('.prose-field keeps its deliberate size/leading inherit, untouched', () => {
+  test('.prose-field inherits its contextual size but keeps a readable one-line base extent', () => {
     const rule = ruleFor('.prose-field');
     expect(rule.declarations).toMatch(/font-size:\s*inherit/);
-    expect(rule.declarations).toMatch(/line-height:\s*inherit/);
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-hair\) 0/);
+    expect(rule.declarations).toMatch(/min-height:\s*calc\(var\(--leading-note\) \* 1em\)/);
   });
 
   test('the recorded figure reads the note size at the prose weight, in pen blue (sketch 003 line 88, D-15)', () => {
@@ -507,10 +508,9 @@ describe('placeholders italic, entered prose roman pen-blue', () => {
 });
 
 describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption and its content share one label', () => {
-  test('the eight existing sites read their caption-to-content distance through var(--gap-xs)', () => {
+  test('the seven existing sites read their caption-to-content distance through var(--gap-xs)', () => {
     for (const selector of [
       '.headnote__version-field > .pen-caption',
-      '.headnote__reason-field span',
       '.headnote__citation span:first-child',
       '.versions__ceremony-field span',
       '.method-step__uses legend',

@@ -614,7 +614,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // consecutive block on the same field still moves focus; blockedDate*
   // are the churn-date press-to-block's own message and attempt counter,
   // read by BOTH ceremonies (D-05: "a sentence beside both save sets");
-  // formStatus is the form-status live region's own text.
+  // formStatus is the open pen's own form-status live region text,
+  // whichever pen is open.
   const [fieldErrors, setFieldErrors] = useState({});
   const [invalidFieldTarget, setInvalidFieldTarget] = useState(null);
   const invalidFieldAttemptRef = useRef(0);
@@ -641,7 +642,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // the ninth round, Pattern 5) — the removal toasts' channel, since the
   // toast lives where the action was: TASTING_REMOVED_EMPTY_STATUS and
   // TASTING_REMOVED_DATA_STATUS both write here now, never to formStatus.
-  // formStatus stays the foot's own save/validation channel (line 309).
+  // formStatus stays the open pen's own save/validation channel (line
+  // 309), whichever pen is open.
   const [recordStatus, setRecordStatus] = useState('');
   const recordStatusTimerRef = useRef(null);
   const [pendingUndo, setPendingUndo] = useState(null);
@@ -1404,6 +1406,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
     setVersionSaveAction(null);
     versionSaveLockRef.current = false;
     onPageStatus('');
+    // Load-bearing, not defensive: without this a refusal survives in
+    // formStatus after the pen closes and prints itself when this pen
+    // reopens.
+    announce('');
     setMode('developing');
   }
 
@@ -1430,12 +1436,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
     setVersionSaveAction(null);
     versionSaveLockRef.current = false;
     onPageStatus('');
+    announce('');
   }
 
   function handleChangePenField(field, value) {
     setBlockedMessage(null);
     setBlockedTarget(null);
     onPageStatus('');
+    announce('');
     setPenDraft((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -1588,7 +1596,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
       // on every blocked press (WR-01) so a second consecutive block on
       // the same field still moves focus.
       const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
-      if (!rowId) onPageStatus(VERSION_BLOCKED_STATUS);
+      if (!rowId) announce(VERSION_BLOCKED_STATUS);
       blockedAttemptRef.current += 1;
       setBlockedTarget(
         rowId ? { kind: 'row', rowId, attempt: blockedAttemptRef.current } : { kind: 'versionLine', attempt: blockedAttemptRef.current },
@@ -1627,13 +1635,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
     versionSaveLockRef.current = true;
     setVersionSaveAction('new');
     onPageStatus('');
+    announce('');
     let child;
     try {
       child = createChildVersion(version, penFields, { id: freshId(), now: new Date().toISOString() });
     } catch {
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);
-      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
+      announce(VERSION_SAVE_ERROR);
       return;
     }
     Promise.resolve().then(() => repository.saveVersion(child)).then(() => {
@@ -1649,7 +1658,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }).catch(() => {
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);
-      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
+      announce(VERSION_SAVE_ERROR);
     });
   }
 
@@ -1664,13 +1673,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
     versionSaveLockRef.current = true;
     setVersionSaveAction('over');
     onPageStatus('');
+    announce('');
     let updated;
     try {
       updated = saveOverVersion(version, penFields, { now: new Date().toISOString() });
     } catch {
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);
-      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
+      announce(VERSION_SAVE_ERROR);
       return;
     }
     Promise.resolve().then(() => repository.saveVersion(updated)).then(() => {
@@ -1686,7 +1696,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }).catch(() => {
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);
-      onPageStatus(VERSION_SAVE_ERROR, { persist: true });
+      announce(VERSION_SAVE_ERROR);
     });
   }
 
@@ -1731,6 +1741,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
               penReason={penReason}
               canSaveOver={canSaveOver}
               saveAction={versionSaveAction}
+              formStatus={formStatus}
               onStartDeveloping={handleStartDeveloping}
               onCancelDeveloping={handleCancelDeveloping}
               onChangePenField={handleChangePenField}

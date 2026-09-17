@@ -454,3 +454,47 @@ describe('VersionRow — the saved metadata transforms into the next-version cer
     expect(markup).not.toContain('versions__ceremony-row');
   });
 });
+
+// The pen's own form-scoped live region (260917-e5k, the pending todo
+// file's middle row): a refused save and a failed write speak here,
+// beside the controls and the kept draft, because the pen stays open —
+// mirrors BatchRow.test.jsx's own form-status block (~892-912).
+describe('VersionRow — the plan pen\'s own form-status live region', () => {
+  it('renders a role="status" region after the From-batch field and before the ceremony', () => {
+    const markup = renderVersionRow({
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      batches: [],
+      canSaveOver: true,
+      formStatus: 'Check the version. Your changes have been kept.',
+    });
+    expect(markup).toContain('class="form-status"');
+    expect(markup).toContain('role="status"');
+    expect(markup).toContain('aria-live="polite"');
+    expect(markup).toContain('Check the version. Your changes have been kept.');
+    const citationIndex = markup.indexOf('class="headnote__citation"');
+    const formStatusIndex = markup.indexOf('class="form-status"');
+    const ceremonyIndex = markup.indexOf('class="headnote__ceremony"');
+    expect(citationIndex).not.toBe(-1);
+    expect(formStatusIndex).not.toBe(-1);
+    expect(ceremonyIndex).not.toBe(-1);
+    expect(formStatusIndex).toBeGreaterThan(citationIndex);
+    expect(ceremonyIndex).toBeGreaterThan(formStatusIndex);
+  });
+
+  it('renders the region empty (no text node) when formStatus is blank — mounted before any text arrives', () => {
+    const markup = renderVersionRow({
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      batches: [],
+      canSaveOver: true,
+      formStatus: '',
+    });
+    expect(markup).toMatch(/<p class="form-status" role="status" aria-live="polite"><\/p>/);
+  });
+
+  it('renders no .form-status at all in the reading branch (no pen open)', () => {
+    const markup = renderVersionRow({ openPen: null });
+    expect(markup).not.toContain('form-status');
+  });
+});

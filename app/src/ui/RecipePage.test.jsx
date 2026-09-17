@@ -18,6 +18,8 @@
 // (VersionRow) — BatchRow's own coverage lives in BatchRow.test.jsx.
 import { describe, it, expect, vi } from 'vitest';
 vi.mock('../store/repository.js', () => ({ repository: {} }));
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import {
@@ -669,9 +671,48 @@ describe('MEASURED_INVALID_STATUS, CHURN_DATE_BLOCKED_MESSAGE and CHURN_DATE_BLO
   });
 });
 
-describe('VERSION_BLOCKED_STATUS — the page-owned reassurance for a field-owned Version error', () => {
+describe('VERSION_BLOCKED_STATUS — the form-owned reassurance for a field-owned Version error (260917-e5k: moved off the page channel)', () => {
   it('directs attention to Version and confirms the draft was kept', () => {
     expect(VERSION_BLOCKED_STATUS).toBe('Check the version. Your changes have been kept.');
+  });
+});
+
+// The version pen's refusal and its storage failure route into the form
+// channel (announce), never the page channel (onPageStatus) — the page
+// region speaks only on a successful version save (260917-e5k, the
+// pending todo's page/form split). Reads RecipePage.jsx as text, in the
+// style cross-cutting.test.js already uses for the stylesheet: comments
+// are stripped first so prose can never satisfy or break the gate, then
+// for each constant every `functionName(CONSTANT` call site is collected
+// into a set (not a count), so a fifth failure path never reds this test
+// and a path that changes channel does.
+describe('RecipePage.jsx — the version pen\'s refusal and failure route through announce, never onPageStatus', () => {
+  const recipePagePath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const recipePageSource = readFileSync(recipePagePath, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  function callersOf(constantName) {
+    const pattern = new RegExp(`(\\w+)\\(${constantName}\\b`, 'g');
+    return new Set([...recipePageSource.matchAll(pattern)].map((match) => match[1]));
+  }
+
+  it('the refusal (VERSION_BLOCKED_STATUS) is passed only to announce', () => {
+    const callers = callersOf('VERSION_BLOCKED_STATUS');
+    expect(callers.size).toBeGreaterThan(0);
+    expect(callers).toEqual(new Set(['announce']));
+  });
+
+  it('the storage failure (VERSION_SAVE_ERROR) is passed only to announce, at every site', () => {
+    const callers = callersOf('VERSION_SAVE_ERROR');
+    expect(callers.size).toBeGreaterThan(0);
+    expect(callers).toEqual(new Set(['announce']));
+  });
+
+  it('the success (VERSION_SAVED_STATUS) is passed only to onPageStatus', () => {
+    const callers = callersOf('VERSION_SAVED_STATUS');
+    expect(callers.size).toBeGreaterThan(0);
+    expect(callers).toEqual(new Set(['onPageStatus']));
   });
 });
 

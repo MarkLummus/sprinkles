@@ -25,6 +25,7 @@ export function VersionRow({
   penReason = null,
   canSaveOver,
   saveAction = null,
+  formStatus = '',
   onStartDeveloping,
   onCancelDeveloping,
   onChangePenField,
@@ -128,6 +129,14 @@ export function VersionRow({
                 </select>
               )}
             </label>
+            {/* The pen's own form-scoped live region (the todo file's middle
+                row): a refused save and a failed write speak here, beside
+                the controls and the kept draft, because the pen stays open
+                and the draft survives — the page scope is for the save
+                that ends the session. Mirrors BatchRow.jsx's own region. */}
+            <p className="form-status" role="status" aria-live="polite">
+              {formStatus}
+            </p>
             <div className="headnote__ceremony">
               <button type="button" disabled={saveAction !== null} onClick={onCancelDeveloping}>
                 Cancel

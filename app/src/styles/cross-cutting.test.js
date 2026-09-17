@@ -237,7 +237,7 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
   });
 
-  test('app.css carries exactly six top-level @media blocks, at the six named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15; 260915-x6n touch font)', () => {
+  test('app.css carries exactly seven top-level @media blocks, at the seven named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15; 260915-x6n touch font; 260917-ewf print)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
@@ -246,6 +246,7 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
       '(max-width: 759.98px)',
       '(max-width: 759.98px), (pointer: coarse)',
       '(min-width: 760px) and (pointer: coarse)',
+      'print',
     ]);
   });
 });
@@ -631,5 +632,17 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
 
   test('no transition was added — the notice appears and disappears with no motion', () => {
     expect(appCssSource).not.toMatch(/transition/);
+  });
+});
+
+describe('the print layer suppresses only the page notice (260917-ewf Task 3)', () => {
+  test('.page-status goes display: none under @media print, and nothing else is styled there', () => {
+    // Resolved explicitly on r.media === 'print', never through
+    // mediaRuleFor, which returns the first match across ALL media
+    // blocks (the file's own precedent at ~206).
+    const printRules = rules.filter((r) => r.media === 'print');
+    expect(printRules).toHaveLength(1);
+    expect(printRules[0].selector).toBe('.page-status');
+    expect(printRules[0].declarations).toMatch(/display:\s*none/);
   });
 });

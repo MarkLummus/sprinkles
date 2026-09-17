@@ -2607,3 +2607,16 @@ textarea {
     outline-color: CanvasText;
   }
 }
+
+/* The start of the print layer (260917-ewf), the seventh top-level
+   @media block, sibling to the six above — never nested. .page-status
+   is screen furniture: a fixed or floating notice repeats on every
+   printed page in Chrome, and the printed bench sheet is this
+   product's core-value artifact (PRODUCT.md, "Paper works the
+   kitchen"). Nothing else is styled here — Phase 4 owns the print
+   route and its geometry, and this must not pre-empt it. */
+@media print {
+  .page-status {
+    display: none;
+  }
+}

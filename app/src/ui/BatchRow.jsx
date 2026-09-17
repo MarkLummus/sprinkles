@@ -732,7 +732,7 @@ export function BatchRow({
                 pending and the section is absent (007 lines 505-510) —
                 the head slot above carries it once the section reopens.
                 status is the end-of-record ceremony's own live region
-                (007 line 303) — the removal toasts' home (the ninth
+                (007 line 304) — the removal toasts' home (the ninth
                 round, Pattern 5); addTastingRef/restoreRef are the
                 removal focus landing's own refs (Pitfall 8). */}
             <SaveCeremony
@@ -745,7 +745,7 @@ export function BatchRow({
               onRestore={pendingUndo && !draft.tastingOpen ? onUndoRemove : null}
               restoreRef={restoreRef}
             />
-            {/* Next time (sketch 007 line 307; UAT item 14; D-12): carries
+            {/* Next time (sketch 007 line 301; UAT item 14; D-12): carries
                 its own visible caption and the sketch's e.g. placeholder,
                 verbatim. */}
             <label className="batch-margin__field">

@@ -12,7 +12,7 @@
 // disabled here — the tasting completeness gate this ceremony's ancestor
 // once carried is retired with D-02; the only block either mount can show
 // is the hint text beside it. status is ceremony A's own live region —
-// the removal toasts' home (007 line 303; the ninth round, Pattern 5) —
+// the removal toasts' home (007 line 304; the ninth round, Pattern 5) —
 // rendered FIRST so it reads before the hint or any control; the foot's
 // own mount passes no status, so it renders no region at all.
 export function SaveCeremony({

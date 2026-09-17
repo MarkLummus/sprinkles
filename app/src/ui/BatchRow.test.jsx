@@ -750,7 +750,7 @@ describe('BatchRow — the record pen\'s own blocked-date sentence, beside cerem
   });
 });
 
-describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the ninth round\'s own order (D-14, 007 lines 301-306, 484, 505-510)', () => {
+describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the ninth round\'s own order (D-14, 007 lines 302-307, 484, 505-510)', () => {
   it('renders Add tasting after class="save-ceremony" and before Cancel when the section is absent and no restore is pending', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: false }, pendingUndo: null });
     const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
@@ -788,7 +788,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
     expect(ceremonyMarkup).not.toContain('Restore tasting');
   });
 
-  it('renders the removal toast in ceremony A\'s own status region, before Restore tasting (007 lines 303, 561; Task 2)', () => {
+  it('renders the removal toast in ceremony A\'s own status region, before Restore tasting (007 lines 304, 561; Task 2)', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: false },
@@ -803,7 +803,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
     expect(restoreIndex).toBeGreaterThan(statusIndex);
   });
 
-  it('renders the empty status paragraph first, even with no toast — the live region exists before it speaks (007 line 303)', () => {
+  it('renders the empty status paragraph first, even with no toast — the live region exists before it speaks (007 line 304)', () => {
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: false },
@@ -897,7 +897,7 @@ describe('BatchRow — the textareas (contract "Textareas")', () => {
     expect(markup).toContain('placeholder="e.g. oil bottle opened 24 Jul"');
   });
 
-  it('renders the shared Next time textarea with its own caption and the sketch\'s verbatim placeholder (sketch 007 line 307; UAT item 14)', () => {
+  it('renders the shared Next time textarea with its own caption and the sketch\'s verbatim placeholder (sketch 007 line 301; UAT item 14)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
     expect(markup).toContain('placeholder="e.g. churn 2 min longer"');
     expect(markup).toMatch(/<label class="batch-margin__field"><span class="pen-caption">Next time<\/span>/);

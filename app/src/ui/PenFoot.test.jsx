@@ -118,7 +118,7 @@ describe('PenFoot — Add tasting beside the foot ceremony while the section is 
     expect(markup).not.toContain('Add tasting');
   });
 
-  it('renders Add tasting inside the save ceremony, before Cancel — the ninth round\'s own order (D-14, 007 lines 301-306)', () => {
+  it('renders Add tasting inside the save ceremony, before Cancel — the ninth round\'s own order (D-14, 007 lines 302-307)', () => {
     const markup = renderPenFoot({ openPen: 'record', tastingOpen: false });
     const ceremonyIndex = markup.indexOf('class="save-ceremony"');
     const addTastingIndex = markup.indexOf('Add tasting');
@@ -229,7 +229,7 @@ describe('SaveCeremony — the one component both mounts share (D-01)', () => {
     expect(markup).not.toContain('disabled=""');
   });
 
-  it('renders Add tasting before Cancel before Save batch when onAddTasting is given (D-14, 007 lines 304-306)', () => {
+  it('renders Add tasting before Cancel before Save batch when onAddTasting is given (D-14, 007 lines 305-307)', () => {
     const markup = renderCeremony({ onAddTasting: noop });
     const addTastingIndex = markup.indexOf('Add tasting');
     const cancelIndex = markup.indexOf('Cancel');

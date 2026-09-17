@@ -9,9 +9,10 @@
 // ceremony A's own mount is ever given onRestore. hint is the record
 // pen's own blocked-date sentence (D-05), read from the one RecipePage
 // state both mounts share, so the two can never disagree. Save is never
-// disabled here — the tasting completeness gate this ceremony's ancestor
-// once carried is retired with D-02; the only block either mount can show
-// is the hint text beside it. status is ceremony A's own live region —
+// disabled for completeness — the tasting completeness gate this
+// ceremony's ancestor once carried is retired with D-02 — but every
+// action locks during persistence so a double press cannot create two
+// records. status is ceremony A's own live region —
 // the removal toasts' home (007 line 304; the ninth round, Pattern 5) —
 // rendered FIRST so it reads before the hint or any control; the foot's
 // own mount passes no status, so it renders no region at all.
@@ -20,6 +21,7 @@ export function SaveCeremony({
   onSave,
   hint,
   status,
+  saveAction = null,
   onAddTasting = null,
   addTastingRef = null,
   onRestore = null,
@@ -34,16 +36,16 @@ export function SaveCeremony({
       )}
       {hint && <p className="save-ceremony__hint">{hint}</p>}
       {onRestore && (
-        <button type="button" className="text-control undo-control" ref={restoreRef} onClick={onRestore}>Restore tasting</button>
+        <button type="button" disabled={saveAction !== null} className="text-control undo-control" ref={restoreRef} onClick={onRestore}>Restore tasting</button>
       )}
       {onAddTasting && (
-        <button type="button" className="text-control save-ceremony__add-tasting" ref={addTastingRef} onClick={onAddTasting}>Add tasting</button>
+        <button type="button" disabled={saveAction !== null} className="text-control save-ceremony__add-tasting" ref={addTastingRef} onClick={onAddTasting}>Add tasting</button>
       )}
-      <button type="button" onClick={onCancel}>
+      <button type="button" disabled={saveAction !== null} onClick={onCancel}>
         Cancel
       </button>
-      <button type="button" onClick={onSave}>
-        Save batch
+      <button type="button" disabled={saveAction !== null} onClick={onSave}>
+        {saveAction === 'amend' ? 'Saving changes…' : saveAction === 'new' ? 'Saving batch…' : 'Save batch'}
       </button>
     </div>
   );
@@ -69,6 +71,7 @@ export function PenFoot({
   canSaveOver,
   penHint,
   saveAction = null,
+  batchSaveAction = null,
   tastingOpen,
   pendingUndo = null,
   onCancelDeveloping,
@@ -111,6 +114,7 @@ export function PenFoot({
             onCancel={onCancelRecording}
             onSave={onSaveBatch}
             hint={penHint}
+            saveAction={batchSaveAction}
             onAddTasting={!tastingOpen && !pendingUndo ? onAddTasting : null}
           />
         )}

@@ -4,13 +4,28 @@ title: Page-owned feedback scope — the save announcement and its focus landing
 area: ui
 severity: major
 updated: 2026-09-17T16:10:00.000Z
+completed: 2026-09-17T14:00:00-04:00
 files:
   - app/src/ui/RecipePage.jsx
   - app/src/router.jsx
   - .impeccable/critique/2026-09-16T18-58-36Z__app-src-ui-batchrow-jsx.md
 ---
 
-## Status, 2026-09-17 — two thirds built, by a different route
+## Status, 2026-09-17 — complete
+
+The remaining batch-save boundary is now built. New records and in-place corrections publish
+`recorded [date] against [version]` through the page-owned region. New-record navigation carries
+the Batch focus landing through route state; an amendment lands on the same heading in place.
+The heading is programmatically focusable, names the churn date to assistive technology, and draws
+the established visible landing ring. Persistence is guarded against repeat activation; both
+ceremonies share the disabled in-flight state and distinguish “Saving batch…” from “Saving
+changes…”. Immediate construction failures and rejected storage writes keep the draft open, restore
+the controls, and state “Couldn’t save the batch. Try again.” in the form-owned channel.
+
+The implementation uses the existing `RecipePageForRoute` shell rather than introducing a layout
+route, preserving the keyed-page reset backstop.
+
+## Earlier status — two thirds built, by a different route
 
 **Read this before the analysis below: most of the machinery this asked for now exists.** It
 arrived with the *version* pen rather than the batch pen, so the problem statement below still
@@ -33,7 +48,7 @@ history rather than a live obstacle.
   holding the running head and the notice, with `RecipePage` a keyed sibling after it. Same
   property — outside the key, survives the navigation — without touching the route table.
 
-**Still open, and it is the part that matters most:**
+**Still open at that checkpoint, and it was the part that mattered most:**
 
 - **The batch save still says nothing, and still drops focus.** `handleSaveBatch` announces on both
   of its refusal paths (`MEASURED_INVALID_STATUS`, `CHURN_DATE_BLOCKED_STATUS`) and then calls

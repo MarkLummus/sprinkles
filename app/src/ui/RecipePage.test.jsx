@@ -37,6 +37,8 @@ import {
   buildTastingFieldsFromDraft,
   CHURN_DATE_BLOCKED_MESSAGE,
   CHURN_DATE_BLOCKED_STATUS,
+  BATCH_SAVE_ERROR,
+  batchSavedStatus,
   VERSION_BLOCKED_STATUS,
   MEASURED_INVALID_STATUS,
   TASTING_REMOVED_EMPTY_STATUS,
@@ -671,6 +673,16 @@ describe('MEASURED_INVALID_STATUS, CHURN_DATE_BLOCKED_MESSAGE and CHURN_DATE_BLO
   });
 });
 
+describe('batch save completion feedback', () => {
+  it('names the stored record date and the version snapshot it was made against', () => {
+    expect(batchSavedStatus(augustSecondBatch)).toBe('recorded 4 Aug 2026 against 50 g oil · 800 g');
+  });
+
+  it('gives a recoverable storage failure without discarding the draft', () => {
+    expect(BATCH_SAVE_ERROR).toBe('Couldn’t save the batch. Try again.');
+  });
+});
+
 describe('VERSION_BLOCKED_STATUS — the form-owned reassurance for a field-owned Version error (260917-e5k: moved off the page channel)', () => {
   it('directs attention to Version and confirms the draft was kept', () => {
     expect(VERSION_BLOCKED_STATUS).toBe('Check the version. Your changes have been kept.');
@@ -713,6 +725,12 @@ describe('RecipePage.jsx — the version pen\'s refusal and failure route throug
     const callers = callersOf('VERSION_SAVED_STATUS');
     expect(callers.size).toBeGreaterThan(0);
     expect(callers).toEqual(new Set(['onPageStatus']));
+  });
+
+  it('batch storage failures stay with the form and completing saves reach the page', () => {
+    expect(callersOf('BATCH_SAVE_ERROR')).toEqual(new Set(['announce']));
+    expect(recipePageSource.match(/onPageStatus\(batchSavedStatus\(record\)\)/g)).toHaveLength(2);
+    expect(recipePageSource).not.toMatch(/announce\(batchSavedStatus/);
   });
 });
 

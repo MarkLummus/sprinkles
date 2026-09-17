@@ -4,9 +4,9 @@ current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.3.1.1 complete, ready to plan Phase 4
-last_updated: "2026-09-16T14:28:50.000Z"
-last_activity: 2026-09-16
-last_activity_desc: Completed quick task 260916-wg0: axes core/declared cues named for assistive tech; critique fixes 3, 4 and 5 closed
+last_updated: "2026-09-17T14:00:00-04:00"
+last_activity: 2026-09-17
+last_activity_desc: Hardened batch-save completion with page-owned confirmation, saved-record focus, persistence locking, and recoverable failure
 state_head: d4cf638f07c0d4c88c1dfa4b3cb2ee81676d218c
 progress:
   total_phases: 9
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-17 - Completed quick task 260917-h83: the recipe list route takes the shared page gutter, so all five page boxes keep one left edge at every width
+Last activity: 2026-09-17 - Hardened batch-save completion with page-owned confirmation, saved-record focus, persistence locking, and recoverable failure
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -114,7 +114,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Roadmap: UX1-01–UX1-03 are verified end-to-end in Phase 4 but are build constraints in every phase.
 - [03.3.1, 2026-09-16]: Each axis's stops group names its own core/declared cue (`aria-labelledby="axis-name-{key} axes-{core|declared}-cue"`) rather than a group wrapper — the desktop arrangement renders the cues and six axes as flat siblings so CSS can place them row-major, so there is no wrapper to label. Both groups are labelled pending a screen-reader UAT on whether "Every recipe" across four core axes is too repetitive; dropping the core cue is a one-ternary change. This restores the unsuperseded requirement at `batch-record-tasting-battery-structure.md:158` — the cue-row redesign superseded the caption's location only, and moving it out of Body's box silently dropped the announcement.
 - [03.3.1, 2026-09-16]: The end-of-record ceremony sits below the shared Next time field, not above it — the sketch 007 rule changes from "after whichever section is last" to "after all record content". Reverses the placement recorded at sketch 007 README:203 (attributed to 03.3.1 D-01 / 03.3.1.1 D-14). Reason: Next time is not a section but a field of the whole record, so the old rule placed a session-ending Save above the one field carrying the product's core value; with twin identical saves ratified the same day, the first save must still follow all record content. Sketch revised first, app followed.
-- [03.3.1, 2026-09-16]: Three feedback scopes govern announcements — field (the control), form (the pen, for reversible actions that leave it open), and page (a stable shell that survives the form and the route change). "Tasting removed" is form-scoped; "Batch saved" is page-scoped. Successful saves announce through a page-owned live region and move focus to the saved record heading; save failures stay field- or form-scoped beside the controls. Requires the app's first layout route — not yet built, captured as a pending todo.
+- [03.3.1, 2026-09-16; completed 2026-09-17]: Three feedback scopes govern announcements — field (the control), form (the pen, for reversible actions that leave it open), and page (a stable shell that survives the form and the route change). "Tasting removed" is form-scoped; completing saves are page-scoped. Batch saves now announce the stored date and version snapshot, then focus the saved Batch heading across navigation or in place; failures keep the draft open in the form channel. The existing `RecipePageForRoute` wrapper supplied the stable shell, so no layout route was required.
 - [Phase 01]: Version-embedded ingredient row promoted as the primary identity model — a shared library is a future source a version copies from, never a render-time authority.
 - [Phase 01]: Reused old-sprinkles library.js/olive-oil.js transcription verbatim (dextrose PAC 190, salt PAC 580) rather than the competing 103-row seed database, per D-01.
 - [Phase 01]: Vitest defaults to environment:'node' so the domain suite is provably DOM-free; component tests opt into a DOM environment per-file.
@@ -193,7 +193,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 ### Pending Todos
 
-- [2026-09-17] [ui] Page-owned feedback scope — the save announcement and its focus landing — [todo file](.planning/todos/pending/2026-09-16-page-owned-feedback-scope-and-the-save-announcement.md)
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
 - [2026-09-17] [ui] What an empty prose field should measure — desktop height, the sketch departure, and autoGrow — [todo file](.planning/todos/pending/2026-09-16-what-an-empty-prose-field-should-measure.md)
 

@@ -286,6 +286,16 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft });
     expect(markup).not.toContain('disabled=""');
   });
+
+  it('makes the saved Batch heading a named programmatic landing', () => {
+    const markup = renderBatchRow({
+      openPen: null,
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      focusBatchOnMount: true,
+    });
+    expect(markup).toMatch(/<h2[^>]*tabindex="-1"[^>]*aria-label="Batch churned 2 Aug 2026"[^>]*>Batch<\/h2>/);
+  });
 });
 
 describe('BatchRow — the tasting section, hidden until added (D-01, contract "Settled defaults")', () => {

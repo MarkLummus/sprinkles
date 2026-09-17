@@ -350,6 +350,9 @@ export function BatchRow({
   pendingUndo = null,
   restoreAttempt = null,
   removeTastingAttempt = null,
+  batchSaveAction = null,
+  focusBatchOnMount = false,
+  focusBatchAttempt = null,
   onChangeRecordField,
   onChangeSegment,
   onClearSegment,
@@ -382,6 +385,19 @@ export function BatchRow({
       amendButtonRef.current?.focus();
     }
   }, [openPen]);
+
+  // A completed save lands on the record that now exists. New records
+  // carry the signal through navigation; amendments increment the local
+  // attempt counter. The explicit class keeps the programmatic landing
+  // visible after a pointer-driven save, then retires on blur.
+  const batchHeadingRef = useRef(null);
+  const [landingFocusVisible, setLandingFocusVisible] = useState(false);
+  useEffect(() => {
+    if (focusBatchOnMount || focusBatchAttempt != null) {
+      batchHeadingRef.current?.focus();
+      setLandingFocusVisible(true);
+    }
+  }, [focusBatchOnMount, focusBatchAttempt]);
 
   // The churn date's own press-to-block focus (D-05): fires once per
   // press, keyed on the attempt counter so a second consecutive block on
@@ -453,7 +469,19 @@ export function BatchRow({
           showing them there read as the wrong batch's date. Amending
           keeps both, since amend corrects the very batch in view. */}
       <div className="batch-row__head">
-        <h2 className="region-name">Batch</h2>
+        <h2
+          ref={batchHeadingRef}
+          className={`region-name${landingFocusVisible ? ' is-landing-focus' : ''}`}
+          tabIndex={focusBatchOnMount || focusBatchAttempt != null ? -1 : undefined}
+          aria-label={
+            (focusBatchOnMount || focusBatchAttempt != null) && openBatch
+              ? `Batch churned ${openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}`
+              : undefined
+          }
+          onBlur={() => setLandingFocusVisible(false)}
+        >
+          Batch
+        </h2>
         {openPen !== 'record' && openBatch && (
           <span className="batch-row__date">
             {`churned ${openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}`}
@@ -815,6 +843,7 @@ export function BatchRow({
               onCancel={onCancelRecording}
               onSave={onSaveBatch}
               status={recordStatus}
+              saveAction={batchSaveAction}
               onAddTasting={!draft.tastingOpen && !pendingUndo ? onAddTasting : null}
               addTastingRef={addTastingRef}
               onRestore={pendingUndo && !draft.tastingOpen ? onUndoRemove : null}

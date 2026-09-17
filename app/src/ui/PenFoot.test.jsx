@@ -231,6 +231,16 @@ describe('SaveCeremony — the one component both mounts share (D-01)', () => {
     expect(markup).not.toContain('disabled=""');
   });
 
+  it('locks the ceremony and states which batch operation is in flight', () => {
+    const freshMarkup = renderCeremony({ saveAction: 'new', onAddTasting: noop });
+    expect(freshMarkup).toContain('Saving batch…');
+    expect(freshMarkup.match(/disabled=""/g)).toHaveLength(3);
+
+    const amendMarkup = renderCeremony({ saveAction: 'amend' });
+    expect(amendMarkup).toContain('Saving changes…');
+    expect(amendMarkup.match(/disabled=""/g)).toHaveLength(2);
+  });
+
   it('renders Add tasting before Cancel before Save batch when onAddTasting is given (D-14, 007 lines 305-307)', () => {
     const markup = renderCeremony({ onAddTasting: noop });
     const addTastingIndex = markup.indexOf('Add tasting');

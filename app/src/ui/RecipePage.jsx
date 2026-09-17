@@ -46,6 +46,7 @@ export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entr
 // so announcing CHURN_DATE_BLOCKED_MESSAGE here would print a second
 // visible copy of the field's own sentence.
 export const CHURN_DATE_BLOCKED_STATUS = 'Check the churn date. Your entries have been kept.';
+export const BATCH_SAVE_ERROR = 'Couldn’t save the batch. Try again.';
 export const VERSION_SAVED_STATUS = 'Version saved.';
 export const VERSION_SAVE_ERROR = 'Couldn’t save the version. Try again.';
 export const VERSION_BLOCKED_STATUS = 'Check the version. Your changes have been kept.';
@@ -562,6 +563,10 @@ export function buildTastingFieldsFromDraft(draft, parsed) {
   };
 }
 
+export function batchSavedStatus(record) {
+  return `recorded ${formatRecordDate(record.recordedAt)} against ${record.snapshot.versionLabel}`;
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The margin's derived-advisories block (FORM2-02)
 // renders nothing visible when the version has none — no placeholder text.
@@ -572,6 +577,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // can identify itself before offering another Next version action.
   const location = useLocation();
   const focusVersionOnMount = Boolean(location.state?.focusVersion);
+  const focusBatchOnMount = Boolean(location.state?.focusBatch);
   // The show-changes state (D-02): on when the `changes` key is present in
   // the URL's search parameters at all — its value is never consulted, so
   // presence is the whole signal. Composes with both /recipe/:id and
@@ -661,6 +667,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // the Remove tasting control.
   const [restoreAttempt, setRestoreAttempt] = useState(null);
   const restoreAttemptRef = useRef(0);
+  const [batchSaveAction, setBatchSaveAction] = useState(null);
+  const batchSaveLockRef = useRef(false);
+  const [focusBatchAttempt, setFocusBatchAttempt] = useState(null);
+  const focusBatchAttemptRef = useRef(0);
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
   // reason, citation and headnote start blank/null — never defaulted from
   // the parent — while rows is a map keyed by row id holding the raw
@@ -1008,6 +1018,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // stamping a false changed date on it, while the new batch is never
   // created (T-02-24).
   function handleStartRecording() {
+    batchSaveLockRef.current = false;
+    setBatchSaveAction(null);
+    setFocusBatchAttempt(null);
+    onPageStatus('');
     setAmendingBatchId(null);
     setAmendBaseline(null);
     setDraft(blankRecordDraft());
@@ -1197,6 +1211,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // tasting side too (D-03) — pre-filled from the batch, never from the
   // version (task 3, draftFromBatch above).
   function handleStartAmending(batch) {
+    batchSaveLockRef.current = false;
+    setBatchSaveAction(null);
+    setFocusBatchAttempt(null);
+    onPageStatus('');
     const filledDraft = draftFromBatch(batch);
     setDraft(filledDraft);
     // The baseline isDraftDirty compares against (03-07, T-03-43) — a
@@ -1281,9 +1299,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
   // The one save (D-01/D-02/D-03/D-04): every battery measurement
   // validates first (RESEARCH.md Open Question 3), then the churn date
-  // (D-05) — Save stays enabled through both blocks, never disabled
-  // (validateRecordDraft is the one traversal both blocks flow through).
-  // Only once the draft is clean does the two impure calls (a fresh id,
+  // (D-05) — Save stays enabled until a valid attempt begins; the two
+  // ceremonies then lock together for the persistence boundary so repeat
+  // activation cannot write two records. validateRecordDraft is the one
+  // traversal both validation blocks flow through. Only once the draft is
+  // clean do the two impure calls (a fresh id,
   // the current instant) run, here, in the one save handler — createBatch
   // and completeRecord stay deterministic. Amending (amendingBatchId set)
   // calls completeRecord on the batch being amended instead of createBatch
@@ -1294,6 +1314,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // (RESEARCH.md Assumption A3 — surfaced in this plan's SUMMARY for
   // end-of-phase UAT).
   function handleSaveBatch() {
+    if (batchSaveLockRef.current) return;
     const { fieldErrors: errors, invalidFieldKey, blockedDateMessage: dateMessage, parsed } = validateRecordDraft(draft);
 
     if (invalidFieldKey !== null) {
@@ -1316,33 +1337,80 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }
     setBlockedDateMessage(null);
 
-    const now = new Date().toISOString();
-    const churnFields = buildChurnFieldsFromDraft(draft, parsed);
-    const tasting = draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null;
+    batchSaveLockRef.current = true;
+    const saveAction = amendingBatchId ? 'amend' : 'new';
+    setBatchSaveAction(saveAction);
+    announce('');
+
+    let now;
+    let churnFields;
+    let tasting;
+    try {
+      now = new Date().toISOString();
+      churnFields = buildChurnFieldsFromDraft(draft, parsed);
+      tasting = draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null;
+    } catch {
+      batchSaveLockRef.current = false;
+      setBatchSaveAction(null);
+      announce(BATCH_SAVE_ERROR);
+      return;
+    }
 
     if (amendingBatchId) {
-      const batchBeingAmended = batches.find((batch) => batch.id === amendingBatchId);
-      const record = completeRecord(batchBeingAmended, churnFields, tasting, { now });
-      repository.saveBatch(record).then(() => {
+      let record;
+      try {
+        const batchBeingAmended = batches.find((batch) => batch.id === amendingBatchId);
+        record = completeRecord(batchBeingAmended, churnFields, tasting, { now });
+      } catch {
+        batchSaveLockRef.current = false;
+        setBatchSaveAction(null);
+        announce(BATCH_SAVE_ERROR);
+        return;
+      }
+      Promise.resolve().then(() => repository.saveBatch(record)).then(() => {
         setBatches((prev) => prev.map((batch) => (batch.id === record.id ? record : batch)));
         setMode('reading');
         setDraft(null);
         setAmendingBatchId(null);
         setAmendBaseline(null);
         setFormStatus('');
+        batchSaveLockRef.current = false;
+        setBatchSaveAction(null);
+        onPageStatus(batchSavedStatus(record));
+        focusBatchAttemptRef.current += 1;
+        setFocusBatchAttempt(focusBatchAttemptRef.current);
+      }).catch(() => {
+        batchSaveLockRef.current = false;
+        setBatchSaveAction(null);
+        announce(BATCH_SAVE_ERROR);
       });
       return;
     }
 
-    const record = createBatch(version, churnFields, tasting, { id: freshId(), now });
+    let record;
+    try {
+      record = createBatch(version, churnFields, tasting, { id: freshId(), now });
+    } catch {
+      batchSaveLockRef.current = false;
+      setBatchSaveAction(null);
+      announce(BATCH_SAVE_ERROR);
+      return;
+    }
 
-    repository.saveBatch(record).then(() => {
+    Promise.resolve().then(() => repository.saveBatch(record)).then(() => {
       setBatches((prev) => [...prev, record]);
       setMode('reading');
       setDraft(null);
       setAmendBaseline(null);
       setFormStatus('');
-      navigate(`/recipe/${id}/batch/${record.id}`);
+      batchSaveLockRef.current = false;
+      setBatchSaveAction(null);
+      onPageStatus(batchSavedStatus(record));
+      navigate(`/recipe/${id}/batch/${record.id}`, { state: { focusBatch: true } });
+    }).catch(() => {
+      batchSaveLockRef.current = false;
+      setBatchSaveAction(null);
+      announce(BATCH_SAVE_ERROR);
     });
   }
 
@@ -1356,6 +1424,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // never from the draft, so the page already shows the right thing once
   // mode returns to reading.
   function handleCancelRecording() {
+    batchSaveLockRef.current = false;
+    setBatchSaveAction(null);
+    setFocusBatchAttempt(null);
+    onPageStatus('');
     setMode('reading');
     setDraft(null);
     setAmendingBatchId(null);
@@ -1697,7 +1769,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
   }
 
   return (
-    <article className="recipe-page" aria-busy={versionSaveAction ? 'true' : undefined}>
+    <article className="recipe-page" aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
       {/* The front matter (sketch 003 variant B, 03.3-01): two
             full-width stacked rows — the version's row, then the batch's
             row (app.css .recipe-band). Recipe block first in DOM order,
@@ -1760,6 +1832,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
             pendingUndo={pendingUndo}
             restoreAttempt={restoreAttempt}
             removeTastingAttempt={removeTastingAttempt}
+            batchSaveAction={batchSaveAction}
+            focusBatchOnMount={focusBatchOnMount}
+            focusBatchAttempt={focusBatchAttempt}
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
             onClearSegment={handleClearSegment}
@@ -1864,6 +1939,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
         openPen={openPen}
         canSaveOver={canSaveOver}
         saveAction={versionSaveAction}
+        batchSaveAction={batchSaveAction}
         tastingOpen={draft?.tastingOpen ?? false}
         pendingUndo={pendingUndo}
         onCancelDeveloping={handleCancelDeveloping}

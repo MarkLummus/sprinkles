@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-17T00:49:35.450Z",
+  "phase": "4",
+  "phase_name": "Prepare the next version for making",
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "context": "design",
+  "context_detection_note": "The pause-work heuristic matched .planning/sketches/009-wide-touch/ as active sketch work. That is a FALSE POSITIVE: 009 was last modified 2026-09-15 23:53 and was never opened this session. This session was Impeccable design work (shape + critique) ahead of Phase 4, so the handoff is at .planning/.continue-here.md. Note also that the heuristic's `ls .planning/phases/*/PLAN.md` never matches in this project, which names plans XX-NN-PLAN.md.",
+  "completed_tasks": [
+    {"id": 1, "name": "/gsd-progress report", "status": "done", "commit": null, "note": "Established that verification_status `stale` on phases 02-03.3.1.1 is covered-file drift, not verification debt: every VERIFICATION.md reads status: passed, and staleness is a re-hashed covered_files fingerprint that later phases invalidate by editing shared components."},
+    {"id": 2, "name": "/impeccable shape route:/print/recipe-sheet", "status": "done", "commit": null, "note": "Wrote .impeccable/surfaces/route-print-recipe-sheet.md (90 lines). Satisfies ROADMAP Phase 4's prerequisite: 'Impeccable brief approved for the bench sheet (print) surface'."},
+    {"id": 3, "name": "Supersession notes in route-recipe.md", "status": "done", "commit": null, "note": "Two surgical edits: struck 'the step column' in section 3 'The sheet' with a supersession note, and closed the section 7 open item 'Where Print sits on the version row'."},
+    {"id": 4, "name": "/impeccable critique app/src/ui/BatchRow.jsx", "status": "done", "commit": null, "note": "Dual-agent, run blind to the 2026-09-15 snapshot. 25/40, 4 P1s + 1 P2. Snapshot at .impeccable/critique/2026-09-16T18-58-36Z__app-src-ui-batchrow-jsx.md."}
+  ],
+  "remaining_tasks": [
+    {"id": 5, "name": "Revise route-recipe-batch.md for the ceremony decision", "status": "not_started", "note": "Mark chose: keep both Save ceremony mounts, treat two identical Saves as intentional redundancy. The CODE is correct; the BRIEF is stale. Two paragraphs to revise: (a) the state-based labels 'Save batch only' / 'Save batch & tasting' and two distinct save scopes -> record the redundancy as deliberate; (b) click-again-clears, still listed as in scope though DESIGN.md records the reversal as shipped. Offered at the end of the critique run; Mark paused before answering."},
+    {"id": 6, "name": "Critique fix 1 (P1): saving says nothing and drops focus", "status": "not_started", "command": "/impeccable harden -> /gsd-quick"},
+    {"id": 7, "name": "Critique fix 3 (P1): Next time sits below Save and after it in tab order", "status": "not_started", "command": "/impeccable layout -> /gsd-quick"},
+    {"id": 8, "name": "Critique fix 4 (P1): four prose fields are 19px on every coarse pointer", "status": "not_started", "command": "/impeccable adapt -> /gsd-quick", "note": "One selector: add .prose-field to the touch-union min-height list at app.css:2284."},
+    {"id": 9, "name": "Critique fix 2 (P1): blocked save's sentence never in the viewport", "status": "not_started", "command": "/impeccable harden -> /gsd-quick"},
+    {"id": 10, "name": "Critique fix 5 (P2): axes core/declared cues unlabelled for assistive tech", "status": "not_started", "command": "/impeccable harden -> /gsd-quick"},
+    {"id": 11, "name": "Verify Riley's 21px overflow on the iPad", "status": "not_started", "note": "1366 coarse, WebKit, genuine top-level resize. Unproven on a real window; see blocking constraint 1."},
+    {"id": 12, "name": "/gsd-discuss-phase 4", "status": "not_started", "note": "Unblocked by task 2. Phase 4 has no directory and no CONTEXT.md yet."}
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Verify the 21px horizontal overflow on the 1366 coarse iPad with a real top-level resize", "context": "Assessment B produced it only in a same-origin iframe where neither resize nor matchMedia change ever fired. Fresh loads at 760 and 600 are clean. DESIGN.md warns about this exact geometry, so it is plausible, but it is unproven. Mark chose to verify before acting.", "blocking": false},
+    {"action": "Reset the dev IndexedDB", "context": "The live critique assessment saved two throwaway batches (churned 2 Aug and 9 Aug 2026, one carrying a tasting). The olive oil version now reads '3 later batches'. Cosmetic to dev data only; no repo file was touched.", "blocking": false},
+    {"action": "Decide whether route-recipe.md's Status line needs a 'revised 2026-09-16' clause", "context": "That file's own convention logs every revision in its Status line. Two sections were changed this session without logging, so the file is internally inconsistent until it is added. Deliberately left undone as a third unrequested edit.", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "The blank batch-log page carries the whole battery, split into 'At the machine' and 'When you taste it', printed two pages front and back of one sheet", "rationale": "Mark: the current printout is already 4+ sheets, so a duplex churn log is acceptable. The split matches the app's own seam - BatchRow.jsx already groups the battery into a churn section and a tasting section.", "phase": "4"},
+    {"decision": "The sheet's short code is derived from the version id, not a per-print random nonce", "rationale": "Mark: the goal is to track the print back to the recipe version. The batch record is created when recorded, not when printed - settled in his background research. A derived code stores nothing and leaves D16 untouched. Accepted loss: two printings of one unchanged version are indistinguishable.", "phase": "4"},
+    {"decision": "Printing lives on its own route, /recipe/:id/sheet, not print CSS on the recipe page", "rationale": "Mark: printing will have multiple modes (recipe development vs publishing/sharing); a separate route fits that, and burdening the already-complex recipe route would make it worse. router.jsx already anticipated a Phase 4 print route. Milestone 1 builds the bench sheet mode only - no mode switcher.", "phase": "4"},
+    {"decision": "A split row prints one line per portion in each step's group, each with its own mise-en-place tick and as-made blank", "rationale": "Asserted rather than asked, then confirmed: the maker weighs each portion separately at the bench, and the sheet's '120 g + 263 g' is already what paper does. Follows the 2026-09-09 portions revision that retired the Step column.", "phase": "4"},
+    {"decision": "Keep both Save ceremony mounts with identical labels; the brief is the stale document, not the code", "rationale": "Mark: two identical Saves are intentional redundancy on a long page; the brief's two-scope idea ('Save batch only' / 'Save batch & tasting') is what was wrong. Requires a brief revision, not a code change.", "phase": "03.3.1"},
+    {"decision": "Address all five critique issues in impact order 1 -> 3 -> 4 -> 2 -> 5", "rationale": "Mark chose the full scope over either sub-group. Issues 1, 2 and 5 are all /impeccable harden on one component and would sensibly batch into one /gsd-quick-batch.", "phase": "03.3.1"},
+    {"decision": "Verify the responsive overflow on the iPad before fixing the React/CSS dual authority", "rationale": "Mark chose evidence over architecture-on-principle. Confirms the standing project rule: verify in the engine that matters.", "phase": "03.3.1"}
+  ],
+  "uncommitted_files": [
+    " M .impeccable/surfaces/route-recipe.md",
+    "?? .impeccable/critique/2026-09-16T18-58-36Z__app-src-ui-batchrow-jsx.md",
+    "?? .impeccable/surfaces/route-print-recipe-sheet.md",
+    "?? design/"
+  ],
+  "uncommitted_files_note": "MEASURED from git status --porcelain at pause time. NOTHING under app/ was edited this session - no source code is at risk. design/ is pre-existing and untracked from before this session (3 bitmap mocks).",
+  "next_action": "Ask Mark whether to make the two route-recipe-batch.md brief revisions (ceremony redundancy + click-again-clears) - it was offered and he paused before answering. Then start critique fix 1 via /impeccable harden, routed through /gsd-quick per the project rule that every app/ edit goes through GSD.",
+  "context_notes": "Two commands ran back to back and they are connected: the bench-sheet brief's batch-log page is the paper mirror of BatchRow.jsx, so the critique's issue 3 (Next time below Save) is also a question about what order side 1 and side 2 of the printed log should carry. Fixing the pen's sequence before Phase 4 plans lock is the cheap ordering. The critique was deliberately run blind to the 2026-09-15 snapshot: both of that run's P1s were independently re-found, which upgrades them from stale to confirmed. Score moved 24 -> 25 but P1 count went 2 -> 4, which is the blind re-run finding more rather than a regression."
+}

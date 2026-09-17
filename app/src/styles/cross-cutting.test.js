@@ -53,8 +53,8 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(resolveTokenPx(tokens, '--touch-stop-height')).toBe(44);
   });
 
-  test("inside the media block, `button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179)", () => {
-    const rule = mediaRuleFor('button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle');
+  test("inside the media block, `button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179; .prose-field joined in 260916-vv1, critique issue 4, the four record prose fields at 560 x 19 on a coarse pointer)", () => {
+    const rule = mediaRuleFor('button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle');
     expect(rule, 'expected the media-block control rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
@@ -83,7 +83,9 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('the touch union carries the six sizing rules, and the width-only block keeps the version row (Mark, 2026-09-15: touch is a mode, the version row collapse is a width decision)', () => {
     const touchRules = rules.filter((r) => r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(touchRules.map((r) => r.selector)).toEqual([
-      'button, select, .ink-field, .segmented__option, .batch-margin .chip-toggle',
+      // .prose-field joined this rule in 260916-vv1 — it takes the shared
+      // floor rather than a private rule.
+      'button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle',
       '.text-control',
       // Sketch 008 line 260 grows the checkbox LABEL, not the square — the
       // two flex labels holding the Skipped and Uses checkboxes.

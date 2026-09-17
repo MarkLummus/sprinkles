@@ -2290,9 +2290,18 @@ textarea {
    Measured cause: Mark's iPad reports viewport 1366 with `pointer: coarse`, so
    no width threshold meant for phones could ever have caught it. */
 @media (max-width: 759.98px), (pointer: coarse) {
+  /* .prose-field joins this floor (260916-vv1, Impeccable critique issue 4,
+     Mark approved 2026-09-16): the four record prose fields measured 560 x 19
+     at every coarse pointer, under UX1-01. It takes the SHARED --touch-min
+     declaration rather than a private rule — one value stays app-wide, and
+     neither a narrow window nor a wide iPad is a named exception. This goes
+     beyond sketch 008 line 166, which pairs .ink-field and .prose-field for
+     font-size (167) but not for min-height — a departure recorded in the
+     260916-vv1 SUMMARY for Mark to rationalise. */
   button,
   select,
   .ink-field,
+  .prose-field,
   .segmented__option,
   .batch-margin .chip-toggle {
     min-height: var(--touch-min);

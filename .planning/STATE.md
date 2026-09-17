@@ -6,7 +6,7 @@ status: planning
 stopped_at: Phase 03.3.1.1 complete, ready to plan Phase 4
 last_updated: "2026-09-16T14:28:50.000Z"
 last_activity: 2026-09-16
-last_activity_desc: Completed quick task 260916-ufq: end-of-record ceremony moved below the shared Next time field, sketch 007 revised first
+last_activity_desc: Completed quick task 260916-vv1: .prose-field added to the touch-union min-height floor; critique fixes 3 and 4 both closed
 state_head: d4cf638f07c0d4c88c1dfa4b3cb2ee81676d218c
 progress:
   total_phases: 9
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-16 - Completed quick task 260916-ufq: the end-of-record ceremony now sits below the shared Next time field (sketch 007 revised first, app follows)
+Last activity: 2026-09-16 - Completed quick task 260916-vv1: .prose-field joined the touch-union 44px floor (critique fix 4); desktop height and the sketch departure captured as a todo
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -194,6 +194,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 - [2026-09-17] [ui] Page-owned feedback scope — the save announcement and its focus landing — [todo file](.planning/todos/pending/2026-09-16-page-owned-feedback-scope-and-the-save-announcement.md)
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
+- [2026-09-17] [ui] What an empty prose field should measure — desktop height, the sketch departure, and autoGrow — [todo file](.planning/todos/pending/2026-09-16-what-an-empty-prose-field-should-measure.md)
 
 ### Blockers/Concerns
 
@@ -248,6 +249,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260913-far | Add the agent prose, commits, browser-test inputs in English convention to .claude/CLAUDE.md | 2026-09-13 | ec80399 | [260913-far-add-the-agent-prose-commits-browser-test](./quick/260913-far-add-the-agent-prose-commits-browser-test/) |
 | 260916-tai | Revise route-recipe-batch.md: record the twin Saves as deliberate redundancy and strike click-again-clears | 2026-09-16 | aa096d4 | [260916-tai-revise-route-recipe-batch-md-record-the-](./quick/260916-tai-revise-route-recipe-batch-md-record-the-/) |
 | 260916-ufq | Move the end-of-record ceremony below the shared Next time field — sketch 007 first, then the app | 2026-09-16 | 63d714a | [260916-ufq-move-the-end-of-record-ceremony-below-th](./quick/260916-ufq-move-the-end-of-record-ceremony-below-th/) |
+| 260916-vv1 | Add .prose-field to the touch-union min-height list so the four prose fields meet the 44px target on every coarse pointer | 2026-09-16 | 8987f85 | [260916-vv1-add-prose-field-to-the-touch-union-min-h](./quick/260916-vv1-add-prose-field-to-the-touch-union-min-h/) |
 
 ### Roadmap Evolution
 

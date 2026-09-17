@@ -6,7 +6,7 @@ status: planning
 stopped_at: Phase 03.3.1.1 complete, ready to plan Phase 4
 last_updated: "2026-09-16T14:28:50.000Z"
 last_activity: 2026-09-16
-last_activity_desc: Completed quick task 260916-ch0 (UAT 5/5); debug session show-changes-hides-pen parked
+last_activity_desc: Completed quick task 260916-tai: revised route-recipe-batch.md for the save-ceremony and click-again-clears rulings
 state_head: d4cf638f07c0d4c88c1dfa4b3cb2ee81676d218c
 progress:
   total_phases: 9
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-16 - Completed quick task 260916-ch0 (UAT 5/5); debug session show-changes-hides-pen parked
+Last activity: 2026-09-16 - Completed quick task 260916-tai: revised route-recipe-batch.md (twin Saves recorded as deliberate redundancy; click-again-clears struck)
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -190,7 +190,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 ### Pending Todos
 
-None yet.
+- [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
 
 ### Blockers/Concerns
 
@@ -243,6 +243,7 @@ None yet.
 | 260909-oox | Reject impossible negative measured values on the batch record | 2026-09-09 | 66d0849 | .planning/quick/260909-oox-reject-impossible-negative-measured-valu |
 | 260912-ti1 | Apply the sketch's cross-cutting findings to the real app: 44px touch targets below 760px through the first @media block, the four type-role tokens, the 6px caption gap at all nine sites, italic placeholders, an at-rule-aware stylesheet reader, and a third style-contract suite | 2026-09-13 | 011dc09 | [260912-ti1-apply-cross-cutting-sketch-findings-to-t](./quick/260912-ti1-apply-cross-cutting-sketch-findings-to-t/) |
 | 260913-far | Add the agent prose, commits, browser-test inputs in English convention to .claude/CLAUDE.md | 2026-09-13 | ec80399 | [260913-far-add-the-agent-prose-commits-browser-test](./quick/260913-far-add-the-agent-prose-commits-browser-test/) |
+| 260916-tai | Revise route-recipe-batch.md: record the twin Saves as deliberate redundancy and strike click-again-clears | 2026-09-16 | aa096d4 | [260916-tai-revise-route-recipe-batch-md-record-the-](./quick/260916-tai-revise-route-recipe-batch-md-record-the-/) |
 
 ### Roadmap Evolution
 
@@ -261,6 +262,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-15T16:19:04.818Z
-Stopped at: Phase 03.3.1.1 complete, ready to plan Phase 4
-Resume file: None
+Last session: 2026-09-17T01:05:00.000Z
+Stopped at: Session resumed from the 2026-09-16 design-session handoff. Mark chose: (1) make both route-recipe-batch.md brief revisions (ceremony redundancy + drop click-again-clears), then (2) work the five BatchRow critique fixes in order 1 -> 3 -> 4 -> 2 -> 5, before planning Phase 4. Proceeding to /gsd-quick for the brief revisions.
+Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

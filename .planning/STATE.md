@@ -190,6 +190,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 ### Pending Todos
 
+- [2026-09-17] [ui] Page-owned feedback scope — the save announcement and its focus landing — [todo file](.planning/todos/pending/2026-09-16-page-owned-feedback-scope-and-the-save-announcement.md)
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
 
 ### Blockers/Concerns

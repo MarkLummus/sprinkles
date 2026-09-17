@@ -103,16 +103,16 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
     expect(markup).not.toContain('batch-row__date');
   });
 
-  it('renders the later-batches count, closed by default, with no list content rendered', () => {
+  it('renders the Batches count as the complete set — every batch of the version, the one in view included', () => {
     const markup = renderBatchRow({
       openBatch: augustSecondBatch,
       batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
     });
-    expect(markup).toContain('>1 later batch<');
+    expect(markup).toContain('Batches (2)');
     expect(markup).not.toContain('Batches of this version');
   });
 
-  it('renders the plural count for more than one later batch', () => {
+  it('renders the complete count for three batches, no plural branch', () => {
     const markup = renderBatchRow({
       openBatch: null,
       batches: [
@@ -121,15 +121,15 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
         { ...augustSecondBatch, id: 'other-batch-2' },
       ],
     });
-    expect(markup).toContain('>3 later batches<');
+    expect(markup).toContain('Batches (3)');
   });
 
-  it('renders no later-batches control when there are none beyond the one in view', () => {
+  it('renders Batches (1) when the one batch is the one in view — the complete set includes it, never a subtraction to zero', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    expect(markup).not.toContain('later batch');
+    expect(markup).toContain('Batches (1)');
   });
 
-  it('renders no churned-date span and no later-batches control while recording a new batch — that date names the batch in view, not the one being recorded (Mark, 2026-09-10 live review, G-03.3-4)', () => {
+  it('renders no churned-date span and no Batches control while recording a new batch — that date names the batch in view, not the one being recorded (Mark, 2026-09-10 live review, G-03.3-4)', () => {
     const markup = renderBatchRow({
       openPen: 'record',
       mode: 'recording',
@@ -138,10 +138,10 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
       batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
     });
     expect(markup).not.toContain('batch-row__date');
-    expect(markup).not.toContain('later batch');
+    expect(markup).not.toContain('Batches (');
   });
 
-  it('keeps the churned-date span and later-batches control while amending the batch in view', () => {
+  it('keeps the churned-date span and the Batches control while amending the batch in view', () => {
     const markup = renderBatchRow({
       openPen: 'amend',
       mode: 'recording',
@@ -150,7 +150,7 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
       batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
     });
     expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
-    expect(markup).toContain('>1 later batch<');
+    expect(markup).toContain('Batches (2)');
   });
 });
 
@@ -179,15 +179,15 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(correctButton).toBeTruthy();
   });
 
-  it('names the later-batches panel by aria-controls on its count disclosure', () => {
+  it('names the Batches panel by aria-controls on its count disclosure', () => {
     const markup = renderBatchRow({
       openPen: null,
       openBatch: augustSecondBatch,
       batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
     });
-    const countButton = markup.match(/<button[^>]*>1 later batch<\/button>/)[0];
+    const countButton = markup.match(/<button[^>]*>Batches \(2\)<\/button>/)[0];
     expect(countButton).toContain('aria-expanded="false"');
-    expect(countButton).toContain('aria-controls="batch-row-later"');
+    expect(countButton).toContain('aria-controls="batch-row-batches"');
   });
 
   it('renders no openers while the plan pen is open — this row renders nothing at the top for a pen it does not own', () => {
@@ -1280,10 +1280,10 @@ describe('BatchRow — the batch list, always a list only with zero batches; a c
   });
 });
 
-// laterBatchMetaFor (D-04, D-09, Pitfall 7): the later-batches list's own
-// meta small print — "changed {date}" replaces the retired tasted-count
+// laterBatchMetaFor (D-04, D-09, Pitfall 7): the batch list's own meta
+// small print — "changed {date}" replaces the retired tasted-count
 // wording; the drawn temperature and At-the-machine parts are unchanged.
-describe('laterBatchMetaFor — the later-batches list\'s meta small print (D-04)', () => {
+describe('laterBatchMetaFor — the batch list\'s meta small print (D-04)', () => {
   it("reads \"changed {date}\" when the batch carries a changed date", () => {
     const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
     expect(laterBatchMetaFor(changedBatch)).toContain('changed 10 Aug 2026');

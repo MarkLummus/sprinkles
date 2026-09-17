@@ -307,13 +307,13 @@ function TastingReading({ batch }) {
   );
 }
 
-// laterBatchMetaFor(batch) -> the later-batches list's own meta small
-// print parts (D-04, D-09): the drawn temperature and At-the-machine
-// prose, unchanged, plus "changed {date}" when the batch carries a
-// changed value — replacing the retired tasted-count wording (Pitfall 7:
-// a batch is tasted zero or one, never plural). Exported for direct
-// testing, since the disclosure that renders this has no prop to open it
-// from a render-only test (this file's own AxesGrid precedent).
+// laterBatchMetaFor(batch) -> the batch list's own meta small print parts
+// (D-04, D-09): the drawn temperature and At-the-machine prose, unchanged,
+// plus "changed {date}" when the batch carries a changed value —
+// replacing the retired tasted-count wording (Pitfall 7: a batch is
+// tasted zero or one, never plural). Exported for direct testing, since
+// the disclosure that renders this has no prop to open it from a
+// render-only test (this file's own AxesGrid precedent).
 export function laterBatchMetaFor(batch) {
   const metaParts = [];
   if (batch.churn.outOfMachineTempC != null) {
@@ -327,7 +327,7 @@ export function laterBatchMetaFor(batch) {
 // The batch's own row (sketch 003 variant B, 03.3-01; rebuilt to the full
 // battery in 03.3.1-02, the tasting section added in 03.3.1-03): the front
 // matter's second stacked row. One head line (Batch label, churned date,
-// later-batches count) precedes the churn section, the tasting section
+// the Batches count) precedes the churn section, the tasting section
 // (hidden until Add tasting opens it, D-01), the read view, and the foot
 // controls, in that order.
 export function BatchRow({
@@ -451,16 +451,17 @@ export function BatchRow({
     if (invalidFieldTarget) fieldRefs.current[invalidFieldTarget.key]?.focus();
   }, [invalidFieldTarget]);
 
-  // The later-batches disclosure (sketch 003 variant B, G-03.3-4): closed
-  // by default, matching the same convention VersionRow's own Later
-  // disclosure uses (03.3-06) — the count and the list it discloses are
-  // fed by the same computed value, never two divergent queries.
-  const [laterBatchesOpen, setLaterBatchesOpen] = useState(false);
-  const laterBatchesCount = batches.length - (openBatch ? 1 : 0);
+  // The Batches disclosure (route-recipe.md § 3 "History controls name a
+  // whole set, never a direction", 260917-odu): closed by default,
+  // counting every batch of the version in view, the one being read
+  // included — the list it discloses already renders every batch (D-09),
+  // so only the count and the words move here.
+  const [batchesOpen, setBatchesOpen] = useState(false);
+  const batchCount = batches.length;
 
   return (
     <section className="batch-row" aria-label="Batch">
-      {/* The date and later-batches control name the batch IN VIEW — a
+      {/* The date and the Batches control name the batch IN VIEW — a
           different batch than the one being recorded while
           openPen === 'record' (Mark, 2026-09-10 live review, G-03.3-4):
           showing them there read as the wrong batch's date. Amending
@@ -484,15 +485,15 @@ export function BatchRow({
             {`churned ${openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}`}
           </span>
         )}
-        {openPen !== 'record' && laterBatchesCount > 0 && (
+        {openPen !== 'record' && batchCount > 0 && (
           <button
             type="button"
             className="text-control"
-            aria-expanded={laterBatchesOpen}
-            aria-controls="batch-row-later"
-            onClick={() => setLaterBatchesOpen((open) => !open)}
+            aria-expanded={batchesOpen}
+            aria-controls="batch-row-batches"
+            onClick={() => setBatchesOpen((open) => !open)}
           >
-            {`${laterBatchesCount} later batch${laterBatchesCount === 1 ? '' : 'es'}`}
+            {`Batches (${batchCount})`}
           </button>
         )}
         {/* Correct: an underlined word standing on the head line that
@@ -951,14 +952,16 @@ export function BatchRow({
       {/* The batch list (D-09): always a list with zero batches, since
           there is no count to disclose. With one or more, it becomes the
           "Batches of this version" panel the head's own count control
-          opens (sketch 003 variant B, G-03.3-4) — closed by default. */}
+          opens (sketch 003 variant B, G-03.3-4) — closed by default, and
+          it already includes every batch of the version in view, the one
+          being read among them. */}
       {batches.length === 0 ? (
         <ul className="batch-margin__list">
           <li>no batch yet</li>
         </ul>
       ) : (
-        laterBatchesOpen && (
-          <section id="batch-row-later" className="batch-row__later" aria-label="Batches of this version">
+        batchesOpen && (
+          <section id="batch-row-batches" className="batch-row__later" aria-label="Batches of this version">
             <h2 className="region-name">Batches of this version</h2>
             <ul className="batch-row__later-list">
               {sortedBatches(batches).map((batch) => {

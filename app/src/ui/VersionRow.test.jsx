@@ -279,28 +279,34 @@ describe('VersionRow — the plan pen carries no interface-policy hint', () => {
   });
 });
 
-// The version strip now renders only inside the "Later" disclosure (sketch
-// 003 variant B, G-03.3-4), closed by default — renderToStaticMarkup
-// cannot exercise the open state (Method.test.jsx's own "closed by
-// default" precedent for a click-driven disclosure, cited in
-// 03.3-PATTERNS.md), so this coverage asserts only the closed state: the
-// Later button with the correct count, and no version-strip markup at
-// all. The open state's own list rendering (is-current, churned, link
-// suppression while a pen is open) is VersionStrip's own coverage in
-// VersionStrip.test.jsx, unaffected by this plan.
-describe('VersionRow — the Later-versions disclosure, closed by default (D-07, sketch 003 variant B, G-03.3-4)', () => {
-  it('renders the Later button with the descendant count and no version-strip markup while closed', () => {
+// The version strip now renders only inside the Versions disclosure
+// (sketch 003 variant B, G-03.3-4; the struck "Later" wording retired
+// 260917-odu), closed by default — renderToStaticMarkup cannot exercise
+// the open state (Method.test.jsx's own "closed by default" precedent for
+// a click-driven disclosure, cited in 03.3-PATTERNS.md), so this coverage
+// asserts only the closed state: the Versions button with the correct
+// count, and no version-strip markup at all. The open state's own list
+// rendering (is-current, churned, link suppression while a pen is open)
+// is VersionStrip's own coverage in VersionStrip.test.jsx, unaffected by
+// this plan.
+//
+// A count assertion must pass a `versions` prop that CONTAINS the version
+// in view — renderVersionRow's own default below is `[oliveOilVersion]`,
+// so a child fixture rendered without its own explicit `versions` array
+// counts only the root.
+describe('VersionRow — the Versions disclosure, closed by default (D-07, sketch 003 variant B, G-03.3-4, 260917-odu)', () => {
+  it('renders the Versions button counting the complete set — the version in view plus an ancestor — and no version-strip markup while closed', () => {
     const markup = renderVersionRow({
       version: oliveOilVersion,
       versions: [oliveOilVersion, childVersion],
     });
-    expect(markup).toMatch(/<button[^>]*class="text-control"[^>]*>1 later version<\/button>/);
-    const laterButton = markup.match(/<button[^>]*>1 later version<\/button>/)[0];
-    expect(laterButton).toContain('aria-controls="version-row-later"');
+    expect(markup).toMatch(/<button[^>]*class="text-control"[^>]*>Versions \(2\)<\/button>/);
+    const versionsButton = markup.match(/<button[^>]*>Versions \(2\)<\/button>/)[0];
+    expect(versionsButton).toContain('aria-controls="version-row-versions"');
     expect(markup).not.toContain('version-strip');
   });
 
-  it('renders the plural count for more than one descendant', () => {
+  it('counts the whole recipe regardless of tree depth — a root, its child and its grandchild', () => {
     const grandchildVersion = {
       ...childVersion,
       id: 'olive-oil-ice-cream-v3',
@@ -311,14 +317,45 @@ describe('VersionRow — the Later-versions disclosure, closed by default (D-07,
       version: oliveOilVersion,
       versions: [oliveOilVersion, childVersion, grandchildVersion],
     });
-    expect(markup).toContain('2 later versions');
+    expect(markup).toContain('Versions (3)');
   });
 
-  it('renders no Later dt/dd and no version-strip markup when there are no descendants', () => {
+  // An ancestor AND a sibling both count: a three-generation, two-branch
+  // tree (root, childVersion and its sibling as root's two children,
+  // grandchildVersion as childVersion's own child), viewed from the
+  // middle version (childVersion). The whole recipe's count is 4 — not
+  // the 2-member subtree below childVersion — proving this reads the
+  // recipe's complete list, never a descendant walk.
+  it('counts an ancestor and a sibling from the middle of a two-branch tree', () => {
+    const siblingVersion = {
+      ...childVersion,
+      id: 'olive-oil-ice-cream-v2b',
+      versionLabel: '52 g oil · 800 g',
+    };
+    const grandchildVersion = {
+      ...childVersion,
+      id: 'olive-oil-ice-cream-v3',
+      parentVersionId: childVersion.id,
+      parentVersionLabel: childVersion.versionLabel,
+    };
+    const markup = renderVersionRow({
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion, siblingVersion, grandchildVersion],
+    });
+    expect(markup).toContain('Versions (4)');
+  });
+
+  it('renders Versions (1), not nothing, for a root version with no other versions', () => {
     const markup = renderVersionRow({ version: oliveOilVersion, versions: [oliveOilVersion] });
     expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
-    expect(markup).not.toContain('later version');
+    expect(markup).toContain('Versions (1)');
     expect(markup).not.toContain('version-strip');
+  });
+
+  it('renders no control at all with an empty versions array — the pre-load paint before Versions (0) could ever show', () => {
+    const markup = renderVersionRow({ version: oliveOilVersion, versions: [] });
+    expect(markup).not.toContain('Versions (');
+    expect(markup).not.toContain('version-row__history');
   });
 });
 
@@ -328,7 +365,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
   // lineage at all, and "Why" is unconditional across root and child —
   // superseding the earlier gap-closure decision to omit the whole block
   // for a root version.
-  it('renders Written and "no reason recorded" for a root version with no later versions, and no Later dt/dd', () => {
+  it('renders Written and "no reason recorded" for a root version, and no Later dt/dd', () => {
     const markup = renderVersionRow({ version: oliveOilVersion, versions: [oliveOilVersion] });
     expect(markup).toMatch(/<dt[^>]*>Written<\/dt>/);
     expect(markup).toContain('no reason recorded');
@@ -337,7 +374,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
   });
 
-  it('renders From version (never bare "From"), folded with the written date, From batch, Why, and the Later count for a child version', () => {
+  it('renders From version (never bare "From"), folded with the written date, From batch, Why, and the Versions count for a child version', () => {
     const grandchildVersion = {
       ...childVersion,
       id: 'olive-oil-ice-cream-v3',
@@ -358,7 +395,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).toContain(childVersion.reason);
     expect(markup).toContain('class="version-row__reason prose-text"');
     expect(markup).toContain(oliveOilVersion.versionLabel);
-    expect(markup).toContain('1 later version');
+    expect(markup).toContain('Versions (3)');
   });
 
   it('omits the From batch line when no batch was cited', () => {

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate } from '../domain/batch.js';
-import { citableBatches, descendantVersions, versionsForRecipe } from '../domain/lineage.js';
+import { citableBatches, versionsForRecipe } from '../domain/lineage.js';
 import { VersionStrip } from './VersionStrip.jsx';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
@@ -71,14 +71,15 @@ export function VersionRow({
     }
   }, [openPen]);
 
-  // The Later-versions disclosure (sketch 003 variant B, G-03.3-4): closed
-  // by default, revealing the CURRENT version's own descendants — the
-  // whole subtree below it, not the recipe's full version list (that
-  // full-list rendering retired to this disclosure's own use, replacing
-  // the unconditional strip call this file used to make below).
-  const [laterVersionsOpen, setLaterVersionsOpen] = useState(false);
-  const descendants = descendantVersions(versionsForRecipe(versions, version.recipeId), version.id);
-  const laterCount = descendants.length;
+  // The Versions disclosure (route-recipe.md § 3 "History controls name a
+  // whole set, never a direction", 260917-odu): closed by default,
+  // revealing the recipe's COMPLETE version list — every version of this
+  // recipe, the one in view included, never the subtree below it. One
+  // array feeds both the count and the strip, so the two can never
+  // diverge.
+  const [versionsOpen, setVersionsOpen] = useState(false);
+  const recipeVersions = versionsForRecipe(versions, version.recipeId);
+  const versionCount = recipeVersions.length;
 
   return (
     <>
@@ -167,13 +168,15 @@ export function VersionRow({
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
             G-03.3-4): a Written/From-version+date line, a Why line always
-            present, a From-batch line where cited, and a Later disclosure
-            fed by this version's own descendants. Parent and Batch stay
-            ink links while no pen is open, and plain text while one is
-            (the same link-suppression discipline the version list used to
-            carry). Sits ABOVE the acts group, matching the sketch's own
+            present, and a From-batch line where cited. Parent and Batch
+            stay ink links while no pen is open, and plain text while one
+            is (the same link-suppression discipline the version list used
+            to carry). Sits ABOVE the acts group, matching the sketch's own
             dl-then-acts order (index.html:208-216) — the checkpoint
-            feedback's reading-layout fix. */}
+            feedback's reading-layout fix. The Versions disclosure control
+            used to close this dl (the struck Later dt/dd); it now sits on
+            its own line below the dl (260917-odu) — see
+            version-row__history just after </dl>. */}
         <dl className="version-row__meta-list">
           {!version.parentVersionId ? (
             <>
@@ -216,23 +219,27 @@ export function VersionRow({
               </dd>
             </>
           )}
-          {laterCount > 0 && (
-            <>
-              <dt className="versions__lineage-label">Later</dt>
-              <dd className="versions__lineage">
-                <button
-                  type="button"
-                  className="text-control"
-                  aria-expanded={laterVersionsOpen}
-                  aria-controls="version-row-later"
-                  onClick={() => setLaterVersionsOpen((open) => !open)}
-                >
-                  {laterCount} later version{laterCount === 1 ? '' : 's'}
-                </button>
-              </dd>
-            </>
-          )}
         </dl>
+
+        {/* The history control (route-recipe.md § 3, 260917-odu): names
+            the whole set it discloses, so it labels itself — the struck
+            "Later" lineage label had no replacement word and inventing
+            one is forbidden. Its own line, below the dl and above the
+            acts group, rather than inside the dl or the acts group, so it
+            stays available while the batch pen is open (D-UAT-2). */}
+        {versionCount > 0 && (
+          <p className="version-row__history">
+            <button
+              type="button"
+              className="text-control"
+              aria-expanded={versionsOpen}
+              aria-controls="version-row-versions"
+              onClick={() => setVersionsOpen((open) => !open)}
+            >
+              {`Versions (${versionCount})`}
+            </button>
+          </p>
+        )}
 
         {/* The acts group (sketch 003 variant B, index.html:215, 479):
             Next version, then Record another/Record batch, then Show
@@ -268,14 +275,16 @@ export function VersionRow({
         )}
       </section>
 
-      {laterVersionsOpen && (
-        // The Later-versions disclosure (sketch 003 variant B,
-        // index.html:230-233): a full-width row, not nested in vmeta's
-        // own narrow column (03.3-06 checkpoint feedback).
-        <section id="version-row-later" className="recipe-band__full-row" aria-label="Later versions">
-          <h2 className="region-name">Later versions</h2>
+      {versionsOpen && (
+        // The Versions disclosure (route-recipe.md § 3, 260917-odu): a
+        // full-width row, not nested in vmeta's own narrow column
+        // (03.3-06 checkpoint feedback) — now the recipe's complete
+        // version list, the version in view included, not the subtree
+        // below it.
+        <section id="version-row-versions" className="recipe-band__full-row" aria-label="Versions">
+          <h2 className="region-name">Versions</h2>
           <VersionStrip
-            versions={descendants}
+            versions={recipeVersions}
             recipeId={version.recipeId}
             currentId={version.id}
             allBatches={allBatches}

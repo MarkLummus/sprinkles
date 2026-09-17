@@ -715,6 +715,13 @@ textarea {
   color: var(--ink);
 }
 
+/* The version row's history control, its own line below the metadata
+   stack (route-recipe.md § 3, 260917-odu) — the same top margin
+   .version-row__reason-label uses to open a new line in this stack. */
+.version-row__history {
+  margin-top: var(--gap-s);
+}
+
 /* Opening the plan pen turns the saved Version column into the child's
    provenance and ceremony. Its first rule names the parent; reason,
    citation and actions follow in the same compact reading order. */
@@ -722,7 +729,7 @@ textarea {
   margin-bottom: var(--gap-s);
 }
 
-/* The Later-versions disclosure spans both front-matter columns rather
+/* The Versions disclosure spans both front-matter columns rather
    than being squeezed into vmeta's narrow track. */
 .recipe-band__full-row {
   grid-column: 1 / -1;
@@ -1640,7 +1647,7 @@ textarea {
 
 /* The batch row's head line (sketch 003 variant B, index.html:83-85,
    03.3-07, G-03.3-4): the region-name label, the churned date, and the
-   later-batches disclosure control read as one baseline-aligned line. */
+   Batches disclosure control read as one baseline-aligned line. */
 .batch-row__head {
   display: flex;
   align-items: baseline;

@@ -262,12 +262,28 @@ textarea {
   resize: none;
 }
 
+/* Out of flow (260917-ewf): DESIGN.md's "nothing moves" holds, so the
+   notice overlays the top of the page instead of reflowing it, and no
+   blank line is reserved for it in either state. Both anchors read off
+   .page-head: inset-block-start: 100% is that band's own bottom edge
+   (the running head's, since the band holds nothing else), and
+   inset-inline-start: var(--gap-xl) is the same token .running-head
+   reads for its own left padding, so head and notice share one left
+   edge. That edge only agrees with .recipe-page above 600px — below it
+   .recipe-page steps down to --gap-m while .running-head does not; that
+   is a pre-existing mismatch and is not resolved here. The viewport arm
+   of max-width was corrected (Mark, in session) from calc(100vw - 2 *
+   var(--gap-m)) to calc(100vw - var(--gap-xl) - var(--gap-m)): the old
+   arm was written for a box inset --gap-m from the RIGHT, and is
+   geometrically stale for a box now inset var(--gap-xl) from the LEFT —
+   the new arm is that same left inset plus one --gap-m of breathing
+   room on the right, tokens only. */
 .page-status {
-  position: fixed;
+  position: absolute;
   z-index: 10;
-  inset-block-end: var(--gap-m);
-  inset-inline-end: var(--gap-m);
-  max-width: min(var(--measure-prose), calc(100vw - 2 * var(--gap-m)));
+  inset-block-start: 100%;
+  inset-inline-start: var(--gap-xl);
+  max-width: min(var(--measure-prose), calc(100vw - var(--gap-xl) - var(--gap-m)));
   margin: 0;
   padding: var(--gap-xs) var(--gap-s);
   border: var(--rule-baseline) solid var(--ink);

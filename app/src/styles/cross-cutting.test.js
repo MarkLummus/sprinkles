@@ -588,3 +588,48 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
     expect(ruleFor('.batch-row__later-meta').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
   });
 });
+
+describe('the page notice anchors beneath the running head, out of flow (260917-ewf)', () => {
+  test('.page-status is absolutely positioned, with no fixed-corner declarations left', () => {
+    const rule = ruleFor('.page-status');
+    expect(rule, 'expected a top-level .page-status rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/position:\s*absolute/);
+    expect(rule.declarations).not.toMatch(/position:\s*fixed/);
+    expect(rule.declarations).not.toMatch(/inset-block-end/);
+    expect(rule.declarations).not.toMatch(/inset-inline-end/);
+  });
+
+  test('.page-head is the containing block (position: relative), and .page-status anchors to its bottom edge', () => {
+    const pageHeadRule = ruleFor('.page-head');
+    expect(pageHeadRule, 'expected a top-level .page-head rule').toBeTruthy();
+    expect(pageHeadRule.declarations).toMatch(/position:\s*relative/);
+    expect(ruleFor('.page-status').declarations).toMatch(/inset-block-start:\s*100%/);
+  });
+
+  test('the notice and the running head share one left edge — one contract across both rules, so neither can drift alone', () => {
+    expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-start:\s*var\(--gap-xl\)/);
+    expect(ruleFor('.running-head').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-xl\)\s+0/);
+  });
+
+  test('every other visual declaration on .page-status survives unchanged, and .page-status:empty still collapses', () => {
+    const rule = ruleFor('.page-status');
+    expect(rule.declarations).toMatch(/z-index:\s*10/);
+    expect(rule.declarations).toMatch(/max-width:\s*min\(var\(--measure-prose\), calc\(100vw - var\(--gap-xl\) - var\(--gap-m\)\)\)/);
+    expect(rule.declarations).toMatch(/margin:\s*0/);
+    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-xs\) var\(--gap-s\)/);
+    expect(rule.declarations).toMatch(/border:\s*var\(--rule-baseline\) solid var\(--ink\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--ground\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+
+    const emptyRule = ruleFor('.page-status:empty');
+    expect(emptyRule, 'expected .page-status:empty to survive').toBeTruthy();
+    expect(emptyRule.declarations).toMatch(/padding:\s*0/);
+    expect(emptyRule.declarations).toMatch(/border:\s*0/);
+  });
+
+  test('no transition was added — the notice appears and disappears with no motion', () => {
+    expect(appCssSource).not.toMatch(/transition/);
+  });
+});

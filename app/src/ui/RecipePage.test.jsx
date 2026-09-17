@@ -34,6 +34,7 @@ import {
   buildChurnFieldsFromDraft,
   buildTastingFieldsFromDraft,
   CHURN_DATE_BLOCKED_MESSAGE,
+  CHURN_DATE_BLOCKED_STATUS,
   MEASURED_INVALID_STATUS,
   TASTING_REMOVED_EMPTY_STATUS,
   TASTING_REMOVED_DATA_STATUS,
@@ -653,13 +654,17 @@ describe('validateRecordDraft — the one traversal: measurements first, then th
   });
 });
 
-describe('MEASURED_INVALID_STATUS and CHURN_DATE_BLOCKED_MESSAGE — the contract\'s own verbatim sentences, each written once (D-05)', () => {
+describe('MEASURED_INVALID_STATUS, CHURN_DATE_BLOCKED_MESSAGE and CHURN_DATE_BLOCKED_STATUS — the contract\'s own verbatim sentences, each written once (D-05, § 3)', () => {
   it('matches the contract\'s own status sentence', () => {
     expect(MEASURED_INVALID_STATUS).toBe('Check the marked measurements. Your entries have been kept.');
   });
 
   it('matches the working blocked-date sentence', () => {
     expect(CHURN_DATE_BLOCKED_MESSAGE).toBe('Enter the date you churned.');
+  });
+
+  it('matches the churn date\'s own form-scoped summary, the sibling of MEASURED_INVALID_STATUS', () => {
+    expect(CHURN_DATE_BLOCKED_STATUS).toBe('Check the churn date. Your entries have been kept.');
   });
 });
 

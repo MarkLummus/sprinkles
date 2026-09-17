@@ -38,6 +38,14 @@ export const CHURN_DATE_BLOCKED_MESSAGE = 'Enter the date you churned.';
 // ("Controls spec"), read from handleSaveBatch's own announce() call.
 export const MEASURED_INVALID_STATUS = 'Check the marked measurements. Your entries have been kept.';
 
+// The churn date's own form-scoped summary, the sibling of
+// MEASURED_INVALID_STATUS above: the field says its own sentence (in its
+// label, D-05), the form says this summary, and a form-scoped announcement
+// never repeats a field-scoped one — .form-status is a visible paragraph,
+// so announcing CHURN_DATE_BLOCKED_MESSAGE here would print a second
+// visible copy of the field's own sentence.
+export const CHURN_DATE_BLOCKED_STATUS = 'Check the churn date. Your entries have been kept.';
+
 // The contract's verbatim record-status sentences for the record pen's own
 // two hidden-mode removal paths (contract "Feedback and undo lifecycle",
 // the removal path matrix — Pitfall 6: the always-visible mode's two rows
@@ -841,10 +849,12 @@ export function RecipePage() {
 
   // The one hint derivation (RESEARCH.md Pattern 2): whichever pen is open
   // owns the hint both VersionRow and PenFoot render — the plan pen's own
-  // blocked-save sentence, or the record/amend pen's own blocked-date
-  // sentence (D-05). Neither pen has a completeness gate (D-02 retires the
-  // tasting save gate) — the record pen's Save is never disabled.
-  const penHint = openPen === 'record' || openPen === 'amend' ? blockedDateMessage : blockedMessage;
+  // blocked-save sentence. The record/amend pen contributes none: the
+  // churn date's blocked-date sentence now renders once, in the date's
+  // own label (D-05), so PenFoot's ceremony carries nothing of it. Neither
+  // pen has a completeness gate (D-02 retires the tasting save gate) — the
+  // record pen's Save is never disabled.
+  const penHint = openPen === 'record' || openPen === 'amend' ? null : blockedMessage;
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -1293,6 +1303,7 @@ export function RecipePage() {
       dateBlockedAttemptRef.current += 1;
       setBlockedDateMessage(dateMessage);
       setBlockedDateAttempt(dateBlockedAttemptRef.current);
+      announce(CHURN_DATE_BLOCKED_STATUS);
       return;
     }
     setBlockedDateMessage(null);

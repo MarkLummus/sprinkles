@@ -53,6 +53,10 @@ function unitWords(unit) {
   return unit;
 }
 
+// churnDate is not a BATTERY_FIELDS key, so it carries its own error id
+// rather than flowing through MeasuredField below.
+const CHURN_DATE_ERROR_ID = 'field-error-churnDate';
+
 // One battery measured field (contract "Controls spec"; sketch 007 @
 // 2a212be lines 37-44; D-13): text-mode, inputMode="decimal" — never
 // type="number", so a malformed value stays in place rather than being
@@ -472,18 +476,35 @@ export function BatchRow({
                 (D-05), then the three numeric churn measurements beside
                 it (contract "DOM order inventory"). .batch-row__cells
                 stays only for the read view below — the pen no longer
-                uses it. */}
+                uses it. Mark's 2026-09-16 ruling: the batch's name is not
+                the record's content, so the date is named required, and a
+                refusal renders here — once, beside the field focus lands
+                on — rather than at either ceremony. */}
             <div className="field-row">
               <label className="field-row__label field-row__label--date">
-                <span className="pen-caption">Churn date</span>
+                <span className="pen-caption">Churn date, required</span>
                 <input
                   type="date"
                   className="ink-field"
+                  required
+                  aria-required="true"
+                  aria-invalid={blockedDateMessage ? 'true' : undefined}
+                  aria-describedby={blockedDateMessage ? CHURN_DATE_ERROR_ID : undefined}
                   autoFocus
                   ref={churnDateRef}
                   value={draft.churnDate}
                   onChange={(event) => onChangeRecordField('churnDate', event.target.value)}
                 />
+                {/* The caption's visible word and aria-required's own
+                    announcement may both say "required" to a screen
+                    reader — accepted, not an oversight: the word is for
+                    the maker who never hears it, the attribute for the
+                    one who does. */}
+                {blockedDateMessage && (
+                  <span id={CHURN_DATE_ERROR_ID} className="field-error">
+                    {blockedDateMessage}
+                  </span>
+                )}
               </label>
               {CHURN_MEASURED_FIELDS.map((field) => (
                 <MeasuredField
@@ -752,10 +773,10 @@ export function BatchRow({
             {/* Ceremony A (D-01): closes the record body after all record
                 content, below the shared Next time, in every state
                 (placement revised 2026-09-16, sketch 007's eleventh
-                round). Its hint is the record pen's own
-                blocked-date sentence — the same state ceremony B
-                (PenFoot) reads, so the two can never disagree. Add
-                tasting stands beside it exactly while the section is
+                round). The blocked-date sentence renders in the churn
+                date's own label now (one occurrence), so neither this
+                ceremony nor ceremony B (PenFoot) carries a hint of it.
+                Add tasting stands beside it exactly while the section is
                 absent and no restore is pending (007 line 484); Restore
                 tasting takes the opener's own place while a restore is
                 pending and the section is absent (007 lines 505-510) —
@@ -767,7 +788,6 @@ export function BatchRow({
             <SaveCeremony
               onCancel={onCancelRecording}
               onSave={onSaveBatch}
-              hint={blockedDateMessage}
               status={recordStatus}
               onAddTasting={!draft.tastingOpen && !pendingUndo ? onAddTasting : null}
               addTastingRef={addTastingRef}

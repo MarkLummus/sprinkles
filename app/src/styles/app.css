@@ -1723,36 +1723,13 @@ textarea {
 
 /* The "Batches of this version" disclosure (sketch 003 variant B,
    index.html:256-262, 03.3-07, G-03.3-4): a full-width panel under the
-   row, opened by the head line's own count control. */
-.batch-row__later {
+   row, opened by the head line's own count control. Its rows read the
+   shared .history-register family, above — this is the panel's own
+   frame, not a register row. */
+.batch-row__batches {
   margin-top: var(--gap-m);
   padding-top: var(--gap-s);
   border-top: var(--rule-graduation) solid var(--ink);
-}
-
-.batch-row__later-list {
-  list-style: none;
-  margin: var(--gap-xs) 0 0;
-  padding: 0;
-  display: flex;
-  gap: var(--gap-l);
-  flex-wrap: wrap;
-}
-
-.batch-row__later-date {
-  font-family: var(--face-text);
-  font-size: var(--size-version-line);
-  margin: 0;
-}
-
-.batch-row__later-small {
-  font-family: var(--face-grotesk);
-  color: var(--ink);
-}
-
-.batch-row__later-meta {
-  font-size: var(--size-small-print);
-  margin: var(--gap-hair) 0 0;
 }
 
 .batch-margin button {

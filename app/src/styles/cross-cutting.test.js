@@ -594,10 +594,10 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
     expect(ruleFor('.running-head').declarations).toMatch(/font-size:\s*var\(--size-running-head\)/);
   });
 
-  test("the batch row's measured-cell small print keeps its ratified registers", () => {
+  test("the batch row's measured-cell small print keeps its ratified registers, and the shared history-register provenance rule keeps its own", () => {
     expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
     expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--size-deviation-words\)/);
-    expect(ruleFor('.batch-row__later-meta').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+    expect(ruleFor('.history-register__provenance').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
   });
 });
 

@@ -961,27 +961,29 @@ export function BatchRow({
         </ul>
       ) : (
         batchesOpen && (
-          <section id="batch-row-batches" className="batch-row__later" aria-label="Batches of this version">
+          <section id="batch-row-batches" className="batch-row__batches" aria-label="Batches of this version">
             <h2 className="region-name">Batches of this version</h2>
-            <ul className="batch-row__later-list">
+            <ul className="history-register">
               {sortedBatches(batches).map((batch) => {
                 const isOpenBatch = openBatch && batch.id === openBatch.id;
                 const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
                 const metaParts = laterBatchMetaFor(batch);
                 return (
-                  <li key={batch.id}>
-                    <p className="batch-row__later-date">
-                      {isOpenBatch ? (
-                        <>
-                          <strong>{dateWords}</strong> <span className="batch-row__later-small">· In view</span>
-                        </>
-                      ) : openPen ? (
-                        dateWords
-                      ) : (
-                        <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{dateWords}</Link>
-                      )}
-                    </p>
-                    {metaParts.length > 0 && <p className="batch-row__later-meta">{metaParts.join(' · ')}</p>}
+                  <li key={batch.id} className="history-register__item">
+                    <div className="history-register__identity">
+                      <p className="history-register__name">
+                        {isOpenBatch ? (
+                          <>
+                            <strong>{dateWords}</strong> <span className="history-register__marker">· In view</span>
+                          </>
+                        ) : openPen ? (
+                          dateWords
+                        ) : (
+                          <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{dateWords}</Link>
+                        )}
+                      </p>
+                      {metaParts.length > 0 && <p className="history-register__provenance">{metaParts.join(' · ')}</p>}
+                    </div>
                   </li>
                 );
               })}

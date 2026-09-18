@@ -769,7 +769,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     };
   }, [version]);
 
-  // Every batch in the store, for the Later disclosure's own cards
+  // Every batch in the store, for the recipe History outline
   // (03.3-06 checkpoint feedback, G-03.3-4): each descendant's "churned"
   // date and its cited batch's date both come out of this one read — one
   // repository.getAllBatches() read, not a query per version, since the

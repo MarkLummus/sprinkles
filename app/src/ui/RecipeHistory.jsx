@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { DECLARED_FLAW } from '../domain/battery.js';
-import { formatRecordDate, sortedBatches } from '../domain/batch.js';
+import { recordDateWords, sortedBatches } from '../domain/batch.js';
 import { sortedVersions, versionsForRecipe, versionIdentity } from '../domain/lineage.js';
 
 function compareChronological(a, b) {
@@ -57,12 +57,12 @@ function tastingOutcome(batch) {
     ...(batch.tasting.bitterDeclared ? [DECLARED_FLAW] : []),
   ];
   if (problems.length > 0) return problems.join(' · ');
-  return `Tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`;
+  return `Tasted ${recordDateWords(batch.tasting.tastedDate)}`;
 }
 
 function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPen }) {
   const isInView = version.id === currentVersionId && batch.id === currentBatchId;
-  const churnDate = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
+  const churnDate = recordDateWords(batch.churn.churnDate);
   const label = `Batch · ${churnDate}`;
 
   return (
@@ -71,7 +71,7 @@ function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPe
         <p className="recipe-history__batch-name">
           {isInView || openPen
             ? label
-            : <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{label}</Link>}
+            : <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{label}</Link>}
           {isInView && <span className="history-register__marker"> · In view</span>}
         </p>
         <p className="recipe-history__batch-state">
@@ -116,22 +116,22 @@ function VersionNode({
           <h3 className="recipe-history__version-name">
             {isInView || openPen
               ? versionIdentity(ordered, version)
-              : <Link to={`/recipe/${version.id}`}>{versionIdentity(ordered, version)}</Link>}
+              : <Link to={`/recipe/${version.id}`} state={{ focusVersion: true }}>{versionIdentity(ordered, version)}</Link>}
             {markers.length > 0 && (
               <span className="history-register__marker">{` · ${markers.join(' · ')}`}</span>
             )}
           </h3>
-          <p className="recipe-history__written">written {formatRecordDate(version.createdAt)}</p>
+          <p className="recipe-history__written">written {recordDateWords(version.createdAt)}</p>
         </div>
 
         {citedBatch && (
           <p className="recipe-history__cause">
             After batch ·{' '}
             {openPen ? (
-              citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
+              recordDateWords(citedBatch.churn.churnDate)
             ) : (
-              <Link to={`/recipe/${citedBatch.versionId}/batch/${citedBatch.id}`}>
-                {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
+              <Link to={`/recipe/${citedBatch.versionId}/batch/${citedBatch.id}`} state={{ focusBatch: true }}>
+                {recordDateWords(citedBatch.churn.churnDate)}
               </Link>
             )}
           </p>

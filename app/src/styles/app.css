@@ -701,6 +701,20 @@ textarea {
   margin: 0 0 var(--gap-xs);
 }
 
+/* Authored version names keep the text face; dates and batch citations
+   are compact metadata even when they share the same provenance line. */
+.version-row__parent-name {
+  font-family: var(--face-text);
+  font-size: var(--size-deviation-words);
+}
+
+.version-row__written,
+.version-row__batch-provenance {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Why is authored rationale, not a compact fact. It stays inside the
    definition list for its label relationship, but spans both tracks and
    reads with the same note role as the prose field that creates it. */
@@ -757,11 +771,9 @@ textarea {
   font-size: var(--size-small-print);
 }
 
-/* The history register (route-recipe.md § 6 "The two history panels read
-   as one register, not as cards", revised 2026-09-17; ingredient table's
-   own rule discipline, app.css:893, is the precedent). One ruled row per
-   record, shared by the Versions panel and the Batches panel
-   (BatchRow.jsx): a wrapping flex line, not a fixed two-track grid — at
+/* The compact batch register (route-recipe.md § 6; ingredient table's
+   own rule discipline is the precedent). One ruled row per batch in the
+   standalone Batches panel: a wrapping flex line, not a fixed two-track grid — at
    393 a sized right-hand column in a grid either crushes the left column
    or overflows, and no `@media` block may be added here, so
    `flex-wrap: wrap` plus `margin-left: auto` on the right block gives the
@@ -802,9 +814,10 @@ textarea {
 }
 
 .history-register__name {
-  font-family: var(--face-text);
-  font-size: var(--size-version-line);
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 /* The position markers' type role (route-recipe.md § 3, 260917-odu;
@@ -823,8 +836,8 @@ textarea {
 }
 
 .history-register__record {
-  margin-left: auto;
-  text-align: right;
+  margin-inline-start: auto;
+  text-align: end;
   font-variant-numeric: tabular-nums;
 }
 
@@ -858,12 +871,12 @@ textarea {
   border-top: var(--rule-baseline) solid var(--ink);
 }
 
-/* The version in view, carried by weight and outline on its own sheet —
+/* The version in view, carried by its explicit marker and outline on its own sheet —
    never on the list item, which also holds this version's branches
    (recipe-history__branches, a sibling of the sheet); a rule on the list
-   item would bolden and enclose descendant version nodes not in view. */
+   item would enclose descendant version nodes not in view. Authored prose
+   inside the sheet keeps its ordinary role and weight. */
 .recipe-history__version.is-current > .recipe-history__version-sheet {
-  font-weight: 700;
   outline: var(--rule-graduation) solid var(--ink);
   outline-offset: var(--focus-outline-offset);
 }
@@ -894,6 +907,7 @@ textarea {
   font-family: var(--face-text);
   font-size: var(--size-version-line);
   font-weight: 400;
+  overflow-wrap: anywhere;
 }
 
 .recipe-history__version-name a,
@@ -911,7 +925,7 @@ textarea {
 
 .recipe-history__written,
 .recipe-history__batch-state {
-  margin-left: auto;
+  margin-inline-start: auto;
   font-variant-numeric: tabular-nums;
 }
 
@@ -936,7 +950,7 @@ textarea {
 
 .recipe-history__batches {
   margin-top: var(--gap-s);
-  margin-left: var(--gap-l);
+  margin-inline-start: var(--gap-l);
 }
 
 .recipe-history__batch {
@@ -944,43 +958,49 @@ textarea {
   border-top: var(--rule-graduation) solid var(--bookcloth);
 }
 
-.recipe-history__batch.is-current {
-  font-weight: 700;
-}
-
 .recipe-history__batch-name {
   flex: 1 1 var(--rhist-bname-min);
   min-width: 0;
   font-family: var(--face-grotesk);
   font-size: var(--type-control);
+  overflow-wrap: anywhere;
 }
 
 .recipe-history__outcome,
 .recipe-history__next {
   margin-top: var(--gap-hair);
-  margin-left: var(--gap-l);
+  margin-inline-start: var(--gap-l);
   overflow-wrap: anywhere;
 }
 
-.recipe-history__outcome:not(.prose-text),
-.recipe-history__next {
+.recipe-history__outcome:not(.prose-text) {
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
 }
 
+.recipe-history__next {
+  font-family: var(--face-text);
+  font-size: var(--type-note);
+  line-height: var(--leading-note);
+  color: var(--pen-blue);
+}
+
 .recipe-history__next span {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
   font-weight: 500;
+  color: var(--ink);
 }
 
 .recipe-history__empty {
   margin-top: var(--gap-s);
-  margin-left: var(--gap-l);
+  margin-inline-start: var(--gap-l);
 }
 
 .recipe-history__branches {
-  margin-left: var(--gap-l);
-  padding-left: var(--gap-m);
-  border-left: var(--rule-graduation) solid var(--bookcloth);
+  margin-inline-start: var(--gap-l);
+  padding-inline-start: var(--gap-m);
+  border-inline-start: var(--rule-graduation) solid var(--bookcloth);
 }
 
 .ingredient-table-region {
@@ -1835,8 +1855,9 @@ textarea {
 }
 
 .batch-row__date {
-  font-family: var(--face-text);
-  font-size: var(--size-version-line);
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+  font-variant-numeric: tabular-nums;
   color: var(--pen-blue);
 }
 
@@ -2662,12 +2683,12 @@ textarea {
   }
 
   .recipe-history__batches {
-    margin-left: var(--gap-m);
+    margin-inline-start: var(--gap-m);
   }
 
   .recipe-history__branches {
-    margin-left: var(--gap-s);
-    padding-left: var(--gap-s);
+    margin-inline-start: var(--gap-s);
+    padding-inline-start: var(--gap-s);
   }
 
   .recipe-history__reason {

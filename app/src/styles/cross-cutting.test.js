@@ -58,6 +58,25 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(resolveTokenPx(tokens, '--touch-stop-height')).toBe(44);
   });
 
+  test('history keeps authored names wrappable and reduces nested indentation with logical properties on phone widths', () => {
+    expect(ruleFor('.recipe-history__version-name').declarations).toMatch(/min-width:\s*0/);
+    expect(ruleFor('.recipe-history__version-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(ruleFor('.recipe-history__batch-name').declarations).toMatch(/min-width:\s*0/);
+    expect(ruleFor('.recipe-history__batch-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
+
+    const branches = ruleFor('.recipe-history__branches').declarations;
+    expect(branches).toMatch(/margin-inline-start:\s*var\(--gap-l\)/);
+    expect(branches).toMatch(/padding-inline-start:\s*var\(--gap-m\)/);
+    expect(branches).toMatch(/border-inline-start:/);
+    expect(branches).not.toMatch(/margin-left|padding-left|border-left/);
+
+    const narrowBatches = rules.find((r) => r.selector === '.recipe-history__batches' && r.media === '(max-width: 759.98px)');
+    const narrowBranches = rules.find((r) => r.selector === '.recipe-history__branches' && r.media === '(max-width: 759.98px)');
+    expect(narrowBatches.declarations).toMatch(/margin-inline-start:\s*var\(--gap-m\)/);
+    expect(narrowBranches.declarations).toMatch(/margin-inline-start:\s*var\(--gap-s\)/);
+    expect(narrowBranches.declarations).toMatch(/padding-inline-start:\s*var\(--gap-s\)/);
+  });
+
   test("inside the media block, `button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179; .prose-field joined in 260916-vv1, critique issue 4, the four record prose fields at 560 x 19 on a coarse pointer)", () => {
     const rule = mediaRuleFor('button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle');
     expect(rule, 'expected the media-block control rule').toBeTruthy();

@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { BatchRow, AxesGrid, laterBatchMetaFor } from './BatchRow.jsx';
+import { BatchRow, AxesGrid, BatchHistoryPanel, batchHistoryMetaFor } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { axesForBatch } from '../domain/axes.js';
@@ -72,6 +72,20 @@ function renderBatchRow(props) {
         onStartAmending={noop}
         onCancelRecording={noop}
         onSaveBatch={noop}
+        {...props}
+      />
+    </MemoryRouter>,
+  );
+}
+
+function renderBatchHistoryPanel(props) {
+  return renderToStaticMarkup(
+    <MemoryRouter>
+      <BatchHistoryPanel
+        version={oliveOilVersion}
+        batches={[]}
+        openBatch={null}
+        openPen={null}
         {...props}
       />
     </MemoryRouter>,
@@ -1280,26 +1294,64 @@ describe('BatchRow — the batch list, always a list only with zero batches; a c
   });
 });
 
-// laterBatchMetaFor (D-04, D-09, Pitfall 7): the batch list's own meta
+describe('BatchHistoryPanel — the revealed Batches register', () => {
+  const newerBatch = { ...augustSecondBatch, id: 'newer-batch', churn: { ...augustSecondBatch.churn, churnDate: '2026-08-16' } };
+  const undatedBatch = { ...augustSecondBatch, id: 'undated-batch', churn: { ...augustSecondBatch.churn, churnDate: null } };
+
+  it('reveals exactly the complete batch count, newest first, with the older batch in view', () => {
+    const markup = renderBatchHistoryPanel({
+      batches: [augustSecondBatch, undatedBatch, newerBatch],
+      openBatch: augustSecondBatch,
+    });
+    expect(markup).toContain('<h2 class="region-name">Batches of this version</h2>');
+    expect(markup).toContain('<ul class="history-register">');
+    expect(markup.match(/<li class="history-register__item">/g)).toHaveLength(3);
+    expect(markup.indexOf('16 Aug 2026')).toBeLessThan(markup.indexOf('2 Aug 2026'));
+    expect(markup.indexOf('2 Aug 2026')).toBeLessThan(markup.indexOf('date unknown'));
+    expect(markup).toContain('2 Aug 2026 <span class="history-register__marker">· In view</span>');
+    expect(markup).not.toMatch(/2 Aug 2026[\s\S]*?later/i);
+  });
+
+  it('uses stable routes and descriptive focus intent for batches that are not in view', () => {
+    const markup = renderBatchHistoryPanel({
+      batches: [augustSecondBatch, newerBatch],
+      openBatch: augustSecondBatch,
+    });
+    expect(markup).toContain('href="/recipe/olive-oil-ice-cream-v1/batch/newer-batch"');
+    expect(markup.match(/<a /g)).toHaveLength(1);
+  });
+
+  it('removes navigation links while a pen is open without changing the revealed count', () => {
+    const markup = renderBatchHistoryPanel({
+      batches: [augustSecondBatch, newerBatch],
+      openBatch: augustSecondBatch,
+      openPen: 'amend',
+    });
+    expect(markup.match(/<li class="history-register__item">/g)).toHaveLength(2);
+    expect(markup).not.toContain('<a ');
+  });
+});
+
+// batchHistoryMetaFor (D-04, D-09, Pitfall 7): the batch list's own meta
 // small print — "changed {date}" replaces the retired tasted-count
 // wording; the drawn temperature and At-the-machine parts are unchanged.
-describe('laterBatchMetaFor — the batch list\'s meta small print (D-04)', () => {
+describe('batchHistoryMetaFor — the batch list\'s meta small print (D-04)', () => {
   it("reads \"changed {date}\" when the batch carries a changed date", () => {
     const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
-    expect(laterBatchMetaFor(changedBatch)).toContain('changed 10 Aug 2026');
+    expect(batchHistoryMetaFor(changedBatch)).toContain('changed 10 Aug 2026');
   });
 
   it('carries no "changed" part when the batch has never been changed', () => {
-    expect(laterBatchMetaFor(augustSecondBatch).some((part) => part.startsWith('changed '))).toBe(false);
+    expect(batchHistoryMetaFor(augustSecondBatch).some((part) => part.startsWith('changed '))).toBe(false);
   });
 
   it('never reads "tasted" — the tasted-count wording is retired (Pitfall 7)', () => {
     const tastedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
-    expect(laterBatchMetaFor(tastedBatch).join(' · ')).not.toMatch(/\btasted\b/);
+    expect(batchHistoryMetaFor(tastedBatch).join(' · ')).not.toMatch(/\btasted\b/);
   });
 
   it('keeps the drawn-temperature and At-the-machine parts', () => {
-    expect(laterBatchMetaFor(augustSecondBatch)).toEqual(['out of machine −6 °C', 'Soft, not greasy']);
+    expect(batchHistoryMetaFor(augustSecondBatch)).toEqual(['out of machine −6 °C', 'Soft, not greasy']);
   });
 
   it('returns an empty list when the batch carries none of the three facts', () => {
@@ -1308,6 +1360,6 @@ describe('laterBatchMetaFor — the batch list\'s meta small print (D-04)', () =
       changed: null,
       churn: { ...augustSecondBatch.churn, outOfMachineTempC: null, atTheMachine: null },
     };
-    expect(laterBatchMetaFor(bareBatch)).toEqual([]);
+    expect(batchHistoryMetaFor(bareBatch)).toEqual([]);
   });
 });

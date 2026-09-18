@@ -170,6 +170,62 @@ describe('RecipeHistory', () => {
     expect(markup).not.toContain('<a ');
   });
 
+  it('renders multiple attempts newest first and marks an older batch in view without calling it later', () => {
+    const oldest = makeBatch({ id: 'oldest', churn: { churnDate: '2026-01-02' } });
+    const middle = makeBatch({ id: 'middle', churn: { churnDate: '2026-01-09' } });
+    const newest = makeBatch({ id: 'newest', churn: { churnDate: '2026-01-16' } });
+    const markup = renderHistory({
+      versions: [root],
+      currentVersionId: 'v1',
+      currentBatchId: 'oldest',
+      allBatches: [middle, oldest, newest],
+    });
+
+    expect(markup.indexOf('Batch · 16 Jan 2026')).toBeLessThan(markup.indexOf('Batch · 9 Jan 2026'));
+    expect(markup.indexOf('Batch · 9 Jan 2026')).toBeLessThan(markup.indexOf('Batch · 2 Jan 2026'));
+    expect(markup.match(/<li class="recipe-history__batch/g)).toHaveLength(3);
+    expect(markup).toContain('Batch · 2 Jan 2026<span class="history-register__marker"> · In view</span>');
+    expect(markup).not.toMatch(/\blater\b/i);
+  });
+
+  it('uses readable unknowns for missing version, churn, tasting and cited-batch dates', () => {
+    const undatedRoot = makeVersion({ createdAt: null });
+    const undatedBatch = makeBatch({
+      churn: { churnDate: null },
+      tasting: {
+        tastedDate: null,
+        note: null,
+        defects: null,
+        bitterDeclared: null,
+      },
+    });
+    const undatedChild = makeVersion({
+      ...successor,
+      createdAt: null,
+      reason: '',
+    });
+    const markup = renderHistory({
+      versions: [undatedRoot, undatedChild],
+      currentVersionId: 'v1',
+      allBatches: [undatedBatch],
+    });
+
+    expect((markup.match(/written date unknown/g) ?? []).length).toBe(2);
+    expect(markup).toContain('Batch · date unknown');
+    expect(markup).toContain('After batch · <a href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('Tasted date unknown');
+    expect(markup).not.toContain('>Why<');
+  });
+
+  it('preserves a long multilingual authored name and exposes descriptive list names', () => {
+    const longName = 'نسخة زيت الزيتون الطويلة جدًا · 冰淇淋配方 · 🍨 · '.repeat(5);
+    const longVersion = makeVersion({ versionLabel: longName });
+    const markup = renderHistory({ versions: [longVersion], currentVersionId: 'v1' });
+    expect(markup).toContain(longName);
+    expect(markup).toContain('aria-label="Recipe development history"');
+    expect(markup).toContain('class="recipe-history__version-name"');
+  });
+
   it('does not render a version belonging to a different recipeId', () => {
     const other = makeVersion({ id: 'other', recipeId: 'recipe-2', versionLabel: 'Elsewhere' });
     const markup = renderHistory({ versions: [root, other], currentVersionId: 'v1', allBatches: [] });

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { formatRecordDate } from '../domain/batch.js';
+import { recordDateWords } from '../domain/batch.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { RecipeHistory } from './RecipeHistory.jsx';
 
@@ -144,7 +144,7 @@ export function VersionRow({
                   <option value="">no batch cited</option>
                   {citableBatches(batches).map((batch) => (
                     <option key={batch.id} value={batch.id}>
-                      {batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown'}
+                      {recordDateWords(batch.churn.churnDate)}
                     </option>
                   ))}
                 </select>
@@ -219,19 +219,22 @@ export function VersionRow({
           {!version.parentVersionId ? (
             <>
               <dt className="versions__lineage-label">Written</dt>
-              <dd className="versions__lineage">{formatRecordDate(version.createdAt)}</dd>
+              <dd className="versions__lineage version-row__written">{recordDateWords(version.createdAt)}</dd>
             </>
           ) : (
             <>
               <dt className="versions__lineage-label">From version</dt>
               <dd className="versions__lineage">
-                {openPen ? (
-                  version.parentVersionLabel
-                ) : (
-                  <Link to={`/recipe/${version.parentVersionId}`}>{version.parentVersionLabel}</Link>
-                )}
-                {' · written '}
-                {formatRecordDate(version.createdAt)}
+                <span className="version-row__parent-name">
+                  {openPen ? (
+                    version.parentVersionLabel
+                  ) : (
+                    <Link to={`/recipe/${version.parentVersionId}`} state={{ focusVersion: true }}>
+                      {version.parentVersionLabel}
+                    </Link>
+                  )}
+                </span>
+                <span className="version-row__written">{` · written ${recordDateWords(version.createdAt)}`}</span>
               </dd>
             </>
           )}
@@ -246,12 +249,12 @@ export function VersionRow({
           {version.citedBatchId && citedBatch && (
             <>
               <dt className="versions__lineage-label">From batch</dt>
-              <dd className="versions__lineage">
+              <dd className="versions__lineage version-row__batch-provenance">
                 {openPen ? (
-                  citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'
+                  recordDateWords(citedBatch.churn.churnDate)
                 ) : (
-                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`}>
-                    {citedBatch.churn.churnDate ? formatRecordDate(citedBatch.churn.churnDate) : 'date unknown'}
+                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`} state={{ focusBatch: true }}>
+                    {recordDateWords(citedBatch.churn.churnDate)}
                   </Link>
                 )}
               </dd>

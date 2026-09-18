@@ -435,6 +435,12 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
   });
 
+  it('keeps a root version with no written date readable instead of throwing', () => {
+    const undated = { ...oliveOilVersion, createdAt: null };
+    const markup = renderVersionRow({ version: undated, versions: [undated] });
+    expect(markup).toContain('class="versions__lineage version-row__written">date unknown</dd>');
+  });
+
   it('renders From version (never bare "From"), folded with the written date, From batch, Why, and the Versions count for a child version', () => {
     const grandchildVersion = {
       ...childVersion,
@@ -530,7 +536,7 @@ describe('VersionRow — no batch list rendered here any more (D-09, moved to Ba
 // column, and the acts group rendered ABOVE the dl instead of below it.
 // Fixed by returning a Fragment: a `.vmeta` section (h2, dl, then the acts
 // group) plus, as its OWN full-width sibling sections, the ceremony (while
-// developing) and the Later disclosure (while open) — matching sketch 003
+// developing) and the History disclosure (while open) — matching sketch 003
 // variant B's own `.vmeta`/`.ceremony`/`.list` siblings (index.html:208-233).
 describe('VersionRow — the saved metadata transforms into the next-version ceremony', () => {
   it('wraps the reading-mode stack in a "vmeta" section, the sketch\'s own class name', () => {

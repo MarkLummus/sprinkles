@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { formatRecordDate, readMeasured, sortedBatches } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, recordDateWords, sortedBatches } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
 import { axesForBatch, readMarkWord } from '../domain/axes.js';
@@ -231,7 +231,7 @@ function TastingReading({ batch }) {
       <div className="tasting-reading__head">
         <h3 className="region-name">Tasting</h3>
         <p className="batch-row__date">
-          {`tasted ${batch.tasting.tastedDate ? formatRecordDate(batch.tasting.tastedDate) : 'date unknown'}`}
+          {`tasted ${recordDateWords(batch.tasting.tastedDate)}`}
         </p>
       </div>
       <div className="batch-row__cells tasting-reading__conditions">
@@ -307,14 +307,14 @@ function TastingReading({ batch }) {
   );
 }
 
-// laterBatchMetaFor(batch) -> the batch list's own meta small print parts
+// batchHistoryMetaFor(batch) -> the batch list's own meta small print parts
 // (D-04, D-09): the drawn temperature and At-the-machine prose, unchanged,
 // plus "changed {date}" when the batch carries a changed value —
 // replacing the retired tasted-count wording (Pitfall 7: a batch is
 // tasted zero or one, never plural). Exported for direct testing, since
 // the disclosure that renders this has no prop to open it from a
 // render-only test (this file's own AxesGrid precedent).
-export function laterBatchMetaFor(batch) {
+export function batchHistoryMetaFor(batch) {
   const metaParts = [];
   if (batch.churn.outOfMachineTempC != null) {
     metaParts.push(`out of machine ${churnMeasured(batch.churn.outOfMachineTempC, { signed: true })} °C`);
@@ -322,6 +322,39 @@ export function laterBatchMetaFor(batch) {
   if (batch.churn.atTheMachine) metaParts.push(batch.churn.atTheMachine);
   if (batch.changed) metaParts.push(`changed ${formatRecordDate(batch.changed)}`);
   return metaParts;
+}
+
+export function BatchHistoryPanel({ version, batches, openBatch = null, openPen = null }) {
+  return (
+    <section id="batch-row-batches" className="batch-row__batches" aria-label="Batches of this version">
+      <h2 className="region-name">Batches of this version</h2>
+      <ul className="history-register">
+        {sortedBatches(batches).map((batch) => {
+          const isOpenBatch = openBatch && batch.id === openBatch.id;
+          const dateWords = recordDateWords(batch.churn.churnDate);
+          const metaParts = batchHistoryMetaFor(batch);
+          return (
+            <li key={batch.id} className="history-register__item">
+              <div className="history-register__identity">
+                <p className="history-register__name">
+                  {isOpenBatch ? (
+                    <>
+                      {dateWords} <span className="history-register__marker">· In view</span>
+                    </>
+                  ) : openPen ? (
+                    dateWords
+                  ) : (
+                    <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{dateWords}</Link>
+                  )}
+                </p>
+                {metaParts.length > 0 && <p className="history-register__provenance">{metaParts.join(' · ')}</p>}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
 }
 
 // The batch's own row (sketch 003 variant B, 03.3-01; rebuilt to the full
@@ -473,7 +506,7 @@ export function BatchRow({
           tabIndex={focusBatchOnMount || focusBatchAttempt != null ? -1 : undefined}
           aria-label={
             (focusBatchOnMount || focusBatchAttempt != null) && openBatch
-              ? `Batch churned ${openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}`
+              ? `Batch churned ${recordDateWords(openBatch.churn.churnDate)}`
               : undefined
           }
           onBlur={() => setLandingFocusVisible(false)}
@@ -482,7 +515,7 @@ export function BatchRow({
         </h2>
         {openPen !== 'record' && openBatch && (
           <span className="batch-row__date">
-            {`churned ${openBatch.churn.churnDate ? formatRecordDate(openBatch.churn.churnDate) : 'date unknown'}`}
+            {`churned ${recordDateWords(openBatch.churn.churnDate)}`}
           </span>
         )}
         {openPen !== 'record' && batchCount > 0 && (
@@ -931,7 +964,7 @@ export function BatchRow({
             <dl className="batch-row__provenance">
               <div>
                 <dt>Recorded</dt>
-                <dd>{`${formatRecordDate(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}</dd>
+                <dd>{`${recordDateWords(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}</dd>
               </div>
               {/* D-04: churned, tasted, changed — only the latest change
                   ever shows, since every save after the first replaces
@@ -961,34 +994,12 @@ export function BatchRow({
         </ul>
       ) : (
         batchesOpen && (
-          <section id="batch-row-batches" className="batch-row__batches" aria-label="Batches of this version">
-            <h2 className="region-name">Batches of this version</h2>
-            <ul className="history-register">
-              {sortedBatches(batches).map((batch) => {
-                const isOpenBatch = openBatch && batch.id === openBatch.id;
-                const dateWords = batch.churn.churnDate ? formatRecordDate(batch.churn.churnDate) : 'date unknown';
-                const metaParts = laterBatchMetaFor(batch);
-                return (
-                  <li key={batch.id} className="history-register__item">
-                    <div className="history-register__identity">
-                      <p className="history-register__name">
-                        {isOpenBatch ? (
-                          <>
-                            <strong>{dateWords}</strong> <span className="history-register__marker">· In view</span>
-                          </>
-                        ) : openPen ? (
-                          dateWords
-                        ) : (
-                          <Link to={`/recipe/${version.id}/batch/${batch.id}`}>{dateWords}</Link>
-                        )}
-                      </p>
-                      {metaParts.length > 0 && <p className="history-register__provenance">{metaParts.join(' · ')}</p>}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
+          <BatchHistoryPanel
+            version={version}
+            batches={batches}
+            openBatch={openBatch}
+            openPen={openPen}
+          />
         )
       )}
     </section>

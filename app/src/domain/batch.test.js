@@ -17,7 +17,6 @@ import {
   readMeasured,
   sortedBatches,
   latestChurnDate,
-  batchHistoryWords,
   BATCH_SCHEMA_VERSION,
 } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -466,44 +465,6 @@ describe('latestChurnDate', () => {
 
   it('returns null when every batch is undated', () => {
     expect(latestChurnDate([{ churn: { churnDate: null } }, { churn: { churnDate: null } }])).toBe(null);
-  });
-});
-
-describe('batchHistoryWords', () => {
-  it('zero batches reads "not yet churned"', () => {
-    expect(batchHistoryWords([])).toBe('not yet churned');
-  });
-
-  it('one dated batch reads "churned <date>"', () => {
-    const batches = [{ churn: { churnDate: '2026-08-02' } }];
-    expect(batchHistoryWords(batches)).toBe('churned 2 Aug 2026');
-  });
-
-  it('one undated batch reads bare "churned"', () => {
-    const batches = [{ churn: { churnDate: null } }];
-    expect(batchHistoryWords(batches)).toBe('churned');
-  });
-
-  it('two dated batches read "churned twice · last <date>", the word not the numeral', () => {
-    const batches = [
-      { churn: { churnDate: '2026-08-02' } },
-      { churn: { churnDate: '2026-08-20' } },
-    ];
-    expect(batchHistoryWords(batches)).toBe('churned twice · last 20 Aug 2026');
-  });
-
-  it('three dated batches read "churned 3 times · last <date>", the date being the latest regardless of array order', () => {
-    const batches = [
-      { churn: { churnDate: '2026-08-20' } },
-      { churn: { churnDate: '2026-08-02' } },
-      { churn: { churnDate: '2026-08-10' } },
-    ];
-    expect(batchHistoryWords(batches)).toBe('churned 3 times · last 20 Aug 2026');
-  });
-
-  it('two undated batches read "churned twice" alone, the "· last …" clause omitted', () => {
-    const batches = [{ churn: { churnDate: null } }, { churn: { churnDate: null } }];
-    expect(batchHistoryWords(batches)).toBe('churned twice');
   });
 });
 

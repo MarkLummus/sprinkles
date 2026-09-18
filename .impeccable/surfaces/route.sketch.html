@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Sprinkles · The Jar</title><style>
+:root{--ground:#FFFFFF;--ink:#1A1C1F;--s1:#F25C7A;--s2:#F7C948;--s3:#3EB7C8;--s4:#7BC96F;--s5:#F28C38;--s6:#9B6BD6;--mute:#6C737A}
+*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.45 -apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:22px 48px}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.02em;position:relative}
+.brand:after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:6px;background:linear-gradient(90deg,var(--s1) 0 14%,transparent 14% 20%,var(--s2) 20% 32%,transparent 32% 38%,var(--s3) 38% 52%,transparent 52% 58%,var(--s4) 58% 70%,transparent 70% 76%,var(--s5) 76% 90%,transparent 90%);border-radius:3px}
+nav a{margin-left:26px;text-decoration:none;color:var(--ink);font-weight:600;font-size:14px}nav a.on{border-bottom:3px solid var(--s3);padding-bottom:2px}
+h1{margin:36px 48px 4px;font-size:34px;letter-spacing:-.02em}.sub{margin:0 48px 28px;color:var(--mute)}
+.list{margin:0 48px}
+.r{display:grid;grid-template-columns:8px 1.3fr 1fr 1fr 1fr;gap:28px;align-items:center;padding:22px 0;border-top:1px solid #E7E9EC;text-decoration:none;color:inherit}
+.r .bar{width:8px;height:56px;border-radius:4px;background:var(--c)}
+.r h2{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em}.r .v{color:var(--mute);font-size:14px}
+.sp{display:flex;gap:5px;align-items:center;flex-wrap:wrap}.sp i{display:inline-block;width:18px;height:6px;border-radius:3px;background:var(--c);transform:rotate(var(--rot,0deg))}
+.lab{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.w{font-family:Georgia,serif;font-style:italic;color:#1f3d7a}
+.cta{display:inline-block;margin:36px 48px;padding:12px 18px;border-radius:10px;background:var(--ink);color:#fff;font-weight:700;text-decoration:none;position:relative}
+.cta:after{content:"";position:absolute;right:-10px;top:-8px;width:26px;height:26px;background:radial-gradient(circle,var(--s2) 3px,transparent 3.5px) 0 0/9px 9px,radial-gradient(circle,var(--s1) 2.5px,transparent 3px) 4px 4px/9px 9px}
+.key{margin:8px 48px 40px;padding-top:18px;border-top:1px solid #E7E9EC;display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;font-size:14px;color:#33393f}.key b{display:block;margin-bottom:4px;color:var(--ink)}
+.syn{position:fixed;right:12px;bottom:10px;font-size:11px;color:#888}
+</style></head><body>
+<header><div class="brand">Sprinkles</div><nav><a class="on">Recipes</a><a>Line of work</a><a>Bring in a recipe</a></nav></header>
+<h1>Recipes</h1><p class="sub">Every count is a sprinkle. Versions in the recipe's colour, batches in gold.</p>
+<div class="list">
+<a class="r" style="--c:var(--s4)"><div class="bar"></div><div><h2>Olive Oil Ice Cream</h2><div class="v">v4 · 56 g oil · 800 g · worked on 17 Sep</div></div><div><div class="lab">versions</div><div class="sp"><i></i><i style="--rot:12deg"></i><i style="--rot:-9deg"></i><i style="--rot:4deg"></i></div></div><div><div class="lab">batches</div><div class="sp" style="--c:var(--s2)"><i style="--rot:-6deg"></i></div></div><div class="w">"soft, not greasy"</div></a>
+<a class="r" style="--c:var(--s5)"><div class="bar"></div><div><h2>Mexican Chocolate</h2><div class="v">v4 · 1 kg</div></div><div><div class="lab">versions</div><div class="sp"><i></i><i style="--rot:12deg"></i><i style="--rot:-9deg"></i><i style="--rot:4deg"></i></div></div><div><div class="lab">batches</div><div class="sp" style="--c:var(--s2)"><i></i><i style="--rot:14deg"></i><i style="--rot:-7deg"></i></div></div><div class="w">"too hard to scoop"</div></a>
+<a class="r" style="--c:var(--s1)"><div class="bar"></div><div><h2>Strawberry</h2><div class="v">v1 · 1 kg</div></div><div><div class="lab">versions</div><div class="sp"><i></i></div></div><div><div class="lab">batches</div><div class="sp" style="--c:var(--s2)"><i style="--rot:8deg"></i></div></div><div class="v">no verdict written</div></a>
+<a class="r" style="--c:var(--s3)"><div class="bar"></div><div><h2>Pistachio</h2><div class="v">v1 · 800 g</div></div><div><div class="lab">versions</div><div class="sp"><i></i></div></div><div><div class="lab">batches</div><div class="v">not yet made</div></div><div></div></a>
+</div>
+<a class="cta">Bring in a recipe</a>
+<div class="key"><div><b>The jar</b>Six sprinkle colours, used as marks: a recipe's identity bar, its version tally, its batch tally. Never a verdict.</div><div><b>Where the delight is</b>Saving a version drops one more sprinkle; a batch drops a gold one. Small, quick, and only then.</div><div><b>Where the book lives</b>Open a recipe and the paper spread is exactly what you have, with the recipe's sprinkle colour as its running head.</div></div>
+<div class="syn">Concept sketch. Strawberry and Pistachio are synthetic.</div>
+</body></html>

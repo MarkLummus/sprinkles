@@ -72,6 +72,8 @@ The name **Sprinkles** is binding. Nothing else is. The following exist as incum
 - "The Cupping Form" visual world built in the earlier attempt at `~/Documents/projects/old-sprinkles/DESIGN.md` and `.impeccable/direction-contract.md`: printed black, recorded ink blue, colour identifies and form carries state, Archivo and Archivo Narrow, light only, print-native.
 - The cone-and-scoop icon and slate-blue palette from `design-explorations/` (26 JSX mockups, with mint and teal palette variants evaluated and not chosen).
 
+Confirmed by Mark on 2026-09-18 (D13 authority, first confirmation): the paper world is binding inside three frames only — the recipe spread on screen, the batch and tasting log (black, blue, and a highlighter still to be drawn), and the printed sheet. Outside those frames the app has a second world, "The Sprinkles Jar": a small fixed set of sprinkle colours for the app's own marks and guidance, and a larger palette from which each recipe takes an identity colour. Colour never carries a verdict anywhere (D06). Direction contract: `.impeccable/surfaces/route.md`.
+
 Voice (from the brief): knowledgeable, welcoming, precise; respects experimentation and taste; explains terms without condescension; candid when evidence is insufficient. Avoid "your recipe is correct," "this will fix it," and equating one sensory word with one metric.
 
 ## Evidence on Hand

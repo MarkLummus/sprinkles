@@ -61,6 +61,9 @@ const childVersion = {
   reason: 'less oil after the batch of 2 Aug',
   citedBatchId: augustSecondBatch.id,
   versionLabel: '45 g oil · 800 g',
+  // The child needs a creation date of its own, distinct from the seed's,
+  // or no assertion here can tell the child's date from the parent's.
+  createdAt: '2026-08-05T00:00:00.000Z',
 };
 
 // The section itself still carries no page-level running head of its own
@@ -414,7 +417,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).toContain('class="versions__lineage version-row__written">date unknown</dd>');
   });
 
-  it('renders From version (never bare "From"), folded with the written date, From batch, Why, and the Versions count for a child version', () => {
+  it('renders From version (never bare "From"), a Written line of the child\'s own date, From batch, Why, and the History control for a child version', () => {
     const grandchildVersion = {
       ...childVersion,
       id: 'olive-oil-ice-cream-v3',
@@ -429,13 +432,31 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     });
     expect(markup).toMatch(/<dt[^>]*>From version<\/dt>/);
     expect(markup).not.toMatch(/<dt[^>]*>From<\/dt>/);
-    expect(markup).toContain('· written');
     expect(markup).toContain('From batch');
     expect(markup).toContain('Why');
     expect(markup).toContain(childVersion.reason);
     expect(markup).toContain('class="version-row__reason prose-text"');
     expect(markup).toContain(oliveOilVersion.versionLabel);
     expect(markup).toContain('>History</button>');
+  });
+
+  // VROW-01/VROW-02: the folded value hid two facts — the child's own
+  // written date, and a From-version value that must carry the parent
+  // alone. This case pins both once the fold is gone.
+  it("prints the child's own written date under its own term, and leaves From version carrying the parent alone", () => {
+    const markup = renderVersionRow({
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    expect(markup).toMatch(/<dt class="versions__lineage-label">Written<\/dt>/);
+    expect(markup).toMatch(/<dd class="versions__lineage version-row__written">5 Aug 2026<\/dd>/);
+    const fromVersionValue = markup.match(/<dt[^>]*>From version<\/dt><dd[^>]*>(.*?)<\/dd>/)[1];
+    expect(fromVersionValue).toContain(oliveOilVersion.versionLabel);
+    expect(fromVersionValue).not.toContain('5 Aug 2026');
+    expect(fromVersionValue).not.toContain('1 Jul 2026');
+    expect(fromVersionValue).not.toContain('written');
   });
 
   it('omits the From batch line when no batch was cited', () => {

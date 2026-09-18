@@ -200,7 +200,8 @@ export function VersionRow({
         </h2>
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
-            G-03.3-4): a Written/From-version+date line, a Why line always
+            G-03.3-4): a Written line carrying this version's own date, a
+            From-version line where a parent exists, a Why line always
             present, and a From-batch line where cited. Parent and Batch
             stay ink links while no pen is open, and plain text while one
             is (the same link-suppression discipline the version list used
@@ -211,12 +212,9 @@ export function VersionRow({
             its own line below the dl (260917-odu) — see
             version-row__history just after </dl>. */}
         <dl className="version-row__meta-list">
-          {!version.parentVersionId ? (
-            <>
-              <dt className="versions__lineage-label">Written</dt>
-              <dd className="versions__lineage version-row__written">{recordDateWords(version.createdAt)}</dd>
-            </>
-          ) : (
+          <dt className="versions__lineage-label">Written</dt>
+          <dd className="versions__lineage version-row__written">{recordDateWords(version.createdAt)}</dd>
+          {version.parentVersionId && (
             <>
               <dt className="versions__lineage-label">From version</dt>
               <dd className="versions__lineage">
@@ -229,7 +227,6 @@ export function VersionRow({
                     </Link>
                   )}
                 </span>
-                <span className="version-row__written">{` · written ${recordDateWords(version.createdAt)}`}</span>
               </dd>
             </>
           )}

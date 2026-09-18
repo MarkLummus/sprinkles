@@ -1798,7 +1798,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
             parentVersion={parentVersion}
             showingChanges={showingChanges}
             openPen={openPen}
-            penReason={penReason}
             canSaveOver={canSaveOver}
             saveAction={versionSaveAction}
             formStatus={formStatus}

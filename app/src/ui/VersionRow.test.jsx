@@ -36,7 +36,6 @@ function renderVersionRow(props) {
         allBatches={[]}
         citedBatch={null}
         openPen={null}
-        penReason={null}
         canSaveOver={true}
         penHint={null}
         onStartDeveloping={noop}
@@ -159,7 +158,7 @@ describe('VersionRow — the Develop opener, present only with no pen open (D-05
   });
 
   it('renders no Develop opener while a batch pen is open — this row renders nothing at the top for a pen it does not own', () => {
-    const markup = renderVersionRow({ openPen: 'record', penReason: 'a batch is being recorded' });
+    const markup = renderVersionRow({ openPen: 'record' });
     expect(markup).not.toContain('>Next version<');
   });
 
@@ -338,7 +337,7 @@ describe('VersionRow — the plan pen carries no interface-policy hint', () => {
   });
 
   it('leaves the hint to BatchRow while a batch pen is open, so the front matter never repeats it', () => {
-    const markup = renderVersionRow({ openPen: 'record', penReason: 'a batch is being recorded' });
+    const markup = renderVersionRow({ openPen: 'record' });
     expect(markup).not.toContain('Links return after you save or cancel.');
   });
 
@@ -348,31 +347,24 @@ describe('VersionRow — the plan pen carries no interface-policy hint', () => {
   });
 });
 
-// The version strip now renders only inside the Versions disclosure
-// (sketch 003 variant B, G-03.3-4; the struck "Later" wording retired
-// 260917-odu), closed by default — renderToStaticMarkup cannot exercise
-// the open state (Method.test.jsx's own "closed by default" precedent for
-// a click-driven disclosure, cited in 03.3-PATTERNS.md), so this coverage
-// asserts only the closed state: the Versions button with the correct
-// count, and no version-strip markup at all. The open state's own list
-// rendering (is-current, churned, link suppression while a pen is open)
-// is VersionStrip's own coverage in VersionStrip.test.jsx, unaffected by
-// this plan.
+// Recipe history renders only inside its disclosure, closed by default.
+// The control states the complete version count; RecipeHistory.test.jsx
+// owns the open outline's lineage, batch nesting, routes and markers.
 //
 // A count assertion must pass a `versions` prop that CONTAINS the version
 // in view — renderVersionRow's own default below is `[oliveOilVersion]`,
 // so a child fixture rendered without its own explicit `versions` array
 // counts only the root.
-describe('VersionRow — the Versions disclosure, closed by default (D-07, sketch 003 variant B, G-03.3-4, 260917-odu)', () => {
-  it('renders the Versions button counting the complete set — the version in view plus an ancestor — and no version-strip markup while closed', () => {
+describe('VersionRow — the History disclosure, closed by default', () => {
+  it('renders the History button counting the complete version set and no history markup while closed', () => {
     const markup = renderVersionRow({
       version: oliveOilVersion,
       versions: [oliveOilVersion, childVersion],
     });
-    expect(markup).toMatch(/<button[^>]*class="text-control"[^>]*>Versions \(2\)<\/button>/);
-    const versionsButton = markup.match(/<button[^>]*>Versions \(2\)<\/button>/)[0];
-    expect(versionsButton).toContain('aria-controls="version-row-versions"');
-    expect(markup).not.toContain('version-strip');
+    expect(markup).toMatch(/<button[^>]*class="text-control"[^>]*>History \(2 versions\)<\/button>/);
+    const historyButton = markup.match(/<button[^>]*>History \(2 versions\)<\/button>/)[0];
+    expect(historyButton).toContain('aria-controls="version-row-history"');
+    expect(markup).not.toContain('recipe-history');
   });
 
   it('counts the whole recipe regardless of tree depth — a root, its child and its grandchild', () => {
@@ -386,7 +378,7 @@ describe('VersionRow — the Versions disclosure, closed by default (D-07, sketc
       version: oliveOilVersion,
       versions: [oliveOilVersion, childVersion, grandchildVersion],
     });
-    expect(markup).toContain('Versions (3)');
+    expect(markup).toContain('History (3 versions)');
   });
 
   // An ancestor AND a sibling both count: a three-generation, two-branch
@@ -411,19 +403,19 @@ describe('VersionRow — the Versions disclosure, closed by default (D-07, sketc
       version: childVersion,
       versions: [oliveOilVersion, childVersion, siblingVersion, grandchildVersion],
     });
-    expect(markup).toContain('Versions (4)');
+    expect(markup).toContain('History (4 versions)');
   });
 
-  it('renders Versions (1), not nothing, for a root version with no other versions', () => {
+  it('renders the singular History count for a root version with no other versions', () => {
     const markup = renderVersionRow({ version: oliveOilVersion, versions: [oliveOilVersion] });
     expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
-    expect(markup).toContain('Versions (1)');
-    expect(markup).not.toContain('version-strip');
+    expect(markup).toContain('History (1 version)');
+    expect(markup).not.toContain('recipe-history');
   });
 
-  it('renders no control at all with an empty versions array — the pre-load paint before Versions (0) could ever show', () => {
+  it('renders no control at all with an empty versions array', () => {
     const markup = renderVersionRow({ version: oliveOilVersion, versions: [] });
-    expect(markup).not.toContain('Versions (');
+    expect(markup).not.toContain('History (');
     expect(markup).not.toContain('version-row__history');
   });
 });
@@ -464,7 +456,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).toContain(childVersion.reason);
     expect(markup).toContain('class="version-row__reason prose-text"');
     expect(markup).toContain(oliveOilVersion.versionLabel);
-    expect(markup).toContain('Versions (3)');
+    expect(markup).toContain('History (3 versions)');
   });
 
   it('omits the From batch line when no batch was cited', () => {

@@ -97,11 +97,11 @@ export function RecipeList() {
 }
 
 // The list itself, split out as a presentational component over an array
-// (the same convention VersionStrip.jsx establishes) so it is testable
+// (the same convention RecipeHistory.jsx establishes) so it is testable
 // without driving RecipeList's own fetch effect. One row per recipe, at
 // its most recently created version (route-recipe-version.md § 3,
 // 03-03) — hides nothing permanently: every superseded version stays
-// reachable through the strip on the recipe page (VersionStrip.jsx).
+// reachable through the history outline on the recipe page (RecipeHistory.jsx).
 // This is only honest while that stays true.
 export function RecipeRows({ versions }) {
   return (

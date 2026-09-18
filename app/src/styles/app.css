@@ -740,7 +740,7 @@ textarea {
   margin-bottom: var(--gap-s);
 }
 
-/* The Versions disclosure spans both front-matter columns rather
+/* The History disclosure spans both front-matter columns rather
    than being squeezed into vmeta's narrow track. */
 .recipe-band__full-row {
   grid-column: 1 / -1;
@@ -831,6 +831,156 @@ textarea {
 .history-register__record p {
   font-size: var(--size-small-print);
   margin: 0;
+}
+
+/* Recipe history is a development outline, not a third card system. A
+   version is the preserved plan; its indented batches are attempts made
+   from that plan. Child versions continue beneath their parent so a fork
+   remains visible instead of being flattened into chronology. */
+.recipe-history {
+  max-width: var(--measure-prose);
+}
+
+.recipe-history__versions,
+.recipe-history__branches,
+.recipe-history__batches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recipe-history__version {
+  min-width: 0;
+}
+
+.recipe-history__version-sheet {
+  padding: var(--gap-s) 0 var(--gap-m);
+  border-top: var(--rule-baseline) solid var(--ink);
+}
+
+/* The version in view, carried by weight and outline on its own sheet —
+   never on the list item, which also holds this version's branches
+   (recipe-history__branches, a sibling of the sheet); a rule on the list
+   item would bolden and enclose descendant version nodes not in view. */
+.recipe-history__version.is-current > .recipe-history__version-sheet {
+  font-weight: 700;
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.recipe-history__version-head,
+.recipe-history__batch-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--gap-xs) var(--gap-m);
+}
+
+.recipe-history__version-name,
+.recipe-history__batch-name,
+.recipe-history__written,
+.recipe-history__batch-state,
+.recipe-history__outcome,
+.recipe-history__next,
+.recipe-history__cause,
+.recipe-history__empty,
+.recipe-history__reason p {
+  margin: 0;
+}
+
+.recipe-history__version-name {
+  flex: 1 1 var(--rhist-vname-min);
+  min-width: 0;
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  font-weight: 400;
+}
+
+.recipe-history__version-name a,
+.recipe-history__batch-name a {
+  color: inherit;
+}
+
+.recipe-history__written,
+.recipe-history__batch-state,
+.recipe-history__cause,
+.recipe-history__empty {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.recipe-history__written,
+.recipe-history__batch-state {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.recipe-history__cause {
+  margin-top: var(--gap-xs);
+}
+
+.recipe-history__cause a {
+  color: inherit;
+}
+
+.recipe-history__reason {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--gap-xs) var(--gap-m);
+  margin-top: var(--gap-s);
+}
+
+.recipe-history__reason .prose-text {
+  font-size: var(--type-note);
+}
+
+.recipe-history__batches {
+  margin-top: var(--gap-s);
+  margin-left: var(--gap-l);
+}
+
+.recipe-history__batch {
+  padding: var(--gap-xs) 0;
+  border-top: var(--rule-graduation) solid var(--bookcloth);
+}
+
+.recipe-history__batch.is-current {
+  font-weight: 700;
+}
+
+.recipe-history__batch-name {
+  flex: 1 1 var(--rhist-bname-min);
+  min-width: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+}
+
+.recipe-history__outcome,
+.recipe-history__next {
+  margin-top: var(--gap-hair);
+  margin-left: var(--gap-l);
+  overflow-wrap: anywhere;
+}
+
+.recipe-history__outcome:not(.prose-text),
+.recipe-history__next {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+.recipe-history__next span {
+  font-weight: 500;
+}
+
+.recipe-history__empty {
+  margin-top: var(--gap-s);
+  margin-left: var(--gap-l);
+}
+
+.recipe-history__branches {
+  margin-left: var(--gap-l);
+  padding-left: var(--gap-m);
+  border-left: var(--rule-graduation) solid var(--bookcloth);
 }
 
 .ingredient-table-region {
@@ -2508,6 +2658,19 @@ textarea {
      stops at desktop widths — see the sketch question logged in CONTEXT. */
 @media (max-width: 759.98px) {
   .recipe-band__row-version {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-history__batches {
+    margin-left: var(--gap-m);
+  }
+
+  .recipe-history__branches {
+    margin-left: var(--gap-s);
+    padding-left: var(--gap-s);
+  }
+
+  .recipe-history__reason {
     grid-template-columns: 1fr;
   }
 

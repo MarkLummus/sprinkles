@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate } from '../domain/batch.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
-import { VersionStrip } from './VersionStrip.jsx';
+import { RecipeHistory } from './RecipeHistory.jsx';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
-// version's own acts (Develop, the version strip, the lineage line) — the
+// version's own acts (Develop, the history outline, the lineage line) — the
 // batch's acts (Record another, Amend, Add tasting, the batch list, the
 // batch's own content) now live in BatchRow.jsx. No page-level running
 // head here (ROADMAP Scope bullet 1) — the row carries no "Versions"
@@ -22,7 +22,6 @@ export function VersionRow({
   parentVersion = null,
   showingChanges = false,
   openPen = null,
-  penReason = null,
   canSaveOver,
   saveAction = null,
   formStatus = '',
@@ -87,20 +86,17 @@ export function VersionRow({
     }
   }, [focusVersionOnMount, mode]);
 
-  // The Versions disclosure (route-recipe.md § 3 "History controls name a
-  // whole set, never a direction", 260917-odu): closed by default,
-  // revealing the recipe's COMPLETE version list — every version of this
-  // recipe, the one in view included, never the subtree below it. One
-  // array feeds both the count and the strip, so the two can never
-  // diverge.
-  const [versionsOpen, setVersionsOpen] = useState(false);
+  // The recipe-level History disclosure is closed by default. One complete
+  // version set feeds both its count and the parent-child outline, so the
+  // label and revealed content cannot diverge.
+  const [historyOpen, setHistoryOpen] = useState(false);
   const recipeVersions = versionsForRecipe(versions, version.recipeId);
   const versionCount = recipeVersions.length;
   // The identity heading's inputs (route-recipe.md § 6 "One version
   // identity, wherever a version is named", 2026-09-18): the same ordered
-  // array the Versions disclosure below already computes. isLatest is
+  // array the History disclosure below already computes. isLatest is
   // ordered[0] positionally — the same discipline `Latest` takes in
-  // VersionStrip.jsx, and for the same reason: the marker and the order
+  // RecipeHistory.jsx, and for the same reason: the marker and the order
   // cannot disagree.
   const ordered = sortedVersions(recipeVersions);
   const isLatest = ordered.length > 0 && ordered[0].id === version.id;
@@ -215,7 +211,7 @@ export function VersionRow({
             is (the same link-suppression discipline the version list used
             to carry). Sits ABOVE the acts group, matching the sketch's own
             dl-then-acts order (index.html:208-216) — the checkpoint
-            feedback's reading-layout fix. The Versions disclosure control
+            feedback's reading-layout fix. The History disclosure control
             used to close this dl (the struck Later dt/dd); it now sits on
             its own line below the dl (260917-odu) — see
             version-row__history just after </dl>. */}
@@ -274,11 +270,11 @@ export function VersionRow({
             <button
               type="button"
               className="text-control"
-              aria-expanded={versionsOpen}
-              aria-controls="version-row-versions"
-              onClick={() => setVersionsOpen((open) => !open)}
+              aria-expanded={historyOpen}
+              aria-controls="version-row-history"
+              onClick={() => setHistoryOpen((open) => !open)}
             >
-              {`Versions (${versionCount})`}
+              {`History (${versionCount} version${versionCount === 1 ? '' : 's'})`}
             </button>
           </p>
         )}
@@ -317,21 +313,16 @@ export function VersionRow({
         )}
       </section>
 
-      {versionsOpen && (
-        // The Versions disclosure (route-recipe.md § 3, 260917-odu): a
-        // full-width row, not nested in vmeta's own narrow column
-        // (03.3-06 checkpoint feedback) — now the recipe's complete
-        // version list, the version in view included, not the subtree
-        // below it.
-        <section id="version-row-versions" className="recipe-band__full-row" aria-label="Versions">
-          <h2 className="region-name">Versions</h2>
-          <VersionStrip
+      {historyOpen && (
+        <section id="version-row-history" className="recipe-band__full-row" aria-label="History">
+          <h2 className="region-name">History</h2>
+          <RecipeHistory
             versions={recipeVersions}
             recipeId={version.recipeId}
-            currentId={version.id}
+            currentVersionId={version.id}
+            currentBatchId={openBatch?.id ?? null}
             allBatches={allBatches}
             openPen={openPen}
-            penReason={penReason}
           />
         </section>
       )}

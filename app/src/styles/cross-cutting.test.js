@@ -105,11 +105,15 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
       // Decision C: HEIGHT only. The width and the track stay width-keyed below.
       '.axis-mark__stop',
     ]);
-    // Track GEOMETRY stays width-only: a 216px track overflows the 213.3px
-    // column of the wide-viewport axes grid (measured, Mark's iPad 1366 coarse).
+    // Track GEOMETRY and the history outline's indentation stay width-only:
+    // wide touch keeps the desktop composition, while a narrow viewport
+    // reduces lineage and batch indents without flattening the tree.
     const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
     expect(widthOnly.map((r) => r.selector)).toEqual([
       '.recipe-band__row-version',
+      '.recipe-history__batches',
+      '.recipe-history__branches',
+      '.recipe-history__reason',
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
     ]);

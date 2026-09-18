@@ -267,6 +267,12 @@
      the headnote's 1.6fr track claims the rest (D-15). */
   --vmeta-min: 300px;
 
+  /* The recipe-history outline's two name columns (REVIEW-04, 260918-a5l):
+     the width at which each name stops shrinking and its row's flex head
+     wraps its right-hand metadata onto its own line. */
+  --rhist-vname-min: 22rem;
+  --rhist-bname-min: 16rem;
+
   /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
      references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
      the Responsive Ladder"; 03.3.1.1 tenth round): below the 760px

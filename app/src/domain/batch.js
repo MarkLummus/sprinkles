@@ -296,3 +296,31 @@ export function latestChurnDate(batches) {
   }
   return latest;
 }
+
+/**
+ * batchHistoryWords(batches) -> a version's batch history stated in words,
+ * given the batches of that one version. The vocabulary is settled at
+ * route-recipe.md § 3, "The tip, and the lists" — transcribed here, not
+ * re-derived: `not yet churned` (0), `churned <date>` (1), `churned twice
+ * · last <date>` (2), `churned <n> times · last <date>` (n >= 3). `twice`
+ * is the brief's own word and keeps its special case.
+ *
+ * Where latestChurnDate(batches) returns null, the `· last …` clause is
+ * omitted rather than printing an unknown date — the one-batch case
+ * collapses further, to bare `churned`, since a single date-only clause
+ * has nothing left to attach the count to.
+ */
+export function batchHistoryWords(batches) {
+  const count = batches.length;
+  if (count === 0) return 'not yet churned';
+
+  const latest = latestChurnDate(batches);
+
+  if (count === 1) {
+    return latest != null ? `churned ${formatRecordDate(latest)}` : 'churned';
+  }
+
+  const dateClause = latest != null ? ` · last ${formatRecordDate(latest)}` : '';
+  const countWord = count === 2 ? 'twice' : `${count} times`;
+  return `churned ${countWord}${dateClause}`;
+}

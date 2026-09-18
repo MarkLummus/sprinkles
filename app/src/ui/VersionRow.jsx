@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate } from '../domain/batch.js';
-import { citableBatches, versionsForRecipe } from '../domain/lineage.js';
+import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { VersionStrip } from './VersionStrip.jsx';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
@@ -37,6 +37,7 @@ export function VersionRow({
   // references RecipePage.jsx already computes and passes to BatchRow.
   openBatch = null,
   onStartRecording,
+  focusVersionOnMount = false,
 }) {
   // Focus-return for the Develop opener: closing the plan's pen returns
   // focus to the control that opened it. Must sit above the conditional
@@ -71,6 +72,21 @@ export function VersionRow({
     }
   }, [openPen]);
 
+  // Focus-return for a fork's landing (D-27), relocated verbatim from
+  // Headnote.jsx: after a child is created, land on the identity that was
+  // just saved. The temporary class keeps the programmatic landing
+  // visible even when the save began with a pointer; blur returns the
+  // line to ordinary ink. Must sit above the conditional render below,
+  // same as every other ref/effect pair here.
+  const versionIdentityRef = useRef(null);
+  const [landingFocusVisible, setLandingFocusVisible] = useState(false);
+  useEffect(() => {
+    if (focusVersionOnMount && mode === 'reading') {
+      versionIdentityRef.current?.focus();
+      setLandingFocusVisible(true);
+    }
+  }, [focusVersionOnMount, mode]);
+
   // The Versions disclosure (route-recipe.md § 3 "History controls name a
   // whole set, never a direction", 260917-odu): closed by default,
   // revealing the recipe's COMPLETE version list — every version of this
@@ -80,6 +96,14 @@ export function VersionRow({
   const [versionsOpen, setVersionsOpen] = useState(false);
   const recipeVersions = versionsForRecipe(versions, version.recipeId);
   const versionCount = recipeVersions.length;
+  // The identity heading's inputs (route-recipe.md § 6 "One version
+  // identity, wherever a version is named", 2026-09-18): the same ordered
+  // array the Versions disclosure below already computes. isLatest is
+  // ordered[0] positionally — the same discipline `Latest` takes in
+  // VersionStrip.jsx, and for the same reason: the marker and the order
+  // cannot disagree.
+  const ordered = sortedVersions(recipeVersions);
+  const isLatest = ordered.length > 0 && ordered[0].id === version.id;
 
   return (
     <>
@@ -160,11 +184,29 @@ export function VersionRow({
           </>
         ) : (
           <>
-        {/* The sketch's own visible "Version" region-name heading
-            (G-03.3-4) — the section's aria-label already carries "Version"
-            as an accessible name; this adds the same word as a visible
-            label, matching the "Batch" legend BatchRow.jsx already prints. */}
-        <h2 className="region-name">Version</h2>
+        {/* The identity heading (route-recipe.md § 6 "One version identity,
+            wherever a version is named", 2026-09-18): replaces the sketch's
+            bare "Version" region-name heading with the same identity line
+            the history register prints for this version, minus "In view"
+            — the maker is on it. D-27's landing focus moved here whole
+            from Headnote.jsx: the ref, the temporary is-landing-focus
+            class, tabIndex and the blur clear. No aria-label override —
+            the visible line now says what the override said, so the
+            accessible name and the visible text agree. */}
+        <h2
+          ref={versionIdentityRef}
+          className={`version-row__identity${landingFocusVisible ? ' is-landing-focus' : ''}`}
+          tabIndex={focusVersionOnMount ? -1 : undefined}
+          onBlur={() => setLandingFocusVisible(false)}
+        >
+          {versionIdentity(ordered, version)}
+          {isLatest && (
+            <>
+              {' '}
+              <span className="history-register__marker">· Latest</span>
+            </>
+          )}
+        </h2>
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
             G-03.3-4): a Written/From-version+date line, a Why line always

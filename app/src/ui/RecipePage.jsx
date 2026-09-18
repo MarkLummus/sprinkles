@@ -1785,7 +1785,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
             versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
             isSaving={versionSaveAction !== null}
-            focusVersionOnMount={focusVersionOnMount}
           />
 
           <VersionRow
@@ -1811,6 +1810,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onToggleShowChanges={handleToggleShowChanges}
             openBatch={openBatch}
             onStartRecording={handleStartRecording}
+            focusVersionOnMount={focusVersionOnMount}
           />
         </div>
 

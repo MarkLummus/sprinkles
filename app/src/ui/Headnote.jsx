@@ -1,15 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { FieldFeedback } from './FieldFeedback.jsx';
 
 // The recipe block (route-recipe.md § 3 "The imprint", revised
-// 2026-09-17): the recipe's name, current/draft version line and intro.
-// Developing a successor transforms this block into the child's identity
-// instead of leaving the parent's identity above a second version form.
-// The recipe name in 2rem is the block's own head — it wears no running
-// head of its own (D-02). D-03: the version line reads just the version
-// line — the churned date now reaches the reader through the batch list
-// in Versions, and the recording-state churn-date field lives in that
-// pen's own ceremony there too.
+// 2026-09-17): the recipe's name and intro. Developing a successor
+// transforms this block into the child's identity instead of leaving the
+// parent's identity above a second version form. The recipe name in 2rem
+// is the block's own head — it wears no running head of its own (D-02).
+// D-03: the churned date reaches the reader through the batch list in
+// Versions, and the recording-state churn-date field lives in that pen's
+// own ceremony there too. The authored version line itself now reads on
+// the version row's own heading, not here (route-recipe.md § 6 "One
+// version identity, wherever a version is named", 2026-09-18).
 export function Headnote({
   version,
   mode,
@@ -18,11 +19,8 @@ export function Headnote({
   versionLineBlockedAttempt = null,
   versionLineError = null,
   isSaving = false,
-  focusVersionOnMount = false,
 }) {
   const versionLineFieldRef = useRef(null);
-  const versionIdentityRef = useRef(null);
-  const [landingFocusVisible, setLandingFocusVisible] = useState(false);
   const descriptionIsEmpty = mode === 'developing' && penDraft.headnote === '';
   const parentHasDescription = version.headnote !== '';
 
@@ -30,20 +28,10 @@ export function Headnote({
     if (versionLineBlockedAttempt != null) versionLineFieldRef.current?.focus();
   }, [versionLineBlockedAttempt]);
 
-  // After a child is created, land on the identity that was just saved.
-  // The temporary class keeps the programmatic landing visible even when
-  // the save began with a pointer; blur returns the line to ordinary ink.
-  useEffect(() => {
-    if (focusVersionOnMount && mode === 'reading') {
-      versionIdentityRef.current?.focus();
-      setLandingFocusVisible(true);
-    }
-  }, [focusVersionOnMount, mode]);
-
   return (
     <header className="headnote">
       <h1>{version.recipeName}</h1>
-      {mode === 'developing' ? (
+      {mode === 'developing' && (
         <label className="headnote__version-field">
           <span className="pen-caption">Version</span>
           <input
@@ -66,16 +54,6 @@ export function Headnote({
             required
           />
         </label>
-      ) : (
-        <p
-          ref={versionIdentityRef}
-          className={`headnote__version${landingFocusVisible ? ' is-landing-focus' : ''}`}
-          tabIndex={focusVersionOnMount ? -1 : undefined}
-          aria-label={focusVersionOnMount ? `Version ${version.versionLabel}` : undefined}
-          onBlur={() => setLandingFocusVisible(false)}
-        >
-          {version.versionLabel}
-        </p>
       )}
       {/* The intro paragraph (route-recipe-version.md § 3): a text field
           in developing mode, with the baseline's prose struck beneath it

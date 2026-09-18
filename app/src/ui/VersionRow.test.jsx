@@ -65,15 +65,84 @@ const childVersion = {
 };
 
 // The section itself still carries no page-level running head of its own
-// (ROADMAP Scope bullet 1) — but per sketch 003 variant B (the confirmed
-// design, G-03.3-4), the vmeta stack this section renders now carries its
-// own visible "Version" region-name heading, matching the "Batch" legend
-// BatchRow.jsx already prints in this same phase.
-describe('VersionRow — the Version region-name heading (sketch 003 variant B, G-03.3-4)', () => {
-  it('renders the section with an aria-label of Version and a visible "Version" region-name heading', () => {
+// (ROADMAP Scope bullet 1). The sketch's own bare "Version" region-name
+// heading (sketch 003 variant B, G-03.3-4) is retired in favour of the
+// identity line (route-recipe.md § 6 "One version identity, wherever a
+// version is named", 2026-09-18) — the same string the history register
+// prints for this version, minus "In view".
+describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)', () => {
+  it('renders the section with an aria-label of Version and the identity heading, with Latest for the only version there is', () => {
     const markup = renderVersionRow({});
     expect(markup).toContain('aria-label="Version"');
-    expect(markup).toMatch(/<h2 class="region-name">Version<\/h2>/);
+    expect(markup).toContain(
+      '<h2 class="version-row__identity">Version 1 · 50 g oil · 800 g <span class="history-register__marker">· Latest</span></h2>',
+    );
+  });
+
+  it('renders no bare "Version" region-name heading', () => {
+    const markup = renderVersionRow({});
+    expect(markup).not.toMatch(/<h2 class="region-name">Version<\/h2>/);
+  });
+
+  it('reads the word "Version" exactly once in the identity line', () => {
+    const markup = renderVersionRow({});
+    const heading = markup.match(/<h2 class="version-row__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
+    expect((heading.match(/Version/g) ?? []).length).toBe(1);
+  });
+
+  it('gives a middle version of a four-version set its own ordinal and no Latest', () => {
+    const root = { ...oliveOilVersion, id: 'root', parentVersionId: null, createdAt: '2026-01-01T00:00:00.000Z' };
+    const child = { ...oliveOilVersion, id: 'child', parentVersionId: 'root', versionLabel: 'child line', createdAt: '2026-02-01T00:00:00.000Z' };
+    const sibling = { ...oliveOilVersion, id: 'sibling', parentVersionId: 'root', versionLabel: 'sibling line', createdAt: '2026-03-01T00:00:00.000Z' };
+    const grandchild = { ...oliveOilVersion, id: 'grandchild', parentVersionId: 'child', versionLabel: 'grandchild line', createdAt: '2026-04-01T00:00:00.000Z' };
+    const fourVersions = [root, child, sibling, grandchild];
+    const markup = renderVersionRow({ version: child, versions: fourVersions, citedBatch: null, parentVersion: root });
+    expect(markup).toContain('Version 2 · child line');
+    const heading = markup.match(/<h2 class="version-row__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
+    expect(heading).not.toContain('Latest');
+  });
+
+  it('gives two siblings of one parent consecutive ordinals', () => {
+    const root = { ...oliveOilVersion, id: 'root', parentVersionId: null, createdAt: '2026-01-01T00:00:00.000Z' };
+    const child = { ...oliveOilVersion, id: 'child', parentVersionId: 'root', versionLabel: 'child line', createdAt: '2026-02-01T00:00:00.000Z' };
+    const sibling = { ...oliveOilVersion, id: 'sibling', parentVersionId: 'root', versionLabel: 'sibling line', createdAt: '2026-03-01T00:00:00.000Z' };
+    const grandchild = { ...oliveOilVersion, id: 'grandchild', parentVersionId: 'child', versionLabel: 'grandchild line', createdAt: '2026-04-01T00:00:00.000Z' };
+    const fourVersions = [root, child, sibling, grandchild];
+    const childMarkup = renderVersionRow({ version: child, versions: fourVersions, citedBatch: null, parentVersion: root });
+    const siblingMarkup = renderVersionRow({ version: sibling, versions: fourVersions, citedBatch: null, parentVersion: root });
+    const childOrdinal = Number(childMarkup.match(/Version (\d+) · child line/)[1]);
+    const siblingOrdinal = Number(siblingMarkup.match(/Version (\d+) · sibling line/)[1]);
+    expect(Math.abs(childOrdinal - siblingOrdinal)).toBe(1);
+  });
+
+  it('never renders "In view" on the version row', () => {
+    const markup = renderVersionRow({});
+    expect(markup).not.toContain('In view');
+  });
+
+  it('renders the authored line alone during the pre-load paint — no guessed ordinal, but the heading still exists', () => {
+    const markup = renderVersionRow({ version: oliveOilVersion, versions: [] });
+    expect(markup).toContain('50 g oil · 800 g');
+    expect(markup).not.toContain('Version 1');
+    expect(markup).toMatch(/<h2 class="version-row__identity"[^>]*>/);
+  });
+
+  it('lands D-27\'s programmatic focus on the identity heading, carrying tabindex and no aria-label', () => {
+    const markup = renderVersionRow({ focusVersionOnMount: true });
+    expect(markup).toMatch(/<h2[^>]*class="version-row__identity[^"]*"[^>]*tabindex="-1"/);
+    const heading = markup.match(/<h2[^>]*class="version-row__identity[^"]*"[^>]*>/)[0];
+    expect(heading).not.toContain('aria-label');
+    // The focus CALL itself cannot be driven here — there is no jsdom in
+    // this suite, so useEffect never runs against a real DOM. Covered by
+    // the browser checkpoint (D-27), not this render-level assertion.
+  });
+
+  it('carries no anti-goal form for the ordinal — no v1, #1, 1st, or zero-padding', () => {
+    const markup = renderVersionRow({});
+    expect(markup).not.toContain('v1');
+    expect(markup).not.toContain('#1');
+    expect(markup).not.toContain('1st');
+    expect(markup).not.toContain('Version 01');
   });
 });
 

@@ -1,6 +1,7 @@
-// Component test for the recipe block — the recipe's own name, version
-// line and intro paragraph, and nothing else (route-recipe.md § 3,
-// revised 2026-09-08; D-02, D-03). In the existing style:
+// Component test for the recipe block — the recipe's own name and intro
+// paragraph, and nothing else (route-recipe.md § 3, revised 2026-09-08;
+// D-02, D-03; the authored version line moved to VersionRow's own
+// heading, route-recipe.md § 6, 2026-09-18). In the existing style:
 // renderToStaticMarkup (react-dom/server), the node test environment, no
 // jsdom, no testing-library, no new dependency, no MemoryRouter — this
 // shrunk component renders no Link. Every case exercising the ceremony,
@@ -27,10 +28,10 @@ function renderHeadnote(props) {
 }
 
 describe('Headnote — the recipe block alone (D-02, D-03)', () => {
-  it('renders the recipe name and the version line, with no running head of its own', () => {
+  it('renders the recipe name, with no running head of its own and no version line', () => {
     const markup = renderHeadnote({});
     expect(markup).toContain(`<h1>${oliveOilVersion.recipeName}</h1>`);
-    expect(markup).toContain(oliveOilVersion.versionLabel);
+    expect(markup).not.toContain(oliveOilVersion.versionLabel);
     expect(markup).not.toContain('region-name');
   });
 
@@ -44,9 +45,9 @@ describe('Headnote — the recipe block alone (D-02, D-03)', () => {
     expect(markup).toContain(oliveOilVersion.headnote);
   });
 
-  it('prints nothing recorded — the version line alone, no churned date (D-03)', () => {
+  it('prints the recipe name and prose alone — no version line, no churned date (D-03)', () => {
     const markup = renderHeadnote({});
-    expect(markup).toBe(`<header class="headnote"><h1>${oliveOilVersion.recipeName}</h1><p class="headnote__version">${oliveOilVersion.versionLabel}</p><p class="headnote__prose">${oliveOilVersion.headnote}</p></header>`);
+    expect(markup).toBe(`<header class="headnote"><h1>${oliveOilVersion.recipeName}</h1><p class="headnote__prose">${oliveOilVersion.headnote}</p></header>`);
   });
 });
 
@@ -61,7 +62,6 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
     expect(markup).toMatch(/<label class="headnote__version-field"><span class="pen-caption">Version<\/span><input/);
     expect(markup).toMatch(/<input[^>]*aria-label="Version"[^>]*value=""/);
     expect(markup).toContain('<span class="field-requirement" aria-hidden="true">Required</span>');
-    expect(markup).not.toContain(`<p class="headnote__version">${oliveOilVersion.versionLabel}</p>`);
   });
 
   it('renders a text field bound to the pen draft', () => {
@@ -154,12 +154,6 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
     expect(markup).toMatch(/<input[^>]*aria-invalid="true"[^>]*aria-describedby="version-field-error"/);
     expect(markup).toContain('<span id="version-field-error" class="field-error">Enter a version.</span>');
     expect(markup).not.toContain('field-requirement');
-  });
-
-  it('makes the saved version identity the programmatic landing after creating a child', () => {
-    const markup = renderHeadnote({ focusVersionOnMount: true });
-    expect(markup).toMatch(/<p[^>]*class="headnote__version"[^>]*tabindex="-1"[^>]*aria-label="Version 50 g oil · 800 g"/);
-    expect(markup).not.toContain('autofocus');
   });
 
   it('freezes the identity fields while a version save is in flight', () => {

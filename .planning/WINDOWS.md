@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 2
+open_count: 3
 waived_count: 0
 fixed_count: 0
-total_count: 2
-last_updated: 2026-09-17T23:02:52.034Z
+total_count: 3
+last_updated: 2026-09-18T03:05:56.382Z
 ---
 
 # Broken Windows Ledger
@@ -17,6 +17,7 @@ last_updated: 2026-09-17T23:02:52.034Z
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
 | 1 | quick | unrun-verify | app/src/styles/cross-cutting.test.js |  | Task 3 human measurement (44px targets, 6px gaps, compact 768px) recorded by executor; human confirmation deferred to end-of-phase UAT per human_verify_mode | open |  | 2026-09-13T01:41:36.084Z |  |
 | 2 | quick-260917-odu | unrun-verify | app/src/ui/VersionRow.jsx |  | Orchestrator ran the 1024/393 browser check on a four-version, two-branch store: counts, markers, dead controls, root card and no-overflow all confirmed. What remains is Mark's own eye — whether the relocated Versions (n) control reads right on its own line below the dl, and whether Version/Versions on one screen reads as a set name rather than a stutter — plus a forced-colours and screen-reader pass | open |  | 2026-09-17T23:02:52.034Z |  |
+| 3 | quick-260917-vev | unrun-verify | app/src/styles/app.css |  | Forced-colours pass on the history register verified structurally, not emulated: the (forced-colors: active) block at app.css:2625 names no register selector and no register rule sets forced-color-adjust: none, so every marker is a word and every rule a system-repainted border. Not confirmed live. Also unconfirmed by eye: whether the register reads as a chronology rather than a table, and a screen-reader pass over the two panels. | open |  | 2026-09-18T03:05:56.382Z |  |
 
 ````json
 [
@@ -42,6 +43,19 @@ last_updated: 2026-09-17T23:02:52.034Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-17T23:02:52.034Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 3,
+    "kind": "unrun-verify",
+    "phase": "quick-260917-vev",
+    "file": "app/src/styles/app.css",
+    "line": null,
+    "description": "Forced-colours pass on the history register verified structurally, not emulated: the (forced-colors: active) block at app.css:2625 names no register selector and no register rule sets forced-color-adjust: none, so every marker is a word and every rule a system-repainted border. Not confirmed live. Also unconfirmed by eye: whether the register reads as a chronology rather than a table, and a screen-reader pass over the two panels.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-18T03:05:56.382Z",
     "resolved_at": null,
     "milestone": null
   }

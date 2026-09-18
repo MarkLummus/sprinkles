@@ -1,26 +1,26 @@
 import { Link } from 'react-router';
-import { formatRecordDate, latestChurnDate } from '../domain/batch.js';
+import { formatRecordDate, batchHistoryWords } from '../domain/batch.js';
 import { sortedVersions, versionsForRecipe } from '../domain/lineage.js';
 
-// The Versions disclosure's own card list (route-recipe.md § 3 "History
-// controls name a whole set, never a direction", 260917-odu; originally
-// built against sketch 003 variant B's own `.vtree`/`renderTree` markup,
-// index.html:97-103, 230-233, 440-447, for VersionRow's disclosure —
-// 03.3-06 checkpoint feedback, Mark, 2026-09-10). Every version of the
-// recipe, the one in view included, in creation order, most recently
-// created first — never the store's own key order, and never a subtree
-// walk. Each card carries the version's own line, a meta line naming its
-// parent (when one exists — a root version has none), its cited batch's
-// date (when one was cited) and its own written date, and a batch line
-// naming its own most recent churn date (when it has one) plus an Open
-// control. The entry in view carries neither a version-line link nor an
-// Open control — a link to the page it is already on goes nowhere — and
-// wears the word "In view"; the newest version (ordered[0], positional)
-// wears "Latest"; both can land on one entry. `allBatches` is the whole
-// store's batch list (RecipePage.jsx's own repository.getAllBatches()
-// read) — every date rendered here is looked up from it rather than
-// carried on the version record itself, since a version never stores
-// another record's date on itself (D-10).
+// The Versions disclosure's own ruled register (route-recipe.md § 6 "The
+// two history panels read as one register, not as cards", revised
+// 2026-09-17; row grammar shared with BatchRow.jsx's batch panel). Every
+// version of the recipe, the one in view included, in creation order,
+// most recently created first — never the store's own key order, and
+// never a subtree walk. Each row's identity block carries the version's
+// own line and one provenance line, the citation winning where it exists:
+// "after the batch of <date>" when a cited batch carries a churn date,
+// otherwise "from <parent>" when one exists, otherwise no line at all — a
+// root version cites nothing. The record block carries the version's own
+// written date over its batch history stated in words
+// (batchHistoryWords). The version line is the row's only link. The entry
+// in view carries no link at all — a link to the page it is already on
+// goes nowhere — and wears the word "In view"; the newest version
+// (ordered[0], positional) wears "Latest"; both can land on one entry.
+// `allBatches` is the whole store's batch list (RecipePage.jsx's own
+// repository.getAllBatches() read) — every date rendered here is looked
+// up from it rather than carried on the version record itself, since a
+// version never stores another record's date on itself (D-10).
 export function VersionStrip({ versions, recipeId, currentId, allBatches = [], openPen = null, penReason = null }) {
   const ordered = sortedVersions(versionsForRecipe(versions, recipeId));
   // Latest is positional — the id of ordered[0], the very array the list
@@ -33,26 +33,25 @@ export function VersionStrip({ versions, recipeId, currentId, allBatches = [], o
 
   return (
     <nav className="version-strip" aria-label="Version strip">
-      <ul className="version-strip__list">
+      <ul className="history-register">
         {ordered.map((version) => {
           const isCurrent = version.id === currentId;
           const isLatest = version.id === latestId;
-          const ownChurnDate = latestChurnDate(allBatches.filter((batch) => batch.versionId === version.id));
+          const versionBatches = allBatches.filter((batch) => batch.versionId === version.id);
           const citedBatch = version.citedBatchId
             ? allBatches.find((batch) => batch.id === version.citedBatchId)
             : null;
-          // The complete set meets a root version for the first time
-          // (260917-odu) — its parentVersionId and parentVersionLabel are
-          // both null (store contract), so the "from …" clause becomes
-          // conditional rather than reading "from null".
-          const metaParts = [];
-          if (version.parentVersionId) {
-            metaParts.push(`from ${version.parentVersionLabel}`);
-          }
+          // The citation wins where it exists (Mark, 2026-09-17) — never
+          // both, the run-on is what is being removed. The complete set
+          // meets a root version for the first time (260917-odu): a root
+          // cites nothing and has no parent, so provenance stays null and
+          // no second line renders at all.
+          let provenance = null;
           if (citedBatch?.churn.churnDate) {
-            metaParts.push(`after the batch of ${formatRecordDate(citedBatch.churn.churnDate)}`);
+            provenance = `after the batch of ${formatRecordDate(citedBatch.churn.churnDate)}`;
+          } else if (version.parentVersionId) {
+            provenance = `from ${version.parentVersionLabel}`;
           }
-          metaParts.push(formatRecordDate(version.createdAt));
           // The position markers (route-recipe.md § 3, 260917-odu): words,
           // not a class — form carries state, and a marker existing only
           // as a style is invisible to a screen reader and under forced
@@ -64,41 +63,33 @@ export function VersionStrip({ versions, recipeId, currentId, allBatches = [], o
           return (
             <li
               key={version.id}
-              className={isCurrent ? 'version-strip__item is-current' : 'version-strip__item'}
+              className={isCurrent ? 'history-register__item is-current' : 'history-register__item'}
             >
-              <p className="version-strip__vline">
-                {/* D-UAT-2: while a pen is open, the strip is not a way
-                    off the page — the version line renders as plain text
-                    instead of a link, the same link-suppression
-                    discipline every other link in this row carries. The
-                    entry in view renders as text unconditionally, pen or
-                    no pen: a link to the page it is already on goes
-                    nowhere. */}
-                {isCurrent || openPen
-                  ? version.versionLabel
-                  : <Link to={`/recipe/${version.id}`}>{version.versionLabel}</Link>}
-                {markers.length > 0 && (
-                  <>
-                    {' '}
-                    <span className="version-strip__marker">{`· ${markers.join(' · ')}`}</span>
-                  </>
-                )}
-              </p>
-              <p className="version-strip__meta">{metaParts.join(' · ')}</p>
-              <p className="version-strip__batch">
-                {ownChurnDate && (
-                  <span className="version-strip__churned">churned {formatRecordDate(ownChurnDate)}</span>
-                )}
-                {/* The entry in view renders no Open control at all — not
-                    even as the plain word, which would name an act that
-                    has already happened (the same dead-control rule as
-                    its version line above). */}
-                {isCurrent ? null : openPen ? 'Open' : (
-                  <Link className="text-control" to={`/recipe/${version.id}`}>
-                    Open
-                  </Link>
-                )}
-              </p>
+              <div className="history-register__identity">
+                <p className="history-register__name">
+                  {/* D-UAT-2: while a pen is open, the strip is not a way
+                      off the page — the version line renders as plain text
+                      instead of a link, the same link-suppression
+                      discipline every other link in this row carries. The
+                      entry in view renders as text unconditionally, pen or
+                      no pen: a link to the page it is already on goes
+                      nowhere. The version line is this row's only link. */}
+                  {isCurrent || openPen
+                    ? version.versionLabel
+                    : <Link to={`/recipe/${version.id}`}>{version.versionLabel}</Link>}
+                  {markers.length > 0 && (
+                    <>
+                      {' '}
+                      <span className="history-register__marker">{`· ${markers.join(' · ')}`}</span>
+                    </>
+                  )}
+                </p>
+                {provenance && <p className="history-register__provenance">{provenance}</p>}
+              </div>
+              <div className="history-register__record">
+                <p>written {formatRecordDate(version.createdAt)}</p>
+                <p>{batchHistoryWords(versionBatches)}</p>
+              </div>
             </li>
           );
         })}

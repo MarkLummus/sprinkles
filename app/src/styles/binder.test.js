@@ -92,9 +92,9 @@ describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 t
     expect(buttonRules[0].declarations).not.toMatch(/outline/);
   });
 
-  test('`.version-strip__item.is-current` declares its outline at --rule-graduation, not focus weight (D-14)', () => {
-    const rule = ruleFor('.version-strip__item.is-current');
-    expect(rule, 'expected the current version-strip item rule').toBeTruthy();
+  test('`.history-register__item.is-current` declares its outline at --rule-graduation, not focus weight (D-14)', () => {
+    const rule = ruleFor('.history-register__item.is-current');
+    expect(rule, 'expected the current history-register item rule').toBeTruthy();
     expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
   });
 

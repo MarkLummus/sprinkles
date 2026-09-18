@@ -11,6 +11,18 @@
    pinned by cross-cutting.test.js, and a second one here would double
    it. */
 
+/* The route-level ground (route.md § 3, "OWN-WORLD: White ground"):
+   without this, app.css's body rule keeps painting the paper world's
+   warmer --ground beneath .list-page's own padding, so this route reads
+   as a white card floating on cream — exactly the "objects on a page"
+   look the contract refuses. :has() is supported in Chromium, WebKit and
+   Firefox; scoping the selector on .home's presence, rather than adding
+   a route class to <body> itself, keeps every other route's body
+   untouched with no change to app.css. */
+body:has(.home) {
+  background: var(--home-ground);
+}
+
 .home {
   background: var(--home-ground);
   color: var(--home-ink);
@@ -75,11 +87,15 @@
   border-bottom: var(--rule-home-nav-active) solid var(--jar-teal);
 }
 
+/* OWN-WORLD (route.md § 3): one grotesk outside the paper frames — the
+   text face is the book's own voice, kept only for the batch's own
+   words below (.home__words). The title and the recipe name read the
+   sketch's own heavy grotesk, tight tracking. */
 .home__title {
   margin: var(--gap-l) 0 var(--gap-hair);
-  font-family: var(--face-text);
+  font-family: var(--face-grotesk);
   font-size: var(--size-home-title);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
@@ -130,7 +146,7 @@
 
 .home__name {
   margin: 0;
-  font-family: var(--face-text);
+  font-family: var(--face-grotesk);
   font-size: var(--size-home-recipe-name);
   font-weight: 700;
   letter-spacing: -0.02em;

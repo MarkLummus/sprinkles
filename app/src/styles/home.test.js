@@ -42,13 +42,41 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
   test('every rule is scoped under the .home root class', () => {
     expect(rules.length).toBeGreaterThan(0);
     for (const rule of rules) {
-      expect(rule.selector.startsWith('.home'), `expected "${rule.selector}" to be scoped under .home`).toBe(true);
+      // body:has(.home) is the one documented exception (fix round 1):
+      // it has to key off .home from the body element itself to reach
+      // the route-level ground all the way to the viewport edge, which
+      // no selector rooted AT .home can do. Every other rule is scoped
+      // exactly as before.
+      expect(
+        rule.selector.startsWith('.home') || rule.selector === 'body:has(.home)',
+        `expected "${rule.selector}" to be scoped under .home`,
+      ).toBe(true);
     }
   });
 
   test('the only @media condition in home.css is the named touch step-down (css-source.js parses one level of nesting)', () => {
     const mediaConditions = new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media));
     expect([...mediaConditions]).toEqual(['(max-width: 759.98px)']);
+  });
+
+  test('the route-level ground reaches the whole viewport (fix round 1: no cream frame around a white card)', () => {
+    const bodyRule = rules.find((rule) => rule.selector === 'body:has(.home)');
+    expect(bodyRule, 'expected a body:has(.home) rule declaring the route-level ground').toBeTruthy();
+    expect(bodyRule.declarations).toMatch(/background:\s*var\(--home-ground\)/);
+  });
+
+  test('OWN-WORLD is one grotesk (route.md § 3): the title and the recipe name read --face-grotesk, never --face-text', () => {
+    const titleRule = rules.find((rule) => rule.selector === '.home__title');
+    const nameRule = rules.find((rule) => rule.selector === '.home__name');
+    expect(titleRule, 'expected a .home__title rule').toBeTruthy();
+    expect(nameRule, 'expected a .home__name rule').toBeTruthy();
+    expect(titleRule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+    expect(nameRule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+  });
+
+  test('the text face survives on exactly one rule — the batch\'s own words in pen blue (route.md § 1: the record keeps its voice)', () => {
+    const textFaceRules = rules.filter((rule) => /font-family:\s*var\(--face-text\)/.test(rule.declarations));
+    expect(textFaceRules.map((rule) => rule.selector)).toEqual(['.home__words']);
   });
 });
 

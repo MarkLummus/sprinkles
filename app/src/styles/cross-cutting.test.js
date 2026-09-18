@@ -504,6 +504,29 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).not.toMatch(/font-size:/);
   });
 
+  test('the History register\'s three prose paragraphs all read --type-note, and the non-prose variant does not', () => {
+    const reasonProse = historyRuleFor('.recipe-history__reason .prose-text');
+    expect(reasonProse, 'expected a .recipe-history__reason .prose-text rule').toBeTruthy();
+    expect(reasonProse.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+
+    const outcomeProse = historyRuleFor('.recipe-history__outcome.prose-text');
+    expect(outcomeProse, 'expected a .recipe-history__outcome.prose-text rule').toBeTruthy();
+    expect(outcomeProse.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+
+    // Not historyRuleFor: that helper returns the FIRST non-media rule whose
+    // selector list contains the string, and for .recipe-history__next that
+    // is the shared margin rule (.recipe-history__outcome, .recipe-history__next),
+    // which carries no size at all — so look up the exact selector instead.
+    const nextTime = historyRules.find((r) => !r.media && r.selector === '.recipe-history__next');
+    expect(nextTime, 'expected an exact .recipe-history__next rule').toBeTruthy();
+    expect(nextTime.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+    expect(nextTime.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+
+    const outcomeNonProse = historyRuleFor('.recipe-history__outcome:not(.prose-text)');
+    expect(outcomeNonProse, 'expected a .recipe-history__outcome:not(.prose-text) rule').toBeTruthy();
+    expect(outcomeNonProse.declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+  });
+
   test('.prose-field inherits its contextual size but keeps a readable one-line base extent', () => {
     const rule = ruleFor('.prose-field');
     expect(rule.declarations).toMatch(/font-size:\s*inherit/);

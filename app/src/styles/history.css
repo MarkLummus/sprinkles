@@ -129,6 +129,13 @@
   overflow-wrap: anywhere;
 }
 
+/* The recorded tasting note shares the register's prose role with Why and
+   Next time (route-recipe-version.md "History type roles", revised
+   2026-09-18); .prose-text already supplies the face, leading and colour. */
+.recipe-history__outcome.prose-text {
+  font-size: var(--type-note);
+}
+
 .recipe-history__next {
   font-family: var(--face-text);
   font-size: var(--type-note);

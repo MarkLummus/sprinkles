@@ -328,7 +328,7 @@ export function batchHistoryMetaFor(batch) {
 export function BatchHistoryPanel({ version, batches, openBatch = null, openPen = null, open = true }) {
   return (
     <HistoryPanel open={open} id="batch-row-batches" className="batch-row__batches" title="Batches of this version">
-      <HistoryList className="history-register" label="Batches of this version">
+      <HistoryList ordered className="history-register" label="Batches of this version">
         {sortedBatches(batches).map((batch) => {
           const isOpenBatch = openBatch && batch.id === openBatch.id;
           const identity = batchIdentity(batch);

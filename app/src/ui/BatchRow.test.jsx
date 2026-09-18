@@ -1304,7 +1304,7 @@ describe('BatchHistoryPanel — the revealed Batches register', () => {
       openBatch: augustSecondBatch,
     });
     expect(markup).toContain('<h2 class="region-name">Batches of this version</h2>');
-    expect(markup).toContain('class="history-register history-list"');
+    expect(markup).toContain('<ol role="list" aria-label="Batches of this version" class="history-register history-list">');
     expect(markup.match(/<li class="history-register__item history-item[^"]*"/g)).toHaveLength(3);
     expect(markup.indexOf('16 Aug 2026')).toBeLessThan(markup.indexOf('2 Aug 2026'));
     expect(markup.indexOf('2 Aug 2026')).toBeLessThan(markup.indexOf('Batch · date unknown'));

@@ -5,6 +5,7 @@ import { describe, it, expect } from 'vitest';
 import {
   sortedVersions,
   versionsForRecipe,
+  versionIdentity,
   latestVersionPerRecipe,
   versionLineUnique,
   createChildVersion,
@@ -88,6 +89,81 @@ describe('versionsForRecipe', () => {
   it('filters to one recipeId', () => {
     const versions = [makeVersion({ id: 'a', recipeId: 'r1' }), makeVersion({ id: 'b', recipeId: 'r2' })];
     expect(versionsForRecipe(versions, 'r1').map((v) => v.id)).toEqual(['a']);
+  });
+});
+
+describe('versionIdentity', () => {
+  it('names the oldest of three Version 1 and the newest Version 3', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' });
+    const b = makeVersion({ id: 'b', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' });
+    const c = makeVersion({ id: 'c', versionLabel: 'third', createdAt: '2026-03-01T00:00:00.000Z' });
+    const ordered = sortedVersions([a, b, c]);
+    expect(versionIdentity(ordered, a)).toBe('Version 1 · first');
+    expect(versionIdentity(ordered, b)).toBe('Version 2 · second');
+    expect(versionIdentity(ordered, c)).toBe('Version 3 · third');
+  });
+
+  it('reads a one-version recipe as Version 1 · {label}', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'line' });
+    const ordered = sortedVersions([a]);
+    expect(versionIdentity(ordered, a)).toBe('Version 1 · line');
+  });
+
+  it('passes the authored name through exactly, no title-casing, truncation or fallback', () => {
+    const a = makeVersion({ id: 'a', versionLabel: '50 g oil · 800 g, take TWO!' });
+    const ordered = sortedVersions([a]);
+    expect(versionIdentity(ordered, a)).toBe('Version 1 · 50 g oil · 800 g, take TWO!');
+  });
+
+  it('gives two siblings of one parent consecutive ordinals', () => {
+    const root = makeVersion({ id: 'root', versionLabel: 'root', parentVersionId: null, createdAt: '2026-01-01T00:00:00.000Z' });
+    const child = makeVersion({ id: 'child', versionLabel: 'child', parentVersionId: 'root', createdAt: '2026-02-01T00:00:00.000Z' });
+    const sibling = makeVersion({ id: 'sibling', versionLabel: 'sibling', parentVersionId: 'root', createdAt: '2026-03-01T00:00:00.000Z' });
+    const grandchild = makeVersion({ id: 'grandchild', versionLabel: 'grandchild', parentVersionId: 'child', createdAt: '2026-04-01T00:00:00.000Z' });
+    const ordered = sortedVersions([root, child, sibling, grandchild]);
+    const childOrdinal = Number(versionIdentity(ordered, child).match(/^Version (\d+)/)[1]);
+    const siblingOrdinal = Number(versionIdentity(ordered, sibling).match(/^Version (\d+)/)[1]);
+    expect(Math.abs(childOrdinal - siblingOrdinal)).toBe(1);
+  });
+
+  it('resolves a tie on createdAt by array position, the first wearing the higher number', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' });
+    const b = makeVersion({ id: 'b', versionLabel: 'second', createdAt: '2026-01-01T00:00:00.000Z' });
+    // sortedVersions returns tied entries in input order, so `a` (input-first) sorts first
+    // and therefore reads the HIGHER ordinal — position decides, not the date.
+    const ordered = sortedVersions([a, b]);
+    expect(versionIdentity(ordered, a)).toBe('Version 2 · first');
+    expect(versionIdentity(ordered, b)).toBe('Version 1 · second');
+  });
+
+  it('gives a version with createdAt: null the lowest ordinal, no special word', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' });
+    const b = makeVersion({ id: 'b', versionLabel: 'undated', createdAt: null });
+    const ordered = sortedVersions([a, b]);
+    expect(versionIdentity(ordered, b)).toBe('Version 1 · undated');
+    expect(versionIdentity(ordered, a)).toBe('Version 2 · first');
+  });
+
+  it('names a version absent from the array by its authored line alone — the pre-load paint', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'not yet in the list' });
+    const identity = versionIdentity([], a);
+    expect(identity).toBe('not yet in the list');
+    expect(identity).not.toContain('Version');
+    expect(identity).not.toMatch(/\d/);
+  });
+
+  it('leaves a saveOverVersion result at the same ordinal it had', () => {
+    const a = makeVersion({ id: 'a', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' });
+    const b = makeVersion({ id: 'b', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' });
+    const c = makeVersion({ id: 'c', versionLabel: 'third', createdAt: '2026-03-01T00:00:00.000Z' });
+    const before = sortedVersions([a, b, c]);
+    const beforeIdentity = versionIdentity(before, b);
+
+    const corrected = saveOverVersion(b, { versionLabel: 'second, corrected' });
+    const after = sortedVersions([a, corrected, c]);
+    const afterIdentity = versionIdentity(after, corrected);
+
+    expect(beforeIdentity.match(/^Version (\d+)/)[1]).toBe(afterIdentity.match(/^Version (\d+)/)[1]);
   });
 });
 

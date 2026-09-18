@@ -31,6 +31,35 @@ export function versionsForRecipe(versions, recipeId) {
 }
 
 /**
+ * versionIdentity(ordered, version) -> "Version {n} · {authored name}", the
+ * one string both the version row's own heading and the history register's
+ * row print for the same version (route-recipe.md § 6 "One version
+ * identity, wherever a version is named", 2026-09-18). `ordered` is the
+ * caller's own `sortedVersions(versionsForRecipe(versions, recipeId))` —
+ * createdAt DESCENDING — so the ordinal is `ordered.length - index`, that
+ * array's own index reversed: flat creation order, not depth in the
+ * lineage, so two children of one parent take consecutive numbers and
+ * neither claims the other as its parent. `createdAt` is the only
+ * orderable key a version carries — the authored name is free text
+ * (D-01/D-04) and `saveOverVersion` never retakes `createdAt`, so a
+ * correction does not renumber the book. A version with no `createdAt`
+ * sorts where `sortedVersions` already puts it (last, descending) and so
+ * takes the lowest ordinals; no special word is invented for it.
+ * `latestVersionPerRecipe` is deliberately not called here: it walks the
+ * store again with its own null coercion and its own tie rule, a second
+ * opinion about order living beside `sortedVersions`'s — exactly what
+ * `Latest`'s positional read (VersionStrip.jsx) already refused. A version
+ * absent from `ordered` (the pre-load paint, before the recipe's version
+ * list has resolved) has no position yet, so it is named by its authored
+ * line alone rather than a guessed number.
+ */
+export function versionIdentity(ordered, version) {
+  const index = ordered.findIndex((candidate) => candidate.id === version.id);
+  if (index < 0) return version.versionLabel;
+  return `Version ${ordered.length - index} · ${version.versionLabel}`;
+}
+
+/**
  * descendantVersions(versions, versionId) -> every version in `versions`
  * transitively descended from versionId via parentVersionId links (a
  * version's direct children, then each child's own descendants, flat) —

@@ -343,4 +343,91 @@
      instead (app.css), so the clearance is exactly this token's
      arithmetic on one side of the hairline, never a second number. */
   --axes-cols-clearance: 12px;
+
+  /* --------------------------------------------------------------------
+     The Sprinkles Jar — .impeccable/surfaces/route.md, outside the paper
+     frames only (§ 1: the recipe spread, the batch log and the printed
+     sheet stay black ink/blue pen; everything else — home, the shell,
+     history, line of work, compare, import — is this world). The
+     Formulation Cookbook tokens above stay the three paper frames' own;
+     nothing in this block moves any of them, and no existing token above
+     is changed.
+     -------------------------------------------------------------------- */
+
+  /* The jar (route.md § 3): a small set of sprinkle hues, fixed, each
+     named for the sprinkle colour it is, not for a job — the app's own
+     marks: tallies, the active nav, the primary action, moments of
+     delight. A jar hue never carries a verdict (D06). route.sketch.html's
+     own six are the starting point; none read muddy or too close to a
+     neighbour, so all six are kept as sketched. */
+  --jar-pink: #f25c7a;
+  --jar-gold: #f7c948;
+  --jar-teal: #3eb7c8;
+  --jar-green: #7bc96f;
+  --jar-orange: #f28c38;
+  --jar-violet: #9b6bd6;
+
+  /* The home ground and ink (route.md § 3): the sketch's pure white and
+     near-black — the paper frames' warmer --ground stays theirs.
+     --home-mute carries text (the meta line, the micro-labels) and must
+     meet WCAG AA (4.5:1) against --home-ground. The sketch's own grey
+     (#6C737A) measured 4.80:1 — on the line, as route.md § 5 warns — so
+     it is darkened here; #5B6169 measures 6.25:1, a real margin above
+     the 4.5:1 floor. --home-rule (the hairline between rows) carries no
+     text and needs no ratio. */
+  --home-ground: #ffffff;
+  --home-ink: #1a1c1f;
+  --home-mute: #5b6169; /* 6.25:1 against --home-ground, measured */
+  --home-rule: #e7e9ec;
+
+  /* The recipe palette (route.md § 3, § 5): an ordered set of twelve
+     hues, RECIPE_HUE_COUNT in app/src/ui/recipe-colour.js — identity
+     only. These draw a row's identity bar and its version tally, never
+     text, so no contrast floor applies, but each reads clearly against
+     --home-ground and is distinguishable from its neighbours at a
+     glance. route.md § 5 leaves the palette's size and the assignment
+     rule open; recipe-colour.js ships the deterministic default that
+     deals these in order. */
+  --recipe-hue-01: #d1475e;
+  --recipe-hue-02: #d17547;
+  --recipe-hue-03: #d1ba47;
+  --recipe-hue-04: #a3d147;
+  --recipe-hue-05: #5ed147;
+  --recipe-hue-06: #47d175;
+  --recipe-hue-07: #47d1ba;
+  --recipe-hue-08: #47a3d1;
+  --recipe-hue-09: #475ed1;
+  --recipe-hue-10: #7547d1;
+  --recipe-hue-11: #ba47d1;
+  --recipe-hue-12: #d147a3;
+
+  /* The world's geometry and type: every visual value in this project
+     reads a custom property, so each of the sketch's own marks gets its
+     own name here. Spacing that already lands on the existing --gap-*
+     scale (the header/title/row rhythm, the actions row, the filled
+     action's own padding) reads that scale directly in home.css rather
+     than a second token here; --touch-min (above) is what the narrow-
+     width targets grow toward. These are only the values the existing
+     scale does not carry. */
+  --size-home-brand: 1.375rem; /* 22px, the brand word */
+  --size-home-brand-rule: 6px; /* the sprinkle rule beneath the brand */
+  --size-home-title: 2.125rem; /* 34px, the page title */
+  --size-home-recipe-name: 1.5rem; /* 24px, a recipe's name on its row */
+  --size-home-meta: 0.875rem; /* 14px, the version/meta line, the nav word, the last words */
+  --size-home-label: 0.75rem; /* 12px, the versions/batches micro-label */
+  --tracking-home-label: 0.08em;
+  --size-sprinkle-w: 18px;
+  --size-sprinkle-h: 6px;
+  --radius-sprinkle: 3px;
+  --size-bar-w: 8px;
+  --size-bar-h: 56px;
+  --radius-bar: 4px;
+  --radius-cta: 10px; /* the filled action's own radius; its padding reads var(--gap-s)/var(--gap-m) directly */
+  --rule-home-nav-active: 3px;
+  --rule-home-row: var(--rule-graduation); /* reuses the app's existing 1px hairline weight, named for this world so it can move independently later */
+  --duration-home: 120ms; /* the one short transition this world is allowed (route.md § 1: the no-motion binder does not cross the paper frame) */
+
+  /* The last words on a row read the existing --pen-blue (above): no
+     second blue is defined here. The Two-Ink rule still binds wherever
+     plan and actual meet (route.md § 1). */
 }

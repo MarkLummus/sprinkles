@@ -1,3 +1,4 @@
+import { HistoryDisclosure, HistoryPanel, HistoryMarkers } from './History.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { recordDateWords } from '../domain/batch.js';
@@ -196,12 +197,7 @@ export function VersionRow({
           onBlur={() => setLandingFocusVisible(false)}
         >
           {versionIdentity(ordered, version)}
-          {isLatest && (
-            <>
-              {' '}
-              <span className="history-register__marker">· Latest</span>
-            </>
-          )}
+          <HistoryMarkers latest={isLatest} />
         </h2>
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
@@ -270,15 +266,13 @@ export function VersionRow({
             stays available while the batch pen is open (D-UAT-2). */}
         {versionCount > 0 && (
           <p className="version-row__history">
-            <button
-              type="button"
-              className="text-control"
-              aria-expanded={historyOpen}
-              aria-controls="version-row-history"
-              onClick={() => setHistoryOpen((open) => !open)}
+            <HistoryDisclosure
+              open={historyOpen}
+              panelId="version-row-history"
+              onToggle={() => setHistoryOpen((open) => !open)}
             >
               {`History (${versionCount} version${versionCount === 1 ? '' : 's'})`}
-            </button>
+            </HistoryDisclosure>
           </p>
         )}
 
@@ -316,9 +310,7 @@ export function VersionRow({
         )}
       </section>
 
-      {historyOpen && (
-        <section id="version-row-history" className="recipe-band__full-row" aria-label="History">
-          <h2 className="region-name">History</h2>
+      <HistoryPanel open={historyOpen} id="version-row-history" className="recipe-band__full-row" title="History">
           <RecipeHistory
             versions={recipeVersions}
             recipeId={version.recipeId}
@@ -327,8 +319,7 @@ export function VersionRow({
             allBatches={allBatches}
             openPen={openPen}
           />
-        </section>
-      )}
+      </HistoryPanel>
     </>
   );
 }

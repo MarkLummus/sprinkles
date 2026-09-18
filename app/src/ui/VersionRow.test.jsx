@@ -74,7 +74,7 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
     const markup = renderVersionRow({});
     expect(markup).toContain('aria-label="Version"');
     expect(markup).toContain(
-      '<h2 class="version-row__identity">Version 1 · 50 g oil · 800 g <span class="history-register__marker">· Latest</span></h2>',
+      '<h2 class="version-row__identity">Version 1 · 50 g oil · 800 g<span class="history-register__marker"> · Latest</span></h2>',
     );
   });
 
@@ -361,7 +361,7 @@ describe('VersionRow — the History disclosure, closed by default', () => {
       version: oliveOilVersion,
       versions: [oliveOilVersion, childVersion],
     });
-    expect(markup).toMatch(/<button[^>]*class="text-control"[^>]*>History \(2 versions\)<\/button>/);
+    expect(markup).toMatch(/<button[^>]*class="text-control history-disclosure"[^>]*>History \(2 versions\)<\/button>/);
     const historyButton = markup.match(/<button[^>]*>History \(2 versions\)<\/button>/)[0];
     expect(historyButton).toContain('aria-controls="version-row-history"');
     expect(markup).not.toContain('recipe-history');

@@ -1,0 +1,170 @@
+/* Shared history grammar. Layout variants preserve plan/record type roles;
+   state, rhythm and responsive nesting are the same for both entities. */
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+
+.history-item {
+  min-width: 0;
+  padding: var(--gap-s) 0;
+  border-top: var(--rule-baseline) solid var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.history-item.is-current {
+  outline: var(--rule-graduation) solid var(--ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.history-item.is-current > .history-register__identity > .history-register__name,
+.history-item.is-current > .recipe-history__version-head > .recipe-history__version-name,
+.history-item.is-current > .recipe-history__batch-head > .recipe-history__batch-name {
+  font-weight: 700;
+}
+
+.history-item a {
+  color: inherit;
+}
+
+.history-register__identity,
+.recipe-history__version {
+  min-width: 0;
+}
+
+.recipe-history__version-head,
+.recipe-history__batch-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--gap-xs) var(--gap-m);
+}
+
+.history-register__name,
+.recipe-history__batch-name {
+  flex: 1 1 var(--rhist-bname-min);
+  min-width: 0;
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--type-control);
+  overflow-wrap: anywhere;
+}
+
+.recipe-history__version-name {
+  flex: 1 1 var(--rhist-vname-min);
+  min-width: 0;
+  margin: 0;
+  font-family: var(--face-text);
+  font-size: var(--size-version-line);
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.history-register__marker,
+.history-provenance,
+.recipe-history__empty,
+.recipe-history__outcome:not(.prose-text) {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-weight: 400;
+}
+
+.history-provenance {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+.recipe-history {
+  max-width: var(--measure-prose);
+}
+
+.recipe-history__written,
+.recipe-history__batch-state {
+  margin-inline-start: auto;
+}
+
+.recipe-history__cause {
+  margin-top: var(--gap-xs);
+}
+
+.recipe-history__reason {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--gap-xs) var(--gap-m);
+  margin-top: var(--gap-s);
+}
+
+.recipe-history__reason p {
+  margin: 0;
+}
+
+.recipe-history__reason .prose-text {
+  font-size: var(--type-note);
+}
+
+.history-list--records {
+  margin-top: var(--gap-s);
+  margin-inline-start: var(--gap-l);
+  margin-inline-end: var(--gap-xs);
+}
+
+.history-list--records > .history-item {
+  border-top: var(--rule-graduation) solid var(--bookcloth);
+}
+
+.history-list--branches {
+  margin-inline-start: var(--gap-l);
+  padding-inline-start: var(--gap-m);
+  border-inline-start: var(--rule-graduation) solid var(--bookcloth);
+}
+
+.recipe-history__outcome,
+.recipe-history__next {
+  margin-block: var(--gap-hair) 0;
+  margin-inline: var(--gap-l) 0;
+  overflow-wrap: anywhere;
+}
+
+.recipe-history__next {
+  font-family: var(--face-text);
+  font-size: var(--type-note);
+  line-height: var(--leading-note);
+  color: var(--pen-blue);
+}
+
+.recipe-history__next span {
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.recipe-history__empty {
+  margin-block: var(--gap-s) 0;
+  margin-inline: var(--gap-l) 0;
+}
+
+@media (max-width: 759.98px) {
+  .history-list--records {
+    margin-inline-start: var(--gap-m);
+  }
+
+  .history-list--branches {
+    margin-inline-start: var(--gap-s);
+    padding-inline-start: var(--gap-s);
+  }
+
+  .recipe-history__reason {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-history__outcome,
+  .recipe-history__next,
+  .recipe-history__empty {
+    margin-inline-start: var(--gap-s);
+  }
+}

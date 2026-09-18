@@ -42,6 +42,23 @@ const recipeListJsxSource = readFileSync(RECIPE_LIST_JSX_PATH, 'utf8');
 
 const tokens = readCustomProperties(tokensSource);
 const rules = readAllRules(appCssSource);
+const historyRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'history.css'), 'utf8'));
+function historyRuleFor(selector) {
+  return historyRules.find((r) => !r.media && r.selector.split(', ').includes(selector));
+}
+
+// The shorthand alone is the danger: (?:^|[\s;]) plus the literal colon
+// match `margin:` or `padding:` only, never `margin-block`, `margin-inline`
+// or any `-start`/`-end` longhand. Only the four-value form is reported —
+// three values or fewer set left and right to the same value and are
+// therefore already direction-symmetric. This exists because the fourth
+// value of the shorthand IS the physical left edge, so a regex looking for
+// the physical longhand reads a direction-locked rule as clean.
+function fourValueShorthands(declarations) {
+  return [...declarations.matchAll(/(?:^|[\s;])(margin|padding):\s*([^;]+);/g)]
+    .filter((m) => m[2].trim().split(/\s+/).length === 4)
+    .map((m) => `${m[1]}: ${m[2].trim()}`);
+}
 
 function ruleFor(selector) {
   return rules.find((r) => r.selector === selector && r.media === undefined);
@@ -59,22 +76,50 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   });
 
   test('history keeps authored names wrappable and reduces nested indentation with logical properties on phone widths', () => {
-    expect(ruleFor('.recipe-history__version-name').declarations).toMatch(/min-width:\s*0/);
-    expect(ruleFor('.recipe-history__version-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
-    expect(ruleFor('.recipe-history__batch-name').declarations).toMatch(/min-width:\s*0/);
-    expect(ruleFor('.recipe-history__batch-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(historyRuleFor('.recipe-history__version-name').declarations).toMatch(/min-width:\s*0/);
+    expect(historyRuleFor('.recipe-history__version-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(historyRuleFor('.recipe-history__batch-name').declarations).toMatch(/min-width:\s*0/);
+    expect(historyRuleFor('.recipe-history__batch-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
 
-    const branches = ruleFor('.recipe-history__branches').declarations;
+    const branches = historyRuleFor('.history-list--branches').declarations;
     expect(branches).toMatch(/margin-inline-start:\s*var\(--gap-l\)/);
     expect(branches).toMatch(/padding-inline-start:\s*var\(--gap-m\)/);
     expect(branches).toMatch(/border-inline-start:/);
     expect(branches).not.toMatch(/margin-left|padding-left|border-left/);
 
-    const narrowBatches = rules.find((r) => r.selector === '.recipe-history__batches' && r.media === '(max-width: 759.98px)');
-    const narrowBranches = rules.find((r) => r.selector === '.recipe-history__branches' && r.media === '(max-width: 759.98px)');
+    const narrowBatches = historyRules.find((r) => r.selector === '.history-list--records' && r.media === '(max-width: 759.98px)');
+    const narrowBranches = historyRules.find((r) => r.selector === '.history-list--branches' && r.media === '(max-width: 759.98px)');
     expect(narrowBatches.declarations).toMatch(/margin-inline-start:\s*var\(--gap-m\)/);
     expect(narrowBranches.declarations).toMatch(/margin-inline-start:\s*var\(--gap-s\)/);
     expect(narrowBranches.declarations).toMatch(/padding-inline-start:\s*var\(--gap-s\)/);
+
+    // Not historyRuleFor: .recipe-history__empty is also a member of the
+    // earlier type-role group at history.css:66-69, which declares no
+    // margin at all, so a first-match lookup silently resolves to the
+    // wrong rule.
+    const offsetRules = historyRules.filter(
+      (r) =>
+        !r.media &&
+        /(^|[\s;])margin/.test(r.declarations) &&
+        ['.recipe-history__outcome', '.recipe-history__next', '.recipe-history__empty'].some((c) =>
+          r.selector.split(', ').includes(c),
+        ),
+    );
+    expect(offsetRules.map((r) => r.selector)).toEqual([
+      '.recipe-history__outcome, .recipe-history__next',
+      '.recipe-history__empty',
+    ]);
+    for (const rule of offsetRules) {
+      expect(rule.declarations).toMatch(/margin-inline(?:-start)?:\s*var\(--gap-l\)/);
+      // The reset these paragraphs used to get from app.css left with the
+      // extraction, so the zero now has to be stated here or a paragraph's
+      // UA bottom margin returns.
+      expect(rule.declarations).toMatch(/margin-block:\s*var\(--gap-(?:hair|s)\) 0|margin-bottom:\s*0/);
+      expect(rule.declarations).not.toMatch(/margin-left|margin-right|padding-left|padding-right|border-left|border-right/);
+      // The assertion the other three depend on: the shorthand is
+      // invisible to all of them.
+      expect(fourValueShorthands(rule.declarations)).toEqual([]);
+    }
   });
 
   test("inside the media block, `button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179; .prose-field joined in 260916-vv1, critique issue 4, the four record prose fields at 560 x 19 on a coarse pointer)", () => {
@@ -130,12 +175,26 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
     expect(widthOnly.map((r) => r.selector)).toEqual([
       '.recipe-band__row-version',
-      '.recipe-history__batches',
-      '.recipe-history__branches',
-      '.recipe-history__reason',
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
     ]);
+  });
+
+  test('history.css states its narrow block exhaustively, and the width-only-versus-touch-union discipline covers the extracted file too', () => {
+    const narrowHistoryRules = historyRules.filter((r) => r.media === '(max-width: 759.98px)');
+    expect(narrowHistoryRules.map((r) => r.selector)).toEqual([
+      '.history-list--records',
+      '.history-list--branches',
+      '.recipe-history__reason',
+      '.recipe-history__outcome, .recipe-history__next, .recipe-history__empty',
+    ]);
+
+    // history.css carries one breakpoint, so a rule added under the touch
+    // union or any other condition forces a decision in this suite rather
+    // than shipping unguarded — the mode of failure Finding 1 arrived
+    // through.
+    const historyMediaConditions = [...new Set(historyRules.filter((r) => r.media !== undefined).map((r) => r.media))];
+    expect(historyMediaConditions).toEqual(['(max-width: 759.98px)']);
   });
 
   test("decision C: the touch union grows the stop's HEIGHT only — the width and the track stay width-keyed (sketch 009, Mark 2026-09-15)", () => {
@@ -620,7 +679,7 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
   test("the batch row's measured-cell small print keeps its ratified registers, and the shared history-register provenance rule keeps its own", () => {
     expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
     expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--size-deviation-words\)/);
-    expect(ruleFor('.history-register__provenance').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+    expect(historyRuleFor('.history-provenance').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
   });
 });
 

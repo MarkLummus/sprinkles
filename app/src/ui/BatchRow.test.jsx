@@ -1304,11 +1304,11 @@ describe('BatchHistoryPanel — the revealed Batches register', () => {
       openBatch: augustSecondBatch,
     });
     expect(markup).toContain('<h2 class="region-name">Batches of this version</h2>');
-    expect(markup).toContain('<ul class="history-register">');
-    expect(markup.match(/<li class="history-register__item">/g)).toHaveLength(3);
+    expect(markup).toContain('class="history-register history-list"');
+    expect(markup.match(/<li class="history-register__item history-item[^"]*"/g)).toHaveLength(3);
     expect(markup.indexOf('16 Aug 2026')).toBeLessThan(markup.indexOf('2 Aug 2026'));
     expect(markup.indexOf('2 Aug 2026')).toBeLessThan(markup.indexOf('date unknown'));
-    expect(markup).toContain('2 Aug 2026 <span class="history-register__marker">· In view</span>');
+    expect(markup).toContain('2 Aug 2026<span class="history-register__marker"> · In view</span>');
     expect(markup).not.toMatch(/2 Aug 2026[\s\S]*?later/i);
   });
 
@@ -1327,7 +1327,7 @@ describe('BatchHistoryPanel — the revealed Batches register', () => {
       openBatch: augustSecondBatch,
       openPen: 'amend',
     });
-    expect(markup.match(/<li class="history-register__item">/g)).toHaveLength(2);
+    expect(markup.match(/<li class="history-register__item history-item[^"]*"/g)).toHaveLength(2);
     expect(markup).not.toContain('<a ');
   });
 });

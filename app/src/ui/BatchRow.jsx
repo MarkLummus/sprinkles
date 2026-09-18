@@ -1,3 +1,4 @@
+import { HistoryDisclosure, HistoryPanel, HistoryList, HistoryItem, HistoryMarkers, HistoryProvenance } from './History.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { formatRecordDate, readMeasured, recordDateWords, sortedBatches } from '../domain/batch.js';
@@ -324,22 +325,21 @@ export function batchHistoryMetaFor(batch) {
   return metaParts;
 }
 
-export function BatchHistoryPanel({ version, batches, openBatch = null, openPen = null }) {
+export function BatchHistoryPanel({ version, batches, openBatch = null, openPen = null, open = true }) {
   return (
-    <section id="batch-row-batches" className="batch-row__batches" aria-label="Batches of this version">
-      <h2 className="region-name">Batches of this version</h2>
-      <ul className="history-register">
+    <HistoryPanel open={open} id="batch-row-batches" className="batch-row__batches" title="Batches of this version">
+      <HistoryList className="history-register" label="Batches of this version">
         {sortedBatches(batches).map((batch) => {
           const isOpenBatch = openBatch && batch.id === openBatch.id;
           const dateWords = recordDateWords(batch.churn.churnDate);
           const metaParts = batchHistoryMetaFor(batch);
           return (
-            <li key={batch.id} className="history-register__item">
+            <HistoryItem key={batch.id} current={isOpenBatch} className="history-register__item">
               <div className="history-register__identity">
                 <p className="history-register__name">
                   {isOpenBatch ? (
                     <>
-                      {dateWords} <span className="history-register__marker">· In view</span>
+                      {dateWords}<HistoryMarkers current />
                     </>
                   ) : openPen ? (
                     dateWords
@@ -347,13 +347,13 @@ export function BatchHistoryPanel({ version, batches, openBatch = null, openPen 
                     <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{dateWords}</Link>
                   )}
                 </p>
-                {metaParts.length > 0 && <p className="history-register__provenance">{metaParts.join(' · ')}</p>}
+                {metaParts.length > 0 && <HistoryProvenance>{metaParts.join(' · ')}</HistoryProvenance>}
               </div>
-            </li>
+            </HistoryItem>
           );
         })}
-      </ul>
-    </section>
+      </HistoryList>
+    </HistoryPanel>
   );
 }
 
@@ -519,15 +519,13 @@ export function BatchRow({
           </span>
         )}
         {openPen !== 'record' && batchCount > 0 && (
-          <button
-            type="button"
-            className="text-control"
-            aria-expanded={batchesOpen}
-            aria-controls="batch-row-batches"
-            onClick={() => setBatchesOpen((open) => !open)}
+          <HistoryDisclosure
+            open={batchesOpen}
+            panelId="batch-row-batches"
+            onToggle={() => setBatchesOpen((open) => !open)}
           >
             {`Batches (${batchCount})`}
-          </button>
+          </HistoryDisclosure>
         )}
         {/* Correct: an underlined word standing on the head line that
             names the record it acts on, right-aligned like Remove tasting
@@ -993,14 +991,13 @@ export function BatchRow({
           <li>no batch yet</li>
         </ul>
       ) : (
-        batchesOpen && (
           <BatchHistoryPanel
+            open={batchesOpen}
             version={version}
             batches={batches}
             openBatch={openBatch}
             openPen={openPen}
           />
-        )
       )}
     </section>
   );

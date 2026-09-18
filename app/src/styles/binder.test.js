@@ -34,6 +34,7 @@ const appCssSource = readFileSync(APP_CSS_PATH, 'utf8');
 
 const tokens = readCustomProperties(tokensSource);
 const rules = readAllRules(appCssSource);
+const historyRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'history.css'), 'utf8'));
 
 function ruleFor(selector) {
   return rules.find((r) => r.selector === selector);
@@ -92,8 +93,8 @@ describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 t
     expect(buttonRules[0].declarations).not.toMatch(/outline/);
   });
 
-  test('`.history-register__item.is-current` declares its outline at --rule-graduation, not focus weight (D-14)', () => {
-    const rule = ruleFor('.history-register__item.is-current');
+  test('`.history-item.is-current` declares its outline at --rule-graduation, not focus weight (D-14)', () => {
+    const rule = historyRules.find((r) => r.selector === '.history-item.is-current');
     expect(rule, 'expected the current history-register item rule').toBeTruthy();
     expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
   });

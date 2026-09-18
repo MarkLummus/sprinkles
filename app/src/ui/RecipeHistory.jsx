@@ -1,3 +1,4 @@
+import { HistoryList, HistoryItem, HistoryMarkers, HistoryProvenance } from './History.jsx';
 import { Link } from 'react-router';
 import { DECLARED_FLAW } from '../domain/battery.js';
 import { recordDateWords, sortedBatches } from '../domain/batch.js';
@@ -66,17 +67,17 @@ function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPe
   const label = `Batch · ${churnDate}`;
 
   return (
-    <li className={isInView ? 'recipe-history__batch is-current' : 'recipe-history__batch'}>
+    <HistoryItem className="recipe-history__batch" current={isInView}>
       <div className="recipe-history__batch-head">
         <p className="recipe-history__batch-name">
           {isInView || openPen
             ? label
             : <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{label}</Link>}
-          {isInView && <span className="history-register__marker"> · In view</span>}
+          <HistoryMarkers current={isInView} />
         </p>
-        <p className="recipe-history__batch-state">
+        <HistoryProvenance className="recipe-history__batch-state">
           {batch.tasting ? 'Churned and tasted' : 'Churned'}
-        </p>
+        </HistoryProvenance>
       </div>
       <p className={batch.tasting?.note ? 'recipe-history__outcome prose-text' : 'recipe-history__outcome'}>
         {tastingOutcome(batch)}
@@ -84,7 +85,7 @@ function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPe
       {batch.churn.nextTimeNote && (
         <p className="recipe-history__next"><span>Next time</span> {batch.churn.nextTimeNote}</p>
       )}
-    </li>
+    </HistoryItem>
   );
 }
 
@@ -105,27 +106,22 @@ function VersionNode({
     ? allBatches.find((batch) => batch.id === version.citedBatchId)
     : null;
   const childVersions = childrenByParent.get(version.id) ?? [];
-  const markers = [];
-  if (isInView) markers.push('In view');
-  if (isLatest) markers.push('Latest');
 
   return (
-    <li className={isInView ? 'recipe-history__version is-current' : 'recipe-history__version'}>
-      <article className="recipe-history__version-sheet">
+    <li className="recipe-history__version">
+      <HistoryItem as="article" className="recipe-history__version-sheet" current={isInView}>
         <div className="recipe-history__version-head">
           <h3 className="recipe-history__version-name">
             {isInView || openPen
               ? versionIdentity(ordered, version)
               : <Link to={`/recipe/${version.id}`} state={{ focusVersion: true }}>{versionIdentity(ordered, version)}</Link>}
-            {markers.length > 0 && (
-              <span className="history-register__marker">{` · ${markers.join(' · ')}`}</span>
-            )}
+            <HistoryMarkers current={isInView} latest={isLatest} />
           </h3>
-          <p className="recipe-history__written">written {recordDateWords(version.createdAt)}</p>
+          <HistoryProvenance className="recipe-history__written">written {recordDateWords(version.createdAt)}</HistoryProvenance>
         </div>
 
         {citedBatch && (
-          <p className="recipe-history__cause">
+          <HistoryProvenance className="recipe-history__cause">
             After batch ·{' '}
             {openPen ? (
               recordDateWords(citedBatch.churn.churnDate)
@@ -134,7 +130,7 @@ function VersionNode({
                 {recordDateWords(citedBatch.churn.churnDate)}
               </Link>
             )}
-          </p>
+          </HistoryProvenance>
         )}
 
         {version.reason && (
@@ -145,7 +141,7 @@ function VersionNode({
         )}
 
         {batches.length > 0 ? (
-          <ol className="recipe-history__batches" aria-label={`Batches of ${versionIdentity(ordered, version)}`}>
+          <HistoryList ordered nested="records" className="recipe-history__batches" label={`Batches of ${versionIdentity(ordered, version)}`}>
             {batches.map((batch) => (
               <BatchAttempt
                 key={batch.id}
@@ -156,14 +152,14 @@ function VersionNode({
                 openPen={openPen}
               />
             ))}
-          </ol>
+          </HistoryList>
         ) : (
           <p className="recipe-history__empty">No batch recorded</p>
         )}
-      </article>
+      </HistoryItem>
 
       {childVersions.length > 0 && (
-        <ol className="recipe-history__branches" aria-label={`Versions made from ${versionIdentity(ordered, version)}`}>
+        <HistoryList ordered nested="branches" className="recipe-history__branches" label={`Versions made from ${versionIdentity(ordered, version)}`}>
           {childVersions.map((child) => (
             <VersionNode
               key={child.id}
@@ -177,7 +173,7 @@ function VersionNode({
               openPen={openPen}
             />
           ))}
-        </ol>
+        </HistoryList>
       )}
     </li>
   );
@@ -198,7 +194,7 @@ export function RecipeHistory({
 
   return (
     <nav className="recipe-history" aria-label="Recipe development history">
-      <ol className="recipe-history__versions">
+      <HistoryList ordered className="recipe-history__versions">
         {roots.map((version) => (
           <VersionNode
             key={version.id}
@@ -212,7 +208,7 @@ export function RecipeHistory({
             openPen={openPen}
           />
         ))}
-      </ol>
+      </HistoryList>
     </nav>
   );
 }

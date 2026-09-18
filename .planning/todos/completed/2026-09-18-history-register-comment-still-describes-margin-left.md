@@ -4,7 +4,11 @@ title: The history register's comment still explains a margin-left the rule no l
 area: ui
 severity: minor
 files:
+
   - app/src/styles/app.css
+
+completed: 2026-09-18
+status: completed
 ---
 
 ## Problem

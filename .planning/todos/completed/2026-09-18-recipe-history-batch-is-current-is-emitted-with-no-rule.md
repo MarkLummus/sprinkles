@@ -4,8 +4,12 @@ title: The nested batch in view carries a class no stylesheet answers
 area: ui
 severity: minor
 files:
+
   - app/src/ui/RecipeHistory.jsx
   - app/src/styles/app.css
+
+completed: 2026-09-18
+status: completed
 ---
 
 ## Problem

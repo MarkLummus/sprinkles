@@ -4,8 +4,12 @@ title: The standalone Batches register marks the batch in view with words alone
 area: design
 severity: minor
 files:
+
   - app/src/ui/BatchRow.jsx
   - app/src/styles/app.css
+
+completed: 2026-09-18
+status: completed
 ---
 
 ## Problem

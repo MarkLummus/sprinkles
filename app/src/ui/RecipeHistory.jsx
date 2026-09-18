@@ -49,8 +49,14 @@ export function versionForest(versions) {
   return { roots: chronological(children.get(null) ?? []), children };
 }
 
+// tastingOutcome(batch) -> the authored outcome only (HIST-04): the tasting
+// note, or the recorded defects joined with the middot (including the
+// declared flaw). Returns null when there is no tasting at all, and when a
+// tasting carries neither note nor defects — the shared provenance line
+// (tastingProvenance) already states the tasting's presence or its
+// absence, so a second sentence here would say it twice.
 function tastingOutcome(batch) {
-  if (!batch.tasting) return 'No tasting recorded';
+  if (!batch.tasting) return null;
   if (batch.tasting.note) return batch.tasting.note;
 
   const problems = [
@@ -58,12 +64,13 @@ function tastingOutcome(batch) {
     ...(batch.tasting.bitterDeclared ? [DECLARED_FLAW] : []),
   ];
   if (problems.length > 0) return problems.join(' · ');
-  return `Tasted ${recordDateWords(batch.tasting.tastedDate)}`;
+  return null;
 }
 
 function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPen }) {
   const isInView = version.id === currentVersionId && batch.id === currentBatchId;
   const label = batchIdentity(batch);
+  const outcome = tastingOutcome(batch);
 
   return (
     <HistoryItem className="recipe-history__batch" current={isInView}>
@@ -78,9 +85,11 @@ function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPe
           {tastingProvenance(batch)}
         </HistoryProvenance>
       </div>
-      <p className={batch.tasting?.note ? 'recipe-history__outcome prose-text' : 'recipe-history__outcome'}>
-        {tastingOutcome(batch)}
-      </p>
+      {outcome != null && (
+        <p className={batch.tasting?.note ? 'recipe-history__outcome prose-text' : 'recipe-history__outcome'}>
+          {outcome}
+        </p>
+      )}
       {batch.churn.nextTimeNote && (
         <p className="recipe-history__next"><span>Next time</span> {batch.churn.nextTimeNote}</p>
       )}
@@ -121,7 +130,7 @@ function VersionNode({
 
         {citedBatch && (
           <HistoryProvenance className="recipe-history__cause">
-            After batch ·{' '}
+            From batch ·{' '}
             {openPen ? (
               recordDateWords(citedBatch.churn.churnDate)
             ) : (
@@ -153,7 +162,7 @@ function VersionNode({
             ))}
           </HistoryList>
         ) : (
-          <p className="recipe-history__empty">No batch recorded</p>
+          <p className="recipe-history__empty">Not yet churned</p>
         )}
       </HistoryItem>
 

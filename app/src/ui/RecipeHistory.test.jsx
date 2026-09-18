@@ -119,8 +119,9 @@ describe('RecipeHistory', () => {
     expect(markup).toContain('Silky, but the oil lingers.');
     expect(markup).toContain('<span>Next time</span> Use less olive oil.');
     expect(markup).toContain('Reduce the oily finish.');
-    expect(markup).toContain('After batch · <a href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('From batch · <a href="/recipe/v1/batch/b1"');
     expect(markup).toContain('aria-label="Versions made from Version 1 · Original plan"');
+    expect(markup).toContain('Not yet churned');
   });
 
   it('uses stable version and batch routes and marks the records in view', () => {
@@ -139,11 +140,12 @@ describe('RecipeHistory', () => {
     expect(markup).toContain('Batch · 4 Feb 2026<span class="history-register__marker"> · In view</span>');
   });
 
-  it('links another batch directly and states when no tasting was recorded', () => {
+  it('links another batch directly and states absence once, in the provenance line alone', () => {
     const batch = makeBatch({ id: 'b1', versionId: 'v1' });
     const markup = renderHistory({ versions: [root], currentVersionId: 'v1', allBatches: [batch] });
     expect(markup).toContain('href="/recipe/v1/batch/b1"');
-    expect(markup).toContain('No tasting recorded');
+    expect(markup).toContain('Not yet tasted');
+    expect(markup).not.toContain('recipe-history__outcome');
   });
 
   it('uses recorded defects as the outcome when no tasting note exists', () => {
@@ -212,8 +214,8 @@ describe('RecipeHistory', () => {
 
     expect((markup.match(/written date unknown/g) ?? []).length).toBe(2);
     expect(markup).toContain('Batch · date unknown');
-    expect(markup).toContain('After batch · <a href="/recipe/v1/batch/b1"');
-    expect(markup).toContain('Tasted date unknown');
+    expect(markup).toContain('From batch · <a href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('recipe-history__batch-state">Tasted date unknown');
     expect(markup).not.toContain('>Why<');
   });
 

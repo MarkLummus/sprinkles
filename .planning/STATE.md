@@ -4,10 +4,10 @@ current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.3.1.1 complete, ready to plan Phase 4
-last_updated: "2026-09-18T16:18:55.561Z"
+last_updated: "2026-09-18T18:23:04.008Z"
 last_activity: 2026-09-18
 last_activity_desc: Hardened batch-save completion with page-owned confirmation, saved-record focus, persistence locking, and recoverable failure
-state_head: 42f790a0f4a3d532ff5797f5c23a67472ddba36f
+state_head: 45c40c409464c69d443cf608d2348e0513bc68b8
 progress:
   total_phases: 9
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-18 - Completed quick task 260918-gha: The Sprinkles Jar home page (route:/); paper confined to three frames
+Last activity: 2026-09-18 - Completed quick task 260918-jki: Owning-history contract: History uncounted, Batches (n) counts attempts, shared batch identity/provenance, From batch citation
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -259,6 +259,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260916-vv1 | Add .prose-field to the touch-union min-height list so the four prose fields meet the 44px target on every coarse pointer | 2026-09-16 | 8987f85 | [260916-vv1-add-prose-field-to-the-touch-union-min-h](./quick/260916-vv1-add-prose-field-to-the-touch-union-min-h/) |
 | 260916-wg0 | Name the axes core/declared split for assistive tech — per-axis aria-labelledby on each stops group | 2026-09-16 | 8979e5e | [260916-wg0-name-the-axes-core-declared-split-for-as](./quick/260916-wg0-name-the-axes-core-declared-split-for-as/) |
 | 260918-gha | Build the home page (route:/) in The Sprinkles Jar world; paper confined to the recipe spread, batch log and print sheet | 2026-09-18 | 42f790a | [260918-gha-build-the-home-page-route-in-the-sprinkl](./quick/260918-gha-build-the-home-page-route-in-the-sprinkl/) |
+| 260918-jki | Owning-history contract: History uncounted, Batches (n) counts attempts, shared batch identity/provenance, From batch citation | 2026-09-18 | 45c40c4 | [260918-jki-implement-the-revised-owning-history-con](./quick/260918-jki-implement-the-revised-owning-history-con/) |
 
 ### Roadmap Evolution
 

@@ -92,7 +92,6 @@ export function VersionRow({
   // label and revealed content cannot diverge.
   const [historyOpen, setHistoryOpen] = useState(false);
   const recipeVersions = versionsForRecipe(versions, version.recipeId);
-  const versionCount = recipeVersions.length;
   // The identity heading's inputs (route-recipe.md § 6 "One version
   // identity, wherever a version is named", 2026-09-18): the same ordered
   // array the History disclosure below already computes. isLatest is
@@ -258,20 +257,23 @@ export function VersionRow({
           )}
         </dl>
 
-        {/* The history control (route-recipe.md § 3, 260917-odu): names
-            the whole set it discloses, so it labels itself — the struck
+        {/* The history control (route-recipe.md § 6 "History is the
+            development outline"): names what it discloses, not how many —
+            versions are the outline's primary nodes and their batches are
+            nested evidence beneath them, so a version-only tally would
+            name less than the disclosure actually holds. The struck
             "Later" lineage label had no replacement word and inventing
             one is forbidden. Its own line, below the dl and above the
             acts group, rather than inside the dl or the acts group, so it
             stays available while the batch pen is open (D-UAT-2). */}
-        {versionCount > 0 && (
+        {recipeVersions.length > 0 && (
           <p className="version-row__history">
             <HistoryDisclosure
               open={historyOpen}
               panelId="version-row-history"
               onToggle={() => setHistoryOpen((open) => !open)}
             >
-              {`History (${versionCount} version${versionCount === 1 ? '' : 's'})`}
+              History
             </HistoryDisclosure>
           </p>
         )}

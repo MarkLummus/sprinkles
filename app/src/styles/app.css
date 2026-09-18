@@ -665,7 +665,7 @@ textarea {
 }
 
 /* Authored version names keep the text face; dates and batch citations
-   are compact metadata even when they share the same provenance line. */
+   are compact metadata on their own labelled lines. */
 .version-row__parent-name {
   font-family: var(--face-text);
   font-size: var(--size-deviation-words);

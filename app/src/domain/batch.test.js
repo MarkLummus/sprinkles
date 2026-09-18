@@ -7,6 +7,7 @@ import {
   createBatch,
   completeRecord,
   formatRecordDate,
+  recordDateWords,
   hasAsMade,
   asMadeFor,
   asMadeForPortion,
@@ -41,6 +42,14 @@ function createRepositoryDouble() {
 }
 
 const CHURN_ONLY = { churnDate: '2026-08-02', asMade: { 'row-01': [383] } };
+
+describe('recordDateWords', () => {
+  it('formats a stored date and keeps a missing imported date readable', () => {
+    expect(recordDateWords('2026-08-02')).toBe('2 Aug 2026');
+    expect(recordDateWords(null)).toBe('date unknown');
+    expect(recordDateWords('')).toBe('date unknown');
+  });
+});
 
 describe('createBatch', () => {
   it('returns a record with the supplied id, versionId, recordedAt, changed null and tasting null when tastingFields is null', () => {

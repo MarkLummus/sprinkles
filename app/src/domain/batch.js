@@ -33,6 +33,13 @@ export function formatRecordDate(iso) {
   return `${Number(day)} ${monthName} ${year}`;
 }
 
+// History can meet an imported legacy record without a date. Keep that
+// absence readable and non-fatal at every history call site rather than
+// asking formatRecordDate to parse a value it was never designed to accept.
+export function recordDateWords(iso) {
+  return iso ? formatRecordDate(iso) : 'date unknown';
+}
+
 /**
  * buildChurn(churnFields) -> the churn object both createBatch and
  * completeRecord write, replaced wholesale on every save (D-02). Every

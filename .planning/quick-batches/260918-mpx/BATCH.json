@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "batch_id": "260918-mpx",
+  "created_at": "2026-09-18T20:21:30.059Z",
+  "options": {},
+  "base_revision": "06fae6e48695f41f5eafa6148a5d1b7131c76c0e",
+  "items": [
+    {
+      "quick_id": "260918-mpy",
+      "client_id": null,
+      "description": "TASK 1 — Child version's own written date is printed inside its parent's value. app/src/ui/VersionRow.jsx:233: inside the `From version` <dd>, the row appends ` · written ${recordDateWords(version.createdAt)}` — `version` is the version IN VIEW, not the parent. Live DOM on /recipe/ov-v2 reads \"FROM VERSION 50 g oil · 800 g · written 5 Aug 2026\", where 5 Aug is Version 2's createdAt; the History register below correctly says Version 1 was written 1 Jul 2026. The `·` separator joins parts of one record everywhere else and here switches records mid-value. A root version already gets its own `Written` <dt> (VersionRow.jsx:216-219). Give the child the same dedicated `Written` term and leave From version carrying only the parent. Verify: on /recipe/ov-v2 the row's written date matches the register's line for Version 2, and the parent's name carries no date. Update VersionRow tests.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/VersionRow.jsx",
+        "app/src/ui/VersionRow.test.jsx",
+        "app/src/styles/app.css"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "0332b57",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "260918-mpz",
+      "client_id": null,
+      "description": "TASK 2 — The Batches panel denies it is ordered. app/src/ui/BatchRow.jsx:331: `<HistoryList className=\"history-register\" label=\"Batches of this version\">` omits `ordered`, so History.jsx:22 renders a <ul>. Its content is sortedBatches() — newest first — and its twin, the History panel's nested batch list (RecipeHistory.jsx:144), passes `ordered` and renders an <ol>. Pass `ordered`. Verify: both lists are <ol> in the DOM (BatchRow test).",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/BatchRow.jsx",
+        "app/src/ui/BatchRow.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "8d41ff8",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "260918-mq0",
+      "client_id": null,
+      "description": "TASK 3 — The recorded tasting note is the one prose in the register set below its role. app/src/styles/history.css: Why is 16px/24, Next time 16px/24, the tasting note 15px/22.5 — all three declared by DESIGN.md \"History type roles\" as the shared serif prose role. `.prose-text` (app.css:1428) sets no font-size and inherits the page's 15px table default; `.recipe-history__reason .prose-text` (history.css:105-107) and `.recipe-history__next` (history.css:132-137) each set `--type-note` explicitly, and `.recipe-history__outcome` was missed. Add the note role to `.recipe-history__outcome.prose-text` only — the non-prose variant (`No tasting recorded`, defect words) must stay small-print grotesk per history.css:69. Verify: all three compute to 16px/24.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/styles/history.css",
+        "app/src/styles/cross-cutting.test.js"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "ccc2f44",
+      "failure_reason": null
+    }
+  ]
+}

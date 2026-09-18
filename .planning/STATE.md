@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-18 - Completed quick task 260918-jki: Owning-history contract: History uncounted, Batches (n) counts attempts, shared batch identity/provenance, From batch citation
+Last activity: 2026-09-18 - Completed quick batch 260918-mpx: three recipe-history fixes (child Written term, ordered Batches list, tasting note prose size)
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -260,6 +260,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260916-wg0 | Name the axes core/declared split for assistive tech — per-axis aria-labelledby on each stops group | 2026-09-16 | 8979e5e | [260916-wg0-name-the-axes-core-declared-split-for-as](./quick/260916-wg0-name-the-axes-core-declared-split-for-as/) |
 | 260918-gha | Build the home page (route:/) in The Sprinkles Jar world; paper confined to the recipe spread, batch log and print sheet | 2026-09-18 | 42f790a | [260918-gha-build-the-home-page-route-in-the-sprinkl](./quick/260918-gha-build-the-home-page-route-in-the-sprinkl/) |
 | 260918-jki | Owning-history contract: History uncounted, Batches (n) counts attempts, shared batch identity/provenance, From batch citation | 2026-09-18 | 45c40c4 | [260918-jki-implement-the-revised-owning-history-con](./quick/260918-jki-implement-the-revised-owning-history-con/) |
+| 260918-mpy | Child version gets its own Written term; From version carries only the parent | 2026-09-18 | 0332b57 | [260918-mpy-task-1-child-version-s-own-written-date-is-printed-inside-it](./quick/260918-mpy-task-1-child-version-s-own-written-date-is-printed-inside-it/) |
+| 260918-mpz | Batches panel register renders as an ordered list | 2026-09-18 | 8d41ff8 | [260918-mpz-task-2-the-batches-panel-denies-it-is-ordered-app-src-ui-bat](./quick/260918-mpz-task-2-the-batches-panel-denies-it-is-ordered-app-src-ui-bat/) |
+| 260918-mq0 | Recorded tasting note takes the register's prose size | 2026-09-18 | ccc2f44 | [260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg](./quick/260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg/) |
 
 ### Roadmap Evolution
 

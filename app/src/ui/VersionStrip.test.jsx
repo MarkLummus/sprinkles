@@ -54,7 +54,7 @@ describe('VersionStrip — a list of one version is still a list (D-09 disciplin
     const versions = [makeVersion({ id: 'v1' })];
     const markup = renderStrip({ versions, currentId: 'v1' });
     expect(markup).toMatch(/<ul class="history-register">/);
-    expect(markup).toContain('line');
+    expect(markup).toContain('Version 1 · line');
     expect(markup).toContain('<span class="history-register__marker">· In view · Latest</span>');
     expect(markup).not.toContain('<a');
   });
@@ -79,6 +79,11 @@ describe('VersionStrip — three versions of one recipe', () => {
     expect(thirdIndex).toBeGreaterThan(-1);
     expect(thirdIndex).toBeLessThan(secondIndex);
     expect(secondIndex).toBeLessThan(firstIndex);
+    // The ordinal is ordered.length - index off this same array: the
+    // newest (third) is Version 3, down to the oldest (first) at Version 1.
+    expect(markup).toContain('Version 3 · third');
+    expect(markup).toContain('Version 2 · second');
+    expect(markup).toContain('Version 1 · first');
   });
 
   it('does not render a version belonging to a different recipeId', () => {
@@ -91,7 +96,7 @@ describe('VersionStrip — three versions of one recipe', () => {
   it("carries the current version's entry with the distinguishing class, no longer a link, wearing In view", () => {
     const markup = renderStrip({ versions, currentId: 'b' });
     expect(markup).toMatch(
-      /<li class="history-register__item is-current"><div class="history-register__identity"><p class="history-register__name">second <span class="history-register__marker">· In view<\/span><\/p>/,
+      /<li class="history-register__item is-current"><div class="history-register__identity"><p class="history-register__name">Version 2 · second <span class="history-register__marker">· In view<\/span><\/p>/,
     );
     const currentLi = markup.match(/<li class="history-register__item is-current">[\s\S]*?<\/li>/)[0];
     expect(currentLi).not.toContain('<a');
@@ -115,7 +120,7 @@ describe('VersionStrip — the row content (route-recipe.md § 6)', () => {
     const versions = [makeVersion({ id: 'v2', versionLabel: '48 g oil · 800 g' })];
     const markup = renderStrip({ versions, currentId: 'v1' });
     expect(markup).toMatch(
-      /<p class="history-register__name"><a href="\/recipe\/v2"[^>]*>48 g oil · 800 g<\/a> <span class="history-register__marker">· Latest<\/span><\/p>/,
+      /<p class="history-register__name"><a href="\/recipe\/v2"[^>]*>Version 1 · 48 g oil · 800 g<\/a> <span class="history-register__marker">· Latest<\/span><\/p>/,
     );
   });
 
@@ -277,13 +282,13 @@ describe('VersionStrip — the position markers', () => {
   it('wears both markers, in reading order, on one entry when the newest is the one in view', () => {
     const markup = renderStrip({ versions, currentId: 'c' });
     expect(markup).toContain(
-      '<p class="history-register__name">third <span class="history-register__marker">· In view · Latest</span></p>',
+      '<p class="history-register__name">Version 3 · third <span class="history-register__marker">· In view · Latest</span></p>',
     );
   });
 
   it('wears no marker text on an entry that is neither the newest nor the one in view', () => {
     const markup = renderStrip({ versions, currentId: 'b' });
-    expect(markup).toMatch(/<p class="history-register__name"><a href="\/recipe\/a"[^>]*>first<\/a><\/p>/);
+    expect(markup).toMatch(/<p class="history-register__name"><a href="\/recipe\/a"[^>]*>Version 1 · first<\/a><\/p>/);
   });
 
   it('wears Latest only once — on the entry the list puts first — when two entries share a createdAt', () => {
@@ -293,9 +298,22 @@ describe('VersionStrip — the position markers', () => {
     ];
     const markup = renderStrip({ versions: tiedVersions, currentId: 'z' });
     expect((markup.match(/Latest/g) ?? []).length).toBe(1);
+    // sortedVersions keeps tied entries in input order, so 'a' (input-first)
+    // sorts first and wears the HIGHER ordinal — position decides, not the
+    // date, the tie-break discipline `versionIdentity` shares with `Latest`.
     expect(markup).toMatch(
-      /<p class="history-register__name"><a href="\/recipe\/a"[^>]*>first<\/a> <span class="history-register__marker">· Latest<\/span><\/p>/,
+      /<p class="history-register__name"><a href="\/recipe\/a"[^>]*>Version 2 · first<\/a> <span class="history-register__marker">· Latest<\/span><\/p>/,
     );
+    expect(markup).toContain('Version 1 · second');
+  });
+
+  it('carries no anti-goal form for the ordinal — no v3, #3, 3rd, zero-padding, or a wrapping element of its own', () => {
+    const markup = renderStrip({ versions, currentId: 'b' });
+    expect(markup).not.toContain('v3');
+    expect(markup).not.toContain('#3');
+    expect(markup).not.toContain('3rd');
+    expect(markup).not.toContain('Version 03');
+    expect(markup).not.toMatch(/<span[^>]*>Version 3<\/span>/);
   });
 
   it('renders no <a> at all for the entry in view, with no pen open', () => {

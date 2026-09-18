@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { formatRecordDate, batchHistoryWords } from '../domain/batch.js';
-import { sortedVersions, versionsForRecipe } from '../domain/lineage.js';
+import { sortedVersions, versionsForRecipe, versionIdentity } from '../domain/lineage.js';
 
 // The Versions disclosure's own ruled register (route-recipe.md § 6 "The
 // two history panels read as one register, not as cards", revised
@@ -13,7 +13,11 @@ import { sortedVersions, versionsForRecipe } from '../domain/lineage.js';
 // otherwise "from <parent>" when one exists, otherwise no line at all — a
 // root version cites nothing. The record block carries the version's own
 // written date over its batch history stated in words
-// (batchHistoryWords). The version line is the row's only link. The entry
+// (batchHistoryWords). The row's identity is versionIdentity's output —
+// "Version {n} · {authored name}" — one string shared with the version
+// row's own heading (route-recipe.md § 6 "One version identity, wherever
+// a version is named", 2026-09-18), so the two sites cannot drift. The
+// identity line is the row's only link. The entry
 // in view carries no link at all — a link to the page it is already on
 // goes nowhere — and wears the word "In view"; the newest version
 // (ordered[0], positional) wears "Latest"; both can land on one entry.
@@ -41,6 +45,7 @@ export function VersionStrip({ versions, recipeId, currentId, allBatches = [], o
           const citedBatch = version.citedBatchId
             ? allBatches.find((batch) => batch.id === version.citedBatchId)
             : null;
+          const identity = versionIdentity(ordered, version);
           // The citation wins where it exists (Mark, 2026-09-17) — never
           // both, the run-on is what is being removed. The complete set
           // meets a root version for the first time (260917-odu): a root
@@ -75,8 +80,8 @@ export function VersionStrip({ versions, recipeId, currentId, allBatches = [], o
                       no pen: a link to the page it is already on goes
                       nowhere. The version line is this row's only link. */}
                   {isCurrent || openPen
-                    ? version.versionLabel
-                    : <Link to={`/recipe/${version.id}`}>{version.versionLabel}</Link>}
+                    ? identity
+                    : <Link to={`/recipe/${version.id}`}>{identity}</Link>}
                   {markers.length > 0 && (
                     <>
                       {' '}

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles/tokens.css';
 import './styles/app.css';
 import './styles/history.css';
+import './styles/home.css';
 import { repository } from './store/repository.js';
 import { seedIfEmpty } from './store/seed.js';
 import { App } from './router.jsx';

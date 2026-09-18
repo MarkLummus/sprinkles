@@ -368,49 +368,12 @@ textarea {
 /* The list route's page body (DESIGN.md:215, "the list page"). It is the
    fifth box on the shared gutter, mirroring recipe-page because this route
    has no running head above it and so needs the whole page body's inset on
-   every side, not just the inline edge. The bullet indent on the import
-   errors list below is a marker indent, not a second gutter. */
+   every side, not just the inline edge. The Sprinkles Jar world it frames
+   (home.css, route.md, 260918-gha) renders inside this padding as a child
+   under its own root class, "home" — this rule stays the page's one
+   inline gutter and carries no world-specific styling of its own. */
 .list-page {
   padding: var(--gap-page);
-}
-
-.recipe-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.recipe-list li + li {
-  margin-top: var(--gap-s);
-}
-
-.recipe-list a {
-  display: flex;
-  gap: var(--gap-m);
-  color: inherit;
-  font-variant-numeric: tabular-nums;
-}
-
-.recipe-list__name {
-  font-family: var(--face-text);
-}
-
-.recipe-list__transfer {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-s);
-  margin-bottom: var(--gap-m);
-}
-
-.recipe-list__file-input {
-  display: none;
-}
-
-.recipe-list__import-errors {
-  margin: 0;
-  padding-left: var(--gap-m);
-  font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
 }
 
 .recipe-page {

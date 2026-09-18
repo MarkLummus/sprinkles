@@ -1,0 +1,282 @@
+/* The Sprinkles Jar — .impeccable/surfaces/route.md, outside the three
+   paper frames only (§ 1). Every selector here is scoped under .home,
+   which is what lets this world override the global link underline and
+   the button/select binder for the home page alone while the paper
+   frames keep both. Unlike app.css, this world may carry a border
+   radius, a fill and one short transition (route.md § 1: the no-motion/
+   no-shadow/no-radius binder does not cross the paper frame). Every
+   colour, size, spacing and rule weight below reads a custom property
+   from tokens.css — none is a literal here. .home itself carries no
+   inline padding: the page gutter is .list-page's own (app.css), already
+   pinned by cross-cutting.test.js, and a second one here would double
+   it. */
+
+.home {
+  background: var(--home-ground);
+  color: var(--home-ink);
+  font-family: var(--face-grotesk);
+}
+
+.home__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--gap-s);
+}
+
+/* The brand and its sprinkle rule (FIRST VIEWPORT: "Brand with its
+   sprinkle rule at top left"). The rule beneath it is drawn from the
+   jar's own six hues, a decorative mark — never a link to elsewhere, the
+   nav names the one destination this shell reaches. */
+.home__brand {
+  position: relative;
+  margin: 0;
+  font-weight: 700;
+  font-size: var(--size-home-brand);
+  letter-spacing: -0.02em;
+}
+
+.home__brand::after {
+  content: '';
+  display: block;
+  margin-top: var(--gap-xs);
+  height: var(--size-home-brand-rule);
+  border-radius: var(--radius-sprinkle);
+  background: linear-gradient(
+    90deg,
+    var(--jar-pink) 0 14%,
+    transparent 14% 20%,
+    var(--jar-gold) 20% 32%,
+    transparent 32% 38%,
+    var(--jar-teal) 38% 52%,
+    transparent 52% 58%,
+    var(--jar-green) 58% 70%,
+    transparent 70% 76%,
+    var(--jar-orange) 76% 90%,
+    transparent 90%
+  );
+}
+
+.home__nav {
+  display: flex;
+  align-items: center;
+}
+
+/* The one nav item this shell reaches, marked current rather than linked
+   to itself (the app's own convention — a version "in view" is not a
+   link to itself either, domain/lineage.js's versionIdentity). Underlined
+   in a jar colour (FIRST VIEWPORT: "active item underlined in a jar
+   colour"). */
+.home__nav-current {
+  font-weight: 600;
+  font-size: var(--size-home-meta);
+  padding-bottom: var(--gap-hair);
+  border-bottom: var(--rule-home-nav-active) solid var(--jar-teal);
+}
+
+.home__title {
+  margin: var(--gap-l) 0 var(--gap-hair);
+  font-family: var(--face-text);
+  font-size: var(--size-home-title);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.home__guidance {
+  margin: 0 0 var(--gap-l);
+  color: var(--home-mute);
+}
+
+.home__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: var(--gap-s);
+  column-gap: var(--gap-l);
+  padding: var(--gap-m) 0;
+  border-top: var(--rule-home-row) solid var(--home-rule);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--duration-home);
+}
+
+.home__row:hover {
+  background: var(--home-rule);
+}
+
+/* The identity bar (FIRST VIEWPORT: "identity bar"): the recipe's own
+   hue, dealt by recipe-colour.js and reached here as a fixed
+   var(--recipe-hue-NN) reference on --c, never a stored value
+   (T-260918-gha-02). */
+.home__bar {
+  flex: 0 0 var(--size-bar-w);
+  width: var(--size-bar-w);
+  height: var(--size-bar-h);
+  border-radius: var(--radius-bar);
+  background: var(--c);
+}
+
+.home__main {
+  flex: 2 1 0;
+  min-width: 0;
+}
+
+.home__name {
+  margin: 0;
+  font-family: var(--face-text);
+  font-size: var(--size-home-recipe-name);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.home__meta {
+  display: block;
+  margin-top: var(--gap-hair);
+  font-size: var(--size-home-meta);
+  color: var(--home-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.home__tally-group {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.home__tally-label {
+  margin: 0 0 var(--gap-xs);
+  font-size: var(--size-home-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-home-label);
+  color: var(--home-mute);
+}
+
+.home__tally-label--empty {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* A row of sprinkle marks — decorative (aria-hidden), since
+   .home__tally-label already carries the count as text: a count told
+   only in marks is invisible to a screen reader and colour must never be
+   the sole carrier. route.md § 5 leaves how a tally reads past a dozen
+   open; the marks simply wrap. */
+.home__tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  align-items: center;
+}
+
+.home__tally-mark {
+  display: inline-block;
+  width: var(--size-sprinkle-w);
+  height: var(--size-sprinkle-h);
+  border-radius: var(--radius-sprinkle);
+}
+
+.home__tally-mark--version {
+  background: var(--c);
+}
+
+.home__tally-mark--batch {
+  background: var(--jar-gold);
+}
+
+/* The last verdict, in pen blue (FIRST VIEWPORT; the Two-Ink rule still
+   binds wherever plan and actual meet, route.md § 1) — no second blue is
+   defined for this world. */
+.home__words {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--face-text);
+  font-style: italic;
+  font-size: var(--size-home-meta);
+  color: var(--pen-blue);
+  overflow-wrap: anywhere;
+}
+
+.home__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gap-s);
+  margin-top: var(--gap-l);
+}
+
+/* The one filled action (FIRST VIEWPORT: "'Bring in a recipe' as the one
+   filled action below the list" — Import is the control that performs
+   that arrival in this app). Overrides the paper world's hairline
+   button/select binder (app.css) for this page alone, per route.md § 1. */
+.home__cta {
+  appearance: none;
+  border: none;
+  border-radius: var(--radius-cta);
+  padding: var(--gap-s) var(--gap-m);
+  background: var(--home-ink);
+  color: var(--home-ground);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-home-meta);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--duration-home);
+}
+
+.home__cta:hover {
+  background: var(--jar-teal);
+  color: var(--home-ink);
+}
+
+/* Export, a quiet text action beside the filled one. */
+.home__quiet {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--home-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-home-meta);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: var(--offset-link-underline);
+  cursor: pointer;
+}
+
+.home__file-input {
+  display: none;
+}
+
+.home__import-errors {
+  margin: var(--gap-s) 0 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--size-small-print);
+}
+
+/* Below the 760px step-down (sketch-findings-sprinkles,
+   references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
+   the Responsive Ladder"): interactive targets grow toward --touch-min
+   and the row is free to wrap onto further lines so nothing overflows
+   at 393px. One top-level @media block, nothing deeper — css-source.js
+   parses exactly one level of nesting. */
+@media (max-width: 759.98px) {
+  .home__nav-current,
+  .home__cta,
+  .home__quiet {
+    min-height: var(--touch-min);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .home__row {
+    padding: var(--gap-s) 0;
+  }
+}

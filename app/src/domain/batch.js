@@ -41,6 +41,28 @@ export function recordDateWords(iso) {
 }
 
 /**
+ * batchIdentity(batch) -> the shared attempt identity (HIST-03): the word
+ * `Batch`, the middot separator, then the churn date through
+ * recordDateWords — one identity, read by both the recipe-level History
+ * outline and the version-level Batches register, so the two lists cannot
+ * name one attempt two ways.
+ */
+export function batchIdentity(batch) {
+  return `Batch · ${recordDateWords(batch.churn.churnDate)}`;
+}
+
+/**
+ * tastingProvenance(batch) -> the shared attempt provenance (HIST-04):
+ * `Tasted {date}` when the batch carries a tasting, `Not yet tasted` when
+ * it carries none — one provenance, read by both panels, so a maker never
+ * learns two names for one fact.
+ */
+export function tastingProvenance(batch) {
+  if (!batch.tasting) return 'Not yet tasted';
+  return `Tasted ${recordDateWords(batch.tasting.tastedDate)}`;
+}
+
+/**
  * buildChurn(churnFields) -> the churn object both createBatch and
  * completeRecord write, replaced wholesale on every save (D-02). Every
  * numeric field uses an explicit `!= null` check (never `||`/truthiness)

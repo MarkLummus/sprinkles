@@ -8,6 +8,8 @@ import {
   completeRecord,
   formatRecordDate,
   recordDateWords,
+  batchIdentity,
+  tastingProvenance,
   hasAsMade,
   asMadeFor,
   asMadeForPortion,
@@ -124,6 +126,33 @@ describe('formatRecordDate', () => {
 
   it('formats a bare YYYY-MM-DD string the same way', () => {
     expect(formatRecordDate('2026-08-02')).toBe('2 Aug 2026');
+  });
+});
+
+// batchIdentity and tastingProvenance (HIST-03, HIST-04): one attempt
+// identity and one attempt provenance, shared by the recipe-level History
+// outline and the version-level Batches register.
+describe('batchIdentity', () => {
+  it('names the churn date', () => {
+    expect(batchIdentity({ churn: { churnDate: '2026-08-02' } })).toBe('Batch · 2 Aug 2026');
+  });
+
+  it('reads "date unknown" through recordDateWords when the churn date is absent', () => {
+    expect(batchIdentity({ churn: { churnDate: null } })).toBe('Batch · date unknown');
+  });
+});
+
+describe('tastingProvenance', () => {
+  it('names the tasted date when the tasting carries one', () => {
+    expect(tastingProvenance({ tasting: { tastedDate: '2026-08-03' } })).toBe('Tasted 3 Aug 2026');
+  });
+
+  it('reads "Tasted date unknown" for a tasting with no date', () => {
+    expect(tastingProvenance(augustSecondBatch)).toBe('Tasted date unknown');
+  });
+
+  it('reads "Not yet tasted" when the batch carries no tasting at all', () => {
+    expect(tastingProvenance({ tasting: null })).toBe('Not yet tasted');
   });
 });
 

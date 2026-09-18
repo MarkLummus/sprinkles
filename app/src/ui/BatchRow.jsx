@@ -1,7 +1,7 @@
 import { HistoryDisclosure, HistoryPanel, HistoryList, HistoryItem, HistoryMarkers, HistoryProvenance } from './History.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { formatRecordDate, readMeasured, recordDateWords, sortedBatches } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, batchIdentity, tastingProvenance } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
 import { axesForBatch, readMarkWord } from '../domain/axes.js';
@@ -309,14 +309,14 @@ function TastingReading({ batch }) {
 }
 
 // batchHistoryMetaFor(batch) -> the batch list's own meta small print parts
-// (D-04, D-09): the drawn temperature and At-the-machine prose, unchanged,
-// plus "changed {date}" when the batch carries a changed value —
-// replacing the retired tasted-count wording (Pitfall 7: a batch is
-// tasted zero or one, never plural). Exported for direct testing, since
-// the disclosure that renders this has no prop to open it from a
-// render-only test (this file's own AxesGrid precedent).
+// (D-04, D-09, HIST-04, HIST-07): the shared tasting provenance leads,
+// then the drawn temperature and At-the-machine prose follow it as
+// supporting evidence, then "changed {date}" when the batch carries a
+// changed value. Exported for direct testing, since the disclosure that
+// renders this has no prop to open it from a render-only test (this
+// file's own AxesGrid precedent).
 export function batchHistoryMetaFor(batch) {
-  const metaParts = [];
+  const metaParts = [tastingProvenance(batch)];
   if (batch.churn.outOfMachineTempC != null) {
     metaParts.push(`out of machine ${churnMeasured(batch.churn.outOfMachineTempC, { signed: true })} °C`);
   }
@@ -331,7 +331,7 @@ export function BatchHistoryPanel({ version, batches, openBatch = null, openPen 
       <HistoryList className="history-register" label="Batches of this version">
         {sortedBatches(batches).map((batch) => {
           const isOpenBatch = openBatch && batch.id === openBatch.id;
-          const dateWords = recordDateWords(batch.churn.churnDate);
+          const identity = batchIdentity(batch);
           const metaParts = batchHistoryMetaFor(batch);
           return (
             <HistoryItem key={batch.id} current={isOpenBatch} className="history-register__item">
@@ -339,15 +339,15 @@ export function BatchHistoryPanel({ version, batches, openBatch = null, openPen 
                 <p className="history-register__name">
                   {isOpenBatch ? (
                     <>
-                      {dateWords}<HistoryMarkers current />
+                      {identity}<HistoryMarkers current />
                     </>
                   ) : openPen ? (
-                    dateWords
+                    identity
                   ) : (
-                    <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{dateWords}</Link>
+                    <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{identity}</Link>
                   )}
                 </p>
-                {metaParts.length > 0 && <HistoryProvenance>{metaParts.join(' · ')}</HistoryProvenance>}
+                <HistoryProvenance>{metaParts.join(' · ')}</HistoryProvenance>
               </div>
             </HistoryItem>
           );

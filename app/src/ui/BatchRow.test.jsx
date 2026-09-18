@@ -1307,9 +1307,10 @@ describe('BatchHistoryPanel — the revealed Batches register', () => {
     expect(markup).toContain('class="history-register history-list"');
     expect(markup.match(/<li class="history-register__item history-item[^"]*"/g)).toHaveLength(3);
     expect(markup.indexOf('16 Aug 2026')).toBeLessThan(markup.indexOf('2 Aug 2026'));
-    expect(markup.indexOf('2 Aug 2026')).toBeLessThan(markup.indexOf('date unknown'));
+    expect(markup.indexOf('2 Aug 2026')).toBeLessThan(markup.indexOf('Batch · date unknown'));
     expect(markup).toContain('2 Aug 2026<span class="history-register__marker"> · In view</span>');
     expect(markup).not.toMatch(/2 Aug 2026[\s\S]*?later/i);
+    expect(markup).toContain('>Batch · 16 Aug 2026</a>');
   });
 
   it('uses stable routes and descriptive focus intent for batches that are not in view', () => {
@@ -1332,9 +1333,10 @@ describe('BatchHistoryPanel — the revealed Batches register', () => {
   });
 });
 
-// batchHistoryMetaFor (D-04, D-09, Pitfall 7): the batch list's own meta
-// small print — "changed {date}" replaces the retired tasted-count
-// wording; the drawn temperature and At-the-machine parts are unchanged.
+// batchHistoryMetaFor (D-04, D-09, HIST-04, HIST-07): the batch list's own
+// meta small print — the shared tasting provenance leads, "changed {date}"
+// replaces the retired tasted-count wording, and the drawn temperature and
+// At-the-machine parts follow as supporting evidence.
 describe('batchHistoryMetaFor — the batch list\'s meta small print (D-04)', () => {
   it("reads \"changed {date}\" when the batch carries a changed date", () => {
     const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
@@ -1345,21 +1347,35 @@ describe('batchHistoryMetaFor — the batch list\'s meta small print (D-04)', ()
     expect(batchHistoryMetaFor(augustSecondBatch).some((part) => part.startsWith('changed '))).toBe(false);
   });
 
-  it('never reads "tasted" — the tasted-count wording is retired (Pitfall 7)', () => {
+  it('never reads the retired plural-tasting wording (Pitfall 7): never "once", "twice", or "times"', () => {
     const tastedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
-    expect(batchHistoryMetaFor(tastedBatch).join(' · ')).not.toMatch(/\btasted\b/);
+    expect(batchHistoryMetaFor(tastedBatch).join(' · ')).not.toMatch(/tasted once|tasted twice|\btimes\b/);
   });
 
-  it('keeps the drawn-temperature and At-the-machine parts', () => {
-    expect(batchHistoryMetaFor(augustSecondBatch)).toEqual(['out of machine −6 °C', 'Soft, not greasy']);
+  it('reads the shared provenance first, then the drawn-temperature and At-the-machine parts', () => {
+    expect(batchHistoryMetaFor(augustSecondBatch)).toEqual([
+      'Tasted date unknown',
+      'out of machine −6 °C',
+      'Soft, not greasy',
+    ]);
   });
 
-  it('returns an empty list when the batch carries none of the three facts', () => {
+  it('reads the provenance alone when the batch carries none of the three supporting facts', () => {
     const bareBatch = {
       ...augustSecondBatch,
       changed: null,
       churn: { ...augustSecondBatch.churn, outOfMachineTempC: null, atTheMachine: null },
     };
-    expect(batchHistoryMetaFor(bareBatch)).toEqual([]);
+    expect(batchHistoryMetaFor(bareBatch)).toEqual(['Tasted date unknown']);
+  });
+
+  it('reads "Not yet tasted" alone when the batch carries no tasting and none of the three supporting facts', () => {
+    const untastedBareBatch = {
+      ...augustSecondBatch,
+      changed: null,
+      tasting: null,
+      churn: { ...augustSecondBatch.churn, outOfMachineTempC: null, atTheMachine: null },
+    };
+    expect(batchHistoryMetaFor(untastedBareBatch)).toEqual(['Not yet tasted']);
   });
 });

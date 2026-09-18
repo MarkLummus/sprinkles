@@ -1,7 +1,7 @@
 import { HistoryList, HistoryItem, HistoryMarkers, HistoryProvenance } from './History.jsx';
 import { Link } from 'react-router';
 import { DECLARED_FLAW } from '../domain/battery.js';
-import { recordDateWords, sortedBatches } from '../domain/batch.js';
+import { recordDateWords, sortedBatches, batchIdentity, tastingProvenance } from '../domain/batch.js';
 import { sortedVersions, versionsForRecipe, versionIdentity } from '../domain/lineage.js';
 
 function compareChronological(a, b) {
@@ -63,8 +63,7 @@ function tastingOutcome(batch) {
 
 function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPen }) {
   const isInView = version.id === currentVersionId && batch.id === currentBatchId;
-  const churnDate = recordDateWords(batch.churn.churnDate);
-  const label = `Batch · ${churnDate}`;
+  const label = batchIdentity(batch);
 
   return (
     <HistoryItem className="recipe-history__batch" current={isInView}>
@@ -76,7 +75,7 @@ function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPe
           <HistoryMarkers current={isInView} />
         </p>
         <HistoryProvenance className="recipe-history__batch-state">
-          {batch.tasting ? 'Churned and tasted' : 'Churned'}
+          {tastingProvenance(batch)}
         </HistoryProvenance>
       </div>
       <p className={batch.tasting?.note ? 'recipe-history__outcome prose-text' : 'recipe-history__outcome'}>

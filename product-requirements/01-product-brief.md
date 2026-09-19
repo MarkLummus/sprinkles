@@ -1,6 +1,6 @@
 # Sprinkles — Product brief
 
-Status: product brief aligned with accepted decisions D01–D16. Open details are identified below; detailed design and implementation plans require separate review.
+Status: product brief aligned with accepted decisions D01–D17. Open details are identified below; detailed design and implementation plans require separate review.
 
 ## What is Sprinkles?
 
@@ -23,6 +23,16 @@ Sprinkles is designed for serious home enthusiasts: people motivated to understa
 They do not need to own a particular machine or know formulation terminology. A maker can begin with “it was too hard to scoop” and explore more technical information when it helps. Experienced makers can inspect ingredient composition and recipe calculations in greater depth.
 
 ## How it works
+
+### Connected working spaces (D17, accepted 2026-09-19)
+
+**Idea log** captures possibilities without requiring quantities. **Notebook** develops recipes through gram-governed versions, batches, observations, and Next time plans, retaining unsuccessful attempts. **Recipe book** holds dependable recipes and bases that are ready to make, with review and printing close at hand. Selecting a trusted version does not finish the recipe or move its history; development can continue while an earlier version remains selected.
+
+Imports preserve original quantities and attribution. A Recipe-book recipe may use volume, weight, or mixed units; Develop in Notebook introduces deliberate, reviewable gram conversion without overwriting the source. A Base is a reusable recipe role. Adapt starts a distinct recipe from a specific version, while Next version continues the same recipe; the maker's intent decides.
+
+The **Recipe Sheet**, also called the **Sheet**, presents a version for reading, editing, and printing. Its title and description may differ from the enduring Recipe name and Recipe description. Every Batch records a particular recipe state, including imported recipes, without requiring the maker to enter development mode.
+
+**Ingredients** supplies technical composition and provenance. **Kitchen** holds Equipment context, including sourced or observed batch ranges and tools informing the Method. **Ask an expert** is an AI-assisted contextual capability for ideas, recipes, and batches; saved exchanges are Consultations, and suggestions remain distinct from the maker's plans and actual execution. These are product direction, not additional first-milestone commitments.
 
 ### Develop a recipe
 

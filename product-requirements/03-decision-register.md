@@ -1,6 +1,6 @@
 # Decision register
 
-**D01–D16 are accepted.** D14 establishes the first product milestone's outcome, not its implementation plan. Acceptance does not mark implementation complete. Framework choice (GSD for delivery; Impeccable for design/branding) is user-confirmed, but exact GSD distribution is unresolved.
+**D01–D17 are accepted.** D14 establishes the first product milestone's outcome, not its implementation plan. Acceptance does not mark implementation complete. Framework choice (GSD for delivery; Impeccable for design/branding) is user-confirmed, but exact GSD distribution is unresolved.
 
 | ID | Accepted decision | Basis | Consequence / tradeoff |
 |---|---|---|---|
@@ -20,10 +20,13 @@
 | D14 — Accepted as revised | Prioritize recipe development, using the in-progress olive oil recipe to review the recipe and first-batch notes, explore adjustments, preserve versions, and prepare the next recipe through the review/print experience | Mark's current recipe-development work and available assets | Olive oil source is an alternate-format printout plus batch prep notes; other structured recipes establish format references. This does not commit photo/file import. Implementation belongs to GSD and Impeccable. |
 | D15 — Accepted | Use a manual, reviewed import-and-advice pilot with follow-up when available | User proposal; EV01–EV05 | Evaluate usefulness before claiming automated effectiveness. No automatic posting or publication of source data. |
 | D16 — Accepted | Keep storage and synchronization architecture open | Mark's storage research and clarification | No commitment to local-only, local-first, cloud-based storage, or Google Drive sync. |
+| D17 — Accepted | Connected workspaces, gram-governed Notebook, original-unit imports, and approved product vocabulary | Mark's approval, 2026-09-19 | Preserve recipe/version/batch relationships; Adapt follows maker intent; Sheet and Recipe Sheet are synonymous; delivery scope remains separate. |
 
 Research identifiers F01–F08 refer to the [research synthesis](research-reference/02-research-synthesis.md); EV/SYN identifiers refer to [evaluation scenarios](research-reference/06-evaluation-scenarios.md). Consult those only when reviewing the supporting evidence. References to original jobs or design todos record historical rationale, not instructions to load archived documents or override accepted decisions.
 
 ## Specific choices still open
+
+D17 below settles the connected workspaces, measurement domains, and vocabulary on 2026-09-19. D01–D16 remain accepted; D17 narrows D12's open Template/Base terminology without deciding ratings or the Optimize/Scale labels.
 
 | Choice | Recommended starting point | Needed before |
 |---|---|---|
@@ -32,7 +35,7 @@ Research identifiers F01–F08 refer to the [research synthesis](research-refere
 | Platform/stack/deployment | Inspect existing project and ask only material unknowns | Native framework initialization/build |
 | Supported equipment | Define initial conventional-machine scope and handling of other processes | Process schema and design brief approval |
 | Stars vs overall outcomes | Test outcomes alone versus outcomes plus optional rating | Batch logging design approval |
-| Base/template/variation mechanics | Preserve semantic distinctions, test visible actions | Recipe-library design approval |
+| Base/adaptation implementation | D17 settles meaning and the Adapt action; persistence and interaction details remain to be shaped | Recipe-library implementation planning |
 | Brand authority | Review existing cone/scoop/slate-blue work with Mark | Visual direction approval |
 | Privacy/service policy | Decide external model data transfer, retention, and credentials handling | Live AI integration |
 | Evaluation thresholds | Establish baseline, then approve tolerances; fabricated quantities are a critical failure | Release gate definition |
@@ -52,6 +55,28 @@ Research identifiers F01–F08 refer to the [research synthesis](research-refere
 When Mark approves a decision, record date, status, and any conditions here. Promote only the associated approved requirements to GSD scope. If implementation or design exposes a needed change, propose it here before altering the capability contract. A dated approval record—not framework-generated completion—is the authority.
 
 ## Completed Decisions
+
+### D17 — Connected workspaces, measurement domains, and approved vocabulary
+
+**Status:** Accepted
+
+**Date:** 2026-09-19
+
+**Owner:** Mark
+
+**Scope:** Product model and user-facing language; no milestone expansion or implementation claim
+
+**Decision:** Idea log captures possibilities; Notebook develops recipes in grams; Recipe book holds ready-to-make recipes and bases in original volume, weight, or mixed units or as selected Notebook versions. These are connected views and activities. Add to Recipe Book selects a particular version without moving, duplicating, or ending its development history. Later work never silently replaces that selection. Batches retain one meaning and history across all entry points, without requiring development mode to record a batch.
+
+Import preserves original quantities, attribution, and conversion basis. Develop in Notebook makes gram conversion deliberate and reviewable, with uncertainty visible. Conversion alone does not decide recipe identity. **Adapt** starts a distinct recipe from a specific version; **Next version** continues the same recipe. Maker intent decides. **Base** is a reusable recipe role, including imported volumetric recipes; publication and popularity do not define it.
+
+**Recipe Sheet** and **Sheet** are synonymous presentations of a version, including reading, editing, and printing. Recipe name/description belong to the enduring identity; Sheet title/description belong to the version and remain historically stable. Version name and Why identify and explain the revision. The complete approved vocabulary is in `05-domain-and-language.md`, including Draft, Sources, Ingredients, Kitchen, and AI-assisted Ask an expert / Consultation. “Sprinkles Jar” is retired as interface and active design terminology; use recipe context and actual section names.
+
+**Rationale:** Preserve the maker's distinction between ideas, development, and dependable recipes, and between recipe identity, printable content, actual attempts, and proposed changes. Naming preferences are Mark's design decisions, not conclusions established by community research.
+
+**Open questions:** Detailed schema, migration, Home composition, import delivery, Kitchen setup support, AI integration and data-sharing policy, and sourcing/permissions for a published-base collection. The two Home mocks remain contenders. No consultation service or external data transfer is authorized by this decision.
+
+**Affected artifacts:** PRODUCT.md; product brief; domain guide; proposed requirements; framework handoffs; shell, recipe, version, and print surface briefs. GSD delivery scope remains separately approved.
 
 ### D01 - Retain the full develop–make–learn product; define serious enthusiasts by motivation, with precise persona attributes unvalidated
 

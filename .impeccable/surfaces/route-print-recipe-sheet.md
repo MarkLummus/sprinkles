@@ -11,6 +11,10 @@ related_targets: ["route:/recipe","route:/recipe/version","route:/recipe/batch"]
 
 Product truth: `PRODUCT.md` and `product-requirements/03-decision-register.md`. Requirement IDs: `.planning/REQUIREMENTS.md` (PRINT-01…05, UX1-01…03). Primary evidence: the five photographs of the 2 Aug 2026 sheet (`~/Downloads/IMG_2485–2489.HEIC`), the churn-log audit (`Ice Cream Log Pages/sprinkles-churn-log-binder-audit.md`), and the prior print prototype (`~/Documents/projects/old-sprinkles/src/` — `styles/print.css`, `ui/BatchLog.jsx`, `domain/sheet-codes.js`), reference only and stale in vocabulary and axis model.
 
+## Vocabulary amendment — 2026-09-19
+
+D17 and `product-requirements/05-domain-and-language.md` govern terminology over older wording below. **Recipe Sheet** and **Sheet** are synonymous, in reading, editing, and printing, including multiple printed pages. Recipe name and Recipe description belong to the enduring recipe; Sheet title and Sheet description belong to the saved version. Version name and Why identify and explain the revision. **Adapt** starts a distinct recipe from a specific version; **Next version** continues the same recipe; unsaved work is a Draft or Version draft. Recipe-level metadata and History are recipe context, outside the paper Sheet. This amendment records approved meaning; field separation and responsive layout implementation still require shaping and delivery planning.
+
 ## 1. Job and audience
 
 Mark, at a desktop, with a saved version he intends to make. He prints, carries paper to the kitchen, and works from it at the machine — hands wet, scale beside him, app not present. Days pass. He returns to the app with the sheet, or a photo of it, and types in what happened.

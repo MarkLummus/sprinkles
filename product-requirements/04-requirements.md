@@ -1,6 +1,6 @@
 # Jobs, use cases, and proposed requirements
 
-Status: **draft detailed specifications supporting accepted decisions D01–D16**. The accepted direction is not being reopened; individual criteria, design details, and delivery scope still require review. IDs remain stable on adoption. Dependencies identify logical prerequisites, not a prescribed stack.
+Status: **draft detailed specifications supporting accepted decisions D01–D17**. The accepted direction is not being reopened; individual criteria, design details, and delivery scope still require review. IDs remain stable on adoption. Dependencies identify logical prerequisites, not a prescribed stack.
 
 Accepted D02 separates external-recipe troubleshooting for discovery from customer-facing product scope. Historical Reddit cases below are evaluation inputs, not requirements to build an intake flow for other people's failed batches. Ordinary after-the-fact logging supports accepted D04/D08; its detailed interaction remains to be designed. Accepted D16 leaves storage and synchronization architecture open; persistence requirements do not select a storage provider or architecture.
 
@@ -43,6 +43,17 @@ For a specific referenced case, consult [evaluation scenarios](research-referenc
 Historical mockup gaps stay in the originals. They are not reasserted as current defects here.
 
 ## Capability contract
+
+### D17 refinement — connected work and measurement (accepted direction, 2026-09-19)
+
+These boundaries refine the requirements below; detailed acceptance criteria and milestone placement still require planning. Vocabulary is owned by `05-domain-and-language.md`.
+
+- **IMP-01–03 / UC2:** Import preserves original text, attribution, volume/weight/mixed units, and uncertainty. A maker may retain a recipe in the Recipe book or Develop in Notebook. Gram conversion preserves the Original quantity and Conversion basis, exposes estimates, and requires review; it never silently chooses Adapt versus Next version. Incomplete work can be saved with affected calculations limited.
+- **REC-01 / UC1, UC3, UC11:** Create a Recipe or mark it as a Base; Bases remain ordinary recipes with versions. Adapt creates a distinct identity linked to the precise starting version. Recipe name/description are distinct from the version-owned Sheet title/description. A Recipe Sheet and a Sheet are the same presentation.
+- **Recipe-book selection:** Add to Recipe Book selects a trusted version; Update Recipe Book version changes it explicitly. Latest version and Recipe Book version can differ. Selection does not move or duplicate development history. Imported recipes may remain in their original units.
+- **BATCH-01–02 / UC8:** Record from the Recipe book without entering development mode; preserve the particular version, units, ingredients, and relevant equipment context. Imported-recipe batches use the same record and history concepts, with no separate Book make log.
+- **ING-01 / SCALE-01:** Ingredients holds composition and provenance. Kitchen holds Equipment; min/max batch guidance identifies its source, units, and uncertainty. Do not silently equate mix mass, finished Yield, and machine capacity. Pantry inventory and named Kitchen setup support are separate scope choices.
+- **DIAG-01–02:** Ask an expert is visibly AI-assisted, grounded in the selected idea, recipe, or batch. A saved exchange is a Consultation. Keep Next time notes, Suggestions, Experiment plans, accepted changes, and actual execution distinct. TRUST-01 still governs external data sharing.
 
 ### IMP-01 — Review an imported recipe
 

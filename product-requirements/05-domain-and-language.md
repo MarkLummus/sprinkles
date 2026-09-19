@@ -4,10 +4,48 @@ Status: shared domain and language guidance aligned with accepted D04–D11. Det
 
 ## Core records
 
+### Approved vocabulary — 2026-09-19 (D17)
+
+Mark approved the following terms, including **Adapt** as the action and **Sheet** as a synonym for **Recipe Sheet**. This section supersedes conflicting older terminology. It establishes meaning, not implementation or delivery status. Use sentence case in interface labels.
+
+| Term | Meaning / user-facing wording |
+|---|---|
+| Idea log | Ideas and inspiration without required ingredients or quantities. |
+| Notebook | Gram-governed recipe development through versions, batches, observations, and plans. |
+| Recipe book | Ready-to-make recipes and bases: imported recipes in original units or selected Notebook versions. |
+| Recipe | Enduring identity owning versions and history; avoid “development project” as a competing record name. |
+| Recipe name; Recipe description | Identity and description of the recipe overall. |
+| Recipe Sheet; Sheet | Synonyms for the readable, editable, printable presentation of one version; it may span several printed pages. |
+| Sheet title; Sheet description | Version-owned title and introductory prose. May differ from Recipe name and Recipe description; recipe-level edits never silently rewrite saved Sheets. |
+| Version; Version name | A saved actual recipe state and its authored name, e.g. “Version 3 · Less oil, more salt.” |
+| Why | Reason for the revision, separate from either description. |
+| Draft; Version draft | Unsaved work; avoid “Sheet draft” as another record type. |
+| Recipe context; recipe sidebar | Design-discussion terms for the surrounding information; sidebar describes desktop placement only. Expose About this recipe, History, and In the Recipe Book without an umbrella label. Retire “Sprinkles Jar.” |
+| Imported recipe | How a recipe entered Sprinkles, not a separate species of Recipe. |
+| Source recipe | The relationship of a starting recipe to work developed from it. |
+| Source; Sources | Attribution or evidence behind recipes, ingredient data, conversions, or equipment claims. |
+| Base; Base recipe | Reusable recipe role, usually unflavoured, independent of publication or popularity. Imported volumetric recipes can be Bases. |
+| Adaptation; Adapt; Adapted from | A distinct recipe linked to the specific version it began from; action **Adapt**, provenance **Adapted from**. |
+| Next version | Continue developing the same recipe. Intent decides adaptation versus version, not ingredient differences or conversion alone. |
+| Develop in Notebook | Enter gram-governed development while preserving original quantities and conversion basis. |
+| Add to Recipe Book; Update Recipe Book version | Select or replace a trusted version without moving or duplicating history. Avoid “Publish.” |
+| Ready to make; Recipe Book version; Latest version | Readiness and selection are distinct from recency. Avoid “Completed” and “Final.” |
+| Batch; Batch record; Tasting | One making attempt; its recorded information; an observation event attached to it. Same meaning in Notebook and Recipe Book, including imported recipes. |
+| Original quantity; Quantity in grams; Conversion basis; Estimated | Source measurement, working mass, conversion evidence, and uncertainty. |
+| Batch size; Yield | Mix quantity versus amount produced; neither silently implies finished volume or machine fit. |
+| Ingredients; Ingredient library | Navigation destination and explanatory name for composition and provenance. Brand-specific items may use their actual ingredient names; no required “Ingredient product” entity. Pantry is reserved for inventory. |
+| Kitchen; Equipment; Kitchen setup | Destination, its tools, and a named combination only if saved combinations are supported. |
+| Ask an expert; AI-assisted; Consultation | Contextual AI capability, visible disclosure, and saved exchange. “Council of experts” remains internal. |
+| Next time; Suggestion; Experiment plan | Maker's note; AI advice; intentionally chosen change and what to observe. None implies execution or a saved version. |
+
+The three working spaces remain connected. Recording from the Recipe book does not require development mode or create a separate “Book make log.” Batches preserve the version, measurement basis, ingredient data, and relevant equipment context actually used.
+
+Imports retain original volume, weight, or mixed units. Conversion to Notebook grams is deliberate and reviewable. Missing quantities remain missing, estimated conversions stay marked, and incomplete work can be saved with affected calculations limited or unavailable.
+
 | Concept | Meaning and required distinction |
 |---|---|
 | Source | Text/reference from which information came; retain attribution and location where practical. |
-| Recipe | Reusable ingredients, components, and intended method. |
+| Recipe | Enduring identity with saved states of ingredients, components, and intended method. |
 | Recipe version | Preserved recipe state referenced by an attempt. Storage implementation is open; historical stability is required. |
 | Component | Base, ripple, sauce, inclusion, or other separately prepared part; may itself be reusable. |
 | Ingredient specification | Identity and relevant composition, with per-field provenance and uncertainty. |
@@ -80,7 +118,7 @@ Avoid “Your recipe is correct,” “This will fix it,” “In my experience,
 
 ## Labels still open
 
-Stars vs overall result controls; Optimize vs Adjust balance; Scale vs Change batch size; Template vs Base recipe in particular contexts. Test understanding and task success. Community word frequency alone cannot choose them.
+Stars vs overall result controls; Optimize vs Adjust balance; Scale vs Change batch size remain open. D17 settles Base and Adaptation semantics: Template and duplicate are not synonyms for either. Test understanding and task success. Community word frequency alone cannot choose them.
 
 ## Interface labels settled on the recipe page
 
@@ -88,7 +126,7 @@ Decided by Mark on 2026-09-09 after the vocabulary audit was reviewed against th
 
 | Was on screen | Now | Note |
 |---|---|---|
-| Version line | Version | The field that names a version; the placeholder shows the shape, e.g. "55 g oil · 800 g". |
+| Version line | Version name | Updated by D17 on 2026-09-19: the authored name of a saved state. |
 | Reason | Why | The maker's reason for a version, in their own words. |
 | Cites | From batch | The batch a version answers. |
 | Parent | From version | The version it came from. |

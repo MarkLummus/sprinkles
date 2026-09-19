@@ -2,9 +2,11 @@
 
 Prepared 2026-09-04; context reviewed 2026-09-05. Status: **accepted product decisions with draft detailed requirements and design briefs**.
 
-This folder is the active product handoff for GSD implementation/project management and Impeccable design/branding. D01–D16 are accepted. Detailed specifications and design briefs still require review within that direction; these documents do not assert current implementation or framework-initialization status.
+This folder is the active product handoff for GSD implementation/project management and Impeccable design/branding. D01–D17 are accepted. Detailed specifications and design briefs still require review within that direction; these documents do not assert current implementation or framework-initialization status.
 
 ## Reading order
+
+Updated 2026-09-19: D17 records Mark's approval of the connected workspaces, measurement domains, and vocabulary. `05-domain-and-language.md` owns the complete glossary. D01–D16 retain their original acceptance dates; D17 does not expand the first milestone or assert implementation.
 
 1. [Product brief](01-product-brief.md) — purpose, audience, boundaries, success.
 2. [Decision register](03-decision-register.md) — accepted decisions, deliberately open details, and authority over conflicting historical material.
@@ -17,7 +19,7 @@ For a quick review, read 01 and 03 first. For planning and design, add 04, 05, a
 ## Authority and ownership
 
 - Mark approves product scope and design direction. Research observations are not approvals.
-- D01–D16 are accepted. D14 prioritizes developing the next olive oil recipe using its printout and batch prep notes; other structured recipes provide format references. Consult the register for exact scope. External-recipe troubleshooting is discovery/evaluation, not a required product entry point. Import starts with pasted text; URL and file import belong in a later milestone, while photo import needs discovery. Storage and synchronization architecture remain open.
+- D01–D17 are accepted. D14 prioritizes developing the next olive oil recipe using its printout and batch prep notes; other structured recipes provide format references. Consult the register for exact scope. External-recipe troubleshooting is discovery/evaluation, not a required product entry point. Import starts with pasted text; URL and file import belong in a later milestone, while photo import needs discovery. Storage and synchronization architecture remain open.
 - The decision register governs product direction. The brief and domain guide summarize it; detailed acceptance criteria and design seeds are drafts where not separately approved.
 - References to inherited work do not establish that it was user-tested or implemented, and cannot override accepted decisions.
 - Open decisions must not be resolved by whichever framework runs first. Conflicts must be surfaced, not silently overwritten.
@@ -45,7 +47,7 @@ Historical documents are archived outside the project and excluded from the acti
 
 ## Approval checkpoint
 
-D01–D16 are accepted. D14 establishes recipe development with the olive oil working case as the first product milestone. Detailed requirements, design briefs, and implementation planning remain for review through GSD and Impeccable; acceptance of the decisions does not automatically approve every linked criterion. D15 establishes the manual pilot approach; its execution details still need planning. D12 preserves open label/rating choices, and D13 requires confirmation of brand authority before expansion or replacement. Record accepted/rejected/deferred status with date and rationale; do not infer approval from document creation.
+D01–D17 are accepted. D14 establishes recipe development with the olive oil working case as the first product milestone. Detailed requirements, design briefs, and implementation planning remain for review through GSD and Impeccable; acceptance of the decisions does not automatically approve every linked criterion. D15 establishes the manual pilot approach; its execution details still need planning. D12 preserves open label/rating choices, and D13 requires confirmation of brand authority before expansion or replacement. Record accepted/rejected/deferred status with date and rationale; do not infer approval from document creation.
 
 ## Definition of a ready handoff
 

@@ -11,6 +11,10 @@ related_targets: ["route:/recipe","route:/recipe/batch","route:/print/recipe-she
 
 Product truth: `PRODUCT.md` and `product-requirements/03-decision-register.md`. Requirement IDs: `.planning/REQUIREMENTS.md`. Primary evidence: the 2 Aug 2026 batch as recorded in the app, the churn-log audit (`Ice Cream Log Pages/sprinkles-churn-log-binder-audit.md`), and the earlier attempt's advisory definitions (`~/Documents/projects/old-sprinkles/src/domain/advisories.js`, read as evidence, not built on).
 
+## Vocabulary amendment — 2026-09-19
+
+D17 and `product-requirements/05-domain-and-language.md` govern terminology over older wording below. **Recipe Sheet** and **Sheet** are synonymous, in reading, editing, and printing, including multiple printed pages. Recipe name and Recipe description belong to the enduring recipe; Sheet title and Sheet description belong to the saved version. Version name and Why identify and explain the revision. **Adapt** starts a distinct recipe from a specific version; **Next version** continues the same recipe; unsaved work is a Draft or Version draft. Recipe-level metadata and History are recipe context, outside the paper Sheet. This amendment records approved meaning; field separation and responsive layout implementation still require shaping and delivery planning.
+
 ## 1. Job and audience
 
 Mark, at the desktop, weeks after the 2 Aug churn, with the batch record open in the margin: 383 beside 370.4, 45 beside 40, lecithin at 0 and step 1 struck, drawn at −6 °C, "soft, not greasy", oil character 4.5, bitterness 5, sweetness 4, and the headnote's own verdict that 50 g oil "is the low anchor, not the oil-forward target". He is deciding what to change, and the binder says what happens next if the page does not help: the reason for a change is almost never on the page that makes the change, and the one time the app gave him a field he wrote a properly formed delta with the previous value in it. The job is to turn that decision into a saved next version with its reason on the page that makes it, without touching the churned version or its record.

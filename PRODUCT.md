@@ -2,7 +2,7 @@
 
 <!-- impeccable:product-schema 1 -->
 
-Product authority is `product-requirements/` (accepted decisions D01–D16 in `03-decision-register.md`; read `README.md` first). This record carries the durable product truth Impeccable needs for design work and marks what is deliberately undecided. It does not restate the register and must not drift from it. Delivery status lives in `.planning/` (GSD).
+Product authority is `product-requirements/` (accepted decisions D01–D17 in `03-decision-register.md`; read `README.md` first). This record carries the durable product truth Impeccable needs for design work and marks what is deliberately undecided. It does not restate the register and must not drift from it. Delivery status lives in `.planning/` (GSD).
 
 ## Platform
 
@@ -30,7 +30,39 @@ Longer-run success: a maker can bring in a real recipe without retyping, see wha
 
 Sprinkles connects what was planned (the recipe), what was actually done (the batch), and how the result was experienced (observations), and keeps those three layers distinct. A recipe app shows ingredients and steps; a calculator shows balance figures. Sprinkles keeps history honest: a batch refers to the exact recipe state and ingredient coefficients it was made with, editing today never rewrites yesterday, balance is an assessment under stated assumptions rather than a verdict, and unknowns stay visibly unknown instead of being invented.
 
+## Vocabulary and lineage
+
+The product uses **recipe** for any makeable formulation, including a reusable base. A recipe has its own identity, saved versions, batches, and history.
+
+- A **base** is a reusable foundation intended to receive flavours or other additions, usually unflavoured. It may be created by the maker, developed in Sprinkles, or originate from a published source; publication or popularity does not define it.
+- An **adaptation** is a distinct recipe developed from a base or another recipe. It preserves the specific version it began from, then has its own identity and history. An Olive Oil & Rosemary recipe, for example, may adapt a particular Olive Oil version; later Olive Oil edits never rewrite that starting point.
+- A **version** is a saved state in the development of the same recipe. Changing Olive Oil's oil amount or sweetener balance produces another Olive Oil version. A version is an actual preserved recipe state, not merely a possible change.
+
+Intent, rather than the size or kind of ingredient change, distinguishes a version from an adaptation. Adding rosemary may remain an experiment within Olive Oil's development or begin a distinct Olive Oil & Rosemary recipe; the maker chooses, and Sprinkles never infers that choice from ingredient differences alone.
+
+A proposed Next time adjustment remains a note until the maker saves a version. A batch records making one particular version, and several batches may record attempts from that same version. Template and duplicate are not interchangeable with these terms.
+
+## Workspaces and Recipe Book selection
+
+Sprinkles has three connected working spaces, distinguished by the maker's intention rather than by isolated document types:
+
+- The **Idea log** captures flavours, combinations, inspiration, and things to try. An idea needs neither ingredients nor quantities. Pursuing one starts recipe development in the Notebook.
+- The **Notebook** develops a recipe through versions, batches, observations, and Next time plans. Unsuccessful attempts remain because they explain how the recipe evolved. **Notebook** is the chosen name because it comfortably holds recipes, calculations, observations, and experiments without implying a daily or strictly chronological record; that is a product preference, not research evidence.
+- The **Recipe book** is where a maker finds dependable recipes and bases to make or build from, with review and printing close at hand. **Bases** identifies the reusable foundations within that collection.
+
+**Add to Recipe Book** selects a particular version as **ready to make**; **Update Recipe Book version** changes that selection. It does not mark the recipe completed, move or duplicate its development history, or sever its Notebook connection. An earlier trusted version may stay in the Recipe book while the maker continues developing newer versions, and later experiments never silently change the version selected for the book. The Recipe book can also retain imported recipes in their original units.
+
+A maker can record a batch from a Recipe-book recipe without entering development mode. That batch still belongs to the selected version and appears in its Notebook history. Capturing an idea, developing a recipe, and choosing a trusted version therefore change the activity and view, not the relationships between the work.
+
 ## Operating Context
+
+### Approved product vocabulary and measurement domains (D17, 2026-09-19)
+
+The complete language authority is `product-requirements/05-domain-and-language.md`. **Adapt** creates a distinct recipe from a specific version; **Next version** continues the same recipe. **Recipe Sheet** and **Sheet** are synonyms for a version's readable, editable, printable presentation. Recipe name and Recipe description belong to its enduring identity; Sheet title and Sheet description are version-owned and may differ. Version name and Why identify and explain the revision. Unsaved work is a Draft or Version draft.
+
+Notebook ingredient quantities are governed in grams. Imports retain original volume, weight, or mixed units, source text, and attribution. **Develop in Notebook** makes conversion deliberate; preserve Original quantity, Quantity in grams, Conversion basis, and Estimated status. Missing values stay missing and limit calculations. Conversion does not itself create an adaptation. A Base is a reusable recipe role regardless of units. Source recipe describes a relationship; Imported recipe describes intake, not a separate data species.
+
+Shared foundations are **Ingredients** (composition and provenance, not Pantry inventory) and **Kitchen** (Equipment, with Kitchen setup only if named combinations are supported). Equipment range claims retain their source and distinguish measured experience from estimates; relevant context belongs to the batch history. **Ask an expert** is a contextual, **AI-assisted** capability; a saved exchange is a **Consultation**. **Next time**, **Suggestion**, and **Experiment plan** distinguish maker notes, AI advice, and an intentional future test. Detailed interfaces and delivery remain to be scoped.
 
 - **Desktop formulates.** Recipe development, comparison, and printing happen at a laptop or desktop.
 - **Paper works the kitchen.** The printed bench sheet is the artifact at the machine; ink on it (as-made grams, struck steps, draw temperature, tasting marks) is the batch's first record. Days pass between printing and returning to the app.
@@ -43,11 +75,12 @@ Sprinkles connects what was planned (the recipe), what was actually done (the ba
 
 **Milestone 1 capabilities** (GSD `.planning/REQUIREMENTS.md`, IDs derived from the packet): open the churned recipe with balance figures and their basis; record the first batch with as-made deviations, measured values, and an own-words result; create and edit version 2 with lineage and a change reason citing the batch; compare versions in grams, % of batch, and figures; structural advisories with their basis; print a bench sheet (formula with as-made column, method with typed targets, blank batch-log page, human-readable short code). Batch size stays 800 g; ingredient handling stays within the recipe's twelve rows.
 
-**Later milestones (accepted direction, not yet scoped):** pasted-text import first, URL and file import later, photo import after discovery (D03); components (D05); ingredient library and provenance editing (D09); scaling (D10); diagnosis and experiment planning (D07); comparison across attempts.
+**Later milestones (accepted direction, not yet scoped):** pasted-text import first, URL and file import later, photo import after discovery (D03); components (D05); ingredient library and provenance editing (D09); scaling (D10); diagnosis and experiment planning (D07); comparison across attempts; an Idea log, Notebook, and Recipe book; bases, adaptations, and a curated collection that can help a maker begin without a blank page.
 
 **Constraints that bind design:**
 
-- Separate recipe, version, actual batch, observation, and proposed next attempt; historical context is preserved (D04). A batch snapshots the coefficients it was computed with.
+- Separate recipe, version, actual batch, observation, and proposed next attempt; historical context is preserved (D04). A batch snapshots the specific version and coefficients it was made with; an adaptation preserves the version it began from.
+- Treat the Idea log, Notebook, and Recipe book as connected views and activities around the same work. Selecting a Recipe-book version preserves its identity, provenance, batches, and development history.
 - Balance is an assessment under assumptions, never a gate or guarantee (D06). Out-of-range recipes still save and print.
 - Familiar words by default, technical detail available (D11). Terminology authority is `product-requirements/05-domain-and-language.md`.
 - Preserve missing, inferred, and estimated information visibly; do not invent precision (D03, D09).
@@ -58,12 +91,14 @@ Sprinkles connects what was planned (the recipe), what was actually done (the ba
 
 **Explicitly undecided (do not settle in design work):**
 
-- Labels for stars/ratings, Optimize, Scale, and Template; whether an overall rating control exists (D12).
+- Labels for stars/ratings, Optimize, and Scale; whether an overall rating control exists (D12). D17 settles Base and Adaptation terminology.
 - Storage and synchronization architecture (D16).
 - Ingredient seed dataset (three candidates disagree on coefficients); chosen in GSD Phase 1 planning.
 - Accessibility standard: WCAG 2.2 AA is proposed and not yet confirmed as the product standard. GSD requirement UX1-01 tests text contrast at AA for milestone 1.
 - Supported equipment families beyond the working case.
 - Whether/how a "proposed next attempt" entity gets built — named in the product's own separation of recipe/version/batch/observation/proposed-next-attempt but never implemented (today, developing and saving a next version are the same action). Surfaced concretely by the council data-contract exchange (`product-requirements/research-reference/sprinkles-council-data-contract-v1.1.md`): an accepted council experiment needs two landing spots — a proposed new version, or a proposed recording protocol on the *existing* version when no formula changes — neither of which exists yet.
+- How the Idea log, Notebook, Recipe book, bases, and adaptations are introduced in the interface and data model; the vocabulary and relationships are confirmed, but these are not yet milestone-1 features.
+- Sourcing, attribution, permissions, and any editorial policy for published bases. A published-base collection cannot ship until this review is complete.
 
 ## Brand Commitments
 
@@ -72,7 +107,7 @@ The name **Sprinkles** is binding. Nothing else is. The following exist as incum
 - "The Cupping Form" visual world built in the earlier attempt at `~/Documents/projects/old-sprinkles/DESIGN.md` and `.impeccable/direction-contract.md`: printed black, recorded ink blue, colour identifies and form carries state, Archivo and Archivo Narrow, light only, print-native.
 - The cone-and-scoop icon and slate-blue palette from `design-explorations/` (26 JSX mockups, with mint and teal palette variants evaluated and not chosen).
 
-Confirmed by Mark on 2026-09-18 (D13 authority, first confirmation): the paper world is binding inside three frames only — the recipe spread on screen, the batch and tasting log (black, blue, and a highlighter still to be drawn), and the printed sheet. Outside those frames the app has a second world, "The Sprinkles Jar": a small fixed set of sprinkle colours for the app's own marks and guidance, and a larger palette from which each recipe takes an identity colour. Colour never carries a verdict anywhere (D06). Direction contract: `.impeccable/surfaces/route.md`.
+Confirmed by Mark on 2026-09-18 (D13 authority, first confirmation): the paper world is binding inside three frames only — the recipe spread on screen, the batch and tasting log (black, blue, and a highlighter still to be drawn), and the printed sheet. Outside those frames the app uses a colorful context and navigation layer: a small fixed set of sprinkle colours for the app's own marks and guidance, and a larger palette from which each recipe takes an identity colour. Colour never carries a verdict anywhere (D06). Direction contract: `.impeccable/surfaces/route.md`.
 
 Voice (from the brief): knowledgeable, welcoming, precise; respects experimentation and taste; explains terms without condescension; candid when evidence is insufficient. Avoid "your recipe is correct," "this will fix it," and equating one sensory word with one metric.
 
@@ -96,3 +131,4 @@ Absent, and not to be fabricated: user interviews beyond Mark, testimonials, cus
 3. **Make uncertainty visible.** Missing quantities, unclear steps, and estimated coefficients stay visible and limit what the app claims.
 4. **Keep everyday use lightweight.** Making a familiar recipe or recording a good result is quick; ask for more only when it would materially improve advice.
 5. **Support judgment, not guarantees.** Balance and advice explain their reasoning and leave the maker in control.
+6. **Preserve connected work across intentions.** Capturing an idea, developing a recipe, and selecting a ready-to-make version must not discard or silently rewrite the lineage that connects them.

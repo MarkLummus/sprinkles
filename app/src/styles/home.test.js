@@ -62,7 +62,7 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
   test('the route-level ground reaches the whole viewport (fix round 1: no cream frame around a white card)', () => {
     const bodyRule = rules.find((rule) => rule.selector === 'body:has(.home)');
     expect(bodyRule, 'expected a body:has(.home) rule declaring the route-level ground').toBeTruthy();
-    expect(bodyRule.declarations).toMatch(/background:\s*var\(--home-ground\)/);
+    expect(bodyRule.declarations).toMatch(/background:\s*var\(--app-background\)/);
   });
 
   test('OWN-WORLD is one grotesk (route.md § 3): the title and the recipe name read --face-grotesk, never --face-text', () => {

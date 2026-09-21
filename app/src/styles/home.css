@@ -20,12 +20,12 @@
    a route class to <body> itself, keeps every other route's body
    untouched with no change to app.css. */
 body:has(.home) {
-  background: var(--home-ground);
+  background: var(--app-background);
 }
 
 .home {
-  background: var(--home-ground);
-  color: var(--home-ink);
+  background: var(--app-background);
+  color: var(--app-text);
   font-family: var(--face-grotesk);
 }
 
@@ -45,7 +45,7 @@ body:has(.home) {
   position: relative;
   margin: 0;
   font-weight: 700;
-  font-size: var(--size-home-brand);
+  font-size: var(--app-size-brand);
   letter-spacing: -0.02em;
 }
 
@@ -53,8 +53,8 @@ body:has(.home) {
   content: '';
   display: block;
   margin-top: var(--gap-xs);
-  height: var(--size-home-brand-rule);
-  border-radius: var(--radius-sprinkle);
+  height: var(--app-size-brand-rule);
+  border-radius: var(--app-radius-sprinkle);
   background: linear-gradient(
     90deg,
     var(--jar-pink) 0 14%,
@@ -82,9 +82,9 @@ body:has(.home) {
    colour"). */
 .home__nav-current {
   font-weight: 600;
-  font-size: var(--size-home-meta);
+  font-size: var(--app-size-meta);
   padding-bottom: var(--gap-hair);
-  border-bottom: var(--rule-home-nav-active) solid var(--jar-teal);
+  border-bottom: var(--app-rule-nav-active) solid var(--jar-teal);
 }
 
 /* OWN-WORLD (route.md § 3): one grotesk outside the paper frames — the
@@ -94,14 +94,14 @@ body:has(.home) {
 .home__title {
   margin: var(--gap-l) 0 var(--gap-hair);
   font-family: var(--face-grotesk);
-  font-size: var(--size-home-title);
+  font-size: var(--app-size-title);
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .home__guidance {
   margin: 0 0 var(--gap-l);
-  color: var(--home-mute);
+  color: var(--app-text-secondary);
 }
 
 .home__list {
@@ -117,14 +117,14 @@ body:has(.home) {
   row-gap: var(--gap-s);
   column-gap: var(--gap-l);
   padding: var(--gap-m) 0;
-  border-top: var(--rule-home-row) solid var(--home-rule);
+  border-top: var(--app-rule-row) solid var(--app-divider);
   text-decoration: none;
   color: inherit;
-  transition: background-color var(--duration-home);
+  transition: background-color var(--app-duration);
 }
 
 .home__row:hover {
-  background: var(--home-rule);
+  background: var(--app-divider);
 }
 
 /* The identity bar (FIRST VIEWPORT: "identity bar"): the recipe's own
@@ -132,10 +132,10 @@ body:has(.home) {
    var(--recipe-hue-NN) reference on --c, never a stored value
    (T-260918-gha-02). */
 .home__bar {
-  flex: 0 0 var(--size-bar-w);
-  width: var(--size-bar-w);
-  height: var(--size-bar-h);
-  border-radius: var(--radius-bar);
+  flex: 0 0 var(--app-size-rail-w);
+  width: var(--app-size-rail-w);
+  height: var(--app-size-rail-h);
+  border-radius: var(--app-radius-rail);
   background: var(--c);
 }
 
@@ -147,7 +147,7 @@ body:has(.home) {
 .home__name {
   margin: 0;
   font-family: var(--face-grotesk);
-  font-size: var(--size-home-recipe-name);
+  font-size: var(--app-size-recipe-name);
   font-weight: 700;
   letter-spacing: -0.02em;
   overflow-wrap: anywhere;
@@ -156,8 +156,8 @@ body:has(.home) {
 .home__meta {
   display: block;
   margin-top: var(--gap-hair);
-  font-size: var(--size-home-meta);
-  color: var(--home-mute);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -168,11 +168,11 @@ body:has(.home) {
 
 .home__tally-label {
   margin: 0 0 var(--gap-xs);
-  font-size: var(--size-home-label);
+  font-size: var(--app-size-label);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: var(--tracking-home-label);
-  color: var(--home-mute);
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-text-secondary);
 }
 
 .home__tally-label--empty {
@@ -194,9 +194,9 @@ body:has(.home) {
 
 .home__tally-mark {
   display: inline-block;
-  width: var(--size-sprinkle-w);
-  height: var(--size-sprinkle-h);
-  border-radius: var(--radius-sprinkle);
+  width: var(--app-size-sprinkle-w);
+  height: var(--app-size-sprinkle-h);
+  border-radius: var(--app-radius-sprinkle);
 }
 
 .home__tally-mark--version {
@@ -215,7 +215,7 @@ body:has(.home) {
   min-width: 0;
   font-family: var(--face-text);
   font-style: italic;
-  font-size: var(--size-home-meta);
+  font-size: var(--app-size-meta);
   color: var(--sheet-pen-blue);
   overflow-wrap: anywhere;
 }
@@ -235,20 +235,20 @@ body:has(.home) {
 .home__cta {
   appearance: none;
   border: none;
-  border-radius: var(--radius-cta);
+  border-radius: var(--app-radius-action);
   padding: var(--gap-s) var(--gap-m);
-  background: var(--home-ink);
-  color: var(--home-ground);
+  background: var(--app-text);
+  color: var(--app-background);
   font-family: var(--face-grotesk);
-  font-size: var(--size-home-meta);
+  font-size: var(--app-size-meta);
   font-weight: 700;
   cursor: pointer;
-  transition: background-color var(--duration-home);
+  transition: background-color var(--app-duration);
 }
 
 .home__cta:hover {
   background: var(--jar-teal);
-  color: var(--home-ink);
+  color: var(--app-text);
 }
 
 /* Export, a quiet text action beside the filled one. */
@@ -257,9 +257,9 @@ body:has(.home) {
   border: none;
   background: none;
   padding: 0;
-  color: var(--home-ink);
+  color: var(--app-text);
   font-family: var(--face-grotesk);
-  font-size: var(--size-home-meta);
+  font-size: var(--app-size-meta);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: var(--offset-link-underline);
@@ -274,7 +274,7 @@ body:has(.home) {
   margin: var(--gap-s) 0 0;
   padding-left: var(--gap-m);
   font-family: var(--face-grotesk);
-  font-size: var(--sheet-size-small-print);
+  font-size: var(--app-size-label); /* the App world reads App sizes, not the Sheet's small print */
 }
 
 /* Below the 760px step-down (sketch-findings-sprinkles,

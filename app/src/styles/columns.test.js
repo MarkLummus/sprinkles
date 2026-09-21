@@ -41,8 +41,8 @@ const REMOVE_BUTTON = 60.45; // the native remove/restore <button>, RemoveRowCon
 const WIDEST_INGREDIENT_NAME = 142.83; // "Lambda carrageenan"
 
 // The page arithmetic (route-recipe-version.md's host page, .recipe-page
-// in app.css): a 2fr/1fr grid, --gap-xl (48px) padding on both sides, and
-// a --gap-l (32px) gap between the two columns. The ingredient table
+// in app.css): a 2fr/1fr grid, --gap-page (--gap-xl, 48px) padding on both
+// sides, and a --gap-l (32px) gap between the two columns. The ingredient table
 // lives in the 2fr column, two thirds of what the grid gap and padding
 // leave. From Phase 03.3.1.1 the page stacks to one column below 1100px
 // (app.css's 1099.98px block, D-15), so tableWidthAt(1024) below is a

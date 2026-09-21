@@ -7,12 +7,17 @@ colors:
   sheet-pen-blue: "#1f3d7a"
   sheet-bookcloth: "#33513b"
   app-notebook: "#FD5B57"
+  app-notebook-text: "#EE0803"
   app-recipe-book: "#F18A36"
+  app-recipe-book-text: "#BC5B0D"
   app-idea-log: "#FDC632"
+  app-idea-log-text: "#976F01"
   app-pantry: "#76BD78"
   app-ingredients: "#388B57"
+  app-ingredients-text: "#358452"
   app-kitchen: "#505DB5"
   app-blue: "#2081EA"
+  app-blue-text: "#1576DE"
   app-background: "#FFFFFF"
   app-surface-subtle: "#F3F4F2"
   app-text: "#141414"
@@ -236,21 +241,28 @@ The four frontmatter roles below are the **implemented Sheet palette**. Their na
 | Role | Approved token |
 |---|---|
 | Notebook · red | `{colors.app-notebook}` |
+| Notebook text · 4.50:1 on the app background · tentatively approved 2026-09-21 | `{colors.app-notebook-text}` |
 | Recipe Book · orange | `{colors.app-recipe-book}` |
+| Recipe Book text · 4.52:1 on the app background · tentatively approved 2026-09-21 | `{colors.app-recipe-book-text}` |
 | Idea log · yellow | `{colors.app-idea-log}` |
+| Idea log text · 4.59:1 on the app background · tentatively approved 2026-09-21 | `{colors.app-idea-log-text}` |
 | Pantry · light green, reserved for later | `{colors.app-pantry}` |
 | Ingredients · leaf green | `{colors.app-ingredients}` |
+| Ingredients text · 4.60:1 on the app background · tentatively approved 2026-09-21 | `{colors.app-ingredients-text}` |
 | Kitchen · indigo | `{colors.app-kitchen}` |
 | App blue · distinct from Sheet pen blue | `{colors.app-blue}` |
+| App blue text · 4.51:1 on the app background · tentatively approved 2026-09-21 | `{colors.app-blue-text}` |
 | App background | `{colors.app-background}` |
 | Subtle surface | `{colors.app-surface-subtle}` |
 | Primary text | `{colors.app-text}` |
 | Secondary text | `{colors.app-text-secondary}` |
 | Dividers | `{colors.app-divider}` |
 
+**Text companions, tentatively approved 2026-09-21.** A companion is the same hue darkened only until it clears 4.5:1 on the app background, for a destination name, a count, or a link set in its own colour. A companion is never a fill, and an accent is never text. Kitchen needs no companion: it already reads 5.88:1. Two companions carry a caveat. The Notebook companion is a pure red and must be watched against the No-Verdict Rule; the Idea log companion is an olive that no longer reads as the yellow. Either may fall back to the app's primary text colour.
+
 Recipe-specific identity colors are retired. Destination colors identify workspaces, not individual recipes or outcomes. Pantry's reserved color does not add Pantry to the current feature scope.
 
-**Still unresolved:** whether app blue is the shared link, primary-action, and focus color; feedback treatments; pale tints and darker text companions; hover, pressed, and disabled states. Preview-derived variants are experimental, not approved tokens. Contrast-test each foreground/background pairing before implementation; accent swatches are not automatically suitable for text or white button labels. The existing no-verdict rule remains binding until a feedback decision explicitly revises it. The Sheet highlighter's color and meaning remain unresolved.
+**Still unresolved:** whether app blue is the shared link, primary-action, and focus color; feedback treatments; pale tints; hover, pressed, and disabled states. Preview-derived variants are experimental, not approved tokens. Contrast-test each foreground/background pairing before implementation; accent swatches are not automatically suitable for text or white button labels. The existing no-verdict rule remains binding until a feedback decision explicitly revises it. The Sheet highlighter's color and meaning remain unresolved. The five text companions above are tentatively approved 2026-09-21 and wait on Mark's confirmation.
 
 The existing sidecar's tonal ramps are preview metadata, not additional approved UI colors. Approved app roles are specified above; derived ramps still require review before implementation.
 

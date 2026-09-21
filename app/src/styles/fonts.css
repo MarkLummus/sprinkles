@@ -1,0 +1,31 @@
+/* The hand's one font declaration (D-17, DESIGN.md's Hand role).
+   This file exists because css-source.js's assertNoAtRules throws on any
+   at-rule other than a top-level @media block — app.css, history.css and
+   home.css are all parsed by readAllRules for the contract suites, so
+   this at-rule cannot live in any of them. fonts.css is never read by
+   readAllRules, so it is the one place this at-rule is allowed.
+
+   Provenance of the vendored binary (app/public/fonts/caveat-regular.woff2):
+     Source: Caveat Regular 400, from the font's own public distribution,
+       https://github.com/googlefonts/caveat (build source; OFL.txt taken
+       verbatim from this same repository). That repository ships only
+       .ttf sources, no compiled woff2, so the woff2 binary itself was
+       retrieved from Google Fonts' own webfont-serving infrastructure —
+       the same compiled build the repository's own sources produce, not
+       a third-party conversion. Verify the binary against the checksum
+       below rather than the exact retrieval URL, which is not recorded
+       here to keep this stylesheet free of a live font-CDN reference
+       (the app/ tree must carry none, per D-17's own network prohibition
+       and this phase's grep gate).
+     Retrieved: 2026-09-21
+     sha256: d0b7b931b8980049327e8f8f9ac264617c8200b8422d62e886473d3d9527bad3
+
+   Nothing is fetched from a network at runtime — the face is served from
+   this app's own origin via Vite's public/ static-asset pipeline. */
+@font-face {
+  font-family: 'Caveat';
+  src: url('/fonts/caveat-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

@@ -755,15 +755,25 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
   });
 });
 
-describe('the print layer suppresses only the page notice (260917-ewf Task 3)', () => {
-  test('.page-status goes display: none under @media print, and nothing else is styled there', () => {
+describe('the print layer suppresses the page notice and falls the hand back to the text face (260917-ewf Task 3; 03.4-02 Task 2, D-17)', () => {
+  test('the print block carries exactly two rules: .page-status goes display: none, and .app-hand falls back to the text face in italic', () => {
     // Resolved explicitly on r.media === 'print', never through
     // mediaRuleFor, which returns the first match across ALL media
-    // blocks (the file's own precedent at ~206).
+    // blocks (the file's own precedent at ~206). The print block's
+    // cardinality pin is deliberately widened here, in the same change
+    // that adds the hand's fallback rule (RESEARCH.md Pitfall 2) — not
+    // discovered later as a surprise red test.
     const printRules = rules.filter((r) => r.media === 'print');
-    expect(printRules).toHaveLength(1);
-    expect(printRules[0].selector).toBe('.page-status');
-    expect(printRules[0].declarations).toMatch(/display:\s*none/);
+    expect(printRules).toHaveLength(2);
+
+    const pageStatusRule = printRules.find((r) => r.selector === '.page-status');
+    expect(pageStatusRule, 'expected .page-status among the print rules').toBeTruthy();
+    expect(pageStatusRule.declarations).toMatch(/display:\s*none/);
+
+    const handRule = printRules.find((r) => r.selector === '.app-hand');
+    expect(handRule, 'expected .app-hand among the print rules').toBeTruthy();
+    expect(handRule.declarations).toMatch(/font-family:\s*var\(--face-text\)/);
+    expect(handRule.declarations).toMatch(/font-style:\s*italic/);
   });
 });
 
@@ -813,5 +823,28 @@ describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepp
   test('no app.css rule reads var(--gap-xl) any more — every one of the four consumers reads the shared --gap-page instead', () => {
     const offenders = rules.filter((r) => /var\(--gap-xl\)/.test(r.declarations));
     expect(offenders).toEqual([]);
+  });
+});
+
+describe('the hand (D-17, D-18, DESIGN.md Typography > Hand role)', () => {
+  test('.app-hand is a top-level rule reading the hand face, the pen blue, and both hand size tokens in one declaration, with no weight and no transform', () => {
+    const rule = ruleFor('.app-hand');
+    expect(rule, 'expected a top-level .app-hand rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-hand\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*max\(var\(--size-hand\),\s*var\(--size-hand-min\)\)/);
+    expect(rule.declarations).not.toMatch(/font-weight/);
+    expect(rule.declarations).not.toMatch(/text-transform/);
+  });
+
+  test('a forced-colours rule falls .app-hand back to the text face, in italic (D-17)', () => {
+    // binder.test.js's existing shape for asserting a selector's presence
+    // inside the forced-colors block: .find over the block, not a length
+    // assertion (that block carries no exact-count pin, unlike print).
+    const forcedRules = rules.filter((r) => r.media === '(forced-colors: active)');
+    const handRule = forcedRules.find((r) => r.selector === '.app-hand');
+    expect(handRule, 'expected .app-hand among the forced-colors selectors').toBeTruthy();
+    expect(handRule.declarations).toMatch(/font-family:\s*var\(--face-text\)/);
+    expect(handRule.declarations).toMatch(/font-style:\s*italic/);
   });
 });

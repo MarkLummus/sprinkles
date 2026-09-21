@@ -271,7 +271,7 @@ The existing sidecar's tonal ramps are preview metadata, not additional approved
 - **Print Ink** (`{colors.sheet-ink}`): everything the system prints. Type, table rules, graduations, the hatch of a target band, the tick at a value, every drawn control's border, the strike, focus outlines. Contrast on ground 17.16:1.
 
 ### Secondary
-- **Pen Blue** (`{colors.sheet-pen-blue}`): everything the maker or the record contributes, and now also the fill that marks a picked control. An ink field's typed value and the record's saved text (`.ink-field`, `.prose-field`, `.prose-text`, `.ink-text`), the batch row's measured cells and date, a changed step's line, the fill of a picked stop, segment or defect square. The plan beside it stays black. On the printed sheet this layer is blank space for a real pen. Contrast on ground 9.75:1.
+- **Pen Blue** (`{colors.sheet-pen-blue}`): everything the maker or the record contributes, and now also the fill that marks a picked control. An ink field's typed value and the record's saved text (`.ink-field`, `.prose-field`, `.prose-text`, `.ink-text`), the batch row's measured cells and date, a changed step's line, the fill of a picked stop, segment or defect square. The plan beside it stays black. On the printed sheet this layer is blank space for a real pen. Contrast on ground 9.75:1. In the App, pen blue has one use only: the maker's own words, set in the hand. This is the one sanctioned `sheet-` token in the App, chosen so the maker's words keep the Sheet's voice wherever they are quoted; recipe-level metadata, provenance, dates and standing are app text or secondary text in the App even when they describe a record.
 
 ### Tertiary
 - **Bookcloth** (`{colors.sheet-bookcloth}`): a muted bottle green that identifies the book. Sheet region names and the hairline that separates the version row's full-width sub-rows — never a status, never a control, never a figure. A third hue so it is never mistaken for the pen. Contrast on ground 8.22:1.
@@ -288,7 +288,7 @@ The existing sidecar's tonal ramps are preview metadata, not additional approved
 
 ## Typography
 
-**Scope:** the stacks and hierarchy below catalogue implemented Sheet typography and its current reuse in legacy app controls. App-interface typography remains to be specified; Sheet uppercase captions and serif/grotesk assignments are not automatic app-wide requirements. No handwriting font is selected by this merge. Units retain their correct case and quantities remain easy to scan in both contexts.
+**Scope:** the stacks and hierarchy below catalogue implemented Sheet typography and its current reuse in legacy app controls. App-interface typography remains to be specified; Sheet uppercase captions and serif/grotesk assignments are not automatic app-wide requirements. One handwriting face is approved for the App and reserved for the maker's own words; see the Hand role and the Hand Rule below. It is not a Sheet face: on a Recipe Sheet, in a batch record, and in print, the maker's words stay in the text face and pen blue. Units retain their correct case and quantities remain easy to scan in both contexts.
 
 **Display Font:** Georgia (with Iowan Old Style, Times New Roman, serif)
 **Body Font:** Georgia (same stack; the text face carries headnote, version line, method prose, authored notes, and the record's own words)
@@ -309,6 +309,7 @@ The existing sidecar's tonal ramps are preview metadata, not additional approved
 - **Figure** (700, 1.25rem, tabular): the value beside each graduated rule, and the step number in the method's margin column. The page's one heavy element, and it stays in ink.
 - **Deviation** (400, 0.8125rem): the words under a rule (`inside 22–26`, `1.4 over target`), a measured cell's unit word, and, in italic text face, a step's purpose and aside.
 - **Note** (400, 1rem, leading 1.5, at the 65ch measure): written notes, typed or saved. Also the size a **recorded figure** reads at — a measured value in the batch row takes the note size at the prose weight in pen blue (leading 1.1), not the balance figure's 1.25rem/700. The record reads at the weight of the maker's words.
+- **Hand** (400, 1.375rem, leading 1.25, sheet pen blue), *approved 2026-09-21, implementation pending*: the maker's own words in the App: a tasting, a Next time, a version's Why, a batch's note, an idea in the log. Never below 1.25rem, because a script face loses its letterforms before a text face does. Never uppercase, never bold, never a label. Under `forced-colors: active` and in print the role falls back to the text face in italic, so the words survive where the face does not. Face: Caveat (SIL Open Font License), shipped as a file in the repo and declared with one `@font-face`; no font is fetched from a network. Tokens: `--face-hand`, `--size-hand`, `--leading-hand`, `--size-hand-min`, to land with the tokens.css palette rework. The entry moves out of *pending* when those tokens exist and the fallback is verified in both modes.
 - **Small print** (400, 0.75rem, tabular where numeric): target chips, basis notes, rule anchors, fat breakdown, plan sub-lines, cross-flags, version-strip meta, import errors.
 
 ### Named Rules
@@ -317,6 +318,8 @@ The existing sidecar's tonal ramps are preview metadata, not additional approved
 **The Lowercase-Unit Rule.** Units keep their case everywhere, including inside uppercase running heads.
 
 **The Placeholder Rule.** A placeholder is an example in ink small print, italic — never a default, never pen blue. A blank field still saves as blank.
+
+**The Hand Rule.** In the App, what the maker observed is written in the hand, in sheet pen blue: a tasting, a Next time, a Why, a note on a batch, an idea. What the maker specified (ingredients, method, quantities, dates, names) is set in type, because a specification is not an observation. What the app writes is set in type, always, so the hand never speaks in the app's voice and a machine suggestion is never mistaken for the maker's judgement. A question the maker typed to an expert is set in type; it is the maker's, but it is not an observation. The hand is a face, not a colour rule: it is always pen blue, but pen blue is not always the hand.
 
 **The Caption-and-Helper Rule.** A caption is uppercase and labels exactly one input. A sentence that explains rather than labels is a *helper*, sentence-cased, and it sits beside the caption as a sibling — never folded into it, where `text-transform` would shout it.
 
@@ -476,6 +479,7 @@ The record pen's own instrument, framed at 640px while recording and full width 
 - **Do** use the Sheet catalogue for Sheet typography, outlines, pen selection, step order, and print behavior.
 - **Do** distinguish approved direction, observed implementation, and unresolved design choices.
 - **Do** keep page composition in surface briefs and reusable visual rules in this document.
+- **Do** set the maker's observations in the hand and sheet pen blue in the App, at or above the hand's minimum size, with the text-face fallback in place for forced colours and print.
 
 ### Don't:
 - **Don't** impose the Sheet palette's four colors on Home, navigation, recipe context, History, Ingredients, Kitchen, or consultations.
@@ -486,3 +490,4 @@ The record pen's own instrument, framed at 640px while recording and full width 
 - **Don't** use color to encode success, failure, warning, or uncertainty, or make interaction state depend on color alone.
 - **Don't** paint recipe-level metadata as recorded pen content merely because it shares a route with the Sheet.
 - **Don't** call the surrounding interface “Sprinkles Jar.” Use the approved section names and vocabulary.
+- **Don't** put a specification, a label, a date, a heading, or anything the app wrote in the hand, and don't load the hand's file from a network.

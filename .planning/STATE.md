@@ -4,10 +4,10 @@ current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Session resumed, building the Design System artifact (task 7)
-last_updated: "2026-09-21T16:21:05.212Z"
+last_updated: "2026-09-21T16:33:01.417Z"
 last_activity: 2026-09-21
-last_activity_desc: Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions
-state_head: 68a450adb58141ede4618c7b654bcd432746ecd3
+last_activity_desc: "Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions"
+state_head: 0f3c4f7a7bf0f173294679b6f3bbf7b1fba59bfc
 progress:
   total_phases: 9
   completed_phases: 8
@@ -264,6 +264,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260918-mpz | Batches panel register renders as an ordered list | 2026-09-18 | 8d41ff8 | [260918-mpz-task-2-the-batches-panel-denies-it-is-ordered-app-src-ui-bat](./quick/260918-mpz-task-2-the-batches-panel-denies-it-is-ordered-app-src-ui-bat/) |
 | 260918-mq0 | Recorded tasting note takes the register's prose size | 2026-09-18 | ccc2f44 | [260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg](./quick/260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg/) |
 | 260921-gss | Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions | 2026-09-21 | 68a450a | [260921-gss-amend-design-md-sheet-app-context-prefix](./quick/260921-gss-amend-design-md-sheet-app-context-prefix/) |
+| 42 | Apply the approved hand to DESIGN.md: Caveat, observations plus ideas, sheet pen blue in the App, tokens pending with the tokens.css rework | 2026-09-21 | 0f3c4f7 | — |
 
 ### Roadmap Evolution
 

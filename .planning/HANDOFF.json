@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-21T18:32:45Z",
+  "phase": null,
+  "phase_name": "none — design exploration and document amendments between Phase 03.3.1.1 (complete) and Phase 4 (not planned)",
+  "phase_dir": null,
+  "plan": null,
+  "task": 10,
+  "total_tasks": 11,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 7, "name": "Design System artifact built (https://claude.ai/artifact/M7LkrAkNQYA897PpKnjjzU): 21 colours sheet-*/app-* incl. five tentative *-text companions, 14 type styles incl. app-hand, Sheet spacing and touch, cover; no components", "status": "done", "commit": null},
+    {"id": 8, "name": "Hand decided: Caveat, observations plus ideas, sheet-pen-blue in the App, tokens ride Task 11; DESIGN.md amended", "status": "done", "commit": "8bc3595"},
+    {"id": 9, "name": "Canvas re-pointed from recipe hues to destination colours, 29 boards; rails kept in destination colour after Mark rejected removal; History nodes by where a version lives; filled action in companion blue (A) with outline secondary (F); 'What a mark means' rewritten; new board 'The filled action — six alternatives'", "status": "done", "commit": null},
+    {"id": 10, "name": "Canvas greys to tokens: Sheet boards' rules and mutes to ink, app dividers to app-divider, ghosts and disclosure to app-surface-subtle; batch log specification set in ink per Mark's comment; bare churn dates on the making sheet; bench action column fixed width", "status": "done", "commit": null},
+    {"id": 12, "name": "DESIGN.md amendments: Sheet/App names and sheet- prefix (quick 260921-gss), five tentative text companions, the hand, App marks and the filled action as approved direction", "status": "done", "commit": "20a8d13"}
+  ],
+  "remaining_tasks": [
+    {"id": 11, "name": "GSD code work (phase-sized, not a quick task): tokens.css to the approved app palette with the sheet- prefix on the Sheet tokens (--ground to --sheet-ground and so on, contract suites included), five app-*-text companions, the hand's font file and --face-hand/--size-hand/--leading-hand/--size-hand-min with the forced-colours and print fallback; then Home reworked per route.md 'Active work first' using the App marks grammar in DESIGN.md", "status": "not_started"},
+    {"id": 13, "name": "Mark to settle the rail question: keep the 8px rail on single-destination lists (as the canvas stands) or only where places mix; then update 'What a mark means' and DESIGN.md App marks", "status": "not_started"},
+    {"id": 14, "name": "Optional sweep: canvas app boards still use #5b6169 for secondary text (token #595959) and #1a1c1f for app ink (token #141414)", "status": "not_started"},
+    {"id": 15, "name": "route.md still says shared action colour is open; Impeccable owns that file; bring it level with DESIGN.md's filled action when the brief is next touched", "status": "not_started"}
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Confirm or amend the five tentative app-*-text companions and the filled action colour in DESIGN.md", "context": "Both are marked tentatively approved 2026-09-21; Mark chose them on the canvas and in chat", "blocking": false},
+    {"action": "Decide whether the rail stays on single-destination lists", "context": "Mark rejected the marker-only design and asked for rails back to reconsider (canvas version 132)", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "The two contexts are named Sheet and App; every token carries sheet- or app-; 'paper' is not a context name", "rationale": "app-notebook read as App but pen-blue did not read as Sheet (Mark)", "phase": "design"},
+    {"decision": "The hand is Caveat, for observations and ideas only, always sheet-pen-blue in the App; specification, dates, headings, the expert question and app text stay in type; text-face italic fallback in forced-colours and print", "rationale": "Mark, from the hand draft, all four recommended options", "phase": "design"},
+    {"decision": "App marks: rails in the row's destination colour on every list (rail-vs-marker still open); tallies filled = version, hollow = batch in the row's colour; nav underline in destination colour, Home app blue; recipe tabs in the place's colour; History nodes and rings by where each version lives", "rationale": "Mark on the canvas; ink History nodes and rail removal were both rejected", "phase": "design"},
+    {"decision": "Filled action: primary = app-blue-text #1576DE fill with white label (4.51:1); secondary = same blue outline and label. App blue under white fails at 3.90:1; per-destination fills cannot be one rule", "rationale": "Mark's leaning from six drawn alternatives", "phase": "design"},
+    {"decision": "Five text companions, same hue darkened to 4.5:1 on white, tentatively approved; Notebook (pure red) and Idea log (olive) carry caveats with app-text as fallback", "rationale": "The design system page flagged the accents as unreadable text; companions answer it without changing the approved accents", "phase": "design"},
+    {"decision": "On the Sheet, everything the maker specified (ingredients, method, version, provenance) is ink; batch rows are pen blue; observations in the hand", "rationale": "Two-Ink Rule; Mark's comment on the batch log board", "phase": "design"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Ask Mark whether to settle the rail question first, then plan Task 11 as a GSD phase: /gsd-discuss-phase for a new inserted phase (tokens.css palette + sheet- prefix + hand tokens, then Home per route.md) or fold it into Phase 4 planning. No code has changed this session.",
+  "context_notes": "Canvas: https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq at version 142; Main and Phone boards are the shipped record and were deliberately left in the old grammar. Design system: https://claude.ai/artifact/M7LkrAkNQYA897PpKnjjzU at version 10, tracks DESIGN.md 8bc3595 (the App marks amendment 20a8d13 is not yet mirrored there). Every board's colours are hand-copied, not mounted. Mark edits the canvas live: before any publish, read the artifact's bare URL (not only a file) after a page save, or the publish is refused. Auto-replies on comment threads have promised the wrong scope twice today (one block instead of the rule; a question instead of a look); always read the thread and correct in a follow-up before resolving. Restoring rails by anchor text stacked them on the first row once; place sequentially. Memory files in ~/.claude/projects/-Users-mark-Documents-projects-sprinkles/memory/ hold the naming, hand and mark-grammar decisions."
+}

@@ -2565,6 +2565,15 @@ textarea {
   .segmented__option:has(input[type='radio']:checked):has(input[type='radio']:focus-visible) {
     outline-color: CanvasText;
   }
+
+  /* The hand's fallback (D-17, DESIGN.md's Hand entry): the script face
+     falls back to the text face, in italic, so the maker's words survive
+     where forced colours strip the face's own colour cue. No colour
+     declaration here — forced colours already takes colour away. */
+  .app-hand {
+    font-family: var(--face-text);
+    font-style: italic;
+  }
 }
 
 /* The start of the print layer (260917-ewf), the seventh top-level
@@ -2577,5 +2586,14 @@ textarea {
 @media print {
   .page-status {
     display: none;
+  }
+
+  /* The hand's fallback (D-17, DESIGN.md's Hand entry): the script face
+     falls back to the text face, in italic, so the maker's words survive
+     in print, where the script face cannot render. No colour declaration
+     here — print already takes colour away. */
+  .app-hand {
+    font-family: var(--face-text);
+    font-style: italic;
   }
 }

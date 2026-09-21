@@ -8,12 +8,15 @@
    Provenance of the vendored binary (app/public/fonts/caveat-regular.woff2):
      Source: Caveat Regular 400, from the font's own public distribution,
        https://github.com/googlefonts/caveat (build source; OFL.txt taken
-       verbatim from this same repository), compiled woff2 served from
-       Google Fonts' own CDN at
-       https://fonts.gstatic.com/s/caveat/v23/WnznHAc5bAfYB2QRah7pcpNvOx-pjfJ9eIWpYQ.woff2
-       (the GitHub repository ships only .ttf sources, no compiled woff2;
-       this is Google's own compiled distribution of the identical font
-       build, not a third-party conversion).
+       verbatim from this same repository). That repository ships only
+       .ttf sources, no compiled woff2, so the woff2 binary itself was
+       retrieved from Google Fonts' own webfont-serving infrastructure —
+       the same compiled build the repository's own sources produce, not
+       a third-party conversion. Verify the binary against the checksum
+       below rather than the exact retrieval URL, which is not recorded
+       here to keep this stylesheet free of a live font-CDN reference
+       (the app/ tree must carry none, per D-17's own network prohibition
+       and this phase's grep gate).
      Retrieved: 2026-09-21
      sha256: d0b7b931b8980049327e8f8f9ac264617c8200b8422d62e886473d3d9527bad3
 

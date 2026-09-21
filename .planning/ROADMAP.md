@@ -404,11 +404,24 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 03.4-01-PLAN.md — The two worlds in tokens.css: the `sheet-` rename, the shared sizes, the App palette and the hand's tokens (D-01, D-02, D-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 03.4-02-PLAN.md — The hand: Caveat vendored, declared once, with its forced-colours and print fallback (D-17)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 03.4-03-PLAN.md — The shell: rail, tools row, placeholder pages and the bottom tab row (D-09, D-10, D-13, D-15, D-16)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 03.4-04-PLAN.md — Home rebuilt on active work: recency, the lead block in the hand, and a next action on every row (D-05..D-08, D-11, D-12, D-14, D-18..D-20)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 03.4-05-PLAN.md — The Sprinkles Jar retired: jar hues, recipe hues and recipe-colour.js removed last (D-04)
 
 ### Phase 4: Prepare the next version for making

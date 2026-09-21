@@ -396,6 +396,17 @@ Plans:
 
 - [x] 03.3.1.1-06-PLAN.md — The orchestrator-run conformance pass (gating, autonomous: false): both tabs at the ten D-16 widths in the three states, written to 03.3.1.1-CONFORMANCE.md
 
+### Phase 03.4: The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)
+
+**Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
+**Requirements**: TBD
+**Depends on:** Phase 03.3.1.1
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 03.4 to break down)
+
 ### Phase 4: Prepare the next version for making
 
 **Goal**: Maker can print the new version as a bench sheet, carry it to the kitchen, and match the printed sheet back to its version — with the whole develop loop operable by keyboard and recoverable

@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 4
-current_phase_name: Prepare the next version for making
+current_phase: 03.4
+current_phase_name: The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home
 status: planning
 stopped_at: Resumed 2026-09-21; rail settled; handoff task 11 (code, phase-sized) remains unrouted
-last_updated: "2026-09-21T18:38:19.482Z"
+last_updated: "2026-09-21T18:40:05.348Z"
 last_activity: 2026-09-21
 last_activity_desc: "Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions"
-state_head: 5c97348f864c8c8bb87c1e458cdb8474ae0517c8
+state_head: 5a88cfcfc0f7ef9be52e797c218b66eefd44cada
 progress:
-  total_phases: 9
+  total_phases: 10
   completed_phases: 8
   total_plans: 51
   completed_plans: 51
-  percent: 89
+  percent: 80
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 
 ## Current Position
 
-Phase: 4 — Prepare the next version for making
+Phase: 03.4 — The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)
 Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-21 - Completed quick task 260921-gss: Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions
 
-Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
+Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
 ## Performance Metrics
 
@@ -274,6 +274,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 03.2 inserted after Phase 03.1: The portion and the lift — route-recipe.md revised twice on 2026-09-09; re-cut 2026-09-09 as the stored-shape half, the page rebuild moving to 03.3 (URGENT)
 - Phase 03.3 inserted after Phase 03.2: The front-matter rows and the page in step order — split out of the original 03.2 so the stored-shape migration is verified on its own (URGENT)
 - Phase 03.3.1.1 inserted after Phase 03.3.1: Record pen conformance polish: close the untriaged UI gaps from 03.3.1's UAT against sketch 007 (layout widths, control styling, caption casing/placement, missing captions, focus order) (URGENT)
+- Phase 03.4 inserted after Phase 3: The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (handoff Task 11 from the 2026-09-21 design session) (URGENT)
 
 ## Deferred Items
 
@@ -286,5 +287,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-21T19:10:00Z
-Stopped at: Session resumed; rail question settled (rail stays on every list, DESIGN.md 5c97348). HANDOFF.json consumed. Next: route handoff Task 11 (tokens.css palette, sheet- prefix, hand tokens, Home rework) as a GSD phase
+Stopped at: Session resumed; rail settled (DESIGN.md 5c97348); handoff Task 11 inserted as Phase 03.4. Next: /gsd-discuss-phase 03.4
 Resume file: .planning/.continue-here.md

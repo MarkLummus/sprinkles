@@ -284,5 +284,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-21T14:56:53Z
-Stopped at: Quick 260921-gss done (DESIGN.md amended); handoff tasks 8 to 11 remain, next is the hand decision
+Stopped at: Hand approved (DESIGN.md 8bc3595, design system updated); handoff tasks 9 to 11 remain: re-point canvas boards, fix paper-board greys, tokens.css palette + prefix + hand tokens, Home per route.md
 Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

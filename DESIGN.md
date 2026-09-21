@@ -262,7 +262,9 @@ The four frontmatter roles below are the **implemented Sheet palette**. Their na
 
 Recipe-specific identity colors are retired. Destination colors identify workspaces, not individual recipes or outcomes. Pantry's reserved color does not add Pantry to the current feature scope.
 
-**Still unresolved:** whether app blue is the shared link, primary-action, and focus color; feedback treatments; pale tints; hover, pressed, and disabled states. Preview-derived variants are experimental, not approved tokens. Contrast-test each foreground/background pairing before implementation; accent swatches are not automatically suitable for text or white button labels. The existing no-verdict rule remains binding until a feedback decision explicitly revises it. The Sheet highlighter's color and meaning remain unresolved. The five text companions above are tentatively approved 2026-09-21 and wait on Mark's confirmation.
+**The filled action, tentatively approved 2026-09-21.** The primary action in the App is a filled control in the app blue's text companion (`{colors.app-blue-text}`) with a white label, 4.51:1; the secondary action is the same blue as outline and label on the app background. App blue itself under a white label reads 3.90:1 and is not used as a fill; a per-destination fill cannot be one rule because Ingredients and Kitchen fail under an ink label. Chosen on the canvas from six drawn alternatives.
+
+**Still unresolved:** whether app blue is the shared link and focus color; feedback treatments; pale tints; hover, pressed, and disabled states. Preview-derived variants are experimental, not approved tokens. Contrast-test each foreground/background pairing before implementation; accent swatches are not automatically suitable for text or white button labels. The existing no-verdict rule remains binding until a feedback decision explicitly revises it. The Sheet highlighter's color and meaning remain unresolved. The five text companions above are tentatively approved 2026-09-21 and wait on Mark's confirmation.
 
 The existing sidecar's tonal ramps are preview metadata, not additional approved UI colors. Approved app roles are specified above; derived ramps still require review before implementation.
 
@@ -464,6 +466,16 @@ The record pen's own instrument, framed at 640px while recording and full width 
 ### Authored block
 - **Style:** a legend in the section role (600 uppercase), with the block's name at left and the word `authored` at right, then a bulleted list in the body role at the note size. The derived-advisories block wears the parallel legend, and its items read as small print — no colour, no icon, no badge. Keeps the maker's judgement visibly apart from anything derived.
 
+### App marks (approved direction, 2026-09-21; not implemented)
+Settled with Mark on the design canvas when the recipe hues were retired. Colour says where a thing lives, never which recipe it is and never how it went. A recipe has no colour; its name is its identity.
+
+- **The rail.** Each row on a list keeps its 8px rail, now in the colour of the destination the row lives in: Notebook, Recipe book, Idea log. A citation of a Notebook batch inside another destination carries a Notebook rail. Mark has not settled whether the rail stays on single-destination lists or only where places mix; until he does, every list keeps it.
+- **Tallies.** A version is a filled sprinkle, a batch is an open sprinkle with a 2px edge, both in the row's destination colour, always beside the words that state the count. Ideas have no batches.
+- **Navigation.** The active place underlines in its own colour; Home, which is no destination, underlines in app blue. Tabs inside a recipe (History beside the Sheet) underline in the colour of the place the recipe is in. Standing words such as "In view" stay ink.
+- **History.** On a timeline a version node and its batch rings take the colour of where that version lives now: a Notebook version red, the Recipe book version orange, an imported recipe orange, an idea yellow. Ink nodes were tried and rejected.
+- **The brand mark.** The sprinkle rule under the word Sprinkles is the five destination colours in navigation order.
+- **Filled action.** See Colors. Home as shipped, and the Sheet, keep their present treatment.
+
 ### Navigation (incumbent implementation; app redesign pending)
 - The running head is the way home, in ink — never bookcloth, which names a block, not a link. The recipe list is plain links inheriting ink with the hairline underline every link carries, name in the text face, version and mass in the grotesk with tabular numerals, 12px between items. A "no recipe found" page carries the running head above it and a second link back to the list.
 
@@ -491,3 +503,4 @@ The record pen's own instrument, framed at 640px while recording and full width 
 - **Don't** paint recipe-level metadata as recorded pen content merely because it shares a route with the Sheet.
 - **Don't** call the surrounding interface “Sprinkles Jar.” Use the approved section names and vocabulary.
 - **Don't** put a specification, a label, a date, a heading, or anything the app wrote in the hand, and don't load the hand's file from a network.
+- **Don't** give a recipe a colour of its own, and don't let a rail, a sprinkle, or an underline mean anything but the place a thing lives or the place you are.

@@ -4,10 +4,10 @@ current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Session resumed, building the Design System artifact (task 7)
-last_updated: "2026-09-21T16:33:01.417Z"
+last_updated: "2026-09-21T18:09:41.156Z"
 last_activity: 2026-09-21
 last_activity_desc: "Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions"
-state_head: 0f3c4f7a7bf0f173294679b6f3bbf7b1fba59bfc
+state_head: c42055bd99d1cba32b8a458e8ecdd4d17eef0749
 progress:
   total_phases: 9
   completed_phases: 8
@@ -265,6 +265,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260918-mq0 | Recorded tasting note takes the register's prose size | 2026-09-18 | ccc2f44 | [260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg](./quick/260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg/) |
 | 260921-gss | Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions | 2026-09-21 | 68a450a | [260921-gss-amend-design-md-sheet-app-context-prefix](./quick/260921-gss-amend-design-md-sheet-app-context-prefix/) |
 | 42 | Apply the approved hand to DESIGN.md: Caveat, observations plus ideas, sheet pen blue in the App, tokens pending with the tokens.css rework | 2026-09-21 | 0f3c4f7 | — |
+| 43 | Amend DESIGN.md with the App mark grammar (rails, tallies, nav, History by place) and the filled action in companion blue, all approved direction 2026-09-21 | 2026-09-21 | c42055b | — |
 
 ### Roadmap Evolution
 
@@ -284,5 +285,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-21T14:56:53Z
-Stopped at: Canvas grammar settled with Mark (rails kept, History by place, filled action in companion blue); tasks 10 and 11 remain; the whole mark grammar and the filled action still need a DESIGN.md amendment
+Stopped at: DESIGN.md carries the App mark grammar and the filled action (approved direction, not implemented); handoff tasks 10 (paper-board greys) and 11 (tokens.css palette, prefix, hand tokens, Home per route.md) remain
 Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

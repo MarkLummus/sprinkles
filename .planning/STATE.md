@@ -1,13 +1,13 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.4"
-current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home"
+current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)"
 status: executing
 stopped_at: Phase 03.4 context gathered
-last_updated: "2026-09-21T23:11:04.453Z"
+last_updated: "2026-09-21T23:17:14.010Z"
 last_activity: 2026-09-21
-last_activity_desc: "Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions"
-state_head: 29ef6b16a2b1eeb022073eb8e2f2f7f2e2c2a858
+last_activity_desc: Phase 03.4 execution started
+state_head: 122288983428b7caa20627e7a227eb49e0e7619a
 progress:
   total_phases: 10
   completed_phases: 8
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 4 — Prepare the next version for making (the new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable)
+**Current focus:** Phase 03.4 — The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)
 
 ## Current Position
 
-Phase: 03.4 (The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-21 - Completed quick task 260921-gss: Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions
+Phase: 03.4 (The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)) — EXECUTING
+Plan: 1 of 5
+Status: Executing Phase 03.4
+Last activity: 2026-09-21 — Phase 03.4 execution started
 
 Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 

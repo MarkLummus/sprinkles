@@ -73,8 +73,8 @@ describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 t
 
     const pressedBeforeRule = ruleFor(".text-toggle[aria-pressed='true']::before");
     expect(pressedBeforeRule, "expected a .text-toggle[aria-pressed='true']::before rule").toBeTruthy();
-    expect(pressedBeforeRule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
-    expect(pressedBeforeRule.declarations).toMatch(/border-color:\s*var\(--pen-blue\)/);
+    expect(pressedBeforeRule.declarations).toMatch(/background:\s*var\(--sheet-pen-blue\)/);
+    expect(pressedBeforeRule.declarations).toMatch(/border-color:\s*var\(--sheet-pen-blue\)/);
 
     // css-source.js stores a grouped selector as one normalised string, so
     // the paired underline rule below is keyed as the whole comma-joined
@@ -96,19 +96,19 @@ describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 t
   test('`.history-item.is-current` declares its outline at --rule-graduation, not focus weight (D-14)', () => {
     const rule = historyRules.find((r) => r.selector === '.history-item.is-current');
     expect(rule, 'expected the current history-register item rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--sheet-ink\)/);
   });
 
   test('`.ingredient-table tbody tr.is-marked` declares its outline at --rule-graduation, not focus weight (D-14)', () => {
     const rule = ruleFor('.ingredient-table tbody tr.is-marked');
     expect(rule, 'expected the marked-row rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--sheet-ink\)/);
   });
 
   test('`.batch-margin__list li.is-open` declares its outline at --rule-graduation, not focus weight (D-14)', () => {
     const rule = ruleFor('.batch-margin__list li.is-open');
     expect(rule, 'expected the open-batch rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--sheet-ink\)/);
   });
 
   test('no rule declares outline: none, so the global focus rule can always paint (D-14)', () => {
@@ -141,7 +141,7 @@ describe('buttons and selects — ink hairline, no fill, no radius, dashed when 
     expect(rest, 'expected the rest-state button, select rule').toBeTruthy();
     expect(hover, 'expected the button:hover, select:hover rule').toBeTruthy();
 
-    expect(rest.declarations).toMatch(/border:\s*var\(--rule-ink-field\)\s*solid\s*var\(--ink\)/);
+    expect(rest.declarations).toMatch(/border:\s*var\(--rule-ink-field\)\s*solid\s*var\(--sheet-ink\)/);
     expect(rest.declarations).toMatch(
       /padding:\s*calc\(var\(--gap-xs\)\s*\+\s*var\(--rule-hover\)\s*-\s*var\(--rule-ink-field\)\)/,
     );
@@ -162,7 +162,7 @@ describe('the drawn checkbox (D-13)', () => {
     const rule = ruleFor("input[type='checkbox']");
     expect(rule, "expected an input[type='checkbox'] rule").toBeTruthy();
     expect(rule.declarations).toMatch(/appearance:\s*none/);
-    expect(rule.declarations).toMatch(/border:\s*var\(--rule-graduation\)\s*solid\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/border:\s*var\(--rule-graduation\)\s*solid\s*var\(--sheet-ink\)/);
     expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
     expect(rule.declarations).toMatch(/flex:\s*0 0 auto/);
   });
@@ -176,8 +176,8 @@ describe('the drawn checkbox (D-13)', () => {
   test("a checked checkbox fills pen blue with a matching border, not ink (one fill for every on state, 2026-09-16)", () => {
     const rule = ruleFor("input[type='checkbox']:checked");
     expect(rule, "expected an input[type='checkbox']:checked rule").toBeTruthy();
-    expect(rule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
-    expect(rule.declarations).toMatch(/border-color:\s*var\(--pen-blue\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--sheet-pen-blue\)/);
+    expect(rule.declarations).toMatch(/border-color:\s*var\(--sheet-pen-blue\)/);
   });
 
   test("a checked checkbox repaints in the forced-colors block", () => {
@@ -236,13 +236,13 @@ describe('links — a hairline underline everywhere, visited reads the same (D-1
     const rule = ruleFor('a');
     expect(rule, 'expected a global `a` rule').toBeTruthy();
     expect(rule.declarations).toMatch(/text-decoration:\s*underline/);
-    expect(rule.declarations).toMatch(/color:\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
   });
 
   test('`a:visited` reads the same ink colour as unvisited (D-18)', () => {
     const rule = ruleFor('a:visited');
     expect(rule, 'expected an `a:visited` rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/color:\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
   });
 
   test('no selector other than `a`/`.text-control` declares an underline (D-18, D-04, 03.1 Gap 1 override; 03.3.1.1 tenth round)', () => {
@@ -334,9 +334,9 @@ describe('the picked state is a fill (D-04, sketch 007 lines 49 and 83)', () => 
       ".axis-mark__stop:has(input[type='radio']:checked), .segmented__option:has(input[type='radio']:checked)",
     );
     expect(rule, 'expected the grouped fill rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
-    expect(rule.declarations).toMatch(/border-color:\s*var\(--pen-blue\)/);
-    expect(rule.declarations).toMatch(/color:\s*var\(--ground\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--sheet-pen-blue\)/);
+    expect(rule.declarations).toMatch(/border-color:\s*var\(--sheet-pen-blue\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ground\)/);
     expect(rule.declarations).toMatch(/z-index:\s*1/);
   });
 
@@ -368,11 +368,11 @@ describe('the picked state is a fill (D-04, sketch 007 lines 49 and 83)', () => 
   test('a defect is a square and a word: the square fills pen blue when pressed, the button itself never does', () => {
     const beforeRule = ruleFor('.chip-toggle::before');
     expect(beforeRule, 'expected a .chip-toggle::before rule').toBeTruthy();
-    expect(beforeRule.declarations).toMatch(/width:\s*var\(--size-lead-mark\)/);
+    expect(beforeRule.declarations).toMatch(/width:\s*var\(--sheet-size-lead-mark\)/);
     expect(beforeRule.declarations).toMatch(/border:\s*var\(--rule-graduation\)/);
     const pressedBeforeRule = ruleFor(".chip-toggle[aria-pressed='true']::before");
     expect(pressedBeforeRule, "expected a .chip-toggle[aria-pressed='true']::before rule").toBeTruthy();
-    expect(pressedBeforeRule.declarations).toMatch(/background:\s*var\(--pen-blue\)/);
+    expect(pressedBeforeRule.declarations).toMatch(/background:\s*var\(--sheet-pen-blue\)/);
     expect(ruleFor(".chip-toggle[aria-pressed='true']")).toBeUndefined();
   });
 });

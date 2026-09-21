@@ -11,12 +11,12 @@
 .history-item {
   min-width: 0;
   padding: var(--gap-s) 0;
-  border-top: var(--rule-baseline) solid var(--ink);
+  border-top: var(--rule-baseline) solid var(--sheet-ink);
   overflow-wrap: anywhere;
 }
 
 .history-item.is-current {
-  outline: var(--rule-graduation) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--sheet-ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -45,20 +45,20 @@
 
 .history-register__name,
 .recipe-history__batch-name {
-  flex: 1 1 var(--rhist-bname-min);
+  flex: 1 1 var(--sheet-rhist-bname-min);
   min-width: 0;
   margin: 0;
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
+  font-size: var(--sheet-type-control);
   overflow-wrap: anywhere;
 }
 
 .recipe-history__version-name {
-  flex: 1 1 var(--rhist-vname-min);
+  flex: 1 1 var(--sheet-rhist-vname-min);
   min-width: 0;
   margin: 0;
   font-family: var(--face-text);
-  font-size: var(--size-version-line);
+  font-size: var(--sheet-size-version-line);
   font-weight: 400;
   overflow-wrap: anywhere;
 }
@@ -68,7 +68,7 @@
 .recipe-history__empty,
 .recipe-history__outcome:not(.prose-text) {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-weight: 400;
 }
 
@@ -103,7 +103,7 @@
 }
 
 .recipe-history__reason .prose-text {
-  font-size: var(--type-note);
+  font-size: var(--sheet-type-note);
 }
 
 .history-list--records {
@@ -113,13 +113,13 @@
 }
 
 .history-list--records > .history-item {
-  border-top: var(--rule-graduation) solid var(--bookcloth);
+  border-top: var(--rule-graduation) solid var(--sheet-bookcloth);
 }
 
 .history-list--branches {
   margin-inline-start: var(--gap-l);
   padding-inline-start: var(--gap-m);
-  border-inline-start: var(--rule-graduation) solid var(--bookcloth);
+  border-inline-start: var(--rule-graduation) solid var(--sheet-bookcloth);
 }
 
 .recipe-history__outcome,
@@ -133,21 +133,21 @@
    Next time (route-recipe-version.md "History type roles", revised
    2026-09-18); .prose-text already supplies the face, leading and colour. */
 .recipe-history__outcome.prose-text {
-  font-size: var(--type-note);
+  font-size: var(--sheet-type-note);
 }
 
 .recipe-history__next {
   font-family: var(--face-text);
-  font-size: var(--type-note);
-  line-height: var(--leading-note);
-  color: var(--pen-blue);
+  font-size: var(--sheet-type-note);
+  line-height: var(--sheet-leading-note);
+  color: var(--sheet-pen-blue);
 }
 
 .recipe-history__next span {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-weight: 500;
-  color: var(--ink);
+  color: var(--sheet-ink);
 }
 
 .recipe-history__empty {

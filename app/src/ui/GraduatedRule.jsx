@@ -6,7 +6,8 @@
 // Stroke weights mirror the direction contract's rule-drawing tokens
 // (route-recipe.md § 4 / tokens.css --rule-*), expressed as plain numbers
 // because SVG presentation attributes read user-space units, not CSS
-// lengths. Colour is never a literal — every stroke reads var(--ink).
+// lengths. Colour is never a literal — every stroke reads the Sheet ink
+// colour token, --sheet-ink.
 import { figureLabelText } from '../domain/figures.js';
 
 const WIDTH = 320;
@@ -49,7 +50,7 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
         y1={18}
         x2={gx}
         y2={i % 5 === 0 ? 24 : 21}
-        stroke="var(--ink)"
+        stroke="var(--sheet-ink)"
         strokeWidth={RULE_GRADUATION}
       />,
     );
@@ -115,7 +116,7 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
           <>
             <defs>
               <pattern id={hatchId} width="4" height="4" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="0" y2="4" stroke="var(--ink)" strokeWidth={HATCH_STROKE} />
+                <line x1="0" y1="0" x2="0" y2="4" stroke="var(--sheet-ink)" strokeWidth={HATCH_STROKE} />
               </pattern>
             </defs>
             <rect
@@ -125,11 +126,11 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
               height={14}
               fill={`url(#${hatchId})`}
             />
-            <line x1={toX(band[0])} y1={2} x2={toX(band[0])} y2={20} stroke="var(--ink)" strokeWidth={RULE_BAND_EDGE} />
-            <line x1={toX(band[1])} y1={2} x2={toX(band[1])} y2={20} stroke="var(--ink)" strokeWidth={RULE_BAND_EDGE} />
+            <line x1={toX(band[0])} y1={2} x2={toX(band[0])} y2={20} stroke="var(--sheet-ink)" strokeWidth={RULE_BAND_EDGE} />
+            <line x1={toX(band[1])} y1={2} x2={toX(band[1])} y2={20} stroke="var(--sheet-ink)" strokeWidth={RULE_BAND_EDGE} />
           </>
         )}
-        <line x1="0" y1={18} x2={WIDTH} y2={18} stroke="var(--ink)" strokeWidth={RULE_BASELINE} />
+        <line x1="0" y1={18} x2={WIDTH} y2={18} stroke="var(--sheet-ink)" strokeWidth={RULE_BASELINE} />
         {graduations}
         {changed && (
           <rect
@@ -138,11 +139,11 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
             width={RULE_TICK}
             height={22}
             fill="none"
-            stroke="var(--ink)"
+            stroke="var(--sheet-ink)"
             strokeWidth={RULE_TICK_HOLLOW}
           />
         )}
-        <line x1={toX(value)} y1={0} x2={toX(value)} y2={22} stroke="var(--ink)" strokeWidth={RULE_TICK} />
+        <line x1={toX(value)} y1={0} x2={toX(value)} y2={22} stroke="var(--sheet-ink)" strokeWidth={RULE_TICK} />
       </svg>
       <div className="graduated-rule__anchors" aria-hidden="true">
         <span>{lo}</span>

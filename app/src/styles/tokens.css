@@ -3,23 +3,23 @@
    Every value here is decided there; nothing here decides anything new. */
 :root {
   /* Colour — four roles only (contract § 2) */
-  --ground: #f7f7f4;
-  --ink: #141414;
-  --pen-blue: #1f3d7a; /* everything recorded — unused on screen this phase */
-  --bookcloth: #33513b;
+  --sheet-ground: #f7f7f4;
+  --sheet-ink: #141414;
+  --sheet-pen-blue: #1f3d7a; /* everything recorded — unused on screen this phase */
+  --sheet-bookcloth: #33513b;
 
   /* Type — two stacks, system only (contract § 1) */
   --face-text: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
   --face-grotesk: -apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
-  --size-running-head: 0.75rem;
-  --size-recipe-name: 2rem;
-  --size-version-line: 1.125rem;
-  --size-headnote-prose: 1rem;
-  --size-table-body: 0.9375rem;
-  --size-figure-value: 1.25rem;
-  --size-deviation-words: 0.8125rem;
-  --size-small-print: 0.75rem;
+  --sheet-size-running-head: 0.75rem;
+  --sheet-size-recipe-name: 2rem;
+  --sheet-size-version-line: 1.125rem;
+  --sheet-size-headnote-prose: 1rem;
+  --sheet-size-table-body: 0.9375rem;
+  --sheet-size-figure-value: 1.25rem;
+  --sheet-size-deviation-words: 0.8125rem;
+  --sheet-size-small-print: 0.75rem;
 
   /* Type roles (sketch-findings-sprinkles,
      references/cross-cutting-type-spacing-feedback.md, "Type Roles"): the
@@ -31,16 +31,16 @@
      role's sketch value of a 70ch maximum is not adopted — --measure-prose
      (65ch) below is the ratified measure in the direction contract, and
      the note role reads it. */
-  --type-section: 0.875rem; /* section headings: 14px, weight 600, leading 1.35 */
-  --leading-section: 1.35;
-  --type-label: 0.75rem; /* compact field captions: 12px, weight 500 — every caption, axis names included since the tenth round (007 line 157) */
-  --type-control: 0.8125rem; /* actionable choices, helper text, status: 13px, and text controls (003 line 32) */
-  --leading-control: 1.3; /* the control role's leading (sketch 003 @ d89b758 line 32, 007 lines 164-166, sketch 008 line 36) */
-  --leading-helper: 1.4; /* a helper sentence's own leading (007 line 169; sketch 008 line 36) */
-  --leading-figure: 1.1; /* the recorded figure's own leading (003 line 88) — a leading is a size and reads a token */
-  --text-control-min: 24px; /* an underlined word is an inline action (003 line 32; 007 line 131) — 24px tall at desktop; 44px below 760px rides --touch-min */
-  --type-note: 1rem; /* written notes: 16px, leading 1.5, at --measure-prose */
-  --leading-note: 1.5;
+  --sheet-type-section: 0.875rem; /* section headings: 14px, weight 600, leading 1.35 */
+  --sheet-leading-section: 1.35;
+  --sheet-type-label: 0.75rem; /* compact field captions: 12px, weight 500 — every caption, axis names included since the tenth round (007 line 157) */
+  --sheet-type-control: 0.8125rem; /* actionable choices, helper text, status: 13px, and text controls (003 line 32) */
+  --sheet-leading-control: 1.3; /* the control role's leading (sketch 003 @ d89b758 line 32, 007 lines 164-166, sketch 008 line 36) */
+  --sheet-leading-helper: 1.4; /* a helper sentence's own leading (007 line 169; sketch 008 line 36) */
+  --sheet-leading-figure: 1.1; /* the recorded figure's own leading (003 line 88) — a leading is a size and reads a token */
+  --sheet-text-control-min: 24px; /* an underlined word is an inline action (003 line 32; 007 line 131) — 24px tall at desktop; 44px below 760px rides --touch-min */
+  --sheet-type-note: 1rem; /* written notes: 16px, leading 1.5, at --measure-prose */
+  --sheet-leading-note: 1.5;
 
   /* Spacing scale (contract § 3) */
   --gap-hair: 2px;
@@ -88,9 +88,9 @@
      zero content height — because `appearance: none` strips the native
      control and WebKit then gives it no intrinsic height. A filled date
      renders 28px, which is why no completed record ever showed it. */
-  --leading-field: 1.35;
-  --field-min-h: 26px;
-  --leading-table: 1.2; /* fixed so a marked row's bold weight cannot change its height */
+  --sheet-leading-field: 1.35;
+  --sheet-field-min-h: 26px;
+  --sheet-leading-table: 1.2; /* fixed so a marked row's bold weight cannot change its height */
   /* --col-ingredient retired (G-03-11, D-UAT-6). The name column is now
      the single unsized column (app.css, .ingredient-table__col-name:
      width: auto), absorbing whatever the five sized columns below leave
@@ -102,8 +102,8 @@
      D-UAT-6 accepts as the yield rather than squeezing a sized column to
      nothing. An automatic width is a keyword, not a visual value, so
      nothing replaces this token. */
-  --hatch-pitch: 4px;
-  --hatch-stroke: 1.2px;
+  --sheet-hatch-pitch: 4px;
+  --sheet-hatch-stroke: 1.2px;
 
   /* Focus treatment (contract § 5, D-14; 03.3.1.1 tenth round, sketch 007
      line 153): the ring means focus and nothing else — it is heavier
@@ -125,21 +125,21 @@
 
   /* The select's drawn chevron (D-17): two CSS linear-gradient triangles
      replace the browser's own arrow once appearance: none removes it.
-     --size-select-chevron is each triangle's edge; the two insets place
-     the pair's shared point --inset-select-chevron-x from the field's
-     right edge and --inset-select-chevron-y above/below its vertical
+     --sheet-size-select-chevron is each triangle's edge; the two insets place
+     the pair's shared point --sheet-inset-select-chevron-x from the field's
+     right edge and --sheet-inset-select-chevron-y above/below its vertical
      centre; --gap-select-chevron-room is the right padding that keeps an
      option's text off the drawing, derived from the existing medium gap
      rather than a new size. */
-  --size-select-chevron: 5px;
-  --inset-select-chevron-x: 14px;
-  --inset-select-chevron-y: 3px;
+  --sheet-size-select-chevron: 5px;
+  --sheet-inset-select-chevron-x: 14px;
+  --sheet-inset-select-chevron-y: 3px;
   --gap-select-chevron-room: var(--gap-m);
 
   /* The pen layer (route-recipe-batch.md § 3) — pen blue was defined above
      and unpainted until now. */
   --rule-ink-field: 1px;
-  --size-ink-field: 0.9375rem;
+  --sheet-size-ink-field: 0.9375rem;
 
   /* The record pen's field widths (sketch 007 @ 2a212be lines 41 + 43;
      03.3.1.1 D-13 as amended by D-01/D-22): a date field reads at 128px,
@@ -147,14 +147,14 @@
      56px beside its unit word — "48px clipped '−12.5' and '120.5'; 56px
      holds both" (the sketch's own comment, measured 2026-09-14). The
      live HTML supersedes D-13's literal 48px call, per D-01. */
-  --field-w-date: 128px;
-  --field-w-figure: 56px;
+  --sheet-field-w-date: 128px;
+  --sheet-field-w-figure: 56px;
   /* The gap between a figure box and its unit word (007 line 42). */
   --gap-field-unit: 4px;
   /* A field-row caption reserves two lines of height so a short and a
      long caption in one row keep their fields on one baseline (007 line
      39; sketch 008 line 49 names this token). */
-  --caption-two-lines: 2.4em;
+  --sheet-caption-two-lines: 2.4em;
   /* The same two-line reserve, resolved against the caption's own size rather
      than whatever the element inherits. An `em` means what the ELEMENT's
      font-size says, so a caption line that holds a caption but is not itself
@@ -164,31 +164,31 @@
      Setting a font-size on the head fixed the arithmetic but made the head's
      computed size differ from the sketch's for no rendered reason, so the
      multiplication is done here instead and the head inherits normally. */
-  --caption-two-lines-abs: calc(2.4 * var(--type-label));
+  --sheet-caption-two-lines-abs: calc(2.4 * var(--sheet-type-label));
 
   /* This table's own horizontal cell padding (G-03-11, D-UAT-6): tightened
      to half of what the general small gap gave it before (--gap-s, 12px),
      as its own token so it can be adjusted for this table alone without
      moving --gap-s for everything else that reads it. Buys back 12px of
      column per column in the table's widest state (6px on each side),
-     which is what lets --col-numeric below shrink toward its content
+     which is what lets --sheet-col-numeric below shrink toward its content
      without the name column paying for the difference. */
-  --table-cell-pad-x: var(--gap-xs);
+  --sheet-table-cell-pad-x: var(--gap-xs);
 
   /* Ingredient-table column widths (G-03-11 corrects the derivation below;
-     D-UAT-6 sizes --col-numeric and the padding token above). Every token
+     D-UAT-6 sizes --sheet-col-numeric and the padding token above). Every token
      here is now padding-inclusive: the table's cells are border-box
      (app.css, the shared th/td rule), so a declared width IS the whole
      column and a column's usable CONTENT is its token minus twice
-     --table-cell-pad-x (12px). Before this plan the cells were
+     --sheet-table-cell-pad-x (12px). Before this plan the cells were
      content-box, so a declared width had that padding ADDED on top — the
      derivation below used to subtract the padding from the remainder
      instead, which is only correct the other way around; that mistake is
      what let this bug through undetected (G-03-11 root cause 2).
 
      The page arithmetic (unchanged by this plan): at a given viewport,
-     .recipe-page's 2fr/1fr grid, minus --gap-xl (48px) padding on both
-     sides and --gap-l (32px) gap between its two columns, leaves
+     .recipe-page's 2fr/1fr grid, minus --gap-page (--gap-xl, 48px) padding
+     on both sides and --gap-l (32px) gap between its two columns, leaves
      (viewport - 128) for the two columns together; the ingredient table
      lives in the 2fr column, two thirds of that —
      (viewport - 128) * 2 / 3. That is 768px at a 1280px viewport and
@@ -208,7 +208,7 @@
      Remove at once — six sized columns, with the ingredient-name column
      (app.css, .ingredient-table__col-name) absorbing whatever they
      leave. */
-  --col-numeric: 94px; /* content: 94 - 12 = 82px, ~1.4px above the
+  --sheet-col-numeric: 94px; /* content: 94 - 12 = 82px, ~1.4px above the
     80.61px "% of batch" header — a few px of slack and no more, since
     every px given to a sized column here comes out of the name column's
     remainder. Shrunk from 88px (sized to the field, never the header) per
@@ -219,17 +219,17 @@
      reading state's own width nor the pen's wider variant has a column
      left to size. Every rule that consumed either token was removed in
      the same plan. */
-  --col-data: 86px; /* content: 86 - 12 = 74px, against "estimated"
+  --sheet-col-data: 86px; /* content: 86 - 12 = 74px, against "estimated"
     (66.14px) and the reasoned-longer "unreviewed" (~73.5px, no seed row
     produces it yet) — sized to the longer, unmeasured word rather than
     to what happens to sit on screen today (G-03-11). */
-  --col-remove: 78px; /* content: 78 - 12 = 66px, a little slack over the
+  --sheet-col-remove: 78px; /* content: 78 - 12 = 66px, a little slack over the
     60.45px native remove/restore <button> — a bare button has no shrink
     guard, unlike the step select's flex + min-width:0 pair (03-08). */
 
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);
-  --size-mark-stop: 0.8125rem;
+  --sheet-size-mark-stop: 0.8125rem;
 
   /* The Strike Rule (route-recipe-version.md § 7): one stroke, in ink, for
      every "not in force, replaced by what sits beside it" meaning — a
@@ -241,7 +241,7 @@
   /* The removal cross-flags (route-recipe-version.md § 3, 03-02): small
      print beside a flagged row or beneath a flagged step, naming what
      removal orphaned — state carried in words, never in colour. */
-  --size-cross-flag: var(--size-small-print);
+  --sheet-size-cross-flag: var(--sheet-size-small-print);
 
   /* The uses control's checkboxes (route-recipe-version.md § 3, 03-02). */
   --gap-uses-chip: var(--gap-xs);
@@ -260,18 +260,18 @@
   /* The batch row's measured-cell grid (sketch 003 variant B, 03.3-01):
      the minimum a cell may shrink to before the grid wraps another onto
      its own line. */
-  --col-batch-cell-min: 96px;
+  --sheet-col-batch-cell-min: 96px;
 
   /* The version row's metadata column floor (sketch 003 @ d89b758 line 69,
      `minmax(300px, 1fr)`): the column never shrinks below this even as
      the headnote's 1.6fr track claims the rest (D-15). */
-  --vmeta-min: 300px;
+  --sheet-vmeta-min: 300px;
 
   /* The recipe-history outline's two name columns (REVIEW-04, 260918-a5l):
      the width at which each name stops shrinking and its row's flex head
      wraps its right-hand metadata onto its own line. */
-  --rhist-vname-min: 22rem;
-  --rhist-bname-min: 16rem;
+  --sheet-rhist-vname-min: 22rem;
+  --sheet-rhist-bname-min: 16rem;
 
   /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
      references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
@@ -279,7 +279,7 @@
      step-down, interactive targets grow toward 44px — --touch-min is
      that minimum height for buttons, selects and ink fields;
      --touch-stop-width is a rating stop's grown width, joined with its
-     four siblings on the 216px --track-stop-narrow (5 x 44 - 4 x 1 =
+     four siblings on the 216px --sheet-track-stop-narrow (5 x 44 - 4 x 1 =
      216, sketch 007 @ 2a212be lines 177-178), its height reading
      --touch-min for the 44x44 box. Px literals, so the contract suites
      resolve them with resolveTokenPx. Desktop stays compact — the
@@ -294,45 +294,45 @@
      never carries the literal. The breakpoint literals themselves
      (759.98px, 600px) stay in app.css's own @media preludes, the one
      sanctioned exception the touch block above already established.
-     --pen-w caps the record pen's frame (contract "the pen is 640px
+     --sheet-pen-w caps the record pen's frame (contract "the pen is 640px
      wide") via .batch-margin--pen (app.css), a recording-mode class
      BatchRow.jsx applies only while mode === 'recording' — the read
      view keeps its own already-shipped full width on the same shared
      .batch-margin container (page-shell-front-matter.md's "front
      matter spans the whole page" rule; VERIFICATION.md gap, 03.3.1).
-     --stop-w is five joined cells sharing four hairlines on the
-     unchanged 186px --track-stop (5 x 38 - 4 x 1 = 186, sketch 007
+     --sheet-stop-w is five joined cells sharing four hairlines on the
+     unchanged 186px --sheet-track-stop (5 x 38 - 4 x 1 = 186, sketch 007
      lines 80-81, 124) — the cells share hairlines through a negative
      margin (app.css), not a gap, so --stop-gap is retired. */
-  --pen-w: 640px;
-  --track-stop: 186px;
-  --track-stop-narrow: 216px;
-  --stop-w: 38px;
-  --stop-h: 32px;
+  --sheet-pen-w: 640px;
+  --sheet-track-stop: 186px;
+  --sheet-track-stop-narrow: 216px;
+  --sheet-stop-w: 38px;
+  --sheet-stop-h: 32px;
   /* 32px: segment options, defects, the checkbox label and Show changes
-     share the cell height (sketch 008 line 55). --stop-h keeps its own
+     share the cell height (sketch 008 line 55). --sheet-stop-h keeps its own
      name and stays the axis stop's token. */
-  --control-h: var(--stop-h);
+  --sheet-control-h: var(--sheet-stop-h);
   /* The stop's own grown height below 760px: rides the existing touch
      block's 44px (the --rule-foot-band pattern above) so the stop's
      height and every other control's min-height can never drift apart
      while reading its own name at the call site. */
-  --touch-stop-height: var(--touch-min);
+  --sheet-touch-stop-height: var(--touch-min);
   /* The caption line reserves Clear's height, marked or not, so picking
      moves nothing (sketch 007 line 75 — Clear is a text control, 24px;
      line 180 — 44px below 760px; README tenth round: head 24 -> 24,
      44 -> 44 before and after a pick). */
-  --caption-line-h: var(--text-control-min);
-  --caption-line-h-touch: var(--touch-min);
+  --sheet-caption-line-h: var(--sheet-text-control-min);
+  --sheet-caption-line-h-touch: var(--touch-min);
   /* The segmented option's own padding (007 lines 48 + 165): the hover
      padding (app.css) is derived from these by calc, never a second
      literal. */
-  --seg-pad-y: 5px;
-  --seg-pad-x: 8px;
+  --sheet-seg-pad-y: 5px;
+  --sheet-seg-pad-x: 8px;
   /* The 13px leading square shared by the defect and Show changes
      (sketch 008 line 59): rides the app's existing 13px mark token
      rather than a new one. */
-  --size-lead-mark: var(--size-mark-stop);
+  --sheet-size-lead-mark: var(--sheet-size-mark-stop);
   /* 20px between a defect and the next (007 line 89) — the row's own
      wrap gap is --gap-xs. */
   --gap-defect-col: var(--gap-m);
@@ -342,7 +342,7 @@
      column's own padding-left — the axes grid reads column-gap: 0
      instead (app.css), so the clearance is exactly this token's
      arithmetic on one side of the hairline, never a second number. */
-  --axes-cols-clearance: 12px;
+  --sheet-axes-cols-clearance: 12px;
 
   /* --------------------------------------------------------------------
      The Sprinkles Jar — .impeccable/surfaces/route.md, outside the paper
@@ -367,27 +367,54 @@
   --jar-orange: #f28c38;
   --jar-violet: #9b6bd6;
 
-  /* The home ground and ink (route.md § 3): the sketch's pure white and
-     near-black — the paper frames' warmer --ground stays theirs.
-     --home-mute carries text (the meta line, the micro-labels) and must
-     meet WCAG AA (4.5:1) against --home-ground. The sketch's own grey
-     (#6C737A) measured 4.80:1 — on the line, as route.md § 5 warns — so
-     it is darkened here; #5B6169 measures 6.25:1, a real margin above
-     the 4.5:1 floor. --home-rule (the hairline between rows) carries no
-     text and needs no ratio. */
-  --home-ground: #ffffff;
-  --home-ink: #1a1c1f;
-  --home-mute: #5b6169; /* 6.25:1 against --home-ground, measured */
-  --home-rule: #e7e9ec;
+  /* The App palette (DESIGN.md, "Colors > Scope and status"; approved
+     2026-09-21): Option B with the lighter Ingredients green and the
+     preview neutral set, taken verbatim from DESIGN.md's colors:
+     frontmatter. The five *-text companions are tentatively approved
+     2026-09-21 and wait on Mark's confirmation once seen in the real app
+     (D-19); Pantry and Kitchen carry no companion of their own — Kitchen's
+     indigo already reads 5.88:1 (D-09). --home-ground/ink/mute/rule
+     retire into --app-background/text/text-secondary/divider (D-03). */
+  --app-notebook: #fd5b57;
+  --app-notebook-text: #ee0803;
+  --app-recipe-book: #f18a36;
+  --app-recipe-book-text: #bc5b0d;
+  --app-idea-log: #fdc632;
+  --app-idea-log-text: #976f01;
+  --app-pantry: #76bd78;
+  --app-ingredients: #388b57;
+  --app-ingredients-text: #358452;
+  --app-kitchen: #505db5;
+  --app-blue: #2081ea;
+  --app-blue-text: #1576de;
+  --app-background: #ffffff;
+  --app-surface-subtle: #f3f4f2;
+  --app-text: #141414;
+  --app-text-secondary: #595959;
+  --app-divider: #d6dad7;
+
+  /* The hand (DESIGN.md, Typography > Hierarchy, "Hand"; D-17): the
+     maker's own words in the App — a tasting, a Next time, a version's
+     Why, a batch's note, an idea in the log. Caveat's face stack ends at
+     the text face, not a generic cursive keyword, so a missing font file
+     lands the words in the book's own face rather than an arbitrary
+     system script. The font file and its @font-face arrive in plan 02;
+     the fallback under forced-colors/print is verified there too. */
+  --face-hand: 'Caveat', var(--face-text);
+  --size-hand: 1.375rem;
+  --leading-hand: 1.25;
+  --size-hand-min: 1.25rem;
 
   /* The recipe palette (route.md § 3, § 5): an ordered set of twelve
      hues, RECIPE_HUE_COUNT in app/src/ui/recipe-colour.js — identity
      only. These draw a row's identity bar and its version tally, never
      text, so no contrast floor applies, but each reads clearly against
-     --home-ground and is distinguishable from its neighbours at a
+     --app-background and is distinguishable from its neighbours at a
      glance. route.md § 5 leaves the palette's size and the assignment
      rule open; recipe-colour.js ships the deterministic default that
-     deals these in order. */
+     deals these in order. Retired by D-04 once the App marks grammar
+     (DESIGN.md "App marks") replaces per-recipe colour with per-
+     destination colour — plan 05, this phase's last step. */
   --recipe-hue-01: #d1475e;
   --recipe-hue-02: #d17547;
   --recipe-hue-03: #d1ba47;
@@ -401,33 +428,36 @@
   --recipe-hue-11: #ba47d1;
   --recipe-hue-12: #d147a3;
 
-  /* The world's geometry and type: every visual value in this project
-     reads a custom property, so each of the sketch's own marks gets its
-     own name here. Spacing that already lands on the existing --gap-*
-     scale (the header/title/row rhythm, the actions row, the filled
-     action's own padding) reads that scale directly in home.css rather
-     than a second token here; --touch-min (above) is what the narrow-
-     width targets grow toward. These are only the values the existing
-     scale does not carry. */
-  --size-home-brand: 1.375rem; /* 22px, the brand word */
-  --size-home-brand-rule: 6px; /* the sprinkle rule beneath the brand */
-  --size-home-title: 2.125rem; /* 34px, the page title */
-  --size-home-recipe-name: 1.5rem; /* 24px, a recipe's name on its row */
-  --size-home-meta: 0.875rem; /* 14px, the version/meta line, the nav word, the last words */
-  --size-home-label: 0.75rem; /* 12px, the versions/batches micro-label */
-  --tracking-home-label: 0.08em;
-  --size-sprinkle-w: 18px;
-  --size-sprinkle-h: 6px;
-  --radius-sprinkle: 3px;
-  --size-bar-w: 8px;
-  --size-bar-h: 56px;
-  --radius-bar: 4px;
-  --radius-cta: 10px; /* the filled action's own radius; its padding reads var(--gap-s)/var(--gap-m) directly */
-  --rule-home-nav-active: 3px;
-  --rule-home-row: var(--rule-graduation); /* reuses the app's existing 1px hairline weight, named for this world so it can move independently later */
-  --duration-home: 120ms; /* the one short transition this world is allowed (route.md § 1: the no-motion binder does not cross the paper frame) */
+  /* The App's geometry and type (DESIGN.md App marks section; D-03):
+     every visual value in this project reads a custom property, so each
+     of the sketch's own marks gets its own name here. Spacing that
+     already lands on the existing --gap-* scale (the header/title/row
+     rhythm, the actions row, the filled action's own padding) reads that
+     scale directly in home.css rather than a second token here;
+     --touch-min (above) is what the narrow-width targets grow toward.
+     These are only the values the existing scale does not carry. The
+     three bar tokens become rail tokens because DESIGN.md's App marks
+     section calls the 8px mark on a row the rail; the geometry is
+     unchanged. */
+  --app-size-brand: 1.375rem; /* 22px, the brand word */
+  --app-size-brand-rule: 6px; /* the sprinkle rule beneath the brand */
+  --app-size-title: 2.125rem; /* 34px, the page title */
+  --app-size-recipe-name: 1.5rem; /* 24px, a recipe's name on its row */
+  --app-size-meta: 0.875rem; /* 14px, the version/meta line, the nav word, the last words */
+  --app-size-label: 0.75rem; /* 12px, the versions/batches micro-label */
+  --app-tracking-label: 0.08em;
+  --app-size-sprinkle-w: 18px;
+  --app-size-sprinkle-h: 6px;
+  --app-radius-sprinkle: 3px;
+  --app-size-rail-w: 8px;
+  --app-size-rail-h: 56px;
+  --app-radius-rail: 4px;
+  --app-radius-action: 10px; /* the filled action's own radius; its padding reads var(--gap-s)/var(--gap-m) directly */
+  --app-rule-nav-active: 3px;
+  --app-rule-row: var(--rule-graduation); /* reuses the app's existing 1px hairline weight, named for this world so it can move independently later */
+  --app-duration: 120ms; /* the one short transition this world is allowed (route.md § 1: the no-motion binder does not cross the paper frame) */
 
-  /* The last words on a row read the existing --pen-blue (above): no
+  /* The last words on a row read the existing --sheet-pen-blue (above): no
      second blue is defined here. The Two-Ink rule still binds wherever
      plan and actual meet (route.md § 1). */
 }

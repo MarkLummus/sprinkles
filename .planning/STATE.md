@@ -284,5 +284,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-21T14:56:53Z
-Stopped at: Hand approved (DESIGN.md 8bc3595, design system updated); handoff tasks 9 to 11 remain: re-point canvas boards, fix paper-board greys, tokens.css palette + prefix + hand tokens, Home per route.md
+Stopped at: Canvas re-pointed to destination colours (task 9 done); tasks 10 (paper-board greys) and 11 (tokens.css palette, prefix, hand tokens, Home per route.md) remain; mark grammar not yet in DESIGN.md
 Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

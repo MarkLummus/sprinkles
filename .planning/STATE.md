@@ -1,13 +1,13 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 03.4
-current_phase_name: The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home
+current_phase: "03.4"
+current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home"
 status: planning
-stopped_at: Resumed 2026-09-21; rail settled; handoff task 11 (code, phase-sized) remains unrouted
-last_updated: "2026-09-21T18:40:05.348Z"
+stopped_at: Phase 03.4 context gathered
+last_updated: "2026-09-21T22:23:01.204Z"
 last_activity: 2026-09-21
 last_activity_desc: "Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions"
-state_head: 5a88cfcfc0f7ef9be52e797c218b66eefd44cada
+state_head: beb0fd6bbb697eb7871609ef074ac0525f9ba023
 progress:
   total_phases: 10
   completed_phases: 8
@@ -286,6 +286,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-21T19:10:00Z
-Stopped at: Session resumed; rail settled (DESIGN.md 5c97348); handoff Task 11 inserted as Phase 03.4. Next: /gsd-discuss-phase 03.4
-Resume file: .planning/.continue-here.md
+Last session: 2026-09-21T22:23:00.735Z
+Stopped at: Phase 03.4 context gathered
+Resume file: .planning/phases/03.4-the-design-layer-in-code-app-palette-sheet-prefixed-tokens-t/03.4-CONTEXT.md

@@ -36,16 +36,17 @@
     {
       "id": 5,
       "name": "Mark's document amendments: app palette Option B approved, recipe identity colours retired, Home direction 'Active work first'",
-      "status": "in_progress",
-      "progress": "written by Mark in DESIGN.md, PRODUCT.md, route.md, design.json — not yet committed"
+      "status": "done",
+      "commit": "6321b78"
+    },
+    {
+      "id": 6,
+      "name": "Commit the four amended documents and push",
+      "status": "done",
+      "commit": "6321b78"
     }
   ],
   "remaining_tasks": [
-    {
-      "id": 6,
-      "name": "Commit the four amended documents (Mark's)",
-      "status": "not_started"
-    },
     {
       "id": 7,
       "name": "Build the Design System artifact from DESIGN.md frontmatter: 16 colours one theme, paper type roles, spacing; README from DESIGN.md; no components, no hand yet",
@@ -75,11 +76,6 @@
   "blockers": [],
   "async_jobs": [],
   "human_actions_pending": [
-    {
-      "action": "Commit DESIGN.md, PRODUCT.md, .impeccable/surfaces/route.md, .impeccable/design.json",
-      "context": "Mark's own amendments; the design system should cite the commit it was read from",
-      "blocking": true
-    },
     {
       "action": "Review .planning/design-md-hand-draft.md and accept, amend, or reject",
       "context": "DESIGN.md still says no handwriting font is selected; the canvas uses one on ~9 boards",
@@ -128,15 +124,7 @@
       "phase": "design"
     }
   ],
-  "uncommitted_files": [
-    " M .impeccable/design.json",
-    " M .impeccable/surfaces/route.md",
-    " M DESIGN.md",
-    " M PRODUCT.md",
-    "?? .impeccable/critique/2026-09-19T13-19-32Z__exec-d9d02bfe-02c0-4c5b-ad31-3a8d7eb97b95-png.md",
-    "?? .impeccable/critique/2026-09-19T13-30-03Z__exec-72338e38-bf09-46d3-95b8-886935ffcb9c-png.md",
-    "?? .planning/design-md-hand-draft.md"
-  ],
-  "next_action": "Ask Mark to commit the four amended documents, then create the Design System artifact (type https://claude.ai/artifact/5M7UeXXcx16TP3vzVFNDzd) from DESIGN.md frontmatter with status notes: paper implemented, app approved-not-implemented.",
+  "uncommitted_files": [],
+  "next_action": "Create the Design System artifact (type https://claude.ai/artifact/5M7UeXXcx16TP3vzVFNDzd) from DESIGN.md frontmatter at commit 6321b78 and app/src/styles/tokens.css, with status notes: paper implemented, app approved-not-implemented. No components, no hand.",
   "context_notes": "Canvas: https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq (private). Local copies of every board and canvas.json were in the session scratchpad and are gone; re-read from the artifact before editing. Every board's colours are hand-copied from tokens.css, not mounted from a design system. Mark edits the canvas live (moves boards, adds image notes and his own artboards) — always re-read canvas.json right before publishing the index. Auto-replies on artifact comments have twice stated the opposite of what Mark asked; read the thread and correct them explicitly."
 }

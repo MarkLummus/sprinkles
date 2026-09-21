@@ -399,13 +399,17 @@ Plans:
 ### Phase 03.4: The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)
 
 **Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
-**Requirements**: TBD
+**Requirements**: none mapped — a design-delivery phase governed by CONTEXT.md's D-01..D-20; UX1-01 and UX1-03 apply as build constraints
 **Depends on:** Phase 03.3.1.1
-**Plans:** 0 plans
+**Plans:** 5 plans
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 03.4 to break down)
+- [ ] 03.4-01-PLAN.md — The two worlds in tokens.css: the `sheet-` rename, the shared sizes, the App palette and the hand's tokens (D-01, D-02, D-03)
+- [ ] 03.4-02-PLAN.md — The hand: Caveat vendored, declared once, with its forced-colours and print fallback (D-17)
+- [ ] 03.4-03-PLAN.md — The shell: rail, tools row, placeholder pages and the bottom tab row (D-09, D-10, D-13, D-15, D-16)
+- [ ] 03.4-04-PLAN.md — Home rebuilt on active work: recency, the lead block in the hand, and a next action on every row (D-05..D-08, D-11, D-12, D-14, D-18..D-20)
+- [ ] 03.4-05-PLAN.md — The Sprinkles Jar retired: jar hues, recipe hues and recipe-colour.js removed last (D-04)
 
 ### Phase 4: Prepare the next version for making
 

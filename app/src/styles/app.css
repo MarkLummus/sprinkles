@@ -5,7 +5,7 @@
 body {
   margin: 0;
   background: var(--ground);
-  color: var(--ink);
+  color: var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);
 }
@@ -19,17 +19,17 @@ body {
    used to carry (.graduated-rule, .ink-field, the radio stop) in favour of
    a single rule at the browser's own :focus-visible boundary. */
 :focus-visible {
-  outline: var(--focus-outline-width) solid var(--ink);
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
   outline-offset: var(--focus-outline-offset);
 }
 
 button,
 select {
   appearance: none;
-  border: var(--rule-ink-field) solid var(--ink);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
   border-radius: 0;
   background: none;
-  color: var(--ink);
+  color: var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--size-table-body);
   box-sizing: border-box;
@@ -71,7 +71,7 @@ select:disabled {
   border-radius: 0;
   background: none;
   padding: 0;
-  color: var(--ink);
+  color: var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--type-control);
   line-height: var(--leading-control);
@@ -112,7 +112,7 @@ select:disabled {
   width: var(--size-lead-mark);
   height: var(--size-lead-mark);
   box-sizing: border-box;
-  border: var(--rule-graduation) solid var(--ink);
+  border: var(--rule-graduation) solid var(--sheet-ink);
   margin-right: var(--gap-xs);
   vertical-align: baseline;
 }
@@ -145,7 +145,7 @@ select.ink-field {
 /* Links (D-18): every link carries a hairline ink underline, visited the
    same as unvisited; text that is not a link is never underlined. */
 a {
-  color: var(--ink);
+  color: var(--sheet-ink);
   text-decoration: underline;
   text-decoration-thickness: var(--rule-ink-field);
   text-underline-offset: var(--offset-link-underline);
@@ -153,7 +153,7 @@ a {
 }
 
 a:visited {
-  color: var(--ink);
+  color: var(--sheet-ink);
 }
 
 /* The select's chevron (D-17): appearance: none above already removed the
@@ -165,8 +165,8 @@ a:visited {
    closed-state chrome only. */
 select,
 select.ink-field {
-  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
-    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, var(--sheet-ink) 50%),
+    linear-gradient(135deg, var(--sheet-ink) 50%, transparent 50%);
   background-position:
     calc(100% - var(--inset-select-chevron-x)) calc(50% - var(--inset-select-chevron-y)),
     calc(100% - var(--inset-select-chevron-x) + var(--size-select-chevron))
@@ -188,7 +188,7 @@ input[type='checkbox'] {
   width: var(--size-mark-stop);
   height: var(--size-mark-stop);
   margin: 0;
-  border: var(--rule-graduation) solid var(--ink);
+  border: var(--rule-graduation) solid var(--sheet-ink);
   border-radius: 0;
   background: none;
   box-sizing: border-box;
@@ -292,9 +292,9 @@ textarea {
   margin: 0;
   margin-block-start: var(--gap-xs);
   padding: var(--gap-xs) var(--gap-s);
-  border: var(--rule-baseline) solid var(--ink);
+  border: var(--rule-baseline) solid var(--sheet-ink);
   background: var(--ground);
-  color: var(--ink);
+  color: var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--type-control);
 }
@@ -320,7 +320,7 @@ textarea {
    findings, cross-cutting feedback): a placeholder reads as
    not-yet-entered text, against entered prose's roman pen-blue. */
 ::placeholder {
-  color: var(--ink);
+  color: var(--sheet-ink);
   font-size: var(--size-small-print);
   font-style: italic;
   opacity: 1;
@@ -398,7 +398,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: var(--gap-m);
-  border-bottom: var(--rule-baseline) solid var(--ink);
+  border-bottom: var(--rule-baseline) solid var(--sheet-ink);
   padding-bottom: var(--gap-m);
   min-width: 0; /* sketch 003 @ d89b758 lines 49-53: every area gets
      min-width: 0 so a wide table or long word cannot force a grid track
@@ -419,7 +419,7 @@ textarea {
   gap: var(--gap-l);
   align-items: start;
   padding-bottom: var(--gap-m);
-  border-bottom: var(--rule-graduation) solid var(--ink);
+  border-bottom: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 /* With the batch row distilled out of the plan pen, the band itself owns
@@ -569,7 +569,7 @@ textarea {
    rule. binder.test.js's "exactly one rule" assertion is updated to name
    this as the one documented exception. */
 .is-landing-focus:focus {
-  outline: var(--focus-outline-width) solid var(--ink);
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -700,7 +700,7 @@ textarea {
   font-family: var(--face-grotesk);
   font-size: var(--type-control);
   line-height: var(--leading-helper);
-  color: var(--ink);
+  color: var(--sheet-ink);
 }
 
 /* The version row's history control, its own line below the metadata
@@ -768,7 +768,7 @@ textarea {
 .pen-foot__rule {
   grid-column: 1 / -1;
   border: 0;
-  border-top: var(--rule-foot-band) solid var(--ink);
+  border-top: var(--rule-foot-band) solid var(--sheet-ink);
   margin: 0;
 }
 
@@ -806,7 +806,7 @@ textarea {
   text-align: left;
   padding: var(--gap-xs) var(--table-cell-pad-x);
   line-height: var(--leading-table);
-  border-bottom: var(--rule-baseline) solid var(--ink);
+  border-bottom: var(--rule-baseline) solid var(--sheet-ink);
 }
 
 /* The single unsized column (G-03-11, D-UAT-6): under this table's fixed
@@ -942,7 +942,7 @@ textarea {
 
 .ingredient-table tfoot td {
   border-bottom: none;
-  border-top: var(--rule-baseline) solid var(--ink);
+  border-top: var(--rule-baseline) solid var(--sheet-ink);
   font-weight: 700;
 }
 
@@ -962,7 +962,7 @@ textarea {
 
 .ingredient-table__comparison {
   caption-side: top;
-  color: var(--ink);
+  color: var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
   font-weight: 500;
@@ -976,7 +976,7 @@ textarea {
    weight only, so nothing shifts position when focus moves. Unmarked rows
    are untouched — never dimmed, never a different colour. */
 .ingredient-table tbody tr.is-marked {
-  outline: var(--rule-graduation) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--sheet-ink);
   outline-offset: var(--focus-outline-offset);
   font-weight: 700;
 }
@@ -1001,7 +1001,7 @@ textarea {
   max-width: var(--measure-prose);
   padding-bottom: var(--gap-m);
   margin-bottom: var(--gap-m);
-  border-bottom: var(--rule-graduation) solid var(--ink);
+  border-bottom: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 .method-steps {
@@ -1057,7 +1057,7 @@ textarea {
 .target-chip {
   display: inline-flex;
   gap: var(--gap-hair);
-  border: var(--rule-graduation) solid var(--ink);
+  border: var(--rule-graduation) solid var(--sheet-ink);
   padding: 0 var(--gap-xs);
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
@@ -1375,7 +1375,7 @@ textarea {
    override, 03.3-01): a rule until the field holds text — no visible
    label word. */
 .prose-field--empty {
-  border-bottom: var(--rule-graduation) solid var(--ink);
+  border-bottom: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 /* The lead-in field (route-recipe-version.md § 3): reads bold in place of
@@ -1404,7 +1404,7 @@ textarea {
   font-size: var(--size-ink-field);
   font-variant-numeric: tabular-nums;
   color: var(--pen-blue);
-  border: var(--rule-ink-field) solid var(--ink);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
   border-radius: 0;
   background: none;
   padding: var(--gap-hair) var(--gap-xs);
@@ -1471,7 +1471,7 @@ textarea {
 .tasting-reading {
   margin-top: var(--gap-m);
   padding-top: var(--gap-s);
-  border-top: var(--rule-graduation) solid var(--ink);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 .tasting-reading__head {
@@ -1520,7 +1520,7 @@ textarea {
   gap: var(--gap-xs) var(--gap-l);
   margin: var(--gap-l) 0 0;
   padding-top: var(--gap-s);
-  border-top: var(--rule-graduation) solid var(--ink);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
 }
@@ -1604,7 +1604,7 @@ textarea {
    Air cell's `<span class="u absent">not measured</span>`; Impeccable
    critique 2026-09-15, P2): ink, at the unit's own size. */
 .batch-row__unit--absent {
-  color: var(--ink);
+  color: var(--sheet-ink);
 }
 
 /* A measured cell's plan/technical-term sub-line (sketch 003 variant B,
@@ -1642,7 +1642,7 @@ textarea {
 .batch-row__batches {
   margin-top: var(--gap-m);
   padding-top: var(--gap-s);
-  border-top: var(--rule-graduation) solid var(--ink);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 .batch-margin button {
@@ -1674,7 +1674,7 @@ textarea {
    .is-marked rows use. */
 .batch-margin__list li.is-open {
   font-weight: 700;
-  outline: var(--rule-graduation) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--sheet-ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -1684,7 +1684,7 @@ textarea {
 .tasting {
   margin-top: var(--gap-m);
   padding-top: var(--gap-s);
-  border-top: var(--rule-graduation) solid var(--ink);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 /* The pen's own caption role (sketch 007 @ 2a212be lines 36 + 156; contract
@@ -1715,7 +1715,7 @@ textarea {
   font-style: normal;
   text-transform: none;
   letter-spacing: 0;
-  color: var(--ink);
+  color: var(--sheet-ink);
   margin: 0;
 }
 
@@ -1906,7 +1906,7 @@ textarea {
   flex: 0 0 var(--stop-w);
   height: var(--stop-h);
   margin-right: calc(-1 * var(--rule-ink-field));
-  border: var(--rule-ink-field) solid var(--ink);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
   border-radius: 0;
   font-family: var(--face-grotesk);
   font-variant-numeric: tabular-nums;
@@ -1954,7 +1954,7 @@ textarea {
    mouse click on the label ring-free. */
 .axis-mark__stop:has(input[type='radio']:focus-visible),
 .segmented__option:has(input[type='radio']:focus-visible) {
-  outline: var(--focus-outline-width) solid var(--ink);
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -2013,7 +2013,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: var(--rule-ink-field) solid var(--ink);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
   border-radius: 0;
   margin-right: calc(-1 * var(--rule-ink-field));
   padding: var(--seg-pad-y) var(--seg-pad-x);
@@ -2022,7 +2022,7 @@ textarea {
   font-family: var(--face-grotesk);
   font-size: var(--type-control);
   line-height: var(--leading-control);
-  color: var(--ink);
+  color: var(--sheet-ink);
   cursor: pointer;
 }
 
@@ -2081,7 +2081,7 @@ textarea {
   font-size: var(--type-control);
   line-height: var(--leading-control);
   letter-spacing: 0;
-  color: var(--ink);
+  color: var(--sheet-ink);
   cursor: pointer;
 }
 
@@ -2096,7 +2096,7 @@ textarea {
   width: var(--size-lead-mark);
   height: var(--size-lead-mark);
   box-sizing: border-box;
-  border: var(--rule-graduation) solid var(--ink);
+  border: var(--rule-graduation) solid var(--sheet-ink);
   flex: 0 0 auto;
 }
 
@@ -2193,7 +2193,7 @@ textarea {
   top: 0;
   bottom: 0;
   left: calc(200% / 3);
-  border-left: var(--rule-graduation) solid var(--ink);
+  border-left: var(--rule-graduation) solid var(--sheet-ink);
   pointer-events: none;
 }
 
@@ -2257,7 +2257,7 @@ textarea {
 
 .axes-grid__group--declared {
   padding-top: var(--gap-s);
-  border-top: var(--rule-graduation) solid var(--ink);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 /* The stacked declared defect group, under its own rule like the
@@ -2265,7 +2265,7 @@ textarea {
    .axes-grid--stacked's own gap, the same distance the sketch draws with
    a margin. */
 .axes-grid--stacked > .defect-group--declared {
-  border-top: var(--rule-graduation) solid var(--ink);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
   padding-top: var(--gap-s);
 }
 

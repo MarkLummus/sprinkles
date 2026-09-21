@@ -11,12 +11,12 @@
 .history-item {
   min-width: 0;
   padding: var(--gap-s) 0;
-  border-top: var(--rule-baseline) solid var(--ink);
+  border-top: var(--rule-baseline) solid var(--sheet-ink);
   overflow-wrap: anywhere;
 }
 
 .history-item.is-current {
-  outline: var(--rule-graduation) solid var(--ink);
+  outline: var(--rule-graduation) solid var(--sheet-ink);
   outline-offset: var(--focus-outline-offset);
 }
 
@@ -147,7 +147,7 @@
   font-family: var(--face-grotesk);
   font-size: var(--size-small-print);
   font-weight: 500;
-  color: var(--ink);
+  color: var(--sheet-ink);
 }
 
 .recipe-history__empty {

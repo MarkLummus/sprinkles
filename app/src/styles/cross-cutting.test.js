@@ -543,7 +543,7 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/color:\s*var\(--pen-blue\)/);
     const absentRule = ruleFor('.batch-row__unit--absent');
     expect(absentRule, 'expected a .batch-row__unit--absent rule').toBeTruthy();
-    expect(absentRule.declarations).toMatch(/color:\s*var\(--ink\)/);
+    expect(absentRule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
   });
 
   test('.text-control reads the control role at a 24px minimum height (sketch 003 line 32, 007 line 131, D-15)', () => {
@@ -738,9 +738,9 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
     expect(rule.declarations).toMatch(/margin:\s*0/);
     expect(rule.declarations).toMatch(/margin-block-start:\s*var\(--gap-xs\)/);
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-xs\) var\(--gap-s\)/);
-    expect(rule.declarations).toMatch(/border:\s*var\(--rule-baseline\) solid var\(--ink\)/);
+    expect(rule.declarations).toMatch(/border:\s*var\(--rule-baseline\) solid var\(--sheet-ink\)/);
     expect(rule.declarations).toMatch(/background:\s*var\(--ground\)/);
-    expect(rule.declarations).toMatch(/color:\s*var\(--ink\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
     expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
     expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
 

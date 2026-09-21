@@ -4,7 +4,7 @@
 :root {
   /* Colour — four roles only (contract § 2) */
   --ground: #f7f7f4;
-  --ink: #141414;
+  --sheet-ink: #141414;
   --pen-blue: #1f3d7a; /* everything recorded — unused on screen this phase */
   --bookcloth: #33513b;
 

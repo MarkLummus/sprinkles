@@ -285,5 +285,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-21T14:56:53Z
-Stopped at: DESIGN.md carries the App mark grammar and the filled action (approved direction, not implemented); handoff tasks 10 (paper-board greys) and 11 (tokens.css palette, prefix, hand tokens, Home per route.md) remain
+Stopped at: Handoff tasks 7 to 10 done; task 11 remains (tokens.css palette + sheet- prefix + hand tokens, Home per route.md, via GSD). Open finding: batch log board sets specification in pen blue against the Two-Ink Rule
 Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

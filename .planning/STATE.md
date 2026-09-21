@@ -285,5 +285,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-21T14:56:53Z
-Stopped at: Handoff tasks 7 to 10 done; task 11 remains (tokens.css palette + sheet- prefix + hand tokens, Home per route.md, via GSD). Open finding: batch log board sets specification in pen blue against the Two-Ink Rule
+Stopped at: Handoff tasks 7 to 10 done and pushed; batch log board fixed to the Two-Ink Rule on Mark's comment; task 11 remains (tokens.css palette + sheet- prefix + hand tokens, Home per route.md, via GSD)
 Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

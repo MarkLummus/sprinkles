@@ -3,11 +3,11 @@ gsd_state_version: "1.0"
 current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
-stopped_at: Phase 03.3.1.1 complete, ready to plan Phase 4
-last_updated: "2026-09-18T18:23:04.008Z"
-last_activity: 2026-09-18
-last_activity_desc: Hardened batch-save completion with page-owned confirmation, saved-record focus, persistence locking, and recoverable failure
-state_head: 45c40c409464c69d443cf608d2348e0513bc68b8
+stopped_at: Session resumed, building the Design System artifact (task 7)
+last_updated: "2026-09-21T16:21:05.212Z"
+last_activity: 2026-09-21
+last_activity_desc: Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions
+state_head: 68a450adb58141ede4618c7b654bcd432746ecd3
 progress:
   total_phases: 9
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 4 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-09-18 - Completed quick batch 260918-mpx: three recipe-history fixes (child Written term, ordered Batches list, tasting note prose size)
+Last activity: 2026-09-21 - Completed quick task 260921-gss: Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions
 
 Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -263,6 +263,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260918-mpy | Child version gets its own Written term; From version carries only the parent | 2026-09-18 | 0332b57 | [260918-mpy-task-1-child-version-s-own-written-date-is-printed-inside-it](./quick/260918-mpy-task-1-child-version-s-own-written-date-is-printed-inside-it/) |
 | 260918-mpz | Batches panel register renders as an ordered list | 2026-09-18 | 8d41ff8 | [260918-mpz-task-2-the-batches-panel-denies-it-is-ordered-app-src-ui-bat](./quick/260918-mpz-task-2-the-batches-panel-denies-it-is-ordered-app-src-ui-bat/) |
 | 260918-mq0 | Recorded tasting note takes the register's prose size | 2026-09-18 | ccc2f44 | [260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg](./quick/260918-mq0-task-3-the-recorded-tasting-note-is-the-one-prose-in-the-reg/) |
+| 260921-gss | Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions | 2026-09-21 | 68a450a | [260921-gss-amend-design-md-sheet-app-context-prefix](./quick/260921-gss-amend-design-md-sheet-app-context-prefix/) |
 
 ### Roadmap Evolution
 
@@ -281,6 +282,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-17T01:05:00.000Z
-Stopped at: Session resumed from the 2026-09-16 design-session handoff. Mark chose: (1) make both route-recipe-batch.md brief revisions (ceremony redundancy + drop click-again-clears), then (2) work the five BatchRow critique fixes in order 1 -> 3 -> 4 -> 2 -> 5, before planning Phase 4. Proceeding to /gsd-quick for the brief revisions.
+Last session: 2026-09-21T14:56:53Z
+Stopped at: Quick 260921-gss done (DESIGN.md amended); handoff tasks 8 to 11 remain, next is the hand decision
 Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

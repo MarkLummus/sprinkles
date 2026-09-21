@@ -3,11 +3,11 @@ gsd_state_version: "1.0"
 current_phase: 4
 current_phase_name: Prepare the next version for making
 status: planning
-stopped_at: Paused after the design session; handoff tasks 7 to 10 done, task 11 (code) remains
-last_updated: "2026-09-21T18:32:45.000Z"
+stopped_at: Resumed 2026-09-21; rail settled; handoff task 11 (code, phase-sized) remains unrouted
+last_updated: "2026-09-21T18:38:19.482Z"
 last_activity: 2026-09-21
 last_activity_desc: "Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions"
-state_head: c42055bd99d1cba32b8a458e8ecdd4d17eef0749
+state_head: 5c97348f864c8c8bb87c1e458cdb8474ae0517c8
 progress:
   total_phases: 9
   completed_phases: 8
@@ -266,6 +266,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260921-gss | Amend DESIGN.md: Sheet/App context prefixes on every token and five tentatively approved app text companions | 2026-09-21 | 68a450a | [260921-gss-amend-design-md-sheet-app-context-prefix](./quick/260921-gss-amend-design-md-sheet-app-context-prefix/) |
 | 42 | Apply the approved hand to DESIGN.md: Caveat, observations plus ideas, sheet pen blue in the App, tokens pending with the tokens.css rework | 2026-09-21 | 0f3c4f7 | — |
 | 43 | Amend DESIGN.md with the App mark grammar (rails, tallies, nav, History by place) and the filled action in companion blue, all approved direction 2026-09-21 | 2026-09-21 | c42055b | — |
+| 44 | Settle the rail question in DESIGN.md App marks: the rail stays on every list (Mark, 2026-09-21) | 2026-09-21 | 5c97348 | — |
 
 ### Roadmap Evolution
 
@@ -284,6 +285,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-21T18:32:45Z
-Stopped at: Paused after the design session (handoff tasks 7 to 10 done; DESIGN.md amended four times; canvas at version 142). Task 11, the code, remains and is phase-sized
-Resume file: .planning/.continue-here.md and .planning/HANDOFF.json (written 2026-09-21T18:32:45Z)
+Last session: 2026-09-21T19:10:00Z
+Stopped at: Session resumed; rail question settled (rail stays on every list, DESIGN.md 5c97348). HANDOFF.json consumed. Next: route handoff Task 11 (tokens.css palette, sheet- prefix, hand tokens, Home rework) as a GSD phase
+Resume file: .planning/.continue-here.md

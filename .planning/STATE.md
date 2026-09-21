@@ -284,5 +284,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-21T14:56:53Z
-Stopped at: Canvas re-pointed to destination colours (task 9 done, rails kept for Mark to reconsider, History nodes by place); tasks 10 and 11 remain; mark grammar not yet in DESIGN.md
+Stopped at: Canvas grammar settled with Mark (rails kept, History by place, filled action in companion blue); tasks 10 and 11 remain; the whole mark grammar and the filled action still need a DESIGN.md amendment
 Resume file: .planning/.continue-here.md (retains the two blocking browser constraints and the fix table; HANDOFF.json consumed)

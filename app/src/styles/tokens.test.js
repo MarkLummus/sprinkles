@@ -93,8 +93,8 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
     const expectedUnread = [
       '--rule-band-edge',
       '--rule-tick',
-      '--hatch-pitch',
-      '--hatch-stroke',
+      '--sheet-hatch-pitch',
+      '--sheet-hatch-stroke',
       '--gap-mark-stop',
       '--rule-tick-hollow',
       '--jar-violet',

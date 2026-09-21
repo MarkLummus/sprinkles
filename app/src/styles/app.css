@@ -4,10 +4,10 @@
 
 body {
   margin: 0;
-  background: var(--ground);
+  background: var(--sheet-ground);
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 /* The binder (route-recipe.md § 6, D-13): every control drawn by the page,
@@ -31,7 +31,7 @@ select {
   background: none;
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
   box-sizing: border-box;
   cursor: pointer;
   /* Rest-state padding (D-15, D-16; 007 line 28, 003 line 30): the
@@ -63,7 +63,7 @@ select:disabled {
    buttons — no border, an ink underline reading the same token pair the
    `a` rule below already uses for its own underline. An underlined word
    is an inline action: the control role's size and leading, 24px tall at
-   desktop (--text-control-min; 44px below 760px, the 759.98px block
+   desktop (--sheet-text-control-min; 44px below 760px, the 759.98px block
    below). */
 .text-control {
   appearance: none;
@@ -73,9 +73,9 @@ select:disabled {
   padding: 0;
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
-  line-height: var(--leading-control);
-  min-height: var(--text-control-min);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
+  min-height: var(--sheet-text-control-min);
   cursor: pointer;
   text-decoration: underline;
   text-decoration-thickness: var(--rule-ink-field);
@@ -103,14 +103,14 @@ select:disabled {
    after .text-control's own rules to win min-height at desktop, and
    before the touch union to lose it at a coarse pointer. */
 .text-toggle {
-  min-height: var(--control-h);
+  min-height: var(--sheet-control-h);
 }
 
 .text-toggle::before {
   content: '';
   display: inline-block;
-  width: var(--size-lead-mark);
-  height: var(--size-lead-mark);
+  width: var(--sheet-size-lead-mark);
+  height: var(--sheet-size-lead-mark);
   box-sizing: border-box;
   border: var(--rule-graduation) solid var(--sheet-ink);
   margin-right: var(--gap-xs);
@@ -118,8 +118,8 @@ select:disabled {
 }
 
 .text-toggle[aria-pressed='true']::before {
-  background: var(--pen-blue);
-  border-color: var(--pen-blue);
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
 }
 
 /* the square carries the state; the underline stays hairline on a pressed
@@ -168,12 +168,12 @@ select.ink-field {
   background-image: linear-gradient(45deg, transparent 50%, var(--sheet-ink) 50%),
     linear-gradient(135deg, var(--sheet-ink) 50%, transparent 50%);
   background-position:
-    calc(100% - var(--inset-select-chevron-x)) calc(50% - var(--inset-select-chevron-y)),
-    calc(100% - var(--inset-select-chevron-x) + var(--size-select-chevron))
-      calc(50% - var(--inset-select-chevron-y));
+    calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),
+    calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron))
+      calc(50% - var(--sheet-inset-select-chevron-y));
   background-size:
-    var(--size-select-chevron) var(--size-select-chevron),
-    var(--size-select-chevron) var(--size-select-chevron);
+    var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),
+    var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
   background-repeat: no-repeat;
   padding-right: var(--gap-select-chevron-room);
 }
@@ -185,8 +185,8 @@ select.ink-field {
    sketch 008 lines 107-109). */
 input[type='checkbox'] {
   appearance: none;
-  width: var(--size-mark-stop);
-  height: var(--size-mark-stop);
+  width: var(--sheet-size-mark-stop);
+  height: var(--sheet-size-mark-stop);
   margin: 0;
   border: var(--rule-graduation) solid var(--sheet-ink);
   border-radius: 0;
@@ -201,8 +201,8 @@ input[type='checkbox']:hover {
 }
 
 input[type='checkbox']:checked {
-  background: var(--pen-blue);
-  border-color: var(--pen-blue);
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
 }
 
 /* Number spinners (D-19): the cross-browser pair — Chromium/WebKit hide
@@ -293,10 +293,10 @@ textarea {
   margin-block-start: var(--gap-xs);
   padding: var(--gap-xs) var(--gap-s);
   border: var(--rule-baseline) solid var(--sheet-ink);
-  background: var(--ground);
+  background: var(--sheet-ground);
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
+  font-size: var(--sheet-type-control);
 }
 
 .page-status:empty {
@@ -321,7 +321,7 @@ textarea {
    not-yet-entered text, against entered prose's roman pen-blue. */
 ::placeholder {
   color: var(--sheet-ink);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-style: italic;
   opacity: 1;
 }
@@ -341,7 +341,7 @@ textarea {
    its plain-language name, not a link. */
 .running-head {
   font-family: var(--face-grotesk);
-  font-size: var(--size-running-head);
+  font-size: var(--sheet-size-running-head);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: 0;
@@ -358,7 +358,7 @@ textarea {
 .not-found {
   padding: var(--gap-m) var(--gap-page);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 .not-found a {
@@ -415,7 +415,7 @@ textarea {
    graduation-weight rule separating it from the batch row beneath. */
 .recipe-band__row-version {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(var(--vmeta-min), 1fr);
+  grid-template-columns: minmax(0, 1.6fr) minmax(var(--sheet-vmeta-min), 1fr);
   gap: var(--gap-l);
   align-items: start;
   padding-bottom: var(--gap-m);
@@ -441,13 +441,13 @@ textarea {
 
 .headnote h1 {
   font-family: var(--face-text);
-  font-size: var(--size-recipe-name);
+  font-size: var(--sheet-size-recipe-name);
   margin: 0;
 }
 
 .headnote__prose {
   font-family: var(--face-text);
-  font-size: var(--size-headnote-prose);
+  font-size: var(--sheet-size-headnote-prose);
   max-width: var(--measure-prose);
   margin: var(--gap-s) 0 0;
 }
@@ -458,14 +458,14 @@ textarea {
 .headnote__version-field {
   display: block;
   font-family: var(--face-text);
-  font-size: var(--size-version-line);
+  font-size: var(--sheet-size-version-line);
   margin: var(--gap-xs) 0 0;
 }
 
 .headnote__version-field > .pen-caption {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -500,7 +500,7 @@ textarea {
 .headnote__citation {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
   margin-top: var(--gap-s);
 }
 
@@ -511,7 +511,7 @@ textarea {
 .headnote__citation span:first-child {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -582,7 +582,7 @@ textarea {
 .versions__ceremony-field {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 /* The churned/tasting date field, sized to a date rather than the full
@@ -591,12 +591,12 @@ textarea {
    costs nothing and reads self-documenting beside .ink-field's own
    width: 100%. */
 .versions__ceremony-field .ink-field[type='date'] {
-  width: var(--field-w-date);
+  width: var(--sheet-field-w-date);
 }
 
 .versions__ceremony-field span {
   display: block;
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   margin-bottom: var(--gap-xs);
 }
@@ -614,7 +614,7 @@ textarea {
    the value inheriting the block's own text-face size. */
 .versions__lineage {
   font-family: var(--face-text);
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
   max-width: var(--measure-prose);
   margin: var(--gap-hair) 0 0;
 }
@@ -626,7 +626,7 @@ textarea {
 .versions__lineage-label {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -659,7 +659,7 @@ textarea {
    definition shared by both sites that print it. */
 .version-row__identity {
   font-family: var(--face-text);
-  font-size: var(--size-version-line);
+  font-size: var(--sheet-size-version-line);
   font-weight: 400;
   margin: 0 0 var(--gap-xs);
 }
@@ -668,13 +668,13 @@ textarea {
    are compact metadata on their own labelled lines. */
 .version-row__parent-name {
   font-family: var(--face-text);
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
 }
 
 .version-row__written,
 .version-row__batch-provenance {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-variant-numeric: tabular-nums;
 }
 
@@ -692,14 +692,14 @@ textarea {
 
 .version-row__reason {
   max-width: var(--measure-prose);
-  font-size: var(--type-note);
+  font-size: var(--sheet-type-note);
 }
 
 /* An absence belongs to the printed system, not the maker's pen. */
 .version-row__reason--empty {
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
-  line-height: var(--leading-helper);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-helper);
   color: var(--sheet-ink);
 }
 
@@ -723,7 +723,7 @@ textarea {
   grid-column: 1 / -1;
   margin-top: var(--gap-m);
   padding-top: var(--gap-s);
-  border-top: var(--rule-graduation) solid var(--bookcloth);
+  border-top: var(--rule-graduation) solid var(--sheet-bookcloth);
 }
 
 /* An amended batch's second line in the batch list (D-09), on its own
@@ -731,7 +731,7 @@ textarea {
 .versions__batch-amended {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
 }
 
 .ingredient-table-region {
@@ -790,7 +790,7 @@ textarea {
   table-layout: fixed;
   width: 100%;
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
   font-variant-numeric: tabular-nums;
 }
 
@@ -804,8 +804,8 @@ textarea {
      the number the screen actually shows. */
   box-sizing: border-box;
   text-align: left;
-  padding: var(--gap-xs) var(--table-cell-pad-x);
-  line-height: var(--leading-table);
+  padding: var(--gap-xs) var(--sheet-table-cell-pad-x);
+  line-height: var(--sheet-leading-table);
   border-bottom: var(--rule-baseline) solid var(--sheet-ink);
 }
 
@@ -828,7 +828,7 @@ textarea {
    different column in the row becomes conditional, where a positional
    nth-child selector would not. */
 .ingredient-table__col-numeric {
-  width: var(--col-numeric);
+  width: var(--sheet-col-numeric);
   text-align: right;
 }
 
@@ -838,11 +838,11 @@ textarea {
    column's button painted over the Data column's flag word. Both now
    read their own token (tokens.css). */
 .ingredient-table__col-data {
-  width: var(--col-data);
+  width: var(--sheet-col-data);
 }
 
 .ingredient-table__col-remove {
-  width: var(--col-remove);
+  width: var(--sheet-col-remove);
 }
 
 .ingredient-table .ink-field {
@@ -883,7 +883,7 @@ textarea {
    with .struck-value so no builder adds a fourth meaning. */
 .prose-struck-beneath {
   font-family: var(--face-text);
-  font-size: var(--size-headnote-prose);
+  font-size: var(--sheet-size-headnote-prose);
   max-width: var(--measure-prose);
   text-decoration: line-through;
   text-decoration-thickness: var(--rule-strike);
@@ -895,7 +895,7 @@ textarea {
    with its own remove-this-row control. */
 .ingredient-table__flag {
   font-family: var(--face-grotesk);
-  font-size: var(--size-cross-flag);
+  font-size: var(--sheet-size-cross-flag);
   margin: var(--gap-hair) 0 0;
 }
 
@@ -910,7 +910,7 @@ textarea {
    literal. */
 .ingredient-table__step-head td {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding-top: var(--gap-s);
@@ -921,7 +921,7 @@ textarea {
   text-transform: none;
   letter-spacing: 0;
   font-family: var(--face-text);
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
   margin-left: var(--gap-s);
 }
 
@@ -930,12 +930,12 @@ textarea {
    (formatPortionLine, domain/composition.js). */
 .ingredient-table__portion-note {
   display: block;
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
 }
 
 .ingredient-table th {
   font-family: var(--face-grotesk);
-  font-size: var(--size-running-head);
+  font-size: var(--sheet-size-running-head);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -956,7 +956,7 @@ textarea {
 
 .table-small-print {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   margin: var(--gap-hair) 0 0;
 }
 
@@ -964,7 +964,7 @@ textarea {
   caption-side: top;
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-weight: 500;
   letter-spacing: 0.04em;
   text-align: left;
@@ -985,12 +985,12 @@ textarea {
    in the bookcloth colour that identifies the book, never a status. */
 .region-name {
   font-family: var(--face-grotesk);
-  font-size: var(--type-section);
+  font-size: var(--sheet-type-section);
   font-weight: 600;
-  line-height: var(--leading-section);
+  line-height: var(--sheet-leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--bookcloth);
+  color: var(--sheet-bookcloth);
   margin: 0 0 var(--gap-xs);
 }
 
@@ -1022,7 +1022,7 @@ textarea {
 
 .method-step__n {
   font-family: var(--face-grotesk);
-  font-size: var(--size-figure-value);
+  font-size: var(--sheet-size-figure-value);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1042,7 +1042,7 @@ textarea {
 
 .method-step__lead {
   font-family: var(--face-text);
-  font-size: var(--size-headnote-prose);
+  font-size: var(--sheet-size-headnote-prose);
   max-width: var(--measure-prose);
   margin: 0;
 }
@@ -1060,7 +1060,7 @@ textarea {
   border: var(--rule-graduation) solid var(--sheet-ink);
   padding: 0 var(--gap-xs);
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1068,7 +1068,7 @@ textarea {
 .method-step__aside {
   font-family: var(--face-text);
   font-style: italic;
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
   max-width: var(--measure-prose);
   margin: var(--gap-xs) 0 0;
 }
@@ -1086,7 +1086,7 @@ textarea {
 
 .method-step__skipped-label {
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1096,7 +1096,7 @@ textarea {
    render-only-when-present convention as .method-step__purpose/__aside. */
 .method-step__changed {
   font-family: var(--face-text);
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
   max-width: var(--measure-prose);
   margin: var(--gap-xs) 0 0;
 }
@@ -1130,12 +1130,12 @@ textarea {
   flex-wrap: wrap;
   gap: var(--gap-uses-chip);
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
 }
 
 .method-step__uses legend {
   width: 100%;
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1153,7 +1153,7 @@ textarea {
    "done" control on the same line. */
 .method-step__uses-line {
   font-family: var(--face-grotesk);
-  font-size: var(--size-cross-flag);
+  font-size: var(--sheet-size-cross-flag);
   margin: var(--gap-xs) 0 0;
 }
 
@@ -1189,7 +1189,7 @@ textarea {
 .method-step__flag,
 .method-step__stale-flag {
   font-family: var(--face-grotesk);
-  font-size: var(--size-cross-flag);
+  font-size: var(--sheet-size-cross-flag);
   margin: var(--gap-hair) 0 0;
 }
 
@@ -1198,7 +1198,7 @@ textarea {
   align-items: center;
   gap: var(--gap-xs);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 .method-step__line-control {
@@ -1206,7 +1206,7 @@ textarea {
   flex-direction: column;
   gap: var(--gap-xs);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 /* The margin's derived-advisories block (FORM2-02, 03-05): small-print
@@ -1217,9 +1217,9 @@ textarea {
   display: flex;
   justify-content: space-between;
   font-family: var(--face-grotesk);
-  font-size: var(--type-section);
+  font-size: var(--sheet-type-section);
   font-weight: 600;
-  line-height: var(--leading-section);
+  line-height: var(--sheet-leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: var(--gap-m) 0 0;
@@ -1227,7 +1227,7 @@ textarea {
 
 .derived-advisories__item {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   margin: var(--gap-xs) 0 0;
 }
 
@@ -1235,9 +1235,9 @@ textarea {
   display: flex;
   justify-content: space-between;
   font-family: var(--face-grotesk);
-  font-size: var(--type-section);
+  font-size: var(--sheet-type-section);
   font-weight: 600;
-  line-height: var(--leading-section);
+  line-height: var(--sheet-leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: var(--gap-m) 0 0;
@@ -1247,8 +1247,8 @@ textarea {
   margin: var(--gap-xs) 0 0;
   padding-left: var(--gap-m);
   font-family: var(--face-text);
-  font-size: var(--type-note);
-  line-height: var(--leading-note);
+  font-size: var(--sheet-type-note);
+  line-height: var(--sheet-leading-note);
 }
 
 /* A note's pen-open field and its remove control (03-02). */
@@ -1267,7 +1267,7 @@ textarea {
    just carrying provenance, so this is not a second legend. */
 .authored__inherited {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
 }
 
 .formulation-note__rule + .formulation-note__rule {
@@ -1276,7 +1276,7 @@ textarea {
 
 .formulation-note__fat-breakdown {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-variant-numeric: tabular-nums;
   margin: var(--gap-xs) 0 0;
 }
@@ -1308,15 +1308,15 @@ textarea {
 }
 
 .graduated-rule__label {
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 .graduated-rule__label-term {
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
 }
 
 .graduated-rule__value {
-  font-size: var(--size-figure-value);
+  font-size: var(--sheet-size-figure-value);
   font-weight: 700;
 }
 
@@ -1324,24 +1324,24 @@ textarea {
   display: flex;
   justify-content: space-between;
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   font-variant-numeric: tabular-nums;
   margin-top: var(--gap-hair);
 }
 
 .graduated-rule__deviation {
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
 }
 
 .graduated-rule__basis {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   margin: var(--gap-hair) 0 0;
 }
 
 .basis-note {
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   max-width: var(--measure-prose);
   margin: var(--gap-m) 0 0;
 }
@@ -1359,13 +1359,13 @@ textarea {
 .prose-field {
   font-family: var(--face-text);
   font-size: inherit;
-  line-height: var(--leading-note);
-  color: var(--pen-blue);
+  line-height: var(--sheet-leading-note);
+  color: var(--sheet-pen-blue);
   border: none;
   background: none;
   padding: var(--gap-hair) 0;
   margin: 0;
-  min-height: calc(var(--leading-note) * 1em);
+  min-height: calc(var(--sheet-leading-note) * 1em);
   width: 100%;
   max-width: var(--measure-prose);
   box-sizing: border-box;
@@ -1390,8 +1390,8 @@ textarea {
    margin and the method. Counted values keep .ink-text's grotesk. */
 .prose-text {
   font-family: var(--face-text);
-  line-height: var(--leading-note);
-  color: var(--pen-blue);
+  line-height: var(--sheet-leading-note);
+  color: var(--sheet-pen-blue);
   overflow-wrap: anywhere;
 }
 
@@ -1401,15 +1401,15 @@ textarea {
    outline disappears, form giving way to plain text. */
 .ink-field {
   font-family: var(--face-grotesk);
-  font-size: var(--size-ink-field);
+  font-size: var(--sheet-size-ink-field);
   font-variant-numeric: tabular-nums;
-  color: var(--pen-blue);
+  color: var(--sheet-pen-blue);
   border: var(--rule-ink-field) solid var(--sheet-ink);
   border-radius: 0;
   background: none;
   padding: var(--gap-hair) var(--gap-xs);
-  line-height: var(--leading-field);
-  min-height: var(--field-min-h);
+  line-height: var(--sheet-leading-field);
+  min-height: var(--sheet-field-min-h);
   width: 100%;
   box-sizing: border-box;
 }
@@ -1423,14 +1423,14 @@ textarea {
 }
 
 .ink-text {
-  color: var(--pen-blue);
+  color: var(--sheet-pen-blue);
 }
 
 .batch-margin__legend {
   font-family: var(--face-grotesk);
-  font-size: var(--type-section);
+  font-size: var(--sheet-type-section);
   font-weight: 600;
-  line-height: var(--leading-section);
+  line-height: var(--sheet-leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: 0 0 var(--gap-xs);
@@ -1441,7 +1441,7 @@ textarea {
   flex-direction: column;
   gap: var(--gap-xs);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
   margin-top: var(--gap-xs);
 }
 
@@ -1459,7 +1459,7 @@ textarea {
    content moved here. */
 .batch-row__cells {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--col-batch-cell-min), max-content));
+  grid-template-columns: repeat(auto-fit, minmax(var(--sheet-col-batch-cell-min), max-content));
   gap: var(--gap-s) var(--gap-l);
   margin: var(--gap-s) 0 0;
 }
@@ -1499,7 +1499,7 @@ textarea {
 .batch-row__group-label {
   margin: 0 0 var(--gap-xs);
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1522,7 +1522,7 @@ textarea {
   padding-top: var(--gap-s);
   border-top: var(--rule-graduation) solid var(--sheet-ink);
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
 }
 
 .batch-row__provenance > div {
@@ -1538,7 +1538,7 @@ textarea {
 
 .batch-row__provenance dd {
   margin: 0;
-  color: var(--pen-blue);
+  color: var(--sheet-pen-blue);
   overflow-wrap: anywhere;
 }
 
@@ -1550,7 +1550,7 @@ textarea {
 
 .batch-row__cell-label {
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1564,10 +1564,10 @@ textarea {
    every figure rule are untouched). */
 .batch-row__cell-value {
   font-family: var(--face-grotesk);
-  font-size: var(--type-note);
+  font-size: var(--sheet-type-note);
   font-weight: 400;
-  line-height: var(--leading-figure);
-  color: var(--pen-blue);
+  line-height: var(--sheet-leading-figure);
+  color: var(--sheet-pen-blue);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1587,16 +1587,16 @@ textarea {
 
 .batch-row__date {
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
+  font-size: var(--sheet-type-control);
   font-variant-numeric: tabular-nums;
-  color: var(--pen-blue);
+  color: var(--sheet-pen-blue);
 }
 
 /* A measured cell's own unit, set lighter than its figure (sketch
    003 variant B, index.html:89, 03.3-07): also carries the cell's
    "not measured" wording alone when the value is absent. */
 .batch-row__unit {
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
   font-weight: 400;
 }
 
@@ -1611,7 +1611,7 @@ textarea {
    index.html:90, 03.3-07). */
 .batch-row__plan {
   display: block;
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   margin-top: var(--gap-hair);
 }
 
@@ -1621,7 +1621,7 @@ textarea {
 .batch-row__tasting-meta {
   text-transform: none;
   letter-spacing: 0;
-  color: var(--pen-blue);
+  color: var(--sheet-pen-blue);
 }
 
 /* Correct, on the batch head line (sketch 003 @ d89b758 line 84:
@@ -1654,7 +1654,7 @@ textarea {
    rule, so the read view sharing this container keeps its own
    already-shipped full width (VERIFICATION.md gap, 03.3.1). */
 .batch-margin--pen {
-  max-width: var(--pen-w);
+  max-width: var(--sheet-pen-w);
 }
 
 .batch-margin__list {
@@ -1662,7 +1662,7 @@ textarea {
   margin: var(--gap-xs) 0 0;
   padding: 0;
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 .batch-margin__list li + li {
@@ -1696,9 +1696,9 @@ textarea {
 .pen-caption {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
-  line-height: var(--leading-section);
+  line-height: var(--sheet-leading-section);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin: 0 0 var(--gap-xs);
@@ -1709,8 +1709,8 @@ textarea {
    case, always a SIBLING of the uppercase caption element. */
 .pen-helper {
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
-  line-height: var(--leading-helper);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-helper);
   font-weight: 400;
   font-style: normal;
   text-transform: none;
@@ -1759,11 +1759,11 @@ textarea {
   flex: 0 0 auto;
   margin: 0 0 var(--gap-s);
   font-family: var(--face-grotesk);
-  font-size: var(--size-table-body);
+  font-size: var(--sheet-size-table-body);
 }
 
 .field-row__label--date {
-  width: var(--field-w-date);
+  width: var(--sheet-field-w-date);
 }
 
 /* Two lines reserved (007 line 39): a short and a long caption in the same
@@ -1774,8 +1774,8 @@ textarea {
 .field-row .pen-caption:not(.segmented-field__caption) {
   display: flex;
   align-items: flex-end;
-  line-height: var(--leading-table);
-  min-height: var(--caption-two-lines);
+  line-height: var(--sheet-leading-table);
+  min-height: var(--sheet-caption-two-lines);
 }
 
 .field-unit {
@@ -1785,15 +1785,15 @@ textarea {
 }
 
 .field-unit .ink-field {
-  width: var(--field-w-figure);
+  width: var(--sheet-field-w-figure);
   flex: 0 0 auto;
   text-align: right;
 }
 
 .field-unit__unit {
-  font-size: var(--size-deviation-words);
+  font-size: var(--sheet-size-deviation-words);
   white-space: nowrap;
-  line-height: var(--leading-control);
+  line-height: var(--sheet-leading-control);
 }
 
 /* The melt row's own alignment override (007 line 286's inline
@@ -1833,7 +1833,7 @@ textarea {
   align-items: flex-end;
   gap: var(--gap-xs);
   margin-bottom: var(--gap-xs);
-  min-height: var(--caption-line-h);
+  min-height: var(--sheet-caption-line-h);
   flex-wrap: wrap;
 }
 
@@ -1861,7 +1861,7 @@ textarea {
    value, uppercase by transform so the source stays sentence case. */
 .axis-mark__name {
   font-family: var(--face-grotesk);
-  font-size: var(--type-label);
+  font-size: var(--sheet-type-label);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1876,12 +1876,12 @@ textarea {
    same fact in CSS rather than opening a second source of truth. */
 .axis-mark__state {
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
+  font-size: var(--sheet-type-control);
   font-style: italic;
 }
 
 .axis-mark__state:has(~ .axis-mark__clear) {
-  color: var(--pen-blue);
+  color: var(--sheet-pen-blue);
   font-style: normal;
 }
 
@@ -1895,7 +1895,7 @@ textarea {
    top (z-index 1, above) and a hovered one above it (z-index 2). */
 .axis-mark__stops {
   display: flex;
-  width: var(--track-stop);
+  width: var(--sheet-track-stop);
 }
 
 .axis-mark__stop {
@@ -1903,8 +1903,8 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 var(--stop-w);
-  height: var(--stop-h);
+  flex: 0 0 var(--sheet-stop-w);
+  height: var(--sheet-stop-h);
   margin-right: calc(-1 * var(--rule-ink-field));
   border: var(--rule-ink-field) solid var(--sheet-ink);
   border-radius: 0;
@@ -1913,7 +1913,7 @@ textarea {
   cursor: pointer;
   /* A label, not a button/select — the global border-box rule above
      doesn't reach it, so the border was adding onto the declared
-     --stop-w/--stop-h instead of being drawn inside them (measured live,
+     --sheet-stop-w/--sheet-stop-h instead of being drawn inside them (measured live,
      03.3.1-06 Task 3: 40x46 instead of the contract's 40x44 below 760px). */
   box-sizing: border-box;
 }
@@ -1943,9 +1943,9 @@ textarea {
    (Pitfall 2). */
 .axis-mark__stop:has(input[type='radio']:checked),
 .segmented__option:has(input[type='radio']:checked) {
-  background: var(--pen-blue);
-  border-color: var(--pen-blue);
-  color: var(--ground);
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
+  color: var(--sheet-ground);
   z-index: 1;
 }
 
@@ -1971,10 +1971,10 @@ textarea {
 .axis-mark__anchors {
   display: flex;
   justify-content: space-between;
-  width: var(--track-stop);
+  width: var(--sheet-track-stop);
   margin-top: var(--gap-hair);
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
+  font-size: var(--sheet-type-control);
   font-style: italic;
   white-space: nowrap;
 }
@@ -1988,7 +1988,7 @@ textarea {
 .batch-margin .axis-mark__clear,
 .batch-margin .segmented-field__clear {
   font-family: var(--face-grotesk);
-  font-size: var(--size-mark-stop);
+  font-size: var(--sheet-size-mark-stop);
   margin-top: 0;
   margin-left: auto;
 }
@@ -2016,12 +2016,12 @@ textarea {
   border: var(--rule-ink-field) solid var(--sheet-ink);
   border-radius: 0;
   margin-right: calc(-1 * var(--rule-ink-field));
-  padding: var(--seg-pad-y) var(--seg-pad-x);
+  padding: var(--sheet-seg-pad-y) var(--sheet-seg-pad-x);
   box-sizing: border-box;
-  min-height: var(--stop-h);
+  min-height: var(--sheet-stop-h);
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
-  line-height: var(--leading-control);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
   color: var(--sheet-ink);
   cursor: pointer;
 }
@@ -2035,8 +2035,8 @@ textarea {
    size). D-06's "no hover on options" is superseded (RESEARCH 2c). */
 .segmented__option:hover {
   border-width: var(--rule-hover);
-  padding: calc(var(--seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field)))
-    calc(var(--seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));
+  padding: calc(var(--sheet-seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field)))
+    calc(var(--sheet-seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));
   z-index: 2;
 }
 
@@ -2075,11 +2075,11 @@ textarea {
   padding: 0;
   background: none;
   box-sizing: border-box;
-  min-height: var(--stop-h);
+  min-height: var(--sheet-stop-h);
   margin-top: 0;
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
-  line-height: var(--leading-control);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
   letter-spacing: 0;
   color: var(--sheet-ink);
   cursor: pointer;
@@ -2093,8 +2093,8 @@ textarea {
 .chip-toggle::before {
   content: '';
   display: inline-block;
-  width: var(--size-lead-mark);
-  height: var(--size-lead-mark);
+  width: var(--sheet-size-lead-mark);
+  height: var(--sheet-size-lead-mark);
   box-sizing: border-box;
   border: var(--rule-graduation) solid var(--sheet-ink);
   flex: 0 0 auto;
@@ -2105,8 +2105,8 @@ textarea {
 }
 
 .chip-toggle[aria-pressed='true']::before {
-  background: var(--pen-blue);
-  border-color: var(--pen-blue);
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
 }
 
 /* The one save ceremony (PenFoot.jsx's SaveCeremony; D-01): one rule
@@ -2124,7 +2124,7 @@ textarea {
 
 .save-ceremony__hint {
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
+  font-size: var(--sheet-type-control);
 }
 
 /* The removal toast sits at the left of the ceremony row (007 line 55's
@@ -2141,10 +2141,10 @@ textarea {
    prose field keeps its own 70ch). */
 .form-status {
   font-family: var(--face-grotesk);
-  font-size: var(--type-control);
+  font-size: var(--sheet-type-control);
   margin: var(--gap-m) 0 0;
   max-width: var(--measure-prose);
-  line-height: var(--leading-note);
+  line-height: var(--sheet-leading-note);
 }
 
 /* Required guidance and a malformed field's own sentence share one quiet
@@ -2156,7 +2156,7 @@ textarea {
 .field-error {
   display: block;
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
   margin-top: var(--gap-hair);
 }
 
@@ -2169,7 +2169,7 @@ textarea {
    gated by 03.3.1-06 Task 2's own extension of the touch-step media
    block further down this file. The hairline sits at the contract's own
    calc position. Clearance is now carried by padding on the two flanking
-   columns rather than column-gap — --axes-cols-clearance is the
+   columns rather than column-gap — --sheet-axes-cols-clearance is the
    declared column's own padding-left (007 line 66), so the verified
    12px stop-to-rule clearance is still this one token's arithmetic. */
 .axes-grid {
@@ -2185,7 +2185,7 @@ textarea {
 }
 
 .axes-grid:not(.axes-grid--stacked) > .axis-mark--declared {
-  padding-left: var(--axes-cols-clearance);
+  padding-left: var(--sheet-axes-cols-clearance);
 }
 
 .axes-rule {
@@ -2221,7 +2221,7 @@ textarea {
 .axes-grid:not(.axes-grid--stacked) > .axes-cue--declared,
 .axes-grid:not(.axes-grid--stacked) > .defect-group--declared {
   grid-column: 3;
-  padding-left: var(--axes-cols-clearance);
+  padding-left: var(--sheet-axes-cols-clearance);
 }
 
 .defects-head {
@@ -2312,14 +2312,14 @@ textarea {
    css-source.js's first-match rule lookups keep finding every top-level
    rule first. Buttons, selects, ink fields and segmented options grow
    to a 44px minimum height (--touch-min) and the axis-mark stop box to
-   the joined 44x44 cell (--touch-stop-width over --touch-stop-height,
-   5 x 44 - 4 x 1 = 216 on --track-stop-narrow, sketch 007 lines
+   the joined 44x44 cell (--touch-stop-width over --sheet-touch-stop-height,
+   5 x 44 - 4 x 1 = 216 on --sheet-track-stop-narrow, sketch 007 lines
    177-178) — the box moved from the input to the label in 03.3.1-06
    Task 1's rebuild, so this is the label's own override now, not the
    input's; flex-basis repeats the width so the joined-cell flex row
-   still grows correctly (the desktop rule's flex: 0 0 var(--stop-w)
+   still grows correctly (the desktop rule's flex: 0 0 var(--sheet-stop-w)
    would otherwise keep its 38px basis here); the stops' and anchors'
-   shared track widens to the 216px --track-stop-narrow. Every desktop
+   shared track widens to the 216px --sheet-track-stop-narrow. Every desktop
    rule above is untouched — everything here lives inside this block,
    whose --touch-min flex-row stops wrap rather than overflow (the
    .axis-mark__stops row already wraps). The 759.98px prelude is the one
@@ -2374,7 +2374,7 @@ textarea {
      but 009 never drew narrow, so 007/008 still govern here. */
   .axis-mark__head,
   .segmented-field__head {
-    min-height: var(--caption-line-h-touch);
+    min-height: var(--sheet-caption-line-h-touch);
   }
 
   /* Sketch 008 line 166, approved by Mark 2026-09-15, retiring the app's
@@ -2383,16 +2383,16 @@ textarea {
      also stops the record jumping under the maker's thumb on the iPad. */
   .ink-field,
   .prose-field {
-    font-size: var(--type-note);
+    font-size: var(--sheet-type-note);
   }
 
   /* Decision C (sketch 009, settled by Mark 2026-09-15): at touch the stop
-     grows in HEIGHT only. The width and --track-stop are deliberately absent
+     grows in HEIGHT only. The width and --sheet-track-stop are deliberately absent
      here and stay in the width-keyed block below, so the 186px track still
      fits the 213.3px column a wide touch screen gives it. A 38x44 target,
      not the 32px one a wide touch viewport got before. */
   .axis-mark__stop {
-    height: var(--touch-stop-height);
+    height: var(--sheet-touch-stop-height);
   }
 }
 
@@ -2400,7 +2400,7 @@ textarea {
    Two different reasons, both measured:
    - The version row's collapse is a D-15 layout decision (UAT item I-01): a
      wide tablet must keep its two columns.
-   - The 216px --track-stop-narrow and the 44x44 stop are drawn for the
+   - The 216px --sheet-track-stop-narrow and the 44x44 stop are drawn for the
      STACKED axes layout. At a wide viewport the axes sit in a three-column
      grid whose columns measure 213.3px, so a 216px track overflows its column
      into the next axis (measured on Mark's iPad, 1366 coarse, 2026-09-15:
@@ -2415,12 +2415,12 @@ textarea {
 
   .axis-mark__stops,
   .axis-mark__anchors {
-    width: var(--track-stop-narrow);
+    width: var(--sheet-track-stop-narrow);
   }
 
   .axis-mark__stop {
     width: var(--touch-stop-width);
-    height: var(--touch-stop-height);
+    height: var(--sheet-touch-stop-height);
     flex-basis: var(--touch-stop-width);
   }
 }
@@ -2456,13 +2456,13 @@ textarea {
   }
 
   /* .ink-field is deliberately NOT here. The 600px step used to drop it to
-     --type-control (13px), which is the pre-declared departure sketch 008 line
+     --sheet-type-control (13px), which is the pre-declared departure sketch 008 line
      166 retires — and below 600 is exactly where a phone's auto-zoom bites, so
      the touch union's 16px must survive this step. The margin's own prose
      field keeps the smaller size; 008 speaks for .ink-field and .prose-field,
      not for it. */
   .batch-margin__field {
-    font-size: var(--type-control);
+    font-size: var(--sheet-type-control);
   }
 
   .save-ceremony,
@@ -2470,8 +2470,8 @@ textarea {
     flex-wrap: wrap;
   }
 
-  /* At 393px the ingredient table's sized columns (--col-numeric x3 +
-     --col-data, tokens.css) sum past the content width the region has
+  /* At 393px the ingredient table's sized columns (--sheet-col-numeric x3 +
+     --sheet-col-data, tokens.css) sum past the content width the region has
      left after the page's own padding, and table-layout: fixed cannot
      shrink a sized column (RESEARCH.md Pitfall 7). The sketch draws no
      rule for this width (003 was tested at 834/1024), so the table
@@ -2507,7 +2507,7 @@ textarea {
 @media (min-width: 760px) and (pointer: coarse) {
   .axis-mark__head,
   .segmented-field__head {
-    min-height: var(--caption-two-lines-abs);
+    min-height: var(--sheet-caption-two-lines-abs);
   }
 
   .axis-mark__head .text-control,

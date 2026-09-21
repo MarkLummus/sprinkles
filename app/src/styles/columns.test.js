@@ -90,10 +90,10 @@ const tokens = readCustomProperties(tokensSource);
 const columnRules = readColumnRules(appCssSource);
 const emittedColumns = emittedColumnClasses(ingredientTableSource);
 
-const tableCellPadX = resolveTokenPx(tokens, '--table-cell-pad-x');
-const colNumeric = resolveTokenPx(tokens, '--col-numeric');
-const colData = resolveTokenPx(tokens, '--col-data');
-const colRemove = resolveTokenPx(tokens, '--col-remove');
+const tableCellPadX = resolveTokenPx(tokens, '--sheet-table-cell-pad-x');
+const colNumeric = resolveTokenPx(tokens, '--sheet-col-numeric');
+const colData = resolveTokenPx(tokens, '--sheet-col-data');
+const colRemove = resolveTokenPx(tokens, '--sheet-col-remove');
 
 describe('reading helpers', () => {
   test('stripCssComments removes a comment block without touching the rule beside it', () => {
@@ -115,9 +115,9 @@ describe('reading helpers', () => {
   });
 
   test('readColumnRules reads the declarations for a single-selector column rule', () => {
-    const fixture = `.ingredient-table__col-numeric {\n  width: var(--col-numeric);\n  text-align: right;\n}`;
+    const fixture = `.ingredient-table__col-numeric {\n  width: var(--sheet-col-numeric);\n  text-align: right;\n}`;
     const byColumn = readColumnRules(fixture);
-    expect(byColumn.numeric).toContain('var(--col-numeric)');
+    expect(byColumn.numeric).toContain('var(--sheet-col-numeric)');
   });
 });
 
@@ -135,7 +135,7 @@ describe('task 1 — border-box accounting and a corrected derivation', () => {
     const paddingDecl = cellRule.declarations.match(/padding:\s*([^;]+);/);
     expect(paddingDecl, 'expected a padding declaration on the cell rule').toBeTruthy();
     expect(paddingDecl[1]).not.toMatch(/var\(--gap-s\)/);
-    expect(paddingDecl[1]).toMatch(/var\(--table-cell-pad-x\)/);
+    expect(paddingDecl[1]).toMatch(/var\(--sheet-table-cell-pad-x\)/);
   });
 
   test('the horizontal padding token is declared, is a px value, and is tighter than the old 12px gap-s padding', () => {
@@ -147,7 +147,7 @@ describe('task 1 — border-box accounting and a corrected derivation', () => {
     for (const col of ['numeric']) {
       const decl = columnRules[col];
       expect(decl, `expected a rule for .ingredient-table__col-${col}`).toBeTruthy();
-      expect(decl).toMatch(/width:\s*var\(--col-[\w-]+\)/);
+      expect(decl).toMatch(/width:\s*var\(--sheet-col-[\w-]+\)/);
       expect(decl).not.toMatch(/width:\s*\d/);
     }
   });
@@ -186,7 +186,7 @@ describe('task 2 — Data and Remove get columns of their own; the name column a
   test('every other column reads its width through a --col-* token that resolves to a px value', () => {
     for (const col of ['numeric', 'data', 'remove']) {
       const decl = columnRules[col];
-      const match = decl.match(/width:\s*var\((--col-[\w-]+)\)/);
+      const match = decl.match(/width:\s*var\((--sheet-col-[\w-]+)\)/);
       expect(match, `expected ${col} to read width from a --col-* token`).toBeTruthy();
       expect(resolveTokenPx(tokens, match[1])).toBeTypeOf('number');
     }

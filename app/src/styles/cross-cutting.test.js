@@ -72,7 +72,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test('the touch tokens resolve through resolveTokenPx to 44 and 44, and the stop-height alias rides --touch-min', () => {
     expect(resolveTokenPx(tokens, '--touch-min')).toBe(44);
     expect(resolveTokenPx(tokens, '--touch-stop-width')).toBe(44);
-    expect(resolveTokenPx(tokens, '--touch-stop-height')).toBe(44);
+    expect(resolveTokenPx(tokens, '--sheet-touch-stop-height')).toBe(44);
   });
 
   test('history keeps authored names wrappable and reduces nested indentation with logical properties on phone widths', () => {
@@ -137,16 +137,16 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(max-width: 759.98px)');
     expect(rule, 'expected the width-only axis-mark__stop rule').toBeTruthy();
     expect(rule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
-    expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
+    expect(rule.declarations).toMatch(/height:\s*var\(--sheet-touch-stop-height\)/);
     expect(rule.declarations).toMatch(/flex-basis:\s*var\(--touch-stop-width\)/);
     expect(rule.declarations).not.toMatch(/:\s*-?\d+(?:\.\d+)?px/);
   });
 
-  test('inside the media block, the stops and anchors tracks both widen to the 216px --track-stop-narrow', () => {
+  test('inside the media block, the stops and anchors tracks both widen to the 216px --sheet-track-stop-narrow', () => {
     const rule = mediaRuleFor('.axis-mark__stops, .axis-mark__anchors');
     expect(rule, 'expected the media-block track-width rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 759.98px)');
-    expect(rule.declarations).toMatch(/width:\s*var\(--track-stop-narrow\)/);
+    expect(rule.declarations).toMatch(/width:\s*var\(--sheet-track-stop-narrow\)/);
   });
 
   test('the touch union carries the six sizing rules, and the width-only block keeps the version row (Mark, 2026-09-15: touch is a mode, the version row collapse is a width decision)', () => {
@@ -206,7 +206,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     // back.
     const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(rule, 'expected the touch-union axis-mark__stop rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/height:\s*var\(--touch-stop-height\)/);
+    expect(rule.declarations).toMatch(/height:\s*var\(--sheet-touch-stop-height\)/);
     expect(rule.declarations).not.toMatch(/(^|[^-])width:/);
     expect(rule.declarations).not.toMatch(/flex-basis/);
   });
@@ -232,19 +232,19 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     // case it was drawn for, and this test fails if they are merged again.
     const wide = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(min-width: 760px) and (pointer: coarse)');
     expect(wide, 'expected the wide-touch caption-line rule').toBeTruthy();
-    expect(wide.declarations).toMatch(/min-height:\s*var\(--caption-two-lines-abs\)/);
+    expect(wide.declarations).toMatch(/min-height:\s*var\(--sheet-caption-two-lines-abs\)/);
 
     const narrow = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(narrow, 'expected the narrow caption-line rule').toBeTruthy();
-    expect(narrow.declarations).toMatch(/min-height:\s*var\(--caption-line-h-touch\)/);
+    expect(narrow.declarations).toMatch(/min-height:\s*var\(--sheet-caption-line-h-touch\)/);
   });
 
   test("sketch 008's touch font bump survives the 600px step (260915-x6n)", () => {
     const bump = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(bump, 'expected the touch-union font rule').toBeTruthy();
-    expect(bump.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+    expect(bump.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
 
-    // The 600px step used to pull .ink-field back down to --type-control,
+    // The 600px step used to pull .ink-field back down to --sheet-type-control,
     // which is the pre-declared 13px departure 008 line 166 retires — and
     // below 600 is exactly where a phone's auto-zoom bites. The step now
     // names only the margin's own prose field.
@@ -311,7 +311,7 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     const rule = mediaRuleFor('.batch-margin__field');
     expect(rule, 'expected a media-scoped field-text rule').toBeTruthy();
     expect(rule.media).toBe('(max-width: 600px)');
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-control\)/);
     expect(rule.selector).not.toMatch(/\.ink-field/);
   });
 
@@ -363,13 +363,13 @@ describe('the 1099.98px block — the page stacks (sketch 003 line 48, D-15)', (
     expect(rule.declarations).not.toMatch(/padding/);
   });
 
-  test(".recipe-band__row-version's desktop columns read --vmeta-min at a 300px floor (sketch 003 line 69)", () => {
+  test(".recipe-band__row-version's desktop columns read --sheet-vmeta-min at a 300px floor (sketch 003 line 69)", () => {
     const rule = ruleFor('.recipe-band__row-version');
     expect(rule, 'expected the desktop .recipe-band__row-version rule').toBeTruthy();
     expect(rule.declarations).toMatch(
-      /minmax\(0, 1\.6fr\) minmax\(var\(--vmeta-min\), 1fr\)/,
+      /minmax\(0, 1\.6fr\) minmax\(var\(--sheet-vmeta-min\), 1fr\)/,
     );
-    expect(resolveTokenPx(tokens, '--vmeta-min')).toBe(300);
+    expect(resolveTokenPx(tokens, '--sheet-vmeta-min')).toBe(300);
   });
 });
 
@@ -401,32 +401,32 @@ describe('the stylesheet reader sees a media block (parser round-trip, css-sourc
 
 describe('type roles — the four validated sizes mapped onto tokens', () => {
   test('the role tokens carry the sketch\'s values, by value string (resolveTokenPx is px-only)', () => {
-    expect(tokens['--type-section']).toBe('0.875rem');
-    expect(tokens['--leading-section']).toBe('1.35');
-    expect(tokens['--type-label']).toBe('0.75rem');
-    expect(tokens['--type-control']).toBe('0.8125rem');
-    expect(tokens['--type-note']).toBe('1rem');
-    expect(tokens['--leading-note']).toBe('1.5');
+    expect(tokens['--sheet-type-section']).toBe('0.875rem');
+    expect(tokens['--sheet-leading-section']).toBe('1.35');
+    expect(tokens['--sheet-type-label']).toBe('0.75rem');
+    expect(tokens['--sheet-type-control']).toBe('0.8125rem');
+    expect(tokens['--sheet-type-note']).toBe('1rem');
+    expect(tokens['--sheet-leading-note']).toBe('1.5');
   });
 
   test('the four section-heading rules read the section role at weight 600 and leading 1.35', () => {
     for (const selector of ['.region-name', '.batch-margin__legend', '.authored__legend', '.derived-advisories__legend']) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to carry the section role`).toBeTruthy();
-      expect(rule.declarations).toMatch(/font-size:\s*var\(--type-section\)/);
+      expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-section\)/);
       expect(rule.declarations).toMatch(/font-weight:\s*600/);
-      expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-section\)/);
+      expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-section\)/);
     }
   });
 
   test('.region-name keeps its ratified surface traits — bookcloth colour and the uppercase/letter-spacing transform', () => {
     const rule = ruleFor('.region-name');
-    expect(rule.declarations).toMatch(/color:\s*var\(--bookcloth\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-bookcloth\)/);
     expect(rule.declarations).toMatch(/text-transform:\s*uppercase/);
     expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
-  test('the nine caption rules read --type-label at weight 500', () => {
+  test('the nine caption rules read --sheet-type-label at weight 500', () => {
     for (const selector of [
       '.headnote__version-field > .pen-caption',
       '.headnote__citation span:first-child',
@@ -440,7 +440,7 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     ]) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to carry the caption role`).toBeTruthy();
-      expect(rule.declarations).toMatch(/font-size:\s*var\(--type-label\)/);
+      expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-label\)/);
       expect(rule.declarations).toMatch(/font-weight:\s*500/);
     }
   });
@@ -468,7 +468,7 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     for (const selector of HELPER_STATUS_SELECTORS) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to read the helper/status role`).toBeTruthy();
-      expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+      expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-control\)/);
     }
   });
 
@@ -494,24 +494,24 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
 
   test('.authored__notes reads the note role and the note leading', () => {
     const rule = ruleFor('.authored__notes');
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
-    expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
   });
 
   test('.prose-text reads the note leading and keeps its deliberate size inherit (no font-size of its own)', () => {
     const rule = ruleFor('.prose-text');
-    expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
     expect(rule.declarations).not.toMatch(/font-size:/);
   });
 
-  test('the History register\'s three prose paragraphs all read --type-note, and the non-prose variant does not', () => {
+  test('the History register\'s three prose paragraphs all read --sheet-type-note, and the non-prose variant does not', () => {
     const reasonProse = historyRuleFor('.recipe-history__reason .prose-text');
     expect(reasonProse, 'expected a .recipe-history__reason .prose-text rule').toBeTruthy();
-    expect(reasonProse.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+    expect(reasonProse.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
 
     const outcomeProse = historyRuleFor('.recipe-history__outcome.prose-text');
     expect(outcomeProse, 'expected a .recipe-history__outcome.prose-text rule').toBeTruthy();
-    expect(outcomeProse.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+    expect(outcomeProse.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
 
     // Not historyRuleFor: that helper returns the FIRST non-media rule whose
     // selector list contains the string, and for .recipe-history__next that
@@ -519,28 +519,28 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     // which carries no size at all — so look up the exact selector instead.
     const nextTime = historyRules.find((r) => !r.media && r.selector === '.recipe-history__next');
     expect(nextTime, 'expected an exact .recipe-history__next rule').toBeTruthy();
-    expect(nextTime.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
-    expect(nextTime.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+    expect(nextTime.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
+    expect(nextTime.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
 
     const outcomeNonProse = historyRuleFor('.recipe-history__outcome:not(.prose-text)');
     expect(outcomeNonProse, 'expected a .recipe-history__outcome:not(.prose-text) rule').toBeTruthy();
-    expect(outcomeNonProse.declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+    expect(outcomeNonProse.declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
   });
 
   test('.prose-field inherits its contextual size but keeps a readable one-line base extent', () => {
     const rule = ruleFor('.prose-field');
     expect(rule.declarations).toMatch(/font-size:\s*inherit/);
-    expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-note\)/);
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-hair\) 0/);
-    expect(rule.declarations).toMatch(/min-height:\s*calc\(var\(--leading-note\) \* 1em\)/);
+    expect(rule.declarations).toMatch(/min-height:\s*calc\(var\(--sheet-leading-note\) \* 1em\)/);
   });
 
   test('the recorded figure reads the note size at the prose weight, in pen blue (sketch 003 line 88, D-15)', () => {
     const rule = ruleFor('.batch-row__cell-value');
     expect(rule, 'expected a .batch-row__cell-value rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-note\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
     expect(rule.declarations).toMatch(/font-weight:\s*400/);
-    expect(rule.declarations).toMatch(/color:\s*var\(--pen-blue\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
     const absentRule = ruleFor('.batch-row__unit--absent');
     expect(absentRule, 'expected a .batch-row__unit--absent rule').toBeTruthy();
     expect(absentRule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
@@ -549,9 +549,9 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
   test('.text-control reads the control role at a 24px minimum height (sketch 003 line 32, 007 line 131, D-15)', () => {
     const rule = ruleFor('.text-control');
     expect(rule, 'expected a .text-control rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
-    expect(rule.declarations).toMatch(/min-height:\s*var\(--text-control-min\)/);
-    expect(tokens['--text-control-min']).toBe('24px');
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-control\)/);
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--sheet-text-control-min\)/);
+    expect(tokens['--sheet-text-control-min']).toBe('24px');
   });
 });
 
@@ -565,15 +565,15 @@ describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
   test('.field-unit .ink-field reads the 56px figure width', () => {
     const rule = ruleFor('.field-unit .ink-field');
     expect(rule, 'expected a .field-unit .ink-field rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/width:\s*var\(--field-w-figure\)/);
-    expect(resolveTokenPx(tokens, '--field-w-figure')).toBe(56);
+    expect(rule.declarations).toMatch(/width:\s*var\(--sheet-field-w-figure\)/);
+    expect(resolveTokenPx(tokens, '--sheet-field-w-figure')).toBe(56);
   });
 
   test('.field-row__label--date reads the 128px date width', () => {
     const rule = ruleFor('.field-row__label--date');
     expect(rule, 'expected a .field-row__label--date rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/width:\s*var\(--field-w-date\)/);
-    expect(resolveTokenPx(tokens, '--field-w-date')).toBe(128);
+    expect(rule.declarations).toMatch(/width:\s*var\(--sheet-field-w-date\)/);
+    expect(resolveTokenPx(tokens, '--sheet-field-w-date')).toBe(128);
   });
 
   test('.method-step__on-demand sits at its own content width, not stretched by the column flex wrapper', () => {
@@ -588,7 +588,7 @@ describe("the sketch's field row (007 @ 2a212be lines 37-44, D-13)", () => {
     // The em token, deliberately: this element IS a caption, so 2.4em resolves
     // against its own 12px. The -abs companion exists for the caption LINE,
     // which holds a caption without being one. Both must reach 28.8px.
-    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-two-lines\)/);
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--sheet-caption-two-lines\)/);
   });
 });
 
@@ -599,9 +599,9 @@ describe('placeholders italic, entered prose roman pen-blue', () => {
   });
 
   test('entered prose carries no italic of its own — .prose-field and .prose-text stay roman pen-blue', () => {
-    expect(ruleFor('.prose-field').declarations).toMatch(/color:\s*var\(--pen-blue\)/);
+    expect(ruleFor('.prose-field').declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
     expect(ruleFor('.prose-field').declarations).not.toMatch(/font-style/);
-    expect(ruleFor('.prose-text').declarations).toMatch(/color:\s*var\(--pen-blue\)/);
+    expect(ruleFor('.prose-text').declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
     expect(ruleFor('.prose-text').declarations).not.toMatch(/font-style/);
   });
 
@@ -642,7 +642,7 @@ describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption 
     const rule = ruleFor('.axis-mark__head, .segmented-field__head');
     expect(rule, 'expected the grouped .axis-mark__head, .segmented-field__head rule').toBeTruthy();
     expect(rule.declarations).toMatch(/margin-bottom:\s*var\(--gap-xs\)/);
-    expect(rule.declarations).toMatch(/min-height:\s*var\(--caption-line-h\)/);
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--sheet-caption-line-h\)/);
     // M4 (sketch 009, Mark 2026-09-15): bottom-aligned, not centred, so the
     // caption's baseline lands where the field-row caption beside it lands.
     expect(rule.declarations).toMatch(/align-items:\s*flex-end/);
@@ -650,7 +650,7 @@ describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption 
     // em-based reserve would resolve against 12px, which fixed the arithmetic
     // but made the head's computed size differ from the sketch's for no
     // rendered reason — nothing inside inherits it, every child sets its own.
-    // The multiplication moved into --caption-two-lines-abs instead.
+    // The multiplication moved into --sheet-caption-two-lines-abs instead.
     expect(rule.declarations).not.toMatch(/font-size:/);
   });
 });
@@ -665,18 +665,18 @@ describe('joined stops (007 @ 2a212be lines 80-81, 124)', () => {
   test('.axis-mark__stop reads a 38px flex-basis and a one-hairline negative right margin, reset on :last-child', () => {
     const rule = ruleFor('.axis-mark__stop');
     expect(rule, 'expected a .axis-mark__stop rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/flex:\s*0 0 var\(--stop-w\)/);
+    expect(rule.declarations).toMatch(/flex:\s*0 0 var\(--sheet-stop-w\)/);
     expect(rule.declarations).toMatch(/margin-right:\s*calc\(-1 \* var\(--rule-ink-field\)\)/);
     const lastChildRule = ruleFor('.axis-mark__stop:last-child');
     expect(lastChildRule, 'expected a .axis-mark__stop:last-child rule').toBeTruthy();
     expect(lastChildRule.declarations).toMatch(/margin-right:\s*0/);
   });
 
-  test('--stop-w resolves to 38 and --stop-gap is retired; the caption-line tokens resolve to 24 and 44', () => {
-    expect(resolveTokenPx(tokens, '--stop-w')).toBe(38);
+  test('--sheet-stop-w resolves to 38 and --stop-gap is retired; the caption-line tokens resolve to 24 and 44', () => {
+    expect(resolveTokenPx(tokens, '--sheet-stop-w')).toBe(38);
     expect(tokens['--stop-gap']).toBeUndefined();
-    expect(resolveTokenPx(tokens, '--caption-line-h')).toBe(24);
-    expect(resolveTokenPx(tokens, '--caption-line-h-touch')).toBe(44);
+    expect(resolveTokenPx(tokens, '--sheet-caption-line-h')).toBe(24);
+    expect(resolveTokenPx(tokens, '--sheet-caption-line-h-touch')).toBe(44);
   });
 
   test('the axes grid reads column-gap: 0 — clearance now carried by padding on the flanking columns', () => {
@@ -688,21 +688,21 @@ describe('joined stops (007 @ 2a212be lines 80-81, 124)', () => {
 
 describe('exclusion guards — registers the finding deliberately leaves in place', () => {
   test("the ingredient table's internal type keeps its measured register (columns.test.js's browser-measured column minimums depend on these sizes)", () => {
-    expect(ruleFor('.ingredient-table th').declarations).toMatch(/font-size:\s*var\(--size-running-head\)/);
-    expect(ruleFor('.table-small-print').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
-    expect(ruleFor('.ingredient-table__flag').declarations).toMatch(/font-size:\s*var\(--size-cross-flag\)/);
-    // a --size-cross-flag consumer outside the table stays there too
-    expect(ruleFor('.method-step__uses-line').declarations).toMatch(/font-size:\s*var\(--size-cross-flag\)/);
+    expect(ruleFor('.ingredient-table th').declarations).toMatch(/font-size:\s*var\(--sheet-size-running-head\)/);
+    expect(ruleFor('.table-small-print').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
+    expect(ruleFor('.ingredient-table__flag').declarations).toMatch(/font-size:\s*var\(--sheet-size-cross-flag\)/);
+    // a --sheet-size-cross-flag consumer outside the table stays there too
+    expect(ruleFor('.method-step__uses-line').declarations).toMatch(/font-size:\s*var\(--sheet-size-cross-flag\)/);
   });
 
   test('.running-head keeps its wayfinding register', () => {
-    expect(ruleFor('.running-head').declarations).toMatch(/font-size:\s*var\(--size-running-head\)/);
+    expect(ruleFor('.running-head').declarations).toMatch(/font-size:\s*var\(--sheet-size-running-head\)/);
   });
 
   test("the batch row's measured-cell small print keeps its ratified registers, and the shared history-register provenance rule keeps its own", () => {
-    expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
-    expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--size-deviation-words\)/);
-    expect(historyRuleFor('.history-provenance').declarations).toMatch(/font-size:\s*var\(--size-small-print\)/);
+    expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
+    expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--sheet-size-deviation-words\)/);
+    expect(historyRuleFor('.history-provenance').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
   });
 });
 
@@ -739,10 +739,10 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
     expect(rule.declarations).toMatch(/margin-block-start:\s*var\(--gap-xs\)/);
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-xs\) var\(--gap-s\)/);
     expect(rule.declarations).toMatch(/border:\s*var\(--rule-baseline\) solid var\(--sheet-ink\)/);
-    expect(rule.declarations).toMatch(/background:\s*var\(--ground\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--sheet-ground\)/);
     expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
     expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--type-control\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-control\)/);
 
     const emptyRule = ruleFor('.page-status:empty');
     expect(emptyRule, 'expected .page-status:empty to survive').toBeTruthy();

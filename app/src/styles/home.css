@@ -216,7 +216,7 @@ body:has(.home) {
   font-family: var(--face-text);
   font-style: italic;
   font-size: var(--size-home-meta);
-  color: var(--pen-blue);
+  color: var(--sheet-pen-blue);
   overflow-wrap: anywhere;
 }
 
@@ -274,7 +274,7 @@ body:has(.home) {
   margin: var(--gap-s) 0 0;
   padding-left: var(--gap-m);
   font-family: var(--face-grotesk);
-  font-size: var(--size-small-print);
+  font-size: var(--sheet-size-small-print);
 }
 
 /* Below the 760px step-down (sketch-findings-sprinkles,

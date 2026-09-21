@@ -2,10 +2,10 @@
 name: Sprinkles
 description: A recipe read as a recipe, with the formulation and the record in its margins.
 colors:
-  ground: "#f7f7f4"
-  ink: "#141414"
-  pen-blue: "#1f3d7a"
-  bookcloth: "#33513b"
+  sheet-ground: "#f7f7f4"
+  sheet-ink: "#141414"
+  sheet-pen-blue: "#1f3d7a"
+  sheet-bookcloth: "#33513b"
   app-notebook: "#FD5B57"
   app-recipe-book: "#F18A36"
   app-idea-log: "#FDC632"
@@ -93,21 +93,21 @@ spacing:
   xl: "48px"
 components:
   region-name:
-    textColor: "{colors.bookcloth}"
+    textColor: "{colors.sheet-bookcloth}"
     typography: "{typography.section}"
     padding: "0 0 6px"
   button:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.table}"
     padding: "7px"
   button-hover:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     padding: "6px"
   text-control:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.control}"
     padding: "0"
     height: "24px"
@@ -115,7 +115,7 @@ components:
     height: "44px"
   ink-field:
     backgroundColor: "transparent"
-    textColor: "{colors.pen-blue}"
+    textColor: "{colors.sheet-pen-blue}"
     typography: "{typography.table}"
     padding: "2px 6px"
     height: "26px"
@@ -124,7 +124,7 @@ components:
     height: "44px"
   prose-field:
     backgroundColor: "transparent"
-    textColor: "{colors.pen-blue}"
+    textColor: "{colors.sheet-pen-blue}"
     typography: "{typography.body}"
     lineHeight: 1.5
     padding: "2px 0"
@@ -133,67 +133,67 @@ components:
     typography: "{typography.note}"
     minHeight: "44px"
   pen-caption:
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.caption}"
     padding: "0 0 6px"
   pen-helper:
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.helper}"
     padding: "0"
   table-header:
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.label}"
     padding: "6px 6px"
   table-cell:
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.table}"
     padding: "6px 6px"
   target-chip:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.small-print}"
     padding: "0 6px"
   axis-stop:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.table}"
     width: "38px"
     height: "32px"
   axis-stop-picked:
-    backgroundColor: "{colors.pen-blue}"
-    textColor: "{colors.ground}"
+    backgroundColor: "{colors.sheet-pen-blue}"
+    textColor: "{colors.sheet-ground}"
   segmented-option:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.control}"
     padding: "5px 8px"
     height: "32px"
   segmented-option-picked:
-    backgroundColor: "{colors.pen-blue}"
-    textColor: "{colors.ground}"
+    backgroundColor: "{colors.sheet-pen-blue}"
+    textColor: "{colors.sheet-ground}"
   chip-toggle:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.control}"
     padding: "0"
     height: "32px"
   chip-toggle-mark-pressed:
-    backgroundColor: "{colors.pen-blue}"
+    backgroundColor: "{colors.sheet-pen-blue}"
     size: "13px"
   figure-value:
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.figure}"
   recorded-value:
-    textColor: "{colors.pen-blue}"
+    textColor: "{colors.sheet-pen-blue}"
     typography: "{typography.note}"
   step-number:
-    textColor: "{colors.ink}"
+    textColor: "{colors.sheet-ink}"
     typography: "{typography.figure}"
 ---
 
 # Design System: Sprinkles
 
-Merged 2026-09-20 from the implemented paper system and the approved product/surface direction. The frontmatter preserves the existing tokens and components from `app/src/styles/tokens.css`, `app/src/styles/app.css`, and `app/src/ui/`; these are implemented paper primitives, not an exhaustive palette or component contract for the future app interface. App palette amendment, approved 2026-09-21: Option B with the revised Ingredients green and the preview neutral set are now specified in frontmatter. These app tokens are approved design values, not a claim of implementation; existing paper tokens remain unchanged. The detailed implementation catalogue was last refreshed 2026-09-17; this merge verifies palette identity and changes scope, not every historical component assertion.
+Merged 2026-09-20 from the implemented Sheet system and the approved product/surface direction. The frontmatter preserves the existing tokens and components from `app/src/styles/tokens.css`, `app/src/styles/app.css`, and `app/src/ui/`; these are implemented Sheet primitives, not an exhaustive palette or component contract for the future app interface. App palette amendment, approved 2026-09-21: Option B with the revised Ingredients green and the preview neutral set are now specified in frontmatter. These app tokens are approved design values, not a claim of implementation; existing Sheet tokens remain unchanged. The detailed implementation catalogue was last refreshed 2026-09-17; this merge verifies palette identity and changes scope, not every historical component assertion.
 
 Product authority: `PRODUCT.md` and D17 in `product-requirements/03-decision-register.md`. The shell/Home direction is owned by `.impeccable/surfaces/route.md`; Recipe Sheet, record, and print behavior retain their respective surface briefs. Approved direction and implemented behavior are distinguished below.
 
@@ -201,23 +201,25 @@ Product authority: `PRODUCT.md` and D17 in `product-requirements/03-decision-reg
 
 **Creative North Star: "The Formulation Cookbook"**
 
-The cookbook remains the material reference for Recipe Sheets and batch/tasting logs. Around those paper surfaces, Sprinkles has a colorful app interface for navigation, recipe context, history, and supporting tools. The two contexts belong to one product: paper supports reading, making, and recording; the app interface supports finding, choosing, and continuing work. The retired name “Sprinkles Jar” is not an interface label.
+The cookbook remains the material reference for Recipe Sheets and batch/tasting logs. Around those Sheet surfaces, Sprinkles has a colorful app interface for navigation, recipe context, history, and supporting tools. The two contexts belong to one product: the Sheet supports reading, making, and recording; the app interface supports finding, choosing, and continuing work. The retired name “Sprinkles Jar” is not an interface label.
 
-**The Context Boundary Rule.** Apply paper rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Method, and Notes belong to the version's Recipe Sheet. Batch records keep the paper and pen treatment. A shared route does not imply a shared visual context.
+**The two contexts are named.** The **Sheet** is the Recipe Sheet, the batch and tasting log, and the print sheet. The **App** is Home, Notebook, Recipe Book, Idea log, Ingredients, and Kitchen. Every colour token carries its context as a prefix: `sheet-*` for the Sheet, `app-*` for the App. Earlier drafts of this document named the Sheet after its material.
+
+**The Context Boundary Rule.** Apply Sheet rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Method, and Notes belong to the version's Recipe Sheet. Batch records keep the paper and pen treatment. A shared route does not imply a shared visual context.
 
 | Context | Approved direction | Implementation status |
 |---|---|---|
-| App interface | Bright, colorful, approachable; the approved Option B destination palette and neutral set. Color identifies and guides, never judges a result. | Base palette and neutrals approved; interaction and feedback colors, derived states, type roles, shapes, depth, motion, and components remain unresolved. Existing paper-styled shell/history controls are transitional. |
+| App interface | Bright, colorful, approachable; the approved Option B destination palette and neutral set. Color identifies and guides, never judges a result. | Base palette and neutrals approved; interaction and feedback colors, derived states, type roles, shapes, depth, motion, and components remain unresolved. Existing Sheet-styled shell/history controls are transitional. |
 | Recipe Sheet and batch/tasting log | Paper, ink, pen blue, restrained rules, readable prose and precise quantities. | Existing tokens and component catalogue below. Proposed highlighter role remains unresolved. |
 | Print | Black on white, with room for handwritten records and a stable reference to the version. | Print behavior is owned by the print surface brief; screen paper color is not a requirement to print a background. |
 
 Home composition belongs in its surface brief. Mockups are exploration evidence, not token specifications: photographs, handwriting, slogans, and exact component geometry are not approved merely because they appear in a preferred concept.
 
 **Key Characteristics:**
-- Two explicit visual contexts: colorful app interface and paper Recipe Sheets/records.
-- Four implemented paper color roles, plus approved app destination colors and neutrals; no recipe-specific colors.
-- Paper prose uses the text face; measured quantities use the grotesk with tabular numerals.
-- Paper controls preserve the binder's ink outlines, pen-blue selection, and distinct focus indication.
+- Two explicit visual contexts: the colorful app interface, and the Sheet (Recipe Sheets and records).
+- Four implemented Sheet color roles, plus approved app destination colors and neutrals; no recipe-specific colors.
+- Sheet prose uses the text face; measured quantities use the grotesk with tabular numerals.
+- Sheet controls preserve the binder's ink outlines, pen-blue selection, and distinct focus indication.
 - Across both contexts, color never carries a verdict; meaning and interaction state remain legible without color.
 - Approved direction is distinct from shipped components and unresolved visual choices.
 
@@ -225,9 +227,11 @@ Home composition belongs in its surface brief. Mockups are exploration evidence,
 
 ### Scope and status
 
-The four frontmatter roles below are the **implemented paper palette**. Their names and values are preserved. They are not a four-color limit on Sprinkles.
+The four frontmatter roles below are the **implemented Sheet palette**. Their names and values are preserved. They are not a four-color limit on Sprinkles.
 
-**App palette — approved 2026-09-21:** Option B (Bright accents), with the lighter Ingredients green, and the preview neutral set. The `app-*` frontmatter values are approved for the app interface; they do not replace paper tokens and are not yet a shipped CSS catalogue.
+`app/src/styles/tokens.css` still declares these roles unprefixed (`--ground`, `--ink`, `--pen-blue`, `--bookcloth`, `--gap-*`, `--type-*`); the code rename is pending and rides with the tokens.css palette rework. The typography and spacing roles catalogued below are Sheet roles too, and take the `sheet-` prefix in the design system; this document's frontmatter `typography` and `spacing` keys stay as they are, because they are not colour aliases.
+
+**App palette — approved 2026-09-21:** Option B (Bright accents), with the lighter Ingredients green, and the preview neutral set. The `app-*` frontmatter values are approved for the app interface; they do not replace Sheet tokens and are not yet a shipped CSS catalogue.
 
 | Role | Approved token |
 |---|---|
@@ -246,33 +250,33 @@ The four frontmatter roles below are the **implemented paper palette**. Their na
 
 Recipe-specific identity colors are retired. Destination colors identify workspaces, not individual recipes or outcomes. Pantry's reserved color does not add Pantry to the current feature scope.
 
-**Still unresolved:** whether app blue is the shared link, primary-action, and focus color; feedback treatments; pale tints and darker text companions; hover, pressed, and disabled states. Preview-derived variants are experimental, not approved tokens. Contrast-test each foreground/background pairing before implementation; accent swatches are not automatically suitable for text or white button labels. The existing no-verdict rule remains binding until a feedback decision explicitly revises it. The paper highlighter's color and meaning remain unresolved.
+**Still unresolved:** whether app blue is the shared link, primary-action, and focus color; feedback treatments; pale tints and darker text companions; hover, pressed, and disabled states. Preview-derived variants are experimental, not approved tokens. Contrast-test each foreground/background pairing before implementation; accent swatches are not automatically suitable for text or white button labels. The existing no-verdict rule remains binding until a feedback decision explicitly revises it. The Sheet highlighter's color and meaning remain unresolved.
 
 The existing sidecar's tonal ramps are preview metadata, not additional approved UI colors. Approved app roles are specified above; derived ramps still require review before implementation.
 
 
 ### Primary
-- **Print Ink** (`{colors.ink}`): everything the system prints. Type, table rules, graduations, the hatch of a target band, the tick at a value, every drawn control's border, the strike, focus outlines. Contrast on ground 17.16:1.
+- **Print Ink** (`{colors.sheet-ink}`): everything the system prints. Type, table rules, graduations, the hatch of a target band, the tick at a value, every drawn control's border, the strike, focus outlines. Contrast on ground 17.16:1.
 
 ### Secondary
-- **Pen Blue** (`{colors.pen-blue}`): everything the maker or the record contributes, and now also the fill that marks a picked control. An ink field's typed value and the record's saved text (`.ink-field`, `.prose-field`, `.prose-text`, `.ink-text`), the batch row's measured cells and date, a changed step's line, the fill of a picked stop, segment or defect square. The plan beside it stays black. On the printed sheet this layer is blank space for a real pen. Contrast on ground 9.75:1.
+- **Pen Blue** (`{colors.sheet-pen-blue}`): everything the maker or the record contributes, and now also the fill that marks a picked control. An ink field's typed value and the record's saved text (`.ink-field`, `.prose-field`, `.prose-text`, `.ink-text`), the batch row's measured cells and date, a changed step's line, the fill of a picked stop, segment or defect square. The plan beside it stays black. On the printed sheet this layer is blank space for a real pen. Contrast on ground 9.75:1.
 
 ### Tertiary
-- **Bookcloth** (`{colors.bookcloth}`): a muted bottle green that identifies the book. Paper region names and the hairline that separates the version row's full-width sub-rows — never a status, never a control, never a figure. A third hue so it is never mistaken for the pen. Contrast on ground 8.22:1.
+- **Bookcloth** (`{colors.sheet-bookcloth}`): a muted bottle green that identifies the book. Sheet region names and the hairline that separates the version row's full-width sub-rows — never a status, never a control, never a figure. A third hue so it is never mistaken for the pen. Contrast on ground 8.22:1.
 
 ### Neutral
-- **Text Paper** (`{colors.ground}`): the page, and the text colour of any control the pen has filled. Cool off-white, deliberately not cream, so it reads as text paper rather than parchment. There is no sunk, hover, or divider grey; every rule and border is full ink at a thin weight.
+- **Text Paper** (`{colors.sheet-ground}`): the page, and the text colour of any control the pen has filled. Cool off-white, deliberately not cream, so it reads as text paper rather than parchment. There is no sunk, hover, or divider grey; every rule and border is full ink at a thin weight.
 
 ### Named Rules
-**The Two-Ink Rule.** Within the paper contexts, printed matter is ink black; recorded matter is pen blue; the two never mix on one element. A value that is half plan and half record is two values. The record keeps its blue after saving — it is the maker's, and saving changes form, not ink.
+**The Two-Ink Rule.** Within the Sheet, printed matter is ink black; recorded matter is pen blue; the two never mix on one element. A value that is half plan and half record is two values. The record keeps its blue after saving — it is the maker's, and saving changes form, not ink.
 
 **The No-Verdict Rule.** No colour anywhere carries pass, fail, warning, or uncertainty. A figure's standing against its band is stated in words beside the figure; estimated or unreviewed data says so as a word in the Data column; a malformed measurement is a sentence under the field and `aria-invalid`, never a red line. A picked control's pen-blue fill is not a verdict — it is the record's own ink saying *the maker chose this*.
 
-**The Bookcloth Rule.** In paper contexts, bookcloth names regions or draws the existing band-sub-row hairline. This role does not constrain green or other identity colors in the app interface.
+**The Bookcloth Rule.** In the Sheet, bookcloth names regions or draws the existing band-sub-row hairline. This role does not constrain green or other identity colors in the app interface.
 
 ## Typography
 
-**Scope:** the stacks and hierarchy below catalogue implemented paper typography and its current reuse in legacy app controls. App-interface typography remains to be specified; paper uppercase captions and serif/grotesk assignments are not automatic app-wide requirements. No handwriting font is selected by this merge. Units retain their correct case and quantities remain easy to scan in both contexts.
+**Scope:** the stacks and hierarchy below catalogue implemented Sheet typography and its current reuse in legacy app controls. App-interface typography remains to be specified; Sheet uppercase captions and serif/grotesk assignments are not automatic app-wide requirements. No handwriting font is selected by this merge. Units retain their correct case and quantities remain easy to scan in both contexts.
 
 **Display Font:** Georgia (with Iowan Old Style, Times New Roman, serif)
 **Body Font:** Georgia (same stack; the text face carries headnote, version line, method prose, authored notes, and the record's own words)
@@ -312,9 +316,9 @@ The existing sidecar's tonal ramps are preview metadata, not additional approved
 
 Keep recipe context visibly distinct from the Recipe Sheet. The desktop exploration places context in a left sidebar and the Sheet on the right; smaller-screen treatments must preserve that distinction and reading order. Exact widths, collapse behavior, and navigation patterns remain surface decisions, not new global breakpoints. Home strategy is defined in its owning brief, not by the recipe grid below.
 
-### Existing paper-page implementation
+### Existing Sheet-page implementation
 
-The following grid and responsive catalogue describe the incumbent page, including legacy front matter that currently mixes app context with paper. They are implementation evidence, not a requirement to preserve that placement when applying the new boundary.
+The following grid and responsive catalogue describe the incumbent page, including legacy front matter that currently mixes app context with the Sheet. They are implementation evidence, not a requirement to preserve that placement when applying the new boundary.
 
 The recipe page is a two-column grid at a 2:1 ratio. A **front-matter band** spans both columns above the spread: two stacked full-width rows — the version's row (recipe block at `1.6fr`, Version/Why/From batch metadata at a 300px floor, plus full-width sub-rows for the save ceremony and History disclosure, each opened by a bookcloth hairline), then the batch's row — closed by a baseline-weight rule. Below it, column one is the recipe as written in the sheet's page order, the ingredient table then the method; column two is a single region that flows on its own, the formulation note beside the table, then the margin. A **pen foot** appears across the full width only while a pen is open: a hairline rule, then the save ceremony right-aligned under the side column. Whichever column runs longer leaves its void at the bottom. Regions are separated by the large gap (32px) and the page carries the extra-large gap (48px) as its outer margin. The recipe list is a single column of links, each a flex row of name, version line, and batch mass.
 
@@ -344,14 +348,14 @@ Above 1100px the grid holds at every width; the brief expects the spread at 1280
 
 ## Elevation & Depth
 
-**App interface:** paper's prohibitions on second backgrounds, tonal layers, and shadows do not apply globally. The app background and subtle surface colors are approved; shadow values and further depth treatments remain unresolved. Maintain discernible focus and state without relying on color.
+**App interface:** the Sheet's prohibitions on second backgrounds, tonal layers, and shadows do not apply globally. The app background and subtle surface colors are approved; shadow values and further depth treatments remain unresolved. Maintain discernible focus and state without relying on color.
 
-**Paper contexts:** flat, and flat as a commitment rather than a default. There are no shadows, no tonal layers, no sunk or raised surfaces, and no second background colour — no paper shadow token is established. Depth is conveyed by rule weight alone: hairline graduations and state outlines (1px), the table's row rules, a rule's baseline and a text control's hovered underline (1.5px), every hover border and the focus ring (2px), and the tick at a figure's value (2.5px). The one heavy element per view is the heaviest stroke on it, not a box with a shadow.
+**The Sheet:** flat, and flat as a commitment rather than a default. There are no shadows, no tonal layers, no sunk or raised surfaces, and no second background colour — no Sheet shadow token is established. Depth is conveyed by rule weight alone: hairline graduations and state outlines (1px), the table's row rules, a rule's baseline and a text control's hovered underline (1.5px), every hover border and the focus ring (2px), and the tick at a figure's value (2.5px). The one heavy element per view is the heaviest stroke on it, not a box with a shadow.
 
 Three weights, three meanings, and they are provably ordered: **1px** is the outline on content the page is pointing at (a marked table row, the open batch, the current version); **2px** is focus, and nothing else; the picked control's **fill** is a different sign entirely, so a picked thing and a focused thing never read as each other.
 
 ### Named Rules
-**The Paper-Is-Flat Rule.** Within a Recipe Sheet or batch/tasting log, nothing floats above the paper. If an element needs to stand apart, it gets a heavier rule, an ink outline, or the pen's fill — never a shadow.
+**The Sheet-Is-Flat Rule.** Within a Recipe Sheet or batch/tasting log, nothing floats above the paper. If an element needs to stand apart, it gets a heavier rule, an ink outline, or the pen's fill — never a shadow.
 
 **The Focus-Heavier-than-State Rule.** One focus rule at the browser's own `:focus-visible` boundary draws a 2px ink outline offset 2px — heavier than the 1px outline any pointed-at content carries, and a different sign from a pressed control's fill. A focused element that is also stateful reads both. There is exactly one documented exception: `.is-landing-focus:focus`, a plain `:focus` rule that makes the fork's landing focus visible after a mouse-driven Save, which Chrome's modality tracking would otherwise leave ringless.
 
@@ -359,9 +363,9 @@ Three weights, three meanings, and they are provably ordered: **1px** is the out
 
 ## Shapes
 
-**App interface:** plain, quiet, rounded controls are part of the approved direction, but no exact radius or component shape is established. Paper's square-edge and browser-chrome treatments do not bind the app interface.
+**App interface:** plain, quiet, rounded controls are part of the approved direction, but no exact radius or component shape is established. The Sheet's square-edge and browser-chrome treatments do not bind the app interface.
 
-**Implemented paper controls:** square. No radius token is established in the preserved catalogue. Borders are ink at hairline weight: buttons, fields, segmented options and axis stops carry a 1px border with no fill at rest; the table has a 1.5px rule under every row and header; the focus outline is 2px ink offset 2px outside the element, and it means focus only — an invalid field is a sentence beneath it, never a ring. The graduated rule is drawn in SVG as straight lines and a 45° hatch at 4px pitch with a 1.2px stroke.
+**Implemented Sheet controls:** square. No radius token is established in the preserved catalogue. Borders are ink at hairline weight: buttons, fields, segmented options and axis stops carry a 1px border with no fill at rest; the table has a 1.5px rule under every row and header; the focus outline is 2px ink offset 2px outside the element, and it means focus only — an invalid field is a sentence beneath it, never a ring. The graduated rule is drawn in SVG as straight lines and a 45° hatch at 4px pitch with a 1.2px stroke.
 
 Joined controls — the five stops of an axis, the three options of a segmented control — share one hairline through a negative margin rather than a gap, and the picked cell lifts above its neighbours so its pen-blue border is never hidden under theirs.
 
@@ -371,7 +375,7 @@ Browser chrome is redrawn, not accepted: the select's arrow is replaced by two C
 
 ## Components
 
-**Catalogue scope:** the descriptions and sidecar examples below preserve the implemented paper controls. Front matter, History, and navigation examples also document transitional reuse of these controls outside paper; they do not define the future app component family. App components require their own approved states and tokens. Shared accessibility responsibilities include usable touch targets, keyboard access, explicit labels, visible focus distinct from selection, and feedback that survives the action it reports.
+**Catalogue scope:** the descriptions and sidecar examples below preserve the implemented Sheet controls. Front matter, History, and navigation examples also document transitional reuse of these controls outside the Sheet; they do not define the future app component family. App components require their own approved states and tokens. Shared accessibility responsibilities include usable touch targets, keyboard access, explicit labels, visible focus distinct from selection, and feedback that survives the action it reports.
 
 Components feel like a working binder: printed pages a person actually writes on, with drawn controls in the margins. Every control is ink at hairline weight with no fill at rest; a picked or pressed control fills pen blue with paper-coloured text, and the record's own ink is pen blue.
 
@@ -452,19 +456,19 @@ The record pen's own instrument, framed at 640px while recording and full width 
 
 ### Do:
 - **Do** establish whether an element belongs to app context, a Recipe Sheet, a batch/tasting log, or print before applying visual rules.
-- **Do** preserve the implemented paper tokens; add app tokens only when their roles and values have been specified and implemented.
+- **Do** preserve the implemented Sheet tokens; add app tokens only when their roles and values have been specified and implemented.
 - **Do** keep recipe identity and app accents distinct from ink that communicates plan and actual records.
 - **Do** keep keyboard focus discernible from selected state, preserve semantic controls, and make touch targets usable.
 - **Do** state balance, uncertainty, errors, and provenance in words; color never supplies a verdict.
 - **Do** keep units correctly cased, quantities legible, and required/error feedback attached to its control.
-- **Do** use the paper catalogue for paper typography, outlines, pen selection, step order, and print behavior.
+- **Do** use the Sheet catalogue for Sheet typography, outlines, pen selection, step order, and print behavior.
 - **Do** distinguish approved direction, observed implementation, and unresolved design choices.
 - **Do** keep page composition in surface briefs and reusable visual rules in this document.
 
 ### Don't:
-- **Don't** impose the paper palette's four colors on Home, navigation, recipe context, History, Ingredients, Kitchen, or consultations.
-- **Don't** extend paper's flatness, square corners, no-motion treatment, or image restrictions into app-wide bans.
-- **Don't** add shadows, gradients, rounded cards, or animation inside paper contexts merely because the surrounding app can use a different treatment.
+- **Don't** impose the Sheet palette's four colors on Home, navigation, recipe context, History, Ingredients, Kitchen, or consultations.
+- **Don't** extend the Sheet's flatness, square corners, no-motion treatment, or image restrictions into app-wide bans.
+- **Don't** add shadows, gradients, rounded cards, or animation inside the Sheet merely because the surrounding app can use a different treatment.
 - **Don't** introduce app palette values, fonts, shadows, radii, or motion timings from exploratory mocks without a design decision.
 - **Don't** treat sidecar tonal-ramp previews as approved additional colors.
 - **Don't** use color to encode success, failure, warning, or uncertainty, or make interaction state depend on color alone.

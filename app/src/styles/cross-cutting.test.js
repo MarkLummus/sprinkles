@@ -815,3 +815,15 @@ describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepp
     expect(offenders).toEqual([]);
   });
 });
+
+describe('the hand (D-17, D-18, DESIGN.md Typography > Hand role)', () => {
+  test('.app-hand is a top-level rule reading the hand face, the pen blue, and both hand size tokens in one declaration, with no weight and no transform', () => {
+    const rule = ruleFor('.app-hand');
+    expect(rule, 'expected a top-level .app-hand rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-hand\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*max\(var\(--size-hand\),\s*var\(--size-hand-min\)\)/);
+    expect(rule.declarations).not.toMatch(/font-weight/);
+    expect(rule.declarations).not.toMatch(/text-transform/);
+  });
+});

@@ -376,6 +376,20 @@ textarea {
   padding: var(--gap-page);
 }
 
+/* The hand (DESIGN.md Typography > Hand role, D-17, D-18): the maker's
+   own words in the App — Caveat, floor-guarded at --size-hand-min so the
+   script face never loses its letterforms below the readable minimum,
+   the hand's own leading, and the one sanctioned Sheet token in the App,
+   --sheet-pen-blue. Never bold, never uppercase — the Hand Rule says an
+   observation is never mistaken for a specification or the app's own
+   voice. */
+.app-hand {
+  font-family: var(--face-hand);
+  font-size: max(var(--size-hand), var(--size-hand-min));
+  line-height: var(--leading-hand);
+  color: var(--sheet-pen-blue);
+}
+
 .recipe-page {
   display: grid;
   grid-template-columns: 2fr 1fr;

@@ -89,11 +89,12 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
     // painted anywhere; the twelve --recipe-hue-* tokens, which
     // recipe-colour.js builds as a name string at runtime
     // (`--recipe-hue-${hueNumber}`) rather than a literal var() read this
-    // static scan can see; thirteen App destination/neutral colours this
-    // plan declares from DESIGN.md but does not yet wire into home.css
-    // (plans 03/04 apply the App marks grammar); and the hand's four
-    // tokens (D-17), whose consumer — Home's lead-block Next-time text,
-    // D-18 — lands in a later plan too.
+    // static scan can see; and thirteen App destination/neutral colours
+    // this plan declares from DESIGN.md but does not yet wire into
+    // home.css (plans 03/04 apply the App marks grammar). The hand's four
+    // tokens (D-17) are no longer in this list — plan 02's .app-hand rule
+    // in app.css is their first consumer; Home's lead-block Next-time
+    // text (D-18) is their second, in a later plan.
     const expectedUnread = [
       '--rule-band-edge',
       '--rule-tick',
@@ -127,10 +128,6 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
       '--app-blue',
       '--app-blue-text',
       '--app-surface-subtle',
-      '--face-hand',
-      '--size-hand',
-      '--leading-hand',
-      '--size-hand-min',
     ];
     expect(unread.sort()).toEqual(expectedUnread.sort());
   });

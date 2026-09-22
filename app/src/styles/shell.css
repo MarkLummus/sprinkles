@@ -1,0 +1,251 @@
+/* The shell — DESIGN.md "App marks", "Navigation" (D-09, D-10, D-13, D-15,
+   D-16, D-19). Every route renders inside .shell: a header carrying the
+   wordmark and (Task 2) a tools row, and a 224px left rail of the App's
+   destinations beside the routed page in .shell__main. Below the phone
+   step (Task 3) .shell__rail hides and a bottom tab row takes over — the
+   one media condition this file is ever allowed to carry.
+
+   Two root classes only: .shell (the shell's own chrome) and .place (the
+   unbuilt-place page Placeholder.jsx renders inside .shell__main) —
+   shell.test.js pins every selector here to one of the two.
+
+   Every colour, size, spacing and rule weight below reads a custom
+   property from tokens.css — none is a literal here. */
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: var(--app-text);
+}
+
+.shell__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gap-s) var(--gap-page);
+}
+
+.shell__brand {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-weight: 700;
+  font-size: var(--app-size-brand);
+}
+
+/* The brand mark (D-09): five sprinkles, one per destination, in
+   navigation order, beneath the wordmark. Decorative and aria-hidden —
+   never a link. */
+.shell__sprinkles {
+  display: flex;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-xs);
+}
+
+.shell__sprinkle {
+  display: inline-block;
+  width: var(--app-size-sprinkle-w);
+  height: var(--app-size-sprinkle-h);
+  border-radius: var(--app-radius-sprinkle);
+  transform: rotate(var(--app-tilt-sprinkle));
+}
+
+.shell__sprinkle--notebook {
+  background: var(--app-notebook);
+}
+
+.shell__sprinkle--recipe-book {
+  background: var(--app-recipe-book);
+}
+
+.shell__sprinkle--idea-log {
+  background: var(--app-idea-log);
+}
+
+.shell__sprinkle--ingredients {
+  background: var(--app-ingredients);
+}
+
+.shell__sprinkle--kitchen {
+  background: var(--app-kitchen);
+}
+
+/* The tools row (D-09, D-13, D-15): Search, Import and Export as
+   icon-and-word controls, top-right of the header, on every route. */
+.shell__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-m);
+}
+
+.shell__tools button {
+  appearance: none;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.shell__file-input {
+  display: none;
+}
+
+.shell__import-errors {
+  flex-basis: 100%;
+  margin: var(--gap-xs) 0 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+}
+
+.shell__body {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+/* The 224px rail (D-09). Distinct from --app-size-rail-w, a row's own 8px
+   identity mark — the two "rail" meanings never share a token. */
+.shell__rail {
+  flex: 0 0 var(--app-size-nav-w);
+  width: var(--app-size-nav-w);
+  display: flex;
+  flex-direction: column;
+}
+
+/* The routed page. No transform, filter, perspective, will-change or
+   contain here or on .shell/.shell__body (shell.test.js): any of those
+   would make this element a new containing block, and the recipe route's
+   .page-status anchors to .page-head (app.css) by position alone — it
+   must keep finding that ancestor, not this one, once nested a level
+   deeper under the shell. */
+.shell__main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.shell__place {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--gap-s) var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  text-decoration: none;
+}
+
+/* A rail place's line icon (Task 2 draws the SVG itself; this rule reads
+   its box size now so the token is not an orphan before that markup
+   lands). */
+.shell__place svg {
+  width: var(--app-size-icon);
+  height: var(--app-size-icon);
+}
+
+/* The active place sits on the subtle surface (D-09) — no colour bar, and
+   no underline: colour says which place, the surface and aria-current
+   (set by NavLink from the router's own match) say which is current. */
+.shell__place[aria-current='page'] {
+  background: var(--app-surface-subtle);
+}
+
+/* A hairline between the rail's two groups (Home / Notebook, Recipe book,
+   Idea log / Ingredients, Kitchen). */
+.shell__divider {
+  border: none;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+  margin: var(--gap-xs) var(--gap-m);
+}
+
+/* Home, which is no destination, takes the app blue for its icon and the
+   app blue text companion for its word (D-09). Every other place's icon
+   takes its destination's accent and its word takes that destination's
+   text companion; Kitchen's indigo needs no companion, so both read the
+   same token. */
+.shell__place--home {
+  color: var(--app-blue-text);
+}
+
+.shell__place--home svg {
+  stroke: var(--app-blue);
+}
+
+.shell__place--notebook {
+  color: var(--app-notebook-text);
+}
+
+.shell__place--notebook svg {
+  stroke: var(--app-notebook);
+}
+
+.shell__place--recipe-book {
+  color: var(--app-recipe-book-text);
+}
+
+.shell__place--recipe-book svg {
+  stroke: var(--app-recipe-book);
+}
+
+.shell__place--idea-log {
+  color: var(--app-idea-log-text);
+}
+
+.shell__place--idea-log svg {
+  stroke: var(--app-idea-log);
+}
+
+.shell__place--ingredients {
+  color: var(--app-ingredients-text);
+}
+
+.shell__place--ingredients svg {
+  stroke: var(--app-ingredients);
+}
+
+.shell__place--kitchen {
+  color: var(--app-kitchen);
+}
+
+.shell__place--kitchen svg {
+  stroke: var(--app-kitchen);
+}
+
+/* The bottom tab row (D-16): rendered at every width, hidden above the
+   phone step. Below it (the one media block this file carries) the rail
+   hides and this shows instead — a hidden element leaves the
+   accessibility tree, so only one navigation is ever exposed. */
+.shell__tabs {
+  display: none;
+}
+
+.shell__more > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 759.98px) {
+  .shell__rail {
+    display: none;
+  }
+
+  .shell__tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    background: var(--app-background);
+    border-top: var(--app-rule-row) solid var(--app-divider);
+  }
+
+  .shell__tabs .shell__place,
+  .shell__more li {
+    min-height: var(--touch-min);
+  }
+
+  .shell__main {
+    padding-bottom: var(--app-size-tab-h);
+  }
+}

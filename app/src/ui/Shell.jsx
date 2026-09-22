@@ -127,7 +127,7 @@ const ICONS = {
 function RailPlace({ place }) {
   const Icon = ICONS[place.slug];
   return (
-    <NavLink to={place.path} className={`shell__place shell__place--${place.slug}`}>
+    <NavLink to={place.path} className={`shell__place shell__place--${place.slug}`} tabIndex={0}>
       <Icon />
       {place.name}
     </NavLink>
@@ -140,6 +140,15 @@ function RailPlace({ place }) {
 // Idea log, a divider, Ingredients / Kitchen — beside the routed page in
 // .shell__main. NavLink supplies aria-current from the router's own
 // match, never from hand-written state.
+//
+// Every stop also carries an explicit tabindex (G-03.4-r3-3,
+// .planning/debug/ipad-tab-never-enters-app.md): WebKit makes an <a href>
+// keyboard-focusable only under the embedder's TabsToLinks preference —
+// off on Apple platforms, with no iPadOS switch, and untouched by Full
+// Keyboard Access, which widens only the form-control gate — or when the
+// element carries an explicit tabindex, which routes it straight to
+// Element::isKeyboardFocusable. Search is therefore the document's first
+// keyboard-focusable element for Safari's chrome-to-page hand-off.
 export function Shell() {
   const [importErrors, setImportErrors] = useState([]);
   const [storeRevision, setStoreRevision] = useState(0);
@@ -215,15 +224,15 @@ export function Shell() {
           </div>
         </div>
         <div className="shell__tools">
-          <NavLink to="/search" className="shell__place">
+          <NavLink to="/search" className="shell__place" tabIndex={0}>
             <SearchIcon />
             Search
           </NavLink>
-          <button type="button" className="shell__place" onClick={() => fileInputRef.current?.click()}>
+          <button type="button" className="shell__place" tabIndex={0} onClick={() => fileInputRef.current?.click()}>
             <ImportIcon />
             Import
           </button>
-          <button type="button" className="shell__place" onClick={handleExport}>
+          <button type="button" className="shell__place" tabIndex={0} onClick={handleExport}>
             <ExportIcon />
             Export
           </button>
@@ -247,7 +256,7 @@ export function Shell() {
       </header>
       <div className="shell__body">
         <nav className="shell__rail" aria-label="Places">
-          <NavLink to="/" end className="shell__place shell__place--home">
+          <NavLink to="/" end className="shell__place shell__place--home" tabIndex={0}>
             <HomeIcon />
             Home
           </NavLink>
@@ -280,7 +289,7 @@ export function Shell() {
           on item activation and an effect keyed on the route closes it on
           navigation, in both cases returning focus to the summary. */}
       <nav className="shell__tabs" aria-label="Places">
-        <NavLink to="/" end className="shell__place shell__place--home">
+        <NavLink to="/" end className="shell__place shell__place--home" tabIndex={0}>
           <HomeIcon />
           Home
         </NavLink>
@@ -288,7 +297,7 @@ export function Shell() {
           <RailPlace key={place.slug} place={place} />
         ))}
         <details className="shell__more" open={moreOpen} onToggle={(event) => setMoreOpen(event.currentTarget.open)}>
-          <summary className="shell__place" ref={moreSummaryRef}>
+          <summary className="shell__place" ref={moreSummaryRef} tabIndex={0}>
             <MoreIcon />
             More
           </summary>
@@ -300,19 +309,19 @@ export function Shell() {
               <RailPlace place={PLACES[4]} />
             </li>
             <li>
-              <NavLink to="/search" className="shell__place">
+              <NavLink to="/search" className="shell__place" tabIndex={0}>
                 <SearchIcon />
                 Search
               </NavLink>
             </li>
             <li>
-              <button type="button" className="shell__place" onClick={() => fileInputRef.current?.click()}>
+              <button type="button" className="shell__place" tabIndex={0} onClick={() => fileInputRef.current?.click()}>
                 <ImportIcon />
                 Import
               </button>
             </li>
             <li>
-              <button type="button" className="shell__place" onClick={handleExport}>
+              <button type="button" className="shell__place" tabIndex={0} onClick={handleExport}>
                 <ExportIcon />
                 Export
               </button>

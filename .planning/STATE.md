@@ -204,6 +204,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-22] [design] Board 170 — remove the 46px lined page-preview glyph from the lead block — [todo file](.planning/todos/pending/2026-09-22-board-170-drop-the-lead-page-preview-glyph.md)
 - [2026-09-22] [ui] Remove the Sprinkles home link from the recipe route — [todo file](.planning/todos/pending/2026-09-22-remove-the-sprinkles-home-link-from-the-recipe-route.md)
 - [2026-09-22] [design] Settle the App-context radius in DESIGN.md, then revisit the rail's active item — [todo file](.planning/todos/pending/2026-09-22-settle-app-context-radius-then-revisit-rail-active-item.md)
+- [2026-09-22] [ui] Shorten "Continue developing" to "Keep developing" in boards and app — [todo file](.planning/todos/pending/2026-09-22-shorten-continue-developing-to-keep-developing.md)
 - [2026-09-22] [design] Three /impeccable document follow-ups this phase hands to Impeccable, not code — [todo file](.planning/todos/pending/2026-09-22-three-impeccable-document-jobs-this-phase-hands-off.md)
 
 ### Blockers/Concerns

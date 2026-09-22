@@ -12,18 +12,6 @@
    pinned by cross-cutting.test.js, and a second one here would double
    it. */
 
-/* The route-level ground (route.md § 3, "OWN-WORLD: White ground"):
-   without this, app.css's body rule keeps painting the paper world's
-   warmer --ground beneath .list-page's own padding, so this route reads
-   as a white card floating on cream — exactly the "objects on a page"
-   look the contract refuses. :has() is supported in Chromium, WebKit and
-   Firefox; scoping the selector on .home's presence, rather than adding
-   a route class to <body> itself, keeps every other route's body
-   untouched with no change to app.css. */
-body:has(.home) {
-  background: var(--app-background);
-}
-
 .home {
   background: var(--app-background);
   color: var(--app-text);

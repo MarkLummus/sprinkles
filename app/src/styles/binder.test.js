@@ -239,10 +239,24 @@ describe('links — a hairline underline everywhere, visited reads the same (D-1
     expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
   });
 
-  test('`a:visited` reads the same ink colour as unvisited (D-18)', () => {
-    const rule = ruleFor('a:visited');
-    expect(rule, 'expected an `a:visited` rule').toBeTruthy();
+  test('`:where(a:visited)` reads the same ink colour as unvisited, at zero specificity (gap 4)', () => {
+    const rule = ruleFor(':where(a:visited)');
+    expect(rule, 'expected a `:where(a:visited)` rule').toBeTruthy();
     expect(rule.declarations).toMatch(/color:\s*var\(--sheet-ink\)/);
+  });
+
+  // The cascade outcome this rewrite buys — a single-class App rule
+  // outranking the visited pseudo-class — cannot be proven under Vitest's
+  // `node` environment (no layout engine, no cascade). It is proven
+  // instead by construction, from three pins that together establish it:
+  // this one (the app's only visited selector carries zero specificity),
+  // shell.test.js's per-destination .shell__place--* colour pins, and
+  // home.test.js's .home__action / .home__action--secondary colour pins
+  // — all single-class selectors, which is what outranks a zero-specificity
+  // :where() wrapper regardless of source order.
+  test('app.css\'s only visited selector is the zero-specificity one (gap 4)', () => {
+    const visitedRules = rules.filter((r) => /:visited\b/.test(r.selector));
+    expect(visitedRules.map((r) => r.selector)).toEqual([':where(a:visited)']);
   });
 
   test('no selector other than `a`/`.text-control` declares an underline (D-18, D-04, 03.1 Gap 1 override; 03.3.1.1 tenth round)', () => {

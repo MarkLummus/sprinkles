@@ -51,6 +51,12 @@ describe('shell.css — no visual literal, every value a var() read', () => {
     }
   });
 
+  test('.shell paints the App ground for every route it wraps (gap 3, route.md § 1)', () => {
+    const rule = rules.find((r) => r.selector === '.shell' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
+  });
+
   // The one allowed condition, the touch step-down (D-16) — any condition
   // this file ever carries must be exactly this string.
   test('the only @media condition allowed in shell.css is the named touch step-down', () => {

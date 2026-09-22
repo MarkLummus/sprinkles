@@ -41,30 +41,16 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     }
   });
 
-  test('every rule is scoped under the .home root class', () => {
+  test('every rule is scoped under the .home root class, with no exception (gap 3: the shell paints the App ground for every route now, not just this one)', () => {
     expect(rules.length).toBeGreaterThan(0);
     for (const rule of rules) {
-      // body:has(.home) is the one documented exception (fix round 1):
-      // it has to key off .home from the body element itself to reach
-      // the route-level ground all the way to the viewport edge, which
-      // no selector rooted AT .home can do. Every other rule is scoped
-      // exactly as before.
-      expect(
-        rule.selector.startsWith('.home') || rule.selector === 'body:has(.home)',
-        `expected "${rule.selector}" to be scoped under .home`,
-      ).toBe(true);
+      expect(rule.selector.startsWith('.home'), `expected "${rule.selector}" to be scoped under .home`).toBe(true);
     }
   });
 
   test('the only @media condition in home.css is the named touch step-down (css-source.js parses one level of nesting)', () => {
     const mediaConditions = new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media));
     expect([...mediaConditions]).toEqual(['(max-width: 759.98px)']);
-  });
-
-  test('the route-level ground reaches the whole viewport (fix round 1: no cream frame around a white card)', () => {
-    const bodyRule = rules.find((rule) => rule.selector === 'body:has(.home)');
-    expect(bodyRule, 'expected a body:has(.home) rule declaring the route-level ground').toBeTruthy();
-    expect(bodyRule.declarations).toMatch(/background:\s*var\(--app-background\)/);
   });
 
   test('OWN-WORLD is one grotesk (route.md § 3): the title and the recipe name read --face-grotesk, never --face-text', () => {
@@ -87,6 +73,16 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
   test("RecipeList.jsx's source carries the hand role class exactly once, so plan 02's rule has exactly one renderer (D-18, D-20)", () => {
     const matches = recipeListJsxSource.match(/\bapp-hand\b/g) ?? [];
     expect(matches).toHaveLength(1);
+  });
+
+  test('the filled and secondary actions each carry a single-class selector that can outrank the rewritten visited rule (gap 4)', () => {
+    const actionRule = rules.find((rule) => rule.selector === '.home__action');
+    const secondaryRule = rules.find((rule) => rule.selector === '.home__action--secondary');
+    expect(actionRule, 'expected a .home__action rule').toBeTruthy();
+    expect(secondaryRule, 'expected a .home__action--secondary rule').toBeTruthy();
+    expect(actionRule.declarations).toMatch(/background:\s*var\(--app-blue-text\)/);
+    expect(actionRule.declarations).toMatch(/color:\s*var\(--app-background\)/);
+    expect(secondaryRule.declarations).toMatch(/color:\s*var\(--app-blue-text\)/);
   });
 
   test('the row\'s rail and tally read a destination accent token, never a per-recipe custom property (D-11, 03.4-04 Task 2)', () => {

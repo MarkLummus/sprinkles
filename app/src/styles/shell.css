@@ -9,6 +9,11 @@
    unbuilt-place page Placeholder.jsx renders inside .shell__main) —
    shell.test.js pins every selector here to one of the two.
 
+   The shell owns the App ground for every route it wraps (gap 3, route.md
+   § 1): .shell paints --app-background once, here, rather than each route
+   painting it for itself. The three Sheet frames (app.css's .recipe-page,
+   .page-head and .not-found) paint their own paper over it.
+
    Every colour, size, spacing and rule weight below reads a custom
    property from tokens.css — none is a literal here. */
 
@@ -16,6 +21,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: var(--app-background);
   color: var(--app-text);
 }
 

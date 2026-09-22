@@ -143,7 +143,17 @@ select.ink-field {
 }
 
 /* Links (D-18): every link carries a hairline ink underline, visited the
-   same as unvisited; text that is not a link is never underlined. */
+   same as unvisited; text that is not a link is never underlined.
+
+   The visited rule reads at zero specificity (gap 4, D-01/D-02 boundary,
+   D-07, D-09, D-19): :where(a:visited) keeps the same declaration and the
+   same place in the file, but author-origin declarations beat the user
+   agent's own visited colour regardless of specificity, so the Sheet's
+   "visited reads the same as unvisited" still holds here — while every
+   single-class App rule (.shell__place--*, .home__action,
+   .home__action--secondary) now outranks it instead of losing its
+   destination companion to a browser default once a route has been
+   visited. */
 a {
   color: var(--sheet-ink);
   text-decoration: underline;
@@ -152,7 +162,7 @@ a {
   cursor: pointer;
 }
 
-a:visited {
+:where(a:visited) {
   color: var(--sheet-ink);
 }
 
@@ -331,9 +341,16 @@ textarea {
    height is exactly the head's own height. That is what lets the
    notice's inset-block-start: 100% land on the head's bottom edge
    instead of a literal offset. No z-index here — one would make this a
-   stacking context and trap the notice inside it. */
+   stacking context and trap the notice inside it.
+
+   Own paper (gap 3, route.md § 1): now that the shell paints the App's
+   ground for every route it wraps (shell.css), the three Sheet-frame
+   surfaces — this one, .recipe-page and .not-found — each declare
+   --sheet-ground explicitly, so the paper world keeps its own colour
+   instead of inheriting the App's white through the shell. */
 .page-head {
   position: relative;
+  background: var(--sheet-ground);
 }
 
 /* The running head (route-recipe-version.md § 4, § 6): the way home on
@@ -357,6 +374,7 @@ textarea {
    mistyped or since-removed version id is no longer a dead end. */
 .not-found {
   padding: var(--gap-m) var(--gap-page);
+  background: var(--sheet-ground);
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-table-body);
 }
@@ -400,6 +418,7 @@ textarea {
     'foot foot';
   gap: var(--gap-l);
   padding: var(--gap-page);
+  background: var(--sheet-ground);
 }
 
 /* The front matter (sketch 003 variant B, 03.3-01): two full-width

@@ -47,6 +47,20 @@ function findAnchorTag(markup, needle) {
   return null;
 }
 
+// Finds every opening tag of an <a>, <button> or <summary> element whose
+// attributes (in whatever order React emitted them) contain shell__place —
+// the class every shell stop carries. Same attribute-order-agnostic idiom
+// as findAnchorTag, widened to the three element kinds a stop can be.
+function findShellPlaceTags(markup) {
+  const re = /<(?:a|button|summary)\b[^>]*>/g;
+  const tags = [];
+  let match;
+  while ((match = re.exec(markup))) {
+    if (match[0].includes('shell__place')) tags.push(match[0]);
+  }
+  return tags;
+}
+
 describe('Shell — every route renders inside the layout route (D-09, D-10)', () => {
   it('renders the rail and the Notebook placeholder at /notebook, with the Notebook entry marked current', () => {
     const markup = renderAt('/notebook');
@@ -157,5 +171,33 @@ describe('Shell — More closes on item activation and route change (G-03.4-3)',
     const detailsTag = markup.match(/<details\b[^>]*>/)?.[0];
     expect(detailsTag, 'expected a <details ...> opening tag').toBeTruthy();
     expect(detailsTag).not.toMatch(/\bopen\b/);
+  });
+});
+
+// G-03.4-r3-3 (.planning/debug/ipad-tab-never-enters-app.md): WebKit makes
+// an <a href> keyboard-focusable only under the embedder's TabsToLinks
+// preference — off on Apple platforms, with no iPadOS switch, and
+// untouched by Full Keyboard Access, which widens only the form-control
+// gate — or when the element carries an explicit tabindex, which routes
+// it straight to Element::isKeyboardFocusable. Every shell stop therefore
+// sets one. The pin is on rendered markup, not source text: the
+// attribute's whole effect is in the DOM WebKit reads, and a source regex
+// could pass with the attribute on the wrong element.
+describe('every shell stop carries an explicit tabindex, pinned on rendered markup (G-03.4-r3-3, .planning/debug/ipad-tab-never-enters-app.md)', () => {
+  it('renders exactly 19 shell__place stops (3 tools + 6 rail + 4 tab row + 1 summary + 5 More items), each carrying tabindex="0"', () => {
+    const markup = renderAt('/');
+    const tags = findShellPlaceTags(markup);
+    expect(tags).toHaveLength(19);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('tabindex="-1" occurs exactly once in the markup, on the hidden file input alone', () => {
+    const markup = renderAt('/');
+    expect(markup.match(/tabindex="-1"/g)).toHaveLength(1);
+    const inputTag = markup.match(/<input\b[^>]*tabindex="-1"[^>]*>/)?.[0];
+    expect(inputTag, 'expected the tabindex="-1" input tag').toBeTruthy();
+    expect(inputTag).toContain('type="file"');
   });
 });

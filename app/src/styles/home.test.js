@@ -48,9 +48,30 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     }
   });
 
-  test('the only @media condition in home.css is the named touch step-down (css-source.js parses one level of nesting)', () => {
-    const mediaConditions = new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media));
-    expect([...mediaConditions]).toEqual(['(max-width: 759.98px)']);
+  test('home.css carries exactly two named @media steps, in file order — the 1099.98px lead-and-row step, then the 759.98px touch step-down, and no third (css-source.js parses one level of nesting)', () => {
+    const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
+    expect(mediaConditions).toEqual(['(max-width: 1099.98px)', '(max-width: 759.98px)']);
+  });
+
+  test('the 1099.98px step stacks the lead and hides its rod (G-03.4-6)', () => {
+    const stackedLeadRule = rules.find((rule) => rule.selector === '.home__lead' && rule.media === '(max-width: 1099.98px)');
+    const hiddenRailRule = rules.find((rule) => rule.selector === '.home__lead .home__rail' && rule.media === '(max-width: 1099.98px)');
+    expect(stackedLeadRule, 'expected a .home__lead rule under the 1099.98px condition').toBeTruthy();
+    expect(hiddenRailRule, 'expected a .home__lead .home__rail rule under the 1099.98px condition').toBeTruthy();
+    expect(stackedLeadRule.declarations).toMatch(/flex-direction:\s*column/);
+    expect(hiddenRailRule.declarations).toMatch(/display:\s*none/);
+  });
+
+  test('.home__lead-name wraps rather than spills (G-03.4-6)', () => {
+    const leadNameRule = rules.find((rule) => rule.selector === '.home__lead-name');
+    expect(leadNameRule, 'expected a .home__lead-name rule').toBeTruthy();
+    expect(leadNameRule.declarations).toMatch(/overflow-wrap:\s*anywhere/);
+  });
+
+  test("the 1099.98px step declares no rule for the stacked lead's actions — a deliberate decision, not an oversight (G-03.4-6)", () => {
+    const mediaRules = rules.filter((rule) => rule.media === '(max-width: 1099.98px)');
+    const actionsRule = mediaRules.find((rule) => rule.selector.includes('actions'));
+    expect(actionsRule).toBeUndefined();
   });
 
   test('OWN-WORLD is one grotesk (route.md § 3): the title and the recipe name read --face-grotesk, never --face-text', () => {

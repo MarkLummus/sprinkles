@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.4"
 current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)"
 status: executing
-stopped_at: Completed 03.4-08-PLAN.md
-last_updated: "2026-09-22T16:47:45.832Z"
+stopped_at: Completed 03.4-14-PLAN.md
+last_updated: "2026-09-22T19:29:21.182Z"
 last_activity: 2026-09-22
-last_activity_desc: Phase 03.4 execution started
-state_head: 1bbfa5c3913c71b980e259696f4afec7ffbdcb1c
+last_activity_desc: Phase 03.4 execution resumed (wave continue)
+state_head: 82f7cbd0d0dc63eb129db375cbd36ff00d88931c
 progress:
   total_phases: 10
   completed_phases: 8
-  total_plans: 64
-  completed_plans: 59
+  total_plans: 65
+  completed_plans: 65
   percent: 80
 ---
 
@@ -28,9 +28,9 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03.4 (The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)) — EXECUTING
-Plan: 1 of 13
-Status: Executing Phase 03.4
-Last activity: 2026-09-22 — Phase 03.4 execution started
+Plan: 2 of 13
+Status: Ready to execute
+Last activity: 2026-09-22 — Phase 03.4 execution resumed (wave continue)
 
 Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -105,6 +105,7 @@ Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase
 | Phase 03.4 P06 | ~15min | 3 tasks | 7 files |
 | Phase 03.4 P07 | ~20min | 2 tasks | 5 files |
 | Phase 03.4 P08 | ~25min | 2 tasks | 3 files |
+| Phase 03.4 P14 | ~20min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -195,6 +196,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.3.1.1]: [Phase 03.3.1.1, Plan 01] The three top-level @media blocks cascade 1099.98px, then 759.98px, then 600px in app.css — Narrower always wins on shared selectors by source order
 - [Phase 03.4]: [03.4, 2026-09-22] [Phase 03.4, Plan 07] Gap 5/6 closure: the row reads the board's five-column desktop grid (rail, identity, standing, tally, actions) with a lastEvent.js-derived standing word; the lead block is rebuilt from a bottom-divider into a bordered, radiused block with the rod, a captioned Next time column, and RowActions over its own entry. --app-radius-lead is named apart from --app-radius-action though both read 10px; the lead's own rod hides at the touch step (board 171 draws none) while the row's rod and tally are kept per the phase's earlier recorded decision.
 - [Phase 03.4]: [Phase 03.4] [Phase 03.4, Plan 08] Wrote 03.4-GAPS-CONFORMANCE.md: a 38-row side-by-side record (board 170 at 1280, board 171 at 393) tracing all six VERIFICATION.md gaps to their closing plan/task/pin, naming the four already-decided board departures (12px tab label, rod/tally kept at phone width, absent page-preview glyph, no versions-count cell), and surfacing three new findings (rail's missing padding/border-right, active rail item's missing pill, RowActions always showing two actions at 393px) as open rows for Mark, not resolved by this plan. A re-runnable probe (03.4-gaps-conformance-probe.js) ships beside it for a browser-driven UAT pass.
+- [Phase 03.4]: [Phase 03.4, Plan 14] Closed G-03.4-r3-3: explicit tabIndex={0} on all ten shell__place JSX sites (19 rendered stops) bypasses WebKit's TabsToLinks/Full-Keyboard-Access gates for the Safari chrome-to-page hand-off; shell.css's .shell__place:focus comment and 03.4-09-SUMMARY.md corrected (dated Correction section) to stop citing round two's falsified 'focus lands without :focus-visible' inference as measured.
 
 ### Pending Todos
 
@@ -299,6 +301,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-22T03:13:56.373Z
-Stopped at: Completed 03.4-08-PLAN.md
+Last session: 2026-09-22T19:29:21.115Z
+Stopped at: Completed 03.4-14-PLAN.md
 Resume file: None

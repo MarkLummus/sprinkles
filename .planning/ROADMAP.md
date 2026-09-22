@@ -401,7 +401,7 @@ Plans:
 **Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
 **Requirements**: none mapped — a design-delivery phase governed by CONTEXT.md's D-01..D-20; UX1-01 and UX1-03 apply as build constraints
 **Depends on:** Phase 03.3.1.1
-**Plans:** 13/14 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths; five more added 2026-09-22 after UAT round two diagnosed eight gaps; one more added 2026-09-22 after UAT round three falsified G-03.4-4's premise)
+**Plans:** 14/14 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths; five more added 2026-09-22 after UAT round two diagnosed eight gaps; one more added 2026-09-22 after UAT round three falsified G-03.4-4's premise)
 
 Plans:
 **Wave 1**
@@ -452,7 +452,7 @@ Plans:
 
 **Wave 12 — gap closure** *(03.4-UAT.md round three: G-03.4-r3-3, root-caused from WebKit source; blocked on Wave 11)*
 
-- [ ] 03.4-14-PLAN.md — Every shell stop keyboard-focusable on WebKit without a platform preference: an explicit tabindex on the nineteen stops, pinned on rendered markup; the falsified "focus lands without :focus-visible" premise corrected in shell.css and the 03.4-09 record; the UAT truth split at the Safari boundary (G-03.4-r3-3)
+- [x] 03.4-14-PLAN.md — Every shell stop keyboard-focusable on WebKit without a platform preference: an explicit tabindex on the nineteen stops, pinned on rendered markup; the falsified "focus lands without :focus-visible" premise corrected in shell.css and the 03.4-09 record; the UAT truth split at the Safari boundary (G-03.4-r3-3)
 
 ### Phase 4: Prepare the next version for making
 

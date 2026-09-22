@@ -1,13 +1,14 @@
-/* The Sprinkles Jar — .impeccable/surfaces/route.md, outside the three
-   paper frames only (§ 1). Every selector here is scoped under .home,
-   which is what lets this world override the global link underline and
-   the button/select binder for the home page alone while the paper
-   frames keep both. Unlike app.css, this world may carry a border
-   radius, a fill and one short transition (route.md § 1: the no-motion/
-   no-shadow/no-radius binder does not cross the paper frame). Every
-   colour, size, spacing and rule weight below reads a custom property
-   from tokens.css — none is a literal here. .home itself carries no
-   inline padding: the page gutter is .list-page's own (app.css), already
+/* Home — "Active work first" (.impeccable/surfaces/route.md, Home
+   direction amendment 2026-09-20), outside the three paper frames only
+   (route.md § 1). Every selector here is scoped under .home, which is
+   what lets this world override the global link underline and the
+   button/select binder for the home page alone while the paper frames
+   keep both. Unlike app.css, this world may carry a border radius, a
+   fill and one short transition (route.md § 1: the no-motion/no-shadow/
+   no-radius binder does not cross the paper frame). Every colour, size,
+   spacing and rule weight below reads a custom property from
+   tokens.css — none is a literal here. .home itself carries no inline
+   padding: the page gutter is .list-page's own (app.css), already
    pinned by cross-cutting.test.js, and a second one here would double
    it. */
 
@@ -30,9 +31,10 @@ body:has(.home) {
 }
 
 /* OWN-WORLD (route.md § 3): one grotesk outside the paper frames — the
-   text face is the book's own voice, kept only for the batch's own
-   words below (.home__words). The title and the recipe name read the
-   sketch's own heavy grotesk, tight tracking. */
+   text face never appears here at all; the maker's own words render in
+   the hand role class instead (.home__lead-next-time, D-18). The title
+   and the recipe name read the sketch's own heavy grotesk, tight
+   tracking. */
 .home__title {
   margin: var(--gap-l) 0 var(--gap-hair);
   font-family: var(--face-grotesk);
@@ -41,8 +43,84 @@ body:has(.home) {
   letter-spacing: -0.02em;
 }
 
-.home__guidance {
+/* The empty shelf (D-08): no lead block, no list, no heading — one
+   sentence, then Recipe book and Idea log lead, each in its own text
+   companion. Two links share one class, told apart by their order in
+   the one sentence that holds both. */
+.home__empty {
+  margin-top: var(--gap-m);
+}
+
+.home__empty p {
+  margin: 0 0 var(--gap-s);
+}
+
+.home__empty-lead {
+  font-weight: 700;
+}
+
+.home__empty-lead:first-of-type {
+  color: var(--app-recipe-book-text);
+}
+
+.home__empty-lead:last-of-type {
+  color: var(--app-idea-log-text);
+}
+
+/* The lead block (D-06, D-12, D-18): the recipe the maker touched last,
+   larger than a row, above the list. */
+.home__lead {
   margin: 0 0 var(--gap-l);
+  padding-bottom: var(--gap-m);
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+
+.home__lead-place {
+  margin: 0 0 var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-notebook-text);
+}
+
+.home__lead-name {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-lead-name);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.home__lead-name a {
+  color: inherit;
+}
+
+.home__lead-meta {
+  margin: var(--gap-hair) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The maker's own Next time (D-18): the hand's face, colour, size and
+   leading all come from the .app-hand role class in app.css (plan 02) —
+   this rule sets spacing and measure only and declares no font-family. */
+.home__lead-next-time {
+  margin: var(--gap-s) 0 0;
+  max-width: var(--measure-prose);
+}
+
+/* The heading over the rows (D-14). */
+.home__section {
+  margin: 0 0 var(--gap-s);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
   color: var(--app-text-secondary);
 }
 
@@ -52,41 +130,52 @@ body:has(.home) {
   padding: 0;
 }
 
+/* Every recipe row (D-11): a block, not a link — a link cannot hold two
+   action controls. A grid, so the rail spans every line, the place name
+   sits above the recipe name, and the actions sit at the row's own right
+   edge, with no wrapper class beyond what the row itself needs. */
 .home__row {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    'rail place actions'
+    'rail name actions'
+    'rail meta actions';
   align-items: center;
-  flex-wrap: wrap;
-  row-gap: var(--gap-s);
-  column-gap: var(--gap-l);
+  column-gap: var(--gap-m);
+  row-gap: var(--gap-hair);
   padding: var(--gap-m) 0;
   border-top: var(--app-rule-row) solid var(--app-divider);
-  text-decoration: none;
-  color: inherit;
-  transition: background-color var(--app-duration);
 }
 
-.home__row:hover {
-  background: var(--app-divider);
-}
-
-/* The identity bar (FIRST VIEWPORT: "identity bar"): the recipe's own
-   hue, dealt by recipe-colour.js and reached here as a fixed
-   var(--recipe-hue-NN) reference on --c, never a stored value
-   (T-260918-gha-02). */
-.home__bar {
-  flex: 0 0 var(--app-size-rail-w);
+/* The destination rail (D-11, DESIGN.md "App marks — The rail"):
+   decorative and aria-hidden, since the place name beside it already
+   carries the destination as text. Every recipe lives in the Notebook
+   this phase, so this rule reads the Notebook's own accent directly;
+   placeNameFor (RecipeList.jsx) is the one place a second destination's
+   name is decided, and this rule is what a second destination's colour
+   would extend. */
+.home__rail {
+  grid-area: rail;
   width: var(--app-size-rail-w);
   height: var(--app-size-rail-h);
   border-radius: var(--app-radius-rail);
-  background: var(--c);
+  background: var(--app-notebook);
 }
 
-.home__main {
-  flex: 2 1 0;
-  min-width: 0;
+.home__place {
+  grid-area: place;
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-notebook-text);
 }
 
 .home__name {
+  grid-area: name;
   margin: 0;
   font-family: var(--face-grotesk);
   font-size: var(--app-size-recipe-name);
@@ -95,38 +184,20 @@ body:has(.home) {
   overflow-wrap: anywhere;
 }
 
+.home__name a {
+  color: inherit;
+}
+
+/* The batch tally line (D-11, D-19): the marks are decorative
+   (aria-hidden) and the count beside them is always in words, so a
+   count told only in marks is never the sole carrier (UX1-03). */
 .home__meta {
-  display: block;
-  margin-top: var(--gap-hair);
-  font-size: var(--app-size-meta);
-  color: var(--app-text-secondary);
-  font-variant-numeric: tabular-nums;
+  grid-area: meta;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
 }
 
-.home__tally-group {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.home__tally-label {
-  margin: 0 0 var(--gap-xs);
-  font-size: var(--app-size-label);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: var(--app-tracking-label);
-  color: var(--app-text-secondary);
-}
-
-.home__tally-label--empty {
-  text-transform: none;
-  letter-spacing: normal;
-}
-
-/* A row of sprinkle marks — decorative (aria-hidden), since
-   .home__tally-label already carries the count as text: a count told
-   only in marks is invisible to a screen reader and colour must never be
-   the sole carrier. route.md § 5 leaves how a tally reads past a dozen
-   open; the marks simply wrap. */
 .home__tally {
   display: flex;
   flex-wrap: wrap;
@@ -134,41 +205,85 @@ body:has(.home) {
   align-items: center;
 }
 
+/* A hollow sprinkle — an open ring in the destination's own accent,
+   never a fill, so a version's filled sprinkle (the recipe route's own
+   history mark, DESIGN.md "Tallies") and a batch's hollow one are never
+   mistaken for each other even in one colour. */
 .home__tally-mark {
   display: inline-block;
   width: var(--app-size-sprinkle-w);
   height: var(--app-size-sprinkle-h);
   border-radius: var(--app-radius-sprinkle);
+  border: var(--app-rule-tally) solid var(--app-notebook);
 }
 
-.home__tally-mark--version {
-  background: var(--c);
+.home__count {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
 }
 
-.home__tally-mark--batch {
-  background: var(--jar-gold);
+.home__actions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-s);
 }
 
-/* The last verdict, in pen blue (FIRST VIEWPORT; the Two-Ink rule still
-   binds wherever plan and actual meet, route.md § 1) — no second blue is
-   defined for this world. */
-.home__words {
-  flex: 1 1 0;
-  min-width: 0;
-  font-family: var(--face-text);
-  font-style: italic;
+/* The filled action (D-07, DESIGN.md "The filled action"): the app
+   blue's text companion as the fill, the app background as the label
+   colour. The App radius and the shared touch minimum apply to both the
+   filled and the secondary action; the standing is stated by the
+   action's own words, never by colour. */
+.home__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--gap-s) var(--gap-m);
+  border-radius: var(--app-radius-action);
+  border: var(--app-rule-row) solid var(--app-blue-text);
+  background: var(--app-blue-text);
+  color: var(--app-background);
+  font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
-  color: var(--sheet-pen-blue);
-  overflow-wrap: anywhere;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* The secondary action: the same blue as outline and label, on the app
+   background (DESIGN.md "The filled action") — the border colour is
+   already var(--app-blue-text) from the base rule above. */
+.home__action--secondary {
+  background: var(--app-background);
+  color: var(--app-blue-text);
 }
 
 /* Below the 760px step-down (sketch-findings-sprinkles,
    references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
-   the Responsive Ladder"): the row is free to wrap onto further lines so
-   nothing overflows at 393px. One top-level @media block, nothing
-   deeper — css-source.js parses exactly one level of nesting. */
+   the Responsive Ladder"): the row stacks, the rail sits beside the
+   place and the name rather than spanning three rows of its own column,
+   and the actions wrap onto their own line at full width — every
+   action's own --touch-min floor already holds at every width. The one
+   top-level media block this file carries — css-source.js parses
+   exactly one level of nesting. */
 @media (max-width: 759.98px) {
   .home__row {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'rail place'
+      'rail name'
+      'meta meta'
+      'actions actions';
     padding: var(--gap-s) 0;
+  }
+
+  .home__actions {
+    width: 100%;
+  }
+
+  .home__action {
+    flex: 1 1 0;
   }
 }

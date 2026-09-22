@@ -90,30 +90,35 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
     // recipe-colour.js builds as a name string at runtime
     // (`--recipe-hue-${hueNumber}`) rather than a literal var() read this
     // static scan can see; --app-pantry, reserved for a destination not
-    // yet built (D-09's rail has no Pantry entry); and three App geometry
-    // tokens (--app-radius-action, --app-rule-nav-active,
-    // --app-size-brand-rule) whose only consumers were Home's filled
-    // action, its active-nav underline and its brand rule — all removed
-    // by 03.4-03 Task 2 when Import/Export/nav moved into Shell.jsx.
-    // Plan 04's Home rebuild is expected to re-wire the filled-action
-    // radius; the nav-active and brand-rule tokens stay declared for now
-    // since D-04 (plan 05) is the only step allowed to retire a token
-    // outright.
+    // yet built (D-09's rail has no Pantry entry); and two App geometry
+    // tokens (--app-rule-nav-active, --app-size-brand-rule) whose only
+    // consumers were Home's active-nav underline and its brand rule — both
+    // removed by 03.4-03 Task 2 when nav moved into Shell.jsx. They stay
+    // declared for now since D-04 (plan 05) is the only step allowed to
+    // retire a token outright. --app-radius-action is no longer in this
+    // list — 03.4-04 Task 2's filled action (.home__action) is its first
+    // consumer.
     //
     // Every App destination/neutral colour (--app-notebook, --app-blue,
     // etc.) and --app-notebook-text/--app-blue-text/--app-surface-subtle
     // are no longer in this list — shell.css's rail and tools row (Task
     // 1/2) are their first consumers. The hand's four tokens (D-17) are
     // no longer in this list either — plan 02's .app-hand rule in app.css
-    // is their first consumer; Home's lead-block Next-time text (D-18) is
-    // their second, in a later plan.
+    // is their first consumer; Home's lead-block Next-time text (D-18,
+    // 03.4-04 Task 1) is their second.
     //
     // Four of the six original Sprinkles Jar hues (--jar-pink, --jar-teal,
-    // --jar-green, --jar-orange) are newly unread: Task 2 deleted the
-    // brand's old gradient rule (home.css's .home__brand::after), their
-    // only consumer, replacing it with the five App-destination sprinkles
-    // in shell.css. --jar-gold survives (still read by
-    // .home__tally-mark--batch); --jar-violet was already unread.
+    // --jar-green, --jar-orange) are newly unread since 03.4-03 Task 2
+    // deleted the brand's old gradient rule (home.css's
+    // .home__brand::after), their only consumer, replacing it with the
+    // five App-destination sprinkles in shell.css. --jar-gold is newly
+    // unread here — 03.4-04 Task 2's row rewrite (D-11) replaced the
+    // batch tally's fixed gold colour with the destination's own accent,
+    // .home__tally-mark--batch's only consumer, deleted along with the
+    // rule; --jar-violet was already unread. --app-duration is also
+    // newly unread — its one consumer, .home__row's hover transition,
+    // had no reason to survive once the row stopped being a single link
+    // (D-11: the row is a block, not a link).
     const expectedUnread = [
       '--rule-band-edge',
       '--rule-tick',
@@ -121,7 +126,9 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
       '--sheet-hatch-stroke',
       '--gap-mark-stop',
       '--rule-tick-hollow',
+      '--app-duration',
       '--jar-pink',
+      '--jar-gold',
       '--jar-teal',
       '--jar-green',
       '--jar-orange',
@@ -139,7 +146,6 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
       '--recipe-hue-11',
       '--recipe-hue-12',
       '--app-pantry',
-      '--app-radius-action',
       '--app-rule-nav-active',
       '--app-size-brand-rule',
     ];

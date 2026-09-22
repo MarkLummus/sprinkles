@@ -19,9 +19,11 @@ import { readAllRules } from './css-source.js';
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const HOME_CSS_PATH = path.join(STYLES_DIR, 'home.css');
 const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
+const RECIPE_LIST_JSX_PATH = path.join(STYLES_DIR, '..', 'ui', 'RecipeList.jsx');
 
 const homeCssSource = readFileSync(HOME_CSS_PATH, 'utf8');
 const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
+const recipeListJsxSource = readFileSync(RECIPE_LIST_JSX_PATH, 'utf8');
 
 // readAllRules runs assertNoAtRules for us: a non-media at-rule, or an
 // at-rule nested inside the one top-level @media block, throws here at
@@ -68,15 +70,39 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
   test('OWN-WORLD is one grotesk (route.md § 3): the title and the recipe name read --face-grotesk, never --face-text', () => {
     const titleRule = rules.find((rule) => rule.selector === '.home__title');
     const nameRule = rules.find((rule) => rule.selector === '.home__name');
+    const leadNameRule = rules.find((rule) => rule.selector === '.home__lead-name');
     expect(titleRule, 'expected a .home__title rule').toBeTruthy();
     expect(nameRule, 'expected a .home__name rule').toBeTruthy();
+    expect(leadNameRule, 'expected a .home__lead-name rule').toBeTruthy();
     expect(titleRule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
     expect(nameRule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+    expect(leadNameRule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
   });
 
-  test('the text face survives on exactly one rule — the batch\'s own words in pen blue (route.md § 1: the record keeps its voice)', () => {
-    const textFaceRules = rules.filter((rule) => /font-family:\s*var\(--face-text\)/.test(rule.declarations));
-    expect(textFaceRules.map((rule) => rule.selector)).toEqual(['.home__words']);
+  test('no rule in home.css declares the text face or the hand face — the hand is a role class in app.css, plan 02 (D-18)', () => {
+    const textOrHandFaceRules = rules.filter((rule) => /font-family:\s*var\(--face-(text|hand)\)/.test(rule.declarations));
+    expect(textOrHandFaceRules).toEqual([]);
+  });
+
+  test("RecipeList.jsx's source carries the hand role class exactly once, so plan 02's rule has exactly one renderer (D-18, D-20)", () => {
+    const matches = recipeListJsxSource.match(/\bapp-hand\b/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+
+  test('the row\'s rail and tally read a destination accent token, never a per-recipe custom property (D-11, 03.4-04 Task 2)', () => {
+    const railRule = rules.find((rule) => rule.selector === '.home__rail');
+    const tallyMarkRule = rules.find((rule) => rule.selector === '.home__tally-mark');
+    expect(railRule, 'expected a .home__rail rule').toBeTruthy();
+    expect(tallyMarkRule, 'expected a .home__tally-mark rule').toBeTruthy();
+    expect(railRule.declarations).toMatch(/var\(--app-notebook\)/);
+    expect(tallyMarkRule.declarations).toMatch(/var\(--app-notebook\)/);
+    expect(railRule.declarations).not.toMatch(/var\(--c\)/);
+    expect(tallyMarkRule.declarations).not.toMatch(/var\(--c\)/);
+  });
+
+  test('no rule reads a jar hue or a recipe hue (D-04 in progress; the App marks grammar replaces per-recipe colour)', () => {
+    expect(homeCssSource).not.toMatch(/var\(--jar-/);
+    expect(homeCssSource).not.toMatch(/var\(--recipe-hue-/);
   });
 });
 

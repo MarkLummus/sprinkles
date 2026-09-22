@@ -110,13 +110,22 @@
   flex: 1 1 auto;
 }
 
-/* The 224px rail (D-09). Distinct from --app-size-rail-w, a row's own 8px
-   identity mark — the two "rail" meanings never share a token. */
+/* The 224px rail (D-09, G-03.4-7, board 170 line 30). Distinct from
+   --app-size-rail-w, a row's own 8px identity mark — the two "rail"
+   meanings never share a token. The padding reads the gap scale's own
+   reading of the board's hand-copied 8/20/32/30 (03.4-07 decision #5: the
+   board governs structure and order, tokens govern values) — 6/20/32/20,
+   not a literal copy. border-box sizing is what keeps the declared 224px
+   basis from growing by the padding and the border; this project has no
+   global box-sizing reset. */
 .shell__rail {
   flex: 0 0 var(--app-size-nav-w);
   width: var(--app-size-nav-w);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  padding: var(--gap-xs) var(--gap-m) var(--gap-l);
+  border-right: var(--app-rule-row) solid var(--app-divider);
 }
 
 /* The routed page. No transform, filter, perspective, will-change or

@@ -69,6 +69,32 @@ describe('shell.css — no visual literal, every value a var() read', () => {
   });
 });
 
+describe('the rail reads board 170\'s own edge (G-03.4-7, board 170 line 30)', () => {
+  test('.shell__rail declares the hairline right border reading --app-rule-row and --app-divider', () => {
+    const rule = rules.find((r) => r.selector === '.shell__rail' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__rail rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/border-right:\s*var\(--app-rule-row\)\s+solid\s+var\(--app-divider\)/);
+  });
+
+  test('.shell__rail declares a padding whose every value is a --gap- read', () => {
+    const rule = rules.find((r) => r.selector === '.shell__rail' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__rail rule').toBeTruthy();
+    const paddingMatch = rule.declarations.match(/padding:\s*([^;]+);/);
+    expect(paddingMatch, 'expected a padding declaration').toBeTruthy();
+    const values = paddingMatch[1].trim().split(/\s+/);
+    expect(values.length).toBeGreaterThan(0);
+    for (const value of values) {
+      expect(value).toMatch(/^var\(--gap-/);
+    }
+  });
+
+  test('.shell__rail declares box-sizing: border-box, so its padding and border cannot grow its 224px basis', () => {
+    const rule = rules.find((r) => r.selector === '.shell__rail' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__rail rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
+  });
+});
+
 describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
   test('shell.css carries exactly one @media block', () => {
     expect(shellCssSource.match(/@media/g)).toHaveLength(1);

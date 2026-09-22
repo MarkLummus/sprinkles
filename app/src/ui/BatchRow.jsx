@@ -344,7 +344,7 @@ export function BatchHistoryPanel({ version, batches, openBatch = null, openPen 
                   ) : openPen ? (
                     identity
                   ) : (
-                    <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{identity}</Link>
+                    <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }} tabIndex={0}>{identity}</Link>
                   )}
                 </p>
                 <HistoryProvenance>{metaParts.join(' · ')}</HistoryProvenance>

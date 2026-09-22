@@ -60,7 +60,7 @@ function RecipePageForRoute() {
           the head's height. */}
       <div className="page-head">
         <p className="running-head">
-          <Link to="/">Sprinkles</Link>
+          <Link to="/" tabIndex={0}>Sprinkles</Link>
         </p>
         <PageStatus message={pageStatus} />
       </div>

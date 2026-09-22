@@ -845,7 +845,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     return (
       <div className="not-found">
         <p>No recipe found for this version.</p>
-        <Link to="/">Back to the recipe list</Link>
+        <Link to="/" tabIndex={0}>Back to the recipe list</Link>
       </div>
     );
   }

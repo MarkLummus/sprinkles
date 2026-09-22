@@ -3,6 +3,9 @@
 // the node test environment, MemoryRouter + Routes/Route for the router
 // context — the same convention RecipeList.test.jsx uses for the app's
 // links.
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { describe, it, expect, vi } from 'vitest';
 // Shell.jsx imports repository.js, whose module-level
 // `export const repository = createRepository()` opens the real IndexedDB
@@ -14,6 +17,10 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter, Routes, Route } from 'react-router';
 import { Shell, PLACES } from './Shell.jsx';
 import { Placeholder } from './Placeholder.jsx';
+
+const UI_DIR = path.dirname(fileURLToPath(import.meta.url));
+const SHELL_JSX_PATH = path.join(UI_DIR, 'Shell.jsx');
+const shellJsxSource = readFileSync(SHELL_JSX_PATH, 'utf8');
 
 function renderAt(path) {
   return renderToStaticMarkup(
@@ -109,5 +116,46 @@ describe('Shell — the bottom tab row and More (D-16, 03.4-03 Task 3)', () => {
     const markup = renderAt('/');
     expect(markup.match(/<details\b/g)).toHaveLength(1);
     expect(markup.match(/type="file"/g)).toHaveLength(1);
+  });
+});
+
+// G-03.4-3 half A (.planning/debug/more-panel-stays-open-import-no-home.md):
+// this suite is renderToStaticMarkup in vitest's node environment, so it
+// cannot click, toggle a <details>, navigate, or run an effect — 1119
+// passing tests coexisted with the defect these facts describe (More never
+// closed on item activation or on route change). Reading Shell.jsx's own
+// source as text, the way home.test.js reads RecipeList.jsx, is what this
+// harness can honestly assert; a real DOM-level interaction test needs
+// jsdom or testing-library, a structural choice recorded as a follow-up
+// rather than taken here.
+describe('Shell — More closes on item activation and route change (G-03.4-3)', () => {
+  it('imports useLocation from react-router', () => {
+    expect(shellJsxSource).toMatch(/import\s*\{[^}]*\buseLocation\b[^}]*\}\s*from\s*'react-router'/);
+  });
+
+  it('imports useEffect from react', () => {
+    expect(shellJsxSource).toMatch(/import\s*\{[^}]*\buseEffect\b[^}]*\}\s*from\s*'react'/);
+  });
+
+  it('the shell__more details carries both an open prop and an onToggle handler', () => {
+    const detailsTag = shellJsxSource.match(/<details className="shell__more"[^>]*>/)?.[0];
+    expect(detailsTag, 'expected a <details className="shell__more" ...> opening tag').toBeTruthy();
+    expect(detailsTag).toMatch(/\bopen=\{/);
+    expect(detailsTag).toMatch(/\bonToggle=\{/);
+  });
+
+  it('an effect closes the panel keyed on the route pathname', () => {
+    expect(shellJsxSource).toMatch(/useEffect\(\(\) => \{[\s\S]*?\}, \[pathname\]\);/);
+  });
+
+  it('the More list carries a click handler closing the panel', () => {
+    expect(shellJsxSource).toMatch(/<ul onClick=\{closeMore\}>/);
+  });
+
+  it('rendered at rest, the details still emits no open attribute', () => {
+    const markup = renderAt('/');
+    const detailsTag = markup.match(/<details\b[^>]*>/)?.[0];
+    expect(detailsTag, 'expected a <details ...> opening tag').toBeTruthy();
+    expect(detailsTag).not.toMatch(/\bopen\b/);
   });
 });

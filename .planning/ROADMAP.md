@@ -401,7 +401,7 @@ Plans:
 **Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
 **Requirements**: none mapped — a design-delivery phase governed by CONTEXT.md's D-01..D-20; UX1-01 and UX1-03 apply as build constraints
 **Depends on:** Phase 03.3.1.1
-**Plans:** 11/13 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths; five more added 2026-09-22 after UAT round two diagnosed eight gaps)
+**Plans:** 12/13 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths; five more added 2026-09-22 after UAT round two diagnosed eight gaps)
 
 Plans:
 **Wave 1**
@@ -444,7 +444,7 @@ Plans:
 
 **Wave 10 — gap closure** *(blocked on Waves 9's home.css and conformance-record work)*
 
-- [ ] 03.4-12-PLAN.md — The phone row as board 171 draws it: no rod, no tally, one action, the lead untouched; the lead's meta line drops the mass figure; DESIGN.md's App marks rule records the exception (G-03.4-6b, G-03.4-6c)
+- [x] 03.4-12-PLAN.md — The phone row as board 171 draws it: no rod, no tally, one action, the lead untouched; the lead's meta line drops the mass figure; DESIGN.md's App marks rule records the exception (G-03.4-6b, G-03.4-6c)
 
 **Wave 11 — gap closure** *(blocked on Wave 10)*
 

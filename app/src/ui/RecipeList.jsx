@@ -131,6 +131,20 @@ function batchCountWords(count) {
   return `${count} batch${count === 1 ? '' : 'es'}`;
 }
 
+// The standing's own word (D-07, D-11, gap 6): looked up from
+// lastEvent.js's exported constants — never hand-spelled — so a row's
+// word can never disagree with the standing that also decides
+// RowActions beside it (T-03.4-G07). D-07 also names two standings a
+// Recipe Book version's own "Ready to make" and a saved idea's own
+// "Saved idea" — that lastEvent.js's standingFor cannot return this
+// phase (03.4-CONTEXT.md decision #2), so this lookup carries no entry
+// for either.
+const STANDING_WORDS = {
+  [NOT_YET_CHURNED]: 'Not yet churned',
+  [AWAITING_TASTING]: 'Awaiting tasting',
+  [TASTED]: 'Tasted',
+};
+
 // The row's next action(s) (D-07, D-11): one filled action, and at most
 // one outline secondary, chosen by the recipe's own standing. Record a
 // tasting is the one action that opens the newest batch's own path;
@@ -201,6 +215,7 @@ export function RecipeRows({ versions, batches = [] }) {
             <h2 className="home__name">
               <Link to={`/recipe/${entry.latestVersion.id}`}>{entry.name}</Link>
             </h2>
+            <span className="home__standing">{STANDING_WORDS[entry.standing]}</span>
             <span className="home__meta">
               <span className="home__tally" aria-hidden="true">
                 {Array.from({ length: batchCount }, (_, i) => (

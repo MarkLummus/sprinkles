@@ -157,6 +157,42 @@ describe('RecipeRows — the App marks grammar (D-07, D-11, D-19, 03.4-04 Task 2
   });
 });
 
+// The standing word (gap 6, D-07, D-11): every row states in plain
+// words where it stands, beside — never instead of — its filled action.
+describe('RecipeRows — the standing word (gap 6, D-07, D-11)', () => {
+  it('renders "Not yet churned" for a recipe with no batch', () => {
+    const markup = renderRows([makeVersion()]);
+    expect(markup).toContain('home__standing');
+    expect(markup).toContain('Not yet churned');
+  });
+
+  it('renders "Awaiting tasting" for a recipe whose newest batch has no tasting', () => {
+    const version = makeVersion({ id: 'v1', recipeId: 'r1' });
+    const batches = [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })];
+    const markup = renderRows([version], batches);
+    expect(markup).toContain('Awaiting tasting');
+  });
+
+  it('renders "Tasted" for a recipe whose newest batch carries a tasting', () => {
+    const version = makeVersion({ id: 'v1', recipeId: 'r1' });
+    const batches = [
+      makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: { tastedDate: '2026-01-02' } }),
+    ];
+    const markup = renderRows([version], batches);
+    expect(markup).toContain('Tasted');
+  });
+
+  it('renders the standing word once per row, alongside the filled action, not instead of it', () => {
+    const version = makeVersion({ id: 'v1', recipeId: 'r1' });
+    const batches = [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })];
+    const markup = renderRows([version], batches);
+    const standingMatches = markup.match(/home__standing/g) ?? [];
+    expect(standingMatches).toHaveLength(1);
+    expect(markup).toContain('Awaiting tasting');
+    expect(markup).toContain('Record a tasting');
+  });
+});
+
 // HomeLead (03.4-04 Task 1, D-06, D-12, D-18, D-20): the recipe the maker
 // touched last, as a larger block above the list — one presentational
 // component over one activeWork() entry, so it is testable without

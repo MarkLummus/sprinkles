@@ -95,6 +95,27 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     expect(railRule.declarations).not.toMatch(/var\(--c\)/);
     expect(tallyMarkRule.declarations).not.toMatch(/var\(--c\)/);
   });
+
+  test("the row's desktop template reads the board's standing and tally columns (gap 6)", () => {
+    const rowRule = rules.find((rule) => rule.selector === '.home__row' && rule.media === undefined);
+    expect(rowRule, 'expected a top-level .home__row rule').toBeTruthy();
+    expect(rowRule.declarations).toMatch(/grid-template-columns:[^;]*var\(--app-col-standing\)/);
+    expect(rowRule.declarations).toMatch(/grid-template-columns:[^;]*var\(--app-col-tally\)/);
+  });
+
+  test('a .home__standing rule exists and reads the App meta size (gap 6)', () => {
+    const standingRule = rules.find((rule) => rule.selector === '.home__standing');
+    expect(standingRule, 'expected a .home__standing rule').toBeTruthy();
+    expect(standingRule.declarations).toMatch(/font-size:\s*var\(--app-size-meta\)/);
+  });
+
+  test("the media-scoped .home__row rule's areas name the standing area, so the phone form cannot silently lose it (gap 6)", () => {
+    const mediaRowRule = rules.find(
+      (rule) => rule.selector === '.home__row' && rule.media === '(max-width: 759.98px)',
+    );
+    expect(mediaRowRule, 'expected a media-scoped .home__row rule').toBeTruthy();
+    expect(mediaRowRule.declarations).toMatch(/grid-template-areas:[^;]*standing/);
+  });
 });
 
 describe('home.css is wired in (main.jsx, 260917-h83 precedent)', () => {

@@ -118,22 +118,33 @@
   padding: 0;
 }
 
-/* Every recipe row (D-11): a block, not a link — a link cannot hold two
-   action controls. A grid, so the rail spans every line, the place name
-   sits above the recipe name, and the actions sit at the row's own right
-   edge, with no wrapper class beyond what the row itself needs. */
+/* Every recipe row (D-11, gap 6): a block, not a link — a link cannot
+   hold two action controls. A grid, so the rail spans every line, the
+   place name sits above the recipe name, and the row reads the board's
+   own five columns at desktop (board 170 lines 86-103): the rail, the
+   identity column (place over name), the standing word, the tally, then
+   the actions at the row's own right edge. The standing and tally areas
+   each span both identity rows, as the rail already does. */
 .home__row {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr var(--app-col-standing) var(--app-col-tally) auto;
   grid-template-areas:
-    'rail place actions'
-    'rail name actions'
-    'rail meta actions';
+    'rail place standing tally actions'
+    'rail name standing tally actions';
   align-items: center;
   column-gap: var(--gap-m);
   row-gap: var(--gap-hair);
   padding: var(--gap-m) 0;
   border-top: var(--app-rule-row) solid var(--app-divider);
+}
+
+/* The standing word (D-07, D-11, gap 6): plain words stating where the
+   recipe stands, beside — never instead of — its filled action. */
+.home__standing {
+  grid-area: standing;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
 }
 
 /* The destination rail (D-11, DESIGN.md "App marks — The rail"):
@@ -176,14 +187,16 @@
   color: inherit;
 }
 
-/* The batch tally line (D-11, D-19): the marks are decorative
+/* The batch tally line (D-11, D-19, gap 6): the marks are decorative
    (aria-hidden) and the count beside them is always in words, so a
-   count told only in marks is never the sole carrier (UX1-03). */
+   count told only in marks is never the sole carrier (UX1-03). Reads the
+   row's tally area and stacks the marks over the count, as the board
+   draws it (board 170 lines 94-100) — not beside them. */
 .home__meta {
-  grid-area: meta;
+  grid-area: tally;
   display: flex;
-  align-items: center;
-  gap: var(--gap-xs);
+  flex-direction: column;
+  gap: var(--gap-hair);
 }
 
 .home__tally {
@@ -209,6 +222,7 @@
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
   color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
 .home__actions {
@@ -258,12 +272,12 @@
    exactly one level of nesting. */
 @media (max-width: 759.98px) {
   .home__row {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     grid-template-areas:
-      'rail place'
-      'rail name'
-      'meta meta'
-      'actions actions';
+      'rail place standing'
+      'rail name standing'
+      'rail tally tally'
+      'rail actions actions';
     padding: var(--gap-s) 0;
   }
 

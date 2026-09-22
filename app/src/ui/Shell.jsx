@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { NavLink, Outlet } from 'react-router';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router';
 import { repository } from '../store/repository.js';
 import { exportStore, importStore } from '../store/transfer.js';
 
@@ -145,6 +145,19 @@ export function Shell() {
   const [storeRevision, setStoreRevision] = useState(0);
   const fileInputRef = useRef(null);
 
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreSummaryRef = useRef(null);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [pathname]);
+
+  function closeMore() {
+    setMoreOpen(false);
+    moreSummaryRef.current?.focus();
+  }
+
   // Export hands the maker a file, using the browser's own object URL and
   // an anchor click — no upload, no network, no external service (D-15).
   // Moved from RecipeList.jsx unchanged in behaviour so it keeps working
@@ -258,7 +271,14 @@ export function Shell() {
           shown. Because the hidden one leaves the accessibility tree,
           both may share the rail's own label. More's Import opens the
           same single hidden file input the tools row's Import opens —
-          one input, two buttons, never two inputs. */}
+          one input, two buttons, never two inputs. More's open state is
+          React's now (G-03.4-3): a native <details> toggles only via its
+          own <summary>'s activation behaviour, so choosing one of the
+          five items inside never closed it, and because the element sits
+          outside the Outlet a route change used to reconcile it in place
+          with `open` still set. The `<ul>`'s own click handler closes it
+          on item activation and an effect keyed on the route closes it on
+          navigation, in both cases returning focus to the summary. */}
       <nav className="shell__tabs" aria-label="Places">
         <NavLink to="/" end className="shell__place shell__place--home">
           <HomeIcon />
@@ -267,12 +287,12 @@ export function Shell() {
         {PLACES.slice(0, 3).map((place) => (
           <RailPlace key={place.slug} place={place} />
         ))}
-        <details className="shell__more">
-          <summary className="shell__place">
+        <details className="shell__more" open={moreOpen} onToggle={(event) => setMoreOpen(event.currentTarget.open)}>
+          <summary className="shell__place" ref={moreSummaryRef}>
             <MoreIcon />
             More
           </summary>
-          <ul>
+          <ul onClick={closeMore}>
             <li>
               <RailPlace place={PLACES[3]} />
             </li>

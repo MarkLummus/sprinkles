@@ -4,10 +4,10 @@ current_phase: "03.4"
 current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)"
 status: executing
 stopped_at: Completed 03.4-08-PLAN.md
-last_updated: "2026-09-22T03:13:56.494Z"
+last_updated: "2026-09-22T13:31:56.484Z"
 last_activity: 2026-09-21
 last_activity_desc: Phase 03.4 execution resumed (wave continue)
-state_head: e30f62c798678aefa853f3041b35311a4d890db8
+state_head: 63c38e185a51dd475808f4f79f853a27f8bd275d
 progress:
   total_phases: 10
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 Phase: 03.4 (The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)) — EXECUTING
 Plan: 4 of 5
 Status: Ready to execute
-Last activity: 2026-09-21 — Phase 03.4 execution resumed (wave continue)
+Last activity: 2026-09-22 - Completed quick task 260922-d2y: border-box on .shell__tabs .shell__place and .home__action
 
 Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 
@@ -272,6 +272,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 42 | Apply the approved hand to DESIGN.md: Caveat, observations plus ideas, sheet pen blue in the App, tokens pending with the tokens.css rework | 2026-09-21 | 0f3c4f7 | — |
 | 43 | Amend DESIGN.md with the App mark grammar (rails, tallies, nav, History by place) and the filled action in companion blue, all approved direction 2026-09-21 | 2026-09-21 | c42055b | — |
 | 44 | Settle the rail question in DESIGN.md App marks: the rail stays on every list (Mark, 2026-09-21) | 2026-09-21 | 5c97348 | — |
+| 260922-d2y | border-box on .shell__tabs .shell__place and .home__action | 2026-09-22 | 63c38e1 | [260922-d2y-border-box-on-shell-tabs-shell-place-and](./quick/260922-d2y-border-box-on-shell-tabs-shell-place-and/) |
 
 ### Roadmap Evolution
 

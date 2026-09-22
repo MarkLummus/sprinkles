@@ -401,7 +401,7 @@ Plans:
 **Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
 **Requirements**: none mapped — a design-delivery phase governed by CONTEXT.md's D-01..D-20; UX1-01 and UX1-03 apply as build constraints
 **Depends on:** Phase 03.3.1.1
-**Plans:** 5/5 plans executed
+**Plans:** 5/8 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths)
 
 Plans:
 **Wave 1**
@@ -423,6 +423,18 @@ Plans:
 **Wave 5** *(blocked on Wave 4 completion)*
 
 - [x] 03.4-05-PLAN.md — The Sprinkles Jar retired: jar hues, recipe hues and recipe-colour.js removed last (D-04)
+
+**Wave 6 — gap closure** *(03.4-VERIFICATION.md: gaps_found, six failed truths)*
+
+- [ ] 03.4-06-PLAN.md — The shell's own world: the App ground on every route, the Sheet visited rule de-specified, the unbuilt-place rules, and a tab row that fits 393 (gaps 1-4)
+
+**Wave 7 — gap closure** *(blocked on Wave 6 completion)*
+
+- [ ] 03.4-07-PLAN.md — Home against the board: the row's column grammar with its standing word, and the lead block bordered, rodded, captioned and carrying its actions (gaps 5-6)
+
+**Wave 8 — gap closure** *(blocked on Waves 6 and 7)*
+
+- [ ] 03.4-08-PLAN.md — The side-by-side conformance record at 1280 and 393 against boards 170 and 171, with every gap traced to a pin and every departure written down
 
 ### Phase 4: Prepare the next version for making
 

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pick up where you left off — side navigation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap">
+<style>
+body{margin:0;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;background:#ffffff}
+a{color:#1a1c1f}
+</style>
+</helmet>
+<div style="width: 1280px; height: 940px; box-sizing: border-box; background: #ffffff; color: #1a1c1f; display: flex; flex-direction: column;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 26px 56px 18px 40px;">
+    <span style="position: relative; display: inline-block; padding-right: 44px;"><span style="font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 26px;">Sprinkles</span><span aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;"><span style="position: absolute; left: 116px; top: 2px; width: 16px; height: 5px; border-radius: 3px; background: #fd5b57; transform: rotate(-30deg);"></span><span style="position: absolute; left: 132px; top: 14px; width: 16px; height: 5px; border-radius: 3px; background: #f18a36; transform: rotate(20deg);"></span><span style="position: absolute; left: 118px; top: 24px; width: 16px; height: 5px; border-radius: 3px; background: #fdc632; transform: rotate(-15deg);"></span><span style="position: absolute; left: -22px; top: 4px; width: 16px; height: 5px; border-radius: 3px; background: #388b57; transform: rotate(35deg);"></span><span style="position: absolute; left: -14px; top: 24px; width: 16px; height: 5px; border-radius: 3px; background: #505db5; transform: rotate(-20deg);"></span></span></span>
+    <nav aria-label="Tools" style="display: flex; align-items: center; gap: 28px;">
+      <a href="#" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #1a1c1f; font-size: 14px;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><span>Search</span></a>
+      <a href="#" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #1a1c1f; font-size: 14px;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M12 3v11M7 10l5 5 5-5"/><path d="M4 21h16"/></svg><span>Import</span></a>
+      <a href="#" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #1a1c1f; font-size: 14px;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M12 14V3M7 8l5-5 5 5"/><path d="M4 21h16"/></svg><span>Export</span></a>
+    </nav>
+  </header>
+
+  <div style="flex: 1 1 0; min-height: 0; display: flex;">
+
+    <nav aria-label="Primary" style="flex: 0 0 224px; box-sizing: border-box; padding: 8px 20px 32px 30px; border-right: 1px solid #d6dad7;">
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px;">
+        <li><span aria-current="page" style="display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 8px; text-decoration: none; color: #1576de; font-size: 15px; font-weight: 600; background: #f3f4f2;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></span></li>
+      </ul>
+      <ul style="list-style: none; margin: 14px 0 0; padding: 14px 0 0; border-top: 1px solid #d6dad7; display: flex; flex-direction: column; gap: 2px;">
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 8px; text-decoration: none; color: #ee0803; font-size: 15px; font-weight: 400;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fd5b57" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 3v18M12 8h4M12 12h4"/></svg><span>Notebook</span></a></li>
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 8px; text-decoration: none; color: #bc5b0d; font-size: 15px; font-weight: 400;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f18a36" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M4 4h6a3 3 0 0 1 2 1 3 3 0 0 1 2-1h6v15h-6a3 3 0 0 0-2 1 3 3 0 0 0-2-1H4z"/><path d="M12 5v15"/></svg><span>Recipe book</span></a></li>
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 8px; text-decoration: none; color: #976f01; font-size: 15px; font-weight: 400;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fdc632" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M9 18h6M10 21h4"/><path d="M8.5 14.5a5.5 5.5 0 1 1 7 0c-.8.7-1.5 1.5-1.5 2.5h-4c0-1-.7-1.8-1.5-2.5z"/></svg><span>Idea log</span></a></li>
+      </ul>
+      <ul style="list-style: none; margin: 14px 0 0; padding: 14px 0 0; border-top: 1px solid #d6dad7; display: flex; flex-direction: column; gap: 2px;">
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 8px; text-decoration: none; color: #358452; font-size: 15px; font-weight: 400;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#388b57" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-14 14z"/><path d="M5 19c3-4 6-7 10-9"/></svg><span>Ingredients</span></a></li>
+        <li><a href="#" style="display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 8px; text-decoration: none; color: #505db5; font-size: 15px; font-weight: 400;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#505db5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: 0 0 auto;"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 7h6"/></svg><span>Kitchen</span></a></li>
+      </ul>
+    </nav>
+
+    <div style="flex: 1 1 0; min-width: 0; box-sizing: border-box; padding: 8px 56px 40px 48px; display: flex; flex-direction: column;">
+
+  <h1 style="margin: 0 0 14px; font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 28px; font-weight: 400;">Pick up where you left off</h1>
+
+  <div style="display: flex; align-items: center; column-gap: 24px; padding: 18px 20px; border: 1px solid #1a1c1f; border-radius: 10px;">
+
+    <span aria-hidden="true" style="flex: 0 0 8px; width: 8px; height: 62px; border-radius: 4px; background: #fd5b57;"></span>
+
+    <span aria-hidden="true" style="flex: 0 0 46px; box-sizing: border-box; width: 46px; height: 62px; padding: 7px 6px; border: 1px solid #d6dad7; border-radius: 2px; display: flex; flex-direction: column; gap: 4px;">
+      <span style="display: block; height: 3px; width: 100%; background: #d6dad7;"></span>
+      <span style="display: block; height: 3px; width: 72%; background: #d6dad7;"></span>
+      <span style="display: block; height: 3px; width: 88%; background: #d6dad7;"></span>
+      <span style="display: block; height: 3px; width: 60%; background: #d6dad7;"></span>
+    </span>
+
+    <span style="flex: 2 1 0; min-width: 0;">
+      <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #5b6169;">Notebook</span>
+      <h2 style="margin: 3px 0 0; font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 23px; font-weight: 400;">Olive Oil Ice Cream</h2>
+      <span style="display: block; margin-top: 2px; font-size: 13px; color: #5b6169;">Version 3 &middot; Less oil &middot; awaiting tasting &middot; last batch 14 Sep</span>
+    </span>
+
+    <span style="flex: 2 1 0; min-width: 0;">
+      <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #5b6169;">Next time</span>
+      <span style="display: block; margin-top: 2px; font-family: 'Caveat', Georgia, serif; font-size: 24px; line-height: 1.2; color: #1f3d7a;">Taste after 20 Sep, then decide on the sugar.</span>
+    </span>
+
+    <span style="flex: 0 0 auto; display: flex; align-items: center; gap: 10px;">
+      <button type="button" style="appearance: none; border: none; border-radius: 10px; padding: 11px 18px; background: #1576de; color: #ffffff; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">Record a tasting</button>
+      <button type="button" style="appearance: none; border: 1px solid #1576de; border-radius: 10px; padding: 10px 17px; background: none; color: #1576de; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">Continue developing</button>
+    </span>
+
+  </div>
+
+  <p style="margin: 10px 0 0; font-size: 13px; color: #5b6169;">The recipe you were last in. A shortcut, not a second record &mdash; it is in the list below too. No ingredients, no method: those live on the sheet.</p>
+  <p style="margin: 4px 0 0; font-size: 13px; color: #5b6169;">The action follows the standing. This batch is churned and untasted, so the filled action is <span style="color: #1a1c1f; font-weight: 600;">Record a tasting</span>, not Record a batch &mdash; a second batch of an untasted version learns nothing.</p>
+
+  <h2 style="margin: 30px 0 4px; font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 24px; font-weight: 400;">Recipes</h2>
+  <p style="margin: 0 0 8px; font-size: 13px; color: #5b6169;">The colour is the space it is in. The name is the recipe. The word is where it stands, and the filled action is what it waits for.</p>
+
+  <ul style="list-style: none; margin: 0; padding: 0; flex-grow: 1;">
+
+    <li>
+      <div style="display: flex; align-items: center; column-gap: 20px; padding: 13px 0; border-top: 1px solid #d6dad7; ">
+        <span aria-hidden="true" style="flex: 0 0 8px; width: 8px; height: 44px; border-radius: 4px; background: #fd5b57;"></span>
+        <span style="flex: 2 1 0; min-width: 0;">
+          <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #5b6169;">Notebook</span>
+          <h3 style="margin: 2px 0 0; font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 19px; font-weight: 400;"><a href="#" style="text-decoration: none; color: inherit;">Olive Oil Ice Cream</a></h3>
+        </span>
+        <span style="flex: 0 0 120px; font-size: 13px; font-weight: 600;">Awaiting tasting</span>
+        <span style="flex: 0 0 132px;">
+          <span aria-hidden="true" style="display: flex; gap: 5px; align-items: center;">
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #fd5b57; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #fd5b57; background: transparent;"></span>
+          </span>
+          <span style="display: block; margin-top: 4px; font-size: 12px; color: #5b6169; font-variant-numeric: tabular-nums;">2 batches</span>
+        </span>
+        <span style="flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; gap: 8px;"><button type="button" style="appearance: none; border: none; border-radius: 10px; padding: 9px 15px; background: #1576de; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">Record a tasting</button><button type="button" style="appearance: none; border: 1px solid #1576de; border-radius: 10px; padding: 8px 14px; background: none; color: #1576de; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;">Continue developing</button></span>
+      </div>
+    </li>
+
+    <li>
+      <div style="display: flex; align-items: center; column-gap: 20px; padding: 13px 0; border-top: 1px solid #d6dad7; ">
+        <span aria-hidden="true" style="flex: 0 0 8px; width: 8px; height: 44px; border-radius: 4px; background: #f18a36;"></span>
+        <span style="flex: 2 1 0; min-width: 0;">
+          <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #5b6169;">Recipe book</span>
+          <h3 style="margin: 2px 0 0; font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 19px; font-weight: 400;"><a href="#" style="text-decoration: none; color: inherit;">Roasted Strawberry</a></h3>
+        </span>
+        <span style="flex: 0 0 120px; font-size: 13px; font-weight: 600;">Ready to make</span>
+        <span style="flex: 0 0 132px;">
+          <span aria-hidden="true" style="display: flex; gap: 5px; align-items: center;">
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+          </span>
+          <span style="display: block; margin-top: 4px; font-size: 12px; color: #5b6169; font-variant-numeric: tabular-nums;">5 batches</span>
+        </span>
+        <span style="flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; gap: 8px;"><button type="button" style="appearance: none; border: none; border-radius: 10px; padding: 9px 15px; background: #1576de; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">Print and make</button><button type="button" style="appearance: none; border: 1px solid #1576de; border-radius: 10px; padding: 8px 14px; background: none; color: #1576de; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;">Develop in Notebook</button></span>
+      </div>
+    </li>
+
+    <li>
+      <div style="display: flex; align-items: center; column-gap: 20px; padding: 13px 0; border-top: 1px solid #d6dad7; ">
+        <span aria-hidden="true" style="flex: 0 0 8px; width: 8px; height: 44px; border-radius: 4px; background: #f18a36;"></span>
+        <span style="flex: 2 1 0; min-width: 0;">
+          <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #5b6169;">Recipe book</span>
+          <h3 style="margin: 2px 0 0; font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 19px; font-weight: 400;"><a href="#" style="text-decoration: none; color: inherit;">Malted Vanilla</a></h3>
+        </span>
+        <span style="flex: 0 0 120px; font-size: 13px; font-weight: 600;">Ready to make</span>
+        <span style="flex: 0 0 132px;">
+          <span aria-hidden="true" style="display: flex; gap: 5px; align-items: center;">
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+            <span style="display: inline-block; box-sizing: border-box; width: 18px; height: 6px; border-radius: 3px; border: 2px solid #f18a36; background: transparent;"></span>
+          </span>
+          <span style="display: block; margin-top: 4px; font-size: 12px; color: #5b6169; font-variant-numeric: tabular-nums;">5 batches</span>
+        </span>
+        <span style="flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; gap: 8px;"><button type="button" style="appearance: none; border: none; border-radius: 10px; padding: 9px 15px; background: #1576de; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">Print and make</button><button type="button" style="appearance: none; border: 1px solid #1576de; border-radius: 10px; padding: 8px 14px; background: none; color: #1576de; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;">Develop in Notebook</button></span>
+      </div>
+    </li>
+
+    <li>
+      <div style="display: flex; align-items: center; column-gap: 20px; padding: 13px 0; border-top: 1px solid #d6dad7; border-bottom: 1px solid #d6dad7; ">
+        <span aria-hidden="true" style="flex: 0 0 8px; width: 8px; height: 44px; border-radius: 4px; background: #fdc632;"></span>
+        <span style="flex: 2 1 0; min-width: 0;">
+          <span style="display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #5b6169;">Idea log</span>
+          <h3 style="margin: 2px 0 0; font-family: Georgia,'Iowan Old Style','Times New Roman',serif; font-size: 19px; font-weight: 400;"><a href="#" style="text-decoration: none; color: inherit;">Olive oil with rosemary</a></h3>
+        </span>
+        <span style="flex: 0 0 120px; font-size: 13px; font-weight: 600;">Saved idea</span>
+        <span style="flex: 0 0 132px; font-size: 13px; color: #5b6169;">No quantities yet</span>
+        <span style="flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; gap: 8px;"><button type="button" style="appearance: none; border: none; border-radius: 10px; padding: 9px 15px; background: #1576de; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">Develop in Notebook</button></span>
+      </div>
+    </li>
+
+  </ul>
+
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

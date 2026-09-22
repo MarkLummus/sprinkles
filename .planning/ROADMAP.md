@@ -401,7 +401,7 @@ Plans:
 **Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
 **Requirements**: none mapped — a design-delivery phase governed by CONTEXT.md's D-01..D-20; UX1-01 and UX1-03 apply as build constraints
 **Depends on:** Phase 03.3.1.1
-**Plans:** 8/13 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths; five more added 2026-09-22 after UAT round two diagnosed eight gaps)
+**Plans:** 11/13 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths; five more added 2026-09-22 after UAT round two diagnosed eight gaps)
 
 Plans:
 **Wave 1**
@@ -438,9 +438,9 @@ Plans:
 
 **Wave 9 — gap closure** *(03.4-UAT.md round two: eight diagnosed gaps, five debug sessions)*
 
-- [ ] 03.4-09-PLAN.md — The App's own surfaces: the canvas per context so iOS overscroll is white on App routes, the rail's padding and hairline border, and a focus ring that paints on the iPad (G-03.4-9, G-03.4-7, G-03.4-4)
-- [ ] 03.4-10-PLAN.md — Home on the ladder's 1099.98px step: the lead stacks with its rod hidden and its actions at natural width, the rows stop overflowing at 760px, and the lead's name wraps (G-03.4-6)
-- [ ] 03.4-11-PLAN.md — More dismisses: the panel's open state moves into React, closing on item activation and on route change with focus back on its summary (G-03.4-3, half A only — import feedback deferred)
+- [x] 03.4-09-PLAN.md — The App's own surfaces: the canvas per context so iOS overscroll is white on App routes, the rail's padding and hairline border, and a focus ring that paints on the iPad (G-03.4-9, G-03.4-7, G-03.4-4)
+- [x] 03.4-10-PLAN.md — Home on the ladder's 1099.98px step: the lead stacks with its rod hidden and its actions at natural width, the rows stop overflowing at 760px, and the lead's name wraps (G-03.4-6)
+- [x] 03.4-11-PLAN.md — More dismisses: the panel's open state moves into React, closing on item activation and on route change with focus back on its summary (G-03.4-3, half A only — import feedback deferred)
 
 **Wave 10 — gap closure** *(blocked on Waves 9's home.css and conformance-record work)*
 

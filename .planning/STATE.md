@@ -199,6 +199,12 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 ### Pending Todos
 
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
+- [2026-09-17] [ui] An amendment announces the batch's original recording date, not the amendment — [todo file](.planning/todos/pending/2026-09-17-an-amendment-announces-its-original-recording-date.md)
+- [2026-09-17] [design] DESIGN.md's responsive ladder understates what the 600px step now moves — [todo file](.planning/todos/pending/2026-09-17-design-md-responsive-ladder-understates-the-600px-step.md)
+- [2026-09-22] [design] Board 170 — remove the 46px lined page-preview glyph from the lead block — [todo file](.planning/todos/pending/2026-09-22-board-170-drop-the-lead-page-preview-glyph.md)
+- [2026-09-22] [ui] Remove the Sprinkles home link from the recipe route — [todo file](.planning/todos/pending/2026-09-22-remove-the-sprinkles-home-link-from-the-recipe-route.md)
+- [2026-09-22] [design] Settle the App-context radius in DESIGN.md, then revisit the rail's active item — [todo file](.planning/todos/pending/2026-09-22-settle-app-context-radius-then-revisit-rail-active-item.md)
+- [2026-09-22] [design] Three /impeccable document follow-ups this phase hands to Impeccable, not code — [todo file](.planning/todos/pending/2026-09-22-three-impeccable-document-jobs-this-phase-hands-off.md)
 
 ### Blockers/Concerns
 

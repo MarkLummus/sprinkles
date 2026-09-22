@@ -3,7 +3,7 @@
    wordmark and (Task 2) a tools row, and a 224px left rail of the App's
    destinations beside the routed page in .shell__main. Below the phone
    step (Task 3) .shell__rail hides and a bottom tab row takes over — the
-   one @media condition this file is ever allowed to carry.
+   one media condition this file is ever allowed to carry.
 
    Two root classes only: .shell (the shell's own chrome) and .place (the
    unbuilt-place page Placeholder.jsx renders inside .shell__main) —
@@ -208,4 +208,44 @@
 
 .shell__place--kitchen svg {
   stroke: var(--app-kitchen);
+}
+
+/* The bottom tab row (D-16): rendered at every width, hidden above the
+   phone step. Below it (the one media block this file carries) the rail
+   hides and this shows instead — a hidden element leaves the
+   accessibility tree, so only one navigation is ever exposed. */
+.shell__tabs {
+  display: none;
+}
+
+.shell__more > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 759.98px) {
+  .shell__rail {
+    display: none;
+  }
+
+  .shell__tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    background: var(--app-background);
+    border-top: var(--app-rule-row) solid var(--app-divider);
+  }
+
+  .shell__tabs .shell__place,
+  .shell__more li {
+    min-height: var(--touch-min);
+  }
+
+  .shell__main {
+    padding-bottom: var(--app-size-tab-h);
+  }
 }

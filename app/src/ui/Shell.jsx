@@ -106,6 +106,16 @@ function ExportIcon() {
   );
 }
 
+function MoreIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <circle cx="5" cy="12" r="1.2" />
+      <circle cx="12" cy="12" r="1.2" />
+      <circle cx="19" cy="12" r="1.2" />
+    </svg>
+  );
+}
+
 const ICONS = {
   notebook: NotebookIcon,
   'recipe-book': RecipeBookIcon,
@@ -241,6 +251,55 @@ export function Shell() {
           <Outlet context={storeRevision} />
         </main>
       </div>
+      {/* D-16: below the phone step the rail becomes a bottom tab row of
+          five coloured tabs, the fifth being More — Ingredients, Kitchen,
+          Search, Import and Export. Rendered at every width; the one
+          allowed media condition (shell.css) decides which navigation is
+          shown. Because the hidden one leaves the accessibility tree,
+          both may share the rail's own label. More's Import opens the
+          same single hidden file input the tools row's Import opens —
+          one input, two buttons, never two inputs. */}
+      <nav className="shell__tabs" aria-label="Places">
+        <NavLink to="/" end className="shell__place shell__place--home">
+          <HomeIcon />
+          Home
+        </NavLink>
+        {PLACES.slice(0, 3).map((place) => (
+          <RailPlace key={place.slug} place={place} />
+        ))}
+        <details className="shell__more">
+          <summary className="shell__place">
+            <MoreIcon />
+            More
+          </summary>
+          <ul>
+            <li>
+              <RailPlace place={PLACES[3]} />
+            </li>
+            <li>
+              <RailPlace place={PLACES[4]} />
+            </li>
+            <li>
+              <NavLink to="/search" className="shell__place">
+                <SearchIcon />
+                Search
+              </NavLink>
+            </li>
+            <li>
+              <button type="button" className="shell__place" onClick={() => fileInputRef.current?.click()}>
+                <ImportIcon />
+                Import
+              </button>
+            </li>
+            <li>
+              <button type="button" className="shell__place" onClick={handleExport}>
+                <ExportIcon />
+                Export
+              </button>
+            </li>
+          </ul>
+        </details>
+      </nav>
     </div>
   );
 }

@@ -466,6 +466,7 @@
   --app-size-nav-w: 224px;
   --app-size-icon: 20px;
   --app-tilt-sprinkle: -8deg; /* the brand mark's five sprinkles, each a tilted rounded rod */
+  --app-size-tab-h: 56px; /* the bottom tab row's own height below the phone step (D-16); .shell__main's bottom padding matches it so the fixed row never covers the end of a page */
 
   /* The last words on a row read the existing --sheet-pen-blue (above): no
      second blue is defined here. The Two-Ink rule still binds wherever

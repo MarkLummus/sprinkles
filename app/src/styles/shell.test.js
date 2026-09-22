@@ -51,14 +51,68 @@ describe('shell.css — no visual literal, every value a var() read', () => {
     }
   });
 
-  // shell.css does not yet carry a media block (Task 3 adds the one
-  // allowed condition, the touch step-down); this guard is written now so
-  // any condition this file ever gains must be that exact string.
+  // The one allowed condition, the touch step-down (D-16) — any condition
+  // this file ever carries must be exactly this string.
   test('the only @media condition allowed in shell.css is the named touch step-down', () => {
     const mediaConditions = new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media));
     for (const condition of mediaConditions) {
       expect(condition).toBe('(max-width: 759.98px)');
     }
+  });
+});
+
+describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
+  test('shell.css carries exactly one @media block', () => {
+    expect(shellCssSource.match(/@media/g)).toHaveLength(1);
+  });
+
+  test('the media block holds only the tab row\'s own rules and the rail\'s hiding rule', () => {
+    const mediaRules = rules.filter((r) => r.media === '(max-width: 759.98px)');
+    expect(mediaRules.length).toBeGreaterThan(0);
+    for (const rule of mediaRules) {
+      const selectors = rule.selector.split(',').map((s) => s.trim());
+      for (const selector of selectors) {
+        expect(
+          selector === '.shell__rail' ||
+            selector.startsWith('.shell__tabs') ||
+            selector.startsWith('.shell__more') ||
+            selector === '.shell__main',
+          `expected "${selector}" to be the rail's hiding rule or a tab-row rule`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  test('above the step the tab row is hidden, below it the rail is hidden and the tab row shows, fixed to the bottom edge', () => {
+    const defaultTabsRule = rules.find((r) => r.selector === '.shell__tabs' && r.media === undefined);
+    expect(defaultTabsRule, 'expected a top-level .shell__tabs rule hiding it by default').toBeTruthy();
+    expect(defaultTabsRule.declarations).toMatch(/display:\s*none/);
+
+    const mediaRailRule = rules.find((r) => r.selector === '.shell__rail' && r.media === '(max-width: 759.98px)');
+    expect(mediaRailRule, 'expected .shell__rail to hide inside the media block').toBeTruthy();
+    expect(mediaRailRule.declarations).toMatch(/display:\s*none/);
+
+    const mediaTabsRule = rules.find((r) => r.selector === '.shell__tabs' && r.media === '(max-width: 759.98px)');
+    expect(mediaTabsRule, 'expected .shell__tabs to show, fixed, inside the media block').toBeTruthy();
+    expect(mediaTabsRule.declarations).toMatch(/display:\s*flex/);
+    expect(mediaTabsRule.declarations).toMatch(/position:\s*fixed/);
+  });
+
+  test('.shell__main carries a bottom padding matching the tab-row height token, so the fixed row never covers the end of a page', () => {
+    const rule = rules.find((r) => r.selector === '.shell__main' && r.media === '(max-width: 759.98px)');
+    expect(rule, 'expected a media-scoped .shell__main rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/padding-bottom:\s*var\(--app-size-tab-h\)/);
+  });
+
+  test('every tab and every item in the More list reads the touch minimum height inside the media block', () => {
+    const rule = rules.find(
+      (r) =>
+        r.media === '(max-width: 759.98px)' &&
+        r.selector.includes('.shell__tabs .shell__place') &&
+        r.selector.includes('.shell__more li'),
+    );
+    expect(rule, 'expected a media-scoped touch-target rule for the tabs and the More list').toBeTruthy();
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
   });
 });
 

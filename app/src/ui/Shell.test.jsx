@@ -83,3 +83,31 @@ describe('Shell — the whole rail, the tools row, and Import/Export (03.4-03 Ta
     expect(markup.match(/type="file"/g)).toHaveLength(1);
   });
 });
+
+describe('Shell — the bottom tab row and More (D-16, 03.4-03 Task 3)', () => {
+  it('renders five tabs — Home, Notebook, Recipe book, Idea log, More', () => {
+    const markup = renderAt('/');
+    const tabsMatch = markup.match(/<nav class="shell__tabs"[^>]*>([\s\S]*?)<\/nav>/);
+    expect(tabsMatch, 'expected a nav.shell__tabs element').toBeTruthy();
+    const tabsMarkup = tabsMatch[1];
+    for (const name of ['Home', 'Notebook', 'Recipe book', 'Idea log', 'More']) {
+      expect(tabsMarkup).toContain(name);
+    }
+  });
+
+  it('the More disclosure holds Ingredients, Kitchen, Search, Import and Export', () => {
+    const markup = renderAt('/');
+    const detailsMatch = markup.match(/<details class="shell__more">([\s\S]*?)<\/details>/);
+    expect(detailsMatch, 'expected a details.shell__more element').toBeTruthy();
+    const moreMarkup = detailsMatch[1];
+    for (const name of ['Ingredients', 'Kitchen', 'Search', 'Import', 'Export']) {
+      expect(moreMarkup).toContain(name);
+    }
+  });
+
+  it('renders exactly one <details> element and exactly one file input, shared by the tools row and More', () => {
+    const markup = renderAt('/');
+    expect(markup.match(/<details\b/g)).toHaveLength(1);
+    expect(markup.match(/type="file"/g)).toHaveLength(1);
+  });
+});

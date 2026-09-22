@@ -35,13 +35,15 @@ export function RecipeList() {
     };
   }, [storeRevision]);
 
-  if (versions === null) return null;
-
   return (
     <div className="list-page">
       <div className="home">
         <h1 className="home__title">Pick up where you left off</h1>
-        <HomeBody versions={versions} batches={batches} />
+        {versions === null ? (
+          <p className="home__loading">Loading your recipes…</p>
+        ) : (
+          <HomeBody versions={versions} batches={batches} />
+        )}
       </div>
     </div>
   );

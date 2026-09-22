@@ -78,7 +78,7 @@ function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPe
         <p className="recipe-history__batch-name">
           {isInView || openPen
             ? label
-            : <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }}>{label}</Link>}
+            : <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }} tabIndex={0}>{label}</Link>}
           <HistoryMarkers current={isInView} />
         </p>
         <HistoryProvenance className="recipe-history__batch-state">
@@ -122,7 +122,7 @@ function VersionNode({
           <h3 className="recipe-history__version-name">
             {isInView || openPen
               ? versionIdentity(ordered, version)
-              : <Link to={`/recipe/${version.id}`} state={{ focusVersion: true }}>{versionIdentity(ordered, version)}</Link>}
+              : <Link to={`/recipe/${version.id}`} state={{ focusVersion: true }} tabIndex={0}>{versionIdentity(ordered, version)}</Link>}
             <HistoryMarkers current={isInView} latest={isLatest} />
           </h3>
           <HistoryProvenance className="recipe-history__written">written {recordDateWords(version.createdAt)}</HistoryProvenance>
@@ -134,7 +134,7 @@ function VersionNode({
             {openPen ? (
               recordDateWords(citedBatch.churn.churnDate)
             ) : (
-              <Link to={`/recipe/${citedBatch.versionId}/batch/${citedBatch.id}`} state={{ focusBatch: true }}>
+              <Link to={`/recipe/${citedBatch.versionId}/batch/${citedBatch.id}`} state={{ focusBatch: true }} tabIndex={0}>
                 {recordDateWords(citedBatch.churn.churnDate)}
               </Link>
             )}

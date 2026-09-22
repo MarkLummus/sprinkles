@@ -119,7 +119,7 @@ describe('RecipeHistory', () => {
     expect(markup).toContain('Silky, but the oil lingers.');
     expect(markup).toContain('<span>Next time</span> Use less olive oil.');
     expect(markup).toContain('Reduce the oily finish.');
-    expect(markup).toContain('From batch · <a href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('From batch · <a tabindex="0" href="/recipe/v1/batch/b1"');
     expect(markup).toContain('aria-label="Versions made from Version 1 · Original plan"');
     expect(markup).toContain('Not yet churned');
   });
@@ -214,7 +214,7 @@ describe('RecipeHistory', () => {
 
     expect((markup.match(/written date unknown/g) ?? []).length).toBe(2);
     expect(markup).toContain('Batch · date unknown');
-    expect(markup).toContain('From batch · <a href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('From batch · <a tabindex="0" href="/recipe/v1/batch/b1"');
     expect(markup).toContain('recipe-history__batch-state">Tasted date unknown');
     expect(markup).not.toContain('>Why<');
   });

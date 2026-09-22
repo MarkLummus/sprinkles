@@ -222,7 +222,7 @@ export function VersionRow({
                   {openPen ? (
                     version.parentVersionLabel
                   ) : (
-                    <Link to={`/recipe/${version.parentVersionId}`} state={{ focusVersion: true }}>
+                    <Link to={`/recipe/${version.parentVersionId}`} state={{ focusVersion: true }} tabIndex={0}>
                       {version.parentVersionLabel}
                     </Link>
                   )}
@@ -245,7 +245,7 @@ export function VersionRow({
                 {openPen ? (
                   recordDateWords(citedBatch.churn.churnDate)
                 ) : (
-                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`} state={{ focusBatch: true }}>
+                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`} state={{ focusBatch: true }} tabIndex={0}>
                     {recordDateWords(citedBatch.churn.churnDate)}
                   </Link>
                 )}

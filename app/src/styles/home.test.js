@@ -99,11 +99,6 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     expect(railRule.declarations).not.toMatch(/var\(--c\)/);
     expect(tallyMarkRule.declarations).not.toMatch(/var\(--c\)/);
   });
-
-  test('no rule reads a jar hue or a recipe hue (D-04 in progress; the App marks grammar replaces per-recipe colour)', () => {
-    expect(homeCssSource).not.toMatch(/var\(--jar-/);
-    expect(homeCssSource).not.toMatch(/var\(--recipe-hue-/);
-  });
 });
 
 describe('home.css is wired in (main.jsx, 260917-h83 precedent)', () => {

@@ -55,6 +55,16 @@
   color: var(--app-idea-log-text);
 }
 
+/* The loading line (03.4-13, G-03.4-1): before the store reads resolve,
+   this replaces the early `return null` beneath the title — the page's
+   one wrapper never renders nothing. Same top margin as .home__empty
+   above, its nearest sibling in voice. */
+.home__loading {
+  margin-top: var(--gap-m);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+
 /* The lead block (D-06, D-12, D-18, gap 5): the recipe the maker
    touched last, larger than a row and its own bordered block, above the
    list, in the board's own order (board 170 lines 49-79) — the rod,

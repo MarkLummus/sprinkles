@@ -203,3 +203,17 @@ describe('home.css is wired in (main.jsx, 260917-h83 precedent)', () => {
     expect(appCssIndex).toBeLessThan(homeCssIndex);
   });
 });
+
+describe('the loading line (03.4-13, G-03.4-1)', () => {
+  test('a top-level .home__loading rule exists and reads the meta size and the secondary text colour from tokens', () => {
+    const rule = rules.find((r) => r.selector === '.home__loading' && r.media === undefined);
+    expect(rule, 'expected a top-level .home__loading rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-meta\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--app-text-secondary\)/);
+  });
+
+  test('RecipeList.jsx renders the home__loading class exactly once — the rule is never an orphan', () => {
+    const matches = recipeListJsxSource.match(/home__loading/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+});

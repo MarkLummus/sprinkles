@@ -16,7 +16,7 @@ import { describe, it, expect, vi } from 'vitest';
 vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { RecipeRows, HomeLead, HomeBody } from './RecipeList.jsx';
+import { RecipeList, RecipeRows, HomeLead, HomeBody } from './RecipeList.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { versionIdentity } from '../domain/lineage.js';
 
@@ -322,5 +322,24 @@ describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
     expect(markup).not.toContain('Nothing is in progress');
     expect(markup).toContain('home__lead');
     expect(markup.match(/<li /g)).toHaveLength(1);
+  });
+});
+
+// RecipeList — the loading state (03.4-13, G-03.4-1): before the store
+// reads resolve, the page shows its wrapper, its title and a loading
+// line, never nothing. renderToStaticMarkup runs no effects (react-dom/
+// server, node environment — the same idiom this file already uses for
+// HomeBody/HomeLead/RecipeRows), so versions/batches stay at their
+// initial state and the component renders in exactly its loading state.
+describe('RecipeList — the loading state (03.4-13, G-03.4-1)', () => {
+  it('renders the page title and a loading line, and no recipe row, before the store reads resolve', () => {
+    const markup = renderToStaticMarkup(
+      <MemoryRouter>
+        <RecipeList />
+      </MemoryRouter>,
+    );
+    expect(markup).toContain('Pick up where you left off');
+    expect(markup).toContain('home__loading');
+    expect(markup).not.toContain('<li');
   });
 });

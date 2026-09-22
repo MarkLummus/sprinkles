@@ -10,14 +10,18 @@ import { repository } from './store/repository.js';
 import { seedIfEmpty } from './store/seed.js';
 import { App } from './router.jsx';
 
+const root = createRoot(document.getElementById('root'));
+
+root.render(<p className="app-boot">Opening your recipes…</p>);
+
 try {
   await seedIfEmpty(repository);
 } catch (err) {
-  document.getElementById('root').textContent = 'Could not open the local store. Try reloading.';
+  root.render(<p className="app-boot">Could not open the local store. Try reloading.</p>);
   throw err;
 }
 
-createRoot(document.getElementById('root')).render(
+root.render(
   <StrictMode>
     <App />
   </StrictMode>,

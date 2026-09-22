@@ -83,6 +83,7 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     expect(actionRule.declarations).toMatch(/background:\s*var\(--app-blue-text\)/);
     expect(actionRule.declarations).toMatch(/color:\s*var\(--app-background\)/);
     expect(secondaryRule.declarations).toMatch(/color:\s*var\(--app-blue-text\)/);
+    expect(actionRule.declarations).toMatch(/box-sizing:\s*border-box/);
   });
 
   test('the row\'s rail and tally read a destination accent token, never a per-recipe custom property (D-11, 03.4-04 Task 2)', () => {

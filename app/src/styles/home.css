@@ -280,6 +280,7 @@
    filled and the secondary action; the standing is stated by the
    action's own words, never by colour. */
 .home__action {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;

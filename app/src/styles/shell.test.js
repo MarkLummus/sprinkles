@@ -141,6 +141,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
     expect(rule, 'expected a media-scoped .shell__tabs .shell__place rule').toBeTruthy();
     expect(rule.declarations).toMatch(/flex-direction:\s*column/);
     expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-label\)/);
+    expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
   });
 
   test('the bar is pinned to the tab-height token with border-box sizing (gap 1)', () => {

@@ -17,9 +17,11 @@ import { readAllRules } from './css-source.js';
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const SHELL_CSS_PATH = path.join(STYLES_DIR, 'shell.css');
 const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
+const PLACEHOLDER_JSX_PATH = path.join(STYLES_DIR, '..', 'ui', 'Placeholder.jsx');
 
 const shellCssSource = readFileSync(SHELL_CSS_PATH, 'utf8');
 const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
+const placeholderJsxSource = readFileSync(PLACEHOLDER_JSX_PATH, 'utf8');
 
 // readAllRules runs assertNoAtRules for us: a non-media at-rule, or an
 // at-rule nested inside the one top-level @media block, throws here at
@@ -161,6 +163,38 @@ describe('the five destinations plus Home each carry their own accent and compan
     const iconRule = rules.find((r) => r.selector === `.shell__place--${slug} svg`);
     expect(iconRule, `expected a .shell__place--${slug} svg rule`).toBeTruthy();
     expect(iconRule.declarations).toMatch(new RegExp(`stroke:\\s*var\\(${iconToken}\\)`));
+  });
+});
+
+describe('the unbuilt place reads in the App\'s own voice (D-10, gap 2, CR-01)', () => {
+  test('.place declares the App text colour and the grotesk face', () => {
+    const rule = rules.find((r) => r.selector === '.place');
+    expect(rule, 'expected a .place rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/color:\s*var\(--app-text\)/);
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+  });
+
+  test('.place__title mirrors .home__title\'s role: the App title size and the grotesk face', () => {
+    const rule = rules.find((r) => r.selector === '.place__title');
+    expect(rule, 'expected a .place__title rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-title\)/);
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+  });
+
+  test('.place__note reads the App meta size in the secondary text colour', () => {
+    const rule = rules.find((r) => r.selector === '.place__note');
+    expect(rule, 'expected a .place__note rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-meta\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--app-text-secondary\)/);
+  });
+
+  test('Placeholder.jsx renders each of the three classes exactly once, so none of the three rules can become an orphan again', () => {
+    const rootMatches = placeholderJsxSource.match(/className="list-page place"/g) ?? [];
+    const titleMatches = placeholderJsxSource.match(/\bplace__title\b/g) ?? [];
+    const noteMatches = placeholderJsxSource.match(/\bplace__note\b/g) ?? [];
+    expect(rootMatches).toHaveLength(1);
+    expect(titleMatches).toHaveLength(1);
+    expect(noteMatches).toHaveLength(1);
   });
 });
 

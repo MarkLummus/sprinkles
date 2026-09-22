@@ -130,6 +130,30 @@
   min-width: 0;
 }
 
+/* The unbuilt place (D-10, gap 2, CR-01): Placeholder.jsx's root carries
+   this class beside .list-page's own gutter, so an unbuilt destination
+   reads in the App's own voice instead of the browser's defaults. No
+   padding here — the page gutter is .list-page's own (app.css), and a
+   second one here would double it. */
+.place {
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+}
+
+.place__title {
+  margin: var(--gap-l) 0 var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-title);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.place__note {
+  max-width: var(--measure-prose);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+
 .shell__place {
   display: flex;
   align-items: center;

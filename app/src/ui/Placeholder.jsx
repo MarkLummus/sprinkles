@@ -5,7 +5,7 @@
 // link back; the rail is the way out.
 export function Placeholder({ name }) {
   return (
-    <div className="list-page">
+    <div className="list-page place">
       <h1 className="place__title">{name}</h1>
       <p className="place__note">{name} is not built yet.</p>
     </div>

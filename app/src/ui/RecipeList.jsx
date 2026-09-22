@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { computeBalance } from '../domain/composition.js';
 import { activeRows } from '../domain/rows.js';
 import { latestVersionPerRecipe, sortedVersions, versionsForRecipe, versionIdentity } from '../domain/lineage.js';
 import { sortedBatches } from '../domain/batch.js';
-import { exportStore, importStore } from '../store/transfer.js';
 import { recipeHueByRecipeId } from './recipe-colour.js';
 
 // The arrival — The Sprinkles Jar (.impeccable/surfaces/route.md,
@@ -15,12 +14,16 @@ import { recipeHueByRecipeId } from './recipe-colour.js';
 // appearing exactly once in this file's own source, and on app.css's
 // matching rule staying the page's one inline gutter, so the Jar world
 // renders in a child under its own root class, "home", rather than by
-// extending that outer element's class.
+// extending that outer element's class. The header, brand, nav and
+// import/export controls moved into Shell.jsx (D-09, D-15) — they now
+// render once, in the tools row, on every route.
 export function RecipeList() {
+  // Shell.jsx increments this after a successful import (via the Outlet
+  // context), so this route reloads its own data with no page reload and
+  // without Shell reaching into this route's state.
+  const storeRevision = useOutletContext();
   const [versions, setVersions] = useState(null);
   const [batches, setBatches] = useState([]);
-  const [importErrors, setImportErrors] = useState([]);
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,90 +36,16 @@ export function RecipeList() {
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  // Export hands the maker a file, using the browser's own object URL and
-  // an anchor click — no upload, no network, no external service (D-06).
-  async function handleExport() {
-    const exported = await exportStore(repository);
-    const blob = new Blob([JSON.stringify(exported, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'sprinkles-store.json';
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
-  }
-
-  // Import reads a file the maker chose, using the browser's local file
-  // reading. On rejection the errors render as text; nothing is replaced
-  // or cleared.
-  async function handleImportChange(event) {
-    const file = event.target.files[0];
-    event.target.value = '';
-    if (!file) return;
-
-    let parsed;
-    try {
-      parsed = JSON.parse(await file.text());
-    } catch {
-      setImportErrors(['$: the file is not valid JSON']);
-      return;
-    }
-
-    const result = await importStore(repository, parsed);
-    if (!result.ok) {
-      setImportErrors(result.errors);
-      return;
-    }
-    setImportErrors([]);
-    const [loadedVersions, loadedBatches] = await Promise.all([repository.listVersions(), repository.getAllBatches()]);
-    setVersions(loadedVersions);
-    setBatches(loadedBatches);
-  }
+  }, [storeRevision]);
 
   if (versions === null) return null;
 
   return (
     <div className="list-page">
       <div className="home">
-        <header className="home__header">
-          <p className="home__brand">Sprinkles</p>
-          <nav className="home__nav" aria-label="Primary">
-            <span className="home__nav-current" aria-current="page">
-              Recipes
-            </span>
-          </nav>
-        </header>
         <h1 className="home__title">Recipes</h1>
         <p className="home__guidance">Every count is a sprinkle. Versions in the recipe's colour, batches in gold.</p>
         <RecipeRows versions={versions} batches={batches} />
-        <div className="home__actions">
-          <button type="button" className="home__cta" onClick={() => fileInputRef.current?.click()}>
-            Import
-          </button>
-          <button type="button" className="home__quiet" onClick={handleExport}>
-            Export
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="application/json"
-            className="home__file-input"
-            onChange={handleImportChange}
-            tabIndex={-1}
-            aria-hidden="true"
-          />
-          {importErrors.length > 0 && (
-            <ul className="home__import-errors">
-              {importErrors.map((error) => (
-                <li key={error}>{error}</li>
-              ))}
-            </ul>
-          )}
-        </div>
       </div>
     </div>
   );

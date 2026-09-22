@@ -80,6 +80,30 @@ describe('the shell layout never becomes a containing block for .page-status (03
   });
 });
 
+describe('the five destinations plus Home each carry their own accent and companion (D-09, D-19, 03.4-03 Task 2)', () => {
+  // { slug, wordToken, iconToken } — the text companion colours the word,
+  // the destination's own accent colours the icon; Kitchen has no
+  // companion, so both read the same indigo token (D-09).
+  const expected = [
+    { slug: 'home', wordToken: '--app-blue-text', iconToken: '--app-blue' },
+    { slug: 'notebook', wordToken: '--app-notebook-text', iconToken: '--app-notebook' },
+    { slug: 'recipe-book', wordToken: '--app-recipe-book-text', iconToken: '--app-recipe-book' },
+    { slug: 'idea-log', wordToken: '--app-idea-log-text', iconToken: '--app-idea-log' },
+    { slug: 'ingredients', wordToken: '--app-ingredients-text', iconToken: '--app-ingredients' },
+    { slug: 'kitchen', wordToken: '--app-kitchen', iconToken: '--app-kitchen' },
+  ];
+
+  test.each(expected)('$slug: the word reads $wordToken, the icon reads $iconToken', ({ slug, wordToken, iconToken }) => {
+    const wordRule = rules.find((r) => r.selector === `.shell__place--${slug}`);
+    expect(wordRule, `expected a .shell__place--${slug} rule`).toBeTruthy();
+    expect(wordRule.declarations).toMatch(new RegExp(`color:\\s*var\\(${wordToken}\\)`));
+
+    const iconRule = rules.find((r) => r.selector === `.shell__place--${slug} svg`);
+    expect(iconRule, `expected a .shell__place--${slug} svg rule`).toBeTruthy();
+    expect(iconRule.declarations).toMatch(new RegExp(`stroke:\\s*var\\(${iconToken}\\)`));
+  });
+});
+
 describe('shell.css is wired in (main.jsx, home.test.js precedent)', () => {
   test('main.jsx imports shell.css after app.css', () => {
     const appCssIndex = mainJsxSource.indexOf('./styles/app.css');

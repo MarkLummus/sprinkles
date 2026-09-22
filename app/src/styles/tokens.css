@@ -465,6 +465,7 @@
      share a token. --app-size-icon is each rail place's line-icon box. */
   --app-size-nav-w: 224px;
   --app-size-icon: 20px;
+  --app-tilt-sprinkle: -8deg; /* the brand mark's five sprinkles, each a tilted rounded rod */
 
   /* The last words on a row read the existing --sheet-pen-blue (above): no
      second blue is defined here. The Two-Ink rule still binds wherever

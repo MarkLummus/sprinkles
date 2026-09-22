@@ -16,10 +16,12 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  color: var(--app-text);
 }
 
 .shell__head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding: var(--gap-s) var(--gap-page);
@@ -30,6 +32,71 @@
   font-family: var(--face-grotesk);
   font-weight: 700;
   font-size: var(--app-size-brand);
+}
+
+/* The brand mark (D-09): five sprinkles, one per destination, in
+   navigation order, beneath the wordmark. Decorative and aria-hidden —
+   never a link. */
+.shell__sprinkles {
+  display: flex;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-xs);
+}
+
+.shell__sprinkle {
+  display: inline-block;
+  width: var(--app-size-sprinkle-w);
+  height: var(--app-size-sprinkle-h);
+  border-radius: var(--app-radius-sprinkle);
+  transform: rotate(var(--app-tilt-sprinkle));
+}
+
+.shell__sprinkle--notebook {
+  background: var(--app-notebook);
+}
+
+.shell__sprinkle--recipe-book {
+  background: var(--app-recipe-book);
+}
+
+.shell__sprinkle--idea-log {
+  background: var(--app-idea-log);
+}
+
+.shell__sprinkle--ingredients {
+  background: var(--app-ingredients);
+}
+
+.shell__sprinkle--kitchen {
+  background: var(--app-kitchen);
+}
+
+/* The tools row (D-09, D-13, D-15): Search, Import and Export as
+   icon-and-word controls, top-right of the header, on every route. */
+.shell__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-m);
+}
+
+.shell__tools button {
+  appearance: none;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.shell__file-input {
+  display: none;
+}
+
+.shell__import-errors {
+  flex-basis: 100%;
+  margin: var(--gap-xs) 0 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
 }
 
 .shell__body {
@@ -82,12 +149,63 @@
   background: var(--app-surface-subtle);
 }
 
-/* Home, which is no destination, takes the app blue text companion
-   (D-09). */
+/* A hairline between the rail's two groups (Home / Notebook, Recipe book,
+   Idea log / Ingredients, Kitchen). */
+.shell__divider {
+  border: none;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+  margin: var(--gap-xs) var(--gap-m);
+}
+
+/* Home, which is no destination, takes the app blue for its icon and the
+   app blue text companion for its word (D-09). Every other place's icon
+   takes its destination's accent and its word takes that destination's
+   text companion; Kitchen's indigo needs no companion, so both read the
+   same token. */
 .shell__place--home {
   color: var(--app-blue-text);
 }
 
+.shell__place--home svg {
+  stroke: var(--app-blue);
+}
+
 .shell__place--notebook {
   color: var(--app-notebook-text);
+}
+
+.shell__place--notebook svg {
+  stroke: var(--app-notebook);
+}
+
+.shell__place--recipe-book {
+  color: var(--app-recipe-book-text);
+}
+
+.shell__place--recipe-book svg {
+  stroke: var(--app-recipe-book);
+}
+
+.shell__place--idea-log {
+  color: var(--app-idea-log-text);
+}
+
+.shell__place--idea-log svg {
+  stroke: var(--app-idea-log);
+}
+
+.shell__place--ingredients {
+  color: var(--app-ingredients-text);
+}
+
+.shell__place--ingredients svg {
+  stroke: var(--app-ingredients);
+}
+
+.shell__place--kitchen {
+  color: var(--app-kitchen);
+}
+
+.shell__place--kitchen svg {
+  stroke: var(--app-kitchen);
 }

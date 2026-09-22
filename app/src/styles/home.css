@@ -29,64 +29,6 @@ body:has(.home) {
   font-family: var(--face-grotesk);
 }
 
-.home__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--gap-s);
-}
-
-/* The brand and its sprinkle rule (FIRST VIEWPORT: "Brand with its
-   sprinkle rule at top left"). The rule beneath it is drawn from the
-   jar's own six hues, a decorative mark — never a link to elsewhere, the
-   nav names the one destination this shell reaches. */
-.home__brand {
-  position: relative;
-  margin: 0;
-  font-weight: 700;
-  font-size: var(--app-size-brand);
-  letter-spacing: -0.02em;
-}
-
-.home__brand::after {
-  content: '';
-  display: block;
-  margin-top: var(--gap-xs);
-  height: var(--app-size-brand-rule);
-  border-radius: var(--app-radius-sprinkle);
-  background: linear-gradient(
-    90deg,
-    var(--jar-pink) 0 14%,
-    transparent 14% 20%,
-    var(--jar-gold) 20% 32%,
-    transparent 32% 38%,
-    var(--jar-teal) 38% 52%,
-    transparent 52% 58%,
-    var(--jar-green) 58% 70%,
-    transparent 70% 76%,
-    var(--jar-orange) 76% 90%,
-    transparent 90%
-  );
-}
-
-.home__nav {
-  display: flex;
-  align-items: center;
-}
-
-/* The one nav item this shell reaches, marked current rather than linked
-   to itself (the app's own convention — a version "in view" is not a
-   link to itself either, domain/lineage.js's versionIdentity). Underlined
-   in a jar colour (FIRST VIEWPORT: "active item underlined in a jar
-   colour"). */
-.home__nav-current {
-  font-weight: 600;
-  font-size: var(--app-size-meta);
-  padding-bottom: var(--gap-hair);
-  border-bottom: var(--app-rule-nav-active) solid var(--jar-teal);
-}
-
 /* OWN-WORLD (route.md § 3): one grotesk outside the paper frames — the
    text face is the book's own voice, kept only for the batch's own
    words below (.home__words). The title and the recipe name read the
@@ -220,78 +162,12 @@ body:has(.home) {
   overflow-wrap: anywhere;
 }
 
-.home__actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--gap-s);
-  margin-top: var(--gap-l);
-}
-
-/* The one filled action (FIRST VIEWPORT: "'Bring in a recipe' as the one
-   filled action below the list" — Import is the control that performs
-   that arrival in this app). Overrides the paper world's hairline
-   button/select binder (app.css) for this page alone, per route.md § 1. */
-.home__cta {
-  appearance: none;
-  border: none;
-  border-radius: var(--app-radius-action);
-  padding: var(--gap-s) var(--gap-m);
-  background: var(--app-text);
-  color: var(--app-background);
-  font-family: var(--face-grotesk);
-  font-size: var(--app-size-meta);
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color var(--app-duration);
-}
-
-.home__cta:hover {
-  background: var(--jar-teal);
-  color: var(--app-text);
-}
-
-/* Export, a quiet text action beside the filled one. */
-.home__quiet {
-  appearance: none;
-  border: none;
-  background: none;
-  padding: 0;
-  color: var(--app-text);
-  font-family: var(--face-grotesk);
-  font-size: var(--app-size-meta);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: var(--offset-link-underline);
-  cursor: pointer;
-}
-
-.home__file-input {
-  display: none;
-}
-
-.home__import-errors {
-  margin: var(--gap-s) 0 0;
-  padding-left: var(--gap-m);
-  font-family: var(--face-grotesk);
-  font-size: var(--app-size-label); /* the App world reads App sizes, not the Sheet's small print */
-}
-
 /* Below the 760px step-down (sketch-findings-sprinkles,
    references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
-   the Responsive Ladder"): interactive targets grow toward --touch-min
-   and the row is free to wrap onto further lines so nothing overflows
-   at 393px. One top-level @media block, nothing deeper — css-source.js
-   parses exactly one level of nesting. */
+   the Responsive Ladder"): the row is free to wrap onto further lines so
+   nothing overflows at 393px. One top-level @media block, nothing
+   deeper — css-source.js parses exactly one level of nesting. */
 @media (max-width: 759.98px) {
-  .home__nav-current,
-  .home__cta,
-  .home__quiet {
-    min-height: var(--touch-min);
-    display: inline-flex;
-    align-items: center;
-  }
-
   .home__row {
     padding: var(--gap-s) 0;
   }

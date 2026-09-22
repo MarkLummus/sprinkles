@@ -92,6 +92,11 @@ export const router = createBrowserRouter([
       { path: '/recipe/:id', Component: RecipePageForRoute },
       { path: '/recipe/:id/batch/:batchId', Component: RecipePageForRoute },
       { path: '/notebook', element: <Placeholder name="Notebook" /> },
+      { path: '/recipe-book', element: <Placeholder name="Recipe book" /> },
+      { path: '/idea-log', element: <Placeholder name="Idea log" /> },
+      { path: '/ingredients', element: <Placeholder name="Ingredients" /> },
+      { path: '/kitchen', element: <Placeholder name="Kitchen" /> },
+      { path: '/search', element: <Placeholder name="Search" /> },
     ],
   },
 ]);

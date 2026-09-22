@@ -3,10 +3,16 @@
 // the node test environment, MemoryRouter + Routes/Route for the router
 // context — the same convention RecipeList.test.jsx uses for the app's
 // links.
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+// Shell.jsx imports repository.js, whose module-level
+// `export const repository = createRepository()` opens the real IndexedDB
+// at import time — a side effect this test never exercises (Import/Export
+// are never clicked here). Stubbed at the one seam Shell.jsx imports
+// through, the same convention RecipeList.test.jsx uses.
+vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import { Shell } from './Shell.jsx';
+import { Shell, PLACES } from './Shell.jsx';
 import { Placeholder } from './Placeholder.jsx';
 
 function renderAt(path) {
@@ -55,5 +61,25 @@ describe('Shell — every route renders inside the layout route (D-09, D-10)', (
   it('renders no inline style on any shell element', () => {
     const markup = renderAt('/');
     expect(markup).not.toContain('style=');
+  });
+});
+
+describe('Shell — the whole rail, the tools row, and Import/Export (03.4-03 Task 2)', () => {
+  it('renders all five destinations as links to their own path, each carrying its own modifier class', () => {
+    const markup = renderAt('/');
+    for (const place of PLACES) {
+      const tag = findAnchorTag(markup, `shell__place--${place.slug}`);
+      expect(tag, `expected a link carrying shell__place--${place.slug}`).toBeTruthy();
+      expect(tag).toContain(`href="${place.path}"`);
+    }
+  });
+
+  it('renders Search as a link to /search, Import and Export as buttons, and exactly one file input', () => {
+    const markup = renderAt('/');
+    const searchLink = findAnchorTag(markup, 'href="/search"');
+    expect(searchLink, 'expected a link to /search').toBeTruthy();
+    const buttonCount = (markup.match(/<button\b/g) ?? []).length;
+    expect(buttonCount).toBeGreaterThanOrEqual(2);
+    expect(markup.match(/type="file"/g)).toHaveLength(1);
   });
 });

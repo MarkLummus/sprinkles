@@ -3,6 +3,8 @@ import { createBrowserRouter, Link, useParams } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
+import { Shell } from './ui/Shell.jsx';
+import { Placeholder } from './ui/Placeholder.jsx';
 
 // A different version, or a different batch of the same version, must be a
 // different page instance (one-pen-rule-leaks.md Evidence 8-9). React
@@ -77,11 +79,21 @@ export function PageStatus({ message }) {
 
 // D-14: URL-addressable routes for the list and the recipe page now, so
 // Phase 2's batch route and Phase 4's print route are additions, not a
-// retrofit.
+// retrofit. D-09: every route now nests under the Shell layout route, so
+// the rail and tools row render once and persist across navigation
+// (RESEARCH.md Pattern 1). Task 1 adds the one placeholder route this
+// task's rail reaches (Notebook); Task 2 adds the remaining destinations
+// and the Search placeholder.
 export const router = createBrowserRouter([
-  { path: '/', Component: RecipeList },
-  { path: '/recipe/:id', Component: RecipePageForRoute },
-  { path: '/recipe/:id/batch/:batchId', Component: RecipePageForRoute },
+  {
+    Component: Shell,
+    children: [
+      { path: '/', Component: RecipeList },
+      { path: '/recipe/:id', Component: RecipePageForRoute },
+      { path: '/recipe/:id/batch/:batchId', Component: RecipePageForRoute },
+      { path: '/notebook', element: <Placeholder name="Notebook" /> },
+    ],
+  },
 ]);
 
 export function App() {

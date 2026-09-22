@@ -16,7 +16,7 @@ const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const UI_DIR = path.join(STYLES_DIR, '..', 'ui');
 const DOMAIN_DIR = path.join(STYLES_DIR, '..', 'domain');
 
-const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'history.css', 'home.css'];
+const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'history.css', 'home.css', 'shell.css'];
 
 // Set per-element via React's style prop (RecipeList.jsx's `.home__row`,
 // `style={{ '--c': ... }}`), never declared in a stylesheet — home.css
@@ -89,12 +89,15 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
     // painted anywhere; the twelve --recipe-hue-* tokens, which
     // recipe-colour.js builds as a name string at runtime
     // (`--recipe-hue-${hueNumber}`) rather than a literal var() read this
-    // static scan can see; and thirteen App destination/neutral colours
-    // this plan declares from DESIGN.md but does not yet wire into
-    // home.css (plans 03/04 apply the App marks grammar). The hand's four
-    // tokens (D-17) are no longer in this list — plan 02's .app-hand rule
-    // in app.css is their first consumer; Home's lead-block Next-time
-    // text (D-18) is their second, in a later plan.
+    // static scan can see; and ten App destination/neutral colours this
+    // plan declares from DESIGN.md but does not yet wire into
+    // shell.css/home.css (plans 03/04 apply the App marks grammar).
+    // --app-notebook-text, --app-blue-text and --app-surface-subtle are no
+    // longer in this list — 03.4-03 Task 1's shell.css rail is their first
+    // consumer. The hand's four tokens (D-17) are no longer in this list
+    // either — plan 02's .app-hand rule in app.css is their first
+    // consumer; Home's lead-block Next-time text (D-18) is their second,
+    // in a later plan.
     const expectedUnread = [
       '--rule-band-edge',
       '--rule-tick',
@@ -116,7 +119,6 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
       '--recipe-hue-11',
       '--recipe-hue-12',
       '--app-notebook',
-      '--app-notebook-text',
       '--app-recipe-book',
       '--app-recipe-book-text',
       '--app-idea-log',
@@ -126,8 +128,6 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
       '--app-ingredients-text',
       '--app-kitchen',
       '--app-blue',
-      '--app-blue-text',
-      '--app-surface-subtle',
     ];
     expect(unread.sort()).toEqual(expectedUnread.sort());
   });

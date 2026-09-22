@@ -457,6 +457,15 @@
   --app-rule-row: var(--rule-graduation); /* reuses the app's existing 1px hairline weight, named for this world so it can move independently later */
   --app-duration: 120ms; /* the one short transition this world is allowed (route.md § 1: the no-motion binder does not cross the paper frame) */
 
+  /* The shell (DESIGN.md "App marks", "Navigation"; D-09, phase 03.4 plan
+     03): the 224px left rail every route renders inside, distinct from
+     --app-size-rail-w above (a row's own 8px identity mark). Named
+     --app-size-nav-w rather than --app-size-rail-w so the two "rail"
+     meanings — the navigation column and a row's identity bar — never
+     share a token. --app-size-icon is each rail place's line-icon box. */
+  --app-size-nav-w: 224px;
+  --app-size-icon: 20px;
+
   /* The last words on a row read the existing --sheet-pen-blue (above): no
      second blue is defined here. The Two-Ink rule still binds wherever
      plan and actual meet (route.md § 1). */

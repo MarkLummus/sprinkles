@@ -32,6 +32,19 @@ body:has(.recipe-page, .page-head, .not-found) {
   background: var(--sheet-ground);
 }
 
+/* The boot line (G-03.4-1, .planning/debug/ipad-page-load-seconds.md): the
+   one thing painted before the shell exists, on body's own ground —
+   main.jsx renders it through the root before IndexedDB is ever awaited,
+   and renders the store-open failure message through the same class, so
+   neither wait is spent on a blank page. An App role class in the shared
+   stylesheet, .app-hand's own precedent (below). */
+.app-boot {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  padding: var(--gap-page);
+}
+
 /* The binder (route-recipe.md § 6, D-13): every control drawn by the page,
    not the browser — ink at hairline weight, no fill, no radius, no icon.
    Written as bare element rules so every control, including the list

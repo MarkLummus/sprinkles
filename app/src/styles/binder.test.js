@@ -28,9 +28,11 @@ import { stripCssComments, readCustomProperties, resolveTokenPx, readAllRules, a
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TOKENS_PATH = path.join(STYLES_DIR, 'tokens.css');
 const APP_CSS_PATH = path.join(STYLES_DIR, 'app.css');
+const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
 
 const tokensSource = readFileSync(TOKENS_PATH, 'utf8');
 const appCssSource = readFileSync(APP_CSS_PATH, 'utf8');
+const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
 
 const tokens = readCustomProperties(tokensSource);
 const rules = readAllRules(appCssSource);
@@ -424,5 +426,27 @@ describe('the canvas is per context, on body, not a descendant (G-03.4-9, commit
         expect(part, `expected no selector matching the root element alone, found "${part}"`).not.toMatch(/^html(\b|[.:#[]|$)/);
       }
     }
+  });
+});
+
+// The boot line (G-03.4-1, .planning/debug/ipad-page-load-seconds.md): the
+// one thing painted before the shell exists, on body's own ground, before
+// IndexedDB is ever awaited. Pinned beside the canvas guard above so
+// neither this rule nor main.jsx's rendering of it can quietly drift
+// apart — an orphaned rule with no renderer, or a renderer whose class no
+// longer matches any rule, would both silently lose the fix.
+describe('the boot line paints before the store opens (G-03.4-1)', () => {
+  test('an .app-boot rule exists and every value it declares is a var() read', () => {
+    const rule = ruleFor('.app-boot');
+    expect(rule, 'expected a top-level .app-boot rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-grotesk\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-meta\)/);
+    expect(rule.declarations).toMatch(/color:\s*var\(--app-text-secondary\)/);
+    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-page\)/);
+  });
+
+  test('main.jsx carries the app-boot class exactly twice — the boot line and the store-open failure message', () => {
+    const matches = mainJsxSource.match(/app-boot/g) || [];
+    expect(matches).toHaveLength(2);
   });
 });

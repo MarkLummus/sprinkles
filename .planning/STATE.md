@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.4"
 current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)"
 status: executing
-stopped_at: Completed 03.4-06-PLAN.md
-last_updated: "2026-09-22T02:45:45.948Z"
+stopped_at: Completed 03.4-07-PLAN.md
+last_updated: "2026-09-22T02:57:06.834Z"
 last_activity: 2026-09-21
 last_activity_desc: Phase 03.4 execution resumed (wave continue)
-state_head: 0c02ac49e44973b265681fe9a21936bfe88338d5
+state_head: 218e2e1a9634eef55ee98918970b2ce0953321c8
 progress:
   total_phases: 10
   completed_phases: 8
   total_plans: 59
-  completed_plans: 57
+  completed_plans: 58
   percent: 80
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03.4 (The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-09-21 — Phase 03.4 execution resumed (wave continue)
 
@@ -103,6 +103,7 @@ Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase
 | Phase 03.3.1 P07 | 15min | 1 tasks | 2 files |
 | Phase 03.3.1.1 P01 | 17min | 3 tasks | 9 files |
 | Phase 03.4 P06 | ~15min | 3 tasks | 7 files |
+| Phase 03.4 P07 | ~20min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -191,6 +192,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.3.1]: [Phase 03.3.1, Plan 07] Closed G-03.3.1-4: TastingReading's <h3> caption no longer derives a summary line from markedAxes/readMarkWord; the caption is bare 'Tasting' for every tasting, and the declared flaw still surfaces via the unchanged defects line.
 - [Phase 03.3.1.1]: [Phase 03.3.1.1, Plan 01] Open Question 4 resolved as overflow-x: auto on .ingredient-table-region (600px block), not narrower column tokens — The table scrolls inside its own region while the page never overflows, matching D-15's zero-PAGE-overflow acceptance criterion; not yet confirmed in a real browser (Plan 06's conformance pass does that)
 - [Phase 03.3.1.1]: [Phase 03.3.1.1, Plan 01] The three top-level @media blocks cascade 1099.98px, then 759.98px, then 600px in app.css — Narrower always wins on shared selectors by source order
+- [Phase 03.4]: [03.4, 2026-09-22] [Phase 03.4, Plan 07] Gap 5/6 closure: the row reads the board's five-column desktop grid (rail, identity, standing, tally, actions) with a lastEvent.js-derived standing word; the lead block is rebuilt from a bottom-divider into a bordered, radiused block with the rod, a captioned Next time column, and RowActions over its own entry. --app-radius-lead is named apart from --app-radius-action though both read 10px; the lead's own rod hides at the touch step (board 171 draws none) while the row's rod and tally are kept per the phase's earlier recorded decision.
 
 ### Pending Todos
 
@@ -287,6 +289,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-22T02:45:45.832Z
-Stopped at: Completed 03.4-06-PLAN.md
+Last session: 2026-09-22T02:57:06.723Z
+Stopped at: Completed 03.4-07-PLAN.md
 Resume file: None

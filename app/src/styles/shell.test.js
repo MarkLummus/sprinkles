@@ -272,6 +272,28 @@ describe('the unbuilt place reads in the App\'s own voice (D-10, gap 2, CR-01)',
   });
 });
 
+describe('a focus ring that paints where :focus-visible never fires (G-03.4-4, .planning/debug/ipad-keyboard-no-focus-ring.md)', () => {
+  test('exactly one rule in shell.css has a selector containing :focus, and it is .shell__place:focus, top-level', () => {
+    const focusRules = rules.filter((r) => r.selector.includes(':focus'));
+    expect(focusRules).toHaveLength(1);
+    expect(focusRules[0].selector).toBe('.shell__place:focus');
+    expect(focusRules[0].media).toBeUndefined();
+  });
+
+  test('.shell__place:focus declares both focus tokens', () => {
+    const rule = rules.find((r) => r.selector === '.shell__place:focus' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__place:focus rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/outline:\s*var\(--focus-outline-width\)/);
+    expect(rule.declarations).toMatch(/outline-offset:\s*var\(--focus-outline-offset\)/);
+  });
+
+  test('no rule in shell.css declares outline: none, so the ring can always paint', () => {
+    for (const rule of rules) {
+      expect(rule.declarations).not.toMatch(/outline:\s*none/);
+    }
+  });
+});
+
 describe('shell.css is wired in (main.jsx, home.test.js precedent)', () => {
   test('main.jsx imports shell.css after app.css', () => {
     const appCssIndex = mainJsxSource.indexOf('./styles/app.css');

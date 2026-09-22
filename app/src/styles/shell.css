@@ -188,6 +188,27 @@
   background: var(--app-surface-subtle);
 }
 
+/* A focus ring that paints where :focus-visible never fires (G-03.4-4,
+   .planning/debug/ipad-keyboard-no-focus-ring.md): Mark measured that
+   iPadOS Safari with Full Keyboard Access on moves Tab focus onto these
+   stops without WebKit ever setting the :focus-visible heuristic, so the
+   page's one global :focus-visible rule (app.css) paints nothing there.
+   This mirrors the project's own documented exception for the same
+   modality boundary (app.css:594-607, .is-landing-focus:focus): a plain
+   :focus rule, scoped narrowly to the shell's own stops and nothing else
+   — More's summary is included because it carries this same class. It
+   reads the App's own text colour rather than the Sheet ink the global
+   rule uses, because this rule lives in the App's world (D-02, D-03); the
+   two resolve to the same value today and are free to move apart. No
+   media condition is added here — shell.css carries exactly one, and its
+   own suite asserts that. Accepted cost, open for Mark at UAT: a mouse
+   click on one of these stops also leaves the ring showing until focus
+   moves elsewhere. */
+.shell__place:focus {
+  outline: var(--focus-outline-width) solid var(--app-text);
+  outline-offset: var(--focus-outline-offset);
+}
+
 /* A hairline between the rail's two groups (Home / Notebook, Recipe book,
    Idea log / Ingredients, Kitchen). */
 .shell__divider {

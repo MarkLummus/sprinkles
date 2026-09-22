@@ -344,29 +344,6 @@
      arithmetic on one side of the hairline, never a second number. */
   --sheet-axes-cols-clearance: 12px;
 
-  /* --------------------------------------------------------------------
-     The Sprinkles Jar — .impeccable/surfaces/route.md, outside the paper
-     frames only (§ 1: the recipe spread, the batch log and the printed
-     sheet stay black ink/blue pen; everything else — home, the shell,
-     history, line of work, compare, import — is this world). The
-     Formulation Cookbook tokens above stay the three paper frames' own;
-     nothing in this block moves any of them, and no existing token above
-     is changed.
-     -------------------------------------------------------------------- */
-
-  /* The jar (route.md § 3): a small set of sprinkle hues, fixed, each
-     named for the sprinkle colour it is, not for a job — the app's own
-     marks: tallies, the active nav, the primary action, moments of
-     delight. A jar hue never carries a verdict (D06). route.sketch.html's
-     own six are the starting point; none read muddy or too close to a
-     neighbour, so all six are kept as sketched. */
-  --jar-pink: #f25c7a;
-  --jar-gold: #f7c948;
-  --jar-teal: #3eb7c8;
-  --jar-green: #7bc96f;
-  --jar-orange: #f28c38;
-  --jar-violet: #9b6bd6;
-
   /* The App palette (DESIGN.md, "Colors > Scope and status"; approved
      2026-09-21): Option B with the lighter Ingredients green and the
      preview neutral set, taken verbatim from DESIGN.md's colors:
@@ -405,29 +382,6 @@
   --leading-hand: 1.25;
   --size-hand-min: 1.25rem;
 
-  /* The recipe palette (route.md § 3, § 5): an ordered set of twelve
-     hues, RECIPE_HUE_COUNT in app/src/ui/recipe-colour.js — identity
-     only. These draw a row's identity bar and its version tally, never
-     text, so no contrast floor applies, but each reads clearly against
-     --app-background and is distinguishable from its neighbours at a
-     glance. route.md § 5 leaves the palette's size and the assignment
-     rule open; recipe-colour.js ships the deterministic default that
-     deals these in order. Retired by D-04 once the App marks grammar
-     (DESIGN.md "App marks") replaces per-recipe colour with per-
-     destination colour — plan 05, this phase's last step. */
-  --recipe-hue-01: #d1475e;
-  --recipe-hue-02: #d17547;
-  --recipe-hue-03: #d1ba47;
-  --recipe-hue-04: #a3d147;
-  --recipe-hue-05: #5ed147;
-  --recipe-hue-06: #47d175;
-  --recipe-hue-07: #47d1ba;
-  --recipe-hue-08: #47a3d1;
-  --recipe-hue-09: #475ed1;
-  --recipe-hue-10: #7547d1;
-  --recipe-hue-11: #ba47d1;
-  --recipe-hue-12: #d147a3;
-
   /* The App's geometry and type (DESIGN.md App marks section; D-03):
      every visual value in this project reads a custom property, so each
      of the sketch's own marks gets its own name here. Spacing that
@@ -444,7 +398,7 @@
   --app-size-title: 2.125rem; /* 34px, the page title */
   --app-size-recipe-name: 1.5rem; /* 24px, a recipe's name on its row */
   --app-size-lead-name: 1.75rem; /* 28px, the lead block's own larger recipe name (D-06) */
-  --app-size-meta: 0.875rem; /* 14px, the version/meta line, the nav word, the last words */
+  --app-size-meta: 0.875rem; /* 14px, the version/meta line, the nav word */
   --app-size-label: 0.75rem; /* 12px, the versions/batches micro-label */
   --app-tracking-label: 0.08em;
   --app-size-sprinkle-w: 18px;
@@ -469,8 +423,4 @@
   --app-size-icon: 20px;
   --app-tilt-sprinkle: -8deg; /* the brand mark's five sprinkles, each a tilted rounded rod */
   --app-size-tab-h: 56px; /* the bottom tab row's own height below the phone step (D-16); .shell__main's bottom padding matches it so the fixed row never covers the end of a page */
-
-  /* The last words on a row read the existing --sheet-pen-blue (above): no
-     second blue is defined here. The Two-Ink rule still binds wherever
-     plan and actual meet (route.md § 1). */
 }

@@ -18,13 +18,13 @@ const DOMAIN_DIR = path.join(STYLES_DIR, '..', 'domain');
 
 const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'history.css', 'home.css', 'shell.css'];
 
-// Set per-element via React's style prop (RecipeList.jsx's `.home__row`,
-// `style={{ '--c': ... }}`), never declared in a stylesheet — home.css
-// reads it as the row's own dealt hue. Not a token this gate can resolve
-// against a declaration; RecipeList.jsx/home.css are Jar-world files this
-// phase does not rename (RESEARCH.md Pitfall 4), and D-04 (plan 05)
-// removes --c outright once the App marks grammar replaces it.
-const LOCALLY_SET_CUSTOM_PROPERTIES = new Set(['--c']);
+// No custom property is set inline via React's style prop any more — D-04
+// (plan 05) retired --c, RecipeList.jsx's old per-row dealt-hue property,
+// along with the rest of the Sprinkles Jar. Kept as an empty set (rather
+// than removed outright) so a future inline custom property has a named
+// place to be excepted, documented, rather than silently widening the
+// unresolved-token gate.
+const LOCALLY_SET_CUSTOM_PROPERTIES = new Set();
 
 function stripJsComments(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
@@ -85,18 +85,14 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
     // geometry tokens GraduatedRule.jsx hand-mirrors as plain JS numbers
     // rather than reading with var() (its own header comment explains why
     // — SVG presentation attributes read user-space units, not CSS
-    // lengths); --jar-violet, the sixth sketched jar hue kept but not yet
-    // painted anywhere; the twelve --recipe-hue-* tokens, which
-    // recipe-colour.js builds as a name string at runtime
-    // (`--recipe-hue-${hueNumber}`) rather than a literal var() read this
-    // static scan can see; --app-pantry, reserved for a destination not
-    // yet built (D-09's rail has no Pantry entry); and two App geometry
-    // tokens (--app-rule-nav-active, --app-size-brand-rule) whose only
-    // consumers were Home's active-nav underline and its brand rule — both
-    // removed by 03.4-03 Task 2 when nav moved into Shell.jsx. They stay
-    // declared for now since D-04 (plan 05) is the only step allowed to
-    // retire a token outright. --app-radius-action is no longer in this
-    // list — 03.4-04 Task 2's filled action (.home__action) is its first
+    // lengths); --app-pantry, reserved for a destination not yet built
+    // (D-09's rail has no Pantry entry); and two App geometry tokens
+    // (--app-rule-nav-active, --app-size-brand-rule) whose only consumers
+    // were Home's active-nav underline and its brand rule — both removed
+    // by 03.4-03 Task 2 when nav moved into Shell.jsx. They stay declared
+    // for now since D-04 (plan 05) is the only step allowed to retire a
+    // token outright. --app-radius-action is no longer in this list —
+    // 03.4-04 Task 2's filled action (.home__action) is its first
     // consumer.
     //
     // Every App destination/neutral colour (--app-notebook, --app-blue,
@@ -107,18 +103,12 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
     // is their first consumer; Home's lead-block Next-time text (D-18,
     // 03.4-04 Task 1) is their second.
     //
-    // Four of the six original Sprinkles Jar hues (--jar-pink, --jar-teal,
-    // --jar-green, --jar-orange) are newly unread since 03.4-03 Task 2
-    // deleted the brand's old gradient rule (home.css's
-    // .home__brand::after), their only consumer, replacing it with the
-    // five App-destination sprinkles in shell.css. --jar-gold is newly
-    // unread here — 03.4-04 Task 2's row rewrite (D-11) replaced the
-    // batch tally's fixed gold colour with the destination's own accent,
-    // .home__tally-mark--batch's only consumer, deleted along with the
-    // rule; --jar-violet was already unread. --app-duration is also
-    // newly unread — its one consumer, .home__row's hover transition,
-    // had no reason to survive once the row stopped being a single link
-    // (D-11: the row is a block, not a link).
+    // The Jar's six hues and the twelve per-recipe hues are gone from
+    // this list entirely — 03.4-05 (D-04) deleted their declarations
+    // from tokens.css outright, so they no longer exist to be unread.
+    // --app-duration is also newly unread — its one consumer, .home__row's
+    // hover transition, had no reason to survive once the row stopped
+    // being a single link (D-11: the row is a block, not a link).
     const expectedUnread = [
       '--rule-band-edge',
       '--rule-tick',
@@ -127,24 +117,6 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
       '--gap-mark-stop',
       '--rule-tick-hollow',
       '--app-duration',
-      '--jar-pink',
-      '--jar-gold',
-      '--jar-teal',
-      '--jar-green',
-      '--jar-orange',
-      '--jar-violet',
-      '--recipe-hue-01',
-      '--recipe-hue-02',
-      '--recipe-hue-03',
-      '--recipe-hue-04',
-      '--recipe-hue-05',
-      '--recipe-hue-06',
-      '--recipe-hue-07',
-      '--recipe-hue-08',
-      '--recipe-hue-09',
-      '--recipe-hue-10',
-      '--recipe-hue-11',
-      '--recipe-hue-12',
       '--app-pantry',
       '--app-rule-nav-active',
       '--app-size-brand-rule',
@@ -188,15 +160,11 @@ describe('tokens.test.js — the prefix-discipline gate (03.4-01 Task 3)', () =>
   const SHARED_HAND = ['--face-hand', '--size-hand', '--leading-hand', '--size-hand-min'];
   const SHARED = [...SHARED_SPACING_AND_RULES, ...SHARED_TYPE, ...SHARED_HAND];
 
-  // D-04: the jar hues and the twelve recipe hues are removed by plan 05,
-  // this phase's last step, once every other consumer no longer reads
-  // them — nothing else belongs in this array.
-  const RETIRING = [
-    '--jar-pink', '--jar-gold', '--jar-teal', '--jar-green', '--jar-orange', '--jar-violet',
-    '--recipe-hue-01', '--recipe-hue-02', '--recipe-hue-03', '--recipe-hue-04', '--recipe-hue-05',
-    '--recipe-hue-06', '--recipe-hue-07', '--recipe-hue-08', '--recipe-hue-09', '--recipe-hue-10',
-    '--recipe-hue-11', '--recipe-hue-12',
-  ];
+  // D-04: the jar hues and the twelve recipe hues were retired in this
+  // phase's last step (plan 05) — nothing is declared under this
+  // exception any more, so the prefix-discipline gate below now binds
+  // with no exemption left to hide behind.
+  const RETIRING = [];
 
   test('every tokens.css declaration is --sheet-, --app-, an explicit shared size, or a token plan 05 retires', () => {
     const declaredInTokens = readCustomProperties(readFileSync(path.join(STYLES_DIR, 'tokens.css'), 'utf8'));

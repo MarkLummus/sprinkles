@@ -190,3 +190,13 @@ Steps, in order, reporting the overlay's top line after each:
 4. (Optional) After step 3, report whether the `.shell__place:focus` ring is visible on whichever element the overlay names as active — that confirms the 03.4-09 rule paints once focus does arrive.
 
 Alternative to the bookmarklet: Settings → Apps → Safari → Advanced → Web Inspector on, cable to the Mac, Safari (Mac) → Develop → iPad → the page, and evaluate `document.activeElement` after each keypress.
+
+## Device probe result — Mark, 2026-09-22
+
+"overlay never changed on 1-4" — after "probe ready", no keydown, focusin, focusout, window focus or window blur was logged at any step: not from the address bar (step 2), not after tapping in the page (step 3), not for Option+Tab (step 3).
+
+Reading: with Full Keyboard Access on, Tab (and Option+Tab) is consumed by UIKit's focus engine before it is ever dispatched to the page as a DOM keydown — the page never sees the key at all, even when it was just tapped. The page can therefore participate only through the UIKit focus hand-off (`WKContentView didUpdateFocusInContext` → `setInitialFocus`), and that hand-off makes no DOM event unless it finds a keyboard-focusable element. With no explicit tabindex on any shell stop and FKA's `KeyboardAccessFull` possibly not reaching the web process, there is nothing for it to find, so the overlay stays silent. This is consistent with condition (1) (link gate) plus either (2A) or (2B); it does not separate 2A from 2B.
+
+What it does decide: no keyboard-event-side fix (key handlers, `:focus-visible` work) can help, because no key event arrives. The only lever the page has is to offer the hand-off a focus candidate — the explicit `tabIndex={0}` in plan 03.4-14. That plan is now also the discriminating experiment: after it ships, re-run the probe. `focusin A.shell__place "Search"` means the hand-off works and 2A/2B were moot; still silent means Safari never hands UIKit focus to the web view (2B) — a Safari/FKA behaviour with no page-side remedy, and truth (b) is dropped rather than re-planned.
+
+Optional cross-check Mark can do meanwhile: on the iPad with FKA on, open any page with a text input (e.g. a search engine) and press Tab from the address bar; if focus never enters that page either, 2B is confirmed independently of Sprinkles.

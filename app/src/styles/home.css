@@ -114,12 +114,15 @@
   color: var(--app-notebook-text);
 }
 
+/* Wraps rather than spills, matching .home__name (home.css:224) — the two
+   names in this file now wrap alike (G-03.4-6). */
 .home__lead-name {
   margin: 0;
   font-family: var(--face-grotesk);
   font-size: var(--app-size-lead-name);
   font-weight: 700;
   letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
 }
 
 .home__lead-name a {
@@ -302,6 +305,57 @@
 .home__action--secondary {
   background: var(--app-background);
   color: var(--app-blue-text);
+}
+
+/* G-03.4-6 (.planning/debug/home-lead-row-crushed-near-760.md): between
+   760px and ~1100px the lead's two text columns are starved by its
+   actions' fixed flex-basis. Measured at 760px: the identity column
+   renders 55.41px (0.00px when a tasting is awaited) against a name
+   whose min-content is 85.9px, while the actions hold a constant
+   219.17px (343.59px when a tasting is awaited) at every width from
+   760px to 1440px. The number below is not a new breakpoint — it is the
+   ladder's own existing 1099.98px step (DESIGN.md's responsive ladder,
+   "the spread collapses"), reused rather than duplicated. This block
+   sits ABOVE the 759.98px block below, so the narrower step still wins
+   where both declare.
+
+   The rod is hidden here for the same reason the 759.98px block hides
+   it: stacked with the rod kept, it renders as an orphan bar (measured).
+
+   This block declares no rule for the stacked lead's actions — on
+   purpose, not an oversight. Mark decided the two actions sit at their
+   natural width, left-aligned, rather than stretched edge to edge. That
+   is what happens when the phone block's own `.home__actions { width:
+   100% }` and `.home__action { flex: 1 1 0 }` stay confined to the
+   759.98px block and are not reached by this wider step.
+
+   The rows join the lead at this same step: the desktop grid's fixed
+   standing and tally tracks plus the actions measured 778px of content
+   inside a 760px page (802px when a tasting is awaited), so Home
+   scrolled sideways in the same band the lead was crushed in. Mark
+   folded it into this closure, naming the remedy as adopting the phone
+   layout earlier on the ladder. The rod and the tally are kept here —
+   dropping them is phone-width only (G-03.4-6b, plan 12), not this
+   block's job. */
+@media (max-width: 1099.98px) {
+  .home__lead {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: var(--gap-s);
+  }
+
+  .home__lead .home__rail {
+    display: none;
+  }
+
+  .home__row {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'rail place standing'
+      'rail name standing'
+      'rail tally tally'
+      'rail actions actions';
+  }
 }
 
 /* Below the 760px step-down (sketch-findings-sprinkles,

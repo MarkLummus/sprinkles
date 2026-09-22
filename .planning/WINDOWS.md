@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 5
+open_count: 9
 waived_count: 0
 fixed_count: 0
-total_count: 5
-last_updated: 2026-09-18T16:15:37.298Z
+total_count: 9
+last_updated: 2026-09-22T03:12:15.056Z
 ---
 
 # Broken Windows Ledger
@@ -20,6 +20,10 @@ last_updated: 2026-09-18T16:15:37.298Z
 | 3 | quick-260917-vev | unrun-verify | app/src/styles/app.css |  | Forced-colours pass on the history register verified structurally, not emulated: the (forced-colors: active) block at app.css:2625 names no register selector and no register rule sets forced-color-adjust: none, so every marker is a word and every rule a system-repainted border. Not confirmed live. Also unconfirmed by eye: whether the register reads as a chronology rather than a table, and a screen-reader pass over the two panels. | open |  | 2026-09-18T03:05:56.382Z |  |
 | 4 | quick-260918-cdg | unrun-verify | app/src/styles/history.css |  | RTL browser measurement deferred to end-of-phase UAT: with dir=rtl at narrow width, confirm outcome/next-time/empty-state paragraphs indent from the right edge alone with a flush left edge, and confirm nothing moved at LTR (no paragraph gained a bottom margin) — none of the three style-contract suites has a layout engine | open |  | 2026-09-18T13:10:29.743Z |  |
 | 5 | quick-260918-gha | unrun-verify | app/src/ui/RecipeList.jsx |  | Task 3's <human-check> (compare http://localhost:5173/ against route.sketch.html at desktop and at 393px/coarse pointer) not run — no browser-automation tool available to this executor; deferred to end-of-phase UAT with Mark. | open |  | 2026-09-18T16:15:37.298Z |  |
+| 6 | 03.4 | deviation | .planning/phases/03.4-the-design-layer-in-code-app-palette-sheet-prefixed-tokens-t/03.4-GAPS-CONFORMANCE.md |  | Four recorded board departures (12px tab label, rod/tally at phone width, absent page-preview glyph, no versions-count cell) open for Mark at UAT | open |  | 2026-09-22T03:11:36.417Z |  |
+| 7 | 03.4 | deviation | app/src/styles/shell.css |  | Rail (.shell__rail) carries no padding and no border-right vs board 170's 8/20/32/30 padding and 1px divider - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 3 | open |  | 2026-09-22T03:12:14.913Z |  |
+| 8 | 03.4 | deviation | app/src/styles/shell.css |  | Rail's active-item (aria-current=page) has no border-radius pill or bold weight vs board 170's 8px radius/600 weight - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 4 | open |  | 2026-09-22T03:12:14.985Z |  |
+| 9 | 03.4 | deviation | app/src/ui/RecipeList.jsx |  | RowActions always renders both filled+secondary actions at every width; board 171's row shows only the filled action at 393px - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 32 | open |  | 2026-09-22T03:12:15.056Z |  |
 
 ````json
 [
@@ -84,6 +88,58 @@ last_updated: 2026-09-18T16:15:37.298Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-18T16:15:37.298Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 6,
+    "kind": "deviation",
+    "phase": "03.4",
+    "file": ".planning/phases/03.4-the-design-layer-in-code-app-palette-sheet-prefixed-tokens-t/03.4-GAPS-CONFORMANCE.md",
+    "line": null,
+    "description": "Four recorded board departures (12px tab label, rod/tally at phone width, absent page-preview glyph, no versions-count cell) open for Mark at UAT",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T03:11:36.417Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 7,
+    "kind": "deviation",
+    "phase": "03.4",
+    "file": "app/src/styles/shell.css",
+    "line": null,
+    "description": "Rail (.shell__rail) carries no padding and no border-right vs board 170's 8/20/32/30 padding and 1px divider - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 3",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T03:12:14.913Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 8,
+    "kind": "deviation",
+    "phase": "03.4",
+    "file": "app/src/styles/shell.css",
+    "line": null,
+    "description": "Rail's active-item (aria-current=page) has no border-radius pill or bold weight vs board 170's 8px radius/600 weight - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 4",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T03:12:14.985Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 9,
+    "kind": "deviation",
+    "phase": "03.4",
+    "file": "app/src/ui/RecipeList.jsx",
+    "line": null,
+    "description": "RowActions always renders both filled+secondary actions at every width; board 171's row shows only the filled action at 393px - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 32",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-22T03:12:15.056Z",
     "resolved_at": null,
     "milestone": null
   }

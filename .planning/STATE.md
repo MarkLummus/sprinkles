@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.4"
 current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)"
 status: executing
-stopped_at: Completed 03.4-07-PLAN.md
-last_updated: "2026-09-22T02:57:06.834Z"
+stopped_at: Completed 03.4-08-PLAN.md
+last_updated: "2026-09-22T03:13:56.494Z"
 last_activity: 2026-09-21
 last_activity_desc: Phase 03.4 execution resumed (wave continue)
-state_head: 218e2e1a9634eef55ee98918970b2ce0953321c8
+state_head: e30f62c798678aefa853f3041b35311a4d890db8
 progress:
   total_phases: 10
   completed_phases: 8
   total_plans: 59
-  completed_plans: 58
+  completed_plans: 59
   percent: 80
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-10)
 ## Current Position
 
 Phase: 03.4 (The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-09-21 — Phase 03.4 execution resumed (wave continue)
 
@@ -104,6 +104,7 @@ Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase
 | Phase 03.3.1.1 P01 | 17min | 3 tasks | 9 files |
 | Phase 03.4 P06 | ~15min | 3 tasks | 7 files |
 | Phase 03.4 P07 | ~20min | 2 tasks | 5 files |
+| Phase 03.4 P08 | ~25min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -193,6 +194,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.3.1.1]: [Phase 03.3.1.1, Plan 01] Open Question 4 resolved as overflow-x: auto on .ingredient-table-region (600px block), not narrower column tokens — The table scrolls inside its own region while the page never overflows, matching D-15's zero-PAGE-overflow acceptance criterion; not yet confirmed in a real browser (Plan 06's conformance pass does that)
 - [Phase 03.3.1.1]: [Phase 03.3.1.1, Plan 01] The three top-level @media blocks cascade 1099.98px, then 759.98px, then 600px in app.css — Narrower always wins on shared selectors by source order
 - [Phase 03.4]: [03.4, 2026-09-22] [Phase 03.4, Plan 07] Gap 5/6 closure: the row reads the board's five-column desktop grid (rail, identity, standing, tally, actions) with a lastEvent.js-derived standing word; the lead block is rebuilt from a bottom-divider into a bordered, radiused block with the rod, a captioned Next time column, and RowActions over its own entry. --app-radius-lead is named apart from --app-radius-action though both read 10px; the lead's own rod hides at the touch step (board 171 draws none) while the row's rod and tally are kept per the phase's earlier recorded decision.
+- [Phase 03.4]: [Phase 03.4] [Phase 03.4, Plan 08] Wrote 03.4-GAPS-CONFORMANCE.md: a 38-row side-by-side record (board 170 at 1280, board 171 at 393) tracing all six VERIFICATION.md gaps to their closing plan/task/pin, naming the four already-decided board departures (12px tab label, rod/tally kept at phone width, absent page-preview glyph, no versions-count cell), and surfacing three new findings (rail's missing padding/border-right, active rail item's missing pill, RowActions always showing two actions at 393px) as open rows for Mark, not resolved by this plan. A re-runnable probe (03.4-gaps-conformance-probe.js) ships beside it for a browser-driven UAT pass.
 
 ### Pending Todos
 
@@ -289,6 +291,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-22T02:57:06.723Z
-Stopped at: Completed 03.4-07-PLAN.md
+Last session: 2026-09-22T03:13:56.373Z
+Stopped at: Completed 03.4-08-PLAN.md
 Resume file: None

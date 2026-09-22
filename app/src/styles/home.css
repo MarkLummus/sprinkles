@@ -327,7 +327,16 @@
    natural width, left-aligned, rather than stretched edge to edge. That
    is what happens when the phone block's own `.home__actions { width:
    100% }` and `.home__action { flex: 1 1 0 }` stay confined to the
-   759.98px block and are not reached by this wider step. */
+   759.98px block and are not reached by this wider step.
+
+   The rows join the lead at this same step: the desktop grid's fixed
+   standing and tally tracks plus the actions measured 778px of content
+   inside a 760px page (802px when a tasting is awaited), so Home
+   scrolled sideways in the same band the lead was crushed in. Mark
+   folded it into this closure, naming the remedy as adopting the phone
+   layout earlier on the ladder. The rod and the tally are kept here —
+   dropping them is phone-width only (G-03.4-6b, plan 12), not this
+   block's job. */
 @media (max-width: 1099.98px) {
   .home__lead {
     flex-direction: column;
@@ -337,6 +346,15 @@
 
   .home__lead .home__rail {
     display: none;
+  }
+
+  .home__row {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'rail place standing'
+      'rail name standing'
+      'rail tally tally'
+      'rail actions actions';
   }
 }
 

@@ -74,6 +74,16 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     expect(actionsRule).toBeUndefined();
   });
 
+  test('the rows take the stacked template at the same 1099.98px step, so the fixed standing and tally tracks that overflowed the page are gone in this band (G-03.4-6)', () => {
+    const mediaRowRule = rules.find((rule) => rule.selector === '.home__row' && rule.media === '(max-width: 1099.98px)');
+    expect(mediaRowRule, 'expected a .home__row rule under the 1099.98px condition').toBeTruthy();
+    expect(mediaRowRule.declarations).toMatch(/grid-template-areas:[^;]*standing/);
+    expect(mediaRowRule.declarations).toMatch(/grid-template-areas:[^;]*tally/);
+    expect(mediaRowRule.declarations).toMatch(/grid-template-areas:[^;]*actions/);
+    expect(mediaRowRule.declarations).not.toMatch(/var\(--app-col-standing\)/);
+    expect(mediaRowRule.declarations).not.toMatch(/var\(--app-col-tally\)/);
+  });
+
   test('OWN-WORLD is one grotesk (route.md § 3): the title and the recipe name read --face-grotesk, never --face-text', () => {
     const titleRule = rules.find((rule) => rule.selector === '.home__title');
     const nameRule = rules.find((rule) => rule.selector === '.home__name');

@@ -188,11 +188,20 @@
   background: var(--app-surface-subtle);
 }
 
-/* A focus ring that paints where :focus-visible never fires (G-03.4-4,
-   .planning/debug/ipad-keyboard-no-focus-ring.md): Mark measured that
-   iPadOS Safari with Full Keyboard Access on moves Tab focus onto these
-   stops without WebKit ever setting the :focus-visible heuristic, so the
-   page's one global :focus-visible rule (app.css) paints nothing there.
+/* A focus ring for when focus does arrive — it does nothing to bring
+   focus in (G-03.4-4, .planning/debug/ipad-keyboard-no-focus-ring.md;
+   corrected by G-03.4-r3-3, .planning/debug/ipad-tab-never-enters-app.md):
+   the fallback was added on round two's inference that iPadOS Safari with
+   Full Keyboard Access on was landing Tab focus on these stops without
+   WebKit ever setting the :focus-visible heuristic. That inference was
+   never measured — no activeElement reading was ever taken — and round
+   three showed focus never entered the page at all: WebKit keyboard-
+   focuses an <a href> only under the embedder's TabsToLinks preference,
+   off on Apple platforms with no iPadOS switch and untouched by Full
+   Keyboard Access, or with an explicit tabindex, which Shell.jsx now sets
+   on every stop (G-03.4-r3-3). Whether WebKit sets :focus-visible for a
+   Tab on iPadOS is still unmeasured, which is why this rule stays.
+
    This mirrors the project's own documented exception for the same
    modality boundary (app.css:594-607, .is-landing-focus:focus): a plain
    :focus rule, scoped narrowly to the shell's own stops and nothing else

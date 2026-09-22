@@ -10,3 +10,6 @@ node_modules/
 
 # Design working files — bitmap mocks and references, not product artifacts
 design/
+
+# GSD session locks — per-machine claims, never shared
+.planning/*.lock

@@ -110,13 +110,22 @@
   flex: 1 1 auto;
 }
 
-/* The 224px rail (D-09). Distinct from --app-size-rail-w, a row's own 8px
-   identity mark — the two "rail" meanings never share a token. */
+/* The 224px rail (D-09, G-03.4-7, board 170 line 30). Distinct from
+   --app-size-rail-w, a row's own 8px identity mark — the two "rail"
+   meanings never share a token. The padding reads the gap scale's own
+   reading of the board's hand-copied 8/20/32/30 (03.4-07 decision #5: the
+   board governs structure and order, tokens govern values) — 6/20/32/20,
+   not a literal copy. border-box sizing is what keeps the declared 224px
+   basis from growing by the padding and the border; this project has no
+   global box-sizing reset. */
 .shell__rail {
   flex: 0 0 var(--app-size-nav-w);
   width: var(--app-size-nav-w);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  padding: var(--gap-xs) var(--gap-m) var(--gap-l);
+  border-right: var(--app-rule-row) solid var(--app-divider);
 }
 
 /* The routed page. No transform, filter, perspective, will-change or
@@ -177,6 +186,27 @@
    (set by NavLink from the router's own match) say which is current. */
 .shell__place[aria-current='page'] {
   background: var(--app-surface-subtle);
+}
+
+/* A focus ring that paints where :focus-visible never fires (G-03.4-4,
+   .planning/debug/ipad-keyboard-no-focus-ring.md): Mark measured that
+   iPadOS Safari with Full Keyboard Access on moves Tab focus onto these
+   stops without WebKit ever setting the :focus-visible heuristic, so the
+   page's one global :focus-visible rule (app.css) paints nothing there.
+   This mirrors the project's own documented exception for the same
+   modality boundary (app.css:594-607, .is-landing-focus:focus): a plain
+   :focus rule, scoped narrowly to the shell's own stops and nothing else
+   — More's summary is included because it carries this same class. It
+   reads the App's own text colour rather than the Sheet ink the global
+   rule uses, because this rule lives in the App's world (D-02, D-03); the
+   two resolve to the same value today and are free to move apart. No
+   media condition is added here — shell.css carries exactly one, and its
+   own suite asserts that. Accepted cost, open for Mark at UAT: a mouse
+   click on one of these stops also leaves the ring showing until focus
+   moves elsewhere. */
+.shell__place:focus {
+  outline: var(--focus-outline-width) solid var(--app-text);
+  outline-offset: var(--focus-outline-offset);
 }
 
 /* A hairline between the rail's two groups (Home / Notebook, Recipe book,

@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
-import { computeBalance } from '../domain/composition.js';
-import { activeRows } from '../domain/rows.js';
 import { versionIdentity } from '../domain/lineage.js';
 import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 
@@ -86,19 +84,20 @@ export function HomeBody({ versions, batches }) {
 // last, as a larger, bordered block above the list — the board's own
 // order (board 170 lines 49-79): the destination rod, the identity
 // column (the place it lives in, its name as a link to its latest
-// version, the version identity and mass line the row already
-// computes), a Next time column captioned in the app's own words when
-// its newest batch carries one, and the standing's own actions —
-// RowActions over this same entry, so the lead's action is always the
-// one its own row shows. A separate presentational component, over one
-// activeWork() entry, so it is testable without driving RecipeList's own
-// fetch effect — the same convention RecipeRows already establishes.
-// Every recipe lives in the Notebook this phase (03.4-CONTEXT.md), so
-// the place name reads the Notebook's own text companion.
+// version, the version identity), a Next time column captioned in the
+// app's own words when its newest batch carries one, and the standing's
+// own actions — RowActions over this same entry, so the lead's action is
+// always the one its own row shows. The meta line carries the version
+// identity alone (Mark, UAT test 6 ruling 6.4 of 2026-09-22, against
+// board 170's own meta) — whether the board's standing word and
+// last-batch date should join it is open, not decided. A separate
+// presentational component, over one activeWork() entry, so it is
+// testable without driving RecipeList's own fetch effect — the same
+// convention RecipeRows already establishes. Every recipe lives in the
+// Notebook this phase (03.4-CONTEXT.md), so the place name reads the
+// Notebook's own text companion.
 export function HomeLead({ entry }) {
   if (!entry) return null;
-  const balance = computeBalance(activeRows(entry.latestVersion));
-  const massLine = balance ? `${balance.mass.toFixed(1)} g` : 'no ingredient rows';
   const nextTime = entry.batches[0]?.churn?.nextTimeNote ?? null;
   return (
     <section className="home__lead">
@@ -108,9 +107,7 @@ export function HomeLead({ entry }) {
         <h2 className="home__lead-name">
           <Link to={`/recipe/${entry.latestVersion.id}`}>{entry.name}</Link>
         </h2>
-        <p className="home__lead-meta">
-          {versionIdentity(entry.versions, entry.latestVersion)} · {massLine}
-        </p>
+        <p className="home__lead-meta">{versionIdentity(entry.versions, entry.latestVersion)}</p>
       </div>
       {/* Notes render as text, never as markup — no dangerouslySetInnerHTML
           (T-03.4-12). The caption is the app's own label, not the

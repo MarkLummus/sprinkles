@@ -368,13 +368,39 @@
    exactly one level of nesting. */
 @media (max-width: 759.98px) {
   .home__row {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto;
     grid-template-areas:
-      'rail place standing'
-      'rail name standing'
-      'rail tally tally'
-      'rail actions actions';
+      'place standing'
+      'name standing'
+      'actions actions';
     padding: var(--gap-s) 0;
+  }
+
+  /* Mark's UAT rulings 6.2 and 7.3 of 2026-09-22, read against board 171
+     lines 36-46: at this width the board draws no colour bar, no marks
+     and no count anywhere in the row — only the identity, the standing
+     word and one filled action. This reverses 03.4-07 decision #2, which
+     kept the rod and the tally here on DESIGN.md's App marks rule
+     ("the rail stays on every list"). Hiding the tally takes the count
+     in words out with the marks, which UX1-03 permits: it forbids a
+     count carried by marks alone, not a count at every width. Each hide
+     is scoped under .home__row, never bare — board 171 draws the LEAD's
+     two actions (line 32) and the ROW's one (line 45), so a bare
+     `.home__action--secondary { display: none }` would take the lead's
+     second action with it too. With the secondary hidden, the one
+     remaining action still stretches to the row's full width under this
+     block's own rules below, which board 171 does not draw and which is
+     recorded as open in the conformance record. */
+  .home__row .home__rail {
+    display: none;
+  }
+
+  .home__row .home__meta {
+    display: none;
+  }
+
+  .home__row .home__action--secondary {
+    display: none;
   }
 
   .home__actions {

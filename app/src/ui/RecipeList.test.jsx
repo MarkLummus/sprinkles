@@ -18,6 +18,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { RecipeRows, HomeLead, HomeBody } from './RecipeList.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { versionIdentity } from '../domain/lineage.js';
 
 function makeVersion(overrides = {}) {
   return {
@@ -223,12 +224,14 @@ describe('HomeLead', () => {
     expect(renderLead(null)).toBe('');
   });
 
-  it("renders the place name, the recipe name as a link to its latest version, and the version identity and mass line", () => {
-    const markup = renderLead(makeEntry());
+  it("renders the place name, the recipe name as a link to its latest version, and the version identity alone — no computed mass figure (03.4-12, Mark's ruling 6.4 of 2026-09-22)", () => {
+    const entry = makeEntry();
+    const markup = renderLead(entry);
     expect(markup).toContain('Notebook');
     expect(markup).toContain('Olive oil');
     expect(markup).toContain('href="/recipe/v1"');
-    expect(markup).toContain('g');
+    expect(markup).toContain(versionIdentity(entry.versions, entry.latestVersion));
+    expect(markup).not.toMatch(/\d\.\d\s*g\b/);
   });
 
   it('renders no Next time when the newest batch carries none', () => {

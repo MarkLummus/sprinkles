@@ -141,12 +141,39 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     expect(standingRule.declarations).toMatch(/font-size:\s*var\(--app-size-meta\)/);
   });
 
-  test("the media-scoped .home__row rule's areas name the standing area, so the phone form cannot silently lose it (gap 6)", () => {
+  test("the media-scoped .home__row rule's areas still name the standing area and no longer name the rail or tally areas (G-03.4-6b)", () => {
     const mediaRowRule = rules.find(
       (rule) => rule.selector === '.home__row' && rule.media === '(max-width: 759.98px)',
     );
     expect(mediaRowRule, 'expected a media-scoped .home__row rule').toBeTruthy();
     expect(mediaRowRule.declarations).toMatch(/grid-template-areas:[^;]*standing/);
+    expect(mediaRowRule.declarations).not.toMatch(/grid-template-areas:[^;]*rail/);
+    expect(mediaRowRule.declarations).not.toMatch(/grid-template-areas:[^;]*tally/);
+  });
+
+  test('the phone-width row hides its rod, its tally and its secondary action, each scoped under .home__row so the lead is untouched (G-03.4-6b, rulings 6.2 and 7.3)', () => {
+    const hiddenRailRule = rules.find(
+      (rule) => rule.selector === '.home__row .home__rail' && rule.media === '(max-width: 759.98px)',
+    );
+    const hiddenTallyRule = rules.find(
+      (rule) => rule.selector === '.home__row .home__meta' && rule.media === '(max-width: 759.98px)',
+    );
+    const hiddenSecondaryRule = rules.find(
+      (rule) => rule.selector === '.home__row .home__action--secondary' && rule.media === '(max-width: 759.98px)',
+    );
+    expect(hiddenRailRule, 'expected a .home__row .home__rail rule under the 759.98px condition').toBeTruthy();
+    expect(hiddenTallyRule, 'expected a .home__row .home__meta rule under the 759.98px condition').toBeTruthy();
+    expect(hiddenSecondaryRule, 'expected a .home__row .home__action--secondary rule under the 759.98px condition').toBeTruthy();
+    expect(hiddenRailRule.declarations).toMatch(/display:\s*none/);
+    expect(hiddenTallyRule.declarations).toMatch(/display:\s*none/);
+    expect(hiddenSecondaryRule.declarations).toMatch(/display:\s*none/);
+  });
+
+  test("no rule under the 759.98px condition hides a bare .home__action--secondary — every hide is row-scoped, so the lead's second action cannot be lost by a later widening of the selector (G-03.4-6b)", () => {
+    const bareSecondaryHide = rules.find(
+      (rule) => rule.selector === '.home__action--secondary' && rule.media === '(max-width: 759.98px)',
+    );
+    expect(bareSecondaryHide).toBeUndefined();
   });
 
   test('.home__lead is a bordered, radiused block (gap 5)', () => {

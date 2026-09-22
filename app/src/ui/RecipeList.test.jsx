@@ -325,6 +325,44 @@ describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
   });
 });
 
+// Every <a> the app renders carries an explicit tabindex, closing
+// G-03.4-r4-1 (.planning/debug/ipad-keyboard-locks-after-tab.md). WebKit
+// admits an <a href> to the Tab order only under the embedder's
+// TabsToLinks preference — off on Apple platforms, untouched by Full
+// Keyboard Access — or when the link carries an explicit tabindex;
+// 03.4-14 gave the shell's stops one, and Home's own links are this
+// gap's other half. The rule is recorded in .claude/CLAUDE.md's
+// Conventions. The pin is on rendered markup, not source text, because
+// the attribute's whole effect is in the DOM WebKit reads.
+describe('HomeBody — every link carries an explicit tabindex (G-03.4-r4-1, .planning/debug/ipad-keyboard-locks-after-tab.md)', () => {
+  it('renders exactly 2 <a> opening tags for an empty store (Recipe book, Idea log), each carrying tabindex="0"', () => {
+    const markup = renderBody([]);
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(2);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('renders exactly 11 <a> opening tags for three recipes, one per standing, the tasted one leading (lead 3: name, Next version, Adapt; rows 8: not-yet-churned 2, awaiting-tasting 3, tasted 3), each carrying tabindex="0"', () => {
+    const versions = [
+      makeVersion({ id: 'v1', recipeId: 'r1', recipeName: 'Not yet churned recipe', createdAt: '2026-01-01T00:00:00.000Z' }),
+      makeVersion({ id: 'v2', recipeId: 'r2', recipeName: 'Awaiting tasting recipe', createdAt: '2026-01-02T00:00:00.000Z' }),
+      makeVersion({ id: 'v3', recipeId: 'r3', recipeName: 'Tasted recipe', createdAt: '2026-01-04T00:00:00.000Z' }),
+    ];
+    const batches = [
+      makeBatch({ id: 'b2', versionId: 'v2', recordedAt: '2026-01-03T00:00:00.000Z', tasting: null }),
+      makeBatch({ id: 'b3', versionId: 'v3', recordedAt: '2026-01-05T00:00:00.000Z', tasting: { tastedDate: '2026-01-06' } }),
+    ];
+    const markup = renderBody(versions, batches);
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(11);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+});
+
 // RecipeList — the loading state (03.4-13, G-03.4-1): before the store
 // reads resolve, the page shows its wrapper, its title and a loading
 // line, never nothing. renderToStaticMarkup runs no effects (react-dom/

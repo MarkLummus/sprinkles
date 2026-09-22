@@ -170,3 +170,23 @@ root_cause: |
 fix: "[not applied — goal: find_root_cause_only]. Direction only: explicit tabIndex={0} on every shell stop (the seven NavLinks and two buttons; the tab row's four links and More's summary for the phone arm) — HTMLAnchorElement.cpp:132-134 and HTMLFormControlElement.cpp:222-223 route an element with an explicit tabindex past the TabsToLinks/FKA gates, so Search becomes the document's first keyboard-focusable element for the chrome→page hand-off. Pin it in Shell.test.jsx. Then split the UAT truth: (a) with focus already in the page (tap once, then Tab) rings at every stop in order; (b) Tab from the chrome enters the page — a device/Safari behaviour to record, not assert, until measured."
 verification: "[not applicable — diagnose-only]. On-device probe for the secondary condition is in the handback."
 files_changed: []
+
+## Device probe (needs Mark) — appended 2026-09-22 by the verify-work orchestrator from the debugger's hand-back
+
+Preview server must be running (`npm --prefix app run build && npm --prefix app run preview -- --host`, one Vite process only). Install once on the iPad: in Safari, bookmark any page, then Bookmarks → Edit → change the bookmark's URL to the line below (paste it whole). Opening that bookmark on the app page adds a yellow overlay at the bottom that logs every keydown / focus change with `document.activeElement`.
+
+```
+javascript:(function(){var o=document.getElementById('fkaprobe');if(!o){o=document.createElement('div');o.id='fkaprobe';o.style.cssText='position:fixed;left:0;bottom:0;z-index:2147483647;max-width:100vw;background:#ffec3d;color:#000;font:14px/1.4 monospace;padding:8px;white-space:pre-wrap';document.body.appendChild(o);}var n=0;function d(el){if(!el)return 'none';return el.tagName+(el.className?'.'+String(el.className).split(' ')[0]:'')+(el.textContent?' "'+el.textContent.trim().slice(0,12)+'"':'');}function log(t){n++;o.textContent=n+' '+t+' | active='+d(document.activeElement)+' | hasFocus='+document.hasFocus()+'\n'+o.textContent.split('\n').slice(0,5).join('\n');}document.addEventListener('keydown',function(e){log('keydown '+e.key+(e.altKey?'+alt':'')+(e.ctrlKey?'+ctrl':'')+(e.shiftKey?'+shift':''));},true);document.addEventListener('focusin',function(e){log('focusin '+d(e.target));},true);document.addEventListener('focusout',function(e){log('focusout '+d(e.target));},true);window.addEventListener('focus',function(){log('window focus');});window.addEventListener('blur',function(){log('window blur');});log('probe ready');})();
+```
+
+Steps, in order, reporting the overlay's top line after each:
+
+1. With Full Keyboard Access already ON, force-quit Safari (App Switcher → swipe it away), reopen it, load http://192.168.1.133:4173/ , tap the bookmark. Overlay should read "1 probe ready | active=BODY".
+2. Tap the address bar, then press Tab up to 12 times, watching the overlay.
+   - Overlay never changes → Safari's focus loop never visits the web view (condition B): a Safari/FKA behaviour; no page change can move focus in from the chrome — the truth must be split.
+   - "window focus" and/or "keydown Tab | active=BODY" then focus leaves → the web view was entered but nothing was focusable (condition A: FKA value not reaching the web process even after relaunch).
+   - "focusin BUTTON.shell__place "Import"" (Search skipped) → hand-off works and FKA is propagated; links skipped exactly as diagnosed; the tabindex fix will make Search first.
+3. Tap once on blank white space in the page (below the rail), then press Tab. Same three readings as step 2, now independent of the chrome hand-off. Then press Option+Tab: if "focusin A.shell__place "Search"" (or a rail place) appears, that is the TabsToLinks gate observed directly — links reachable only with the Option inversion.
+4. (Optional) After step 3, report whether the `.shell__place:focus` ring is visible on whichever element the overlay names as active — that confirms the 03.4-09 rule paints once focus does arrive.
+
+Alternative to the bookmarklet: Settings → Apps → Safari → Advanced → Web Inspector on, cable to the Mac, Safari (Mac) → Develop → iPad → the page, and evaluate `document.activeElement` after each keypress.

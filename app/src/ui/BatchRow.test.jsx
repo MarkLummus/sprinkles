@@ -1331,6 +1331,18 @@ describe('BatchHistoryPanel — the revealed Batches register', () => {
     expect(markup.match(/<li class="history-register__item history-item[^"]*"/g)).toHaveLength(2);
     expect(markup).not.toContain('<a ');
   });
+
+  // G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
+  // explicit tabindex.
+  it('renders exactly 1 <a> opening tag, carrying tabindex="0"', () => {
+    const markup = renderBatchHistoryPanel({
+      batches: [augustSecondBatch, newerBatch],
+      openBatch: augustSecondBatch,
+    });
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabindex="0"');
+  });
 });
 
 // batchHistoryMetaFor (D-04, D-09, HIST-04, HIST-07): the batch list's own

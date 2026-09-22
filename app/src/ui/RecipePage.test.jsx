@@ -767,6 +767,39 @@ describe('the running head is owned by the routed shell, not by RecipePage (2609
   });
 });
 
+// G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
+// explicit tabindex, pinned on rendered markup where the harness can
+// render it. Neither site here can be: router.jsx cannot be imported in
+// the node environment, as the block above records; RecipePage.jsx's
+// not-found link is reached only after an effect sets the version to
+// null, and renderToStaticMarkup runs no effects. Matching the whole
+// Link opening tag, one per file, is enough because each file holds
+// exactly one single-line Link, so the attribute cannot sit on another
+// element. Declares its own reads — the block above's constants are
+// scoped inside its own callback.
+describe('the running head and the not-found link carry an explicit tabindex (G-03.4-r4-1)', () => {
+  const routerPathForTabIndex = fileURLToPath(new URL('../router.jsx', import.meta.url));
+  const routerSourceForTabIndex = readFileSync(routerPathForTabIndex, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+  const recipePagePathForTabIndex = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const recipePageSourceForTabIndex = readFileSync(recipePagePathForTabIndex, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it('router.jsx renders exactly one Link opening tag, carrying tabIndex={0}', () => {
+    const tags = routerSourceForTabIndex.match(/<Link\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabIndex={0}');
+  });
+
+  it('RecipePage.jsx renders exactly one Link opening tag, carrying tabIndex={0}', () => {
+    const tags = recipePageSourceForTabIndex.match(/<Link\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabIndex={0}');
+  });
+});
+
 describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save assembly (D-02, D-10)', () => {
   it('assembles the churn fields from a valid draft, blank-is-absent on every optional field', () => {
     const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', timeToDrawTempMinutes: '20' };

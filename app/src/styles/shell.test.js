@@ -74,7 +74,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
     expect(shellCssSource.match(/@media/g)).toHaveLength(1);
   });
 
-  test('the media block holds only the tab row\'s own rules and the rail\'s hiding rule', () => {
+  test('the media block holds only the tab row\'s own rules, the rail\'s hiding rule and the folded tools row', () => {
     const mediaRules = rules.filter((r) => r.media === '(max-width: 759.98px)');
     expect(mediaRules.length).toBeGreaterThan(0);
     for (const rule of mediaRules) {
@@ -84,8 +84,9 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
           selector === '.shell__rail' ||
             selector.startsWith('.shell__tabs') ||
             selector.startsWith('.shell__more') ||
+            selector.startsWith('.shell__tools') ||
             selector === '.shell__main',
-          `expected "${selector}" to be the rail's hiding rule or a tab-row rule`,
+          `expected "${selector}" to be the rail's hiding rule, the folded tools row, or a tab-row rule`,
         ).toBe(true);
       }
     }
@@ -121,6 +122,52 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
     );
     expect(rule, 'expected a media-scoped touch-target rule for the tabs and the More list').toBeTruthy();
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
+  });
+
+  test('the tab row\'s five flex children — the four links and the More disclosure — each take an equal share of the bar (gap 1, 03.4-UI-REVIEW.md finding 1)', () => {
+    const rule = rules.find(
+      (r) =>
+        r.media === '(max-width: 759.98px)' &&
+        r.selector.includes('.shell__tabs > .shell__place') &&
+        r.selector.includes('.shell__tabs > .shell__more'),
+    );
+    expect(rule, 'expected a media-scoped per-item flex rule naming both child kinds').toBeTruthy();
+    expect(rule.declarations).toMatch(/flex:\s*1 1 0/);
+    expect(rule.declarations).toMatch(/min-width:\s*0/);
+  });
+
+  test('each tab reads icon over label, not beside it (board 171, Mark 2026-09-22)', () => {
+    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__tabs .shell__place');
+    expect(rule, 'expected a media-scoped .shell__tabs .shell__place rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/flex-direction:\s*column/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-label\)/);
+  });
+
+  test('the bar is pinned to the tab-height token with border-box sizing (gap 1)', () => {
+    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__tabs');
+    expect(rule, 'expected a media-scoped .shell__tabs rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/height:\s*var\(--app-size-tab-h\)/);
+    expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
+    expect(rule.declarations).toMatch(/position:\s*fixed/);
+    expect(rule.declarations).toMatch(/display:\s*flex/);
+  });
+
+  test('More opens as a panel above the bar, not inline in the fixed row (D-16, gap 1)', () => {
+    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__more[open] > ul');
+    expect(rule, 'expected a media-scoped rule for More\'s open list').toBeTruthy();
+    expect(rule.declarations).toMatch(/position:\s*absolute/);
+    expect(rule.declarations).toMatch(/inset-block-end:\s*100%/);
+  });
+
+  test('the header\'s Search/Import/Export controls fold away below the phone step, and the tools row, the file input and the errors list keep no media-scoped hiding rule of their own (decision 3)', () => {
+    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__tools > .shell__place');
+    expect(rule, 'expected a media-scoped .shell__tools > .shell__place rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/display:\s*none/);
+
+    const mediaSelectors = rules.filter((r) => r.media === '(max-width: 759.98px)').map((r) => r.selector);
+    expect(mediaSelectors).not.toContain('.shell__tools');
+    expect(mediaSelectors).not.toContain('.shell__file-input');
+    expect(mediaSelectors).not.toContain('.shell__import-errors');
   });
 });
 

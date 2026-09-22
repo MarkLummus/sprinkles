@@ -261,8 +261,9 @@
 
   .shell__tabs {
     display: flex;
-    align-items: center;
-    justify-content: space-around;
+    align-items: stretch;
+    height: var(--app-size-tab-h);
+    box-sizing: border-box;
     position: fixed;
     inset-inline: 0;
     inset-block-end: 0;
@@ -270,9 +271,65 @@
     border-top: var(--app-rule-row) solid var(--app-divider);
   }
 
+  /* The tab row's five flex children: the four destination links and the
+     More disclosure itself — not the summary inside it. Direct-child
+     selectors, so each of the five gets an equal share of the viewport
+     instead of the intrinsic content width the board measured at 532px
+     (03.4-UI-REVIEW.md finding 1). */
+  .shell__tabs > .shell__place,
+  .shell__tabs > .shell__more {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* Icon over label (board 171, Mark 2026-09-22), not beside it: this
+     descendant rule reaches both the four links and More's own summary
+     (which also carries .shell__place), overriding the rail's horizontal
+     padding and gap with a small vertical pad and the hairline gap. */
+  .shell__tabs .shell__place {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-hair);
+    padding: var(--gap-xs) 0;
+    text-align: center;
+    font-size: var(--app-size-label);
+  }
+
   .shell__tabs .shell__place,
   .shell__more li {
     min-height: var(--touch-min);
+  }
+
+  /* More opens as a panel above the bar, not inline in the fixed row
+     (D-16, gap 1): the disclosure anchors its own list, which — once
+     open — pins to the bar's top edge and trailing edge, sized to its
+     content, on the App background with a hairline divider border. No
+     radius: board 171 never draws the open panel, so nothing about it is
+     copied from a drawing (decision 5). */
+  .shell__more {
+    position: relative;
+  }
+
+  .shell__more[open] > ul {
+    position: absolute;
+    inset-block-end: 100%;
+    inset-inline-end: 0;
+    width: max-content;
+    background: var(--app-background);
+    border: var(--app-rule-row) solid var(--app-divider);
+    padding: var(--gap-s);
+  }
+
+  /* The header's Search/Import/Export controls fold away at this step
+     (D-16, decision 3): all three are duplicated inside More. The tools
+     row itself stays — the shared hidden file input and the import-errors
+     list live inside it, and hiding the row would leave an import failure
+     with nothing to report itself through. */
+  .shell__tools > .shell__place {
+    display: none;
   }
 
   .shell__main {

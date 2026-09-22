@@ -15,7 +15,7 @@ import { describe, it, expect, vi } from 'vitest';
 vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { RecipeRows } from './RecipeList.jsx';
+import { RecipeRows, HomeLead } from './RecipeList.jsx';
 import { recipeHueByRecipeId } from './recipe-colour.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { rowGrams } from '../domain/rows.js';
@@ -154,23 +154,64 @@ describe('RecipeRows — The Sprinkles Jar identity and tallies (route.md, 26091
     expect(markup).not.toMatch(/home__tally-mark--batch/);
   });
 
-  it("renders the newest batch's own words, chosen by churn date, escaped as text", () => {
-    const version = makeVersion({ id: 'v1', recipeId: 'r1' });
-    const batches = [
-      makeBatch({ id: 'older', versionId: 'v1', churn: { churnDate: '2026-01-01', atTheMachine: 'older words' } }),
-      makeBatch({
-        id: 'newer',
-        versionId: 'v1',
-        churn: { churnDate: '2026-02-01', atTheMachine: '<script>alert(1)</script>' },
-      }),
-    ];
-    const markup = renderRows([version], batches);
-    expect(markup).not.toContain('older words');
-    expect(markup).toContain('&lt;script&gt;');
-    expect(markup).not.toContain('<script>');
-  });
-
   it('renders without a batches prop (the default) and does not throw', () => {
     expect(() => renderRows([makeVersion()])).not.toThrow();
+  });
+});
+
+// HomeLead (03.4-04 Task 1, D-06, D-12, D-18, D-20): the recipe the maker
+// touched last, as a larger block above the list — one presentational
+// component over one activeWork() entry, so it is testable without
+// driving RecipeList's own fetch effect.
+function makeEntry(overrides = {}) {
+  return {
+    id: 'r1',
+    name: 'Olive oil',
+    latestVersion: makeVersion({ id: 'v1', recipeId: 'r1' }),
+    versions: [makeVersion({ id: 'v1', recipeId: 'r1' })],
+    batches: [],
+    lastEventAt: '2026-01-01T00:00:00.000Z',
+    standing: 'not-yet-churned',
+    ...overrides,
+  };
+}
+
+function renderLead(entry) {
+  return renderToStaticMarkup(
+    <MemoryRouter>
+      <HomeLead entry={entry} />
+    </MemoryRouter>,
+  );
+}
+
+describe('HomeLead', () => {
+  it('renders nothing for a null entry', () => {
+    expect(renderLead(null)).toBe('');
+  });
+
+  it("renders the place name, the recipe name as a link to its latest version, and the version identity and mass line", () => {
+    const markup = renderLead(makeEntry());
+    expect(markup).toContain('Notebook');
+    expect(markup).toContain('Olive oil');
+    expect(markup).toContain('href="/recipe/v1"');
+    expect(markup).toContain('g');
+  });
+
+  it('renders no Next time when the newest batch carries none', () => {
+    const entry = makeEntry({ batches: [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01', nextTimeNote: null } })] });
+    const markup = renderLead(entry);
+    expect(markup).not.toContain('home__lead-next-time');
+  });
+
+  it("renders the maker's Next time in the hand role class, escaped as text", () => {
+    const entry = makeEntry({
+      batches: [
+        makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01', nextTimeNote: '<script>alert(1)</script>' } }),
+      ],
+    });
+    const markup = renderLead(entry);
+    expect(markup).toContain('app-hand');
+    expect(markup).toContain('&lt;script&gt;');
+    expect(markup).not.toContain('<script>');
   });
 });

@@ -41,9 +41,50 @@ body:has(.home) {
   letter-spacing: -0.02em;
 }
 
-.home__guidance {
+/* The lead block (D-06, D-12, D-18): the recipe the maker touched last,
+   larger than a row, above the list. */
+.home__lead {
   margin: 0 0 var(--gap-l);
+  padding-bottom: var(--gap-m);
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+
+.home__lead-place {
+  margin: 0 0 var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-notebook-text);
+}
+
+.home__lead-name {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-lead-name);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.home__lead-name a {
+  color: inherit;
+}
+
+.home__lead-meta {
+  margin: var(--gap-hair) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
   color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The maker's own Next time (D-18): the hand's face, colour, size and
+   leading all come from the .app-hand role class in app.css (plan 02) —
+   this rule sets spacing and measure only and declares no font-family. */
+.home__lead-next-time {
+  margin: var(--gap-s) 0 0;
+  max-width: var(--measure-prose);
 }
 
 .home__list {
@@ -147,19 +188,6 @@ body:has(.home) {
 
 .home__tally-mark--batch {
   background: var(--jar-gold);
-}
-
-/* The last verdict, in pen blue (FIRST VIEWPORT; the Two-Ink rule still
-   binds wherever plan and actual meet, route.md § 1) — no second blue is
-   defined for this world. */
-.home__words {
-  flex: 1 1 0;
-  min-width: 0;
-  font-family: var(--face-text);
-  font-style: italic;
-  font-size: var(--app-size-meta);
-  color: var(--sheet-pen-blue);
-  overflow-wrap: anywhere;
 }
 
 /* Below the 760px step-down (sketch-findings-sprinkles,

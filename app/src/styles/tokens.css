@@ -443,6 +443,7 @@
   --app-size-brand-rule: 6px; /* the sprinkle rule beneath the brand */
   --app-size-title: 2.125rem; /* 34px, the page title */
   --app-size-recipe-name: 1.5rem; /* 24px, a recipe's name on its row */
+  --app-size-lead-name: 1.75rem; /* 28px, the lead block's own larger recipe name (D-06) */
   --app-size-meta: 0.875rem; /* 14px, the version/meta line, the nav word, the last words */
   --app-size-label: 0.75rem; /* 12px, the versions/batches micro-label */
   --app-tracking-label: 0.08em;

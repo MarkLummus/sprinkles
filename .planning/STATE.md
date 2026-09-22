@@ -1,17 +1,17 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.4"
-current_phase_name: "The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)"
+current_phase_name: the-design-layer-in-code-app-palette-sheet-prefixed-tokens-t
 status: executing
 stopped_at: Completed 03.4-14-PLAN.md
-last_updated: "2026-09-22T19:29:21.182Z"
+last_updated: "2026-09-22T22:24:09.320Z"
 last_activity: 2026-09-22
-last_activity_desc: Phase 03.4 execution resumed (wave continue)
-state_head: 82f7cbd0d0dc63eb129db375cbd36ff00d88931c
+last_activity_desc: Phase 03.4 execution started
+state_head: 5f25d16a1f82943394a82b4545c38ba4937a4601
 progress:
   total_phases: 10
   completed_phases: 8
-  total_plans: 65
+  total_plans: 66
   completed_plans: 65
   percent: 80
 ---
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-10)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.4 — The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)
+**Current focus:** Phase 03.4 — the-design-layer-in-code-app-palette-sheet-prefixed-tokens-t
 
 ## Current Position
 
-Phase: 03.4 (The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (INSERTED)) — EXECUTING
-Plan: 2 of 13
-Status: Ready to execute
-Last activity: 2026-09-22 — Phase 03.4 execution resumed (wave continue)
+Phase: 03.4 (the-design-layer-in-code-app-palette-sheet-prefixed-tokens-t) — EXECUTING
+Plan: 1 of 15
+Status: Executing Phase 03.4
+Last activity: 2026-09-22 — Phase 03.4 execution started
 
 Progress: [████████░░] 80% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
 

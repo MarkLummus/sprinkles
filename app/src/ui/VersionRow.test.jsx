@@ -610,3 +610,22 @@ describe('VersionRow — the plan pen\'s own form-status live region', () => {
     expect(markup).not.toContain('form-status');
   });
 });
+
+// G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
+// explicit tabindex. The History panel starts closed, so its own links
+// are pinned in RecipeHistory.test.jsx, not here.
+describe('VersionRow — every link carries an explicit tabindex (G-03.4-r4-1)', () => {
+  it('renders exactly 2 <a> opening tags — From version, From batch — each carrying tabindex="0"', () => {
+    const markup = renderVersionRow({
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(2);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+});

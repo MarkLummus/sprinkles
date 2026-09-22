@@ -234,4 +234,20 @@ describe('RecipeHistory', () => {
     expect(markup).not.toContain('Elsewhere');
     expect(markup.match(/<li class="recipe-history__version/g)).toHaveLength(1);
   });
+
+  // G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
+  // explicit tabindex.
+  it("renders exactly 3 <a> opening tags — v1's name, b1's name, v2's From batch — each carrying an explicit tabindex", () => {
+    const batch = makeBatch({ id: 'b1', versionId: 'v1' });
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [batch],
+    });
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(3);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
 });

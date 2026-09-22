@@ -3,10 +3,8 @@ import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { computeBalance } from '../domain/composition.js';
 import { activeRows } from '../domain/rows.js';
-import { latestVersionPerRecipe, sortedVersions, versionsForRecipe, versionIdentity } from '../domain/lineage.js';
-import { sortedBatches } from '../domain/batch.js';
-import { activeWork } from '../domain/lastEvent.js';
-import { recipeHueByRecipeId } from './recipe-colour.js';
+import { versionIdentity } from '../domain/lineage.js';
+import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 
 // Home — "Active work first" (.impeccable/surfaces/route.md, Home
 // direction amendment 2026-09-20; DESIGN.md "App marks"). The outer
@@ -48,6 +46,7 @@ export function RecipeList() {
       <div className="home">
         <h1 className="home__title">Pick up where you left off</h1>
         <HomeLead entry={work[0] ?? null} />
+        <h2 className="home__section">Recipes</h2>
         <RecipeRows versions={versions} batches={batches} />
       </div>
     </div>
@@ -87,76 +86,101 @@ export function HomeLead({ entry }) {
   );
 }
 
+// Every recipe lives in the Notebook this phase (03.4-CONTEXT.md D-07) —
+// read from this one function so a second destination becomes a change
+// here and in the matching home.css rule, not a rewrite of the row's own
+// markup.
+function placeNameFor() {
+  return 'Notebook';
+}
+
+// batchCountWords(n) -> the batch tally's count in words (D-11, D-19,
+// UX1-03): the marks beside it are decorative, so the count is never
+// carried by marks alone.
+function batchCountWords(count) {
+  if (count === 0) return 'not yet made';
+  return `${count} batch${count === 1 ? '' : 'es'}`;
+}
+
+// The row's next action(s) (D-07, D-11): one filled action, and at most
+// one outline secondary, chosen by the recipe's own standing. Record a
+// tasting is the one action that opens the newest batch's own path;
+// every other action opens the recipe at its latest version.
+function RowActions({ entry }) {
+  const latestPath = `/recipe/${entry.latestVersion.id}`;
+  if (entry.standing === NOT_YET_CHURNED) {
+    return (
+      <span className="home__actions">
+        <Link to={latestPath} className="home__action">
+          Record a batch
+        </Link>
+      </span>
+    );
+  }
+  if (entry.standing === AWAITING_TASTING) {
+    const tastingPath = `/recipe/${entry.latestVersion.id}/batch/${entry.batches[0].id}`;
+    return (
+      <span className="home__actions">
+        <Link to={tastingPath} className="home__action">
+          Record a tasting
+        </Link>
+        <Link to={latestPath} className="home__action home__action--secondary">
+          Continue developing
+        </Link>
+      </span>
+    );
+  }
+  if (entry.standing === TASTED) {
+    return (
+      <span className="home__actions">
+        <Link to={latestPath} className="home__action">
+          Next version
+        </Link>
+        <Link to={latestPath} className="home__action home__action--secondary">
+          Adapt
+        </Link>
+      </span>
+    );
+  }
+  // No fourth branch: D-07's other two standings need the Recipe Book
+  // and the Idea Log, which lastEvent.js's standingFor never returns
+  // this phase (03.4-CONTEXT.md decision #2).
+  return null;
+}
+
 // The list itself, split out as a presentational component over an array
-// (the same convention RecipeHistory.jsx establishes) so it is testable
-// without driving RecipeList's own fetch effect. One row per recipe, at
-// its most recently created version (route-recipe-version.md § 3,
-// 03-03) — hides nothing permanently: every superseded version stays
-// reachable through the history outline on the recipe page (RecipeHistory.jsx).
-// This is only honest while that stays true.
+// (the same convention RecipeHistory.jsx establishes and HomeLead now
+// shares) so it is testable without driving RecipeList's own fetch
+// effect. One row per recipe, at its most recently created version, in
+// recency order (D-05, D-06) — hides nothing permanently: every
+// superseded version stays reachable through the history outline on the
+// recipe page (RecipeHistory.jsx). The lead recipe stays in this list
+// too (D-12): activeWork's own first entry is not excluded here.
 //
 // batches defaults to [] so the existing tests, which pass versions
-// alone, keep passing. <li> stays attribute-free (RecipeList.test.jsx
-// counts rows with markup.match(/<li>/g)); the list class lives on the
-// <ul> and the row class on the inner <Link>.
+// alone, keep passing.
 export function RecipeRows({ versions, batches = [] }) {
-  const hueByRecipeId = recipeHueByRecipeId(versions);
+  const work = activeWork(versions, batches);
   return (
     <ul className="home__list">
-      {latestVersionPerRecipe(versions).map((version) => {
-        const ordered = sortedVersions(versionsForRecipe(versions, version.recipeId));
-        const orderedIds = new Set(ordered.map((v) => v.id));
-        // Read null-safely: an imported record that fails validation
-        // should never reach the store, but a malformed one that does
-        // must render an incomplete row rather than throw the page away
-        // (T-260918-gha-03) — filtered here, before sortedBatches (the
-        // domain's one ordering) ever sees it.
-        const recipeBatches = batches.filter((batch) => orderedIds.has(batch.versionId) && batch.churn);
-        const balance = computeBalance(activeRows(version));
-        const hue = hueByRecipeId.get(version.recipeId);
-        const versionCount = ordered.length;
-        const batchCount = recipeBatches.length;
+      {work.map((entry) => {
+        const batchCount = entry.batches.length;
         return (
-          <li key={version.id}>
-            {/* The inline style's value is a fixed var(--recipe-hue-NN)
-                reference built from an integer index, never a string
-                taken from a stored record (T-260918-gha-02). */}
-            <Link to={`/recipe/${version.id}`} className="home__row" style={{ '--c': `var(${hue})` }}>
-              <span className="home__bar" aria-hidden="true" />
-              <span className="home__main">
-                <h2 className="home__name">{version.recipeName}</h2>
-                <span className="home__meta">
-                  {versionIdentity(ordered, version)} ·{' '}
-                  {balance ? `${balance.mass.toFixed(1)} g` : 'no ingredient rows'}
-                </span>
+          <li key={entry.id} className="home__row">
+            <span className="home__rail" aria-hidden="true" />
+            <p className="home__place">{placeNameFor()}</p>
+            <h2 className="home__name">
+              <Link to={`/recipe/${entry.latestVersion.id}`}>{entry.name}</Link>
+            </h2>
+            <span className="home__meta">
+              <span className="home__tally" aria-hidden="true">
+                {Array.from({ length: batchCount }, (_, i) => (
+                  <span key={i} className="home__tally-mark" />
+                ))}
               </span>
-              <span className="home__tally-group">
-                <span className="home__tally-label">
-                  {versionCount} version{versionCount === 1 ? '' : 's'}
-                </span>
-                <span className="home__tally" aria-hidden="true">
-                  {Array.from({ length: versionCount }, (_, i) => (
-                    <span key={i} className="home__tally-mark home__tally-mark--version" />
-                  ))}
-                </span>
-              </span>
-              <span className="home__tally-group">
-                {batchCount > 0 ? (
-                  <>
-                    <span className="home__tally-label">
-                      {batchCount} batch{batchCount === 1 ? '' : 'es'}
-                    </span>
-                    <span className="home__tally" aria-hidden="true">
-                      {Array.from({ length: batchCount }, (_, i) => (
-                        <span key={i} className="home__tally-mark home__tally-mark--batch" />
-                      ))}
-                    </span>
-                  </>
-                ) : (
-                  <span className="home__tally-label home__tally-label--empty">not yet made</span>
-                )}
-              </span>
-            </Link>
+              <span className="home__count">{batchCountWords(batchCount)}</span>
+            </span>
+            <RowActions entry={entry} />
           </li>
         );
       })}

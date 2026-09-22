@@ -88,6 +88,22 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     const matches = recipeListJsxSource.match(/\bapp-hand\b/g) ?? [];
     expect(matches).toHaveLength(1);
   });
+
+  test('the row\'s rail and tally read a destination accent token, never a per-recipe custom property (D-11, 03.4-04 Task 2)', () => {
+    const railRule = rules.find((rule) => rule.selector === '.home__rail');
+    const tallyMarkRule = rules.find((rule) => rule.selector === '.home__tally-mark');
+    expect(railRule, 'expected a .home__rail rule').toBeTruthy();
+    expect(tallyMarkRule, 'expected a .home__tally-mark rule').toBeTruthy();
+    expect(railRule.declarations).toMatch(/var\(--app-notebook\)/);
+    expect(tallyMarkRule.declarations).toMatch(/var\(--app-notebook\)/);
+    expect(railRule.declarations).not.toMatch(/var\(--c\)/);
+    expect(tallyMarkRule.declarations).not.toMatch(/var\(--c\)/);
+  });
+
+  test('no rule reads a jar hue or a recipe hue (D-04 in progress; the App marks grammar replaces per-recipe colour)', () => {
+    expect(homeCssSource).not.toMatch(/var\(--jar-/);
+    expect(homeCssSource).not.toMatch(/var\(--recipe-hue-/);
+  });
 });
 
 describe('home.css is wired in (main.jsx, 260917-h83 precedent)', () => {

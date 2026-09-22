@@ -1,9 +1,10 @@
 // Component test for the recipe list's one-row-per-recipe grouping
-// (route-recipe-version.md § 3, 03-03; The Sprinkles Jar, route.md,
-// 260918-gha). In the existing style — renderToStaticMarkup
-// (react-dom/server) in the node test environment. Because the list
-// renders Links it needs a router context: wrapped in a MemoryRouter
-// from react-router, already a dependency — no testing library added.
+// (route-recipe-version.md § 3, 03-03) and the App marks grammar (D-07,
+// D-11, D-19, 03.4-04 Task 2). In the existing style —
+// renderToStaticMarkup (react-dom/server) in the node test environment.
+// Because the list renders Links it needs a router context: wrapped in a
+// MemoryRouter from react-router, already a dependency — no testing
+// library added.
 import { describe, it, expect, vi } from 'vitest';
 // RecipeList.jsx imports repository.js, whose module-level
 // `export const repository = createRepository()` opens the real
@@ -16,9 +17,7 @@ vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { RecipeRows, HomeLead } from './RecipeList.jsx';
-import { recipeHueByRecipeId } from './recipe-colour.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
-import { rowGrams } from '../domain/rows.js';
 
 function makeVersion(overrides = {}) {
   return {
@@ -36,7 +35,10 @@ function makeBatch(overrides = {}) {
   return {
     id: 'b1',
     versionId: 'v1',
+    recordedAt: '2026-01-01T00:00:00.000Z',
+    changed: null,
     churn: { churnDate: '2026-01-01', atTheMachine: null },
+    tasting: null,
     ...overrides,
   };
 }
@@ -58,7 +60,7 @@ describe('RecipeRows — one row per recipe, at its most recently created versio
       makeVersion({ id: 'c', recipeId: 'r2', versionLabel: 'third', createdAt: '2026-01-15T00:00:00.000Z' }),
     ];
     const markup = renderRows(versions);
-    expect(markup.match(/<li>/g)).toHaveLength(2);
+    expect(markup.match(/<li /g)).toHaveLength(2);
   });
 
   it('renders the row for the version with the greatest createdAt', () => {
@@ -67,91 +69,87 @@ describe('RecipeRows — one row per recipe, at its most recently created versio
       makeVersion({ id: 'b', recipeId: 'r1', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' }),
     ];
     const markup = renderRows(versions);
-    expect(markup).toContain('second');
-    expect(markup).not.toContain('>first<');
+    expect(markup).toContain('href="/recipe/b"');
+    expect(markup).not.toContain('href="/recipe/a"');
   });
 
   it('renders one row for a single version', () => {
     const markup = renderRows([makeVersion()]);
-    expect(markup.match(/<li>/g)).toHaveLength(1);
+    expect(markup.match(/<li /g)).toHaveLength(1);
   });
 
   it('renders no rows and does not crash for an empty store', () => {
     const markup = renderRows([]);
-    expect(markup).not.toContain('<li>');
-  });
-
-  it('reports a mass that excludes a removed row', () => {
-    const fullMass = oliveOilVersion.rows.reduce((total, row) => total + rowGrams(row), 0);
-    const removedRowGrams = rowGrams(oliveOilVersion.rows[0]);
-    const versionWithRemoval = makeVersion({
-      rows: oliveOilVersion.rows.map((row, index) => (index === 0 ? { ...row, removed: true } : row)),
-    });
-    const markup = renderRows([versionWithRemoval]);
-    const expectedMass = (fullMass - removedRowGrams).toFixed(1);
-    expect(markup).toContain(`${expectedMass} g`);
-    expect(markup).not.toContain(`${fullMass.toFixed(1)} g`);
+    expect(markup).not.toContain('<li');
   });
 });
 
-describe('RecipeRows — The Sprinkles Jar identity and tallies (route.md, 260918-gha)', () => {
-  it("carries the hue recipeHueByRecipeId deals, the same for a recipe across its own versions", () => {
-    const versions = [
-      makeVersion({ id: 'a', recipeId: 'r1', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' }),
-      makeVersion({ id: 'b', recipeId: 'r1', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' }),
-    ];
-    const expectedHue = recipeHueByRecipeId(versions).get('r1');
-    const markup = renderRows(versions);
-    expect(markup).toContain(`var(${expectedHue})`);
+describe('RecipeRows — the App marks grammar (D-07, D-11, D-19, 03.4-04 Task 2)', () => {
+  it('reads the place name (Notebook) above the recipe name, and no version tally at all (D-11)', () => {
+    const markup = renderRows([makeVersion()]);
+    expect(markup).toContain('Notebook');
+    expect(markup).not.toContain('version');
   });
 
-  it('gives two recipes two different hue tokens', () => {
-    const versions = [
-      makeVersion({ id: 'a', recipeId: 'r1', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' }),
-      makeVersion({ id: 'c', recipeId: 'r2', versionLabel: 'third', createdAt: '2026-01-15T00:00:00.000Z' }),
-    ];
-    const hues = recipeHueByRecipeId(versions);
-    const markup = renderRows(versions);
-    expect(hues.get('r1')).not.toBe(hues.get('r2'));
-    expect(markup).toContain(`var(${hues.get('r1')})`);
-    expect(markup).toContain(`var(${hues.get('r2')})`);
-  });
-
-  it('draws one version-tally mark per version the recipe has', () => {
-    const versions = [
-      makeVersion({ id: 'a', recipeId: 'r1', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' }),
-      makeVersion({ id: 'b', recipeId: 'r1', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' }),
-      makeVersion({ id: 'c', recipeId: 'r1', versionLabel: 'third', createdAt: '2026-03-01T00:00:00.000Z' }),
-    ];
-    const markup = renderRows(versions);
-    const versionMarks = markup.match(/home__tally-mark--version/g) ?? [];
-    expect(versionMarks).toHaveLength(3);
-  });
-
-  it("draws one batch-tally mark per batch across the recipe's own versions, and none of another recipe's", () => {
+  it('renders one hollow tally mark per batch across the recipe\'s own versions, and none of another recipe\'s, with the count in words', () => {
     const versions = [
       makeVersion({ id: 'a', recipeId: 'r1', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' }),
       makeVersion({ id: 'b', recipeId: 'r1', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' }),
       makeVersion({ id: 'c', recipeId: 'r2', versionLabel: 'third', createdAt: '2026-01-15T00:00:00.000Z' }),
     ];
     const batches = [
-      makeBatch({ id: 'ba', versionId: 'a', churn: { churnDate: '2026-01-05', atTheMachine: null } }),
-      makeBatch({ id: 'bb', versionId: 'b', churn: { churnDate: '2026-02-05', atTheMachine: null } }),
-      makeBatch({ id: 'bc', versionId: 'c', churn: { churnDate: '2026-01-20', atTheMachine: null } }),
-      makeBatch({ id: 'bd', versionId: 'c', churn: { churnDate: '2026-01-25', atTheMachine: null } }),
-      makeBatch({ id: 'be', versionId: 'c', churn: { churnDate: '2026-01-30', atTheMachine: null } }),
+      makeBatch({ id: 'ba', versionId: 'a', churn: { churnDate: '2026-01-05' }, tasting: { tastedDate: '2026-01-06' } }),
+      makeBatch({ id: 'bb', versionId: 'b', churn: { churnDate: '2026-02-05' }, tasting: { tastedDate: '2026-02-06' } }),
+      makeBatch({ id: 'bc', versionId: 'c', churn: { churnDate: '2026-01-20' } }),
+      makeBatch({ id: 'bd', versionId: 'c', churn: { churnDate: '2026-01-25' } }),
+      makeBatch({ id: 'be', versionId: 'c', churn: { churnDate: '2026-01-30' } }),
     ];
     const markup = renderRows(versions, batches);
     expect(markup).toContain('2 batches');
     expect(markup).toContain('3 batches');
-    const batchMarks = markup.match(/home__tally-mark--batch/g) ?? [];
-    expect(batchMarks).toHaveLength(5);
+    const marks = markup.match(/home__tally-mark/g) ?? [];
+    expect(marks).toHaveLength(5);
   });
 
-  it('reads "not yet made" and draws no batch mark for a recipe with no batch', () => {
+  it('reads "not yet made" and draws no tally mark for a recipe with no batch', () => {
     const markup = renderRows([makeVersion()]);
     expect(markup).toContain('not yet made');
-    expect(markup).not.toMatch(/home__tally-mark--batch/);
+    expect(markup).not.toMatch(/home__tally-mark/);
+  });
+
+  it('gives a not-yet-churned recipe only Record a batch, with no secondary action', () => {
+    const markup = renderRows([makeVersion()]);
+    expect(markup).toContain('Record a batch');
+    expect(markup).not.toContain('home__action--secondary');
+  });
+
+  it('gives an awaiting-tasting recipe Record a tasting (to the newest batch) with Continue developing beside it', () => {
+    const version = makeVersion({ id: 'v1', recipeId: 'r1' });
+    const batches = [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })];
+    const markup = renderRows([version], batches);
+    expect(markup).toContain('Record a tasting');
+    expect(markup).toContain('href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('Continue developing');
+  });
+
+  it('gives a tasted recipe Next version with Adapt beside it', () => {
+    const version = makeVersion({ id: 'v1', recipeId: 'r1' });
+    const batches = [
+      makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: { tastedDate: '2026-01-02' } }),
+    ];
+    const markup = renderRows([version], batches);
+    expect(markup).toContain('Next version');
+    expect(markup).toContain('Adapt');
+  });
+
+  it('renders no maker-authored free text on any row — the hand appears only on the lead block (D-20)', () => {
+    const version = makeVersion({ id: 'v1', recipeId: 'r1' });
+    const batches = [
+      makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01', nextTimeNote: '<script>alert(1)</script>' } }),
+    ];
+    const markup = renderRows([version], batches);
+    expect(markup).not.toContain('<script>');
+    expect(markup).not.toContain('alert(1)');
   });
 
   it('renders without a batches prop (the default) and does not throw', () => {

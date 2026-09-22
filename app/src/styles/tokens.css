@@ -453,6 +453,7 @@
   --app-size-rail-w: 8px;
   --app-size-rail-h: 56px;
   --app-radius-rail: 4px;
+  --app-rule-tally: 2px; /* the hollow sprinkle's own edge (D-11) */
   --app-radius-action: 10px; /* the filled action's own radius; its padding reads var(--gap-s)/var(--gap-m) directly */
   --app-rule-nav-active: 3px;
   --app-rule-row: var(--rule-graduation); /* reuses the app's existing 1px hairline weight, named for this world so it can move independently later */

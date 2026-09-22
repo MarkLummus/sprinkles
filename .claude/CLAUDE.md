@@ -44,6 +44,8 @@ The workspace lives in `app/`. Commands: `npm --prefix app run dev`, `npm --pref
 - Every visual value (colour, face, size, spacing, rule weight) reads through a CSS custom property defined in `app/src/styles/tokens.css`; no component or stylesheet carries a literal.
 - Notes and prose render as text, never as markup — no `dangerouslySetInnerHTML` anywhere under `app/src`.
 - Agent-facing prose, git commit messages, and browser-test input values are English — pinned against language drift in agent runs.
+- Device UAT — anything Mark opens on the iPad or iPhone over the LAN — is served from `npm --prefix app run build && npm --prefix app run preview -- --host`, never from the dev server: the dev server ships the unbundled module graph (measured at 64 requests and 6.22 MiB against the build's 3 requests and about 134 KB gzipped), and no device measurement taken against it means anything.
+- Only one Vite process per workspace. Two servers started from the same `app/` directory share one optimised-deps cache, so either one re-optimising invalidates the other's hashes and a stale request returns 504, which makes the client reload the whole page — a measured amplifier, not a theory. Kill the duplicate before measuring anything.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->

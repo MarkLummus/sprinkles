@@ -390,3 +390,39 @@ describe('the picked state is a fill (D-04, sketch 007 lines 49 and 83)', () => 
     expect(ruleFor(".chip-toggle[aria-pressed='true']")).toBeUndefined();
   });
 });
+
+// The canvas guard (G-03.4-9, commit 4105848): replaces the guard that
+// commit deleted alongside the only rule that ever painted the App ground
+// at a canvas-propagating level. The elastic-overscroll region paints the
+// CSS canvas from the BODY element's own background, never a descendant's
+// — see .planning/debug/ios-overscroll-cream-on-app-routes.md for the
+// measured variants. This suite cannot render a canvas (no layout engine),
+// so it pins the source-level precondition: body carries the App ground,
+// the three paper frames hand it back via :has(), and no rule anywhere
+// declares a background for the root element on its own, which is the one
+// change that would stop body's background from reaching the canvas.
+describe('the canvas is per context, on body, not a descendant (G-03.4-9, commit 4105848)', () => {
+  test('the top-level body rule declares the App ground', () => {
+    const rule = rules.find((r) => r.selector === 'body' && r.media === undefined);
+    expect(rule, 'expected a top-level body rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
+  });
+
+  test('a top-level rule hands the canvas back to the Sheet cream for all three paper frames', () => {
+    const rule = rules.find((r) => r.selector.startsWith('body:has(') && r.media === undefined);
+    expect(rule, 'expected a top-level body:has(...) rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/background:\s*var\(--sheet-ground\)/);
+    expect(rule.selector).toMatch(/\.recipe-page/);
+    expect(rule.selector).toMatch(/\.page-head/);
+    expect(rule.selector).toMatch(/\.not-found/);
+  });
+
+  test('no rule in app.css declares a background for the root element on its own — that would cancel body\'s propagation to the canvas', () => {
+    for (const rule of rules) {
+      const parts = rule.selector.split(',').map((s) => s.trim());
+      for (const part of parts) {
+        expect(part, `expected no selector matching the root element alone, found "${part}"`).not.toMatch(/^html(\b|[.:#[]|$)/);
+      }
+    }
+  });
+});

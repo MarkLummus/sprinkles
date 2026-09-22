@@ -2,12 +2,34 @@
    value, and rule weight reads through a custom property defined in
    tokens.css — none is a literal here. */
 
+/* The canvas, per context (G-03.4-9, .planning/debug/ios-overscroll-cream-
+   on-app-routes.md): iOS Safari's elastic-overscroll region paints the CSS
+   canvas background, which the UA fills from the BODY element's own
+   background only while the root element (html) stays transparent — a
+   descendant's background, .shell's included, can never reach the canvas
+   at any size, because the canvas is unbounded and no descendant box
+   propagates to it. So the App's white is declared here, on body itself,
+   and the three paper frames (.recipe-page, .page-head, .not-found) hand
+   the canvas back to the Sheet's cream via the :has() rule below — which
+   was measured (debug session variants C/D) to re-propagate when a paper
+   frame mounts after first paint, so a client-side route change into or
+   out of a Sheet frame moves the canvas with no JS and no route class on
+   body. No `html` selector may be added anywhere in this project: giving
+   the root element a background is the one change that stops body's
+   background from propagating to the canvas at all (debug session
+   variant B), which would cancel this mechanism outright. This is the
+   replacement for the guard commit 4105848 deleted alongside the App
+   ground it retired. */
 body {
   margin: 0;
-  background: var(--sheet-ground);
+  background: var(--app-background);
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-table-body);
+}
+
+body:has(.recipe-page, .page-head, .not-found) {
+  background: var(--sheet-ground);
 }
 
 /* The binder (route-recipe.md § 6, D-13): every control drawn by the page,

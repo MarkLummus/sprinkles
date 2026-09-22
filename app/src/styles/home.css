@@ -55,12 +55,53 @@
   color: var(--app-idea-log-text);
 }
 
-/* The lead block (D-06, D-12, D-18): the recipe the maker touched last,
-   larger than a row, above the list. */
+/* The lead block (D-06, D-12, D-18, gap 5): the recipe the maker
+   touched last, larger than a row and its own bordered block, above the
+   list, in the board's own order (board 170 lines 49-79) — the rod,
+   the identity column, the Next time column, then the standing's own
+   actions. */
 .home__lead {
+  display: flex;
+  align-items: center;
+  column-gap: var(--gap-m);
+  padding: var(--gap-m);
   margin: 0 0 var(--gap-l);
-  padding-bottom: var(--gap-m);
-  border-bottom: var(--app-rule-row) solid var(--app-divider);
+  border: var(--app-rule-row) solid var(--app-text);
+  border-radius: var(--app-radius-lead);
+}
+
+/* The rod inside the lead never shrinks — a flex item's default
+   flex-shrink would let it thin as its siblings grow. */
+.home__lead .home__rail {
+  flex-shrink: 0;
+}
+
+/* The identity and Next time columns each take an equal flexible share,
+   with a zero minimum width so a long recipe name or note can wrap
+   instead of forcing the row wider. */
+.home__lead-identity,
+.home__lead-next {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* The actions inside the lead size to their own content, not a flexible
+   share. */
+.home__lead .home__actions {
+  flex: 0 0 auto;
+}
+
+/* The "Next time" caption (gap 5): the App label role, in the secondary
+   text colour — app text, never the maker's own words (DESIGN.md's Hand
+   Rule), so it carries no hand face of its own. */
+.home__lead-caption {
+  margin: 0 0 var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-text-secondary);
 }
 
 .home__lead-place {
@@ -287,5 +328,19 @@
 
   .home__action {
     flex: 1 1 0;
+  }
+
+  /* The lead block stacked (gap 5, board 171 lines 21-33): the border
+     and radius survive the step; the rod does not, since board 171's
+     own lead block draws no rod at all. */
+  .home__lead {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: var(--gap-s);
+    padding: var(--gap-s);
+  }
+
+  .home__lead .home__rail {
+    display: none;
   }
 }

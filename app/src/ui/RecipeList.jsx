@@ -82,14 +82,17 @@ export function HomeBody({ versions, batches }) {
   );
 }
 
-// The lead block (D-06, D-12, D-18): the recipe the maker touched last,
-// as a larger block above the list — the place it lives in, its name as
-// a link to its latest version, the version identity and mass line the
-// row already computes, and, when its newest batch carries one, the
-// maker's own Next time in the hand (D-18, D-20 — the one place the
-// hand appears on the page). A separate presentational component, over
-// one activeWork() entry, so it is testable without driving RecipeList's
-// own fetch effect — the same convention RecipeRows already establishes.
+// The lead block (D-06, D-12, D-18, gap 5): the recipe the maker touched
+// last, as a larger, bordered block above the list — the board's own
+// order (board 170 lines 49-79): the destination rod, the identity
+// column (the place it lives in, its name as a link to its latest
+// version, the version identity and mass line the row already
+// computes), a Next time column captioned in the app's own words when
+// its newest batch carries one, and the standing's own actions —
+// RowActions over this same entry, so the lead's action is always the
+// one its own row shows. A separate presentational component, over one
+// activeWork() entry, so it is testable without driving RecipeList's own
+// fetch effect — the same convention RecipeRows already establishes.
 // Every recipe lives in the Notebook this phase (03.4-CONTEXT.md), so
 // the place name reads the Notebook's own text companion.
 export function HomeLead({ entry }) {
@@ -99,18 +102,29 @@ export function HomeLead({ entry }) {
   const nextTime = entry.batches[0]?.churn?.nextTimeNote ?? null;
   return (
     <section className="home__lead">
-      <p className="home__lead-place">Notebook</p>
-      <h2 className="home__lead-name">
-        <Link to={`/recipe/${entry.latestVersion.id}`}>{entry.name}</Link>
-      </h2>
-      <p className="home__lead-meta">
-        {versionIdentity(entry.versions, entry.latestVersion)} · {massLine}
-      </p>
+      <span className="home__rail" aria-hidden="true" />
+      <div className="home__lead-identity">
+        <p className="home__lead-place">Notebook</p>
+        <h2 className="home__lead-name">
+          <Link to={`/recipe/${entry.latestVersion.id}`}>{entry.name}</Link>
+        </h2>
+        <p className="home__lead-meta">
+          {versionIdentity(entry.versions, entry.latestVersion)} · {massLine}
+        </p>
+      </div>
       {/* Notes render as text, never as markup — no dangerouslySetInnerHTML
-          (T-03.4-12). The hand role class plan 02 shipped in app.css
+          (T-03.4-12). The caption is the app's own label, not the
+          maker's words (DESIGN.md's Hand Rule) — only the note beneath
+          it reads the hand role class plan 02 shipped in app.css, which
           carries the face, colour and leading; home__lead-next-time
           carries spacing and measure only. */}
-      {nextTime && <p className="home__lead-next-time app-hand">{nextTime}</p>}
+      {nextTime && (
+        <div className="home__lead-next">
+          <p className="home__lead-caption">Next time</p>
+          <p className="home__lead-next-time app-hand">{nextTime}</p>
+        </div>
+      )}
+      <RowActions entry={entry} />
     </section>
   );
 }

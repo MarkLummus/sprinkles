@@ -116,6 +116,23 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     expect(mediaRowRule, 'expected a media-scoped .home__row rule').toBeTruthy();
     expect(mediaRowRule.declarations).toMatch(/grid-template-areas:[^;]*standing/);
   });
+
+  test('.home__lead is a bordered, radiused block (gap 5)', () => {
+    const leadRule = rules.find((rule) => rule.selector === '.home__lead' && rule.media === undefined);
+    expect(leadRule, 'expected a top-level .home__lead rule').toBeTruthy();
+    expect(leadRule.declarations).toMatch(/border:\s*var\(--app-rule-row\)\s*solid\s*var\(--app-text\)/);
+    expect(leadRule.declarations).toMatch(/border-radius:\s*var\(--app-radius-lead\)/);
+  });
+
+  test('a .home__lead-caption rule declares the App label role in the secondary text colour, and .home__lead-next-time declares no font-family (gap 5)', () => {
+    const captionRule = rules.find((rule) => rule.selector === '.home__lead-caption');
+    const nextTimeRule = rules.find((rule) => rule.selector === '.home__lead-next-time');
+    expect(captionRule, 'expected a .home__lead-caption rule').toBeTruthy();
+    expect(nextTimeRule, 'expected a .home__lead-next-time rule').toBeTruthy();
+    expect(captionRule.declarations).toMatch(/font-size:\s*var\(--app-size-label\)/);
+    expect(captionRule.declarations).toMatch(/color:\s*var\(--app-text-secondary\)/);
+    expect(nextTimeRule.declarations).not.toMatch(/font-family/);
+  });
 });
 
 describe('home.css is wired in (main.jsx, 260917-h83 precedent)', () => {

@@ -250,6 +250,50 @@ describe('HomeLead', () => {
   });
 });
 
+// The lead block as the board draws it (gap 5): bordered, rodded, a
+// captioned Next time column, and its own actions.
+describe('HomeLead — the board\'s block (gap 5)', () => {
+  it('renders the destination rod, the same class the rows use', () => {
+    const markup = renderLead(makeEntry());
+    expect(markup).toContain('home__rail');
+  });
+
+  it('renders the place, name and meta line inside one identity element', () => {
+    const markup = renderLead(makeEntry());
+    expect(markup).toMatch(/<div class="home__lead-identity">[\s\S]*Notebook[\s\S]*Olive oil[\s\S]*<\/div>/);
+  });
+
+  it('renders a "Next time" caption and the note together, inside one column element, only when a note exists', () => {
+    const entry = makeEntry({
+      batches: [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01', nextTimeNote: 'Taste again in a week.' } })],
+    });
+    const markup = renderLead(entry);
+    expect(markup).toMatch(/<div class="home__lead-next">[\s\S]*Next time[\s\S]*Taste again in a week\.[\s\S]*<\/div>/);
+  });
+
+  it('renders no caption and no Next time column when the newest batch carries no note', () => {
+    const markup = renderLead(makeEntry());
+    expect(markup).not.toContain('home__lead-next');
+    expect(markup).not.toContain('Next time');
+  });
+
+  it('gives a not-yet-churned lead the batch action alone', () => {
+    const markup = renderLead(makeEntry());
+    expect(markup).toContain('Record a batch');
+    expect(markup).not.toContain('home__action--secondary');
+  });
+
+  it('gives an awaiting-tasting lead the filled tasting action with Continue developing beside it', () => {
+    const entry = makeEntry({
+      standing: 'awaiting-tasting',
+      batches: [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })],
+    });
+    const markup = renderLead(entry);
+    expect(markup).toContain('Record a tasting');
+    expect(markup).toContain('Continue developing');
+  });
+});
+
 // HomeBody (03.4-04 Task 3, D-08, D-06, D-12): the empty shelf when the
 // store holds no recipes, or the lead block and the rows otherwise.
 function renderBody(versions, batches = []) {

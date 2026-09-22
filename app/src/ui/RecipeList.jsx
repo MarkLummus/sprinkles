@@ -39,17 +39,46 @@ export function RecipeList() {
 
   if (versions === null) return null;
 
-  const work = activeWork(versions, batches);
-
   return (
     <div className="list-page">
       <div className="home">
         <h1 className="home__title">Pick up where you left off</h1>
-        <HomeLead entry={work[0] ?? null} />
-        <h2 className="home__section">Recipes</h2>
-        <RecipeRows versions={versions} batches={batches} />
+        <HomeBody versions={versions} batches={batches} />
       </div>
     </div>
+  );
+}
+
+// The body below the title: the empty shelf (D-08) when the store holds
+// no recipes, or the lead block and the rows (D-06, D-12) otherwise. A
+// separate presentational component, over plain versions/batches props,
+// so it is testable without driving RecipeList's own fetch effect — the
+// same convention HomeLead and RecipeRows already establish.
+export function HomeBody({ versions, batches }) {
+  if (versions.length === 0) {
+    return (
+      <div className="home__empty">
+        <p>Nothing is in progress right now.</p>
+        <p>
+          <Link to="/recipe-book" className="home__empty-lead">
+            Recipe book
+          </Link>{' '}
+          and{' '}
+          <Link to="/idea-log" className="home__empty-lead">
+            Idea log
+          </Link>{' '}
+          are ready when you are.
+        </p>
+      </div>
+    );
+  }
+  const work = activeWork(versions, batches);
+  return (
+    <>
+      <HomeLead entry={work[0] ?? null} />
+      <h2 className="home__section">Recipes</h2>
+      <RecipeRows versions={versions} batches={batches} />
+    </>
   );
 }
 

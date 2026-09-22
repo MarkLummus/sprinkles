@@ -43,6 +43,30 @@ body:has(.home) {
   letter-spacing: -0.02em;
 }
 
+/* The empty shelf (D-08): no lead block, no list, no heading — one
+   sentence, then Recipe book and Idea log lead, each in its own text
+   companion. Two links share one class, told apart by their order in
+   the one sentence that holds both. */
+.home__empty {
+  margin-top: var(--gap-m);
+}
+
+.home__empty p {
+  margin: 0 0 var(--gap-s);
+}
+
+.home__empty-lead {
+  font-weight: 700;
+}
+
+.home__empty-lead:first-of-type {
+  color: var(--app-recipe-book-text);
+}
+
+.home__empty-lead:last-of-type {
+  color: var(--app-idea-log-text);
+}
+
 /* The lead block (D-06, D-12, D-18): the recipe the maker touched last,
    larger than a row, above the list. */
 .home__lead {
@@ -238,11 +262,28 @@ body:has(.home) {
 
 /* Below the 760px step-down (sketch-findings-sprinkles,
    references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
-   the Responsive Ladder"): the row is free to wrap onto further lines so
-   nothing overflows at 393px. One top-level @media block, nothing
-   deeper — css-source.js parses exactly one level of nesting. */
+   the Responsive Ladder"): the row stacks, the rail sits beside the
+   place and the name rather than spanning three rows of its own column,
+   and the actions wrap onto their own line at full width — every
+   action's own --touch-min floor already holds at every width. The one
+   top-level media block this file carries — css-source.js parses
+   exactly one level of nesting. */
 @media (max-width: 759.98px) {
   .home__row {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'rail place'
+      'rail name'
+      'meta meta'
+      'actions actions';
     padding: var(--gap-s) 0;
+  }
+
+  .home__actions {
+    width: 100%;
+  }
+
+  .home__action {
+    flex: 1 1 0;
   }
 }

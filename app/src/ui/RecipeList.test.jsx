@@ -16,7 +16,7 @@ import { describe, it, expect, vi } from 'vitest';
 vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { RecipeRows, HomeLead } from './RecipeList.jsx';
+import { RecipeRows, HomeLead, HomeBody } from './RecipeList.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 function makeVersion(overrides = {}) {
@@ -211,5 +211,33 @@ describe('HomeLead', () => {
     expect(markup).toContain('app-hand');
     expect(markup).toContain('&lt;script&gt;');
     expect(markup).not.toContain('<script>');
+  });
+});
+
+// HomeBody (03.4-04 Task 3, D-08, D-06, D-12): the empty shelf when the
+// store holds no recipes, or the lead block and the rows otherwise.
+function renderBody(versions, batches = []) {
+  return renderToStaticMarkup(
+    <MemoryRouter>
+      <HomeBody versions={versions} batches={batches} />
+    </MemoryRouter>,
+  );
+}
+
+describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
+  it('renders the sentence and the two leading links, and no row, for an empty store', () => {
+    const markup = renderBody([]);
+    expect(markup).toContain('Nothing is in progress');
+    expect(markup).toContain('href="/recipe-book"');
+    expect(markup).toContain('href="/idea-log"');
+    expect(markup).not.toContain('<li');
+    expect(markup).not.toContain('home__lead');
+  });
+
+  it('renders a lead block and a list of one for a single recipe, not the empty state (D-06, D-12)', () => {
+    const markup = renderBody([makeVersion()]);
+    expect(markup).not.toContain('Nothing is in progress');
+    expect(markup).toContain('home__lead');
+    expect(markup.match(/<li /g)).toHaveLength(1);
   });
 });

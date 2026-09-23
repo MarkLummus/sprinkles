@@ -401,7 +401,7 @@ Plans:
 **Goal:** The approved design layer of 2026-09-21 lands in code: tokens.css carries the App palette and the Sheet tokens under the `sheet-` prefix (contract suites included), the five `app-*-text` companions, and the hand (Caveat, with forced-colours and print fallback); then Home is reworked per route.md "Active work first" using the App marks grammar in DESIGN.md.
 **Requirements**: none mapped — a design-delivery phase governed by CONTEXT.md's D-01..D-20; UX1-01 and UX1-03 apply as build constraints
 **Depends on:** Phase 03.3.1.1
-**Plans:** 15/15 plans executed (three gap-closure plans added 2026-09-22 after verification found six failed truths; five more added 2026-09-22 after UAT round two diagnosed eight gaps; one more added 2026-09-22 after UAT round three falsified G-03.4-4's premise; one more added 2026-09-22 after UAT round four found Home's own links unreachable by Tab)
+**Plans:** 15/15 plans complete
 
 Plans:
 **Wave 1**

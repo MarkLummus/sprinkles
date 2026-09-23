@@ -1,6 +1,6 @@
 ---
 created: 2026-09-23T01:30:00.000Z
-title: Build the Recipe book print format (one-sided sheet for making a finished recipe)
+title: Build the Recipe book print format (one page, the recipe only, for making a finished recipe)
 area: ui
 severity: minor
 files:
@@ -11,7 +11,7 @@ files:
 
 Mark wants two print formats because their uses differ (2026-09-23): the Notebook format
 (the bench sheet, Phase 4) and a Recipe book format for making a finished recipe. Phase 4
-builds only the Notebook format (04-CONTEXT D-22).
+builds only the Notebook format (04-CONTEXT D-22). The Recipe book format carries no batch or tasting log (Mark, 2026-09-23).
 
 ## Design
 

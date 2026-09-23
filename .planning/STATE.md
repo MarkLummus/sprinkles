@@ -20,10 +20,10 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-10)
+See: .planning/PROJECT.md (updated 2026-09-22)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.4 — the-design-layer-in-code-app-palette-sheet-prefixed-tokens-t
+**Current focus:** Phase 4 — Prepare the next version for making
 
 ## Current Position
 
@@ -32,7 +32,7 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-09-22 — Phase 03.4 complete, transitioned to Phase 4
 
-Progress: [█████████░] 89% (3/4 phases; 27/27 plans in Phase 3 line; Phase 03.3.1 adds 6 more, all executed)
+Progress: [█████████░] 89% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
 ## Performance Metrics
 
@@ -166,6 +166,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03]: [Phase 3, Plan 11] Ingredient-table cells made border-box with a new --table-cell-pad-x token (6px, half the old 12px); tokens.css derivation rewritten to add cell padding to each declared width instead of subtracting it from the remainder; --col-data and --col-remove tokens added and --col-ingredient retired in favor of width:auto on the name column (D-UAT-6, closes G-03-11).
 - Phase 3 UAT (Mark, 2026-09-07/08): D-UAT-1/2 writing a tasting is a pen and every opener, strip link, batch link and lineage link disables with its reason in words, no dialog; D-UAT-3 the orphaned-row rule stays and a removed step names in words which rows another step still covers; D-UAT-4/5 `n` is immutable identity, live steps renumber, a removed step's number is empty in the pen and struck in show-changes; D-UAT-6 padding-inclusive column tokens, Data and Remove sized, name column absorbs and may wrap below ~1140px. As made column shown only with a batch in view; saved children naming a removed step are remapped on read.
 - [Phase 03]: [Phase 3, Plan 12] The pen suppresses a removed step's margin number entirely (D-UAT-5); show-changes marks it struck via a new .method-step__n--struck rule reading --rule-strike (D-UAT-4). The step selector's option and the orphaned-row flag both drop a removed step's number outright, naming it by lead-in alone — closing G-03-14's collision between a removed step's number and the live step that inherited its position.
+- [03.4, 2026-09-22]: Two contexts (Sheet, App) with prefixed tokens; the hand is Caveat in pen blue for observations only; Home reads active work first; device UAT is served from the production build.
+- [03.4, 2026-09-22]: Every app `<a>` carries tabindex 0 (WebKit TabsToLinks gate); Full Keyboard Access stays off on the iPad; the same rule for buttons, checkboxes and radios is deferred to a shared Button component (todo), so the recipe page's controls stay unreachable by Tab on iPadOS for now.
 - [Impeccable 2026-09-08] The three surface briefs (`route-recipe.md`, `route-recipe-version.md`, `route-recipe-batch.md`) were revised 2026-09-08 after the whole-page critique (25/40, `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md`) and confirmed by Mark 2026-09-08. Headline decisions: **the imprint** — a front-matter band beside the headnote that takes every control out of the printed spread (openers, version strip, lineage line and show-changes toggle, churned date, batch list, and each pen's save ceremony), with the pen's save/cancel pair repeated at the foot of the page; **the binder** — every control drawn in ink at hairline weight, no fill, no radius, no icon, a disabled control keeping its label and going from solid stroke to dashed with its reason in words, a pressed or current state as outline plus weight; **the pen keeps the page** — prose fields render as printed paragraphs with the hairline outline appearing only on focus, a step's purpose and aside appear on demand behind "add a purpose"/"add an aside", and the uses list reads as one line of names with a "change" control that opens the twelve checkboxes for that step alone; **native date inputs** kept for their validation and keyboard entry with the calendar icon hidden, the browser's segment highlight a named exception to the four-colour system; **Escape** closes only an untouched pen, returning focus to its opener, and does nothing once the draft holds ink, so Cancel is the one exit.
 - [Impeccable 2026-09-08] `.claude/CLAUDE.md` gains an "Impeccable and GSD in sync" constraint: Impeccable evaluates and decides (writing `.impeccable/`, `DESIGN.md`, `PRODUCT.md`), every edit under the app workspace goes through a GSD command, and Impeccable's refine, enhance and fix commands describe work for `/gsd-quick`, `/gsd-quick-batch` or a phase plan rather than editing the workspace directly.
 - [Phase 03.1]: [Phase 03.1, Plan 01] Versions.jsx and PenFoot.jsx built as the imprint's tracer: Develop opens the plan's pen in Versions (replacing the openers), the ceremony's Cancel/Save pair repeats at a new foot band under a hairline rule, and Headnote.jsx shrinks to the recipe alone. Existing markup moved into Versions kept its pre-existing class names per the plan's own recorded decision; PenFoot gates strictly on openPen === 'plan' (not !== null) since this plan gives it no batch-pen handlers or penDraft — a literal !== null gate would crash on Save during a batch pen.
@@ -212,6 +214,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 ### Blockers/Concerns
 
+- [Phase 03.4 → 4, UX-01] On iPadOS Safari with Full Keyboard Access off, Tab skips every button, checkbox and radio without an explicit tabindex (38 sites, 11 in the recipe page's reading view); the recipe page is unreachable by keyboard past the running head. Deferred by Mark to a shared Button component: `.planning/todos/pending/2026-09-22-shared-button-component-carries-tabindex-for-webkit.md`, debug `.planning/debug/ipad-recipe-page-tab-skips-controls.md`. Phase 4 verifies UX-01 end to end, so it must land or be re-ruled there.
+- [Phase 03.4 → 4] Code review WR-01/WR-02 (03.4-REVIEW.md, carried): Shell.jsx's tab-row comment claims focus returns to the summary in both cases but the route-change effect only closes More; shell.css has no rule suppressing summary::-webkit-details-marker on the More disclosure.
 - [260912-ti1 carry] The recipe page still overflows horizontally at 393px (scrollWidth 608 vs 393) — pre-existing, proven unchanged when the task's media block was removed live; the below-760px page arrangement (the ladder) that resolves it belongs to the page-shell finding (`.claude/skills/sketch-findings-sprinkles/references/page-shell-front-matter.md`). Recorded in `.planning/quick/260912-ti1-apply-cross-cutting-sketch-findings-to-t/deferred-items.md`. Task 3's browser measurements (44px targets, 40x44 stops, 6px gaps, compact 768px) are recorded in the task SUMMARY for end-of-phase UAT confirmation.
 - Impeccable initialized 2026-09-05: `PRODUCT.md` written; surface brief for the recipe surface and bench sheet confirmed by Mark (`.impeccable/surfaces/`, direction "The Formulation Cookbook" expanding the Cupping Form, seed d1a5d80a, code-led). Phase 1, 3, and 4 prerequisites met. `DESIGN.md` and `.impeccable/design.json` written 2026-09-06 by `/impeccable document` from the Phase 1 build (commit 17bd91f); North Star "The Formulation Cookbook". The batch-capture brief for Phase 2 is confirmed: `.impeccable/surfaces/route-recipe-batch.md`, shaped and confirmed by Mark 2026-09-06 and committed in e23d798, so the Phase 2 prerequisite is met. The Phase 3 brief is confirmed: `.impeccable/surfaces/route-recipe-version.md` ("Developing the next version"), shaped and confirmed by Mark 2026-09-07, so the Phase 3 prerequisite is met.
 - [Phase 3 → 4] Security: T-03-10 (medium, non-blocking) is open in `03-SECURITY.md`. The pen draft's seeding path at `app/src/ui/RecipePage.jsx:719` (`rows[row.id] = {...}` in `handleStartDeveloping`) is a bare bracket write against a stored row id; an imported `{"id": "__proto__"}` passes the transfer validator and corrupts the local draft object (not `Object.prototype`). Close with `Object.fromEntries` or re-disposition to accept with the local-only rationale. T-02-32 is closed by T-03-06.
@@ -302,6 +306,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-22T19:29:21.115Z
+Last session: 2026-09-23T00:10:31Z
 Stopped at: Phase 03.4 complete, ready to plan Phase 4
 Resume file: None

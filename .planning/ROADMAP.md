@@ -20,6 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 03.2: The portion and the reset** (INSERTED) - Portions become the authored amount and the total derives; `step`/`splitStep` retire; the store resets to the new shape and the seed is rewritten, rather than migrating (completed 2026-09-10)
 - [x] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only (completed 2026-09-10)
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
+- [ ] **Phase 5: Version evolution** - A batch records reordered and new Method steps, and a version can evolve its step structure
 
 ## Phase Details
 
@@ -458,9 +459,9 @@ Plans:
 
 - [x] 03.4-15-PLAN.md — Every link the app renders keyboard-focusable on WebKit: an explicit tabindex on the seventeen Link sites outside the shell, pinned on rendered markup per component (source text for the two the node harness cannot render) and recorded as a project convention; the UAT tap moved beside the wordmark, and the keyboard lock-up (S2) given an on-device procedure, not code (G-03.4-r4-1)
 
-### Phase 03.4.1: Separate the recipe from the sheet (INSERTED)
+### Phase 03.5: Separate the recipe from the sheet (INSERTED)
 
-**Goal:** The recipe route shows the recipe record apart from the version's Recipe Sheet, visually and in the store, as D17 and DESIGN.md's Context Boundary Rule define them. Recipe record: Recipe name, Recipe description, History, provenance, version selection, batches and tastings. Recipe Sheet: Sheet title, Sheet description, ingredients, method, notes. A recipe's name can then change without rewriting a saved Sheet, and the Sheet can be read on its own, with no batch, tasting or as-made values in it, which is what Phase 4 prints.
+**Goal:** The Notebook recipe route shows the recipe record apart from the version's Recipe Sheet, visually, in the store and in its routes, as D17, DESIGN.md's Context Boundary Rule and `.impeccable/surfaces/route-recipe.md` § "03.5 revision" define them. Recipe record (App context): Recipe name, Recipe description with rename, version identity and selection, History, provenance; the batch in view's batch and tasting log is App context too. Recipe Sheet in its Notebook form: Sheet title, Sheet description, ingredients, Method, Notes, and the batch in view's as-made grams and Method changes in pen blue. A recipe's name can change without rewriting a saved Sheet. Routes move to /notebook/:recipeId/:versionId[/batch/:batchId] with redirects from /recipe/…; /recipe-book/:recipeId is reserved, not built. The seed grows to several recipes, with olive oil and Mexican Chocolate v1–v4 (transcribed from Mark's binder, reviewed by Mark) in active development. The layout is chosen on a Claude Design canvas, desktop first, then 1366, 1024 and 393.
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
@@ -468,14 +469,14 @@ Plans:
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 03.4.1 to break down)
+- [ ] TBD (run /gsd-plan-phase 03.5 to break down)
 
 ### Phase 4: Prepare the next version for making
 
-**Status:** Paused 2026-09-23 until Phase 03.4.1 separates the recipe from the sheet. Context gathered (`04-CONTEXT.md`); its print decisions carry over, but the canvas starting point must be re-captured from the separated Sheet.
+**Status:** Paused 2026-09-23 until Phase 03.5 separates the recipe from the sheet. Context gathered (`04-CONTEXT.md`); its print decisions carry over, but the canvas starting point must be re-captured from the separated Sheet.
 **Goal**: Maker can print the new version as a bench sheet, carry it to the kitchen, and match the printed sheet back to its version — with the whole develop loop operable by keyboard and recoverable
 **Mode:** mvp
-**Depends on**: Phase 3, Phase 03.4.1
+**Depends on**: Phase 3, Phase 03.5
 **Requirements**: PRINT-01, PRINT-02, PRINT-03, PRINT-04, PRINT-05, UX1-01, UX1-02, UX1-03
 **Success Criteria** (what must be TRUE):
 
@@ -489,6 +490,21 @@ Plans:
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the bench sheet (print) surface
 **Phase notes**: No QR codes — a human-readable short code only (PRINT-04), and no print-log "did you churn it?" nudge; both prior designs depend on the open storage decision. UX1-01–UX1-03 are verified end-to-end here because this is the first point where the whole loop exists, but they are build constraints in every phase: each phase's plans apply keyboard operation, visible labels and focus, AA contrast, non-colour-only signalling, and edit recovery to the surfaces it creates.
+
+### Phase 5: Version evolution
+
+**Goal:** A batch records reordered steps and new steps in the Method, and a version can evolve its step structure — adding, removing and reordering steps — so version development is not limited to amounts and step text.
+**Why added:** Deferred from Phase 03.5 by Mark, 2026-09-23: both are needed for version evolution, and are scoped as their own phase rather than folded into the record/Sheet separation.
+**Requirements**: TBD
+**Depends on:** Phase 4
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 5 to break down)
+
+---
+*Roadmap created: 2026-09-05*
 
 ## Milestone Constraints
 
@@ -504,7 +520,7 @@ These govern every phase and are not re-litigated during planning:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 3.4 → 3.4.1 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 3.4 → 3.5 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -517,6 +533,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 7/7 | Complete    | 2026-09-13 |
 | 3.3.1.1. Record pen conformance polish | 6/6 | Complete    | 2026-09-16 |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
+| 5. Version evolution | 0/TBD | Not started | - |
 
 ## Coverage
 
@@ -531,6 +548,3 @@ All 23 v1 requirements are mapped to exactly one phase.
 | **Total** | | **23** |
 
 No orphaned requirements. No requirement appears in two phases.
-
----
-*Roadmap created: 2026-09-05*

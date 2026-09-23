@@ -1,13 +1,13 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 03.4.1
+current_phase: 03.5
 current_phase_name: Separate the recipe from the sheet
 status: Ready to discuss
 stopped_at: Phase 4 context gathered
-last_updated: "2026-09-23T11:37:57.086Z"
+last_updated: "2026-09-23T13:14:35.208Z"
 last_activity: 2026-09-22
 last_activity_desc: Phase 03.4 complete, transitioned to Phase 4
-state_head: 2d158df11681e76cf19cc6e77f96125aa8674b72
+state_head: 29330edf17b6e1a047eac7b8e95056822b580e93
 progress:
   total_phases: 11
   completed_phases: 8
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 
 ## Current Position
 
-Phase: 03.4.1 — Separate the recipe from the sheet (inserted; Phase 4 paused)
+Phase: 03.5 — Separate the recipe from the sheet (inserted; Phase 4 paused)
 Plan: Not started
 Status: Ready to discuss
 Last activity: 2026-09-22 — Phase 03.4 complete, transitioned to Phase 4
@@ -296,6 +296,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 03.3.1.1 inserted after Phase 03.3.1: Record pen conformance polish: close the untriaged UI gaps from 03.3.1's UAT against sketch 007 (layout widths, control styling, caption casing/placement, missing captions, focus order) (URGENT)
 - Phase 03.4 inserted after Phase 3: The design layer in code: App palette, Sheet-prefixed tokens, the hand, and Home (handoff Task 11 from the 2026-09-21 design session) (URGENT)
 - Phase 03.4.1 inserted after Phase 03.4: Separate the recipe from the sheet: split the recipe record from the version's Recipe Sheet on the route and in the store (D17, Context Boundary Rule); Phase 4 printing paused until it lands (URGENT)
+- Phase 03.4.1 edited: edited fields: goal (Notebook form, App-context batch record, /notebook routes, realistic seed, canvas ladder)
+- Phase 5 added: Version evolution — reordered and new Method steps in a batch, and step-structure evolution in a version (deferred from 03.5 by Mark, 2026-09-23)
+- Phase 03.4.1 renumbered to 03.5 (Mark, 2026-09-23); title, goal and position unchanged
 
 ## Deferred Items
 

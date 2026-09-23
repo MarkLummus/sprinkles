@@ -15,6 +15,18 @@ Product truth: `PRODUCT.md` and `product-requirements/03-decision-register.md`. 
 
 D17 and `product-requirements/05-domain-and-language.md` govern terminology over older wording below. **Recipe Sheet** and **Sheet** are synonymous, in reading, editing, and printing, including multiple printed pages. Recipe name and Recipe description belong to the enduring recipe; Sheet title and Sheet description belong to the saved version. Version name and Why identify and explain the revision. **Adapt** starts a distinct recipe from a specific version; **Next version** continues the same recipe; unsaved work is a Draft or Version draft. Recipe-level metadata and History are recipe context, outside the paper Sheet. This amendment records approved meaning; field separation and responsive layout implementation still require shaping and delivery planning.
 
+## Assets and processes amendment — 2026-09-23
+
+`route-recipe.md` § "03.5 revision" (Phase 03.5, confirmed by Mark 2026-09-23) and D18 (assets and processes, `product-requirements/03-decision-register.md`) govern over this brief where they differ. What changes:
+
+- **Recipe identity and the Sheet separate.** Recipe name and Recipe description move to a new recipe record, edited by rename in App context, which forks no version and rewrites no saved Sheet. The version owns **Sheet title** and **Sheet description**, which replace the "headnote" this brief names; the pen edits them with the rest of the Sheet, and Next version copies them from the parent. § "The draft replaces the saved front matter" (2026-09-17) reads accordingly: what the pen holds fixed is the Recipe name, and it lives outside the Sheet.
+- **Where the ceremony sits.** Version identity, Why, From batch, History and Next version are App context, outside the Sheet; the ceremony's placement against the Sheet is drawn on the 03.5 canvas. The pen's grammar on the plan — strike and beside, tracked changes, show changes — stands unchanged inside the Sheet.
+- **The record beside the pen.** The batch's as-made grams and Method changes sit on the Sheet beside the plan the pen edits; the rest of the batch record is App context (`route-recipe-batch.md` amendment, same date).
+- **Routes.** Routes: `/recipe/:id` and `/recipe/:id/batch/:batchId` become `/notebook/:recipeId/:versionId` and `/notebook/:recipeId/:versionId/batch/:batchId`, with the old paths redirecting; `/recipe-book/:recipeId` is reserved, not built; print sits at `…/print` under each, replacing `/recipe/:id/sheet`.
+- **Deferred.** Adding, removing and reordering steps as version evolution is Phase 5.
+
+Everything else in this brief stands.
+
 ## 1. Job and audience
 
 Mark, at the desktop, weeks after the 2 Aug churn, with the batch record open in the margin: 383 beside 370.4, 45 beside 40, lecithin at 0 and step 1 struck, drawn at −6 °C, "soft, not greasy", oil character 4.5, bitterness 5, sweetness 4, and the headnote's own verdict that 50 g oil "is the low anchor, not the oil-forward target". He is deciding what to change, and the binder says what happens next if the page does not help: the reason for a change is almost never on the page that makes the change, and the one time the app gave him a field he wrote a properly formed delta with the previous value in it. The job is to turn that decision into a saved next version with its reason on the page that makes it, without touching the churned version or its record.

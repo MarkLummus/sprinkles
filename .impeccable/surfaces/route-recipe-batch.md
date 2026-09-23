@@ -11,6 +11,17 @@ related_targets: ["route:/recipe","route:/print/recipe-sheet"]
 
 Product truth: `PRODUCT.md` and `product-requirements/03-decision-register.md`. Requirement IDs: `.planning/REQUIREMENTS.md`. Primary evidence: the five photographs of the 2 Aug 2026 sheet (`~/Downloads/IMG_2485–2489.HEIC`) and the churn-log audit (`Ice Cream Log Pages/sprinkles-churn-log-binder-audit.md`).
 
+## Assets and processes amendment — 2026-09-23
+
+`route-recipe.md` § "03.5 revision" (Phase 03.5, confirmed by Mark 2026-09-23) and D18 (assets and processes, `product-requirements/03-decision-register.md`) govern over this brief where they differ. A batch and its tastings are a **process**; the Sheet is an **asset**. What changes:
+
+- **Where the record sits.** Only the batch in view's as-made grams (per portion) and its Method changes — strikes, skips, edited step text — stay on the Sheet, in pen blue against the black plan. Everything else in the record — the churn date, measured values, At the machine, How did it turn out?, the tasting battery, problems, melt, Next time, and the Batches (n) chooser — leaves the Sheet and is **App context** on screen. The ceremony no longer lives in the headnote's "churned ___" slot or the Sheet's front matter.
+- **What restyles.** The Two-Ink and Bookcloth rules and the binder's ink-hairline controls govern the record only where it sits on the Sheet. The battery's grammar — joined stops, segmented controls, defect toggles, Clear, the two save ceremonies, blank-stays-blank, no defaults, picking is final — stands as interaction; its visual treatment moves to App context and is drawn on the 03.5 canvas, not invented by a builder. The maker's own words stay in the hand (pen-blue Caveat, DESIGN.md). The No-Verdict Rule stays binding everywhere.
+- **Routes.** Routes: `/recipe/:id` and `/recipe/:id/batch/:batchId` become `/notebook/:recipeId/:versionId` and `/notebook/:recipeId/:versionId/batch/:batchId`, with the old paths redirecting; `/recipe-book/:recipeId` is reserved, not built; print sits at `…/print` under each, replacing `/recipe/:id/sheet`.
+- **Deferred.** Reordered and new Method steps in a batch go to Phase 5, Version evolution. The highlighter is undecided (`route.md` amendment, same date).
+
+Everything else in this brief stands, including what the record holds and how it saves.
+
 ## 1. Job and audience
 
 Mark, at the desktop, days after churning, with the annotated sheet in hand. The ice cream is in the freezer and the sheet carries ink in three places: written-over grams on the formula page, a struck step and changed values on the method pages, and the batch log on the last page. He is transcribing, not composing. The binder's finding sets the stakes: 14 of 29 churned batches left no result, and silence there means nothing in either direction. The job is to get the record in while it is still true, in about the time it took to write it.

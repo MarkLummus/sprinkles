@@ -21,6 +21,10 @@ D17 retires “Sprinkles Jar” as an active name. The colorful area is recipe c
 
 Reference: the active-work responsive concept board, `exec-793bc09c-6ac8-4019-858b-788e03371e3f.png`, generated during this discussion. Its photographs, handwriting, slogans, exact colors, and geometry remain exploratory. A maker with no active work needs an intentional empty state; how active work is chosen or ordered remains open.
 
+## Assets and processes amendment — 2026-09-23
+
+`route-recipe.md` § "03.5 revision" (Phase 03.5, confirmed by Mark 2026-09-23) and D18 (assets and processes, `product-requirements/03-decision-register.md`) govern over § 1 below where they differ. On screen, paper holds inside **one** frame on a recipe route: the Recipe Sheet, an asset. The batch and tasting log is a process record and is App context on screen; the Sheet in its Notebook form carries only the batch in view's as-made grams and Method changes in pen blue. In print, the Sheet and the blank batch log stay paper. The Sheet has two forms, Notebook and Recipe Book, and the destination route picks the form. The **highlighter** § 1 reserves for the paper batch log is undecided again: whether it marks the printed log, the Sheet, or nothing is settled when that surface is next drawn (Mark, 2026-09-23). Routes: `/recipe/:id` and `/recipe/:id/batch/:batchId` become `/notebook/:recipeId/:versionId` and `/notebook/:recipeId/:versionId/batch/:batchId`, with the old paths redirecting; `/recipe-book/:recipeId` is reserved, not built; print sits at `…/print` under each, replacing `/recipe/:id/sheet`. Everything else in this brief stands.
+
 ## 1. Where this world applies
 
 Mark, 2026-09-18: paper stays inside three frames and nowhere else.

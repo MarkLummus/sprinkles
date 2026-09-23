@@ -37,6 +37,8 @@ Mark approved the following terms, including **Adapt** as the action and **Sheet
 | Kitchen; Equipment; Kitchen setup | Destination, its tools, and a named combination only if saved combinations are supported. |
 | Ask an expert; AI-assisted; Consultation | Contextual AI capability, visible disclosure, and saved exchange. “Council of experts” remains internal. |
 | Next time; Suggestion; Experiment plan | Maker's note; AI advice; intentionally chosen change and what to observe. None implies execution or a saved version. |
+| Asset (internal term) | What a maker keeps and builds from: a Recipe and its versions (Sheets), Bases, Ingredients, Kitchen, Ideas. Design and data framing only; not an interface label (D18). |
+| Process (internal term) | What happens to or with assets — making (Batch, Tasting), Import, Adapt, Next version, Develop in Notebook, Add to Recipe Book, Ask an expert — leaving a dated record of the exact asset state used. Not an interface label (D18). |
 
 The three working spaces remain connected. Recording from the Recipe book does not require development mode or create a separate “Book make log.” Batches preserve the version, measurement basis, ingredient data, and relevant equipment context actually used.
 

@@ -1,6 +1,6 @@
 # Sprinkles — Product brief
 
-Status: product brief aligned with accepted decisions D01–D17. Open details are identified below; detailed design and implementation plans require separate review.
+Status: product brief aligned with accepted decisions D01–D18. Open details are identified below; detailed design and implementation plans require separate review.
 
 ## What is Sprinkles?
 

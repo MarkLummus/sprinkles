@@ -1,6 +1,6 @@
 # Jobs, use cases, and proposed requirements
 
-Status: **draft detailed specifications supporting accepted decisions D01–D17**. The accepted direction is not being reopened; individual criteria, design details, and delivery scope still require review. IDs remain stable on adoption. Dependencies identify logical prerequisites, not a prescribed stack.
+Status: **draft detailed specifications supporting accepted decisions D01–D18**. The accepted direction is not being reopened; individual criteria, design details, and delivery scope still require review. IDs remain stable on adoption. Dependencies identify logical prerequisites, not a prescribed stack.
 
 Accepted D02 separates external-recipe troubleshooting for discovery from customer-facing product scope. Historical Reddit cases below are evaluation inputs, not requirements to build an intake flow for other people's failed batches. Ordinary after-the-fact logging supports accepted D04/D08; its detailed interaction remains to be designed. Accepted D16 leaves storage and synchronization architecture open; persistence requirements do not select a storage provider or architecture.
 

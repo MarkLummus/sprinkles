@@ -6,7 +6,7 @@ D17 (2026-09-19) settles the connected workspaces and vocabulary in `05-domain-a
 
 ## Shared adoption sequence
 
-1. Read the product brief and accepted D01–D17 decisions. Confirm only unresolved details relevant to the task; do not reopen accepted direction without a reason.
+1. Read the product brief and accepted D01–D18 decisions. Confirm only unresolved details relevant to the task; do not reopen accepted direction without a reason.
 2. Inspect current code/assets and identify implemented versus designed-only behavior. Do not reuse historical gap claims as a fresh audit.
 3. Confirm exact GSD distribution/version and unresolved platform, stack, and deployment constraints. Use accepted D14's recipe-development outcome as the first milestone; develop its detailed plan through the frameworks. No installation is authorized by this packet.
 4. Seed framework-native context from approved decisions and selected requirements; preserve IDs and source links.
@@ -52,7 +52,7 @@ The product requirements packet retains rationale. GSD becomes the delivery trac
 
 ### Ready-to-use GSD kickoff prompt
 
-> Read product-requirements/README.md and follow its status and reading-boundary rules. Use only the active primary documents by default; consult research references for a specific need and do not load archived context. D01–D17 are accepted. D14 sets the first milestone's outcome: develop and prepare the next olive oil recipe, using the recipe printout, first-batch prep notes, and review/print experience. Other structured recipes establish format references; the olive oil recipe is not already structured. Supporting code/prototypes are user-reported, and review/print implementation code is unconfirmed. Use these as context for planning with Mark, not a prescribed implementation. Confirm your GSD distribution/version and inspect supplied assets through your workflow. Preserve requirement IDs, approved product boundaries, and open technical choices. Do not create a competing product definition or treat every draft acceptance criterion as approved. Obtain the relevant scope/design approvals before execution.
+> Read product-requirements/README.md and follow its status and reading-boundary rules. Use only the active primary documents by default; consult research references for a specific need and do not load archived context. D01–D18 are accepted. D14 sets the first milestone's outcome: develop and prepare the next olive oil recipe, using the recipe printout, first-batch prep notes, and review/print experience. Other structured recipes establish format references; the olive oil recipe is not already structured. Supporting code/prototypes are user-reported, and review/print implementation code is unconfirmed. Use these as context for planning with Mark, not a prescribed implementation. Confirm your GSD distribution/version and inspect supplied assets through your workflow. Preserve requirement IDs, approved product boundaries, and open technical choices. Do not create a competing product definition or treat every draft acceptance criterion as approved. Obtain the relevant scope/design approvals before execution.
 
 ## Impeccable adapter
 

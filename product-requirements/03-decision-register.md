@@ -1,6 +1,6 @@
 # Decision register
 
-**D01–D17 are accepted.** D14 establishes the first product milestone's outcome, not its implementation plan. Acceptance does not mark implementation complete. Framework choice (GSD for delivery; Impeccable for design/branding) is user-confirmed, but exact GSD distribution is unresolved.
+**D01–D18 are accepted.** D14 establishes the first product milestone's outcome, not its implementation plan. Acceptance does not mark implementation complete. Framework choice (GSD for delivery; Impeccable for design/branding) is user-confirmed, but exact GSD distribution is unresolved.
 
 | ID | Accepted decision | Basis | Consequence / tradeoff |
 |---|---|---|---|
@@ -21,6 +21,7 @@
 | D15 — Accepted | Use a manual, reviewed import-and-advice pilot with follow-up when available | User proposal; EV01–EV05 | Evaluate usefulness before claiming automated effectiveness. No automatic posting or publication of source data. |
 | D16 — Accepted | Keep storage and synchronization architecture open | Mark's storage research and clarification | No commitment to local-only, local-first, cloud-based storage, or Google Drive sync. |
 | D17 — Accepted | Connected workspaces, gram-governed Notebook, original-unit imports, and approved product vocabulary | Mark's approval, 2026-09-19 | Preserve recipe/version/batch relationships; Adapt follows maker intent; Sheet and Recipe Sheet are synonymous; delivery scope remains separate. |
+| D18 — Accepted | Sprinkles distinguishes assets from processes | Mark's approval, 2026-09-23 | Assets are kept and reused; processes change them and leave a dated record citing the exact asset state used. The two stay distinguishable and are joined deliberately. Internal framing; not interface labels. |
 
 Research identifiers F01–F08 refer to the [research synthesis](research-reference/02-research-synthesis.md); EV/SYN identifiers refer to [evaluation scenarios](research-reference/06-evaluation-scenarios.md). Consult those only when reviewing the supporting evidence. References to original jobs or design todos record historical rationale, not instructions to load archived documents or override accepted decisions.
 
@@ -55,6 +56,31 @@ D17 below settles the connected workspaces, measurement domains, and vocabulary 
 When Mark approves a decision, record date, status, and any conditions here. Promote only the associated approved requirements to GSD scope. If implementation or design exposes a needed change, propose it here before altering the capability contract. A dated approval record—not framework-generated completion—is the authority.
 
 ## Completed Decisions
+
+### D18 — Assets and processes
+
+**Status:** Accepted
+
+**Date:** 2026-09-23
+
+**Owner:** Mark
+
+**Scope:** Product model and design framing; no interface labels, no milestone expansion or implementation claim
+
+**Decision:** Sprinkles holds two kinds of things. **Assets** are what a maker keeps, reads, and builds from: a Recipe and its versions (each presented as a Sheet), Bases, Ingredients, Kitchen equipment and setups, and Ideas. **Processes** are what happens to or with assets: making (a Batch and its Tastings), Import, Adapt, Next version, Develop in Notebook, Add to Recipe Book, and Ask an expert. A process happens at a time and leaves a **record**: the process, its date, and the exact asset state it used or produced (the Batch's version and coefficient snapshot, Adapted from, Why and From batch, the Source and Original quantity, the Conversion basis, the selected version, the Consultation).
+
+**Consequences:**
+
+1. Assets change only through a process. The exception is correcting an asset's own identity (renaming a Recipe, Save over on an unchurned version), which rewrites no record.
+2. A record is never rewritten by a later change to an asset; it keeps citing the state it used (D04, D09).
+3. Assets and processes stay distinguishable, but not necessarily separate. A process's evidence may be shown in the context of the asset it concerns when that aids understanding, and stays marked as the process's own. The batch in view's as-made grams and Method changes sit on the Sheet in pen blue against the black plan, while the rest of the batch record is App context. In print, a process can appear as blank space for the pen (DESIGN.md Context Boundary Rule).
+4. "Asset" and "process" are design and data framing, not interface labels (D11). The maker sees the grammar instead: a dated record and a clear "made from" or "from".
+
+**Rationale:** Named by Mark while separating the recipe record from the Sheet (GSD Phase 03.5): the Sheet is a resource the maker keeps; a batch and its tastings are a process that happened. The same shape already governs D04's recipe/version/batch separation and D17's lineage terms, and extends to Import and Adapt.
+
+**Open questions:** Whether each process gets a first-class record type or some (Add to Recipe Book, Develop in Notebook) record only as fields on the asset they change; decided when each process is shaped. D16's storage question stays open.
+
+**Affected artifacts:** PRODUCT.md (Product Principle 7); domain guide; DESIGN.md Context Boundary Rule; recipe surface brief (`route-recipe.md` § "03.5 revision").
 
 ### D17 — Connected workspaces, measurement domains, and approved vocabulary
 

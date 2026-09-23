@@ -2,7 +2,7 @@
 
 <!-- impeccable:product-schema 1 -->
 
-Product authority is `product-requirements/` (accepted decisions D01–D17 in `03-decision-register.md`; read `README.md` first). This record carries the durable product truth Impeccable needs for design work and marks what is deliberately undecided. It does not restate the register and must not drift from it. Delivery status lives in `.planning/` (GSD).
+Product authority is `product-requirements/` (accepted decisions D01–D18 in `03-decision-register.md`; read `README.md` first). This record carries the durable product truth Impeccable needs for design work and marks what is deliberately undecided. It does not restate the register and must not drift from it. Delivery status lives in `.planning/` (GSD).
 
 ## Platform
 
@@ -132,3 +132,4 @@ Absent, and not to be fabricated: user interviews beyond Mark, testimonials, cus
 4. **Keep everyday use lightweight.** Making a familiar recipe or recording a good result is quick; ask for more only when it would materially improve advice.
 5. **Support judgment, not guarantees.** Balance and advice explain their reasoning and leave the maker in control.
 6. **Preserve connected work across intentions.** Capturing an idea, developing a recipe, and selecting a ready-to-make version must not discard or silently rewrite the lineage that connects them.
+7. **Tell assets from processes, and join them on purpose.** An asset (a recipe, its Sheet, an ingredient) is what a maker keeps; a process (making, importing, adapting, developing a version) is what happened to it (D18). Keep them distinguishable everywhere, and decide deliberately where to show them together. Bring a process's evidence into an asset's context when the evidence is about that asset and reading them together helps: the batch's as-made grams on the Sheet show what was actually weighed against what was planned. Even there, the evidence stays visibly the process's own (in pen, dated, citing its batch) and never becomes part of the asset.

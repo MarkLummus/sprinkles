@@ -17,11 +17,15 @@ Out, and named by the brief: QR codes, the print-log nudge, any mode picker, pub
 ## Implementation Decisions
 
 ### Design authority for the sheet (prerequisite to planning)
-- **Canvas:** the bench sheet is drawn on the "Bench sheet" page of Mark's Sprinkles canvas, https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq (five letter pages plus the route at 1280 and 390). Awaiting Mark's approval, then the D-02 snapshot.
+- **Canvas:** the bench sheet is drawn on the "Print formats" page of Mark's Sprinkles canvas, https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq (five letter pages plus the route at 1280 and 390). Awaiting Mark's approval, then the D-02 snapshot.
 - **D-01:** The bench sheet is drawn on a **Claude Design canvas** (Artifact type "Design"), not by `/gsd-sketch`. It is drawn and approved by Mark **before** `/gsd-plan-phase 4`.
 - **D-02:** Once approved, the canvas's HTML is **snapshotted into the repo as `.planning/sketches/010-bench-sheet/`**, and that snapshot is the acceptance target, read as a structural contract (elements, placement, states, text, CSS), as with sketches 007/008. Planner, checker, executors and UAT read the snapshot, never a prose paraphrase of it. — **Reversibility:** costly — every plan's acceptance criteria cite it.
 - **D-03:** The canvas takes its values from Mark's **"Sprinkles Design System"** artifact (https://claude.ai/artifact/M7LkrAkNQYA897PpKnjjzU). Before drawing, check it against `app/src/styles/tokens.css` and `DESIGN.md` (the 2026-09-21 approvals: Sheet/App contexts, `sheet-*`/`app-*` prefixes, the hand in Caveat) and flag any drift to Mark. The build still reads every value through `tokens.css`; the design system does not become a second token source.
 - **D-04:** The on-screen sheet route at phone width (393) is **decided by the canvas**: the Claude Design drawing must include a 393 view, and the build follows it.
+
+### Print formats (Mark, 2026-09-23)
+- **D-22:** Printing has **two formats** because their uses differ: the **Notebook format** (the bench sheet, for developing a recipe: ingredient lines per portion with tick boxes, as-made column and % of batch, the full method, the two-sided batch log) and the **Recipe book format** (one side, for making a finished recipe: whole amounts, lean method with targets, a simple made on / tasted on / how did it turn out / next time log). **Phase 4 builds the Notebook format only.** The Recipe book format is designed now on the canvas ("Print formats" page, `RecipeBookSheet.dc.html`) and built in a later phase. The sheet route must leave room for a second format without building a switcher (the brief's § 7 "modes" rule stands).
+- **D-22a:** Open for the later phase, not decided here: whether one version's two formats share one sheet code. D-08 derives the code from "printed content"; for two formats to match back to the same version, the derivation should read the version's recipe content, not the format's layout. Planning for Phase 4 should derive from content that both formats share, so the rule does not need to change later.
 
 ### Sheet wording and pagination
 - **D-05:** The version row's print control reads **"Print sheet"** (D17 "Sheet"; closes `route-recipe.md` § 7's open item).
@@ -122,6 +126,7 @@ Out, and named by the brief: QR codes, the print-log nudge, any mode picker, pub
 <deferred>
 ## Deferred Ideas
 
+- **Recipe book print format** (D-22) — designed on the canvas, built in a later phase; todo `2026-09-23-build-the-recipe-book-print-format.md`.
 - Plain-language glosses for PAC, POD and MSNF (D11) — wording for Impeccable, not code in this phase.
 
 ### Reviewed Todos (not folded)

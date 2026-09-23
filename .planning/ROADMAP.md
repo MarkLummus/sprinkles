@@ -458,11 +458,24 @@ Plans:
 
 - [x] 03.4-15-PLAN.md — Every link the app renders keyboard-focusable on WebKit: an explicit tabindex on the seventeen Link sites outside the shell, pinned on rendered markup per component (source text for the two the node harness cannot render) and recorded as a project convention; the UAT tap moved beside the wordmark, and the keyboard lock-up (S2) given an on-device procedure, not code (G-03.4-r4-1)
 
+### Phase 03.4.1: Separate the recipe from the sheet (INSERTED)
+
+**Goal:** The recipe route shows the recipe record apart from the version's Recipe Sheet, visually and in the store, as D17 and DESIGN.md's Context Boundary Rule define them. Recipe record: Recipe name, Recipe description, History, provenance, version selection, batches and tastings. Recipe Sheet: Sheet title, Sheet description, ingredients, method, notes. A recipe's name can then change without rewriting a saved Sheet, and the Sheet can be read on its own, with no batch, tasting or as-made values in it, which is what Phase 4 prints.
+**Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
+**Requirements**: TBD
+**Depends on:** Phase 03.4
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 03.4.1 to break down)
+
 ### Phase 4: Prepare the next version for making
 
+**Status:** Paused 2026-09-23 until Phase 03.4.1 separates the recipe from the sheet. Context gathered (`04-CONTEXT.md`); its print decisions carry over, but the canvas starting point must be re-captured from the separated Sheet.
 **Goal**: Maker can print the new version as a bench sheet, carry it to the kitchen, and match the printed sheet back to its version — with the whole develop loop operable by keyboard and recoverable
 **Mode:** mvp
-**Depends on**: Phase 3
+**Depends on**: Phase 3, Phase 03.4.1
 **Requirements**: PRINT-01, PRINT-02, PRINT-03, PRINT-04, PRINT-05, UX1-01, UX1-02, UX1-03
 **Success Criteria** (what must be TRUE):
 
@@ -491,7 +504,7 @@ These govern every phase and are not re-litigated during planning:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 4
+Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 3.4 → 3.4.1 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|

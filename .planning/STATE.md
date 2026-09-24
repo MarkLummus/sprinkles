@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: Ready to discuss
 stopped_at: Phase 4 context gathered
-last_updated: "2026-09-24T12:35:28.418Z"
+last_updated: "2026-09-24T17:42:44.552Z"
 last_activity: 2026-09-24
 last_activity_desc: Phase 03.4 complete, transitioned to Phase 4
-state_head: 754635258860ac2daf3357083c5b0608a6d96b3f
+state_head: 4f7fa4f6a10ddc70771035ab472166209d85bf5e
 progress:
   total_phases: 11
   completed_phases: 8
@@ -294,6 +294,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260924-b7q | Record 03.5 decisions: Instructions rename, drop Carried forward, defer phone logging | 2026-09-24 | a4ac8f6 | [260924-b7q-record-03-5-decisions-instructions-renam](./quick/260924-b7q-record-03-5-decisions-instructions-renam/) |
 | 260924-c24 | Snapshot the approved 03.5 layout C boards into sketch 011 | 2026-09-24 | 6259c36 | [260924-c24-snapshot-the-approved-03-5-layout-c-boar](./quick/260924-c24-snapshot-the-approved-03-5-layout-c-boar/) |
 | 47 | Record 03.5 open-item decisions (rename, folds, Recipe Book fields, Done/Cancel, screen-only rename, seed notes, Notes) | 2026-09-24 | 7546352 | — |
+| 49 | Sketch 011: one fold hides Balance and Things to check; 1366 log beside the Sheet | 2026-09-24 | 4f7fa4f | — |
 
 ### Roadmap Evolution
 

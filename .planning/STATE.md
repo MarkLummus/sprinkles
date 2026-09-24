@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: Ready to discuss
 stopped_at: Phase 4 context gathered
-last_updated: "2026-09-24T17:48:40.324Z"
+last_updated: "2026-09-24T17:54:32.967Z"
 last_activity: 2026-09-24
 last_activity_desc: Phase 03.4 complete, transitioned to Phase 4
-state_head: b882dde00131791b838d8739e03fc39b26073732
+state_head: 8231ee78eb899e79a19831da37e34d785980d095
 progress:
   total_phases: 11
   completed_phases: 8
@@ -296,6 +296,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 47 | Record 03.5 open-item decisions (rename, folds, Recipe Book fields, Done/Cancel, screen-only rename, seed notes, Notes) | 2026-09-24 | 7546352 | — |
 | 49 | Sketch 011: one fold hides Balance and Things to check; 1366 log beside the Sheet | 2026-09-24 | 4f7fa4f | — |
 | 50 | Sketch 011: open step's Done and Cancel in Sheet grammar | 2026-09-24 | b882dde | — |
+| 51 | Sketch 011: step uses control reads change the ingredients | 2026-09-24 | 8231ee7 | — |
 
 ### Roadmap Evolution
 

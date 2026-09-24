@@ -202,15 +202,18 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.4]: [Phase 03.4, Plan 14] Closed G-03.4-r3-3: explicit tabIndex={0} on all ten shell__place JSX sites (19 rendered stops) bypasses WebKit's TabsToLinks/Full-Keyboard-Access gates for the Safari chrome-to-page hand-off; shell.css's .shell__place:focus comment and 03.4-09-SUMMARY.md corrected (dated Correction section) to stop citing round two's falsified 'focus lands without :focus-visible' inference as measured.
 
 ### Pending Todos
-
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
 - [2026-09-17] [ui] An amendment announces the batch's original recording date, not the amendment — [todo file](.planning/todos/pending/2026-09-17-an-amendment-announces-its-original-recording-date.md)
 - [2026-09-17] [design] DESIGN.md's responsive ladder understates what the 600px step now moves — [todo file](.planning/todos/pending/2026-09-17-design-md-responsive-ladder-understates-the-600px-step.md)
 - [2026-09-22] [design] Board 170 — remove the 46px lined page-preview glyph from the lead block — [todo file](.planning/todos/pending/2026-09-22-board-170-drop-the-lead-page-preview-glyph.md)
+- [2026-09-22] [design] Paint the canvas (overscroll region) white on every route, including the paper frames — [todo file](.planning/todos/pending/2026-09-22-overscroll-canvas-white-on-every-route.md)
 - [2026-09-22] [ui] Remove the Sprinkles home link from the recipe route — [todo file](.planning/todos/pending/2026-09-22-remove-the-sprinkles-home-link-from-the-recipe-route.md)
 - [2026-09-22] [design] Settle the App-context radius in DESIGN.md, then revisit the rail's active item — [todo file](.planning/todos/pending/2026-09-22-settle-app-context-radius-then-revisit-rail-active-item.md)
+- [2026-09-22] [ui] A shared Button component that always carries tabindex, so every button, checkbox and radio Tabs on iPadOS Safari … — [todo file](.planning/todos/pending/2026-09-22-shared-button-component-carries-tabindex-for-webkit.md)
 - [2026-09-22] [ui] Shorten "Continue developing" to "Keep developing" in boards and app — [todo file](.planning/todos/pending/2026-09-22-shorten-continue-developing-to-keep-developing.md)
 - [2026-09-22] [design] Three /impeccable document follow-ups this phase hands to Impeccable, not code — [todo file](.planning/todos/pending/2026-09-22-three-impeccable-document-jobs-this-phase-hands-off.md)
+- [2026-09-23] [ui] Build the Recipe book print format (one page, the recipe only, for making a finished recipe) — [todo file](.planning/todos/pending/2026-09-23-build-the-recipe-book-print-format.md)
+- [2026-09-24] [design] Decide whether the batch and tasting log is entered on the phone, or only transcribed at the desk — [todo file](.planning/todos/pending/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md)
 
 ### Blockers/Concerns
 

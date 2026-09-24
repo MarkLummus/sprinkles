@@ -886,3 +886,16 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
     expect(record.tasting.tastingTempC).toBe(-12);
   });
 });
+
+describe('the steps region is named Instructions (Mark, 2026-09-24)', () => {
+  const recipePagePathForInstructions = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const recipePageSourceForInstructions = readFileSync(recipePagePathForInstructions, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it('renders exactly one method-region section, carrying aria-label="Instructions"', () => {
+    const tags = recipePageSourceForInstructions.match(/<section className="method-region"[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('aria-label="Instructions"');
+  });
+});

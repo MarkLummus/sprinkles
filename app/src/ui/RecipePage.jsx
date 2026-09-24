@@ -1881,7 +1881,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
         )}
       </section>
 
-      <section className="method-region" aria-label="Method">
+      <section className="method-region" aria-label="Instructions">
         <Method
           steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
           stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}

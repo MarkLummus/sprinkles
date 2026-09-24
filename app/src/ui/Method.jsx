@@ -587,7 +587,7 @@ export function Method({
 
   return (
     <>
-      <h2 className="region-name">Method</h2>
+      <h2 className="region-name">Instructions</h2>
       <div className="method__before">
         <p className="region-name">Before you start</p>
         <NoteList

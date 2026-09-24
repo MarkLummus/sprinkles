@@ -333,7 +333,7 @@ def sheet_pen(s):
                 return li.replace('</div></li>', ctl + '</div></li>')
             parts = []
             if n in USES:
-                parts.append(f'<span style="{SMALL}">uses {USES[n]}</span><button type="button" {tc}>change</button>')
+                parts.append(f'<span style="{SMALL}">uses {USES[n]}</span><button type="button" {tc}>change the ingredients</button>')
             if 'method-step__purpose' not in li: parts.append(f'<button type="button" {tc}>add a purpose</button>')
             if 'method-step__aside' not in li: parts.append(f'<button type="button" {tc}>add an aside</button>')
             sep = f'<span aria-hidden="true" style="{SMALL}">·</span>'
@@ -342,7 +342,7 @@ def sheet_pen(s):
             return li.replace('</div></li>', ctl + '</div></li>')
         parts = []
         if n in USES:
-            parts.append(f'<span style="{SMALL}">uses {USES[n]}</span><button type="button" {tc}>change</button>')
+            parts.append(f'<span style="{SMALL}">uses {USES[n]}</span><button type="button" {tc}>change the ingredients</button>')
         if 'method-step__purpose' not in li: parts.append(f'<button type="button" {tc}>add a purpose</button>')
         if 'method-step__aside' not in li: parts.append(f'<button type="button" {tc}>add an aside</button>')
         parts.append(f'<button type="button" {tc}>remove</button>')

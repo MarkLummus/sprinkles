@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 03.5 — Separate the recipe from the sheet (inserted; Phase 4 paused)
 Plan: Not started
 Status: Ready to discuss
-Last activity: 2026-09-22 — Phase 03.4 complete, transitioned to Phase 4
+Last activity: 2026-09-24 - Completed quick task 260924-b7q: Record 03.5 decisions: Instructions rename, drop Carried forward, defer phone logging
 
 Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -290,6 +290,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 43 | Amend DESIGN.md with the App mark grammar (rails, tallies, nav, History by place) and the filled action in companion blue, all approved direction 2026-09-21 | 2026-09-21 | c42055b | — |
 | 44 | Settle the rail question in DESIGN.md App marks: the rail stays on every list (Mark, 2026-09-21) | 2026-09-21 | 5c97348 | — |
 | 260922-d2y | border-box on .shell__tabs .shell__place and .home__action | 2026-09-22 | 63c38e1 | [260922-d2y-border-box-on-shell-tabs-shell-place-and](./quick/260922-d2y-border-box-on-shell-tabs-shell-place-and/) |
+| 260924-b7q | Record 03.5 decisions: Instructions rename, drop Carried forward, defer phone logging | 2026-09-24 | a4ac8f6 | [260924-b7q-record-03-5-decisions-instructions-renam](./quick/260924-b7q-record-03-5-decisions-instructions-renam/) |
 
 ### Roadmap Evolution
 
@@ -313,6 +314,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-23T00:34:54.689Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-prepare-the-next-version-for-making/04-CONTEXT.md
+Last session: 2026-09-24
+Stopped at: Session resumed, proceeding to 03.5 sketch snapshot (handoff task 6 of 8)
+Resume file: .planning/.continue-here.md

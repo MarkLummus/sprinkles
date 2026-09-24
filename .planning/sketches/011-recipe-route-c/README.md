@@ -64,6 +64,7 @@ Canvas: https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq, page "Recipe route 03
 This sketch is the single authority for 03.5 agents — planner, checker, executors and UAT read the boards, including their CSS, not a paraphrase. Conformance is judged side-by-side in a browser that has visited the routes, never from prose or a test count.
 
 - The Recipe Book board is a reference only (the form and its route are not built in 03.5), and its derived facts strip and footnote predate the 2026-09-24 Yield and time decision, which governs.
+- Mark, 2026-09-24: the Recipe Book board as drawn exposes the version structure (version selection, Next version and the History rail in the band, as in the Notebook). The Recipe Book is meant for specific ready-to-make recipes, close to publishing: one selected version without its development history (product brief; D18; 05-domain-and-language: Add to Recipe Book selects a trusted version without moving or duplicating history). Open for the 03.5 discussion; the board is not the authority on the Recipe Book's context band.
 - Versions 3–8 on the long-history board are illustrative, not seed content.
 - The not-chosen pen alternatives (focused-only controls and always-shown controls), layouts A and B, and the ingredient-table alternatives stay on the canvas only and are not live alternatives.
 

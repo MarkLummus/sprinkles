@@ -1,13 +1,13 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 03.5
+current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: Ready to discuss
 stopped_at: Phase 4 context gathered
-last_updated: "2026-09-23T13:14:35.208Z"
-last_activity: 2026-09-22
+last_updated: "2026-09-24T12:35:28.418Z"
+last_activity: 2026-09-24
 last_activity_desc: Phase 03.4 complete, transitioned to Phase 4
-state_head: 29330edf17b6e1a047eac7b8e95056822b580e93
+state_head: 754635258860ac2daf3357083c5b0608a6d96b3f
 progress:
   total_phases: 11
   completed_phases: 8
@@ -202,6 +202,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.4]: [Phase 03.4, Plan 14] Closed G-03.4-r3-3: explicit tabIndex={0} on all ten shell__place JSX sites (19 rendered stops) bypasses WebKit's TabsToLinks/Full-Keyboard-Access gates for the Safari chrome-to-page hand-off; shell.css's .shell__place:focus comment and 03.4-09-SUMMARY.md corrected (dated Correction section) to stop citing round two's falsified 'focus lands without :focus-visible' inference as measured.
 
 ### Pending Todos
+
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
 - [2026-09-17] [ui] An amendment announces the batch's original recording date, not the amendment — [todo file](.planning/todos/pending/2026-09-17-an-amendment-announces-its-original-recording-date.md)
 - [2026-09-17] [design] DESIGN.md's responsive ladder understates what the 600px step now moves — [todo file](.planning/todos/pending/2026-09-17-design-md-responsive-ladder-understates-the-600px-step.md)
@@ -291,6 +292,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 44 | Settle the rail question in DESIGN.md App marks: the rail stays on every list (Mark, 2026-09-21) | 2026-09-21 | 5c97348 | — |
 | 260922-d2y | border-box on .shell__tabs .shell__place and .home__action | 2026-09-22 | 63c38e1 | [260922-d2y-border-box-on-shell-tabs-shell-place-and](./quick/260922-d2y-border-box-on-shell-tabs-shell-place-and/) |
 | 260924-b7q | Record 03.5 decisions: Instructions rename, drop Carried forward, defer phone logging | 2026-09-24 | a4ac8f6 | [260924-b7q-record-03-5-decisions-instructions-renam](./quick/260924-b7q-record-03-5-decisions-instructions-renam/) |
+| 47 | Record 03.5 open-item decisions (rename, folds, Recipe Book fields, Done/Cancel, screen-only rename, seed notes, Notes) | 2026-09-24 | 7546352 | — |
 
 ### Roadmap Evolution
 

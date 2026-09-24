@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 03.2: The portion and the reset** (INSERTED) - Portions become the authored amount and the total derives; `step`/`splitStep` retire; the store resets to the new shape and the seed is rewritten, rather than migrating (completed 2026-09-10)
 - [x] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only (completed 2026-09-10)
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
-- [ ] **Phase 5: Version evolution** - A batch records reordered and new Method steps, and a version can evolve its step structure
+- [ ] **Phase 5: Version evolution** - A batch records reordered and new Instructions steps, and a version can evolve its step structure
 
 ## Phase Details
 
@@ -461,7 +461,7 @@ Plans:
 
 ### Phase 03.5: Separate the recipe from the sheet (INSERTED)
 
-**Goal:** The Notebook recipe route shows the recipe record apart from the version's Recipe Sheet, visually, in the store and in its routes, as D17, DESIGN.md's Context Boundary Rule and `.impeccable/surfaces/route-recipe.md` § "03.5 revision" define them. Recipe record (App context): Recipe name, Recipe description with rename, version identity and selection, History, provenance; the batch in view's batch and tasting log is App context too. Recipe Sheet in its Notebook form: Sheet title, Sheet description, ingredients, Method, Notes, and the batch in view's as-made grams and Method changes in pen blue. A recipe's name can change without rewriting a saved Sheet. Routes move to /notebook/:recipeId/:versionId[/batch/:batchId] with redirects from /recipe/…; /recipe-book/:recipeId is reserved, not built. The seed grows to several recipes, with olive oil and Mexican Chocolate v1–v4 (transcribed from Mark's binder, reviewed by Mark) in active development. The layout is chosen on a Claude Design canvas, desktop first, then 1366, 1024 and 393.
+**Goal:** The Notebook recipe route shows the recipe record apart from the version's Recipe Sheet, visually, in the store and in its routes, as D17, DESIGN.md's Context Boundary Rule and `.impeccable/surfaces/route-recipe.md` § "03.5 revision" define them. Recipe record (App context): Recipe name, Recipe description with rename, version identity and selection, History, provenance; the batch in view's batch and tasting log is App context too. Recipe Sheet in its Notebook form: Sheet title, Sheet description, ingredients, Instructions, Notes, and the batch in view's as-made grams and Instructions changes in pen blue. A recipe's name can change without rewriting a saved Sheet. Routes move to /notebook/:recipeId/:versionId[/batch/:batchId] with redirects from /recipe/…; /recipe-book/:recipeId is reserved, not built. The seed grows to several recipes, with olive oil and Mexican Chocolate v1–v4 (transcribed from Mark's binder, reviewed by Mark) in active development. The layout is chosen on a Claude Design canvas, desktop first, then 1366, 1024 and 393.
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
@@ -493,7 +493,7 @@ Plans:
 
 ### Phase 5: Version evolution
 
-**Goal:** A batch records reordered steps and new steps in the Method, and a version can evolve its step structure — adding, removing and reordering steps — so version development is not limited to amounts and step text.
+**Goal:** A batch records reordered steps and new steps in the Instructions, and a version can evolve its step structure — adding, removing and reordering steps — so version development is not limited to amounts and step text.
 **Why added:** Deferred from Phase 03.5 by Mark, 2026-09-23: both are needed for version evolution, and are scoped as their own phase rather than folded into the record/Sheet separation.
 **Requirements**: TBD
 **Depends on:** Phase 4

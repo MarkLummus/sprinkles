@@ -77,7 +77,7 @@ Recipe → version → batch → observations is a useful relationship, not a ma
 | Recipe | Formulation is appropriate in advanced contexts, not a compulsory primary label. |
 | Base / base recipe | Use for the underlying mix or reusable starting recipe; not every template or flavored recipe is a base. |
 | Batch | One attempt, not a recipe synonym. |
-| Method; what you did | Distinguish intended steps from actual execution. |
+| Instructions; what you did | Distinguish intended steps from actual execution. |
 | How did it turn out? | Preserve the answer rather than forcing an immediate diagnosis. |
 | Next time… | Maker's intention; distinguish from the app's recommendation. |
 | Sweetness | POD is a model of relative sweetening effect, not a complete sensory verdict. |
@@ -148,8 +148,11 @@ Decided by Mark on 2026-09-09 after the vocabulary audit was reviewed against th
 | Data (column head) | Source | The cell words "estimated", "unreviewed" stay. |
 | Advisories | Things to check | |
 | Headnote | (no on-screen or accessible name) | Book vocabulary; the prose needs no label. |
+| Method | Instructions | Mark, 2026-09-24: the heading and accessible name of the Sheet's steps, on screen and in print. |
 
-Kept as they are: Recipe, Version, Batch, Tasting, Add tasting, Record batch, Record another, Show changes, Next time, Done differently, Skipped, As made, Ingredient notes, Balance, basis, Ingredients, Method, Notes, Before you start, Carried forward, Uses.
+Kept as they are: Recipe, Version, Batch, Tasting, Add tasting, Record batch, Record another, Show changes, Next time, Done differently, Skipped, As made, Ingredient notes, Balance, basis, Ingredients, Notes, Before you start, Uses.
+
+Carried forward is retired with the notes it named (Mark, 2026-09-24).
 
 ## Saying absence
 

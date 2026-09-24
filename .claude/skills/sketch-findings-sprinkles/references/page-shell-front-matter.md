@@ -11,7 +11,7 @@ Validated by sketch 003 (winner B), building on 001–002's rejections.
 - **Balance stays level with Ingredients.** The front matter is sized so the side region's Balance note starts level with the Ingredients region name.
 - **A baseline-weight rule (1.5px) closes the front matter** above Ingredients; inner row separators are 1px graduation weight.
 - **The ingredient table reads in step order**, the only order — Phase 03.3 settled that there is no toggle; the sketch's "Table as written" toolbar button was a comparison aid, not a page control. In step order: groups by step with the step's lead-in as a full-width head row; a split ingredient appears once per step as a portion line ("120 g of 370.4 g · 46.3% in all" beneath its name); the Step column disappears; portions carry their own share in the numeric column. As made is recorded per portion.
-- **"Before you start" lives at the head of the Method**, before step 1. Things to check and carried-forward Notes sit under Balance.
+- **"Before you start" lives at the head of the Instructions** (Method in the sketch; renamed by Mark 2026-09-24), before step 1. Things to check sits under Balance; the carried-forward Notes that sat with it were dropped (Mark, 2026-09-24).
 - **Absence labels follow the "Saying absence" guide rule** (e.g. "not churned yet" — say what isn't, plainly).
 
 ## CSS Patterns
@@ -58,7 +58,7 @@ td .was { text-decoration: line-through; text-decoration-thickness: var(--rule-s
 - Front matter: `.row.row-version` (headnote with h1/version line/prose, `.vmeta` definition grid, `.acts` control row) then `.row.row-batch` (head with region name + pen-blue date, `.cells`, tasting cells, `.words`).
 - Openable trees under rows: `.vtree` (auto-fill `minmax(260px, 1fr)` grid of version lines with nested batch lines) and `.blist` (flex row of batch dates with metadata).
 - Table: `table-layout: fixed`, tabular numerals, right-aligned numeric columns, `col` widths for num/step/data; `.step-head` rows carry the step's lead-in prose after the uppercase label.
-- Method: `ol` with `grid-template-columns: 2ch 1fr`, grotesk figure numerals, lead-in bold, italic asides.
+- Instructions: `ol` with `grid-template-columns: 2ch 1fr`, grotesk figure numerals, lead-in bold, italic asides.
 
 ## What to Avoid
 

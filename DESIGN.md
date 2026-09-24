@@ -210,12 +210,12 @@ The cookbook remains the material reference for Recipe Sheets and batch/tasting 
 
 **The two contexts are named.** The **Sheet** is the Recipe Sheet, the batch and tasting log, and the print sheet. The **App** is Home, Notebook, Recipe Book, Idea log, Ingredients, and Kitchen. Every colour token carries its context as a prefix: `sheet-*` for the Sheet, `app-*` for the App. Earlier drafts of this document named the Sheet after its material.
 
-**The Context Boundary Rule.** Apply Sheet rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Method, and Notes belong to the version's Recipe Sheet. On screen, the batch and tasting record is App context (Mark, 2026-09-23); the Sheet in its Notebook form carries only the batch in view's as-made grams and Method changes in pen blue, and the printed batch log keeps the paper and pen treatment. The Sheet has two forms — Notebook (as-made and log) and Recipe Book (neither) — per `.impeccable/surfaces/route-recipe.md` § "03.5 revision". A shared route does not imply a shared visual context.
+**The Context Boundary Rule.** Apply Sheet rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Instructions, and Notes belong to the version's Recipe Sheet. On screen, the batch and tasting record is App context (Mark, 2026-09-23); the Sheet in its Notebook form carries only the batch in view's as-made grams and Instructions changes in pen blue, and the printed batch log keeps the paper and pen treatment. The Sheet has two forms — Notebook (as-made and log) and Recipe Book (neither) — per `.impeccable/surfaces/route-recipe.md` § "03.5 revision". A shared route does not imply a shared visual context.
 
 | Context | Approved direction | Implementation status |
 |---|---|---|
 | App interface | Bright, colorful, approachable; the approved Option B destination palette and neutral set. Color identifies and guides, never judges a result. | Base palette and neutrals approved; interaction and feedback colors, derived states, type roles, shapes, depth, motion, and components remain unresolved. Existing Sheet-styled shell/history controls are transitional. |
-| Recipe Sheet — a resource | Paper, ink, pen blue, restrained rules, readable prose and precise quantities. The Sheet is the asset a maker keeps, reads, edits and prints; its Notebook form carries the batch in view's as-made grams and Method changes in pen blue. | Existing tokens and component catalogue below. Proposed highlighter role remains unresolved. |
+| Recipe Sheet — a resource | Paper, ink, pen blue, restrained rules, readable prose and precise quantities. The Sheet is the asset a maker keeps, reads, edits and prints; its Notebook form carries the batch in view's as-made grams and Instructions changes in pen blue. | Existing tokens and component catalogue below. Proposed highlighter role remains unresolved. |
 | Batch and tasting log — a process record | On screen, App context: the record of one making attempt and its tastings, what happened rather than what is kept (Mark, 2026-09-23). In print, the Notebook form carries it as blank log pages on paper for the pen. | Currently drawn in Sheet paper and pen blue; moves to App context in Phase 03.5. Maker's own words stay in the hand. |
 | Print | Black on white, with room for handwritten records and a stable reference to the version. | Print behavior is owned by the print surface brief; screen paper color is not a requirement to print a background. |
 
@@ -302,7 +302,7 @@ The existing sidecar's tonal ramps are preview metadata, not additional approved
 ### Hierarchy
 - **Display** (700, 2rem): the recipe name, once per page, in the headnote.
 - **Headline** (400, 1.125rem): an authored version identity, e.g. `Version 2 · 50 g oil · 800 g`. Batch dates are compact metadata, never headlines. Units are never uppercased.
-- **Body** (400, 1rem): headnote prose, method instructions, authored notes. Method lead-ins are bold within the same size.
+- **Body** (400, 1rem): headnote prose, method instructions, authored notes. Lead-ins in the Instructions are bold within the same size.
 - **Section** (600, 0.875rem, leading 1.35, uppercase): region names and block legends — a region head is a true heading weight, not a label.
 - **Caption** (500, 0.75rem, leading 1.35, 0.04em tracking, uppercase): every caption that labels an input — Version, Why, From batch, the batch row's cell labels, the record pen's field captions, axis names, segmented captions, the two group cues. Uppercase by `text-transform` so the source stays sentence case for screen readers.
 - **Label** (400, 0.75rem, 0.04em tracking, uppercase): table headers and the running head. The plain, unweighted sibling of Caption.
@@ -398,7 +398,7 @@ Browser chrome is redrawn, not accepted: the select's arrow is replaced by two C
 Components feel like a working binder: printed pages a person actually writes on, with drawn controls in the margins. Every control is ink at hairline weight with no fill at rest; a picked or pressed control fills pen blue with paper-coloured text, and the record's own ink is pen blue.
 
 ### Region name
-- **Style:** the section role in bookcloth, uppercase, tracked 0.04em, 6px beneath it. Every region (Headnote, Ingredients, Method, Balance, Batch, Tasting) wears one as its first child.
+- **Style:** the section role in bookcloth, uppercase, tracked 0.04em, 6px beneath it. Every region (Headnote, Ingredients, Instructions, Balance, Batch, Tasting) wears one as its first child.
 - **Rule:** the only place bookcloth appears on type.
 
 ### The binder (buttons, selects, checkboxes)
@@ -436,8 +436,8 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Style:** inline, 1px ink border, no fill, 0 by 6px padding, small print in the grotesk with tabular numerals, a 2px gap between label and value.
 - **State:** none. A chip is a typed target on a method step (`temp 85 °C`, `hold 2 min`), never a control.
 
-### Method step
-- **Style:** a two-column grid, step number in the figure role in the left column, body right. Lead-in bold in the text face, instruction in the same face, target chips beneath, then purpose and aside in italic deviation size. "Before you start" heads the method at the prose measure, closed by a hairline rule.
+### Instructions step
+- **Style:** a two-column grid, step number in the figure role in the left column, body right. Lead-in bold in the text face, instruction in the same face, target chips beneath, then purpose and aside in italic deviation size. "Before you start" heads the Instructions at the prose measure, closed by a hairline rule.
 - **Rhythm:** 20px between steps, 12px gutter between number and body.
 - **Pen state:** the strike control, the changed line in pen blue, on-demand "add purpose / add aside / done differently" text controls, and the uses checkboxes all read in place; a struck step reads struck with its prose intact, the strike scoped to the prose span so the label beside it stays legible.
 

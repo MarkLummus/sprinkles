@@ -32,7 +32,7 @@ Imports preserve original quantities and attribution. A Recipe-book recipe may u
 
 The **Recipe Sheet**, also called the **Sheet**, presents a version for reading, editing, and printing. Its title and description may differ from the enduring Recipe name and Recipe description. Every Batch records a particular recipe state, including imported recipes, without requiring the maker to enter development mode.
 
-**Ingredients** supplies technical composition and provenance. **Kitchen** holds Equipment context, including sourced or observed batch ranges and tools informing the Method. **Ask an expert** is an AI-assisted contextual capability for ideas, recipes, and batches; saved exchanges are Consultations, and suggestions remain distinct from the maker's plans and actual execution. These are product direction, not additional first-milestone commitments.
+**Ingredients** supplies technical composition and provenance. **Kitchen** holds Equipment context, including sourced or observed batch ranges and tools informing the Instructions. **Ask an expert** is an AI-assisted contextual capability for ideas, recipes, and batches; saved exchanges are Consultations, and suggestions remain distinct from the maker's plans and actual execution. These are product direction, not additional first-milestone commitments.
 
 ### Develop a recipe
 

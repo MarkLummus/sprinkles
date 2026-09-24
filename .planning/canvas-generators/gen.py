@@ -338,7 +338,7 @@ def sheet_pen(s):
             if 'method-step__aside' not in li: parts.append(f'<button type="button" {tc}>add an aside</button>')
             sep = f'<span aria-hidden="true" style="{SMALL}">·</span>'
             ctl = (f'<p style="margin:6px 0 0;display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;">{sep.join(parts)}</p>'
-                   f'<p style="margin:10px 0 0;display:flex;gap:10px;">{quiet("Cancel")}{filled("Done")}</p>')
+                   f'<p style="margin:10px 0 0;display:flex;gap:16px;align-items:center;"><button type="button" class="text-control">Cancel</button><button type="button">Done</button></p>')  # Sheet grammar: underlined word, hairline ink box
             return li.replace('</div></li>', ctl + '</div></li>')
         parts = []
         if n in USES:

@@ -13,6 +13,8 @@ RAIL = seg(asbuilt, '<nav class="shell__rail"', '<main class="shell__main">')
 RAIL = RAIL.replace('class="shell__place shell__place--notebook" href="/notebook"', 'class="shell__place shell__place--notebook" aria-current="page" href="/notebook"')
 SHEET = seg(asbuilt, '<section class="ingredient-table-region"', '</article>').replace('<h2 class="region-name">Method</h2>', '<h2 class="region-name">Instructions</h2>')
 TABS = seg(asbuilt, '<nav class="shell__tabs"', '</nav>') + '</nav>'.replace('<h2 class="region-name">Method</h2>', '<h2 class="region-name">Instructions</h2>')
+# Carried forward notes dropped (Mark, 2026-09-24): the block leaves every board; Before you start keeps the inherited marker
+SHEET = re.sub(r'<div class="authored"><p class="authored__legend"><span>Carried forward</span><span>authored</span></p><ul class="authored__notes">.*?</ul></div>', '', SHEET, count=1, flags=re.S)
 STYLESHEET = '/_blob/e7df2000f61674b89baca5fccf5c19f8'
 
 # ---- tokens (Sprinkles Design System, tokens.json) ----
@@ -348,7 +350,7 @@ def sheet_pen(s):
         ctl = f'<p style="margin:6px 0 0;display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;">{sep.join(parts)}</p>'
         return li.replace('</div></li>', ctl + '</div></li>')
     s = re.sub(r'<li id="method-step-\d+".*?</li>', step_controls, s, flags=re.S)
-    # authored notes (Before you start, Carried forward): editable, inherited marker, removable per note
+    # authored notes (Before you start): editable, inherited marker, removable per note
     def note(m):
         return (f'<li style="color:{PEN};">' + m.group(1) +
                 f' <span class="table-small-print" style="{SMALL}">from 50 g oil · 800 g</span>'
@@ -435,7 +437,7 @@ def layout_c_rung(width):
 
 def phone_folds(html):
     """393 only: disclosures closed by default on version details, Balance (with Things to check),
-    Carried forward, and the log's Tasting; Ingredients, Instructions, Before you start and the churn cells stay open."""
+    and the log's Tasting; Ingredients, Instructions, Before you start and the churn cells stay open."""
     disc = lambda label, target: f'<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="{target}">{label}</button>'
     # version details
     html = html.replace('<dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);',
@@ -444,9 +446,8 @@ def phone_folds(html):
     html = html.replace('<div class="formulation-note"><h2 class="region-name">Balance</h2>',
                         '<div class="formulation-note"><h2 class="region-name">Balance</h2><p style="margin:0 0 8px;">' + disc('Show balance and things to check', 'fold-balance') + '</p><div id="fold-balance" hidden>', 1)
     html = html.replace('<div class="margin-region"><div class="derived-advisories">', '<div class="margin-region"><div class="derived-advisories" style="display:contents;">', 1)
-    # close the balance fold before Carried forward
-    html = html.replace('<div class="authored"><p class="authored__legend"><span>Carried forward</span><span>authored</span></p><ul class="authored__notes"',
-                        '</div><div class="authored"><p class="authored__legend"><span>Carried forward</span><span>authored</span></p><p style="margin:0 0 8px;">' + disc('Show 3 notes', 'fold-notes') + '</p><ul id="fold-notes" hidden class="authored__notes"', 1)
+    # close the balance fold after Things to check, the margin's last block now that Carried forward is dropped
+    html = html.replace('</div></article>', '</div></div></article>', 1)
     # the log's Tasting
     html = re.sub(r'(<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>tasted date unknown</span>)</div>',
                   r'\1 ' + disc('Show', 'fold-tasting') + '</div><div id="fold-tasting" hidden style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
@@ -487,9 +488,9 @@ specs = [
  ('R35C_Pen', 'C · the pen open from Next version · edit this step, one step open (chosen 2026-09-24)', 3700, layout_c('batch', pen=True)),
  ('R35C_PenFocus', 'Not chosen · the pen with controls on the focused step only', 3700, None),
  ('R35C_PenStep', 'Not chosen · the pen with step controls always shown', 3700, None),
- ('R35C_1366', 'C · 1366 · iPad landscape · the log beside the Sheet, details, Balance, notes and Tasting folded', 3800, None),
- ('R35C_1024', 'C · 1024 · iPad portrait · one column, the log below the Sheet, details, Balance, notes and Tasting folded', 4600, None),
- ('R35C_393', 'C · 393 · phone · one column, bottom tab row, details, Balance, notes and Tasting folded', 5800, None),
+ ('R35C_1366', 'C · 1366 · iPad landscape · the log beside the Sheet, details, Balance and Tasting folded', 3800, None),
+ ('R35C_1024', 'C · 1024 · iPad portrait · one column, the log below the Sheet, details, Balance and Tasting folded', 4600, None),
+ ('R35C_393', 'C · 393 · phone · one column, bottom tab row, details, Balance and Tasting folded', 5800, None),
  ('R35_RecipeBookForm', 'Reference · the Recipe Book form of the Sheet on screen (/recipe-book/:recipeId, not built in 03.5)', 2000, layout_c('none', sheet_html=recipe_book_form(), log=False, rail=RB)),
 ]
 for key, title, h, main in specs:

@@ -4,10 +4,14 @@ title: Decide whether the batch and tasting log is entered on the phone, or only
 area: design
 severity: minor
 files:
-  - .impeccable/surfaces/route-recipe.md:67
-  - .impeccable/surfaces/route-recipe-batch.md:33
-  - .impeccable/surfaces/route-recipe.md:153
+  - .impeccable/surfaces/route-recipe.md:69
+  - .impeccable/surfaces/route-recipe-batch.md:34
+  - .impeccable/surfaces/route-recipe.md:155
 ---
+
+## Deferred — 2026-09-24
+
+Deferred out of 03.5 (Mark, 2026-09-24) to a product brief for phone-based jobs: `.planning/todos/pending/2026-09-24-write-a-product-brief-for-phone-based-jobs.md`. This todo is that brief's first input; 03.5 designs no phone logging.
 
 ## Problem
 
@@ -24,7 +28,7 @@ expected to enter churn and tasting values on the phone at the machine.
 
 ## Solution
 
-Decide in the 03.5 discussion, not on the canvas:
+Decide in the product brief for phone-based jobs, not in 03.5 and not on the canvas:
 
 - Keep the brief's rule (paper at the machine, transcribe at the desk): the 393 board stands,
   and the length is the recipe itself. Record the decision in the discussion log.
@@ -33,5 +37,6 @@ Decide in the 03.5 discussion, not on the canvas:
   jumps to it from the band, and re-check on the device (the served copy at
   http://192.168.1.133:8393/ was the check used today; it is not kept).
 
-Either way the folds on the phone board (Details, Balance, notes, Tasting closed by default)
-stay a narrow-width state; the Sheet reads whole at desktop and in print.
+Either way the folds on the phone board (Details, Balance, Tasting closed by default;
+Carried forward dropped 2026-09-24) stay a narrow-width state; the Sheet reads whole at
+desktop and in print.

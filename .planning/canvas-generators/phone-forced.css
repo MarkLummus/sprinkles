@@ -1,0 +1,240 @@
+/* app/src/styles/shell.css @media (max-width: 759.98px) */
+.shell__rail {
+    display: none;
+  }
+
+  .shell__tabs {
+    display: flex;
+    align-items: stretch;
+    height: var(--app-size-tab-h);
+    box-sizing: border-box;
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    background: var(--app-background);
+    border-top: var(--app-rule-row) solid var(--app-divider);
+  }
+
+  /* The tab row's five flex children: the four destination links and the
+     More disclosure itself — not the summary inside it. Direct-child
+     selectors, so each of the five gets an equal share of the viewport
+     instead of the intrinsic content width the board measured at 532px
+     (03.4-UI-REVIEW.md finding 1). */
+  .shell__tabs > .shell__place,
+  .shell__tabs > .shell__more {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* Icon over label (board 171, Mark 2026-09-22), not beside it: this
+     descendant rule reaches both the four links and More's own summary
+     (which also carries .shell__place), overriding the rail's horizontal
+     padding and gap with a small vertical pad and the hairline gap. */
+  .shell__tabs .shell__place {
+    box-sizing: border-box;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-hair);
+    padding: var(--gap-xs) 0;
+    text-align: center;
+    font-size: var(--app-size-label);
+  }
+
+  .shell__tabs .shell__place,
+  .shell__more li {
+    min-height: var(--touch-min);
+  }
+
+  /* More opens as a panel above the bar, not inline in the fixed row
+     (D-16, gap 1): the disclosure anchors its own list, which — once
+     open — pins to the bar's top edge and trailing edge, sized to its
+     content, on the App background with a hairline divider border. No
+     radius: board 171 never draws the open panel, so nothing about it is
+     copied from a drawing (decision 5). */
+  .shell__more {
+    position: relative;
+  }
+
+  .shell__more[open] > ul {
+    position: absolute;
+    inset-block-end: 100%;
+    inset-inline-end: 0;
+    width: max-content;
+    background: var(--app-background);
+    border: var(--app-rule-row) solid var(--app-divider);
+    padding: var(--gap-s);
+  }
+
+  /* The header's Search/Import/Export controls fold away at this step
+     (D-16, decision 3): all three are duplicated inside More. The tools
+     row itself stays — the shared hidden file input and the import-errors
+     list live inside it, and hiding the row would leave an import failure
+     with nothing to report itself through. */
+  .shell__tools > .shell__place {
+    display: none;
+  }
+
+  .shell__main {
+    padding-bottom: var(--app-size-tab-h);
+  }
+/* app/src/styles/app.css @media (max-width: 1099.98px) */
+.recipe-page {
+    grid-template-columns: 1fr;
+    gap: var(--gap-m);
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'method'
+      'foot';
+  }
+
+  .pen-foot {
+    grid-template-columns: 1fr;
+  }
+
+  .pen-foot__controls {
+    grid-column: 1;
+  }
+/* app/src/styles/app.css @media (max-width: 759.98px), (pointer: coarse) */
+/* .prose-field joins this floor (260916-vv1, Impeccable critique issue 4,
+     Mark approved 2026-09-16): the four record prose fields measured 560 x 19
+     at every coarse pointer, under UX1-01. It takes the SHARED --touch-min
+     declaration rather than a private rule — one value stays app-wide, and
+     neither a narrow window nor a wide iPad is a named exception. Sketches
+     007 and 008 now carry the same floor, closing the original departure. */
+  button,
+  select,
+  .ink-field,
+  .prose-field,
+  .segmented__option,
+  .batch-margin .chip-toggle {
+    min-height: var(--touch-min);
+  }
+
+  .text-control {
+    min-height: var(--touch-min);
+  }
+
+  /* Sketch 008 line 260 grows the checkbox LABEL, not the square — the
+     two flex labels that hold the Skipped and Uses checkboxes. */
+  .method-step__uses-item,
+  .method-step__strike-control {
+    min-height: var(--touch-min);
+  }
+
+  /* The NARROW drawing's caption line (sketch 007 line 180, 008 line 167:
+     "Clear is 44px here, so the head reserves 44px marked or not"). Sketch 009
+     replaces this at a WIDE touch viewport — see the wide-touch block below —
+     but 009 never drew narrow, so 007/008 still govern here. */
+  .axis-mark__head,
+  .segmented-field__head {
+    min-height: var(--sheet-caption-line-h-touch);
+  }
+
+  /* Sketch 008 line 166, approved by Mark 2026-09-15, retiring the app's
+     pre-declared 13px departure. Besides matching the sketch, 16px is the
+     threshold below which iOS Safari zooms the page on field focus — so this
+     also stops the record jumping under the maker's thumb on the iPad. */
+  .ink-field,
+  .prose-field {
+    font-size: var(--sheet-type-note);
+  }
+
+  /* Decision C (sketch 009, settled by Mark 2026-09-15): at touch the stop
+     grows in HEIGHT only. The width and --sheet-track-stop are deliberately absent
+     here and stay in the width-keyed block below, so the 186px track still
+     fits the 213.3px column a wide touch screen gives it. A 38x44 target,
+     not the 32px one a wide touch viewport got before. */
+  .axis-mark__stop {
+    height: var(--sheet-touch-stop-height);
+  }
+/* app/src/styles/app.css @media (max-width: 759.98px) */
+.recipe-band__row-version {
+    grid-template-columns: 1fr;
+  }
+
+  .axis-mark__stops,
+  .axis-mark__anchors {
+    width: var(--sheet-track-stop-narrow);
+  }
+
+  .axis-mark__stop {
+    width: var(--touch-stop-width);
+    height: var(--sheet-touch-stop-height);
+    flex-basis: var(--touch-stop-width);
+  }
+/* app/src/styles/app.css @media block,
+   sibling to the one above — never nested inside it (css-source.js's
+   one-level contract, WR-02). The sketch's own "field-row label widths"
+   tweak (007 line 139) now has a real side-by-side label to narrow —
+   .field-row__label — once Task 1's field-row family lands; the prose
+   fields keep their own .batch-margin__field, label-above-input shape,
+   untouched by this rule. */
+@media (max-width: 600px) */
+/* The one place the page's phone gutter is stated (260917-gjo): four
+     boxes step together below 600px because they all read one name,
+     --gap-page (tokens.css) — the page itself, the running head, the
+     "no recipe found" page, and the notice. The literal 600 stays here,
+     in app.css's own prelude, where the touch block above already put
+     it; it is deliberately not in tokens.css (see that file's comment
+     on --gap-page for why). No other declaration belongs in this rule. */
+  :root {
+    --gap-page: var(--gap-m);
+  }
+
+  .field-row__label {
+    max-width: 100%;
+  }
+
+  /* .ink-field is deliberately NOT here. The 600px step used to drop it to
+     --sheet-type-control (13px), which is the pre-declared departure sketch 008 line
+     166 retires — and below 600 is exactly where a phone's auto-zoom bites, so
+     the touch union's 16px must survive this step. The margin's own prose
+     field keeps the smaller size; 008 speaks for .ink-field and .prose-field,
+     not for it. */
+  .batch-margin__field {
+    font-size: var(--sheet-type-control);
+  }
+
+  .save-ceremony,
+  .pen-foot__controls {
+    flex-wrap: wrap;
+  }
+
+  /* At 393px the ingredient table's sized columns (--sheet-col-numeric x3 +
+     --sheet-col-data, tokens.css) sum past the content width the region has
+     left after the page's own padding, and table-layout: fixed cannot
+     shrink a sized column (RESEARCH.md Pitfall 7). The sketch draws no
+     rule for this width (003 was tested at 834/1024), so the table
+     scrolls inside its own region and the page itself never overflows —
+     D-15's acceptance criterion is zero PAGE overflow, not zero table
+     overflow (planner's call on RESEARCH Open Question 4, recorded for
+     Mark's acknowledgement). */
+  .ingredient-table-region {
+    overflow-x: auto;
+  }
+/* app/src/styles/history.css @media (max-width: 759.98px) */
+.history-list--records {
+    margin-inline-start: var(--gap-m);
+  }
+
+  .history-list--branches {
+    margin-inline-start: var(--gap-s);
+    padding-inline-start: var(--gap-s);
+  }
+
+  .recipe-history__reason {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-history__outcome,
+  .recipe-history__next,
+  .recipe-history__empty {
+    margin-inline-start: var(--gap-s);
+  }/* the phone gutter, stated once more with the specificity the canvas needs */
+html, :root, .shell, .recipe-page, .page-head { --gap-page: var(--gap-m); }
+.recipe-page { padding: var(--gap-m) !important; }

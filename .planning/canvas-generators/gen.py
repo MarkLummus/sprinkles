@@ -436,18 +436,17 @@ def layout_c_rung(width):
     return f'<div style="padding:{gutter};display:flex;flex-direction:column;gap:24px;">{band}{body}</div>'
 
 def phone_folds(html):
-    """393 only: disclosures closed by default on version details, Balance (with Things to check),
+    """1366, 1024 and 393: disclosures closed by default on version details, Balance (with Things to check),
     and the log's Tasting; Ingredients, Instructions, Before you start and the churn cells stay open."""
     disc = lambda label, target: f'<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="{target}">{label}</button>'
     # version details
     html = html.replace('<dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);',
                         '<p style="margin:0;">' + disc('Details', 'fold-version') + '</p><dl id="fold-version" hidden style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);', 1)
     # Balance: everything after its heading, plus Things to check, folds
+    # one control folds both: the heading and control stay out, the Balance block and Things to check are hidden together
     html = html.replace('<div class="formulation-note"><h2 class="region-name">Balance</h2>',
-                        '<div class="formulation-note"><h2 class="region-name">Balance</h2><p style="margin:0 0 8px;">' + disc('Show balance and things to check', 'fold-balance') + '</p><div id="fold-balance" hidden>', 1)
-    html = html.replace('<div class="margin-region"><div class="derived-advisories">', '<div class="margin-region"><div class="derived-advisories" style="display:contents;">', 1)
-    # close the balance fold after Things to check, the margin's last block now that Carried forward is dropped
-    html = html.replace('</div></article>', '</div></div></article>', 1)
+                        '<h2 class="region-name">Balance</h2><p style="margin:0 0 8px;">' + disc('Show balance and things to check', 'fold-balance fold-check') + '</p><div id="fold-balance" hidden><div class="formulation-note">', 1)
+    html = html.replace('</section><div class="margin-region"><div class="derived-advisories">', '</div></section><div class="margin-region"><div id="fold-check" hidden class="derived-advisories">', 1)
     # the log's Tasting
     html = re.sub(r'(<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>tasted date unknown</span>)</div>',
                   r'\1 ' + disc('Show', 'fold-tasting') + '</div><div id="fold-tasting" hidden style="display:flex;flex-direction:column;gap:12px;">', html, count=1)

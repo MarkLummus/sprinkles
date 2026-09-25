@@ -411,12 +411,12 @@ describe('the canvas is per context, on body, not a descendant (G-03.4-9, commit
     expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
   });
 
-  test('a top-level rule hands the canvas back to the Sheet cream for both paper frames', () => {
+  test('a top-level rule hands the canvas back to the Sheet cream for the not-found page — layout C paints the App white above and below the Sheet, so .recipe-page no longer triggers this rule (03.5-04 Task 1, decisions_recorded 7): the Sheet keeps its own paper through .recipe-page\'s own background instead', () => {
     const rule = rules.find((r) => r.selector.startsWith('body:has(') && r.media === undefined);
     expect(rule, 'expected a top-level body:has(...) rule').toBeTruthy();
     expect(rule.declarations).toMatch(/background:\s*var\(--sheet-ground\)/);
-    expect(rule.selector).toMatch(/\.recipe-page/);
     expect(rule.selector).toMatch(/\.not-found/);
+    expect(rule.selector).not.toMatch(/\.recipe-page/);
     expect(rule.selector).not.toMatch(/\.page-head/);
   });
 

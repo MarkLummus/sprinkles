@@ -16,7 +16,7 @@ const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const UI_DIR = path.join(STYLES_DIR, '..', 'ui');
 const DOMAIN_DIR = path.join(STYLES_DIR, '..', 'domain');
 
-const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'history.css', 'home.css', 'shell.css'];
+const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'history.css', 'home.css', 'shell.css', 'notebook.css'];
 
 // No custom property is set inline via React's style prop any more — D-04
 // (plan 05) retired --c, RecipeList.jsx's old per-row dealt-hue property,

@@ -9,6 +9,8 @@ import {
   mexicanChocolateV3Batch,
   mexicanChocolateV4,
 } from './mexican-chocolate.js';
+import { pineappleRecipe, pineappleV1 } from './pineapple.js';
+import { coconutRecipe, coconutV1, coconutV2, coconutV2Batch } from './coconut.js';
 
 export const transcribedRecipeGroups = [
   {
@@ -16,4 +18,6 @@ export const transcribedRecipeGroups = [
     versions: [mexicanChocolateV1, mexicanChocolateV3, mexicanChocolateV4],
     batches: [mexicanChocolateV1Batch, mexicanChocolateV3Batch],
   },
+  { recipe: pineappleRecipe, versions: [pineappleV1], batches: [] },
+  { recipe: coconutRecipe, versions: [coconutV1, coconutV2], batches: [coconutV2Batch] },
 ];

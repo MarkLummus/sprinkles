@@ -9,6 +9,9 @@ import { validateStoreFile, STORE_SCHEMA_VERSION } from '../store/transfer.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
 import { buildAdvisories } from '../domain/advisories.js';
+import { pineappleV1 } from './pineapple.js';
+import { coconutV1, coconutV2 } from './coconut.js';
+import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 
 function flatten(groups) {
   return {
@@ -99,9 +102,9 @@ describe('Mexican Chocolate lineage (D-01: v1 -> v3 -> v4, no v2 made up)', () =
     expect(mexicanChocolateV4.parentVersionId).toBe(mexicanChocolateV3.id);
   });
 
-  it('no exported version id or versionLabel names v2', () => {
-    const { versions } = flatten(transcribedRecipeGroups);
-    for (const version of versions) {
+  it('no exported Mexican Chocolate version id or versionLabel names v2 (Coconut legitimately has its own v2)', () => {
+    const mexicanChocolateGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mexican-chocolate');
+    for (const version of mexicanChocolateGroup.versions) {
       expect(version.id).not.toMatch(/-v2$/);
       expect(version.versionLabel.trim()).not.toBe('v2');
     }
@@ -135,5 +138,36 @@ describe('Mexican Chocolate v1/v3 batches (D-02, D-06)', () => {
         }
       }
     }
+  });
+});
+
+describe('Pineapple v1 and Coconut v1 -> v2 (D-05, D-06)', () => {
+  it('pineappleV1 has no parent and exactly one batch with a tasting', () => {
+    expect(pineappleV1.parentVersionId).toBeNull();
+    const { batches } = flatten(transcribedRecipeGroups);
+    const pineappleBatches = batches.filter((b) => b.versionId === pineappleV1.id);
+    expect(pineappleBatches).toHaveLength(1);
+    expect(pineappleBatches[0].tasting).not.toBeNull();
+  });
+
+  it('coconutV2s parent is coconutV1', () => {
+    expect(coconutV2.parentVersionId).toBe(coconutV1.id);
+  });
+
+  it("coconutV2's batch has churnDurationMinutes 35 and outOfMachineTempC -8, and no tasting", () => {
+    const { batches } = flatten(transcribedRecipeGroups);
+    const v2Batch = batches.find((b) => b.versionId === coconutV2.id);
+    expect(v2Batch.churn.churnDurationMinutes).toBe(35);
+    expect(v2Batch.churn.outOfMachineTempC).toBe(-8);
+    expect(v2Batch.tasting).toBeNull();
+  });
+});
+
+describe('States coverage across transcribed recipes and batches (D-05)', () => {
+  it('covers not-yet-churned, awaiting-tasting and tasted at least once each', () => {
+    const standings = transcribedRecipeGroups.map((group) => standingFor(group.batches));
+    expect(standings).toContain(NOT_YET_CHURNED);
+    expect(standings).toContain(AWAITING_TASTING);
+    expect(standings).toContain(TASTED);
   });
 });

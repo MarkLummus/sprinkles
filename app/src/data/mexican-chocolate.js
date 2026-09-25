@@ -41,7 +41,7 @@ export const mexicanChocolateRecipe = {
 // throw rather than read as "no advisory applies." The kitchen is shared
 // across every recipe Mark churns; this is not per-recipe data
 // (03.5-SEED-REVIEW.md judgement call 2).
-const KITCHEN_EQUIPMENT = {
+export const KITCHEN_EQUIPMENT = {
   scale: 'Kitchen scale',
   scaleResolutionG: 1,
   precisionScaleResolutionG: 0.01,

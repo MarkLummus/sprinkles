@@ -182,4 +182,63 @@ export const library = {
     },
     note: 'No PAC field in the export. Left missing, not zeroed.',
   },
+
+  // decisions_recorded 6 (03.5-03-PLAN.md): binder-recipe ingredients the
+  // library lacked, taken from the photographed printout's own per-row
+  // columns — a row's grams of Water/Sugar/Fat/MSNF/Solids/PAC/POD divided
+  // by its own Amount, pac/pod x100 as elsewhere. basis 'derived' (read off
+  // a printed table's arithmetic, not a stated label), source names the
+  // printout's own image.
+  pineapple: {
+    name: 'Pineapple',
+    category: 'fruit',
+    composition: { fat: 0.0012, sugar: 0.0985, other: 0.0403, pac: 13.3, pod: 10.82 },
+    basis: { fat: 'derived', sugar: 'derived', other: 'derived', pac: 'derived', pod: 'derived' },
+    source: {
+      fat: 'Ice Ed printout (IMG_2481)',
+      sugar: 'Ice Ed printout (IMG_2481)',
+      other: 'Ice Ed printout (IMG_2481)',
+      pac: 'Ice Ed printout (IMG_2481)',
+      pod: 'Ice Ed printout (IMG_2481)',
+    },
+  },
+  coconutCream: {
+    name: "Coconut Cream, Trader Joe's",
+    category: 'fat',
+    composition: { fat: 0.3, sugar: 0.0167, other: 0.0433, pac: 2.42, pod: 1.69 },
+    basis: { fat: 'derived', sugar: 'derived', other: 'derived', pac: 'derived', pod: 'derived' },
+    source: {
+      fat: 'Ice Ed printout (IMG_2471)',
+      sugar: 'Ice Ed printout (IMG_2471)',
+      other: 'Ice Ed printout (IMG_2471)',
+      pac: 'Ice Ed printout (IMG_2471)',
+      pod: 'Ice Ed printout (IMG_2471)',
+    },
+  },
+  shreddedCoconut: {
+    name: 'Coconut, Shredded (unsweetened)',
+    category: 'fat',
+    composition: { fat: 0.6667, sugar: 0.0667, other: 0.236, pac: 9.68, pod: 6.74 },
+    basis: { fat: 'derived', sugar: 'derived', other: 'derived', pac: 'derived', pod: 'derived' },
+    source: {
+      fat: 'Ice Ed printout (IMG_2471)',
+      sugar: 'Ice Ed printout (IMG_2471)',
+      other: 'Ice Ed printout (IMG_2471)',
+      pac: 'Ice Ed printout (IMG_2471)',
+      pod: 'Ice Ed printout (IMG_2471)',
+    },
+  },
+  coconutMilk: {
+    name: "Coconut Milk, Trader Joe's",
+    category: 'fat',
+    composition: { fat: 0.169, sugar: 0.0154, other: 0.0156, pac: 2.23, pod: 1.56 },
+    basis: { fat: 'derived', sugar: 'derived', other: 'derived', pac: 'derived', pod: 'derived' },
+    source: {
+      fat: 'Ice Ed printout (IMG_2472)',
+      sugar: 'Ice Ed printout (IMG_2472)',
+      other: 'Ice Ed printout (IMG_2472)',
+      pac: 'Ice Ed printout (IMG_2472)',
+      pod: 'Ice Ed printout (IMG_2472)',
+    },
+  },
 };

@@ -59,6 +59,30 @@ describe('railEntries', () => {
     const entries = railEntries([v1], [], { currentVersionId: 'v1' });
     expect(entries).toHaveLength(1);
   });
+
+  it('appends a draft entry after the saved versions, ordinal one past the saved count (03.5-05 Task 2, D-13)', () => {
+    const v1 = makeVersion();
+    const v2 = makeVersion({ id: 'v2', versionLabel: 'more salt', createdAt: '2026-08-01T00:00:00.000Z' });
+    const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
+    const entries = railEntries([v1, v2], [], { currentVersionId: 'v1', draft });
+
+    expect(entries).toHaveLength(3);
+    expect(entries[2]).toMatchObject({
+      dateWords: '20 Sep',
+      name: 'Version 3 · less oil',
+      stateWords: 'draft',
+      churned: false,
+      inView: false,
+      isDraft: true,
+    });
+  });
+
+  it('drops the label from the draft entry name when it is blank', () => {
+    const v1 = makeVersion();
+    const draft = { label: '', createdAt: '2026-09-20T10:00:00.000Z' };
+    const entries = railEntries([v1], [], { currentVersionId: 'v1', draft });
+    expect(entries[1].name).toBe('Version 2');
+  });
 });
 
 describe('railHint', () => {

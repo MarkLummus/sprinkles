@@ -98,4 +98,35 @@ describe('RecipeHistory — the dated rail (03.5-05, sketch 011 decision 4)', ()
     expect(markup).not.toContain('Elsewhere');
     expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(1);
   });
+
+  // D-13: the draft node shows only while the pen is open, from memory —
+  // 03.5-05 Task 2.
+  it('appends a draft node reading "draft" while the pen is open, with no link and a hint that counts it', () => {
+    const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [],
+      openPen: 'plan',
+      draft,
+    });
+    const nodes = markup.match(/<li class="notebook-history__node[^"]*"/g) ?? [];
+    expect(nodes).toHaveLength(3);
+    expect(markup).not.toContain('<a ');
+    expect(markup).toMatch(/notebook-history__state">draft<\/span><\/span><\/li><\/ol>/);
+    expect(markup).toContain('3 versions');
+  });
+
+  it('renders no draft node when openPen is null, even with a draft object passed', () => {
+    const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [],
+      openPen: null,
+      draft,
+    });
+    expect(markup).not.toContain('draft');
+    expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(2);
+  });
 });

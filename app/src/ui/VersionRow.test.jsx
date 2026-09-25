@@ -340,52 +340,10 @@ describe('VersionRow — the plan pen carries no interface-policy hint', () => {
   });
 });
 
-// Recipe history renders only inside its disclosure, closed by default.
-// The control names the whole outline it discloses, with no count — a
-// version-only tally would name less than the disclosure holds, since
-// versions are the outline's primary nodes and their batches are nested
-// evidence beneath them (HIST-01). RecipeHistory.test.jsx owns the open
-// outline's lineage, batch nesting, routes and markers, and its own forest
-// and cross-recipe filter tests pin the recipe-level scope this control
-// used to prove with a count.
-describe('VersionRow — the History disclosure, closed by default', () => {
-  it('renders the bare History button and no history markup while closed', () => {
-    const markup = renderVersionRow({
-      version: oliveOilVersion,
-      versions: [oliveOilVersion, childVersion],
-    });
-    expect(markup).toContain('<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="version-row-history">History</button>');
-    expect(markup).not.toContain('recipe-history');
-  });
-
-  it('carries no digit and no version word for a lone version', () => {
-    const markup = renderVersionRow({ version: oliveOilVersion, versions: [oliveOilVersion] });
-    expect(markup).not.toMatch(/<dt[^>]*>Later<\/dt>/);
-    const historyButton = markup.match(/<button[^>]*class="text-control history-disclosure"[^>]*>([^<]*)<\/button>/);
-    expect(historyButton[1]).toBe('History');
-    expect(markup).not.toContain('recipe-history');
-  });
-
-  it('renders no disclosure at all with an empty versions array', () => {
-    const markup = renderVersionRow({ version: oliveOilVersion, versions: [] });
-    expect(markup).not.toContain('history-disclosure');
-    expect(markup).not.toContain('version-row__history');
-  });
-
-  // HIST-07: the two scopes are distinct controls. This component renders
-  // only the recipe-level outline's disclosure, with no count; the
-  // version's own attempt register (`Batches (n)`) is BatchRow's control,
-  // already counted by BatchRow.test.jsx.
-  it('names the recipe-level outline alone — no Batches control here', () => {
-    const markup = renderVersionRow({
-      version: oliveOilVersion,
-      versions: [oliveOilVersion, childVersion],
-    });
-    expect(markup).toContain('>History</button>');
-    expect(markup).not.toContain('Batches (');
-  });
-});
-
+// The History disclosure and its panel retired from this component
+// (03.5-05): the rail now renders directly in RecipePage.jsx as
+// RecipeHistory, outside the version column. RecipeHistory.test.jsx owns
+// the rail's own lineage, routes and marks.
 describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
   // Sketch 003 variant B, G-03.3-4: a root version's dl now reads
   // "Written" (the version's own createdAt) rather than rendering no
@@ -407,7 +365,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).toContain('class="versions__lineage version-row__written">date unknown</dd>');
   });
 
-  it('renders From version (never bare "From"), a Written line of the child\'s own date, From batch, Why, and the History control for a child version', () => {
+  it('renders From version (never bare "From"), a Written line of the child\'s own date, From batch and Why for a child version', () => {
     const grandchildVersion = {
       ...childVersion,
       id: 'olive-oil-ice-cream-v3',
@@ -427,7 +385,6 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).toContain(childVersion.reason);
     expect(markup).toContain('class="version-row__reason prose-text"');
     expect(markup).toContain(oliveOilVersion.versionLabel);
-    expect(markup).toContain('>History</button>');
   });
 
   // VROW-01/VROW-02: the folded value hid two facts — the child's own

@@ -8,6 +8,7 @@ import {
   completeRecord,
   formatRecordDate,
   recordDateWords,
+  dayMonthWords,
   batchIdentity,
   tastingProvenance,
   hasAsMade,
@@ -50,6 +51,15 @@ describe('recordDateWords', () => {
     expect(recordDateWords('2026-08-02')).toBe('2 Aug 2026');
     expect(recordDateWords(null)).toBe('date unknown');
     expect(recordDateWords('')).toBe('date unknown');
+  });
+});
+
+// The History rail's own compact date (03.5-05): day and month, no year.
+describe('dayMonthWords', () => {
+  it('drops the year from a full timestamp and a bare date, and reads unknown when absent', () => {
+    expect(dayMonthWords('2026-07-01T00:00:00.000Z')).toBe('1 Jul');
+    expect(dayMonthWords('2026-08-02')).toBe('2 Aug');
+    expect(dayMonthWords(null)).toBe('date unknown');
   });
 });
 

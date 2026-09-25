@@ -23,3 +23,26 @@ export function useBelowDesktop() {
   }, [hasMatchMedia]);
   return below;
 }
+
+// Option A's own query (03.5-07 Task 3, decisions_recorded 4/Task 2
+// answer): the log sits beside the Sheet at the notebook-body row's own
+// 1099.98px rung and above — the record pen's frame lives in that
+// narrower column whenever this is true, so it takes the narrow
+// arrangement there too, not only below 759.98px. Node-guarded, the same
+// critical note as useBelowDesktop above.
+export const LOG_BESIDE_SHEET_QUERY = '(min-width: 1100px)';
+
+export function useLogBesideSheet() {
+  const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+  const [besideSheet, setBesideSheet] = useState(() =>
+    hasMatchMedia ? window.matchMedia(LOG_BESIDE_SHEET_QUERY).matches : false,
+  );
+  useEffect(() => {
+    if (!hasMatchMedia) return undefined;
+    const mediaQuery = window.matchMedia(LOG_BESIDE_SHEET_QUERY);
+    const onChange = (event) => setBesideSheet(event.matches);
+    mediaQuery.addEventListener('change', onChange);
+    return () => mediaQuery.removeEventListener('change', onChange);
+  }, [hasMatchMedia]);
+  return besideSheet;
+}

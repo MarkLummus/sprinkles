@@ -10,6 +10,7 @@ import { Segmented } from './Segmented.jsx';
 import { AxisMark } from './AxisMark.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { notebookPath } from './notebookPaths.js';
+import { useLogBesideSheet } from './useBelowDesktop.js';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -514,6 +515,13 @@ export function BatchRow({
   // useBelow760's own header comment for the node-environment guard.
   const below760 = useBelow760();
 
+  // Option A (03.5-07 Task 2 answer, decisions_recorded 4): the record
+  // pen's own frame now lives in the log column whenever the log sits
+  // beside the Sheet (1100px and up), so the axes take the stacked
+  // core-then-declared arrangement there too — not only below 760px.
+  const logBesideSheet = useLogBesideSheet();
+  const below = below760 || logBesideSheet;
+
   // The first-invalid-measurement focus (contract "Controls spec"): a ref
   // per battery field key, keyed by the constants in BATTERY_FIELDS —
   // never a maker-influenced key (T-02-32) — so the same attempt-keyed
@@ -807,7 +815,7 @@ export function BatchRow({
                       : { snapshot: { declaredAxes: version.declaredAxes } },
                   )}
                   marks={draft.marks}
-                  below={below760}
+                  below={below}
                   onChangeMark={onChangeRecordMark}
                   onClearMark={onClearAxisMark}
                 >

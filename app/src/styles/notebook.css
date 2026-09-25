@@ -537,6 +537,40 @@
   color: var(--app-text-secondary);
 }
 
+/* The record pen's own frame, opened in the column (03.5-07 Task 3,
+   Task 2 answer — option A, decisions_recorded 4): the battery keeps
+   sketch 007/008's grammar unchanged; only its frame moves. The narrow
+   arrangement app.css already draws for touch/narrow widths (the stop
+   track, field-row label widths) reapplies here unconditionally, since
+   the log column (340px/300px) is narrow whether or not the pointer is
+   coarse — the ceremony's own wrap rule is left on permanently, since
+   wrapping only engages when content does not fit. app.css's own
+   width-keyed rules hand back control inside (max-width: 1099.98px),
+   where the log stacks below the Sheet and reads full width again. */
+.notebook-log .batch-margin--pen {
+  max-width: none;
+}
+
+.notebook-log .axis-mark__stops,
+.notebook-log .axis-mark__anchors {
+  width: var(--sheet-track-stop-narrow);
+}
+
+.notebook-log .axis-mark__stop {
+  width: var(--touch-stop-width);
+  height: var(--sheet-touch-stop-height);
+  flex-basis: var(--touch-stop-width);
+}
+
+.notebook-log .field-row__label {
+  max-width: 100%;
+}
+
+.notebook-log .save-ceremony,
+.notebook-log .pen-foot__controls {
+  flex-wrap: wrap;
+}
+
 @media (max-width: 1499.98px) {
   .notebook {
     padding: 0 var(--gap-l) var(--gap-xl) var(--gap-l);
@@ -570,6 +604,29 @@
   .notebook-log {
     flex-basis: auto;
     padding: 0 var(--app-notebook-gap-tight);
+  }
+
+  /* The record pen's frame hands back to app.css's own width-keyed rules
+     here (03.5-07 Task 3): the log stacks full width below the Sheet at
+     this rung, so the column is no longer narrow and the pen reads
+     exactly as it did before this plan. */
+  .notebook-log .batch-margin--pen {
+    max-width: var(--sheet-pen-w);
+  }
+
+  .notebook-log .axis-mark__stops,
+  .notebook-log .axis-mark__anchors {
+    width: var(--sheet-track-stop);
+  }
+
+  .notebook-log .axis-mark__stop {
+    width: auto;
+    height: var(--sheet-stop-h);
+    flex-basis: var(--sheet-stop-w);
+  }
+
+  .notebook-log .field-row__label {
+    max-width: none;
   }
 }
 

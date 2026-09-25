@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 3/9 plans executed
+**Plans:** 4/9 plans executed
 
 Plans:
 
@@ -480,7 +480,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 03.5-04-PLAN.md — Layout C's frame and App band: Recipe name and Rename (D-12), the version column, and the pen's ceremony in the band with the Sheet's own fields in the Sheet
+- [x] 03.5-04-PLAN.md — Layout C's frame and App band: Recipe name and Rename (D-12), the version column, and the pen's ceremony in the band with the Sheet's own fields in the Sheet
 
 **Wave 4** *(blocked on Wave 3)*
 

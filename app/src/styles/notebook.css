@@ -263,6 +263,48 @@
   color: var(--app-text-secondary);
 }
 
+/* The version column's reading state (Task 2, 1600-batch.html): the
+   section's own direct children (the "Version" caption, the identity
+   heading, the details list, the History line and the acts row) share
+   one 12px rhythm — the board nests the identity and details a further
+   4px apart inside their own wrapper; this file reads one gap throughout
+   rather than adding that extra wrapper div, a minor departure flagged
+   for plan 08's conformance record. */
+.notebook-version {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+
+.notebook-version__identity {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-identity-size);
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.notebook-version__details {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--app-notebook-recipe-rail-gap);
+  row-gap: var(--app-notebook-gap-hairline);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text);
+}
+
+.notebook-version__details dt {
+  color: var(--app-text-secondary);
+}
+
+.notebook-version__acts {
+  display: flex;
+  gap: var(--app-notebook-acts-gap);
+  flex-wrap: wrap;
+}
+
 @media (max-width: 1499.98px) {
   .notebook {
     padding: 0 var(--gap-l) var(--gap-xl) var(--gap-l);

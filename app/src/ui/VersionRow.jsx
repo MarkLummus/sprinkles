@@ -1,4 +1,4 @@
-import { HistoryDisclosure, HistoryPanel, HistoryMarkers } from './History.jsx';
+import { HistoryDisclosure, HistoryPanel } from './History.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { recordDateWords } from '../domain/batch.js';
@@ -104,13 +104,8 @@ export function VersionRow({
 
   return (
     <>
-      <section
-        className={`vmeta${openPen === 'plan' ? ' vmeta--developing' : ''}`}
-        aria-label={openPen === 'plan' ? 'Next version' : 'Version'}
-        aria-busy={saveAction ? 'true' : undefined}
-      >
-        {openPen === 'plan' ? (
-          <>
+      {openPen === 'plan' ? (
+        <section className="vmeta vmeta--developing" aria-label="Next version" aria-busy={saveAction ? 'true' : undefined}>
             <h2 className="region-name">Next version</h2>
             <dl className="version-row__meta-list">
               <dt className="versions__lineage-label">From version</dt>
@@ -178,9 +173,14 @@ export function VersionRow({
                 </button>
               )}
             </div>
-          </>
-        ) : (
-          <>
+        </section>
+      ) : (
+        <section className="notebook-version" aria-label="Version" aria-busy={saveAction ? 'true' : undefined}>
+        {/* The version column as App front matter (03.5-04 Task 2, sketch
+            011 1600-batch.html): a "Version" caption, then the identity
+            heading. */}
+        <span className="notebook-caption">Version</span>
+
         {/* The identity heading (route-recipe.md § 6 "One version identity,
             wherever a version is named", 2026-09-18): replaces the sketch's
             bare "Version" region-name heading with the same identity line
@@ -189,15 +189,18 @@ export function VersionRow({
             from Headnote.jsx: the ref, the temporary is-landing-focus
             class, tabIndex and the blur clear. No aria-label override —
             the visible line now says what the override said, so the
-            accessible name and the visible text agree. */}
+            accessible name and the visible text agree. Restyled as App
+            front matter (Task 2): HistoryMarkers (a Sheet-context register
+            marker) is replaced by a literal "· Latest" span — the only
+            marker this heading ever draws. */}
         <h2
           ref={versionIdentityRef}
-          className={`version-row__identity${landingFocusVisible ? ' is-landing-focus' : ''}`}
+          className={`notebook-version__identity${landingFocusVisible ? ' is-landing-focus' : ''}`}
           tabIndex={focusVersionOnMount ? -1 : undefined}
           onBlur={() => setLandingFocusVisible(false)}
         >
           {versionIdentity(ordered, version)}
-          <HistoryMarkers latest={isLatest} />
+          {isLatest && <span className="notebook-version__latest"> · Latest</span>}
         </h2>
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
@@ -212,7 +215,7 @@ export function VersionRow({
             used to close this dl (the struck Later dt/dd); it now sits on
             its own line below the dl (260917-odu) — see
             version-row__history just after </dl>. */}
-        <dl className="version-row__meta-list">
+        <dl className="notebook-version__details">
           <dt className="versions__lineage-label">Written</dt>
           <dd className="versions__lineage version-row__written">{recordDateWords(version.createdAt)}</dd>
           {version.parentVersionId && (
@@ -276,39 +279,37 @@ export function VersionRow({
           </p>
         )}
 
-        {/* The acts group (sketch 003 variant B, index.html:215, 479):
-            Next version, then Record another/Record batch, then Show
-            changes (once a parent exists) — one row, below the dl, only
-            while no pen is open. */}
+        {/* The acts group (sketch 003 variant B, index.html:215, 479;
+            restyled as App front matter, Task 2): Next version, then
+            Record another/Record batch, then Show changes (once a parent
+            exists) — one row, below the dl, only while no pen is open. */}
         {openPen === null && (
-          <div className="versions__openers">
-            <div className="versions__opener-group">
+          <div className="notebook-version__acts">
+            <button
+              type="button"
+              ref={developButtonRef}
+              className="notebook-action"
+              onClick={onStartDeveloping}
+            >
+              Next version
+            </button>
+            <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
+              {openBatch ? 'Record another' : 'Record batch'}
+            </button>
+            {parentVersion && (
               <button
                 type="button"
-                ref={developButtonRef}
-                onClick={onStartDeveloping}
+                className="notebook-link"
+                aria-pressed={showingChanges}
+                onClick={onToggleShowChanges}
               >
-                Next version
+                Show changes
               </button>
-              <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
-                {openBatch ? 'Record another' : 'Record batch'}
-              </button>
-              {parentVersion && (
-                <button
-                  type="button"
-                  className="headnote__show-changes text-control text-toggle"
-                  aria-pressed={showingChanges}
-                  onClick={onToggleShowChanges}
-                >
-                  Show changes
-                </button>
-              )}
-            </div>
+            )}
           </div>
         )}
-          </>
-        )}
-      </section>
+        </section>
+      )}
 
       <HistoryPanel open={historyOpen} id="version-row-history" className="recipe-band__full-row" title="History">
           <RecipeHistory

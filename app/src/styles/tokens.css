@@ -448,4 +448,6 @@
   --app-notebook-field-radius: 8px; /* 1600-pen.html: a ceremony field's own corner radius */
   --app-notebook-gap-hairline: 4px; /* 1600-pen.html: a field's own label-to-control gap and the From batch fieldset's own gap */
   --app-notebook-checkbox-size: 16px; /* 1600-pen.html: the From batch checkbox's own edge */
+  --app-notebook-acts-gap: 10px; /* 1600-batch.html: the version column's own acts row gap (Task 2) */
+  --app-notebook-identity-size: 18px; /* 1600-batch.html: the version identity heading's own size (Task 2) */
 }

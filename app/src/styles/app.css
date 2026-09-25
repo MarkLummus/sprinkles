@@ -346,8 +346,7 @@ textarea {
   border: 0;
 }
 
-.headnote,
-.vmeta {
+.headnote {
   min-width: 0;
 }
 
@@ -471,80 +470,46 @@ textarea {
   margin: var(--gap-s) 0 0;
 }
 
-/* While developing, the version field replaces the saved version line in
-   the recipe identity. The child's name therefore reads as part of the
-   front matter rather than as a second form below the parent's name. */
-.headnote__version-field {
+/* The Sheet title field (03.5-04 Task 3, 1600-pen.html): restyled to the
+   Sheet's own identity — the text face at the recipe-name size, bold, pen
+   blue — overriding only what .ink-field's generic grotesk/small-field
+   styling does not already carry (the ink hairline border and the pen-
+   blue colour are .ink-field's own, unchanged). Scoped under
+   .headnote__sheet-title-field so no other .ink-field in the app is
+   affected. */
+.headnote__sheet-title-field {
   display: block;
-  font-family: var(--face-text);
-  font-size: var(--sheet-size-version-line);
-  margin: var(--gap-xs) 0 0;
-}
-
-.headnote__version-field > .pen-caption {
-  display: block;
-  font-family: var(--face-grotesk);
-  font-size: var(--sheet-type-label);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: var(--gap-xs);
-}
-
-/* The version-line field (D-13 § 8, "Measure"): held to the prose measure
-   rather than the full width of the page. */
-.headnote__version-field .ink-field {
-  max-width: var(--measure-prose);
-}
-
-.headnote__reason-field {
-  display: block;
-  margin-top: var(--gap-s);
-}
-
-/* The "From batch" label-over-control (03.3-06 checkpoint feedback,
-   sketch 003 variant B, index.html:225): stacked like Version and Why
-   above it, not the inline "label beside control" row this used to be. */
-.headnote__citation {
-  display: block;
-  font-family: var(--face-grotesk);
-  font-size: var(--sheet-size-table-body);
-  margin-top: var(--gap-s);
-}
-
-/* :first-child, not a bare "span" selector: .headnote__citation has a
-   second sibling span (.ink-text, the no-batch absence text) when the
-   version has no batch to cite, and that one must read in the ordinary
-   field face, not the label's small-print uppercase treatment. */
-.headnote__citation span:first-child {
-  display: block;
-  font-family: var(--face-grotesk);
-  font-size: var(--sheet-type-label);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: var(--gap-xs);
-}
-
-/* The citation select (D-13 § 8, "Measure"): held to the prose measure
-   alongside the version-line field above. */
-.headnote__citation select.ink-field {
-  max-width: var(--measure-prose);
-}
-
-.headnote__ceremony {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--gap-s);
   margin-top: var(--gap-m);
 }
 
-/* The headnote prose field (03-02, 03.1-04): its own visible label word
-   is gone (planner decision 2) — the wrapper's own spacing is all this
-   rule keeps. */
+.headnote__sheet-title-field .ink-field {
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-recipe-name);
+  font-weight: 700;
+}
+
+/* The headnote prose field (03-02, 03.1-04; restyled 03.5-04 Task 3):
+   its own visible label word is gone (planner decision 2) — the
+   wrapper's own spacing is all this rule keeps beyond the explicit size
+   1600-pen.html draws (.prose-field's own inherited size, ~15px from
+   body, is not the Sheet description's own 16px). */
 .headnote__prose-field {
   display: block;
   margin-top: var(--gap-m);
+}
+
+.headnote__prose-field .prose-field {
+  font-size: var(--sheet-type-note);
+}
+
+/* The helper line under the Sheet fields (1600-pen.html): names what the
+   fields do, in the small deviation-words size and the app's own leading
+   for a helper sentence, in ink — .pen-caption's own inherited colour. */
+.headnote__field-helper {
+  margin: var(--gap-xs) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-deviation-words);
+  line-height: var(--sheet-leading-helper);
 }
 
 /* The fork's landing focus, made visible (03.3-06 checkpoint feedback,
@@ -621,21 +586,6 @@ textarea {
   letter-spacing: 0.04em;
 }
 
-/* The version row's meta stack as a definition list (sketch 003 variant
-   B, index.html:75-77, G-03.3-4): a label column beside its value column,
-   reusing .versions__lineage/-label on the dt/dd pairs it wraps so the
-   rules above keep working unchanged. */
-.version-row__meta-list {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: var(--gap-hair) var(--gap-s);
-  margin: 0;
-}
-
-.version-row__meta-list dd {
-  margin: 0;
-}
-
 /* Authored version names keep the text face; dates and batch citations
    are compact metadata on their own labelled lines. */
 .version-row__parent-name {
@@ -682,15 +632,8 @@ textarea {
   margin-top: var(--gap-s);
 }
 
-/* Opening the plan pen turns the saved Version column into the child's
-   provenance and ceremony. Its first rule names the parent; reason,
-   citation and actions follow in the same compact reading order. */
-.vmeta--developing .version-row__meta-list {
-  margin-bottom: var(--gap-s);
-}
-
 /* The History disclosure spans both front-matter columns rather
-   than being squeezed into vmeta's narrow track. */
+   than being squeezed into the version column's narrow track. */
 .recipe-band__full-row {
   grid-column: 1 / -1;
   margin-top: var(--gap-m);

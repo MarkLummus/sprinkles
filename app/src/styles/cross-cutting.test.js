@@ -417,10 +417,11 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
-  test('the nine caption rules read --sheet-type-label at weight 500', () => {
+  // 03.5-04 Task 3: .headnote__version-field and .headnote__citation
+  // retired (the version pen's own ceremony moved whole into
+  // VersionRow.jsx's .notebook-ceremony) — seven caption rules remain.
+  test('the seven caption rules read --sheet-type-label at weight 500', () => {
     for (const selector of [
-      '.headnote__version-field > .pen-caption',
-      '.headnote__citation span:first-child',
       '.versions__ceremony-field span',
       '.batch-row__cell-label',
       '.method-step__uses legend',
@@ -604,10 +605,10 @@ describe('placeholders italic, entered prose roman pen-blue', () => {
 });
 
 describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption and its content share one label', () => {
-  test('the seven existing sites read their caption-to-content distance through var(--gap-xs)', () => {
+  // 03.5-04 Task 3: .headnote__version-field and .headnote__citation
+  // retired — five existing sites remain (down from seven).
+  test('the five existing sites read their caption-to-content distance through var(--gap-xs)', () => {
     for (const selector of [
-      '.headnote__version-field > .pen-caption',
-      '.headnote__citation span:first-child',
       '.versions__ceremony-field span',
       '.method-step__uses legend',
     ]) {

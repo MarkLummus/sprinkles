@@ -1856,6 +1856,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             openBatch={openBatch}
             onStartRecording={handleStartRecording}
             focusVersionOnMount={focusVersionOnMount}
+            versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
+            versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
           />
         </div>
       </header>
@@ -1869,8 +1871,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
                 mode={mode}
                 penDraft={penDraft}
                 onChangePenField={handleChangePenField}
-                versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
-                versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
                 isSaving={versionSaveAction !== null}
               />
             </div>
@@ -1952,18 +1952,12 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
             <PenFoot
               openPen={openPen}
-              canSaveOver={canSaveOver}
-              saveAction={versionSaveAction}
               batchSaveAction={batchSaveAction}
               tastingOpen={draft?.tastingOpen ?? false}
               pendingUndo={pendingUndo}
-              onCancelDeveloping={handleCancelDeveloping}
-              onSaveAsNewVersion={handleSaveAsNewVersion}
-              onSaveOverVersion={handleSaveOverVersion}
               onCancelRecording={handleCancelRecording}
               onSaveBatch={handleSaveBatch}
               onAddTasting={handleAddTasting}
-              onUndoRemove={handleUndoRemove}
             />
           </article>
         </div>

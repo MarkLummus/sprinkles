@@ -258,6 +258,12 @@
   resize: vertical;
 }
 
+.notebook-ceremony__actions {
+  display: flex;
+  gap: var(--app-notebook-acts-gap);
+  flex-wrap: wrap;
+}
+
 .notebook-version__latest {
   font-weight: 400;
   color: var(--app-text-secondary);

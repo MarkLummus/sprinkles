@@ -212,13 +212,13 @@ describe('VersionRow — the ceremony (Task 3, 1600-pen.html)', () => {
 
   it('renders a Version name field with the new placeholder and a "was ..." helper, never the old Sheet-context aria-label', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toMatch(/<input[^>]*aria-label="Version name"[^>]*placeholder="e\.g\. less oil"/);
+    expect(markup).toMatch(/<input[^>]*placeholder="e\.g\. less oil"[^>]*aria-label="Version name"/);
     expect(markup).toContain('was 50 g oil · 800 g');
   });
 
   it('renders the Why textarea with the new placeholder, in the hand', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toMatch(/<textarea[^>]*aria-label="Why"[^>]*placeholder="what this version is for, in your words"/);
+    expect(markup).toMatch(/<textarea[^>]*placeholder="what this version is for, in your words"[^>]*aria-label="Why"/);
     expect(markup).toMatch(/<textarea[^>]*class="notebook-ceremony__why"/);
   });
 

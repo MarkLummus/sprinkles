@@ -26,7 +26,6 @@ function makeVersion(overrides = {}) {
     ...oliveOilVersion,
     id: 'v1',
     recipeId: 'r1',
-    recipeName: 'Recipe',
     versionLabel: 'line',
     createdAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
@@ -357,9 +356,9 @@ describe('HomeBody — every link carries an explicit tabindex (G-03.4-r4-1, .pl
 
   it('renders exactly 11 <a> opening tags for three recipes, one per standing, the tasted one leading (lead 3: name, Next version, Adapt; rows 8: not-yet-churned 2, awaiting-tasting 3, tasted 3), each carrying tabindex="0"', () => {
     const versions = [
-      makeVersion({ id: 'v1', recipeId: 'r1', recipeName: 'Not yet churned recipe', createdAt: '2026-01-01T00:00:00.000Z' }),
-      makeVersion({ id: 'v2', recipeId: 'r2', recipeName: 'Awaiting tasting recipe', createdAt: '2026-01-02T00:00:00.000Z' }),
-      makeVersion({ id: 'v3', recipeId: 'r3', recipeName: 'Tasted recipe', createdAt: '2026-01-04T00:00:00.000Z' }),
+      makeVersion({ id: 'v1', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' }),
+      makeVersion({ id: 'v2', recipeId: 'r2', createdAt: '2026-01-02T00:00:00.000Z' }),
+      makeVersion({ id: 'v3', recipeId: 'r3', createdAt: '2026-01-04T00:00:00.000Z' }),
     ];
     const batches = [
       makeBatch({ id: 'b2', versionId: 'v2', recordedAt: '2026-01-03T00:00:00.000Z', tasting: null }),

@@ -8,7 +8,6 @@ function makeVersion(overrides = {}) {
   return {
     id: 'v1',
     recipeId: 'r1',
-    recipeName: 'Olive oil',
     createdAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
   };
@@ -106,8 +105,8 @@ describe('standingFor', () => {
 describe('activeWork', () => {
   it('returns one entry per recipe with the recipe id, name, latest version, ordered versions, ordered batches, lastEventAt and standing', () => {
     const versions = [
-      makeVersion({ id: 'a', recipeId: 'r1', recipeName: 'Olive oil', createdAt: '2026-01-01T00:00:00.000Z' }),
-      makeVersion({ id: 'b', recipeId: 'r1', recipeName: 'Olive oil', createdAt: '2026-02-01T00:00:00.000Z' }),
+      makeVersion({ id: 'a', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' }),
+      makeVersion({ id: 'b', recipeId: 'r1', createdAt: '2026-02-01T00:00:00.000Z' }),
     ];
     const batches = [
       makeBatch({ id: 'ba', versionId: 'a', recordedAt: '2026-01-05T00:00:00.000Z', churn: { churnDate: '2026-01-05' } }),

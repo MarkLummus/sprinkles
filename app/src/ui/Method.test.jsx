@@ -116,7 +116,8 @@ function makeRow(id, name, grams, removed = false) {
 function makeBaselineVersion() {
   return {
     versionLabel: 'v1',
-    headnote: 'Baseline headnote.',
+    sheetTitle: 'Baseline title.',
+    sheetDescription: 'Baseline description.',
     targets: {},
     rows: [makeRow('row-a', 'Row A', 10), makeRow('row-b', 'Row B', 20)],
     method: [

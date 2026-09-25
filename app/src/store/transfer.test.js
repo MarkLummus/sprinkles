@@ -58,7 +58,7 @@ function makeVersion(overrides = {}) {
   return {
     id: 'v1',
     schemaVersion: 4,
-    recipeName: 'Test recipe',
+    recipeId: 'r1',
     coefficientSetId: 'set-1',
     parentVersionId: null,
     parentVersionLabel: null,
@@ -79,7 +79,8 @@ function makeVersion(overrides = {}) {
     declaredAxes: ['Body', 'Oil'],
     declaredFlaw: 'Bitter',
     versionLabel: 'v1 label',
-    headnote: '',
+    sheetTitle: '',
+    sheetDescription: '',
     ...overrides,
   };
 }
@@ -688,9 +689,9 @@ describe('validateVersion, the fields', () => {
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
-  // WR-01 (code review): versionLabel and headnote are read directly by the
-  // UI (the version-line uniqueness check, the headnote's own rendering)
-  // but were never checked here.
+  // WR-01 (code review): versionLabel, sheetTitle and sheetDescription are
+  // read directly by the UI (the version-line uniqueness check, the
+  // Sheet title/description's own rendering) but were never checked here.
   it('rejects a version whose versionLabel is blank, naming the field', () => {
     const version = makeVersion({ versionLabel: '' });
     const result = validateStoreFile(makeStoreFile([version]));
@@ -706,16 +707,41 @@ describe('validateVersion, the fields', () => {
     expect(result.errors.some((error) => error.includes('.versionLabel'))).toBe(true);
   });
 
-  it('rejects a version whose headnote is not a string, naming the field', () => {
-    const version = makeVersion({ headnote: null });
+  it('rejects a version whose sheetTitle is not a string, naming the field', () => {
+    const version = makeVersion({ sheetTitle: null });
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('.headnote'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('.sheetTitle'))).toBe(true);
   });
 
-  it('accepts a version whose headnote is a blank string', () => {
-    const version = makeVersion({ headnote: '' });
+  it('accepts a version whose sheetTitle is a blank string', () => {
+    const version = makeVersion({ sheetTitle: '' });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a version whose sheetDescription is not a string, naming the field', () => {
+    const version = makeVersion({ sheetDescription: null });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.sheetDescription'))).toBe(true);
+  });
+
+  it('accepts a version whose sheetDescription is a blank string', () => {
+    const version = makeVersion({ sheetDescription: '' });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a version whose recipeId is missing, naming the field', () => {
+    const version = makeVersion();
+    delete version.recipeId;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.recipeId'))).toBe(true);
+  });
+
+  it('says nothing about a recipe name — the field left the version (D-11)', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion()]));
+    expect(result.errors.some((error) => error.includes('recipeName'))).toBe(false);
   });
 
   it('rejects a declaredAxes entry naming an axis outside the declared pair, naming the path', () => {

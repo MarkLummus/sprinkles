@@ -26,7 +26,7 @@ function makeRow(id, name, grams, step, overrides = {}) {
 }
 
 function makeVersion(rows) {
-  return { versionLabel: 'v', headnote: '', targets: {}, rows, method: [] };
+  return { versionLabel: 'v', sheetTitle: '', sheetDescription: '', targets: {}, rows, method: [] };
 }
 
 // The pen draft's row shape (D-01, D-02): { portions: [{ step, grams }],

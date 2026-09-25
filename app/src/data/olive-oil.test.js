@@ -121,8 +121,25 @@ describe('oliveOilVersion.declaredAxes and declaredFlaw (03.3.1-CONTEXT.md D-07)
     expect(oliveOilVersion.declaredFlaw).toBe('Bitter');
   });
 
-  it('carries VERSION_SCHEMA_VERSION 4', () => {
-    expect(oliveOilVersion.schemaVersion).toBe(4);
+  it('carries VERSION_SCHEMA_VERSION 5', () => {
+    expect(oliveOilVersion.schemaVersion).toBe(5);
+  });
+});
+
+describe('oliveOilVersion.sheetTitle and sheetDescription (D-09, D-11)', () => {
+  it('sheetTitle is "Olive Oil Ice Cream", exactly as sketch 011\'s 1600-batch.html headnote h1', () => {
+    expect(oliveOilVersion.sheetTitle).toBe('Olive Oil Ice Cream');
+  });
+
+  it("sheetDescription is the exact headnote__prose paragraph from sketch 011's 1600-batch.html", () => {
+    expect(oliveOilVersion.sheetDescription).toBe(
+      'Silky and quietly savoury. Fresh olive oil adds a gentle fruitiness without overwhelming the cream, and a little more salt than you would think carries it. Serve it soft, with flaky salt.',
+    );
+  });
+
+  it('carries no recipeName or headnote key — the recipe record carries the name and description now (D-11)', () => {
+    expect(oliveOilVersion.recipeName).toBeUndefined();
+    expect(oliveOilVersion.headnote).toBeUndefined();
   });
 });
 

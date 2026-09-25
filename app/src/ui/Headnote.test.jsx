@@ -1,11 +1,12 @@
-// Component test for the recipe block — the recipe's own name and intro
-// paragraph, and nothing else (route-recipe.md § 3, revised 2026-09-08;
-// D-02, D-03; the authored version line moved to VersionRow's own
-// heading, route-recipe.md § 6, 2026-09-18). In the existing style:
-// renderToStaticMarkup (react-dom/server), the node test environment, no
-// jsdom, no testing-library, no new dependency, no MemoryRouter — this
-// shrunk component renders no Link. Every case exercising the ceremony,
-// the lineage line, the show-changes toggle, the Develop opener, or the
+// Component test for the Sheet block — the Sheet's own title and intro
+// prose, and nothing else (route-recipe.md § 3, revised 2026-09-08;
+// D-02, D-03; 03.5-CONTEXT.md D-09, D-11: the recipe's own name and
+// description moved off the version into the recipe record, rendered
+// elsewhere). In the existing style: renderToStaticMarkup
+// (react-dom/server), the node test environment, no jsdom, no
+// testing-library, no new dependency, no MemoryRouter — this shrunk
+// component renders no Link. Every case exercising the ceremony, the
+// lineage line, the show-changes toggle, the Develop opener, or the
 // churned date moved to Versions.test.jsx along with the markup itself
 // (03.1-CONTEXT.md D-03, D-04 to D-06).
 import { describe, it, expect } from 'vitest';
@@ -27,10 +28,10 @@ function renderHeadnote(props) {
   );
 }
 
-describe('Headnote — the recipe block alone (D-02, D-03)', () => {
-  it('renders the recipe name, with no running head of its own and no version line', () => {
+describe('Headnote — the Sheet block alone (D-02, D-03, D-09)', () => {
+  it('renders the Sheet title, with no running head of its own and no version line', () => {
     const markup = renderHeadnote({});
-    expect(markup).toContain(`<h1>${oliveOilVersion.recipeName}</h1>`);
+    expect(markup).toContain(`<h1>${oliveOilVersion.sheetTitle}</h1>`);
     expect(markup).not.toContain(oliveOilVersion.versionLabel);
     expect(markup).not.toContain('region-name');
   });
@@ -42,19 +43,22 @@ describe('Headnote — the recipe block alone (D-02, D-03)', () => {
 
   it('renders the intro paragraph while reading', () => {
     const markup = renderHeadnote({});
-    expect(markup).toContain(oliveOilVersion.headnote);
+    expect(markup).toContain(oliveOilVersion.sheetDescription);
   });
 
-  it('prints the recipe name and prose alone — no version line, no churned date (D-03)', () => {
+  it('prints the Sheet title and prose alone — no version line, no churned date (D-03)', () => {
     const markup = renderHeadnote({});
-    expect(markup).toBe(`<header class="headnote"><h1>${oliveOilVersion.recipeName}</h1><p class="headnote__prose">${oliveOilVersion.headnote}</p></header>`);
+    expect(markup).toBe(
+      `<header class="headnote"><h1>${oliveOilVersion.sheetTitle}</h1><p class="headnote__prose">${oliveOilVersion.sheetDescription}</p></header>`,
+    );
   });
 });
 
-describe('Headnote — the intro-paragraph field, while the plan pen is open (D-28: precedes every save in the tab order)', () => {
+describe('Headnote — the Sheet title and Sheet description fields, while the plan pen is open (D-28: precedes every save in the tab order)', () => {
   const developingDraft = {
     versionLabel: '',
-    headnote: oliveOilVersion.headnote,
+    sheetTitle: oliveOilVersion.sheetTitle,
+    sheetDescription: oliveOilVersion.sheetDescription,
   };
 
   it('replaces the parent version line with the blank child version field', () => {
@@ -64,23 +68,17 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
     expect(markup).toContain('<span class="field-requirement" aria-hidden="true">Required</span>');
   });
 
-  it('renders a text field bound to the pen draft', () => {
-    const markup = renderHeadnote({
-      mode: 'developing',
-      penDraft: developingDraft,
-    });
-    expect(markup).toMatch(/<textarea[^>]*aria-label="Description"/);
+  it('renders a Sheet title text field bound to the pen draft', () => {
+    const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft });
+    expect(markup).toMatch(/<label class="headnote__sheet-title-field"><span class="pen-caption">Sheet title<\/span><input[^>]*aria-label="Sheet title"[^>]*value="[^"]*"/);
   });
 
-  // Prose fields carry no visible label word (03.1-04, planner decision 2):
-  // the field's own accessible name is the one place "Description" is
-  // now spelled out.
-  it('renders no visible label word — the accessible name alone names the field', () => {
+  it('renders a Sheet description text field bound to the pen draft', () => {
     const markup = renderHeadnote({
       mode: 'developing',
       penDraft: developingDraft,
     });
-    expect(markup).not.toContain('<span>Headnote prose</span>');
+    expect(markup).toMatch(/<textarea[^>]*aria-label="Sheet description"/);
   });
 
   it('carries the printed-paragraph treatment, not the counted field\'s class', () => {
@@ -95,21 +93,21 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
   it('shows an empty writing baseline and the struck parent when an inherited description is cleared', () => {
     const markup = renderHeadnote({
       mode: 'developing',
-      penDraft: { ...developingDraft, headnote: '' },
+      penDraft: { ...developingDraft, sheetDescription: '' },
     });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"/);
-    const descriptionField = markup.match(/<textarea[^>]*aria-label="Description"[^>]*>/)?.[0];
+    const descriptionField = markup.match(/<textarea[^>]*aria-label="Sheet description"[^>]*>/)?.[0];
     expect(descriptionField).toBeTruthy();
     expect(descriptionField).not.toContain('placeholder=');
-    expect(markup).toContain(`<p class="prose-struck-beneath">${oliveOilVersion.headnote}</p>`);
+    expect(markup).toContain(`<p class="prose-struck-beneath">${oliveOilVersion.sheetDescription}</p>`);
   });
 
   it('uses an example hint when neither parent nor draft has a description', () => {
-    const version = { ...oliveOilVersion, headnote: '' };
+    const version = { ...oliveOilVersion, sheetDescription: '' };
     const markup = renderHeadnote({
       version,
       mode: 'developing',
-      penDraft: { ...developingDraft, headnote: '' },
+      penDraft: { ...developingDraft, sheetDescription: '' },
     });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"/);
     expect(markup).toContain('placeholder="e.g. what this version changes"');
@@ -117,27 +115,36 @@ describe('Headnote — the intro-paragraph field, while the plan pen is open (D-
   });
 
   it('shows new prose without an empty strike when the parent had no description', () => {
-    const version = { ...oliveOilVersion, headnote: '' };
+    const version = { ...oliveOilVersion, sheetDescription: '' };
     const markup = renderHeadnote({
       version,
       mode: 'developing',
-      penDraft: { ...developingDraft, headnote: 'A lighter olive-oil version.' },
+      penDraft: { ...developingDraft, sheetDescription: 'A lighter olive-oil version.' },
     });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
     expect(markup).not.toContain('prose-field--empty');
     expect(markup).not.toContain('prose-struck-beneath');
   });
 
-  it('renders the baseline struck beneath once the field differs from it', () => {
+  it('renders the Sheet description baseline struck beneath once the field differs from it', () => {
     const markup = renderHeadnote({
       mode: 'developing',
-      penDraft: { ...developingDraft, headnote: 'a rewritten intro' },
+      penDraft: { ...developingDraft, sheetDescription: 'a rewritten intro' },
     });
     expect(markup).toContain('prose-struck-beneath');
-    expect(markup).toContain(oliveOilVersion.headnote);
+    expect(markup).toContain(oliveOilVersion.sheetDescription);
   });
 
-  it('renders no struck paragraph while the field still matches the baseline', () => {
+  it('renders the Sheet title baseline struck beneath once the field differs from it', () => {
+    const markup = renderHeadnote({
+      mode: 'developing',
+      penDraft: { ...developingDraft, sheetTitle: 'A rewritten title' },
+    });
+    expect(markup).toContain('prose-struck-beneath');
+    expect(markup).toContain(oliveOilVersion.sheetTitle);
+  });
+
+  it('renders no struck paragraph while both fields still match the baseline', () => {
     const markup = renderHeadnote({
       mode: 'developing',
       penDraft: developingDraft,

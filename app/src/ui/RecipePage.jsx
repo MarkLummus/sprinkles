@@ -27,6 +27,7 @@ import { BatchRow } from './BatchRow.jsx';
 import { RecipeBand } from './RecipeBand.jsx';
 import { Headnote } from './Headnote.jsx';
 import { VersionRow } from './VersionRow.jsx';
+import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
@@ -698,6 +699,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   const [blockedMessage, setBlockedMessage] = useState(null);
   const [versionSaveAction, setVersionSaveAction] = useState(null);
   const versionSaveLockRef = useRef(false);
+  // The History rail's draft node (03.5-05 Task 2, D-13): the day the
+  // pen opened, held in memory only — never stored, cleared wherever the
+  // pen closes.
+  const penOpenedAtRef = useRef(null);
   // The offending field a blocked save names (critique P1 #3, D-21): the
   // version-line field, or a row's grams field by id — read by
   // IngredientTable and Versions to mark and focus exactly the field
@@ -1521,6 +1526,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     setBlockedTarget(null);
     setVersionSaveAction(null);
     versionSaveLockRef.current = false;
+    penOpenedAtRef.current = new Date().toISOString();
     onPageStatus('');
     // Load-bearing, not defensive: without this a refusal survives in
     // formStatus after the pen closes and prints itself when this pen
@@ -1551,6 +1557,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     setBlockedTarget(null);
     setVersionSaveAction(null);
     versionSaveLockRef.current = false;
+    penOpenedAtRef.current = null;
     onPageStatus('');
     announce('');
   }
@@ -1768,6 +1775,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
       setPenDraft(null);
       setBlockedMessage(null);
       setBlockedTarget(null);
+      penOpenedAtRef.current = null;
       onPageStatus(VERSION_SAVED_STATUS);
       // The child mounts fresh because router.jsx keys RecipePage by its
       // route. Land on the saved identity before offering another fork.
@@ -1807,6 +1815,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
       setPenDraft(null);
       setBlockedMessage(null);
       setBlockedTarget(null);
+      penOpenedAtRef.current = null;
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);
       onPageStatus(VERSION_SAVED_STATUS);
@@ -1860,6 +1869,19 @@ export function RecipePage({ onPageStatus = () => {} }) {
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
           />
         </div>
+
+        <RecipeHistory
+          versions={versions}
+          recipeId={version.recipeId}
+          currentVersionId={version.id}
+          allBatches={allBatches}
+          openPen={openPen}
+          draft={
+            mode === 'developing' && penDraft
+              ? { label: penDraft.versionLabel, createdAt: penOpenedAtRef.current }
+              : null
+          }
+        />
       </header>
 
       <div className="notebook-body">

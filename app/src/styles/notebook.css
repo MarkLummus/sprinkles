@@ -311,6 +311,130 @@
   flex-wrap: wrap;
 }
 
+/* The History rail (Task 1, 1600-batch.html; decisions_recorded 4): a
+   dated rail of the recipe's own versions, oldest left, drawn beneath
+   the band's two columns. The nested version/batch tree it replaces
+   lived in history.css/the pre-03.5-05 RecipeHistory.jsx; every rule the
+   rebuilt rail reads lives here instead. */
+.notebook-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-history-head-gap);
+}
+
+.notebook-history__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.notebook-history__hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+
+.notebook-history__rail {
+  position: relative;
+  overflow-x: auto;
+}
+
+.notebook-history__track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--app-notebook-history-track-top);
+  height: var(--app-rule-row);
+  background: var(--app-divider);
+}
+
+/* The left fade (Task 2, 1600-long-history.html): shows only while
+   scrollLeft is above 0 — content is hidden to the left. */
+.notebook-history__fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--app-notebook-history-fade-w);
+  background: linear-gradient(to left, transparent, var(--app-background));
+  pointer-events: none;
+}
+
+.notebook-history__nodes {
+  display: flex;
+  gap: var(--app-notebook-history-node-gap);
+  min-width: max-content;
+  margin: 0;
+  padding: 0 var(--gap-xs);
+  list-style: none;
+}
+
+.notebook-history__node {
+  flex: 0 0 var(--app-notebook-history-node-w);
+  min-width: 0;
+}
+
+.notebook-history__node-inner {
+  display: grid;
+  grid-template-rows:
+    var(--app-notebook-history-row-label-h)
+    var(--app-notebook-history-row-mark-h)
+    var(--app-notebook-history-row-name-h)
+    var(--app-notebook-history-row-label-h);
+  row-gap: var(--gap-xs);
+  min-width: 0;
+  text-decoration: none;
+  color: var(--app-text);
+}
+
+.notebook-history__date {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  line-height: var(--app-notebook-history-row-label-h);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.notebook-history__mark {
+  box-sizing: border-box;
+  width: var(--app-notebook-history-mark-size);
+  height: var(--app-notebook-history-mark-size);
+  border-radius: 50%;
+  background: var(--app-background);
+  border: var(--rule-baseline) solid var(--app-notebook);
+}
+
+.notebook-history__mark--churned {
+  background: var(--app-notebook);
+  border: none;
+}
+
+.notebook-history__mark--in-view {
+  box-shadow:
+    0 0 0 var(--app-notebook-history-ring-inset) var(--app-background),
+    0 0 0 var(--app-notebook-history-ring-w) var(--app-notebook);
+}
+
+.notebook-history__name {
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  line-height: var(--app-notebook-history-name-line-h);
+}
+
+.notebook-history__name--in-view {
+  font-weight: 700;
+}
+
+.notebook-history__state {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  line-height: var(--app-notebook-history-row-label-h);
+  color: var(--app-text-secondary);
+}
+
 @media (max-width: 1499.98px) {
   .notebook {
     padding: 0 var(--gap-l) var(--gap-xl) var(--gap-l);

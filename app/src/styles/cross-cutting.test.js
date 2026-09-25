@@ -75,53 +75,6 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(resolveTokenPx(tokens, '--sheet-touch-stop-height')).toBe(44);
   });
 
-  test('history keeps authored names wrappable and reduces nested indentation with logical properties on phone widths', () => {
-    expect(historyRuleFor('.recipe-history__version-name').declarations).toMatch(/min-width:\s*0/);
-    expect(historyRuleFor('.recipe-history__version-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
-    expect(historyRuleFor('.recipe-history__batch-name').declarations).toMatch(/min-width:\s*0/);
-    expect(historyRuleFor('.recipe-history__batch-name').declarations).toMatch(/overflow-wrap:\s*anywhere/);
-
-    const branches = historyRuleFor('.history-list--branches').declarations;
-    expect(branches).toMatch(/margin-inline-start:\s*var\(--gap-l\)/);
-    expect(branches).toMatch(/padding-inline-start:\s*var\(--gap-m\)/);
-    expect(branches).toMatch(/border-inline-start:/);
-    expect(branches).not.toMatch(/margin-left|padding-left|border-left/);
-
-    const narrowBatches = historyRules.find((r) => r.selector === '.history-list--records' && r.media === '(max-width: 759.98px)');
-    const narrowBranches = historyRules.find((r) => r.selector === '.history-list--branches' && r.media === '(max-width: 759.98px)');
-    expect(narrowBatches.declarations).toMatch(/margin-inline-start:\s*var\(--gap-m\)/);
-    expect(narrowBranches.declarations).toMatch(/margin-inline-start:\s*var\(--gap-s\)/);
-    expect(narrowBranches.declarations).toMatch(/padding-inline-start:\s*var\(--gap-s\)/);
-
-    // Not historyRuleFor: .recipe-history__empty is also a member of the
-    // earlier type-role group at history.css:66-69, which declares no
-    // margin at all, so a first-match lookup silently resolves to the
-    // wrong rule.
-    const offsetRules = historyRules.filter(
-      (r) =>
-        !r.media &&
-        /(^|[\s;])margin/.test(r.declarations) &&
-        ['.recipe-history__outcome', '.recipe-history__next', '.recipe-history__empty'].some((c) =>
-          r.selector.split(', ').includes(c),
-        ),
-    );
-    expect(offsetRules.map((r) => r.selector)).toEqual([
-      '.recipe-history__outcome, .recipe-history__next',
-      '.recipe-history__empty',
-    ]);
-    for (const rule of offsetRules) {
-      expect(rule.declarations).toMatch(/margin-inline(?:-start)?:\s*var\(--gap-l\)/);
-      // The reset these paragraphs used to get from app.css left with the
-      // extraction, so the zero now has to be stated here or a paragraph's
-      // UA bottom margin returns.
-      expect(rule.declarations).toMatch(/margin-block:\s*var\(--gap-(?:hair|s)\) 0|margin-bottom:\s*0/);
-      expect(rule.declarations).not.toMatch(/margin-left|margin-right|padding-left|padding-right|border-left|border-right/);
-      // The assertion the other three depend on: the shorthand is
-      // invisible to all of them.
-      expect(fourValueShorthands(rule.declarations)).toEqual([]);
-    }
-  });
-
   test("inside the media block, `button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179; .prose-field joined in 260916-vv1, critique issue 4, the four record prose fields at 560 x 19 on a coarse pointer)", () => {
     const rule = mediaRuleFor('button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle');
     expect(rule, 'expected the media-block control rule').toBeTruthy();
@@ -179,21 +132,9 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     ]);
   });
 
-  test('history.css states its narrow block exhaustively, and the width-only-versus-touch-union discipline covers the extracted file too', () => {
-    const narrowHistoryRules = historyRules.filter((r) => r.media === '(max-width: 759.98px)');
-    expect(narrowHistoryRules.map((r) => r.selector)).toEqual([
-      '.history-list--records',
-      '.history-list--branches',
-      '.recipe-history__reason',
-      '.recipe-history__outcome, .recipe-history__next, .recipe-history__empty',
-    ]);
-
-    // history.css carries one breakpoint, so a rule added under the touch
-    // union or any other condition forces a decision in this suite rather
-    // than shipping unguarded — the mode of failure Finding 1 arrived
-    // through.
+  test('history.css carries no media condition at all now that the nested version/batch outline (the file\'s only rung-dependent content) retired with the History rail (03.5-05)', () => {
     const historyMediaConditions = [...new Set(historyRules.filter((r) => r.media !== undefined).map((r) => r.media))];
-    expect(historyMediaConditions).toEqual(['(max-width: 759.98px)']);
+    expect(historyMediaConditions).toEqual([]);
   });
 
   test("decision C: the touch union grows the stop's HEIGHT only — the width and the track stay width-keyed (sketch 009, Mark 2026-09-15)", () => {
@@ -494,29 +435,6 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     const rule = ruleFor('.prose-text');
     expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
     expect(rule.declarations).not.toMatch(/font-size:/);
-  });
-
-  test('the History register\'s three prose paragraphs all read --sheet-type-note, and the non-prose variant does not', () => {
-    const reasonProse = historyRuleFor('.recipe-history__reason .prose-text');
-    expect(reasonProse, 'expected a .recipe-history__reason .prose-text rule').toBeTruthy();
-    expect(reasonProse.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
-
-    const outcomeProse = historyRuleFor('.recipe-history__outcome.prose-text');
-    expect(outcomeProse, 'expected a .recipe-history__outcome.prose-text rule').toBeTruthy();
-    expect(outcomeProse.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
-
-    // Not historyRuleFor: that helper returns the FIRST non-media rule whose
-    // selector list contains the string, and for .recipe-history__next that
-    // is the shared margin rule (.recipe-history__outcome, .recipe-history__next),
-    // which carries no size at all — so look up the exact selector instead.
-    const nextTime = historyRules.find((r) => !r.media && r.selector === '.recipe-history__next');
-    expect(nextTime, 'expected an exact .recipe-history__next rule').toBeTruthy();
-    expect(nextTime.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
-    expect(nextTime.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
-
-    const outcomeNonProse = historyRuleFor('.recipe-history__outcome:not(.prose-text)');
-    expect(outcomeNonProse, 'expected a .recipe-history__outcome:not(.prose-text) rule').toBeTruthy();
-    expect(outcomeNonProse.declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
   });
 
   test('.prose-field inherits its contextual size but keeps a readable one-line base extent', () => {

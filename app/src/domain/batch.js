@@ -41,6 +41,20 @@ export function recordDateWords(iso) {
 }
 
 /**
+ * dayMonthWords(iso) -> 'D Mon', the History rail's own compact date
+ * (03.5-05): the same leading YYYY-MM-DD parse and month table
+ * formatRecordDate uses, with the year dropped — the rail's nodes read
+ * across one recipe, close enough in time that the year is implied.
+ * Absent input reads 'date unknown', matching recordDateWords.
+ */
+export function dayMonthWords(iso) {
+  if (!iso) return 'date unknown';
+  const [, month, day] = iso.slice(0, 10).split('-');
+  const monthName = MONTHS[Number(month) - 1];
+  return `${Number(day)} ${monthName}`;
+}
+
+/**
  * batchIdentity(batch) -> the shared attempt identity (HIST-03): the word
  * `Batch`, the middot separator, then the churn date through
  * recordDateWords — one identity, read by both the recipe-level History

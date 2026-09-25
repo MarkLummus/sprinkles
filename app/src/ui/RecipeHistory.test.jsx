@@ -1,14 +1,14 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router';
-import { RecipeHistory, versionForest } from './RecipeHistory.jsx';
+import { RecipeHistory } from './RecipeHistory.jsx';
 
 function makeVersion(overrides = {}) {
   return {
     id: 'v1',
     recipeId: 'recipe-1',
     versionLabel: 'Original plan',
-    createdAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-07-01T00:00:00.000Z',
     parentVersionId: null,
     parentVersionLabel: null,
     reason: null,
@@ -21,233 +21,112 @@ function makeBatch(overrides = {}) {
   return {
     id: 'b1',
     versionId: 'v1',
-    recordedAt: '2026-01-03T00:00:00.000Z',
-    changed: null,
-    tasting: null,
+    churn: { churnDate: '2026-08-02', nextTimeNote: null, ...overrides.churn },
     ...overrides,
-    churn: {
-      churnDate: '2026-01-02',
-      nextTimeNote: null,
-      ...overrides.churn,
-    },
   };
 }
 
 function renderHistory(props) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <RecipeHistory
-        versions={[]}
-        recipeId="recipe-1"
-        currentVersionId="v1"
-        allBatches={[]}
-        {...props}
-      />
+      <RecipeHistory versions={[]} recipeId="recipe-1" currentVersionId="v1" allBatches={[]} {...props} />
     </MemoryRouter>,
   );
 }
 
-describe('versionForest', () => {
-  it('keeps successors beneath their parent and preserves a branch', () => {
-    const root = makeVersion();
-    const firstChild = makeVersion({
-      id: 'v2',
-      versionLabel: 'First child',
-      createdAt: '2026-02-01T00:00:00.000Z',
-      parentVersionId: 'v1',
-      parentVersionLabel: root.versionLabel,
-    });
-    const secondChild = makeVersion({
-      id: 'v3',
-      versionLabel: 'Second child',
-      createdAt: '2026-03-01T00:00:00.000Z',
-      parentVersionId: 'v1',
-      parentVersionLabel: root.versionLabel,
-    });
-    const forest = versionForest([secondChild, root, firstChild]);
-    expect(forest.roots.map((version) => version.id)).toEqual(['v1']);
-    expect(forest.children.get('v1').map((version) => version.id)).toEqual(['v2', 'v3']);
-  });
-
-  it('keeps a version with a missing parent visible as a root', () => {
-    const orphan = makeVersion({ id: 'orphan', parentVersionId: 'missing' });
-    expect(versionForest([orphan]).roots).toEqual([orphan]);
-  });
-
-  it('promotes a cyclic pair to roots and drops the cycle from children, so a caller walking children terminates', () => {
-    const a = makeVersion({ id: 'a', parentVersionId: 'b' });
-    const b = makeVersion({ id: 'b', parentVersionId: 'a' });
-    const forest = versionForest([a, b]);
-    expect(forest.roots.map((version) => version.id).sort()).toEqual(['a', 'b']);
-    expect(forest.children.get('a') ?? []).toEqual([]);
-    expect(forest.children.get('b') ?? []).toEqual([]);
-  });
-});
-
-describe('RecipeHistory', () => {
+describe('RecipeHistory — the dated rail (03.5-05, sketch 011 decision 4)', () => {
   const root = makeVersion();
   const successor = makeVersion({
     id: 'v2',
-    versionLabel: 'Less oil',
-    createdAt: '2026-02-01T00:00:00.000Z',
+    versionLabel: 'less oil',
+    createdAt: '2026-09-20T00:00:00.000Z',
     parentVersionId: 'v1',
     parentVersionLabel: root.versionLabel,
-    reason: 'Reduce the oily finish.',
-    citedBatchId: 'b1',
   });
 
-  it('presents versions as preserved plans with their batches nested beneath them', () => {
-    const rootBatch = makeBatch({
-      id: 'b1',
-      versionId: 'v1',
-      tasting: {
-        tastedDate: '2026-01-03',
-        note: 'Silky, but the oil lingers.',
-        defects: null,
-        bitterDeclared: null,
-      },
-      churn: { churnDate: '2026-01-02', nextTimeNote: 'Use less olive oil.' },
-    });
-    const markup = renderHistory({
-      versions: [root, successor],
-      currentVersionId: 'v2',
-      allBatches: [rootBatch],
-    });
-
-    expect(markup.indexOf('Version 1 · Original plan')).toBeLessThan(markup.indexOf('Batch · 2 Jan 2026'));
-    expect(markup.indexOf('Batch · 2 Jan 2026')).toBeLessThan(markup.indexOf('Version 2 · Less oil'));
-    expect(markup).toContain('Silky, but the oil lingers.');
-    expect(markup).toContain('<span>Next time</span> Use less olive oil.');
-    expect(markup).toContain('Reduce the oily finish.');
-    expect(markup).toContain('From batch · <a tabindex="0" href="/notebook/recipe-1/v1/batch/b1"');
-    expect(markup).toContain('aria-label="Versions made from Version 1 · Original plan"');
-    expect(markup).toContain('Not yet churned');
-  });
-
-  it('uses stable version and batch routes and marks the records in view', () => {
-    const currentBatch = makeBatch({ id: 'b2', versionId: 'v2', churn: { churnDate: '2026-02-04' } });
-    const markup = renderHistory({
-      versions: [root, successor],
-      currentVersionId: 'v2',
-      currentBatchId: 'b2',
-      allBatches: [currentBatch],
-    });
-
-    expect(markup).toContain('href="/notebook/recipe-1/v1"');
-    expect(markup).not.toContain('href="/notebook/recipe-1/v2"');
-    expect(markup).not.toContain('href="/notebook/recipe-1/v2/batch/b2"');
-    expect(markup).toContain('Version 2 · Less oil<span class="history-register__marker"> · In view · Latest</span>');
-    expect(markup).toContain('Batch · 4 Feb 2026<span class="history-register__marker"> · In view</span>');
-  });
-
-  it('links another batch directly and states absence once, in the provenance line alone', () => {
-    const batch = makeBatch({ id: 'b1', versionId: 'v1' });
-    const markup = renderHistory({ versions: [root], currentVersionId: 'v1', allBatches: [batch] });
-    expect(markup).toContain('href="/notebook/recipe-1/v1/batch/b1"');
-    expect(markup).toContain('Not yet tasted');
-    expect(markup).not.toContain('recipe-history__outcome');
-  });
-
-  it('uses recorded defects as the outcome when no tasting note exists', () => {
-    const batch = makeBatch({
-      tasting: {
-        tastedDate: '2026-01-03',
-        note: null,
-        defects: ['Sandy, gritty'],
-        bitterDeclared: true,
-      },
-    });
-    const markup = renderHistory({ versions: [root], allBatches: [batch] });
-    expect(markup).toContain('Sandy, gritty · Bitter');
-  });
-
-  it('suppresses navigation while a pen is open', () => {
+  it('renders a labelled section, a caption, a hint, and an ordered list of nodes', () => {
     const batch = makeBatch();
     const markup = renderHistory({
       versions: [root, successor],
       currentVersionId: 'v2',
       allBatches: [batch],
-      openPen: 'record',
     });
-    expect(markup).not.toContain('<a ');
+    expect(markup).toContain('aria-label="History"');
+    expect(markup).toContain('class="notebook-caption">History<');
+    expect(markup).toContain('notebook-history__hint');
+    expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(2);
   });
 
-  it('renders multiple attempts newest first and marks an older batch in view without calling it later', () => {
-    const oldest = makeBatch({ id: 'oldest', churn: { churnDate: '2026-01-02' } });
-    const middle = makeBatch({ id: 'middle', churn: { churnDate: '2026-01-09' } });
-    const newest = makeBatch({ id: 'newest', churn: { churnDate: '2026-01-16' } });
-    const markup = renderHistory({
-      versions: [root],
-      currentVersionId: 'v1',
-      currentBatchId: 'oldest',
-      allBatches: [middle, oldest, newest],
-    });
-
-    expect(markup.indexOf('Batch · 16 Jan 2026')).toBeLessThan(markup.indexOf('Batch · 9 Jan 2026'));
-    expect(markup.indexOf('Batch · 9 Jan 2026')).toBeLessThan(markup.indexOf('Batch · 2 Jan 2026'));
-    expect(markup.match(/<li class="recipe-history__batch/g)).toHaveLength(3);
-    expect(markup).toContain('Batch · 2 Jan 2026<span class="history-register__marker"> · In view</span>');
-    expect(markup).not.toMatch(/\blater\b/i);
-  });
-
-  it('uses readable unknowns for missing version, churn, tasting and cited-batch dates', () => {
-    const undatedRoot = makeVersion({ createdAt: null });
-    const undatedBatch = makeBatch({
-      churn: { churnDate: null },
-      tasting: {
-        tastedDate: null,
-        note: null,
-        defects: null,
-        bitterDeclared: null,
-      },
-    });
-    const undatedChild = makeVersion({
-      ...successor,
-      createdAt: null,
-      reason: '',
-    });
-    const markup = renderHistory({
-      versions: [undatedRoot, undatedChild],
-      currentVersionId: 'v1',
-      allBatches: [undatedBatch],
-    });
-
-    expect((markup.match(/written date unknown/g) ?? []).length).toBe(2);
-    expect(markup).toContain('Batch · date unknown');
-    expect(markup).toContain('From batch · <a tabindex="0" href="/notebook/recipe-1/v1/batch/b1"');
-    expect(markup).toContain('recipe-history__batch-state">Tasted date unknown');
-    expect(markup).not.toContain('>Why<');
-  });
-
-  it('preserves a long multilingual authored name and exposes descriptive list names', () => {
-    const longName = 'نسخة زيت الزيتون الطويلة جدًا · 冰淇淋配方 · 🍨 · '.repeat(5);
-    const longVersion = makeVersion({ versionLabel: longName });
-    const markup = renderHistory({ versions: [longVersion], currentVersionId: 'v1' });
-    expect(markup).toContain(longName);
-    expect(markup).toContain('aria-label="Recipe development history"');
-    expect(markup).toContain('class="recipe-history__version-name"');
-  });
-
-  it('does not render a version belonging to a different recipeId', () => {
-    const other = makeVersion({ id: 'other', recipeId: 'recipe-2', versionLabel: 'Elsewhere' });
-    const markup = renderHistory({ versions: [root, other], currentVersionId: 'v1', allBatches: [] });
-    expect(markup).not.toContain('Elsewhere');
-    expect(markup.match(/<li class="recipe-history__version/g)).toHaveLength(1);
-  });
-
-  // G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
-  // explicit tabindex.
-  it("renders exactly 3 <a> opening tags — v1's name, b1's name, v2's From batch — each carrying an explicit tabindex", () => {
-    const batch = makeBatch({ id: 'b1', versionId: 'v1' });
+  it('renders exactly one link — the version not in view — with an explicit tabindex and the Notebook address', () => {
+    const batch = makeBatch();
     const markup = renderHistory({
       versions: [root, successor],
       currentVersionId: 'v2',
       allBatches: [batch],
     });
     const tags = markup.match(/<a\b[^>]*>/g) ?? [];
-    expect(tags).toHaveLength(3);
-    for (const tag of tags) {
-      expect(tag).toContain('tabindex="0"');
-    }
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('href="/notebook/recipe-1/v1"');
+    expect(tags[0]).toContain('tabindex="0"');
+  });
+
+  it('marks the in-view node with aria-current and the in-view mark class, and leaves the other node unmarked', () => {
+    const batch = makeBatch();
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [batch],
+    });
+    expect(markup).toContain('aria-current="page"');
+    expect(markup).toContain('notebook-history__mark--in-view');
+  });
+
+  it('renders no links at all while a pen is open', () => {
+    const batch = makeBatch();
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [batch],
+      openPen: 'plan',
+    });
+    expect(markup).not.toContain('<a ');
+  });
+
+  it('renders no version belonging to a different recipeId', () => {
+    const other = makeVersion({ id: 'other', recipeId: 'recipe-2', versionLabel: 'Elsewhere' });
+    const markup = renderHistory({ versions: [root, other], currentVersionId: 'v1', allBatches: [] });
+    expect(markup).not.toContain('Elsewhere');
+    expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(1);
+  });
+
+  // D-13: the draft node shows only while the pen is open, from memory —
+  // 03.5-05 Task 2.
+  it('appends a draft node reading "draft" while the pen is open, with no link and a hint that counts it', () => {
+    const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [],
+      openPen: 'plan',
+      draft,
+    });
+    const nodes = markup.match(/<li class="notebook-history__node[^"]*"/g) ?? [];
+    expect(nodes).toHaveLength(3);
+    expect(markup).not.toContain('<a ');
+    expect(markup).toMatch(/notebook-history__state">draft<\/span><\/span><\/li><\/ol>/);
+    expect(markup).toContain('3 versions');
+  });
+
+  it('renders no draft node when openPen is null, even with a draft object passed', () => {
+    const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [],
+      openPen: null,
+      draft,
+    });
+    expect(markup).not.toContain('draft');
+    expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(2);
   });
 });

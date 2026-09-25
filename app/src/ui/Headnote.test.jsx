@@ -61,11 +61,21 @@ describe('Headnote — the Sheet title and Sheet description fields, while the p
     sheetDescription: oliveOilVersion.sheetDescription,
   };
 
-  it('replaces the parent version line with the blank child version field', () => {
+  // 03.5-04 Task 3: the Version name field moves to VersionRow's own
+  // ceremony in the band — Headnote renders no version-line field, no
+  // "Version" or "Version name" label, at all.
+  it('renders no Version field — it moved to the band\'s ceremony (Task 3)', () => {
     const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft });
-    expect(markup).toMatch(/<label class="headnote__version-field"><span class="pen-caption">Version<\/span><input/);
-    expect(markup).toMatch(/<input[^>]*aria-label="Version"[^>]*value=""/);
-    expect(markup).toContain('<span class="field-requirement" aria-hidden="true">Required</span>');
+    expect(markup).not.toContain('headnote__version-field');
+    expect(markup).not.toMatch(/aria-label="Version"/);
+    expect(markup).not.toMatch(/aria-label="Version name"/);
+    expect(markup).not.toContain('>Version<');
+    expect(markup).not.toContain('>Version name<');
+  });
+
+  it('renders the helper line naming what the Sheet fields do (Task 3)', () => {
+    const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft });
+    expect(markup).toContain('What the sheet is served under. Prints as the title. Copies into the next version.');
   });
 
   it('renders a Sheet title text field bound to the pen draft', () => {
@@ -150,17 +160,6 @@ describe('Headnote — the Sheet title and Sheet description fields, while the p
       penDraft: developingDraft,
     });
     expect(markup).not.toContain('prose-struck-beneath');
-  });
-
-  it('connects a blocked version field to its visible error and marks it invalid', () => {
-    const markup = renderHeadnote({
-      mode: 'developing',
-      penDraft: developingDraft,
-      versionLineError: 'Enter a version.',
-    });
-    expect(markup).toMatch(/<input[^>]*aria-invalid="true"[^>]*aria-describedby="version-field-error"/);
-    expect(markup).toContain('<span id="version-field-error" class="field-error">Enter a version.</span>');
-    expect(markup).not.toContain('field-requirement');
   });
 
   it('freezes the identity fields while a version save is in flight', () => {

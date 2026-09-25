@@ -149,7 +149,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(rule.declarations).toMatch(/width:\s*var\(--sheet-track-stop-narrow\)/);
   });
 
-  test('the touch union carries the six sizing rules, and the width-only block keeps the version row (Mark, 2026-09-15: touch is a mode, the version row collapse is a width decision)', () => {
+  test('the touch union carries the six sizing rules, and the width-only block keeps the axis-mark track geometry (Mark, 2026-09-15: touch is a mode, track geometry is a width decision; .recipe-band__row-version moved to notebook.css, 03.5-04 Task 1)', () => {
     const touchRules = rules.filter((r) => r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(touchRules.map((r) => r.selector)).toEqual([
       // .prose-field joined this rule in 260916-vv1 — it takes the shared
@@ -174,7 +174,6 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     // reduces lineage and batch indents without flattening the tree.
     const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
     expect(widthOnly.map((r) => r.selector)).toEqual([
-      '.recipe-band__row-version',
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
     ]);
@@ -363,14 +362,6 @@ describe('the 1099.98px block — the page stacks (sketch 003 line 48, D-15)', (
     expect(rule.declarations).not.toMatch(/padding/);
   });
 
-  test(".recipe-band__row-version's desktop columns read --sheet-vmeta-min at a 300px floor (sketch 003 line 69)", () => {
-    const rule = ruleFor('.recipe-band__row-version');
-    expect(rule, 'expected the desktop .recipe-band__row-version rule').toBeTruthy();
-    expect(rule.declarations).toMatch(
-      /minmax\(0, 1\.6fr\) minmax\(var\(--sheet-vmeta-min\), 1fr\)/,
-    );
-    expect(resolveTokenPx(tokens, '--sheet-vmeta-min')).toBe(300);
-  });
 });
 
 describe('the stylesheet reader sees a media block (parser round-trip, css-source.js)', () => {
@@ -426,10 +417,11 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/letter-spacing:\s*0\.04em/);
   });
 
-  test('the nine caption rules read --sheet-type-label at weight 500', () => {
+  // 03.5-04 Task 3: .headnote__version-field and .headnote__citation
+  // retired (the version pen's own ceremony moved whole into
+  // VersionRow.jsx's .notebook-ceremony) — seven caption rules remain.
+  test('the seven caption rules read --sheet-type-label at weight 500', () => {
     for (const selector of [
-      '.headnote__version-field > .pen-caption',
-      '.headnote__citation span:first-child',
       '.versions__ceremony-field span',
       '.batch-row__cell-label',
       '.method-step__uses legend',
@@ -613,10 +605,10 @@ describe('placeholders italic, entered prose roman pen-blue', () => {
 });
 
 describe('the 6px caption-to-content gap — var(--gap-xs) everywhere a caption and its content share one label', () => {
-  test('the seven existing sites read their caption-to-content distance through var(--gap-xs)', () => {
+  // 03.5-04 Task 3: .headnote__version-field and .headnote__citation
+  // retired — five existing sites remain (down from seven).
+  test('the five existing sites read their caption-to-content distance through var(--gap-xs)', () => {
     for (const selector of [
-      '.headnote__version-field > .pen-caption',
-      '.headnote__citation span:first-child',
       '.versions__ceremony-field span',
       '.method-step__uses legend',
     ]) {

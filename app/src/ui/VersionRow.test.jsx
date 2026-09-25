@@ -78,8 +78,14 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
     const markup = renderVersionRow({});
     expect(markup).toContain('aria-label="Version"');
     expect(markup).toContain(
-      '<h2 class="version-row__identity">Version 1 · 50 g oil · 800 g<span class="history-register__marker"> · Latest</span></h2>',
+      '<h2 class="notebook-version__identity">Version 1 · 50 g oil · 800 g<span class="notebook-version__latest"> · Latest</span></h2>',
     );
+  });
+
+  it('reads as App front matter: a section reading .notebook-version (03.5-04 Task 2), with a "Version" caption before the identity heading', () => {
+    const markup = renderVersionRow({});
+    expect(markup).toContain('<section class="notebook-version" aria-label="Version"');
+    expect(markup).toMatch(/<span class="notebook-caption">Version<\/span>/);
   });
 
   it('renders no bare "Version" region-name heading', () => {
@@ -89,7 +95,7 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
 
   it('reads the word "Version" exactly once in the identity line', () => {
     const markup = renderVersionRow({});
-    const heading = markup.match(/<h2 class="version-row__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
+    const heading = markup.match(/<h2 class="notebook-version__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
     expect((heading.match(/Version/g) ?? []).length).toBe(1);
   });
 
@@ -101,7 +107,7 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
     const fourVersions = [root, child, sibling, grandchild];
     const markup = renderVersionRow({ version: child, versions: fourVersions, citedBatch: null, parentVersion: root });
     expect(markup).toContain('Version 2 · child line');
-    const heading = markup.match(/<h2 class="version-row__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
+    const heading = markup.match(/<h2 class="notebook-version__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
     expect(heading).not.toContain('Latest');
   });
 
@@ -127,13 +133,13 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
     const markup = renderVersionRow({ version: oliveOilVersion, versions: [] });
     expect(markup).toContain('50 g oil · 800 g');
     expect(markup).not.toContain('Version 1');
-    expect(markup).toMatch(/<h2 class="version-row__identity"[^>]*>/);
+    expect(markup).toMatch(/<h2 class="notebook-version__identity"[^>]*>/);
   });
 
   it('lands D-27\'s programmatic focus on the identity heading, carrying tabindex and no aria-label', () => {
     const markup = renderVersionRow({ focusVersionOnMount: true });
-    expect(markup).toMatch(/<h2[^>]*class="version-row__identity[^"]*"[^>]*tabindex="-1"/);
-    const heading = markup.match(/<h2[^>]*class="version-row__identity[^"]*"[^>]*>/)[0];
+    expect(markup).toMatch(/<h2[^>]*class="notebook-version__identity[^"]*"[^>]*tabindex="-1"/);
+    const heading = markup.match(/<h2[^>]*class="notebook-version__identity[^"]*"[^>]*>/)[0];
     expect(heading).not.toContain('aria-label');
     // The focus CALL itself cannot be driven here — there is no jsdom in
     // this suite, so useEffect never runs against a real DOM. Covered by
@@ -158,7 +164,7 @@ describe('VersionRow — the Develop opener, present only with no pen open (D-05
   it('renders no Develop opener while the plan pen is open — the ceremony replaces it (D-06)', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
     expect(markup).not.toMatch(/<button[^>]*>Next version<\/button>/);
-    expect(markup).toMatch(/<h2 class="region-name">Next version<\/h2>/);
+    expect(markup).toContain('Next version · draft from Version 1');
   });
 
   it('renders no Develop opener while a batch pen is open — this row renders nothing at the top for a pen it does not own', () => {
@@ -191,107 +197,88 @@ describe('VersionRow — the Develop opener, present only with no pen open (D-05
 
 });
 
-describe('VersionRow — the two named placeholders, an example in ink small print (D-20)', () => {
-  it('renders the reason example; the version-line example belongs to Headnote', () => {
+// 03.5-04 Task 3: the pen's own ceremony now lives entirely in
+// VersionRow.jsx — a <form class="notebook-ceremony">, the Version name
+// field moved whole from Headnote (keeping required/autoFocus/the
+// blocked-attempt focus effect/FieldFeedback), the Why field restyled in
+// the hand, and From batch reading a single checkbox when exactly one
+// batch is citable (decisions_recorded 5).
+describe('VersionRow — the ceremony (Task 3, 1600-pen.html)', () => {
+  it('renders a form.notebook-ceremony with the draft-from caption naming the parent\'s own ordinal', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toContain('e.g. less oil after the batch of 2 Aug');
-    expect(markup).not.toContain('e.g. 55 g oil · 800 g');
+    expect(markup).toMatch(/<form class="notebook-ceremony" aria-label="Next version"/);
+    expect(markup).toContain('Next version · draft from Version 1');
   });
-});
 
-describe('VersionRow — the ceremony renders nothing pre-filled', () => {
-  it('renders a blank reason and no chosen citation', () => {
+  it('renders a Version name field with the new placeholder and a "was ..." helper, never the old Sheet-context aria-label', () => {
+    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    expect(markup).toMatch(/<input[^>]*placeholder="e\.g\. less oil"[^>]*aria-label="Version name"/);
+    expect(markup).toContain('was 50 g oil · 800 g');
+  });
+
+  it('renders the Why textarea with the new placeholder, in the hand', () => {
+    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    expect(markup).toMatch(/<textarea[^>]*placeholder="what this version is for, in your words"[^>]*aria-label="Why"/);
+    expect(markup).toMatch(/<textarea[^>]*class="notebook-ceremony__why"/);
+  });
+
+  it('renders a single citable batch as one checkbox labelled "date · at-the-machine words", unchecked when nothing is cited', () => {
     const markup = renderVersionRow({
       openPen: 'plan',
       penDraft: emptyPenDraft(),
       batches: [augustSecondBatch],
       canSaveOver: false,
     });
-    expect(markup).toContain('<textarea');
-    expect(markup).not.toContain('value="60 g oil');
+    expect(markup).toMatch(/<legend class="notebook-caption">From batch<\/legend>/);
+    expect(markup).toMatch(/<input type="checkbox"[^>]*\/>2 Aug 2026 · Soft, not greasy/);
+    expect(markup).not.toContain('checked=""');
+    expect(markup).not.toContain('<select');
+  });
+
+  it('checks the single citable-batch checkbox once it is cited, and toggling reads through onChangePenField', () => {
+    const markup = renderVersionRow({
+      openPen: 'plan',
+      penDraft: { ...emptyPenDraft(), citedBatchId: augustSecondBatch.id },
+      batches: [augustSecondBatch],
+      canSaveOver: false,
+    });
+    expect(markup).toMatch(/<input type="checkbox"[^>]*checked=""/);
+  });
+
+  it('renders "no batch" as plain text — no fieldset control — when the version has no batch', () => {
+    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    expect(markup).toContain('no batch');
+    expect(markup).not.toContain('<select');
+    expect(markup).not.toContain('type="checkbox"');
+  });
+
+  it('keeps the existing select once more than one batch is citable', () => {
+    const secondBatch = { ...augustSecondBatch, id: 'second-batch', churn: { ...augustSecondBatch.churn, churnDate: '2026-08-09' } };
+    const markup = renderVersionRow({
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      batches: [augustSecondBatch, secondBatch],
+      canSaveOver: false,
+    });
+    expect(markup).toContain('<select');
     expect(markup).toMatch(/<option value="" selected="">no batch cited<\/option>/);
   });
 
-  it('renders "no batch" when the version has no batch', () => {
-    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toContain('no batch');
-  });
-});
-
-// 03.1-04 read the reason field with no visible label at all; 03.3-06
-// checkpoint feedback (Mark, 2026-09-10, sketch 003 variant B,
-// index.html:222) supersedes that for a visible "Why" label matching
-// Version's own — never the retired "Reason" wording — while the field
-// itself still carries its own accessible name in aria-label.
-describe('VersionRow — the reason field carries a visible "Why" label (03.1-04, superseded by 03.3-06 checkpoint feedback)', () => {
-  it('renders a visible "Why" label, never "Reason", alongside the aria-label', () => {
-    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).not.toContain('<span>Reason</span>');
-    expect(markup).toMatch(/<label class="headnote__reason-field"><span class="pen-caption">Why<\/span>/);
-    expect(markup).toMatch(/<textarea[^>]*aria-label="Why"/);
-    expect(markup).toMatch(/<textarea[^>]*class="prose-field prose-field--empty"/);
-  });
-
-  it('drops the empty baseline once the rationale holds prose', () => {
-    const markup = renderVersionRow({
-      openPen: 'plan',
-      penDraft: { ...emptyPenDraft(), reason: 'Less oil after the batch of 2 Aug.' },
-      batches: [],
-      canSaveOver: true,
-    });
-    expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
-    expect(markup).not.toContain('prose-field--empty');
-  });
-});
-
-// 03.3-06 checkpoint feedback (sketch 003 variant B, index.html:225): the
-// citation reads as a label over its control, the same shape Version and
-// Why use, not a label beside its control on one line.
-describe('VersionRow — the citation reads label-over-control, like Version and Why (03.3-06 checkpoint feedback)', () => {
-  it('wraps "From batch" and its select in one label, the control after the visible span', () => {
-    const markup = renderVersionRow({
-      openPen: 'plan',
-      penDraft: emptyPenDraft(),
-      batches: [augustSecondBatch],
-      canSaveOver: false,
-    });
-    expect(markup).toMatch(/<label class="headnote__citation"><span>From batch<\/span><select/);
-  });
-
-  it('wraps "no batch" in the same label-over-control shape when the version has no batch', () => {
-    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toMatch(/<label class="headnote__citation"><span>From batch<\/span><span class="ink-text">no batch<\/span><\/label>/);
-  });
-});
-
-describe('VersionRow — save actions name their versioning outcome', () => {
-  it('a version with a batch renders Cancel then Save as a new version', () => {
-    const markup = renderVersionRow({
-      openPen: 'plan',
-      penDraft: emptyPenDraft(),
-      batches: [augustSecondBatch],
-      canSaveOver: false,
-    });
-    const cancelIndex = markup.indexOf('Cancel');
-    const saveIndex = markup.indexOf('Save as a new version');
+  it('renders Cancel (outline) then Save as a new version (filled) in DOM order, with Save over this version last only when canSaveOver', () => {
+    const withoutOver = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [augustSecondBatch], canSaveOver: false });
+    const cancelIndex = withoutOver.indexOf('Cancel');
+    const saveIndex = withoutOver.indexOf('Save as a new version');
     expect(cancelIndex).toBeGreaterThanOrEqual(0);
     expect(saveIndex).toBeGreaterThan(cancelIndex);
-    expect(markup).not.toContain('Save over this version');
-  });
+    expect(withoutOver).not.toContain('Save over this version');
+    expect(withoutOver).toMatch(/<button type="button" class="notebook-action--outline"[^>]*>Cancel<\/button>/);
+    expect(withoutOver).toMatch(/<button type="button" class="notebook-action"[^>]*>Save as a new version<\/button>/);
 
-  it('a version with no batch renders Cancel, Save as a new version, then Save over this version', () => {
-    const markup = renderVersionRow({
-      openPen: 'plan',
-      penDraft: emptyPenDraft(),
-      batches: [],
-      canSaveOver: true,
-    });
-    const cancelIndex = markup.indexOf('Cancel');
-    const saveAsIndex = markup.indexOf('Save as a new version');
-    const saveIndex = markup.indexOf('Save over this version');
-    expect(cancelIndex).toBeGreaterThanOrEqual(0);
-    expect(saveAsIndex).toBeGreaterThan(cancelIndex);
-    expect(saveIndex).toBeGreaterThan(saveAsIndex);
+    const withOver = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
+    const saveAsIndex = withOver.indexOf('Save as a new version');
+    const saveOverIndex = withOver.indexOf('Save over this version');
+    expect(saveOverIndex).toBeGreaterThan(saveAsIndex);
+    expect(withOver).toMatch(/<button type="button" class="notebook-action--outline"[^>]*>Save over this version<\/button>/);
   });
 
   it('disables every ceremony action and names the active save while saving a child', () => {
@@ -303,32 +290,34 @@ describe('VersionRow — save actions name their versioning outcome', () => {
       saveAction: 'new',
     });
     expect(markup).toContain('aria-busy="true"');
-    expect(markup).toMatch(/<button type="button" disabled="">Cancel<\/button>/);
-    expect(markup).toMatch(/<button type="button" disabled="">Saving new version…<\/button>/);
-    expect(markup).toMatch(/<select[^>]*disabled=""/);
+    expect(markup).toMatch(/<button type="button" class="notebook-action--outline" disabled="">Cancel<\/button>/);
+    expect(markup).toMatch(/<button type="button" class="notebook-action" disabled="">Saving new version…<\/button>/);
+    expect(markup).toMatch(/<input type="checkbox"[^>]*disabled=""/);
     expect(markup).toMatch(/<textarea[^>]*disabled=""/);
   });
-});
 
-describe('VersionRow — field validation is owned by Headnote', () => {
-  it('does not repeat a blocked Version error beside the controls', () => {
+  it('connects a blocked Version name field to its visible error and marks it invalid', () => {
     const markup = renderVersionRow({
       openPen: 'plan',
       penDraft: emptyPenDraft(),
       batches: [],
       canSaveOver: true,
-      penHint: 'Enter a version.',
+      versionLineError: 'Enter a version.',
     });
-    expect(markup).not.toContain('Enter a version.');
-    expect(markup).not.toContain('version-field-error');
+    expect(markup).toMatch(/<input[^>]*aria-invalid="true"[^>]*aria-describedby="version-field-error"/);
+    expect(markup).toContain('<span id="version-field-error" class="field-error">Enter a version.</span>');
   });
 });
 
+// 03.5-04 Task 3: the pen ceremony states the parent through its own
+// caption ("Next version · draft from Version N") and the Version name
+// field's "was ..." helper — no dl, no Written/Why metadata repeated.
 describe('VersionRow — the parent is stated as provenance for the draft', () => {
-  it('renders the saved parent under From version and hides its old Written and Why metadata', () => {
+  it('names the parent in the caption and the helper, with no dl and no old Written/Why metadata', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toMatch(/<dt[^>]*>From version<\/dt>/);
-    expect(markup).toContain(`<dd class="versions__lineage">${oliveOilVersion.versionLabel}</dd>`);
+    expect(markup).toContain(`Next version · draft from Version 1`);
+    expect(markup).toContain(`was ${oliveOilVersion.versionLabel}`);
+    expect(markup).not.toContain('<dl');
     expect(markup).not.toMatch(/<dt[^>]*>Written<\/dt>/);
     expect(markup).not.toContain('no reason recorded');
   });
@@ -486,23 +475,24 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
       parentVersion: oliveOilVersion,
     });
     expect(withParent).toContain('Show changes');
-    expect(withParent).toContain('headnote__show-changes');
-    expect(withParent).toContain('text-toggle');
+    expect(withParent).toContain('notebook-link');
 
     const withoutParent = renderVersionRow({ version: childVersion, citedBatch: augustSecondBatch, parentVersion: null });
     expect(withoutParent).not.toContain('Show changes');
   });
 
-  // 03.3-06 checkpoint feedback (sketch 003 variant B, index.html:479):
-  // Show changes reads as a text control, not a bordered button. One fill
-  // for every on state (2026-09-16): it is also a square-and-word toggle.
-  it('renders Show changes carrying the text-control and text-toggle classes', () => {
+  // 03.5-04 Task 2: Show changes reads as an App control now (.notebook-link),
+  // its aria-pressed state carrying the toggle — App context reads its own
+  // controls, not the Sheet's .text-control/.text-toggle pair (03.3-06
+  // checkpoint feedback's own square-and-word toggle stays a Sheet-only
+  // convention).
+  it('renders Show changes carrying the notebook-link class and aria-pressed', () => {
     const markup = renderVersionRow({
       version: childVersion,
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    expect(markup).toMatch(/<button[^>]*class="headnote__show-changes text-control text-toggle"[^>]*>Show changes<\/button>/);
+    expect(markup).toMatch(/<button[^>]*class="notebook-link"[^>]*aria-pressed="false"[^>]*>Show changes<\/button>/);
   });
 
   it('renders Parent and Batch as plain text, not links, while a pen is open', () => {
@@ -534,9 +524,9 @@ describe('VersionRow — no batch list rendered here any more (D-09, moved to Ba
 // developing) and the History disclosure (while open) — matching sketch 003
 // variant B's own `.vmeta`/`.ceremony`/`.list` siblings (index.html:208-233).
 describe('VersionRow — the saved metadata transforms into the next-version ceremony', () => {
-  it('wraps the reading-mode stack in a "vmeta" section, the sketch\'s own class name', () => {
+  it('wraps the reading-mode stack in a "notebook-version" section (03.5-04 Task 2: App front matter, not the Sheet\'s vmeta)', () => {
     const markup = renderVersionRow({});
-    expect(markup).toMatch(/<section class="vmeta" aria-label="Version">/);
+    expect(markup).toMatch(/<section class="notebook-version" aria-label="Version">/);
   });
 
   it('renders the acts group (Next version, Record, Show changes) AFTER the dl, matching the sketch\'s own dl-then-acts order', () => {
@@ -547,18 +537,22 @@ describe('VersionRow — the saved metadata transforms into the next-version cer
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    const dlIndex = markup.indexOf('version-row__meta-list');
-    const actsIndex = markup.indexOf('versions__opener-group');
+    const dlIndex = markup.indexOf('notebook-version__details');
+    const actsIndex = markup.indexOf('notebook-version__acts');
     const showChangesIndex = markup.lastIndexOf('Show changes');
     expect(dlIndex).toBeGreaterThanOrEqual(0);
     expect(actsIndex).toBeGreaterThan(dlIndex);
     expect(showChangesIndex).toBeGreaterThan(actsIndex);
   });
 
-  it('uses the existing metadata column for the next-version provenance and controls', () => {
+  it('renders Next version with the filled-action class (03.5-04 Task 2)', () => {
+    const markup = renderVersionRow({ openPen: null });
+    expect(markup).toMatch(/<button[^>]*class="notebook-action"[^>]*>Next version<\/button>/);
+  });
+
+  it('renders the ceremony as a form in the band, not the old vmeta section (Task 3)', () => {
     const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [], canSaveOver: true });
-    expect(markup).toMatch(/<section class="vmeta vmeta--developing" aria-label="Next version">/);
-    expect(markup).toMatch(/<h2 class="region-name">Next version<\/h2>/);
+    expect(markup).toMatch(/<form class="notebook-ceremony" aria-label="Next version"/);
     expect(markup).not.toContain('versions__ceremony-row');
   });
 
@@ -573,7 +567,7 @@ describe('VersionRow — the saved metadata transforms into the next-version cer
 // beside the controls and the kept draft, because the pen stays open —
 // mirrors BatchRow.test.jsx's own form-status block (~892-912).
 describe('VersionRow — the plan pen\'s own form-status live region', () => {
-  it('renders a role="status" region after the From-batch field and before the ceremony', () => {
+  it('renders a role="status" region after the From-batch field and before the actions', () => {
     const markup = renderVersionRow({
       openPen: 'plan',
       penDraft: emptyPenDraft(),
@@ -585,14 +579,14 @@ describe('VersionRow — the plan pen\'s own form-status live region', () => {
     expect(markup).toContain('role="status"');
     expect(markup).toContain('aria-live="polite"');
     expect(markup).toContain('Check the version. Your changes have been kept.');
-    const citationIndex = markup.indexOf('class="headnote__citation"');
+    const citationIndex = markup.indexOf('notebook-ceremony__batch-fieldset');
     const formStatusIndex = markup.indexOf('class="form-status"');
-    const ceremonyIndex = markup.indexOf('class="headnote__ceremony"');
+    const actionsIndex = markup.indexOf('notebook-ceremony__actions');
     expect(citationIndex).not.toBe(-1);
     expect(formStatusIndex).not.toBe(-1);
-    expect(ceremonyIndex).not.toBe(-1);
+    expect(actionsIndex).not.toBe(-1);
     expect(formStatusIndex).toBeGreaterThan(citationIndex);
-    expect(ceremonyIndex).toBeGreaterThan(formStatusIndex);
+    expect(actionsIndex).toBeGreaterThan(formStatusIndex);
   });
 
   it('renders the region empty (no text node) when formStatus is blank — mounted before any text arrives', () => {

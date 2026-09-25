@@ -24,6 +24,7 @@ import { Method } from './Method.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchRow } from './BatchRow.jsx';
+import { RecipeBand } from './RecipeBand.jsx';
 import { Headnote } from './Headnote.jsx';
 import { VersionRow } from './VersionRow.jsx';
 import { PenFoot } from './PenFoot.jsx';
@@ -743,6 +744,28 @@ export function RecipePage({ onPageStatus = () => {} }) {
     };
   }, [versionId]);
 
+  // The recipe record (03.5-04 Task 1, D-11): the band's own RecipeBand
+  // reads name/description from here, not from the version — Rename edits
+  // only this record. Keyed on the loaded version's own recipeId (not the
+  // route's, though the not-found guard above already proves the two
+  // agree by the time this fires) — the same house cancelled-flag pattern
+  // citedBatch/parentVersion below already use, so a stale response from
+  // an abandoned fetch can never land on the wrong version.
+  const [recipe, setRecipe] = useState(undefined);
+  useEffect(() => {
+    let cancelled = false;
+    if (!version) {
+      setRecipe(undefined);
+      return undefined;
+    }
+    repository.getRecipe(version.recipeId).then((result) => {
+      if (!cancelled) setRecipe(result ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [version]);
+
   // The cited batch this version's lineage line names (route-recipe-version.md
   // § 3): citedBatchId is an id only — the batch itself lives on the
   // parent, never copied onto the child — so its churn date is read once
@@ -862,6 +885,16 @@ export function RecipePage({ onPageStatus = () => {} }) {
   if (version === null || version.recipeId !== recipeId) {
     return <RecipeNotFound />;
   }
+  // The recipe record's own loading/missing branches (03.5-04 Task 1):
+  // this fetch starts only once `version` resolves (it is keyed on
+  // `version`, above), so `recipe` is briefly `undefined` even once
+  // `version` itself has painted — the same "loading branch returns null"
+  // discipline the version guard above already follows. `null` — a
+  // version whose recipeId names no stored recipe — is treated as the
+  // same not-found page, for the same reason the mismatched-recipeId
+  // branch above is: a recipe view never renders with no recipe to show.
+  if (recipe === undefined) return null;
+  if (recipe === null) return <RecipeNotFound />;
 
   // The one call site (D-UAT-1): every control that disables while a pen
   // is open reads openPen/penReason from here, never mode directly.
@@ -1784,24 +1817,21 @@ export function RecipePage({ onPageStatus = () => {} }) {
     });
   }
 
+  // Rename's own write (03.5-04 Task 1, D-12): writes the recipe record
+  // through the seam at once — no version, no Why, no fork, and no saved
+  // Sheet is touched. RecipeBand owns its own error/saving state; this
+  // handler's only job is the seam call and the local state update, the
+  // same shape every other save in this file follows (Promise -> then
+  // setState).
+  function handleSaveRecipe(next) {
+    return repository.saveRecipe(next).then(() => setRecipe(next));
+  }
+
   return (
-    <article className="recipe-page" aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
-      {/* The front matter (sketch 003 variant B, 03.3-01): two
-            full-width stacked rows — the version's row, then the batch's
-            row (app.css .recipe-band). Recipe block first in DOM order,
-            so the intro paragraph field precedes every save in the tab
-            order (D-28). */}
-      <div className="recipe-band">
-        <div className="recipe-band__row-version">
-          <Headnote
-            version={version}
-            mode={mode}
-            penDraft={penDraft}
-            onChangePenField={handleChangePenField}
-            versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
-            versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
-            isSaving={versionSaveAction !== null}
-          />
+    <div className="notebook">
+      <header className="notebook-band">
+        <div className="notebook-band__grid">
+          <RecipeBand recipe={recipe} onSave={handleSaveRecipe} />
 
           <VersionRow
             version={version}
@@ -1826,10 +1856,114 @@ export function RecipePage({ onPageStatus = () => {} }) {
             openBatch={openBatch}
             onStartRecording={handleStartRecording}
             focusVersionOnMount={focusVersionOnMount}
+            versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
+            versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
           />
         </div>
+      </header>
 
-        {mode !== 'developing' && (
+      <div className="notebook-body">
+        <div className="notebook-body__sheet">
+          <article className="recipe-page" aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
+            <div className="recipe-band">
+              <Headnote
+                version={version}
+                mode={mode}
+                penDraft={penDraft}
+                onChangePenField={handleChangePenField}
+                isSaving={versionSaveAction !== null}
+              />
+            </div>
+
+            <section className="ingredient-table-region" aria-label="Ingredients">
+              <h2 className="region-name">Ingredients</h2>
+              {hasRows ? (
+                <IngredientTable
+                  rows={mode === 'developing' || showingChanges ? version.rows : readingVersion.rows}
+                  draftVersion={draftVersion}
+                  diff={changeDiff}
+                  showingChanges={showingChanges}
+                  blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
+                  blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
+                  markedRowIds={markedRowIds}
+                  markedFigureLabel={markedFigureLabel}
+                  mode={mode}
+                  draft={draft}
+                  penDraft={penDraft}
+                  openBatch={evidenceBatch}
+                  comparisonBatchLabel={comparisonBatchLabel}
+                  steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
+                  currentStepNumbers={currentStepNumbers}
+                  onChangeAsMade={handleChangeAsMade}
+                  onChangePenGrams={handleChangePenGrams}
+                  onTogglePenRowRemoved={handleTogglePenRowRemoved}
+                />
+              ) : (
+                <p>This version has no ingredient rows.</p>
+              )}
+            </section>
+
+            <section className="method-region" aria-label="Instructions">
+              <Method
+                steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
+                stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
+                mode={mode}
+                onChangeStepChange={handleChangeStepChange}
+                rows={version.rows}
+                draftVersion={draftVersion}
+                baselineVersion={version}
+                penDiff={penDiff}
+                penStaleSteps={penStaleSteps}
+                showingChanges={showingChanges}
+                changeDiff={changeDiff}
+                staleSteps={changeStaleSteps}
+                staleFlagVisible={mode === 'developing' || showingChanges}
+                currentStepNumbers={currentStepNumbers}
+                baselineStepNumbers={baselineStepNumbers}
+                onChangePenStepField={handleChangePenStepField}
+                onChangePenStepTarget={handleChangePenStepTarget}
+                onTogglePenStepUses={handleTogglePenStepUses}
+                onTogglePenStepRemoved={handleTogglePenStepRemoved}
+                beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
+                onChangeNoteText={handleChangePenNoteText}
+                onRemoveNote={handleRemovePenNote}
+              />
+            </section>
+
+            {/* Column two, what the sheet does not print: the formulation
+                note beside the table, then the margin beneath it. One
+                flow, so the method's height never separates the two. */}
+            <div className="side-region">
+              <section className="formulation-note-region" aria-label="Balance">
+                <FormulationNote
+                  version={liveVersion}
+                  mode={mode}
+                  diff={mode === 'developing' ? penDiff : changeDiff}
+                  onFocusFigure={setFocusedFigureKey}
+                  onBlurFigure={() => setFocusedFigureKey(null)}
+                />
+                <BasisNote version={liveVersion} />
+              </section>
+
+              <div className="margin-region">
+                <DerivedAdvisories version={liveVersion} />
+              </div>
+            </div>
+
+            <PenFoot
+              openPen={openPen}
+              batchSaveAction={batchSaveAction}
+              tastingOpen={draft?.tastingOpen ?? false}
+              pendingUndo={pendingUndo}
+              onCancelRecording={handleCancelRecording}
+              onSaveBatch={handleSaveBatch}
+              onAddTasting={handleAddTasting}
+            />
+          </article>
+        </div>
+
+        <aside className="notebook-log" aria-label="Batch">
+          {mode !== 'developing' && (
           <BatchRow
             version={version}
             batches={batches}
@@ -1866,99 +2000,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onCancelRecording={handleCancelRecording}
             onSaveBatch={handleSaveBatch}
           />
-        )}
+          )}
+        </aside>
       </div>
-
-      <section className="ingredient-table-region" aria-label="Ingredients">
-        <h2 className="region-name">Ingredients</h2>
-        {hasRows ? (
-          <IngredientTable
-            rows={mode === 'developing' || showingChanges ? version.rows : readingVersion.rows}
-            draftVersion={draftVersion}
-            diff={changeDiff}
-            showingChanges={showingChanges}
-            blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
-            blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
-            markedRowIds={markedRowIds}
-            markedFigureLabel={markedFigureLabel}
-            mode={mode}
-            draft={draft}
-            penDraft={penDraft}
-            openBatch={evidenceBatch}
-            comparisonBatchLabel={comparisonBatchLabel}
-            steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
-            currentStepNumbers={currentStepNumbers}
-            onChangeAsMade={handleChangeAsMade}
-            onChangePenGrams={handleChangePenGrams}
-            onTogglePenRowRemoved={handleTogglePenRowRemoved}
-          />
-        ) : (
-          <p>This version has no ingredient rows.</p>
-        )}
-      </section>
-
-      <section className="method-region" aria-label="Instructions">
-        <Method
-          steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
-          stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
-          mode={mode}
-          onChangeStepChange={handleChangeStepChange}
-          rows={version.rows}
-          draftVersion={draftVersion}
-          baselineVersion={version}
-          penDiff={penDiff}
-          penStaleSteps={penStaleSteps}
-          showingChanges={showingChanges}
-          changeDiff={changeDiff}
-          staleSteps={changeStaleSteps}
-          staleFlagVisible={mode === 'developing' || showingChanges}
-          currentStepNumbers={currentStepNumbers}
-          baselineStepNumbers={baselineStepNumbers}
-          onChangePenStepField={handleChangePenStepField}
-          onChangePenStepTarget={handleChangePenStepTarget}
-          onTogglePenStepUses={handleTogglePenStepUses}
-          onTogglePenStepRemoved={handleTogglePenStepRemoved}
-          beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
-          onChangeNoteText={handleChangePenNoteText}
-          onRemoveNote={handleRemovePenNote}
-        />
-      </section>
-
-      {/* Column two, what the sheet does not print: the formulation note
-          beside the table, then the margin beneath it. One flow, so the
-          method's height never separates the two. */}
-      <div className="side-region">
-        <section className="formulation-note-region" aria-label="Balance">
-          <FormulationNote
-            version={liveVersion}
-            mode={mode}
-            diff={mode === 'developing' ? penDiff : changeDiff}
-            onFocusFigure={setFocusedFigureKey}
-            onBlurFigure={() => setFocusedFigureKey(null)}
-          />
-          <BasisNote version={liveVersion} />
-        </section>
-
-        <div className="margin-region">
-          <DerivedAdvisories version={liveVersion} />
-        </div>
-      </div>
-
-      <PenFoot
-        openPen={openPen}
-        canSaveOver={canSaveOver}
-        saveAction={versionSaveAction}
-        batchSaveAction={batchSaveAction}
-        tastingOpen={draft?.tastingOpen ?? false}
-        pendingUndo={pendingUndo}
-        onCancelDeveloping={handleCancelDeveloping}
-        onSaveAsNewVersion={handleSaveAsNewVersion}
-        onSaveOverVersion={handleSaveOverVersion}
-        onCancelRecording={handleCancelRecording}
-        onSaveBatch={handleSaveBatch}
-        onAddTasting={handleAddTasting}
-        onUndoRemove={handleUndoRemove}
-      />
-    </article>
+    </div>
   );
 }

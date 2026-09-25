@@ -6,6 +6,7 @@ import './styles/app.css';
 import './styles/shell.css';
 import './styles/history.css';
 import './styles/home.css';
+import './styles/notebook.css';
 import { repository } from './store/repository.js';
 import { seedIfEmpty } from './store/seed.js';
 import { App } from './router.jsx';

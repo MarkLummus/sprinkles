@@ -1,10 +1,11 @@
-import { HistoryDisclosure, HistoryPanel, HistoryMarkers } from './History.jsx';
+import { HistoryDisclosure, HistoryPanel } from './History.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { recordDateWords } from '../domain/batch.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { RecipeHistory } from './RecipeHistory.jsx';
 import { notebookPath } from './notebookPaths.js';
+import { FieldFeedback } from './FieldFeedback.jsx';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
@@ -39,6 +40,13 @@ export function VersionRow({
   openBatch = null,
   onStartRecording,
   focusVersionOnMount = false,
+  // The Version name field's own blocked-save state (03.5-04 Task 3,
+  // moved whole from Headnote.jsx): versionLineBlockedAttempt is an
+  // attempt counter (WR-01's pattern) so a second consecutive block still
+  // refocuses the field; versionLineError is the field's own contract
+  // sentence, read by FieldFeedback.
+  versionLineBlockedAttempt = null,
+  versionLineError = null,
 }) {
   // Focus-return for the Develop opener: closing the plan's pen returns
   // focus to the control that opened it. Must sit above the conditional
@@ -88,6 +96,14 @@ export function VersionRow({
     }
   }, [focusVersionOnMount, mode]);
 
+  // Focus-return for the Version name field's own blocked save (03.5-04
+  // Task 3, moved whole from Headnote.jsx): must sit above the
+  // conditional render below, same as every other ref/effect pair here.
+  const versionLineFieldRef = useRef(null);
+  useEffect(() => {
+    if (versionLineBlockedAttempt != null) versionLineFieldRef.current?.focus();
+  }, [versionLineBlockedAttempt]);
+
   // The recipe-level History disclosure is closed by default. One complete
   // version set feeds both its count and the parent-child outline, so the
   // label and revealed content cannot diverge.
@@ -102,85 +118,141 @@ export function VersionRow({
   const ordered = sortedVersions(recipeVersions);
   const isLatest = ordered.length > 0 && ordered[0].id === version.id;
 
+  // The ceremony's own caption (03.5-04 Task 3, decisions_recorded 6):
+  // "Next version · draft from Version N", N the PARENT's (this version's)
+  // own position in the same ordered array versionIdentity reads — absent
+  // during the pre-load paint, the same edge case versionIdentity itself
+  // already handles by falling back to no guessed number.
+  const versionOrdinalIndex = ordered.findIndex((candidate) => candidate.id === version.id);
+  const ceremonyCaption =
+    versionOrdinalIndex >= 0
+      ? `Next version · draft from Version ${ordered.length - versionOrdinalIndex}`
+      : 'Next version';
+
+  // The From batch fieldset's own citable list (decisions_recorded 5):
+  // one checkbox when exactly one batch is citable, the existing select
+  // with more than one, and "no batch" with none — computed once here so
+  // the fieldset's three branches never call citableBatches a second time.
+  const citable = citableBatches(batches);
+
   return (
     <>
-      <section
-        className={`vmeta${openPen === 'plan' ? ' vmeta--developing' : ''}`}
-        aria-label={openPen === 'plan' ? 'Next version' : 'Version'}
-        aria-busy={saveAction ? 'true' : undefined}
-      >
-        {openPen === 'plan' ? (
-          <>
-            <h2 className="region-name">Next version</h2>
-            <dl className="version-row__meta-list">
-              <dt className="versions__lineage-label">From version</dt>
-              <dd className="versions__lineage">{version.versionLabel}</dd>
-            </dl>
-            <label className="headnote__reason-field">
-              <span className="pen-caption">Why</span>
-              <textarea
-                className={penDraft.reason === '' ? 'prose-field prose-field--empty' : 'prose-field'}
-                rows="2"
-                disabled={saveAction !== null}
-                placeholder="e.g. less oil after the batch of 2 Aug"
-                value={penDraft.reason}
-                aria-label="Why"
-                onChange={(event) => onChangePenField('reason', event.target.value)}
-              />
-            </label>
-            <label className="headnote__citation">
-              <span>From batch</span>
-              {batches.length === 0 ? (
-                <span className="ink-text">no batch</span>
-              ) : (
-                <select
-                  className="ink-field"
+      {openPen === 'plan' ? (
+        <form
+          className="notebook-ceremony"
+          aria-label="Next version"
+          aria-busy={saveAction ? 'true' : undefined}
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <span className="notebook-caption">{ceremonyCaption}</span>
+
+          {/* The Version name field (03.5-04 Task 3, moved whole from
+              Headnote.jsx): keeps required/autoFocus, the blocked-attempt
+              focus effect and FieldFeedback — only its placeholder, helper
+              and aria-label change (1600-pen.html). */}
+          <label className="notebook-field">
+            <span className="notebook-caption">Version name</span>
+            <input
+              ref={versionLineFieldRef}
+              type="text"
+              className="ink-field"
+              required
+              autoFocus
+              disabled={saveAction !== null}
+              placeholder="e.g. less oil"
+              value={penDraft.versionLabel}
+              aria-label="Version name"
+              aria-invalid={versionLineError ? 'true' : undefined}
+              aria-describedby={versionLineError ? 'version-field-error' : undefined}
+              onChange={(event) => onChangePenField('versionLabel', event.target.value)}
+            />
+            <p className="notebook-helper">{`was ${version.versionLabel}`}</p>
+            <FieldFeedback error={versionLineError} errorId="version-field-error" required />
+          </label>
+
+          <label className="notebook-field">
+            <span className="notebook-caption">Why</span>
+            <textarea
+              className="notebook-ceremony__why"
+              rows="2"
+              disabled={saveAction !== null}
+              placeholder="what this version is for, in your words"
+              value={penDraft.reason}
+              aria-label="Why"
+              onChange={(event) => onChangePenField('reason', event.target.value)}
+            />
+          </label>
+
+          {/* From batch (decisions_recorded 5): one checkbox when exactly
+              one batch is citable, the existing select with more than one,
+              "no batch" with none — a group of checkboxes never pretends
+              to be single-choice. */}
+          <fieldset className="notebook-ceremony__batch-fieldset">
+            <legend className="notebook-caption">From batch</legend>
+            {batches.length === 0 ? (
+              <span className="ink-text">no batch</span>
+            ) : citable.length === 1 ? (
+              <label className="notebook-ceremony__batch-option">
+                <input
+                  type="checkbox"
                   disabled={saveAction !== null}
-                  value={penDraft.citedBatchId ?? ''}
-                  aria-label="Cite a batch"
-                  onChange={(event) =>
-                    onChangePenField('citedBatchId', event.target.value === '' ? null : event.target.value)
+                  checked={penDraft.citedBatchId === citable[0].id}
+                  onChange={() =>
+                    onChangePenField('citedBatchId', penDraft.citedBatchId === citable[0].id ? null : citable[0].id)
                   }
-                >
-                  <option value="">no batch cited</option>
-                  {citableBatches(batches).map((batch) => (
-                    <option key={batch.id} value={batch.id}>
-                      {recordDateWords(batch.churn.churnDate)}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </label>
-            {/* The pen's own form-scoped live region (the todo file's middle
-                row): a refused save and a failed write speak here, beside
-                the controls and the kept draft, because the pen stays open
-                and the draft survives — the page scope is for the save
-                that ends the session. Mirrors BatchRow.jsx's own region. */}
-            <p className="form-status" role="status" aria-live="polite">
-              {formStatus}
-            </p>
-            <div className="headnote__ceremony">
-              <button type="button" disabled={saveAction !== null} onClick={onCancelDeveloping}>
-                Cancel
+                />
+                {`${recordDateWords(citable[0].churn.churnDate)}${citable[0].churn.atTheMachine ? ` · ${citable[0].churn.atTheMachine}` : ''}`}
+              </label>
+            ) : (
+              <select
+                className="ink-field"
+                disabled={saveAction !== null}
+                value={penDraft.citedBatchId ?? ''}
+                aria-label="Cite a batch"
+                onChange={(event) =>
+                  onChangePenField('citedBatchId', event.target.value === '' ? null : event.target.value)
+                }
+              >
+                <option value="">no batch cited</option>
+                {citable.map((batch) => (
+                  <option key={batch.id} value={batch.id}>
+                    {recordDateWords(batch.churn.churnDate)}
+                  </option>
+                ))}
+              </select>
+            )}
+          </fieldset>
+
+          {/* The pen's own form-scoped live region (the todo file's middle
+              row): a refused save and a failed write speak here, beside
+              the controls and the kept draft, because the pen stays open
+              and the draft survives — the page scope is for the save
+              that ends the session. Mirrors BatchRow.jsx's own region. */}
+          <p className="form-status" role="status" aria-live="polite">
+            {formStatus}
+          </p>
+
+          <div className="notebook-ceremony__actions">
+            <button type="button" className="notebook-action--outline" disabled={saveAction !== null} onClick={onCancelDeveloping}>
+              Cancel
+            </button>
+            <button type="button" className="notebook-action" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
+              {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
+            </button>
+            {canSaveOver && (
+              <button type="button" className="notebook-action--outline" disabled={saveAction !== null} onClick={onSaveOverVersion}>
+                {saveAction === 'over' ? 'Saving this version…' : 'Save over this version'}
               </button>
-              {canSaveOver ? (
-                <>
-                  <button type="button" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
-                    {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
-                  </button>
-                  <button type="button" disabled={saveAction !== null} onClick={onSaveOverVersion}>
-                    {saveAction === 'over' ? 'Saving this version…' : 'Save over this version'}
-                  </button>
-                </>
-              ) : (
-                <button type="button" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
-                  {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
-                </button>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
+            )}
+          </div>
+        </form>
+      ) : (
+        <section className="notebook-version" aria-label="Version" aria-busy={saveAction ? 'true' : undefined}>
+        {/* The version column as App front matter (03.5-04 Task 2, sketch
+            011 1600-batch.html): a "Version" caption, then the identity
+            heading. */}
+        <span className="notebook-caption">Version</span>
+
         {/* The identity heading (route-recipe.md § 6 "One version identity,
             wherever a version is named", 2026-09-18): replaces the sketch's
             bare "Version" region-name heading with the same identity line
@@ -189,15 +261,18 @@ export function VersionRow({
             from Headnote.jsx: the ref, the temporary is-landing-focus
             class, tabIndex and the blur clear. No aria-label override —
             the visible line now says what the override said, so the
-            accessible name and the visible text agree. */}
+            accessible name and the visible text agree. Restyled as App
+            front matter (Task 2): HistoryMarkers (a Sheet-context register
+            marker) is replaced by a literal "· Latest" span — the only
+            marker this heading ever draws. */}
         <h2
           ref={versionIdentityRef}
-          className={`version-row__identity${landingFocusVisible ? ' is-landing-focus' : ''}`}
+          className={`notebook-version__identity${landingFocusVisible ? ' is-landing-focus' : ''}`}
           tabIndex={focusVersionOnMount ? -1 : undefined}
           onBlur={() => setLandingFocusVisible(false)}
         >
           {versionIdentity(ordered, version)}
-          <HistoryMarkers latest={isLatest} />
+          {isLatest && <span className="notebook-version__latest"> · Latest</span>}
         </h2>
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
@@ -212,7 +287,7 @@ export function VersionRow({
             used to close this dl (the struck Later dt/dd); it now sits on
             its own line below the dl (260917-odu) — see
             version-row__history just after </dl>. */}
-        <dl className="version-row__meta-list">
+        <dl className="notebook-version__details">
           <dt className="versions__lineage-label">Written</dt>
           <dd className="versions__lineage version-row__written">{recordDateWords(version.createdAt)}</dd>
           {version.parentVersionId && (
@@ -276,39 +351,37 @@ export function VersionRow({
           </p>
         )}
 
-        {/* The acts group (sketch 003 variant B, index.html:215, 479):
-            Next version, then Record another/Record batch, then Show
-            changes (once a parent exists) — one row, below the dl, only
-            while no pen is open. */}
+        {/* The acts group (sketch 003 variant B, index.html:215, 479;
+            restyled as App front matter, Task 2): Next version, then
+            Record another/Record batch, then Show changes (once a parent
+            exists) — one row, below the dl, only while no pen is open. */}
         {openPen === null && (
-          <div className="versions__openers">
-            <div className="versions__opener-group">
+          <div className="notebook-version__acts">
+            <button
+              type="button"
+              ref={developButtonRef}
+              className="notebook-action"
+              onClick={onStartDeveloping}
+            >
+              Next version
+            </button>
+            <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
+              {openBatch ? 'Record another' : 'Record batch'}
+            </button>
+            {parentVersion && (
               <button
                 type="button"
-                ref={developButtonRef}
-                onClick={onStartDeveloping}
+                className="notebook-link"
+                aria-pressed={showingChanges}
+                onClick={onToggleShowChanges}
               >
-                Next version
+                Show changes
               </button>
-              <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
-                {openBatch ? 'Record another' : 'Record batch'}
-              </button>
-              {parentVersion && (
-                <button
-                  type="button"
-                  className="headnote__show-changes text-control text-toggle"
-                  aria-pressed={showingChanges}
-                  onClick={onToggleShowChanges}
-                >
-                  Show changes
-                </button>
-              )}
-            </div>
+            )}
           </div>
         )}
-          </>
-        )}
-      </section>
+        </section>
+      )}
 
       <HistoryPanel open={historyOpen} id="version-row-history" className="recipe-band__full-row" title="History">
           <RecipeHistory

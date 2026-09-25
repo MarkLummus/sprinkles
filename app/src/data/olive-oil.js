@@ -240,28 +240,16 @@ export const oliveOilVersion = {
     },
   ],
   // Authored, not derived — judgement the app cannot reach. The sheet also
-  // prints an ultra-pasteurised-dairy note under "Carried forward" and a
-  // machine-minimum-fill note under "Before you start"; both are *derived*
-  // structural advisories Phase 3 computes (FORM2-02) and are deliberately
-  // held here — restating a derived figure as authored judgement is exactly
-  // the mixing the brief separates. Each note is { text, inheritedFrom }:
-  // inheritedFrom is null on a version's own authored notes, and carries a
-  // parent's version line on a note a child inherited unedited (D-10).
+  // prints a machine-minimum-fill note under "Before you start"; that is a
+  // *derived* structural advisory Phase 3 computes (FORM2-02) and is
+  // deliberately held here — restating a derived figure as authored
+  // judgement is exactly the mixing the brief separates. Each note is
+  // { text, inheritedFrom }: inheritedFrom is null on a version's own
+  // authored notes, and carries a parent's version line on a note a child
+  // inherited unedited (D-10). Carried forward is gone from this record
+  // (03.5-CONTEXT.md decision 10, D-06 of the 03.5 revision): its three
+  // notes' words are dropped, not moved — beforeYouStart is the whole shape.
   authored: {
-    carriedForward: [
-      {
-        text: 'Gellan in the cream — roughly 0.03–0.09 g at this cream weight, an estimate with no published spec. Below anything you would taste, against 1.68 g of deliberate stabiliser.',
-        inheritedFrom: null,
-      },
-      {
-        text: 'No glucose syrup — less costly at 13% milkfat than it would be at 8%, since the milkfat is carrying structure the DE42 would have provided.',
-        inheritedFrom: null,
-      },
-      {
-        text: 'This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.',
-        inheritedFrom: null,
-      },
-    ],
     beforeYouStart: [
       {
         text: 'Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.',

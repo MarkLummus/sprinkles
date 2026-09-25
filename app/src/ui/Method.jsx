@@ -512,9 +512,9 @@ export function Method({
   mode = 'reading',
   onChangeStepChange = () => {},
   rows = [],
-  // "Before you start" (03.3-01, moved out of Authored.jsx): the same
-  // NoteList shape carriedForward already uses, headed at the top of the
-  // Method rather than in column two.
+  // "Before you start" (03.3-01, moved out of Authored.jsx): NoteList's
+  // own shape (Authored.jsx), headed at the top of the Method rather
+  // than in column two.
   beforeYouStart = [],
   onChangeNoteText = () => {},
   onRemoveNote = () => {},

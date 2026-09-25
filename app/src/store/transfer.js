@@ -4,14 +4,26 @@
 // write: a malformed file is refused with every error found, never
 // half-applied (T-04-01) and never used to reach past an object's own
 // properties into its prototype chain (T-04-02). It now knows exactly one
-// shape — schemaVersion 5, the battery's stored shape
-// (03.3.1-CONTEXT.md D-09) — and refuses 1 through 4 rather than lifting
-// them; there is no ladder here anymore.
+// shape — schemaVersion 6, carrying recipes beside versions and batches
+// (03.5-CONTEXT.md D-10, D-11) — and refuses everything older rather than
+// lifting it; there is no ladder here.
 import { AXES } from '../domain/axes.js';
 import { SEGMENT_OPTIONS, DEFECTS } from '../domain/battery.js';
 
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const DECLARED_AXIS_NAMES = AXES.filter((axis) => axis.group === 'declared').map((axis) => axis.name);
+
+// The store file's own bookkeeping number (D-10) — distinct from
+// DB_VERSION (db.js) and VERSION_SCHEMA_VERSION (olive-oil.js): three
+// separate counters, each incrementing only its own prior value. Bumped
+// to 6 this phase because the file gained a `recipes` array and the
+// version shape lost `recipeName`/`headnote` (D-11).
+export const STORE_SCHEMA_VERSION = 6;
+
+// D-10: a plain sentence a maker can read, pushed first — before the
+// path-named `$.schemaVersion` error — whenever the file is from a
+// version of Sprinkles older than this one.
+export const OLDER_EXPORT_MESSAGE = 'This file is from an older version of Sprinkles and can’t be imported.';
 
 function isPlainObject(value) {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -153,6 +165,26 @@ function validateAuthoredNote(note, path, errors) {
   }
   if (!isStringOrNull(note.inheritedFrom)) {
     errors.push(`${path}.inheritedFrom: expected a string or null, got ${JSON.stringify(note.inheritedFrom)}`);
+  }
+}
+
+/**
+ * validateRecipe(recipe, path, errors) -> void, in validateAuthoredNote's
+ * own collect-all-errors, name-the-path style: object check, id a
+ * non-empty string, name and description each a string (D-11's { id,
+ * name, description } shape). Never throws.
+ */
+function validateRecipe(recipe, path, errors) {
+  if (!isPlainObject(recipe)) {
+    errors.push(`${path}: expected an object`);
+    return;
+  }
+  if (!isNonEmptyString(recipe.id)) errors.push(`${path}.id: expected a non-empty string`);
+  if (typeof recipe.name !== 'string') {
+    errors.push(`${path}.name: expected a string, got ${JSON.stringify(recipe.name)}`);
+  }
+  if (typeof recipe.description !== 'string') {
+    errors.push(`${path}.description: expected a string, got ${JSON.stringify(recipe.description)}`);
   }
 }
 
@@ -351,16 +383,9 @@ function validateVersion(version, path, errors) {
   } else {
     version.method.forEach((step, index) => validateStep(step, `${path}.method[${index}]`, errors));
   }
-  if (
-    !isPlainObject(version.authored) ||
-    !Array.isArray(version.authored.carriedForward) ||
-    !Array.isArray(version.authored.beforeYouStart)
-  ) {
-    errors.push(`${path}.authored: expected { carriedForward: [], beforeYouStart: [] }`);
+  if (!isPlainObject(version.authored) || !Array.isArray(version.authored.beforeYouStart)) {
+    errors.push(`${path}.authored: expected { beforeYouStart: [] }`);
   } else {
-    version.authored.carriedForward.forEach((note, index) =>
-      validateAuthoredNote(note, `${path}.authored.carriedForward[${index}]`, errors),
-    );
     version.authored.beforeYouStart.forEach((note, index) =>
       validateAuthoredNote(note, `${path}.authored.beforeYouStart[${index}]`, errors),
     );
@@ -404,15 +429,17 @@ function validateVersion(version, path, errors) {
  * Collects every error found — never stops at the first — and names the
  * offending path in each message so the maker can see what was wrong.
  * Pure: it has no repository parameter and makes no store call — the D-09
- * parent-resolves check, which needs to know what the store already
- * holds, lives in importStore below, after this gate and before any write.
+ * parent-resolves check and the D-11 recipe-resolves check, which need to
+ * know what the store already holds, live in importStore below, after
+ * this gate and before any write.
  *
- * D-09 (03.3.1-CONTEXT.md): the accepted schema is the single value 5, the
- * battery's stored shape. A store exported after this change imports
- * after it; a store exported before it — schemaVersion 1 through 4 — is
- * refused as old rather than silently read as current. Reinstating that
- * older promise means restoring one lift branch in importStore alone,
- * never a second live-database ladder (CONTEXT.md Deferred Ideas).
+ * D-10, D-11 (03.5-CONTEXT.md): the accepted schema is the single value
+ * STORE_SCHEMA_VERSION (6), carrying a `recipes` array beside versions
+ * and batches. A store exported after this change imports after it; a
+ * store exported before it is refused as old — with OLDER_EXPORT_MESSAGE
+ * first, a plain sentence a maker can read — rather than silently read as
+ * current or lifted. The store resets rather than migrates (D-10): there
+ * is no lift branch here.
  */
 export function validateStoreFile(parsed) {
   const errors = [];
@@ -426,8 +453,11 @@ export function validateStoreFile(parsed) {
   if (parsed.app !== 'sprinkles') {
     errors.push(`$.app: expected "sprinkles", got ${JSON.stringify(parsed.app)}`);
   }
-  if (parsed.schemaVersion !== 5) {
-    errors.push(`$.schemaVersion: expected 5, got ${JSON.stringify(parsed.schemaVersion)}`);
+  if (typeof parsed.schemaVersion === 'number' && parsed.schemaVersion < STORE_SCHEMA_VERSION) {
+    errors.push(OLDER_EXPORT_MESSAGE);
+  }
+  if (parsed.schemaVersion !== STORE_SCHEMA_VERSION) {
+    errors.push(`$.schemaVersion: expected ${STORE_SCHEMA_VERSION}, got ${JSON.stringify(parsed.schemaVersion)}`);
   }
   if (!Array.isArray(parsed.versions)) {
     errors.push('$.versions: expected an array');
@@ -441,6 +471,12 @@ export function validateStoreFile(parsed) {
     parsed.batches.forEach((batch, index) => validateBatch(batch, `$.batches[${index}]`, errors));
   }
 
+  if (!Array.isArray(parsed.recipes)) {
+    errors.push('$.recipes: expected an array');
+  } else {
+    parsed.recipes.forEach((recipe, index) => validateRecipe(recipe, `$.recipes[${index}]`, errors));
+  }
+
   return { ok: errors.length === 0, errors };
 }
 
@@ -448,24 +484,28 @@ export function validateStoreFile(parsed) {
 export async function exportStore(repository) {
   const versions = await repository.getAll();
   const batches = await repository.getAllBatches();
+  const recipes = await repository.listRecipes();
   return {
     app: 'sprinkles',
-    schemaVersion: 5,
+    schemaVersion: STORE_SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
     versions,
     batches,
+    recipes,
   };
 }
 
 /**
  * importStore(repository, parsed) -> { ok, errors }. Validates parsed
- * directly — schemaVersion 5 is the only shape this function ever sees,
- * so there is no lift to run first. Writes nothing on failure — a
+ * directly — STORE_SCHEMA_VERSION is the only shape this function ever
+ * sees, so there is no lift to run first. Writes nothing on failure — a
  * partially applied import is worse than a refused one (T-04-01, T-02-08).
- * The D-09 parent-resolves gate runs after validation and before any
- * write, in the same two-step "validate then write" shape: a version
- * whose parentVersionId does not resolve to another version in this file
- * or an id already in the store refuses the whole import.
+ * The D-09 parent-resolves gate and the D-11 recipe-resolves gate run
+ * after validation and before any write, in the same two-step "validate
+ * then write" shape: a version whose parentVersionId does not resolve to
+ * another version in this file or an id already in the store, or whose
+ * recipeId does not resolve to a recipe in this file or the store,
+ * refuses the whole import.
  */
 export async function importStore(repository, parsed) {
   const { ok, errors } = validateStoreFile(parsed);
@@ -484,6 +524,23 @@ export async function importStore(repository, parsed) {
   });
   if (parentErrors.length > 0) return { ok: false, errors: parentErrors };
 
+  // D-11: a version whose recipeId names no recipe, in this file or
+  // already in the store, refuses the whole import — the same shape as
+  // the parent-resolves gate above.
+  const fileRecipeIds = new Set(parsed.recipes.map((recipe) => recipe.id));
+  const storeRecipes = await repository.listRecipes();
+  const storeRecipeIds = new Set(storeRecipes.map((recipe) => recipe.id));
+  const recipeErrors = [];
+  parsed.versions.forEach((version, index) => {
+    if (!fileRecipeIds.has(version.recipeId) && !storeRecipeIds.has(version.recipeId)) {
+      recipeErrors.push(
+        `$.versions[${index}].recipeId: refers to a recipe not present in this file or the store, ${JSON.stringify(version.recipeId)}`,
+      );
+    }
+  });
+  if (recipeErrors.length > 0) return { ok: false, errors: recipeErrors };
+
+  await repository.putAllRecipes(parsed.recipes);
   await repository.putAll(parsed.versions);
   await repository.putAllBatches(parsed.batches);
   return { ok: true, errors: [] };

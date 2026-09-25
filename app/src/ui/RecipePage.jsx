@@ -20,7 +20,6 @@ import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
-import { Authored } from './Authored.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchRow } from './BatchRow.jsx';
@@ -289,7 +288,6 @@ export function isPenDraftDirty(mode, penDraft, version) {
     return isStepDirty(draftStep, step);
   });
   if (methodDirty) return true;
-  if (isAuthoredListDirty(penDraft.authored.carriedForward, version.authored.carriedForward)) return true;
   if (isAuthoredListDirty(penDraft.authored.beforeYouStart, version.authored.beforeYouStart)) return true;
   return false;
 }
@@ -1931,12 +1929,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
         <div className="margin-region">
           <DerivedAdvisories version={liveVersion} />
-          <Authored
-            carriedForward={mode === 'developing' && penDraft ? penDraft.authored.carriedForward : version.authored.carriedForward}
-            mode={mode}
-            onChangeNoteText={handleChangePenNoteText}
-            onRemoveNote={handleRemovePenNote}
-          />
         </div>
       </div>
 

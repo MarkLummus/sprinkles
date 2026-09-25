@@ -4,7 +4,7 @@ import { GraduatedRule } from './GraduatedRule.jsx';
 // The six graduated rules under the ingredient table — the brief's focal
 // moment. buildFigures computes every value, band, and deviation; this
 // component only renders them, in the order the domain module returns.
-export function FormulationNote({ version, mode, diff = null, onFocusFigure, onBlurFigure }) {
+export function FormulationNote({ version, mode, diff = null, onFocusFigure, onBlurFigure, showHeading = true }) {
   const figures = buildFigures(version);
 
   if (figures.length === 0) return null;
@@ -20,7 +20,7 @@ export function FormulationNote({ version, mode, diff = null, onFocusFigure, onB
 
   return (
     <div className="formulation-note">
-      <h2 className="region-name">Balance</h2>
+      {showHeading && <h2 className="region-name">Balance</h2>}
       {figures.map((figure) => {
         // The show-changes state's per-figure delta (route-recipe-version.md
         // § 3, § 6, 03-04): matched by key from the one buildDiff RecipePage

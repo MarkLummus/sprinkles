@@ -227,7 +227,7 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
 // judgment. The caller renders this only while `batch.tasting` exists; a
 // batch with none reads its own silence-is-a-value sentence instead
 // (BatchRow's read view, below).
-function TastingReading({ batch }) {
+function TastingReading({ batch, foldable = false }) {
   const axes = axesForBatch(batch);
   const marks = batch.tasting.marks;
   const markedAxes = axes.filter((axis) => marks[axis.key] != null);
@@ -235,14 +235,13 @@ function TastingReading({ batch }) {
     ...(batch.tasting.defects ?? []),
     ...(batch.tasting.bitterDeclared ? [DECLARED_FLAW] : []),
   ];
-  return (
-    <div className="tasting-reading">
-      <div className="tasting-reading__head">
-        <h3 className="region-name">Tasting</h3>
-        <p className="batch-row__date">
-          {`tasted ${recordDateWords(batch.tasting.tastedDate)}`}
-        </p>
-      </div>
+  // The Tasting fold (03.5-08 Task 1, settled decision 6): local, never
+  // stored, starts closed on every mount. Only this component's own body
+  // folds — the churn cells above it (BatchRow's own reading branch)
+  // stay open at every width.
+  const [tastingOpen, setTastingOpen] = useState(false);
+  const body = (
+    <>
       <div className="batch-row__cells tasting-reading__conditions">
         <div className="batch-row__cell">
           <span className="batch-row__cell-label">Tempering</span>
@@ -318,6 +317,28 @@ function TastingReading({ batch }) {
           </div>
         </div>
       </div>
+    </>
+  );
+  return (
+    <div className="tasting-reading">
+      <div className="tasting-reading__head">
+        <h3 className="region-name">Tasting</h3>
+        <p className="batch-row__date">
+          {`tasted ${recordDateWords(batch.tasting.tastedDate)}`}
+        </p>
+        {foldable && (
+          <HistoryDisclosure open={tastingOpen} onToggle={() => setTastingOpen((open) => !open)} panelId="fold-tasting">
+            {tastingOpen ? 'Hide' : 'Show'}
+          </HistoryDisclosure>
+        )}
+      </div>
+      {foldable ? (
+        <div id="fold-tasting" hidden={!tastingOpen}>
+          {body}
+        </div>
+      ) : (
+        body
+      )}
     </div>
   );
 }
@@ -421,6 +442,10 @@ export function BatchRow({
   // decisions_recorded 1) — the same reference RecipePage.jsx already
   // passes to VersionRow's own Next version/Develop opener.
   onStartRecording,
+  // The Tasting fold (03.5-08 Task 1, settled decision 6): below desktop
+  // TastingReading's own body closes by default; at desktop (foldable
+  // false, the default) nothing here changes.
+  foldable = false,
 }) {
   // Focus-return for the Correct opener this row owns — closing the pen
   // returns focus to the control that opened it. Must sit above the
@@ -1022,7 +1047,7 @@ export function BatchRow({
                 tasting; a batch with none reads its own
                 silence-is-a-value sentence instead. */}
             {openBatch.tasting ? (
-              <TastingReading batch={openBatch} />
+              <TastingReading batch={openBatch} foldable={foldable} />
             ) : (
               <p>This batch has not been tasted yet.</p>
             )}

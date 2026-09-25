@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 4/9 plans executed
+**Plans:** 5/9 plans executed
 
 Plans:
 
@@ -484,7 +484,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3)*
 
-- [ ] 03.5-05-PLAN.md — The History rail: dated, versions only, filled/hollow/ring, the draft node only while the pen is open (D-13)
+- [x] 03.5-05-PLAN.md — The History rail: dated, versions only, filled/hollow/ring, the draft node only while the pen is open (D-13)
 
 **Wave 5** *(blocked on Wave 4)*
 

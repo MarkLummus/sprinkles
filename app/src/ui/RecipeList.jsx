@@ -21,15 +21,19 @@ export function RecipeList() {
   const storeRevision = useOutletContext();
   const [versions, setVersions] = useState(null);
   const [batches, setBatches] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([repository.listVersions(), repository.getAllBatches()]).then(([loadedVersions, loadedBatches]) => {
-      if (!cancelled) {
-        setVersions(loadedVersions);
-        setBatches(loadedBatches);
-      }
-    });
+    Promise.all([repository.listVersions(), repository.getAllBatches(), repository.listRecipes()]).then(
+      ([loadedVersions, loadedBatches, loadedRecipes]) => {
+        if (!cancelled) {
+          setVersions(loadedVersions);
+          setBatches(loadedBatches);
+          setRecipes(loadedRecipes);
+        }
+      },
+    );
     return () => {
       cancelled = true;
     };
@@ -42,7 +46,7 @@ export function RecipeList() {
         {versions === null ? (
           <p className="home__loading">Loading your recipes…</p>
         ) : (
-          <HomeBody versions={versions} batches={batches} />
+          <HomeBody versions={versions} batches={batches} recipes={recipes} />
         )}
       </div>
     </div>
@@ -54,7 +58,7 @@ export function RecipeList() {
 // separate presentational component, over plain versions/batches props,
 // so it is testable without driving RecipeList's own fetch effect — the
 // same convention HomeLead and RecipeRows already establish.
-export function HomeBody({ versions, batches }) {
+export function HomeBody({ versions, batches, recipes = [] }) {
   if (versions.length === 0) {
     return (
       <div className="home__empty">
@@ -72,12 +76,12 @@ export function HomeBody({ versions, batches }) {
       </div>
     );
   }
-  const work = activeWork(versions, batches);
+  const work = activeWork(versions, batches, recipes);
   return (
     <>
       <HomeLead entry={work[0] ?? null} />
       <h2 className="home__section">Recipes</h2>
-      <RecipeRows versions={versions} batches={batches} />
+      <RecipeRows versions={versions} batches={batches} recipes={recipes} />
     </>
   );
 }
@@ -213,10 +217,10 @@ function RowActions({ entry }) {
 // recipe page (RecipeHistory.jsx). The lead recipe stays in this list
 // too (D-12): activeWork's own first entry is not excluded here.
 //
-// batches defaults to [] so the existing tests, which pass versions
-// alone, keep passing.
-export function RecipeRows({ versions, batches = [] }) {
-  const work = activeWork(versions, batches);
+// batches and recipes default to [] so the existing tests, which pass
+// versions alone, keep passing.
+export function RecipeRows({ versions, batches = [], recipes = [] }) {
+  const work = activeWork(versions, batches, recipes);
   return (
     <ul className="home__list">
       {work.map((entry) => {

@@ -34,6 +34,19 @@ export const SEED_USES = {
   10: [],
 };
 
+// The recipe record (D-11): reached only through the repository seam's
+// recipes methods, never through the version. Its id matches
+// oliveOilVersion.recipeId below. D-09: seeded exactly as the boards draw
+// it — the name carries "circulator" (the version's own equipment word),
+// the description is today's headnote text, verbatim, character for
+// character.
+export const oliveOilRecipe = {
+  id: 'olive-oil-ice-cream',
+  name: 'Olive Oil Ice Cream, circulator',
+  description:
+    'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
+};
+
 // Deep-copy the ingredient record onto the row so a stored version is
 // self-contained (D-05): a later edit to the shared `library` must never
 // move a figure already computed from a version's own rows.

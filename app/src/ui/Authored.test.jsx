@@ -1,19 +1,23 @@
 // Component test for the authored notes (route-recipe-version.md § 3;
-// D-13 § 8, task 1). In the existing house style: renderToStaticMarkup
+// D-13 § 8, task 1; 03.5-CONTEXT.md decision 10: the Authored wrapper and
+// its Carried forward legend are gone — NoteList is the whole component
+// now, exercised directly the way Method.jsx's "Before you start" already
+// calls it). In the existing house style: renderToStaticMarkup
 // (react-dom/server) in the node test environment, no jsdom, no
-// testing-library, no MemoryRouter — Authored renders no Link. Follows
+// testing-library, no MemoryRouter — NoteList renders no Link. Follows
 // Headnote.test.jsx's render-helper convention (03.1-04 task 3).
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Authored } from './Authored.jsx';
+import { NoteList } from './Authored.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 const noop = () => {};
 
-function renderAuthored(props) {
+function renderNoteList(props) {
   return renderToStaticMarkup(
-    <Authored
-      carriedForward={oliveOilVersion.authored.carriedForward}
+    <NoteList
+      listKey="beforeYouStart"
+      notes={oliveOilVersion.authored.beforeYouStart}
       mode="reading"
       onChangeNoteText={noop}
       onRemoveNote={noop}
@@ -22,43 +26,49 @@ function renderAuthored(props) {
   );
 }
 
-describe('Authored — a note in the reading state', () => {
+describe('NoteList — a note in the reading state', () => {
   it('renders the note as plain prose, not a field', () => {
-    const markup = renderAuthored({});
-    expect(markup).toContain(oliveOilVersion.authored.carriedForward[0].text);
+    const markup = renderNoteList({});
+    expect(markup).toContain(oliveOilVersion.authored.beforeYouStart[0].text);
     expect(markup).not.toContain('<textarea');
     expect(markup).not.toContain('ink-field');
     expect(markup).not.toContain('prose-field');
   });
 
   it('renders no remove control while reading', () => {
-    const markup = renderAuthored({});
+    const markup = renderNoteList({});
     expect(markup).not.toContain('<button');
+  });
+
+  it('renders no Carried forward legend of any kind — the list left the store (decisions_recorded 10)', () => {
+    const markup = renderNoteList({});
+    expect(markup).not.toContain('Carried forward');
+    expect(markup).not.toContain('authored__legend');
   });
 });
 
-describe('Authored — a note while developing (03.1-04, D-13 § 8)', () => {
+describe('NoteList — a note while developing (03.1-04, D-13 § 8)', () => {
   it('renders the note as a prose field, not the counted field\'s class', () => {
-    const markup = renderAuthored({ mode: 'developing' });
+    const markup = renderNoteList({ mode: 'developing' });
     expect(markup).toMatch(/<textarea[^>]*class="prose-field"/);
     expect(markup).not.toContain('ink-field');
   });
 
   it('carries the note\'s own accessible name, with no visible label word', () => {
-    const markup = renderAuthored({ mode: 'developing' });
-    expect(markup).toMatch(/<textarea[^>]*aria-label="carriedForward note 1"/);
+    const markup = renderNoteList({ mode: 'developing' });
+    expect(markup).toMatch(/<textarea[^>]*aria-label="beforeYouStart note 1"/);
   });
 
   it('renders a remove control beside the field', () => {
-    const markup = renderAuthored({ mode: 'developing' });
+    const markup = renderNoteList({ mode: 'developing' });
     expect(markup).toMatch(/<button[^>]*>remove<\/button>/);
   });
 });
 
-describe('Authored — the inherited-from marker survives both states (D-06)', () => {
+describe('NoteList — the inherited-from marker survives both states (D-06)', () => {
   it('renders the marker in the reading state', () => {
-    const markup = renderAuthored({
-      carriedForward: [{ text: 'A carried note.', inheritedFrom: '50 g oil · 800 g' }],
+    const markup = renderNoteList({
+      notes: [{ text: 'A before-you-start note.', inheritedFrom: '50 g oil · 800 g' }],
       mode: 'reading',
     });
     expect(markup).toContain('authored__inherited');
@@ -66,8 +76,8 @@ describe('Authored — the inherited-from marker survives both states (D-06)', (
   });
 
   it('renders the marker beside the field while developing', () => {
-    const markup = renderAuthored({
-      carriedForward: [{ text: 'A carried note.', inheritedFrom: '50 g oil · 800 g' }],
+    const markup = renderNoteList({
+      notes: [{ text: 'A before-you-start note.', inheritedFrom: '50 g oil · 800 g' }],
       mode: 'developing',
     });
     expect(markup).toContain('authored__inherited');
@@ -75,7 +85,7 @@ describe('Authored — the inherited-from marker survives both states (D-06)', (
   });
 
   it('renders no marker at all for a note with none', () => {
-    const markup = renderAuthored({});
+    const markup = renderNoteList({});
     expect(markup).not.toContain('authored__inherited');
   });
 });

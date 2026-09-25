@@ -183,7 +183,6 @@ function makeBaselineVersion(overrides = {}) {
       },
     ],
     authored: {
-      carriedForward: [{ text: 'Carried note', inheritedFrom: null }],
       beforeYouStart: [{ text: 'Before note', inheritedFrom: null }],
     },
     ...overrides,

@@ -51,14 +51,14 @@ describe('oliveOilVersion.method', () => {
   });
 });
 
-describe('oliveOilVersion.authored', () => {
-  it('has exactly three carried-forward notes and two before-you-start notes', () => {
-    expect(oliveOilVersion.authored.carriedForward).toHaveLength(3);
+describe('oliveOilVersion.authored (D-06, D-10: Carried forward is gone, not moved)', () => {
+  it('has exactly one key, beforeYouStart, holding the two existing notes', () => {
+    expect(Object.keys(oliveOilVersion.authored)).toEqual(['beforeYouStart']);
     expect(oliveOilVersion.authored.beforeYouStart).toHaveLength(2);
   });
 
   it('mentions neither ultra-pasteurised mass nor machine minimum fill — both are derived, not authored', () => {
-    const allNotes = [...oliveOilVersion.authored.carriedForward, ...oliveOilVersion.authored.beforeYouStart]
+    const allNotes = oliveOilVersion.authored.beforeYouStart
       .map((note) => note.text)
       .join(' ')
       .toLowerCase();
@@ -66,20 +66,25 @@ describe('oliveOilVersion.authored', () => {
     expect(allNotes).not.toMatch(/minimum fill/);
   });
 
-  it('is three carried-forward and two before-you-start note objects, each with a text string and inheritedFrom null', () => {
-    for (const note of [...oliveOilVersion.authored.carriedForward, ...oliveOilVersion.authored.beforeYouStart]) {
+  it('is two before-you-start note objects, each with a text string and inheritedFrom null', () => {
+    for (const note of oliveOilVersion.authored.beforeYouStart) {
       expect(typeof note.text).toBe('string');
       expect(note.inheritedFrom).toBeNull();
     }
   });
 
-  it('carries the exact authored wording for the low-anchor and Graza-tasting notes', () => {
-    const carriedForwardTexts = oliveOilVersion.authored.carriedForward.map((note) => note.text);
+  it('carries the exact authored wording for the Graza-tasting note', () => {
     const beforeYouStartTexts = oliveOilVersion.authored.beforeYouStart.map((note) => note.text);
-    expect(carriedForwardTexts).toContain('This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.');
     expect(beforeYouStartTexts).toContain(
       'Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.',
     );
+  });
+
+  it('the carried-forward words are dropped entirely, not moved into beforeYouStart (decisions_recorded 10)', () => {
+    const beforeYouStartTexts = oliveOilVersion.authored.beforeYouStart.map((note) => note.text).join(' ');
+    expect(beforeYouStartTexts).not.toContain('low anchor');
+    expect(beforeYouStartTexts).not.toContain('Gellan in the cream');
+    expect(beforeYouStartTexts).not.toContain('glucose syrup');
   });
 });
 

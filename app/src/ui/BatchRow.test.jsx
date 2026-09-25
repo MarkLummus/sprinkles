@@ -1296,6 +1296,39 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   });
 });
 
+// The Tasting fold (03.5-08 Task 1, sketch 011 1366-batch.html/settled
+// decision 6): below desktop the tasting read view closes by default
+// behind a "Show"/"Hide" control on the Tasting head; the churn cells
+// above it are never folded. At desktop (foldable false/absent) nothing
+// changes.
+describe('BatchRow — the Tasting fold below desktop (03.5-08 Task 1, settled decision 6)', () => {
+  it('renders a closed Show control on the Tasting head and a hidden fold-tasting wrapper when foldable', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldable: true });
+    expect(markup).toMatch(
+      /<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="fold-tasting">Show<\/button>/,
+    );
+    expect(markup).toMatch(/<div id="fold-tasting" hidden="?/);
+    // The tasting cells sit inside the fold, after the id="fold-tasting" opening tag.
+    const foldIndex = markup.indexOf('id="fold-tasting"');
+    const conditionsIndex = markup.indexOf('tasting-reading__conditions');
+    expect(conditionsIndex).toBeGreaterThan(foldIndex);
+  });
+
+  it('leaves the churn cells outside any fold when foldable', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldable: true });
+    const churnCellsIndex = markup.indexOf('class="batch-row__cells"');
+    const foldIndex = markup.indexOf('id="fold-tasting"');
+    expect(churnCellsIndex).toBeGreaterThan(-1);
+    expect(churnCellsIndex).toBeLessThan(foldIndex);
+  });
+
+  it('renders no Show/Hide control and no fold-tasting wrapper when not foldable', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).not.toContain('aria-controls="fold-tasting"');
+    expect(markup).not.toContain('id="fold-tasting"');
+  });
+});
+
 describe('BatchRow — zero-batch and unknown-address states', () => {
   it('reads "no batch yet" with no batch recorded', () => {
     const markup = renderBatchRow({ openBatch: null, batches: [] });

@@ -20,6 +20,22 @@ describe('FormulationNote — the region head reads Balance, not the book vocabu
   });
 });
 
+// The Balance heading moves to the owning region below desktop (03.5-08
+// Task 1, decisions_recorded 3): the region renders the h2 itself at
+// every width, so FormulationNote renders none when told showHeading is
+// false — its place never depends on width.
+describe('FormulationNote — the heading moves to the owning region below desktop (03.5-08 Task 1, decisions_recorded 3)', () => {
+  it('renders no h2 when showHeading is false', () => {
+    const markup = renderToStaticMarkup(<FormulationNote version={oliveOilVersion} mode="reading" showHeading={false} />);
+    expect(markup).not.toContain('<h2');
+  });
+
+  it('renders the Balance h2 when showHeading is true (the default)', () => {
+    const markup = renderToStaticMarkup(<FormulationNote version={oliveOilVersion} mode="reading" />);
+    expect(markup).toMatch(/<h2[^>]*class="region-name"[^>]*>Balance<\/h2>/);
+  });
+});
+
 describe('FormulationNote — graduated rules leave the recording tab path (D-04)', () => {
   it('gives every graduated-rule button tabindex="-1" while recording', () => {
     const markup = renderToStaticMarkup(<FormulationNote version={oliveOilVersion} mode="recording" />);

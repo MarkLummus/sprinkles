@@ -461,6 +461,27 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
   });
 });
 
+// The Details fold (03.5-08 Task 1, sketch 011 1366-batch.html/settled
+// decision 6): below desktop the version's own Written/From/Why details
+// close by default behind a "Details" control; at desktop (foldable
+// false/absent) nothing about this section changes.
+describe('VersionRow — the Details fold below desktop (03.5-08 Task 1, settled decision 6)', () => {
+  it('renders a closed Details control and a hidden dl when foldable', () => {
+    const markup = renderVersionRow({ foldable: true });
+    expect(markup).toMatch(
+      /<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="fold-version">Details<\/button>/,
+    );
+    expect(markup).toMatch(/<dl class="notebook-version__details" id="fold-version" hidden="?/);
+  });
+
+  it('renders no Details control and a visible dl when not foldable', () => {
+    const markup = renderVersionRow({});
+    expect(markup).not.toContain('>Details<');
+    expect(markup).not.toContain('id="fold-version"');
+    expect(markup).toContain('<dl class="notebook-version__details">');
+  });
+});
+
 describe('VersionRow — no batch list rendered here any more (D-09, moved to BatchRow)', () => {
   it('renders no batch-margin__list element', () => {
     const markup = renderVersionRow({});

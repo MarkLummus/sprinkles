@@ -12,6 +12,15 @@ import {
 } from './mexican-chocolate.js';
 import { pineappleRecipe, pineappleV1, pineappleV1Batch } from './pineapple.js';
 import { coconutRecipe, coconutV1, coconutV1Batch, coconutV2, coconutV2Batch } from './coconut.js';
+import {
+  strawberryRecipe,
+  strawberryV1,
+  strawberryV1Batch,
+  strawberryV2,
+  strawberryV2Batch,
+  strawberryV2_1,
+  strawberryV2_1Batch,
+} from './strawberry.js';
 
 export const transcribedRecipeGroups = [
   {
@@ -21,4 +30,9 @@ export const transcribedRecipeGroups = [
   },
   { recipe: pineappleRecipe, versions: [pineappleV1], batches: [pineappleV1Batch] },
   { recipe: coconutRecipe, versions: [coconutV1, coconutV2], batches: [coconutV1Batch, coconutV2Batch] },
+  {
+    recipe: strawberryRecipe,
+    versions: [strawberryV1, strawberryV2, strawberryV2_1],
+    batches: [strawberryV1Batch, strawberryV2Batch, strawberryV2_1Batch],
+  },
 ];

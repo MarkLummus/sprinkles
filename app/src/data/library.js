@@ -241,4 +241,76 @@ export const library = {
       pod: 'Ice Ed printout (IMG_2472)',
     },
   },
+
+  // Mark 2026-09-25 (quick 260925-lpd, decision 1): ingredients the library
+  // lacked, taken from the .ier files' own coefficient blocks with the D-03
+  // block's conversion (pac/pod x100, fat/sugar/msnf as given, other =
+  // Solids minus every other solid key; dairy entries carry fat and msnf
+  // only, as wholeMilk33, since composition.js derives lactose from msnf).
+  // A field the source omits stays omitted; where two .ier files define one
+  // name differently, the latest version's definition is taken and the
+  // others are recorded in 03.5-SEED-REVIEW.md, "Across the 2026-09-25
+  // additions".
+  wholeMilk35: {
+    name: 'Whole Milk 3.5%',
+    category: 'dairy',
+    dairy: true,
+    composition: { fat: 0.035, msnf: 0.087 },
+    basis: { fat: 'estimated', msnf: 'estimated' },
+    source: { fat: 'Ice Ed export (Strawberry V1.ier, Mocha.ier)', msnf: 'Ice Ed export (Strawberry V1.ier, Mocha.ier)' },
+    note: 'Kept separate from wholeMilk ("Whole milk, 3.5% fat", the olive oil carton) — Mark 2026-09-25: each Ice Ed milk is its own ingredient as the export defines it.',
+  },
+  wholeMilk37: {
+    name: 'Whole Milk 3.7%',
+    category: 'dairy',
+    dairy: true,
+    composition: { fat: 0.0366, msnf: 0.0865 },
+    basis: { fat: 'estimated', msnf: 'estimated' },
+    source: { fat: 'Ice Ed export (Standard Base.ier)', msnf: 'Ice Ed export (Standard Base.ier)' },
+    note: 'The export spells it "whole milk, 3.7%"; its own entry, like Whole Milk 3.3% and 3.5%.',
+  },
+  coffeeBeans: {
+    name: 'Coffee beans',
+    category: 'other',
+    composition: { other: 1 },
+    basis: { other: 'estimated' },
+    source: { other: 'Ice Ed export (Mocha.ier)' },
+    note: 'The export gives only Solids: 1 — no fat, sugar, PAC or POD. Left missing, not zeroed (the cinnamon precedent).',
+  },
+  strawberries: {
+    name: 'Strawberries',
+    category: 'fruit',
+    composition: { fat: 0.0022, sugar: 0.049, other: 0.0378, pac: 8.5, pod: 6.1 },
+    basis: { fat: 'estimated', sugar: 'estimated', other: 'estimated', pac: 'estimated', pod: 'estimated' },
+    source: {
+      fat: 'Ice Ed export (Strawberry V2.1.ier)',
+      sugar: 'Ice Ed export (Strawberry V2.1.ier)',
+      other: 'Ice Ed export (Strawberry V2.1.ier)',
+      pac: 'Ice Ed export (Strawberry V2.1.ier)',
+      pod: 'Ice Ed export (Strawberry V2.1.ier)',
+    },
+    note: "V2.1's definition; Strawberry V1.ier and V2.ier define it with sugar 0.0534, pac 10.06, pod 9.8, and those versions embed this later definition.",
+  },
+  driedStrawberry: {
+    name: 'Strawberry (dried)',
+    category: 'fruit',
+    composition: { fat: 0.0022, sugar: 0.441, other: 0.5568, pac: 76.6, pod: 54.8 },
+    basis: { fat: 'estimated', sugar: 'estimated', other: 'estimated', pac: 'estimated', pod: 'estimated' },
+    source: {
+      fat: 'Ice Ed export (Strawberry V2.1.ier)',
+      sugar: 'Ice Ed export (Strawberry V2.1.ier)',
+      other: 'Ice Ed export (Strawberry V2.1.ier)',
+      pac: 'Ice Ed export (Strawberry V2.1.ier)',
+      pod: 'Ice Ed export (Strawberry V2.1.ier)',
+    },
+    note: "V2.1's definition; Strawberry V2.ier's own block under this name is fresh-strawberry data (Solids 0.089, kcal 0.31), which V2's printed figures used — V2 embeds this definition instead.",
+  },
+  almondExtract: {
+    name: 'Almond extract',
+    category: 'other',
+    composition: {},
+    basis: {},
+    source: {},
+    note: 'No Ice Ed file in ~/Desktop/Ice Cream defines Almond Extract — Ingredients.iei (Ice Ed\'s ingredient-library export, 2025-01-30) defines only "Almond Paste (pure)" and no .ier uses it — so its composition is left missing, never zeroed (D-03; Mark 2026-09-25, answer 4): its grams count toward the batch mass and nothing else. Flagged for Mark.',
+  },
 };

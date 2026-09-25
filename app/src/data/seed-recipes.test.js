@@ -1,7 +1,7 @@
-// Store-file validation and finite-balance guarantees for every transcribed
-// seed recipe (Mexican Chocolate, Pineapple, Coconut) — the D-07 review gate
-// covers only these data files; nothing here is wired into store/seed.js,
-// which this file never imports.
+// Store-file validation and finite-balance guarantees for every group in
+// transcribedRecipeGroups — the D-07 review gate covers only these data
+// files; nothing here is wired into store/seed.js, which this file never
+// imports.
 import { describe, it, expect } from 'vitest';
 import { transcribedRecipeGroups } from './seed-recipes.js';
 import { mexicanChocolateV1, mexicanChocolateV2, mexicanChocolateV3, mexicanChocolateV4 } from './mexican-chocolate.js';
@@ -11,6 +11,8 @@ import { buildFigures } from '../domain/figures.js';
 import { buildAdvisories } from '../domain/advisories.js';
 import { pineappleV1 } from './pineapple.js';
 import { coconutV1, coconutV2 } from './coconut.js';
+import { library } from './library.js';
+import { strawberryV1, strawberryV2, strawberryV2_1 } from './strawberry.js';
 import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { railEntries } from '../domain/historyRail.js';
 
@@ -262,6 +264,206 @@ describe('Pineapple v1 and Coconut v1 -> v2 (D-05, D-06)', () => {
     expect(v2Batch.churn.churnDurationMinutes).toBe(35);
     expect(v2Batch.churn.outOfMachineTempC).toBe(-8);
     expect(v2Batch.tasting).toBeNull();
+  });
+});
+
+describe('library entries added 2026-09-25 (quick 260925-lpd)', () => {
+  it('wholeMilk35, wholeMilk37, coffeeBeans, strawberries and driedStrawberry each carry a full estimated composition', () => {
+    const entries = [
+      ['wholeMilk35', { fat: 0.035, msnf: 0.087 }],
+      ['wholeMilk37', { fat: 0.0366, msnf: 0.0865 }],
+      ['coffeeBeans', { other: 1 }],
+      ['strawberries', { fat: 0.0022, sugar: 0.049, other: 0.0378, pac: 8.5, pod: 6.1 }],
+      ['driedStrawberry', { fat: 0.0022, sugar: 0.441, other: 0.5568, pac: 76.6, pod: 54.8 }],
+    ];
+    for (const [key, composition] of entries) {
+      const entry = library[key];
+      expect(entry.composition).toEqual(composition);
+      for (const field of Object.keys(composition)) {
+        expect(entry.basis[field]).toBe('estimated');
+        expect(entry.source[field]).toMatch(/^Ice Ed export \(/);
+      }
+    }
+  });
+
+  it('almondExtract has an empty composition and basis, never zeroed', () => {
+    expect(library.almondExtract.composition).toEqual({});
+    expect(library.almondExtract.basis).toEqual({});
+  });
+});
+
+describe('Strawberry V1 -> V2 -> V2.1 (IMG_2455-2457 + .ier + comparisons workbook)', () => {
+  function totalGrams(row) {
+    return row.portions.reduce((sum, p) => sum + p.grams, 0);
+  }
+
+  it('strawberryV1 has 11 rows in .ier order with matching grams', () => {
+    const expected = [
+      ['Whole Milk 3.5%', 400],
+      ['Sucrose', 26],
+      ['Dextrose', 112],
+      ['Fructose', 14],
+      ['Dried Skimmed Milk Powder', 120],
+      ['Lecithin', 1],
+      ['Locust Bean Gum', 0.3],
+      ['Guar', 0.1],
+      ['Lambda Carrageenan', 0.2],
+      ['Cream, heavy', 208],
+      ['Strawberries', 518],
+    ];
+    expect(strawberryV1.rows).toHaveLength(11);
+    strawberryV1.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      expect(totalGrams(row)).toBeCloseTo(expected[i][1], 5);
+    });
+  });
+
+  it('strawberryV2 has 10 rows in .ier order with matching grams', () => {
+    const expected = [
+      ['Whole Milk 3.5%', 500],
+      ['Cream, heavy', 140],
+      ['Sucrose', 40],
+      ['Dextrose', 71],
+      ['Fructose', 15],
+      ['Dried Skimmed Milk Powder', 57],
+      ['Lecithin', 2.5],
+      ['Vanilla Extract', 0],
+      ['Strawberry (dried)', 56],
+      ['Strawberries', 100],
+    ];
+    expect(strawberryV2.rows).toHaveLength(10);
+    strawberryV2.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      expect(totalGrams(row)).toBeCloseTo(expected[i][1], 5);
+    });
+  });
+
+  it('strawberryV2_1 has 11 rows in .ier order with matching grams', () => {
+    const expected = [
+      ['Whole Milk 3.5%', 449],
+      ['Cream, heavy', 100],
+      ['Sucrose', 12],
+      ['Dextrose', 119],
+      ['Fructose', 3],
+      ['Dried Skimmed Milk Powder', 50],
+      ['Lecithin', 2.5],
+      ['Vanilla Extract', 0],
+      ['Strawberry (dried)', 28],
+      ['Strawberries', 106],
+      ['Salt', 1],
+    ];
+    expect(strawberryV2_1.rows).toHaveLength(11);
+    strawberryV2_1.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      expect(totalGrams(row)).toBeCloseTo(expected[i][1], 5);
+    });
+  });
+
+  it('carries the record fields Mark approved 2026-09-25', () => {
+    expect(strawberryV1.id).toBe('strawberry-v1');
+    expect(strawberryV2.id).toBe('strawberry-v2');
+    expect(strawberryV2_1.id).toBe('strawberry-v2-1');
+    expect([strawberryV1.versionLabel, strawberryV2.versionLabel, strawberryV2_1.versionLabel]).toEqual(['V1', 'V2', 'V2.1']);
+    expect(strawberryV1.recipeId).toBe('strawberry');
+    expect(strawberryV2.recipeId).toBe('strawberry');
+    expect(strawberryV2_1.recipeId).toBe('strawberry');
+    expect(strawberryV1.parentVersionId).toBeNull();
+    expect(strawberryV1.parentVersionLabel).toBeNull();
+    expect(strawberryV2.parentVersionId).toBe(strawberryV1.id);
+    expect(strawberryV2.parentVersionLabel).toBe('V1');
+    expect(strawberryV2_1.parentVersionId).toBe(strawberryV2.id);
+    expect(strawberryV2_1.parentVersionLabel).toBe('V2');
+    for (const version of [strawberryV1, strawberryV2, strawberryV2_1]) {
+      expect(version.reason).toBeNull();
+      expect(version.citedBatchId).toBeNull();
+    }
+    expect(strawberryV1.createdAt).toBe('2024-09-02T11:07:00.000Z');
+    expect(strawberryV2.createdAt).toBe('2024-09-14T12:03:59.000Z');
+    expect(strawberryV2_1.createdAt).toBe('2024-09-14T12:04:00.000Z');
+    expect(strawberryV1.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.1014 });
+    expect(strawberryV2.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.1014 });
+    expect(strawberryV2_1.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -17, hardness: 0.7, overrunPercent: 0.1014 });
+    expect(strawberryV1.process).toEqual({ pasteuriseC: 77, holdMinutes: 45 });
+    expect(strawberryV2.process).toEqual({});
+    expect(strawberryV2_1.process).toEqual({});
+    expect(strawberryV1.method).toHaveLength(1);
+    expect(strawberryV1.method[0].uses).toHaveLength(11);
+    expect(strawberryV2.method).toEqual([]);
+    expect(strawberryV2_1.method).toEqual([]);
+  });
+
+  it('has exactly one batch per version with the approved fields', () => {
+    const strawberryGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'strawberry');
+    const batchesFor = (versionId) => strawberryGroup.batches.filter((b) => b.versionId === versionId);
+
+    const v1Batches = batchesFor(strawberryV1.id);
+    expect(v1Batches).toHaveLength(1);
+    expect(v1Batches[0].churn.asMade).toEqual({});
+    expect(v1Batches[0].tasting.marks).toEqual({ sweetness: 2, hardness: 5 });
+    expect(v1Batches[0].tasting.tastingTempC).toBe(-18);
+    expect(v1Batches[0].tasting.note).toContain('Too hard to scoop');
+    expect(v1Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: ok · Texture: flaky · Scoopability: hard · Flavor: not enough')).toBe(true);
+
+    const v2Batches = batchesFor(strawberryV2.id);
+    expect(v2Batches).toHaveLength(1);
+    expect(v2Batches[0].churn.asMade).toEqual({});
+    expect(v2Batches[0].churn.atTheMachine).toContain("Don't Cook Fruit.");
+    expect(v2Batches[0].tasting.marks).toEqual({ sweetness: 3 });
+    expect(v2Batches[0].tasting.note).toContain('Good Flavor in Sweet Cream');
+    expect(v2Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: good · Texture: good · Scoopability: hard · Flavor: strong')).toBe(true);
+
+    const v2_1Batches = batchesFor(strawberryV2_1.id);
+    expect(v2_1Batches).toHaveLength(1);
+    expect(v2_1Batches[0].churn.asMade).toEqual({ 'row-01': [449] });
+    expect(v2_1Batches[0].tasting.marks).toEqual({ hardness: 4, sweetness: 3 });
+    expect(v2_1Batches[0].tasting.note).toContain('Not as Soft as Mocha');
+    expect(v2_1Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: good · Texture: good · Scoopability: medium hard · Flavor: good')).toBe(true);
+
+    for (const batch of strawberryGroup.batches) {
+      expect(batch.churn.churnDate).toBeNull();
+      const version = [strawberryV1, strawberryV2, strawberryV2_1].find((v) => v.id === batch.versionId);
+      expect(batch.recordedAt).toBe(version.createdAt);
+    }
+  });
+
+  it("the group's rail names are exactly Version 1-3 and every version stands TASTED", () => {
+    const strawberryGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'strawberry');
+    const entries = railEntries(strawberryGroup.versions, strawberryGroup.batches, {
+      currentVersionId: strawberryV2_1.id,
+    });
+    expect(entries.map((e) => e.name)).toEqual(['Version 1 · V1', 'Version 2 · V2', 'Version 3 · V2.1']);
+    for (const version of strawberryGroup.versions) {
+      const versionBatches = strawberryGroup.batches.filter((b) => b.versionId === version.id);
+      expect(standingFor(versionBatches)).toBe(TASTED);
+    }
+  });
+});
+
+describe('every transcribed group reads as one chain in list order (D-05, D-06)', () => {
+  it('every version belongs to its own group, is strictly dated, and chains through its parent; every batch belongs to its group', () => {
+    for (const group of transcribedRecipeGroups) {
+      for (const version of group.versions) {
+        expect(version.recipeId).toBe(group.recipe.id);
+      }
+      for (let i = 1; i < group.versions.length; i++) {
+        expect(group.versions[i].createdAt > group.versions[i - 1].createdAt).toBe(true);
+      }
+      expect(group.versions[0].parentVersionId).toBeNull();
+      for (let i = 1; i < group.versions.length; i++) {
+        expect(group.versions[i].parentVersionId).toBe(group.versions[i - 1].id);
+        expect(group.versions[i].parentVersionLabel).toBe(group.versions[i - 1].versionLabel);
+      }
+      const entries = railEntries(group.versions, group.batches, {
+        currentVersionId: group.versions[group.versions.length - 1].id,
+      });
+      expect(entries.map((e) => e.name)).toEqual(
+        group.versions.map((v, i) => `Version ${i + 1} · ${v.versionLabel}`),
+      );
+      const versionIds = new Set(group.versions.map((v) => v.id));
+      for (const batch of group.batches) {
+        expect(versionIds.has(batch.versionId)).toBe(true);
+      }
+    }
   });
 });
 

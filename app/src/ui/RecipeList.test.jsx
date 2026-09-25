@@ -70,8 +70,8 @@ describe('RecipeRows — one row per recipe, at its most recently created versio
       makeVersion({ id: 'b', recipeId: 'r1', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' }),
     ];
     const markup = renderRows(versions);
-    expect(markup).toContain('href="/recipe/b"');
-    expect(markup).not.toContain('href="/recipe/a"');
+    expect(markup).toContain('href="/notebook/r1/b"');
+    expect(markup).not.toContain('href="/notebook/r1/a"');
   });
 
   it('renders one row for a single version', () => {
@@ -129,7 +129,7 @@ describe('RecipeRows — the App marks grammar (D-07, D-11, D-19, 03.4-04 Task 2
     const batches = [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })];
     const markup = renderRows([version], batches);
     expect(markup).toContain('Record a tasting');
-    expect(markup).toContain('href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('href="/notebook/r1/v1/batch/b1"');
     expect(markup).toContain('Continue developing');
   });
 
@@ -229,7 +229,7 @@ describe('HomeLead', () => {
     const markup = renderLead(entry);
     expect(markup).toContain('Notebook');
     expect(markup).toContain('Olive oil');
-    expect(markup).toContain('href="/recipe/v1"');
+    expect(markup).toContain('href="/notebook/r1/v1"');
     expect(markup).toContain(versionIdentity(entry.versions, entry.latestVersion));
     expect(markup).not.toMatch(/\d\.\d\s*g\b/);
   });

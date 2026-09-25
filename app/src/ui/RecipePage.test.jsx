@@ -776,6 +776,42 @@ describe('the running head is owned by the routed shell, not by RecipePage (2609
   });
 });
 
+// D-14/D-16 (03.5-02 Task 1): router.jsx cannot be rendered in this node
+// harness (createBrowserRouter needs `document`, per the block above), so
+// the new Notebook route table and the legacy /recipe/ redirects are pinned
+// on source text, the same idiom the block above already uses.
+describe('router.jsx routes the Notebook form, keeps the legacy /recipe/ redirects, and keys RecipePage on recipeId/versionId/batchId (03.5-02 D-14, D-16)', () => {
+  const routerPathForNotebook = fileURLToPath(new URL('../router.jsx', import.meta.url));
+  const routerSourceForNotebook = readFileSync(routerPathForNotebook, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it("routes '/notebook/:recipeId/:versionId' to RecipePageForRoute", () => {
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/notebook\/:recipeId\/:versionId',\s*Component:\s*RecipePageForRoute\s*\}/,
+    );
+  });
+
+  it("routes '/notebook/:recipeId/:versionId/batch/:batchId' to RecipePageForRoute", () => {
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/notebook\/:recipeId\/:versionId\/batch\/:batchId',\s*Component:\s*RecipePageForRoute\s*\}/,
+    );
+  });
+
+  it("routes both '/recipe/:id' paths to LegacyRecipeRedirect (D-16, kept indefinitely)", () => {
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/recipe\/:id',\s*Component:\s*LegacyRecipeRedirect\s*\}/,
+    );
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/recipe\/:id\/batch\/:batchId',\s*Component:\s*LegacyRecipeRedirect\s*\}/,
+    );
+  });
+
+  it('keys RecipePage on recipeId, versionId and batchId joined by ::, batchId falling back to empty', () => {
+    expect(routerSourceForNotebook).toMatch(/key=\{`\$\{recipeId\}::\$\{versionId\}::\$\{batchId \?\? ''\}`\}/);
+  });
+});
+
 // G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
 // explicit tabindex, pinned on rendered markup where the harness can
 // render it. Neither site here can be: router.jsx cannot be imported in

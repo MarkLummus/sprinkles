@@ -117,6 +117,9 @@ const pineappleV1TastingFields = {
   meltStyle: null,
 };
 
+// recordedAt moves with the version's own createdAt (2025-01-11T14:38:00.000Z,
+// Mark 2026-09-25) rather than a churn-session timestamp of its own — no
+// source records a separate churn date for this batch.
 export const pineappleV1Batch = createBatch(
   pineappleV1,
   pineappleV1ChurnFields,

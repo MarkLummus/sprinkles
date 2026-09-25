@@ -158,5 +158,223 @@
         "printedTimestampFlag": "No timestamp legible in this photo's frame, though the binder audit's own print-generation classification says this format normally carries one."
       }
     }
+  },
+  "standard-base": {
+    "standard-base-v1": {
+      "source": "Standard Base.ier (Ice Ed export, ~/Desktop/Ice Cream)",
+      "fields": {
+        "kcalPer100gByIngredient": {
+          "whole milk, 3.7%": 0.64,
+          "Cream, heavy": 3.4,
+          "Sucrose": 3.85,
+          "Dextrose": 3.66,
+          "Dried Skimmed Milk Powder": 3.55,
+          "Lecithin": 8.84
+        }
+      }
+    },
+    "standard-base-v2": {
+      "source": "Standard Base-2.ier (Ice Ed export, ~/Desktop/Ice Cream)",
+      "fields": {
+        "kcalPer100gByIngredient": {
+          "whole milk, 3.7%": 0.64,
+          "Cream, heavy": 3.4,
+          "Sucrose": 3.85,
+          "Dextrose": 3.66,
+          "Dried Skimmed Milk Powder": 3.55,
+          "Lecithin": 8.84
+        }
+      }
+    }
+  },
+  "underbelly-light-base": {
+    "underbelly-light-base-v1": {
+      "source": "Ice Cream Comparisons.xlsx, column G (~/Desktop/Ice Cream)",
+      "fields": {
+        "comparisonsWorkbook": {
+          "column": "G",
+          "sousVideTempC": null,
+          "stabilizersG": 4.5,
+          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "good", "flavor": "good" }
+        },
+        "calculatorInputs": { "hardness": 0.75, "servingTemperatureC": -18 },
+        "workbookLabels": {
+          "Whole Milk 3.7%": "whole milk, 3.7%",
+          "Cream, Heavy": "Cream, heavy",
+          "SMP": "Dried Skimmed Milk Powder",
+          "Almond Extract": "Almond Extract"
+        }
+      }
+    },
+    "underbelly-light-base-v2": {
+      "source": "Underbelly Light Base.ier (Ice Ed export, ~/Desktop/Ice Cream)",
+      "fields": {
+        "kcalPer100gByIngredient": {
+          "Whole Milk 3.3%": 0.61,
+          "Cream, heavy": 3.4,
+          "Dried Skimmed Milk Powder": 3.55,
+          "Sucrose": 3.85,
+          "Dextrose": 3.66,
+          "Fructose": 3.98,
+          "Lecithin": 8.84,
+          "Locust Bean Gum": 3.32,
+          "Guar": 3.32,
+          "Lambda Carrageenan": 1.12,
+          "Salt": null
+        }
+      }
+    }
+  },
+  "strawberry": {
+    "strawberry-v1": {
+      "source": "IMG_2455.HEIC (binder photo) + Strawberry V1.ier (Ice Ed export, ~/Desktop/Ice Cream) + comparisons workbook column E",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 151,
+          "lBase": 1.27,
+          "lIceCream": 1.4
+        },
+        "errorFlags": {},
+        "printedTimestamp": "9/2/24, 11:07 AM",
+        "notesText": "based on stabilizer mix from Mocha recipe\ncream has Gellan gum: reducing guar gum\nSous Vide for 45 minutes @ 77C\ntarget 0.28% stabilizers / water weight: 2.64 / 947 = 0.28%\ntarget 40% fruit weight / total weight: 518 / 1400 = 37%",
+        "notesFlag": "Only the sous-vide line becomes this version's own process/method step; the stabilizer-mix reference, the gellan note and the two percentage targets are not transcribed onto the version. See 03.5-SEED-REVIEW.md, Strawberry V1, judgement call 45.",
+        "comparisonsWorkbook": {
+          "column": "E",
+          "sousVideTempC": 77,
+          "stabilizersG": 2.64,
+          "verdicts": { "sweetness": "ok", "texture": "flaky", "scoopability": "hard", "flavor": "not enough" }
+        }
+      }
+    },
+    "strawberry-v2": {
+      "source": "IMG_2456.HEIC (binder photo) + Strawberry V2.ier (Ice Ed export, ~/Desktop/Ice Cream) + comparisons workbook column D",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 156,
+          "lBase": 0.89,
+          "lIceCream": 0.98
+        },
+        "errorFlags": {},
+        "printedTimestamp": null,
+        "printedTimestampFlag": "No timestamp legible on this page.",
+        "comparisonsWorkbook": {
+          "column": "D",
+          "sousVideTempC": null,
+          "stabilizersG": 3.2,
+          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "hard", "flavor": "strong" }
+        }
+      }
+    },
+    "strawberry-v2-1": {
+      "source": "IMG_2457.HEIC (binder photo) + Strawberry V2.1.ier (Ice Ed export, ~/Desktop/Ice Cream) + comparisons workbook column C",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 166,
+          "lBase": 0.79,
+          "lIceCream": 0.87
+        },
+        "errorFlags": {},
+        "printedTimestamp": "9/14/24, 12:04 PM",
+        "comparisonsWorkbook": {
+          "column": "C",
+          "sousVideTempC": 77,
+          "stabilizersG": 2.5,
+          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "medium hard", "flavor": "good" }
+        }
+      }
+    }
+  },
+  "mocha": {
+    "mocha-v0": {
+      "source": "Mocha.ier (Ice Ed export, ~/Desktop/Ice Cream) + IMG_2464.HEIC (binder photo) + comparisons workbook column I",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 163,
+          "lBase": 0.78,
+          "lIceCream": 1.01
+        },
+        "errorFlags": { "solidsErrorPercent": 6.95 },
+        "printedTimestamp": null,
+        "printedTimestampFlag": "No print timestamp and no handwritten date on this page.",
+        "comparisonsWorkbook": {
+          "column": "I",
+          "sousVideTempC": 77,
+          "stabilizersG": 2.6,
+          "verdicts": { "sweetness": "good", "texture": "great", "scoopability": "great", "flavor": "too strong" }
+        }
+      }
+    },
+    "mocha-v1": {
+      "source": "Mocha v1.ier (Ice Ed export, ~/Desktop/Ice Cream)",
+      "fields": {
+        "kcalPer100gByIngredient": {
+          "Whole Milk 3.5%": 0.61,
+          "Cocoa Powder": 2.28,
+          "Sucrose": 3.85,
+          "Dextrose": 3.66,
+          "Fructose": 3.98,
+          "Dried Skimmed Milk Powder": 3.55,
+          "Lecithin": 8.84,
+          "Salt": null,
+          "Locust Bean Gum": 3.32,
+          "Guar": 3.32,
+          "Lambda Carrageenan": 1.12,
+          "Cream, heavy": 3.4,
+          "Vanilla Extract": 2.88,
+          "Coffee Beans": 0.01
+        },
+        "notesText": "cream has Gellan gum - reduce Guar gum to 0.2\nSous Vide for 45 minutes @ 75C",
+        "notesFlag": "Only the sous-vide line becomes this version's own process/method step; the gellan/guar line is not transcribed onto the version (its rows keep the printed guar 0.5). See 03.5-SEED-REVIEW.md, Mocha v1, judgement call 50."
+      }
+    },
+    "mocha-v2": {
+      "source": "IMG_2465.HEIC (binder photo, the photo wins — Mark 2026-09-25, answer 1) + comparisons workbook column J; Mocha v2.ier for its re-save facts only",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 164,
+          "lBase": 0.72,
+          "lIceCream": 0.94
+        },
+        "errorFlags": {},
+        "printedTimestamp": null,
+        "printedTimestampFlag": "No print timestamp on this page; the page types \"updated 12/23/2024\" with no time of day.",
+        "notesText": "updated 12/23/2024\nreduced Coffee from 15g to 8g, reduced Cocoa from 60g to 30g\ncream has Gellan gum - reduce Guar gum to 0.2, Sous Vide for 45 minutes @ 75C",
+        "notesFlag": "The coffee/cocoa line becomes this version's own reason; the sous-vide clause becomes process/method; \"updated 12/23/2024\" and the gellan/guar clause are not transcribed onto the version. See 03.5-SEED-REVIEW.md, Mocha v2, judgement call 51.",
+        "iceEdExportFlag": "Mocha v2.ier was re-saved 2024-12-28 07:56 −05:00, 11 minutes before Mocha v3.ier, with Whole Milk 3.3%, sucrose 50, dextrose 86 and the newer Dextrose block (PAC 1.66) — v3's own values. It is not a source for v2's rows (Mark 2026-09-25: the photo wins).",
+        "comparisonsWorkbook": {
+          "column": "J",
+          "sousVideTempC": 77,
+          "stabilizersG": 2.9,
+          "verdicts": { "sweetness": "good", "texture": "great", "scoopability": "great", "flavor": "too much coffee" }
+        }
+      }
+    },
+    "mocha-v3": {
+      "source": "Mocha v3.ier (Ice Ed export, ~/Desktop/Ice Cream) = IMG_2466.HEIC (binder photo, no handwriting)",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 164,
+          "lBase": 0.72,
+          "lIceCream": 0.94,
+          "pac": 261,
+          "pacTarget": [220, 230],
+          "pod": 150,
+          "podTarget": [110, 120],
+          "pacToPodRatio": 1.74,
+          "percentSolids": 38.5,
+          "percentWater": 61.1,
+          "percentSugar": 22.3,
+          "percentNonLactoseSugar": 16.5,
+          "percentFat": 5.6,
+          "percentMilkFat": 5.1,
+          "percentMsnf": 10.7
+        },
+        "errorFlags": {},
+        "printedTimestamp": null,
+        "printedTimestampFlag": "No print timestamp and no handwriting on this page.",
+        "notesText": "updated 12/23/2024\nreduced Coffee from 8g to 6g\ncream has Gellan gum - reduce Guar gum to 0.2\nSous Vide for 45 minutes @ 75C",
+        "notesFlag": "Only \"reduced Coffee from 8g to 6g\" is v3's own line, becoming this version's reason; the sous-vide clause becomes process/method; \"updated 12/23/2024\" and the gellan/guar line are v2's, carried forward — not repeated as v3's own reason. See 03.5-SEED-REVIEW.md, Mocha v3, judgement call 52."
+      }
+    }
   }
 }

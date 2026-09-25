@@ -1,7 +1,9 @@
-// Mexican Chocolate — v1, v3 and v4, transcribed from Mark's binder photos
-// and Ice Ed exports (D-01, D-02). v1 comes from IMG_2453.HEIC and
-// ~/Desktop/Ice Cream/Mexican Chocolate v1.ier; v3 from IMG_2454.HEIC; v4
-// from ~/Downloads/recipe-Mexican Chocolate v4.json. Every judgement call is
+// Mexican Chocolate — v1, v2, v3 and v4, transcribed from Mark's binder
+// photos and Ice Ed exports (D-01, D-02). v1 comes from IMG_2453.HEIC and
+// ~/Desktop/Ice Cream/Mexican Chocolate v1.ier; v2 from
+// ~/Documents/Mexican Chocolate v2-2.ier (Ice Ed export, found on disk
+// 2026-09-25, quick 260925-kix); v3 from IMG_2454.HEIC; v4 from
+// ~/Downloads/recipe-Mexican Chocolate v4.json. Every judgement call is
 // flagged in 03.5-SEED-REVIEW.md, which this file's own comments point at
 // rather than repeat. Nothing here is wired into store/seed.js (D-07).
 import { library } from './library.js';
@@ -249,6 +251,87 @@ export const mexicanChocolateV1Batch = createBatch(
   { id: MEXICAN_CHOCOLATE_V1_BATCH_ID, now: '2025-12-13T00:00:00.000Z' },
 );
 
+// v2 — ~/Documents/Mexican Chocolate v2-2.ier (Ice Ed export, Recipe.Name
+// "Mexican Chocolate v2", file saved 2026-01-11). Found on disk 2026-09-25
+// (quick 260925-kix), amending 03.5-CONTEXT.md D-01, which had believed v2
+// lost. ~/Documents/Mexican Chocolate v2.ier is v1 saved under the v2 name
+// before any edit (identical apart from Recipe.Name) and is not a source.
+// No binder page and no churn evidence exists for this version, so no batch
+// and no tasting is recorded. The Notes text is v1's own, carried forward by
+// Ice Ed unedited — process and Instructions below follow the v4 precedent
+// (mexicanChocolateV4.method), and the Observations/to-fix text goes only to
+// the sidecar (03.5-SEED-REVIEW.md, Mexican Chocolate v2, judgement calls
+// 26–28), never onto this version as a note, a reason, or a tasting.
+export const MEXICAN_CHOCOLATE_V2_ID = 'mexican-chocolate-v2';
+
+export const mexicanChocolateV2 = {
+  schemaVersion: MEXICAN_CHOCOLATE_SCHEMA_VERSION,
+  id: MEXICAN_CHOCOLATE_V2_ID,
+  recipeId: 'mexican-chocolate',
+  parentVersionId: MEXICAN_CHOCOLATE_V1_ID,
+  parentVersionLabel: 'v1',
+  reason: null,
+  citedBatchId: null,
+  // The .ier file carries no SavedAt of its own — createdAt is the file's
+  // own modification time (2026-01-11 18:22:38 -05:00), converted to UTC.
+  createdAt: '2026-01-11T23:22:38.000Z',
+  versionLabel: 'v2',
+  coefficientSetId: '2026.1-slice-transcription',
+  coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
+  sheetTitle: 'Mexican Chocolate',
+  sheetDescription: '',
+  // 12 rows, in the .ier's own Ingredients order. No library entry is
+  // added or edited — every name maps to the entry v1, v3 and v4 already
+  // use for it.
+  rows: [
+    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 427 }], removed: false }) },
+    { id: 'row-02', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 30 }], removed: false }) },
+    { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 50 }], removed: false }) },
+    { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 35 }], removed: false }) },
+    { id: 'row-05', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 5 }], removed: false }) },
+    { id: 'row-06', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 39 }], removed: false }) },
+    { id: 'row-07', ...embed('Salt', library.salt, { portions: [{ step: 1, grams: 1 }], removed: false }) },
+    { id: 'row-08', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 140 }], removed: false }) },
+    { id: 'row-09', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 7 }], removed: false }) },
+    { id: 'row-10', ...embed('Stabilizer Mix 4421', library.stabilizerMix4421, { portions: [{ step: 1, grams: 2.2 }], removed: false }) },
+    { id: 'row-11', ...embed('Cinnamon', library.cinnamon, { portions: [{ step: 1, grams: 2.6 }], removed: false }) },
+    { id: 'row-12', ...embed('Allulose', library.allulose, { portions: [{ step: 1, grams: 50 }], removed: false }) },
+  ],
+  equipment: KITCHEN_EQUIPMENT,
+  // Read directly from the Notes text's own process line, same as v3/v4.
+  process: { pasteuriseC: 75, holdMinutes: 60 },
+  // Recipe.Overrun 0.2992666666666666 rounded to 4 decimals, as v1 and v4.
+  iceEd: { style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2993 },
+  declaredAxes: [],
+  declaredFlaw: null,
+  // Written out literally (not shared by reference with v4) — the v4
+  // precedent, since the carried-forward Notes give the same process and
+  // the same two steps v4 has, step 2's aside included (Mark 2026-09-25).
+  method: [
+    {
+      n: 1,
+      leadIn: 'Cayenne and sous vide',
+      instruction: 'Add a pinch of cayenne pepper. Sous vide for 60 minutes at 75 °C.',
+      targets: [
+        { label: 'temp', value: '75 °C' },
+        { label: 'hold', value: '60 min' },
+      ],
+      removed: false,
+      uses: ['row-01', 'row-02', 'row-03', 'row-04', 'row-05', 'row-06', 'row-07', 'row-08', 'row-09', 'row-10', 'row-11', 'row-12'],
+    },
+    {
+      n: 2,
+      leadIn: 'Chill and churn',
+      instruction: 'Chill the base overnight, then churn.',
+      targets: [],
+      aside: 'Very thick by morning. Takes 40+ minutes to churn.',
+      removed: false,
+      uses: [],
+    },
+  ],
+  authored: { beforeYouStart: [] },
+};
+
 // v3 — IMG_2454.HEIC (binder photo), zero handwriting. 12 rows including
 // allulose, matching the v1 "To fix" list's direction (not its exact
 // numbers). Every binder page was churned (audit correction 1), so a batch
@@ -262,13 +345,20 @@ export const mexicanChocolateV3 = {
   schemaVersion: MEXICAN_CHOCOLATE_SCHEMA_VERSION,
   id: MEXICAN_CHOCOLATE_V3_ID,
   recipeId: 'mexican-chocolate',
-  parentVersionId: MEXICAN_CHOCOLATE_V1_ID,
-  parentVersionLabel: 'v1',
+  // Re-parented to v2 (Mark 2026-09-25, amending judgement call 14 —
+  // 03.5-SEED-REVIEW.md). v3's own rows/process/iceEd/method are untouched.
+  parentVersionId: MEXICAN_CHOCOLATE_V2_ID,
+  parentVersionLabel: 'v2',
   // The v1 to-fix list is the closest source for "why this version" even
   // though the executed numbers differ slightly (dextrose 45 g not 55 g;
-  // allulose 36.8 g not +30 g) — judgement call 11.
+  // allulose 36.8 g not +30 g) — judgement call 11. Left exactly as written
+  // pending Mark (open question 8, review amendment to judgement call 14):
+  // the list now reads as the step from v1 to v2, not v2 to v3.
   reason: 'Lower stabilizer to 2.5 g/kg; increase fat to 8% minimum, 9–11% optimal; dextrose 86 g → 55 g; allulose +30 g.',
-  citedBatchId: MEXICAN_CHOCOLATE_V1_BATCH_ID,
+  // Forced null, not chosen: the app keeps a cited batch on the parent
+  // version (RecipePage.jsx's cited-batch comment; VersionRow.jsx routes
+  // the From batch link through parentVersionId) and v2 has no batch.
+  citedBatchId: null,
   // Printed 1/13/26 7:06 PM — no timezone given, treated as UTC (flagged).
   createdAt: '2026-01-13T19:06:00.000Z',
   versionLabel: 'v3',

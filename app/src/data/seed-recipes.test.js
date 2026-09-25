@@ -4,7 +4,7 @@
 // which this file never imports.
 import { describe, it, expect } from 'vitest';
 import { transcribedRecipeGroups } from './seed-recipes.js';
-import { mexicanChocolateV1, mexicanChocolateV3, mexicanChocolateV4 } from './mexican-chocolate.js';
+import { mexicanChocolateV1, mexicanChocolateV2, mexicanChocolateV3, mexicanChocolateV4 } from './mexican-chocolate.js';
 import { validateStoreFile, STORE_SCHEMA_VERSION } from '../store/transfer.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
@@ -12,6 +12,7 @@ import { buildAdvisories } from '../domain/advisories.js';
 import { pineappleV1 } from './pineapple.js';
 import { coconutV1, coconutV2 } from './coconut.js';
 import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
+import { railEntries } from '../domain/historyRail.js';
 
 function flatten(groups) {
   return {
@@ -96,22 +97,86 @@ describe('mexicanChocolateV4 (D-01, D-02, D-03)', () => {
   });
 });
 
-describe('Mexican Chocolate lineage (D-01: v1 -> v3 -> v4, no v2 made up)', () => {
-  it('v3s parent is v1 and v4s parent is v3', () => {
-    expect(mexicanChocolateV3.parentVersionId).toBe(mexicanChocolateV1.id);
-    expect(mexicanChocolateV4.parentVersionId).toBe(mexicanChocolateV3.id);
+describe('mexicanChocolateV2 (v2-2.ier export, Mark 2026-09-25)', () => {
+  it('has 12 rows in the .ier source order with matching grams', () => {
+    const expected = [
+      ['Whole Milk 3.3%', 427],
+      ['Cocoa Powder', 30],
+      ['Sucrose', 50],
+      ['Dextrose', 35],
+      ['Fructose', 5],
+      ['Dried Skimmed Milk Powder', 39],
+      ['Salt', 1],
+      ['Cream, heavy', 140],
+      ['Vanilla Extract', 7],
+      ['Stabilizer Mix 4421', 2.2],
+      ['Cinnamon', 2.6],
+      ['Allulose', 50],
+    ];
+    expect(mexicanChocolateV2.rows).toHaveLength(12);
+    mexicanChocolateV2.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      const total = row.portions.reduce((t, p) => t + p.grams, 0);
+      expect(total).toBeCloseTo(expected[i][1], 5);
+    });
   });
 
-  it('no exported Mexican Chocolate version id or versionLabel names v2 (Coconut legitimately has its own v2)', () => {
-    const mexicanChocolateGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mexican-chocolate');
-    for (const version of mexicanChocolateGroup.versions) {
-      expect(version.id).not.toMatch(/-v2$/);
-      expect(version.versionLabel.trim()).not.toBe('v2');
-    }
+  it('carries the record fields Mark approved 2026-09-25', () => {
+    expect(mexicanChocolateV2.id).toBe('mexican-chocolate-v2');
+    expect(mexicanChocolateV2.versionLabel).toBe('v2');
+    expect(mexicanChocolateV2.recipeId).toBe('mexican-chocolate');
+    expect(mexicanChocolateV2.parentVersionId).toBe(mexicanChocolateV1.id);
+    expect(mexicanChocolateV2.parentVersionLabel).toBe('v1');
+    expect(mexicanChocolateV2.reason).toBeNull();
+    expect(mexicanChocolateV2.citedBatchId).toBeNull();
+    expect(mexicanChocolateV2.createdAt).toBe('2026-01-11T23:22:38.000Z');
+    expect(mexicanChocolateV2.process).toEqual({ pasteuriseC: 75, holdMinutes: 60 });
+    expect(mexicanChocolateV2.iceEd).toEqual({
+      style: 'Gelato',
+      servingTemperatureC: -16,
+      hardness: 0.75,
+      overrunPercent: 0.2993,
+    });
+  });
+
+  it('method deep-equals mexicanChocolateV4s method (the v4 precedent, Mark 2026-09-25)', () => {
+    expect(mexicanChocolateV2.method).toEqual(mexicanChocolateV4.method);
   });
 });
 
-describe('Mexican Chocolate v1/v3 batches (D-02, D-06)', () => {
+describe('Mexican Chocolate lineage (v1 -> v2 -> v3 -> v4)', () => {
+  it('v2s parent is v1, v3s parent is v2, and v4s parent is v3', () => {
+    expect(mexicanChocolateV2.parentVersionId).toBe(mexicanChocolateV1.id);
+    expect(mexicanChocolateV2.parentVersionLabel).toBe(mexicanChocolateV1.versionLabel);
+    expect(mexicanChocolateV3.parentVersionId).toBe(mexicanChocolateV2.id);
+    expect(mexicanChocolateV3.parentVersionLabel).toBe(mexicanChocolateV2.versionLabel);
+    expect(mexicanChocolateV4.parentVersionId).toBe(mexicanChocolateV3.id);
+    expect(mexicanChocolateV4.parentVersionLabel).toBe(mexicanChocolateV3.versionLabel);
+  });
+
+  it('the group holds exactly v1, v2, v3, v4 in order with strictly ascending createdAt', () => {
+    const mexicanChocolateGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mexican-chocolate');
+    const ids = mexicanChocolateGroup.versions.map((v) => v.id);
+    expect(ids).toEqual(['mexican-chocolate-v1', 'mexican-chocolate-v2', 'mexican-chocolate-v3', 'mexican-chocolate-v4']);
+    const createdAts = mexicanChocolateGroup.versions.map((v) => v.createdAt);
+    for (let i = 1; i < createdAts.length; i++) {
+      expect(createdAts[i] > createdAts[i - 1]).toBe(true);
+    }
+  });
+
+  it('railEntries names the four versions in order, with v2 not yet churned', () => {
+    const mexicanChocolateGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mexican-chocolate');
+    const entries = railEntries(mexicanChocolateGroup.versions, mexicanChocolateGroup.batches, {
+      currentVersionId: mexicanChocolateV4.id,
+    });
+    expect(entries.map((e) => e.name)).toEqual(['Version 1 · v1', 'Version 2 · v2', 'Version 3 · v3', 'Version 4 · v4']);
+    const v2Entry = entries.find((e) => e.id === mexicanChocolateV2.id);
+    expect(v2Entry.churned).toBe(false);
+    expect(v2Entry.stateWords).toBe('not yet churned');
+  });
+});
+
+describe('Mexican Chocolate v1/v2/v3 batches (D-02, D-06)', () => {
   it("v1s batch, if exported, has churnDate 2025-12-13", () => {
     const { batches } = flatten(transcribedRecipeGroups);
     const v1Batch = batches.find((b) => b.versionId === mexicanChocolateV1.id);
@@ -123,6 +188,23 @@ describe('Mexican Chocolate v1/v3 batches (D-02, D-06)', () => {
     const v3Batches = batches.filter((b) => b.versionId === mexicanChocolateV3.id);
     for (const batch of v3Batches) {
       expect(batch.tasting).toBeNull();
+    }
+  });
+
+  it('no batch has versionId mexican-chocolate-v2 (v2 has no batch, so no tasting)', () => {
+    const { batches } = flatten(transcribedRecipeGroups);
+    const v2Batches = batches.filter((b) => b.versionId === mexicanChocolateV2.id);
+    expect(v2Batches).toHaveLength(0);
+  });
+
+  it('a non-null citedBatchId always cites a batch belonging to the citing versions parent', () => {
+    const { versions, batches } = flatten(transcribedRecipeGroups);
+    const versionsById = new Map(versions.map((v) => [v.id, v]));
+    for (const version of versions) {
+      if (version.citedBatchId === null) continue;
+      const citedBatch = batches.find((b) => b.id === version.citedBatchId);
+      expect(citedBatch).toBeDefined();
+      expect(citedBatch.versionId).toBe(version.parentVersionId);
     }
   });
 

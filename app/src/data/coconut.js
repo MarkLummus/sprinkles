@@ -30,8 +30,11 @@ export const coconutV1 = {
   parentVersionLabel: null,
   reason: null,
   citedBatchId: null,
-  // No print timestamp is legible on this page. Placeholder, flagged.
-  createdAt: '2026-01-01T00:00:00.000Z',
+  // The page itself carries no print timestamp — createdAt is the .ier
+  // file's own save time (Coconut v1 - FAIL.ier, 2024-12-27 16:21:12
+  // −05:00) converted to UTC, Mark 2026-09-25 (03.5-SEED-REVIEW.md
+  // judgement call 19).
+  createdAt: '2024-12-27T21:21:12.000Z',
   versionLabel: 'v1',
   coefficientSetId: '2026.1-slice-transcription',
   coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
@@ -101,7 +104,7 @@ export const coconutV1Batch = createBatch(
   coconutV1,
   coconutV1ChurnFields,
   coconutV1TastingFields,
-  { id: COCONUT_V1_BATCH_ID, now: '2026-01-01T00:00:00.000Z' },
+  { id: COCONUT_V1_BATCH_ID, now: coconutV1.createdAt },
 );
 
 // v2 — the direct fix for v1's failure (coconut cream -> coconut milk),
@@ -121,8 +124,11 @@ export const coconutV2 = {
   parentVersionLabel: 'v1',
   reason: null,
   citedBatchId: COCONUT_V1_BATCH_ID,
-  // No print timestamp is legible on this page. Placeholder, flagged.
-  createdAt: '2026-01-08T00:00:00.000Z',
+  // The page itself carries no print timestamp — createdAt is the .ier
+  // file's own save time (Coconut v2.ier, 2024-12-28 10:10:46 −05:00)
+  // converted to UTC, Mark 2026-09-25 (03.5-SEED-REVIEW.md judgement
+  // call 22).
+  createdAt: '2024-12-28T15:10:46.000Z',
   versionLabel: 'v2',
   coefficientSetId: '2026.1-slice-transcription',
   coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
@@ -176,5 +182,5 @@ const coconutV2ChurnFields = {
 
 export const coconutV2Batch = createBatch(coconutV2, coconutV2ChurnFields, null, {
   id: COCONUT_V2_BATCH_ID,
-  now: '2026-01-08T00:00:00.000Z',
+  now: coconutV2.createdAt,
 });

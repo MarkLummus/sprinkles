@@ -268,6 +268,19 @@ describe('Pineapple v1 and Coconut v1 -> v2 (D-05, D-06)', () => {
     expect(v2Batch.churn.outOfMachineTempC).toBe(-8);
     expect(v2Batch.tasting).toBeNull();
   });
+
+  it('pineappleV1, coconutV1 and coconutV2 carry their .ier save times as createdAt, and each batch recordedAt moves with it (Mark 2026-09-25)', () => {
+    expect(pineappleV1.createdAt).toBe('2025-01-11T14:38:00.000Z');
+    expect(coconutV1.createdAt).toBe('2024-12-27T21:21:12.000Z');
+    expect(coconutV2.createdAt).toBe('2024-12-28T15:10:46.000Z');
+    const { versions, batches } = flatten(transcribedRecipeGroups);
+    for (const versionId of [pineappleV1.id, coconutV1.id, coconutV2.id]) {
+      const version = versions.find((v) => v.id === versionId);
+      for (const batch of batches.filter((b) => b.versionId === versionId)) {
+        expect(batch.recordedAt).toBe(version.createdAt);
+      }
+    }
+  });
 });
 
 describe('library entries added 2026-09-25 (quick 260925-lpd)', () => {

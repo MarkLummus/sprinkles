@@ -30,11 +30,11 @@ export const pineappleV1 = {
   parentVersionLabel: null,
   reason: null,
   citedBatchId: null,
-  // No print timestamp is legible on this page (the binder audit's own
-  // generation-1 classification: short print format, no header/footer
-  // timestamp). Placeholder, flagged — 03.5-SEED-REVIEW.md "Open questions
-  // for Mark".
-  createdAt: '2026-02-01T00:00:00.000Z',
+  // The page itself carries no print timestamp — createdAt is the .ier
+  // file's own save time (Pineapple v1.ier, 2025-01-11 09:38:00 −05:00)
+  // converted to UTC, Mark 2026-09-25 (03.5-SEED-REVIEW.md judgement
+  // call 15).
+  createdAt: '2025-01-11T14:38:00.000Z',
   versionLabel: 'v1',
   coefficientSetId: '2026.1-slice-transcription',
   coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
@@ -121,5 +121,5 @@ export const pineappleV1Batch = createBatch(
   pineappleV1,
   pineappleV1ChurnFields,
   pineappleV1TastingFields,
-  { id: PINEAPPLE_V1_BATCH_ID, now: '2026-02-01T00:00:00.000Z' },
+  { id: PINEAPPLE_V1_BATCH_ID, now: pineappleV1.createdAt },
 );

@@ -13,6 +13,9 @@ import { pineappleV1 } from './pineapple.js';
 import { coconutV1, coconutV2 } from './coconut.js';
 import { library } from './library.js';
 import { strawberryV1, strawberryV2, strawberryV2_1 } from './strawberry.js';
+import { standardBaseV1, standardBaseV2 } from './standard-base.js';
+import { underbellyLightBaseV1, underbellyLightBaseV2 } from './underbelly-light-base.js';
+import { mochaV0, mochaV1, mochaV2, mochaV3 } from './mocha.js';
 import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { railEntries } from '../domain/historyRail.js';
 
@@ -435,6 +438,251 @@ describe('Strawberry V1 -> V2 -> V2.1 (IMG_2455-2457 + .ier + comparisons workbo
     for (const version of strawberryGroup.versions) {
       const versionBatches = strawberryGroup.batches.filter((b) => b.versionId === version.id);
       expect(standingFor(versionBatches)).toBe(TASTED);
+    }
+  });
+});
+
+describe('Mocha v0 -> v1 -> v2 -> v3 (IMG_2464-2466 + .ier + comparisons workbook)', () => {
+  function totalGrams(row) {
+    return row.portions.reduce((sum, p) => sum + p.grams, 0);
+  }
+
+  const mochaRowNames = [
+    'Whole Milk 3.5%', 'Cocoa Powder', 'Sucrose', 'Dextrose', 'Fructose',
+    'Dried Skimmed Milk Powder', 'Lecithin', 'Salt', 'Locust Bean Gum',
+    'Guar', 'Lambda Carrageenan', 'Cream, heavy', 'Vanilla Extract', 'Coffee Beans',
+  ];
+
+  it('mochaV0 has 14 rows in .ier order with matching grams', () => {
+    const expected = [500, 60, 42, 105, 5, 33, 1.5, 0.9, 0.6, 0.5, 0.3, 67, 7, 30];
+    expect(mochaV0.rows).toHaveLength(14);
+    mochaV0.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(mochaRowNames[i]);
+      expect(totalGrams(row)).toBeCloseTo(expected[i], 5);
+    });
+  });
+
+  it('mochaV1 is the same as v0 except row-14 (Coffee Beans 30 -> 15)', () => {
+    expect(mochaV1.rows).toHaveLength(14);
+    mochaV1.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(mochaV0.rows[i].ingredientName);
+      if (row.id === 'row-14') {
+        expect(totalGrams(row)).toBeCloseTo(15, 5);
+      } else {
+        expect(totalGrams(row)).toBeCloseTo(totalGrams(mochaV0.rows[i]), 5);
+      }
+    });
+  });
+
+  it('mochaV2 has 14 rows from the printed page IMG_2465', () => {
+    const expected = [500, 30, 46, 89, 5, 39, 1.5, 1, 0.6, 0.5, 0.3, 67, 7, 8];
+    expect(mochaV2.rows).toHaveLength(14);
+    mochaV2.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(mochaRowNames[i]);
+      expect(totalGrams(row)).toBeCloseTo(expected[i], 5);
+    });
+  });
+
+  it('mochaV3 has 14 rows with Whole Milk 3.3%', () => {
+    const expected = [500, 30, 50, 86, 5, 39, 1.5, 1, 0.6, 0.5, 0.3, 67, 7, 6];
+    const names = ['Whole Milk 3.3%', ...mochaRowNames.slice(1)];
+    expect(mochaV3.rows).toHaveLength(14);
+    mochaV3.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(names[i]);
+      expect(totalGrams(row)).toBeCloseTo(expected[i], 5);
+    });
+  });
+
+  it('carries the record fields Mark approved 2026-09-25', () => {
+    expect([mochaV0.id, mochaV1.id, mochaV2.id, mochaV3.id]).toEqual(['mocha-v0', 'mocha-v1', 'mocha-v2', 'mocha-v3']);
+    expect([mochaV0.versionLabel, mochaV1.versionLabel, mochaV2.versionLabel, mochaV3.versionLabel]).toEqual(['v0', 'v1', 'v2', 'v3']);
+    for (const version of [mochaV0, mochaV1, mochaV2, mochaV3]) {
+      expect(version.recipeId).toBe('mocha');
+      expect(version.citedBatchId).toBeNull();
+    }
+    expect(mochaV0.parentVersionId).toBeNull();
+    expect(mochaV1.parentVersionId).toBe(mochaV0.id);
+    expect(mochaV1.parentVersionLabel).toBe('v0');
+    expect(mochaV2.parentVersionId).toBe(mochaV1.id);
+    expect(mochaV3.parentVersionId).toBe(mochaV2.id);
+    expect(mochaV0.createdAt).toBe('2024-12-23T14:16:41.000Z');
+    expect(mochaV1.createdAt).toBe('2024-12-23T14:16:42.000Z');
+    expect(mochaV2.createdAt).toBe('2024-12-28T12:56:38.000Z');
+    expect(mochaV3.createdAt).toBe('2024-12-28T13:07:34.000Z');
+    expect(mochaV0.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.2993 });
+    expect(mochaV1.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.2993 });
+    expect(mochaV2.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2993 });
+    expect(mochaV3.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.2993 });
+    expect(mochaV0.process).toEqual({});
+    expect(mochaV1.process).toEqual({ pasteuriseC: 75, holdMinutes: 45 });
+    expect(mochaV2.process).toEqual({ pasteuriseC: 75, holdMinutes: 45 });
+    expect(mochaV3.process).toEqual({ pasteuriseC: 75, holdMinutes: 45 });
+    expect(mochaV0.reason).toBeNull();
+    expect(mochaV1.reason).toBeNull();
+    expect(mochaV2.reason).toBe('reduced Coffee from 15g to 8g, reduced Cocoa from 60g to 30g');
+    expect(mochaV3.reason).toBe('reduced Coffee from 8g to 6g');
+  });
+
+  it('has exactly one batch each for v0, v2 and v3, and none for v1', () => {
+    const mochaGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mocha');
+    const batchesFor = (versionId) => mochaGroup.batches.filter((b) => b.versionId === versionId);
+
+    const v0Batches = batchesFor(mochaV0.id);
+    expect(v0Batches).toHaveLength(1);
+    expect(v0Batches[0].churn.asMade).toEqual({ 'row-01': [502], 'row-10': [0.2], 'row-12': [70], 'row-14': [15] });
+    expect(v0Batches[0].churn.atTheMachine).toBe('Sous vide @ 77°C for 45 minutes');
+    expect(v0Batches[0].churn.ingredientNotes).toBe('Cream has Guar 0.5%');
+    expect(v0Batches[0].tasting.marks).toEqual({ smoothness: 5, sweetness: 3, scoopability: 3 });
+    expect(v0Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: good · Texture: great · Scoopability: great · Flavor: too strong')).toBe(true);
+
+    expect(batchesFor(mochaV1.id)).toHaveLength(0);
+
+    const v2Batches = batchesFor(mochaV2.id);
+    expect(v2Batches).toHaveLength(1);
+    expect(v2Batches[0].churn.asMade).toEqual({ 'row-10': [0], 'row-11': [0.5] });
+    expect(v2Batches[0].tasting.marks).toEqual({ sweetness: 3, scoopability: 3 });
+    expect(v2Batches[0].tasting.note).toBe('Comparisons workbook — Sweetness: good · Texture: great · Scoopability: great · Flavor: too much coffee');
+
+    const v3Batches = batchesFor(mochaV3.id);
+    expect(v3Batches).toHaveLength(1);
+    expect(v3Batches[0].churn.asMade).toEqual({});
+    expect(v3Batches[0].tasting).toBeNull();
+
+    for (const batch of mochaGroup.batches) {
+      const version = [mochaV0, mochaV1, mochaV2, mochaV3].find((v) => v.id === batch.versionId);
+      expect(batch.recordedAt).toBe(version.createdAt);
+    }
+  });
+
+  it('standings across Mocha versions cover TASTED, NOT_YET_CHURNED, TASTED and AWAITING_TASTING', () => {
+    const mochaGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mocha');
+    const standingsInOrder = mochaGroup.versions.map((version) =>
+      standingFor(mochaGroup.batches.filter((b) => b.versionId === version.id)),
+    );
+    expect(standingsInOrder).toEqual([TASTED, NOT_YET_CHURNED, TASTED, AWAITING_TASTING]);
+  });
+});
+
+describe('Standard Base v1 -> v2 (.ier only)', () => {
+  it('standardBaseV1 has 6 rows in .ier order with matching grams', () => {
+    const expected = [
+      ['whole milk, 3.7%', 264],
+      ['Cream, heavy', 140],
+      ['Sucrose', 43.1],
+      ['Dextrose', 29.6],
+      ['Dried Skimmed Milk Powder', 20.5],
+      ['Lecithin', 2.42],
+    ];
+    expect(standardBaseV1.rows).toHaveLength(6);
+    standardBaseV1.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      const total = row.portions.reduce((t, p) => t + p.grams, 0);
+      expect(total).toBeCloseTo(expected[i][1], 5);
+    });
+  });
+
+  it('standardBaseV2 has 6 rows in .ier order with matching grams', () => {
+    const expected = [
+      ['whole milk, 3.7%', 500],
+      ['Cream, heavy', 260],
+      ['Sucrose', 70],
+      ['Dextrose', 65],
+      ['Dried Skimmed Milk Powder', 37],
+      ['Lecithin', 4.5],
+    ];
+    expect(standardBaseV2.rows).toHaveLength(6);
+    standardBaseV2.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      const total = row.portions.reduce((t, p) => t + p.grams, 0);
+      expect(total).toBeCloseTo(expected[i][1], 5);
+    });
+  });
+
+  it('has no batch and reads Version 1 · v1, Version 2 · v2', () => {
+    const standardBaseGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'standard-base');
+    expect(standardBaseGroup.batches).toEqual([]);
+    expect(standardBaseV2.parentVersionId).toBe(standardBaseV1.id);
+    const entries = railEntries(standardBaseGroup.versions, standardBaseGroup.batches, {
+      currentVersionId: standardBaseV2.id,
+    });
+    expect(entries.map((e) => e.name)).toEqual(['Version 1 · v1', 'Version 2 · v2']);
+  });
+});
+
+describe('Underbelly Light Base v1 (workbook column G) -> v2 (.ier)', () => {
+  it('underbellyLightBaseV1 has 8 rows in the workbook row order with matching grams', () => {
+    const expected = [
+      ['whole milk, 3.7%', 500],
+      ['Cream, heavy', 220],
+      ['Sucrose', 55],
+      ['Dextrose', 56],
+      ['Fructose', 8],
+      ['Dried Skimmed Milk Powder', 51],
+      ['Lecithin', 4.5],
+      ['Almond Extract', 5],
+    ];
+    expect(underbellyLightBaseV1.rows).toHaveLength(8);
+    underbellyLightBaseV1.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      const total = row.portions.reduce((t, p) => t + p.grams, 0);
+      expect(total).toBeCloseTo(expected[i][1], 5);
+    });
+    expect(underbellyLightBaseV1.iceEd).toEqual({ style: null, servingTemperatureC: null, hardness: null, overrunPercent: null });
+  });
+
+  it('underbellyLightBaseV2 has 11 rows in .ier order with matching grams', () => {
+    const expected = [
+      ['Whole Milk 3.3%', 480],
+      ['Cream, heavy', 240],
+      ['Dried Skimmed Milk Powder', 85],
+      ['Sucrose', 70],
+      ['Dextrose', 36],
+      ['Fructose', 6],
+      ['Lecithin', 2],
+      ['Locust Bean Gum', 0.8],
+      ['Guar', 0.6],
+      ['Lambda Carrageenan', 0.4],
+      ['Salt', 0.7],
+    ];
+    expect(underbellyLightBaseV2.rows).toHaveLength(11);
+    underbellyLightBaseV2.rows.forEach((row, i) => {
+      expect(row.ingredientName).toBe(expected[i][0]);
+      const total = row.portions.reduce((t, p) => t + p.grams, 0);
+      expect(total).toBeCloseTo(expected[i][1], 5);
+    });
+    expect(underbellyLightBaseV2.parentVersionId).toBe(underbellyLightBaseV1.id);
+    expect(underbellyLightBaseV2.parentVersionLabel).toBe('v1');
+  });
+
+  it('v1 has exactly one tasted batch from the workbook verdicts; v2 has none', () => {
+    const ublbGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'underbelly-light-base');
+    const v1Batches = ublbGroup.batches.filter((b) => b.versionId === underbellyLightBaseV1.id);
+    expect(v1Batches).toHaveLength(1);
+    expect(v1Batches[0].churn.churnDate).toBeNull();
+    expect(v1Batches[0].tasting.marks).toEqual({ sweetness: 3, scoopability: 3 });
+    expect(v1Batches[0].tasting.note).toBe('Comparisons workbook — Sweetness: good · Texture: good · Scoopability: good · Flavor: good');
+    const v2Batches = ublbGroup.batches.filter((b) => b.versionId === underbellyLightBaseV2.id);
+    expect(v2Batches).toHaveLength(0);
+    const standings = ublbGroup.versions.map((version) =>
+      standingFor(ublbGroup.batches.filter((b) => b.versionId === version.id)),
+    );
+    expect(standings).toEqual([TASTED, NOT_YET_CHURNED]);
+  });
+});
+
+describe('transcribedRecipeGroups holds seven groups in order (D-05)', () => {
+  it('lists recipe ids in the approved order, each with an empty description', () => {
+    expect(transcribedRecipeGroups.map((g) => g.recipe.id)).toEqual([
+      'mexican-chocolate',
+      'pineapple',
+      'coconut',
+      'standard-base',
+      'underbelly-light-base',
+      'strawberry',
+      'mocha',
+    ]);
+    for (const group of transcribedRecipeGroups) {
+      expect(group.recipe.description).toBe('');
     }
   });
 });

@@ -21,6 +21,23 @@ import {
   strawberryV2_1,
   strawberryV2_1Batch,
 } from './strawberry.js';
+import { standardBaseRecipe, standardBaseV1, standardBaseV2 } from './standard-base.js';
+import {
+  underbellyLightBaseRecipe,
+  underbellyLightBaseV1,
+  underbellyLightBaseV1Batch,
+  underbellyLightBaseV2,
+} from './underbelly-light-base.js';
+import {
+  mochaRecipe,
+  mochaV0,
+  mochaV0Batch,
+  mochaV1,
+  mochaV2,
+  mochaV2Batch,
+  mochaV3,
+  mochaV3Batch,
+} from './mocha.js';
 
 export const transcribedRecipeGroups = [
   {
@@ -30,9 +47,20 @@ export const transcribedRecipeGroups = [
   },
   { recipe: pineappleRecipe, versions: [pineappleV1], batches: [pineappleV1Batch] },
   { recipe: coconutRecipe, versions: [coconutV1, coconutV2], batches: [coconutV1Batch, coconutV2Batch] },
+  { recipe: standardBaseRecipe, versions: [standardBaseV1, standardBaseV2], batches: [] },
+  {
+    recipe: underbellyLightBaseRecipe,
+    versions: [underbellyLightBaseV1, underbellyLightBaseV2],
+    batches: [underbellyLightBaseV1Batch],
+  },
   {
     recipe: strawberryRecipe,
     versions: [strawberryV1, strawberryV2, strawberryV2_1],
     batches: [strawberryV1Batch, strawberryV2Batch, strawberryV2_1Batch],
+  },
+  {
+    recipe: mochaRecipe,
+    versions: [mochaV0, mochaV1, mochaV2, mochaV3],
+    batches: [mochaV0Batch, mochaV2Batch, mochaV3Batch],
   },
 ];

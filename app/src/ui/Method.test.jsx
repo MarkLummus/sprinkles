@@ -7,9 +7,9 @@
 // renders no links, so no router context is needed.
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Method } from './Method.jsx';
+import { Method, StepPenBody } from './Method.jsx';
 import { buildDiff } from '../domain/diff.js';
-import { stepsWithStaleAmounts } from '../domain/uses.js';
+import { stepsWithStaleAmounts, removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 
 const struckStep = { n: 1, leadIn: 'Steep', instruction: 'Warm the milk and steep the zest.' };
@@ -427,10 +427,11 @@ describe('Method — developing mode', () => {
     // (03-10), not its stored key.
     expect(markup).toContain('still used by step 1');
     expect(markup).not.toContain('remove this step');
-    // The coverage cue stays on the closed step (03.3-03, option B), but
-    // remove/restore now lives only inside the reveal — the closed
-    // markup carries neither button.
-    expect(markup).not.toMatch(/>restore<\/button>/);
+    // The coverage cue stays on the closed step (03.3-03, option B).
+    // Remove moved TO the closed step too (sketch 011 decisions_recorded
+    // 4) — a removed step's closed markup now reads "restore", not
+    // "remove".
+    expect(markup).toMatch(/>restore<\/button>/);
   });
 
   it('renders no coverage cue for a removed step whose rows are covered by nothing — the table already carries that answer', () => {
@@ -454,10 +455,11 @@ describe('Method — developing mode', () => {
 
   // Was "renders exactly one control on a removed step" before 03.1-04,
   // then "remove/restore alongside the on-demand openers" before 03.3-03:
-  // the step body now opens read-only by default (D-23, D-24, 03.3-03) —
-  // restore/remove/add purpose/add aside all moved inside the reveal, so
-  // the default closed markup carries none of them, only edit this step.
-  it('renders no restore/remove/add purpose/add aside controls by default on a removed step — only edit this step, until revealed', () => {
+  // the step body opens read-only by default (D-23, D-24, 03.3-03) — add
+  // purpose/add aside stay inside the reveal, but remove/restore itself
+  // moved TO the closed step (sketch 011 decisions_recorded 4, Task 3),
+  // so the default closed markup now reads "edit this step · restore".
+  it('renders "edit this step" and "restore" by default on a removed step — add purpose/add aside stay inside the reveal', () => {
     const baselineVersion = makeBaselineVersion();
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[0].removed = true;
@@ -474,8 +476,10 @@ describe('Method — developing mode', () => {
     );
 
     const buttonMatches = markup.match(/<button[^>]*>[^<]*<\/button>/g) ?? [];
-    expect(buttonMatches.every((button) => !/>restore<|>remove<|>add purpose<|>add aside</.test(button))).toBe(true);
+    expect(buttonMatches.every((button) => !/>add purpose<|>add aside</.test(button))).toBe(true);
     expect(markup.match(/>edit this step<\/button>/g)?.length).toBe(1);
+    expect(markup.match(/>restore<\/button>/g)?.length).toBe(1);
+    expect(markup).not.toMatch(/>remove<\/button>/);
     expect(markup).toContain('aria-label="Removed step, edit this step"');
   });
 
@@ -1236,5 +1240,134 @@ describe('Method — "Before you start" heads the Method (03.3-01, 03.1 Override
     const markup = renderToStaticMarkup(<Method steps={[unstruckStep]} mode="reading" />);
     expect(markup).toContain('method__before');
     expect(markup).toContain('Before you start');
+  });
+});
+
+// Sketch 011 decisions_recorded 4, Task 3: remove moves TO the closed
+// step — every closed step now reads "edit this step · remove" (or
+// "restore" once removed), never "edit this step" alone.
+describe('Method — the closed pen step reads "edit this step · remove" (sketch 011 decisions_recorded 4, Task 3)', () => {
+  it('an active step renders edit this step then remove, in that DOM order', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
+        rows={baselineVersion.rows}
+      />,
+    );
+
+    const editIndex = markup.indexOf('>edit this step<');
+    const removeIndex = markup.indexOf('>remove<');
+    expect(editIndex).toBeGreaterThan(-1);
+    expect(removeIndex).toBeGreaterThan(editIndex);
+    expect(markup).not.toMatch(/>restore<\/button>/);
+    expect(markup).not.toMatch(/>Cancel<\/button>/);
+    expect(markup).not.toMatch(/>Done<\/button>/);
+  });
+});
+
+// Sketch 011 decisions_recorded 5, Task 3: one step open at a time, Cancel
+// before Done, the uses toggle reworded to "change the ingredients", the
+// on-demand triggers to "add a purpose"/"add an aside", and remove moved
+// off the open form entirely (decisions_recorded 4). Rendered through the
+// exported StepPenBody directly with isOpen — renderToStaticMarkup cannot
+// simulate the click that would open a step through <Method> itself
+// (RESEARCH.md Pitfall 4, this file's own established precedent above).
+function makeThreeStepVersion() {
+  return {
+    versionLabel: 'v1',
+    sheetTitle: 't',
+    sheetDescription: 'd',
+    targets: {},
+    rows: [{ id: 'row-a', ingredientName: 'Row A', portions: [{ step: 1, grams: 10 }], removed: false, ingredient: { composition: {} } }],
+    method: [
+      { n: 1, leadIn: 'Lead one', instruction: 'Do one.', removed: false, uses: [] },
+      { n: 2, leadIn: 'Lead two', instruction: 'Do two.', removed: false, uses: [] },
+      { n: 3, leadIn: 'Build the base', instruction: 'Whisk it all.', removed: false, uses: ['row-a'] },
+    ],
+  };
+}
+
+function renderOpenStepPenBody(stepN) {
+  const baselineVersion = makeThreeStepVersion();
+  const draftVersion = structuredClone(baselineVersion);
+  const diff = buildDiff(draftVersion, baselineVersion);
+  const step = baselineVersion.method.find((candidate) => candidate.n === stepN);
+  const draftStep = draftVersion.method.find((candidate) => candidate.n === stepN);
+  const stepDiff = diff.steps.find((candidate) => candidate.n === stepN);
+  const flaggedRows = removedRowsUsedBy(draftVersion, draftStep);
+  const coveredRows = coveredRowsFor(draftVersion, draftStep);
+  const fieldLabel = (s, removed, name) => (removed ? `Removed step ${s.n}, ${name}` : `Step ${s.n}, ${name}`);
+
+  return renderToStaticMarkup(
+    <StepPenBody
+      step={step}
+      draftStep={draftStep}
+      stepDiff={stepDiff}
+      rows={baselineVersion.rows}
+      flaggedRows={flaggedRows}
+      coveredRows={coveredRows}
+      staleEntry={undefined}
+      staleFlagVisible={false}
+      currentStepNumbers={null}
+      fieldLabel={fieldLabel}
+      isOpen
+      onOpen={() => {}}
+      onDone={() => {}}
+      onCancel={() => {}}
+      onChangePenStepField={() => {}}
+      onChangePenStepTarget={() => {}}
+      onTogglePenStepUses={() => {}}
+      onTogglePenStepRemoved={() => {}}
+    />,
+  );
+}
+
+describe('Method — StepPenBody, opened (sketch 011 decisions_recorded 5, Task 3)', () => {
+  it('renders its fields, a controls line reading change the ingredients / add a purpose / add an aside, then Cancel and Done — no remove control at all', () => {
+    const markup = renderOpenStepPenBody(3);
+
+    expect(markup).toContain('<input');
+    expect(markup).toContain('<textarea');
+    expect(markup).toMatch(/>change the ingredients<\/button>/);
+    expect(markup).toMatch(/>add a purpose<\/button>/);
+    expect(markup).toMatch(/>add an aside<\/button>/);
+    expect(markup).not.toMatch(/>remove<\/button>/);
+    expect(markup).not.toMatch(/>restore<\/button>/);
+    expect(markup).not.toContain('>edit this step<');
+
+    const cancelIndex = markup.indexOf('>Cancel<');
+    const doneIndex = markup.indexOf('>Done<');
+    expect(cancelIndex).toBeGreaterThan(-1);
+    expect(doneIndex).toBeGreaterThan(cancelIndex);
+    expect(markup).toMatch(/<button type="button" class="text-control"[^>]*>Cancel<\/button>/);
+  });
+
+  it("names the uses toggle by the step's own position: 'Step 3, change the ingredients'", () => {
+    const markup = renderOpenStepPenBody(3);
+    expect(markup).toContain('aria-label="Step 3, change the ingredients"');
+  });
+
+  it('renders no literal \'change\' wording anywhere — only \'change the ingredients\'', () => {
+    const markup = renderOpenStepPenBody(3);
+    expect(markup).not.toMatch(/>change<\/button>/);
+  });
+});
+
+// D-19 (sketch 011 Task 3): a batch's Instructions changes are written in
+// the hand, the same treatment as the as-made grams (IngredientTable.jsx).
+describe('Method — a changed step line is written in the hand (D-19, sketch 011 Task 3)', () => {
+  it('reads .method-step__changed.sheet-hand, not .ink-text', () => {
+    const markup = renderToStaticMarkup(
+      <Method steps={[changedLineStep]} stepChanges={{ 3: { struck: false, line: 'blend 60 s' } }} mode="reading" />,
+    );
+    expect(markup).toContain('<p class="method-step__changed sheet-hand">blend 60 s</p>');
+    expect(markup).not.toContain('ink-text');
   });
 });

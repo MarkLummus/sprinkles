@@ -470,4 +470,5 @@
   --app-notebook-history-mark-size: 12px; /* 1600-batch.html: the mark's own diameter */
   --app-notebook-history-ring-inset: 2px; /* 1600-batch.html: the in-view ring's own inner (App white) inset */
   --app-notebook-history-ring-w: 3.5px; /* 1600-batch.html: the in-view ring's own outer (Notebook red) width */
+  --app-notebook-history-fade-w: 96px; /* 1600-long-history.html: the left fade's own width (Task 2) */
 }

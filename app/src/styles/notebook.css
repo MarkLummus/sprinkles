@@ -348,6 +348,18 @@
   background: var(--app-divider);
 }
 
+/* The left fade (Task 2, 1600-long-history.html): shows only while
+   scrollLeft is above 0 — content is hidden to the left. */
+.notebook-history__fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--app-notebook-history-fade-w);
+  background: linear-gradient(to left, transparent, var(--app-background));
+  pointer-events: none;
+}
+
 .notebook-history__nodes {
   display: flex;
   gap: var(--app-notebook-history-node-gap);

@@ -563,10 +563,11 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
       <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
     );
 
-    // The total's own numeric cell alone — never the aria-label, which
-    // spells the unit as "grams" and would falsely inflate an " g"
-    // substring count.
-    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-numeric">([\s\S]*?)<\/td>/.exec(markup);
+    // The total's own name cell alone — the struck-then-current pair now
+    // nests inside its own plan-grams slot there (sketch 011 Task 2), not
+    // a separate numeric td — never the aria-label, which spells the unit
+    // as "grams" and would falsely inflate an " g" substring count.
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/.exec(markup);
     const totalCellMarkup = totalCellMatch[1];
     expect(totalCellMarkup).toContain('<span class="struck-value">40.0</span>');
     expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);
@@ -579,7 +580,7 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
 
     const markup = renderToStaticMarkup(<IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" />);
 
-    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-numeric">([\s\S]*?)<\/td>/.exec(markup);
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/.exec(markup);
     const totalCellMarkup = totalCellMatch[1];
     expect(totalCellMarkup).toContain(`<span class="struck-value">${diff.total.fromValue}</span>`);
     expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);

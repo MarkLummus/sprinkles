@@ -761,38 +761,8 @@ textarea {
   text-align: right;
 }
 
-/* The Data and Remove columns (G-03-11): unstyled since 03-02/03-08, so
-   under this table's fixed layout they split whatever the sized columns
-   above left — 5.41px each at a 1280px viewport, which is why the Remove
-   column's button painted over the Data column's flag word. Both now
-   read their own token (tokens.css). */
-.ingredient-table__col-data {
-  width: var(--sheet-col-data);
-}
-
-.ingredient-table__col-remove {
-  width: var(--sheet-col-remove);
-}
-
 .ingredient-table .ink-field {
   text-align: right;
-}
-
-/* The grams cell's pen-open state (route-recipe-version.md § 3, § 6): the
-   struck baseline sits beside the field as a sibling span, never an
-   ancestor of it — the same reason Method.jsx's Skipped label sits
-   outside its struck span. */
-.ingredient-table__grams-cell {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--gap-strike);
-}
-
-.ingredient-table__grams-cell .ink-field {
-  width: auto;
-  flex: 1 1 auto;
-  min-width: 0;
 }
 
 /* The Strike Rule (route-recipe-version.md § 7): a struck value in ink,
@@ -835,14 +805,26 @@ textarea {
   vertical-align: middle;
 }
 
-/* The plan-grams span (sketch 011 decision 2, 03.5-06 Task 1): the row's
-   plan amount, right-aligned before the ingredient name, in both the
-   reading state and the pen's own grams field (Task 2). */
+/* The plan-grams span (sketch 011 decision 2, 03.5-06): the row's plan
+   amount, right-aligned before the ingredient name, in every state — the
+   reading state's own plain text (Task 1), and the pen's grams field, the
+   struck parent value, and the total row's struck-plus-current pair
+   (Task 2). white-space: nowrap keeps a struck-parent-plus-field pair, or
+   a struck-plus-current total, from wrapping mid-figure. */
 .ingredient-table__plan-grams {
   display: inline-block;
   min-width: var(--sheet-plan-grams-w);
   text-align: right;
   margin-right: var(--sheet-plan-grams-gap);
+  white-space: nowrap;
+}
+
+/* The pen's own grams field, inside the plan-grams slot (Task 2,
+   1600-pen.html): narrower than .ink-field's own 100% default, since the
+   slot's min-width already carries the layout. */
+.ingredient-table__plan-grams .ink-field {
+  width: var(--sheet-grams-field-w);
+  flex: none;
 }
 
 /* The step-grouped table's own group-head row (LD-01, sketch 003 variant

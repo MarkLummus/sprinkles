@@ -193,38 +193,28 @@
      (viewport - 128) * 2 / 3. That is 768px at a 1280px viewport and
      597.33px at 1024px.
 
-     Measured content minimums
+     Measured content minimum
      (.planning/debug/remove-column-occludes-values.md, phase-3
      measurement): 80.61px for the "% of batch" header, the numeric
-     columns' widest content (wider than any numeric field); 66.14px for
-     the Data column's "estimated" flag word, with "unreviewed" reasoned
-     wider still though no seed row currently produces it; 60.45px for the
-     Remove column's native remove/restore button; 142.83px for "Lambda
-     carrageenan", the widest seed ingredient name.
+     columns' widest content (wider than any numeric field).
 
-     The widest state this arithmetic must survive: a churned version open
-     in the pen, showing all three numeric columns plus Step, Data and
-     Remove at once — six sized columns, with the ingredient-name column
-     (app.css, .ingredient-table__col-name) absorbing whatever they
-     leave. */
+     The Data and Remove column-width tokens retired (sketch 011 Task 2,
+     03.5-06): style 6 drops the Data and Remove columns outright — the
+     estimated/unreviewed flag reads as an inline chip after the name and
+     remove/restore sits inline after it too, both inside the auto-width
+     name column, never a sized column of their own. The widest state this
+     arithmetic must survive is now just the numeric column at its widest
+     (As made + % of batch together), with the ingredient-name column
+     (app.css, .ingredient-table__col-name) absorbing whatever it leaves —
+     the same "sized by identity, not position" contract, one fewer sized
+     column to negotiate around. --col-step/--col-step-pen retired earlier
+     for the same reason (03.3-02, LD-01/LD-02): the table groups by step
+     instead of naming one in a cell. */
   --sheet-col-numeric: 94px; /* content: 94 - 12 = 82px, ~1.4px above the
     80.61px "% of batch" header — a few px of slack and no more, since
     every px given to a sized column here comes out of the name column's
     remainder. Shrunk from 88px (sized to the field, never the header) per
     D-UAT-6. */
-  /* --col-step and --col-step-pen retired (03.3-02, LD-01/LD-02): the
-     Step column itself was removed from the ingredient table — it now
-     groups by step instead of naming one in a cell — so neither the
-     reading state's own width nor the pen's wider variant has a column
-     left to size. Every rule that consumed either token was removed in
-     the same plan. */
-  --sheet-col-data: 86px; /* content: 86 - 12 = 74px, against "estimated"
-    (66.14px) and the reasoned-longer "unreviewed" (~73.5px, no seed row
-    produces it yet) — sized to the longer, unmeasured word rather than
-    to what happens to sit on screen today (G-03-11). */
-  --sheet-col-remove: 78px; /* content: 78 - 12 = 66px, a little slack over the
-    60.45px native remove/restore <button> — a bare button has no shrink
-    guard, unlike the step select's flex + min-width:0 pair (03-08). */
 
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);
@@ -486,6 +476,7 @@
   --sheet-flag-gap: 8px; /* the estimated/unreviewed chip's own margin-left after the name */
   --sheet-portion-indent: 82px; /* the split portion note's own padding-left — the plan-grams span (64) plus its gap (18), never a second literal */
   --sheet-leading-hand: 1; /* the Sheet's own hand leading (decisions_recorded 1) — distinct from --leading-hand (1.25), the App's own */
+  --sheet-grams-field-w: 52px; /* Task 2 (1600-pen.html): the pen's own grams field, inside the plan-grams slot — narrower than the field's own 100% default, since the slot's min-width already carries the layout */
 
   /* The 393 narrow list (393-batch.html's forced narrow rules, "the
      ingredient table reads as a list, two lines per row": quantity and

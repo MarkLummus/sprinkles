@@ -465,13 +465,13 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 9 plans
+**Plans:** 1/9 plans executed
 
 Plans:
 
 **Wave 1**
 
-- [ ] 03.5-01-PLAN.md — The recipe record in the store end to end (recipes store, DB 6, seam, seed, Home names from records); sheetTitle/sheetDescription replace the version's name and headnote; Carried forward removed; export schema 6 refuses older files (D-09, D-10, D-11)
+- [x] 03.5-01-PLAN.md — The recipe record in the store end to end (recipes store, DB 6, seam, seed, Home names from records); sheetTitle/sheetDescription replace the version's name and headnote; Carried forward removed; export schema 6 refuses older files (D-09, D-10, D-11)
 
 **Wave 2** *(blocked on Wave 1)*
 

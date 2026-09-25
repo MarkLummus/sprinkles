@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 10
+open_count: 11
 waived_count: 0
 fixed_count: 0
-total_count: 10
-last_updated: 2026-09-25T12:06:20.582Z
+total_count: 11
+last_updated: 2026-09-25T12:45:51.264Z
 ---
 
 # Broken Windows Ledger
@@ -25,6 +25,7 @@ last_updated: 2026-09-25T12:06:20.582Z
 | 8 | 03.4 | deviation | app/src/styles/shell.css |  | Rail's active-item (aria-current=page) has no border-radius pill or bold weight vs board 170's 8px radius/600 weight - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 4 | open |  | 2026-09-22T03:12:14.985Z |  |
 | 9 | 03.4 | deviation | app/src/ui/RecipeList.jsx |  | RowActions always renders both filled+secondary actions at every width; board 171's row shows only the filled action at 393px - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 32 | open |  | 2026-09-22T03:12:15.056Z |  |
 | 10 | 03.5 | unrun-verify | app/src/ui/RecipeHistory.jsx |  | Real-browser side-by-side check of the History rail against 1600-batch.html/1600-no-batch.html/1600-long-history.html/1600-pen.html — no browser-automation tool available inside this worktree; deferred to end-of-phase UAT per workflow.human_verify_mode: end-of-phase | open |  | 2026-09-25T12:06:20.582Z |  |
+| 11 | 03.5 | unrun-verify | .planning/phases/03.5-separate-the-recipe-from-the-sheet/03.5-06-PLAN.md |  | Plan 03.5-06 verification bullet 2: the built app's olive oil Sheet at every state (reading/pen/record/show-changes) against the sketch boards, the pen's one-step-open/Cancel/Done behaviour, and the total's as-made hand values -- needs a real layout engine this worktree had no browser-automation tool for; deferred to end-of-phase UAT (workflow.human_verify_mode: end-of-phase). | open |  | 2026-09-25T12:45:51.264Z |  |
 
 ````json
 [
@@ -154,6 +155,19 @@ last_updated: 2026-09-25T12:06:20.582Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-25T12:06:20.582Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 11,
+    "kind": "unrun-verify",
+    "phase": "03.5",
+    "file": ".planning/phases/03.5-separate-the-recipe-from-the-sheet/03.5-06-PLAN.md",
+    "line": null,
+    "description": "Plan 03.5-06 verification bullet 2: the built app's olive oil Sheet at every state (reading/pen/record/show-changes) against the sketch boards, the pen's one-step-open/Cancel/Done behaviour, and the total's as-made hand values -- needs a real layout engine this worktree had no browser-automation tool for; deferred to end-of-phase UAT (workflow.human_verify_mode: end-of-phase).",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-25T12:45:51.264Z",
     "resolved_at": null,
     "milestone": null
   }

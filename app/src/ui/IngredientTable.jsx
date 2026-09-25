@@ -92,16 +92,20 @@ function rowAccessibleLabel(
   return parts.join(', ');
 }
 
-// The grams cell (route-recipe-version.md § 3, § 6): plain text outside the
-// pen, one controlled text field while developing — scoped to exactly ONE
-// named portion now (Task 2), not a loop joining every portion inside one
-// cell, since each portion is its own <tr> once the table groups by step.
-// The struck baseline is that portion's own stored amount, rendered as a
-// sibling of the field, not its ancestor, so the strike can never bleed
-// onto the field beside it.
+// The plan-grams slot (route-recipe-version.md § 3, § 6; sketch 011
+// decision 2, Task 2): style 6's own right-aligned span before the name —
+// plain text outside the pen, one controlled text field while developing
+// — scoped to exactly ONE named portion (Task 2), not a loop joining every
+// portion inside one cell, since each portion is its own <tr> once the
+// table groups by step. The struck baseline (a changed value's parent
+// amount) is a SIBLING before the slot, never its ancestor — the strike
+// can never bleed onto the field beside it — mirroring the total row's own
+// struck-then-current pair, which instead nests both INSIDE the slot
+// (route-recipe-version.md § 3's "Grams field sits in the plan-grams slot,
+// a changed value's parent amount is struck before it").
 function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef }) {
   if (mode !== 'developing') {
-    return <>{row.portions[portionIndex].grams} g</>;
+    return <span className="ingredient-table__plan-grams">{`${row.portions[portionIndex].grams} g`}</span>;
   }
   const draftRow = penDraft.rows[row.id];
   const portion = row.portions[portionIndex];
@@ -118,20 +122,23 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
   // apart.
   const multiPortion = row.portions.length > 1;
   return (
-    <span className="ingredient-table__grams-cell">
-      {changed && <span className="struck-value">{portion.grams}</span>}
-      <input
-        ref={inputRef}
-        type="text"
-        inputMode="decimal"
-        className="ink-field"
-        value={draftPortion.grams}
-        aria-label={
-          multiPortion ? `${row.ingredientName}, grams, portion ${portionIndex + 1}` : `${row.ingredientName}, grams`
-        }
-        onChange={(event) => onChangePenGrams(row.id, portionIndex, event.target.value)}
-      />
-    </span>
+    <>
+      {changed && <span className="struck-value">{`${portion.grams} g`}</span>}
+      <span className="ingredient-table__plan-grams">
+        <input
+          ref={inputRef}
+          type="text"
+          inputMode="decimal"
+          className="ink-field"
+          value={draftPortion.grams}
+          aria-label={
+            multiPortion ? `${row.ingredientName}, grams, portion ${portionIndex + 1}` : `${row.ingredientName}, grams`
+          }
+          onChange={(event) => onChangePenGrams(row.id, portionIndex, event.target.value)}
+        />
+        {' g'}
+      </span>
+    </>
   );
 }
 
@@ -159,24 +166,26 @@ function RemoveRowControl({ removed, onToggle }) {
   );
 }
 
-// The show-changes state's grams cell (route-recipe-version.md § 3, § 6,
-// 03-04): both the struck parent value and the current value read through
-// ink, never pen blue — a saved version's marks are never still being
-// typed, so nothing here reads through .ink-field or .ink-text. Driven
-// entirely by the row's own buildDiff descriptor; a removed row forces the
-// strike even when the number itself did not move, the same forced-strike
-// discipline GramsCell already applies in the pen. Only valid for a
-// single-portion row — diff.js's rowDiff carries ROW-level totals alone, so
-// it cannot attribute a struck comparison to one portion of a split row
-// (Task 2's own show-changes branch renders a split row's grams plainly
-// instead, with no strike).
+// The show-changes state's plan-grams slot (route-recipe-version.md § 3,
+// § 6, 03-04; sketch 011 Task 2): both the struck parent value and the
+// current value read through ink, never pen blue — a saved version's
+// marks are never still being typed, so nothing here reads through
+// .ink-field or .ink-text — nested INSIDE the slot, mirroring the total
+// row's own struck-then-current pair (both values are static text here,
+// never a field beside them). Driven entirely by the row's own buildDiff
+// descriptor; a removed row forces the strike even when the number itself
+// did not move, the same forced-strike discipline GramsCell already
+// applies in the pen. Only valid for a single-portion row — diff.js's
+// rowDiff carries ROW-level totals alone, so it cannot attribute a struck
+// comparison to one portion of a split row (the show-changes branch below
+// renders a split row's grams plainly instead, with no strike).
 function DiffGramsCell({ rowDiff }) {
   const changed = rowDiff.removed || rowDiff.gramsChanged;
   return (
-    <>
-      {changed && rowDiff.gramsFrom != null && <span className="struck-value">{rowDiff.gramsFrom} g</span>}
-      {rowDiff.gramsTo} g
-    </>
+    <span className="ingredient-table__plan-grams">
+      {changed && rowDiff.gramsFrom != null && <span className="struck-value">{`${rowDiff.gramsFrom} g`}</span>}
+      {`${rowDiff.gramsTo} g`}
+    </span>
   );
 }
 
@@ -294,7 +303,7 @@ function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade 
   }
   const value = openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
   if (value !== null) {
-    return <span className="ink-text">{`${value} g`}</span>;
+    return <span className="sheet-hand">{`${value} g`}</span>;
   }
   return null;
 }
@@ -411,13 +420,14 @@ export function IngredientTable({
         ? `Total, plan ${totalDisplayText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
         : `Total, plan ${totalDisplayText.replace(' g', ' grams')}`;
 
-  // This table carries two conditional columns: As made, in the middle,
-  // governed by hasAsMadeLayer; and Remove, at the end, governed by
-  // isDeveloping. Each is gated at exactly four sites — the header and
-  // all three body branches — plus the total row, so a future third
-  // conditional column should follow this same shape (one named
-  // predicate, four-plus-one gated sites) rather than inventing its own.
-  const columnCount = 4 + (hasAsMadeLayer ? 1 : 0) + (isDeveloping ? 1 : 0);
+  // Style 6, every state (sketch 011 decisions 2, 3; D-19; 03.5-06 Tasks 1
+  // and 2): the table has exactly two column identities left — the
+  // auto-width name column, which now also carries the plan grams and the
+  // estimated/unreviewed chip inline, and the token-sized numeric column
+  // (As made, % of batch). As made alone stays conditional, governed by
+  // hasAsMadeLayer, gated at the header and all three body branches plus
+  // the total row.
+  const columnCount = 2 + (hasAsMadeLayer ? 1 : 0);
 
   // The method array the grouping helper reads lead-in text from: the
   // pen's own live draftVersion.method while developing (its own comment
@@ -425,27 +435,34 @@ export function IngredientTable({
   const stepsForGrouping = isDeveloping ? draftVersion.method : steps;
   const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers);
 
+  // Style 6's reading row (sketch 011 decisions 2, 3; D-19; 03.5-06 Task
+  // 1) — also the recording state's row (Task 2): GramsCell's own
+  // non-developing branch already renders the plain plan-grams span, so
+  // recording (mode "recording", the as-made field rendered by AsMadeCell
+  // below) reads the identical name-cell shape as plain reading, with no
+  // second branch to keep in sync.
   function renderReadingEntry(row, portion, portionIndex) {
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
     const isSplit = row.portions.length > 1;
+    const ariaLabel = rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue);
+
     return (
-      <tr
-        key={`${row.id}:${portionIndex}`}
-        className={isMarked ? 'is-marked' : undefined}
-        aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
-      >
+      <tr key={`${row.id}:${portionIndex}`} className={isMarked ? 'is-marked' : undefined} aria-label={ariaLabel}>
         <td className="ingredient-table__col-name">
+          <GramsCell row={row} portionIndex={portionIndex} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
           {row.ingredientName}
+          {dataFlag && (
+            <span className="target-chip ingredient-table__flag">
+              <span className="target-chip__value">{dataFlag}</span>
+            </span>
+          )}
           {isSplit && (
             <span className="ingredient-table__portion-note">
               {formatPortionLine(portion.grams, rowGrams(row), baselineMass)}
             </span>
           )}
-        </td>
-        <td className="ingredient-table__col-numeric">
-          <GramsCell row={row} portionIndex={portionIndex} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
         </td>
         {hasAsMadeLayer && (
           <td className="ingredient-table__col-numeric">
@@ -453,7 +470,6 @@ export function IngredientTable({
           </td>
         )}
         <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
-        <td className="ingredient-table__col-data">{dataFlag}</td>
       </tr>
     );
   }
@@ -471,15 +487,22 @@ export function IngredientTable({
         aria-label={rowDiffAccessibleLabel(row, portion, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue, isSplit)}
       >
         <td className="ingredient-table__col-name">
+          {isSplit ? (
+            <span className="ingredient-table__plan-grams">{`${portion.grams} g`}</span>
+          ) : (
+            <DiffGramsCell rowDiff={rowDiff} />
+          )}
           {rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+          {dataFlag && (
+            <span className="target-chip ingredient-table__flag">
+              <span className="target-chip__value">{dataFlag}</span>
+            </span>
+          )}
           {isSplit && (
             <span className="ingredient-table__portion-note">
               {formatPortionLine(portion.grams, rowGrams(row), baselineMass)}
             </span>
           )}
-        </td>
-        <td className="ingredient-table__col-numeric">
-          {isSplit ? <>{portion.grams} g</> : <DiffGramsCell rowDiff={rowDiff} />}
         </td>
         {hasAsMadeLayer && (
           <td className="ingredient-table__col-numeric">
@@ -489,7 +512,6 @@ export function IngredientTable({
         <td className="ingredient-table__col-numeric">
           {isSplit ? formatShareOfBatch(portion.grams, baselineMass) : <DiffShareCell rowDiff={rowDiff} />}
         </td>
-        <td className="ingredient-table__col-data">{dataFlag}</td>
       </tr>
     );
   }
@@ -549,17 +571,6 @@ export function IngredientTable({
         aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams, changedShare, removed)}
       >
         <td className="ingredient-table__col-name">
-          {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
-          {isSplit && (
-            <span className="ingredient-table__portion-note">
-              {formatPortionLine(livePortionGrams, rowGrams(row), currentMass)}
-            </span>
-          )}
-          {portionIndex === 0 && flagged && (
-            <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
-          )}
-        </td>
-        <td className="ingredient-table__col-numeric">
           <GramsCell
             row={row}
             portionIndex={portionIndex}
@@ -568,6 +579,25 @@ export function IngredientTable({
             onChangePenGrams={onChangePenGrams}
             inputRef={portionIndex === 0 ? (element) => registerGramsInput(row.id, element) : undefined}
           />
+          {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+          {dataFlag && (
+            <span className="target-chip ingredient-table__flag">
+              <span className="target-chip__value">{dataFlag}</span>
+            </span>
+          )}
+          {isSplit && (
+            <span className="ingredient-table__portion-note">
+              {formatPortionLine(livePortionGrams, rowGrams(row), currentMass)}
+            </span>
+          )}
+          {portionIndex === 0 && flagged && (
+            <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
+          )}
+          {/* Remove/restore, in the name cell now (sketch 011 Task 2) —
+              never its own column — after the name and after the orphan
+              flag when present, mirroring the sketch's own tail-of-cell
+              placement. */}
+          {portionIndex === 0 && <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />}
         </td>
         {hasAsMadeLayer && (
           <td className="ingredient-table__col-numeric">
@@ -580,10 +610,6 @@ export function IngredientTable({
           ) : (
             <ShareCell baselineShare={portionBaselineShare} currentShare={portionCurrentShare} />
           )}
-        </td>
-        <td className="ingredient-table__col-data">{dataFlag}</td>
-        <td className="ingredient-table__col-remove">
-          {portionIndex === 0 && <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />}
         </td>
       </tr>
     );
@@ -601,14 +627,13 @@ export function IngredientTable({
         {comparisonBatchLabel && <caption className="ingredient-table__comparison">{comparisonBatchLabel}</caption>}
         <thead>
           <tr>
+            {/* Style 6, every state (sketch 011, 03.5-06 Tasks 1 and 2):
+                no Grams column, no Source/Data column, no Remove column —
+                the plan grams, the estimated/unreviewed flag and
+                remove/restore all sit inline, inside the name column. */}
             <th scope="col" className="ingredient-table__col-name">Ingredient</th>
-            <th scope="col" className="ingredient-table__col-numeric">Grams</th>
             {hasAsMadeLayer && <th scope="col" className="ingredient-table__col-numeric">As made</th>}
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
-            {/* The Data column goes blank-headed in the pen (D-22): the
-                column stays, its head goes. */}
-            <th scope="col" className="ingredient-table__col-data">{isDeveloping ? '' : 'Source'}</th>
-            {isDeveloping && <th scope="col" className="ingredient-table__col-remove">Remove</th>}
           </tr>
         </thead>
         <tbody>
@@ -632,23 +657,31 @@ export function IngredientTable({
         </tbody>
         <tfoot>
           <tr aria-label={totalAriaLabel}>
-            <td className="ingredient-table__col-name">Total</td>
-            {/* The unit prints once (D-22, critique P2 #2): the struck
-                baseline reads the bare-number formatter — the pen's own
-                through formatGramsValue, show-changes' through
-                diff.total.fromValue — never composing a second unit onto
-                what totalDisplayText already carries after it. */}
-            <td className="ingredient-table__col-numeric">
-              {isDeveloping && currentTotalText !== baselineTotalText && (
-                <span className="struck-value">{formatGramsValue(baselineMass)}</span>
-              )}
-              {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.fromValue}</span>}
-              {totalDisplayText}
+            <td className="ingredient-table__col-name">
+              {/* The unit prints once (D-22, critique P2 #2): the struck
+                  baseline reads the bare-number formatter — the pen's own
+                  through formatGramsValue, show-changes' through
+                  diff.total.fromValue — never composing a second unit onto
+                  what totalDisplayText already carries after it. Nested
+                  INSIDE the plan-grams slot (sketch 011 Task 2), unlike a
+                  row's own struck value, which sits as a sibling before it
+                  — the total row's struck-then-current pair is one static
+                  figure, never a field beside it. */}
+              <span className="ingredient-table__plan-grams">
+                {isDeveloping && currentTotalText !== baselineTotalText && (
+                  <span className="struck-value">{formatGramsValue(baselineMass)}</span>
+                )}
+                {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.fromValue}</span>}
+                {totalDisplayText}
+              </span>
+              Total
             </td>
-            {hasAsMadeLayer && <td className="ingredient-table__col-numeric">{asMadeTotalText}</td>}
+            {hasAsMadeLayer && (
+              <td className="ingredient-table__col-numeric">
+                <span className="sheet-hand">{asMadeTotalText}</span>
+              </td>
+            )}
             <td className="ingredient-table__col-numeric"></td>
-            <td className="ingredient-table__col-data"></td>
-            {isDeveloping && <td className="ingredient-table__col-remove"></td>}
           </tr>
         </tfoot>
       </table>

@@ -569,6 +569,20 @@ export function batchSavedStatus(record) {
   return `recorded ${formatRecordDate(record.recordedAt)} against ${record.snapshot.versionLabel}`;
 }
 
+// Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
+// Task 3, T-03.5-19): the version the pen opened on is the draft's own
+// parent, so restoring is a structuredClone of that ONE step, replacing
+// the draft's own copy of it — every other step and every other penDraft
+// key stay exactly as they were. Pure, so its own immutability is
+// unit-tested directly.
+export function restoreStepFromVersion(penDraft, version, stepN) {
+  const parentStep = version.method.find((step) => step.n === stepN);
+  return {
+    ...penDraft,
+    method: penDraft.method.map((step) => (step.n === stepN ? structuredClone(parentStep) : step)),
+  };
+}
+
 // The not-found markup (03.5-02, decisions_recorded 3): shared by a version
 // missing outright and by a version whose recipeId does not match the
 // route's own recipeId (a wrong-address read, not a real recipe). Exported
@@ -1664,6 +1678,17 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }));
   }
 
+  // Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
+  // Task 3): restores exactly the one step the pen opened on, from the
+  // version the pen opened on (`version`, in scope for the whole page) —
+  // the same clear-blocked-state shape every other pen-step handler above
+  // already follows.
+  function handleRestorePenStep(stepN) {
+    setBlockedMessage(null);
+    setBlockedTarget(null);
+    setPenDraft((prev) => restoreStepFromVersion(prev, version, stepN));
+  }
+
   // An authored note's text, and the inherited-from marker it carries
   // (route-recipe-version.md, "Inherited notes"): the marker persists when
   // the edited text still equals the text this version inherited it with,
@@ -1946,6 +1971,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
                 onChangePenStepTarget={handleChangePenStepTarget}
                 onTogglePenStepUses={handleTogglePenStepUses}
                 onTogglePenStepRemoved={handleTogglePenStepRemoved}
+                onRestorePenStep={handleRestorePenStep}
                 beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
                 onChangeNoteText={handleChangePenNoteText}
                 onRemoveNote={handleRemovePenNote}

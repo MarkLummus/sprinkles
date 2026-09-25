@@ -44,6 +44,7 @@ import {
   TASTING_REMOVED_EMPTY_STATUS,
   TASTING_REMOVED_DATA_STATUS,
   TASTING_RESTORED_STATUS,
+  restoreStepFromVersion,
 } from './RecipePage.jsx';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -264,6 +265,48 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('reading', draft, version)).toBe(false);
     expect(isPenDraftDirty('developing', null, version)).toBe(false);
     expect(isPenDraftDirty('developing', draft, null)).toBe(false);
+  });
+});
+
+// Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
+// Task 3, T-03.5-19): the version the pen opened on is the draft's own
+// parent, so restoring is a structuredClone of that ONE step, replacing
+// the draft's own copy — never touching any other step or any other
+// penDraft key.
+describe('restoreStepFromVersion — Cancel restores exactly the one step the pen opened on (T-03.5-19)', () => {
+  const version = makeBaselineVersion();
+
+  it("replaces the named step with the version's own step, leaving every other step and every other penDraft key untouched", () => {
+    const penDraft = makeCleanPenDraft(version);
+    penDraft.method[0].leadIn = 'A typed change';
+    penDraft.method[0].purpose = 'A typed purpose';
+    penDraft.reason = 'unrelated pen field';
+
+    const restored = restoreStepFromVersion(penDraft, version, 1);
+
+    expect(restored.method[0]).toEqual(version.method[0]);
+    expect(restored.method[1]).toEqual(penDraft.method[1]);
+    expect(restored.reason).toBe('unrelated pen field');
+    expect(restored.rows).toBe(penDraft.rows);
+  });
+
+  it('is pure: the input penDraft and the version are both left untouched', () => {
+    const penDraft = makeCleanPenDraft(version);
+    penDraft.method[0].leadIn = 'A typed change';
+    const penDraftClone = structuredClone(penDraft);
+    const versionClone = structuredClone(version);
+
+    restoreStepFromVersion(penDraft, version, 1);
+
+    expect(penDraft).toEqual(penDraftClone);
+    expect(version).toEqual(versionClone);
+  });
+
+  it("deep-clones the version's own step — mutating the restored draft's step never moves the version's own record", () => {
+    const penDraft = makeCleanPenDraft(version);
+    const restored = restoreStepFromVersion(penDraft, version, 1);
+    restored.method[0].leadIn = 'mutated after restore';
+    expect(version.method[0].leadIn).toBe('Lead in one');
   });
 });
 

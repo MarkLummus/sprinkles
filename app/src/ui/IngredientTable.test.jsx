@@ -253,8 +253,8 @@ describe('IngredientTable — the As made column reads and records per portion (
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
     expect(markup).not.toContain('120 + 263');
-    expect(markup).toContain('<span class="ink-text">120 g</span>');
-    expect(markup).toContain('<span class="ink-text">263 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">120 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">263 g</span>');
     expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 120 g"');
     expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 263 g"');
   });
@@ -271,14 +271,15 @@ describe('IngredientTable — the As made column reads and records per portion (
     // check is satisfied by a dangling '120 +  g' just as much as by a
     // clean '120 g' — asserting the whole cell and the whole accessible
     // name is the only way this class of regression cannot pass green.
-    expect(markup).toContain('<span class="ink-text">120 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">120 g</span>');
     expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 120 g"');
     // The unwritten portion's own line: no as-made phrase and no ink-text —
     // full-string, so it cannot pass on a dangling accessible name either.
     expect(markup).toContain(
-      'aria-label="Whole milk, 370.4 g"><td class="ingredient-table__col-name">Whole milk' +
+      'aria-label="Whole milk, 370.4 g"><td class="ingredient-table__col-name">' +
+        '<span class="ingredient-table__plan-grams">250.4 g</span>Whole milk' +
         '<span class="ingredient-table__portion-note">250.4 g of 370.4 g · 100.0% in all</span>' +
-        '</td><td class="ingredient-table__col-numeric">250.4 g</td><td class="ingredient-table__col-numeric"></td>',
+        '</td><td class="ingredient-table__col-numeric"></td>',
     );
   });
 
@@ -292,12 +293,13 @@ describe('IngredientTable — the As made column reads and records per portion (
 
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
-    expect(markup).toContain('<span class="ink-text">100 g</span>');
-    expect(markup).toContain('<span class="ink-text">50 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">100 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">50 g</span>');
     expect(markup).toContain('aria-label="Row A, 170 g, as made 100 g"');
     expect(markup).toContain('aria-label="Row A, 170 g, as made 50 g"');
     expect(markup).toContain(
-      'aria-label="Row A, 170 g"><td class="ingredient-table__col-name">Row A' +
+      'aria-label="Row A, 170 g"><td class="ingredient-table__col-name">' +
+        '<span class="ingredient-table__plan-grams">20 g</span>Row A' +
         '<span class="ingredient-table__portion-note">20 g of 170.0 g · 100.0% in all</span>',
     );
   });
@@ -470,7 +472,10 @@ describe('IngredientTable — a rejected draft grams value holds the parent shar
     // history value alongside the live one — strip that struck span
     // before asserting on the live figure, so the assertion is about
     // what changed, not about the history the change is shown against.
-    const shareCell = rowBTr.match(/<td class="ingredient-table__col-numeric">[\s\S]*?<\/td>/g)[1];
+    // The share cell is the row's only remaining col-numeric td (sketch
+    // 011 Task 2: the grams field moved into the name cell's own
+    // plan-grams slot, so index [0] — not [1] — is the share cell now).
+    const shareCell = rowBTr.match(/<td class="ingredient-table__col-numeric">[\s\S]*?<\/td>/g)[0];
     const liveShareText = shareCell.replace(/<span class="struck-value">[^<]*<\/span>/, '');
     expect(liveShareText).toContain('trace');
     expect(liveShareText).not.toContain('50.0%');
@@ -558,10 +563,11 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
       <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
     );
 
-    // The total's own numeric cell alone — never the aria-label, which
-    // spells the unit as "grams" and would falsely inflate an " g"
-    // substring count.
-    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-numeric">([\s\S]*?)<\/td>/.exec(markup);
+    // The total's own name cell alone — the struck-then-current pair now
+    // nests inside its own plan-grams slot there (sketch 011 Task 2), not
+    // a separate numeric td — never the aria-label, which spells the unit
+    // as "grams" and would falsely inflate an " g" substring count.
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/.exec(markup);
     const totalCellMarkup = totalCellMatch[1];
     expect(totalCellMarkup).toContain('<span class="struck-value">40.0</span>');
     expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);
@@ -574,7 +580,7 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
 
     const markup = renderToStaticMarkup(<IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" />);
 
-    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-numeric">([\s\S]*?)<\/td>/.exec(markup);
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/.exec(markup);
     const totalCellMarkup = totalCellMatch[1];
     expect(totalCellMarkup).toContain(`<span class="struck-value">${diff.total.fromValue}</span>`);
     expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);
@@ -722,13 +728,113 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
   });
 });
 
-describe('IngredientTable — the Data column head reads Source (03.3-04)', () => {
-  it('renders "Source" in the reading-state header, not "Data"', () => {
+// Sketch 011 Task 2: every state now reads style 6 — the Data and Remove
+// columns are gone outright, not just suppressed in the reading state
+// (Task 1's own guard here is superseded now that recording joins it).
+describe('IngredientTable — recording reads style 6 too (sketch 011 Task 2): no Grams, Source or Data column at all', () => {
+  it('renders no Grams/Source/Data head, and the row carries the plan-grams span plus the as-made input', () => {
     const version = makeVersion([makeRow('a', 'Whole milk', 120, 1)]);
-    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" steps={version.method} />);
-    expect(markup).toMatch(/<th[^>]*class="ingredient-table__col-data"[^>]*>Source<\/th>/);
+    const draft = { asMade: {} };
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="recording" draft={draft} steps={version.method} />,
+    );
+
     const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).not.toContain('Grams');
+    expect(headerRow).not.toContain('Source');
     expect(headerRow).not.toContain('Data');
+
+    expect(markup).toContain('<span class="ingredient-table__plan-grams">120 g</span>Whole milk');
+    expect(markup).toContain('aria-label="Whole milk, as made, grams"');
+    expect(markup).not.toContain('ingredient-table__col-data');
+    expect(markup).not.toContain('ingredient-table__col-remove');
+  });
+});
+
+// Sketch 011 decisions 2, 3; D-19 (Task 1): the reading state's table takes
+// style 6 — plan grams before the name, an "estimated"/"unreviewed" chip
+// where Source used to be, and the batch's as-made grams written in the
+// hand. Scoped to genuine reading (mode="reading", not showingChanges) —
+// recording keeps its own markup until Task 2 (the test above).
+describe('IngredientTable — the reading state reads in style 6 (sketch 011 decisions 2, 3; D-19)', () => {
+  it('a split, estimated row with a batch in view: thead reads Ingredient/As made/% of batch, the name cell carries the plan-grams span, the chip, and the portion note, and the as-made value is written in the hand', () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, {
+        portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }],
+        ingredient: { composition: { fat: 1 }, basis: { fat: 'estimated' } },
+      }),
+      makeRow('b', 'Heavy cream', 429.28, 3),
+    ]);
+    version.method = [
+      { n: 2, leadIn: 'Gum slurry.', instruction: 'x' },
+      { n: 3, leadIn: 'Build the base.', instruction: 'x' },
+    ];
+    const currentStepNumbers = displayNumbers(version.method);
+    const openBatch = makeBatch({ a: [120, 263] });
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        mode="reading"
+        steps={version.method}
+        currentStepNumbers={currentStepNumbers}
+        openBatch={openBatch}
+      />,
+    );
+
+    const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).toContain('>Ingredient<');
+    expect(headerRow).toContain('>As made<');
+    expect(headerRow).toContain('>% of batch<');
+    expect(headerRow).not.toContain('Grams');
+    expect(headerRow).not.toContain('Source');
+
+    expect(markup).toContain(
+      '<span class="ingredient-table__plan-grams">120 g</span>Whole milk' +
+        '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>' +
+        '<span class="ingredient-table__portion-note">120 g of 370.4 g · 46.3% in all</span>',
+    );
+    expect(markup).toContain('<span class="sheet-hand">120 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">263 g</span>');
+    expect(markup).toContain('aria-label="Whole milk, 370.4 g, estimated, as made 120 g"');
+    expect(markup).not.toContain('ingredient-table__col-data');
+  });
+
+  it('no batch in view: thead reads Ingredient/% of batch alone, the step head spans two columns, and no sheet-hand span renders', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    version.method = [{ n: 1, leadIn: 'Mix.', instruction: 'x' }];
+    const currentStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        mode="reading"
+        steps={version.method}
+        currentStepNumbers={currentStepNumbers}
+        openBatch={null}
+      />,
+    );
+
+    const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).toContain('>Ingredient<');
+    expect(headerRow).toContain('>% of batch<');
+    expect(headerRow).not.toContain('As made');
+    expect(markup).toMatch(/<tr class="ingredient-table__step-head"><td colSpan="2">/);
+    expect(markup).not.toContain('sheet-hand');
+  });
+
+  it('the total row: a plan-grams span holding the total then "Total", and the As made total written in the hand', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1), makeRow('b', 'Row B', 20, 1)]);
+    version.method = [{ n: 1, leadIn: 'Mix.', instruction: 'x' }];
+    const openBatch = makeBatch({ a: [45] });
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} openBatch={openBatch} />,
+    );
+
+    const totalRow = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
+    expect(totalRow).toContain('<span class="ingredient-table__plan-grams">60.0 g</span>Total');
+    expect(totalRow).toContain('<span class="sheet-hand">65.0 g</span>');
   });
 });
 
@@ -800,3 +906,66 @@ describe('IngredientTable — the pen\'s remove/restore control carries .text-co
 // `grep -n '\[blockedRowId\]'` against IngredientTable.jsx) are what prove
 // the fix landed — deliberately not duplicated here as a render test that
 // could never actually exercise the effect.
+
+// Sketch 011 Task 2: every table state now reads style 6 — the pen, the
+// record and show-changes join the reading state Task 1 already moved.
+// Grams sits in the plan-grams slot everywhere, a changed value's parent
+// amount strikes before it, remove sits after the name, and the Data and
+// Remove columns are retired outright.
+describe('IngredientTable — the pen reads style 6 too (sketch 011 Task 2): grams in the plan-grams slot, the struck parent before it, remove after the name', () => {
+  it('a changed row: the struck parent grams sit before the plan-grams span holding the field, the estimated chip and remove come after the name, and no col-data/col-remove renders anywhere', () => {
+    const version = makeVersion([
+      makeRow('a', 'Graza Drizzle', 40, 8, { ingredient: { composition: { fat: 1 }, basis: { fat: 'stated' } } }),
+    ]);
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: onePortionDraftRow(8, '48') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).not.toContain('Grams');
+    expect(headerRow).not.toContain('Remove');
+    expect(headerRow).not.toContain('Source');
+
+    expect(markup).toContain('<span class="struck-value">40 g</span><span class="ingredient-table__plan-grams">');
+    expect(markup).toContain('aria-label="Graza Drizzle, grams"');
+    expect(markup).toContain('value="48"');
+    expect(markup).toContain(' g</span>Graza Drizzle');
+    expect(markup).toMatch(/Graza Drizzle<button type="button" class="text-control"[^>]*>remove<\/button>/);
+    expect(markup).not.toContain('ingredient-table__col-data');
+    expect(markup).not.toContain('ingredient-table__col-remove');
+  });
+
+  it('the total row strikes the parent total before the current one, inside the plan-grams slot', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const draftVersion = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+    const penDraft = { rows: { a: onePortionDraftRow(1, '48') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    const totalRow = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
+    expect(totalRow).toContain(
+      '<span class="ingredient-table__plan-grams"><span class="struck-value">40.0</span>48.0 g</span>Total',
+    );
+  });
+});
+
+describe('IngredientTable — show-changes reads style 6 too (sketch 011 Task 2)', () => {
+  it('a changed, single-portion row: the struck parent grams sit inside the plan-grams slot, before the current value', () => {
+    const baseline = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const current = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+    const diff = buildDiff(current, baseline);
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" />);
+
+    expect(markup).toContain(
+      '<span class="ingredient-table__plan-grams"><span class="struck-value">40 g</span>48 g</span>Row A',
+    );
+    expect(markup).not.toContain('ingredient-table__col-data');
+    expect(markup).not.toContain('ingredient-table__col-remove');
+  });
+});

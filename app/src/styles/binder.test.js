@@ -120,6 +120,54 @@ describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 t
   });
 });
 
+// The step pen's own controls (sketch 011 decisions_recorded 4, 5; Task 3):
+// remove/restore moved TO the closed step; Cancel and Done read the
+// binder's existing global button/.text-control rules with no class of
+// their own; the open step's field block gets its own hairline outline.
+describe('the step pen — remove on the closed step, Cancel/Done through the binder, the open field block outlined (sketch 011 Task 3)', () => {
+  test('.method-step__acts (the closed step\'s "edit this step · remove" line) is a flex row reading the step-acts gap token', () => {
+    const rule = ruleFor('.method-step__acts');
+    expect(rule, 'expected a .method-step__acts rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/display:\s*flex/);
+    expect(rule.declarations).toMatch(/gap:\s*var\(--sheet-step-acts-gap\)/);
+  });
+
+  test('.method-step__uses-line (the open step\'s controls line) wraps as a flex row, sharing the same gap token as the closed acts line', () => {
+    const rule = ruleFor('.method-step__uses-line');
+    expect(rule, 'expected a .method-step__uses-line rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/display:\s*flex/);
+    expect(rule.declarations).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule.declarations).toMatch(/gap:\s*var\(--sheet-step-acts-gap\)/);
+  });
+
+  test('.method-step__done-cancel declares no button styling of its own — Cancel and Done read the global button/.text-control rules, never a bespoke class', () => {
+    const rule = ruleFor('.method-step__done-cancel');
+    expect(rule, 'expected a .method-step__done-cancel rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/gap:\s*var\(--sheet-done-cancel-gap\)/);
+    expect(rule.declarations).toMatch(/margin-top:\s*var\(--sheet-done-cancel-gap-t\)/);
+    expect(ruleFor('.method-step__done')).toBeUndefined();
+  });
+
+  test('.method-step__open-fields draws a hairline ink outline at the board\'s own offset (sketch 011 decision 2)', () => {
+    const rule = ruleFor('.method-step__open-fields');
+    expect(rule, 'expected a .method-step__open-fields rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/outline:\s*var\(--rule-graduation\)\s*solid\s*var\(--sheet-ink\)/);
+    expect(rule.declarations).toMatch(/outline-offset:\s*var\(--sheet-open-fields-offset\)/);
+  });
+
+  test('.method-step__edit no longer exists — remove moved to the closed step alongside edit this step, both reading plain .text-control (sketch 011 decisions_recorded 4)', () => {
+    expect(ruleFor('.method-step__edit')).toBeUndefined();
+  });
+
+  test('.method-step__changed carries no font-family or font-size of its own — .sheet-hand (D-19) owns all of its typography, so the two classes can never collide in source order', () => {
+    const rule = ruleFor('.method-step__changed');
+    expect(rule, 'expected a .method-step__changed rule').toBeTruthy();
+    expect(rule.declarations).not.toMatch(/font-family/);
+    expect(rule.declarations).not.toMatch(/font-size/);
+    expect(rule.declarations).toMatch(/margin:\s*var\(--sheet-changed-line-gap-t\)\s*0\s*0/);
+  });
+});
+
 describe('buttons and selects — ink hairline, no fill, no radius, dashed when disabled (D-13, D-16)', () => {
   test('the `button, select` rule declares appearance: none, border-radius: 0 and no fill (D-13)', () => {
     const rule = ruleFor('button, select');

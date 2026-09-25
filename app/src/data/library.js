@@ -102,4 +102,84 @@ export const library = {
     composition: { stabilizer: 1 },
     basis: { stabilizer: 'stated' },
   },
+
+  // D-03/D-04 (03.5-CONTEXT.md): ingredients the library lacked, added while
+  // transcribing Mexican Chocolate v4. Every composition field converts from
+  // the Ice Ed export's own per-gram fractions — pac/pod times 100 (sucrose
+  // = 100 reference basis, matching the existing entries above), fat/sugar/
+  // stabilizer taken as given, `other` = the export's own Solids figure
+  // minus every other solid key the entry carries. A field the export omits
+  // is omitted here too, never zeroed (03.5-SEED-REVIEW.md "Mexican
+  // Chocolate v4" ingredient table has the arithmetic for each field).
+  wholeMilk33: {
+    name: 'Whole Milk 3.3%',
+    category: 'dairy',
+    dairy: true,
+    composition: { fat: 0.032, msnf: 0.087 },
+    basis: { fat: 'estimated', msnf: 'estimated' },
+    source: {
+      fat: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      msnf: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+    },
+    note: 'D-04: kept separate from wholeMilk ("Whole milk, 3.5% fat") — a different stated fat percentage, not a near-match.',
+  },
+  cocoaPowder: {
+    name: 'Cocoa powder',
+    category: 'other',
+    composition: { fat: 0.137, sugar: 0.005, other: 0.828, pac: -160, pod: 0.5 },
+    basis: { fat: 'estimated', sugar: 'estimated', other: 'estimated', pac: 'estimated', pod: 'estimated' },
+    source: {
+      fat: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      sugar: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      other: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      pac: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      pod: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+    },
+    note: 'Ice Ed records a negative PAC for cocoa powder (freezing-point-raising), carried through unchanged: -1.6 x 100 = -160.',
+  },
+  cinnamon: {
+    name: 'Cinnamon',
+    category: 'other',
+    composition: { other: 1 },
+    basis: { other: 'estimated' },
+    source: { other: 'Ice Ed export (recipe-Mexican Chocolate v4.json)' },
+    note: 'The export gives only Solids: 1 — no fat, sugar, PAC or POD. Left missing, not zeroed.',
+  },
+  vanillaExtract: {
+    name: 'Vanilla extract',
+    category: 'other',
+    composition: { fat: 0.0006, sugar: 0.1265, other: 0.0031, pac: 12.7, pod: 12.7 },
+    basis: { fat: 'estimated', sugar: 'estimated', other: 'estimated', pac: 'estimated', pod: 'estimated' },
+    source: {
+      fat: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      sugar: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      other: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      pac: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      pod: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+    },
+  },
+  fructose: {
+    name: 'Fructose',
+    category: 'sugar',
+    composition: { sugar: 1, pac: 190, pod: 170 },
+    basis: { sugar: 'estimated', pac: 'estimated', pod: 'estimated' },
+    source: {
+      sugar: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      pac: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      pod: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+    },
+  },
+  stabilizerMix4421: {
+    name: 'Stabilizer Mix 4421',
+    category: 'stabilizer',
+    composition: { fat: 0.0027, stabilizer: 0.5545, other: 0.361, pod: 0.91 },
+    basis: { fat: 'estimated', stabilizer: 'estimated', other: 'estimated', pod: 'estimated' },
+    source: {
+      fat: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      stabilizer: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      other: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+      pod: 'Ice Ed export (recipe-Mexican Chocolate v4.json)',
+    },
+    note: 'No PAC field in the export. Left missing, not zeroed.',
+  },
 };

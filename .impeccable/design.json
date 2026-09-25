@@ -374,9 +374,9 @@
       "name": "Authored block",
       "kind": "custom",
       "refersTo": "region-name",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). The maker's own notes, with a legend naming the block and the word \"authored\" so it stays apart from anything derived.",
-      "html": "<div class=\"ds-authored\"><p class=\"ds-authored__legend\"><span>Carried forward</span><span>authored</span></p><ul class=\"ds-authored__notes\"><li>No glucose syrup — less costly at 13% milkfat than it would be at 8%.</li><li>This is the low anchor, not the oil-forward target.</li></ul></div>",
-      "css": ".ds-authored{color:var(--ink)}.ds-authored__legend{display:flex;justify-content:space-between;font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--size-headnote-prose)}"
+      "description": "Implemented paper catalogue. The maker's own notes that head the Instructions under a Before you start region name, closed off from the steps by a graduation rule (03.5, D-06).",
+      "html": "<div class=\"ds-authored\"><p class=\"ds-authored__legend\">Before you start</p><ul class=\"ds-authored__notes\"><li>Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.</li><li>Check the cream’s actual butterfat. The carton states a 36% minimum, which is a floor.</li></ul></div>",
+      "css": ".ds-authored{color:var(--ink);max-width:var(--measure-prose);padding-bottom:var(--gap-m);border-bottom:var(--rule-graduation) solid var(--ink)}.ds-authored__legend{font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--type-note);line-height:var(--leading-note)}"
     },
     {
       "name": "Recipe list link",

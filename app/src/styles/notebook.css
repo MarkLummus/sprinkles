@@ -213,6 +213,17 @@
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
 
+/* 03.5-08 Task 2 conformance fix: .notebook-recipe is a flex column, so
+   its default align-items: stretch grows Rename's own button to the
+   column's full width (and centres its text, the button UA default) —
+   the board keeps Rename hugging its own text (1600-batch.html: a bare
+   <p> around the button, never a flex child). Scoped to this one
+   placement so VersionRow.jsx's own .notebook-link (a row's flex child,
+   where vertical stretch is wanted) is untouched. */
+.notebook-recipe > .notebook-link {
+  align-self: flex-start;
+}
+
 /* The pen's ceremony (Task 3, 1600-pen.html): the "From batch" checkbox
    and the caption-to-control gaps the shared .notebook-field/.notebook-caption
    rules above do not cover on their own. */
@@ -311,6 +322,17 @@
   font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
   color: var(--app-text);
+}
+
+/* 03.5-08 Task 2 conformance fix: the rule above's own display: grid ties
+   with the UA stylesheet's [hidden] { display: none } on specificity, and
+   wins on source order (author over UA) — so Task 1's closed-by-default
+   fold-version dl (VersionRow.jsx: hidden={foldable ? !detailsOpen : ...})
+   rendered open at every below-desktop width the probe measured (1366,
+   1024, 393). This re-asserts none at higher specificity than the class
+   rule alone. */
+.notebook-version__details[hidden] {
+  display: none;
 }
 
 .notebook-version__details dt {

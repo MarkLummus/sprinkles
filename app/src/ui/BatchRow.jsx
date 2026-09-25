@@ -60,6 +60,12 @@ function unitWords(unit) {
 // rather than flowing through MeasuredField below.
 const CHURN_DATE_ERROR_ID = 'field-error-churnDate';
 
+// The no-batch state's own prose (1600-no-batch.html, 03.5-07 decisions):
+// a version with no batch reads this sentence in place of the churn
+// cells, with Record a batch as the filled action beside it. The board's
+// other control there is Phase 4's, not built here.
+export const NO_BATCH_PROSE = 'Not yet churned. Print the sheet, make it, then record what happened.';
+
 // One battery measured field (contract "Controls spec"; sketch 007 @
 // 2a212be lines 37-44; D-13): text-mode, inputMode="decimal" — never
 // type="number", so a malformed value stays in place rather than being
@@ -265,20 +271,26 @@ function TastingReading({ batch }) {
         </div>
       </div>
       {batch.tasting.note && <p className="prose-text tasting-reading__note">{batch.tasting.note}</p>}
-      {(markedAxes.length > 0 || defectWords.length > 0) && (
+      {markedAxes.length > 0 && (
         <div className="tasting-reading__group">
           <h4 className="batch-row__group-label">Observations</h4>
-          {markedAxes.length > 0 && (
-            <div className="batch-row__cells tasting-reading__axes">
-              {markedAxes.map((axis) => (
-                <div className="batch-row__cell" key={axis.key}>
-                  <span className="batch-row__cell-label">{axis.name}</span>
-                  <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
-                </div>
-              ))}
-            </div>
-          )}
-          {defectWords.length > 0 && <p className="prose-text tasting-reading__problems">{defectWords.join(' · ')}</p>}
+          <div className="batch-row__cells tasting-reading__axes">
+            {markedAxes.map((axis) => (
+              <div className="batch-row__cell" key={axis.key}>
+                <span className="batch-row__cell-label">{axis.name}</span>
+                <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {/* Problems (1600-batch.html): the maker's own words, in the hand —
+          a separate caption from Observations' measured axis marks
+          (03.5-07 decisions_recorded 1-3). */}
+      {defectWords.length > 0 && (
+        <div className="tasting-reading__group">
+          <h4 className="batch-row__group-label">Problems</h4>
+          <span className="app-hand tasting-reading__problems">{defectWords.join(' · ')}</span>
         </div>
       )}
       <div className="tasting-reading__group">
@@ -399,11 +411,19 @@ export function BatchRow({
   onStartAmending,
   onCancelRecording,
   onSaveBatch,
+  // The Recorded line's own version identity (03.5-07, decisions_recorded
+  // 2): RecipePage passes versionIdentity(...) over the recipe's sorted
+  // versions; falls back to the batch's own stored snapshot label when
+  // absent (a caller that has not computed it yet).
+  versionName = null,
+  // The Record opener, moved here from VersionRow.jsx (03.5-07 Task 1,
+  // decisions_recorded 1) — the same reference RecipePage.jsx already
+  // passes to VersionRow's own Next version/Develop opener.
+  onStartRecording,
 }) {
   // Focus-return for the Correct opener this row owns — closing the pen
   // returns focus to the control that opened it. Must sit above the
-  // conditional render below — hooks cannot be called conditionally. The
-  // Record opener's own ref/effect pair lives in VersionRow.jsx.
+  // conditional render below — hooks cannot be called conditionally.
   const amendButtonRef = useRef(null);
   const wasAmendingRef = useRef(false);
   useEffect(() => {
@@ -414,6 +434,24 @@ export function BatchRow({
     if (wasAmendingRef.current) {
       wasAmendingRef.current = false;
       amendButtonRef.current?.focus();
+    }
+  }, [openPen]);
+
+  // Focus-return for the Record opener, moved here from VersionRow.jsx
+  // verbatim (03.5-07 Task 1, decisions_recorded 1) — this row now owns
+  // the button beside Batches/Correct. Shared by both the head's "Record
+  // another" (a batch is in view) and the no-batch state's "Record a
+  // batch" below, since exactly one of the two ever mounts.
+  const recordButtonRef = useRef(null);
+  const wasRecordingRef = useRef(false);
+  useEffect(() => {
+    if (openPen === 'record') {
+      wasRecordingRef.current = true;
+      return;
+    }
+    if (wasRecordingRef.current) {
+      wasRecordingRef.current = false;
+      recordButtonRef.current?.focus();
     }
   }, [openPen]);
 
@@ -493,6 +531,15 @@ export function BatchRow({
   const [batchesOpen, setBatchesOpen] = useState(false);
   const batchCount = batches.length;
 
+  // The Batches control is withheld while any pen is open, not only the
+  // batch's own record pen (03.5-07 must_haves: "the log stays visible
+  // while the version pen is open, read-only... its controls and links
+  // are withheld") — visible with no pen open, or while amending the
+  // very batch it names. The churned date beside it is text, not a
+  // control, and keeps its own narrower guard below (only the record
+  // pen's own blank-date state hides it).
+  const logControlsVisible = openPen === null || openPen === 'amend';
+
   return (
     <section className="batch-row" aria-label="Batch">
       {/* The date and the Batches control name the batch IN VIEW — a
@@ -519,7 +566,7 @@ export function BatchRow({
             {`churned ${recordDateWords(openBatch.churn.churnDate)}`}
           </span>
         )}
-        {openPen !== 'record' && batchCount > 0 && (
+        {logControlsVisible && batchCount > 0 && (
           <HistoryDisclosure
             open={batchesOpen}
             panelId="batch-row-batches"
@@ -542,6 +589,21 @@ export function BatchRow({
             onClick={() => onStartAmending(openBatch)}
           >
             Correct
+          </button>
+        )}
+        {/* Record another: moved from VersionRow.jsx (03.5-07 Task 1,
+            decisions_recorded 1), last in the head's own right-hand
+            group. Present only with no pen open and a batch in view —
+            the no-batch state's own "Record a batch" (below) is the
+            same handler, offered where the sketch draws it instead. */}
+        {openPen === null && openBatch && (
+          <button
+            type="button"
+            ref={recordButtonRef}
+            className="text-control batch-row__record"
+            onClick={onStartRecording}
+          >
+            Record another
           </button>
         )}
       </div>
@@ -942,8 +1004,10 @@ export function BatchRow({
                 </span>
               </div>
             </div>
-            {openBatch.churn.atTheMachine && <p className="prose-text">{openBatch.churn.atTheMachine}</p>}
-            {openBatch.churn.ingredientNotes && <p className="prose-text">{openBatch.churn.ingredientNotes}</p>}
+            {/* At the machine / Ingredient notes: the maker's own words,
+                in the hand (03.5-07, decisions_recorded 1). */}
+            {openBatch.churn.atTheMachine && <span className="app-hand">{openBatch.churn.atTheMachine}</span>}
+            {openBatch.churn.ingredientNotes && <span className="app-hand">{openBatch.churn.ingredientNotes}</span>}
 
             {/* The tasting battery's own read view (contract "Axes spec",
                 brief § 3): TastingReading reads only the single stored
@@ -954,16 +1018,22 @@ export function BatchRow({
             ) : (
               <p>This batch has not been tasted yet.</p>
             )}
-            {openBatch.churn.nextTimeNote && (
-              <div className="batch-row__conclusion">
-                <h3 className="batch-row__group-label">Next time</h3>
-                <p className="prose-text">{openBatch.churn.nextTimeNote}</p>
-              </div>
-            )}
+            {/* Next time always renders its caption (03.5-07,
+                decisions_recorded 3): the note in the hand when written,
+                "nothing written yet" in the same muted voice as an absent
+                measured value otherwise. */}
+            <div className="batch-row__conclusion">
+              <h3 className="batch-row__group-label">Next time</h3>
+              {openBatch.churn.nextTimeNote ? (
+                <span className="app-hand">{openBatch.churn.nextTimeNote}</span>
+              ) : (
+                <span className="batch-row__unit batch-row__unit--absent">nothing written yet</span>
+              )}
+            </div>
             <dl className="batch-row__provenance">
               <div>
                 <dt>Recorded</dt>
-                <dd>{`${recordDateWords(openBatch.recordedAt)} against ${openBatch.snapshot.versionLabel}`}</dd>
+                <dd>{`${recordDateWords(openBatch.recordedAt)} against ${versionName ?? openBatch.snapshot.versionLabel}`}</dd>
               </div>
               {/* D-04: churned, tasted, changed — only the latest change
                   ever shows, since every save after the first replaces
@@ -976,8 +1046,23 @@ export function BatchRow({
               )}
             </dl>
           </>
+        ) : batches.length > 0 ? (
+          <p>No batch of this version has that address.</p>
         ) : (
-          batches.length > 0 && <p>No batch of this version has that address.</p>
+          <>
+            {/* The no-batch state (1600-no-batch.html): a version that
+                has never been churned. Record a batch is the filled
+                action (.notebook-action); it shares the head's own
+                Record opener handler and focus-return ref, since exactly
+                one of the two ever mounts. The board's other control
+                there is Phase 4's, out of scope here. */}
+            <p>{NO_BATCH_PROSE}</p>
+            {openPen === null && (
+              <button type="button" ref={recordButtonRef} className="notebook-action" onClick={onStartRecording}>
+                Record a batch
+              </button>
+            )}
+          </>
         )}
       </div>
 

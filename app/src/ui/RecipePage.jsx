@@ -11,6 +11,8 @@ import {
   createChildVersion,
   saveOverVersion,
   versionsForRecipe,
+  sortedVersions,
+  versionIdentity,
   blockedSaveMessage,
   blockedSaveRowId,
   parseGramsDraft,
@@ -1861,6 +1863,12 @@ export function RecipePage({ onPageStatus = () => {} }) {
     return repository.saveRecipe(next).then(() => setRecipe(next));
   }
 
+  // The batch log's own Recorded line names the version by identity
+  // (03.5-07 decisions_recorded 2) — the same versionIdentity(ordered,
+  // version) call VersionRow.jsx makes for its own identity heading, over
+  // the recipe's own sorted versions.
+  const versionName = versionIdentity(sortedVersions(versionsForRecipe(versions, version.recipeId)), version);
+
   return (
     <div className="notebook">
       <header className="notebook-band">
@@ -1887,8 +1895,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onSaveAsNewVersion={handleSaveAsNewVersion}
             onSaveOverVersion={handleSaveOverVersion}
             onToggleShowChanges={handleToggleShowChanges}
-            openBatch={openBatch}
-            onStartRecording={handleStartRecording}
             focusVersionOnMount={focusVersionOnMount}
             versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
@@ -2011,9 +2017,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
         </div>
 
         <aside className="notebook-log" aria-label="Batch">
-          {mode !== 'developing' && (
           <BatchRow
             version={version}
+            versionName={versionName}
             batches={batches}
             openBatch={openBatch}
             mode={mode}
@@ -2047,8 +2053,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onStartAmending={handleStartAmending}
             onCancelRecording={handleCancelRecording}
             onSaveBatch={handleSaveBatch}
+            onStartRecording={handleStartRecording}
           />
-          )}
         </aside>
       </div>
     </div>

@@ -324,6 +324,17 @@
   color: var(--app-text);
 }
 
+/* 03.5-08 Task 2 conformance fix: the rule above's own display: grid ties
+   with the UA stylesheet's [hidden] { display: none } on specificity, and
+   wins on source order (author over UA) — so Task 1's closed-by-default
+   fold-version dl (VersionRow.jsx: hidden={foldable ? !detailsOpen : ...})
+   rendered open at every below-desktop width the probe measured (1366,
+   1024, 393). This re-asserts none at higher specificity than the class
+   rule alone. */
+.notebook-version__details[hidden] {
+  display: none;
+}
+
 .notebook-version__details dt {
   color: var(--app-text-secondary);
 }

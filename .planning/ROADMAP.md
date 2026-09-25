@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 5/9 plans executed
+**Plans:** 6/9 plans executed
 
 Plans:
 
@@ -488,7 +488,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 03.5-06-PLAN.md — The Sheet in Notebook form: table style 6 with the estimated chip and the 393 list; as-made grams and Instructions changes in the hand (D-19 code); one step open with Cancel and Done
+- [x] 03.5-06-PLAN.md — The Sheet in Notebook form: table style 6 with the estimated chip and the 393 list; as-made grams and Instructions changes in the hand (D-19 code); one step open with Cancel and Done
 
 **Wave 6** *(blocked on Wave 5)*
 

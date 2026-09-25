@@ -67,5 +67,75 @@
         "staleNotesFlag": "Repeated verbatim from Mexican Chocolate v1/v3's own history (see mexican-chocolate-v3 below, whose Observations block is the same v1 text). v4 has never been churned, so none of this text is v4's own result — it is not stored as an authored note or a battery mark on this version. See 03.5-SEED-REVIEW.md, Mexican Chocolate v4, judgement call 4."
       }
     }
+  },
+  "pineapple": {
+    "pineapple-v1": {
+      "source": "IMG_2481.HEIC (binder photo, generation-1 print format)",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 156,
+          "lBase": 0.94,
+          "lIceCream": 1.04,
+          "pac": 266,
+          "pacTarget": [220, 230],
+          "pod": 122,
+          "podTarget": [110, 120],
+          "pacToPodRatio": 2.19,
+          "percentSolids": 32.6,
+          "percentFat": 7.1,
+          "percentMsnf": 9.5,
+          "percentStabilizer": 0.16
+        },
+        "errorFlags": { "solidsErrorPercent": 23.2, "pacErrorPercent": 21, "stabilizerErrorPercent": 237 },
+        "printedTimestamp": null,
+        "printedTimestampFlag": "No timestamp is legible on this page — generation-1 short print format (binder audit classification: no header/footer)."
+      }
+    }
+  },
+  "coconut": {
+    "coconut-v1": {
+      "source": "IMG_2471.HEIC (binder photo, \"Coconut, Allrecipes.com\")",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 244,
+          "lBase": 1.17,
+          "lIceCream": 1.53,
+          "pac": 261,
+          "pacTarget": [220, 230],
+          "pod": 146,
+          "podTarget": [110, 120],
+          "pacToPodRatio": 1.79,
+          "percentSolids": 41.9,
+          "percentFat": 16.7,
+          "percentMilkFat": 3.7,
+          "percentMsnf": 6.0
+        },
+        "errorFlags": {},
+        "printedTimestamp": null,
+        "printedTimestampFlag": "No timestamp legible on this page."
+      }
+    },
+    "coconut-v2": {
+      "source": "IMG_2472.HEIC (binder photo)",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 175,
+          "lBase": 0.73,
+          "lIceCream": 0.95,
+          "pac": 288,
+          "pacTarget": [220, 230],
+          "pod": 136,
+          "podTarget": [110, 120],
+          "pacToPodRatio": 2.13,
+          "percentSolids": 38.6,
+          "percentFat": 13.8,
+          "percentMilkFat": 9.6,
+          "percentMsnf": 7.9
+        },
+        "errorFlags": { "msnfErrorPercent": 4.49, "solidsErrorPercent": 68.2, "podErrorPercent": 14.7 },
+        "printedTimestamp": null,
+        "printedTimestampFlag": "No timestamp legible in this photo's frame, though the binder audit's own print-generation classification says this format normally carries one."
+      }
+    }
   }
 }

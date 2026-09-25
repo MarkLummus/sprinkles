@@ -164,8 +164,16 @@ describe('Pineapple v1 and Coconut v1 -> v2 (D-05, D-06)', () => {
 });
 
 describe('States coverage across transcribed recipes and batches (D-05)', () => {
-  it('covers not-yet-churned, awaiting-tasting and tasted at least once each', () => {
-    const standings = transcribedRecipeGroups.map((group) => standingFor(group.batches));
+  it('covers not-yet-churned, awaiting-tasting and tasted at least once each, per version', () => {
+    // standingFor is recipe-scoped in the app (Home reads one standing per
+    // recipe, from its newest batch) — D-05's coverage claim is per
+    // VERSION (decisions_recorded 2: "Mexican Chocolate v3 if a batch is
+    // recorded for it"), so this reads standingFor over each version's own
+    // batches, not each recipe's.
+    const { versions, batches } = flatten(transcribedRecipeGroups);
+    const standings = versions.map((version) =>
+      standingFor(batches.filter((b) => b.versionId === version.id)),
+    );
     expect(standings).toContain(NOT_YET_CHURNED);
     expect(standings).toContain(AWAITING_TASTING);
     expect(standings).toContain(TASTED);

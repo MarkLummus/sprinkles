@@ -1,1 +1,320 @@
-/* notebook.css — stub, RED phase (03.5-04 Task 1). Real rules follow in GREEN. */
+/* notebook.css — the App-context world of the Notebook recipe route
+   (03.5-04 Task 1, sketch 011 layout C, decisions_recorded 1). Every rule
+   here is scoped under .notebook: the frame around the Sheet (the band
+   above it, the log beside/below it), the recipe column (RecipeBand.jsx),
+   the version column's reading state (VersionRow.jsx, Task 2) and its
+   pen ceremony (Task 3). The Sheet's own rules — .recipe-page, .headnote,
+   the ingredient table, the method — stay in app.css; this file never
+   reads a Sheet token and app.css never reads a --app-notebook-* one.
+
+   The ladder (decisions_recorded 2): the boards give rungs, not
+   thresholds. Between 1366 and 1600 this plan sets the desktop rung at
+   1500px, so iPad landscape rules apply at (max-width: 1499.98px). 1024
+   and 393 map onto the app's existing steps: one column at
+   (max-width: 1099.98px) — only the Sheet/log row restructures there,
+   the band grid stays two columns at both 1366 and 1024, matching the
+   boards' own drawn values — and phone at (max-width: 759.98px), where
+   the shell's tab row already switches. Media-query conditions cannot
+   read custom properties, so these three literals live here, in the
+   file's own prelude, as 600 does in app.css. */
+
+.notebook {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-frame-gap);
+  padding: 0 var(--gap-xl) var(--gap-xl) var(--app-notebook-frame-pad-start);
+}
+
+/* The header band (D-12's Rename lives in its recipe column; the version
+   column's reading state is Task 2's, the ceremony Task 3's). Only
+   vertical padding of its own — the frame above supplies the inline
+   edge at every rung down to 1099.98px; the 759.98px rung gives the band
+   its own inline padding once the frame's drops to zero (below). */
+.notebook-band {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-band-rhythm);
+  padding: var(--gap-m) 0 var(--app-notebook-band-rhythm);
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+
+.notebook-band__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: var(--app-notebook-grid-gap);
+  align-items: start;
+}
+
+/* The Sheet/log row: beside each other at desktop and iPad landscape,
+   stacked below 1099.98px (decisions_recorded 2). */
+.notebook-body {
+  display: flex;
+  gap: var(--app-notebook-grid-gap);
+  align-items: flex-start;
+}
+
+/* The Sheet's own wrapper carries no padding of its own — .recipe-page
+   reads its own --gap-page at every rung, "the Sheet edge to edge"
+   (393-batch.html) meaning this wrapper adds nothing on top of it. */
+.notebook-body__sheet {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.notebook-log {
+  flex: 0 0 var(--app-notebook-log-w);
+  min-width: 0;
+  padding-top: var(--app-notebook-gap-tight);
+}
+
+/* The recipe column (RecipeBand.jsx, D-12). No destination caption
+   (decisions_recorded 8) — the rail mark alone carries the identity. */
+.notebook-recipe {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-tight);
+}
+
+/* The rail-and-name row (1600-batch.html): its own 14px gap, nested
+   inside .notebook-recipe's own 8px stack gap above. */
+.notebook-recipe__identity {
+  display: flex;
+  align-items: stretch;
+  gap: var(--app-notebook-recipe-rail-gap);
+}
+
+.notebook-recipe__rail {
+  flex: 0 0 var(--app-size-rail-w);
+  width: var(--app-size-rail-w);
+  align-self: stretch;
+  min-height: var(--app-notebook-rail-min-h);
+  border-radius: var(--app-radius-rail);
+  background: var(--app-notebook);
+}
+
+.notebook-recipe__name {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-lead-name);
+  line-height: var(--app-notebook-name-leading);
+  font-weight: 700;
+  color: var(--app-text);
+}
+
+.notebook-recipe__description {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text-secondary);
+}
+
+.notebook-recipe__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+
+.notebook-recipe__form-actions {
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+
+/* The shared App controls (decisions_recorded 3): Rename's own fields and
+   the pen's ceremony (Task 3) both read these, so nothing is invented
+   twice. Reads the same filled/secondary-action shape home.css already
+   established (.home__action/.home__action--secondary) so the App's one
+   filled-action convention is never redrawn a third way. */
+.notebook-caption {
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+
+.notebook-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-hairline);
+}
+
+.notebook-field .ink-field,
+.notebook-field input,
+.notebook-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);
+  border: var(--app-rule-row) solid var(--app-divider);
+  border-radius: var(--app-notebook-field-radius);
+  background: var(--app-background);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+
+.notebook-helper {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+
+.notebook-action {
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--gap-s) var(--gap-m);
+  border-radius: var(--app-radius-action);
+  border: var(--app-rule-row) solid var(--app-blue-text);
+  background: var(--app-blue-text);
+  color: var(--app-background);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notebook-action--outline {
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--gap-s) var(--gap-m);
+  border-radius: var(--app-radius-action);
+  border: var(--app-rule-row) solid var(--app-blue-text);
+  background: var(--app-background);
+  color: var(--app-blue-text);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notebook-link {
+  appearance: none;
+  border: none;
+  padding: 0;
+  background: none;
+  color: var(--app-blue-text);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+
+/* The pen's ceremony (Task 3, 1600-pen.html): the "From batch" checkbox
+   and the caption-to-control gaps the shared .notebook-field/.notebook-caption
+   rules above do not cover on their own. */
+.notebook-ceremony {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+
+.notebook-ceremony__batch-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-hairline);
+}
+
+.notebook-ceremony__batch-option {
+  display: flex;
+  align-items: center;
+  gap: var(--app-notebook-gap-tight);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+
+.notebook-ceremony__batch-option input {
+  margin: 0;
+  width: var(--app-notebook-checkbox-size);
+  height: var(--app-notebook-checkbox-size);
+}
+
+/* The Why field in the hand (1600-pen.html; the approved bend recorded
+   D-19 does not reach here — this is authored prose, not a batch
+   measurement — the hand is already this field's own established role,
+   route-recipe-version.md § 3). */
+.notebook-ceremony__why {
+  font-family: var(--face-hand);
+  font-size: var(--size-hand);
+  line-height: var(--leading-hand);
+  color: var(--sheet-pen-blue);
+  resize: vertical;
+}
+
+.notebook-version__latest {
+  font-weight: 400;
+  color: var(--app-text-secondary);
+}
+
+@media (max-width: 1499.98px) {
+  .notebook {
+    padding: 0 var(--gap-l) var(--gap-xl) var(--gap-l);
+    gap: var(--app-notebook-band-rhythm);
+  }
+
+  .notebook-band {
+    gap: var(--gap-m);
+    padding: var(--app-notebook-band-pad-t-narrow) 0 var(--gap-m);
+  }
+
+  .notebook-band__grid {
+    gap: var(--gap-l);
+  }
+
+  .notebook-body {
+    gap: var(--gap-l);
+  }
+
+  .notebook-log {
+    flex-basis: var(--app-notebook-log-w-narrow);
+  }
+}
+
+@media (max-width: 1099.98px) {
+  .notebook-body {
+    flex-direction: column;
+    gap: var(--app-notebook-frame-gap);
+  }
+
+  .notebook-log {
+    flex-basis: auto;
+    padding: 0 var(--app-notebook-gap-tight);
+  }
+}
+
+@media (max-width: 759.98px) {
+  .notebook {
+    padding: 0 0 var(--app-notebook-frame-pad-b-phone);
+  }
+
+  .notebook-band {
+    padding: var(--app-notebook-band-pad-t-narrow) var(--gap-m) var(--gap-m);
+  }
+
+  .notebook-band__grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-m);
+  }
+
+  .notebook-log {
+    padding: 0 var(--gap-m);
+  }
+}

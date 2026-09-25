@@ -8,20 +8,19 @@
    background only while the root element (html) stays transparent — a
    descendant's background, .shell's included, can never reach the canvas
    at any size, because the canvas is unbounded and no descendant box
-   propagates to it. So the App's white is declared here, on body itself,
-   and the two paper frames (.recipe-page, .not-found) hand the canvas
-   back to the Sheet's cream via the :has() rule below (the running head
-   is gone — folded todo, 03.5-02 Task 3 — and its own trigger goes with
-   it) — which
-   was measured (debug session variants C/D) to re-propagate when a paper
-   frame mounts after first paint, so a client-side route change into or
-   out of a Sheet frame moves the canvas with no JS and no route class on
-   body. No `html` selector may be added anywhere in this project: giving
-   the root element a background is the one change that stops body's
-   background from propagating to the canvas at all (debug session
-   variant B), which would cancel this mechanism outright. This is the
-   replacement for the guard commit 4105848 deleted alongside the App
-   ground it retired. */
+   propagates to it. So the App's white is declared here, on body itself.
+   Layout C (03.5-04 Task 1, decisions_recorded 7) puts App context above
+   and below the Sheet on the recipe route now, and every board sets body
+   to white there too — so .recipe-page no longer hands the canvas back:
+   only the :has() rule below still does, for the one remaining paper
+   frame, .not-found (the running head is gone — folded todo, 03.5-02
+   Task 3 — and its own trigger went with it). .recipe-page keeps its own
+   paper through its own background declaration below; it no longer needs
+   to reach the canvas, since the canvas is white at every point along
+   the recipe route now. No `html` selector may be added anywhere in this
+   project: giving the root element a background is the one change that
+   stops body's background from propagating to the canvas at all (debug
+   session variant B), which would cancel this mechanism outright. */
 body {
   margin: 0;
   background: var(--app-background);
@@ -30,7 +29,7 @@ body {
   font-size: var(--sheet-size-table-body);
 }
 
-body:has(.recipe-page, .not-found) {
+body:has(.not-found) {
   background: var(--sheet-ground);
 }
 
@@ -448,30 +447,6 @@ textarea {
      min-width: 0 so a wide table or long word cannot force a grid track
      past the viewport — the direct cause of the 393 band overflow
      STATE.md recorded (D-15). */
-}
-
-/* The version row's own two-column split: the headnote at 1.6fr on the
-   left, VersionRow's metadata at a 300px floor on the right (sketch 003 @
-   d89b758 line 69, `minmax(0, 1.6fr) minmax(300px, 1fr)`; D-15; UAT item
-   1) — the grid no longer clamps the headnote to the prose measure itself
-   (`.headnote` keeps its own `max-width`, 003 line 70), and the metadata
-   column can never be squeezed below its own floor. Closed by a
-   graduation-weight rule separating it from the batch row beneath. */
-.recipe-band__row-version {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(var(--sheet-vmeta-min), 1fr);
-  gap: var(--gap-l);
-  align-items: start;
-  padding-bottom: var(--gap-m);
-  border-bottom: var(--rule-graduation) solid var(--sheet-ink);
-}
-
-/* With the batch row distilled out of the plan pen, the band itself owns
-   the one closing rule. Do not leave the former inter-row divider behind
-   as an unexplained double rule. */
-.recipe-band__row-version:only-child {
-  border-bottom: 0;
-  padding-bottom: 0;
 }
 
 /* Column one is the recipe as written, in the sheet's page order: table,
@@ -2441,22 +2416,18 @@ textarea {
 }
 
 /* Layout and track GEOMETRY at narrow widths — width ONLY, never pointer.
-   Two different reasons, both measured:
-   - The version row's collapse is a D-15 layout decision (UAT item I-01): a
-     wide tablet must keep its two columns.
-   - The 216px --sheet-track-stop-narrow and the 44x44 stop are drawn for the
-     STACKED axes layout. At a wide viewport the axes sit in a three-column
-     grid whose columns measure 213.3px, so a 216px track overflows its column
-     into the next axis (measured on Mark's iPad, 1366 coarse, 2026-09-15:
-     Hardness's track ran 2.7px past its cell into Scoopability, and across the
-     grid's hairline). Touch HEIGHTS are safe to widen to the pointer; this
-     track geometry is not, because no layout has been drawn for touch-sized
-     stops at desktop widths — see the sketch question logged in CONTEXT. */
+   The version row's own narrow-width collapse moved to notebook.css with
+   the row itself (03.5-04 Task 1 restructure; VersionRow now renders in
+   the band grid, outside .recipe-page). The 216px --sheet-track-stop-narrow
+   and the 44x44 stop are drawn for the STACKED axes layout, measured: at a
+   wide viewport the axes sit in a three-column grid whose columns measure
+   213.3px, so a 216px track overflows its column into the next axis
+   (measured on Mark's iPad, 1366 coarse, 2026-09-15: Hardness's track ran
+   2.7px past its cell into Scoopability, and across the grid's hairline).
+   Touch HEIGHTS are safe to widen to the pointer; this track geometry is
+   not, because no layout has been drawn for touch-sized stops at desktop
+   widths — see the sketch question logged in CONTEXT. */
 @media (max-width: 759.98px) {
-  .recipe-band__row-version {
-    grid-template-columns: 1fr;
-  }
-
   .axis-mark__stops,
   .axis-mark__anchors {
     width: var(--sheet-track-stop-narrow);

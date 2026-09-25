@@ -262,11 +262,6 @@
      its own line. */
   --sheet-col-batch-cell-min: 96px;
 
-  /* The version row's metadata column floor (sketch 003 @ d89b758 line 69,
-     `minmax(300px, 1fr)`): the column never shrinks below this even as
-     the headnote's 1.6fr track claims the rest (D-15). */
-  --sheet-vmeta-min: 300px;
-
   /* The recipe-history outline's two name columns (REVIEW-04, 260918-a5l):
      the width at which each name stops shrinking and its row's flex head
      wraps its right-hand metadata onto its own line. */
@@ -426,4 +421,31 @@
   --app-size-icon: 20px;
   --app-tilt-sprinkle: -8deg; /* the brand mark's five sprinkles, each a tilted rounded rod */
   --app-size-tab-h: 56px; /* the bottom tab row's own height below the phone step (D-16); .shell__main's bottom padding matches it so the fixed row never covers the end of a page */
+
+  /* The Notebook recipe route's frame (03.5-04 Task 1, sketch 011 layout
+     C): every value here is read only from notebook.css, taken from the
+     boards' own inline styles, named for its role, reusing the existing
+     gap and app scale where a board value already lands on it (e.g. the
+     48px, 32px and 20px frame padding reuses --gap-xl, --gap-l and
+     --gap-m directly and needs no token of its own here — only the
+     values the existing scale does not carry get a name below). */
+  --app-notebook-frame-pad-start: 40px; /* 1600-batch.html: the frame's own inline-start edge at desktop */
+  --app-notebook-frame-gap: 28px; /* 1600-batch.html: the frame's own row gap (band to body); reused as the Sheet/log stacked gap at the 1099.98px rung */
+  --app-notebook-band-rhythm: 24px; /* 1600-batch.html: the band's own vertical gap and bottom padding; reused as the frame's own row gap at the 1499.98px rung */
+  --app-notebook-grid-gap: 40px; /* 1600-batch.html: the band grid's column gap and the Sheet/log row's own gap */
+  --app-notebook-log-w: 340px; /* 1600-batch.html: the log column's width at desktop */
+  --app-notebook-log-w-narrow: 300px; /* 1366-batch.html: the log column's width at iPad landscape */
+  --app-notebook-gap-tight: 8px; /* 1600-batch.html: the log's own top padding and the recipe column's own stack gap; reused as the log's horizontal padding at the 1099.98px rung and the ceremony's checkbox-to-label gap (1600-pen.html) */
+  --app-notebook-band-pad-t-narrow: 16px; /* 1366-batch.html: the band's own top padding below the 1499.98px rung */
+  --app-notebook-frame-pad-b-phone: 40px; /* 393-batch.html: the frame's own bottom padding below the 759.98px rung */
+  --app-notebook-rail-min-h: 32px; /* 1600-batch.html: the recipe rail's own minimum height (it stretches with its row, unlike home.css's fixed-height rail) */
+  --app-notebook-recipe-rail-gap: 14px; /* 1600-batch.html: the rail-to-name gap */
+  --app-notebook-name-leading: 1.15; /* 1600-batch.html: the recipe name's own line-height */
+  --app-notebook-size-body: 15px; /* 1600-batch.html: the recipe description's own size; reused for a ceremony field's own text size (1600-pen.html) */
+  --app-notebook-desc-leading: 1.5; /* 1600-batch.html: the recipe description's own line-height */
+  --app-notebook-link-underline-offset: 3px; /* 1600-batch.html: Rename's own underline offset */
+  --app-notebook-field-pad-x: 10px; /* 1600-pen.html: a ceremony field's own horizontal padding */
+  --app-notebook-field-radius: 8px; /* 1600-pen.html: a ceremony field's own corner radius */
+  --app-notebook-gap-hairline: 4px; /* 1600-pen.html: a field's own label-to-control gap and the From batch fieldset's own gap */
+  --app-notebook-checkbox-size: 16px; /* 1600-pen.html: the From batch checkbox's own edge */
 }

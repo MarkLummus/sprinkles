@@ -124,11 +124,24 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     ]);
     // Track GEOMETRY and the history outline's indentation stay width-only:
     // wide touch keeps the desktop composition, while a narrow viewport
-    // reduces lineage and batch indents without flattening the tree.
+    // reduces lineage and batch indents without flattening the tree. The
+    // 393 narrow ingredient-table list (sketch 011 decisions_recorded 5,
+    // 03.5-06 Task 1) joined this same block — it is a layout rewrite tied
+    // to width alone, never to pointer coarseness.
     const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
     expect(widthOnly.map((r) => r.selector)).toEqual([
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
+      '.ingredient-table thead',
+      '.ingredient-table, .ingredient-table tbody, .ingredient-table tfoot, .ingredient-table tr',
+      '.ingredient-table tr',
+      '.ingredient-table tr.ingredient-table__step-head',
+      '.ingredient-table td',
+      '.ingredient-table td.ingredient-table__col-name',
+      '.ingredient-table__plan-grams',
+      '.ingredient-table td.ingredient-table__col-numeric',
+      '.ingredient-table td.ingredient-table__col-numeric:empty',
+      '.ingredient-table__portion-note',
     ]);
   });
 

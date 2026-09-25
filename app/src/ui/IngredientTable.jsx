@@ -294,7 +294,7 @@ function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade 
   }
   const value = openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
   if (value !== null) {
-    return <span className="ink-text">{`${value} g`}</span>;
+    return <span className="sheet-hand">{`${value} g`}</span>;
   }
   return null;
 }
@@ -411,13 +411,26 @@ export function IngredientTable({
         ? `Total, plan ${totalDisplayText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
         : `Total, plan ${totalDisplayText.replace(' g', ' grams')}`;
 
-  // This table carries two conditional columns: As made, in the middle,
-  // governed by hasAsMadeLayer; and Remove, at the end, governed by
-  // isDeveloping. Each is gated at exactly four sites — the header and
-  // all three body branches — plus the total row, so a future third
-  // conditional column should follow this same shape (one named
-  // predicate, four-plus-one gated sites) rather than inventing its own.
-  const columnCount = 4 + (hasAsMadeLayer ? 1 : 0) + (isDeveloping ? 1 : 0);
+  // Style 6 (sketch 011 decisions 2, 3; D-19; 03.5-06 Task 1): the
+  // reading state alone — mode "reading", not showing changes, never the
+  // pen — drops the Grams and Source/Data columns outright (their content
+  // moves inline into the name cell instead). Recording keeps the old
+  // shape until Task 2 expands style 6 to every state, so this predicate
+  // is deliberately narrower than "not developing and not showing
+  // changes" — it excludes mode === 'recording' on purpose.
+  const isPlainReading = mode === 'reading' && !isDeveloping && !isShowingChanges;
+
+  // This table carries two conditional columns outside the reading state:
+  // As made, in the middle, governed by hasAsMadeLayer; and Remove, at the
+  // end, governed by isDeveloping. Each is gated at exactly four sites —
+  // the header and all three body branches — plus the total row, so a
+  // future third conditional column should follow this same shape (one
+  // named predicate, four-plus-one gated sites) rather than inventing its
+  // own. The reading state's own column count is Task 1's own two-or-three
+  // set (Ingredient, [As made], % of batch) — no Grams, no Data/Source.
+  const columnCount = isPlainReading
+    ? 2 + (hasAsMadeLayer ? 1 : 0)
+    : 4 + (hasAsMadeLayer ? 1 : 0) + (isDeveloping ? 1 : 0);
 
   // The method array the grouping helper reads lead-in text from: the
   // pen's own live draftVersion.method while developing (its own comment
@@ -430,12 +443,42 @@ export function IngredientTable({
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
     const isSplit = row.portions.length > 1;
+    const ariaLabel = rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue);
+
+    // Style 6 (sketch 011 decisions 2, 3; D-19; 03.5-06 Task 1): the plan
+    // grams stand right-aligned before the name, the estimated/unreviewed
+    // flag reads as a chip after it (when dataFlagFor names one), and the
+    // Grams and Source cells are gone from this branch entirely — their
+    // content now lives inline in the name cell.
+    if (isPlainReading) {
+      return (
+        <tr key={`${row.id}:${portionIndex}`} className={isMarked ? 'is-marked' : undefined} aria-label={ariaLabel}>
+          <td className="ingredient-table__col-name">
+            <span className="ingredient-table__plan-grams">{`${portion.grams} g`}</span>
+            {row.ingredientName}
+            {dataFlag && (
+              <span className="target-chip ingredient-table__flag">
+                <span className="target-chip__value">{dataFlag}</span>
+              </span>
+            )}
+            {isSplit && (
+              <span className="ingredient-table__portion-note">
+                {formatPortionLine(portion.grams, rowGrams(row), baselineMass)}
+              </span>
+            )}
+          </td>
+          {hasAsMadeLayer && (
+            <td className="ingredient-table__col-numeric">
+              <AsMadeCell row={row} portionIndex={portionIndex} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+            </td>
+          )}
+          <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>
+        </tr>
+      );
+    }
+
     return (
-      <tr
-        key={`${row.id}:${portionIndex}`}
-        className={isMarked ? 'is-marked' : undefined}
-        aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
-      >
+      <tr key={`${row.id}:${portionIndex}`} className={isMarked ? 'is-marked' : undefined} aria-label={ariaLabel}>
         <td className="ingredient-table__col-name">
           {row.ingredientName}
           {isSplit && (
@@ -602,12 +645,20 @@ export function IngredientTable({
         <thead>
           <tr>
             <th scope="col" className="ingredient-table__col-name">Ingredient</th>
-            <th scope="col" className="ingredient-table__col-numeric">Grams</th>
+            {/* Style 6 (sketch 011, 03.5-06 Task 1): the reading state has
+                no Grams column of its own — the plan grams sit inline,
+                before the name. Every other state keeps this head until
+                Task 2. */}
+            {!isPlainReading && <th scope="col" className="ingredient-table__col-numeric">Grams</th>}
             {hasAsMadeLayer && <th scope="col" className="ingredient-table__col-numeric">As made</th>}
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
             {/* The Data column goes blank-headed in the pen (D-22): the
-                column stays, its head goes. */}
-            <th scope="col" className="ingredient-table__col-data">{isDeveloping ? '' : 'Source'}</th>
+                column stays, its head goes. The reading state drops the
+                column entirely (03.5-06 Task 1) — its flag reads as an
+                inline chip instead. */}
+            {!isPlainReading && (
+              <th scope="col" className="ingredient-table__col-data">{isDeveloping ? '' : 'Source'}</th>
+            )}
             {isDeveloping && <th scope="col" className="ingredient-table__col-remove">Remove</th>}
           </tr>
         </thead>
@@ -632,23 +683,40 @@ export function IngredientTable({
         </tbody>
         <tfoot>
           <tr aria-label={totalAriaLabel}>
-            <td className="ingredient-table__col-name">Total</td>
-            {/* The unit prints once (D-22, critique P2 #2): the struck
-                baseline reads the bare-number formatter — the pen's own
-                through formatGramsValue, show-changes' through
-                diff.total.fromValue — never composing a second unit onto
-                what totalDisplayText already carries after it. */}
-            <td className="ingredient-table__col-numeric">
-              {isDeveloping && currentTotalText !== baselineTotalText && (
-                <span className="struck-value">{formatGramsValue(baselineMass)}</span>
-              )}
-              {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.fromValue}</span>}
-              {totalDisplayText}
-            </td>
-            {hasAsMadeLayer && <td className="ingredient-table__col-numeric">{asMadeTotalText}</td>}
-            <td className="ingredient-table__col-numeric"></td>
-            <td className="ingredient-table__col-data"></td>
-            {isDeveloping && <td className="ingredient-table__col-remove"></td>}
+            {isPlainReading ? (
+              <>
+                <td className="ingredient-table__col-name">
+                  <span className="ingredient-table__plan-grams">{totalDisplayText}</span>
+                  Total
+                </td>
+                {hasAsMadeLayer && (
+                  <td className="ingredient-table__col-numeric">
+                    <span className="sheet-hand">{asMadeTotalText}</span>
+                  </td>
+                )}
+                <td className="ingredient-table__col-numeric"></td>
+              </>
+            ) : (
+              <>
+                <td className="ingredient-table__col-name">Total</td>
+                {/* The unit prints once (D-22, critique P2 #2): the struck
+                    baseline reads the bare-number formatter — the pen's own
+                    through formatGramsValue, show-changes' through
+                    diff.total.fromValue — never composing a second unit onto
+                    what totalDisplayText already carries after it. */}
+                <td className="ingredient-table__col-numeric">
+                  {isDeveloping && currentTotalText !== baselineTotalText && (
+                    <span className="struck-value">{formatGramsValue(baselineMass)}</span>
+                  )}
+                  {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.fromValue}</span>}
+                  {totalDisplayText}
+                </td>
+                {hasAsMadeLayer && <td className="ingredient-table__col-numeric">{asMadeTotalText}</td>}
+                <td className="ingredient-table__col-numeric"></td>
+                <td className="ingredient-table__col-data"></td>
+                {isDeveloping && <td className="ingredient-table__col-remove"></td>}
+              </>
+            )}
           </tr>
         </tfoot>
       </table>

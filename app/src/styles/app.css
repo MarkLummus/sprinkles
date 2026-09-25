@@ -417,6 +417,20 @@ textarea {
   color: var(--sheet-pen-blue);
 }
 
+/* The Sheet's own hand (sketch 011 decisions_recorded 1, D-19): a SEPARATE
+   rule from .app-hand above, not a reuse — the boards draw the Sheet's
+   hand at a flat --size-hand-min (20px) with a leading of 1, where the
+   App's .app-hand is max(22, 20)px at 1.25. Bends DESIGN.md's Hand Rule
+   for batch edits on the Sheet (as-made grams, Instructions changes); the
+   rule text itself is changed through /impeccable document (plan 08), not
+   here. */
+.sheet-hand {
+  font-family: var(--face-hand);
+  font-size: var(--size-hand-min);
+  line-height: var(--sheet-leading-hand);
+  color: var(--sheet-pen-blue);
+}
+
 .recipe-page {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -807,11 +821,28 @@ textarea {
 
 /* The orphaned-row flag (route-recipe-version.md § 3, 03-02): small print
    beside the row's name, naming the removed step that left it unused,
-   with its own remove-this-row control. */
+   with its own remove-this-row control. Reused (sketch 011 decision 3,
+   03.5-06 Task 1) for the reading state's estimated/unreviewed chip — a
+   `<span class="target-chip ingredient-table__flag">` reads this same
+   small-print role for its font, plus its own margin-left and vertical
+   alignment for sitting inline after the name; harmless on the orphaned
+   flag's own <p>, where vertical-align is a no-op and the small
+   margin-left is unnoticed. */
 .ingredient-table__flag {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-cross-flag);
-  margin: var(--gap-hair) 0 0;
+  margin: var(--gap-hair) 0 0 var(--sheet-flag-gap);
+  vertical-align: middle;
+}
+
+/* The plan-grams span (sketch 011 decision 2, 03.5-06 Task 1): the row's
+   plan amount, right-aligned before the ingredient name, in both the
+   reading state and the pen's own grams field (Task 2). */
+.ingredient-table__plan-grams {
+  display: inline-block;
+  min-width: var(--sheet-plan-grams-w);
+  text-align: right;
+  margin-right: var(--sheet-plan-grams-gap);
 }
 
 /* The step-grouped table's own group-head row (LD-01, sketch 003 variant
@@ -842,10 +873,13 @@ textarea {
 
 /* The split-ingredient sub-line (LD-01): beneath the ingredient's name on
    every occurrence, naming its share of the row's own total
-   (formatPortionLine, domain/composition.js). */
+   (formatPortionLine, domain/composition.js). Indented to clear the
+   plan-grams span and its own gap (sketch 011 decision 2, 03.5-06 Task 1)
+   — never a second literal, --sheet-portion-indent is that same sum. */
 .ingredient-table__portion-note {
   display: block;
   font-size: var(--sheet-size-small-print);
+  padding-left: var(--sheet-portion-indent);
 }
 
 .ingredient-table th {
@@ -2334,6 +2368,66 @@ textarea {
     height: var(--sheet-touch-stop-height);
     flex-basis: var(--touch-stop-width);
   }
+
+  /* 393: the ingredient table reads as a two-line list — quantity and
+     name, then as made and share (393-batch.html's forced narrow rules,
+     now real app rules; decisions_recorded 5, 03.5-06 Task 1). Every
+     value here is that board's own literal, read through this table's
+     own narrow-list tokens (tokens.css). The 600px block's own
+     .ingredient-table-region { overflow-x: auto } stays until plan 08
+     measures zero page overflow at 393 makes it moot. */
+  .ingredient-table thead {
+    display: none;
+  }
+
+  .ingredient-table,
+  .ingredient-table tbody,
+  .ingredient-table tfoot,
+  .ingredient-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .ingredient-table tr {
+    padding: var(--sheet-narrow-row-pad-y) 0;
+    border-bottom: var(--rule-graduation) solid var(--sheet-ink);
+  }
+
+  .ingredient-table tr.ingredient-table__step-head {
+    border-bottom: 0;
+    padding: var(--sheet-narrow-step-pad-t) 0 var(--sheet-narrow-step-pad-b);
+  }
+
+  .ingredient-table td {
+    display: block;
+    width: auto;
+    padding: 0;
+    border: 0;
+  }
+
+  .ingredient-table td.ingredient-table__col-name {
+    width: 100%;
+  }
+
+  .ingredient-table__plan-grams {
+    min-width: 0;
+    margin-right: var(--sheet-narrow-name-gap);
+  }
+
+  .ingredient-table td.ingredient-table__col-numeric {
+    display: inline-block;
+    text-align: left;
+    padding-right: var(--sheet-narrow-numeric-pad-r);
+    margin-top: var(--sheet-narrow-numeric-gap-t);
+  }
+
+  .ingredient-table td.ingredient-table__col-numeric:empty {
+    display: none;
+  }
+
+  .ingredient-table__portion-note {
+    padding-left: 0;
+  }
 }
 
 /* The 600px block (contract "Responsive ladder"): a second, narrower
@@ -2472,6 +2566,13 @@ textarea {
     font-family: var(--face-text);
     font-style: italic;
   }
+
+  /* The Sheet's own hand (sketch 011, D-19): the same fallback as
+     .app-hand above, mirrored for its own rule. */
+  .sheet-hand {
+    font-family: var(--face-text);
+    font-style: italic;
+  }
 }
 
 /* The start of the print layer (260917-ewf), the seventh top-level
@@ -2491,6 +2592,13 @@ textarea {
      in print, where the script face cannot render. No colour declaration
      here — print already takes colour away. */
   .app-hand {
+    font-family: var(--face-text);
+    font-style: italic;
+  }
+
+  /* The Sheet's own hand (sketch 011, D-19): the same fallback as
+     .app-hand above, mirrored for its own rule. */
+  .sheet-hand {
     font-family: var(--face-text);
     font-style: italic;
   }

@@ -471,4 +471,31 @@
   --app-notebook-history-ring-inset: 2px; /* 1600-batch.html: the in-view ring's own inner (App white) inset */
   --app-notebook-history-ring-w: 3.5px; /* 1600-batch.html: the in-view ring's own outer (Notebook red) width */
   --app-notebook-history-fade-w: 96px; /* 1600-long-history.html: the left fade's own width (Task 2) */
+
+  /* Table style 6 (sketch 011 decisions 2, 3; D-19; 03.5-06 Task 1): the
+     plan grams stand right-aligned before the ingredient name, the
+     estimated/unreviewed flag reads as a chip after it, and a split row's
+     portion note indents to clear both. Every value here is the board's
+     own literal (1600-batch.html/1600-no-batch.html/1600-pen.html), not a
+     measured-minimum budget like --sheet-col-numeric above — there is
+     nothing to measure a minimum against, since this is inline content in
+     the name column's own automatic width, not a shrink-to-content sized
+     column. */
+  --sheet-plan-grams-w: 64px; /* the plan-grams span's own min-width */
+  --sheet-plan-grams-gap: 18px; /* the span's own margin-right before the name */
+  --sheet-flag-gap: 8px; /* the estimated/unreviewed chip's own margin-left after the name */
+  --sheet-portion-indent: 82px; /* the split portion note's own padding-left — the plan-grams span (64) plus its gap (18), never a second literal */
+  --sheet-leading-hand: 1; /* the Sheet's own hand leading (decisions_recorded 1) — distinct from --leading-hand (1.25), the App's own */
+
+  /* The 393 narrow list (393-batch.html's forced narrow rules, "the
+     ingredient table reads as a list, two lines per row": quantity and
+     name, then as made and share). Every value here is that board's own
+     literal, read once by app.css's existing (max-width: 759.98px)
+     block — no new @media block, per that block's own contract. */
+  --sheet-narrow-row-pad-y: 8px; /* a row's own top/bottom padding */
+  --sheet-narrow-step-pad-t: 14px; /* a step-head row's own top padding */
+  --sheet-narrow-step-pad-b: 4px; /* a step-head row's own bottom padding */
+  --sheet-narrow-name-gap: 10px; /* the plan-grams span's own reset margin-right at this width */
+  --sheet-narrow-numeric-pad-r: 14px; /* a numeric cell's own right padding, reading inline */
+  --sheet-narrow-numeric-gap-t: 4px; /* a numeric cell's own top margin, second line under the name */
 }

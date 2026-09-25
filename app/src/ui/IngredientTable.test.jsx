@@ -253,8 +253,8 @@ describe('IngredientTable — the As made column reads and records per portion (
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
     expect(markup).not.toContain('120 + 263');
-    expect(markup).toContain('<span class="ink-text">120 g</span>');
-    expect(markup).toContain('<span class="ink-text">263 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">120 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">263 g</span>');
     expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 120 g"');
     expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 263 g"');
   });
@@ -271,14 +271,15 @@ describe('IngredientTable — the As made column reads and records per portion (
     // check is satisfied by a dangling '120 +  g' just as much as by a
     // clean '120 g' — asserting the whole cell and the whole accessible
     // name is the only way this class of regression cannot pass green.
-    expect(markup).toContain('<span class="ink-text">120 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">120 g</span>');
     expect(markup).toContain('aria-label="Whole milk, 370.4 g, as made 120 g"');
     // The unwritten portion's own line: no as-made phrase and no ink-text —
     // full-string, so it cannot pass on a dangling accessible name either.
     expect(markup).toContain(
-      'aria-label="Whole milk, 370.4 g"><td class="ingredient-table__col-name">Whole milk' +
+      'aria-label="Whole milk, 370.4 g"><td class="ingredient-table__col-name">' +
+        '<span class="ingredient-table__plan-grams">250.4 g</span>Whole milk' +
         '<span class="ingredient-table__portion-note">250.4 g of 370.4 g · 100.0% in all</span>' +
-        '</td><td class="ingredient-table__col-numeric">250.4 g</td><td class="ingredient-table__col-numeric"></td>',
+        '</td><td class="ingredient-table__col-numeric"></td>',
     );
   });
 
@@ -292,12 +293,13 @@ describe('IngredientTable — the As made column reads and records per portion (
 
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
-    expect(markup).toContain('<span class="ink-text">100 g</span>');
-    expect(markup).toContain('<span class="ink-text">50 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">100 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">50 g</span>');
     expect(markup).toContain('aria-label="Row A, 170 g, as made 100 g"');
     expect(markup).toContain('aria-label="Row A, 170 g, as made 50 g"');
     expect(markup).toContain(
-      'aria-label="Row A, 170 g"><td class="ingredient-table__col-name">Row A' +
+      'aria-label="Row A, 170 g"><td class="ingredient-table__col-name">' +
+        '<span class="ingredient-table__plan-grams">20 g</span>Row A' +
         '<span class="ingredient-table__portion-note">20 g of 170.0 g · 100.0% in all</span>',
     );
   });
@@ -807,7 +809,7 @@ describe('IngredientTable — the reading state reads in style 6 (sketch 011 dec
     expect(headerRow).toContain('>Ingredient<');
     expect(headerRow).toContain('>% of batch<');
     expect(headerRow).not.toContain('As made');
-    expect(markup).toMatch(/<tr class="ingredient-table__step-head"><td colspan="2">/);
+    expect(markup).toMatch(/<tr class="ingredient-table__step-head"><td colSpan="2">/);
     expect(markup).not.toContain('sheet-hand');
   });
 

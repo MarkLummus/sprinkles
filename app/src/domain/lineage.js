@@ -108,13 +108,17 @@ export function versionLineUnique(versions, candidateLine, excludeId) {
  * createChildVersion(parent, penFields, { id, now }) -> a new version
  * record carrying the supplied id, the parent's identity as
  * parentVersionId/parentVersionLabel, and a fresh createdAt (D-06). Every
- * structural field the pen edits — rows, method, headnote, authored — is
+ * structural field the pen edits — rows, method, authored — is
  * deep-copied with structuredClone, so the child shares no structure with
  * its parent (D-10, D-04): mutating a value reached through the parent
- * afterwards never moves the child. Pure: id and now are supplied by the
- * caller, exactly as domain/batch.js's createBatch takes them — this
- * function never reaches for crypto.randomUUID() or new Date() itself,
- * and it never writes to the parent (T-03-03).
+ * afterwards never moves the child. sheetTitle/sheetDescription come from
+ * penFields directly (03.5-CONTEXT.md: Next version copies the parent's
+ * Sheet title and Sheet description) — no recipeName field is carried;
+ * recipe identity lives off the version now, in the recipes store
+ * (03.5-CONTEXT.md D-11). Pure: id and now are supplied by the caller,
+ * exactly as domain/batch.js's createBatch takes them — this function
+ * never reaches for crypto.randomUUID() or new Date() itself, and it
+ * never writes to the parent (T-03-03).
  */
 export function createChildVersion(parent, penFields, { id, now }) {
   return {
@@ -124,7 +128,6 @@ export function createChildVersion(parent, penFields, { id, now }) {
     parentVersionId: parent.id,
     parentVersionLabel: parent.versionLabel,
     createdAt: now,
-    recipeName: parent.recipeName,
     versionLabel: penFields.versionLabel,
     coefficientSetId: parent.coefficientSetId,
     coefficientSetName: parent.coefficientSetName,
@@ -137,7 +140,8 @@ export function createChildVersion(parent, penFields, { id, now }) {
     citedBatchId: penFields.citedBatchId,
     rows: structuredClone(penFields.rows),
     method: structuredClone(penFields.method),
-    headnote: penFields.headnote,
+    sheetTitle: penFields.sheetTitle,
+    sheetDescription: penFields.sheetDescription,
     authored: structuredClone(penFields.authored),
   };
 }
@@ -159,7 +163,8 @@ export function saveOverVersion(version, penFields) {
     citedBatchId: penFields.citedBatchId,
     rows: structuredClone(penFields.rows),
     method: structuredClone(penFields.method),
-    headnote: penFields.headnote,
+    sheetTitle: penFields.sheetTitle,
+    sheetDescription: penFields.sheetDescription,
     authored: structuredClone(penFields.authored),
   };
 }

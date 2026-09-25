@@ -6,11 +6,10 @@ import { library } from './library.js';
 
 // The version record's own bookkeeping number — distinct from DB_VERSION
 // (db.js) and from the store file's schemaVersion (transfer.js). Bumped to
-// 4 this phase because the declared-axes model changed: a version now
-// declares its pair by name against the battery's fixed AXES table,
-// rather than authoring its own anchor words (03.3.1-CONTEXT.md D-07,
-// Pitfall 3).
-export const VERSION_SCHEMA_VERSION = 4;
+// 5 this phase because the recipe's own identity left the version: the
+// recipe name is gone (the recipes store carries it now, D-11) and the
+// headnote field split into sheetTitle/sheetDescription (D-09).
+export const VERSION_SCHEMA_VERSION = 5;
 
 // A fixed constant, not a live timestamp: two machines seeding this
 // version on different days must agree on its createdAt, so it is never
@@ -34,6 +33,19 @@ export const SEED_USES = {
   10: [],
 };
 
+// The recipe record (D-11): reached only through the repository seam's
+// recipes methods, never through the version. Its id matches
+// oliveOilVersion.recipeId below. D-09: seeded exactly as the boards draw
+// it — the name carries "circulator" (the version's own equipment word),
+// the description is today's headnote text, verbatim, character for
+// character.
+export const oliveOilRecipe = {
+  id: 'olive-oil-ice-cream',
+  name: 'Olive Oil Ice Cream, circulator',
+  description:
+    'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
+};
+
 // Deep-copy the ingredient record onto the row so a stored version is
 // self-contained (D-05): a later edit to the shared `library` must never
 // move a figure already computed from a version's own rows.
@@ -54,12 +66,15 @@ export const oliveOilVersion = {
   reason: null,
   citedBatchId: null,
   createdAt: SEED_CREATED_AT,
-  recipeName: 'Olive Oil Ice Cream',
   versionLabel: '50 g oil · 800 g',
   coefficientSetId: '2026.1-slice-transcription',
   coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
-  headnote:
-    'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
+  // D-09: the Sheet's own title and prose, exactly as sketch 011's
+  // 1600-batch.html headnote draws them — distinct from oliveOilRecipe's
+  // name/description above, which the boards give different words.
+  sheetTitle: 'Olive Oil Ice Cream',
+  sheetDescription:
+    'Silky and quietly savoury. Fresh olive oil adds a gentle fruitiness without overwhelming the cream, and a little more salt than you would think carries it. Serve it soft, with flaky salt.',
   rows: [
     { id: 'row-01', ...embed('Whole milk', library.wholeMilk, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }], removed: false }) },
     { id: 'row-02', ...embed('Heavy cream', library.heavyCream, { portions: [{ step: 3, grams: 252.8 }], removed: false }) },
@@ -225,28 +240,16 @@ export const oliveOilVersion = {
     },
   ],
   // Authored, not derived — judgement the app cannot reach. The sheet also
-  // prints an ultra-pasteurised-dairy note under "Carried forward" and a
-  // machine-minimum-fill note under "Before you start"; both are *derived*
-  // structural advisories Phase 3 computes (FORM2-02) and are deliberately
-  // held here — restating a derived figure as authored judgement is exactly
-  // the mixing the brief separates. Each note is { text, inheritedFrom }:
-  // inheritedFrom is null on a version's own authored notes, and carries a
-  // parent's version line on a note a child inherited unedited (D-10).
+  // prints a machine-minimum-fill note under "Before you start"; that is a
+  // *derived* structural advisory Phase 3 computes (FORM2-02) and is
+  // deliberately held here — restating a derived figure as authored
+  // judgement is exactly the mixing the brief separates. Each note is
+  // { text, inheritedFrom }: inheritedFrom is null on a version's own
+  // authored notes, and carries a parent's version line on a note a child
+  // inherited unedited (D-10). Carried forward is gone from this record
+  // (03.5-CONTEXT.md decision 10, D-06 of the 03.5 revision): its three
+  // notes' words are dropped, not moved — beforeYouStart is the whole shape.
   authored: {
-    carriedForward: [
-      {
-        text: 'Gellan in the cream — roughly 0.03–0.09 g at this cream weight, an estimate with no published spec. Below anything you would taste, against 1.68 g of deliberate stabiliser.',
-        inheritedFrom: null,
-      },
-      {
-        text: 'No glucose syrup — less costly at 13% milkfat than it would be at 8%, since the milkfat is carrying structure the DE42 would have provided.',
-        inheritedFrom: null,
-      },
-      {
-        text: 'This is the low anchor, not the oil-forward target. Oil is 28% of total fat. Expect a textural contribution and background flavour, not a dominant one.',
-        inheritedFrom: null,
-      },
-    ],
     beforeYouStart: [
       {
         text: 'Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.',

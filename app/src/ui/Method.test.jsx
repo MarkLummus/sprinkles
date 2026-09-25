@@ -116,7 +116,8 @@ function makeRow(id, name, grams, removed = false) {
 function makeBaselineVersion() {
   return {
     versionLabel: 'v1',
-    headnote: 'Baseline headnote.',
+    sheetTitle: 'Baseline title.',
+    sheetDescription: 'Baseline description.',
     targets: {},
     rows: [makeRow('row-a', 'Row A', 10), makeRow('row-b', 'Row B', 20)],
     method: [
@@ -1186,8 +1187,8 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
 });
 
 // "Before you start" (03.3-01): moved out of Authored.jsx to head the
-// Method, before step 1 — the same NoteList shape carriedForward already
-// uses (Authored.test.jsx keeps that shared component's own coverage).
+// Method, before step 1 — NoteList's own shape (Authored.test.jsx keeps
+// that shared component's own coverage).
 describe('Method — "Before you start" heads the Method (03.3-01, 03.1 Overrides Accepted Gap)', () => {
   it('renders between the Instructions heading and the step list', () => {
     const markup = renderToStaticMarkup(

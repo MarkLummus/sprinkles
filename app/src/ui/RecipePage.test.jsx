@@ -117,7 +117,7 @@ function renderVersionsReading(openPen, reason) {
         version={oliveOilVersion}
         versions={[oliveOilVersion]}
         mode="reading"
-        penDraft={{ versionLabel: '', reason: '', citedBatchId: null, headnote: oliveOilVersion.headnote }}
+        penDraft={{ versionLabel: '', reason: '', citedBatchId: null, sheetTitle: oliveOilVersion.sheetTitle, sheetDescription: oliveOilVersion.sheetDescription }}
         batches={[]}
         allBatches={[]}
         citedBatch={null}
@@ -156,7 +156,8 @@ function makeBaselineVersion(overrides = {}) {
   return {
     id: 'v1',
     recipeId: 'r1',
-    headnote: 'Baseline headnote.',
+    sheetTitle: 'Baseline title.',
+    sheetDescription: 'Baseline description.',
     rows: [
       { id: 'row-1', portions: [{ step: 1, grams: 100 }], removed: false },
       { id: 'row-2', portions: [{ step: 2, grams: 50 }], removed: false },
@@ -182,7 +183,6 @@ function makeBaselineVersion(overrides = {}) {
       },
     ],
     authored: {
-      carriedForward: [{ text: 'Carried note', inheritedFrom: null }],
       beforeYouStart: [{ text: 'Before note', inheritedFrom: null }],
     },
     ...overrides,
@@ -205,7 +205,8 @@ function makeCleanPenDraft(version) {
     versionLabel: '',
     reason: '',
     citedBatchId: null,
-    headnote: version.headnote,
+    sheetTitle: version.sheetTitle,
+    sheetDescription: version.sheetDescription,
     rows,
     method: structuredClone(version.method),
     authored: structuredClone(version.authored),
@@ -227,11 +228,19 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('developing', draft, version)).toBe(false);
   });
 
-  it('is dirty when the headnote prose changes, and clean again typed back', () => {
+  it('is dirty when only the Sheet title differs from the version\'s, and clean again typed back', () => {
     const draft = makeCleanPenDraft(version);
-    draft.headnote = 'Changed headnote.';
+    draft.sheetTitle = 'Changed title.';
     expect(isPenDraftDirty('developing', draft, version)).toBe(true);
-    draft.headnote = 'Baseline headnote.';
+    draft.sheetTitle = 'Baseline title.';
+    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
+  });
+
+  it('is dirty when only the Sheet description differs from the version\'s, and clean again typed back', () => {
+    const draft = makeCleanPenDraft(version);
+    draft.sheetDescription = 'Changed description.';
+    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
+    draft.sheetDescription = 'Baseline description.';
     expect(isPenDraftDirty('developing', draft, version)).toBe(false);
   });
 
@@ -251,7 +260,7 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
 
   it('is never dirty when the mode is not developing, or when the version or the draft is absent', () => {
     const draft = makeCleanPenDraft(version);
-    draft.headnote = 'Changed headnote.';
+    draft.sheetTitle = 'Changed title.';
     expect(isPenDraftDirty('reading', draft, version)).toBe(false);
     expect(isPenDraftDirty('developing', null, version)).toBe(false);
     expect(isPenDraftDirty('developing', draft, null)).toBe(false);

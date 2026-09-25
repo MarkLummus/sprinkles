@@ -50,6 +50,24 @@ export function createRepository() {
       await Promise.all(batches.map((batch) => tx.store.put(batch)));
       return tx.done;
     },
+    async listRecipes() {
+      const db = await dbPromise;
+      return db.getAll('recipes');
+    },
+    async getRecipe(id) {
+      const db = await dbPromise;
+      return db.get('recipes', id);
+    },
+    async saveRecipe(recipe) {
+      const db = await dbPromise;
+      return db.put('recipes', recipe);
+    },
+    async putAllRecipes(recipes) {
+      const db = await dbPromise;
+      const tx = db.transaction('recipes', 'readwrite');
+      await Promise.all(recipes.map((recipe) => tx.store.put(recipe)));
+      return tx.done;
+    },
   };
 }
 

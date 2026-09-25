@@ -80,17 +80,22 @@ function compareByRecency(a, b) {
 }
 
 /**
- * activeWork(versions, batches) -> one entry per recipe — id, name, its
- * latest version, its own versions newest-first, its own batches
- * newest-first, its lastEventAt and its standing — ordered by
+ * activeWork(versions, batches, recipes = []) -> one entry per recipe —
+ * id, name, its latest version, its own versions newest-first, its own
+ * batches newest-first, its lastEventAt and its standing — ordered by
  * lastEventAt descending, a null last event ordering last, ties broken
  * on the latest version's id (D-05, D-06, D-07). An empty versions array
  * returns an empty array. A batch whose churn is missing entirely (a
  * malformed stored record) is left out of a recipe's own batches rather
  * than reaching sortedBatches, which reads every batch's churn to order
- * it — the same guard the row renderer already applies.
+ * it — the same guard the row renderer already applies. name is read
+ * from the recipe record whose id matches the version's recipeId (D-11:
+ * the recipe's name lives off the version now) — a missing record falls
+ * back to the recipeId string itself rather than undefined, so a lost
+ * record never renders an empty link (decisions_recorded 3).
  */
-export function activeWork(versions, batches) {
+export function activeWork(versions, batches, recipes = []) {
+  const recipesById = new Map(recipes.map((recipe) => [recipe.id, recipe]));
   return latestVersionPerRecipe(versions)
     .map((latestVersion) => {
       const recipeId = latestVersion.recipeId;
@@ -102,7 +107,7 @@ export function activeWork(versions, batches) {
       const orderedBatches = sortedBatches(recipeBatches);
       return {
         id: recipeId,
-        name: latestVersion.recipeName,
+        name: recipesById.get(recipeId)?.name ?? recipeId,
         latestVersion,
         versions: orderedVersions,
         batches: orderedBatches,

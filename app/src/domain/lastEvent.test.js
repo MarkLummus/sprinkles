@@ -8,7 +8,6 @@ function makeVersion(overrides = {}) {
   return {
     id: 'v1',
     recipeId: 'r1',
-    recipeName: 'Olive oil',
     createdAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
   };
@@ -106,13 +105,14 @@ describe('standingFor', () => {
 describe('activeWork', () => {
   it('returns one entry per recipe with the recipe id, name, latest version, ordered versions, ordered batches, lastEventAt and standing', () => {
     const versions = [
-      makeVersion({ id: 'a', recipeId: 'r1', recipeName: 'Olive oil', createdAt: '2026-01-01T00:00:00.000Z' }),
-      makeVersion({ id: 'b', recipeId: 'r1', recipeName: 'Olive oil', createdAt: '2026-02-01T00:00:00.000Z' }),
+      makeVersion({ id: 'a', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' }),
+      makeVersion({ id: 'b', recipeId: 'r1', createdAt: '2026-02-01T00:00:00.000Z' }),
     ];
     const batches = [
       makeBatch({ id: 'ba', versionId: 'a', recordedAt: '2026-01-05T00:00:00.000Z', churn: { churnDate: '2026-01-05' } }),
     ];
-    const [entry] = activeWork(versions, batches);
+    const recipes = [{ id: 'r1', name: 'Olive oil', description: '' }];
+    const [entry] = activeWork(versions, batches, recipes);
     expect(entry.id).toBe('r1');
     expect(entry.name).toBe('Olive oil');
     expect(entry.latestVersion.id).toBe('b');
@@ -152,5 +152,27 @@ describe('activeWork', () => {
     const [entry] = activeWork(versions, [malformedBatch]);
     expect(entry.batches).toEqual([]);
     expect(entry.standing).toBe(NOT_YET_CHURNED);
+  });
+
+  it("returns entry.name from the recipe whose id equals the version's recipeId (D-11)", () => {
+    const versions = [makeVersion({ id: 'a', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' })];
+    const recipes = [
+      { id: 'r1', name: 'Olive Oil Ice Cream, circulator', description: '' },
+      { id: 'r2', name: 'Someone else\'s recipe', description: '' },
+    ];
+    const [entry] = activeWork(versions, [], recipes);
+    expect(entry.name).toBe('Olive Oil Ice Cream, circulator');
+  });
+
+  it('falls back to the recipeId string when recipes is empty (decisions_recorded 3)', () => {
+    const versions = [makeVersion({ id: 'a', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' })];
+    const [entry] = activeWork(versions, [], []);
+    expect(entry.name).toBe('r1');
+  });
+
+  it('defaults recipes to an empty array when the third argument is omitted', () => {
+    const versions = [makeVersion({ id: 'a', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' })];
+    const [entry] = activeWork(versions, []);
+    expect(entry.name).toBe('r1');
   });
 });

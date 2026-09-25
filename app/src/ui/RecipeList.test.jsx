@@ -17,7 +17,8 @@ vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { RecipeList, RecipeRows, HomeLead, HomeBody } from './RecipeList.jsx';
-import { oliveOilVersion } from '../data/olive-oil.js';
+import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
+import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { versionIdentity } from '../domain/lineage.js';
 
 function makeVersion(overrides = {}) {
@@ -25,7 +26,6 @@ function makeVersion(overrides = {}) {
     ...oliveOilVersion,
     id: 'v1',
     recipeId: 'r1',
-    recipeName: 'Recipe',
     versionLabel: 'line',
     createdAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
@@ -299,13 +299,23 @@ describe('HomeLead — the board\'s block (gap 5)', () => {
 
 // HomeBody (03.4-04 Task 3, D-08, D-06, D-12): the empty shelf when the
 // store holds no recipes, or the lead block and the rows otherwise.
-function renderBody(versions, batches = []) {
+function renderBody(versions, batches = [], recipes = []) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <HomeBody versions={versions} batches={batches} />
+      <HomeBody versions={versions} batches={batches} recipes={recipes} />
     </MemoryRouter>,
   );
 }
+
+// The recipe record is the name's source (D-11): HomeBody threads a third
+// `recipes` prop into activeWork so the lead's name link reads the record,
+// not a field on the version.
+describe('HomeBody — the recipe record is the name\'s source (D-11)', () => {
+  it("reads the olive oil recipe's name from the recipe record, not the version", () => {
+    const markup = renderBody([oliveOilVersion], [augustSecondBatch], [oliveOilRecipe]);
+    expect(markup).toMatch(/<h2 class="home__lead-name">[\s\S]*Olive Oil Ice Cream, circulator[\s\S]*<\/h2>/);
+  });
+});
 
 describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
   it('renders the sentence and the two leading links, and no row, for an empty store', () => {
@@ -346,9 +356,9 @@ describe('HomeBody — every link carries an explicit tabindex (G-03.4-r4-1, .pl
 
   it('renders exactly 11 <a> opening tags for three recipes, one per standing, the tasted one leading (lead 3: name, Next version, Adapt; rows 8: not-yet-churned 2, awaiting-tasting 3, tasted 3), each carrying tabindex="0"', () => {
     const versions = [
-      makeVersion({ id: 'v1', recipeId: 'r1', recipeName: 'Not yet churned recipe', createdAt: '2026-01-01T00:00:00.000Z' }),
-      makeVersion({ id: 'v2', recipeId: 'r2', recipeName: 'Awaiting tasting recipe', createdAt: '2026-01-02T00:00:00.000Z' }),
-      makeVersion({ id: 'v3', recipeId: 'r3', recipeName: 'Tasted recipe', createdAt: '2026-01-04T00:00:00.000Z' }),
+      makeVersion({ id: 'v1', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' }),
+      makeVersion({ id: 'v2', recipeId: 'r2', createdAt: '2026-01-02T00:00:00.000Z' }),
+      makeVersion({ id: 'v3', recipeId: 'r3', createdAt: '2026-01-04T00:00:00.000Z' }),
     ];
     const batches = [
       makeBatch({ id: 'b2', versionId: 'v2', recordedAt: '2026-01-03T00:00:00.000Z', tasting: null }),

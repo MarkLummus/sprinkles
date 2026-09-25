@@ -1,17 +1,20 @@
 import { describe, it, expect } from 'vitest';
-import { exportStore, importStore, validateStoreFile } from './transfer.js';
-import { oliveOilVersion } from '../data/olive-oil.js';
+import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION, OLDER_EXPORT_MESSAGE } from './transfer.js';
+import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 // A plain in-memory object implementing the repository seam's contract —
-// no store library, no browser. Mirrors createRepository's putAll/putAllBatches:
-// upsert by id, never a wholesale replace. Tracks call counts so a test can
-// assert a write method was never invoked (the refuse-whole-file gate).
-function createInMemoryRepository(initialVersions = [], initialBatches = []) {
+// no store library, no browser. Mirrors createRepository's putAll/putAllBatches/
+// putAllRecipes: upsert by id, never a wholesale replace. Tracks call counts
+// so a test can assert a write method was never invoked (the refuse-whole-file
+// gate).
+function createInMemoryRepository(initialVersions = [], initialBatches = [], initialRecipes = []) {
   const versions = [...initialVersions];
   const batches = [...initialBatches];
+  const recipes = [...initialRecipes];
   let putAllCalls = 0;
   let putAllBatchesCalls = 0;
+  let putAllRecipesCalls = 0;
   return {
     get versions() {
       return versions;
@@ -19,11 +22,17 @@ function createInMemoryRepository(initialVersions = [], initialBatches = []) {
     get batches() {
       return batches;
     },
+    get recipes() {
+      return recipes;
+    },
     get putAllCalls() {
       return putAllCalls;
     },
     get putAllBatchesCalls() {
       return putAllBatchesCalls;
+    },
+    get putAllRecipesCalls() {
+      return putAllRecipesCalls;
     },
     async getAll() {
       return [...versions];
@@ -47,10 +56,21 @@ function createInMemoryRepository(initialVersions = [], initialBatches = []) {
         else batches.push(batch);
       }
     },
+    async listRecipes() {
+      return [...recipes];
+    },
+    async putAllRecipes(newRecipes) {
+      putAllRecipesCalls += 1;
+      for (const recipe of newRecipes) {
+        const i = recipes.findIndex((r) => r.id === recipe.id);
+        if (i >= 0) recipes[i] = recipe;
+        else recipes.push(recipe);
+      }
+    },
   };
 }
 
-// Schema 5-shaped by default (D-09, 03.3.1-CONTEXT.md): every version
+// Schema 6-shaped by default (D-10, D-11, 03.5-CONTEXT.md): every version
 // validateStoreFile sees in production is authored fresh (createChildVersion,
 // or the seed) — there is no lift branch left to fill these in on the way
 // in, so a well-formed fixture carries them from the start.
@@ -58,7 +78,7 @@ function makeVersion(overrides = {}) {
   return {
     id: 'v1',
     schemaVersion: 4,
-    recipeName: 'Test recipe',
+    recipeId: 'r1',
     coefficientSetId: 'set-1',
     parentVersionId: null,
     parentVersionLabel: null,
@@ -75,11 +95,25 @@ function makeVersion(overrides = {}) {
       },
     ],
     method: [],
-    authored: { carriedForward: [], beforeYouStart: [] },
+    authored: { beforeYouStart: [] },
     declaredAxes: ['Body', 'Oil'],
     declaredFlaw: 'Bitter',
     versionLabel: 'v1 label',
-    headnote: '',
+    sheetTitle: '',
+    sheetDescription: '',
+    ...overrides,
+  };
+}
+
+// D-11: a recipe record { id, name, description }, reached only through
+// the repository seam. Its default id matches makeVersion's default
+// recipeId, so the recipe-resolves gate accepts the two default fixtures
+// together with no extra wiring.
+function makeRecipe(overrides = {}) {
+  return {
+    id: 'r1',
+    name: 'Test recipe',
+    description: 'A description',
     ...overrides,
   };
 }
@@ -151,53 +185,61 @@ function makeTasting(overrides = {}) {
   };
 }
 
-// The one accepted shape (D-09): schemaVersion 5, batches always present
-// (an array, never absent).
-function makeStoreFile(versions = [makeVersion()], batches = []) {
-  return { app: 'sprinkles', schemaVersion: 5, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches };
+// The one accepted shape (D-10, D-11): schemaVersion 6, batches and
+// recipes always present (arrays, never absent).
+function makeStoreFile(versions = [makeVersion()], batches = [], recipes = [makeRecipe()]) {
+  return { app: 'sprinkles', schemaVersion: 6, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches, recipes };
 }
 
 describe('exportStore', () => {
-  it('returns app sprinkles, schemaVersion 5, and every version and batch the repository held', async () => {
-    const repository = createInMemoryRepository([makeVersion(), makeVersion({ id: 'v2' })], [makeBatch()]);
+  it('returns app sprinkles, schemaVersion 6, and every version, batch and recipe the repository held', async () => {
+    const repository = createInMemoryRepository(
+      [makeVersion(), makeVersion({ id: 'v2' })],
+      [makeBatch()],
+      [makeRecipe()],
+    );
     const exported = await exportStore(repository);
     expect(exported.app).toBe('sprinkles');
-    expect(exported.schemaVersion).toBe(5);
+    expect(exported.schemaVersion).toBe(6);
+    expect(exported.schemaVersion).toBe(STORE_SCHEMA_VERSION);
     expect(exported.versions).toHaveLength(2);
     expect(exported.batches).toHaveLength(1);
+    expect(exported.recipes).toHaveLength(1);
   });
 });
 
 describe('export then import round trip', () => {
   it('yields records deep-equal to the originals in a second empty repository', async () => {
-    const source = createInMemoryRepository([makeVersion(), makeVersion({ id: 'v2' })], [makeBatch()]);
+    const source = createInMemoryRepository([makeVersion(), makeVersion({ id: 'v2' })], [makeBatch()], [makeRecipe()]);
     const exported = await exportStore(source);
 
-    const target = createInMemoryRepository([], []);
+    const target = createInMemoryRepository([], [], []);
     const result = await importStore(target, exported);
 
     expect(result.ok).toBe(true);
     expect(target.versions).toEqual(source.versions);
     expect(target.batches).toEqual(source.batches);
+    expect(target.recipes).toEqual(source.recipes);
   });
 
-  // The phase's Done-when (D-09): a store exported after this change
-  // imports after it, proven against the real seeded olive oil version and
-  // its real 2 Aug batch, not a fixture. JSON.parse(JSON.stringify(...))
+  // The phase's Done-when (D-10, D-11): a store exported after this change
+  // imports after it, proven against the real seeded olive oil recipe,
+  // version and its real 2 Aug batch, not a fixture. JSON.parse(JSON.stringify(...))
   // carries a genuinely serialised payload, the same as a file on disk,
   // rather than a live object graph the two repositories could share by
   // reference.
-  it('carries the real seeded olive oil version and its 2 Aug batch intact', async () => {
-    const source = createInMemoryRepository([oliveOilVersion], [augustSecondBatch]);
+  it('carries the real seeded olive oil recipe, version and its 2 Aug batch intact', async () => {
+    const source = createInMemoryRepository([oliveOilVersion], [augustSecondBatch], [oliveOilRecipe]);
     const exported = await exportStore(source);
     const serialised = JSON.parse(JSON.stringify(exported));
 
-    const target = createInMemoryRepository([], []);
+    const target = createInMemoryRepository([], [], []);
     const result = await importStore(target, serialised);
 
     expect(result.ok).toBe(true);
     expect(target.versions).toEqual([oliveOilVersion]);
     expect(target.batches).toEqual([augustSecondBatch]);
+    expect(target.recipes).toEqual([oliveOilRecipe]);
   });
 });
 
@@ -212,21 +254,37 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('app'))).toBe(true);
   });
 
-  it('accepts a payload whose schemaVersion is 5 — the schema number flips from refused to accepted (D-09)', () => {
+  it('accepts a payload whose schemaVersion is 6 — the schema number flips from refused to accepted (D-10, D-11)', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(false);
   });
 
-  it.each([1, 2, 3, 4])(
+  it.each([1, 2, 3, 4, 5])(
     'rejects a payload whose schemaVersion is %i, naming the path and both the expected and received value',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
       expect(result.ok).toBe(false);
       const error = result.errors.find((message) => message.includes('$.schemaVersion'));
-      expect(error).toContain('expected 5');
+      expect(error).toContain('expected 6');
       expect(error).toContain(String(oldSchemaVersion));
     },
   );
+
+  // D-10: a plain sentence goes first, before the path-named error, so an
+  // older export's own maker sees words before a technical path.
+  it.each([1, 2, 3, 4, 5])(
+    'reports OLDER_EXPORT_MESSAGE as the first error for a payload whose schemaVersion is %i',
+    (oldSchemaVersion) => {
+      const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
+      expect(result.ok).toBe(false);
+      expect(result.errors[0]).toBe(OLDER_EXPORT_MESSAGE);
+    },
+  );
+
+  it('does not report OLDER_EXPORT_MESSAGE for a well-formed schemaVersion 6 payload', () => {
+    const result = validateStoreFile(makeStoreFile());
+    expect(result.errors).not.toContain(OLDER_EXPORT_MESSAGE);
+  });
 
   it('rejects a payload whose versions is not an array', () => {
     const result = validateStoreFile({ ...makeStoreFile(), versions: {} });
@@ -296,17 +354,17 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('.authored'))).toBe(true);
   });
 
-  it('rejects a version whose authored is missing carriedForward or beforeYouStart', () => {
-    const version = makeVersion({ authored: { carriedForward: [] } });
+  it('rejects a version whose authored is missing beforeYouStart', () => {
+    const version = makeVersion({ authored: {} });
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('.authored'))).toBe(true);
   });
 
-  it('reports two errors for a payload with two distinct faults, not only the first', () => {
+  it('reports every error for a payload with distinct faults, not only the first — app plus the two schemaVersion entries (D-10)', () => {
     const result = validateStoreFile({ ...makeStoreFile(), app: 'other', schemaVersion: 3 });
     expect(result.ok).toBe(false);
-    expect(result.errors).toHaveLength(2);
+    expect(result.errors).toHaveLength(3);
   });
 
   it('rejects a payload carrying a prototype-mutating key, and leaves a fresh object unpolluted', () => {
@@ -510,6 +568,54 @@ describe('validateStoreFile', () => {
   });
 });
 
+// D-11: the recipe record { id, name, description }, validated in
+// validateAuthoredNote's collect-all-errors, name-the-path style.
+describe('validateRecipe / $.recipes', () => {
+  it('accepts a well-formed store file with one recipe, reporting ok', () => {
+    expect(validateStoreFile(makeStoreFile([makeVersion()], [], [makeRecipe()]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a missing recipes array, naming the path', () => {
+    const result = validateStoreFile({ ...makeStoreFile(), recipes: undefined });
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.recipes: expected an array'))).toBe(true);
+  });
+
+  it('rejects a recipe with no id, naming the path', () => {
+    const recipe = makeRecipe();
+    delete recipe.id;
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [], [recipe]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.recipes[0].id'))).toBe(true);
+  });
+
+  it('rejects a recipe whose name is not a string, naming the path and the received value', () => {
+    const recipe = makeRecipe({ name: 42 });
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [], [recipe]));
+    expect(result.ok).toBe(false);
+    const error = result.errors.find((message) => message.includes('$.recipes[0].name'));
+    expect(error).toBe('$.recipes[0].name: expected a string, got 42');
+  });
+
+  it('rejects a recipe whose description is not a string, naming the path', () => {
+    const recipe = makeRecipe({ description: null });
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [], [recipe]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.recipes[0].description'))).toBe(true);
+  });
+
+  it('rejects a recipe carrying an own __proto__ key via the existing unsafe-key scanner, and leaves a fresh object unpolluted', () => {
+    const malicious = JSON.parse(
+      '{"app":"sprinkles","schemaVersion":6,"versions":[],"batches":[],' +
+        '"recipes":[{"id":"r1","name":"x","description":"x","__proto__":{"polluted":true}}]}',
+    );
+    const result = validateStoreFile(malicious);
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('__proto__'))).toBe(true);
+    expect({}.polluted).toBeUndefined();
+  });
+});
+
 describe('importStore', () => {
   it('writes nothing on an invalid payload and reports every error found', async () => {
     const repository = createInMemoryRepository([makeVersion({ id: 'existing' })]);
@@ -518,16 +624,18 @@ describe('importStore', () => {
     const result = await importStore(repository, { ...makeStoreFile(), app: 'other', schemaVersion: 3 });
 
     expect(result.ok).toBe(false);
-    expect(result.errors).toHaveLength(2);
+    expect(result.errors).toHaveLength(3);
     expect(repository.versions).toEqual(before);
   });
 
-  it('imports a well-formed schemaVersion 5 file with a batch, round-tripping through putAll and putAllBatches', async () => {
-    const repository = createInMemoryRepository([], []);
-    const result = await importStore(repository, makeStoreFile([makeVersion()], [makeBatch()]));
+  it('imports a well-formed schemaVersion 6 file with a batch and a recipe, round-tripping through putAllRecipes, putAll and putAllBatches', async () => {
+    const repository = createInMemoryRepository([], [], []);
+    const result = await importStore(repository, makeStoreFile([makeVersion()], [makeBatch()], [makeRecipe()]));
     expect(result.ok).toBe(true);
+    expect(repository.recipes).toEqual([makeRecipe()]);
     expect(repository.versions).toEqual([makeVersion()]);
     expect(repository.batches).toEqual([makeBatch()]);
+    expect(repository.putAllRecipesCalls).toBe(1);
   });
 
   it('refuses the whole file: one bad batch beside a good one writes nothing at all', async () => {
@@ -540,6 +648,7 @@ describe('importStore', () => {
     expect(result.ok).toBe(false);
     expect(repository.putAllCalls).toBe(0);
     expect(repository.putAllBatchesCalls).toBe(0);
+    expect(repository.putAllRecipesCalls).toBe(0);
     expect(repository.versions).toEqual([]);
     expect(repository.batches).toEqual([]);
   });
@@ -577,6 +686,43 @@ describe('the parent-resolves gate', () => {
   it('validateStoreFile stays pure: it accepts the same unresolvable-parent file with no error, since the gate lives in importStore', () => {
     const child = makeVersion({ id: 'child', parentVersionId: 'unknown-parent', parentVersionLabel: 'line' });
     expect(validateStoreFile(makeStoreFile([child]))).toEqual({ ok: true, errors: [] });
+  });
+});
+
+// D-11: an imported version whose recipeId names no recipe in the file or
+// the store is refused whole — the same "validate then write" shape as
+// the parent-resolves gate above, run after it and before any write.
+describe('the recipe-resolves gate', () => {
+  it('accepts a file whose version names a recipe present in the same file', async () => {
+    const version = makeVersion({ recipeId: 'r1' });
+    const repository = createInMemoryRepository([], [], []);
+    const result = await importStore(repository, makeStoreFile([version], [], [makeRecipe({ id: 'r1' })]));
+    expect(result.ok).toBe(true);
+    expect(repository.versions).toEqual([version]);
+  });
+
+  it('accepts a file whose version names a recipe already in the store', async () => {
+    const version = makeVersion({ recipeId: 'r1' });
+    const repository = createInMemoryRepository([], [], [makeRecipe({ id: 'r1' })]);
+    const result = await importStore(repository, makeStoreFile([version], [], []));
+    expect(result.ok).toBe(true);
+  });
+
+  it('refuses whole a file whose version names a recipe in neither the file nor the store — nothing is written', async () => {
+    const version = makeVersion({ recipeId: 'unknown-recipe' });
+    const repository = createInMemoryRepository([], [], []);
+    const result = await importStore(repository, makeStoreFile([version], [], [makeRecipe({ id: 'r1' })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('recipeId'))).toBe(true);
+    expect(repository.putAllCalls).toBe(0);
+    expect(repository.putAllRecipesCalls).toBe(0);
+    expect(repository.versions).toEqual([]);
+    expect(repository.recipes).toEqual([]);
+  });
+
+  it('validateStoreFile stays pure: it accepts the same unresolvable-recipe file with no error, since the gate lives in importStore', () => {
+    const version = makeVersion({ recipeId: 'unknown-recipe' });
+    expect(validateStoreFile(makeStoreFile([version], [], [makeRecipe({ id: 'r1' })]))).toEqual({ ok: true, errors: [] });
   });
 });
 
@@ -665,15 +811,15 @@ describe('validateVersion, the fields', () => {
   });
 
   it('rejects an authored note with no text field, naming the path', () => {
-    const version = makeVersion({ authored: { carriedForward: [{ inheritedFrom: null }], beforeYouStart: [] } });
+    const version = makeVersion({ authored: { beforeYouStart: [{ inheritedFrom: null }] } });
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('.authored.carriedForward[0].text'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('.authored.beforeYouStart[0].text'))).toBe(true);
   });
 
   it('accepts a well-formed authored note carrying an inheritedFrom string', () => {
     const version = makeVersion({
-      authored: { carriedForward: [{ text: 'note', inheritedFrom: '50 g oil · 800 g' }], beforeYouStart: [] },
+      authored: { beforeYouStart: [{ text: 'note', inheritedFrom: '50 g oil · 800 g' }] },
     });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
@@ -688,9 +834,9 @@ describe('validateVersion, the fields', () => {
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
-  // WR-01 (code review): versionLabel and headnote are read directly by the
-  // UI (the version-line uniqueness check, the headnote's own rendering)
-  // but were never checked here.
+  // WR-01 (code review): versionLabel, sheetTitle and sheetDescription are
+  // read directly by the UI (the version-line uniqueness check, the
+  // Sheet title/description's own rendering) but were never checked here.
   it('rejects a version whose versionLabel is blank, naming the field', () => {
     const version = makeVersion({ versionLabel: '' });
     const result = validateStoreFile(makeStoreFile([version]));
@@ -706,16 +852,41 @@ describe('validateVersion, the fields', () => {
     expect(result.errors.some((error) => error.includes('.versionLabel'))).toBe(true);
   });
 
-  it('rejects a version whose headnote is not a string, naming the field', () => {
-    const version = makeVersion({ headnote: null });
+  it('rejects a version whose sheetTitle is not a string, naming the field', () => {
+    const version = makeVersion({ sheetTitle: null });
     const result = validateStoreFile(makeStoreFile([version]));
     expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('.headnote'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('.sheetTitle'))).toBe(true);
   });
 
-  it('accepts a version whose headnote is a blank string', () => {
-    const version = makeVersion({ headnote: '' });
+  it('accepts a version whose sheetTitle is a blank string', () => {
+    const version = makeVersion({ sheetTitle: '' });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a version whose sheetDescription is not a string, naming the field', () => {
+    const version = makeVersion({ sheetDescription: null });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.sheetDescription'))).toBe(true);
+  });
+
+  it('accepts a version whose sheetDescription is a blank string', () => {
+    const version = makeVersion({ sheetDescription: '' });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a version whose recipeId is missing, naming the field', () => {
+    const version = makeVersion();
+    delete version.recipeId;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('.recipeId'))).toBe(true);
+  });
+
+  it('says nothing about a recipe name — the field left the version (D-11)', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion()]));
+    expect(result.errors.some((error) => error.includes('recipeName'))).toBe(false);
   });
 
   it('rejects a declaredAxes entry naming an axis outside the declared pair, naming the path', () => {
@@ -734,12 +905,12 @@ describe('validateVersion, the fields', () => {
 
   it("rejects a file carrying __proto__ on a method step — the uses array's containing object — via the existing scanner", () => {
     const malicious = JSON.parse(
-      '{"app":"sprinkles","schemaVersion":5,"versions":[{"id":"v1","schemaVersion":4,"recipeName":"x","coefficientSetId":"c",' +
+      '{"app":"sprinkles","schemaVersion":6,"versions":[{"id":"v1","schemaVersion":5,"recipeId":"r1","coefficientSetId":"c",' +
         '"parentVersionId":null,"parentVersionLabel":null,"reason":null,"citedBatchId":null,"createdAt":"2026-01-01T00:00:00.000Z",' +
-        '"declaredAxes":["Body","Oil"],"declaredFlaw":"Bitter",' +
+        '"declaredAxes":["Body","Oil"],"declaredFlaw":"Bitter","versionLabel":"v","sheetTitle":"","sheetDescription":"",' +
         '"rows":[{"id":"r1","ingredientName":"x","portions":[{"step":1,"grams":1}],"ingredient":{"composition":{"fat":1}},"removed":false}],' +
         '"method":[{"n":1,"leadIn":"x","instruction":"x","removed":false,"uses":[],"__proto__":{"polluted":true}}],' +
-        '"authored":{"carriedForward":[],"beforeYouStart":[]}}],"batches":[]}',
+        '"authored":{"beforeYouStart":[]}}],"batches":[],"recipes":[]}',
     );
     const result = validateStoreFile(malicious);
     expect(result.ok).toBe(false);

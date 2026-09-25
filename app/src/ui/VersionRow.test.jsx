@@ -19,7 +19,8 @@ function emptyPenDraft(overrides = {}) {
     versionLabel: '',
     reason: '',
     citedBatchId: null,
-    headnote: oliveOilVersion.headnote,
+    sheetTitle: oliveOilVersion.sheetTitle,
+    sheetDescription: oliveOilVersion.sheetDescription,
     ...overrides,
   };
 }

@@ -228,7 +228,8 @@ describe('createChildVersion', () => {
     citedBatchId: null,
     rows: oliveOilVersion.rows,
     method: oliveOilVersion.method,
-    headnote: oliveOilVersion.headnote,
+    sheetTitle: oliveOilVersion.sheetTitle,
+    sheetDescription: oliveOilVersion.sheetDescription,
     authored: oliveOilVersion.authored,
   };
 
@@ -239,6 +240,21 @@ describe('createChildVersion', () => {
     expect(child.parentVersionLabel).toBe('50 g oil · 800 g');
     expect(child.createdAt).toBe('2026-09-07T10:00:00.000Z');
     expect(child.recipeId).toBe('olive-oil-ice-cream');
+  });
+
+  it('carries no recipeName key — recipe identity lives off the version now (D-11)', () => {
+    const child = createChildVersion(oliveOilVersion, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(child.recipeName).toBeUndefined();
+  });
+
+  it('carries sheetTitle and sheetDescription from penFields', () => {
+    const child = createChildVersion(
+      oliveOilVersion,
+      { ...penFields, sheetTitle: 'New title', sheetDescription: 'New description' },
+      { id: 'v2', now: '2026-09-07T10:00:00.000Z' },
+    );
+    expect(child.sheetTitle).toBe('New title');
+    expect(child.sheetDescription).toBe('New description');
   });
 
   it('does not mutate the parent', () => {
@@ -288,7 +304,8 @@ describe('saveOverVersion', () => {
       citedBatchId: null,
       rows: oliveOilVersion.rows,
       method: oliveOilVersion.method,
-      headnote: 'old headnote',
+      sheetTitle: 'old title',
+      sheetDescription: 'old description',
       authored: oliveOilVersion.authored,
     };
     const penFields = {
@@ -297,7 +314,8 @@ describe('saveOverVersion', () => {
       citedBatchId: 'b-1',
       rows: oliveOilVersion.rows,
       method: oliveOilVersion.method,
-      headnote: 'new headnote',
+      sheetTitle: 'new title',
+      sheetDescription: 'new description',
       authored: oliveOilVersion.authored,
     };
     const updated = saveOverVersion(child, penFields, { now: '2026-09-08T00:00:00.000Z' });
@@ -308,7 +326,8 @@ describe('saveOverVersion', () => {
     expect(updated.versionLabel).toBe('65 g oil · 800 g');
     expect(updated.reason).toBe('raised the oil again');
     expect(updated.citedBatchId).toBe('b-1');
-    expect(updated.headnote).toBe('new headnote');
+    expect(updated.sheetTitle).toBe('new title');
+    expect(updated.sheetDescription).toBe('new description');
   });
 });
 

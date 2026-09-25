@@ -29,8 +29,31 @@ describe('buildDiff — identity', () => {
     expect(diff.figures.every((figure) => !figure.changed)).toBe(true);
     expect(diff.total.changed).toBe(false);
     expect(diff.versionLabelChanged).toBe(false);
-    expect(diff.headnoteChanged).toBe(false);
+    expect(diff.sheetTitleChanged).toBe(false);
+    expect(diff.sheetDescriptionChanged).toBe(false);
     expect(diff.targetsChanged).toBe(false);
+  });
+});
+
+describe('buildDiff — sheetTitleChanged and sheetDescriptionChanged (D-09, D-11)', () => {
+  it('reports each field independently: a changed title with an unchanged description reports true and false', () => {
+    const baseline = clone();
+    const current = clone();
+    current.sheetTitle = 'A new Sheet title';
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.sheetTitleChanged).toBe(true);
+    expect(diff.sheetDescriptionChanged).toBe(false);
+  });
+
+  it('reports a changed description with an unchanged title as false and true', () => {
+    const baseline = clone();
+    const current = clone();
+    current.sheetDescription = 'A new Sheet description';
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.sheetTitleChanged).toBe(false);
+    expect(diff.sheetDescriptionChanged).toBe(true);
   });
 });
 

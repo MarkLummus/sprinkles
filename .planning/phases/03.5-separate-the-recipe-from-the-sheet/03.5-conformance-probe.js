@@ -195,10 +195,25 @@ function readRail() {
   // (a span child of a div, never of an <a>). The state line is the
   // node's own last direct-child span (date, mark-wrapper, name, state
   // — in that order, no class on any of the four).
-  var nodes = document.querySelectorAll('header a');
+  //
+  // Bug fix (03.5-08 Task 2 conformance run): a document-wide `header a`
+  // matches every <a> under ANY <header>, including the shell's OWN top
+  // <header class="shell__head"> (Search/Import/Export), which sits
+  // before the recipe band's own bare <header> in document order — so
+  // nodes[0] was the shell's Search link, not the rail's first node, on
+  // every board reading this probe took. `header h1` (readBand's own
+  // selector, scoped correctly because only the recipe band's header
+  // carries an h1 before the Sheet's own headnote further down) locates
+  // that SAME header; scoping the rail query to it keeps this reader off
+  // the shell's chrome.
+  var recipeHeaderH1 = document.querySelector('header h1');
+  var recipeHeader = recipeHeaderH1 ? recipeHeaderH1.closest('header') : null;
+  var nodes = recipeHeader ? recipeHeader.querySelectorAll('a') : document.querySelectorAll('header a');
   var firstNodeB = nodes.length ? nodes[0] : null;
   var container = firstNodeB ? firstNodeB.parentElement : null;
-  var firstMarkB = document.querySelector('header a span[aria-hidden="true"]');
+  var firstMarkB = recipeHeader
+    ? recipeHeader.querySelector('a span[aria-hidden="true"]')
+    : document.querySelector('header a span[aria-hidden="true"]');
   var stateSpan = null;
   if (firstNodeB) {
     var directSpans = [];
@@ -266,15 +281,25 @@ function readLog() {
   // Board: aria-label="Batch" is drawn on BOTH the <aside> (the column)
   // and the <section> immediately inside it (1600-batch.html lines
   // 906-907) — the column is the OUTER match, so index 0 of the
-  // aria-label query. The head's three openers (Batches (n), Correct,
-  // Record another) are the only <button>s in this subtree while no pen
-  // is open. Cell label/value are the first churn cell's own two spans
-  // (uppercase label, then the value span — 1600-batch.html lines
+  // aria-label query. Cell label/value are the first churn cell's own two
+  // spans (uppercase label, then the value span — 1600-batch.html lines
   // 920-923); the hand note is the first span carrying the Caveat font
   // family inline (the at-the-machine words, 1600-batch.html line 946).
+  //
+  // Bug fix (03.5-08 Task 2 conformance run): this file's own prior
+  // comment claimed the head's three openers were the only <button>s in
+  // the whole aside while no pen is open, but the Tasting fold's own
+  // 'Show'/'Hide' control (below desktop, Task 1) is also a <button> in
+  // this subtree, further down — an unscoped querySelectorAll('button')
+  // picked it up too (measured: 4 texts at 1366/1024/393, the fourth
+  // 'Show', against the app's own .batch-row__head-scoped 3). The head
+  // row is the section's own first child div (1600-batch.html lines
+  // 908-911); scoping there matches the app reader's own head-only scope.
   var asides = document.querySelectorAll('[aria-label="Batch"]');
   var column = asides.length ? asides[0] : null;
-  var buttons = column ? column.querySelectorAll('button') : [];
+  var section = column ? column.querySelector('section[aria-label="Batch"]') : null;
+  var head = section ? section.firstElementChild : null;
+  var buttons = head ? head.querySelectorAll('button') : [];
   var texts = [];
   for (var j = 0; j < buttons.length; j++) texts.push(buttons[j].textContent.trim());
   var firstCell = column ? column.querySelector('div[style*="grid-template-columns:repeat(2"] div') : null;

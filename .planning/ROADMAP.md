@@ -465,11 +465,39 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 0 plans
+**Plans:** 9 plans
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 03.5 to break down)
+**Wave 1**
+
+- [ ] 03.5-01-PLAN.md — The recipe record in the store end to end (recipes store, DB 6, seam, seed, Home names from records); sheetTitle/sheetDescription replace the version's name and headnote; Carried forward removed; export schema 6 refuses older files (D-09, D-10, D-11)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 03.5-02-PLAN.md — Notebook routes and permanent /recipe/… redirects, every in-app link moved, the running head removed with the notice re-anchored, and the Recipe Book principle recorded (D-14…D-18, folded todo)
+- [ ] 03.5-03-PLAN.md — Seed transcription: Mexican Chocolate v1/v3/v4, Pineapple v1, Coconut v1→v2, new library entries, sidecar, and the side-by-side review for Mark; nothing wired (D-01…D-08)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 03.5-04-PLAN.md — Layout C's frame and App band: Recipe name and Rename (D-12), the version column, and the pen's ceremony in the band with the Sheet's own fields in the Sheet
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 03.5-05-PLAN.md — The History rail: dated, versions only, filled/hollow/ring, the draft node only while the pen is open (D-13)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 03.5-06-PLAN.md — The Sheet in Notebook form: table style 6 with the estimated chip and the 393 list; as-made grams and Instructions changes in the hand (D-19 code); one step open with Cancel and Done
+
+**Wave 6** *(blocked on Wave 5)*
+
+- [ ] 03.5-07-PLAN.md — The batch log in App context beside/below the Sheet, the no-batch state, and the record pen's placement (checkpoint: Mark decides — the canvas drew the reading state only)
+
+**Wave 7** *(blocked on Wave 6)*
+
+- [ ] 03.5-08-PLAN.md — Folds below desktop, the side-by-side conformance record against sketch 011 at 1600/1366/1024/393, and the /impeccable document hand-off for the Hand Rule bend (D-19)
+- [ ] 03.5-09-PLAN.md — Mark's D-07 approval gate on the transcription, then the seed wired (DB 7) with coverage invariants (D-01, D-05, D-07)
 
 ### Phase 4: Prepare the next version for making
 

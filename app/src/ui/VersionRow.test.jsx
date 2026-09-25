@@ -178,21 +178,16 @@ describe('VersionRow — the Develop opener, present only with no pen open (D-05
     expect(markup).not.toContain('Add tasting');
   });
 
-  // G-03.3-4: the Record opener moved beside Next version, into this
-  // row's own acts group — reading openBatch the same way BatchRow's own
-  // opener used to.
-  it('renders Record batch beside Next version when the version has no batch', () => {
-    const markup = renderVersionRow({ openPen: null, openBatch: null });
+  // 03.5-07 Task 1: the Record opener moves from here to BatchRow.jsx's
+  // own head, beside Batches and Correct (decisions_recorded 1) — this
+  // row's acts group now holds only Next version and, once a parent
+  // exists, Show changes.
+  it('renders no Record opener of any kind — it lives in BatchRow.jsx now', () => {
+    const markup = renderVersionRow({ openPen: null });
     expect(markup).toContain('Next version');
-    expect(markup).toContain('Record batch');
     expect(markup).not.toContain('Record another');
-  });
-
-  it('renders Record another beside Next version when a batch is in view', () => {
-    const markup = renderVersionRow({ openPen: null, openBatch: augustSecondBatch });
-    expect(markup).toContain('Next version');
-    expect(markup).toContain('Record another');
     expect(markup).not.toContain('Record batch');
+    expect(markup).not.toContain('Record a batch');
   });
 
 });
@@ -486,10 +481,9 @@ describe('VersionRow — the saved metadata transforms into the next-version cer
     expect(markup).toMatch(/<section class="notebook-version" aria-label="Version">/);
   });
 
-  it('renders the acts group (Next version, Record, Show changes) AFTER the dl, matching the sketch\'s own dl-then-acts order', () => {
+  it('renders the acts group (Next version, Show changes) AFTER the dl, matching the sketch\'s own dl-then-acts order', () => {
     const markup = renderVersionRow({
       openPen: null,
-      openBatch: null,
       version: childVersion,
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,

@@ -14,7 +14,6 @@
 
   --sheet-size-running-head: 0.75rem;
   --sheet-size-recipe-name: 2rem;
-  --sheet-size-version-line: 1.125rem;
   --sheet-size-headnote-prose: 1rem;
   --sheet-size-table-body: 0.9375rem;
   --sheet-size-figure-value: 1.25rem;
@@ -262,10 +261,12 @@
      its own line. */
   --sheet-col-batch-cell-min: 96px;
 
-  /* The recipe-history outline's two name columns (REVIEW-04, 260918-a5l):
-     the width at which each name stops shrinking and its row's flex head
-     wraps its right-hand metadata onto its own line. */
-  --sheet-rhist-vname-min: 22rem;
+  /* The batch history register's own name column (REVIEW-04, 260918-a5l):
+     the width at which the name stops shrinking and its row's flex head
+     wraps its right-hand metadata onto its own line. The version-name
+     counterpart (--sheet-rhist-vname-min) retired with the nested version
+     outline the rebuilt RecipeHistory.jsx replaced (03.5-05) —
+     BatchHistoryPanel is this token's only remaining reader. */
   --sheet-rhist-bname-min: 16rem;
 
   /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
@@ -450,4 +451,23 @@
   --app-notebook-checkbox-size: 16px; /* 1600-pen.html: the From batch checkbox's own edge */
   --app-notebook-acts-gap: 10px; /* 1600-batch.html: the version column's own acts row gap (Task 2) */
   --app-notebook-identity-size: 18px; /* 1600-batch.html: the version identity heading's own size (Task 2) */
+
+  /* The History rail (03.5-05 Task 1, 1600-batch.html/1600-long-history.html):
+     values off the same board that have no existing role to reuse. The
+     mark's own colour reuses --app-notebook (the Notebook red already
+     named for this identity), its hollow border reuses --rule-baseline
+     (1.5px, the app's own hairline weight), and the track's height reuses
+     --app-rule-row — nothing here duplicates a value tokens.css already
+     names for the same role. */
+  --app-notebook-history-head-gap: 10px; /* 1600-batch.html: the gap between the caption row and the rail */
+  --app-notebook-history-track-top: 27px; /* 1600-batch.html: the hairline track's own top inset */
+  --app-notebook-history-node-w: 168px; /* 1600-batch.html: a node's own fixed width */
+  --app-notebook-history-node-gap: 24px; /* 1600-batch.html: the gap between nodes */
+  --app-notebook-history-row-label-h: 16px; /* 1600-batch.html: the date and state rows' own height/line-height */
+  --app-notebook-history-row-mark-h: 12px; /* 1600-batch.html: the mark row's own height */
+  --app-notebook-history-row-name-h: 40px; /* 1600-batch.html: the name row's own height, two lines */
+  --app-notebook-history-name-line-h: 20px; /* 1600-batch.html: the name's own single-line height */
+  --app-notebook-history-mark-size: 12px; /* 1600-batch.html: the mark's own diameter */
+  --app-notebook-history-ring-inset: 2px; /* 1600-batch.html: the in-view ring's own inner (App white) inset */
+  --app-notebook-history-ring-w: 3.5px; /* 1600-batch.html: the in-view ring's own outer (Notebook red) width */
 }

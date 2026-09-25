@@ -27,6 +27,7 @@ import { BatchRow } from './BatchRow.jsx';
 import { RecipeBand } from './RecipeBand.jsx';
 import { Headnote } from './Headnote.jsx';
 import { VersionRow } from './VersionRow.jsx';
+import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 
@@ -1860,6 +1861,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
           />
         </div>
+
+        <RecipeHistory
+          versions={versions}
+          recipeId={version.recipeId}
+          currentVersionId={version.id}
+          allBatches={allBatches}
+          openPen={openPen}
+        />
       </header>
 
       <div className="notebook-body">

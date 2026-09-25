@@ -1,5 +1,7 @@
-/* Shared history grammar. Layout variants preserve plan/record type roles;
-   state, rhythm and responsive nesting are the same for both entities. */
+/* Shared history grammar (03.5-05: narrowed to the batch history register
+   alone — BatchHistoryPanel, app/src/ui/BatchRow.jsx — once the recipe
+   History rail replaced the nested version/batch outline that used to
+   share this file). */
 .history-list {
   list-style: none;
   margin: 0;
@@ -20,9 +22,7 @@
   outline-offset: var(--focus-outline-offset);
 }
 
-.history-item.is-current > .history-register__identity > .history-register__name,
-.history-item.is-current > .recipe-history__version-head > .recipe-history__version-name,
-.history-item.is-current > .recipe-history__batch-head > .recipe-history__batch-name {
+.history-item.is-current > .history-register__identity > .history-register__name {
   font-weight: 700;
 }
 
@@ -30,21 +30,11 @@
   color: inherit;
 }
 
-.history-register__identity,
-.recipe-history__version {
+.history-register__identity {
   min-width: 0;
 }
 
-.recipe-history__version-head,
-.recipe-history__batch-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--gap-xs) var(--gap-m);
-}
-
-.history-register__name,
-.recipe-history__batch-name {
+.history-register__name {
   flex: 1 1 var(--sheet-rhist-bname-min);
   min-width: 0;
   margin: 0;
@@ -53,20 +43,8 @@
   overflow-wrap: anywhere;
 }
 
-.recipe-history__version-name {
-  flex: 1 1 var(--sheet-rhist-vname-min);
-  min-width: 0;
-  margin: 0;
-  font-family: var(--face-text);
-  font-size: var(--sheet-size-version-line);
-  font-weight: 400;
-  overflow-wrap: anywhere;
-}
-
 .history-register__marker,
-.history-provenance,
-.recipe-history__empty,
-.recipe-history__outcome:not(.prose-text) {
+.history-provenance {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-small-print);
   font-weight: 400;
@@ -76,102 +54,4 @@
   margin: 0;
   overflow-wrap: anywhere;
   font-variant-numeric: tabular-nums;
-}
-
-.recipe-history {
-  max-width: var(--measure-prose);
-}
-
-.recipe-history__written,
-.recipe-history__batch-state {
-  margin-inline-start: auto;
-}
-
-.recipe-history__cause {
-  margin-top: var(--gap-xs);
-}
-
-.recipe-history__reason {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  gap: var(--gap-xs) var(--gap-m);
-  margin-top: var(--gap-s);
-}
-
-.recipe-history__reason p {
-  margin: 0;
-}
-
-.recipe-history__reason .prose-text {
-  font-size: var(--sheet-type-note);
-}
-
-.history-list--records {
-  margin-top: var(--gap-s);
-  margin-inline-start: var(--gap-l);
-  margin-inline-end: var(--gap-xs);
-}
-
-.history-list--records > .history-item {
-  border-top: var(--rule-graduation) solid var(--sheet-bookcloth);
-}
-
-.history-list--branches {
-  margin-inline-start: var(--gap-l);
-  padding-inline-start: var(--gap-m);
-  border-inline-start: var(--rule-graduation) solid var(--sheet-bookcloth);
-}
-
-.recipe-history__outcome,
-.recipe-history__next {
-  margin-block: var(--gap-hair) 0;
-  margin-inline: var(--gap-l) 0;
-  overflow-wrap: anywhere;
-}
-
-/* The recorded tasting note shares the register's prose role with Why and
-   Next time (route-recipe-version.md "History type roles", revised
-   2026-09-18); .prose-text already supplies the face, leading and colour. */
-.recipe-history__outcome.prose-text {
-  font-size: var(--sheet-type-note);
-}
-
-.recipe-history__next {
-  font-family: var(--face-text);
-  font-size: var(--sheet-type-note);
-  line-height: var(--sheet-leading-note);
-  color: var(--sheet-pen-blue);
-}
-
-.recipe-history__next span {
-  font-family: var(--face-grotesk);
-  font-size: var(--sheet-size-small-print);
-  font-weight: 500;
-  color: var(--sheet-ink);
-}
-
-.recipe-history__empty {
-  margin-block: var(--gap-s) 0;
-  margin-inline: var(--gap-l) 0;
-}
-
-@media (max-width: 759.98px) {
-  .history-list--records {
-    margin-inline-start: var(--gap-m);
-  }
-
-  .history-list--branches {
-    margin-inline-start: var(--gap-s);
-    padding-inline-start: var(--gap-s);
-  }
-
-  .recipe-history__reason {
-    grid-template-columns: 1fr;
-  }
-
-  .recipe-history__outcome,
-  .recipe-history__next,
-  .recipe-history__empty {
-    margin-inline-start: var(--gap-s);
-  }
 }

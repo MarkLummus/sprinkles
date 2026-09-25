@@ -1,9 +1,7 @@
-import { HistoryDisclosure, HistoryPanel } from './History.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { recordDateWords } from '../domain/batch.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
-import { RecipeHistory } from './RecipeHistory.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 
@@ -104,10 +102,6 @@ export function VersionRow({
     if (versionLineBlockedAttempt != null) versionLineFieldRef.current?.focus();
   }, [versionLineBlockedAttempt]);
 
-  // The recipe-level History disclosure is closed by default. One complete
-  // version set feeds both its count and the parent-child outline, so the
-  // label and revealed content cannot diverge.
-  const [historyOpen, setHistoryOpen] = useState(false);
   const recipeVersions = versionsForRecipe(versions, version.recipeId);
   // The identity heading's inputs (route-recipe.md § 6 "One version
   // identity, wherever a version is named", 2026-09-18): the same ordered
@@ -330,27 +324,6 @@ export function VersionRow({
           )}
         </dl>
 
-        {/* The history control (route-recipe.md § 6 "History is the
-            development outline"): names what it discloses, not how many —
-            versions are the outline's primary nodes and their batches are
-            nested evidence beneath them, so a version-only tally would
-            name less than the disclosure actually holds. The struck
-            "Later" lineage label had no replacement word and inventing
-            one is forbidden. Its own line, below the dl and above the
-            acts group, rather than inside the dl or the acts group, so it
-            stays available while the batch pen is open (D-UAT-2). */}
-        {recipeVersions.length > 0 && (
-          <p className="version-row__history">
-            <HistoryDisclosure
-              open={historyOpen}
-              panelId="version-row-history"
-              onToggle={() => setHistoryOpen((open) => !open)}
-            >
-              History
-            </HistoryDisclosure>
-          </p>
-        )}
-
         {/* The acts group (sketch 003 variant B, index.html:215, 479;
             restyled as App front matter, Task 2): Next version, then
             Record another/Record batch, then Show changes (once a parent
@@ -382,17 +355,6 @@ export function VersionRow({
         )}
         </section>
       )}
-
-      <HistoryPanel open={historyOpen} id="version-row-history" className="recipe-band__full-row" title="History">
-          <RecipeHistory
-            versions={recipeVersions}
-            recipeId={version.recipeId}
-            currentVersionId={version.id}
-            currentBatchId={openBatch?.id ?? null}
-            allBatches={allBatches}
-            openPen={openPen}
-          />
-      </HistoryPanel>
     </>
   );
 }

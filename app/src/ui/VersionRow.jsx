@@ -4,6 +4,7 @@ import { recordDateWords } from '../domain/batch.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { notebookPath } from './notebookPaths.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
+import { HistoryDisclosure } from './History.jsx';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
@@ -40,7 +41,15 @@ export function VersionRow({
   // sentence, read by FieldFeedback.
   versionLineBlockedAttempt = null,
   versionLineError = null,
+  // The Details fold (03.5-08 Task 1, settled decision 6): below desktop
+  // the version's own Written/From/Why details close by default behind a
+  // "Details" control; at desktop (foldable false, the default) nothing
+  // here changes.
+  foldable = false,
 }) {
+  // Local, never stored (settled decision 6): starts closed on every
+  // mount, so every visit to the route below desktop reopens closed.
+  const [detailsOpen, setDetailsOpen] = useState(false);
   // Focus-return for the Develop opener: closing the plan's pen returns
   // focus to the control that opened it. Must sit above the conditional
   // render below — hooks cannot be called conditionally.
@@ -259,7 +268,16 @@ export function VersionRow({
             used to close this dl (the struck Later dt/dd); it now sits on
             its own line below the dl (260917-odu) — see
             version-row__history just after </dl>. */}
-        <dl className="notebook-version__details">
+        {foldable && (
+          <HistoryDisclosure open={detailsOpen} onToggle={() => setDetailsOpen((open) => !open)} panelId="fold-version">
+            Details
+          </HistoryDisclosure>
+        )}
+        <dl
+          className="notebook-version__details"
+          id={foldable ? 'fold-version' : undefined}
+          hidden={foldable ? !detailsOpen : undefined}
+        >
           <dt className="versions__lineage-label">Written</dt>
           <dd className="versions__lineage version-row__written">{recordDateWords(version.createdAt)}</dd>
           {version.parentVersionId && (

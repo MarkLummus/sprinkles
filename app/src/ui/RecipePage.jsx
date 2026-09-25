@@ -32,6 +32,8 @@ import { VersionRow } from './VersionRow.jsx';
 import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
+import { HistoryDisclosure } from './History.jsx';
+import { useBelowDesktop } from './useBelowDesktop.js';
 
 // The record pen's blocked-date sentence (D-05) — one constant, read from
 // both handleSaveBatch (via validateRecordDraft) and the ceremony's own
@@ -894,6 +896,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [mode, amendingBatchId, penDraft, version, draft, amendBaseline]);
+
+  // The below-desktop folds (03.5-08 Task 1, settled decision 6): one
+  // media read, passed down as `foldable` to VersionRow, the Balance
+  // region and BatchRow. balanceOpen is this region's own fold state —
+  // local, never stored, starting closed on every visit. Both hooks must
+  // sit above the early returns below.
+  const belowDesktop = useBelowDesktop();
+  const [balanceOpen, setBalanceOpen] = useState(false);
 
   if (version === undefined) return null;
   // The running head — the way home in every state, including this one
@@ -1898,6 +1908,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             focusVersionOnMount={focusVersionOnMount}
             versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
+            foldable={belowDesktop}
           />
         </div>
 
@@ -1988,18 +1999,52 @@ export function RecipePage({ onPageStatus = () => {} }) {
                 note beside the table, then the margin beneath it. One
                 flow, so the method's height never separates the two. */}
             <div className="side-region">
+              {/* The Balance fold (03.5-08 Task 1, settled decision 6): the
+                  region renders the "Balance" h2 itself at every width
+                  (decisions_recorded 3), so its place never depends on
+                  whether the fold exists. Below desktop, one control opens
+                  both fold-balance and fold-check (the toggle's own
+                  aria-controls); at desktop there is no toggle, no ids and
+                  no hidden. */}
               <section className="formulation-note-region" aria-label="Balance">
-                <FormulationNote
-                  version={liveVersion}
-                  mode={mode}
-                  diff={mode === 'developing' ? penDiff : changeDiff}
-                  onFocusFigure={setFocusedFigureKey}
-                  onBlurFigure={() => setFocusedFigureKey(null)}
-                />
-                <BasisNote version={liveVersion} />
+                <h2 className="region-name">Balance</h2>
+                {belowDesktop && (
+                  <HistoryDisclosure
+                    open={balanceOpen}
+                    onToggle={() => setBalanceOpen((open) => !open)}
+                    panelId="fold-balance fold-check"
+                  >
+                    {balanceOpen ? 'Hide balance and things to check' : 'Show balance and things to check'}
+                  </HistoryDisclosure>
+                )}
+                {belowDesktop ? (
+                  <div id="fold-balance" hidden={!balanceOpen}>
+                    <FormulationNote
+                      version={liveVersion}
+                      mode={mode}
+                      diff={mode === 'developing' ? penDiff : changeDiff}
+                      onFocusFigure={setFocusedFigureKey}
+                      onBlurFigure={() => setFocusedFigureKey(null)}
+                      showHeading={false}
+                    />
+                    <BasisNote version={liveVersion} />
+                  </div>
+                ) : (
+                  <>
+                    <FormulationNote
+                      version={liveVersion}
+                      mode={mode}
+                      diff={mode === 'developing' ? penDiff : changeDiff}
+                      onFocusFigure={setFocusedFigureKey}
+                      onBlurFigure={() => setFocusedFigureKey(null)}
+                      showHeading={false}
+                    />
+                    <BasisNote version={liveVersion} />
+                  </>
+                )}
               </section>
 
-              <div className="margin-region">
+              <div className="margin-region" id={belowDesktop ? 'fold-check' : undefined} hidden={belowDesktop ? !balanceOpen : undefined}>
                 <DerivedAdvisories version={liveVersion} />
               </div>
             </div>
@@ -2054,6 +2099,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onCancelRecording={handleCancelRecording}
             onSaveBatch={handleSaveBatch}
             onStartRecording={handleStartRecording}
+            foldable={belowDesktop}
           />
         </aside>
       </div>

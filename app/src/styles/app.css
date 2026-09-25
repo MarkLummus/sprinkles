@@ -1233,6 +1233,15 @@ textarea {
   margin-top: var(--gap-m);
 }
 
+/* The Balance fold's own toggle (03.5-08 Task 1, settled decision 6;
+   1366-batch.html): "Show balance and things to check" sits between the
+   region's own h2 and its folded content, with the board's own 8px
+   bottom margin. Absent at desktop — nothing renders here then. */
+.formulation-note-region > .history-disclosure {
+  display: block;
+  margin: 0 0 var(--sheet-balance-fold-gap-b);
+}
+
 .formulation-note__fat-breakdown {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-small-print);

@@ -510,4 +510,9 @@
   --sheet-done-cancel-gap: 16px; /* the Done/Cancel paragraph's own gap */
   --sheet-open-fields-offset: 4px; /* the open step's field block's own outline-offset */
   --sheet-changed-line-gap-t: 4px; /* .method-step__changed's own top margin (corrects the previous --gap-xs reuse, which read 6px against the board's 4px) */
+
+  /* The Balance fold's own toggle (03.5-08 Task 1, settled decision 6;
+     1366-batch.html): "Show balance and things to check" sits between
+     the region's own h2 and its folded content. */
+  --sheet-balance-fold-gap-b: 8px; /* the toggle's own bottom margin */
 }

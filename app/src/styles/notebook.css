@@ -290,6 +290,18 @@
   color: var(--app-text);
 }
 
+/* The Details fold's own control (03.5-08 Task 1, settled decision 6;
+   1366-batch.html): the same underlined-link treatment the log's own
+   openers already take (.notebook-log .text-control), read here for the
+   version column's own text-control instead. Absent at desktop —
+   nothing renders here then. */
+.notebook-version .text-control {
+  color: var(--app-blue-text);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+}
+
 .notebook-version__details {
   margin: 0;
   display: grid;

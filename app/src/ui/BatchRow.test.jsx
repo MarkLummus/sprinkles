@@ -1318,7 +1318,7 @@ describe('BatchHistoryPanel — the revealed Batches register', () => {
       batches: [augustSecondBatch, newerBatch],
       openBatch: augustSecondBatch,
     });
-    expect(markup).toContain('href="/recipe/olive-oil-ice-cream-v1/batch/newer-batch"');
+    expect(markup).toContain('href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/newer-batch"');
     expect(markup.match(/<a /g)).toHaveLength(1);
   });
 

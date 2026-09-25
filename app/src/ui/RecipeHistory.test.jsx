@@ -119,7 +119,7 @@ describe('RecipeHistory', () => {
     expect(markup).toContain('Silky, but the oil lingers.');
     expect(markup).toContain('<span>Next time</span> Use less olive oil.');
     expect(markup).toContain('Reduce the oily finish.');
-    expect(markup).toContain('From batch · <a tabindex="0" href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('From batch · <a tabindex="0" href="/notebook/recipe-1/v1/batch/b1"');
     expect(markup).toContain('aria-label="Versions made from Version 1 · Original plan"');
     expect(markup).toContain('Not yet churned');
   });
@@ -133,9 +133,9 @@ describe('RecipeHistory', () => {
       allBatches: [currentBatch],
     });
 
-    expect(markup).toContain('href="/recipe/v1"');
-    expect(markup).not.toContain('href="/recipe/v2"');
-    expect(markup).not.toContain('href="/recipe/v2/batch/b2"');
+    expect(markup).toContain('href="/notebook/recipe-1/v1"');
+    expect(markup).not.toContain('href="/notebook/recipe-1/v2"');
+    expect(markup).not.toContain('href="/notebook/recipe-1/v2/batch/b2"');
     expect(markup).toContain('Version 2 · Less oil<span class="history-register__marker"> · In view · Latest</span>');
     expect(markup).toContain('Batch · 4 Feb 2026<span class="history-register__marker"> · In view</span>');
   });
@@ -143,7 +143,7 @@ describe('RecipeHistory', () => {
   it('links another batch directly and states absence once, in the provenance line alone', () => {
     const batch = makeBatch({ id: 'b1', versionId: 'v1' });
     const markup = renderHistory({ versions: [root], currentVersionId: 'v1', allBatches: [batch] });
-    expect(markup).toContain('href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('href="/notebook/recipe-1/v1/batch/b1"');
     expect(markup).toContain('Not yet tasted');
     expect(markup).not.toContain('recipe-history__outcome');
   });
@@ -214,7 +214,7 @@ describe('RecipeHistory', () => {
 
     expect((markup.match(/written date unknown/g) ?? []).length).toBe(2);
     expect(markup).toContain('Batch · date unknown');
-    expect(markup).toContain('From batch · <a tabindex="0" href="/recipe/v1/batch/b1"');
+    expect(markup).toContain('From batch · <a tabindex="0" href="/notebook/recipe-1/v1/batch/b1"');
     expect(markup).toContain('recipe-history__batch-state">Tasted date unknown');
     expect(markup).not.toContain('>Why<');
   });

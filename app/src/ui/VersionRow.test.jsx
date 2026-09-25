@@ -515,7 +515,7 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
       batches: [],
       canSaveOver: true,
     });
-    expect(markup).not.toMatch(/<a[^>]*href="\/recipe\/olive-oil-ice-cream-v1"/);
+    expect(markup).not.toMatch(/<a[^>]*href="\/notebook\/olive-oil-ice-cream\/olive-oil-ice-cream-v1"/);
   });
 });
 
@@ -628,5 +628,18 @@ describe('VersionRow — every link carries an explicit tabindex (G-03.4-r4-1)',
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }
+  });
+
+  // 03.5-02 Task 2 (D-17): both lineage links move to the Notebook form,
+  // built with the child's own recipeId.
+  it('builds the From version and From batch hrefs with notebookPath (D-17)', () => {
+    const markup = renderVersionRow({
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+    });
+    expect(markup).toContain('href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1"');
+    expect(markup).toContain(`href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/${augustSecondBatch.id}"`);
   });
 });

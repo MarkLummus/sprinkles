@@ -1,6 +1,8 @@
 // Pure path builders for the Notebook route form (03.5-CONTEXT.md D-14 to
 // D-17). No React, no store — see notebookPaths.js's own header comment.
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { notebookPath, legacyRecipePath, latestVersionPath } from './notebookPaths.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
@@ -57,5 +59,21 @@ describe('latestVersionPath — the /notebook/:recipeId landing target (D-14)', 
 
   it('returns null when the recipeId has no versions', () => {
     expect(latestVersionPath([], 'nothing-here')).toBeNull();
+  });
+});
+
+// D-14 (03.5-02 Task 2): router.jsx cannot be rendered in the node harness
+// (createBrowserRouter needs `document`) — pinned on source text, the same
+// idiom RecipePage.test.jsx's own router-source describe uses.
+describe('router.jsx routes /notebook/:recipeId to NotebookLatestRedirect (03.5-02 D-14)', () => {
+  const routerPath = fileURLToPath(new URL('../router.jsx', import.meta.url));
+  const routerSource = readFileSync(routerPath, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it("routes '/notebook/:recipeId' to NotebookLatestRedirect", () => {
+    expect(routerSource).toMatch(
+      /\{\s*path:\s*'\/notebook\/:recipeId',\s*Component:\s*NotebookLatestRedirect\s*\}/,
+    );
   });
 });

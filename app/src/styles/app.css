@@ -9,8 +9,10 @@
    descendant's background, .shell's included, can never reach the canvas
    at any size, because the canvas is unbounded and no descendant box
    propagates to it. So the App's white is declared here, on body itself,
-   and the three paper frames (.recipe-page, .page-head, .not-found) hand
-   the canvas back to the Sheet's cream via the :has() rule below — which
+   and the two paper frames (.recipe-page, .not-found) hand the canvas
+   back to the Sheet's cream via the :has() rule below (the running head
+   is gone — folded todo, 03.5-02 Task 3 — and its own trigger goes with
+   it) — which
    was measured (debug session variants C/D) to re-propagate when a paper
    frame mounts after first paint, so a client-side route change into or
    out of a Sheet frame moves the canvas with no JS and no route class on
@@ -28,7 +30,7 @@ body {
   font-size: var(--sheet-size-table-body);
 }
 
-body:has(.recipe-page, .page-head, .not-found) {
+body:has(.recipe-page, .not-found) {
   background: var(--sheet-ground);
 }
 
@@ -307,31 +309,27 @@ textarea {
   resize: none;
 }
 
-/* Out of flow (260917-ewf): DESIGN.md's "nothing moves" holds, so the
-   notice overlays the top of the page instead of reflowing it, and no
-   blank line is reserved for it in either state. Both anchors read off
-   .page-head: inset-block-start: 100% is that band's own bottom edge
-   (the running head's, since the band holds nothing else), and this
-   box's own left inset reads the same shared gutter, --gap-page, that
-   .running-head reads for its own left padding, so head and notice
-   share one left edge (260917-gjo) — at every width, since both read
-   the one property that steps together. The viewport arm of max-width
-   was corrected (Mark, in session) from calc(100vw - 2 *
-   var(--gap-m)) to calc(100vw - var(--gap-page) - var(--gap-m)): the old
-   arm was written for a box inset --gap-m from the RIGHT, and is
-   geometrically stale for a box now inset var(--gap-page) from the LEFT —
-   the new arm is that same left inset plus one --gap-m of breathing
-   room on the right, tokens only. margin-block-start: var(--gap-xs)
-   (measured in Chrome at 1024px: the running head's underline box
-   bottom sits at y=34, the notice's top border at y=35 — a 1px
-   collision between two unrelated ink rules) opens air between the
-   head and the notice without reflowing anything: a margin on an
-   absolutely positioned box offsets only that box, never the head or
-   the page beneath it. */
+/* Out of flow (260917-ewf; re-anchored 03.5-02 Task 3, folded todo):
+   DESIGN.md's "nothing moves" holds, so the notice overlays the top of
+   the page instead of reflowing it, and no blank line is reserved for it
+   in either state. The running head is gone — this box now anchors to
+   .page-status-anchor, a zero-height containing block sitting where the
+   head used to, above the keyed page (router.jsx). inset-block-start: 0
+   puts the notice flush with the anchor's own top edge instead of a
+   band's bottom edge, and this box's own left inset still reads the
+   shared gutter, --gap-page — the same property .page-status-anchor's
+   sibling, the keyed page, reads for its own left edge, so notice and
+   page still share one left edge (260917-gjo) at every width. The
+   viewport arm of max-width was corrected (Mark, in session) from
+   calc(100vw - 2 * var(--gap-m)) to calc(100vw - var(--gap-page) -
+   var(--gap-m)): the old arm was written for a box inset --gap-m from
+   the RIGHT, and is geometrically stale for a box now inset
+   var(--gap-page) from the LEFT — the new arm is that same left inset
+   plus one --gap-m of breathing room on the right, tokens only. */
 .page-status {
   position: absolute;
   z-index: 10;
-  inset-block-start: 100%;
+  inset-block-start: 0;
   inset-inline-start: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
   margin: 0;
@@ -371,42 +369,20 @@ textarea {
   opacity: 1;
 }
 
-/* The head band (260917-ewf): the containing block for .page-status,
-   holding the running head and the notice and nothing else, so its
-   height is exactly the head's own height. That is what lets the
-   notice's inset-block-start: 100% land on the head's bottom edge
-   instead of a literal offset. No z-index here — one would make this a
-   stacking context and trap the notice inside it.
-
-   Own paper (gap 3, route.md § 1): now that the shell paints the App's
-   ground for every route it wraps (shell.css), the three Sheet-frame
-   surfaces — this one, .recipe-page and .not-found — each declare
-   --sheet-ground explicitly, so the paper world keeps its own colour
-   instead of inheriting the App's white through the shell. */
-.page-head {
+/* The notice's own anchor (03.5-02 Task 3, folded todo): the running
+   head is gone, so this is all that remains of its containing block — a
+   zero-height box sitting where the head used to, above the keyed page
+   and outside it (router.jsx), so .page-status's inset-block-start: 0
+   has something to sit flush against. No height, no padding and no
+   background of its own: it holds nothing visible, only the notice,
+   positioned absolutely within it. */
+.page-status-anchor {
   position: relative;
-  background: var(--sheet-ground);
 }
 
-/* The running head (route-recipe-version.md § 4, § 6): the way home on
-   the recipe page, in ink — never bookcloth, which identifies a block by
-   its plain-language name, not a link. */
-.running-head {
-  font-family: var(--face-grotesk);
-  font-size: var(--sheet-size-running-head);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin: 0;
-  padding: var(--gap-m) var(--gap-page) 0;
-}
-
-.running-head a {
-  color: inherit;
-}
-
-/* The real "no recipe found" state (route-recipe-version.md § 4): the
-   running head above it, and a second link back to the list, so a
-   mistyped or since-removed version id is no longer a dead end. */
+/* The real "no recipe found" state (route-recipe-version.md § 4): a link
+   back to the list, so a mistyped or since-removed version id is no
+   longer a dead end. */
 .not-found {
   padding: var(--gap-m) var(--gap-page);
   background: var(--sheet-ground);
@@ -2508,13 +2484,14 @@ textarea {
    fields keep their own .batch-margin__field, label-above-input shape,
    untouched by this rule. */
 @media (max-width: 600px) {
-  /* The one place the page's phone gutter is stated (260917-gjo): four
-     boxes step together below 600px because they all read one name,
-     --gap-page (tokens.css) — the page itself, the running head, the
-     "no recipe found" page, and the notice. The literal 600 stays here,
-     in app.css's own prelude, where the touch block above already put
-     it; it is deliberately not in tokens.css (see that file's comment
-     on --gap-page for why). No other declaration belongs in this rule. */
+  /* The one place the page's phone gutter is stated (260917-gjo; the
+     running head retired 03.5-02 Task 3): three boxes step together
+     below 600px because they all read one name, --gap-page (tokens.css)
+     — the page itself, the "no recipe found" page, and the notice. The
+     literal 600 stays here, in app.css's own prelude, where the touch
+     block above already put it; it is deliberately not in tokens.css
+     (see that file's comment on --gap-page for why). No other
+     declaration belongs in this rule. */
   :root {
     --gap-page: var(--gap-m);
   }

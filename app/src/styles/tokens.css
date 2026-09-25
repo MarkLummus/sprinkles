@@ -50,11 +50,11 @@
   --gap-l: 32px;
   --gap-xl: 48px;
   /* The page shell's one inline edge (260917-gjo; the list route's page
-     body added 260917-h83): the left edge shared by the page itself
-     (.recipe-page), the running head above it (.running-head), the "no
-     recipe found" page in that same position (.not-found), the notice
-     that anchors to the head (.page-status), and the list route's page
-     body (.list-page) — five boxes, one gutter, so a future edit cannot
+     body added 260917-h83; the running head retired 03.5-02 Task 3): the
+     left edge shared by the page itself (.recipe-page), the "no recipe
+     found" page in that same position (.not-found), the notice that
+     anchors above the page (.page-status), and the list route's page
+     body (.list-page) — four boxes, one gutter, so a future edit cannot
      move one of them without the others. Reads --gap-xl at desktop. The
      step to --gap-m below 600px is declared once, on :root inside app.css's existing
      600px media block — not here — for two reasons: this file's own

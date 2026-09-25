@@ -11,8 +11,9 @@
 
    The shell owns the App ground for every route it wraps (gap 3, route.md
    § 1): .shell paints --app-background once, here, rather than each route
-   painting it for itself. The three Sheet frames (app.css's .recipe-page,
-   .page-head and .not-found) paint their own paper over it.
+   painting it for itself. The two Sheet frames (app.css's .recipe-page
+   and .not-found) paint their own paper over it — the running head that
+   used to be a third is retired (03.5-02 Task 3, folded todo).
 
    Every colour, size, spacing and rule weight below reads a custom
    property from tokens.css — none is a literal here. */
@@ -131,9 +132,9 @@
 /* The routed page. No transform, filter, perspective, will-change or
    contain here or on .shell/.shell__body (shell.test.js): any of those
    would make this element a new containing block, and the recipe route's
-   .page-status anchors to .page-head (app.css) by position alone — it
-   must keep finding that ancestor, not this one, once nested a level
-   deeper under the shell. */
+   .page-status anchors to .page-status-anchor (app.css) by position
+   alone — it must keep finding that ancestor, not this one, once nested
+   a level deeper under the shell. */
 .shell__main {
   flex: 1 1 auto;
   min-width: 0;

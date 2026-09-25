@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createBrowserRouter, Link, useParams } from 'react-router';
+import { createBrowserRouter, useParams } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
@@ -55,15 +55,13 @@ function RecipePageForRoute() {
 
   return (
     <>
-      {/* The running head lives here, in the routed shell, above the
-          keyed page, so the notice has a fixed band to anchor beneath
-          instead of a magic offset. RecipePage stays a sibling AFTER
-          this div, never inside it, so the band's height stays exactly
-          the head's height. */}
-      <div className="page-head">
-        <p className="running-head">
-          <Link to="/" tabIndex={0}>Sprinkles</Link>
-        </p>
+      {/* The running head is gone (folded todo, 03.5-02 Task 3) — the App
+          shell's own rail and wordmark are the way home now. This anchor
+          is what remains of the band: a zero-height containing block for
+          .page-status, positioned outside the keyed RecipePage so the
+          notice survives the navigation a save causes. RecipePage stays a
+          sibling AFTER this div, never inside it. */}
+      <div className="page-status-anchor">
         <PageStatus message={pageStatus} />
       </div>
       <RecipePage key={`${recipeId}::${versionId}::${batchId ?? ''}`} onPageStatus={announcePageStatus} />

@@ -695,10 +695,6 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
     expect(ruleFor('.method-step__uses-line').declarations).toMatch(/font-size:\s*var\(--sheet-size-cross-flag\)/);
   });
 
-  test('.running-head keeps its wayfinding register', () => {
-    expect(ruleFor('.running-head').declarations).toMatch(/font-size:\s*var\(--sheet-size-running-head\)/);
-  });
-
   test("the batch row's measured-cell small print keeps its ratified registers, and the shared history-register provenance rule keeps its own", () => {
     expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
     expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--sheet-size-deviation-words\)/);
@@ -706,7 +702,7 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
   });
 });
 
-describe('the page notice anchors beneath the running head, out of flow (260917-ewf)', () => {
+describe('the page notice anchors above the keyed page, out of flow (260917-ewf; re-anchored 03.5-02 Task 3)', () => {
   test('.page-status is absolutely positioned, with no fixed-corner declarations left', () => {
     const rule = ruleFor('.page-status');
     expect(rule, 'expected a top-level .page-status rule').toBeTruthy();
@@ -716,16 +712,15 @@ describe('the page notice anchors beneath the running head, out of flow (260917-
     expect(rule.declarations).not.toMatch(/inset-inline-end/);
   });
 
-  test('.page-head is the containing block (position: relative), and .page-status anchors to its bottom edge', () => {
-    const pageHeadRule = ruleFor('.page-head');
-    expect(pageHeadRule, 'expected a top-level .page-head rule').toBeTruthy();
-    expect(pageHeadRule.declarations).toMatch(/position:\s*relative/);
-    expect(ruleFor('.page-status').declarations).toMatch(/inset-block-start:\s*100%/);
+  test('.page-status-anchor is the containing block (position: relative), and .page-status anchors flush to its own top edge', () => {
+    const anchorRule = ruleFor('.page-status-anchor');
+    expect(anchorRule, 'expected a top-level .page-status-anchor rule').toBeTruthy();
+    expect(anchorRule.declarations).toMatch(/position:\s*relative/);
+    expect(ruleFor('.page-status').declarations).toMatch(/inset-block-start:\s*0/);
   });
 
-  test('five boxes, one gutter — the notice, the running head, the page, the "no recipe found" page, and the list route\'s page body all read the shared --gap-page, so none can drift alone (260917-gjo; the fifth box added 260917-h83)', () => {
+  test('four boxes, one gutter — the notice, the page, the "no recipe found" page, and the list route\'s page body all read the shared --gap-page, so none can drift alone (260917-gjo; the fifth box, the running head, retired 03.5-02 Task 3)', () => {
     expect(ruleFor('.page-status').declarations).toMatch(/inset-inline-start:\s*var\(--gap-page\)/);
-    expect(ruleFor('.running-head').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)\s+0/);
     expect(ruleFor('.not-found').declarations).toMatch(/padding:\s*var\(--gap-m\)\s+var\(--gap-page\)/);
     expect(ruleFor('.recipe-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
     expect(ruleFor('.list-page').declarations).toMatch(/padding:\s*var\(--gap-page\)/);
@@ -810,7 +805,7 @@ describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepp
   });
 
   test('no media-scoped rule re-states an inline gutter for any of the five boxes — the step is declared once, on :root alone', () => {
-    const guardedSelectors = ['.recipe-page', '.running-head', '.not-found', '.page-status', '.list-page'];
+    const guardedSelectors = ['.recipe-page', '.not-found', '.page-status', '.list-page'];
     const offenders = rules.filter(
       (r) =>
         r.media !== undefined &&

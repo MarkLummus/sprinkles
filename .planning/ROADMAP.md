@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 6/9 plans executed
+**Plans:** 7/9 plans executed
 
 Plans:
 
@@ -492,7 +492,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5)*
 
-- [ ] 03.5-07-PLAN.md — The batch log in App context beside/below the Sheet, the no-batch state, and the record pen's placement (checkpoint: Mark decides — the canvas drew the reading state only)
+- [x] 03.5-07-PLAN.md — The batch log in App context beside/below the Sheet, the no-batch state, and the record pen's placement (checkpoint: Mark decides — the canvas drew the reading state only)
 
 **Wave 7** *(blocked on Wave 6)*
 

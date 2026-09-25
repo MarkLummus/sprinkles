@@ -349,12 +349,11 @@ export const mexicanChocolateV3 = {
   // 03.5-SEED-REVIEW.md). v3's own rows/process/iceEd/method are untouched.
   parentVersionId: MEXICAN_CHOCOLATE_V2_ID,
   parentVersionLabel: 'v2',
-  // The v1 to-fix list is the closest source for "why this version" even
-  // though the executed numbers differ slightly (dextrose 45 g not 55 g;
-  // allulose 36.8 g not +30 g) — judgement call 11. Left exactly as written
-  // pending Mark (open question 8, review amendment to judgement call 14):
-  // the list now reads as the step from v1 to v2, not v2 to v3.
-  reason: 'Lower stabilizer to 2.5 g/kg; increase fat to 8% minimum, 9–11% optimal; dextrose 86 g → 55 g; allulose +30 g.',
+  // Mark 2026-09-25 (open question 8): v1's to-fix list is cleared — it
+  // describes the step from v1 to v2 — and replaced with a plain account of
+  // the step from v2 to v3, computed from the two versions' seeded rows. It
+  // is inferred from the numbers; no source states why v3 was made.
+  reason: 'Milk 427 g → 500 g; cream 140 g → 77.4 g; cocoa 30 g → 16.1 g; dextrose 35 g → 45 g; allulose 50 g → 36.8 g; every other row trimmed by about a tenth.',
   // Forced null, not chosen: the app keeps a cited batch on the parent
   // version (RecipePage.jsx's cited-batch comment; VersionRow.jsx routes
   // the From batch link through parentVersionId) and v2 has no batch.

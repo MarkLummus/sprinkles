@@ -176,6 +176,26 @@ describe('Mexican Chocolate lineage (v1 -> v2 -> v3 -> v4)', () => {
   });
 });
 
+describe('mexicanChocolateV3 reason (open question 8, Mark 2026-09-25)', () => {
+  const grams = (version, name) =>
+    version.rows.find((row) => row.ingredientName === name).portions.reduce((sum, p) => sum + p.grams, 0);
+
+  it('describes the step from v2, not v1\'s to-fix list', () => {
+    expect(mexicanChocolateV3.reason).not.toMatch(/stabilizer to 2\.5/);
+    const named = [
+      ['Whole Milk 3.3%', 'Milk'],
+      ['Cream, heavy', 'cream'],
+      ['Cocoa Powder', 'cocoa'],
+      ['Dextrose', 'dextrose'],
+      ['Allulose', 'allulose'],
+    ];
+    named.forEach(([name, word]) => {
+      const phrase = `${word} ${grams(mexicanChocolateV2, name)} g → ${grams(mexicanChocolateV3, name)} g`;
+      expect(mexicanChocolateV3.reason).toContain(phrase);
+    });
+  });
+});
+
 describe('Mexican Chocolate v1/v2/v3 batches (D-02, D-06)', () => {
   it("v1s batch, if exported, has churnDate 2025-12-13", () => {
     const { batches } = flatten(transcribedRecipeGroups);

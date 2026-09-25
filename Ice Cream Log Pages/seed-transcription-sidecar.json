@@ -1,5 +1,50 @@
 {
   "mexican-chocolate": {
+    "mexican-chocolate-v1": {
+      "source": "IMG_2453.HEIC (binder photo) + Mexican Chocolate v1.ier (Ice Ed export, ~/Desktop/Ice Cream)",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 166,
+          "lBase": 0.72,
+          "lIceCream": 0.94,
+          "pac": 262,
+          "pacTarget": [220, 230],
+          "pod": 151,
+          "podTarget": [110, 120],
+          "pacToPodRatio": 1.74,
+          "percentSolids": 38.4,
+          "percentFat": 5.6,
+          "percentMsnf": 10.7,
+          "percentStabilizer": 0.35
+        },
+        "errorFlags": { "stabilizerErrorPercent": 50.2 },
+        "printedTimestamp": "12/12/25, 11:20 PM",
+        "handwrittenDate": "12/13/2025"
+      }
+    },
+    "mexican-chocolate-v3": {
+      "source": "IMG_2454.HEIC (binder photo)",
+      "fields": {
+        "spec": {
+          "kcalPer100g": 146,
+          "lBase": 0.7,
+          "lIceCream": 0.84,
+          "pac": 290,
+          "pacTarget": [220, 230],
+          "pod": 149,
+          "podTarget": [110, 120],
+          "pacToPodRatio": 1.95,
+          "percentSolids": 36.2,
+          "percentFat": 6.0,
+          "percentMsnf": 10.5,
+          "percentStabilizer": 0.14
+        },
+        "errorFlags": { "stabilizerErrorPercent": 259 },
+        "printedTimestamp": "1/13/26, 7:06 PM",
+        "staleObservationsText": "Observations:\nsweetness is good\nhard straight from freezer\n\nneed to lower stabilizer to 2.5g / kg\nincrease fat to 8% minimum, optimally 9 - 11%\ndextrose: 86g --> 55g\nallulose: +30g",
+        "staleObservationsFlag": "Identical, word for word, to v1's own outcome text plus its own 'To fix' list — this is v1's text retyped, not a v3 result. See 03.5-SEED-REVIEW.md, Mexican Chocolate v3, judgement call 12 (D-02)."
+      }
+    },
     "mexican-chocolate-v4": {
       "source": "recipe-Mexican Chocolate v4.json (Ice Ed export, ~/Downloads)",
       "fields": {

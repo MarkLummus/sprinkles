@@ -8,9 +8,11 @@ import { seedIfEmpty } from './seed.js';
 function createInMemoryRepository(initial = []) {
   const versions = [...initial];
   const batches = [];
+  const recipes = [];
   return {
     versions,
     batches,
+    recipes,
     async listVersions() {
       return versions;
     },
@@ -19,6 +21,9 @@ function createInMemoryRepository(initial = []) {
     },
     async saveBatch(batch) {
       batches.push(batch);
+    },
+    async saveRecipe(recipe) {
+      recipes.push(recipe);
     },
   };
 }
@@ -56,5 +61,23 @@ describe('seedIfEmpty', () => {
     const repository = createInMemoryRepository([{ id: 'existing' }]);
     await seedIfEmpty(repository);
     expect(repository.batches.length).toBe(0);
+  });
+
+  it('writes exactly one recipe record, deep-equal to oliveOilRecipe, against an empty repository', async () => {
+    const repository = createInMemoryRepository([]);
+    await seedIfEmpty(repository);
+    expect(repository.recipes.length).toBe(1);
+    expect(repository.recipes[0]).toEqual({
+      id: 'olive-oil-ice-cream',
+      name: 'Olive Oil Ice Cream, circulator',
+      description:
+        'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
+    });
+  });
+
+  it('writes no recipe when a version already exists', async () => {
+    const repository = createInMemoryRepository([{ id: 'existing' }]);
+    await seedIfEmpty(repository);
+    expect(repository.recipes.length).toBe(0);
   });
 });

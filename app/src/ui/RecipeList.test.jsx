@@ -17,7 +17,8 @@ vi.mock('../store/repository.js', () => ({ repository: {} }));
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import { RecipeList, RecipeRows, HomeLead, HomeBody } from './RecipeList.jsx';
-import { oliveOilVersion } from '../data/olive-oil.js';
+import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
+import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { versionIdentity } from '../domain/lineage.js';
 
 function makeVersion(overrides = {}) {
@@ -299,13 +300,23 @@ describe('HomeLead — the board\'s block (gap 5)', () => {
 
 // HomeBody (03.4-04 Task 3, D-08, D-06, D-12): the empty shelf when the
 // store holds no recipes, or the lead block and the rows otherwise.
-function renderBody(versions, batches = []) {
+function renderBody(versions, batches = [], recipes = []) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <HomeBody versions={versions} batches={batches} />
+      <HomeBody versions={versions} batches={batches} recipes={recipes} />
     </MemoryRouter>,
   );
 }
+
+// The recipe record is the name's source (D-11): HomeBody threads a third
+// `recipes` prop into activeWork so the lead's name link reads the record,
+// not a field on the version.
+describe('HomeBody — the recipe record is the name\'s source (D-11)', () => {
+  it("reads the olive oil recipe's name from the recipe record, not the version", () => {
+    const markup = renderBody([oliveOilVersion], [augustSecondBatch], [oliveOilRecipe]);
+    expect(markup).toMatch(/<h2 class="home__lead-name">[\s\S]*Olive Oil Ice Cream, circulator[\s\S]*<\/h2>/);
+  });
+});
 
 describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
   it('renders the sentence and the two leading links, and no row, for an empty store', () => {

@@ -129,3 +129,61 @@ export const mexicanChocolateV4 = {
   // No source names anything for "before you start" — nothing authored.
   authored: { beforeYouStart: [] },
 };
+
+// STUB: task 2's RED phase only. GREEN fills these in (v1's real 11 rows,
+// v3's real 12 rows, correct lineage).
+export const mexicanChocolateV1 = {
+  schemaVersion: MEXICAN_CHOCOLATE_SCHEMA_VERSION,
+  id: 'mexican-chocolate-v1',
+  recipeId: 'mexican-chocolate',
+  parentVersionId: null,
+  parentVersionLabel: null,
+  reason: null,
+  citedBatchId: null,
+  createdAt: '2025-12-12T23:20:00.000Z',
+  versionLabel: 'v1',
+  coefficientSetId: '2026.1-slice-transcription',
+  coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
+  sheetTitle: 'Mexican Chocolate',
+  sheetDescription: '',
+  rows: [
+    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 500 }], removed: false }) },
+  ],
+  equipment: KITCHEN_EQUIPMENT,
+  process: { pasteuriseC: 75, holdMinutes: 45 },
+  iceEd: { style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.2993 },
+  declaredAxes: [],
+  declaredFlaw: null,
+  method: [
+    { n: 1, leadIn: 'Stub step', instruction: 'Stub instruction.', targets: [], removed: false, uses: ['row-01'] },
+  ],
+  authored: { beforeYouStart: [] },
+};
+
+export const mexicanChocolateV3 = {
+  schemaVersion: MEXICAN_CHOCOLATE_SCHEMA_VERSION,
+  id: 'mexican-chocolate-v3',
+  recipeId: 'mexican-chocolate',
+  parentVersionId: null,
+  parentVersionLabel: null,
+  reason: null,
+  citedBatchId: null,
+  createdAt: '2026-01-13T19:06:00.000Z',
+  versionLabel: 'v3',
+  coefficientSetId: '2026.1-slice-transcription',
+  coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
+  sheetTitle: 'Mexican Chocolate',
+  sheetDescription: '',
+  rows: [
+    { id: 'row-01', ...embed('Whole Milk 3.3%', library.wholeMilk33, { portions: [{ step: 1, grams: 500 }], removed: false }) },
+  ],
+  equipment: KITCHEN_EQUIPMENT,
+  process: { pasteuriseC: 75, holdMinutes: 60 },
+  iceEd: { style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2 },
+  declaredAxes: [],
+  declaredFlaw: null,
+  method: [
+    { n: 1, leadIn: 'Stub step', instruction: 'Stub instruction.', targets: [], removed: false, uses: ['row-01'] },
+  ],
+  authored: { beforeYouStart: [] },
+};

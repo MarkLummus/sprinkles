@@ -4,7 +4,7 @@
 // which this file never imports.
 import { describe, it, expect } from 'vitest';
 import { transcribedRecipeGroups } from './seed-recipes.js';
-import { mexicanChocolateV4 } from './mexican-chocolate.js';
+import { mexicanChocolateV1, mexicanChocolateV3, mexicanChocolateV4 } from './mexican-chocolate.js';
 import { validateStoreFile, STORE_SCHEMA_VERSION } from '../store/transfer.js';
 import { computeBalance } from '../domain/composition.js';
 import { buildFigures } from '../domain/figures.js';
@@ -90,5 +90,50 @@ describe('mexicanChocolateV4 (D-01, D-02, D-03)', () => {
       const total = row.portions.reduce((t, p) => t + p.grams, 0);
       expect(total).toBeCloseTo(expected[i][1], 5);
     });
+  });
+});
+
+describe('Mexican Chocolate lineage (D-01: v1 -> v3 -> v4, no v2 made up)', () => {
+  it('v3s parent is v1 and v4s parent is v3', () => {
+    expect(mexicanChocolateV3.parentVersionId).toBe(mexicanChocolateV1.id);
+    expect(mexicanChocolateV4.parentVersionId).toBe(mexicanChocolateV3.id);
+  });
+
+  it('no exported version id or versionLabel names v2', () => {
+    const { versions } = flatten(transcribedRecipeGroups);
+    for (const version of versions) {
+      expect(version.id).not.toMatch(/-v2$/);
+      expect(version.versionLabel.trim()).not.toBe('v2');
+    }
+  });
+});
+
+describe('Mexican Chocolate v1/v3 batches (D-02, D-06)', () => {
+  it("v1s batch, if exported, has churnDate 2025-12-13", () => {
+    const { batches } = flatten(transcribedRecipeGroups);
+    const v1Batch = batches.find((b) => b.versionId === mexicanChocolateV1.id);
+    if (v1Batch) expect(v1Batch.churn.churnDate).toBe('2025-12-13');
+  });
+
+  it('no v3 batch carries a tasting (its Observations are v1s words, D-02)', () => {
+    const { batches } = flatten(transcribedRecipeGroups);
+    const v3Batches = batches.filter((b) => b.versionId === mexicanChocolateV3.id);
+    for (const batch of v3Batches) {
+      expect(batch.tasting).toBeNull();
+    }
+  });
+
+  it('every exported batchs snapshot rows deep-equal its own versions rows, and null measured fields stay null', () => {
+    const { versions, batches } = flatten(transcribedRecipeGroups);
+    const versionsById = new Map(versions.map((v) => [v.id, v]));
+    for (const batch of batches) {
+      const version = versionsById.get(batch.versionId);
+      expect(batch.snapshot.rows).toEqual(version.rows);
+      for (const field of ['timeToDrawTempMinutes', 'outOfMachineTempC', 'churnDurationMinutes']) {
+        if (batch.churn[field] === null) {
+          expect(batch.churn[field]).toBeNull();
+        }
+      }
+    }
   });
 });

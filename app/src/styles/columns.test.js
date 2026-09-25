@@ -30,14 +30,6 @@ const ingredientTableSource = readFileSync(INGREDIENT_TABLE_JSX_PATH, 'utf8');
 // (.planning/debug/remove-column-occludes-values.md, phase-3 measurement,
 // "Content widths that set the real minimum for each column").
 const PERCENT_OF_BATCH_HEADER = 80.61; // the numeric columns' widest content
-const DATA_FLAG_ESTIMATED = 66.14; // "estimated" — the shorter of the two flag words
-// "unreviewed" is one letter longer than "estimated" and no seed row
-// currently carries it, so it was never measured. Reasoned rather than
-// guessed: "estimated" averages 66.14 / 9 = 7.35px per letter; scaled to
-// "unreviewed"'s 10 letters, that is ~73.5px — used as the Data column's
-// real minimum since it is the longer word the app can produce.
-const DATA_FLAG_UNREVIEWED_REASONED = 73.5;
-const REMOVE_BUTTON = 60.45; // the native remove/restore <button>, RemoveRowControl
 const WIDEST_INGREDIENT_NAME = 142.83; // "Lambda carrageenan"
 
 // The page arithmetic (route-recipe-version.md's host page, .recipe-page
@@ -92,8 +84,6 @@ const emittedColumns = emittedColumnClasses(ingredientTableSource);
 
 const tableCellPadX = resolveTokenPx(tokens, '--sheet-table-cell-pad-x');
 const colNumeric = resolveTokenPx(tokens, '--sheet-col-numeric');
-const colData = resolveTokenPx(tokens, '--sheet-col-data');
-const colRemove = resolveTokenPx(tokens, '--sheet-col-remove');
 
 describe('reading helpers', () => {
   test('stripCssComments removes a comment block without touching the rule beside it', () => {
@@ -165,9 +155,20 @@ describe('task 1 — border-box accounting and a corrected derivation', () => {
 
 });
 
-describe('task 2 — Data and Remove get columns of their own; the name column absorbs the remainder', () => {
-  test('the component emits exactly the five columns this table has', () => {
-    expect(emittedColumns).toEqual(new Set(['name', 'numeric', 'data', 'remove']));
+// Sketch 011 Task 2: Data and Remove retire outright — every state now
+// reads style 6, so the table has only two column identities left: the
+// auto-width name column (which now also carries the plan grams and the
+// flag chip inline) and the token-sized numeric column (As made,
+// % of batch). The old "give Data and Remove their own column" contract
+// (03-08/03.3-02) is superseded, not merely narrowed.
+describe('task 2 — Data and Remove retire outright; only the name (auto) and numeric (token-sized) columns remain', () => {
+  test('the component emits only the two columns this table has now', () => {
+    expect(emittedColumns).toEqual(new Set(['name', 'numeric']));
+  });
+
+  test('app.css no longer styles a Data or a Remove column', () => {
+    expect(columnRules.data).toBeUndefined();
+    expect(columnRules.remove).toBeUndefined();
   });
 
   test('every emitted column class is matched by a width rule in app.css — the gate a grep on one file could not express', () => {
@@ -183,13 +184,11 @@ describe('task 2 — Data and Remove get columns of their own; the name column a
     expect(autoColumns).toEqual(['name']);
   });
 
-  test('every other column reads its width through a --col-* token that resolves to a px value', () => {
-    for (const col of ['numeric', 'data', 'remove']) {
-      const decl = columnRules[col];
-      const match = decl.match(/width:\s*var\((--sheet-col-[\w-]+)\)/);
-      expect(match, `expected ${col} to read width from a --col-* token`).toBeTruthy();
-      expect(resolveTokenPx(tokens, match[1])).toBeTypeOf('number');
-    }
+  test('the remaining numeric column reads its width through a --col-* token that resolves to a px value', () => {
+    const decl = columnRules.numeric;
+    const match = decl.match(/width:\s*var\((--sheet-col-[\w-]+)\)/);
+    expect(match, 'expected numeric to read width from a --col-* token').toBeTruthy();
+    expect(resolveTokenPx(tokens, match[1])).toBeTypeOf('number');
   });
 
   test('no ingredient-table rule declares a clipping or a stacking property', () => {
@@ -205,53 +204,25 @@ describe('task 2 — Data and Remove get columns of their own; the name column a
     }
   });
 
-  test('each of the two new tokens, less the two paddings, clears its own measured minimum', () => {
-    expect(colData - 2 * tableCellPadX).toBeGreaterThanOrEqual(DATA_FLAG_UNREVIEWED_REASONED);
-    expect(colData - 2 * tableCellPadX).toBeGreaterThanOrEqual(DATA_FLAG_ESTIMATED);
-    expect(colRemove - 2 * tableCellPadX).toBeGreaterThanOrEqual(REMOVE_BUTTON);
-  });
-
-  describe('the width budget, computed from the tokens themselves at every width the UAT names', () => {
-    // The table's widest state: a churned version open in the pen, all
-    // three numeric columns plus Data and Remove at once. The Step column
-    // was removed outright (03.3-02, LD-01/LD-02) — the table groups by
-    // step instead of naming one in a cell — so this shape no longer
-    // includes it.
-    function sizedColumnsTotalWidestState() {
-      return 3 * colNumeric + colData + colRemove;
+  describe('the width budget, now just the numeric column: the name column clears the widest seed name plus the plan-grams prefix at every UAT width', () => {
+    // The table's widest remaining state: both numeric columns at once
+    // (As made + % of batch). No Grams, Data or Remove column of its own
+    // any more — the plan grams live inline, inside the auto-width name
+    // column itself, alongside the widest ingredient name.
+    function sizedColumnsTotal() {
+      return 2 * colNumeric;
     }
 
-    test.each(UAT_WIDTHS)('at %ipx, the sized columns never exceed the table width — no column is ever squeezed to nothing', (viewport) => {
-      expect(sizedColumnsTotalWidestState()).toBeLessThanOrEqual(tableWidthAt(viewport));
+    test.each(UAT_WIDTHS)('at %ipx, the sized columns never exceed the table width', (viewport) => {
+      expect(sizedColumnsTotal()).toBeLessThanOrEqual(tableWidthAt(viewport));
     });
 
-    test.each([1280, 1366, 1440])('at %ipx and above, the name column clears the widest seed name (D-UAT-6: unwrapped at 1280+)', (viewport) => {
-      const remainder = tableWidthAt(viewport) - sizedColumnsTotalWidestState();
+    test.each(UAT_WIDTHS)('at %ipx, the name column clears the widest seed name plus the plan-grams span and its gap — comfortably, now that Grams/Data/Remove no longer compete for the remainder', (viewport) => {
+      const remainder = tableWidthAt(viewport) - sizedColumnsTotal();
       const nameContent = remainder - 2 * tableCellPadX;
-      expect(nameContent).toBeGreaterThanOrEqual(WIDEST_INGREDIENT_NAME);
-    });
-
-    test('at 1152px, the name column still clears the widest seed name', () => {
-      const remainder = tableWidthAt(1152) - sizedColumnsTotalWidestState();
-      const nameContent = remainder - 2 * tableCellPadX;
-      expect(nameContent).toBeGreaterThanOrEqual(WIDEST_INGREDIENT_NAME);
-    });
-
-    test('at 1024px, the name column stays positive — the accepted yield (D-UAT-6), not an oversight', () => {
-      const remainder = tableWidthAt(1024) - sizedColumnsTotalWidestState();
-      const nameContent = remainder - 2 * tableCellPadX;
-      expect(nameContent).toBeGreaterThan(0);
-      // And it is genuinely narrower than the widest name — this is the
-      // width at which D-UAT-6 accepts a wrap, not a second clearance.
-      expect(nameContent).toBeLessThan(WIDEST_INGREDIENT_NAME);
-    });
-
-    test("the recording state's widest shape (no Remove column) still fits at 1280px — the unreported second instance; the reading state itself no longer carries this shape (sketch 011 Task 1)", () => {
-      const recordingStateTotal = 3 * colNumeric + colData;
-      expect(recordingStateTotal).toBeLessThanOrEqual(tableWidthAt(1280));
-      // The Data column gets its whole declared width — nothing steals
-      // from it because the total including it still fits.
-      expect(recordingStateTotal).toBeGreaterThanOrEqual(colData);
+      const planGramsW = resolveTokenPx(tokens, '--sheet-plan-grams-w');
+      const planGramsGap = resolveTokenPx(tokens, '--sheet-plan-grams-gap');
+      expect(nameContent).toBeGreaterThanOrEqual(WIDEST_INGREDIENT_NAME + planGramsW + planGramsGap);
     });
   });
 });

@@ -472,7 +472,10 @@ describe('IngredientTable — a rejected draft grams value holds the parent shar
     // history value alongside the live one — strip that struck span
     // before asserting on the live figure, so the assertion is about
     // what changed, not about the history the change is shown against.
-    const shareCell = rowBTr.match(/<td class="ingredient-table__col-numeric">[\s\S]*?<\/td>/g)[1];
+    // The share cell is the row's only remaining col-numeric td (sketch
+    // 011 Task 2: the grams field moved into the name cell's own
+    // plan-grams slot, so index [0] — not [1] — is the share cell now).
+    const shareCell = rowBTr.match(/<td class="ingredient-table__col-numeric">[\s\S]*?<\/td>/g)[0];
     const liveShareText = shareCell.replace(/<span class="struck-value">[^<]*<\/span>/, '');
     expect(liveShareText).toContain('trace');
     expect(liveShareText).not.toContain('50.0%');
@@ -724,20 +727,26 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
   });
 });
 
-// Sketch 011 Task 1: the reading state's header no longer carries a Data
-// column at all (its "Source" head retires along with the whole column —
-// see the style-6 describe block below). Recording keeps the pre-011
-// markup unchanged until Task 2, so this is now a recording-state guard.
-describe('IngredientTable — recording keeps the Data column head "Source" (03.3-04; sketch 011 Task 1 scopes style 6 to reading alone)', () => {
-  it('renders "Source" in the recording-state header, not "Data"', () => {
+// Sketch 011 Task 2: every state now reads style 6 — the Data and Remove
+// columns are gone outright, not just suppressed in the reading state
+// (Task 1's own guard here is superseded now that recording joins it).
+describe('IngredientTable — recording reads style 6 too (sketch 011 Task 2): no Grams, Source or Data column at all', () => {
+  it('renders no Grams/Source/Data head, and the row carries the plan-grams span plus the as-made input', () => {
     const version = makeVersion([makeRow('a', 'Whole milk', 120, 1)]);
     const draft = { asMade: {} };
     const markup = renderToStaticMarkup(
       <IngredientTable rows={version.rows} mode="recording" draft={draft} steps={version.method} />,
     );
-    expect(markup).toMatch(/<th[^>]*class="ingredient-table__col-data"[^>]*>Source<\/th>/);
+
     const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).not.toContain('Grams');
+    expect(headerRow).not.toContain('Source');
     expect(headerRow).not.toContain('Data');
+
+    expect(markup).toContain('<span class="ingredient-table__plan-grams">120 g</span>Whole milk');
+    expect(markup).toContain('aria-label="Whole milk, as made, grams"');
+    expect(markup).not.toContain('ingredient-table__col-data');
+    expect(markup).not.toContain('ingredient-table__col-remove');
   });
 });
 
@@ -896,3 +905,66 @@ describe('IngredientTable — the pen\'s remove/restore control carries .text-co
 // `grep -n '\[blockedRowId\]'` against IngredientTable.jsx) are what prove
 // the fix landed — deliberately not duplicated here as a render test that
 // could never actually exercise the effect.
+
+// Sketch 011 Task 2: every table state now reads style 6 — the pen, the
+// record and show-changes join the reading state Task 1 already moved.
+// Grams sits in the plan-grams slot everywhere, a changed value's parent
+// amount strikes before it, remove sits after the name, and the Data and
+// Remove columns are retired outright.
+describe('IngredientTable — the pen reads style 6 too (sketch 011 Task 2): grams in the plan-grams slot, the struck parent before it, remove after the name', () => {
+  it('a changed row: the struck parent grams sit before the plan-grams span holding the field, the estimated chip and remove come after the name, and no col-data/col-remove renders anywhere', () => {
+    const version = makeVersion([
+      makeRow('a', 'Graza Drizzle', 40, 8, { ingredient: { composition: { fat: 1 }, basis: { fat: 'stated' } } }),
+    ]);
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: onePortionDraftRow(8, '48') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).not.toContain('Grams');
+    expect(headerRow).not.toContain('Remove');
+    expect(headerRow).not.toContain('Source');
+
+    expect(markup).toContain('<span class="struck-value">40 g</span><span class="ingredient-table__plan-grams">');
+    expect(markup).toContain('aria-label="Graza Drizzle, grams"');
+    expect(markup).toContain('value="48"');
+    expect(markup).toContain(' g</span>Graza Drizzle');
+    expect(markup).toMatch(/Graza Drizzle<button type="button" class="text-control"[^>]*>remove<\/button>/);
+    expect(markup).not.toContain('ingredient-table__col-data');
+    expect(markup).not.toContain('ingredient-table__col-remove');
+  });
+
+  it('the total row strikes the parent total before the current one, inside the plan-grams slot', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const draftVersion = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+    const penDraft = { rows: { a: onePortionDraftRow(1, '48') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    const totalRow = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
+    expect(totalRow).toContain(
+      '<span class="ingredient-table__plan-grams"><span class="struck-value">40.0</span>48.0 g</span>Total',
+    );
+  });
+});
+
+describe('IngredientTable — show-changes reads style 6 too (sketch 011 Task 2)', () => {
+  it('a changed, single-portion row: the struck parent grams sit inside the plan-grams slot, before the current value', () => {
+    const baseline = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const current = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+    const diff = buildDiff(current, baseline);
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" />);
+
+    expect(markup).toContain(
+      '<span class="ingredient-table__plan-grams"><span class="struck-value">40 g</span>48 g</span>Row A',
+    );
+    expect(markup).not.toContain('ingredient-table__col-data');
+    expect(markup).not.toContain('ingredient-table__col-remove');
+  });
+});

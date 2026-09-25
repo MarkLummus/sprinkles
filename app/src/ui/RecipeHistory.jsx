@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { DECLARED_FLAW } from '../domain/battery.js';
 import { recordDateWords, sortedBatches, batchIdentity, tastingProvenance } from '../domain/batch.js';
 import { sortedVersions, versionsForRecipe, versionIdentity } from '../domain/lineage.js';
+import { notebookPath } from './notebookPaths.js';
 
 function compareChronological(a, b) {
   if (a.createdAt === b.createdAt) return 0;
@@ -78,7 +79,7 @@ function BatchAttempt({ batch, version, currentVersionId, currentBatchId, openPe
         <p className="recipe-history__batch-name">
           {isInView || openPen
             ? label
-            : <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }} tabIndex={0}>{label}</Link>}
+            : <Link to={notebookPath(version.recipeId, version.id, batch.id)} state={{ focusBatch: true }} tabIndex={0}>{label}</Link>}
           <HistoryMarkers current={isInView} />
         </p>
         <HistoryProvenance className="recipe-history__batch-state">
@@ -122,7 +123,7 @@ function VersionNode({
           <h3 className="recipe-history__version-name">
             {isInView || openPen
               ? versionIdentity(ordered, version)
-              : <Link to={`/recipe/${version.id}`} state={{ focusVersion: true }} tabIndex={0}>{versionIdentity(ordered, version)}</Link>}
+              : <Link to={notebookPath(version.recipeId, version.id)} state={{ focusVersion: true }} tabIndex={0}>{versionIdentity(ordered, version)}</Link>}
             <HistoryMarkers current={isInView} latest={isLatest} />
           </h3>
           <HistoryProvenance className="recipe-history__written">written {recordDateWords(version.createdAt)}</HistoryProvenance>
@@ -134,7 +135,7 @@ function VersionNode({
             {openPen ? (
               recordDateWords(citedBatch.churn.churnDate)
             ) : (
-              <Link to={`/recipe/${citedBatch.versionId}/batch/${citedBatch.id}`} state={{ focusBatch: true }} tabIndex={0}>
+              <Link to={notebookPath(version.recipeId, citedBatch.versionId, citedBatch.id)} state={{ focusBatch: true }} tabIndex={0}>
                 {recordDateWords(citedBatch.churn.churnDate)}
               </Link>
             )}

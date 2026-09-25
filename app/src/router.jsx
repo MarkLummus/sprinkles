@@ -5,7 +5,7 @@ import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
 import { Shell } from './ui/Shell.jsx';
 import { Placeholder } from './ui/Placeholder.jsx';
-import { LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
+import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 
 // A different version, or a different batch of the same version, must be a
 // different page instance (one-pen-rule-leaks.md Evidence 8-9). React
@@ -99,6 +99,7 @@ export const router = createBrowserRouter([
     Component: Shell,
     children: [
       { path: '/', Component: RecipeList },
+      { path: '/notebook/:recipeId', Component: NotebookLatestRedirect },
       { path: '/notebook/:recipeId/:versionId', Component: RecipePageForRoute },
       { path: '/notebook/:recipeId/:versionId/batch/:batchId', Component: RecipePageForRoute },
       // D-16: kept indefinitely, not deleted — the old id is a version id.

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
-import { legacyRecipePath } from './notebookPaths.js';
+import { legacyRecipePath, latestVersionPath } from './notebookPaths.js';
 import { RecipeNotFound } from './RecipePage.jsx';
 
 // Component redirects, not route loaders (decisions_recorded 1, 03.5-02
@@ -39,6 +39,35 @@ export function LegacyRecipeRedirect() {
       cancelled = true;
     };
   }, [id, batchId]);
+
+  if (notFound) return <RecipeNotFound />;
+  return null;
+}
+
+// The /notebook/:recipeId landing target (D-14): replace-redirects to that
+// recipe's latest version, or renders RecipeNotFound when the recipeId has
+// no versions at all.
+export function NotebookLatestRedirect() {
+  const { recipeId } = useParams();
+  const navigate = useNavigate();
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setNotFound(false);
+    repository.listVersions().then((versions) => {
+      if (cancelled) return;
+      const path = latestVersionPath(versions, recipeId);
+      if (path) {
+        navigate(path, { replace: true });
+      } else {
+        setNotFound(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [recipeId]);
 
   if (notFound) return <RecipeNotFound />;
   return null;

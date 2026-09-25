@@ -9,6 +9,7 @@ import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
 import { AxisMark } from './AxisMark.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
+import { notebookPath } from './notebookPaths.js';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -344,7 +345,7 @@ export function BatchHistoryPanel({ version, batches, openBatch = null, openPen 
                   ) : openPen ? (
                     identity
                   ) : (
-                    <Link to={`/recipe/${version.id}/batch/${batch.id}`} state={{ focusBatch: true }} tabIndex={0}>{identity}</Link>
+                    <Link to={notebookPath(version.recipeId, version.id, batch.id)} state={{ focusBatch: true }} tabIndex={0}>{identity}</Link>
                   )}
                 </p>
                 <HistoryProvenance>{metaParts.join(' · ')}</HistoryProvenance>

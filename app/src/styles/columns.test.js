@@ -246,12 +246,35 @@ describe('task 2 — Data and Remove get columns of their own; the name column a
       expect(nameContent).toBeLessThan(WIDEST_INGREDIENT_NAME);
     });
 
-    test("the reading state's widest shape (no Remove column) still fits at 1280px — the unreported second instance", () => {
-      const readingStateTotal = 3 * colNumeric + colData;
-      expect(readingStateTotal).toBeLessThanOrEqual(tableWidthAt(1280));
+    test("the recording state's widest shape (no Remove column) still fits at 1280px — the unreported second instance; the reading state itself no longer carries this shape (sketch 011 Task 1)", () => {
+      const recordingStateTotal = 3 * colNumeric + colData;
+      expect(recordingStateTotal).toBeLessThanOrEqual(tableWidthAt(1280));
       // The Data column gets its whole declared width — nothing steals
       // from it because the total including it still fits.
-      expect(readingStateTotal).toBeGreaterThanOrEqual(colData);
+      expect(recordingStateTotal).toBeGreaterThanOrEqual(colData);
     });
+  });
+});
+
+// Style 6 (sketch 011 decisions 2, 3, Task 1): the reading state no longer
+// sizes a Grams or a Data column at all — the plan grams and the
+// estimated/unreviewed chip move inline into the name column instead, each
+// reading its own literal board token rather than a measured-minimum
+// budget (there is nothing to measure a minimum against: these are the
+// board's own fixed values, not a shrink-to-content column).
+describe("task 1 style 6 — the plan-grams span and the flag gap read the board's own literal tokens (sketch 011 decisions 2, 3)", () => {
+  const planGramsW = resolveTokenPx(tokens, '--sheet-plan-grams-w');
+  const planGramsGap = resolveTokenPx(tokens, '--sheet-plan-grams-gap');
+  const flagGap = resolveTokenPx(tokens, '--sheet-flag-gap');
+  const portionIndent = resolveTokenPx(tokens, '--sheet-portion-indent');
+
+  test("the plan-grams span, its own gap, and the flag gap resolve to the board's literal px values (64, 18, 8)", () => {
+    expect(planGramsW).toBe(64);
+    expect(planGramsGap).toBe(18);
+    expect(flagGap).toBe(8);
+  });
+
+  test("the split portion note's indent is the plan-grams span plus its own gap, never a second literal (1600-batch.html: padding-left 82px)", () => {
+    expect(portionIndent).toBe(planGramsW + planGramsGap);
   });
 });

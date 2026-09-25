@@ -722,13 +722,107 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
   });
 });
 
-describe('IngredientTable — the Data column head reads Source (03.3-04)', () => {
-  it('renders "Source" in the reading-state header, not "Data"', () => {
+// Sketch 011 Task 1: the reading state's header no longer carries a Data
+// column at all (its "Source" head retires along with the whole column —
+// see the style-6 describe block below). Recording keeps the pre-011
+// markup unchanged until Task 2, so this is now a recording-state guard.
+describe('IngredientTable — recording keeps the Data column head "Source" (03.3-04; sketch 011 Task 1 scopes style 6 to reading alone)', () => {
+  it('renders "Source" in the recording-state header, not "Data"', () => {
     const version = makeVersion([makeRow('a', 'Whole milk', 120, 1)]);
-    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" steps={version.method} />);
+    const draft = { asMade: {} };
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="recording" draft={draft} steps={version.method} />,
+    );
     expect(markup).toMatch(/<th[^>]*class="ingredient-table__col-data"[^>]*>Source<\/th>/);
     const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
     expect(headerRow).not.toContain('Data');
+  });
+});
+
+// Sketch 011 decisions 2, 3; D-19 (Task 1): the reading state's table takes
+// style 6 — plan grams before the name, an "estimated"/"unreviewed" chip
+// where Source used to be, and the batch's as-made grams written in the
+// hand. Scoped to genuine reading (mode="reading", not showingChanges) —
+// recording keeps its own markup until Task 2 (the test above).
+describe('IngredientTable — the reading state reads in style 6 (sketch 011 decisions 2, 3; D-19)', () => {
+  it('a split, estimated row with a batch in view: thead reads Ingredient/As made/% of batch, the name cell carries the plan-grams span, the chip, and the portion note, and the as-made value is written in the hand', () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, {
+        portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }],
+        ingredient: { composition: { fat: 1 }, basis: { fat: 'estimated' } },
+      }),
+      makeRow('b', 'Heavy cream', 429.28, 3),
+    ]);
+    version.method = [
+      { n: 2, leadIn: 'Gum slurry.', instruction: 'x' },
+      { n: 3, leadIn: 'Build the base.', instruction: 'x' },
+    ];
+    const currentStepNumbers = displayNumbers(version.method);
+    const openBatch = makeBatch({ a: [120, 263] });
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        mode="reading"
+        steps={version.method}
+        currentStepNumbers={currentStepNumbers}
+        openBatch={openBatch}
+      />,
+    );
+
+    const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).toContain('>Ingredient<');
+    expect(headerRow).toContain('>As made<');
+    expect(headerRow).toContain('>% of batch<');
+    expect(headerRow).not.toContain('Grams');
+    expect(headerRow).not.toContain('Source');
+
+    expect(markup).toContain(
+      '<span class="ingredient-table__plan-grams">120 g</span>Whole milk' +
+        '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>' +
+        '<span class="ingredient-table__portion-note">120 g of 370.4 g · 46.3% in all</span>',
+    );
+    expect(markup).toContain('<span class="sheet-hand">120 g</span>');
+    expect(markup).toContain('<span class="sheet-hand">263 g</span>');
+    expect(markup).toContain('aria-label="Whole milk, 370.4 g, estimated, as made 120 g"');
+    expect(markup).not.toContain('ingredient-table__col-data');
+  });
+
+  it('no batch in view: thead reads Ingredient/% of batch alone, the step head spans two columns, and no sheet-hand span renders', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    version.method = [{ n: 1, leadIn: 'Mix.', instruction: 'x' }];
+    const currentStepNumbers = displayNumbers(version.method);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        mode="reading"
+        steps={version.method}
+        currentStepNumbers={currentStepNumbers}
+        openBatch={null}
+      />,
+    );
+
+    const headerRow = markup.slice(markup.indexOf('<thead>'), markup.indexOf('</thead>'));
+    expect(headerRow).toContain('>Ingredient<');
+    expect(headerRow).toContain('>% of batch<');
+    expect(headerRow).not.toContain('As made');
+    expect(markup).toMatch(/<tr class="ingredient-table__step-head"><td colspan="2">/);
+    expect(markup).not.toContain('sheet-hand');
+  });
+
+  it('the total row: a plan-grams span holding the total then "Total", and the As made total written in the hand', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1), makeRow('b', 'Row B', 20, 1)]);
+    version.method = [{ n: 1, leadIn: 'Mix.', instruction: 'x' }];
+    const openBatch = makeBatch({ a: [45] });
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} openBatch={openBatch} />,
+    );
+
+    const totalRow = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
+    expect(totalRow).toContain('<span class="ingredient-table__plan-grams">60.0 g</span>Total');
+    expect(totalRow).toContain('<span class="sheet-hand">65.0 g</span>');
   });
 });
 

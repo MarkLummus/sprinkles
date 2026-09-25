@@ -502,17 +502,6 @@ textarea {
   margin-top: var(--gap-s);
 }
 
-/* The show-changes toggle (route-recipe-version.md § 3, § 6, 03-04; one
-   fill for every on state, 2026-09-16): the square carries the pressed
-   state now (.text-toggle, sketch 008 lines 91-95), not weight or an
-   outline. Reads .text-control (03.3-06 checkpoint feedback, sketch 003
-   variant B, index.html:479) for its border-less, underlined rest state;
-   this rule now only carries the spacing this button needs beside its
-   siblings. */
-.headnote__show-changes {
-  margin-left: var(--gap-xs);
-}
-
 /* The "From batch" label-over-control (03.3-06 checkpoint feedback,
    sketch 003 variant B, index.html:225): stacked like Version and Why
    above it, not the inline "label beside control" row this used to be. */
@@ -556,25 +545,6 @@ textarea {
 .headnote__prose-field {
   display: block;
   margin-top: var(--gap-m);
-}
-
-/* Versions (route-recipe.md § 3 "The imprint", D-04 to D-06): the openers
-   in two rows, --gap-m between the two groups and --gap-s between
-   adjacent controls within a group; the ceremony (D-06's own plan-pen
-   markup keeps the headnote__* classes above, per 03.1-CONTEXT.md's
-   planner decision 1 — this rule only spaces the wrapper it moved into). */
-.versions__openers {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-m);
-  margin-top: var(--gap-m);
-}
-
-.versions__opener-group {
-  display: flex;
-  gap: var(--gap-s);
-  flex-wrap: wrap;
-  align-items: center;
 }
 
 /* The fork's landing focus, made visible (03.3-06 checkpoint feedback,
@@ -664,23 +634,6 @@ textarea {
 
 .version-row__meta-list dd {
   margin: 0;
-}
-
-/* The version row's identity heading (route-recipe.md § 6 "One version
-   identity, wherever a version is named", 2026-09-18): the same line the
-   register prints for this version, minus "In view" — one string, in the
-   text face at the version-line size (DESIGN.md's Headline role). It
-   replaces the bare "Version" region name, so it takes .region-name's own
-   bottom gap to the dl beneath it, and resets the h2's user-agent weight
-   and size, which no other rule in this file does. The "Latest" span
-   inside it reuses .history-register__marker, the way this row's own dl
-   reuses .versions__lineage — one rule for the identity, and one type
-   definition shared by both sites that print it. */
-.version-row__identity {
-  font-family: var(--face-text);
-  font-size: var(--sheet-size-version-line);
-  font-weight: 400;
-  margin: 0 0 var(--gap-xs);
 }
 
 /* Authored version names keep the text face; dates and batch citations

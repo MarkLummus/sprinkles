@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
 stopped_at: Phase 03.5 context gathered
-last_updated: "2026-09-25T09:53:43.419Z"
+last_updated: "2026-09-25T19:05:13.760Z"
 last_activity: 2026-09-25
 last_activity_desc: Phase 03.5 execution started
-state_head: b2f1ce2f6bea3814d74f994637cb199c0c28e50e
+state_head: 2759b489b67246949ceb7c5766b0b64061e595e0
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
 Plan: 1 of 9
 Status: Executing Phase 03.5
-Last activity: 2026-09-25 — Phase 03.5 execution started
+Last activity: 2026-09-25 - Completed quick task 260925-kix: Seed Mexican Chocolate v2 from the v2-2 Ice Ed export; fix the version chain v1-v2-v3-v4
 
 Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -298,6 +298,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 50 | Sketch 011: open step's Done and Cancel in Sheet grammar | 2026-09-24 | b882dde | — |
 | 51 | Sketch 011: step uses control reads change the ingredients | 2026-09-24 | 8231ee7 | — |
 | 52 | Note: Recipe Book reference exposes version structure (open for 03.5 discussion) | 2026-09-24 | 594b983 | — |
+| 260925-kix | Seed Mexican Chocolate v2 from the v2-2 Ice Ed export; fix the version chain v1-v2-v3-v4 | 2026-09-25 | 2759b48 | [260925-kix-seed-mexican-chocolate-v2-from-the-v2-2-](./quick/260925-kix-seed-mexican-chocolate-v2-from-the-v2-2-/) |
 
 ### Roadmap Evolution
 

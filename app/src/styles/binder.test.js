@@ -400,9 +400,10 @@ describe('the picked state is a fill (D-04, sketch 007 lines 49 and 83)', () => 
 // — see .planning/debug/ios-overscroll-cream-on-app-routes.md for the
 // measured variants. This suite cannot render a canvas (no layout engine),
 // so it pins the source-level precondition: body carries the App ground,
-// the three paper frames hand it back via :has(), and no rule anywhere
-// declares a background for the root element on its own, which is the one
-// change that would stop body's background from reaching the canvas.
+// the two paper frames hand it back via :has() (the running head, a third
+// trigger, retired 03.5-02 Task 3), and no rule anywhere declares a
+// background for the root element on its own, which is the one change
+// that would stop body's background from reaching the canvas.
 describe('the canvas is per context, on body, not a descendant (G-03.4-9, commit 4105848)', () => {
   test('the top-level body rule declares the App ground', () => {
     const rule = rules.find((r) => r.selector === 'body' && r.media === undefined);
@@ -410,13 +411,13 @@ describe('the canvas is per context, on body, not a descendant (G-03.4-9, commit
     expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
   });
 
-  test('a top-level rule hands the canvas back to the Sheet cream for all three paper frames', () => {
+  test('a top-level rule hands the canvas back to the Sheet cream for both paper frames', () => {
     const rule = rules.find((r) => r.selector.startsWith('body:has(') && r.media === undefined);
     expect(rule, 'expected a top-level body:has(...) rule').toBeTruthy();
     expect(rule.declarations).toMatch(/background:\s*var\(--sheet-ground\)/);
     expect(rule.selector).toMatch(/\.recipe-page/);
-    expect(rule.selector).toMatch(/\.page-head/);
     expect(rule.selector).toMatch(/\.not-found/);
+    expect(rule.selector).not.toMatch(/\.page-head/);
   });
 
   test('no rule in app.css declares a background for the root element on its own — that would cancel body\'s propagation to the canvas', () => {

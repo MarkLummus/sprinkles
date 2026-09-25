@@ -29,6 +29,7 @@ function renderAt(path) {
         <Route element={<Shell />}>
           <Route path="/" element={<p>Home page</p>} />
           <Route path="/notebook" element={<Placeholder name="Notebook" />} />
+          <Route path="/notebook/:recipeId/:versionId" element={<p>Recipe page</p>} />
         </Route>
       </Routes>
     </MemoryRouter>,
@@ -66,6 +67,14 @@ describe('Shell — every route renders inside the layout route (D-09, D-10)', (
     const markup = renderAt('/notebook');
     expect(markup).toContain('shell__rail');
     expect(markup).toContain('Notebook is not built yet.');
+    const notebookLink = findAnchorTag(markup, 'shell__place--notebook');
+    expect(notebookLink, 'expected a link carrying shell__place--notebook').toBeTruthy();
+    expect(notebookLink).toContain('aria-current="page"');
+  });
+
+  it('marks the Notebook entry current at a /notebook/:recipeId/:versionId sub-route (D-15)', () => {
+    const markup = renderAt('/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1');
+    expect(markup).toContain('shell__rail');
     const notebookLink = findAnchorTag(markup, 'shell__place--notebook');
     expect(notebookLink, 'expected a link carrying shell__place--notebook').toBeTruthy();
     expect(notebookLink).toContain('aria-current="page"');

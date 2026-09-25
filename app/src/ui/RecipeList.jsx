@@ -3,6 +3,7 @@ import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { versionIdentity } from '../domain/lineage.js';
 import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
+import { notebookPath } from './notebookPaths.js';
 
 // Home — "Active work first" (.impeccable/surfaces/route.md, Home
 // direction amendment 2026-09-20; DESIGN.md "App marks"). The outer
@@ -111,7 +112,7 @@ export function HomeLead({ entry }) {
       <div className="home__lead-identity">
         <p className="home__lead-place">Notebook</p>
         <h2 className="home__lead-name">
-          <Link to={`/recipe/${entry.latestVersion.id}`} tabIndex={0}>{entry.name}</Link>
+          <Link to={notebookPath(entry.id, entry.latestVersion.id)} tabIndex={0}>{entry.name}</Link>
         </h2>
         <p className="home__lead-meta">{versionIdentity(entry.versions, entry.latestVersion)}</p>
       </div>
@@ -167,7 +168,7 @@ const STANDING_WORDS = {
 // tasting is the one action that opens the newest batch's own path;
 // every other action opens the recipe at its latest version.
 function RowActions({ entry }) {
-  const latestPath = `/recipe/${entry.latestVersion.id}`;
+  const latestPath = notebookPath(entry.id, entry.latestVersion.id);
   if (entry.standing === NOT_YET_CHURNED) {
     return (
       <span className="home__actions">
@@ -178,7 +179,7 @@ function RowActions({ entry }) {
     );
   }
   if (entry.standing === AWAITING_TASTING) {
-    const tastingPath = `/recipe/${entry.latestVersion.id}/batch/${entry.batches[0].id}`;
+    const tastingPath = notebookPath(entry.id, entry.latestVersion.id, entry.batches[0].id);
     return (
       <span className="home__actions">
         <Link to={tastingPath} className="home__action" tabIndex={0}>
@@ -230,7 +231,7 @@ export function RecipeRows({ versions, batches = [], recipes = [] }) {
             <span className="home__rail" aria-hidden="true" />
             <p className="home__place">{placeNameFor()}</p>
             <h2 className="home__name">
-              <Link to={`/recipe/${entry.latestVersion.id}`} tabIndex={0}>{entry.name}</Link>
+              <Link to={notebookPath(entry.id, entry.latestVersion.id)} tabIndex={0}>{entry.name}</Link>
             </h2>
             <span className="home__standing">{STANDING_WORDS[entry.standing]}</span>
             <span className="home__meta">

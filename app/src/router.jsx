@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { createBrowserRouter, Link, useParams } from 'react-router';
+import { createBrowserRouter, useParams } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
 import { Shell } from './ui/Shell.jsx';
 import { Placeholder } from './ui/Placeholder.jsx';
+import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 
 // A different version, or a different batch of the same version, must be a
 // different page instance (one-pen-rule-leaks.md Evidence 8-9). React
 // Router's _renderMatches builds the rendered route element with no key of
-// its own, so /recipe/A -> /recipe/B reused the same RecipePage instance
-// and carried its mode, draft, amendingBatchId, tastingDraft and penDraft
-// along with it. That silent carry is what turned two latent bugs into
-// reachable failures: (a) amending version A's batch, landing on B, then
-// pressing Save batch — amendingBatchId still names A's batch while
+// its own, so /notebook/r/A -> /notebook/r/B reused the same RecipePage
+// instance and carried its mode, draft, amendingBatchId, tastingDraft and
+// penDraft along with it. That silent carry is what turned two latent bugs
+// into reachable failures: (a) amending version A's batch, landing on B,
+// then pressing Save batch — amendingBatchId still names A's batch while
 // `batches` has reloaded to B's, so `batches.find` returns undefined and
 // recordAmendment throws reading `amendedAt` off it; (b) developing
 // version A, landing on sibling B, then pressing Save as a new version —
@@ -21,13 +22,14 @@ import { Placeholder } from './ui/Placeholder.jsx';
 // rows including their ids, so buildPenFields finds a draft row for every
 // row of B and silently writes a child OF B carrying A's grams, method,
 // headnote and authored notes, with no error at all. A key built from the
-// route's own id and batchId makes both paths unreachable by any route,
-// including the browser's own back and forward buttons, which no disabled
-// link could ever guard — this is D-UAT-2's reset backstop, not its
-// in-app navigation policy (that is 03-07's scope). The wrapper does
-// nothing else: no state, no fetch, just the parameters and the key.
+// route's own recipeId, versionId and batchId makes both paths
+// unreachable by any route, including the browser's own back and forward
+// buttons, which no disabled link could ever guard — this is D-UAT-2's
+// reset backstop, not its in-app navigation policy (that is 03-07's
+// scope). The wrapper does nothing else: no state, no fetch, just the
+// parameters and the key.
 function RecipePageForRoute() {
-  const { id, batchId } = useParams();
+  const { recipeId, versionId, batchId } = useParams();
   const [pageStatus, setPageStatus] = useState('');
   const pageStatusTimerRef = useRef(null);
 
@@ -53,18 +55,16 @@ function RecipePageForRoute() {
 
   return (
     <>
-      {/* The running head lives here, in the routed shell, above the
-          keyed page, so the notice has a fixed band to anchor beneath
-          instead of a magic offset. RecipePage stays a sibling AFTER
-          this div, never inside it, so the band's height stays exactly
-          the head's height. */}
-      <div className="page-head">
-        <p className="running-head">
-          <Link to="/" tabIndex={0}>Sprinkles</Link>
-        </p>
+      {/* The running head is gone (folded todo, 03.5-02 Task 3) — the App
+          shell's own rail and wordmark are the way home now. This anchor
+          is what remains of the band: a zero-height containing block for
+          .page-status, positioned outside the keyed RecipePage so the
+          notice survives the navigation a save causes. RecipePage stays a
+          sibling AFTER this div, never inside it. */}
+      <div className="page-status-anchor">
         <PageStatus message={pageStatus} />
       </div>
-      <RecipePage key={`${id}::${batchId ?? ''}`} onPageStatus={announcePageStatus} />
+      <RecipePage key={`${recipeId}::${versionId}::${batchId ?? ''}`} onPageStatus={announcePageStatus} />
     </>
   );
 }
@@ -84,13 +84,25 @@ export function PageStatus({ message }) {
 // (RESEARCH.md Pattern 1). Task 1 adds the one placeholder route this
 // task's rail reaches (Notebook); Task 2 adds the remaining destinations
 // and the Search placeholder.
+//
+// 03.5-02: a version lives at /notebook/:recipeId/:versionId (and its
+// batch sibling); /notebook/:recipeId replace-redirects to that recipe's
+// latest version (D-14, added by Task 2). The old /recipe/:id and
+// /recipe/:id/batch/:batchId addresses are kept indefinitely (D-16) —
+// never deleted — and now resolve through LegacyRecipeRedirect, which
+// reads the old id as a version id and replaces the address with the
+// Notebook form.
 export const router = createBrowserRouter([
   {
     Component: Shell,
     children: [
       { path: '/', Component: RecipeList },
-      { path: '/recipe/:id', Component: RecipePageForRoute },
-      { path: '/recipe/:id/batch/:batchId', Component: RecipePageForRoute },
+      { path: '/notebook/:recipeId', Component: NotebookLatestRedirect },
+      { path: '/notebook/:recipeId/:versionId', Component: RecipePageForRoute },
+      { path: '/notebook/:recipeId/:versionId/batch/:batchId', Component: RecipePageForRoute },
+      // D-16: kept indefinitely, not deleted — the old id is a version id.
+      { path: '/recipe/:id', Component: LegacyRecipeRedirect },
+      { path: '/recipe/:id/batch/:batchId', Component: LegacyRecipeRedirect },
       { path: '/notebook', element: <Placeholder name="Notebook" /> },
       { path: '/recipe-book', element: <Placeholder name="Recipe book" /> },
       { path: '/idea-log', element: <Placeholder name="Idea log" /> },

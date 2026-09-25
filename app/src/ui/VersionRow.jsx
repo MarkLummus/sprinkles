@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { recordDateWords } from '../domain/batch.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { RecipeHistory } from './RecipeHistory.jsx';
+import { notebookPath } from './notebookPaths.js';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
@@ -222,7 +223,7 @@ export function VersionRow({
                   {openPen ? (
                     version.parentVersionLabel
                   ) : (
-                    <Link to={`/recipe/${version.parentVersionId}`} state={{ focusVersion: true }} tabIndex={0}>
+                    <Link to={notebookPath(version.recipeId, version.parentVersionId)} state={{ focusVersion: true }} tabIndex={0}>
                       {version.parentVersionLabel}
                     </Link>
                   )}
@@ -245,7 +246,7 @@ export function VersionRow({
                 {openPen ? (
                   recordDateWords(citedBatch.churn.churnDate)
                 ) : (
-                  <Link to={`/recipe/${version.parentVersionId}/batch/${version.citedBatchId}`} state={{ focusBatch: true }} tabIndex={0}>
+                  <Link to={notebookPath(version.recipeId, version.parentVersionId, version.citedBatchId)} state={{ focusBatch: true }} tabIndex={0}>
                     {recordDateWords(citedBatch.churn.churnDate)}
                   </Link>
                 )}

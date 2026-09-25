@@ -61,6 +61,7 @@ Shaped with Mark 2026-09-23 (`/impeccable shape`) for GSD Phase 03.5; confirmed 
 - **Folds below desktop start closed on every visit.** Nothing remembers a fold being opened; no stored state.
 - **Recipe Book form gets authored Yield and time fields**, as a printed recipe book carries Serves and times. They are Sheet fields on the version. Which time fields, and how they sit beside the derived Makes (row total) and step-target Age, Harden and Serve, is settled when the Recipe Book form is built; the form stays unbuilt in 03.5.
 - **Open step buttons:** Done and Cancel. Done keeps the edit in the draft; Cancel restores the parent's step.
+- **The Recipe Book band, principle settled, drawing deferred.** The Recipe Book form shows one selected version only — no version selection, no Next version and no History — and its band carries the Recipe name. Sketch 011's own reference board exposed the version structure as drawn; that is not the authority. The reference board itself is redrawn in the phase that builds the Recipe Book form, and `/recipe-book/:recipeId` stays reserved, not built, until then.
 
 ## 1. Job and audience
 

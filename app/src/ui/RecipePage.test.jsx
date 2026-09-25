@@ -749,7 +749,7 @@ describe('RecipePage.jsx — the version pen\'s refusal and failure route throug
 // createBrowserHistory, which needs `document` — so no markup test is
 // possible for the running head's new home. The repository mock above is
 // not the obstacle; this is a plain module-scope DOM dependency.
-describe('the running head is owned by the routed shell, not by RecipePage (260917-ewf)', () => {
+describe('the running head is gone; PageStatus anchors outside the keyed page (260917-ewf, 03.5-02 Task 3 folded todo)', () => {
   const routerPath = fileURLToPath(new URL('../router.jsx', import.meta.url));
   const routerSource = readFileSync(routerPath, 'utf8')
     .replace(/\/\*[\s\S]*?\*\//g, '')
@@ -759,48 +759,75 @@ describe('the running head is owned by the routed shell, not by RecipePage (2609
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
 
-  it('router.jsx renders the running head exactly once', () => {
-    expect(routerSource.match(/className="running-head"/g) ?? []).toHaveLength(1);
+  it('router.jsx renders no running head and no Link opening tag', () => {
+    expect(routerSource.match(/className="running-head"/g)).toBeNull();
+    expect(routerSource.match(/<Link\b[^>]*>/g)).toBeNull();
   });
 
   it('RecipePage.jsx renders the running head zero times', () => {
     expect(thisFilesRecipePageSource.match(/className="running-head"/g)).toBeNull();
   });
 
-  it('the notice precedes the keyed page — PageStatus outside RecipePage, key still on RecipePage', () => {
+  it('PageStatus sits inside .page-status-anchor, which precedes the keyed page', () => {
+    const anchorIndex = routerSource.indexOf('className="page-status-anchor"');
     const statusIndex = routerSource.indexOf('<PageStatus');
     const pageIndex = routerSource.indexOf('<RecipePage');
-    expect(statusIndex).toBeGreaterThanOrEqual(0);
+    expect(anchorIndex).toBeGreaterThanOrEqual(0);
+    expect(statusIndex).toBeGreaterThan(anchorIndex);
     expect(pageIndex).toBeGreaterThan(statusIndex);
     expect(routerSource).toMatch(/<RecipePage\s+key=/);
   });
 });
 
-// G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
-// explicit tabindex, pinned on rendered markup where the harness can
-// render it. Neither site here can be: router.jsx cannot be imported in
-// the node environment, as the block above records; RecipePage.jsx's
-// not-found link is reached only after an effect sets the version to
-// null, and renderToStaticMarkup runs no effects. Matching the whole
-// Link opening tag, one per file, is enough because each file holds
-// exactly one single-line Link, so the attribute cannot sit on another
-// element. Declares its own reads — the block above's constants are
-// scoped inside its own callback.
-describe('the running head and the not-found link carry an explicit tabindex (G-03.4-r4-1)', () => {
-  const routerPathForTabIndex = fileURLToPath(new URL('../router.jsx', import.meta.url));
-  const routerSourceForTabIndex = readFileSync(routerPathForTabIndex, 'utf8')
+// D-14/D-16 (03.5-02 Task 1): router.jsx cannot be rendered in this node
+// harness (createBrowserRouter needs `document`, per the block above), so
+// the new Notebook route table and the legacy /recipe/ redirects are pinned
+// on source text, the same idiom the block above already uses.
+describe('router.jsx routes the Notebook form, keeps the legacy /recipe/ redirects, and keys RecipePage on recipeId/versionId/batchId (03.5-02 D-14, D-16)', () => {
+  const routerPathForNotebook = fileURLToPath(new URL('../router.jsx', import.meta.url));
+  const routerSourceForNotebook = readFileSync(routerPathForNotebook, 'utf8')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
+
+  it("routes '/notebook/:recipeId/:versionId' to RecipePageForRoute", () => {
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/notebook\/:recipeId\/:versionId',\s*Component:\s*RecipePageForRoute\s*\}/,
+    );
+  });
+
+  it("routes '/notebook/:recipeId/:versionId/batch/:batchId' to RecipePageForRoute", () => {
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/notebook\/:recipeId\/:versionId\/batch\/:batchId',\s*Component:\s*RecipePageForRoute\s*\}/,
+    );
+  });
+
+  it("routes both '/recipe/:id' paths to LegacyRecipeRedirect (D-16, kept indefinitely)", () => {
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/recipe\/:id',\s*Component:\s*LegacyRecipeRedirect\s*\}/,
+    );
+    expect(routerSourceForNotebook).toMatch(
+      /\{\s*path:\s*'\/recipe\/:id\/batch\/:batchId',\s*Component:\s*LegacyRecipeRedirect\s*\}/,
+    );
+  });
+
+  it('keys RecipePage on recipeId, versionId and batchId joined by ::, batchId falling back to empty', () => {
+    expect(routerSourceForNotebook).toMatch(/key=\{`\$\{recipeId\}::\$\{versionId\}::\$\{batchId \?\? ''\}`\}/);
+  });
+});
+
+// G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
+// explicit tabindex, pinned on rendered markup where the harness can
+// render it. router.jsx's own case is gone with the running head
+// (03.5-02 Task 3) — it renders no Link at all now, covered by the block
+// above. RecipePage.jsx's not-found link is reached only after an effect
+// sets the version to null, and renderToStaticMarkup runs no effects, so
+// this stays a source-text pin: exactly one single-line Link, so the
+// attribute cannot sit on another element.
+describe('the not-found link carries an explicit tabindex (G-03.4-r4-1)', () => {
   const recipePagePathForTabIndex = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
   const recipePageSourceForTabIndex = readFileSync(recipePagePathForTabIndex, 'utf8')
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
-
-  it('router.jsx renders exactly one Link opening tag, carrying tabIndex={0}', () => {
-    const tags = routerSourceForTabIndex.match(/<Link\b[^>]*>/g) ?? [];
-    expect(tags).toHaveLength(1);
-    expect(tags[0]).toContain('tabIndex={0}');
-  });
 
   it('RecipePage.jsx renders exactly one Link opening tag, carrying tabIndex={0}', () => {
     const tags = recipePageSourceForTabIndex.match(/<Link\b[^>]*>/g) ?? [];

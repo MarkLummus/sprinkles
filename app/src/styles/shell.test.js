@@ -200,10 +200,10 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
 
 describe('the shell layout never becomes a containing block for .page-status (03.4-03 Task 1)', () => {
   // The recipe route's page-scoped notice (app.css's .page-status) anchors
-  // to .page-head by position alone. Nesting RecipePageForRoute one level
-  // deeper under the shell's Outlet must not interpose a new containing
-  // block between them — any of these five properties on .shell,
-  // .shell__body or .shell__main would do exactly that.
+  // to .page-status-anchor by position alone. Nesting RecipePageForRoute
+  // one level deeper under the shell's Outlet must not interpose a new
+  // containing block between them — any of these five properties on
+  // .shell, .shell__body or .shell__main would do exactly that.
   test('.shell, .shell__body and .shell__main declare none of transform, filter, perspective, will-change, contain', () => {
     const forbidden = ['transform', 'filter', 'perspective', 'will-change', 'contain'];
     for (const selector of ['.shell', '.shell__body', '.shell__main']) {

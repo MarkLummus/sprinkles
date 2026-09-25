@@ -18,6 +18,7 @@ import {
 import { buildDiff } from '../domain/diff.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
+import { notebookPath } from './notebookPaths.js';
 import { IngredientTable } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
@@ -566,11 +567,25 @@ export function batchSavedStatus(record) {
   return `recorded ${formatRecordDate(record.recordedAt)} against ${record.snapshot.versionLabel}`;
 }
 
+// The not-found markup (03.5-02, decisions_recorded 3): shared by a version
+// missing outright and by a version whose recipeId does not match the
+// route's own recipeId (a wrong-address read, not a real recipe). Exported
+// so NotebookRedirects.jsx's LegacyRecipeRedirect and NotebookLatestRedirect
+// render the identical not-found page rather than inventing a second one.
+export function RecipeNotFound() {
+  return (
+    <div className="not-found">
+      <p>No recipe found for this version.</p>
+      <Link to="/" tabIndex={0}>Back to the recipe list</Link>
+    </div>
+  );
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The margin's derived-advisories block (FORM2-02)
 // renders nothing visible when the version has none — no placeholder text.
 export function RecipePage({ onPageStatus = () => {} }) {
-  const { id, batchId } = useParams();
+  const { recipeId, versionId, batchId } = useParams();
   const navigate = useNavigate();
   // The fork's landing focus signal: read once here so the saved child
   // can identify itself before offering another Next version action.
@@ -697,23 +712,23 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
   useEffect(() => {
     let cancelled = false;
-    repository.getVersion(id).then((result) => {
+    repository.getVersion(versionId).then((result) => {
       if (!cancelled) setVersion(result ?? null);
     });
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [versionId]);
 
   useEffect(() => {
     let cancelled = false;
-    repository.listBatchesForVersion(id).then((result) => {
+    repository.listBatchesForVersion(versionId).then((result) => {
       if (!cancelled) setBatches(result);
     });
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [versionId]);
 
   // Every stored version, loaded once beside the two effects above — the
   // strip (03-03) and the version-line uniqueness check (D-04) both read
@@ -726,7 +741,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [versionId]);
 
   // The cited batch this version's lineage line names (route-recipe-version.md
   // § 3): citedBatchId is an id only — the batch itself lives on the
@@ -784,7 +799,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [versionId]);
 
   // D-24: leaving the page with unsaved ink uses the browser's own leave
   // warning only, registered while recording or the plan's pen holds a
@@ -841,14 +856,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // (route-recipe-version.md § 4) — is now drawn by the routed shell
   // (router.jsx), above this component and outside its key, so it also
   // covers the loading state above. A mistyped or since-removed version
-  // id is no longer a dead end.
-  if (version === null) {
-    return (
-      <div className="not-found">
-        <p>No recipe found for this version.</p>
-        <Link to="/" tabIndex={0}>Back to the recipe list</Link>
-      </div>
-    );
+  // id is no longer a dead end. A version whose own recipeId does not
+  // match the route's recipeId is treated the same way (decisions_recorded
+  // 3, 03.5-02) — a recipe never renders under a wrong address.
+  if (version === null || version.recipeId !== recipeId) {
+    return <RecipeNotFound />;
   }
 
   // The one call site (D-UAT-1): every control that disables while a pen
@@ -1408,7 +1420,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
       batchSaveLockRef.current = false;
       setBatchSaveAction(null);
       onPageStatus(batchSavedStatus(record));
-      navigate(`/recipe/${id}/batch/${record.id}`, { state: { focusBatch: true } });
+      navigate(notebookPath(version.recipeId, version.id, record.id), { state: { focusBatch: true } });
     }).catch(() => {
       batchSaveLockRef.current = false;
       setBatchSaveAction(null);
@@ -1726,7 +1738,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
       onPageStatus(VERSION_SAVED_STATUS);
       // The child mounts fresh because router.jsx keys RecipePage by its
       // route. Land on the saved identity before offering another fork.
-      navigate(`/recipe/${child.id}`, { state: { focusVersion: true } });
+      navigate(notebookPath(child.recipeId, child.id), { state: { focusVersion: true } });
     }).catch(() => {
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);

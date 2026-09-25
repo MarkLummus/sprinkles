@@ -42,7 +42,7 @@ describe('legacyRecipePath — the /recipe/:id redirect target (D-16)', () => {
 
   it('never returns a path starting with /recipe/ (T-03.5-08)', () => {
     expect(legacyRecipePath(oliveOilVersion, 'b1')).not.toMatch(/^\/recipe\//);
-    expect(legacyRecipePath(undefined, null)).not.toMatch(/^\/recipe\//);
+    expect(legacyRecipePath(undefined, null)).toBeNull();
   });
 });
 

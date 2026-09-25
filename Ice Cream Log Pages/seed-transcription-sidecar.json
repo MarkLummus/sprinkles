@@ -22,6 +22,27 @@
         "handwrittenDate": "12/13/2025"
       }
     },
+    "mexican-chocolate-v2": {
+      "source": "Mexican Chocolate v2-2.ier (Ice Ed export, ~/Documents; Recipe.Name \"Mexican Chocolate v2\")",
+      "fields": {
+        "kcalPer100gByIngredient": {
+          "Whole Milk 3.3%": 0.61,
+          "Cocoa Powder": 2.28,
+          "Sucrose": 3.85,
+          "Dextrose": 3.66,
+          "Fructose": 3.98,
+          "Dried Skimmed Milk Powder": 3.55,
+          "Salt": null,
+          "Cream, heavy": 3.4,
+          "Vanilla Extract": 2.88,
+          "Stabilizer Mix 4421": 5.127,
+          "Cinnamon": null,
+          "Allulose": 0.2
+        },
+        "staleNotesText": "Observations:\nsweetness is good\nhard straight from freezer\n\nneed to lower stabilizer to 2.5g / kg\nincrease fat to 8% minimum, optimally 9 - 11%\ndextrose: 86g --> 55g\nallulose: +30g",
+        "staleNotesFlag": "Carried forward by Ice Ed from Mexican Chocolate v1's Notes (identical to ~/Documents/Mexican Chocolate v1.ier's own Notes). v2 has no binder page and no churn evidence, so none of this text is v2's own result — it is not stored as an authored note, a reason, a tasting or a battery mark on this version. See 03.5-SEED-REVIEW.md, Mexican Chocolate v2, judgement call 27."
+      }
+    },
     "mexican-chocolate-v3": {
       "source": "IMG_2454.HEIC (binder photo)",
       "fields": {

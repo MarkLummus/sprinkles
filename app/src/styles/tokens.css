@@ -489,4 +489,15 @@
   --sheet-narrow-name-gap: 10px; /* the plan-grams span's own reset margin-right at this width */
   --sheet-narrow-numeric-pad-r: 14px; /* a numeric cell's own right padding, reading inline */
   --sheet-narrow-numeric-gap-t: 4px; /* a numeric cell's own top margin, second line under the name */
+
+  /* The step pen (sketch 011 decisions_recorded 5; 1600-pen.html, Task 3):
+     the closed step's own "edit this step · remove" line and the open
+     step's controls line share one gap; Cancel/Done get their own,
+     wider pair — both read the binder's existing global button/
+     .text-control rules, no class of their own for either control. */
+  --sheet-step-acts-gap: 8px; /* the closed acts line's and the open controls line's own gap between controls */
+  --sheet-done-cancel-gap-t: 10px; /* the Done/Cancel paragraph's own top margin */
+  --sheet-done-cancel-gap: 16px; /* the Done/Cancel paragraph's own gap */
+  --sheet-open-fields-offset: 4px; /* the open step's field block's own outline-offset */
+  --sheet-changed-line-gap-t: 4px; /* .method-step__changed's own top margin (corrects the previous --gap-xs reuse, which read 6px against the board's 4px) */
 }

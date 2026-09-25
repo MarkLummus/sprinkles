@@ -1023,13 +1023,15 @@ textarea {
   letter-spacing: 0.04em;
 }
 
-/* The maker's one line per changed step, in pen blue, following the same
+/* The maker's one line per changed step, written in the hand (D-19,
+   sketch 011 Task 3) via the .sheet-hand class alongside this one —
+   .sheet-hand owns every typography value (font, size, colour), so this
+   rule carries layout only, never a font-family/font-size of its own
+   that would collide with it in source order. Follows the same
    render-only-when-present convention as .method-step__purpose/__aside. */
 .method-step__changed {
-  font-family: var(--face-text);
-  font-size: var(--sheet-size-deviation-words);
   max-width: var(--measure-prose);
-  margin: var(--gap-xs) 0 0;
+  margin: var(--sheet-changed-line-gap-t) 0 0;
 }
 
 .method-step__recording {
@@ -1080,20 +1082,25 @@ textarea {
   gap: var(--gap-hair);
 }
 
-/* The uses line (D-24): one line of names in small print, its "change"/
-   "done" control on the same line. */
+/* The controls line (D-24; sketch 011 decisions_recorded 5, Task 3): one
+   line of names, its "change the ingredients"/"done" toggle, and the
+   purpose/aside on-demand triggers, middot-separated — wrapping rather
+   than overflowing at narrow widths. */
 .method-step__uses-line {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-cross-flag);
   margin: var(--gap-xs) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sheet-step-acts-gap);
 }
 
-.method-step__uses-line button {
-  margin-left: var(--gap-xs);
-}
-
-/* The on-demand text controls (D-23, D-25): "add purpose", "add aside",
-   "done differently" — sitting in the step's own flow, one per line. */
+/* The on-demand text controls (D-23, D-25): "done differently" — sitting
+   in the record pen's own flow, one per step (StepRecordingControls).
+   The plan pen's own "add a purpose"/"add an aside" triggers moved onto
+   the controls line above (sketch 011 Task 3) and read plain
+   .text-control, no longer this class. */
 .method-step__on-demand {
   display: block;
   /* The wrapper is a column flex, so a stretched item fills the whole
@@ -1105,14 +1112,35 @@ textarea {
   margin-top: var(--gap-xs);
 }
 
-/* The "edit this step" control's own layout rule (03.3-03, 03.1 Gap 1
-   override): same shape as .method-step__on-demand above — the control's
-   visual style comes entirely from the .text-control class applied
-   alongside it. */
-.method-step__edit {
-  display: block;
-  align-self: flex-start;
+/* The closed step's own controls line (sketch 011 decisions_recorded 4,
+   Task 3): "edit this step · remove" (or "restore" once removed) — both
+   read the binder's existing .text-control rule, no class of their own
+   beyond this line's own layout. */
+.method-step__acts {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sheet-step-acts-gap);
   margin-top: var(--gap-xs);
+}
+
+/* The open step's field block (sketch 011 decision 2, Task 3): a hairline
+   ink outline around the lead-in/instruction/target fields, the one place
+   this plan draws toward the board's single pen-blue block without
+   changing the field grammar itself (decisions_recorded 2). */
+.method-step__open-fields {
+  outline: var(--rule-graduation) solid var(--sheet-ink);
+  outline-offset: var(--sheet-open-fields-offset);
+}
+
+/* Done/Cancel (sketch 011 decisions_recorded 5, Task 3): Cancel first
+   (Sheet grammar) as an underlined word, Done as the binder's own
+   hairline ink box — both read the existing global button/.text-control
+   rules already declared above; this rule is layout only. */
+.method-step__done-cancel {
+  display: flex;
+  align-items: center;
+  gap: var(--sheet-done-cancel-gap);
+  margin-top: var(--sheet-done-cancel-gap-t);
 }
 
 /* The removed-row cross-flag and the stale-amount flag (03-02): small

@@ -72,13 +72,19 @@ function useOnDemandField(initialOpen, onCollapse) {
   return { isOpen, openField, fieldRef, handleBlur };
 }
 
-// A step's body while the plan's pen is open (D-23, D-24, D-28): pulled out
-// of the steps.map() loop below so each step can own its own on-demand
-// state (purpose, aside, the uses checklist) via ordinary component-local
-// useState — this component is called once per step, in the same order
-// every render, since the method's own step count does not change within
-// a session.
-function StepPenBody({
+// A step's body while the plan's pen is open (D-23, D-24, D-28; sketch 011
+// decisions_recorded 5, Task 3): pulled out of the steps.map() loop below
+// so each step can own its own on-demand state (purpose, aside, the uses
+// checklist) via ordinary component-local useState — this component is
+// called once per step, in the same order every render, since the
+// method's own step count does not change within a session. Whether THIS
+// step is the one open is Method's own state now, not this component's —
+// isOpen/onOpen/onDone/onCancel are all Method's, so opening one step can
+// close whichever other step was open (Done keeps its edits, matching
+// Cancel's own restore-and-close). Exported for its own direct test —
+// renderToStaticMarkup cannot simulate the click that opens a step through
+// <Method> itself (RESEARCH.md Pitfall 4).
+export function StepPenBody({
   step,
   draftStep,
   stepDiff,
@@ -89,6 +95,10 @@ function StepPenBody({
   staleFlagVisible,
   currentStepNumbers,
   fieldLabel,
+  isOpen,
+  onOpen,
+  onDone,
+  onCancel,
   onChangePenStepField,
   onChangePenStepTarget,
   onTogglePenStepUses,
@@ -102,16 +112,6 @@ function StepPenBody({
     onChangePenStepField(step.n, 'purpose', ''),
   );
   const aside = useOnDemandField(Boolean(draftStep.aside), () => onChangePenStepField(step.n, 'aside', ''));
-
-  // The whole-step reveal gate (03.3-03, 03.1 Gap 1 override): the same
-  // useOnDemandField primitive purpose/aside already use above, called a
-  // third time — here at the whole-step level instead of the per-field
-  // level, per PATTERNS.md's own recommendation, never a second
-  // implementation. Only isOpen/openField are read below; no
-  // auto-focus-on-reveal is built (fieldRef/handleBlur stay unused for
-  // this call), since nothing in scope asks for it — a stated boundary,
-  // not an oversight.
-  const stepReveal = useOnDemandField(false, () => {});
 
   // The uses line (D-24): closed by default, reading the names live off
   // the draft on every render — never a snapshot — so the line above the
@@ -134,75 +134,82 @@ function StepPenBody({
     usesControlRef.current?.focus();
   }
 
-  // The whole-step reveal gate (03.3-03, 03.1 Gap 1 override): the pen
-  // opens each step read-only by default — the closed branch below
-  // transcribes the show-changes branch's own read-only JSX
-  // (Method.jsx's isShowingChanges branch), fed draftStep/stepDiff
-  // instead of step/stepDiff — with one "edit this step" text control
-  // revealing this same, unmodified open form. Both branches keep the
-  // outer method-step__body wrapper so its grid/spacing rule applies
-  // uniformly regardless of state.
-  return stepReveal.isOpen ? (
+  // The whole-step reveal gate (03.3-03, 03.1 Gap 1 override; sketch 011
+  // decisions_recorded 5, Task 3): the pen opens each step read-only by
+  // default — the closed branch below transcribes the show-changes
+  // branch's own read-only JSX (Method.jsx's isShowingChanges branch), fed
+  // draftStep/stepDiff instead of step/stepDiff — with one "edit this
+  // step" text control revealing this same, unmodified open form. Both
+  // branches keep the outer method-step__body wrapper so its grid/spacing
+  // rule applies uniformly regardless of state.
+  return isOpen ? (
     <div className="method-step__body">
-      <label className="method-step__field">
-        <input
-          type="text"
-          className="prose-field prose-field--lead-in"
-          value={draftStep.leadIn}
-          aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
-          onChange={(event) => onChangePenStepField(step.n, 'leadIn', event.target.value)}
-        />
-      </label>
-      <label className="method-step__field">
-        <textarea
-          className="prose-field"
-          rows="2"
-          value={draftStep.instruction}
-          aria-label={fieldLabel(step, draftStep.removed, 'instruction')}
-          onChange={(event) => onChangePenStepField(step.n, 'instruction', event.target.value)}
-        />
-      </label>
-      {/* The one place the strike sits below rather than beside
-          the field, because a paragraph has no room beside
-          (route-recipe-version.md § 3). The "removed" label is
-          a sibling of the struck element, never nested inside
-          it — the same reason the reading branch's "Skipped"
-          label sits outside its struck span, below. */}
-      {showStruckBeneath && (
-        <p className="prose-struck-beneath">
-          <b>{stepDiff.textFrom.leadIn}.</b> {stepDiff.textFrom.instruction}
-        </p>
-      )}
-      {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
+      {/* The open step's fields, in a hairline outline (sketch 011
+          decision 2, decisions_recorded 5): the field grammar itself
+          stands unchanged — separate lead-in, instruction and target
+          fields, not the board's one pen-blue block — that difference
+          goes on plan 08's record for Mark. */}
+      <div className="method-step__open-fields">
+        <label className="method-step__field">
+          <input
+            type="text"
+            className="prose-field prose-field--lead-in"
+            value={draftStep.leadIn}
+            aria-label={fieldLabel(step, draftStep.removed, 'lead-in')}
+            onChange={(event) => onChangePenStepField(step.n, 'leadIn', event.target.value)}
+          />
+        </label>
+        <label className="method-step__field">
+          <textarea
+            className="prose-field"
+            rows="2"
+            value={draftStep.instruction}
+            aria-label={fieldLabel(step, draftStep.removed, 'instruction')}
+            onChange={(event) => onChangePenStepField(step.n, 'instruction', event.target.value)}
+          />
+        </label>
+        {/* The one place the strike sits below rather than beside
+            the field, because a paragraph has no room beside
+            (route-recipe-version.md § 3). The "removed" label is
+            a sibling of the struck element, never nested inside
+            it — the same reason the reading branch's "Skipped"
+            label sits outside its struck span, below. */}
+        {showStruckBeneath && (
+          <p className="prose-struck-beneath">
+            <b>{stepDiff.textFrom.leadIn}.</b> {stepDiff.textFrom.instruction}
+          </p>
+        )}
+        {draftStep.removed && <span className="method-step__skipped-label"> removed</span>}
 
-      {draftStep.targets?.length > 0 && (
-        <p className="method-step__targets">
-          {draftStep.targets.map((target, index) => {
-            const targetDiff = stepDiff.targets[index];
-            return (
-              <span className="target-chip" key={index}>
-                {targetDiff?.changed && targetDiff.from != null && (
-                  <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
-                )}
-                <input
-                  type="text"
-                  className="ink-field target-chip__label-field"
-                  value={target.label}
-                  aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
-                  onChange={(event) => onChangePenStepTarget(step.n, index, 'label', event.target.value)}
-                />
-                <input
-                  type="text"
-                  className="ink-field target-chip__value-field"
-                  value={target.value}
-                  aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
-                  onChange={(event) => onChangePenStepTarget(step.n, index, 'value', event.target.value)}
-                />
-              </span>
-            );
-          })}
-        </p>
-      )}
+        {draftStep.targets?.length > 0 && (
+          <p className="method-step__targets">
+            {draftStep.targets.map((target, index) => {
+              const targetDiff = stepDiff.targets[index];
+              return (
+                <span className="target-chip" key={index}>
+                  {targetDiff?.changed && targetDiff.from != null && (
+                    <span className="struck-value">{`${targetDiff.label} ${targetDiff.from}`}</span>
+                  )}
+                  <input
+                    type="text"
+                    className="ink-field target-chip__label-field"
+                    value={target.label}
+                    aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, label`)}
+                    onChange={(event) => onChangePenStepTarget(step.n, index, 'label', event.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className="ink-field target-chip__value-field"
+                    value={target.value}
+                    aria-label={fieldLabel(step, draftStep.removed, `target ${index + 1}, value`)}
+                    onChange={(event) => onChangePenStepTarget(step.n, index, 'value', event.target.value)}
+                  />
+                </span>
+              );
+            })}
+          </p>
+        )}
+      </div>
 
       {/* The stale-amount flag (route-recipe-version.md § 3):
           derived from the step's uses list, never from parsing
@@ -218,10 +225,11 @@ function StepPenBody({
         </p>
       )}
 
-      {/* Purpose and aside on demand (D-23): a lowercase opener when the
-          field holds no text, the field itself once the maker asks for
-          one or it already carries a baseline value. */}
-      {purpose.isOpen ? (
+      {/* Purpose and aside on demand (D-23): the field itself once the
+          maker asks for one or it already carries a baseline value — the
+          "add a purpose"/"add an aside" openers now sit on the shared
+          controls line below, beside "change the ingredients", not here. */}
+      {purpose.isOpen && (
         <label className="method-step__field">
           <textarea
             ref={purpose.fieldRef}
@@ -233,22 +241,13 @@ function StepPenBody({
             onBlur={purpose.handleBlur}
           />
         </label>
-      ) : (
-        <button
-          type="button"
-          className="method-step__on-demand text-control"
-          aria-label={fieldLabel(step, draftStep.removed, 'add purpose')}
-          onClick={purpose.openField}
-        >
-          add purpose
-        </button>
       )}
       {/* Each of the four text fields strikes only its own
           parent value, beneath itself, when that field moved —
           never the lead-in/instruction pair (03-09). */}
       {showPurposeStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.purpose}</p>}
 
-      {aside.isOpen ? (
+      {aside.isOpen && (
         <label className="method-step__field">
           <textarea
             ref={aside.fieldRef}
@@ -260,24 +259,17 @@ function StepPenBody({
             onBlur={aside.handleBlur}
           />
         </label>
-      ) : (
-        <button
-          type="button"
-          className="method-step__on-demand text-control"
-          aria-label={fieldLabel(step, draftStep.removed, 'add aside')}
-          onClick={aside.openField}
-        >
-          add aside
-        </button>
       )}
       {showAsideStruck && <p className="prose-struck-beneath">{stepDiff.textFrom.aside}</p>}
 
-      {/* The uses line (D-24): one line of names with a single "change"
-          control per step, rather than twelve checkboxes permanently on
-          screen. The wrapper below (G-03.3-2 fix, gap plan 05) covers both
-          this line's "change"/"done" button and the fieldset, so an
-          Escape pressed while focus is on the button (not just inside the
-          fieldset) is caught by the same usesOpen-gated handler. */}
+      {/* The controls line (D-24, D-23; sketch 011 decisions_recorded 5):
+          the uses sentence and its "change the ingredients"/"done"
+          toggle, then the on-demand triggers for purpose and aside — one
+          line, middot-separated, each trigger absent once its own field
+          is open. The wrapper below (G-03.3-2 fix, gap plan 05) covers
+          both this line's toggle and the fieldset, so an Escape pressed
+          while focus is on the button (not just inside the fieldset) is
+          caught by the same usesOpen-gated handler. */}
       <div onKeyDown={handleUsesKeyDown}>
         <p className="method-step__uses-line">
           {usesNames.length > 0 ? `uses ${usesNames.join(', ')}` : 'uses nothing yet'}{' '}
@@ -285,11 +277,37 @@ function StepPenBody({
             type="button"
             className="text-control"
             ref={usesControlRef}
-            aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change')}
+            aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change the ingredients')}
             onClick={() => setUsesOpen((open) => !open)}
           >
-            {usesOpen ? 'done' : 'change'}
+            {usesOpen ? 'done' : 'change the ingredients'}
           </button>
+          {!purpose.isOpen && (
+            <>
+              <span aria-hidden="true">·</span>
+              <button
+                type="button"
+                className="text-control"
+                aria-label={fieldLabel(step, draftStep.removed, 'add a purpose')}
+                onClick={purpose.openField}
+              >
+                add a purpose
+              </button>
+            </>
+          )}
+          {!aside.isOpen && (
+            <>
+              <span aria-hidden="true">·</span>
+              <button
+                type="button"
+                className="text-control"
+                aria-label={fieldLabel(step, draftStep.removed, 'add an aside')}
+                onClick={aside.openField}
+              >
+                add an aside
+              </button>
+            </>
+          )}
         </p>
         {usesOpen && (
           <fieldset className="method-step__uses" aria-label={fieldLabel(step, draftStep.removed, 'uses')}>
@@ -340,23 +358,30 @@ function StepPenBody({
         <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
       )}
 
-      <button
-        type="button"
-        className="text-control"
-        aria-label={fieldLabel(step, draftStep.removed, draftStep.removed ? 'restore' : 'remove')}
-        onClick={() => onTogglePenStepRemoved(step.n)}
-      >
-        {draftStep.removed ? 'restore' : 'remove'}
-      </button>
+      {/* Done/Cancel (sketch 011 decisions_recorded 5): Cancel first
+          (Sheet grammar), an underlined word; Done a hairline ink box —
+          both read the binder's existing global button/.text-control
+          rules, no class of their own. remove/restore no longer lives
+          here at all — it moved to the closed step (decisions_recorded
+          4), the mirror of moving into the open form. */}
+      <p className="method-step__done-cancel">
+        <button type="button" className="text-control" onClick={onCancel}>
+          Cancel
+        </button>
+        <button type="button" onClick={onDone}>
+          Done
+        </button>
+      </p>
     </div>
   ) : (
     // The closed-state form (03.3-03, 03.1 Gap 1 override): transcribed
     // from the isShowingChanges branch's own read-only JSX below, fed
     // draftStep/stepDiff instead of step/stepDiff — this branch's own
     // data is the maker's live edit, not the baseline `steps` prop.
-    // Renders nothing for flaggedRows/the uses line/remove-restore; that
-    // content lives only in the revealed form above (Mark, 2026-09-10,
-    // option B).
+    // Renders nothing for flaggedRows/the uses line; that content lives
+    // only in the revealed form above (Mark, 2026-09-10, option B).
+    // remove/restore DOES render here now (sketch 011 decisions_recorded
+    // 4) — the mirror of the move above.
     <div className="method-step__body">
       <p className="method-step__lead">
         <span className={draftStep.removed ? 'method-step__prose--struck' : undefined}>
@@ -407,14 +432,25 @@ function StepPenBody({
         <p className="method-step__flag">{coverageSentence(coveredRows, currentStepNumbers)}</p>
       )}
 
-      <button
-        type="button"
-        className="text-control method-step__edit"
-        aria-label={fieldLabel(step, draftStep.removed, 'edit this step')}
-        onClick={stepReveal.openField}
-      >
-        edit this step
-      </button>
+      <p className="method-step__acts">
+        <button
+          type="button"
+          className="text-control"
+          aria-label={fieldLabel(step, draftStep.removed, 'edit this step')}
+          onClick={onOpen}
+        >
+          edit this step
+        </button>
+        <span aria-hidden="true">·</span>
+        <button
+          type="button"
+          className="text-control"
+          aria-label={fieldLabel(step, draftStep.removed, draftStep.removed ? 'restore' : 'remove')}
+          onClick={() => onTogglePenStepRemoved(step.n)}
+        >
+          {draftStep.removed ? 'restore' : 'remove'}
+        </button>
+      </p>
     </div>
   );
 }
@@ -539,6 +575,11 @@ export function Method({
   onChangePenStepTarget = () => {},
   onTogglePenStepUses = () => {},
   onTogglePenStepRemoved = () => {},
+  // Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;
+  // Task 3): restores that ONE step from the version the pen opened on —
+  // RecipePage.jsx's own restoreStepFromVersion, called with the stored
+  // step key Method passes here.
+  onRestorePenStep = () => {},
   // The two maps RecipePage computes once through domain/stepNumbers.js
   // (03-10): currentStepNumbers from the method this component is showing
   // (the draft's while developing, the version's own otherwise);
@@ -552,6 +593,27 @@ export function Method({
   const isShowingChanges = !isDeveloping && showingChanges && changeDiff != null;
   const activeDiff = isDeveloping ? penDiff : changeDiff;
   const activeStaleSteps = isDeveloping ? penStaleSteps : staleSteps;
+
+  // One step open at a time (sketch 011 decisions_recorded 5, Task 3):
+  // Method's own state now, not StepPenBody's — opening a step closes
+  // whichever other step was open, with its edits kept (Done does the
+  // same). Reset whenever the pen itself closes, so a step cannot stay
+  // "open" in memory across a save/cancel/reopen cycle.
+  const [openStepN, setOpenStepN] = useState(null);
+  useEffect(() => {
+    if (!isDeveloping) setOpenStepN(null);
+  }, [isDeveloping]);
+
+  function handleOpenStep(stepN) {
+    setOpenStepN(stepN);
+  }
+  function handleDoneStep() {
+    setOpenStepN(null);
+  }
+  function handleCancelStep(stepN) {
+    onRestorePenStep(stepN);
+    setOpenStepN(null);
+  }
 
   // The one place a step's displayed number is resolved (D-UAT-4,
   // D-UAT-5, G-03-14): its position in the current map if it has one,
@@ -634,6 +696,10 @@ export function Method({
                   staleFlagVisible={staleFlagVisible}
                   currentStepNumbers={currentStepNumbers}
                   fieldLabel={fieldLabel}
+                  isOpen={openStepN === step.n}
+                  onOpen={() => handleOpenStep(step.n)}
+                  onDone={handleDoneStep}
+                  onCancel={() => handleCancelStep(step.n)}
                   onChangePenStepField={onChangePenStepField}
                   onChangePenStepTarget={onChangePenStepTarget}
                   onTogglePenStepUses={onTogglePenStepUses}
@@ -766,7 +832,7 @@ export function Method({
                 )}
                 {step.purpose && <p className="method-step__purpose">{step.purpose}</p>}
                 {step.aside && <p className="method-step__aside">{step.aside}</p>}
-                {mode !== 'recording' && changedLine && <p className="method-step__changed ink-text">{changedLine}</p>}
+                {mode !== 'recording' && changedLine && <p className="method-step__changed sheet-hand">{changedLine}</p>}
                 {mode === 'recording' && (
                   <StepRecordingControls
                     step={step}

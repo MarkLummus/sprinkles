@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 11
+open_count: 12
 waived_count: 0
 fixed_count: 0
-total_count: 11
-last_updated: 2026-09-25T12:45:51.264Z
+total_count: 12
+last_updated: 2026-09-25T13:13:18.723Z
 ---
 
 # Broken Windows Ledger
@@ -26,6 +26,7 @@ last_updated: 2026-09-25T12:45:51.264Z
 | 9 | 03.4 | deviation | app/src/ui/RecipeList.jsx |  | RowActions always renders both filled+secondary actions at every width; board 171's row shows only the filled action at 393px - new conformance finding, 03.4-GAPS-CONFORMANCE.md row 32 | open |  | 2026-09-22T03:12:15.056Z |  |
 | 10 | 03.5 | unrun-verify | app/src/ui/RecipeHistory.jsx |  | Real-browser side-by-side check of the History rail against 1600-batch.html/1600-no-batch.html/1600-long-history.html/1600-pen.html — no browser-automation tool available inside this worktree; deferred to end-of-phase UAT per workflow.human_verify_mode: end-of-phase | open |  | 2026-09-25T12:06:20.582Z |  |
 | 11 | 03.5 | unrun-verify | .planning/phases/03.5-separate-the-recipe-from-the-sheet/03.5-06-PLAN.md |  | Plan 03.5-06 verification bullet 2: the built app's olive oil Sheet at every state (reading/pen/record/show-changes) against the sketch boards, the pen's one-step-open/Cancel/Done behaviour, and the total's as-made hand values -- needs a real layout engine this worktree had no browser-automation tool for; deferred to end-of-phase UAT (workflow.human_verify_mode: end-of-phase). | open |  | 2026-09-25T12:45:51.264Z |  |
+| 12 | 03.5 | unrun-verify | app/src/ui/BatchRow.jsx |  | Task 3 human-check deferred: at 1600/1366 open Record another, confirm the record pen opens in the log column with no horizontal overflow (scrollWidth == clientWidth) and Save batch lands on the new batch — no browser-automation tool in this worktree | open |  | 2026-09-25T13:13:18.723Z |  |
 
 ````json
 [
@@ -168,6 +169,19 @@ last_updated: 2026-09-25T12:45:51.264Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-25T12:45:51.264Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 12,
+    "kind": "unrun-verify",
+    "phase": "03.5",
+    "file": "app/src/ui/BatchRow.jsx",
+    "line": null,
+    "description": "Task 3 human-check deferred: at 1600/1366 open Record another, confirm the record pen opens in the log column with no horizontal overflow (scrollWidth == clientWidth) and Save batch lands on the new batch — no browser-automation tool in this worktree",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-25T13:13:18.723Z",
     "resolved_at": null,
     "milestone": null
   }

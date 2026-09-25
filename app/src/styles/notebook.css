@@ -435,6 +435,142 @@
   color: var(--app-text-secondary);
 }
 
+/* The batch log's own reading state (03.5-07 Task 1, 1600-batch.html's
+   <aside aria-label="Batch">): BatchRow.jsx keeps its own class names
+   (decisions_recorded 1) — every rule here restyles them by scope, value
+   by value from the aside's own inline styles. The record pen's own
+   rules (app.css, the Sheet-styled .batch-margin--pen etc.) are not
+   touched; this scope reaches only the reading state's own markup. */
+.notebook-log .batch-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+}
+
+.notebook-log .batch-row__head {
+  align-items: baseline;
+  gap: var(--app-notebook-log-head-gap);
+}
+
+.notebook-log .batch-row .region-name,
+.notebook-log .tasting-reading .region-name,
+.notebook-log .batch-row__group-label {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .batch-row__date {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+
+.notebook-log .tasting-reading__head .batch-row__date {
+  font-size: var(--app-notebook-log-tasted-size);
+  color: var(--app-text-secondary);
+}
+
+/* Batches, Correct and Record another (the head's own openers) share one
+   underlined-link treatment in the log, the same as the sketch draws all
+   three identically. */
+.notebook-log .text-control {
+  color: var(--app-blue-text);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+}
+
+.notebook-log .batch-row__cells {
+  gap: var(--app-notebook-log-cell-gap-row) var(--gap-m);
+}
+
+.notebook-log .batch-row__cell-label {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .batch-row__cell-value {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-log-value-size);
+  font-weight: 600;
+  color: var(--app-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.notebook-log .batch-row__unit {
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .batch-row__unit--absent {
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .batch-row__plan {
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .batch-row__provenance,
+.notebook-log .batch-row__provenance dt {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .batch-row__provenance dd {
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .prose-text {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text-secondary);
+}
+
+/* The record pen's own frame, opened in the column (03.5-07 Task 3,
+   Task 2 answer — option A, decisions_recorded 4): the battery keeps
+   sketch 007/008's grammar unchanged; only its frame moves. The narrow
+   arrangement app.css already draws for touch/narrow widths (the stop
+   track, field-row label widths) reapplies here unconditionally, since
+   the log column (340px/300px) is narrow whether or not the pointer is
+   coarse — the ceremony's own wrap rule is left on permanently, since
+   wrapping only engages when content does not fit. app.css's own
+   width-keyed rules hand back control inside (max-width: 1099.98px),
+   where the log stacks below the Sheet and reads full width again. */
+.notebook-log .batch-margin--pen {
+  max-width: none;
+}
+
+.notebook-log .axis-mark__stops,
+.notebook-log .axis-mark__anchors {
+  width: var(--sheet-track-stop-narrow);
+}
+
+.notebook-log .axis-mark__stop {
+  width: var(--touch-stop-width);
+  height: var(--sheet-touch-stop-height);
+  flex-basis: var(--touch-stop-width);
+}
+
+.notebook-log .field-row__label {
+  max-width: 100%;
+}
+
+.notebook-log .save-ceremony,
+.notebook-log .pen-foot__controls {
+  flex-wrap: wrap;
+}
+
 @media (max-width: 1499.98px) {
   .notebook {
     padding: 0 var(--gap-l) var(--gap-xl) var(--gap-l);
@@ -468,6 +604,29 @@
   .notebook-log {
     flex-basis: auto;
     padding: 0 var(--app-notebook-gap-tight);
+  }
+
+  /* The record pen's frame hands back to app.css's own width-keyed rules
+     here (03.5-07 Task 3): the log stacks full width below the Sheet at
+     this rung, so the column is no longer narrow and the pen reads
+     exactly as it did before this plan. */
+  .notebook-log .batch-margin--pen {
+    max-width: var(--sheet-pen-w);
+  }
+
+  .notebook-log .axis-mark__stops,
+  .notebook-log .axis-mark__anchors {
+    width: var(--sheet-track-stop);
+  }
+
+  .notebook-log .axis-mark__stop {
+    width: auto;
+    height: var(--sheet-stop-h);
+    flex-basis: var(--sheet-stop-w);
+  }
+
+  .notebook-log .field-row__label {
+    max-width: none;
   }
 }
 

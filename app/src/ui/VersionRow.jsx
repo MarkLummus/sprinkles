@@ -8,7 +8,7 @@ import { FieldFeedback } from './FieldFeedback.jsx';
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
 // version's own acts (Develop, the history outline, the lineage line) — the
-// batch's acts (Record another, Amend, Add tasting, the batch list, the
+// batch's acts (Record, Correct, Add tasting, the batch list, the
 // batch's own content) now live in BatchRow.jsx. No page-level running
 // head here (ROADMAP Scope bullet 1) — the row carries no "Versions"
 // heading of its own.
@@ -32,11 +32,6 @@ export function VersionRow({
   onSaveAsNewVersion,
   onSaveOverVersion,
   onToggleShowChanges = () => {},
-  // The Record opener this row now owns beside Next version (sketch 003
-  // variant B, G-03.3-4) — openBatch/onStartRecording are the same
-  // references RecipePage.jsx already computes and passes to BatchRow.
-  openBatch = null,
-  onStartRecording,
   focusVersionOnMount = false,
   // The Version name field's own blocked-save state (03.5-04 Task 3,
   // moved whole from Headnote.jsx): versionLineBlockedAttempt is an
@@ -61,23 +56,6 @@ export function VersionRow({
       developButtonRef.current?.focus();
     }
   }, [mode]);
-
-  // Focus-return for the Record opener, relocated verbatim from
-  // BatchRow.jsx (03.3-06, G-03.3-4) since this row now owns the button
-  // beside Next version — must sit above the conditional render below,
-  // same as every other ref/effect pair here.
-  const recordButtonRef = useRef(null);
-  const wasRecordingRef = useRef(false);
-  useEffect(() => {
-    if (openPen === 'record') {
-      wasRecordingRef.current = true;
-      return;
-    }
-    if (wasRecordingRef.current) {
-      wasRecordingRef.current = false;
-      recordButtonRef.current?.focus();
-    }
-  }, [openPen]);
 
   // Focus-return for a fork's landing (D-27), relocated verbatim from
   // Headnote.jsx: after a child is created, land on the identity that was
@@ -325,9 +303,11 @@ export function VersionRow({
         </dl>
 
         {/* The acts group (sketch 003 variant B, index.html:215, 479;
-            restyled as App front matter, Task 2): Next version, then
-            Record another/Record batch, then Show changes (once a parent
-            exists) — one row, below the dl, only while no pen is open. */}
+            restyled as App front matter, Task 2): Next version, then Show
+            changes (once a parent exists) — one row, below the dl, only
+            while no pen is open. The Record opener moved to BatchRow.jsx's
+            own head, beside Batches/Correct (03.5-07 Task 1,
+            decisions_recorded 1). */}
         {openPen === null && (
           <div className="notebook-version__acts">
             <button
@@ -337,9 +317,6 @@ export function VersionRow({
               onClick={onStartDeveloping}
             >
               Next version
-            </button>
-            <button type="button" ref={recordButtonRef} onClick={onStartRecording}>
-              {openBatch ? 'Record another' : 'Record batch'}
             </button>
             {parentVersion && (
               <button

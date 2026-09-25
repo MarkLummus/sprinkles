@@ -442,6 +442,16 @@
   --app-notebook-acts-gap: 10px; /* 1600-batch.html: the version column's own acts row gap (Task 2) */
   --app-notebook-identity-size: 18px; /* 1600-batch.html: the version identity heading's own size (Task 2) */
 
+  /* The batch log's own reading-state values (03.5-07 Task 1,
+     1600-batch.html's <aside aria-label="Batch">): the measured-value
+     figure, the tasted-date size, and the head's/cells' own gaps — none
+     of these reuse an existing token, since the aside's own inline
+     styles carry values the App scale does not otherwise name. */
+  --app-notebook-log-value-size: 20px; /* a measured cell's own figure (Time to draw temp., Sweetness, ...) */
+  --app-notebook-log-tasted-size: 13px; /* the tasting head's own "tasted <date>" size */
+  --app-notebook-log-cell-gap-row: 16px; /* the cells grid's own row-gap (the column-gap reuses --gap-m, 20px) */
+  --app-notebook-log-head-gap: 18px; /* the head's own right-hand control group gap (Batches, Correct, Record) */
+
   /* The History rail (03.5-05 Task 1, 1600-batch.html/1600-long-history.html):
      values off the same board that have no existing role to reuse. The
      mark's own colour reuses --app-notebook (the Notebook red already

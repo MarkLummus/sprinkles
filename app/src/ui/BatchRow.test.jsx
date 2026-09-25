@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { BatchRow, AxesGrid, BatchHistoryPanel, batchHistoryMetaFor } from './BatchRow.jsx';
+import { BatchRow, AxesGrid, BatchHistoryPanel, batchHistoryMetaFor, NO_BATCH_PROSE } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { axesForBatch } from '../domain/axes.js';
@@ -72,6 +72,8 @@ function renderBatchRow(props) {
         onStartAmending={noop}
         onCancelRecording={noop}
         onSaveBatch={noop}
+        versionName="Version 1 · 50 g oil · 800 g"
+        onStartRecording={noop}
         {...props}
       />
     </MemoryRouter>,
@@ -169,28 +171,37 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
 });
 
 describe('BatchRow — the openers, present only with no pen open (D-05)', () => {
-  it('renders no Correct when the version has no batch — Record lives in VersionRow, Add tasting arrives in plan 03', () => {
+  it('renders no Correct when the version has no batch, but offers Record a batch in the no-batch state', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: null, batches: [] });
     expect(markup).not.toContain('Record another');
-    expect(markup).not.toContain('Record batch');
     expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
+    expect(markup).toContain('Record a batch');
   });
 
-  it('renders Correct on the Batch head line, right-aligned, when a batch is in view — no Add tasting yet (plan 03 opens the tasting section)', () => {
-    const markup = renderBatchRow({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    expect(markup).not.toContain('Record another');
+  it('renders Batches, Correct, then Record another on the Batch head line, in that order, when a batch is in view — no Add tasting yet (plan 03 opens the tasting section)', () => {
+    const markup = renderBatchRow({
+      openPen: null,
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+    });
+    expect(markup).toContain('Record another');
     expect(markup).toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
-    expect(markup).not.toContain('batch-row__acts');
     const headIndex = markup.indexOf('class="batch-row__head"');
     const marginIndex = markup.indexOf('class="batch-margin');
+    const batchesIndex = markup.indexOf('Batches (2)');
     const correctIndex = markup.indexOf('>Correct<');
+    const recordIndex = markup.indexOf('Record another');
     expect(headIndex).toBeGreaterThan(-1);
-    expect(correctIndex).toBeGreaterThan(headIndex);
-    expect(correctIndex).toBeLessThan(marginIndex);
+    expect(batchesIndex).toBeGreaterThan(headIndex);
+    expect(correctIndex).toBeGreaterThan(batchesIndex);
+    expect(recordIndex).toBeGreaterThan(correctIndex);
+    expect(recordIndex).toBeLessThan(marginIndex);
     const correctButton = markup.match(/<button[^>]*class="text-control batch-row__correct"[^>]*>Correct<\/button>/)[0];
     expect(correctButton).toBeTruthy();
+    const recordButton = markup.match(/<button[^>]*class="text-control batch-row__record"[^>]*>Record another<\/button>/)[0];
+    expect(recordButton).toBeTruthy();
   });
 
   it('names the Batches panel by aria-controls on its count disclosure', () => {
@@ -204,8 +215,10 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(countButton).toContain('aria-controls="batch-row-batches"');
   });
 
-  it('renders no openers while the plan pen is open — this row renders nothing at the top for a pen it does not own', () => {
+  it('renders no Correct, Record another or Batches control while the plan pen is open, though the reading content (including the churned date) still renders', () => {
     const markup = renderBatchRow({ openPen: 'plan', openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
+    expect(markup).not.toContain('Batches (');
     expect(markup).not.toContain('Record another');
     expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
@@ -1087,9 +1100,9 @@ describe("BatchRow — the record's reading state, measured values as cells (con
     });
   });
 
-  it('renders the recorded-against fact as supporting provenance, outside the measured-value grid', () => {
+  it('renders the recorded-against fact as supporting provenance, naming the version by identity — the versionName prop, not the bare snapshot label (decisions_recorded 2)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(/<dl class="batch-row__provenance"><div><dt>Recorded<\/dt><dd>4 Aug 2026 against 50 g oil · 800 g<\/dd>/);
+    expect(markup).toMatch(/<dl class="batch-row__provenance"><div><dt>Recorded<\/dt><dd>4 Aug 2026 against Version 1 · 50 g oil · 800 g<\/dd>/);
     const measuredEnd = markup.indexOf('</div>', markup.indexOf('class="batch-row__cells"'));
     expect(markup.indexOf('<dt>Recorded</dt>')).toBeGreaterThan(measuredEnd);
   });
@@ -1108,10 +1121,26 @@ describe("BatchRow — the record's reading state, measured values as cells (con
     expect(provenanceIndex).toBeGreaterThan(nextTimeIndex);
   });
 
-  it('renders the at-the-machine and ingredient notes prose with the prose-text class', () => {
+  it('always renders the Next time caption, reading the note in the hand when written', () => {
+    const batch = {
+      ...augustSecondBatch,
+      churn: { ...augustSecondBatch.churn, nextTimeNote: 'Use less oil.' },
+    };
+    const markup = renderBatchRow({ openBatch: batch, batches: [batch], mode: 'reading' });
+    expect(markup).toMatch(/<h3 class="batch-row__group-label">Next time<\/h3><span class="app-hand">Use less oil\.<\/span>/);
+  });
+
+  it('reads "nothing written yet" for Next time when the batch carries no note (decisions_recorded 3)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text">Soft, not greasy<\/p>/);
-    expect(markup).toMatch(/<p class="prose-text">oil bottle opened 24 Jul<\/p>/);
+    expect(markup).toMatch(
+      /<h3 class="batch-row__group-label">Next time<\/h3><span class="batch-row__unit batch-row__unit--absent">nothing written yet<\/span>/,
+    );
+  });
+
+  it('renders the at-the-machine and ingredient notes in the hand (.app-hand), not typed prose (decisions_recorded, D-19)', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toMatch(/<span class="app-hand">Soft, not greasy<\/span>/);
+    expect(markup).toMatch(/<span class="app-hand">oil bottle opened 24 Jul<\/span>/);
   });
 
   it('reads no code reference to any retired churn field name', () => {
@@ -1215,18 +1244,22 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     );
   });
 
-  it('reads the recipe-specific flaw by its plain name with no other defects picked (the seeded case)', () => {
+  it('reads the recipe-specific flaw by its plain name, under its own "Problems" caption, in the hand — no other defects picked (the seeded case)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Bitter<\/p>/);
+    expect(markup).toMatch(
+      /<h4 class="batch-row__group-label">Problems<\/h4><span class="app-hand tasting-reading__problems">Bitter<\/span>/,
+    );
   });
 
-  it('joins picked defect words with the declared flaw, comma-worded, when both are present', () => {
+  it('joins picked defect words with the declared flaw, comma-worded, in the hand, when both are present', () => {
     const flawedBatch = {
       ...augustSecondBatch,
       tasting: { ...augustSecondBatch.tasting, defects: ['Sandy, gritty', 'Greasy film'] },
     };
     const markup = renderBatchRow({ openBatch: flawedBatch, batches: [flawedBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text tasting-reading__problems">Sandy, gritty · Greasy film · Bitter<\/p>/);
+    expect(markup).toMatch(
+      /<span class="app-hand tasting-reading__problems">Sandy, gritty · Greasy film · Bitter<\/span>/,
+    );
   });
 
   it('renders no defects line at all with no defects picked and no flaw declared', () => {
@@ -1273,6 +1306,21 @@ describe('BatchRow — zero-batch and unknown-address states', () => {
     const markup = renderBatchRow({ openBatch: null, batches: [augustSecondBatch] });
     expect(markup).not.toContain('no batch yet');
     expect(markup).toContain('No batch of this version has that address.');
+  });
+});
+
+describe('BatchRow — the no-batch state offers Record a batch (1600-no-batch.html)', () => {
+  it('reads NO_BATCH_PROSE and one filled Record a batch button, no Print sheet, with a version that has never been churned', () => {
+    const markup = renderBatchRow({ openBatch: null, batches: [] });
+    expect(markup).toContain(NO_BATCH_PROSE);
+    expect(markup).toMatch(/<button[^>]*class="notebook-action[^"]*"[^>]*>Record a batch<\/button>/);
+    expect(markup).not.toContain('Print sheet');
+  });
+
+  it('withholds Record a batch while any pen is open', () => {
+    const markup = renderBatchRow({ openPen: 'plan', openBatch: null, batches: [] });
+    expect(markup).toContain(NO_BATCH_PROSE);
+    expect(markup).not.toContain('Record a batch');
   });
 });
 

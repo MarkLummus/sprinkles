@@ -18,12 +18,8 @@ function renderPenFoot(props) {
   return renderToStaticMarkup(
     <PenFoot
       openPen={null}
-      canSaveOver={true}
       penHint={null}
       tastingOpen={false}
-      onCancelDeveloping={noop}
-      onSaveAsNewVersion={noop}
-      onSaveOverVersion={noop}
       onCancelRecording={noop}
       onSaveBatch={noop}
       onAddTasting={noop}
@@ -37,39 +33,11 @@ describe('PenFoot — renders only while a pen is open', () => {
     expect(renderPenFoot({ openPen: null })).toBe('');
   });
 
-  it('renders the rule and the pair when openPen is "plan"', () => {
-    const markup = renderPenFoot({ openPen: 'plan' });
-    expect(markup).toContain('pen-foot__rule');
-    expect(markup).toContain('Cancel');
-    expect(markup).toContain('Save');
-  });
-});
-
-describe('PenFoot — the plan actions repeat their explicit versioning outcome', () => {
-  it('renders Cancel then Save as a new version when canSaveOver is false', () => {
-    const markup = renderPenFoot({ openPen: 'plan', canSaveOver: false });
-    const cancelIndex = markup.indexOf('Cancel');
-    const saveIndex = markup.indexOf('Save as a new version');
-    expect(cancelIndex).toBeGreaterThanOrEqual(0);
-    expect(saveIndex).toBeGreaterThan(cancelIndex);
-    expect(markup).not.toContain('Save over this version');
-  });
-
-  it('renders Cancel, Save as a new version, then Save over this version when canSaveOver is true', () => {
-    const markup = renderPenFoot({ openPen: 'plan', canSaveOver: true });
-    const cancelIndex = markup.indexOf('Cancel');
-    const saveAsIndex = markup.indexOf('Save as a new version');
-    const saveIndex = markup.indexOf('Save over this version');
-    expect(cancelIndex).toBeGreaterThanOrEqual(0);
-    expect(saveAsIndex).toBeGreaterThan(cancelIndex);
-    expect(saveIndex).toBeGreaterThan(saveAsIndex);
-  });
-
-  it('mirrors the in-flight child save and disables the repeated controls', () => {
-    const markup = renderPenFoot({ openPen: 'plan', canSaveOver: true, saveAction: 'new' });
-    expect(markup).toMatch(/<button type="button" disabled="">Cancel<\/button>/);
-    expect(markup).toMatch(/<button type="button" disabled="">Saving new version…<\/button>/);
-    expect(markup).toMatch(/<button type="button" disabled="">Save over this version<\/button>/);
+  // 03.5-04 Task 3: the version pen's own ceremony now lives in the band
+  // (VersionRow.jsx), not the foot — "1600-pen.html draws no foot pair"
+  // for the plan pen. The record/amend branch is untouched below.
+  it('renders nothing when openPen is "plan" — the ceremony lives in the band now', () => {
+    expect(renderPenFoot({ openPen: 'plan' })).toBe('');
   });
 });
 

@@ -163,8 +163,9 @@ function buildStepDiff(step, baseStep) {
 }
 
 /**
- * buildDiff(current, baseline) -> { versionLabelChanged, headnoteChanged,
- * rows, steps, targetsChanged, figures, total }. The one comparison of two
+ * buildDiff(current, baseline) -> { versionLabelChanged, sheetTitleChanged,
+ * sheetDescriptionChanged, rows, steps, targetsChanged, figures, total }.
+ * The one comparison of two
  * versions, computed at display precision so a change no reader can see is
  * never reported as one: shares compare formatShareOfBatch's own printed
  * string, figures compare value.toFixed(decimals). `rows` is one
@@ -232,7 +233,8 @@ export function buildDiff(current, baseline) {
 
   return {
     versionLabelChanged: current.versionLabel !== baseline.versionLabel,
-    headnoteChanged: current.headnote !== baseline.headnote,
+    sheetTitleChanged: current.sheetTitle !== baseline.sheetTitle,
+    sheetDescriptionChanged: current.sheetDescription !== baseline.sheetDescription,
     rows,
     steps,
     targetsChanged: !bandsEqual(current.targets, baseline.targets),

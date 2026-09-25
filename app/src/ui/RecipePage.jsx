@@ -265,15 +265,16 @@ function isAuthoredListDirty(draftList, baseList) {
 // string or step differs from that portion's own value, in order.
 //
 // Extended (03-07, T-03-42) to the three fields the pen spends most of its
-// time editing — method, headnote, authored — which this check omitted
-// entirely: a maker who rewrote a step's prose or an authored note and
-// then reloaded lost it with no warning of any kind.
+// time editing — method, the Sheet title/description, authored — which
+// this check omitted entirely: a maker who rewrote a step's prose or an
+// authored note and then reloaded lost it with no warning of any kind.
 export function isPenDraftDirty(mode, penDraft, version) {
   if (mode !== 'developing' || !penDraft || !version) return false;
   if (penDraft.versionLabel !== '') return true;
   if (penDraft.reason !== '') return true;
   if (penDraft.citedBatchId !== null) return true;
-  if (penDraft.headnote !== version.headnote) return true;
+  if (penDraft.sheetTitle !== version.sheetTitle) return true;
+  if (penDraft.sheetDescription !== version.sheetDescription) return true;
   const rowsDirty = version.rows.some((row) => {
     const draftRow = penDraft.rows[row.id];
     if (draftRow.removed !== (row.removed ?? false)) return true;
@@ -672,8 +673,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   const [focusBatchAttempt, setFocusBatchAttempt] = useState(null);
   const focusBatchAttemptRef = useRef(0);
   // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
-  // reason, citation and headnote start blank/null — never defaulted from
-  // the parent — while rows is a map keyed by row id holding the raw
+  // reason and citation start blank/null — never defaulted from the
+  // parent — while sheetTitle/sheetDescription copy the parent's own
+  // (03.5-CONTEXT.md decision "Next version copies Sheet title and Sheet
+  // description"), and rows is a map keyed by row id holding the raw
   // string the maker typed for grams, the draft.asMade precedent (never
   // Number() on keystroke, so a value typed finer than the display
   // survives, RESEARCH.md Pitfall 5).
@@ -893,7 +896,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             };
           }),
           method: penDraft.method,
-          headnote: penDraft.headnote,
+          sheetTitle: penDraft.sheetTitle,
+          sheetDescription: penDraft.sheetDescription,
           authored: penDraft.authored,
         }
       : null;
@@ -1464,7 +1468,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
       versionLabel: '',
       reason: '',
       citedBatchId: null,
-      headnote: version.headnote,
+      sheetTitle: version.sheetTitle,
+      sheetDescription: version.sheetDescription,
       rows,
       method: structuredClone(version.method),
       authored: structuredClone(version.authored),
@@ -1688,7 +1693,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
       citedBatchId: penDraft.citedBatchId,
       rows,
       method: penDraft.method,
-      headnote: penDraft.headnote,
+      sheetTitle: penDraft.sheetTitle,
+      sheetDescription: penDraft.sheetDescription,
       authored: penDraft.authored,
     };
   }

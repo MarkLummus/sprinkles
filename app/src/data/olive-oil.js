@@ -6,11 +6,10 @@ import { library } from './library.js';
 
 // The version record's own bookkeeping number — distinct from DB_VERSION
 // (db.js) and from the store file's schemaVersion (transfer.js). Bumped to
-// 4 this phase because the declared-axes model changed: a version now
-// declares its pair by name against the battery's fixed AXES table,
-// rather than authoring its own anchor words (03.3.1-CONTEXT.md D-07,
-// Pitfall 3).
-export const VERSION_SCHEMA_VERSION = 4;
+// 5 this phase because the recipe's own identity left the version: the
+// recipe name is gone (the recipes store carries it now, D-11) and the
+// headnote field split into sheetTitle/sheetDescription (D-09).
+export const VERSION_SCHEMA_VERSION = 5;
 
 // A fixed constant, not a live timestamp: two machines seeding this
 // version on different days must agree on its createdAt, so it is never
@@ -67,12 +66,15 @@ export const oliveOilVersion = {
   reason: null,
   citedBatchId: null,
   createdAt: SEED_CREATED_AT,
-  recipeName: 'Olive Oil Ice Cream',
   versionLabel: '50 g oil · 800 g',
   coefficientSetId: '2026.1-slice-transcription',
   coefficientSetName: 'coefficient set 2026.1 (slice transcription)',
-  headnote:
-    'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
+  // D-09: the Sheet's own title and prose, exactly as sketch 011's
+  // 1600-batch.html headnote draws them — distinct from oliveOilRecipe's
+  // name/description above, which the boards give different words.
+  sheetTitle: 'Olive Oil Ice Cream',
+  sheetDescription:
+    'Silky and quietly savoury. Fresh olive oil adds a gentle fruitiness without overwhelming the cream, and a little more salt than you would think carries it. Serve it soft, with flaky salt.',
   rows: [
     { id: 'row-01', ...embed('Whole milk', library.wholeMilk, { portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }], removed: false }) },
     { id: 'row-02', ...embed('Heavy cream', library.heavyCream, { portions: [{ step: 3, grams: 252.8 }], removed: false }) },

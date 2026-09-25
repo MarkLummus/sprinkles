@@ -339,7 +339,7 @@ function validateVersion(version, path, errors) {
     return;
   }
   if (!isNonEmptyString(version.id)) errors.push(`${path}.id: expected a non-empty string`);
-  if (typeof version.recipeName !== 'string') errors.push(`${path}.recipeName: expected a string`);
+  if (!isNonEmptyString(version.recipeId)) errors.push(`${path}.recipeId: expected a non-empty string`);
   if (typeof version.coefficientSetId !== 'string') errors.push(`${path}.coefficientSetId: expected a string`);
   if (!Array.isArray(version.rows) || version.rows.length === 0) {
     errors.push(`${path}.rows: expected a non-empty array`);
@@ -381,17 +381,21 @@ function validateVersion(version, path, errors) {
   if (!isAbsentOrNull(version.declaredFlaw) && typeof version.declaredFlaw !== 'string') {
     errors.push(`${path}.declaredFlaw: expected a string or null, got ${JSON.stringify(version.declaredFlaw)}`);
   }
-  // WR-01 (code review): both fields are read directly by the UI (the
-  // version-line uniqueness check, the headnote's own rendering) but were
-  // never checked here. versionLabel must be non-empty — the app's own
-  // save gate (lineage.js blockedSaveMessage) never lets a blank one
-  // through — while headnote is legitimately blank prose (an authored
-  // version can have none), so only its type is checked.
+  // WR-01 (code review): all three fields are read directly by the UI
+  // (the version-line uniqueness check, the Sheet title/description's own
+  // rendering) but were never checked here. versionLabel must be
+  // non-empty — the app's own save gate (lineage.js blockedSaveMessage)
+  // never lets a blank one through — while sheetTitle and sheetDescription
+  // are legitimately blank prose (an authored version can have none), so
+  // only their type is checked.
   if (!isNonEmptyString(version.versionLabel)) {
     errors.push(`${path}.versionLabel: expected a non-empty string, got ${JSON.stringify(version.versionLabel)}`);
   }
-  if (typeof version.headnote !== 'string') {
-    errors.push(`${path}.headnote: expected a string, got ${JSON.stringify(version.headnote)}`);
+  if (typeof version.sheetTitle !== 'string') {
+    errors.push(`${path}.sheetTitle: expected a string, got ${JSON.stringify(version.sheetTitle)}`);
+  }
+  if (typeof version.sheetDescription !== 'string') {
+    errors.push(`${path}.sheetDescription: expected a string, got ${JSON.stringify(version.sheetDescription)}`);
   }
 }
 

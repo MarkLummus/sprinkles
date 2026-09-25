@@ -78,8 +78,14 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
     const markup = renderVersionRow({});
     expect(markup).toContain('aria-label="Version"');
     expect(markup).toContain(
-      '<h2 class="version-row__identity">Version 1 · 50 g oil · 800 g<span class="history-register__marker"> · Latest</span></h2>',
+      '<h2 class="notebook-version__identity">Version 1 · 50 g oil · 800 g<span class="notebook-version__latest"> · Latest</span></h2>',
     );
+  });
+
+  it('reads as App front matter: a section reading .notebook-version (03.5-04 Task 2), with a "Version" caption before the identity heading', () => {
+    const markup = renderVersionRow({});
+    expect(markup).toContain('<section class="notebook-version" aria-label="Version"');
+    expect(markup).toMatch(/<span class="notebook-caption">Version<\/span>/);
   });
 
   it('renders no bare "Version" region-name heading', () => {
@@ -89,7 +95,7 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
 
   it('reads the word "Version" exactly once in the identity line', () => {
     const markup = renderVersionRow({});
-    const heading = markup.match(/<h2 class="version-row__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
+    const heading = markup.match(/<h2 class="notebook-version__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
     expect((heading.match(/Version/g) ?? []).length).toBe(1);
   });
 
@@ -101,7 +107,7 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
     const fourVersions = [root, child, sibling, grandchild];
     const markup = renderVersionRow({ version: child, versions: fourVersions, citedBatch: null, parentVersion: root });
     expect(markup).toContain('Version 2 · child line');
-    const heading = markup.match(/<h2 class="version-row__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
+    const heading = markup.match(/<h2 class="notebook-version__identity"[^>]*>[\s\S]*?<\/h2>/)[0];
     expect(heading).not.toContain('Latest');
   });
 
@@ -127,13 +133,13 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
     const markup = renderVersionRow({ version: oliveOilVersion, versions: [] });
     expect(markup).toContain('50 g oil · 800 g');
     expect(markup).not.toContain('Version 1');
-    expect(markup).toMatch(/<h2 class="version-row__identity"[^>]*>/);
+    expect(markup).toMatch(/<h2 class="notebook-version__identity"[^>]*>/);
   });
 
   it('lands D-27\'s programmatic focus on the identity heading, carrying tabindex and no aria-label', () => {
     const markup = renderVersionRow({ focusVersionOnMount: true });
-    expect(markup).toMatch(/<h2[^>]*class="version-row__identity[^"]*"[^>]*tabindex="-1"/);
-    const heading = markup.match(/<h2[^>]*class="version-row__identity[^"]*"[^>]*>/)[0];
+    expect(markup).toMatch(/<h2[^>]*class="notebook-version__identity[^"]*"[^>]*tabindex="-1"/);
+    const heading = markup.match(/<h2[^>]*class="notebook-version__identity[^"]*"[^>]*>/)[0];
     expect(heading).not.toContain('aria-label');
     // The focus CALL itself cannot be driven here — there is no jsdom in
     // this suite, so useEffect never runs against a real DOM. Covered by
@@ -486,23 +492,24 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
       parentVersion: oliveOilVersion,
     });
     expect(withParent).toContain('Show changes');
-    expect(withParent).toContain('headnote__show-changes');
-    expect(withParent).toContain('text-toggle');
+    expect(withParent).toContain('notebook-link');
 
     const withoutParent = renderVersionRow({ version: childVersion, citedBatch: augustSecondBatch, parentVersion: null });
     expect(withoutParent).not.toContain('Show changes');
   });
 
-  // 03.3-06 checkpoint feedback (sketch 003 variant B, index.html:479):
-  // Show changes reads as a text control, not a bordered button. One fill
-  // for every on state (2026-09-16): it is also a square-and-word toggle.
-  it('renders Show changes carrying the text-control and text-toggle classes', () => {
+  // 03.5-04 Task 2: Show changes reads as an App control now (.notebook-link),
+  // its aria-pressed state carrying the toggle — App context reads its own
+  // controls, not the Sheet's .text-control/.text-toggle pair (03.3-06
+  // checkpoint feedback's own square-and-word toggle stays a Sheet-only
+  // convention).
+  it('renders Show changes carrying the notebook-link class and aria-pressed', () => {
     const markup = renderVersionRow({
       version: childVersion,
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    expect(markup).toMatch(/<button[^>]*class="headnote__show-changes text-control text-toggle"[^>]*>Show changes<\/button>/);
+    expect(markup).toMatch(/<button[^>]*class="notebook-link"[^>]*aria-pressed="false"[^>]*>Show changes<\/button>/);
   });
 
   it('renders Parent and Batch as plain text, not links, while a pen is open', () => {
@@ -534,9 +541,9 @@ describe('VersionRow — no batch list rendered here any more (D-09, moved to Ba
 // developing) and the History disclosure (while open) — matching sketch 003
 // variant B's own `.vmeta`/`.ceremony`/`.list` siblings (index.html:208-233).
 describe('VersionRow — the saved metadata transforms into the next-version ceremony', () => {
-  it('wraps the reading-mode stack in a "vmeta" section, the sketch\'s own class name', () => {
+  it('wraps the reading-mode stack in a "notebook-version" section (03.5-04 Task 2: App front matter, not the Sheet\'s vmeta)', () => {
     const markup = renderVersionRow({});
-    expect(markup).toMatch(/<section class="vmeta" aria-label="Version">/);
+    expect(markup).toMatch(/<section class="notebook-version" aria-label="Version">/);
   });
 
   it('renders the acts group (Next version, Record, Show changes) AFTER the dl, matching the sketch\'s own dl-then-acts order', () => {
@@ -547,12 +554,17 @@ describe('VersionRow — the saved metadata transforms into the next-version cer
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    const dlIndex = markup.indexOf('version-row__meta-list');
-    const actsIndex = markup.indexOf('versions__opener-group');
+    const dlIndex = markup.indexOf('notebook-version__details');
+    const actsIndex = markup.indexOf('notebook-version__acts');
     const showChangesIndex = markup.lastIndexOf('Show changes');
     expect(dlIndex).toBeGreaterThanOrEqual(0);
     expect(actsIndex).toBeGreaterThan(dlIndex);
     expect(showChangesIndex).toBeGreaterThan(actsIndex);
+  });
+
+  it('renders Next version with the filled-action class (03.5-04 Task 2)', () => {
+    const markup = renderVersionRow({ openPen: null });
+    expect(markup).toMatch(/<button[^>]*class="notebook-action"[^>]*>Next version<\/button>/);
   });
 
   it('uses the existing metadata column for the next-version provenance and controls', () => {

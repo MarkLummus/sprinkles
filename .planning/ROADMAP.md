@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 1/9 plans executed
+**Plans:** 3/9 plans executed
 
 Plans:
 
@@ -475,8 +475,8 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 03.5-02-PLAN.md — Notebook routes and permanent /recipe/… redirects, every in-app link moved, the running head removed with the notice re-anchored, and the Recipe Book principle recorded (D-14…D-18, folded todo)
-- [ ] 03.5-03-PLAN.md — Seed transcription: Mexican Chocolate v1/v3/v4, Pineapple v1, Coconut v1→v2, new library entries, sidecar, and the side-by-side review for Mark; nothing wired (D-01…D-08)
+- [x] 03.5-02-PLAN.md — Notebook routes and permanent /recipe/… redirects, every in-app link moved, the running head removed with the notice re-anchored, and the Recipe Book principle recorded (D-14…D-18, folded todo)
+- [x] 03.5-03-PLAN.md — Seed transcription: Mexican Chocolate v1/v3/v4, Pineapple v1, Coconut v1→v2, new library entries, sidecar, and the side-by-side review for Mark; nothing wired (D-01…D-08)
 
 **Wave 3** *(blocked on Wave 2)*
 

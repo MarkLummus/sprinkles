@@ -28,14 +28,15 @@ HAND = "'Caveat',Georgia,serif"
 HAND_AM = "font-family:'Caveat',Georgia,serif;font-size:20px;line-height:1;color:" + PEN + ";"
 
 def sheet_for(state):
-    """Style 6: Grams and Ingredient merged (figure in a right-aligned slot, an 18px gap, the name);
+    """Style 6, two columns (Mark, 2026-09-25): Grams and Ingredient under one 'Ingredient' head, the figure in its own
+    right-aligned column and the name in the next, so a long name wraps inside its own column at every width;
     As made in its own column, in the hand, present only with a batch in view."""
     s = SHEET
     batch = state != 'none'
     # head
-    head_batch = '<th scope="col" class="ingredient-table__col-name">Ingredient</th><th scope="col" class="ingredient-table__col-numeric">As made</th><th scope="col" class="ingredient-table__col-numeric">% of batch</th>'
-    head_none = '<th scope="col" class="ingredient-table__col-name">Ingredient</th><th scope="col" class="ingredient-table__col-numeric">% of batch</th>'
-    s = re.sub(r'<thead>.*?</thead>', '<thead><tr>' + (head_batch if batch else head_none) + '</tr></thead>', s, flags=re.S)
+    head_batch = '<th scope="col" class="ingredient-table__col-name" colspan="2">Ingredient</th><th scope="col" class="ingredient-table__col-numeric">As made</th><th scope="col" class="ingredient-table__col-numeric">% of batch</th>'
+    head_none = '<th scope="col" class="ingredient-table__col-name" colspan="2">Ingredient</th><th scope="col" class="ingredient-table__col-numeric">% of batch</th>'
+    s = re.sub(r'<thead>.*?</thead>', '<thead><tr>' + (head_batch if batch else head_none) + '</tr></thead>', s, count=1, flags=re.S)
     def fix_row(m):
         row = m.group(0)
         tds = re.findall(r'<td[^>]*>.*?</td>', row, flags=re.S)
@@ -46,19 +47,19 @@ def sheet_for(state):
         am = re.sub(r'^<td[^>]*>|</td>$', '', tds[2])
         am_val = re.sub(r'<[^>]+>', '', am)
         pct, src = tds[3], tds[4]
-        name_inner = name_inner.replace('<span class="ingredient-table__portion-note">', '<span class="ingredient-table__portion-note" style="padding-left:82px;">')
+        name_inner = name_inner.replace('<span class="ingredient-table__portion-note">', '<span class="ingredient-table__portion-note">')
         src_val = re.sub(r'<[^>]+>', '', src).strip()
         tag = f' <span class="target-chip" style="margin-left:8px;vertical-align:middle;"><span class="target-chip__value">{src_val}</span></span>' if src_val else ''
         if '<span class="ingredient-table__portion-note"' in name_inner:
             name_inner = name_inner.replace('<span class="ingredient-table__portion-note"', tag + '<span class="ingredient-table__portion-note"', 1)
         else:
             name_inner = name_inner + tag
-        merged = f'<td class="ingredient-table__col-name"><span style="display:inline-block;min-width:64px;text-align:right;margin-right:18px;">{grams}</span>{name_inner}</td>'
+        merged = f'<td class="ingredient-table__col-grams" style="text-align:right;white-space:nowrap;padding-right:18px;">{grams}</td><td class="ingredient-table__col-name">{name_inner}</td>'
         am_td = f'<td class="ingredient-table__col-numeric"><span style="{HAND_AM}">{am_val}</span></td>' if am_val else '<td class="ingredient-table__col-numeric"></td>'
         open_tag = re.match(r'<tr[^>]*>', row).group(0)
         return open_tag + merged + (am_td if batch else '') + pct + '</tr>'
     s = re.sub(r'<tr aria-label=.*?</tr>', fix_row, s, flags=re.S)
-    s = s.replace('colspan="5"', 'colspan="3"' if batch else 'colspan="2"')
+    s = s.replace('colspan="5"', 'colspan="4"' if batch else 'colspan="3"')
     if not batch:
         s = re.sub(r', as made [\d.]+ g(rams)?', '', s)
         s = s.replace('<span class="method-step__prose--struck">', '<span>')
@@ -214,7 +215,17 @@ def recipe_book_sheet():
     return None
 
 # ---- shell wrapper ----
+# Two-column style 6 (Mark, 2026-09-26): the table sizes to content, so the amount and both numeric columns take
+# their figures' width and the name takes the rest; numeric heads may wrap ("% of / batch").
+TABLE_CSS = '''
+.ingredient-table{table-layout:auto !important}
+.ingredient-table td.ingredient-table__col-grams{width:1%;white-space:nowrap}
+.ingredient-table .ingredient-table__col-numeric{width:1% !important}
+.ingredient-table td.ingredient-table__col-numeric{white-space:nowrap}
+.ingredient-table th.ingredient-table__col-numeric{white-space:normal}
+'''
 def board(title, w, h, main_html, active='notebook', extra_css=''):
+    extra_css = TABLE_CSS + extra_css
     rail = RAIL if active == 'notebook' else RAIL.replace(' aria-current="page" href="/notebook"', ' href="/notebook"').replace('class="shell__place shell__place--recipe-book" href="/recipe-book"', 'class="shell__place shell__place--recipe-book" aria-current="page" href="/recipe-book"')
     return f'''<!doctype html>
 <html lang="en">
@@ -288,26 +299,25 @@ def layout_b(state, pen=False, tab='sheet'):
 SMALL = f"font-family:{GROT};font-size:12px;letter-spacing:0.02em;color:{INK};"
 PEN_CONTROLS = 'always'
 def grams_field(value):
-    return f'<span style="display:inline-block;min-width:64px;text-align:right;margin-right:18px;white-space:nowrap;"><input type="text" value="{value}" aria-label="grams" style="box-sizing:border-box;width:52px;padding:2px 4px;border:1px solid {INK};background:{GROUND};color:{PEN};font-family:{GROT};font-size:15px;font-variant-numeric:tabular-nums;text-align:right;"> g</span>'
+    return f'<span style="white-space:nowrap;"><input type="text" value="{value}" aria-label="grams" style="box-sizing:border-box;width:52px;padding:2px 4px;border:1px solid {INK};background:{GROUND};color:{PEN};font-family:{GROT};font-size:15px;font-variant-numeric:tabular-nums;text-align:right;"> g</span>'
 def sheet_pen(s):
     """The pen open on the plan (route-recipe-version.md § 3): every grams a field in pen blue inside a hairline
     ink outline; a changed value shows the parent's struck in ink before it; each row and step gains 'remove'."""
     def fix_row(m):
         row = m.group(0)
-        g = re.search(r'<span style="display:inline-block;min-width:64px;text-align:right;margin-right:18px;">([\d.]+) g</span>', row)
+        g = re.search(r'(<td class="ingredient-table__col-grams"[^>]*>)([\d.]+) g</td>', row)
         if not g: return row
-        val = g.group(1)
+        val = g.group(2)
         if 'Graza Drizzle' in row:
             field = f'<s style="{SMALL}">{val} g</s> ' + grams_field('48')
             row = row.replace('<td class="ingredient-table__col-numeric">5.0%</td>', f'<td class="ingredient-table__col-numeric"><s>5.0%</s> 6.0%</td>')
         else:
             field = grams_field(val)
-        row = row.replace(g.group(0), '', 1)
-        row = row.replace('<td class="ingredient-table__col-name">', '<td class="ingredient-table__col-name">' + field, 1)
+        row = row.replace(g.group(0), g.group(1) + field + '</td>', 1)
         row = row.replace('</td><td class="ingredient-table__col-numeric">', f' <button type="button" class="text-control" style="margin-left:10px;">remove</button></td><td class="ingredient-table__col-numeric">', 1)
         return row
     s = re.sub(r'<tr aria-label=(?!"Total).*?</tr>', fix_row, s, flags=re.S)
-    s = s.replace('margin-right:18px;">799.7 g</span>Total', f'margin-right:18px;white-space:nowrap;"><s>799.7</s> 807.7 g</span>Total')
+    s = s.replace('">799.7 g</td>', '"><s>799.7</s> 807.7 g</td>')
     # steps: remove per step, after the targets
     # prose edits in place: pen blue while the pen is open, the outline only on the focused paragraph
     s = s.replace('<p class="method-step__lead">', f'<p class="method-step__lead" style="color:{PEN};">')
@@ -507,15 +517,17 @@ for key, title, h, main in specs:
         if w in (393, 1024, 1366):
             main = phone_folds(main)
     PHONE_TABLE = '''
-/* 393: the ingredient table reads as a list, two lines per row: quantity and name, then as made and share */
+/* 393: the ingredient table reads as a list: the plan amount, the name, the share on line one; as made in the hand under the plan amount */
 .ingredient-table thead{display:none}
-.ingredient-table,.ingredient-table tbody,.ingredient-table tfoot,.ingredient-table tr{display:block;width:100%}
-.ingredient-table tr{padding:8px 0;border-bottom:1px solid var(--sheet-ink)}
-.ingredient-table tr.ingredient-table__step-head{border-bottom:0;padding:14px 0 4px}
-.ingredient-table td{display:block;width:auto;padding:0;border:0}
-.ingredient-table td.ingredient-table__col-name{width:100%}
-.ingredient-table td.ingredient-table__col-name > span:first-child{min-width:0 !important;margin-right:10px !important}
-.ingredient-table td.ingredient-table__col-numeric{display:inline-block;text-align:left;padding-right:14px;margin-top:4px}
+.ingredient-table,.ingredient-table tbody,.ingredient-table tfoot{display:block;width:100%}
+.ingredient-table tr{display:grid;grid-template-columns:64px minmax(0,1fr) max-content;column-gap:10px;row-gap:2px;width:100%;padding:8px 0;border-bottom:1px solid var(--sheet-ink)}
+.ingredient-table tr.ingredient-table__step-head{display:block;border-bottom:0;padding:14px 0 4px}
+.ingredient-table td{display:block;padding:0;border:0}
+.ingredient-table td.ingredient-table__col-grams,.ingredient-table td.ingredient-table__col-name,.ingredient-table td.ingredient-table__col-numeric{width:auto !important}
+.ingredient-table td.ingredient-table__col-grams{grid-column:1;grid-row:1;text-align:right;padding-right:0 !important}
+.ingredient-table td.ingredient-table__col-name{grid-column:2;grid-row:1 / 3}
+.ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){grid-column:1;grid-row:2;text-align:right !important}
+.ingredient-table td.ingredient-table__col-numeric:last-child{grid-column:3;grid-row:1;text-align:right !important}
 .ingredient-table td.ingredient-table__col-numeric:empty{display:none}
 .ingredient-table__portion-note{padding-left:0 !important}
 [hidden]{display:none !important}

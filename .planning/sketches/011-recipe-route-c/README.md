@@ -50,6 +50,7 @@ Taken in substance from `.planning/.continue-here.md` `<decisions_made>` and fro
 12. The Recipe Book form gets authored Yield and time fields as Sheet fields on the version, which time fields and how they sit beside the derived Makes, Age, Harden and Serve being settled when the form is built, and the form stays unbuilt in 03.5.
 13. The Recipe Book form's footer names the Recipe name with its qualifier while the Sheet title stays the heading, and its running head is gone.
 14. Phone logging is deferred out of 03.5 to the brief for phone-based jobs (`.planning/todos/pending/2026-09-24-write-a-product-brief-for-phone-based-jobs.md`), so the 393 board settles layout, not whether the log is entered on the phone.
+15. The ingredient table's amount and name are two columns under one "Ingredient" head, at every width (Mark, 2026-09-25/26): the table sizes to content, so the amount, As made and % of batch take their figures' width (the numeric heads may wrap) and the name takes the rest, wrapping inside its own column; the "estimated" tag and the portion line stay with the name. At 393 the plan amount, the name and the share sit on line one, and as made sits under the plan amount on the same right edge. The side nav shows only from 1024 up (Mark, 2026-09-25); every drawn rung already agrees, and the widths between rungs are derived later from measured content limits, not picked.
 
 ## How the boards are made
 

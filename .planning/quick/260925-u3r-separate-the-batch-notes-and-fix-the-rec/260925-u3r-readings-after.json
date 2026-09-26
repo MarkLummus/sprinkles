@@ -1,0 +1,451 @@
+{
+  "route": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1",
+  "takenAt": "2026-09-26T02:34:35.990Z",
+  "readings": {
+    "393": {
+      "innerWidth": 393,
+      "scrollWidth": 393,
+      "gtc": "353px",
+      "regions": {
+        ".notebook-body__sheet": {
+          "top": 667.4,
+          "left": 0,
+          "width": 393,
+          "height": 2930.1
+        },
+        ".ingredient-table-region": {
+          "top": 852.4,
+          "left": 20,
+          "width": 353,
+          "height": 1122.4
+        },
+        ".method-region": {
+          "top": 2091.7,
+          "left": 20,
+          "width": 353,
+          "height": 1465.8
+        },
+        ".side-region": {
+          "top": 1994.8,
+          "left": 20,
+          "width": 353,
+          "height": 76.9
+        }
+      },
+      "log": {
+        "top": 3625.4,
+        "left": 0,
+        "width": 393
+      },
+      "headers": [
+        {
+          "text": "Ingredient",
+          "left": 0,
+          "right": 0
+        },
+        {
+          "text": "As made",
+          "left": 0,
+          "right": 0
+        },
+        {
+          "text": "% of batch",
+          "left": 0,
+          "right": 0
+        }
+      ],
+      "maxNameCellH": 33.7,
+      "portionLines": 1,
+      "notes": {
+        "cells": {
+          "top": 3763.4,
+          "left": 20,
+          "width": 353,
+          "height": 154.8
+        },
+        "cellsBottom": 3918.2,
+        "items": [
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "Soft, not greasy",
+            "top": 3936.2,
+            "bottom": 3963.7,
+            "left": 20,
+            "width": 353,
+            "height": 27.5
+          },
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "oil bottle opened 24 Jul",
+            "top": 3967.7,
+            "bottom": 3995.2,
+            "left": 20,
+            "width": 353,
+            "height": 27.5
+          }
+        ],
+        "gapCellsToFirst": 18,
+        "gapBetween": 4,
+        "sameLine": false
+      }
+    },
+    "760": {
+      "innerWidth": 760,
+      "scrollWidth": 760,
+      "gtc": "376px",
+      "regions": {
+        ".notebook-body__sheet": {
+          "top": 540.6,
+          "left": 256,
+          "width": 472,
+          "height": 2767
+        },
+        ".ingredient-table-region": {
+          "top": 753.6,
+          "left": 304,
+          "width": 376,
+          "height": 942.3
+        },
+        ".method-region": {
+          "top": 1792.8,
+          "left": 304,
+          "width": 376,
+          "height": 1446.8
+        },
+        ".side-region": {
+          "top": 1715.9,
+          "left": 304,
+          "width": 376,
+          "height": 56.9
+        }
+      },
+      "log": {
+        "top": 3335.6,
+        "left": 256,
+        "width": 472
+      },
+      "headers": [
+        {
+          "text": "Ingredient",
+          "left": 304,
+          "right": 492
+        },
+        {
+          "text": "As made",
+          "left": 492,
+          "right": 586
+        },
+        {
+          "text": "% of batch",
+          "left": 586,
+          "right": 680
+        }
+      ],
+      "maxNameCellH": 79.1,
+      "portionLines": 2,
+      "notes": {
+        "cells": {
+          "top": 3433.6,
+          "left": 264,
+          "width": 456,
+          "height": 139.8
+        },
+        "cellsBottom": 3573.4,
+        "items": [
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "Soft, not greasy",
+            "top": 3591.4,
+            "bottom": 3618.9,
+            "left": 264,
+            "width": 456,
+            "height": 27.5
+          },
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "oil bottle opened 24 Jul",
+            "top": 3622.9,
+            "bottom": 3650.4,
+            "left": 264,
+            "width": 456,
+            "height": 27.5
+          }
+        ],
+        "gapCellsToFirst": 18,
+        "gapBetween": 4,
+        "sameLine": false
+      }
+    },
+    "1024": {
+      "innerWidth": 1024,
+      "scrollWidth": 1024,
+      "gtc": "640px",
+      "regions": {
+        ".notebook-body__sheet": {
+          "top": 440.9,
+          "left": 256,
+          "width": 736,
+          "height": 2325.1
+        },
+        ".ingredient-table-region": {
+          "top": 634.9,
+          "left": 304,
+          "width": 640,
+          "height": 741.5
+        },
+        ".method-region": {
+          "top": 1473.2,
+          "left": 304,
+          "width": 640,
+          "height": 1224.8
+        },
+        ".side-region": {
+          "top": 1396.3,
+          "left": 304,
+          "width": 640,
+          "height": 56.9
+        }
+      },
+      "log": {
+        "top": 2794,
+        "left": 256,
+        "width": 498.9
+      },
+      "headers": [
+        {
+          "text": "Ingredient",
+          "left": 304,
+          "right": 756
+        },
+        {
+          "text": "As made",
+          "left": 756,
+          "right": 850
+        },
+        {
+          "text": "% of batch",
+          "left": 850,
+          "right": 944
+        }
+      ],
+      "maxNameCellH": 46.7,
+      "portionLines": 1,
+      "notes": {
+        "cells": {
+          "top": 2850,
+          "left": 264,
+          "width": 482.9,
+          "height": 139.8
+        },
+        "cellsBottom": 2989.8,
+        "items": [
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "Soft, not greasy",
+            "top": 3007.8,
+            "bottom": 3035.3,
+            "left": 264,
+            "width": 482.9,
+            "height": 27.5
+          },
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "oil bottle opened 24 Jul",
+            "top": 3039.3,
+            "bottom": 3066.8,
+            "left": 264,
+            "width": 482.9,
+            "height": 27.5
+          }
+        ],
+        "gapCellsToFirst": 18,
+        "gapBetween": 4,
+        "sameLine": false
+      }
+    },
+    "1100": {
+      "innerWidth": 1100,
+      "scrollWidth": 1100,
+      "gtc": "234.656px 117.344px",
+      "regions": {
+        ".notebook-body__sheet": {
+          "top": 418,
+          "left": 256,
+          "width": 480,
+          "height": 4210.7
+        },
+        ".ingredient-table-region": {
+          "top": 643,
+          "left": 304,
+          "width": 234.7,
+          "height": 1818.9
+        },
+        ".method-region": {
+          "top": 2493.9,
+          "left": 304,
+          "width": 234.7,
+          "height": 2054.8
+        },
+        ".side-region": {
+          "top": 643,
+          "left": 570.7,
+          "width": 117.3,
+          "height": 3905.7
+        }
+      },
+      "log": {
+        "top": 418,
+        "left": 768,
+        "width": 300
+      },
+      "headers": [
+        {
+          "text": "Ingredient",
+          "left": 304,
+          "right": 350.7
+        },
+        {
+          "text": "As made",
+          "left": 350.7,
+          "right": 444.7
+        },
+        {
+          "text": "% of batch",
+          "left": 444.7,
+          "right": 538.7
+        }
+      ],
+      "maxNameCellH": 215.8,
+      "portionLines": 9,
+      "notes": {
+        "cells": {
+          "top": 524,
+          "left": 768,
+          "width": 300,
+          "height": 184.2
+        },
+        "cellsBottom": 708.2,
+        "items": [
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "Soft, not greasy",
+            "top": 726.2,
+            "bottom": 753.7,
+            "left": 768,
+            "width": 300,
+            "height": 27.5
+          },
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "oil bottle opened 24 Jul",
+            "top": 757.7,
+            "bottom": 785.2,
+            "left": 768,
+            "width": 300,
+            "height": 27.5
+          }
+        ],
+        "gapCellsToFirst": 18,
+        "gapBetween": 4,
+        "sameLine": false
+      }
+    },
+    "1366": {
+      "innerWidth": 1366,
+      "scrollWidth": 1366,
+      "gtc": "412px 206px",
+      "regions": {
+        ".notebook-body__sheet": {
+          "top": 418,
+          "left": 256,
+          "width": 746,
+          "height": 2623.1
+        },
+        ".ingredient-table-region": {
+          "top": 624,
+          "left": 304,
+          "width": 412,
+          "height": 888.3
+        },
+        ".method-region": {
+          "top": 1544.3,
+          "left": 304,
+          "width": 412,
+          "height": 1416.8
+        },
+        ".side-region": {
+          "top": 624,
+          "left": 748,
+          "width": 206,
+          "height": 2337.1
+        }
+      },
+      "log": {
+        "top": 418,
+        "left": 1034,
+        "width": 300
+      },
+      "headers": [
+        {
+          "text": "Ingredient",
+          "left": 304,
+          "right": 528
+        },
+        {
+          "text": "As made",
+          "left": 528,
+          "right": 622
+        },
+        {
+          "text": "% of batch",
+          "left": 622,
+          "right": 716
+        }
+      ],
+      "maxNameCellH": 79.1,
+      "portionLines": 2,
+      "notes": {
+        "cells": {
+          "top": 524,
+          "left": 1034,
+          "width": 300,
+          "height": 184.2
+        },
+        "cellsBottom": 708.2,
+        "items": [
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "Soft, not greasy",
+            "top": 726.2,
+            "bottom": 753.7,
+            "left": 1034,
+            "width": 300,
+            "height": 27.5
+          },
+          {
+            "tag": "P",
+            "className": "batch-row__note app-hand",
+            "text": "oil bottle opened 24 Jul",
+            "top": 757.7,
+            "bottom": 785.2,
+            "left": 1034,
+            "width": 300,
+            "height": 27.5
+          }
+        ],
+        "gapCellsToFirst": 18,
+        "gapBetween": 4,
+        "sameLine": false
+      }
+    }
+  }
+}

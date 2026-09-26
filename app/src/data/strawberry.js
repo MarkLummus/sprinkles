@@ -20,6 +20,53 @@ function embed(ingredientName, ingredient, fields) {
   };
 }
 
+// Mark 2026-09-25 (open question 12): each Strawberry version carries its
+// own .ier's definitions, so its in-app figures match its printed page.
+// The conversion is library.js's 260925-lpd rule: pac/pod x100, fat and
+// sugar as given, other = Solids minus fat minus sugar. Water (0.911 = 1
+// minus Solids where present) and kcal have no composition key and are
+// recorded in the sidecar. A field the source omits stays omitted (D-03).
+// Why they are here and not in library.js: the library keeps one entry
+// per name (V2.1.ier's, which V2.1 embeds), and a library entry holding
+// fresh-fruit data under "Strawberry (dried)" would be picked as dried
+// strawberry by anyone choosing from the library. embed() clones them at
+// authoring time, like every row.
+const STRAWBERRIES_V1_V2_IER = {
+  name: 'Strawberries',
+  category: 'fruit',
+  composition: { fat: 0.0022, sugar: 0.0534, other: 0.0334, pac: 10.055716666666667, pod: 9.8 },
+  basis: { fat: 'estimated', sugar: 'estimated', other: 'estimated', pac: 'estimated', pod: 'estimated' },
+  source: {
+    fat: 'Ice Ed export (Strawberry V1.ier, Strawberry V2.ier)',
+    sugar: 'Ice Ed export (Strawberry V1.ier, Strawberry V2.ier)',
+    other: 'Ice Ed export (Strawberry V1.ier, Strawberry V2.ier)',
+    pac: 'Ice Ed export (Strawberry V1.ier, Strawberry V2.ier)',
+    pod: 'Ice Ed export (Strawberry V1.ier, Strawberry V2.ier)',
+  },
+  // Strawberry V1.ier's and V2.ier's own "Strawberries" block (identical
+  // in both files), which their printed pages IMG_2455 and IMG_2456
+  // computed from.
+  note: "Strawberry V1.ier's and V2.ier's own \"Strawberries\" block (identical in both files), which their printed pages IMG_2455 and IMG_2456 computed from.",
+};
+
+const DRIED_STRAWBERRY_V2_IER = {
+  name: 'Strawberry (dried)',
+  category: 'fruit',
+  composition: { fat: 0.0022, sugar: 0.0534, other: 0.0334, pac: 10.1, pod: 9.8 },
+  basis: { fat: 'estimated', sugar: 'estimated', other: 'estimated', pac: 'estimated', pod: 'estimated' },
+  source: {
+    fat: 'Ice Ed export (Strawberry V2.ier)',
+    sugar: 'Ice Ed export (Strawberry V2.ier)',
+    other: 'Ice Ed export (Strawberry V2.ier)',
+    pac: 'Ice Ed export (Strawberry V2.ier)',
+    pod: 'Ice Ed export (Strawberry V2.ier)',
+  },
+  // Strawberry V2.ier's own block under this name is fresh-strawberry data
+  // (Solids 0.089, kcal 0.31, no Water key), kept exactly as Ice Ed had it
+  // (Mark 2026-09-25), since IMG_2456's printed figures used it.
+  note: "Strawberry V2.ier's own block under this name is fresh-strawberry data (Solids 0.089, kcal 0.31, no Water key), kept exactly as Ice Ed had it (Mark 2026-09-25), since IMG_2456's printed figures used it.",
+};
+
 export const strawberryRecipe = {
   id: 'strawberry',
   name: 'Strawberry',
@@ -48,7 +95,7 @@ export const strawberryV1 = {
   sheetDescription: '',
   // 11 rows, .ier order = printed table order.
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk35, { portions: [{ step: 1, grams: 400 }], removed: false }) },
+    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk, { portions: [{ step: 1, grams: 400 }], removed: false }) },
     { id: 'row-02', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 26 }], removed: false }) },
     { id: 'row-03', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 112 }], removed: false }) },
     { id: 'row-04', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 14 }], removed: false }) },
@@ -58,7 +105,7 @@ export const strawberryV1 = {
     { id: 'row-08', ...embed('Guar', library.guarGum, { portions: [{ step: 1, grams: 0.1 }], removed: false }) },
     { id: 'row-09', ...embed('Lambda Carrageenan', library.carrageenan, { portions: [{ step: 1, grams: 0.2 }], removed: false }) },
     { id: 'row-10', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 208 }], removed: false }) },
-    { id: 'row-11', ...embed('Strawberries', library.strawberries, { portions: [{ step: 1, grams: 518 }], removed: false }) },
+    { id: 'row-11', ...embed('Strawberries', STRAWBERRIES_V1_V2_IER, { portions: [{ step: 1, grams: 518 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // Typed Notes: "Sous Vide for 45 minutes @ 77C".
@@ -148,7 +195,7 @@ export const strawberryV2 = {
   sheetTitle: 'Strawberry',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk35, { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk, { portions: [{ step: 1, grams: 500 }], removed: false }) },
     { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 140 }], removed: false }) },
     { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 40 }], removed: false }) },
     { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 71 }], removed: false }) },
@@ -156,8 +203,8 @@ export const strawberryV2 = {
     { id: 'row-06', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 57 }], removed: false }) },
     { id: 'row-07', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 2.5 }], removed: false }) },
     { id: 'row-08', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 0 }], removed: false }) },
-    { id: 'row-09', ...embed('Strawberry (dried)', library.driedStrawberry, { portions: [{ step: 1, grams: 56 }], removed: false }) },
-    { id: 'row-10', ...embed('Strawberries', library.strawberries, { portions: [{ step: 1, grams: 100 }], removed: false }) },
+    { id: 'row-09', ...embed('Strawberry (dried)', DRIED_STRAWBERRY_V2_IER, { portions: [{ step: 1, grams: 56 }], removed: false }) },
+    { id: 'row-10', ...embed('Strawberries', STRAWBERRIES_V1_V2_IER, { portions: [{ step: 1, grams: 100 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // Empty Notes on this page — the Coconut precedent (empty process, empty
@@ -221,7 +268,7 @@ export const strawberryV2_1 = {
   sheetTitle: 'Strawberry',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk35, { portions: [{ step: 1, grams: 449 }], removed: false }) },
+    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk, { portions: [{ step: 1, grams: 449 }], removed: false }) },
     { id: 'row-02', ...embed('Cream, heavy', library.heavyCream, { portions: [{ step: 1, grams: 100 }], removed: false }) },
     { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 12 }], removed: false }) },
     { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 119 }], removed: false }) },

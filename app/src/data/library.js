@@ -250,16 +250,16 @@ export const library = {
   // A field the source omits stays omitted; where two .ier files define one
   // name differently, the latest version's definition is taken and the
   // others are recorded in 03.5-SEED-REVIEW.md, "Across the 2026-09-25
-  // additions".
-  wholeMilk35: {
-    name: 'Whole Milk 3.5%',
-    category: 'dairy',
-    dairy: true,
-    composition: { fat: 0.035, msnf: 0.087 },
-    basis: { fat: 'estimated', msnf: 'estimated' },
-    source: { fat: 'Ice Ed export (Strawberry V1.ier, Mocha.ier)', msnf: 'Ice Ed export (Strawberry V1.ier, Mocha.ier)' },
-    note: 'Kept separate from wholeMilk ("Whole milk, 3.5% fat", the olive oil carton) — Mark 2026-09-25: each Ice Ed milk is its own ingredient as the export defines it.',
-  },
+  // additions" — except that Strawberry V1 and V2 embed their own files'
+  // definitions (strawberry.js, Mark 2026-09-25).
+  //
+  // Ice Ed's "Whole Milk 3.5%" (Strawberry, Mocha) is the same ingredient
+  // as wholeMilk above — Mark 2026-09-25, one shared whole-milk-3.5% entry.
+  // Rows keep the printed name and embed wholeMilk. The export's own block
+  // (fat 0.035, msnf 0.087) differs from wholeMilk's msnf 0.088;
+  // 03.5-SEED-REVIEW.md judgement call 57 records what moves. The earlier
+  // separate entry's "per Mark" note was the orchestrator's wording in the
+  // 260925-lpd planner prompt, not Mark's.
   wholeMilk37: {
     name: 'Whole Milk 3.7%',
     category: 'dairy',
@@ -267,7 +267,7 @@ export const library = {
     composition: { fat: 0.0366, msnf: 0.0865 },
     basis: { fat: 'estimated', msnf: 'estimated' },
     source: { fat: 'Ice Ed export (Standard Base.ier)', msnf: 'Ice Ed export (Standard Base.ier)' },
-    note: 'The export spells it "whole milk, 3.7%"; its own entry, like Whole Milk 3.3% and 3.5%.',
+    note: 'The export spells it "whole milk, 3.7%"; its own entry, like Whole Milk 3.3% — a different stated fat from wholeMilk (D-04).',
   },
   coffeeBeans: {
     name: 'Coffee beans',
@@ -289,7 +289,7 @@ export const library = {
       pac: 'Ice Ed export (Strawberry V2.1.ier)',
       pod: 'Ice Ed export (Strawberry V2.1.ier)',
     },
-    note: "V2.1's definition; Strawberry V1.ier and V2.ier define it with sugar 0.0534, pac 10.06, pod 9.8, and those versions embed this later definition.",
+    note: "Strawberry V2.1.ier's definition, which Strawberry V2.1 embeds. Strawberry V1.ier and V2.ier define it with sugar 0.0534, pac 10.06, pod 9.8; V1 and V2 embed that definition from strawberry.js (Mark 2026-09-25).",
   },
   driedStrawberry: {
     name: 'Strawberry (dried)',
@@ -303,7 +303,7 @@ export const library = {
       pac: 'Ice Ed export (Strawberry V2.1.ier)',
       pod: 'Ice Ed export (Strawberry V2.1.ier)',
     },
-    note: "V2.1's definition; Strawberry V2.ier's own block under this name is fresh-strawberry data (Solids 0.089, kcal 0.31), which V2's printed figures used — V2 embeds this definition instead.",
+    note: "Strawberry V2.1.ier's definition, which Strawberry V2.1 embeds. Strawberry V2.ier's own block under this name is fresh-strawberry data (Solids 0.089, kcal 0.31); V2 embeds that block from strawberry.js, as Ice Ed had it (Mark 2026-09-25).",
   },
   almondExtract: {
     name: 'Almond extract',

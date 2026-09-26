@@ -69,7 +69,7 @@ export const mochaV0 = {
   sheetTitle: 'Mocha',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk35, { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk, { portions: [{ step: 1, grams: 500 }], removed: false }) },
     { id: 'row-02', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 60 }], removed: false }) },
     { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 42 }], removed: false }) },
     { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 105 }], removed: false }) },
@@ -174,7 +174,7 @@ export const mochaV1 = {
   sheetTitle: 'Mocha',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk35, { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk, { portions: [{ step: 1, grams: 500 }], removed: false }) },
     { id: 'row-02', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 60 }], removed: false }) },
     { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 42 }], removed: false }) },
     { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 105 }], removed: false }) },
@@ -227,7 +227,7 @@ export const mochaV2 = {
   sheetTitle: 'Mocha',
   sheetDescription: '',
   rows: [
-    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk35, { portions: [{ step: 1, grams: 500 }], removed: false }) },
+    { id: 'row-01', ...embed('Whole Milk 3.5%', library.wholeMilk, { portions: [{ step: 1, grams: 500 }], removed: false }) },
     { id: 'row-02', ...embed('Cocoa Powder', library.cocoaPowder, { portions: [{ step: 1, grams: 30 }], removed: false }) },
     { id: 'row-03', ...embed('Sucrose', library.sucrose, { portions: [{ step: 1, grams: 46 }], removed: false }) },
     { id: 'row-04', ...embed('Dextrose', library.dextrose, { portions: [{ step: 1, grams: 89 }], removed: false }) },

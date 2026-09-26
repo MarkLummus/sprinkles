@@ -18,6 +18,7 @@ import { underbellyLightBaseV1, underbellyLightBaseV2 } from './underbelly-light
 import { mochaV0, mochaV1, mochaV2, mochaV3 } from './mocha.js';
 import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { railEntries } from '../domain/historyRail.js';
+import { rowGrams } from '../domain/rows.js';
 
 function flatten(groups) {
   return {
@@ -295,9 +296,8 @@ describe('Pineapple v1 and Coconut v1 -> v2 (D-05, D-06)', () => {
 });
 
 describe('library entries added 2026-09-25 (quick 260925-lpd)', () => {
-  it('wholeMilk35, wholeMilk37, coffeeBeans, strawberries and driedStrawberry each carry a full estimated composition', () => {
+  it('wholeMilk37, coffeeBeans, strawberries and driedStrawberry each carry a full estimated composition', () => {
     const entries = [
-      ['wholeMilk35', { fat: 0.035, msnf: 0.087 }],
       ['wholeMilk37', { fat: 0.0366, msnf: 0.0865 }],
       ['coffeeBeans', { other: 1 }],
       ['strawberries', { fat: 0.0022, sugar: 0.049, other: 0.0378, pac: 8.5, pod: 6.1 }],
@@ -316,6 +316,78 @@ describe('library entries added 2026-09-25 (quick 260925-lpd)', () => {
   it('almondExtract has an empty composition and basis, never zeroed', () => {
     expect(library.almondExtract.composition).toEqual({});
     expect(library.almondExtract.basis).toEqual({});
+  });
+});
+
+describe("Strawberry versions embed their own .ier definitions (Mark 2026-09-25, open question 12)", () => {
+  function rowById(version, id) {
+    return version.rows.find((row) => row.id === id);
+  }
+
+  it("V1's and V2's Strawberries rows embed the same V1.ier/V2.ier definition", () => {
+    const composition = { fat: 0.0022, sugar: 0.0534, other: 0.0334, pac: 10.055716666666667, pod: 9.8 };
+    for (const row of [rowById(strawberryV1, 'row-11'), rowById(strawberryV2, 'row-10')]) {
+      expect(row.ingredient.composition).toEqual(composition);
+      for (const field of Object.keys(composition)) {
+        expect(row.ingredient.basis[field]).toBe('estimated');
+        expect(row.ingredient.source[field]).toBe('Ice Ed export (Strawberry V1.ier, Strawberry V2.ier)');
+      }
+    }
+  });
+
+  it("V2's Strawberry (dried) row embeds V2.ier's own fresh-strawberry block", () => {
+    const composition = { fat: 0.0022, sugar: 0.0534, other: 0.0334, pac: 10.1, pod: 9.8 };
+    const row = rowById(strawberryV2, 'row-09');
+    expect(row.ingredient.composition).toEqual(composition);
+    for (const field of Object.keys(composition)) {
+      expect(row.ingredient.basis[field]).toBe('estimated');
+      expect(row.ingredient.source[field]).toBe('Ice Ed export (Strawberry V2.ier)');
+    }
+  });
+
+  it("V2.1's strawberry rows embed the library's entries", () => {
+    expect(rowById(strawberryV2_1, 'row-10').ingredient).toEqual(library.strawberries);
+    expect(rowById(strawberryV2_1, 'row-09').ingredient).toEqual(library.driedStrawberry);
+  });
+
+  it("each strawberry row's grams x sugar, PAC and POD rounds to its printed page's figure", () => {
+    const cases = [
+      [strawberryV1, 'row-11', '27.7', '52.1', '50.8'],
+      [strawberryV2, 'row-09', '2.99', '5.66', '5.49'],
+      [strawberryV2, 'row-10', '5.34', '10.1', '9.8'],
+      [strawberryV2_1, 'row-09', '12.3', '21.4', '15.3'],
+      [strawberryV2_1, 'row-10', '5.19', '9.01', '6.47'],
+    ];
+    const decimalsOf = (s) => (s.includes('.') ? s.split('.')[1].length : 0);
+    for (const [version, id, sugarStr, pacStr, podStr] of cases) {
+      const row = rowById(version, id);
+      const grams = rowGrams(row);
+      const { composition } = row.ingredient;
+      expect((grams * composition.sugar).toFixed(decimalsOf(sugarStr))).toBe(sugarStr);
+      expect(((grams * composition.pac) / 100).toFixed(decimalsOf(pacStr))).toBe(pacStr);
+      expect(((grams * composition.pod) / 100).toFixed(decimalsOf(podStr))).toBe(podStr);
+    }
+  });
+});
+
+describe('Whole Milk 3.5% is one ingredient (Mark 2026-09-25, open question 12)', () => {
+  it('library has no separate 3.5% entry; every "Whole Milk 3.5%" row embeds the unedited wholeMilk', () => {
+    expect(library.wholeMilk35).toBeUndefined();
+    for (const key of Object.keys(library)) {
+      if (key === 'wholeMilk') continue;
+      expect(library[key].name).not.toBe('Whole Milk 3.5%');
+    }
+    expect(library.wholeMilk.name).toBe('Whole milk, 3.5% fat');
+    expect(library.wholeMilk.composition).toEqual({ fat: 0.035, msnf: 0.088 });
+
+    for (const version of [strawberryV1, strawberryV2, strawberryV2_1, mochaV0, mochaV1, mochaV2]) {
+      const row = version.rows.find((r) => r.id === 'row-01');
+      expect(row.ingredientName).toBe('Whole Milk 3.5%');
+      expect(row.ingredient).toEqual(library.wholeMilk);
+    }
+
+    const mochaV3Row01 = mochaV3.rows.find((r) => r.id === 'row-01');
+    expect(mochaV3Row01.ingredient).toEqual(library.wholeMilk33);
   });
 });
 

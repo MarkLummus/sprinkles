@@ -47,12 +47,17 @@
       "number": "4",
       "name": "Prepare the next version for making",
       "status": "pending"
+    },
+    {
+      "number": "5",
+      "name": "Version evolution",
+      "status": "pending"
     }
   ],
   "next": {
-    "command": "/gsd:progress",
-    "label": "Show progress",
-    "reason": "Unsure of state — showing progress"
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 03.5 of 12 · 67% · executing"
   },
-  "updated_at": "2026-09-23T13:14:35.306Z"
+  "updated_at": "2026-09-25T09:53:43.435Z"
 }

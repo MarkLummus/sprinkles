@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-26T13:33:57.610Z",
+  "phase": "03.5",
+  "phase_name": "separate-the-recipe-from-the-sheet",
+  "phase_dir": ".planning/phases/03.5-separate-the-recipe-from-the-sheet",
+  "plan": null,
+  "task": null,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "Sketch 011: ingredient table amount + name as two columns, all widths (approved on canvas v238)", "status": "done", "commit": "812487a"},
+    {"id": 2, "name": "App: batch notes each on their own line (quick 260925-u3r)", "status": "done", "commit": "c4369e9"},
+    {"id": 3, "name": "Seed: new recipes and Mark's answers (quick 260925-kix, lpd, re3)", "status": "done", "commit": "9880b0f"}
+  ],
+  "remaining_tasks": [
+    {"id": 4, "name": "Width-constraints study: Sheet 1-col min/max, Sheet 2-col min/max, log min, measured from sketch 011", "status": "not_started"},
+    {"id": 5, "name": "Mark sets values and precedence; derive breakpoints; record in DESIGN.md and sketch 011; GSD gap-closure plan in 03.5", "status": "not_started"},
+    {"id": 6, "name": "03.5-09: wire the transcribed seed into the store (D-07 gate)", "status": "not_started"}
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Answer 03.5-SEED-REVIEW.md open questions 9, 13, 14, 16", "context": "placeholder dates, almond extract coefficients, judgement readings, cited batches", "blocking": false},
+    {"action": "Review 03.5-08 conformance record", "context": "marked Open for Mark", "blocking": false},
+    {"action": "Answer log precedence after the widths table", "context": "does the log drop below the Sheet before or after the Sheet drops to one column", "blocking": true}
+  ],
+  "decisions": [
+    {"decision": "Side nav only from 1024 up", "rationale": "760 lacks width for the side nav (Mark, 2026-09-25)", "phase": "03.5"},
+    {"decision": "Ingredient table: amount and name as two columns under one head at every width, content-sized", "rationale": "names wrap in their own column (Mark, 2026-09-25/26)", "phase": "03.5"},
+    {"decision": "No picked breakpoints; derive from measured content limits and Mark's precedence", "rationale": "Mark rejected arbitrary checkpoints (2026-09-25)", "phase": "03.5"},
+    {"decision": "Sheet two-column mode takes precedence over one-column mode", "rationale": "Mark, 2026-09-25", "phase": "03.5"}
+  ],
+  "uncommitted_files": [" M .planning/state.json"],
+  "next_action": "Render sketch 011's Sheet and log at a sweep of container widths in headless Chrome, find the min/max limits, present the widths table, screenshots and the log-precedence question to Mark.",
+  "context_notes": "Constraints first, then precedence, then checkpoints. Canvas runtime strips <colgroup>; board rules go in helmet style. See .planning/.continue-here.md for infrastructure and canvas workflow."
+}

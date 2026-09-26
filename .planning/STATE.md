@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
 stopped_at: Phase 03.5 context gathered
-last_updated: "2026-09-25T22:11:09.421Z"
+last_updated: "2026-09-26T00:24:05.257Z"
 last_activity: 2026-09-25
 last_activity_desc: Phase 03.5 execution started
-state_head: 727896bf132d7bdd1f389330afb4ef0b9c1a47c6
+state_head: ab4c9241bcd9f401e329623d81ae7f043bd77fb8
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
 Plan: 1 of 9
 Status: Executing Phase 03.5
-Last activity: 2026-09-25 - Completed quick task 260925-lpd: Seed Standard Base, Underbelly Light Base, Strawberry and Mocha from Ice Ed exports, binder and comparisons workbook; fix Pineapple and Coconut dates
+Last activity: 2026-09-25 - Completed quick task 260925-re3: Apply Mark's answers to seed open questions 10, 11, 12 and 15: Mocha tastings from pages only, Strawberry per-version fruit data
 
 Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -301,6 +301,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260925-kix | Seed Mexican Chocolate v2 from the v2-2 Ice Ed export; fix the version chain v1-v2-v3-v4 | 2026-09-25 | 2759b48 | [260925-kix-seed-mexican-chocolate-v2-from-the-v2-2-](./quick/260925-kix-seed-mexican-chocolate-v2-from-the-v2-2-/) |
 | 54 | Describe Mexican Chocolate v3's reason as the step from v2 (open question 8) | 2026-09-25 | 4736061 | — |
 | 260925-lpd | Seed Standard Base, Underbelly Light Base, Strawberry and Mocha from Ice Ed exports, binder and comparisons workbook; fix Pineapple and Coconut dates | 2026-09-25 | 727896b | [260925-lpd-seed-standard-base-underbelly-light-base](./quick/260925-lpd-seed-standard-base-underbelly-light-base/) |
+| 260925-re3 | Apply Mark's answers to seed open questions 10, 11, 12 and 15: Mocha tastings from pages only, Strawberry per-version fruit data | 2026-09-26 | ab4c924 | [260925-re3-apply-mark-s-answers-to-seed-open-questi](./quick/260925-re3-apply-mark-s-answers-to-seed-open-questi/) |
 
 ### Roadmap Evolution
 

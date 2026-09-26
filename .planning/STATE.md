@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
 stopped_at: Phase 03.5 context gathered
-last_updated: "2026-09-26T00:24:05.257Z"
+last_updated: "2026-09-26T02:37:02.836Z"
 last_activity: 2026-09-25
 last_activity_desc: Phase 03.5 execution started
-state_head: ab4c9241bcd9f401e329623d81ae7f043bd77fb8
+state_head: 6d3f7635c6a16d002614d2548a4081b436861321
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
 Plan: 1 of 9
 Status: Executing Phase 03.5
-Last activity: 2026-09-25 - Completed quick task 260925-re3: Apply Mark's answers to seed open questions 10, 11, 12 and 15: Mocha tastings from pages only, Strawberry per-version fruit data
+Last activity: 2026-09-25 - Completed quick task 260925-u3r: Separate the batch notes (1025-1365 grid band deferred to a constraints study)
 
 Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -302,6 +302,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 54 | Describe Mexican Chocolate v3's reason as the step from v2 (open question 8) | 2026-09-25 | 4736061 | — |
 | 260925-lpd | Seed Standard Base, Underbelly Light Base, Strawberry and Mocha from Ice Ed exports, binder and comparisons workbook; fix Pineapple and Coconut dates | 2026-09-25 | 727896b | [260925-lpd-seed-standard-base-underbelly-light-base](./quick/260925-lpd-seed-standard-base-underbelly-light-base/) |
 | 260925-re3 | Apply Mark's answers to seed open questions 10, 11, 12 and 15: Mocha tastings from pages only, Strawberry per-version fruit data | 2026-09-26 | ab4c924 | [260925-re3-apply-mark-s-answers-to-seed-open-questi](./quick/260925-re3-apply-mark-s-answers-to-seed-open-questi/) |
+| 260925-u3r | Separate the batch notes (1025-1365 grid band deferred to a constraints study) | 2026-09-26 | 6d3f763 | [260925-u3r-separate-the-batch-notes-and-fix-the-rec](./quick/260925-u3r-separate-the-batch-notes-and-fix-the-rec/) |
 
 ### Roadmap Evolution
 

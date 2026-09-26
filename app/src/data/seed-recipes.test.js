@@ -77,6 +77,17 @@ describe('transcribedRecipeGroups validates as a store file (D-07 gate: not wire
   });
 });
 
+describe('no tasting carries a comparisons-workbook verdict (Mark 2026-09-25, open question 10)', () => {
+  it('no batch tasting note mentions the comparisons workbook, for every recipe', () => {
+    const { batches } = flatten(transcribedRecipeGroups);
+    for (const batch of batches) {
+      if (batch.tasting !== null) {
+        expect(batch.tasting.note).not.toContain('Comparisons workbook');
+      }
+    }
+  });
+});
+
 describe('mexicanChocolateV4 (D-01, D-02, D-03)', () => {
   it('has 12 rows in Ice Ed source order with matching grams', () => {
     const expected = [
@@ -408,7 +419,7 @@ describe('Strawberry V1 -> V2 -> V2.1 (IMG_2455-2457 + .ier + comparisons workbo
     expect(strawberryV2_1.method).toEqual([]);
   });
 
-  it('has exactly one batch per version with the approved fields', () => {
+  it('has exactly one batch per version with the approved fields, page-only content (Mark 2026-09-25)', () => {
     const strawberryGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'strawberry');
     const batchesFor = (versionId) => strawberryGroup.batches.filter((b) => b.versionId === versionId);
 
@@ -417,23 +428,23 @@ describe('Strawberry V1 -> V2 -> V2.1 (IMG_2455-2457 + .ier + comparisons workbo
     expect(v1Batches[0].churn.asMade).toEqual({});
     expect(v1Batches[0].tasting.marks).toEqual({ sweetness: 2, hardness: 5 });
     expect(v1Batches[0].tasting.tastingTempC).toBe(-18);
-    expect(v1Batches[0].tasting.note).toContain('Too hard to scoop');
-    expect(v1Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: ok · Texture: flaky · Scoopability: hard · Flavor: not enough')).toBe(true);
+    expect(v1Batches[0].tasting.note).toBe(
+      'Not very sweet. Could be sweeter.\nStrawberry flavor is good. Could use more.\nFlaky, not creamy, Dry. (maybe cooked too much water?)\nComing out of Fridge/Freezer Temp = -18°C\nToo hard to scoop',
+    );
 
     const v2Batches = batchesFor(strawberryV2.id);
     expect(v2Batches).toHaveLength(1);
     expect(v2Batches[0].churn.asMade).toEqual({});
-    expect(v2Batches[0].churn.atTheMachine).toContain("Don't Cook Fruit.");
-    expect(v2Batches[0].tasting.marks).toEqual({ sweetness: 3 });
-    expect(v2Batches[0].tasting.note).toContain('Good Flavor in Sweet Cream');
-    expect(v2Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: good · Texture: good · Scoopability: hard · Flavor: strong')).toBe(true);
+    expect(v2Batches[0].churn.atTheMachine).toBe(
+      "Sous Vide 45min @ 77\nDon't Cook Fruit.\nAge Overnight\nGood Flavor in Sweet Cream\nSweet cream is thick",
+    );
+    expect(v2Batches[0].tasting).toBeNull();
 
     const v2_1Batches = batchesFor(strawberryV2_1.id);
     expect(v2_1Batches).toHaveLength(1);
     expect(v2_1Batches[0].churn.asMade).toEqual({ 'row-01': [449] });
-    expect(v2_1Batches[0].tasting.marks).toEqual({ hardness: 4, sweetness: 3 });
-    expect(v2_1Batches[0].tasting.note).toContain('Not as Soft as Mocha');
-    expect(v2_1Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: good · Texture: good · Scoopability: medium hard · Flavor: good')).toBe(true);
+    expect(v2_1Batches[0].tasting.marks).toEqual({ hardness: 4 });
+    expect(v2_1Batches[0].tasting.note).toBe('Medium Hard,\nDry.\nNot as Hard as Strawberry V2\nNot as Soft as Mocha');
 
     for (const batch of strawberryGroup.batches) {
       expect(batch.churn.churnDate).toBeNull();
@@ -442,16 +453,16 @@ describe('Strawberry V1 -> V2 -> V2.1 (IMG_2455-2457 + .ier + comparisons workbo
     }
   });
 
-  it("the group's rail names are exactly Version 1-3 and every version stands TASTED", () => {
+  it("the group's rail names are exactly Version 1-3, standing [TASTED, AWAITING_TASTING, TASTED] (Mark 2026-09-25)", () => {
     const strawberryGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'strawberry');
     const entries = railEntries(strawberryGroup.versions, strawberryGroup.batches, {
       currentVersionId: strawberryV2_1.id,
     });
     expect(entries.map((e) => e.name)).toEqual(['Version 1 · V1', 'Version 2 · V2', 'Version 3 · V2.1']);
-    for (const version of strawberryGroup.versions) {
-      const versionBatches = strawberryGroup.batches.filter((b) => b.versionId === version.id);
-      expect(standingFor(versionBatches)).toBe(TASTED);
-    }
+    const standingsInOrder = strawberryGroup.versions.map((version) =>
+      standingFor(strawberryGroup.batches.filter((b) => b.versionId === version.id)),
+    );
+    expect(standingsInOrder).toEqual([TASTED, AWAITING_TASTING, TASTED]);
   });
 });
 
@@ -511,8 +522,11 @@ describe('Mocha v0 -> v1 -> v2 -> v3 (IMG_2464-2466 + .ier + comparisons workboo
     expect([mochaV0.versionLabel, mochaV1.versionLabel, mochaV2.versionLabel, mochaV3.versionLabel]).toEqual(['v0', 'v1', 'v2', 'v3']);
     for (const version of [mochaV0, mochaV1, mochaV2, mochaV3]) {
       expect(version.recipeId).toBe('mocha');
-      expect(version.citedBatchId).toBeNull();
     }
+    expect(mochaV0.citedBatchId).toBeNull();
+    expect(mochaV1.citedBatchId).toBe('mocha-v0-batch-01');
+    expect(mochaV2.citedBatchId).toBeNull();
+    expect(mochaV3.citedBatchId).toBeNull();
     expect(mochaV0.parentVersionId).toBeNull();
     expect(mochaV1.parentVersionId).toBe(mochaV0.id);
     expect(mochaV1.parentVersionLabel).toBe('v0');
@@ -545,16 +559,20 @@ describe('Mocha v0 -> v1 -> v2 -> v3 (IMG_2464-2466 + .ier + comparisons workboo
     expect(v0Batches[0].churn.asMade).toEqual({ 'row-01': [502], 'row-10': [0.2], 'row-12': [70], 'row-14': [15] });
     expect(v0Batches[0].churn.atTheMachine).toBe('Sous vide @ 77°C for 45 minutes');
     expect(v0Batches[0].churn.ingredientNotes).toBe('Cream has Guar 0.5%');
-    expect(v0Batches[0].tasting.marks).toEqual({ smoothness: 5, sweetness: 3, scoopability: 3 });
-    expect(v0Batches[0].tasting.note.endsWith('Comparisons workbook — Sweetness: good · Texture: great · Scoopability: great · Flavor: too strong')).toBe(true);
+    expect(v0Batches[0].tasting.marks).toEqual({ smoothness: 5 });
+    expect(v0Batches[0].tasting.note).toBe(
+      'Base is Potent! maybe too much cocoa + coffee\nReally strong cocoa.\nVery smooth.\nNot Hard.',
+    );
 
     expect(batchesFor(mochaV1.id)).toHaveLength(0);
 
     const v2Batches = batchesFor(mochaV2.id);
     expect(v2Batches).toHaveLength(1);
     expect(v2Batches[0].churn.asMade).toEqual({ 'row-10': [0], 'row-11': [0.5] });
-    expect(v2Batches[0].tasting.marks).toEqual({ sweetness: 3, scoopability: 3 });
-    expect(v2Batches[0].tasting.note).toBe('Comparisons workbook — Sweetness: good · Texture: great · Scoopability: great · Flavor: too much coffee');
+    expect(v2Batches[0].churn.ingredientNotes).toBe(
+      'Guar: the printed 0.5 is struck through in ink with nothing written beside it; recorded as 0 g as-made, an uncertain reading (the page\'s typed note says to reduce guar to 0.2).\nLambda Carrageenan: the printed 0.3 is overwritten 0.5 in ink.',
+    );
+    expect(v2Batches[0].tasting).toBeNull();
 
     const v3Batches = batchesFor(mochaV3.id);
     expect(v3Batches).toHaveLength(1);
@@ -567,12 +585,12 @@ describe('Mocha v0 -> v1 -> v2 -> v3 (IMG_2464-2466 + .ier + comparisons workboo
     }
   });
 
-  it('standings across Mocha versions cover TASTED, NOT_YET_CHURNED, TASTED and AWAITING_TASTING', () => {
+  it('standings across Mocha versions cover TASTED, NOT_YET_CHURNED, AWAITING_TASTING and AWAITING_TASTING (Mark 2026-09-25)', () => {
     const mochaGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mocha');
     const standingsInOrder = mochaGroup.versions.map((version) =>
       standingFor(mochaGroup.batches.filter((b) => b.versionId === version.id)),
     );
-    expect(standingsInOrder).toEqual([TASTED, NOT_YET_CHURNED, TASTED, AWAITING_TASTING]);
+    expect(standingsInOrder).toEqual([TASTED, NOT_YET_CHURNED, AWAITING_TASTING, AWAITING_TASTING]);
   });
 });
 
@@ -667,19 +685,13 @@ describe('Underbelly Light Base v1 (workbook column G) -> v2 (.ier)', () => {
     expect(underbellyLightBaseV2.parentVersionLabel).toBe('v1');
   });
 
-  it('v1 has exactly one tasted batch from the workbook verdicts; v2 has none', () => {
+  it('Underbelly Light Base has no batch (Mark 2026-09-25): both versions read not yet churned', () => {
     const ublbGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'underbelly-light-base');
-    const v1Batches = ublbGroup.batches.filter((b) => b.versionId === underbellyLightBaseV1.id);
-    expect(v1Batches).toHaveLength(1);
-    expect(v1Batches[0].churn.churnDate).toBeNull();
-    expect(v1Batches[0].tasting.marks).toEqual({ sweetness: 3, scoopability: 3 });
-    expect(v1Batches[0].tasting.note).toBe('Comparisons workbook — Sweetness: good · Texture: good · Scoopability: good · Flavor: good');
-    const v2Batches = ublbGroup.batches.filter((b) => b.versionId === underbellyLightBaseV2.id);
-    expect(v2Batches).toHaveLength(0);
+    expect(ublbGroup.batches).toEqual([]);
     const standings = ublbGroup.versions.map((version) =>
       standingFor(ublbGroup.batches.filter((b) => b.versionId === version.id)),
     );
-    expect(standings).toEqual([TASTED, NOT_YET_CHURNED]);
+    expect(standings).toEqual([NOT_YET_CHURNED, NOT_YET_CHURNED]);
   });
 });
 

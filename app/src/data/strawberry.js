@@ -5,7 +5,9 @@
 // Comparisons.xlsx, columns E, D, C). Mark's 2026-09-25 decisions 1, 2, 3
 // and 5 (quick 260925-lpd); every judgement call is flagged in
 // 03.5-SEED-REVIEW.md, which this file's own comments point at rather than
-// repeat. Nothing here is wired into store/seed.js (D-07).
+// repeat. Nothing here is wired into store/seed.js (D-07). The workbook's
+// columns E, D and C are recorded in the sidecar, their verdicts not used
+// (no page mark) — Mark 2026-09-25, "if not marked, then ignore".
 import { library } from './library.js';
 import { createBatch } from '../domain/batch.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
@@ -110,7 +112,7 @@ const strawberryV1TastingFields = {
   // -> sweetness 2 (direction stated, degree read as leaning — flagged).
   marks: { sweetness: 2, hardness: 5 },
   note:
-    'Not very sweet. Could be sweeter.\nStrawberry flavor is good. Could use more.\nFlaky, not creamy, Dry. (maybe cooked too much water?)\nComing out of Fridge/Freezer Temp = -18°C\nToo hard to scoop\nComparisons workbook — Sweetness: ok · Texture: flaky · Scoopability: hard · Flavor: not enough',
+    'Not very sweet. Could be sweeter.\nStrawberry flavor is good. Could use more.\nFlaky, not creamy, Dry. (maybe cooked too much water?)\nComing out of Fridge/Freezer Temp = -18°C\nToo hard to scoop',
   defects: null,
   bitterDeclared: null,
   meltTestG: null,
@@ -179,33 +181,23 @@ const strawberryV2ChurnFields = {
   churnDurationMinutes: null,
   exitConsistency: null,
   airiness: null,
-  // "Don't Cook Fruit." is written on the sous-vide line, read as this
-  // batch's own process note, not a reason and not nextTimeNote — flagged.
-  atTheMachine: "Sous Vide 45min @ 77\nDon't Cook Fruit.\nAge Overnight",
+  // "Don't Cook Fruit." is read as this batch's own process note
+  // (flagged). "Good Flavor in Sweet Cream / Sweet cream is thick" follow
+  // "Age Overnight" in the page's same ink block; they observe the base,
+  // which Mark 2026-09-25 ruled is not a tasting, so they sit here, in the
+  // model's process note, rather than a tasting.
+  atTheMachine: "Sous Vide 45min @ 77\nDon't Cook Fruit.\nAge Overnight\nGood Flavor in Sweet Cream\nSweet cream is thick",
   ingredientNotes: null,
   nextTimeNote: null,
 };
 
-const strawberryV2TastingFields = {
-  tastedDate: null,
-  temperingMinutes: null,
-  tastingTempC: null,
-  // Workbook Sweetness "good" -> sweetness 3, the page being silent on
-  // sweetness.
-  marks: { sweetness: 3 },
-  // The page itself records only the base; the finished-product verdicts
-  // come from the workbook (flagged).
-  note: 'Good Flavor in Sweet Cream\nSweet cream is thick\nComparisons workbook — Sweetness: good · Texture: good · Scoopability: hard · Flavor: strong',
-  defects: null,
-  bitterDeclared: null,
-  meltTestG: null,
-  meltStyle: null,
-};
-
+// No tasting — the page records only the base, and workbook column D's
+// verdicts are not used (Mark 2026-09-25), so V2 reads churned, not yet
+// tasted.
 export const strawberryV2Batch = createBatch(
   strawberryV2,
   strawberryV2ChurnFields,
-  strawberryV2TastingFields,
+  null,
   { id: STRAWBERRY_V2_BATCH_ID, now: strawberryV2.createdAt },
 );
 
@@ -273,9 +265,10 @@ const strawberryV2_1TastingFields = {
   temperingMinutes: null,
   tastingTempC: null,
   // "Medium Hard" -> hardness 4 (Mexican Chocolate v1's "Hard straight from
-  // Freezer" -> 5 precedent); workbook Sweetness "good" -> sweetness 3.
-  marks: { hardness: 4, sweetness: 3 },
-  note: 'Medium Hard,\nDry.\nNot as Hard as Strawberry V2\nNot as Soft as Mocha\nComparisons workbook — Sweetness: good · Texture: good · Scoopability: medium hard · Flavor: good',
+  // Freezer" -> 5 precedent). Workbook column C's verdicts are not used
+  // (Mark 2026-09-25: "if not marked, then ignore").
+  marks: { hardness: 4 },
+  note: 'Medium Hard,\nDry.\nNot as Hard as Strawberry V2\nNot as Soft as Mocha',
   defects: null,
   bitterDeclared: null,
   meltTestG: null,

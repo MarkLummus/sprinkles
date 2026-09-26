@@ -1,13 +1,14 @@
 // Underbelly Light Base — v1, v2 (Mark 2026-09-25, answer 4). v1 is the
 // comparisons workbook's column G (`~/Desktop/Ice Cream/Ice Cream
-// Comparisons.xlsx`), with a batch and a tasting from its four verdicts;
-// v2 is `~/Desktop/Ice Cream/Underbelly Light Base.ier`, parent v1, no
-// batch. A base in PRODUCT.md's vocabulary, but the recipe record has no
-// field for that (D-11, D-08), so it is seeded as an ordinary recipe
-// here. No gellan row (decision 3d). Every judgement call is flagged in
-// 03.5-SEED-REVIEW.md. Nothing here is wired into store/seed.js (D-07).
+// Comparisons.xlsx`) and no batch — Mark 2026-09-25: no page, no process
+// value (the workbook's Sous Vide Temp row is blank for column G) and no
+// tasting (its four verdicts are recorded, not used); v2 is `~/Desktop/Ice
+// Cream/Underbelly Light Base.ier`, parent v1, no batch. A base in
+// PRODUCT.md's vocabulary, but the recipe record has no field for that
+// (D-11, D-08), so it is seeded as an ordinary recipe here. No gellan row
+// (decision 3d). Every judgement call is flagged in 03.5-SEED-REVIEW.md.
+// Nothing here is wired into store/seed.js (D-07).
 import { library } from './library.js';
-import { createBatch } from '../domain/batch.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
 
 function embed(ingredientName, ingredient, fields) {
@@ -73,41 +74,6 @@ export const underbellyLightBaseV1 = {
   method: [],
   authored: { beforeYouStart: [] },
 };
-
-export const UNDERBELLY_LIGHT_BASE_V1_BATCH_ID = 'underbelly-light-base-v1-batch-01';
-
-const underbellyLightBaseV1ChurnFields = {
-  churnDate: null,
-  asMade: {},
-  stepChanges: {},
-  timeToDrawTempMinutes: null,
-  outOfMachineTempC: null,
-  churnDurationMinutes: null,
-  exitConsistency: null,
-  airiness: null,
-  atTheMachine: null,
-  ingredientNotes: null,
-  nextTimeNote: null,
-};
-
-const underbellyLightBaseV1TastingFields = {
-  tastedDate: null,
-  temperingMinutes: null,
-  tastingTempC: null,
-  marks: { sweetness: 3, scoopability: 3 },
-  note: 'Comparisons workbook — Sweetness: good · Texture: good · Scoopability: good · Flavor: good',
-  defects: null,
-  bitterDeclared: null,
-  meltTestG: null,
-  meltStyle: null,
-};
-
-export const underbellyLightBaseV1Batch = createBatch(
-  underbellyLightBaseV1,
-  underbellyLightBaseV1ChurnFields,
-  underbellyLightBaseV1TastingFields,
-  { id: UNDERBELLY_LIGHT_BASE_V1_BATCH_ID, now: underbellyLightBaseV1.createdAt },
-);
 
 // v2 — Underbelly Light Base.ier, parent v1, no batch. Peppermint on UBLB
 // v1.ier (2024-12-26) already uses this gum-and-salt shape, so the formula

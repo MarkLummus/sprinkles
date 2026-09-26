@@ -8,6 +8,8 @@
 // labelled v0 (Mark 2026-09-25, answer 3). Every judgement call is
 // flagged in 03.5-SEED-REVIEW.md, which this file's own comments point at
 // rather than repeat. Nothing here is wired into store/seed.js (D-07).
+// Workbook columns I and J are recorded in the sidecar and not used (no
+// page mark) — Mark 2026-09-25, "if not marked, then ignore".
 import { library } from './library.js';
 import { createBatch } from '../domain/batch.js';
 import { KITCHEN_EQUIPMENT } from './mexican-chocolate.js';
@@ -121,18 +123,14 @@ const mochaV0TastingFields = {
   tastedDate: null,
   temperingMinutes: null,
   tastingTempC: null,
-  // "Very smooth." -> smoothness 5 (the axis's own high anchor word);
-  // workbook Sweetness "good" -> sweetness 3; workbook Scoopability
-  // "great" -> scoopability 3 (Mexican Chocolate v1's "scoopable" -> 3
-  // precedent) — all flagged. "Not Hard", "Really strong cocoa" and "Base
-  // is Potent! …" stay prose. Column I is read as this batch's (a default,
-  // flagged): its sous vide 77 matches this page's ink (Mocha v1's typed
-  // Notes say 75C), its coffee 15 and guar 0.2 match this page's ink, its
-  // verdicts agree with this page's outcome, and no source shows Mocha v1
-  // churned; its milk 500 and cream 67 match the printed plan, not the ink.
-  marks: { smoothness: 5, sweetness: 3, scoopability: 3 },
+  // "Very smooth." -> smoothness 5 (the axis's own high anchor word,
+  // flagged); "Not Hard", "Really strong cocoa" and "Base is Potent! …"
+  // stay prose. Workbook column I's verdicts are not used — Mark
+  // 2026-09-25: "if not marked, then ignore"; a batch carries only what
+  // its binder page marks (recorded in the sidecar).
+  marks: { smoothness: 5 },
   note:
-    'Base is Potent! maybe too much cocoa + coffee\nReally strong cocoa.\nVery smooth.\nNot Hard.\nComparisons workbook — Sweetness: good · Texture: great · Scoopability: great · Flavor: too strong',
+    'Base is Potent! maybe too much cocoa + coffee\nReally strong cocoa.\nVery smooth.\nNot Hard.',
   defects: null,
   bitterDeclared: null,
   meltTestG: null,
@@ -146,7 +144,11 @@ export const mochaV0Batch = createBatch(
   { id: MOCHA_V0_BATCH_ID, now: mochaV0.createdAt },
 );
 
-// v1 — Mocha v1.ier only; no binder page, no batch.
+// v1 — Mocha v1.ier only; no binder page, no batch. Mark 2026-09-25 (open
+// question 10) — all 29 binder photos are catalogued in the binder audit
+// (Ice Cream Log Pages/sprinkles-churn-log-binder-audit.md) and none is
+// Mocha v1. IMG_2464 is v0's churned batch (ink coffee 15, guar 0.2,
+// cream 70, milk 502), so v1 was never churned on its own.
 export const MOCHA_V1_ID = 'mocha-v1';
 
 export const mochaV1 = {
@@ -156,8 +158,13 @@ export const mochaV1 = {
   parentVersionId: MOCHA_V0_ID,
   parentVersionLabel: 'v0',
   // No source says why coffee went 30 -> 15.
+  // reason stays null (judgement call 36): v1 has no page, and its typed
+  // "reduce Guar gum to 0.2" does not describe its rows (guar stays 0.5;
+  // the v0 -> v1 change is coffee 30 -> 15), so no reason is set.
   reason: null,
-  citedBatchId: null,
+  // Mark 2026-09-25 — Mocha v1.ier is the recipe re-saved after v0's
+  // churned batch (IMG_2464), so v1 cites that batch.
+  citedBatchId: MOCHA_V0_BATCH_ID,
   // createdAt: ordering placeholder — Mark to supply the real date: its
   // .ier time is the archive stamp, used as it stands.
   createdAt: '2024-12-23T14:16:42.000Z',
@@ -272,25 +279,13 @@ const mochaV2ChurnFields = {
   nextTimeNote: null,
 };
 
-const mochaV2TastingFields = {
-  tastedDate: null,
-  temperingMinutes: null,
-  tastingTempC: null,
-  marks: { sweetness: 3, scoopability: 3 },
-  // Column J is labelled "Mocha V2" and holds coffee 8, but its formula is
-  // the re-saved Mocha v2.ier, not this page — mapped to this batch as the
-  // only v2 batch, flagged.
-  note: 'Comparisons workbook — Sweetness: good · Texture: great · Scoopability: great · Flavor: too much coffee',
-  defects: null,
-  bitterDeclared: null,
-  meltTestG: null,
-  meltStyle: null,
-};
-
+// No tasting — the page records no outcome of its own, and workbook
+// column J's verdicts are not used (Mark 2026-09-25: "if not marked, then
+// ignore"), so v2 reads churned, not yet tasted.
 export const mochaV2Batch = createBatch(
   mochaV2,
   mochaV2ChurnFields,
-  mochaV2TastingFields,
+  null,
   { id: MOCHA_V2_BATCH_ID, now: mochaV2.createdAt },
 );
 

@@ -25,7 +25,6 @@ import { standardBaseRecipe, standardBaseV1, standardBaseV2 } from './standard-b
 import {
   underbellyLightBaseRecipe,
   underbellyLightBaseV1,
-  underbellyLightBaseV1Batch,
   underbellyLightBaseV2,
 } from './underbelly-light-base.js';
 import {
@@ -51,7 +50,7 @@ export const transcribedRecipeGroups = [
   {
     recipe: underbellyLightBaseRecipe,
     versions: [underbellyLightBaseV1, underbellyLightBaseV2],
-    batches: [underbellyLightBaseV1Batch],
+    batches: [],
   },
   {
     recipe: strawberryRecipe,

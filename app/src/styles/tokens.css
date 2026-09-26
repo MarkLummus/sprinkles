@@ -437,7 +437,7 @@
   --app-notebook-link-underline-offset: 3px; /* 1600-batch.html: Rename's own underline offset */
   --app-notebook-field-pad-x: 10px; /* 1600-pen.html: a ceremony field's own horizontal padding */
   --app-notebook-field-radius: 8px; /* 1600-pen.html: a ceremony field's own corner radius */
-  --app-notebook-gap-hairline: 4px; /* 1600-pen.html: a field's own label-to-control gap and the From batch fieldset's own gap */
+  --app-notebook-gap-hairline: 4px; /* 1600-pen.html: a field's own label-to-control gap and the From batch fieldset's own gap; reused as the gap between the maker's batch notes in the log (260925-u3r) */
   --app-notebook-checkbox-size: 16px; /* 1600-pen.html: the From batch checkbox's own edge */
   --app-notebook-acts-gap: 10px; /* 1600-batch.html: the version column's own acts row gap (Task 2) */
   --app-notebook-identity-size: 18px; /* 1600-batch.html: the version identity heading's own size (Task 2) */
@@ -451,6 +451,7 @@
   --app-notebook-log-tasted-size: 13px; /* the tasting head's own "tasted <date>" size */
   --app-notebook-log-cell-gap-row: 16px; /* the cells grid's own row-gap (the column-gap reuses --gap-m, 20px) */
   --app-notebook-log-head-gap: 18px; /* the head's own right-hand control group gap (Batches, Correct, Record) */
+  --app-notebook-log-group-gap: 18px; /* the log section's own gap between its groups on every sketch 011 batch board, read here as the space between the measured cells and the maker's notes (260925-u3r) */
 
   /* The History rail (03.5-05 Task 1, 1600-batch.html/1600-long-history.html):
      values off the same board that have no existing role to reuse. The

@@ -52,3 +52,20 @@ describe('notebook.css is wired in (main.jsx, home.css precedent)', () => {
     expect(homeCssIndex).toBeLessThan(notebookCssIndex);
   });
 });
+
+describe("the log's batch notes (260925-u3r, sketch 011)", () => {
+  test('.notebook-log .batch-row__notes is a top-level flex column, the hairline gap, and the log group gap above', () => {
+    const notesRule = rules.find((rule) => rule.selector === '.notebook-log .batch-row__notes' && rule.media === undefined);
+    expect(notesRule, 'expected a top-level .notebook-log .batch-row__notes rule').toBeTruthy();
+    expect(notesRule.declarations).toMatch(/display:\s*flex/);
+    expect(notesRule.declarations).toMatch(/flex-direction:\s*column/);
+    expect(notesRule.declarations).toMatch(/gap:\s*var\(--app-notebook-gap-hairline\)/);
+    expect(notesRule.declarations).toMatch(/margin-top:\s*var\(--app-notebook-log-group-gap\)/);
+  });
+
+  test('.notebook-log .batch-row__note resets the paragraph margin so the flex gap alone spaces the notes', () => {
+    const noteRule = rules.find((rule) => rule.selector === '.notebook-log .batch-row__note' && rule.media === undefined);
+    expect(noteRule, 'expected a top-level .notebook-log .batch-row__note rule').toBeTruthy();
+    expect(noteRule.declarations).toMatch(/margin:\s*0/);
+  });
+});

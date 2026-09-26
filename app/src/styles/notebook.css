@@ -554,6 +554,21 @@
   color: var(--app-text-secondary);
 }
 
+/* The notes group (sketch 011, every batch board's <div> beneath the
+   measured cells): a flex column with the hairline gap between the two
+   notes, and the log's own group gap above, separating each note onto
+   its own line (260925-u3r). */
+.notebook-log .batch-row__notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-hairline);
+  margin-top: var(--app-notebook-log-group-gap);
+}
+
+.notebook-log .batch-row__note {
+  margin: 0;
+}
+
 .notebook-log .batch-row__provenance,
 .notebook-log .batch-row__provenance dt {
   font-family: var(--face-grotesk);

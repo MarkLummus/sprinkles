@@ -1137,10 +1137,56 @@ describe("BatchRow — the record's reading state, measured values as cells (con
     );
   });
 
-  it('renders the at-the-machine and ingredient notes in the hand (.app-hand), not typed prose (decisions_recorded, D-19)', () => {
+  it('renders the two batch notes as their own paragraphs in one notes block, in the hand (260925-u3r, sketch 011)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(/<span class="app-hand">Soft, not greasy<\/span>/);
-    expect(markup).toMatch(/<span class="app-hand">oil bottle opened 24 Jul<\/span>/);
+    expect(markup).toMatch(
+      /<div class="batch-row__notes"><p class="batch-row__note app-hand">Soft, not greasy<\/p><p class="batch-row__note app-hand">oil bottle opened 24 Jul<\/p><\/div>/,
+    );
+  });
+
+  it('renders exactly one notes block and exactly two note paragraphs', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup.split('class="batch-row__notes"').length - 1).toBe(1);
+    expect(markup.split('class="batch-row__note app-hand"').length - 1).toBe(2);
+  });
+
+  it('places the notes block after the Airiness cell and before the tasting reading', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    const airinessIndex = markup.indexOf('Airiness');
+    const notesIndex = markup.indexOf('class="batch-row__notes"');
+    const tastingIndex = markup.indexOf('class="tasting-reading"');
+    expect(airinessIndex).toBeGreaterThan(-1);
+    expect(notesIndex).toBeGreaterThan(airinessIndex);
+    expect(tastingIndex).toBeGreaterThan(notesIndex);
+  });
+
+  it('renders one note paragraph when only the at-the-machine note is present', () => {
+    const oneNoteBatch = { ...augustSecondBatch, churn: { ...augustSecondBatch.churn, ingredientNotes: null } };
+    const markup = renderBatchRow({ openBatch: oneNoteBatch, batches: [oneNoteBatch], mode: 'reading' });
+    expect(markup.split('class="batch-row__note app-hand"').length - 1).toBe(1);
+    expect(markup).toMatch(/<div class="batch-row__notes"><p class="batch-row__note app-hand">Soft, not greasy<\/p><\/div>/);
+  });
+
+  it('renders no notes block when both notes are absent', () => {
+    const noNoteBatch = {
+      ...augustSecondBatch,
+      churn: { ...augustSecondBatch.churn, atTheMachine: null, ingredientNotes: null },
+    };
+    const markup = renderBatchRow({ openBatch: noNoteBatch, batches: [noNoteBatch], mode: 'reading' });
+    expect(markup).not.toContain('batch-row__notes');
+  });
+
+  it('renders a note whose text looks like HTML escaped, never as markup', () => {
+    const htmlNoteBatch = { ...augustSecondBatch, churn: { ...augustSecondBatch.churn, ingredientNotes: '<b>x</b>' } };
+    const markup = renderBatchRow({ openBatch: htmlNoteBatch, batches: [htmlNoteBatch], mode: 'reading' });
+    expect(markup).toContain('&lt;b&gt;x&lt;/b&gt;');
+    expect(markup).not.toMatch(/<b>x<\/b>/);
+  });
+
+  it('reads no sibling span carrying a note\'s text — the old shared-line shape is gone', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).not.toMatch(/<span class="app-hand">Soft, not greasy<\/span>/);
+    expect(markup).not.toMatch(/<span class="app-hand">oil bottle opened 24 Jul<\/span>/);
   });
 
   it('reads no code reference to any retired churn field name', () => {

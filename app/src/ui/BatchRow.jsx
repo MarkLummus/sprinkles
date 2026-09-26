@@ -1038,9 +1038,18 @@ export function BatchRow({
               </div>
             </div>
             {/* At the machine / Ingredient notes: the maker's own words,
-                in the hand (03.5-07, decisions_recorded 1). */}
-            {openBatch.churn.atTheMachine && <span className="app-hand">{openBatch.churn.atTheMachine}</span>}
-            {openBatch.churn.ingredientNotes && <span className="app-hand">{openBatch.churn.ingredientNotes}</span>}
+                in the hand (03.5-07, decisions_recorded 1). Each note is
+                its own paragraph in one column, 4px apart and 18px under
+                the cells, as every sketch 011 batch board draws it
+                (260925-u3r). */}
+            {(openBatch.churn.atTheMachine || openBatch.churn.ingredientNotes) && (
+              <div className="batch-row__notes">
+                {openBatch.churn.atTheMachine && <p className="batch-row__note app-hand">{openBatch.churn.atTheMachine}</p>}
+                {openBatch.churn.ingredientNotes && (
+                  <p className="batch-row__note app-hand">{openBatch.churn.ingredientNotes}</p>
+                )}
+              </div>
+            )}
 
             {/* The tasting battery's own read view (contract "Axes spec",
                 brief § 3): TastingReading reads only the single stored

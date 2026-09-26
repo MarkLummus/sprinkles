@@ -191,11 +191,13 @@
     "underbelly-light-base-v1": {
       "source": "Ice Cream Comparisons.xlsx, column G (~/Desktop/Ice Cream)",
       "fields": {
+        "batchFlag": "No batch (Mark 2026-09-25): no binder page, no process value in column G (row 24, Sous Vide Temp, is blank) and its verdicts are not a tasting (03.5-SEED-REVIEW.md judgement call 53).",
         "comparisonsWorkbook": {
           "column": "G",
           "sousVideTempC": null,
           "stabilizersG": 4.5,
-          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "good", "flavor": "good" }
+          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "good", "flavor": "good" },
+          "verdictsStatus": "not used: no page mark"
         },
         "calculatorInputs": { "hardness": 0.75, "servingTemperatureC": -18 },
         "workbookLabels": {
@@ -235,6 +237,9 @@
           "lIceCream": 1.4
         },
         "errorFlags": {},
+        "ingredientDefinitions": {
+          "Strawberries": { "Water": 0.911, "Sugar": 0.0534, "Solids": 0.089, "PAC": 0.10055716666666667, "POD": 0.098, "kcal": 0.31, "Fat": 0.0022 }
+        },
         "printedTimestamp": "9/2/24, 11:07 AM",
         "notesText": "based on stabilizer mix from Mocha recipe\ncream has Gellan gum: reducing guar gum\nSous Vide for 45 minutes @ 77C\ntarget 0.28% stabilizers / water weight: 2.64 / 947 = 0.28%\ntarget 40% fruit weight / total weight: 518 / 1400 = 37%",
         "notesFlag": "Only the sous-vide line becomes this version's own process/method step; the stabilizer-mix reference, the gellan note and the two percentage targets are not transcribed onto the version. See 03.5-SEED-REVIEW.md, Strawberry V1, judgement call 45.",
@@ -242,7 +247,8 @@
           "column": "E",
           "sousVideTempC": 77,
           "stabilizersG": 2.64,
-          "verdicts": { "sweetness": "ok", "texture": "flaky", "scoopability": "hard", "flavor": "not enough" }
+          "verdicts": { "sweetness": "ok", "texture": "flaky", "scoopability": "hard", "flavor": "not enough" },
+          "verdictsStatus": "not used: no page mark"
         }
       }
     },
@@ -255,13 +261,19 @@
           "lIceCream": 0.98
         },
         "errorFlags": {},
+        "ingredientDefinitions": {
+          "Strawberry (dried)": { "Fat": 0.0022, "Sugar": 0.0534, "kcal": 0.31, "Solids": 0.089, "PAC": 0.101, "POD": 0.098 },
+          "Strawberries": { "Water": 0.911, "Sugar": 0.0534, "Solids": 0.089, "PAC": 0.10055716666666667, "POD": 0.098, "kcal": 0.31, "Fat": 0.0022 }
+        },
+        "ingredientDefinitionsFlag": "Strawberry V2.ier's \"Strawberry (dried)\" block is fresh-strawberry data under the dried name, with no Water key; kept exactly as Ice Ed had it (Mark 2026-09-25). The version embeds both blocks (03.5-SEED-REVIEW.md, judgement call 54).",
         "printedTimestamp": null,
         "printedTimestampFlag": "No timestamp legible on this page.",
         "comparisonsWorkbook": {
           "column": "D",
           "sousVideTempC": null,
           "stabilizersG": 3.2,
-          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "hard", "flavor": "strong" }
+          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "hard", "flavor": "strong" },
+          "verdictsStatus": "not used: no page mark"
         }
       }
     },
@@ -274,12 +286,17 @@
           "lIceCream": 0.87
         },
         "errorFlags": {},
+        "ingredientDefinitions": {
+          "Strawberry (dried)": { "Fat": 0.0022, "Sugar": 0.441, "kcal": 3.57, "Solids": 1, "PAC": 0.766, "POD": 0.548 },
+          "Strawberries": { "Water": 0.911, "Sugar": 0.049, "Solids": 0.089, "PAC": 0.085, "POD": 0.061, "kcal": 0.31, "Fat": 0.0022 }
+        },
         "printedTimestamp": "9/14/24, 12:04 PM",
         "comparisonsWorkbook": {
           "column": "C",
           "sousVideTempC": 77,
           "stabilizersG": 2.5,
-          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "medium hard", "flavor": "good" }
+          "verdicts": { "sweetness": "good", "texture": "good", "scoopability": "medium hard", "flavor": "good" },
+          "verdictsStatus": "not used: no page mark"
         }
       }
     }
@@ -300,13 +317,15 @@
           "column": "I",
           "sousVideTempC": 77,
           "stabilizersG": 2.6,
-          "verdicts": { "sweetness": "good", "texture": "great", "scoopability": "great", "flavor": "too strong" }
+          "verdicts": { "sweetness": "good", "texture": "great", "scoopability": "great", "flavor": "too strong" },
+          "verdictsStatus": "not used: no page mark"
         }
       }
     },
     "mocha-v1": {
       "source": "Mocha v1.ier (Ice Ed export, ~/Desktop/Ice Cream)",
       "fields": {
+        "batchFlag": "No batch: no binder page is Mocha v1 — all 29 photos are catalogued in sprinkles-churn-log-binder-audit.md. IMG_2464 is v0's churned batch, and Mocha v1.ier is the recipe re-saved after it; v1 cites that batch as its citedBatchId (Mark 2026-09-25; 03.5-SEED-REVIEW.md judgement call 55).",
         "kcalPer100gByIngredient": {
           "Whole Milk 3.5%": 0.61,
           "Cocoa Powder": 2.28,
@@ -345,7 +364,8 @@
           "column": "J",
           "sousVideTempC": 77,
           "stabilizersG": 2.9,
-          "verdicts": { "sweetness": "good", "texture": "great", "scoopability": "great", "flavor": "too much coffee" }
+          "verdicts": { "sweetness": "good", "texture": "great", "scoopability": "great", "flavor": "too much coffee" },
+          "verdictsStatus": "not used: no page mark"
         }
       }
     },

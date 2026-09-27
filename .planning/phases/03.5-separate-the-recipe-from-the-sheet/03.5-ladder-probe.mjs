@@ -1,8 +1,8 @@
-// 03.5-10/11/12: the derived width ladder's checks (sketch 011 decision 16),
-// run against the built app and, where a board exists for the width, the
-// matching sketch 011 board. Groups accumulate across this gap's plans —
-// this plan adds nav, sheet and home; a later plan in the same gap set
-// adds log, cap, band and margin.
+// 03.5-10: the derived width ladder's checks (sketch 011 decision 16), run
+// against the built app and, where a board exists for the width, the
+// matching sketch 011 board. Groups accumulate across this plan's tasks —
+// Task 1 adds nav, sheet and home; Task 2 adds log and cap; Task 3 adds
+// band and margin.
 //
 // Usage: node 03.5-ladder-probe.mjs <groups> <widths>
 //   groups: comma list, e.g. nav,sheet,home
@@ -29,20 +29,18 @@ const BOARD_FOR_WIDTH = {
   1920: '1920-batch.html',
 };
 
-function displayOfScript() {
-  function displayOf(selector) {
-    const el = document.querySelector(selector);
-    return el ? getComputedStyle(el).display : null;
-  }
-  return displayOf;
-}
-
 async function readApp(browser, appUrl, width) {
   const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse: false });
   const reading = await page.evaluate(() => {
     function displayOf(selector) {
       const el = document.querySelector(selector);
       return el ? getComputedStyle(el).display : null;
+    }
+    function rectOf(selector) {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { top: r.top, left: r.left, right: r.right, bottom: r.bottom, width: r.width };
     }
     const recipePage = document.querySelector('.recipe-page');
     const recipePageTrackCount = recipePage
@@ -59,6 +57,10 @@ async function readApp(browser, appUrl, width) {
       linkCount: links.length,
       scrollWidth: document.documentElement.scrollWidth,
       innerWidth: window.innerWidth,
+      sheetRect: rectOf('.recipe-page'),
+      logRect: rectOf('[aria-label="Batch"]'),
+      frameRect: rectOf('.notebook'),
+      mainRect: rectOf('.shell__main'),
     };
   });
   await context.close();
@@ -94,6 +96,12 @@ async function readBoard(browser, repoUrl, file) {
       const el = document.querySelector(selector);
       return el ? getComputedStyle(el).display : null;
     }
+    function rectOf(selector) {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { top: r.top, left: r.left, right: r.right, bottom: r.bottom, width: r.width };
+    }
     const recipePage = document.querySelector('.recipe-page');
     const recipePageTrackCount = recipePage
       ? getComputedStyle(recipePage).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length
@@ -102,6 +110,9 @@ async function readBoard(browser, repoUrl, file) {
       railDisplay: displayOf('.shell__rail'),
       tabsDisplay: displayOf('.shell__tabs'),
       recipePageTrackCount,
+      sheetRect: rectOf('.recipe-page'),
+      logRect: rectOf('[aria-label="Batch"]'),
+      frameRect: rectOf('main.shell__main > div'),
     };
   });
   await context.close();
@@ -123,13 +134,14 @@ async function main() {
   const { appUrl, repoUrl, close } = await startServers();
   const browser = await launch();
 
+  const needsApp = ['nav', 'sheet', 'log', 'cap', 'band', 'margin'].some((g) => groups.has(g));
+
   try {
     for (const width of widths) {
-      const appReading = groups.has('nav') || groups.has('sheet') ? await readApp(browser, appUrl, width) : null;
+      const appReading = needsApp ? await readApp(browser, appUrl, width) : null;
       const homeReading = groups.has('home') ? await readHome(browser, appUrl, width) : null;
       const boardFile = BOARD_FOR_WIDTH[width];
-      const boardReading =
-        boardFile && (groups.has('nav') || groups.has('sheet')) ? await readBoard(browser, repoUrl, boardFile) : null;
+      const boardReading = boardFile && needsApp ? await readBoard(browser, repoUrl, boardFile) : null;
 
       console.log(
         JSON.stringify({ width, app: appReading, home: homeReading, board: boardReading ? { file: boardFile, ...boardReading } : null }),
@@ -169,6 +181,57 @@ async function main() {
           countedCheck(
             appReading.recipePageTrackCount === boardReading.recipePageTrackCount,
             `sheet width=${width}: .recipe-page track count matches board ${boardFile}`,
+          );
+        }
+      }
+
+      if (groups.has('log') && appReading) {
+        const { sheetRect, logRect } = appReading;
+        const logBesideSheet = width >= 1366;
+        if (logBesideSheet) {
+          countedCheck(
+            Math.abs(logRect.top - sheetRect.top) <= 2,
+            `log width=${width}: log top within 2px of the Sheet's top`,
+          );
+          countedCheck(
+            Math.abs(logRect.left - sheetRect.right - 32) <= 1,
+            `log width=${width}: log sits 32px right of the Sheet's right edge`,
+          );
+          countedCheck(Math.abs(logRect.width - 350) <= 0.5, `log width=${width}: log is 350px wide`);
+        } else {
+          countedCheck(logRect.top >= sheetRect.bottom - 1, `log width=${width}: log sits below the Sheet`);
+        }
+      }
+
+      if (groups.has('cap') && appReading) {
+        const { sheetRect, logRect, frameRect, mainRect } = appReading;
+        const expectedFrameWidth = Math.min(mainRect.width, 1546);
+        countedCheck(
+          Math.abs(frameRect.width - expectedFrameWidth) <= 0.5,
+          `cap width=${width}: frame width is min(main width, 1546)`,
+        );
+        const leftSpace = frameRect.left - mainRect.left;
+        const rightSpace = mainRect.right - frameRect.right;
+        countedCheck(
+          Math.abs(leftSpace - rightSpace) <= 1,
+          `cap width=${width}: equal space either side of the frame inside .shell__main`,
+        );
+        if (width === 1920) {
+          countedCheck(Math.abs(sheetRect.width - 1100) <= 0.5, `cap width=${width}: Sheet is 1100px wide`);
+          countedCheck(Math.abs(logRect.width - 350) <= 0.5, `cap width=${width}: log is 350px wide`);
+        }
+        if ((width === 1366 || width === 1920) && boardReading) {
+          countedCheck(
+            Math.abs(sheetRect.width - boardReading.sheetRect.width) <= 1,
+            `cap width=${width}: Sheet width matches board ${boardFile}`,
+          );
+          countedCheck(
+            Math.abs(logRect.width - boardReading.logRect.width) <= 1,
+            `cap width=${width}: log width matches board ${boardFile}`,
+          );
+          countedCheck(
+            Math.abs(frameRect.width - boardReading.frameRect.width) <= 1,
+            `cap width=${width}: frame width matches board ${boardFile}`,
           );
         }
       }

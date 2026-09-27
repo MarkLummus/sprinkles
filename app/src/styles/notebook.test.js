@@ -37,9 +37,9 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test('notebook.css carries exactly three named @media steps, in file order — 1499.98px (the desktop/iPad-landscape rung), then 1099.98px (the Sheet/log column stack), then 759.98px (the phone edge-to-edge step)', () => {
+  test('notebook.css carries exactly three named @media steps, in file order — 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 759.98px (the phone edge-to-edge step, plan 13)', () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
-    expect(mediaConditions).toEqual(['(max-width: 1499.98px)', '(max-width: 1099.98px)', '(max-width: 759.98px)']);
+    expect(mediaConditions).toEqual(['(max-width: 1499.98px)', '(max-width: 1365.98px)', '(max-width: 759.98px)']);
   });
 });
 
@@ -50,6 +50,30 @@ describe('notebook.css is wired in (main.jsx, home.css precedent)', () => {
     expect(homeCssIndex).toBeGreaterThan(-1);
     expect(notebookCssIndex).toBeGreaterThan(-1);
     expect(homeCssIndex).toBeLessThan(notebookCssIndex);
+  });
+});
+
+describe('the content cap, centred from a 1770px window (sketch 011 decision 16)', () => {
+  test('.notebook declares a max-width over --app-notebook-content-max and --app-notebook-gutter, margin: 0 auto, and a padding reading --app-notebook-gutter', () => {
+    const rule = rules.find((rule) => rule.selector === '.notebook' && rule.media === undefined);
+    expect(rule, 'expected a top-level .notebook rule').toBeTruthy();
+    expect(rule.declarations).toMatch(
+      /max-width:\s*calc\(var\(--app-notebook-content-max\)\s*\+\s*2\s*\*\s*var\(--app-notebook-gutter\)\)/,
+    );
+    expect(rule.declarations).toMatch(/margin:\s*0 auto/);
+    expect(rule.declarations).toMatch(/padding:\s*0 var\(--app-notebook-gutter\)/);
+  });
+
+  test('.notebook-body declares its gap reading --app-notebook-gutter', () => {
+    const rule = rules.find((rule) => rule.selector === '.notebook-body' && rule.media === undefined);
+    expect(rule, 'expected a top-level .notebook-body rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/gap:\s*var\(--app-notebook-gutter\)/);
+  });
+
+  test('.notebook-log declares its flex basis reading --app-notebook-log-w', () => {
+    const rule = rules.find((rule) => rule.selector === '.notebook-log' && rule.media === undefined);
+    expect(rule, 'expected a top-level .notebook-log rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/flex:\s*0 0 var\(--app-notebook-log-w\)/);
   });
 });
 

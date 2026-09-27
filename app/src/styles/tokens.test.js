@@ -48,8 +48,8 @@ const jsFiles = [...jsSourceFiles(UI_DIR), ...jsSourceFiles(DOMAIN_DIR)];
 
 // declared: every custom property declared anywhere across the four
 // stylesheets, unioned — app.css's second --gap-page declaration inside its
-// 600px block counts too, since readCustomProperties is a flat regex with
-// no notion of media-block scope.
+// phone-forms block counts too, since readCustomProperties is a flat regex
+// with no notion of media-block scope.
 const declared = {};
 for (const { src } of cssSourceFiles) Object.assign(declared, readCustomProperties(src));
 

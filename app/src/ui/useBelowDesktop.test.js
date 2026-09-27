@@ -13,14 +13,14 @@ describe('useBelowDesktop.js — the two below-desktop queries (03.5-05 Task 2, 
     expect(typeof useBelowDesktop).toBe('function');
   });
 
-  // Option A (03.5-07 Task 2 answer, decisions_recorded 4): the record
-  // pen's frame lives in the log column once the log sits beside the
-  // Sheet — the notebook-body row's own 1100px rung (notebook.css's
-  // 1099.98px step, expressed here as a min-width so a log-beside-Sheet
-  // reading matches true, not the below-desktop sense the other query
-  // takes).
-  it('exports LOG_BESIDE_SHEET_QUERY at the 1100px rung and useLogBesideSheet as a function', () => {
-    expect(LOG_BESIDE_SHEET_QUERY).toBe('(min-width: 1100px)');
+  // Sketch 011 decision 16: the log sits beside the Sheet from 1366 up —
+  // 224 side nav + 3 x 32 gutters + the Sheet's two-column minimum 696 +
+  // the log's own 350 — expressed here as a min-width so a
+  // log-beside-Sheet reading matches true, not the below-desktop sense
+  // the other query takes. The complement of notebook.css's own
+  // log-below block, (max-width: 1365.98px).
+  it('exports LOG_BESIDE_SHEET_QUERY at the 1366px rung and useLogBesideSheet as a function', () => {
+    expect(LOG_BESIDE_SHEET_QUERY).toBe('(min-width: 1366px)');
     expect(typeof useLogBesideSheet).toBe('function');
   });
 });

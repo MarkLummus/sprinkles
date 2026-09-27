@@ -2237,23 +2237,26 @@ textarea {
   padding-top: var(--gap-s);
 }
 
-/* The page-shell ladder's first step (sketch 003 @ d89b758 line 48;
-   D-15; UAT items 15, 16): below 1100px (the sketch's `relayout()`
-   threshold, line 511, `want < 1100`, expressed here as a viewport
-   max-width) the page stacks to one column — band, ingredients, side,
+/* The page-shell ladder's first step (sketch 011 decision 16, superseding
+   sketch 003 @ d89b758 line 48's 1100px call; D-15; UAT items 15, 16):
+   below 984px the page stacks to one column — band, ingredients, side,
    method, foot, side BEFORE method — and the column gap narrows to
-   --gap-m. This block changes columns and gap ONLY: the paper's page
-   padding reads the shared --gap-page (260917-gjo), which the 600px
-   block below steps for the whole page shell at once (003 line 178) —
-   no padding declaration lives here. The
+   --gap-m. 984 = the side nav's 224 + 2 x 32 gutters + the Sheet's
+   two-column minimum 696, the same sum shell.css's rail cut reads: the
+   side nav and the Sheet's second column go together, so a viewport
+   never shows one without the other. This block changes columns and gap
+   ONLY: the paper's page padding reads the shared --gap-page
+   (260917-gjo), which the phone-forms block below steps for the whole
+   page shell at once (003 line 178) — no padding declaration lives
+   here. The
    foot band (.pen-foot) mirrors .recipe-page's own columns (desktop
    rules above) and must collapse with it, or the ceremony would sit in
-   a phantom second column. The 1099.98px prelude is the one sanctioned
+   a phantom second column. The 983.98px prelude is the one sanctioned
    breakpoint literal in the file, alongside 759.98px below: a prelude,
    not a declaration, so binder.test.js's no-bare-px gate never sees it,
-   and the fractional value keeps exactly 1100px on the desktop side of
+   and the fractional value keeps exactly 984px on the desktop side of
    the boundary. */
-@media (max-width: 1099.98px) {
+@media (max-width: 983.98px) {
   .recipe-page {
     grid-template-columns: 1fr;
     gap: var(--gap-m);
@@ -2392,7 +2395,7 @@ textarea {
      name, then as made and share (393-batch.html's forced narrow rules,
      now real app rules; decisions_recorded 5, 03.5-06 Task 1). Every
      value here is that board's own literal, read through this table's
-     own narrow-list tokens (tokens.css). The 600px block's own
+     own narrow-list tokens (tokens.css). The phone-forms block's own
      .ingredient-table-region { overflow-x: auto } stays until plan 08
      measures zero page overflow at 393 makes it moot. */
   .ingredient-table thead {
@@ -2449,29 +2452,33 @@ textarea {
   }
 }
 
-/* The 600px block (contract "Responsive ladder"): a second, narrower
-   step below the 760px stack — the page's own frame padding shrinks
-   (the sketch's own .pen frame has no analogue in this codebase; the
-   page shell, .recipe-page, is what actually frames the record at every
-   width), the record's field text drops a size, and both save
-   ceremonies (one rule, D-01 — .save-ceremony is the one component both
-   PenFoot.jsx and BatchRow.jsx mount) are allowed to wrap rather than
-   force a single overflowing row. A second top-level @media block,
-   sibling to the one above — never nested inside it (css-source.js's
-   one-level contract, WR-02). The sketch's own "field-row label widths"
-   tweak (007 line 139) now has a real side-by-side label to narrow —
-   .field-row__label — once Task 1's field-row family lands; the prose
-   fields keep their own .batch-margin__field, label-above-input shape,
-   untouched by this rule. */
-@media (max-width: 600px) {
+/* The phone forms (contract "Responsive ladder"; sketch 011 decision 16,
+   retiring the route's earlier 600px cut, DESIGN.md): below 724 — the
+   band's side-by-side minimum 660 + 2 x 32 gutters — the page's own
+   frame padding shrinks (the sketch's own .pen frame has no analogue in
+   this codebase; the page shell, .recipe-page, is what actually frames
+   the record at every width), the record's field text drops a size, and
+   both save ceremonies (one rule, D-01 — .save-ceremony is the one
+   component both PenFoot.jsx and BatchRow.jsx mount) are allowed to wrap
+   rather than force a single overflowing row. A second top-level @media
+   block, sibling to the one above — never nested inside it
+   (css-source.js's one-level contract, WR-02). The sketch's own
+   "field-row label widths" tweak (007 line 139) now has a real
+   side-by-side label to narrow — .field-row__label — once Task 1's
+   field-row family lands; the prose fields keep their own
+   .batch-margin__field, label-above-input shape, untouched by this rule.
+   The list-form ingredient table rules stay in the width-only block
+   above for now; plan 11 moves them here when it rewrites them for
+   decision 15. */
+@media (max-width: 723.98px) {
   /* The one place the page's phone gutter is stated (260917-gjo; the
      running head retired 03.5-02 Task 3): three boxes step together
-     below 600px because they all read one name, --gap-page (tokens.css)
-     — the page itself, the "no recipe found" page, and the notice. The
-     literal 600 stays here, in app.css's own prelude, where the touch
-     block above already put it; it is deliberately not in tokens.css
-     (see that file's comment on --gap-page for why). No other
-     declaration belongs in this rule. */
+     below the phone-forms cut because they all read one name, --gap-page
+     (tokens.css) — the page itself, the "no recipe found" page, and the
+     notice. The literal 723.98 stays here, in app.css's own prelude,
+     where the touch block above already put its own literal; it is
+     deliberately not in tokens.css (see that file's comment on
+     --gap-page for why). No other declaration belongs in this rule. */
   :root {
     --gap-page: var(--gap-m);
   }
@@ -2480,12 +2487,12 @@ textarea {
     max-width: 100%;
   }
 
-  /* .ink-field is deliberately NOT here. The 600px step used to drop it to
-     --sheet-type-control (13px), which is the pre-declared departure sketch 008 line
-     166 retires — and below 600 is exactly where a phone's auto-zoom bites, so
-     the touch union's 16px must survive this step. The margin's own prose
-     field keeps the smaller size; 008 speaks for .ink-field and .prose-field,
-     not for it. */
+  /* .ink-field is deliberately NOT here. The phone-forms step used to drop
+     it to --sheet-type-control (13px), which is the pre-declared departure
+     sketch 008 line 166 retires — and below 724 is exactly where a phone's
+     auto-zoom bites, so the touch union's 16px must survive this step. The
+     margin's own prose field keeps the smaller size; 008 speaks for
+     .ink-field and .prose-field, not for it. */
   .batch-margin__field {
     font-size: var(--sheet-type-control);
   }

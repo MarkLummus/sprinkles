@@ -362,15 +362,17 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     // stylesheet reader (css-source.js) parses one level of @media
     // nesting, and this pins the file to that contract — exactly the
     // six sibling media blocks the responsive ladder and forced colours
-    // need (the 1099.98px page-shell stack, D-15; the touch union
+    // need (the 983.98px page-shell stack, side nav and Sheet's second
+    // column together, sketch 011 decision 16; the touch union
     // "(max-width: 759.98px), (pointer: coarse)"; the width-only 759.98px
-    // layout block the version row keeps; the 600px block; and
-    // forced-colors: active), plus the print layer last — one rule,
-    // suppressing only the page notice — never
-    // nested inside one another — assertNoAtRules throws on a non-media
-    // at-rule and on anything nested inside a media block — and no other
-    // at-rule keyword anywhere. Comment-stripped first, matching
-    // readAllRules' own internal call: an English comment can
+    // layout block the version row keeps; the 723.98px phone-forms block
+    // (sketch 011 decision 16 — the stacked band, the 20px margin and the
+    // list-form table go together); and forced-colors: active), plus the
+    // print layer last — one rule, suppressing only the page notice —
+    // never nested inside one another — assertNoAtRules throws on a
+    // non-media at-rule and on anything nested inside a media block —
+    // and no other at-rule keyword anywhere. Comment-stripped first,
+    // matching readAllRules' own internal call: an English comment can
     // legitimately say "@supports" without that being a real at-rule.
     const stripped = stripCssComments(appCssSource);
     expect(stripped.match(/@media\b/g)).toHaveLength(7);
@@ -379,9 +381,9 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     expect(mediaRules.length).toBeGreaterThan(0);
     const allowedMedia = [
       '(max-width: 759.98px), (pointer: coarse)',
-      '(max-width: 1099.98px)',
+      '(max-width: 983.98px)',
       '(max-width: 759.98px)',
-      '(max-width: 600px)',
+      '(max-width: 723.98px)',
       '(min-width: 760px) and (pointer: coarse)',
       '(forced-colors: active)',
       'print',

@@ -1,9 +1,13 @@
 /* The shell — DESIGN.md "App marks", "Navigation" (D-09, D-10, D-13, D-15,
    D-16, D-19). Every route renders inside .shell: a header carrying the
    wordmark and (Task 2) a tools row, and a 224px left rail of the App's
-   destinations beside the routed page in .shell__main. Below the phone
-   step (Task 3) .shell__rail hides and a bottom tab row takes over — the
-   one media condition this file is ever allowed to carry.
+   destinations beside the routed page in .shell__main. The side nav
+   shows only from 984 up — 984 = the rail's 224 + 2 x 32 gutters + the
+   Sheet's two-column minimum 696 (sketch 011 decision 16; the rail and
+   the Sheet's second column go together, superseding the earlier "1024
+   up" call). Below that cut .shell__rail hides and a bottom tab row
+   takes over — the one media condition this file is ever allowed to
+   carry.
 
    Two root classes only: .shell (the shell's own chrome) and .place (the
    unbuilt-place page Placeholder.jsx renders inside .shell__main) —
@@ -281,7 +285,7 @@
 }
 
 /* The bottom tab row (D-16): rendered at every width, hidden above the
-   phone step. Below it (the one media block this file carries) the rail
+   side-nav cut. Below it (the one media block this file carries) the rail
    hides and this shows instead — a hidden element leaves the
    accessibility tree, so only one navigation is ever exposed. */
 .shell__tabs {
@@ -294,7 +298,7 @@
   padding: 0;
 }
 
-@media (max-width: 759.98px) {
+@media (max-width: 983.98px) {
   .shell__rail {
     display: none;
   }

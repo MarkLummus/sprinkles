@@ -542,8 +542,9 @@ export function BatchRow({
 
   // Option A (03.5-07 Task 2 answer, decisions_recorded 4): the record
   // pen's own frame now lives in the log column whenever the log sits
-  // beside the Sheet (1100px and up), so the axes take the stacked
-  // core-then-declared arrangement there too — not only below 760px.
+  // beside the Sheet (1366px and up, sketch 011 decision 16), so the
+  // axes take the stacked core-then-declared arrangement there too — not
+  // only below 760px.
   const logBesideSheet = useLogBesideSheet();
   const below = below760 || logBesideSheet;
 

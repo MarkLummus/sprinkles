@@ -25,12 +25,15 @@ export function useBelowDesktop() {
 }
 
 // Option A's own query (03.5-07 Task 3, decisions_recorded 4/Task 2
-// answer): the log sits beside the Sheet at the notebook-body row's own
-// 1099.98px rung and above — the record pen's frame lives in that
-// narrower column whenever this is true, so it takes the narrow
-// arrangement there too, not only below 759.98px. Node-guarded, the same
-// critical note as useBelowDesktop above.
-export const LOG_BESIDE_SHEET_QUERY = '(min-width: 1100px)';
+// answer), re-derived at sketch 011 decision 16's own cut (03.5-10 Task
+// 2): the log sits beside the Sheet from 1366 up — 224 side nav + 3 x 32
+// gutters + the Sheet's two-column minimum 696 + the log's own 350, the
+// complement of notebook.css's own log-below block,
+// (max-width: 1365.98px). The record pen's frame lives in that narrower
+// column whenever this is true, so it takes the narrow arrangement there
+// too, not only below 759.98px. Node-guarded, the same critical note as
+// useBelowDesktop above.
+export const LOG_BESIDE_SHEET_QUERY = '(min-width: 1366px)';
 
 export function useLogBesideSheet() {
   const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';

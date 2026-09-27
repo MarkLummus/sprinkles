@@ -1,6 +1,7 @@
 // 260927-758: real-render probe for the notebook fields' iOS focus-zoom
-// floor under a coarse pointer (Rename and Next version), and for the Why's
-// hand rendering (D-01). Imports the 03.5 harness unchanged — never starts
+// floor under a coarse pointer (Rename and Next version, including the
+// From batch select branch), and for the Why's hand rendering and its two
+// fallbacks (D-01, D-03). Imports the 03.5 harness unchanged — never starts
 // a Vite server and never touches :4173 (see this task's environment note).
 //
 // Usage: node 260927-758-field-zoom-probe.mjs
@@ -19,6 +20,24 @@ const FINE_BASELINE_PX = {
   'Version name': '15px',
   'Cite a batch': '15px',
 };
+
+// The exact text-entry controls each flow's form is expected to show,
+// asserted as a list so no case can pass on zero controls.
+const EXPECTED_LABELS = {
+  rename: ['Recipe name', 'Recipe description'],
+  next: ['Version name', 'Why'],
+  'next-select': ['Version name', 'Why', 'Cite a batch'],
+};
+
+const MODES = [
+  { width: 393, coarse: true },
+  { width: 1366, coarse: true },
+  { width: 1366, coarse: false },
+];
+
+function modeKey({ width, coarse }) {
+  return `${width}-${coarse ? 'coarse' : 'fine'}`;
+}
 
 // Collects every input/textarea/select under .notebook-band that is
 // actually visible (getClientRects().length > 0), with the fields this
@@ -64,9 +83,20 @@ function readHandReference() {
   return reference;
 }
 
+// The Why's fallback reference: a throwaway span reading --face-text alone,
+// so the fallback check compares against the token rather than a literal.
+function readTextFaceFamily() {
+  const span = document.createElement('span');
+  span.style.cssText = 'font-family: var(--face-text);';
+  document.querySelector('.notebook').appendChild(span);
+  const family = getComputedStyle(span).fontFamily;
+  span.remove();
+  return family;
+}
+
 // Waits for document.fonts.ready, then reports whether a Caveat face is
-// loaded — read at screen, before any emulateMedia call (Task 3 emulates
-// forced-colors/print afterward, which unloads it).
+// loaded — read at screen, before any emulateMedia call (the fallback
+// check emulates afterward, which unloads it).
 async function readCaveatLoaded(page) {
   return page.evaluate(async () => {
     await document.fonts.ready;
@@ -84,27 +114,45 @@ async function openNextVersion(page) {
   await page.click('.notebook-version__acts button >> nth=' + index);
 }
 
-async function readRenameFlow(browser, appUrl, { width, coarse }) {
-  const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
-  try {
-    await openRename(page);
-    await page.waitForSelector('.notebook-field .ink-field');
-    const fields = await page.evaluate(readNotebookFields);
-    return { fields };
-  } finally {
-    await context.close();
-  }
+// Records a second batch (the seeded recipe already carries one), so the
+// From batch control becomes the select branch (Cite a batch) rather than
+// the single-citable checkbox, then opens Next version.
+async function recordSecondBatchThenOpenNext(page) {
+  await page.click('.batch-row__record');
+  await page.fill('.notebook-log input[type="date"]', '2026-09-20');
+  await page.locator('.notebook-log button', { hasText: /^Save batch$/ }).click();
+  await page.waitForSelector('.notebook-version__acts');
+  await openNextVersion(page);
 }
 
-async function readNextFlow(browser, appUrl, { width, coarse }) {
-  const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+async function readFlow(browser, appUrl, flowName, mode) {
+  const { context, page } = await openApp(browser, appUrl, APP_ROUTE, mode);
   try {
-    await openNextVersion(page);
-    await page.waitForSelector('.notebook-ceremony__why');
+    if (flowName === 'rename') {
+      await openRename(page);
+      await page.waitForSelector('.notebook-field .ink-field');
+    } else if (flowName === 'next') {
+      await openNextVersion(page);
+      await page.waitForSelector('.notebook-ceremony__why');
+    } else {
+      await recordSecondBatchThenOpenNext(page);
+      await page.waitForSelector('.notebook-ceremony__why');
+    }
+
     const fields = await page.evaluate(readNotebookFields);
-    const handReference = await page.evaluate(readHandReference);
-    const caveatLoaded = await readCaveatLoaded(page);
-    return { fields, handReference, caveatLoaded };
+    const result = { fields };
+
+    if (flowName === 'next' || flowName === 'next-select') {
+      result.handReference = await page.evaluate(readHandReference);
+    }
+    if (flowName === 'next') {
+      result.checkboxes = fields.filter((f) => f.tag === 'input' && f.type === 'checkbox');
+    }
+    if (flowName === 'next' && mode.width === 1366 && !mode.coarse) {
+      result.caveatLoaded = await readCaveatLoaded(page);
+    }
+
+    return result;
   } finally {
     await context.close();
   }
@@ -119,17 +167,6 @@ function checkTextEntryLabels(countedCheck, flow, mode, fields, expectedLabels) 
     `${flow} ${JSON.stringify(mode)}: exactly the expected text-entry controls ${JSON.stringify(expectedSorted)} (got ${JSON.stringify(labels)})`,
   );
   return textEntryFields;
-}
-
-function checkNonWhyFineBaselines(countedCheck, flow, mode, textEntryFields) {
-  for (const field of textEntryFields) {
-    if (field.ariaLabel === 'Why') continue;
-    const baseline = FINE_BASELINE_PX[field.ariaLabel];
-    countedCheck(
-      field.fontSize === baseline,
-      `${flow} ${JSON.stringify(mode)}: ${field.ariaLabel} font-size equals fine baseline ${baseline} (got ${field.fontSize})`,
-    );
-  }
 }
 
 function checkWhyEqualsHand(countedCheck, flow, mode, fields, handReference) {
@@ -154,6 +191,44 @@ function checkWhyEqualsHand(countedCheck, flow, mode, fields, handReference) {
   );
 }
 
+async function runFallbackChecks(browser, appUrl, countedCheck) {
+  const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width: 1366, coarse: false });
+  try {
+    await openNextVersion(page);
+    await page.waitForSelector('.notebook-ceremony__why');
+
+    await page.emulateMedia({ forcedColors: 'active' });
+    const forcedColorsReading = await page.evaluate(() => {
+      const why = document.querySelector('.notebook-ceremony__why');
+      const computed = getComputedStyle(why);
+      return { fontFamily: computed.fontFamily, fontStyle: computed.fontStyle };
+    });
+    const forcedColorsTextFace = await page.evaluate(readTextFaceFamily);
+    console.log(JSON.stringify({ flow: 'fallback', mode: 'forced-colors-active', reading: forcedColorsReading, textFace: forcedColorsTextFace }));
+    countedCheck(
+      forcedColorsReading.fontFamily === forcedColorsTextFace,
+      `fallback forced-colors active: Why font-family equals --face-text (got ${forcedColorsReading.fontFamily}, reference ${forcedColorsTextFace})`,
+    );
+    countedCheck(forcedColorsReading.fontStyle === 'italic', `fallback forced-colors active: Why font-style is italic (got ${forcedColorsReading.fontStyle})`);
+
+    await page.emulateMedia({ forcedColors: 'none', media: 'print' });
+    const printReading = await page.evaluate(() => {
+      const why = document.querySelector('.notebook-ceremony__why');
+      const computed = getComputedStyle(why);
+      return { fontFamily: computed.fontFamily, fontStyle: computed.fontStyle };
+    });
+    const printTextFace = await page.evaluate(readTextFaceFamily);
+    console.log(JSON.stringify({ flow: 'fallback', mode: 'print', reading: printReading, textFace: printTextFace }));
+    countedCheck(
+      printReading.fontFamily === printTextFace,
+      `fallback print: Why font-family equals --face-text (got ${printReading.fontFamily}, reference ${printTextFace})`,
+    );
+    countedCheck(printReading.fontStyle === 'italic', `fallback print: Why font-style is italic (got ${printReading.fontStyle})`);
+  } finally {
+    await context.close();
+  }
+}
+
 async function main() {
   const failures = [];
   let checkCount = 0;
@@ -165,39 +240,68 @@ async function main() {
   const { appUrl, close } = await startServers();
   const browser = await launch();
 
+  // familyByLabelAndMode['Recipe name']['1366-coarse'] = fontFamily, etc.,
+  // built up across every reading — used at the end to prove the four
+  // non-Why fields keep the same face at 1366 whichever pointer is in use.
+  const familyByLabelAndMode = {};
+
   try {
-    // rename: 393 coarse and 1366 fine.
-    for (const mode of [
-      { width: 393, coarse: true },
-      { width: 1366, coarse: false },
-    ]) {
-      const { fields } = await readRenameFlow(browser, appUrl, mode);
-      console.log(JSON.stringify({ flow: 'rename', mode, fields }));
+    for (const flow of ['rename', 'next', 'next-select']) {
+      for (const mode of MODES) {
+        const result = await readFlow(browser, appUrl, flow, mode);
+        console.log(JSON.stringify({ flow, mode, ...result }));
 
-      const textEntryFields = checkTextEntryLabels(countedCheck, 'rename', mode, fields, ['Recipe name', 'Recipe description']);
+        const textEntryFields = checkTextEntryLabels(countedCheck, flow, mode, result.fields, EXPECTED_LABELS[flow]);
 
-      if (mode.coarse) {
         for (const field of textEntryFields) {
-          countedCheck(
-            parseFloat(field.fontSize) >= 16,
-            `rename ${JSON.stringify(mode)}: ${field.ariaLabel} font-size at least 16px under coarse (got ${field.fontSize})`,
-          );
+          if (field.ariaLabel !== 'Why') {
+            const key = modeKey(mode);
+            familyByLabelAndMode[field.ariaLabel] ??= {};
+            familyByLabelAndMode[field.ariaLabel][key] = field.fontFamily;
+          }
+
+          if (mode.coarse) {
+            countedCheck(
+              parseFloat(field.fontSize) >= 16,
+              `${flow} ${JSON.stringify(mode)}: ${field.ariaLabel} font-size at least 16px under coarse (got ${field.fontSize})`,
+            );
+          } else if (mode.width === 1366 && field.ariaLabel !== 'Why') {
+            const baseline = FINE_BASELINE_PX[field.ariaLabel];
+            countedCheck(
+              field.fontSize === baseline,
+              `${flow} ${JSON.stringify(mode)}: ${field.ariaLabel} font-size equals fine baseline ${baseline} (got ${field.fontSize})`,
+            );
+          }
         }
-      } else {
-        checkNonWhyFineBaselines(countedCheck, 'rename', mode, textEntryFields);
+
+        if (flow === 'next' || flow === 'next-select') {
+          checkWhyEqualsHand(countedCheck, flow, mode, result.fields, result.handReference);
+        }
+
+        if (flow === 'next') {
+          // A reading, not a size check — the checkbox is not a text-entry
+          // control and does not trigger iOS focus zoom.
+          countedCheck(result.checkboxes.length === 1, `${flow} ${JSON.stringify(mode)}: exactly one From batch checkbox found (got ${result.checkboxes.length})`);
+        }
+
+        if (result.caveatLoaded !== undefined) {
+          countedCheck(result.caveatLoaded, `${flow} ${JSON.stringify(mode)}: Caveat face is loaded (document.fonts)`);
+        }
       }
     }
 
-    // next: 1366 fine, for now (Task 3 expands to coarse and other widths).
-    for (const mode of [{ width: 1366, coarse: false }]) {
-      const { fields, handReference, caveatLoaded } = await readNextFlow(browser, appUrl, mode);
-      console.log(JSON.stringify({ flow: 'next', mode, fields, handReference, caveatLoaded }));
-
-      const textEntryFields = checkTextEntryLabels(countedCheck, 'next', mode, fields, ['Version name', 'Why']);
-      checkNonWhyFineBaselines(countedCheck, 'next', mode, textEntryFields);
-      checkWhyEqualsHand(countedCheck, 'next', mode, fields, handReference);
-      countedCheck(caveatLoaded, `next ${JSON.stringify(mode)}: Caveat face is loaded (document.fonts)`);
+    // The four non-Why labels keep the same face at 1366 whichever pointer
+    // is in use — only the size changes under coarse.
+    for (const label of ['Recipe name', 'Recipe description', 'Version name', 'Cite a batch']) {
+      const coarseFamily = familyByLabelAndMode[label]?.['1366-coarse'];
+      const fineFamily = familyByLabelAndMode[label]?.['1366-fine'];
+      countedCheck(
+        coarseFamily === fineFamily,
+        `${label}: 1366 coarse font-family equals 1366 fine font-family (got coarse ${coarseFamily}, fine ${fineFamily})`,
+      );
     }
+
+    await runFallbackChecks(browser, appUrl, countedCheck);
   } finally {
     await browser.close();
     await close();

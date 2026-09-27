@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 8/14 plans executed
+**Plans:** 9/14 plans executed
 
 Plans:
 
@@ -501,7 +501,7 @@ Plans:
 
 **Wave 8 — gap closure** *(the derived width ladder and table redesign Mark approved 2026-09-26, sketch 011 decisions 15–16; independent of 03.5-09)*
 
-- [ ] 03.5-10-PLAN.md — The ladder's three derived cuts: side nav and two-column Sheet together at 984 (app-wide shell cut), log beside at 350 from 1366 with the 1482 cap centred from 1770, stacked band and 20 margin at 724; a no-Vite probe harness and the ladder probe
+- [x] 03.5-10-PLAN.md — The ladder's three derived cuts: side nav and two-column Sheet together at 984 (app-wide shell cut), log beside at 350 from 1366 with the 1482 cap centred from 1770, stacked band and 20 margin at 724; a no-Vite probe harness and the ladder probe
 
 **Wave 9** *(blocked on Wave 8)*
 

@@ -16,7 +16,8 @@ TABS = seg(asbuilt, '<nav class="shell__tabs"', '</nav>') + '</nav>'.replace('<h
 # Carried forward notes dropped (Mark, 2026-09-24): the block leaves every board; Before you start keeps the inherited marker
 SHEET = re.sub(r'<div class="authored"><p class="authored__legend"><span>Carried forward</span><span>authored</span></p><ul class="authored__notes">.*?</ul></div>', '', SHEET, count=1, flags=re.S)
 # "Things to check" reads "Watch for" and the "derived" label is dropped (Mark, 2026-09-27, decision 18)
-SHEET = SHEET.replace('<p class="derived-advisories__legend"><span>Things to check</span><span>derived</span></p>', '<p class="derived-advisories__legend"><span>Watch for</span></p>')
+# Watch for is a section in its own right, its heading styled as Balance's (Mark, 2026-09-27: "Promote Watch For into a section")
+SHEET = SHEET.replace('<p class="derived-advisories__legend"><span>Things to check</span><span>derived</span></p>', '<h2 class="region-name">Watch for</h2>')
 STYLESHEET = '/_blob/e7df2000f61674b89baca5fccf5c19f8'
 
 # ---- tokens (Sprinkles Design System, tokens.json) ----
@@ -460,15 +461,17 @@ def phone_folds(html, open_=False):
     disc = lambda label, target: f'<button type="button" class="text-control history-disclosure" aria-expanded="{exp}" aria-controls="{target}">{label}</button>'
     sh = 'Hide' if open_ else 'Show'
     # version details
+    # every Show/Hide control sits beside its section's label (Mark, 2026-09-27)
+    html = html.replace(cap('Version'), f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Version")}' + disc(sh + ' details', 'fold-version') + '</div>', 1)
     html = html.replace('<dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);',
-                        '<p style="margin:0;">' + disc(sh + ' details', 'fold-version') + f'</p><dl id="fold-version"{hid} style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);', 1)
+                        f'<dl id="fold-version"{hid} style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);', 1)
     # Balance: its heading stays with its control beside it; the rules and the source note fold
     html = html.replace('<div class="formulation-note"><h2 class="region-name">Balance</h2>',
                         '<div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Balance</h2>' + disc(sh, 'fold-balance') + f'</div><div id="fold-balance"{hid}><div class="formulation-note">', 1)
     html = html.replace('</section><div class="margin-region">', '</div></section><div class="margin-region">', 1)
     # Watch for: its own control beside its heading; the advisories fold
-    html = re.sub(r'<div class="derived-advisories"><p class="derived-advisories__legend"><span>Watch for</span></p>(.*?)</div></div>',
-                  lambda m: '<div class="derived-advisories"><p class="derived-advisories__legend" style="justify-content:flex-start;align-items:baseline;gap:14px;"><span>Watch for</span>' + disc(sh, 'fold-check') + f'</p><div id="fold-check"{hid}>' + m.group(1) + '</div></div></div>', html, count=1, flags=re.S)
+    html = re.sub(r'<div class="derived-advisories"><h2 class="region-name">Watch for</h2>(.*?)</div></div>',
+                  lambda m: '<div class="derived-advisories"><div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Watch for</h2>' + disc(sh, 'fold-check') + f'</div><div id="fold-check"{hid}>' + m.group(1) + '</div></div></div>', html, count=1, flags=re.S)
     # the log's Tasting
     html = re.sub(r'(<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>tasted date unknown</span>)</div>',
                   lambda m: m.group(1) + ' ' + disc(sh, 'fold-tasting') + f'</div><div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)

@@ -24,6 +24,7 @@ Phase 03.5 separates the recipe record from the Sheet (`.impeccable/surfaces/rou
 | 723-batch.html | 723 × 3500 | C · 723 · widest phone form · bottom tab row, band stacked, two-line ingredient list, 20px margin, folds closed |
 | 393-batch.html | 393 × 5800 | C · 393 · phone · one column, bottom tab row, folds closed |
 | details-fold.html | 1040 × 320 | C · version details, both fold states: closed below 1366 (Show details), open from 1366 (Hide details) |
+| 393-all-folded.html | 393 × 1300 | C · 393 · exploration · every section folded (Version details, History, Ingredients, Balance, Watch for, Instructions, Batch), to see the page height: about 1,220 against about 3,960 with decision 18's folds only. Not a decision. |
 | recipe-book-form-reference.html | 1600 × 2000 | Reference · the Recipe Book form of the Sheet on screen (/recipe-book/:recipeId, not built in 03.5) |
 
 ## The ladder
@@ -70,7 +71,7 @@ Every board is generated, never hand-edited — `.planning/canvas-generators/gen
 
 To change a board: edit the generator (re-reading the as-built board, canvas.json and the stylesheet asset from the canvas first, per gen.py's SRC path), regenerate, grep the outputs for every approved change, publish, then re-snapshot here. Never patch a file in this folder.
 
-Canvas: https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq, page "Recipe route 03.5", versions 228–229; the derived ladder and rail fix, version 242; decision 18's folds, version 247; the details fold board (`foldstates.py`), version 248. From version 249 a closed fold's content is left out of the drawing, since the canvas does not honour the `hidden` attribute (Mark saw the closed and open details look the same); the app still renders it hidden. `.planning/canvas-generators/snapshot.py <scratchpad> <dest>` makes these snapshot files from the generated boards.
+Canvas: https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq, page "Recipe route 03.5", versions 228–229; the derived ladder and rail fix, version 242; decision 18's folds, version 247; the details fold board (`foldstates.py`), version 248. From version 249 a closed fold's content is left out of the drawing, since the canvas does not honour the `hidden` attribute (Mark saw the closed and open details look the same); the app still renders it hidden. Version 250 (Mark, 2026-09-27): Watch for is a section, its heading styled as Balance's ("Promote Watch For into a section"), and every Show/Hide control sits beside its section's label, including "Show details" beside Version. `.planning/canvas-generators/snapshot.py <scratchpad> <dest>` makes these snapshot files from the generated boards.
 
 ## What is authority here
 

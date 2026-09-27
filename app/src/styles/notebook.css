@@ -270,18 +270,17 @@
   height: var(--app-notebook-checkbox-size);
 }
 
-/* The Why field in the hand (1600-pen.html; the approved bend recorded
-   D-19 does not reach here — this is authored prose, not a batch
-   measurement — the hand is already this field's own established role,
-   route-recipe-version.md § 3). Scoped to .notebook-field .notebook-ceremony__why
-   (two classes, 260927-758, D-01): the Why sits inside label.notebook-field,
-   so the bare one-class selector lost font-family, font-size and colour to
-   .notebook-field textarea (one class plus one element) — the Why measured
-   as grotesk at 15px until this fix. */
+/* The Why is typed in the prose-field role and shown in the hand once
+   saved (sketch 011 decision 17, Mark 2026-09-27: "type in the prose and
+   show in the hand"): the text face, pen blue, the note size and leading,
+   as app.css's .prose-field reads them. Scoped to .notebook-field
+   .notebook-ceremony__why (two classes): the Why sits inside
+   label.notebook-field, and the bare one-class selector lost to
+   .notebook-field textarea (one class plus one element). */
 .notebook-field .notebook-ceremony__why {
-  font-family: var(--face-hand);
-  font-size: var(--size-hand);
-  line-height: var(--leading-hand);
+  font-family: var(--face-text);
+  font-size: var(--sheet-type-note);
+  line-height: var(--sheet-leading-note);
   color: var(--sheet-pen-blue);
   resize: vertical;
 }
@@ -715,41 +714,12 @@
    (.ink-field, .prose-field), so these fields stayed at 15px under a
    coarse pointer since 715de20 (pre-existing). This rule matches the base
    rule's own selectors, so source order alone decides — that is why it
-   sits after every base rule, at the file's foot (Task 2 adds the Why's
-   two fallback blocks after it). It reads app.css's own touch-floor token,
+   sits after every base rule, at the file's foot. It reads app.css's own touch-floor token,
    so the zoom threshold stays one value across the app. */
 @media (pointer: coarse) {
   .notebook-field .ink-field,
   .notebook-field input,
   .notebook-field textarea {
     font-size: var(--sheet-type-note);
-  }
-}
-
-/* The Why's fallback under forced colours (D-03, 260927-758), mirroring
-   app.css's own .app-hand/.sheet-hand fallbacks (D-17, DESIGN.md's Hand
-   entry): the script face falls back to the text face, in italic, so the
-   maker's words survive where forced colours strip the face's own colour
-   cue. No colour declaration here — forced colours already takes colour
-   away. This is the Why's own copy, not a shared class, because the scoped
-   rule above outranks app.css's .app-hand fallback and the Why does not
-   carry .app-hand. */
-@media (forced-colors: active) {
-  .notebook-field .notebook-ceremony__why {
-    font-family: var(--face-text);
-    font-style: italic;
-  }
-}
-
-/* The Why's fallback in print (D-03, 260927-758), mirroring app.css's own
-   .app-hand/.sheet-hand print fallbacks (D-17, DESIGN.md's Hand entry): the
-   script face falls back to the text face, in italic, so the maker's words
-   survive in print, where the script face cannot render. No colour
-   declaration here — print already takes colour away. This is the Why's
-   own copy for the same reason as the forced-colours block above. */
-@media print {
-  .notebook-field .notebook-ceremony__why {
-    font-family: var(--face-text);
-    font-style: italic;
   }
 }

@@ -1,7 +1,7 @@
 // 260927-758: real-render probe for the notebook fields' iOS focus-zoom
 // floor under a coarse pointer (Rename and Next version, including the
-// From batch select branch), and for the Why's hand rendering and its two
-// fallbacks (D-01, D-03). Imports the 03.5 harness unchanged — never starts
+// From batch select branch), and for the Why's prose-field role (sketch 011
+// decision 17, which replaced this task's D-01/D-03 hand rendering). Imports the 03.5 harness unchanged — never starts
 // a Vite server and never touches :4173 (see this task's environment note).
 //
 // Usage: node 260927-758-field-zoom-probe.mjs
@@ -11,8 +11,8 @@ import { startServers, launch, openApp, check, finish, APP_ROUTE } from '../../p
 // under .notebook-band read 15px grotesk at every pointer and width, except
 // the select (16px, already outside .notebook-field). Why is not in this
 // map: its pre-D-01 fine-pointer reading was 15px grotesk, rgb(20, 20, 20)
-// (the 2026-09-27 planning reading) — D-01 puts it in the hand instead, so
-// Why is checked against the token-derived hand reference (readHandReference)
+// (the 2026-09-27 planning reading) — decision 17 types it in the prose-field role, so
+// Why is checked against the token-derived prose reference (readHandReference)
 // rather than this string baseline.
 const FINE_BASELINE_PX = {
   'Recipe name': '15px',
@@ -64,13 +64,13 @@ function readNotebookFields() {
     });
 }
 
-// A hand reference derived from the tokens, not from literals: a throwaway
+// A prose-field reference derived from the tokens, not from literals: a throwaway
 // span inside .notebook reading the same four custom properties the Why
 // rule declares. An inline style on a throwaway element inside the probe is
 // measurement, not app code.
 function readHandReference() {
   const span = document.createElement('span');
-  span.style.cssText = 'font-family: var(--face-hand); font-size: var(--size-hand); line-height: var(--leading-hand); color: var(--sheet-pen-blue);';
+  span.style.cssText = 'font-family: var(--face-text); font-size: var(--sheet-type-note); line-height: var(--sheet-leading-note); color: var(--sheet-pen-blue);';
   document.querySelector('.notebook').appendChild(span);
   const computed = getComputedStyle(span);
   const reference = {
@@ -81,27 +81,6 @@ function readHandReference() {
   };
   span.remove();
   return reference;
-}
-
-// The Why's fallback reference: a throwaway span reading --face-text alone,
-// so the fallback check compares against the token rather than a literal.
-function readTextFaceFamily() {
-  const span = document.createElement('span');
-  span.style.cssText = 'font-family: var(--face-text);';
-  document.querySelector('.notebook').appendChild(span);
-  const family = getComputedStyle(span).fontFamily;
-  span.remove();
-  return family;
-}
-
-// Waits for document.fonts.ready, then reports whether a Caveat face is
-// loaded — read at screen, before any emulateMedia call (the fallback
-// check emulates afterward, which unloads it).
-async function readCaveatLoaded(page) {
-  return page.evaluate(async () => {
-    await document.fonts.ready;
-    return [...document.fonts].some((face) => face.family.replace(/["']/g, '') === 'Caveat' && face.status === 'loaded');
-  });
 }
 
 async function openRename(page) {
@@ -148,9 +127,6 @@ async function readFlow(browser, appUrl, flowName, mode) {
     if (flowName === 'next') {
       result.checkboxes = fields.filter((f) => f.tag === 'input' && f.type === 'checkbox');
     }
-    if (flowName === 'next' && mode.width === 1366 && !mode.coarse) {
-      result.caveatLoaded = await readCaveatLoaded(page);
-    }
 
     return result;
   } finally {
@@ -175,58 +151,20 @@ function checkWhyEqualsHand(countedCheck, flow, mode, fields, handReference) {
   if (!why) return;
   countedCheck(
     why.fontFamily === handReference.fontFamily,
-    `${flow} ${JSON.stringify(mode)}: Why font-family equals the hand reference (got ${why.fontFamily}, reference ${handReference.fontFamily})`,
+    `${flow} ${JSON.stringify(mode)}: Why font-family equals the prose reference (got ${why.fontFamily}, reference ${handReference.fontFamily})`,
   );
   countedCheck(
     why.fontSize === handReference.fontSize,
-    `${flow} ${JSON.stringify(mode)}: Why font-size equals the hand reference (got ${why.fontSize}, reference ${handReference.fontSize})`,
+    `${flow} ${JSON.stringify(mode)}: Why font-size equals the prose reference (got ${why.fontSize}, reference ${handReference.fontSize})`,
   );
   countedCheck(
     why.lineHeight === handReference.lineHeight,
-    `${flow} ${JSON.stringify(mode)}: Why line-height equals the hand reference (got ${why.lineHeight}, reference ${handReference.lineHeight})`,
+    `${flow} ${JSON.stringify(mode)}: Why line-height equals the prose reference (got ${why.lineHeight}, reference ${handReference.lineHeight})`,
   );
   countedCheck(
     why.color === handReference.color,
-    `${flow} ${JSON.stringify(mode)}: Why color equals the hand reference (got ${why.color}, reference ${handReference.color})`,
+    `${flow} ${JSON.stringify(mode)}: Why color equals the prose reference (got ${why.color}, reference ${handReference.color})`,
   );
-}
-
-async function runFallbackChecks(browser, appUrl, countedCheck) {
-  const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width: 1366, coarse: false });
-  try {
-    await openNextVersion(page);
-    await page.waitForSelector('.notebook-ceremony__why');
-
-    await page.emulateMedia({ forcedColors: 'active' });
-    const forcedColorsReading = await page.evaluate(() => {
-      const why = document.querySelector('.notebook-ceremony__why');
-      const computed = getComputedStyle(why);
-      return { fontFamily: computed.fontFamily, fontStyle: computed.fontStyle };
-    });
-    const forcedColorsTextFace = await page.evaluate(readTextFaceFamily);
-    console.log(JSON.stringify({ flow: 'fallback', mode: 'forced-colors-active', reading: forcedColorsReading, textFace: forcedColorsTextFace }));
-    countedCheck(
-      forcedColorsReading.fontFamily === forcedColorsTextFace,
-      `fallback forced-colors active: Why font-family equals --face-text (got ${forcedColorsReading.fontFamily}, reference ${forcedColorsTextFace})`,
-    );
-    countedCheck(forcedColorsReading.fontStyle === 'italic', `fallback forced-colors active: Why font-style is italic (got ${forcedColorsReading.fontStyle})`);
-
-    await page.emulateMedia({ forcedColors: 'none', media: 'print' });
-    const printReading = await page.evaluate(() => {
-      const why = document.querySelector('.notebook-ceremony__why');
-      const computed = getComputedStyle(why);
-      return { fontFamily: computed.fontFamily, fontStyle: computed.fontStyle };
-    });
-    const printTextFace = await page.evaluate(readTextFaceFamily);
-    console.log(JSON.stringify({ flow: 'fallback', mode: 'print', reading: printReading, textFace: printTextFace }));
-    countedCheck(
-      printReading.fontFamily === printTextFace,
-      `fallback print: Why font-family equals --face-text (got ${printReading.fontFamily}, reference ${printTextFace})`,
-    );
-    countedCheck(printReading.fontStyle === 'italic', `fallback print: Why font-style is italic (got ${printReading.fontStyle})`);
-  } finally {
-    await context.close();
-  }
 }
 
 async function main() {
@@ -284,9 +222,6 @@ async function main() {
           countedCheck(result.checkboxes.length === 1, `${flow} ${JSON.stringify(mode)}: exactly one From batch checkbox found (got ${result.checkboxes.length})`);
         }
 
-        if (result.caveatLoaded !== undefined) {
-          countedCheck(result.caveatLoaded, `${flow} ${JSON.stringify(mode)}: Caveat face is loaded (document.fonts)`);
-        }
       }
     }
 
@@ -301,7 +236,6 @@ async function main() {
       );
     }
 
-    await runFallbackChecks(browser, appUrl, countedCheck);
   } finally {
     await browser.close();
     await close();

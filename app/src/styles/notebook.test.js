@@ -37,7 +37,7 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test("notebook.css carries exactly seven named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (forced-colors: active) and print (the Why's hand fallback to the text face in italic, D-03)", () => {
+  test("notebook.css carries exactly five named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
     expect(mediaConditions).toEqual([
       '(min-width: 1366px)',
@@ -45,8 +45,6 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
       '(max-width: 1365.98px)',
       '(max-width: 723.98px)',
       '(pointer: coarse)',
-      '(forced-colors: active)',
-      'print',
     ]);
   });
 });
@@ -91,32 +89,18 @@ describe("the notebook fields' iOS focus-zoom floor under a coarse pointer (2609
   });
 });
 
-describe('the Why in the hand at every pointer, with the hand\'s fallbacks (260927-758, D-01, D-03)', () => {
-  test('a top-level rule scopes the Why to .notebook-field .notebook-ceremony__why, keeping its five hand declarations, and no rule anywhere carries the bare .notebook-ceremony__why selector', () => {
+describe('the Why is typed in the prose-field role (sketch 011 decision 17)', () => {
+  test('a top-level rule scopes the Why to .notebook-field .notebook-ceremony__why in the text face, note size and leading, pen blue, and no rule anywhere carries the bare .notebook-ceremony__why selector', () => {
     const rule = rules.find((rule) => rule.selector === '.notebook-field .notebook-ceremony__why' && rule.media === undefined);
     expect(rule, 'expected a top-level .notebook-field .notebook-ceremony__why rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-hand\)/);
-    expect(rule.declarations).toMatch(/font-size:\s*var\(--size-hand\)/);
-    expect(rule.declarations).toMatch(/line-height:\s*var\(--leading-hand\)/);
+    expect(rule.declarations).toMatch(/font-family:\s*var\(--face-text\)/);
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
+    expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
     expect(rule.declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
-    expect(rule.declarations).toMatch(/resize:\s*vertical/);
+    expect(rule.declarations).not.toMatch(/--face-hand|--size-hand|--leading-hand/);
 
     const bareRule = rules.find((rule) => rule.selector === '.notebook-ceremony__why');
     expect(bareRule, 'expected no rule with the bare .notebook-ceremony__why selector').toBeUndefined();
-  });
-
-  test('the Why falls back to the text face in italic, with no colour declaration, under (forced-colors: active) and print', () => {
-    const forcedColorsRule = rules.find((rule) => rule.selector === '.notebook-field .notebook-ceremony__why' && rule.media === '(forced-colors: active)');
-    expect(forcedColorsRule, 'expected a (forced-colors: active) .notebook-field .notebook-ceremony__why rule').toBeTruthy();
-    expect(forcedColorsRule.declarations).toMatch(/font-family:\s*var\(--face-text\)/);
-    expect(forcedColorsRule.declarations).toMatch(/font-style:\s*italic/);
-    expect(forcedColorsRule.declarations).not.toMatch(/(^|;)\s*color\s*:/);
-
-    const printRule = rules.find((rule) => rule.selector === '.notebook-field .notebook-ceremony__why' && rule.media === 'print');
-    expect(printRule, 'expected a print .notebook-field .notebook-ceremony__why rule').toBeTruthy();
-    expect(printRule.declarations).toMatch(/font-family:\s*var\(--face-text\)/);
-    expect(printRule.declarations).toMatch(/font-style:\s*italic/);
-    expect(printRule.declarations).not.toMatch(/(^|;)\s*color\s*:/);
   });
 });
 

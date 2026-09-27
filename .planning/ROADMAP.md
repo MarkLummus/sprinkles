@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 9/14 plans executed
+**Plans:** 11/14 plans executed
 
 Plans:
 
@@ -505,8 +505,8 @@ Plans:
 
 **Wave 9** *(blocked on Wave 8)*
 
-- [ ] 03.5-11-PLAN.md — Decision 15: amount and name as two content-sized columns under one head in all three render paths, the list form below 724, the pen and recording states measured
-- [ ] 03.5-12-PLAN.md — History rail nodes above the line; where the desktop state begins (checkpoint: Mark chooses 1770, 1366 or a study), replacing the 1500 placeholder
+- [x] 03.5-11-PLAN.md — Decision 15: amount and name as two content-sized columns under one head in all three render paths, the list form below 724, the pen and recording states measured
+- [x] 03.5-12-PLAN.md — History rail nodes above the line; where the desktop state begins (checkpoint: Mark chooses 1770, 1366 or a study), replacing the 1500 placeholder
 
 **Wave 10** *(blocked on 03.5-11 and 03.5-12)*
 

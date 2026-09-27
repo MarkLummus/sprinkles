@@ -83,11 +83,6 @@
       "action": "Answer 03.5-SEED-REVIEW.md Q9/Q13/Q14/Q16",
       "context": "plan 09 D-07 gate",
       "blocking": true
-    },
-    {
-      "action": "iPhone check on :4173 of the zoom fix and the Why",
-      "context": "260927-758 + a68437c",
-      "blocking": false
     }
   ],
   "decisions": [
@@ -104,6 +99,11 @@
     {
       "decision": "Version 1 has no From row",
       "rationale": "Mark 2026-09-27; matches VersionRow.jsx",
+      "phase": "03.5"
+    },
+    {
+      "decision": "iPhone check of the zoom fix and the Why on :4173 passed",
+      "rationale": "Mark 2026-09-27: \"problem solved\"",
       "phase": "03.5"
     }
   ],

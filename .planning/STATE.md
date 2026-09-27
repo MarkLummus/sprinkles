@@ -3,15 +3,15 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
-stopped_at: Phase 03.5 context gathered
-last_updated: "2026-09-26T02:37:02.836Z"
+stopped_at: Phase 03.5 gap plans 10-14 planned and checked
+last_updated: "2026-09-27T02:06:58.949Z"
 last_activity: 2026-09-25
 last_activity_desc: Phase 03.5 execution started
-state_head: 6d3f7635c6a16d002614d2548a4081b436861321
+state_head: bc634918a131e0694b2bb4a685da9e66f3b7f811
 progress:
   total_phases: 12
   completed_phases: 8
-  total_plans: 75
+  total_plans: 80
   completed_plans: 66
   percent: 67
 ---
@@ -27,9 +27,9 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 
 ## Current Position
 
-Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
+Phase: 03.5 (Separate the recipe from the sheet) — READY TO EXECUTE
 Plan: 1 of 9
-Status: Executing Phase 03.5
+Status: Ready to execute
 Last activity: 2026-09-25 - Completed quick task 260925-u3r: Separate the batch notes (1025-1365 grid band deferred to a constraints study)
 
 Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed through Phase 03.4)
@@ -327,5 +327,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-26
-Stopped at: Width ladder approved and recorded (sketch 011 decision 16, DESIGN.md); next /gsd-plan-phase 03.5 --gaps
+Stopped at: Gap plans 03.5-10..14 written and passed the checker (bc63491); two Mark decisions pending (plan 12 desktop-state cut 1770|1366|measure; plan 13 record pen cut 760|724); next /gsd-execute-phase 03.5 --gaps-only
 Resume file: .planning/.continue-here.md

@@ -37,9 +37,49 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test('notebook.css carries exactly four named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16)', () => {
+  test("notebook.css carries exactly five named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
-    expect(mediaConditions).toEqual(['(min-width: 1366px)', '(max-width: 1499.98px)', '(max-width: 1365.98px)', '(max-width: 723.98px)']);
+    expect(mediaConditions).toEqual(['(min-width: 1366px)', '(max-width: 1499.98px)', '(max-width: 1365.98px)', '(max-width: 723.98px)', '(pointer: coarse)']);
+  });
+});
+
+describe("the notebook fields' iOS focus-zoom floor under a coarse pointer (260927-758)", () => {
+  const appCssPath = path.join(STYLES_DIR, 'app.css');
+  const appCssSource = readFileSync(appCssPath, 'utf8');
+  const appRules = readAllRules(appCssSource);
+
+  test('a rule under (pointer: coarse) has the base field rule\'s exact selectors, reads --sheet-type-note for font-size, and sets no font-family', () => {
+    const rule = rules.find(
+      (rule) => rule.selector === '.notebook-field .ink-field, .notebook-field input, .notebook-field textarea' && rule.media === '(pointer: coarse)',
+    );
+    expect(rule, 'expected a (pointer: coarse) rule with the base field selectors').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
+    expect(rule.declarations).not.toMatch(/font-family/);
+  });
+
+  test('the coarse rule reads the same font-size token as app.css\'s own (pointer: coarse) .ink-field, .prose-field floor', () => {
+    const appFloorRule = appRules.find((rule) => rule.selector === '.ink-field, .prose-field' && rule.media === '(pointer: coarse)');
+    expect(appFloorRule, 'expected app.css\'s (pointer: coarse) .ink-field, .prose-field rule').toBeTruthy();
+    expect(appFloorRule.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
+  });
+
+  test('the top-level base field rule still reads --app-notebook-size-body', () => {
+    const rule = rules.find(
+      (rule) => rule.selector === '.notebook-field .ink-field, .notebook-field input, .notebook-field textarea' && rule.media === undefined,
+    );
+    expect(rule, 'expected the top-level base field rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/font-size:\s*var\(--app-notebook-size-body\)/);
+  });
+
+  test('the coarse rule sits after the base rule in file order, so source order alone decides', () => {
+    const baseIndex = rules.findIndex(
+      (rule) => rule.selector === '.notebook-field .ink-field, .notebook-field input, .notebook-field textarea' && rule.media === undefined,
+    );
+    const coarseIndex = rules.findIndex(
+      (rule) => rule.selector === '.notebook-field .ink-field, .notebook-field input, .notebook-field textarea' && rule.media === '(pointer: coarse)',
+    );
+    expect(baseIndex).toBeGreaterThan(-1);
+    expect(coarseIndex).toBeGreaterThan(baseIndex);
   });
 });
 

@@ -688,7 +688,11 @@
   }
 }
 
-@media (max-width: 759.98px) {
+/* The phone forms (sketch 011 decision 16's Grouping Rule): 724 = the
+   band's side-by-side minimum 660 + 2 x 32 gutters. Below this cut the
+   stacked band, the 20px page margin (app.css's own phone-forms block)
+   and the list-form ingredient table go together. */
+@media (max-width: 723.98px) {
   .notebook {
     padding: 0 0 var(--app-notebook-frame-pad-b-phone);
   }

@@ -55,8 +55,9 @@
      anchors above the page (.page-status), and the list route's page
      body (.list-page) — four boxes, one gutter, so a future edit cannot
      move one of them without the others. Reads --gap-xl at desktop. The
-     step to --gap-m below 600px is declared once, on :root inside app.css's existing
-     600px media block — not here — for two reasons: this file's own
+     step to --gap-m below the phone-forms cut is declared once, on :root
+     inside app.css's existing phone-forms media block — not here — for
+     two reasons: this file's own
      convention (see the breakpoint-literal comment above) keeps
      breakpoint literals in app.css's own media preludes, and
      concretely, readCustomProperties flattens this file into one map with

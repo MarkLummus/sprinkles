@@ -375,7 +375,7 @@ def ceremony():
 <form style="display:flex;flex-direction:column;gap:12px;">
   {cap('Next version · draft from Version 1')}
   <label style="display:flex;flex-direction:column;gap:4px;">{cap('Version name')}<input type="text" value="" placeholder="e.g. less oil" style="{field}"><span style="font-family:{GROT};font-size:12px;color:{TEXT2};">was 50 g oil · 800 g</span></label>
-  <label style="display:flex;flex-direction:column;gap:4px;">{cap('Why')}<textarea rows="2" placeholder="what this version is for, in your words" style="{field}font-family:'Caveat',Georgia,serif;font-size:22px;line-height:1.25;color:{PEN};resize:vertical;"></textarea></label>
+  <label style="display:flex;flex-direction:column;gap:4px;">{cap('Why')}<textarea rows="2" placeholder="what this version is for, in your words" style="{field}font-family:{SERIF};font-size:16px;line-height:1.5;color:{PEN};resize:vertical;"></textarea></label>
   <fieldset style="margin:0;padding:0;border:0;display:flex;flex-direction:column;gap:4px;">{cap('From batch')}<label style="display:flex;align-items:center;gap:8px;font-family:{GROT};font-size:14px;color:{TEXT};"><input type="checkbox" style="margin:0;width:16px;height:16px;">2 Aug 2026 · soft, not greasy</label></fieldset>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">{quiet('Cancel')}{filled('Save as a new version')}</div>
 </form>'''

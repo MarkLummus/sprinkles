@@ -169,53 +169,15 @@
   /* This table's own horizontal cell padding (G-03-11, D-UAT-6): tightened
      to half of what the general small gap gave it before (--gap-s, 12px),
      as its own token so it can be adjusted for this table alone without
-     moving --gap-s for everything else that reads it. Buys back 12px of
-     column per column in the table's widest state (6px on each side),
-     which is what lets --sheet-col-numeric below shrink toward its content
-     without the name column paying for the difference. */
+     moving --gap-s for everything else that reads it. */
   --sheet-table-cell-pad-x: var(--gap-xs);
 
-  /* Ingredient-table column widths (G-03-11 corrects the derivation below;
-     D-UAT-6 sizes --sheet-col-numeric and the padding token above). Every token
-     here is now padding-inclusive: the table's cells are border-box
-     (app.css, the shared th/td rule), so a declared width IS the whole
-     column and a column's usable CONTENT is its token minus twice
-     --sheet-table-cell-pad-x (12px). Before this plan the cells were
-     content-box, so a declared width had that padding ADDED on top — the
-     derivation below used to subtract the padding from the remainder
-     instead, which is only correct the other way around; that mistake is
-     what let this bug through undetected (G-03-11 root cause 2).
-
-     The page arithmetic (unchanged by this plan): at a given viewport,
-     .recipe-page's 2fr/1fr grid, minus --gap-page (--gap-xl, 48px) padding
-     on both sides and --gap-l (32px) gap between its two columns, leaves
-     (viewport - 128) for the two columns together; the ingredient table
-     lives in the 2fr column, two thirds of that —
-     (viewport - 128) * 2 / 3. That is 768px at a 1280px viewport and
-     597.33px at 1024px.
-
-     Measured content minimum
-     (.planning/debug/remove-column-occludes-values.md, phase-3
-     measurement): 80.61px for the "% of batch" header, the numeric
-     columns' widest content (wider than any numeric field).
-
-     The Data and Remove column-width tokens retired (sketch 011 Task 2,
-     03.5-06): style 6 drops the Data and Remove columns outright — the
-     estimated/unreviewed flag reads as an inline chip after the name and
-     remove/restore sits inline after it too, both inside the auto-width
-     name column, never a sized column of their own. The widest state this
-     arithmetic must survive is now just the numeric column at its widest
-     (As made + % of batch together), with the ingredient-name column
-     (app.css, .ingredient-table__col-name) absorbing whatever it leaves —
-     the same "sized by identity, not position" contract, one fewer sized
-     column to negotiate around. --col-step/--col-step-pen retired earlier
-     for the same reason (03.3-02, LD-01/LD-02): the table groups by step
-     instead of naming one in a cell. */
-  --sheet-col-numeric: 94px; /* content: 94 - 12 = 82px, ~1.4px above the
-    80.61px "% of batch" header — a few px of slack and no more, since
-    every px given to a sized column here comes out of the name column's
-    remainder. Shrunk from 88px (sized to the field, never the header) per
-    D-UAT-6. */
+  /* Ingredient-table column widths (decision 15, sketch 011, 03.5-11 Task
+     1): the amount and numeric columns are content-sized (width: 1% in an
+     auto-layout table, app.css) — there is no width budget to derive
+     here, since a content-sized column takes exactly what its own content
+     needs. The table probe (03.5-table-probe.mjs) measures the rendered
+     columns against the boards instead of a token asserting a px minimum. */
 
   /* The nine-stop mark control (route-recipe-batch.md § 6, D-16). */
   --gap-mark-stop: var(--gap-xs);
@@ -474,33 +436,30 @@
   --app-notebook-history-ring-w: 3.5px; /* 1600-batch.html: the in-view ring's own outer (Notebook red) width */
   --app-notebook-history-fade-w: 96px; /* 1600-long-history.html: the left fade's own width (Task 2) */
 
-  /* Table style 6 (sketch 011 decisions 2, 3; D-19; 03.5-06 Task 1): the
-     plan grams stand right-aligned before the ingredient name, the
-     estimated/unreviewed flag reads as a chip after it, and a split row's
-     portion note indents to clear both. Every value here is the board's
-     own literal (1600-batch.html/1600-no-batch.html/1600-pen.html), not a
-     measured-minimum budget like --sheet-col-numeric above — there is
-     nothing to measure a minimum against, since this is inline content in
-     the name column's own automatic width, not a shrink-to-content sized
-     column. */
-  --sheet-plan-grams-w: 64px; /* the plan-grams span's own min-width */
-  --sheet-plan-grams-gap: 18px; /* the span's own margin-right before the name */
+  /* Table style 6, decision 15 (sketch 011 decisions 2, 3; D-19; 03.5-06
+     Task 1; 03.5-11 Task 1): the plan grams stand in their own column
+     before the name, and the estimated/unreviewed flag reads as a chip
+     after it. Every value here is the board's own literal
+     (1600-batch.html/1600-no-batch.html/1600-pen.html/393-batch.html), not
+     a measured-minimum budget — there is nothing to measure a minimum
+     against, since these are the board's own fixed values, not a
+     shrink-to-content sized column. */
+  --sheet-plan-grams-w: 64px; /* the plan-grams span's own min-width (1600-batch.html); also the list form's amount track (393-batch.html) */
+  --sheet-plan-grams-gap: 18px; /* the amount cell's own gap before the name (1366-batch.html) — the amount column's padding-right now, not the span's margin-right (decision 15) */
   --sheet-flag-gap: 8px; /* the estimated/unreviewed chip's own margin-left after the name */
-  --sheet-portion-indent: 82px; /* the split portion note's own padding-left — the plan-grams span (64) plus its gap (18), never a second literal */
   --sheet-leading-hand: 1; /* the Sheet's own hand leading (decisions_recorded 1) — distinct from --leading-hand (1.25), the App's own */
   --sheet-grams-field-w: 52px; /* Task 2 (1600-pen.html): the pen's own grams field, inside the plan-grams slot — narrower than the field's own 100% default, since the slot's min-width already carries the layout */
 
-  /* The 393 narrow list (393-batch.html's forced narrow rules, "the
-     ingredient table reads as a list, two lines per row": quantity and
-     name, then as made and share). Every value here is that board's own
-     literal, read once by app.css's existing (max-width: 759.98px)
-     block — no new @media block, per that block's own contract. */
+  /* The list form below 724 (723-batch.html/393-batch.html's forced narrow
+     rules, "the plan amount, the name and the share sit on line one, and
+     As made sits under the plan amount on the same right edge" — decision
+     15, sketch 011). Every value here is that board's own literal, read
+     once by app.css's phone-forms (max-width: 723.98px) block — no new
+     @media block, per that block's own contract. */
   --sheet-narrow-row-pad-y: 8px; /* a row's own top/bottom padding */
   --sheet-narrow-step-pad-t: 14px; /* a step-head row's own top padding */
   --sheet-narrow-step-pad-b: 4px; /* a step-head row's own bottom padding */
-  --sheet-narrow-name-gap: 10px; /* the plan-grams span's own reset margin-right at this width */
-  --sheet-narrow-numeric-pad-r: 14px; /* a numeric cell's own right padding, reading inline */
-  --sheet-narrow-numeric-gap-t: 4px; /* a numeric cell's own top margin, second line under the name */
+  --sheet-narrow-name-gap: 10px; /* the list grid's own column-gap, between the amount, name and share tracks (723-batch.html) */
 
   /* The step pen (sketch 011 decisions_recorded 5; 1600-pen.html, Task 3):
      the closed step's own "edit this step · remove" line and the open

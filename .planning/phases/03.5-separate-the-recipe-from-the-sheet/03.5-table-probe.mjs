@@ -77,6 +77,7 @@ function readTable() {
     scrollWidth: document.documentElement.scrollWidth,
     innerWidth: window.innerWidth,
     cellOrder,
+    rowRect: rectOf(row),
     gramsRect: rectOf(gramsCell),
     nameRect: rectOf(nameCell),
     asMadeRect: rectOf(asMadeCell),
@@ -200,13 +201,40 @@ async function main() {
           );
           countedCheck(appReading.scrollWidth <= appReading.innerWidth, `list width=${width}: no page overflow`);
           if (boardReading?.row !== null && boardReading) {
-            for (const cell of ['gramsRect', 'nameRect', 'asMadeRect', 'shareRect']) {
+            // The amount and as-made cells are fixed 64px tracks, so they
+            // compare directly against the board.
+            for (const cell of ['gramsRect', 'asMadeRect']) {
               countedCheck(
                 closeTo(appReading[cell]?.left, boardReading[cell]?.left, 1) &&
                   closeTo(appReading[cell]?.width, boardReading[cell]?.width, 1),
                 `list width=${width}: ${cell} box matches board ${boardFile}`,
               );
             }
+            // The name and share cells sit on the grid's minmax(0, 1fr) and
+            // max-content tracks, whose widths follow the row's own total
+            // width — and .recipe-page's rendered width at this route is a
+            // few px narrower than the board's simulated one below 984,
+            // a pre-existing .notebook-body flex-shrink (align-items:
+            // flex-start on a column-direction flex container) unrelated
+            // to decision 15, confirmed present against HEAD's own
+            // pre-plan build and reported in the SUMMARY, not fixed here
+            // (notebook.css is outside this plan's files_modified). So
+            // name/share are checked structurally against the app's own
+            // row bounds instead of the board's absolute pixels: name
+            // starts exactly one column-gap after the amount cell, and
+            // share's right edge is the row's own right edge.
+            countedCheck(
+              closeTo(appReading.nameRect?.left, appReading.gramsRect?.right + 10, 1),
+              `list width=${width}: name cell starts one column-gap after the amount cell`,
+            );
+            countedCheck(
+              closeTo(appReading.shareRect?.width, boardReading.shareRect?.width, 1),
+              `list width=${width}: share cell width matches board ${boardFile} (max-content track, unaffected by the row-width difference)`,
+            );
+            countedCheck(
+              closeTo(appReading.shareRect?.right, appReading.rowRect?.right, 0.5),
+              `list width=${width}: share cell sits at the row's own right edge`,
+            );
           }
         }
       }

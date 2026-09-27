@@ -327,5 +327,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-09-26
-Stopped at: Width-constraints study measured (https://claude.ai/artifact/2VNpa4tVnp2hh6E7iKYmnW); awaiting Mark: log precedence and chosen min/max values
+Stopped at: Width ladder approved and recorded (sketch 011 decision 16, DESIGN.md); next /gsd-plan-phase 03.5 --gaps
 Resume file: .planning/.continue-here.md

@@ -37,9 +37,9 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test('notebook.css carries exactly three named @media steps, in file order — 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16)', () => {
+  test('notebook.css carries exactly four named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16)', () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
-    expect(mediaConditions).toEqual(['(max-width: 1499.98px)', '(max-width: 1365.98px)', '(max-width: 723.98px)']);
+    expect(mediaConditions).toEqual(['(min-width: 1366px)', '(max-width: 1499.98px)', '(max-width: 1365.98px)', '(max-width: 723.98px)']);
   });
 });
 
@@ -99,5 +99,53 @@ describe("the log's batch notes (260925-u3r, sketch 011)", () => {
     const noteRule = rules.find((rule) => rule.selector === '.notebook-log .batch-row__note' && rule.media === undefined);
     expect(noteRule, 'expected a top-level .notebook-log .batch-row__note rule').toBeTruthy();
     expect(noteRule.declarations).toMatch(/margin:\s*0/);
+  });
+});
+
+describe('the record pen\'s own frame, scoped to where the log genuinely is a column (03.5-13 Task 1, decisions_recorded 1)', () => {
+  const logColumnSelectors = [
+    '.notebook-log .batch-margin--pen',
+    '.notebook-log .axis-mark__stops, .notebook-log .axis-mark__anchors',
+    '.notebook-log .axis-mark__stop',
+    '.notebook-log .field-row__label',
+  ];
+
+  test('each of the four log-column pen rules is found under (min-width: 1366px), and nowhere else', () => {
+    for (const selector of logColumnSelectors) {
+      const scoped = rules.find((rule) => rule.selector === selector && rule.media === '(min-width: 1366px)');
+      expect(scoped, `expected "${selector}" under (min-width: 1366px)`).toBeTruthy();
+
+      const topLevel = rules.find((rule) => rule.selector === selector && rule.media === undefined);
+      expect(topLevel, `expected no top-level "${selector}" rule`).toBeUndefined();
+
+      const handBack = rules.find((rule) => rule.selector === selector && rule.media === '(max-width: 1365.98px)');
+      expect(handBack, `expected no (max-width: 1365.98px) "${selector}" rule`).toBeUndefined();
+    }
+  });
+
+  test('the (min-width: 1366px) block declares the same narrow values as before — 216px track, the joined touch cell, and a full-width label', () => {
+    const trackRule = rules.find(
+      (rule) => rule.selector === '.notebook-log .axis-mark__stops, .notebook-log .axis-mark__anchors' && rule.media === '(min-width: 1366px)',
+    );
+    expect(trackRule.declarations).toMatch(/width:\s*var\(--sheet-track-stop-narrow\)/);
+
+    const stopRule = rules.find((rule) => rule.selector === '.notebook-log .axis-mark__stop' && rule.media === '(min-width: 1366px)');
+    expect(stopRule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
+    expect(stopRule.declarations).toMatch(/height:\s*var\(--sheet-touch-stop-height\)/);
+    expect(stopRule.declarations).toMatch(/flex-basis:\s*var\(--touch-stop-width\)/);
+
+    const labelRule = rules.find((rule) => rule.selector === '.notebook-log .field-row__label' && rule.media === '(min-width: 1366px)');
+    expect(labelRule.declarations).toMatch(/max-width:\s*100%/);
+
+    const penRule = rules.find((rule) => rule.selector === '.notebook-log .batch-margin--pen' && rule.media === '(min-width: 1366px)');
+    expect(penRule.declarations).toMatch(/max-width:\s*none/);
+  });
+
+  test('the ceremony wrap rule stays unconditional, at top level', () => {
+    const rule = rules.find(
+      (rule) => rule.selector === '.notebook-log .save-ceremony, .notebook-log .pen-foot__controls' && rule.media === undefined,
+    );
+    expect(rule, 'expected the ceremony wrap rule to stay top-level').toBeTruthy();
+    expect(rule.declarations).toMatch(/flex-wrap:\s*wrap/);
   });
 });

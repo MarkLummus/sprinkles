@@ -703,3 +703,21 @@
     padding: 0 var(--gap-m);
   }
 }
+
+/* iOS Safari zooms the page when a focused text field computes under 16px
+   (Mark's iPhone, 2026-09-27: Rename or Next version, then Cancel, left the
+   page wider than the screen). The base field rule above (two classes, or a
+   class and an element) outranks app.css's single-class touch floor
+   (.ink-field, .prose-field), so these fields stayed at 15px under a
+   coarse pointer since 715de20 (pre-existing). This rule matches the base
+   rule's own selectors, so source order alone decides — that is why it
+   sits after every base rule, at the file's foot (Task 2 adds the Why's
+   two fallback blocks after it). It reads app.css's own touch-floor token,
+   so the zoom threshold stays one value across the app. */
+@media (pointer: coarse) {
+  .notebook-field .ink-field,
+  .notebook-field input,
+  .notebook-field textarea {
+    font-size: var(--sheet-type-note);
+  }
+}

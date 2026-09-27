@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 7/14 plans executed
+**Plans:** 8/14 plans executed
 
 Plans:
 
@@ -496,7 +496,7 @@ Plans:
 
 **Wave 7** *(blocked on Wave 6)*
 
-- [ ] 03.5-08-PLAN.md — Folds below desktop, the side-by-side conformance record against sketch 011 at 1600/1366/1024/393, and the /impeccable document hand-off for the Hand Rule bend (D-19)
+- [x] 03.5-08-PLAN.md — Folds below desktop, the side-by-side conformance record against sketch 011 at 1600/1366/1024/393, and the /impeccable document hand-off for the Hand Rule bend (D-19)
 - [ ] 03.5-09-PLAN.md — Mark's D-07 approval gate on the transcription, then the seed wired (DB 7) with coverage invariants (D-01, D-05, D-07)
 
 **Wave 8 — gap closure** *(the derived width ladder and table redesign Mark approved 2026-09-26, sketch 011 decisions 15–16; independent of 03.5-09)*

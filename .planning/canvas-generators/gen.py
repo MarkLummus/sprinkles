@@ -1,6 +1,6 @@
 import json, re, os, datetime
 
-SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/10a9aeeb-4724-4ff9-9b65-ce90fed7d98b/scratchpad'
+SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/8a627d74-8755-4cb3-9bd5-6098b27eca61/scratchpad'
 SRC = SP + '/artifact-files/8c08ac14-3ead-48f4-861a-5016f88c8338/project'
 OUT = SP + '/canvas/project'
 os.makedirs(OUT, exist_ok=True)
@@ -260,7 +260,7 @@ class Component extends DCLogic {{
 
 W = 1600
 boards = {}
-RUNGS = {'R35C_1366': 1366, 'R35C_1024': 1024, 'R35C_393': 393}
+RUNGS = {'R35C_1366': 1366, 'R35C_1024': 1024, 'R35C_984': 984, 'R35C_983': 983, 'R35C_723': 723, 'R35C_393': 393, 'R35C_1920': 1920}
 
 # A — sidebar
 def layout_a(state, pen=False):
@@ -397,7 +397,7 @@ def history_rail(versions, count_text):
   <div style="display:flex;align-items:baseline;justify-content:space-between;">{cap('History')}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{count_text}</span></div>
   <div style="position:relative;overflow:hidden;">
     <div style="position:absolute;left:0;right:0;top:27px;height:1px;background:{DIV};"></div>
-    <div style="display:flex;gap:24px;min-width:max-content;padding:0 6px;">{nodes}</div>
+    <div style="position:relative;display:flex;gap:24px;min-width:max-content;padding:0 6px;">{nodes}</div>
   </div>
 </div>'''
 
@@ -413,10 +413,11 @@ def layout_c(state, pen=False, sheet_html=None, log=True, rail=None):
   {history_rail(versions, '2 versions · oldest left, latest right')}
 </header>'''
     body_sheet = sheet_html if sheet_html is not None else sheet(state, pen)
-    col = f'<aside aria-label="Batch" style="flex:0 0 340px;min-width:0;padding-top:8px;">{batch_log(state, column=True)}</aside>' if log else ''
-    return f'''<div style="padding:0 48px 48px 40px;display:flex;flex-direction:column;gap:28px;">
+    col = f'<aside aria-label="Batch" style="flex:0 0 350px;min-width:0;padding-top:8px;">{batch_log(state, column=True)}</aside>' if log else ''
+    # the derived ladder (Mark, 2026-09-26): 32px gutters, the log 350 beside the Sheet, content capped at 1482 and centred from a 1770 window
+    return f'''<div style="box-sizing:border-box;width:100%;max-width:1546px;margin:0 auto;padding:0 32px 48px;display:flex;flex-direction:column;gap:28px;">
   {band}
-  <div style="display:flex;gap:40px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{body_sheet}</div>{col}</div>
+  <div style="display:flex;gap:32px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{body_sheet}</div>{col}</div>
 </div>'''
 
 def layout_c_rung(width):
@@ -424,8 +425,11 @@ def layout_c_rung(width):
     state = 'batch'
     versions = [('1 Jul', 'Version 1 · 50 g oil · 800 g', 'churned 2 Aug · Latest', True, True),
                 ('20 Sep', 'Version 2 · less oil', 'draft', False, False)]
-    gutter = '0 20px 40px 20px' if width == 393 else '0 32px 48px 32px'
-    if width == 393:
+    # the derived ladder (Mark, 2026-09-26): below 984 the side nav gives way to the tab row and the Sheet is one column;
+    # below 724 the band stacks, the ingredient table reads as a list and the margin is 20
+    narrow = width < 724
+    gutter = '0 20px 40px 20px' if narrow else '0 32px 48px 32px'
+    if narrow:
         top = f'<div style="display:flex;flex-direction:column;gap:20px;">{recipe_identity(False)}{version_block()}</div>'
     else:
         top = f'''<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:start;">
@@ -436,9 +440,9 @@ def layout_c_rung(width):
   {top}
   {history_rail(versions, '2 versions')}
 </header>'''
-    if width == 1366:
-        body = f'<div style="display:flex;gap:32px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{sheet(state)}</div><aside aria-label="Batch" style="flex:0 0 300px;min-width:0;padding-top:8px;">{batch_log(state, column=True)}</aside></div>'
-    elif width == 393:
+    if width >= 1366:
+        body = f'<div style="display:flex;gap:32px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{sheet(state)}</div><aside aria-label="Batch" style="flex:0 0 350px;min-width:0;padding-top:8px;">{batch_log(state, column=True)}</aside></div>'
+    elif narrow:
         # the paper runs edge to edge; its own 20px gutter is the only inset. App blocks keep the 20px page gutter.
         return f'<div style="display:flex;flex-direction:column;gap:24px;padding-bottom:40px;"><div style="padding:0 20px;">{band}</div>{sheet(state)}<div style="padding:0 20px;">{batch_log(state, column=True)}</div></div>'
     else:
@@ -497,9 +501,13 @@ specs = [
  ('R35C_Pen', 'C · the pen open from Next version · edit this step, one step open (chosen 2026-09-24)', 3700, layout_c('batch', pen=True)),
  ('R35C_PenFocus', 'Not chosen · the pen with controls on the focused step only', 3700, None),
  ('R35C_PenStep', 'Not chosen · the pen with step controls always shown', 3700, None),
- ('R35C_1366', 'C · 1366 · iPad landscape · the log beside the Sheet, details, Balance and Tasting folded', 3800, None),
- ('R35C_1024', 'C · 1024 · iPad portrait · one column, the log below the Sheet, details, Balance and Tasting folded', 4600, None),
+ ('R35C_1366', 'C · 1366 · iPad landscape · side nav, the Sheet in two columns, the log beside it at 350, details, Balance and Tasting folded', 3100, None),
+ ('R35C_1024', 'C · 1024 · iPad portrait · side nav, the Sheet in two columns, the log below it, details, Balance and Tasting folded', 3400, None),
+ ('R35C_984', 'C · 984 · narrowest with the side nav · the Sheet in two columns at 696, the log below it, folds closed', 3600, None),
+ ('R35C_983', 'C · 983 · widest below the side nav · bottom tab row, the Sheet in one column, the log below it, folds closed', 3300, None),
+ ('R35C_723', 'C · 723 · widest phone form · bottom tab row, the Sheet in one column, band stacked, two-line ingredient list, 20px margin, folds closed', 3500, None),
  ('R35C_393', 'C · 393 · phone · one column, bottom tab row, details, Balance and Tasting folded', 5800, None),
+ ('R35C_1920', 'C · 1920 · wide · content capped at 1482 and centred in the main area', 2900, None),
  ('R35_RecipeBookForm', 'Reference · the Recipe Book form of the Sheet on screen (/recipe-book/:recipeId, not built in 03.5)', 2000, layout_c('none', sheet_html=recipe_book_form(), log=False, rail=RB)),
 ]
 for key, title, h, main in specs:
@@ -513,8 +521,8 @@ for key, title, h, main in specs:
     active = 'recipe-book' if key == 'R35_RecipeBookForm' else 'notebook'
     w = RUNGS.get(key, W)
     if key in RUNGS:
-        main = layout_c_rung(w)
-        if w in (393, 1024, 1366):
+        main = layout_c('batch') if w == 1920 else layout_c_rung(w)
+        if w < 1600:
             main = phone_folds(main)
     PHONE_TABLE = '''
 /* 393: the ingredient table reads as a list: the plan amount, the name, the share on line one; as made in the hand under the plan amount */
@@ -533,7 +541,28 @@ for key, title, h, main in specs:
 [hidden]{display:none !important}
 '''
     FORCED = open(SP + '/phone-forced.css').read()
-    extra = (FORCED + PHONE_TABLE) if w == 393 else ('[hidden]{display:none !important}' if w in (1024, 1366) else '')
+    # sections of the app's narrow rules, so each rung carries only what the derived ladder gives it (Mark, 2026-09-26)
+    SHELL_TABS = FORCED[:FORCED.index('/* app/src/styles/app.css @media (max-width: 1099.98px) */')]
+    ONE_COL = FORCED[FORCED.index('/* app/src/styles/app.css @media (max-width: 1099.98px) */'):FORCED.index('/* app/src/styles/app.css @media (max-width: 759.98px), (pointer: coarse) */')]
+    AFTER_TOUCH = FORCED[FORCED.index('/* app/src/styles/app.css @media (max-width: 759.98px) */'):]
+    TWO_COL = '''
+/* the Sheet keeps its Balance column down to 724 (Mark, 2026-09-26), whatever the viewer's window */
+.recipe-page{gap:var(--gap-l);grid-template-columns:2fr 1fr;grid-template-areas:"band band""ingredients side""method side""foot foot"}
+.pen-foot{grid-template-columns:2fr 1fr}
+'''
+    if w == 393:
+        extra = FORCED + PHONE_TABLE
+    elif w < 724:
+        # touch sizing is keyed to the pointer only now, so a narrow mouse window carries no touch floor
+        extra = SHELL_TABS + ONE_COL + AFTER_TOUCH + PHONE_TABLE
+    elif w < 984:
+        extra = SHELL_TABS + ONE_COL + '[hidden]{display:none !important}'
+    elif w == 1920:
+        extra = ''
+    else:
+        extra = ('' if w in (1024, 1366) else TWO_COL) + '[hidden]{display:none !important}'
+    if w in (984, 1024):
+        extra += TWO_COL
     open(OUT + '/' + fn, 'w').write(board(title, w, h, main, active, extra))
     boards[fn] = (title, h)
 
@@ -558,7 +587,8 @@ for key, title, h, _ in specs:
         row = key[3]; col = ['NoBatch', 'Batch', 'Pen'].index(key.split('_')[1])
         x, y = xs[col], rows[row]
     if key in RUNGS:
-        x = {'R35C_1366': 0, 'R35C_1024': 1446, 'R35C_393': 2550}[key]; y = 15400
+        x, y = {'R35C_1366': (0, 15400), 'R35C_1024': (1446, 15400), 'R35C_393': (2550, 15400),
+                'R35C_984': (0, 20400), 'R35C_983': (1064, 20400), 'R35C_723': (2127, 20400), 'R35C_1920': (0, 26600)}[key]
     cj['boards'][fn] = {'x': x, 'y': y, 'w': RUNGS.get(key, W), 'h': h, 'page': PAGE, 'title': title}
     if fn not in cj['order']:
         cj['order'].append(fn)

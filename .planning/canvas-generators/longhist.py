@@ -29,7 +29,7 @@ strip = f'''<div style="display:flex;flex-direction:column;gap:10px;">
   <div style="display:flex;align-items:baseline;justify-content:space-between;">{cap('History')}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">8 versions · oldest left, latest right · opens at the version in view</span></div>
   <div style="position:relative;overflow:hidden;">
     <div style="position:absolute;left:0;right:0;top:27px;height:1px;background:{DIV};"></div>
-    <div style="display:flex;justify-content:flex-end;gap:{GAP}px;min-width:max-content;padding:0 6px;">{nodes}</div>
+    <div style="position:relative;display:flex;justify-content:flex-end;gap:{GAP}px;min-width:max-content;padding:0 6px;">{nodes}</div>
     <div aria-hidden="true" style="position:absolute;top:0;left:0;bottom:0;width:96px;background:linear-gradient(to left, rgba(255,255,255,0), #ffffff);pointer-events:none;"></div>
   </div>
 </div>'''
@@ -40,9 +40,9 @@ band = f'''<header style="display:flex;flex-direction:column;gap:24px;padding:20
   </div>
   {strip}
 </header>'''
-main = f'''<div style="padding:0 48px 48px 40px;display:flex;flex-direction:column;gap:28px;">
+main = f'''<div style="box-sizing:border-box;width:100%;max-width:1546px;margin:0 auto;padding:0 32px 48px;display:flex;flex-direction:column;gap:28px;">
   {band}
-  <div style="display:flex;gap:40px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{sheet('batch')}</div><aside aria-label="Batch" style="flex:0 0 340px;min-width:0;padding-top:8px;">{batch_log('batch', column=True)}</aside></div>
+  <div style="display:flex;gap:32px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{sheet('batch')}</div><aside aria-label="Batch" style="flex:0 0 350px;min-width:0;padding-top:8px;">{batch_log('batch', column=True)}</aside></div>
 </div>'''
 open(OUT+'/R35C_LongHistory.dc.html','w').write(board('C · header band · History as a dated rail, eight versions, scrolling', 1600, 3500, main))
 print('ok')

@@ -326,6 +326,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-25T02:50:52.677Z
-Stopped at: Phase 03.5 context gathered
-Resume file: .planning/phases/03.5-separate-the-recipe-from-the-sheet/03.5-CONTEXT.md
+Last session: 2026-09-26
+Stopped at: Width-constraints study measured (https://claude.ai/artifact/2VNpa4tVnp2hh6E7iKYmnW); awaiting Mark: log precedence and chosen min/max values
+Resume file: .planning/.continue-here.md

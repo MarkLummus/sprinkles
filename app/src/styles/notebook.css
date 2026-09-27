@@ -7,29 +7,40 @@
    the ingredient table, the method — stay in app.css; this file never
    reads a Sheet token and app.css never reads a --app-notebook-* one.
 
-   The ladder (decisions_recorded 2): the boards give rungs, not
-   thresholds. Between 1366 and 1600 this plan sets the desktop rung at
-   1500px, so iPad landscape rules apply at (max-width: 1499.98px). 1024
-   and 393 map onto the app's existing steps: one column at
-   (max-width: 1099.98px) — only the Sheet/log row restructures there,
-   the band grid stays two columns at both 1366 and 1024, matching the
-   boards' own drawn values — and phone at (max-width: 759.98px), where
-   the shell's tab row already switches. Media-query conditions cannot
-   read custom properties, so these three literals live here, in the
-   file's own prelude, as 600 does in app.css. */
+   The ladder (sketch 011 decision 16, derived from measured content
+   limits, superseding this file's earlier rung-based reading): from 1366
+   up the log sits beside the Sheet at 350, with 32 gutters (page margin,
+   Sheet to log, page margin) and the content capped at 1482, centred from
+   a 1770px window (.notebook's own rule, below). Below 1366 the log moves
+   below the Sheet first — (max-width: 1365.98px) — before the side nav
+   and the Sheet's second column go together at 984 (shell.css, app.css).
+   The interim desktop rung at (max-width: 1499.98px) and the phone step
+   at (max-width: 759.98px) are not this plan's to resolve (plans 12 and
+   13); their prelude literals stay for the same reason 600 stays in
+   app.css: media-query conditions cannot read custom properties. */
 
+/* The content cap (sketch 011 decision 16): from a 1770px window the
+   content stops growing at 1482 and centres in the main area — 1482 = the
+   Sheet's two-column minimum (696) + the gutter (32) + the log (350). A
+   max-width with auto margins, not a media query — the cap has no rung of
+   its own. */
 .notebook {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--app-notebook-content-max) + 2 * var(--app-notebook-gutter));
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: var(--app-notebook-frame-gap);
-  padding: 0 var(--gap-xl) var(--gap-xl) var(--app-notebook-frame-pad-start);
+  padding: 0 var(--app-notebook-gutter) var(--gap-xl);
 }
 
 /* The header band (D-12's Rename lives in its recipe column; the version
    column's reading state is Task 2's, the ceremony Task 3's). Only
    vertical padding of its own — the frame above supplies the inline
-   edge at every rung down to 1099.98px; the 759.98px rung gives the band
-   its own inline padding once the frame's drops to zero (below). */
+   edge unconditionally now (.notebook's own gutter); the 759.98px rung
+   gives the band its own inline padding once the frame's drops to zero
+   (below). */
 .notebook-band {
   display: flex;
   flex-direction: column;
@@ -45,11 +56,13 @@
   align-items: start;
 }
 
-/* The Sheet/log row: beside each other at desktop and iPad landscape,
-   stacked below 1099.98px (decisions_recorded 2). */
+/* The Sheet/log row: beside each other from 1366 up, stacked below it
+   (sketch 011 decision 16 — the log moves below the Sheet first). The gap
+   is the set gutter (32), the same value that separates the page margins
+   from the Sheet and the log. */
 .notebook-body {
   display: flex;
-  gap: var(--app-notebook-grid-gap);
+  gap: var(--app-notebook-gutter);
   align-items: flex-start;
 }
 
@@ -591,11 +604,12 @@
    sketch 007/008's grammar unchanged; only its frame moves. The narrow
    arrangement app.css already draws for touch/narrow widths (the stop
    track, field-row label widths) reapplies here unconditionally, since
-   the log column (340px/300px) is narrow whether or not the pointer is
-   coarse — the ceremony's own wrap rule is left on permanently, since
-   wrapping only engages when content does not fit. app.css's own
-   width-keyed rules hand back control inside (max-width: 1099.98px),
-   where the log stacks below the Sheet and reads full width again. */
+   the log column (350px, sketch 011 decision 16) is narrow whether or
+   not the pointer is coarse — the ceremony's own wrap rule is left on
+   permanently, since wrapping only engages when content does not fit.
+   app.css's own width-keyed rules hand back control inside
+   (max-width: 1365.98px), where the log stacks below the Sheet and reads
+   full width again. */
 .notebook-log .batch-margin--pen {
   max-width: none;
 }
@@ -622,7 +636,6 @@
 
 @media (max-width: 1499.98px) {
   .notebook {
-    padding: 0 var(--gap-l) var(--gap-xl) var(--gap-l);
     gap: var(--app-notebook-band-rhythm);
   }
 
@@ -634,17 +647,13 @@
   .notebook-band__grid {
     gap: var(--gap-l);
   }
-
-  .notebook-body {
-    gap: var(--gap-l);
-  }
-
-  .notebook-log {
-    flex-basis: var(--app-notebook-log-w-narrow);
-  }
 }
 
-@media (max-width: 1099.98px) {
+/* The log moves below the Sheet first (sketch 011 decision 16's
+   precedence): 1366 = the side nav's 224 + 3 x 32 gutters + the Sheet's
+   two-column minimum 696 + the log's own 350. Below this cut the Sheet
+   still keeps two columns — that rung is 984, shell.css/app.css. */
+@media (max-width: 1365.98px) {
   .notebook-body {
     flex-direction: column;
     gap: var(--app-notebook-frame-gap);

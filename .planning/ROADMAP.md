@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 11/14 plans executed
+**Plans:** 12/14 plans executed
 
 Plans:
 
@@ -510,7 +510,7 @@ Plans:
 
 **Wave 10** *(blocked on 03.5-11 and 03.5-12)*
 
-- [ ] 03.5-13-PLAN.md — Touch sizes by pointer only, reaching the record pen in the full-width log; the record pen's own cut (checkpoint: Mark keeps 760 per DESIGN.md or groups onto 724)
+- [x] 03.5-13-PLAN.md — Touch sizes by pointer only, reaching the record pen in the full-width log; the record pen's own cut (checkpoint: Mark keeps 760 per DESIGN.md or groups onto 724)
 
 **Wave 11** *(blocked on Wave 10)*
 

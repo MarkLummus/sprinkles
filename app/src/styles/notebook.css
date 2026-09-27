@@ -612,30 +612,36 @@
    Task 2 answer — option A, decisions_recorded 4): the battery keeps
    sketch 007/008's grammar unchanged; only its frame moves. The narrow
    arrangement app.css already draws for touch/narrow widths (the stop
-   track, field-row label widths) reapplies here unconditionally, since
-   the log column (350px, sketch 011 decision 16) is narrow whether or
-   not the pointer is coarse — the ceremony's own wrap rule is left on
-   permanently, since wrapping only engages when content does not fit.
-   app.css's own width-keyed rules hand back control inside
-   (max-width: 1365.98px), where the log stacks below the Sheet and reads
-   full width again. */
-.notebook-log .batch-margin--pen {
-  max-width: none;
-}
+   track, field-row label widths) applies here from (min-width: 1366px)
+   on — where the log genuinely IS a 350px column (1366 = 224 + 3 x 32 +
+   696 + 350, the complement of the log-below-the-Sheet block below) —
+   the ceremony's own wrap rule is left on permanently, since wrapping
+   only engages when content does not fit. 03.5-13 Task 1 removes the
+   hand-back that used to apply these same rules unconditionally and
+   then claw them back below 1366: at two classes of specificity it
+   outranked app.css's own single-class touch-union rule, so the record
+   pen's stops stayed 32px tall under a coarse pointer wherever the log
+   was full width (decisions_recorded 1). Scoping the rules to the width
+   where they are actually true removes the need for a hand-back. */
+@media (min-width: 1366px) {
+  .notebook-log .batch-margin--pen {
+    max-width: none;
+  }
 
-.notebook-log .axis-mark__stops,
-.notebook-log .axis-mark__anchors {
-  width: var(--sheet-track-stop-narrow);
-}
+  .notebook-log .axis-mark__stops,
+  .notebook-log .axis-mark__anchors {
+    width: var(--sheet-track-stop-narrow);
+  }
 
-.notebook-log .axis-mark__stop {
-  width: var(--touch-stop-width);
-  height: var(--sheet-touch-stop-height);
-  flex-basis: var(--touch-stop-width);
-}
+  .notebook-log .axis-mark__stop {
+    width: var(--touch-stop-width);
+    height: var(--sheet-touch-stop-height);
+    flex-basis: var(--touch-stop-width);
+  }
 
-.notebook-log .field-row__label {
-  max-width: 100%;
+  .notebook-log .field-row__label {
+    max-width: 100%;
+  }
 }
 
 .notebook-log .save-ceremony,
@@ -671,29 +677,6 @@
   .notebook-log {
     flex-basis: auto;
     padding: 0 var(--app-notebook-gap-tight);
-  }
-
-  /* The record pen's frame hands back to app.css's own width-keyed rules
-     here (03.5-07 Task 3): the log stacks full width below the Sheet at
-     this rung, so the column is no longer narrow and the pen reads
-     exactly as it did before this plan. */
-  .notebook-log .batch-margin--pen {
-    max-width: var(--sheet-pen-w);
-  }
-
-  .notebook-log .axis-mark__stops,
-  .notebook-log .axis-mark__anchors {
-    width: var(--sheet-track-stop);
-  }
-
-  .notebook-log .axis-mark__stop {
-    width: auto;
-    height: var(--sheet-stop-h);
-    flex-basis: var(--sheet-stop-w);
-  }
-
-  .notebook-log .field-row__label {
-    max-width: none;
   }
 }
 

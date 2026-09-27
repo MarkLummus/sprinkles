@@ -122,26 +122,17 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
       // Decision C: HEIGHT only. The width and the track stay width-keyed below.
       '.axis-mark__stop',
     ]);
-    // Track GEOMETRY and the history outline's indentation stay width-only:
-    // wide touch keeps the desktop composition, while a narrow viewport
-    // reduces lineage and batch indents without flattening the tree. The
-    // 393 narrow ingredient-table list (sketch 011 decisions_recorded 5,
-    // 03.5-06 Task 1) joined this same block — it is a layout rewrite tied
-    // to width alone, never to pointer coarseness.
+    // Track GEOMETRY stays width-only: wide touch keeps the desktop
+    // composition, while a narrow viewport reduces the stop's own width.
+    // The narrow ingredient-table list moved out of this block entirely
+    // (decision 15, sketch 011, 03.5-11 Task 1) — it now lives in the
+    // phone-forms (max-width: 723.98px) block below, sharing that cut with
+    // the band and the page margin (sketch 011 decision 16), so this block
+    // keeps only the two axis-mark rules it was drawn for.
     const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
     expect(widthOnly.map((r) => r.selector)).toEqual([
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
-      '.ingredient-table thead',
-      '.ingredient-table, .ingredient-table tbody, .ingredient-table tfoot, .ingredient-table tr',
-      '.ingredient-table tr',
-      '.ingredient-table tr.ingredient-table__step-head',
-      '.ingredient-table td',
-      '.ingredient-table td.ingredient-table__col-name',
-      '.ingredient-table__plan-grams',
-      '.ingredient-table td.ingredient-table__col-numeric',
-      '.ingredient-table td.ingredient-table__col-numeric:empty',
-      '.ingredient-table__portion-note',
     ]);
   });
 
@@ -282,6 +273,51 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
     );
     expect(rule, 'expected a media-scoped .ingredient-table-region rule').toBeTruthy();
     expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
+  });
+
+  // Decision 15 (sketch 011, 03.5-11 Task 1): below 724 the table reads as
+  // the drawn list — no head row, one grid row per portion — moved here
+  // from the width-only (max-width: 759.98px) block wholesale, in the
+  // board's own rule order (723-batch.html), appended after this block's
+  // pre-existing content.
+  test('the phone-forms block appends the list-form rules, in the board\'s own order, after its pre-existing content (decision 15, sketch 011, 03.5-11)', () => {
+    const phoneFormsRules = rules.filter((r) => r.media === '(max-width: 723.98px)');
+    expect(phoneFormsRules.map((r) => r.selector)).toEqual([
+      ':root',
+      '.field-row__label',
+      '.batch-margin__field',
+      '.save-ceremony, .pen-foot__controls',
+      '.ingredient-table-region',
+      '.ingredient-table thead',
+      '.ingredient-table, .ingredient-table tbody, .ingredient-table tfoot',
+      '.ingredient-table tr',
+      '.ingredient-table tr.ingredient-table__step-head',
+      '.ingredient-table td',
+      '.ingredient-table td.ingredient-table__col-grams, .ingredient-table td.ingredient-table__col-name, .ingredient-table td.ingredient-table__col-numeric',
+      '.ingredient-table td.ingredient-table__col-grams',
+      '.ingredient-table td.ingredient-table__col-name',
+      '.ingredient-table td.ingredient-table__col-numeric:nth-last-child(2)',
+      '.ingredient-table td.ingredient-table__col-numeric:last-child',
+      '.ingredient-table td.ingredient-table__col-numeric:empty',
+    ]);
+  });
+
+  test("the list row's grid reads --sheet-plan-grams-w for its first track, and no list-form rule carries !important (the boards need !important only to beat their own inlined stale stylesheet; app.css has no such conflict to out-rank)", () => {
+    const trRule = rules.find((r) => r.selector === '.ingredient-table tr' && r.media === '(max-width: 723.98px)');
+    expect(trRule, 'expected the media-scoped list-row grid rule').toBeTruthy();
+    expect(trRule.declarations).toMatch(
+      /grid-template-columns:\s*var\(--sheet-plan-grams-w\) minmax\(0,\s*1fr\) max-content/,
+    );
+    expect(trRule.declarations).toMatch(/column-gap:\s*var\(--sheet-narrow-name-gap\)/);
+    expect(trRule.declarations).toMatch(/row-gap:\s*var\(--gap-hair\)/);
+    expect(trRule.declarations).toMatch(/padding:\s*var\(--sheet-narrow-row-pad-y\)\s+0/);
+    expect(trRule.declarations).toMatch(/border-bottom:\s*var\(--rule-graduation\)\s+solid\s+var\(--sheet-ink\)/);
+
+    const listRules = rules.filter((r) => r.media === '(max-width: 723.98px)' && r.selector.includes('ingredient-table'));
+    expect(listRules.length).toBeGreaterThan(0);
+    for (const rule of listRules) {
+      expect(rule.declarations).not.toMatch(/!important/);
+    }
   });
 
   test('app.css carries exactly seven top-level @media blocks, at the seven named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15; 260915-x6n touch font; 260917-ewf print)', () => {

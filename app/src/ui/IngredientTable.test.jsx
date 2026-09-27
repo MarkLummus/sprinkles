@@ -126,10 +126,6 @@ function sectionMarkup(markup, tag) {
   return markup.slice(start, end);
 }
 
-function countTag(markup, tag) {
-  return (markup.match(new RegExp(`<${tag}[ >]`, 'g')) || []).length;
-}
-
 // A group-head <tr> carries a single colspanned <td> (Task 2) — stripped
 // before counting, since its one cell would otherwise violate the
 // header/body/total column-count invariant this helper checks.
@@ -137,10 +133,29 @@ function stripStepHeadRows(tbodyMarkup) {
   return tbodyMarkup.replace(/<tr class="ingredient-table__step-head">[\s\S]*?<\/tr>/g, '');
 }
 
+// Decision 15 (sketch 011, 03.5-11 Task 1): the head's first th now spans
+// two body columns (the amount and the name share one "Ingredient" head),
+// so a bare tag count would read the head as one column short. Weighting
+// each cell by its own colSpan (default 1) is what lets the head's column
+// count agree with the body's and the total row's again.
+function countCells(markup, tag) {
+  // `(\s[^>]*)?>` (not `[^>]*>`) so `<th` never matches `<thead`'s own
+  // opening tag — the same tag-boundary the original bare countTag got via
+  // `[ >]`, kept here so the colSpan attribute is still captured.
+  const re = new RegExp(`<${tag}(\\s[^>]*)?>`, 'g');
+  let total = 0;
+  let match;
+  while ((match = re.exec(markup))) {
+    const spanMatch = match[1] && match[1].match(/colSpan="(\d+)"/);
+    total += spanMatch ? Number(spanMatch[1]) : 1;
+  }
+  return total;
+}
+
 function assertCellCountsAgree(markup) {
-  const headerCount = countTag(sectionMarkup(markup, 'thead'), 'th');
-  const bodyCount = countTag(stripStepHeadRows(sectionMarkup(markup, 'tbody')), 'td');
-  const totalCount = countTag(sectionMarkup(markup, 'tfoot'), 'td');
+  const headerCount = countCells(sectionMarkup(markup, 'thead'), 'th');
+  const bodyCount = countCells(stripStepHeadRows(sectionMarkup(markup, 'tbody')), 'td');
+  const totalCount = countCells(sectionMarkup(markup, 'tfoot'), 'td');
   expect(headerCount).toBe(bodyCount);
   expect(bodyCount).toBe(totalCount);
 }
@@ -276,8 +291,9 @@ describe('IngredientTable — the As made column reads and records per portion (
     // The unwritten portion's own line: no as-made phrase and no ink-text —
     // full-string, so it cannot pass on a dangling accessible name either.
     expect(markup).toContain(
-      'aria-label="Whole milk, 370.4 g"><td class="ingredient-table__col-name">' +
-        '<span class="ingredient-table__plan-grams">250.4 g</span>Whole milk' +
+      'aria-label="Whole milk, 370.4 g"><td class="ingredient-table__col-grams">' +
+        '<span class="ingredient-table__plan-grams">250.4 g</span></td>' +
+        '<td class="ingredient-table__col-name">Whole milk' +
         '<span class="ingredient-table__portion-note">250.4 g of 370.4 g · 100.0% in all</span>' +
         '</td><td class="ingredient-table__col-numeric"></td>',
     );
@@ -298,8 +314,9 @@ describe('IngredientTable — the As made column reads and records per portion (
     expect(markup).toContain('aria-label="Row A, 170 g, as made 100 g"');
     expect(markup).toContain('aria-label="Row A, 170 g, as made 50 g"');
     expect(markup).toContain(
-      'aria-label="Row A, 170 g"><td class="ingredient-table__col-name">' +
-        '<span class="ingredient-table__plan-grams">20 g</span>Row A' +
+      'aria-label="Row A, 170 g"><td class="ingredient-table__col-grams">' +
+        '<span class="ingredient-table__plan-grams">20 g</span></td>' +
+        '<td class="ingredient-table__col-name">Row A' +
         '<span class="ingredient-table__portion-note">20 g of 170.0 g · 100.0% in all</span>',
     );
   });
@@ -563,11 +580,12 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
       <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
     );
 
-    // The total's own name cell alone — the struck-then-current pair now
-    // nests inside its own plan-grams slot there (sketch 011 Task 2), not
-    // a separate numeric td — never the aria-label, which spells the unit
-    // as "grams" and would falsely inflate an " g" substring count.
-    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/.exec(markup);
+    // The total's own amount cell alone (sketch 011 decision 15, moved out
+    // of the name cell) — the struck-then-current pair still nests inside
+    // its own plan-grams slot there (sketch 011 Task 2), not a separate
+    // numeric td — never the aria-label, which spells the unit as "grams"
+    // and would falsely inflate an " g" substring count.
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-grams">([\s\S]*?)<\/td>/.exec(markup);
     const totalCellMarkup = totalCellMatch[1];
     expect(totalCellMarkup).toContain('<span class="struck-value">40.0</span>');
     expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);
@@ -580,7 +598,7 @@ describe('IngredientTable — the total row prints its unit once (D-22, critique
 
     const markup = renderToStaticMarkup(<IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" />);
 
-    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/.exec(markup);
+    const totalCellMatch = /<tfoot>[\s\S]*?<td class="ingredient-table__col-grams">([\s\S]*?)<\/td>/.exec(markup);
     const totalCellMarkup = totalCellMatch[1];
     expect(totalCellMarkup).toContain(`<span class="struck-value">${diff.total.fromValue}</span>`);
     expect((totalCellMarkup.match(/ g/g) || []).length).toBe(1);
@@ -744,7 +762,9 @@ describe('IngredientTable — recording reads style 6 too (sketch 011 Task 2): n
     expect(headerRow).not.toContain('Source');
     expect(headerRow).not.toContain('Data');
 
-    expect(markup).toContain('<span class="ingredient-table__plan-grams">120 g</span>Whole milk');
+    expect(markup).toContain(
+      '<span class="ingredient-table__plan-grams">120 g</span></td><td class="ingredient-table__col-name">Whole milk',
+    );
     expect(markup).toContain('aria-label="Whole milk, as made, grams"');
     expect(markup).not.toContain('ingredient-table__col-data');
     expect(markup).not.toContain('ingredient-table__col-remove');
@@ -790,7 +810,8 @@ describe('IngredientTable — the reading state reads in style 6 (sketch 011 dec
     expect(headerRow).not.toContain('Source');
 
     expect(markup).toContain(
-      '<span class="ingredient-table__plan-grams">120 g</span>Whole milk' +
+      '<span class="ingredient-table__plan-grams">120 g</span></td>' +
+        '<td class="ingredient-table__col-name">Whole milk' +
         '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>' +
         '<span class="ingredient-table__portion-note">120 g of 370.4 g · 46.3% in all</span>',
     );
@@ -800,7 +821,7 @@ describe('IngredientTable — the reading state reads in style 6 (sketch 011 dec
     expect(markup).not.toContain('ingredient-table__col-data');
   });
 
-  it('no batch in view: thead reads Ingredient/% of batch alone, the step head spans two columns, and no sheet-hand span renders', () => {
+  it('no batch in view: thead reads Ingredient/% of batch alone, the step head spans every column (three, decision 15), and no sheet-hand span renders', () => {
     const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
     version.method = [{ n: 1, leadIn: 'Mix.', instruction: 'x' }];
     const currentStepNumbers = displayNumbers(version.method);
@@ -819,7 +840,7 @@ describe('IngredientTable — the reading state reads in style 6 (sketch 011 dec
     expect(headerRow).toContain('>Ingredient<');
     expect(headerRow).toContain('>% of batch<');
     expect(headerRow).not.toContain('As made');
-    expect(markup).toMatch(/<tr class="ingredient-table__step-head"><td colSpan="2">/);
+    expect(markup).toMatch(/<tr class="ingredient-table__step-head"><td colSpan="3">/);
     expect(markup).not.toContain('sheet-hand');
   });
 
@@ -833,7 +854,9 @@ describe('IngredientTable — the reading state reads in style 6 (sketch 011 dec
     );
 
     const totalRow = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
-    expect(totalRow).toContain('<span class="ingredient-table__plan-grams">60.0 g</span>Total');
+    expect(totalRow).toContain(
+      '<span class="ingredient-table__plan-grams">60.0 g</span></td><td class="ingredient-table__col-name">Total',
+    );
     expect(totalRow).toContain('<span class="sheet-hand">65.0 g</span>');
   });
 });
@@ -932,7 +955,7 @@ describe('IngredientTable — the pen reads style 6 too (sketch 011 Task 2): gra
     expect(markup).toContain('<span class="struck-value">40 g</span><span class="ingredient-table__plan-grams">');
     expect(markup).toContain('aria-label="Graza Drizzle, grams"');
     expect(markup).toContain('value="48"');
-    expect(markup).toContain(' g</span>Graza Drizzle');
+    expect(markup).toContain(' g</span></td><td class="ingredient-table__col-name">Graza Drizzle');
     expect(markup).toMatch(/Graza Drizzle<button type="button" class="text-control"[^>]*>remove<\/button>/);
     expect(markup).not.toContain('ingredient-table__col-data');
     expect(markup).not.toContain('ingredient-table__col-remove');
@@ -949,7 +972,8 @@ describe('IngredientTable — the pen reads style 6 too (sketch 011 Task 2): gra
 
     const totalRow = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
     expect(totalRow).toContain(
-      '<span class="ingredient-table__plan-grams"><span class="struck-value">40.0</span>48.0 g</span>Total',
+      '<span class="ingredient-table__plan-grams"><span class="struck-value">40.0</span>48.0 g</span>' +
+        '</td><td class="ingredient-table__col-name">Total',
     );
   });
 });
@@ -963,7 +987,8 @@ describe('IngredientTable — show-changes reads style 6 too (sketch 011 Task 2)
     const markup = renderToStaticMarkup(<IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" />);
 
     expect(markup).toContain(
-      '<span class="ingredient-table__plan-grams"><span class="struck-value">40 g</span>48 g</span>Row A',
+      '<span class="ingredient-table__plan-grams"><span class="struck-value">40 g</span>48 g</span>' +
+        '</td><td class="ingredient-table__col-name">Row A',
     );
     expect(markup).not.toContain('ingredient-table__col-data');
     expect(markup).not.toContain('ingredient-table__col-remove');

@@ -1,14 +1,15 @@
-// The stylesheet contract 03-08's greps could not express (G-03-11):
-// this suite has no layout engine — it runs under Vitest's default `node`
-// environment (vitest.config.js), and `renderToStaticMarkup` in a node
-// process computes no boxes. Every assertion below reads the two
-// stylesheets and the component AS TEXT and checks the contract they
-// state, and the arithmetic that contract implies. It cannot assert a
-// rendered pixel; that stays a real-browser human check
-// (.planning/debug/remove-column-occludes-values.md, the plan's own
-// <verify><human-check> blocks). Do not read a passing run here as proof
+// The stylesheet contract 03-08's greps could not express (G-03-11),
+// extended by decision 15 (sketch 011, 03.5-11): this suite has no layout
+// engine — it runs under Vitest's default `node` environment
+// (vitest.config.js), and `renderToStaticMarkup` in a node process
+// computes no boxes. Every assertion below reads the two stylesheets and
+// the component AS TEXT and checks the contract they state, and the
+// arithmetic that contract implies. It cannot assert a rendered pixel;
+// that stays a real-browser measurement
+// (.planning/phases/03.5-separate-the-recipe-from-the-sheet/03.5-table-probe.mjs,
+// the plan's own <verify> block). Do not read a passing run here as proof
 // the table renders correctly — it proves the tokens and rules are
-// internally consistent with the measured minimums, nothing more.
+// internally consistent, nothing more.
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -25,30 +26,6 @@ const tokensSource = readFileSync(TOKENS_PATH, 'utf8');
 const appCssSource = readFileSync(APP_CSS_PATH, 'utf8');
 const ingredientTableSource = readFileSync(INGREDIENT_TABLE_JSX_PATH, 'utf8');
 
-// Measured content minimums, every one attributed to the debug session
-// that measured it in a real browser
-// (.planning/debug/remove-column-occludes-values.md, phase-3 measurement,
-// "Content widths that set the real minimum for each column").
-const PERCENT_OF_BATCH_HEADER = 80.61; // the numeric columns' widest content
-const WIDEST_INGREDIENT_NAME = 142.83; // "Lambda carrageenan"
-
-// The page arithmetic (route-recipe-version.md's host page, .recipe-page
-// in app.css): a 2fr/1fr grid, --gap-page (--gap-xl, 48px) padding on both
-// sides, and a --gap-l (32px) gap between the two columns. The ingredient table
-// lives in the 2fr column, two thirds of what the grid gap and padding
-// leave. From Phase 03.3.1.1 the page stacks to one column below 1100px
-// (app.css's 1099.98px block, D-15), so tableWidthAt(1024) below is a
-// conservative lower bound — the table has the whole content width at
-// that stacked viewport — and the widths at or above 1100 are the ones
-// this 2fr arithmetic still describes exactly.
-const GAP_XL = 48;
-const GAP_L = 32;
-function tableWidthAt(viewport) {
-  return ((viewport - 2 * GAP_XL - GAP_L) * 2) / 3;
-}
-
-const UAT_WIDTHS = [1024, 1152, 1280, 1366, 1440];
-
 // --- Reading helpers -------------------------------------------------
 // Both tasks' assertions rest on these: a comment stripper (so a rule can
 // never be satisfied by prose about it), a token reader (values from
@@ -56,7 +33,7 @@ const UAT_WIDTHS = [1024, 1152, 1280, 1366, 1440];
 // (declarations for a given selector in app.css) — all read through
 // css-source.js so this suite and binder.test.js can never drift apart.
 
-// Returns { numeric: '...', step: '...', ... } mapping each
+// Returns { numeric: '...', grams: '...', ... } mapping each
 // ingredient-table__col-* class to its declarations text, for rules whose
 // selector is exactly that one column class (this file's existing shape —
 // one selector, one column).
@@ -83,7 +60,6 @@ const columnRules = readColumnRules(appCssSource);
 const emittedColumns = emittedColumnClasses(ingredientTableSource);
 
 const tableCellPadX = resolveTokenPx(tokens, '--sheet-table-cell-pad-x');
-const colNumeric = resolveTokenPx(tokens, '--sheet-col-numeric');
 
 describe('reading helpers', () => {
   test('stripCssComments removes a comment block without touching the rule beside it', () => {
@@ -105,13 +81,13 @@ describe('reading helpers', () => {
   });
 
   test('readColumnRules reads the declarations for a single-selector column rule', () => {
-    const fixture = `.ingredient-table__col-numeric {\n  width: var(--sheet-col-numeric);\n  text-align: right;\n}`;
+    const fixture = `.ingredient-table__col-numeric {\n  width: 1%;\n  text-align: right;\n}`;
     const byColumn = readColumnRules(fixture);
-    expect(byColumn.numeric).toContain('var(--sheet-col-numeric)');
+    expect(byColumn.numeric).toContain('1%');
   });
 });
 
-describe('task 1 — border-box accounting and a corrected derivation', () => {
+describe('task 1 — border-box accounting (G-03-11, unchanged by decision 15)', () => {
   test('the shared th/td rule declares border-box sizing', () => {
     const rules = readAllRules(appCssSource);
     const cellRule = rules.find((r) => /\.ingredient-table th,\s*\.ingredient-table td/.test(r.selector));
@@ -132,38 +108,20 @@ describe('task 1 — border-box accounting and a corrected derivation', () => {
     expect(tableCellPadX).toBeTypeOf('number');
     expect(tableCellPadX).toBeLessThan(12);
   });
-
-  test('the numeric column rule declares its width through a --col-* token, never a px literal', () => {
-    for (const col of ['numeric']) {
-      const decl = columnRules[col];
-      expect(decl, `expected a rule for .ingredient-table__col-${col}`).toBeTruthy();
-      expect(decl).toMatch(/width:\s*var\(--sheet-col-[\w-]+\)/);
-      expect(decl).not.toMatch(/width:\s*\d/);
-    }
-  });
-
-  test('the numeric column token, less its own two paddings, clears the widest thing it prints (the "% of batch" header)', () => {
-    expect(colNumeric).toBeTypeOf('number');
-    const content = colNumeric - 2 * tableCellPadX;
-    expect(content).toBeGreaterThanOrEqual(PERCENT_OF_BATCH_HEADER);
-  });
-
-  test('the numeric column sits within a few px of its minimum, not far above it', () => {
-    const content = colNumeric - 2 * tableCellPadX;
-    expect(content - PERCENT_OF_BATCH_HEADER).toBeLessThanOrEqual(6);
-  });
-
 });
 
-// Sketch 011 Task 2: Data and Remove retire outright — every state now
-// reads style 6, so the table has only two column identities left: the
-// auto-width name column (which now also carries the plan grams and the
-// flag chip inline) and the token-sized numeric column (As made,
-// % of batch). The old "give Data and Remove their own column" contract
-// (03-08/03.3-02) is superseded, not merely narrowed.
-describe('task 2 — Data and Remove retire outright; only the name (auto) and numeric (token-sized) columns remain', () => {
-  test('the component emits only the two columns this table has now', () => {
-    expect(emittedColumns).toEqual(new Set(['name', 'numeric']));
+// Decision 15 (sketch 011, 03.5-11 Task 1): the table now has three column
+// identities — the content-sized amount column (new, holding the plan
+// grams), the auto-width name column, and the content-sized numeric column
+// (As made, % of batch). A content-sized column has no measured-minimum
+// budget to assert against — `width: 1%` under table-layout: auto takes
+// exactly the content's own width, so there is nothing to shrink-wrap
+// toward. The Data and Remove columns stay retired outright (03.5-06
+// Task 2) — this gap only ever moves the amount out of the name column,
+// never reintroduces a column style 6 already dropped.
+describe('task 1 style 6 (decision 15) — three column identities: content-sized grams, auto name, content-sized numeric', () => {
+  test('the component emits exactly the three columns this table has now', () => {
+    expect(emittedColumns).toEqual(new Set(['grams', 'name', 'numeric']));
   });
 
   test('app.css no longer styles a Data or a Remove column', () => {
@@ -177,6 +135,13 @@ describe('task 2 — Data and Remove retire outright; only the name (auto) and n
     }
   });
 
+  test('.ingredient-table declares table-layout auto, sized to its own content', () => {
+    const rules = readAllRules(appCssSource);
+    const tableRule = rules.find((r) => r.selector === '.ingredient-table' && r.media === undefined);
+    expect(tableRule, 'expected the top-level .ingredient-table rule').toBeTruthy();
+    expect(tableRule.declarations).toMatch(/table-layout:\s*auto/);
+  });
+
   test('exactly one column declares an automatic width, and it is the ingredient name', () => {
     const autoColumns = Object.entries(columnRules)
       .filter(([, decl]) => /width:\s*auto/.test(decl))
@@ -184,11 +149,31 @@ describe('task 2 — Data and Remove retire outright; only the name (auto) and n
     expect(autoColumns).toEqual(['name']);
   });
 
-  test('the remaining numeric column reads its width through a --col-* token that resolves to a px value', () => {
-    const decl = columnRules.numeric;
-    const match = decl.match(/width:\s*var\((--sheet-col-[\w-]+)\)/);
-    expect(match, 'expected numeric to read width from a --col-* token').toBeTruthy();
-    expect(resolveTokenPx(tokens, match[1])).toBeTypeOf('number');
+  test('the grams and numeric columns both declare width: 1% — content-sized, never a --col-* token', () => {
+    for (const col of ['grams', 'numeric']) {
+      expect(columnRules[col]).toMatch(/width:\s*1%/);
+      expect(columnRules[col]).not.toMatch(/width:\s*var\(/);
+    }
+  });
+
+  test('the grams column right-aligns and never wraps, with a right padding reading --sheet-plan-grams-gap', () => {
+    const decl = columnRules.grams;
+    expect(decl).toMatch(/white-space:\s*nowrap/);
+    expect(decl).toMatch(/text-align:\s*right/);
+    expect(decl).toMatch(/padding-right:\s*var\(--sheet-plan-grams-gap\)/);
+  });
+
+  test('td.ingredient-table__col-numeric never wraps, but the heads keep wrapping', () => {
+    const rules = readAllRules(appCssSource);
+    const tdNumeric = rules.find(
+      (r) => r.selector === '.ingredient-table td.ingredient-table__col-numeric' && r.media === undefined,
+    );
+    expect(tdNumeric, 'expected a td-scoped nowrap rule for the numeric column').toBeTruthy();
+    expect(tdNumeric.declarations).toMatch(/white-space:\s*nowrap/);
+    const thForcesNowrap = rules.some(
+      (r) => /\bth\.ingredient-table__col-numeric\b/.test(r.selector) && /white-space:\s*nowrap/.test(r.declarations),
+    );
+    expect(thForcesNowrap).toBe(false);
   });
 
   test('no ingredient-table rule declares a clipping or a stacking property', () => {
@@ -204,48 +189,20 @@ describe('task 2 — Data and Remove retire outright; only the name (auto) and n
     }
   });
 
-  describe('the width budget, now just the numeric column: the name column clears the widest seed name plus the plan-grams prefix at every UAT width', () => {
-    // The table's widest remaining state: both numeric columns at once
-    // (As made + % of batch). No Grams, Data or Remove column of its own
-    // any more — the plan grams live inline, inside the auto-width name
-    // column itself, alongside the widest ingredient name.
-    function sizedColumnsTotal() {
-      return 2 * colNumeric;
-    }
-
-    test.each(UAT_WIDTHS)('at %ipx, the sized columns never exceed the table width', (viewport) => {
-      expect(sizedColumnsTotal()).toBeLessThanOrEqual(tableWidthAt(viewport));
-    });
-
-    test.each(UAT_WIDTHS)('at %ipx, the name column clears the widest seed name plus the plan-grams span and its gap — comfortably, now that Grams/Data/Remove no longer compete for the remainder', (viewport) => {
-      const remainder = tableWidthAt(viewport) - sizedColumnsTotal();
-      const nameContent = remainder - 2 * tableCellPadX;
-      const planGramsW = resolveTokenPx(tokens, '--sheet-plan-grams-w');
-      const planGramsGap = resolveTokenPx(tokens, '--sheet-plan-grams-gap');
-      expect(nameContent).toBeGreaterThanOrEqual(WIDEST_INGREDIENT_NAME + planGramsW + planGramsGap);
-    });
+  test('tokens.css declares neither --sheet-col-numeric nor --sheet-portion-indent — decision 15 has no width budget to derive them from', () => {
+    expect(tokens['--sheet-col-numeric']).toBeUndefined();
+    expect(tokens['--sheet-portion-indent']).toBeUndefined();
   });
 });
 
-// Style 6 (sketch 011 decisions 2, 3, Task 1): the reading state no longer
-// sizes a Grams or a Data column at all — the plan grams and the
-// estimated/unreviewed chip move inline into the name column instead, each
-// reading its own literal board token rather than a measured-minimum
-// budget (there is nothing to measure a minimum against: these are the
-// board's own fixed values, not a shrink-to-content column).
-describe("task 1 style 6 — the plan-grams span and the flag gap read the board's own literal tokens (sketch 011 decisions 2, 3)", () => {
-  const planGramsW = resolveTokenPx(tokens, '--sheet-plan-grams-w');
-  const planGramsGap = resolveTokenPx(tokens, '--sheet-plan-grams-gap');
-  const flagGap = resolveTokenPx(tokens, '--sheet-flag-gap');
-  const portionIndent = resolveTokenPx(tokens, '--sheet-portion-indent');
-
-  test("the plan-grams span, its own gap, and the flag gap resolve to the board's literal px values (64, 18, 8)", () => {
-    expect(planGramsW).toBe(64);
-    expect(planGramsGap).toBe(18);
-    expect(flagGap).toBe(8);
-  });
-
-  test("the split portion note's indent is the plan-grams span plus its own gap, never a second literal (1600-batch.html: padding-left 82px)", () => {
-    expect(portionIndent).toBe(planGramsW + planGramsGap);
+// Style 6 (sketch 011 decisions 2, 3; decision 15, 03.5-11 Task 1): every
+// value here is the board's own literal (1600-batch.html, 393-batch.html),
+// not a measured-minimum budget — there is nothing to measure a minimum
+// against, since these are the board's own fixed values.
+describe("decision 15's own literal tokens (sketch 011) — the amount span, its gap, and the flag gap read the board's own literal values", () => {
+  test("the plan-grams span width, its own gap, and the flag gap resolve to the board's literal px values (64, 18, 8)", () => {
+    expect(resolveTokenPx(tokens, '--sheet-plan-grams-w')).toBe(64);
+    expect(resolveTokenPx(tokens, '--sheet-plan-grams-gap')).toBe(18);
+    expect(resolveTokenPx(tokens, '--sheet-flag-gap')).toBe(8);
   });
 });

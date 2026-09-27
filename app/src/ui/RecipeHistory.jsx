@@ -66,7 +66,6 @@ export function RecipeHistory({ versions, recipeId, currentVersionId, allBatches
         onScroll={(event) => setScrolledLeft(event.target.scrollLeft > 0)}
       >
         <div className="notebook-history__track" aria-hidden="true" />
-        {scrolledLeft && <div className="notebook-history__fade" aria-hidden="true" />}
         <ol className="notebook-history__nodes">
           {entries.map((entry) => {
             const inner = (
@@ -102,6 +101,7 @@ export function RecipeHistory({ versions, recipeId, currentVersionId, allBatches
             );
           })}
         </ol>
+        {scrolledLeft && <div className="notebook-history__fade" aria-hidden="true" />}
       </div>
     </section>
   );

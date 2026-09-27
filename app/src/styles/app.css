@@ -2237,23 +2237,25 @@ textarea {
   padding-top: var(--gap-s);
 }
 
-/* The page-shell ladder's first step (sketch 003 @ d89b758 line 48;
-   D-15; UAT items 15, 16): below 1100px (the sketch's `relayout()`
-   threshold, line 511, `want < 1100`, expressed here as a viewport
-   max-width) the page stacks to one column — band, ingredients, side,
+/* The page-shell ladder's first step (sketch 011 decision 16, superseding
+   sketch 003 @ d89b758 line 48's 1100px call; D-15; UAT items 15, 16):
+   below 984px the page stacks to one column — band, ingredients, side,
    method, foot, side BEFORE method — and the column gap narrows to
-   --gap-m. This block changes columns and gap ONLY: the paper's page
-   padding reads the shared --gap-page (260917-gjo), which the 600px
-   block below steps for the whole page shell at once (003 line 178) —
-   no padding declaration lives here. The
+   --gap-m. 984 = the side nav's 224 + 2 x 32 gutters + the Sheet's
+   two-column minimum 696, the same sum shell.css's rail cut reads: the
+   side nav and the Sheet's second column go together, so a viewport
+   never shows one without the other. This block changes columns and gap
+   ONLY: the paper's page padding reads the shared --gap-page
+   (260917-gjo), which the 600px block below steps for the whole page
+   shell at once (003 line 178) — no padding declaration lives here. The
    foot band (.pen-foot) mirrors .recipe-page's own columns (desktop
    rules above) and must collapse with it, or the ceremony would sit in
-   a phantom second column. The 1099.98px prelude is the one sanctioned
+   a phantom second column. The 983.98px prelude is the one sanctioned
    breakpoint literal in the file, alongside 759.98px below: a prelude,
    not a declaration, so binder.test.js's no-bare-px gate never sees it,
-   and the fractional value keeps exactly 1100px on the desktop side of
+   and the fractional value keeps exactly 984px on the desktop side of
    the boundary. */
-@media (max-width: 1099.98px) {
+@media (max-width: 983.98px) {
   .recipe-page {
     grid-template-columns: 1fr;
     gap: var(--gap-m);

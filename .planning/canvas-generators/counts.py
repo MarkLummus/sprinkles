@@ -38,7 +38,7 @@ W = 1078
 vers = ''.join([
   panel('1 version · today', 'The rail draws with its one node. The hint reads "1 version · oldest left, latest right".', band(history_rail(V1, '1 version · oldest left, latest right')), W),
   panel('1 version · option A: no History yet', 'History appears once a second version is saved. Until then, the band is the recipe and the version.', band(''), W),
-  panel('1 version · option B: History as one line', 'The section stays in place, so the band keeps its shape, with one plain line instead of a rail.', band(one_line), W),
+  panel('1 version · option B: History as one line · picked (Mark, 2026-09-27)', 'The section stays in place, so the band keeps its shape, with one plain line instead of a rail.', band(one_line), W),
   panel('Many versions · today (8)', 'The rail opens at the version in view, older versions behind a fade on the left, and scrolls.', band(rail_end(V8, '8 versions · oldest left, latest right · opens at the version in view'), v7), W),
 ])
 dc('R35C_CountVersions.dc.html', 'Counts · versions: 1 vs many (options, not decided)', 1174, 1740, page(vers, gap=48, direction='column'))
@@ -51,7 +51,7 @@ b0 = batch_log('none', column=True)
 ba = ''.join([
   panel('0 batches · today', 'Not yet churned: the log offers Record a batch and Print sheet.', b0, L),
   panel('1 batch · today', 'The head reads Batches (1), which opens a list of one: the batch already in view.', b1, L),
-  panel('1 batch · option: no Batches control', 'Batches (n) appears from a second batch. Correct and Record another stay.', b1_no_ctl, L),
+  panel('1 batch · option: no Batches control · picked (Mark, 2026-09-27)', 'Batches (n) appears from a second batch. Correct and Record another stay.', b1_no_ctl, L),
 ])
 dc('R35C_CountBatches01.dc.html', 'Counts · batches: 0 and 1 (options, not decided)', 1274, 900, page(ba))
 
@@ -60,7 +60,7 @@ B = [('16 Aug 2026', 'Tasted 17 Aug 2026 · out of machine −6 °C', True), ('9
 def head(left, right):
     return f'<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">{left}<div style="display:flex;align-items:baseline;gap:18px;">{right}</div></div>'
 date = lambda d: f'<span style="font-family:{GROT};font-size:15px;color:{TEXT};font-variant-numeric:tabular-nums;">churned {d}</span>'
-bm = batch_log('batch', column=True).replace('churned 2 Aug 2026', 'churned 16 Aug 2026', 1).replace('Recorded 4 Aug 2026', 'Recorded 17 Aug 2026', 1)
+bm = batch_log('batch', column=True).replace('churned 2 Aug 2026', 'churned 16 Aug 2026', 1).replace('Recorded 4 Aug 2026', 'Recorded 17 Aug 2026', 1).replace('tasted date unknown', 'tasted 17 Aug 2026', 1)
 old_head = re.search(r'<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">.*?</div>\s*</div>', bm, flags=re.S).group(0)
 # A: today's register
 reg_items = ''.join(f'''<li style="padding:10px 0;border-top:1px solid {DIV};display:flex;flex-direction:column;gap:2px;">
@@ -69,21 +69,48 @@ reg_items = ''.join(f'''<li style="padding:10px 0;border-top:1px solid {DIV};dis
 reg = f'<div style="display:flex;flex-direction:column;gap:6px;">{cap("Batches of this version")}<ol style="margin:0;padding:0;list-style:none;">{reg_items}</ol></div>'
 optA = bm.replace(old_head, head(f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}{date("16 Aug 2026")}</div>', textctl('Hide batches (3)') + textctl('Correct') + textctl('Record another')) + reg, 1)
 # B: a batch timeline, like History
-def bnode(d, cur):
+def bnode(d, cur, tasted):
     ring = f'box-shadow:0 0 0 2px {APP_BG},0 0 0 3.5px {NOTEBOOK};' if cur else ''
+    dot = f'background:{NOTEBOOK};' if tasted else f'background:{APP_BG};border:1.5px solid {NOTEBOOK};'
     lbl = f'<span style="font-family:{GROT};font-size:13px;font-weight:{700 if cur else 400};color:{TEXT if cur else BLUE_T};{"" if cur else "text-decoration:underline;text-underline-offset:3px;"}">{d.rsplit(" ",1)[0]}</span>'
-    return f'<a href="#" style="flex:0 0 92px;display:flex;flex-direction:column;gap:6px;text-decoration:none;"><span style="display:flex;align-items:center;height:12px;"><span aria-hidden="true" style="width:12px;height:12px;border-radius:6px;background:{NOTEBOOK};{ring}"></span></span>{lbl}</a>'
-tl = f'''<div style="display:flex;flex-direction:column;gap:8px;"><div style="display:flex;justify-content:space-between;align-items:baseline;">{cap("Batches")}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3 · oldest left</span></div>
+    return f'<a href="#" style="flex:0 0 92px;display:flex;flex-direction:column;gap:6px;text-decoration:none;"><span style="display:flex;align-items:center;height:12px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>{lbl}</a>'
+TASTED = lambda m: not m.startswith('Not yet tasted')
+tl = f'''<div style="display:flex;flex-direction:column;gap:8px;"><div style="display:flex;justify-content:space-between;align-items:baseline;">{cap("Batches")}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3 · oldest left · hollow: not yet tasted</span></div>
   <div style="position:relative;"><div style="position:absolute;left:0;right:0;top:6px;height:1px;background:{DIV};"></div>
-  <div style="position:relative;display:flex;gap:12px;padding:0 6px;">{''.join(bnode(d, cur) for d, m, cur in reversed(B))}</div></div></div>'''
+  <div style="position:relative;display:flex;gap:12px;padding:0 6px;">{''.join(bnode(d, cur, TASTED(m)) for d, m, cur in reversed(B))}</div></div></div>'''
 optB = bm.replace(old_head, head(f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}{date("16 Aug 2026")}</div>', textctl('Correct') + textctl('Record another')) + tl, 1)
 # C: a drop-down in place of the date
 sel = f'''<label style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}<select aria-label="Batch in view" style="font-family:{GROT};font-size:15px;color:{TEXT};padding:6px 28px 6px 10px;border:1px solid {DIV};border-radius:8px;background:{APP_BG};">{''.join(f'<option{" selected" if cur else ""}>churned {d}</option>' for d, m, cur in B)}</select></label>'''
 optC = bm.replace(old_head, head(sel, textctl('Correct') + textctl('Record another')), 1)
+def vnode(d, m, cur, last):
+    ring = f'box-shadow:0 0 0 2px {APP_BG},0 0 0 3.5px {NOTEBOOK};' if cur else ''
+    dot = f'background:{NOTEBOOK};' if TASTED(m) else f'background:{APP_BG};border:1.5px solid {NOTEBOOK};'
+    line = '' if last else f'<span aria-hidden="true" style="position:absolute;left:5.5px;top:18px;bottom:-12px;width:1px;background:{DIV};"></span>'
+    title = f'<span style="font-family:{GROT};font-size:14px;font-weight:700;color:{TEXT};">churned {d}</span>' if cur else f'<span style="font-family:{GROT};font-size:14px;color:{BLUE_T};text-decoration:underline;text-underline-offset:3px;">churned {d}</span>'
+    return f'''<li style="position:relative;"><a href="#" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
+  {line}<span style="display:flex;align-items:center;height:20px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
+  <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{title}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{m}</span></span></a></li>'''
+vrail = f'''<div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;justify-content:space-between;align-items:baseline;">{cap("Batches")}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3 · latest first</span></div>
+  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vnode(d, m, cur, i == len(B) - 1) for i, (d, m, cur) in enumerate(B))}</ol></div>'''
+optD = bm.replace(old_head, vrail + f'<div style="padding-top:14px;border-top:1px solid {DIV};">' + head(f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}{date("16 Aug 2026")}</div>', textctl('Correct') + textctl('Record another')) + '</div>', 1)
 bmany = ''.join([
   panel('3 batches · A: today, a list', 'Batches (3) opens the list of this version’s batches under the head, each with its tasting and machine reading. Drawn open.', optA, L),
   panel('3 batches · B: a batch timeline', 'Like History: one node per batch, oldest left, the one in view ringed. It scrolls past about three.', optB, L),
   panel('3 batches · C: a drop-down', 'The churn date becomes the chooser. Compact, and it grows with no room cost, but it hides the others until opened.', optC, L),
+  panel('3 batches · D: the rail upright in the side column', 'From 1366, where the log is a column, the batches stand as a vertical rail above the batch in view, latest first, each with its tasting and machine reading. Below 1366 it lies down as B.', optD, L),
 ])
-dc('R35C_CountBatchesMany.dc.html', 'Counts · batches: many, three ways to choose (options, not decided)', 1274, 1120, page(bmany))
+dc('R35C_CountBatchesMany.dc.html', 'Counts · batches: many, four ways to choose (options, not decided)', 1688, 1120, page(bmany))
+
+# ---------- batches: many, at 393 ----------
+# the log sits under the Sheet on the phone, full width inside the 20px gutter (the ladder below 724); drawn so the choice is made on the phone too (critique 2026-09-27)
+P = 393
+def phone(t, sub, body):
+    return panel(t, sub, f'<div style="box-sizing:border-box;width:{P}px;padding:20px;border:1px solid {DIV};border-radius:12px;background:{APP_BG};">{body}</div>', P)
+optA_closed = bm.replace(old_head, head(f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}{date("16 Aug 2026")}</div>', textctl('Batches (3)') + textctl('Correct') + textctl('Record another')), 1)
+ph = ''.join([
+  phone('393 · A: a list, closed', 'Batches (3) sits in the head beside Correct and Record another; the list opens under the head as at 1366.', optA_closed),
+  phone('393 · B (and D below 1366): a timeline', 'Three nodes fit across 353; a fourth scrolls, older ones behind a fade on the left.', optB),
+  phone('393 · C: a drop-down', 'On the iPhone the native picker opens from the bottom of the screen.', optC),
+])
+dc('R35C_CountBatchesMany393.dc.html', 'Counts · batches: many, at 393 (options, not decided)', 1403, 960, page(ph))
 print('ok')

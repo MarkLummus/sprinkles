@@ -1,6 +1,6 @@
 import json, re, os, datetime
 
-SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/49c327ea-f05a-4ddf-8697-42727a6c3108/scratchpad'
+SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/f305c1f4-77bf-4a99-9b61-704e2aea8a41/scratchpad'
 SRC = SP + '/artifact-files/8c08ac14-3ead-48f4-861a-5016f88c8338/project'
 OUT = SP + '/canvas/project'
 os.makedirs(OUT, exist_ok=True)

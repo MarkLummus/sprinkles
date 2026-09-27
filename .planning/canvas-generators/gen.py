@@ -474,7 +474,22 @@ def phone_folds(html, open_=False):
                   lambda m: m.group(1) + ' ' + disc(sh, 'fold-tasting') + f'</div><div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
     # close the tasting fold after Next time
     html = re.sub(r'(nothing written yet</span></div>)(\s*</div>)', r'\1</div>\2', html, count=1)
+    if not open_:
+        html = drop_closed_folds(html)
     return html
+
+def drop_closed_folds(html):
+    """The canvas does not honour the hidden attribute (Mark, 2026-09-27: the closed and open details looked the same),
+    so a closed fold's content is left out of the drawing rather than marked hidden."""
+    while True:
+        m = re.search(r'<(div|dl) id="fold-[a-z]+" hidden[^>]*>', html)
+        if not m: return html
+        tag, i, depth, j = m.group(1), m.start(), 0, m.start()
+        for t in re.finditer(r'<(/?)' + tag + r'\b[^>]*>', html[i:]):
+            depth += -1 if t.group(1) else 1
+            if depth == 0:
+                j = i + t.end(); break
+        html = html[:i] + html[j:]
 
 # Recipe Book form of the Sheet, on screen (reference; not built in 03.5)
 def recipe_book_form():

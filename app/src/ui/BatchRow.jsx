@@ -120,7 +120,14 @@ function autoGrow(event) {
 // exist — an unguarded read here would crash every existing static test
 // the instant this hook landed. With no window, or no
 // window.matchMedia, the hook answers the desktop arrangement and builds
-// no listener; the real subscription exists only in the browser.
+// no listener; the real subscription exists only in the browser. With
+// app.css's own width-only block and wide-touch block, this hook governs
+// only the record pen's own battery now — the route's one width cut not
+// yet measured (03.5-13 Task 2/decisions_recorded 5). Mark kept it at
+// 760 (2026-09-27), as DESIGN.md records, rather than grouping it onto
+// the ladder's 724; a todo tracks measuring the battery's own wide/
+// stacked limits
+// (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md).
 function useBelow760() {
   const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
   const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 759.98px)').matches : false));

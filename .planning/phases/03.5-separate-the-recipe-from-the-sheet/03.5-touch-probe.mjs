@@ -1,12 +1,16 @@
-// 03.5-13 Task 1: touch sizes follow the pointer alone, checked at both a
-// coarse and a fine pointer, including the record pen's battery in the
-// full-width log. Imports the plan-10 harness unchanged (decisions_recorded
-// — prohibitions).
+// 03.5-13: touch sizes follow the pointer alone, checked at both a coarse
+// and a fine pointer (Task 1), and the record pen's own remaining width cut
+// — Mark's answer, kept at 760 (Task 3) — read from app.css itself rather
+// than hardcoded, so one command covers either answer. Imports the plan-10
+// harness unchanged (decisions_recorded — prohibitions).
 //
 // Usage: node 03.5-touch-probe.mjs <groups> <widths>
 //   groups: comma list, e.g. touch,record
-//   widths: comma list, e.g. 393,723,1024,1366
-import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE } from './03.5-probe-harness.mjs';
+//   widths: comma list, e.g. 393,723,759,760,1024,1366
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, REPO_ROOT } from './03.5-probe-harness.mjs';
+import { readAllRules } from '../../../app/src/styles/css-source.js';
 
 const [, , groupsArg, widthsArg] = process.argv;
 
@@ -61,14 +65,34 @@ async function readTouchBoard(browser, repoUrl, file) {
   return reading;
 }
 
+// Task 3: the record pen's own remaining width cut, read from app.css
+// itself rather than hardcoded — the width-only block's own
+// `.axis-mark__stops, .axis-mark__anchors` rule (option-keep-760) or, if
+// Mark had instead grouped onto 724, the same selector's new home at the
+// top of the (max-width: 723.98px) block. Either way the cut is the
+// media condition's own max-width plus 0.02, matching the file's own
+// complement-pair convention (759.98/760, or 723.98/724).
+function findRecordCut() {
+  const appCssPath = path.join(REPO_ROOT, 'app', 'src', 'styles', 'app.css');
+  const rules = readAllRules(readFileSync(appCssPath, 'utf8'));
+  const rule = rules.find((r) => r.selector === '.axis-mark__stops, .axis-mark__anchors' && r.media);
+  const match = rule?.media.match(/max-width:\s*([\d.]+)px/);
+  if (!match) {
+    throw new Error("findRecordCut: could not find the record pen's width-only cut in app.css");
+  }
+  return Number(match[1]) + 0.02;
+}
+
 // The record group opens the pen through the log's own "Record another"
 // button (.batch-row__record, shared class with 03.5-table-probe.mjs's
 // readRecording), then Add tasting to reveal the battery — scoped to
 // .notebook-log since PenFoot's own foot-band ceremony (B) renders the
 // same save-ceremony__add-tasting class a second time once the pen is
 // open, and an unscoped click would hit Playwright's strict-mode
-// ambiguity. Waits for the first axis stop to mount.
-async function readRecordStop(browser, appUrl, width, coarse) {
+// ambiguity. Waits for the first axis stop to mount, then reads the
+// stop's own box (Task 1) alongside the battery's arrangement, its
+// track width and the caption line's min-height (Task 3).
+async function readRecordBattery(browser, appUrl, width, coarse) {
   const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
   await page.click('.batch-row__record');
   await page.click('.notebook-log .save-ceremony__add-tasting');
@@ -77,7 +101,16 @@ async function readRecordStop(browser, appUrl, width, coarse) {
     const stop = document.querySelector('.axis-mark__stop');
     if (!stop) return null;
     const r = stop.getBoundingClientRect();
-    return { width: r.width, height: r.height };
+    const grid = document.querySelector('.axes-grid');
+    const track = document.querySelector('.axis-mark__stops');
+    const head = document.querySelector('.axis-mark__head');
+    return {
+      width: r.width,
+      height: r.height,
+      stacked: grid ? grid.classList.contains('axes-grid--stacked') : null,
+      trackWidth: track ? track.getBoundingClientRect().width : null,
+      headMinHeight: head ? getComputedStyle(head).minHeight : null,
+    };
   });
   await context.close();
   return reading;
@@ -159,17 +192,29 @@ async function main() {
       // 1024 (log below the Sheet, 984-1365 rung): the stop's HEIGHT reads
       // the pointer alone — 44 coarse, 32 fine. 1366 (log beside the Sheet,
       // the 350 column): the narrow arrangement applies unconditionally, so
-      // the stop is 44x44 whichever pointer is in use — the arrangement cut
-      // this task's Task 3 places precisely (703-13 decisions_recorded 5,
-      // kept at 760).
+      // the stop is 44x44 whichever pointer is in use.
+      //
+      // Task 3: the record pen's own remaining width cut (Mark's answer,
+      // kept at 760) — read from app.css itself (findRecordCut), so this
+      // same command and this same expectation cover either answer. Below
+      // the cut, or at/above 1366 (the log beside the Sheet), the battery
+      // is stacked with a 216px track; between the cut and 1366 it is wide
+      // with a 186px track (fine pointer only — Decision C keeps the stop's
+      // own width off the pointer). A coarse pointer's caption-line
+      // min-height is checked only at the cut's own complement pair, where
+      // sketch 009's wide-touch reserve begins.
+      const cut = findRecordCut();
+      const cutFloor = Math.floor(cut);
       for (const width of widths) {
-        if (width !== 1024 && width !== 1366) continue;
+        const isLadderRung = width === 1024 || width === 1366;
+        const isCutPair = width === cutFloor - 1 || width === cutFloor;
+        if (!isLadderRung && !isCutPair) continue;
 
-        const coarseReading = await readRecordStop(browser, appUrl, width, true);
+        const coarseReading = await readRecordBattery(browser, appUrl, width, true);
         console.log(JSON.stringify({ group: 'record', width, coarse: true, reading: coarseReading }));
         countedCheck(coarseReading != null, `record width=${width} coarse: first axis stop found`);
 
-        const fineReading = await readRecordStop(browser, appUrl, width, false);
+        const fineReading = await readRecordBattery(browser, appUrl, width, false);
         console.log(JSON.stringify({ group: 'record', width, coarse: false, reading: fineReading }));
         countedCheck(fineReading != null, `record width=${width} fine: first axis stop found`);
 
@@ -181,6 +226,39 @@ async function main() {
         if (width === 1366) {
           countedCheck(coarseReading?.width === 44 && coarseReading?.height === 44, `record width=1366 coarse: stop is 44x44 (got ${coarseReading?.width}x${coarseReading?.height})`);
           countedCheck(fineReading?.width === 44 && fineReading?.height === 44, `record width=1366 fine: stop is 44x44 (got ${fineReading?.width}x${fineReading?.height})`);
+        }
+
+        if (isCutPair) {
+          const expectedStacked = width < cut || width >= 1366;
+          const expectedTrackWidth = expectedStacked ? 216 : 186;
+          countedCheck(
+            coarseReading?.stacked === expectedStacked,
+            `record width=${width} coarse: arrangement is ${expectedStacked ? 'stacked' : 'wide'} (got stacked=${coarseReading?.stacked})`,
+          );
+          countedCheck(
+            fineReading?.stacked === expectedStacked,
+            `record width=${width} fine: arrangement is ${expectedStacked ? 'stacked' : 'wide'} (got stacked=${fineReading?.stacked})`,
+          );
+          countedCheck(
+            fineReading?.trackWidth === expectedTrackWidth,
+            `record width=${width} fine: track width is ${expectedTrackWidth} (got ${fineReading?.trackWidth})`,
+          );
+          // Below the cut: the touch union's single-line reserve (--touch-min,
+          // 44px). At/above the cut: sketch 009's wide-touch two-line reserve
+          // (--sheet-caption-two-lines-abs, 2.4 x --sheet-type-label = 28.8px)
+          // wins over the touch union by later source order.
+          const headMinHeightPx = parseFloat(coarseReading?.headMinHeight ?? 'NaN');
+          if (width < cut) {
+            countedCheck(
+              headMinHeightPx === 44,
+              `record width=${width} coarse: caption-line head min-height is 44 (single line, got ${coarseReading?.headMinHeight})`,
+            );
+          } else {
+            countedCheck(
+              Math.abs(headMinHeightPx - 28.8) < 0.5,
+              `record width=${width} coarse: caption-line head min-height is the two-line reserve (~28.8px, got ${coarseReading?.headMinHeight})`,
+            );
+          }
         }
       }
     }

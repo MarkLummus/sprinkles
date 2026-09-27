@@ -2407,15 +2407,23 @@ textarea {
 /* Layout and track GEOMETRY at narrow widths — width ONLY, never pointer.
    The version row's own narrow-width collapse moved to notebook.css with
    the row itself (03.5-04 Task 1 restructure; VersionRow now renders in
-   the band grid, outside .recipe-page). The 216px --sheet-track-stop-narrow
-   and the 44x44 stop are drawn for the STACKED axes layout, measured: at a
-   wide viewport the axes sit in a three-column grid whose columns measure
-   213.3px, so a 216px track overflows its column into the next axis
-   (measured on Mark's iPad, 1366 coarse, 2026-09-15: Hardness's track ran
-   2.7px past its cell into Scoopability, and across the grid's hairline).
-   Touch HEIGHTS are safe to widen to the pointer; this track geometry is
-   not, because no layout has been drawn for touch-sized stops at desktop
-   widths — see the sketch question logged in CONTEXT. */
+   the band grid, outside .recipe-page), so this block now governs only
+   the record pen's own battery. It is, with the wide-touch block below
+   and BatchRow.jsx's useBelow760, the route's one width cut not yet
+   measured (03.5-13 Task 2/decisions_recorded 5): Mark kept it at 760,
+   as DESIGN.md records, rather than grouping it onto the ladder's 724 —
+   a todo tracks measuring the battery's own limits
+   (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md).
+   The 216px --sheet-track-stop-narrow and the 44x44 stop are drawn for
+   the STACKED axes layout, measured: at a wide viewport the axes sit in
+   a three-column grid whose columns measure 213.3px, so a 216px track
+   overflows its column into the next axis (measured on Mark's iPad,
+   1366 coarse, 2026-09-15: Hardness's track ran 2.7px past its cell into
+   Scoopability, and across the grid's hairline). Touch HEIGHTS are safe
+   to widen to the pointer; this track geometry is not, because no layout
+   has been drawn for touch-sized stops at desktop widths — see the
+   sketch question logged in CONTEXT. The complement pair is 759.98/760,
+   matching the wide-touch block's own min-width: 760px below. */
 @media (max-width: 759.98px) {
   .axis-mark__stops,
   .axis-mark__anchors {
@@ -2592,7 +2600,15 @@ textarea {
    M4 itself: Clear takes its 44px target as an overflowing hit area, so the
    line box never changes height. The caption line then reserves the same two
    lines the field-row caption beside it reserves, and the melt row sits level
-   — while the axes still reserve Clear's height, so picking moves nothing. */
+   — while the axes still reserve Clear's height, so picking moves nothing.
+
+   This block, with the width-only block above and BatchRow.jsx's own
+   useBelow760, governs only the record pen's own battery now — the
+   route's one width cut not yet measured (03.5-13 Task 2/decisions_recorded
+   5). Mark kept it at 760 (2026-09-27), as DESIGN.md records, rather than
+   grouping it onto the ladder's 724; a todo tracks measuring the battery's
+   own wide/stacked limits
+   (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md). */
 @media (min-width: 760px) and (pointer: coarse) {
   .axis-mark__head,
   .segmented-field__head {

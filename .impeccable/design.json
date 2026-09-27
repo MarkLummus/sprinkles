@@ -203,14 +203,34 @@
     "motion": [],
     "breakpoints": [
       {
+        "name": "recipe-log-beside",
+        "value": "min-width: 1366px",
+        "purpose": "Recipe route, approved 2026-09-26 (sketch 011 decision 16), not yet implemented. The log sits beside the two-column Sheet at 350. 1366 = side nav 224 + three 32px gutters + Sheet minimum 696 + log 350."
+      },
+      {
+        "name": "recipe-side-nav",
+        "value": "min-width: 984px",
+        "purpose": "Recipe route, approved 2026-09-26, not yet implemented. The side nav and the Sheet's second column hold together from here up (224 + 64 + 696); below it the bottom tab row and a one-column Sheet arrive at the same cut, and the log is below the Sheet."
+      },
+      {
+        "name": "recipe-phone-forms",
+        "value": "max-width: 723.98px",
+        "purpose": "Recipe route, approved 2026-09-26, not yet implemented. The list-form ingredient table, the 20px page margin and the stacked band arrive together (band side-by-side minimum 660 + 64)."
+      },
+      {
+        "name": "recipe-content-cap",
+        "value": "min-width: 1770px",
+        "purpose": "Recipe route, approved 2026-09-26, not yet implemented. Content stops growing at 1482 (Sheet 1100 + 32 + log 350) and centres in the main area."
+      },
+      {
         "name": "spread-collapse",
         "value": "max-width: 1099.98px",
-        "purpose": "The two-column spread becomes one column in the order band, ingredients, side, method, foot — side BEFORE method, so the formulation note stays near its table. Page gap narrows to 20px; the pen foot collapses with it."
+        "purpose": "Incumbent; superseded on the recipe route by recipe-side-nav (the Sheet keeps two columns down to 984). The two-column spread becomes one column in the order band, ingredients, side, method, foot — side BEFORE method, so the formulation note stays near its table. Page gap narrows to 20px; the pen foot collapses with it."
       },
       {
         "name": "touch-union",
         "value": "max-width: 759.98px, (pointer: coarse)",
-        "purpose": "Touch sizes. Buttons, selects, ink fields, segmented options, defect toggles and text controls take a 44px minimum height; an axis stop grows in HEIGHT only, to 38x44; .ink-field and .prose-field read 16px. A union, not a replacement: a narrowed desktop window still exercises touch mode, and a real touch device is caught however wide it is."
+        "purpose": "Incumbent; the width arm is retired (Mark, 2026-09-26): touch sizes follow the pointer only. Touch sizes. Buttons, selects, ink fields, segmented options, defect toggles and text controls take a 44px minimum height; an axis stop grows in HEIGHT only, to 38x44; .ink-field and .prose-field read 16px. A union, not a replacement: a narrowed desktop window still exercises touch mode, and a real touch device is caught however wide it is."
       },
       {
         "name": "narrow-layout",
@@ -220,7 +240,7 @@
       {
         "name": "phone",
         "value": "max-width: 600px",
-        "purpose": "Page padding shrinks to 20px, the margin’s prose field drops to the control size, both save ceremonies may wrap, and the ingredient table scrolls inside its own region rather than overflowing the page."
+        "purpose": "Incumbent; superseded on the recipe route by recipe-phone-forms. Page padding shrinks to 20px, the margin’s prose field drops to the control size, both save ceremonies may wrap, and the ingredient table scrolls inside its own region rather than overflowing the page."
       },
       {
         "name": "wide-touch",

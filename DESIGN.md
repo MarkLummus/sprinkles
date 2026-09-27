@@ -334,7 +334,22 @@ The existing sidecar's tonal ramps are preview metadata, not additional approved
 
 ### Approved boundary; app layout unresolved
 
-Keep recipe context visibly distinct from the Recipe Sheet. The desktop exploration places context in a left sidebar and the Sheet on the right; smaller-screen treatments must preserve that distinction and reading order. Exact widths, collapse behavior, and navigation patterns remain surface decisions, not new global breakpoints. Home strategy is defined in its owning brief, not by the recipe grid below.
+Keep recipe context visibly distinct from the Recipe Sheet. The desktop exploration places context in a left sidebar and the Sheet on the right; smaller-screen treatments must preserve that distinction and reading order. The recipe route's widths are settled by the derived ladder below (sketch 011, decision 16); other routes' widths remain surface decisions until they are measured the same way. Home strategy is defined in its owning brief, not by the recipe grid below.
+
+### The recipe route's width ladder (approved 2026-09-26; not yet implemented)
+
+Sketch 011 README decision 16 and its boards (1920, 1600, 1366, 1024, 984, 983, 723, 393) are the authority; the measurements are in the width-constraints study. **The Derived-Cut Rule.** A cut is never picked: measure each part's content limits, set a value for each, set which part gives way first, and the cut falls out as a sum. When a new part joins the route, it gets measured and ranked, and the sums are redone.
+
+Set values: the Sheet's two-column minimum is **696** (the width drawn on the 1366 board; 660 was drawn and rejected as too bunched); the log is **350** beside the Sheet, its minimum and its width; gutters are **32** (page margin, Sheet to log, page margin); the side nav is **224**; the content maximum is **1482** (the two-column Sheet stops gaining at about 1100, plus 32, plus the log). Precedence, as the window narrows: the log moves below the Sheet first; then the side nav and the Sheet's second column go together; the phone forms go last.
+
+| Window | Nav | Sheet | Log | Ingredient table, page margin, band |
+|---|---|---|---|---|
+| 1366 and up | side | two columns | beside, 350 | column form, 48, side by side |
+| 984 to 1365 | side | two columns | below | column form, 48, side by side |
+| 724 to 983 | bottom tab row | one column | below | column form, 48, side by side |
+| below 724 | bottom tab row | one column | below | list form, 20, stacked |
+
+The cuts are sums: 1366 = 224 + 3 × 32 + 696 + 350; 984 = 224 + 2 × 32 + 696; 724 = the band's side-by-side minimum (660) + 2 × 32. From a 1770 window (224 + 64 + 1482) the content stops growing and centres in the main area. **The Grouping Rule.** Layout changes share a cut wherever the set values allow, so the page changes a few times, all at once, rather than one part at a time (Mark, 2026-09-26); the list-form table, the 20px margin and the stacked band move together, as do the side nav and the Sheet's second column. Touch sizes follow the pointer only — a narrow mouse window keeps mouse sizes — which retires the width arm of the touch union below.
 
 ### Existing Sheet-page implementation
 
@@ -349,6 +364,8 @@ The spacing scale is six steps: hair (2px) for the gap inside a chip, between st
 Prose never runs past a 65ch measure: headnote prose, method instruction, purpose, aside, the basis note, written notes, the prose fields and the record's live region all read the one measure token. The method's step number sits in a fixed auto-width margin column so numbers stay put as prose reflows. The ingredient table is full width of its column, fixed-layout, border-box, and reads in **step order**: step-group rows name each step with its lead-in beside them, portions sit under their ingredient's name, and rows are never sorted, grouped, or reordered from the authored order. The name column is the single unsized column, absorbing what the five sized columns leave.
 
 ### The responsive ladder
+
+This is the incumbent implementation, superseded on the recipe route by the width ladder above: its 1100 and 600 cuts and the width arm of the touch union go when Phase 03.5 builds that ladder. The 760 width block and the wide-touch block still govern the record surfaces, which have not been measured yet.
 
 The page answers **two independent questions** — how wide is the viewport, and how is it being pointed at — and it never confuses them. Five blocks, all top-level siblings, never nested:
 
@@ -425,7 +442,8 @@ Components feel like a working binder: printed pages a person actually writes on
 - **Shape:** square, borderless container; a 1.5px ink rule under every header and row, the total row's rule above it.
 - **Type:** header in the label role uppercase; body in the table role with tabular numerals; left-aligned throughout, numeric columns right-aligned.
 - **Padding:** 6px vertical, 6px horizontal per cell (`--table-cell-pad-x`), border-box, so a declared column width is the whole column.
-- **Layout:** fixed table layout; the ingredient-name column is the single unsized column; the numeric (94px), Data (86px) and Remove (78px) columns carry their own tokens. Rows read in step order under step-group heads.
+- **Layout (approved 2026-09-26, sketch 011 decision 15; not yet implemented):** the amount and the name are two columns under one "Ingredient" head at every width, and the table sizes to its content: the amount, As made and % of batch take their figures' width (the numeric heads may wrap), and the name takes the rest, wrapping inside its own column, with the "estimated" tag and the portion line staying with the name. Below 724 the table reads as a list with no header row: the plan amount, the name and the share on line one, and As made in the hand under the plan amount on the same right edge. Rows read in step order under step-group heads.
+- **Layout (incumbent implementation):** fixed table layout; the ingredient-name column is the single unsized column; the numeric (94px), Data (86px) and Remove (78px) columns carry their own tokens.
 - **Marked state:** when a figure is focused, its contributing rows take a 1px ink outline offset 2px and bold weight. Unmarked rows are untouched, never dimmed.
 
 ### Graduated rule (signature)
@@ -454,6 +472,7 @@ Components feel like a working binder: printed pages a person actually writes on
 - `HistoryDisclosure` takes `open`, `onToggle`, and `panelId`; pair it with `HistoryPanel` using the same `id` and `open`. The panel stays mounted and hidden when closed, with its content unmounted. Native buttons retain Enter/Space behavior, the global focus ring, hover underline, and coarse-pointer target sizing. Opening is expressed by the panel and `aria-expanded`, without restyling the word.
 - `HistoryList` takes `ordered`, `label`, and optional `nested="records"` or `nested="branches"`. Lists keep explicit list semantics when their markers are suppressed. Both nested variants reduce indentation below 760px; authored text wraps.
 - `HistoryItem` takes `current` and optional `as="article"` for a version sheet. Current records carry `aria-current`, an ink outline, and a bold identity; prose and provenance keep their normal weight. Child version branches sit outside the parent sheet so they do not inherit its current state. Record padding is `--gap-s` in both histories.
+- **History rail (approved direction, sketch 011; not yet implemented):** a dated rail of versions on one grey hairline. The nodes paint above the line, so a hollow node's white fill hides the line where the line crosses it (Mark, 2026-09-26).
 - `HistoryMarkers` takes independent `current` and `latest` booleans. Only callers determine which entity is latest. `HistoryProvenance` accepts text or links as children and optional layout classes; dates and state words share the small-print grotesk role.
 
 ### The tasting battery (signature)

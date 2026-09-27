@@ -91,9 +91,15 @@ def vnode(d, m, cur, last):
     return f'''<li style="position:relative;"><a href="#" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
   {line}<span style="display:flex;align-items:center;height:20px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
   <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{title}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{m}</span></span></a></li>'''
-vrail = f'''<div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;justify-content:space-between;align-items:baseline;">{cap("Batches")}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3 · latest first</span></div>
-  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vnode(d, m, cur, i == len(B) - 1) for i, (d, m, cur) in enumerate(B))}</ol></div>'''
-optD = bm.replace(old_head, vrail + f'<div style="padding-top:14px;border-top:1px solid {DIV};">' + head(f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}{date("16 Aug 2026")}</div>', textctl('Correct') + textctl('Record another')) + '</div>', 1)
+# the batch list folds like every other section, Show/Hide beside its label, open from 1366, closed below (Mark, 2026-09-27: "yes, draw it")
+def vrail_(open_):
+    ctl = textctl('Hide' if open_ else 'Show').replace('<button type="button"', f'<button type="button" aria-expanded="{"true" if open_ else "false"}" aria-controls="fold-batches"', 1)
+    hd = f'<div style="display:flex;justify-content:space-between;align-items:baseline;"><div style="display:flex;align-items:baseline;gap:14px;">{cap("Batches")}{ctl}</div><span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3{" · latest first" if open_ else ""}</span></div>'
+    ol = f'''<ol id="fold-batches" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vnode(d, m, cur, i == len(B) - 1) for i, (d, m, cur) in enumerate(B))}</ol>''' if open_ else ''
+    return f'<div style="display:flex;flex-direction:column;gap:10px;">{hd}{ol}</div>'
+def optD_(open_):
+    return bm.replace(old_head, vrail_(open_) + f'<div style="padding-top:14px;border-top:1px solid {DIV};">' + head(f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}{date("16 Aug 2026")}</div>', textctl('Correct') + textctl('Record another')) + '</div>', 1)
+optD = optD_(True)
 bmany = ''.join([
   panel('3 batches · A: today, a list', 'Batches (3) opens the list of this version’s batches under the head, each with its tasting and machine reading. Drawn open.', optA, L),
   panel('3 batches · B: a batch timeline', 'Like History: one node per batch, oldest left, the one in view ringed. It scrolls past about three.', optB, L),
@@ -143,6 +149,7 @@ def phone_frame(body):
 up = ''.join([
   panel('393 · History upright, closed', 'Closed by default below 1366, like the other folds: the label, Show beside it, and the count.', phone_frame(band393(vhist_closed)), P),
   panel('393 · History upright, open', 'Hide beside the label; the rail stands latest first, each version one row. All eight show; nothing scrolls sideways.', phone_frame(band393(vhist)), P),
-  panel('393 · Batches upright', 'The log under the Sheet: the batches of this version as a vertical rail above the batch in view, latest first, each with its tasting and machine reading.', phone_frame('<div style="padding-top:20px;">' + optD + '</div>'), P),
+  panel('393 · Batches upright, closed', 'Closed by default below 1366: the label, Show beside it, and the count; the batch in view follows.', phone_frame('<div style="padding-top:20px;">' + optD_(False) + '</div>'), P),
+  panel('393 · Batches upright, open', 'Hide beside the label; the batches of this version stand latest first above the batch in view, each with its tasting and machine reading.', phone_frame('<div style="padding-top:20px;">' + optD + '</div>'), P),
 ])
-dc('R35C_CountUpright393.dc.html', 'Counts · versions and batches upright at 393 (options, not decided)', 1427, 1120, page(up))
+dc('R35C_CountUpright393.dc.html', 'Counts · versions and batches upright at 393 (decision 19)', 1884, 1120, page(up))

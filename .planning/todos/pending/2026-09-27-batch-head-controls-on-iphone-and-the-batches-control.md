@@ -18,4 +18,4 @@ Mark, 2026-09-27, iPhone layout:
 
 - Measure the head line at 393 and 723 against 393-batch.html and 723-batch.html, then align it.
 - Hide the Batches control when the version has 0 or 1 batches.
-- ~~Open question for Mark: timeline or drop-down?~~ Answered 2026-09-27, sketch 011 decision 19: with two or more batches, an upright batch rail above the batch in view at every width (option D), filled where tasted, hollow where not; no Batches control at 0 or 1 batch. History folds too, and stands upright below 1366. Build it with the decision-18 app change.
+- ~~Open question for Mark: timeline or drop-down?~~ Answered 2026-09-27, sketch 011 decision 19: with two or more batches, an upright batch rail above the batch in view at every width (option D), folding like the other sections (open from 1366, closed below), filled where tasted, hollow where not; no Batches control at 0 or 1 batch. History folds too, and stands upright below 1366. Build it with the decision-18 app change.

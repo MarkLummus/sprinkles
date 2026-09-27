@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-27T12:04:19Z",
+  "phase": "03.5",
+  "phase_name": "Separate the recipe from the sheet",
+  "phase_dir": ".planning/phases/03.5-separate-the-recipe-from-the-sheet",
+  "plan": 14,
+  "task": 0,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "03.5-08", "name": "close out", "status": "done", "commit": "bb5cf39"},
+    {"id": "03.5-10", "name": "ladder cuts", "status": "done", "commit": "f640140"},
+    {"id": "03.5-11", "name": "two-column ingredient table", "status": "done", "commit": "3a31265"},
+    {"id": "03.5-12", "name": "History rail; desktop cut deferred", "status": "done", "commit": "c315ae7"},
+    {"id": "03.5-13", "name": "touch by pointer", "status": "done", "commit": "774ad79"}
+  ],
+  "remaining_tasks": [
+    {"id": "study", "name": "desktop-state study (plan 12 'measure')", "status": "not_started"},
+    {"id": "03.5-14", "name": "ladder conformance re-run", "status": "not_started"},
+    {"id": "03.5-09", "name": "wire transcribed seed (D-07 gate)", "status": "not_started"}
+  ],
+  "blockers": [
+    {"description": "Plan 14 precondition: the desktop-state study must land first", "type": "human_action", "workaround": "run the study, then Mark sets values"}
+  ],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "iPhone check of the zoom fix and the Why on :4173", "context": "260927-758 + a68437c", "blocking": false},
+    {"action": "Answer 03.5-SEED-REVIEW.md Q9/Q13/Q14/Q16", "context": "plan 09 D-07 gate", "blocking": true},
+    {"action": "Set values and precedence for the desktop-state cut once measured", "context": "plan 12 'measure'", "blocking": true}
+  ],
+  "decisions": [
+    {"decision": "Record pen cut stays 760", "rationale": "Mark 2026-09-27; measure later", "phase": "03.5"},
+    {"decision": "Desktop-state cut: measure", "rationale": "Mark 2026-09-27; no picked cuts", "phase": "03.5"},
+    {"decision": "Why typed in prose, shown in the hand", "rationale": "Mark 2026-09-27; sketch 011 decision 17", "phase": "03.5"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Desktop-state study: measure open vs folded Sheet and band rhythms across 1366-1770; publish a widths table; ask Mark for values and precedence.",
+  "context_notes": "See .planning/phases/03.5-separate-the-recipe-from-the-sheet/.continue-here.md. The root .planning/.continue-here.md is superseded."
+}

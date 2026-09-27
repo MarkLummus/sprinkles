@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 12
+open_count: 13
 waived_count: 0
 fixed_count: 0
-total_count: 12
-last_updated: 2026-09-25T13:13:18.723Z
+total_count: 13
+last_updated: 2026-09-27T03:16:56.906Z
 ---
 
 # Broken Windows Ledger
@@ -27,6 +27,7 @@ last_updated: 2026-09-25T13:13:18.723Z
 | 10 | 03.5 | unrun-verify | app/src/ui/RecipeHistory.jsx |  | Real-browser side-by-side check of the History rail against 1600-batch.html/1600-no-batch.html/1600-long-history.html/1600-pen.html — no browser-automation tool available inside this worktree; deferred to end-of-phase UAT per workflow.human_verify_mode: end-of-phase | open |  | 2026-09-25T12:06:20.582Z |  |
 | 11 | 03.5 | unrun-verify | .planning/phases/03.5-separate-the-recipe-from-the-sheet/03.5-06-PLAN.md |  | Plan 03.5-06 verification bullet 2: the built app's olive oil Sheet at every state (reading/pen/record/show-changes) against the sketch boards, the pen's one-step-open/Cancel/Done behaviour, and the total's as-made hand values -- needs a real layout engine this worktree had no browser-automation tool for; deferred to end-of-phase UAT (workflow.human_verify_mode: end-of-phase). | open |  | 2026-09-25T12:45:51.264Z |  |
 | 12 | 03.5 | unrun-verify | app/src/ui/BatchRow.jsx |  | Task 3 human-check deferred: at 1600/1366 open Record another, confirm the record pen opens in the log column with no horizontal overflow (scrollWidth == clientWidth) and Save batch lands on the new batch — no browser-automation tool in this worktree | open |  | 2026-09-25T13:13:18.723Z |  |
+| 13 | 03.5 | deviation | app/src/ui/useBelowDesktop.js |  | Task 2's desktop-state cut answered option-measure (Mark, 2026-09-27): Task 3 made no change. The 1500px placeholder (BELOW_DESKTOP_QUERY, notebook.css's interim 1499.98px block) stays until Mark's study lands; plan 14's conformance run is blocked on it. | open |  | 2026-09-27T03:16:56.906Z |  |
 
 ````json
 [
@@ -182,6 +183,19 @@ last_updated: 2026-09-25T13:13:18.723Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-25T13:13:18.723Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 13,
+    "kind": "deviation",
+    "phase": "03.5",
+    "file": "app/src/ui/useBelowDesktop.js",
+    "line": null,
+    "description": "Task 2's desktop-state cut answered option-measure (Mark, 2026-09-27): Task 3 made no change. The 1500px placeholder (BELOW_DESKTOP_QUERY, notebook.css's interim 1499.98px block) stays until Mark's study lands; plan 14's conformance run is blocked on it.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-27T03:16:56.906Z",
     "resolved_at": null,
     "milestone": null
   }

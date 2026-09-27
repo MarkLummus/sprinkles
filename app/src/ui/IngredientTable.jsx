@@ -420,14 +420,15 @@ export function IngredientTable({
         ? `Total, plan ${totalDisplayText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
         : `Total, plan ${totalDisplayText.replace(' g', ' grams')}`;
 
-  // Style 6, every state (sketch 011 decisions 2, 3; D-19; 03.5-06 Tasks 1
-  // and 2): the table has exactly two column identities left — the
-  // auto-width name column, which now also carries the plan grams and the
-  // estimated/unreviewed chip inline, and the token-sized numeric column
+  // Decision 15 (sketch 011, 03.5-11 Task 1): the table now has three
+  // column identities — the content-sized amount column (the plan grams,
+  // right-aligned before the name), the auto-width name column (the
+  // estimated/unreviewed chip, the portion note, the orphaned-row flag and
+  // remove/restore all stay here), and the content-sized numeric column
   // (As made, % of batch). As made alone stays conditional, governed by
   // hasAsMadeLayer, gated at the header and all three body branches plus
   // the total row.
-  const columnCount = 2 + (hasAsMadeLayer ? 1 : 0);
+  const columnCount = 3 + (hasAsMadeLayer ? 1 : 0);
 
   // The method array the grouping helper reads lead-in text from: the
   // pen's own live draftVersion.method while developing (its own comment
@@ -450,8 +451,10 @@ export function IngredientTable({
 
     return (
       <tr key={`${row.id}:${portionIndex}`} className={isMarked ? 'is-marked' : undefined} aria-label={ariaLabel}>
-        <td className="ingredient-table__col-name">
+        <td className="ingredient-table__col-grams">
           <GramsCell row={row} portionIndex={portionIndex} mode={mode} penDraft={penDraft} onChangePenGrams={onChangePenGrams} />
+        </td>
+        <td className="ingredient-table__col-name">
           {row.ingredientName}
           {dataFlag && (
             <span className="target-chip ingredient-table__flag">
@@ -486,12 +489,14 @@ export function IngredientTable({
         className={isMarked ? 'is-marked' : undefined}
         aria-label={rowDiffAccessibleLabel(row, portion, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue, isSplit)}
       >
-        <td className="ingredient-table__col-name">
+        <td className="ingredient-table__col-grams">
           {isSplit ? (
             <span className="ingredient-table__plan-grams">{`${portion.grams} g`}</span>
           ) : (
             <DiffGramsCell rowDiff={rowDiff} />
           )}
+        </td>
+        <td className="ingredient-table__col-name">
           {rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
           {dataFlag && (
             <span className="target-chip ingredient-table__flag">
@@ -570,7 +575,7 @@ export function IngredientTable({
         className={isMarked || isBlocked ? 'is-marked' : undefined}
         aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams, changedShare, removed)}
       >
-        <td className="ingredient-table__col-name">
+        <td className="ingredient-table__col-grams">
           <GramsCell
             row={row}
             portionIndex={portionIndex}
@@ -579,6 +584,8 @@ export function IngredientTable({
             onChangePenGrams={onChangePenGrams}
             inputRef={portionIndex === 0 ? (element) => registerGramsInput(row.id, element) : undefined}
           />
+        </td>
+        <td className="ingredient-table__col-name">
           {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
           {dataFlag && (
             <span className="target-chip ingredient-table__flag">
@@ -627,11 +634,14 @@ export function IngredientTable({
         {comparisonBatchLabel && <caption className="ingredient-table__comparison">{comparisonBatchLabel}</caption>}
         <thead>
           <tr>
-            {/* Style 6, every state (sketch 011, 03.5-06 Tasks 1 and 2):
-                no Grams column, no Source/Data column, no Remove column —
-                the plan grams, the estimated/unreviewed flag and
-                remove/restore all sit inline, inside the name column. */}
-            <th scope="col" className="ingredient-table__col-name">Ingredient</th>
+            {/* Decision 15 (sketch 011, 03.5-11 Task 1): the amount and the
+                name are two columns now, sharing one "Ingredient" head —
+                still no Grams, Source/Data or Remove column of its own.
+                The estimated/unreviewed flag, the portion note, the
+                orphaned-row flag and remove/restore all stay inline
+                inside the name column; only the plan amount moved out,
+                into its own preceding column. */}
+            <th scope="col" className="ingredient-table__col-name" colSpan={2}>Ingredient</th>
             {hasAsMadeLayer && <th scope="col" className="ingredient-table__col-numeric">As made</th>}
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
           </tr>
@@ -657,7 +667,7 @@ export function IngredientTable({
         </tbody>
         <tfoot>
           <tr aria-label={totalAriaLabel}>
-            <td className="ingredient-table__col-name">
+            <td className="ingredient-table__col-grams">
               {/* The unit prints once (D-22, critique P2 #2): the struck
                   baseline reads the bare-number formatter — the pen's own
                   through formatGramsValue, show-changes' through
@@ -666,7 +676,9 @@ export function IngredientTable({
                   INSIDE the plan-grams slot (sketch 011 Task 2), unlike a
                   row's own struck value, which sits as a sibling before it
                   — the total row's struck-then-current pair is one static
-                  figure, never a field beside it. */}
+                  figure, never a field beside it. Decision 15 (03.5-11
+                  Task 1) moved this slot into its own preceding column;
+                  the name cell keeps only "Total". */}
               <span className="ingredient-table__plan-grams">
                 {isDeveloping && currentTotalText !== baselineTotalText && (
                   <span className="struck-value">{formatGramsValue(baselineMass)}</span>
@@ -674,8 +686,8 @@ export function IngredientTable({
                 {isShowingChanges && diff.total.changed && <span className="struck-value">{diff.total.fromValue}</span>}
                 {totalDisplayText}
               </span>
-              Total
             </td>
+            <td className="ingredient-table__col-name">Total</td>
             {hasAsMadeLayer && (
               <td className="ingredient-table__col-numeric">
                 <span className="sheet-hand">{asMadeTotalText}</span>

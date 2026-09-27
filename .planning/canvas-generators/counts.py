@@ -18,7 +18,7 @@ def dc(fn, title, w, h, main):
 # ---------- versions ----------
 V1 = [('1 Jul', 'Version 1 · 50 g oil · 800 g', 'churned 2 Aug · Latest', True, True)]
 V8 = [('1 Jul','Version 1 · 50 g oil · 800 g','churned 2 Aug',True,False),('20 Jul','Version 2 · less oil','churned 24 Jul',True,False),
-      ('4 Aug','Version 3 · more salt','churned 6 Aug',True,False),('11 Aug','Version 4 · allulose out','',False,False),
+      ('4 Aug','Version 3 · more salt','churned 6 Aug',True,False),('11 Aug','Version 4 · allulose out','not churned',False,False),
       ('18 Aug','Version 5 · gum blend up','churned 20 Aug',True,False),('25 Aug','Version 6 · cream at 36%','churned 27 Aug',True,False),
       ('1 Sep','Version 7 · oil cold-emulsified','churned 3 Sep · Latest',True,True),('20 Sep','Version 8 · 40 g oil','draft',False,False)]
 def band(history_html, vb=None):
@@ -30,7 +30,7 @@ def rail_end(versions, hint):
     # at rest the rail opens scrolled to the version in view: the latest end, older versions behind a fade
     h = h.replace('<div style="position:relative;overflow:hidden;">', '<div style="position:relative;overflow:hidden;display:flex;justify-content:flex-end;">')
     return h.replace('</div>\n  </div></div>\n</div>', f'</div>\n    <div aria-hidden="true" style="position:absolute;top:0;left:0;bottom:0;width:96px;background:linear-gradient(to left, rgba(255,255,255,0), #ffffff);pointer-events:none;"></div>\n  </div></div>\n</div>')
-v7 = version_block().replace('Version 1 · 50 g oil · 800 g', 'Version 7 · oil cold-emulsified').replace('1 Jul 2026', '1 Sep 2026')
+v7 = version_block(draft='Version 8 · 40 g oil').replace('Version 1 · 50 g oil · 800 g', 'Version 7 · oil cold-emulsified').replace('1 Jul 2026', '1 Sep 2026')
 # a later version has a parent, so it carries the app's From version row (Mark, 2026-09-27)
 v7 = v7.replace(f'<dt style="color:{TEXT2};">Why</dt>', f'<dt style="color:{TEXT2};">From version</dt><dd style="margin:0;"><a href="#" style="color:{BLUE_T};text-underline-offset:3px;">Version 6 · cream at 36%</a></dd>\n      <dt style="color:{TEXT2};">Why</dt>', 1)
 one_line = f'<div style="display:flex;flex-direction:column;gap:10px;">{cap("History")}<p style="margin:0;font-family:{GROT};font-size:14px;color:{TEXT2};">Only this version so far</p></div>'
@@ -61,7 +61,7 @@ B = [('16 Aug 2026', 'Tasted 17 Aug 2026 · out of machine −6 °C', True), ('9
 def head(left, right):
     return f'<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">{left}<div style="display:flex;align-items:baseline;gap:18px;">{right}</div></div>'
 date = lambda d: f'<span style="font-family:{GROT};font-size:15px;color:{TEXT};font-variant-numeric:tabular-nums;">churned {d}</span>'
-bm = batch_log('batch', column=True).replace('churned 2 Aug 2026', 'churned 16 Aug 2026', 1).replace('Recorded 4 Aug 2026', 'Recorded 17 Aug 2026', 1).replace('tasted date unknown', 'tasted 17 Aug 2026', 1)
+bm = batch_log('batch', column=True).replace('churned 2 Aug 2026', 'churned 16 Aug 2026', 1).replace('Recorded 4 Aug 2026', 'Recorded 17 Aug 2026', 1).replace('tasted date unknown', 'tasted 17 Aug 2026', 1).replace('against Version 1 · 50 g oil · 800 g', 'against Version 7 · oil cold-emulsified', 1)
 old_head = re.search(r'<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">.*?</div>\s*</div>', bm, flags=re.S).group(0)
 # A: today's register
 reg_items = ''.join(f'''<li style="padding:10px 0;border-top:1px solid {DIV};display:flex;flex-direction:column;gap:2px;">
@@ -88,13 +88,12 @@ def vnode(d, m, cur, last):
     dot = f'background:{NOTEBOOK};' if TASTED(m) else f'background:{APP_BG};border:1.5px solid {NOTEBOOK};'
     line = '' if last else f'<span aria-hidden="true" style="position:absolute;left:5.5px;top:18px;bottom:-12px;width:1px;background:{DIV};"></span>'
     title = f'<span style="font-family:{GROT};font-size:14px;font-weight:700;color:{TEXT};">churned {d}</span>' if cur else f'<span style="font-family:{GROT};font-size:14px;color:{BLUE_T};text-decoration:underline;text-underline-offset:3px;">churned {d}</span>'
-    return f'''<li style="position:relative;"><a href="#" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
+    return f'''<li style="position:relative;"><a href="#" tabindex="0" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
   {line}<span style="display:flex;align-items:center;height:20px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
   <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{title}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{m}</span></span></a></li>'''
 # the batch list folds like every other section, Show/Hide beside its label, open from 1366, closed below (Mark, 2026-09-27: "yes, draw it")
 def vrail_(open_):
-    ctl = textctl('Hide' if open_ else 'Show').replace('<button type="button"', f'<button type="button" aria-expanded="{"true" if open_ else "false"}" aria-controls="fold-batches"', 1)
-    hd = f'<div style="display:flex;justify-content:space-between;align-items:baseline;"><div style="display:flex;align-items:baseline;gap:14px;">{cap("Batches")}{ctl}</div><span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3{" · latest first" if open_ else ""}</span></div>'
+    hd = fold_row('Batches', open_, 'fold-batches', '3 batches' + (' · latest first' if open_ else ''))
     ol = f'''<ol id="fold-batches" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vnode(d, m, cur, i == len(B) - 1) for i, (d, m, cur) in enumerate(B))}</ol>''' if open_ else ''
     return f'<div style="display:flex;flex-direction:column;gap:10px;">{hd}{ol}</div>'
 def optD_(open_):
@@ -130,15 +129,14 @@ def vver(date, title, meta, filled_, cur, last):
     line = '' if last else f'<span aria-hidden="true" style="position:absolute;left:5.5px;top:18px;bottom:-12px;width:1px;background:{DIV};"></span>'
     t = f'<span style="font-family:{GROT};font-size:14px;font-weight:700;color:{TEXT};">{title}</span>' if cur else f'<span style="font-family:{GROT};font-size:14px;color:{BLUE_T};text-decoration:underline;text-underline-offset:3px;">{title}</span>'
     m = ' · '.join(x for x in (date, meta) if x)
-    return f'''<li style="position:relative;"><a href="#" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
+    return f'''<li style="position:relative;"><a href="#" tabindex="0" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
   {line}<span style="display:flex;align-items:center;height:20px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
   <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{t}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};font-variant-numeric:tabular-nums;">{m}</span></span></a></li>'''
 V8_IN_VIEW = [(d, t, m, f, t.startswith('Version 7')) for d, t, m, f, c in V8]
 # History folds like every other section, its Show/Hide beside the label (Mark, 2026-09-27: "we need the Show/Hide on History also");
 # closed by default below 1366 (decision 18). The canvas ignores hidden, so the closed state leaves the rail out.
 def hist_head(open_):
-    ctl = textctl('Hide' if open_ else 'Show').replace('<button type="button"', f'<button type="button" aria-expanded="{"true" if open_ else "false"}" aria-controls="fold-history"', 1)
-    return f'<div style="display:flex;justify-content:space-between;align-items:baseline;"><div style="display:flex;align-items:baseline;gap:14px;">{cap("History")}{ctl}</div><span style="font-family:{GROT};font-size:12px;color:{TEXT2};">8 versions{" · latest first" if open_ else ""}</span></div>'
+    return fold_row('History', open_, 'fold-history', '8 versions' + (' · latest first' if open_ else ''))
 vrail_v = f'''<ol id="fold-history" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vver(*v, i == len(V8_IN_VIEW) - 1) for i, v in enumerate(reversed(V8_IN_VIEW)))}</ol>'''
 vhist = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(True)}{vrail_v}</div>'
 vhist_closed = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(False)}</div>'
@@ -152,4 +150,4 @@ up = ''.join([
   panel('393 · Batches upright, closed', 'Closed by default below 1366: the label, Show beside it, and the count; the batch in view follows.', phone_frame('<div style="padding-top:20px;">' + optD_(False) + '</div>'), P),
   panel('393 · Batches upright, open', 'Hide beside the label; the batches of this version stand latest first above the batch in view, each with its tasting and machine reading.', phone_frame('<div style="padding-top:20px;">' + optD + '</div>'), P),
 ])
-dc('R35C_CountUpright393.dc.html', 'Counts · versions and batches upright at 393 (decision 19)', 1884, 1120, page(up))
+dc('R35C_CountUpright393.dc.html', 'Counts · versions and batches upright at 393 (decision 19)', 1884, 1180, page(up))

@@ -36,7 +36,7 @@ strip = f'''<div style="display:flex;flex-direction:column;gap:10px;">
 band = f'''<header style="display:flex;flex-direction:column;gap:24px;padding:20px 0 24px;border-bottom:1px solid {DIV};">
   <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:start;">
     <div>{recipe_identity(False)}</div>
-    <div>{version_block()}</div>
+    <div>{version_block(draft='Version 8 · 40 g oil')}</div>
   </div>
   {strip}
 </header>'''

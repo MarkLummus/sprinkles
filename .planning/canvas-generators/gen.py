@@ -116,14 +116,27 @@ def recipe_identity(pen=False, stacked=True, rail=None):
   <p style="margin:0;">{textctl('Rename')}</p>
 </div>'''
 
-def version_block(compact=False):
+def draft_line(draft):
+    """A saved draft above the version in view is named in the band, so "Latest" is not read as the newest row on History (Mark, 2026-09-27)."""
+    if not draft: return ''
+    return f'\n    <p style="margin:0;font-family:{GROT};font-size:14px;color:{TEXT2};">Draft: <a href="#" tabindex="0" style="color:{BLUE_T};text-underline-offset:3px;">{draft}</a></p>'
+
+def fold_row(label, open_, target, count=''):
+    """A fold head whose whole row is the control: label, Show/Hide and the count in one 44px-tall button (Mark, 2026-09-27, 393 critique)."""
+    sh = 'Hide' if open_ else 'Show'
+    cnt = f'<span style="font-family:{GROT};font-size:12px;font-weight:400;color:{TEXT2};text-decoration:none;">{count}</span>' if count else ''
+    return (f'<button type="button" class="text-control history-disclosure" aria-expanded="{"true" if open_ else "false"}" aria-controls="{target}" '
+            f'style="appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;display:flex;width:100%;min-height:44px;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;">'
+            f'<span style="display:flex;align-items:baseline;gap:14px;">{cap(label)}<span style="text-decoration:underline;text-underline-offset:3px;">{sh}</span></span>{cnt}</button>')
+
+def version_block(compact=False, draft=None):
     # Version 1 has no parent and cites no batch, so it has no From rows (Mark, 2026-09-27; the app's VersionRow.jsx
     # shows "From version" only where a parent exists and "From batch" only where one is cited)
     return f'''
 <div style="display:flex;flex-direction:column;gap:12px;">
   {cap('Version')}
   <div style="display:flex;flex-direction:column;gap:4px;">
-    <p style="margin:0;font-family:{GROT};font-size:18px;font-weight:600;color:{TEXT};">Version 1 · 50 g oil · 800 g <span style="font-weight:400;color:{TEXT2};">· Latest</span></p>
+    <p style="margin:0;font-family:{GROT};font-size:18px;font-weight:600;color:{TEXT};">Version 1 · 50 g oil · 800 g <span style="font-weight:400;color:{TEXT2};">· Latest</span></p>{draft_line(draft)}
     <dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:14px;row-gap:4px;font-family:{GROT};font-size:14px;color:{TEXT};">
       <dt style="color:{TEXT2};">Written</dt><dd style="margin:0;font-variant-numeric:tabular-nums;">1 Jul 2026</dd>
       <dt style="color:{TEXT2};">Why</dt><dd style="margin:0;color:{TEXT2};">no reason recorded</dd>
@@ -390,7 +403,7 @@ def history_rail(versions, count_text):
         dot = f'background:{NOTEBOOK};' if filled else f'background:{APP_BG};border:1.5px solid {NOTEBOOK};'
         ring = f'box-shadow:0 0 0 2px {APP_BG},0 0 0 3.5px {NOTEBOOK};' if current else ''
         w = 700 if current else 400
-        return f'''<a href="#" style="flex:0 0 168px;display:grid;grid-template-rows:16px 12px 40px 16px;row-gap:6px;text-decoration:none;color:{TEXT};min-width:0;">
+        return f'''<a href="#" tabindex="0" style="flex:0 0 168px;display:grid;grid-template-rows:16px 12px 40px 16px;row-gap:6px;text-decoration:none;color:{TEXT};min-width:0;">
   <span style="font-family:{GROT};font-size:12px;line-height:16px;color:{TEXT2};font-variant-numeric:tabular-nums;">{date}</span>
   <span style="display:flex;align-items:center;height:12px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
   <span style="font-family:{GROT};font-size:14px;font-weight:{w};line-height:20px;overflow:hidden;">{title}</span>
@@ -414,7 +427,7 @@ def history_upright(versions, count_text):
         line = '' if last else f'<span aria-hidden="true" style="position:absolute;left:5.5px;top:18px;bottom:-12px;width:1px;background:{DIV};"></span>'
         t = f'<span style="font-family:{GROT};font-size:14px;font-weight:700;color:{TEXT};">{title}</span>' if current else f'<span style="font-family:{GROT};font-size:14px;color:{BLUE_T};text-decoration:underline;text-underline-offset:3px;">{title}</span>'
         m = ' · '.join(x for x in (date, meta) if x)
-        return f'''<li style="position:relative;"><a href="#" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
+        return f'''<li style="position:relative;"><a href="#" tabindex="0" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
   {line}<span style="display:flex;align-items:center;height:20px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
   <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{t}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};font-variant-numeric:tabular-nums;">{m}</span></span></a></li>'''
     items = ''.join(row(*v, i == len(rows) - 1) for i, v in enumerate(rows))
@@ -430,7 +443,7 @@ def layout_c(state, pen=False, sheet_html=None, log=True, rail=None):
     band = f'''<header style="display:flex;flex-direction:column;gap:24px;padding:20px 0 24px;border-bottom:1px solid {DIV};">
   <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:start;">
     <div>{recipe_identity(False, rail=rail)}</div>
-    <div>{ceremony() if pen else version_block()}</div>
+    <div>{ceremony() if pen else version_block(draft='Version 2 · less oil')}</div>
   </div>
   {history_rail(versions, '2 versions · oldest left, latest right')}
 </header>'''
@@ -452,11 +465,11 @@ def layout_c_rung(width):
     narrow = width < 724
     gutter = '0 20px 40px 20px' if narrow else '0 32px 48px 32px'
     if narrow:
-        top = f'<div style="display:flex;flex-direction:column;gap:20px;">{recipe_identity(False)}{version_block()}</div>'
+        top = f'<div style="display:flex;flex-direction:column;gap:20px;">{recipe_identity(False)}{version_block(draft="Version 2 · less oil")}</div>'
     else:
         top = f'''<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:start;">
     <div>{recipe_identity(False)}</div>
-    <div>{version_block()}</div>
+    <div>{version_block(draft='Version 2 · less oil')}</div>
   </div>'''
     band = f'''<header style="display:flex;flex-direction:column;gap:20px;padding:16px 0 20px;border-bottom:1px solid {DIV};">
   {top}
@@ -492,7 +505,8 @@ def phone_folds(html, open_=False):
     html = re.sub(r'<div class="derived-advisories"><h2 class="region-name">Watch for</h2>(.*?)</div></div>',
                   lambda m: '<div class="derived-advisories"><div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Watch for</h2>' + disc(sh, 'fold-check') + f'</div><div id="fold-check"{hid}>' + m.group(1) + '</div></div></div>', html, count=1, flags=re.S)
     # History: folds like the others, its control beside the label; open from 1366, closed below (Mark, 2026-09-27)
-    html = html.replace(cap('History'), f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("History")}' + disc(sh, 'fold-history') + '</div>', 1)
+    html = re.sub(r'<div style="display:flex;align-items:baseline;justify-content:space-between;">' + re.escape(cap('History')) + r'<span[^>]*>([^<]*)</span></div>',
+                  lambda m: fold_row('History', open_, 'fold-history', m.group(1)), html, count=1)
     html = html.replace('<div class="hist-body">', f'<div id="fold-history"{hid} class="hist-body">', 1)
     if not open_:
         html = re.sub(r'(\d+ versions) · latest first', r'\1', html, count=1)  # closed: the count alone

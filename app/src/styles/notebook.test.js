@@ -77,6 +77,14 @@ describe('the content cap, centred from a 1770px window (sketch 011 decision 16)
   });
 });
 
+describe('the History rail — marks paint above the line (03.5-12 Task 1, sketch 011 decision 16 last sentence)', () => {
+  test('.notebook-history__nodes declares position: relative, so a later positioned sibling of the (also positioned) track paints above it', () => {
+    const rule = rules.find((rule) => rule.selector === '.notebook-history__nodes' && rule.media === undefined);
+    expect(rule, 'expected a top-level .notebook-history__nodes rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/position:\s*relative/);
+  });
+});
+
 describe("the log's batch notes (260925-u3r, sketch 011)", () => {
   test('.notebook-log .batch-row__notes is a top-level flex column, the hairline gap, and the log group gap above', () => {
     const notesRule = rules.find((rule) => rule.selector === '.notebook-log .batch-row__notes' && rule.media === undefined);

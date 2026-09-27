@@ -407,7 +407,16 @@
   pointer-events: none;
 }
 
+/* Sketch 011 decision 16's last sentence ("the History rail's nodes sit on
+   top of its line") and gen.py's own fix (lines 396-402): a positioned
+   sibling later in DOM order paints above an earlier positioned sibling of
+   the same stacking level, but only if it is itself positioned. The track
+   above is position: absolute; without this rule the node list stayed an
+   unpositioned, in-flow box, which CSS 2.1's painting order always puts
+   BELOW a positioned sibling regardless of DOM order — so the track's
+   hairline painted over every mark. */
 .notebook-history__nodes {
+  position: relative;
   display: flex;
   gap: var(--app-notebook-history-node-gap);
   min-width: max-content;

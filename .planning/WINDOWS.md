@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 14
+open_count: 15
 waived_count: 0
 fixed_count: 0
-total_count: 14
-last_updated: 2026-09-27T03:47:18.397Z
+total_count: 15
+last_updated: 2026-09-27T04:19:09.439Z
 ---
 
 # Broken Windows Ledger
@@ -29,6 +29,7 @@ last_updated: 2026-09-27T03:47:18.397Z
 | 12 | 03.5 | unrun-verify | app/src/ui/BatchRow.jsx |  | Task 3 human-check deferred: at 1600/1366 open Record another, confirm the record pen opens in the log column with no horizontal overflow (scrollWidth == clientWidth) and Save batch lands on the new batch — no browser-automation tool in this worktree | open |  | 2026-09-25T13:13:18.723Z |  |
 | 13 | 03.5 | deviation | app/src/styles/notebook.css |  | Below 984, .notebook-body (flex, column-direction) uses align-items: flex-start, which shrink-wraps .notebook-body__sheet to its own max-content width instead of stretching to the available cross-axis width whenever that content's max-content is narrower than available (confirmed on the 723px cut: .recipe-page renders ~21px narrower than the sketch board's simulated width). Confirmed present on HEAD before 03.5-11's own changes too. notebook.css is outside 03.5-11's files_modified. | open |  | 2026-09-27T03:47:18.397Z |  |
 | 14 | 03.5 | deviation | app/src/ui/useBelowDesktop.js |  | Task 2's desktop-state cut answered option-measure (Mark, 2026-09-27): Task 3 made no change. The 1500px placeholder (BELOW_DESKTOP_QUERY, notebook.css's interim 1499.98px block) stays until Mark's study lands; plan 14's conformance run is blocked on it. | open |  | 2026-09-27T03:16:56.906Z |  |
+| 15 | 03.5 | deviation | app/src/styles/app.css |  | The record pen's own remaining width cut (the width-only block's 216px track/44x44 stop, the wide-touch caption reserve, BatchRow.jsx's useBelow760) stays at 760, per Mark's 2026-09-27 Task 2 answer, rather than grouping onto the ladder's 724 — DESIGN.md line 368 still says these surfaces have not been measured. A todo tracks measuring the battery's wide/stacked limits and re-deriving the cut (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md). | open |  | 2026-09-27T04:19:09.439Z |  |
 
 ````json
 [
@@ -210,6 +211,19 @@ last_updated: 2026-09-27T03:47:18.397Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-09-27T03:16:56.906Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 15,
+    "kind": "deviation",
+    "phase": "03.5",
+    "file": "app/src/styles/app.css",
+    "line": null,
+    "description": "The record pen's own remaining width cut (the width-only block's 216px track/44x44 stop, the wide-touch caption reserve, BatchRow.jsx's useBelow760) stays at 760, per Mark's 2026-09-27 Task 2 answer, rather than grouping onto the ladder's 724 — DESIGN.md line 368 still says these surfaces have not been measured. A todo tracks measuring the battery's wide/stacked limits and re-deriving the cut (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md).",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-27T04:19:09.439Z",
     "resolved_at": null,
     "milestone": null
   }

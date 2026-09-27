@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
 stopped_at: Phase 03.5 gap plans 10-14 planned and checked
-last_updated: "2026-09-27T02:06:58.949Z"
+last_updated: "2026-09-27T09:38:50.570Z"
 last_activity: 2026-09-25
 last_activity_desc: Phase 03.5 execution started
-state_head: bc634918a131e0694b2bb4a685da9e66f3b7f811
+state_head: 220b8ffc1d210a62c67e530596f5d111cfba0b01
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 03.5 (Separate the recipe from the sheet) — READY TO EXECUTE
 Plan: 1 of 9
 Status: Ready to execute
-Last activity: 2026-09-25 - Completed quick task 260925-u3r: Separate the batch notes (1025-1365 grid band deferred to a constraints study)
+Last activity: 2026-09-27 - Completed quick task 260927-758: Keep notebook fields at 16px under a coarse pointer; the Why in the hand
 
 Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -303,6 +303,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260925-lpd | Seed Standard Base, Underbelly Light Base, Strawberry and Mocha from Ice Ed exports, binder and comparisons workbook; fix Pineapple and Coconut dates | 2026-09-25 | 727896b | [260925-lpd-seed-standard-base-underbelly-light-base](./quick/260925-lpd-seed-standard-base-underbelly-light-base/) |
 | 260925-re3 | Apply Mark's answers to seed open questions 10, 11, 12 and 15: Mocha tastings from pages only, Strawberry per-version fruit data | 2026-09-26 | ab4c924 | [260925-re3-apply-mark-s-answers-to-seed-open-questi](./quick/260925-re3-apply-mark-s-answers-to-seed-open-questi/) |
 | 260925-u3r | Separate the batch notes (1025-1365 grid band deferred to a constraints study) | 2026-09-26 | 6d3f763 | [260925-u3r-separate-the-batch-notes-and-fix-the-rec](./quick/260925-u3r-separate-the-batch-notes-and-fix-the-rec/) |
+| 260927-758 | Keep notebook fields at 16px under a coarse pointer (iOS focus zoom); the Why written in the hand at every pointer | 2026-09-27 | 220b8ff | [260927-758-keep-notebook-fields-at-16px-under-coars](./quick/260927-758-keep-notebook-fields-at-16px-under-coars/) |
 
 ### Roadmap Evolution
 

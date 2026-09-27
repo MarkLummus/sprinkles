@@ -172,7 +172,7 @@ def batch_log(state, column=False):
 <section aria-label="Batch" style="display:flex;flex-direction:column;gap:18px;">
   <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;">
     <div style="display:flex;align-items:baseline;gap:14px;">{cap('Batch')}<span style="font-family:{GROT};font-size:15px;color:{TEXT};font-variant-numeric:tabular-nums;">churned 2 Aug 2026</span></div>
-    <div style="display:flex;align-items:baseline;gap:18px;">{textctl('Batches (1)')}{textctl('Correct')}{textctl('Record another')}</div>
+    <div style="display:flex;align-items:baseline;gap:18px;">{textctl('Correct')}{textctl('Record another')}</div>
   </div>
   <div style="display:grid;{cols}gap:16px 20px;">
     {cell('Time to draw temp.', '20', 'min', 'plan 10–12 min')}
@@ -399,10 +399,28 @@ def history_rail(versions, count_text):
     nodes = ''.join(node(*v) for v in versions)
     return f'''<div style="display:flex;flex-direction:column;gap:10px;">
   <div style="display:flex;align-items:baseline;justify-content:space-between;">{cap('History')}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{count_text}</span></div>
-  <div style="position:relative;overflow:hidden;">
+  <div class="hist-body"><div style="position:relative;overflow:hidden;">
     <div style="position:absolute;left:0;right:0;top:27px;height:1px;background:{DIV};"></div>
     <div style="position:relative;display:flex;gap:24px;min-width:max-content;padding:0 6px;">{nodes}</div>
-  </div>
+  </div></div>
+</div>'''
+
+def history_upright(versions, count_text):
+    """Below 1366 History stands upright, latest first, one row per version (Mark, 2026-09-27)."""
+    rows = list(reversed(versions))
+    def row(date, title, meta, filled, current, last):
+        dot = f'background:{NOTEBOOK};' if filled else f'background:{APP_BG};border:1.5px solid {NOTEBOOK};'
+        ring = f'box-shadow:0 0 0 2px {APP_BG},0 0 0 3.5px {NOTEBOOK};' if current else ''
+        line = '' if last else f'<span aria-hidden="true" style="position:absolute;left:5.5px;top:18px;bottom:-12px;width:1px;background:{DIV};"></span>'
+        t = f'<span style="font-family:{GROT};font-size:14px;font-weight:700;color:{TEXT};">{title}</span>' if current else f'<span style="font-family:{GROT};font-size:14px;color:{BLUE_T};text-decoration:underline;text-underline-offset:3px;">{title}</span>'
+        m = ' · '.join(x for x in (date, meta) if x)
+        return f'''<li style="position:relative;"><a href="#" style="position:relative;display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:14px;min-height:44px;text-decoration:none;">
+  {line}<span style="display:flex;align-items:center;height:20px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
+  <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{t}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};font-variant-numeric:tabular-nums;">{m}</span></span></a></li>'''
+    items = ''.join(row(*v, i == len(rows) - 1) for i, v in enumerate(rows))
+    return f'''<div style="display:flex;flex-direction:column;gap:10px;">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;">{cap('History')}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{count_text}</span></div>
+  <div class="hist-body"><ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{items}</ol></div>
 </div>'''
 
 def layout_c(state, pen=False, sheet_html=None, log=True, rail=None):
@@ -442,7 +460,7 @@ def layout_c_rung(width):
   </div>'''
     band = f'''<header style="display:flex;flex-direction:column;gap:20px;padding:16px 0 20px;border-bottom:1px solid {DIV};">
   {top}
-  {history_rail(versions, '2 versions')}
+  {history_rail(versions, '2 versions') if width >= 1366 else history_upright(versions, '2 versions · latest first')}
 </header>'''
     if width >= 1366:
         body = f'<div style="display:flex;gap:32px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{sheet(state)}</div><aside aria-label="Batch" style="flex:0 0 350px;min-width:0;padding-top:8px;">{batch_log(state, column=True)}</aside></div>'
@@ -455,7 +473,7 @@ def layout_c_rung(width):
 
 def phone_folds(html, open_=False):
     """Decision 18 (Mark, 2026-09-27): the folds are a convenience at every width, open by default from 1366 and
-    closed by default below it, with no stored state. Version details, Balance, Watch for and the log's Tasting each
+    closed by default below it, with no stored state. Version details, History, Balance, Watch for and the log's Tasting each
     have their own control, labelled by state; Ingredients, Instructions, Before you start and the churn cells stay open."""
     hid = '' if open_ else ' hidden'
     exp = 'true' if open_ else 'false'
@@ -473,6 +491,11 @@ def phone_folds(html, open_=False):
     # Watch for: its own control beside its heading; the advisories fold
     html = re.sub(r'<div class="derived-advisories"><h2 class="region-name">Watch for</h2>(.*?)</div></div>',
                   lambda m: '<div class="derived-advisories"><div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Watch for</h2>' + disc(sh, 'fold-check') + f'</div><div id="fold-check"{hid}>' + m.group(1) + '</div></div></div>', html, count=1, flags=re.S)
+    # History: folds like the others, its control beside the label; open from 1366, closed below (Mark, 2026-09-27)
+    html = html.replace(cap('History'), f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("History")}' + disc(sh, 'fold-history') + '</div>', 1)
+    html = html.replace('<div class="hist-body">', f'<div id="fold-history"{hid} class="hist-body">', 1)
+    if not open_:
+        html = re.sub(r'(\d+ versions) · latest first', r'\1', html, count=1)  # closed: the count alone
     # the log's Tasting
     html = re.sub(r'(<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>tasted date unknown</span>)</div>',
                   lambda m: m.group(1) + ' ' + disc(sh, 'fold-tasting') + f'</div><div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)

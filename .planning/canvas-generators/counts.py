@@ -29,7 +29,7 @@ def rail_end(versions, hint):
     h = history_rail(versions, hint)
     # at rest the rail opens scrolled to the version in view: the latest end, older versions behind a fade
     h = h.replace('<div style="position:relative;overflow:hidden;">', '<div style="position:relative;overflow:hidden;display:flex;justify-content:flex-end;">')
-    return h.replace('</div>\n  </div>\n</div>', f'</div>\n    <div aria-hidden="true" style="position:absolute;top:0;left:0;bottom:0;width:96px;background:linear-gradient(to left, rgba(255,255,255,0), #ffffff);pointer-events:none;"></div>\n  </div>\n</div>')
+    return h.replace('</div>\n  </div></div>\n</div>', f'</div>\n    <div aria-hidden="true" style="position:absolute;top:0;left:0;bottom:0;width:96px;background:linear-gradient(to left, rgba(255,255,255,0), #ffffff);pointer-events:none;"></div>\n  </div></div>\n</div>')
 v7 = version_block().replace('Version 1 · 50 g oil · 800 g', 'Version 7 · oil cold-emulsified').replace('1 Jul 2026', '1 Sep 2026')
 # a later version has a parent, so it carries the app's From version row (Mark, 2026-09-27)
 v7 = v7.replace(f'<dt style="color:{TEXT2};">Why</dt>', f'<dt style="color:{TEXT2};">From version</dt><dd style="margin:0;"><a href="#" style="color:{BLUE_T};text-underline-offset:3px;">Version 6 · cream at 36%</a></dd>\n      <dt style="color:{TEXT2};">Why</dt>', 1)
@@ -45,7 +45,8 @@ dc('R35C_CountVersions.dc.html', 'Counts · versions: 1 vs many (options, not de
 
 # ---------- batches: 0 and 1 ----------
 L = 350
-b1 = batch_log('batch', column=True)
+# the head as it was before the pick: Batches (1) beside Correct
+b1 = batch_log('batch', column=True).replace(textctl('Correct'), textctl('Batches (1)') + textctl('Correct'), 1)
 b1_no_ctl = b1.replace(textctl('Batches (1)'), '', 1)
 b0 = batch_log('none', column=True)
 ba = ''.join([

@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 7/9 plans executed
+**Plans:** 7/14 plans executed
 
 Plans:
 
@@ -498,6 +498,23 @@ Plans:
 
 - [ ] 03.5-08-PLAN.md — Folds below desktop, the side-by-side conformance record against sketch 011 at 1600/1366/1024/393, and the /impeccable document hand-off for the Hand Rule bend (D-19)
 - [ ] 03.5-09-PLAN.md — Mark's D-07 approval gate on the transcription, then the seed wired (DB 7) with coverage invariants (D-01, D-05, D-07)
+
+**Wave 8 — gap closure** *(the derived width ladder and table redesign Mark approved 2026-09-26, sketch 011 decisions 15–16; independent of 03.5-09)*
+
+- [ ] 03.5-10-PLAN.md — The ladder's three derived cuts: side nav and two-column Sheet together at 984 (app-wide shell cut), log beside at 350 from 1366 with the 1482 cap centred from 1770, stacked band and 20 margin at 724; a no-Vite probe harness and the ladder probe
+
+**Wave 9** *(blocked on Wave 8)*
+
+- [ ] 03.5-11-PLAN.md — Decision 15: amount and name as two content-sized columns under one head in all three render paths, the list form below 724, the pen and recording states measured
+- [ ] 03.5-12-PLAN.md — History rail nodes above the line; where the desktop state begins (checkpoint: Mark chooses 1770, 1366 or a study), replacing the 1500 placeholder
+
+**Wave 10** *(blocked on 03.5-11 and 03.5-12)*
+
+- [ ] 03.5-13-PLAN.md — Touch sizes by pointer only, reaching the record pen in the full-width log; the record pen's own cut (checkpoint: Mark keeps 760 per DESIGN.md or groups onto 724)
+
+**Wave 11** *(blocked on Wave 10)*
+
+- [ ] 03.5-14-PLAN.md — Conformance re-run against sketch 011 at 1920/1600/1366/1024/984/983/723/393, drift fixed, Open for Mark, device UAT, and the /impeccable document hand-off
 
 ### Phase 4: Prepare the next version for making
 

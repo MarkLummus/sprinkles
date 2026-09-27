@@ -1,6 +1,6 @@
 import json, re, os, datetime
 
-SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/8a627d74-8755-4cb3-9bd5-6098b27eca61/scratchpad'
+SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/49c327ea-f05a-4ddf-8697-42727a6c3108/scratchpad'
 SRC = SP + '/artifact-files/8c08ac14-3ead-48f4-861a-5016f88c8338/project'
 OUT = SP + '/canvas/project'
 os.makedirs(OUT, exist_ok=True)
@@ -15,6 +15,8 @@ SHEET = seg(asbuilt, '<section class="ingredient-table-region"', '</article>').r
 TABS = seg(asbuilt, '<nav class="shell__tabs"', '</nav>') + '</nav>'.replace('<h2 class="region-name">Method</h2>', '<h2 class="region-name">Instructions</h2>')
 # Carried forward notes dropped (Mark, 2026-09-24): the block leaves every board; Before you start keeps the inherited marker
 SHEET = re.sub(r'<div class="authored"><p class="authored__legend"><span>Carried forward</span><span>authored</span></p><ul class="authored__notes">.*?</ul></div>', '', SHEET, count=1, flags=re.S)
+# "Things to check" reads "Watch for" and the "derived" label is dropped (Mark, 2026-09-27, decision 18)
+SHEET = SHEET.replace('<p class="derived-advisories__legend"><span>Things to check</span><span>derived</span></p>', '<p class="derived-advisories__legend"><span>Watch for</span></p>')
 STYLESHEET = '/_blob/e7df2000f61674b89baca5fccf5c19f8'
 
 # ---- tokens (Sprinkles Design System, tokens.json) ----
@@ -449,22 +451,27 @@ def layout_c_rung(width):
         body = f'<div style="display:flex;flex-direction:column;gap:28px;">{sheet(state)}<div style="padding:0 8px;">{batch_log(state, column=False)}</div></div>'
     return f'<div style="padding:{gutter};display:flex;flex-direction:column;gap:24px;">{band}{body}</div>'
 
-def phone_folds(html):
-    """1366, 1024 and 393: disclosures closed by default on version details, Balance (with Things to check),
-    and the log's Tasting; Ingredients, Instructions, Before you start and the churn cells stay open."""
-    disc = lambda label, target: f'<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="{target}">{label}</button>'
+def phone_folds(html, open_=False):
+    """Decision 18 (Mark, 2026-09-27): the folds are a convenience at every width, open by default from 1366 and
+    closed by default below it, with no stored state. Version details, Balance, Watch for and the log's Tasting each
+    have their own control, labelled by state; Ingredients, Instructions, Before you start and the churn cells stay open."""
+    hid = '' if open_ else ' hidden'
+    exp = 'true' if open_ else 'false'
+    disc = lambda label, target: f'<button type="button" class="text-control history-disclosure" aria-expanded="{exp}" aria-controls="{target}">{label}</button>'
+    sh = 'Hide' if open_ else 'Show'
     # version details
     html = html.replace('<dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);',
-                        '<p style="margin:0;">' + disc('Details', 'fold-version') + '</p><dl id="fold-version" hidden style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);', 1)
-    # Balance: everything after its heading, plus Things to check, folds
-    # one control folds both: the heading and control stay out, the Balance block and Things to check are hidden together
+                        '<p style="margin:0;">' + disc(sh + ' details', 'fold-version') + f'</p><dl id="fold-version"{hid} style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);', 1)
+    # Balance: its heading stays with its control beside it; the rules and the source note fold
     html = html.replace('<div class="formulation-note"><h2 class="region-name">Balance</h2>',
-                        '<h2 class="region-name">Balance</h2><p style="margin:0 0 8px;">' + disc('Show balance and things to check', 'fold-balance fold-check') + '</p><div id="fold-balance" hidden><div class="formulation-note">', 1)
-    html = html.replace('</section><div class="margin-region"><div class="derived-advisories">', '</div></section><div class="margin-region"><div id="fold-check" hidden class="derived-advisories">', 1)
+                        '<div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Balance</h2>' + disc(sh, 'fold-balance') + f'</div><div id="fold-balance"{hid}><div class="formulation-note">', 1)
+    html = html.replace('</section><div class="margin-region">', '</div></section><div class="margin-region">', 1)
+    # Watch for: its own control beside its heading; the advisories fold
+    html = re.sub(r'<div class="derived-advisories"><p class="derived-advisories__legend"><span>Watch for</span></p>(.*?)</div></div>',
+                  lambda m: '<div class="derived-advisories"><p class="derived-advisories__legend" style="justify-content:flex-start;align-items:baseline;gap:14px;"><span>Watch for</span>' + disc(sh, 'fold-check') + f'</p><div id="fold-check"{hid}>' + m.group(1) + '</div></div></div>', html, count=1, flags=re.S)
     # the log's Tasting
     html = re.sub(r'(<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>tasted date unknown</span>)</div>',
-                  r'\1 ' + disc('Show', 'fold-tasting') + '</div><div id="fold-tasting" hidden style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
-    html = html.replace('<div>' + cap('Next time'), '<div>' + cap('Next time'), 1)
+                  lambda m: m.group(1) + ' ' + disc(sh, 'fold-tasting') + f'</div><div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
     # close the tasting fold after Next time
     html = re.sub(r'(nothing written yet</span></div>)(\s*</div>)', r'\1</div>\2', html, count=1)
     return html
@@ -501,12 +508,12 @@ specs = [
  ('R35C_Pen', 'C · the pen open from Next version · edit this step, one step open (chosen 2026-09-24)', 3700, layout_c('batch', pen=True)),
  ('R35C_PenFocus', 'Not chosen · the pen with controls on the focused step only', 3700, None),
  ('R35C_PenStep', 'Not chosen · the pen with step controls always shown', 3700, None),
- ('R35C_1366', 'C · 1366 · iPad landscape · side nav, the Sheet in two columns, the log beside it at 350, details, Balance and Tasting folded', 3100, None),
- ('R35C_1024', 'C · 1024 · iPad portrait · side nav, the Sheet in two columns, the log below it, details, Balance and Tasting folded', 3400, None),
+ ('R35C_1366', 'C · 1366 · iPad landscape · side nav, the Sheet in two columns, the log beside it at 350, folds open', 3100, None),
+ ('R35C_1024', 'C · 1024 · iPad portrait · side nav, the Sheet in two columns, the log below it, folds closed', 3400, None),
  ('R35C_984', 'C · 984 · narrowest with the side nav · the Sheet in two columns at 696, the log below it, folds closed', 3600, None),
  ('R35C_983', 'C · 983 · widest below the side nav · bottom tab row, the Sheet in one column, the log below it, folds closed', 3300, None),
  ('R35C_723', 'C · 723 · widest phone form · bottom tab row, the Sheet in one column, band stacked, two-line ingredient list, 20px margin, folds closed', 3500, None),
- ('R35C_393', 'C · 393 · phone · one column, bottom tab row, details, Balance and Tasting folded', 5800, None),
+ ('R35C_393', 'C · 393 · phone · one column, bottom tab row, folds closed', 5800, None),
  ('R35C_1920', 'C · 1920 · wide · content capped at 1482 and centred in the main area', 2900, None),
  ('R35_RecipeBookForm', 'Reference · the Recipe Book form of the Sheet on screen (/recipe-book/:recipeId, not built in 03.5)', 2000, layout_c('none', sheet_html=recipe_book_form(), log=False, rail=RB)),
 ]
@@ -521,9 +528,11 @@ for key, title, h, main in specs:
     active = 'recipe-book' if key == 'R35_RecipeBookForm' else 'notebook'
     w = RUNGS.get(key, W)
     if key in RUNGS:
-        main = layout_c('batch') if w == 1920 else layout_c_rung(w)
-        if w < 1600:
-            main = phone_folds(main)
+        # decision 18: from 1366 the band is roomy and the folds open by default; below 1366 tight and closed
+        main = layout_c('batch') if w >= 1366 else layout_c_rung(w)
+        main = phone_folds(main, open_=w >= 1366)
+    elif key in ('R35C_NoBatch', 'R35C_Batch', 'R35C_Pen'):
+        main = phone_folds(main, open_=True)
     PHONE_TABLE = '''
 /* 393: the ingredient table reads as a list: the plan amount, the name, the share on line one; as made in the hand under the plan amount */
 .ingredient-table thead{display:none}

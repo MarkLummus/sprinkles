@@ -44,5 +44,6 @@ main = f'''<div style="box-sizing:border-box;width:100%;max-width:1546px;margin:
   {band}
   <div style="display:flex;gap:32px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{sheet('batch')}</div><aside aria-label="Batch" style="flex:0 0 350px;min-width:0;padding-top:8px;">{batch_log('batch', column=True)}</aside></div>
 </div>'''
+main = phone_folds(main, open_=True)  # decision 18: folds open by default from 1366
 open(OUT+'/R35C_LongHistory.dc.html','w').write(board('C · header band · History as a dated rail, eight versions, scrolling', 1600, 3500, main))
 print('ok')

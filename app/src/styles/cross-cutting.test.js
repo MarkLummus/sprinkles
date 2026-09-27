@@ -242,7 +242,7 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     // mediaRuleFor is first-match by selector across all media blocks
     // (PATTERNS.md caveat); resolving by r.media directly is this file's
     // own precedent, kept here even though .recipe-page no longer has a
-    // rule of its own in this block to disambiguate from the 1099.98px
+    // rule of its own in this block to disambiguate from the 983.98px
     // one (03.3.1.1-01 Task 1).
     const rootStep = rules.find((r) => r.selector === ':root' && r.media === '(max-width: 600px)');
     expect(rootStep, 'expected a media-scoped :root step-down rule').toBeTruthy();
@@ -287,18 +287,18 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
-      '(max-width: 1099.98px)',
       '(max-width: 600px)',
       '(max-width: 759.98px)',
       '(max-width: 759.98px), (pointer: coarse)',
+      '(max-width: 983.98px)',
       '(min-width: 760px) and (pointer: coarse)',
       'print',
     ]);
   });
 });
 
-describe('the 1099.98px block — the page stacks (sketch 003 line 48, D-15)', () => {
-  const stackRules = rules.filter((r) => r.media === '(max-width: 1099.98px)');
+describe('the 983.98px block — the side nav and the Sheet\'s second column go together (sketch 011 decision 16)', () => {
+  const stackRules = rules.filter((r) => r.media === '(max-width: 983.98px)');
 
   test('carries exactly .recipe-page, .pen-foot and .pen-foot__controls, in order', () => {
     expect(stackRules.map((r) => r.selector)).toEqual([

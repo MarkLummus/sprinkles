@@ -362,7 +362,8 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     // stylesheet reader (css-source.js) parses one level of @media
     // nesting, and this pins the file to that contract — exactly the
     // six sibling media blocks the responsive ladder and forced colours
-    // need (the 1099.98px page-shell stack, D-15; the touch union
+    // need (the 983.98px page-shell stack, side nav and Sheet's second
+    // column together, sketch 011 decision 16; the touch union
     // "(max-width: 759.98px), (pointer: coarse)"; the width-only 759.98px
     // layout block the version row keeps; the 600px block; and
     // forced-colors: active), plus the print layer last — one rule,
@@ -379,7 +380,7 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     expect(mediaRules.length).toBeGreaterThan(0);
     const allowedMedia = [
       '(max-width: 759.98px), (pointer: coarse)',
-      '(max-width: 1099.98px)',
+      '(max-width: 983.98px)',
       '(max-width: 759.98px)',
       '(max-width: 600px)',
       '(min-width: 760px) and (pointer: coarse)',

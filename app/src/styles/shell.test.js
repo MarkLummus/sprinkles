@@ -28,6 +28,11 @@ const placeholderJsxSource = readFileSync(PLACEHOLDER_JSX_PATH, 'utf8');
 // import time rather than being silently mis-parsed.
 const rules = readAllRules(shellCssSource);
 
+// The side nav shows only from 984 up (sketch 011 decision 16: 224 side nav
+// + 2 x 32 gutters + the Sheet's two-column minimum 696) — superseding the
+// earlier 759.98px touch step-down this file carried through 03.5-09.
+const SIDE_NAV_MEDIA = '(max-width: 983.98px)';
+
 describe('shell.css — no visual literal, every value a var() read', () => {
   test('no declaration contains a hex colour', () => {
     expect(shellCssSource).not.toMatch(/:[^;{}]*#[0-9a-fA-F]{3,8}/);
@@ -59,12 +64,12 @@ describe('shell.css — no visual literal, every value a var() read', () => {
     expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
   });
 
-  // The one allowed condition, the touch step-down (D-16) — any condition
-  // this file ever carries must be exactly this string.
-  test('the only @media condition allowed in shell.css is the named touch step-down', () => {
+  // The one allowed condition, the side-nav cut (sketch 011 decision 16) —
+  // any condition this file ever carries must be exactly this string.
+  test('the only @media condition allowed in shell.css is the named side-nav cut', () => {
     const mediaConditions = new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media));
     for (const condition of mediaConditions) {
-      expect(condition).toBe('(max-width: 759.98px)');
+      expect(condition).toBe(SIDE_NAV_MEDIA);
     }
   });
 });
@@ -101,7 +106,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
   });
 
   test('the media block holds only the tab row\'s own rules, the rail\'s hiding rule and the folded tools row', () => {
-    const mediaRules = rules.filter((r) => r.media === '(max-width: 759.98px)');
+    const mediaRules = rules.filter((r) => r.media === SIDE_NAV_MEDIA);
     expect(mediaRules.length).toBeGreaterThan(0);
     for (const rule of mediaRules) {
       const selectors = rule.selector.split(',').map((s) => s.trim());
@@ -123,18 +128,18 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
     expect(defaultTabsRule, 'expected a top-level .shell__tabs rule hiding it by default').toBeTruthy();
     expect(defaultTabsRule.declarations).toMatch(/display:\s*none/);
 
-    const mediaRailRule = rules.find((r) => r.selector === '.shell__rail' && r.media === '(max-width: 759.98px)');
+    const mediaRailRule = rules.find((r) => r.selector === '.shell__rail' && r.media === SIDE_NAV_MEDIA);
     expect(mediaRailRule, 'expected .shell__rail to hide inside the media block').toBeTruthy();
     expect(mediaRailRule.declarations).toMatch(/display:\s*none/);
 
-    const mediaTabsRule = rules.find((r) => r.selector === '.shell__tabs' && r.media === '(max-width: 759.98px)');
+    const mediaTabsRule = rules.find((r) => r.selector === '.shell__tabs' && r.media === SIDE_NAV_MEDIA);
     expect(mediaTabsRule, 'expected .shell__tabs to show, fixed, inside the media block').toBeTruthy();
     expect(mediaTabsRule.declarations).toMatch(/display:\s*flex/);
     expect(mediaTabsRule.declarations).toMatch(/position:\s*fixed/);
   });
 
   test('.shell__main carries a bottom padding matching the tab-row height token, so the fixed row never covers the end of a page', () => {
-    const rule = rules.find((r) => r.selector === '.shell__main' && r.media === '(max-width: 759.98px)');
+    const rule = rules.find((r) => r.selector === '.shell__main' && r.media === SIDE_NAV_MEDIA);
     expect(rule, 'expected a media-scoped .shell__main rule').toBeTruthy();
     expect(rule.declarations).toMatch(/padding-bottom:\s*var\(--app-size-tab-h\)/);
   });
@@ -142,7 +147,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
   test('every tab and every item in the More list reads the touch minimum height inside the media block', () => {
     const rule = rules.find(
       (r) =>
-        r.media === '(max-width: 759.98px)' &&
+        r.media === SIDE_NAV_MEDIA &&
         r.selector.includes('.shell__tabs .shell__place') &&
         r.selector.includes('.shell__more li'),
     );
@@ -153,7 +158,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
   test('the tab row\'s five flex children — the four links and the More disclosure — each take an equal share of the bar (gap 1, 03.4-UI-REVIEW.md finding 1)', () => {
     const rule = rules.find(
       (r) =>
-        r.media === '(max-width: 759.98px)' &&
+        r.media === SIDE_NAV_MEDIA &&
         r.selector.includes('.shell__tabs > .shell__place') &&
         r.selector.includes('.shell__tabs > .shell__more'),
     );
@@ -163,7 +168,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
   });
 
   test('each tab reads icon over label, not beside it (board 171, Mark 2026-09-22)', () => {
-    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__tabs .shell__place');
+    const rule = rules.find((r) => r.media === SIDE_NAV_MEDIA && r.selector === '.shell__tabs .shell__place');
     expect(rule, 'expected a media-scoped .shell__tabs .shell__place rule').toBeTruthy();
     expect(rule.declarations).toMatch(/flex-direction:\s*column/);
     expect(rule.declarations).toMatch(/font-size:\s*var\(--app-size-label\)/);
@@ -171,7 +176,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
   });
 
   test('the bar is pinned to the tab-height token with border-box sizing (gap 1)', () => {
-    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__tabs');
+    const rule = rules.find((r) => r.media === SIDE_NAV_MEDIA && r.selector === '.shell__tabs');
     expect(rule, 'expected a media-scoped .shell__tabs rule').toBeTruthy();
     expect(rule.declarations).toMatch(/height:\s*var\(--app-size-tab-h\)/);
     expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
@@ -180,18 +185,18 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
   });
 
   test('More opens as a panel above the bar, not inline in the fixed row (D-16, gap 1)', () => {
-    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__more[open] > ul');
+    const rule = rules.find((r) => r.media === SIDE_NAV_MEDIA && r.selector === '.shell__more[open] > ul');
     expect(rule, 'expected a media-scoped rule for More\'s open list').toBeTruthy();
     expect(rule.declarations).toMatch(/position:\s*absolute/);
     expect(rule.declarations).toMatch(/inset-block-end:\s*100%/);
   });
 
-  test('the header\'s Search/Import/Export controls fold away below the phone step, and the tools row, the file input and the errors list keep no media-scoped hiding rule of their own (decision 3)', () => {
-    const rule = rules.find((r) => r.media === '(max-width: 759.98px)' && r.selector === '.shell__tools > .shell__place');
+  test('the header\'s Search/Import/Export controls fold away below the side-nav cut, and the tools row, the file input and the errors list keep no media-scoped hiding rule of their own (decision 3)', () => {
+    const rule = rules.find((r) => r.media === SIDE_NAV_MEDIA && r.selector === '.shell__tools > .shell__place');
     expect(rule, 'expected a media-scoped .shell__tools > .shell__place rule').toBeTruthy();
     expect(rule.declarations).toMatch(/display:\s*none/);
 
-    const mediaSelectors = rules.filter((r) => r.media === '(max-width: 759.98px)').map((r) => r.selector);
+    const mediaSelectors = rules.filter((r) => r.media === SIDE_NAV_MEDIA).map((r) => r.selector);
     expect(mediaSelectors).not.toContain('.shell__tools');
     expect(mediaSelectors).not.toContain('.shell__file-input');
     expect(mediaSelectors).not.toContain('.shell__import-errors');

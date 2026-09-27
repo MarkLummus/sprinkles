@@ -364,8 +364,9 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     // six sibling media blocks the responsive ladder and forced colours
     // need (the 983.98px page-shell stack, side nav and Sheet's second
     // column together, sketch 011 decision 16; the touch union
-    // "(max-width: 759.98px), (pointer: coarse)"; the width-only 759.98px
-    // layout block the version row keeps; the 723.98px phone-forms block
+    // "(pointer: coarse)" — pointer-only since 03.5-13 retired its width
+    // arm; the width-only 759.98px layout block the version row keeps;
+    // the 723.98px phone-forms block
     // (sketch 011 decision 16 — the stacked band, the 20px margin and the
     // list-form table go together); and forced-colors: active), plus the
     // print layer last — one rule, suppressing only the page notice —
@@ -380,7 +381,7 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     const mediaRules = rules.filter((r) => r.media !== undefined);
     expect(mediaRules.length).toBeGreaterThan(0);
     const allowedMedia = [
-      '(max-width: 759.98px), (pointer: coarse)',
+      '(pointer: coarse)',
       '(max-width: 983.98px)',
       '(max-width: 759.98px)',
       '(max-width: 723.98px)',

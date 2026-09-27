@@ -222,17 +222,21 @@
      BatchHistoryPanel is this token's only remaining reader. */
   --sheet-rhist-bname-min: 16rem;
 
-  /* Touch targets below the 760px step-down (sketch-findings-sprinkles,
+  /* Touch targets under a coarse pointer (sketch-findings-sprinkles,
      references/cross-cutting-type-spacing-feedback.md, "Touch Targets &
-     the Responsive Ladder"; 03.3.1.1 tenth round): below the 760px
-     step-down, interactive targets grow toward 44px — --touch-min is
-     that minimum height for buttons, selects and ink fields;
-     --touch-stop-width is a rating stop's grown width, joined with its
-     four siblings on the 216px --sheet-track-stop-narrow (5 x 44 - 4 x 1 =
-     216, sketch 007 @ 2a212be lines 177-178), its height reading
-     --touch-min for the 44x44 box. Px literals, so the contract suites
-     resolve them with resolveTokenPx. Desktop stays compact — the
-     growth lives only in app.css's @media (max-width: 759.98px) block. */
+     the Responsive Ladder"; 03.3.1.1 tenth round; pointer-only since
+     03.5-13, sketch 011 decision 16): under a coarse pointer, interactive
+     targets grow toward 44px — --touch-min is that minimum height for
+     buttons, selects and ink fields; --touch-stop-width is a rating
+     stop's grown width, joined with its four siblings on the 216px
+     --sheet-track-stop-narrow (5 x 44 - 4 x 1 = 216, sketch 007 @
+     2a212be lines 177-178), its height reading --touch-min for the
+     44x44 box. Px literals, so the contract suites resolve them with
+     resolveTokenPx. A fine pointer stays compact — the growth lives
+     only in app.css's @media (pointer: coarse) block; the joined cell's
+     own WIDTH and the track it sits on stay width-keyed, in the
+     width-only @media (max-width: 759.98px) block below it (Decision C,
+     sketch 009; DESIGN.md's Capability Rule). */
   --touch-min: 44px;
   --touch-stop-width: 44px;
 
@@ -241,9 +245,12 @@
      ladder"/"Axes spec"; 03.3.1-06; 03.3.1.1 tenth round): every
      verified number from the structural contract, named so app.css
      never carries the literal. The breakpoint literals themselves
-     (759.98px, 600px) stay in app.css's own @media preludes, the one
-     sanctioned exception the touch block above already established.
-     --sheet-pen-w caps the record pen's frame (contract "the pen is 640px
+     (759.98px, 600px) stay in app.css's own @media preludes — the
+     width-only 759.98px block (track geometry, width-keyed) and the
+     723.98px phone-forms block, the sanctioned exception the touch
+     block above already established for `--touch-min`/
+     `--touch-stop-width`, neither of which carries a width literal of
+     its own any more. --sheet-pen-w caps the record pen's frame (contract "the pen is 640px
      wide") via .batch-margin--pen (app.css), a recording-mode class
      BatchRow.jsx applies only while mode === 'recording' — the read
      view keeps its own already-shipped full width on the same shared

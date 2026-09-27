@@ -68,7 +68,7 @@ function mediaRuleFor(selector) {
   return rules.find((r) => r.media !== undefined && r.selector === selector);
 }
 
-describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch findings; 03.3.1-06 Task 2; 03.3.1.1 tenth round)', () => {
+describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch findings; 03.3.1-06 Task 2; 03.3.1.1 tenth round; 03.5-13 retires the width arm)', () => {
   test('the touch tokens resolve through resolveTokenPx to 44 and 44, and the stop-height alias rides --touch-min', () => {
     expect(resolveTokenPx(tokens, '--touch-min')).toBe(44);
     expect(resolveTokenPx(tokens, '--touch-stop-width')).toBe(44);
@@ -78,7 +78,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   test("inside the media block, `button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle` declares min-height reading --touch-min (the defect rides the same 44px target as the segment option, sketch 007 line 179; .prose-field joined in 260916-vv1, critique issue 4, the four record prose fields at 560 x 19 on a coarse pointer)", () => {
     const rule = mediaRuleFor('button, select, .ink-field, .prose-field, .segmented__option, .batch-margin .chip-toggle');
     expect(rule, 'expected the media-block control rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
+    expect(rule.media).toBe('(pointer: coarse)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
     expect(rule.declarations).not.toMatch(/:\s*-?\d+(?:\.\d+)?px/);
   });
@@ -103,7 +103,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   });
 
   test('the touch union carries the six sizing rules, and the width-only block keeps the axis-mark track geometry (Mark, 2026-09-15: touch is a mode, track geometry is a width decision; .recipe-band__row-version moved to notebook.css, 03.5-04 Task 1)', () => {
-    const touchRules = rules.filter((r) => r.media === '(max-width: 759.98px), (pointer: coarse)');
+    const touchRules = rules.filter((r) => r.media === '(pointer: coarse)');
     expect(touchRules.map((r) => r.selector)).toEqual([
       // .prose-field joined this rule in 260916-vv1 — it takes the shared
       // floor rather than a private rule.
@@ -115,7 +115,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
       // The NARROW drawing (007 line 180, 008 line 167): Clear is 44px here,
       // so the caption line reserves 44px marked or not. Sketch 009 replaces
       // this at a wide touch viewport, in its own block — it cannot live here,
-      // because the union also matches every narrow width.
+      // because the union matches every coarse pointer, phones included.
       '.axis-mark__head, .segmented-field__head',
       // Sketch 008 line 166, approved 2026-09-15.
       '.ink-field, .prose-field',
@@ -148,7 +148,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     // Growing only the height gives a 38x44 target on the unchanged 186px
     // track. If a width or flex-basis ever appears here, that regression is
     // back.
-    const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(pointer: coarse)');
     expect(rule, 'expected the touch-union axis-mark__stop rule').toBeTruthy();
     expect(rule.declarations).toMatch(/height:\s*var\(--sheet-touch-stop-height\)/);
     expect(rule.declarations).not.toMatch(/(^|[^-])width:/);
@@ -178,13 +178,13 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(wide, 'expected the wide-touch caption-line rule').toBeTruthy();
     expect(wide.declarations).toMatch(/min-height:\s*var\(--sheet-caption-two-lines-abs\)/);
 
-    const narrow = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    const narrow = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(pointer: coarse)');
     expect(narrow, 'expected the narrow caption-line rule').toBeTruthy();
     expect(narrow.declarations).toMatch(/min-height:\s*var\(--sheet-caption-line-h-touch\)/);
   });
 
   test("sketch 008's touch font bump survives the phone-forms step (260915-x6n)", () => {
-    const bump = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 759.98px), (pointer: coarse)');
+    const bump = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(pointer: coarse)');
     expect(bump, 'expected the touch-union font rule').toBeTruthy();
     expect(bump.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
 
@@ -204,7 +204,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     // here, matching every other control in the block.
     const rule = mediaRuleFor('.text-control');
     expect(rule, 'expected a media-scoped .text-control rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px), (pointer: coarse)');
+    expect(rule.media).toBe('(pointer: coarse)');
     expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
   });
 
@@ -216,7 +216,7 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     // two rules would silently change the touch target.
     const toggleIndex = rules.findIndex((r) => r.selector === '.text-toggle' && r.media === undefined);
     const touchTextControlIndex = rules.findIndex(
-      (r) => r.selector === '.text-control' && r.media === '(max-width: 759.98px), (pointer: coarse)',
+      (r) => r.selector === '.text-control' && r.media === '(pointer: coarse)',
     );
     expect(toggleIndex).toBeGreaterThanOrEqual(0);
     expect(touchTextControlIndex).toBeGreaterThanOrEqual(0);
@@ -320,15 +320,15 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
     }
   });
 
-  test('app.css carries exactly seven top-level @media blocks, at the seven named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15; 260915-x6n touch font; 260917-ewf print)', () => {
+  test('app.css carries exactly seven top-level @media blocks, at the seven named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
       '(max-width: 723.98px)',
       '(max-width: 759.98px)',
-      '(max-width: 759.98px), (pointer: coarse)',
       '(max-width: 983.98px)',
       '(min-width: 760px) and (pointer: coarse)',
+      '(pointer: coarse)',
       'print',
     ]);
   });

@@ -2311,7 +2311,7 @@ textarea {
   }
 }
 
-/* Touch targets below the 760px step-down (sketch-findings-sprinkles,
+/* Touch targets under a coarse pointer (sketch-findings-sprinkles,
    references/cross-cutting-type-spacing-feedback.md; 03.3.1.1 tenth
    round): the app's first at-rule, placed after every existing rule so
    css-source.js's first-match rule lookups keep finding every top-level
@@ -2327,26 +2327,29 @@ textarea {
    shared track widens to the 216px --sheet-track-stop-narrow. Every desktop
    rule above is untouched — everything here lives inside this block,
    whose --touch-min flex-row stops wrap rather than overflow (the
-   .axis-mark__stops row already wraps). The 759.98px prelude is the one
-   sanctioned breakpoint literal in the file: a prelude, not a
-   declaration, so binder.test.js's no-bare-px gate never sees it, and
-   the fractional value keeps exactly 760px on the desktop side of the
-   boundary, matching the finding's verified-at-768 desktop compactness.
-   The sketches' text controls are `<button>`s, inline-block, and take
-   24px tall at desktop and 44px here (sketch 003 @ d89b758 lines 32 and
-   178; 007 lines 131 and 180; settled on sketch 008, 2026-09-14) — the
-   caption line (.axis-mark__head, .segmented-field__head, above) grows
-   with it (007 line 180). The version row also collapses to one column
-   here (sketch 003 @ d89b758 line 71; D-15; UAT item 1). */
-/* Touch mode (Mark, 2026-09-15). Sketch 008 lines 162-167 express touch as a
-   MODE (a `.touch` class), not a width; `syncTouch()` there toggles it from the
-   frame width only because a static sketch has no pointer to query. A browser
-   can ask directly, so the app reads the capability. The width arm stays, as a
-   union not a replacement, so a narrowed desktop window still exercises touch
-   mode for testing — and so nothing that worked before stops working.
+   .axis-mark__stops row already wraps). This condition carries no
+   breakpoint literal at all now (03.5-13 Task 1 retires the union's own
+   759.98px width arm) — `(pointer: coarse)` alone; the width-only block
+   below keeps that literal for track geometry, which stays width-keyed
+   (Decision C, sketch 009). The sketches' text controls are `<button>`s,
+   inline-block, and take 24px tall at desktop and 44px here (sketch
+   003 @ d89b758 lines 32 and 178; 007 lines 131 and 180; settled on
+   sketch 008, 2026-09-14) — the caption line (.axis-mark__head,
+   .segmented-field__head, above) grows with it (007 line 180). The
+   version row also collapses to one column here (sketch 003 @ d89b758
+   line 71; D-15; UAT item 1). */
+/* Touch sizes follow the pointer only (Mark, 2026-09-26; sketch 011
+   decision 16; DESIGN.md's Capability Rule). Sketch 008 lines 162-167
+   first expressed touch as a MODE (a `.touch` class), not a width;
+   `syncTouch()` there toggled it from the frame width only because a
+   static sketch has no pointer to query — a browser can ask directly,
+   so the app reads the capability alone now, with no width threshold
+   joined to it (03.5-13 Task 1 retires the union's own width arm and
+   notebook.css's own hand-back that kept the record pen's stops at
+   32px below 1366 under a coarse pointer, decisions_recorded 1).
    Measured cause: Mark's iPad reports viewport 1366 with `pointer: coarse`, so
    no width threshold meant for phones could ever have caught it. */
-@media (max-width: 759.98px), (pointer: coarse) {
+@media (pointer: coarse) {
   /* .prose-field joins this floor (260916-vv1, Impeccable critique issue 4,
      Mark approved 2026-09-16): the four record prose fields measured 560 x 19
      at every coarse pointer, under UX1-01. It takes the SHARED --touch-min
@@ -2404,15 +2407,23 @@ textarea {
 /* Layout and track GEOMETRY at narrow widths — width ONLY, never pointer.
    The version row's own narrow-width collapse moved to notebook.css with
    the row itself (03.5-04 Task 1 restructure; VersionRow now renders in
-   the band grid, outside .recipe-page). The 216px --sheet-track-stop-narrow
-   and the 44x44 stop are drawn for the STACKED axes layout, measured: at a
-   wide viewport the axes sit in a three-column grid whose columns measure
-   213.3px, so a 216px track overflows its column into the next axis
-   (measured on Mark's iPad, 1366 coarse, 2026-09-15: Hardness's track ran
-   2.7px past its cell into Scoopability, and across the grid's hairline).
-   Touch HEIGHTS are safe to widen to the pointer; this track geometry is
-   not, because no layout has been drawn for touch-sized stops at desktop
-   widths — see the sketch question logged in CONTEXT. */
+   the band grid, outside .recipe-page), so this block now governs only
+   the record pen's own battery. It is, with the wide-touch block below
+   and BatchRow.jsx's useBelow760, the route's one width cut not yet
+   measured (03.5-13 Task 2/decisions_recorded 5): Mark kept it at 760,
+   as DESIGN.md records, rather than grouping it onto the ladder's 724 —
+   a todo tracks measuring the battery's own limits
+   (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md).
+   The 216px --sheet-track-stop-narrow and the 44x44 stop are drawn for
+   the STACKED axes layout, measured: at a wide viewport the axes sit in
+   a three-column grid whose columns measure 213.3px, so a 216px track
+   overflows its column into the next axis (measured on Mark's iPad,
+   1366 coarse, 2026-09-15: Hardness's track ran 2.7px past its cell into
+   Scoopability, and across the grid's hairline). Touch HEIGHTS are safe
+   to widen to the pointer; this track geometry is not, because no layout
+   has been drawn for touch-sized stops at desktop widths — see the
+   sketch question logged in CONTEXT. The complement pair is 759.98/760,
+   matching the wide-touch block's own min-width: 760px below. */
 @media (max-width: 759.98px) {
   .axis-mark__stops,
   .axis-mark__anchors {
@@ -2566,26 +2577,38 @@ textarea {
   }
 }
 
-/* Sketch 009's wide-touch drawing — a seventh top-level block, and a SIBLING
-   of the touch union above (css-source.js's one-level contract, WR-02).
+/* Sketch 009's wide-touch drawing — a seventh top-level block, sibling of
+   the touch union above (css-source.js's one-level contract, WR-02) — but
+   never a sibling of a union that also matches narrow widths any more
+   (03.5-13 Task 1 retires that width arm; the touch union above now reads
+   `(pointer: coarse)` alone).
 
    It is min-width 760 AND pointer coarse: exactly the case 009 was drawn for,
    and the case no earlier sketch had drawn. Mark's iPad is 1366 and coarse at
    once, so no width threshold meant for phones could reach it and the narrow
    drawing's rules are wrong there.
 
-   Why these rules cannot live in the touch union: the union also matches every
-   narrow width, where sketches 007 and 008 draw a 44px caption line with Clear
-   at 44px inside it ("Clear is 44px here, so the head reserves 44px marked or
-   not", 008 line 167). Applying M4 across the union overwrote that drawing at
-   680, 580, 480 and 393 — caught by the conformance re-measure, which read the
-   head at 28.8px against the sketch's 44px. Each drawing now governs the case
-   it was drawn for.
+   Why these rules cannot live in the touch union: the union matches every
+   coarse pointer, phones included, where sketches 007 and 008 draw a 44px
+   caption line with Clear at 44px inside it ("Clear is 44px here, so the
+   head reserves 44px marked or not", 008 line 167). Applying M4 across the
+   union overwrote that drawing at 680, 580, 480 and 393 — caught by the
+   conformance re-measure, which read the head at 28.8px against the
+   sketch's 44px. Each drawing now governs the case it was drawn for: this
+   block's own min-width: 760px keeps it scoped to the wide case.
 
    M4 itself: Clear takes its 44px target as an overflowing hit area, so the
    line box never changes height. The caption line then reserves the same two
    lines the field-row caption beside it reserves, and the melt row sits level
-   — while the axes still reserve Clear's height, so picking moves nothing. */
+   — while the axes still reserve Clear's height, so picking moves nothing.
+
+   This block, with the width-only block above and BatchRow.jsx's own
+   useBelow760, governs only the record pen's own battery now — the
+   route's one width cut not yet measured (03.5-13 Task 2/decisions_recorded
+   5). Mark kept it at 760 (2026-09-27), as DESIGN.md records, rather than
+   grouping it onto the ladder's 724; a todo tracks measuring the battery's
+   own wide/stacked limits
+   (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md). */
 @media (min-width: 760px) and (pointer: coarse) {
   .axis-mark__head,
   .segmented-field__head {

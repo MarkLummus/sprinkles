@@ -1,7 +1,7 @@
 // 03.5-10: the derived width ladder's checks (sketch 011 decision 16), run
 // against the built app and, where a board exists for the width, the
 // matching sketch 011 board. Groups accumulate across this plan's tasks —
-// Task 1 adds nav, sheet and home; Task 2 adds log and cap; Task 3 adds
+// Task 1 added nav, sheet and home; Task 2 added log and cap; Task 3 adds
 // band and margin.
 //
 // Usage: node 03.5-ladder-probe.mjs <groups> <widths>
@@ -48,6 +48,10 @@ async function readApp(browser, appUrl, width) {
       : null;
     const links = [...document.querySelectorAll('a')];
     const allTabIndexZero = links.length > 0 && links.every((a) => a.getAttribute('tabindex') === '0');
+    function paddingLeftOf(selector) {
+      const el = document.querySelector(selector);
+      return el ? parseFloat(getComputedStyle(el).paddingLeft) : null;
+    }
     return {
       railDisplay: displayOf('.shell__rail'),
       tabsDisplay: displayOf('.shell__tabs'),
@@ -61,6 +65,9 @@ async function readApp(browser, appUrl, width) {
       logRect: rectOf('[aria-label="Batch"]'),
       frameRect: rectOf('.notebook'),
       mainRect: rectOf('.shell__main'),
+      bandGridDisplay: displayOf('.notebook-band__grid'),
+      recipePagePaddingLeft: paddingLeftOf('.recipe-page'),
+      shellHeadPaddingLeft: paddingLeftOf('.shell__head'),
     };
   });
   await context.close();
@@ -76,6 +83,8 @@ async function readHome(browser, appUrl, width) {
     }
     const links = [...document.querySelectorAll('a')];
     const allTabIndexZero = links.length > 0 && links.every((a) => a.getAttribute('tabindex') === '0');
+    const listPageEl = document.querySelector('.list-page');
+    const listPagePaddingLeft = listPageEl ? parseFloat(getComputedStyle(listPageEl).paddingLeft) : null;
     return {
       railDisplay: displayOf('.shell__rail'),
       tabsDisplay: displayOf('.shell__tabs'),
@@ -83,6 +92,7 @@ async function readHome(browser, appUrl, width) {
       linkCount: links.length,
       scrollWidth: document.documentElement.scrollWidth,
       innerWidth: window.innerWidth,
+      listPagePaddingLeft,
     };
   });
   await context.close();
@@ -106,6 +116,14 @@ async function readBoard(browser, repoUrl, file) {
     const recipePageTrackCount = recipePage
       ? getComputedStyle(recipePage).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length
       : null;
+    function paddingLeftOf(selector) {
+      const el = document.querySelector(selector);
+      return el ? parseFloat(getComputedStyle(el).paddingLeft) : null;
+    }
+    // The band grid is the first element child of main.shell__main header —
+    // the board's own divs carry no class, unlike the app's .notebook-band__grid.
+    const bandHeader = document.querySelector('main.shell__main header');
+    const bandGridDisplay = bandHeader?.firstElementChild ? getComputedStyle(bandHeader.firstElementChild).display : null;
     return {
       railDisplay: displayOf('.shell__rail'),
       tabsDisplay: displayOf('.shell__tabs'),
@@ -113,6 +131,9 @@ async function readBoard(browser, repoUrl, file) {
       sheetRect: rectOf('.recipe-page'),
       logRect: rectOf('[aria-label="Batch"]'),
       frameRect: rectOf('main.shell__main > div'),
+      bandGridDisplay,
+      recipePagePaddingLeft: paddingLeftOf('.recipe-page'),
+      shellHeadPaddingLeft: paddingLeftOf('.shell__head'),
     };
   });
   await context.close();
@@ -236,10 +257,54 @@ async function main() {
         }
       }
 
+      if (groups.has('band') && appReading) {
+        const bandSideBySide = width >= 724;
+        const expectedDisplay = bandSideBySide ? 'grid' : 'flex';
+        countedCheck(
+          appReading.bandGridDisplay === expectedDisplay,
+          `band width=${width}: band grid is ${expectedDisplay} iff width>=724`,
+        );
+        if (boardReading) {
+          countedCheck(
+            appReading.bandGridDisplay === boardReading.bandGridDisplay,
+            `band width=${width}: band grid display matches board ${boardFile}`,
+          );
+        }
+      }
+
+      if (groups.has('margin') && appReading) {
+        const expectedMargin = width >= 724 ? 48 : 20;
+        countedCheck(
+          Math.abs(appReading.recipePagePaddingLeft - expectedMargin) <= 0.5,
+          `margin width=${width}: .recipe-page padding-left is ${expectedMargin} iff width>=724`,
+        );
+        countedCheck(
+          Math.abs(appReading.shellHeadPaddingLeft - expectedMargin) <= 0.5,
+          `margin width=${width}: .shell__head padding-left is ${expectedMargin} iff width>=724`,
+        );
+        if (boardReading) {
+          countedCheck(
+            Math.abs(appReading.recipePagePaddingLeft - boardReading.recipePagePaddingLeft) <= 0.5,
+            `margin width=${width}: .recipe-page padding-left matches board ${boardFile}`,
+          );
+          countedCheck(
+            Math.abs(appReading.shellHeadPaddingLeft - boardReading.shellHeadPaddingLeft) <= 0.5,
+            `margin width=${width}: .shell__head padding-left matches board ${boardFile}`,
+          );
+        }
+      }
+
       if (groups.has('home') && homeReading) {
         const navCount = (isShown(homeReading.railDisplay) ? 1 : 0) + (isShown(homeReading.tabsDisplay) ? 1 : 0);
         countedCheck(navCount === 1, `home width=${width}: exactly one navigation shown`);
         countedCheck(homeReading.scrollWidth <= homeReading.innerWidth, `home width=${width}: no page overflow`);
+        if (groups.has('margin')) {
+          const expectedMargin = width >= 724 ? 48 : 20;
+          countedCheck(
+            Math.abs(homeReading.listPagePaddingLeft - expectedMargin) <= 0.5,
+            `home width=${width}: .list-page padding-left is ${expectedMargin} iff width>=724`,
+          );
+        }
       }
     }
   } finally {

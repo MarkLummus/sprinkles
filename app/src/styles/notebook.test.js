@@ -37,9 +37,9 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test('notebook.css carries exactly three named @media steps, in file order — 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 759.98px (the phone edge-to-edge step, plan 13)', () => {
+  test('notebook.css carries exactly three named @media steps, in file order — 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16)', () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
-    expect(mediaConditions).toEqual(['(max-width: 1499.98px)', '(max-width: 1365.98px)', '(max-width: 759.98px)']);
+    expect(mediaConditions).toEqual(['(max-width: 1499.98px)', '(max-width: 1365.98px)', '(max-width: 723.98px)']);
   });
 });
 

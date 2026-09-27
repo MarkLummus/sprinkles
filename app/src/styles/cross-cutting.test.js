@@ -192,17 +192,18 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
     expect(narrow.declarations).toMatch(/min-height:\s*var\(--sheet-caption-line-h-touch\)/);
   });
 
-  test("sketch 008's touch font bump survives the 600px step (260915-x6n)", () => {
+  test("sketch 008's touch font bump survives the phone-forms step (260915-x6n)", () => {
     const bump = rules.find((r) => r.selector === '.ink-field, .prose-field' && r.media === '(max-width: 759.98px), (pointer: coarse)');
     expect(bump, 'expected the touch-union font rule').toBeTruthy();
     expect(bump.declarations).toMatch(/font-size:\s*var\(--sheet-type-note\)/);
 
-    // The 600px step used to pull .ink-field back down to --sheet-type-control,
-    // which is the pre-declared 13px departure 008 line 166 retires — and
-    // below 600 is exactly where a phone's auto-zoom bites. The step now
-    // names only the margin's own prose field.
-    const step = rules.find((r) => r.media === '(max-width: 600px)' && /font-size/.test(r.declarations) && r.selector.includes('batch-margin__field'));
-    expect(step, 'expected the 600px font-size rule').toBeTruthy();
+    // The phone-forms step used to pull .ink-field back down to
+    // --sheet-type-control, which is the pre-declared 13px departure 008
+    // line 166 retires — and below 724 is exactly where a phone's
+    // auto-zoom bites. The step now names only the margin's own prose
+    // field.
+    const step = rules.find((r) => r.media === '(max-width: 723.98px)' && /font-size/.test(r.declarations) && r.selector.includes('batch-margin__field'));
+    expect(step, 'expected the phone-forms font-size rule').toBeTruthy();
     expect(step.selector).not.toMatch(/\.ink-field/);
   });
 
@@ -237,33 +238,33 @@ describe('touch targets below the 760px step-down — 44px, stops 44x44 (sketch 
   });
 });
 
-describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () => {
+describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () => {
   test('the page gutter steps down through the shared property, not a per-element .recipe-page override (260917-gjo)', () => {
     // mediaRuleFor is first-match by selector across all media blocks
     // (PATTERNS.md caveat); resolving by r.media directly is this file's
     // own precedent, kept here even though .recipe-page no longer has a
     // rule of its own in this block to disambiguate from the 983.98px
     // one (03.3.1.1-01 Task 1).
-    const rootStep = rules.find((r) => r.selector === ':root' && r.media === '(max-width: 600px)');
+    const rootStep = rules.find((r) => r.selector === ':root' && r.media === '(max-width: 723.98px)');
     expect(rootStep, 'expected a media-scoped :root step-down rule').toBeTruthy();
     expect(rootStep.declarations).toMatch(/--gap-page:\s*var\(--gap-m\)/);
 
     // The rule this replaced is gone: the step now arrives through
     // --gap-page alone, so restating it per-element here would be the
     // exact double-declaration this task exists to remove.
-    const recipePage600 = rules.find((r) => r.selector === '.recipe-page' && r.media === '(max-width: 600px)');
-    expect(recipePage600, '.recipe-page should have no rule left in the 600px block').toBeUndefined();
+    const recipePage600 = rules.find((r) => r.selector === '.recipe-page' && r.media === '(max-width: 723.98px)');
+    expect(recipePage600, '.recipe-page should have no rule left in the phone-forms block').toBeUndefined();
   });
 
-  test("the margin's prose field drops to the control role in the 600px block — and .ink-field no longer goes with it (260915-x6n)", () => {
+  test("the margin's prose field drops to the control role in the phone-forms block — and .ink-field no longer goes with it (260915-x6n)", () => {
     // .ink-field used to ride this rule. Sketch 008 line 166 retires that 13px
-    // as a pre-declared departure, and below 600 is exactly where a phone's
+    // as a pre-declared departure, and below 724 is exactly where a phone's
     // auto-zoom bites, so the touch union's 16px must survive the step. The
     // margin's own prose field is not what 008 speaks for, and keeps the
     // smaller size.
     const rule = mediaRuleFor('.batch-margin__field');
     expect(rule, 'expected a media-scoped field-text rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 600px)');
+    expect(rule.media).toBe('(max-width: 723.98px)');
     expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-control\)/);
     expect(rule.selector).not.toMatch(/\.ink-field/);
   });
@@ -271,13 +272,13 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
   test('both save ceremonies wrap through one rule (D-01)', () => {
     const rule = mediaRuleFor('.save-ceremony, .pen-foot__controls');
     expect(rule, 'expected a media-scoped save-ceremony/pen-foot wrap rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 600px)');
+    expect(rule.media).toBe('(max-width: 723.98px)');
     expect(rule.declarations).toMatch(/flex-wrap:\s*wrap/);
   });
 
-  test('the ingredient table region scrolls inside itself at 600px and below (RESEARCH Pitfall 7, D-15)', () => {
+  test('the ingredient table region scrolls inside itself at 723.98px and below (RESEARCH Pitfall 7, D-15)', () => {
     const rule = rules.find(
-      (r) => r.selector === '.ingredient-table-region' && r.media === '(max-width: 600px)',
+      (r) => r.selector === '.ingredient-table-region' && r.media === '(max-width: 723.98px)',
     );
     expect(rule, 'expected a media-scoped .ingredient-table-region rule').toBeTruthy();
     expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
@@ -287,7 +288,7 @@ describe('the 600px block — a second, narrower step (03.3.1-06 Task 2)', () =>
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
-      '(max-width: 600px)',
+      '(max-width: 723.98px)',
       '(max-width: 759.98px)',
       '(max-width: 759.98px), (pointer: coarse)',
       '(max-width: 983.98px)',
@@ -715,8 +716,8 @@ describe('one shared page gutter (260917-gjo) — --gap-page defined once, stepp
 
   test("main.jsx imports tokens.css before app.css — the cascade the shared gutter's step-down rests on", () => {
     // Both --gap-page declarations sit on :root at equal specificity, and
-    // a media query adds none, so which one wins below 600px is decided
-    // purely by source order. That makes this import order a real
+    // a media query adds none, so which one wins below the phone-forms
+    // cut is decided purely by source order. That makes this import order a real
     // contract the mechanism depends on, not incidental sequencing — if
     // it ever flipped, the step-down would silently stop applying.
     const tokensImportIndex = mainJsxSource.indexOf('./styles/tokens.css');

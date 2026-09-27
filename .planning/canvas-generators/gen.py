@@ -117,6 +117,8 @@ def recipe_identity(pen=False, stacked=True, rail=None):
 </div>'''
 
 def version_block(compact=False):
+    # Version 1 has no parent and cites no batch, so it has no From rows (Mark, 2026-09-27; the app's VersionRow.jsx
+    # shows "From version" only where a parent exists and "From batch" only where one is cited)
     return f'''
 <div style="display:flex;flex-direction:column;gap:12px;">
   {cap('Version')}
@@ -124,7 +126,6 @@ def version_block(compact=False):
     <p style="margin:0;font-family:{GROT};font-size:18px;font-weight:600;color:{TEXT};">Version 1 · 50 g oil · 800 g <span style="font-weight:400;color:{TEXT2};">· Latest</span></p>
     <dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:14px;row-gap:4px;font-family:{GROT};font-size:14px;color:{TEXT};">
       <dt style="color:{TEXT2};">Written</dt><dd style="margin:0;font-variant-numeric:tabular-nums;">1 Jul 2026</dd>
-      <dt style="color:{TEXT2};">From</dt><dd style="margin:0;">the 1 kg formula, off the app</dd>
       <dt style="color:{TEXT2};">Why</dt><dd style="margin:0;color:{TEXT2};">no reason recorded</dd>
     </dl>
   </div>

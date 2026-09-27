@@ -127,14 +127,21 @@ def vver(date, title, meta, filled_, cur, last):
   {line}<span style="display:flex;align-items:center;height:20px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>
   <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{t}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};font-variant-numeric:tabular-nums;">{m}</span></span></a></li>'''
 V8_IN_VIEW = [(d, t, m, f, t.startswith('Version 7')) for d, t, m, f, c in V8]
-vhist = f'''<div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;justify-content:space-between;align-items:baseline;">{cap("History")}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">8 versions · latest first</span></div>
-  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vver(*v, i == len(V8_IN_VIEW) - 1) for i, v in enumerate(reversed(V8_IN_VIEW)))}</ol></div>'''
-band393 = f'''<header style="display:flex;flex-direction:column;gap:20px;padding:16px 0 20px;border-bottom:1px solid {DIV};">
-  {recipe_identity(False)}{v7}{vhist}</header>'''
+# History folds like every other section, its Show/Hide beside the label (Mark, 2026-09-27: "we need the Show/Hide on History also");
+# closed by default below 1366 (decision 18). The canvas ignores hidden, so the closed state leaves the rail out.
+def hist_head(open_):
+    ctl = textctl('Hide' if open_ else 'Show').replace('<button type="button"', f'<button type="button" aria-expanded="{"true" if open_ else "false"}" aria-controls="fold-history"', 1)
+    return f'<div style="display:flex;justify-content:space-between;align-items:baseline;"><div style="display:flex;align-items:baseline;gap:14px;">{cap("History")}{ctl}</div><span style="font-family:{GROT};font-size:12px;color:{TEXT2};">8 versions{" · latest first" if open_ else ""}</span></div>'
+vrail_v = f'''<ol id="fold-history" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vver(*v, i == len(V8_IN_VIEW) - 1) for i, v in enumerate(reversed(V8_IN_VIEW)))}</ol>'''
+vhist = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(True)}{vrail_v}</div>'
+vhist_closed = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(False)}</div>'
+band393 = lambda h: f'''<header style="display:flex;flex-direction:column;gap:20px;padding:16px 0 20px;border-bottom:1px solid {DIV};">
+  {recipe_identity(False)}{v7}{h}</header>'''
 def phone_frame(body):
     return f'<div style="box-sizing:border-box;width:{P}px;padding:0 20px 20px;border:1px solid {DIV};border-radius:12px;background:{APP_BG};overflow:hidden;">{body}</div>'
 up = ''.join([
-  panel('393 · History upright', 'The band stacks: recipe, the version in view, then History as a vertical rail, latest first, each version one row. All eight show; nothing scrolls sideways.', phone_frame(band393), P),
+  panel('393 · History upright, closed', 'Closed by default below 1366, like the other folds: the label, Show beside it, and the count.', phone_frame(band393(vhist_closed)), P),
+  panel('393 · History upright, open', 'Hide beside the label; the rail stands latest first, each version one row. All eight show; nothing scrolls sideways.', phone_frame(band393(vhist)), P),
   panel('393 · Batches upright', 'The log under the Sheet: the batches of this version as a vertical rail above the batch in view, latest first, each with its tasting and machine reading.', phone_frame('<div style="padding-top:20px;">' + optD + '</div>'), P),
 ])
-dc('R35C_CountUpright393.dc.html', 'Counts · versions and batches upright at 393 (options, not decided)', 970, 1120, page(up))
+dc('R35C_CountUpright393.dc.html', 'Counts · versions and batches upright at 393 (options, not decided)', 1427, 1120, page(up))

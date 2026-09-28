@@ -214,13 +214,6 @@
      its own line. */
   --sheet-col-batch-cell-min: 96px;
 
-  /* The batch history register's own name column (REVIEW-04, 260918-a5l):
-     the width at which the name stops shrinking and its row's flex head
-     wraps its right-hand metadata onto its own line. The version-name
-     counterpart (--sheet-rhist-vname-min) retired with the nested version
-     outline the rebuilt RecipeHistory.jsx replaced (03.5-05) —
-     BatchHistoryPanel is this token's only remaining reader. */
-  --sheet-rhist-bname-min: 16rem;
 
   /* Touch targets under a coarse pointer (sketch-findings-sprinkles,
      references/cross-cutting-type-spacing-feedback.md, "Touch Targets &

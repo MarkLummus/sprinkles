@@ -1,5 +1,5 @@
 // The permanent net under a token rename (03.4-01). Reads tokens.css,
-// app.css, history.css and home.css AS TEXT — the same convention
+// app.css and home.css AS TEXT — the same convention
 // columns.test.js/binder.test.js/cross-cutting.test.js/home.test.js already
 // use via css-source.js — plus every .js/.jsx source under app/src/ui and
 // app/src/domain, and proves two invariants no other suite checks: every
@@ -16,7 +16,7 @@ const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const UI_DIR = path.join(STYLES_DIR, '..', 'ui');
 const DOMAIN_DIR = path.join(STYLES_DIR, '..', 'domain');
 
-const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'history.css', 'home.css', 'shell.css', 'notebook.css'];
+const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'home.css', 'shell.css', 'notebook.css'];
 
 // No custom property is set inline via React's style prop any more — D-04
 // (plan 05) retired --c, RecipeList.jsx's old per-row dealt-hue property,

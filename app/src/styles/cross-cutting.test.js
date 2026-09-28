@@ -42,10 +42,6 @@ const recipeListJsxSource = readFileSync(RECIPE_LIST_JSX_PATH, 'utf8');
 
 const tokens = readCustomProperties(tokensSource);
 const rules = readAllRules(appCssSource);
-const historyRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'history.css'), 'utf8'));
-function historyRuleFor(selector) {
-  return historyRules.find((r) => !r.media && r.selector.split(', ').includes(selector));
-}
 
 // The shorthand alone is the danger: (?:^|[\s;]) plus the literal colon
 // match `margin:` or `padding:` only, never `margin-block`, `margin-inline`
@@ -134,11 +130,6 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
     ]);
-  });
-
-  test('history.css carries no media condition at all now that the nested version/batch outline (the file\'s only rung-dependent content) retired with the History rail (03.5-05)', () => {
-    const historyMediaConditions = [...new Set(historyRules.filter((r) => r.media !== undefined).map((r) => r.media))];
-    expect(historyMediaConditions).toEqual([]);
   });
 
   test("decision C: the touch union grows the stop's HEIGHT only — the width and the track stay width-keyed (sketch 009, Mark 2026-09-15)", () => {
@@ -658,10 +649,9 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
     expect(ruleFor('.method-step__uses-line').declarations).toMatch(/font-size:\s*var\(--sheet-size-cross-flag\)/);
   });
 
-  test("the batch row's measured-cell small print keeps its ratified registers, and the shared history-register provenance rule keeps its own", () => {
+  test("the batch row's measured-cell small print keeps its ratified registers", () => {
     expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
     expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--sheet-size-deviation-words\)/);
-    expect(historyRuleFor('.history-provenance').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
   });
 });
 

@@ -4,7 +4,6 @@ import './styles/tokens.css';
 import './styles/fonts.css';
 import './styles/app.css';
 import './styles/shell.css';
-import './styles/history.css';
 import './styles/home.css';
 import './styles/notebook.css';
 import { repository } from './store/repository.js';

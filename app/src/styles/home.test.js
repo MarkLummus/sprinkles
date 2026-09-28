@@ -1,6 +1,6 @@
 // home.css's own token-discipline contract (The Sprinkles Jar, route.md,
-// 260918-gha). binder.test.js and cross-cutting.test.js read app.css,
-// history.css and tokens.css as TEXT — they never read home.css, which
+// 260918-gha). binder.test.js and cross-cutting.test.js read app.css
+// and tokens.css as TEXT — they never read home.css, which
 // is what lets home.css carry a radius, a fill and a transition (route.md
 // § 1: the no-motion/no-shadow/no-radius binder does not cross the paper
 // frame) — and it is also why this file has to exist, or the token
@@ -195,7 +195,7 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
 });
 
 describe('home.css is wired in (main.jsx, 260917-h83 precedent)', () => {
-  test('main.jsx imports home.css after app.css, the position history.css already established', () => {
+  test('main.jsx imports home.css after app.css', () => {
     const appCssIndex = mainJsxSource.indexOf('./styles/app.css');
     const homeCssIndex = mainJsxSource.indexOf('./styles/home.css');
     expect(appCssIndex).toBeGreaterThan(-1);

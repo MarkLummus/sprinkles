@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-21T02:24:10.635684Z",
+  "generatedAt": "2026-09-28T12:00:00Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -194,7 +194,7 @@
     },
     "state": {
       "picked": "A picked or pressed CONTROL fills pen blue edge to edge, border and all, with paper-coloured text. No bold, no underline, no outline of its own. An independent on/off is a square and a word — only the 13px square fills.",
-      "pointedAt": "Content the page is pointing at — a marked table row, the open batch, the current version, a pressed Show changes — reads bold plus a 1px ink outline offset 2px, in place.",
+      "pointedAt": "Content the page is pointing at — a marked table row, the open batch, the current version — reads bold plus a 1px ink outline offset 2px, in place.",
       "recorded": "Anything the maker typed or saved reads pen blue and keeps it after saving. An absence (“not measured”) is ink.",
       "notInForce": "One ink strike at 1.2px — a skipped step, a superseded value, a removed row or step. Beside the replacement where there is room, beneath it for a paragraph.",
       "forcedColors": "The picked fill survives as a fill, repainted in the system Highlight with HighlightText, so state and focus never collapse into the same outline. A focused picked control switches its ring to CanvasText."
@@ -205,47 +205,37 @@
       {
         "name": "recipe-log-beside",
         "value": "min-width: 1366px",
-        "purpose": "Recipe route, approved 2026-09-26 (sketch 011 decision 16), not yet implemented. The log sits beside the two-column Sheet at 350. 1366 = side nav 224 + three 32px gutters + Sheet minimum 696 + log 350."
+        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5 (sketch 011 decision 16). The log sits beside the two-column Sheet at 350. 1366 = side nav 224 + three 32px gutters + Sheet minimum 696 + log 350. Also the folds' cut (decision 18): every fold is open by default from here and closed below, with no stored state, and the band's rhythm switches here."
       },
       {
         "name": "recipe-side-nav",
         "value": "min-width: 984px",
-        "purpose": "Recipe route, approved 2026-09-26, not yet implemented. The side nav and the Sheet's second column hold together from here up (224 + 64 + 696); below it the bottom tab row and a one-column Sheet arrive at the same cut, and the log is below the Sheet."
+        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5. The side nav and the Sheet's second column hold together from here up (224 + 64 + 696); below it the bottom tab row and a one-column Sheet arrive at the same cut, and the log is below the Sheet."
       },
       {
         "name": "recipe-phone-forms",
         "value": "max-width: 723.98px",
-        "purpose": "Recipe route, approved 2026-09-26, not yet implemented. The list-form ingredient table, the 20px page margin and the stacked band arrive together (band side-by-side minimum 660 + 64)."
+        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5. The list-form ingredient table, the 20px page margin and the stacked band arrive together (band side-by-side minimum 660 + 64)."
       },
       {
         "name": "recipe-content-cap",
         "value": "min-width: 1770px",
-        "purpose": "Recipe route, approved 2026-09-26, not yet implemented. Content stops growing at 1482 (Sheet 1100 + 32 + log 350) and centres in the main area."
+        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5. Content stops growing at 1482 (Sheet 1100 + 32 + log 350) and centres in the main area."
       },
       {
-        "name": "spread-collapse",
-        "value": "max-width: 1099.98px",
-        "purpose": "Incumbent; superseded on the recipe route by recipe-side-nav (the Sheet keeps two columns down to 984). The two-column spread becomes one column in the order band, ingredients, side, method, foot — side BEFORE method, so the formulation note stays near its table. Page gap narrows to 20px; the pen foot collapses with it."
+        "name": "touch",
+        "value": "pointer: coarse",
+        "purpose": "Touch sizes follow the pointer only (width arm retired, Mark 2026-09-26; built in 03.5-13). Buttons, selects, ink fields, segmented options, defect toggles and text controls take a 44px minimum height; an axis stop grows in HEIGHT only, to 38x44; .ink-field and .prose-field read 16px. A narrow mouse window keeps mouse sizes; a real touch device is caught however wide it is."
       },
       {
-        "name": "touch-union",
-        "value": "max-width: 759.98px, (pointer: coarse)",
-        "purpose": "Incumbent; the width arm is retired (Mark, 2026-09-26): touch sizes follow the pointer only. Touch sizes. Buttons, selects, ink fields, segmented options, defect toggles and text controls take a 44px minimum height; an axis stop grows in HEIGHT only, to 38x44; .ink-field and .prose-field read 16px. A union, not a replacement: a narrowed desktop window still exercises touch mode, and a real touch device is caught however wide it is."
-      },
-      {
-        "name": "narrow-layout",
+        "name": "record-pen-narrow",
         "value": "max-width: 759.98px",
-        "purpose": "Width only. The version row collapses to one column and the axis track takes its 216px geometry with 44x44 stops. Track geometry is deliberately NOT in the touch union: at 1366 the axes sit in three 213.3px columns, where a 216px track overflows into its neighbour."
-      },
-      {
-        "name": "phone",
-        "value": "max-width: 600px",
-        "purpose": "Incumbent; superseded on the recipe route by recipe-phone-forms. Page padding shrinks to 20px, the margin’s prose field drops to the control size, both save ceremonies may wrap, and the ingredient table scrolls inside its own region rather than overflowing the page."
+        "purpose": "The record pen's own width cut, width only: the tasting battery takes its stacked arrangement and the axis track its 216px geometry with 44x44 stops. Kept at 760 by Mark's 2026-09-27 answer until the record pen is measured (todo 2026-09-26-measure-the-record-pen-width-limits); the route's one cut not yet derived. Track geometry is deliberately NOT in the touch block: at 1366 the axes sit in three 213.3px columns, where a 216px track overflows into its neighbour."
       },
       {
         "name": "wide-touch",
         "value": "min-width: 760px and (pointer: coarse)",
-        "purpose": "A tablet held in the hand at a desktop width (sketch 009). Axis and segmented caption lines reserve two lines of caption height so they sit level with the field captions beside them, and Clear takes its 44px target as an overflowing ::after hit area so the line box never grows."
+        "purpose": "A tablet held in the hand at a desktop width (sketch 009). Axis and segmented caption lines reserve two lines of caption height so they sit level with the field captions beside them, and Clear takes its 44px target as an overflowing ::after hit area so the line box never grows. Kept at 760 with the record pen's width cut (Mark, 2026-09-27)."
       },
       {
         "name": "forced-colors",
@@ -256,11 +246,10 @@
     "table": {
       "leading": "1.2",
       "nameColumnWidth": "auto",
-      "layout": "fixed",
+      "layout": "auto",
       "boxSizing": "border-box",
-      "sizedColumns": "numeric 94px, data 86px, remove 78px",
       "cellPadX": "6px",
-      "purpose": "The ingredient table’s layout is fixed and its leading constant so a marked row’s bold weight moves nothing. Cells are border-box, so a declared column width is the whole column. The name column is the single unsized column, absorbing what the sized columns leave; rows read in step order under step-group heads."
+      "purpose": "The ingredient table sizes to its content (sketch 011 decision 15, built in 03.5-11): the amount, As made and % of batch take their figures' width and the name takes the rest, wrapping in its own column. Below 724 it reads as a list with no header row. Its leading stays constant so a marked row's bold weight moves nothing; rows read in step order under step-group heads."
     },
     "battery": {
       "penWidth": "640px",
@@ -378,8 +367,8 @@
       "name": "Text toggle",
       "kind": "chip",
       "refersTo": "text-toggle",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). An independent on/off recorded in prose, so it is a square and a word like the defect: a 13px leading square before the word, hollow at rest, filled pen blue when on, aria-pressed carrying the fact. The underline stays hairline whether on or off — the square carries the state, the word never bolds and never gains an outline (Show changes, one fill for every on state, 2026-09-16).",
-      "html": "<button type=\"button\" class=\"ds-text-toggle\" aria-pressed=\"true\">Show changes</button>",
+      "description": "Implemented paper catalogue (legacy app reuse is transitional). An independent on/off recorded in prose, so it is a square and a word like the defect: a 13px leading square before the word, hollow at rest, filled pen blue when on, aria-pressed carrying the fact. The underline stays hairline whether on or off — the square carries the state, the word never bolds and never gains an outline (one fill for every on state, 2026-09-16). Show changes no longer uses it: since 03.5-15 it is an underlined word that names its state, Hide changes while shown, with no aria-pressed.",
+      "html": "<button type=\"button\" class=\"ds-text-toggle\" aria-pressed=\"true\">Step 3, skipped</button>",
       "css": ".ds-text-toggle{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);min-height:var(--control-h);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-toggle::before{content:\"\";display:inline-block;width:var(--size-lead-mark);height:var(--size-lead-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--ink);margin-right:var(--gap-xs);vertical-align:baseline}.ds-text-toggle[aria-pressed=\"true\"]::before{background:var(--pen-blue);border-color:var(--pen-blue)}.ds-text-toggle[aria-pressed=\"true\"],.ds-text-toggle[aria-pressed=\"true\"]:hover{text-decoration-thickness:var(--rule-ink-field)}.ds-text-toggle:hover::before{border-width:var(--rule-hover)}.ds-text-toggle:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-text-toggle{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-text-toggle[aria-pressed=\"true\"]::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}}"
     },
     {
@@ -405,6 +394,14 @@
       "description": "Implemented paper catalogue (legacy app reuse is transitional). The only navigation: name in the text face, version and mass in the grotesk, inheriting ink, the hairline underline every link carries.",
       "html": "<ul class=\"ds-recipe-list\"><li><a href=\"#\"><span class=\"ds-recipe-list__name\">Olive Oil Ice Cream</span><span>50 g oil · 800 g</span><span>799.7 g</span></a></li></ul>",
       "css": ".ds-recipe-list{list-style:none;margin:0;padding:0;font-family:var(--face-grotesk);font-size:var(--size-table-body);color:var(--ink)}.ds-recipe-list li+li{margin-top:var(--gap-s)}.ds-recipe-list a{display:flex;gap:var(--gap-m);color:inherit;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline);font-variant-numeric:tabular-nums}.ds-recipe-list a:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-recipe-list__name{font-family:var(--face-text)}"
+    },
+    {
+      "name": "Fold head",
+      "kind": "custom",
+      "refersTo": "fold-row",
+      "description": "Sketch 011 decisions 18 and 19, built in Phase 03.5 (FoldRow.jsx). One full-row button per fold on the recipe route: label, then Show or Hide as an underlined word, and an optional count or date at the row's end. aria-expanded carries the state; 44px floor at every pointer. Every fold head is this component; a Show/Hide is never hand-built.",
+      "html": "<button type=\"button\" class=\"ds-fold-row\" aria-expanded=\"false\"><span class=\"ds-fold-row__head\"><span class=\"ds-fold-row__label\">History</span><span class=\"ds-fold-row__control\">Show</span></span><span class=\"ds-fold-row__count\">3 versions</span></button>",
+      "css": ".ds-fold-row{appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;display:flex;width:100%;min-height:var(--touch-min);align-items:center;justify-content:space-between;gap:var(--app-notebook-recipe-rail-gap)}.ds-fold-row__head{display:flex;align-items:baseline;gap:var(--app-notebook-recipe-rail-gap)}.ds-fold-row__label{font-family:var(--face-grotesk);font-size:var(--app-size-label);font-weight:600;letter-spacing:var(--app-tracking-label);text-transform:uppercase;color:var(--app-text-secondary)}.ds-fold-row__control{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);color:var(--sheet-ink);text-decoration:underline;text-underline-offset:var(--app-notebook-link-underline-offset)}.ds-fold-row:hover .ds-fold-row__control{text-decoration-thickness:1.5px}.ds-fold-row:focus-visible{outline:2px solid var(--sheet-ink);outline-offset:2px}.ds-fold-row__count{font-family:var(--face-grotesk);font-size:var(--app-size-label);color:var(--app-text-secondary)}"
     }
   ],
   "narrative": {

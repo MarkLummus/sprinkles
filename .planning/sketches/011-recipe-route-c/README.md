@@ -1,6 +1,6 @@
 # Sketch 011 — the recipe route, layout C
 
-**Status:** SETTLED — layout C (Mark, 2026-09-24); width ladder derived and approved (Mark, 2026-09-26, decision 16). Acceptance target for Phase 03.5; awaiting app implementation.
+**Status:** SETTLED — layout C (Mark, 2026-09-24); width ladder derived and approved (Mark, 2026-09-26, decision 16). Acceptance target for Phase 03.5; built in plans 03.5-10 to 03.5-18 (decisions 15, 16, 18 and 19), conformance in 03.5-LADDER-CONFORMANCE.md.
 **Drawn:** 2026-09-23 to 2026-09-24.
 **Question:** where recipe context, the Sheet and the batch log sit, from desktop to phone.
 

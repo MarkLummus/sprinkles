@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { seedIfEmpty } from './seed.js';
+import { seedRecipeGroups } from '../data/seed-recipes.js';
 
 // A plain in-memory object implementing the repository seam's contract —
 // no store library, no browser. This is why seedIfEmpty takes its
@@ -29,18 +30,43 @@ function createInMemoryRepository(initial = []) {
 }
 
 describe('seedIfEmpty', () => {
-  it('writes exactly one version record with id olive-oil-ice-cream-v1 against an empty repository', async () => {
+  it('writes one recipe record per group, in seedRecipeGroups order', async () => {
     const repository = createInMemoryRepository([]);
     await seedIfEmpty(repository);
-    expect(repository.versions.length).toBe(1);
+    expect(repository.recipes.map((r) => r.id)).toEqual(seedRecipeGroups.map((g) => g.recipe.id));
+  });
+
+  it('writes every version of every group, in group and version order', async () => {
+    const repository = createInMemoryRepository([]);
+    await seedIfEmpty(repository);
+    const expectedVersionIds = seedRecipeGroups.flatMap((g) => g.versions.map((v) => v.id));
+    expect(repository.versions.map((v) => v.id)).toEqual(expectedVersionIds);
+  });
+
+  it('writes every batch of every group, in group and batch order', async () => {
+    const repository = createInMemoryRepository([]);
+    await seedIfEmpty(repository);
+    const expectedBatchIds = seedRecipeGroups.flatMap((g) => g.batches.map((b) => b.id));
+    expect(repository.batches.map((b) => b.id)).toEqual(expectedBatchIds);
+  });
+
+  it('writes oliveOilRecipe first and oliveOilVersion first', async () => {
+    const repository = createInMemoryRepository([]);
+    await seedIfEmpty(repository);
+    expect(repository.recipes[0].id).toBe('olive-oil-ice-cream');
     expect(repository.versions[0].id).toBe('olive-oil-ice-cream-v1');
   });
 
-  it('is idempotent: calling twice against the same repository leaves exactly one record', async () => {
+  it('is idempotent: a second call against the filled repository writes nothing further', async () => {
     const repository = createInMemoryRepository([]);
     await seedIfEmpty(repository);
+    const versionCount = repository.versions.length;
+    const batchCount = repository.batches.length;
+    const recipeCount = repository.recipes.length;
     await seedIfEmpty(repository);
-    expect(repository.versions.length).toBe(1);
+    expect(repository.versions.length).toBe(versionCount);
+    expect(repository.batches.length).toBe(batchCount);
+    expect(repository.recipes.length).toBe(recipeCount);
   });
 
   it('writes nothing and leaves an existing unrelated record untouched', async () => {
@@ -48,36 +74,7 @@ describe('seedIfEmpty', () => {
     await seedIfEmpty(repository);
     expect(repository.versions.length).toBe(1);
     expect(repository.versions[0].id).toBe('existing');
-  });
-
-  it('also writes exactly one batch record against an empty repository', async () => {
-    const repository = createInMemoryRepository([]);
-    await seedIfEmpty(repository);
-    expect(repository.batches.length).toBe(1);
-    expect(repository.batches[0].versionId).toBe('olive-oil-ice-cream-v1');
-  });
-
-  it('writes no batch when a version already exists', async () => {
-    const repository = createInMemoryRepository([{ id: 'existing' }]);
-    await seedIfEmpty(repository);
-    expect(repository.batches.length).toBe(0);
-  });
-
-  it('writes exactly one recipe record, deep-equal to oliveOilRecipe, against an empty repository', async () => {
-    const repository = createInMemoryRepository([]);
-    await seedIfEmpty(repository);
-    expect(repository.recipes.length).toBe(1);
-    expect(repository.recipes[0]).toEqual({
-      id: 'olive-oil-ice-cream',
-      name: 'Olive Oil Ice Cream, circulator',
-      description:
-        'Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.',
-    });
-  });
-
-  it('writes no recipe when a version already exists', async () => {
-    const repository = createInMemoryRepository([{ id: 'existing' }]);
-    await seedIfEmpty(repository);
     expect(repository.recipes.length).toBe(0);
+    expect(repository.batches.length).toBe(0);
   });
 });

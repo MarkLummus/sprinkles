@@ -3,7 +3,7 @@
 // files; nothing here is wired into store/seed.js, which this file never
 // imports.
 import { describe, it, expect } from 'vitest';
-import { transcribedRecipeGroups } from './seed-recipes.js';
+import { seedRecipeGroups, transcribedRecipeGroups } from './seed-recipes.js';
 import { mexicanChocolateV1, mexicanChocolateV2, mexicanChocolateV3, mexicanChocolateV4 } from './mexican-chocolate.js';
 import { validateStoreFile, STORE_SCHEMA_VERSION } from '../store/transfer.js';
 import { computeBalance } from '../domain/composition.js';
@@ -34,6 +34,13 @@ function collectStrings(value, out = []) {
   else if (value && typeof value === 'object') Object.values(value).forEach((v) => collectStrings(v, out));
   return out;
 }
+
+describe('seedRecipeGroups (plan 09): olive oil first, then transcribedRecipeGroups in order', () => {
+  it('places the olive oil group first, then transcribedRecipeGroups unchanged, in order', () => {
+    expect(seedRecipeGroups[0].recipe.id).toBe('olive-oil-ice-cream');
+    expect(seedRecipeGroups.slice(1)).toEqual(transcribedRecipeGroups);
+  });
+});
 
 describe('transcribedRecipeGroups validates as a store file (D-07 gate: not wired into seed.js)', () => {
   it('passes validateStoreFile at the current schema version with no errors', () => {

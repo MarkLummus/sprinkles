@@ -1,6 +1,9 @@
-// The D-10/D-11 proof against a real IndexedDB: DB_VERSION 6 adds a third
-// `recipes` store, and a returning profile at a prior version resets
-// (D-10, one-way, approved by Mark) rather than lifting. This file
+// The D-10/D-11 proof against a real IndexedDB: DB_VERSION 7 (plan 09: the
+// seed's content changes, and seedIfEmpty writes only into an empty store,
+// so a profile seeded at 6 would never receive the new recipes) still holds
+// the same three stores a version-6 profile already had, and a returning
+// profile at a prior version resets (D-10, one-way, approved by Mark)
+// rather than lifting. This file
 // imports db.js only — never repository.js and never idb itself, so the
 // project's seam grep (only db.js under app/src imports 'idb') stays
 // exact. The fake-indexeddb setup mirrors app/tests/db-reset.test.js: a
@@ -46,9 +49,9 @@ beforeEach(() => {
 });
 
 describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
-  it('opens a fresh (deleted) database with versions, batches and recipes stores, at version 6', async () => {
+  it('opens a fresh (deleted) database with versions, batches and recipes stores, at version 7', async () => {
     const db = await openStore();
-    expect(db.version).toBe(6);
+    expect(db.version).toBe(7);
     expect(db.version).toBe(DB_VERSION);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
@@ -81,6 +84,42 @@ describe('openStore, against a real IndexedDB (fake-indexeddb)', () => {
     oldDb.close();
 
     const db = await openStore();
+    expect(db.objectStoreNames.contains('versions')).toBe(true);
+    expect(db.objectStoreNames.contains('batches')).toBe(true);
+    expect(db.objectStoreNames.contains('recipes')).toBe(true);
+    expect(await db.getAll('versions')).toEqual([]);
+    db.close();
+  });
+
+  it('resets a database first opened at version 6 (all three stores, one record put) to all three stores, empty', async () => {
+    const oldDb = await new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 6);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains('versions')) {
+          db.createObjectStore('versions', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('batches')) {
+          const batches = db.createObjectStore('batches', { keyPath: 'id' });
+          batches.createIndex('by-version', 'versionId');
+        }
+        if (!db.objectStoreNames.contains('recipes')) {
+          db.createObjectStore('recipes', { keyPath: 'id' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    await new Promise((resolve, reject) => {
+      const tx = oldDb.transaction('versions', 'readwrite');
+      tx.objectStore('versions').put({ id: 'pre-existing' });
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+    oldDb.close();
+
+    const db = await openStore();
+    expect(db.version).toBe(7);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
     expect(db.objectStoreNames.contains('recipes')).toBe(true);

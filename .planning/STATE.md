@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
-stopped_at: Completed 03.5-15-PLAN.md
-last_updated: "2026-09-28T04:56:40.362Z"
+stopped_at: Completed 03.5-16-PLAN.md
+last_updated: "2026-09-28T05:25:41.559Z"
 last_activity: 2026-09-28
 last_activity_desc: Phase 03.5 execution started
-state_head: c079830dacd76b9d36decc2c2f0c2e26158870a9
+state_head: 7df2032c6548f7f930440659cb990eb2b178809a
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 84
-  completed_plans: 79
+  completed_plans: 80
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
-Plan: 2 of 18
+Plan: 3 of 18
 Status: Ready to execute
 Last activity: 2026-09-28 — Phase 03.5 execution started
 
@@ -108,6 +108,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.4 P08 | ~25min | 2 tasks | 3 files |
 | Phase 03.4 P14 | ~20min | 2 tasks | 4 files |
 | Phase 03.5 P15 | 45min | 2 tasks | 11 files |
+| Phase 03.5 P16 | ~35min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -203,6 +204,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.4]: [Phase 03.4, Plan 14] Closed G-03.4-r3-3: explicit tabIndex={0} on all ten shell__place JSX sites (19 rendered stops) bypasses WebKit's TabsToLinks/Full-Keyboard-Access gates for the Safari chrome-to-page hand-off; shell.css's .shell__place:focus comment and 03.4-09-SUMMARY.md corrected (dated Correction section) to stop citing round two's falsified 'focus lands without :focus-visible' inference as measured.
 - [Phase 03.5]: [03.5, Plan 15] The folds' cut moved to 1366 (sketch 011 decision 18): BELOW_DESKTOP_QUERY is now (max-width: 1365.98px), the complement of LOG_BESIDE_SHEET_QUERY; the version's details fold exists at every width through one full-row FoldRow control (gen.py fold_row), open by default from 1366 and closed below, with useFold(openByDefault) resetting to the width's default on every crossing and no stored state anywhere.
 - [Phase 03.5]: [03.5, Plan 15] The band's rhythm (frame/band/grid gaps, band padding-top) now switches at the same 1366 cut as the folds, replacing the retired 1499.98px interim rung; Show changes reads Hide changes while shown, with aria-pressed dropped (decisions_recorded 5 - a self-renaming toggle must not also announce a pressed state).
+- [Phase 03.5]: 03.5-16: The 32px gap above Watch for needed no replacement token — measured live against 1366-batch.html, the space comes entirely from .side-region's own flex gap once the old legend's margin-top is gone.
+- [Phase 03.5]: 03.5-16: The band probe's fold-tasting board comparison reads the board's caption-level style against the app's control-level style (a deliberate cross-field compare) since gen.py's Tasting fold_row() wraps its label in an explicitly-styled cap() span rather than nesting inside an ancestor .region-name, unlike Balance/Watch for.
 
 ### Pending Todos
 
@@ -341,6 +344,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-28T04:56:40.272Z
-Stopped at: Completed 03.5-15-PLAN.md
+Last session: 2026-09-28T05:25:41.469Z
+Stopped at: Completed 03.5-16-PLAN.md
 Resume file: None

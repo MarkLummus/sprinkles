@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 13/18 plans executed
+**Plans:** 14/18 plans executed
 
 Plans:
 
@@ -518,7 +518,7 @@ Plans:
 
 **Wave 12** *(blocked on 03.5-15)*
 
-- [ ] 03.5-16-PLAN.md — Balance and Watch for fold apart, each through its own full-row head inside its h2 ("Things to check" becomes Watch for, with no "derived" label); Tasting's date moves to the end of its fold row
+- [x] 03.5-16-PLAN.md — Balance and Watch for fold apart, each through its own full-row head inside its h2 ("Things to check" becomes Watch for, with no "derived" label); Tasting's date moves to the end of its fold row
 
 **Wave 13** *(blocked on 03.5-16)*
 

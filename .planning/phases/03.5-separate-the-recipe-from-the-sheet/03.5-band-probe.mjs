@@ -3,13 +3,14 @@
 // plan's own SUMMARY). Imports the plan-10 harness unchanged
 // (decisions_recorded — prohibitions).
 //
-// 03.5-15 Task 1 extends this file with a `folds` group: sketch 011
-// decisions 18/19's cut at 1366 and the full-row fold head, this plan's
-// own fold-version. EXPECTED_FOLDS grows with plan 16's Balance/Watch
-// for/Tasting/History/Batches folds.
+// 03.5-15 extends this file with two more groups: `folds` (Task 1 — sketch
+// 011 decisions 18/19's cut at 1366 and the full-row fold head, this plan's
+// own fold-version; EXPECTED_FOLDS grows with plan 16's Balance/Watch
+// for/Tasting/History/Batches folds) and `rhythm` (Task 2 — the band's own
+// rhythm switching at the same 1366 cut).
 //
 // Usage: node 03.5-band-probe.mjs <groups> <widths>
-//   groups: comma list, e.g. rail,folds
+//   groups: comma list, e.g. rail,folds,rhythm
 //   widths: comma list, e.g. 393,1024,1365,1366,1920
 import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE } from './03.5-probe-harness.mjs';
 
@@ -174,6 +175,43 @@ async function readFoldGeometry(page, foldId) {
 
 async function clickFoldControl(page, foldId) {
   await page.click(`button[aria-controls="${foldId}"]`);
+}
+
+// The `rhythm` group (03.5-15 Task 2): the frame's own row gap (.notebook),
+// the band's own row gap and top padding (.notebook-band), and the band
+// grid's own column gap (.notebook-band__grid) — the app's own selectors.
+async function readNotebookRhythm(page) {
+  return page.evaluate(() => {
+    const px = (v) => parseFloat(v);
+    const notebook = document.querySelector('.notebook');
+    const band = document.querySelector('.notebook-band');
+    const grid = document.querySelector('.notebook-band__grid');
+    return {
+      notebookGap: notebook ? px(getComputedStyle(notebook).rowGap) : null,
+      bandGap: band ? px(getComputedStyle(band).rowGap) : null,
+      bandPaddingTop: band ? px(getComputedStyle(band).paddingTop) : null,
+      gridGap: grid ? px(getComputedStyle(grid).columnGap) : null,
+    };
+  });
+}
+
+// The board's own equivalent structure (README "How the boards are made"):
+// the frame is main.shell__main's own direct child div, the band is
+// main.shell__main's own header, and the grid is the band's own first
+// element child.
+async function readBoardRhythm(page) {
+  return page.evaluate(() => {
+    const px = (v) => parseFloat(v);
+    const frame = document.querySelector('main.shell__main > div');
+    const band = document.querySelector('main.shell__main header');
+    const grid = band ? band.firstElementChild : null;
+    return {
+      notebookGap: frame ? px(getComputedStyle(frame).rowGap) : null,
+      bandGap: band ? px(getComputedStyle(band).rowGap) : null,
+      bandPaddingTop: band ? px(getComputedStyle(band).paddingTop) : null,
+      gridGap: grid ? px(getComputedStyle(grid).columnGap) : null,
+    };
+  });
 }
 
 async function main() {
@@ -365,6 +403,49 @@ async function main() {
         );
 
         await context.close();
+      }
+    }
+
+    if (groups.has('rhythm')) {
+      for (const width of widths) {
+        if (![1024, 1365, 1366, 1920].includes(width)) continue;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse: false });
+        const reading = await readNotebookRhythm(page);
+        console.log(JSON.stringify({ group: 'rhythm', width, reading }));
+        const expected =
+          width >= 1366
+            ? { notebookGap: 28, bandGap: 24, bandPaddingTop: 20, gridGap: 40 }
+            : { notebookGap: 24, bandGap: 20, bandPaddingTop: 16, gridGap: 32 };
+        for (const key of Object.keys(expected)) {
+          countedCheck(
+            reading[key] === expected[key],
+            `rhythm width=${width}: ${key} is ${expected[key]} (got ${reading[key]})`,
+          );
+        }
+        await context.close();
+      }
+
+      const boardFiles = { 1920: '1920-batch.html', 1024: '1024-batch.html' };
+      for (const [width, file] of Object.entries(boardFiles)) {
+        const { context: boardContext, page: boardPage } = await openBoard(browser, repoUrl, file);
+        const boardReading = await readBoardRhythm(boardPage);
+        console.log(JSON.stringify({ group: 'rhythm', board: file, boardReading }));
+
+        const { context: appContext, page: appPage } = await openApp(browser, appUrl, APP_ROUTE, {
+          width: Number(width),
+          coarse: false,
+        });
+        const appReading = await readNotebookRhythm(appPage);
+        console.log(JSON.stringify({ group: 'rhythm', width: Number(width), comparedTo: file, appReading }));
+
+        for (const key of Object.keys(boardReading)) {
+          countedCheck(
+            appReading[key] === boardReading[key],
+            `rhythm width=${width}: app ${key} (${appReading[key]}) equals ${file}'s ${key} (${boardReading[key]})`,
+          );
+        }
+        await appContext.close();
+        await boardContext.close();
       }
     }
   } finally {

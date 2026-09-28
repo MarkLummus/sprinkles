@@ -37,15 +37,39 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test("notebook.css carries exactly five named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1499.98px (the interim desktop rung, plan 12), then 1365.98px (the log moves below the Sheet, sketch 011 decision 16), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758)", () => {
+  test("notebook.css carries exactly four named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
     expect(mediaConditions).toEqual([
       '(min-width: 1366px)',
-      '(max-width: 1499.98px)',
       '(max-width: 1365.98px)',
       '(max-width: 723.98px)',
       '(pointer: coarse)',
     ]);
+  });
+});
+
+// The band's rhythm moves with the folds (sketch 011 decision 18, Mark,
+// 2026-09-27: "Move with the folds"; 03.5-15 Task 2): the interim
+// 1499.98px rung (plan 12) is gone, and its four rhythm declarations now
+// sit as the first rules under (max-width: 1365.98px) — the same cut
+// where the log moves below the Sheet and the folds default closed.
+describe("the band's rhythm at 1366 (sketch 011 decision 18, 03.5-15 Task 2)", () => {
+  test('the 1499.98px interim rung no longer exists', () => {
+    expect(rules.some((rule) => rule.media === '(max-width: 1499.98px)')).toBe(false);
+  });
+
+  test('.notebook, .notebook-band and .notebook-band__grid carry their rhythm declarations under (max-width: 1365.98px)', () => {
+    const narrow = rules.filter((rule) => rule.media === '(max-width: 1365.98px)');
+    const notebookRule = narrow.find((rule) => rule.selector === '.notebook');
+    const bandRule = narrow.find((rule) => rule.selector === '.notebook-band');
+    const gridRule = narrow.find((rule) => rule.selector === '.notebook-band__grid');
+    expect(notebookRule).toBeDefined();
+    expect(bandRule).toBeDefined();
+    expect(gridRule).toBeDefined();
+    expect(notebookRule.declarations).toContain('gap: var(--app-notebook-band-rhythm)');
+    expect(bandRule.declarations).toContain('gap: var(--gap-m)');
+    expect(bandRule.declarations).toContain('padding: var(--app-notebook-band-pad-t-narrow) 0 var(--gap-m)');
+    expect(gridRule.declarations).toContain('gap: var(--gap-l)');
   });
 });
 

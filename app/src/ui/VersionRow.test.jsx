@@ -433,18 +433,34 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(withoutParent).not.toContain('Show changes');
   });
 
-  // 03.5-04 Task 2: Show changes reads as an App control now (.notebook-link),
-  // its aria-pressed state carrying the toggle — App context reads its own
-  // controls, not the Sheet's .text-control/.text-toggle pair (03.3-06
-  // checkpoint feedback's own square-and-word toggle stays a Sheet-only
-  // convention).
-  it('renders Show changes carrying the notebook-link class and aria-pressed', () => {
+  // 03.5-04 Task 2: Show changes reads as an App control now (.notebook-link)
+  // — App context reads its own controls, not the Sheet's
+  // .text-control/.text-toggle pair (03.3-06 checkpoint feedback's own
+  // square-and-word toggle stays a Sheet-only convention).
+  //
+  // 03.5-15 Task 2, decisions_recorded 5: the control names the action by
+  // its own state instead of carrying aria-pressed — a toggle that renames
+  // itself must not also announce a pressed state (WAI-ARIA APG button
+  // pattern), or it doubles the state in the accessible name.
+  it('renders Show changes carrying the notebook-link class and no aria-pressed', () => {
     const markup = renderVersionRow({
       version: childVersion,
       citedBatch: augustSecondBatch,
       parentVersion: oliveOilVersion,
     });
-    expect(markup).toMatch(/<button[^>]*class="notebook-link"[^>]*aria-pressed="false"[^>]*>Show changes<\/button>/);
+    expect(markup).toMatch(/<button[^>]*class="notebook-link"[^>]*>Show changes<\/button>/);
+    expect(markup).not.toContain('aria-pressed');
+  });
+
+  it('renders Hide changes when showingChanges is true', () => {
+    const markup = renderVersionRow({
+      version: childVersion,
+      citedBatch: augustSecondBatch,
+      parentVersion: oliveOilVersion,
+      showingChanges: true,
+    });
+    expect(markup).toMatch(/<button[^>]*class="notebook-link"[^>]*>Hide changes<\/button>/);
+    expect(markup).not.toContain('Show changes');
   });
 
   it('renders Parent and Batch as plain text, not links, while a pen is open', () => {

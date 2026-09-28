@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
-stopped_at: Completed 03.5-14-PLAN.md
-last_updated: "2026-09-28T14:20:35.238Z"
+stopped_at: Completed 03.5-09-PLAN.md
+last_updated: "2026-09-28T16:02:54.382Z"
 last_activity: 2026-09-28
 last_activity_desc: Phase 03.5 execution started
-state_head: 96cb6d51673f13903d75ddcf01c35eaeaccc0357
+state_head: 64c6984a523b620dcd8e42e1d7a3ec882986c8cf
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 84
-  completed_plans: 83
+  completed_plans: 84
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
-Plan: 6 of 18
+Plan: 7 of 18
 Status: Ready to execute
 Last activity: 2026-09-28 — Phase 03.5 execution started
 
@@ -112,6 +112,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P17 | ~30min | 3 tasks | 17 files |
 | Phase 03.5 P18 | 35min | 3 tasks | 9 files |
 | Phase 03.5 P14 | ~4h elapsed (~30min automated) | 3 tasks | 26 files |
+| Phase 03.5 P09 | ~50min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -214,6 +215,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: [Phase 03.5, Plan 18] History rebuilt on FoldRow/UprightRail (decision 19): one plain line at exactly one entry, otherwise a fold — the horizontal rail from 1366 (unchanged), UprightRail below it, latest first. railHint's signature moved to {open, upright, overflowing}; railEntries splits an unchurned version's wording by position ('not yet churned' only for the latest, 'not churned' for an older one).
 - [Phase 03.5]: [Phase 03.5, Plan 18] Draft line (decision 19's band line) deferred to Phase 4 with draft persistence, per Mark's recorded answer (option-defer, 2026-09-28) — no app code change, D-13 stands.
 - [Phase 03.5]: [03.5, Plan 14] Ladder conformance re-run at every sketch-011 width found no CSS drift — The ladder, decision 15's table, and decisions 18/19 all measured match/accepted/scenario against sketch 011's boards at 1920, 1600-pen, 1600-long-history, 1366, 1024, 984, 983, 723 and 393, plus the four count-board panels; notebook.css/app.css/tokens.css needed no edits, and all five gap probes (667 checks) re-ran clean as regression.
+- [Phase 03.5]: [Phase 03.5] [Phase 03.5, Plan 09] Mark approved the transcribed seed content as transcribed (2026-09-28); seedRecipeGroups (olive oil first, then transcribedRecipeGroups) is the one array seed.js imports, DB_VERSION moved to 7
+- [Phase 03.5]: [Phase 03.5] [Phase 03.5, Plan 09] Judgement call 58: Coconut's, Strawberry's and Mocha's batches arrays reordered newest-first in seed-recipes.js so Home's standing (activeWork/sortedBatches) reads each recipe's true newest batch rather than an array-order tie-break artifact; no field changed, no date invented
 
 ### Pending Todos
 
@@ -354,6 +357,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-28T10:59:25.684Z
-Stopped at: Completed 03.5-14-PLAN.md
+Last session: 2026-09-28T16:02:54.285Z
+Stopped at: Completed 03.5-09-PLAN.md
 Resume file: None

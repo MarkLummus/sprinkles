@@ -149,6 +149,60 @@
   color: var(--app-text-secondary);
 }
 
+/* The one fold head every below-desktop fold uses (sketch 011 decisions
+   18/19, gen.py's own fold_row; 03.5-15 Task 1, this file's Version fold;
+   plan 16 extends it to Balance, Watch for, Tasting, History and
+   Batches). The class is fold-row only — never text-control or
+   history-disclosure — so neither the log's/version column's blue
+   .text-control scope nor the touch union's own .text-control rule
+   (app.css) reaches it; its own rule below carries fold_row's inline
+   resets and the 44px touch floor at every pointer. */
+.notebook .fold-row {
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  display: flex;
+  width: 100%;
+  min-height: var(--touch-min);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--app-notebook-recipe-rail-gap);
+  text-decoration: none;
+}
+
+.notebook .fold-row__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-notebook-recipe-rail-gap);
+}
+
+.notebook .fold-row__control {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--sheet-ink);
+  text-decoration: underline;
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+
+.notebook .fold-row__count {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--app-text-secondary);
+}
+
 .notebook-field {
   display: flex;
   flex-direction: column;
@@ -317,18 +371,6 @@
   color: var(--app-text);
 }
 
-/* The Details fold's own control (03.5-08 Task 1, settled decision 6;
-   1366-batch.html): the same underlined-link treatment the log's own
-   openers already take (.notebook-log .text-control), read here for the
-   version column's own text-control instead. Absent at desktop —
-   nothing renders here then. */
-.notebook-version .text-control {
-  color: var(--app-blue-text);
-  font-family: var(--face-grotesk);
-  font-size: var(--app-size-meta);
-  font-weight: 600;
-}
-
 .notebook-version__details {
   margin: 0;
   display: grid;
@@ -342,11 +384,10 @@
 
 /* 03.5-08 Task 2 conformance fix: the rule above's own display: grid ties
    with the UA stylesheet's [hidden] { display: none } on specificity, and
-   wins on source order (author over UA) — so Task 1's closed-by-default
-   fold-version dl (VersionRow.jsx: hidden={foldable ? !detailsOpen : ...})
-   rendered open at every below-desktop width the probe measured (1366,
-   1024, 393). This re-asserts none at higher specificity than the class
-   rule alone. */
+   wins on source order (author over UA) — so the fold-version dl
+   (VersionRow.jsx: hidden={!detailsOpen}, unconditional at every width
+   since 03.5-15 Task 1) rendered open where it should have been closed.
+   This re-asserts none at higher specificity than the class rule alone. */
 .notebook-version__details[hidden] {
   display: none;
 }

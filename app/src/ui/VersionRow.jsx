@@ -4,7 +4,8 @@ import { recordDateWords } from '../domain/batch.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { notebookPath } from './notebookPaths.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
-import { HistoryDisclosure } from './History.jsx';
+import { FoldRow } from './FoldRow.jsx';
+import { useFold } from './useBelowDesktop.js';
 
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
@@ -41,15 +42,15 @@ export function VersionRow({
   // sentence, read by FieldFeedback.
   versionLineBlockedAttempt = null,
   versionLineError = null,
-  // The Details fold (03.5-08 Task 1, settled decision 6): below desktop
-  // the version's own Written/From/Why details close by default behind a
-  // "Details" control; at desktop (foldable false, the default) nothing
-  // here changes.
-  foldable = false,
+  // The details fold (sketch 011 decisions 18/19, 03.5-15 Task 1): a
+  // convenience at every width now, not a below-desktop-only affordance —
+  // open by default from 1366 (foldsOpen true, the default here) and
+  // closed by default below it. Never stored (decisions_recorded 2):
+  // useFold below returns detailsOpen to this default whenever it
+  // changes, so an iPad rotation across 1366 resets the fold.
+  foldsOpen = true,
 }) {
-  // Local, never stored (settled decision 6): starts closed on every
-  // mount, so every visit to the route below desktop reopens closed.
-  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailsOpen, toggleDetailsOpen] = useFold(foldsOpen);
   // Focus-return for the Develop opener: closing the plan's pen returns
   // focus to the control that opened it. Must sit above the conditional
   // render below — hooks cannot be called conditionally.
@@ -230,9 +231,18 @@ export function VersionRow({
       ) : (
         <section className="notebook-version" aria-label="Version" aria-busy={saveAction ? 'true' : undefined}>
         {/* The version column as App front matter (03.5-04 Task 2, sketch
-            011 1600-batch.html): a "Version" caption, then the identity
-            heading. */}
-        <span className="notebook-caption">Version</span>
+            011 1600-batch.html), and the details fold at every width
+            (sketch 011 decisions 18/19, 03.5-15 Task 1): the section's
+            first child is FoldRow, whose own label doubles as the
+            "Version" caption — the standalone caption span and the old
+            below-desktop-only HistoryDisclosure both retire into it. */}
+        <FoldRow
+          label={<span className="notebook-caption">Version</span>}
+          open={detailsOpen}
+          onToggle={toggleDetailsOpen}
+          controls="fold-version"
+          what="details"
+        />
 
         {/* The identity heading (route-recipe.md § 6 "One version identity,
             wherever a version is named", 2026-09-18): replaces the sketch's
@@ -267,16 +277,13 @@ export function VersionRow({
             feedback's reading-layout fix. The History disclosure control
             used to close this dl (the struck Later dt/dd); it now sits on
             its own line below the dl (260917-odu) — see
-            version-row__history just after </dl>. */}
-        {foldable && (
-          <HistoryDisclosure open={detailsOpen} onToggle={() => setDetailsOpen((open) => !open)} panelId="fold-version">
-            Details
-          </HistoryDisclosure>
-        )}
+            version-row__history just after </dl>. The dl always carries
+            id="fold-version" now (03.5-15 Task 1) — FoldRow above is its
+            control at every width. */}
         <dl
           className="notebook-version__details"
-          id={foldable ? 'fold-version' : undefined}
-          hidden={foldable ? !detailsOpen : undefined}
+          id="fold-version"
+          hidden={!detailsOpen}
         >
           <dt className="versions__lineage-label">Written</dt>
           <dd className="versions__lineage version-row__written">{recordDateWords(version.createdAt)}</dd>

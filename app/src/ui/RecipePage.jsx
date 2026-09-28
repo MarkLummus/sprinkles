@@ -897,11 +897,15 @@ export function RecipePage({ onPageStatus = () => {} }) {
     };
   }, [mode, amendingBatchId, penDraft, version, draft, amendBaseline]);
 
-  // The below-desktop folds (03.5-08 Task 1, settled decision 6): one
-  // media read, passed down as `foldable` to VersionRow, the Balance
-  // region and BatchRow. balanceOpen is this region's own fold state —
-  // local, never stored, starting closed on every visit. Both hooks must
-  // sit above the early returns below.
+  // The folds at every width (sketch 011 decision 18, 03.5-15): one media
+  // read, now cut at 1366 (BELOW_DESKTOP_QUERY), passed down to VersionRow
+  // as its own foldsOpen prop (the negation of belowDesktop) — open by
+  // default from 1366, closed below, and back to that default on every
+  // visit or width crossing (useFold, decisions_recorded 2). The Balance
+  // region and BatchRow still read `belowDesktop`/`foldable` directly;
+  // plan 16 converts them to the same useFold discipline. balanceOpen is
+  // that region's own fold state — local, never stored. Both hooks must sit
+  // above the early returns below.
   const belowDesktop = useBelowDesktop();
   const [balanceOpen, setBalanceOpen] = useState(false);
 
@@ -1908,7 +1912,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             focusVersionOnMount={focusVersionOnMount}
             versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
-            foldable={belowDesktop}
+            foldsOpen={!belowDesktop}
           />
         </div>
 

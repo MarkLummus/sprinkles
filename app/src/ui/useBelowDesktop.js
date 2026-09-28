@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 
-// The History rail's own below-desktop query (03.5-05 Task 2): the same
-// 1499.98px rung notebook.css's own @media step already uses for the
-// band/rail composition. Node-guarded (BatchRow.jsx's useBelow760, the
-// same critical note): RecipeHistory's own static-markup tests run under
-// Vitest's node environment (renderToStaticMarkup, no jsdom), where
-// `window` does not exist — an unguarded read here would crash them.
-// With no window, or no window.matchMedia, this hook answers the
-// desktop arrangement and builds no listener; the real subscription
+// Every below-desktop fold's own query (sketch 011 decision 18, 03.5-15):
+// the log's own cut, 1366 = 224 (side nav) + 3 x 32 (gutters) + 696 (the
+// Sheet's two-column minimum) + 350 (the log) — the complement of
+// LOG_BESIDE_SHEET_QUERY below. Node-guarded (BatchRow.jsx's
+// useBelow760, the same critical note): RecipeHistory's own static-markup
+// tests run under Vitest's node environment (renderToStaticMarkup, no
+// jsdom), where `window` does not exist — an unguarded read here would
+// crash them. With no window, or no window.matchMedia, this hook answers
+// the desktop arrangement and builds no listener; the real subscription
 // exists only in the browser.
-export const BELOW_DESKTOP_QUERY = '(max-width: 1499.98px)';
+export const BELOW_DESKTOP_QUERY = '(max-width: 1365.98px)';
 
 export function useBelowDesktop() {
   const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
@@ -22,6 +23,20 @@ export function useBelowDesktop() {
     return () => mediaQuery.removeEventListener('change', onChange);
   }, [hasMatchMedia]);
   return below;
+}
+
+// useFold(openByDefault): a fold's own open/closed state (decisions_recorded
+// 2, 03.5-15) — starts at its width's default and returns to that default
+// whenever the default changes, so an iPad rotation across 1366 resets the
+// fold and a maker's own open/close never outlives the width it was made
+// at. No storage of any kind (T-03.5-37) — this is component state only.
+export function useFold(openByDefault) {
+  const [open, setOpen] = useState(openByDefault);
+  useEffect(() => {
+    setOpen(openByDefault);
+  }, [openByDefault]);
+  const toggle = () => setOpen((current) => !current);
+  return [open, toggle];
 }
 
 // Option A's own query (03.5-07 Task 3, decisions_recorded 4/Task 2

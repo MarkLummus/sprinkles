@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
-stopped_at: Completed 03.5-18-PLAN.md
-last_updated: "2026-09-28T06:37:12.175Z"
+stopped_at: Completed 03.5-14-PLAN.md
+last_updated: "2026-09-28T10:59:25.953Z"
 last_activity: 2026-09-28
 last_activity_desc: Phase 03.5 execution started
-state_head: 20f12d0603d8c9fc80914a1e39b7e197286a32ea
+state_head: 4db8e77196b249f3f6046403e03ff45d88cbb7ca
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 84
-  completed_plans: 82
+  completed_plans: 83
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
-Plan: 5 of 18
+Plan: 6 of 18
 Status: Ready to execute
 Last activity: 2026-09-28 — Phase 03.5 execution started
 
@@ -111,6 +111,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P16 | ~35min | 2 tasks | 11 files |
 | Phase 03.5 P17 | ~30min | 3 tasks | 17 files |
 | Phase 03.5 P18 | 35min | 3 tasks | 9 files |
+| Phase 03.5 P14 | ~4h elapsed (~30min automated) | 3 tasks | 26 files |
 
 ## Accumulated Context
 
@@ -212,6 +213,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: [Phase 03.5, Plan 17] Rule 1 fix: .notebook-body's align-items: flex-start carried over unchanged from the 1366-up row layout into the below-1366 column layout, shrinking .notebook-log to its own content width instead of the column's full box (measured 424px vs 683-703px at 723). Added align-items: stretch to the same media block, fixing the batch-head todo's own board comparison and, incidentally, the Sheet's own below-1366 stacking.
 - [Phase 03.5]: [Phase 03.5, Plan 18] History rebuilt on FoldRow/UprightRail (decision 19): one plain line at exactly one entry, otherwise a fold — the horizontal rail from 1366 (unchanged), UprightRail below it, latest first. railHint's signature moved to {open, upright, overflowing}; railEntries splits an unchurned version's wording by position ('not yet churned' only for the latest, 'not churned' for an older one).
 - [Phase 03.5]: [Phase 03.5, Plan 18] Draft line (decision 19's band line) deferred to Phase 4 with draft persistence, per Mark's recorded answer (option-defer, 2026-09-28) — no app code change, D-13 stands.
+- [Phase 03.5]: [03.5, Plan 14] Ladder conformance re-run at every sketch-011 width found no CSS drift — The ladder, decision 15's table, and decisions 18/19 all measured match/accepted/scenario against sketch 011's boards at 1920, 1600-pen, 1600-long-history, 1366, 1024, 984, 983, 723 and 393, plus the four count-board panels; notebook.css/app.css/tokens.css needed no edits, and all five gap probes (667 checks) re-ran clean as regression.
 
 ### Pending Todos
 
@@ -263,6 +265,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
   - [List page carry] `/` has no page margin, default buttons, no title or running head, and a link with no underline or focus treatment; out of the recipe brief's scope, for whichever phase next touches the list.
   - [Phase 4 carry, UX1-01] No live announcement when a rule marks its rows; PAC, POD, MSNF carry no plain-language gloss (D11).
 - [Impeccable 2026-09-08 -> new phase between 3 and 4] The code work for these confirmed revisions is to be planned as a phase inserted between Phase 3 and Phase 4, not as quick tasks: the imprint (front-matter band, every control out of the spread, the save pair repeated at the foot), the binder's control treatment and its new `--focus-outline-width` token, the pen's printed-paragraph prose fields with purpose and aside on demand and the uses line, native date inputs with the calendar icon hidden, and Escape closing only an untouched pen. Briefs: `.impeccable/surfaces/route-recipe.md` (§ 3 the imprint, § 6 the binder and § 8 Controls), `route-recipe-version.md`, `route-recipe-batch.md`; critique snapshot `.impeccable/critique/2026-09-08T12-33-31Z__app-src-ui-recipepage-jsx.md` (25/40, three P1s).
+- [Phase 03.5, Plan 14] Task 2's device human-check (iPad landscape 1366, iPad portrait 1024, iPhone 393, and a desktop board comparison) is deferred to end-of-phase UAT; must run before phase 03.5 UAT closes out. See 03.5-14-SUMMARY.md "Deferred Human Verification".
 
 ### Quick Tasks Completed
 
@@ -350,6 +353,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-28T06:37:12.083Z
-Stopped at: Completed 03.5-18-PLAN.md
+Last session: 2026-09-28T10:59:25.684Z
+Stopped at: Completed 03.5-14-PLAN.md
 Resume file: None

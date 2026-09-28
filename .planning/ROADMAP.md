@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 16/18 plans executed
+**Plans:** 17/18 plans executed
 
 Plans:
 
@@ -530,7 +530,7 @@ Plans:
 
 **Wave 15** *(blocked on 03.5-15 to 03.5-18)*
 
-- [ ] 03.5-14-PLAN.md — Conformance re-run against sketch 011 at 1920/1600/1366/1024/984/983/723/393 and the decision-19 count boards, drift fixed, Open for Mark, device UAT, and the /impeccable document hand-off
+- [x] 03.5-14-PLAN.md — Conformance re-run against sketch 011 at 1920/1600/1366/1024/984/983/723/393 and the decision-19 count boards, drift fixed, Open for Mark, device UAT, and the /impeccable document hand-off
 
 ### Phase 4: Prepare the next version for making
 

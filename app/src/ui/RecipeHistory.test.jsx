@@ -29,78 +29,105 @@ function makeBatch(overrides = {}) {
 function renderHistory(props) {
   return renderToStaticMarkup(
     <MemoryRouter>
-      <RecipeHistory versions={[]} recipeId="recipe-1" currentVersionId="v1" allBatches={[]} {...props} />
+      <RecipeHistory
+        versions={[]}
+        recipeId="recipe-1"
+        currentVersionId="v1"
+        allBatches={[]}
+        belowDesktop={false}
+        {...props}
+      />
     </MemoryRouter>,
   );
 }
 
-describe('RecipeHistory — the dated rail (03.5-05, sketch 011 decision 4)', () => {
-  const root = makeVersion();
-  const successor = makeVersion({
-    id: 'v2',
-    versionLabel: 'less oil',
-    createdAt: '2026-09-20T00:00:00.000Z',
-    parentVersionId: 'v1',
-    parentVersionLabel: root.versionLabel,
-  });
+const root = makeVersion();
+const successor = makeVersion({
+  id: 'v2',
+  versionLabel: 'less oil',
+  createdAt: '2026-09-20T00:00:00.000Z',
+  parentVersionId: 'v1',
+  parentVersionLabel: root.versionLabel,
+});
 
-  it('renders a labelled section, a caption, a hint, and an ordered list of nodes', () => {
+// 03.5-18 Task 1 (decision 19): History folds like every other section from
+// two entries. From 1366 (belowDesktop=false) it is the horizontal rail,
+// wrapped in a FoldRow whose count reads the horizontal hint. Below 1366
+// (belowDesktop=true) it is UprightRail (plan 17), latest first, wrapped in
+// the same FoldRow reading the upright hint. RecipeHistory takes
+// belowDesktop as a prop now (decisions_recorded 3) rather than calling
+// useBelowDesktop itself, so these tests can render both arrangements.
+describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 19)', () => {
+  it('belowDesktop false: FoldRow reads open/Hide and the horizontal count; the rail carries id fold-history; exactly 1 link with tabindex 0', () => {
     const batch = makeBatch();
     const markup = renderHistory({
       versions: [root, successor],
       currentVersionId: 'v2',
       allBatches: [batch],
+      belowDesktop: false,
     });
     expect(markup).toContain('aria-label="History"');
-    expect(markup).toContain('class="notebook-caption">History<');
-    expect(markup).toContain('notebook-history__hint');
-    expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(2);
-  });
-
-  it('renders exactly one link — the version not in view — with an explicit tabindex and the Notebook address', () => {
-    const batch = makeBatch();
-    const markup = renderHistory({
-      versions: [root, successor],
-      currentVersionId: 'v2',
-      allBatches: [batch],
-    });
+    expect(markup).toContain('aria-controls="fold-history"');
+    expect(markup).toContain('aria-expanded="true"');
+    expect(markup).toContain('>Hide<');
+    expect(markup).toContain('2 versions · oldest left, latest right');
+    expect(markup).toContain('id="fold-history"');
     const tags = markup.match(/<a\b[^>]*>/g) ?? [];
     expect(tags).toHaveLength(1);
     expect(tags[0]).toContain('href="/notebook/recipe-1/v1"');
     expect(tags[0]).toContain('tabindex="0"');
   });
 
-  it('marks the in-view node with aria-current and the in-view mark class, and leaves the other node unmarked', () => {
+  it('belowDesktop true: FoldRow reads closed/Show and the bare count; the upright list is hidden, latest first; exactly 1 link with tabindex 0', () => {
     const batch = makeBatch();
     const markup = renderHistory({
       versions: [root, successor],
       currentVersionId: 'v2',
       allBatches: [batch],
+      belowDesktop: true,
     });
-    expect(markup).toContain('aria-current="page"');
-    expect(markup).toContain('notebook-history__mark--in-view');
+    expect(markup).toContain('aria-expanded="false"');
+    expect(markup).toContain('>Show<');
+    expect(markup).toMatch(/>2 versions<\/span>/);
+    expect(markup).toContain('<ol id="fold-history"');
+    expect(markup).toContain('class="notebook-upright"');
+    expect(markup).toMatch(/\shidden(=""|\s|>)/);
+    const secondIdx = markup.indexOf('Version 2');
+    const firstIdx = markup.indexOf('Version 1');
+    expect(secondIdx).toBeGreaterThan(-1);
+    expect(firstIdx).toBeGreaterThan(secondIdx);
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabindex="0"');
   });
 
-  it('renders no links at all while a pen is open', () => {
+  it('renders no links at all while a pen is open, in either arrangement', () => {
     const batch = makeBatch();
-    const markup = renderHistory({
-      versions: [root, successor],
-      currentVersionId: 'v2',
-      allBatches: [batch],
-      openPen: 'plan',
-    });
-    expect(markup).not.toContain('<a ');
+    for (const belowDesktop of [false, true]) {
+      const markup = renderHistory({
+        versions: [root, successor],
+        currentVersionId: 'v2',
+        allBatches: [batch],
+        belowDesktop,
+        openPen: 'plan',
+      });
+      expect(markup).not.toContain('<a ');
+    }
   });
 
-  it('renders no version belonging to a different recipeId', () => {
+  it('filters out a version belonging to a different recipeId, keeping the fold at two own-recipe entries', () => {
     const other = makeVersion({ id: 'other', recipeId: 'recipe-2', versionLabel: 'Elsewhere' });
-    const markup = renderHistory({ versions: [root, other], currentVersionId: 'v1', allBatches: [] });
+    const markup = renderHistory({
+      versions: [root, successor, other],
+      currentVersionId: 'v1',
+      allBatches: [],
+    });
     expect(markup).not.toContain('Elsewhere');
-    expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(1);
+    expect(markup).toContain('2 versions');
   });
 
   // D-13: the draft node shows only while the pen is open, from memory —
-  // 03.5-05 Task 2.
+  // 03.5-05 Task 2, unchanged by this plan's own rework.
   it('appends a draft node reading "draft" while the pen is open, with no link and a hint that counts it', () => {
     const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
     const markup = renderHistory({
@@ -110,11 +137,9 @@ describe('RecipeHistory — the dated rail (03.5-05, sketch 011 decision 4)', ()
       openPen: 'plan',
       draft,
     });
-    const nodes = markup.match(/<li class="notebook-history__node[^"]*"/g) ?? [];
-    expect(nodes).toHaveLength(3);
     expect(markup).not.toContain('<a ');
-    expect(markup).toMatch(/notebook-history__state">draft<\/span><\/span><\/li><\/ol>/);
     expect(markup).toContain('3 versions');
+    expect(markup).toContain('draft');
   });
 
   it('renders no draft node when openPen is null, even with a draft object passed', () => {
@@ -127,6 +152,6 @@ describe('RecipeHistory — the dated rail (03.5-05, sketch 011 decision 4)', ()
       draft,
     });
     expect(markup).not.toContain('draft');
-    expect(markup.match(/<li class="notebook-history__node/g)).toHaveLength(2);
+    expect(markup).toContain('2 versions');
   });
 });

@@ -9,10 +9,17 @@
 // for/Tasting/History/Batches folds) and `rhythm` (Task 2 — the band's own
 // rhythm switching at the same 1366 cut).
 //
+// 03.5-18 Task 1 adds the `history` group (decision 19's own History fold:
+// one line at one version — Task 2 — a folding horizontal rail from 1366
+// and UprightRail below it from two) and re-points `rail` at a two-version
+// horizontal rail (saveNextVersion once, paint-order checks at 1366/1920,
+// the forced-overflow fade check moved from 393 to 1366 — below 1366 the
+// rail is upright now, not horizontal, so 393 no longer applies to it).
+//
 // Usage: node 03.5-band-probe.mjs <groups> <widths>
-//   groups: comma list, e.g. rail,folds,rhythm
+//   groups: comma list, e.g. rail,folds,rhythm,history
 //   widths: comma list, e.g. 393,1024,1365,1366,1920
-import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE } from './03.5-probe-harness.mjs';
+import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, saveNextVersion } from './03.5-probe-harness.mjs';
 
 const [, , groupsArg, widthsArg] = process.argv;
 
@@ -73,14 +80,16 @@ async function readRailMarks(page) {
   });
 }
 
-// The seeded fixture (APP_ROUTE) carries exactly one saved version, so the
-// rail's own single node cannot overflow. The fade check needs a rail that
-// actually scrolls (content hidden to the left) — a second node is cloned
+// The rail's own real content (even after saveNextVersion, two nodes) may
+// not fill the rail's width on its own, so the fade check needs a rail that
+// actually scrolls (content hidden to the left) — a further node is cloned
 // from the real, rendered first node purely for this read, the same "for
 // the read only" treatment the plan gives the fade's own pointer-events
 // below. The clone lives inside the <ol> React does not otherwise touch on
 // a re-render triggered by a sibling's conditional (the fade), so it
-// survives the scroll-driven re-render that follows.
+// survives the scroll-driven re-render that follows. Moved from 393 to 1366
+// (03.5-18 Task 1, decisions_recorded — below 1366 the rail is upright now,
+// not horizontal, so the horizontal fade no longer exists there).
 //
 // The fade is position: absolute inside the rail, which is itself the
 // scrolling element (overflow-x: auto) — its own left:0 box scrolls along
@@ -89,11 +98,17 @@ async function readRailMarks(page) {
 // is clipped by the rail's own visible frame. The fade's true VISIBLE left
 // edge is therefore the rail's own left edge, not the fade element's own
 // (partly clipped, scroll-following) getBoundingClientRect().
-async function readRailFadeAt393(page) {
+async function readRailFadeReading(page) {
   return page.evaluate(async () => {
     const list = document.querySelector('.notebook-history__nodes');
     const firstNode = list.querySelector('.notebook-history__node');
-    list.appendChild(firstNode.cloneNode(true));
+    // 1366's own rail column is far wider than 393's — a single clone (the
+    // pre-03.5-18 amount, sufficient at 393) does not reliably overflow it.
+    // Ten clones (~1680px of extra node width) overflows any width this
+    // probe runs at, up to 1920.
+    for (let i = 0; i < 10; i += 1) {
+      list.appendChild(firstNode.cloneNode(true));
+    }
 
     const rail = document.querySelector('.notebook-history__rail');
     rail.scrollLeft = 40;
@@ -147,6 +162,63 @@ async function readBoardMarks(page) {
       const hit = document.elementFromPoint(cx, cy);
       return { onMark: hit === mark, hitClass: hit ? hit.className : null };
     });
+  });
+}
+
+// The `history` group (03.5-18 Task 1/2, decision 19): the recipe's own
+// History fold reuses UprightRail's own classes below 1366 (plan 17), so
+// this reads #fold-history the same way the batch-list probe reads
+// #fold-batches. The horizontal branch (>=1366) keeps reading the `rail`
+// group's own .notebook-history__* classes via readFoldGeometry (the fold
+// head, generic across every FoldRow) and a plain node count.
+async function readAppHistoryUprightGeometry(page) {
+  return page.evaluate(() => {
+    const list = document.getElementById('fold-history');
+    if (!list || list.tagName !== 'OL') return null;
+    const rows = [...list.querySelectorAll(':scope > li.notebook-upright__row')];
+    const marks = [...list.querySelectorAll('.notebook-upright__mark')];
+    const firstRow = rows[0];
+    const firstRowRect = firstRow ? firstRow.getBoundingClientRect() : null;
+    const firstTitle = firstRow ? firstRow.querySelector('.notebook-upright__title') : null;
+    const firstMeta = firstRow ? firstRow.querySelector('.notebook-upright__meta') : null;
+    const firstMark = marks[0] ? marks[0].getBoundingClientRect() : null;
+    return {
+      rowCount: rows.length,
+      rowTitles: rows.map((row) => row.querySelector('.notebook-upright__title')?.textContent ?? null),
+      rowMetas: rows.map((row) => row.querySelector('.notebook-upright__meta')?.textContent ?? null),
+      rowHeight: firstRowRect ? firstRowRect.height : null,
+      markWidth: firstMark ? firstMark.width : null,
+      markHeight: firstMark ? firstMark.height : null,
+      titleFontSize: firstTitle ? getComputedStyle(firstTitle).fontSize : null,
+      metaFontSize: firstMeta ? getComputedStyle(firstMeta).fontSize : null,
+    };
+  });
+}
+
+// upright-393.html's own "open" panel (011-options-counts): the row shape
+// counts.py's vnode/history_upright draws is structurally identical to
+// batches-many.html's own vrail_ rows (same author, same shape) — the mark
+// is the aria-hidden span carrying inline border-radius: 6px, exactly the
+// "board has no class names" discipline the batches probe already
+// established for the shared UprightRail component.
+async function readBoardHistoryUprightGeometry(page) {
+  return page.evaluate(() => {
+    const list = document.getElementById('fold-history');
+    if (!list || list.tagName !== 'OL') return null;
+    const rows = [...list.querySelectorAll(':scope > li')];
+    const firstRow = rows[0];
+    const ariaHiddenSpans = firstRow ? [...firstRow.querySelectorAll('a[href="#"] span[aria-hidden="true"]')] : [];
+    const marks = ariaHiddenSpans.filter((el) => el.style.borderRadius === '6px');
+    const firstMarkRect = marks[0] ? marks[0].getBoundingClientRect() : null;
+    const textSpans = firstRow ? firstRow.querySelectorAll('a > span:last-child > span') : [];
+    return {
+      rowCount: rows.length,
+      rowHeight: firstRow ? firstRow.getBoundingClientRect().height : null,
+      markWidth: firstMarkRect ? firstMarkRect.width : null,
+      markHeight: firstMarkRect ? firstMarkRect.height : null,
+      titleFontSize: textSpans[0] ? getComputedStyle(textSpans[0]).fontSize : null,
+      metaFontSize: textSpans[1] ? getComputedStyle(textSpans[1]).fontSize : null,
+    };
   });
 }
 
@@ -270,9 +342,9 @@ async function main() {
   try {
     if (groups.has('rail')) {
       for (const width of widths) {
-        if (width !== 1366 && width !== 393) continue;
-        const coarse = width === 393;
-        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+        if (width !== 1366 && width !== 1920) continue;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse: false });
+        await saveNextVersion(page, 'less oil');
         const marks = await readRailMarks(page);
         console.log(JSON.stringify({ group: 'rail', width, marks }));
         countedCheck(marks.length > 0, `rail width=${width}: at least one mark rendered`);
@@ -281,13 +353,13 @@ async function main() {
           countedCheck(!mark.onTrack, `rail width=${width}: mark ${i} never hit-tests to the track`);
         }
 
-        if (width === 393) {
-          const fadeReading = await readRailFadeAt393(page);
+        if (width === 1366) {
+          const fadeReading = await readRailFadeReading(page);
           console.log(JSON.stringify({ group: 'rail', width, fade: fadeReading }));
-          countedCheck(fadeReading.fadeFound, 'rail width=393: the fade renders once the rail is scrolled');
+          countedCheck(fadeReading.fadeFound, 'rail width=1366: the fade renders once the rail is scrolled');
           countedCheck(
             fadeReading.isFade,
-            `rail width=393: the fade paints over the node it hides (got ${fadeReading.hitClass})`,
+            `rail width=1366: the fade paints over the node it hides (got ${fadeReading.hitClass})`,
           );
         }
 
@@ -303,6 +375,130 @@ async function main() {
         `rail board: the first mark's centre hit-tests to that mark (got ${boardReading[0]?.hitClass})`,
       );
       await boardContext.close();
+    }
+
+    if (groups.has('history')) {
+      const { context: uprightBoardCtx, page: uprightBoardPage } = await openBoard(
+        browser,
+        repoUrl,
+        '../011-options-counts/upright-393.html',
+      );
+      const uprightBoardReading = await readBoardHistoryUprightGeometry(uprightBoardPage);
+      console.log(JSON.stringify({ group: 'history', board: 'upright-393.html', uprightBoardReading }));
+      await uprightBoardCtx.close();
+
+      const { context: foldBoardCtx, page: foldBoardPage } = await openBoard(browser, repoUrl, '1366-batch.html');
+      const foldBoardReading = await readFoldGeometry(foldBoardPage, 'fold-history');
+      console.log(JSON.stringify({ group: 'history', board: '1366-batch.html', foldBoardReading }));
+      await foldBoardCtx.close();
+
+      for (const width of widths) {
+        if (![393, 1024, 1366, 1920].includes(width)) continue;
+        const coarse = width === 393;
+        const expectedOpen = width >= 1366;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+        await saveNextVersion(page, 'less oil');
+
+        let reading = await readFoldGeometry(page, 'fold-history');
+        console.log(JSON.stringify({ group: 'history', width, reading }));
+        countedCheck(reading !== null, `history width=${width}: the fold-history control exists`);
+
+        if (reading) {
+          countedCheck(
+            reading.ariaExpanded === String(expectedOpen),
+            `history width=${width}: aria-expanded is ${expectedOpen} (got ${reading.ariaExpanded})`,
+          );
+
+          if (expectedOpen) {
+            const nodeCount = await page.evaluate(
+              () => document.querySelectorAll('#fold-history .notebook-history__node').length,
+            );
+            countedCheck(nodeCount === 2, `history width=${width}: 2 horizontal nodes (got ${nodeCount})`);
+            countedCheck(
+              reading.countText != null && reading.countText.endsWith('oldest left, latest right'),
+              `history width=${width}: the count ends "oldest left, latest right" (got ${reading.countText})`,
+            );
+          } else {
+            countedCheck(
+              reading.countText === '2 versions',
+              `history width=${width}: the count reads "2 versions" while closed (got ${reading.countText})`,
+            );
+            await clickFoldControl(page, 'fold-history');
+            reading = await readFoldGeometry(page, 'fold-history');
+            countedCheck(reading.ariaExpanded === 'true', `history width=${width}: a click opens fold-history`);
+            const upright = await readAppHistoryUprightGeometry(page);
+            countedCheck(
+              upright !== null,
+              `history width=${width}: the upright list (#fold-history) exists once opened`,
+            );
+            if (upright) {
+              countedCheck(upright.rowCount === 2, `history width=${width}: 2 upright rows (got ${upright.rowCount})`);
+              countedCheck(
+                upright.rowTitles[0] != null && upright.rowTitles[0].startsWith('Version 2'),
+                `history width=${width}: the first row names Version 2 (got ${upright.rowTitles[0]})`,
+              );
+              countedCheck(
+                upright.rowHeight >= 44,
+                `history width=${width}: row height is at least 44px (got ${upright.rowHeight})`,
+              );
+            }
+            countedCheck(
+              reading.countText != null && reading.countText.endsWith('latest first'),
+              `history width=${width}: the count ends "latest first" once open (got ${reading.countText})`,
+            );
+          }
+
+          const linkReading = await page.evaluate(() => {
+            const links = [...document.querySelectorAll('#fold-history a')];
+            return { count: links.length, tabindexOk: links.every((a) => a.getAttribute('tabindex') === '0') };
+          });
+          countedCheck(linkReading.count === 1, `history width=${width}: exactly 1 rail link (got ${linkReading.count})`);
+          countedCheck(linkReading.tabindexOk, `history width=${width}: every rail link carries tabindex 0`);
+
+          if (width === 393 && uprightBoardReading) {
+            const appUpright = await readAppHistoryUprightGeometry(page);
+            if (appUpright) {
+              countedCheck(
+                Math.abs(appUpright.rowHeight - uprightBoardReading.rowHeight) <= 1,
+                `history width=393: row height (${appUpright.rowHeight}) within 1px of upright-393.html's (${uprightBoardReading.rowHeight})`,
+              );
+              countedCheck(
+                Math.abs(appUpright.markWidth - uprightBoardReading.markWidth) <= 1,
+                `history width=393: mark width (${appUpright.markWidth}) within 1px of upright-393.html's (${uprightBoardReading.markWidth})`,
+              );
+              countedCheck(
+                Math.abs(parseFloat(appUpright.titleFontSize) - parseFloat(uprightBoardReading.titleFontSize)) <= 1,
+                `history width=393: title font-size (${appUpright.titleFontSize}) within 1px of upright-393.html's (${uprightBoardReading.titleFontSize})`,
+              );
+              countedCheck(
+                Math.abs(parseFloat(appUpright.metaFontSize) - parseFloat(uprightBoardReading.metaFontSize)) <= 1,
+                `history width=393: meta font-size (${appUpright.metaFontSize}) within 1px of upright-393.html's (${uprightBoardReading.metaFontSize})`,
+              );
+            }
+          }
+
+          if (width === 1366 && foldBoardReading) {
+            countedCheck(
+              Math.abs(reading.height - foldBoardReading.height) <= 1,
+              `history width=1366: control height (${reading.height}) within 1px of 1366-batch.html's (${foldBoardReading.height})`,
+            );
+            countedCheck(
+              reading.word === foldBoardReading.word,
+              `history width=1366: control word (${reading.word}) agrees with 1366-batch.html's (${foldBoardReading.word})`,
+            );
+            countedCheck(
+              Math.abs(parseFloat(reading.countFontSize) - parseFloat(foldBoardReading.countFontSize)) <= 1,
+              `history width=1366: count font-size (${reading.countFontSize}) within 1px of 1366-batch.html's (${foldBoardReading.countFontSize})`,
+            );
+            countedCheck(
+              reading.countColor === foldBoardReading.countColor,
+              `history width=1366: count colour (${reading.countColor}) agrees with 1366-batch.html's (${foldBoardReading.countColor})`,
+            );
+          }
+        }
+
+        await context.close();
+      }
     }
 
     if (groups.has('folds')) {

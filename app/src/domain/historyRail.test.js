@@ -85,18 +85,26 @@ describe('railEntries', () => {
   });
 });
 
-describe('railHint', () => {
-  it('reads the singular at one version, desktop, not overflowing', () => {
-    expect(railHint(1, { belowDesktop: false, overflowing: false })).toBe('1 version · oldest left, latest right');
+describe('railHint (03.5-18 Task 1: open/upright/overflowing, decision 19)', () => {
+  it('reads the count alone while closed', () => {
+    expect(railHint(2, { open: false })).toBe('2 versions');
   });
 
-  it('adds the opens-at clause only while overflowing, desktop', () => {
-    expect(railHint(8, { belowDesktop: false, overflowing: true })).toBe(
+  it('reads the upright clause while open and upright', () => {
+    expect(railHint(2, { open: true, upright: true })).toBe('2 versions · latest first');
+  });
+
+  it('reads the horizontal clause while open and not upright', () => {
+    expect(railHint(2, { open: true })).toBe('2 versions · oldest left, latest right');
+  });
+
+  it('adds the opens-at clause only while open, horizontal and overflowing', () => {
+    expect(railHint(8, { open: true, overflowing: true })).toBe(
       '8 versions · oldest left, latest right · opens at the version in view',
     );
   });
 
-  it('drops the desktop clauses below desktop even while overflowing', () => {
-    expect(railHint(2, { belowDesktop: true, overflowing: true })).toBe('2 versions');
+  it('never adds the overflow clause while upright, even while overflowing', () => {
+    expect(railHint(8, { open: true, upright: true, overflowing: true })).toBe('8 versions · latest first');
   });
 });

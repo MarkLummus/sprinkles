@@ -185,6 +185,25 @@ export async function recordAnotherBatch(page, isoDate) {
   await page.waitForSelector('h2.region-name:has-text("Batch")');
 }
 
+// saveNextVersion(page, name) — a UI-driven fork in the harness's own
+// throwaway browser context (03.5-18 Task 1): activates "Next version" (the
+// reading view's own opener, VersionRow.jsx), fills the Version name field,
+// activates "Save as a new version", and waits for the saved child's own
+// route and identity heading. The same "wait for the URL to CHANGE" pattern
+// as recordAnotherBatch above (WR-01/single-target precedent) — a fresh
+// save always lands on a URL distinct from the one it started on, so this
+// is correct even the first time it is called from APP_ROUTE. Never touches
+// Mark's :4173 preview or his own browser profile (T-03.5-44) — the
+// caller's page/context is this file's own openApp() result, on 127.0.0.1.
+export async function saveNextVersion(page, name) {
+  const urlBeforeSave = page.url();
+  await page.getByRole('button', { name: 'Next version' }).first().click();
+  await page.getByLabel('Version name').fill(name);
+  await page.getByRole('button', { name: 'Save as a new version' }).click();
+  await page.waitForFunction((prev) => window.location.href !== prev, urlBeforeSave);
+  await page.waitForSelector('h2.notebook-version__identity');
+}
+
 export function check(failures, condition, label) {
   if (!condition) failures.push(`FAIL ${label}`);
 }

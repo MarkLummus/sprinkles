@@ -1,7 +1,7 @@
 import { openDB } from 'idb';
 
 export const DB_NAME = 'sprinkles';
-export const DB_VERSION = 6;
+export const DB_VERSION = 7;
 
 // The only module under app/src that touches the store library — every
 // other module reaches the store through repository.js's seam (D-06).
@@ -14,7 +14,10 @@ export function openStore() {
       // empty and reseeds through seedIfEmpty. Order is load-bearing: for
       // a returning profile every guard below would skip (the stores
       // already exist), so the drop must run first or nothing would
-      // recreate them.
+      // recreate them. This same branch carries the plan-09 bump to 7 (the
+      // seed's content changed, and seedIfEmpty only writes into an empty
+      // store, so a profile already seeded at 6 needs this same reset to
+      // pick up the new recipes) — no new branch was needed.
       if (oldVersion > 0 && oldVersion < DB_VERSION) {
         if (db.objectStoreNames.contains('versions')) db.deleteObjectStore('versions');
         if (db.objectStoreNames.contains('batches')) db.deleteObjectStore('batches');

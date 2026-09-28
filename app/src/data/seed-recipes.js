@@ -10,6 +10,8 @@ import {
   mexicanChocolateV3Batch,
   mexicanChocolateV4,
 } from './mexican-chocolate.js';
+import { oliveOilRecipe, oliveOilVersion } from './olive-oil.js';
+import { augustSecondBatch } from './batch-2026-08-02.js';
 import { pineappleRecipe, pineappleV1, pineappleV1Batch } from './pineapple.js';
 import { coconutRecipe, coconutV1, coconutV1Batch, coconutV2, coconutV2Batch } from './coconut.js';
 import {
@@ -62,4 +64,13 @@ export const transcribedRecipeGroups = [
     versions: [mochaV0, mochaV1, mochaV2, mochaV3],
     batches: [mochaV0Batch, mochaV2Batch, mochaV3Batch],
   },
+];
+
+// The full seed order (plan 09, D-07 approved): olive oil leads so the
+// store's first-written records stay the working case, then every
+// transcribed group in transcribedRecipeGroups's own order. This is the
+// only array store/seed.js imports.
+export const seedRecipeGroups = [
+  { recipe: oliveOilRecipe, versions: [oliveOilVersion], batches: [augustSecondBatch] },
+  ...transcribedRecipeGroups,
 ];

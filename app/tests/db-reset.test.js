@@ -123,9 +123,13 @@ describe('the D-05 reset, against a real IndexedDB', () => {
     const repository = createRepository();
     await seedIfEmpty(repository);
 
+    // Plan 09: seedIfEmpty now writes every seedRecipeGroups entry. This
+    // guard's own figures are olive oil's, so it picks that version out by
+    // id rather than assuming it is the only one — listVersions reads back
+    // in IndexedDB key order (alphabetical by id), not seed-write order.
     const versions = await repository.listVersions();
-    expect(versions).toHaveLength(1);
-    const [seeded] = versions;
+    expect(versions.length).toBeGreaterThan(1);
+    const seeded = versions.find((version) => version.id === 'olive-oil-ice-cream-v1');
 
     const figures = Object.fromEntries(
       buildFigures(seeded).map((figure) => [figure.key, Number(figure.value.toFixed(figure.decimals))]),

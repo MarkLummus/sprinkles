@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
 stopped_at: Completed 03.5-09-PLAN.md
-last_updated: "2026-09-28T16:02:54.382Z"
+last_updated: "2026-09-28T16:28:28.077Z"
 last_activity: 2026-09-28
 last_activity_desc: Phase 03.5 execution started
-state_head: 64c6984a523b620dcd8e42e1d7a3ec882986c8cf
+state_head: fa28522e45be3941501e1a07752901ae1dbb9f01
 progress:
   total_phases: 12
   completed_phases: 8
@@ -217,6 +217,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: [03.5, Plan 14] Ladder conformance re-run at every sketch-011 width found no CSS drift — The ladder, decision 15's table, and decisions 18/19 all measured match/accepted/scenario against sketch 011's boards at 1920, 1600-pen, 1600-long-history, 1366, 1024, 984, 983, 723 and 393, plus the four count-board panels; notebook.css/app.css/tokens.css needed no edits, and all five gap probes (667 checks) re-ran clean as regression.
 - [Phase 03.5]: [Phase 03.5] [Phase 03.5, Plan 09] Mark approved the transcribed seed content as transcribed (2026-09-28); seedRecipeGroups (olive oil first, then transcribedRecipeGroups) is the one array seed.js imports, DB_VERSION moved to 7
 - [Phase 03.5]: [Phase 03.5] [Phase 03.5, Plan 09] Judgement call 58: Coconut's, Strawberry's and Mocha's batches arrays reordered newest-first in seed-recipes.js so Home's standing (activeWork/sortedBatches) reads each recipe's true newest batch rather than an array-order tie-break artifact; no field changed, no date invented
+- [Phase 03.5]: jsdom kept as a devDependency (Mark 2026-09-28): tests default to Vitest's node environment; a test needing a real render cycle opts in per file with a @vitest-environment jsdom docblock (first: useFold.reset.test.jsx)
 
 ### Pending Todos
 

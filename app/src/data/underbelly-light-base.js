@@ -43,11 +43,11 @@ export const underbellyLightBaseV1 = {
   parentVersionLabel: null,
   reason: null,
   citedBatchId: null,
-  // createdAt: ordering placeholder — Mark to supply the real date: the
-  // workbook column carries no date, so v1 takes v2's createdAt minus one
-  // second; its 3.7% milk and 4.5 g lecithin match the workbook's "Mango
-  // 2" column (Mango 2 on Light Base, printed 8/14/24), so the real date
-  // is probably 2024.
+  // createdAt: 1/11/2025, confirmed by Mark 2026-09-28 (seed open
+  // question 9). The workbook column carries no date, so v1 keeps v2's
+  // createdAt minus one second to hold the order; its 3.7% milk and 4.5 g
+  // lecithin match the workbook's "Mango 2" column (Mango 2 on Light Base,
+  // printed 8/14/24), so the formula itself probably dates from 2024.
   createdAt: '2025-01-11T14:22:07.000Z',
   versionLabel: 'v1',
   coefficientSetId: '2026.1-slice-transcription',

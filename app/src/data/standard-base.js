@@ -33,10 +33,10 @@ export const standardBaseV1 = {
   parentVersionLabel: null,
   reason: null,
   citedBatchId: null,
-  // createdAt: ordering placeholder — Mark to supply the real date: both
-  // files' .ier times tie to the same second (2024-12-23 09:16:46 −05:00,
-  // the folder's archive stamp), so v1 takes v2's createdAt minus one
-  // second.
+  // createdAt: 12/23/2024, confirmed by Mark 2026-09-28 (seed open
+  // question 9). Both files' .ier times tie to the same second (2024-12-23
+  // 09:16:46 −05:00, the folder's archive stamp), so v1 keeps v2's
+  // createdAt minus one second to hold the order.
   createdAt: '2024-12-23T14:16:45.000Z',
   versionLabel: 'v1',
   coefficientSetId: '2026.1-slice-transcription',
@@ -71,8 +71,8 @@ export const standardBaseV2 = {
   parentVersionLabel: 'v1',
   reason: null,
   citedBatchId: null,
-  // createdAt: ordering placeholder — Mark to supply the real date: the
-  // .ier's own save time is the archive stamp (2024-12-23 09:16:46 −05:00).
+  // createdAt: 12/23/2024, confirmed by Mark 2026-09-28 (seed open
+  // question 9): the .ier's own save time (2024-12-23 09:16:46 −05:00).
   createdAt: '2024-12-23T14:16:46.000Z',
   versionLabel: 'v2',
   coefficientSetId: '2026.1-slice-transcription',

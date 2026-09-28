@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
-stopped_at: Phase 03.5 gap plans 10-14 planned and checked
-last_updated: "2026-09-28T04:26:38.229Z"
-last_activity: 2026-09-27
+stopped_at: Completed 03.5-15-PLAN.md
+last_updated: "2026-09-28T04:56:40.362Z"
+last_activity: 2026-09-28
 last_activity_desc: Phase 03.5 execution started
-state_head: 4c4bfea6a97e0c1996db01f275831e0f38ca5c88
+state_head: c079830dacd76b9d36decc2c2f0c2e26158870a9
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 84
-  completed_plans: 66
+  completed_plans: 79
   percent: 67
 ---
 
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 
 ## Current Position
 
-Phase: 03.5 (Separate the recipe from the sheet) — READY TO EXECUTE
-Plan: 1 of 9
+Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
+Plan: 2 of 18
 Status: Ready to execute
-Last activity: 2026-09-27 - Completed quick task 260927-758: Keep notebook fields at 16px under a coarse pointer; the Why in the hand
+Last activity: 2026-09-28 — Phase 03.5 execution started
 
 Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -107,6 +107,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.4 P07 | ~20min | 2 tasks | 5 files |
 | Phase 03.4 P08 | ~25min | 2 tasks | 3 files |
 | Phase 03.4 P14 | ~20min | 2 tasks | 4 files |
+| Phase 03.5 P15 | 45min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -200,6 +201,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.4]: [03.4, 2026-09-22] [Phase 03.4, Plan 07] Gap 5/6 closure: the row reads the board's five-column desktop grid (rail, identity, standing, tally, actions) with a lastEvent.js-derived standing word; the lead block is rebuilt from a bottom-divider into a bordered, radiused block with the rod, a captioned Next time column, and RowActions over its own entry. --app-radius-lead is named apart from --app-radius-action though both read 10px; the lead's own rod hides at the touch step (board 171 draws none) while the row's rod and tally are kept per the phase's earlier recorded decision.
 - [Phase 03.4]: [Phase 03.4] [Phase 03.4, Plan 08] Wrote 03.4-GAPS-CONFORMANCE.md: a 38-row side-by-side record (board 170 at 1280, board 171 at 393) tracing all six VERIFICATION.md gaps to their closing plan/task/pin, naming the four already-decided board departures (12px tab label, rod/tally kept at phone width, absent page-preview glyph, no versions-count cell), and surfacing three new findings (rail's missing padding/border-right, active rail item's missing pill, RowActions always showing two actions at 393px) as open rows for Mark, not resolved by this plan. A re-runnable probe (03.4-gaps-conformance-probe.js) ships beside it for a browser-driven UAT pass.
 - [Phase 03.4]: [Phase 03.4, Plan 14] Closed G-03.4-r3-3: explicit tabIndex={0} on all ten shell__place JSX sites (19 rendered stops) bypasses WebKit's TabsToLinks/Full-Keyboard-Access gates for the Safari chrome-to-page hand-off; shell.css's .shell__place:focus comment and 03.4-09-SUMMARY.md corrected (dated Correction section) to stop citing round two's falsified 'focus lands without :focus-visible' inference as measured.
+- [Phase 03.5]: [03.5, Plan 15] The folds' cut moved to 1366 (sketch 011 decision 18): BELOW_DESKTOP_QUERY is now (max-width: 1365.98px), the complement of LOG_BESIDE_SHEET_QUERY; the version's details fold exists at every width through one full-row FoldRow control (gen.py fold_row), open by default from 1366 and closed below, with useFold(openByDefault) resetting to the width's default on every crossing and no stored state anywhere.
+- [Phase 03.5]: [03.5, Plan 15] The band's rhythm (frame/band/grid gaps, band padding-top) now switches at the same 1366 cut as the folds, replacing the retired 1499.98px interim rung; Show changes reads Hide changes while shown, with aria-pressed dropped (decisions_recorded 5 - a self-renaming toggle must not also announce a pressed state).
 
 ### Pending Todos
 
@@ -338,6 +341,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-26
-Stopped at: Gap plans 03.5-10..14 written and passed the checker (bc63491); two Mark decisions pending (plan 12 desktop-state cut 1770|1366|measure; plan 13 record pen cut 760|724); next /gsd-execute-phase 03.5 --gaps-only
-Resume file: .planning/.continue-here.md
+Last session: 2026-09-28T04:56:40.272Z
+Stopped at: Completed 03.5-15-PLAN.md
+Resume file: None

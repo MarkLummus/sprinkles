@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 12/18 plans executed
+**Plans:** 13/18 plans executed
 
 Plans:
 
@@ -514,7 +514,7 @@ Plans:
 
 **Wave 11 — gap closure** *(sketch 011 decisions 18 and 19, Mark 2026-09-27, with three of that day's todos; blocked on 03.5-12 and 03.5-13)*
 
-- [ ] 03.5-15-PLAN.md — The folds' cut at 1366 and the full-row fold head: folds at every width, open by default from 1366 and closed below, with no stored state; the version details read Show details / Hide details; the band's rhythm moves to 1366; Show changes toggles to Hide changes
+- [x] 03.5-15-PLAN.md — The folds' cut at 1366 and the full-row fold head: folds at every width, open by default from 1366 and closed below, with no stored state; the version details read Show details / Hide details; the band's rhythm moves to 1366; Show changes toggles to Hide changes
 
 **Wave 12** *(blocked on 03.5-15)*
 

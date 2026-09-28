@@ -121,13 +121,17 @@ def draft_line(draft):
     if not draft: return ''
     return f'\n    <p style="margin:0;font-family:{GROT};font-size:14px;color:{TEXT2};">Draft: <a href="#" tabindex="0" style="color:{BLUE_T};text-underline-offset:3px;">{draft}</a></p>'
 
-def fold_row(label, open_, target, count=''):
-    """A fold head whose whole row is the control: label, Show/Hide and the count in one 44px-tall button (Mark, 2026-09-27, 393 critique)."""
-    sh = 'Hide' if open_ else 'Show'
-    cnt = f'<span style="font-family:{GROT};font-size:12px;font-weight:400;color:{TEXT2};text-decoration:none;">{count}</span>' if count else ''
+def fold_row(label, open_, target, count='', what=''):
+    """A fold head whose whole row is the control: the label, Show or Hide, and a count or date in one 44px-tall button
+    (Mark, 2026-09-27, 393 critique; "apply the same full-row treatment where missing"). The label keeps its own face:
+    an App section passes cap(...), a Sheet section passes its plain name inside its h2.region-name, which the button inherits."""
+    sh = ('Hide' if open_ else 'Show') + (' ' + what if what else '')
+    ctl = f'<span style="font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-weight:400;letter-spacing:normal;text-transform:none;color:var(--sheet-ink);text-decoration:underline;text-underline-offset:3px;">{sh}</span>'
+    cnt = f'<span style="font-family:{GROT};font-size:12px;font-weight:400;letter-spacing:normal;text-transform:none;color:{TEXT2};">{count}</span>' if count else ''
     return (f'<button type="button" class="text-control history-disclosure" aria-expanded="{"true" if open_ else "false"}" aria-controls="{target}" '
-            f'style="appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;display:flex;width:100%;min-height:44px;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;">'
-            f'<span style="display:flex;align-items:baseline;gap:14px;">{cap(label)}<span style="text-decoration:underline;text-underline-offset:3px;">{sh}</span></span>{cnt}</button>')
+            f'style="appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;'
+            f'display:flex;width:100%;min-height:44px;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;">'
+            f'<span style="display:flex;align-items:baseline;gap:14px;">{label}{ctl}</span>{cnt}</button>')
 
 def version_block(compact=False, draft=None):
     # Version 1 has no parent and cites no batch, so it has no From rows (Mark, 2026-09-27; the app's VersionRow.jsx
@@ -489,30 +493,27 @@ def phone_folds(html, open_=False):
     closed by default below it, with no stored state. Version details, History, Balance, Watch for and the log's Tasting each
     have their own control, labelled by state; Ingredients, Instructions, Before you start and the churn cells stay open."""
     hid = '' if open_ else ' hidden'
-    exp = 'true' if open_ else 'false'
-    disc = lambda label, target: f'<button type="button" class="text-control history-disclosure" aria-expanded="{exp}" aria-controls="{target}">{label}</button>'
-    sh = 'Hide' if open_ else 'Show'
     # version details
     # every Show/Hide control sits beside its section's label (Mark, 2026-09-27)
-    html = html.replace(cap('Version'), f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Version")}' + disc(sh + ' details', 'fold-version') + '</div>', 1)
+    html = html.replace(cap('Version'), fold_row(cap('Version'), open_, 'fold-version', what='details'), 1)
     html = html.replace('<dl style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);',
                         f'<dl id="fold-version"{hid} style="margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);', 1)
     # Balance: its heading stays with its control beside it; the rules and the source note fold
     html = html.replace('<div class="formulation-note"><h2 class="region-name">Balance</h2>',
-                        '<div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Balance</h2>' + disc(sh, 'fold-balance') + f'</div><div id="fold-balance"{hid}><div class="formulation-note">', 1)
+                        '<h2 class="region-name" style="margin:0 0 var(--gap-xs);">' + fold_row('Balance', open_, 'fold-balance') + f'</h2><div id="fold-balance"{hid}><div class="formulation-note">', 1)
     html = html.replace('</section><div class="margin-region">', '</div></section><div class="margin-region">', 1)
     # Watch for: its own control beside its heading; the advisories fold
     html = re.sub(r'<div class="derived-advisories"><h2 class="region-name">Watch for</h2>(.*?)</div></div>',
-                  lambda m: '<div class="derived-advisories"><div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Watch for</h2>' + disc(sh, 'fold-check') + f'</div><div id="fold-check"{hid}>' + m.group(1) + '</div></div></div>', html, count=1, flags=re.S)
+                  lambda m: '<div class="derived-advisories"><h2 class="region-name" style="margin:0 0 var(--gap-xs);">' + fold_row('Watch for', open_, 'fold-check') + f'</h2><div id="fold-check"{hid}>' + m.group(1) + '</div></div></div>', html, count=1, flags=re.S)
     # History: folds like the others, its control beside the label; open from 1366, closed below (Mark, 2026-09-27)
     html = re.sub(r'<div style="display:flex;align-items:baseline;justify-content:space-between;">' + re.escape(cap('History')) + r'<span[^>]*>([^<]*)</span></div>',
-                  lambda m: fold_row('History', open_, 'fold-history', m.group(1)), html, count=1)
+                  lambda m: fold_row(cap('History'), open_, 'fold-history', m.group(1)), html, count=1)
     html = html.replace('<div class="hist-body">', f'<div id="fold-history"{hid} class="hist-body">', 1)
     if not open_:
         html = re.sub(r'(\d+ versions) · latest first', r'\1', html, count=1)  # closed: the count alone
     # the log's Tasting
-    html = re.sub(r'(<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>tasted date unknown</span>)</div>',
-                  lambda m: m.group(1) + ' ' + disc(sh, 'fold-tasting') + f'</div><div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
+    html = re.sub(r'<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>(tasted [^<]*)</span></div>',
+                  lambda m: fold_row(cap('Tasting'), open_, 'fold-tasting', m.group(1)) + f'<div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
     # close the tasting fold after Next time
     html = re.sub(r'(nothing written yet</span></div>)(\s*</div>)', r'\1</div>\2', html, count=1)
     if not open_:

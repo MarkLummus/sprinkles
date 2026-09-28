@@ -93,7 +93,7 @@ def vnode(d, m, cur, last):
   <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{title}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{m}</span></span></a></li>'''
 # the batch list folds like every other section, Show/Hide beside its label, open from 1366, closed below (Mark, 2026-09-27: "yes, draw it")
 def vrail_(open_):
-    hd = fold_row('Batches', open_, 'fold-batches', '3 batches' + (' · latest first' if open_ else ''))
+    hd = fold_row(cap('Batches'), open_, 'fold-batches', '3 batches' + (' · latest first' if open_ else ''))
     ol = f'''<ol id="fold-batches" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vnode(d, m, cur, i == len(B) - 1) for i, (d, m, cur) in enumerate(B))}</ol>''' if open_ else ''
     return f'<div style="display:flex;flex-direction:column;gap:10px;">{hd}{ol}</div>'
 def optD_(open_):
@@ -136,7 +136,7 @@ V8_IN_VIEW = [(d, t, m, f, t.startswith('Version 7')) for d, t, m, f, c in V8]
 # History folds like every other section, its Show/Hide beside the label (Mark, 2026-09-27: "we need the Show/Hide on History also");
 # closed by default below 1366 (decision 18). The canvas ignores hidden, so the closed state leaves the rail out.
 def hist_head(open_):
-    return fold_row('History', open_, 'fold-history', '8 versions' + (' · latest first' if open_ else ''))
+    return fold_row(cap('History'), open_, 'fold-history', '8 versions' + (' · latest first' if open_ else ''))
 vrail_v = f'''<ol id="fold-history" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vver(*v, i == len(V8_IN_VIEW) - 1) for i, v in enumerate(reversed(V8_IN_VIEW)))}</ol>'''
 vhist = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(True)}{vrail_v}</div>'
 vhist_closed = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(False)}</div>'

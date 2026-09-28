@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 12/14 plans executed
+**Plans:** 12/18 plans executed
 
 Plans:
 
@@ -512,9 +512,25 @@ Plans:
 
 - [x] 03.5-13-PLAN.md — Touch sizes by pointer only, reaching the record pen in the full-width log; the record pen's own cut (checkpoint: Mark keeps 760 per DESIGN.md or groups onto 724)
 
-**Wave 11** *(blocked on Wave 10)*
+**Wave 11 — gap closure** *(sketch 011 decisions 18 and 19, Mark 2026-09-27, with three of that day's todos; blocked on 03.5-12 and 03.5-13)*
 
-- [ ] 03.5-14-PLAN.md — Conformance re-run against sketch 011 at 1920/1600/1366/1024/984/983/723/393, drift fixed, Open for Mark, device UAT, and the /impeccable document hand-off
+- [ ] 03.5-15-PLAN.md — The folds' cut at 1366 and the full-row fold head: folds at every width, open by default from 1366 and closed below, with no stored state; the version details read Show details / Hide details; the band's rhythm moves to 1366; Show changes toggles to Hide changes
+
+**Wave 12** *(blocked on 03.5-15)*
+
+- [ ] 03.5-16-PLAN.md — Balance and Watch for fold apart, each through its own full-row head inside its h2 ("Things to check" becomes Watch for, with no "derived" label); Tasting's date moves to the end of its fold row
+
+**Wave 13** *(blocked on 03.5-16)*
+
+- [ ] 03.5-17-PLAN.md — Batches by count: no Batches control at 0 or 1 batch; from 2, the upright batch list above the batch in view (option D), folding like the other sections; the batch head aligned at 393 and 723; the old register retired
+
+**Wave 14** *(blocked on 03.5-17)*
+
+- [ ] 03.5-18-PLAN.md — History by count: one line at one version; with more, it folds, horizontal from 1366 and upright below; "not churned"; tabindex 0 on every rail link; the band's Draft line (checkpoint: Mark decides, since D-13 keeps drafts in memory)
+
+**Wave 15** *(blocked on 03.5-15 to 03.5-18)*
+
+- [ ] 03.5-14-PLAN.md — Conformance re-run against sketch 011 at 1920/1600/1366/1024/984/983/723/393 and the decision-19 count boards, drift fixed, Open for Mark, device UAT, and the /impeccable document hand-off
 
 ### Phase 4: Prepare the next version for making
 

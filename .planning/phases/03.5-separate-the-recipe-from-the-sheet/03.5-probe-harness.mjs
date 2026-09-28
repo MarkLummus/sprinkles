@@ -162,6 +162,24 @@ export async function openBoard(browser, repoUrl, file) {
   return { context, page };
 }
 
+// recordAnotherBatch(page, isoDate) — a UI-driven save in the harness's own
+// throwaway browser context (03.5-17 Task 1): activates "Record another" (a
+// batch already exists) or "Record a batch" (the no-batch state), fills the
+// Churn date field with isoDate, activates the FIRST "Save batch" — both the
+// record pen's foot (PenFoot) and the end-of-record ceremony (BatchRow's own
+// SaveCeremony) mount the identical control while recording, so two "Save
+// batch" buttons exist on the page — and waits for the saved batch's own
+// route and head. Never touches Mark's :4173 preview or his own browser
+// profile (T-03.5-44) — the caller's page/context is this file's own
+// openApp() result, on 127.0.0.1.
+export async function recordAnotherBatch(page, isoDate) {
+  await page.getByRole('button', { name: /^Record (another|a batch)$/ }).first().click();
+  await page.getByLabel('Churn date').fill(isoDate);
+  await page.getByRole('button', { name: 'Save batch' }).first().click();
+  await page.waitForURL(/\/batch\//);
+  await page.waitForSelector('h2.region-name:has-text("Batch")');
+}
+
 export function check(failures, condition, label) {
   if (!condition) failures.push(`FAIL ${label}`);
 }

@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { BatchRow, AxesGrid, BatchHistoryPanel, batchHistoryMetaFor, NO_BATCH_PROSE } from './BatchRow.jsx';
+import { BatchRow, AxesGrid, batchListMeta, NO_BATCH_PROSE } from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { axesForBatch } from '../domain/axes.js';
@@ -80,20 +80,6 @@ function renderBatchRow(props) {
   );
 }
 
-function renderBatchHistoryPanel(props) {
-  return renderToStaticMarkup(
-    <MemoryRouter>
-      <BatchHistoryPanel
-        version={oliveOilVersion}
-        batches={[]}
-        openBatch={null}
-        openPen={null}
-        {...props}
-      />
-    </MemoryRouter>,
-  );
-}
-
 describe('BatchRow — the Batch region-name head line (sketch 003 variant B, G-03.3-4)', () => {
   it('renders the section with an aria-label of Batch and a visible "Batch" region-name heading', () => {
     const markup = renderBatchRow({});
@@ -119,54 +105,35 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
     expect(markup).not.toContain('batch-row__date');
   });
 
-  it('renders the Batches count as the complete set — every batch of the version, the one in view included', () => {
-    const markup = renderBatchRow({
-      openBatch: augustSecondBatch,
-      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
-    });
-    expect(markup).toContain('Batches (2)');
-    expect(markup).not.toContain('Batches of this version');
-  });
-
-  it('renders the complete count for three batches, no plural branch', () => {
-    const markup = renderBatchRow({
-      openBatch: null,
-      batches: [
-        augustSecondBatch,
-        { ...augustSecondBatch, id: 'other-batch-1' },
-        { ...augustSecondBatch, id: 'other-batch-2' },
-      ],
-    });
-    expect(markup).toContain('Batches (3)');
-  });
-
-  it('renders Batches (1) when the one batch is the one in view — the complete set includes it, never a subtraction to zero', () => {
-    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    expect(markup).toContain('Batches (1)');
-  });
-
-  it('renders no churned-date span and no Batches control while recording a new batch — that date names the batch in view, not the one being recorded (Mark, 2026-09-10 live review, G-03.3-4)', () => {
+  it('renders no churned-date span and withholds the batch list while recording a new batch — that date names the batch in view, not the one being recorded (Mark, 2026-09-10 live review, G-03.3-4)', () => {
     const markup = renderBatchRow({
       openPen: 'record',
       mode: 'recording',
       draft: emptyRecordDraft,
       openBatch: augustSecondBatch,
-      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+      batches: [
+        augustSecondBatch,
+        { ...augustSecondBatch, id: 'other-batch', churn: { ...augustSecondBatch.churn, churnDate: '2026-08-09' } },
+      ],
     });
     expect(markup).not.toContain('batch-row__date');
-    expect(markup).not.toContain('Batches (');
+    expect(markup).not.toContain('fold-batches');
+    expect(markup).not.toMatch(/Batches \(/);
   });
 
-  it('keeps the churned-date span and the Batches control while amending the batch in view', () => {
+  it('keeps the churned-date span and shows the batch list while amending the batch in view (decision 19 — only the record pen withholds it)', () => {
     const markup = renderBatchRow({
       openPen: 'amend',
       mode: 'recording',
       draft: { ...emptyRecordDraft, churnDate: '2026-08-02' },
       openBatch: augustSecondBatch,
-      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+      batches: [
+        augustSecondBatch,
+        { ...augustSecondBatch, id: 'other-batch', churn: { ...augustSecondBatch.churn, churnDate: '2026-08-09' } },
+      ],
     });
     expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
-    expect(markup).toContain('Batches (2)');
+    expect(markup).toContain('id="fold-batches"');
   });
 });
 
@@ -179,23 +146,25 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(markup).toContain('Record a batch');
   });
 
-  it('renders Batches, Correct, then Record another on the Batch head line, in that order, when a batch is in view — no Add tasting yet (plan 03 opens the tasting section)', () => {
+  it('renders Correct then Record another on the Batch head line, in that order, when a batch is in view — no Batches control any more (decision 19), no Add tasting yet', () => {
     const markup = renderBatchRow({
       openPen: null,
       openBatch: augustSecondBatch,
-      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
+      batches: [
+        augustSecondBatch,
+        { ...augustSecondBatch, id: 'other-batch', churn: { ...augustSecondBatch.churn, churnDate: '2026-08-09' } },
+      ],
     });
     expect(markup).toContain('Record another');
     expect(markup).toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
-    const headIndex = markup.indexOf('class="batch-row__head"');
+    expect(markup).not.toMatch(/Batches \(/);
+    const headIndex = markup.indexOf('class="batch-row__head');
     const marginIndex = markup.indexOf('class="batch-margin');
-    const batchesIndex = markup.indexOf('Batches (2)');
     const correctIndex = markup.indexOf('>Correct<');
     const recordIndex = markup.indexOf('Record another');
     expect(headIndex).toBeGreaterThan(-1);
-    expect(batchesIndex).toBeGreaterThan(headIndex);
-    expect(correctIndex).toBeGreaterThan(batchesIndex);
+    expect(correctIndex).toBeGreaterThan(headIndex);
     expect(recordIndex).toBeGreaterThan(correctIndex);
     expect(recordIndex).toBeLessThan(marginIndex);
     const correctButton = markup.match(/<button[^>]*class="text-control batch-row__correct"[^>]*>Correct<\/button>/)[0];
@@ -204,24 +173,109 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(recordButton).toBeTruthy();
   });
 
-  it('names the Batches panel by aria-controls on its count disclosure', () => {
-    const markup = renderBatchRow({
-      openPen: null,
-      openBatch: augustSecondBatch,
-      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch' }],
-    });
-    const countButton = markup.match(/<button[^>]*>Batches \(2\)<\/button>/)[0];
-    expect(countButton).toContain('aria-expanded="false"');
-    expect(countButton).toContain('aria-controls="batch-row-batches"');
-  });
-
-  it('renders no Correct, Record another or Batches control while the plan pen is open, though the reading content (including the churned date) still renders', () => {
+  it('renders no Correct, Record another or the batch list while the plan pen is open, though the reading content (including the churned date) still renders', () => {
     const markup = renderBatchRow({ openPen: 'plan', openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
-    expect(markup).not.toContain('Batches (');
+    expect(markup).not.toMatch(/Batches \(/);
     expect(markup).not.toContain('Record another');
     expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
+  });
+});
+
+// The upright batch list (sketch 011 decision 19, counts.py's vrail_/optD_;
+// 03.5-17): from two batches, the version's batches stand as an upright
+// list above the batch in view, latest first, filled where tasted and
+// hollow where not, the batch in view ringed and rendered as text, every
+// other row a link with tabindex 0. It folds like every other section
+// (FoldRow/useFold, 03.5-15/16) — open by default from 1366, closed below,
+// with no state stored. The retired "Batches (n)" head disclosure and its
+// BatchHistoryPanel are gone outright; this list replaces both.
+describe('BatchRow — the upright batch list at two or more batches (decision 19, sketch 011, 03.5-17)', () => {
+  const laterBatch1 = {
+    ...augustSecondBatch,
+    id: 'other-batch-1',
+    tasting: null,
+    churn: { ...augustSecondBatch.churn, churnDate: '2026-08-09' },
+  };
+  const laterBatch2 = {
+    ...augustSecondBatch,
+    id: 'other-batch-2',
+    tasting: null,
+    churn: { ...augustSecondBatch.churn, churnDate: '2026-08-16' },
+  };
+  const threeBatches = [augustSecondBatch, laterBatch1, laterBatch2];
+
+  function foldBatchesButton(markup) {
+    return markup.match(/<button[^>]*aria-controls="fold-batches"[^>]*>[\s\S]*?<\/button>/)[0];
+  }
+
+  it('renders the fold row open by default with foldsOpen true — aria-controls fold-batches, Hide, and the count "3 batches · latest first"', () => {
+    const markup = renderBatchRow({ batches: threeBatches, openBatch: laterBatch2, foldsOpen: true });
+    const foldButton = foldBatchesButton(markup);
+    expect(foldButton).toContain('aria-expanded="true"');
+    expect(foldButton).toContain('>Hide<');
+    expect(foldButton).toContain('3 batches · latest first');
+  });
+
+  it('runs the ol#fold-batches rows in churn-date descending order, each meta joining tastingProvenance and the out-of-machine words', () => {
+    const markup = renderBatchRow({ batches: threeBatches, openBatch: laterBatch2, foldsOpen: true });
+    const listIndex = markup.indexOf('id="fold-batches"');
+    expect(listIndex).toBeGreaterThan(-1);
+    const idx16 = markup.indexOf('churned 16 Aug 2026');
+    const idx9 = markup.indexOf('churned 9 Aug 2026');
+    const idx2 = markup.indexOf('churned 2 Aug 2026');
+    expect(idx16).toBeGreaterThan(listIndex);
+    expect(idx9).toBeGreaterThan(idx16);
+    expect(idx2).toBeGreaterThan(idx9);
+    expect(markup).toContain('Not yet tasted · out of machine −6 °C');
+    expect(markup).toContain('Tasted date unknown · out of machine −6 °C');
+  });
+
+  it('renders exactly 2 links, each with tabindex="0", and the list before the Batch h2', () => {
+    const markup = renderBatchRow({ batches: threeBatches, openBatch: laterBatch2, foldsOpen: true });
+    const anchors = [...markup.matchAll(/<a\b[^>]*>/g)].map(([tag]) => tag).filter((tag) => tag.includes('notebook-upright__link'));
+    expect(anchors).toHaveLength(2);
+    for (const tag of anchors) expect(tag).toContain('tabindex="0"');
+    const listIndex = markup.indexOf('id="fold-batches"');
+    const headingIndex = markup.indexOf('class="region-name">Batch<');
+    expect(listIndex).toBeGreaterThan(-1);
+    expect(headingIndex).toBeGreaterThan(listIndex);
+  });
+
+  it('reads Show and the bare count "3 batches" with foldsOpen false, and hides the list', () => {
+    const markup = renderBatchRow({ batches: threeBatches, openBatch: laterBatch2, foldsOpen: false });
+    const foldButton = foldBatchesButton(markup);
+    expect(foldButton).toContain('aria-expanded="false"');
+    expect(foldButton).toContain('>Show<');
+    expect(foldButton).toContain('3 batches');
+    expect(foldButton).not.toContain('latest first');
+    const listTag = markup.match(/<ol id="fold-batches"[^>]*>/)[0];
+    expect(listTag).toMatch(/\shidden(=""|\s|>)/);
+  });
+
+  it('renders zero links while the plan pen is open — the rows read as text (D-UAT-1/2 link suppression)', () => {
+    const markup = renderBatchRow({ batches: threeBatches, openBatch: laterBatch2, openPen: 'plan' });
+    expect(markup).not.toContain('<a ');
+    expect(markup).toContain('id="fold-batches"');
+  });
+
+  it('withholds the batch list entirely while the record pen is open (G-03.3-4)', () => {
+    const markup = renderBatchRow({
+      batches: threeBatches,
+      openBatch: laterBatch2,
+      openPen: 'record',
+      mode: 'recording',
+      draft: emptyRecordDraft,
+    });
+    expect(markup).not.toContain('fold-batches');
+  });
+
+  it('never renders the retired "Batches (" control text at any batch count', () => {
+    for (const batches of [[], [augustSecondBatch], threeBatches]) {
+      const markup = renderBatchRow({ batches, openBatch: batches.length ? batches[0] : null });
+      expect(markup).not.toMatch(/Batches \(/);
+    }
   });
 });
 
@@ -1411,118 +1465,51 @@ describe('BatchRow — the no-batch state offers Record a batch (1600-no-batch.h
   });
 });
 
-describe('BatchRow — the batch list, always a list only with zero batches; a closed-by-default disclosure otherwise (D-09, sketch 003 variant B, G-03.3-4)', () => {
+describe('BatchRow — the batch list, always a list only with zero batches; the upright list from two (D-09, decision 19, 03.5-17)', () => {
   it('reads "no batch yet" with no batch recorded', () => {
     const markup = renderBatchRow({ batches: [] });
     expect(markup).toMatch(/<ul class="batch-margin__list"><li>no batch yet<\/li><\/ul>/);
   });
 
-  it('renders no "Batches of this version" section by default when a batch exists — the disclosure is closed by default', () => {
+  it('renders no batch list at all with exactly one batch — no Batches control at 0 or 1 (decision 19, batch-head todo)', () => {
     const markup = renderBatchRow({ batches: [augustSecondBatch], openBatch: augustSecondBatch });
-    expect(markup).not.toContain('Batches of this version');
+    expect(markup).not.toContain('fold-batches');
     expect(markup).not.toContain('batch-margin__list');
   });
 
-  it('renders no "Batches of this version" section by default with an address that matches no batch', () => {
+  it('renders no batch list with one batch and an address that matches no batch', () => {
     const markup = renderBatchRow({ batches: [augustSecondBatch], openBatch: null });
-    expect(markup).not.toContain('Batches of this version');
+    expect(markup).not.toContain('fold-batches');
   });
 });
 
-describe('BatchHistoryPanel — the revealed Batches register', () => {
-  const newerBatch = { ...augustSecondBatch, id: 'newer-batch', churn: { ...augustSecondBatch.churn, churnDate: '2026-08-16' } };
-  const undatedBatch = { ...augustSecondBatch, id: 'undated-batch', churn: { ...augustSecondBatch.churn, churnDate: null } };
-
-  it('reveals exactly the complete batch count, newest first, with the older batch in view', () => {
-    const markup = renderBatchHistoryPanel({
-      batches: [augustSecondBatch, undatedBatch, newerBatch],
-      openBatch: augustSecondBatch,
-    });
-    expect(markup).toContain('<h2 class="region-name">Batches of this version</h2>');
-    expect(markup).toContain('<ol role="list" aria-label="Batches of this version" class="history-register history-list">');
-    expect(markup.match(/<li class="history-register__item history-item[^"]*"/g)).toHaveLength(3);
-    expect(markup.indexOf('16 Aug 2026')).toBeLessThan(markup.indexOf('2 Aug 2026'));
-    expect(markup.indexOf('2 Aug 2026')).toBeLessThan(markup.indexOf('Batch · date unknown'));
-    expect(markup).toContain('2 Aug 2026<span class="history-register__marker"> · In view</span>');
-    expect(markup).not.toMatch(/2 Aug 2026[\s\S]*?later/i);
-    expect(markup).toContain('>Batch · 16 Aug 2026</a>');
+// batchListMeta (decisions_recorded 3, 03.5-17): the batch list's own meta
+// small print — the shared tasting provenance leads, then the out-of-machine
+// reading when measured. The retired register's other parts (At-the-machine
+// words, the changed date) are not on the board's rows and are not carried.
+describe('batchListMeta — the batch list\'s meta small print (decisions_recorded 3, 03.5-17)', () => {
+  it('gives the shared provenance and the out-of-machine reading for a tasted batch with a reading', () => {
+    expect(batchListMeta(augustSecondBatch)).toEqual(['Tasted date unknown', 'out of machine −6 °C']);
   });
 
-  it('uses stable routes and descriptive focus intent for batches that are not in view', () => {
-    const markup = renderBatchHistoryPanel({
-      batches: [augustSecondBatch, newerBatch],
-      openBatch: augustSecondBatch,
-    });
-    expect(markup).toContain('href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/newer-batch"');
-    expect(markup.match(/<a /g)).toHaveLength(1);
+  it('drops the out-of-machine part when the batch carries no reading', () => {
+    const bareBatch = { ...augustSecondBatch, churn: { ...augustSecondBatch.churn, outOfMachineTempC: null } };
+    expect(batchListMeta(bareBatch)).toEqual(['Tasted date unknown']);
   });
 
-  it('removes navigation links while a pen is open without changing the revealed count', () => {
-    const markup = renderBatchHistoryPanel({
-      batches: [augustSecondBatch, newerBatch],
-      openBatch: augustSecondBatch,
-      openPen: 'amend',
-    });
-    expect(markup.match(/<li class="history-register__item history-item[^"]*"/g)).toHaveLength(2);
-    expect(markup).not.toContain('<a ');
-  });
-
-  // G-03.4-r4-1 (.claude/CLAUDE.md convention): every link carries an
-  // explicit tabindex.
-  it('renders exactly 1 <a> opening tag, carrying tabindex="0"', () => {
-    const markup = renderBatchHistoryPanel({
-      batches: [augustSecondBatch, newerBatch],
-      openBatch: augustSecondBatch,
-    });
-    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
-    expect(tags).toHaveLength(1);
-    expect(tags[0]).toContain('tabindex="0"');
-  });
-});
-
-// batchHistoryMetaFor (D-04, D-09, HIST-04, HIST-07): the batch list's own
-// meta small print — the shared tasting provenance leads, "changed {date}"
-// replaces the retired tasted-count wording, and the drawn temperature and
-// At-the-machine parts follow as supporting evidence.
-describe('batchHistoryMetaFor — the batch list\'s meta small print (D-04)', () => {
-  it("reads \"changed {date}\" when the batch carries a changed date", () => {
-    const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
-    expect(batchHistoryMetaFor(changedBatch)).toContain('changed 10 Aug 2026');
-  });
-
-  it('carries no "changed" part when the batch has never been changed', () => {
-    expect(batchHistoryMetaFor(augustSecondBatch).some((part) => part.startsWith('changed '))).toBe(false);
-  });
-
-  it('never reads the retired plural-tasting wording (Pitfall 7): never "once", "twice", or "times"', () => {
-    const tastedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
-    expect(batchHistoryMetaFor(tastedBatch).join(' · ')).not.toMatch(/tasted once|tasted twice|\btimes\b/);
-  });
-
-  it('reads the shared provenance first, then the drawn-temperature and At-the-machine parts', () => {
-    expect(batchHistoryMetaFor(augustSecondBatch)).toEqual([
-      'Tasted date unknown',
-      'out of machine −6 °C',
-      'Soft, not greasy',
-    ]);
-  });
-
-  it('reads the provenance alone when the batch carries none of the three supporting facts', () => {
-    const bareBatch = {
-      ...augustSecondBatch,
-      changed: null,
-      churn: { ...augustSecondBatch.churn, outOfMachineTempC: null, atTheMachine: null },
-    };
-    expect(batchHistoryMetaFor(bareBatch)).toEqual(['Tasted date unknown']);
-  });
-
-  it('reads "Not yet tasted" alone when the batch carries no tasting and none of the three supporting facts', () => {
+  it('reads "Not yet tasted" alone for an untasted batch with no reading', () => {
     const untastedBareBatch = {
       ...augustSecondBatch,
-      changed: null,
       tasting: null,
-      churn: { ...augustSecondBatch.churn, outOfMachineTempC: null, atTheMachine: null },
+      churn: { ...augustSecondBatch.churn, outOfMachineTempC: null },
     };
-    expect(batchHistoryMetaFor(untastedBareBatch)).toEqual(['Not yet tasted']);
+    expect(batchListMeta(untastedBareBatch)).toEqual(['Not yet tasted']);
+  });
+
+  it('never carries a "changed" or At-the-machine part — those are not on the board\'s rows (decisions_recorded 3)', () => {
+    const changedBatch = { ...augustSecondBatch, changed: '2026-08-10' };
+    const meta = batchListMeta(changedBatch);
+    expect(meta.some((part) => part.startsWith('changed '))).toBe(false);
+    expect(meta).not.toContain('Soft, not greasy');
   });
 });

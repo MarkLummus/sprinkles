@@ -181,7 +181,10 @@ describe('Mexican Chocolate lineage (v1 -> v2 -> v3 -> v4)', () => {
     }
   });
 
-  it('railEntries names the four versions in order, with v2 not yet churned', () => {
+  // v2 is not the latest version (v4 is) — 03.5-18 Task 2 (decisions_recorded
+  // 2) reads an older, never-churned version as "not churned", reserving
+  // "not yet churned" for the latest.
+  it('railEntries names the four versions in order, with v2 (an older version) not churned', () => {
     const mexicanChocolateGroup = transcribedRecipeGroups.find((g) => g.recipe.id === 'mexican-chocolate');
     const entries = railEntries(mexicanChocolateGroup.versions, mexicanChocolateGroup.batches, {
       currentVersionId: mexicanChocolateV4.id,
@@ -189,7 +192,7 @@ describe('Mexican Chocolate lineage (v1 -> v2 -> v3 -> v4)', () => {
     expect(entries.map((e) => e.name)).toEqual(['Version 1 · v1', 'Version 2 · v2', 'Version 3 · v3', 'Version 4 · v4']);
     const v2Entry = entries.find((e) => e.id === mexicanChocolateV2.id);
     expect(v2Entry.churned).toBe(false);
-    expect(v2Entry.stateWords).toBe('not yet churned');
+    expect(v2Entry.stateWords).toBe('not churned');
   });
 });
 

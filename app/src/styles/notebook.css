@@ -417,6 +417,17 @@
   gap: var(--app-notebook-history-head-gap);
 }
 
+/* The one-line state at exactly one entry (03.5-18 Task 2, decision 19,
+   versions-1-vs-many.html's picked panel): the caption-to-line gap is
+   .notebook-history's own flex gap above (the board's 10px) — no separate
+   rule needed for it. */
+.notebook-history__only {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+
 .notebook-history__rail {
   position: relative;
   overflow-x: auto;

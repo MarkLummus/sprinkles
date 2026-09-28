@@ -72,6 +72,20 @@ export function RecipeHistory({
     return () => window.removeEventListener('resize', measureOverflow);
   }, [currentVersionId, entries.length, open, belowDesktop]);
 
+  // One entry (a lone saved version, no draft) reads as one plain line —
+  // no fold, no rail, no link (decisions_recorded 1, sketch 011
+  // versions-1-vs-many.html's picked panel, 03.5-18 Task 2). The rule
+  // counts entries, the draft included: with one saved version and the pen
+  // open the draft entry makes two, so the fold above still applies.
+  if (entries.length === 1) {
+    return (
+      <section className="notebook-history" aria-label="History">
+        <span className="notebook-caption">History</span>
+        <p className="notebook-history__only">Only this version so far</p>
+      </section>
+    );
+  }
+
   return (
     <section className="notebook-history" aria-label="History">
       <FoldRow

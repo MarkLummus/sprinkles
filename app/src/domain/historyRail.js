@@ -30,7 +30,10 @@ function compareChronological(a, b) {
  * ordinal versionIdentity prints and for `latest` — reads the same
  * sortedVersions/versionIdentity pair every other version-naming site in
  * the app reads, so the rail's "Latest" word never disagrees with the
- * version column's own.
+ * version column's own. An unchurned version's stateWords split by
+ * position (decisions_recorded 2, 03.5-18 Task 2): the latest reads "not
+ * yet churned", an older one "not churned" — it was never going to be,
+ * unlike the latest, which merely has not been yet.
  */
 export function railEntries(versions, allBatches, { currentVersionId, draft = null } = {}) {
   const ordered = sortedVersions(versions);
@@ -40,7 +43,16 @@ export function railEntries(versions, allBatches, { currentVersionId, draft = nu
     const versionBatches = allBatches.filter((batch) => batch.versionId === version.id);
     const churned = versionBatches.length > 0;
     const latest = version.id === latestId;
-    const baseWords = churned ? `churned ${dayMonthWords(latestChurnDate(versionBatches))}` : 'not yet churned';
+    // The state words split by position (decisions_recorded 2, 03.5-18 Task
+    // 2): the LATEST unchurned version reads "not yet churned"
+    // (1600-no-batch.html's rail); an OLDER one reads "not churned"
+    // (upright-393.html's Version 4) — it was never going to be churned
+    // now, unlike the latest, which is only not yet.
+    const baseWords = churned
+      ? `churned ${dayMonthWords(latestChurnDate(versionBatches))}`
+      : latest
+        ? 'not yet churned'
+        : 'not churned';
     return {
       id: version.id,
       dateWords: dayMonthWords(version.createdAt),

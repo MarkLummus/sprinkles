@@ -393,11 +393,11 @@
   --app-notebook-gutter: var(--gap-l); /* sketch 011 decision 16: the set gutter — page margin, Sheet to log, page margin — from 1366 up */
   --app-notebook-content-max: 1482px; /* sketch 011 decision 16: the Sheet's two-column minimum (696) + the gutter (32) + the log (350); the content stops growing here and centres from a 1770px window */
   --app-notebook-frame-gap: 28px; /* 1600-batch.html: the frame's own row gap (band to body); reused as the Sheet/log stacked gap below the log-beside cut */
-  --app-notebook-band-rhythm: 24px; /* 1600-batch.html: the band's own vertical gap and bottom padding; reused as the frame's own row gap in the interim desktop rung (plan 12) */
+  --app-notebook-band-rhythm: 24px; /* 1600-batch.html: the band's own vertical gap and bottom padding; reused as the frame's own row gap below 1366, sketch 011 decision 18's cut (03.5-15) */
   --app-notebook-grid-gap: 40px; /* 1600-batch.html: the band grid's own column gap (the Sheet/log row's own gap now reads --app-notebook-gutter, sketch 011 decision 16) */
   --app-notebook-log-w: 350px; /* sketch 011 decision 16: the log column's width at every beside rung (1600, 1366) */
   --app-notebook-gap-tight: 8px; /* 1600-batch.html: the log's own top padding and the recipe column's own stack gap; reused as the log's horizontal padding once the log moves below the Sheet and the ceremony's checkbox-to-label gap (1600-pen.html) */
-  --app-notebook-band-pad-t-narrow: 16px; /* 1366-batch.html: the band's own top padding in the interim desktop rung (plan 12) */
+  --app-notebook-band-pad-t-narrow: 16px; /* 1366-batch.html: the band's own top padding below 1366, sketch 011 decision 18's cut (03.5-15) */
   --app-notebook-frame-pad-b-phone: 40px; /* 393-batch.html: the frame's own bottom padding in the phone forms (plan 13) */
   --app-notebook-rail-min-h: 32px; /* 1600-batch.html: the recipe rail's own minimum height (it stretches with its row, unlike home.css's fixed-height rail) */
   --app-notebook-recipe-rail-gap: 14px; /* 1600-batch.html: the rail-to-name gap */

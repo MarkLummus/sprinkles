@@ -344,13 +344,17 @@ export function VersionRow({
               Next version
             </button>
             {parentVersion && (
+              // 03.5-15 Task 2, decisions_recorded 5: names the action by
+              // its own state instead of carrying aria-pressed — a toggle
+              // that renames itself must not also announce a pressed
+              // state (WAI-ARIA APG button pattern), or it doubles the
+              // state in the accessible name.
               <button
                 type="button"
                 className="notebook-link"
-                aria-pressed={showingChanges}
                 onClick={onToggleShowChanges}
               >
-                Show changes
+                {showingChanges ? 'Hide changes' : 'Show changes'}
               </button>
             )}
           </div>

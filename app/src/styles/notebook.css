@@ -14,10 +14,12 @@
    a 1770px window (.notebook's own rule, below). Below 1366 the log moves
    below the Sheet first — (max-width: 1365.98px) — before the side nav
    and the Sheet's second column go together at 984 (shell.css, app.css).
-   The interim desktop rung at (max-width: 1499.98px) and the phone step
-   at (max-width: 759.98px) are not this plan's to resolve (plans 12 and
-   13); their prelude literals stay for the same reason 600 stays in
-   app.css: media-query conditions cannot read custom properties. */
+   The interim desktop rung at (max-width: 1499.98px) is retired (sketch
+   011 decision 18, 03.5-15): the folds and the band's own rhythm now
+   switch at the same 1365.98px cut as the log. The phone step at
+   (max-width: 759.98px) is not this plan's to resolve (plan 13); its
+   prelude literal stays for the same reason 600 stays in app.css:
+   media-query conditions cannot read custom properties. */
 
 /* The content cap (sketch 011 decision 16): from a 1770px window the
    content stops growing at 1482 and centres in the main area — 1482 = the
@@ -693,7 +695,14 @@
   flex-wrap: wrap;
 }
 
-@media (max-width: 1499.98px) {
+/* The band's rhythm moves with the folds (sketch 011 decision 18, Mark,
+   2026-09-27: "Move with the folds"; 03.5-15 Task 2): roomy from 1366 —
+   the folds' own default (03.5-15 Task 1) — and tight below it, at the
+   same cut where the log moves below the Sheet first (sketch 011
+   decision 16's precedence): 1366 = the side nav's 224 + 3 x 32 gutters +
+   the Sheet's two-column minimum 696 + the log's own 350. Below this cut
+   the Sheet still keeps two columns — that rung is 984, shell.css/app.css. */
+@media (max-width: 1365.98px) {
   .notebook {
     gap: var(--app-notebook-band-rhythm);
   }
@@ -706,13 +715,7 @@
   .notebook-band__grid {
     gap: var(--gap-l);
   }
-}
 
-/* The log moves below the Sheet first (sketch 011 decision 16's
-   precedence): 1366 = the side nav's 224 + 3 x 32 gutters + the Sheet's
-   two-column minimum 696 + the log's own 350. Below this cut the Sheet
-   still keeps two columns — that rung is 984, shell.css/app.css. */
-@media (max-width: 1365.98px) {
   .notebook-body {
     flex-direction: column;
     gap: var(--app-notebook-frame-gap);

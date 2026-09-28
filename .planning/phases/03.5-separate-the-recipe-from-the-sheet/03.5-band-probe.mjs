@@ -195,6 +195,19 @@ async function readAppHistoryUprightGeometry(page) {
   });
 }
 
+// The one-line state at exactly one entry (03.5-18 Task 2, decision 19):
+// reads identically whether it is the app's own <p class="notebook-history__
+// only"> or versions-1-vs-many.html's bare, unstyled <p> — found by its own
+// exact text, since neither side names it with a shared class.
+async function readOneLineGeometry(page) {
+  return page.evaluate(() => {
+    const p = [...document.querySelectorAll('p')].find((el) => el.textContent.trim() === 'Only this version so far');
+    if (!p) return null;
+    const style = getComputedStyle(p);
+    return { fontSize: style.fontSize, color: style.color };
+  });
+}
+
 // upright-393.html's own "open" panel (011-options-counts): the row shape
 // counts.py's vnode/history_upright draws is structurally identical to
 // batches-many.html's own vrail_ rows (same author, same shape) — the mark
@@ -392,12 +405,53 @@ async function main() {
       console.log(JSON.stringify({ group: 'history', board: '1366-batch.html', foldBoardReading }));
       await foldBoardCtx.close();
 
+      // versions-1-vs-many.html's "picked" panel (Task 2, decision 19): the
+      // one line's own font-size/colour, compared against the app's fresh
+      // seed below (both read through the same readOneLineGeometry, by text
+      // rather than by any shared class name).
+      const { context: oneLineBoardCtx, page: oneLineBoardPage } = await openBoard(
+        browser,
+        repoUrl,
+        '../011-options-counts/versions-1-vs-many.html',
+      );
+      const oneLineBoardReading = await readOneLineGeometry(oneLineBoardPage);
+      console.log(JSON.stringify({ group: 'history', board: 'versions-1-vs-many.html', oneLineBoardReading }));
+      await oneLineBoardCtx.close();
+
       for (const width of widths) {
         if (![393, 1024, 1366, 1920].includes(width)) continue;
         const coarse = width === 393;
         const expectedOpen = width >= 1366;
         const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+
+        // Fresh seed (Task 2): one saved version, no fork yet — one plain
+        // line, no fold-history control, no rail.
+        const freshReading = await page.evaluate(() => ({
+          hasFoldHistory: !!document.querySelector('[aria-controls="fold-history"], #fold-history'),
+          hasOnlyLine: document.body.textContent.includes('Only this version so far'),
+        }));
+        console.log(JSON.stringify({ group: 'history', width, fresh: freshReading }));
+        countedCheck(freshReading.hasOnlyLine, `history width=${width}: fresh seed reads "Only this version so far"`);
+        countedCheck(!freshReading.hasFoldHistory, `history width=${width}: fresh seed has no fold-history control`);
+
+        if (oneLineBoardReading) {
+          const appOneLine = await readOneLineGeometry(page);
+          if (appOneLine) {
+            countedCheck(
+              Math.abs(parseFloat(appOneLine.fontSize) - parseFloat(oneLineBoardReading.fontSize)) <= 1,
+              `history width=${width}: one-line font-size (${appOneLine.fontSize}) within 1px of versions-1-vs-many.html's (${oneLineBoardReading.fontSize})`,
+            );
+            countedCheck(
+              appOneLine.color === oneLineBoardReading.color,
+              `history width=${width}: one-line colour (${appOneLine.color}) agrees with versions-1-vs-many.html's (${oneLineBoardReading.color})`,
+            );
+          }
+        }
+
+        // Two forks (Task 2 behavior): Version 2 from Version 1, then
+        // Version 3 from Version 2 — three total entries.
         await saveNextVersion(page, 'less oil');
+        await saveNextVersion(page, 'more salt');
 
         let reading = await readFoldGeometry(page, 'fold-history');
         console.log(JSON.stringify({ group: 'history', width, reading }));
@@ -413,15 +467,15 @@ async function main() {
             const nodeCount = await page.evaluate(
               () => document.querySelectorAll('#fold-history .notebook-history__node').length,
             );
-            countedCheck(nodeCount === 2, `history width=${width}: 2 horizontal nodes (got ${nodeCount})`);
+            countedCheck(nodeCount === 3, `history width=${width}: 3 horizontal nodes (got ${nodeCount})`);
             countedCheck(
               reading.countText != null && reading.countText.endsWith('oldest left, latest right'),
               `history width=${width}: the count ends "oldest left, latest right" (got ${reading.countText})`,
             );
           } else {
             countedCheck(
-              reading.countText === '2 versions',
-              `history width=${width}: the count reads "2 versions" while closed (got ${reading.countText})`,
+              reading.countText === '3 versions',
+              `history width=${width}: the count reads "3 versions" while closed (got ${reading.countText})`,
             );
             await clickFoldControl(page, 'fold-history');
             reading = await readFoldGeometry(page, 'fold-history');
@@ -432,15 +486,33 @@ async function main() {
               `history width=${width}: the upright list (#fold-history) exists once opened`,
             );
             if (upright) {
-              countedCheck(upright.rowCount === 2, `history width=${width}: 2 upright rows (got ${upright.rowCount})`);
+              countedCheck(upright.rowCount === 3, `history width=${width}: 3 upright rows (got ${upright.rowCount})`);
               countedCheck(
-                upright.rowTitles[0] != null && upright.rowTitles[0].startsWith('Version 2'),
-                `history width=${width}: the first row names Version 2 (got ${upright.rowTitles[0]})`,
+                upright.rowTitles[0] != null && upright.rowTitles[0].startsWith('Version 3'),
+                `history width=${width}: the first row names Version 3 (got ${upright.rowTitles[0]})`,
               );
               countedCheck(
                 upright.rowHeight >= 44,
                 `history width=${width}: row height is at least 44px (got ${upright.rowHeight})`,
               );
+
+              if (width === 1024) {
+                // Both forks land "now" (the harness's own clock), so their
+                // dateWords match — Version 2 vs Version 3 is read from the
+                // row title, not the date.
+                const v2Index = upright.rowTitles.findIndex((t) => t != null && t.startsWith('Version 2'));
+                const v3Index = upright.rowTitles.findIndex((t) => t != null && t.startsWith('Version 3'));
+                const v2Meta = v2Index >= 0 ? upright.rowMetas[v2Index] : null;
+                const v3Meta = v3Index >= 0 ? upright.rowMetas[v3Index] : null;
+                countedCheck(
+                  v2Meta != null && v2Meta.includes('not churned') && !v2Meta.includes('not yet'),
+                  `history width=1024: Version 2's row meta contains "not churned" and not "not yet" (got ${v2Meta})`,
+                );
+                countedCheck(
+                  v3Meta != null && v3Meta.includes('not yet churned · Latest'),
+                  `history width=1024: Version 3's row meta contains "not yet churned · Latest" (got ${v3Meta})`,
+                );
+              }
             }
             countedCheck(
               reading.countText != null && reading.countText.endsWith('latest first'),
@@ -452,7 +524,7 @@ async function main() {
             const links = [...document.querySelectorAll('#fold-history a')];
             return { count: links.length, tabindexOk: links.every((a) => a.getAttribute('tabindex') === '0') };
           });
-          countedCheck(linkReading.count === 1, `history width=${width}: exactly 1 rail link (got ${linkReading.count})`);
+          countedCheck(linkReading.count === 2, `history width=${width}: exactly 2 rail links (got ${linkReading.count})`);
           countedCheck(linkReading.tabindexOk, `history width=${width}: every rail link carries tabindex 0`);
 
           if (width === 393 && uprightBoardReading) {

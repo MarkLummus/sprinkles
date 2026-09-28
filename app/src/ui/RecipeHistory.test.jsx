@@ -155,3 +155,83 @@ describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 
     expect(markup).toContain('2 versions');
   });
 });
+
+// 03.5-18 Task 2 (decisions_recorded 1): one entry — a lone saved version,
+// no draft — reads as one plain line: no fold, no rail, no link
+// (versions-1-vs-many.html's picked panel).
+describe('RecipeHistory — exactly one entry reads one plain line (03.5-18 Task 2, decision 19)', () => {
+  it('renders the History caption over "Only this version so far", with no fold-history, no link and no rail class', () => {
+    const markup = renderHistory({
+      versions: [root],
+      currentVersionId: 'v1',
+      allBatches: [],
+    });
+    expect(markup).toContain('class="notebook-caption">History<');
+    expect(markup).toContain('Only this version so far');
+    expect(markup).not.toContain('fold-history');
+    expect(markup).not.toContain('<a ');
+    expect(markup).not.toContain('notebook-history__rail');
+    expect(markup).not.toContain('notebook-upright');
+  });
+
+  it('with the pen open and a draft, one saved version becomes two entries and the fold appears (decisions_recorded 1)', () => {
+    const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
+    const markup = renderHistory({
+      versions: [root],
+      currentVersionId: 'v1',
+      allBatches: [],
+      openPen: 'plan',
+      draft,
+    });
+    expect(markup).not.toContain('Only this version so far');
+    expect(markup).toContain('fold-history');
+    expect(markup).toContain('2 versions');
+  });
+});
+
+describe('RecipeHistory — exact link counts at three versions (03.5-18 Task 2)', () => {
+  const third = makeVersion({
+    id: 'v3',
+    versionLabel: 'more salt',
+    createdAt: '2026-09-25T00:00:00.000Z',
+    parentVersionId: 'v2',
+    parentVersionLabel: successor.versionLabel,
+  });
+
+  it('upright gives exactly 2 links, each with tabindex 0', () => {
+    const markup = renderHistory({
+      versions: [root, successor, third],
+      currentVersionId: 'v3',
+      allBatches: [],
+      belowDesktop: true,
+    });
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(2);
+    expect(tags.every((tag) => tag.includes('tabindex="0"'))).toBe(true);
+  });
+
+  it('horizontal gives exactly 2 links, each with tabindex 0', () => {
+    const markup = renderHistory({
+      versions: [root, successor, third],
+      currentVersionId: 'v3',
+      allBatches: [],
+      belowDesktop: false,
+    });
+    const tags = markup.match(/<a\b[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(2);
+    expect(tags.every((tag) => tag.includes('tabindex="0"'))).toBe(true);
+  });
+
+  it('renders no links at all while any pen is open, in either arrangement', () => {
+    for (const belowDesktop of [false, true]) {
+      const markup = renderHistory({
+        versions: [root, successor, third],
+        currentVersionId: 'v3',
+        allBatches: [],
+        belowDesktop,
+        openPen: 'amend',
+      });
+      expect(markup).not.toContain('<a ');
+    }
+  });
+});

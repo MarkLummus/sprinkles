@@ -83,6 +83,36 @@ describe('railEntries', () => {
     const entries = railEntries([v1], [], { currentVersionId: 'v1', draft });
     expect(entries[1].name).toBe('Version 2');
   });
+
+  // 03.5-18 Task 2 (decisions_recorded 2): the state words split by
+  // position — an older, never-churned version reads "not churned"
+  // (upright-393.html Version 4); only the LATEST unchurned version keeps
+  // "not yet churned" (1600-no-batch.html's rail).
+  it('reads an older, never-churned version as "not churned"', () => {
+    const v1 = makeVersion();
+    const v2 = makeVersion({ id: 'v2', versionLabel: 'allulose out', createdAt: '2026-08-11T00:00:00.000Z' });
+    const v3 = makeVersion({ id: 'v3', versionLabel: 'gum blend up', createdAt: '2026-08-18T00:00:00.000Z' });
+    const batch3 = makeBatch({ id: 'b3', versionId: 'v3', churn: { churnDate: '2026-08-20' } });
+    const entries = railEntries([v1, v2, v3], [batch3], { currentVersionId: 'v1' });
+    expect(entries[1]).toMatchObject({ stateWords: 'not churned', churned: false, latest: false });
+  });
+
+  it('still reads the latest, never-churned version as "not yet churned · Latest"', () => {
+    const v1 = makeVersion();
+    const v2 = makeVersion({ id: 'v2', versionLabel: 'less oil', createdAt: '2026-09-20T00:00:00.000Z' });
+    const entries = railEntries([v1, v2], [], { currentVersionId: 'v1' });
+    expect(entries[1]).toMatchObject({ stateWords: 'not yet churned · Latest', churned: false, latest: true });
+  });
+
+  it('still reads a churned version by its churn date, and the draft entry still reads "draft"', () => {
+    const v1 = makeVersion();
+    const v2 = makeVersion({ id: 'v2', versionLabel: 'less oil', createdAt: '2026-09-20T00:00:00.000Z' });
+    const batch = makeBatch();
+    const draft = { label: 'more salt', createdAt: '2026-09-25T00:00:00.000Z' };
+    const entries = railEntries([v1, v2], [batch], { currentVersionId: 'v1', draft });
+    expect(entries[0]).toMatchObject({ stateWords: 'churned 2 Aug' });
+    expect(entries[2]).toMatchObject({ stateWords: 'draft' });
+  });
 });
 
 describe('railHint (03.5-18 Task 1: open/upright/overflowing, decision 19)', () => {

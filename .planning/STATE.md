@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
 stopped_at: Completed 03.5-14-PLAN.md
-last_updated: "2026-09-28T10:59:25.953Z"
+last_updated: "2026-09-28T14:20:35.238Z"
 last_activity: 2026-09-28
 last_activity_desc: Phase 03.5 execution started
-state_head: 4db8e77196b249f3f6046403e03ff45d88cbb7ca
+state_head: 96cb6d51673f13903d75ddcf01c35eaeaccc0357
 progress:
   total_phases: 12
   completed_phases: 8
@@ -330,6 +330,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260925-u3r | Separate the batch notes (1025-1365 grid band deferred to a constraints study) | 2026-09-26 | 6d3f763 | [260925-u3r-separate-the-batch-notes-and-fix-the-rec](./quick/260925-u3r-separate-the-batch-notes-and-fix-the-rec/) |
 | 260927-758 | Keep notebook fields at 16px under a coarse pointer (iOS focus zoom); the Why written in the hand at every pointer | 2026-09-27 | 220b8ff | [260927-758-keep-notebook-fields-at-16px-under-coars](./quick/260927-758-keep-notebook-fields-at-16px-under-coars/) |
 | 59 | Type the Why in the prose-field role, not the hand (sketch 011 decision 17) | 2026-09-27 | a68437c | — |
+| 60 | Seed Q13: Underbelly Light Base v1 almond extract -> vanilla extract | 2026-09-28 | 96cb6d5 | — |
 
 ### Roadmap Evolution
 

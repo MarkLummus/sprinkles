@@ -2,11 +2,13 @@
 created: 2026-09-24T12:30:00.000Z
 title: Decide whether the batch and tasting log is entered on the phone, or only transcribed at the desk
 area: design
-severity: minor
+severity: major
 files:
   - .impeccable/surfaces/route-recipe.md:69
   - .impeccable/surfaces/route-recipe-batch.md:34
   - .impeccable/surfaces/route-recipe.md:155
+  - .impeccable/critique/2026-09-27T18-26-51Z__lanning-sketches-011-recipe-route-c-393-batch-html.md
+  - .planning/sketches/011-recipe-route-c/393-batch.html
 ---
 
 ## Deferred — 2026-09-24
@@ -40,3 +42,17 @@ Decide in the product brief for phone-based jobs, not in 03.5 and not on the can
 Either way the folds on the phone board (Details, Balance, Tasting closed by default;
 Carried forward dropped 2026-09-24) stay a narrow-width state; the Sheet reads whole at
 desktop and in print.
+
+## Update — 2026-09-27, the 393 Impeccable critique
+
+Mark deferred both items to the phone shaping ("leave it for now"; "leave it as-is for now, we'll shape the phone version later"). They are not part of the decision-18/19 app change. Severity raised to major (Mark confirmed).
+
+1. **P0: the transcribing fields sit about 4 screens deep.** On sketch 011's 393-batch.html (at a true 393 viewport) the batch log starts at y 3,335 and its first measured field at y 3,430, about 3.9 iPhone screens down. It comes after the full Ingredients and Instructions, which the maker is already holding on paper. The options raised:
+   - a "Batch" jump link in the band;
+   - the log before the Sheet below 724;
+   - Ingredients and Instructions folded by default on the phone when a batch is in view (this reopens decision 6).
+2. **P1: the phone's only filled action is Next version,** a desktop, formulating action. Record another (Record a batch) is an underlined word at the bottom of the page. The option raised: make the record action the filled one below 724 and demote Next version to a text control.
+
+Related questions from the critique:
+- Should "no stored fold state" hold for Tasting at 393, when opening it is the same first tap every visit?
+- Is Next version on the phone a feature, or left over from the desktop band?

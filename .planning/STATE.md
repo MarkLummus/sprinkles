@@ -215,6 +215,16 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-22] [design] Three /impeccable document follow-ups this phase hands to Impeccable, not code — [todo file](.planning/todos/pending/2026-09-22-three-impeccable-document-jobs-this-phase-hands-off.md)
 - [2026-09-23] [ui] Build the Recipe book print format (one page, the recipe only, for making a finished recipe) — [todo file](.planning/todos/pending/2026-09-23-build-the-recipe-book-print-format.md)
 - [2026-09-24] [design] Decide whether the batch and tasting log is entered on the phone, or only transcribed at the desk — [todo file](.planning/todos/pending/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md)
+- [2026-09-24] [design] Write a product brief for phone-based jobs — [todo file](.planning/todos/pending/2026-09-24-write-a-product-brief-for-phone-based-jobs.md)
+- [2026-09-25] [design] Draw the App-context record pen (route-recipe-batch.md's 2026-09-23 amendment) — [todo file](.planning/todos/pending/2026-09-25-draw-the-record-pen-in-app-context.md)
+- [2026-09-26] [design] Measure the record pen's own width limits, then re-derive its cut — [todo file](.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md)
+- [2026-09-27] [ui] Align the version section's Details link — [todo file](.planning/todos/pending/2026-09-27-align-the-version-details-link.md)
+- [2026-09-27] [ui] Recipe band buttons narrow on hover or click — [todo file](.planning/todos/pending/2026-09-27-band-buttons-narrow-on-hover-or-click.md)
+- [2026-09-27] [ui] Batch head controls on iPhone, and when the Batches control shows — [todo file](.planning/todos/pending/2026-09-27-batch-head-controls-on-iphone-and-the-batches-control.md)
+- [2026-09-27] [ui] Version Details control reads Show details / Hide details — [todo file](.planning/todos/pending/2026-09-27-details-toggles-show-details-hide-details.md)
+- [2026-09-27] [ui] Show changes toggles to Hide changes by state — [todo file](.planning/todos/pending/2026-09-27-show-changes-toggles-to-hide-changes.md)
+- [2026-09-27] [ui] Keep the side nav's options on screen while the page scrolls — [todo file](.planning/todos/pending/2026-09-27-sticky-side-nav.md)
+- [2026-09-27] [ui] Look into the Why row in the version details — [todo file](.planning/todos/pending/2026-09-27-why-row-in-version-details.md)
 
 ### Blockers/Concerns
 

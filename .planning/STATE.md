@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet
 status: executing
-stopped_at: Completed 03.5-17-PLAN.md
-last_updated: "2026-09-28T06:09:36.283Z"
+stopped_at: Completed 03.5-18-PLAN.md
+last_updated: "2026-09-28T06:37:12.175Z"
 last_activity: 2026-09-28
 last_activity_desc: Phase 03.5 execution started
-state_head: 8732a81d1c91718c2ec32cf88f82cc7bdaeddc18
+state_head: 20f12d0603d8c9fc80914a1e39b7e197286a32ea
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 84
-  completed_plans: 81
+  completed_plans: 82
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
-Plan: 4 of 18
+Plan: 5 of 18
 Status: Ready to execute
 Last activity: 2026-09-28 — Phase 03.5 execution started
 
@@ -110,6 +110,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P15 | 45min | 2 tasks | 11 files |
 | Phase 03.5 P16 | ~35min | 2 tasks | 11 files |
 | Phase 03.5 P17 | ~30min | 3 tasks | 17 files |
+| Phase 03.5 P18 | 35min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -209,6 +210,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: 03.5-16: The band probe's fold-tasting board comparison reads the board's caption-level style against the app's control-level style (a deliberate cross-field compare) since gen.py's Tasting fold_row() wraps its label in an explicitly-styled cap() span rather than nesting inside an ancestor .region-name, unlike Balance/Watch for.
 - [Phase 03.5]: [Phase 03.5, Plan 17] UprightRail.jsx built as the shared vertical list row (option D, sketch 011 decision 19); the batch list stands above the batch in view from two batches, folding like every other section (FoldRow/useFold). BatchHistoryPanel, the old "Batches (n)" head disclosure, History.jsx and history.css are retired outright.
 - [Phase 03.5]: [Phase 03.5, Plan 17] Rule 1 fix: .notebook-body's align-items: flex-start carried over unchanged from the 1366-up row layout into the below-1366 column layout, shrinking .notebook-log to its own content width instead of the column's full box (measured 424px vs 683-703px at 723). Added align-items: stretch to the same media block, fixing the batch-head todo's own board comparison and, incidentally, the Sheet's own below-1366 stacking.
+- [Phase 03.5]: [Phase 03.5, Plan 18] History rebuilt on FoldRow/UprightRail (decision 19): one plain line at exactly one entry, otherwise a fold — the horizontal rail from 1366 (unchanged), UprightRail below it, latest first. railHint's signature moved to {open, upright, overflowing}; railEntries splits an unchurned version's wording by position ('not yet churned' only for the latest, 'not churned' for an older one).
+- [Phase 03.5]: [Phase 03.5, Plan 18] Draft line (decision 19's band line) deferred to Phase 4 with draft persistence, per Mark's recorded answer (option-defer, 2026-09-28) — no app code change, D-13 stands.
 
 ### Pending Todos
 
@@ -347,6 +350,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-28T06:09:36.191Z
-Stopped at: Completed 03.5-17-PLAN.md
+Last session: 2026-09-28T06:37:12.083Z
+Stopped at: Completed 03.5-18-PLAN.md
 Resume file: None

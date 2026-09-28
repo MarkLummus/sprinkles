@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 15/18 plans executed
+**Plans:** 16/18 plans executed
 
 Plans:
 
@@ -526,7 +526,7 @@ Plans:
 
 **Wave 14** *(blocked on 03.5-17)*
 
-- [ ] 03.5-18-PLAN.md — History by count: one line at one version; with more, it folds, horizontal from 1366 and upright below; "not churned"; tabindex 0 on every rail link; the band's Draft line (checkpoint: Mark decides, since D-13 keeps drafts in memory)
+- [x] 03.5-18-PLAN.md — History by count: one line at one version; with more, it folds, horizontal from 1366 and upright below; "not churned"; tabindex 0 on every rail link; the band's Draft line (checkpoint: Mark decides, since D-13 keeps drafts in memory)
 
 **Wave 15** *(blocked on 03.5-15 to 03.5-18)*
 

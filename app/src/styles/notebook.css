@@ -537,6 +537,112 @@
   color: var(--app-text-secondary);
 }
 
+/* UprightRail (sketch 011 decision 19, counts.py's vnode/vrail_; 03.5-17
+   Task 1): the vertical list row shared by the batch list here and,
+   plan 18, the recipe's History below 1366. Reuses the History rail's own
+   tokens throughout (mark size, ring inset and width, the Notebook colour,
+   --rule-baseline for the hollow border) since it is the same mark drawn
+   upright instead of lying down; only the connector below is new. */
+.notebook-upright {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+
+/* 03.5-08 Task 2's own dl precedent (line 393 above): [hidden]'s UA rule
+   loses to this class's own display: flex on specificity ties, and wins
+   on source order (author over UA) without this re-assertion. */
+.notebook-upright[hidden] {
+  display: none;
+}
+
+.notebook-upright__row {
+  position: relative;
+}
+
+/* The connector down to the next row (decisions_recorded 1) — a row's own
+   ::after rather than a markup element, so it draws identically whether
+   the row itself is a Link or a span. Offsets run mark-centre to
+   mark-centre: half the mark's own diameter down from this row's top,
+   to half the next mark's diameter up from this row's own bottom edge
+   (that gap is the list's own row gap, --gap-s, plus the next mark's own
+   half-diameter). Only the connector's WIDTH is a measured/compared
+   quantity (the plan's own acceptance criteria); the vertical offsets are
+   this file's own reasonable placement, not board-measured pixels. */
+.notebook-upright__row:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--app-notebook-history-mark-size) / 2 - var(--app-rule-row) / 2);
+  top: calc(var(--app-notebook-history-mark-size) / 2);
+  bottom: calc(-1 * (var(--gap-s) + var(--app-notebook-history-mark-size) / 2));
+  width: var(--app-rule-row);
+  background: var(--app-divider);
+}
+
+.notebook-upright__link {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--app-notebook-history-mark-size) minmax(0, 1fr);
+  column-gap: var(--app-notebook-recipe-rail-gap);
+  align-items: center;
+  min-height: var(--touch-min);
+  text-decoration: none;
+  color: inherit;
+}
+
+.notebook-upright__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  min-width: 0;
+}
+
+.notebook-upright__mark {
+  box-sizing: border-box;
+  width: var(--app-notebook-history-mark-size);
+  height: var(--app-notebook-history-mark-size);
+  border-radius: 50%;
+  background: var(--app-background);
+  border: var(--rule-baseline) solid var(--app-notebook);
+}
+
+.notebook-upright__mark--filled {
+  background: var(--app-notebook);
+  border: none;
+}
+
+.notebook-upright__mark--in-view {
+  box-shadow:
+    0 0 0 var(--app-notebook-history-ring-inset) var(--app-background),
+    0 0 0 var(--app-notebook-history-ring-w) var(--app-notebook);
+}
+
+.notebook-upright__title {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-blue-text);
+  text-decoration: underline;
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+
+/* The row in view is not a link (decisions_recorded 2) — bold ink, no
+   underline, whether or not it carries a `to` (UprightRail.jsx only ever
+   sets aria-current="page" on that one row's own span). */
+.notebook-upright__link[aria-current='page'] .notebook-upright__title {
+  font-weight: 700;
+  color: var(--app-text);
+  text-decoration: none;
+}
+
+.notebook-upright__meta {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+
 /* The batch log's own reading state (03.5-07 Task 1, 1600-batch.html's
    <aside aria-label="Batch">): BatchRow.jsx keeps its own class names
    (decisions_recorded 1) — every rule here restyles them by scope, value
@@ -547,6 +653,23 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-m);
+}
+
+/* The batch list block (FoldRow + UprightRail, decision 19, 03.5-17): the
+   gap between the fold head and the rail reuses the History rail's own
+   head-to-rail gap (they draw the identical relationship). */
+.notebook-log .batch-row__batch-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-history-head-gap);
+}
+
+/* The head's own rule and top padding once the batch list precedes it
+   (counts.py's optD_ wrapping div) — 14px/1px/divider, all three already
+   named for this exact value elsewhere in this file. */
+.notebook-log .batch-row__head--after-list {
+  padding-top: var(--app-notebook-recipe-rail-gap);
+  border-top: var(--app-rule-row) solid var(--app-divider);
 }
 
 .notebook-log .batch-row__head {

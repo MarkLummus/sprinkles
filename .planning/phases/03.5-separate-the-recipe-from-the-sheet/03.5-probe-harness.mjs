@@ -169,14 +169,19 @@ export async function openBoard(browser, repoUrl, file) {
 // record pen's foot (PenFoot) and the end-of-record ceremony (BatchRow's own
 // SaveCeremony) mount the identical control while recording, so two "Save
 // batch" buttons exist on the page — and waits for the saved batch's own
-// route and head. Never touches Mark's :4173 preview or his own browser
-// profile (T-03.5-44) — the caller's page/context is this file's own
-// openApp() result, on 127.0.0.1.
+// route and head. The caller may already be sitting on a `/batch/…` URL
+// (recording another one), so the wait is for the URL to CHANGE away from
+// its own value at click time, not merely for a `/batch/` URL to exist —
+// the latter is already true before the save and would resolve instantly.
+// Never touches Mark's :4173 preview or his own browser profile
+// (T-03.5-44) — the caller's page/context is this file's own openApp()
+// result, on 127.0.0.1.
 export async function recordAnotherBatch(page, isoDate) {
+  const urlBeforeSave = page.url();
   await page.getByRole('button', { name: /^Record (another|a batch)$/ }).first().click();
   await page.getByLabel('Churn date').fill(isoDate);
   await page.getByRole('button', { name: 'Save batch' }).first().click();
-  await page.waitForURL(/\/batch\//);
+  await page.waitForFunction((prev) => window.location.href !== prev, urlBeforeSave);
   await page.waitForSelector('h2.region-name:has-text("Batch")');
 }
 

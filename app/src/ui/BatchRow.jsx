@@ -1,7 +1,5 @@
-import { HistoryDisclosure, HistoryPanel, HistoryList, HistoryItem, HistoryMarkers, HistoryProvenance } from './History.jsx';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
-import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, batchIdentity, tastingProvenance } from '../domain/batch.js';
+import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, tastingProvenance } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
 import { axesForBatch, readMarkWord } from '../domain/axes.js';
@@ -11,6 +9,7 @@ import { AxisMark } from './AxisMark.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { FoldRow } from './FoldRow.jsx';
+import { UprightRail } from './UprightRail.jsx';
 import { useLogBesideSheet, useFold } from './useBelowDesktop.js';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
@@ -350,53 +349,19 @@ function TastingReading({ batch, foldsOpen = true }) {
   );
 }
 
-// batchHistoryMetaFor(batch) -> the batch list's own meta small print parts
-// (D-04, D-09, HIST-04, HIST-07): the shared tasting provenance leads,
-// then the drawn temperature and At-the-machine prose follow it as
-// supporting evidence, then "changed {date}" when the batch carries a
-// changed value. Exported for direct testing, since the disclosure that
-// renders this has no prop to open it from a render-only test (this
-// file's own AxesGrid precedent).
-export function batchHistoryMetaFor(batch) {
+// batchListMeta(batch) -> the batch list's own meta small print parts
+// (decisions_recorded 3, 03.5-17): the shared tasting provenance leads,
+// then "out of machine {temp} °C" when measured. The retired register's
+// other parts (the at-the-machine words, the changed date) are not on the
+// board's rows (batches-many.html panel D) and are not carried. Exported
+// for direct testing, since the fold that renders this has no prop to
+// open it from a render-only test (this file's own AxesGrid precedent).
+export function batchListMeta(batch) {
   const metaParts = [tastingProvenance(batch)];
   if (batch.churn.outOfMachineTempC != null) {
     metaParts.push(`out of machine ${churnMeasured(batch.churn.outOfMachineTempC, { signed: true })} °C`);
   }
-  if (batch.churn.atTheMachine) metaParts.push(batch.churn.atTheMachine);
-  if (batch.changed) metaParts.push(`changed ${formatRecordDate(batch.changed)}`);
   return metaParts;
-}
-
-export function BatchHistoryPanel({ version, batches, openBatch = null, openPen = null, open = true }) {
-  return (
-    <HistoryPanel open={open} id="batch-row-batches" className="batch-row__batches" title="Batches of this version">
-      <HistoryList ordered className="history-register" label="Batches of this version">
-        {sortedBatches(batches).map((batch) => {
-          const isOpenBatch = openBatch && batch.id === openBatch.id;
-          const identity = batchIdentity(batch);
-          const metaParts = batchHistoryMetaFor(batch);
-          return (
-            <HistoryItem key={batch.id} current={isOpenBatch} className="history-register__item">
-              <div className="history-register__identity">
-                <p className="history-register__name">
-                  {isOpenBatch ? (
-                    <>
-                      {identity}<HistoryMarkers current />
-                    </>
-                  ) : openPen ? (
-                    identity
-                  ) : (
-                    <Link to={notebookPath(version.recipeId, version.id, batch.id)} state={{ focusBatch: true }} tabIndex={0}>{identity}</Link>
-                  )}
-                </p>
-                <HistoryProvenance>{metaParts.join(' · ')}</HistoryProvenance>
-              </div>
-            </HistoryItem>
-          );
-        })}
-      </HistoryList>
-    </HistoryPanel>
-  );
 }
 
 // The batch's own row (sketch 003 variant B, 03.3-01; rebuilt to the full
@@ -564,31 +529,52 @@ export function BatchRow({
     if (invalidFieldTarget) fieldRefs.current[invalidFieldTarget.key]?.focus();
   }, [invalidFieldTarget]);
 
-  // The Batches disclosure (route-recipe.md § 3 "History controls name a
-  // whole set, never a direction", 260917-odu): closed by default,
-  // counting every batch of the version in view, the one being read
-  // included — the list it discloses already renders every batch (D-09),
-  // so only the count and the words move here.
-  const [batchesOpen, setBatchesOpen] = useState(false);
-  const batchCount = batches.length;
-
-  // The Batches control is withheld while any pen is open, not only the
-  // batch's own record pen (03.5-07 must_haves: "the log stays visible
-  // while the version pen is open, read-only... its controls and links
-  // are withheld") — visible with no pen open, or while amending the
-  // very batch it names. The churned date beside it is text, not a
-  // control, and keeps its own narrower guard below (only the record
-  // pen's own blank-date state hides it).
-  const logControlsVisible = openPen === null || openPen === 'amend';
+  // The batch list (decision 19, sketch 011, 03.5-17): from two batches,
+  // the version's batches stand as an upright list above the batch in
+  // view (option D), latest first. It folds like every other section
+  // (FoldRow/useFold, 03.5-15/16) — open by default from 1366, closed
+  // below, with no state stored. Withheld entirely while the record pen
+  // is open (G-03.3-4: the batch in view is not the one being recorded);
+  // its rows read as text (no `to`) while any other pen is open
+  // (D-UAT-1/2's link suppression). Replaces the retired "Batches (n)"
+  // head disclosure and BatchHistoryPanel outright — at 0 or 1 batch
+  // there is nothing to disclose (the batch-head todo).
+  const [batchListOpen, toggleBatchList] = useFold(foldsOpen);
+  const showBatchList = batches.length >= 2 && openPen !== 'record';
 
   return (
     <section className="batch-row" aria-label="Batch">
-      {/* The date and the Batches control name the batch IN VIEW — a
+      {showBatchList && (
+        <div className="batch-row__batch-list">
+          <FoldRow
+            label={<span className="notebook-caption">Batches</span>}
+            open={batchListOpen}
+            onToggle={toggleBatchList}
+            controls="fold-batches"
+            count={`${batches.length} batches${batchListOpen ? ' · latest first' : ''}`}
+          />
+          <UprightRail
+            id="fold-batches"
+            label="Batches of this version"
+            hidden={!batchListOpen}
+            entries={sortedBatches(batches).map((batch) => ({
+              key: batch.id,
+              title: `churned ${recordDateWords(batch.churn.churnDate)}`,
+              meta: batchListMeta(batch).join(' · '),
+              filled: Boolean(batch.tasting),
+              inView: Boolean(openBatch && batch.id === openBatch.id),
+              to: openPen ? null : notebookPath(version.recipeId, version.id, batch.id),
+              state: { focusBatch: true },
+            }))}
+          />
+        </div>
+      )}
+      {/* The date and Correct/Record another name the batch IN VIEW — a
           different batch than the one being recorded while
           openPen === 'record' (Mark, 2026-09-10 live review, G-03.3-4):
           showing them there read as the wrong batch's date. Amending
           keeps both, since amend corrects the very batch in view. */}
-      <div className="batch-row__head">
+      <div className={`batch-row__head${showBatchList ? ' batch-row__head--after-list' : ''}`}>
         <h2
           ref={batchHeadingRef}
           className={`region-name${landingFocusVisible ? ' is-landing-focus' : ''}`}
@@ -606,15 +592,6 @@ export function BatchRow({
           <span className="batch-row__date">
             {`churned ${recordDateWords(openBatch.churn.churnDate)}`}
           </span>
-        )}
-        {logControlsVisible && batchCount > 0 && (
-          <HistoryDisclosure
-            open={batchesOpen}
-            panelId="batch-row-batches"
-            onToggle={() => setBatchesOpen((open) => !open)}
-          >
-            {`Batches (${batchCount})`}
-          </HistoryDisclosure>
         )}
         {/* Correct: an underlined word standing on the head line that
             names the record it acts on, right-aligned like Remove tasting
@@ -1116,24 +1093,15 @@ export function BatchRow({
         )}
       </div>
 
-      {/* The batch list (D-09): always a list with zero batches, since
-          there is no count to disclose. With one or more, it becomes the
-          "Batches of this version" panel the head's own count control
-          opens (sketch 003 variant B, G-03.3-4) — closed by default, and
-          it already includes every batch of the version in view, the one
-          being read among them. */}
-      {batches.length === 0 ? (
+      {/* The no-batch state's own list (D-09): with zero batches there is
+          nothing to disclose. From one batch, nothing renders here any
+          more — the batch list above (showBatchList) replaces it from
+          two, and one batch offers no control of any kind (the
+          batch-head todo). */}
+      {batches.length === 0 && (
         <ul className="batch-margin__list">
           <li>no batch yet</li>
         </ul>
-      ) : (
-          <BatchHistoryPanel
-            open={batchesOpen}
-            version={version}
-            batches={batches}
-            openBatch={openBatch}
-            openPen={openPen}
-          />
       )}
     </section>
   );

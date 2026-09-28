@@ -1231,28 +1231,28 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     }
   });
 
-  it('renders the caption as bare "Tasting" with no summary span, even with marked axes and a declared flaw', () => {
+  it('renders the fold-row label as bare "Tasting" with no summary span, even with marked axes and a declared flaw', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).not.toContain('tasting-reading__summary');
-    expect(markup).toMatch(/<h3 class="region-name">\s*Tasting\s*<\/h3>/);
+    expect(markup).toContain('<span class="fold-row__head">Tasting<span class="fold-row__control">');
   });
 
   it('renders no summary line span when nothing is marked and nothing is declared', () => {
     const bareBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, marks: {}, bitterDeclared: null } };
     const markup = renderBatchRow({ openBatch: bareBatch, batches: [bareBatch], mode: 'reading' });
     expect(markup).not.toContain('tasting-reading__summary');
-    expect(markup).toMatch(/<h3 class="region-name">\s*Tasting\s*<\/h3>/);
+    expect(markup).toContain('<span class="fold-row__head">Tasting<span class="fold-row__control">');
   });
 
-  it('reads the tasted date as "date unknown" when absent, never invented', () => {
+  it('reads the tasted date as "date unknown" when absent, never invented — as the fold row\'s own count', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toContain('<p class="batch-row__date">tasted date unknown</p>');
+    expect(markup).toContain('<span class="fold-row__count">tasted date unknown</span>');
   });
 
-  it('reads the tasted date via formatRecordDate when present', () => {
+  it('reads the tasted date via formatRecordDate when present — as the fold row\'s own count', () => {
     const datedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, tastedDate: '2026-08-03' } };
     const markup = renderBatchRow({ openBatch: datedBatch, batches: [datedBatch], mode: 'reading' });
-    expect(markup).toContain('<p class="batch-row__date">tasted 3 Aug 2026</p>');
+    expect(markup).toContain('<span class="fold-row__count">tasted 3 Aug 2026</span>');
   });
 
   it('reads the tasting temperature signed, and the melt test with its own unit', () => {

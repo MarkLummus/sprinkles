@@ -2084,7 +2084,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onCancelRecording={handleCancelRecording}
             onSaveBatch={handleSaveBatch}
             onStartRecording={handleStartRecording}
-            foldable={belowDesktop}
+            foldsOpen={!belowDesktop}
           />
         </aside>
       </div>

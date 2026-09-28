@@ -414,11 +414,12 @@
 
   /* The batch log's own reading-state values (03.5-07 Task 1,
      1600-batch.html's <aside aria-label="Batch">): the measured-value
-     figure, the tasted-date size, and the head's/cells' own gaps — none
-     of these reuse an existing token, since the aside's own inline
-     styles carry values the App scale does not otherwise name. */
+     figure, and the head's/cells' own gaps — none of these reuse an
+     existing token, since the aside's own inline styles carry values the
+     App scale does not otherwise name. The tasted-date's own size token
+     retired at 03.5-16 Task 2: the date now reads the fold row's own
+     count face (--app-size-label) instead of a bespoke size. */
   --app-notebook-log-value-size: 20px; /* a measured cell's own figure (Time to draw temp., Sweetness, ...) */
-  --app-notebook-log-tasted-size: 13px; /* the tasting head's own "tasted <date>" size */
   --app-notebook-log-cell-gap-row: 16px; /* the cells grid's own row-gap (the column-gap reuses --gap-m, 20px) */
   --app-notebook-log-head-gap: 18px; /* the head's own right-hand control group gap (Batches, Correct, Record) */
   --app-notebook-log-group-gap: 18px; /* the log section's own gap between its groups on every sketch 011 batch board, read here as the space between the measured cells and the maker's notes (260925-u3r) */

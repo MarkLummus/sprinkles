@@ -1463,8 +1463,7 @@ textarea {
   flex-wrap: wrap;
 }
 
-.tasting-reading__head .region-name,
-.tasting-reading__head .batch-row__date {
+.tasting-reading__head .region-name {
   margin: 0;
 }
 

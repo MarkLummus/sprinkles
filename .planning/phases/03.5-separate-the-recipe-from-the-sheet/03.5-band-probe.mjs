@@ -181,7 +181,12 @@ async function readFoldGeometry(page, foldId) {
     const wordStyle = wordEl ? getComputedStyle(wordEl) : null;
     const captionStyle = captionEl ? getComputedStyle(captionEl) : null;
     const controlStyle = getComputedStyle(control);
-    const countEl = control.querySelector(':scope > span.fold-row__count');
+    // Structural, not by class — the board's own count span (gen.py's
+    // fold_row `cnt`) carries no class attribute at all, only an inline
+    // style, so it is read as the button's second direct <span> child
+    // (the head span is always first) exactly as the app's own
+    // span.fold-row__count sits.
+    const countEl = control.querySelector(':scope > span:nth-child(2)');
     const countStyle = countEl ? getComputedStyle(countEl) : null;
     const countRect = countEl ? countEl.getBoundingClientRect() : null;
     return {
@@ -198,6 +203,7 @@ async function readFoldGeometry(page, foldId) {
       wordTextDecorationLine: wordStyle ? wordStyle.textDecorationLine : null,
       captionFontSize: captionStyle ? captionStyle.fontSize : null,
       captionTextTransform: captionStyle ? captionStyle.textTransform : null,
+      captionColor: captionStyle ? captionStyle.color : null,
       controlFontSize: controlStyle.fontSize,
       controlColor: controlStyle.color,
       controlTextTransform: controlStyle.textTransform,
@@ -467,20 +473,39 @@ async function main() {
               `folds width=${width}: ${id} caption text-transform (${appReading.captionTextTransform}) agrees exactly with ${file}'s (${boardReading.captionTextTransform})`,
             );
           } else {
-            // Balance/Watch for/Tasting: the label is bare text inheriting
-            // its face straight from the button's own computed style
-            // (region-name/caption face, 03.5-16 Task 1).
+            // Balance/Watch for: the label is bare text in the app AND on
+            // the board (fold_row() sits directly inside the board's own
+            // h2.region-name — gen.py leaves that wrapper in place), so
+            // both sides inherit their caption face onto the BUTTON itself
+            // — compare controlFontSize/controlColor/controlTextTransform
+            // on both sides directly (03.5-16 Task 1).
+            //
+            // Tasting: the app's label is ALSO bare text (inherits from
+            // .notebook-log .tasting-reading .region-name via the h3,
+            // decisions_recorded 2 — "the button inherits the h3's caption
+            // face"), but the board's fold_row() call wraps its label in
+            // cap('Tasting') — an explicitly-styled nested span, not an
+            // inherited one, since gen.py's own replacement drops the
+            // Tasting head's ancestor entirely rather than nesting inside
+            // one. Both approaches draw the identical pixel (the caption
+            // face), so the comparison is deliberately cross-field here:
+            // the app's own control-level read against the board's
+            // caption-level read (03.5-16 Task 2).
+            const boardFontSize = id === 'fold-tasting' ? boardReading.captionFontSize : boardReading.controlFontSize;
+            const boardColor = id === 'fold-tasting' ? boardReading.captionColor : boardReading.controlColor;
+            const boardTextTransform =
+              id === 'fold-tasting' ? boardReading.captionTextTransform : boardReading.controlTextTransform;
             countedCheck(
-              Math.abs(parseFloat(appReading.controlFontSize) - parseFloat(boardReading.controlFontSize)) <= 1,
-              `folds width=${width}: ${id} control font-size (${appReading.controlFontSize}) within 1px of ${file}'s (${boardReading.controlFontSize})`,
+              Math.abs(parseFloat(appReading.controlFontSize) - parseFloat(boardFontSize)) <= 1,
+              `folds width=${width}: ${id} control font-size (${appReading.controlFontSize}) within 1px of ${file}'s (${boardFontSize})`,
             );
             countedCheck(
-              appReading.controlColor === boardReading.controlColor,
-              `folds width=${width}: ${id} control colour (${appReading.controlColor}) agrees with ${file}'s (${boardReading.controlColor})`,
+              appReading.controlColor === boardColor,
+              `folds width=${width}: ${id} control colour (${appReading.controlColor}) agrees with ${file}'s (${boardColor})`,
             );
             countedCheck(
-              appReading.controlTextTransform === boardReading.controlTextTransform,
-              `folds width=${width}: ${id} control text-transform (${appReading.controlTextTransform}) agrees exactly with ${file}'s (${boardReading.controlTextTransform})`,
+              appReading.controlTextTransform === boardTextTransform,
+              `folds width=${width}: ${id} control text-transform (${appReading.controlTextTransform}) agrees exactly with ${file}'s (${boardTextTransform})`,
             );
           }
 

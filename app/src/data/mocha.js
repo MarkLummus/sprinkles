@@ -57,8 +57,8 @@ export const mochaV0 = {
   parentVersionLabel: null,
   reason: null,
   citedBatchId: null,
-  // createdAt: ordering placeholder — Mark to supply the real date: the
-  // .ier time (2024-12-23 09:16:42 −05:00, the folder's archive stamp)
+  // createdAt: ordering placeholder, kept as seed data (Mark 2026-09-28,
+  // seed open question 9): the .ier time (2024-12-23 09:16:42 −05:00, the folder's archive stamp)
   // ties with Mocha v1.ier's to the second, so v0 takes v1's createdAt
   // minus one second; the real date predates August 2024 (Mango 2 on Light
   // Base, printed 8/14/24, already names "Stabilizer mix from Mocha").
@@ -165,8 +165,9 @@ export const mochaV1 = {
   // Mark 2026-09-25 — Mocha v1.ier is the recipe re-saved after v0's
   // churned batch (IMG_2464), so v1 cites that batch.
   citedBatchId: MOCHA_V0_BATCH_ID,
-  // createdAt: ordering placeholder — Mark to supply the real date: its
-  // .ier time is the archive stamp, used as it stands.
+  // createdAt: ordering placeholder, kept as seed data (Mark 2026-09-28,
+  // seed open question 9): its .ier time is the archive stamp, used as it
+  // stands.
   createdAt: '2024-12-23T14:16:42.000Z',
   versionLabel: 'v1',
   coefficientSetId: '2026.1-slice-transcription',
@@ -217,10 +218,11 @@ export const mochaV2 = {
   // Typed on IMG_2465 itself, v2's own words, matching v1 -> v2.
   reason: 'reduced Coffee from 15g to 8g, reduced Cocoa from 60g to 30g',
   citedBatchId: null,
-  // createdAt: ordering placeholder — Mark to supply the real date:
-  // '2024-12-28T12:56:38.000Z' is the .ier's re-save time, not v2's
-  // creation; the page types "updated 12/23/2024".
-  createdAt: '2024-12-28T12:56:38.000Z',
+  // createdAt: 12/23/2024, the page's own typed "updated 12/23/2024"
+  // (Mark 2026-09-28, seed open question 9), not the .ier's re-save time
+  // (2024-12-28 07:56 −05:00). v1 plus one second, so v2 follows v1 on the
+  // same day.
+  createdAt: '2024-12-23T14:16:43.000Z',
   versionLabel: 'v2',
   coefficientSetId: '2026.1-slice-transcription',
   coefficientSetName: 'coefficient set 2026.1 (slice transcription)',

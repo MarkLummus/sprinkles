@@ -184,7 +184,8 @@ export const strawberryV2 = {
   parentVersionLabel: 'V1',
   reason: null,
   citedBatchId: null,
-  // createdAt: ordering placeholder — Mark to supply the real date: this
+  // createdAt: ordering placeholder, kept as seed data (Mark 2026-09-28,
+  // seed open question 9): this
   // page has no print timestamp and its .ier time (2024-12-23 09:16
   // −05:00, the folder's archive stamp) falls after V2.1's print, so it
   // takes V2.1's createdAt minus one second (Mark 2026-09-25, answer 2).

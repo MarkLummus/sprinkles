@@ -604,7 +604,7 @@ describe('Mocha v0 -> v1 -> v2 -> v3 (IMG_2464-2466 + .ier + comparisons workboo
     expect(mochaV3.parentVersionId).toBe(mochaV2.id);
     expect(mochaV0.createdAt).toBe('2024-12-23T14:16:41.000Z');
     expect(mochaV1.createdAt).toBe('2024-12-23T14:16:42.000Z');
-    expect(mochaV2.createdAt).toBe('2024-12-28T12:56:38.000Z');
+    expect(mochaV2.createdAt).toBe('2024-12-23T14:16:43.000Z');
     expect(mochaV3.createdAt).toBe('2024-12-28T13:07:34.000Z');
     expect(mochaV0.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.2993 });
     expect(mochaV1.iceEd).toEqual({ style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.2993 });

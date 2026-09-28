@@ -26,9 +26,9 @@ const widths = widthsArg.split(',').map(Number);
 
 // The folds this plan's own probe checks — grows as plan 16 brings Balance,
 // Watch for, Tasting, History and Batches onto the same FoldRow (sketch 011
-// decision 19). Task 1 (03.5-16) adds fold-balance and fold-check; Task 2
+// decision 19). Task 1 (03.5-16) added fold-balance and fold-check; Task 2
 // adds fold-tasting.
-const EXPECTED_FOLDS = ['fold-version', 'fold-balance', 'fold-check'];
+const EXPECTED_FOLDS = ['fold-version', 'fold-balance', 'fold-check', 'fold-tasting'];
 
 // fold-version's own label sits in a dedicated caption span (VersionRow's
 // `label={<span className="notebook-caption">Version</span>}`, since the

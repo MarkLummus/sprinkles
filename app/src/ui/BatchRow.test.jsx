@@ -1342,16 +1342,15 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   });
 });
 
-// The Tasting fold (03.5-08 Task 1, sketch 011 1366-batch.html/settled
-// decision 6): below desktop the tasting read view closes by default
-// behind a "Show"/"Hide" control on the Tasting head; the churn cells
-// above it are never folded. At desktop (foldable false/absent) nothing
-// changes.
-describe('BatchRow — the Tasting fold below desktop (03.5-08 Task 1, settled decision 6)', () => {
-  it('renders a closed Show control on the Tasting head and a hidden fold-tasting wrapper when foldable', () => {
-    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldable: true });
-    expect(markup).toMatch(
-      /<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="fold-tasting">Show<\/button>/,
+// The Tasting fold head (sketch 011 decisions 18/19, 03.5-16 Task 2): one
+// full-row FoldRow control at every width now (no more "not foldable"
+// state), Tasting, Show or Hide, then the tasted date at the row's end.
+// The churn cells above it are never folded.
+describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 18/19)', () => {
+  it('closed (foldsOpen false): h3.region-name holds a fold-row naming fold-tasting, collapsed, Show, with the tasted date as its own count; the body is hidden', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldsOpen: false });
+    expect(markup).toContain(
+      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-tasting"><span class="fold-row__head">Tasting<span class="fold-row__control">Show</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
     );
     expect(markup).toMatch(/<div id="fold-tasting" hidden="?/);
     // The tasting cells sit inside the fold, after the id="fold-tasting" opening tag.
@@ -1360,18 +1359,27 @@ describe('BatchRow — the Tasting fold below desktop (03.5-08 Task 1, settled d
     expect(conditionsIndex).toBeGreaterThan(foldIndex);
   });
 
-  it('leaves the churn cells outside any fold when foldable', () => {
-    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldable: true });
+  it('open (foldsOpen true, the default): the control reads Hide, and the body carries no hidden attribute', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toContain(
+      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-tasting"><span class="fold-row__head">Tasting<span class="fold-row__control">Hide</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
+    );
+    expect(markup).toContain('<div id="fold-tasting">');
+  });
+
+  it('leaves the churn cells outside the fold', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldsOpen: false });
     const churnCellsIndex = markup.indexOf('class="batch-row__cells"');
     const foldIndex = markup.indexOf('id="fold-tasting"');
     expect(churnCellsIndex).toBeGreaterThan(-1);
     expect(churnCellsIndex).toBeLessThan(foldIndex);
   });
 
-  it('renders no Show/Hide control and no fold-tasting wrapper when not foldable', () => {
+  it('the tasting head holds no other date element — the tasted date lives only in the fold row\'s own count', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).not.toContain('aria-controls="fold-tasting"');
-    expect(markup).not.toContain('id="fold-tasting"');
+    const headIndex = markup.indexOf('<div class="tasting-reading__head">');
+    const headEndIndex = markup.indexOf('</div>', headIndex);
+    expect(markup.slice(headIndex, headEndIndex)).not.toContain('batch-row__date');
   });
 });
 

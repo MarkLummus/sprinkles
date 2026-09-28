@@ -90,6 +90,7 @@ export function RecipeHistory({
     <section className="notebook-history" aria-label="History">
       <FoldRow
         label={<span className="notebook-caption">History</span>}
+        labelText="History"
         open={open}
         onToggle={toggle}
         controls="fold-history"

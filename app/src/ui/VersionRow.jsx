@@ -238,6 +238,7 @@ export function VersionRow({
             below-desktop-only HistoryDisclosure both retire into it. */}
         <FoldRow
           label={<span className="notebook-caption">Version</span>}
+          labelText="Version"
           open={detailsOpen}
           onToggle={toggleDetailsOpen}
           controls="fold-version"

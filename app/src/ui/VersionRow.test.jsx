@@ -485,7 +485,7 @@ describe('VersionRow — the details fold at every width (sketch 011 decisions 1
   it('renders a closed fold reading "Show details" and a hidden dl when foldsOpen is false', () => {
     const markup = renderVersionRow({ foldsOpen: false });
     expect(markup).toMatch(
-      /<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version">/,
+      /<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version" aria-label="Version Show details">/,
     );
     expect(markup).toMatch(/<span class="fold-row__control">Show details<\/span>/);
     expect(markup).toMatch(/<dl class="notebook-version__details" id="fold-version" hidden="?/);
@@ -494,7 +494,7 @@ describe('VersionRow — the details fold at every width (sketch 011 decisions 1
   it('renders an open fold reading "Hide details" and a visible dl when foldsOpen is true (the default)', () => {
     const markup = renderVersionRow({});
     expect(markup).toMatch(
-      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version">/,
+      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version" aria-label="Version Hide details">/,
     );
     expect(markup).toMatch(/<span class="fold-row__control">Hide details<\/span>/);
     expect(markup).toContain('<dl class="notebook-version__details" id="fold-version">');

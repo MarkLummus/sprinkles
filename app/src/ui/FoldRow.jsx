@@ -7,10 +7,27 @@
 // `.text-control` scope nor the touch union's `.text-control` rule
 // reaches it; its own CSS rule (notebook.css) carries fold_row's inline
 // resets and the 44px touch floor at every pointer.
-export function FoldRow({ label, open, onToggle, controls, what, count }) {
+// labelText: the label's own plain-string form for the accessible name
+// below (WR-01, 03.5 review) — most callers' label IS already that string;
+// callers whose label is a caption element (VersionRow, BatchRow's batch
+// list, RecipeHistory) pass it separately, since aria-label cannot read a
+// React element. The visible markup below is untouched — label, control
+// word and count stay three adjacent DOM text nodes exactly as before, so
+// no layout gap changes; only the button's computed accessible name gains
+// real word boundaries.
+export function FoldRow({ label, labelText, open, onToggle, controls, what, count }) {
   const controlWord = (open ? 'Hide' : 'Show') + (what ? ` ${what}` : '');
+  const name = typeof label === 'string' ? label : labelText;
+  const accessibleName = `${name} ${controlWord}${count ? `, ${count}` : ''}`;
   return (
-    <button type="button" className="fold-row" aria-expanded={open} aria-controls={controls} onClick={onToggle}>
+    <button
+      type="button"
+      className="fold-row"
+      aria-expanded={open}
+      aria-controls={controls}
+      aria-label={accessibleName}
+      onClick={onToggle}
+    >
       <span className="fold-row__head">
         {label}
         <span className="fold-row__control">{controlWord}</span>

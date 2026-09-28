@@ -548,6 +548,7 @@ export function BatchRow({
         <div className="batch-row__batch-list">
           <FoldRow
             label={<span className="notebook-caption">Batches</span>}
+            labelText="Batches"
             open={batchListOpen}
             onToggle={toggleBatchList}
             controls="fold-batches"

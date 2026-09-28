@@ -71,15 +71,18 @@ export function railEntries(versions, allBatches, { currentVersionId, draft = nu
 }
 
 /**
- * railHint(count, { belowDesktop, overflowing }) -> the hint beside the
- * History caption (1600-batch.html / 1366-batch.html): "{n} version(s)"
- * below desktop, with "· oldest left, latest right" added at
- * desktop/iPad-landscape, and "· opens at the version in view" appended
- * only while the rail actually overflows its own width
- * (1600-long-history.html).
+ * railHint(count, { open, upright, overflowing }) -> the count beside the
+ * History fold's own control (1366-batch.html, upright-393.html; sketch 011
+ * decision 19, 03.5-18 Task 1): the bare count while closed, "· latest
+ * first" while open and upright (below 1366), "· oldest left, latest
+ * right" while open and horizontal (1366 and up) — plus "· opens at the
+ * version in view" appended only while the horizontal rail actually
+ * overflows its own width (1600-long-history.html; never while upright,
+ * which never overflows its own column).
  */
-export function railHint(count, { belowDesktop = false, overflowing = false } = {}) {
+export function railHint(count, { open = false, upright = false, overflowing = false } = {}) {
   const base = `${count} version${count === 1 ? '' : 's'}`;
-  if (belowDesktop) return base;
+  if (!open) return base;
+  if (upright) return `${base} · latest first`;
   return overflowing ? `${base} · oldest left, latest right · opens at the version in view` : `${base} · oldest left, latest right`;
 }

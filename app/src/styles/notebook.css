@@ -408,23 +408,13 @@
    dated rail of the recipe's own versions, oldest left, drawn beneath
    the band's two columns. The nested version/batch tree it replaces
    lived in history.css/the pre-03.5-05 RecipeHistory.jsx; every rule the
-   rebuilt rail reads lives here instead. */
+   rebuilt rail reads lives here instead. The section's own head is now
+   FoldRow (03.5-18 Task 1, decision 19) — the old .notebook-history__head/
+   __hint rules it replaced are deleted; nothing else read them. */
 .notebook-history {
   display: flex;
   flex-direction: column;
   gap: var(--app-notebook-history-head-gap);
-}
-
-.notebook-history__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-
-.notebook-history__hint {
-  font-family: var(--face-grotesk);
-  font-size: var(--app-size-label);
-  color: var(--app-text-secondary);
 }
 
 .notebook-history__rail {

@@ -1928,6 +1928,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
               ? { label: penDraft.versionLabel, createdAt: penOpenedAtRef.current }
               : null
           }
+          belowDesktop={belowDesktop}
         />
       </header>
 

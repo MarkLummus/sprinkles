@@ -32,8 +32,8 @@ import { VersionRow } from './VersionRow.jsx';
 import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
-import { HistoryDisclosure } from './History.jsx';
-import { useBelowDesktop } from './useBelowDesktop.js';
+import { FoldRow } from './FoldRow.jsx';
+import { useBelowDesktop, useFold } from './useBelowDesktop.js';
 
 // The record pen's blocked-date sentence (D-05) — one constant, read from
 // both handleSaveBatch (via validateRecordDraft) and the ceremony's own
@@ -897,17 +897,18 @@ export function RecipePage({ onPageStatus = () => {} }) {
     };
   }, [mode, amendingBatchId, penDraft, version, draft, amendBaseline]);
 
-  // The folds at every width (sketch 011 decision 18, 03.5-15): one media
-  // read, now cut at 1366 (BELOW_DESKTOP_QUERY), passed down to VersionRow
-  // as its own foldsOpen prop (the negation of belowDesktop) — open by
+  // The folds at every width (sketch 011 decisions 18/19, 03.5-15/16): one
+  // media read, cut at 1366 (BELOW_DESKTOP_QUERY), passed down as each
+  // region's own foldsOpen prop (the negation of belowDesktop) — open by
   // default from 1366, closed below, and back to that default on every
-  // visit or width crossing (useFold, decisions_recorded 2). The Balance
-  // region and BatchRow still read `belowDesktop`/`foldable` directly;
-  // plan 16 converts them to the same useFold discipline. balanceOpen is
-  // that region's own fold state — local, never stored. Both hooks must sit
-  // above the early returns below.
+  // visit or width crossing (useFold, decisions_recorded 2). Balance and
+  // Watch for fold separately (decision 18): Balance's own fold state is
+  // local to this component, since its region renders here; Watch for's
+  // lives inside DerivedAdvisories and Tasting's inside TastingReading,
+  // both reading this same foldsOpen prop. Both hooks below must sit above
+  // the early returns.
   const belowDesktop = useBelowDesktop();
-  const [balanceOpen, setBalanceOpen] = useState(false);
+  const [balanceOpen, toggleBalance] = useFold(!belowDesktop);
 
   if (version === undefined) return null;
   // The running head — the way home in every state, including this one
@@ -2003,53 +2004,33 @@ export function RecipePage({ onPageStatus = () => {} }) {
                 note beside the table, then the margin beneath it. One
                 flow, so the method's height never separates the two. */}
             <div className="side-region">
-              {/* The Balance fold (03.5-08 Task 1, settled decision 6): the
-                  region renders the "Balance" h2 itself at every width
-                  (decisions_recorded 3), so its place never depends on
-                  whether the fold exists. Below desktop, one control opens
-                  both fold-balance and fold-check (the toggle's own
-                  aria-controls); at desktop there is no toggle, no ids and
-                  no hidden. */}
+              {/* Balance and Watch for fold apart, each through its own
+                  full-row control inside its own h2 (decision 18): this
+                  region's own control lives here, since the region itself
+                  renders here; Watch for's own control lives inside
+                  DerivedAdvisories, reading the same foldsOpen. One branch
+                  at every width — the fold wrapper and its hidden attribute
+                  always exist; they simply never hide anything from 1366
+                  up (useFold's own default). */}
               <section className="formulation-note-region" aria-label="Balance">
-                <h2 className="region-name">Balance</h2>
-                {belowDesktop && (
-                  <HistoryDisclosure
-                    open={balanceOpen}
-                    onToggle={() => setBalanceOpen((open) => !open)}
-                    panelId="fold-balance fold-check"
-                  >
-                    {balanceOpen ? 'Hide balance and things to check' : 'Show balance and things to check'}
-                  </HistoryDisclosure>
-                )}
-                {belowDesktop ? (
-                  <div id="fold-balance" hidden={!balanceOpen}>
-                    <FormulationNote
-                      version={liveVersion}
-                      mode={mode}
-                      diff={mode === 'developing' ? penDiff : changeDiff}
-                      onFocusFigure={setFocusedFigureKey}
-                      onBlurFigure={() => setFocusedFigureKey(null)}
-                      showHeading={false}
-                    />
-                    <BasisNote version={liveVersion} />
-                  </div>
-                ) : (
-                  <>
-                    <FormulationNote
-                      version={liveVersion}
-                      mode={mode}
-                      diff={mode === 'developing' ? penDiff : changeDiff}
-                      onFocusFigure={setFocusedFigureKey}
-                      onBlurFigure={() => setFocusedFigureKey(null)}
-                      showHeading={false}
-                    />
-                    <BasisNote version={liveVersion} />
-                  </>
-                )}
+                <h2 className="region-name">
+                  <FoldRow label="Balance" open={balanceOpen} onToggle={toggleBalance} controls="fold-balance" />
+                </h2>
+                <div id="fold-balance" hidden={!balanceOpen}>
+                  <FormulationNote
+                    version={liveVersion}
+                    mode={mode}
+                    diff={mode === 'developing' ? penDiff : changeDiff}
+                    onFocusFigure={setFocusedFigureKey}
+                    onBlurFigure={() => setFocusedFigureKey(null)}
+                    showHeading={false}
+                  />
+                  <BasisNote version={liveVersion} />
+                </div>
               </section>
 
-              <div className="margin-region" id={belowDesktop ? 'fold-check' : undefined} hidden={belowDesktop ? !balanceOpen : undefined}>
-                <DerivedAdvisories version={liveVersion} />
+              <div className="margin-region">
+                <DerivedAdvisories version={liveVersion} foldsOpen={!belowDesktop} />
               </div>
             </div>
 

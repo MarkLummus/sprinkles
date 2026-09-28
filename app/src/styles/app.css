@@ -1203,21 +1203,10 @@ textarea {
 }
 
 /* The margin's derived-advisories block (FORM2-02, 03-05): small-print
-   paragraphs in ink under a legend parallel to the authored block's own,
-   at the same reading weight as the authored notes beside it — no colour,
-   no icon, no badge. */
-.derived-advisories__legend {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--face-grotesk);
-  font-size: var(--sheet-type-section);
-  font-weight: 600;
-  line-height: var(--sheet-leading-section);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin: var(--gap-m) 0 0;
-}
-
+   paragraphs in ink at the same reading weight as the authored notes
+   beside it — no colour, no icon, no badge. Its own legend paragraph
+   retired at decision 18 (03.5-16): the section now wears the shared
+   .region-name heading (Watch for) instead. */
 .derived-advisories__item {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-small-print);
@@ -1265,15 +1254,6 @@ textarea {
 
 .formulation-note__rule + .formulation-note__rule {
   margin-top: var(--gap-m);
-}
-
-/* The Balance fold's own toggle (03.5-08 Task 1, settled decision 6;
-   1366-batch.html): "Show balance and things to check" sits between the
-   region's own h2 and its folded content, with the board's own 8px
-   bottom margin. Absent at desktop — nothing renders here then. */
-.formulation-note-region > .history-disclosure {
-  display: block;
-  margin: 0 0 var(--sheet-balance-fold-gap-b);
 }
 
 .formulation-note__fat-breakdown {

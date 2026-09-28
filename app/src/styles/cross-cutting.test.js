@@ -391,8 +391,11 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(tokens['--sheet-leading-note']).toBe('1.5');
   });
 
-  test('the four section-heading rules read the section role at weight 600 and leading 1.35', () => {
-    for (const selector of ['.region-name', '.batch-margin__legend', '.authored__legend', '.derived-advisories__legend']) {
+  test('the three section-heading rules read the section role at weight 600 and leading 1.35', () => {
+    // .derived-advisories__legend retired at decision 18 (03.5-16): Watch
+    // for now wears the shared .region-name heading instead of its own
+    // legend paragraph, so that role is already covered by .region-name.
+    for (const selector of ['.region-name', '.batch-margin__legend', '.authored__legend']) {
       const rule = ruleFor(selector);
       expect(rule, `expected ${selector} to carry the section role`).toBeTruthy();
       expect(rule.declarations).toMatch(/font-size:\s*var\(--sheet-type-section\)/);

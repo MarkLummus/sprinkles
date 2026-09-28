@@ -187,12 +187,13 @@ async function readRecording(browser, appUrl, width) {
 // 0.5px, never compensated for here.
 async function readMarked(browser, appUrl, width) {
   const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse: false });
-  // Below the desktop threshold (useBelowDesktop.js — still 1499.98px,
-  // the plan 12 "desktop-state decision" this plan does not touch),
-  // Balance renders as a closed fold by default, so its GraduatedRule
-  // figures have zero layout box until opened — open it first, exactly
-  // as a maker would before ever seeing a rule at this width.
-  const toggle = await page.$('button:has-text("Show balance and things to check")');
+  // Below the folds' own cut (useBelowDesktop.js's BELOW_DESKTOP_QUERY,
+  // now 1365.98px — sketch 011 decision 18, 03.5-15/16), Balance renders
+  // as its own closed fold by default, so its GraduatedRule figures have
+  // zero layout box until opened — open it first, exactly as a maker
+  // would before ever seeing a rule at this width. Its own control now
+  // (03.5-16 Task 1), separate from Watch for's.
+  const toggle = await page.$('button[aria-controls="fold-balance"][aria-expanded="false"]');
   if (toggle) await toggle.click();
   await page.waitForSelector('.graduated-rule');
   const readLefts = () =>

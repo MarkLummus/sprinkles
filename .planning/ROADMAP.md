@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 14/18 plans executed
+**Plans:** 15/18 plans executed
 
 Plans:
 
@@ -522,7 +522,7 @@ Plans:
 
 **Wave 13** *(blocked on 03.5-16)*
 
-- [ ] 03.5-17-PLAN.md — Batches by count: no Batches control at 0 or 1 batch; from 2, the upright batch list above the batch in view (option D), folding like the other sections; the batch head aligned at 393 and 723; the old register retired
+- [x] 03.5-17-PLAN.md — Batches by count: no Batches control at 0 or 1 batch; from 2, the upright batch list above the batch in view (option D), folding like the other sections; the batch head aligned at 393 and 723; the old register retired
 
 **Wave 14** *(blocked on 03.5-17)*
 

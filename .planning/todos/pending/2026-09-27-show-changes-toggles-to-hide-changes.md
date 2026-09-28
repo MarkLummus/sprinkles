@@ -6,6 +6,7 @@ severity: minor
 files:
   - app/src/ui/VersionRow.jsx:346
   - app/src/ui/RecipePage.jsx:2017
+resolves_phase: "03.5"
 ---
 
 ## Problem

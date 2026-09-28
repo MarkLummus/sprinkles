@@ -6,6 +6,7 @@ severity: minor
 files:
   - app/src/ui/BatchRow.jsx:567-616
   - app/src/styles/notebook.css
+resolves_phase: "03.5"
 ---
 
 ## Problem

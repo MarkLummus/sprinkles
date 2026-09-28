@@ -5,6 +5,7 @@ area: ui
 severity: minor
 files:
   - app/src/ui/VersionRow.jsx:272
+resolves_phase: "03.5"
 ---
 
 ## Problem

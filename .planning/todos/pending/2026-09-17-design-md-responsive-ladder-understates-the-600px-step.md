@@ -9,6 +9,7 @@ files:
   - DESIGN.md:278
   - app/src/styles/tokens.css
   - app/src/styles/app.css
+resolves_phase: "03.5"
 ---
 
 **Mark is fixing this one with Impeccable.** It is a DESIGN.md wording question, not a code change —

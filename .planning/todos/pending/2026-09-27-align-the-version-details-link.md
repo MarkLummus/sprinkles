@@ -6,6 +6,7 @@ severity: cosmetic
 files:
   - app/src/ui/VersionRow.jsx:272
   - app/src/styles/notebook.css
+resolves_phase: "03.5"
 ---
 
 ## Problem

@@ -569,61 +569,66 @@ export function BatchRow({
           />
         </div>
       )}
-      {/* The date and Correct/Record another name the batch IN VIEW — a
-          different batch than the one being recorded while
-          openPen === 'record' (Mark, 2026-09-10 live review, G-03.3-4):
-          showing them there read as the wrong batch's date. Amending
-          keeps both, since amend corrects the very batch in view. */}
+      {/* The head's own two groups (393-batch.html/723-batch.html, the
+          batch-head todo, 03.5-17 Task 2): a lead group (Batch + the
+          churned date, naming the batch IN VIEW — a different batch than
+          the one being recorded while openPen === 'record', Mark,
+          2026-09-10 live review, G-03.3-4) and an acts group (Correct,
+          Record another), space-between with wrap. Amending keeps both
+          groups' content, since amend corrects the very batch in view. */}
       <div className={`batch-row__head${showBatchList ? ' batch-row__head--after-list' : ''}`}>
-        <h2
-          ref={batchHeadingRef}
-          className={`region-name${landingFocusVisible ? ' is-landing-focus' : ''}`}
-          tabIndex={focusBatchOnMount || focusBatchAttempt != null ? -1 : undefined}
-          aria-label={
-            (focusBatchOnMount || focusBatchAttempt != null) && openBatch
-              ? `Batch churned ${recordDateWords(openBatch.churn.churnDate)}`
-              : undefined
-          }
-          onBlur={() => setLandingFocusVisible(false)}
-        >
-          Batch
-        </h2>
-        {openPen !== 'record' && openBatch && (
-          <span className="batch-row__date">
-            {`churned ${recordDateWords(openBatch.churn.churnDate)}`}
-          </span>
-        )}
-        {/* Correct: an underlined word standing on the head line that
-            names the record it acts on, right-aligned like Remove tasting
-            on 007's Tasting head (sketch 003 line 84, D-15) — present
-            only with no pen open and a batch in view. The row has no foot
-            acts and no read-view Add tasting (003 line 256): the pen is
-            the one door (03.3.1 D-01/D-03). */}
-        {openPen === null && openBatch && (
-          <button
-            type="button"
-            ref={amendButtonRef}
-            className="text-control batch-row__correct"
-            onClick={() => onStartAmending(openBatch)}
+        <div className="batch-row__head-lead">
+          <h2
+            ref={batchHeadingRef}
+            className={`region-name${landingFocusVisible ? ' is-landing-focus' : ''}`}
+            tabIndex={focusBatchOnMount || focusBatchAttempt != null ? -1 : undefined}
+            aria-label={
+              (focusBatchOnMount || focusBatchAttempt != null) && openBatch
+                ? `Batch churned ${recordDateWords(openBatch.churn.churnDate)}`
+                : undefined
+            }
+            onBlur={() => setLandingFocusVisible(false)}
           >
-            Correct
-          </button>
-        )}
-        {/* Record another: moved from VersionRow.jsx (03.5-07 Task 1,
-            decisions_recorded 1), last in the head's own right-hand
-            group. Present only with no pen open and a batch in view —
-            the no-batch state's own "Record a batch" (below) is the
-            same handler, offered where the sketch draws it instead. */}
-        {openPen === null && openBatch && (
-          <button
-            type="button"
-            ref={recordButtonRef}
-            className="text-control batch-row__record"
-            onClick={onStartRecording}
-          >
-            Record another
-          </button>
-        )}
+            Batch
+          </h2>
+          {openPen !== 'record' && openBatch && (
+            <span className="batch-row__date">
+              {`churned ${recordDateWords(openBatch.churn.churnDate)}`}
+            </span>
+          )}
+        </div>
+        <div className="batch-row__head-acts">
+          {/* Correct: an underlined word standing on the head line that
+              names the record it acts on (sketch 003 line 84, D-15) —
+              present only with no pen open and a batch in view. The row
+              has no foot acts and no read-view Add tasting (003 line
+              256): the pen is the one door (03.3.1 D-01/D-03). */}
+          {openPen === null && openBatch && (
+            <button
+              type="button"
+              ref={amendButtonRef}
+              className="text-control batch-row__correct"
+              onClick={() => onStartAmending(openBatch)}
+            >
+              Correct
+            </button>
+          )}
+          {/* Record another: moved from VersionRow.jsx (03.5-07 Task 1,
+              decisions_recorded 1), last in the acts group. Present only
+              with no pen open and a batch in view — the no-batch state's
+              own "Record a batch" (below) is the same handler, offered
+              where the sketch draws it instead. */}
+          {openPen === null && openBatch && (
+            <button
+              type="button"
+              ref={recordButtonRef}
+              className="text-control batch-row__record"
+              onClick={onStartRecording}
+            >
+              Record another
+            </button>
+          )}
+        </div>
       </div>
 
       {/* recording-mode caps the frame at --pen-w (640px, contract

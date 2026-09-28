@@ -1553,8 +1553,10 @@ textarea {
 }
 
 /* The batch row's head line (sketch 003 variant B, index.html:83-85,
-   03.3-07, G-03.3-4): the region-name label, the churned date, and the
-   Batches disclosure control read as one baseline-aligned line. */
+   03.3-07, G-03.3-4): the base Sheet-context rule. The App reading view
+   (notebook.css) overrides this into the two-group lead/acts arrangement
+   393-batch.html/723-batch.html draw (decision 19's list replaced the
+   Batches disclosure that once shared this line, 03.5-17). */
 .batch-row__head {
   display: flex;
   align-items: baseline;
@@ -1603,27 +1605,6 @@ textarea {
   text-transform: none;
   letter-spacing: 0;
   color: var(--sheet-pen-blue);
-}
-
-/* Correct, on the batch head line (sketch 003 @ d89b758 line 84:
-   `.row-batch .head .correct { margin-left: auto }`; box-or-word rubric,
-   sketch 008 @ 3a5beed line 230 — Correct is an underlined word because
-   it acts on the record already in view). .batch-row__head is already
-   flex/baseline/wrap (003 line 83); this margin alone pushes Correct to
-   the line's right edge. */
-.batch-row__correct {
-  margin-left: auto;
-}
-
-/* The "Batches of this version" disclosure (sketch 003 variant B,
-   index.html:256-262, 03.3-07, G-03.3-4): a full-width panel under the
-   row, opened by the head line's own count control. Its rows read the
-   shared .history-register family, above — this is the panel's own
-   frame, not a register row. */
-.batch-row__batches {
-  margin-top: var(--gap-m);
-  padding-top: var(--gap-s);
-  border-top: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 .batch-margin button {

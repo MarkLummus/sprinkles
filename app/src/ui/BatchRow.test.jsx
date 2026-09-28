@@ -173,6 +173,20 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(recordButton).toBeTruthy();
   });
 
+  it('reads Batch, the churned date, Correct, then Record another with exactly one batch — no Batches control at 0 or 1 (decision 19, the batch-head todo)', () => {
+    const markup = renderBatchRow({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(markup).not.toContain('fold-batches');
+    expect(markup).not.toMatch(/Batches \(/);
+    const headingIndex = markup.indexOf('class="region-name">Batch<');
+    const dateIndex = markup.indexOf('class="batch-row__date">churned 2 Aug 2026<');
+    const correctIndex = markup.indexOf('>Correct<');
+    const recordIndex = markup.indexOf('Record another');
+    expect(headingIndex).toBeGreaterThan(-1);
+    expect(dateIndex).toBeGreaterThan(headingIndex);
+    expect(correctIndex).toBeGreaterThan(dateIndex);
+    expect(recordIndex).toBeGreaterThan(correctIndex);
+  });
+
   it('renders no Correct, Record another or the batch list while the plan pen is open, though the reading content (including the churned date) still renders', () => {
     const markup = renderBatchRow({ openPen: 'plan', openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');

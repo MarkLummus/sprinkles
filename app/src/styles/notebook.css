@@ -672,7 +672,24 @@
   border-top: var(--app-rule-row) solid var(--app-divider);
 }
 
+/* The batch head's own two groups (393-batch.html/723-batch.html, the
+   batch-head todo, 03.5-17 Task 2): a lead group (Batch + the churned
+   date) and an acts group (Correct + Record another), space-between with
+   wrap — .batch-row__head's own display: flex/flex-wrap: wrap (app.css)
+   stays; only justify-content and the gap are the App reading view's own. */
 .notebook-log .batch-row__head {
+  justify-content: space-between;
+  gap: var(--app-notebook-log-head-outer-gap);
+}
+
+.notebook-log .batch-row__head-lead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-notebook-recipe-rail-gap);
+}
+
+.notebook-log .batch-row__head-acts {
+  display: flex;
   align-items: baseline;
   gap: var(--app-notebook-log-head-gap);
 }
@@ -835,7 +852,20 @@
   }
 
   .notebook-body {
+    /* Rule 1 fix (03.5-17 Task 2): the base rule's align-items: flex-start
+       (declared above for the 1366-up ROW layout, where the Sheet and log
+       sit at their own natural heights) carries over unchanged when the
+       axes swap to a COLUMN below 1366 — there it means the CROSS axis
+       (width), so .notebook-log shrank to its own content's width instead
+       of stretching to the column's full width (measured 424px against
+       the log's own 683-703px content box at 723). Blocked this task's own
+       single-batch board comparison outright, since the head's absolute
+       offsets can never match a board drawn at the column's real width.
+       stretch here restores the intended full-width stacking (matching
+       .notebook-body__sheet's own already-correct appearance, whose wide
+       Sheet content happened to mask the same bug). */
     flex-direction: column;
+    align-items: stretch;
     gap: var(--app-notebook-frame-gap);
   }
 

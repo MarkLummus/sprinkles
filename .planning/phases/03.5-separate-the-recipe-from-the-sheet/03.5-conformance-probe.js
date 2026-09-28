@@ -1,10 +1,12 @@
 // 03.5-conformance-probe.js
 //
 // Plain browser JS (no ES module syntax) — pasted whole into one
-// evaluate call per page (a sketch 011 board, or the built app) and
-// width (1600, 1366, 1024, 393; decisions_recorded 4). After pasting,
-// call `JSON.stringify(readPage())` to get the width's whole reading in
-// one object. The same readPage() runs on both kinds of page — the
+// evaluate call per page (a sketch 011 board, the count boards, or the
+// built app) and width (1920, 1600-pen, 1600-long-history, 1366, 1024,
+// 984, 983, 723, 393; plan 14's own ladder run, extending the widths
+// 03.5-08's original run measured). After pasting, call
+// `JSON.stringify(readPage())` to get the width's whole reading in one
+// object. The same readPage() runs on both kinds of page — the
 // precedent both 03.3.1.1-conformance-probe.js and
 // 03.4-gaps-conformance-probe.js set, one reader for every tab, so a
 // difference is the board's versus the app's, never the reader's own.
@@ -154,12 +156,18 @@ function readVersionColumn() {
       nextVersion: box(document.querySelector('.notebook-version__acts .notebook-action')),
     };
   }
-  // Board: the "Version" caption span (uppercase, no class) locates the
-  // column; its own parent div is the column's wrapper (1600-batch.html
-  // lines 136-158 / 1366-batch.html lines 136-159, the div(gap:12px)
-  // holding the caption, the identity+dl pair, and the acts row).
+  // Board: since decision 18 (03.5-15+) the "Version" caption span sits
+  // INSIDE the fold-version button's own baseline-gap wrapper
+  // (`<button aria-controls="fold-version"><span><span>Version</span>
+  // <span>Show details</span></span></button>`), not as a bare sibling of
+  // the identity/dl pair the way 03.5-08's original boards drew it — so
+  // `caption.parentElement` (that inner span) no longer reaches the
+  // column; the column is the fold-version BUTTON's own parent instead.
+  // Falls back to the pre-decision-18 shape (caption.parentElement) for a
+  // board that predates the fold.
+  var foldVersionBtn = document.querySelector('button[aria-controls="fold-version"]');
   var caption = firstByText('span', 'Version');
-  var column = caption ? caption.parentElement : null;
+  var column = foldVersionBtn ? foldVersionBtn.parentElement : caption ? caption.parentElement : null;
   return {
     caption: box(caption),
     identity: box(column ? column.querySelector('p') : null),
@@ -173,6 +181,22 @@ function readVersionColumn() {
 // the <a> nodes drawn beneath the band's two columns, inside the SAME
 // <header> the band lives in).
 // ---------------------------------------------------------------------------
+// markHitFor(markEl) — the element document.elementFromPoint finds at a
+// mark's own centre (03.5-12's own rail paint-order fix; this plan's own
+// action text: "the class or tag of document.elementFromPoint at the
+// first mark's centre"). Returns the class string when the hit element
+// carries one (both pages' marks/track carry a class or inline styling
+// only — no board mark has a class, so a board hit reports the tag),
+// else the tag name, so a wrong paint order (the track winning again)
+// shows up as a different string than the mark's own class/tag.
+function markHitFor(markEl) {
+  if (!markEl) return null;
+  var r = markEl.getBoundingClientRect();
+  var el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+  if (!el) return null;
+  return el.className && typeof el.className === 'string' && el.className.length ? el.className : el.tagName;
+}
+
 function readRail() {
   if (isAppPage()) {
     var nodesList = document.querySelector('.notebook-history__nodes');
@@ -185,35 +209,58 @@ function readRail() {
       nodeGap: nodesList ? getComputedStyle(nodesList).gap : null,
       markBox: box(firstMark),
       stateText: firstState ? firstState.textContent.trim() : null,
+      markHit: markHitFor(firstMark),
     };
   }
   // Board: each rail node is a bare <a> (flex: 0 0 168px), inside a
-  // div(display:flex;gap:24px) that is the nodes' own container
-  // (1600-batch.html lines 165-184). Each node's own mark is the
-  // span[aria-hidden="true"] nested inside it — scoping the selector to
-  // `a span[aria-hidden]` keeps this away from the band's OWN rail mark
-  // (a span child of a div, never of an <a>). The state line is the
-  // node's own last direct-child span (date, mark-wrapper, name, state
-  // — in that order, no class on any of the four).
+  // div(display:flex;gap:24px) that is the nodes' own container. Since
+  // decision 19 (03.5-15+), the whole rail lives inside `#fold-history`
+  // (gen.py's own fold_row + hist-body pair) — scoping there is what
+  // keeps this reader off every OTHER <a> in the recipe header, not just
+  // the shell's chrome (03.5-08's own fix below): at a below-1366 width
+  // with the fold closed, the board's own generator omits `#fold-history`
+  // from the markup entirely (README: "a closed fold's content is left
+  // out of the drawing"), so `nodes` correctly reads empty instead of
+  // falling through to the version column's own "Draft: …" link — the
+  // FIRST <a> in the header once the rail's own link is gone, and a false
+  // positive this plan's own Task 1 run measured before this fix.
   //
-  // Bug fix (03.5-08 Task 2 conformance run): a document-wide `header a`
-  // matches every <a> under ANY <header>, including the shell's OWN top
-  // <header class="shell__head"> (Search/Import/Export), which sits
-  // before the recipe band's own bare <header> in document order — so
-  // nodes[0] was the shell's Search link, not the rail's first node, on
-  // every board reading this probe took. `header h1` (readBand's own
-  // selector, scoped correctly because only the recipe band's header
-  // carries an h1 before the Sheet's own headnote further down) locates
-  // that SAME header; scoping the rail query to it keeps this reader off
-  // the shell's chrome.
+  // Bug fix (03.5-08 Task 2 conformance run, superseded by the
+  // `#fold-history` scope above but kept as the fallback for a board that
+  // predates decision 19): a document-wide `header a` matches every <a>
+  // under ANY <header>, including the shell's OWN top <header
+  // class="shell__head"> (Search/Import/Export), which sits before the
+  // recipe band's own bare <header> in document order.
   var recipeHeaderH1 = document.querySelector('header h1');
   var recipeHeader = recipeHeaderH1 ? recipeHeaderH1.closest('header') : null;
-  var nodes = recipeHeader ? recipeHeader.querySelectorAll('a') : document.querySelectorAll('header a');
+  var railBody = recipeHeader ? recipeHeader.querySelector('#fold-history') : document.querySelector('#fold-history');
+  // A fold-history BUTTON with no matching #fold-history body means the
+  // fold exists and is simply closed (this board's own convention for a
+  // closed fold, README) — genuinely no rail markup to read, not a cue to
+  // fall back to the whole header's <a> elements (which would pick up the
+  // version column's own "Draft: …" link instead, a false positive this
+  // plan's own Task 1 run measured before this guard). Only fall back to
+  // the pre-decision-19 header-wide search when the fold mechanism itself
+  // is entirely absent (a board that predates decision 19).
+  var hasFoldHistoryButton = !!(recipeHeader
+    ? recipeHeader.querySelector('button[aria-controls="fold-history"]')
+    : document.querySelector('button[aria-controls="fold-history"]'));
+  var nodes = railBody
+    ? railBody.querySelectorAll('a')
+    : hasFoldHistoryButton
+      ? []
+      : recipeHeader
+        ? recipeHeader.querySelectorAll('a')
+        : document.querySelectorAll('header a');
   var firstNodeB = nodes.length ? nodes[0] : null;
   var container = firstNodeB ? firstNodeB.parentElement : null;
-  var firstMarkB = recipeHeader
-    ? recipeHeader.querySelector('a span[aria-hidden="true"]')
-    : document.querySelector('header a span[aria-hidden="true"]');
+  var firstMarkB = railBody
+    ? railBody.querySelector('a span[aria-hidden="true"]')
+    : hasFoldHistoryButton
+      ? null
+      : recipeHeader
+        ? recipeHeader.querySelector('a span[aria-hidden="true"]')
+        : document.querySelector('header a span[aria-hidden="true"]');
   var stateSpan = null;
   if (firstNodeB) {
     var directSpans = [];
@@ -228,6 +275,7 @@ function readRail() {
     nodeGap: container ? getComputedStyle(container).gap : null,
     markBox: box(firstMarkB),
     stateText: stateSpan ? stateSpan.textContent.trim() : null,
+    markHit: markHitFor(firstMarkB),
   };
 }
 
@@ -241,21 +289,70 @@ function readSheet() {
   var ths = document.querySelectorAll('table.ingredient-table thead th');
   var widths = [];
   for (var i = 0; i < ths.length; i++) widths.push(box(ths[i]).w);
-  // The plan-grams span (app: .ingredient-table__plan-grams; board: the
-  // same span with no class of its own) is, on BOTH pages, the first
-  // child <span> of a row's own name cell — this selector needs no
-  // branch. The as-made cell's own span (app: .sheet-hand; board: an
-  // inline-styled span, no class) is, on both pages, the As-made
-  // column's own first <span> — .ingredient-table__col-numeric is a
-  // shared class, so this selector needs no branch either.
+
+  // The first ingredient row (not a step-head row) — both readFirstRowCells
+  // and the plan-grams fix below key off it. Decision 15 gave the plan
+  // amount its own <td class="ingredient-table__col-grams">, the FIRST td
+  // in that row on both pages (03.5-11) — the old selector this plan's own
+  // read_first flags (td.ingredient-table__col-name span:first-child)
+  // assumed the pre-decision-15 shape, where the amount lived inside the
+  // name cell; decision 15 moved it out, so that selector silently read
+  // null on both pages after 03.5-11 landed.
+  var rows = document.querySelectorAll('table.ingredient-table tbody tr');
+  var firstRow = null;
+  for (var r = 0; r < rows.length; r++) {
+    if (!rows[r].classList.contains('ingredient-table__step-head')) {
+      firstRow = rows[r];
+      break;
+    }
+  }
+  var firstRowCells = [];
+  if (firstRow) {
+    var fCells = firstRow.querySelectorAll('td');
+    for (var fc = 0; fc < fCells.length; fc++) firstRowCells.push(box(fCells[fc]));
+  }
+
+  var totalRow = document.querySelector('table.ingredient-table tfoot tr');
+  var totalRowCells = [];
+  if (totalRow) {
+    var tCells = totalRow.querySelectorAll('td');
+    for (var tc = 0; tc < tCells.length; tc++) totalRowCells.push(box(tCells[tc]));
+  }
+
+  // listRow (Task 1's own action text): below 724 the table drops its
+  // thead (app.css's list-form rules, 03.5-11) and each row becomes a CSS
+  // grid — read the first row's own cells' boxes plus their computed grid
+  // row, so a drift in the grid placement (not just the box geometry)
+  // shows up as a difference.
+  var theadEl = document.querySelector('table.ingredient-table thead');
+  var theadHidden = theadEl ? getComputedStyle(theadEl).display === 'none' : false;
+  var listRow = null;
+  if (theadHidden && firstRow) {
+    var lCells = firstRow.querySelectorAll('td');
+    listRow = [];
+    for (var lc = 0; lc < lCells.length; lc++) {
+      var lBox = box(lCells[lc]);
+      var lcs = getComputedStyle(lCells[lc]);
+      lBox.gridRow = lcs.gridRowStart + ' / ' + lcs.gridRowEnd;
+      listRow.push(lBox);
+    }
+  }
+
+  // The as-made cell's own span (app: .sheet-hand; board: an inline-styled
+  // span, no class) is, on both pages, the As-made column's own first
+  // <span> — .ingredient-table__col-numeric is a shared class, so this
+  // selector needs no branch either.
   return {
     headnoteH1: box(document.querySelector('.headnote h1')),
     tableColumnCount: ths.length,
     tableColumnWidths: widths,
-    planGrams: box(document.querySelector('table.ingredient-table tbody td.ingredient-table__col-name span:first-child')),
+    planGrams: box(document.querySelector('table.ingredient-table tbody td.ingredient-table__col-grams')),
     chip: box(document.querySelector('.target-chip')),
     asMadeCell: box(document.querySelector('table.ingredient-table tbody td.ingredient-table__col-numeric span')),
     stepChanged: box(document.querySelector('.method-step__changed')),
+    firstRowCells: firstRowCells,
+    totalRowCells: totalRowCells,
+    listRow: listRow,
   };
 }
 
@@ -295,14 +392,25 @@ function readLog() {
   // 'Show', against the app's own .batch-row__head-scoped 3). The head
   // row is the section's own first child div (1600-batch.html lines
   // 908-911); scoping there matches the app reader's own head-only scope.
+  // 984-batch.html (this plan's own read_first) draws the log as ONE
+  // <section aria-label="Batch"> below desktop — no outer <aside> at all,
+  // since below 1366 the log is inline content in the stacked column, not
+  // a sidebar. At 1366/1600/1920 (log beside the Sheet) the generator still
+  // wraps that same <section> in an outer <aside aria-label="Batch">, the
+  // 03.5-08 original two-element shape. Handle both: `column` is the
+  // OUTER match (aside, when one exists); `section` is that match ITSELF
+  // when it is already a <section>, else the nested one.
   var asides = document.querySelectorAll('[aria-label="Batch"]');
   var column = asides.length ? asides[0] : null;
-  var section = column ? column.querySelector('section[aria-label="Batch"]') : null;
+  var section = column && column.tagName === 'SECTION' ? column : (column ? column.querySelector('section[aria-label="Batch"]') : null);
   var head = section ? section.firstElementChild : null;
   var buttons = head ? head.querySelectorAll('button') : [];
   var texts = [];
   for (var j = 0; j < buttons.length; j++) texts.push(buttons[j].textContent.trim());
-  var firstCell = column ? column.querySelector('div[style*="grid-template-columns:repeat(2"] div') : null;
+  // The churn-cell grid's own column count varies by width (03.5-17
+  // rewrote it from a fixed repeat(2) to repeat(5) at some widths) — match
+  // any repeat(...) column count rather than hardcoding one.
+  var firstCell = column ? column.querySelector('div[style*="grid-template-columns:repeat("] div') : null;
   var cellSpans = firstCell ? firstCell.querySelectorAll('span') : [];
   return {
     columnBox: box(column),
@@ -310,6 +418,151 @@ function readLog() {
     cellLabel: box(cellSpans.length ? cellSpans[0] : null),
     cellValue: box(cellSpans.length > 1 ? cellSpans[1] : null),
     handNote: box(column ? column.querySelector('span[style*="Caveat"]') : null),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// readLadder() — plan 14 Task 1's own new reader: the width ladder's own
+// nav/frame/band/log geometry (03.5-10's three derived cuts), every fold
+// control at once (decisions 18/19), and the History head's own count
+// text (or the one-line state). Every selector here is either shared
+// (`button[aria-controls^="fold-"]`, drawn identically by both pages
+// since decision 18/19) or branched exactly once via isAppPage(), the
+// same discipline every other reader in this file already follows.
+// ---------------------------------------------------------------------------
+function readLadder() {
+  var railEl = document.querySelector('.shell__rail');
+  var tabsEl = document.querySelector('.shell__tabs');
+  var toolsPlaceEl = document.querySelector('.shell__tools > .shell__place');
+
+  var recipePage = document.querySelector('.recipe-page');
+  var trackCount = recipePage
+    ? getComputedStyle(recipePage).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length
+    : null;
+
+  // The frame (app: .notebook; board: the padded div directly under
+  // main.shell__main — the board's own root has no class of its own).
+  var frameEl = isAppPage() ? document.querySelector('.notebook') : document.querySelector('main.shell__main > div');
+  var mainEl = document.querySelector('.shell__main');
+  var frameBox = box(frameEl);
+  var mainRect = mainEl ? mainEl.getBoundingClientRect() : null;
+  var spaceLeft = frameBox && mainRect ? frameBox.left - mainRect.left : null;
+  var spaceRight = frameBox && mainRect ? mainRect.right - (frameBox.left + frameBox.w) : null;
+
+  // The band grid (app: .notebook-band__grid; board: main.shell__main
+  // header's own first element child — the board's own div carries no
+  // class, per readBand's own comment above).
+  var bandGridEl = isAppPage()
+    ? document.querySelector('.notebook-band__grid')
+    : (function () {
+        var h = document.querySelector('main.shell__main header');
+        return h ? h.firstElementChild : null;
+      })();
+  var bandGrid = bandGridEl
+    ? { display: getComputedStyle(bandGridEl).display, columnGap: getComputedStyle(bandGridEl).columnGap }
+    : null;
+
+  // The log (app: .notebook-log; board: the first [aria-label="Batch"],
+  // the OUTER match per readLog's own comment above) and whether it sits
+  // beside or below the Sheet.
+  var logEl = isAppPage() ? document.querySelector('.notebook-log') : document.querySelector('[aria-label="Batch"]');
+  var logBox = box(logEl);
+  var sheetRect = recipePage ? recipePage.getBoundingClientRect() : null;
+  var logPlacement = null;
+  if (logBox && sheetRect) {
+    logPlacement = logBox.left >= sheetRect.left + sheetRect.w - 1 ? 'beside' : 'below';
+  }
+
+  function paddingLeftOf(selector) {
+    var el = document.querySelector(selector);
+    return el ? parseFloat(getComputedStyle(el).paddingLeft) : null;
+  }
+
+  // Every fold control at once (`button[aria-controls^="fold-"]` — shared,
+  // unbranched, since both pages draw the identical button structure from
+  // decision 18/19 on): aria-controls, aria-expanded, its own text, box
+  // height, and its width against its own parent's content width (the
+  // "full-row" acceptance criterion every FoldRow/gen.py fold_row shares).
+  var folds = [];
+  var foldButtons = document.querySelectorAll('button[aria-controls^="fold-"]');
+  for (var i = 0; i < foldButtons.length; i++) {
+    var fb = foldButtons[i];
+    var fBox = box(fb);
+    var parentEl = fb.parentElement;
+    var parentWidth = parentEl ? parentEl.getBoundingClientRect().width : null;
+    folds.push({
+      ariaControls: fb.getAttribute('aria-controls'),
+      ariaExpanded: fb.getAttribute('aria-expanded'),
+      text: fBox.text,
+      height: fBox.h,
+      widthRatio: parentWidth ? fBox.w / parentWidth : null,
+    });
+  }
+
+  // The History head's own count text, or the one line when there is one
+  // version (RecipeHistory.jsx's own `.notebook-history__only` branch).
+  var historyText = null;
+  if (isAppPage()) {
+    var onlyEl = document.querySelector('.notebook-history__only');
+    if (onlyEl) {
+      historyText = onlyEl.textContent.trim();
+    } else {
+      var histBtn = document.querySelector('button[aria-controls="fold-history"]');
+      var countEl = histBtn ? histBtn.querySelector('.fold-row__count') : null;
+      historyText = countEl ? countEl.textContent.trim() : null;
+    }
+  } else {
+    var histBtnB = document.querySelector('button[aria-controls="fold-history"]');
+    if (histBtnB) {
+      var directSpans = [];
+      for (var j = 0; j < histBtnB.children.length; j++) {
+        if (histBtnB.children[j].tagName === 'SPAN') directSpans.push(histBtnB.children[j]);
+      }
+      // The head's own two-span baseline wrapper is itself the FIRST
+      // direct child span; a third, sibling span (the count) is the LAST
+      // direct child when present.
+      var countSpanB = directSpans.length > 1 ? directSpans[directSpans.length - 1] : null;
+      historyText = countSpanB ? countSpanB.textContent.trim() : null;
+    } else {
+      var onlyElB = firstByText('p', 'Only this version so far');
+      historyText = onlyElB ? onlyElB.textContent.trim() : null;
+    }
+  }
+
+  return {
+    railDisplay: railEl ? getComputedStyle(railEl).display : null,
+    tabsDisplay: tabsEl ? getComputedStyle(tabsEl).display : null,
+    toolsPlaceDisplay: toolsPlaceEl ? getComputedStyle(toolsPlaceEl).display : null,
+    recipePageTrackCount: trackCount,
+    frameBox: frameBox,
+    spaceLeft: spaceLeft,
+    spaceRight: spaceRight,
+    bandGrid: bandGrid,
+    logBox: logBox,
+    logPlacement: logPlacement,
+    recipePagePaddingLeft: paddingLeftOf('.recipe-page'),
+    shellHeadPaddingLeft: paddingLeftOf('.shell__head'),
+    folds: folds,
+    historyText: historyText,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// readTouch() — decision 16's "touch sizes follow the pointer only, no
+// longer a width" (03.5-13): the page's own pointer mode and the log's
+// 'Correct' control's rendered height and computed min-height, so a
+// reading at 393 (coarse) can be compared against the same reading at a
+// wider, fine-pointer width without re-deriving the touch floor from CSS
+// source.
+// ---------------------------------------------------------------------------
+function readTouch() {
+  var coarse = window.matchMedia('(pointer: coarse)').matches;
+  var correctBtn = firstByText('button', 'Correct');
+  var cs = correctBtn ? getComputedStyle(correctBtn) : null;
+  return {
+    coarse: coarse,
+    correctHeight: correctBtn ? correctBtn.getBoundingClientRect().height : null,
+    correctMinHeight: cs ? cs.minHeight : null,
   };
 }
 
@@ -340,6 +593,8 @@ function readPage() {
     rail: readRail(),
     sheet: readSheet(),
     log: readLog(),
+    ladder: readLadder(),
+    touch: readTouch(),
   };
 }
 

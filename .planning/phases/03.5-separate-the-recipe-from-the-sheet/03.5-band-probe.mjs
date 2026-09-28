@@ -3,9 +3,14 @@
 // plan's own SUMMARY). Imports the plan-10 harness unchanged
 // (decisions_recorded — prohibitions).
 //
+// 03.5-15 Task 1 extends this file with a `folds` group: sketch 011
+// decisions 18/19's cut at 1366 and the full-row fold head, this plan's
+// own fold-version. EXPECTED_FOLDS grows with plan 16's Balance/Watch
+// for/Tasting/History/Batches folds.
+//
 // Usage: node 03.5-band-probe.mjs <groups> <widths>
-//   groups: comma list, e.g. rail,desktop
-//   widths: comma list, e.g. 393,1366
+//   groups: comma list, e.g. rail,folds
+//   widths: comma list, e.g. 393,1024,1365,1366,1920
 import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE } from './03.5-probe-harness.mjs';
 
 const [, , groupsArg, widthsArg] = process.argv;
@@ -17,6 +22,11 @@ if (!groupsArg || !widthsArg) {
 
 const groups = new Set(groupsArg.split(','));
 const widths = widthsArg.split(',').map(Number);
+
+// The folds this plan's own probe checks — grows as plan 16 brings Balance,
+// Watch for, Tasting, History and Batches onto the same FoldRow (sketch 011
+// decision 19).
+const EXPECTED_FOLDS = ['fold-version'];
 
 // The rail group (Task 1, sketch 011 decision 16's last sentence, 1600-
 // long-history.html): every mark sits above the track, and a scrolled
@@ -125,6 +135,47 @@ async function readBoardMarks(page) {
   });
 }
 
+// The `folds` group (03.5-15 Task 1): a fold's control (button[aria-controls=id]),
+// its panel (getElementById(id)) and, where the control renders (the app's
+// FoldRow markup AND the board's own inline-styled fold_row markup share the
+// same child shape), the control word and caption elements inside it —
+// button > span:first-child (the head) > span:first-child (the caption) /
+// span:last-child (the control word).
+async function readFoldGeometry(page, foldId) {
+  return page.evaluate((id) => {
+    const control = document.querySelector(`button[aria-controls="${id}"]`);
+    if (!control) return null;
+    const rect = control.getBoundingClientRect();
+    const parent = control.parentElement;
+    const parentRect = parent ? parent.getBoundingClientRect() : null;
+    const panel = document.getElementById(id);
+    const panelDisplay = panel ? getComputedStyle(panel).display : null;
+    const head = control.querySelector(':scope > span:first-child');
+    const captionEl = head ? head.querySelector(':scope > span:first-child') : null;
+    const wordEl = head ? head.querySelector(':scope > span:last-child') : null;
+    const wordStyle = wordEl ? getComputedStyle(wordEl) : null;
+    const captionStyle = captionEl ? getComputedStyle(captionEl) : null;
+    return {
+      ariaExpanded: control.getAttribute('aria-expanded'),
+      height: rect.height,
+      width: rect.width,
+      parentWidth: parentRect ? parentRect.width : null,
+      panelDisplay,
+      word: wordEl ? wordEl.textContent : null,
+      wordFontSize: wordStyle ? wordStyle.fontSize : null,
+      wordColor: wordStyle ? wordStyle.color : null,
+      wordFontWeight: wordStyle ? wordStyle.fontWeight : null,
+      wordTextDecorationLine: wordStyle ? wordStyle.textDecorationLine : null,
+      captionFontSize: captionStyle ? captionStyle.fontSize : null,
+      captionTextTransform: captionStyle ? captionStyle.textTransform : null,
+    };
+  }, foldId);
+}
+
+async function clickFoldControl(page, foldId) {
+  await page.click(`button[aria-controls="${foldId}"]`);
+}
+
 async function main() {
   const failures = [];
   let checkCount = 0;
@@ -172,6 +223,149 @@ async function main() {
         `rail board: the first mark's centre hit-tests to that mark (got ${boardReading[0]?.hitClass})`,
       );
       await boardContext.close();
+    }
+
+    if (groups.has('folds')) {
+      for (const width of widths) {
+        if (![393, 1024, 1365, 1366, 1920].includes(width)) continue;
+        const coarse = width === 393;
+        const expectedOpen = width >= 1366;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+
+        for (const id of EXPECTED_FOLDS) {
+          const reading = await readFoldGeometry(page, id);
+          console.log(JSON.stringify({ group: 'folds', width, id, reading }));
+          countedCheck(reading !== null, `folds width=${width} ${id}: control exists`);
+          if (!reading) continue;
+
+          countedCheck(
+            reading.ariaExpanded === String(expectedOpen),
+            `folds width=${width} ${id}: aria-expanded is ${expectedOpen} (got ${reading.ariaExpanded})`,
+          );
+          countedCheck(
+            (reading.panelDisplay === 'none') === !expectedOpen,
+            `folds width=${width} ${id}: panel display none exactly when closed (got ${reading.panelDisplay})`,
+          );
+          countedCheck(
+            reading.height >= 43.5,
+            `folds width=${width} ${id}: control at least 44px tall (got ${reading.height})`,
+          );
+          countedCheck(
+            reading.parentWidth != null && Math.abs(reading.width - reading.parentWidth) <= 1,
+            `folds width=${width} ${id}: control width within 1px of its parent (got ${reading.width} vs ${reading.parentWidth})`,
+          );
+          const expectedWord = expectedOpen ? 'Hide details' : 'Show details';
+          countedCheck(
+            reading.word === expectedWord,
+            `folds width=${width} ${id}: control word reads "${expectedWord}" (got ${reading.word})`,
+          );
+
+          await clickFoldControl(page, id);
+          const afterClick = await readFoldGeometry(page, id);
+          countedCheck(
+            afterClick.ariaExpanded !== reading.ariaExpanded,
+            `folds width=${width} ${id}: a click flips aria-expanded`,
+          );
+          countedCheck(
+            (afterClick.panelDisplay === 'none') !== (reading.panelDisplay === 'none'),
+            `folds width=${width} ${id}: a click flips the panel's display`,
+          );
+
+          await page.reload({ waitUntil: 'networkidle' });
+          await page.waitForSelector('.notebook');
+          const afterReload = await readFoldGeometry(page, id);
+          countedCheck(
+            afterReload.ariaExpanded === String(expectedOpen),
+            `folds width=${width} ${id}: page.reload() restores the default`,
+          );
+        }
+
+        if (width === 1366) {
+          await page.setViewportSize({ width: 1024, height: 1100 });
+          await page.waitForTimeout(150);
+          const at1024 = await readFoldGeometry(page, 'fold-version');
+          countedCheck(
+            at1024?.ariaExpanded === 'false',
+            `folds: setViewportSize to 1024 closes fold-version (got ${at1024?.ariaExpanded})`,
+          );
+          await page.setViewportSize({ width: 1366, height: 1100 });
+          await page.waitForTimeout(150);
+          const backAt1366 = await readFoldGeometry(page, 'fold-version');
+          countedCheck(
+            backAt1366?.ariaExpanded === 'true',
+            `folds: back to 1366 opens fold-version (got ${backAt1366?.ariaExpanded})`,
+          );
+        }
+
+        await context.close();
+      }
+
+      const boardStates = [
+        { file: '1366-batch.html', expectedOpen: true, expectedWord: 'Hide details' },
+        { file: '1024-batch.html', expectedOpen: false, expectedWord: 'Show details' },
+      ];
+      const boardReadings = {};
+      for (const { file, expectedOpen, expectedWord } of boardStates) {
+        const { context: boardContext, page: boardPage } = await openBoard(browser, repoUrl, file);
+        const reading = await readFoldGeometry(boardPage, 'fold-version');
+        console.log(JSON.stringify({ group: 'folds', board: file, reading }));
+        countedCheck(reading !== null, `folds board ${file}: fold-version control exists`);
+        if (reading) {
+          countedCheck(
+            reading.ariaExpanded === String(expectedOpen),
+            `folds board ${file}: aria-expanded is ${expectedOpen} (got ${reading.ariaExpanded})`,
+          );
+          countedCheck(
+            reading.word === expectedWord,
+            `folds board ${file}: word reads "${expectedWord}" (got ${reading.word})`,
+          );
+        }
+        boardReadings[file] = reading;
+        await boardContext.close();
+      }
+
+      const boardComparisons = [
+        { width: 1366, coarse: false, file: '1366-batch.html' },
+        { width: 1024, coarse: false, file: '1024-batch.html' },
+      ];
+      for (const { width, coarse, file } of boardComparisons) {
+        const boardReading = boardReadings[file];
+        if (!boardReading) continue;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+        const appReading = await readFoldGeometry(page, 'fold-version');
+        console.log(JSON.stringify({ group: 'folds', width, comparedTo: file, appReading }));
+
+        countedCheck(
+          Math.abs(appReading.height - boardReading.height) <= 1,
+          `folds width=${width}: control height (${appReading.height}) within 1px of ${file}'s (${boardReading.height})`,
+        );
+        countedCheck(
+          Math.abs(parseFloat(appReading.wordFontSize) - parseFloat(boardReading.wordFontSize)) <= 1,
+          `folds width=${width}: control word font-size (${appReading.wordFontSize}) within 1px of ${file}'s (${boardReading.wordFontSize})`,
+        );
+        countedCheck(
+          appReading.wordColor === boardReading.wordColor,
+          `folds width=${width}: control word colour (${appReading.wordColor}) agrees with ${file}'s (${boardReading.wordColor})`,
+        );
+        countedCheck(
+          appReading.wordFontWeight === boardReading.wordFontWeight,
+          `folds width=${width}: control word font-weight (${appReading.wordFontWeight}) agrees exactly with ${file}'s (${boardReading.wordFontWeight})`,
+        );
+        countedCheck(
+          appReading.wordTextDecorationLine === boardReading.wordTextDecorationLine,
+          `folds width=${width}: control word text-decoration-line (${appReading.wordTextDecorationLine}) agrees exactly with ${file}'s (${boardReading.wordTextDecorationLine})`,
+        );
+        countedCheck(
+          Math.abs(parseFloat(appReading.captionFontSize) - parseFloat(boardReading.captionFontSize)) <= 1,
+          `folds width=${width}: caption font-size (${appReading.captionFontSize}) within 1px of ${file}'s (${boardReading.captionFontSize})`,
+        );
+        countedCheck(
+          appReading.captionTextTransform === boardReading.captionTextTransform,
+          `folds width=${width}: caption text-transform (${appReading.captionTextTransform}) agrees exactly with ${file}'s (${boardReading.captionTextTransform})`,
+        );
+
+        await context.close();
+      }
     }
   } finally {
     await browser.close();

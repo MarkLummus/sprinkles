@@ -461,24 +461,43 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
   });
 });
 
-// The Details fold (03.5-08 Task 1, sketch 011 1366-batch.html/settled
-// decision 6): below desktop the version's own Written/From/Why details
-// close by default behind a "Details" control; at desktop (foldable
-// false/absent) nothing about this section changes.
-describe('VersionRow — the Details fold below desktop (03.5-08 Task 1, settled decision 6)', () => {
-  it('renders a closed Details control and a hidden dl when foldable', () => {
-    const markup = renderVersionRow({ foldable: true });
+// The details fold at every width (sketch 011 decisions 18/19, 03.5-15
+// Task 1, superseding the below-desktop-only 03.5-08 Task 1/settled
+// decision 6): open by default from 1366 (foldsOpen true, the default)
+// and closed by default below it, through one full-row FoldRow control.
+describe('VersionRow — the details fold at every width (sketch 011 decisions 18/19, 03.5-15 Task 1)', () => {
+  it('renders a closed fold reading "Show details" and a hidden dl when foldsOpen is false', () => {
+    const markup = renderVersionRow({ foldsOpen: false });
     expect(markup).toMatch(
-      /<button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="fold-version">Details<\/button>/,
+      /<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version">/,
     );
+    expect(markup).toMatch(/<span class="fold-row__control">Show details<\/span>/);
     expect(markup).toMatch(/<dl class="notebook-version__details" id="fold-version" hidden="?/);
   });
 
-  it('renders no Details control and a visible dl when not foldable', () => {
+  it('renders an open fold reading "Hide details" and a visible dl when foldsOpen is true (the default)', () => {
     const markup = renderVersionRow({});
-    expect(markup).not.toContain('>Details<');
-    expect(markup).not.toContain('id="fold-version"');
-    expect(markup).toContain('<dl class="notebook-version__details">');
+    expect(markup).toMatch(
+      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version">/,
+    );
+    expect(markup).toMatch(/<span class="fold-row__control">Hide details<\/span>/);
+    expect(markup).toContain('<dl class="notebook-version__details" id="fold-version">');
+  });
+
+  it('renders the Version caption once, inside the fold row, before the identity heading', () => {
+    const markup = renderVersionRow({});
+    const foldIndex = markup.indexOf('class="fold-row"');
+    const captionIndex = markup.indexOf('<span class="notebook-caption">Version</span>');
+    const headingIndex = markup.indexOf('notebook-version__identity');
+    expect(foldIndex).toBeGreaterThanOrEqual(0);
+    expect(captionIndex).toBeGreaterThan(foldIndex);
+    expect(headingIndex).toBeGreaterThan(captionIndex);
+    expect(markup.match(/<span class="notebook-caption">Version<\/span>/g)?.length).toBe(1);
+  });
+
+  it('renders no button reading "Details" alone', () => {
+    const markup = renderVersionRow({});
+    expect(markup).not.toMatch(/>Details</);
   });
 });
 

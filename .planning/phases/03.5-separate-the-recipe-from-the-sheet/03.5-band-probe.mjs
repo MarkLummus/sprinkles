@@ -26,8 +26,22 @@ const widths = widthsArg.split(',').map(Number);
 
 // The folds this plan's own probe checks — grows as plan 16 brings Balance,
 // Watch for, Tasting, History and Batches onto the same FoldRow (sketch 011
-// decision 19).
-const EXPECTED_FOLDS = ['fold-version'];
+// decision 19). Task 1 (03.5-16) adds fold-balance and fold-check; Task 2
+// adds fold-tasting.
+const EXPECTED_FOLDS = ['fold-version', 'fold-balance', 'fold-check'];
+
+// fold-version's own label sits in a dedicated caption span (VersionRow's
+// `label={<span className="notebook-caption">Version</span>}`, since the
+// Sheet's ambient text is not already caption-styled); its own control word
+// therefore carries a "details" suffix ("Show details"/"Hide details").
+// Every other fold (Balance, Watch for, Tasting) passes a bare string label
+// that inherits its caption/region-name face straight from the surrounding
+// heading (decisions_recorded 2/3, 03.5-16) — no separate caption span, and
+// no suffix on the control word.
+const FOLD_WHAT = { 'fold-version': ' details' };
+function expectedFoldWord(id, open) {
+  return (open ? 'Hide' : 'Show') + (FOLD_WHAT[id] ?? '');
+}
 
 // The rail group (Task 1, sketch 011 decision 16's last sentence, 1600-
 // long-history.html): every mark sits above the track, and a scrolled
@@ -141,7 +155,17 @@ async function readBoardMarks(page) {
 // FoldRow markup AND the board's own inline-styled fold_row markup share the
 // same child shape), the control word and caption elements inside it —
 // button > span:first-child (the head) > span:first-child (the caption) /
-// span:last-child (the control word).
+// span:last-child (the control word). fold-version is the only fold whose
+// label is a dedicated caption span (see FOLD_WHAT above) — captionEl/wordEl
+// only resolve distinctly there. Every other fold's label is bare text with
+// no wrapping span, so captionEl and wordEl above both collapse onto the
+// same (only) span child; controlFontSize/controlColor/controlTextTransform
+// read the BUTTON's own computed style instead — since FoldRow's CSS
+// (`font/color/text-transform: inherit`) carries the ancestor heading's
+// caption/region-name face straight onto the button, including its bare
+// text label, this is the correct read for those folds (03.5-16 Task 1).
+// countEl/countText/countRight (03.5-16 Task 2) cover a fold whose FoldRow
+// carries a `count` (Tasting's tasted date, at the row's own right end).
 async function readFoldGeometry(page, foldId) {
   return page.evaluate((id) => {
     const control = document.querySelector(`button[aria-controls="${id}"]`);
@@ -156,10 +180,15 @@ async function readFoldGeometry(page, foldId) {
     const wordEl = head ? head.querySelector(':scope > span:last-child') : null;
     const wordStyle = wordEl ? getComputedStyle(wordEl) : null;
     const captionStyle = captionEl ? getComputedStyle(captionEl) : null;
+    const controlStyle = getComputedStyle(control);
+    const countEl = control.querySelector(':scope > span.fold-row__count');
+    const countStyle = countEl ? getComputedStyle(countEl) : null;
+    const countRect = countEl ? countEl.getBoundingClientRect() : null;
     return {
       ariaExpanded: control.getAttribute('aria-expanded'),
       height: rect.height,
       width: rect.width,
+      right: rect.right,
       parentWidth: parentRect ? parentRect.width : null,
       panelDisplay,
       word: wordEl ? wordEl.textContent : null,
@@ -169,6 +198,13 @@ async function readFoldGeometry(page, foldId) {
       wordTextDecorationLine: wordStyle ? wordStyle.textDecorationLine : null,
       captionFontSize: captionStyle ? captionStyle.fontSize : null,
       captionTextTransform: captionStyle ? captionStyle.textTransform : null,
+      controlFontSize: controlStyle.fontSize,
+      controlColor: controlStyle.color,
+      controlTextTransform: controlStyle.textTransform,
+      countText: countEl ? countEl.textContent : null,
+      countFontSize: countStyle ? countStyle.fontSize : null,
+      countColor: countStyle ? countStyle.color : null,
+      countRight: countRect ? countRect.right : null,
     };
   }, foldId);
 }
@@ -292,11 +328,22 @@ async function main() {
             reading.parentWidth != null && Math.abs(reading.width - reading.parentWidth) <= 1,
             `folds width=${width} ${id}: control width within 1px of its parent (got ${reading.width} vs ${reading.parentWidth})`,
           );
-          const expectedWord = expectedOpen ? 'Hide details' : 'Show details';
+          const expectedWord = expectedFoldWord(id, expectedOpen);
           countedCheck(
             reading.word === expectedWord,
             `folds width=${width} ${id}: control word reads "${expectedWord}" (got ${reading.word})`,
           );
+
+          if (id === 'fold-tasting') {
+            countedCheck(
+              reading.countText === 'tasted date unknown',
+              `folds width=${width} ${id}: count reads "tasted date unknown" (got ${reading.countText})`,
+            );
+            countedCheck(
+              reading.countRight != null && Math.abs(reading.countRight - reading.right) <= 1,
+              `folds width=${width} ${id}: count's right edge sits at the row's own end (control right ${reading.right}, count right ${reading.countRight})`,
+            );
+          }
 
           await clickFoldControl(page, id);
           const afterClick = await readFoldGeometry(page, id);
@@ -338,71 +385,118 @@ async function main() {
         await context.close();
       }
 
-      const boardStates = [
-        { file: '1366-batch.html', expectedOpen: true, expectedWord: 'Hide details' },
-        { file: '1024-batch.html', expectedOpen: false, expectedWord: 'Show details' },
+      // Every fold in EXPECTED_FOLDS shares the same two board states
+      // (1366-batch.html open, 1024-batch.html closed — decisions 18/19
+      // draw every fold's default at the same 1366 cut).
+      const boardStateDefs = [
+        { file: '1366-batch.html', expectedOpen: true },
+        { file: '1024-batch.html', expectedOpen: false },
       ];
-      const boardReadings = {};
-      for (const { file, expectedOpen, expectedWord } of boardStates) {
-        const { context: boardContext, page: boardPage } = await openBoard(browser, repoUrl, file);
-        const reading = await readFoldGeometry(boardPage, 'fold-version');
-        console.log(JSON.stringify({ group: 'folds', board: file, reading }));
-        countedCheck(reading !== null, `folds board ${file}: fold-version control exists`);
-        if (reading) {
-          countedCheck(
-            reading.ariaExpanded === String(expectedOpen),
-            `folds board ${file}: aria-expanded is ${expectedOpen} (got ${reading.ariaExpanded})`,
-          );
-          countedCheck(
-            reading.word === expectedWord,
-            `folds board ${file}: word reads "${expectedWord}" (got ${reading.word})`,
-          );
+      const boardReadingsById = {};
+      for (const id of EXPECTED_FOLDS) {
+        boardReadingsById[id] = {};
+        for (const { file, expectedOpen } of boardStateDefs) {
+          const { context: boardContext, page: boardPage } = await openBoard(browser, repoUrl, file);
+          const reading = await readFoldGeometry(boardPage, id);
+          console.log(JSON.stringify({ group: 'folds', board: file, id, reading }));
+          countedCheck(reading !== null, `folds board ${file}: ${id} control exists`);
+          if (reading) {
+            const expectedWord = expectedFoldWord(id, expectedOpen);
+            countedCheck(
+              reading.ariaExpanded === String(expectedOpen),
+              `folds board ${file}: ${id} aria-expanded is ${expectedOpen} (got ${reading.ariaExpanded})`,
+            );
+            countedCheck(
+              reading.word === expectedWord,
+              `folds board ${file}: ${id} word reads "${expectedWord}" (got ${reading.word})`,
+            );
+          }
+          boardReadingsById[id][file] = reading;
+          await boardContext.close();
         }
-        boardReadings[file] = reading;
-        await boardContext.close();
       }
 
       const boardComparisons = [
         { width: 1366, coarse: false, file: '1366-batch.html' },
         { width: 1024, coarse: false, file: '1024-batch.html' },
       ];
-      for (const { width, coarse, file } of boardComparisons) {
-        const boardReading = boardReadings[file];
-        if (!boardReading) continue;
-        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
-        const appReading = await readFoldGeometry(page, 'fold-version');
-        console.log(JSON.stringify({ group: 'folds', width, comparedTo: file, appReading }));
+      for (const id of EXPECTED_FOLDS) {
+        for (const { width, coarse, file } of boardComparisons) {
+          const boardReading = boardReadingsById[id][file];
+          if (!boardReading) continue;
+          const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+          const appReading = await readFoldGeometry(page, id);
+          console.log(JSON.stringify({ group: 'folds', width, id, comparedTo: file, appReading }));
 
-        countedCheck(
-          Math.abs(appReading.height - boardReading.height) <= 1,
-          `folds width=${width}: control height (${appReading.height}) within 1px of ${file}'s (${boardReading.height})`,
-        );
-        countedCheck(
-          Math.abs(parseFloat(appReading.wordFontSize) - parseFloat(boardReading.wordFontSize)) <= 1,
-          `folds width=${width}: control word font-size (${appReading.wordFontSize}) within 1px of ${file}'s (${boardReading.wordFontSize})`,
-        );
-        countedCheck(
-          appReading.wordColor === boardReading.wordColor,
-          `folds width=${width}: control word colour (${appReading.wordColor}) agrees with ${file}'s (${boardReading.wordColor})`,
-        );
-        countedCheck(
-          appReading.wordFontWeight === boardReading.wordFontWeight,
-          `folds width=${width}: control word font-weight (${appReading.wordFontWeight}) agrees exactly with ${file}'s (${boardReading.wordFontWeight})`,
-        );
-        countedCheck(
-          appReading.wordTextDecorationLine === boardReading.wordTextDecorationLine,
-          `folds width=${width}: control word text-decoration-line (${appReading.wordTextDecorationLine}) agrees exactly with ${file}'s (${boardReading.wordTextDecorationLine})`,
-        );
-        countedCheck(
-          Math.abs(parseFloat(appReading.captionFontSize) - parseFloat(boardReading.captionFontSize)) <= 1,
-          `folds width=${width}: caption font-size (${appReading.captionFontSize}) within 1px of ${file}'s (${boardReading.captionFontSize})`,
-        );
-        countedCheck(
-          appReading.captionTextTransform === boardReading.captionTextTransform,
-          `folds width=${width}: caption text-transform (${appReading.captionTextTransform}) agrees exactly with ${file}'s (${boardReading.captionTextTransform})`,
-        );
+          if (!appReading) {
+            countedCheck(false, `folds width=${width}: ${id} control exists (comparing against ${file})`);
+            await context.close();
+            continue;
+          }
 
-        await context.close();
+          countedCheck(
+            Math.abs(appReading.height - boardReading.height) <= 1,
+            `folds width=${width}: ${id} control height (${appReading.height}) within 1px of ${file}'s (${boardReading.height})`,
+          );
+
+          if (id === 'fold-version') {
+            // fold-version's label is a dedicated caption span (FOLD_WHAT
+            // above) — compare its own word/caption styling, as before.
+            countedCheck(
+              Math.abs(parseFloat(appReading.wordFontSize) - parseFloat(boardReading.wordFontSize)) <= 1,
+              `folds width=${width}: ${id} control word font-size (${appReading.wordFontSize}) within 1px of ${file}'s (${boardReading.wordFontSize})`,
+            );
+            countedCheck(
+              appReading.wordColor === boardReading.wordColor,
+              `folds width=${width}: ${id} control word colour (${appReading.wordColor}) agrees with ${file}'s (${boardReading.wordColor})`,
+            );
+            countedCheck(
+              appReading.wordFontWeight === boardReading.wordFontWeight,
+              `folds width=${width}: ${id} control word font-weight (${appReading.wordFontWeight}) agrees exactly with ${file}'s (${boardReading.wordFontWeight})`,
+            );
+            countedCheck(
+              appReading.wordTextDecorationLine === boardReading.wordTextDecorationLine,
+              `folds width=${width}: ${id} control word text-decoration-line (${appReading.wordTextDecorationLine}) agrees exactly with ${file}'s (${boardReading.wordTextDecorationLine})`,
+            );
+            countedCheck(
+              Math.abs(parseFloat(appReading.captionFontSize) - parseFloat(boardReading.captionFontSize)) <= 1,
+              `folds width=${width}: ${id} caption font-size (${appReading.captionFontSize}) within 1px of ${file}'s (${boardReading.captionFontSize})`,
+            );
+            countedCheck(
+              appReading.captionTextTransform === boardReading.captionTextTransform,
+              `folds width=${width}: ${id} caption text-transform (${appReading.captionTextTransform}) agrees exactly with ${file}'s (${boardReading.captionTextTransform})`,
+            );
+          } else {
+            // Balance/Watch for/Tasting: the label is bare text inheriting
+            // its face straight from the button's own computed style
+            // (region-name/caption face, 03.5-16 Task 1).
+            countedCheck(
+              Math.abs(parseFloat(appReading.controlFontSize) - parseFloat(boardReading.controlFontSize)) <= 1,
+              `folds width=${width}: ${id} control font-size (${appReading.controlFontSize}) within 1px of ${file}'s (${boardReading.controlFontSize})`,
+            );
+            countedCheck(
+              appReading.controlColor === boardReading.controlColor,
+              `folds width=${width}: ${id} control colour (${appReading.controlColor}) agrees with ${file}'s (${boardReading.controlColor})`,
+            );
+            countedCheck(
+              appReading.controlTextTransform === boardReading.controlTextTransform,
+              `folds width=${width}: ${id} control text-transform (${appReading.controlTextTransform}) agrees exactly with ${file}'s (${boardReading.controlTextTransform})`,
+            );
+          }
+
+          if (id === 'fold-tasting') {
+            countedCheck(
+              Math.abs(parseFloat(appReading.countFontSize) - parseFloat(boardReading.countFontSize)) <= 1,
+              `folds width=${width}: ${id} count font-size (${appReading.countFontSize}) within 1px of ${file}'s (${boardReading.countFontSize})`,
+            );
+            countedCheck(
+              appReading.countColor === boardReading.countColor,
+              `folds width=${width}: ${id} count colour (${appReading.countColor}) agrees with ${file}'s (${boardReading.countColor})`,
+            );
+          }
+
+          await context.close();
+        }
       }
     }
 

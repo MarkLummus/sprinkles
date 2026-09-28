@@ -305,12 +305,4 @@ export const library = {
     },
     note: "Strawberry V2.1.ier's definition, which Strawberry V2.1 embeds. Strawberry V2.ier's own block under this name is fresh-strawberry data (Solids 0.089, kcal 0.31); V2 embeds that block from strawberry.js, as Ice Ed had it (Mark 2026-09-25).",
   },
-  almondExtract: {
-    name: 'Almond extract',
-    category: 'other',
-    composition: {},
-    basis: {},
-    source: {},
-    note: 'No Ice Ed file in ~/Desktop/Ice Cream defines Almond Extract — Ingredients.iei (Ice Ed\'s ingredient-library export, 2025-01-30) defines only "Almond Paste (pure)" and no .ier uses it — so its composition is left missing, never zeroed (D-03; Mark 2026-09-25, answer 4): its grams count toward the batch mass and nothing else. Flagged for Mark.',
-  },
 };

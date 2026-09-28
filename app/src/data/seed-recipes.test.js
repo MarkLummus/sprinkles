@@ -315,11 +315,6 @@ describe('library entries added 2026-09-25 (quick 260925-lpd)', () => {
       }
     }
   });
-
-  it('almondExtract has an empty composition and basis, never zeroed', () => {
-    expect(library.almondExtract.composition).toEqual({});
-    expect(library.almondExtract.basis).toEqual({});
-  });
 });
 
 describe("Strawberry versions embed their own .ier definitions (Mark 2026-09-25, open question 12)", () => {
@@ -725,7 +720,7 @@ describe('Underbelly Light Base v1 (workbook column G) -> v2 (.ier)', () => {
       ['Fructose', 8],
       ['Dried Skimmed Milk Powder', 51],
       ['Lecithin', 4.5],
-      ['Almond Extract', 5],
+      ['Vanilla Extract', 5],
     ];
     expect(underbellyLightBaseV1.rows).toHaveLength(8);
     underbellyLightBaseV1.rows.forEach((row, i) => {

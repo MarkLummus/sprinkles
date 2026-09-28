@@ -28,9 +28,11 @@ export const underbellyLightBaseRecipe = {
 // v1 — the workbook's column G. Row names are the Ice Ed names for Ice Ed
 // ingredients (the workbook's labels "Whole Milk 3.7%", "Cream, Heavy" and
 // "SMP" name the same ingredients as Standard Base's 'whole milk, 3.7%',
-// 'Cream, heavy' and 'Dried Skimmed Milk Powder' — flagged) and 'Almond
-// Extract' as the workbook writes it. No Gellan Gum row (column G's own
-// Gellan Gum cell is blank; decision 3d).
+// 'Cream, heavy' and 'Dried Skimmed Milk Powder' — flagged). Row 8 is
+// Vanilla Extract where column G writes Almond Extract: no source defines
+// almond extract's composition, and Mark chose the swap (2026-09-28, seed
+// open question 13). No Gellan Gum row (column G's own Gellan Gum cell is
+// blank; decision 3d).
 export const UNDERBELLY_LIGHT_BASE_V1_ID = 'underbelly-light-base-v1';
 
 export const underbellyLightBaseV1 = {
@@ -60,7 +62,7 @@ export const underbellyLightBaseV1 = {
     { id: 'row-05', ...embed('Fructose', library.fructose, { portions: [{ step: 1, grams: 8 }], removed: false }) },
     { id: 'row-06', ...embed('Dried Skimmed Milk Powder', library.skimMilkPowder, { portions: [{ step: 1, grams: 51 }], removed: false }) },
     { id: 'row-07', ...embed('Lecithin', library.lecithin, { portions: [{ step: 1, grams: 4.5 }], removed: false }) },
-    { id: 'row-08', ...embed('Almond Extract', library.almondExtract, { portions: [{ step: 1, grams: 5 }], removed: false }) },
+    { id: 'row-08', ...embed('Vanilla Extract', library.vanillaExtract, { portions: [{ step: 1, grams: 5 }], removed: false }) },
   ],
   equipment: KITCHEN_EQUIPMENT,
   // The workbook's Sous Vide Temp row is blank for this column.

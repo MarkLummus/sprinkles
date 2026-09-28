@@ -1,0 +1,58 @@
+{
+  "counts-versions-picked": {
+    "found": true,
+    "captionText": "1 version · option B: History as one line · picked (Mark, 2026-09-27)",
+    "foldAriaControls": null,
+    "foldAriaExpanded": null,
+    "foldText": null,
+    "onlyLineText": "Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath."
+  },
+  "counts-upright-history-closed": {
+    "found": true,
+    "captionText": "393 · History upright, closed",
+    "foldAriaControls": "fold-history",
+    "foldAriaExpanded": "false",
+    "foldText": "HistoryShow8 versions",
+    "onlyLineText": null
+  },
+  "counts-upright-history-open": {
+    "found": true,
+    "captionText": "393 · History upright, open",
+    "foldAriaControls": "fold-history",
+    "foldAriaExpanded": "true",
+    "foldText": "HistoryHide8 versions · latest first",
+    "onlyLineText": null
+  },
+  "counts-upright-batches-closed": {
+    "found": true,
+    "captionText": "393 · Batches upright, closed",
+    "foldAriaControls": "fold-batches",
+    "foldAriaExpanded": "false",
+    "foldText": "BatchesShow3 batches",
+    "onlyLineText": null
+  },
+  "counts-upright-batches-open": {
+    "found": true,
+    "captionText": "393 · Batches upright, open",
+    "foldAriaControls": "fold-batches",
+    "foldAriaExpanded": "true",
+    "foldText": "BatchesHide3 batches · latest first",
+    "onlyLineText": null
+  },
+  "counts-batches-picked": {
+    "found": true,
+    "captionText": "1 batch · option: no Batches control · picked (Mark, 2026-09-27)",
+    "foldAriaControls": null,
+    "foldAriaExpanded": null,
+    "foldText": null,
+    "onlyLineText": "Recorded 4 Aug 2026 against Version 1 · 50 g oil · 800 g"
+  },
+  "counts-batches-many-d": {
+    "found": true,
+    "captionText": "3 batches · D: the rail upright in the side column",
+    "foldAriaControls": "fold-batches",
+    "foldAriaExpanded": "true",
+    "foldText": "BatchesHide3 batches · latest first",
+    "onlyLineText": null
+  }
+}

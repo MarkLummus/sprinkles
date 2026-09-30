@@ -12,6 +12,7 @@ import { buildDiff } from '../domain/diff.js';
 import { stepsWithStaleAmounts, removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { mexicanChocolateV3, mexicanChocolateV4 } from '../data/mexican-chocolate.js';
+import { transcribedRecipeGroups } from '../data/seed-recipes.js';
 
 const struckStep = { n: 1, leadIn: 'Steep', instruction: 'Warm the milk and steep the zest.' };
 const unstruckStep = { n: 2, leadIn: 'Chill', instruction: 'Cool the base overnight.' };
@@ -1410,5 +1411,33 @@ describe('Method — show changes on a step the parent lacks (G-03.5-2a)', () =>
     const slice = stepSlice(markup, 2);
     expect(slice).not.toContain('prose-struck-beneath');
     expect(slice).not.toContain('struck-value');
+  });
+});
+
+// Every seeded child against its seeded parent, derived from the seed so a
+// new seeded child joins the sweep automatically.
+const seededPairs = transcribedRecipeGroups.flatMap(({ recipe, versions }) =>
+  versions.flatMap((child) => {
+    const parent = versions.find((candidate) => candidate.id === child.parentVersionId);
+    return parent ? [{ title: `${recipe.id}: ${child.id} against ${parent.id}`, child, parent }] : [];
+  }),
+);
+
+describe('Method — show changes over the seeded lineage (G-03.5-2a)', () => {
+  it('covers at least eight seeded child/parent pairs', () => {
+    expect(seededPairs.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it.each(seededPairs.map((pair) => [pair.title, pair]))('%s renders without throwing, and a step the parent lacks reads plain', (_title, { child, parent }) => {
+    let markup;
+    expect(() => {
+      markup = renderShowChanges(child, parent);
+    }).not.toThrow();
+    const parentSteps = new Set(parent.method.map((step) => step.n));
+    for (const step of child.method) {
+      if (!parentSteps.has(step.n)) {
+        expect(stepSlice(markup, step.n)).not.toContain('prose-struck-beneath');
+      }
+    }
   });
 });

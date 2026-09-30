@@ -755,7 +755,14 @@
   font-weight: 600;
 }
 
+/* G-03.5-6 (03.5-25): the measurements stand in equal columns, as every
+   sketch 011 batch board draws them. This rule ported the board's gap and
+   left the Sheet's content-sized track list (app.css), which packed the
+   cells to the left. The base is the two-column form (1366-batch.html and
+   up); the 1365.98px block sets five across and the 723.98px block sets
+   two again. */
 .notebook-log .batch-row__cells {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--app-notebook-log-cell-gap-row) var(--gap-m);
 }
 
@@ -907,6 +914,12 @@
     flex-basis: auto;
     padding: 0 var(--app-notebook-gap-tight);
   }
+
+  /* G-03.5-6: five equal columns from 724 to 1365.98, as 1024-batch.html,
+     984-batch.html and 983-batch.html draw the churn cells. */
+  .notebook-log .batch-row__cells {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 /* The phone forms (sketch 011 decision 16's Grouping Rule): 724 = the
@@ -936,6 +949,12 @@
 
   .notebook-log {
     padding: 0 var(--gap-m);
+  }
+
+  /* G-03.5-6: two columns again at 723.98 and below (723-batch.html,
+     393-batch.html), after the five-across step above. */
+  .notebook-log .batch-row__cells {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

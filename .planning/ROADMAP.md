@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 22/25 plans executed
+**Plans:** 23/25 plans executed
 
 Plans:
 
@@ -541,7 +541,7 @@ Plans:
 
 **Wave 17** *(blocked on 03.5-20 to 03.5-22)*
 
-- [ ] 03.5-23-PLAN.md — Tasting its own section with an h2, drawn on the boards first. Every fold head fills its row at every width, measured against the row and the board (G-03.5-4, G-03.5-8d)
+- [x] 03.5-23-PLAN.md — Tasting its own section with an h2, drawn on the boards first. Every fold head fills its row at every width, measured against the row and the board (G-03.5-4, G-03.5-8d)
 
 **Wave 18** *(blocked on 03.5-23)*
 

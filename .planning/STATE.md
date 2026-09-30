@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
-stopped_at: Completed 03.5-22-PLAN.md
-last_updated: "2026-09-30T02:26:42.416Z"
+stopped_at: Completed 03.5-23-PLAN.md
+last_updated: "2026-09-30T02:40:43.599Z"
 last_activity: 2026-09-29
 last_activity_desc: Phase 03.5 execution started
-state_head: dc1751166b56af7de80097c9f28ad62a9db0d938
+state_head: 351ad54260ea1984ad25c8ba5f50e1e6ebd47fe3
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 91
-  completed_plans: 88
+  completed_plans: 89
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet (INSERTED)) — EXECUTING
-Plan: 5 of 25
+Plan: 6 of 25
 Status: Ready to execute
 Last activity: 2026-09-29 — Phase 03.5 execution started
 
@@ -117,6 +117,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P20 | 25min | 2 tasks | 5 files |
 | Phase 03.5 P21 | 15 min | 2 tasks | 12 files |
 | Phase 03.5 P22 | 30 min | 3 tasks | 9 files |
+| Phase 03.5 P23 | 11 min | 2 tasks | 24 files |
 
 ## Accumulated Context
 
@@ -229,6 +230,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: 03.5-21: fold accessible names join label, control word and count with commas only; Show/Hide stays in the name (G-03.5-7)
 - [Phase 03.5]: 03.5-22: the foot band is one column at every width with the ceremony right-aligned at its end (not a two-column foot with a wrapping ceremony); the live as-made total is inline-size contained to stay in flow but out of the column's sizing
 - [Phase 03.5]: 03.5-22: Home's recipe-name links are inline-flex 44px targets under (pointer: coarse) only (Mark, 2026-09-29); the pen's grams column growth stays open
+- [Phase 03.5]: 03.5-23: Tasting is its own section nested in place (section named Tasting, h2 heading, inside the Batch section); the sibling-after-Batch alternative is Mark's call
+- [Phase 03.5]: 03.5-23: band grid align-items: stretch in the 723.98px block fills the Version fold head; it also widens the Rename and Next version forms at phone width (recorded for Mark)
 
 ### Pending Todos
 
@@ -369,6 +372,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-30T02:26:42.316Z
-Stopped at: Completed 03.5-22-PLAN.md
+Last session: 2026-09-30T02:40:43.500Z
+Stopped at: Completed 03.5-23-PLAN.md
 Resume file: None

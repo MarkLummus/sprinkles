@@ -116,6 +116,48 @@ async function readRecordBattery(browser, appUrl, width, coarse) {
   return reading;
 }
 
+// G-03.5-4b (03.5-22 Task 3): Home's recipe-name links against the 44px
+// touch floor. The links are classless anchors inside h2.home__name (each
+// row) and h2.home__lead-name (Pick up where you left off). Each link is
+// scrolled into view first, since elementFromPoint only sees the viewport;
+// its top and bottom edges are hit-tested 2px inside, at the horizontal
+// centre, and every visible action is hit-tested 3px inside its own top, the
+// gap the name link must never steal from (the row gap to the action is 3px).
+function readHomeLinks() {
+  const within = (hit, el) => hit != null && (hit === el || el.contains(hit));
+  const links = [...document.querySelectorAll('.home__name a, .home__lead-name a')].map((link) => {
+    link.scrollIntoView({ block: 'center' });
+    const r = link.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    return {
+      text: link.textContent.trim(),
+      lead: Boolean(link.closest('.home__lead-name')),
+      height: r.height,
+      topHit: within(document.elementFromPoint(x, r.top + 2), link),
+      bottomHit: within(document.elementFromPoint(x, r.bottom - 2), link),
+    };
+  });
+  const actions = [...document.querySelectorAll('.home__action')]
+    .filter((action) => action.getBoundingClientRect().height > 0)
+    .map((action) => {
+      action.scrollIntoView({ block: 'center' });
+      const r = action.getBoundingClientRect();
+      return {
+        text: action.textContent.trim(),
+        topHit: within(document.elementFromPoint(r.left + r.width / 2, r.top + 3), action),
+      };
+    });
+  return { links, actions };
+}
+
+async function readHome(browser, appUrl, width, coarse) {
+  const { context, page } = await openApp(browser, appUrl, '/', { width, coarse });
+  await page.waitForSelector('.home__name a');
+  const reading = await page.evaluate(readHomeLinks);
+  await context.close();
+  return reading;
+}
+
 async function main() {
   const failures = [];
   let checkCount = 0;
@@ -183,6 +225,38 @@ async function main() {
               true,
               `touch width=${width} fine: Correct's rendered height vs ${boardFile} (measured, not asserted) — app ${reading.correct?.height}, board ${boardReading.correct?.height}`,
             );
+          }
+        }
+      }
+    }
+
+    if (groups.has('home')) {
+      // Coarse at 393 (the iPhone) and 1366 (the iPad): every name link is a
+      // 44px target that opens the recipe at both its edges, and takes
+      // nothing from the action below it. Fine at 1366: the rule reads the
+      // pointer alone, so the links keep their line-box height.
+      for (const width of widths) {
+        for (const coarse of width === 1366 ? [true, false] : [true]) {
+          const label = `home width=${width} ${coarse ? 'coarse' : 'fine'}`;
+          const reading = await readHome(browser, appUrl, width, coarse);
+          console.log(JSON.stringify({ group: 'home', width, coarse, reading }));
+          countedCheck(reading.links.length > 0, `${label}: name links found (${reading.links.length})`);
+          countedCheck(reading.links.some((link) => link.lead), `${label}: the Pick up name link is among them`);
+          for (const link of reading.links) {
+            const name = `${link.lead ? 'lead' : 'row'} link "${link.text}"`;
+            if (coarse) {
+              countedCheck(link.height >= 43.5, `${label}: ${name} is at least 43.5px tall (got ${link.height})`);
+              countedCheck(link.topHit, `${label}: ${name} answers a hit 2px inside its top edge`);
+              countedCheck(link.bottomHit, `${label}: ${name} answers a hit 2px inside its bottom edge`);
+            } else {
+              countedCheck(link.height < 43.5, `${label}: ${name} keeps its line-box height (got ${link.height})`);
+            }
+          }
+          if (coarse) {
+            countedCheck(reading.actions.length > 0, `${label}: visible actions found (${reading.actions.length})`);
+            for (const action of reading.actions) {
+              countedCheck(action.topHit, `${label}: action "${action.text}" answers a hit 3px inside its top edge (no name link steals it)`);
+            }
           }
         }
       }

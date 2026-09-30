@@ -48,9 +48,24 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     }
   });
 
-  test('home.css carries exactly two named @media steps, in file order — the 1099.98px lead-and-row step, then the 759.98px touch step-down, and no third (css-source.js parses one level of nesting)', () => {
+  test('home.css carries exactly three named @media steps, in file order — the 1099.98px lead-and-row step, the 759.98px step-down, then the coarse-pointer name-link floor, and no fourth (css-source.js parses one level of nesting)', () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
-    expect(mediaConditions).toEqual(['(max-width: 1099.98px)', '(max-width: 759.98px)']);
+    expect(mediaConditions).toEqual(['(max-width: 1099.98px)', '(max-width: 759.98px)', '(pointer: coarse)']);
+  });
+
+  // G-03.5-4b (03.5-22; Mark, 2026-09-29: taller links). The name links are
+  // classless inline anchors, and min-height does nothing on an inline box,
+  // so the floor needs inline-flex beside it. Under a coarse pointer only.
+  test('under a coarse pointer the name links are inline-flex boxes with the --touch-min floor (G-03.5-4b)', () => {
+    const rule = rules.find((r) => r.media === '(pointer: coarse)' && r.selector.includes('.home__name a'));
+    expect(rule, 'expected a rule for the name links under (pointer: coarse)').toBeTruthy();
+    expect(rule.selector).toContain('.home__lead-name a');
+    expect(rule.declarations).toMatch(/display:\s*inline-flex/);
+    expect(rule.declarations).toMatch(/align-items:\s*center/);
+    expect(rule.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
+    // The floor is coarse-only: no unscoped rule may carry it.
+    const unscoped = rules.filter((r) => r.media === undefined && /a$/.test(r.selector) && /min-height/.test(r.declarations));
+    expect(unscoped).toEqual([]);
   });
 
   test('the 1099.98px step stacks the lead and hides its rod (G-03.4-6)', () => {

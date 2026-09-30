@@ -20,6 +20,9 @@
 export function FoldRow({ label, labelText, open, onToggle, controls, what, count }) {
   const controlWord = (open ? 'Hide' : 'Show') + (what ? ` ${what}` : '');
   const name = typeof label === 'string' ? label : labelText;
+  if (typeof name !== 'string' && import.meta.env?.DEV) {
+    throw new Error('FoldRow needs a string label or a string labelText');
+  }
   const accessibleName = `${name}, ${controlWord}${count ? `, ${count}` : ''}`;
   return (
     <button

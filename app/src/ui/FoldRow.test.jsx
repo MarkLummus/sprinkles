@@ -156,4 +156,17 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
       expect(markup).toContain('aria-label="Tasting, Show, tasted 28 Sep"');
     });
   });
+
+  it('throws in development when an element label comes without labelText', () => {
+    expect(() =>
+      renderToStaticMarkup(
+        <FoldRow
+          label={<span className="notebook-caption">Version</span>}
+          open={false}
+          onToggle={noop}
+          controls="fold-version"
+        />,
+      ),
+    ).toThrow('FoldRow needs a string label or a string labelText');
+  });
 });

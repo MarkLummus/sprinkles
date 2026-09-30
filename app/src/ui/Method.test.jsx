@@ -11,6 +11,7 @@ import { Method, StepPenBody } from './Method.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { stepsWithStaleAmounts, removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
+import { mexicanChocolateV3, mexicanChocolateV4 } from '../data/mexican-chocolate.js';
 
 const struckStep = { n: 1, leadIn: 'Steep', instruction: 'Warm the milk and steep the zest.' };
 const unstruckStep = { n: 2, leadIn: 'Chill', instruction: 'Cool the base overnight.' };
@@ -1369,5 +1370,45 @@ describe('Method — a changed step line is written in the hand (D-19, sketch 01
     );
     expect(markup).toContain('<p class="method-step__changed sheet-hand">blend 60 s</p>');
     expect(markup).not.toContain('ink-text');
+  });
+});
+
+// G-03.5-2a (03.5 UAT test 2): Show changes threw on a version that adds a
+// step its parent lacks, because buildDiff gives such a step textFrom: null
+// (diff.js's documented contract) and the show-changes branch read
+// textFrom.purpose unguarded. Rendered the way RecipePage renders it in
+// show-changes (RecipePage.jsx changeDiff / changeStaleSteps / step numbers).
+function renderShowChanges(child, parent) {
+  return renderToStaticMarkup(
+    <Method
+      steps={child.method}
+      mode="reading"
+      showingChanges
+      changeDiff={buildDiff(child, parent)}
+      staleSteps={stepsWithStaleAmounts(child, parent)}
+      staleFlagVisible
+      rows={child.rows}
+      currentStepNumbers={displayNumbers(child.method)}
+      baselineStepNumbers={displayNumbers(parent.method)}
+    />,
+  );
+}
+
+function stepSlice(markup, n) {
+  const start = markup.indexOf(`id="method-step-${n}"`);
+  expect(start).toBeGreaterThan(-1);
+  return markup.slice(start, markup.indexOf('</li>', start));
+}
+
+describe('Method — show changes on a step the parent lacks (G-03.5-2a)', () => {
+  it('renders Mexican Chocolate v4 against v3 without throwing, and its new step reads plain', () => {
+    let markup;
+    expect(() => {
+      markup = renderShowChanges(mexicanChocolateV4, mexicanChocolateV3);
+    }).not.toThrow();
+    expect(markup).toContain('Chill and churn');
+    const slice = stepSlice(markup, 2);
+    expect(slice).not.toContain('prose-struck-beneath');
+    expect(slice).not.toContain('struck-value');
   });
 });

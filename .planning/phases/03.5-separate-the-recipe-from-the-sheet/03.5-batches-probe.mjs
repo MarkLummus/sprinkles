@@ -9,6 +9,12 @@
 //   groups: comma list, e.g. many,single,keypad
 //   widths: comma list, e.g. 393,723,1024,1366
 //
+// 03.5-25: `cells` (G-03.5-6) measures the log's churn-cell grid at each width
+// against the board of the same width, opened at its drawn width by
+// openBoard's defaults: the resolved track count and widths, and each cell's
+// left from its grid's left. Usage:
+//   node 03.5-batches-probe.mjs cells 393,723,983,984,1024,1366,1600
+//
 // 03.5-21: `keypad` (G-03.5-5b) reads each battery input's inputmode after
 // Record another / Add tasting, then saves -6 and -12 in the two °C fields
 // and reads both back. Usage: node 03.5-batches-probe.mjs keypad 393,1366
@@ -146,6 +152,52 @@ async function readBatchHeadGeometry(page) {
       headRect: head.getBoundingClientRect(),
     };
   });
+}
+
+
+// 03.5-25 (G-03.5-6): the churn-cell grids, one reading shape for both pages.
+// The app's churn grid is the log's first .batch-row__cells outside
+// .tasting-reading; the board's is the first grid-template-columns:repeat(
+// div in the Batch section outside the Tasting section. Both are read by
+// their children in order: label span, value span (and a plan line).
+const CELLS_BOARD_FILES = {
+  393: '393-batch.html',
+  723: '723-batch.html',
+  983: '983-batch.html',
+  984: '984-batch.html',
+  1024: '1024-batch.html',
+  1366: '1366-batch.html',
+  1600: '1600-batch.html',
+};
+
+function readChurnCellsIn(page, isApp) {
+  return page.evaluate((app) => {
+    const grid = app
+      ? [...document.querySelectorAll('.notebook-log .batch-row__cells')].find((el) => !el.closest('.tasting-reading'))
+      : [...document.querySelectorAll('[aria-label="Batch"] div[style*="grid-template-columns:repeat("]')].find(
+          (el) => !el.closest('section[aria-label="Tasting"]'),
+        );
+    if (!grid) return null;
+    const gridRect = grid.getBoundingClientRect();
+    const cells = [...grid.children].map((cell) => {
+      const rect = cell.getBoundingClientRect();
+      const label = cell.children[0];
+      const value = cell.children[1];
+      return {
+        label: label.textContent.trim(),
+        left: rect.left - gridRect.left,
+        top: rect.top - gridRect.top,
+        height: rect.height,
+        labelToValue: value.getBoundingClientRect().top - label.getBoundingClientRect().bottom,
+      };
+    });
+    return {
+      tracks: getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).map(parseFloat),
+      gridWidth: gridRect.width,
+      gridHeight: gridRect.height,
+      cells,
+    };
+  }, isApp);
 }
 
 async function main() {
@@ -314,6 +366,52 @@ async function main() {
               `single width=${width}: Record another's right offset (${reading.recordRight}) within 1px of ${boardFile}'s (${boardReading.recordRight})`,
             );
           }
+        }
+
+        await context.close();
+      }
+    }
+
+    if (groups.has('cells')) {
+      for (const width of widths) {
+        const file = CELLS_BOARD_FILES[width];
+        if (!file) continue;
+        const coarse = width === 393;
+        const { context: boardContext, page: boardPage } = await openBoard(browser, repoUrl, `../011-recipe-route-c/${file}`);
+        const board = await readChurnCellsIn(boardPage, false);
+        await boardContext.close();
+
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+        await assertSeed(page);
+        const app = await readChurnCellsIn(page, true);
+        console.log(JSON.stringify({ group: 'cells', width, board, app }));
+
+        countedCheck(board !== null, `cells width=${width}: ${file} draws a churn grid`);
+        countedCheck(app !== null, `cells width=${width}: the app renders a churn grid`);
+        if (board && app) {
+          countedCheck(
+            app.tracks.length === board.tracks.length,
+            `cells width=${width}: ${app.tracks.length} tracks in the app against ${board.tracks.length} on ${file} (${JSON.stringify(app.tracks)} against ${JSON.stringify(board.tracks)})`,
+          );
+          app.tracks.forEach((track, i) => {
+            if (i >= board.tracks.length) return;
+            countedCheck(
+              Math.abs(track - board.tracks[i]) <= 1,
+              `cells width=${width}: track ${i + 1} is ${track} in the app against ${board.tracks[i]} on ${file}`,
+            );
+          });
+          countedCheck(
+            app.cells.length === board.cells.length,
+            `cells width=${width}: ${app.cells.length} cells in the app against ${board.cells.length} on ${file}`,
+          );
+          board.cells.forEach((boardCell, i) => {
+            const appCell = app.cells[i];
+            if (!appCell) return;
+            countedCheck(
+              appCell.label === boardCell.label && Math.abs(appCell.left - boardCell.left) <= 1,
+              `cells width=${width}: "${boardCell.label}" stands ${appCell.left} from the grid's left in the app against ${boardCell.left} on ${file}`,
+            );
+          });
         }
 
         await context.close();

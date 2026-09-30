@@ -357,6 +357,22 @@ function readSheet() {
 }
 
 // ---------------------------------------------------------------------------
+// readCellGrid(grid) — 03.5-25 (G-03.5-6): a churn-cell grid's resolved
+// track list and each cell's left offset from the grid's own left edge,
+// so a difference in the track sizing function shows up as a difference
+// in `tracks` and `pitch` on the two pages, whatever the widths agree on.
+function readCellGrid(grid) {
+  if (!grid) return null;
+  var gr = grid.getBoundingClientRect();
+  var tracks = getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).filter(Boolean);
+  var pitch = [];
+  for (var i = 0; i < grid.children.length; i++) {
+    pitch.push(Math.round((grid.children[i].getBoundingClientRect().left - gr.left) * 10) / 10);
+  }
+  return { tracks: tracks, pitch: pitch };
+}
+
+// ---------------------------------------------------------------------------
 // The batch log (BatchRow.jsx's own reading log; on the board, the
 // <aside aria-label="Batch"> beside the Sheet, drawn as bare divs/spans
 // with no class of their own).
@@ -373,6 +389,13 @@ function readLog() {
       cellLabel: box(log ? log.querySelector('.batch-row__cell-label') : null),
       cellValue: box(log ? log.querySelector('.batch-row__cell-value') : null),
       handNote: box(log ? log.querySelector('.app-hand') : null),
+      cellGrid: readCellGrid(
+        log
+          ? [].filter.call(log.querySelectorAll('.batch-row__cells'), function (el) {
+              return !el.closest('.tasting-reading');
+            })[0]
+          : null,
+      ),
     };
   }
   // Board: aria-label="Batch" is drawn on BOTH the <aside> (the column)
@@ -418,6 +441,13 @@ function readLog() {
     cellLabel: box(cellSpans.length ? cellSpans[0] : null),
     cellValue: box(cellSpans.length > 1 ? cellSpans[1] : null),
     handNote: box(column ? column.querySelector('span[style*="Caveat"]') : null),
+    cellGrid: readCellGrid(
+      column
+        ? [].filter.call(column.querySelectorAll('div[style*="grid-template-columns:repeat("]'), function (el) {
+            return !el.closest('section[aria-label="Tasting"]');
+          })[0]
+        : null,
+    ),
   };
 }
 

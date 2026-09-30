@@ -298,3 +298,28 @@ describe('the record pen\'s own frame, scoped to where the log genuinely is a co
     expect(rule.declarations).toMatch(/flex-wrap:\s*wrap/);
   });
 });
+
+// G-03.5-6 (03.5-25): the log's churn cells stand in the boards' equal
+// columns. notebook.css used to override only the cells' gap, so the grid
+// kept the Sheet's content-sized track list and packed the measurements to
+// the left. The cascade carries the counts: 2 from 1366 (the base rule),
+// 5 from 724 to 1365.98, 2 at 723.98 and below.
+describe("the log's churn cells take the boards' track list (G-03.5-6, 03.5-25)", () => {
+  const cellsRule = (media) =>
+    rules.find((rule) => rule.selector === '.notebook-log .batch-row__cells' && rule.media === media);
+
+  test('the base rule, which applies from 1366, declares two equal columns', () => {
+    expect(cellsRule(undefined), 'expected a top-level .notebook-log .batch-row__cells rule').toBeTruthy();
+    expect(cellsRule(undefined).declarations).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  });
+
+  test('the 1365.98px block declares five equal columns', () => {
+    expect(cellsRule('(max-width: 1365.98px)'), 'expected a .notebook-log .batch-row__cells rule under (max-width: 1365.98px)').toBeTruthy();
+    expect(cellsRule('(max-width: 1365.98px)').declarations).toMatch(/grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/);
+  });
+
+  test('the 723.98px block declares two equal columns again', () => {
+    expect(cellsRule('(max-width: 723.98px)'), 'expected a .notebook-log .batch-row__cells rule under (max-width: 723.98px)').toBeTruthy();
+    expect(cellsRule('(max-width: 723.98px)').declarations).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  });
+});

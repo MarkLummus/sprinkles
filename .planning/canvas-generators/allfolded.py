@@ -23,9 +23,11 @@ hs = main.index(cap('History'))
 hs = main.rindex('<div style="display:flex;flex-direction:column;gap:10px;">', 0, hs)
 main = main[:hs] + head(cap('History')) + main[balanced_end(main, hs):]
 # Batch: its label, a Show control, and the date; the cells, the notes, Tasting and the recorded line go
-m = re.search(r'<section aria-label="Batch"[^>]*>.*?</section>', main, flags=re.S)
+# The Batch section holds the Tasting section (decision 20), so its end is found by balance, not by the first </section>
+batch_start = main.index('<section aria-label="Batch"')
+batch_end = balanced_end(main, batch_start, 'section')
 batch = f'<section aria-label="Batch" style="display:flex;flex-direction:column;gap:18px;"><div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;">{cap("Batch")}{ctl()}<span style="font-family:{GROT};font-size:15px;color:{TEXT};font-variant-numeric:tabular-nums;">churned 2 Aug 2026</span></div></section>'
-main = main[:m.start()] + batch + main[m.end():]
+main = main[:batch_start] + batch + main[batch_end:]
 extra = open(SP + '/phone-forced.css').read() + '[hidden]{display:none !important}'
 open(OUT + '/R35C_393AllFolded.dc.html', 'w').write(board('C · 393 · exploration · every section folded, to see the page height', 393, 1300, main, extra_css=extra))
 print('ok')

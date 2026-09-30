@@ -175,6 +175,10 @@ def cell(label, value, unit='', plan=''):
     p = f'<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{plan}</span>' if plan else ''
     return f'<div style="display:flex;flex-direction:column;gap:2px;min-width:0;">{cap(label)}{v}{p}</div>'
 
+# Tasting is its own section, its heading an h2 the same level as Balance and Watch for (Mark, UAT 2026-09-30, item 9;
+# decision 20). The h2 resets the user-agent heading margin and inherits the face, so nothing draws differently.
+TASTING_H2 = 'margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;'
+
 def batch_log(state, column=False):
     if state == 'none':
         return f'''
@@ -199,8 +203,8 @@ def batch_log(state, column=False):
     {cell('Airiness', '')}
   </div>
   <div style="display:flex;flex-direction:column;gap:4px;">{hand('Soft, not greasy')}{hand('oil bottle opened 24 Jul')}</div>
-  <div style="display:flex;flex-direction:column;gap:12px;padding-top:14px;border-top:1px solid {DIV};">
-    <div style="display:flex;align-items:baseline;gap:14px;">{cap('Tasting')}<span style="font-family:{GROT};font-size:13px;color:{TEXT2};">tasted date unknown</span></div>
+  <section aria-label="Tasting" style="display:flex;flex-direction:column;gap:12px;padding-top:14px;border-top:1px solid {DIV};">
+    <h2 style="{TASTING_H2}display:flex;align-items:baseline;gap:14px;">{cap('Tasting')}<span style="font-family:{GROT};font-size:13px;color:{TEXT2};">tasted date unknown</span></h2>
     <div style="display:grid;{cols3}gap:16px 20px;">
       {cell('Tempering', '')}
       {cell('Tasting temperature', '−12', '°C')}
@@ -213,7 +217,7 @@ def batch_log(state, column=False):
       {cell('Melt style', '')}
     </div>
     <div>{cap('Next time')}<span style="display:block;margin-top:4px;font-family:{GROT};font-size:14px;color:{TEXT2};">nothing written yet</span></div>
-  </div>
+  </section>
   <p style="margin:0;font-family:{GROT};font-size:12px;color:{TEXT2};">Recorded 4 Aug 2026 against Version 1 · 50 g oil · 800 g</p>
 </section>'''
 
@@ -511,11 +515,11 @@ def phone_folds(html, open_=False):
     html = html.replace('<div class="hist-body">', f'<div id="fold-history"{hid} class="hist-body">', 1)
     if not open_:
         html = re.sub(r'(\d+ versions) · latest first', r'\1', html, count=1)  # closed: the count alone
-    # the log's Tasting
-    html = re.sub(r'<div style="display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>(tasted [^<]*)</span></div>',
-                  lambda m: fold_row(cap('Tasting'), open_, 'fold-tasting', m.group(1)) + f'<div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
-    # close the tasting fold after Next time
-    html = re.sub(r'(nothing written yet</span></div>)(\s*</div>)', r'\1</div>\2', html, count=1)
+    # the log's Tasting: the button sits in the section's h2, the fold opens after it
+    html = re.sub(r'<h2 style="' + re.escape(TASTING_H2) + r'display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>(tasted [^<]*)</span></h2>',
+                  lambda m: f'<h2 style="{TASTING_H2}">' + fold_row(cap('Tasting'), open_, 'fold-tasting', m.group(1)) + f'</h2><div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)
+    # close the tasting fold after Next time, before the section ends
+    html = re.sub(r'(nothing written yet</span></div>)(\s*</section>)', r'\1</div>\2', html, count=1)
     if not open_:
         html = drop_closed_folds(html)
     return html

@@ -692,7 +692,7 @@ export function IngredientTable({
               <td
                 className={
                   mode === 'recording'
-                    ? 'ingredient-table__col-numeric ingredient-table__col-numeric--live-total'
+                    ? 'ingredient-table__col-numeric ingredient-table__live-total'
                     : 'ingredient-table__col-numeric'
                 }
               >

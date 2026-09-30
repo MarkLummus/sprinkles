@@ -826,7 +826,7 @@ textarea {
    column. It stays in flow on purpose: the list form below 724 puts this
    cell in a grid row of its own, which an out-of-flow total would
    collapse. The reading state's total is unchanged. */
-.ingredient-table td.ingredient-table__col-numeric--live-total .sheet-hand {
+.ingredient-table td.ingredient-table__live-total .sheet-hand {
   display: flex;
   justify-content: flex-end;
   contain: inline-size;

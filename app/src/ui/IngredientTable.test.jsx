@@ -206,7 +206,7 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
 
     expect(markup).toContain('class="ink-field ingredient-table__as-made-field"');
     const tfoot = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
-    expect(tfoot).toContain('<td class="ingredient-table__col-numeric ingredient-table__col-numeric--live-total">');
+    expect(tfoot).toContain('<td class="ingredient-table__col-numeric ingredient-table__live-total">');
   });
 
   it("reading a saved batch carries neither recording hook (G-03.5-8a)", () => {
@@ -216,7 +216,7 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
     );
 
     expect(markup).not.toContain('ingredient-table__as-made-field');
-    expect(markup).not.toContain('ingredient-table__col-numeric--live-total');
+    expect(markup).not.toContain('ingredient-table__live-total');
   });
 
   it('developing on a version with no batch: As made header absent — the exact case the maker reported', () => {

@@ -1,9 +1,9 @@
 {
   "page": "board",
-  "innerWidth": 1920,
+  "innerWidth": 983,
   "overflow": {
-    "scrollWidth": 1920,
-    "innerWidth": 1920
+    "scrollWidth": 983,
+    "innerWidth": 983
   },
   "band": {
     "railMarkBox": {

@@ -1,9 +1,9 @@
 {
   "page": "board",
-  "innerWidth": 1920,
+  "innerWidth": 393,
   "overflow": {
-    "scrollWidth": 1920,
-    "innerWidth": 1920
+    "scrollWidth": 393,
+    "innerWidth": 393
   },
   "band": {
     "railMarkBox": {
@@ -666,7 +666,7 @@
     "historyText": "2 versions"
   },
   "touch": {
-    "coarse": false,
+    "coarse": true,
     "correctHeight": 44,
     "correctMinHeight": "44px"
   }

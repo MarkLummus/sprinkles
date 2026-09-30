@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
-stopped_at: Completed 03.5-19-PLAN.md
-last_updated: "2026-09-30T02:03:39.891Z"
+stopped_at: Completed 03.5-20-PLAN.md
+last_updated: "2026-09-30T02:13:03.102Z"
 last_activity: 2026-09-29
 last_activity_desc: Phase 03.5 execution started
-state_head: ccbc0306b71e1b19464eec0d4f3187a1fa308fa7
+state_head: 1612dd776003a05f5f229e9270315b975ef5482d
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 91
-  completed_plans: 85
+  completed_plans: 86
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet (INSERTED)) — EXECUTING
-Plan: 2 of 25
+Plan: 3 of 25
 Status: Ready to execute
 Last activity: 2026-09-29 — Phase 03.5 execution started
 
@@ -114,6 +114,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P14 | ~4h elapsed (~30min automated) | 3 tasks | 26 files |
 | Phase 03.5 P09 | ~50min | 3 tasks | 9 files |
 | Phase 03.5 P19 | 3 min | 2 tasks | 3 files |
+| Phase 03.5 P20 | 25min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -220,6 +221,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: [Phase 03.5] [Phase 03.5, Plan 09] Judgement call 58: Coconut's, Strawberry's and Mocha's batches arrays reordered newest-first in seed-recipes.js so Home's standing (activeWork/sortedBatches) reads each recipe's true newest batch rather than an array-order tie-break artifact; no field changed, no date invented
 - [Phase 03.5]: jsdom kept as a devDependency (Mark 2026-09-28): tests default to Vitest's node environment; a test needing a real render cycle opts in per file with a @vitest-environment jsdom docblock (first: useFold.reset.test.jsx)
 - [Phase 03.5]: 03.5-19: Show changes treats stepDiff.textFrom == null as a step new in this version and renders it plain; no added mark until Impeccable draws it (G-03.5-2a). G-03.5-2b still deferred.
+- [Phase 03.5]: 03.5-20: openBoard sets hasTouch without isMobile for coarse boards (no meta viewport => isMobile gives 980); boards measured at their own $preview width
+- [Phase 03.5]: 03.5-20: 723 fine-pointer touch-floor board/app difference recorded in LADDER-CONFORMANCE, not fixed; awaiting decision
 
 ### Pending Todos
 
@@ -360,6 +363,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-30T02:03:39.782Z
-Stopped at: Completed 03.5-19-PLAN.md
+Last session: 2026-09-30T02:13:03.001Z
+Stopped at: Completed 03.5-20-PLAN.md
 Resume file: None

@@ -28,8 +28,10 @@ nodes = ''.join(node(*v) for v in versions)
 strip = f'''<div style="display:flex;flex-direction:column;gap:10px;">
   <div style="display:flex;align-items:baseline;justify-content:space-between;">{cap('History')}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">8 versions · oldest left, latest right · opens at the version in view</span></div>
   <div class="hist-body"><div style="position:relative;overflow:hidden;">
-    <div style="position:absolute;left:0;right:0;top:27px;height:1px;background:{DIV};"></div>
+    <div style="position:relative;width:max-content;">
+    <div style="position:absolute;left:12px;right:168px;top:27px;height:1px;background:{DIV};"></div>
     <div style="position:relative;display:flex;justify-content:flex-end;gap:{GAP}px;min-width:max-content;padding:0 6px;">{nodes}</div>
+    </div>
     <div aria-hidden="true" style="position:absolute;top:0;left:0;bottom:0;width:96px;background:linear-gradient(to left, rgba(255,255,255,0), #ffffff);pointer-events:none;"></div>
   </div></div>
 </div>'''

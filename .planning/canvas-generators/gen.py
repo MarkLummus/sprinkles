@@ -406,7 +406,10 @@ def ceremony():
 </form>'''
 
 def history_rail(versions, count_text):
-    """History as a dated rail: date above, node on the rail, title and one meta line below; versions only."""
+    """History as a dated rail: date above, node on the rail, title and one meta line below; versions only.
+    The line connects nodes only (Mark, 2026-09-29): the track and the node row sit in one strip as wide as its content,
+    and the track runs from the first mark's centre (padding 6 + half a mark 6 = 12) to the last mark's centre
+    (padding 6 + a node's 168 less half a mark 6 = 168 from the strip's right)."""
     def node(date, title, meta, filled, current):
         dot = f'background:{NOTEBOOK};' if filled else f'background:{APP_BG};border:1.5px solid {NOTEBOOK};'
         ring = f'box-shadow:0 0 0 2px {APP_BG},0 0 0 3.5px {NOTEBOOK};' if current else ''
@@ -421,8 +424,10 @@ def history_rail(versions, count_text):
     return f'''<div style="display:flex;flex-direction:column;gap:10px;">
   <div style="display:flex;align-items:baseline;justify-content:space-between;">{cap('History')}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{count_text}</span></div>
   <div class="hist-body"><div style="position:relative;overflow:hidden;">
-    <div style="position:absolute;left:0;right:0;top:27px;height:1px;background:{DIV};"></div>
+    <div style="position:relative;width:max-content;">
+    <div style="position:absolute;left:12px;right:168px;top:27px;height:1px;background:{DIV};"></div>
     <div style="position:relative;display:flex;gap:24px;min-width:max-content;padding:0 6px;">{nodes}</div>
+    </div>
   </div></div>
 </div>'''
 

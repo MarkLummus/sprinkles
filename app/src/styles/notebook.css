@@ -899,6 +899,12 @@
   .notebook-band__grid {
     display: flex;
     flex-direction: column;
+    /* G-03.5-4: the base rule's align-items: start acts on the block axis in
+       the >=724 grid, but on the inline axis once this override makes the
+       grid a flex column, so the Version section shrank to its widest child
+       (281px of 353) and its fold head with it. stretch restores the full
+       row, the same bug class 03.5-17 fixed on .notebook-body. */
+    align-items: stretch;
     gap: var(--gap-m);
   }
 

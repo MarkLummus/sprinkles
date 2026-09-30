@@ -179,6 +179,7 @@ function readChurnCellsIn(page, isApp) {
         );
     if (!grid) return null;
     const gridRect = grid.getBoundingClientRect();
+    const head = app ? grid.closest('.batch-row').querySelector('.batch-row__head') : grid.parentElement.firstElementChild;
     const cells = [...grid.children].map((cell) => {
       const rect = cell.getBoundingClientRect();
       const label = cell.children[0];
@@ -195,8 +196,40 @@ function readChurnCellsIn(page, isApp) {
       tracks: getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).map(parseFloat),
       gridWidth: gridRect.width,
       gridHeight: gridRect.height,
+      headToGrid: gridRect.top - head.getBoundingClientRect().bottom,
       cells,
     };
+  }, isApp);
+}
+
+// The Tasting section's grids (03.5-25 decisions_recorded 2). The app's
+// tasting fold is opened first if it is closed; the board is read as drawn.
+// Reads each grid's resolved tracks and each cell's left from the grid's
+// left, height and label-to-value gap.
+function readTastingGridsIn(page, isApp) {
+  return page.evaluate((app) => {
+    const section = document.querySelector(app ? '.tasting-reading' : 'section[aria-label="Tasting"]');
+    if (!section) return null;
+    const grids = app
+      ? [...section.querySelectorAll('.batch-row__cells')]
+      : [...section.querySelectorAll('div[style*="grid-template-columns:repeat("]')];
+    return grids.map((grid) => {
+      const gridRect = grid.getBoundingClientRect();
+      return {
+        tracks: getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).map(parseFloat),
+        cells: [...grid.children].map((cell) => {
+          const rect = cell.getBoundingClientRect();
+          const label = cell.children[0];
+          const value = cell.children[1];
+          return {
+            label: label.textContent.trim(),
+            left: rect.left - gridRect.left,
+            height: rect.height,
+            labelToValue: value.getBoundingClientRect().top - label.getBoundingClientRect().bottom,
+          };
+        }),
+      };
+    });
   }, isApp);
 }
 
@@ -379,6 +412,7 @@ async function main() {
         const coarse = width === 393;
         const { context: boardContext, page: boardPage } = await openBoard(browser, repoUrl, `../011-recipe-route-c/${file}`);
         const board = await readChurnCellsIn(boardPage, false);
+        const boardTasting = width === 1366 ? await readTastingGridsIn(boardPage, false) : null;
         await boardContext.close();
 
         const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
@@ -411,7 +445,52 @@ async function main() {
               appCell.label === boardCell.label && Math.abs(appCell.left - boardCell.left) <= 1,
               `cells width=${width}: "${boardCell.label}" stands ${appCell.left} from the grid's left in the app against ${boardCell.left} on ${file}`,
             );
+            countedCheck(
+              Math.abs(appCell.height - boardCell.height) <= 1,
+              `cells width=${width}: "${boardCell.label}" is ${appCell.height} tall in the app against ${boardCell.height} on ${file}`,
+            );
+            countedCheck(
+              Math.abs(appCell.labelToValue - boardCell.labelToValue) <= 1,
+              `cells width=${width}: "${boardCell.label}" has ${appCell.labelToValue} from label to value in the app against ${boardCell.labelToValue} on ${file}`,
+            );
           });
+          countedCheck(
+            Math.abs(app.headToGrid - board.headToGrid) <= 1,
+            `cells width=${width}: the head's bottom to the grid's top is ${app.headToGrid} in the app against ${board.headToGrid} on ${file}`,
+          );
+          countedCheck(
+            Math.abs(app.gridHeight - board.gridHeight) <= 1,
+            `cells width=${width}: the grid is ${app.gridHeight} tall in the app against ${board.gridHeight} on ${file}`,
+          );
+        }
+
+        // The tasting grids: 2 tracks at 723.98 and below and from 1366, 4
+        // from 724 to 1365.98 (the generator's own tasting grid, drawn open
+        // on no board). At 1366 the fold is open by default and the board
+        // draws it open, so the pitch is compared with 1366-batch.html's.
+        const tastingFold = page.locator('button[aria-controls="fold-tasting"]');
+        if ((await tastingFold.count()) > 0 && (await tastingFold.getAttribute('aria-expanded')) !== 'true') await tastingFold.click();
+        const appTasting = await readTastingGridsIn(page, true);
+        const expectedTastingTracks = width >= 724 && width < 1366 ? 4 : 2;
+        countedCheck(appTasting !== null && appTasting.length > 0, `cells width=${width}: the app renders tasting grids`);
+        for (const [gi, grid] of (appTasting ?? []).entries()) {
+          countedCheck(
+            grid.tracks.length === expectedTastingTracks,
+            `cells width=${width}: tasting grid ${gi + 1} has ${grid.tracks.length} tracks, expected ${expectedTastingTracks} (${JSON.stringify(grid.tracks)})`,
+          );
+        }
+        if (boardTasting && appTasting) {
+          const boardCellsByLabel = new Map(boardTasting.flatMap((grid) => grid.cells).map((cell) => [cell.label, cell]));
+          for (const [gi, grid] of appTasting.entries()) {
+            for (const cell of grid.cells) {
+              const boardCell = boardCellsByLabel.get(cell.label);
+              if (!boardCell) continue;
+              countedCheck(
+                Math.abs(cell.left - boardCell.left) <= 1 && Math.abs(cell.height - boardCell.height) <= 1 && Math.abs(cell.labelToValue - boardCell.labelToValue) <= 1,
+                `cells width=1366: tasting "${cell.label}" (grid ${gi + 1}) reads left ${cell.left}, height ${cell.height}, label-to-value ${cell.labelToValue} against ${boardCell.left}, ${boardCell.height}, ${boardCell.labelToValue} on ${file}`,
+              );
+            }
+          }
         }
 
         await context.close();

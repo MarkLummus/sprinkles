@@ -1165,11 +1165,23 @@ describe("BatchRow — the record's reading state, measured values as cells (con
   it('reads exit consistency and airiness as "not measured" when the batch left them blank', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Exit consistency<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Exit consistency<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Airiness<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Airiness<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
     );
+  });
+
+  it('renders an absent churn reading as the cell\'s own child, with no value span around it (G-03.5-6)', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).not.toMatch(/<span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">/);
+  });
+
+  it('keeps the value span when the reading is present (G-03.5-6)', () => {
+    const measured = { ...augustSecondBatch, churn: { ...augustSecondBatch.churn, exitConsistency: 'Soft serve', airiness: 'Light' } };
+    const markup = renderBatchRow({ openBatch: measured, batches: [measured], mode: 'reading' });
+    expect(markup).toMatch(/<span class="batch-row__cell-label">Exit consistency<\/span><span class="batch-row__cell-value">Soft serve<\/span>/);
+    expect(markup).toMatch(/<span class="batch-row__cell-label">Airiness<\/span><span class="batch-row__cell-value">Light<\/span>/);
   });
 
   it('renders no Amended cell — the changed date arrives in plan 05', () => {
@@ -1364,14 +1376,18 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     };
     const markup = renderBatchRow({ openBatch: blankBatch, batches: [blankBatch], mode: 'reading' });
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
     );
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Melt style<\/span><span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Melt style<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
     );
+    expect(markup).toMatch(
+      /<span class="batch-row__cell-label">Tempering<\/span><span class="batch-row__unit batch-row__unit--absent">not measured<\/span><\/div>/,
+    );
+    expect(markup).not.toMatch(/<span class="batch-row__cell-value"><span class="batch-row__unit batch-row__unit--absent">/);
   });
 
   it('reads the melt style\'s picked words when set', () => {

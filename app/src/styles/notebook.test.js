@@ -323,3 +323,39 @@ describe("the log's churn cells take the boards' track list (G-03.5-6, 03.5-25)"
     expect(cellsRule('(max-width: 723.98px)').declarations).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
   });
 });
+
+// G-03.5-6 (03.5-25): the log's vertical rhythm reads the boards' values in
+// the log scope only (Sheet-context rules in app.css are untouched), the
+// grid gap between sections is 18, and the tasting grids take their own
+// column count.
+describe("the log's vertical rhythm and the tasting grids (G-03.5-6, 03.5-25)", () => {
+  const topLevel = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
+
+  test('the log section gap is the log group gap, which puts 18 between the head and the cells', () => {
+    expect(topLevel('.notebook-log .batch-row').declarations).toMatch(/gap:\s*var\(--app-notebook-log-group-gap\)/);
+  });
+
+  test("the cell's label-to-value gap is the hairline, the value line is normal leading, and the plan line has no top margin", () => {
+    expect(topLevel('.notebook-log .batch-row__cell'), 'expected a top-level .notebook-log .batch-row__cell rule').toBeTruthy();
+    expect(topLevel('.notebook-log .batch-row__cell').declarations).toMatch(/gap:\s*var\(--gap-hair\)/);
+    expect(topLevel('.notebook-log .batch-row__cell-value').declarations).toMatch(/line-height:\s*normal/);
+    expect(topLevel('.notebook-log .batch-row__plan').declarations).toMatch(/margin-top:\s*0/);
+  });
+
+  test("the churn cells' own grid, a direct child of the section, has no top margin; the tasting grids keep the Sheet's", () => {
+    const churn = topLevel('.notebook-log .batch-row > .batch-row__cells');
+    expect(churn, 'expected a top-level .notebook-log .batch-row > .batch-row__cells rule').toBeTruthy();
+    expect(churn.declarations).toMatch(/margin-top:\s*0/);
+  });
+
+  test('the tasting grids take four columns from 724 to 1365.98 and two at 723.98 and below, with no base rule of their own', () => {
+    const selector = '.notebook-log .tasting-reading .batch-row__cells';
+    const mid = rules.find((rule) => rule.selector === selector && rule.media === '(max-width: 1365.98px)');
+    const narrow = rules.find((rule) => rule.selector === selector && rule.media === '(max-width: 723.98px)');
+    expect(mid, `expected "${selector}" under (max-width: 1365.98px)`).toBeTruthy();
+    expect(mid.declarations).toMatch(/grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
+    expect(narrow, `expected "${selector}" under (max-width: 723.98px)`).toBeTruthy();
+    expect(narrow.declarations).toMatch(/grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+    expect(topLevel(selector)).toBeUndefined();
+  });
+});

@@ -801,6 +801,37 @@ textarea {
   text-align: right;
 }
 
+/* The recording as-made field holds --sheet-field-w-figure (56px) at every
+   width (G-03.5-8a; Mark, 2026-09-29: "it gets wider as I type the
+   numbers"). Under decision 15 the numeric column is content-sized, and
+   the field had no width of its own (.ink-field is 100%), so it took the
+   column's width. 03.5-11 measured only the EMPTY field (~52px, which was
+   the width of the seed total "799.7 g" in the hand, not a designed width)
+   and dropped the fixed width. Two classes so it beats .ink-field's 100%
+   whatever the file order. In the list form below 724 the column is a fixed
+   64px track and the field sits right-aligned in it (text-align: right on
+   the cell). */
+.ingredient-table .ingredient-table__as-made-field {
+  width: var(--sheet-field-w-figure);
+}
+
+/* The live as-made total, while recording, no longer sizes the column
+   (G-03.5-8a). It was the column's widest nowrap content, recomputed from
+   the draft on every keystroke, so each extra digit widened the column and
+   moved the name column with it. inline-size containment gives the total a
+   zero intrinsic width, so the column's width comes from the fixed field
+   and its head. The total keeps its place in the flow (a block the width
+   of the cell), right-aligned by the flex container, and a total wider
+   than the cell overflows toward the name column rather than the share
+   column. It stays in flow on purpose: the list form below 724 puts this
+   cell in a grid row of its own, which an out-of-flow total would
+   collapse. The reading state's total is unchanged. */
+.ingredient-table td.ingredient-table__col-numeric--live-total .sheet-hand {
+  display: flex;
+  justify-content: flex-end;
+  contain: inline-size;
+}
+
 /* The Strike Rule (route-recipe-version.md § 7): a struck value in ink,
    immediately before the value that replaced it. One stroke for every
    "not in force" meaning across the app — a skipped step, a superseded

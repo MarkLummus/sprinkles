@@ -290,7 +290,7 @@ function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade 
       <input
         type="text"
         inputMode="decimal"
-        className="ink-field"
+        className="ink-field ingredient-table__as-made-field"
         value={draftValues ? draftValues[portionIndex] : ''}
         aria-label={
           multiPortion
@@ -689,7 +689,13 @@ export function IngredientTable({
             </td>
             <td className="ingredient-table__col-name">Total</td>
             {hasAsMadeLayer && (
-              <td className="ingredient-table__col-numeric">
+              <td
+                className={
+                  mode === 'recording'
+                    ? 'ingredient-table__col-numeric ingredient-table__col-numeric--live-total'
+                    : 'ingredient-table__col-numeric'
+                }
+              >
                 <span className="sheet-hand">{asMadeTotalText}</span>
               </td>
             )}

@@ -10,21 +10,26 @@ function createInMemoryRepository(initial = []) {
   const versions = [...initial];
   const batches = [];
   const recipes = [];
+  const writes = [];
   return {
     versions,
     batches,
     recipes,
+    writes,
     async listVersions() {
       return versions;
     },
-    async saveVersion(version) {
-      versions.push(version);
+    async putAll(items) {
+      writes.push('versions');
+      versions.push(...items);
     },
-    async saveBatch(batch) {
-      batches.push(batch);
+    async putAllBatches(items) {
+      writes.push('batches');
+      batches.push(...items);
     },
-    async saveRecipe(recipe) {
-      recipes.push(recipe);
+    async putAllRecipes(items) {
+      writes.push('recipes');
+      recipes.push(...items);
     },
   };
 }
@@ -55,6 +60,12 @@ describe('seedIfEmpty', () => {
     await seedIfEmpty(repository);
     expect(repository.recipes[0].id).toBe('olive-oil-ice-cream');
     expect(repository.versions[0].id).toBe('olive-oil-ice-cream-v1');
+  });
+
+  it('writes versions last, so the emptiness check only flips once recipes and batches are in', async () => {
+    const repository = createInMemoryRepository([]);
+    await seedIfEmpty(repository);
+    expect(repository.writes).toEqual(['recipes', 'batches', 'versions']);
   });
 
   it('is idempotent: a second call against the filled repository writes nothing further', async () => {

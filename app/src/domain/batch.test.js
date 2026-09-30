@@ -489,6 +489,13 @@ describe('sortedBatches', () => {
     expect(sortedBatches(batches).map((b) => b.churn.churnDate)).toEqual(['2026-09-01', '2026-08-02', null]);
   });
 
+  it('breaks a churn-date tie by recordedAt descending, whatever order the batches arrive in', () => {
+    const older = { id: 'older', recordedAt: '2024-12-27T21:21:12.000Z', churn: { churnDate: null } };
+    const newer = { id: 'newer', recordedAt: '2024-12-28T15:10:46.000Z', churn: { churnDate: null } };
+    expect(sortedBatches([older, newer]).map((b) => b.id)).toEqual(['newer', 'older']);
+    expect(sortedBatches([newer, older]).map((b) => b.id)).toEqual(['newer', 'older']);
+  });
+
   it('does not sort in place', () => {
     const batches = [{ churn: { churnDate: '2026-08-02' } }, { churn: { churnDate: '2026-09-01' } }];
     const original = [...batches];

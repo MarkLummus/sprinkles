@@ -47,13 +47,7 @@ export const transcribedRecipeGroups = [
     batches: [mexicanChocolateV1Batch, mexicanChocolateV3Batch],
   },
   { recipe: pineappleRecipe, versions: [pineappleV1], batches: [pineappleV1Batch] },
-  // Batches listed newest first (judgement call 58): neither batch carries
-  // a churnDate, so domain/batch.js's sortedBatches ties on that null field
-  // and falls back to this array's own order to decide which one
-  // standingFor reads as "the newest batch". v2 (the reformulated,
-  // not-yet-tasted batch) came after v1 (the tasted "EPIC FAIL"), so it
-  // leads here — the truthful order, not just the one Home would show.
-  { recipe: coconutRecipe, versions: [coconutV1, coconutV2], batches: [coconutV2Batch, coconutV1Batch] },
+  { recipe: coconutRecipe, versions: [coconutV1, coconutV2], batches: [coconutV1Batch, coconutV2Batch] },
   { recipe: standardBaseRecipe, versions: [standardBaseV1, standardBaseV2], batches: [] },
   {
     recipe: underbellyLightBaseRecipe,
@@ -61,20 +55,14 @@ export const transcribedRecipeGroups = [
     batches: [],
   },
   {
-    // Batches newest first (judgement call 58, as coconut above): none of
-    // the three carries a churnDate, so the same tie-break applies —
-    // V2.1 -> V2 -> V1 is the true churn order.
     recipe: strawberryRecipe,
     versions: [strawberryV1, strawberryV2, strawberryV2_1],
-    batches: [strawberryV2_1Batch, strawberryV2Batch, strawberryV1Batch],
+    batches: [strawberryV1Batch, strawberryV2Batch, strawberryV2_1Batch],
   },
   {
-    // Batches newest first (judgement call 58, as coconut above): none of
-    // the three carries a churnDate, so the same tie-break applies — v3 ->
-    // v2 -> v0 is the true churn order (v1 has no batch of its own).
     recipe: mochaRecipe,
     versions: [mochaV0, mochaV1, mochaV2, mochaV3],
-    batches: [mochaV3Batch, mochaV2Batch, mochaV0Batch],
+    batches: [mochaV0Batch, mochaV2Batch, mochaV3Batch],
   },
 ];
 

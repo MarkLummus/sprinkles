@@ -312,16 +312,26 @@ export function asMadeTotals(rows, asMade) {
 
 /**
  * sortedBatches(batches) -> a new array of batches ordered by churn date
- * descending, undated batches last. Never sorts in place.
+ * descending, undated batches last. Batches that tie on churn date (both
+ * undated, or the same day) order by recordedAt descending, so the result
+ * never depends on the order the store happened to return them in
+ * (IndexedDB hands records back in id order). Never sorts in place.
  */
 export function sortedBatches(batches) {
   return [...batches].sort((a, b) => {
     const aDate = a.churn.churnDate;
     const bDate = b.churn.churnDate;
-    if (aDate === bDate) return 0;
-    if (aDate === null) return 1;
-    if (bDate === null) return -1;
-    return aDate < bDate ? 1 : -1;
+    if (aDate !== bDate) {
+      if (aDate === null) return 1;
+      if (bDate === null) return -1;
+      return aDate < bDate ? 1 : -1;
+    }
+    const aRecorded = a.recordedAt;
+    const bRecorded = b.recordedAt;
+    if (aRecorded === bRecorded) return 0;
+    if (aRecorded == null) return 1;
+    if (bRecorded == null) return -1;
+    return aRecorded < bRecorded ? 1 : -1;
   });
 }
 

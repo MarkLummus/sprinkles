@@ -100,4 +100,21 @@ describe('UprightRail — the vertical list row shared by batches (decision 19) 
     expect(markup).not.toContain('<a ');
     expect(markup).toContain('class="notebook-upright__link">');
   });
+
+  // 03.5-24 (G-03.5-5): the mark sits in a box as tall as the title line, as
+  // upright-393.html draws it, so it is level with the title and clear of
+  // the connector the row draws below it.
+  it('wraps each mark in its title-line box, the mark that box\'s only child', () => {
+    const markup = render({});
+    const boxes = markup.split('<span class="notebook-upright__mark-box"><span aria-hidden="true" class="notebook-upright__mark').length - 1;
+    expect(boxes).toBe(3);
+    expect(markup.split('notebook-upright__mark-box').length - 1).toBe(3);
+  });
+
+  it('keeps the link or span as the row\'s only child, so the connector (the row\'s ::before) precedes it in tree order', () => {
+    const markup = render({});
+    const rowStarts = [...markup.matchAll(/<li class="notebook-upright__row">(<[a-z]+ )/g)].map((match) => match[1]);
+    expect(rowStarts).toHaveLength(3);
+    for (const start of rowStarts) expect(['<a ', '<span ']).toContain(start);
+  });
 });

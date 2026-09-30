@@ -12,7 +12,20 @@
 // 03.5-21: `keypad` (G-03.5-5b) reads each battery input's inputmode after
 // Record another / Add tasting, then saves -6 and -12 in the two °C fields
 // and reads both back. Usage: node 03.5-batches-probe.mjs keypad 393,1366
-import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, recordAnotherBatch } from './03.5-probe-harness.mjs';
+import {
+  startServers,
+  launch,
+  openApp,
+  openBoard,
+  check,
+  finish,
+  APP_ROUTE,
+  recordAnotherBatch,
+  readAppUprightConnectors,
+  readBoardUprightConnectors,
+  uprightConnectorChecks,
+  uprightBoardMatchChecks,
+} from './03.5-probe-harness.mjs';
 
 const [, , groupsArg, widthsArg] = process.argv;
 
@@ -153,8 +166,15 @@ async function main() {
       console.log(JSON.stringify({ group: 'many', board: 'batches-many.html', boardReading }));
       await boardContext.close();
 
+      // 03.5-24 (G-03.5-5): upright-393.html's batch list, the oracle for
+      // where the connector sits against its marks.
+      const { context: uprightCtx, page: uprightPage } = await openBoard(browser, repoUrl, '../011-options-counts/upright-393.html');
+      const uprightBoardConnectors = await readBoardUprightConnectors(uprightPage, 'fold-batches');
+      uprightConnectorChecks(uprightBoardConnectors, 'many board upright-393.html', countedCheck);
+      await uprightCtx.close();
+
       for (const width of widths) {
-        if (![393, 1024, 1366].includes(width)) continue;
+        if (![393, 723, 1024, 1366].includes(width)) continue;
         const coarse = width === 393;
         const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
 
@@ -240,6 +260,15 @@ async function main() {
               `many width=${width}: connector width (${reading.connectorWidth}) within 1px of batches-many.html's (${boardReading.connectorWidth})`,
             );
           }
+        }
+
+        // Last, since the reader scrolls the list to the middle of the
+        // screen and the checks above read viewport positions.
+        const appConnectors = await readAppUprightConnectors(page, 'fold-batches');
+        console.log(JSON.stringify({ group: 'many', width, connectors: appConnectors }));
+        uprightConnectorChecks(appConnectors, `many width=${width}`, countedCheck);
+        if (width === 393 && appConnectors && uprightBoardConnectors) {
+          uprightBoardMatchChecks(appConnectors, uprightBoardConnectors, 'upright-393.html', `many width=${width}`, countedCheck);
         }
 
         await context.close();

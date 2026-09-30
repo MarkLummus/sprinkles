@@ -260,3 +260,133 @@ export function finish(failures, count, name) {
     console.log(`${name}: ${count} checks passed`);
   }
 }
+
+// 03.5-24 (G-03.5-5, UAT test 5: "the gray line draws over the circles"):
+// the upright rails' connector, read the same way on the app and on a board
+// so the two are compared number for number.
+//
+// Each reader returns one entry per row, in page coordinates, after
+// scrolling the list into view (elementFromPoint needs the point on
+// screen). `line` is null for a row that draws no connector. The app's
+// connector is a pseudo-element on the row (::before, or ::after on a build
+// that still uses it): its top, bottom and left resolve to px on an
+// absolutely positioned pseudo-element, so the line's extent is the row's
+// rect plus those. The board's connector is a real aria-hidden span (1px
+// wide, no border-radius) beside the mark, which is the span carrying
+// border-radius: 6px.
+export async function readAppUprightConnectors(page, listId) {
+  return page.evaluate((id) => {
+    const list = document.getElementById(id);
+    if (!list) return null;
+    list.scrollIntoView({ block: 'center' });
+    const rows = [...list.querySelectorAll(':scope > li.notebook-upright__row')];
+    return rows.map((row) => {
+      const rowRect = row.getBoundingClientRect();
+      const mark = row.querySelector('.notebook-upright__mark');
+      const markRect = mark.getBoundingClientRect();
+      const box = mark.parentElement;
+      const style = ['::before', '::after']
+        .map((pseudo) => getComputedStyle(row, pseudo))
+        .find((cs) => cs.content !== 'none' && cs.content !== 'normal');
+      const line = style
+        ? {
+            top: rowRect.top + parseFloat(style.top),
+            bottom: rowRect.bottom - parseFloat(style.bottom),
+            cx: rowRect.left + parseFloat(style.left) + parseFloat(style.width) / 2,
+          }
+        : null;
+      const hit = document.elementFromPoint(markRect.left + markRect.width / 2, markRect.top + markRect.height / 2);
+      return {
+        rowTop: rowRect.top,
+        markTop: markRect.top,
+        markBottom: markRect.bottom,
+        markCx: markRect.left + markRect.width / 2,
+        hitOk: hit === mark || (box !== row && box.contains(hit)),
+        line,
+      };
+    });
+  }, listId);
+}
+
+export async function readBoardUprightConnectors(page, listId) {
+  return page.evaluate((id) => {
+    const list = document.getElementById(id);
+    if (!list) return null;
+    list.scrollIntoView({ block: 'center' });
+    const rows = [...list.querySelectorAll(':scope > li')];
+    return rows.map((row) => {
+      const rowRect = row.getBoundingClientRect();
+      const spans = [...row.querySelectorAll('a[href="#"] span[aria-hidden="true"]')];
+      const mark = spans.find((el) => el.style.borderRadius === '6px');
+      const connector = spans.find((el) => el.style.borderRadius !== '6px');
+      const markRect = mark.getBoundingClientRect();
+      const lineRect = connector ? connector.getBoundingClientRect() : null;
+      const hit = document.elementFromPoint(markRect.left + markRect.width / 2, markRect.top + markRect.height / 2);
+      return {
+        rowTop: rowRect.top,
+        markTop: markRect.top,
+        markBottom: markRect.bottom,
+        markCx: markRect.left + markRect.width / 2,
+        hitOk: hit === mark || mark.parentElement.contains(hit),
+        line: lineRect ? { top: lineRect.top, bottom: lineRect.bottom, cx: lineRect.left + lineRect.width / 2 } : null,
+      };
+    });
+  }, listId);
+}
+
+// The line connects marks only: below its own mark, above the next, centred
+// on the marks, the last row has none, and every mark hit-tests to itself.
+export function uprightConnectorChecks(rows, label, countedCheck) {
+  countedCheck(rows !== null && rows.length >= 2, `${label}: at least two rows to read (got ${rows?.length})`);
+  if (!rows || rows.length < 2) return;
+  rows.forEach((row, i) => {
+    const last = i === rows.length - 1;
+    countedCheck(row.hitOk, `${label}: row ${i}'s mark hit-tests to itself at its centre`);
+    if (last) {
+      countedCheck(row.line === null, `${label}: the last row draws no connector`);
+      return;
+    }
+    countedCheck(row.line !== null, `${label}: row ${i} draws a connector`);
+    if (!row.line) return;
+    countedCheck(
+      row.line.top >= row.markBottom + 1,
+      `${label}: row ${i}'s connector starts (${row.line.top}) at least 1px below its own mark's bottom (${row.markBottom})`,
+    );
+    countedCheck(
+      row.line.bottom <= rows[i + 1].markTop - 1,
+      `${label}: row ${i}'s connector ends (${row.line.bottom}) at least 1px above the next mark's top (${rows[i + 1].markTop})`,
+    );
+    countedCheck(
+      Math.abs(row.line.cx - row.markCx) <= 0.5,
+      `${label}: row ${i}'s connector is centred on its mark (${row.line.cx} against ${row.markCx})`,
+    );
+  });
+}
+
+// What upright-393.html draws, as three numbers read off its first row: the
+// mark's offset from its row's top (4), the gap from the mark to the
+// connector below it (2), and the gap from the connector to the next mark
+// (4).
+export function uprightConnectorOffsets(rows) {
+  const [first, second] = rows;
+  return {
+    markOffset: first.markTop - first.rowTop,
+    gapBelowMark: first.line ? first.line.top - first.markBottom : null,
+    gapAboveNext: first.line && second ? second.markTop - first.line.bottom : null,
+  };
+}
+
+export function uprightBoardMatchChecks(app, board, boardName, label, countedCheck) {
+  const a = uprightConnectorOffsets(app);
+  const b = uprightConnectorOffsets(board);
+  for (const [key, what] of [
+    ['markOffset', "the mark's offset from its row's top"],
+    ['gapBelowMark', "the connector's gap below its mark"],
+    ['gapAboveNext', "the connector's gap above the next mark"],
+  ]) {
+    countedCheck(
+      a[key] !== null && b[key] !== null && Math.abs(a[key] - b[key]) <= 1,
+      `${label}: ${what} (${a[key]}) within 1px of ${boardName}'s (${b[key]})`,
+    );
+  }
+}

@@ -19,7 +19,21 @@
 // Usage: node 03.5-band-probe.mjs <groups> <widths>
 //   groups: comma list, e.g. rail,folds,rhythm,history
 //   widths: comma list, e.g. 393,1024,1365,1366,1920
-import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, saveNextVersion, recordAnotherBatch } from './03.5-probe-harness.mjs';
+import {
+  startServers,
+  launch,
+  openApp,
+  openBoard,
+  check,
+  finish,
+  APP_ROUTE,
+  saveNextVersion,
+  recordAnotherBatch,
+  readAppUprightConnectors,
+  readBoardUprightConnectors,
+  uprightConnectorChecks,
+  uprightBoardMatchChecks,
+} from './03.5-probe-harness.mjs';
 
 const [, , groupsArg, widthsArg] = process.argv;
 
@@ -482,6 +496,10 @@ async function main() {
       );
       const uprightBoardReading = await readBoardHistoryUprightGeometry(uprightBoardPage);
       console.log(JSON.stringify({ group: 'history', board: 'upright-393.html', uprightBoardReading }));
+      // 03.5-24 (G-03.5-5): the board's own connector geometry, the oracle
+      // the app's line is compared against below.
+      const uprightBoardConnectors = await readBoardUprightConnectors(uprightBoardPage, 'fold-history');
+      uprightConnectorChecks(uprightBoardConnectors, 'history board upright-393.html', countedCheck);
       await uprightBoardCtx.close();
 
       const { context: foldBoardCtx, page: foldBoardPage } = await openBoard(browser, repoUrl, '1366-batch.html');
@@ -602,6 +620,15 @@ async function main() {
               reading.countText != null && reading.countText.endsWith('latest first'),
               `history width=${width}: the count ends "latest first" once open (got ${reading.countText})`,
             );
+
+            // 03.5-24 (G-03.5-5): the line joins marks only, and at 393
+            // sits where upright-393.html draws it.
+            const appConnectors = await readAppUprightConnectors(page, 'fold-history');
+            console.log(JSON.stringify({ group: 'history', width, connectors: appConnectors }));
+            uprightConnectorChecks(appConnectors, `history width=${width}`, countedCheck);
+            if (width === 393 && appConnectors && uprightBoardConnectors) {
+              uprightBoardMatchChecks(appConnectors, uprightBoardConnectors, 'upright-393.html', `history width=${width}`, countedCheck);
+            }
           }
 
           const linkReading = await page.evaluate(() => {

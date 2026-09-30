@@ -170,6 +170,45 @@ describe('the History rail — marks paint above the line (03.5-12 Task 1, sketc
   });
 });
 
+describe("the upright rail's line connects marks only (03.5-24 Task 1, G-03.5-5, upright-393.html's measured geometry)", () => {
+  const uprightRules = () => rules.filter((rule) => rule.selector.startsWith('.notebook-upright'));
+
+  test("the connector is the row's ::before, drawn ahead of the positioned link, and no ::after remains", () => {
+    const connector = rules.find((rule) => rule.selector === '.notebook-upright__row:not(:last-child)::before' && rule.media === undefined);
+    expect(connector, 'expected a top-level .notebook-upright__row:not(:last-child)::before rule').toBeTruthy();
+    expect(connector.declarations).toMatch(/position:\s*absolute/);
+    expect(rules.some((rule) => rule.selector.includes('.notebook-upright__row') && rule.selector.includes('::after'))).toBe(false);
+  });
+
+  test('the connector runs from just below the mark to the next row, every offset composed from existing tokens', () => {
+    const connector = rules.find((rule) => rule.selector === '.notebook-upright__row:not(:last-child)::before');
+    const top = connector.declarations.match(/top:\s*calc\(([^;]*)\);/)?.[1] ?? '';
+    expect(top).toContain('var(--app-notebook-history-name-line-h)');
+    expect(top).toContain('var(--app-notebook-history-mark-size)');
+    expect(top).toContain('var(--gap-hair)');
+    expect(connector.declarations).toMatch(/bottom:\s*calc\(-1 \* var\(--gap-s\)\)/);
+    expect(connector.declarations).toMatch(/left:\s*calc\(var\(--app-notebook-history-mark-size\) \/ 2 - var\(--app-rule-row\) \/ 2\)/);
+  });
+
+  test("the link's grid aligns its items to the start, so the mark box and the title share the row's top", () => {
+    const link = rules.find((rule) => rule.selector === '.notebook-upright__link' && rule.media === undefined);
+    expect(link.declarations).toMatch(/align-items:\s*start/);
+    expect(link.declarations).toMatch(/min-height:\s*var\(--touch-min\)/);
+  });
+
+  test('the mark box is as tall as the title line, with its mark centred in it', () => {
+    const box = rules.find((rule) => rule.selector === '.notebook-upright__mark-box' && rule.media === undefined);
+    expect(box, 'expected a top-level .notebook-upright__mark-box rule').toBeTruthy();
+    expect(box.declarations).toMatch(/display:\s*flex/);
+    expect(box.declarations).toMatch(/align-items:\s*center/);
+    expect(box.declarations).toMatch(/height:\s*var\(--app-notebook-history-name-line-h\)/);
+  });
+
+  test('no z-index in any upright rule: paint order comes from tree order and positioning', () => {
+    for (const rule of uprightRules()) expect(rule.declarations).not.toMatch(/z-index/);
+  });
+});
+
 describe("the log's batch notes (260925-u3r, sketch 011)", () => {
   test('.notebook-log .batch-row__notes is a top-level flex column, the hairline gap, and the log group gap above', () => {
     const notesRule = rules.find((rule) => rule.selector === '.notebook-log .batch-row__notes' && rule.media === undefined);

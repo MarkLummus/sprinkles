@@ -19,7 +19,7 @@
 // Usage: node 03.5-band-probe.mjs <groups> <widths>
 //   groups: comma list, e.g. rail,folds,rhythm,history
 //   widths: comma list, e.g. 393,1024,1365,1366,1920
-import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, saveNextVersion } from './03.5-probe-harness.mjs';
+import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, saveNextVersion, recordAnotherBatch } from './03.5-probe-harness.mjs';
 
 const [, , groupsArg, widthsArg] = process.argv;
 
@@ -334,9 +334,12 @@ const ROW_OF = {
   'fold-tasting': '.notebook-log',
   'fold-batches': '.notebook-log',
 };
-// The folds whose width and count are judged against ROW_OF and the matched-
-// width board. Task 1 covers Tasting; Task 2 covers every fold.
-const ROW_CHECKED_FOLDS = ['fold-tasting'];
+// The folds in the fresh seed whose width and count are judged against ROW_OF
+// and the matched-width board. History and Batches only exist once a second
+// version and a second batch are saved, so they are judged in their own
+// throwaway pass below.
+const ROW_CHECKED_FOLDS = ['fold-version', 'fold-balance', 'fold-check', 'fold-tasting'];
+
 const MATCHED_BOARDS = { 393: '393-batch.html', 723: '723-batch.html' };
 
 async function readRowOracle(page, foldId) {
@@ -656,7 +659,7 @@ async function main() {
 
     if (groups.has('folds')) {
       for (const width of widths) {
-        if (![393, 723, 984, 1024, 1365, 1366, 1920].includes(width)) continue;
+        if (![393, 723, 983, 984, 1024, 1365, 1366, 1920].includes(width)) continue;
         const coarse = width === 393;
         const expectedOpen = width >= 1366;
         const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
@@ -682,10 +685,6 @@ async function main() {
           countedCheck(
             reading.height >= 43.5,
             `folds width=${width} ${id}: control at least 44px tall (got ${reading.height})`,
-          );
-          countedCheck(
-            reading.parentWidth != null && Math.abs(reading.width - reading.parentWidth) <= 1,
-            `folds width=${width} ${id}: control width within 1px of its parent (got ${reading.width} vs ${reading.parentWidth})`,
           );
           const expectedWord = expectedFoldWord(id, expectedOpen);
           countedCheck(
@@ -760,6 +759,27 @@ async function main() {
             backAt1366?.ariaExpanded === 'true',
             `folds: back to 1366 opens fold-version (got ${backAt1366?.ariaExpanded})`,
           );
+        }
+
+        // History and Batches (G-03.5-4): a second batch (Record another)
+        // then a second version (Next version), in one throwaway context, so
+        // both folds exist. Judged against their rows and, at 393 and 723,
+        // against the matched board where it draws them.
+        {
+          const late = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+          await recordAnotherBatch(late.page, '2026-08-09');
+          const lateBatches = await readFoldGeometry(late.page, 'fold-batches');
+          await saveNextVersion(late.page, 'less oil');
+          const lateHistory = await readFoldGeometry(late.page, 'fold-history');
+          for (const [id, lateReading] of [['fold-batches', lateBatches], ['fold-history', lateHistory]]) {
+            console.log(JSON.stringify({ group: 'folds', width, id, late: true, reading: lateReading }));
+            countedCheck(lateReading !== null, `folds width=${width} ${id}: control exists after a second batch and a second version`);
+            if (!lateReading) continue;
+            countedCheck(lateReading.height >= 43.5, `folds width=${width} ${id}: control at least 44px tall (got ${lateReading.height})`);
+            const boardReading = matchedBoard ? await readFoldGeometry(matchedBoard.page, id) : null;
+            await foldRowChecks(late.page, id, lateReading, width, boardReading ?? undefined, countedCheck);
+          }
+          await late.context.close();
         }
 
         if (matchedBoard) await matchedBoard.context.close();

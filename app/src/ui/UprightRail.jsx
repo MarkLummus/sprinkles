@@ -5,7 +5,9 @@ import { Link } from 'react-router';
 // (versions, plan 18) — one component for both, since the row's shape (a
 // 12px mark, a 14px gap, a row at least 44px tall, a title over a 12px meta
 // line, and a 1px connector down to the next row) is identical either way
-// (decisions_recorded 1, 03.5-17).
+// (decisions_recorded 1, 03.5-17). The mark sits in a box as tall as the
+// title line, as upright-393.html draws it (G-03.5-5, 03.5-24); the
+// connector is the row's ::before in notebook.css, ahead of the link.
 //
 // entry: { key, title, meta, filled, inView, to, state }. The row in view
 // is never a link (decisions_recorded 2) — it renders as a span, bold ink,
@@ -27,7 +29,9 @@ export function UprightRail({ id, label, entries, hidden }) {
           .join(' ');
         const inner = (
           <>
-            <span aria-hidden="true" className={markClassName} />
+            <span className="notebook-upright__mark-box">
+              <span aria-hidden="true" className={markClassName} />
+            </span>
             <span className="notebook-upright__text">
               <span className="notebook-upright__title">{entry.title}</span>
               <span className="notebook-upright__meta">{entry.meta}</span>

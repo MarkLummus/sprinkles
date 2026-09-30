@@ -565,20 +565,24 @@
 }
 
 /* The connector down to the next row (decisions_recorded 1) — a row's own
-   ::after rather than a markup element, so it draws identically whether
-   the row itself is a Link or a span. Offsets run mark-centre to
-   mark-centre: half the mark's own diameter down from this row's top,
-   to half the next mark's diameter up from this row's own bottom edge
-   (that gap is the list's own row gap, --gap-s, plus the next mark's own
-   half-diameter). Only the connector's WIDTH is a measured/compared
-   quantity (the plan's own acceptance criteria); the vertical offsets are
-   this file's own reasonable placement, not board-measured pixels. */
-.notebook-upright__row:not(:last-child)::after {
+   pseudo-element rather than a markup element, so it draws identically
+   whether the row itself is a Link or a span. It is ::before, not ::after
+   (G-03.5-5, 03.5-24): the positioned link below comes later in tree order,
+   so it paints over the connector and never the reverse, without a z-index.
+   The offsets are upright-393.html's measured geometry: the mark sits in a
+   title-line box (--app-notebook-history-name-line-h, 20px), 4px below the
+   row's top, so the line starts 2px below the mark
+   (name-line-h/2 + mark/2 + --gap-hair = 18px) and runs to the next row's
+   top (the list's own row gap, --gap-s, below this row). It is centred on
+   the mark. It never touches a circle. */
+.notebook-upright__row:not(:last-child)::before {
   content: '';
   position: absolute;
   left: calc(var(--app-notebook-history-mark-size) / 2 - var(--app-rule-row) / 2);
-  top: calc(var(--app-notebook-history-mark-size) / 2);
-  bottom: calc(-1 * (var(--gap-s) + var(--app-notebook-history-mark-size) / 2));
+  top: calc(
+    var(--app-notebook-history-name-line-h) / 2 + var(--app-notebook-history-mark-size) / 2 + var(--gap-hair)
+  );
+  bottom: calc(-1 * var(--gap-s));
   width: var(--app-rule-row);
   background: var(--app-divider);
 }
@@ -588,10 +592,18 @@
   display: grid;
   grid-template-columns: var(--app-notebook-history-mark-size) minmax(0, 1fr);
   column-gap: var(--app-notebook-recipe-rail-gap);
-  align-items: center;
+  align-items: start;
   min-height: var(--touch-min);
   text-decoration: none;
   color: inherit;
+}
+
+/* The mark's box is as tall as the title line, with the mark centred in it,
+   so the mark sits level with the title (upright-393.html's 20px wrapper). */
+.notebook-upright__mark-box {
+  display: flex;
+  align-items: center;
+  height: var(--app-notebook-history-name-line-h);
 }
 
 .notebook-upright__text {

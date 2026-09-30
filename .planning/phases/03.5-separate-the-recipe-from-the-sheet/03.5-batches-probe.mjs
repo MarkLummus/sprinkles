@@ -56,7 +56,7 @@ async function assertSeed(page) {
 
 // The app's own upright-list geometry, read structurally by the classes
 // UprightRail.jsx renders (app/src/ui/UprightRail.jsx, app/src/styles/
-// notebook.css). The connector is a ::after pseudo-element on the first
+// notebook.css). The connector is a ::before pseudo-element on the first
 // (non-last) row — getComputedStyle's second argument reads a pseudo-
 // element's own computed style.
 async function readAppUprightGeometry(page) {
@@ -74,7 +74,7 @@ async function readAppUprightGeometry(page) {
     const firstTitle = firstRow ? firstRow.querySelector('.notebook-upright__title') : null;
     const firstMeta = firstRow ? firstRow.querySelector('.notebook-upright__meta') : null;
     const firstMark = marks[0] ? marks[0].getBoundingClientRect() : null;
-    const connectorStyle = rows.length > 1 ? getComputedStyle(rows[0], '::after') : null;
+    const connectorStyle = rows.length > 1 ? getComputedStyle(rows[0], '::before') : null;
     return {
       rowCount: rows.length,
       rowTitles: rows.map((row) => row.querySelector('.notebook-upright__title')?.textContent ?? null),

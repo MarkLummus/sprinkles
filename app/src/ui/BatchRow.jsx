@@ -70,7 +70,10 @@ export const NO_BATCH_PROSE = 'Not yet churned. Print the sheet, make it, then r
 // One battery measured field (contract "Controls spec"; sketch 007 @
 // 2a212be lines 37-44; D-13): text-mode, inputMode="decimal" — never
 // type="number", so a malformed value stays in place rather than being
-// rejected before validation runs. The unit word is a sibling after the
+// rejected before validation runs. The exception is a signed field (the two
+// °C ones): the iPhone decimal pad has no minus key, so it takes the full
+// keyboard (inputMode="text") with autocorrect and autocapitalize off
+// (G-03.5-5b; Mark, 2026-09-29). The unit word is a sibling after the
 // input, never concatenated into the caption (007 lines 42-44: the root
 // cause of UAT item 2) — the aria-label keeps the spelled-out unit for
 // the field's accessible name. The .field-error line renders inside the
@@ -87,7 +90,9 @@ function MeasuredField({ field, value, error, onChange, inputRef }) {
       <span className="field-unit">
         <input
           type="text"
-          inputMode="decimal"
+          inputMode={field.signed ? 'text' : 'decimal'}
+          autoCorrect={field.signed ? 'off' : undefined}
+          autoCapitalize={field.signed ? 'off' : undefined}
           className="ink-field"
           aria-label={`${field.label}, ${unitWords(field.unit)}`}
           aria-invalid={error ? 'true' : undefined}

@@ -616,7 +616,7 @@ renderAxes();
 });
 document.querySelectorAll('input').forEach((field, i) => {
   field.id ||= 'measurement-' + i;
-  if (field.type !== 'date') field.inputMode = 'decimal';
+  if (field.type !== 'date') { const isC = field.closest('label').textContent.includes('°C'); field.inputMode = isC ? 'text' : 'decimal'; if (isC) { field.setAttribute('autocorrect', 'off'); field.setAttribute('autocapitalize', 'off'); } }
   field.addEventListener('input', () => { if (field.closest('#tasting-body')) forgetUndo(); clearError(field); updateSaveLabel(); });
 });
 document.querySelectorAll('textarea').forEach(field => {

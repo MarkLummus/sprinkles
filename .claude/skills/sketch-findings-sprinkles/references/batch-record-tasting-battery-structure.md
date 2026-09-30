@@ -184,7 +184,7 @@ after a wider gap (the `declared-flaw` margin) marking it as a different kind of
 
 **Date and numeric fields**:
 
-- Non-date inputs carry `inputMode="decimal"`. Blank is always allowed.
+- Non-date inputs carry `inputMode="decimal"`, except the two °C fields (`inputMode="text"`, autocorrect and autocapitalize off: the iPhone decimal pad has no minus, G-03.5-5b). Blank is always allowed.
 - Decimal point and comma both accepted; a Unicode minus (−) is normalized to ASCII; negatives are
   rejected except on °C fields (a field is a temperature when its label's text includes "°C" —
   "Out of machine" and "Tasting temperature").

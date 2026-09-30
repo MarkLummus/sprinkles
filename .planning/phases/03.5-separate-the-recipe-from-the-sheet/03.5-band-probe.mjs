@@ -103,6 +103,44 @@ async function readRailMarks(page) {
   });
 }
 
+// 03.5-24 (G-03.5-5): the horizontal rail's line connects nodes only. How far
+// the track's left edge sits from the first mark's centre, and its right edge
+// from the last mark's centre, on the app and on a board (0 and 0 where the
+// line runs first node to last).
+async function readAppRailTrackExtent(page) {
+  return page.evaluate(() => {
+    const track = document.querySelector('.notebook-history__track');
+    const marks = [...document.querySelectorAll('.notebook-history__mark')];
+    if (!track || marks.length === 0) return null;
+    const t = track.getBoundingClientRect();
+    const first = marks[0].getBoundingClientRect();
+    const last = marks[marks.length - 1].getBoundingClientRect();
+    return {
+      markCount: marks.length,
+      leftToFirstMark: t.left - (first.left + first.width / 2),
+      rightToLastMark: t.right - (last.left + last.width / 2),
+    };
+  });
+}
+
+async function readBoardRailTrackExtent(page) {
+  return page.evaluate(() => {
+    const track = document.querySelector('div[style*="top:27px"][style*="height:1px"]');
+    if (!track) return null;
+    const box = track.closest('div[style*="overflow:hidden"]');
+    const marks = [...box.querySelectorAll('a[href="#"] span[aria-hidden="true"]')].filter((m) => m.style.borderRadius === '6px');
+    if (marks.length === 0) return null;
+    const t = track.getBoundingClientRect();
+    const first = marks[0].getBoundingClientRect();
+    const last = marks[marks.length - 1].getBoundingClientRect();
+    return {
+      markCount: marks.length,
+      leftToFirstMark: t.left - (first.left + first.width / 2),
+      rightToLastMark: t.right - (last.left + last.width / 2),
+    };
+  });
+}
+
 // The rail's own real content (even after saveNextVersion, two nodes) may
 // not fill the rail's width on its own, so the fade check needs a rail that
 // actually scrolls (content hidden to the left) — a further node is cloned
@@ -167,7 +205,16 @@ async function readRailFadeReading(page) {
     const x = railRect.left + 10;
     const y = nameRect.top + nameRect.height / 2;
     const hit = document.elementFromPoint(x, y);
-    return { fadeFound: true, isFade: hit === fade, hitClass: hit ? hit.className : null };
+    const track = document.querySelector('.notebook-history__track');
+    const marks = [...document.querySelectorAll('.notebook-history__mark')];
+    const lastMark = marks[marks.length - 1].getBoundingClientRect();
+    const trackRect = track.getBoundingClientRect();
+    return {
+      fadeFound: true,
+      isFade: hit === fade,
+      hitClass: hit ? hit.className : null,
+      trackRightToLastMark: trackRect.right - (lastMark.left + lastMark.width / 2),
+    };
   });
 }
 
@@ -464,6 +511,37 @@ async function main() {
           countedCheck(!mark.onTrack, `rail width=${width}: mark ${i} never hit-tests to the track`);
         }
 
+        // 03.5-24 (G-03.5-5): the line runs from the first mark's centre to the
+        // last mark's centre, as the board of the same width draws it.
+        const extent = await readAppRailTrackExtent(page);
+        console.log(JSON.stringify({ group: 'rail', width, extent }));
+        countedCheck(extent !== null && extent.markCount === 2, `rail width=${width}: two marks to run between (got ${extent?.markCount})`);
+        if (extent) {
+          countedCheck(
+            Math.abs(extent.leftToFirstMark) <= 1,
+            `rail width=${width}: the track's left edge is at the first mark's centre (off by ${extent.leftToFirstMark})`,
+          );
+          countedCheck(
+            Math.abs(extent.rightToLastMark) <= 1,
+            `rail width=${width}: the track's right edge is at the last mark's centre (off by ${extent.rightToLastMark})`,
+          );
+          const { context: extentBoardCtx, page: extentBoardPage } = await openBoard(browser, repoUrl, `${width}-batch.html`);
+          const boardExtent = await readBoardRailTrackExtent(extentBoardPage);
+          console.log(JSON.stringify({ group: 'rail', board: `${width}-batch.html`, boardExtent }));
+          countedCheck(boardExtent !== null, `rail width=${width}: ${width}-batch.html draws a track with marks`);
+          if (boardExtent) {
+            countedCheck(
+              Math.abs(extent.leftToFirstMark - boardExtent.leftToFirstMark) <= 1,
+              `rail width=${width}: first-mark-to-track-left (${extent.leftToFirstMark}) within 1px of ${width}-batch.html's (${boardExtent.leftToFirstMark})`,
+            );
+            countedCheck(
+              Math.abs(extent.rightToLastMark - boardExtent.rightToLastMark) <= 1,
+              `rail width=${width}: last-mark-to-track-right (${extent.rightToLastMark}) within 1px of ${width}-batch.html's (${boardExtent.rightToLastMark})`,
+            );
+          }
+          await extentBoardCtx.close();
+        }
+
         if (width === 1366) {
           const fadeReading = await readRailFadeReading(page);
           console.log(JSON.stringify({ group: 'rail', width, fade: fadeReading }));
@@ -471,6 +549,10 @@ async function main() {
           countedCheck(
             fadeReading.isFade,
             `rail width=1366: the fade paints over the node it hides (got ${fadeReading.hitClass})`,
+          );
+          countedCheck(
+            Math.abs(fadeReading.trackRightToLastMark) <= 1,
+            `rail width=1366: with the rail forced to overflow the track still ends at the last mark's centre (off by ${fadeReading.trackRightToLastMark})`,
           );
         }
 

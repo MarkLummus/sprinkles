@@ -209,6 +209,31 @@ describe("the upright rail's line connects marks only (03.5-24 Task 1, G-03.5-5,
   });
 });
 
+describe("the History rail's line runs first node to last (03.5-24 Task 3, G-03.5-5)", () => {
+  test('the strip is positioned and as wide as its content, so the track and the node list share one box', () => {
+    const rule = rules.find((rule) => rule.selector === '.notebook-history__strip' && rule.media === undefined);
+    expect(rule, 'expected a top-level .notebook-history__strip rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/position:\s*relative/);
+    expect(rule.declarations).toMatch(/width:\s*max-content/);
+  });
+
+  test("the track's left is the row's padding plus half a mark, its right the padding plus a node's width less half a mark", () => {
+    const rule = rules.find((rule) => rule.selector === '.notebook-history__track' && rule.media === undefined);
+    expect(rule.declarations).toMatch(/left:\s*calc\(var\(--gap-xs\) \+ var\(--app-notebook-history-mark-size\) \/ 2\)/);
+    expect(rule.declarations).toMatch(
+      /right:\s*calc\(var\(--gap-xs\) \+ var\(--app-notebook-history-node-w\) - var\(--app-notebook-history-mark-size\) \/ 2\)/,
+    );
+  });
+
+  test('the node list keeps the same padding the track offsets read, and no history rule carries a z-index', () => {
+    const nodes = rules.find((rule) => rule.selector === '.notebook-history__nodes' && rule.media === undefined);
+    expect(nodes.declarations).toMatch(/padding:\s*0 var\(--gap-xs\)/);
+    for (const rule of rules.filter((rule) => rule.selector.startsWith('.notebook-history'))) {
+      expect(rule.declarations).not.toMatch(/z-index/);
+    }
+  });
+});
+
 describe("the log's batch notes (260925-u3r, sketch 011)", () => {
   test('.notebook-log .batch-row__notes is a top-level flex column, the hairline gap, and the log group gap above', () => {
     const notesRule = rules.find((rule) => rule.selector === '.notebook-log .batch-row__notes' && rule.media === undefined);

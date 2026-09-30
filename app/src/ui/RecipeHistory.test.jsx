@@ -78,6 +78,24 @@ describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 
     expect(tags[0]).toContain('tabindex="0"');
   });
 
+  // 03.5-24 (G-03.5-5): the track and the node list sit in one strip as wide
+  // as its content, so the track can run from the first mark's centre to the
+  // last one's instead of across the whole rail.
+  it('belowDesktop false: the rail holds one strip, the track first and then the node list, and no fade at rest', () => {
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [makeBatch()],
+      belowDesktop: false,
+    });
+    expect(markup).toMatch(
+      /<div class="notebook-history__rail" id="fold-history"><div class="notebook-history__strip"><div class="notebook-history__track" aria-hidden="true"><\/div><ol class="notebook-history__nodes">/,
+    );
+    expect(markup).toMatch(/<\/ol><\/div><\/div>/);
+    expect(markup).not.toContain('notebook-history__fade');
+    expect((markup.match(/notebook-history__strip/g) ?? []).length).toBe(1);
+  });
+
   it('belowDesktop true: FoldRow reads closed/Show and the bare count; the upright list is hidden, latest first; exactly 1 link with tabindex 0', () => {
     const batch = makeBatch();
     const markup = renderHistory({

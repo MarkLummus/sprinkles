@@ -1439,10 +1439,10 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
 // state), Tasting, Show or Hide, then the tasted date at the row's end.
 // The churn cells above it are never folded.
 describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 18/19)', () => {
-  it('closed (foldsOpen false): h3.region-name holds a fold-row naming fold-tasting, collapsed, Show, with the tasted date as its own count; the body is hidden', () => {
+  it('closed (foldsOpen false): a section named Tasting whose h2.region-name holds a fold-row naming fold-tasting, collapsed, Show, with the tasted date as its own count; the body is hidden (G-03.5-8d)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldsOpen: false });
     expect(markup).toContain(
-      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-tasting" aria-label="Tasting, Show, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Show</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
+      '<section class="tasting-reading" aria-label="Tasting"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-tasting" aria-label="Tasting, Show, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Show</span></span><span class="fold-row__count">tasted date unknown</span></button></h2>',
     );
     expect(markup).toMatch(/<div id="fold-tasting" hidden="?/);
     // The tasting cells sit inside the fold, after the id="fold-tasting" opening tag.
@@ -1454,7 +1454,7 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
   it('open (foldsOpen true, the default): the control reads Hide, and the body carries no hidden attribute', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain(
-      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-tasting" aria-label="Tasting, Hide, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Hide</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
+      '<section class="tasting-reading" aria-label="Tasting"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-tasting" aria-label="Tasting, Hide, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Hide</span></span><span class="fold-row__count">tasted date unknown</span></button></h2>',
     );
     expect(markup).toContain('<div id="fold-tasting">');
   });
@@ -1467,11 +1467,27 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
     expect(churnCellsIndex).toBeLessThan(foldIndex);
   });
 
-  it('the tasting head holds no other date element — the tasted date lives only in the fold row\'s own count', () => {
+  it('the tasting heading holds no other date element — the tasted date lives only in the fold row\'s own count', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    const headIndex = markup.indexOf('<div class="tasting-reading__head">');
-    const headEndIndex = markup.indexOf('</div>', headIndex);
+    const headIndex = markup.indexOf('<section class="tasting-reading"');
+    const headEndIndex = markup.indexOf('</h2>', headIndex);
+    expect(headIndex).toBeGreaterThan(-1);
+    expect(headEndIndex).toBeGreaterThan(headIndex);
     expect(markup.slice(headIndex, headEndIndex)).not.toContain('batch-row__date');
+  });
+
+  it('draws no heading wrapper: the reading holds no element of the removed head wrapper\'s class, so the heading is a block the button fills (G-03.5-4)', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).not.toContain('tasting-reading__head');
+    expect(markup.split('aria-label="Tasting"').length - 1).toBe(1);
+  });
+
+  it('keeps the record pen\'s own Tasting head an h3 inside .tasting-head (G-03.5-8d names the reading only)', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    expect(markup).toMatch(/<div class="tasting-head"><h3 class="region-name">Tasting<\/h3>/);
   });
 });
 

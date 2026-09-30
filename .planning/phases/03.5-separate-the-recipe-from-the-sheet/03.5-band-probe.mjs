@@ -267,6 +267,7 @@ async function readFoldGeometry(page, foldId) {
     const rect = control.getBoundingClientRect();
     const parent = control.parentElement;
     const parentRect = parent ? parent.getBoundingClientRect() : null;
+    const grand = parent ? parent.parentElement : null;
     const panel = document.getElementById(id);
     const panelDisplay = panel ? getComputedStyle(panel).display : null;
     const head = control.querySelector(':scope > span:first-child');
@@ -287,8 +288,12 @@ async function readFoldGeometry(page, foldId) {
       ariaExpanded: control.getAttribute('aria-expanded'),
       height: rect.height,
       width: rect.width,
+      left: rect.left,
       right: rect.right,
       parentWidth: parentRect ? parentRect.width : null,
+      parentTag: parent ? parent.tagName : null,
+      grandTag: grand ? grand.tagName : null,
+      grandLabel: grand ? grand.getAttribute('aria-label') : null,
       panelDisplay,
       word: wordEl ? wordEl.textContent : null,
       wordFontSize: wordStyle ? wordStyle.fontSize : null,
@@ -311,6 +316,73 @@ async function readFoldGeometry(page, foldId) {
 
 async function clickFoldControl(page, foldId) {
   await page.click(`button[aria-controls="${foldId}"]`);
+}
+
+// 03.5-23 (G-03.5-4): the row a fold head sits in, named per fold, and never
+// its own parent. A parent that shrink-wraps the button (the band grid's
+// align-items: start in its flex column; Tasting's h3 in a flex row) makes
+// "control width equals parent width" true for a head narrower than its row,
+// which is how this gap passed. The row is the container the head should
+// span: the content box of an element, or its second grid track where the
+// element is a grid of two or more columns (the band grid from 724; the
+// recipe page from 984, whose second track is the Sheet's side region).
+const ROW_OF = {
+  'fold-version': '.notebook-band__grid',
+  'fold-history': '.notebook-band',
+  'fold-balance': '.recipe-page',
+  'fold-check': '.recipe-page',
+  'fold-tasting': '.notebook-log',
+  'fold-batches': '.notebook-log',
+};
+// The folds whose width and count are judged against ROW_OF and the matched-
+// width board. Task 1 covers Tasting; Task 2 covers every fold.
+const ROW_CHECKED_FOLDS = ['fold-tasting'];
+const MATCHED_BOARDS = { 393: '393-batch.html', 723: '723-batch.html' };
+
+async function readRowOracle(page, foldId) {
+  return page.evaluate((selector) => {
+    const el = document.querySelector(selector);
+    if (!el) return null;
+    const cs = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    const px = (v) => parseFloat(v) || 0;
+    const left = r.left + px(cs.borderLeftWidth) + px(cs.paddingLeft);
+    const right = r.right - px(cs.borderRightWidth) - px(cs.paddingRight);
+    if (cs.display === 'grid') {
+      const tracks = cs.gridTemplateColumns.split(' ').map(px);
+      if (tracks.length >= 2) {
+        const trackLeft = left + tracks[0] + px(cs.columnGap);
+        return { left: trackLeft, right: trackLeft + tracks[1], width: tracks[1] };
+      }
+    }
+    return { left, right, width: right - left };
+  }, ROW_OF[foldId]);
+}
+
+// The row-and-board checks for one fold in the app at one width (the row
+// oracle, the count at the row's end, and, at 393 and 723, the board drawn
+// for that width). `matchedReading` is the board's own readFoldGeometry.
+async function foldRowChecks(page, id, reading, width, matchedReading, countedCheck) {
+  const row = await readRowOracle(page, id);
+  countedCheck(row !== null, `folds width=${width} ${id}: its row (${ROW_OF[id]}) exists`);
+  if (row) {
+    countedCheck(
+      Math.abs(reading.width - row.width) <= 1,
+      `folds width=${width} ${id}: control width (${reading.width}) equals its row's (${row.width}, ${ROW_OF[id]})`,
+    );
+    if (reading.countRight != null) {
+      countedCheck(
+        Math.abs(reading.countRight - row.right) <= 1,
+        `folds width=${width} ${id}: count's right edge (${reading.countRight}) sits at its row's end (${row.right})`,
+      );
+    }
+  }
+  if (matchedReading !== undefined) {
+    countedCheck(
+      matchedReading !== null && Math.abs(reading.width - matchedReading.width) <= 1,
+      `folds width=${width} ${id}: control width (${reading.width}) equals ${MATCHED_BOARDS[width]}'s (${matchedReading?.width})`,
+    );
+  }
 }
 
 // The `rhythm` group (03.5-15 Task 2): the frame's own row gap (.notebook),
@@ -584,10 +656,14 @@ async function main() {
 
     if (groups.has('folds')) {
       for (const width of widths) {
-        if (![393, 1024, 1365, 1366, 1920].includes(width)) continue;
+        if (![393, 723, 984, 1024, 1365, 1366, 1920].includes(width)) continue;
         const coarse = width === 393;
         const expectedOpen = width >= 1366;
         const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+        // The board drawn for this width, opened through openBoard's defaults
+        // (its own drawn width; coarse for the 393 board), for the width
+        // comparison at 393 and 723 (G-03.5-4).
+        const matchedBoard = MATCHED_BOARDS[width] ? await openBoard(browser, repoUrl, MATCHED_BOARDS[width]) : null;
 
         for (const id of EXPECTED_FOLDS) {
           const reading = await readFoldGeometry(page, id);
@@ -627,7 +703,18 @@ async function main() {
             `folds width=${width} ${id}: exactly one button has the accessible name "${expectedName}"`,
           );
 
+          if (ROW_CHECKED_FOLDS.includes(id)) {
+            const matchedReading = matchedBoard ? await readFoldGeometry(matchedBoard.page, id) : undefined;
+            await foldRowChecks(page, id, reading, width, matchedReading, countedCheck);
+          }
+
           if (id === 'fold-tasting') {
+            // G-03.5-8d: Tasting is its own section, its heading an h2 the
+            // same level as Balance and Watch for.
+            countedCheck(
+              reading.parentTag === 'H2' && reading.grandTag === 'SECTION' && reading.grandLabel === 'Tasting',
+              `folds width=${width} ${id}: control sits in an H2 inside a SECTION named Tasting (got ${reading.parentTag} in ${reading.grandTag} "${reading.grandLabel}")`,
+            );
             countedCheck(
               reading.countText === 'tasted date unknown',
               `folds width=${width} ${id}: count reads "tasted date unknown" (got ${reading.countText})`,
@@ -675,6 +762,7 @@ async function main() {
           );
         }
 
+        if (matchedBoard) await matchedBoard.context.close();
         await context.close();
       }
 
@@ -702,6 +790,12 @@ async function main() {
             countedCheck(
               reading.word === expectedWord,
               `folds board ${file}: ${id} word reads "${expectedWord}" (got ${reading.word})`,
+            );
+          }
+          if (reading && id === 'fold-tasting') {
+            countedCheck(
+              reading.parentTag === 'H2' && reading.grandTag === 'SECTION' && reading.grandLabel === 'Tasting',
+              `folds board ${file}: ${id} control sits in an H2 inside a SECTION named Tasting (got ${reading.parentTag} in ${reading.grandTag} "${reading.grandLabel}")`,
             );
           }
           boardReadingsById[id][file] = reading;

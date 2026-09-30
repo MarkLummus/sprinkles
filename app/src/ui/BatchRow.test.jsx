@@ -1442,7 +1442,7 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
   it('closed (foldsOpen false): h3.region-name holds a fold-row naming fold-tasting, collapsed, Show, with the tasted date as its own count; the body is hidden', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldsOpen: false });
     expect(markup).toContain(
-      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-tasting" aria-label="Tasting Show, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Show</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
+      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-tasting" aria-label="Tasting, Show, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Show</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
     );
     expect(markup).toMatch(/<div id="fold-tasting" hidden="?/);
     // The tasting cells sit inside the fold, after the id="fold-tasting" opening tag.
@@ -1454,7 +1454,7 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
   it('open (foldsOpen true, the default): the control reads Hide, and the body carries no hidden attribute', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain(
-      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-tasting" aria-label="Tasting Hide, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Hide</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
+      '<h3 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-tasting" aria-label="Tasting, Hide, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Hide</span></span><span class="fold-row__count">tasted date unknown</span></button></h3>',
     );
     expect(markup).toContain('<div id="fold-tasting">');
   });

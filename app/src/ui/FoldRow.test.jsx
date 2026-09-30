@@ -21,7 +21,7 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
       />,
     );
     expect(markup).toBe(
-      '<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version" aria-label="Version Show details">' +
+      '<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version" aria-label="Version, Show details">' +
         '<span class="fold-row__head">' +
         '<span class="notebook-caption">Version</span>' +
         '<span class="fold-row__control">Show details</span>' +
@@ -42,7 +42,7 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
       />,
     );
     expect(markup).toMatch(
-      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version" aria-label="Version Hide details">/,
+      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version" aria-label="Version, Hide details">/,
     );
     expect(markup).toMatch(/<span class="fold-row__control">Hide details<\/span>/);
   });
@@ -110,9 +110,11 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
   // word ("VersionShow details", "BatchesShow, 3 batches"). aria-label is
   // built from plain strings instead, with real word boundaries, so the
   // computed accessible name is well-formed regardless of engine — this
-  // pins the label text with spaces, not just the visual markup.
+  // pins the label text, not just the visual markup. G-03.5-7 (03.5 UAT
+  // test 7): the boundary WR-01 made was a space, which VoiceOver does not
+  // pause at, so the label and the Show/Hide word join with a comma.
   describe('accessible name — aria-label reads as separate words, independent of DOM text-node adjacency', () => {
-    it('reads "Version Show details" when closed, a string label passed alongside the caption element', () => {
+    it('reads "Version, Show details" when closed, a string label passed alongside the caption element', () => {
       const markup = renderToStaticMarkup(
         <FoldRow
           label={<span className="notebook-caption">Version</span>}
@@ -123,17 +125,17 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
           what="details"
         />,
       );
-      expect(markup).toContain('aria-label="Version Show details"');
+      expect(markup).toContain('aria-label="Version, Show details"');
     });
 
-    it('reads "Watch for Show" when the label itself is already a plain string (no labelText needed)', () => {
+    it('reads "Watch for, Show" when the label itself is already a plain string (no labelText needed)', () => {
       const markup = renderToStaticMarkup(
         <FoldRow label="Watch for" open={false} onToggle={noop} controls="fold-check" />,
       );
-      expect(markup).toContain('aria-label="Watch for Show"');
+      expect(markup).toContain('aria-label="Watch for, Show"');
     });
 
-    it('reads "Batches Hide, 3 batches · latest first" — label, control word and count all separated', () => {
+    it('reads "Batches, Hide, 3 batches · latest first" — label, control word and count all separated', () => {
       const markup = renderToStaticMarkup(
         <FoldRow
           label={<span className="notebook-caption">Batches</span>}
@@ -144,14 +146,14 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
           count="3 batches · latest first"
         />,
       );
-      expect(markup).toContain('aria-label="Batches Hide, 3 batches · latest first"');
+      expect(markup).toContain('aria-label="Batches, Hide, 3 batches · latest first"');
     });
 
-    it('reads "Tasting Show, tasted 28 Sep" for a plain-string label with a count and no "what"', () => {
+    it('reads "Tasting, Show, tasted 28 Sep" for a plain-string label with a count and no "what"', () => {
       const markup = renderToStaticMarkup(
         <FoldRow label="Tasting" open={false} onToggle={noop} controls="fold-tasting" count="tasted 28 Sep" />,
       );
-      expect(markup).toContain('aria-label="Tasting Show, tasted 28 Sep"');
+      expect(markup).toContain('aria-label="Tasting, Show, tasted 28 Sep"');
     });
   });
 });

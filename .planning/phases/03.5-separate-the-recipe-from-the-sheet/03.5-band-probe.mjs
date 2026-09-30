@@ -50,6 +50,15 @@ function expectedFoldWord(id, open) {
   return (open ? 'Hide' : 'Show') + (FOLD_WHAT[id] ?? '');
 }
 
+// 03.5-21 (G-03.5-7): each fold button's accessible name joins its label,
+// the control word and any count with commas, so VoiceOver pauses at every
+// boundary ("Version, Show details"; "Tasting, Show, tasted date unknown").
+const FOLD_LABEL = { 'fold-version': 'Version', 'fold-balance': 'Balance', 'fold-check': 'Watch for', 'fold-tasting': 'Tasting' };
+const FOLD_COUNT = { 'fold-tasting': 'tasted date unknown' };
+function expectedFoldName(id, open) {
+  return `${FOLD_LABEL[id]}, ${expectedFoldWord(id, open)}${FOLD_COUNT[id] ? `, ${FOLD_COUNT[id]}` : ''}`;
+}
+
 // The rail group (Task 1, sketch 011 decision 16's last sentence, 1600-
 // long-history.html): every mark sits above the track, and a scrolled
 // rail's fade still covers the nodes it hides — checked in the app at a
@@ -606,6 +615,16 @@ async function main() {
           countedCheck(
             reading.word === expectedWord,
             `folds width=${width} ${id}: control word reads "${expectedWord}" (got ${reading.word})`,
+          );
+          const expectedName = expectedFoldName(id, expectedOpen);
+          const actualName = await page.locator(`button[aria-controls="${id}"]`).getAttribute('aria-label');
+          countedCheck(
+            actualName === expectedName,
+            `folds width=${width} ${id}: aria-label reads "${expectedName}" (got ${JSON.stringify(actualName)})`,
+          );
+          countedCheck(
+            (await page.getByRole('button', { name: expectedName, exact: true }).count()) === 1,
+            `folds width=${width} ${id}: exactly one button has the accessible name "${expectedName}"`,
           );
 
           if (id === 'fold-tasting') {

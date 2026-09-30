@@ -844,6 +844,30 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
     expect(timeToDrawInput).toContain('class="ink-field"');
   });
 
+  it('gives the two °C fields the text keyboard with autocorrect and autocapitalize off, since the iPhone decimal pad has no minus (G-03.5-5b)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    for (const name of ['Out of machine, degrees Celsius', 'Tasting temperature, degrees Celsius']) {
+      const input = markup.match(new RegExp(`<input[^>]*aria-label="${name}"[^>]*/>`))[0];
+      expect(input).toContain('inputMode="text"');
+      expect(input).toContain('autoCorrect="off"');
+      expect(input).toContain('autoCapitalize="off"');
+    }
+  });
+
+  it('keeps the decimal pad on every unsigned battery field, with no autocorrect attribute (G-03.5-5b)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    for (const name of [
+      'Time to draw temp\\., minutes',
+      'Churn duration, minutes',
+      'Tempering, minutes',
+      'Melt test, g lost at 20 min',
+    ]) {
+      const input = markup.match(new RegExp(`<input[^>]*aria-label="${name}"[^>]*/>`))[0];
+      expect(input).toContain('inputMode="decimal"');
+      expect(input).not.toContain('autoCorrect');
+    }
+  });
+
   it('spells out the unit in the accessible name for a °C field', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
     expect(markup).toContain('aria-label="Out of machine, degrees Celsius"');

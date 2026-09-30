@@ -6,8 +6,12 @@
 // (the batch-head todo).
 //
 // Usage: node 03.5-batches-probe.mjs <groups> <widths>
-//   groups: comma list, e.g. many,single
+//   groups: comma list, e.g. many,single,keypad
 //   widths: comma list, e.g. 393,723,1024,1366
+//
+// 03.5-21: `keypad` (G-03.5-5b) reads each battery input's inputmode after
+// Record another / Add tasting, then saves -6 and -12 in the two °C fields
+// and reads both back. Usage: node 03.5-batches-probe.mjs keypad 393,1366
 import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, recordAnotherBatch } from './03.5-probe-harness.mjs';
 
 const [, , groupsArg, widthsArg] = process.argv;
@@ -282,6 +286,101 @@ async function main() {
             );
           }
         }
+
+        await context.close();
+      }
+    }
+
+    if (groups.has('keypad')) {
+      // The two signed °C fields open the full keyboard (it has a minus); the
+      // four unsigned ones keep the decimal pad. Keyed by accessible name.
+      const EXPECTED_INPUTMODE = {
+        'Time to draw temp., minutes': 'decimal',
+        'Out of machine, degrees Celsius': 'text',
+        'Churn duration, minutes': 'decimal',
+        'Tempering, minutes': 'decimal',
+        'Tasting temperature, degrees Celsius': 'text',
+        'Melt test, g lost at 20 min': 'decimal',
+      };
+      const readKeypad = (page, names) =>
+        page.evaluate(
+          (wanted) =>
+            wanted.map((name) => {
+              const el = document.querySelector(`input[aria-label="${name}"]`);
+              return {
+                name,
+                inputmode: el ? el.getAttribute('inputmode') : null,
+                autocorrect: el ? el.getAttribute('autocorrect') : null,
+                autocapitalize: el ? el.getAttribute('autocapitalize') : null,
+                type: el ? el.getAttribute('type') : null,
+              };
+            }),
+          names,
+        );
+      const minusThenSix = (text, digits) => /^[-\u2212]\s*/.test(text.trim()) && text.replace(/[^0-9]/g, '') === digits;
+
+      for (const width of widths) {
+        if (![393, 1366].includes(width)) continue;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse: true });
+        await assertSeed(page);
+
+        await page.getByRole('button', { name: 'Record another' }).first().click();
+        const churnNames = ['Time to draw temp., minutes', 'Out of machine, degrees Celsius', 'Churn duration, minutes'];
+        const churnReading = await readKeypad(page, churnNames);
+        console.log(JSON.stringify({ group: 'keypad', width, phase: 'churn', churnReading }));
+        for (const r of churnReading) {
+          const want = EXPECTED_INPUTMODE[r.name];
+          countedCheck(r.inputmode === want, `keypad width=${width}: "${r.name}" inputmode is ${want} (got ${r.inputmode})`);
+          countedCheck(r.type === 'text', `keypad width=${width}: "${r.name}" is type=text (got ${r.type})`);
+          const signed = want === 'text';
+          countedCheck(
+            signed ? r.autocorrect === 'off' && r.autocapitalize === 'off' : r.autocorrect === null,
+            `keypad width=${width}: "${r.name}" autocorrect/autocapitalize ${signed ? 'off' : 'absent'} (got ${r.autocorrect}/${r.autocapitalize})`,
+          );
+        }
+
+        await page.getByRole('button', { name: 'Add tasting' }).first().click();
+        const tastingNames = ['Tempering, minutes', 'Tasting temperature, degrees Celsius', 'Melt test, g lost at 20 min'];
+        const tastingReading = await readKeypad(page, tastingNames);
+        console.log(JSON.stringify({ group: 'keypad', width, phase: 'tasting', tastingReading }));
+        for (const r of tastingReading) {
+          const want = EXPECTED_INPUTMODE[r.name];
+          countedCheck(r.inputmode === want, `keypad width=${width}: "${r.name}" inputmode is ${want} (got ${r.inputmode})`);
+          countedCheck(r.type === 'text', `keypad width=${width}: "${r.name}" is type=text (got ${r.type})`);
+          const signed = want === 'text';
+          countedCheck(
+            signed ? r.autocorrect === 'off' && r.autocapitalize === 'off' : r.autocorrect === null,
+            `keypad width=${width}: "${r.name}" autocorrect/autocapitalize ${signed ? 'off' : 'absent'} (got ${r.autocorrect}/${r.autocapitalize})`,
+          );
+        }
+
+        // The save, in this throwaway context only (T-03.5-55).
+        const urlBeforeSave = page.url();
+        await page.getByLabel('Churn date').fill('2026-09-29');
+        await page.getByLabel('Out of machine, degrees Celsius').fill('-6');
+        await page.getByLabel('Tasting temperature, degrees Celsius').fill('-12');
+        await page.getByRole('button', { name: 'Save batch' }).first().click();
+        await page.waitForFunction((prev) => window.location.href !== prev, urlBeforeSave);
+        await page.waitForSelector('h2.region-name:has-text("Batch")');
+
+        const readCell = (label) =>
+          page.evaluate((wanted) => {
+            const cell = [...document.querySelectorAll('.batch-row__cell')].find(
+              (c) => c.querySelector('.batch-row__cell-label')?.textContent.trim() === wanted,
+            );
+            return cell ? cell.querySelector('.batch-row__cell-value').textContent : null;
+          }, label);
+
+        const outCell = await readCell('Out of machine');
+        countedCheck(outCell !== null && minusThenSix(outCell, '6'), `keypad width=${width}: the saved Out of machine cell reads a minus then 6 (got ${JSON.stringify(outCell)})`);
+
+        const tastingFold = page.locator('button[aria-controls="fold-tasting"]');
+        if ((await tastingFold.getAttribute('aria-expanded')) !== 'true') await tastingFold.click();
+        const tastingCell = await readCell('Tasting temperature');
+        countedCheck(
+          tastingCell !== null && minusThenSix(tastingCell, '12'),
+          `keypad width=${width}: the saved Tasting temperature cell reads a minus then 12 (got ${JSON.stringify(tastingCell)})`,
+        );
 
         await context.close();
       }

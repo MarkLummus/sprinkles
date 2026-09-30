@@ -262,6 +262,56 @@ async function readMarked(browser, appUrl, width) {
   return { before, after, maxShift: Math.max(0, ...shifts) };
 }
 
+// G-03.5-8b (03.5-22 Task 2): every save ceremony on the page, foot band and
+// log alike. A button's label is one line when a Range over its text yields
+// rects sharing a single top; the buttons share one row when their tops
+// overlap in height (the row aligns on the baseline). The foot's controls are read against the foot's own width.
+function readCeremonies() {
+  const oneLine = (el) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const tops = new Set([...range.getClientRects()].map((r) => Math.round(r.top)));
+    return tops.size <= 1;
+  };
+  return [...document.querySelectorAll('.save-ceremony')].map((ceremony) => {
+    const host = ceremony.closest('footer.pen-foot') ? 'foot' : ceremony.closest('.notebook-log') ? 'log' : 'other';
+    const buttons = [...ceremony.querySelectorAll('button')].map((b) => ({
+      label: b.textContent.trim(),
+      oneLine: oneLine(b),
+      top: b.getBoundingClientRect().top,
+      bottom: b.getBoundingClientRect().bottom,
+    }));
+    const foot = ceremony.closest('footer.pen-foot');
+    const controls = ceremony.closest('.pen-foot__controls');
+    return {
+      host,
+      buttons,
+      controlsWidth: controls ? controls.getBoundingClientRect().width : null,
+      footWidth: foot ? foot.getBoundingClientRect().width : null,
+    };
+  });
+}
+
+// Two pens with Add tasting present: Record (Record another, on the batch
+// route) and Correct (on /notebook/coconut, whose batch has no tasting).
+async function readCeremonyPens(browser, appUrl, width, coarse) {
+  const pens = {};
+  for (const [name, route, opener] of [
+    ['record', APP_ROUTE, '.batch-row__record'],
+    ['correct', '/notebook/coconut', '.batch-row__correct'],
+  ]) {
+    const { context, page } = await openApp(browser, appUrl, route, { width, coarse });
+    await page.click(opener);
+    await page.waitForSelector('footer.pen-foot .save-ceremony');
+    pens[name] = await page.evaluate(readCeremonies);
+    await context.close();
+  }
+  return pens;
+}
+
+// Fine at each named width, coarse at the two iPad widths.
+const CEREMONY_COARSE = { 1024: [false, true], 1366: [false, true] };
+
 async function main() {
   const failures = [];
   let checkCount = 0;
@@ -279,6 +329,7 @@ async function main() {
       const isListWidth = width < 724;
       const wantsPen = groups.has('pen') && width === 1600;
       const wantsRecording = groups.has('recording');
+      const wantsCeremony = groups.has('ceremony');
       const wantsMarked = groups.has('marked') && width === 1366;
 
       if (wantsPen) {
@@ -366,6 +417,42 @@ async function main() {
             });
             if (width < 724) {
               console.log(`${label} ${seriesName}: field ${first.input.width}px in a ${first.cell.width}px track, right edge ${first.input.right} of ${first.cell.right}`);
+            }
+          }
+        }
+      }
+
+      if (wantsCeremony) {
+        for (const coarse of CEREMONY_COARSE[width] ?? [false]) {
+          const pens = await readCeremonyPens(browser, appUrl, width, coarse);
+          console.log(JSON.stringify({ width, coarse, ceremony: pens }));
+          for (const [penName, ceremonies] of Object.entries(pens)) {
+            const label = `ceremony width=${width} ${coarse ? 'coarse' : 'fine'} ${penName} pen`;
+            const foot = ceremonies.find((c) => c.host === 'foot');
+            countedCheck(foot != null, `${label}: the foot band's ceremony is present`);
+            countedCheck(
+              foot?.buttons.some((b) => b.label === 'Add tasting'),
+              `${label}: Add tasting is in the foot's ceremony`,
+            );
+            if (foot) {
+              countedCheck(
+                closeTo(foot.controlsWidth, foot.footWidth, 1),
+                `${label}: the foot's controls are as wide as the foot (${foot.controlsWidth} of ${foot.footWidth})`,
+              );
+            }
+            for (const ceremony of ceremonies) {
+              for (const button of ceremony.buttons) {
+                countedCheck(button.oneLine, `${label}: the ${ceremony.host} ceremony's "${button.label}" label is one line`);
+              }
+              // The row aligns on the text baseline, so the buttons' tops
+              // differ (a text control is shorter than a bordered one). One
+              // row means every button's span overlaps every other's.
+              const lowestTop = Math.max(...ceremony.buttons.map((b) => b.top));
+              const highestBottom = Math.min(...ceremony.buttons.map((b) => b.bottom));
+              countedCheck(
+                lowestTop < highestBottom,
+                `${label}: the ${ceremony.host} ceremony's buttons share one row`,
+              );
             }
           }
         }

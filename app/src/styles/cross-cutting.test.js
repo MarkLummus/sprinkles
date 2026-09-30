@@ -328,12 +328,12 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
 describe('the 983.98px block — the side nav and the Sheet\'s second column go together (sketch 011 decision 16)', () => {
   const stackRules = rules.filter((r) => r.media === '(max-width: 983.98px)');
 
-  test('carries exactly .recipe-page, .pen-foot and .pen-foot__controls, in order', () => {
-    expect(stackRules.map((r) => r.selector)).toEqual([
-      '.recipe-page',
-      '.pen-foot',
-      '.pen-foot__controls',
-    ]);
+  // G-03.5-8b (03.5-22): the foot band is one column at every width, so the
+  // block's two foot rules were redundant and are gone. The foot mirrored the
+  // Sheet's two columns only to seat the ceremony beneath the second one, which
+  // is 189px at 984 against the ceremony's 245px.
+  test('carries exactly .recipe-page (the foot band is one column at every width, so it needs no rule here)', () => {
+    expect(stackRules.map((r) => r.selector)).toEqual(['.recipe-page']);
   });
 
   test('.recipe-page stacks to one column in the band/ingredients/side/method/foot order, with no padding declaration', () => {
@@ -344,6 +344,25 @@ describe('the 983.98px block — the side nav and the Sheet\'s second column go 
     expect(rule.declarations).not.toMatch(/padding/);
   });
 
+});
+
+describe('the foot band and its ceremony — one column, labels never broken (G-03.5-8b, 03.5-22)', () => {
+  test('the base .pen-foot declares one track, and the controls span it', () => {
+    const foot = ruleFor('.pen-foot');
+    expect(foot, 'expected the base .pen-foot rule').toBeTruthy();
+    expect(foot.declarations).toMatch(/grid-template-columns:\s*1fr\s*;/);
+    expect(foot.declarations).not.toMatch(/2fr/);
+    const controls = ruleFor('.pen-foot__controls');
+    expect(controls, 'expected the base .pen-foot__controls rule').toBeTruthy();
+    expect(controls.declarations).toMatch(/grid-column:\s*1\s*\/\s*-1/);
+  });
+
+  test('a base rule keeps every ceremony button whole: no shrinking below its label, no line break in it', () => {
+    const rule = ruleFor('.save-ceremony button');
+    expect(rule, 'expected the base ceremony-button rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/white-space:\s*nowrap/);
+    expect(rule.declarations).toMatch(/flex:\s*none/);
+  });
 });
 
 describe('the stylesheet reader sees a media block (parser round-trip, css-source.js)', () => {

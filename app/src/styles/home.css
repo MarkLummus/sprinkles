@@ -435,3 +435,19 @@
     display: none;
   }
 }
+
+/* Home's recipe-name links meet the touch floor under a coarse pointer
+   (G-03.5-4b; Mark, 2026-09-29: taller links; DESIGN.md's pointer: coarse
+   list). The links are classless anchors inside the h2s, and a bare
+   min-height does nothing on an inline box (measured: 28 stays 28), so the
+   floor needs inline-flex beside it. The row grows about 15px per name; the
+   fine pointer keeps the line-box height, because this block reads the
+   pointer alone. The third top-level media step this file carries. */
+@media (pointer: coarse) {
+  .home__name a,
+  .home__lead-name a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+  }
+}

@@ -683,14 +683,17 @@ textarea {
 
 /* The foot band (route-recipe.md § 3 "The imprint"; D-26): shown only
    while a pen is open — a hairline rule across the whole page, then the
-   pair right-aligned under the Notes column. Its own two-column grid
-   matches .recipe-page's so the pair
-   lands under column two without being fenced to the page's own grid
-   tracks by name. */
+   save ceremony right-aligned at the foot's end. One column at every width
+   (G-03.5-8b; DESIGN.md): the foot used to mirror .recipe-page's 2fr/1fr
+   grid to seat the ceremony under the second column, which is 189px at 984
+   and 1366 against the ceremony's natural 245px, so "Add tasting" and
+   "Save batch" broke their labels. The controls span the whole foot and
+   right-align inside it; the Sheet's right edge is where the ceremony's own
+   right edge already sat. */
 .pen-foot {
   grid-area: foot;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--gap-l);
 }
 
@@ -702,7 +705,7 @@ textarea {
 }
 
 .pen-foot__controls {
-  grid-column: 2;
+  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -2115,6 +2118,15 @@ textarea {
   justify-content: flex-end;
 }
 
+/* A ceremony button keeps its label whole (G-03.5-8b): the row never shrinks
+   a button below its label, and never breaks one. The non-wrapping row used
+   to squeeze its buttons to their longest word, so "Add tasting" and "Save
+   batch" read two lines each. */
+.save-ceremony button {
+  flex: none;
+  white-space: nowrap;
+}
+
 .save-ceremony__hint {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-control);
@@ -2274,9 +2286,8 @@ textarea {
    (260917-gjo), which the phone-forms block below steps for the whole
    page shell at once (003 line 178) — no padding declaration lives
    here. The
-   foot band (.pen-foot) mirrors .recipe-page's own columns (desktop
-   rules above) and must collapse with it, or the ceremony would sit in
-   a phantom second column. The 983.98px prelude is the one sanctioned
+   foot band (.pen-foot) is one column at every width and needs no rule
+   in this block (G-03.5-8b). The 983.98px prelude is the one sanctioned
    breakpoint literal in the file, alongside 759.98px below: a prelude,
    not a declaration, so binder.test.js's no-bare-px gate never sees it,
    and the fractional value keeps exactly 984px on the desktop side of
@@ -2291,14 +2302,6 @@ textarea {
       'side'
       'method'
       'foot';
-  }
-
-  .pen-foot {
-    grid-template-columns: 1fr;
-  }
-
-  .pen-foot__controls {
-    grid-column: 1;
   }
 }
 

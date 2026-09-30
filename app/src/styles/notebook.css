@@ -433,10 +433,22 @@
   overflow-x: auto;
 }
 
+/* The strip holds the track and the node list in one box as wide as its
+   content (gen.py's history_rail, 03.5-24, G-03.5-5: the line connects nodes
+   only, Mark 2026-09-29). Positioned, so the track measures from it and not
+   from the scrolling rail, and it grows with the nodes when the rail scrolls. */
+.notebook-history__strip {
+  position: relative;
+  width: max-content;
+}
+
+/* Runs from the first mark's centre (the node list's padding plus half a
+   mark) to the last mark's centre (the padding plus a node's width less half
+   a mark, from the strip's right). */
 .notebook-history__track {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: calc(var(--gap-xs) + var(--app-notebook-history-mark-size) / 2);
+  right: calc(var(--gap-xs) + var(--app-notebook-history-node-w) - var(--app-notebook-history-mark-size) / 2);
   top: var(--app-notebook-history-track-top);
   height: var(--app-rule-row);
   background: var(--app-divider);
@@ -461,7 +473,9 @@
    above is position: absolute; without this rule the node list stayed an
    unpositioned, in-flow box, which CSS 2.1's painting order always puts
    BELOW a positioned sibling regardless of DOM order — so the track's
-   hairline painted over every mark. */
+   hairline painted over every mark. Both now sit in .notebook-history__strip
+   (03.5-24): the node list is still the later positioned sibling, so the
+   marks still paint above the track. */
 .notebook-history__nodes {
   position: relative;
   display: flex;

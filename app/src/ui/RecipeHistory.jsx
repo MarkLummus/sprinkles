@@ -119,42 +119,44 @@ export function RecipeHistory({
           ref={railRef}
           onScroll={(event) => setScrolledLeft(event.target.scrollLeft > 0)}
         >
-          <div className="notebook-history__track" aria-hidden="true" />
-          <ol className="notebook-history__nodes">
-            {entries.map((entry) => {
-              const inner = (
-                <>
-                  <span className="notebook-history__date">{entry.dateWords}</span>
-                  <span
-                    aria-hidden="true"
-                    className={`notebook-history__mark${entry.churned ? ' notebook-history__mark--churned' : ''}${entry.inView ? ' notebook-history__mark--in-view' : ''}`}
-                  />
-                  <span className={`notebook-history__name${entry.inView ? ' notebook-history__name--in-view' : ''}`}>
-                    {entry.name}
-                  </span>
-                  <span className="notebook-history__state">{entry.stateWords}</span>
-                </>
-              );
-              return (
-                <li key={entry.id} className="notebook-history__node" data-in-view={entry.inView ? 'true' : undefined}>
-                  {entry.inView || openPen ? (
-                    <span className="notebook-history__node-inner" aria-current={entry.inView ? 'page' : undefined}>
-                      {inner}
+          <div className="notebook-history__strip">
+            <div className="notebook-history__track" aria-hidden="true" />
+            <ol className="notebook-history__nodes">
+              {entries.map((entry) => {
+                const inner = (
+                  <>
+                    <span className="notebook-history__date">{entry.dateWords}</span>
+                    <span
+                      aria-hidden="true"
+                      className={`notebook-history__mark${entry.churned ? ' notebook-history__mark--churned' : ''}${entry.inView ? ' notebook-history__mark--in-view' : ''}`}
+                    />
+                    <span className={`notebook-history__name${entry.inView ? ' notebook-history__name--in-view' : ''}`}>
+                      {entry.name}
                     </span>
-                  ) : (
-                    <Link
-                      className="notebook-history__node-inner"
-                      to={notebookPath(recipeId, entry.id)}
-                      state={{ focusVersion: true }}
-                      tabIndex={0}
-                    >
-                      {inner}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
+                    <span className="notebook-history__state">{entry.stateWords}</span>
+                  </>
+                );
+                return (
+                  <li key={entry.id} className="notebook-history__node" data-in-view={entry.inView ? 'true' : undefined}>
+                    {entry.inView || openPen ? (
+                      <span className="notebook-history__node-inner" aria-current={entry.inView ? 'page' : undefined}>
+                        {inner}
+                      </span>
+                    ) : (
+                      <Link
+                        className="notebook-history__node-inner"
+                        to={notebookPath(recipeId, entry.id)}
+                        state={{ focusVersion: true }}
+                        tabIndex={0}
+                      >
+                        {inner}
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
           {scrolledLeft && <div className="notebook-history__fade" aria-hidden="true" />}
         </div>
       )}

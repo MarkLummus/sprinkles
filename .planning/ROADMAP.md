@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 23/25 plans executed
+**Plans:** 24/25 plans executed
 
 Plans:
 
@@ -545,7 +545,7 @@ Plans:
 
 **Wave 18** *(blocked on 03.5-23)*
 
-- [ ] 03.5-24-PLAN.md — The rails' line connects nodes only: upright to upright-393.html's geometry, horizontal redrawn on the boards first, then trimmed in the app (G-03.5-5)
+- [x] 03.5-24-PLAN.md — The rails' line connects nodes only: upright to upright-393.html's geometry, horizontal redrawn on the boards first, then trimmed in the app (G-03.5-5)
 
 **Wave 19** *(blocked on 03.5-24)*
 

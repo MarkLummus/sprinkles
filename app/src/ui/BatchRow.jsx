@@ -265,29 +265,25 @@ function TastingReading({ batch, foldsOpen = true }) {
       <div className="batch-row__cells tasting-reading__conditions">
         <div className="batch-row__cell">
           <span className="batch-row__cell-label">Tempering</span>
-          <span className="batch-row__cell-value">
-            {batch.tasting.temperingMinutes != null ? (
-              <>
-                {churnMeasured(batch.tasting.temperingMinutes)}
-                <span className="batch-row__unit"> min</span>
-              </>
-            ) : (
-              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-            )}
-          </span>
+          {batch.tasting.temperingMinutes != null ? (
+            <span className="batch-row__cell-value">
+              {churnMeasured(batch.tasting.temperingMinutes)}
+              <span className="batch-row__unit"> min</span>
+            </span>
+          ) : (
+            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+          )}
         </div>
         <div className="batch-row__cell">
           <span className="batch-row__cell-label">Tasting temperature</span>
-          <span className="batch-row__cell-value">
-            {batch.tasting.tastingTempC != null ? (
-              <>
-                {churnMeasured(batch.tasting.tastingTempC, { signed: true })}
-                <span className="batch-row__unit"> °C</span>
-              </>
-            ) : (
-              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-            )}
-          </span>
+          {batch.tasting.tastingTempC != null ? (
+            <span className="batch-row__cell-value">
+              {churnMeasured(batch.tasting.tastingTempC, { signed: true })}
+              <span className="batch-row__unit"> °C</span>
+            </span>
+          ) : (
+            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+          )}
         </div>
       </div>
       {batch.tasting.note && <p className="prose-text tasting-reading__note">{batch.tasting.note}</p>}
@@ -318,22 +314,22 @@ function TastingReading({ batch, foldsOpen = true }) {
         <div className="batch-row__cells tasting-reading__melt">
           <div className="batch-row__cell">
             <span className="batch-row__cell-label">Melt test</span>
-            <span className="batch-row__cell-value">
-              {batch.tasting.meltTestG != null ? (
-                <>
-                  {churnMeasured(batch.tasting.meltTestG)}
-                  <span className="batch-row__unit"> g lost at 20 min</span>
-                </>
-              ) : (
-                <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-              )}
-            </span>
+            {batch.tasting.meltTestG != null ? (
+              <span className="batch-row__cell-value">
+                {churnMeasured(batch.tasting.meltTestG)}
+                <span className="batch-row__unit"> g lost at 20 min</span>
+              </span>
+            ) : (
+              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+            )}
           </div>
           <div className="batch-row__cell">
             <span className="batch-row__cell-label">Melt style</span>
-            <span className="batch-row__cell-value">
-              {batch.tasting.meltStyle ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
-            </span>
+            {batch.tasting.meltStyle != null ? (
+              <span className="batch-row__cell-value">{batch.tasting.meltStyle}</span>
+            ) : (
+              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+            )}
           </div>
         </div>
       </div>
@@ -983,57 +979,55 @@ export function BatchRow({
             <div className="batch-row__cells">
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Time to draw temp.</span>
-                <span className="batch-row__cell-value">
-                  {openBatch.churn.timeToDrawTempMinutes != null ? (
-                    <>
-                      {churnMeasured(openBatch.churn.timeToDrawTempMinutes)}
-                      <span className="batch-row__unit"> min</span>
-                    </>
-                  ) : (
-                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-                  )}
-                </span>
+                {openBatch.churn.timeToDrawTempMinutes != null ? (
+                  <span className="batch-row__cell-value">
+                    {churnMeasured(openBatch.churn.timeToDrawTempMinutes)}
+                    <span className="batch-row__unit"> min</span>
+                  </span>
+                ) : (
+                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+                )}
                 {targetValueFor(version, 'come-up') && (
                   <span className="batch-row__plan">{`plan ${targetValueFor(version, 'come-up')}`}</span>
                 )}
               </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Out of machine</span>
-                <span className="batch-row__cell-value">
-                  {openBatch.churn.outOfMachineTempC != null ? (
-                    <>
-                      {churnMeasured(openBatch.churn.outOfMachineTempC, { signed: true })}
-                      <span className="batch-row__unit"> °C</span>
-                    </>
-                  ) : (
-                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-                  )}
-                </span>
+                {openBatch.churn.outOfMachineTempC != null ? (
+                  <span className="batch-row__cell-value">
+                    {churnMeasured(openBatch.churn.outOfMachineTempC, { signed: true })}
+                    <span className="batch-row__unit"> °C</span>
+                  </span>
+                ) : (
+                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+                )}
               </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Churn duration</span>
-                <span className="batch-row__cell-value">
-                  {openBatch.churn.churnDurationMinutes != null ? (
-                    <>
-                      {churnMeasured(openBatch.churn.churnDurationMinutes)}
-                      <span className="batch-row__unit"> min</span>
-                    </>
-                  ) : (
-                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-                  )}
-                </span>
+                {openBatch.churn.churnDurationMinutes != null ? (
+                  <span className="batch-row__cell-value">
+                    {churnMeasured(openBatch.churn.churnDurationMinutes)}
+                    <span className="batch-row__unit"> min</span>
+                  </span>
+                ) : (
+                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+                )}
               </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Exit consistency</span>
-                <span className="batch-row__cell-value">
-                  {openBatch.churn.exitConsistency ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
-                </span>
+                {openBatch.churn.exitConsistency != null ? (
+                  <span className="batch-row__cell-value">{openBatch.churn.exitConsistency}</span>
+                ) : (
+                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+                )}
               </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Airiness</span>
-                <span className="batch-row__cell-value">
-                  {openBatch.churn.airiness ?? <span className="batch-row__unit batch-row__unit--absent">not measured</span>}
-                </span>
+                {openBatch.churn.airiness != null ? (
+                  <span className="batch-row__cell-value">{openBatch.churn.airiness}</span>
+                ) : (
+                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+                )}
               </div>
             </div>
             {/* At the machine / Ingredient notes: the maker's own words,

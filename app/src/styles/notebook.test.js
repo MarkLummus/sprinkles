@@ -342,9 +342,9 @@ describe("the log's vertical rhythm and the tasting grids (G-03.5-6, 03.5-25)", 
     expect(topLevel('.notebook-log .batch-row__plan').declarations).toMatch(/margin-top:\s*0/);
   });
 
-  test("the churn cells' own grid, a direct child of the section, has no top margin; the tasting grids keep the Sheet's", () => {
-    const churn = topLevel('.notebook-log .batch-row > .batch-row__cells');
-    expect(churn, 'expected a top-level .notebook-log .batch-row > .batch-row__cells rule').toBeTruthy();
+  test("the churn cells' own grid, a direct child of .batch-margin, has no top margin; the tasting grids keep the Sheet's", () => {
+    const churn = topLevel('.notebook-log .batch-margin > .batch-row__cells');
+    expect(churn, 'expected a top-level .notebook-log .batch-margin > .batch-row__cells rule').toBeTruthy();
     expect(churn.declarations).toMatch(/margin-top:\s*0/);
   });
 

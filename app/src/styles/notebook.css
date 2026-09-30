@@ -679,7 +679,9 @@
 .notebook-log .batch-row {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-m);
+  /* G-03.5-6: 18, the gap every sketch 011 batch board draws between the
+     head and the cells (the Sheet's 12px grid margin is zeroed below). */
+  gap: var(--app-notebook-log-group-gap);
 }
 
 /* The batch list block (FoldRow + UprightRail, decision 19, 03.5-17): the
@@ -766,6 +768,20 @@
   gap: var(--app-notebook-log-cell-gap-row) var(--gap-m);
 }
 
+/* G-03.5-6: the churn grid is a direct child of .batch-margin, the section's
+   next child after the head, so the section's gap alone puts the board's 18
+   between the head and the cells. The tasting grids sit deeper and keep the
+   Sheet's margin. */
+.notebook-log .batch-margin > .batch-row__cells {
+  margin-top: 0;
+}
+
+/* G-03.5-6: a cell's label sits 2px above its value, as the boards draw it
+   (app.css keeps the Sheet's 6). */
+.notebook-log .batch-row__cell {
+  gap: var(--gap-hair);
+}
+
 .notebook-log .batch-row__cell-label {
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
@@ -779,6 +795,8 @@
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-log-value-size);
   font-weight: 600;
+  /* G-03.5-6: the boards' value line is normal leading (app.css: 1.1). */
+  line-height: normal;
   color: var(--app-text);
   font-variant-numeric: tabular-nums;
 }
@@ -795,6 +813,8 @@
 
 .notebook-log .batch-row__plan {
   font-size: var(--app-size-label);
+  /* G-03.5-6: the cell's own gap spaces the plan line, as on the boards. */
+  margin-top: 0;
   color: var(--app-text-secondary);
 }
 
@@ -920,6 +940,14 @@
   .notebook-log .batch-row__cells {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
+
+  /* G-03.5-6: the tasting grids take four across here, the generator's own
+     tasting grid (gen.py batch_log cols3). No board draws Tasting open
+     between 724 and 1365, so this count is generator-sourced, not board-
+     measured. The base rule's two columns serve 1366 and up. */
+  .notebook-log .tasting-reading .batch-row__cells {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* The phone forms (sketch 011 decision 16's Grouping Rule): 724 = the
@@ -954,6 +982,12 @@
   /* G-03.5-6: two columns again at 723.98 and below (723-batch.html,
      393-batch.html), after the five-across step above. */
   .notebook-log .batch-row__cells {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* G-03.5-6: the tasting grids' three-class selector outranks the log's
+     two-class rule above, so two columns are restated for them here. */
+  .notebook-log .tasting-reading .batch-row__cells {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

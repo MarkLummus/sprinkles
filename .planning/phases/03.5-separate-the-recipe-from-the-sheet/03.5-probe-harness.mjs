@@ -4,7 +4,7 @@
 // never Mark's own `vite preview --host` on :4173, which this harness never
 // touches (decisions_recorded 6). Every request whose host is not
 // 127.0.0.1 is aborted, so no third-party asset (the boards' Google Fonts
-// link) is ever fetched into a measured page (T-03.5-25/26).
+// link) is ever fetched into a measured page (T-03.5-69/26).
 //
 // Plain Node ESM: playwright-core (absolute path, copied from
 // 260925-u3r-probe.mjs), node:http, node:fs and node:path only. It never
@@ -84,7 +84,7 @@ function listen(server) {
 // Two throwaway static servers on ephemeral 127.0.0.1 ports: `app` serves
 // the build (REPO_ROOT/app/dist, SPA fallback for client-side routes),
 // `repo` serves the whole repo tree (for the sketch 011 boards under
-// .planning/sketches/). Neither binds --host or 0.0.0.0 (T-03.5-25).
+// .planning/sketches/). Neither binds --host or 0.0.0.0 (T-03.5-69).
 export async function startServers() {
   const appServer = createStaticServer(path.join(REPO_ROOT, 'app', 'dist'), { spaFallback: true });
   const repoServer = createStaticServer(REPO_ROOT);
@@ -107,7 +107,7 @@ export async function launch() {
   return chromium.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
 }
 
-// Blocks every request whose host is not 127.0.0.1 (T-03.5-26) — the boards'
+// Blocks every request whose host is not 127.0.0.1 (T-03.5-70) — the boards'
 // Google Fonts link included; Caveat resolves from app/public/fonts.
 async function blockThirdPartyRequests(context) {
   await context.route('**/*', (route) => {

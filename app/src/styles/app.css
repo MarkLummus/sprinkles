@@ -1490,17 +1490,6 @@ textarea {
   border-top: var(--rule-graduation) solid var(--sheet-ink);
 }
 
-.tasting-reading__head {
-  display: flex;
-  align-items: baseline;
-  gap: var(--gap-s);
-  flex-wrap: wrap;
-}
-
-.tasting-reading__head .region-name {
-  margin: 0;
-}
-
 .tasting-reading__note {
   max-width: var(--measure-prose);
   margin: var(--gap-m) 0 0;

@@ -254,6 +254,11 @@ function TastingReading({ batch, foldsOpen = true }) {
   // cells above it (BatchRow's own reading branch) stay outside the fold
   // at every width. The tasted date moves into the fold row's own count
   // slot (decisions_recorded 3) — the separate date paragraph is gone.
+  // Tasting is its own section (G-03.5-8d; Mark, UAT item 9): a section
+  // named Tasting with an h2, the level of Balance and Watch for, still
+  // nested where it sits in the log. The h2 holds FoldRow directly, with no
+  // head wrapper, so it is a block and the button's width: 100% reaches the
+  // log's content box with the tasted date at the row's end (G-03.5-4).
   const [open, toggle] = useFold(foldsOpen);
   const body = (
     <>
@@ -335,22 +340,20 @@ function TastingReading({ batch, foldsOpen = true }) {
     </>
   );
   return (
-    <div className="tasting-reading">
-      <div className="tasting-reading__head">
-        <h3 className="region-name">
-          <FoldRow
-            label="Tasting"
-            open={open}
-            onToggle={toggle}
-            controls="fold-tasting"
-            count={`tasted ${recordDateWords(batch.tasting.tastedDate)}`}
-          />
-        </h3>
-      </div>
+    <section className="tasting-reading" aria-label="Tasting">
+      <h2 className="region-name">
+        <FoldRow
+          label="Tasting"
+          open={open}
+          onToggle={toggle}
+          controls="fold-tasting"
+          count={`tasted ${recordDateWords(batch.tasting.tastedDate)}`}
+        />
+      </h2>
       <div id="fold-tasting" hidden={!open}>
         {body}
       </div>
-    </div>
+    </section>
   );
 }
 

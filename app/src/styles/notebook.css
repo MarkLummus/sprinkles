@@ -706,6 +706,13 @@
   color: var(--app-text-secondary);
 }
 
+/* The Tasting heading (an h2 directly under .tasting-reading, G-03.5-8d)
+   takes no margin: .region-name's own bottom margin (app.css) would
+   otherwise sit between the heading and the fold below it. */
+.notebook-log .tasting-reading > .region-name {
+  margin: 0;
+}
+
 .notebook-log .batch-row__date {
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-size-body);

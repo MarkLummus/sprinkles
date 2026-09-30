@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 18/18 plans executed
+**Plans:** 18/25 plans executed
 
 Plans:
 
@@ -531,6 +531,25 @@ Plans:
 **Wave 15** *(blocked on 03.5-15 to 03.5-18)*
 
 - [x] 03.5-14-PLAN.md — Conformance re-run against sketch 011 at 1920/1600/1366/1024/984/983/723/393 and the decision-19 count boards, drift fixed, Open for Mark, device UAT, and the /impeccable document hand-off
+
+**Wave 16 — gap closure** *(03.5-UAT.md, with Mark's decisions of 2026-09-29; G-03.5-2b deferred until Impeccable draws it)*
+
+- [ ] 03.5-19-PLAN.md — Show changes no longer crashes on a version that adds a step its parent lacks. The new step reads plain, with no mark yet. Lineage sweep and a new changes probe (G-03.5-2a)
+- [ ] 03.5-20-PLAN.md — Every board measured at its own drawn width and pointer, the regression re-run at matched widths, the method recorded (G-03.5-8c)
+- [ ] 03.5-21-PLAN.md — The iPhone types a minus: the two °C fields take the text keyboard, contract line 187 and sketches 007/008 amended in place. Fold names pause at a comma, "Version, Show details" (G-03.5-5b, G-03.5-7)
+- [ ] 03.5-22-PLAN.md — The as-made field holds 56px while typing and its column holds still. The foot band's ceremony keeps its labels whole at every width. Home's name links meet the 44px coarse floor. DESIGN.md first (G-03.5-8a, G-03.5-8b, G-03.5-4b)
+
+**Wave 17** *(blocked on 03.5-20 to 03.5-22)*
+
+- [ ] 03.5-23-PLAN.md — Tasting its own section with an h2, drawn on the boards first. Every fold head fills its row at every width, measured against the row and the board (G-03.5-4, G-03.5-8d)
+
+**Wave 18** *(blocked on 03.5-23)*
+
+- [ ] 03.5-24-PLAN.md — The rails' line connects nodes only: upright to upright-393.html's geometry, horizontal redrawn on the boards first, then trimmed in the app (G-03.5-5)
+
+**Wave 19** *(blocked on 03.5-24)*
+
+- [ ] 03.5-25-PLAN.md — The log's measurements on the board's grid and rhythm (5 across 724-1365, 2x3 elsewhere), the wrongly accepted conformance rows corrected, the round's full regression (G-03.5-6)
 
 ### Phase 4: Prepare the next version for making
 

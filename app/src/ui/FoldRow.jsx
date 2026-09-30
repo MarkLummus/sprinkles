@@ -14,11 +14,13 @@
 // React element. The visible markup below is untouched — label, control
 // word and count stay three adjacent DOM text nodes exactly as before, so
 // no layout gap changes; only the button's computed accessible name gains
-// real word boundaries.
+// real word boundaries. WR-01's boundary was a space, which gave separate
+// words but no pause; a comma is what VoiceOver pauses on, so the label,
+// the control word and any count are comma-joined (G-03.5-7).
 export function FoldRow({ label, labelText, open, onToggle, controls, what, count }) {
   const controlWord = (open ? 'Hide' : 'Show') + (what ? ` ${what}` : '');
   const name = typeof label === 'string' ? label : labelText;
-  const accessibleName = `${name} ${controlWord}${count ? `, ${count}` : ''}`;
+  const accessibleName = `${name}, ${controlWord}${count ? `, ${count}` : ''}`;
   return (
     <button
       type="button"

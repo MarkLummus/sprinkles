@@ -158,27 +158,77 @@ async function readPenBoard(browser, repoUrl, file) {
   return { ...table, ...extras };
 }
 
-// Task 2: the recording state's own as-made field — the row's first
-// numeric-cell input, once 'Record another' opens the pen.
-async function readRecording(browser, appUrl, width) {
-  const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse: false });
+// G-03.5-8a (03.5-22 Task 1): the recording state's own as-made field, read
+// keystroke by keystroke. The first reading (03.5-11) typed nothing, so it
+// measured the empty field only (~52px, the width of the seed total
+// "799.7 g" in the hand, not a designed width) and the growth Mark saw while
+// typing never showed. Each reading is the field, its cell, the row's name
+// cell, and the row's grid track list (the list form's fixed tracks).
+function readRecordingCells() {
+  const table = document.querySelector('.ingredient-table');
+  const row = [...table.querySelectorAll('tbody tr')].find(
+    (tr) => !tr.classList.contains('ingredient-table__step-head'),
+  );
+  const input = row?.querySelector('.ingredient-table__col-numeric input') ?? null;
+  const cell = input ? input.closest('td') : null;
+  const nameCell = row?.querySelector('.ingredient-table__col-name') ?? null;
+  const box = (el) => {
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return { left: r.left, right: r.right, width: r.width };
+  };
+  return {
+    value: input ? input.value : null,
+    input: box(input),
+    cell: box(cell),
+    name: box(nameCell),
+    columns: row ? getComputedStyle(row).gridTemplateColumns : null,
+    scrollWidth: document.documentElement.scrollWidth,
+    innerWidth: window.innerWidth,
+  };
+}
+
+async function readRecordingStep(page) {
+  // One frame after the key, so React has committed the re-render.
+  return page.evaluate(
+    () => new Promise((resolve) => requestAnimationFrame(() => resolve(window.__readRecordingCells()))),
+  );
+}
+
+async function typeKeystrokes(page, keys) {
+  const input = page.locator('.ingredient-table tbody .ingredient-table__col-numeric input').first();
+  await input.click();
+  // Caret to the end of the value (macOS's End key scrolls, it does not move
+  // the caret), so a prefilled amount is appended to, not typed into.
+  await input.evaluate((el) => el.setSelectionRange(el.value.length, el.value.length));
+  const steps = [await readRecordingStep(page)];
+  for (const key of keys) {
+    await page.keyboard.press(key);
+    steps.push(await readRecordingStep(page));
+  }
+  return steps;
+}
+
+async function readRecording(browser, appUrl, width, coarse) {
+  const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+  await page.evaluate(`window.__readRecordingCells = ${readRecordingCells.toString()}`);
   await page.click('.batch-row__record');
   await page.waitForSelector('.ingredient-table tbody input');
-  const reading = await page.evaluate(() => {
-    const table = document.querySelector('.ingredient-table');
-    const rows = [...table.querySelectorAll('tbody tr')].filter(
-      (tr) => !tr.classList.contains('ingredient-table__step-head'),
-    );
-    const input = rows[0]?.querySelector('.ingredient-table__col-numeric input') ?? null;
-    return {
-      inputWidth: input ? input.getBoundingClientRect().width : null,
-      scrollWidth: document.documentElement.scrollWidth,
-      innerWidth: window.innerWidth,
-    };
-  });
+  const fresh = await typeKeystrokes(page, '12345');
+  // The Correct path: the saved as-made values prefill, and digits append to
+  // the first one. Cancel closes the record pen first.
+  await page.getByRole('button', { name: 'Cancel' }).first().click();
+  await page.waitForSelector('.batch-row__correct');
+  await page.click('.batch-row__correct');
+  await page.waitForSelector('.ingredient-table tbody input');
+  const appended = await typeKeystrokes(page, '999');
   await context.close();
-  return reading;
+  return { fresh, appended };
 }
+
+// Which pointers each width is read at (03.5-22 Task 1): the iPhone, both
+// iPad orientations, and the fine desktop widths either side.
+const RECORDING_COARSE = { 393: [true], 1024: [true], 1366: [false, true] };
 
 // Task 2: a marked row's shift — read every cell's left in the first three
 // ingredient rows, focus the first GraduatedRule figure, read again. A
@@ -282,14 +332,43 @@ async function main() {
       }
 
       if (wantsRecording) {
-        const reading = await readRecording(browser, appUrl, width);
-        console.log(JSON.stringify({ width, recording: reading }));
-        countedCheck(reading.inputWidth != null, `recording width=${width}: as-made field found`);
-        countedCheck(
-          reading.inputWidth >= 52 - 0.5,
-          `recording width=${width}: as-made field is at least 52px wide (measured ${reading.inputWidth}px)`,
-        );
-        countedCheck(reading.scrollWidth <= reading.innerWidth, `recording width=${width}: no page overflow`);
+        for (const coarse of RECORDING_COARSE[width] ?? [false]) {
+          const label = `recording width=${width} ${coarse ? 'coarse' : 'fine'}`;
+          const { fresh, appended } = await readRecording(browser, appUrl, width, coarse);
+          console.log(JSON.stringify({ width, coarse, recording: { fresh, appended } }));
+          for (const [seriesName, series] of [['typed', fresh], ['appended', appended]]) {
+            countedCheck(series[0].input != null, `${label} ${seriesName}: as-made field found`);
+            if (series[0].input == null) continue;
+            const first = series[0];
+            series.forEach((step, index) => {
+              const where = `${label} ${seriesName} key ${index} (value "${step.value}")`;
+              countedCheck(
+                closeTo(step.input.width, 56, 0.5),
+                `${where}: the field holds 56px (measured ${step.input.width.toFixed(2)}px)`,
+              );
+              countedCheck(step.scrollWidth <= step.innerWidth, `${where}: no page overflow`);
+              if (width >= 724) {
+                countedCheck(
+                  closeTo(step.cell.width, first.cell.width, 0.5),
+                  `${where}: the As made column holds its width (${step.cell.width.toFixed(2)} vs ${first.cell.width.toFixed(2)})`,
+                );
+                countedCheck(
+                  closeTo(step.name.left, first.name.left, 0.5) && closeTo(step.name.width, first.name.width, 0.5),
+                  `${where}: the name column does not move (left ${step.name.left.toFixed(2)}, width ${step.name.width.toFixed(2)})`,
+                );
+              } else {
+                countedCheck(step.columns === first.columns, `${where}: the row's grid tracks do not change`);
+                countedCheck(
+                  step.input.left >= step.cell.left - 0.5 && step.input.right <= step.cell.right + 0.5,
+                  `${where}: the field sits inside its track`,
+                );
+              }
+            });
+            if (width < 724) {
+              console.log(`${label} ${seriesName}: field ${first.input.width}px in a ${first.cell.width}px track, right edge ${first.input.right} of ${first.cell.right}`);
+            }
+          }
+        }
       }
 
       if (wantsMarked) {

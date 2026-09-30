@@ -194,6 +194,31 @@ describe('IngredientTable — the As made column obeys hasAsMadeLayer (G-03-1 fi
     assertCellCountsAgree(markup);
   });
 
+  // G-03.5-8a (03.5-22): the recording as-made field holds its own width
+  // (--sheet-field-w-figure) and the live total stays out of the column's
+  // content sizing, so typing never moves the As made or name column. Both
+  // hooks exist in the recording state only.
+  it('recording: the as-made input carries its sizing hook beside ink-field, and the tfoot total cell its live-total hook (G-03.5-8a)', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="recording" draft={{ asMade: {} }} openBatch={null} />,
+    );
+
+    expect(markup).toContain('class="ink-field ingredient-table__as-made-field"');
+    const tfoot = markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>'));
+    expect(tfoot).toContain('<td class="ingredient-table__col-numeric ingredient-table__col-numeric--live-total">');
+  });
+
+  it("reading a saved batch carries neither recording hook (G-03.5-8a)", () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" draft={null} openBatch={makeBatch({ a: ['45'] })} />,
+    );
+
+    expect(markup).not.toContain('ingredient-table__as-made-field');
+    expect(markup).not.toContain('ingredient-table__col-numeric--live-total');
+  });
+
   it('developing on a version with no batch: As made header absent — the exact case the maker reported', () => {
     const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
     const draftVersion = makeVersion([makeRow('a', 'Row A', 40, 1)]);

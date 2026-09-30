@@ -151,14 +151,55 @@ export async function openApp(browser, appUrl, routePath, { width, height = 1100
   return { context, page };
 }
 
-// Opens a sketch 011 board the way the canvas rendered it: a wide viewport
-// with a fine pointer, since the canvas gives an artboard no narrow
-// viewport of its own (decisions_recorded 7).
-export async function openBoard(browser, repoUrl, file) {
-  const context = await browser.newContext({ viewport: { width: 1920, height: 1100 }, hasTouch: false, isMobile: false });
+// Opens a sketch 011 board at the width and pointer it was drawn for
+// (G-03.5-8c; Mark, UAT item 4: "switch to matched widths"), the way the app
+// is measured. `file` resolves against .planning/sketches/011-recipe-route-c/
+// exactly as the URL does, so '../011-options-counts/x.html' works.
+//  - width: the board file's own data-props `$preview.width` (gen.py writes it
+//    on every board, the multi-panel count boards included). A file without it
+//    fails, naming the file, rather than defaulting to a guess.
+//  - coarse: true exactly when the file name carries 393, the boards drawn for
+//    the iPhone. Every other board draws fine-pointer sizes.
+//  - height: 1100, as openApp.
+// An explicit { width, coarse } overrides either default. A coarse context
+// mirrors openApp: hasTouch, isMobile, deviceScaleFactor 3, and the same
+// matchMedia assertion. The count boards open at their page width, not at
+// 393: their panels carry their own fixed widths inline.
+const BOARD_DIR = path.join(REPO_ROOT, '.planning', 'sketches', '011-recipe-route-c');
+
+async function drawnWidthOf(file) {
+  const boardPath = path.resolve(BOARD_DIR, file);
+  if (!boardPath.startsWith(path.join(REPO_ROOT, '.planning', 'sketches') + path.sep)) {
+    throw new Error(`openBoard: ${file} resolves outside .planning/sketches`);
+  }
+  const html = await readFile(boardPath, 'utf8');
+  const match = html.match(/"\$preview"\s*:\s*\{\s*"width"\s*:\s*(\d+)/);
+  if (!match) throw new Error(`openBoard: ${boardPath} carries no $preview width in its data-props`);
+  return Number(match[1]);
+}
+
+export async function openBoard(browser, repoUrl, file, { width, height = 1100, coarse } = {}) {
+  const drawnWidth = width ?? (await drawnWidthOf(file));
+  const wantCoarse = coarse ?? path.basename(file).includes('393');
+  const context = await browser.newContext({
+    viewport: { width: drawnWidth, height },
+    hasTouch: wantCoarse,
+    isMobile: false,
+    deviceScaleFactor: wantCoarse ? 3 : 1,
+  });
   await blockThirdPartyRequests(context);
   const page = await context.newPage();
   await page.goto(`${repoUrl}/.planning/sketches/011-recipe-route-c/${file}`, { waitUntil: 'networkidle' });
+
+  const actualCoarse = await page.evaluate(() => window.matchMedia('(pointer: coarse)').matches);
+  if (actualCoarse !== wantCoarse) {
+    await context.close();
+    const err = new Error(
+      `openBoard: expected (pointer: coarse) to be ${wantCoarse}, got ${actualCoarse} for ${file} at ${drawnWidth}x${height}`,
+    );
+    err.name = 'PointerModeMismatch';
+    throw err;
+  }
   return { context, page };
 }
 

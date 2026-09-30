@@ -165,6 +165,7 @@ async function buildCountsAppState(browser, appUrl, probeSource) {
 async function runCounts(browser, appUrl, repoUrl, probeSource) {
   const boardReadings = {};
   for (const panel of COUNT_PANELS) {
+    // A count board opens at its page width; the panel inside carries its own fixed width.
     const { context, page } = await openBoard(browser, repoUrl, panel.file);
     boardReadings[panel.name] = await readCountPanel(page, panel.caption);
     await context.close();
@@ -248,6 +249,7 @@ async function main() {
       const width = widthFor(name);
       const coarse = coarseFor(name);
 
+      // openBoard opens the board at its own drawn width and pointer (G-03.5-8c).
       const boardCtx = await openBoard(browser, repoUrl, boardFile);
       const boardReading = await readPageWith(boardCtx.page, probeSource);
       await boardCtx.context.close();

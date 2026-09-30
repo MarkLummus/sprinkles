@@ -1,18 +1,18 @@
 ---
 gsd_state_version: "1.0"
 current_phase: "03.5"
-current_phase_name: Separate the recipe from the sheet
+current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
-stopped_at: Completed 03.5-09-PLAN.md
-last_updated: "2026-09-28T16:28:28.077Z"
-last_activity: 2026-09-28
+stopped_at: Completed 03.5-19-PLAN.md
+last_updated: "2026-09-30T02:03:39.891Z"
+last_activity: 2026-09-29
 last_activity_desc: Phase 03.5 execution started
-state_head: fa28522e45be3941501e1a07752901ae1dbb9f01
+state_head: ccbc0306b71e1b19464eec0d4f3187a1fa308fa7
 progress:
   total_phases: 12
   completed_phases: 8
-  total_plans: 84
-  completed_plans: 84
+  total_plans: 91
+  completed_plans: 85
   percent: 67
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-22)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.5 — Separate the recipe from the sheet
+**Current focus:** Phase 03.5 — Separate the recipe from the sheet (INSERTED)
 
 ## Current Position
 
-Phase: 03.5 (Separate the recipe from the sheet) — EXECUTING
-Plan: 7 of 18
+Phase: 03.5 (Separate the recipe from the sheet (INSERTED)) — EXECUTING
+Plan: 2 of 25
 Status: Ready to execute
-Last activity: 2026-09-28 — Phase 03.5 execution started
+Last activity: 2026-09-29 — Phase 03.5 execution started
 
 Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -113,6 +113,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P18 | 35min | 3 tasks | 9 files |
 | Phase 03.5 P14 | ~4h elapsed (~30min automated) | 3 tasks | 26 files |
 | Phase 03.5 P09 | ~50min | 3 tasks | 9 files |
+| Phase 03.5 P19 | 3 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -218,6 +219,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: [Phase 03.5] [Phase 03.5, Plan 09] Mark approved the transcribed seed content as transcribed (2026-09-28); seedRecipeGroups (olive oil first, then transcribedRecipeGroups) is the one array seed.js imports, DB_VERSION moved to 7
 - [Phase 03.5]: [Phase 03.5] [Phase 03.5, Plan 09] Judgement call 58: Coconut's, Strawberry's and Mocha's batches arrays reordered newest-first in seed-recipes.js so Home's standing (activeWork/sortedBatches) reads each recipe's true newest batch rather than an array-order tie-break artifact; no field changed, no date invented
 - [Phase 03.5]: jsdom kept as a devDependency (Mark 2026-09-28): tests default to Vitest's node environment; a test needing a real render cycle opts in per file with a @vitest-environment jsdom docblock (first: useFold.reset.test.jsx)
+- [Phase 03.5]: 03.5-19: Show changes treats stepDiff.textFrom == null as a step new in this version and renders it plain; no added mark until Impeccable draws it (G-03.5-2a). G-03.5-2b still deferred.
 
 ### Pending Todos
 
@@ -358,6 +360,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-28T16:02:54.285Z
-Stopped at: Completed 03.5-09-PLAN.md
+Last session: 2026-09-30T02:03:39.782Z
+Stopped at: Completed 03.5-19-PLAN.md
 Resume file: None

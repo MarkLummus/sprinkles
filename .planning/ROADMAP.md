@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 18/25 plans executed
+**Plans:** 19/25 plans executed
 
 Plans:
 
@@ -534,7 +534,7 @@ Plans:
 
 **Wave 16 — gap closure** *(03.5-UAT.md, with Mark's decisions of 2026-09-29; G-03.5-2b deferred until Impeccable draws it)*
 
-- [ ] 03.5-19-PLAN.md — Show changes no longer crashes on a version that adds a step its parent lacks. The new step reads plain, with no mark yet. Lineage sweep and a new changes probe (G-03.5-2a)
+- [x] 03.5-19-PLAN.md — Show changes no longer crashes on a version that adds a step its parent lacks. The new step reads plain, with no mark yet. Lineage sweep and a new changes probe (G-03.5-2a)
 - [ ] 03.5-20-PLAN.md — Every board measured at its own drawn width and pointer, the regression re-run at matched widths, the method recorded (G-03.5-8c)
 - [ ] 03.5-21-PLAN.md — The iPhone types a minus: the two °C fields take the text keyboard, contract line 187 and sketches 007/008 amended in place. Fold names pause at a comma, "Version, Show details" (G-03.5-5b, G-03.5-7)
 - [ ] 03.5-22-PLAN.md — The as-made field holds 56px while typing and its column holds still. The foot band's ceremony keeps its labels whole at every width. Home's name links meet the 44px coarse floor. DESIGN.md first (G-03.5-8a, G-03.5-8b, G-03.5-4b)

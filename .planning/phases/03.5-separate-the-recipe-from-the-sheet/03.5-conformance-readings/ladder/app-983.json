@@ -434,7 +434,7 @@
       "top": 2743.640625,
       "left": 32,
       "w": 919,
-      "h": 417.390625,
+      "h": 396,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -454,9 +454,9 @@
       "Record another"
     ],
     "cellLabel": {
-      "top": 2799.640625,
+      "top": 2785.640625,
       "left": 40,
-      "w": 145.5,
+      "w": 164.59375,
       "h": 15,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(89, 89, 89)",
@@ -473,10 +473,10 @@
       "text": "Time to draw temp."
     },
     "cellValue": {
-      "top": 2820.640625,
+      "top": 2802.640625,
       "left": 40,
-      "w": 145.5,
-      "h": 22.390625,
+      "w": 164.59375,
+      "h": 25,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -485,14 +485,14 @@
       "fw": "600",
       "fs": "20px",
       "ff": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
-      "lh": "22px",
+      "lh": "normal",
       "gap": "normal",
       "gtc": "none",
       "display": "block",
       "text": "20 min"
     },
     "handNote": {
-      "top": 2883.03125,
+      "top": 2861.640625,
       "left": 40,
       "w": 903,
       "h": 27.5,
@@ -509,6 +509,22 @@
       "gtc": "none",
       "display": "block",
       "text": "Soft, not greasy"
+    },
+    "cellGrid": {
+      "tracks": [
+        "164.594px",
+        "164.594px",
+        "164.609px",
+        "164.594px",
+        "164.609px"
+      ],
+      "pitch": [
+        0,
+        184.6,
+        369.2,
+        553.8,
+        738.4
+      ]
     }
   },
   "ladder": {
@@ -520,7 +536,7 @@
       "top": 63,
       "left": 0,
       "w": 983,
-      "h": 3146.03125,
+      "h": 3124.640625,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -545,7 +561,7 @@
       "top": 2743.640625,
       "left": 32,
       "w": 919,
-      "h": 417.390625,
+      "h": 396,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",

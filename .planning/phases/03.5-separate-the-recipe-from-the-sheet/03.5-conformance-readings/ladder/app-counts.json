@@ -8,7 +8,7 @@
     },
     "band": {
       "railMarkBox": {
-        "top": -2622,
+        "top": -2598,
         "left": 20,
         "w": 8,
         "h": 64.375,
@@ -27,7 +27,7 @@
         "text": ""
       },
       "h1": {
-        "top": -2622,
+        "top": -2598,
         "left": 42,
         "w": 331,
         "h": 64.375,
@@ -46,7 +46,7 @@
         "text": "Olive Oil Ice Cream, circulator"
       },
       "description": {
-        "top": -2549.625,
+        "top": -2525.625,
         "left": 20,
         "w": 353,
         "h": 90,
@@ -65,7 +65,7 @@
         "text": "Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath."
       },
       "rename": {
-        "top": -2451.625,
+        "top": -2427.625,
         "left": 20,
         "w": 55.203125,
         "h": 44,
@@ -86,7 +86,7 @@
     },
     "versionColumn": {
       "caption": {
-        "top": -2373.125,
+        "top": -2349.125,
         "left": 20,
         "w": 60.28125,
         "h": 15,
@@ -105,9 +105,9 @@
         "text": "Version"
       },
       "identity": {
-        "top": -2331.625,
+        "top": -2307.625,
         "left": 20,
-        "w": 216.046875,
+        "w": 353,
         "h": 23,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
@@ -143,7 +143,7 @@
         "text": "Written1 Jul 2026Whyno reason recorded"
       },
       "nextVersion": {
-        "top": -2296.625,
+        "top": -2272.625,
         "left": 20,
         "w": 125.5,
         "h": 44,
@@ -172,7 +172,7 @@
     },
     "sheet": {
       "headnoteH1": {
-        "top": -2123.625,
+        "top": -2099.625,
         "left": 20,
         "w": 353,
         "h": 36,
@@ -197,7 +197,7 @@
         0
       ],
       "planGrams": {
-        "top": -1892.140625,
+        "top": -1868.140625,
         "left": 20,
         "w": 64,
         "h": 18,
@@ -216,7 +216,7 @@
         "text": "120 g"
       },
       "chip": {
-        "top": -1889.21875,
+        "top": -1865.21875,
         "left": 175.640625,
         "w": 66.921875,
         "h": 16.390625,
@@ -238,7 +238,7 @@
       "stepChanged": null,
       "firstRowCells": [
         {
-          "top": -1892.140625,
+          "top": -1868.140625,
           "left": 20,
           "w": 64,
           "h": 18,
@@ -257,7 +257,7 @@
           "text": "120 g"
         },
         {
-          "top": -1892.140625,
+          "top": -1868.140625,
           "left": 94,
           "w": 224.796875,
           "h": 33.703125,
@@ -295,7 +295,7 @@
           "text": ""
         },
         {
-          "top": -1892.140625,
+          "top": -1868.140625,
           "left": 328.796875,
           "w": 44.203125,
           "h": 18,
@@ -316,7 +316,7 @@
       ],
       "totalRowCells": [
         {
-          "top": -1221.171875,
+          "top": -1197.171875,
           "left": 20,
           "w": 64,
           "h": 19,
@@ -335,7 +335,7 @@
           "text": "799.7 g"
         },
         {
-          "top": -1221.171875,
+          "top": -1197.171875,
           "left": 94,
           "w": 269,
           "h": 42,
@@ -354,7 +354,7 @@
           "text": "Total"
         },
         {
-          "top": -1200.171875,
+          "top": -1176.171875,
           "left": 20,
           "w": 64,
           "h": 21,
@@ -394,7 +394,7 @@
       ],
       "listRow": [
         {
-          "top": -1892.140625,
+          "top": -1868.140625,
           "left": 20,
           "w": 64,
           "h": 18,
@@ -414,7 +414,7 @@
           "gridRow": "1 / auto"
         },
         {
-          "top": -1892.140625,
+          "top": -1868.140625,
           "left": 94,
           "w": 224.796875,
           "h": 33.703125,
@@ -454,7 +454,7 @@
           "gridRow": "2 / auto"
         },
         {
-          "top": -1892.140625,
+          "top": -1868.140625,
           "left": 328.796875,
           "w": 44.203125,
           "h": 18,
@@ -477,10 +477,10 @@
     },
     "log": {
       "columnBox": {
-        "top": 497.609375,
+        "top": 521.609375,
         "left": 0,
         "w": 393,
-        "h": 505.96875,
+        "h": 482.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -500,10 +500,10 @@
         "Record another"
       ],
       "cellLabel": {
-        "top": 686.796875,
+        "top": 694.796875,
         "left": 20,
-        "w": 104.34375,
-        "h": 30,
+        "w": 166.5,
+        "h": 15,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(89, 89, 89)",
         "bw": "0px",
@@ -518,26 +518,21 @@
         "display": "block",
         "text": "Time to draw temp."
       },
-      "cellValue": {
-        "top": 722.796875,
-        "left": 20,
-        "w": 104.34375,
-        "h": 22.390625,
-        "bg": "rgba(0, 0, 0, 0)",
-        "color": "rgb(20, 20, 20)",
-        "bw": "0px",
-        "bc": "rgb(20, 20, 20)",
-        "br": "0px",
-        "fw": "600",
-        "fs": "20px",
-        "ff": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
-        "lh": "22px",
-        "gap": "normal",
-        "gtc": "none",
-        "display": "block",
-        "text": "not measured"
-      },
-      "handNote": null
+      "cellValue": null,
+      "handNote": null,
+      "cellGrid": {
+        "tracks": [
+          "166.5px",
+          "166.5px"
+        ],
+        "pitch": [
+          0,
+          186.5,
+          0,
+          186.5,
+          0
+        ]
+      }
     },
     "ladder": {
       "railDisplay": "none",
@@ -545,10 +540,10 @@
       "toolsPlaceDisplay": "none",
       "recipePageTrackCount": 1,
       "frameBox": {
-        "top": -2638,
+        "top": -2614,
         "left": 0,
         "w": 393,
-        "h": 3681.578125,
+        "h": 3657.796875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -570,10 +565,10 @@
         "columnGap": "20px"
       },
       "logBox": {
-        "top": 497.609375,
+        "top": 521.609375,
         "left": 0,
         "w": 393,
-        "h": 505.96875,
+        "h": 482.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -744,7 +739,7 @@
       "identity": {
         "top": 369.375,
         "left": 20,
-        "w": 216.046875,
+        "w": 353,
         "h": 23,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
@@ -1117,7 +1112,7 @@
         "top": 3308.609375,
         "left": 0,
         "w": 393,
-        "h": 505.96875,
+        "h": 482.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -1137,10 +1132,10 @@
         "Record another"
       ],
       "cellLabel": {
-        "top": 3497.796875,
+        "top": 3481.796875,
         "left": 20,
-        "w": 104.34375,
-        "h": 30,
+        "w": 166.5,
+        "h": 15,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(89, 89, 89)",
         "bw": "0px",
@@ -1155,26 +1150,21 @@
         "display": "block",
         "text": "Time to draw temp."
       },
-      "cellValue": {
-        "top": 3533.796875,
-        "left": 20,
-        "w": 104.34375,
-        "h": 22.390625,
-        "bg": "rgba(0, 0, 0, 0)",
-        "color": "rgb(20, 20, 20)",
-        "bw": "0px",
-        "bc": "rgb(20, 20, 20)",
-        "br": "0px",
-        "fw": "600",
-        "fs": "20px",
-        "ff": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
-        "lh": "22px",
-        "gap": "normal",
-        "gtc": "none",
-        "display": "block",
-        "text": "not measured"
-      },
-      "handNote": null
+      "cellValue": null,
+      "handNote": null,
+      "cellGrid": {
+        "tracks": [
+          "166.5px",
+          "166.5px"
+        ],
+        "pitch": [
+          0,
+          186.5,
+          0,
+          186.5,
+          0
+        ]
+      }
     },
     "ladder": {
       "railDisplay": "none",
@@ -1185,7 +1175,7 @@
         "top": 63,
         "left": 0,
         "w": 393,
-        "h": 3791.578125,
+        "h": 3767.796875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -1210,7 +1200,7 @@
         "top": 3308.609375,
         "left": 0,
         "w": 393,
-        "h": 505.96875,
+        "h": 482.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -1381,7 +1371,7 @@
       "identity": {
         "top": -2301.625,
         "left": 20,
-        "w": 216.046875,
+        "w": 353,
         "h": 23,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
@@ -1754,7 +1744,7 @@
         "top": 527.609375,
         "left": 0,
         "w": 393,
-        "h": 671.96875,
+        "h": 648.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -1774,10 +1764,10 @@
         "Record another"
       ],
       "cellLabel": {
-        "top": 882.796875,
+        "top": 866.796875,
         "left": 20,
-        "w": 104.34375,
-        "h": 30,
+        "w": 166.5,
+        "h": 15,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(89, 89, 89)",
         "bw": "0px",
@@ -1792,26 +1782,21 @@
         "display": "block",
         "text": "Time to draw temp."
       },
-      "cellValue": {
-        "top": 918.796875,
-        "left": 20,
-        "w": 104.34375,
-        "h": 22.390625,
-        "bg": "rgba(0, 0, 0, 0)",
-        "color": "rgb(20, 20, 20)",
-        "bw": "0px",
-        "bc": "rgb(20, 20, 20)",
-        "br": "0px",
-        "fw": "600",
-        "fs": "20px",
-        "ff": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
-        "lh": "22px",
-        "gap": "normal",
-        "gtc": "none",
-        "display": "block",
-        "text": "not measured"
-      },
-      "handNote": null
+      "cellValue": null,
+      "handNote": null,
+      "cellGrid": {
+        "tracks": [
+          "166.5px",
+          "166.5px"
+        ],
+        "pitch": [
+          0,
+          186.5,
+          0,
+          186.5,
+          0
+        ]
+      }
     },
     "ladder": {
       "railDisplay": "none",
@@ -1822,7 +1807,7 @@
         "top": -2608,
         "left": 0,
         "w": 393,
-        "h": 3847.578125,
+        "h": 3823.796875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -1847,7 +1832,7 @@
         "top": 527.609375,
         "left": 0,
         "w": 393,
-        "h": 671.96875,
+        "h": 648.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -2310,7 +2295,7 @@
         "top": 422.1875,
         "left": 984,
         "w": 350,
-        "h": 659.96875,
+        "h": 636.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",
@@ -2330,10 +2315,10 @@
         "Record another"
       ],
       "cellLabel": {
-        "top": 765.375,
+        "top": 749.375,
         "left": 984,
-        "w": 103.34375,
-        "h": 30,
+        "w": 165,
+        "h": 15,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(89, 89, 89)",
         "bw": "0px",
@@ -2348,26 +2333,21 @@
         "display": "block",
         "text": "Time to draw temp."
       },
-      "cellValue": {
-        "top": 801.375,
-        "left": 984,
-        "w": 103.34375,
-        "h": 22.390625,
-        "bg": "rgba(0, 0, 0, 0)",
-        "color": "rgb(20, 20, 20)",
-        "bw": "0px",
-        "bc": "rgb(20, 20, 20)",
-        "br": "0px",
-        "fw": "600",
-        "fs": "20px",
-        "ff": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
-        "lh": "22px",
-        "gap": "normal",
-        "gtc": "none",
-        "display": "block",
-        "text": "not measured"
-      },
-      "handNote": null
+      "cellValue": null,
+      "handNote": null,
+      "cellGrid": {
+        "tracks": [
+          "165px",
+          "165px"
+        ],
+        "pitch": [
+          0,
+          185,
+          0,
+          185,
+          0
+        ]
+      }
     },
     "ladder": {
       "railDisplay": "flex",
@@ -2403,7 +2383,7 @@
         "top": 422.1875,
         "left": 984,
         "w": 350,
-        "h": 659.96875,
+        "h": 636.1875,
         "bg": "rgba(0, 0, 0, 0)",
         "color": "rgb(20, 20, 20)",
         "bw": "0px",

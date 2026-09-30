@@ -491,6 +491,22 @@
       "gtc": "none",
       "display": "block",
       "text": "Soft, not greasy"
+    },
+    "cellGrid": {
+      "tracks": [
+        "128px",
+        "128px",
+        "128px",
+        "128px",
+        "128px"
+      ],
+      "pitch": [
+        0,
+        148,
+        296,
+        444,
+        592
+      ]
     }
   },
   "ladder": {

@@ -572,6 +572,19 @@
       "gtc": "none",
       "display": "block",
       "text": "Soft, not greasy"
+    },
+    "cellGrid": {
+      "tracks": [
+        "331.5px",
+        "331.5px"
+      ],
+      "pitch": [
+        0,
+        351.5,
+        0,
+        351.5,
+        0
+      ]
     }
   },
   "ladder": {

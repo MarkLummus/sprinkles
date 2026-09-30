@@ -434,7 +434,7 @@
       "top": 422.1875,
       "left": 984,
       "w": 350,
-      "h": 877.25,
+      "h": 869.6875,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -454,10 +454,10 @@
       "Record another"
     ],
     "cellLabel": {
-      "top": 520.375,
+      "top": 506.375,
       "left": 984,
-      "w": 103.34375,
-      "h": 30,
+      "w": 165,
+      "h": 15,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(89, 89, 89)",
       "bw": "0px",
@@ -473,10 +473,10 @@
       "text": "Time to draw temp."
     },
     "cellValue": {
-      "top": 556.375,
+      "top": 523.375,
       "left": 984,
-      "w": 103.34375,
-      "h": 22.390625,
+      "w": 165,
+      "h": 25,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -485,14 +485,14 @@
       "fw": "600",
       "fs": "20px",
       "ff": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
-      "lh": "22px",
+      "lh": "normal",
       "gap": "normal",
       "gtc": "none",
       "display": "block",
       "text": "20 min"
     },
     "handNote": {
-      "top": 693.15625,
+      "top": 689.375,
       "left": 984,
       "w": 350,
       "h": 27.5,
@@ -509,6 +509,19 @@
       "gtc": "none",
       "display": "block",
       "text": "Soft, not greasy"
+    },
+    "cellGrid": {
+      "tracks": [
+        "165px",
+        "165px"
+      ],
+      "pitch": [
+        0,
+        185,
+        0,
+        185,
+        0
+      ]
     }
   },
   "ladder": {
@@ -545,7 +558,7 @@
       "top": 422.1875,
       "left": 984,
       "w": 350,
-      "h": 877.25,
+      "h": 869.6875,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",

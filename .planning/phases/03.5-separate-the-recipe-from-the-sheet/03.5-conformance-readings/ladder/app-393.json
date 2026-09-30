@@ -106,7 +106,7 @@
     "identity": {
       "top": 369.375,
       "left": 20,
-      "w": 280.75,
+      "w": 353,
       "h": 23,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
@@ -515,7 +515,7 @@
       "top": 3336.203125,
       "left": 0,
       "w": 393,
-      "h": 560.96875,
+      "h": 557.1875,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -535,10 +535,10 @@
       "Record another"
     ],
     "cellLabel": {
-      "top": 3446.390625,
+      "top": 3432.390625,
       "left": 20,
-      "w": 104.34375,
-      "h": 30,
+      "w": 166.5,
+      "h": 15,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(89, 89, 89)",
       "bw": "0px",
@@ -554,10 +554,10 @@
       "text": "Time to draw temp."
     },
     "cellValue": {
-      "top": 3482.390625,
+      "top": 3449.390625,
       "left": 20,
-      "w": 104.34375,
-      "h": 22.390625,
+      "w": 166.5,
+      "h": 25,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -566,14 +566,14 @@
       "fw": "600",
       "fs": "20px",
       "ff": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
-      "lh": "22px",
+      "lh": "normal",
       "gap": "normal",
       "gtc": "none",
       "display": "block",
       "text": "20 min"
     },
     "handNote": {
-      "top": 3619.171875,
+      "top": 3615.390625,
       "left": 20,
       "w": 353,
       "h": 27.5,
@@ -590,6 +590,19 @@
       "gtc": "none",
       "display": "block",
       "text": "Soft, not greasy"
+    },
+    "cellGrid": {
+      "tracks": [
+        "166.5px",
+        "166.5px"
+      ],
+      "pitch": [
+        0,
+        186.5,
+        0,
+        186.5,
+        0
+      ]
     }
   },
   "ladder": {
@@ -601,7 +614,7 @@
       "top": 63,
       "left": 0,
       "w": 393,
-      "h": 3874.171875,
+      "h": 3870.390625,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",
@@ -626,7 +639,7 @@
       "top": 3336.203125,
       "left": 0,
       "w": 393,
-      "h": 560.96875,
+      "h": 557.1875,
       "bg": "rgba(0, 0, 0, 0)",
       "color": "rgb(20, 20, 20)",
       "bw": "0px",

@@ -2,12 +2,14 @@
 // against the built app and, where a board exists for the width, the
 // matching sketch 011 board. Groups accumulate across this plan's tasks —
 // Task 1 added nav, sheet and home; Task 2 added log and cap; Task 3 adds
-// band and margin.
+// band and margin; 03.5-20 adds boards.
 //
 // Usage: node 03.5-ladder-probe.mjs <groups> <widths>
 //   groups: comma list, e.g. nav,sheet,home
 //   widths: comma list, e.g. 983,984,1024
-import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE } from './03.5-probe-harness.mjs';
+import { readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
+import { startServers, launch, openApp, openBoard, check, finish, APP_ROUTE, REPO_ROOT } from './03.5-probe-harness.mjs';
 
 const [, , groupsArg, widthsArg] = process.argv;
 
@@ -140,6 +142,35 @@ async function readBoard(browser, repoUrl, file) {
   return reading;
 }
 
+// 03.5-20 (G-03.5-8c): every sketch 011 board and count board, opened through
+// openBoard with no options, measured at the width it was drawn at. The
+// expected width is read here from the file's own data-props `$preview`,
+// independently of the harness, so the check cannot agree with itself.
+const SKETCH_DIRS = ['011-recipe-route-c', '011-options-counts'];
+
+function boardFiles() {
+  const files = [];
+  for (const dir of SKETCH_DIRS) {
+    const abs = path.join(REPO_ROOT, '.planning', 'sketches', dir);
+    for (const name of readdirSync(abs).filter((n) => n.endsWith('.html')).sort()) {
+      if (dir === '011-recipe-route-c' && name === 'index.html') continue;
+      files.push({ dir, name, arg: dir === '011-recipe-route-c' ? name : `../${dir}/${name}`, abs: path.join(abs, name) });
+    }
+  }
+  return files;
+}
+
+async function readBoardFrame(browser, repoUrl, file, options) {
+  const { context, page } = await openBoard(browser, repoUrl, file, options);
+  const reading = await page.evaluate(() => ({
+    innerWidth: window.innerWidth,
+    coarse: window.matchMedia('(pointer: coarse)').matches,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  await context.close();
+  return reading;
+}
+
 function isShown(display) {
   return display !== null && display !== 'none';
 }
@@ -158,6 +189,27 @@ async function main() {
   const needsApp = ['nav', 'sheet', 'log', 'cap', 'band', 'margin'].some((g) => groups.has(g));
 
   try {
+    if (groups.has('boards')) {
+      // The widths argument is ignored: each board is measured at its own.
+      for (const board of boardFiles()) {
+        const match = readFileSync(board.abs, 'utf8').match(/"\$preview":\{"width":(\d+)/);
+        const drawn = match ? Number(match[1]) : null;
+        countedCheck(drawn !== null, `boards ${board.name}: carries a $preview width`);
+        if (drawn === null) continue;
+        const wantCoarse = board.name.includes('393');
+        const reading = await readBoardFrame(browser, repoUrl, board.arg);
+        countedCheck(reading.innerWidth === drawn, `boards ${board.name}: innerWidth ${reading.innerWidth} is the drawn ${drawn}`);
+        countedCheck(reading.coarse === wantCoarse, `boards ${board.name}: pointer coarse is ${wantCoarse} (name ${wantCoarse ? 'carries' : 'lacks'} 393)`);
+        countedCheck(
+          reading.scrollWidth <= reading.innerWidth + 1,
+          `boards ${board.name}: scrollWidth ${reading.scrollWidth} within innerWidth ${reading.innerWidth} + 1`,
+        );
+      }
+      // An explicit option still overrides the defaults.
+      const forced = await readBoardFrame(browser, repoUrl, '393-batch.html', { width: 1920, coarse: false });
+      countedCheck(forced.innerWidth === 1920 && forced.coarse === false, 'boards 393-batch.html: { width: 1920, coarse: false } still gives 1920 fine');
+    }
+
     for (const width of widths) {
       const appReading = needsApp ? await readApp(browser, appUrl, width) : null;
       const homeReading = groups.has('home') ? await readHome(browser, appUrl, width) : null;

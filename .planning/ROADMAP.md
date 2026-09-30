@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 24/25 plans executed
+**Plans:** 25/25 plans executed
 
 Plans:
 
@@ -549,7 +549,7 @@ Plans:
 
 **Wave 19** *(blocked on 03.5-24)*
 
-- [ ] 03.5-25-PLAN.md — The log's measurements on the board's grid and rhythm (5 across 724-1365, 2x3 elsewhere), the wrongly accepted conformance rows corrected, the round's full regression (G-03.5-6)
+- [x] 03.5-25-PLAN.md — The log's measurements on the board's grid and rhythm (5 across 724-1365, 2x3 elsewhere), the wrongly accepted conformance rows corrected, the round's full regression (G-03.5-6)
 
 ### Phase 4: Prepare the next version for making
 

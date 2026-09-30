@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
-stopped_at: Completed 03.5-24-PLAN.md
-last_updated: "2026-09-30T02:52:50.166Z"
+stopped_at: Completed 03.5-25-PLAN.md
+last_updated: "2026-09-30T03:06:27.630Z"
 last_activity: 2026-09-29
 last_activity_desc: Phase 03.5 execution started
-state_head: ad37c70d7c6c2df72983598b793b7695fe49e4ee
+state_head: b9aa014d8d46187060aadff450d9252bed32896e
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 91
-  completed_plans: 90
+  completed_plans: 91
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet (INSERTED)) — EXECUTING
-Plan: 7 of 25
+Plan: 8 of 25
 Status: Ready to execute
 Last activity: 2026-09-29 — Phase 03.5 execution started
 
@@ -119,6 +119,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P22 | 30 min | 3 tasks | 9 files |
 | Phase 03.5 P23 | 11 min | 2 tasks | 24 files |
 | Phase 03.5 P24 | 13 min | 3 tasks | 20 files |
+| Phase 03.5 P25 | 20 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -234,6 +235,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: 03.5-23: Tasting is its own section nested in place (section named Tasting, h2 heading, inside the Batch section); the sibling-after-Batch alternative is Mark's call
 - [Phase 03.5]: 03.5-23: band grid align-items: stretch in the 723.98px block fills the Version fold head; it also widens the Rename and Next version forms at phone width (recorded for Mark)
 - [Phase 03.5]: 03.5-24: the upright connector is the row's ::before (ahead of the positioned link), mark in a title-line box, row aligns to start; the horizontal rail's track runs first mark centre to last inside a content-sized strip (G-03.5-5)
+- [Phase 03.5]: 03.5-25: the tasting grids' 4 columns from 724 to 1365.98 are generator-sourced (gen.py batch_log cols3); no board draws Tasting open there
+- [Phase 03.5]: 03.5-25: the churn grid's top margin is zeroed on .batch-margin > .batch-row__cells (the grid is a child of .batch-margin, not .batch-row)
 
 ### Pending Todos
 
@@ -374,6 +377,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-09-30T02:52:50.053Z
-Stopped at: Completed 03.5-24-PLAN.md
+Last session: 2026-09-30T03:06:27.529Z
+Stopped at: Completed 03.5-25-PLAN.md
 Resume file: None

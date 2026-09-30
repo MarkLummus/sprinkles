@@ -717,9 +717,15 @@ export function Method({
             // marked the way the reading state already marks a skipped
             // step — the step's own prose struck in place — not by forcing
             // this paragraph, which would print the same sentence twice.
-            const showStruckBeneath = stepDiff.leadInChanged || stepDiff.instructionChanged;
-            const showPurposeStruck = stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
-            const showAsideStruck = stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
+            //
+            // A step absent from the parent has no parent text to strike:
+            // buildDiff gives it textFrom: null (diff.js's contract) and every
+            // *Changed flag true. It reads plain until Impeccable draws its
+            // mark (G-03.5-2a).
+            const isNewStep = stepDiff.textFrom == null;
+            const showStruckBeneath = !isNewStep && (stepDiff.leadInChanged || stepDiff.instructionChanged);
+            const showPurposeStruck = !isNewStep && stepDiff.purposeChanged && stepDiff.textFrom.purpose !== '';
+            const showAsideStruck = !isNewStep && stepDiff.asideChanged && stepDiff.textFrom.aside !== '';
             // The margin (D-UAT-5, G-03-14): a number that came from the
             // BASELINE frame — the number the step had in the parent — is
             // printed here, unlike in the pen above, and carries the

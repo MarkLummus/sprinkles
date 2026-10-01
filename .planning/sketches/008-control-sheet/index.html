@@ -351,12 +351,12 @@ const T = {
   },
   checkbox: s => `<label class="check${s.focus ? ' is-focus' : ''}"><input type="checkbox" class="${cls('', { hover: s.hover, on: s.on }).trim()}"${s.on ? ' checked' : ''} aria-label="Step 3, skipped"><span>Skipped</span></label>`,
   dateField: s => `<label class="field f-date"><span class="lbl">Churn date</span><input type="date" class="${cls('ink-field', s)}"${s.value ? ' value="2026-08-02"' : ''}></label>`,
-  numField: s => `<label class="field"><span class="lbl">Out of machine</span><span class="field-unit"><input type="text" inputmode="text" autocorrect="off" autocapitalize="off" class="${cls('ink-field', s)}" value="${s.invalid ? 'cold' : s.value ? '−6' : ''}" aria-invalid="${!!s.invalid}"${s.invalid ? ' aria-describedby="err-out"' : ''}><span class="u">°C</span></span>${s.invalid ? '<span class="field-error" id="err-out">Enter a temperature, such as −6, or leave blank.</span>' : ''}</label>`,
+  numField: s => `<label class="field"><span class="lbl">Out of machine</span><span class="field-unit"><input type="number" step="any" class="${cls('ink-field', s)}" value="${s.value && !s.invalid ? '-6' : ''}" aria-invalid="${!!s.invalid}"${s.invalid ? ' aria-describedby="err-out"' : ''}><span class="u">°C</span></span>${s.invalid ? '<span class="field-error" id="err-out">Enter a temperature, such as −6, or leave blank.</span>' : ''}</label>`,
   proseField: s => `<label class="field"><span class="lbl">How did it turn out?</span><textarea class="${cls('prose-field', s)}" rows="2" placeholder="e.g. flavor, texture, anything that stood out">${s.value ? 'Soft, not greasy. The oil comes through late, after the sweetness.' : ''}</textarea></label>`,
   fieldRow: () => `<div class="field-row">
       <label class="f-date"><span class="lbl">Tasted</span><input type="date" class="ink-field"></label>
       <label><span class="lbl">Tempering</span><span class="field-unit"><input type="text" inputmode="decimal" class="ink-field"><span class="u">min</span></span></label>
-      <label><span class="lbl">Tasting temperature</span><span class="field-unit"><input type="text" inputmode="text" autocorrect="off" autocapitalize="off" class="ink-field"><span class="u">°C</span></span></label>
+      <label><span class="lbl">Tasting temperature</span><span class="field-unit"><input type="number" step="any" class="ink-field"><span class="u">°C</span></span></label>
     </div>`,
   status: () => `<p class="form-status" role="status">Check the marked measurements. Your entries have been kept.</p>`,
 };

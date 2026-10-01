@@ -594,7 +594,7 @@ function previewSave(button) {
     clearError(field);
     const raw = field.value.trim().replace(/−/g, '-');
     const signed = field.closest('label').textContent.includes('°C');
-    if (!raw || (/^[+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)$/.test(raw) && Number.isFinite(Number(raw.replace(',', '.'))) && (signed || Number(raw.replace(',', '.')) >= 0))) return;
+    if ((!raw && !field.validity.badInput) || (/^[+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)$/.test(raw) && Number.isFinite(Number(raw.replace(',', '.'))) && (signed || Number(raw.replace(',', '.')) >= 0))) return;
     field.setAttribute('aria-invalid', 'true');
     const error = document.createElement('span');
     error.id = field.id + '-error';
@@ -616,7 +616,7 @@ renderAxes();
 });
 document.querySelectorAll('input').forEach((field, i) => {
   field.id ||= 'measurement-' + i;
-  if (field.type !== 'date') { const isC = field.closest('label').textContent.includes('°C'); field.inputMode = isC ? 'text' : 'decimal'; if (isC) { field.setAttribute('autocorrect', 'off'); field.setAttribute('autocapitalize', 'off'); } }
+  if (field.type !== 'date') { const isC = field.closest('label').textContent.includes('°C'); if (isC) { field.type = 'number'; field.step = 'any'; } else { field.inputMode = 'decimal'; } }
   field.addEventListener('input', () => { if (field.closest('#tasting-body')) forgetUndo(); clearError(field); updateSaveLabel(); });
 });
 document.querySelectorAll('textarea').forEach(field => {

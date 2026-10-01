@@ -184,7 +184,7 @@ after a wider gap (the `declared-flaw` margin) marking it as a different kind of
 
 **Date and numeric fields**:
 
-- Non-date inputs carry `inputMode="decimal"`, except the two °C fields (`inputMode="text"`, autocorrect and autocapitalize off: the iPhone decimal pad has no minus, G-03.5-5b). Blank is always allowed.
+- Non-date inputs carry `inputMode="decimal"`, except the two °C fields: those are `type="number"` with `step="any"` and no `inputMode`, no autocorrect and no autocapitalize, because the iPhone decimal pad has no minus and the text keyboard opens on letters, while WebKit opens a number input on the numbers layer with a minus and a period (G-03.5-R2-2; Mark confirmed it on his iPhone, 2026-09-30). A number input reports an entry it cannot read as a blank value, so that entry is read through `validity.badInput` and flagged with the field's own sentence, never saved as blank; the browser also filters what can be typed there, so the comma and Unicode-minus rules below serve the four text fields. Blank is always allowed.
 - Decimal point and comma both accepted; a Unicode minus (−) is normalized to ASCII; negatives are
   rejected except on °C fields (a field is a temperature when its label's text includes "°C" —
   "Out of machine" and "Tasting temperature").

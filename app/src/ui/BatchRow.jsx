@@ -67,13 +67,46 @@ const CHURN_DATE_ERROR_ID = 'field-error-churnDate';
 // other control there is Phase 4's, not built here.
 export const NO_BATCH_PROSE = 'Not yet churned. Print the sheet, make it, then record what happened.';
 
+// What the draft holds for a signed field's entry that the browser cannot
+// read as a number (a lone minus, "1-2", "5e"): a fixed string with letters
+// in it, so parseMeasuredDraft rejects it and the one save gate flags the
+// field with its own contract sentence. A number input reports such an entry
+// as value "" with validity.badInput true, which the draft would otherwise
+// save as blank (G-03.5-R2-2, T-03.5-82). A string, not a flag: isDraftDirty,
+// tastingHasInk and the save gate already read the draft's strings, so none
+// of them changes.
+export const MALFORMED_NUMBER_ENTRY = 'unreadable number';
+
+// A signed input's draft value: the constant when the browser holds text it
+// cannot read, the input's own value otherwise.
+export function readSignedInput(input) {
+  return input.validity.badInput ? MALFORMED_NUMBER_ENTRY : input.value;
+}
+
+// What a signed input displays for a draft value. The constant shows as
+// blank: setting a number input's value to text it cannot hold wipes the
+// characters the maker typed from the screen, so the unreadable entry stays
+// where it is and the draft alone carries the fact.
+export function shownSignedValue(value) {
+  return value === MALFORMED_NUMBER_ENTRY ? '' : value;
+}
+
 // One battery measured field (contract "Controls spec"; sketch 007 @
-// 2a212be lines 37-44; D-13): text-mode, inputMode="decimal" — never
-// type="number", so a malformed value stays in place rather than being
-// rejected before validation runs. The exception is a signed field (the two
-// °C ones): the iPhone decimal pad has no minus key, so it takes the full
-// keyboard (inputMode="text") with autocorrect and autocapitalize off
-// (G-03.5-5b; Mark, 2026-09-29). The unit word is a sibling after the
+// 2a212be lines 37-44; D-13): text-mode, inputMode="decimal", so a
+// malformed value stays in place rather than being rejected before
+// validation runs. The exception is a signed field (the two °C ones): the
+// iPhone decimal pad has no minus key and the text keyboard opens on
+// letters, while WebKit opens a number input on the numbers layer with a
+// minus and a period, so these two are type="number" with step="any" and
+// no inputMode (an inputmode would win over the type), and no autocorrect
+// or autocapitalize, which mean nothing there (G-03.5-R2-2; Mark,
+// 2026-09-30, after trying it on his iPhone; it reverses the 03.3.1 rule
+// never to use a number input, for these two fields only). A number input
+// hands over no text for an entry it cannot read, so MALFORMED_NUMBER_ENTRY
+// carries that fact into the draft, and the displayed value stays blank for
+// it. React's onChange does not fire for a lone minus typed into an empty
+// field (the value string stays ""), while the browser's own input event
+// does, so one handler serves both on a signed field. The unit word is a sibling after the
 // input, never concatenated into the caption (007 lines 42-44: the root
 // cause of UAT item 2) — the aria-label keeps the spelled-out unit for
 // the field's accessible name. The .field-error line renders inside the
@@ -84,22 +117,24 @@ export const NO_BATCH_PROSE = 'Not yet churned. Print the sheet, make it, then r
 // side of the churn/tasting line.
 function MeasuredField({ field, value, error, onChange, inputRef }) {
   const errorId = `field-error-${field.key}`;
+  const handleEdit = (event) =>
+    onChange(field.key, field.signed ? readSignedInput(event.target) : event.target.value);
   return (
     <label className="field-row__label">
       <span className="pen-caption">{field.label}</span>
       <span className="field-unit">
         <input
-          type="text"
-          inputMode={field.signed ? 'text' : 'decimal'}
-          autoCorrect={field.signed ? 'off' : undefined}
-          autoCapitalize={field.signed ? 'off' : undefined}
+          type={field.signed ? 'number' : 'text'}
+          step={field.signed ? 'any' : undefined}
+          inputMode={field.signed ? undefined : 'decimal'}
           className="ink-field"
           aria-label={`${field.label}, ${unitWords(field.unit)}`}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errorId : undefined}
-          value={value}
+          value={field.signed ? shownSignedValue(value) : value}
           ref={inputRef}
-          onChange={(event) => onChange(field.key, event.target.value)}
+          onChange={handleEdit}
+          onInput={field.signed ? handleEdit : undefined}
         />
         <span className="field-unit__unit">{field.unit}</span>
       </span>

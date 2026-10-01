@@ -165,3 +165,7 @@ If any of that fails on the device, say which step. The next move is then to mea
 ---
 *Quick task: 261001-doi*
 *Completed: 2026-10-01*
+
+## Device check
+
+Mark confirmed on his iPad on 2026-10-01: Tab order now reaches the radios and the Add tasting, Cancel and Save batch buttons, and the note-to-"Every recipe" gap reads right. Device-verified by Mark, not by the WebKit probe.

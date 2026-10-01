@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
 stopped_at: Completed 03.5-30-PLAN.md
-last_updated: "2026-10-01T14:34:48.914Z"
+last_updated: "2026-10-01T15:16:13.420Z"
 last_activity: 2026-10-01
 last_activity_desc: Phase 03.5 execution started
-state_head: 6d61a278f74aa3ebbfeb10d739e6a44aca86fb2d
+state_head: 867a4da3a2ff9814235ce23096c2c07debed90db
 progress:
   total_phases: 12
   completed_phases: 8
@@ -370,6 +370,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261001-den | Fix History rail line span on WebKit: track length by arithmetic from entry count, not strip max-content | 2026-10-01 | c30d95d | [261001-den-fix-history-rail-line-span-on-webkit-tra](./quick/261001-den-fix-history-rail-line-span-on-webkit-tra/) |
 | 261001-doi | Fix iPad WebKit Tab skipping buttons/radios/checkboxes, and the note-to-Every-recipe gap | 2026-10-01 | c16e836 | [261001-doi-fix-ipad-webkit-tab-skipping-buttons-rad](./quick/261001-doi-fix-ipad-webkit-tab-skipping-buttons-rad/) |
 | 261001-eds | Blank the As Made total in the ingredient table when no as-made value has been written | 2026-10-01 | 6d61a27 | [261001-eds-blank-the-as-made-total-in-the-ingredien](./quick/261001-eds-blank-the-as-made-total-in-the-ingredien/) |
+| 261001-fcm | Enforce explicit tabindex by test; move rationale to an engineering note; shorten CLAUDE.md | 2026-10-01 | 867a4da | [261001-fcm-keep-claude-md-short-enforce-explicit-ta](./quick/261001-fcm-keep-claude-md-short-enforce-explicit-ta/) |
 
 ### Roadmap Evolution
 

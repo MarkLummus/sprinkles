@@ -224,12 +224,13 @@ describe('BatchRow — the upright batch list at two or more batches (decision 1
     return markup.match(/<button[^>]*aria-controls="fold-batches"[^>]*>[\s\S]*?<\/button>/)[0];
   }
 
-  it('renders the fold row open by default with foldsOpen true — aria-controls fold-batches, Hide, and the count "3 batches · latest first"', () => {
+  it('renders the fold row open by default with foldsOpen true — aria-controls fold-batches, Hide, and the count "3 batches" alone (G-03.5-R2-1)', () => {
     const markup = renderBatchRow({ batches: threeBatches, openBatch: laterBatch2, foldsOpen: true });
     const foldButton = foldBatchesButton(markup);
     expect(foldButton).toContain('aria-expanded="true"');
     expect(foldButton).toContain('>Hide<');
-    expect(foldButton).toContain('3 batches · latest first');
+    expect(foldButton).toContain('>3 batches<');
+    expect(foldButton).not.toContain('·');
   });
 
   it('runs the ol#fold-batches rows in churn-date descending order, each meta joining tastingProvenance and the out-of-machine words', () => {

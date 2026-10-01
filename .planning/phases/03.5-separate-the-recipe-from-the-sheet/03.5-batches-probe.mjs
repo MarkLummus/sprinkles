@@ -233,6 +233,18 @@ function readTastingGridsIn(page, isApp) {
   }, isApp);
 }
 
+// 03.5-29 (G-03.5-R2-1): the fold head's count, read the same way on the app
+// and on the boards. The count is the button's second direct span child (the
+// first holds the label and the control word). Reads every fold-batches button.
+function readFoldBatchesCounts(page) {
+  return page.evaluate(() =>
+    [...document.querySelectorAll('button[aria-controls="fold-batches"]')].map((button) => {
+      const spans = [...button.children].filter((el) => el.tagName === 'SPAN');
+      return spans[1] ? spans[1].textContent : null;
+    }),
+  );
+}
+
 async function main() {
   const failures = [];
   let checkCount = 0;
@@ -249,6 +261,11 @@ async function main() {
       const { context: boardContext, page: boardPage } = await openBoard(browser, repoUrl, '../011-options-counts/batches-many.html');
       const boardReading = await readBoardUprightGeometry(boardPage);
       console.log(JSON.stringify({ group: 'many', board: 'batches-many.html', boardReading }));
+      const manyBoardCounts = await readFoldBatchesCounts(boardPage);
+      countedCheck(manyBoardCounts.length >= 1, 'many board batches-many.html: a fold-batches button is drawn');
+      for (const count of manyBoardCounts) {
+        countedCheck(count === '3 batches', `many board batches-many.html: the fold-batches count reads exactly "3 batches" (got ${JSON.stringify(count)})`);
+      }
       await boardContext.close();
 
       // 03.5-24 (G-03.5-5): upright-393.html's batch list, the oracle for
@@ -256,6 +273,11 @@ async function main() {
       const { context: uprightCtx, page: uprightPage } = await openBoard(browser, repoUrl, '../011-options-counts/upright-393.html');
       const uprightBoardConnectors = await readBoardUprightConnectors(uprightPage, 'fold-batches');
       uprightConnectorChecks(uprightBoardConnectors, 'many board upright-393.html', countedCheck);
+      const uprightBoardCounts = await readFoldBatchesCounts(uprightPage);
+      countedCheck(uprightBoardCounts.length === 2, `many board upright-393.html: two fold-batches buttons are drawn, one closed and one open (got ${uprightBoardCounts.length})`);
+      for (const count of uprightBoardCounts) {
+        countedCheck(count === '3 batches', `many board upright-393.html: the fold-batches count reads exactly "3 batches" (got ${JSON.stringify(count)})`);
+      }
       await uprightCtx.close();
 
       for (const width of widths) {
@@ -278,10 +300,20 @@ async function main() {
             foldState.ariaExpanded === String(expectedDefault),
             `many width=${width}: fold-batches defaults to aria-expanded=${expectedDefault} (got ${foldState.ariaExpanded})`,
           );
+          const [defaultCount] = await readFoldBatchesCounts(page);
           countedCheck(
-            foldState.text.includes('3 batches'),
-            `many width=${width}: fold-batches control reads the count "3 batches" (got "${foldState.text}")`,
+            defaultCount === '3 batches',
+            `many width=${width}: fold-batches count reads exactly "3 batches" in the default state (got ${JSON.stringify(defaultCount)})`,
           );
+          // One click puts the head in the other state; read it, then undo
+          // the click so the flow below sees the default state again.
+          await page.click('button[aria-controls="fold-batches"]');
+          const [otherCount] = await readFoldBatchesCounts(page);
+          countedCheck(
+            otherCount === '3 batches',
+            `many width=${width}: fold-batches count reads exactly "3 batches" in the other state (got ${JSON.stringify(otherCount)})`,
+          );
+          await page.click('button[aria-controls="fold-batches"]');
           if (foldState.ariaExpanded !== 'true') {
             await page.click('button[aria-controls="fold-batches"]');
           }

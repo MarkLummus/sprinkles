@@ -135,7 +135,7 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
       expect(markup).toContain('aria-label="Watch for, Show"');
     });
 
-    it('reads "Batches, Hide, 3 batches · latest first" — label, control word and count all separated', () => {
+    it('reads "Batches, Hide, 3 batches" — label, control word and count all separated', () => {
       const markup = renderToStaticMarkup(
         <FoldRow
           label={<span className="notebook-caption">Batches</span>}
@@ -143,10 +143,10 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
           open={true}
           onToggle={noop}
           controls="fold-batches"
-          count="3 batches · latest first"
+          count="3 batches"
         />,
       );
-      expect(markup).toContain('aria-label="Batches, Hide, 3 batches · latest first"');
+      expect(markup).toContain('aria-label="Batches, Hide, 3 batches"');
     });
 
     it('reads "Tasting, Show, tasted 28 Sep" for a plain-string label with a count and no "what"', () => {

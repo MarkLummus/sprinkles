@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
 stopped_at: Completed 03.5-30-PLAN.md
-last_updated: "2026-10-01T14:20:57.119Z"
+last_updated: "2026-10-01T14:34:48.914Z"
 last_activity: 2026-10-01
 last_activity_desc: Phase 03.5 execution started
-state_head: c16e8365e18de2354df060929b478f7f01e99889
+state_head: 6d61a278f74aa3ebbfeb10d739e6a44aca86fb2d
 progress:
   total_phases: 12
   completed_phases: 8
@@ -369,6 +369,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 60 | Seed Q13: Underbelly Light Base v1 almond extract -> vanilla extract | 2026-09-28 | 96cb6d5 | — |
 | 261001-den | Fix History rail line span on WebKit: track length by arithmetic from entry count, not strip max-content | 2026-10-01 | c30d95d | [261001-den-fix-history-rail-line-span-on-webkit-tra](./quick/261001-den-fix-history-rail-line-span-on-webkit-tra/) |
 | 261001-doi | Fix iPad WebKit Tab skipping buttons/radios/checkboxes, and the note-to-Every-recipe gap | 2026-10-01 | c16e836 | [261001-doi-fix-ipad-webkit-tab-skipping-buttons-rad](./quick/261001-doi-fix-ipad-webkit-tab-skipping-buttons-rad/) |
+| 261001-eds | Blank the As Made total in the ingredient table when no as-made value has been written | 2026-10-01 | 6d61a27 | [261001-eds-blank-the-as-made-total-in-the-ingredien](./quick/261001-eds-blank-the-as-made-total-in-the-ingredien/) |
 
 ### Roadmap Evolution
 

@@ -556,7 +556,7 @@ export function BatchRow({
             open={batchListOpen}
             onToggle={toggleBatchList}
             controls="fold-batches"
-            count={`${batches.length} batches${batchListOpen ? ' · latest first' : ''}`}
+            count={`${batches.length} batches`}
           />
           <UprightRail
             id="fold-batches"

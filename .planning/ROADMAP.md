@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 27/31 plans executed
+**Plans:** 28/31 plans executed
 
 Plans:
 
@@ -554,7 +554,7 @@ Plans:
 **Wave 20 — gap closure** *(03.5-UAT.md round 2, with Mark's decisions of 2026-09-30; G-03.5-R2-2 follows in Wave 22 now that Mark adopted variant A after his iPhone test, and G-03.5-2b stays deferred)*
 
 - [x] 03.5-26-PLAN.md — A later-recorded undated batch outranks an older dated one, so Mexican Chocolate reads Awaiting tasting; the CR-01 standings and the three Home standings hold, proved through the store and on the built Home (G-03.5-R2-5)
-- [ ] 03.5-27-PLAN.md — Boards first: every fold-head count drawn bare, the boards' touch floor narrowed to the pointer, README decisions 22 and 23, and DESIGN.md's Counts sentence through Impeccable (checkpoint) (G-03.5-R2-1, G-03.5-R2-3)
+- [x] 03.5-27-PLAN.md — Boards first: every fold-head count drawn bare, the boards' touch floor narrowed to the pointer, README decisions 22 and 23, and DESIGN.md's Counts sentence through Impeccable (checkpoint) (G-03.5-R2-1, G-03.5-R2-3)
 - [x] 03.5-28-PLAN.md — The Rename and Next version forms keep content width at 393 and 723 while the fold heads stay full row (G-03.5-R2-4)
 
 **Wave 21** *(blocked on 03.5-27 and 03.5-28)*

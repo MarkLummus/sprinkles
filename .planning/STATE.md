@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
-stopped_at: Completed 03.5-29-PLAN.md
-last_updated: "2026-10-01T11:32:12.667Z"
+stopped_at: Completed 03.5-31-PLAN.md
+last_updated: "2026-10-01T11:38:19.569Z"
 last_activity: 2026-10-01
 last_activity_desc: Phase 03.5 execution started
-state_head: d71e185cf4f37857842a2981c77a41e71baadc60
+state_head: f23be8f34b67672dc605b885f051517f3c6648e2
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 97
-  completed_plans: 95
+  completed_plans: 96
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet (INSERTED)) — EXECUTING
-Plan: 5 of 31
+Plan: 6 of 31
 Status: Ready to execute
 Last activity: 2026-10-01 — Phase 03.5 execution started
 
@@ -124,6 +124,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P28 | 8 min | 2 tasks | 3 files |
 | Phase 03.5 P27 | n/a | 3 tasks | 25 files |
 | Phase 03.5 P29 | 10 min | 2 tasks | 9 files |
+| Phase 03.5 P31 | 4min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -244,6 +245,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: 03.5-26: a batch stands at its churn date or, with none, the UTC day it was recorded; later standing first, same day by recordedAt, neither date last (G-03.5-R2-5, Mark option 1)
 - [Phase 03.5]: 03.5-28: phone band grid keeps the base align-items; .notebook-version alone declares align-self: stretch, so the Rename and Next version forms stand at content width and the Version fold head fills the row (G-03.5-R2-4)
 - [Phase 03.5]: 03.5-29: fold-head counts are the bare count (versionCountWords replaces railHint); History overflow state and resize listener removed (G-03.5-R2-1)
+- [Phase 03.5]: 03.5-31: the two signed degree-C fields are type=number step=any with no inputMode (Mark, 2026-09-30, variant A); the 03.3.1 never-number rule is reversed for these two only — WebKit opens a number input on the numbers layer with a minus; the decimal pad has no minus and the text keyboard opens on letters (G-03.5-R2-2)
+- [Phase 03.5]: 03.5-31: a browser-unreadable entry in a signed field reaches the draft as MALFORMED_NUMBER_ENTRY (one handler on onChange and onInput), so the existing save gate flags it and it is never saved blank; signed fields blur on wheel — A number input reports value '' with badInput true and fires no React onChange for a lone minus; the parser already rejects the constant
 
 ### Pending Todos
 
@@ -384,6 +387,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-01T11:32:12.559Z
-Stopped at: Completed 03.5-29-PLAN.md
+Last session: 2026-10-01T11:38:19.464Z
+Stopped at: Completed 03.5-31-PLAN.md
 Resume file: None

@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 29/31 plans executed
+**Plans:** 30/31 plans executed
 
 Plans:
 
@@ -563,7 +563,7 @@ Plans:
 
 **Wave 22** *(blocked on 03.5-29)*
 
-- [ ] 03.5-31-PLAN.md — Out of machine and Tasting temperature become number inputs that open the iPhone's numbers layer with a minus, an unreadable entry is flagged rather than saved blank, and the contract and sketches are amended first (G-03.5-R2-2; the layer is Mark's device check)
+- [x] 03.5-31-PLAN.md — Out of machine and Tasting temperature become number inputs that open the iPhone's numbers layer with a minus, an unreadable entry is flagged rather than saved blank, and the contract and sketches are amended first (G-03.5-R2-2; the layer is Mark's device check)
 
 **Wave 23** *(blocked on 03.5-26 to 03.5-29 and 03.5-31)*
 

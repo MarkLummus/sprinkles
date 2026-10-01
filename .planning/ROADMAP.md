@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 28/31 plans executed
+**Plans:** 29/31 plans executed
 
 Plans:
 
@@ -559,7 +559,7 @@ Plans:
 
 **Wave 21** *(blocked on 03.5-27 and 03.5-28)*
 
-- [ ] 03.5-29-PLAN.md — The app's fold-head counts read bare, the orphaned overflow state removed, and tests and probes pin the bare count on the build and on the boards (G-03.5-R2-1)
+- [x] 03.5-29-PLAN.md — The app's fold-head counts read bare, the orphaned overflow state removed, and tests and probes pin the bare count on the build and on the boards (G-03.5-R2-1)
 
 **Wave 22** *(blocked on 03.5-29)*
 

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
-stopped_at: Completed 03.5-27-PLAN.md
-last_updated: "2026-10-01T11:26:36.657Z"
+stopped_at: Completed 03.5-29-PLAN.md
+last_updated: "2026-10-01T11:32:12.667Z"
 last_activity: 2026-10-01
 last_activity_desc: Phase 03.5 execution started
-state_head: 1154ea037bc6063de555842da9e47506763d1d91
+state_head: d71e185cf4f37857842a2981c77a41e71baadc60
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 97
-  completed_plans: 94
+  completed_plans: 95
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet (INSERTED)) — EXECUTING
-Plan: 4 of 31
+Plan: 5 of 31
 Status: Ready to execute
 Last activity: 2026-10-01 — Phase 03.5 execution started
 
@@ -123,6 +123,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P26 | 12 min | 2 tasks | 5 files |
 | Phase 03.5 P28 | 8 min | 2 tasks | 3 files |
 | Phase 03.5 P27 | n/a | 3 tasks | 25 files |
+| Phase 03.5 P29 | 10 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -242,6 +243,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: 03.5-25: the churn grid's top margin is zeroed on .batch-margin > .batch-row__cells (the grid is a child of .batch-margin, not .batch-row)
 - [Phase 03.5]: 03.5-26: a batch stands at its churn date or, with none, the UTC day it was recorded; later standing first, same day by recordedAt, neither date last (G-03.5-R2-5, Mark option 1)
 - [Phase 03.5]: 03.5-28: phone band grid keeps the base align-items; .notebook-version alone declares align-self: stretch, so the Rename and Next version forms stand at content width and the Version fold head fills the row (G-03.5-R2-4)
+- [Phase 03.5]: 03.5-29: fold-head counts are the bare count (versionCountWords replaces railHint); History overflow state and resize listener removed (G-03.5-R2-1)
 
 ### Pending Todos
 
@@ -382,6 +384,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-01T11:26:36.549Z
-Stopped at: Completed 03.5-27-PLAN.md
+Last session: 2026-10-01T11:32:12.559Z
+Stopped at: Completed 03.5-29-PLAN.md
 Resume file: None

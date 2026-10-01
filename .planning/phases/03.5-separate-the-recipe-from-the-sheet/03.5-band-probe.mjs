@@ -16,6 +16,12 @@
 // the forced-overflow fade check moved from 393 to 1366 — below 1366 the
 // rail is upright now, not horizontal, so 393 no longer applies to it).
 //
+// 261001-den: the History track is sized from the entry count, not the strip's
+// width. `rail` and `history` now also read the track's edges with the strip
+// narrowed by one node gap per join (what a browser that leaves the gap out of
+// max-content draws), and `history` checks the track at three entries; the
+// fade reading sets the count to match its ten clones.
+//
 // Usage: node 03.5-band-probe.mjs <groups> <widths>
 //   groups: comma list, e.g. rail,folds,rhythm,history
 //   widths: comma list, e.g. 393,1024,1365,1366,1920
@@ -123,6 +129,38 @@ async function readAppRailTrackExtent(page) {
   });
 }
 
+// 261001-den: reproduces what a browser draws when it leaves the node gap out
+// of the strip's max-content width (Mark's iPad, 2026-10-01: the line stopped
+// after the third of four marks). The strip is narrowed by one node gap per
+// join, the track's edges are read against the first and last mark's centres,
+// and the strip's own width is put back before returning. A track measured
+// from the strip's right edge falls short here; one sized from the entry
+// count does not.
+async function readRailTrackShortStrip(page) {
+  return page.evaluate(() => {
+    const strip = document.querySelector('.notebook-history__strip');
+    const list = document.querySelector('.notebook-history__nodes');
+    const track = document.querySelector('.notebook-history__track');
+    const marks = [...document.querySelectorAll('.notebook-history__mark')];
+    if (!strip || !list || !track || marks.length === 0) return null;
+    const gap = parseFloat(getComputedStyle(list).columnGap);
+    const joins = marks.length - 1;
+    const before = strip.style.width;
+    strip.style.width = `${strip.getBoundingClientRect().width - gap * joins}px`;
+    const t = track.getBoundingClientRect();
+    const first = marks[0].getBoundingClientRect();
+    const last = marks[marks.length - 1].getBoundingClientRect();
+    const reading = {
+      markCount: marks.length,
+      gap,
+      leftToFirstMark: t.left - (first.left + first.width / 2),
+      rightToLastMark: t.right - (last.left + last.width / 2),
+    };
+    strip.style.width = before;
+    return reading;
+  });
+}
+
 async function readBoardRailTrackExtent(page) {
   return page.evaluate(() => {
     const track = document.querySelector('div[style*="top:27px"][style*="height:1px"]');
@@ -170,6 +208,13 @@ async function readRailFadeReading(page) {
     for (let i = 0; i < 10; i += 1) {
       list.appendChild(firstNode.cloneNode(true));
     }
+    // The clones stand in for real entries, and the track is sized from the
+    // count React renders, so the count follows the clones. React leaves it
+    // alone on the scroll re-render because its own style value has not
+    // changed (261001-den).
+    document
+      .querySelector('.notebook-history__strip')
+      .style.setProperty('--app-notebook-history-count', String(list.children.length));
 
     const rail = document.querySelector('.notebook-history__rail');
     rail.scrollLeft = 40;
@@ -554,6 +599,21 @@ async function main() {
             );
           }
           await extentBoardCtx.close();
+
+          // 261001-den: the same line with the strip one node gap per join short.
+          const shortStrip = await readRailTrackShortStrip(page);
+          console.log(JSON.stringify({ group: 'rail', width, shortStrip }));
+          countedCheck(shortStrip !== null, `rail width=${width}: the strip can be narrowed for the short-strip reading`);
+          if (shortStrip) {
+            countedCheck(
+              Math.abs(shortStrip.leftToFirstMark) <= 1,
+              `rail width=${width}: with the strip ${shortStrip.gap * (shortStrip.markCount - 1)}px short the track's left edge is at the first mark's centre (off by ${shortStrip.leftToFirstMark})`,
+            );
+            countedCheck(
+              Math.abs(shortStrip.rightToLastMark) <= 1,
+              `rail width=${width}: with the strip ${shortStrip.gap * (shortStrip.markCount - 1)}px short the track's right edge is at the last mark's centre (off by ${shortStrip.rightToLastMark})`,
+            );
+          }
         }
 
         if (width === 1366) {
@@ -682,6 +742,31 @@ async function main() {
               () => document.querySelectorAll('#fold-history .notebook-history__node').length,
             );
             countedCheck(nodeCount === 3, `history width=${width}: 3 horizontal nodes (got ${nodeCount})`);
+
+            // 261001-den: at three entries the line still runs first mark to
+            // last, also with the strip one node gap per join short.
+            const extent3 = await readAppRailTrackExtent(page);
+            console.log(JSON.stringify({ group: 'history', width, extent: extent3 }));
+            countedCheck(extent3 !== null && extent3.markCount === 3, `history width=${width}: three marks to run between (got ${extent3?.markCount})`);
+            if (extent3) {
+              countedCheck(
+                Math.abs(extent3.leftToFirstMark) <= 1,
+                `history width=${width}: the track's left edge is at the first mark's centre (off by ${extent3.leftToFirstMark})`,
+              );
+              countedCheck(
+                Math.abs(extent3.rightToLastMark) <= 1,
+                `history width=${width}: the track's right edge is at the last mark's centre (off by ${extent3.rightToLastMark})`,
+              );
+            }
+            const short3 = await readRailTrackShortStrip(page);
+            console.log(JSON.stringify({ group: 'history', width, shortStrip: short3 }));
+            countedCheck(short3 !== null, `history width=${width}: the strip can be narrowed for the short-strip reading`);
+            if (short3) {
+              countedCheck(
+                Math.abs(short3.rightToLastMark) <= 1,
+                `history width=${width}: with the strip ${short3.gap * (short3.markCount - 1)}px short the track's right edge is at the last mark's centre (off by ${short3.rightToLastMark})`,
+              );
+            }
             countedCheck(
               reading.countText === '3 versions',
               `history width=${width}: the count reads exactly "3 versions" while open (got ${JSON.stringify(reading.countText)})`,

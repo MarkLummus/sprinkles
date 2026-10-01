@@ -590,12 +590,30 @@ async function main() {
           focused: document.activeElement === el,
         }));
 
+      // The two signed inputs keep the box the unsigned inputs beside them
+      // have (Out of machine against Time to draw temp., Tasting temperature
+      // against Tempering), within 0.5px.
+      const boxChecks = async (page, label, pairs) => {
+        for (const [signedName, unsignedName] of pairs) {
+          const [a, b] = await Promise.all(
+            [signedName, unsignedName].map((name) => page.locator(`input[aria-label="${name}"]`).boundingBox()),
+          );
+          countedCheck(
+            a !== null && b !== null && Math.abs(a.width - b.width) <= 0.5 && Math.abs(a.height - b.height) <= 0.5,
+            `keypad ${label}: "${signedName}" is ${a?.width}x${a?.height} against "${unsignedName}" ${b?.width}x${b?.height}`,
+          );
+        }
+      };
+      const BOX_PAIRS_CHURN = [['Out of machine, degrees Celsius', 'Time to draw temp., minutes']];
+      const BOX_PAIRS_TASTING = [['Tasting temperature, degrees Celsius', 'Tempering, minutes']];
+
       for (const width of widths) {
         if (![393, 1366].includes(width)) continue;
         const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse: true });
         await assertSeed(page);
 
         await page.getByRole('button', { name: 'Record another' }).first().click();
+        await boxChecks(page, `width=${width} coarse`, BOX_PAIRS_CHURN);
         const churnNames = ['Time to draw temp., minutes', 'Out of machine, degrees Celsius', 'Churn duration, minutes'];
         const churnReading = await readKeypad(page, churnNames);
         console.log(JSON.stringify({ group: 'keypad', width, phase: 'churn', churnReading }));
@@ -606,6 +624,7 @@ async function main() {
         const tastingReading = await readKeypad(page, tastingNames);
         console.log(JSON.stringify({ group: 'keypad', width, phase: 'tasting', tastingReading }));
         attrChecks(width, tastingReading);
+        await boxChecks(page, `width=${width} coarse`, BOX_PAIRS_TASTING);
 
         // A lone minus, by real key presses (Playwright's fill refuses a lone
         // minus on a number input): the browser reports value '' and
@@ -647,8 +666,43 @@ async function main() {
         countedCheck(fixed.ariaInvalid === null, `keypad width=${width}: aria-invalid is gone once Out of machine reads -6 (got ${fixed.ariaInvalid})`);
         countedCheck((await page.locator('#field-error-outOfMachineTempC').count()) === 0, `keypad width=${width}: the error line is gone once Out of machine reads -6`);
 
+        // The second field, in the same record pen. A lone minus then Backspace
+        // is a blank, not a flag: clearing an unreadable entry returns to blank.
+        const tasting = page.getByLabel('Tasting temperature, degrees Celsius');
+        await tasting.focus();
+        await tasting.pressSequentially('-');
+        await tasting.press('Backspace');
+        const cleared = await readInput(tasting);
+        countedCheck(
+          cleared.value === '' && cleared.badInput === false && cleared.ariaInvalid === null,
+          `keypad width=${width}: a lone minus then Backspace in Tasting temperature is blank, not flagged (got ${JSON.stringify(cleared)})`,
+        );
+        const outStill = await readInput(out);
+        countedCheck(outStill.value === '-6' && outStill.ariaInvalid === null, `keypad width=${width}: Out of machine is unaffected by Tasting temperature's edits (got ${JSON.stringify(outStill)})`);
+
+        // A lone minus again, and Save names Tasting temperature.
+        await tasting.pressSequentially('-');
+        await page.getByRole('button', { name: 'Save batch' }).first().click();
+        const tastingFlagged = await page
+          .waitForSelector('#field-error-tastingTempC', { timeout: 5000 })
+          .then(() => true)
+          .catch(() => false);
+        countedCheck(tastingFlagged, `keypad width=${width}: Save batch with a lone minus flags Tasting temperature`);
+        if (!tastingFlagged) {
+          await context.close();
+          continue;
+        }
+        countedCheck(page.url() === urlBeforeSave, `keypad width=${width}: the URL is unchanged after the second refused save`);
+        const tastingErrorText = await page.locator('#field-error-tastingTempC').textContent();
+        countedCheck(tastingErrorText === TEMPERATURE_SENTENCE, `keypad width=${width}: Tasting temperature's error line reads the temperature sentence (got ${JSON.stringify(tastingErrorText)})`);
+        const tastingState = await readInput(tasting);
+        countedCheck(tastingState.ariaInvalid === 'true' && tastingState.focused, `keypad width=${width}: Tasting temperature is aria-invalid and focused (got ${JSON.stringify(tastingState)})`);
+
+        await tasting.fill('-12');
+        await page.waitForSelector('#field-error-tastingTempC', { state: 'detached', timeout: 5000 }).catch(() => {});
+        countedCheck((await page.locator('#field-error-tastingTempC').count()) === 0, `keypad width=${width}: the error line is gone once Tasting temperature reads -12`);
+
         // The save, in this throwaway context only (T-03.5-55).
-        await page.getByLabel('Tasting temperature, degrees Celsius').fill('-12');
         await page.getByRole('button', { name: 'Save batch' }).first().click();
         await page.waitForFunction((prev) => window.location.href !== prev, urlBeforeSave);
         await page.waitForSelector('h2.region-name:has-text("Batch")');
@@ -671,6 +725,60 @@ async function main() {
           tastingCell !== null && minusThenSix(tastingCell, '12'),
           `keypad width=${width}: the saved Tasting temperature cell reads a minus then 12 (got ${JSON.stringify(tastingCell)})`,
         );
+
+        // The Correct pen prefills what the batch holds.
+        await page.getByRole('button', { name: 'Correct' }).first().click();
+        await page.waitForSelector('input[aria-label="Out of machine, degrees Celsius"]');
+        const amendOut = await readInput(page.getByLabel('Out of machine, degrees Celsius'));
+        const amendTasting = await readInput(page.getByLabel('Tasting temperature, degrees Celsius'));
+        countedCheck(amendOut.value === '-6', `keypad width=${width}: the Correct pen prefills Out of machine with -6 (got ${JSON.stringify(amendOut.value)})`);
+        countedCheck(amendTasting.value === '-12', `keypad width=${width}: the Correct pen prefills Tasting temperature with -12 (got ${JSON.stringify(amendTasting.value)})`);
+
+        await context.close();
+      }
+
+      // The wheel belongs to a fine pointer, so it gets its own context at
+      // 1366, and runs only when 1366 was asked for. A control first: a bare
+      // number input is stepped by a wheel while focused in this browser,
+      // which is what the app's signed fields must not do.
+      if (widths.includes(1366)) {
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width: 1366, coarse: false });
+        await assertSeed(page);
+        await page.getByRole('button', { name: 'Record another' }).first().click();
+        await boxChecks(page, 'width=1366 fine', BOX_PAIRS_CHURN);
+        await page.getByRole('button', { name: 'Add tasting' }).first().click();
+        await boxChecks(page, 'width=1366 fine', BOX_PAIRS_TASTING);
+
+        const wheelOver = async (locator) => {
+          await locator.scrollIntoViewIfNeeded();
+          const box = await locator.boundingBox();
+          await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+          await page.mouse.wheel(0, 100);
+          await page.waitForTimeout(200);
+        };
+
+        await page.evaluate(() => {
+          const control = document.createElement('input');
+          control.id = 'wheel-control';
+          control.type = 'number';
+          control.step = 'any';
+          control.value = '5';
+          control.style.cssText = 'position:fixed;top:10px;left:10px;width:100px;z-index:9999';
+          document.body.appendChild(control);
+          control.focus();
+        });
+        await wheelOver(page.locator('#wheel-control'));
+        const controlValue = await page.locator('#wheel-control').inputValue();
+        console.log(JSON.stringify({ group: 'keypad', width: 1366, wheelControlValue: controlValue }));
+        countedCheck(controlValue !== '5', `keypad wheel: the control number input stepped on wheel (5 became ${controlValue}), so this browser exercises the guard`);
+        await page.evaluate(() => document.getElementById('wheel-control').remove());
+
+        const wheelOut = page.getByLabel('Out of machine, degrees Celsius');
+        await wheelOut.fill('-6');
+        await wheelOut.focus();
+        await wheelOver(wheelOut);
+        const afterWheel = await wheelOut.inputValue();
+        countedCheck(afterWheel === '-6', `keypad wheel: a wheel over a focused Out of machine leaves -6 (got ${afterWheel})`);
 
         await context.close();
       }

@@ -22,6 +22,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
+import { MALFORMED_NUMBER_ENTRY } from './BatchRow.jsx';
 import {
   derivePenState,
   isPenDraftDirty,
@@ -976,5 +977,33 @@ describe('the steps region is named Instructions (Mark, 2026-09-24)', () => {
     const tags = recipePageSourceForInstructions.match(/<section className="method-region"[^>]*>/g) ?? [];
     expect(tags).toHaveLength(1);
     expect(tags[0]).toContain('aria-label="Instructions"');
+  });
+});
+
+describe('a browser-unreadable entry in a signed field (G-03.5-R2-2, T-03.5-82): the draft holds MALFORMED_NUMBER_ENTRY and the existing gate rejects it', () => {
+  const TEMPERATURE_SENTENCE = 'Enter a temperature, such as −6, or leave blank.';
+
+  it('parseAllMeasuredFields flags outOfMachineTempC and tastingTempC with the temperature sentence', () => {
+    const outOnly = parseAllMeasuredFields({ ...makeBlankRecordDraft(), outOfMachineTempC: MALFORMED_NUMBER_ENTRY });
+    expect(outOnly.hasErrors).toBe(true);
+    expect(outOnly.fieldErrors.outOfMachineTempC).toBe(TEMPERATURE_SENTENCE);
+    const tastingOnly = parseAllMeasuredFields({ ...makeBlankRecordDraft(), tastingTempC: MALFORMED_NUMBER_ENTRY });
+    expect(tastingOnly.hasErrors).toBe(true);
+    expect(tastingOnly.fieldErrors.tastingTempC).toBe(TEMPERATURE_SENTENCE);
+  });
+
+  it('validateRecordDraft names outOfMachineTempC as the first invalid field when both are set', () => {
+    const result = validateRecordDraft({
+      ...makeBlankRecordDraft(),
+      outOfMachineTempC: MALFORMED_NUMBER_ENTRY,
+      tastingTempC: MALFORMED_NUMBER_ENTRY,
+    });
+    expect(result.invalidFieldKey).toBe('outOfMachineTempC');
+  });
+
+  it('counts as ink: isDraftDirty is true for the constant in either field, and tastingHasInk for tastingTempC', () => {
+    expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), outOfMachineTempC: MALFORMED_NUMBER_ENTRY })).toBe(true);
+    expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), tastingTempC: MALFORMED_NUMBER_ENTRY })).toBe(true);
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), tastingTempC: MALFORMED_NUMBER_ENTRY })).toBe(true);
   });
 });

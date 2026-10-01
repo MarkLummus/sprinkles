@@ -18,6 +18,12 @@
 // 03.5-21: `keypad` (G-03.5-5b) reads each battery input's inputmode after
 // Record another / Add tasting, then saves -6 and -12 in the two °C fields
 // and reads both back. Usage: node 03.5-batches-probe.mjs keypad 393,1366
+//
+// 03.5-31: `keypad` (G-03.5-R2-2) now reads the attribute set that opens the
+// iPhone's numbers layer (the two °C fields type number, step any, no
+// inputmode; the four others type text, inputmode decimal) and drives a lone
+// minus through real key presses to prove it is flagged, never saved blank.
+// The layer itself is a WebKit fact on Mark's iPhone, not a probe result.
 import {
   startServers,
   launch,
@@ -530,15 +536,20 @@ async function main() {
     }
 
     if (groups.has('keypad')) {
-      // The two signed °C fields open the full keyboard (it has a minus); the
-      // four unsigned ones keep the decimal pad. Keyed by accessible name.
-      const EXPECTED_INPUTMODE = {
-        'Time to draw temp., minutes': 'decimal',
-        'Out of machine, degrees Celsius': 'text',
-        'Churn duration, minutes': 'decimal',
-        'Tempering, minutes': 'decimal',
-        'Tasting temperature, degrees Celsius': 'text',
-        'Melt test, g lost at 20 min': 'decimal',
+      // The two signed °C fields are number inputs (G-03.5-R2-2: the iPhone
+      // opens a number input on its numbers layer, with a minus and a period);
+      // the four unsigned ones stay text with the decimal pad. A Chromium probe
+      // reads the attribute set only; the layer itself is Mark's device check.
+      // Keyed by accessible name.
+      const SIGNED = { type: 'number', step: 'any', inputmode: null, autocorrect: null, autocapitalize: null };
+      const UNSIGNED = { type: 'text', step: null, inputmode: 'decimal', autocorrect: null, autocapitalize: undefined };
+      const EXPECTED_ATTRS = {
+        'Time to draw temp., minutes': UNSIGNED,
+        'Out of machine, degrees Celsius': SIGNED,
+        'Churn duration, minutes': UNSIGNED,
+        'Tempering, minutes': UNSIGNED,
+        'Tasting temperature, degrees Celsius': SIGNED,
+        'Melt test, g lost at 20 min': UNSIGNED,
       };
       const readKeypad = (page, names) =>
         page.evaluate(
@@ -547,15 +558,37 @@ async function main() {
               const el = document.querySelector(`input[aria-label="${name}"]`);
               return {
                 name,
+                type: el ? el.getAttribute('type') : null,
+                step: el ? el.getAttribute('step') : null,
                 inputmode: el ? el.getAttribute('inputmode') : null,
                 autocorrect: el ? el.getAttribute('autocorrect') : null,
                 autocapitalize: el ? el.getAttribute('autocapitalize') : null,
-                type: el ? el.getAttribute('type') : null,
               };
             }),
           names,
         );
+      const attrChecks = (width, reading) => {
+        for (const r of reading) {
+          const want = EXPECTED_ATTRS[r.name];
+          const signed = want === SIGNED;
+          countedCheck(r.type === want.type, `keypad width=${width}: "${r.name}" is type=${want.type} (got ${r.type})`);
+          countedCheck(r.step === want.step, `keypad width=${width}: "${r.name}" step is ${want.step} (got ${r.step})`);
+          countedCheck(r.inputmode === want.inputmode, `keypad width=${width}: "${r.name}" inputmode is ${want.inputmode} (got ${r.inputmode})`);
+          countedCheck(
+            r.autocorrect === null && (signed ? r.autocapitalize === null : true),
+            `keypad width=${width}: "${r.name}" carries no autocorrect${signed ? ' or autocapitalize' : ''} (got ${r.autocorrect}/${r.autocapitalize})`,
+          );
+        }
+      };
       const minusThenSix = (text, digits) => /^[-\u2212]\s*/.test(text.trim()) && text.replace(/[^0-9]/g, '') === digits;
+      const TEMPERATURE_SENTENCE = 'Enter a temperature, such as \u22126, or leave blank.';
+      const readInput = (locator) =>
+        locator.evaluate((el) => ({
+          value: el.value,
+          badInput: el.validity.badInput,
+          ariaInvalid: el.getAttribute('aria-invalid'),
+          focused: document.activeElement === el,
+        }));
 
       for (const width of widths) {
         if (![393, 1366].includes(width)) continue;
@@ -566,36 +599,55 @@ async function main() {
         const churnNames = ['Time to draw temp., minutes', 'Out of machine, degrees Celsius', 'Churn duration, minutes'];
         const churnReading = await readKeypad(page, churnNames);
         console.log(JSON.stringify({ group: 'keypad', width, phase: 'churn', churnReading }));
-        for (const r of churnReading) {
-          const want = EXPECTED_INPUTMODE[r.name];
-          countedCheck(r.inputmode === want, `keypad width=${width}: "${r.name}" inputmode is ${want} (got ${r.inputmode})`);
-          countedCheck(r.type === 'text', `keypad width=${width}: "${r.name}" is type=text (got ${r.type})`);
-          const signed = want === 'text';
-          countedCheck(
-            signed ? r.autocorrect === 'off' && r.autocapitalize === 'off' : r.autocorrect === null,
-            `keypad width=${width}: "${r.name}" autocorrect/autocapitalize ${signed ? 'off' : 'absent'} (got ${r.autocorrect}/${r.autocapitalize})`,
-          );
-        }
+        attrChecks(width, churnReading);
 
         await page.getByRole('button', { name: 'Add tasting' }).first().click();
         const tastingNames = ['Tempering, minutes', 'Tasting temperature, degrees Celsius', 'Melt test, g lost at 20 min'];
         const tastingReading = await readKeypad(page, tastingNames);
         console.log(JSON.stringify({ group: 'keypad', width, phase: 'tasting', tastingReading }));
-        for (const r of tastingReading) {
-          const want = EXPECTED_INPUTMODE[r.name];
-          countedCheck(r.inputmode === want, `keypad width=${width}: "${r.name}" inputmode is ${want} (got ${r.inputmode})`);
-          countedCheck(r.type === 'text', `keypad width=${width}: "${r.name}" is type=text (got ${r.type})`);
-          const signed = want === 'text';
-          countedCheck(
-            signed ? r.autocorrect === 'off' && r.autocapitalize === 'off' : r.autocorrect === null,
-            `keypad width=${width}: "${r.name}" autocorrect/autocapitalize ${signed ? 'off' : 'absent'} (got ${r.autocorrect}/${r.autocapitalize})`,
-          );
-        }
+        attrChecks(width, tastingReading);
 
-        // The save, in this throwaway context only (T-03.5-55).
+        // A lone minus, by real key presses (Playwright's fill refuses a lone
+        // minus on a number input): the browser reports value '' and
+        // badInput true, and Save must flag it, never save it as blank.
         const urlBeforeSave = page.url();
         await page.getByLabel('Churn date').fill('2026-09-29');
-        await page.getByLabel('Out of machine, degrees Celsius').fill('-6');
+        const out = page.getByLabel('Out of machine, degrees Celsius');
+        await out.focus();
+        await out.pressSequentially('-');
+        const lone = await readInput(out);
+        countedCheck(lone.value === '' && lone.badInput === true, `keypad width=${width}: a lone minus in Out of machine reads value '' with badInput true (got ${JSON.stringify(lone)})`);
+
+        await page.getByRole('button', { name: 'Save batch' }).first().click();
+        const outcome = await page
+          .waitForFunction(
+            (prev) =>
+              document.querySelector('#field-error-outOfMachineTempC') ? 'error' : window.location.href !== prev ? 'saved' : false,
+            urlBeforeSave,
+            { timeout: 5000 },
+          )
+          .then((handle) => handle.jsonValue())
+          .catch(() => 'neither');
+        countedCheck(outcome === 'error', `keypad width=${width}: Save batch with a lone minus flags Out of machine and does not save (got ${outcome})`);
+        if (outcome !== 'error') {
+          await context.close();
+          continue;
+        }
+        countedCheck(page.url() === urlBeforeSave, `keypad width=${width}: the URL is unchanged after the refused save`);
+        const errorText = await page.locator('#field-error-outOfMachineTempC').textContent();
+        countedCheck(errorText === TEMPERATURE_SENTENCE, `keypad width=${width}: the error line reads the temperature sentence (got ${JSON.stringify(errorText)})`);
+        const flagged = await readInput(out);
+        countedCheck(flagged.ariaInvalid === 'true' && flagged.focused, `keypad width=${width}: Out of machine is aria-invalid and focused (got ${JSON.stringify(flagged)})`);
+        countedCheck(flagged.badInput === true, `keypad width=${width}: the lone minus stayed in place (badInput ${flagged.badInput})`);
+
+        await out.pressSequentially('6');
+        await page.waitForSelector('#field-error-outOfMachineTempC', { state: 'detached', timeout: 5000 }).catch(() => {});
+        const fixed = await readInput(out);
+        countedCheck(fixed.value === '-6', `keypad width=${width}: typing 6 after the minus reads -6 (got ${JSON.stringify(fixed.value)})`);
+        countedCheck(fixed.ariaInvalid === null, `keypad width=${width}: aria-invalid is gone once Out of machine reads -6 (got ${fixed.ariaInvalid})`);
+        countedCheck((await page.locator('#field-error-outOfMachineTempC').count()) === 0, `keypad width=${width}: the error line is gone once Out of machine reads -6`);
+
+        // The save, in this throwaway context only (T-03.5-55).
         await page.getByLabel('Tasting temperature, degrees Celsius').fill('-12');
         await page.getByRole('button', { name: 'Save batch' }).first().click();
         await page.waitForFunction((prev) => window.location.href !== prev, urlBeforeSave);

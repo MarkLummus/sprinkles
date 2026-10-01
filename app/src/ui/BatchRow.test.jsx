@@ -8,7 +8,15 @@
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
-import { BatchRow, AxesGrid, batchListMeta, NO_BATCH_PROSE } from './BatchRow.jsx';
+import {
+  BatchRow,
+  AxesGrid,
+  batchListMeta,
+  NO_BATCH_PROSE,
+  MALFORMED_NUMBER_ENTRY,
+  readSignedInput,
+  shownSignedValue,
+} from './BatchRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { axesForBatch } from '../domain/axes.js';
@@ -834,24 +842,31 @@ describe('BatchRow — no interface-policy hint while the pen is open', () => {
 });
 
 describe('BatchRow — the numeric battery fields (contract "Controls spec")', () => {
-  it('renders all three churn measured fields, text-mode with inputMode="decimal", never type="number"', () => {
+  it('renders all three churn measured fields; the unsigned ones are text-mode with inputMode="decimal"', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
     for (const label of ['Time to draw temp.', 'Out of machine', 'Churn duration']) {
       expect(markup).toContain(label);
     }
-    expect(markup).not.toContain('type="number"');
     const timeToDrawInput = markup.match(/<input[^>]*aria-label="Time to draw temp\., minutes"[^>]*\/>/)[0];
+    expect(timeToDrawInput).toContain('type="text"');
     expect(timeToDrawInput).toContain('inputMode="decimal"');
     expect(timeToDrawInput).toContain('class="ink-field"');
   });
 
-  it('gives the two °C fields the text keyboard with autocorrect and autocapitalize off, since the iPhone decimal pad has no minus (G-03.5-5b)', () => {
+  it('renders only the two °C fields as number inputs; no other input in the markup is type="number" (G-03.5-R2-2, reversing the 03.3.1 rule for these two)', () => {
+    const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expect(markup.match(/type="number"/g)).toHaveLength(2);
+  });
+
+  it('gives the two °C fields type number with step any and no inputMode, autoCorrect or autoCapitalize, so the iPhone opens its numbers layer with a minus (G-03.5-R2-2)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     for (const name of ['Out of machine, degrees Celsius', 'Tasting temperature, degrees Celsius']) {
       const input = markup.match(new RegExp(`<input[^>]*aria-label="${name}"[^>]*/>`))[0];
-      expect(input).toContain('inputMode="text"');
-      expect(input).toContain('autoCorrect="off"');
-      expect(input).toContain('autoCapitalize="off"');
+      expect(input).toContain('type="number"');
+      expect(input).toContain('step="any"');
+      expect(input).not.toContain('inputMode');
+      expect(input).not.toContain('autoCorrect');
+      expect(input).not.toContain('autoCapitalize');
     }
   });
 
@@ -864,7 +879,9 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
       'Melt test, g lost at 20 min',
     ]) {
       const input = markup.match(new RegExp(`<input[^>]*aria-label="${name}"[^>]*/>`))[0];
+      expect(input).toContain('type="text"');
       expect(input).toContain('inputMode="decimal"');
+      expect(input).not.toContain('step=');
       expect(input).not.toContain('autoCorrect');
     }
   });
@@ -902,6 +919,42 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
     });
     const timeToDrawInput = markup.match(/<input[^>]*aria-label="Time to draw temp\., minutes"[^>]*\/>/)[0];
     expect(timeToDrawInput).not.toContain('aria-invalid');
+  });
+});
+
+describe('BatchRow — the signed fields carry a browser-unreadable entry (G-03.5-R2-2, T-03.5-82)', () => {
+  it('readSignedInput answers the constant for an entry the browser cannot read, and the value otherwise', () => {
+    expect(readSignedInput({ value: '', validity: { badInput: true } })).toBe(MALFORMED_NUMBER_ENTRY);
+    expect(readSignedInput({ value: '-6', validity: { badInput: false } })).toBe('-6');
+    expect(readSignedInput({ value: '', validity: { badInput: false } })).toBe('');
+  });
+
+  it('shownSignedValue shows the constant as blank and any other value as itself', () => {
+    expect(shownSignedValue(MALFORMED_NUMBER_ENTRY)).toBe('');
+    expect(shownSignedValue('-6')).toBe('-6');
+    expect(shownSignedValue('')).toBe('');
+  });
+
+  it('renders a draft holding the constant as a blank input, with the constant nowhere in the markup', () => {
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, outOfMachineTempC: MALFORMED_NUMBER_ENTRY },
+    });
+    const input = markup.match(/<input[^>]*aria-label="Out of machine, degrees Celsius"[^>]*\/>/)[0];
+    expect(input).toContain('value=""');
+    expect(markup).not.toContain(MALFORMED_NUMBER_ENTRY);
+  });
+
+  it('flags that field with aria-invalid and the temperature sentence verbatim once the gate has named it', () => {
+    const sentence = 'Enter a temperature, such as −6, or leave blank.';
+    const markup = renderBatchRow({
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, outOfMachineTempC: MALFORMED_NUMBER_ENTRY },
+      fieldErrors: { outOfMachineTempC: sentence },
+    });
+    const input = markup.match(/<input[^>]*aria-label="Out of machine, degrees Celsius"[^>]*\/>/)[0];
+    expect(input).toContain('aria-invalid="true"');
+    expect(markup).toContain(`>${sentence}</span>`);
   });
 });
 

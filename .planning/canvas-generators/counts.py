@@ -76,7 +76,7 @@ def bnode(d, cur, tasted):
     lbl = f'<span style="font-family:{GROT};font-size:13px;font-weight:{700 if cur else 400};color:{TEXT if cur else BLUE_T};{"" if cur else "text-decoration:underline;text-underline-offset:3px;"}">{d.rsplit(" ",1)[0]}</span>'
     return f'<a href="#" style="flex:0 0 92px;display:flex;flex-direction:column;gap:6px;text-decoration:none;"><span style="display:flex;align-items:center;height:12px;"><span aria-hidden="true" style="box-sizing:border-box;width:12px;height:12px;border-radius:6px;{dot}{ring}"></span></span>{lbl}</a>'
 TASTED = lambda m: not m.startswith('Not yet tasted')
-tl = f'''<div style="display:flex;flex-direction:column;gap:8px;"><div style="display:flex;justify-content:space-between;align-items:baseline;">{cap("Batches")}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3 · oldest left · hollow: not yet tasted</span></div>
+tl = f'''<div style="display:flex;flex-direction:column;gap:8px;"><div style="display:flex;justify-content:space-between;align-items:baseline;">{cap("Batches")}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">3 · hollow: not yet tasted</span></div>
   <div style="position:relative;"><div style="position:absolute;left:0;right:0;top:6px;height:1px;background:{DIV};"></div>
   <div style="position:relative;display:flex;gap:12px;padding:0 6px;">{''.join(bnode(d, cur, TASTED(m)) for d, m, cur in reversed(B))}</div></div></div>'''
 optB = bm.replace(old_head, head(f'<div style="display:flex;align-items:baseline;gap:14px;">{cap("Batch")}{date("16 Aug 2026")}</div>', textctl('Correct') + textctl('Record another')) + tl, 1)
@@ -101,7 +101,7 @@ def optD_(open_):
 optD = optD_(True)
 bmany = ''.join([
   panel('3 batches · A: today, a list', 'Batches (3) opens the list of this version’s batches under the head, each with its tasting and machine reading. Drawn open.', optA, L),
-  panel('3 batches · B: a batch timeline', 'Like History: one node per batch, oldest left, the one in view ringed. It scrolls past about three.', optB, L),
+  panel('3 batches · B: a batch timeline', 'Like History: one node per batch, the one in view ringed. It scrolls past about three.', optB, L),
   panel('3 batches · C: a drop-down', 'The churn date becomes the chooser. Compact, and it grows with no room cost, but it hides the others until opened.', optC, L),
   panel('3 batches · D: the rail upright in the side column', 'From 1366, where the log is a column, the batches stand as a vertical rail above the batch in view, latest first, each with its tasting and machine reading. Below 1366 it lies down as B.', optD, L),
 ])

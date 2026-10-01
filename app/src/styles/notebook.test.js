@@ -217,12 +217,13 @@ describe("the History rail's line runs first node to last (03.5-24 Task 3, G-03.
     expect(rule.declarations).toMatch(/width:\s*max-content/);
   });
 
-  test("the track's left is the row's padding plus half a mark, its right the padding plus a node's width less half a mark", () => {
+  test("the track's left is the row's padding plus half a mark, its width one node width plus one node gap per join from the entry count, and it has no right edge (261001-den)", () => {
     const rule = rules.find((rule) => rule.selector === '.notebook-history__track' && rule.media === undefined);
     expect(rule.declarations).toMatch(/left:\s*calc\(var\(--gap-xs\) \+ var\(--app-notebook-history-mark-size\) \/ 2\)/);
     expect(rule.declarations).toMatch(
-      /right:\s*calc\(var\(--gap-xs\) \+ var\(--app-notebook-history-node-w\) - var\(--app-notebook-history-mark-size\) \/ 2\)/,
+      /width:\s*calc\(\(var\(--app-notebook-history-count\) - 1\) \* \(var\(--app-notebook-history-node-w\) \+ var\(--app-notebook-history-node-gap\)\)\)/,
     );
+    expect(rule.declarations).not.toMatch(/(^|[\s;])right\s*:/);
   });
 
   test('the node list keeps the same padding the track offsets read, and no history rule carries a z-index', () => {

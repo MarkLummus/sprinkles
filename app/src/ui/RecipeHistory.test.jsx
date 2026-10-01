@@ -91,7 +91,7 @@ describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 
       belowDesktop: false,
     });
     expect(markup).toMatch(
-      /<div class="notebook-history__rail" id="fold-history"><div class="notebook-history__strip"><div class="notebook-history__track" aria-hidden="true"><\/div><ol class="notebook-history__nodes">/,
+      /<div class="notebook-history__rail" id="fold-history"><div class="notebook-history__strip" style="--app-notebook-history-count:2"><div class="notebook-history__track" aria-hidden="true"><\/div><ol class="notebook-history__nodes">/,
     );
     expect(markup).toMatch(/<\/ol><\/div><\/div>/);
     expect(markup).not.toContain('notebook-history__fade');
@@ -253,5 +253,47 @@ describe('RecipeHistory — exact link counts at three versions (03.5-18 Task 2)
       });
       expect(markup).not.toContain('<a ');
     }
+  });
+});
+
+// 261001-den: the track's length is arithmetic from the entry count
+// (notebook.css), so the strip carries the count, the draft node included, as
+// an inline custom property. Pinned exactly on the strip's own opening tag.
+describe("RecipeHistory: the rail's entry count (261001-den)", () => {
+  const third = makeVersion({
+    id: 'v3',
+    versionLabel: 'more salt',
+    createdAt: '2026-09-25T00:00:00.000Z',
+    parentVersionId: 'v2',
+    parentVersionLabel: successor.versionLabel,
+  });
+  const stripTag = (markup) => markup.match(/<div class="notebook-history__strip"[^>]*>/)?.[0];
+
+  it('two entries put the count 2 on the strip', () => {
+    const markup = renderHistory({ versions: [root, successor], currentVersionId: 'v2' });
+    expect(stripTag(markup)).toBe('<div class="notebook-history__strip" style="--app-notebook-history-count:2">');
+  });
+
+  it('three saved versions put the count 3 on the strip', () => {
+    const markup = renderHistory({ versions: [root, successor, third], currentVersionId: 'v3' });
+    expect(stripTag(markup)).toBe('<div class="notebook-history__strip" style="--app-notebook-history-count:3">');
+  });
+
+  it('two saved versions and a draft put the count 3 on the strip: the draft node is an entry', () => {
+    const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      openPen: 'plan',
+      draft,
+    });
+    expect(stripTag(markup)).toBe('<div class="notebook-history__strip" style="--app-notebook-history-count:3">');
+  });
+
+  it('the upright arrangement and the lone-version line carry no count', () => {
+    const upright = renderHistory({ versions: [root, successor], currentVersionId: 'v2', belowDesktop: true });
+    expect(upright).not.toContain('--app-notebook-history-count');
+    const lone = renderHistory({ versions: [root], currentVersionId: 'v1' });
+    expect(lone).not.toContain('--app-notebook-history-count');
   });
 });

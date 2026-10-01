@@ -106,7 +106,9 @@ export function shownSignedValue(value) {
 // carries that fact into the draft, and the displayed value stays blank for
 // it. React's onChange does not fire for a lone minus typed into an empty
 // field (the value string stays ""), while the browser's own input event
-// does, so one handler serves both on a signed field. The unit word is a sibling after the
+// does, so one handler serves both on a signed field. A mouse wheel over a
+// focused number input steps its value in Chromium, so a signed field blurs
+// on wheel (no preventDefault: the page still scrolls). The unit word is a sibling after the
 // input, never concatenated into the caption (007 lines 42-44: the root
 // cause of UAT item 2) — the aria-label keeps the spelled-out unit for
 // the field's accessible name. The .field-error line renders inside the
@@ -135,6 +137,7 @@ function MeasuredField({ field, value, error, onChange, inputRef }) {
           ref={inputRef}
           onChange={handleEdit}
           onInput={field.signed ? handleEdit : undefined}
+          onWheel={field.signed ? (event) => event.currentTarget.blur() : undefined}
         />
         <span className="field-unit__unit">{field.unit}</span>
       </span>

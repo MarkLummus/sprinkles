@@ -438,6 +438,45 @@ describe('asMadeTotals', () => {
     const rows = [{ id: 'r', portions: [{ step: 1, grams: 10 }] }];
     expect(asMadeTotals(rows, { r: [15] }).anyWritten).toBe(true);
   });
+
+  describe('anyWritten: what counts as written (quick 261001-eds)', () => {
+    const rows = [{ id: 'r', portions: [{ step: 1, grams: 10 }, { step: 2, grams: 20 }] }];
+
+    it('a key holding only nulls is not written', () => {
+      expect(asMadeTotals(rows, { r: [null, null] }).anyWritten).toBe(false);
+    });
+
+    it('a key holding only empty strings is not written', () => {
+      expect(asMadeTotals(rows, { r: ['', ''] }).anyWritten).toBe(false);
+    });
+
+    it('a key holding only an unparseable string is not written', () => {
+      expect(asMadeTotals(rows, { r: ['-', 'abc'] }).anyWritten).toBe(false);
+    });
+
+    it('a written 0 counts, as the number and as the typed string', () => {
+      expect(asMadeTotals(rows, { r: [0, null] }).anyWritten).toBe(true);
+      expect(asMadeTotals(rows, { r: ['0', ''] }).anyWritten).toBe(true);
+    });
+
+    it('a value equal to the plan counts: presence decides, not difference', () => {
+      const { planTotal, asMadeTotal, anyWritten } = asMadeTotals(rows, { r: [10, null] });
+      expect(anyWritten).toBe(true);
+      expect(asMadeTotal).toBe(planTotal);
+    });
+
+    it('one written portion beside one null portion counts', () => {
+      expect(asMadeTotals(rows, { r: [null, 25] }).anyWritten).toBe(true);
+    });
+
+    it('a key that belongs to no passed row (a removed row\'s stale key) is not written', () => {
+      expect(asMadeTotals(rows, { gone: [50] }).anyWritten).toBe(false);
+    });
+
+    it("the seeded 2 Aug batch's own as-made source over the Olive Oil rows is written", () => {
+      expect(asMadeTotals(oliveOilVersion.rows, augustSecondBatch.churn.asMade).anyWritten).toBe(true);
+    });
+  });
 });
 
 describe('asMadeForPortion', () => {

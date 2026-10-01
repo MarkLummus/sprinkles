@@ -1101,4 +1101,130 @@ describe('IngredientTable: the As made total is blank until a value is written (
     expect(markup).toContain('As made totals what was written; the plan fills in where nothing was.');
     assertHeadAndTotalAgree(markup);
   });
+
+  // The As made cell's own markup, cut from the total row: everything
+  // between the "Total" name cell and the closing share cell.
+  function asMadeTotalCell(markup) {
+    const afterName = tfootMarkup(markup).split('<td class="ingredient-table__col-name">Total</td>')[1];
+    return afterName.replace('<td class="ingredient-table__col-numeric"></td></tr></tfoot>', '');
+  }
+
+  function totalLabel(markup) {
+    return tfootMarkup(markup).match(/^<tfoot><tr aria-label="([^"]*)"/)[1];
+  }
+
+  const FILLED = '<td class="ingredient-table__col-numeric"><span class="sheet-hand">65.0 g</span></td>';
+  const BLANK = '<td class="ingredient-table__col-numeric"></td>';
+  const FILLED_LIVE =
+    '<td class="ingredient-table__col-numeric ingredient-table__live-total"><span class="sheet-hand">65.0 g</span></td>';
+  const BLANK_LIVE = '<td class="ingredient-table__col-numeric ingredient-table__live-total"></td>';
+
+  function twoRows() {
+    return makeVersion([makeRow('a', 'Row A', 40, 1), makeRow('b', 'Row B', 20, 1)]);
+  }
+
+  function readingTable(asMade) {
+    return renderToStaticMarkup(<IngredientTable rows={twoRows().rows} mode="reading" openBatch={makeBatch(asMade)} />);
+  }
+
+  function recordingTable(asMade) {
+    return renderToStaticMarkup(
+      <IngredientTable rows={twoRows().rows} mode="recording" draft={{ asMade }} openBatch={null} />,
+    );
+  }
+
+  it('reading, one value written (45 on a 40 row): the total shows the as-made figure, the other row filling from the plan, with its clause', () => {
+    const markup = readingTable({ a: [45] });
+
+    expect(asMadeTotalCell(markup)).toBe(FILLED);
+    expect(totalLabel(markup)).toBe('Total, plan 60.0 grams, as made 65.0 grams');
+    assertHeadAndTotalAgree(markup);
+  });
+
+  it('reading, one value written that equals the plan: the total still shows (60.0 g) and keeps its clause', () => {
+    const markup = readingTable({ a: [40] });
+
+    expect(asMadeTotalCell(markup)).toBe(
+      '<td class="ingredient-table__col-numeric"><span class="sheet-hand">60.0 g</span></td>',
+    );
+    expect(totalLabel(markup)).toBe('Total, plan 60.0 grams, as made 60.0 grams');
+  });
+
+  it('reading, a written 0 counts as written', () => {
+    const markup = readingTable({ a: [0] });
+
+    expect(asMadeTotalCell(markup)).toBe(
+      '<td class="ingredient-table__col-numeric"><span class="sheet-hand">20.0 g</span></td>',
+    );
+    expect(totalLabel(markup)).toBe('Total, plan 60.0 grams, as made 20.0 grams');
+  });
+
+  it('reading, a key holding only null elements reads blank', () => {
+    const markup = readingTable({ a: [null] });
+
+    expect(asMadeTotalCell(markup)).toBe(BLANK);
+    expect(totalLabel(markup)).toBe('Total, plan 60.0 grams');
+    assertHeadAndTotalAgree(markup);
+  });
+
+  it('recording, an empty draft: the live-total cell stays with both classes and no child, and the label reads the plan alone', () => {
+    const markup = recordingTable({});
+
+    expect(asMadeTotalCell(markup)).toBe(BLANK_LIVE);
+    expect(totalLabel(markup)).toBe('Total, plan 60.0 grams');
+    assertHeadAndTotalAgree(markup);
+  });
+
+  it('recording, one typed string: the live-total cell holds the figure in the hand, with its clause', () => {
+    const markup = recordingTable({ a: ['45'] });
+
+    expect(asMadeTotalCell(markup)).toBe(FILLED_LIVE);
+    expect(totalLabel(markup)).toBe('Total, plan 60.0 grams, as made 65.0 grams');
+  });
+
+  it('recording, a typed string equal to the plan: the cell shows', () => {
+    const markup = recordingTable({ a: ['40'] });
+
+    expect(asMadeTotalCell(markup)).toBe(
+      '<td class="ingredient-table__col-numeric ingredient-table__live-total"><span class="sheet-hand">60.0 g</span></td>',
+    );
+    expect(totalLabel(markup)).toBe('Total, plan 60.0 grams, as made 60.0 grams');
+  });
+
+  it('recording, a lone unparseable string or an emptied field leaves the cell blank', () => {
+    expect(asMadeTotalCell(recordingTable({ a: ['-'] }))).toBe(BLANK_LIVE);
+    expect(asMadeTotalCell(recordingTable({ a: [''] }))).toBe(BLANK_LIVE);
+    expect(totalLabel(recordingTable({ a: ['-'] }))).toBe('Total, plan 60.0 grams');
+  });
+
+  describe('show-changes (parent 40, current 48)', () => {
+    function showChangesTable(asMade) {
+      const baseline = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+      const current = makeVersion([makeRow('a', 'Row A', 48, 1)]);
+      const diff = buildDiff(current, baseline);
+      return renderToStaticMarkup(
+        <IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" openBatch={makeBatch(asMade)} />,
+      );
+    }
+
+    it('with nothing written: the plan cell is struck then current, and the As made cell is empty', () => {
+      const markup = showChangesTable({});
+
+      expect(tfootMarkup(markup)).toContain(
+        '<span class="ingredient-table__plan-grams"><span class="struck-value">40.0</span>48.0 g</span>',
+      );
+      expect(asMadeTotalCell(markup)).toBe(BLANK);
+      expect(totalLabel(markup)).toBe('Total, plan was 40.0 grams, now 48.0 grams');
+      assertCellCountsAgree(markup);
+    });
+
+    it('with a value written: the As made cell shows it', () => {
+      const markup = showChangesTable({ a: [45] });
+
+      expect(asMadeTotalCell(markup)).toBe(
+        '<td class="ingredient-table__col-numeric"><span class="sheet-hand">45.0 g</span></td>',
+      );
+      assertCellCountsAgree(markup);
+    });
+  });
 });

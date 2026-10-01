@@ -18,7 +18,7 @@ SHEET = re.sub(r'<div class="authored"><p class="authored__legend"><span>Carried
 # "Things to check" reads "Watch for" and the "derived" label is dropped (Mark, 2026-09-27, decision 18)
 # Watch for is a section in its own right, its heading styled as Balance's (Mark, 2026-09-27: "Promote Watch For into a section")
 SHEET = SHEET.replace('<p class="derived-advisories__legend"><span>Things to check</span><span>derived</span></p>', '<h2 class="region-name">Watch for</h2>')
-STYLESHEET = '/_blob/e7df2000f61674b89baca5fccf5c19f8'
+STYLESHEET = '/_blob/8adf6a1ce6e9505b8dc487280a2ce3d7'
 
 # ---- tokens (Sprinkles Design System, tokens.json) ----
 INK = '#141414'; GROUND = '#f7f7f4'; PEN = '#1f3d7a'; CLOTH = '#33513b'

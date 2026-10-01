@@ -21,7 +21,7 @@ COUNTS_DEST = os.path.join(os.path.dirname(os.path.abspath(DEST)), '011-options-
 def snap(k, dest, out):
     s = open(f'{SP}/canvas/project/{k}.dc.html').read()
     s = s.replace('<script src="./support.js"></script>\n', '', 1)
-    s = s.replace('<link rel="stylesheet" href="/_blob/e7df2000f61674b89baca5fccf5c19f8">', '\n' + STYLE, 1)
+    s = s.replace('<link rel="stylesheet" href="/_blob/8adf6a1ce6e9505b8dc487280a2ce3d7">', '\n' + STYLE, 1)
     open(f'{dest}/{out}.html', 'w').write(s)
 os.makedirs(DEST, exist_ok=True)
 os.makedirs(COUNTS_DEST, exist_ok=True)

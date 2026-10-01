@@ -1,6 +1,6 @@
 import os
 OUT='canvas/project'
-STYLESHEET='/_blob/e7df2000f61674b89baca5fccf5c19f8'
+STYLESHEET='/_blob/8adf6a1ce6e9505b8dc487280a2ce3d7'
 INK='#141414'; GROUND='#f7f7f4'; PEN='#1f3d7a'
 GROT="-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif"
 steps=[('Step 2','Gum slurry — the only high-heat step',[('Whole milk','120 g','120 g','15.0%','estimated','120 g of 370.4 g · 46.3% in all'),('Sucrose','12 g','','1.5%','','12 g of 76.0 g · 9.5% in all'),('Locust bean gum','1.04 g','','0.1%','',''),('Guar gum','0.48 g','','0.1%','',''),('Lambda carrageenan','0.16 g','','trace','','')]),

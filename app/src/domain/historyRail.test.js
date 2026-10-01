@@ -1,9 +1,9 @@
-// Pure domain suite for the History rail's own entries and hint text
+// Pure domain suite for the History rail's own entries and its count words
 // (03.5-05, sketch 011 decision 4: a dated rail of the recipe's versions
 // only, oldest left). Runs under Vitest's default node environment —
 // imports no store, no component, no framework.
 import { describe, it, expect } from 'vitest';
-import { railEntries, railHint } from './historyRail.js';
+import { railEntries, versionCountWords } from './historyRail.js';
 
 function makeVersion(overrides = {}) {
   return {
@@ -115,26 +115,20 @@ describe('railEntries', () => {
   });
 });
 
-describe('railHint (03.5-18 Task 1: open/upright/overflowing, decision 19)', () => {
-  it('reads the count alone while closed', () => {
-    expect(railHint(2, { open: false })).toBe('2 versions');
+describe('versionCountWords (G-03.5-R2-1: the History fold head reads the count alone)', () => {
+  it('reads one version in the singular', () => {
+    expect(versionCountWords(1)).toBe('1 version');
   });
 
-  it('reads the upright clause while open and upright', () => {
-    expect(railHint(2, { open: true, upright: true })).toBe('2 versions · latest first');
+  it('reads two versions in the plural', () => {
+    expect(versionCountWords(2)).toBe('2 versions');
   });
 
-  it('reads the horizontal clause while open and not upright', () => {
-    expect(railHint(2, { open: true })).toBe('2 versions · oldest left, latest right');
+  it('reads eight versions in the plural', () => {
+    expect(versionCountWords(8)).toBe('8 versions');
   });
 
-  it('adds the opens-at clause only while open, horizontal and overflowing', () => {
-    expect(railHint(8, { open: true, overflowing: true })).toBe(
-      '8 versions · oldest left, latest right · opens at the version in view',
-    );
-  });
-
-  it('never adds the overflow clause while upright, even while overflowing', () => {
-    expect(railHint(8, { open: true, upright: true, overflowing: true })).toBe('8 versions · latest first');
+  it('takes the count alone', () => {
+    expect(versionCountWords.length).toBe(1);
   });
 });

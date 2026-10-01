@@ -379,6 +379,20 @@ async function clickFoldControl(page, foldId) {
   await page.click(`button[aria-controls="${foldId}"]`);
 }
 
+// 03.5-29 (G-03.5-R2-1): every fold head's count text for one fold id, read
+// as the button's second direct <span> child (the board's count span carries
+// no class), for the bare-count checks on the boards.
+function readFoldCountTexts(page, foldId) {
+  return page.evaluate(
+    (id) =>
+      [...document.querySelectorAll(`button[aria-controls="${id}"]`)].map((control) => {
+        const countEl = control.querySelector(':scope > span:nth-child(2)');
+        return countEl ? countEl.textContent : null;
+      }),
+    foldId,
+  );
+}
+
 // 03.5-23 (G-03.5-4): the row a fold head sits in, named per fold, and never
 // its own parent. A parent that shrink-wraps the button (the band grid's
 // align-items: start in its flex column; Tasting's h3 in a flex row) makes
@@ -582,11 +596,27 @@ async function main() {
       // the app's line is compared against below.
       const uprightBoardConnectors = await readBoardUprightConnectors(uprightBoardPage, 'fold-history');
       uprightConnectorChecks(uprightBoardConnectors, 'history board upright-393.html', countedCheck);
+      const uprightBoardCounts = await readFoldCountTexts(uprightBoardPage, 'fold-history');
+      countedCheck(uprightBoardCounts.length >= 1, 'history board upright-393.html: a fold-history button is drawn');
+      for (const count of uprightBoardCounts) {
+        countedCheck(
+          count === '8 versions',
+          `history board upright-393.html: the fold-history count reads exactly "8 versions" (got ${JSON.stringify(count)})`,
+        );
+      }
       await uprightBoardCtx.close();
 
       const { context: foldBoardCtx, page: foldBoardPage } = await openBoard(browser, repoUrl, '1366-batch.html');
       const foldBoardReading = await readFoldGeometry(foldBoardPage, 'fold-history');
       console.log(JSON.stringify({ group: 'history', board: '1366-batch.html', foldBoardReading }));
+      const foldBoardCounts = await readFoldCountTexts(foldBoardPage, 'fold-history');
+      countedCheck(foldBoardCounts.length >= 1, 'history board 1366-batch.html: a fold-history button is drawn');
+      for (const count of foldBoardCounts) {
+        countedCheck(
+          count === '2 versions',
+          `history board 1366-batch.html: the fold-history count reads exactly "2 versions" (got ${JSON.stringify(count)})`,
+        );
+      }
       await foldBoardCtx.close();
 
       // versions-1-vs-many.html's "picked" panel (Task 2, decision 19): the
@@ -653,8 +683,8 @@ async function main() {
             );
             countedCheck(nodeCount === 3, `history width=${width}: 3 horizontal nodes (got ${nodeCount})`);
             countedCheck(
-              reading.countText != null && reading.countText.endsWith('oldest left, latest right'),
-              `history width=${width}: the count ends "oldest left, latest right" (got ${reading.countText})`,
+              reading.countText === '3 versions',
+              `history width=${width}: the count reads exactly "3 versions" while open (got ${JSON.stringify(reading.countText)})`,
             );
           } else {
             countedCheck(
@@ -699,8 +729,8 @@ async function main() {
               }
             }
             countedCheck(
-              reading.countText != null && reading.countText.endsWith('latest first'),
-              `history width=${width}: the count ends "latest first" once open (got ${reading.countText})`,
+              reading.countText === '3 versions',
+              `history width=${width}: the count reads exactly "3 versions" once open (got ${JSON.stringify(reading.countText)})`,
             );
 
             // 03.5-24 (G-03.5-5): the line joins marks only, and at 393

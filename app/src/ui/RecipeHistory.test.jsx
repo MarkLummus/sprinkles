@@ -52,13 +52,13 @@ const successor = makeVersion({
 
 // 03.5-18 Task 1 (decision 19): History folds like every other section from
 // two entries. From 1366 (belowDesktop=false) it is the horizontal rail,
-// wrapped in a FoldRow whose count reads the horizontal hint. Below 1366
+// wrapped in a FoldRow whose count reads the bare count. Below 1366
 // (belowDesktop=true) it is UprightRail (plan 17), latest first, wrapped in
-// the same FoldRow reading the upright hint. RecipeHistory takes
+// the same FoldRow reading the bare count. RecipeHistory takes
 // belowDesktop as a prop now (decisions_recorded 3) rather than calling
 // useBelowDesktop itself, so these tests can render both arrangements.
 describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 19)', () => {
-  it('belowDesktop false: FoldRow reads open/Hide and the horizontal count; the rail carries id fold-history; exactly 1 link with tabindex 0', () => {
+  it('belowDesktop false: FoldRow reads open/Hide and the bare count; the rail carries id fold-history; exactly 1 link with tabindex 0', () => {
     const batch = makeBatch();
     const markup = renderHistory({
       versions: [root, successor],
@@ -70,7 +70,9 @@ describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 
     expect(markup).toContain('aria-controls="fold-history"');
     expect(markup).toContain('aria-expanded="true"');
     expect(markup).toContain('>Hide<');
-    expect(markup).toContain('2 versions · oldest left, latest right');
+    const foldButton = markup.match(/<button[^>]*aria-controls="fold-history"[^>]*>[\s\S]*?<\/button>/)[0];
+    expect(foldButton).toMatch(/<span class="fold-row__count">2 versions<\/span>/);
+    expect(foldButton).not.toContain('·');
     expect(markup).toContain('id="fold-history"');
     const tags = markup.match(/<a\b[^>]*>/g) ?? [];
     expect(tags).toHaveLength(1);
@@ -146,7 +148,7 @@ describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 
 
   // D-13: the draft node shows only while the pen is open, from memory —
   // 03.5-05 Task 2, unchanged by this plan's own rework.
-  it('appends a draft node reading "draft" while the pen is open, with no link and a hint that counts it', () => {
+  it('appends a draft node reading "draft" while the pen is open, with no link and a count that includes it', () => {
     const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
     const markup = renderHistory({
       versions: [root, successor],

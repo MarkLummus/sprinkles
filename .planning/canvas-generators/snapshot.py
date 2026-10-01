@@ -4,6 +4,13 @@ S = '.planning/sketches/011-recipe-route-c'
 ref = open(S + '/1600-batch.html').read()
 i = ref.index('<style>'); j = ref.index('</style>', i) + len('</style>')
 STYLE = ref[i:j]
+# G-03.5-R2-3 (Mark, UAT 2026-09-30, option 2): the canvas's stylesheet asset still carries the app's old touch floor under
+# `(width<=759.98px),(pointer:coarse)`; the app's own floor reads the pointer alone, so narrow it in the copy every snapshot inlines.
+# Idempotent: the committed 1600-batch.html already carries the narrowed text on the second run.
+OLD_TOUCH = '@media (width<=759.98px),(pointer:coarse){'
+NEW_TOUCH = '@media (pointer:coarse){'
+STYLE = STYLE.replace(OLD_TOUCH, NEW_TOUCH)
+assert STYLE.count(NEW_TOUCH + 'button,select') == 1 and OLD_TOUCH not in STYLE, 'touch floor condition not narrowed exactly once'
 MAP = {'R35C_Batch': '1600-batch', 'R35C_NoBatch': '1600-no-batch', 'R35C_Pen': '1600-pen', 'R35C_LongHistory': '1600-long-history',
        'R35C_1920': '1920-batch', 'R35C_1366': '1366-batch', 'R35C_1024': '1024-batch', 'R35C_984': '984-batch',
        'R35C_983': '983-batch', 'R35C_723': '723-batch', 'R35C_393': '393-batch', 'R35C_DetailsFold': 'details-fold', 'R35C_393AllFolded': '393-all-folded'}

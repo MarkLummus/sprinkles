@@ -225,6 +225,21 @@ async function main() {
               true,
               `touch width=${width} fine: Correct's rendered height vs ${boardFile} (measured, not asserted) — app ${reading.correct?.height}, board ${boardReading.correct?.height}`,
             );
+            // G-03.5-R2-3 (Mark, UAT 2026-09-30, option 2): the boards' touch
+            // floor reads the pointer alone, as the app's does. The boards'
+            // stylesheet carried the old `(width<=759.98px),(pointer:coarse)`
+            // condition, so a fine-pointer window at 723 drew 44px Rename and
+            // Correct on the board that the app does not.
+            if (width === 723) {
+              countedCheck(
+                boardReading.rename != null && boardReading.rename.minHeight !== '44px',
+                `touch width=${width} fine: ${boardFile} Rename min-height is NOT 44px (got ${boardReading.rename?.minHeight})`,
+              );
+              countedCheck(
+                boardReading.rename != null && boardReading.rename.height < 43.5,
+                `touch width=${width} fine: ${boardFile} Rename height is under 43.5 (got ${boardReading.rename?.height})`,
+              );
+            }
           }
         }
       }

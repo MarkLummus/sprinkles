@@ -1031,8 +1031,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
   const baselineStepNumbers = mode === 'developing' ? displayNumbers(version.method) : changeDiff ? displayNumbers(parentVersion.method) : null;
 
   // The batch this page shows: the one the URL names, or — with no batch
-  // named in the URL — the version's most recent batch by churn date,
-  // undated last, or null when the version has no batch yet.
+  // named in the URL — the version's newest batch, where a batch stands at its
+  // churn date or else the day it was recorded, or null when it has none.
   let openBatch = null;
   if (batchId) {
     openBatch = batches.find((batch) => batch.id === batchId) ?? null;

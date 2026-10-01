@@ -480,13 +480,63 @@ describe('completeRecord', () => {
 });
 
 describe('sortedBatches', () => {
-  it('orders by churn date descending, undated last', () => {
+  it('orders by churn date descending, an undated batch with no recording time last', () => {
     const batches = [
       { churn: { churnDate: '2026-08-02' } },
       { churn: { churnDate: '2026-09-01' } },
       { churn: { churnDate: null } },
     ];
     expect(sortedBatches(batches).map((b) => b.churn.churnDate)).toEqual(['2026-09-01', '2026-08-02', null]);
+  });
+
+  describe('a batch stands at its churn date, or the UTC day it was recorded (G-03.5-R2-5)', () => {
+    const dated = { id: 'dated', recordedAt: '2025-12-13T00:00:00.000Z', churn: { churnDate: '2025-12-13' } };
+
+    it('a later-recorded undated batch outranks an older dated one, whatever order they arrive in', () => {
+      const undated = { id: 'undated', recordedAt: '2026-01-13T19:06:00.000Z', churn: { churnDate: null } };
+      expect(sortedBatches([dated, undated]).map((b) => b.id)).toEqual(['undated', 'dated']);
+      expect(sortedBatches([undated, dated]).map((b) => b.id)).toEqual(['undated', 'dated']);
+    });
+
+    it('an undated batch recorded before a dated batch\'s churn date ranks below it', () => {
+      const undated = { id: 'undated', recordedAt: '2025-11-01T10:00:00.000Z', churn: { churnDate: null } };
+      expect(sortedBatches([undated, dated]).map((b) => b.id)).toEqual(['dated', 'undated']);
+      expect(sortedBatches([dated, undated]).map((b) => b.id)).toEqual(['dated', 'undated']);
+    });
+
+    it('on the same day, recordedAt decides', () => {
+      const sameDay = { id: 'dated', recordedAt: '2026-01-13T08:00:00.000Z', churn: { churnDate: '2026-01-13' } };
+      const later = { id: 'later', recordedAt: '2026-01-13T19:00:00.000Z', churn: { churnDate: null } };
+      const earlier = { id: 'earlier', recordedAt: '2026-01-13T05:00:00.000Z', churn: { churnDate: null } };
+      expect(sortedBatches([sameDay, later]).map((b) => b.id)).toEqual(['later', 'dated']);
+      expect(sortedBatches([later, sameDay]).map((b) => b.id)).toEqual(['later', 'dated']);
+      expect(sortedBatches([sameDay, earlier]).map((b) => b.id)).toEqual(['dated', 'earlier']);
+      expect(sortedBatches([earlier, sameDay]).map((b) => b.id)).toEqual(['dated', 'earlier']);
+    });
+
+    it('dated batches ignore recordedAt across days', () => {
+      const february = { id: 'february', recordedAt: '2026-02-02T09:00:00.000Z', churn: { churnDate: '2026-02-01' } };
+      const january = { id: 'january', recordedAt: '2026-03-01T09:00:00.000Z', churn: { churnDate: '2026-01-01' } };
+      expect(sortedBatches([january, february]).map((b) => b.id)).toEqual(['february', 'january']);
+      expect(sortedBatches([february, january]).map((b) => b.id)).toEqual(['february', 'january']);
+    });
+
+    it('a batch with neither a churn date nor a recordedAt comes last, and two such batches keep their input order', () => {
+      const undated = { id: 'undated', recordedAt: '2020-01-01T00:00:00.000Z', churn: { churnDate: null } };
+      const firstBare = { id: 'first-bare', churn: { churnDate: null } };
+      const secondBare = { id: 'second-bare', churn: { churnDate: null } };
+      expect(sortedBatches([firstBare, dated, secondBare, undated]).map((b) => b.id)).toEqual([
+        'dated',
+        'undated',
+        'first-bare',
+        'second-bare',
+      ]);
+    });
+
+    it('a recordedAt that is not a string counts as missing and never throws', () => {
+      const odd = { id: 'odd', recordedAt: 20260113, churn: { churnDate: null } };
+      expect(sortedBatches([odd, dated]).map((b) => b.id)).toEqual(['dated', 'odd']);
+    });
   });
 
   it('breaks a churn-date tie by recordedAt descending, whatever order the batches arrive in', () => {

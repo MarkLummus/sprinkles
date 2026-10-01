@@ -25,8 +25,8 @@ def band(history_html, vb=None):
     return f'''<header style="display:flex;flex-direction:column;gap:24px;padding:20px 0 24px;border-bottom:1px solid {DIV};">
   <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:start;"><div>{recipe_identity(False)}</div><div>{vb or version_block()}</div></div>
   {history_html}</header>'''
-def rail_end(versions, hint):
-    h = history_rail(versions, hint)
+def rail_end(versions, count_text):
+    h = history_rail(versions, count_text)
     # at rest the rail opens scrolled to the version in view: the latest end, older versions behind a fade
     h = h.replace('<div style="position:relative;overflow:hidden;">', '<div style="position:relative;overflow:hidden;display:flex;justify-content:flex-end;">')
     return h.replace('</div>\n  </div></div>\n</div>', f'</div>\n    <div aria-hidden="true" style="position:absolute;top:0;left:0;bottom:0;width:96px;background:linear-gradient(to left, rgba(255,255,255,0), #ffffff);pointer-events:none;"></div>\n  </div></div>\n</div>')
@@ -36,10 +36,10 @@ v7 = v7.replace(f'<dt style="color:{TEXT2};">Why</dt>', f'<dt style="color:{TEXT
 one_line = f'<div style="display:flex;flex-direction:column;gap:10px;">{cap("History")}<p style="margin:0;font-family:{GROT};font-size:14px;color:{TEXT2};">Only this version so far</p></div>'
 W = 1078
 vers = ''.join([
-  panel('1 version · today', 'The rail draws with its one node. The hint reads "1 version · oldest left, latest right".', band(history_rail(V1, '1 version · oldest left, latest right')), W),
+  panel('1 version · today', 'The rail draws with its one node and the count, "1 version".', band(history_rail(V1, '1 version')), W),
   panel('1 version · option A: no History yet', 'History appears once a second version is saved. Until then, the band is the recipe and the version.', band(''), W),
   panel('1 version · option B: History as one line · picked (Mark, 2026-09-27)', 'The section stays in place, so the band keeps its shape, with one plain line instead of a rail.', band(one_line), W),
-  panel('Many versions · today (8)', 'The rail opens at the version in view, older versions behind a fade on the left, and scrolls.', band(rail_end(V8, '8 versions · oldest left, latest right · opens at the version in view'), v7), W),
+  panel('Many versions · today (8)', 'The rail opens at the version in view, older versions behind a fade on the left, and scrolls.', band(rail_end(V8, '8 versions'), v7), W),
 ])
 dc('R35C_CountVersions.dc.html', 'Counts · versions: 1 vs many (options, not decided)', 1174, 1740, page(vers, gap=48, direction='column'))
 
@@ -93,7 +93,7 @@ def vnode(d, m, cur, last):
   <span style="display:flex;flex-direction:column;gap:2px;min-width:0;">{title}<span style="font-family:{GROT};font-size:12px;color:{TEXT2};">{m}</span></span></a></li>'''
 # the batch list folds like every other section, Show/Hide beside its label, open from 1366, closed below (Mark, 2026-09-27: "yes, draw it")
 def vrail_(open_):
-    hd = fold_row(cap('Batches'), open_, 'fold-batches', '3 batches' + (' · latest first' if open_ else ''))
+    hd = fold_row(cap('Batches'), open_, 'fold-batches', '3 batches')
     ol = f'''<ol id="fold-batches" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vnode(d, m, cur, i == len(B) - 1) for i, (d, m, cur) in enumerate(B))}</ol>''' if open_ else ''
     return f'<div style="display:flex;flex-direction:column;gap:10px;">{hd}{ol}</div>'
 def optD_(open_):
@@ -136,7 +136,7 @@ V8_IN_VIEW = [(d, t, m, f, t.startswith('Version 7')) for d, t, m, f, c in V8]
 # History folds like every other section, its Show/Hide beside the label (Mark, 2026-09-27: "we need the Show/Hide on History also");
 # closed by default below 1366 (decision 18). The canvas ignores hidden, so the closed state leaves the rail out.
 def hist_head(open_):
-    return fold_row(cap('History'), open_, 'fold-history', '8 versions' + (' · latest first' if open_ else ''))
+    return fold_row(cap('History'), open_, 'fold-history', '8 versions')
 vrail_v = f'''<ol id="fold-history" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">{''.join(vver(*v, i == len(V8_IN_VIEW) - 1) for i, v in enumerate(reversed(V8_IN_VIEW)))}</ol>'''
 vhist = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(True)}{vrail_v}</div>'
 vhist_closed = f'<div style="display:flex;flex-direction:column;gap:10px;">{hist_head(False)}</div>'

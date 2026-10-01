@@ -1,6 +1,6 @@
 import json, re, os, datetime
 
-SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/f305c1f4-77bf-4a99-9b61-704e2aea8a41/scratchpad'
+SP = '/private/tmp/claude-501/-Users-mark-Documents-projects-sprinkles/b80a1223-192e-48fd-a9e5-286f5b2f582b/scratchpad'
 SRC = SP + '/artifact-files/8c08ac14-3ead-48f4-861a-5016f88c8338/project'
 OUT = SP + '/canvas/project'
 os.makedirs(OUT, exist_ok=True)
@@ -458,7 +458,7 @@ def layout_c(state, pen=False, sheet_html=None, log=True, rail=None):
     <div>{recipe_identity(False, rail=rail)}</div>
     <div>{ceremony() if pen else version_block(draft='Version 2 · less oil')}</div>
   </div>
-  {history_rail(versions, '2 versions · oldest left, latest right')}
+  {history_rail(versions, '2 versions')}
 </header>'''
     body_sheet = sheet_html if sheet_html is not None else sheet(state, pen)
     col = f'<aside aria-label="Batch" style="flex:0 0 350px;min-width:0;padding-top:8px;">{batch_log(state, column=True)}</aside>' if log else ''
@@ -486,7 +486,7 @@ def layout_c_rung(width):
   </div>'''
     band = f'''<header style="display:flex;flex-direction:column;gap:20px;padding:16px 0 20px;border-bottom:1px solid {DIV};">
   {top}
-  {history_rail(versions, '2 versions') if width >= 1366 else history_upright(versions, '2 versions · latest first')}
+  {history_rail(versions, '2 versions') if width >= 1366 else history_upright(versions, '2 versions')}
 </header>'''
     if width >= 1366:
         body = f'<div style="display:flex;gap:32px;align-items:flex-start;"><div style="flex:1 1 0;min-width:0;">{sheet(state)}</div><aside aria-label="Batch" style="flex:0 0 350px;min-width:0;padding-top:8px;">{batch_log(state, column=True)}</aside></div>'
@@ -518,8 +518,6 @@ def phone_folds(html, open_=False):
     html = re.sub(r'<div style="display:flex;align-items:baseline;justify-content:space-between;">' + re.escape(cap('History')) + r'<span[^>]*>([^<]*)</span></div>',
                   lambda m: fold_row(cap('History'), open_, 'fold-history', m.group(1)), html, count=1)
     html = html.replace('<div class="hist-body">', f'<div id="fold-history"{hid} class="hist-body">', 1)
-    if not open_:
-        html = re.sub(r'(\d+ versions) · latest first', r'\1', html, count=1)  # closed: the count alone
     # the log's Tasting: the button sits in the section's h2, the fold opens after it
     html = re.sub(r'<h2 style="' + re.escape(TASTING_H2) + r'display:flex;align-items:baseline;gap:14px;">' + re.escape(cap('Tasting')) + r'<span[^>]*>(tasted [^<]*)</span></h2>',
                   lambda m: f'<h2 style="{TASTING_H2}">' + fold_row(cap('Tasting'), open_, 'fold-tasting', m.group(1)) + f'</h2><div id="fold-tasting"{hid} style="display:flex;flex-direction:column;gap:12px;">', html, count=1)

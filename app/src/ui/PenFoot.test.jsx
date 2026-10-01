@@ -234,3 +234,54 @@ describe('SaveCeremony — the one component both mounts share (D-01)', () => {
     expect(markup).not.toContain('Add tasting');
   });
 });
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md. The
+// pin is on rendered markup because the attribute's whole effect is in the
+// DOM WebKit reads. disabled stays beside it: a disabled control is not
+// focusable whatever its tabindex, so a locked ceremony cannot be reached.
+describe('every ceremony button carries an explicit tabindex, pinned on rendered markup (quick task 261001-doi)', () => {
+  const buttonTags = (markup) => markup.match(/<button\b[^>]*>/g) ?? [];
+
+  it('the record foot renders Add tasting, Cancel, Save batch — three buttons, each tabindex="0", in that order', () => {
+    const markup = renderPenFoot({ openPen: 'record' });
+    const tags = buttonTags(markup);
+    expect(tags).toHaveLength(3);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+    expect(markup.indexOf('Add tasting')).toBeLessThan(markup.indexOf('Cancel'));
+    expect(markup.indexOf('Cancel')).toBeLessThan(markup.indexOf('Save batch'));
+  });
+
+  it('the record foot with the tasting open renders Cancel and Save batch — two buttons, each tabindex="0"', () => {
+    const tags = buttonTags(renderPenFoot({ openPen: 'record', tastingOpen: true }));
+    expect(tags).toHaveLength(2);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('the ceremony with onRestore and no onAddTasting renders Restore tasting, Cancel, Save batch — three buttons, each tabindex="0"', () => {
+    const markup = renderToStaticMarkup(<SaveCeremony onCancel={noop} onSave={noop} hint={null} onRestore={noop} />);
+    const tags = buttonTags(markup);
+    expect(tags).toHaveLength(3);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+    expect(markup).toContain('Restore tasting');
+  });
+
+  it('the locked ceremony keeps disabled="" beside tabindex="0" on all three buttons (T-261001-doi-02)', () => {
+    const markup = renderToStaticMarkup(
+      <SaveCeremony onCancel={noop} onSave={noop} hint={null} saveAction="new" onAddTasting={noop} />,
+    );
+    const tags = buttonTags(markup);
+    expect(tags).toHaveLength(3);
+    for (const tag of tags) {
+      expect(tag).toContain('disabled=""');
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+});

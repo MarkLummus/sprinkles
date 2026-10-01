@@ -15,6 +15,9 @@ import { useRef } from 'react';
 // click-count guard the sketch names at line 379); a mouse Clear leaves
 // the tab position on Clear so the next Tab still reaches the first
 // option with its ring.
+// Every control here carries an explicit tabIndex: WebKit without Safari's
+// tab-to-highlight preference Tabs only into text entry and into controls
+// that set one, the same rule as every link (quick task 261001-doi).
 // The click stays on onClick, with a no-op onChange to keep React's
 // controlled-input contract happy: a native radio's onChange does not
 // re-fire for a click that leaves its value unchanged, so onClick is the
@@ -42,6 +45,7 @@ export function Segmented({ groupLabel, options, value, onChange, onClear }) {
             type="button"
             className="text-control segmented-field__clear"
             aria-label={`Clear ${groupLabel}`}
+            tabIndex={0}
             onClick={handleClear}
           >
             Clear
@@ -57,6 +61,7 @@ export function Segmented({ groupLabel, options, value, onChange, onClear }) {
               value={option}
               checked={value === option}
               ref={index === 0 ? firstOptionRef : undefined}
+              tabIndex={0}
               onChange={() => {}}
               onClick={() => onChange(option)}
             />

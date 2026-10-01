@@ -36,15 +36,15 @@ export function SaveCeremony({
       )}
       {hint && <p className="save-ceremony__hint">{hint}</p>}
       {onRestore && (
-        <button type="button" disabled={saveAction !== null} className="text-control undo-control" ref={restoreRef} onClick={onRestore}>Restore tasting</button>
+        <button type="button" disabled={saveAction !== null} className="text-control undo-control" ref={restoreRef} tabIndex={0} onClick={onRestore}>Restore tasting</button>
       )}
       {onAddTasting && (
-        <button type="button" disabled={saveAction !== null} className="text-control save-ceremony__add-tasting" ref={addTastingRef} onClick={onAddTasting}>Add tasting</button>
+        <button type="button" disabled={saveAction !== null} className="text-control save-ceremony__add-tasting" ref={addTastingRef} tabIndex={0} onClick={onAddTasting}>Add tasting</button>
       )}
-      <button type="button" disabled={saveAction !== null} onClick={onCancel}>
+      <button type="button" disabled={saveAction !== null} tabIndex={0} onClick={onCancel}>
         Cancel
       </button>
-      <button type="button" disabled={saveAction !== null} onClick={onSave}>
+      <button type="button" disabled={saveAction !== null} tabIndex={0} onClick={onSave}>
         {saveAction === 'amend' ? 'Saving changes…' : saveAction === 'new' ? 'Saving batch…' : 'Save batch'}
       </button>
     </div>

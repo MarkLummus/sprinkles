@@ -426,6 +426,18 @@ describe('asMadeTotals', () => {
     const { asMadeTotal } = asMadeTotals(rows, {});
     expect(asMadeTotal).toBe(30);
   });
+
+  it('an empty as-made source reports anyWritten false beside unchanged totals', () => {
+    const { planTotal, asMadeTotal, anyWritten } = asMadeTotals(oliveOilVersion.rows, {});
+    expect(anyWritten).toBe(false);
+    expect(planTotal).toBeCloseTo(799.68, 2);
+    expect(asMadeTotal).toBeCloseTo(799.68, 2);
+  });
+
+  it('a written entry reports anyWritten true', () => {
+    const rows = [{ id: 'r', portions: [{ step: 1, grams: 10 }] }];
+    expect(asMadeTotals(rows, { r: [15] }).anyWritten).toBe(true);
+  });
 });
 
 describe('asMadeForPortion', () => {

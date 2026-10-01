@@ -270,7 +270,7 @@ export function readMeasured(value, options = {}) {
 }
 
 /**
- * asMadeTotals(rows, asMade) -> { planTotal, asMadeTotal }. planTotal sums
+ * asMadeTotals(rows, asMade) -> { planTotal, asMadeTotal, anyWritten }. planTotal sums
  * every row's plan grams (rowGrams). asMadeTotal sums, per portion: the
  * as-made element where the row's key is present and that element parses
  * (a written 0 contributes zero — D-11), and that portion's own plan
@@ -287,10 +287,17 @@ export function readMeasured(value, options = {}) {
  * written row that the maker has not yet typed into), or does not parse
  * to a finite number is treated the same as an absent element: the
  * portion's own plan grams fills the gap, never NaN.
+ *
+ * anyWritten is true when at least one element of a passed row was taken
+ * over the plan's number, so a caller can tell a total built from what was
+ * written from one that is the plan alone. It is decided by the same
+ * element test as the total, never by a difference from the plan: a
+ * written value equal to the plan, or a written 0, counts.
  */
 export function asMadeTotals(rows, asMade) {
   let planTotal = 0;
   let asMadeTotal = 0;
+  let anyWritten = false;
   for (const row of rows) {
     planTotal += rowGrams(row);
     const hasRow = Object.prototype.hasOwnProperty.call(asMade, row.id);
@@ -301,13 +308,16 @@ export function asMadeTotals(rows, asMade) {
         const raw = values[i];
         if (raw !== null && raw !== undefined && raw !== '') {
           const value = Number(raw);
-          if (Number.isFinite(value)) contribution = value;
+          if (Number.isFinite(value)) {
+            contribution = value;
+            anyWritten = true;
+          }
         }
       }
       asMadeTotal += contribution;
     }
   }
-  return { planTotal, asMadeTotal };
+  return { planTotal, asMadeTotal, anyWritten };
 }
 
 /**

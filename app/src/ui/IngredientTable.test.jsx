@@ -354,16 +354,14 @@ describe('IngredientTable — the As made column reads and records per portion (
 
     const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={openBatch} />);
 
-    // Scoped to the row's own tbody markup, not the whole table: the total
-    // row legitimately carries its own "as made X grams" phrase whenever
-    // an as-made layer is showing at all (hasAsMadeLayer), which is true
-    // here purely because openBatch is non-null — that phrase is correct
-    // and unrelated to this row's own reading, so asserting against the
-    // whole markup would fail on a clause this scenario never claimed to
-    // test (found running Task 2's green pass; recorded in the SUMMARY).
+    // Scoped to the tbody because the cell under test is a body cell. The
+    // total row carries no as-made clause in this state either (nothing is
+    // written, so its cell is blank); its own pins live in the describe
+    // block for the blank total below.
     const bodyMarkup = sectionMarkup(markup, 'tbody');
     expect(bodyMarkup).not.toContain('ink-text');
     expect(bodyMarkup).not.toContain('as made');
+    expect(sectionMarkup(markup, 'tfoot')).not.toContain('sheet-hand');
   });
 
   it('the pen announces the amount it would save for a portion field left blank', () => {
@@ -1069,5 +1067,38 @@ describe('IngredientTable — the remove controls carry an explicit tabindex (qu
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }
+  });
+});
+
+describe('IngredientTable: the As made total is blank until a value is written (quick 261001-eds)', () => {
+  function tfootMarkup(markup) {
+    return markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>') + '</tfoot>'.length);
+  }
+
+  // assertCellCountsAgree above sums every body row's cells, so it only
+  // holds for a one-row fixture; with two rows the head and the total row
+  // are still compared one for one.
+  function assertHeadAndTotalAgree(markup) {
+    expect(countCells(sectionMarkup(markup, 'thead'), 'th')).toBe(countCells(sectionMarkup(markup, 'tfoot'), 'td'));
+  }
+
+  it('reading a saved batch with nothing written: the As made cell stays, empty, and the label reads the plan alone', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1), makeRow('b', 'Row B', 20, 1)]);
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={makeBatch({})} />);
+
+    expect(tfootMarkup(markup)).toBe(
+      '<tfoot><tr aria-label="Total, plan 60.0 grams">' +
+        '<td class="ingredient-table__col-grams"><span class="ingredient-table__plan-grams">60.0 g</span></td>' +
+        '<td class="ingredient-table__col-name">Total</td>' +
+        '<td class="ingredient-table__col-numeric"></td>' +
+        '<td class="ingredient-table__col-numeric"></td>' +
+        '</tr></tfoot>',
+    );
+    expect(tfootMarkup(markup)).not.toContain('sheet-hand');
+    expect(tfootMarkup(markup)).not.toContain('as made');
+    // D-05: the small print is untouched.
+    expect(markup).toContain('As made totals what was written; the plan fills in where nothing was.');
+    assertHeadAndTotalAgree(markup);
   });
 });

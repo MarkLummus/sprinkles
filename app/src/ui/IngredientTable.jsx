@@ -401,11 +401,13 @@ export function IngredientTable({
   const orphanedRowIds = isDeveloping ? new Set(orphanedRows(draftVersion).map((row) => row.id)) : new Set();
 
   // The as-made total appears only while an as-made layer is showing —
-  // recording, or a saved batch reading (D-22). Reading the plan total
-  // needs no as-made source at all, so it is always computed.
+  // recording, or a saved batch reading (D-22) — and only once a value has
+  // been written for an active row (anyWritten); until then its cell stays
+  // in the row, empty. Reading the plan total needs no as-made source at
+  // all, so it is always computed.
   const hasAsMadeLayer = mode === 'recording' || Boolean(openBatch);
   const asMadeSource = mode === 'recording' ? draft.asMade : openBatch ? openBatch.churn.asMade : {};
-  const { asMadeTotal } = asMadeTotals(activeRowsOnly, asMadeSource);
+  const { asMadeTotal, anyWritten } = asMadeTotals(activeRowsOnly, asMadeSource);
   const baselineTotalText = formatGrams(baselineMass);
   const currentTotalText = isDeveloping ? formatGrams(currentMass) : baselineTotalText;
   const asMadeTotalText = formatGrams(asMadeTotal);
@@ -416,7 +418,7 @@ export function IngredientTable({
   const totalAriaLabel =
     isShowingChanges && diff.total.changed
       ? `Total, plan was ${diff.total.from.replace(' g', ' grams')}, now ${diff.total.to.replace(' g', ' grams')}`
-      : hasAsMadeLayer
+      : hasAsMadeLayer && anyWritten
         ? `Total, plan ${totalDisplayText.replace(' g', ' grams')}, as made ${asMadeTotalText.replace(' g', ' grams')}`
         : `Total, plan ${totalDisplayText.replace(' g', ' grams')}`;
 
@@ -696,7 +698,7 @@ export function IngredientTable({
                     : 'ingredient-table__col-numeric'
                 }
               >
-                <span className="sheet-hand">{asMadeTotalText}</span>
+                {anyWritten && <span className="sheet-hand">{asMadeTotalText}</span>}
               </td>
             )}
             <td className="ingredient-table__col-numeric"></td>

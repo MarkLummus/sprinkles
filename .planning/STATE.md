@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
 stopped_at: Completed 03.5-30-PLAN.md
-last_updated: "2026-10-01T11:46:55.905Z"
+last_updated: "2026-10-01T13:50:30.328Z"
 last_activity: 2026-10-01
 last_activity_desc: Phase 03.5 execution started
-state_head: 33cef858b9b542018ade37750f62d6d316f98d0f
+state_head: c30d95d9cdd1985ed01a1e228db881c30cebe0cd
 progress:
   total_phases: 12
   completed_phases: 8
@@ -367,6 +367,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 260927-758 | Keep notebook fields at 16px under a coarse pointer (iOS focus zoom); the Why written in the hand at every pointer | 2026-09-27 | 220b8ff | [260927-758-keep-notebook-fields-at-16px-under-coars](./quick/260927-758-keep-notebook-fields-at-16px-under-coars/) |
 | 59 | Type the Why in the prose-field role, not the hand (sketch 011 decision 17) | 2026-09-27 | a68437c | — |
 | 60 | Seed Q13: Underbelly Light Base v1 almond extract -> vanilla extract | 2026-09-28 | 96cb6d5 | — |
+| 261001-den | Fix History rail line span on WebKit: track length by arithmetic from entry count, not strip max-content | 2026-10-01 | c30d95d | [261001-den-fix-history-rail-line-span-on-webkit-tra](./quick/261001-den-fix-history-rail-line-span-on-webkit-tra/) |
 
 ### Roadmap Evolution
 

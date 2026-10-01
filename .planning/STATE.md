@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
-stopped_at: Completed 03.5-31-PLAN.md
-last_updated: "2026-10-01T11:38:19.569Z"
+stopped_at: Completed 03.5-30-PLAN.md
+last_updated: "2026-10-01T11:46:55.905Z"
 last_activity: 2026-10-01
 last_activity_desc: Phase 03.5 execution started
-state_head: f23be8f34b67672dc605b885f051517f3c6648e2
+state_head: 33cef858b9b542018ade37750f62d6d316f98d0f
 progress:
   total_phases: 12
   completed_phases: 8
   total_plans: 97
-  completed_plans: 96
+  completed_plans: 97
   percent: 67
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.5 (Separate the recipe from the sheet (INSERTED)) — EXECUTING
-Plan: 6 of 31
+Plan: 7 of 31
 Status: Ready to execute
 Last activity: 2026-10-01 — Phase 03.5 execution started
 
@@ -125,6 +125,7 @@ Progress: [███████░░░] 67% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P27 | n/a | 3 tasks | 25 files |
 | Phase 03.5 P29 | 10 min | 2 tasks | 9 files |
 | Phase 03.5 P31 | 4min | 3 tasks | 8 files |
+| Phase 03.5 P30 | 9 min | 1 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -247,6 +248,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: 03.5-29: fold-head counts are the bare count (versionCountWords replaces railHint); History overflow state and resize listener removed (G-03.5-R2-1)
 - [Phase 03.5]: 03.5-31: the two signed degree-C fields are type=number step=any with no inputMode (Mark, 2026-09-30, variant A); the 03.3.1 never-number rule is reversed for these two only — WebKit opens a number input on the numbers layer with a minus; the decimal pad has no minus and the text keyboard opens on letters (G-03.5-R2-2)
 - [Phase 03.5]: 03.5-31: a browser-unreadable entry in a signed field reaches the draft as MALFORMED_NUMBER_ENTRY (one handler on onChange and onInput), so the existing save gate flags it and it is never saved blank; signed fields blur on wheel — A number input reports value '' with badInput true and fires no React onChange for a lone minus; the parser already rejects the constant
+- [Phase 03.5]: Plan 30: the 1920 History head row stays scenario; only its quoted text changed, since it was never match, exact
+- [Phase 03.5]: Plan 30: differing-field counts reported for the final run only; the earlier table predates plans 23 to 25
 
 ### Pending Todos
 
@@ -387,6 +390,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-01T11:38:19.464Z
-Stopped at: Completed 03.5-31-PLAN.md
+Last session: 2026-10-01T11:46:55.799Z
+Stopped at: Completed 03.5-30-PLAN.md
 Resume file: None

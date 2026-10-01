@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 30/31 plans executed
+**Plans:** 31/31 plans executed
 
 Plans:
 
@@ -567,7 +567,7 @@ Plans:
 
 **Wave 23** *(blocked on 03.5-26 to 03.5-29 and 03.5-31)*
 
-- [ ] 03.5-30-PLAN.md — The round's conformance records corrected (counts, the 723 touch floor, the forms, Home's standing), the readings regenerated, and the full regression on the final build (G-03.5-R2-1, G-03.5-R2-2, G-03.5-R2-3, G-03.5-R2-4, G-03.5-R2-5)
+- [x] 03.5-30-PLAN.md — The round's conformance records corrected (counts, the 723 touch floor, the forms, Home's standing), the readings regenerated, and the full regression on the final build (G-03.5-R2-1, G-03.5-R2-2, G-03.5-R2-3, G-03.5-R2-4, G-03.5-R2-5)
 
 ### Phase 4: Prepare the next version for making
 

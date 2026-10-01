@@ -966,13 +966,16 @@
   .notebook-band__grid {
     display: flex;
     flex-direction: column;
-    /* G-03.5-4: the base rule's align-items: start acts on the block axis in
-       the >=724 grid, but on the inline axis once this override makes the
-       grid a flex column, so the Version section shrank to its widest child
-       (281px of 353) and its fold head with it. stretch restores the full
-       row, the same bug class 03.5-17 fixed on .notebook-body. */
-    align-items: stretch;
     gap: var(--gap-m);
+  }
+
+  /* G-03.5-4: the Version section alone stretches, because it holds the fold
+     head that must fill the row (the same bug class 03.5-17 fixed on
+     .notebook-body). G-03.5-R2-4: the grid's other child, the recipe section,
+     and the Next version form that replaces the Version section stand at
+     content width under the base grid's align-items: start, as before plan 23. */
+  .notebook-version {
+    align-self: stretch;
   }
 
   .notebook-log {

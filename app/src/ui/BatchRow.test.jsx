@@ -334,9 +334,10 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     expect(ceremonyIndex).toBeGreaterThan(nextTimeIndex);
   });
 
-  it('reaches Next time before the ceremony\'s own Cancel and Save in both tasting states — DOM order is tab order here because no element in the record pen carries a tabIndex override; browser confirmation of the tab path is a separate UAT step, not this gate', () => {
+  it('reaches Next time before the ceremony\'s own Cancel and Save in both tasting states — DOM order is tab order here because every stop carries tabindex 0 and none carries a positive one; browser confirmation of the tab path is the quick task 261001-doi probe, not this gate', () => {
     for (const tastingOpen of [true, false]) {
       const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen } });
+      expect(markup).not.toMatch(/tabindex="[1-9]/);
       const nextTimeIndex = markup.indexOf('aria-label="Next time"');
       const ceremonyIndex = markup.indexOf('class="save-ceremony"');
       const cancelIndex = markup.indexOf('Cancel', ceremonyIndex);
@@ -754,13 +755,13 @@ describe('BatchRow — the defects, two labelled groups inside the axes grid (co
 
   it('renders Bitter as a plain defect — no helper, no aria-label of its own — inside the "This recipe only" group', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
-    expect(markup).toMatch(/<button type="button" class="chip-toggle" aria-pressed="false">Bitter<\/button>/);
+    expect(markup).toMatch(/<button type="button" class="chip-toggle" aria-pressed="false" tabindex="0">Bitter<\/button>/);
   });
 
   it('checks no chip by default — nothing is pre-selected', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).toMatch(/aria-pressed="false"[^>]*>Coarse, icy</);
-    expect(markup).toContain('<button type="button" class="chip-toggle" aria-pressed="false">Bitter</button>');
+    expect(markup).toContain('<button type="button" class="chip-toggle" aria-pressed="false" tabindex="0">Bitter</button>');
   });
 
   it('marks a picked defect chip aria-pressed="true"', () => {
@@ -777,7 +778,7 @@ describe('BatchRow — the defects, two labelled groups inside the axes grid (co
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true, bitterDeclared: true },
     });
-    expect(markup).toContain('<button type="button" class="chip-toggle" aria-pressed="true">Bitter</button>');
+    expect(markup).toContain('<button type="button" class="chip-toggle" aria-pressed="true" tabindex="0">Bitter</button>');
   });
 
   it('places the defects head after the last axis and before the melt block — inside the grid, after the axes', () => {
@@ -1512,7 +1513,7 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
   it('closed (foldsOpen false): a section named Tasting whose h2.region-name holds a fold-row naming fold-tasting, collapsed, Show, with the tasted date as its own count; the body is hidden (G-03.5-8d)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading', foldsOpen: false });
     expect(markup).toContain(
-      '<section class="tasting-reading" aria-label="Tasting"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-tasting" aria-label="Tasting, Show, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Show</span></span><span class="fold-row__count">tasted date unknown</span></button></h2>',
+      '<section class="tasting-reading" aria-label="Tasting"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-tasting" aria-label="Tasting, Show, tasted date unknown" tabindex="0"><span class="fold-row__head">Tasting<span class="fold-row__control">Show</span></span><span class="fold-row__count">tasted date unknown</span></button></h2>',
     );
     expect(markup).toMatch(/<div id="fold-tasting" hidden="?/);
     // The tasting cells sit inside the fold, after the id="fold-tasting" opening tag.
@@ -1524,7 +1525,7 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
   it('open (foldsOpen true, the default): the control reads Hide, and the body carries no hidden attribute', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain(
-      '<section class="tasting-reading" aria-label="Tasting"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-tasting" aria-label="Tasting, Hide, tasted date unknown"><span class="fold-row__head">Tasting<span class="fold-row__control">Hide</span></span><span class="fold-row__count">tasted date unknown</span></button></h2>',
+      '<section class="tasting-reading" aria-label="Tasting"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-tasting" aria-label="Tasting, Hide, tasted date unknown" tabindex="0"><span class="fold-row__head">Tasting<span class="fold-row__control">Hide</span></span><span class="fold-row__count">tasted date unknown</span></button></h2>',
     );
     expect(markup).toContain('<div id="fold-tasting">');
   });
@@ -1635,5 +1636,62 @@ describe('batchListMeta — the batch list\'s meta small print (decisions_record
     const meta = batchListMeta(changedBatch);
     expect(meta.some((part) => part.startsWith('changed '))).toBe(false);
     expect(meta).not.toContain('Soft, not greasy');
+  });
+});
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads. Each
+// expected count is the sum of the controls that state renders, from
+// BatchRow.jsx: reading is Correct, Record another and the Tasting fold row;
+// the no-batch state is Record a batch; the pen with the tasting closed is
+// two Segmented groups (6 radios) and the ceremony's Add tasting, Cancel,
+// Save batch; the pen with the tasting open is Remove tasting, the four
+// defect chips, Bitter, Cancel and Save batch (8 buttons), and three
+// Segmented groups (9 radios) with six axes of five stops (30 radios).
+describe('BatchRow — every button and radio carries an explicit tabindex (quick task 261001-doi)', () => {
+  const buttonTags = (markup) => markup.match(/<button\b[^>]*>/g) ?? [];
+  const radioTags = (markup) => (markup.match(/<input\b[^>]*>/g) ?? []).filter((tag) => /type="radio"/.test(tag));
+  const expectAllTagged = (tags, count) => {
+    expect(tags).toHaveLength(count);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  };
+
+  it('reading a batch: Correct, Record another and the Tasting fold row — 3 buttons, no radio', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expectAllTagged(buttonTags(markup), 3);
+    expect(radioTags(markup)).toHaveLength(0);
+  });
+
+  it('no batch: Record a batch — 1 button', () => {
+    expectAllTagged(buttonTags(renderBatchRow({})), 1);
+  });
+
+  it('recording with the tasting closed: Add tasting, Cancel, Save batch and 6 radios', () => {
+    const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft });
+    expectAllTagged(buttonTags(markup), 3);
+    expectAllTagged(radioTags(markup), 6);
+  });
+
+  it('recording with the tasting open: 8 buttons and 39 radios', () => {
+    const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+    expectAllTagged(buttonTags(markup), 8);
+    expectAllTagged(radioTags(markup), 39);
+  });
+
+  it('amending with the tasting open: the same 8 buttons and 39 radios', () => {
+    const markup = renderBatchRow({
+      openPen: 'amend',
+      mode: 'recording',
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    expectAllTagged(buttonTags(markup), 8);
+    expectAllTagged(radioTags(markup), 39);
   });
 });

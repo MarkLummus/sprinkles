@@ -77,6 +77,7 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
             type="button"
             className="text-control axis-mark__clear"
             aria-label={`Clear ${axis.name}`}
+            tabIndex={0}
             onClick={handleClear}
           >
             Clear
@@ -101,6 +102,7 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
                 if (index === 0) firstStopRef.current = el;
               }}
               aria-label={`${stop}: ${words[index]}`}
+              tabIndex={0}
               onChange={() => {}}
               onClick={() => handleStopClick(stop)}
             />

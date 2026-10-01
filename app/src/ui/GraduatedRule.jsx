@@ -81,12 +81,15 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
     // accessible name; its children are presentation only. tabIndex is
     // conditional (route-recipe-batch.md § 6, revised 2026-09-07): while
     // recording, the sheet's page order skips these six rules, but they
-    // stay clickable and keep this focus treatment.
+    // stay clickable and keep this focus treatment. The caller's -1
+    // (recording, developing) still takes them off the tab path; every
+    // other state gives them an explicit tabindex, which WebKit needs to
+    // Tab to a button at all (quick task 261001-doi).
     <button
       type="button"
       className="graduated-rule"
       aria-label={accessibleName}
-      tabIndex={tabIndex}
+      tabIndex={tabIndex ?? 0}
       onFocus={() => onFocusFigure?.(key)}
       onBlur={() => onBlurFigure?.()}
     >

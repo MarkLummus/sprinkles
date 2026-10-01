@@ -278,6 +278,7 @@ export function StepPenBody({
             className="text-control"
             ref={usesControlRef}
             aria-label={fieldLabel(step, draftStep.removed, usesOpen ? 'done' : 'change the ingredients')}
+            tabIndex={0}
             onClick={() => setUsesOpen((open) => !open)}
           >
             {usesOpen ? 'done' : 'change the ingredients'}
@@ -289,6 +290,7 @@ export function StepPenBody({
                 type="button"
                 className="text-control"
                 aria-label={fieldLabel(step, draftStep.removed, 'add a purpose')}
+                tabIndex={0}
                 onClick={purpose.openField}
               >
                 add a purpose
@@ -302,6 +304,7 @@ export function StepPenBody({
                 type="button"
                 className="text-control"
                 aria-label={fieldLabel(step, draftStep.removed, 'add an aside')}
+                tabIndex={0}
                 onClick={aside.openField}
               >
                 add an aside
@@ -317,6 +320,7 @@ export function StepPenBody({
                 <input
                   type="checkbox"
                   checked={(draftStep.uses ?? []).includes(row.id)}
+                  tabIndex={0}
                   onChange={() => onTogglePenStepUses(step.n, row.id)}
                 />
                 <span>{row.ingredientName}</span>
@@ -340,7 +344,7 @@ export function StepPenBody({
           {`uses ${flaggedRows.map((row) => row.ingredientName).join(', ')}, which ${
             flaggedRows.length > 1 ? 'are' : 'is'
           } removed`}{' '}
-          <button type="button" onClick={() => onTogglePenStepRemoved(step.n)}>
+          <button type="button" tabIndex={0} onClick={() => onTogglePenStepRemoved(step.n)}>
             remove this step
           </button>
         </p>
@@ -365,10 +369,10 @@ export function StepPenBody({
           here at all — it moved to the closed step (decisions_recorded
           4), the mirror of moving into the open form. */}
       <p className="method-step__done-cancel">
-        <button type="button" className="text-control" onClick={onCancel}>
+        <button type="button" className="text-control" tabIndex={0} onClick={onCancel}>
           Cancel
         </button>
-        <button type="button" onClick={onDone}>
+        <button type="button" tabIndex={0} onClick={onDone}>
           Done
         </button>
       </p>
@@ -437,6 +441,7 @@ export function StepPenBody({
           type="button"
           className="text-control"
           aria-label={fieldLabel(step, draftStep.removed, 'edit this step')}
+          tabIndex={0}
           onClick={onOpen}
         >
           edit this step
@@ -446,6 +451,7 @@ export function StepPenBody({
           type="button"
           className="text-control"
           aria-label={fieldLabel(step, draftStep.removed, draftStep.removed ? 'restore' : 'remove')}
+          tabIndex={0}
           onClick={() => onTogglePenStepRemoved(step.n)}
         >
           {draftStep.removed ? 'restore' : 'remove'}
@@ -482,6 +488,7 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
           type="checkbox"
           checked={entry ? entry.struck : false}
           aria-label={fieldLabel(step, false, 'skipped')}
+          tabIndex={0}
           onChange={handleChangeStruck}
         />
         <span>Skipped</span>
@@ -504,6 +511,7 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
           type="button"
           className="method-step__on-demand"
           aria-label={fieldLabel(step, false, 'done differently')}
+          tabIndex={0}
           onClick={line.openField}
         >
           done differently

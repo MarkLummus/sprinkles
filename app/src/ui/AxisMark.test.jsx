@@ -111,3 +111,33 @@ describe('AxisMark — the anchors row, aria-hidden (contract "Axes spec")', () 
     expect(anchorsMarkup).toContain('hard');
   });
 });
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads.
+describe('AxisMark — every radio and the Clear carry an explicit tabindex (quick task 261001-doi)', () => {
+  it('renders five radios and no button when unmarked, each tabindex="0"', () => {
+    const markup = renderToStaticMarkup(
+      <AxisMark axis={hardnessAxis} value={undefined} onChange={noop} onClear={noop} />,
+    );
+    const radios = markup.match(/<input\b[^>]*type="radio"[^>]*>/g);
+    expect(radios).toHaveLength(5);
+    for (const tag of radios) {
+      expect(tag).toContain('tabindex="0"');
+    }
+    expect(markup.match(/<button\b[^>]*>/g)).toBeNull();
+  });
+
+  it('renders five radios and the one Clear button when marked, each tabindex="0"', () => {
+    const markup = renderToStaticMarkup(
+      <AxisMark axis={hardnessAxis} value={3} onChange={noop} onClear={noop} />,
+    );
+    const tags = [...markup.match(/<input\b[^>]*type="radio"[^>]*>/g), ...markup.match(/<button\b[^>]*>/g)];
+    expect(tags).toHaveLength(6);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+});

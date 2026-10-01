@@ -6,6 +6,8 @@
 // (react-dom/server) in the existing node Vitest environment — Method
 // renders no links, so no router context is needed.
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Method, StepPenBody } from './Method.jsx';
 import { buildDiff } from '../domain/diff.js';
@@ -1296,9 +1298,10 @@ function makeThreeStepVersion() {
   };
 }
 
-function renderOpenStepPenBody(stepN) {
+function renderOpenStepPenBody(stepN, mutateDraft) {
   const baselineVersion = makeThreeStepVersion();
   const draftVersion = structuredClone(baselineVersion);
+  mutateDraft?.(draftVersion);
   const diff = buildDiff(draftVersion, baselineVersion);
   const step = baselineVersion.method.find((candidate) => candidate.n === stepN);
   const draftStep = draftVersion.method.find((candidate) => candidate.n === stepN);
@@ -1438,6 +1441,83 @@ describe('Method — show changes over the seeded lineage (G-03.5-2a)', () => {
       if (!parentSteps.has(step.n)) {
         expect(stepSlice(markup, step.n)).not.toContain('prose-struck-beneath');
       }
+    }
+  });
+});
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads. The one
+// state the node harness cannot render — the uses list, behind a click —
+// is pinned on comment-stripped source text, the way RecipePage.test.jsx
+// pins its not-found link.
+describe('Method — every button and checkbox carries an explicit tabindex (quick task 261001-doi)', () => {
+  const buttonTags = (markup) => markup.match(/<button\b[^>]*>/g) ?? [];
+
+  it('a closed step in the plan pen renders its two buttons (edit this step, remove), each tabindex="0"', () => {
+    const baselineVersion = makeBaselineVersion();
+    const draftVersion = structuredClone(baselineVersion);
+    const markup = renderToStaticMarkup(
+      <Method
+        steps={baselineVersion.method}
+        mode="developing"
+        draftVersion={draftVersion}
+        baselineVersion={baselineVersion}
+        penDiff={buildDiff(draftVersion, baselineVersion)}
+        rows={baselineVersion.rows}
+      />,
+    );
+    const tags = buttonTags(markup);
+    expect(tags).toHaveLength(2);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('an open step renders the uses toggle, add a purpose, add an aside, Cancel and Done, each tabindex="0"', () => {
+    const tags = buttonTags(renderOpenStepPenBody(3));
+    expect(tags).toHaveLength(5);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('an open step that still uses a removed row also renders remove this step, each of the six tabindex="0"', () => {
+    const markup = renderOpenStepPenBody(3, (draft) => {
+      draft.rows[0].removed = true;
+    });
+    expect(markup).toContain('remove this step');
+    const tags = buttonTags(markup);
+    expect(tags).toHaveLength(6);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('a recording step renders the Skipped checkbox and the done differently button, each tabindex="0"', () => {
+    const markup = renderToStaticMarkup(
+      <Method steps={[unstruckStep]} stepChanges={{}} mode="recording" onChangeStepChange={() => {}} />,
+    );
+    const checkboxes = markup.match(/<input\b[^>]*type="checkbox"[^>]*>/g) ?? [];
+    expect(checkboxes).toHaveLength(1);
+    expect(checkboxes[0]).toContain('tabindex="0"');
+    const tags = buttonTags(markup);
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabindex="0"');
+  });
+
+  it('Method.jsx holds exactly 2 checkbox input tags and 9 button tags, each containing tabIndex={0} (source text, for the uses list the harness cannot render)', () => {
+    const source = readFileSync(fileURLToPath(new URL('./Method.jsx', import.meta.url)), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\/\/.*$/gm, '');
+    const checkboxes = (source.match(/<input\b(?:[^>{]|\{[^}]*\})*>/g) ?? []).filter((tag) => /type="checkbox"/.test(tag));
+    const buttons = source.match(/<button\b(?:[^>{]|\{[^}]*\})*>/g) ?? [];
+    expect(checkboxes).toHaveLength(2);
+    expect(buttons).toHaveLength(9);
+    for (const tag of [...checkboxes, ...buttons]) {
+      expect(tag).toContain('tabIndex={0}');
     }
   });
 });

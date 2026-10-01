@@ -90,3 +90,25 @@ describe('GraduatedRule — the two-part label (D11)', () => {
     expect(labelMatch[1]).toMatch(/^Fat, /);
   });
 });
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads.
+describe('GraduatedRule — tabindex 0 unless the caller keeps the rule off the tab path (quick task 261001-doi)', () => {
+  it('renders one button carrying tabindex="0" when the caller passes no tabIndex', () => {
+    const markup = renderToStaticMarkup(<GraduatedRule figure={figure} />);
+    const buttons = markup.match(/<button\b[^>]*>/g);
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0]).toContain('tabindex="0"');
+  });
+
+  it('keeps the caller\'s tabIndex of -1 (recording, developing) and carries no tabindex="0"', () => {
+    const markup = renderToStaticMarkup(<GraduatedRule figure={figure} tabIndex={-1} />);
+    const buttons = markup.match(/<button\b[^>]*>/g);
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0]).toContain('tabindex="-1"');
+    expect(markup).not.toContain('tabindex="0"');
+  });
+});

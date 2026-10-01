@@ -160,7 +160,7 @@ function ShareCell({ baselineShare, currentShare }) {
 // colour — exactly one control per row.
 function RemoveRowControl({ removed, onToggle }) {
   return (
-    <button type="button" className="text-control" onClick={onToggle}>
+    <button type="button" className="text-control" tabIndex={0} onClick={onToggle}>
       {removed ? 'restore' : 'remove'}
     </button>
   );
@@ -267,7 +267,7 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
   return (
     <p className="ingredient-table__flag">
       {`used by ${joined}, which ${verb} removed`}{' '}
-      <button type="button" onClick={() => onTogglePenRowRemoved(row.id)}>
+      <button type="button" tabIndex={0} onClick={() => onTogglePenRowRemoved(row.id)}>
         remove this row
       </button>
     </p>

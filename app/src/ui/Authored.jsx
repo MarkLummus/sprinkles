@@ -31,7 +31,7 @@ export function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote 
                 aria-label={`${listKey} note ${index + 1}`}
                 onChange={(event) => onChangeNoteText(listKey, index, event.target.value)}
               />
-              <button type="button" onClick={() => onRemoveNote(listKey, index)}>
+              <button type="button" tabIndex={0} onClick={() => onRemoveNote(listKey, index)}>
                 remove
               </button>
             </span>

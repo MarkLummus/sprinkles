@@ -46,9 +46,14 @@ describe('FormulationNote — graduated rules leave the recording tab path (D-04
     expect(tabIndexCount).toBe(ruleCount);
   });
 
-  it('renders no tabindex attribute at all while reading, with every rule still drawn', () => {
+  // Quick task 261001-doi: reading is a Tab stop now. WebKit without Safari's
+  // tab-to-highlight preference Tabs only into controls with an explicit
+  // tabindex, so each of the six rules reads tabindex 0 while reading;
+  // recording and developing keep -1 (the two tests around this one).
+  it('gives every graduated-rule button tabindex="0" while reading, with every rule still drawn', () => {
     const markup = renderToStaticMarkup(<FormulationNote version={oliveOilVersion} mode="reading" />);
-    expect(markup).not.toContain('tabindex');
+    expect(countOccurrences(markup, 'tabindex="0"')).toBe(6);
+    expect(markup).not.toContain('tabindex="-1"');
     for (const label of FIGURE_LABELS) {
       expect(markup).toContain(label);
     }

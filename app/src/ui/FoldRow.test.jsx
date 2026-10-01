@@ -21,7 +21,7 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
       />,
     );
     expect(markup).toBe(
-      '<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version" aria-label="Version, Show details">' +
+      '<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version" aria-label="Version, Show details" tabindex="0">' +
         '<span class="fold-row__head">' +
         '<span class="notebook-caption">Version</span>' +
         '<span class="fold-row__control">Show details</span>' +
@@ -42,7 +42,7 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
       />,
     );
     expect(markup).toMatch(
-      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version" aria-label="Version, Hide details">/,
+      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version" aria-label="Version, Hide details" tabindex="0">/,
     );
     expect(markup).toMatch(/<span class="fold-row__control">Hide details<\/span>/);
   });
@@ -168,5 +168,28 @@ describe('FoldRow — the one full-row fold head (sketch 011 decisions 18/19, ge
         />,
       ),
     ).toThrow('FoldRow needs a string label or a string labelText');
+  });
+});
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads.
+describe('FoldRow — the one button carries an explicit tabindex (quick task 261001-doi)', () => {
+  it('renders one button tag, tabindex="0"', () => {
+    const markup = renderToStaticMarkup(
+      <FoldRow
+        label={<span className="notebook-caption">Version</span>}
+        labelText="Version"
+        open={false}
+        onToggle={noop}
+        controls="fold-version"
+        what="details"
+      />,
+    );
+    const tags = markup.match(/<button\b[^>]*>/g);
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabindex="0"');
   });
 });

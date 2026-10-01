@@ -179,6 +179,7 @@ export function VersionRow({
                   type="checkbox"
                   disabled={saveAction !== null}
                   checked={penDraft.citedBatchId === citable[0].id}
+                  tabIndex={0}
                   onChange={() =>
                     onChangePenField('citedBatchId', penDraft.citedBatchId === citable[0].id ? null : citable[0].id)
                   }
@@ -215,14 +216,14 @@ export function VersionRow({
           </p>
 
           <div className="notebook-ceremony__actions">
-            <button type="button" className="notebook-action--outline" disabled={saveAction !== null} onClick={onCancelDeveloping}>
+            <button type="button" className="notebook-action--outline" disabled={saveAction !== null} tabIndex={0} onClick={onCancelDeveloping}>
               Cancel
             </button>
-            <button type="button" className="notebook-action" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
+            <button type="button" className="notebook-action" disabled={saveAction !== null} tabIndex={0} onClick={onSaveAsNewVersion}>
               {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
             </button>
             {canSaveOver && (
-              <button type="button" className="notebook-action--outline" disabled={saveAction !== null} onClick={onSaveOverVersion}>
+              <button type="button" className="notebook-action--outline" disabled={saveAction !== null} tabIndex={0} onClick={onSaveOverVersion}>
                 {saveAction === 'over' ? 'Saving this version…' : 'Save over this version'}
               </button>
             )}
@@ -340,6 +341,7 @@ export function VersionRow({
               type="button"
               ref={developButtonRef}
               className="notebook-action"
+              tabIndex={0}
               onClick={onStartDeveloping}
             >
               Next version
@@ -353,6 +355,7 @@ export function VersionRow({
               <button
                 type="button"
                 className="notebook-link"
+                tabIndex={0}
                 onClick={onToggleShowChanges}
               >
                 {showingChanges ? 'Hide changes' : 'Show changes'}

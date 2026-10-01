@@ -1019,3 +1019,55 @@ describe('IngredientTable — show-changes reads style 6 too (sketch 011 Task 2)
     expect(markup).not.toContain('ingredient-table__col-remove');
   });
 });
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads.
+describe('IngredientTable — the remove controls carry an explicit tabindex (quick task 261001-doi)', () => {
+  it('one pen row renders its one remove control, tabindex="0"', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1)]);
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: onePortionDraftRow(1, '10') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    const tags = markup.match(/<button\b[^>]*>/g);
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabindex="0"');
+  });
+
+  it('an orphaned row renders its remove control and the flag\'s remove this row, each tabindex="0"', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 3)]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.', uses: ['a'] },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
+      { n: 3, leadIn: 'Three', instruction: 'Do three.' },
+    ];
+    const draftVersion = structuredClone(version);
+    draftVersion.method[0].removed = true;
+    const penDraft = { rows: { a: onePortionDraftRow(3, '10') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(version.method)}
+      />,
+    );
+
+    const tags = markup.match(/<button\b[^>]*>/g);
+    expect(markup).toContain('remove this row');
+    expect(tags).toHaveLength(2);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+});

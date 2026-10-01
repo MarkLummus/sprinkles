@@ -285,8 +285,8 @@ describe('VersionRow — the ceremony (Task 3, 1600-pen.html)', () => {
       saveAction: 'new',
     });
     expect(markup).toContain('aria-busy="true"');
-    expect(markup).toMatch(/<button type="button" class="notebook-action--outline" disabled="">Cancel<\/button>/);
-    expect(markup).toMatch(/<button type="button" class="notebook-action" disabled="">Saving new version…<\/button>/);
+    expect(markup).toMatch(/<button type="button" class="notebook-action--outline" disabled="" tabindex="0">Cancel<\/button>/);
+    expect(markup).toMatch(/<button type="button" class="notebook-action" disabled="" tabindex="0">Saving new version…<\/button>/);
     expect(markup).toMatch(/<input type="checkbox"[^>]*disabled=""/);
     expect(markup).toMatch(/<textarea[^>]*disabled=""/);
   });
@@ -485,7 +485,7 @@ describe('VersionRow — the details fold at every width (sketch 011 decisions 1
   it('renders a closed fold reading "Show details" and a hidden dl when foldsOpen is false', () => {
     const markup = renderVersionRow({ foldsOpen: false });
     expect(markup).toMatch(
-      /<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version" aria-label="Version, Show details">/,
+      /<button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version" aria-label="Version, Show details" tabindex="0">/,
     );
     expect(markup).toMatch(/<span class="fold-row__control">Show details<\/span>/);
     expect(markup).toMatch(/<dl class="notebook-version__details" id="fold-version" hidden="?/);
@@ -494,7 +494,7 @@ describe('VersionRow — the details fold at every width (sketch 011 decisions 1
   it('renders an open fold reading "Hide details" and a visible dl when foldsOpen is true (the default)', () => {
     const markup = renderVersionRow({});
     expect(markup).toMatch(
-      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version" aria-label="Version, Hide details">/,
+      /<button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-version" aria-label="Version, Hide details" tabindex="0">/,
     );
     expect(markup).toMatch(/<span class="fold-row__control">Hide details<\/span>/);
     expect(markup).toContain('<dl class="notebook-version__details" id="fold-version">');
@@ -642,5 +642,65 @@ describe('VersionRow — every link carries an explicit tabindex (G-03.4-r4-1)',
     });
     expect(markup).toContain('href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1"');
     expect(markup).toContain(`href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/${augustSecondBatch.id}"`);
+  });
+});
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads. The one
+// select (two or more citable batches) is not touched.
+describe('VersionRow — every button and checkbox carries an explicit tabindex (quick task 261001-doi)', () => {
+  const controlTags = (markup) => [
+    ...(markup.match(/<button\b[^>]*>/g) ?? []),
+    ...((markup.match(/<input\b[^>]*>/g) ?? []).filter((tag) => /type="checkbox"/.test(tag))),
+  ];
+
+  it('developing with one citable batch renders the checkbox, Cancel and Save as a new version, each tabindex="0"', () => {
+    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [augustSecondBatch], canSaveOver: false });
+    const tags = controlTags(markup);
+    expect(tags).toHaveLength(3);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('developing with Save over this version offered renders four, each tabindex="0"', () => {
+    const markup = renderVersionRow({ openPen: 'plan', penDraft: emptyPenDraft(), batches: [augustSecondBatch], canSaveOver: true });
+    const tags = controlTags(markup);
+    expect(tags).toHaveLength(4);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('the locked ceremony keeps disabled="" beside tabindex="0" on the checkbox and both buttons (T-261001-doi-02)', () => {
+    const markup = renderVersionRow({
+      openPen: 'plan',
+      penDraft: emptyPenDraft(),
+      batches: [augustSecondBatch],
+      canSaveOver: false,
+      saveAction: 'new',
+    });
+    const tags = controlTags(markup);
+    expect(tags).toHaveLength(3);
+    for (const tag of tags) {
+      expect(tag).toContain('disabled=""');
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('reading renders Next version, Show changes and the details fold row, each tabindex="0"', () => {
+    const markup = renderVersionRow({
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      parentVersion: oliveOilVersion,
+    });
+    const tags = controlTags(markup);
+    expect(tags).toHaveLength(3);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
   });
 });

@@ -651,6 +651,7 @@ export function BatchRow({
               type="button"
               ref={amendButtonRef}
               className="text-control batch-row__correct"
+              tabIndex={0}
               onClick={() => onStartAmending(openBatch)}
             >
               Correct
@@ -666,6 +667,7 @@ export function BatchRow({
               type="button"
               ref={recordButtonRef}
               className="text-control batch-row__record"
+              tabIndex={0}
               onClick={onStartRecording}
             >
               Record another
@@ -805,12 +807,13 @@ export function BatchRow({
                     {tastingStatus}
                   </p>
                   {pendingUndo && (
-                    <button type="button" className="text-control undo-control" onClick={onUndoRemove}>Restore tasting</button>
+                    <button type="button" className="text-control undo-control" tabIndex={0} onClick={onUndoRemove}>Restore tasting</button>
                   )}
                   <button
                     type="button"
                     className="text-control tasting-head__remove"
                     ref={removeTastingButtonRef}
+                    tabIndex={0}
                     onClick={onRemoveTasting}
                   >
                     Remove tasting
@@ -912,6 +915,7 @@ export function BatchRow({
                           type="button"
                           className="chip-toggle"
                           aria-pressed={draft.defects.includes(defect)}
+                          tabIndex={0}
                           onClick={() => onChangeDefect(defect)}
                         >
                           {defect}
@@ -930,7 +934,7 @@ export function BatchRow({
                           aria-label of its own; its own boolean reads
                           from bitterDeclared rather than the defects
                           list. */}
-                      <button type="button" className="chip-toggle" aria-pressed={draft.bitterDeclared} onClick={onToggleBitter}>
+                      <button type="button" className="chip-toggle" aria-pressed={draft.bitterDeclared} tabIndex={0} onClick={onToggleBitter}>
                         {DECLARED_FLAW}
                       </button>
                     </div>
@@ -1131,7 +1135,7 @@ export function BatchRow({
                 there is Phase 4's, out of scope here. */}
             <p>{NO_BATCH_PROSE}</p>
             {openPen === null && (
-              <button type="button" ref={recordButtonRef} className="notebook-action" onClick={onStartRecording}>
+              <button type="button" ref={recordButtonRef} className="notebook-action" tabIndex={0} onClick={onStartRecording}>
                 Record a batch
               </button>
             )}

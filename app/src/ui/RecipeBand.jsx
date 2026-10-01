@@ -101,10 +101,10 @@ export function RecipeBand({ recipe, onSave, initiallyRenaming = false, initialE
             {status}
           </p>
           <div className="notebook-recipe__form-actions">
-            <button type="button" className="notebook-action--outline" disabled={saving} onClick={handleCancel}>
+            <button type="button" className="notebook-action--outline" disabled={saving} tabIndex={0} onClick={handleCancel}>
               Cancel
             </button>
-            <button type="button" className="notebook-action" disabled={saving} onClick={handleSave}>
+            <button type="button" className="notebook-action" disabled={saving} tabIndex={0} onClick={handleSave}>
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
@@ -116,7 +116,7 @@ export function RecipeBand({ recipe, onSave, initiallyRenaming = false, initialE
             <h1 className="notebook-recipe__name">{recipe.name}</h1>
           </div>
           {recipe.description !== '' && <p className="notebook-recipe__description">{recipe.description}</p>}
-          <button type="button" ref={renameButtonRef} className="notebook-link" onClick={handleOpen}>
+          <button type="button" ref={renameButtonRef} className="notebook-link" tabIndex={0} onClick={handleOpen}>
             Rename
           </button>
         </>

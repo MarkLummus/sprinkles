@@ -89,3 +89,24 @@ describe('NoteList — the inherited-from marker survives both states (D-06)', (
     expect(markup).not.toContain('authored__inherited');
   });
 });
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads.
+describe('NoteList — the remove controls carry an explicit tabindex (quick task 261001-doi)', () => {
+  it('renders one remove button per note while developing, each tabindex="0"', () => {
+    const markup = renderNoteList({ mode: 'developing' });
+    const buttons = markup.match(/<button\b[^>]*>/g);
+    expect(buttons).toHaveLength(oliveOilVersion.authored.beforeYouStart.length);
+    expect(buttons).toHaveLength(2);
+    for (const tag of buttons) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+
+  it('renders no button while reading', () => {
+    expect(renderNoteList({}).match(/<button\b[^>]*>/g)).toBeNull();
+  });
+});

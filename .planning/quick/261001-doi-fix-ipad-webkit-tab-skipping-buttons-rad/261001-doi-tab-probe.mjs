@@ -9,7 +9,11 @@
 // Reading A: from Churn duration, Tab to Save batch, collapsed by radio group
 // name, against the brief's eight stops. Reading B: Tab stops per radio group,
 // nothing picked and Exit consistency picked. Reading C: ArrowRight,
-// ArrowRight, ArrowLeft in the Exit consistency group.
+// ArrowRight, ArrowLeft in the Exit consistency group. Reading D: the same
+// span with the tasting open, reduced to its button and radio stops, WebKit's
+// list against Chromium's. Reading E: Tab stops on the Hardness axis group,
+// nothing picked and the 3 stop picked. Reading F: the arrow keys in the
+// Hardness group.
 //
 // WebKit is created through a context built here, not through openApp: openApp
 // asserts a pointer mode and is written against Chromium.
@@ -53,7 +57,7 @@ const keyMatches = (key, expected) => key === expected || (expected.startsWith('
 const sameList = (keys, expected) =>
   keys.length === expected.length && keys.every((key, index) => keyMatches(key, expected[index]));
 
-async function openPen(browser, appUrl) {
+async function openPen(browser, appUrl, { tasting = false } = {}) {
   const context = await browser.newContext({
     viewport: { width: 1366, height: 1024 },
     hasTouch: true,
@@ -66,6 +70,7 @@ async function openPen(browser, appUrl) {
   const page = await context.newPage();
   await page.goto(appUrl + APP_ROUTE, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'Record another' }).first().click();
+  if (tasting) await page.getByRole('button', { name: 'Add tasting' }).first().click();
   return { context, page };
 }
 
@@ -137,6 +142,10 @@ async function arrowReading(page, engine, label, prefix, max) {
   return readings;
 }
 
+// Reading D's reduction: button and radio stops only, radio runs collapsed.
+const buttonsAndRadios = (stops) => collapse(stops.filter((s) => s.tag === 'button' || s.type === 'radio'));
+
+const readingD = {};
 const servers = await startServers();
 const engines = [
   ['webkit', () => webkit.launch()],
@@ -191,6 +200,49 @@ try {
         console.log(JSON.stringify({ engine, reading: 'C', readings }));
         await context.close();
       }
+
+      // Reading D: the tasting-open span, button and radio stops only.
+      {
+        const { context, page } = await openPen(browser, servers.appUrl, { tasting: true });
+        await page.locator(CHURN).focus();
+        const stops = await tabSpan(page, isSaveBatch, 150);
+        const reduced = buttonsAndRadios(stops);
+        readingD[engine] = reduced;
+        console.log(JSON.stringify({ engine, reading: 'D', stops: stops.length, order: reduced }));
+        countedCheck(
+          stops.length > 0 && isSaveBatch(stops[stops.length - 1]),
+          `${engine}: Tab from Churn duration with the tasting open reaches Save batch within 150 presses (read ${stops.length} stops, ended on ${JSON.stringify(stops[stops.length - 1])})`,
+        );
+
+        // Reading E: Tab stops on the Hardness group. Every stop in the span
+        // is read already; the picked state is a fresh page.
+        const unpickedHardness = stopsOn(stops, 'axis-hardness');
+        await context.close();
+        const picked = await openPen(browser, servers.appUrl, { tasting: true });
+        await picked.page
+          .locator('label.axis-mark__stop', { has: picked.page.locator('input[name="axis-hardness"][value="3"]') })
+          .click();
+        await picked.page.locator(CHURN).focus();
+        const pickedStops = await tabSpan(picked.page, isSaveBatch, 150);
+        const pickedHardness = stopsOn(pickedStops, 'axis-hardness');
+        const pickedHardnessClear = pickedStops.filter((s) => s.tag === 'button' && s.label === 'Clear Hardness').length;
+        console.log(
+          JSON.stringify({ engine, reading: 'E', hardness: { unpicked: unpickedHardness, picked: pickedHardness, pickedClear: pickedHardnessClear } }),
+        );
+        if (engine === 'chromium') {
+          countedCheck(unpickedHardness === 1, `${engine}: Hardness reads 1 radio stop unpicked (read ${unpickedHardness})`);
+          countedCheck(pickedHardness === 1, `${engine}: Hardness reads 1 radio stop picked (read ${pickedHardness})`);
+        }
+        await picked.context.close();
+      }
+
+      // Reading F: arrow keys in the Hardness group, tasting open.
+      {
+        const { context, page } = await openPen(browser, servers.appUrl, { tasting: true });
+        const readings = await arrowReading(page, engine, 'Hardness', 'axis-hardness', 60);
+        console.log(JSON.stringify({ engine, reading: 'F', readings }));
+        await context.close();
+      }
     } finally {
       await browser.close();
     }
@@ -198,5 +250,12 @@ try {
 } finally {
   await servers.close();
 }
+
+// Reading D's comparison: the same button and radio stops, in the same order.
+const listD = (engine) => (readingD[engine] ?? []).map((entry) => entry.key);
+countedCheck(
+  JSON.stringify(listD('webkit')) === JSON.stringify(listD('chromium')) && listD('webkit').at(-1) === 'Save batch',
+  `webkit's tasting-open button and radio list equals chromium's and ends at Save batch (webkit ${JSON.stringify(listD('webkit'))}, chromium ${JSON.stringify(listD('chromium'))})`,
+);
 
 finish(failures, count, '261001-doi tab probe');

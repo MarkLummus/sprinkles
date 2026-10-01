@@ -31,6 +31,7 @@ export function FoldRow({ label, labelText, open, onToggle, controls, what, coun
       aria-expanded={open}
       aria-controls={controls}
       aria-label={accessibleName}
+      tabIndex={0}
       onClick={onToggle}
     >
       <span className="fold-row__head">

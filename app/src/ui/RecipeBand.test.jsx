@@ -62,3 +62,28 @@ describe('RecipeBand — blocked (a blank name is refused, D-12)', () => {
     expect(markup).toMatch(/aria-describedby="[^"]+"/);
   });
 });
+
+// Quick task 261001-doi: WebKit without Safari's tab-to-highlight preference
+// Tabs only into text entry and into controls that carry an explicit
+// tabindex — the same rule as every link, recorded in .claude/CLAUDE.md
+// (the cause is spelled out in Segmented.test.jsx). Pinned on rendered
+// markup: the attribute's whole effect is in the DOM WebKit reads.
+describe('RecipeBand — every button carries an explicit tabindex (quick task 261001-doi)', () => {
+  it('reading renders the one Rename button, tabindex="0"', () => {
+    const markup = renderToStaticMarkup(<RecipeBand recipe={makeRecipe()} onSave={() => Promise.resolve()} />);
+    const tags = markup.match(/<button\b[^>]*>/g);
+    expect(tags).toHaveLength(1);
+    expect(tags[0]).toContain('tabindex="0"');
+  });
+
+  it('renaming renders Cancel and Save, each tabindex="0"', () => {
+    const markup = renderToStaticMarkup(
+      <RecipeBand recipe={makeRecipe()} onSave={() => Promise.resolve()} initiallyRenaming />,
+    );
+    const tags = markup.match(/<button\b[^>]*>/g);
+    expect(tags).toHaveLength(2);
+    for (const tag of tags) {
+      expect(tag).toContain('tabindex="0"');
+    }
+  });
+});

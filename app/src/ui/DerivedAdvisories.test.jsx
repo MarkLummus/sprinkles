@@ -38,7 +38,7 @@ describe('DerivedAdvisories — the Watch for fold (sketch 011 decisions 18/19)'
   it('open (foldsOpen true, the default): h2.region-name holds a fold-row naming fold-check, expanded, reading Hide; the panel carries no hidden attribute', () => {
     const markup = renderToStaticMarkup(<DerivedAdvisories version={oliveOilVersion} />);
     expect(markup).toContain(
-      '<h2 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-check" aria-label="Watch for, Hide"><span class="fold-row__head">Watch for<span class="fold-row__control">Hide</span></span></button></h2>',
+      '<h2 class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-check" aria-label="Watch for, Hide" tabindex="0"><span class="fold-row__head">Watch for<span class="fold-row__control">Hide</span></span></button></h2>',
     );
     expect(markup).toContain('<div id="fold-check">');
   });
@@ -46,7 +46,7 @@ describe('DerivedAdvisories — the Watch for fold (sketch 011 decisions 18/19)'
   it('closed (foldsOpen false): aria-expanded false, reading Show, and the panel hidden', () => {
     const markup = renderToStaticMarkup(<DerivedAdvisories version={oliveOilVersion} foldsOpen={false} />);
     expect(markup).toContain(
-      '<h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-check" aria-label="Watch for, Show"><span class="fold-row__head">Watch for<span class="fold-row__control">Show</span></span></button></h2>',
+      '<h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-check" aria-label="Watch for, Show" tabindex="0"><span class="fold-row__head">Watch for<span class="fold-row__control">Show</span></span></button></h2>',
     );
     expect(markup).toMatch(/<div id="fold-check" hidden="?/);
   });

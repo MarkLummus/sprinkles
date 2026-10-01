@@ -18,13 +18,14 @@ const DOMAIN_DIR = path.join(STYLES_DIR, '..', 'domain');
 
 const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'home.css', 'shell.css', 'notebook.css'];
 
-// No custom property is set inline via React's style prop any more — D-04
-// (plan 05) retired --c, RecipeList.jsx's old per-row dealt-hue property,
-// along with the rest of the Sprinkles Jar. Kept as an empty set (rather
-// than removed outright) so a future inline custom property has a named
-// place to be excepted, documented, rather than silently widening the
-// unresolved-token gate.
-const LOCALLY_SET_CUSTOM_PROPERTIES = new Set();
+// One custom property is set inline via React's style prop: RecipeHistory.jsx
+// puts the entry count on the History strip, a layout count read by
+// notebook.css's track width (261001-den), so it has no declaration in
+// tokens.css by design. D-04 (plan 05) retired --c, RecipeList.jsx's old
+// per-row dealt-hue property, along with the rest of the Sprinkles Jar. A
+// further inline custom property gets a named place here, documented, rather
+// than silently widening the unresolved-token gate.
+const LOCALLY_SET_CUSTOM_PROPERTIES = new Set(['--app-notebook-history-count']);
 
 function stripJsComments(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');

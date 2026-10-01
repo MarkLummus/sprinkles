@@ -443,12 +443,16 @@
 }
 
 /* Runs from the first mark's centre (the node list's padding plus half a
-   mark) to the last mark's centre (the padding plus a node's width less half
-   a mark, from the strip's right). */
+   mark) to the last mark's centre. Its length is one node width plus one node
+   gap per join, taken from the entry count RecipeHistory.jsx sets on the
+   strip: a browser may leave the node gap out of the strip's max-content
+   width, and a right edge measured from the strip then falls short by one gap
+   per join (Mark's iPad, 2026-10-01, the line stopped after the third of four
+   marks). */
 .notebook-history__track {
   position: absolute;
   left: calc(var(--gap-xs) + var(--app-notebook-history-mark-size) / 2);
-  right: calc(var(--gap-xs) + var(--app-notebook-history-node-w) - var(--app-notebook-history-mark-size) / 2);
+  width: calc((var(--app-notebook-history-count) - 1) * (var(--app-notebook-history-node-w) + var(--app-notebook-history-node-gap)));
   top: var(--app-notebook-history-track-top);
   height: var(--app-rule-row);
   background: var(--app-divider);

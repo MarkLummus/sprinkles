@@ -109,7 +109,10 @@ export function RecipeHistory({
           ref={railRef}
           onScroll={(event) => setScrolledLeft(event.target.scrollLeft > 0)}
         >
-          <div className="notebook-history__strip">
+          {/* The entry count is a layout count, not a visual value: notebook.css
+              sizes the track from it, so the line's length never depends on the
+              strip's intrinsic width (261001-den). */}
+          <div className="notebook-history__strip" style={{ '--app-notebook-history-count': String(entries.length) }}>
             <div className="notebook-history__track" aria-hidden="true" />
             <ol className="notebook-history__nodes">
               {entries.map((entry) => {

@@ -843,3 +843,29 @@ describe('the hand (D-17, D-18, DESIGN.md Typography > Hand role)', () => {
     expect(handRule.declarations).toMatch(/font-style:\s*italic/);
   });
 });
+
+// Quick task 261001-doi (Mark's iPad, 2026-10-01: the Every recipe cue sat
+// 3px under the tasting note). Sketch 007 draws the space below the note
+// twice: line 96's `margin-bottom: var(--gap-m)` on .note-block, outside
+// the block, and line 34's `label { margin: 0 0 var(--gap-s) }`, which the
+// board's note field inherits as a label and the app's paragraph eyebrow
+// and textarea lost. The app carries the second inside the block as
+// padding. Read as text: the rendered distances are the batches probe's
+// notegap group, measured against the board in a browser.
+describe('the space below the tasting note (sketch 007 lines 34 and 96; quick task 261001-doi)', () => {
+  test('.note-block carries margin-bottom var(--gap-m) and padding-bottom var(--gap-s), nothing else, and no px literal', () => {
+    const rule = ruleFor('.note-block');
+    expect(rule, 'expected a top-level .note-block rule').toBeTruthy();
+    const declarations = rule.declarations
+      .split(';')
+      .map((declaration) => declaration.trim())
+      .filter(Boolean);
+    expect(declarations).toEqual(['padding-bottom: var(--gap-s)', 'margin-bottom: var(--gap-m)']);
+    expect(rule.declarations).not.toMatch(/\d+px/);
+  });
+
+  test('--gap-m resolves to 20 and --gap-s to 12, so the board\'s space is token arithmetic', () => {
+    expect(resolveTokenPx(tokens, '--gap-m')).toBe(20);
+    expect(resolveTokenPx(tokens, '--gap-s')).toBe(12);
+  });
+});

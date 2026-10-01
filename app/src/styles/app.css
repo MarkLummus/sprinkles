@@ -2154,6 +2154,18 @@ textarea {
   margin-top: var(--gap-hair);
 }
 
+/* The space the board draws below the tasting note, before the axes it
+   leads into (sketch 007): line 96's margin-bottom, var(--gap-m), outside
+   the block, and line 34's label margin, var(--gap-s), inside it — the
+   board's note field is a label, and the app's paragraph eyebrow and
+   textarea lost that margin when the label became a paragraph. Tokens
+   only. Quick task 261001-doi (Mark's iPad, 2026-10-01: the Every recipe
+   cue sat 3px under the note). */
+.note-block {
+  padding-bottom: var(--gap-s);
+  margin-bottom: var(--gap-m);
+}
+
 /* The axes grid's desktop row-major arrangement (AxesGrid, BatchRow.jsx;
    contract "Axes spec"/"Responsive ladder"; 03.3.1.1 tenth round, sketch
    007 lines 65-68): a real DOM swap, not a media-scoped layout —

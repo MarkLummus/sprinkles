@@ -24,6 +24,13 @@
 // inputmode; the four others type text, inputmode decimal) and drives a lone
 // minus through real key presses to prove it is flagged, never saved blank.
 // The layer itself is a WebKit fact on Mark's iPhone, not a probe result.
+//
+// 261001-doi: `notegap` guards the space below the tasting note. After
+// Record another / Add tasting it reads, on the app and on sketch 007, the
+// note block's bottom to the Every recipe cue, the textarea's bottom to the
+// note block's bottom, and the textarea's bottom to the cue, at 393 coarse,
+// 1366 coarse and 1366 fine, and holds the app to the board's distance.
+// Usage: node 03.5-batches-probe.mjs notegap 393,1366
 import {
   startServers,
   launch,
@@ -249,6 +256,36 @@ function readFoldBatchesCounts(page) {
       return spans[1] ? spans[1].textContent : null;
     }),
   );
+}
+
+// 261001-doi: the three numbers the notegap group compares, read from the
+// rendered boxes. The note block is the textarea's own .note-block on both
+// the app and sketch 007, the cue is picked by id on the app and by class on
+// the board.
+function readNoteGap([textareaSelector, cueSelector]) {
+  const textarea = document.querySelector(textareaSelector);
+  const noteBlock = textarea.closest('.note-block');
+  const cue = document.querySelector(cueSelector);
+  const box = (el) => el.getBoundingClientRect();
+  return {
+    noteToCue: +(box(cue).top - box(noteBlock).bottom).toFixed(2),
+    textareaToNoteBottom: +(box(noteBlock).bottom - box(textarea).bottom).toFixed(2),
+    textareaToCue: +(box(cue).top - box(textarea).bottom).toFixed(2),
+  };
+}
+
+async function readAppNoteGap(page) {
+  await page.getByRole('button', { name: 'Record another' }).first().click();
+  await page.getByRole('button', { name: 'Add tasting' }).first().click();
+  return page.evaluate(readNoteGap, ['textarea[aria-label="How did it turn out?"]', '#axes-core-cue']);
+}
+
+async function readBoardNoteGap(browser, repoUrl, { width, coarse }) {
+  const { context, page } = await openBoard(browser, repoUrl, '../007-full-battery/index.html', { width, coarse });
+  await page.evaluate(() => setTastingMode('visible'));
+  const reading = await page.evaluate(readNoteGap, ['#tasting-body .note-block textarea', '#axes .axes-cue--core']);
+  await context.close();
+  return reading;
 }
 
 async function main() {
@@ -781,6 +818,41 @@ async function main() {
         countedCheck(afterWheel === '-6', `keypad wheel: a wheel over a focused Out of machine leaves -6 (got ${afterWheel})`);
 
         await context.close();
+      }
+    }
+
+    if (groups.has('notegap')) {
+      // The board draws 20px from the note block to the cue (line 96) and
+      // 17.25px of label margin and strut under the textarea (line 34), so
+      // 37.25 from the textarea to the cue. The app's note block gives the
+      // 12px label margin as padding and the 20px as margin; what remains of
+      // the board's textarea-to-cue distance is the two engines' differing
+      // strut under an inline-block textarea (about 2.25px), so the app may
+      // read up to 3px closer than the board and 1px farther, and nothing
+      // else in the spacing moves.
+      const noteGapCombos = [];
+      for (const width of widths) {
+        if (![393, 1366].includes(width)) continue;
+        noteGapCombos.push({ width, coarse: true });
+        if (width === 1366) noteGapCombos.push({ width, coarse: false });
+      }
+      for (const { width, coarse } of noteGapCombos) {
+        const label = `notegap width=${width} ${coarse ? 'coarse' : 'fine'}`;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+        await assertSeed(page);
+        const app = await readAppNoteGap(page);
+        await context.close();
+        const board = await readBoardNoteGap(browser, repoUrl, { width, coarse });
+        console.log(JSON.stringify({ group: 'notegap', width, coarse, app, board }));
+        countedCheck(
+          Math.abs(app.noteToCue - board.noteToCue) <= 1,
+          `${label}: the note block's bottom to the Every recipe cue is ${app.noteToCue} on the app against ${board.noteToCue} on sketch 007, within 1px`,
+        );
+        const textareaDelta = app.textareaToCue - board.textareaToCue;
+        countedCheck(
+          textareaDelta >= -3 && textareaDelta <= 1,
+          `${label}: the textarea's bottom to the cue is ${app.textareaToCue} on the app against ${board.textareaToCue} on sketch 007, no more than 3px closer and 1px farther (got ${textareaDelta.toFixed(2)})`,
+        );
       }
     }
   } finally {

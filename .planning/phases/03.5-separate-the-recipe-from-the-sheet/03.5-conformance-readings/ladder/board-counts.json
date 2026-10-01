@@ -20,7 +20,7 @@
     "captionText": "393 · History upright, open",
     "foldAriaControls": "fold-history",
     "foldAriaExpanded": "true",
-    "foldText": "HistoryHide8 versions · latest first",
+    "foldText": "HistoryHide8 versions",
     "onlyLineText": null
   },
   "counts-upright-batches-closed": {
@@ -36,7 +36,7 @@
     "captionText": "393 · Batches upright, open",
     "foldAriaControls": "fold-batches",
     "foldAriaExpanded": "true",
-    "foldText": "BatchesHide3 batches · latest first",
+    "foldText": "BatchesHide3 batches",
     "onlyLineText": null
   },
   "counts-batches-picked": {
@@ -52,7 +52,7 @@
     "captionText": "3 batches · D: the rail upright in the side column",
     "foldAriaControls": "fold-batches",
     "foldAriaExpanded": "true",
-    "foldText": "BatchesHide3 batches · latest first",
+    "foldText": "BatchesHide3 batches",
     "onlyLineText": null
   }
 }

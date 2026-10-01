@@ -1060,6 +1060,43 @@ async function main() {
           `forms width=${width}: the Version fold head (${foldHeadWidth}) is the grid's width (${gridWidth})`,
         );
 
+        // The pen is closed: the band's height and the Sheet's top, so the
+        // RED and GREEN builds can be set side by side (the fix moves widths
+        // only), and the closed controls against the board drawn for this width.
+        const closed = await page.evaluate(() => {
+          const widthOf = (text) => {
+            const button = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === text);
+            return button ? button.getBoundingClientRect().width : null;
+          };
+          const band = document.querySelector('.notebook-band');
+          const sheet = document.querySelector('.recipe-page');
+          return {
+            bandHeight: band ? band.getBoundingClientRect().height : null,
+            sheetTop: sheet ? sheet.getBoundingClientRect().top + window.scrollY : null,
+            rename: widthOf('Rename'),
+            nextVersion: widthOf('Next version'),
+          };
+        });
+        console.log(JSON.stringify({ group: 'forms', width, closed }));
+        if (MATCHED_BOARDS[width]) {
+          const board = await openBoard(browser, repoUrl, MATCHED_BOARDS[width]);
+          const boardClosed = await board.page.evaluate(() => {
+            const widthOf = (text) => {
+              const button = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === text);
+              return button ? button.getBoundingClientRect().width : null;
+            };
+            return { rename: widthOf('Rename'), nextVersion: widthOf('Next version') };
+          });
+          await board.context.close();
+          console.log(JSON.stringify({ group: 'forms', width, board: MATCHED_BOARDS[width], boardClosed }));
+          for (const [key, label] of [['rename', 'Rename'], ['nextVersion', 'Next version']]) {
+            countedCheck(
+              boardClosed[key] !== null && closed[key] !== null && Math.abs(closed[key] - boardClosed[key]) <= 3,
+              `forms width=${width}: the closed ${label} control (${closed[key]}) is within 3 of ${MATCHED_BOARDS[width]}'s (${boardClosed[key]})`,
+            );
+          }
+        }
+
         await page.getByRole('button', { name: 'Rename', exact: true }).click();
         await page.waitForSelector('.notebook-recipe__form');
         const renameWidth = await readWidth('.notebook-recipe__form');

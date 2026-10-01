@@ -311,26 +311,37 @@ export function asMadeTotals(rows, asMade) {
 }
 
 /**
- * sortedBatches(batches) -> a new array of batches ordered by churn date
- * descending, undated batches last. Batches that tie on churn date (both
- * undated, or the same day) order by recordedAt descending, so the result
- * never depends on the order the store happened to return them in
- * (IndexedDB hands records back in id order). Never sorts in place.
+ * sortedBatches(batches) -> a new array of batches, newest first. A batch
+ * stands at its churn date or, with none, at the UTC calendar day it was
+ * recorded (the first ten characters of recordedAt); the later standing
+ * comes first. On the same standing day the later recordedAt comes first,
+ * and a batch with neither a churn date nor a recordedAt comes last, so a
+ * later-recorded undated batch outranks an older dated one (G-03.5-R2-5).
+ * Dated batches never order by recordedAt across days, so a batch typed in
+ * late for an older churn does not outrank a newer one. The result never
+ * depends on the order the store happened to return the batches in
+ * (IndexedDB hands records back in id order). A recordedAt that is not a
+ * string counts as missing. Never sorts in place.
  */
 export function sortedBatches(batches) {
+  const standingDay = (batch) => {
+    if (batch.churn.churnDate) return batch.churn.churnDate;
+    if (typeof batch.recordedAt === 'string') return batch.recordedAt.slice(0, 10);
+    return null;
+  };
   return [...batches].sort((a, b) => {
-    const aDate = a.churn.churnDate;
-    const bDate = b.churn.churnDate;
-    if (aDate !== bDate) {
-      if (aDate === null) return 1;
-      if (bDate === null) return -1;
-      return aDate < bDate ? 1 : -1;
+    const aDay = standingDay(a);
+    const bDay = standingDay(b);
+    if (aDay !== bDay) {
+      if (aDay === null) return 1;
+      if (bDay === null) return -1;
+      return aDay < bDay ? 1 : -1;
     }
-    const aRecorded = a.recordedAt;
-    const bRecorded = b.recordedAt;
+    const aRecorded = typeof a.recordedAt === 'string' ? a.recordedAt : null;
+    const bRecorded = typeof b.recordedAt === 'string' ? b.recordedAt : null;
     if (aRecorded === bRecorded) return 0;
-    if (aRecorded == null) return 1;
-    if (bRecorded == null) return -1;
+    if (aRecorded === null) return 1;
+    if (bRecorded === null) return -1;
     return aRecorded < bRecorded ? 1 : -1;
   });
 }

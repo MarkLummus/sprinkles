@@ -465,7 +465,7 @@ Plans:
 **Why inserted:** Mark, 2026-09-23. Phase 4's print design was drawn apart from the built page, and the built page mixes record and Sheet, so the printed sheet could not be designed or judged correctly. Phase 4 is paused until this lands.
 **Requirements**: TBD
 **Depends on:** Phase 03.4
-**Plans:** 25/25 plans executed
+**Plans:** 25/30 plans executed
 
 Plans:
 
@@ -550,6 +550,20 @@ Plans:
 **Wave 19** *(blocked on 03.5-24)*
 
 - [x] 03.5-25-PLAN.md — The log's measurements on the board's grid and rhythm (5 across 724-1365, 2x3 elsewhere), the wrongly accepted conformance rows corrected, the round's full regression (G-03.5-6)
+
+**Wave 20 — gap closure** *(03.5-UAT.md round 2, with Mark's decisions of 2026-09-30; G-03.5-R2-2 waits on Mark's device test and G-03.5-2b stays deferred)*
+
+- [ ] 03.5-26-PLAN.md — A later-recorded undated batch outranks an older dated one, so Mexican Chocolate reads Awaiting tasting; the CR-01 standings and the three Home standings hold, proved through the store and on the built Home (G-03.5-R2-5)
+- [ ] 03.5-27-PLAN.md — Boards first: every fold-head count drawn bare, the boards' touch floor narrowed to the pointer, README decisions 22 and 23, and DESIGN.md's Counts sentence through Impeccable (checkpoint) (G-03.5-R2-1, G-03.5-R2-3)
+- [ ] 03.5-28-PLAN.md — The Rename and Next version forms keep content width at 393 and 723 while the fold heads stay full row (G-03.5-R2-4)
+
+**Wave 21** *(blocked on 03.5-27 and 03.5-28)*
+
+- [ ] 03.5-29-PLAN.md — The app's fold-head counts read bare, the orphaned overflow state removed, and tests and probes pin the bare count on the build and on the boards (G-03.5-R2-1)
+
+**Wave 22** *(blocked on 03.5-26 to 03.5-29)*
+
+- [ ] 03.5-30-PLAN.md — The round's conformance records corrected (counts, the 723 touch floor, the forms, Home's standing), the readings regenerated, and the full regression on the final build (G-03.5-R2-1, G-03.5-R2-3, G-03.5-R2-4, G-03.5-R2-5)
 
 ### Phase 4: Prepare the next version for making
 

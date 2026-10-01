@@ -359,3 +359,27 @@ describe("the log's vertical rhythm and the tasting grids (G-03.5-6, 03.5-25)", 
     expect(topLevel(selector)).toBeUndefined();
   });
 });
+
+// G-03.5-R2-4 (03.5-28): plan 23 made the phone band's grid align-items:
+// stretch so the Version fold head fills its row (G-03.5-4), which also
+// stretched the Rename and Next version forms to the full row. The grid goes
+// back to the base rule's align-items, and only the Version section, the one
+// grid child holding a fold head, stretches.
+describe("the phone band's forms keep their content width, the Version fold head the row (G-03.5-R2-4, 03.5-28)", () => {
+  const narrowRule = (selector) =>
+    rules.find((rule) => rule.selector === selector && rule.media === '(max-width: 723.98px)');
+
+  test('the 723.98px band grid is a flex column and declares no align-items, so the base rule applies', () => {
+    const grid = narrowRule('.notebook-band__grid');
+    expect(grid, 'expected a .notebook-band__grid rule under (max-width: 723.98px)').toBeTruthy();
+    expect(grid.declarations).toMatch(/display:\s*flex/);
+    expect(grid.declarations).toMatch(/flex-direction:\s*column/);
+    expect(grid.declarations).not.toMatch(/align-items/);
+  });
+
+  test('the 723.98px block stretches the Version section alone', () => {
+    const version = narrowRule('.notebook-version');
+    expect(version, 'expected a .notebook-version rule under (max-width: 723.98px)').toBeTruthy();
+    expect(version.declarations).toMatch(/align-self:\s*stretch/);
+  });
+});

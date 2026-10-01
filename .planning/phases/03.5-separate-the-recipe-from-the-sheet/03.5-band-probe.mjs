@@ -1035,6 +1035,60 @@ async function main() {
       }
     }
 
+    // The `forms` group (03.5-28, G-03.5-R2-4): below 724 the band is a flex
+    // column, and the open Rename and Next version forms keep their content
+    // width while the Version fold head runs the row. Widths of 724 and above
+    // are skipped (the band is a two-column grid there, unchanged).
+    if (groups.has('forms')) {
+      for (const width of widths) {
+        if (width >= 724) continue;
+        const coarse = width === 393;
+        const { context, page } = await openApp(browser, appUrl, APP_ROUTE, { width, coarse });
+
+        const readWidth = (selector) =>
+          page.evaluate((sel) => {
+            const el = document.querySelector(sel);
+            return el ? el.getBoundingClientRect().width : null;
+          }, selector);
+
+        const gridWidth = await readWidth('.notebook-band__grid');
+        const foldHeadWidth = await page.locator('button[aria-controls="fold-version"]').evaluate((el) => el.getBoundingClientRect().width);
+        console.log(JSON.stringify({ group: 'forms', width, gridWidth, foldHeadWidth }));
+        countedCheck(gridWidth !== null, `forms width=${width}: the band grid exists`);
+        countedCheck(
+          Math.abs(foldHeadWidth - gridWidth) <= 1,
+          `forms width=${width}: the Version fold head (${foldHeadWidth}) is the grid's width (${gridWidth})`,
+        );
+
+        await page.getByRole('button', { name: 'Rename', exact: true }).click();
+        await page.waitForSelector('.notebook-recipe__form');
+        const renameWidth = await readWidth('.notebook-recipe__form');
+        console.log(JSON.stringify({ group: 'forms', width, form: 'rename', renameWidth, gridWidth }));
+        countedCheck(renameWidth <= gridWidth + 1, `forms width=${width}: the Rename form (${renameWidth}) is at most the grid's width (${gridWidth})`);
+        if (width >= 600) {
+          countedCheck(
+            renameWidth <= gridWidth - 8,
+            `forms width=${width}: the Rename form (${renameWidth}) is at least 8px narrower than the grid (${gridWidth})`,
+          );
+          countedCheck(Math.abs(renameWidth - 542) <= 4, `forms width=${width}: the Rename form (${renameWidth}) is within 4 of 542`);
+        }
+        await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+        await page.waitForSelector('.notebook-recipe__form', { state: 'detached' });
+
+        await page.getByRole('button', { name: 'Next version', exact: true }).first().click();
+        await page.waitForSelector('.notebook-ceremony');
+        const ceremonyWidth = await readWidth('.notebook-ceremony');
+        console.log(JSON.stringify({ group: 'forms', width, form: 'next-version', ceremonyWidth, gridWidth }));
+        countedCheck(
+          ceremonyWidth <= gridWidth - 8,
+          `forms width=${width}: the Next version form (${ceremonyWidth}) is at least 8px narrower than the grid (${gridWidth})`,
+        );
+        countedCheck(Math.abs(ceremonyWidth - 288.5) <= 4, `forms width=${width}: the Next version form (${ceremonyWidth}) is within 4 of 288.5`);
+
+        await context.close();
+      }
+    }
+
     if (groups.has('rhythm')) {
       for (const width of widths) {
         if (![1024, 1365, 1366, 1920].includes(width)) continue;

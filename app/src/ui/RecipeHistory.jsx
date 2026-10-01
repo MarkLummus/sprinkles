@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { railEntries, railHint } from '../domain/historyRail.js';
+import { railEntries, versionCountWords } from '../domain/historyRail.js';
 import { versionsForRecipe } from '../domain/lineage.js';
 import { notebookPath } from './notebookPaths.js';
 import { FoldRow } from './FoldRow.jsx';
@@ -27,7 +27,6 @@ export function RecipeHistory({
   belowDesktop = false,
 }) {
   const railRef = useRef(null);
-  const [overflowing, setOverflowing] = useState(false);
   const [scrolledLeft, setScrolledLeft] = useState(false);
   const recipeVersions = versionsForRecipe(versions, recipeId);
   const entries = railEntries(recipeVersions, allBatches, {
@@ -38,24 +37,17 @@ export function RecipeHistory({
 
   // The horizontal rail opens scrolled to the version in view
   // (decisions_recorded 1, 03.5-05): sets the rail's own scrollLeft, never
-  // scrollIntoView, which would move the page instead of the rail. The same
-  // layout pass measures whether the rail overflows its own width (the
-  // hint's "opens at the version in view" clause) and, after any
-  // autoscroll, whether content is now hidden to the left (the fade). Runs
-  // only for the horizontal rail (decisions_recorded 5, 03.5-18) — a closed
-  // rail (below 1366, or the fold itself closed) has no width to measure —
-  // and re-runs whenever `open` or `belowDesktop` changes, since a rail that
-  // was hidden gains its real width only once shown.
+  // scrollIntoView, which would move the page instead of the rail. After
+  // any autoscroll it reads whether content is now hidden to the left (the
+  // fade). Runs only for the horizontal rail (decisions_recorded 5,
+  // 03.5-18) — a closed rail (below 1366, or the fold itself closed) has no
+  // width to measure — and re-runs whenever `open` or `belowDesktop`
+  // changes, since a rail that was hidden gains its real width only once
+  // shown.
   useEffect(() => {
-    if (belowDesktop) return undefined;
+    if (belowDesktop) return;
     const rail = railRef.current;
-    if (!rail) return undefined;
-
-    function measureOverflow() {
-      setOverflowing(rail.scrollWidth > rail.clientWidth);
-    }
-    measureOverflow();
-    window.addEventListener('resize', measureOverflow);
+    if (!rail) return;
 
     const node = rail.querySelector('[data-in-view="true"]');
     if (node) {
@@ -68,8 +60,6 @@ export function RecipeHistory({
       }
     }
     setScrolledLeft(rail.scrollLeft > 0);
-
-    return () => window.removeEventListener('resize', measureOverflow);
   }, [currentVersionId, entries.length, open, belowDesktop]);
 
   // One entry (a lone saved version, no draft) reads as one plain line —
@@ -94,7 +84,7 @@ export function RecipeHistory({
         open={open}
         onToggle={toggle}
         controls="fold-history"
-        count={railHint(entries.length, { open, upright: belowDesktop, overflowing })}
+        count={versionCountWords(entries.length)}
       />
       {belowDesktop ? (
         <UprightRail

@@ -1,5 +1,5 @@
 // Pure. No framework, no DOM, no store import. The History rail's own
-// entries and hint text (03.5-05, sketch 011 decision 4): a flat, dated
+// entries and count words (03.5-05, sketch 011 decision 4): a flat, dated
 // list of a recipe's own versions, oldest first, replacing the nested
 // version/batch tree RecipeHistory.jsx drew before this plan. Batches
 // live only in the App-context batch log now (plan 07) — the rail never
@@ -83,18 +83,10 @@ export function railEntries(versions, allBatches, { currentVersionId, draft = nu
 }
 
 /**
- * railHint(count, { open, upright, overflowing }) -> the count beside the
- * History fold's own control (1366-batch.html, upright-393.html; sketch 011
- * decision 19, 03.5-18 Task 1): the bare count while closed, "· latest
- * first" while open and upright (below 1366), "· oldest left, latest
- * right" while open and horizontal (1366 and up) — plus "· opens at the
- * version in view" appended only while the horizontal rail actually
- * overflows its own width (1600-long-history.html; never while upright,
- * which never overflows its own column).
+ * versionCountWords(count) -> the History fold's count beside its own
+ * control: the number of versions in words, "1 version" or "N versions",
+ * and nothing else, open or closed (G-03.5-R2-1).
  */
-export function railHint(count, { open = false, upright = false, overflowing = false } = {}) {
-  const base = `${count} version${count === 1 ? '' : 's'}`;
-  if (!open) return base;
-  if (upright) return `${base} · latest first`;
-  return overflowing ? `${base} · oldest left, latest right · opens at the version in view` : `${base} · oldest left, latest right`;
+export function versionCountWords(count) {
+  return `${count} version${count === 1 ? '' : 's'}`;
 }

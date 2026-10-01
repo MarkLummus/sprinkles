@@ -219,3 +219,7 @@ On the iPad:
 ---
 *Phase: quick-261001-eds*
 *Completed: 2026-10-01*
+
+## Device check
+
+Mark confirmed all three iPad checks on 2026-10-01: Mocha v3 (Show changes off and on) has an empty As made total, Mocha v2 reads 794.6 g, and the batch pen total is empty on open, appears on the first typed digit, goes away when cleared, with the column heads steady. Device-verified by Mark, not by the WebKit probe.

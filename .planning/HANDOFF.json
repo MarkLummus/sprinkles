@@ -1,40 +1,44 @@
 {
   "version": "1.0",
-  "timestamp": "2026-09-28T03:44:41.126Z",
+  "timestamp": "2026-10-02T02:57:56.548Z",
   "phase": "03.5",
-  "phase_name": "Separate the recipe from the sheet",
+  "phase_name": "Separate the recipe from the sheet (INSERTED)",
   "phase_dir": ".planning/phases/03.5-separate-the-recipe-from-the-sheet",
-  "plan": 14,
-  "task": 0,
-  "total_tasks": 4,
+  "plan": 31,
+  "task": 31,
+  "total_tasks": 31,
   "status": "paused",
   "completed_tasks": [
-    {"id": "impeccable-counts", "name": "Impeccable critique of the count options; Mark's picks", "status": "done", "commit": "30bfd9e"},
-    {"id": "d19", "name": "sketch 011 decision 19 (counts, upright rails, History and batch folds)", "status": "done", "commit": "ee7a7de"},
-    {"id": "impeccable-393", "name": "Impeccable critique at 393; drawing fixes; full-row fold heads", "status": "done", "commit": "8e603cc"},
-    {"id": "phone-todo", "name": "deferred phone items captured", "status": "done", "commit": "b91bc62"}
+    {"id": "03.5-26", "name": "later-recorded undated batch outranks an older dated one", "status": "done", "commit": "32cb8a6"},
+    {"id": "03.5-27", "name": "boards: bare fold-head counts, pointer-only touch floor, DESIGN.md line 356", "status": "done", "commit": "52fc899"},
+    {"id": "03.5-28", "name": "Rename and Next version forms at content width", "status": "done", "commit": "714cb69"},
+    {"id": "03.5-29", "name": "app fold-head counts, hints removed", "status": "done", "commit": "a0e5a2b"},
+    {"id": "03.5-31", "name": "signed degree-C fields as number inputs", "status": "done", "commit": "6d66092"},
+    {"id": "03.5-30", "name": "conformance records and round regression", "status": "done", "commit": "f071487"},
+    {"id": "quick-261001-den", "name": "History rail line span on WebKit", "status": "done", "commit": "c30d95d"},
+    {"id": "quick-261001-doi", "name": "explicit tabIndex on buttons, radios, checkboxes; note-block space", "status": "done", "commit": "fe75b89"},
+    {"id": "quick-261001-eds", "name": "blank As Made total until a value is written", "status": "done", "commit": "6d61a27"},
+    {"id": "quick-261001-fcm", "name": "tabindex scan test, engineering note, shorter CLAUDE.md", "status": "done", "commit": "867a4da"}
   ],
   "remaining_tasks": [
-    {"id": "d18-19-app", "name": "decision 18 + 19 app change through GSD", "status": "not_started"},
-    {"id": "03.5-14", "name": "ladder conformance re-run", "status": "not_started"},
-    {"id": "03.5-09", "name": "wire transcribed seed (D-07 gate)", "status": "not_started"},
-    {"id": "gates", "name": "phase gates and UAT", "status": "not_started"}
+    {"id": "verify", "name": "re-verify the phase (status is stale after the quick tasks)", "status": "not_started"},
+    {"id": "uat3", "name": "/gsd-verify-work 03.5 for the remaining device-only items", "status": "not_started"},
+    {"id": "secure", "name": "/gsd-secure-phase 03.5", "status": "not_started"},
+    {"id": "review", "name": "triage open review findings WR-01, WR-02, IN-01..IN-04", "status": "not_started"},
+    {"id": "complete", "name": "phase.complete for 03.5", "status": "not_started"}
   ],
-  "blockers": [
-    {"description": "Plan 14 needs the decision 18/19 app change first", "type": "technical", "workaround": ""},
-    {"description": "Plan 09 needs Mark's SEED-REVIEW answers", "type": "human_action", "workaround": ""}
-  ],
+  "blockers": [],
   "async_jobs": [],
   "human_actions_pending": [
-    {"action": "Say when to start the decision 18/19 app change", "context": "Mark said 'not yet' before the 393 critique", "blocking": true},
-    {"action": "Confirm the canvas v260 renders (full-row fold heads, Draft line)", "context": "checked only in local headless renders", "blocking": false},
-    {"action": "Answer 03.5-SEED-REVIEW.md Q9/Q13/Q14/Q16", "context": "plan 09 D-07 gate", "blocking": true}
+    {"action": "check the remaining device items on the iPhone/iPad (numbers layer with minus key, Home standings after reset, form widths at 393/723, fold-head counts with VoiceOver, fold reset across 1366)", "context": "03.5-VERIFICATION.md human_needed items", "blocking": true},
+    {"action": "answer the five design questions in SEED-261001-iq4 (where definitions live, free-text measures, what Bitter becomes, which surface edits them, sketch first)", "context": "recipe-specific tasting measures and failures", "blocking": false},
+    {"action": "decide the scope of Sid's section-rhythm note (batch pen only or every sectioned surface)", "context": ".planning/notes/2026-10-01-for-sid-section-rhythm.md", "blocking": false},
+    {"action": "say whether to push main (about 25 commits unpushed since daca879)", "context": "push only on request", "blocking": false}
   ],
   "decisions": [
-    {"decision": "1 version: History as one line; 1 batch: no Batches control; many batches: vertical batch list at every width", "rationale": "Mark 2026-09-27 after the Impeccable critique", "phase": "03.5"},
-    {"decision": "History horizontal from 1366, upright below; History and the batch list fold (open from 1366)", "rationale": "Mark 2026-09-27", "phase": "03.5"},
-    {"decision": "Every fold head is a full-row 44px control; draft named in the band; 'not churned' on unchurned versions", "rationale": "Mark 2026-09-27 after the 393 critique", "phase": "03.5"},
-    {"decision": "Phone reading order and filled action deferred to phone shaping", "rationale": "Mark 2026-09-27", "phase": "03.5"}
+    {"decision": "As Made total blank unless at least one as-made value is written", "rationale": "Mark, UAT note on Mocha v3: the Pen column repeated the plan total", "phase": "03.5"},
+    {"decision": "tabindex rule enforced by tabindex-scan.test.js, not prose; CLAUDE.md kept short; CONVENTIONS.md is the source of the Conventions block", "rationale": "Mark: keep CLAUDE.md short", "phase": "03.5"},
+    {"decision": "named squad: Sarge, Sid, Hicks, Bishop; Mark stays Mark", "rationale": "Mark wants a few names to remember", "phase": "03.5"}
   ],
   "uncommitted_files": [
     "?? .impeccable/critique/2026-09-27T12-14-47Z__app-src-ui-shell-jsx.md",
@@ -44,6 +48,6 @@
     "?? .impeccable/critique/2026-09-27T18-26-51Z__lanning-sketches-011-recipe-route-c-393-batch-html.md",
     "?? .impeccable/critique/2026-09-27T18-26-51Z__nning-sketches-011-options-counts-upright-393-html.md"
   ],
-  "next_action": "Ask Mark whether and how to start the decision 18/19 app change (/gsd-quick, quick-batch, or 03.5 gap plan); scope from .continue-here.md remaining_work item 1.",
-  "context_notes": "See .planning/phases/03.5-separate-the-recipe-from-the-sheet/.continue-here.md. Design for the recipe route is settled except the deferred phone transcription layout. fold_row() in gen.py is the one source for fold heads."
+  "next_action": "Run /gsd-execute-phase 03.5 to re-run the verification gates (status is stale), then /gsd-verify-work 03.5 with Mark for the device items; ask Mark about pushing main and starting the seed's design conversation with Sid.",
+  "context_notes": "Mark tests on the iPad (WebKit, 1366, coarse). Loop: reproduce in Playwright WebKit, measure the DOM, fix via a GSD quick task, verify in both engines, hand Mark a device checklist. Sketches come first for anything new. Never run generate-claude-md on the real repo; never use /gsd-fast (git add -A would stage untracked critique files)."
 }

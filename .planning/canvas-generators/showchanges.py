@@ -24,6 +24,15 @@ STACK_PEN = ".ingredient-table td.ingredient-table__col-grams>.struck-value{disp
 # The same asset also lacks the flag chip's `vertical-align:middle`, which moves a wrapped name's line box by 1.5px in the pen.
 PEN_FIELD = ".ingredient-table__plan-grams .ink-field{width:52px;flex:none}\n.ingredient-table__flag{vertical-align:middle}\n"
 PEN_RULE = STACK_PEN + RULE + PEN_FIELD
+# The remove and restore links in the name cell (Sid, 2026-10-02, Mark: "the remove link doesn't have enough white space to separate
+# it from either ingredient name or estimated tag"). The app prints the link straight after the name or the estimated tag, so they
+# touch (0px on every width 320 to 723, WebKit and Chrome, decision 26). 1600-pen.html draws a word space and
+# margin-left:10px: 14px from the last ink to the link. A margin would also indent a link that wraps onto its own line, so the gap is
+# a word space with extra word-spacing in its own span: it collapses at the start of a line, and a wrapped link stays flush under the
+# name. The app's fix is the same span before RemoveRowControl's button and the token --sheet-remove-gap (10px).
+REMOVE_GAP = ":root{--sheet-remove-gap:10px}\n.ingredient-table__remove-gap{word-spacing:var(--sheet-remove-gap)}\n"
+def with_remove_gap(html):
+    return re.sub(r'(<button type="button" class="text-control" tabindex="0">(?:remove|restore)</button>)', r'<span class="ingredient-table__remove-gap"> </span>\1', html)
 
 CHIP = '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>'
 def tr(label, amount, name, share, asmade=None, hand_total=False):
@@ -86,11 +95,11 @@ dc('R35C_723ShowChanges.dc.html', 'C · 723 · Show changes on · Mexican Chocol
 # Captured from the built app (showchanges-capture.json key mex4pen): Whole Milk 563 to 600, Sucrose 33.4 to 36, Cocoa Powder
 # 40.8 to 45, Cinnamon removed; every other amount untouched, so there are changed, share-only, unchanged and removed rows.
 def pen_board(w):
-    sec = CAP['mex4pen']['pen']
+    sec = with_remove_gap(CAP['mex4pen']['pen'])
     return f'<div style="width:{w}px;background:{APP_BG};padding:20px 0 40px;box-sizing:border-box;"><article class="recipe-page" style="box-sizing:border-box;">{sec}</article></div>'
 HPEN = 1100
-dc('R35C_393PenChanges.dc.html', 'C · 393 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field', 393, HPEN, pen_board(393), phone_css(393) + BASE_CSS + PEN_RULE)
-dc('R35C_723PenChanges.dc.html', 'C · 723 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field', 723, HPEN, pen_board(723), phone_css(723) + BASE_CSS + PEN_RULE)
+dc('R35C_393PenChanges.dc.html', 'C · 393 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field', 393, HPEN, pen_board(393), phone_css(393) + BASE_CSS + PEN_RULE + REMOVE_GAP)
+dc('R35C_723PenChanges.dc.html', 'C · 723 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field', 723, HPEN, pen_board(723), phone_css(723) + BASE_CSS + PEN_RULE + REMOVE_GAP)
 
 # 3: the cases the main board does not carry, at 393
 mex = rows_of(CAP['mex4']['show'])

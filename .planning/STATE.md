@@ -4,10 +4,10 @@ current_phase: "03.5"
 current_phase_name: Separate the recipe from the sheet (INSERTED)
 status: executing
 stopped_at: Completed 03.5-30-PLAN.md
-last_updated: "2026-10-01T15:16:13.420Z"
+last_updated: "2026-10-02T09:53:31.393Z"
 last_activity: 2026-10-01
 last_activity_desc: Phase 03.5 execution started
-state_head: 867a4da3a2ff9814235ce23096c2c07debed90db
+state_head: aa6ad42b26889904ab992f14a7887e89fe22d424
 progress:
   total_phases: 12
   completed_phases: 8
@@ -371,6 +371,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261001-doi | Fix iPad WebKit Tab skipping buttons/radios/checkboxes, and the note-to-Every-recipe gap | 2026-10-01 | c16e836 | [261001-doi-fix-ipad-webkit-tab-skipping-buttons-rad](./quick/261001-doi-fix-ipad-webkit-tab-skipping-buttons-rad/) |
 | 261001-eds | Blank the As Made total in the ingredient table when no as-made value has been written | 2026-10-01 | 6d61a27 | [261001-eds-blank-the-as-made-total-in-the-ingredien](./quick/261001-eds-blank-the-as-made-total-in-the-ingredien/) |
 | 261001-fcm | Enforce explicit tabindex by test; move rationale to an engineering note; shorten CLAUDE.md | 2026-10-01 | 867a4da | [261001-fcm-keep-claude-md-short-enforce-explicit-ta](./quick/261001-fcm-keep-claude-md-short-enforce-explicit-ta/) |
+| 261002-7xo | Unit tests for the signed-field handlers (onChange, onInput, onWheel) on BatchRow MeasuredField; closes truth 26b and the missing-test half of WR-01 | 2026-10-02 | aa6ad42 | [261002-7xo-unit-tests-for-the-signed-field-handlers](./quick/261002-7xo-unit-tests-for-the-signed-field-handlers/) |
 
 ### Roadmap Evolution
 

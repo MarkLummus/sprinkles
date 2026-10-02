@@ -175,7 +175,8 @@ function RemoveRowControl({ removed, onToggle }) {
 // never a field beside them). Driven entirely by the row's own buildDiff
 // descriptor; a removed row forces the strike even when the number itself
 // did not move, the same forced-strike discipline GramsCell already
-// applies in the pen. Only valid for a single-portion row — diff.js's
+// applies in the pen. A removed row prints its struck old amount alone,
+// with no current amount after it (sketch 011 decision 24). Only valid for a single-portion row — diff.js's
 // rowDiff carries ROW-level totals alone, so it cannot attribute a struck
 // comparison to one portion of a split row (the show-changes branch below
 // renders a split row's grams plainly instead, with no strike).
@@ -184,7 +185,7 @@ function DiffGramsCell({ rowDiff }) {
   return (
     <span className="ingredient-table__plan-grams">
       {changed && rowDiff.gramsFrom != null && <span className="struck-value">{`${rowDiff.gramsFrom} g`}</span>}
-      {`${rowDiff.gramsTo} g`}
+      {!rowDiff.removed && `${rowDiff.gramsTo} g`}
     </span>
   );
 }

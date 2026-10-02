@@ -15,6 +15,15 @@ BASE_CSS = ":root{--sheet-flag-gap:8px}\n.ingredient-table__flag{margin-left:var
 STACK_AMOUNT = ".ingredient-table__plan-grams>.struck-value{display:block;margin-right:0}\n"
 STACK_SHARE = ".ingredient-table td.ingredient-table__col-numeric>.struck-value{display:block;margin-right:0}\n"
 RULE = STACK_AMOUNT + STACK_SHARE
+# The pen's changed row (Sid, 2026-10-02, Mark: "include the pen"): GramsCell puts the struck parent as a SIBLING before the
+# plan-grams slot, so it is a direct child of the amount cell, not of the slot. One more selector, same two declarations; the
+# pen's Total row nests its struck figure inside the slot and is already covered by STACK_AMOUNT.
+STACK_PEN = ".ingredient-table td.ingredient-table__col-grams>.struck-value{display:block;margin-right:0}\n"
+# The canvas's stylesheet asset predates the app's `.ingredient-table__plan-grams .ink-field` width, so a pen row drew its field at
+# the 64px track instead of the 52px 1600-pen.html draws (inline width:52px there); the pen boards carry that width themselves.
+# The same asset also lacks the flag chip's `vertical-align:middle`, which moves a wrapped name's line box by 1.5px in the pen.
+PEN_FIELD = ".ingredient-table__plan-grams .ink-field{width:52px;flex:none}\n.ingredient-table__flag{vertical-align:middle}\n"
+PEN_RULE = STACK_PEN + RULE + PEN_FIELD
 
 CHIP = '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>'
 def tr(label, amount, name, share, asmade=None, hand_total=False):
@@ -72,6 +81,16 @@ def main_board(w):
 H393, H723 = 1080, 1080
 dc('R35C_393ShowChanges.dc.html', 'C · 393 · Show changes on · Mexican Chocolate v4 against v3, struck above current', 393, H393, main_board(393), phone_css(393) + BASE_CSS + RULE)
 dc('R35C_723ShowChanges.dc.html', 'C · 723 · Show changes on · Mexican Chocolate v4 against v3, struck above current', 723, H723, main_board(723), phone_css(723) + BASE_CSS + RULE)
+
+# 1b and 2b: the pen's changed rows, Mexican Chocolate v4 opened from Next version (Mark, 2026-10-02: "include the pen").
+# Captured from the built app (showchanges-capture.json key mex4pen): Whole Milk 563 to 600, Sucrose 33.4 to 36, Cocoa Powder
+# 40.8 to 45, Cinnamon removed; every other amount untouched, so there are changed, share-only, unchanged and removed rows.
+def pen_board(w):
+    sec = CAP['mex4pen']['pen']
+    return f'<div style="width:{w}px;background:{APP_BG};padding:20px 0 40px;box-sizing:border-box;"><article class="recipe-page" style="box-sizing:border-box;">{sec}</article></div>'
+HPEN = 1100
+dc('R35C_393PenChanges.dc.html', 'C · 393 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field', 393, HPEN, pen_board(393), phone_css(393) + BASE_CSS + PEN_RULE)
+dc('R35C_723PenChanges.dc.html', 'C · 723 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field', 723, HPEN, pen_board(723), phone_css(723) + BASE_CSS + PEN_RULE)
 
 # 3: the cases the main board does not carry, at 393
 mex = rows_of(CAP['mex4']['show'])
@@ -149,11 +168,15 @@ ENTRIES = {
   'R35C_393ShowChanges.dc.html': dict(x=0, y=32500, w=393, h=H393, page='page-13', title='C · 393 · Show changes on · Mexican Chocolate v4 against v3, struck above current'),
   'R35C_723ShowChanges.dc.html': dict(x=473, y=32500, w=723, h=H723, page='page-13', title='C · 723 · Show changes on · Mexican Chocolate v4 against v3, struck above current'),
   'R35C_393ShowChangesCases.dc.html': dict(x=1276, y=32500, w=393 * 5 + 48 * 4 + 96, h=640, page='page-13', title='C · 393 · Show changes on · the cases beside the main board (constructed rows are named)'),
+  'R35C_393PenChanges.dc.html': dict(x=0, y=35100, w=393, h=HPEN, page='page-13', title='C · 393 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field'),
+  'R35C_723PenChanges.dc.html': dict(x=473, y=35100, w=723, h=HPEN, page='page-13', title='C · 723 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field'),
   'R35C_ShowChangesOptions.dc.html': dict(x=0, y=33900, w=393 * 6 + 40 * 5 + 96, h=840, page='page-13', title='Show changes at 393 · options for the list form (recommended: 1b)'),
 }
 NOTES = {
-  'r35-showchanges-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': 32200, 'maxW': 5000, 'text': 'Show changes at phone widths: the struck old figure above the new one (proposed 2026-10-02, Mark to choose; the options are on the board below)'},
-  'r35-showchanges-note': {'fill': 'gray', 'page': 'page-13', 'x': 3609, 'y': 32500, 'w': 400, 'text': 'Show changes on, list form, below 724. Every row is the app\'s own markup, captured from the built app (Mexican Chocolate v4 against v3, Mocha v3, Strawberry v2.1). The struck figure sits above the current one in both the amount and the % of batch, so the 64px amount track holds and the name column keeps the width it has in the reading view (223px at 393). Changed rows grow one line; unchanged rows stay one line.\n\nThe cases board covers a batch in view, the total, a share-only change, a removed row, an added row, a split ingredient and a long name with the estimated flag. The removed, added, split and long-name rows are constructed from seeded names; the seed has none of those in a Show changes comparison.'},
+  'r35-showchanges-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': 32200, 'maxW': 5000, 'text': 'Show changes at phone widths: the struck old figure above the new one (approved by Mark, 2026-10-02: option 1b; the options are on the board below)'},
+  'r35-showchanges-note': {'fill': 'gray', 'page': 'page-13', 'x': 3609, 'y': 32500, 'w': 400, 'text': 'Show changes on, list form, below 724. Every row is the app\'s own markup, captured from the built app (Mexican Chocolate v4 against v3, Mocha v3, Strawberry v2.1). The struck figure sits above the current one in both the amount and the % of batch, so the 64px amount track holds and the name column keeps the width it has in the reading view (223px at 393). Changed rows grow one line; unchanged rows stay one line. Approved by Mark, 2026-10-02: 1b, the removed row as drawn (one struck amount), the Total as drawn (struck total, no unit).\n\nThe cases board covers a batch in view, the total, a share-only change, a removed row, an added row, a split ingredient and a long name with the estimated flag. The removed, added, split and long-name rows are constructed from seeded names; the seed has none of those in a Show changes comparison.'},
+  'r35-pen-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': 34860, 'maxW': 5000, 'text': 'The pen at phone widths: a changed amount draws the struck parent above the 52px grams field (drawn 2026-10-02, awaiting Mark\'s look)'},
+  'r35-pen-note': {'fill': 'gray', 'page': 'page-13', 'x': 1276, 'y': 35100, 'w': 400, 'text': 'The pen opened from Next version, list form, below 724. Mark said to include the pen in the Show changes fix (2026-10-02); he has not seen these two boards. The rows are the built app\'s own markup: Whole Milk 563 to 600, Sucrose 33.4 to 36, Cocoa Powder 40.8 to 45, Cinnamon removed, every other amount as seeded. The struck parent sits above the field in the 64px amount track, right-aligned; the field stays 52px wide (44px tall on a coarse pointer) and clear of the name. A row whose share only moved stacks its share and keeps the field\'s height. A row with no change stays one line. The Total stacks its struck figure, no unit.'},
 }
 json.dump({'boards': ENTRIES, 'notes': NOTES}, open(OUT + '/showchanges-canvas-entries.json', 'w'), indent=2)
 print('ok')

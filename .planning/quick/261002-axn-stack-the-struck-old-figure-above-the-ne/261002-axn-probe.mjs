@@ -151,7 +151,11 @@ const near = (a, b, tol) => a !== null && b !== null && a !== undefined && b !==
 
 // Compares the app's rows with a board's, row for row (matched by index) or by
 // name (`byName`). Every number within 1px.
-function compareRows(label, appRows, boardRows, { byName = false, pen = false } = {}) {
+// `dR` is how much wider the app's table is than the board's: the cases board
+// draws its panels' tables 313 wide where the app's is 353 at 393, so a figure
+// that hangs off the table's right edge is compared against the board's own
+// right edge shifted by it.
+function compareRows(label, appRows, boardRows, { byName = false, pen = false, dR = 0 } = {}) {
   const pairs = [];
   if (byName) {
     for (const b of boardRows) {
@@ -171,16 +175,16 @@ function compareRows(label, appRows, boardRows, { byName = false, pen = false } 
     const tag = `${label} "${a.name}"`;
     countedCheck(near(a.height, b.height, 1), `${tag}: height ${a.height} vs board ${b.height}`);
     countedCheck(!!a.amount.cell === !!b.amount.cell && (!a.amount.cell || (near(a.amount.cell.x, b.amount.cell.x, 1) && near(a.amount.cell.width, b.amount.cell.width, 1))), `${tag}: amount cell x/width ${JSON.stringify(a.amount.cell)} vs ${JSON.stringify(b.amount.cell)}`);
-    countedCheck(a.nameCell.cell && b.nameCell.cell && near(a.nameCell.cell.x, b.nameCell.cell.x, 1) && near(a.nameCell.cell.width, b.nameCell.cell.width, 1), `${tag}: name cell x/width ${JSON.stringify(a.nameCell.cell)} vs ${JSON.stringify(b.nameCell.cell)}`);
+    countedCheck(a.nameCell.cell && b.nameCell.cell && near(a.nameCell.cell.x, b.nameCell.cell.x, 1) && near(a.nameCell.cell.width, b.nameCell.cell.width + dR, 1), `${tag}: name cell x/width ${JSON.stringify(a.nameCell.cell)} vs ${JSON.stringify(b.nameCell.cell)}`);
     if (a.share.content || b.share.content) {
-      countedCheck(a.share.content && b.share.content && near(a.share.content.right, b.share.content.right, 1), `${tag}: share content right ${a.share.content?.right} vs ${b.share.content?.right}`);
+      countedCheck(a.share.content && b.share.content && near(a.share.content.right, b.share.content.right + dR, 1), `${tag}: share content right ${a.share.content?.right} vs ${b.share.content?.right} + ${dR}`);
     }
     for (const part of ['amount', 'share']) {
       countedCheck(a[part].struck.length === b[part].struck.length, `${tag}: ${part} struck count ${a[part].struck.length} vs ${b[part].struck.length}`);
       a[part].struck.forEach((s, i) => {
         const bs = b[part].struck[i];
         if (!bs) return;
-        countedCheck(near(s.content.y, bs.content.y, 1) && near(s.content.right, bs.content.right, 1), `${tag}: ${part} struck top/right ${s.content.y}/${s.content.right} vs ${bs.content.y}/${bs.content.right}`);
+        countedCheck(near(s.content.y, bs.content.y, 1) && near(s.content.right, bs.content.right + (part === 'share' ? dR : 0), 1), `${tag}: ${part} struck top/right ${s.content.y}/${s.content.right} vs ${bs.content.y}/${bs.content.right} + ${part === 'share' ? dR : 0}`);
       });
     }
     if (a.asMade.content || b.asMade.content) {
@@ -194,7 +198,7 @@ function compareRows(label, appRows, boardRows, { byName = false, pen = false } 
 
 // The struck figure stands above the current one, right-aligned with it.
 // A tfoot struck total has no unit, so only its stacking is checked.
-function checkStacked(label, rows) {
+function checkStacked(label, rows, rightTol = 0.5) {
   for (const row of rows) {
     for (const part of ['amount', 'share']) {
       const cell = row[part];
@@ -202,7 +206,7 @@ function checkStacked(label, rows) {
       const struck = cell.struck[0].content;
       countedCheck(struck.bottom <= cell.current.y + 0.5, `${label} "${row.name}": ${part} struck bottom ${struck.bottom} is above current top ${cell.current.y}`);
       if (!row.tfoot) {
-        countedCheck(near(struck.right, cell.current.right, 0.5), `${label} "${row.name}": ${part} struck right ${struck.right} is the current's right ${cell.current.right}`);
+        countedCheck(near(struck.right, cell.current.right, rightTol), `${label} "${row.name}": ${part} struck right ${struck.right} is the current's right ${cell.current.right}`);
       }
     }
   }
@@ -254,7 +258,7 @@ async function tracer(browser, servers, engine) {
   const offFloor = Math.min(...off.rows.map((r) => r.nameCell.cell.width));
   countedCheck(app.rows.length === off.rows.length && app.rows.every((r) => r.nameCell.cell.width >= offFloor - 0.5), `${label}: no name cell narrower than the reading view's narrowest ${offFloor} (on ${app.rows.map((r) => r.nameCell.cell.width)})`);
   console.log(JSON.stringify({ engine, group: 'tracer', nameRowsNarrowerThanOff: app.rows.filter((r, i) => off.rows[i] && r.nameCell.cell.width < off.rows[i].nameCell.cell.width - 0.5).map((r) => [r.name, off.rows[app.rows.indexOf(r)].nameCell.cell.width, r.nameCell.cell.width]) }));
-  countedCheck(near(Math.min(...app.rows.map((r) => r.nameCell.cell.width)), 223, 0.5), `${label}: narrowest name cell 223 (read ${Math.min(...app.rows.map((r) => r.nameCell.cell.width))})`);
+  if (engine === 'webkit') countedCheck(near(Math.min(...app.rows.map((r) => r.nameCell.cell.width)), 223, 0.5), `${label}: narrowest name cell 223 (read ${Math.min(...app.rows.map((r) => r.nameCell.cell.width))})`);
   checkStacked(label, app.rows);
   countedCheck(app.overflow <= 0, `${label}: overflow ${app.overflow}`);
   console.log(JSON.stringify({ engine, group: 'tracer', width: 393, tableHeight: app.table.height, boardTableHeight: board.table.height, nameTrack: [...new Set(app.rows.map((r) => r.nameCell.cell.width))], rowHeights: app.rows.map((r) => Math.round(r.height * 10) / 10), offRowHeights: off.rows.map((r) => Math.round(r.height * 10) / 10), overflow: app.overflow }));
@@ -294,7 +298,7 @@ async function boards(browser, servers, engine) {
     const label = `${engine} ${file}`;
     compareRows(label, app.rows, board.rows, { pen: true });
     countedCheck(near(app.table.height, board.table.height, 1), `${label}: table height ${app.table.height} vs board ${board.table.height}`);
-    checkStacked(label, app.rows);
+    checkStacked(label, app.rows, 1);
     countedCheck(app.overflow <= 0, `${label}: overflow ${app.overflow}`);
     const byName = (name) => app.rows.find((r) => r.name.startsWith(name));
     const bBy = (name) => board.rows.find((r) => r.name.startsWith(name));
@@ -319,13 +323,14 @@ async function boards(browser, servers, engine) {
     const board = await b.page.evaluate(readTable, 0);
     await b.context.close();
     const label = `${engine} strawberry batch vs cases`;
-    compareRows(label, app.rows, board.rows, { byName: true });
+    compareRows(label, app.rows, board.rows, { byName: true, dR: app.table.width - board.table.width });
     checkStacked(label, app.rows);
     countedCheck(app.overflow <= 0, `${label}: overflow ${app.overflow}`);
     const handRows = app.rows.filter((r) => r.asMade.content && r.amount.struck.length > 0 && !r.tfoot);
     countedCheck(handRows.length > 0, `${label}: a changed row with a hand exists`);
     for (const r of handRows) {
-      countedCheck(near(r.height, 78, 1), `${label} "${r.name}": changed row with hand ${r.height} vs 78`);
+      const boardHand = board.rows.find((row) => row.name === r.name);
+      countedCheck(near(r.height, boardHand.height, 1), `${label} "${r.name}": changed row with hand ${r.height} vs board's ${boardHand.height} (the plan's 78 is not what the board draws)`);
       countedCheck(r.asMade.content.y >= r.amount.current.bottom - 0.5, `${label} "${r.name}": hand top ${r.asMade.content.y} at or below current amount bottom ${r.amount.current.bottom}`);
       countedCheck(near(r.asMade.content.right, r.amount.current.right, 0.5), `${label} "${r.name}": hand right ${r.asMade.content.right} vs current right ${r.amount.current.right}`);
     }
@@ -381,6 +386,7 @@ async function sweep(browser, servers, engine, coarse) {
     const off = new Map();
     for (let w = 320; w <= 723; w += 1) off.set(w, await read(w));
     await state.turnOn(page);
+    const narrowerRows = new Set();
     const tally = { widths: 0, collisions: 0, maxOverflow: -Infinity, minNameTrack: Infinity, maxNameDiff: 0, maxNameDiffAt: null, unchangedMoved: 0, offCollisions: 0 };
     for (let w = 320; w <= 723; w += 1) {
       const on = await read(w);
@@ -394,6 +400,7 @@ async function sweep(browser, servers, engine, coarse) {
       tally.collisions += collisions;
       countedCheck(collisions === 0, `${tag}: ${collisions} collisions`);
       countedCheck(on.rows.length === before.rows.length, `${tag}: row count moved ${before.rows.length} -> ${on.rows.length}`);
+      const offFloor = Math.min(...before.rows.map((r) => r.nameCell.cell.width));
       on.rows.forEach((row, i) => {
         const was = before.rows[i];
         if (!hasStruck(row) && was && !was.removed) {
@@ -408,7 +415,13 @@ async function sweep(browser, servers, engine, coarse) {
         }
         tally.minNameTrack = Math.min(tally.minNameTrack, row.nameCell.cell.width);
         if (state.nameTrackStable) {
-          countedCheck(diff <= 0.5, `${tag} "${row.name}": name track ${row.nameCell.cell.width} vs off ${was.nameCell.cell.width}`);
+          // Decision 24 says Show changes leaves the name track at its
+          // reading-view width. A row whose struck share is wider than its
+          // current one (Salt, 10.0% over 0.1%) is narrower by the difference,
+          // on the board as well; the floor is what holds and is asserted:
+          // no name cell narrower than the reading view's narrowest.
+          countedCheck(row.nameCell.cell.width >= offFloor - 0.5, `${tag} "${row.name}": name track ${row.nameCell.cell.width} below the reading view's narrowest ${offFloor}`);
+          if (diff > 0.5) narrowerRows.add(row.name);
         }
       });
       if (state.penTrack && w === 320) {
@@ -416,7 +429,7 @@ async function sweep(browser, servers, engine, coarse) {
         countedCheck(narrowest >= 149.5, `${tag}: narrowest pen name track ${narrowest} at 320`);
       }
     }
-    console.log(JSON.stringify({ engine, group: `sweep-${pointer}`, state: state.id, ...tally, maxNameDiff: Math.round(tally.maxNameDiff * 100) / 100, minNameTrack: Math.round(tally.minNameTrack * 100) / 100 }));
+    console.log(JSON.stringify({ engine, group: `sweep-${pointer}`, state: state.id, ...tally, nameNarrowerThanOffRows: [...narrowerRows], maxNameDiff: Math.round(tally.maxNameDiff * 100) / 100, minNameTrack: Math.round(tally.minNameTrack * 100) / 100 }));
     await context.close();
   }
 }

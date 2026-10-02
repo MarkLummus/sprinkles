@@ -113,4 +113,48 @@ describe('MeasuredField — the signed-field handlers (03.5 review WR-01, truth 
     });
     expect(spy.mock.calls).toEqual([['outOfMachineTempC', MALFORMED_NUMBER_ENTRY]]);
   });
+
+  it('an unreadable edit of a field holding -6 reaches the draft as the constant through onChange alone', () => {
+    const { spy, input } = mount({ ...emptyRecordDraft, outOfMachineTempC: '-6' });
+    expect(input.value).toBe('-6');
+    // The prototype setter moves the DOM value without touching React's
+    // instance-level value tracker, as the browser does.
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, '');
+    Object.defineProperty(input, 'validity', { configurable: true, value: { badInput: true } });
+    // React never routes a native change event to onInput, so this isolates
+    // onChange. A later fix to WR-01's double call that drops onChange on
+    // signed fields must revisit this test on purpose.
+    act(() => {
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    expect(spy.mock.calls).toEqual([['outOfMachineTempC', MALFORMED_NUMBER_ENTRY]]);
+  });
+
+  it('a readable -6 typed over the constant reaches the draft as -6, never the constant', () => {
+    const { spy, input } = mount({ ...emptyRecordDraft, outOfMachineTempC: MALFORMED_NUMBER_ENTRY });
+    expect(input.value).toBe('');
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, '-6');
+    act(() => {
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    // The call count is not pinned: today onInput and onChange both fire for
+    // a moved value (WR-01's double call), and a later fix may make it one.
+    expect(spy.mock.calls.length).toBeGreaterThanOrEqual(1);
+    for (const call of spy.mock.calls) {
+      expect(call).toEqual(['outOfMachineTempC', '-6']);
+      expect(call[1]).not.toBe(MALFORMED_NUMBER_ENTRY);
+    }
+  });
+
+  it('a wheel over the focused field blurs it and leaves -6 in place', () => {
+    const { spy, input } = mount({ ...emptyRecordDraft, outOfMachineTempC: '-6' });
+    input.focus();
+    expect(document.activeElement).toBe(input);
+    act(() => {
+      input.dispatchEvent(new WheelEvent('wheel', { bubbles: true, deltaY: 100 }));
+    });
+    expect(document.activeElement).not.toBe(input);
+    expect(input.value).toBe('-6');
+    expect(spy).not.toHaveBeenCalled();
+  });
 });

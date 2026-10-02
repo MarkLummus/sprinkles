@@ -57,6 +57,9 @@ describe('IngredientTable — the show-changes state', () => {
     // The removed row reappears whole and struck, in its own place — never
     // dropped, never moved to the end.
     expect(markup).toContain('<span class="struck-value">Row B</span>');
+    // A removed row prints its one struck old amount and no current amount
+    // after it (sketch 011 decision 24).
+    expect(markup).toContain('<span class="ingredient-table__plan-grams"><span class="struck-value">20 g</span></span>');
   });
 
   it('renders a share strike alone for a row whose grams held but whose share moved', () => {

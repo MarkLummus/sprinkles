@@ -290,7 +290,23 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       '.ingredient-table td.ingredient-table__col-numeric:nth-last-child(2)',
       '.ingredient-table td.ingredient-table__col-numeric:last-child',
       '.ingredient-table td.ingredient-table__col-numeric:empty',
+      '.ingredient-table__plan-grams > .struck-value',
+      '.ingredient-table td.ingredient-table__col-numeric > .struck-value',
+      '.ingredient-table td.ingredient-table__col-grams > .struck-value',
     ]);
+  });
+
+  test('below 724 the struck old figure is a block with no right margin, in the amount, the share and the pen (decisions 24 and 25, sketch 011)', () => {
+    for (const selector of [
+      '.ingredient-table__plan-grams > .struck-value',
+      '.ingredient-table td.ingredient-table__col-numeric > .struck-value',
+      '.ingredient-table td.ingredient-table__col-grams > .struck-value',
+    ]) {
+      const rule = rules.find((r) => r.selector === selector && r.media === '(max-width: 723.98px)');
+      expect(rule, `expected a media-scoped rule for ${selector}`).toBeTruthy();
+      expect(rule.declarations).toMatch(/display:\s*block/);
+      expect(rule.declarations).toMatch(/margin-right:\s*0/);
+    }
   });
 
   test("the list row's grid reads --sheet-plan-grams-w for its first track, and no list-form rule carries !important (the boards need !important only to beat their own inlined stale stylesheet; app.css has no such conflict to out-rank)", () => {

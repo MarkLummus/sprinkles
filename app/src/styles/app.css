@@ -2570,6 +2570,25 @@ textarea {
   .ingredient-table td.ingredient-table__col-numeric:empty {
     display: none;
   }
+
+  /* Below 724 the struck old figure stands above the current one,
+     right-aligned in the same track (sketch 011 decisions 24 and 25;
+     393-show-changes.html, 393-pen-changes.html). From 724 the base
+     .struck-value rule keeps the two figures side by side. */
+  .ingredient-table__plan-grams > .struck-value {
+    display: block;
+    margin-right: 0;
+  }
+
+  .ingredient-table td.ingredient-table__col-numeric > .struck-value {
+    display: block;
+    margin-right: 0;
+  }
+
+  .ingredient-table td.ingredient-table__col-grams > .struck-value {
+    display: block;
+    margin-right: 0;
+  }
 }
 
 /* Sketch 009's wide-touch drawing — a seventh top-level block, sibling of

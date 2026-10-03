@@ -85,6 +85,15 @@ describe('VersionRow — the band\'s controls below 724 call the handler they ar
     expect(spies.onRecordTasting).not.toHaveBeenCalled();
   });
 
+  it('Record a tasting, on a batch awaiting tasting, calls onRecordTasting once with no argument (Test J)', () => {
+    const spies = mount([{ ...augustSecondBatch, tasting: null }]);
+    act(() => buttonNamed('Record a tasting').click());
+    expect(spies.onRecordTasting).toHaveBeenCalledTimes(1);
+    expect(spies.onRecordTasting).toHaveBeenCalledWith();
+    expect(spies.onStartRecording).not.toHaveBeenCalled();
+    expect(spies.onStartDeveloping).not.toHaveBeenCalled();
+  });
+
   it('the text-control Next version calls onStartDeveloping once and nothing else (Test I)', () => {
     const spies = mount([augustSecondBatch]);
     act(() => buttonNamed('Next version').click());

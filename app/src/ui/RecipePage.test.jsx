@@ -1061,4 +1061,22 @@ describe('RecipePage.jsx — the band\'s record act is wired to the log\'s own h
     expect(tag).toContain('below724={below724}');
     expect(tag).toContain('onStartRecording={handleStartRecording}');
   });
+
+  // The seam 261002-wn0 replaces: the band's Record a tasting calls it.
+  it('defines handleRecordTasting as the single call that opens the amend pen on the latest batch (Test L)', () => {
+    const body = source.match(/function handleRecordTasting\(\)\s*\{([\s\S]*?)\n  \}/)?.[1] ?? null;
+    expect(body).not.toBeNull();
+    expect(body.trim()).toBe('handleStartAmending(sortedBatches(batches)[0]);');
+    const tag = source.match(/<VersionRow\b[\s\S]*?\/>/)?.[0] ?? '';
+    expect(tag).toContain('onRecordTasting={handleRecordTasting}');
+  });
+
+  it('marks the seam for 261002-wn0 in the comment block right above the function (Test L)', () => {
+    const raw = readFileSync(recipePagePath, 'utf8');
+    const at = raw.indexOf('function handleRecordTasting');
+    expect(at).toBeGreaterThan(-1);
+    const above = raw.slice(Math.max(0, at - 1600), at);
+    expect(above).toContain('SEAM(261002-wn0)');
+    expect(above.slice(above.lastIndexOf('SEAM(261002-wn0)')).match(/\n\s*\n/)).toBeNull();
+  });
 });

@@ -757,6 +757,23 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
     expect(buttons[2].attrs).toContain('class="notebook-link"');
   });
 
+  it('leads with a filled Record a tasting when the latest batch awaits its tasting (Test F)', () => {
+    const buttons = actButtons(renderVersionRow({ below724: true, batches: [awaitingBatch] }));
+    expect(buttons.map((button) => button.label)).toEqual(['Record a tasting', 'Next version']);
+    expect(buttons[0].attrs).toContain('class="notebook-action"');
+    expect(buttons[1].attrs).toContain('class="notebook-link"');
+    const withParent = actButtons(
+      renderVersionRow({
+        below724: true,
+        version: childVersion,
+        versions: [oliveOilVersion, childVersion],
+        parentVersion: oliveOilVersion,
+        batches: [awaitingBatch],
+      }),
+    );
+    expect(withParent.map((button) => button.label)).toEqual(['Record a tasting', 'Next version', 'Show changes']);
+  });
+
   // Guard (passes before and after): from 724 up the band is as built.
   it('from 724 up carries no record control and keeps Next version filled (Test D, guard)', () => {
     for (const batches of [[], [augustSecondBatch], [awaitingBatch]]) {

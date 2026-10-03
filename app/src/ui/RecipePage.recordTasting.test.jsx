@@ -267,4 +267,46 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     expect(pen()).toBeNull();
     expect(document.activeElement).toBe(current.container.querySelector('.batch-row__correct'));
   });
+
+  // The band names the version's latest batch; a batch list row links to an
+  // older batch's own address, where the log shows that older batch. Opening
+  // in place there would show one batch's head and save onto another
+  // (T-wn0-01), so the band moves to the awaiting batch's own address.
+  it('T6: on an older batch\'s address, Record a tasting moves to the awaiting batch and opens the pen there', async () => {
+    installMatchMedia();
+    const newer = {
+      ...structuredClone(augustSecondBatch),
+      id: 'newer-batch',
+      recordedAt: '2026-08-09T10:00:00.000Z',
+      churn: { ...augustSecondBatch.churn, churnDate: '2026-08-09' },
+      tasting: null,
+    };
+    const olderPath = `${VERSION_PATH}/batch/${augustSecondBatch.id}`;
+    await mountAt(olderPath, [augustSecondBatch, newer]);
+    expect(current.container.querySelector('.batch-row__date').textContent).toBe('churned 2 Aug 2026');
+    expect(band().textContent).toBe('Record a tasting');
+
+    await click(band());
+    await flush(() => pen() !== null);
+
+    expect(locationNow.pathname).toBe(`${VERSION_PATH}/batch/newer-batch`);
+    expect(pen()).not.toBeNull();
+    expect(current.container.querySelector('.batch-row__date').textContent).toBe('churned 9 Aug 2026');
+    expect(tastedInput()).not.toBeNull();
+    expect(document.activeElement).toBe(tastedInput());
+    expect(locationNow.state).toBeNull();
+
+    await click(buttonByText(pen(), 'Cancel'));
+    expect(pen()).toBeNull();
+    expect(document.activeElement).toBe(band());
+
+    // Back or a reload lands on the same history entry: it carries no state,
+    // so no pen opens.
+    const entry = { pathname: locationNow.pathname, state: locationNow.state };
+    await act(async () => current.root.unmount());
+    current.container.remove();
+    current = null;
+    await mountAt(entry, [augustSecondBatch, newer]);
+    expect(pen()).toBeNull();
+  });
 });

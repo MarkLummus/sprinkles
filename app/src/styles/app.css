@@ -2417,7 +2417,7 @@ textarea {
    has been drawn for touch-sized stops at desktop widths — see the
    sketch question logged in CONTEXT. The complement pair is 759.98/760,
    matching the wide-touch block's own min-width: 760px below. */
-@media (max-width: 759.98px) {
+@media (max-width: 723.98px) {
   .axis-mark__stops,
   .axis-mark__anchors {
     width: var(--sheet-track-stop-narrow);
@@ -2621,7 +2621,7 @@ textarea {
    grouping it onto the ladder's 724; a todo tracks measuring the battery's
    own wide/stacked limits
    (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md). */
-@media (min-width: 760px) and (pointer: coarse) {
+@media (min-width: 724px) and (pointer: coarse) {
   .axis-mark__head,
   .segmented-field__head {
     min-height: var(--sheet-caption-two-lines-abs);

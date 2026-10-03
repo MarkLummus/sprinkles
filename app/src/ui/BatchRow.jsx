@@ -171,12 +171,12 @@ function autoGrow(event) {
 // the ladder's 724; a todo tracks measuring the battery's own wide/
 // stacked limits
 // (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md).
-function useBelow760() {
+function useBelow724() {
   const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
-  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 759.98px)').matches : false));
+  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 723.98px)').matches : false));
   useEffect(() => {
     if (!hasMatchMedia) return undefined;
-    const mediaQuery = window.matchMedia('(max-width: 759.98px)');
+    const mediaQuery = window.matchMedia('(max-width: 723.98px)');
     const onChange = (event) => setBelow(event.matches);
     mediaQuery.addEventListener('change', onChange);
     return () => mediaQuery.removeEventListener('change', onChange);
@@ -189,7 +189,7 @@ function useBelow760() {
 // or stacked core-then-declared. `below` is an explicit boolean, never a
 // live matchMedia read, so BatchRow.test.jsx can render and assert both
 // arrangements directly, without stubbing matchMedia (this plan's own
-// critical note) — BatchRow's own useBelow760 above is the only thing
+// critical note) — BatchRow's own useBelow724 above is the only thing
 // that reads the real matchMedia, and only where window supports it.
 // `marks` is the draft's own marks map, read by axis key, so a mark
 // crossing the boundary survives by construction (Pitfall 8). `children`
@@ -551,8 +551,8 @@ export function BatchRow({
   }, [removeTastingAttempt]);
 
   // The axes' own arrangement (contract "Keyboard and tab order") — see
-  // useBelow760's own header comment for the node-environment guard.
-  const below760 = useBelow760();
+  // useBelow724's own header comment for the node-environment guard.
+  const below724 = useBelow724();
 
   // Option A (03.5-07 Task 2 answer, decisions_recorded 4): the record
   // pen's own frame now lives in the log column whenever the log sits
@@ -560,7 +560,7 @@ export function BatchRow({
   // axes take the stacked core-then-declared arrangement there too — not
   // only below 760px.
   const logBesideSheet = useLogBesideSheet();
-  const below = below760 || logBesideSheet;
+  const below = below724 || logBesideSheet;
 
   // The first-invalid-measurement focus (contract "Controls spec"): a ref
   // per battery field key, keyed by the constants in BATTERY_FIELDS —

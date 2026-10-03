@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 // the log's own cut, 1366 = 224 (side nav) + 3 x 32 (gutters) + 696 (the
 // Sheet's two-column minimum) + 350 (the log) — the complement of
 // LOG_BESIDE_SHEET_QUERY below. Node-guarded (BatchRow.jsx's
-// useBelow760, the same critical note): RecipeHistory's own static-markup
+// useBelow724, the same critical note): RecipeHistory's own static-markup
 // tests run under Vitest's node environment (renderToStaticMarkup, no
 // jsdom), where `window` does not exist — an unguarded read here would
 // crash them. With no window, or no window.matchMedia, this hook answers

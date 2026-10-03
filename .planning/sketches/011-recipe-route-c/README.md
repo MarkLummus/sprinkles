@@ -28,8 +28,8 @@ Phase 03.5 separates the recipe record from the Sheet (`.impeccable/surfaces/rou
 | 393-show-changes.html | 393 × 1080 | C · 393 · Show changes on · Mexican Chocolate v4 against v3, the struck figure above the current one (approved 2026-10-02, decision 24) |
 | 723-show-changes.html | 723 × 1080 | C · 723 · the same state at the widest phone form (approved, decision 24) |
 | 393-show-changes-cases.html | 2253 × 640 | C · 393 · Show changes on · a batch in view, the total, a share-only change, a removed row, an added row, a split ingredient, a long name with the estimated flag; the removed, added, split and long-name rows are constructed from seeded names (approved, decision 24) |
-| 393-pen-changes.html | 393 × 1100 | C · 393 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field, the remove and restore links 14px clear of the name and the estimated tag (drawn 2026-10-02, awaiting Mark's look, decisions 25 and 26) |
-| 723-pen-changes.html | 723 × 1100 | C · 723 · the same state at the widest phone form (drawn, awaiting Mark's look, decisions 25 and 26) |
+| 393-pen-changes.html | 393 × 1100 | C · 393 · the pen open from Next version · Mexican Chocolate v4 · changed amounts, struck above the field, the remove and restore links 14px clear of the name and the estimated tag (drawn 2026-10-02, approved by Mark 2026-10-02, decisions 25 and 26) |
+| 723-pen-changes.html | 723 × 1100 | C · 723 · the same state at the widest phone form (drawn, approved by Mark 2026-10-02, decisions 25 and 26) |
 | 1366-sticky-nav.html | 1366 × 768 | C · 1366 · the window 640px down a long page · the side nav's options pinned 6px under the window's top, the log beside the Sheet (drawn 2026-10-02, approved by Mark 2026-10-02, decision 27) |
 | 984-sticky-nav.html | 984 × 768 | C · 984 · the window 2,800px down · the same pinned nav, the log below the Sheet (drawn, approved by Mark 2026-10-02, decision 27) |
 | 350-pen-as-built.html | 350 × 2280 | Reference · 350 · the record pen as built · Sheet grammar in the log column (the built app's own markup; 100 elements, 0 mismatches against the app) |

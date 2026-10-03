@@ -272,8 +272,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-27] [ui] Align the version section's Details link — [todo file](.planning/todos/pending/2026-09-27-align-the-version-details-link.md)
 - [2026-09-27] [ui] Recipe band buttons narrow on hover or click — [todo file](.planning/todos/pending/2026-09-27-band-buttons-narrow-on-hover-or-click.md)
 - [2026-09-27] [ui] Batch head controls on iPhone, and when the Batches control shows — [todo file](.planning/todos/pending/2026-09-27-batch-head-controls-on-iphone-and-the-batches-control.md)
-- [2026-09-27] [ui] Version Details control reads Show details / Hide details — [todo file](.planning/todos/pending/2026-09-27-details-toggles-show-details-hide-details.md)
-- [2026-09-27] [ui] Show changes toggles to Hide changes by state — [todo file](.planning/todos/pending/2026-09-27-show-changes-toggles-to-hide-changes.md)
 - [2026-09-27] [ui] Keep the side nav's options on screen while the page scrolls — [todo file](.planning/todos/pending/2026-09-27-sticky-side-nav.md)
 - [2026-09-27] [ui] Look into the Why row in the version details — [todo file](.planning/todos/pending/2026-09-27-why-row-in-version-details.md)
 

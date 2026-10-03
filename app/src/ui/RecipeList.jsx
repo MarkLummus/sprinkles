@@ -186,7 +186,7 @@ function RowActions({ entry }) {
           Record a tasting
         </Link>
         <Link to={latestPath} className="home__action home__action--secondary" tabIndex={0}>
-          Continue developing
+          Keep developing
         </Link>
       </span>
     );

@@ -124,13 +124,13 @@ describe('RecipeRows — the App marks grammar (D-07, D-11, D-19, 03.4-04 Task 2
     expect(markup).not.toContain('home__action--secondary');
   });
 
-  it('gives an awaiting-tasting recipe Record a tasting (to the newest batch) with Continue developing beside it', () => {
+  it('gives an awaiting-tasting recipe Record a tasting (to the newest batch) with Keep developing beside it', () => {
     const version = makeVersion({ id: 'v1', recipeId: 'r1' });
     const batches = [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })];
     const markup = renderRows([version], batches);
     expect(markup).toContain('Record a tasting');
     expect(markup).toContain('href="/notebook/r1/v1/batch/b1"');
-    expect(markup).toContain('Continue developing');
+    expect(markup).toContain('Keep developing');
   });
 
   it('gives a tasted recipe Next version with Adapt beside it', () => {
@@ -286,14 +286,14 @@ describe('HomeLead — the board\'s block (gap 5)', () => {
     expect(markup).not.toContain('home__action--secondary');
   });
 
-  it('gives an awaiting-tasting lead the filled tasting action with Continue developing beside it', () => {
+  it('gives an awaiting-tasting lead the filled tasting action with Keep developing beside it', () => {
     const entry = makeEntry({
       standing: 'awaiting-tasting',
       batches: [makeBatch({ id: 'b1', versionId: 'v1', churn: { churnDate: '2026-01-01' }, tasting: null })],
     });
     const markup = renderLead(entry);
     expect(markup).toContain('Record a tasting');
-    expect(markup).toContain('Continue developing');
+    expect(markup).toContain('Keep developing');
   });
 });
 

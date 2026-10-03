@@ -59,3 +59,15 @@
 /* === D3 === D2 with the struck old figure BELOW the current one, in the amount, the share, the Total and the pen's parent value: the plan amount keeps the first line, so Show changes only adds a line under it (DOM order is unchanged, struck first, so a reader still hears "was, now") */
 .ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:nth-last-child(2){margin-top:0}
 .ingredient-table td.ingredient-table__col-grams:has(.struck-value),.ingredient-table__plan-grams:has(>.struck-value),.ingredient-table td.ingredient-table__col-numeric:has(>.struck-value){display:flex;flex-direction:column-reverse;align-items:flex-end}
+/* === P3 === the phone (below 724), D3: plan / As made / struck in the amount's column, the struck figure last (Mark, 2026-10-03: "Plan / as made / struck"). The amount's cell and its span give up their boxes so the struck figure can take the third line of the row grid with As made between; where the amount has a struck figure the share's cell spans the same three lines with its struck figure on the bottom one, so the two struck figures stand on one line; a share that moved alone keeps its struck figure directly under it. A removed row's lone struck amount stands on the first line; the pen's struck parent (a direct child of the cell) stays last, under the field. Each lower figure carries its own hair above it, so an empty line adds nothing. */
+.ingredient-table tr{row-gap:0}
+/* an anonymous box (the plan amount's text, once its cell and span give up their boxes) takes its alignment from the row, not from the cell */
+.ingredient-table tr:not(.ingredient-table__step-head){text-align:right}
+.ingredient-table td.ingredient-table__col-name{text-align:left;grid-row:1 / 4}
+.ingredient-table td.ingredient-table__col-grams,.ingredient-table__plan-grams:has(>.struck-value){display:contents}
+.ingredient-table td.ingredient-table__col-grams .struck-value{display:block;grid-column:1;grid-row:3;margin:var(--gap-hair) 0 0;text-align:right}
+.ingredient-table tr:has(.ingredient-table__col-name>.struck-value) .ingredient-table__plan-grams>.struck-value{grid-row:1;margin-top:0}
+.ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){margin-top:var(--gap-hair)}
+.ingredient-table td.ingredient-table__col-numeric:last-child:has(>.struck-value){display:flex;flex-direction:column-reverse;align-items:flex-end}
+.ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:last-child:has(>.struck-value){grid-row:1 / 4;justify-content:space-between}
+.ingredient-table td.ingredient-table__col-numeric:last-child>.struck-value{margin:0}

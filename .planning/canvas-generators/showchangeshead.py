@@ -8,8 +8,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # With Record a tasting filled, a version that has a parent needs ~354-357px for the band's three controls against a 353px row, so
 # Show changes wraps under the filled action at 320 to 390. Option 3: the band keeps only the actions (filled action, Next version
 # as a text control, the Go to batch row) and Show changes / Hide changes moves to the head of the ingredient table, right-aligned on
-# the Ingredients heading row. Nothing else changes: the band, the Sheet, the folds, the rails, the decision 24 struck-above-new
-# figures (RULE), the 44px target on a coarse pointer (decision 23: the pointer alone).
+# the Ingredients heading row. Nothing else changes: the band, the Sheet, the folds, the rails, the decision 24 figures, as amended 2026-10-03 (the struck
+# figure last, RULE), the 44px target on a coarse pointer (decision 23: the pointer alone).
 #
 # Every Ingredients region below is the built app's own markup (coconut-capture.json, Playwright WebKit, the preview build, 393 coarse):
 # Coconut v2 (has a parent, a batch awaiting its tasting) with Show changes off and on, and Coconut v1 (no parent). The ONE edit to
@@ -70,8 +70,8 @@ def page(state, parent, key, label):
 PANELS3 = [  # state, parent, capture key, control label, heading, sub
   ('awaiting', True, 'plain', 'Show changes', 'Changes hidden · Show changes at the table\'s head',
    'Coconut v2, a batch awaiting tasting. The band keeps Record a tasting, Next version and Go to batch; Show changes sits on the Ingredients row, right-aligned.'),
-  ('awaiting', True, 'show', 'Hide changes', 'Changes shown · Hide changes, the struck figure above the new',
-   'The same page after Show changes: the control reads Hide changes and the table draws decision 24\'s struck-above-new figures. The band is unchanged.'),
+  ('awaiting', True, 'show', 'Hide changes', 'Changes shown · Hide changes, the struck figure under the new (redrawn 2026-10-03, awaiting Mark\'s look)',
+   'The same page after Show changes: the control reads Hide changes and the table draws decision 24 as amended 2026-10-03 (plan amount, As made, then the struck figure). The band is unchanged.'),
   ('tasted', False, 'plain', None, 'First version · no parent, no control',
    'Coconut v1 has no parent: the Ingredients row is the heading alone, as today, and the band is the approved one.'),
 ]
@@ -114,7 +114,7 @@ ENTRIES = {
 }
 NOTES = {
   'r35-scheadnote-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': Y3 - 240, 'maxW': hw393 + 160 + hw723, 'text': 'Show changes at the head of the ingredient table, option 3 (Mark asked to see it 2026-10-02; drawn, not approved)'},
-  'r35-scheadnote-note': {'fill': 'gray', 'page': 'page-13', 'x': hw393 + 160 + hw723 + 80, 'y': Y3, 'w': 400, 'text': 'Option 3: the band keeps only the actions (Record a tasting filled, Next version a text control, Go to batch), so it no longer wraps at 320 to 390; Show changes / Hide changes moves onto the Ingredients heading row, right-aligned, in the Sheet\'s own text control. Each board shows the changes hidden, the changes shown (decision 24\'s struck figure above the new) and a first version, which has no control and keeps its heading as is. Every table is the built app\'s own markup (Coconut v2 and v1). The control still switches the whole version\'s changes, including the Instructions and Balance further down the page, not only the table.'},
+  'r35-scheadnote-note': {'fill': 'gray', 'page': 'page-13', 'x': hw393 + 160 + hw723 + 80, 'y': Y3, 'w': 400, 'text': 'Option 3: the band keeps only the actions (Record a tasting filled, Next version a text control, Go to batch), so it no longer wraps at 320 to 390; Show changes / Hide changes moves onto the Ingredients heading row, right-aligned, in the Sheet\'s own text control. Each board shows the changes hidden, the changes shown (decision 24 as amended 2026-10-03, the struck figure under the new; the Changes shown panel redrawn, awaiting Mark\'s look) and a first version, which has no control and keeps its heading as is. Every table is the built app\'s own markup (Coconut v2 and v1). The control still switches the whole version\'s changes, including the Instructions and Balance further down the page, not only the table.'},
 }
 json.dump({'boards': ENTRIES, 'notes': NOTES}, open(OUT + '/showchangeshead-canvas-entries.json', 'w'), indent=2)
 print('ok head', hw393, hh393, hw723, hh723)

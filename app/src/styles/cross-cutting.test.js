@@ -351,8 +351,25 @@ describe('the 983.98px block — the side nav and the Sheet\'s second column go 
   // block's two foot rules were redundant and are gone. The foot mirrored the
   // Sheet's two columns only to seat the ceremony beneath the second one, which
   // is 189px at 984 against the ceremony's 245px.
-  test('carries exactly .recipe-page (the foot band is one column at every width, so it needs no rule here)', () => {
-    expect(stackRules.map((r) => r.selector)).toEqual(['.recipe-page']);
+  // 261003-9bz adds .recipe-page--no-method: an Instructions-less Sheet drops the empty method row.
+  test('carries exactly .recipe-page and .recipe-page--no-method (the foot band is one column at every width, so it needs no rule here)', () => {
+    expect(stackRules.map((r) => r.selector)).toEqual(['.recipe-page', '.recipe-page--no-method']);
+  });
+
+  test('261003-9bz: the narrow .recipe-page--no-method rule declares the four areas without method, after the narrow .recipe-page rule', () => {
+    const rule = stackRules.find((r) => r.selector === '.recipe-page--no-method');
+    expect(rule, 'expected the media-scoped .recipe-page--no-method rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/grid-template-areas:\s*'band'\s*'ingredients'\s*'side'\s*'foot'\s*;?\s*$/);
+    expect(rule.declarations).not.toMatch(/method/);
+    expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(stackRules.find((r) => r.selector === '.recipe-page')));
+  });
+
+  test('261003-9bz: the base .recipe-page--no-method rule declares only the three two-column areas, after the base .recipe-page rule', () => {
+    const rule = ruleFor('.recipe-page--no-method');
+    expect(rule, 'expected the top-level .recipe-page--no-method rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/grid-template-areas:\s*'band band'\s*'ingredients side'\s*'foot foot'\s*;?\s*$/);
+    expect(rule.declarations).not.toMatch(/grid-template-columns|gap|padding/);
+    expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(ruleFor('.recipe-page')));
   });
 
   test('.recipe-page stacks to one column in the band/ingredients/side/method/foot order, with no padding declaration', () => {

@@ -980,6 +980,32 @@ describe('the steps region is named Instructions (Mark, 2026-09-24)', () => {
   });
 });
 
+describe('the empty Instructions section is left out (261003-9bz)', () => {
+  const recipePagePathForEmptyMethod = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const source = readFileSync(recipePagePathForEmptyMethod, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  // The first three are regression guards: Task 1 already made them true.
+  it('calls showsMethodRegion once, imported from ./Method.jsx', () => {
+    expect(source.match(/showsMethodRegion\(/g) ?? []).toHaveLength(1);
+    expect(source).toMatch(/import \{[^}]*\bshowsMethodRegion\b[^}]*\} from '\.\/Method\.jsx'/);
+  });
+
+  it('renders the method-region section only when methodRegionShown', () => {
+    expect(source).toMatch(/\{methodRegionShown && \(\s*<section className="method-region"/);
+  });
+
+  it('hands Method the same two values the guard read', () => {
+    expect(source).toContain('steps={methodSteps}');
+    expect(source).toContain('beforeYouStart={methodNotes}');
+  });
+
+  it('marks the article recipe-page--no-method exactly when the section is not rendered', () => {
+    expect(source).toContain("className={methodRegionShown ? 'recipe-page' : 'recipe-page recipe-page--no-method'}");
+  });
+});
+
 describe('a browser-unreadable entry in a signed field (G-03.5-R2-2, T-03.5-82): the draft holds MALFORMED_NUMBER_ENTRY and the existing gate rejects it', () => {
   const TEMPERATURE_SENTENCE = 'Enter a temperature, such as −6, or leave blank.';
 

@@ -213,6 +213,223 @@ async function tracer(browser, servers, engine) {
   console.log(JSON.stringify({ engine, group: 'tracer', gaps: onLine.map((r) => [r.name, round1(r.gap)]), wrapped: wrapped.map((r) => [r.name, round1(r.off)]), tableHeight: read.tableHeight }));
 }
 
+// A check whose label is only built when it fails, for the sweeps' tens of
+// thousands of passing checks.
+const lazyCheck = (condition, label) => countedCheck(condition, condition ? '' : label());
+
+const BOARD_RECT_KEYS = ['row', 'amount', 'nameCell', 'share', 'input', 'button'];
+
+async function boards(browser, servers, engine) {
+  const figure = gapFigure(engine);
+  for (const [width, coarse, file] of [[393, true, '393-pen-changes.html'], [723, false, '723-pen-changes.html']]) {
+    const { context, page } = await openAppPage(browser, servers.appUrl, MEX4, { width, coarse });
+    await openPen(page);
+    await editPen(page);
+    const appRects = await page.evaluate(readRects);
+    const app = await page.evaluate(readPen);
+    await context.close();
+    const b = await openBoard(browser, servers.repoUrl, file);
+    const boardRects = await b.page.evaluate(readRects);
+    const board = await b.page.evaluate(readPen);
+    await b.context.close();
+
+    const label = `${engine} ${file}`;
+    countedCheck(appRects.rows.length === boardRects.rows.length, `${label}: row count ${appRects.rows.length} vs board ${boardRects.rows.length}`);
+    let mismatches = 0;
+    const examples = [];
+    const n = Math.min(appRects.rows.length, boardRects.rows.length);
+    for (let i = 0; i < n; i += 1) {
+      for (const key of BOARD_RECT_KEYS) {
+        const a = appRects.rows[i][key];
+        const c = boardRects.rows[i][key];
+        let bad = false;
+        if (!a || !c) bad = !!a !== !!c;
+        else bad = [0, 1, 2, 3].some((k) => Math.abs(a[k] - c[k]) > 0.5);
+        if (bad) {
+          mismatches += 1;
+          if (examples.length < 4) examples.push([i, appRects.rows[i].name, key, a, c]);
+        }
+      }
+    }
+    countedCheck(mismatches === 0, `${label}: ${mismatches} rect mismatches ${JSON.stringify(examples)}`);
+    countedCheck(near(appRects.tableHeight, boardRects.tableHeight, 1), `${label}: table height ${appRects.tableHeight} vs board ${boardRects.tableHeight}`);
+    countedCheck(app.rows.length === board.rows.length, `${label}: link count ${app.rows.length} vs board ${board.rows.length}`);
+    let gapMismatch = 0;
+    app.rows.forEach((r, i) => {
+      const c = board.rows[i];
+      if (!c) return;
+      const same = r.gap === null || c.gap === null ? r.gap === c.gap : near(r.gap, c.gap, 0.5);
+      if (!same) gapMismatch += 1;
+    });
+    countedCheck(gapMismatch === 0, `${label}: ${gapMismatch} link gaps differ from the board's (app ${JSON.stringify(app.rows.map((r) => r.gap === null ? null : round1(r.gap)))} board ${JSON.stringify(board.rows.map((r) => r.gap === null ? null : round1(r.gap)))})`);
+    countedCheck(app.rows.every((r) => r.gapSpan), `${label}: every link has its gap span`);
+    const cin = app.rows.find((r) => r.name.startsWith('Cinnamon'));
+    countedCheck(cin !== undefined && cin.label === 'restore', `${label}: Cinnamon's link reads restore`);
+    if (width === 393) {
+      countedCheck(cin !== undefined && cin.gap !== null && near(cin.gap, figure, 0.5), `${label}: Cinnamon's restore on the line with gap ${cin && cin.gap} (wanted ${figure})`);
+    }
+    countedCheck(app.overflow <= 0, `${label}: overflow ${app.overflow}`);
+    console.log(JSON.stringify({ engine, group: 'boards', file, rows: appRects.rows.length, boardRows: boardRects.rows.length, mismatches, tableHeight: appRects.tableHeight, boardTableHeight: boardRects.tableHeight, links: app.rows.length, restoreGap: cin && cin.gap !== null ? round1(cin.gap) : null, restoreOff: cin ? round1(cin.off) : null, boardRestoreGap: (board.rows.find((r) => r.label === 'restore') || {}).gap ?? null, overflow: app.overflow }));
+  }
+}
+
+async function states(browser, servers, engine) {
+  const figure = gapFigure(engine);
+  for (const coarse of [true, false]) {
+    for (const width of [320, 393, 723]) {
+      const pointer = coarse ? 'coarse' : 'fine';
+      const tag = `${engine} ${pointer} @${width}`;
+
+      // (1) Restore: Cinnamon's remove clicked.
+      {
+        const { context, page } = await openAppPage(browser, servers.appUrl, MEX4, { width, coarse });
+        await openPen(page);
+        await page.locator('tbody tr', { hasText: 'Cinnamon' }).getByRole('button', { name: 'remove' }).click();
+        await page.locator('tbody tr', { hasText: 'Cinnamon' }).getByRole('button', { name: 'restore' }).waitFor();
+        const read = await page.evaluate(readPen);
+        await context.close();
+        const cin = read.rows.find((r) => r.name.startsWith('Cinnamon'));
+        countedCheck(cin !== undefined && cin.label === 'restore', `${tag} restore: Cinnamon's link reads restore`);
+        if (cin) {
+          countedCheck(cin.gapSpan, `${tag} restore: previous sibling is the gap span`);
+          if (cin.gap !== null) countedCheck(near(cin.gap, figure, 0.5), `${tag} restore: on the line, gap ${cin.gap} vs ${figure}`);
+          else countedCheck(near(cin.off, 0, 0.5), `${tag} restore: wrapped, offset ${cin.off} vs 0`);
+        }
+        console.log(JSON.stringify({ engine, group: 'states', state: 'restore', pointer, width, onLine: cin ? cin.gap !== null : null, gap: cin && cin.gap !== null ? round1(cin.gap) : null, off: cin ? round1(cin.off) : null }));
+      }
+
+      // (2) Orphaned row: step 1 removed.
+      {
+        const { context, page } = await openAppPage(browser, servers.appUrl, MEX4, { width, coarse });
+        await openPen(page);
+        await page.locator('.method-region button', { hasText: /^remove$/ }).first().click();
+        await page.waitForSelector('.ingredient-table p.ingredient-table__flag');
+        const read = await page.evaluate(readPen);
+        await context.close();
+        const flagged = read.rows.filter((r) => r.flag !== null);
+        countedCheck(flagged.length >= 1, `${tag} orphan: ${flagged.length} rows carry the flag`);
+        for (const r of flagged) {
+          countedCheck(near(r.off, 0, 0.5), `${tag} orphan "${r.name}": link offset ${r.off} vs 0`);
+          countedCheck(r.top >= r.flag.bottom - 0.5, `${tag} orphan "${r.name}": link top ${r.top} is below flag bottom ${r.flag.bottom}`);
+          countedCheck(r.gap === null, `${tag} orphan "${r.name}": link is on its own line (gap ${r.gap})`);
+        }
+        console.log(JSON.stringify({ engine, group: 'states', state: 'orphan', pointer, width, flagged: flagged.map((r) => [r.name, round1(r.off), r.gap === null ? null : round1(r.gap)]), overflow: read.overflow }));
+      }
+    }
+  }
+}
+
+const SWEEP_STATES = [
+  { id: 'mex4', route: MEX4, links: 12, sid: { webkit: 130, chrome: 127 } },
+  { id: 'mocha3', route: MOCHA3, links: 14, sid: { webkit: 130, chrome: 127 } },
+  { id: 'straw21', route: STRAW21, links: 11, sid: { webkit: 102, chrome: 99 } },
+];
+
+// One cell-geometry comparison, fix against baseline, within 0.1.
+const sameCell = (a, b) => a === null || b === null ? a === b : near(a.left, b.left, 0.1) && near(a.width, b.width, 0.1);
+
+async function sweep(browser, servers, engine, coarse) {
+  const pointer = coarse ? 'coarse' : 'fine';
+  const figure = gapFigure(engine);
+  for (const state of SWEEP_STATES) {
+    const { context, page } = await openAppPage(browser, servers.appUrl, state.route, { width: 393, coarse });
+    await openPen(page);
+    const t = { engine, group: `sweep-${pointer}`, state: state.id, widths: 0, links: state.links, gapMin: Infinity, gapMax: -Infinity, wrappedOffMin: Infinity, wrappedOffMax: -Infinity, newlyWrappedRowWidths: 0, sid: state.sid[engine], maxTrackMove: 0, maxBtnDelta: 0, maxOverflow: -Infinity };
+    let at393 = null;
+    for (let width = 320; width <= 723; width += 1) {
+      await page.setViewportSize({ width, height: 1100 });
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => resolve())));
+      await setBaseline(page, true);
+      const before = await page.evaluate(readPen);
+      await setBaseline(page, false);
+      const after = await page.evaluate(readPen);
+      const tag = () => `${engine} ${pointer} ${state.id} @${width}`;
+      t.widths += 1;
+      lazyCheck(after.innerWidth === width && before.innerWidth === width, () => `${tag()}: innerWidth ${after.innerWidth}`);
+      lazyCheck(after.rows.length === state.links && before.rows.length === state.links, () => `${tag()}: ${after.rows.length} links (baseline ${before.rows.length}), wanted ${state.links}`);
+      lazyCheck(after.rows.every((r) => r.gapSpan), () => `${tag()}: a link lacks its gap span`);
+      lazyCheck(after.overflow <= 0, () => `${tag()}: overflow ${after.overflow}`);
+      t.maxOverflow = Math.max(t.maxOverflow, after.overflow);
+      let newly = 0;
+      after.rows.forEach((r, i) => {
+        const was = before.rows[i];
+        if (!was) return;
+        const rowTag = () => `${tag()} "${r.name}"`;
+        if (r.gap !== null) {
+          lazyCheck(near(r.gap, figure, 0.5), () => `${rowTag()}: same-line gap ${r.gap} vs ${figure}`);
+          t.gapMin = Math.min(t.gapMin, r.gap);
+          t.gapMax = Math.max(t.gapMax, r.gap);
+        } else {
+          lazyCheck(near(r.off, 0, 0.5), () => `${rowTag()}: wrapped link offset ${r.off} vs 0`);
+          t.wrappedOffMin = Math.min(t.wrappedOffMin, r.off);
+          t.wrappedOffMax = Math.max(t.wrappedOffMax, r.off);
+        }
+        const dW = Math.abs(r.btn.width - was.btn.width);
+        const dH = Math.abs(r.btn.height - was.btn.height);
+        t.maxBtnDelta = Math.max(t.maxBtnDelta, dW, dH);
+        lazyCheck(dW <= 0.1 && dH <= 0.1, () => `${rowTag()}: button ${r.btn.width}x${r.btn.height} vs baseline ${was.btn.width}x${was.btn.height}`);
+        if (coarse) lazyCheck(near(r.btn.height, 44, 0.5), () => `${rowTag()}: coarse button height ${r.btn.height} vs 44`);
+        lazyCheck(sameCell(r.nameCell, was.nameCell) && sameCell(r.amountCell, was.amountCell) && sameCell(r.shareCell, was.shareCell), () => `${rowTag()}: a track moved (name ${JSON.stringify(r.nameCell)}/${JSON.stringify(was.nameCell)} amount ${JSON.stringify(r.amountCell)}/${JSON.stringify(was.amountCell)} share ${JSON.stringify(r.shareCell)}/${JSON.stringify(was.shareCell)})`);
+        for (const cell of ['nameCell', 'amountCell', 'shareCell']) {
+          if (r[cell] && was[cell]) t.maxTrackMove = Math.max(t.maxTrackMove, Math.abs(r[cell].left - was[cell].left), Math.abs(r[cell].width - was[cell].width));
+        }
+        const wrappedNow = r.gap === null;
+        const wrappedWas = was.gap === null;
+        if (wrappedNow === wrappedWas) lazyCheck(near(r.rowHeight, was.rowHeight, 0.1), () => `${rowTag()}: row height ${r.rowHeight} vs baseline ${was.rowHeight}`);
+        lazyCheck(!(wrappedWas && !wrappedNow), () => `${rowTag()}: wrapped in the baseline but on the line after the fix`);
+        if (wrappedNow && !wrappedWas) newly += 1;
+      });
+      t.newlyWrappedRowWidths += newly;
+      if (width === 393) at393 = { before, after };
+    }
+    if (engine === 'webkit' && coarse && state.id === 'mex4') {
+      const { before, after } = at393;
+      const wrapsBefore = before.rows.filter((r) => r.gap === null);
+      const wrapsAfter = after.rows.filter((r) => r.gap === null);
+      const newlyNames = after.rows.filter((r, i) => r.gap === null && before.rows[i].gap !== null).map((r) => r.name);
+      countedCheck(wrapsBefore.length === 3 && wrapsAfter.length === 5, `${engine} 393 mex4: baseline wraps ${wrapsBefore.length} of 12, fix wraps ${wrapsAfter.length} (wanted 3 and 5)`);
+      countedCheck(newlyNames.length === 2 && newlyNames.some((n) => n.startsWith('Cocoa Powder')) && newlyNames.some((n) => n.startsWith('Vanilla Extract')), `${engine} 393 mex4: newly wrapped ${JSON.stringify(newlyNames)}`);
+      countedCheck(near(after.tableHeight - before.tableHeight, 36, 1), `${engine} 393 mex4: table grows ${after.tableHeight - before.tableHeight} (wanted 36)`);
+      t.at393 = { baselineWraps: wrapsBefore.length, fixWraps: wrapsAfter.length, newlyWrapped: newlyNames, tableHeightBefore: round1(before.tableHeight), tableHeightAfter: round1(after.tableHeight), grows: round1(after.tableHeight - before.tableHeight) };
+    }
+    for (const k of ['gapMin', 'gapMax', 'wrappedOffMin', 'wrappedOffMax', 'maxTrackMove', 'maxBtnDelta']) t[k] = Math.round(t[k] * 100) / 100;
+    console.log(JSON.stringify(t));
+    await context.close();
+  }
+}
+
+async function wide(browser, servers, engine) {
+  const figure = gapFigure(engine);
+  for (const width of [724, 1366]) {
+    const { context, page } = await openAppPage(browser, servers.appUrl, MEX4, { width, coarse: false });
+    await openPen(page);
+    await setBaseline(page, true);
+    const before = await page.evaluate(readPen);
+    await setBaseline(page, false);
+    const after = await page.evaluate(readPen);
+    await context.close();
+    const tag = `${engine} @${width}`;
+    countedCheck(after.rows.length === 12 && before.rows.length === 12, `${tag}: ${after.rows.length} links (baseline ${before.rows.length})`);
+    countedCheck(after.rows.every((r) => r.gapSpan), `${tag}: every link has its gap span`);
+    const onLine = after.rows.filter((r) => r.gap !== null);
+    countedCheck(onLine.every((r) => near(r.gap, figure, 0.5)), `${tag}: every same-line gap within 0.5 of ${figure} (${onLine.map((r) => round1(r.gap))})`);
+    const wrapped = after.rows.map((r, i) => [r, before.rows[i]]).filter(([r]) => r.gap === null);
+    // A link wrapped before and after keeps its offset exactly. A link the gap
+    // newly pushes to the next line (on the line in the baseline) has no
+    // baseline offset to keep: it must stand at the offset the already-wrapped
+    // links share, and is reported as a finding (the plan expected none from 724 up).
+    const wrappedBoth = wrapped.filter(([, was]) => was.gap === null);
+    const newlyWrapped = wrapped.filter(([, was]) => was.gap !== null);
+    countedCheck(wrappedBoth.every(([r, was]) => near(r.off, was.off, 0.5)), `${tag}: links wrapped before and after keep their baseline offset (${wrappedBoth.map(([r, was]) => [round1(r.off), round1(was.off)])})`);
+    const sharedOff = wrappedBoth.length ? wrappedBoth[0][0].off : null;
+    countedCheck(newlyWrapped.every(([r]) => sharedOff !== null && near(r.off, sharedOff, 0.5)), `${tag}: newly wrapped links stand at the shared wrapped offset ${sharedOff} (${newlyWrapped.map(([r]) => [r.name, round1(r.off)])})`);
+    const shareMove = Math.max(...after.rows.map((r, i) => Math.abs(r.shareCell.left - before.rows[i].shareCell.left)));
+    countedCheck(shareMove <= 0.5, `${tag}: share column moved ${shareMove}`);
+    countedCheck(after.overflow <= 0, `${tag}: overflow ${after.overflow}`);
+    console.log(JSON.stringify({ engine, group: 'wide', width, links: after.rows.length, onLine: onLine.length, gaps: [...new Set(onLine.map((r) => round1(r.gap)))], wrapped: wrapped.length, wrappedBoth: wrappedBoth.length, newlyWrapped: newlyWrapped.map(([r, was]) => [r.name, round1(r.off), round1(was.off)]), wrappedOff: wrapped.map(([r, was]) => [r.name, round1(r.off), round1(was.off)]), shareMove: Math.round(shareMove * 100) / 100, overflow: after.overflow }));
+  }
+}
+
 // ---------------------------------------------------------------------------
 const requested = process.argv[2] ? process.argv[2].split(',') : ['tracer', 'boards', 'states', 'sweep', 'sweep-fine', 'wide'];
 const servers = await startServers();
@@ -222,6 +439,11 @@ try {
     try {
       // The tracer proves one path in WebKit; the full run repeats it in Chrome.
       if (requested.includes('tracer') && (engine === 'webkit' || requested.length > 1)) await tracer(browser, servers, engine);
+      if (requested.includes('boards')) await boards(browser, servers, engine);
+      if (requested.includes('states')) await states(browser, servers, engine);
+      if (requested.includes('sweep')) await sweep(browser, servers, engine, true);
+      if (requested.includes('sweep-fine')) await sweep(browser, servers, engine, false);
+      if (requested.includes('wide')) await wide(browser, servers, engine);
     } finally {
       await browser.close();
     }

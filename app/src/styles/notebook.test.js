@@ -384,3 +384,44 @@ describe("the phone band's forms keep their content width, the Version fold head
     expect(version.declarations).toMatch(/align-self:\s*stretch/);
   });
 });
+
+// Quick 261002-wmy: the band's Go to batch row (sketch 011 decision 30,
+// 393-phone-log.html and 723-phone-log.html) shows below 724 only. The base
+// rule hides it; the existing 723.98px block gives it the board's row box; its
+// two spans ride the fold-row control and count typography.
+describe('the Go to batch row shows below 724 only (quick 261002-wmy)', () => {
+  const jumpRules = rules.filter((rule) => rule.selector === '.notebook-jump');
+  const jumpRule = (media) => jumpRules.find((rule) => rule.media === media);
+
+  test('a top-level .notebook-jump rule hides the row', () => {
+    const base = jumpRule(undefined);
+    expect(base, 'expected a top-level .notebook-jump rule').toBeTruthy();
+    expect(base.declarations).toMatch(/display:\s*none/);
+  });
+
+  test("the 723.98px block gives it the board's row box, every value a token or keyword", () => {
+    const narrow = jumpRule('(max-width: 723.98px)');
+    expect(narrow, 'expected a .notebook-jump rule under (max-width: 723.98px)').toBeTruthy();
+    const d = narrow.declarations;
+    expect(d).toMatch(/display:\s*flex/);
+    expect(d).toMatch(/width:\s*100%/);
+    expect(d).toMatch(/min-height:\s*var\(--touch-min\)/);
+    expect(d).toMatch(/align-items:\s*center/);
+    expect(d).toMatch(/justify-content:\s*space-between/);
+    expect(d).toMatch(/gap:\s*var\(--app-notebook-recipe-rail-gap\)/);
+    expect(d).toMatch(/text-decoration:\s*none/);
+    expect(d).toMatch(/color:\s*inherit/);
+  });
+
+  test('no .notebook-jump rule sits under the desktop or the 1365.98px steps', () => {
+    expect(jumpRule('(min-width: 1366px)')).toBeUndefined();
+    expect(jumpRule('(max-width: 1365.98px)')).toBeUndefined();
+  });
+
+  test('its control word and status ride the fold-row control and count rules', () => {
+    const control = rules.find((rule) => rule.selector.includes('.notebook .fold-row__control'));
+    const count = rules.find((rule) => rule.selector.includes('.notebook .fold-row__count'));
+    expect(control.selector).toContain('.notebook .notebook-jump__control');
+    expect(count.selector).toContain('.notebook .notebook-jump__status');
+  });
+});

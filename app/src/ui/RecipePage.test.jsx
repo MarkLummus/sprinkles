@@ -1007,3 +1007,33 @@ describe('a browser-unreadable entry in a signed field (G-03.5-R2-2, T-03.5-82):
     expect(tastingHasInk({ ...makeBlankRecordDraft(), tastingTempC: MALFORMED_NUMBER_ENTRY })).toBe(true);
   });
 });
+
+// Quick 261002-wmy: the band's Go to batch row (sketch 011 decision 30) is the
+// last child of the band grid, after VersionRow and before History, and
+// activates the page's existing focus landing. Source-text pin, in the same
+// readFileSync idiom as the neighbouring describes.
+describe('RecipePage places the Go to batch row last in the band grid (quick 261002-wmy)', () => {
+  const goToBatchPath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const goToBatchSource = readFileSync(goToBatchPath, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it('renders exactly one GoToBatch, after VersionRow and before the grid closes and RecipeHistory opens', () => {
+    expect(goToBatchSource.match(/<GoToBatch\b/g)).toHaveLength(1);
+    const versionRow = goToBatchSource.indexOf('<VersionRow');
+    const jump = goToBatchSource.indexOf('<GoToBatch');
+    const history = goToBatchSource.indexOf('<RecipeHistory');
+    const gridClose = goToBatchSource.indexOf('</div>', jump);
+    expect(versionRow).toBeGreaterThan(-1);
+    expect(jump).toBeGreaterThan(versionRow);
+    expect(gridClose).toBeGreaterThan(jump);
+    expect(history).toBeGreaterThan(gridClose);
+  });
+
+  it('passes the log batches and the jump handler, and defines the handler', () => {
+    const tag = goToBatchSource.match(/<GoToBatch\b[^>]*\/>/)?.[0] ?? '';
+    expect(tag).toContain('batches={batches}');
+    expect(tag).toContain('onGo={handleGoToBatch}');
+    expect(goToBatchSource).toContain('function handleGoToBatch(');
+  });
+});

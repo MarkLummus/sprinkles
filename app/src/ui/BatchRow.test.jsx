@@ -102,6 +102,20 @@ describe('BatchRow — the Batch region-name head line (sketch 003 variant B, G-
   });
 });
 
+describe("BatchRow — the Batch heading is the Go to batch row's target (quick 261002-wmy)", () => {
+  it('carries id="batch" with a batch in view, exactly once', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(markup).toMatch(/<h2 id="batch" class="region-name"[^>]*>Batch<\/h2>/);
+    expect(markup.split('id="batch"').length - 1).toBe(1);
+  });
+
+  it('carries id="batch" in the no-batch state too, exactly once', () => {
+    const markup = renderBatchRow({ batches: [], openBatch: null });
+    expect(markup).toMatch(/<h2 id="batch" class="region-name"[^>]*>Batch<\/h2>/);
+    expect(markup.split('id="batch"').length - 1).toBe(1);
+  });
+});
+
 describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
   it('renders "churned <date>" beside the Batch heading when a batch is in view', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });

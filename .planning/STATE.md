@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-02T12:22:46.198Z"
+last_updated: "2026-10-03T01:02:51.363Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 35ada81f93ad451245a639241f6be7ccffaaf2fa
+state_head: e2ae01887128780554e8a9c2cd7b6ea61630be58
 progress:
   total_phases: 12
   completed_phases: 8
@@ -372,6 +372,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261001-fcm | Enforce explicit tabindex by test; move rationale to an engineering note; shorten CLAUDE.md | 2026-10-01 | 867a4da | [261001-fcm-keep-claude-md-short-enforce-explicit-ta](./quick/261001-fcm-keep-claude-md-short-enforce-explicit-ta/) |
 | 261002-7xo | Unit tests for the signed-field handlers (onChange, onInput, onWheel) on BatchRow MeasuredField; closes truth 26b and the missing-test half of WR-01 | 2026-10-02 | aa6ad42 | [261002-7xo-unit-tests-for-the-signed-field-handlers](./quick/261002-7xo-unit-tests-for-the-signed-field-handlers/) |
 | 261002-axn | Stack the struck old figure above the new one in Show changes and the pen at phone width (sketch 011 decisions 24, 25); removed row prints one struck amount | 2026-10-02 | 35ada81 | [261002-axn-stack-the-struck-old-figure-above-the-ne](./quick/261002-axn-stack-the-struck-old-figure-above-the-ne/) |
+| 261002-sre | Next version pen's remove/restore link stands 14px clear of the name or estimated tag (sketch 011 decision 26) | 2026-10-03 | e2ae018 | [261002-sre-give-the-next-version-pen-s-remove-link-](./quick/261002-sre-give-the-next-version-pen-s-remove-link-/) |
 
 ### Roadmap Evolution
 

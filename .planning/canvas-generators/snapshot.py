@@ -2,7 +2,7 @@ import sys, os, re
 SP = sys.argv[1]; DEST = sys.argv[2]
 ONLY = sys.argv[3:]   # optional board keys: snapshot only these (the other generators need not have run)
 S = '.planning/sketches/011-recipe-route-c'
-ref = open(S + '/1600-batch.html').read()
+ref = open(S + '/393-batch.html').read()   # any gen.py board: it carries the canvas stylesheet inline (1600-batch.html became a final-design board, which does not)
 i = ref.index('<style>'); j = ref.index('</style>', i) + len('</style>')
 STYLE = ref[i:j]
 # G-03.5-R2-3 (Mark, UAT 2026-09-30, option 2): the canvas's stylesheet asset still carries the app's old touch floor under
@@ -24,7 +24,8 @@ MAP = {'R35C_Batch': '1600-batch', 'R35C_NoBatch': '1600-no-batch', 'R35C_Pen': 
        'R35C_393ShowChangesHead': '393-show-changes-head', 'R35C_723ShowChangesHead': '723-show-changes-head',
        'R35C_1366IngredientOptions': '1366-ingredient-options', 'R35C_1024IngredientOptions': '1024-ingredient-options',
        'R35C_1366Ladder': '1366-ladder', 'R35C_1194Ladder': '1194-ladder',
-       'R35C_1366Nav': '1366-nav', 'R35C_1194Nav': '1194-nav'}
+       'R35C_1366Nav': '1366-nav', 'R35C_1194Nav': '1194-nav',
+       'R35C_744': '744-batch', 'R35C_834': '834-batch', 'R35C_GoToBatchWide': '724-1365-go-to-batch'}
 # The count boards (Mark, 2026-09-27) live in the sibling 011-options-counts folder of DEST, with the same two replacements.
 COUNTS = {'R35C_CountVersions': 'versions-1-vs-many', 'R35C_CountBatches01': 'batches-0-and-1', 'R35C_CountBatchesMany': 'batches-many',
           'R35C_CountBatchesMany393': 'batches-many-393', 'R35C_CountUpright393': 'upright-393'}

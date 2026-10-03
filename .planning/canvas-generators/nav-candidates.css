@@ -19,3 +19,7 @@
 .shell{position:relative}
 .shell__rail{display:flex;position:absolute;left:0;top:68px;height:956px;z-index:5;background:var(--app-background);width:224px;flex:none;padding:var(--gap-xs) var(--gap-m) var(--gap-l);box-shadow:4px 0 16px rgba(20,20,20,.18)}
 .shell__scrim{position:absolute;left:0;right:0;top:68px;height:956px;z-index:4;background:rgba(20,20,20,.28)}
+/* === JUMP === the final design (decision 33): the band's Go to batch row, from 724 to 1365 wherever the log sits below the Sheet (Mark, 2026-10-03: "Goto batch extends above"); the app renders the row at every width and hides it above 723, so the change is this display, in the band grid's second column under the Version section */
+.notebook-jump{display:flex;grid-column:2;width:100%;min-height:var(--touch-min);align-items:center;justify-content:space-between;gap:var(--app-notebook-recipe-rail-gap);text-decoration:none;color:inherit}
+/* === PIN === the final design: the menu button is pinned (Mark: "Button is pinned"): outside the header's flow, 44 x 44, 6px under the window's top and 8px in from its left edge, above the page and below the open fly-out's scrim; the header keeps a 44px slot for it at the top of the page */
+.shell__menu{position:fixed;top:var(--gap-xs);left:var(--gap-s);z-index:6;background:var(--app-background);border-radius:var(--app-radius-action);box-shadow:0 1px 4px rgba(20,20,20,.22)}

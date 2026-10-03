@@ -36,9 +36,15 @@ const BLOCKS = [{ id: 'A', recipe: 'Mexican Chocolate v3', route: MEX3, changes:
 // [label, width, height (the screen, in points)]
 const WINDOWS = [['iPad mini portrait', 744, 1133], ['11in iPad Pro portrait', 834, 1194], ['12.9in iPad Pro portrait', 1024, 1366], ['iPad mini landscape', 1133, 744], ['11in iPad Pro landscape', 1194, 834], ['12.9in iPad Pro landscape', 1366, 1024]];
 const CHROME_UI = 70;
-const CANDS = ['today', 'L', 'f collapsed', 'f expanded', 'g closed'];
+const JUMP = nav.match(/\/\* === JUMP ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1];
+const ONLY = process.env.CAND_ONLY || '';   // re-measure just this candidate and merge it into the existing JSON
+const CANDS = ['today', 'L', 'f collapsed', 'f expanded', 'g closed', 'final'];
 function spec(cand, W) {
   let css = '', dom = null, vw = W, note = '';
+  if (cand === 'final') {      // decision 33: g closed (the fly-out from 984; the tab row below), the Go to batch row from 724 to 1365, D3 from 724
+    css = (W >= 984 ? nav.match(/\/\* === G ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1] : '') + (W <= 1365 ? JUMP : '');
+    return { css, dom: W >= 984 ? 'g' : null, vw, note: '' };
+  }
   if (W < 984) return { css, dom, vw, same: true };       // below 984 every candidate is the bottom tab row as built
   if (cand === 'L' && W < 1590) css = TAB_KEEP_TOOLS;
   if (cand === 'f collapsed') { css = nav.match(/\/\* === F ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1]; dom = 'f'; }
@@ -94,12 +100,14 @@ async function measure(browser, servers, blk, win, cand) {
 const servers = await startServers(); const out = [];
 for (const [engine, mk] of [['webkit', () => webkit.launch()], ['chrome', () => launch()]]) {
   const browser = await mk();
-  for (const blk of BLOCKS) for (const win of WINDOWS) for (const cand of (win[1] < 984 ? ['today'] : CANDS)) {
+  for (const blk of BLOCKS) for (const win of WINDOWS) for (const cand of (ONLY ? [ONLY] : (win[1] < 984 ? ['today', 'final'] : CANDS))) {
     try { out.push({ engine, block: blk.id, recipe: blk.recipe, window: win[0], W: win[1], H: win[2], cand, ...(await measure(browser, servers, blk, win, cand)) }); }
     catch (e) { out.push({ engine, block: blk.id, window: win[0], W: win[1], H: win[2], cand, error: String(e).slice(0, 200) }); }
   }
   await browser.close();
 }
 await servers.close();
-await writeFile(path.join(HERE, 'ladder-measures.json'), JSON.stringify({ blocks: BLOCKS, windows: WINDOWS, chromeUi: CHROME_UI, rows: out }));
+let rows = out;
+if (ONLY) { const prev = JSON.parse(await readFile(path.join(HERE, 'ladder-measures.json'), 'utf8')); rows = prev.rows.filter((r) => r.cand !== ONLY).concat(out); }
+await writeFile(path.join(HERE, 'ladder-measures.json'), JSON.stringify({ blocks: BLOCKS, windows: WINDOWS, chromeUi: CHROME_UI, rows }));
 console.log('ok', out.length, 'errors', out.filter((r) => r.error).length);

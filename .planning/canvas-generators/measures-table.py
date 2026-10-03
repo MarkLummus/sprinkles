@@ -8,7 +8,9 @@ ROWS = [r for r in D['rows'] if not r.get('error')]
 ERR = [r for r in D['rows'] if r.get('error')]
 BLOCKS = {b['id']: b for b in D['blocks']}
 WINDOWS = D['windows']
-CAND_ORDER = ['today', 'L', 'f collapsed', 'f expanded', 'g closed']
+CAND_ORDER = ['today', 'L', 'f collapsed', 'f expanded', 'g closed', 'final']
+def cands_for(win): return ['today', 'final'] if win[1] < 984 else CAND_ORDER
+def cand_label(win, cand): return 'all candidates (tab row as built)' if (cand == 'today' and win[1] < 984) else ('FINAL DESIGN (g closed + Go to batch row + D3 from 724)' if cand == 'final' else cand)
 def get(engine, block, window, cand):
     return next((r for r in ROWS if r['engine'] == engine and r['block'] == block and r['window'] == window and r['cand'] == cand), None)
 def screens(y, vis):
@@ -34,19 +36,19 @@ with open(HERE + '/ladder-measures.csv', 'w', newline='') as f:
     w = csv.writer(f); w.writerow(cols)
     for blk in ('A', 'B'):
         for win in WINDOWS:
-            for cand in (['today'] if win[1] < 984 else CAND_ORDER):
+            for cand in cands_for(win):
                 r = get('webkit', blk, win[0], cand)
                 if not r: continue
                 r = derived(r); c = get('chrome', blk, win[0], cand)
                 est = estimate(win[0], cand) if blk == 'A' else None
-                w.writerow([blk, BLOCKS[blk]['recipe'], win[0], win[1], win[2], r['vis'], cand if win[1] >= 984 else 'all candidates (tab row as built)', r['nav'], r['sheetCols'], r['balance'], r['logPos'], r['sheetW'], r['tableW'], r['balanceW'], r['nameMin'],
+                w.writerow([blk, BLOCKS[blk]['recipe'], win[0], win[1], win[2], r['vis'], cand_label(win, cand), r['nav'], r['sheetCols'], r['balance'], r['logPos'], r['sheetW'], r['tableW'], r['balanceW'], r['nameMin'],
                             len(r['wrapped']), r['maxRows'], r['docH'], r['screens'], r['yIng'], r['yTableBottom'], r['yTotal'], r['yBal'], r['balScreens'], r['yLog'], r['logScreens'], r['methodH'], r['penH'], r['penTastingH'],
                             est if est is not None else '', c['docH'] if c else '', c['nameMin'] if c else '', r['note']])
 # ---- shared text ----
 VISNOTE = f"The visible height is an ESTIMATE, not measured on Mark's device: the screen height less {D['chromeUi']}px (iPadOS status bar about 24 plus Safari's compact tab and address bar about 46). Playwright's iPad descriptors give the full screen as the viewport and no Safari chrome, so they cannot supply it."
 HEADNOTE = ("Rules: one recipe per block, every fold open (Details, History, Balance, Watch for, the log's Tasting; every collapsed fold button in the page, clicked until none is left), coarse pointer, WebKit "
             "(Chrome's page heights are in the CSV; the largest difference from WebKit is 4.3%), the built app (dist of 2026-10-03) with one rule moved per candidate, the ingredient table drawn with As made as its first column from 724 up (Mark's standing preference; the phone keeps it stacked and is not in this table). "
-            "Candidates: today (the ladder as built); L (the rail yields to the bottom tab row below 1590, the Sheet's two-column minimum 920); f collapsed (a 57px icon rail) and f expanded (the 224 rail, on L's sums); g closed (no rail, a menu button). "
+            "Candidates: FINAL DESIGN (Mark's choice, decision 32/33: g closed, the Go to batch row from 724 to 1365, D3 from 724; the last row of each window); today (the ladder as built); L (the rail yields to the bottom tab row below 1590, the Sheet's two-column minimum 920); f collapsed (a 57px icon rail) and f expanded (the 224 rail, on L's sums); g closed (no rail, a menu button). "
             "Below 984 every candidate is the bottom tab row as built, so one row stands for all of them. The narrow rail e is not in this table (a 1366 and 1194 candidate only; its numbers are on the ladder boards). f expanded at 1366 is measured at 1365 (the log below), 1px narrower.")
 def fmt(v, suffix=''):
     return '' if v is None else f'{v}{suffix}'
@@ -55,6 +57,31 @@ def rec_label(blk):
 # ---- findings (computed, then named by block) ----
 def cell(block, window, cand): 
     r = get('webkit', block, window, cand); return derived(r) if r else None
+# ---- the final-design block (both recipes, the FINAL DESIGN row of every window) ----
+def final_rows():
+    out = []
+    for win in WINDOWS:
+        for blk in ('A', 'B'):
+            r = cell(blk, win[0], 'final')
+            if r: out.append((win, blk, r))
+    return out
+def final_md():
+    h = '| Window (screen, visible est.) | Recipe | Layout | Page (screens) | Ingredients y | Total y | Balance y (screens) | Log y (screens) | Table / name column; wraps | Pen, Record another / + tasting |'
+    o = ['*Block F: the final design (decision 33): the fly-out closed, D3 from 724 with As made first, the Go to batch row from 724 to 1365; both recipes, every fold open, the same rules as Blocks A and B.*', '', h, '|' + '---|' * (h.count('|') - 1)]
+    for win, blk, r in final_rows():
+        wraps = 'none' if not r['wrapped'] else f"{len(r['wrapped'])} wrap ({r['maxRows']} rows)"
+        o.append(f"| {win[0]} {win[1]} x {win[2]} (visible about {r['vis']}) | {BLOCKS[blk]['recipe']} | {LAYOUT(r)} | {r['docH']:,} ({r['screens']}) | {r['yIng']:,} | {r['yTotal']:,} | {r['yBal']:,} ({r['balScreens']}) | {r['yLog']:,} ({r['logScreens']}) | {r['tableW']:.0f} / {r['nameMin']:.0f}; {wraps} | {r['penH']:,} / {r['penTastingH']:,} |")
+    return '\n'.join(o)
+def final_html():
+    out = ['<h2>Block F: the final design (decision 33): the fly-out closed, D3 from 724 with As made first, the Go to batch row from 724 to 1365</h2>', '<table>' + th('Window (screen, visible est.)', 'Recipe', 'Layout', 'Page height', 'Screens', 'Ingredients y', 'Total row y', 'Balance y (screens)', 'Log y (screens)', 'Table / name column', 'Names wrapping', 'Pen: Record another / + tasting')]
+    last = None
+    for win, blk, r in final_rows():
+        label = f"<b>{html.escape(win[0])}</b><br>{win[1]} x {win[2]}, visible about {r['vis']}" if win[0] != last else ''
+        last = win[0]
+        wraps = 'none' if not r['wrapped'] else f"{len(r['wrapped'])} ({r['maxRows']} rows)"
+        out.append(td(label, html.escape(BLOCKS[blk]['recipe']), html.escape(LAYOUT(r)), f"{r['docH']:,}", f"{r['screens']}", f"{r['yIng']:,}", f"{r['yTotal']:,}", f"{r['yBal']:,} ({r['balScreens']}), {r['balance']}", f"{r['yLog']:,} ({r['logScreens']}), {r['logPos']}", f"{r['tableW']:.0f} / {r['nameMin']:.0f}", wraps, f"{r['penH']:,} / {r['penTastingH']:,}", cls='first' if label else None))
+    out.append('</table>')
+    return '\n'.join(out)
 # ---- HTML ----
 def th(*h): return '<tr>' + ''.join(f'<th>{html.escape(x)}</th>' for x in h) + '</tr>'
 def td(*c, cls=None):
@@ -66,13 +93,12 @@ def blk_table(blk):
     out.append('<table>' + th(*hdr))
     for win in WINDOWS:
         first = True
-        cands = ['today'] if win[1] < 984 else CAND_ORDER
-        for cand in cands:
+        for cand in cands_for(win):
             r = cell(blk, win[0], cand)
             if not r: continue
             label = f"<b>{html.escape(win[0])}</b><br>{win[1]} x {win[2]}, visible about {r['vis']}" if first else ''
             first = False
-            cname = cand if win[1] >= 984 else 'all candidates (tab row as built)'
+            cname = cand_label(win, cand)
             wraps = 'none' if not r['wrapped'] else f"{len(r['wrapped'])} ({r['maxRows']} rows)"
             est = estimate(win[0], cand) if blk == 'A' else None
             row = [label, html.escape(cname), html.escape(LAYOUT(r)), f"{r['docH']:,}", f"{r['screens']}", f"{r['yIng']:,}", f"{r['yTotal']:,}",
@@ -93,6 +119,7 @@ th{background:#f3f4f2;position:sticky;top:0}tr.first td{border-top:2px solid #14
 <p>{html.escape(HEADNOTE)}</p>
 <p>Screens = page height / visible height. A y is a distance from the top of the page in px; (screens) is that y / visible height, so 0.4 is on the first screen and 2.0 is two full screens of scroll away. Pen = the record pen's height in the log after Record another, and after Add tasting is opened too.</p>
 {findings_html}
+{final_html()}
 {blk_table('A')}
 {blk_table('B')}
 </body></html>'''
@@ -103,21 +130,21 @@ def md_block(blk):
     out.append(hdr); out.append('|' + '---|' * (hdr.count('|') - 1))
     for win in WINDOWS:
         first = True
-        for cand in (['today'] if win[1] < 984 else CAND_ORDER):
+        for cand in cands_for(win):
             r = cell(blk, win[0], cand)
             if not r: continue
             lab = f"{win[0]} {win[1]} x {win[2]} (visible about {r['vis']})" if first else ''
             first = False
             wraps = 'none' if not r['wrapped'] else f"{len(r['wrapped'])} wrap ({r['maxRows']} rows)"
             est = estimate(win[0], cand) if blk == 'A' else None
-            row = f"| {lab} | {cand if win[1] >= 984 else 'all (tab row as built)'} | {LAYOUT(r)} | {r['docH']:,} ({r['screens']}) | {r['yIng']:,} | {r['yTotal']:,} | {r['yBal']:,} ({r['balScreens']}) | {r['yLog']:,} ({r['logScreens']}) | {r['tableW']:.0f} / {r['nameMin']:.0f}; {wraps} | {r['penH']:,} / {r['penTastingH']:,} |"
+            row = f"| {lab} | {cand_label(win, cand)} | {LAYOUT(r)} | {r['docH']:,} ({r['screens']}) | {r['yIng']:,} | {r['yTotal']:,} | {r['yBal']:,} ({r['balScreens']}) | {r['yLog']:,} ({r['logScreens']}) | {r['tableW']:.0f} / {r['nameMin']:.0f}; {wraps} | {r['penH']:,} / {r['penTastingH']:,} |"
             if blk == 'A': row += f" {est:,} ({round(est / r['vis'], 1)}) |" if est else ' |'
             out.append(row)
     return '\n'.join(out)
 def build_md(findings_md):
     return (f"**Measures table (decision 32 addendum, drawn 2026-10-03, awaiting Mark's look; nothing approved).** Mark: \"do we have a table of measures? with all folds open, and at the iPad portrait and landscape widths, what is screen height?\" then \"use the same recipe for each to be consistent\". The full table is `measures-table.html` beside the boards and `.planning/canvas-generators/ladder-measures.csv` (sortable); the generator is `measures-table.mjs` and `measures-table.py`. "
             f"{HEADNOTE} {VISNOTE} Screens = page height / visible height; a y is the distance from the top of the page in px, and (screens) is that y / visible height. The page-height estimate column is Block A plus the Instructions difference to Block B, arithmetic, not a real recipe.\n\n"
-            + findings_md + '\n\n' + md_block('A') + '\n\n' + md_block('B') + '\n')
+            + findings_md + '\n\n' + final_md() + '\n\n' + md_block('A') + '\n\n' + md_block('B') + '\n')
 if __name__ == '__main__':
     fm = open(HERE + '/measures-findings.md').read() if os.path.exists(HERE + '/measures-findings.md') else ''
     fh = ('<h2>Findings that change the recommendation</h2>' + ''.join('<p>' + html.escape(p) + '</p>' for p in fm.split('\n\n') if p.strip())) if fm else ''

@@ -3,8 +3,8 @@ import gen
 from gen import *
 # Sid, 2026-10-02 (todo 2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone; Mark chose option C on
 # 2026-10-02: the phone transcribes any time, with the same pen as the desk). Below 724 the recipe band gains a "Go to batch" row
-# that jumps to the batch log, and the filled action becomes Record a batch (no batch yet) or Record another (a batch exists),
-# with Next version a text control. The Sheet, the folds, Show changes, the rails and the log are the approved boards' own markup
+# that jumps to the batch log, and the filled action becomes Record a batch (no batch yet), Record a tasting (a batch awaits its
+# tasting; Mark, 2026-10-02) or Record another (a tasted batch), with Next version a text control. The Sheet, the folds, Show changes, the rails and the log are the approved boards' own markup
 # (layout_c_rung's narrow branch, unchanged except for the two band edits and, in the awaiting-tasting panel, the log's own words);
 # the pen is not drawn here, it is 393-pen-app.html (decision 29). Nothing live-at-the-machine, no timers, no photo, no new field,
 # and the log stays below the Sheet.
@@ -24,7 +24,9 @@ def jump_row(status):
             f'gap:14px;text-decoration:none;color:inherit;">{ctl}{st}</a>')
 
 def actions(state, parent):
-    primary = 'Record a batch' if state == 'none' else 'Record another'
+    # decision 30 (Mark, 2026-10-02): with a batch awaiting tasting the filled action reads Record a tasting (it opens the log's pen on
+    # Add tasting without Correct); Record another with a tasted batch; Record a batch with none.
+    primary = {'none': 'Record a batch', 'awaiting': 'Record a tasting'}.get(state, 'Record another')
     more = textctl('Next version') + (textctl('Show changes') if parent else '')
     return f'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">{filled(primary)}{more}</div>'
 
@@ -90,7 +92,7 @@ def suffix_ids(html, vid):
 CAPTION = f'margin:0 0 10px;font-family:{GROT};font-size:16px;line-height:22px;font-weight:600;color:{TEXT};'
 SUBCAP = f'margin:0;font-family:{GROT};font-size:14px;line-height:20px;font-weight:400;color:{TEXT2};'
 PANELS = [('tasted', False, 'Tasted batch', 'Record another is filled; the log below holds the batch'),
-          ('awaiting', False, 'Batch awaiting tasting', 'Record another is filled; the log says not tasted yet'),
+          ('awaiting', False, 'Batch awaiting tasting', 'Record a tasting is filled; the log says not tasted yet'),
           ('none', False, 'No batch yet', 'Record a batch is filled; the jump lands on the log'),
           ('none', True, 'Version with a parent', 'The band alone; Show changes sits beside Next version')]
 # panel heights: the tallest page, measured on the first render of each width (see the report)
@@ -117,8 +119,8 @@ def phone_board(width, key, title, extra_css):
     open(OUT + '/' + key + '.dc.html', 'w').write(html)
     return bw, bh
 
-T393 = 'C · 393 · option C, the phone transcribes: Go to batch in the band, Record another or Record a batch filled, Next version a text control (drawn 2026-10-02, awaiting Mark\'s look)'
-T723 = 'C · 723 · option C, the same states at the widest phone form (drawn 2026-10-02, awaiting Mark\'s look)'
+T393 = 'C · 393 · option C, the phone transcribes: Go to batch in the band, Record another, Record a tasting or Record a batch filled, Next version a text control (drawn 2026-10-02, awaiting-tasting panel redrawn after Mark\'s answers; not yet approved)'
+T723 = 'C · 723 · option C, the same states at the widest phone form (drawn 2026-10-02, awaiting-tasting panel redrawn after Mark\'s answers; not yet approved)'
 bw393, bh393 = phone_board(393, 'R35C_393PhoneLog', T393, FORCED + PHONE_TABLE)
 bw723, bh723 = phone_board(723, 'R35C_723PhoneLog', T723, SHELL_TABS + ONE_COL + AFTER_TOUCH + PHONE_TABLE)
 
@@ -128,8 +130,8 @@ ENTRIES = {
   'R35C_723PhoneLog.dc.html': dict(x=bw393 + 160, y=Y, w=bw723, h=bh723, page='page-13', title=T723),
 }
 NOTES = {
-  'r35-phonelog-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': Y - 240, 'maxW': bw393 + 160 + bw723, 'text': 'Logging on the phone, option C (Mark chose it 2026-10-02; drawn, awaiting Mark\'s look)'},
-  'r35-phonelog-note': {'fill': 'gray', 'page': 'page-13', 'x': bw393 + 160 + bw723 + 80, 'y': Y, 'w': 400, 'text': 'Option C: the phone transcribes any time, with the same pen as the desk. Below 724 the band gains one row, Go to batch, which jumps to the batch log (it shows Home\'s own status words: Tasted, Awaiting tasting, Not yet churned). The filled action is Record another when a batch exists and Record a batch when none does, and Next version becomes a text control beside it. Each board has three whole pages (tasted, awaiting tasting, no batch) and a fourth panel for a version with a parent, where Show changes wraps under the filled action. Everything else is the approved 393 and 723 pages: the Sheet, the folds, the rails, the log, the pen (393-pen-app). Not drawn: live logging at the machine, timers, photo capture, new fields, the log above the Sheet.'},
+  'r35-phonelog-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': Y - 240, 'maxW': bw393 + 160 + bw723, 'text': 'Logging on the phone, option C (Mark chose it 2026-10-02; his answers drawn, not yet approved)'},
+  'r35-phonelog-note': {'fill': 'gray', 'page': 'page-13', 'x': bw393 + 160 + bw723 + 80, 'y': Y, 'w': 400, 'text': 'Option C: the phone transcribes any time, with the same pen as the desk. Below 724 the band gains one row, Go to batch, which jumps to the batch log (it shows Home\'s own status words: Tasted, Awaiting tasting, Not yet churned). The filled action is Record another for a tasted batch, Record a tasting for a batch awaiting its tasting (it opens the log\'s pen on Add tasting; the app has no way to do that yet) and Record a batch when none exists, and Next version becomes a text control beside it. Each board has three whole pages (tasted, awaiting tasting, no batch) and a fourth panel for a version with a parent, where Show changes wraps under the filled action. Everything else is the approved 393 and 723 pages: the Sheet, the folds, the rails, the log, the pen (393-pen-app). Not drawn: live logging at the machine, timers, photo capture, new fields, the log above the Sheet.'},
 }
 json.dump({'boards': ENTRIES, 'notes': NOTES}, open(OUT + '/phonelog-canvas-entries.json', 'w'), indent=2)
 print('ok', bw393, bh393, bw723, bh723)

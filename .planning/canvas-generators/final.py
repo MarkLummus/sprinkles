@@ -26,7 +26,8 @@ OPT = open(HERE + '/ingredient-options.css').read(); NCSS = open(HERE + '/nav-ca
 def sec(css, name):
     m = re.search(r'/\* === ' + name + r' ===[^*]*\*/([\s\S]*?)(?=/\* === |$)', css); assert m, name; return m.group(1)
 D3 = sec(OPT, 'D') + sec(OPT, 'D2') + sec(OPT, 'D3')
-G = sec(NCSS, 'G'); GO = sec(NCSS, 'GO'); JUMP = sec(NCSS, 'JUMP')
+G = sec(NCSS, 'G'); GO = sec(NCSS, 'GO'); JUMP = sec(NCSS, 'JUMP'); HDR = sec(NCSS, 'HDR'); HDR724 = sec(NCSS, 'HDR724')
+HEAD_H = 57       # the sticky header: 44px targets + 2 x 6px padding + the 1px hairline (header-test.json)
 KEBAB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="12" r="1.2"></circle><circle cx="12" cy="12" r="1.2"></circle><circle cx="19" cy="12" r="1.2"></circle></svg>'
 FIX = '.shell{min-height:0;position:relative}.shell__tabs{position:absolute !important;inset-inline:0;inset-block-end:0}.shell__main{min-width:0}.shell__brand a{color:inherit;text-decoration:none}'
 LABEL_CSS = '''
@@ -34,9 +35,9 @@ LABEL_CSS = '''
 .fp-sub{font-family:var(--face-grotesk);color:var(--app-text-secondary);font-size:15px;line-height:21px;margin:4px 0 0}
 .fp-win{box-sizing:border-box;position:relative;background:var(--app-background);outline:1px solid var(--app-divider);overflow:hidden}
 '''
-def with_menu(html, W):
+def with_menu(html, W, option724=False):
     """From 984 the rail is the fly-out: the wordmark links to Home and a menu button stands beside it (closed)."""
-    if W < 984:     # no menu button below 984 (the tab row stays), but the wordmark is a link to Home at every width (Mark, 2026-10-03)
+    if W < 984 and not option724:     # no menu button below 984 (the tab row stays), but the wordmark is a link to Home at every width (Mark, 2026-10-03)
         w = '<p class="shell__brand">Sprinkles</p>'; assert html.count(w) == 1
         return html.replace(w, '<p class="shell__brand"><a href="/" tabindex="0">Sprinkles</a></p>', 1)
     a = '<header class="shell__head"><div><p class="shell__brand">Sprinkles</p>'
@@ -44,10 +45,11 @@ def with_menu(html, W):
     assert html.count(a) == 1 and html.count(b) == 1, 'header markup changed'
     html = html.replace(a, '<header class="shell__head"><div class="shell__lead"><button type="button" class="shell__menu" aria-label="Places" aria-expanded="false" aria-controls="places" tabindex="0">' + KEBAB + '</button><div><p class="shell__brand"><a href="/" tabindex="0">Sprinkles</a></p>', 1)
     return html.replace(b, '</div></div></div><div class="shell__tools">', 1)
-def final_css(W, vid, extra=''):
+def final_css(W, vid, extra='', option724=False):
     css = resolve_media(APPC, W, True) + resolve_media(SHELLC, W, True) + resolve_media(NBC, W, True) + FIX
-    if W >= 984:
-        css += G + '.shell__menu{margin:0 0 0 calc(-1 * var(--gap-xs))}'      # closed, at the top of the page: in the header's slot (PIN is drawn on the sticky boards)
+    if W >= 984 or option724:
+        css += G + HDR.replace('html{scroll-padding-top:57px}', '')      # the sticky header: the menu button, the wordmark, Search, Import, Export (scroll-padding is on html, which a panel cannot scope)
+        if W < 984: css += HDR724
     if W >= 724: css += D3
     if 724 <= W <= 1365: css += JUMP
     return scope_css(css + extra, '.' + vid)
@@ -76,11 +78,19 @@ def history_eight(html):
     extra[-1] = extra[-1].replace('not churned', 'not yet churned · Latest')
     html = html.replace(ol.group(0), ol.group(1) + nodes[0] + nodes[1] + nodes[2] + new4 + ''.join(extra) + ol.group(3), 1)
     return html.replace('--app-notebook-history-count: 4;', '--app-notebook-history-count: 8;').replace('4 versions', '8 versions')
-def panel_html(state, W):
+def jump_into_version(html):
+    """Option: the Go to batch row inside the Version section, directly under the acts, instead of the band grid's third child."""
+    m = re.search(r'<a class="notebook-jump".*?</a>', html, flags=re.S); assert m
+    row = m.group(0)
+    html = html.replace(row, '', 1)
+    acts = re.search(r'<div class="notebook-version__acts">.*?</div>', html, flags=re.S); assert acts
+    return html.replace(acts.group(0), acts.group(0) + row.replace('class="notebook-jump"', 'class="notebook-jump" style="grid-column:auto"', 1), 1)
+def panel_html(state, W, option724=False, jumpin=False):
     key = f'{state}_{W}'
     html = CAP[key] if key in CAP else CAP[f'{state.replace("long", "")}_{W}']
     if state == 'mex3long': html = history_eight(html)
-    return with_menu(html, W)
+    if jumpin: html = jump_into_version(html)
+    return with_menu(html, W, option724)
 def page_board(W, states, fn_title, full_title, pstates=None):
     css_parts = [resolve_media(TOK, W, True), LABEL_CSS]
     body = ''; x = GAP; H = 0
@@ -129,11 +139,12 @@ for key, snap, W, states, title in BOARDS:
 # ---- the band of 724 to 1365: the Go to batch row where the log sits below the Sheet ----
 def crop_board(key, snap, title, panels, h):
     css_parts = [LABEL_CSS]; body = ''; x = GAP; seen = set()
-    for st, W, cap in panels:
-        vid = f'fp-{st}-{W}'
+    for st, W, cap, *var in panels:
+        var = var[0] if var else ''
+        vid = f'fp-{st}-{W}-{var or "x"}'
         if W not in seen: css_parts.append(resolve_media(TOK, W, True)); seen.add(W)
-        css_parts.append(final_css(W, vid))
-        html = unique_ids(panel_html(st, W), vid)
+        css_parts.append(final_css(W, vid, option724=(var == 'o724')))
+        html = unique_ids(panel_html(st, W, option724=(var == 'o724'), jumpin=(var == 'jumpin')), vid)
         rec, what = RECIPE[st]
         body += (f'<div style="position:absolute;left:{x}px;top:{GAP}px;width:{W}px;"><div style="height:{CAP_H}px;"><p class="fp-title">{rec} · {W} wide</p><p class="fp-sub">{cap}</p></div>'
                  f'<div class="fp-win {vid}" style="width:{W}px;height:{h}px;"><div style="width:{W}px;">{html}</div></div></div>\n')
@@ -143,8 +154,13 @@ def crop_board(key, snap, title, panels, h):
     fn = write_board(key, title + STAMP, bw, bh, main, ''.join(css_parts) + '[hidden]{display:none !important}')
     ENTRIES[fn] = dict(w=bw, h=bh, page='page-13', title=title + STAMP, snap=snap)
 GO_CAP = "The band's Go to batch row (decision 30 drew it below 724; Mark, 2026-10-03: it extends wherever the log sits below the Sheet, so up to 1365): in the Version column under Next version and Show changes, History's row grammar, the control word and the batch's status, the whole row one 44px target; it jumps to the log. The row is the app's own and the app hides it above 723; the drawing shows it displayed."
-crop_board('R35C_GoToBatchWide', '724-1365-go-to-batch', 'C · 744, 1024 and 1194 · the band with the Go to batch row, where the log sits below the Sheet',
-           [('mex3', 744, GO_CAP + ' Batch awaiting its tasting.'), ('mex3', 1024, GO_CAP), ('olive1', 1194, GO_CAP + ' A tasted batch (Olive Oil v1).')], 900)
+crop_board('R35C_GoToBatchWide', '724-1365-go-to-batch', 'C · 744, 1024 and 1194 · the band with the Go to batch row, where the log sits below the Sheet; and an option with the row inside the Version section',
+           [('mex3', 744, GO_CAP + ' Batch awaiting its tasting. As built: the band grid\'s third child.'), ('mex3', 1024, GO_CAP + ' As built: the band grid\'s third child.'), ('olive1', 1194, GO_CAP + ' A tasted batch (Olive Oil v1). As built.'),
+            ('mex3', 1024, 'OPTION (Mark has not answered): the row inside the Version section, directly under Next version and Hide changes, 12px below them, so it reads as part of the version\'s acts; a DOM move in the band.', 'jumpin'),
+            ('olive1', 1194, 'OPTION: the same, a tasted batch.', 'jumpin')], 900)
+crop_board('R35C_HeaderOption724', '724-983-header-option', 'C · 744 and 834 · OPTION: the sticky header and the fly-out in place of the bottom tab row, 724 to 983 (Search, Import and Export stay in the bar; the page loses the tab row\'s 56px and gains the bar)',
+           [('mex3', 744, 'OPTION (a recommendation, not decided): the same sticky bar as 984 and up, the menu button, the wordmark, Search, Import and Export; no bottom tab row. The page is 56px shorter at the foot and the bar is 57px at the top.', 'o724'),
+            ('mex3', 834, 'OPTION: the same at 834.', 'o724'), ('olive1', 744, 'OPTION: Olive Oil v1 at 744.', 'o724')], 1100)
 
 # ---- the pinned menu button and the fly-out, where decision 27 drew the pinned rail options ----
 KEBAB_STYLED = KEBAB.replace('<svg ', '<svg style="width:20px;height:20px;transform:rotate(90deg)" ')
@@ -160,22 +176,24 @@ def sticky_board(key, snap, title, W, vh, scroll, state):
         base = panel_html(state, W)
         nav = rail_nav(CAP[f'{state}_{W}'])
         html = unique_ids(base, vid); nav = unique_ids(nav, vid)
-        btn = (f'<button type="button" class="shell__menu-pinned" aria-label="Places" aria-expanded="{"true" if opened else "false"}" tabindex="0" style="position:absolute;z-index:6;left:8px;top:6px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;'
-               f'padding:0;border:none;border-radius:10px;background:var(--app-background);color:var(--app-text);box-shadow:0 1px 4px rgba(20,20,20,.22);">{KEBAB_STYLED}</button>')
+        # the sticky header, drawn where it stands when the page is scrolled: at the window's top, over the page (a sticky element has no scroll container in a drawing)
+        hdr = re.search(r'<header class="shell__head">.*?</header>', html, flags=re.S).group(0)
+        bar = hdr.replace('<header class="shell__head">', '<header class="shell__head" style="position:absolute;top:0;left:0;right:0;z-index:7">', 1)
+        if opened: bar = bar.replace('aria-expanded="false"', 'aria-expanded="true"', 1)
         flyout = ''
         if opened:
-            nav = nav.replace('<nav class="shell__rail"', '<nav class="shell__rail" style="display:flex !important;position:absolute;left:0;top:0;bottom:0;width:224px;z-index:5;background:var(--app-background);padding-top:56px;box-shadow:4px 0 16px rgba(20,20,20,.18);flex:none"', 1)
-            flyout = f'<div style="position:absolute;inset:0;z-index:4;background:rgba(20,20,20,.28);"></div>{nav}'
-        cap = ('Closed, the window ' + f'{scroll}px down the page: the header has scrolled away; the menu button stays, 44 x 44, 6px under the window\'s top and 8px in from its left. Nothing else of the nav is on screen.' if not opened else
-               f'Open, the same window: the full 224 nav slides over the page, above it in z-order, from the window\'s top to its foot, with a scrim; the page beneath has not moved ({scroll}px down, the same rows). The button stays on top and closes it, as do a tap on the scrim, Escape and choosing a place.')
+            nav = nav.replace('<nav class="shell__rail"', f'<nav class="shell__rail" style="display:flex !important;position:absolute;left:0;top:{HEAD_H}px;bottom:0;width:224px;z-index:5;background:var(--app-background);box-shadow:4px 0 16px rgba(20,20,20,.18);flex:none"', 1)
+            flyout = f'<div style="position:absolute;left:0;right:0;top:{HEAD_H}px;bottom:0;z-index:4;background:rgba(20,20,20,.28);"></div>{nav}'
+        cap = (f'Closed, the window {scroll}px down the page: the bar has stayed at the top, {HEAD_H}px tall (44px targets, 6px of padding, a hairline): the menu button, the wordmark, Search, Import and Export are all on screen. Nothing of the page is covered but the bar\'s own {HEAD_H}px.' if not opened else
+               f'Open, the same window: the full 224 nav slides over the page, above it in z-order, from the foot of the bar to the window\'s foot, with a scrim; the bar stays above both, so the menu button still closes it and Search, Import and Export still work; the page beneath has not moved ({scroll}px down, the same rows). A tap on the scrim, Escape, the menu button and choosing a place all close it.')
         body += (f'<div style="position:absolute;left:{x}px;top:{GAP}px;width:{W}px;"><div style="height:{CAP_H}px;"><p class="fp-title">{"Open" if opened else "Closed"} · {W} x {vh}</p><p class="fp-sub">{cap}</p></div>'
-                 f'<div class="fp-win {vid}" style="width:{W}px;height:{vh}px;"><div style="width:{W}px;transform:translateY(-{scroll}px);">{html}</div>{flyout}{btn}</div></div>\n')
+                 f'<div class="fp-win {vid}" style="width:{W}px;height:{vh}px;"><div style="width:{W}px;transform:translateY(-{scroll}px);">{html}</div>{flyout}{bar}</div></div>\n')
         x += W + GAP
     bw, bh = x, GAP + CAP_H + 8 + vh + GAP
     main = f'<div style="position:relative;width:{bw}px;height:{bh}px;background:#ffffff;">{body}</div>'
     fn = write_board(key, title + STAMP, bw, bh, main, ''.join(css_parts) + '[hidden]{display:none !important}')
     ENTRIES[fn] = dict(w=bw, h=bh, page='page-13', title=title + STAMP, snap=snap)
-sticky_board('R35C_1366Sticky', '1366-sticky-nav', 'C · 1366 · the window 640px down a long page · the menu button pinned, closed and open (replaces the pinned rail options of decision 27)', 1366, 954, 640, 'olive1')
-sticky_board('R35C_984Sticky', '984-sticky-nav', 'C · 984 · the window 2,800px down · the menu button pinned, closed and open (replaces the pinned rail options of decision 27)', 984, 768, 2800, 'olive1')
+sticky_board('R35C_1366Sticky', '1366-sticky-nav', 'C · 1366 · the window 640px down a long page · the sticky header, the fly-out closed and open (replaces the pinned rail options of decision 27 and the pinned button)', 1366, 954, 640, 'olive1')
+sticky_board('R35C_984Sticky', '984-sticky-nav', 'C · 984 · the window 2,800px down · the sticky header, the fly-out closed and open (replaces the pinned rail options of decision 27 and the pinned button)', 984, 768, 2800, 'olive1')
 json.dump({'boards': ENTRIES}, open(OUT + '/final-canvas-entries.json', 'w'), indent=2)
 print('ok final', {fn: (e['w'], e['h']) for fn, e in ENTRIES.items()})

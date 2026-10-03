@@ -9,8 +9,8 @@ ERR = [r for r in D['rows'] if r.get('error')]
 BLOCKS = {b['id']: b for b in D['blocks']}
 WINDOWS = D['windows']
 CAND_ORDER = ['today', 'L', 'f collapsed', 'f expanded', 'g closed', 'final']
-def cands_for(win): return ['today', 'final'] if win[1] < 984 else CAND_ORDER
-def cand_label(win, cand): return 'all candidates (tab row as built)' if (cand == 'today' and win[1] < 984) else ('FINAL DESIGN (g closed + Go to batch row + D3 from 724)' if cand == 'final' else cand)
+def cands_for(win): return ['today', 'final', 'final724'] if win[1] < 984 else CAND_ORDER
+def cand_label(win, cand): return 'all candidates (tab row as built)' if (cand == 'today' and win[1] < 984) else ('FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724)' if cand == 'final' else ('OPTION: sticky bar + fly-out from 724 (no tab row)' if cand == 'final724' else cand))
 def get(engine, block, window, cand):
     return next((r for r in ROWS if r['engine'] == engine and r['block'] == block and r['window'] == window and r['cand'] == cand), None)
 def screens(y, vis):

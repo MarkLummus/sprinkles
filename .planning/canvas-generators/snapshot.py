@@ -25,7 +25,7 @@ MAP = {'R35C_Batch': '1600-batch', 'R35C_NoBatch': '1600-no-batch', 'R35C_Pen': 
        'R35C_1366IngredientOptions': '1366-ingredient-options', 'R35C_1024IngredientOptions': '1024-ingredient-options',
        'R35C_1366Ladder': '1366-ladder', 'R35C_1194Ladder': '1194-ladder',
        'R35C_1366Nav': '1366-nav', 'R35C_1194Nav': '1194-nav',
-       'R35C_744': '744-batch', 'R35C_834': '834-batch', 'R35C_GoToBatchWide': '724-1365-go-to-batch'}
+       'R35C_744': '744-batch', 'R35C_834': '834-batch', 'R35C_GoToBatchWide': '724-1365-go-to-batch', 'R35C_HeaderOption724': '724-983-header-option'}
 # The count boards (Mark, 2026-09-27) live in the sibling 011-options-counts folder of DEST, with the same two replacements.
 COUNTS = {'R35C_CountVersions': 'versions-1-vs-many', 'R35C_CountBatches01': 'batches-0-and-1', 'R35C_CountBatchesMany': 'batches-many',
           'R35C_CountBatchesMany393': 'batches-many-393', 'R35C_CountUpright393': 'upright-393'}

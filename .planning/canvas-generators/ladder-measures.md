@@ -23,77 +23,81 @@ Findings that change the recommendation (the block each comes from, and whether 
 | iPad mini portrait 744 x 1133 (visible about 1063) | Olive Oil v1 | tab row; one column; Balance below; log below | 4,759 (4.5) | 670 | 1,390 | 1,461 (1.4) | 3,891 (3.7) | 584 / 376; none | 622 / 1,443 |
 | 11in iPad Pro portrait 834 x 1194 (visible about 1124) | Mexican Chocolate v3 | tab row; one column; Balance below; log below | 3,563 (3.2) | 936 | 1,635 | 1,722 (1.5) | 3,184 (2.8) | 674 / 466; none | 622 / 1,443 |
 | 11in iPad Pro portrait 834 x 1194 (visible about 1124) | Olive Oil v1 | tab row; one column; Balance below; log below | 4,676 (4.2) | 670 | 1,390 | 1,461 (1.3) | 3,823 (3.4) | 674 / 466; none | 622 / 1,443 |
-| 12.9in iPad Pro portrait 1024 x 1366 (visible about 1296) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log below | 2,773 (2.1) | 954 | 1,653 | 954 (0.7) | 2,465 (1.9) | 555 / 347; none | 622 / 1,443 |
-| 12.9in iPad Pro portrait 1024 x 1366 (visible about 1296) | Olive Oil v1 | no rail; two columns; Balance beside; log below | 3,655 (2.8) | 688 | 1,408 | 688 (0.5) | 2,873 (2.2) | 555 / 347; none | 622 / 1,443 |
-| iPad mini landscape 1133 x 744 (visible about 674) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log below | 2,674 (4.0) | 930 | 1,629 | 930 (1.4) | 2,366 (3.5) | 627 / 420; none | 622 / 1,443 |
-| iPad mini landscape 1133 x 744 (visible about 674) | Olive Oil v1 | no rail; two columns; Balance beside; log below | 3,635 (5.4) | 688 | 1,408 | 688 (1.0) | 2,853 (4.2) | 627 / 420; none | 622 / 1,443 |
-| 11in iPad Pro landscape 1194 x 834 (visible about 764) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log below | 2,644 (3.5) | 930 | 1,629 | 930 (1.2) | 2,336 (3.1) | 668 / 460; none | 622 / 1,443 |
-| 11in iPad Pro landscape 1194 x 834 (visible about 764) | Olive Oil v1 | no rail; two columns; Balance beside; log below | 3,597 (4.7) | 688 | 1,408 | 688 (0.9) | 2,815 (3.7) | 668 / 460; none | 622 / 1,443 |
-| 12.9in iPad Pro landscape 1366 x 1024 (visible about 954) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log beside | 2,321 (2.4) | 760 | 1,459 | 760 (0.8) | 611 (0.6) | 528 / 320; none | 725 / 2,168 |
-| 12.9in iPad Pro landscape 1366 x 1024 (visible about 954) | Olive Oil v1 | no rail; two columns; Balance beside; log beside | 2,833 (3.0) | 628 | 1,348 | 628 (0.7) | 422 (0.4) | 528 / 320; none | 725 / 2,441 |
+| 12.9in iPad Pro portrait 1024 x 1366 (visible about 1296) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log below | 2,762 (2.1) | 943 | 1,642 | 943 (0.7) | 2,454 (1.9) | 555 / 347; none | 622 / 1,443 |
+| 12.9in iPad Pro portrait 1024 x 1366 (visible about 1296) | Olive Oil v1 | no rail; two columns; Balance beside; log below | 3,644 (2.8) | 677 | 1,397 | 677 (0.5) | 2,862 (2.2) | 555 / 347; none | 622 / 1,443 |
+| iPad mini landscape 1133 x 744 (visible about 674) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log below | 2,663 (4.0) | 919 | 1,618 | 919 (1.4) | 2,355 (3.5) | 627 / 420; none | 622 / 1,443 |
+| iPad mini landscape 1133 x 744 (visible about 674) | Olive Oil v1 | no rail; two columns; Balance beside; log below | 3,624 (5.4) | 677 | 1,397 | 677 (1.0) | 2,842 (4.2) | 627 / 420; none | 622 / 1,443 |
+| 11in iPad Pro landscape 1194 x 834 (visible about 764) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log below | 2,633 (3.4) | 919 | 1,618 | 919 (1.2) | 2,325 (3.0) | 668 / 460; none | 622 / 1,443 |
+| 11in iPad Pro landscape 1194 x 834 (visible about 764) | Olive Oil v1 | no rail; two columns; Balance beside; log below | 3,586 (4.7) | 677 | 1,397 | 677 (0.9) | 2,804 (3.7) | 668 / 460; none | 622 / 1,443 |
+| 12.9in iPad Pro landscape 1366 x 1024 (visible about 954) | Mexican Chocolate v3 | no rail; two columns; Balance beside; log beside | 2,310 (2.4) | 749 | 1,448 | 749 (0.8) | 600 (0.6) | 528 / 320; none | 725 / 2,168 |
+| 12.9in iPad Pro landscape 1366 x 1024 (visible about 954) | Olive Oil v1 | no rail; two columns; Balance beside; log beside | 2,822 (3.0) | 617 | 1,337 | 617 (0.6) | 411 (0.4) | 528 / 320; none | 725 / 2,441 |
 
 *Block A: Mexican Chocolate v3 (short Instructions (1 step), empty Before you start; a parent, Show changes on, constructed As made figures).*
 
 | Window (screen, visible est.) | Candidate | Layout | Page (screens) | Ingredients y | Total y | Balance y (screens) | Log y (screens) | Table / name column; wraps | Pen, Record another / + tasting | A with Olive Oil's Instructions (estimate) |
 |---|---|---|---|---|---|---|---|---|---|---|
 | iPad mini portrait 744 x 1133 (visible about 1063) | all candidates (tab row as built) | tab row; one column; Balance below; log below | 3,526 (3.3) | 884 | 1,583 | 1,670 (1.6) | 3,147 (3.0) | 584 / 376; none | 622 / 1,443 | 4,566 (4.3) |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | tab row; one column; Balance below; log below | 3,602 (3.4) | 960 | 1,659 | 1,746 (1.6) | 3,223 (3.0) | 584 / 376; none | 622 / 1,443 | 4,642 (4.4) |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | tab row; one column; Balance below; log below | 3,602 (3.4) | 960 | 1,659 | 1,746 (1.6) | 3,223 (3.0) | 584 / 376; none | 622 / 1,443 | 4,642 (4.4) |
+|  | OPTION: sticky bar + fly-out from 724 (no tab row) | no rail; one column; Balance below; log below | 3,541 (3.3) | 955 | 1,654 | 1,741 (1.6) | 3,218 (3.0) | 584 / 376; none | 622 / 1,443 | 4,581 (4.3) |
 | 11in iPad Pro portrait 834 x 1194 (visible about 1124) | all candidates (tab row as built) | tab row; one column; Balance below; log below | 3,487 (3.1) | 860 | 1,559 | 1,646 (1.5) | 3,108 (2.8) | 674 / 466; none | 622 / 1,443 | 4,504 (4.0) |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | tab row; one column; Balance below; log below | 3,563 (3.2) | 936 | 1,635 | 1,722 (1.5) | 3,184 (2.8) | 674 / 466; none | 622 / 1,443 | 4,580 (4.1) |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | tab row; one column; Balance below; log below | 3,563 (3.2) | 936 | 1,635 | 1,722 (1.5) | 3,184 (2.8) | 674 / 466; none | 622 / 1,443 | 4,580 (4.1) |
+|  | OPTION: sticky bar + fly-out from 724 (no tab row) | no rail; one column; Balance below; log below | 3,502 (3.1) | 931 | 1,630 | 1,717 (1.5) | 3,179 (2.8) | 674 / 466; none | 622 / 1,443 | 4,519 (4.0) |
 | 12.9in iPad Pro portrait 1024 x 1366 (visible about 1296) | today | rail 224; two columns; Balance beside; log below | 2,991 (2.3) | 902 | 1,603 | 902 (0.7) | 2,668 (2.1) | 405 / 198; none | 622 / 1,443 | 3,867 (3.0) |
 |  | L | tab row; two columns; Balance beside; log below | 2,753 (2.1) | 878 | 1,577 | 878 (0.7) | 2,389 (1.8) | 555 / 347; none | 622 / 1,443 | 3,617 (2.8) |
 |  | f collapsed | rail 57; two columns; Balance beside; log below | 2,742 (2.1) | 878 | 1,577 | 878 (0.7) | 2,434 (1.9) | 517 / 309; none | 622 / 1,443 | 3,584 (2.8) |
 |  | f expanded | rail 224; one column; Balance below; log below | 3,476 (2.7) | 890 | 1,589 | 1,676 (1.3) | 3,153 (2.4) | 640 / 432; none | 622 / 1,443 | 4,497 (3.5) |
 |  | g closed | no rail; two columns; Balance beside; log below | 2,697 (2.1) | 878 | 1,577 | 878 (0.7) | 2,389 (1.8) | 555 / 347; none | 622 / 1,443 | 3,561 (2.7) |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log below | 2,773 (2.1) | 954 | 1,653 | 954 (0.7) | 2,465 (1.9) | 555 / 347; none | 622 / 1,443 | 3,637 (2.8) |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log below | 2,762 (2.1) | 943 | 1,642 | 943 (0.7) | 2,454 (1.9) | 555 / 347; none | 622 / 1,443 | 3,626 (2.8) |
 | iPad mini landscape 1133 x 744 (visible about 674) | today | rail 224; two columns; Balance beside; log below | 2,847 (4.2) | 878 | 1,577 | 878 (1.3) | 2,539 (3.8) | 478 / 270; none | 622 / 1,443 | 3,667 (5.4) |
 |  | L | tab row; two columns; Balance beside; log below | 2,654 (3.9) | 854 | 1,553 | 854 (1.3) | 2,290 (3.4) | 627 / 420; none | 622 / 1,443 | 3,536 (5.2) |
 |  | f collapsed | rail 57; two columns; Balance beside; log below | 2,628 (3.9) | 854 | 1,553 | 854 (1.3) | 2,320 (3.4) | 589 / 382; none | 622 / 1,443 | 3,495 (5.2) |
 |  | f expanded | rail 224; one column; Balance below; log below | 3,392 (5.0) | 866 | 1,565 | 1,652 (2.5) | 3,084 (4.6) | 749 / 542; none | 622 / 1,443 | 4,409 (6.5) |
 |  | g closed | no rail; two columns; Balance beside; log below | 2,598 (3.9) | 854 | 1,553 | 854 (1.3) | 2,290 (3.4) | 627 / 420; none | 622 / 1,443 | 3,480 (5.2) |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log below | 2,674 (4.0) | 930 | 1,629 | 930 (1.4) | 2,366 (3.5) | 627 / 420; none | 622 / 1,443 | 3,556 (5.3) |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log below | 2,663 (4.0) | 919 | 1,618 | 919 (1.4) | 2,355 (3.5) | 627 / 420; none | 622 / 1,443 | 3,545 (5.3) |
 | 11in iPad Pro landscape 1194 x 834 (visible about 764) | today | rail 224; two columns; Balance beside; log below | 2,727 (3.6) | 878 | 1,577 | 878 (1.1) | 2,419 (3.2) | 519 / 311; none | 622 / 1,443 | 3,576 (4.7) |
 |  | L | tab row; two columns; Balance beside; log below | 2,624 (3.4) | 854 | 1,553 | 854 (1.1) | 2,260 (3.0) | 668 / 460; none | 622 / 1,443 | 3,490 (4.6) |
 |  | f collapsed | rail 57; two columns; Balance beside; log below | 2,598 (3.4) | 854 | 1,553 | 854 (1.1) | 2,290 (3.0) | 630 / 422; none | 622 / 1,443 | 3,480 (4.6) |
 |  | f expanded | rail 224; one column; Balance below; log below | 3,392 (4.4) | 866 | 1,565 | 1,652 (2.2) | 3,084 (4.0) | 810 / 602; none | 622 / 1,443 | 4,409 (5.8) |
 |  | g closed | no rail; two columns; Balance beside; log below | 2,568 (3.4) | 854 | 1,553 | 854 (1.1) | 2,260 (3.0) | 668 / 460; none | 622 / 1,443 | 3,434 (4.5) |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log below | 2,644 (3.5) | 930 | 1,629 | 930 (1.2) | 2,336 (3.1) | 668 / 460; none | 622 / 1,443 | 3,510 (4.6) |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log below | 2,633 (3.4) | 919 | 1,618 | 919 (1.2) | 2,325 (3.0) | 668 / 460; none | 622 / 1,443 | 3,499 (4.6) |
 | 12.9in iPad Pro landscape 1366 x 1024 (visible about 954) | today | rail 224; two columns; Balance beside; log beside | 2,608 (2.7) | 760 | 1,464 | 760 (0.8) | 611 (0.6) | 379 / 171; 1 wrap (2 rows) | 725 / 2,168 | 3,483 (3.7) |
 |  | L | tab row; two columns; Balance beside; log beside | 2,377 (2.5) | 760 | 1,459 | 760 (0.8) | 611 (0.6) | 528 / 320; none | 725 / 2,168 | 3,226 (3.4) |
 |  | f collapsed | rail 57; two columns; Balance beside; log beside | 2,396 (2.5) | 760 | 1,459 | 760 (0.8) | 611 (0.6) | 490 / 282; none | 725 / 2,168 | 3,238 (3.4) |
 |  | f expanded | rail 224; two columns; Balance beside; log below | 2,598 (2.7) | 854 | 1,553 | 854 (0.9) | 2,290 (2.4) | 633 / 425; none | 622 / 1,443 | 3,480 (3.6) |
 |  | g closed | no rail; two columns; Balance beside; log beside | 2,321 (2.4) | 760 | 1,459 | 760 (0.8) | 611 (0.6) | 528 / 320; none | 725 / 2,168 | 3,170 (3.3) |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log beside | 2,321 (2.4) | 760 | 1,459 | 760 (0.8) | 611 (0.6) | 528 / 320; none | 725 / 2,168 | 3,170 (3.3) |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log beside | 2,310 (2.4) | 749 | 1,448 | 749 (0.8) | 600 (0.6) | 528 / 320; none | 725 / 2,168 | 3,159 (3.3) |
 
 *Block B: Olive Oil v1 (long Instructions (10 steps), 2 notes, 4 step heads; its batch's real As made figures; no parent, so no Show changes).*
 
 | Window (screen, visible est.) | Candidate | Layout | Page (screens) | Ingredients y | Total y | Balance y (screens) | Log y (screens) | Table / name column; wraps | Pen, Record another / + tasting |
 |---|---|---|---|---|---|---|---|---|---|
 | iPad mini portrait 744 x 1133 (visible about 1063) | all candidates (tab row as built) | tab row; one column; Balance below; log below | 4,683 (4.4) | 594 | 1,314 | 1,385 (1.3) | 3,815 (3.6) | 584 / 376; none | 622 / 1,443 |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | tab row; one column; Balance below; log below | 4,759 (4.5) | 670 | 1,390 | 1,461 (1.4) | 3,891 (3.7) | 584 / 376; none | 622 / 1,443 |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | tab row; one column; Balance below; log below | 4,759 (4.5) | 670 | 1,390 | 1,461 (1.4) | 3,891 (3.7) | 584 / 376; none | 622 / 1,443 |
+|  | OPTION: sticky bar + fly-out from 724 (no tab row) | no rail; one column; Balance below; log below | 4,698 (4.4) | 665 | 1,385 | 1,456 (1.4) | 3,886 (3.7) | 584 / 376; none | 622 / 1,443 |
 | 11in iPad Pro portrait 834 x 1194 (visible about 1124) | all candidates (tab row as built) | tab row; one column; Balance below; log below | 4,600 (4.1) | 594 | 1,314 | 1,385 (1.2) | 3,747 (3.3) | 674 / 466; none | 622 / 1,443 |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | tab row; one column; Balance below; log below | 4,676 (4.2) | 670 | 1,390 | 1,461 (1.3) | 3,823 (3.4) | 674 / 466; none | 622 / 1,443 |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | tab row; one column; Balance below; log below | 4,676 (4.2) | 670 | 1,390 | 1,461 (1.3) | 3,823 (3.4) | 674 / 466; none | 622 / 1,443 |
+|  | OPTION: sticky bar + fly-out from 724 (no tab row) | no rail; one column; Balance below; log below | 4,615 (4.1) | 665 | 1,385 | 1,456 (1.3) | 3,818 (3.4) | 674 / 466; none | 622 / 1,443 |
 | 12.9in iPad Pro portrait 1024 x 1366 (visible about 1296) | today | rail 224; two columns; Balance beside; log below | 3,747 (2.9) | 612 | 1,332 | 612 (0.5) | 2,950 (2.3) | 405 / 198; none | 622 / 1,443 |
 |  | L | tab row; two columns; Balance beside; log below | 3,635 (2.8) | 612 | 1,332 | 612 (0.5) | 2,797 (2.2) | 555 / 347; none | 622 / 1,443 |
 |  | f collapsed | rail 57; two columns; Balance beside; log below | 3,579 (2.8) | 612 | 1,332 | 612 (0.5) | 2,797 (2.2) | 517 / 309; none | 622 / 1,443 |
 |  | f expanded | rail 224; one column; Balance below; log below | 4,569 (3.5) | 600 | 1,320 | 1,391 (1.1) | 3,772 (2.9) | 640 / 432; none | 622 / 1,443 |
 |  | g closed | no rail; two columns; Balance beside; log below | 3,579 (2.8) | 612 | 1,332 | 612 (0.5) | 2,797 (2.2) | 555 / 347; none | 622 / 1,443 |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log below | 3,655 (2.8) | 688 | 1,408 | 688 (0.5) | 2,873 (2.2) | 555 / 347; none | 622 / 1,443 |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log below | 3,644 (2.8) | 677 | 1,397 | 677 (0.5) | 2,862 (2.2) | 555 / 347; none | 622 / 1,443 |
 | iPad mini landscape 1133 x 744 (visible about 674) | today | rail 224; two columns; Balance beside; log below | 3,617 (5.4) | 612 | 1,332 | 612 (0.9) | 2,835 (4.2) | 478 / 270; none | 622 / 1,443 |
 |  | L | tab row; two columns; Balance beside; log below | 3,615 (5.4) | 612 | 1,332 | 612 (0.9) | 2,777 (4.1) | 627 / 420; none | 622 / 1,443 |
 |  | f collapsed | rail 57; two columns; Balance beside; log below | 3,559 (5.3) | 612 | 1,332 | 612 (0.9) | 2,777 (4.1) | 589 / 382; none | 622 / 1,443 |
 |  | f expanded | rail 224; one column; Balance below; log below | 4,535 (6.7) | 600 | 1,320 | 1,391 (2.1) | 3,753 (5.6) | 749 / 542; none | 622 / 1,443 |
 |  | g closed | no rail; two columns; Balance beside; log below | 3,559 (5.3) | 612 | 1,332 | 612 (0.9) | 2,777 (4.1) | 627 / 420; none | 622 / 1,443 |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log below | 3,635 (5.4) | 688 | 1,408 | 688 (1.0) | 2,853 (4.2) | 627 / 420; none | 622 / 1,443 |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log below | 3,624 (5.4) | 677 | 1,397 | 677 (1.0) | 2,842 (4.2) | 627 / 420; none | 622 / 1,443 |
 | 11in iPad Pro landscape 1194 x 834 (visible about 764) | today | rail 224; two columns; Balance beside; log below | 3,579 (4.7) | 612 | 1,332 | 612 (0.8) | 2,797 (3.7) | 519 / 311; none | 622 / 1,443 |
 |  | L | tab row; two columns; Balance beside; log below | 3,577 (4.7) | 612 | 1,332 | 612 (0.8) | 2,739 (3.6) | 668 / 460; none | 622 / 1,443 |
 |  | f collapsed | rail 57; two columns; Balance beside; log below | 3,559 (4.7) | 612 | 1,332 | 612 (0.8) | 2,777 (3.6) | 630 / 422; none | 622 / 1,443 |
 |  | f expanded | rail 224; one column; Balance below; log below | 4,535 (5.9) | 600 | 1,320 | 1,391 (1.8) | 3,753 (4.9) | 810 / 602; none | 622 / 1,443 |
 |  | g closed | no rail; two columns; Balance beside; log below | 3,521 (4.6) | 612 | 1,332 | 612 (0.8) | 2,739 (3.6) | 668 / 460; none | 622 / 1,443 |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log below | 3,597 (4.7) | 688 | 1,408 | 688 (0.9) | 2,815 (3.7) | 668 / 460; none | 622 / 1,443 |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log below | 3,586 (4.7) | 677 | 1,397 | 677 (0.9) | 2,804 (3.7) | 668 / 460; none | 622 / 1,443 |
 | 12.9in iPad Pro landscape 1366 x 1024 (visible about 954) | today | rail 224; two columns; Balance beside; log beside | 3,059 (3.2) | 628 | 1,377 | 628 (0.7) | 422 (0.4) | 379 / 171; none | 725 / 2,441 |
 |  | L | tab row; two columns; Balance beside; log beside | 2,889 (3.0) | 628 | 1,348 | 628 (0.7) | 422 (0.4) | 528 / 320; none | 725 / 2,441 |
 |  | f collapsed | rail 57; two columns; Balance beside; log beside | 2,871 (3.0) | 628 | 1,348 | 628 (0.7) | 422 (0.4) | 490 / 282; none | 725 / 2,441 |
 |  | f expanded | rail 224; two columns; Balance beside; log below | 3,559 (3.7) | 612 | 1,332 | 612 (0.6) | 2,777 (2.9) | 633 / 425; none | 622 / 1,443 |
 |  | g closed | no rail; two columns; Balance beside; log beside | 2,833 (3.0) | 628 | 1,348 | 628 (0.7) | 422 (0.4) | 528 / 320; none | 725 / 2,441 |
-|  | FINAL DESIGN (g closed + Go to batch row + D3 from 724) | no rail; two columns; Balance beside; log beside | 2,833 (3.0) | 628 | 1,348 | 628 (0.7) | 422 (0.4) | 528 / 320; none | 725 / 2,441 |
+|  | FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724) | no rail; two columns; Balance beside; log beside | 2,822 (3.0) | 617 | 1,337 | 617 (0.6) | 411 (0.4) | 528 / 320; none | 725 / 2,441 |

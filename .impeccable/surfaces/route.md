@@ -25,6 +25,10 @@ Reference: the active-work responsive concept board, `exec-793bc09c-6ac8-4019-85
 
 `route-recipe.md` § "03.5 revision" (Phase 03.5, confirmed by Mark 2026-09-23) and D18 (assets and processes, `product-requirements/03-decision-register.md`) govern over § 1 below where they differ. On screen, paper holds inside **one** frame on a recipe route: the Recipe Sheet, an asset. The batch and tasting log is a process record and is App context on screen; the Sheet in its Notebook form carries only the batch in view's as-made grams and Instructions changes in pen blue. In print, the Sheet and the blank batch log stay paper. The Sheet has two forms, Notebook and Recipe Book, and the destination route picks the form. The **highlighter** § 1 reserves for the paper batch log is undecided again: whether it marks the printed log, the Sheet, or nothing is settled when that surface is next drawn (Mark, 2026-09-23). Routes: `/recipe/:id` and `/recipe/:id/batch/:batchId` become `/notebook/:recipeId/:versionId` and `/notebook/:recipeId/:versionId/batch/:batchId`, with the old paths redirecting; `/recipe-book/:recipeId` is reserved, not built; print sits at `…/print` under each, replacing `/recipe/:id/sheet`. Everything else in this brief stands.
 
+## Action colour amendment — 2026-10-02
+
+Brought level with DESIGN.md (Sid): § 3, the Direction contract's OWN-WORLD line and § 5 no longer call the shared action colour open. DESIGN.md governs it; only link, focus and feedback colours, pale tints and the hover, pressed and disabled states stay open.
+
 ## 1. Where this world applies
 
 Mark, 2026-09-18: paper stays inside three frames and nowhere else.
@@ -45,13 +49,13 @@ Mark, first. Arriving to find the recipe he is working on, see at a glance how f
 
 **Palette amendment — approved 2026-09-21:** Option B with the revised lighter Ingredients green, plus the preview neutral set. DESIGN.md owns the exact values. Notebook is red, Recipe Book orange, Idea log yellow, Pantry light green (reserved), Ingredients leaf green, and Kitchen indigo. App blue is distinct from Recipe Sheet pen blue.
 
-The earlier recipe-specific palette and unique-color-per-recipe rule are retired. Color identifies destinations; words identify recipes and state standing (D06). Shared action, link, focus, and feedback treatments remain open. No exploratory mock's color assignments override this amendment.
+The earlier recipe-specific palette and unique-color-per-recipe rule are retired. Color identifies destinations; words identify recipes and state standing (D06). The filled action is settled in DESIGN.md (Colors, "The filled action"): the primary action is a filled control in app blue's text companion with a white label, the secondary the same blue as outline and label; tentatively approved 2026-09-21. Shared link, focus, and feedback treatments remain open. No exploratory mock's color assignments override this amendment.
 
 ## Direction contract
 
 THESIS: A clean, bright app that makes active work easy to resume, with color supporting guidance and destination identity. Sprinkle marks remain part of the visual direction; the Home exploration will settle imagery and count treatments.
 
-OWN-WORLD: White ground, near-black ink, the approved destination accents and app neutrals from DESIGN.md; no recipe-specific colors. A sprinkle is a short rounded rod, slightly tilted; a tally is a row of them. Controls are plain, rounded, and quiet; colour sits in the marks, destination markers and active navigation; action-color assignments remain open, never in a whole region.
+OWN-WORLD: White ground, near-black ink, the approved destination accents and app neutrals from DESIGN.md; no recipe-specific colors. A sprinkle is a short rounded rod, slightly tilted; a tally is a row of them. Controls are plain, rounded, and quiet; colour sits in the marks, destination markers and active navigation, and in the one filled action (app blue, DESIGN.md), never in a whole region.
 
 STORY: I see what I can continue now, with enough recipe and batch context to choose the next action. My trusted recipes and ideas remain close. Opening a recipe reveals its context and the distinct Recipe Sheet.
 
@@ -70,7 +74,7 @@ First surface: `route:/` (home) and the shell that frames every route, including
 - How active work is selected and ordered; empty Home and multiple active recipes; which continuation action leads in each state.
 - Home imagery, handwriting, component geometry, responsive composition, and any motion. The concept selection establishes priority, not approval of every mock detail.
 
-- Shared interaction and feedback colors; contrast-tested text companions, tints, and interaction states. Base accents and neutrals are approved in DESIGN.md.
+- Shared link, focus and feedback colours; pale tints; hover, pressed and disabled states. Base accents, neutrals, the text companions and the filled action are in DESIGN.md (the companions and the filled action tentatively; Mark confirmed the Notebook companion at 03.4 UAT round two, the rest wait on him).
 - How a tally reads past a dozen versions.
 - The highlighter inside the batch log: colour, meaning, and whether it is the app palette's yellow.
 - The book running head keeps its paper treatment; the sketched recipe-color option is retired.

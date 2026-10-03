@@ -1037,3 +1037,28 @@ describe('RecipePage places the Go to batch row last in the band grid (quick 261
     expect(goToBatchSource).toContain('function handleGoToBatch(');
   });
 });
+
+// Quick task 261002-wmz: the below-724 read is taken once, above the early
+// returns (hooks cannot sit below them), and handed to VersionRow with the
+// log's own record handler. Read as text with comments stripped, the idiom
+// the describes above use.
+describe('RecipePage.jsx — the band\'s record act is wired to the log\'s own handler (261002-wmz)', () => {
+  const recipePagePath = fileURLToPath(new URL('./RecipePage.jsx', import.meta.url));
+  const source = readFileSync(recipePagePath, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it('calls the below-724 hook exactly once, before the first early return (Test K)', () => {
+    expect(source.match(/\buseBelow724\(\)/g)).toHaveLength(1);
+    const hook = source.indexOf('useBelow724()');
+    const earlyReturn = source.indexOf('if (version === undefined) return null;');
+    expect(hook).toBeGreaterThan(-1);
+    expect(earlyReturn).toBeGreaterThan(hook);
+  });
+
+  it('passes that boolean and handleStartRecording to VersionRow (Test K)', () => {
+    const tag = source.match(/<VersionRow\b[\s\S]*?\/>/)?.[0] ?? '';
+    expect(tag).toContain('below724={below724}');
+    expect(tag).toContain('onStartRecording={handleStartRecording}');
+  });
+});

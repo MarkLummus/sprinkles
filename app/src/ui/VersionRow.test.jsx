@@ -704,3 +704,82 @@ describe('VersionRow — every button and checkbox carries an explicit tabindex 
     }
   });
 });
+
+// Sketch 011 decision 30 (Mark, 2026-10-02, "approve the phone-logging
+// boards"), quick task 261002-wmz: below 724 the band's acts row leads with
+// ONE filled control, the record act the version is waiting on, and Next
+// version is the underlined text control beside it. Every assertion is scoped
+// to the acts group's own markup, so the Go to batch row (a sibling in the
+// band grid, 261002-wmy) can never satisfy or break one.
+describe('VersionRow — below 724 the band\'s one filled action is the record act (sketch 011 decision 30, 261002-wmz)', () => {
+  function actsGroup(markup) {
+    const start = markup.indexOf('class="notebook-version__acts"');
+    if (start === -1) return '';
+    return markup.slice(start, markup.indexOf('</div>', start));
+  }
+
+  function actButtons(markup) {
+    return [...actsGroup(markup).matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button>/g)].map((match) => ({
+      attrs: match[1],
+      label: match[2].replace(/<[^>]*>/g, '').trim(),
+    }));
+  }
+
+  const awaitingBatch = { ...augustSecondBatch, tasting: null };
+
+  it('leads with a filled Record another when the latest batch is tasted, then Next version as a text control (Test A)', () => {
+    const buttons = actButtons(renderVersionRow({ below724: true, batches: [augustSecondBatch] }));
+    expect(buttons.map((button) => button.label)).toEqual(['Record another', 'Next version']);
+    expect(buttons[0].attrs).toContain('class="notebook-action"');
+    expect(buttons[0].attrs).toContain('tabindex="0"');
+    expect(buttons[1].attrs).toContain('class="notebook-link"');
+    expect(actsGroup(renderVersionRow({ below724: true, batches: [augustSecondBatch] })).match(/class="notebook-action"/g)).toHaveLength(1);
+  });
+
+  it('leads with a filled Record a batch when the version has no batch (Test B)', () => {
+    const buttons = actButtons(renderVersionRow({ below724: true, batches: [] }));
+    expect(buttons.map((button) => button.label)).toEqual(['Record a batch', 'Next version']);
+    expect(buttons[0].attrs).toContain('class="notebook-action"');
+    expect(buttons[1].attrs).toContain('class="notebook-link"');
+  });
+
+  it('keeps Show changes last, as a text control, when the version has a parent (Test C)', () => {
+    const buttons = actButtons(
+      renderVersionRow({
+        below724: true,
+        version: childVersion,
+        versions: [oliveOilVersion, childVersion],
+        parentVersion: oliveOilVersion,
+        batches: [augustSecondBatch],
+      }),
+    );
+    expect(buttons.map((button) => button.label)).toEqual(['Record another', 'Next version', 'Show changes']);
+    expect(buttons[2].attrs).toContain('class="notebook-link"');
+  });
+
+  // Guard (passes before and after): from 724 up the band is as built.
+  it('from 724 up carries no record control and keeps Next version filled (Test D, guard)', () => {
+    for (const batches of [[], [augustSecondBatch], [awaitingBatch]]) {
+      for (const props of [{}, { below724: false }]) {
+        const buttons = actButtons(renderVersionRow({ ...props, batches }));
+        expect(buttons.map((button) => button.label)).toEqual(['Next version']);
+        expect(buttons[0].attrs).toContain('class="notebook-action"');
+      }
+    }
+  });
+
+  // Guard (passes before and after): while a pen is open the acts row is
+  // not rendered at all, so a second pen cannot open over the first.
+  it('renders no acts group and no record label while any pen is open (Test E, guard)', () => {
+    for (const openPen of ['record', 'amend', 'plan']) {
+      const markup = renderVersionRow({
+        below724: true,
+        openPen,
+        penDraft: emptyPenDraft(),
+        batches: [augustSecondBatch],
+      });
+      expect(markup).not.toContain('notebook-version__acts');
+      expect(markup).not.toMatch(/>Record (a batch|another|a tasting)</);
+    }
+  });
+});

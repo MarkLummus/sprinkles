@@ -6,8 +6,12 @@
 // a component of its own to render standalone under Vitest's node
 // environment.
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import {
   BELOW_DESKTOP_QUERY,
+  BELOW_724_QUERY,
+  useBelow724,
   useBelowDesktop,
   useFold,
   LOG_BESIDE_SHEET_QUERY,
@@ -38,5 +42,20 @@ describe('useBelowDesktop.js — the two below-desktop queries (03.5-05 Task 2, 
   // the contract that this hook exists and is exported.
   it('exports useFold as a function', () => {
     expect(typeof useFold).toBe('function');
+  });
+});
+
+// Quick task 261002-wmz: the 724 cut had one reader (BatchRow.jsx's local
+// hook); the band now reads it too, so it lives here and BatchRow imports it.
+describe('useBelowDesktop.js — the 724 rung (sketch 011 decisions 28 and 30, 261002-wmz)', () => {
+  it('exports BELOW_724_QUERY at the 723.98px rung and useBelow724 as a function (Test M)', () => {
+    expect(BELOW_724_QUERY).toBe('(max-width: 723.98px)');
+    expect(typeof useBelow724).toBe('function');
+  });
+
+  it('BatchRow.jsx imports the hook instead of declaring its own (Test M)', () => {
+    const batchRowSource = readFileSync(fileURLToPath(new URL('./BatchRow.jsx', import.meta.url)), 'utf8');
+    expect(batchRowSource).not.toMatch(/function useBelow724\b/);
+    expect(batchRowSource).toMatch(/import\s*\{[^}]*\buseBelow724\b[^}]*\}\s*from\s*'\.\/useBelowDesktop\.js'/);
   });
 });

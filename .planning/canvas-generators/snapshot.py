@@ -19,7 +19,8 @@ MAP = {'R35C_Batch': '1600-batch', 'R35C_NoBatch': '1600-no-batch', 'R35C_Pen': 
        'R35C_1366Sticky': '1366-sticky-nav', 'R35C_984Sticky': '984-sticky-nav',
        'R35C_PenApp350': '350-pen-app', 'R35C_PenApp393': '393-pen-app', 'R35C_PenAsBuilt350': '350-pen-as-built',
        'R35C_PenRange724': '724-pen-range', 'R35C_PenRange740': '740-pen-range', 'R35C_PenRange759': '759-pen-range',
-       'R35C_393PhoneLog': '393-phone-log', 'R35C_723PhoneLog': '723-phone-log'}
+       'R35C_393PhoneLog': '393-phone-log', 'R35C_723PhoneLog': '723-phone-log',
+       'R35C_393ShowChangesHead': '393-show-changes-head', 'R35C_723ShowChangesHead': '723-show-changes-head'}
 # The count boards (Mark, 2026-09-27) live in the sibling 011-options-counts folder of DEST, with the same two replacements.
 COUNTS = {'R35C_CountVersions': 'versions-1-vs-many', 'R35C_CountBatches01': 'batches-0-and-1', 'R35C_CountBatchesMany': 'batches-many',
           'R35C_CountBatchesMany393': 'batches-many-393', 'R35C_CountUpright393': 'upright-393'}

@@ -256,8 +256,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 - [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
 - [2026-09-17] [ui] An amendment announces the batch's original recording date, not the amendment — [todo file](.planning/todos/pending/2026-09-17-an-amendment-announces-its-original-recording-date.md)
-- [2026-09-17] [design] DESIGN.md's responsive ladder understates what the 600px step now moves — [todo file](.planning/todos/pending/2026-09-17-design-md-responsive-ladder-understates-the-600px-step.md)
-- [2026-09-22] [design] Board 170 — remove the 46px lined page-preview glyph from the lead block — [todo file](.planning/todos/pending/2026-09-22-board-170-drop-the-lead-page-preview-glyph.md)
 - [2026-09-22] [ui] Remove the Sprinkles home link from the recipe route — [todo file](.planning/todos/pending/2026-09-22-remove-the-sprinkles-home-link-from-the-recipe-route.md)
 - [2026-09-22] [design] Settle the App-context radius in DESIGN.md, then revisit the rail's active item — [todo file](.planning/todos/pending/2026-09-22-settle-app-context-radius-then-revisit-rail-active-item.md)
 - [2026-09-22] [ui] A shared Button component that always carries tabindex, so every button, checkbox and radio Tabs on iPadOS Safari … — [todo file](.planning/todos/pending/2026-09-22-shared-button-component-carries-tabindex-for-webkit.md)
@@ -269,7 +267,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-26] [design] Measure the record pen's own width limits, then re-derive its cut — [todo file](.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md)
 - [2026-09-27] [ui] Align the version section's Details link — [todo file](.planning/todos/pending/2026-09-27-align-the-version-details-link.md)
 - [2026-09-27] [ui] Recipe band buttons narrow on hover or click — [todo file](.planning/todos/pending/2026-09-27-band-buttons-narrow-on-hover-or-click.md)
-- [2026-09-27] [ui] Batch head controls on iPhone, and when the Batches control shows — [todo file](.planning/todos/pending/2026-09-27-batch-head-controls-on-iphone-and-the-batches-control.md)
 - [2026-09-27] [ui] Keep the side nav's options on screen while the page scrolls — [todo file](.planning/todos/pending/2026-09-27-sticky-side-nav.md)
 - [2026-09-27] [ui] Look into the Why row in the version details — [todo file](.planning/todos/pending/2026-09-27-why-row-in-version-details.md)
 

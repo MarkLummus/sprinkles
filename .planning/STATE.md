@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-03T01:50:56.005Z"
+last_updated: "2026-10-03T01:55:46.200Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: b5972d576c00977bb84046a3c244937f174a5dc2
+state_head: 3d9f9ce1d4143851f75a0ab478a9a80a9f712bca
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-02 - Completed quick task 261002-u9e: Rename "Continue developing" to "Keep developing"
+Last activity: 2026-10-02 - Completed quick task 261002-v2k: Paint the overscroll canvas white on every route
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -374,6 +374,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261002-axn | Stack the struck old figure above the new one in Show changes and the pen at phone width (sketch 011 decisions 24, 25); removed row prints one struck amount | 2026-10-02 | 35ada81 | [261002-axn-stack-the-struck-old-figure-above-the-ne](./quick/261002-axn-stack-the-struck-old-figure-above-the-ne/) |
 | 261002-sre | Next version pen's remove/restore link stands 14px clear of the name or estimated tag (sketch 011 decision 26) | 2026-10-03 | e2ae018 | [261002-sre-give-the-next-version-pen-s-remove-link-](./quick/261002-sre-give-the-next-version-pen-s-remove-link-/) |
 | 261002-u9e | Rename "Continue developing" to "Keep developing" in RecipeList.jsx and tests | 2026-10-03 | b5972d5 | [261002-u9e-rename-continue-developing-to-keep-devel](./quick/261002-u9e-rename-continue-developing-to-keep-devel/) |
+| 261002-v2k | Paint the overscroll canvas white on every route | 2026-10-03 | 3d9f9ce | [261002-v2k-paint-the-overscroll-canvas-white-on-ever](./quick/261002-v2k-paint-the-overscroll-canvas-white-on-ever/) |
 
 ### Roadmap Evolution
 

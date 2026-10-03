@@ -1,5 +1,6 @@
 import sys, os, re
 SP = sys.argv[1]; DEST = sys.argv[2]
+ONLY = sys.argv[3:]   # optional board keys: snapshot only these (the other generators need not have run)
 S = '.planning/sketches/011-recipe-route-c'
 ref = open(S + '/1600-batch.html').read()
 i = ref.index('<style>'); j = ref.index('</style>', i) + len('</style>')
@@ -20,7 +21,8 @@ MAP = {'R35C_Batch': '1600-batch', 'R35C_NoBatch': '1600-no-batch', 'R35C_Pen': 
        'R35C_PenApp350': '350-pen-app', 'R35C_PenApp393': '393-pen-app', 'R35C_PenAsBuilt350': '350-pen-as-built',
        'R35C_PenRange724': '724-pen-range', 'R35C_PenRange740': '740-pen-range', 'R35C_PenRange759': '759-pen-range',
        'R35C_393PhoneLog': '393-phone-log', 'R35C_723PhoneLog': '723-phone-log',
-       'R35C_393ShowChangesHead': '393-show-changes-head', 'R35C_723ShowChangesHead': '723-show-changes-head'}
+       'R35C_393ShowChangesHead': '393-show-changes-head', 'R35C_723ShowChangesHead': '723-show-changes-head',
+       'R35C_1366IngredientOptions': '1366-ingredient-options', 'R35C_1024IngredientOptions': '1024-ingredient-options'}
 # The count boards (Mark, 2026-09-27) live in the sibling 011-options-counts folder of DEST, with the same two replacements.
 COUNTS = {'R35C_CountVersions': 'versions-1-vs-many', 'R35C_CountBatches01': 'batches-0-and-1', 'R35C_CountBatchesMany': 'batches-many',
           'R35C_CountBatchesMany393': 'batches-many-393', 'R35C_CountUpright393': 'upright-393'}
@@ -37,9 +39,9 @@ os.makedirs(DEST, exist_ok=True)
 os.makedirs(COUNTS_DEST, exist_ok=True)
 os.makedirs(SC_DEST, exist_ok=True)
 for k, out in MAP.items():
-    snap(k, DEST, out)
+    if not ONLY or k in ONLY: snap(k, DEST, out)
 for k, out in COUNTS.items():
-    snap(k, COUNTS_DEST, out)
+    if not ONLY or k in ONLY: snap(k, COUNTS_DEST, out)
 for k, out in SC_OPTIONS.items():
-    snap(k, SC_DEST, out)
+    if not ONLY or k in ONLY: snap(k, SC_DEST, out)
 print('ok')

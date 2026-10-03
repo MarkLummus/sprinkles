@@ -890,3 +890,27 @@ describe('the space below the tasting note (sketch 007 lines 34 and 96; quick ta
     expect(resolveTokenPx(tokens, '--gap-s')).toBe(12);
   });
 });
+
+describe('the Ingredients heading row that carries Show changes below 724 (261002-wn1; boards 393-show-changes-head.html and 723-show-changes-head.html)', () => {
+  test('the board\'s three head rules sit at the top level, and no non-print media block names the head', () => {
+    const head = ruleFor('.ingredient-table-region__head');
+    expect(head, 'expected a top-level .ingredient-table-region__head rule').toBeTruthy();
+    expect(head.declarations).toMatch(/display:\s*flex/);
+    expect(head.declarations).toMatch(/align-items:\s*center/);
+    expect(head.declarations).toMatch(/justify-content:\s*space-between/);
+    expect(head.declarations).toMatch(/gap:\s*var\(--gap-s\)/);
+    expect(head.declarations).toMatch(/margin:\s*0 0 var\(--gap-xs\)/);
+
+    const name = ruleFor('.ingredient-table-region__head .region-name');
+    expect(name, 'expected the head\'s .region-name rule').toBeTruthy();
+    expect(name.declarations).toMatch(/margin:\s*0\s*;/);
+
+    const control = ruleFor('.ingredient-table-region__head .text-control');
+    expect(control, 'expected the head\'s .text-control rule').toBeTruthy();
+    expect(control.declarations).toMatch(/flex:\s*none/);
+    expect(control.declarations).toMatch(/font-weight:\s*400/);
+
+    const inMedia = rules.filter((r) => r.media !== undefined && r.media !== 'print' && r.selector.includes('ingredient-table-region__head'));
+    expect(inMedia).toEqual([]);
+  });
+});

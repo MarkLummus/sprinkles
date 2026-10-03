@@ -5,7 +5,8 @@
 // so no router context is needed.
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { IngredientTable } from './IngredientTable.jsx';
+import { Children } from 'react';
+import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 
@@ -1376,5 +1377,57 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     expect(markup).toContain('Step 1<span class="ingredient-table__step-head-lead">One</span>');
     expect(markup).toContain('Step 2<span class="ingredient-table__step-head-lead">Two</span>');
     expect(markup).not.toContain('Unallocated');
+  });
+});
+
+// Quick task 261002-wn1: below 724 Show changes sits on the Ingredients
+// heading row (sketch 011 decision 30 addendum, option 3; boards
+// 393-show-changes-head.html and 723-show-changes-head.html). The component is
+// hook-free and takes the width signal as a boolean, so both placements render
+// here with no matchMedia.
+describe('IngredientsHead — the Ingredients heading, with Show changes below 724 (261002-wn1)', () => {
+  const PLAIN = '<h2 class="region-name">Ingredients</h2>';
+  const headWith = (label) =>
+    `<div class="ingredient-table-region__head"><h2 class="region-name">Ingredients</h2><button type="button" class="text-control" tabindex="0">${label}</button></div>`;
+  const props = (overrides = {}) => ({
+    parentVersion: { id: 'p' },
+    openPen: null,
+    below724: true,
+    showingChanges: false,
+    onToggleShowChanges: () => {},
+    ...overrides,
+  });
+  const render = (overrides) => renderToStaticMarkup(<IngredientsHead {...props(overrides)} />);
+
+  it('renders the board\'s head row byte for byte with Show changes (Test A)', () => {
+    expect(render()).toBe(headWith('Show changes'));
+  });
+
+  it('reads Hide changes while changes are shown, and carries no aria-pressed (Test B)', () => {
+    const markup = render({ showingChanges: true });
+    expect(markup).toBe(headWith('Hide changes'));
+    expect(markup).not.toContain('aria-pressed');
+  });
+
+  it('is the plain Ingredients heading for a first version (Test C)', () => {
+    expect(render({ parentVersion: null })).toBe(PLAIN);
+  });
+
+  it('is the plain Ingredients heading while any pen is open (Test D)', () => {
+    for (const openPen of ['plan', 'record', 'amend']) {
+      expect(render({ openPen })).toBe(PLAIN);
+    }
+  });
+
+  it('is the plain Ingredients heading from 724 up, in both states (Test E)', () => {
+    expect(render({ below724: false })).toBe(PLAIN);
+    expect(render({ below724: false, showingChanges: true })).toBe(PLAIN);
+  });
+
+  it('hands its button the very handler it was given (Test F)', () => {
+    const onToggleShowChanges = () => {};
+    const element = IngredientsHead(props({ onToggleShowChanges }));
+    const button = Children.toArray(element.props.children).find((child) => child.type === 'button');
+    expect(button.props.onClick).toBe(onToggleShowChanges);
   });
 });

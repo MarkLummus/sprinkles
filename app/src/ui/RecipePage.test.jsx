@@ -1078,3 +1078,24 @@ describe('RecipePage.jsx — the band\'s record act is wired to the log\'s own h
     expect(raw).not.toContain('handleRecordTasting');
   });
 });
+
+// Quick task 261002-wn1: both Show changes placements share the one handler
+// and the one `changes` search parameter; the Ingredients heading is the head
+// component. Read as text with comments stripped.
+describe('RecipePage.jsx — the Ingredients heading carries Show changes below 724 through the one handler (261002-wn1)', () => {
+  const source = readFileSync(fileURLToPath(new URL('./RecipePage.jsx', import.meta.url)), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
+
+  it('has one handleToggleShowChanges, handed to both VersionRow and IngredientsHead, and IngredientsHead sits in the Ingredients section (Test I)', () => {
+    expect(source.match(/function handleToggleShowChanges\(/g)).toHaveLength(1);
+    expect(source.match(/onToggleShowChanges=\{handleToggleShowChanges\}/g)).toHaveLength(2);
+    expect(source.match(/<IngredientsHead/g)).toHaveLength(1);
+    const open = source.indexOf('<section className="ingredient-table-region"');
+    const head = source.indexOf('<IngredientsHead');
+    const close = source.indexOf('</section>', open);
+    expect(open).toBeGreaterThan(-1);
+    expect(head).toBeGreaterThan(open);
+    expect(head).toBeLessThan(close);
+  });
+});

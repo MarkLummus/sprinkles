@@ -800,3 +800,24 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
     }
   });
 });
+
+// Quick task 261002-wn1: below 724 the band's Show changes moves to the
+// Ingredients heading row (IngredientsHead); from 724 up it stays here.
+describe('VersionRow — the band\'s Show changes is gated off below 724 (261002-wn1)', () => {
+  const withParent = { version: childVersion, parentVersion: oliveOilVersion };
+
+  it('renders neither Show changes nor Hide changes below 724, and still renders Next version (Test G)', () => {
+    for (const showingChanges of [false, true]) {
+      const markup = renderVersionRow({ ...withParent, below724: true, showingChanges });
+      expect(markup).not.toContain('Show changes');
+      expect(markup).not.toContain('Hide changes');
+      expect(markup).toContain('Next version');
+    }
+  });
+
+  it('is byte-identical with the prop false as omitted, and keeps the band\'s Show changes (Test H, guard)', () => {
+    const omitted = renderVersionRow(withParent);
+    expect(renderVersionRow({ ...withParent, below724: false })).toBe(omitted);
+    expect(omitted).toContain('Show changes');
+  });
+});

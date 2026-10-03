@@ -99,12 +99,16 @@ def drop_hidden(html):
         html = html[:i] + html[j:]
 CAP = {k: drop_hidden(v) for k, v in CAP.items()}
 OPT = open(HERE + '/ingredient-options.css').read()
-FORM_A = OPT.split('/* === A === */')[1].split('/* === C === */')[0]
-FORM_C = OPT.split('/* === C === */')[1]
+def sec(name):
+    m = re.search(r'/\* === ' + name + r' ===[^*]*\*/([\s\S]*?)(?=/\* === |$)', OPT)
+    assert m, name
+    return m.group(1)
+FORM_A, FORM_C = sec('A'), sec('C')
+FORM_D1, FORM_D1B, FORM_D2 = sec('D') + sec('D1'), sec('D') + sec('D1') + sec('D1b'), sec('D') + sec('D2')       # D1 and D2 share the grid and differ in where two figures sit
 _i = APPC.index('.ingredient-table thead {')
 _j = APPC.index('\n}\n', APPC.index('.ingredient-table td.ingredient-table__col-grams > .struck-value'))
 FORM_B = APPC[_i:_j]            # the app's own phone list form (decision 15), without its media wrapper
-FORMS = {'today': '', 'A': FORM_A, 'B': FORM_B, 'C': FORM_C}
+FORMS = {'today': '', 'A': FORM_A, 'B': FORM_B, 'C': FORM_C, 'D1': FORM_D1, 'D1b': FORM_D1B, 'D2': FORM_D2}
 
 LABEL_CSS = '''
 .io-title{font-family:var(--face-grotesk);color:var(--app-text);font-size:18px;line-height:24px;font-weight:600;margin:0}
@@ -170,10 +174,54 @@ def olive_text(W):
     t['B'] = ('B · the phone list form', f"Name column {wk_ch(W, ST_OLIVE, 'B', 'nameMin')}. Table {wk_ch(W, ST_OLIVE, 'B', 'tableH')} tall, {round(m('webkit', W, ST_OLIVE, 'B')['tableH'] - m('webkit', W, ST_OLIVE, 'today')['tableH'])}px more.")
     t['C'] = ('C · the middle form', f"Name column {wk_ch(W, ST_OLIVE, 'C', 'nameMin')}. Table {wk_ch(W, ST_OLIVE, 'C', 'tableH')} tall, {round(m('webkit', W, ST_OLIVE, 'C')['tableH'] - m('webkit', W, ST_OLIVE, 'today')['tableH'])}px more.")
     return t
-TEXT = {str(W): {'mex': mex_text(W), 'olive': olive_text(W)} for W in (1366, 1024)}
+# Option D (decision 31, 2026-10-03): ingredientopts-d-measure.json, the same kind of measurement across every state the table has.
+DM = json.load(open(HERE + '/ingredientopts-d-measure.json'))
+def dm(engine, W, state, form):
+    return next(r for r in DM if r['engine'] == engine and r['width'] == W and r['state'] == state and r['form'] == form)
+def dwk(W, state, form, key):
+    return f"{round(dm('webkit', W, state, form)[key])}px (Chrome {round(dm('chrome', W, state, form)[key])})"
+def dwraps(W, state, form):
+    a, c = dm('webkit', W, state, form), dm('chrome', W, state, form)
+    def one(r):
+        n = len(r['wrapped'])
+        return 'no name wraps' if r['maxRows'] == 1 else f"{n} name{'s' if n != 1 else ''} wrap, the longest to {r['maxRows']} rows"
+    return one(a) + ('' if one(a) == one(c) else f' (Chrome: {one(c)})')
+S_BOTH, S_PEN, S_OLIVE, S_REC = 'As made + Show changes', 'pen, amounts changed', 'As made (Olive Oil v1, real figures)', 'recording (Olive Oil v1)'
+def d_text(W, state, form, extra=''):
+    if form == 'D1':
+        return ('D1 · the struck figure left of the plan amount, As made below it',
+                f"Name column {dwk(W, state, 'D1', 'nameMin')}, {dwraps(W, state, 'D1')}. The struck figure stays on the plan amount's line, to its left, as the table draws it today (in the share too); As made stands under the plan amount on its right edge, as on the phone. "
+                f"Table {dwk(W, state, 'D1', 'tableH')} tall. {extra}")
+    if form == 'D1b':
+        return ('D1b · as D1, the share\'s struck figure above the current one',
+                f"Name column {dwk(W, state, 'D1b', 'nameMin')}, {dwraps(W, state, 'D1b')}. The amount is D1's (struck left, As made below); the share keeps decision 24's stack, so it stays one figure wide. The struck figure is then left in one column and above in the other. "
+                f"Table {dwk(W, state, 'D1b', 'tableH')} tall. {extra}")
+    return ('D2 · the struck figure above the plan amount, As made left of it',
+            f"Name column {dwk(W, state, 'D2', 'nameMin')}, {dwraps(W, state, 'D2')}. The struck figure stands above the plan amount in the amount and the share (decisions 24 and 25, as the phone); As made has its own track left of the plan amount, under its own head. "
+            f"Table {dwk(W, state, 'D2', 'tableH')} tall. {extra}")
+def row_text(W, state, label_today):
+    t = {'today': (label_today, f"Name column {dwk(W, state, 'today', 'nameMin')}, {dwraps(W, state, 'today')}. Table {dwk(W, state, 'today', 'tableH')} tall."),
+         'C': ('C · the middle form', f"Name column {dwk(W, state, 'C', 'nameMin')}, {dwraps(W, state, 'C')}. Table {dwk(W, state, 'C', 'tableH')} tall."),
+         'D1': d_text(W, state, 'D1'), 'D1b': d_text(W, state, 'D1b'), 'D2': d_text(W, state, 'D2')}
+    return t
+def olive_d(W):
+    t = olive_text(W)
+    t['D1'] = ('D1 · the struck figure left, As made below', f"Name column {dwk(W, S_OLIVE, 'D1', 'nameMin')}, {dwraps(W, S_OLIVE, 'D1')}. Table {dwk(W, S_OLIVE, 'D1', 'tableH')} tall. Nothing is struck here, so D1 reads as C with As made under the amount.")
+    t['D2'] = ('D2 · the struck figure above, As made left', f"Name column {dwk(W, S_OLIVE, 'D2', 'nameMin')}, {dwraps(W, S_OLIVE, 'D2')}. Table {dwk(W, S_OLIVE, 'D2', 'tableH')} tall. As made stands in its own track left of the plan amount, under its head.")
+    t['D1b'] = ('D1b · as D1, the share\'s struck figure above', f"Name column {dwk(W, S_OLIVE, 'D1b', 'nameMin')}, {dwraps(W, S_OLIVE, 'D1b')}. Table {dwk(W, S_OLIVE, 'D1b', 'tableH')} tall. Nothing is struck here, so D1b is D1.")
+    return t
+def mex_d(W):
+    t = mex_text(W)
+    t['D1'] = d_text(W, S_BOTH, 'D1')
+    t['D1b'] = d_text(W, S_BOTH, 'D1b')
+    t['D2'] = d_text(W, S_BOTH, 'D2')
+    return t
+TEXT = {str(W): {'mex': mex_d(W), 'olive': olive_d(W),
+                 'pen': row_text(W, S_PEN, 'Today · the pen open from Next version, Mexican Chocolate v3, three amounts changed'),
+                 'rec': row_text(W, S_REC, 'Today · the recording pen (Record another), Olive Oil v1, four As made figures typed')} for W in (1366, 1024)}
 TEXT['note'] = ("Mark checked the app on his iPad on 2026-10-03. At 1366 landscape, with As made in a column and Show changes on, the ingredient name wraps to 3 rows in some cases; at 1024 portrait he likes the phone's stacking better because it keeps the name from wrapping so much. "
-  "Each board is one window width: the top row is Mexican Chocolate v3 with Show changes on and a batch in view (the seeded batch has no As made figures, so the figures in that column are constructed, two rows left blank); the bottom row is Olive Oil v1 with its real As made figures. "
-  "Today beside A (stack only the changed figure, As made stays a column), B (the phone's list form) and C (a middle form that keeps the table's head and rules and stacks As made and the changed figure under the plan amount). "
+  "Each board is one window width. Row 1: Mexican Chocolate v3 with Show changes on and a batch in view (the seeded batch has no As made figures, so the figures in that column are constructed, two rows left blank). Row 2: Olive Oil v1 with its real As made figures. Row 3: the pen open from Next version on Mexican Chocolate v3, three amounts changed. Row 4: the recording pen (Record another) on Olive Oil v1, four As made figures typed. "
+  "Today beside A (stack only the changed figure, As made stays a column), B (the phone's list form), C (a middle form that keeps the table's head and rules and stacks As made and the changed figure under the plan amount), and, added the same day after Mark asked for one more: D1 and D2, which stack one figure and place one to the left, so the plan amount, the struck figure and As made keep one place relative to each other in every state, the pen's field where the plan amount sits. "
   "Every Sheet is the built app's own markup, the app's own stylesheets, one form's rules added per panel. The table is the same on a mouse and on touch. Nothing here is approved.")
 
 def panel_css(W, vid, form):
@@ -183,34 +231,38 @@ def panel_css(W, vid, form):
 def board_for(W):
     css_parts = [resolve_media(TOK, W, True), LABEL_CSS]
     S = SHEET_W[W]
-    rows = [('mex', 'show', ('today', 'A', 'B', 'C')), ('olive', 'plain', ('today', 'B', 'C'))]
-    # row 2 leaves the A slot for a note: with nothing struck, A draws what the app draws today
-    cols = {'today': 0, 'A': 1, 'B': 2, 'C': 3}
+    # rows: key, capture, forms drawn. Columns are fixed by form, so a form sits in one column on every row.
+    rows = [('mex', f'mex3_{W}_show', ('today', 'A', 'B', 'C', 'D1', 'D1b', 'D2')),
+            ('olive', f'olive1_{W}_plain', ('today', 'B', 'C', 'D1', 'D1b', 'D2')),
+            ('pen', f'mex3pen_{W}', ('today', 'C', 'D1', 'D1b', 'D2')),
+            ('rec', f'olive1rec_{W}', ('today', 'C', 'D1', 'D1b', 'D2'))]
+    cols = {'today': 0, 'A': 1, 'B': 2, 'C': 3, 'D1': 4, 'D1b': 5, 'D2': 6}
+    notes = {'olive': {'A': TEXT[str(W)]['olive']['A']},
+             'pen': {'A': ('A and B · not drawn in this state', 'The pen shows its struck parent before the field in the table form; the stacking forms are drawn in C, D1 and D2.')},
+             'rec': {'A': ('A and B · not drawn in this state', 'The recording pen puts the As made field in the As made column; the stacking forms are drawn in C, D1 and D2.')}}
     body = ''; y = GAP
-    for rkey, state, forms in rows:
+    for rkey, capkey, forms in rows:
         h = HEIGHTS.get(str(W), {}).get(rkey, 1400)
         for form in forms:
             vid = f'io-{rkey}-{form}'
             css_parts.append(panel_css(W, vid, form))
-            capkey = (f'mex3_{W}_show' if rkey == 'mex' else f'olive1_{W}_plain')
             html = unique_ids(CAP[capkey], vid)
             title, sub = TEXT[str(W)][rkey][form]
             x = GAP + cols[form] * (S + GAP)
             body += (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{S}px;">'
                      f'<div style="height:{CAP_H}px;"><p class="io-title">{title}</p><p class="io-sub">{sub}</p></div>'
                      f'<div class="io-win {vid}" style="width:{S}px;height:{h}px;"><div class="notebook" style="width:{S}px;max-width:none;padding:0;margin:0;display:block;">{html}</div></div></div>\n')
-        if rkey == 'olive':
-            x = GAP + cols['A'] * (S + GAP)
-            body += (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{S}px;"><p class="io-title">{TEXT[str(W)]["olive"]["A"][0]}</p>'
-                     f'<p class="io-sub">{TEXT[str(W)]["olive"]["A"][1]}</p></div>\n')
+        for slot, (ttl, sub) in notes.get(rkey, {}).items():
+            x = GAP + cols[slot] * (S + GAP)
+            body += f'<div style="position:absolute;left:{x}px;top:{y}px;width:{S}px;"><p class="io-title">{ttl}</p><p class="io-sub">{sub}</p></div>\n'
         y += CAP_H + 8 + h + GAP
-    bw, bh = GAP + 4 * (S + GAP), y
+    bw, bh = GAP + 7 * (S + GAP), y
     main = f'<div style="position:relative;width:{bw}px;height:{bh}px;background:#ffffff;">{body}</div>'
     return bw, bh, main, ''.join(css_parts) + '[hidden]{display:none !important}'
 
 TITLES = {
-  1366: 'C · 1366 · iPad landscape · the ingredient table with As made and Show changes · today beside three forms (drawn 2026-10-03, decision 31, awaiting Mark\'s look)',
-  1024: 'C · 1024 · iPad portrait · the ingredient table with As made and Show changes · today beside three forms (drawn 2026-10-03, decision 31, awaiting Mark\'s look)',
+  1366: 'C · 1366 · iPad landscape · the ingredient table with As made and Show changes · today beside five forms (drawn 2026-10-03, decision 31, awaiting Mark\'s look)',
+  1024: 'C · 1024 · iPad portrait · the ingredient table with As made and Show changes · today beside five forms (drawn 2026-10-03, decision 31, awaiting Mark\'s look)',
 }
 ENTRIES = {}; X = 0; Y4 = 54000
 for W in (1366, 1024):
@@ -225,7 +277,7 @@ for W in (1366, 1024):
     ENTRIES[fn] = dict(x=X, y=Y4, w=bw, h=bh, page='page-13', title=TITLES[W])
     X += bw + 160
 NOTES = {
-  'r35-ingopt-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': Y4 - 240, 'maxW': X - 160, 'text': 'The ingredient table at 1366 and 1024: As made and the changed figure stacked under the plan amount (drawn 2026-10-03, decision 31, awaiting Mark\'s look)'},
+  'r35-ingopt-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': Y4 - 240, 'maxW': X - 160, 'text': 'The ingredient table at 1366 and 1024: As made and the changed figure under or beside the plan amount, five forms (drawn 2026-10-03, decision 31, awaiting Mark\'s look)'},
   'r35-ingopt-note': {'fill': 'gray', 'page': 'page-13', 'x': X, 'y': Y4, 'w': 400, 'text': TEXT['note']},
 }
 json.dump({'boards': ENTRIES, 'notes': NOTES}, open(OUT + '/ingredientopts-canvas-entries.json', 'w'), indent=2)

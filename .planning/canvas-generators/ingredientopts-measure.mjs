@@ -10,8 +10,9 @@ import { startServers, launch } from '../phases/03.5-separate-the-recipe-from-th
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const optcss = await readFile(path.join(HERE, 'ingredient-options.css'), 'utf8');
-const A = optcss.split('/* === A === */')[1].split('/* === C === */')[0];
-const C = optcss.split('/* === C === */')[1];
+const sec = (name) => { const r = optcss.match(new RegExp('/\\* === ' + name + ' ===[^*]*\\*/([\\s\\S]*?)(?=/\\* === |$)')); if (!r) throw new Error('no section ' + name); return r[1]; };
+const A = sec('A');
+const C = sec('C');
 const appcss = await readFile(path.join(HERE, '../../app/src/styles/app.css'), 'utf8');
 const blockStart = appcss.indexOf('.ingredient-table thead {');
 const blockEnd = appcss.indexOf('\n}\n', appcss.indexOf('.ingredient-table td.ingredient-table__col-grams > .struck-value'));

@@ -52,6 +52,21 @@ for (const width of [1366, 1024]) {
   await page.getByRole('button', { name: 'Hide changes' }).first().waitFor();
   await construct(AS_MADE);
   out[`mex3_${width}_show`] = await grab();
+  // option D (2026-10-03): the pen (Next version open on Mexican Chocolate v3, three amounts changed) and the recording pen (Record another
+  // on Olive Oil v1, four As made figures typed), so the figures' places can be compared across states
+  await page.goto(servers.appUrl + MEX3, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.ingredient-table');
+  await page.getByRole('button', { name: 'Next version' }).first().click();
+  await page.getByLabel('Salt, grams', { exact: true }).waitFor();
+  for (const [label, v] of [['Whole Milk 3.3%', '540'], ['Sucrose', '44'], ['Cocoa Powder', '18']]) await page.getByLabel(label + ', grams', { exact: true }).fill(v);
+  out[`mex3pen_${width}`] = await grab();
+  await page.goto(servers.appUrl + OLIVE1, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.ingredient-table');
+  await page.getByRole('button', { name: /^Record (another|a batch)$/ }).first().click();
+  await page.waitForSelector('.ingredient-table__as-made-field');
+  const fields = page.locator('.ingredient-table__as-made-field');
+  for (const [i, v] of [[0, '118'], [1, '12'], [3, '0.5'], [5, '248']]) await fields.nth(i).fill(v);
+  out[`olive1rec_${width}`] = await grab();
   await ctx.close();
 }
 await browser.close();

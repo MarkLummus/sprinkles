@@ -2023,7 +2023,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
       <div className="notebook-body">
         <div className="notebook-body__sheet">
-          <article className="recipe-page" aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
+          <article className={methodRegionShown ? 'recipe-page' : 'recipe-page recipe-page--no-method'} aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
             <div className="recipe-band">
               <Headnote
                 version={version}

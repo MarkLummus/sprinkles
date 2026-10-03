@@ -434,6 +434,18 @@ textarea {
   background: var(--sheet-ground);
 }
 
+/* An explicit grid row with no item still keeps its gutters, so leaving the
+   Instructions section out alone kept one extra row gap (261003-9bz: 20px
+   measured at 393). This modifier drops the method row. Both modifier rules
+   and their .recipe-page rules are (0,1,0), so source order decides: this
+   one follows the base rule. */
+.recipe-page--no-method {
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'foot foot';
+}
+
 /* The front matter (sketch 003 variant B, 03.3-01): two full-width
    stacked rows — the version's row, then the batch's row — closed by a
    baseline-weight rule above Ingredients. Each row keeps its own internal
@@ -2322,6 +2334,16 @@ textarea {
       'ingredients'
       'side'
       'method'
+      'foot';
+  }
+
+  /* The narrow form of the modifier above: same cause, same drop. It must
+     follow the media-scoped .recipe-page rule, which sets the narrow areas. */
+  .recipe-page--no-method {
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
       'foot';
   }
 }

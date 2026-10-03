@@ -1333,6 +1333,18 @@ export function RecipePage({ onPageStatus = () => {} }) {
     setMode('recording');
   }
 
+  // SEAM(261002-wn0): the recipe band's Record a tasting (sketch 011
+  // decision 30, answer 1; below 724, VersionRow.jsx) calls this function.
+  // For now it opens the amend pen on the latest batch by the log's own
+  // Correct path, with Add tasting one tap inside the pen. 261002-wn0
+  // replaces only this body with the amend pen opened with the tasting step
+  // already open and no Correct. The return path stays BatchRow's (Cancel
+  // focuses the log's Correct). The latest batch is the one standingFor
+  // read for the band's label, so the label and the act name the same batch.
+  function handleRecordTasting() {
+    handleStartAmending(sortedBatches(batches)[0]);
+  }
+
   // Add tasting (D-01, contract "Focus landings"): opens the tasting
   // section and moves focus to the Tasted date — the section opening and
   // the focus landing are themselves the evidence (contract "Feedback and
@@ -1929,6 +1941,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             foldsOpen={!belowDesktop}
             below724={below724}
             onStartRecording={handleStartRecording}
+            onRecordTasting={handleRecordTasting}
           />
 
           <GoToBatch batches={batches} onGo={handleGoToBatch} />

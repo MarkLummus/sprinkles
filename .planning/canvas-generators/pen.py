@@ -141,11 +141,19 @@ def scope_css(css, scope):
         out.append(', '.join(new) + '{' + css[k + 1:m - 1] + '}\n'); i = m
     return ''.join(out)
 
-# The cut at 724: the pen's width literals, moved the way decision 28 proposes. Asserted exactly once each, so this generator
-# fails (instead of drawing a wrong "cut") the day the app itself changes them.
+# The cut at 724 is in the app (decision 28, approved by Mark 2026-10-02 and applied: the pen's width-only block and its wide-touch block
+# both read 724). The two panels are built from the app as it stands: "cut at 724" is the app's stylesheet unchanged, and "today, cut at
+# 760" moves those two literals back to 760, so the board still shows what the app did before the cut. Each literal is asserted exactly once,
+# so this generator fails (instead of drawing a wrong panel) the day the app itself changes them. (Until 2026-10-03 this asserted the old
+# 760 literals and moved them to 724, which failed once the app moved them.)
+PEN_CUT = (('@media (max-width: 723.98px) {\n  .axis-mark__stops,', '@media (max-width: 759.98px) {\n  .axis-mark__stops,'),
+           ('@media (min-width: 724px) and (pointer: coarse) {', '@media (min-width: 760px) and (pointer: coarse) {'))
 def _cut724(app_css):
-    for a, b in (('@media (max-width: 759.98px) {', '@media (max-width: 723.98px) {'),
-                 ('@media (min-width: 760px) and (pointer: coarse) {', '@media (min-width: 724px) and (pointer: coarse) {')):
+    for a, _ in PEN_CUT:
+        assert app_css.count(a) == 1, a
+    return app_css
+def _cut760(app_css):
+    for a, b in PEN_CUT:
         assert app_css.count(a) == 1, a
         app_css = app_css.replace(a, b)
     return app_css
@@ -170,7 +178,7 @@ def unique_ids(html, vid):
 
 def range_board(W):
     css_parts = [resolve_media(TOK, W, False), LABEL_CSS]; panels = {}
-    variants = [('today', 'Today, cut at 760', 'Stacked: 216 track, 44 x 44 stops', APPC),
+    variants = [('today', 'Today, cut at 760', 'Stacked: 216 track, 44 x 44 stops', _cut760(APPC)),
                 ('cut724', 'Cut at 724', 'Three columns: 186 track, 38 x 32 stops (38 x 44 on touch)', _cut724(APPC))]
     for coarse in (False, True):
         for key, head, sub, app_css in variants:

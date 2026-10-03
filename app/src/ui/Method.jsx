@@ -521,6 +521,18 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
   );
 }
 
+// Whether the Instructions section renders at all (261003-9bz; Mark,
+// 2026-10-03, option 1: hide the whole section rather than show a heading over
+// nothing). It renders when there is at least one step or one "Before you
+// start" note. Recording and Show changes need no exception: their only
+// controls and marks (the strike, the line, the changed-line mark, the removed
+// strike) hang on a step, so a method with no step has none to lose. The pen
+// keeps the empty section, as asked, although it has no add-step or add-note
+// control today.
+export function showsMethodRegion({ mode, steps, beforeYouStart }) {
+  return mode === 'developing' || steps.length > 0 || beforeYouStart.length > 0;
+}
+
 // The numbered method, in the sheet's order. The step number sits in a
 // fixed margin column so a Phase 2 batch record can point at exactly one
 // step, and so the numbers stay put as prose reflows. Purpose (why the step

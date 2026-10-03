@@ -22,7 +22,7 @@ import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { notebookPath } from './notebookPaths.js';
 import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
-import { Method } from './Method.jsx';
+import { Method, showsMethodRegion } from './Method.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchRow } from './BatchRow.jsx';
@@ -1961,6 +1961,12 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // the recipe's own sorted versions.
   const versionName = versionIdentity(sortedVersions(versionsForRecipe(versions, version.recipeId)), version);
 
+  // The two values Method receives, held once so the guard below and the
+  // component never read different ones (261003-9bz).
+  const methodSteps = mode === 'developing' || showingChanges ? version.method : readingVersion.method;
+  const methodNotes = mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart;
+  const methodRegionShown = showsMethodRegion({ mode, steps: methodSteps, beforeYouStart: methodNotes });
+
   return (
     <div className="notebook">
       <header className="notebook-band">
@@ -2062,33 +2068,36 @@ export function RecipePage({ onPageStatus = () => {} }) {
               )}
             </section>
 
-            <section className="method-region" aria-label="Instructions">
-              <Method
-                steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
-                stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
-                mode={mode}
-                onChangeStepChange={handleChangeStepChange}
-                rows={version.rows}
-                draftVersion={draftVersion}
-                baselineVersion={version}
-                penDiff={penDiff}
-                penStaleSteps={penStaleSteps}
-                showingChanges={showingChanges}
-                changeDiff={changeDiff}
-                staleSteps={changeStaleSteps}
-                staleFlagVisible={mode === 'developing' || showingChanges}
-                currentStepNumbers={currentStepNumbers}
-                baselineStepNumbers={baselineStepNumbers}
-                onChangePenStepField={handleChangePenStepField}
-                onChangePenStepTarget={handleChangePenStepTarget}
-                onTogglePenStepUses={handleTogglePenStepUses}
-                onTogglePenStepRemoved={handleTogglePenStepRemoved}
-                onRestorePenStep={handleRestorePenStep}
-                beforeYouStart={mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart}
-                onChangeNoteText={handleChangePenNoteText}
-                onRemoveNote={handleRemovePenNote}
-              />
-            </section>
+            {/* No Instructions section when there is nothing to show (261003-9bz). */}
+            {methodRegionShown && (
+              <section className="method-region" aria-label="Instructions">
+                <Method
+                  steps={methodSteps}
+                  stepChanges={mode === 'recording' ? draft.stepChanges : evidenceBatch ? evidenceBatch.churn.stepChanges : {}}
+                  mode={mode}
+                  onChangeStepChange={handleChangeStepChange}
+                  rows={version.rows}
+                  draftVersion={draftVersion}
+                  baselineVersion={version}
+                  penDiff={penDiff}
+                  penStaleSteps={penStaleSteps}
+                  showingChanges={showingChanges}
+                  changeDiff={changeDiff}
+                  staleSteps={changeStaleSteps}
+                  staleFlagVisible={mode === 'developing' || showingChanges}
+                  currentStepNumbers={currentStepNumbers}
+                  baselineStepNumbers={baselineStepNumbers}
+                  onChangePenStepField={handleChangePenStepField}
+                  onChangePenStepTarget={handleChangePenStepTarget}
+                  onTogglePenStepUses={handleTogglePenStepUses}
+                  onTogglePenStepRemoved={handleTogglePenStepRemoved}
+                  onRestorePenStep={handleRestorePenStep}
+                  beforeYouStart={methodNotes}
+                  onChangeNoteText={handleChangePenNoteText}
+                  onRemoveNote={handleRemovePenNote}
+                />
+              </section>
+            )}
 
             {/* Column two, what the sheet does not print: the formulation
                 note beside the table, then the margin beneath it. One

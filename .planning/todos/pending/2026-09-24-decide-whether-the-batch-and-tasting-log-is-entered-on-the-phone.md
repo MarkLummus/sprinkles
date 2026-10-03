@@ -84,3 +84,7 @@ Mark decides. This is my case for C, not a decision.
 - Mark says he will only type at the desk: A, and fix only the filled action.
 - Mark wants to log with the machine running: B, with persistence first.
 - Typing in the pen on the device is poor (keyboard covers fields), or ink is lost to reloads: back to A until fixed.
+
+## Decision — 2026-10-02
+
+Mark chose **option C** ("phone logging option C"): the phone transcribes any time, with the same pen as the desk, typed from the paper sheet or its photo. A "Batch" jump in the band, and below 724 the filled action is Record a batch (or Record another) with Next version as a text control. Not live-at-the-machine logging (B), no timers, no photo capture, no new fields, the log does not move above the Sheet, and the phone still does not formulate (see "What C does not commit us to" above). Follow-ups: drop "Desktop only" from `.impeccable/surfaces/route-recipe-batch.md` (sections 1, 4, 7) and the phone line in `route-recipe.md`; draw the 393 and 723 batch boards with the jump and the filled action; then the app change; the phone brief (todo 2026-09-24-write-a-product-brief-for-phone-based-jobs) takes this as settled input.

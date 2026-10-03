@@ -673,6 +673,11 @@ export function BatchRow({
             <div className="field-row">
               <label className="field-row__label field-row__label--date">
                 <span className="pen-caption">Churn date</span>
+                {/* 261003-by3, .planning/debug/ios-tasting-date-picker.md: the
+                    Record a tasting open already targets the Tasted date
+                    (addTastingAttempt is a number only for that opener), and a
+                    second date focus in the same tap tears down iOS's calendar.
+                    Correct and Record another keep this mount focus. */}
                 <input
                   type="date"
                   className="ink-field"
@@ -680,7 +685,7 @@ export function BatchRow({
                   aria-required="true"
                   aria-invalid={blockedDateMessage ? 'true' : undefined}
                   aria-describedby={blockedDateMessage ? CHURN_DATE_ERROR_ID : undefined}
-                  autoFocus
+                  autoFocus={addTastingAttempt == null}
                   ref={churnDateRef}
                   value={draft.churnDate}
                   onChange={(event) => onChangeRecordField('churnDate', event.target.value)}

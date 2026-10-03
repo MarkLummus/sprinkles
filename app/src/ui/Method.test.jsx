@@ -9,8 +9,9 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Method, StepPenBody } from './Method.jsx';
+import { Method, StepPenBody, showsMethodRegion } from './Method.jsx';
 import { buildDiff } from '../domain/diff.js';
+import { activeSteps } from '../domain/rows.js';
 import { stepsWithStaleAmounts, removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { mexicanChocolateV3, mexicanChocolateV4 } from '../data/mexican-chocolate.js';
@@ -1518,6 +1519,61 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
     expect(buttons).toHaveLength(9);
     for (const tag of [...checkboxes, ...buttons]) {
       expect(tag).toContain('tabIndex={0}');
+    }
+  });
+});
+
+describe('showsMethodRegion: the Instructions section renders only when it has something to show (261003-9bz)', () => {
+  const oneNote = [{ text: 'Taste the oil straight.', inheritedFrom: null }];
+
+  it('A: reading with no step and no note is false', () => {
+    expect(showsMethodRegion({ mode: 'reading', steps: [], beforeYouStart: [] })).toBe(false);
+  });
+
+  it('B: reading with a step and no note is true', () => {
+    expect(showsMethodRegion({ mode: 'reading', steps: [unstruckStep], beforeYouStart: [] })).toBe(true);
+  });
+
+  it('C: a notes-only version keeps the section, in reading and in recording', () => {
+    expect(showsMethodRegion({ mode: 'reading', steps: [], beforeYouStart: oneNote })).toBe(true);
+    expect(showsMethodRegion({ mode: 'recording', steps: [], beforeYouStart: oneNote })).toBe(true);
+  });
+
+  it('D: the pen keeps the empty section', () => {
+    expect(showsMethodRegion({ mode: 'developing', steps: [], beforeYouStart: [] })).toBe(true);
+  });
+
+  it('E: recording with no step and no note is false (the strike and line controls hang on a step); with a step it is true', () => {
+    expect(showsMethodRegion({ mode: 'recording', steps: [], beforeYouStart: [] })).toBe(false);
+    expect(showsMethodRegion({ mode: 'recording', steps: [unstruckStep], beforeYouStart: [] })).toBe(true);
+  });
+
+  it('F: Show changes passes the unfiltered method, so a version with only removed steps keeps the section', () => {
+    expect(showsMethodRegion({ mode: 'reading', steps: [{ ...unstruckStep, removed: true }], beforeYouStart: [] })).toBe(true);
+    expect(showsMethodRegion({ mode: 'reading', steps: [], beforeYouStart: [] })).toBe(false);
+  });
+
+  it('G: over the seed, exactly the nine versions with no step and no note hide the section in reading; every version keeps it in the pen', () => {
+    const versions = transcribedRecipeGroups.flatMap(({ versions: vs }) => vs);
+    const hidden = versions
+      .filter((v) => !showsMethodRegion({ mode: 'reading', steps: activeSteps(v), beforeYouStart: v.authored.beforeYouStart }))
+      .map((v) => v.id)
+      .sort();
+    expect(hidden).toEqual(
+      [
+        'strawberry-v2',
+        'strawberry-v2-1',
+        'coconut-v1',
+        'coconut-v2',
+        'standard-base-v1',
+        'standard-base-v2',
+        'underbelly-light-base-v1',
+        'underbelly-light-base-v2',
+        'mocha-v0',
+      ].sort(),
+    );
+    for (const v of versions) {
+      expect(showsMethodRegion({ mode: 'developing', steps: v.method, beforeYouStart: v.authored.beforeYouStart })).toBe(true);
     }
   });
 });

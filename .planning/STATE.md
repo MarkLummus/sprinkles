@@ -254,7 +254,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 ### Pending Todos
 
-- [2026-09-17] [planning] Second staleness pass on route-recipe-batch.md — reading order and Clear focus — [todo file](.planning/todos/pending/2026-09-16-second-staleness-pass-on-route-recipe-batch-md-reading-order.md)
 - [2026-09-17] [ui] An amendment announces the batch's original recording date, not the amendment — [todo file](.planning/todos/pending/2026-09-17-an-amendment-announces-its-original-recording-date.md)
 - [2026-09-22] [ui] Remove the Sprinkles home link from the recipe route — [todo file](.planning/todos/pending/2026-09-22-remove-the-sprinkles-home-link-from-the-recipe-route.md)
 - [2026-09-22] [design] Settle the App-context radius in DESIGN.md, then revisit the rail's active item — [todo file](.planning/todos/pending/2026-09-22-settle-app-context-radius-then-revisit-rail-active-item.md)

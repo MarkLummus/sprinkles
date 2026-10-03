@@ -9,7 +9,7 @@
 // BatchRow.test.jsx, whose node-environment block must keep running with no
 // window (same split as BatchRow.signed.test.jsx).
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { act } from 'react';
+import { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router';
 import { BatchRow } from './BatchRow.jsx';
@@ -165,4 +165,128 @@ describe('BatchRow date inputs: one date focus per opener (261003-by3)', () => {
     rerender({ openPen: 'record', mode: 'recording', addTastingAttempt: null, draft: emptyRecordDraft });
     expect(dateFocuses).toEqual(['Churn date']);
   });
+});
+
+// ---------------------------------------------------------------------------
+// iOS's Reset calls setValue(null), which falls back to the input's value
+// content attribute. React keeps that attribute equal to the controlled
+// value, so Reset re-applied the shown date and onChange never fired.
+// ---------------------------------------------------------------------------
+
+let calls = [];
+
+// Stateful, so React state really follows each change, as in RecipePage.
+function Harness({ seed }) {
+  const [draft, setDraft] = useState(seed);
+  return rowElement({
+    openPen: 'amend',
+    mode: 'recording',
+    amendOpener: 'correct',
+    addTastingAttempt: null,
+    draft,
+    onChangeRecordField: (field, value) => {
+      calls.push([field, value]);
+      setDraft((prev) => ({ ...prev, [field]: value }));
+    },
+  });
+}
+
+const valueSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+const textAreaSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+
+async function mountHarness() {
+  calls = [];
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  const root = createRoot(container);
+  current = { container, root };
+  await act(async () => {
+    root.render(
+      <Harness seed={{ ...emptyRecordDraft, churnDate: '2026-08-02', tastingOpen: true, tastedDate: '2026-08-03' }} />,
+    );
+  });
+}
+
+async function pick(input, v) {
+  await act(async () => {
+    valueSetter.call(input, v);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+}
+
+// WebKit's setValue(null): a form reset restores the value attribute, or ''
+// when there is none; then the input and change events WebKit dispatches.
+async function reset(input) {
+  await act(async () => {
+    const form = document.createElement('form');
+    form.id = 'by3-reset-form';
+    document.body.appendChild(form);
+    input.setAttribute('form', form.id);
+    form.reset();
+    input.removeAttribute('form');
+    form.remove();
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+}
+
+async function typeAtTheMachine(text) {
+  const area = current.container.querySelector('textarea[aria-label="At the machine"]')
+    ?? [...current.container.querySelectorAll('label')]
+      .find((label) => label.textContent.includes('At the machine'))
+      ?.querySelector('textarea');
+  await act(async () => {
+    textAreaSetter.call(area, text);
+    area.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+}
+
+describe('BatchRow date inputs: no value attribute, so iOS Reset clears (261003-by3)', () => {
+  it('A1: neither date input carries a value attribute after mount, and both show their dates', async () => {
+    await mountHarness();
+    const churn = dateInput('Churn date');
+    const tasted = dateInput('Tasted');
+    expect(churn.hasAttribute('value')).toBe(false);
+    expect(tasted.hasAttribute('value')).toBe(false);
+    expect(churn.value).toBe('2026-08-02');
+    expect(tasted.value).toBe('2026-08-03');
+  });
+
+  it('A2: a re-render from an unrelated draft change leaves no value attribute and keeps the dates', async () => {
+    await mountHarness();
+    await typeAtTheMachine('bowl cold');
+    const churn = dateInput('Churn date');
+    const tasted = dateInput('Tasted');
+    expect(churn.hasAttribute('value')).toBe(false);
+    expect(tasted.hasAttribute('value')).toBe(false);
+    expect(churn.value).toBe('2026-08-02');
+    expect(tasted.value).toBe('2026-08-03');
+  });
+
+  for (const [caption, field] of [['Churn date', 'churnDate'], ['Tasted', 'tastedDate']]) {
+    it(`A3: Reset straight after open empties the ${caption} and state follows`, async () => {
+      await mountHarness();
+      const input = dateInput(caption);
+      await reset(input);
+      expect(calls).toEqual([[field, '']]);
+      expect(input.value).toBe('');
+      expect(input.hasAttribute('value')).toBe(false);
+    });
+
+    it(`A4: a pick then Reset empties the ${caption}, and a later pick still works`, async () => {
+      await mountHarness();
+      const input = dateInput(caption);
+      await pick(input, '2026-10-01');
+      expect(calls).toEqual([[field, '2026-10-01']]);
+      expect(input.value).toBe('2026-10-01');
+      expect(input.hasAttribute('value')).toBe(false);
+      await reset(input);
+      expect(calls).toEqual([[field, '2026-10-01'], [field, '']]);
+      expect(input.value).toBe('');
+      await pick(input, '2026-09-30');
+      expect(input.value).toBe('2026-09-30');
+      expect(calls[calls.length - 1]).toEqual([field, '2026-09-30']);
+    });
+  }
 });

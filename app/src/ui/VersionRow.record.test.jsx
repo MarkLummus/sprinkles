@@ -25,7 +25,7 @@ function mount(batches) {
   const spies = {
     onStartDeveloping: vi.fn(),
     onStartRecording: vi.fn(),
-    onRecordTasting: vi.fn(),
+    onStartTasting: vi.fn(),
   };
   current = { container, root };
   act(() => {
@@ -74,7 +74,7 @@ describe('VersionRow — the band\'s controls below 724 call the handler they ar
     act(() => buttonNamed('Record another').click());
     expect(spies.onStartRecording).toHaveBeenCalledTimes(1);
     expect(spies.onStartDeveloping).not.toHaveBeenCalled();
-    expect(spies.onRecordTasting).not.toHaveBeenCalled();
+    expect(spies.onStartTasting).not.toHaveBeenCalled();
   });
 
   it('Record a batch, with no batch, calls onStartRecording once (Test H)', () => {
@@ -82,14 +82,14 @@ describe('VersionRow — the band\'s controls below 724 call the handler they ar
     act(() => buttonNamed('Record a batch').click());
     expect(spies.onStartRecording).toHaveBeenCalledTimes(1);
     expect(spies.onStartDeveloping).not.toHaveBeenCalled();
-    expect(spies.onRecordTasting).not.toHaveBeenCalled();
+    expect(spies.onStartTasting).not.toHaveBeenCalled();
   });
 
-  it('Record a tasting, on a batch awaiting tasting, calls onRecordTasting once with no argument (Test J)', () => {
+  it('Record a tasting, on a batch awaiting tasting, calls onStartTasting once with that batch (Test J, 261002-wn0)', () => {
     const spies = mount([{ ...augustSecondBatch, tasting: null }]);
     act(() => buttonNamed('Record a tasting').click());
-    expect(spies.onRecordTasting).toHaveBeenCalledTimes(1);
-    expect(spies.onRecordTasting).toHaveBeenCalledWith();
+    expect(spies.onStartTasting).toHaveBeenCalledTimes(1);
+    expect(spies.onStartTasting).toHaveBeenCalledWith(expect.objectContaining({ id: augustSecondBatch.id }));
     expect(spies.onStartRecording).not.toHaveBeenCalled();
     expect(spies.onStartDeveloping).not.toHaveBeenCalled();
   });
@@ -99,6 +99,6 @@ describe('VersionRow — the band\'s controls below 724 call the handler they ar
     act(() => buttonNamed('Next version').click());
     expect(spies.onStartDeveloping).toHaveBeenCalledTimes(1);
     expect(spies.onStartRecording).not.toHaveBeenCalled();
-    expect(spies.onRecordTasting).not.toHaveBeenCalled();
+    expect(spies.onStartTasting).not.toHaveBeenCalled();
   });
 });

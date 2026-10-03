@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { recordDateWords } from '../domain/batch.js';
+import { recordDateWords, sortedBatches } from '../domain/batch.js';
 import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { notebookPath } from './notebookPaths.js';
@@ -65,11 +65,14 @@ export function VersionRow({
   // Below 724 (useBelow724, RecipePage's read) the acts row leads with the
   // filled record act and Next version becomes a text control. The two
   // handlers are RecipePage's own: onStartRecording is the one the log's
-  // Record another and Record a batch call; onRecordTasting is the
-  // SEAM(261002-wn0) handler.
+  // Record another and Record a batch call; onStartTasting opens the amend
+  // pen on the batch the label rule read, with the tasting step already open
+  // (261002-wn0). amendOpener is RecipePage's record of which control opened
+  // the amend pen, so this row takes focus back only when it was the one.
   below724 = false,
   onStartRecording = () => {},
-  onRecordTasting = () => {},
+  onStartTasting = () => {},
+  amendOpener = 'correct',
 }) {
   const [detailsOpen, toggleDetailsOpen] = useFold(foldsOpen);
   // Focus-return for the Develop opener: closing the plan's pen returns
@@ -87,6 +90,29 @@ export function VersionRow({
       developButtonRef.current?.focus();
     }
   }, [mode]);
+
+  // Focus-return for the band's Record a tasting (sketch 011 decision 30,
+  // Mark 2026-10-02; route-recipe-batch.md section 6: Cancel returns focus
+  // to the control that opened the pen). The button unmounts while a pen is
+  // open, so the same ref and was-open pair as Develop above. Above the
+  // conditional render, like every other ref/effect pair here.
+  const recordTastingButtonRef = useRef(null);
+  const wasTastingOpenerRef = useRef(false);
+  useEffect(() => {
+    if (openPen === 'amend') {
+      wasTastingOpenerRef.current = amendOpener === 'record-a-tasting';
+      return;
+    }
+    if (wasTastingOpenerRef.current) {
+      wasTastingOpenerRef.current = false;
+      // focus() alone does not bring the band back in Playwright's WebKit
+      // (it left the control 2.7 screens above the viewport after Cancel
+      // from the log); Chrome's does. The explicit scroll makes the return
+      // the same in both, with the band centred as Chrome's own focus does.
+      recordTastingButtonRef.current?.focus();
+      recordTastingButtonRef.current?.scrollIntoView({ block: 'center' });
+    }
+  }, [openPen]);
 
   // Focus-return for a fork's landing (D-27), relocated verbatim from
   // Headnote.jsx: after a child is created, land on the identity that was
@@ -142,6 +168,9 @@ export function VersionRow({
   // standingFor Home's RowActions and the Go to batch status read, so the
   // band, Home and the jump cannot disagree.
   const standing = standingFor(batches);
+  // The batch that standing read (sortedBatches' newest), handed to
+  // onStartTasting so RecipePage can open the pen on that batch.
+  const latestBatch = sortedBatches(batches)[0];
 
   return (
     <>
@@ -369,9 +398,10 @@ export function VersionRow({
             {below724 && (
               <button
                 type="button"
+                ref={standing === AWAITING_TASTING ? recordTastingButtonRef : undefined}
                 className="notebook-action"
                 tabIndex={0}
-                onClick={() => (standing === AWAITING_TASTING ? onRecordTasting() : onStartRecording())}
+                onClick={() => (standing === AWAITING_TASTING ? onStartTasting(latestBatch) : onStartRecording())}
               >
                 {RECORD_ACT_WORDS[standing]}
               </button>

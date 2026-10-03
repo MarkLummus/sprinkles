@@ -668,6 +668,13 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // focus effect re-fires even on a second press.
   const [addTastingAttempt, setAddTastingAttempt] = useState(null);
   const addTastingAttemptRef = useRef(0);
+  // Which control opened the amend pen: 'correct' (the log's Correct) or
+  // 'record-a-tasting' (the band's, below 724; sketch 011 decision 30).
+  // Every amend open overwrites it and nothing clears it: the two focus-
+  // return effects (BatchRow's for Correct, VersionRow's for the band) read
+  // it as captured when the pen opened, so the control that opened a pen is
+  // the one that gets focus back when it closes.
+  const [amendOpener, setAmendOpener] = useState('correct');
   const [formStatus, setFormStatus] = useState('');
   const formStatusTimerRef = useRef(null);
   // The tasting-status channel (contract "Feedback and undo lifecycle"):
@@ -1306,12 +1313,26 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // the fields — the churn side and, when the batch carries one, the
   // tasting side too (D-03) — pre-filled from the batch, never from the
   // version (task 3, draftFromBatch above).
-  function handleStartAmending(batch) {
+  //
+  // The band's Record a tasting (below 724) opens the same pen through the
+  // 'record-a-tasting' opener (sketch 011 decision 30, Mark 2026-10-02,
+  // answer 1; route-recipe-batch.md sections 1 and 6): the Tasting section
+  // is already open, as if Add tasting had just been pressed, and the Tasted
+  // date takes focus through the same attempt counter Add tasting uses. The
+  // pre-filled draft and its baseline both carry tastingOpen true, so an
+  // untouched pen is clean (Escape closes it, no leave warning) until the
+  // maker types. The pen's head is the one Correct's pen shows ("Batch" and
+  // "churned {date}"); no board draws another, and the word Correct is only
+  // the log head's opener, unmounted while any pen is open.
+  function handleStartAmending(batch, { opener = 'correct' } = {}) {
     batchSaveLockRef.current = false;
     setBatchSaveAction(null);
     setFocusBatchAttempt(null);
     onPageStatus('');
-    const filledDraft = draftFromBatch(batch);
+    const filledDraft =
+      opener === 'record-a-tasting'
+        ? { ...draftFromBatch(batch), tastingOpen: true }
+        : draftFromBatch(batch);
     setDraft(filledDraft);
     // The baseline isDraftDirty compares against (03-07, T-03-43) — a
     // separate clone, not the same object setDraft was just given, so a
@@ -1319,11 +1340,17 @@ export function RecipePage({ onPageStatus = () => {} }) {
     // can never be mistaken for a mutation of the baseline itself.
     setAmendBaseline(structuredClone(filledDraft));
     setAmendingBatchId(batch.id);
+    setAmendOpener(opener);
     setFieldErrors({});
     setInvalidFieldTarget(null);
     setBlockedDateMessage(null);
     setBlockedDateAttempt(null);
-    setAddTastingAttempt(null);
+    if (opener === 'record-a-tasting') {
+      addTastingAttemptRef.current += 1;
+      setAddTastingAttempt(addTastingAttemptRef.current);
+    } else {
+      setAddTastingAttempt(null);
+    }
     setPendingUndo(null);
     setTastingStatus('');
     setRecordStatus('');
@@ -1333,16 +1360,16 @@ export function RecipePage({ onPageStatus = () => {} }) {
     setMode('recording');
   }
 
-  // SEAM(261002-wn0): the recipe band's Record a tasting (sketch 011
-  // decision 30, answer 1; below 724, VersionRow.jsx) calls this function.
-  // For now it opens the amend pen on the latest batch by the log's own
-  // Correct path, with Add tasting one tap inside the pen. 261002-wn0
-  // replaces only this body with the amend pen opened with the tasting step
-  // already open and no Correct. The return path stays BatchRow's (Cancel
-  // focuses the log's Correct). The latest batch is the one standingFor
-  // read for the band's label, so the label and the act name the same batch.
-  function handleRecordTasting() {
-    handleStartAmending(sortedBatches(batches)[0]);
+  // The recipe band's Record a tasting (sketch 011 decision 30, answer 1;
+  // below 724, VersionRow.jsx) hands over the batch its label rule read
+  // (the version's latest). The pen opens in place only when that batch is
+  // the batch in view, so the head, the axes snapshot and the amend save
+  // always name the same batch (T-wn0-01). A different batch in view is
+  // 261002-wn0 Task 2's case.
+  function handleStartTasting(batch) {
+    if (openBatch && openBatch.id === batch.id) {
+      handleStartAmending(batch, { opener: 'record-a-tasting' });
+    }
   }
 
   // Add tasting (D-01, contract "Focus landings"): opens the tasting
@@ -1941,7 +1968,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             foldsOpen={!belowDesktop}
             below724={below724}
             onStartRecording={handleStartRecording}
-            onRecordTasting={handleRecordTasting}
+            onStartTasting={handleStartTasting}
+            amendOpener={amendOpener}
           />
 
           <GoToBatch batches={batches} onGo={handleGoToBatch} />
@@ -2090,6 +2118,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             blockedDateMessage={blockedDateMessage}
             blockedDateAttempt={blockedDateAttempt}
             addTastingAttempt={addTastingAttempt}
+            amendOpener={amendOpener}
             formStatus={formStatus}
             tastingStatus={tastingStatus}
             recordStatus={recordStatus}

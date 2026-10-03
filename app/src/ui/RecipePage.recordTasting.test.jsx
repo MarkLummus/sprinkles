@@ -57,6 +57,7 @@ let current = null;
 let originalMatchMedia = null;
 let pageStatus = null;
 let locationNow = null;
+let scrollIntoView = null;
 
 // router.jsx keys RecipePage by its three route parameters, so a different
 // batch address is a new page instance; this wrapper does the same.
@@ -70,8 +71,13 @@ function Where() {
   return null;
 }
 
-// A fixed 393 coarse window: below 724, a coarse pointer.
+// A fixed 393 coarse window: below 724, a coarse pointer. jsdom has no
+// Element.scrollIntoView, which the band's focus return calls (Playwright
+// WebKit's focus() alone left the band 2.7 screens off; see VersionRow.jsx),
+// so this file stubs it and reads the calls.
 function installMatchMedia() {
+  scrollIntoView = vi.fn();
+  Element.prototype.scrollIntoView = scrollIntoView;
   originalMatchMedia = window.matchMedia;
   window.matchMedia = (query) => {
     const max = query.match(/max-width:\s*([\d.]+)px/);
@@ -166,6 +172,7 @@ afterEach(async () => {
   if (originalMatchMedia === undefined) delete window.matchMedia;
   else window.matchMedia = originalMatchMedia;
   originalMatchMedia = null;
+  delete Element.prototype.scrollIntoView;
 });
 
 describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () => {
@@ -201,6 +208,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     expect(pen()).toBeNull();
     expect(store.saveBatch).not.toHaveBeenCalled();
     expect(document.activeElement).toBe(band());
+    expect(scrollIntoView.mock.contexts).toContain(band());
     expect(band().textContent).toBe('Record a tasting');
   });
 

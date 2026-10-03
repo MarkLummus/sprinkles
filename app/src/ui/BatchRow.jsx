@@ -394,6 +394,7 @@ export function BatchRow({
   blockedDateMessage = null,
   blockedDateAttempt = null,
   addTastingAttempt = null,
+  amendOpener = 'correct',
   formStatus = '',
   tastingStatus = '',
   recordStatus = '',
@@ -439,7 +440,9 @@ export function BatchRow({
   const wasAmendingRef = useRef(false);
   useEffect(() => {
     if (openPen === 'amend') {
-      wasAmendingRef.current = true;
+      // Only Correct gets focus back: a pen the band's Record a tasting
+      // opened returns to the band (VersionRow.jsx), sketch 011 decision 30.
+      wasAmendingRef.current = amendOpener === 'correct';
       return;
     }
     if (wasAmendingRef.current) {

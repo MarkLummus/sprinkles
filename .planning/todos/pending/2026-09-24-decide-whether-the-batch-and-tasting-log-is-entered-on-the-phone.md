@@ -56,3 +56,31 @@ Mark deferred both items to the phone shaping ("leave it for now"; "leave it as-
 Related questions from the critique:
 - Should "no stored fold state" hold for Tasting at 393, when opening it is the same first tap every visit?
 - Is Next version on the phone a feature, or left over from the desktop band?
+
+## Sid's case, 2026-10-02
+
+Mark decides. This is my case for C, not a decision.
+
+**What each means for the maker**
+- **A, phone reads.** The sheet is read-only on the phone. Results are typed at the desk.
+- **B, live at the machine.** Draw temperature, times and grams go in while the machine runs.
+- **C, phone transcribes any time.** Same pen as the desk, typed from the paper sheet or its photo, on the couch or the bus. A "Batch" jump in the band; the filled action below 724 is Record a batch (or Record another), and Next version becomes a text control.
+
+**Cost**
+- **A:** nothing to draw. The phone log stays about 3.9 screens down (critique P0), and Next version stays the filled action (P1).
+- **B:** large. It needs a new brief, a new surface at the machine (one hand, glanceable), and draft persistence (UX1-02, now Phase 4). It fights "paper works the kitchen."
+- **C:** small to medium. Draw: the 393 and 723 batch boards (band, bottom action). The pen at 393 is already drawn and approved (393-pen-app, decision 29). Brief: drop "Desktop only" from `route-recipe-batch.md` (sections 1, 4, 7) and the phone line in `route-recipe.md`. App: a jump link in the band, one below-724 action rule, WebKit check at 393.
+
+**Why C.** PRODUCT.md already says "Phone transcribes ... with the sheet or its photo in hand." The batch brief's "desktop only" is the stale one. C closes both critique findings cheaply and uses a pen we already drew. My evidence is thin: Mark's own iPhone check on 2026-09-24, not a record of him typing there.
+
+**What C does not commit us to**
+- No live or at-the-machine mode (that is B), no timers, no capture from a photo (TRUST-01).
+- No new fields and no phone-only pen.
+- No moving the log above the Sheet. Jump link only.
+- No promise that a reload keeps a draft. C inherits that gap.
+- The phone still does not formulate.
+
+**What would change my mind**
+- Mark says he will only type at the desk: A, and fix only the filled action.
+- Mark wants to log with the machine running: B, with persistence first.
+- Typing in the pen on the device is poor (keyboard covers fields), or ink is lost to reloads: back to A until fixed.

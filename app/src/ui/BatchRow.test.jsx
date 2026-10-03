@@ -5,7 +5,7 @@
 // list renders Link elements. The tasting pen and its ceremony retire
 // with this plan (D-01/D-03) — their own coverage lived here before and
 // is removed, not adapted, since no tasting section renders until plan 03.
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
 import {
@@ -706,7 +706,7 @@ describe('BatchRow — the axes grid does not crash under Vitest\'s node environ
     ).not.toThrow();
   });
 
-  it('renders the desktop row-major arrangement by default under node (matchMedia unavailable → below760 is false)', () => {
+  it('renders the desktop row-major arrangement by default under node (matchMedia unavailable → below724 is false)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).toContain('class="axes-rule"');
   });
@@ -728,6 +728,49 @@ describe('BatchRow — the axes grid does not crash under Vitest\'s node environ
     });
     expect(markup).toContain('(2)');
   });
+});
+
+// Sketch 011 decision 28: the record pen's wide-to-stacked cut is the
+// ladder's 724. BatchRow's useBelow724 reads window.matchMedia in a useState
+// initializer, which renderToStaticMarkup does run, so a stub with only
+// matchMedia is enough; no effect runs under the node environment.
+describe("BatchRow — the record pen's cut at 724 (sketch 011 decision 28)", () => {
+  function stubWindowAt(width) {
+    globalThis.window = {
+      matchMedia(query) {
+        const max = query.match(/^\(max-width: ([\d.]+)px\)$/);
+        const min = query.match(/^\(min-width: ([\d.]+)px\)$/);
+        let matches = false;
+        if (max) matches = width <= Number(max[1]);
+        else if (min) matches = width >= Number(min[1]);
+        return { matches, addEventListener() {}, removeEventListener() {} };
+      },
+    };
+  }
+
+  afterEach(() => {
+    delete globalThis.window;
+  });
+
+  function recordingMarkup() {
+    return renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
+  }
+
+  it('stacks the battery, core then declared, at 723', () => {
+    stubWindowAt(723);
+    const markup = recordingMarkup();
+    expect(markup).toContain('class="axes-grid axes-grid--stacked"');
+    expect(markup).not.toContain('class="axes-rule"');
+  });
+
+  for (const width of [724, 740, 759]) {
+    it(`reads the battery in three columns at ${width}`, () => {
+      stubWindowAt(width);
+      const markup = recordingMarkup();
+      expect(markup).toContain('class="axes-rule"');
+      expect(markup).not.toContain('axes-grid--stacked');
+    });
+  }
 });
 
 describe('BatchRow — the defects, two labelled groups inside the axes grid (contract "Controls spec")', () => {

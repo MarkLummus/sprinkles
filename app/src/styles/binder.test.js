@@ -358,7 +358,7 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     // need (the 983.98px page-shell stack, side nav and Sheet's second
     // column together, sketch 011 decision 16; the touch union
     // "(pointer: coarse)" — pointer-only since 03.5-13 retired its width
-    // arm; the width-only 759.98px layout block the version row keeps;
+    // arm; the record pen's width-only block, at the phone forms' own 723.98px since sketch 011 decision 28;
     // the 723.98px phone-forms block
     // (sketch 011 decision 16 — the stacked band, the 20px margin and the
     // list-form table go together); and forced-colors: active), plus the
@@ -376,9 +376,8 @@ describe('no visual literal — every value is a var() read (D-13)', () => {
     const allowedMedia = [
       '(pointer: coarse)',
       '(max-width: 983.98px)',
-      '(max-width: 759.98px)',
       '(max-width: 723.98px)',
-      '(min-width: 760px) and (pointer: coarse)',
+      '(min-width: 724px) and (pointer: coarse)',
       '(forced-colors: active)',
       'print',
     ];

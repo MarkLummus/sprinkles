@@ -83,7 +83,7 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
     // Resolved on media, not by mediaRuleFor's first match: since 260915-x6n
     // the touch union carries an .axis-mark__stop rule too (decision C's
     // height-only growth), and it comes first in source order.
-    const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(max-width: 759.98px)');
+    const rule = rules.find((r) => r.selector === '.axis-mark__stop' && r.media === '(max-width: 723.98px)');
     expect(rule, 'expected the width-only axis-mark__stop rule').toBeTruthy();
     expect(rule.declarations).toMatch(/width:\s*var\(--touch-stop-width\)/);
     expect(rule.declarations).toMatch(/height:\s*var\(--sheet-touch-stop-height\)/);
@@ -94,7 +94,7 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
   test('inside the media block, the stops and anchors tracks both widen to the 216px --sheet-track-stop-narrow', () => {
     const rule = mediaRuleFor('.axis-mark__stops, .axis-mark__anchors');
     expect(rule, 'expected the media-block track-width rule').toBeTruthy();
-    expect(rule.media).toBe('(max-width: 759.98px)');
+    expect(rule.media).toBe('(max-width: 723.98px)');
     expect(rule.declarations).toMatch(/width:\s*var\(--sheet-track-stop-narrow\)/);
   });
 
@@ -125,7 +125,9 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
     // phone-forms (max-width: 723.98px) block below, sharing that cut with
     // the band and the page margin (sketch 011 decision 16), so this block
     // keeps only the two axis-mark rules it was drawn for.
-    const widthOnly = rules.filter((r) => r.media === '(max-width: 759.98px)');
+    // Since sketch 011 decision 28 this block shares the phone forms'
+    // condition, so it is told apart by selector.
+    const widthOnly = rules.filter((r) => r.media === '(max-width: 723.98px)' && r.selector.startsWith('.axis-mark'));
     expect(widthOnly.map((r) => r.selector)).toEqual([
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
@@ -147,14 +149,14 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
   });
 
   test('M4: Clear in a caption line takes its touch target as an overflowing hit area, not as line height (sketch 009, Mark 2026-09-15)', () => {
-    const box = rules.find((r) => r.selector === '.axis-mark__head .text-control, .segmented-field__head .text-control' && r.media === '(min-width: 760px) and (pointer: coarse)');
+    const box = rules.find((r) => r.selector === '.axis-mark__head .text-control, .segmented-field__head .text-control' && r.media === '(min-width: 724px) and (pointer: coarse)');
     expect(box, 'expected the caption-line text-control rule').toBeTruthy();
     // It must UNDO the blanket .text-control min-height above it, or the line
     // grows and the melt row goes 15.2px out again.
     expect(box.declarations).toMatch(/min-height:\s*0/);
     expect(box.declarations).toMatch(/position:\s*relative/);
 
-    const hit = rules.find((r) => r.selector === '.axis-mark__head .text-control::after, .segmented-field__head .text-control::after' && r.media === '(min-width: 760px) and (pointer: coarse)');
+    const hit = rules.find((r) => r.selector === '.axis-mark__head .text-control::after, .segmented-field__head .text-control::after' && r.media === '(min-width: 724px) and (pointer: coarse)');
     expect(hit, 'expected the hit-area pseudo-element rule').toBeTruthy();
     expect(hit.declarations).toMatch(/position:\s*absolute/);
     expect(hit.declarations).toMatch(/height:\s*var\(--touch-min\)/);
@@ -165,7 +167,7 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
     // overwrote 007/008's narrow drawing at 680, 580, 480 and 393, where the
     // head read 28.8px against the sketch's 44px. Each drawing governs the
     // case it was drawn for, and this test fails if they are merged again.
-    const wide = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(min-width: 760px) and (pointer: coarse)');
+    const wide = rules.find((r) => r.selector === '.axis-mark__head, .segmented-field__head' && r.media === '(min-width: 724px) and (pointer: coarse)');
     expect(wide, 'expected the wide-touch caption-line rule').toBeTruthy();
     expect(wide.declarations).toMatch(/min-height:\s*var\(--sheet-caption-two-lines-abs\)/);
 
@@ -272,7 +274,9 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
   // board's own rule order (723-batch.html), appended after this block's
   // pre-existing content.
   test('the phone-forms block appends the list-form rules, in the board\'s own order, after its pre-existing content (decision 15, sketch 011, 03.5-11)', () => {
-    const phoneFormsRules = rules.filter((r) => r.media === '(max-width: 723.98px)');
+    // The record pen's own width-only block shares this condition (decision
+    // 28) and is pinned above.
+    const phoneFormsRules = rules.filter((r) => r.media === '(max-width: 723.98px)' && !r.selector.startsWith('.axis-mark'));
     expect(phoneFormsRules.map((r) => r.selector)).toEqual([
       ':root',
       '.field-row__label',
@@ -327,14 +331,13 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
     }
   });
 
-  test('app.css carries exactly seven top-level @media blocks, at the seven named conditions (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print)', () => {
+  test('app.css carries exactly seven top-level @media blocks, at six named conditions, the record pen\'s width-only block sharing the phone forms\' 723.98px since sketch 011 decision 28 (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
       '(max-width: 723.98px)',
-      '(max-width: 759.98px)',
       '(max-width: 983.98px)',
-      '(min-width: 760px) and (pointer: coarse)',
+      '(min-width: 724px) and (pointer: coarse)',
       '(pointer: coarse)',
       'print',
     ]);

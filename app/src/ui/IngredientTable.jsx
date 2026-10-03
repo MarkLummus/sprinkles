@@ -323,7 +323,9 @@ function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade 
 // step it participates in with a sub-line naming its share of the row
 // (formatPortionLine, domain/composition.js). A portion whose step cannot
 // be resolved groups under a trailing "Unallocated" head instead of being
-// dropped. `markedRowIds` is the focused figure's contributorRowIds
+// dropped; when that is the only group the head is not drawn, since a lone
+// Unallocated head labels nothing and the label earns its place only beside a
+// numbered group (Mark, 2026-10-02, option 1). `markedRowIds` is the focused figure's contributorRowIds
 // (route-recipe.md § 3, § 5) — marking changes only outline and weight,
 // and moves nothing. `draftVersion` is the pen's own draft, built once by
 // RecipePage (03-02) — present only in developing mode, and read here for
@@ -444,6 +446,7 @@ export function IngredientTable({
   // above states why), the `steps` prop everywhere else.
   const stepsForGrouping = isDeveloping ? draftVersion.method : steps;
   const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers);
+  const showStepHeads = !(groups.length === 1 && groups[0].displayNumber == null);
 
   // Style 6's reading row (sketch 011 decisions 2, 3; D-19; 03.5-06 Task
   // 1) — also the recording state's row (Task 2): GramsCell's own
@@ -658,18 +661,20 @@ export function IngredientTable({
         <tbody>
           {groups.map((group) => (
             <Fragment key={group.displayNumber ?? 'unallocated'}>
-              <tr className="ingredient-table__step-head">
-                <td colSpan={columnCount}>
-                  {group.displayNumber != null ? (
-                    <>
-                      {`Step ${group.displayNumber}`}
-                      <span className="ingredient-table__step-head-lead">{group.leadIn}</span>
-                    </>
-                  ) : (
-                    'Unallocated'
-                  )}
-                </td>
-              </tr>
+              {showStepHeads && (
+                <tr className="ingredient-table__step-head">
+                  <td colSpan={columnCount}>
+                    {group.displayNumber != null ? (
+                      <>
+                        {`Step ${group.displayNumber}`}
+                        <span className="ingredient-table__step-head-lead">{group.leadIn}</span>
+                      </>
+                    ) : (
+                      'Unallocated'
+                    )}
+                  </td>
+                </tr>
+              )}
               {group.entries.map((entry) => renderEntry(entry))}
             </Fragment>
           ))}

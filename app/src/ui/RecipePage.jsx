@@ -29,6 +29,7 @@ import { BatchRow } from './BatchRow.jsx';
 import { RecipeBand } from './RecipeBand.jsx';
 import { Headnote } from './Headnote.jsx';
 import { VersionRow } from './VersionRow.jsx';
+import { GoToBatch } from './GoToBatch.jsx';
 import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
@@ -1094,6 +1095,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }
   }
 
+  // The band's Go to batch row (sketch 011 decision 30): the same two lines an
+  // amendment save runs, so BatchRow's existing landing focuses its Batch
+  // heading and draws the ring. The URL and history are not touched.
+  function handleGoToBatch() {
+    focusBatchAttemptRef.current += 1;
+    setFocusBatchAttempt(focusBatchAttemptRef.current);
+  }
+
   // Clearing the amend target here is load-bearing, not redundant: without
   // it, a maker who amends and then starts a fresh recording would leave
   // amendingBatchId set from the earlier amendment, so handleSaveBatch
@@ -1915,6 +1924,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
             foldsOpen={!belowDesktop}
           />
+
+          <GoToBatch batches={batches} onGo={handleGoToBatch} />
         </div>
 
         <RecipeHistory

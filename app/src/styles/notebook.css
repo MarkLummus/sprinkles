@@ -185,7 +185,8 @@
   gap: var(--app-notebook-recipe-rail-gap);
 }
 
-.notebook .fold-row__control {
+.notebook .fold-row__control,
+.notebook .notebook-jump__control {
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-control);
   font-weight: 400;
@@ -196,13 +197,20 @@
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
 
-.notebook .fold-row__count {
+.notebook .fold-row__count,
+.notebook .notebook-jump__status {
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
   font-weight: 400;
   letter-spacing: normal;
   text-transform: none;
   color: var(--app-text-secondary);
+}
+
+/* The band's Go to batch row: below 724 only (sketch 011 decision 30); from
+   724 up the band is as built. The 723.98px block below gives it its box. */
+.notebook-jump {
+  display: none;
 }
 
 .notebook-field {
@@ -980,6 +988,19 @@
      content width under the base grid's align-items: start, as before plan 23. */
   .notebook-version {
     align-self: stretch;
+  }
+
+  /* Go to batch: History's row grammar (393-phone-log.html, 723-phone-log.html),
+     one link at least 44px tall at every pointer. */
+  .notebook-jump {
+    display: flex;
+    width: 100%;
+    min-height: var(--touch-min);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--app-notebook-recipe-rail-gap);
+    text-decoration: none;
+    color: inherit;
   }
 
   .notebook-log {

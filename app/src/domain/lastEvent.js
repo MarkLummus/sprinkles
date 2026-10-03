@@ -52,6 +52,20 @@ export const NOT_YET_CHURNED = 'not-yet-churned';
 export const AWAITING_TASTING = 'awaiting-tasting';
 export const TASTED = 'tasted';
 
+// The standing's own word (D-07, D-11, gap 6): looked up from the three
+// constants above — never hand-spelled — so a row's word can never disagree
+// with the standing that also decides RowActions beside it (T-03.4-G07).
+// D-07 also names two standings a Recipe Book version's own "Ready to make"
+// and a saved idea's own "Saved idea" — that standingFor cannot return this
+// phase (03.4-CONTEXT.md decision #2), so this lookup carries no entry for
+// either. Home (RecipeList.jsx) and the recipe band's Go to batch row
+// (GoToBatch.jsx) read this one map.
+export const STANDING_WORDS = {
+  [NOT_YET_CHURNED]: 'Not yet churned',
+  [AWAITING_TASTING]: 'Awaiting tasting',
+  [TASTED]: 'Tasted',
+};
+
 /**
  * standingFor(batches) -> NOT_YET_CHURNED when the recipe has no batch,
  * AWAITING_TASTING when the newest batch's tasting is null, TASTED when

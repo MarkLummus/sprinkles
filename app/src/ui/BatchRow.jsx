@@ -619,6 +619,7 @@ export function BatchRow({
       <div className={`batch-row__head${showBatchList ? ' batch-row__head--after-list' : ''}`}>
         <div className="batch-row__head-lead">
           <h2
+            id="batch"
             ref={batchHeadingRef}
             className={`region-name${landingFocusVisible ? ' is-landing-focus' : ''}`}
             tabIndex={focusBatchOnMount || focusBatchAttempt != null ? -1 : undefined}

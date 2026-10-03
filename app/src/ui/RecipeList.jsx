@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { versionIdentity } from '../domain/lineage.js';
-import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
+import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED, STANDING_WORDS } from '../domain/lastEvent.js';
 import { notebookPath } from './notebookPaths.js';
 
 // Home — "Active work first" (.impeccable/surfaces/route.md, Home
@@ -148,20 +148,6 @@ function batchCountWords(count) {
   if (count === 0) return 'not yet made';
   return `${count} batch${count === 1 ? '' : 'es'}`;
 }
-
-// The standing's own word (D-07, D-11, gap 6): looked up from
-// lastEvent.js's exported constants — never hand-spelled — so a row's
-// word can never disagree with the standing that also decides
-// RowActions beside it (T-03.4-G07). D-07 also names two standings a
-// Recipe Book version's own "Ready to make" and a saved idea's own
-// "Saved idea" — that lastEvent.js's standingFor cannot return this
-// phase (03.4-CONTEXT.md decision #2), so this lookup carries no entry
-// for either.
-const STANDING_WORDS = {
-  [NOT_YET_CHURNED]: 'Not yet churned',
-  [AWAITING_TASTING]: 'Awaiting tasting',
-  [TASTED]: 'Tasted',
-};
 
 // The row's next action(s) (D-07, D-11): one filled action, and at most
 // one outline secondary, chosen by the recipe's own standing. Record a

@@ -268,6 +268,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-27] [ui] Recipe band buttons narrow on hover or click — [todo file](.planning/todos/pending/2026-09-27-band-buttons-narrow-on-hover-or-click.md)
 - [2026-09-27] [ui] Keep the side nav's options on screen while the page scrolls — [todo file](.planning/todos/pending/2026-09-27-sticky-side-nav.md)
 - [2026-09-27] [ui] Look into the Why row in the version details — [todo file](.planning/todos/pending/2026-09-27-why-row-in-version-details.md)
+- [2026-10-03] [design] Promote "Before you start" into its own section outside Instructions — [todo file](.planning/todos/pending/2026-10-03-promote-before-you-start-into-its-own-section-outside-instru.md)
 
 ### Blockers/Concerns
 

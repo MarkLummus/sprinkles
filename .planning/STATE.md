@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-03T11:03:29.758Z"
-last_activity: 2026-10-02
+last_updated: "2026-10-03T12:50:46.816Z"
+last_activity: 2026-10-03
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 9cf4ba4a4c8b9bfab2e4bddf44a48b43ab282124
+state_head: 36b92a2d8cecf9aaf4459ea85aaf9dfb98615b28
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-03 - Completed quick task 261003-9bz: Hide the empty Instructions section outside the pen
+Last activity: 2026-10-03 - Completed quick task 261003-by3: Fix iPhone date inputs in the record pen
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -377,6 +377,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261002-wn0 | Record a tasting opens the amend pen on Add tasting without Correct | 2026-10-03 | b403acc | .planning/quick/261002-wn0-record-a-tasting-opens-the-amend-pen-on-add-tasting-without |
 | 261002-wn1 | Show changes moves to the Ingredients row below 724 | 2026-10-03 | fb024fc | .planning/quick/261002-wn1-show-changes-moves-to-the-right-aligned-head-row-of-the-ingr |
 | 261003-9bz | Hide the empty Instructions section outside the pen | 2026-10-03 | 9cf4ba4 | [261003-9bz-hide-the-empty-instructions-section-in-r](./quick/261003-9bz-hide-the-empty-instructions-section-in-r/) |
+| 261003-by3 | Fix iPhone date inputs in the record pen: one date focus, Reset clears | 2026-10-03 | 36b92a2 | [261003-by3-fix-iphone-date-inputs-in-the-record-pen](./quick/261003-by3-fix-iphone-date-inputs-in-the-record-pen/) |
 
 ### Roadmap Evolution
 

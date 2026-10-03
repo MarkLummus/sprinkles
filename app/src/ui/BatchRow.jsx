@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, tastingProvenance } from '../domain/batch.js';
 import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
@@ -501,6 +501,25 @@ export function BatchRow({
     if (addTastingAttempt != null) tastedDateRef.current?.focus();
   }, [addTastingAttempt]);
 
+  // 261003-by3 (.planning/debug/ios-tasting-date-picker.md): iOS's Reset on
+  // a date calendar calls setValue(null), which falls back to the input's
+  // value content attribute. React keeps that attribute equal to the
+  // controlled value, so Reset re-applied the shown date and onChange never
+  // fired. With no attribute, the null Reset falls back to empty, which
+  // reaches onChange as ''. React writes the attribute at commit time
+  // (caught by the layout effect) and again after the commit, when it
+  // restores the input after that input's own onChange (caught by the
+  // microtask in each date onChange). See facebook/react #8938, #12313 and
+  // #23299. Removing the attribute never changes .value: a picked or typed
+  // value is the dirty value.
+  function stripDateValueAttributes() {
+    churnDateRef.current?.removeAttribute('value');
+    tastedDateRef.current?.removeAttribute('value');
+  }
+  useLayoutEffect(() => {
+    stripDateValueAttributes();
+  });
+
   // The restore sequence's own focus landing (contract "Focus landings":
   // "undo after restore → the Clear/Remove control") — the same
   // attempt-counter pattern as the two focus effects above.
@@ -688,7 +707,10 @@ export function BatchRow({
                   autoFocus={addTastingAttempt == null}
                   ref={churnDateRef}
                   value={draft.churnDate}
-                  onChange={(event) => onChangeRecordField('churnDate', event.target.value)}
+                  onChange={(event) => {
+                    onChangeRecordField('churnDate', event.target.value);
+                    queueMicrotask(stripDateValueAttributes);
+                  }}
                 />
                 {/* Native required semantics already announce this fact;
                     the visible helper is for the maker reading the sheet. */}
@@ -811,7 +833,10 @@ export function BatchRow({
                       className="ink-field"
                       ref={tastedDateRef}
                       value={draft.tastedDate}
-                      onChange={(event) => onChangeRecordField('tastedDate', event.target.value)}
+                      onChange={(event) => {
+                        onChangeRecordField('tastedDate', event.target.value);
+                        queueMicrotask(stripDateValueAttributes);
+                      }}
                     />
                   </label>
                   {TASTING_MEASURED_FIELDS.map((field) => (

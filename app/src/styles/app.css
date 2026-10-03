@@ -2735,4 +2735,10 @@ textarea {
     font-family: var(--face-text);
     font-style: italic;
   }
+
+  /* Below 724 Show changes sits on the Sheet's Ingredients row and is
+     screen-only (decision 30 addendum, "Print must hide the control"). */
+  .ingredient-table-region__head .text-control {
+    display: none;
+  }
 }

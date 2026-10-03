@@ -56,3 +56,6 @@
 .ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){align-self:start}
 /* a struck figure above the plan amount takes one line of the amount's cell, so As made drops by that line and stands level with the plan amount */
 .ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:nth-last-child(2){margin-top:calc(var(--sheet-leading-table) * 1em)}
+/* === D3 === D2 with the struck old figure BELOW the current one, in the amount, the share, the Total and the pen's parent value: the plan amount keeps the first line, so Show changes only adds a line under it (DOM order is unchanged, struck first, so a reader still hears "was, now") */
+.ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:nth-last-child(2){margin-top:0}
+.ingredient-table td.ingredient-table__col-grams:has(.struck-value),.ingredient-table__plan-grams:has(>.struck-value),.ingredient-table td.ingredient-table__col-numeric:has(>.struck-value){display:flex;flex-direction:column-reverse;align-items:flex-end}

@@ -13,7 +13,7 @@ import { startServers, launch } from '../phases/03.5-separate-the-recipe-from-th
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const opt = await readFile(path.join(HERE, 'ingredient-options.css'), 'utf8');
 const sec = (name) => { const m = opt.match(new RegExp('/\\* === ' + name + ' ===[^*]*\\*/([\\s\\S]*?)(?=/\\* === |$)')); if (!m) throw new Error('no section ' + name); return m[1]; };
-const FORMS = { today: '', C: sec('C'), D1: sec('D') + sec('D1'), D1b: sec('D') + sec('D1') + sec('D1b'), D2: sec('D') + sec('D2') };
+const FORMS = { today: '', C: sec('C'), D1: sec('D') + sec('D1'), D1b: sec('D') + sec('D1') + sec('D1b'), D2: sec('D') + sec('D2'), D3: sec('D') + sec('D2') + sec('D3') };
 
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean);   // re-measure just these forms and merge them into the existing JSON
 const MEX3 = '/notebook/mexican-chocolate/mexican-chocolate-v3/batch/mexican-chocolate-v3-batch-01';
@@ -71,6 +71,8 @@ async function read() {
     maxRows: Math.max(...ls), wrapped: names.map((n, i) => [[...n.childNodes].filter((c) => c.nodeType === 3).map((c) => c.textContent).join('').trim(), ls[i]]).filter((x) => x[1] > 1),
     tableH: Math.round(T.height), sheetH: Math.round(document.querySelector('.recipe-page').getBoundingClientRect().height),
     overflow: document.documentElement.scrollWidth - innerWidth,
+    shareR: rel(row.querySelector('.ingredient-table__col-numeric:last-child').getBoundingClientRect()),
+    rowTops: rows.map((tr) => Math.round((tr.getBoundingClientRect().top - T.top) * 10) / 10),
     pos: { plan: rel(planEl.getBoundingClientRect()), field: rel(am.querySelector('input') && am.querySelector('input').getBoundingClientRect()), struck: rel(struck && struck.getBoundingClientRect()), asMade: rel(asm && asm.getBoundingClientRect()), nameX: rel(nameCell.getBoundingClientRect()).x },
   };
 }

@@ -12,19 +12,19 @@ const opt = await readFile(path.join(HERE, 'ingredient-options.css'), 'utf8');
 const appcss = await readFile(path.join(HERE, '../../app/src/styles/app.css'), 'utf8');
 const sec = (name) => { const r = opt.match(new RegExp('/\\* === ' + name + ' ===[^*]*\\*/([\\s\\S]*?)(?=/\\* === |$)')); if (!r) throw new Error('no section ' + name); return r[1]; };
 const i = appcss.indexOf('.ingredient-table thead {'), j = appcss.indexOf('\n}\n', appcss.indexOf('.ingredient-table td.ingredient-table__col-grams > .struck-value'));
-const FORMS = { today: '', A: sec('A'), B: appcss.slice(i, j), C: sec('C'), D1: sec('D') + sec('D1'), D1b: sec('D') + sec('D1') + sec('D1b'), D2: sec('D') + sec('D2') };
+const FORMS = { today: '', A: sec('A'), B: appcss.slice(i, j), C: sec('C'), D1: sec('D') + sec('D1'), D1b: sec('D') + sec('D1') + sec('D1b'), D2: sec('D') + sec('D2'), D3: sec('D') + sec('D2') + sec('D3') };
 const AS = { 'Whole Milk 3.3%': 503, 'Cocoa Powder': 16.4, 'Sucrose': 46, 'Dextrose': 45, 'Fructose': 4.5, 'Dried Skimmed Milk Powder': 34.8, 'Salt': null, 'Cream, heavy': 77, 'Vanilla Extract': null, 'Stabilizer Mix 4421': 2, 'Cinnamon': 2.3, 'Allulose': 37 };
 const MEX3 = '/notebook/mexican-chocolate/mexican-chocolate-v3/batch/mexican-chocolate-v3-batch-01';
 const OLIVE1 = '/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89';
 const ROWS = [
-  { row: 'mex', route: MEX3, forms: ['today', 'A', 'B', 'C', 'D1', 'D1b', 'D2'], prep: async (p) => {
+  { row: 'mex', route: MEX3, forms: ['today', 'A', 'B', 'C', 'D1', 'D1b', 'D2', 'D3'], prep: async (p) => {
       await p.getByRole('button', { name: 'Show changes' }).first().click(); await p.getByRole('button', { name: 'Hide changes' }).first().waitFor();
       await p.evaluate((m) => { let sum = 0; for (const tr of document.querySelectorAll('.ingredient-table tbody > tr')) { const nc = tr.querySelector('.ingredient-table__col-name'); const num = tr.querySelectorAll('.ingredient-table__col-numeric'); if (!nc || num.length < 2) continue; const name = [...nc.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim(); const v = m[name]; if (v === null) continue; num[0].innerHTML = `<span class="sheet-hand">${v} g</span>`; sum += v; } document.querySelectorAll('.ingredient-table tfoot .ingredient-table__col-numeric')[0].innerHTML = `<span class="sheet-hand">${Math.round(sum * 10) / 10} g</span>`; }, AS); } },
-  { row: 'olive', route: OLIVE1, forms: ['today', 'B', 'C', 'D1', 'D1b', 'D2'], prep: async () => {} },
-  { row: 'pen', route: MEX3, forms: ['today', 'C', 'D1', 'D1b', 'D2'], prep: async (p) => {
+  { row: 'olive', route: OLIVE1, forms: ['today', 'B', 'C', 'D1', 'D1b', 'D2', 'D3'], prep: async () => {} },
+  { row: 'pen', route: MEX3, forms: ['today', 'C', 'D1', 'D1b', 'D2', 'D3'], prep: async (p) => {
       await p.getByRole('button', { name: 'Next version' }).first().click(); await p.getByLabel('Salt, grams', { exact: true }).waitFor();
       for (const [l, v] of [['Whole Milk 3.3%', '540'], ['Sucrose', '44'], ['Cocoa Powder', '18']]) await p.getByLabel(l + ', grams', { exact: true }).fill(v); } },
-  { row: 'rec', route: OLIVE1, forms: ['today', 'C', 'D1', 'D1b', 'D2'], prep: async (p) => {
+  { row: 'rec', route: OLIVE1, forms: ['today', 'C', 'D1', 'D1b', 'D2', 'D3'], prep: async (p) => {
       await p.getByRole('button', { name: /^Record (another|a batch)$/ }).first().click(); await p.waitForSelector('.ingredient-table__as-made-field');
       const f = p.locator('.ingredient-table__as-made-field'); for (const [k, v] of [[0, '118'], [1, '12'], [3, '0.5'], [5, '248']]) await f.nth(k).fill(v); } },
 ];

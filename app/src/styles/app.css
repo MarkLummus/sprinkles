@@ -875,6 +875,14 @@ textarea {
   vertical-align: middle;
 }
 
+/* The pen's remove/restore link gap (sketch 011 decision 26): the one
+   collapsible space before the button takes the extra word spacing, so a
+   link on the name's line stands clear of it; at the start of a wrapped
+   line the space collapses and the link stays flush. */
+.ingredient-table__remove-gap {
+  word-spacing: var(--sheet-remove-gap);
+}
+
 /* The plan-grams span (sketch 011 decision 2, 03.5-06; decisions_recorded
    3, 03.5-11): the row's plan amount, in every state — the reading
    state's own plain text, and the pen's grams field, the struck parent

@@ -449,6 +449,7 @@
   --sheet-plan-grams-w: 64px; /* the plan-grams span's own min-width (1600-batch.html); also the list form's amount track (393-batch.html) */
   --sheet-plan-grams-gap: 18px; /* the amount cell's own gap before the name (1366-batch.html) — the amount column's padding-right now, not the span's margin-right (decision 15) */
   --sheet-flag-gap: 8px; /* the estimated/unreviewed chip's own margin-left after the name */
+  --sheet-remove-gap: 10px; /* added to the ~4px word space so the pen's remove/restore link stands 14px from the last mark, as on 1600-pen.html; the space collapses at line start, so a wrapped link stays flush (sketch 011 decision 26) */
   --sheet-leading-hand: 1; /* the Sheet's own hand leading (decisions_recorded 1) — distinct from --leading-hand (1.25), the App's own */
   --sheet-grams-field-w: 52px; /* Task 2 (1600-pen.html): the pen's own grams field, inside the plan-grams slot — narrower than the field's own 100% default, since the slot's min-width already carries the layout */
 

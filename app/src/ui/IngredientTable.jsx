@@ -157,12 +157,18 @@ function ShareCell({ baselineShare, currentShare }) {
 }
 
 // The remove/restore control: a text button, never an icon and never a
-// colour — exactly one control per row.
+// colour — exactly one control per row. The span before the button carries
+// the gap (sketch 011 decision 26): a collapsible word space widened by
+// --sheet-remove-gap, so a link on the name's line stands 14px clear and a
+// wrapped link stays flush.
 function RemoveRowControl({ removed, onToggle }) {
   return (
-    <button type="button" className="text-control" tabIndex={0} onClick={onToggle}>
-      {removed ? 'restore' : 'remove'}
-    </button>
+    <>
+      <span className="ingredient-table__remove-gap">{' '}</span>
+      <button type="button" className="text-control" tabIndex={0} onClick={onToggle}>
+        {removed ? 'restore' : 'remove'}
+      </button>
+    </>
   );
 }
 

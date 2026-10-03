@@ -743,18 +743,20 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
     expect(buttons[1].attrs).toContain('class="notebook-link"');
   });
 
-  it('keeps Show changes last, as a text control, when the version has a parent (Test C)', () => {
-    const buttons = actButtons(
-      renderVersionRow({
-        below724: true,
-        version: childVersion,
-        versions: [oliveOilVersion, childVersion],
-        parentVersion: oliveOilVersion,
-        batches: [augustSecondBatch],
-      }),
-    );
-    expect(buttons.map((button) => button.label)).toEqual(['Record another', 'Next version', 'Show changes']);
-    expect(buttons[2].attrs).toContain('class="notebook-link"');
+  // 261002-wn1 moved Show changes out of the band below 724 (it sits on the
+  // Ingredients row, IngredientsHead); this wmz assertion followed the rule.
+  it('keeps Show changes out of the row below 724, and last as a text control from 724 up, when the version has a parent (Test C)', () => {
+    const parented = {
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      parentVersion: oliveOilVersion,
+      batches: [augustSecondBatch],
+    };
+    const below = actButtons(renderVersionRow({ below724: true, ...parented }));
+    expect(below.map((button) => button.label)).toEqual(['Record another', 'Next version']);
+    const above = actButtons(renderVersionRow(parented));
+    expect(above.map((button) => button.label)).toEqual(['Next version', 'Show changes']);
+    expect(above[1].attrs).toContain('class="notebook-link"');
   });
 
   it('leads with a filled Record a tasting when the latest batch awaits its tasting (Test F)', () => {
@@ -771,7 +773,8 @@ describe('VersionRow — below 724 the band\'s one filled action is the record a
         batches: [awaitingBatch],
       }),
     );
-    expect(withParent.map((button) => button.label)).toEqual(['Record a tasting', 'Next version', 'Show changes']);
+    // 261002-wn1: Show changes is on the Ingredients row below 724, not here.
+    expect(withParent.map((button) => button.label)).toEqual(['Record a tasting', 'Next version']);
   });
 
   // Guard (passes before and after): from 724 up the band is as built.

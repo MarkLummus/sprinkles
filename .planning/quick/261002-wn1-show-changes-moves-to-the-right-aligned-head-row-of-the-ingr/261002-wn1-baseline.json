@@ -1,0 +1,5876 @@
+{
+  "webkit|320|coarse|v2-reading": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326.328125,
+          "width": 97.875,
+          "height": 44,
+          "right": 97.875,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -380.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 97.875,
+            "height": 44,
+            "right": 97.875,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 280,
+      "height": 533.03125,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 676.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|320|coarse|v2-show-changes": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326.328125,
+          "width": 104.015625,
+          "height": 44,
+          "right": 104.015625,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -380.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 104.015625,
+            "height": 44,
+            "right": 104.015625,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 280,
+      "height": 663.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 676.40625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|320|coarse|v1-reading": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 148.1875,
+            "height": 44,
+            "right": 148.1875,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 158.1875,
+            "y": -326.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 242.4375,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 280,
+      "height": 570.03125,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 622.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|320|coarse|v2-pen": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 280,
+      "height": 793.03125,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1177.671875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|320|coarse|v2-record": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 280,
+      "height": 905.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|320|coarse|v2-tasting": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 280,
+      "height": 905.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|375|coarse|v2-reading": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326.328125,
+          "width": 97.875,
+          "height": 44,
+          "right": 97.875,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -380.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 97.875,
+            "height": 44,
+            "right": 97.875,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 335,
+      "height": 465.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 676.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|375|coarse|v2-show-changes": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326.328125,
+          "width": 104.015625,
+          "height": 44,
+          "right": 104.015625,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -380.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 104.015625,
+            "height": 44,
+            "right": 104.015625,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 335,
+      "height": 663.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 676.40625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|375|coarse|v1-reading": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 148.1875,
+            "height": 44,
+            "right": 148.1875,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 158.1875,
+            "y": -326.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 242.4375,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 335,
+      "height": 502.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 622.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|375|coarse|v2-pen": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 335,
+      "height": 761.03125,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1090.671875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|375|coarse|v2-record": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 335,
+      "height": 905.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|375|coarse|v2-tasting": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 335,
+      "height": 905.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|393|coarse|v2-reading": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326.328125,
+          "width": 97.875,
+          "height": 44,
+          "right": 97.875,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -380.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 97.875,
+            "height": 44,
+            "right": 97.875,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 353,
+      "height": 465.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 676.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|393|coarse|v2-show-changes": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326.328125,
+          "width": 104.015625,
+          "height": 44,
+          "right": 104.015625,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -380.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -336.328125
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 104.015625,
+            "height": 44,
+            "right": 104.015625,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 353,
+      "height": 663.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 676.40625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|393|coarse|v1-reading": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 148.1875,
+            "height": 44,
+            "right": 148.1875,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 158.1875,
+            "y": -326.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 242.4375,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 353,
+      "height": 502.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 622.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|393|coarse|v2-pen": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 353,
+      "height": 761.03125,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1072.671875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|393|coarse|v2-record": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 353,
+      "height": 905.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|393|coarse|v2-tasting": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 353,
+      "height": 905.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|fine|v2-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 258.6875,
+          "y": -326,
+          "width": 97.875,
+          "height": 44,
+          "right": 356.5625,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -326,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 258.6875,
+            "y": -326,
+            "width": 97.875,
+            "height": 44,
+            "right": 356.5625,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 449.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 595.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|723|fine|v2-show-changes": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 258.6875,
+          "y": -326,
+          "width": 104.015625,
+          "height": 44,
+          "right": 362.703125,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -326,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 258.6875,
+            "y": -326,
+            "width": 104.015625,
+            "height": 44,
+            "right": 362.703125,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 647.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 595.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|723|fine|v1-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 148.1875,
+            "height": 44,
+            "right": 148.1875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 158.1875,
+            "y": -326,
+            "width": 84.25,
+            "height": 44,
+            "right": 242.4375,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 486.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 595.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|fine|v2-pen": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 515.390625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 988.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|fine|v2-record": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 712.390625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 539.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|fine|v2-tasting": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 712.390625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 539.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|coarse|v2-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 258.6875,
+          "y": -326.328125,
+          "width": 97.875,
+          "height": 44,
+          "right": 356.5625,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -326.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 258.6875,
+            "y": -326.328125,
+            "width": 97.875,
+            "height": 44,
+            "right": 356.5625,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 450.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 622.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|723|coarse|v2-show-changes": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 258.6875,
+          "y": -326.328125,
+          "width": 104.015625,
+          "height": 44,
+          "right": 362.703125,
+          "bottom": -282.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 154.4375,
+            "height": 44,
+            "right": 154.4375,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 164.4375,
+            "y": -326.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 248.6875,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 258.6875,
+            "y": -326.328125,
+            "width": 104.015625,
+            "height": 44,
+            "right": 362.703125,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 648.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 622.40625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|723|coarse|v1-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326.328125,
+            "width": 148.1875,
+            "height": 44,
+            "right": 148.1875,
+            "bottom": -282.328125
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 158.1875,
+            "y": -326.328125,
+            "width": 84.25,
+            "height": 44,
+            "right": 242.4375,
+            "bottom": -282.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 487.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 622.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|coarse|v2-pen": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 693.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1036.484375,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|coarse|v2-record": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 890.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|723|coarse|v2-tasting": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 890.21875,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 566.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|724|fine|v2-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 477.109375,
+          "y": -290,
+          "width": 97.875,
+          "height": 44,
+          "right": 574.984375,
+          "bottom": -246
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 128.15625,
+            "height": 44,
+            "right": 467.109375,
+            "bottom": -246
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 477.109375,
+            "y": -290,
+            "width": 97.875,
+            "height": 44,
+            "right": 574.984375,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 431.296875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 481.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|724|fine|v2-show-changes": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 477.109375,
+          "y": -290,
+          "width": 104.015625,
+          "height": 44,
+          "right": 581.125,
+          "bottom": -246
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 128.15625,
+            "height": 44,
+            "right": 467.109375,
+            "bottom": -246
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 477.109375,
+            "y": -290,
+            "width": 104.015625,
+            "height": 44,
+            "right": 581.125,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 431.296875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 481.890625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|724|fine|v1-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 128.15625,
+            "height": 44,
+            "right": 467.109375,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 462.296875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 481.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|724|fine|v2-pen": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 489.171875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 998.21875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|724|fine|v2-record": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 506.171875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 425.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|724|coarse|v2-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 477.109375,
+          "y": -290.328125,
+          "width": 97.875,
+          "height": 44,
+          "right": 574.984375,
+          "bottom": -246.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290.328125,
+            "width": 128.15625,
+            "height": 44,
+            "right": 467.109375,
+            "bottom": -246.328125
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 477.109375,
+            "y": -290.328125,
+            "width": 97.875,
+            "height": 44,
+            "right": 574.984375,
+            "bottom": -246.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 431.125,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 482.21875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|724|coarse|v2-show-changes": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 477.109375,
+          "y": -290.328125,
+          "width": 104.015625,
+          "height": 44,
+          "right": 581.125,
+          "bottom": -246.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290.328125,
+            "width": 128.15625,
+            "height": 44,
+            "right": 467.109375,
+            "bottom": -246.328125
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 477.109375,
+            "y": -290.328125,
+            "width": 104.015625,
+            "height": 44,
+            "right": 581.125,
+            "bottom": -246.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 431.125,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 482.21875,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|724|coarse|v1-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290.328125,
+            "width": 128.15625,
+            "height": 44,
+            "right": 467.109375,
+            "bottom": -246.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 462.109375,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 482.21875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|724|coarse|v2-pen": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 666.5,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1019.296875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|724|coarse|v2-record": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 683.5,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 433.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|1366|fine|v2-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 716.84375,
+          "y": -426,
+          "width": 97.875,
+          "height": 44,
+          "right": 814.71875,
+          "bottom": -382
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 128.15625,
+            "height": 44,
+            "right": 706.84375,
+            "bottom": -382
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 716.84375,
+            "y": -426,
+            "width": 97.875,
+            "height": 44,
+            "right": 814.71875,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 905.234375,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Show changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|1366|fine|v2-show-changes": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 716.84375,
+          "y": -426,
+          "width": 104.015625,
+          "height": 44,
+          "right": 820.859375,
+          "bottom": -382
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 128.15625,
+            "height": 44,
+            "right": 706.84375,
+            "bottom": -382
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 716.84375,
+            "y": -426,
+            "width": 104.015625,
+            "height": 44,
+            "right": 820.859375,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 1003.625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Hide changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|1366|fine|v1-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 128.15625,
+            "height": 44,
+            "right": 706.84375,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 929.734375,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 710.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|1366|fine|v2-pen": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 933.078125,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1039.21875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryHide3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|1366|fine|v2-record": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 937.078125,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 696.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|1366|coarse|v2-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 716.84375,
+          "y": -426.328125,
+          "width": 97.875,
+          "height": 44,
+          "right": 814.71875,
+          "bottom": -382.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426.328125,
+            "width": 128.15625,
+            "height": 44,
+            "right": 706.84375,
+            "bottom": -382.328125
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 716.84375,
+            "y": -426.328125,
+            "width": 97.875,
+            "height": 44,
+            "right": 814.71875,
+            "bottom": -382.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 905.15625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Show changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1
+  },
+  "webkit|1366|coarse|v2-show-changes": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 716.84375,
+          "y": -426.328125,
+          "width": 104.015625,
+          "height": 44,
+          "right": 820.859375,
+          "bottom": -382.328125
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426.328125,
+            "width": 128.15625,
+            "height": 44,
+            "right": 706.84375,
+            "bottom": -382.328125
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 716.84375,
+            "y": -426.328125,
+            "width": 104.015625,
+            "height": 44,
+            "right": 820.859375,
+            "bottom": -382.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 1003.546875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.40625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Hide changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "webkit|1366|coarse|v1-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426.328125,
+            "width": 128.15625,
+            "height": 44,
+            "right": 706.84375,
+            "bottom": -382.328125
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 929.640625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 710.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|1366|coarse|v2-pen": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 1026.25,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1060.296875,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryHide3 versions"
+    ],
+    "roleCount": 0
+  },
+  "webkit|1366|coarse|v2-record": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 1004.34375,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 696.40625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|320|coarse|v2-reading": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326,
+          "width": 98.015625,
+          "height": 44,
+          "right": 98.015625,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -380,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 98.015625,
+            "height": 44,
+            "right": 98.015625,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 280,
+      "height": 529.515625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 679.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|320|coarse|v2-show-changes": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326,
+          "width": 103.265625,
+          "height": 44,
+          "right": 103.265625,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -380,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 103.265625,
+            "height": 44,
+            "right": 103.265625,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 280,
+      "height": 660.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 679.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|320|coarse|v1-reading": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 145.984375,
+            "height": 44,
+            "right": 145.984375,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 155.984375,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 239.484375,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 280,
+      "height": 566.515625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 625.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|320|coarse|v2-pen": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 280,
+      "height": 774.203125,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1156.015625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|320|coarse|v2-record": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 280,
+      "height": 902.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|320|coarse|v2-tasting": {
+    "innerWidth": 320,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 280,
+      "height": 902.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 280,
+      "height": 18.890625,
+      "right": 280,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|375|coarse|v2-reading": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326,
+          "width": 98.015625,
+          "height": 44,
+          "right": 98.015625,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -380,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 98.015625,
+            "height": 44,
+            "right": 98.015625,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 335,
+      "height": 462.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 679.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|375|coarse|v2-show-changes": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326,
+          "width": 103.265625,
+          "height": 44,
+          "right": 103.265625,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -380,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 103.265625,
+            "height": 44,
+            "right": 103.265625,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 335,
+      "height": 660.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 679.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|375|coarse|v1-reading": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 145.984375,
+            "height": 44,
+            "right": 145.984375,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 155.984375,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 239.484375,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 335,
+      "height": 499.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 625.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|375|coarse|v2-pen": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 335,
+      "height": 759.515625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1085.015625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|375|coarse|v2-record": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 335,
+      "height": 902.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|375|coarse|v2-tasting": {
+    "innerWidth": 375,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 335,
+      "height": 902.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 335,
+      "height": 18.890625,
+      "right": 335,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|393|coarse|v2-reading": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326,
+          "width": 98.015625,
+          "height": 44,
+          "right": 98.015625,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -380,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 98.015625,
+            "height": 44,
+            "right": 98.015625,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 353,
+      "height": 462.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 679.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|393|coarse|v2-show-changes": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 0,
+          "y": -326,
+          "width": 103.265625,
+          "height": 44,
+          "right": 103.265625,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 98,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -380,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -380,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -336
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 103.265625,
+            "height": 44,
+            "right": 103.265625,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": false
+    },
+    "region": {
+      "width": 353,
+      "height": 660.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 679.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|393|coarse|v1-reading": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 145.984375,
+            "height": 44,
+            "right": 145.984375,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 155.984375,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 239.484375,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 353,
+      "height": 499.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 625.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|393|coarse|v2-pen": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 353,
+      "height": 742.203125,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1068.015625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|393|coarse|v2-record": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 353,
+      "height": 902.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|393|coarse|v2-tasting": {
+    "innerWidth": 393,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 353,
+      "height": 902.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 353,
+      "height": 18.890625,
+      "right": 353,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|fine|v2-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 255.6875,
+          "y": -326,
+          "width": 98.015625,
+          "height": 44,
+          "right": 353.703125,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 255.6875,
+            "y": -326,
+            "width": 98.015625,
+            "height": 44,
+            "right": 353.703125,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 448.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 598.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|723|fine|v2-show-changes": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 255.6875,
+          "y": -326,
+          "width": 103.265625,
+          "height": 44,
+          "right": 358.953125,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 255.6875,
+            "y": -326,
+            "width": 103.265625,
+            "height": 44,
+            "right": 358.953125,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 646.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 598.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|723|fine|v1-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 145.984375,
+            "height": 44,
+            "right": 145.984375,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 155.984375,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 239.484375,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 485.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 598.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|fine|v2-pen": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 515.390625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 985.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|fine|v2-record": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 711.390625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 542.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|fine|v2-tasting": {
+    "innerWidth": 723,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 711.390625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 542.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|coarse|v2-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 255.6875,
+          "y": -326,
+          "width": 98.015625,
+          "height": 44,
+          "right": 353.703125,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 255.6875,
+            "y": -326,
+            "width": 98.015625,
+            "height": 44,
+            "right": 353.703125,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 448.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 625.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|723|coarse|v2-show-changes": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 255.6875,
+          "y": -326,
+          "width": 103.265625,
+          "height": 44,
+          "right": 358.953125,
+          "bottom": -282
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record a tasting",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 152.1875,
+            "height": 44,
+            "right": 152.1875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 162.1875,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 245.6875,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 255.6875,
+            "y": -326,
+            "width": 103.265625,
+            "height": 44,
+            "right": 358.953125,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 646.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 625.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record a tasting",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|723|coarse|v1-reading": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Record another",
+          "rect": {
+            "x": 0,
+            "y": -326,
+            "width": 145.984375,
+            "height": 44,
+            "right": 145.984375,
+            "bottom": -282
+          }
+        },
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 155.984375,
+            "y": -326,
+            "width": 83.5,
+            "height": 44,
+            "right": 239.484375,
+            "bottom": -282
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 683,
+      "height": 485.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 625.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Record another",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|coarse|v2-pen": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 692.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1032.828125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|coarse|v2-record": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 888.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|723|coarse|v2-tasting": {
+    "innerWidth": 723,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 683,
+      "height": 888.890625,
+      "overflowX": "auto"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 683,
+      "height": 18.890625,
+      "right": 683,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 569.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|724|fine|v2-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 474.453125,
+          "y": -290,
+          "width": 98.015625,
+          "height": 44,
+          "right": 572.46875,
+          "bottom": -246
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 125.5,
+            "height": 44,
+            "right": 464.453125,
+            "bottom": -246
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 474.453125,
+            "y": -290,
+            "width": 98.015625,
+            "height": 44,
+            "right": 572.46875,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 427.921875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 484.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|724|fine|v2-show-changes": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 474.453125,
+          "y": -290,
+          "width": 103.265625,
+          "height": 44,
+          "right": 577.71875,
+          "bottom": -246
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 125.5,
+            "height": 44,
+            "right": 464.453125,
+            "bottom": -246
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 474.453125,
+            "y": -290,
+            "width": 103.265625,
+            "height": 44,
+            "right": 577.71875,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 427.921875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 484.890625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|724|fine|v1-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 125.5,
+            "height": 44,
+            "right": 464.453125,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 458.921875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 484.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|724|fine|v2-pen": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 489.171875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 991.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|724|fine|v2-record": {
+    "innerWidth": 724,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 505.171875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 428.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|724|coarse|v2-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 474.453125,
+          "y": -290,
+          "width": 98.015625,
+          "height": 44,
+          "right": 572.46875,
+          "bottom": -246
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 125.5,
+            "height": 44,
+            "right": 464.453125,
+            "bottom": -246
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 474.453125,
+            "y": -290,
+            "width": 98.015625,
+            "height": 44,
+            "right": 572.46875,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 427.921875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 484.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Show changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|724|coarse|v2-show-changes": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 474.453125,
+          "y": -290,
+          "width": 103.265625,
+          "height": 44,
+          "right": 577.71875,
+          "bottom": -246
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 125.5,
+            "height": 44,
+            "right": 464.453125,
+            "bottom": -246
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 474.453125,
+            "y": -290,
+            "width": 103.265625,
+            "height": 44,
+            "right": 577.71875,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 427.921875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 484.890625,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "Hide changes",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|724|coarse|v1-reading": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 338.953125,
+            "y": -290,
+            "width": 125.5,
+            "height": 44,
+            "right": 464.453125,
+            "bottom": -246
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 564,
+      "height": 458.921875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 484.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "Next version",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|724|coarse|v2-pen": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 666.671875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1012.640625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryShow3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|724|coarse|v2-record": {
+    "innerWidth": 724,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 564,
+      "height": 682.671875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 564,
+      "height": 18.890625,
+      "right": 564,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 434.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionShow details",
+      "HistoryShow2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|1366|fine|v2-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 714.1875,
+          "y": -426,
+          "width": 98.015625,
+          "height": 44,
+          "right": 812.203125,
+          "bottom": -382
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 125.5,
+            "height": 44,
+            "right": 704.1875,
+            "bottom": -382
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 714.1875,
+            "y": -426,
+            "width": 98.015625,
+            "height": 44,
+            "right": 812.203125,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 851.5625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Show changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|1366|fine|v2-show-changes": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 714.1875,
+          "y": -426,
+          "width": 103.265625,
+          "height": 44,
+          "right": 817.453125,
+          "bottom": -382
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 125.5,
+            "height": 44,
+            "right": 704.1875,
+            "bottom": -382
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 714.1875,
+            "y": -426,
+            "width": 103.265625,
+            "height": 44,
+            "right": 817.453125,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 931.0625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Hide changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|1366|fine|v1-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 125.5,
+            "height": 44,
+            "right": 704.1875,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 869.0625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 711.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|1366|fine|v2-pen": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 897,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1033.890625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryHide3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|1366|fine|v2-record": {
+    "innerWidth": 1366,
+    "pointerCoarse": false,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 887.46875,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 696.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|1366|coarse|v2-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Show changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 714.1875,
+          "y": -426,
+          "width": 98.015625,
+          "height": 44,
+          "right": 812.203125,
+          "bottom": -382
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 125.5,
+            "height": 44,
+            "right": 704.1875,
+            "bottom": -382
+          }
+        },
+        {
+          "label": "Show changes",
+          "rect": {
+            "x": 714.1875,
+            "y": -426,
+            "width": 98.015625,
+            "height": 44,
+            "right": 812.203125,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 851.5625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Show changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1
+  },
+  "chrome|1366|coarse|v2-show-changes": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [
+      {
+        "label": "Hide changes",
+        "where": "band",
+        "display": "block",
+        "rect": {
+          "x": 714.1875,
+          "y": -426,
+          "width": 103.265625,
+          "height": 44,
+          "right": 817.453125,
+          "bottom": -382
+        },
+        "tabindex": "0",
+        "ariaPressed": null,
+        "color": "rgb(21, 118, 222)",
+        "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "textDecorationLine": "underline"
+      }
+    ],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 125.5,
+            "height": 44,
+            "right": 704.1875,
+            "bottom": -382
+          }
+        },
+        {
+          "label": "Hide changes",
+          "rect": {
+            "x": 714.1875,
+            "y": -426,
+            "width": 103.265625,
+            "height": 44,
+            "right": 817.453125,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 931.0625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 752.078125,
+    "gapToTable": 6,
+    "struck": 21,
+    "hasChangesParam": true,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "Hide changes",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 1,
+    "struckAfterHide": 0,
+    "labelAfterHide": [
+      "Show changes"
+    ],
+    "hasChangesParamAfterHide": false
+  },
+  "chrome|1366|coarse|v1-reading": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": {
+      "height": 44,
+      "children": [
+        {
+          "label": "Next version",
+          "rect": {
+            "x": 578.6875,
+            "y": -426,
+            "width": 125.5,
+            "height": 44,
+            "right": 704.1875,
+            "bottom": -382
+          }
+        }
+      ],
+      "oneLine": true
+    },
+    "region": {
+      "width": 378.65625,
+      "height": 869.0625,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 711.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "Next version",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|1366|coarse|v2-pen": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 990.25,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 1054.640625,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "Cancel",
+      "Save as a new version",
+      "HistoryHide3 versions"
+    ],
+    "roleCount": 0
+  },
+  "chrome|1366|coarse|v2-record": {
+    "innerWidth": 1366,
+    "pointerCoarse": true,
+    "overflow": 0,
+    "controls": [],
+    "acts": null,
+    "region": {
+      "width": 378.65625,
+      "height": 960.9375,
+      "overflowX": "visible"
+    },
+    "heading": {
+      "x": 0,
+      "y": 0,
+      "width": 378.65625,
+      "height": 18.890625,
+      "right": 378.65625,
+      "bottom": 18.890625
+    },
+    "head": null,
+    "tableTop": 24.890625,
+    "tableDocTop": 696.078125,
+    "gapToTable": 6,
+    "struck": 0,
+    "hasChangesParam": false,
+    "bandHasJump": true,
+    "bandButtons": [
+      "Rename",
+      "VersionHide details",
+      "HistoryHide2 versions"
+    ],
+    "roleCount": 0
+  }
+}

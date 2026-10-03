@@ -21,7 +21,7 @@ import { buildDiff } from '../domain/diff.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { notebookPath } from './notebookPaths.js';
-import { IngredientTable } from './IngredientTable.jsx';
+import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
 import { Method } from './Method.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
@@ -2029,7 +2029,13 @@ export function RecipePage({ onPageStatus = () => {} }) {
             </div>
 
             <section className="ingredient-table-region" aria-label="Ingredients">
-              <h2 className="region-name">Ingredients</h2>
+              <IngredientsHead
+                parentVersion={parentVersion}
+                openPen={openPen}
+                below724={below724}
+                showingChanges={showingChanges}
+                onToggleShowChanges={handleToggleShowChanges}
+              />
               {hasRows ? (
                 <IngredientTable
                   rows={mode === 'developing' || showingChanges ? version.rows : readingVersion.rows}

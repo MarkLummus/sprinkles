@@ -315,6 +315,28 @@ function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade 
   return null;
 }
 
+// The Ingredients region's heading. Below 724 it is the board's head row:
+// the region name with Show changes at the right end (sketch 011 decision 30
+// addendum, option 3, "Move it to the table head, below 724 only", Mark,
+// 2026-10-02; boards 393-show-changes-head.html and 723-show-changes-head.html).
+// The control is the Sheet's `.text-control`, not the band's `.notebook-link`,
+// because it now sits on the Sheet. As in the band it is absent for a first
+// version and while any pen is open, and from 724 up the band carries it
+// instead, so exactly one Show changes control exists at any width. Hook-free:
+// the width signal arrives as `below724`.
+export function IngredientsHead({ parentVersion, openPen, below724, showingChanges, onToggleShowChanges }) {
+  const heading = <h2 className="region-name">Ingredients</h2>;
+  if (!(below724 && openPen === null && parentVersion)) return heading;
+  return (
+    <div className="ingredient-table-region__head">
+      {heading}
+      <button type="button" className="text-control" tabIndex={0} onClick={onToggleShowChanges}>
+        {showingChanges ? 'Hide changes' : 'Show changes'}
+      </button>
+    </div>
+  );
+}
+
 // The table now groups by step (LD-01, ROADMAP Scope bullet 3) rather than
 // rendering one <tr> per ingredient in the version's authored order — a
 // step-head <tr> per group (its lead-in text looked up from `steps`, or

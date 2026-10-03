@@ -392,7 +392,9 @@ export function VersionRow({
             30, Mark 2026-10-02), then Next version as the underlined text
             control; from 724 up Next version is the filled control, as
             built, and the record acts live only in BatchRow.jsx's own
-            head. Show changes follows once a parent exists. */}
+            head. Show changes follows once a parent exists, from 724 up;
+            below 724 it is on the Ingredients row (IngredientsHead, decision
+            30 addendum). */}
         {openPen === null && (
           <div className="notebook-version__acts">
             {below724 && (
@@ -415,7 +417,7 @@ export function VersionRow({
             >
               Next version
             </button>
-            {parentVersion && (
+            {parentVersion && !below724 && (
               // 03.5-15 Task 2, decisions_recorded 5: names the action by
               // its own state instead of carrying aria-pressed — a toggle
               // that renames itself must not also announce a pressed

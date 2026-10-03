@@ -167,8 +167,12 @@ function sameRow(label, a, b) {
   a.cells.forEach((cell, i) => {
     const bc = b.cells[i];
     if (!bc) return;
+    // A display:none cell reports a 0x0 rect at the page origin, so its y
+    // relative to the row only tracks where the row sits; compare y for
+    // laid-out cells alone.
+    const hidden = bc.width === 0 && bc.height === 0;
     countedCheck(
-      near(cell.x, bc.x, 0.5) && near(cell.y, bc.y, 0.5) && near(cell.width, bc.width, 0.5) && near(cell.height, bc.height, 0.5),
+      near(cell.x, bc.x, 0.5) && (hidden || near(cell.y, bc.y, 0.5)) && near(cell.width, bc.width, 0.5) && near(cell.height, bc.height, 0.5),
       `${label} cell ${i}: ${JSON.stringify(cell)} vs ${JSON.stringify(bc)}`,
     );
   });

@@ -1256,3 +1256,125 @@ describe('IngredientTable: the As made total is blank until a value is written (
     });
   });
 });
+
+// Quick task 261002-wdn (Mark, 2026-10-02, option 1): a lone "Unallocated"
+// head labels nothing, so it is hidden when it is the only group; it stays
+// whenever a numbered group sits beside it. Coconut v1 and v2 assign every
+// portion to step 1 but carry an empty method, so no step resolves and every
+// portion lands in that one group. Heads are counted by the exact class with
+// its closing quote, so the "-lead" span is not counted.
+describe('IngredientTable — a lone Unallocated group renders no step head (261002-wdn)', () => {
+  const STEP_HEAD = 'class="ingredient-table__step-head"';
+  const countStepHeads = (markup) => markup.split(STEP_HEAD).length - 1;
+  const countTrs = (markup) => (markup.match(/<tr[ >]/g) || []).length;
+
+  it('A: reading with every portion unresolved renders no step head, yet every row and the Total', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1)]);
+
+    for (const currentStepNumbers of [displayNumbers([]), undefined]) {
+      const markup = renderToStaticMarkup(
+        <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={currentStepNumbers} />,
+      );
+
+      expect(countStepHeads(markup)).toBe(0);
+      expect(markup).not.toContain('Unallocated');
+      const tbody = sectionMarkup(markup, 'tbody');
+      expect(countTrs(tbody)).toBe(2);
+      expect(tbody).toContain('Row A');
+      expect(tbody).toContain('Row B');
+      expect(sectionMarkup(markup, 'tfoot')).toContain('Total');
+    }
+  });
+
+  it('B: Show changes with every portion unresolved renders no step head, and the struck figure still renders', () => {
+    const baseline = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1)]);
+    const current = makeVersion([makeRow('a', 'Row A', 12, 1), makeRow('b', 'Row B', 20, 1)]);
+    const diff = buildDiff(current, baseline);
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={current.rows} diff={diff} showingChanges mode="reading" steps={current.method} currentStepNumbers={displayNumbers([])} />,
+    );
+
+    expect(countStepHeads(markup)).toBe(0);
+    expect(markup).not.toContain('Unallocated');
+    expect(markup).toContain('struck-value');
+    expect(countTrs(sectionMarkup(markup, 'tbody'))).toBe(2);
+  });
+
+  it('C: the pen with its only step removed renders no step head, and one grams field per portion', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1)]);
+    version.method = [{ n: 1, leadIn: 'One', instruction: 'Do one.', removed: true }];
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: onePortionDraftRow(1, '10'), b: onePortionDraftRow(1, '20') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+      />,
+    );
+
+    expect(countStepHeads(markup)).toBe(0);
+    expect(markup).not.toContain('Unallocated');
+    expect(markup).toContain('aria-label="Row A, grams"');
+    expect(markup).toContain('aria-label="Row B, grams"');
+    expect((sectionMarkup(markup, 'tbody').match(/<input /g) || []).length).toBe(2);
+  });
+
+  it('D (guard): a table mixing a numbered group and Unallocated keeps both heads, in reading and in the pen', () => {
+    const version = makeVersion([
+      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] }),
+    ]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', removed: true },
+    ];
+    const currentStepNumbers = displayNumbers(version.method);
+
+    const reading = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={currentStepNumbers} />,
+    );
+    expect(countStepHeads(reading)).toBe(2);
+    expect(reading.indexOf('Step 1<span')).toBeGreaterThan(-1);
+    expect(reading.indexOf('>Unallocated<')).toBeGreaterThan(reading.indexOf('Step 1<span'));
+
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }], removed: false } },
+      asMade: {},
+    };
+    const pen = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+      />,
+    );
+    expect(countStepHeads(pen)).toBe(2);
+    expect(pen.indexOf('>Unallocated<')).toBeGreaterThan(pen.indexOf('Step 1<span'));
+  });
+
+  it('E (guard): a table with only numbered groups keeps one head per group and no Unallocated', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 2)]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.' },
+    ];
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={displayNumbers(version.method)} />,
+    );
+
+    expect(countStepHeads(markup)).toBe(2);
+    expect(markup).toContain('Step 1<span class="ingredient-table__step-head-lead">One</span>');
+    expect(markup).toContain('Step 2<span class="ingredient-table__step-head-lead">Two</span>');
+    expect(markup).not.toContain('Unallocated');
+  });
+});

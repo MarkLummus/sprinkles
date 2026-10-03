@@ -10,7 +10,7 @@ import { FieldFeedback } from './FieldFeedback.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { FoldRow } from './FoldRow.jsx';
 import { UprightRail } from './UprightRail.jsx';
-import { useLogBesideSheet, useFold } from './useBelowDesktop.js';
+import { useBelow724, useLogBesideSheet, useFold } from './useBelowDesktop.js';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -153,32 +153,6 @@ function autoGrow(event) {
   const el = event.target;
   el.style.height = 'auto';
   el.style.height = `${el.scrollHeight}px`;
-}
-
-// The axes' per-arrangement render (contract "Keyboard and tab order"): a
-// matchMedia listener on (max-width: 723.98px), re-rendering on crossing.
-// Node-guarded (RESEARCH.md Code Example 6, this plan's own critical
-// note): BatchRow's own static-markup tests run under Vitest's node
-// environment (renderToStaticMarkup, no jsdom), where `window` does not
-// exist — an unguarded read here would crash every existing static test
-// the instant this hook landed. With no window, or no
-// window.matchMedia, the hook answers the desktop arrangement and builds
-// no listener; the real subscription exists only in the browser. With
-// app.css's own width-only block and wide-touch block, this hook governs
-// only the record pen's own battery, whose cut is the ladder's 724,
-// derived from its measured limits (sketch 011 decision 28, Mark
-// 2026-10-02).
-function useBelow724() {
-  const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
-  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 723.98px)').matches : false));
-  useEffect(() => {
-    if (!hasMatchMedia) return undefined;
-    const mediaQuery = window.matchMedia('(max-width: 723.98px)');
-    const onChange = (event) => setBelow(event.matches);
-    mediaQuery.addEventListener('change', onChange);
-    return () => mediaQuery.removeEventListener('change', onChange);
-  }, [hasMatchMedia]);
-  return below;
 }
 
 // AxesGrid: the six-axis battery in one of the contract's two DOM orders

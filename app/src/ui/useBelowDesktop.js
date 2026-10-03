@@ -25,6 +25,30 @@ export function useBelowDesktop() {
   return below;
 }
 
+// The ladder's 724 rung (sketch 011 decision 28, Mark 2026-10-02): the
+// axes' per-arrangement render (BatchRow.jsx, contract "Keyboard and tab
+// order") and, since sketch 011 decision 30, the recipe band's record act
+// (VersionRow.jsx) both read this one cut. Moved here from BatchRow.jsx
+// unchanged in behaviour. Node-guarded, the same critical note as
+// useBelowDesktop above: BatchRow's and VersionRow's static-markup tests run
+// under Vitest's node environment, where `window` does not exist. With no
+// window, or no window.matchMedia, the hook answers the desktop arrangement
+// and builds no listener; the real subscription exists only in the browser.
+export const BELOW_724_QUERY = '(max-width: 723.98px)';
+
+export function useBelow724() {
+  const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia(BELOW_724_QUERY).matches : false));
+  useEffect(() => {
+    if (!hasMatchMedia) return undefined;
+    const mediaQuery = window.matchMedia(BELOW_724_QUERY);
+    const onChange = (event) => setBelow(event.matches);
+    mediaQuery.addEventListener('change', onChange);
+    return () => mediaQuery.removeEventListener('change', onChange);
+  }, [hasMatchMedia]);
+  return below;
+}
+
 // useFold(openByDefault): a fold's own open/closed state (decisions_recorded
 // 2, 03.5-15) — starts at its width's default and returns to that default
 // whenever the default changes, so an iPad rotation across 1366 resets the

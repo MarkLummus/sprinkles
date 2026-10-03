@@ -1,19 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { recordDateWords } from '../domain/batch.js';
+import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { notebookPath } from './notebookPaths.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { FoldRow } from './FoldRow.jsx';
 import { useFold } from './useBelowDesktop.js';
 
+// The record act's own word, looked up from the three standings (never
+// hand-spelled), the way RecipeList.jsx's STANDING_WORDS does for Home's
+// row: the band's filled control, below 724, names what the version is
+// waiting on (sketch 011 decision 30, answers 1 and 4).
+const RECORD_ACT_WORDS = {
+  [NOT_YET_CHURNED]: 'Record a batch',
+  [AWAITING_TASTING]: 'Record a tasting',
+  [TASTED]: 'Record another',
+};
+
 // The version's own row (sketch 003 variant B, 03.3-01): the front
 // matter's first stacked row, spanning the whole page. Carries the
 // version's own acts (Develop, the history outline, the lineage line) — the
 // batch's acts (Record, Correct, Add tasting, the batch list, the
-// batch's own content) now live in BatchRow.jsx. No page-level running
-// head here (ROADMAP Scope bullet 1) — the row carries no "Versions"
-// heading of its own.
+// batch's own content) live in BatchRow.jsx, except that below 724 the
+// band's first act is the record act the version is waiting on (sketch 011
+// decision 30, Mark 2026-10-02); from 724 up the band is as built. No
+// page-level running head here (ROADMAP Scope bullet 1) — the row carries
+// no "Versions" heading of its own.
 export function VersionRow({
   version,
   versions,
@@ -49,6 +62,14 @@ export function VersionRow({
   // useFold below returns detailsOpen to this default whenever it
   // changes, so an iPad rotation across 1366 resets the fold.
   foldsOpen = true,
+  // Below 724 (useBelow724, RecipePage's read) the acts row leads with the
+  // filled record act and Next version becomes a text control. The two
+  // handlers are RecipePage's own: onStartRecording is the one the log's
+  // Record another and Record a batch call; onRecordTasting is the
+  // SEAM(261002-wn0) handler.
+  below724 = false,
+  onStartRecording = () => {},
+  onRecordTasting = () => {},
 }) {
   const [detailsOpen, toggleDetailsOpen] = useFold(foldsOpen);
   // Focus-return for the Develop opener: closing the plan's pen returns
@@ -116,6 +137,11 @@ export function VersionRow({
   // with more than one, and "no batch" with none — computed once here so
   // the fieldset's three branches never call citableBatches a second time.
   const citable = citableBatches(batches);
+
+  // The band's record act (sketch 011 decision 30), from the same
+  // standingFor Home's RowActions and the Go to batch status read, so the
+  // band, Home and the jump cannot disagree.
+  const standing = standingFor(batches);
 
   return (
     <>
@@ -330,17 +356,30 @@ export function VersionRow({
         </dl>
 
         {/* The acts group (sketch 003 variant B, index.html:215, 479;
-            restyled as App front matter, Task 2): Next version, then Show
-            changes (once a parent exists) — one row, below the dl, only
-            while no pen is open. The Record opener moved to BatchRow.jsx's
-            own head, beside Batches/Correct (03.5-07 Task 1,
-            decisions_recorded 1). */}
+            restyled as App front matter, Task 2): one row, below the dl,
+            only while no pen is open. Below 724 it leads with ONE filled
+            control, the record act the version is waiting on (Record a
+            tasting, Record another or Record a batch, sketch 011 decision
+            30, Mark 2026-10-02), then Next version as the underlined text
+            control; from 724 up Next version is the filled control, as
+            built, and the record acts live only in BatchRow.jsx's own
+            head. Show changes follows once a parent exists. */}
         {openPen === null && (
           <div className="notebook-version__acts">
+            {below724 && (
+              <button
+                type="button"
+                className="notebook-action"
+                tabIndex={0}
+                onClick={() => (standing === AWAITING_TASTING ? onRecordTasting() : onStartRecording())}
+              >
+                {RECORD_ACT_WORDS[standing]}
+              </button>
+            )}
             <button
               type="button"
               ref={developButtonRef}
-              className="notebook-action"
+              className={below724 ? 'notebook-link' : 'notebook-action'}
               tabIndex={0}
               onClick={onStartDeveloping}
             >

@@ -1,0 +1,3404 @@
+{
+  "webkit|320c|tasted-first": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 552.875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|320c|tasted-parent": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|320c|awaiting-first": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|320c|awaiting-parent": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|320c|none-first": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|320c|none-parent": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|375c|tasted-first": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 530.375,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|375c|tasted-parent": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|375c|awaiting-first": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|375c|awaiting-parent": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|375c|none-first": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|375c|none-parent": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|393c|tasted-first": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 530.375,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|393c|tasted-parent": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|393c|awaiting-first": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|393c|awaiting-parent": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|393c|none-first": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|393c|none-parent": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|428c|tasted-first": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 530.375,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|428c|tasted-parent": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|428c|awaiting-first": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|428c|awaiting-parent": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|428c|none-first": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|428c|none-parent": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|723f|tasted-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 426.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723f|tasted-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 375.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723f|awaiting-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 375.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723f|awaiting-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 375.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723f|none-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 375.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|723f|none-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 375.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|723c|tasted-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 453.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723c|tasted-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723c|awaiting-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723c|awaiting-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|723c|none-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|723c|none-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 148.15625,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 158.15625,
+        "right": 256.03125,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 402.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|724f|tasted-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 286.375,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724f|tasted-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 557.109375,
+        "right": 654.984375,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724f|awaiting-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724f|awaiting-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 557.109375,
+        "right": 654.984375,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724f|none-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|724f|none-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 557.109375,
+        "right": 654.984375,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|724c|tasted-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 313.375,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724c|tasted-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 557.109375,
+        "right": 654.984375,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724c|awaiting-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724c|awaiting-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 557.109375,
+        "right": 654.984375,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|724c|none-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|724c|none-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 547.109375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 557.109375,
+        "right": 654.984375,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 234,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|1366f|tasted-first": {
+    "width": 451.3125,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1010.84375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 326.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|1366f|tasted-parent": {
+    "width": 451.3125,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1010.84375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 1020.84375,
+        "right": 1118.71875,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 461.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|1366f|awaiting-first": {
+    "width": 451.3125,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1010.84375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 440.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|1366f|awaiting-parent": {
+    "width": 451.3125,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1010.84375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 1020.84375,
+        "right": 1118.71875,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 482.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "webkit|1366f|none-first": {
+    "width": 451.3125,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1010.84375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 440.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "webkit|1366f|none-parent": {
+    "width": 451.3125,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1010.84375,
+        "top": 0,
+        "width": 128.15625,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 1020.84375,
+        "right": 1118.71875,
+        "top": 0,
+        "width": 97.875,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 461.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|320c|tasted-first": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 576.875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|320c|tasted-parent": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|320c|awaiting-first": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|320c|awaiting-parent": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|320c|none-first": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|320c|none-parent": {
+    "width": 280,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|375c|tasted-first": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 531.375,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|375c|tasted-parent": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|375c|awaiting-first": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|375c|awaiting-parent": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|375c|none-first": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|375c|none-parent": {
+    "width": 335,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|393c|tasted-first": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 531.375,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|393c|tasted-parent": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|393c|awaiting-first": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|393c|awaiting-parent": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|393c|none-first": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|393c|none-parent": {
+    "width": 353,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|428c|tasted-first": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 531.375,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|428c|tasted-parent": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|428c|awaiting-first": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|428c|awaiting-parent": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|428c|none-first": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|428c|none-parent": {
+    "width": 388,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|723f|tasted-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 427.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723f|tasted-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 377.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723f|awaiting-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 377.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723f|awaiting-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 377.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723f|none-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 377.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|723f|none-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 377.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|723c|tasted-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 454.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723c|tasted-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723c|awaiting-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723c|awaiting-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|723c|none-first": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|723c|none-parent": {
+    "width": 683,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 20,
+        "right": 145.5,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 155.5,
+        "right": 253.515625,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 404.1875,
+    "jumpGap": 20,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|724f|tasted-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 285.375,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724f|tasted-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 554.453125,
+        "right": 652.46875,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724f|awaiting-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724f|awaiting-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 554.453125,
+        "right": 652.46875,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724f|none-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|724f|none-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 554.453125,
+        "right": 652.46875,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|724c|tasted-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 312.375,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724c|tasted-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 554.453125,
+        "right": 652.46875,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724c|awaiting-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724c|awaiting-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 554.453125,
+        "right": 652.46875,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|724c|none-first": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|724c|none-parent": {
+    "width": 273.046875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 418.953125,
+        "right": 544.453125,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 554.453125,
+        "right": 652.46875,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 236,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|1366f|tasted-first": {
+    "width": 451.296875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1008.1875,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 326.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|1366f|tasted-parent": {
+    "width": 451.296875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1008.1875,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 1018.1875,
+        "right": 1116.203125,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 462.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|1366f|awaiting-first": {
+    "width": 451.296875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1008.1875,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 441.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|1366f|awaiting-parent": {
+    "width": 451.296875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1008.1875,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 1018.1875,
+        "right": 1116.203125,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 482.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 0,
+    "overflow": 0
+  },
+  "chrome|1366f|none-first": {
+    "width": 451.296875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1008.1875,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      }
+    ],
+    "bandHeight": 441.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  },
+  "chrome|1366f|none-parent": {
+    "width": 451.296875,
+    "height": 44,
+    "rows": 1,
+    "children": [
+      {
+        "text": "Next version",
+        "className": "notebook-action",
+        "tabindex": "0",
+        "left": 882.6875,
+        "right": 1008.1875,
+        "top": 0,
+        "width": 125.5,
+        "height": 44,
+        "bg": "rgb(21, 118, 222)",
+        "color": "rgb(255, 255, 255)",
+        "decoration": "none"
+      },
+      {
+        "text": "Show changes",
+        "className": "notebook-link",
+        "tabindex": "0",
+        "left": 1018.1875,
+        "right": 1116.203125,
+        "top": 0,
+        "width": 98.015625,
+        "height": 44,
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(21, 118, 222)",
+        "decoration": "underline"
+      }
+    ],
+    "bandHeight": 462.1875,
+    "jumpGap": null,
+    "recordBatchBand": 0,
+    "recordBatchLog": 1,
+    "overflow": 0
+  }
+}

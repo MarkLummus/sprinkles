@@ -34,7 +34,7 @@ import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 import { FoldRow } from './FoldRow.jsx';
-import { useBelowDesktop, useFold } from './useBelowDesktop.js';
+import { useBelow724, useBelowDesktop, useFold } from './useBelowDesktop.js';
 
 // The record pen's blocked-date sentence (D-05) — one constant, read from
 // both handleSaveBatch (via validateRecordDraft) and the ceremony's own
@@ -909,6 +909,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // both reading this same foldsOpen prop. Both hooks below must sit above
   // the early returns.
   const belowDesktop = useBelowDesktop();
+  // The recipe band's record act (sketch 011 decision 30): below 724 its
+  // first control is the filled record act. Above the early returns, like
+  // every hook here.
+  const below724 = useBelow724();
   const [balanceOpen, toggleBalance] = useFold(!belowDesktop);
 
   if (version === undefined) return null;
@@ -1923,6 +1927,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             versionLineBlockedAttempt={blockedTarget?.kind === 'versionLine' ? blockedTarget.attempt : null}
             versionLineError={blockedTarget?.kind === 'versionLine' ? blockedMessage : null}
             foldsOpen={!belowDesktop}
+            below724={below724}
+            onStartRecording={handleStartRecording}
           />
 
           <GoToBatch batches={batches} onGo={handleGoToBatch} />

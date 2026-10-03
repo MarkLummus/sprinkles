@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-03T03:02:16.044Z"
+last_updated: "2026-10-03T03:30:42.519Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: f74887ce2f7d3c0f77e4a139b91bcdc63cc683a5
+state_head: f6953ef50c0f6e7576a67ac2dd8ccda9186454e3
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-02 - Completed quick task 261002-vh5: Move the record pen cut from 760 to 724
+Last activity: 2026-10-02 - Completed quick task 261002-wdn: Hide the Unallocated step head when it is the only group
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -370,6 +370,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261002-u9e | Rename "Continue developing" to "Keep developing" in RecipeList.jsx and tests | 2026-10-03 | b5972d5 | [261002-u9e-rename-continue-developing-to-keep-devel](./quick/261002-u9e-rename-continue-developing-to-keep-devel/) |
 | 261002-v2k | Paint the overscroll canvas white on every route | 2026-10-03 | 3d9f9ce | [261002-v2k-paint-the-overscroll-canvas-white-on-ever](./quick/261002-v2k-paint-the-overscroll-canvas-white-on-ever/) |
 | 261002-vh5 | Move the record pen cut from 760 to 724 (decision 28) | 2026-10-03 | f74887c | [261002-vh5-move-the-record-pen-cut-from-760-to-724-](./quick/261002-vh5-move-the-record-pen-cut-from-760-to-724-/) |
+| 261002-wdn | Hide the Unallocated step head when it is the only group | 2026-10-03 | f6953ef | [261002-wdn-hide-the-unallocated-step-head-when-it-i](./quick/261002-wdn-hide-the-unallocated-step-head-when-it-i/) |
 
 ### Roadmap Evolution
 

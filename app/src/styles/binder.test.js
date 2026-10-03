@@ -444,24 +444,31 @@ describe('the picked state is a fill (D-04, sketch 007 lines 49 and 83)', () => 
 // — see .planning/debug/ios-overscroll-cream-on-app-routes.md for the
 // measured variants. This suite cannot render a canvas (no layout engine),
 // so it pins the source-level precondition: body carries the App ground,
-// the two paper frames hand it back via :has() (the running head, a third
-// trigger, retired 03.5-02 Task 3), and no rule anywhere declares a
-// background for the root element on its own, which is the one change
-// that would stop body's background from reaching the canvas.
-describe('the canvas is per context, on body, not a descendant (G-03.4-9, commit 4105848)', () => {
+// no rule hands the canvas back on any route (Mark, 03.4 UAT round three,
+// 2026-09-22), and no rule anywhere declares a background for the root
+// element on its own, which is the one change that would stop body's
+// background from reaching the canvas.
+describe('the canvas is the App ground on every route, on body, not a descendant (G-03.4-9, commit 4105848)', () => {
   test('the top-level body rule declares the App ground', () => {
     const rule = rules.find((r) => r.selector === 'body' && r.media === undefined);
     expect(rule, 'expected a top-level body rule').toBeTruthy();
     expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
   });
 
-  test('a top-level rule hands the canvas back to the Sheet cream for the not-found page — layout C paints the App white above and below the Sheet, so .recipe-page no longer triggers this rule (03.5-04 Task 1, decisions_recorded 7): the Sheet keeps its own paper through .recipe-page\'s own background instead', () => {
-    const rule = rules.find((r) => r.selector.startsWith('body:has(') && r.media === undefined);
-    expect(rule, 'expected a top-level body:has(...) rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/background:\s*var\(--sheet-ground\)/);
-    expect(rule.selector).toMatch(/\.not-found/);
-    expect(rule.selector).not.toMatch(/\.recipe-page/);
-    expect(rule.selector).not.toMatch(/\.page-head/);
+  test('no rule hands the canvas back to the Sheet: no selector starts with body:has(, and the top-level body rule is the only rule that gives body a background (Mark, 03.4 UAT round three, 2026-09-22)', () => {
+    const bodyBackgrounds = [];
+    for (const rule of rules) {
+      const parts = rule.selector.split(',').map((s) => s.trim());
+      for (const part of parts) {
+        expect(part, `expected no body:has(...) hand-back, found "${part}"`).not.toMatch(/^body:has\(/);
+      }
+      if (parts.some((p) => /^body(\b|[.:#[]|$)/.test(p)) && /background/.test(rule.declarations)) {
+        bodyBackgrounds.push(rule);
+      }
+    }
+    expect(bodyBackgrounds).toHaveLength(1);
+    expect(bodyBackgrounds[0].selector).toBe('body');
+    expect(bodyBackgrounds[0].media).toBeUndefined();
   });
 
   test('no rule in app.css declares a background for the root element on its own — that would cancel body\'s propagation to the canvas', () => {

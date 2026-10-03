@@ -2,35 +2,25 @@
    value, and rule weight reads through a custom property defined in
    tokens.css — none is a literal here. */
 
-/* The canvas, per context (G-03.4-9, .planning/debug/ios-overscroll-cream-
-   on-app-routes.md): iOS Safari's elastic-overscroll region paints the CSS
-   canvas background, which the UA fills from the BODY element's own
-   background only while the root element (html) stays transparent — a
-   descendant's background, .shell's included, can never reach the canvas
-   at any size, because the canvas is unbounded and no descendant box
-   propagates to it. So the App's white is declared here, on body itself.
-   Layout C (03.5-04 Task 1, decisions_recorded 7) puts App context above
-   and below the Sheet on the recipe route now, and every board sets body
-   to white there too — so .recipe-page no longer hands the canvas back:
-   only the :has() rule below still does, for the one remaining paper
-   frame, .not-found (the running head is gone — folded todo, 03.5-02
-   Task 3 — and its own trigger went with it). .recipe-page keeps its own
-   paper through its own background declaration below; it no longer needs
-   to reach the canvas, since the canvas is white at every point along
-   the recipe route now. No `html` selector may be added anywhere in this
-   project: giving the root element a background is the one change that
-   stops body's background from propagating to the canvas at all (debug
-   session variant B), which would cancel this mechanism outright. */
+/* The canvas (G-03.4-9, .planning/debug/ios-overscroll-cream-on-app-routes.md):
+   iOS Safari's elastic-overscroll region paints the CSS canvas background,
+   which the UA fills from the BODY element's own background only while the
+   root element stays transparent. A descendant's background, .shell's
+   included, can never reach the canvas, because the canvas is unbounded and
+   no descendant box propagates to it. So the App's white is declared here,
+   on body itself, and body reads it on every route, the Sheet's paper frames
+   included (Mark, 03.4 UAT round three, 2026-09-22). The two paper frames
+   (.recipe-page and .not-found) paint their own Sheet ground through their
+   own background declarations, so neither one needs the canvas.
+   No `html` selector may be added anywhere in this project: giving the
+   root element a background stops body's background reaching the canvas
+   at all (debug session variant B). */
 body {
   margin: 0;
   background: var(--app-background);
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-table-body);
-}
-
-body:has(.not-found) {
-  background: var(--sheet-ground);
 }
 
 /* The boot line (G-03.4-1, .planning/debug/ipad-page-load-seconds.md): the

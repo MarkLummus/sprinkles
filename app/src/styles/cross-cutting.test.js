@@ -744,7 +744,7 @@ describe('the page notice anchors above the keyed page, out of flow (260917-ewf;
 });
 
 describe('the print layer suppresses the page notice and falls the hand back to the text face (260917-ewf Task 3; 03.4-02 Task 2, D-17)', () => {
-  test('the print block carries exactly three rules: .page-status goes display: none, .app-hand falls back to the text face in italic, and so does .sheet-hand (sketch 011 Task 1)', () => {
+  test('the print block carries exactly four rules: .page-status goes display: none, .app-hand falls back to the text face in italic, so does .sheet-hand (sketch 011 Task 1), and the Ingredients-row Show changes goes display: none (261002-wn1)', () => {
     // Resolved explicitly on r.media === 'print', never through
     // mediaRuleFor, which returns the first match across ALL media
     // blocks (the file's own precedent at ~206). The print block's
@@ -752,7 +752,7 @@ describe('the print layer suppresses the page notice and falls the hand back to 
     // that adds the hand's fallback rule (RESEARCH.md Pitfall 2) — not
     // discovered later as a surprise red test.
     const printRules = rules.filter((r) => r.media === 'print');
-    expect(printRules).toHaveLength(3);
+    expect(printRules).toHaveLength(4);
 
     const pageStatusRule = printRules.find((r) => r.selector === '.page-status');
     expect(pageStatusRule, 'expected .page-status among the print rules').toBeTruthy();
@@ -767,6 +767,12 @@ describe('the print layer suppresses the page notice and falls the hand back to 
     expect(sheetHandRule, 'expected .sheet-hand among the print rules').toBeTruthy();
     expect(sheetHandRule.declarations).toMatch(/font-family:\s*var\(--face-text\)/);
     expect(sheetHandRule.declarations).toMatch(/font-style:\s*italic/);
+
+    // 261002-wn1 (decision 30 addendum, "Print must hide the control"): the
+    // control sits on the Sheet below 724 and is screen-only.
+    const headControlRule = printRules.find((r) => r.selector === '.ingredient-table-region__head .text-control');
+    expect(headControlRule, 'expected the Ingredients-row Show changes among the print rules').toBeTruthy();
+    expect(headControlRule.declarations).toMatch(/display:\s*none/);
   });
 });
 

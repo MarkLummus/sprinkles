@@ -156,7 +156,7 @@ function autoGrow(event) {
 }
 
 // The axes' per-arrangement render (contract "Keyboard and tab order"): a
-// matchMedia listener on (max-width: 759.98px), re-rendering on crossing.
+// matchMedia listener on (max-width: 723.98px), re-rendering on crossing.
 // Node-guarded (RESEARCH.md Code Example 6, this plan's own critical
 // note): BatchRow's own static-markup tests run under Vitest's node
 // environment (renderToStaticMarkup, no jsdom), where `window` does not
@@ -165,12 +165,9 @@ function autoGrow(event) {
 // window.matchMedia, the hook answers the desktop arrangement and builds
 // no listener; the real subscription exists only in the browser. With
 // app.css's own width-only block and wide-touch block, this hook governs
-// only the record pen's own battery now — the route's one width cut not
-// yet measured (03.5-13 Task 2/decisions_recorded 5). Mark kept it at
-// 760 (2026-09-27), as DESIGN.md records, rather than grouping it onto
-// the ladder's 724; a todo tracks measuring the battery's own wide/
-// stacked limits
-// (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md).
+// only the record pen's own battery, whose cut is the ladder's 724,
+// derived from its measured limits (sketch 011 decision 28, Mark
+// 2026-10-02).
 function useBelow724() {
   const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
   const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia('(max-width: 723.98px)').matches : false));
@@ -558,7 +555,7 @@ export function BatchRow({
   // pen's own frame now lives in the log column whenever the log sits
   // beside the Sheet (1366px and up, sketch 011 decision 16), so the
   // axes take the stacked core-then-declared arrangement there too — not
-  // only below 760px.
+  // only below 724px.
   const logBesideSheet = useLogBesideSheet();
   const below = below724 || logBesideSheet;
 

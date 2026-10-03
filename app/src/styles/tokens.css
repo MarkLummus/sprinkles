@@ -228,8 +228,9 @@
      resolveTokenPx. A fine pointer stays compact — the growth lives
      only in app.css's @media (pointer: coarse) block; the joined cell's
      own WIDTH and the track it sits on stay width-keyed, in the
-     width-only @media (max-width: 759.98px) block below it (Decision C,
-     sketch 009; DESIGN.md's Capability Rule). */
+     width-only @media (max-width: 723.98px) block below it (Decision C,
+     sketch 009; its cut is 724 since sketch 011 decision 28; DESIGN.md's
+     Capability Rule). */
   --touch-min: 44px;
   --touch-stop-width: 44px;
 
@@ -238,8 +239,8 @@
      ladder"/"Axes spec"; 03.3.1-06; 03.3.1.1 tenth round): every
      verified number from the structural contract, named so app.css
      never carries the literal. The breakpoint literals themselves
-     (759.98px, 600px) stay in app.css's own @media preludes — the
-     width-only 759.98px block (track geometry, width-keyed) and the
+     (723.98px, 600px) stay in app.css's own @media preludes — the
+     width-only 723.98px block (track geometry, width-keyed) and the
      723.98px phone-forms block, the sanctioned exception the touch
      block above already established for `--touch-min`/
      `--touch-stop-width`, neither of which carries a width literal of
@@ -262,7 +263,7 @@
      share the cell height (sketch 008 line 55). --sheet-stop-h keeps its own
      name and stays the axis stop's token. */
   --sheet-control-h: var(--sheet-stop-h);
-  /* The stop's own grown height below 760px: rides the existing touch
+  /* The stop's own grown height below 724px: rides the existing touch
      block's 44px (the --rule-foot-band pattern above) so the stop's
      height and every other control's min-height can never drift apart
      while reading its own name at the call site. */

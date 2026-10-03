@@ -2241,7 +2241,7 @@ textarea {
   margin: 0;
 }
 
-/* The stacked arrangement below 760px (AxesGrid's `below` branch;
+/* The stacked arrangement below 724px (AxesGrid's `below` branch;
    contract "Responsive ladder"): core and declared render as two
    grouped containers on a horizontal rule, each its own auto-fit grid —
    "collapsing further once two 280px columns no longer fit" is exactly
@@ -2287,7 +2287,7 @@ textarea {
    here. The
    foot band (.pen-foot) is one column at every width and needs no rule
    in this block (G-03.5-8b). The 983.98px prelude is the one sanctioned
-   breakpoint literal in the file, alongside 759.98px below: a prelude,
+   breakpoint literal in the file, alongside 723.98px below: a prelude,
    not a declaration, so binder.test.js's no-bare-px gate never sees it,
    and the fractional value keeps exactly 984px on the desktop side of
    the boundary. */
@@ -2323,8 +2323,9 @@ textarea {
    .axis-mark__stops row already wraps). This condition carries no
    breakpoint literal at all now (03.5-13 Task 1 retires the union's own
    759.98px width arm) — `(pointer: coarse)` alone; the width-only block
-   below keeps that literal for track geometry, which stays width-keyed
-   (Decision C, sketch 009). The sketches' text controls are `<button>`s,
+   below keeps a width literal for track geometry, which stays width-keyed
+   (Decision C, sketch 009; its cut is 724 since sketch 011 decision 28).
+   The sketches' text controls are `<button>`s,
    inline-block, and take 24px tall at desktop and 44px here (sketch
    003 @ d89b758 lines 32 and 178; 007 lines 131 and 180; settled on
    sketch 008, 2026-09-14) — the caption line (.axis-mark__head,
@@ -2401,12 +2402,12 @@ textarea {
    The version row's own narrow-width collapse moved to notebook.css with
    the row itself (03.5-04 Task 1 restructure; VersionRow now renders in
    the band grid, outside .recipe-page), so this block now governs only
-   the record pen's own battery. It is, with the wide-touch block below
-   and BatchRow.jsx's useBelow760, the route's one width cut not yet
-   measured (03.5-13 Task 2/decisions_recorded 5): Mark kept it at 760,
-   as DESIGN.md records, rather than grouping it onto the ladder's 724 —
-   a todo tracks measuring the battery's own limits
-   (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md).
+   the record pen's own battery. Its cut, shared with the wide-touch block
+   below and BatchRow.jsx's useBelow724, is the ladder's 724, derived from
+   the pen's measured limits (sketch 011 decision 28, Mark 2026-10-02): the
+   wide arrangement needs a 594 frame and the log adds its own 2 x 20 below
+   724, so it holds from 634 up, and the Grouping Rule folds that onto 724,
+   where the phone forms already change.
    The 216px --sheet-track-stop-narrow and the 44x44 stop are drawn for
    the STACKED axes layout, measured: at a wide viewport the axes sit in
    a three-column grid whose columns measure 213.3px, so a 216px track
@@ -2415,8 +2416,9 @@ textarea {
    Scoopability, and across the grid's hairline). Touch HEIGHTS are safe
    to widen to the pointer; this track geometry is not, because no layout
    has been drawn for touch-sized stops at desktop widths — see the
-   sketch question logged in CONTEXT. The complement pair is 759.98/760,
-   matching the wide-touch block's own min-width: 760px below. */
+   sketch question logged in CONTEXT. The complement pair is 723.98/724,
+   matching the wide-touch block's own min-width: 724px below. This block
+   shares the phone-forms block's condition but stays its own block. */
 @media (max-width: 723.98px) {
   .axis-mark__stops,
   .axis-mark__anchors {
@@ -2448,7 +2450,8 @@ textarea {
    The list-form ingredient table rules (decision 15, sketch 011, 03.5-11
    Task 1) are appended at the end of this block, in the board's own rule
    order (723-batch.html) — moved here from the width-only 759.98px block
-   above, which they no longer share a cut with. */
+   above. That block has sat at this same 723.98px cut since sketch 011
+   decision 28, but stays its own block. */
 @media (max-width: 723.98px) {
   /* The one place the page's phone gutter is stated (260917-gjo; the
      running head retired 03.5-02 Task 3): three boxes step together
@@ -2595,7 +2598,7 @@ textarea {
    (03.5-13 Task 1 retires that width arm; the touch union above now reads
    `(pointer: coarse)` alone).
 
-   It is min-width 760 AND pointer coarse: exactly the case 009 was drawn for,
+   It is min-width 724 AND pointer coarse: exactly the case 009 was drawn for,
    and the case no earlier sketch had drawn. Mark's iPad is 1366 and coarse at
    once, so no width threshold meant for phones could reach it and the narrow
    drawing's rules are wrong there.
@@ -2607,7 +2610,7 @@ textarea {
    union overwrote that drawing at 680, 580, 480 and 393 — caught by the
    conformance re-measure, which read the head at 28.8px against the
    sketch's 44px. Each drawing now governs the case it was drawn for: this
-   block's own min-width: 760px keeps it scoped to the wide case.
+   block's own min-width: 724px keeps it scoped to the wide case.
 
    M4 itself: Clear takes its 44px target as an overflowing hit area, so the
    line box never changes height. The caption line then reserves the same two
@@ -2615,12 +2618,9 @@ textarea {
    — while the axes still reserve Clear's height, so picking moves nothing.
 
    This block, with the width-only block above and BatchRow.jsx's own
-   useBelow760, governs only the record pen's own battery now — the
-   route's one width cut not yet measured (03.5-13 Task 2/decisions_recorded
-   5). Mark kept it at 760 (2026-09-27), as DESIGN.md records, rather than
-   grouping it onto the ladder's 724; a todo tracks measuring the battery's
-   own wide/stacked limits
-   (.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md). */
+   useBelow724, governs only the record pen's own battery. Its cut is 724
+   (sketch 011 decision 28), so from 724 to 759 a coarse pointer gets this
+   block's caption reserve and Clear's overflowing hit area too. */
 @media (min-width: 724px) and (pointer: coarse) {
   .axis-mark__head,
   .segmented-field__head {

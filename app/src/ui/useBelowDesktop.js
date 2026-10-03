@@ -46,7 +46,7 @@ export function useFold(openByDefault) {
 // complement of notebook.css's own log-below block,
 // (max-width: 1365.98px). The record pen's frame lives in that narrower
 // column whenever this is true, so it takes the narrow arrangement there
-// too, not only below 759.98px. Node-guarded, the same critical note as
+// too, not only below 723.98px. Node-guarded, the same critical note as
 // useBelowDesktop above.
 export const LOG_BESIDE_SHEET_QUERY = '(min-width: 1366px)';
 

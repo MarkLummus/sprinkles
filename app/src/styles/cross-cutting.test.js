@@ -680,6 +680,8 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
     expect(ruleFor('.ingredient-table th').declarations).toMatch(/font-size:\s*var\(--sheet-size-running-head\)/);
     expect(ruleFor('.table-small-print').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
     expect(ruleFor('.ingredient-table__flag').declarations).toMatch(/font-size:\s*var\(--sheet-size-cross-flag\)/);
+    // the pen's remove/restore link stands 14px clear of the name (sketch 011 decision 26)
+    expect(ruleFor('.ingredient-table__remove-gap').declarations).toMatch(/word-spacing:\s*var\(--sheet-remove-gap\)/);
     // a --sheet-size-cross-flag consumer outside the table stays there too
     expect(ruleFor('.method-step__uses-line').declarations).toMatch(/font-size:\s*var\(--sheet-size-cross-flag\)/);
   });

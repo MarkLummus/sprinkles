@@ -944,6 +944,31 @@ describe('IngredientTable — the pen\'s remove/restore control carries .text-co
 
     expect(markup).toMatch(/<button type="button" class="text-control"[^>]*>remove<\/button>/);
   });
+
+  // Sketch 011 decision 26: one gap span immediately before every remove or
+  // restore button, so a link on the name's line stands clear of it.
+  it('puts exactly one gap span immediately before every remove and restore link (sketch 011 decision 26)', () => {
+    const chipless = { ingredient: { composition: { fat: 1 }, basis: { fat: 'stated' } } };
+    const version = makeVersion([
+      makeRow('a', 'Row A', 10, 1, chipless),
+      makeRow('b', 'Row B', 20, 1, chipless),
+    ]);
+    const draftVersion = structuredClone(version);
+    draftVersion.rows[1].removed = true;
+    const penDraft = { rows: { a: onePortionDraftRow(1, '10'), b: onePortionDraftRow(1, '20', true) }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+
+    expect(markup).toMatch(/<span class="struck-value">Row B<\/span><span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>restore<\/button>/);
+    const pairs = markup.match(/<span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>(remove|restore)<\/button>/g) ?? [];
+    const spans = markup.match(/class="ingredient-table__remove-gap"/g) ?? [];
+    const links = markup.match(/class="text-control"[^>]*>(remove|restore)<\/button>/g) ?? [];
+    expect(pairs).toHaveLength(2);
+    expect(spans).toHaveLength(2);
+    expect(links).toHaveLength(2);
+  });
 });
 
 // blockedRowAttempt's own dependency-array wiring (WR-01) is a
@@ -982,7 +1007,7 @@ describe('IngredientTable — the pen reads style 6 too (sketch 011 Task 2): gra
     expect(markup).toContain('aria-label="Graza Drizzle, grams"');
     expect(markup).toContain('value="48"');
     expect(markup).toContain(' g</span></td><td class="ingredient-table__col-name">Graza Drizzle');
-    expect(markup).toMatch(/Graza Drizzle<button type="button" class="text-control"[^>]*>remove<\/button>/);
+    expect(markup).toMatch(/Graza Drizzle<span class="ingredient-table__remove-gap"> <\/span><button type="button" class="text-control"[^>]*>remove<\/button>/);
     expect(markup).not.toContain('ingredient-table__col-data');
     expect(markup).not.toContain('ingredient-table__col-remove');
   });

@@ -200,9 +200,10 @@ describe('task 1 style 6 (decision 15) — three column identities: content-size
 // not a measured-minimum budget — there is nothing to measure a minimum
 // against, since these are the board's own fixed values.
 describe("decision 15's own literal tokens (sketch 011) — the amount span, its gap, and the flag gap read the board's own literal values", () => {
-  test("the plan-grams span width, its own gap, and the flag gap resolve to the board's literal px values (64, 18, 8)", () => {
+  test("the plan-grams span width, its own gap, and the flag gap and the remove gap resolve to the board's literal px values (64, 18, 8, 10)", () => {
     expect(resolveTokenPx(tokens, '--sheet-plan-grams-w')).toBe(64);
     expect(resolveTokenPx(tokens, '--sheet-plan-grams-gap')).toBe(18);
     expect(resolveTokenPx(tokens, '--sheet-flag-gap')).toBe(8);
+    expect(resolveTokenPx(tokens, '--sheet-remove-gap')).toBe(10);
   });
 });

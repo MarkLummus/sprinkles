@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-03T01:55:46.200Z"
+last_updated: "2026-10-03T03:02:16.044Z"
 last_activity: 2026-10-02
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 3d9f9ce1d4143851f75a0ab478a9a80a9f712bca
+state_head: f74887ce2f7d3c0f77e4a139b91bcdc63cc683a5
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-02 - Completed quick task 261002-v2k: Paint the overscroll canvas white on every route
+Last activity: 2026-10-02 - Completed quick task 261002-vh5: Move the record pen cut from 760 to 724
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -264,7 +264,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-24] [design] Decide whether the batch and tasting log is entered on the phone, or only transcribed at the desk — [todo file](.planning/todos/pending/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md)
 - [2026-09-24] [design] Write a product brief for phone-based jobs — [todo file](.planning/todos/pending/2026-09-24-write-a-product-brief-for-phone-based-jobs.md)
 - [2026-09-25] [design] Draw the App-context record pen (route-recipe-batch.md's 2026-09-23 amendment) — [todo file](.planning/todos/pending/2026-09-25-draw-the-record-pen-in-app-context.md)
-- [2026-09-26] [design] Measure the record pen's own width limits, then re-derive its cut — [todo file](.planning/todos/pending/2026-09-26-measure-the-record-pen-width-limits.md)
 - [2026-09-27] [ui] Align the version section's Details link — [todo file](.planning/todos/pending/2026-09-27-align-the-version-details-link.md)
 - [2026-09-27] [ui] Recipe band buttons narrow on hover or click — [todo file](.planning/todos/pending/2026-09-27-band-buttons-narrow-on-hover-or-click.md)
 - [2026-09-27] [ui] Keep the side nav's options on screen while the page scrolls — [todo file](.planning/todos/pending/2026-09-27-sticky-side-nav.md)
@@ -370,6 +369,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261002-sre | Next version pen's remove/restore link stands 14px clear of the name or estimated tag (sketch 011 decision 26) | 2026-10-03 | e2ae018 | [261002-sre-give-the-next-version-pen-s-remove-link-](./quick/261002-sre-give-the-next-version-pen-s-remove-link-/) |
 | 261002-u9e | Rename "Continue developing" to "Keep developing" in RecipeList.jsx and tests | 2026-10-03 | b5972d5 | [261002-u9e-rename-continue-developing-to-keep-devel](./quick/261002-u9e-rename-continue-developing-to-keep-devel/) |
 | 261002-v2k | Paint the overscroll canvas white on every route | 2026-10-03 | 3d9f9ce | [261002-v2k-paint-the-overscroll-canvas-white-on-ever](./quick/261002-v2k-paint-the-overscroll-canvas-white-on-ever/) |
+| 261002-vh5 | Move the record pen cut from 760 to 724 (decision 28) | 2026-10-03 | f74887c | [261002-vh5-move-the-record-pen-cut-from-760-to-724-](./quick/261002-vh5-move-the-record-pen-cut-from-760-to-724-/) |
 
 ### Roadmap Evolution
 

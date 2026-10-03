@@ -371,6 +371,10 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261002-v2k | Paint the overscroll canvas white on every route | 2026-10-03 | 3d9f9ce | [261002-v2k-paint-the-overscroll-canvas-white-on-ever](./quick/261002-v2k-paint-the-overscroll-canvas-white-on-ever/) |
 | 261002-vh5 | Move the record pen cut from 760 to 724 (decision 28) | 2026-10-03 | f74887c | [261002-vh5-move-the-record-pen-cut-from-760-to-724-](./quick/261002-vh5-move-the-record-pen-cut-from-760-to-724-/) |
 | 261002-wdn | Hide the Unallocated step head when it is the only group | 2026-10-03 | f6953ef | [261002-wdn-hide-the-unallocated-step-head-when-it-i](./quick/261002-wdn-hide-the-unallocated-step-head-when-it-i/) |
+| 261002-wmy | Go to batch row in the recipe band below 724 | 2026-10-03 | 73309a7 | .planning/quick/261002-wmy-go-to-batch-row-below-724-add-a-go-to-batch-row-to-the-recip |
+| 261002-wmz | Filled record action below 724, Next version a text control | 2026-10-03 | 0caaefa | .planning/quick/261002-wmz-filled-action-rule-below-724-the-band-s-one-filled-action-re |
+| 261002-wn0 | Record a tasting opens the amend pen on Add tasting without Correct | 2026-10-03 | b403acc | .planning/quick/261002-wn0-record-a-tasting-opens-the-amend-pen-on-add-tasting-without |
+| 261002-wn1 | Show changes moves to the Ingredients row below 724 | 2026-10-03 | fb024fc | .planning/quick/261002-wn1-show-changes-moves-to-the-right-aligned-head-row-of-the-ingr |
 
 ### Roadmap Evolution
 

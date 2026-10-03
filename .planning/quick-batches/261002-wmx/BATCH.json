@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "batch_id": "261002-wmx",
+  "created_at": "2026-10-03T03:29:55.521Z",
+  "options": {},
+  "base_revision": "f6953ef50c0f6e7576a67ac2dd8ccda9186454e3",
+  "items": [
+    {
+      "quick_id": "261002-wmy",
+      "client_id": null,
+      "description": "Go to batch row, below 724: add a \"Go to batch\" row to the recipe band after the Version block and before History, built like History's row (underlined control word, a 12px status at the end, the whole row one 44px target). Status reads Tasted, Awaiting tasting or Not yet churned (Home's own words, from the latest batch). It jumps to the batch log heading; with no batch it lands on \"Not yet churned\" and the log's Record a batch. From 724 up the band is unchanged. Authority: .planning/sketches/011-recipe-route-c/README.md decision 30, boards 393-phone-log.html and 723-phone-log.html, .impeccable/surfaces/route-recipe-batch.md and route-recipe.md. Tests first; measure the real DOM against the boards in WebKit and system Chrome at 320, 375, 393, 428 coarse and 723 fine/coarse.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "73309a7",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261002-wmz",
+      "client_id": null,
+      "description": "Filled action rule, below 724: the band's one filled action reads Record a tasting when the latest batch awaits tasting, Record another when a batch exists and is tasted, Record a batch when none; Next version becomes an underlined text control beside it. From 724 up the band is unchanged. When there is no batch, both filled Record a batch buttons stay (the band's and the log's). Same authority as item 1. Item 2 edits the same band as item 1: run it after item 1. Tests first; measure against the boards at the same widths.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "0caaefa",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261002-wn0",
+      "client_id": null,
+      "description": "Record a tasting opens the amend pen on Add tasting without going through Correct. RecipePage.jsx holds the pen state (handleStartAmending, handleAddTasting, openPen, onStartAmending, onAddTasting passed to BatchRow). Add a path that opens the amend pen with the tasting step already open, used by the band's Record a tasting from item 2; settle and report whether the pen heading still says Correct in that case. Run after item 2. Tests first; verify in the real app (WebKit and system Chrome) that Save and Cancel return the maker to the band, and the pen matches 393-pen-app.html.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "b403acc",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261002-wn1",
+      "client_id": null,
+      "description": "Show changes moves to the right-aligned head row of the Ingredients table below 724 only (stays in the band from 724 up). The label toggles Show changes / Hide changes by state, uses the Sheet's own .text-control (sheet ink, underlined), 44px target on a coarse pointer and 24px on a fine one, hidden in print, absent for a first version with no parent; absent in the pen as in the band today. Authority: boards 393-show-changes-head.html and 723-show-changes-head.html and decision 30's option 3 addendum. Touches app/src/ui/IngredientTable.jsx and the band's VersionRow.jsx: run after item 3 and after quick 261002-wdn has landed. Tests first; measure against the boards at 320, 375, 393 and 723.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "fb024fc",
+      "failure_reason": null
+    }
+  ]
+}

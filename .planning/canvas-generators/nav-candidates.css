@@ -1,0 +1,21 @@
+/* Sid, 2026-10-03 (decision 32, candidates f and g). One rule set per state, applied to the app's own shell markup; the DOM additions (the toggle, the menu button, the scrim)
+   are in ladder.py and ladder-measure.mjs. The one glyph is the app's own MoreIcon (three dots, shell.css's tab row), turned to stand vertically: the app has no chevron
+   or panel icon, and a new one is a new asset. */
+/* === F === f, collapsed: an icon-only rail, 44px targets on a 6px margin: 57 wide with its hairline */
+.shell__rail{flex:0 0 57px;width:57px;padding:var(--gap-xs) var(--gap-xs) var(--gap-l);align-items:center}
+.shell__rail .shell__place{width:44px;height:44px;box-sizing:border-box;padding:0;justify-content:center;gap:0;font-size:0}
+.shell__rail .shell__divider{width:32px;margin:var(--gap-xs) 0}
+.shell__rail-toggle{appearance:none;border:none;background:none;color:var(--app-text);cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;margin:0 0 var(--gap-xs)}
+.shell__rail-toggle svg{width:var(--app-size-icon);height:var(--app-size-icon);transform:rotate(90deg)}
+/* === FX === f, expanded: the rail as built (224, words); the toggle stays where it was, at the rail's top left */
+.shell__rail-toggle{appearance:none;border:none;background:none;color:var(--app-text);cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;margin:0 0 var(--gap-xs) calc(var(--gap-xs) - var(--gap-m))}
+.shell__rail-toggle svg{width:var(--app-size-icon);height:var(--app-size-icon);transform:rotate(90deg)}
+/* === G === g, closed: no rail; a menu button beside the wordmark */
+.shell__rail{display:none}
+.shell__lead{display:flex;align-items:center;gap:var(--gap-xs)}
+.shell__menu{appearance:none;border:none;background:none;color:var(--app-text);cursor:pointer;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;margin:0 0 0 calc(-1 * var(--gap-xs))}
+.shell__menu svg{width:var(--app-size-icon);height:var(--app-size-icon);transform:rotate(90deg)}
+/* === GO === g, open: the rail slides over the page, above it in z-order, from the foot of the header to the foot of the window (956px = a 1024 window less the 68px header); the scrim dims the page and dismisses on a tap */
+.shell{position:relative}
+.shell__rail{display:flex;position:absolute;left:0;top:68px;height:956px;z-index:5;background:var(--app-background);width:224px;flex:none;padding:var(--gap-xs) var(--gap-m) var(--gap-l);box-shadow:4px 0 16px rgba(20,20,20,.18)}
+.shell__scrim{position:absolute;left:0;right:0;top:68px;height:956px;z-index:4;background:rgba(20,20,20,.28)}

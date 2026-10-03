@@ -130,9 +130,21 @@ function readPen(rootSelector) {
     }
   }
   const clear = frameEl.querySelector('.axis-mark__clear');
+  // frameOverflow is how far any real element's box overhangs the frame's side
+  // edges. scrollOverflow is the frame's raw scrollWidth - clientWidth, which
+  // also counts Clear's ::after hit area (right: -6px under the wide-touch
+  // block, M4: "an overflowing hit area"). That 6px is drawn on the board and
+  // is the same at 760 and up today, so it is read and compared, not hidden.
+  let frameOverflow = 0;
+  for (const el of frameEl.querySelectorAll('*')) {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) continue;
+    frameOverflow = Math.max(frameOverflow, r.right - frameRect.right, frameRect.left - r.left);
+  }
   return {
     frame: { w: frameRect.width, h: frameRect.height },
-    frameOverflow: frameEl.scrollWidth - frameEl.clientWidth,
+    frameOverflow,
+    scrollOverflow: frameEl.scrollWidth - frameEl.clientWidth,
     stacked: frameEl.querySelector('.axes-grid--stacked') !== null,
     rule: frameEl.querySelector('.axes-rule') !== null,
     grid: gridEl ? rel(gridEl.getBoundingClientRect()) : null,
@@ -159,6 +171,7 @@ function expectArrangement(reading, { width, coarse }, label) {
   }
   countedCheck(near(reading.frame.w, 640, 0.5), `${label}: frame width 640 (read ${reading.frame.w})`);
   countedCheck(reading.frameOverflow <= 0.5, `${label}: frame overflow ${reading.frameOverflow}`);
+  if (!(coarse && width >= 724)) countedCheck(reading.scrollOverflow <= 0.5, `${label}: frame scroll overflow ${reading.scrollOverflow}`);
   countedCheck(reading.trackPastMax <= 0.5, `${label}: track past axis ${reading.trackPastMax}`);
   countedCheck(reading.overlapMax <= 0.5, `${label}: axis overlap ${reading.overlapMax}`);
   countedCheck(reading.pageOverflow === null || reading.pageOverflow <= 0.5, `${label}: page overflow ${reading.pageOverflow}`);
@@ -174,6 +187,7 @@ function compareToBoard(app, board, label) {
   };
   cmp(app.frame.w, board.frame.w, 'frame width');
   cmp(app.frame.h, board.frame.h, 'frame height');
+  cmp(app.scrollOverflow, board.scrollOverflow, 'frame scroll overflow');
   countedCheck(app.axes.length === board.axes.length, `${label}: axis count ${app.axes.length} vs board ${board.axes.length}`);
   for (const key of ['x', 'y', 'w', 'h']) cmp(app.grid[key], board.grid[key], `grid ${key}`);
   app.axes.forEach((a, i) => {
@@ -224,8 +238,95 @@ async function tracer(browser, servers, engine) {
   }));
 }
 
+// Frame heights decision 28's addendum logged for 724-759, by engine and pointer.
+const ADDENDUM_HEIGHT = { webkit: { mouse: 1209, touch: 1443 }, chrome: { mouse: 1200, touch: 1440 } };
+
+const matrixLines = [];
+const boardReadings = new Map();
+async function boardReading(browser, servers, engine, width, panel) {
+  const key = `${engine}/${width}`;
+  if (!boardReadings.has(key)) {
+    const b = await openBoard(browser, servers.repoUrl, `${width}-pen-range.html`);
+    const reading = {};
+    for (const name of ['v-cut724-mouse', 'v-cut724-touch']) {
+      reading[name] = await b.page.evaluate(readPen, `.rng-win.${name}`);
+    }
+    await b.context.close();
+    boardReadings.set(key, reading);
+  }
+  return boardReadings.get(key)[panel];
+}
+
+async function matrix(browser, servers, engine) {
+  for (const width of [723, 724, 740, 759]) {
+    for (const coarse of [false, true]) {
+      const pointer = coarse ? 'touch' : 'mouse';
+      const label = `${engine} ${width} ${pointer}`;
+      const opened = await openPen(browser, servers.appUrl, { width, coarse });
+      const app = await opened.page.evaluate(readPen, 'body');
+      const gridAfter = app.grid.h;
+      await opened.context.close();
+      expectArrangement(app, { width, coarse }, label);
+
+      let boardHeight = null;
+      let worst = null;
+      if (width >= 724) {
+        const board = await boardReading(browser, servers, engine, width, `v-cut724-${pointer}`);
+        boardHeight = board.frame.h;
+        worst = compareToBoard(app, board, `${label} vs ${width}-pen-range.html v-cut724-${pointer}`);
+        if (coarse) {
+          countedCheck(app.axes.every((a) => near(a.headH, 28.8, 0.5)), `${label}: every caption line 28.8 (${app.axes.map((a) => a.headH)})`);
+          countedCheck(app.clearAfterH === '44px', `${label}: Clear's ::after hit area 44px (read ${app.clearAfterH})`);
+          countedCheck(near(gridAfter, opened.gridBefore, 0.5), `${label}: picking stops leaves the axes grid at ${opened.gridBefore} (read ${gridAfter})`);
+        }
+      } else if (coarse) {
+        countedCheck(app.axes.every((a) => near(a.headH, 44, 0.5)), `${label}: every caption line 44 (${app.axes.map((a) => a.headH)})`);
+      }
+
+      const addendum = width >= 724 ? ADDENDUM_HEIGHT[engine][pointer] : null;
+      matrixLines.push({
+        engine,
+        width,
+        pointer,
+        arrangement: app.stacked ? 'stacked' : `${app.columns} columns`,
+        track: [...new Set(app.axes.map((a) => a.trackW))].join('/'),
+        stop: `${app.axes[0].stop.w}x${app.axes[0].stop.h}`,
+        frameW: app.frame.w,
+        frameH: Math.round(app.frame.h * 100) / 100,
+        boardFrameH: boardHeight === null ? null : Math.round(boardHeight * 100) / 100,
+        maxBoardDiff: worst === null ? null : Math.round(worst * 100) / 100,
+        addendumH: addendum,
+        vsAddendum: addendum === null ? null : Math.round((app.frame.h - addendum) * 100) / 100,
+        headH: coarse ? [...new Set(app.axes.map((a) => Math.round(a.headH * 10) / 10))].join('/') : null,
+        clearAfterH: app.clearAfterH,
+        overflow: { frame: app.frameOverflow, scroll: app.scrollOverflow, trackPast: app.trackPastMax, overlap: app.overlapMax, page: app.pageOverflow },
+      });
+      console.log(JSON.stringify({ group: 'matrix', ...matrixLines[matrixLines.length - 1] }));
+    }
+  }
+}
+
+// A live resize across the cut: the hook's listener and the CSS switch together.
+async function resize(browser, servers, engine) {
+  const { context, page } = await openPen(browser, servers.appUrl, { width: 740, coarse: false });
+  const read = () => page.evaluate(readPen, 'body');
+  expectArrangement(await read(), { width: 740, coarse: false }, `${engine} resize 740`);
+
+  await page.setViewportSize({ width: 723, height: 1100 });
+  await page.waitForSelector('.batch-margin--pen .axes-grid--stacked', { timeout: 3000 });
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  expectArrangement(await read(), { width: 723, coarse: false }, `${engine} resize 740 -> 723`);
+
+  await page.setViewportSize({ width: 724, height: 1100 });
+  await page.waitForSelector('.batch-margin--pen .axes-rule', { timeout: 3000 });
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  expectArrangement(await read(), { width: 724, coarse: false }, `${engine} resize 723 -> 724`);
+  await context.close();
+  console.log(JSON.stringify({ engine, group: 'resize', switched: 'ok' }));
+}
+
 // ---------------------------------------------------------------------------
-const requested = process.argv[2] ? process.argv[2].split(',') : ['tracer'];
+const requested = process.argv[2] ? process.argv[2].split(',') : ['tracer', 'matrix', 'resize'];
 const servers = await startServers();
 try {
   for (const [engine, make] of engines) {
@@ -234,6 +335,8 @@ try {
     const browser = await make();
     try {
       if (requested.includes('tracer') && (engine === 'webkit' || requested.length > 1)) await tracer(browser, servers, engine);
+      if (requested.includes('matrix')) await matrix(browser, servers, engine);
+      if (requested.includes('resize')) await resize(browser, servers, engine);
     } finally {
       await browser.close();
     }
@@ -242,4 +345,6 @@ try {
   await servers.close();
 }
 
+const over15 = matrixLines.filter((l) => l.vsAddendum !== null && Math.abs(l.vsAddendum) > 15);
+if (over15.length > 0) console.log(`NOTE frame heights more than 15px from the addendum: ${JSON.stringify(over15.map((l) => [l.engine, l.width, l.pointer, l.frameH, l.addendumH]))}`);
 finish(failures, count, '261002-vh5 probe');

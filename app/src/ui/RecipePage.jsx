@@ -613,6 +613,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   const location = useLocation();
   const focusVersionOnMount = Boolean(location.state?.focusVersion);
   const focusBatchOnMount = Boolean(location.state?.focusBatch);
+  // The band's Record a tasting, pressed on an older batch's address, moves
+  // to the awaiting batch's own address and sets this (handleStartTasting);
+  // the effect below opens the pen once that page instance has its batches.
+  const startTastingOnMount = Boolean(location.state?.startTasting);
   // The show-changes state (D-02): on when the `changes` key is present in
   // the URL's search parameters at all — its value is never consulted, so
   // presence is the whole signal. Composes with both /recipe/:id and
@@ -854,6 +858,24 @@ export function RecipePage({ onPageStatus = () => {} }) {
       cancelled = true;
     };
   }, [versionId]);
+
+  // Opens the pen the band's Record a tasting asked for across a remount
+  // (route state, the focusBatch pattern: the router keys RecipePage by
+  // address, so state is all that crosses). Consumed once: the entry's
+  // state is replaced with null, so Back or a reload never reopens a pen.
+  // handleStartAmending is a function declaration, hoisted, and reads only
+  // refs, setters and module functions, so calling it from here, above the
+  // early returns, is safe.
+  const startTastingConsumedRef = useRef(false);
+  useEffect(() => {
+    if (!startTastingOnMount || startTastingConsumedRef.current) return;
+    if (mode !== 'reading' || !batchId) return;
+    const target = batches.find((batch) => batch.id === batchId);
+    if (!target || target.tasting) return;
+    startTastingConsumedRef.current = true;
+    navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
+    handleStartAmending(target, { opener: 'record-a-tasting' });
+  }, [startTastingOnMount, mode, batchId, batches]);
 
   // D-24: leaving the page with unsaved ink uses the browser's own leave
   // warning only, registered while recording or the plan's pen holds a
@@ -1364,11 +1386,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // below 724, VersionRow.jsx) hands over the batch its label rule read
   // (the version's latest). The pen opens in place only when that batch is
   // the batch in view, so the head, the axes snapshot and the amend save
-  // always name the same batch (T-wn0-01). A different batch in view is
-  // 261002-wn0 Task 2's case.
+  // always name the same batch (T-wn0-01). On an older batch's address the
+  // band moves to the awaiting batch's own address and the pen opens there
+  // (startTastingOnMount, above).
   function handleStartTasting(batch) {
     if (openBatch && openBatch.id === batch.id) {
       handleStartAmending(batch, { opener: 'record-a-tasting' });
+    } else {
+      navigate(notebookPath(version.recipeId, version.id, batch.id), { state: { startTasting: true } });
     }
   }
 

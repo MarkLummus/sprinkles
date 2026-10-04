@@ -227,7 +227,15 @@ function preconditionMex(label, read) {
   countedCheck(read.links.length >= 1, `${label}: baseline has links (read ${read.links.length})`);
 }
 
-function compareOlive(label, after, before) {
+// `restoreFloor` is true for the restore cells at 393. There a removed row stacks
+// the struck old value above the live one in the amount and share cells, which
+// sets a height floor: the untouched second-portion row of the same ingredient
+// already stands at it in the baseline (81 in WebKit, 63.25 in Chrome). The
+// moved link cannot take the first portion row below that floor, so the 15..25
+// drop and the equal-height checks are replaced for the removed row (the
+// coordinator's decision, 2026-10-04) by: at or above the floor, same
+// placement checks as every other cell.
+function compareOlive(label, after, before, { restoreFloor = false } = {}) {
   countedCheck(after.links.length === before.links.length, `${label}: link count ${after.links.length} vs ${before.links.length}`);
   countedCheck(after.notes === before.notes, `${label}: notes ${after.notes} vs ${before.notes}`);
   countedCheck(
@@ -249,7 +257,13 @@ function compareOlive(label, after, before) {
       countedCheck(near(a.btn.width, b.btn.width) && near(a.btn.height, b.btn.height), `${label}: ${a.name} button ${JSON.stringify(a.btn)} vs ${JSON.stringify(b.btn)}`);
       const drop = b.rowHeight - a.rowHeight;
       drops.push(drop);
-      countedCheck(drop >= 15 && drop <= 25, `${label}: ${a.name} row height ${a.rowHeight} vs ${b.rowHeight} (drop ${round(drop)} not in 15..25)`);
+      if (restoreFloor && a.label === 'restore') {
+        const sibling = before.rows.find((r, j) => j !== b.rowIndex && r.textNoLink.includes(a.name));
+        countedCheck(sibling !== undefined, `${label}: ${a.name} has a second-portion row in the baseline`);
+        if (sibling) countedCheck(a.rowHeight >= sibling.height - 0.5, `${label}: ${a.name} row height ${a.rowHeight} is at or above the floor ${sibling.height} (the second-portion row's baseline height)`);
+      } else {
+        countedCheck(drop >= 15 && drop <= 25, `${label}: ${a.name} row height ${a.rowHeight} vs ${b.rowHeight} (drop ${round(drop)} not in 15..25)`);
+      }
     } else {
       countedCheck(nearOrBothNull(a.gap, b.gap), `${label}: ${a.name} gap ${a.gap} vs ${b.gap}`);
       countedCheck(near(a.off, b.off), `${label}: ${a.name} off ${a.off} vs ${b.off}`);
@@ -258,7 +272,7 @@ function compareOlive(label, after, before) {
     }
   });
   const splitA = after.links.filter((l) => l.note !== null);
-  if (splitA.length === 2) countedCheck(near(splitA[0].rowHeight, splitA[1].rowHeight), `${label}: split rows equal in height (${splitA[0].rowHeight}, ${splitA[1].rowHeight})`);
+  if (splitA.length === 2 && !restoreFloor) countedCheck(near(splitA[0].rowHeight, splitA[1].rowHeight), `${label}: split rows equal in height (${splitA[0].rowHeight}, ${splitA[1].rowHeight})`);
 
   countedCheck(after.rows.length === before.rows.length, `${label}: row count ${after.rows.length} vs ${before.rows.length}`);
   after.rows.forEach((row, i) => {
@@ -339,7 +353,7 @@ async function runApp(group) {
               const before = baseline[key];
               countedCheck(before !== undefined, `${key}: baseline cell exists`);
               if (!before) continue;
-              if (c.olive) compareOlive(key, read, before);
+              if (c.olive) compareOlive(key, read, before, { restoreFloor: c.id === 'olive-v1 restore' && width === 393 });
               else compareMex(key, read, before);
               console.log(summaryLine(key, c, before, read));
             }

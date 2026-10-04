@@ -708,6 +708,74 @@ async function runFlyout(servers) {
   });
 }
 
+
+// ---------------------------------------------------------------------------
+// rail: from 1590 the rail stands in the flex row, pinned under the bar.
+async function runRail(servers) {
+  const base = await loadBaseline();
+  const settle = (page) => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await withBrowsers(servers, async (browsers) => {
+    const SHEET = { 1590: [256, 920], 1600: [256, 930], 1920: [331, 1100] };
+    for (const engine of ['webkit', 'chrome']) {
+      for (const width of [1590, 1600, 1920]) {
+        const c = { engine, coarse: false, width, height: 900, route: APP_ROUTE };
+        c.key = cellKey(c);
+        const { context, page } = await openCell(browsers[engine], servers, c);
+        try {
+          const m = await page.evaluate(readApp);
+          const k = c.key;
+          countedCheck(m.menu === null && m.scrim === null, `${k}: no menu button, no scrim`);
+          countedCheck(near(m.brand.box.x, 48), `${k}: wordmark at x 48 (${m.brand.box.x})`);
+          countedCheck(m.rail.display === 'flex' && m.rail.position === 'sticky' && near(m.rail.box.x, 0) && near(m.rail.box.w, 224), `${k}: rail flex, sticky, x 0, 224 wide (${m.rail.display} ${m.rail.position} ${JSON.stringify(m.rail.box)})`);
+          countedCheck(near(m.main.box.x, 224) && near(m.main.box.x + m.main.box.w, width), `${k}: main at x 224 to the window's edge (${JSON.stringify(m.main.box)})`);
+          countedCheck(near(m.sheet.x, SHEET[width][0]) && near(m.sheet.w, SHEET[width][1]), `${k}: Sheet x ${SHEET[width][0]}, ${SHEET[width][1]} wide (${m.sheet.x}/${m.sheet.w})`);
+          countedCheck(m.overflow === 0, `${k}: no horizontal overflow (${m.overflow})`);
+          if (width === 1600) {
+            await page.evaluate(() => window.scrollTo(0, 640));
+            const scrolled = await page.evaluate(readApp);
+            countedCheck(near(scrolled.scrollY, 640) && near(scrolled.rail.box.y, 57) && near(scrolled.rail.box.h, 843), `${k}: scrolled 640, the rail's top stays 57 and its height 843 (${JSON.stringify(scrolled.rail.box)})`);
+            countedCheck(scrolled.rail.places.every((p, i) => near(p.y, FLYOUT_PLACES_Y[i])), `${k}: places still at y ${FLYOUT_PLACES_Y.join(', ')} when scrolled (${scrolled.rail.places.map((p) => p.y)})`);
+            await page.setViewportSize({ width, height: 360 });
+            await settle(page);
+            const short = await page.evaluate(readApp);
+            countedCheck(short.rail.clientHeight === 303 && short.rail.scrollHeight > short.rail.clientHeight && short.rail.overflowY === 'auto', `${k}: at 360 tall the rail is 303 and scrolls itself (clientHeight ${short.rail.clientHeight}, scrollHeight ${short.rail.scrollHeight}, ${short.rail.overflowY})`);
+          }
+          console.log(JSON.stringify({ cell: k, rail: m.rail.box, railPosition: m.rail.position, mainX: m.main.box.x, sheet: m.sheet }));
+        } finally {
+          await context.close();
+        }
+      }
+      // The pinned rail adds no page scroll on a short page.
+      {
+        const c = { engine, coarse: false, width: 1600, height: 900, route: '/kitchen', key: `${engine}-fine-1600-kitchen` };
+        const { context, page } = await openCell(browsers[engine], servers, c);
+        try {
+          const m = await page.evaluate(readApp);
+          countedCheck(m.docH <= m.innerHeight, `${c.key}: /kitchen is no taller than the window (${m.docH} <= ${m.innerHeight})`);
+        } finally {
+          await context.close();
+        }
+      }
+    }
+    // The open fly-out below 1590 is unchanged by the pin: still the window less the bar, at 1366 x 954.
+    {
+      const c = { engine: 'webkit', coarse: false, width: 1366, height: 954, route: APP_ROUTE, key: 'webkit-fine-1366x954-flyout' };
+      const { context, page } = await openCell(browsers.webkit, servers, c);
+      try {
+        await page.evaluate(() => window.scrollTo(0, 300));
+        const before = await page.evaluate(() => window.scrollY);
+        await clickMenu(page);
+        await page.waitForSelector('.shell__scrim');
+        const o = await readOpen(page);
+        openChecks(c.key, o, c, before);
+      } finally {
+        await context.close();
+      }
+    }
+  });
+  void base;
+}
+
 // ---------------------------------------------------------------------------
 // board: the app beside the sketch 011 boards, number for number (the boards
 // are the spec). Each board's panel is read in the page the board draws.
@@ -792,6 +860,14 @@ function compareToBoard(label, app, board, fields) {
   if (fields.includes('sheet')) {
     countedCheck(xwEq(app.sheet, board.sheet), `${label}: Sheet x and width ${boxStr(app.sheet, board.sheet)}`);
   }
+  if (fields.includes('rail') || fields.includes('railfull')) {
+    // 1600-batch and 1920-batch draw the rail as a column the height of the page; the pinned height is drawn only
+    // by 1600-sticky-rail, so those two boards compare the rail's x, y and width, the sticky board the whole box.
+    const box = fields.includes('railfull') ? boxEq(app.rail.box, board.rail.box) : near(app.rail.box.x, board.rail.box.x) && near(app.rail.box.y, board.rail.box.y) && near(app.rail.box.w, board.rail.box.w);
+    countedCheck(box, `${label}: rail ${boxStr(app.rail.box, board.rail.box)}`);
+    countedCheck(app.rail.display === board.rail.display && app.rail.places.length === board.rail.places.length && app.rail.places.every((p, i) => boxEq(p, board.rail.places[i])), `${label}: rail places ${boxStr(app.rail.places, board.rail.places)}`);
+    countedCheck(app.rail.boxShadow === board.rail.boxShadow && app.rail.borderRight === board.rail.borderRight && app.rail.padding === board.rail.padding, `${label}: rail shadow, hairline and padding (${app.rail.boxShadow} | ${app.rail.borderRight} | ${app.rail.padding} vs ${board.rail.boxShadow} | ${board.rail.borderRight} | ${board.rail.padding})`);
+  }
   if (fields.includes('panel')) {
     countedCheck(boxEq(app.rail.box, board.rail.box), `${label}: nav ${boxStr(app.rail.box, board.rail.box)}`);
     countedCheck(app.rail.places.length === board.rail.places.length && app.rail.places.every((p, i) => boxEq(p, board.rail.places[i])), `${label}: places ${boxStr(app.rail.places, board.rail.places)}`);
@@ -826,6 +902,34 @@ async function runBoard(servers) {
       const board = await boardPanel(browsers[bc.engine], servers, file, { by: 'h1' });
       compareToBoard(label, app, board, ['head', 'menu', 'brand', 'tools', 'main', 'sheet']);
       console.log(JSON.stringify({ board: label, bar: [app.head.box.h, board.head.box.h], menuX: [app.menu.box.x, board.menu.box.x], wordmark: [app.brand.box.x, app.brand.box.y, board.brand.box.x, board.brand.box.y], sheet: [app.sheet.x, app.sheet.w, board.sheet.x, board.sheet.w] }));
+    }
+    // 1600-batch and 1920-batch against the app, WebKit fine and Chrome fine.
+    for (const engine of ['webkit', 'chrome']) {
+      for (const width of [1600, 1920]) {
+        const c = { engine, coarse: false, width, height: 900, route: APP_ROUTE };
+        c.key = cellKey(c);
+        const file = `${width}-batch.html`;
+        const label = `${engine} ${file}`;
+        const app = await readCell(browsers[engine], servers, c);
+        const board = await boardPanel(browsers[engine], servers, file, { by: 'h1' });
+        compareToBoard(label, app, board, ['head', 'nomenu', 'brand', 'tools', 'rail', 'main', 'sheet']);
+        console.log(JSON.stringify({ board: label, bar: [app.head.box.h, board.head.box.h], wordmarkX: [app.brand.box.x, board.brand.box.x], rail: [app.rail.box, board.rail.box], main: [app.main.box.x, app.main.box.w, board.main.box.x, board.main.box.w], sheet: [app.sheet.x, app.sheet.w, board.sheet.x, board.sheet.w] }));
+      }
+    }
+    // 1600-sticky-rail: 1600 x 900, the page scrolled 640; the rail is pinned at 57 and 843 tall.
+    for (const engine of ['webkit', 'chrome']) {
+      const board = await boardPanel(browsers[engine], servers, '1600-sticky-rail.html', { by: 'index', index: 0 });
+      const c = { engine, coarse: false, width: board.win.w, height: board.win.h, route: APP_ROUTE };
+      c.key = `${cellKey(c)}-stickyrail`;
+      const { context, page } = await openCell(browsers[engine], servers, c);
+      try {
+        await page.evaluate(() => window.scrollTo(0, 640));
+        const app = await page.evaluate(readApp);
+        compareToBoard(`${engine} 1600-sticky-rail.html`, app, board, ['head', 'nomenu', 'brand', 'tools', 'railfull']);
+        console.log(JSON.stringify({ board: `${engine} 1600-sticky-rail.html`, window: board.win, appScrollY: app.scrollY, rail: [app.rail.box, board.rail.box] }));
+      } finally {
+        await context.close();
+      }
     }
     // The sticky-nav boards: panel 0 closed (its bar only), panel 1 open; the app at the board's window, scrolled to the board's offset.
     for (const [file, offset] of [['744-sticky-nav.html', 1400], ['984-sticky-nav.html', 2800], ['1366-sticky-nav.html', 640]]) {
@@ -864,6 +968,7 @@ try {
     if (g === 'baseline') await runBaseline(servers);
     else if (g === 'header') await runHeader(servers);
     else if (g === 'flyout') await runFlyout(servers);
+    else if (g === 'rail') await runRail(servers);
     else if (g === 'board') await runBoard(servers);
   }
 } finally {

@@ -82,7 +82,13 @@ so the next run skips it.
    the original row's title, `source` the original row's doc id, `options` when the question has
    natural choices (one marked `recommended`), `status: "open"`, `addedBy: "claude"`, and ISO
    `createdAt` and `updatedAt`. The original row's `reply` names the new row. A new row is not a
-   new file. Do the same for every command Mark must run himself (`/gsd-phase`,
+   new file. **No follow-up lives only in a reply.** Whatever the reply names as a next step (a
+   Sid redraw, a build, a command) gets its own open row at the moment you handle the row, with
+   the real clock for its timestamps: a todo titled "Draw: ..." for Sid work (status
+   `scheduled`, and start `sid` for it, queued behind a running Sid, never two at once on the
+   README or canvas), a todo titled "Build: ..." for a decided `app/` change you run now, or a
+   "Run: ..." todo for the commands below. A closed row's reply is a note, not a plan. Do the
+   same for every command Mark must run himself (`/gsd-phase`,
    `/gsd-plan-phase`, `/impeccable ...`): add a new open todo row titled "Run: " plus the
    command's purpose, with `detail` holding the exact command and what it needs, `source` the
    original row's doc id, `addedBy: "claude"`, and ISO `createdAt` and `updatedAt`, so the
@@ -96,7 +102,7 @@ so the next run skips it.
 Boundaries: Never edit anything under `app/` yourself (every app change goes through
 `/gsd-quick` or `/gsd-quick-batch`, which you may invoke for a decided change). Run no other GSD
 command and no `/impeccable` command yourself. Create no new files except a todo file for a todo Mark added on the
-page, in `.planning/todos/pending/`. The only agent you may start is `sid` for a scheduled
-todo's sketch step. The one move allowed is a done todo's file, `pending/` to `completed/`
+page, in `.planning/todos/pending/`. The only agent you may start is `sid`, for a scheduled
+todo's sketch step or a decided sketch redraw (one Sid at a time). The one move allowed is a done todo's file, `pending/` to `completed/`
 under `.planning/todos/`.
 </process>

@@ -362,8 +362,6 @@
   --app-rule-tally: 2px; /* the hollow sprinkle's own edge (D-11) */
   --app-col-standing: 120px; /* the row's standing-word column (board 170 line 93's flex basis) */
   --app-col-tally: 132px; /* the row's tally column — marks over the count (board 170 line 94's flex basis) */
-  --app-radius-action: 10px; /* the filled action's own radius; its padding reads var(--gap-s)/var(--gap-m) directly */
-  --app-radius-lead: 10px; /* the lead block's own corner radius (board 170 line 49); its own name, free to move apart from --app-radius-action even though the numbers agree today */
   --app-rule-nav-active: 3px;
   --app-rule-row: var(--rule-graduation); /* reuses the app's existing 1px hairline weight, named for this world so it can move independently later */
   --app-duration: 120ms; /* the one short transition this world is allowed (route.md § 1: the no-motion binder does not cross the paper frame) */
@@ -402,7 +400,6 @@
   --app-notebook-desc-leading: 1.5; /* 1600-batch.html: the recipe description's own line-height */
   --app-notebook-link-underline-offset: 3px; /* 1600-batch.html: Rename's own underline offset */
   --app-notebook-field-pad-x: 10px; /* 1600-pen.html: a ceremony field's own horizontal padding */
-  --app-notebook-field-radius: 8px; /* 1600-pen.html: a ceremony field's own corner radius */
   --app-notebook-gap-hairline: 4px; /* 1600-pen.html: a field's own label-to-control gap and the From batch fieldset's own gap; reused as the gap between the maker's batch notes in the log (260925-u3r) */
   --app-notebook-checkbox-size: 16px; /* 1600-pen.html: the From batch checkbox's own edge */
   --app-notebook-acts-gap: 10px; /* 1600-batch.html: the version column's own acts row gap (Task 2) */

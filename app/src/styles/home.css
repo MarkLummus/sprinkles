@@ -77,7 +77,7 @@
   padding: var(--gap-m);
   margin: 0 0 var(--gap-l);
   border: var(--app-rule-row) solid var(--app-text);
-  border-radius: var(--app-radius-lead);
+  border-radius: var(--app-radius-control);
 }
 
 /* The rod inside the lead never shrinks — a flex item's default
@@ -299,7 +299,7 @@
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-blue-text);
   color: var(--app-background);

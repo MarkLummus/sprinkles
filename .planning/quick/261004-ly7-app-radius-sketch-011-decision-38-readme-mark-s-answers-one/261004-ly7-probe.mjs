@@ -340,7 +340,7 @@ async function boardReadings(browser, servers) {
       out[name] = await page.evaluate(readShell, { root: PANEL(name) });
     }
     for (const name of ['fp-focus-all-pen-rail', 'fp-focus-one-pen-rail']) {
-      const target = page.locator(`.${name} .shell__place--recipe-book`);
+      const target = page.locator(`.${name} .shell__rail .shell__place--recipe-book`);
       out[name] = await focusPixel(page, target);
     }
     return out;
@@ -349,13 +349,16 @@ async function boardReadings(browser, servers) {
   }
 }
 
-function sameRadiiAndSize(label, app, panel) {
+// Radii always; sizes only for the rail places, where the plan names width and height. A
+// ceremony field or the lead block is a different height on the board (the board draws the
+// touch floor and its own captured content), so its size is printed, not checked.
+function sameRadiiAndSize(label, app, panel, { sizes = false } = {}) {
   countedCheck(app.length === panel.length, `${label}: count app ${app.length} vs board ${panel.length}`);
   app.forEach((a, i) => {
     const p = panel[i];
     if (!p) return;
     countedCheck(JSON.stringify(a.radii) === JSON.stringify(p.radii), `${label}[${i}]: radii app ${a.radii.join(' ')} vs board ${p.radii.join(' ')}`);
-    if (a.rect && p.rect) countedCheck(near(a.rect.w, p.rect.w) && near(a.rect.h, p.rect.h), `${label}[${i}]: size app ${round(a.rect.w)}x${round(a.rect.h)} vs board ${round(p.rect.w)}x${round(p.rect.h)}`);
+    if (a.rect && p.rect && sizes) countedCheck(near(a.rect.w, p.rect.w) && near(a.rect.h, p.rect.h), `${label}[${i}]: size app ${round(a.rect.w)}x${round(a.rect.h)} vs board ${round(p.rect.w)}x${round(p.rect.h)}`);
   });
 }
 
@@ -372,8 +375,8 @@ async function runBoard(servers) {
       countedCheck(board['fp-focus-all-pen-rail'].pixel.class === 'ground', `${key}: board focus-all pixel ${board['fp-focus-all-pen-rail'].pixel.class} ${board['fp-focus-all-pen-rail'].pixel.rgb}, wanted ground (control)`);
       countedCheck(!!pen.focus && pen.focus.pixel.class === board['fp-focus-all-pen-rail'].pixel.class, `${key}: app focus pixel ${pen.focus && pen.focus.pixel.class} vs board focus-all ${board['fp-focus-all-pen-rail'].pixel.class}`);
       // Rail places.
-      sameRadiiAndSize(`${key}: rail (Notebook active) vs B`, pen.rail, board['fp-B-pen-rail'].rail);
-      sameRadiiAndSize(`${key}: rail (Home active) vs B`, home.rail, board['fp-B-home-rail'].rail);
+      sameRadiiAndSize(`${key}: rail (Notebook active) vs B`, pen.rail, board['fp-B-pen-rail'].rail, { sizes: true });
+      sameRadiiAndSize(`${key}: rail (Home active) vs B`, home.rail, board['fp-B-home-rail'].rail, { sizes: true });
       // Weights, from the weight panels.
       for (const [label, app, panel] of [['Notebook active', pen.rail, board['fp-wt-pen-rail'].rail], ['Home active', home.rail, board['fp-wt-home-rail'].rail]]) {
         countedCheck(app.length === panel.length, `${key}: weight panel ${label} place count`);
@@ -394,6 +397,7 @@ async function runBoard(servers) {
         boardCeremony: [...new Set(board['fp-B-pen-cer'].ceremony.fields.map((f) => f.radii[0]))],
         boardActions: [...new Set(board['fp-B-pen-cer'].ceremony.acts.map((f) => f.radii[0]))],
         boardLead: board['fp-B-home-lead'].lead && board['fp-B-home-lead'].lead.radii[0],
+        sizesNotChecked: { appField: pen.ceremony.fields[0].rect, boardField: board['fp-B-pen-cer'].ceremony.fields[0].rect, appLead: home.lead.rect, boardLead: board['fp-B-home-lead'].lead.rect },
       }));
     } finally {
       await browser.close();

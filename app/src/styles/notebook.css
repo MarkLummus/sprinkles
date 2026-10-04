@@ -226,7 +226,7 @@
   width: 100%;
   padding: var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);
   border: var(--app-rule-row) solid var(--app-divider);
-  border-radius: var(--app-notebook-field-radius);
+  border-radius: var(--app-radius-control);
   background: var(--app-background);
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-size-body);
@@ -248,7 +248,7 @@
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-blue-text);
   color: var(--app-background);
@@ -266,7 +266,7 @@
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-background);
   color: var(--app-blue-text);

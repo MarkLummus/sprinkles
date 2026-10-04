@@ -55,6 +55,7 @@ def final_css(W, vid, extra=''):
         if W < 984: css += HDR724                                     # 724 to 983: the header's tools show and the tab row goes
         css += D3
     if BAR_FROM <= W <= 1365: css += JUMP
+    css = re.sub(r'(^|\})(\s*):root\s*\{', r'\1\2body{', css)      # the phone's --gap-page rule: on the panel itself
     return scope_css(css + extra, '.' + vid)
 HEIGHTS = json.load(open(HERE + '/final-heights.json')) if os.path.exists(HERE + '/final-heights.json') else {}
 FACTS = json.load(open(HERE + '/final-board-measure.json')) if os.path.exists(HERE + '/final-board-measure.json') else {}
@@ -287,6 +288,62 @@ if INFO:
     logs = [(744, 'olive1', crop_y(744, 'olive1', 'head') - 30, 330, 0, 744, 'the log', ['Batch head', 'Tasting']), (1024, 'olive1', crop_y(1024, 'olive1', 'head') - 30, 330, 0, 1024, 'the log', ['Batch head', 'Tasting']),
             (1366, 'olive1', crop_y(1366, 'olive1', 'head') - 30, 490, 1366 - 390, 390, 'the log column', ['Tasting'])]
     info_board('R35C_InfoLog', 'info-labels-log', 'C · small info labels in the log, by option: the batch head and the Tasting row (744, 1024, 1366 and up)', logs, '')
+
+
+# ---- decision 35: the Sheet title in the Next version pen (Mark, 2026-10-04): the app draws the h1 and the field; the original 1600-pen drew the field alone ----
+TTC = json.load(open(HERE + '/title-capture.json')) if os.path.exists(HERE + '/title-capture.json') else None
+TTM = json.load(open(HERE + '/title-measure.json')) if os.path.exists(HERE + '/title-measure.json') else {}
+def tt_variant(opt, key, W, rows):
+    html = drop_hidden(TTC['html'][key])
+    st = key.split('_')[1]; draft = {'same': 'Olive Oil Ice Cream', 'short': TTC['SHORT'], 'long': TTC['LONG']}[st]
+    h1 = re.search(r'<h1>[^<]*</h1>', html); assert h1
+    lab = re.search(r'<label class="headnote__sheet-title-field">.*?</label>', html, flags=re.S); assert lab
+    if opt == 'today':
+        return html
+    if opt == 'a':     # the field replaces the heading: a textarea that grows, one title, no h1 in the pen
+        ta = ('<textarea class="prose-field" rows="%d" aria-label="Sheet title" tabindex="0">%s</textarea>' % (rows, draft))
+        new = re.sub(r'<input[^>]*aria-label="Sheet title"[^>]*>', ta, lab.group(0), flags=re.S)
+        return html.replace(h1.group(0), '', 1).replace(lab.group(0), new, 1)
+    if opt == 'b':     # the heading stays (it shows the draft), the field is omitted, an Edit title control turns the heading into the field
+        html = html.replace(lab.group(0), '', 1).replace(h1.group(0), '<h1>%s</h1>' % draft, 1)
+        edit = '<p class="headnote__edit"><button type="button" class="text-control" tabindex="0">Edit title</button></p>'
+        st_p = re.search(r'<p class="prose-struck-beneath">[^<]*</p>', html)
+        anchor = st_p.group(0) if st_p else '<h1>%s</h1>' % draft
+        return html.replace(anchor, anchor + edit, 1)
+TT_OPTS = [('today', 'As built', '', 'The heading shows the parent\'s title, a labelled field with the draft title sits under it, and once they differ the parent\'s title is struck beneath: three title lines on the page.'),
+ ('a', 'Option A: the field replaces the heading', """
+.headnote__sheet-title-field{margin-top:0}
+.headnote__sheet-title-field .prose-field{display:block;font-family:var(--face-text);font-size:var(--sheet-size-recipe-name);font-weight:700;line-height:1.15;resize:none;overflow:hidden}
+""", 'One field, set as the Sheet heading (2rem, bold, pen blue) and built like the description: no box, the small caption above, it grows with its lines, the old title struck beneath only when it differs.'),
+ ('b', 'Option B: the heading stays, Edit title turns it into the field', """
+.headnote__edit{margin:var(--gap-xs) 0 0}
+""", 'The heading shows the draft title, the old one struck beneath when they differ. Edit title (44px) swaps the heading for the field of A. One more tap; no title field until asked.')]
+TT_WINS = [(393, 'same', 'unchanged'), (393, 'short', 'changed'), (393, 'long', 'a long title'), (1366, 'same', 'unchanged'), (1366, 'short', 'changed'), (1600, 'same', 'unchanged'), (1600, 'short', 'changed')]
+def title_board(key, snap, title):
+    css_parts = [LABEL_CSS]; body = ''; y = GAP; seen = set(); bw = 0
+    for oid, oname, ocss, odesc in TT_OPTS:
+        x = GAP; rowh = 0; cells = []
+        for wi, (W, st, what) in enumerate(TT_WINS):
+            vid = f'fp-tt-{oid}-{wi}'
+            if W not in seen: css_parts.append(resolve_media(TOK, W, True)); seen.add(W)
+            css_parts.append(final_css(W, vid, extra=ocss))
+            rows = 1      # the app's textarea rule is field-sizing: content (app.css 296): it grows with its text; rows is the fallback
+            html = unique_ids(with_menu(tt_variant(oid, f'tt_{st}_{W}', W, rows), W), vid)
+            r = TTM.get('rects', {}).get(f'{oid}_{wi}') or {'x': 0, 'y': 0, 'w': W, 'h': 600}
+            cx0 = max(0, r['x'] - 28); cw = min(W - cx0, r['w'] + 56); cy0 = max(0, r['y'] - 28); ch = r['h'] + 56
+            cells.append((vid, W, what, html, cx0, cw, cy0, ch, wi)); rowh = max(rowh, ch)
+        for vid, W, what, html, cx0, cw, cy0, ch, wi in cells:
+            cap = odesc if wi == 0 else f'{W}, {what}.'
+            body += (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{cw}px;"><div style="height:{CAP_H}px;"><p class="fp-title">{oname} · {W} · {what}</p><p class="fp-sub">{cap}</p></div>'
+                     f'<div class="fp-win {vid}" style="width:{cw}px;height:{rowh}px;"><div style="width:{W}px;transform:translate(-{cx0}px,-{cy0}px);">{html}</div></div></div>\n')
+            x += cw + GAP
+        bw = max(bw, x); y += CAP_H + 8 + rowh + GAP
+    main = f'<div style="position:relative;width:{bw}px;height:{y}px;background:#ffffff;">{body}</div>'
+    fn = write_board(key, title + STAMP3, bw, y, main, ''.join(css_parts) + '[hidden]{display:none !important}')
+    ENTRIES[fn] = dict(w=bw, h=y, page='page-13', title=title + STAMP3, snap=snap)
+STAMP3 = " (decision 35, options for Mark; drawn 2026-10-04, awaiting Mark's look; nothing approved)"
+if TTC:
+    title_board('R35C_SheetTitle', 'sheet-title-pen', 'C · the Sheet title in the Next version pen: as built, one field replacing the heading, or the heading with Edit title (393, 1366, 1600; unchanged and changed)')
 
 json.dump({'boards': ENTRIES}, open(OUT + '/final-canvas-entries.json', 'w'), indent=2)
 print('ok final', {fn: (e['w'], e['h']) for fn, e in ENTRIES.items()})

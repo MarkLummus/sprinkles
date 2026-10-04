@@ -17,7 +17,7 @@ MAP = {'R35C_Batch': '1600-batch', 'R35C_NoBatch': '1600-no-batch', 'R35C_Pen': 
        'R35C_983': '983-batch', 'R35C_723': '723-batch', 'R35C_393': '393-batch', 'R35C_DetailsFold': 'details-fold', 'R35C_393AllFolded': '393-all-folded',
        'R35C_393ShowChanges': '393-show-changes', 'R35C_723ShowChanges': '723-show-changes', 'R35C_393ShowChangesCases': '393-show-changes-cases',
        'R35C_393PenChanges': '393-pen-changes', 'R35C_723PenChanges': '723-pen-changes',
-       'R35C_1366Sticky': '1366-sticky-nav', 'R35C_984Sticky': '984-sticky-nav', 'R35C_744Sticky': '744-sticky-nav', 'R35C_RemoveLink': '1600-remove-link', 'R35C_InfoBands': 'info-labels-bands', 'R35C_InfoLog': 'info-labels-log', 'R35C_1600StickyRail': '1600-sticky-rail',
+       'R35C_1366Sticky': '1366-sticky-nav', 'R35C_984Sticky': '984-sticky-nav', 'R35C_744Sticky': '744-sticky-nav', 'R35C_RemoveLink': '1600-remove-link', 'R35C_SheetTitle': 'sheet-title-pen', 'R35C_InfoBands': 'info-labels-bands', 'R35C_InfoLog': 'info-labels-log', 'R35C_1600StickyRail': '1600-sticky-rail',
        'R35C_PenApp350': '350-pen-app', 'R35C_PenApp393': '393-pen-app', 'R35C_PenAsBuilt350': '350-pen-as-built',
        'R35C_PenRange724': '724-pen-range', 'R35C_PenRange740': '740-pen-range', 'R35C_PenRange759': '759-pen-range',
        'R35C_393PhoneLog': '393-phone-log', 'R35C_723PhoneLog': '723-phone-log',

@@ -75,8 +75,8 @@
   "remaining_tasks": [
     {
       "id": "sid-decision-35",
-      "name": "Sid is MID-RUN on decision 35 (Sheet title in the pen as one editable field, not heading plus field). Uncommitted: canvas-generators/title-*.mjs/json, _s.mjs, final.py, snapshot.py, sketches/011-recipe-route-c/sheet-title-pen.html. Re-dispatch Sid with the brief if his run is lost.",
-      "status": "in_progress"
+      "name": "Sid FINISHED decision 35 (Sheet title in the pen): board sheet-title-pen.html, README decision 35 and brief task 10 committed (672a730, ff6dcee, a28b89a; canvas v295). Awaiting Mark: A (one field replaces the heading, Sid recommends) or B (heading plus Edit title); box at rest or not; keep the caption",
+      "status": "done_awaiting_mark"
     },
     {
       "id": "mark-decisions",
@@ -113,8 +113,8 @@
       "blocking": false
     },
     {
-      "action": "Answer decision 35 when Sid reports: Sheet title as one editable field replacing the h1 in the pen (a) or h1 plus Rename control (b)",
-      "context": "Headnote.jsx renders h1 (parent title) then a Sheet title field; Mark leans single editable field",
+      "action": "Answer decision 35 (Sheet title in the pen): A one field replaces the heading (Sid recommends), or B heading plus Edit title; with A: no box at rest like the description (as drawn) or a hairline box on both fields; keep the 'Sheet title' caption?",
+      "context": "board sheet-title-pen.html, canvas v295; the hand-drawn 1600-pen of 2026-09-24 drew the field alone with a box on both fields",
       "blocking": false
     },
     {
@@ -155,24 +155,7 @@
       "phase": "sketch-011"
     }
   ],
-  "uncommitted_files": [
-    "M .planning/canvas-generators/final.py",
-    " M .planning/canvas-generators/snapshot.py",
-    "?? .impeccable/critique/2026-09-27T12-14-47Z__app-src-ui-shell-jsx.md",
-    "?? .impeccable/critique/2026-09-27T16-09-31Z__g-sketches-011-options-counts-batches-0-and-1-html.md",
-    "?? .impeccable/critique/2026-09-27T16-09-31Z__ketches-011-options-counts-versions-1-vs-many-html.md",
-    "?? .impeccable/critique/2026-09-27T16-09-31Z__ning-sketches-011-options-counts-batches-many-html.md",
-    "?? .impeccable/critique/2026-09-27T18-26-51Z__lanning-sketches-011-recipe-route-c-393-batch-html.md",
-    "?? .impeccable/critique/2026-09-27T18-26-51Z__nning-sketches-011-options-counts-upright-393-html.md",
-    "?? .planning/canvas-generators/_s.mjs",
-    "?? .planning/canvas-generators/title-capture.json",
-    "?? .planning/canvas-generators/title-capture.mjs",
-    "?? .planning/canvas-generators/title-measure.json",
-    "?? .planning/canvas-generators/title-measure.mjs",
-    "?? .planning/canvas-generators/title-probe.json",
-    "?? .planning/canvas-generators/title-probe.mjs",
-    "?? .planning/sketches/011-recipe-route-c/sheet-title-pen.html"
-  ],
-  "next_action": "Re-read .planning/.continue-here.md. Ask Mark which open decision to take first (34 info labels, 35 Sheet title, or the 32/33 items); record each answer in README decision 32 yourself the moment he gives it. Check whether Sid's decision 35 run finished (git log, sheet-title-pen.html); if not, re-dispatch Sid with the brief in this file. Only plan app quick tasks for what Mark has approved. Device-check items for Mark are listed; the remove-link fix is unverified on device.",
+  "uncommitted_files": [],
+  "next_action": "Re-read .planning/.continue-here.md. Ask Mark which open decision to take first (34 info labels, 35 Sheet title, or the 32/33 items); record each answer in README decision 32 yourself the moment he gives it. Sid's decision 35 run is finished and committed; no re-dispatch needed. Only plan app quick tasks for what Mark has approved. Device-check items for Mark are listed; the remove-link fix is unverified on device.",
   "context_notes": "Mark tests on iPhone and iPad (WebKit, coarse). Loop: Sid (designer, never edits app/) measures the built app and draws boards from .planning/canvas-generators, Mark approves in conversation, the orchestrator records the approval in the sketch README, then GSD quick tasks (planner opus, executor sonnet) build it and Mark checks the device. Executors cannot make approval claims; the orchestrator records Mark's words. Servers: vite preview on 4173 serves app/dist (rebuilt by each executor), python http.server on 8011 serves .planning/sketches (LAN 192.168.1.133); never start another Vite."
 }

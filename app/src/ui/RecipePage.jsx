@@ -570,8 +570,14 @@ export function buildTastingFieldsFromDraft(draft, parsed) {
   };
 }
 
+// An amendment (completeRecord stamps `changed`; createBatch writes null)
+// announces its own date in the read view's Changed vocabulary, not the
+// original recording date. The page already shows the version (Mark,
+// 2026-10-04), so neither sentence repeats it.
 export function batchSavedStatus(record) {
-  return `recorded ${formatRecordDate(record.recordedAt)} against ${record.snapshot.versionLabel}`;
+  return record.changed
+    ? `changed ${formatRecordDate(record.changed)}`
+    : `recorded ${formatRecordDate(record.recordedAt)}`;
 }
 
 // Cancel on an open step (sketch 011 decisions_recorded 5, decision 1;

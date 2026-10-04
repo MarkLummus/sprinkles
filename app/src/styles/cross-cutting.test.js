@@ -913,6 +913,23 @@ describe('the Why row (sketch 011 decision 37 B, Mark 2026-10-04; quick 261004-l
   });
 });
 
+describe('the WHY label tucked to its words (sketch 011 decision 39 B, Mark 2026-10-04; quick 261004-ox3)', () => {
+  test('.version-row__reason-label has no top margin and a bottom margin of a negative 4px token, and no rule on it sets margin-top', () => {
+    const rule = ruleFor('.version-row__reason-label');
+    expect(rule, 'expected a top-level .version-row__reason-label rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/margin-bottom:\s*calc\(-1 \* var\(--app-notebook-gap-hairline\)\)/);
+    expect(rule.declarations).not.toMatch(/margin-top/);
+    expect(rule.declarations).not.toMatch(/(?:^|[\s;])margin:/);
+
+    const own = rules.filter((r) =>
+      r.selector.split(',').some((s) => s.trim().split(/(?=\.)/).includes('.version-row__reason-label')));
+    expect(own.length).toBeGreaterThan(0);
+    for (const r of own) {
+      expect(r.declarations, r.selector).not.toMatch(/margin-top/);
+    }
+  });
+});
+
 // Quick task 261001-doi (Mark's iPad, 2026-10-01: the Every recipe cue sat
 // 3px under the tasting note). Sketch 007 draws the space below the note
 // twice: line 96's `margin-bottom: var(--gap-m)` on .note-block, outside

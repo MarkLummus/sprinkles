@@ -551,3 +551,21 @@ describe('the ceremony fields and actions share the App control radius (sketch 0
     expect(rule.declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
   });
 });
+
+describe('the Version details rhythm (sketch 011 decision 39 B, Mark 2026-10-04; quick 261004-ox3)', () => {
+  test('the details list reads its own 8px row-gap token, not the 4px hairline, and no media block sets its gap', () => {
+    expect(tokens['--app-notebook-details-gap-row']).toBe('8px');
+    expect(resolveTokenPx(tokens, '--app-notebook-details-gap-row')).toBe(8);
+    expect(resolveTokenPx(tokens, '--app-notebook-gap-hairline')).toBe(4);
+
+    const rule = rules.find((r) => r.selector === '.notebook-version__details' && r.media === undefined);
+    expect(rule, 'expected a top-level .notebook-version__details rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/row-gap:\s*var\(--app-notebook-details-gap-row\)/);
+    expect(rule.declarations).not.toMatch(/--app-notebook-gap-hairline/);
+
+    const scoped = rules.filter((r) => r.media !== undefined && r.selector.includes('.notebook-version__details'));
+    for (const r of scoped) {
+      expect(r.declarations, r.selector).not.toMatch(/(?:^|[\s;])(row-)?gap:/);
+    }
+  });
+});

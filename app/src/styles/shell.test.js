@@ -492,3 +492,26 @@ describe('the menu button, the scrim and the z order (decision 33, quick 261004-
     expect(Number(tokens['--app-z-notice'])).toBeLessThan(Number(tokens['--app-z-header']));
   });
 });
+
+// The rail from 1590, pinned under the bar (decision 33, brief task 6, "The
+// rail"; the acceptance board is 1600-sticky-rail).
+describe('the rail is pinned under the sticky bar from 1590 (decision 33; quick 261004-ly8)', () => {
+  test('the top-level .shell__rail keeps its edge and adds the pin: sticky under the bar, the window less the bar tall, scrolling itself', () => {
+    const rule = rules.find((r) => r.selector === '.shell__rail' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__rail rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/border-right:\s*var\(--app-rule-row\)\s+solid\s+var\(--app-divider\)/);
+    expect(rule.declarations).toMatch(/box-sizing:\s*border-box/);
+    expect(rule.declarations).toMatch(/flex:\s*0 0 var\(--app-size-nav-w\)/);
+    expect(rule.declarations).toMatch(/position:\s*sticky/);
+    expect(rule.declarations).toMatch(/(^|[\s;])top:\s*var\(--app-size-header-h\)/);
+    expect(rule.declarations).toMatch(/align-self:\s*flex-start/);
+    expect(rule.declarations).toMatch(/(^|[\s;])height:\s*calc\(100vh - var\(--app-size-header-h\)\)/);
+    expect(rule.declarations).toMatch(/overflow-y:\s*auto/);
+  });
+
+  test('the open fly-out panel runs between its two insets, not at the pinned rail\'s height', () => {
+    const open = rules.find((r) => r.selector === '.shell__rail--open' && r.media === FLYOUT_MEDIA);
+    expect(open, 'expected the open panel rule in the fly-out block').toBeTruthy();
+    expect(open.declarations).toMatch(/(^|[\s;])height:\s*auto/);
+  });
+});

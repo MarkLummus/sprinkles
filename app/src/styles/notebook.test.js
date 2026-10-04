@@ -8,14 +8,16 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { describe, test, expect } from 'vitest';
-import { readAllRules } from './css-source.js';
+import { readAllRules, readCustomProperties, resolveTokenPx } from './css-source.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const NOTEBOOK_CSS_PATH = path.join(STYLES_DIR, 'notebook.css');
 const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
+const TOKENS_CSS_PATH = path.join(STYLES_DIR, 'tokens.css');
 
 const notebookCssSource = readFileSync(NOTEBOOK_CSS_PATH, 'utf8');
 const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
+const tokens = readCustomProperties(readFileSync(TOKENS_CSS_PATH, 'utf8'));
 
 const rules = readAllRules(notebookCssSource);
 
@@ -467,5 +469,75 @@ describe('small info labels start-aligned from 724 (sketch 011 decision 34 A, Ma
     const base = rules.find((r) => r.selector === '.notebook-log .batch-row__head' && r.media === undefined);
     expect(base.declarations).toMatch(/justify-content:\s*space-between/);
     expect(base.declarations).toMatch(/gap:\s*var\(--app-notebook-log-head-outer-gap\)/);
+  });
+});
+
+// Mark, 2026-09-27: Rename, Next version and the buttons beside them get narrower
+// when hovered or clicked. Measured on the build (quick 261004-ly5): app.css's
+// `button:hover, select:hover` (0,1,1) outranks these single-class rest rules
+// (0,1,0) and sets border-width 2px and padding 6px on every classed App button,
+// so a filled or outline action lost 26px of width on hover and while pressed
+// (chrome 2 x (1 + 20) = 42 down to 2 x (2 + 6) = 16), and a link gained 12.
+// The two-class hover rules below take the box back (the way .text-control:hover
+// does), keeping DESIGN.md's Hover-Is-Weight Rule: the border goes to a whole
+// 2px and the padding loses exactly that much.
+describe('band buttons keep their resting box on hover and press (quick 261004-ly5; Mark 2026-09-27)', () => {
+  const top = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
+  const ACTION_HOVER = '.notebook-action:hover, .notebook-action--outline:hover';
+  const LINK_HOVER = '.notebook-link:hover';
+  const CALC = /^calc\(var\((--[\w-]+)\) \+ var\((--[\w-]+)\) - var\((--[\w-]+)\)\)$/;
+  const declared = (rule, property) => {
+    const match = rule.declarations.match(new RegExp(`(?:^|;|\\s)${property}\\s*:\\s*([^;]+);`));
+    return match ? match[1].trim().replace(/\s+/g, ' ') : undefined;
+  };
+
+  test('the filled and outline actions keep their box on hover: border-plus-padding at rest equals hover, per axis', () => {
+    const hover = top(ACTION_HOVER);
+    expect(hover, `expected a top-level ${ACTION_HOVER} rule`).toBeTruthy();
+    expect(declared(hover, 'border-width')).toBe('var(--rule-hover)');
+
+    const hoverPadding = declared(hover, 'padding');
+    expect(hoverPadding, 'expected a padding declaration on the hover rule').toBeTruthy();
+    const [hoverV, hoverH] = hoverPadding.match(/calc\(.+?\)\)/g);
+    const hoverVMatch = hoverV.match(CALC);
+    const hoverHMatch = hoverH.match(CALC);
+    expect(hoverVMatch, `expected "${hoverV}" to be calc(a + b - c)`).toBeTruthy();
+    expect(hoverHMatch, `expected "${hoverH}" to be calc(a + b - c)`).toBeTruthy();
+
+    for (const selector of ['.notebook-action', '.notebook-action--outline']) {
+      const rest = top(selector);
+      expect(rest, `expected a top-level ${selector} rule`).toBeTruthy();
+      expect(declared(rest, 'padding')).toBe('var(--gap-s) var(--gap-m)');
+      expect(declared(rest, 'border')).toMatch(/^var\(--app-rule-row\) solid /);
+    }
+
+    const px = (name) => resolveTokenPx(tokens, name);
+    const restBorder = px('--app-rule-row');
+    const hoverBorder = px('--rule-hover');
+    const calcPx = (m) => px(m[1]) + px(m[2]) - px(m[3]);
+    // vertical: 1 + 12 = 2 + 11; horizontal: 1 + 20 = 2 + 19
+    expect(restBorder + px('--gap-s')).toBe(hoverBorder + calcPx(hoverVMatch));
+    expect(restBorder + px('--gap-m')).toBe(hoverBorder + calcPx(hoverHMatch));
+    expect([hoverVMatch[1], hoverVMatch[2], hoverVMatch[3]]).toEqual(['--gap-s', '--app-rule-row', '--rule-hover']);
+    expect([hoverHMatch[1], hoverHMatch[2], hoverHMatch[3]]).toEqual(['--gap-m', '--app-rule-row', '--rule-hover']);
+  });
+
+  test('the link keeps padding 0 on hover and gets no new hover look', () => {
+    const hover = top(LINK_HOVER);
+    expect(hover, `expected a top-level ${LINK_HOVER} rule`).toBeTruthy();
+    expect(declared(hover, 'padding')).toBe('0');
+    expect(hover.declarations).not.toMatch(/border|text-decoration|font-weight|color|background/);
+  });
+
+  test('both hover rules are top-level, two simple selectors each (0,2,0, above app.css button:hover at 0,1,1), and carry no !important', () => {
+    for (const selector of [ACTION_HOVER, LINK_HOVER]) {
+      const rule = top(selector);
+      expect(rule, `expected a top-level ${selector} rule (not inside a media block)`).toBeTruthy();
+      for (const part of selector.split(', ')) {
+        expect(part).toMatch(/^\.notebook-[\w-]+:hover$/);
+      }
+      expect(rule.declarations).not.toMatch(/!important/);
+    }
+    expect(rules.filter((rule) => rule.media !== undefined && /:hover/.test(rule.selector) && /notebook-(action|link)/.test(rule.selector))).toEqual([]);
   });
 });

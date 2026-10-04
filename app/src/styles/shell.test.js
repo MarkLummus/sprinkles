@@ -346,22 +346,33 @@ describe('one App radius on every place, the active rail place in weight 600 (sk
     expect(rule.declarations).toMatch(/font-weight:\s*600/);
   });
 
-  test("the active place keeps the subtle surface and carries no weight of its own, so the tab row keeps its shipped weight (Mark's answer 3)", () => {
+  test('the active place keeps the subtle surface and carries no weight of its own; the rail and the tab row each add the weight in their own rule', () => {
     const rule = rules.find((r) => r.selector === ".shell__place[aria-current='page']" && r.media === undefined);
     expect(rule, 'expected a top-level active-place rule').toBeTruthy();
     expect(rule.declarations).toMatch(/background:\s*var\(--app-surface-subtle\)/);
     expect(rule.declarations).not.toMatch(/font-weight/);
   });
 
-  test('only .shell__sprinkle and .shell__place declare a border-radius, and nothing in the media block declares a radius or a weight, so the tab row inherits the base radius at its shipped weight', () => {
+  test("only .shell__sprinkle and .shell__place declare a border-radius, nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
     const radiused = rules.filter((r) => /(^|[\s;])border-radius\s*:/.test(r.declarations));
     expect(radiused.map((r) => r.selector).sort()).toEqual(['.shell__place', '.shell__sprinkle']);
     expect(radiused.find((r) => r.selector === '.shell__sprinkle').declarations).toMatch(/border-radius:\s*var\(--app-radius-sprinkle\)/);
     expect(radiused.find((r) => r.selector === '.shell__place').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     for (const rule of rules.filter((r) => r.media === PHONE_MEDIA)) {
       expect(rule.declarations).not.toMatch(/(^|[\s;])border-radius\s*:/);
-      expect(rule.declarations).not.toMatch(/(^|[\s;])font-weight\s*:/);
     }
+    const weighted = rules.filter((r) => r.media === PHONE_MEDIA && /(^|[\s;])font-weight\s*:/.test(r.declarations));
+    expect(weighted.map((r) => r.selector)).toEqual([".shell__tabs .shell__place[aria-current='page']"]);
+  });
+});
+
+describe("the active tab in weight 600, like the rail (sketch 011 decision 38, Mark's later answer 2026-10-04; quick 261004-ox2)", () => {
+  test("the phone block's active-tab rule declares only weight 600, so the surface and the radius still come from the base rules", () => {
+    const rule = rules.find((r) => r.selector === ".shell__tabs .shell__place[aria-current='page']" && r.media === PHONE_MEDIA);
+    expect(rule, 'expected a phone-block active-tab rule').toBeTruthy();
+    const declarations = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean);
+    expect(declarations).toHaveLength(1);
+    expect(declarations[0]).toMatch(/font-weight:\s*600/);
   });
 });
 

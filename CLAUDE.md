@@ -94,7 +94,9 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
 - When a task leaves Mark a decision, a device check or a board to look at, add a row: short slug
   as doc id, `kind`, `title`, `where`, `addedBy: "claude"`, status `open`, ISO `createdAt` and
   `updatedAt`, and on decide rows `options` with one marked `recommended`. Add `links`
-  ([{label, url}]) for an HTML view. Name the row in the final message.
+  ([{label, url}]) for an HTML view. A canvas board cannot be deep-linked (the canvas ignores
+  the URL hash and query): link the canvas root and put the page and board in `where.label`,
+  e.g. "On the canvas, page Recipe route 03.5: board R35C_SheetTitle". Name the row in the final message.
 - Deferred human checks (HANDOFF.json `human_actions_pending`, or a SUMMARY's
   "Deferred Human Verification") go to the list as rows; those files may still mention them.
 - `/gsd-pause-work`: before writing HANDOFF.json, make each human action a row on the list.

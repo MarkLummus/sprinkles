@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-04T15:37:17.405Z"
+last_updated: "2026-10-04T16:01:47.748Z"
 last_activity: 2026-10-04
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 0d9669661a383656b505a845dec7d9c1dda54bee
+state_head: f685066b0e73da3dd815c61e997473225f84c4fe
 progress:
   total_phases: 12
   completed_phases: 8
@@ -380,6 +380,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261003-by3 | Fix iPhone date inputs in the record pen: one date focus, Reset clears | 2026-10-03 | 36b92a2 | [261003-by3-fix-iphone-date-inputs-in-the-record-pen](./quick/261003-by3-fix-iphone-date-inputs-in-the-record-pen/) |
 | 261004-eoi | Move the split row remove link onto the name line in the pen | 2026-10-04 | 1303ba9 | [261004-eoi-move-the-split-row-remove-link-onto-the-](./quick/261004-eoi-move-the-split-row-remove-link-onto-the-/) |
 | 261004-fwx | Wire Mark's List into the repo: read-first rule in CLAUDE.md and the /marks-list skill | 2026-10-04 | 0d96696 | [261004-fwx-wire-mark-s-list-into-the-repo-read-firs](./quick/261004-fwx-wire-mark-s-list-into-the-repo-read-firs/) |
+| 80 | Name the canvas page and board in Mark's List rows (CLAUDE.md) | 2026-10-04 | f685066 | — |
 
 ### Roadmap Evolution
 

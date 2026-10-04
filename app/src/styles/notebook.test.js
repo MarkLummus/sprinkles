@@ -37,12 +37,13 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test("notebook.css carries exactly four named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758)", () => {
+  test("notebook.css carries exactly five named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then 724px (the small info labels start-aligned, sketch 011 decision 34), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
     expect(mediaConditions).toEqual([
       '(min-width: 1366px)',
       '(max-width: 1365.98px)',
       '(max-width: 723.98px)',
+      '(min-width: 724px)',
       '(pointer: coarse)',
     ]);
   });
@@ -423,5 +424,48 @@ describe('the Go to batch row shows below 724 only (quick 261002-wmy)', () => {
     const count = rules.find((rule) => rule.selector.includes('.notebook .fold-row__count'));
     expect(control.selector).toContain('.notebook .notebook-jump__control');
     expect(count.selector).toContain('.notebook .notebook-jump__status');
+  });
+});
+
+// Sketch 011 decision 34 A (Mark, 2026-10-04; brief task 9; quick 261004-igr):
+// from 724 up the small info labels read from the left. Row A of the boards
+// info-labels-bands.html and info-labels-log.html, declaration for
+// declaration. Below 724 nothing changes.
+describe('small info labels start-aligned from 724 (sketch 011 decision 34 A, Mark 2026-10-04; quick 261004-igr)', () => {
+  const wide = rules.filter((rule) => rule.media === '(min-width: 724px)');
+  const wideRule = (selector) => wide.find((rule) => rule.selector === selector);
+
+  test('the fold row starts its content at the left; the top-level rule keeps space-between', () => {
+    const rule = wideRule('.notebook .fold-row');
+    expect(rule, 'expected .notebook .fold-row under (min-width: 724px)').toBeTruthy();
+    expect(rule.declarations).toMatch(/justify-content:\s*flex-start/);
+    const base = rules.find((r) => r.selector === '.notebook .fold-row' && r.media === undefined);
+    expect(base.declarations).toMatch(/justify-content:\s*space-between/);
+  });
+
+  test('the count and the jump status carry the dot, in CSS so the accessible names stay as they are', () => {
+    const rule = wideRule('.notebook .fold-row__count::before, .notebook .notebook-jump__status::before');
+    expect(rule, 'expected the shared ::before rule under (min-width: 724px)').toBeTruthy();
+    expect(rule.declarations).toMatch(/content:\s*"\\00b7"/);
+    expect(rule.declarations).toMatch(/margin-right:\s*var\(--app-notebook-recipe-rail-gap\)/);
+    const others = rules.filter((r) => r !== rule && /::before/.test(r.selector) && /fold-row__count|notebook-jump__status/.test(r.selector));
+    expect(others).toEqual([]);
+  });
+
+  test('the Go to batch row starts at the left too, and is not shown here (brief task 3 shows it)', () => {
+    const rule = wideRule('.notebook-jump');
+    expect(rule, 'expected .notebook-jump under (min-width: 724px)').toBeTruthy();
+    expect(rule.declarations).toMatch(/justify-content:\s*flex-start/);
+    expect(rule.declarations).not.toMatch(/display/);
+  });
+
+  test("the batch head runs the date then the actions, 32px apart; the top-level rule keeps space-between and its 16px", () => {
+    const rule = wideRule('.notebook-log .batch-row__head');
+    expect(rule, 'expected .notebook-log .batch-row__head under (min-width: 724px)').toBeTruthy();
+    expect(rule.declarations).toMatch(/justify-content:\s*flex-start/);
+    expect(rule.declarations).toMatch(/gap:\s*var\(--gap-l\)/);
+    const base = rules.find((r) => r.selector === '.notebook-log .batch-row__head' && r.media === undefined);
+    expect(base.declarations).toMatch(/justify-content:\s*space-between/);
+    expect(base.declarations).toMatch(/gap:\s*var\(--app-notebook-log-head-outer-gap\)/);
   });
 });

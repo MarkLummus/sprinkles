@@ -28,7 +28,9 @@ so the next run skips it.
 3. React to the rows Mark has answered or written on since the last reply: the row has an
    `answer` or a non-empty `note`, and `handledAt` is missing or earlier than `updatedAt`.
 4. For each such row, say in one or two sentences what Mark decided or wrote (for an answer, give
-   the chosen option's label), then route the follow-up:
+   the chosen option's label). The answer `other` is the page's built-in choice and is not in
+   `options`: the `note` is the answer, so read it as written text and look up no label. An `other`
+   answer with an empty or unclear note goes to the unclear list in step 6. Then route the follow-up:
    - A sketch decision: record it in the `## Decisions` entry of the sketch the row's `where` or
      `source` names (that sketch's `README.md` under `.planning/sketches/`) with the Edit tool. A
      design record outside `app/` (a sketch README decision log, DESIGN.md) is edited only when

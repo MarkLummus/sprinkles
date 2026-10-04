@@ -1,11 +1,11 @@
 import { STANDING_WORDS, standingFor } from '../domain/lastEvent.js';
 
-// The recipe band's Go to batch row (sketch 011 decision 30; boards
-// 393-phone-log.html and 723-phone-log.html; quick 261002-wmy). Below 724
-// the batch log starts about three screens under the band, so the band
-// carries one row, built in History's row grammar: the control word
-// underlined on the left, the batch's standing in 12px at the right end, the
-// whole row one link at least 44px tall.
+// The recipe band's Go to batch row (sketch 011 decisions 30, 33 and 43; boards
+// 393-phone-log.html, 723-phone-log.html and 724-1365-go-to-batch.html; quick
+// 261002-wmy). Below 1366 the batch log sits under the Sheet, two to four
+// screens under the band, so the band carries one row, built in History's row
+// grammar: the control word underlined on the left, then a dot and the batch's
+// standing in 12px, the whole row one link at least 44px tall.
 //
 // The status reads the log's own batches (the version in view's), through
 // the one standing map Home uses, so the band and the log it jumps to cannot
@@ -17,7 +17,7 @@ import { STANDING_WORDS, standingFor } from '../domain/lastEvent.js';
 // through the page's existing focus landing. The browser's own fragment
 // navigation is not used: it neither reliably focuses a tabindex -1 heading
 // in WebKit and Chrome nor leaves react-router's history alone. The CSS, not
-// a media hook, hides the row from 724 up (notebook.css, .notebook-jump).
+// a media hook, hides the row from 1366 up (notebook.css, .notebook-jump).
 export function GoToBatch({ batches, onGo }) {
   const words = STANDING_WORDS[standingFor(batches)];
   return (

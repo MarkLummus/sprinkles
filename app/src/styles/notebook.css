@@ -218,10 +218,9 @@
   margin-right: var(--app-notebook-recipe-rail-gap);
 }
 
-/* The band's Go to batch row: below 724 only (sketch 011 decision 30); from
-   724 up the band is as built. It reads from the left wherever a rule shows
-   it (sketch 011 decisions 41 and 43). The 723.98px block below gives it its
-   box. */
+/* The band's Go to batch row is hidden from 1366, where the log sits beside
+   the Sheet. It reads from the left wherever a rule shows it (sketch 011
+   decisions 41 and 43). The 1365.98px block below gives it its box. */
 .notebook-jump {
   display: none;
   justify-content: flex-start;
@@ -1071,6 +1070,25 @@
     gap: var(--gap-l);
   }
 
+  /* Go to batch shows wherever the log sits below the Sheet: sketch 011
+     decision 30 at the phone, decision 33 (Mark, 2026-10-03: "Goto batch
+     extends above") and decision 43 from 724 to 1365. It is History's row
+     grammar, start-aligned with the dot, one link at least 44px tall at every
+     pointer, the whole row the target. grid-column 2 puts the band grid's
+     third child under the Version section, as the as-built panels of
+     724-1365-go-to-batch.html draw it. In the phone's flex-column band
+     grid-column has no effect, so this one rule serves below 724 too. */
+  .notebook-jump {
+    display: flex;
+    grid-column: 2;
+    width: 100%;
+    min-height: var(--touch-min);
+    align-items: center;
+    gap: var(--app-notebook-recipe-rail-gap);
+    text-decoration: none;
+    color: inherit;
+  }
+
   .notebook-body {
     /* Rule 1 fix (03.5-17 Task 2): the base rule's align-items: flex-start
        (declared above for the 1366-up ROW layout, where the Sheet and log
@@ -1135,18 +1153,6 @@
      content width under the base grid's align-items: start, as before plan 23. */
   .notebook-version {
     align-self: stretch;
-  }
-
-  /* Go to batch: History's row grammar (393-phone-log.html, 723-phone-log.html),
-     one link at least 44px tall at every pointer. */
-  .notebook-jump {
-    display: flex;
-    width: 100%;
-    min-height: var(--touch-min);
-    align-items: center;
-    gap: var(--app-notebook-recipe-rail-gap);
-    text-decoration: none;
-    color: inherit;
   }
 
   .notebook-log {

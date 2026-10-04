@@ -10,6 +10,7 @@ allowed-tools:
   - Glob
   - Edit
   - Write
+  - Skill
   - "Bash(git mv:*)"
   - "Bash(git status:*)"
   - "Bash(git log:*)"
@@ -41,20 +42,23 @@ so the next run skips it.
      `source` names (that sketch's `README.md` under `.planning/sketches/`) with the Edit tool. A
      design record outside `app/` (a sketch README decision log, DESIGN.md) is edited only when
      the edit is exactly what Mark answered; otherwise propose the edit and leave the file alone.
-   - Anything that changes `app/`: name the GSD command to run, `/gsd-quick` with the task text.
+   - Anything that changes `app/`: when the spec is decided (Mark's answer is recorded and
+     nothing is left open), run it: invoke `/gsd-quick` (or `/gsd-quick-batch` for several) with
+     the task text, one run at a time, and report its commits. When the spec is not decided,
+     propose the command and make it a "Run:" row (step 5).
    - A device check that passed: close it (step 5 only).
    - A failed check, or a note describing a defect: propose a `/gsd-quick` or `/gsd-debug` task
      with its text.
    - A todo (kind `todo`) with status `scheduled`: Mark wants the work done, and the note says
-     when or why. Name the whole path by size, then start only its first step. A small change
-     is a `/gsd-quick` with its text; Mark runs it, you do not. A change that needs a sketch
-     first, or that sits before a phase, is a Sid sketch task, then `/gsd-phase` (insert) or
-     `/gsd-plan-phase`; spawn the `sid` agent for the sketch task in the background, with the
-     todo file, Mark's note and the rule that Sid adds a look row to Mark's List when the board
-     is ready. Start no step that edits `app/`, and run no `/gsd-` command yourself. The reply
-     says what was started and what Mark runs next. Start a step only once: the row's
-     `handledAt` makes the next run skip it. The row stays `scheduled`; Mark presses Done when
-     the work ships.
+     when or why. Name the whole path by size, then start its first step. A small change is a
+     `/gsd-quick` with its text: run it. A change that needs a sketch first, or that sits before
+     a phase, is a Sid sketch task, then `/gsd-phase` (insert) or `/gsd-plan-phase`; spawn the
+     `sid` agent for the sketch task in the background, with the todo file, Mark's note and the
+     rule that Sid adds a look row to Mark's List when the board is ready. Run `/gsd-phase`,
+     `/gsd-plan-phase` and `/impeccable` commands never: they need Mark's judgment on scope or
+     design, so make each a "Run:" row (step 5). The reply says what was started and what is
+     left. Start a step only once: the row's `handledAt` makes the next run skip it. The row
+     stays `scheduled`; Mark presses Done when the work ships.
    - A todo Mark added on the page (`addedBy` is `mark`, no `where`): give it a file. Write
      `.planning/todos/pending/<YYYY-MM-DD>-<slug>.md` (the date from the row's `createdAt`, a
      lowercase hyphenated slug of the title, at most 60 characters), shaped like the existing
@@ -78,15 +82,20 @@ so the next run skips it.
    the original row's title, `source` the original row's doc id, `options` when the question has
    natural choices (one marked `recommended`), `status: "open"`, `addedBy: "claude"`, and ISO
    `createdAt` and `updatedAt`. The original row's `reply` names the new row. A new row is not a
-   new file.
+   new file. Do the same for every command Mark must run himself (`/gsd-phase`,
+   `/gsd-plan-phase`, `/impeccable ...`): add a new open todo row titled "Run: " plus the
+   command's purpose, with `detail` holding the exact command and what it needs, `source` the
+   original row's doc id, `addedBy: "claude"`, and ISO `createdAt` and `updatedAt`, so the
+   command stays on the list until Mark presses Done. Mention it in the original row's `reply`.
 6. Report what was handled (title and reply), what is still open grouped by kind (decide, check,
    look, todo; title plus each row's `links` URLs, so Mark can click through), and any answer
    that is unclear, with the decide row now holding its question. The question lives on the
    list, so do not stop to ask it in the session. Never ask about clear answers.
 7. If nothing needs a reaction, say so in one line and list what is open.
 
-Boundaries: Never edit anything under `app/` (every app change is a named GSD command), run no
-GSD command yourself, and create no new files except a todo file for a todo Mark added on the
+Boundaries: Never edit anything under `app/` yourself (every app change goes through
+`/gsd-quick` or `/gsd-quick-batch`, which you may invoke for a decided change). Run no other GSD
+command and no `/impeccable` command yourself. Create no new files except a todo file for a todo Mark added on the
 page, in `.planning/todos/pending/`. The only agent you may start is `sid` for a scheduled
 todo's sketch step. The one move allowed is a done todo's file, `pending/` to `completed/`
 under `.planning/todos/`.

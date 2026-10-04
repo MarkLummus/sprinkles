@@ -39,13 +39,12 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test("notebook.css carries exactly seven named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then 724px (the small info labels start-aligned, sketch 011 decision 34), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (max-width: 723.98px) and (pointer: coarse) (the phone's group-cue margin, where the 44px touch head puts the first axis name lower, 261004-ox4), then (forced-colors: active) (the record pen's picked states stay in the system Highlight under the App skin, 261004-ox4)", () => {
+  test("notebook.css carries exactly six named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (max-width: 723.98px) and (pointer: coarse) (the phone's group-cue margin, where the 44px touch head puts the first axis name lower, 261004-ox4), then (forced-colors: active) (the record pen's picked states stay in the system Highlight under the App skin, 261004-ox4); the small info labels have no step of their own, because they read the same at every width (sketch 011 decision 41, quick 261004-ox5)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
     expect(mediaConditions).toEqual([
       '(min-width: 1366px)',
       '(max-width: 1365.98px)',
       '(max-width: 723.98px)',
-      '(min-width: 724px)',
       '(pointer: coarse)',
       '(max-width: 723.98px) and (pointer: coarse)',
       '(forced-colors: active)',
@@ -404,7 +403,7 @@ describe('the Go to batch row shows below 724 only (quick 261002-wmy)', () => {
     expect(base.declarations).toMatch(/display:\s*none/);
   });
 
-  test("the 723.98px block gives it the board's row box, every value a token or keyword", () => {
+  test("the 723.98px block gives it the board's row box (the start alignment is the top-level rule's), every value a token or keyword", () => {
     const narrow = jumpRule('(max-width: 723.98px)');
     expect(narrow, 'expected a .notebook-jump rule under (max-width: 723.98px)').toBeTruthy();
     const d = narrow.declarations;
@@ -412,7 +411,7 @@ describe('the Go to batch row shows below 724 only (quick 261002-wmy)', () => {
     expect(d).toMatch(/width:\s*100%/);
     expect(d).toMatch(/min-height:\s*var\(--touch-min\)/);
     expect(d).toMatch(/align-items:\s*center/);
-    expect(d).toMatch(/justify-content:\s*space-between/);
+    expect(d).not.toMatch(/justify-content/);
     expect(d).toMatch(/gap:\s*var\(--app-notebook-recipe-rail-gap\)/);
     expect(d).toMatch(/text-decoration:\s*none/);
     expect(d).toMatch(/color:\s*inherit/);
@@ -431,46 +430,53 @@ describe('the Go to batch row shows below 724 only (quick 261002-wmy)', () => {
   });
 });
 
-// Sketch 011 decision 34 A (Mark, 2026-10-04; brief task 9; quick 261004-igr):
-// from 724 up the small info labels read from the left. Row A of the boards
-// info-labels-bands.html and info-labels-log.html, declaration for
-// declaration. Below 724 nothing changes.
-describe('small info labels start-aligned from 724 (sketch 011 decision 34 A, Mark 2026-10-04; quick 261004-igr)', () => {
-  const wide = rules.filter((rule) => rule.media === '(min-width: 724px)');
-  const wideRule = (selector) => wide.find((rule) => rule.selector === selector);
+// Sketch 011 decision 34 A (Mark, 2026-10-04; brief task 9; quick 261004-igr)
+// built the small info labels from 724 up; decision 41 (Mark, 2026-10-04: "32px
+// at the phone, as at the wide widths"; quick 261004-ox5) brings them to 393 and
+// 723, so the (min-width: 724px) block is folded into the base rules and gone.
+// Decision 42 keeps the batch head's height: 32px between the date and the
+// actions where they share a line, the head's own 16px where they wrap. Rows A
+// of info-labels-phone.html and A2 of info-labels-batch-head.html, declaration
+// for declaration.
+describe('small info labels start-aligned at every width (sketch 011 decisions 34 A, 41 and 42, Mark 2026-10-04; quick 261004-ox5)', () => {
+  const top = (selector) => rules.find((r) => r.selector === selector && r.media === undefined);
 
-  test('the fold row starts its content at the left; the top-level rule keeps space-between', () => {
-    const rule = wideRule('.notebook .fold-row');
-    expect(rule, 'expected .notebook .fold-row under (min-width: 724px)').toBeTruthy();
-    expect(rule.declarations).toMatch(/justify-content:\s*flex-start/);
-    const base = rules.find((r) => r.selector === '.notebook .fold-row' && r.media === undefined);
-    expect(base.declarations).toMatch(/justify-content:\s*space-between/);
+  test('the fold row starts its content at the left at every width; no media rule restates it', () => {
+    const base = top('.notebook .fold-row');
+    expect(base, 'expected a top-level .notebook .fold-row rule').toBeTruthy();
+    expect(base.declarations).toMatch(/justify-content:\s*flex-start/);
+    const underMedia = rules.filter((r) => r.selector === '.notebook .fold-row' && r.media !== undefined && /justify-content/.test(r.declarations));
+    expect(underMedia).toEqual([]);
   });
 
-  test('the count and the jump status carry the dot, in CSS so the accessible names stay as they are', () => {
-    const rule = wideRule('.notebook .fold-row__count::before, .notebook .notebook-jump__status::before');
-    expect(rule, 'expected the shared ::before rule under (min-width: 724px)').toBeTruthy();
+  test('the count and the jump status carry the dot in one top-level rule, in CSS so the accessible names stay as they are', () => {
+    const dotRules = rules.filter((r) => /::before/.test(r.selector) && /fold-row__count|notebook-jump__status/.test(r.selector));
+    expect(dotRules).toHaveLength(1);
+    const [rule] = dotRules;
+    expect(rule.media).toBeUndefined();
+    expect(rule.selector).toBe('.notebook .fold-row__count::before, .notebook .notebook-jump__status::before');
     expect(rule.declarations).toMatch(/content:\s*"\\00b7"/);
     expect(rule.declarations).toMatch(/margin-right:\s*var\(--app-notebook-recipe-rail-gap\)/);
-    const others = rules.filter((r) => r !== rule && /::before/.test(r.selector) && /fold-row__count|notebook-jump__status/.test(r.selector));
+  });
+
+  test('the Go to batch row starts at the left in its top-level rule, beside display none; no other jump rule justifies', () => {
+    const base = top('.notebook-jump');
+    expect(base, 'expected a top-level .notebook-jump rule').toBeTruthy();
+    expect(base.declarations).toMatch(/display:\s*none/);
+    expect(base.declarations).toMatch(/justify-content:\s*flex-start/);
+    const others = rules.filter((r) => r.selector === '.notebook-jump' && r !== base && /justify-content/.test(r.declarations));
     expect(others).toEqual([]);
   });
 
-  test('the Go to batch row starts at the left too, and is not shown here (brief task 3 shows it)', () => {
-    const rule = wideRule('.notebook-jump');
-    expect(rule, 'expected .notebook-jump under (min-width: 724px)').toBeTruthy();
-    expect(rule.declarations).toMatch(/justify-content:\s*flex-start/);
-    expect(rule.declarations).not.toMatch(/display/);
-  });
-
-  test("the batch head runs the date then the actions, 32px apart; the top-level rule keeps space-between and its 16px", () => {
-    const rule = wideRule('.notebook-log .batch-row__head');
-    expect(rule, 'expected .notebook-log .batch-row__head under (min-width: 724px)').toBeTruthy();
-    expect(rule.declarations).toMatch(/justify-content:\s*flex-start/);
-    expect(rule.declarations).toMatch(/gap:\s*var\(--gap-l\)/);
-    const base = rules.find((r) => r.selector === '.notebook-log .batch-row__head' && r.media === undefined);
-    expect(base.declarations).toMatch(/justify-content:\s*space-between/);
-    expect(base.declarations).toMatch(/gap:\s*var\(--app-notebook-log-head-outer-gap\)/);
+  test("the batch head runs the date then the actions 32px later, with the head's own 16px between lines, in one top-level rule (decision 42)", () => {
+    const base = top('.notebook-log .batch-row__head');
+    expect(base, 'expected a top-level .notebook-log .batch-row__head rule').toBeTruthy();
+    expect(base.declarations).toMatch(/justify-content:\s*flex-start/);
+    expect(base.declarations).toMatch(/column-gap:\s*var\(--gap-l\)/);
+    expect(base.declarations).toMatch(/row-gap:\s*var\(--app-notebook-log-head-outer-gap\)/);
+    expect(base.declarations, 'no gap shorthand: it would set both gaps').not.toMatch(/(^|[;\s])gap:/);
+    const underMedia = rules.filter((r) => r.selector === '.notebook-log .batch-row__head' && r.media !== undefined);
+    expect(underMedia).toEqual([]);
   });
 });
 

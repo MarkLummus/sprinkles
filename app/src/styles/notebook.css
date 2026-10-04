@@ -1020,6 +1020,41 @@
   }
 }
 
+/* The small info labels read from the left from 724 up (sketch 011 decision
+   34 A, Mark 2026-10-04; brief task 9; quick 261004-igr): label, control
+   word, a dot, then the count, state or date, instead of the count drifting
+   to the far end of a row that is hundreds of px wide. Row A of the boards
+   info-labels-bands.html and info-labels-log.html, declaration for
+   declaration; the gap from the control word to the count reads 32px (the
+   14px row gap, the dot, and its 14px margin). The row stays one 44px
+   button, full width. The dot is CSS, so FoldRow and GoToBatch keep their
+   markup and their accessible names. The jump rule waits for brief task 3,
+   which shows the Go to batch row from 724; until then it is hidden here.
+   The batch head runs the date, then Correct and Record another 32px
+   later; in the 350px log column the wrapped actions sit 32px under the
+   date, as the board draws (the head is 16px taller than before). Below
+   724 nothing changes (the orchestrator's reading of Mark's answer 4). */
+@media (min-width: 724px) {
+  .notebook .fold-row {
+    justify-content: flex-start;
+  }
+
+  .notebook .fold-row__count::before,
+  .notebook .notebook-jump__status::before {
+    content: "\00b7";
+    margin-right: var(--app-notebook-recipe-rail-gap);
+  }
+
+  .notebook-jump {
+    justify-content: flex-start;
+  }
+
+  .notebook-log .batch-row__head {
+    justify-content: flex-start;
+    gap: var(--gap-l);
+  }
+}
+
 /* iOS Safari zooms the page when a focused text field computes under 16px
    (Mark's iPhone, 2026-09-27: Rename or Next version, then Cancel, left the
    page wider than the screen). The base field rule above (two classes, or a

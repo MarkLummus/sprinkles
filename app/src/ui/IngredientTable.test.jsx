@@ -9,6 +9,7 @@ import { Children } from 'react';
 import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
+import { formatShareOfBatch } from '../domain/composition.js';
 
 // The row fixture factory (D-01, D-02): a row is built with portions, an
 // amount and a step for the common one-portion case, with an `overrides`
@@ -1189,6 +1190,8 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
     fixture.draftVersion.rows[0].removed = true;
     fixture.penDraft.rows.a.removed = true;
     const cells = wholeMilkCells(renderPen(fixture));
+    // Against the batch the pen opened on (799.68 g), the same basis as the struck share.
+    const PORTION_LINES = ['120 g of 370.4 g · 46.3% in all', '250.4 g of 370.4 g · 46.3% in all'];
 
     expect(cells).toHaveLength(2);
     [2, 3].forEach((step, i) => {
@@ -1198,10 +1201,14 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
             CHIP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
             GAP +
             `<button type="button" class="text-control" tabindex="0" aria-label="restore Whole milk, Step ${step}">restore</button>` +
-            '<span class="ingredient-table__portion-note">[^<]*</span></td>$',
+            `<span class="ingredient-table__portion-note">${PORTION_LINES[i]}</span></td>$`,
         ),
       );
     });
+    // The struck share beside each line is the portion's share of the batch the pen opened on.
+    const markup = renderPen(fixture);
+    expect(markup).toContain(`<span class="struck-value">${formatShareOfBatch(120, 799.68)}</span>`);
+    expect(markup).toContain(`<span class="struck-value">${formatShareOfBatch(250.4, 799.68)}</span>`);
   });
 
   it('Test C: an orphaned split row runs name, tag, orphan flag, gap, remove link, then the portion line on its first line only (sketch 011 decision 44)', () => {
@@ -1254,6 +1261,78 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
         '<button type="button" class="text-control" tabindex="0">remove</button></td>',
     );
     expect(cell).not.toContain('portion-note');
+  });
+});
+
+// Quick task 261004-ox6 (sketch 011 decision 44 finding 1, Mark's answer 2 of
+// 2026-10-04): a removed split row is outside the live batch, so its portion
+// lines read its share of the batch the pen opened on, the same basis as the
+// struck % of batch beside them. An active split row still reads the live batch.
+describe("IngredientTable — a removed split row's portion line keeps the share it had when the pen opened (261004-ox6; sketch 011 decision 44 finding 1)", () => {
+  function splitFixture() {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, {
+        portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }],
+        ingredient: { composition: { fat: 1 }, basis: { fat: 'estimated' } },
+      }),
+      makeRow('b', 'Heavy cream', 429.28, 3),
+    ]);
+    version.method = [
+      { n: 1, leadIn: 'Gum slurry.', instruction: 'x' },
+      { n: 2, leadIn: 'Warm the milk.', instruction: 'x' },
+      { n: 3, leadIn: 'Build the base.', instruction: 'x' },
+    ];
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: {
+        a: { portions: [{ step: 2, grams: '120' }, { step: 3, grams: '250.4' }], removed: false },
+        b: onePortionDraftRow(3, '429.28'),
+      },
+      asMade: {},
+    };
+    return { version, draftVersion, penDraft };
+  }
+
+  function renderPen({ version, draftVersion, penDraft }) {
+    return renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(version.method)}
+      />,
+    );
+  }
+
+  function notes(markup) {
+    return [...markup.matchAll(/<span class="ingredient-table__portion-note">([^<]*)<\/span>/g)].map((m) => m[1]);
+  }
+
+  // Heavy cream moves to 500 g in the pen; the draft's own rows carry it, as the pen's
+  // handler writes both.
+  function heavyCreamAt500(fixture) {
+    fixture.draftVersion.rows[1].portions[0].grams = 500;
+    fixture.penDraft.rows.b.portions[0].grams = '500';
+  }
+
+  it('Test F: another row changes, then Whole milk is removed: both notes keep the share of the batch the pen opened on', () => {
+    const fixture = splitFixture();
+    heavyCreamAt500(fixture);
+    fixture.draftVersion.rows[0].removed = true;
+    fixture.penDraft.rows.a.removed = true;
+
+    // 74.1% would be the live batch without the row (500 g); 46.3% is the batch it opened on.
+    expect(notes(renderPen(fixture))).toEqual(['120 g of 370.4 g · 46.3% in all', '250.4 g of 370.4 g · 46.3% in all']);
+  });
+
+  it('Test G (guard): another row changes and Whole milk stays active: both notes read against the live batch', () => {
+    const fixture = splitFixture();
+    heavyCreamAt500(fixture);
+
+    expect(notes(renderPen(fixture))).toEqual(['120 g of 370.4 g · 42.6% in all', '250.4 g of 370.4 g · 42.6% in all']);
   });
 });
 

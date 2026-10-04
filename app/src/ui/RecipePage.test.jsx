@@ -727,8 +727,21 @@ describe('MEASURED_INVALID_STATUS, CHURN_DATE_BLOCKED_MESSAGE and CHURN_DATE_BLO
 });
 
 describe('batch save completion feedback', () => {
-  it('names the stored record date and the version snapshot it was made against', () => {
-    expect(batchSavedStatus(augustSecondBatch)).toBe('recorded 4 Aug 2026 against 50 g oil · 800 g');
+  it('names the stored record date alone for a first save, without the version (Mark, 2026-10-04)', () => {
+    expect(batchSavedStatus(augustSecondBatch)).toBe('recorded 4 Aug 2026');
+  });
+
+  it('names the amendment\'s own changed date, not the recording date, on the amend path (todo 2026-09-17; Mark, 2026-10-04)', () => {
+    const amend = (now) => {
+      const draft = draftFromBatch(augustSecondBatch);
+      const { parsed } = parseAllMeasuredFields(draft);
+      const churnFields = buildChurnFieldsFromDraft(draft, parsed);
+      const tasting = draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null;
+      return completeRecord(augustSecondBatch, churnFields, tasting, { now });
+    };
+    expect(batchSavedStatus(amend('2026-09-17T14:05:00.000Z'))).toBe('changed 17 Sep 2026');
+    // Same day as the recording: the branch is on the changed field, not on the two dates differing.
+    expect(batchSavedStatus(amend('2026-08-04T18:30:00.000Z'))).toBe('changed 4 Aug 2026');
   });
 
   it('gives a recoverable storage failure without discarding the draft', () => {

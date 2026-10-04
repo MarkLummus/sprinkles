@@ -390,24 +390,31 @@ describe("the phone band's forms keep their content width, the Version fold head
 });
 
 // Quick 261002-wmy: the band's Go to batch row (sketch 011 decision 30,
-// 393-phone-log.html and 723-phone-log.html) shows below 724 only. The base
-// rule hides it; the existing 723.98px block gives it the board's row box; its
-// two spans ride the fold-row control and count typography.
-describe('the Go to batch row shows below 724 only (quick 261002-wmy)', () => {
+// 393-phone-log.html and 723-phone-log.html) first showed below 724 only. Sketch
+// 011 decision 33 (Mark, 2026-10-03: "Goto batch extends above") and decision 43
+// (Mark, 2026-10-04: "yes, dots like decision 34"; quick 261004-ox9) show it
+// wherever the log sits below the Sheet, below 1366. The base rule hides it from
+// 1366; one rule under the 1365.98px step gives it the board's row box
+// (724-1365-go-to-batch.html, as built), with grid-column 2 to sit in the band
+// grid's second column under the Version section. In the phone's flex-column
+// band grid-column has no effect, so the same rule serves below 724. Its two
+// spans ride the fold-row control and count typography.
+describe('the Go to batch row shows wherever the log sits below the Sheet, below 1366 (quick 261002-wmy; sketch 011 decisions 33 and 43, quick 261004-ox9)', () => {
   const jumpRules = rules.filter((rule) => rule.selector === '.notebook-jump');
   const jumpRule = (media) => jumpRules.find((rule) => rule.media === media);
 
-  test('a top-level .notebook-jump rule hides the row', () => {
+  test('a top-level .notebook-jump rule hides the row from 1366, where the log sits beside the Sheet', () => {
     const base = jumpRule(undefined);
     expect(base, 'expected a top-level .notebook-jump rule').toBeTruthy();
     expect(base.declarations).toMatch(/display:\s*none/);
   });
 
-  test("the 723.98px block gives it the board's row box (the start alignment is the top-level rule's), every value a token or keyword", () => {
-    const narrow = jumpRule('(max-width: 723.98px)');
-    expect(narrow, 'expected a .notebook-jump rule under (max-width: 723.98px)').toBeTruthy();
-    const d = narrow.declarations;
+  test("the 1365.98px step gives it the board's row box in the band's second column (the start alignment is the top-level rule's), every value a token or keyword", () => {
+    const below = jumpRule('(max-width: 1365.98px)');
+    expect(below, 'expected a .notebook-jump rule under (max-width: 1365.98px)').toBeTruthy();
+    const d = below.declarations;
     expect(d).toMatch(/display:\s*flex/);
+    expect(d).toMatch(/grid-column:\s*2/);
     expect(d).toMatch(/width:\s*100%/);
     expect(d).toMatch(/min-height:\s*var\(--touch-min\)/);
     expect(d).toMatch(/align-items:\s*center/);
@@ -417,9 +424,17 @@ describe('the Go to batch row shows below 724 only (quick 261002-wmy)', () => {
     expect(d).toMatch(/color:\s*inherit/);
   });
 
-  test('no .notebook-jump rule sits under the desktop or the 1365.98px steps', () => {
+  test('no .notebook-jump rule sits under the phone step; the 1365.98px rule serves the phone too', () => {
+    expect(jumpRule('(max-width: 723.98px)')).toBeUndefined();
+  });
+
+  test('exactly two .notebook-jump rules declare display: none at the top level and flex under 1365.98px, so nothing shows the row from 1366', () => {
+    const displaying = jumpRules.filter((rule) => /(^|[;\s])display:/.test(rule.declarations));
+    expect(displaying.map((rule) => [rule.media, /display:\s*(\w+)/.exec(rule.declarations)[1]])).toEqual([
+      [undefined, 'none'],
+      ['(max-width: 1365.98px)', 'flex'],
+    ]);
     expect(jumpRule('(min-width: 1366px)')).toBeUndefined();
-    expect(jumpRule('(max-width: 1365.98px)')).toBeUndefined();
   });
 
   test('its control word and status ride the fold-row control and count rules', () => {

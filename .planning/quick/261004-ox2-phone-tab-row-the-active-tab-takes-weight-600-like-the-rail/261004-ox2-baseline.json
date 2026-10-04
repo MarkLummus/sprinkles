@@ -1,0 +1,4354 @@
+{
+  "webkit": {
+    "393": {
+      "home": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.1875,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.78125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1149,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1198,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "notebook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.1875,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.78125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1149,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1198,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "recipeBook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.1875,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.78125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1149,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1198,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ideaLog": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.1875,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.78125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1149,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1198,
+              "w": 78.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ingredients": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.1875,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.78125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.375,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 316.46875,
+              "y": 783,
+              "w": 63.5,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 316.46875,
+              "y": 832,
+              "w": 63.5,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 316.46875,
+              "y": 881,
+              "w": 63.5,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 316.46875,
+              "y": 930,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 316.46875,
+              "y": 981,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      }
+    },
+    "723": {
+      "home": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.1875,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.78125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1149,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1198,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "notebook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.1875,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.78125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1149,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1198,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "recipeBook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.1875,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.78125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1149,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1198,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ideaLog": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.1875,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.78125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 0,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1149,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1198,
+              "w": 144.59375,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1247,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1298,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ingredients": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 33.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 55.189453125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.1875,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 69.8203125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.78125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 44.87109375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.375,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 28.828125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 646.46875,
+              "y": 783,
+              "w": 63.5,
+              "h": 49
+            },
+            "labelWidth": 63.4921875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 646.46875,
+              "y": 832,
+              "w": 63.5,
+              "h": 49
+            },
+            "labelWidth": 42.7734375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 646.46875,
+              "y": 881,
+              "w": 63.5,
+              "h": 49
+            },
+            "labelWidth": 39.29296875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 646.46875,
+              "y": 930,
+              "w": 39.125,
+              "h": 51
+            },
+            "labelWidth": 37.11328125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 646.46875,
+              "y": 981,
+              "w": 38.90625,
+              "h": 51
+            },
+            "labelWidth": 36.90234375,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      }
+    }
+  },
+  "chrome": {
+    "393": {
+      "home": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.203125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.796875,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1148,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1196,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "notebook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.203125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.796875,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1148,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1196,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "recipeBook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.203125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.796875,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1148,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1196,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ideaLog": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.203125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.796875,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1100,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1148,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1196,
+              "w": 78.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ingredients": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 78.59375,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 157.203125,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 235.796875,
+              "y": 1045,
+              "w": 78.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 314.40625,
+              "y": 1045,
+              "w": 78.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 320.421875,
+              "y": 788,
+              "w": 59.578125,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 320.421875,
+              "y": 836,
+              "w": 59.578125,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 320.421875,
+              "y": 884,
+              "w": 59.578125,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 320.421875,
+              "y": 932,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 320.421875,
+              "y": 982,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      }
+    },
+    "723": {
+      "home": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.203125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.796875,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1148,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1196,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "notebook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.203125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.796875,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1148,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1196,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "recipeBook": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.203125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.796875,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1148,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1196,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ideaLog": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.203125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.796875,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1100,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1148,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1196,
+              "w": 144.59375,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1244,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1294,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      },
+      "ingredients": {
+        "tabs": [
+          {
+            "label": "Home",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 0,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 32.234375,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Notebook",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 144.59375,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 52.90625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Recipe book",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 289.203125,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 67.796875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Idea log",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 433.796875,
+              "y": 1045,
+              "w": 144.609375,
+              "h": 55
+            },
+            "labelWidth": 42.890625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "More",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 578.40625,
+              "y": 1045,
+              "w": 144.59375,
+              "h": 55
+            },
+            "labelWidth": 27.578125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "moreItems": [
+          {
+            "label": "Ingredients",
+            "ariaCurrent": "page",
+            "fontWeight": "400",
+            "background": "rgb(243, 244, 242)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 650.421875,
+              "y": 788,
+              "w": 59.578125,
+              "h": 48
+            },
+            "labelWidth": 59.578125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Kitchen",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 650.421875,
+              "y": 836,
+              "w": 59.578125,
+              "h": 48
+            },
+            "labelWidth": 40.6875,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Search",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 650.421875,
+              "y": 884,
+              "w": 59.578125,
+              "h": 48
+            },
+            "labelWidth": 37.5625,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Import",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 650.421875,
+              "y": 932,
+              "w": 37.125,
+              "h": 50
+            },
+            "labelWidth": 35.125,
+            "lines": 1,
+            "inside": true
+          },
+          {
+            "label": "Export",
+            "ariaCurrent": null,
+            "fontWeight": "400",
+            "background": "rgba(0, 0, 0, 0)",
+            "radii": [
+              "10px",
+              "10px",
+              "10px",
+              "10px"
+            ],
+            "box": {
+              "x": 650.421875,
+              "y": 982,
+              "w": 37.328125,
+              "h": 50
+            },
+            "labelWidth": 35.328125,
+            "lines": 1,
+            "inside": true
+          }
+        ],
+        "overflow": 0
+      }
+    }
+  }
+}

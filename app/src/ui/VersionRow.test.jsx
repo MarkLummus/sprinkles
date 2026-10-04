@@ -378,7 +378,8 @@ describe('VersionRow — the lineage, as labelled lines (D-08)', () => {
     expect(markup).toContain('From batch');
     expect(markup).toContain('Why');
     expect(markup).toContain(childVersion.reason);
-    expect(markup).toContain('class="version-row__reason prose-text"');
+    expect(markup).toContain('class="version-row__reason app-hand"');
+    expect(markup).not.toContain('class="version-row__reason prose-text"');
     expect(markup).toContain(oliveOilVersion.versionLabel);
   });
 

@@ -888,6 +888,30 @@ describe('the hand (D-17, D-18, DESIGN.md Typography > Hand role)', () => {
   });
 });
 
+// Sketch 011 decision 37, option B (Mark, 2026-10-04; quick 261004-ly6): the
+// Why value sits on its own line flush with its label, and a saved Why reads
+// in the hand (the .app-hand role, decision 17). The rule resets the user
+// agent's start margin on a dd and carries no size, leading, face or colour
+// of its own, so the hand role's size and leading reach a saved Why. The
+// rendered numbers are the probe's, against why-row.html's B panels.
+describe('the Why row (sketch 011 decision 37 B, Mark 2026-10-04; quick 261004-ly6)', () => {
+  test('.version-row__reason resets the start margin and keeps a long word wrapping, with no physical or shorthand margin, and no rule on it sets font-size, line-height, font-family or color', () => {
+    const rule = ruleFor('.version-row__reason');
+    expect(rule, 'expected a top-level .version-row__reason rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/margin-inline-start:\s*0\s*;/);
+    expect(rule.declarations).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule.declarations).not.toMatch(/(?:^|[\s;])margin:/);
+    expect(rule.declarations).not.toMatch(/margin-left/);
+
+    const own = rules.filter((r) =>
+      r.selector.split(',').some((s) => s.trim().split(/(?=\.)/).includes('.version-row__reason')));
+    expect(own.length).toBeGreaterThan(0);
+    for (const r of own) {
+      expect(r.declarations, r.selector).not.toMatch(/(?:^|[\s;])(font-size|line-height|font-family|color):/);
+    }
+  });
+});
+
 // Quick task 261001-doi (Mark's iPad, 2026-10-01: the Every recipe cue sat
 // 3px under the tasting note). Sketch 007 draws the space below the note
 // twice: line 96's `margin-bottom: var(--gap-m)` on .note-block, outside

@@ -39,7 +39,7 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test("notebook.css carries exactly six named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then 724px (the small info labels start-aligned, sketch 011 decision 34), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (forced-colors: active) (the record pen's picked states stay in the system Highlight under the App skin, 261004-ox4)", () => {
+  test("notebook.css carries exactly seven named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then 724px (the small info labels start-aligned, sketch 011 decision 34), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (max-width: 723.98px) and (pointer: coarse) (the phone's group-cue margin, where the 44px touch head puts the first axis name lower, 261004-ox4), then (forced-colors: active) (the record pen's picked states stay in the system Highlight under the App skin, 261004-ox4)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
     expect(mediaConditions).toEqual([
       '(min-width: 1366px)',
@@ -47,6 +47,7 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
       '(max-width: 723.98px)',
       '(min-width: 724px)',
       '(pointer: coarse)',
+      '(max-width: 723.98px) and (pointer: coarse)',
       '(forced-colors: active)',
     ]);
   });
@@ -632,5 +633,49 @@ describe("the record pen's App skin (sketch 011 decision 29 on decision 38's one
     declares(forced, 'color', 'HighlightText');
     expect(rules.indexOf(forced)).toBeGreaterThan(rules.indexOf(find(PICKED_LIST)));
     expect(rules.indexOf(forced)).toBeGreaterThan(rules.indexOf(find(PRESSED)));
+  });
+});
+
+describe('the group cues take their own face and their own space (sketch 011 decision 40 C, Mark 2026-10-04; quick 261004-ox4)', () => {
+  const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  const declares = (rule, property, value) => {
+    expect(rule, `a rule for the declaration ${property}`).toBeDefined();
+    const found = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean).find((d) => d.startsWith(`${property}:`));
+    expect(found, `${rule.selector} declares ${property}`).toBeDefined();
+    expect(found.slice(property.length + 1).trim(), `${rule.selector} ${property}`).toBe(value);
+  };
+
+  test("--app-notebook-pen-cue-line-h is the cue's own 20px line height", () => {
+    expect(resolveTokenPx(tokens, '--app-notebook-pen-cue-line-h')).toBe(20);
+  });
+
+  test("the cue reads as a heading: 14px (the meta size), weight 600, sentence case, ink, its own line height; its ink outranks the skin's caption colour", () => {
+    const cue = find('.notebook-log .axes-cue');
+    declares(cue, 'font-size', 'var(--app-size-meta)');
+    declares(cue, 'font-weight', '600');
+    declares(cue, 'text-transform', 'none');
+    declares(cue, 'letter-spacing', '0');
+    declares(cue, 'line-height', 'var(--app-notebook-pen-cue-line-h)');
+    declares(cue, 'color', 'var(--app-text)');
+    expect(rules.indexOf(cue)).toBeGreaterThan(rules.indexOf(find('.notebook-log .pen-caption')));
+  });
+
+  test('the space is drawn for the stacked arrangement: 32 between groups, 12 from a cue to its items, 12 from the defects head to its cue', () => {
+    declares(find('.notebook-log .axes-grid--stacked'), 'gap', 'var(--gap-l)');
+    declares(find('.notebook-log .axes-grid__group > .axis-mark:first-of-type'), 'margin-top', '0');
+    declares(find('.notebook-log .axes-grid__group > .axes-cue'), 'margin-bottom', 'calc(var(--gap-s) - var(--gap-m))');
+    declares(find('.notebook-log .axes-grid--stacked > .defects-head'), 'margin-bottom', 'calc(var(--gap-s) - var(--gap-l))');
+  });
+
+  test("the defects head's margin is scoped to the stacked grid: no bare .notebook-log .defects-head rule reaches the wide grid", () => {
+    expect(rules.some((r) => r.selector === '.notebook-log .defects-head')).toBe(false);
+  });
+
+  test("at the phone with a coarse pointer the cue's margin takes back the 15.2px the 44px head adds, read from the two Sheet tokens", () => {
+    const phone = find('.notebook-log .axes-grid__group > .axes-cue', '(max-width: 723.98px) and (pointer: coarse)');
+    expect(phone).toBeDefined();
+    expect(phone.declarations).toMatch(
+      /margin-bottom:\s*calc\(\s*var\(--gap-s\)\s*-\s*var\(--gap-m\)\s*-\s*\(\s*var\(--sheet-caption-line-h-touch\)\s*-\s*var\(--sheet-caption-two-lines-abs\)\s*\)\s*\)/,
+    );
   });
 });

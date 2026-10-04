@@ -43,10 +43,15 @@ so the next run skips it.
    - A failed check, or a note describing a defect: propose a `/gsd-quick` or `/gsd-debug` task
      with its text.
    - A todo (kind `todo`) with status `scheduled`: Mark wants the work done, and the note says
-     when or why. Propose the GSD command by size and name it, never run it. A small change is
-     a `/gsd-quick` with its text. A change that needs a sketch first, or that sits before a
-     phase, is a Sid sketch task, then `/gsd-phase` (insert) or `/gsd-plan-phase`. The row stays
-     `scheduled`; Mark presses Done when the work ships.
+     when or why. Name the whole path by size, then start only its first step. A small change
+     is a `/gsd-quick` with its text; Mark runs it, you do not. A change that needs a sketch
+     first, or that sits before a phase, is a Sid sketch task, then `/gsd-phase` (insert) or
+     `/gsd-plan-phase`; spawn the `sid` agent for the sketch task in the background, with the
+     todo file, Mark's note and the rule that Sid adds a look row to Mark's List when the board
+     is ready. Start no step that edits `app/`, and run no `/gsd-` command yourself. The reply
+     says what was started and what Mark runs next. Start a step only once: the row's
+     `handledAt` makes the next run skip it. The row stays `scheduled`; Mark presses Done when
+     the work ships.
    - A todo with status `done`: the work is finished. Move its file from
      `.planning/todos/pending/` to `.planning/todos/completed/` with `git mv` (the file is named
      in the row's `where`), then close the row (step 5). If the file is already in `completed/`
@@ -67,7 +72,8 @@ so the next run skips it.
    list, so do not stop to ask it in the session. Never ask about clear answers.
 7. If nothing needs a reaction, say so in one line and list what is open.
 
-Boundaries: Never edit anything under `app/` (every app change is a named GSD command), and
-create no new files. The one move allowed is a done todo's file, `pending/` to `completed/`
+Boundaries: Never edit anything under `app/` (every app change is a named GSD command), run no
+GSD command yourself, and create no new files. The only agent you may start is `sid` for a
+scheduled todo's sketch step. The one move allowed is a done todo's file, `pending/` to `completed/`
 under `.planning/todos/`.
 </process>

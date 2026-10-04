@@ -94,6 +94,20 @@ describe('Shell — every route renders inside the layout route (D-09, D-10)', (
   });
 });
 
+describe('Shell — the wordmark is a link to Home at every width (decision 33, quick 261004-ly8)', () => {
+  it('renders the brand paragraph holding only an <a href="/" tabindex="0"> reading Sprinkles, with no shell__place class', () => {
+    const markup = renderAt('/notebook');
+    const brand = markup.match(/<p class="shell__brand">([\s\S]*?)<\/p>/);
+    expect(brand, 'expected a p.shell__brand element').toBeTruthy();
+    const inner = brand[1];
+    expect(inner).toMatch(/^<a\b[^>]*>Sprinkles<\/a>$/);
+    const tag = inner.match(/^<a\b[^>]*>/)[0];
+    expect(tag).toContain('href="/"');
+    expect(tag).toContain('tabindex="0"');
+    expect(tag).not.toContain('shell__place');
+  });
+});
+
 describe('Shell — the whole rail, the tools row, and Import/Export (03.4-03 Task 2)', () => {
   it('renders all five destinations as links to their own path, each carrying its own modifier class', () => {
     const markup = renderAt('/');

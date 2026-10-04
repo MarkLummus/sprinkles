@@ -12,16 +12,20 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { describe, test, expect } from 'vitest';
-import { readAllRules } from './css-source.js';
+import { readAllRules, readCustomProperties } from './css-source.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const SHELL_CSS_PATH = path.join(STYLES_DIR, 'shell.css');
 const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
 const PLACEHOLDER_JSX_PATH = path.join(STYLES_DIR, '..', 'ui', 'Placeholder.jsx');
+const TOKENS_CSS_PATH = path.join(STYLES_DIR, 'tokens.css');
+const APP_CSS_PATH = path.join(STYLES_DIR, 'app.css');
 
 const shellCssSource = readFileSync(SHELL_CSS_PATH, 'utf8');
 const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
 const placeholderJsxSource = readFileSync(PLACEHOLDER_JSX_PATH, 'utf8');
+const tokens = readCustomProperties(readFileSync(TOKENS_CSS_PATH, 'utf8'));
+const appRules = readAllRules(readFileSync(APP_CSS_PATH, 'utf8'));
 
 // readAllRules runs assertNoAtRules for us: a non-media at-rule, or an
 // at-rule nested inside the one top-level @media block, throws here at
@@ -47,12 +51,13 @@ describe('shell.css — no visual literal, every value a var() read', () => {
   // Two documented roots: .shell (the shell's own chrome — head, rail,
   // routed-page column) and .place (the unbuilt-place page Placeholder.jsx
   // renders inside .shell__main). Every selector in this file starts with
-  // one or the other.
+  // one or the other, bar the one root rule (html, scroll-padding-top only;
+  // pinned below).
   test('every rule is scoped under the .shell or .place root', () => {
     expect(rules.length).toBeGreaterThan(0);
     for (const rule of rules) {
       expect(
-        rule.selector.startsWith('.shell') || rule.selector.startsWith('.place'),
+        rule.selector.startsWith('.shell') || rule.selector.startsWith('.place') || rule.selector === 'html',
         `expected "${rule.selector}" to be scoped under .shell or .place`,
       ).toBe(true);
     }
@@ -116,8 +121,10 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
             selector.startsWith('.shell__tabs') ||
             selector.startsWith('.shell__more') ||
             selector.startsWith('.shell__tools') ||
-            selector === '.shell__main',
-          `expected "${selector}" to be the rail's hiding rule, the folded tools row, or a tab-row rule`,
+            selector === '.shell__main' ||
+            selector === '.shell__head' ||
+            selector === 'html',
+          `expected "${selector}" to be the rail's hiding rule, the folded tools row, the scrolling header, the root's scroll padding or a tab-row rule`,
         ).toBe(true);
       }
     }
@@ -209,8 +216,11 @@ describe('the shell layout never becomes a containing block for .page-status (03
   // one level deeper under the shell's Outlet must not interpose a new
   // containing block between them — any of these five properties on
   // .shell, .shell__body or .shell__main would do exactly that.
-  test('.shell, .shell__body and .shell__main declare none of transform, filter, perspective, will-change, contain', () => {
-    const forbidden = ['transform', 'filter', 'perspective', 'will-change', 'contain'];
+  //
+  // overflow joins the list (sketch 011 decision 33, brief (a)): an overflow
+  // other than visible on any ancestor of the sticky bar stops it sticking.
+  test('.shell, .shell__body and .shell__main declare none of transform, filter, perspective, will-change, contain, overflow', () => {
+    const forbidden = ['transform', 'filter', 'perspective', 'will-change', 'contain', 'overflow', 'overflow-x', 'overflow-y'];
     for (const selector of ['.shell', '.shell__body', '.shell__main']) {
       const rule = rules.find((r) => r.selector === selector);
       expect(rule, `expected a top-level ${selector} rule`).toBeTruthy();
@@ -338,5 +348,65 @@ describe('shell.css is wired in (main.jsx, home.test.js precedent)', () => {
     expect(appCssIndex).toBeGreaterThan(-1);
     expect(shellCssIndex).toBeGreaterThan(-1);
     expect(appCssIndex).toBeLessThan(shellCssIndex);
+  });
+});
+
+// The sticky header (sketch 011 decision 33, brief task 5; Mark, 2026-10-03:
+// "so that the search, import and export stay on screen").
+describe('the sticky App header and the wordmark link (decision 33, brief task 5; quick 261004-ly8)', () => {
+  test('the top-level .shell__head is the sticky bar: opaque ground, hairline foot, one row', () => {
+    const rule = rules.find((r) => r.selector === '.shell__head' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__head rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/position:\s*sticky/);
+    expect(rule.declarations).toMatch(/(^|[\s;])top:\s*0\s*;/);
+    expect(rule.declarations).toMatch(/z-index:\s*var\(--app-z-header\)/);
+    expect(rule.declarations).toMatch(/background:\s*var\(--app-background\)/);
+    expect(rule.declarations).toMatch(/border-bottom:\s*var\(--app-rule-row\)\s+solid\s+var\(--app-divider\)/);
+    expect(rule.declarations).toMatch(/padding:\s*var\(--gap-xs\)\s+var\(--gap-page\)/);
+    expect(rule.declarations).toMatch(/flex-wrap:\s*nowrap/);
+  });
+
+  test('the phone block restores the scrolling header and zeroes the root scroll padding', () => {
+    const head = rules.find((r) => r.selector === '.shell__head' && r.media === SIDE_NAV_MEDIA);
+    expect(head, 'expected a media-scoped .shell__head rule').toBeTruthy();
+    expect(head.declarations).toMatch(/position:\s*static/);
+    expect(head.declarations).toMatch(/flex-wrap:\s*wrap/);
+    expect(head.declarations).toMatch(/padding:\s*var\(--gap-s\)\s+var\(--gap-page\)/);
+    expect(head.declarations).toMatch(/border-bottom:\s*none/);
+    const root = rules.find((r) => r.selector === 'html' && r.media === SIDE_NAV_MEDIA);
+    expect(root, 'expected a media-scoped html rule').toBeTruthy();
+    expect(root.declarations).toMatch(/scroll-padding-top:\s*0/);
+  });
+
+  // The canvas guard of app.css (G-03.4-9), extended to this file: the one
+  // html rule here takes scroll-padding-top and nothing else, so the root
+  // element never gets a background and body's still reaches the canvas.
+  test('exactly one top-level html rule exists, declaring scroll-padding-top alone and no background', () => {
+    const htmlRules = rules.filter((r) => r.selector === 'html' && r.media === undefined);
+    expect(htmlRules).toHaveLength(1);
+    const declarations = htmlRules[0].declarations.split(';').map((d) => d.trim()).filter(Boolean);
+    expect(declarations).toEqual(['scroll-padding-top: var(--app-size-header-h)']);
+    for (const rule of rules.filter((r) => r.selector === 'html')) {
+      expect(rule.declarations).not.toMatch(/background/);
+    }
+  });
+
+  test('the header height is the 44px controls, 6px above and below and the 1px hairline, written once', () => {
+    expect(tokens['--app-size-header-h']).toBe('calc(var(--touch-min) + 2 * var(--gap-xs) + var(--app-rule-row))');
+  });
+
+  test('the bar paints above the page notice, which reads a token', () => {
+    expect(tokens['--app-z-notice']).toBe('10');
+    const status = appRules.find((r) => r.selector === '.page-status');
+    expect(status, 'expected app.css to carry .page-status').toBeTruthy();
+    expect(status.declarations).toMatch(/z-index:\s*var\(--app-z-notice\)/);
+    expect(Number(tokens['--app-z-header'])).toBeGreaterThan(Number(tokens['--app-z-notice']));
+  });
+
+  test('the wordmark link takes the App text colour and no underline, over the global link rules', () => {
+    const rule = rules.find((r) => r.selector === '.shell__brand a' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__brand a rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/color:\s*inherit/);
+    expect(rule.declarations).toMatch(/text-decoration:\s*none/);
   });
 });

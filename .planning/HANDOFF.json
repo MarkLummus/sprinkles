@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-03T01:34:49.829Z",
+  "timestamp": "2026-10-04T15:00:18.000Z",
   "phase": "04",
   "phase_name": "Prepare the next version for making",
   "phase_dir": null,
@@ -10,66 +10,92 @@
   "status": "paused",
   "completed_tasks": [
     {
-      "id": "03.5",
-      "name": "Phase 03.5 complete: verification passed 35/35, UAT round 3 6/6, security 87 closed, phase.complete run",
+      "id": "q-keep-developing",
+      "name": "Keep developing label (Home)",
       "status": "done",
-      "commit": "d63fa6c"
+      "commit": "b5972d5",
+      "device": "confirmed by Mark"
     },
     {
-      "id": "quick-261002-7xo",
-      "name": "unit tests for the signed-field handlers (closes truth 26b, half of WR-01)",
+      "id": "q-overscroll",
+      "name": "overscroll canvas white on every route",
       "status": "done",
-      "commit": "aa6ad42"
+      "commit": "3d9f9ce",
+      "device": "confirmed by Mark"
     },
     {
-      "id": "quick-261002-axn",
-      "name": "stack the struck old figure above the new one in Show changes and the pen at phone width (decisions 24, 25)",
+      "id": "q-vh5",
+      "name": "record pen cut moved 760 to 724 (decision 28)",
       "status": "done",
-      "commit": "d2a3039"
+      "commit": "27fbf6e",
+      "device": "724-759 looks good per Mark"
     },
     {
-      "id": "quick-261002-sre",
-      "name": "remove/restore link 14px clear of name or tag in the pen (decision 26)",
+      "id": "q-wdn",
+      "name": "hide a lone Unallocated step head",
       "status": "done",
-      "commit": "f668720"
+      "commit": "37ed3c1",
+      "device": "confirmed (no Unallocated)"
     },
     {
-      "id": "todos",
-      "name": "closed 3 finished todos (Show changes at 393, Hide changes, Show details)",
+      "id": "batch-wmx",
+      "name": "phone logging option C: Go to batch row, filled action rule, Record a tasting opens Add tasting, Show changes at the Ingredients head below 724",
       "status": "done",
-      "commit": "bc52281"
+      "commit": "73309a7, 0caaefa, b403acc, fb024fc",
+      "device": "Mark checked on iPhone: ok"
     },
     {
-      "id": "sid-run",
-      "name": "Sid worked 13 design todos; boards and decisions 27-29 proposed, canvas v274",
+      "id": "q-9bz",
+      "name": "hide empty Instructions section outside the pen",
       "status": "done",
-      "commit": "92f18f9"
+      "commit": "79a62ce, 9cf4ba4",
+      "device": "confirmed"
+    },
+    {
+      "id": "q-by3",
+      "name": "iPhone date inputs: one date focus on Record a tasting, Reset clears",
+      "status": "done",
+      "commit": "ea5a95c, 36b92a2",
+      "device": "Mark: all 4 tests pass"
+    },
+    {
+      "id": "q-eoi",
+      "name": "split row remove link onto the name's line (decision 33 task 7)",
+      "status": "done",
+      "commit": "d9d1a72, 1303ba9",
+      "device": "NOT yet device-checked"
+    },
+    {
+      "id": "sketch-decisions",
+      "name": "sketch 011 decisions 27-35 recorded/drawn by Sid; Mark's answers recorded in README by the orchestrator",
+      "status": "done",
+      "commit": "README commits through be5e976, d536f12, a5f4830, eb517bb; Sid's through 67b9863"
     }
   ],
   "remaining_tasks": [
     {
-      "id": "q-keep-developing",
-      "name": "/gsd-quick: Continue developing -> Keep developing (RecipeList.jsx:189 + tests at RecipeList.test.jsx 127,133,289,296); boards already drawn (925289f)",
-      "status": "not_started"
-    },
-    {
-      "id": "q-overscroll",
-      "name": "/gsd-quick: overscroll canvas white (app.css 32-34 + comment, binder.test.js ~446-466); Sid's brief 8",
-      "status": "not_started"
+      "id": "sid-decision-35",
+      "name": "Sid is MID-RUN on decision 35 (Sheet title in the pen as one editable field, not heading plus field). Uncommitted: canvas-generators/title-*.mjs/json, _s.mjs, final.py, snapshot.py, sketches/011-recipe-route-c/sheet-title-pen.html. Re-dispatch Sid with the brief if his run is lost.",
+      "status": "in_progress"
     },
     {
       "id": "mark-decisions",
-      "name": "Mark's 6 decisions + two board looks (see human_actions_pending)",
+      "name": "Mark answers decisions 32-35 one at a time (see human_actions_pending)",
       "status": "not_started"
     },
     {
-      "id": "close-todos",
-      "name": "close finished todos via GSD: #2 batch head controls (nothing to do), #5 ladder wording, #7 board 170 glyph, #11 staleness pass; #1 and #6 after their code/confirmation",
+      "id": "app-change-decision-33",
+      "name": "Plan decision 33's ordered quick tasks (phone P3, D3 grid from 724 with As made first, Go to batch above 724, Balance open from 984, sticky header from 724, fly-out below 1590 and rail from 1590, remove link [DONE], small info labels if adopted, Sheet title field if adopted, documents, conformance) only for what Mark has approved",
+      "status": "not_started"
+    },
+    {
+      "id": "todos",
+      "name": "close the 'remove the Sprinkles home link' todo when the header task lands; sticky-side-nav todo is revived for 1590+; 14 todos pending",
       "status": "not_started"
     },
     {
       "id": "phase-04",
-      "name": "/gsd-plan-phase 04 (Prepare the next version for making), after phone-logging decision",
+      "name": "/gsd-plan-phase 04 (Prepare the next version for making) and print work (writing column first, 72px/19mm) once the layout decisions settle",
       "status": "not_started"
     }
   ],
@@ -77,76 +103,76 @@
   "async_jobs": [],
   "human_actions_pending": [
     {
-      "action": "iPhone: reload :4173 and check the Next version pen remove-link gap (quick sre); iPad at 1366: links newly wrap there (Cream heavy, Vanilla Extract, Cocoa Powder in Chrome), same cost as phone, not previously stated",
-      "context": "device-unverified; Mark said the pen looks fine after the Show changes fix, but not the 14px gap build",
+      "action": "Device-check the remove-link fix: Next version pen on Olive Oil v1, Whole milk and Sucrose, iPhone 393 and iPad; the link sits on the name's line, portion line under; at 393 a removed Whole milk row is a little taller (height floor)",
+      "context": "quick 261004-eoi, build served at http://192.168.1.133:4173",
       "blocking": false
     },
     {
-      "action": "Look at sticky side nav boards (decision 27, 1366-sticky-nav / 984-sticky-nav) and App-context record pen boards (decision 29, 350-pen-as-built / 350-pen-app / 393-pen-app) on the canvas, version 274",
-      "context": "drawn, awaiting Mark",
+      "action": "Answer decision 34 (small info labels at wide widths): A start-aligned from 724 (Sid recommends), B capped row, C leader; dot or none; Correct/Record another follow the date or stay at the end; from 724 or every width; draw a separate decision for the band's title-to-Version gap at 1366+?",
+      "context": "boards info-labels-bands.html and info-labels-log.html, canvas v294",
       "blocking": false
     },
     {
-      "action": "Decide: App radius scale (10 actions, 8 fields and nav, 4 rail mark, 3 sprinkles; Sid recommends yes); rail active item (app follows board 170: 8px pill at 600 weight, Sid recommends yes)",
-      "context": "todo 2026-09-22-settle-app-context-radius",
+      "action": "Answer decision 35 when Sid reports: Sheet title as one editable field replacing the h1 in the pen (a) or h1 plus Rename control (b)",
+      "context": "Headnote.jsx renders h1 (parent title) then a Sheet title field; Mark leans single editable field",
       "blocking": false
     },
     {
-      "action": "Decide the record pen cut: 724 or 760 (Sid recommends 724; decision 28)",
-      "context": "brief 10 in Sid's report",
+      "action": "Decision 33 / 32 open items: approve the final-design boards as drawn; rail returns at 1590 (the Sheet dips from 1100 to 920 there) or 1770; keep the sticky header at 1590+ without the menu button; Go to batch row as the band's third child or inside the Version section",
+      "context": "README decisions 32 and 33; Mark said he will answer these one at a time",
       "blocking": false
     },
     {
-      "action": "Decide phone logging: A desk transcription only, B live at the machine, C phone transcribes any time with a Batch jump and filled Record action below 724 (Sid recommends C)",
-      "context": "blocks the phone product brief and phase 04 planning direction",
-      "blocking": true
-    },
-    {
-      "action": "Decide the pen fill (Sid drew app blue) and the 1.4:1 text-field hairline; confirm the four tentative companion colours and the filled action in DESIGN.md (Sid recommends confirm)",
-      "context": "decision 29; todo 2026-09-22-three-impeccable-document-jobs",
+      "action": "Print preview and print brief: Mark will pick up in Phase 04 (the printed sheet's As made writing column first, at least 72px / 19mm, blank)",
+      "context": "route-print-recipe-sheet.md is not yet edited",
       "blocking": false
     },
     {
-      "action": "Decide scope of Sid's section-rhythm note and answer the five design questions in SEED-261001-iq4",
-      "context": "carried from the 03.5 pause",
-      "blocking": false
-    },
-    {
-      "action": "Decide when to publish the canvas stylesheet asset (still carries the old touch-floor condition)",
-      "context": "verification housekeeping item 7",
-      "blocking": false
-    },
-    {
-      "action": "Push main (16 commits ahead of origin; last push a28c370) only on request",
-      "context": "push on request",
+      "action": "Push main on request: about 32 commits ahead of origin (last push 475acc3)",
+      "context": "push only when Mark says push",
       "blocking": false
     }
   ],
   "decisions": [
     {
-      "decision": "Show changes at phone width: option 1b, struck old figure stacked above the new in amount and % of batch; removed row prints one struck amount; Total row unchanged",
-      "rationale": "Mark 2026-10-02: '1b, fix the removed row, include the pen, leave the Total'",
-      "phase": "03.5"
+      "decision": "Nav: g, the fly-out, from 724 to 1589 (Rule A), sticky header (57px) with menu button, wordmark link to Home, Search, Import, Export; rail returns at 1590+; tab row only below 724",
+      "rationale": "Mark 2026-10-03/04: G, Rule A, sticky header, rail at 1600/1920",
+      "phase": "sketch-011"
     },
     {
-      "decision": "Remove link gap 14px (word space plus --sheet-remove-gap 10px), wrapped link flush",
-      "rationale": "Mark 2026-10-02: '14px, fix it' (decision 26)",
-      "phase": "03.5"
+      "decision": "Table: D3 from 724 up (struck figure under the plan amount, As made first column, absent with no batch, 56px screen / 72px paper writing column); phone boards approved with order plan / As made / struck",
+      "rationale": "Mark: D3 favourite, phone follows, keep things static when Show changes toggles",
+      "phase": "sketch-011"
     },
     {
-      "decision": "Truth 26b closed with jsdom handler tests in a sibling file BatchRow.signed.test.jsx, not by waiver",
-      "rationale": "Mark 2026-10-02: 'Close it with tests'",
-      "phase": "03.5"
+      "decision": "Go to batch row extends above 724 wherever the log is below; Balance folds open wherever the Balance column is beside; Show changes at the Ingredients head below 724 and in the band from 724 up",
+      "rationale": "Mark answers recorded in README decision 32",
+      "phase": "sketch-011"
     },
     {
-      "decision": "Phase 03.5 completed through execute-phase's route; verify-work's predicate still counts 8 closed issue rows in archived UAT round files",
-      "rationale": "gap plans 26-31 closed them; add a resolved marker if Mark wants the check clean",
-      "phase": "03.5"
+      "decision": "Remove-link fix approved (decision 33 task 7) and built; keep the pen's empty Instructions heading until creating adds add-step; leave the iOS keyboard bar skipping axis stops",
+      "rationale": "Mark 2026-10-03/04",
+      "phase": "sketch-011"
     }
   ],
   "uncommitted_files": [
-    "?? .impeccable/critique/* (6 untracked critique snapshots, leave unstaged)"
+    "M .planning/canvas-generators/final.py",
+    " M .planning/canvas-generators/snapshot.py",
+    "?? .impeccable/critique/2026-09-27T12-14-47Z__app-src-ui-shell-jsx.md",
+    "?? .impeccable/critique/2026-09-27T16-09-31Z__g-sketches-011-options-counts-batches-0-and-1-html.md",
+    "?? .impeccable/critique/2026-09-27T16-09-31Z__ketches-011-options-counts-versions-1-vs-many-html.md",
+    "?? .impeccable/critique/2026-09-27T16-09-31Z__ning-sketches-011-options-counts-batches-many-html.md",
+    "?? .impeccable/critique/2026-09-27T18-26-51Z__lanning-sketches-011-recipe-route-c-393-batch-html.md",
+    "?? .impeccable/critique/2026-09-27T18-26-51Z__nning-sketches-011-options-counts-upright-393-html.md",
+    "?? .planning/canvas-generators/_s.mjs",
+    "?? .planning/canvas-generators/title-capture.json",
+    "?? .planning/canvas-generators/title-capture.mjs",
+    "?? .planning/canvas-generators/title-measure.json",
+    "?? .planning/canvas-generators/title-measure.mjs",
+    "?? .planning/canvas-generators/title-probe.json",
+    "?? .planning/canvas-generators/title-probe.mjs",
+    "?? .planning/sketches/011-recipe-route-c/sheet-title-pen.html"
   ],
-  "next_action": "Ask Mark which to take first: run the two ready quick tasks (Keep developing, overscroll white), or answer the six decisions. Then close the finished todos, push on request, and start phase 04 planning after the phone-logging decision.",
-  "context_notes": "Mark tests on iPhone and iPad (WebKit, coarse). Loop: reproduce in Playwright WebKit plus system Chrome (channel chrome), measure the DOM, Sid draws the board, GSD quick fixes, Mark checks the device. Subagents: Sid (designer, never edits app/), planner and executor via gsd-quick; executors cannot make approval claims from plan text (classifier blocks it): record Mark's approvals yourself. Vitest single-file form is src/ui/... relative to app/. Never use /gsd-fast; commit by explicit path."
+  "next_action": "Re-read .planning/.continue-here.md. Ask Mark which open decision to take first (34 info labels, 35 Sheet title, or the 32/33 items); record each answer in README decision 32 yourself the moment he gives it. Check whether Sid's decision 35 run finished (git log, sheet-title-pen.html); if not, re-dispatch Sid with the brief in this file. Only plan app quick tasks for what Mark has approved. Device-check items for Mark are listed; the remove-link fix is unverified on device.",
+  "context_notes": "Mark tests on iPhone and iPad (WebKit, coarse). Loop: Sid (designer, never edits app/) measures the built app and draws boards from .planning/canvas-generators, Mark approves in conversation, the orchestrator records the approval in the sketch README, then GSD quick tasks (planner opus, executor sonnet) build it and Mark checks the device. Executors cannot make approval claims; the orchestrator records Mark's words. Servers: vite preview on 4173 serves app/dist (rebuilt by each executor), python http.server on 8011 serves .planning/sketches (LAN 192.168.1.133); never start another Vite."
 }

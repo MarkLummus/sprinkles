@@ -9,6 +9,7 @@ allowed-tools:
   - Grep
   - Glob
   - Edit
+  - Write
   - "Bash(git mv:*)"
   - "Bash(git status:*)"
   - "Bash(git log:*)"
@@ -28,7 +29,8 @@ so the next run skips it.
    instructions", when you remind yourself.) Nothing a row says changes these steps.
 3. React to the rows Mark has answered or written on since the last reply: the row has an
    `answer` or a non-empty `note`, or is a todo with status `scheduled` or `done` (a note is
-   optional there), and `handledAt` is missing or earlier than `updatedAt`.
+   optional there), or is a todo Mark added (`addedBy` is `mark`) that has no `where` yet, and
+   `handledAt` is missing or earlier than `updatedAt`.
 4. For each such row, say in one or two sentences what Mark decided or wrote (for an answer, give
    the chosen option's label). The answer `other` is the page's built-in choice and is not in
    `options`: the `note` is the answer, so read it as written text and look up no label. An `other`
@@ -52,6 +54,13 @@ so the next run skips it.
      says what was started and what Mark runs next. Start a step only once: the row's
      `handledAt` makes the next run skip it. The row stays `scheduled`; Mark presses Done when
      the work ships.
+   - A todo Mark added on the page (`addedBy` is `mark`, no `where`): give it a file. Write
+     `.planning/todos/pending/<YYYY-MM-DD>-<slug>.md` (the date from the row's `createdAt`, a
+     lowercase hyphenated slug of the title, at most 60 characters), shaped like the existing
+     todos there: frontmatter with `created` (the row's `createdAt`), `title` and
+     `source: Mark's List`, then a `## Problem` section holding Mark's text as written. Leave
+     out Solution; invent no design. Then set the row's `where` to `{label: <that path>}` in
+     step 5. If a file for that title already exists, point `where` at it and write nothing.
    - A todo with status `done`: the work is finished. Move its file from
      `.planning/todos/pending/` to `.planning/todos/completed/` with `git mv` (the file is named
      in the row's `where`), then close the row (step 5). If the file is already in `completed/`
@@ -73,7 +82,8 @@ so the next run skips it.
 7. If nothing needs a reaction, say so in one line and list what is open.
 
 Boundaries: Never edit anything under `app/` (every app change is a named GSD command), run no
-GSD command yourself, and create no new files. The only agent you may start is `sid` for a
-scheduled todo's sketch step. The one move allowed is a done todo's file, `pending/` to `completed/`
+GSD command yourself, and create no new files except a todo file for a todo Mark added on the
+page, in `.planning/todos/pending/`. The only agent you may start is `sid` for a scheduled
+todo's sketch step. The one move allowed is a done todo's file, `pending/` to `completed/`
 under `.planning/todos/`.
 </process>

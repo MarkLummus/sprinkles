@@ -301,6 +301,31 @@
   align-self: flex-start;
 }
 
+/* Mark, 2026-09-27: Rename, Next version and the buttons beside them got
+   narrower when hovered or clicked (quick 261004-ly5). Measured on the build
+   in WebKit and Chrome: :hover, and a pressed mouse is also hovering, was the
+   only state that changed the box. app.css's `button:hover, select:hover`
+   (0,1,1) outranks the single-class rest rules above (0,1,0) and sets a 2px
+   border and 6px padding on every classed App button, so a filled or outline
+   action went from 2 x (1 + 20) = 42 to 2 x (2 + 6) = 16 of horizontal chrome,
+   26px narrower with its right-hand neighbours sliding left, and a link went
+   from padding 0 to 6px, 12px wider. :focus-visible draws an outline only and
+   changed nothing. These two-class rules (0,2,0) take the box back, the way
+   .text-control:hover does. The actions keep DESIGN.md's Hover-Is-Weight Rule:
+   the border goes to a whole 2px and the padding loses exactly that much, so
+   the box never changes size. The link has no border to thicken, so its box
+   simply stays. app.css's binder is not touched: it is right for the Sheet's
+   unclassed buttons. */
+.notebook-action:hover,
+.notebook-action--outline:hover {
+  border-width: var(--rule-hover);
+  padding: calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover));
+}
+
+.notebook-link:hover {
+  padding: 0;
+}
+
 /* The pen's ceremony (Task 3, 1600-pen.html): the "From batch" checkbox
    and the caption-to-control gaps the shared .notebook-field/.notebook-caption
    rules above do not cover on their own. */

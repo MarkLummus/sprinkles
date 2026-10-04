@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { repository } from '../store/repository.js';
 import { exportStore, importStore } from '../store/transfer.js';
+import { useBelow724, useBelowRail } from './useBelowDesktop.js';
 
 // One source of truth for the App's five destinations (DESIGN.md "App
 // marks", D-09, D-10, D-16): the rail, the bottom tab row, and router.jsx's
@@ -135,12 +136,26 @@ function RailPlace({ place }) {
 }
 
 // The shell every route renders inside (D-09): a header with the wordmark
-// (a link to Home at every width, sketch 011 decision 33),
-// the brand's five sprinkles, and a tools row (Search, Import, Export);
-// a 224px rail of destinations — Home, a divider, Notebook / Recipe book /
-// Idea log, a divider, Ingredients / Kitchen — beside the routed page in
-// .shell__main. NavLink supplies aria-current from the router's own
-// match, never from hand-written state.
+// (a link to Home at every width), the brand's five sprinkles, and a tools
+// row (Search, Import, Export); the six destinations — Home, a divider,
+// Notebook / Recipe book / Idea log, a divider, Ingredients / Kitchen — beside
+// the routed page in .shell__main. NavLink supplies aria-current from the
+// router's own match, never from hand-written state.
+//
+// Three states (sketch 011 decision 33, shell.css): below 724 the bottom tab
+// row and the scrolling header; from 724 to 1589 the sticky bar and the nav as
+// a fly-out, opened from the bar's menu button; from 1590 the 224px rail in the
+// flex row. The fly-out follows brief (a) items (1) to (6):
+//  - it is the one <nav aria-label="Places">; shell__rail--open makes it the
+//    panel, and a scrim sits under it;
+//  - it closes on a place chosen and on the route changing, on Escape, on the
+//    menu button, on a scrim tap, and when the window crosses 1590 or 724 —
+//    `open` is derived from the width, so the panel, the scrim and inert vanish
+//    in the same render the cut is crossed;
+//  - opening moves focus to Home; Tab and Shift-Tab cycle the bar's controls
+//    and the six places; .shell__main is inert while open (the bar is not, so
+//    its controls work); closing by the user returns focus to the menu button
+//    (closeMore's pattern below).
 //
 // Every stop also carries an explicit tabindex (G-03.4-r3-3,
 // .planning/debug/ipad-tab-never-enters-app.md): WebKit makes an <a href>
@@ -159,9 +174,62 @@ export function Shell() {
   const moreSummaryRef = useRef(null);
   const { pathname } = useLocation();
 
+  const belowRail = useBelowRail();
+  const below724 = useBelow724();
+  const flyout = belowRail && !below724;
+  const [placesOpen, setPlacesOpen] = useState(false);
+  const open = flyout && placesOpen;
+  const headRef = useRef(null);
+  const navRef = useRef(null);
+  const menuRef = useRef(null);
+
   useEffect(() => {
     setMoreOpen(false);
+    setPlacesOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!flyout) setPlacesOpen(false);
+  }, [flyout]);
+
+  function closePlaces() {
+    setPlacesOpen(false);
+    menuRef.current?.focus();
+  }
+
+  // While the fly-out is open: focus Home without scrolling the page, and
+  // watch the keyboard in the capture phase. Escape closes the panel and stops
+  // there, so RecipePage's bubble-phase pen listener never sees it and an
+  // untouched pen stays open. Tab and Shift-Tab wrap between the bar's links
+  // and buttons and the six places; no visibility filter, because from 724 to
+  // 1589 every control in the bar shows.
+  useEffect(() => {
+    if (!open) return undefined;
+    navRef.current?.querySelector('.shell__place')?.focus({ preventScroll: true });
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        closePlaces();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const stops = [
+        ...headRef.current.querySelectorAll('a[href], button'),
+        ...navRef.current.querySelectorAll('a[href]'),
+      ];
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => document.removeEventListener('keydown', handleKeyDown, true);
+  }, [open]);
 
   function closeMore() {
     setMoreOpen(false);
@@ -215,17 +283,33 @@ export function Shell() {
 
   return (
     <div className="shell">
-      <header className="shell__head">
-        <div>
-          <p className="shell__brand">
-            <Link to="/" tabIndex={0}>
-              Sprinkles
-            </Link>
-          </p>
-          <div className="shell__sprinkles" aria-hidden="true">
-            {PLACES.map((place) => (
-              <span key={place.slug} className={`shell__sprinkle shell__sprinkle--${place.slug}`} />
-            ))}
+      <header className="shell__head" ref={headRef}>
+        <div className="shell__lead">
+          {flyout && (
+            <button
+              type="button"
+              className="shell__menu"
+              aria-label="Places"
+              aria-expanded={open}
+              aria-controls="places"
+              tabIndex={0}
+              ref={menuRef}
+              onClick={() => (open ? closePlaces() : setPlacesOpen(true))}
+            >
+              <MoreIcon />
+            </button>
+          )}
+          <div>
+            <p className="shell__brand">
+              <Link to="/" tabIndex={0}>
+                Sprinkles
+              </Link>
+            </p>
+            <div className="shell__sprinkles" aria-hidden="true">
+              {PLACES.map((place) => (
+                <span key={place.slug} className={`shell__sprinkle shell__sprinkle--${place.slug}`} />
+              ))}
+            </div>
           </div>
         </div>
         <div className="shell__tools">
@@ -260,7 +344,13 @@ export function Shell() {
         </div>
       </header>
       <div className="shell__body">
-        <nav className="shell__rail" aria-label="Places">
+        <nav
+          id="places"
+          ref={navRef}
+          className={open ? 'shell__rail shell__rail--open' : 'shell__rail'}
+          aria-label="Places"
+          onClick={open ? closePlaces : undefined}
+        >
           <NavLink to="/" end className="shell__place shell__place--home" tabIndex={0}>
             <HomeIcon />
             Home
@@ -274,15 +364,15 @@ export function Shell() {
             <RailPlace key={place.slug} place={place} />
           ))}
         </nav>
-        <main className="shell__main">
+        {open && <div className="shell__scrim" aria-hidden="true" onClick={closePlaces} />}
+        <main className="shell__main" inert={open}>
           <Outlet context={storeRevision} />
         </main>
       </div>
       {/* D-16: below the phone step the rail becomes a bottom tab row of
           five coloured tabs, the fifth being More — Ingredients, Kitchen,
-          Search, Import and Export. Rendered at every width; the one
-          allowed media condition (shell.css) decides which navigation is
-          shown. Because the hidden one leaves the accessibility tree,
+          Search, Import and Export. Rendered at every width; the
+          phone cut (shell.css) decides which navigation is shown. Because the hidden one leaves the accessibility tree,
           both may share the rail's own label. More's Import opens the
           same single hidden file input the tools row's Import opens —
           one input, two buttons, never two inputs. More's open state is

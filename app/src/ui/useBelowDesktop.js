@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
 // Every below-desktop fold's own query (sketch 011 decision 18, 03.5-15):
-// the log's own cut, 1366 = 224 (side nav) + 3 x 32 (gutters) + 696 (the
-// Sheet's two-column minimum) + 350 (the log) — the complement of
+// the log's own cut, 1366 = 3 x 32 (gutters) + 920 (the Sheet's minimum)
+// + 350 (the log); the side nav is in none of the sums from 724 to 1589
+// (decision 33: it is the fly-out there) — the complement of
 // LOG_BESIDE_SHEET_QUERY below. Node-guarded (BatchRow.jsx's
 // useBelow724, the same critical note): RecipeHistory's own static-markup
 // tests run under Vitest's node environment (renderToStaticMarkup, no
@@ -49,6 +50,27 @@ export function useBelow724() {
   return below;
 }
 
+// The rail's own cut (sketch 011 decision 33, Mark 2026-10-03): the rail
+// returns where four columns fit, 224 + 3 x 32 + 350 + 920 = 1590. Below it
+// the nav is the fly-out from 724 (shell.css's (max-width: 1589.98px) block):
+// Shell.jsx reads this, with useBelow724, to decide whether the menu button
+// renders and whether the focus trap, inert and Escape apply. Node-guarded,
+// the same critical note as useBelowDesktop above.
+export const BELOW_RAIL_QUERY = '(max-width: 1589.98px)';
+
+export function useBelowRail() {
+  const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+  const [below, setBelow] = useState(() => (hasMatchMedia ? window.matchMedia(BELOW_RAIL_QUERY).matches : false));
+  useEffect(() => {
+    if (!hasMatchMedia) return undefined;
+    const mediaQuery = window.matchMedia(BELOW_RAIL_QUERY);
+    const onChange = (event) => setBelow(event.matches);
+    mediaQuery.addEventListener('change', onChange);
+    return () => mediaQuery.removeEventListener('change', onChange);
+  }, [hasMatchMedia]);
+  return below;
+}
+
 // useFold(openByDefault): a fold's own open/closed state (decisions_recorded
 // 2, 03.5-15) — starts at its width's default and returns to that default
 // whenever the default changes, so an iPad rotation across 1366 resets the
@@ -65,9 +87,9 @@ export function useFold(openByDefault) {
 
 // Option A's own query (03.5-07 Task 3, decisions_recorded 4/Task 2
 // answer), re-derived at sketch 011 decision 16's own cut (03.5-10 Task
-// 2): the log sits beside the Sheet from 1366 up — 224 side nav + 3 x 32
-// gutters + the Sheet's two-column minimum 696 + the log's own 350, the
-// complement of notebook.css's own log-below block,
+// 2): the log sits beside the Sheet from 1366 up — 3 x 32 gutters + the
+// Sheet's minimum 920 + the log's own 350 (the side nav is the fly-out
+// there, decision 33), the complement of notebook.css's own log-below block,
 // (max-width: 1365.98px). The record pen's frame lives in that narrower
 // column whenever this is true, so it takes the narrow arrangement there
 // too, not only below 723.98px. Node-guarded, the same critical note as

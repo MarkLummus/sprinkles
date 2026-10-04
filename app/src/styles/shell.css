@@ -1,17 +1,23 @@
 /* The shell — DESIGN.md "App marks", "Navigation" (D-09, D-10, D-13, D-15,
    D-16, D-19). Every route renders inside .shell: a header carrying the
-   wordmark and (Task 2) a tools row, and a 224px left rail of the App's
-   destinations beside the routed page in .shell__main. The side nav
-   shows only from 984 up — 984 = the rail's 224 + 2 x 32 gutters + the
-   Sheet's two-column minimum 696 (sketch 011 decision 16; the rail and
-   the Sheet's second column go together, superseding the earlier "1024
-   up" call). Below that cut .shell__rail hides and a bottom tab row
-   takes over — the one media condition this file is ever allowed to
-   carry.
+   wordmark and a tools row, and the App's six destinations beside the
+   routed page in .shell__main. Three states, two media conditions (sketch
+   011 decision 33; Mark, 2026-10-03: the sticky header, "Rule A for
+   724-983", and the rail back at 1590 and up):
+
+   - Below 724 (723.98px, a cut the ladder already has): the bottom tab row,
+     the scrolling header and the tools folded into More; the rail is hidden.
+   - From 724 to 1589 (1589.98px, the one new literal): the sticky bar, and
+     the nav is the fly-out, opened from the bar's menu button over a scrim.
+     The main area is the whole window, so the Sheet is the window less 64,
+     920 at 984.
+   - From 1590: the 224px rail stands in the flex row under the bar
+     (224 + 3 x 32 + 350 + 920 = 1590), and the menu button is gone.
 
    Two root classes only: .shell (the shell's own chrome) and .place (the
    unbuilt-place page Placeholder.jsx renders inside .shell__main) —
-   shell.test.js pins every selector here to one of the two.
+   shell.test.js pins every selector here to one of the two, bar the one
+   html rule.
 
    The shell owns the App ground for every route it wraps (gap 3, route.md
    § 1): .shell paints --app-background once, here, rather than each route
@@ -71,6 +77,50 @@ html {
 .shell__brand a {
   color: inherit;
   text-decoration: none;
+}
+
+/* The bar's left end: the menu button (only from 724 to 1589, where the nav
+   is the fly-out) and the wordmark block (decision 33, nav-candidates.css G).
+   The button's 6px left pull lets its 20px icon, not its 44px box, line up
+   with the page gutter. */
+.shell__lead {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.shell__menu {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  margin: 0;
+  margin-inline-start: calc(-1 * var(--gap-xs));
+  border: none;
+  background: none;
+  color: var(--app-text);
+  cursor: pointer;
+}
+
+/* The app's own three dots, stood upright (decision 33). */
+.shell__menu svg {
+  width: var(--app-size-icon);
+  height: var(--app-size-icon);
+  transform: rotate(var(--app-tilt-menu));
+}
+
+/* The fly-out's scrim: from the bar's foot to the window's foot, over the
+   page and under the panel; a tap on it closes the panel. */
+.shell__scrim {
+  position: fixed;
+  inset-block-start: var(--app-size-header-h);
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: var(--app-z-scrim);
+  background: var(--app-scrim);
 }
 
 /* The brand mark (D-09): five sprinkles, one per destination, in
@@ -255,7 +305,7 @@ html {
    reads the App's own text colour rather than the Sheet ink the global
    rule uses, because this rule lives in the App's world (D-02, D-03); the
    two resolve to the same value today and are free to move apart. No
-   media condition is added here — shell.css carries exactly one, and its
+   media condition is added here — shell.css carries exactly two, and its
    own suite asserts that. Accepted cost, open for Mark at UAT: a mouse
    click on one of these stops also leaves the ring showing until focus
    moves elsewhere. */
@@ -325,10 +375,10 @@ html {
   stroke: var(--app-kitchen);
 }
 
-/* The bottom tab row (D-16): rendered at every width, hidden above the
-   side-nav cut. Below it (the one media block this file carries) the rail
-   hides and this shows instead — a hidden element leaves the
-   accessibility tree, so only one navigation is ever exposed. */
+/* The bottom tab row (D-16): rendered at every width, hidden from 724 up
+   (Rule A). Below it (the phone block, the last media block this file
+   carries) this shows instead — a hidden element leaves the accessibility
+   tree, so only one navigation is ever exposed. */
 .shell__tabs {
   display: none;
 }
@@ -339,7 +389,34 @@ html {
   padding: 0;
 }
 
-@media (max-width: 983.98px) {
+/* The fly-out (decision 33, brief task 6): below the rail's cut the rail
+   leaves the flex row and the nav is a panel. Closed it is display none, so
+   it leaves the layout and the accessibility tree; open (Shell.jsx adds
+   shell__rail--open) it is fixed from the bar's foot to the window's foot at
+   the rail's own width, above the scrim and below the bar, so the menu
+   button that opened it, and Search, Import and Export, stay live. Placed
+   before the phone block so the narrower cut wins later. */
+@media (max-width: 1589.98px) {
+  .shell__rail {
+    display: none;
+  }
+
+  .shell__rail--open {
+    display: flex;
+    position: fixed;
+    inset-block-start: var(--app-size-header-h);
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    z-index: var(--app-z-flyout);
+    background: var(--app-background);
+    box-shadow: var(--app-shadow-flyout);
+    overflow-y: auto;
+  }
+}
+
+/* The phone (below 724): the tab row, More, the folded tools and the
+   scrolling header, as built. */
+@media (max-width: 723.98px) {
   .shell__rail {
     display: none;
   }

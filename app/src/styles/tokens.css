@@ -379,6 +379,11 @@
   --app-size-header-h: calc(var(--touch-min) + 2 * var(--gap-xs) + var(--app-rule-row)); /* the sticky bar from 724 (sketch 011 decision 33): the 44px controls, 6px above and below, the 1px hairline = 57; read by the panel's and the rail's top and by html's scroll padding */
   --app-z-notice: 10; /* the page notice, as built (.page-status) */
   --app-z-header: 11; /* the sticky bar (decision 33), above the notice, which would otherwise paint over it when the page is scrolled a little */
+  --app-z-scrim: 4; /* the fly-out's scrim (decision 33, nav-candidates.css GO): above every z-index the page itself uses (1 and 2 in app.css), below the panel */
+  --app-z-flyout: 5; /* the fly-out panel: above the scrim, below the notice and the bar, so the bar's controls stay live while it is open */
+  --app-scrim: rgba(20, 20, 20, 0.28); /* the scrim: the App text #141414 at 28% (decision 33, GO) */
+  --app-shadow-flyout: 4px 0 16px rgba(20, 20, 20, 0.18); /* the panel's edge shadow (decision 33, GO) */
+  --app-tilt-menu: 90deg; /* the menu button's three dots stand upright, as --app-tilt-sprinkle turns the brand's rods (decision 33) */
 
   /* The Notebook recipe route's frame (03.5-04 Task 1, sketch 011 layout
      C): every value here is read only from notebook.css, taken from the

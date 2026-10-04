@@ -998,6 +998,39 @@
   color: var(--app-background);
 }
 
+/* The group cues take their own face and their own space (sketch 011
+   decision 40 option C, Mark, 2026-10-04, answer 1). The cue reads as a
+   heading in its own face, 26px above its first label and 45px below the
+   previous group's last item, where it used to sit 60 or 75px above and 33px
+   below. The face reaches every arrangement; the space is drawn for the
+   stacked one only (from 1366, and below 724). The defects head's margin is
+   scoped to the stacked grid because the wide grid's 20px row gap would
+   bring it to 0. record-pen-cues.html is the board. */
+.notebook-log .axes-cue {
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+
+.notebook-log .axes-grid--stacked {
+  gap: var(--gap-l);
+}
+
+.notebook-log .axes-grid__group > .axis-mark:first-of-type {
+  margin-top: 0;
+}
+
+.notebook-log .axes-grid__group > .axes-cue {
+  margin-bottom: calc(var(--gap-s) - var(--gap-m));
+}
+
+.notebook-log .axes-grid--stacked > .defects-head {
+  margin-bottom: calc(var(--gap-s) - var(--gap-l));
+}
+
 /* The band's rhythm moves with the folds (sketch 011 decision 18, Mark,
    2026-09-27: "Move with the folds"; 03.5-15 Task 2): roomy from 1366 —
    the folds' own default (03.5-15 Task 1) — and tight below it, at the
@@ -1164,6 +1197,18 @@
   .notebook-field input,
   .notebook-field textarea {
     font-size: var(--sheet-type-note);
+  }
+}
+
+/* The phone's group-cue margin (sketch 011 decision 40 C): the 44px touch
+   head puts the first axis name 15.2px lower than the 28.8px head in the 350
+   column, so the cue's margin takes that back, read from the two tokens
+   rather than the board's rounded 15. The condition is exactly where app.css
+   gives the head 44px. Fine pointers below 724 have a 24px head, take no
+   extra margin, and are not drawn. */
+@media (max-width: 723.98px) and (pointer: coarse) {
+  .notebook-log .axes-grid__group > .axes-cue {
+    margin-bottom: calc(var(--gap-s) - var(--gap-m) - (var(--sheet-caption-line-h-touch) - var(--sheet-caption-two-lines-abs)));
   }
 }
 

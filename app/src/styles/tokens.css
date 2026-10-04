@@ -426,6 +426,7 @@
   --app-notebook-log-head-gap: 18px; /* the head's own acts group gap (Correct, Record another) — the Batches control that once shared this gap retired with decision 19's upright list (03.5-17 Task 2) */
   --app-notebook-log-head-outer-gap: 16px; /* 393-batch.html/723-batch.html: the head's own lead-to-acts gap, between the Batch group and the Correct/Record another group (03.5-17 Task 2) */
   --app-notebook-log-group-gap: 18px; /* the log section's own gap between its groups on every sketch 011 batch board, read here as the space between the measured cells and the maker's notes (260925-u3r) */
+  --app-notebook-pen-cue-line-h: 20px; /* the record pen's group cue's own line height at --app-size-meta (record-pen-cues.html option C, sketch 011 decision 40), replacing the board's literal */
 
   /* The History rail (03.5-05 Task 1, 1600-batch.html/1600-long-history.html):
      values off the same board that have no existing role to reuse. The

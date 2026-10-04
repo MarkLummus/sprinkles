@@ -679,7 +679,12 @@ export function IngredientTable({
 
   return (
     <>
-      <table className={isDeveloping ? 'ingredient-table is-developing' : 'ingredient-table'}>
+      {/* ingredient-table--as-made picks the D3 grid's four tracks from 724 up (sketch 011
+          decisions 31 and 32; decision 33 brief (c)); the DOM already omits the As made cells
+          when there is no layer. */}
+      <table
+        className={`ingredient-table${hasAsMadeLayer ? ' ingredient-table--as-made' : ''}${isDeveloping ? ' is-developing' : ''}`}
+      >
         {comparisonBatchLabel && <caption className="ingredient-table__comparison">{comparisonBatchLabel}</caption>}
         <thead>
           <tr>

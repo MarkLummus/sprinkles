@@ -39,7 +39,7 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
     }
   });
 
-  test("notebook.css carries exactly five named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then 724px (the small info labels start-aligned, sketch 011 decision 34), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758)", () => {
+  test("notebook.css carries exactly six named @media steps, in file order — 1366px (the log-column record-pen rules apply only where the log genuinely is a 350px column, 03.5-13 Task 1), then 1365.98px (the log moves below the Sheet and the folds/band rhythm default closed, sketch 011 decisions 16/18, 03.5-15), then 723.98px (the phone forms — the stacked band, the 20px margin and the list-form table go together, sketch 011 decision 16), then 724px (the small info labels start-aligned, sketch 011 decision 34), then (pointer: coarse) (the notebook fields' iOS focus-zoom floor, 260927-758), then (forced-colors: active) (the record pen's picked states stay in the system Highlight under the App skin, 261004-ox4)", () => {
     const mediaConditions = [...new Set(rules.filter((rule) => rule.media !== undefined).map((rule) => rule.media))];
     expect(mediaConditions).toEqual([
       '(min-width: 1366px)',
@@ -47,6 +47,7 @@ describe('notebook.css — no visual literal, every value a var() read (GUARD-05
       '(max-width: 723.98px)',
       '(min-width: 724px)',
       '(pointer: coarse)',
+      '(forced-colors: active)',
     ]);
   });
 });
@@ -567,5 +568,69 @@ describe('the Version details rhythm (sketch 011 decision 39 B, Mark 2026-10-04;
     for (const r of scoped) {
       expect(r.declarations, r.selector).not.toMatch(/(?:^|[\s;])(row-)?gap:/);
     }
+  });
+});
+
+describe("the record pen's App skin (sketch 011 decision 29 on decision 38's one radius, decision 40; quick 261004-ox4)", () => {
+  const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  const declares = (rule, property, value) => {
+    expect(rule, `a rule for the declaration ${property}`).toBeDefined();
+    const found = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean).find((d) => d.startsWith(`${property}:`));
+    expect(found, `${rule.selector} declares ${property}`).toBeDefined();
+    expect(found.slice(property.length + 1).trim(), `${rule.selector} ${property}`).toBe(value);
+  };
+  const PICKED = [".notebook-log .axis-mark__stop:has(input[type='radio']:checked)", ".notebook-log .segmented__option:has(input[type='radio']:checked)"];
+  const PICKED_LIST = PICKED.join(', ');
+  const PRESSED = ".notebook-log .chip-toggle[aria-pressed='true']::before";
+
+  test('the rules, the captions and the text fields read the App tokens: divider rule colour, secondary caption, control radius and ink', () => {
+    declares(find('.notebook-log *'), 'border-color', 'var(--app-divider)');
+    declares(find('.notebook-log .pen-caption'), 'color', 'var(--app-text-secondary)');
+    declares(find('.notebook-log .ink-field'), 'border-radius', 'var(--app-radius-control)');
+    declares(find('.notebook-log .ink-field'), 'color', 'var(--app-text)');
+  });
+
+  test("the stops and segments take the one control radius on their outer corners only, and a secondary rule colour", () => {
+    declares(find('.notebook-log .axis-mark__stop, .notebook-log .segmented__option'), 'border-color', 'var(--app-text-secondary)');
+    const first = find('.notebook-log .axis-mark__stop:first-child, .notebook-log .segmented__option:first-child');
+    declares(first, 'border-top-left-radius', 'var(--app-radius-control)');
+    declares(first, 'border-bottom-left-radius', 'var(--app-radius-control)');
+    const last = find('.notebook-log .axis-mark__stop:last-child, .notebook-log .segmented__option:last-child');
+    declares(last, 'border-top-right-radius', 'var(--app-radius-control)');
+    declares(last, 'border-bottom-right-radius', 'var(--app-radius-control)');
+  });
+
+  test("a picked stop or segment fills app blue with a white label; a defect square is a 4px rail-radius square that fills app blue when pressed", () => {
+    const picked = find(PICKED_LIST);
+    declares(picked, 'background', 'var(--app-blue-text)');
+    declares(picked, 'border-color', 'var(--app-blue-text)');
+    declares(picked, 'color', 'var(--app-background)');
+    const square = find('.notebook-log .chip-toggle::before');
+    declares(square, 'border-color', 'var(--app-text-secondary)');
+    declares(square, 'border-radius', 'var(--app-radius-rail)');
+    const pressed = find(PRESSED);
+    declares(pressed, 'background', 'var(--app-blue-text)');
+    declares(pressed, 'border-color', 'var(--app-blue-text)');
+  });
+
+  test("the log's own ceremony: Cancel is the outline action and Save batch the filled one, both at the control radius", () => {
+    const outline = find('.notebook-log .save-ceremony button');
+    declares(outline, 'border-color', 'var(--app-blue-text)');
+    declares(outline, 'border-radius', 'var(--app-radius-control)');
+    declares(outline, 'color', 'var(--app-blue-text)');
+    declares(outline, 'background', 'none');
+    const filled = find('.notebook-log .save-ceremony button:last-of-type');
+    declares(filled, 'background', 'var(--app-blue-text)');
+    declares(filled, 'color', 'var(--app-background)');
+  });
+
+  test("forced colours: a later rule restates the system Highlight for the three picked selectors, after the skin's picked rule", () => {
+    const forced = find(`${PICKED_LIST}, ${PRESSED}`, '(forced-colors: active)');
+    declares(forced, 'forced-color-adjust', 'none');
+    declares(forced, 'background', 'Highlight');
+    declares(forced, 'border-color', 'Highlight');
+    declares(forced, 'color', 'HighlightText');
+    expect(rules.indexOf(forced)).toBeGreaterThan(rules.indexOf(find(PICKED_LIST)));
+    expect(rules.indexOf(forced)).toBeGreaterThan(rules.indexOf(find(PRESSED)));
   });
 });

@@ -32,7 +32,8 @@ so the next run skips it.
 4. For each such row, say in one or two sentences what Mark decided or wrote (for an answer, give
    the chosen option's label). The answer `other` is the page's built-in choice and is not in
    `options`: the `note` is the answer, so read it as written text and look up no label. An `other`
-   answer with an empty or unclear note goes to the unclear list in step 6. Then route the follow-up:
+   answer with an empty or unclear note goes to the unclear list: step 5 turns it into a decide
+   row. Then route the follow-up:
    - A sketch decision: record it in the `## Decisions` entry of the sketch the row's `where` or
      `source` names (that sketch's `README.md` under `.planning/sketches/`) with the Edit tool. A
      design record outside `app/` (a sketch README decision log, DESIGN.md) is edited only when
@@ -53,10 +54,17 @@ so the next run skips it.
 5. Write the reply on the row: an `update` with `if_version` from the read, carrying every field
    as read plus `handledAt` (ISO now) and `reply` (one short sentence naming what was done or
    proposed). Leave `updatedAt` as read so step 3 keeps working. If the version check fails,
-   re-read that row and take it again from step 3.
+   re-read that row and take it again from step 3. For an unclear answer, also add a new open
+   decide row so the question stays on the list: a `set` with a short slug as doc id,
+   `kind: "decide"`, a title that is the question, `detail` saying what was unclear and naming
+   the original row's title, `source` the original row's doc id, `options` when the question has
+   natural choices (one marked `recommended`), `status: "open"`, `addedBy: "claude"`, and ISO
+   `createdAt` and `updatedAt`. The original row's `reply` names the new row. A new row is not a
+   new file.
 6. Report what was handled (title and reply), what is still open grouped by kind (decide, check,
    look, todo; title plus each row's `links` URLs, so Mark can click through), and any answer
-   that is unclear. Ask Mark only about the unclear answers, never about clear ones.
+   that is unclear, with the decide row now holding its question. The question lives on the
+   list, so do not stop to ask it in the session. Never ask about clear answers.
 7. If nothing needs a reaction, say so in one line and list what is open.
 
 Boundaries: Never edit anything under `app/` (every app change is a named GSD command), and

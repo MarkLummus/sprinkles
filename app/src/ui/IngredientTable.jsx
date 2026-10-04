@@ -23,7 +23,7 @@ function groupPortionsByStep(rows, steps, stepNumberMap) {
   for (const row of rows) {
     row.portions.forEach((portion, portionIndex) => {
       const displayNumber = stepNumberMap ? displayNumberOf(stepNumberMap, portion.step) : null;
-      const entry = { row, portion, portionIndex };
+      const entry = { row, portion, portionIndex, displayNumber };
       if (displayNumber == null) {
         unallocated.push(entry);
         return;
@@ -157,15 +157,18 @@ function ShareCell({ baselineShare, currentShare }) {
 }
 
 // The remove/restore control: a text button, never an icon and never a
-// colour — exactly one control per row. The span before the button carries
-// the gap (sketch 011 decision 26): a collapsible word space widened by
-// --sheet-remove-gap, so a link on the name's line stands 14px clear and a
-// wrapped link stays flush.
-function RemoveRowControl({ removed, onToggle }) {
+// colour. Every line of a split row has the control, and each one toggles the
+// whole ingredient (sketch 011 decision 44, option B, Mark 2026-10-04); a
+// split line's accessible name says which line it is (`lineName`). The span
+// before the button carries the gap (sketch 011 decision 26): a collapsible
+// word space widened by --sheet-remove-gap, so a link on the name's line
+// stands 14px clear and a wrapped link stays flush.
+function RemoveRowControl({ removed, onToggle, lineName }) {
+  const word = removed ? 'restore' : 'remove';
   return (
     <>
       <span className="ingredient-table__remove-gap">{' '}</span>
-      <button type="button" className="text-control" tabIndex={0} onClick={onToggle}>
+      <button type="button" className="text-control" tabIndex={0} aria-label={lineName ? `${word} ${lineName}` : undefined} onClick={onToggle}>
         {removed ? 'restore' : 'remove'}
       </button>
     </>
@@ -555,7 +558,7 @@ export function IngredientTable({
     );
   }
 
-  function renderDevelopingEntry(row, portion, portionIndex) {
+  function renderDevelopingEntry(row, portion, portionIndex, displayNumber) {
     const draftRow = penDraft.rows[row.id];
     const removed = draftRow.removed;
     const dataFlag = dataFlagFor(row);
@@ -634,8 +637,14 @@ export function IngredientTable({
               the estimated tag and the orphan flag when present, and
               before a split row's portion line, which is a block that
               starts its own line under the link (sketch 011 decision 26;
-              decision 33 addendum, Mark 2026-10-04). */}
-          {portionIndex === 0 && <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />}
+              decision 33 addendum, Mark 2026-10-04). On every portion line
+              of a split row (decision 44, option B), each toggling the whole
+              row, named for its line as its step head reads it. */}
+          <RemoveRowControl
+            removed={removed}
+            onToggle={() => onTogglePenRowRemoved(row.id)}
+            lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Unallocated'}` : undefined}
+          />
           {isSplit && (
             <span className="ingredient-table__portion-note">
               {formatPortionLine(livePortionGrams, rowGrams(row), currentMass)}
@@ -658,9 +667,9 @@ export function IngredientTable({
     );
   }
 
-  function renderEntry({ row, portion, portionIndex }) {
+  function renderEntry({ row, portion, portionIndex, displayNumber }) {
     if (isShowingChanges) return renderShowChangesEntry(row, portion, portionIndex);
-    if (isDeveloping) return renderDevelopingEntry(row, portion, portionIndex);
+    if (isDeveloping) return renderDevelopingEntry(row, portion, portionIndex, displayNumber);
     return renderReadingEntry(row, portion, portionIndex);
   }
 

@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-04T14:51:36.820Z"
-last_activity: 2026-10-03
+last_updated: "2026-10-04T15:37:17.405Z"
+last_activity: 2026-10-04
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 1303ba9cbd658a0cc6ec8f245c26f93d8486f69d
+state_head: 0d9669661a383656b505a845dec7d9c1dda54bee
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-04 - Completed quick task 261004-eoi: Move the split row remove link onto the name line in the pen
+Last activity: 2026-10-04 - Completed quick task 261004-fwx: Wire Mark's List into the repo: read-first rule in CLAUDE.md and the /marks-list skill
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -379,6 +379,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261003-9bz | Hide the empty Instructions section outside the pen | 2026-10-03 | 9cf4ba4 | [261003-9bz-hide-the-empty-instructions-section-in-r](./quick/261003-9bz-hide-the-empty-instructions-section-in-r/) |
 | 261003-by3 | Fix iPhone date inputs in the record pen: one date focus, Reset clears | 2026-10-03 | 36b92a2 | [261003-by3-fix-iphone-date-inputs-in-the-record-pen](./quick/261003-by3-fix-iphone-date-inputs-in-the-record-pen/) |
 | 261004-eoi | Move the split row remove link onto the name line in the pen | 2026-10-04 | 1303ba9 | [261004-eoi-move-the-split-row-remove-link-onto-the-](./quick/261004-eoi-move-the-split-row-remove-link-onto-the-/) |
+| 261004-fwx | Wire Mark's List into the repo: read-first rule in CLAUDE.md and the /marks-list skill | 2026-10-04 | 0d96696 | [261004-fwx-wire-mark-s-list-into-the-repo-read-firs](./quick/261004-fwx-wire-mark-s-list-into-the-repo-read-firs/) |
 
 ### Roadmap Evolution
 

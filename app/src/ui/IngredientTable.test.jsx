@@ -1099,6 +1099,146 @@ describe('IngredientTable — the remove controls carry an explicit tabindex (qu
   });
 });
 
+// Quick task 261004-eoi (sketch 011 decision 26; decision 33 addendum "The
+// split row's remove link", Mark 2026-10-04): a split row's remove or restore
+// link sits on the name's line, after the name, the estimated tag and the
+// orphan flag when present, and before the portion line, which is a block
+// that starts its own line under both. Only the order of the name cell's
+// children is pinned here; every class, label and tabindex stays as it was.
+describe("IngredientTable — a split row's remove link sits on the name's line, before its portion line (261004-eoi; sketch 011 decision 26, decision 33 addendum)", () => {
+  const PORTION_LINE = '120 g of 370.4 g · 46.3% in all';
+  const CHIP = '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>';
+  const GAP = '<span class="ingredient-table__remove-gap"> </span>';
+
+  function splitFixture() {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, {
+        portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }],
+        ingredient: { composition: { fat: 1 }, basis: { fat: 'estimated' } },
+      }),
+      makeRow('b', 'Heavy cream', 429.28, 3),
+    ]);
+    version.method = [
+      { n: 1, leadIn: 'Gum slurry.', instruction: 'x' },
+      { n: 2, leadIn: 'Warm the milk.', instruction: 'x' },
+      { n: 3, leadIn: 'Build the base.', instruction: 'x' },
+    ];
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: {
+        a: { portions: [{ step: 2, grams: '120' }, { step: 3, grams: '250.4' }], removed: false },
+        b: onePortionDraftRow(3, '429.28'),
+      },
+      asMade: {},
+    };
+    return { version, draftVersion, penDraft };
+  }
+
+  function renderPen({ version, draftVersion, penDraft }) {
+    return renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(version.method)}
+      />,
+    );
+  }
+
+  // Every Whole milk name cell, from its opening tag to the first </td>; the
+  // orphan flag is a <p> inside the cell, so the slice holds it.
+  function wholeMilkCells(markup) {
+    return markup.match(/<td class="ingredient-table__col-name">(?:<span class="struck-value">)?Whole milk[\s\S]*?<\/td>/g) ?? [];
+  }
+
+  it('Test A: the first portion\'s name cell runs name, estimated tag, gap, remove link, then the portion line; the second portion has no link', () => {
+    const markup = renderPen(splitFixture());
+    const cells = wholeMilkCells(markup);
+
+    expect(cells).toHaveLength(2);
+    expect(cells[0]).toBe(
+      '<td class="ingredient-table__col-name">Whole milk' +
+        CHIP +
+        GAP +
+        '<button type="button" class="text-control" tabindex="0">remove</button>' +
+        `<span class="ingredient-table__portion-note">${PORTION_LINE}</span></td>`,
+    );
+    expect(cells[1]).toMatch(
+      /^<td class="ingredient-table__col-name">Whole milk<span class="target-chip ingredient-table__flag">.*<\/span><span class="ingredient-table__portion-note">[^<]*<\/span><\/td>$/,
+    );
+    expect(cells[1]).not.toContain('<button');
+    expect(cells[1]).not.toContain('remove-gap');
+    expect(markup.match(/>remove<\/button>/g) ?? []).toHaveLength(2);
+    expect(markup.match(/class="ingredient-table__remove-gap"/g) ?? []).toHaveLength(2);
+  });
+
+  it('Test B: a removed split row runs struck name, tag, gap, restore link, then the portion line', () => {
+    const fixture = splitFixture();
+    fixture.draftVersion.rows[0].removed = true;
+    fixture.penDraft.rows.a.removed = true;
+    const cells = wholeMilkCells(renderPen(fixture));
+
+    expect(cells[0]).toMatch(
+      new RegExp(
+        '^<td class="ingredient-table__col-name"><span class="struck-value">Whole milk</span>' +
+          CHIP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
+          GAP +
+          '<button type="button" class="text-control" tabindex="0">restore</button>' +
+          '<span class="ingredient-table__portion-note">[^<]*</span></td>$',
+      ),
+    );
+    expect(cells[0]).toContain(PORTION_LINE);
+  });
+
+  it('Test C: an orphaned split row runs name, tag, orphan flag, gap, remove link, then the portion line', () => {
+    const fixture = splitFixture();
+    fixture.version.method[0].uses = ['a'];
+    fixture.draftVersion = structuredClone(fixture.version);
+    fixture.draftVersion.method[0].removed = true;
+    const cell = wholeMilkCells(renderPen(fixture))[0];
+
+    const at = {
+      name: cell.indexOf('Whole milk'),
+      chip: cell.indexOf('target-chip'),
+      flag: cell.indexOf('<p class="ingredient-table__flag">'),
+      gap: cell.indexOf('class="ingredient-table__remove-gap"'),
+      link: cell.indexOf('class="text-control" tabindex="0">remove</button>'),
+      note: cell.indexOf('<span class="ingredient-table__portion-note">'),
+    };
+    for (const [part, index] of Object.entries(at)) expect(index, part).toBeGreaterThan(-1);
+    expect(at.name).toBeLessThan(at.chip);
+    expect(at.chip).toBeLessThan(at.flag);
+    expect(at.flag).toBeLessThan(at.gap);
+    expect(at.gap).toBeLessThan(at.link);
+    expect(at.link).toBeLessThan(at.note);
+    expect(cell.endsWith(`${PORTION_LINE}</span></td>`)).toBe(true);
+  });
+
+  // A guard, not a change detector: a row with one portion has no portion
+  // line, so its cell was name, tag, gap, link before this task and still is.
+  it('Test D (guard): a non-split row with an estimated tag stays name, tag, gap, remove link, with no portion line', () => {
+    const version = makeVersion([
+      makeRow('c', 'Row C', 64, 3, { ingredient: { composition: { fat: 1 }, basis: { fat: 'estimated' } } }),
+    ]);
+    version.method = [{ n: 3, leadIn: 'Build the base.', instruction: 'x' }];
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { c: onePortionDraftRow(3, '64') }, asMade: {} };
+    const markup = renderPen({ version, draftVersion, penDraft });
+
+    const cell = markup.match(/<td class="ingredient-table__col-name">Row C[\s\S]*?<\/td>/)[0];
+    expect(cell).toBe(
+      '<td class="ingredient-table__col-name">Row C' +
+        CHIP +
+        GAP +
+        '<button type="button" class="text-control" tabindex="0">remove</button></td>',
+    );
+    expect(cell).not.toContain('portion-note');
+  });
+});
+
 describe('IngredientTable: the As made total is blank until a value is written (quick 261001-eds)', () => {
   function tfootMarkup(markup) {
     return markup.slice(markup.indexOf('<tfoot>'), markup.indexOf('</tfoot>') + '</tfoot>'.length);

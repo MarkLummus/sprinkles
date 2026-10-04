@@ -1190,7 +1190,8 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
           '<span class="ingredient-table__portion-note">[^<]*</span></td>$',
       ),
     );
-    expect(cells[0]).toContain(PORTION_LINE);
+    // The share in the portion line moves with the removed row; the grams do not.
+    expect(cells[0]).toContain('120 g of 370.4 g');
   });
 
   it('Test C: an orphaned split row runs name, tag, orphan flag, gap, remove link, then the portion line', () => {

@@ -626,19 +626,21 @@ export function IngredientTable({
               <span className="target-chip__value">{dataFlag}</span>
             </span>
           )}
+          {portionIndex === 0 && flagged && (
+            <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
+          )}
+          {/* Remove/restore, in the name cell now (sketch 011 Task 2) —
+              never its own column — on the name's line, after the name,
+              the estimated tag and the orphan flag when present, and
+              before a split row's portion line, which is a block that
+              starts its own line under the link (sketch 011 decision 26;
+              decision 33 addendum, Mark 2026-10-04). */}
+          {portionIndex === 0 && <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />}
           {isSplit && (
             <span className="ingredient-table__portion-note">
               {formatPortionLine(livePortionGrams, rowGrams(row), currentMass)}
             </span>
           )}
-          {portionIndex === 0 && flagged && (
-            <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
-          )}
-          {/* Remove/restore, in the name cell now (sketch 011 Task 2) —
-              never its own column — after the name and after the orphan
-              flag when present, mirroring the sketch's own tail-of-cell
-              placement. */}
-          {portionIndex === 0 && <RemoveRowControl removed={removed} onToggle={() => onTogglePenRowRemoved(row.id)} />}
         </td>
         {hasAsMadeLayer && (
           <td className="ingredient-table__col-numeric">

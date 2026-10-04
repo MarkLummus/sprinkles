@@ -395,10 +395,246 @@ async function runLabelsBoard() {
 }
 
 // ===========================================================================
-// Task 10: the Sheet title in the Next version pen. (Added with Task 2.)
-const TITLE_GROUPS = [];
-void TITLE_BASELINE;
-void TITLE_GROUPS;
+// Task 10: the Sheet title in the Next version pen (decision 35 A).
+const SHORT = 'Olive Oil Ice Cream, lighter';
+const LONG = 'Olive Oil Ice Cream with a much longer title that goes on and on';
+const TITLE_STATES = ['same', 'short', 'long'];
+const TITLE_CELLS = [
+  ['webkit', 393, true],
+  ['webkit', 1366, true],
+  ['webkit', 1600, false],
+  ['chrome', 393, false],
+  ['chrome', 1366, false],
+  ['chrome', 1600, false],
+];
+
+// In-page reader of the pen's Sheet front matter. spec.root: selector of a board
+// panel (the app passes null and reads the document).
+async function readTitle(spec) {
+  await document.fonts.ready;
+  await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+  const root = spec.root ? document.querySelector(spec.root) : document;
+  const norm = (s) => s.replace(/\s+/g, ' ').trim();
+  const rr = (e) => {
+    const b = e.getBoundingClientRect();
+    return { x: b.left, y: b.top, w: b.width, h: b.height };
+  };
+  const headnote = root.querySelector('.headnote');
+  const field = root.querySelector('.headnote__sheet-title-field input, .headnote__sheet-title-field textarea');
+  const desc = root.querySelector('.headnote__prose-field textarea');
+  const caption = root.querySelector('.headnote__sheet-title-field .pen-caption');
+  const out = {
+    innerWidth: window.innerWidth,
+    overflow: document.documentElement.scrollWidth - window.innerWidth,
+    headnote: rr(headnote),
+    h1Count: headnote.querySelectorAll('h1').length,
+    struck: [...headnote.querySelectorAll('.prose-struck-beneath')].map((e) => norm(e.textContent)),
+    field: null,
+  };
+  if (field) {
+    const cs = getComputedStyle(field);
+    const lh = parseFloat(cs.lineHeight);
+    const pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    out.field = {
+      tag: field.tagName,
+      className: field.className,
+      value: field.value,
+      rect: rr(field),
+      clientHeight: field.clientHeight,
+      scrollHeight: field.scrollHeight,
+      clientWidth: field.clientWidth,
+      scrollWidth: field.scrollWidth,
+      fontSize: cs.fontSize,
+      fontWeight: cs.fontWeight,
+      lineHeight: cs.lineHeight,
+      paddingTop: cs.paddingTop,
+      paddingBottom: cs.paddingBottom,
+      borderTop: cs.borderTopWidth,
+      borderBottom: cs.borderBottomWidth,
+      color: cs.color,
+      descColor: desc ? getComputedStyle(desc).color : null,
+      captionRect: caption ? rr(caption) : null,
+      lines: Number.isNaN(lh) ? null : Math.round((field.clientHeight - pad) / lh),
+    };
+  }
+  return out;
+}
+
+async function readReadingH1(page) {
+  return page.evaluate(() => {
+    const h1 = document.querySelector('.headnote h1');
+    if (!h1) return null;
+    const b = h1.getBoundingClientRect();
+    return { text: h1.textContent, x: b.left, y: b.top, w: b.width, h: b.height, headnoteH: document.querySelector('.headnote').getBoundingClientRect().height };
+  });
+}
+
+async function measureTitle(browser, servers, width, coarse, state, { extras }) {
+  const { context, page } = await openApp(browser, servers.appUrl, APP_ROUTE, { width, coarse });
+  page.on('dialog', (d) => d.accept());
+  try {
+    const reading = await readReadingH1(page);
+    await page.getByRole('button', { name: 'Next version' }).first().click();
+    const field = page.getByLabel('Sheet title', { exact: true });
+    await field.waitFor();
+    if (state !== 'same') {
+      await field.fill(state === 'short' ? SHORT : LONG);
+      await page.waitForTimeout(150);
+    }
+    const pen = await page.evaluate(readTitle, { root: null });
+    const out = { reading, pen };
+    if (extras) {
+      const h0 = pen.headnote.h;
+      await field.click();
+      await page.keyboard.press('End');
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(100);
+      const afterEnter = await page.evaluate(readTitle, { root: null });
+      await field.fill('Line one\nLine two');
+      await page.waitForTimeout(100);
+      const afterPaste = await page.evaluate(readTitle, { root: null });
+      out.enter = { value: afterEnter.field.value, headnoteH: afterEnter.headnote.h, headnoteH0: h0 };
+      out.paste = { value: afterPaste.field.value };
+      await page.getByRole('button', { name: 'Cancel', exact: true }).first().click();
+      await page.waitForSelector('.headnote h1');
+      out.afterCancel = await readReadingH1(page);
+      await page.emulateMedia({ media: 'print' });
+      out.print = await page.evaluate(() => {
+        const h1 = document.querySelector('.headnote h1');
+        return { display: getComputedStyle(h1).display, h: h1.getBoundingClientRect().height };
+      });
+      await page.emulateMedia({ media: 'screen' });
+    }
+    return out;
+  } finally {
+    await context.close();
+  }
+}
+
+async function runTitle(group) {
+  const servers = await startServers();
+  const results = {};
+  try {
+    const baseline = group === 'title-baseline' ? null : JSON.parse(await readFile(TITLE_BASELINE, 'utf8'));
+    for (const [engine, make] of engines) {
+      const browser = await make();
+      try {
+        for (const [e, width, coarse] of TITLE_CELLS.filter((c) => c[0] === engine)) {
+          for (const state of TITLE_STATES) {
+            const key = `${e}|${width}|${state}`;
+            const read = await measureTitle(browser, servers, width, coarse, state, { extras: state === 'same' });
+            results[key] = read;
+            if (group === 'title-baseline') {
+              titlePrecondition(key, state, read);
+              console.log(titleSummary(key, null, read));
+            } else {
+              const before = baseline[key];
+              countedCheck(before !== undefined, `${key}: baseline cell exists`);
+              if (!before) continue;
+              titleCompare(key, state, read, before);
+              console.log(titleSummary(key, before, read));
+            }
+          }
+        }
+      } finally {
+        await browser.close();
+      }
+    }
+  } finally {
+    await servers.close();
+  }
+  if (group === 'title-baseline' && failures.length === 0) await writeFile(TITLE_BASELINE, JSON.stringify(results, null, 2) + '\n');
+}
+
+function titlePrecondition(key, state, read) {
+  countedCheck(read.pen.h1Count === 1, `${key}: the pen shows 1 h1 (read ${read.pen.h1Count})`);
+  countedCheck(read.pen.field && read.pen.field.tag === 'INPUT', `${key}: the Sheet title field is an INPUT (read ${read.pen.field?.tag})`);
+  if (state === 'long') countedCheck(read.pen.field.scrollWidth > read.pen.field.clientWidth, `${key}: the long title overflows its input (scrollWidth ${read.pen.field.scrollWidth} > ${read.pen.field.clientWidth})`);
+}
+
+function titleSummary(key, before, after) {
+  const f = after.pen.field;
+  return JSON.stringify({
+    cell: key,
+    headnoteH: [before ? round(before.pen.headnote.h) : null, round(after.pen.headnote.h), before ? round(after.pen.headnote.h - before.pen.headnote.h) : null],
+    field: f ? { tag: f.tag, h: round(f.rect.h), lines: f.lines, scrollMinusClient: f.scrollHeight - f.clientHeight, fontSize: f.fontSize } : null,
+    h1: after.pen.h1Count,
+    enter: after.enter ? { value: after.enter.value === after.pen.field.value ? 'unchanged' : after.enter.value, dh: round(after.enter.headnoteH - after.enter.headnoteH0) } : undefined,
+    paste: after.paste?.value,
+    print: after.print,
+  });
+}
+
+function titleCompare(key, state, a, b) {
+  const f = a.pen.field;
+  countedCheck(a.pen.h1Count === 0, `${key}: 0 h1 in the pen (read ${a.pen.h1Count})`);
+  countedCheck(f && f.tag === 'TEXTAREA' && /\bprose-field\b/.test(f.className), `${key}: a TEXTAREA with class prose-field (read ${f?.tag} ${f?.className})`);
+  if (!f) return;
+  countedCheck(f.fontSize === '32px' && f.fontWeight === '700', `${key}: font ${f.fontSize}/${f.fontWeight}`);
+  countedCheck(f.borderTop === '0px' && f.borderBottom === '0px', `${key}: no box at rest (borders ${f.borderTop}/${f.borderBottom})`);
+  countedCheck(f.color === f.descColor, `${key}: pen blue ${f.color} equals the description's ${f.descColor}`);
+  countedCheck(f.captionRect && f.captionRect.y + f.captionRect.h <= f.rect.y + 0.5, `${key}: the caption sits above the field`);
+  countedCheck(f.rect.h >= 44 - 0.5, `${key}: field height ${round(f.rect.h)} is at least 44`);
+  countedCheck(f.scrollHeight <= f.clientHeight + 1, `${key}: never clipped (scrollHeight ${f.scrollHeight} vs clientHeight ${f.clientHeight})`);
+  const strikesOld = a.pen.struck.includes(a.reading.text);
+  countedCheck(strikesOld === (state !== 'same'), `${key}: old title struck beneath exactly when it differs (struck ${JSON.stringify(a.pen.struck)})`);
+  countedCheck(near(a.pen.overflow, b.pen.overflow), `${key}: overflow ${a.pen.overflow} vs ${b.pen.overflow}`);
+  countedCheck(a.reading && b.reading && near(a.reading.x, b.reading.x) && near(a.reading.y, b.reading.y) && near(a.reading.w, b.reading.w) && near(a.reading.h, b.reading.h), `${key}: reading h1 rect equals the baseline's`);
+  if (state === 'same') {
+    countedCheck(a.enter.value === f.value && near(a.enter.headnoteH, a.enter.headnoteH0), `${key}: Enter adds no line (value "${a.enter.value}", height ${a.enter.headnoteH} vs ${a.enter.headnoteH0})`);
+    countedCheck(a.paste.value === 'Line one Line two', `${key}: a pasted newline becomes a space (read "${a.paste.value}")`);
+    countedCheck(a.afterCancel && b.afterCancel && near(a.afterCancel.x, b.afterCancel.x) && near(a.afterCancel.y, b.afterCancel.y) && near(a.afterCancel.w, b.afterCancel.w) && near(a.afterCancel.h, b.afterCancel.h), `${key}: the h1 is back after Cancel at the baseline rect`);
+    countedCheck(a.print.display !== 'none' && a.print.h > 0, `${key}: print shows the h1 (${JSON.stringify(a.print)})`);
+  }
+}
+
+async function runTitleBoard() {
+  const servers = await startServers();
+  try {
+    for (const [engine, make] of engines) {
+      const browser = await make();
+      try {
+        const pointers = engine === 'webkit' ? [true, false] : [false];
+        const board = {};
+        for (const coarse of pointers) {
+          const { context, page } = await openBoard(browser, servers.repoUrl, 'sheet-title-pen.html', { coarse });
+          try {
+            for (let i = 0; i < 7; i += 1) {
+              board[`${coarse}|${i}`] = await page.evaluate(readTitle, { root: `.fp-tt-a-${i}` });
+            }
+          } finally {
+            await context.close();
+          }
+        }
+        // Panel order: 393 same, 393 short, 393 long, 1366 same, 1366 short, 1600 same, 1600 short.
+        const panels = { '393|same': 0, '393|short': 1, '393|long': 2, '1366|same': 3, '1366|short': 4, '1600|same': 5, '1600|short': 6 };
+        for (const [e, width, coarse] of TITLE_CELLS.filter((c) => c[0] === engine)) {
+          for (const state of TITLE_STATES) {
+            const key = `${e}|${width}|${state}`;
+            const read = await measureTitle(browser, servers, width, coarse, state, { extras: false });
+            const idx = panels[`${width}|${state}`];
+            if (idx === undefined) {
+              console.log(JSON.stringify({ cell: `${key}|board`, note: 'no panel; only the clipping check applies' }));
+              continue;
+            }
+            const bp = board[`${coarse}|${idx}`];
+            // The board draws the touch floor (min-height 44) at every pointer; the app's .prose-field floor is 1.5em (48 at 32px) under a
+            // mouse. So compare the headnote outright where the title fields agree, and otherwise everything but the field.
+            const fieldsAgree = near(read.pen.field.rect.h, bp.field.rect.h, 1);
+            if (fieldsAgree) countedCheck(near(read.pen.headnote.h, bp.headnote.h, 1), `${key}: headnote height app ${round(read.pen.headnote.h)} vs board ${round(bp.headnote.h)}`);
+            countedCheck(near(read.pen.headnote.h - read.pen.field.rect.h, bp.headnote.h - bp.field.rect.h, 1), `${key}: headnote height without the title field, app ${round(read.pen.headnote.h - read.pen.field.rect.h)} vs board ${round(bp.headnote.h - bp.field.rect.h)}`);
+            if (state === 'long' && width === 393) countedCheck(read.pen.field.lines === bp.field.lines, `${key}: lines app ${read.pen.field.lines} vs board ${bp.field.lines}`);
+            console.log(JSON.stringify({ cell: `${key}|board`, headnoteH: [round(read.pen.headnote.h), round(bp.headnote.h)], lines: [read.pen.field.lines, bp.field.lines], fieldsAgree, fieldH: [round(read.pen.field.rect.h), round(bp.field.rect.h)] }));
+          }
+        }
+      } finally {
+        await browser.close();
+      }
+    }
+  } finally {
+    await servers.close();
+  }
+}
 
 // ===========================================================================
 const groups = (process.argv[2] ?? '').split(',').filter(Boolean);
@@ -410,6 +646,7 @@ if (groups.length === 0 || groups.some((g) => !known.includes(g))) {
 for (const g of groups) {
   if (g === 'labels-board') await runLabelsBoard();
   else if (g.startsWith('labels')) await runLabels(g);
-  else throw new Error(`group ${g} is added with Task 2`);
+  else if (g === 'title-board') await runTitleBoard();
+  else await runTitle(g);
 }
 finish(failures, count, `261004-igr probe (${groups.join(',')})`);

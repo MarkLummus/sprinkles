@@ -486,22 +486,28 @@ textarea {
   margin: var(--gap-s) 0 0;
 }
 
-/* The Sheet title field (03.5-04 Task 3, 1600-pen.html): restyled to the
-   Sheet's own identity — the text face at the recipe-name size, bold, pen
-   blue — overriding only what .ink-field's generic grotesk/small-field
-   styling does not already carry (the ink hairline border and the pen-
-   blue colour are .ink-field's own, unchanged). Scoped under
-   .headnote__sheet-title-field so no other .ink-field in the app is
-   affected. */
+/* The Sheet title field in the pen (sketch 011 decision 35 A, Mark
+   2026-10-04; brief task 10; row A of sheet-title-pen.html): the field
+   replaces the heading, so it is the Sheet's own identity in the pen — the
+   text face at the recipe-name size, bold, pen blue (.prose-field's own
+   colour), leading 1.15 through a token. Two classes, so it outranks the
+   single-class coarse font-size and min-height rules on .prose-field.
+   field-sizing: content (the textarea rule above) makes it grow with its
+   lines, so a long title wraps and never clips. No box at rest; the
+   global :focus-visible ring is the focus cue. The label is the block's
+   first child, so it carries no top margin. */
 .headnote__sheet-title-field {
   display: block;
-  margin-top: var(--gap-m);
 }
 
-.headnote__sheet-title-field .ink-field {
+.headnote__sheet-title-field .prose-field {
+  display: block;
   font-family: var(--face-text);
   font-size: var(--sheet-size-recipe-name);
   font-weight: 700;
+  line-height: var(--sheet-leading-title);
+  resize: none;
+  overflow: hidden;
 }
 
 /* The headnote prose field (03-02, 03.1-04; restyled 03.5-04 Task 3):

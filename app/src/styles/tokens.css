@@ -40,6 +40,7 @@
   --sheet-text-control-min: 24px; /* an underlined word is an inline action (003 line 32; 007 line 131) — 24px tall at desktop; 44px below 760px rides --touch-min */
   --sheet-type-note: 1rem; /* written notes: 16px, leading 1.5, at --measure-prose */
   --sheet-leading-note: 1.5;
+  --sheet-leading-title: 1.15; /* the Sheet title field's own leading in the pen, set as the heading (sheet-title-pen.html row A, sketch 011 decision 35) */
 
   /* Spacing scale (contract § 3) */
   --gap-hair: 2px;

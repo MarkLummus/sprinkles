@@ -1,0 +1,1100 @@
+{
+  "webkit|393|same": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 636.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "pen": {
+      "innerWidth": 393,
+      "overflow": 0,
+      "headnote": {
+        "x": 20,
+        "y": 841.375,
+        "w": 353,
+        "h": 315.265625
+      },
+      "h1Count": 1,
+      "struck": [],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream",
+        "rect": {
+          "x": 20,
+          "y": 919.5625,
+          "w": 353,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 351,
+        "scrollWidth": 351,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 20,
+          "y": 897.375,
+          "w": 353,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    },
+    "enter": {
+      "value": "Olive Oil Ice Cream",
+      "headnoteH": 315.265625,
+      "headnoteH0": 315.265625
+    },
+    "paste": {
+      "value": "Line one Line two"
+    },
+    "afterCancel": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 509.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "print": {
+      "display": "block",
+      "h": 36
+    }
+  },
+  "webkit|393|short": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 636.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "pen": {
+      "innerWidth": 393,
+      "overflow": 0,
+      "headnote": {
+        "x": 20,
+        "y": 841.375,
+        "w": 353,
+        "h": 336.265625
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream, lighter",
+        "rect": {
+          "x": 20,
+          "y": 919.5625,
+          "w": 353,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 351,
+        "scrollWidth": 460,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 20,
+          "y": 897.375,
+          "w": 353,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "webkit|393|long": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 636.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "pen": {
+      "innerWidth": 393,
+      "overflow": 0,
+      "headnote": {
+        "x": 20,
+        "y": 841.375,
+        "w": 353,
+        "h": 336.265625
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream with a much longer title that goes on and on",
+        "rect": {
+          "x": 20,
+          "y": 919.5625,
+          "w": 353,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 351,
+        "scrollWidth": 1057,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 20,
+          "y": 897.375,
+          "w": 353,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "webkit|1366|same": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 600,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1366,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 705,
+        "w": 600,
+        "h": 273.078125
+      },
+      "h1Count": 1,
+      "struck": [],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream",
+        "rect": {
+          "x": 304,
+          "y": 783.1875,
+          "w": 600,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 598,
+        "scrollWidth": 598,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 761,
+          "w": 600,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    },
+    "enter": {
+      "value": "Olive Oil Ice Cream",
+      "headnoteH": 273.078125,
+      "headnoteH0": 273.078125
+    },
+    "paste": {
+      "value": "Line one Line two"
+    },
+    "afterCancel": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 600,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "print": {
+      "display": "block",
+      "h": 36
+    }
+  },
+  "webkit|1366|short": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 600,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1366,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 705,
+        "w": 600,
+        "h": 294.078125
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream, lighter",
+        "rect": {
+          "x": 304,
+          "y": 783.1875,
+          "w": 600,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 598,
+        "scrollWidth": 598,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 761,
+          "w": 600,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "webkit|1366|long": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 600,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1366,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 705,
+        "w": 600,
+        "h": 294.078125
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream with a much longer title that goes on and on",
+        "rect": {
+          "x": 304,
+          "y": 783.1875,
+          "w": 600,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 598,
+        "scrollWidth": 1057,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 761,
+          "w": 600,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "webkit|1600|same": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 833.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1600,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 699.25,
+        "w": 833.984375,
+        "h": 273.078125
+      },
+      "h1Count": 1,
+      "struck": [],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream",
+        "rect": {
+          "x": 304,
+          "y": 777.4375,
+          "w": 833.984375,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 832,
+        "scrollWidth": 832,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 755.25,
+          "w": 833.984375,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    },
+    "enter": {
+      "value": "Olive Oil Ice Cream",
+      "headnoteH": 273.078125,
+      "headnoteH0": 273.078125
+    },
+    "paste": {
+      "value": "Line one Line two"
+    },
+    "afterCancel": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 833.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "print": {
+      "display": "block",
+      "h": 36
+    }
+  },
+  "webkit|1600|short": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 833.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1600,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 699.25,
+        "w": 833.984375,
+        "h": 294.078125
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream, lighter",
+        "rect": {
+          "x": 304,
+          "y": 777.4375,
+          "w": 833.984375,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 832,
+        "scrollWidth": 832,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 755.25,
+          "w": 833.984375,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "webkit|1600|long": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 833.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1600,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 699.25,
+        "w": 833.984375,
+        "h": 294.078125
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream with a much longer title that goes on and on",
+        "rect": {
+          "x": 304,
+          "y": 777.4375,
+          "w": 833.984375,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 832,
+        "scrollWidth": 1057,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.200001px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 755.25,
+          "w": 833.984375,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "chrome|393|same": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 611.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "pen": {
+      "innerWidth": 393,
+      "overflow": 0,
+      "headnote": {
+        "x": 20,
+        "y": 806.625,
+        "w": 353,
+        "h": 314.9375
+      },
+      "h1Count": 1,
+      "struck": [],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream",
+        "rect": {
+          "x": 20,
+          "y": 884.8125,
+          "w": 353,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 351,
+        "scrollWidth": 351,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 20,
+          "y": 862.625,
+          "w": 353,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    },
+    "enter": {
+      "value": "Olive Oil Ice Cream",
+      "headnoteH": 314.9375,
+      "headnoteH0": 314.9375
+    },
+    "paste": {
+      "value": "Line one Line two"
+    },
+    "afterCancel": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 519.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "print": {
+      "display": "block",
+      "h": 36
+    }
+  },
+  "chrome|393|short": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 611.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "pen": {
+      "innerWidth": 393,
+      "overflow": 0,
+      "headnote": {
+        "x": 20,
+        "y": 806.625,
+        "w": 353,
+        "h": 335.9375
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream, lighter",
+        "rect": {
+          "x": 20,
+          "y": 884.8125,
+          "w": 353,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 351,
+        "scrollWidth": 458,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 20,
+          "y": 862.625,
+          "w": 353,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "chrome|393|long": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 20,
+      "y": 611.375,
+      "w": 353,
+      "h": 36,
+      "headnoteH": 124
+    },
+    "pen": {
+      "innerWidth": 393,
+      "overflow": 0,
+      "headnote": {
+        "x": 20,
+        "y": 806.625,
+        "w": 353,
+        "h": 335.9375
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream with a much longer title that goes on and on",
+        "rect": {
+          "x": 20,
+          "y": 884.8125,
+          "w": 353,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 351,
+        "scrollWidth": 1055,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 20,
+          "y": 862.625,
+          "w": 353,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "chrome|1366|same": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 599.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1366,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 696.25,
+        "w": 599.984375,
+        "h": 272.75
+      },
+      "h1Count": 1,
+      "struck": [],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream",
+        "rect": {
+          "x": 304,
+          "y": 774.4375,
+          "w": 599.984375,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 598,
+        "scrollWidth": 598,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 752.25,
+          "w": 599.984375,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    },
+    "enter": {
+      "value": "Olive Oil Ice Cream",
+      "headnoteH": 272.75,
+      "headnoteH0": 272.75
+    },
+    "paste": {
+      "value": "Line one Line two"
+    },
+    "afterCancel": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 599.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "print": {
+      "display": "block",
+      "h": 36
+    }
+  },
+  "chrome|1366|short": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 599.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1366,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 696.25,
+        "w": 599.984375,
+        "h": 293.75
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream, lighter",
+        "rect": {
+          "x": 304,
+          "y": 774.4375,
+          "w": 599.984375,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 598,
+        "scrollWidth": 598,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 752.25,
+          "w": 599.984375,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "chrome|1366|long": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 599.984375,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1366,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 696.25,
+        "w": 599.984375,
+        "h": 293.75
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream with a much longer title that goes on and on",
+        "rect": {
+          "x": 304,
+          "y": 774.4375,
+          "w": 599.984375,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 598,
+        "scrollWidth": 1055,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 752.25,
+          "w": 599.984375,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "chrome|1600|same": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 834,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1600,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 696.25,
+        "w": 834,
+        "h": 272.75
+      },
+      "h1Count": 1,
+      "struck": [],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream",
+        "rect": {
+          "x": 304,
+          "y": 774.4375,
+          "w": 834,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 832,
+        "scrollWidth": 832,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 752.25,
+          "w": 834,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    },
+    "enter": {
+      "value": "Olive Oil Ice Cream",
+      "headnoteH": 272.75,
+      "headnoteH0": 272.75
+    },
+    "paste": {
+      "value": "Line one Line two"
+    },
+    "afterCancel": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 834,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "print": {
+      "display": "block",
+      "h": 36
+    }
+  },
+  "chrome|1600|short": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 834,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1600,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 696.25,
+        "w": 834,
+        "h": 293.75
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream, lighter",
+        "rect": {
+          "x": 304,
+          "y": 774.4375,
+          "w": 834,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 832,
+        "scrollWidth": 832,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 752.25,
+          "w": 834,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  },
+  "chrome|1600|long": {
+    "reading": {
+      "text": "Olive Oil Ice Cream",
+      "x": 304,
+      "y": 470.1875,
+      "w": 834,
+      "h": 36,
+      "headnoteH": 105
+    },
+    "pen": {
+      "innerWidth": 1600,
+      "overflow": 0,
+      "headnote": {
+        "x": 304,
+        "y": 696.25,
+        "w": 834,
+        "h": 293.75
+      },
+      "h1Count": 1,
+      "struck": [
+        "Olive Oil Ice Cream"
+      ],
+      "field": {
+        "tag": "INPUT",
+        "className": "ink-field",
+        "value": "Olive Oil Ice Cream with a much longer title that goes on and on",
+        "rect": {
+          "x": 304,
+          "y": 774.4375,
+          "w": 834,
+          "h": 49.1875
+        },
+        "clientHeight": 47,
+        "scrollHeight": 47,
+        "clientWidth": 832,
+        "scrollWidth": 1055,
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "43.2px",
+        "paddingTop": "2px",
+        "paddingBottom": "2px",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "color": "rgb(31, 61, 122)",
+        "descColor": "rgb(31, 61, 122)",
+        "captionRect": {
+          "x": 304,
+          "y": 752.25,
+          "w": 834,
+          "h": 16.1875
+        },
+        "lines": 1
+      }
+    }
+  }
+}

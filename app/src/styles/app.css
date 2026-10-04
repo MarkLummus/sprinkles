@@ -633,8 +633,12 @@ textarea {
   grid-column: 1 / -1;
 }
 
+/* Under sketch 011 decision 39 B (Mark 2026-10-04) the label has no top
+   margin of its own: the details' one row gap opens its line like every
+   other line. A negative of the 4px token tucks it to its words; the
+   negative is needed because the dt and the dd are separate grid rows. */
 .version-row__reason-label {
-  margin-top: var(--gap-s);
+  margin-bottom: calc(-1 * var(--app-notebook-gap-hairline));
 }
 
 .version-row__reason {
@@ -652,8 +656,7 @@ textarea {
 }
 
 /* The version row's history control, its own line below the metadata
-   stack (route-recipe.md § 3, 260917-odu) — the same top margin
-   .version-row__reason-label uses to open a new line in this stack. */
+   stack (route-recipe.md § 3, 260917-odu); its top margin opens that line. */
 .version-row__history {
   margin-top: var(--gap-s);
 }

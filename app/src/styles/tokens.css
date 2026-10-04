@@ -409,6 +409,7 @@
   --app-notebook-link-underline-offset: 3px; /* 1600-batch.html: Rename's own underline offset */
   --app-notebook-field-pad-x: 10px; /* 1600-pen.html: a ceremony field's own horizontal padding */
   --app-notebook-gap-hairline: 4px; /* 1600-pen.html: a field's own label-to-control gap and the From batch fieldset's own gap; reused as the gap between the maker's batch notes in the log (260925-u3r) */
+  --app-notebook-details-gap-row: 8px; /* version-details-rhythm.html B (sketch 011 decision 39): the Version details' own row gap, its own name rather than twice the 4px hairline (Mark's answer 2), so the pen's label-to-control gap keeps the 4px token */
   --app-notebook-checkbox-size: 16px; /* 1600-pen.html: the From batch checkbox's own edge */
   --app-notebook-acts-gap: 10px; /* 1600-batch.html: the version column's own acts row gap (Task 2) */
   --app-notebook-identity-size: 18px; /* 1600-batch.html: the version identity heading's own size (Task 2) */

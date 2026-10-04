@@ -411,7 +411,7 @@
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: var(--app-notebook-recipe-rail-gap);
-  row-gap: var(--app-notebook-gap-hairline);
+  row-gap: var(--app-notebook-details-gap-row);
   font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
   color: var(--app-text);

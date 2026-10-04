@@ -1,0 +1,219 @@
+[
+ {
+  "eng": "webkit",
+  "coarse": true,
+  "W": 393,
+  "rows": [
+   {
+    "name": "Whole milk",
+    "noteDisplay": "block",
+    "nameLineTop": 0,
+    "chipTop": 4,
+    "noteTop": 20,
+    "btnTop": 34,
+    "btnLeft": 0,
+    "onNameLine": false,
+    "cellH": 78,
+    "cellW": 223
+   },
+   {
+    "name": "Sucrose",
+    "noteDisplay": "block",
+    "nameLineTop": 0,
+    "chipTop": null,
+    "noteTop": 18,
+    "btnTop": 32,
+    "btnLeft": 0,
+    "onNameLine": false,
+    "cellH": 76,
+    "cellW": 233
+   }
+  ]
+ },
+ {
+  "eng": "webkit",
+  "coarse": true,
+  "W": 723,
+  "rows": [
+   {
+    "name": "Whole milk",
+    "noteDisplay": "block",
+    "nameLineTop": 0,
+    "chipTop": 4,
+    "noteTop": 20,
+    "btnTop": 34,
+    "btnLeft": 0,
+    "onNameLine": false,
+    "cellH": 78,
+    "cellW": 553
+   },
+   {
+    "name": "Sucrose",
+    "noteDisplay": "block",
+    "nameLineTop": 0,
+    "chipTop": null,
+    "noteTop": 18,
+    "btnTop": 32,
+    "btnLeft": 0,
+    "onNameLine": false,
+    "cellH": 76,
+    "cellW": 563
+   }
+  ]
+ },
+ {
+  "eng": "webkit",
+  "coarse": true,
+  "W": 744,
+  "rows": [
+   {
+    "name": "Whole milk",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": 11,
+    "noteTop": 27,
+    "btnTop": 41,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 91,
+    "cellW": 438
+   },
+   {
+    "name": "Sucrose",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": null,
+    "noteTop": 25,
+    "btnTop": 39,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 89,
+    "cellW": 438
+   }
+  ]
+ },
+ {
+  "eng": "webkit",
+  "coarse": true,
+  "W": 984,
+  "rows": [
+   {
+    "name": "Whole milk",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": 11,
+    "noteTop": 27,
+    "btnTop": 41,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 91,
+    "cellW": 232
+   },
+   {
+    "name": "Sucrose",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": null,
+    "noteTop": 25,
+    "btnTop": 39,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 89,
+    "cellW": 232
+   }
+  ]
+ },
+ {
+  "eng": "webkit",
+  "coarse": true,
+  "W": 1024,
+  "rows": [
+   {
+    "name": "Whole milk",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": 11,
+    "noteTop": 27,
+    "btnTop": 41,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 91,
+    "cellW": 259
+   },
+   {
+    "name": "Sucrose",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": null,
+    "noteTop": 25,
+    "btnTop": 39,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 89,
+    "cellW": 259
+   }
+  ]
+ },
+ {
+  "eng": "webkit",
+  "coarse": true,
+  "W": 1366,
+  "rows": [
+   {
+    "name": "Whole milk",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": 11,
+    "noteTop": 27,
+    "btnTop": 41,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 91,
+    "cellW": 232
+   },
+   {
+    "name": "Sucrose",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": null,
+    "noteTop": 25,
+    "btnTop": 39,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 89,
+    "cellW": 232
+   }
+  ]
+ },
+ {
+  "eng": "webkit",
+  "coarse": true,
+  "W": 1600,
+  "rows": [
+   {
+    "name": "Whole milk",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": 11,
+    "noteTop": 27,
+    "btnTop": 41,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 91,
+    "cellW": 388
+   },
+   {
+    "name": "Sucrose",
+    "noteDisplay": "block",
+    "nameLineTop": 7,
+    "chipTop": null,
+    "noteTop": 25,
+    "btnTop": 39,
+    "btnLeft": 6,
+    "onNameLine": false,
+    "cellH": 89,
+    "cellW": 388
+   }
+  ]
+ }
+]

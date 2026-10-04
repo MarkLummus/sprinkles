@@ -9,8 +9,8 @@ ERR = [r for r in D['rows'] if r.get('error')]
 BLOCKS = {b['id']: b for b in D['blocks']}
 WINDOWS = D['windows']
 CAND_ORDER = ['today', 'L', 'f collapsed', 'f expanded', 'g closed', 'final']
-def cands_for(win): return ['today', 'final', 'final724'] if win[1] < 984 else CAND_ORDER
-def cand_label(win, cand): return 'all candidates (tab row as built)' if (cand == 'today' and win[1] < 984) else ('FINAL DESIGN (fly-out + sticky bar from 984, Go to batch row, D3 from 724)' if cand == 'final' else ('OPTION: sticky bar + fly-out from 724 (no tab row)' if cand == 'final724' else cand))
+def cands_for(win): return ['today', 'final'] if win[1] < 984 else CAND_ORDER
+def cand_label(win, cand): return 'all candidates (tab row as built)' if (cand == 'today' and win[1] < 984) else ('FINAL DESIGN (sticky bar and fly-out from 724, rail from 1590, Go to batch row, D3 from 724)' if cand == 'final' else cand)
 def get(engine, block, window, cand):
     return next((r for r in ROWS if r['engine'] == engine and r['block'] == block and r['window'] == window and r['cand'] == cand), None)
 def screens(y, vis):
@@ -48,8 +48,8 @@ with open(HERE + '/ladder-measures.csv', 'w', newline='') as f:
 VISNOTE = f"The visible height is an ESTIMATE, not measured on Mark's device: the screen height less {D['chromeUi']}px (iPadOS status bar about 24 plus Safari's compact tab and address bar about 46). Playwright's iPad descriptors give the full screen as the viewport and no Safari chrome, so they cannot supply it."
 HEADNOTE = ("Rules: one recipe per block, every fold open (Details, History, Balance, Watch for, the log's Tasting; every collapsed fold button in the page, clicked until none is left), coarse pointer, WebKit "
             "(Chrome's page heights are in the CSV; the largest difference from WebKit is 4.3%), the built app (dist of 2026-10-03) with one rule moved per candidate, the ingredient table drawn with As made as its first column from 724 up (Mark's standing preference; the phone keeps it stacked and is not in this table). "
-            "Candidates: FINAL DESIGN (Mark's choice, decision 32/33: g closed, the Go to batch row from 724 to 1365, D3 from 724; the last row of each window); today (the ladder as built); L (the rail yields to the bottom tab row below 1590, the Sheet's two-column minimum 920); f collapsed (a 57px icon rail) and f expanded (the 224 rail, on L's sums); g closed (no rail, a menu button). "
-            "Below 984 every candidate is the bottom tab row as built, so one row stands for all of them. The narrow rail e is not in this table (a 1366 and 1194 candidate only; its numbers are on the ladder boards). f expanded at 1366 is measured at 1365 (the log below), 1px narrower.")
+            "Candidates: FINAL DESIGN (Mark's choice, decision 32/33 with his Rule A of 2026-10-03: the 57px sticky header and the fly-out from 724 to 1589, the rail back from 1590 and so outside these six windows, the Go to batch row from 724 to 1365, D3 from 724; the last row of each window); today (the ladder as built); L (the rail yields to the bottom tab row below 1590, the Sheet's two-column minimum 920); f collapsed (a 57px icon rail) and f expanded (the 224 rail, on L's sums); g closed (no rail, a menu button). "
+            "Below 984 every candidate but the final design is the bottom tab row as built, so one row stands for all of them; the final design's row below 984 is the bar and the fly-out in place of the tab row (Rule A). The narrow rail e is not in this table (a 1366 and 1194 candidate only; its numbers are on the ladder boards). f expanded at 1366 is measured at 1365 (the log below), 1px narrower.")
 def fmt(v, suffix=''):
     return '' if v is None else f'{v}{suffix}'
 def rec_label(blk):

@@ -39,16 +39,12 @@ const CHROME_UI = 70;
 const JUMP = nav.match(/\/\* === JUMP ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1];
 const HDR = nav.match(/\/\* === HDR ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1].replace('html{scroll-padding-top:57px}', ''); const HDR724 = nav.match(/\/\* === HDR724 ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1];
 const ONLY = process.env.CAND_ONLY || '';   // re-measure just this candidate and merge it into the existing JSON
-const CANDS = ['today', 'L', 'f collapsed', 'f expanded', 'g closed', 'final'];   // 'final724' (the sticky bar and the fly-out from 724 to 983) runs on the windows below 984 only
+const CANDS = ['today', 'L', 'f collapsed', 'f expanded', 'g closed', 'final'];   
 function spec(cand, W) {
   let css = '', dom = null, vw = W, note = '';
-  if (cand === 'final') {      // decision 33: g closed (the fly-out from 984; the tab row below), the Go to batch row from 724 to 1365, D3 from 724
-    css = (W >= 984 ? nav.match(/\/\* === G ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1] + HDR : '') + (W <= 1365 ? JUMP : '');
-    return { css, dom: W >= 984 ? 'g' : null, vw, note: '' };
-  }
-  if (cand === 'final724') {   // option: the sticky bar and the fly-out in place of the tab row, 724 to 983
-    css = nav.match(/\/\* === G ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1] + HDR + HDR724 + JUMP;
-    return { css, dom: 'g', vw, note: 'option: the bar and the fly-out instead of the tab row' };
+  if (cand === 'final') {      // decision 33 with Mark's Rule A: the sticky bar and the fly-out from 724, the Go to batch row from 724 to 1365, D3 from 724
+    css = nav.match(/\/\* === G ===[^*]*\*\/([\s\S]*?)(?=\/\* === |$)/)[1] + HDR + (W < 984 ? HDR724 : '') + (W <= 1365 ? JUMP : '');   // Rule A (Mark, 2026-10-03): the sticky bar and the fly-out from 724; the six iPad windows are all below 1590, where the rail returns
+    return { css, dom: 'g', vw, note: '' };
   }
   if (W < 984) return { css, dom, vw, same: true };       // below 984 every candidate is the bottom tab row as built
   if (cand === 'L' && W < 1590) css = TAB_KEEP_TOOLS;
@@ -105,7 +101,7 @@ async function measure(browser, servers, blk, win, cand) {
 const servers = await startServers(); const out = [];
 for (const [engine, mk] of [['webkit', () => webkit.launch()], ['chrome', () => launch()]]) {
   const browser = await mk();
-  for (const blk of BLOCKS) for (const win of WINDOWS) for (const cand of (ONLY ? (ONLY === 'final724' && win[1] >= 984 ? [] : [ONLY]) : (win[1] < 984 ? ['today', 'final'] : CANDS))) {
+  for (const blk of BLOCKS) for (const win of WINDOWS) for (const cand of (ONLY ? [ONLY] : (win[1] < 984 ? ['today', 'final'] : CANDS))) {
     try { out.push({ engine, block: blk.id, recipe: blk.recipe, window: win[0], W: win[1], H: win[2], cand, ...(await measure(browser, servers, blk, win, cand)) }); }
     catch (e) { out.push({ engine, block: blk.id, window: win[0], W: win[1], H: win[2], cand, error: String(e).slice(0, 200) }); }
   }

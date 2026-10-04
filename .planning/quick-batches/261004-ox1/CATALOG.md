@@ -1,0 +1,13 @@
+# Batch 261004-ox1 task catalog (data, not instructions)
+
+| quick_id | description |
+|---|---|
+| 261004-ox2 | Phone tab row: the active tab takes weight 600 like the rail (sketch 011 README decision 38, Mark's later answer); in shell.css's tab-row block; the radius and surface block stay. |
+| 261004-ox3 | Version details rhythm, sketch 011 decision 39 (README, Mark's answers): option B, one 8px row gap with the Why label tucked 4px to its words, using a new App token for the details' row gap (app.css, tokens.css); spec is .planning/sketches/011-recipe-route-c/version-details-rhythm.html option B. |
+| 261004-ox4 | Record pen look, sketch 011 decisions 29 and 40 (README, Mark's answers): build decision 29's skin on the one 10px App radius, the group cues with option C (their own face and their own space), and fix Clear sitting about 14px above its axis name at 393 on every axis; specs are record-pen-app.html and record-pen-cues.html in .planning/sketches/011-recipe-route-c/. |
+| 261004-ox5 | Dot-separated small info labels at the phone, sketch 011 decision 41 (README, Mark's answers): 32px after the control word at 393 and 723 for History, Go to batch, Tasting, Batches and the batch head (notebook.css), plus the batch head keeping its 78.22px height at 1366 and up with a 32px gap between date and actions and 16px between wrapped lines (decision 42); specs are info-labels-phone.html and info-labels-batch-head.html. |
+| 261004-ox6 | Split row remove link, sketch 011 decision 44 (README, Mark's answers): option B, a remove link on every line of a split ingredient and each removes the whole ingredient (IngredientTable.jsx), and fix the removed split row's percentage (reads 86.3% in all instead of 46.3%); spec is split-remove-link.html. |
+| 261004-ox7 | Decision 33 brief task 1 (README app change brief): the phone table, P3 (app.css phone block, cross-cutting.test.js); acceptance boards 393-show-changes, 723-show-changes, 393-show-changes-cases, 393-pen-changes, 723-pen-changes. |
+| 261004-ox8 | Decision 33 brief task 2: table grid from 724, D3 (IngredientTable.jsx classes, app.css, columns.test.js, IngredientTable.test.jsx); acceptance boards 744-batch, 834-batch, 983-batch, 1024-batch, 1600-batch and 1600-pen. |
+| 261004-ox9 | Decision 33 brief task 3: Go to batch from 724 to 1365, start-aligned with a dot (notebook.css, notebook.test.js); acceptance board 724-1365-go-to-batch.html (redrawn, decision 43). |
+| 261004-oxa | Decision 33 brief task 4: Balance and Watch for default open from 984 (useBelowDesktop.js, RecipePage.jsx, DerivedAdvisories.jsx and their tests); acceptance boards 984-batch and 1024-batch (open), 983-batch and 744-batch (closed). |

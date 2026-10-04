@@ -5,6 +5,9 @@ area: ui
 severity: minor
 files:
   - app/src/ui/RecipePage.jsx
+
+completed: 2026-10-04
+status: completed
 ---
 
 ## Problem

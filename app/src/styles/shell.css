@@ -290,8 +290,10 @@ html {
    say which is current. On the rail it also takes weight 600 (Mark's answer
    2), because the surface is 1.10:1 against white and colour alone should
    not carry the current place. The tab row keeps the shipped surface block
-   at its shipped weight, with the radius (Mark's answer 3), so the weight is
-   scoped to .shell__rail as the board's own rule is. */
+   with the radius (Mark's answer 3); since Mark's later answer it also takes
+   weight 600, in its own rule in the phone block. Each nav names its own
+   weight rule, so the header's tools, which also carry .shell__place, never
+   take it. */
 .shell__place[aria-current='page'] {
   background: var(--app-surface-subtle);
 }
@@ -492,6 +494,16 @@ html {
     padding: var(--gap-xs) 0;
     text-align: center;
     font-size: var(--app-size-label);
+  }
+
+  /* The current tab takes weight 600 like the rail's current place (sketch
+     011 decision 38, Mark's later answer, 2026-10-04). The subtle surface and
+     the 10px radius stay from the base rules, as Mark's answer 3 kept them.
+     The descendant selector also reaches the current place inside More's open
+     list, where the surface already shows. More's summary carries no
+     aria-current and stays at 400. */
+  .shell__tabs .shell__place[aria-current='page'] {
+    font-weight: 600;
   }
 
   .shell__tabs .shell__place,

@@ -11,7 +11,9 @@ import { fileURLToPath } from 'node:url';
 import {
   BELOW_DESKTOP_QUERY,
   BELOW_724_QUERY,
+  BELOW_RAIL_QUERY,
   useBelow724,
+  useBelowRail,
   useBelowDesktop,
   useFold,
   LOG_BESIDE_SHEET_QUERY,
@@ -57,5 +59,14 @@ describe('useBelowDesktop.js — the 724 rung (sketch 011 decisions 28 and 30, 2
     const batchRowSource = readFileSync(fileURLToPath(new URL('./BatchRow.jsx', import.meta.url)), 'utf8');
     expect(batchRowSource).not.toMatch(/function useBelow724\b/);
     expect(batchRowSource).toMatch(/import\s*\{[^}]*\buseBelow724\b[^}]*\}\s*from\s*'\.\/useBelowDesktop\.js'/);
+  });
+});
+
+// The rail's own cut (sketch 011 decision 33, quick 261004-ly8): 224 + 3 x 32
+// + 350 + 920 = 1590, so below it the nav is the fly-out from 724.
+describe('useBelowDesktop.js — the rail\'s cut (decision 33)', () => {
+  it('exports BELOW_RAIL_QUERY at the 1589.98px rung and useBelowRail as a function', () => {
+    expect(BELOW_RAIL_QUERY).toBe('(max-width: 1589.98px)');
+    expect(typeof useBelowRail).toBe('function');
   });
 });

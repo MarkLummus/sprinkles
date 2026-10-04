@@ -200,10 +200,10 @@
   }
  },
  "boardMismatchesBefore": {
-  "read-1366": 303,
+  "read-1366": 300,
   "blank-1366": 307,
   "filled-1366": 1218,
-  "read-393": 362,
+  "read-393": 300,
   "blank-393": 307,
   "filled-393": 1218,
   "cues-built-1366": 1218,

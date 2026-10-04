@@ -711,8 +711,9 @@
    <aside aria-label="Batch">): BatchRow.jsx keeps its own class names
    (decisions_recorded 1) — every rule here restyles them by scope, value
    by value from the aside's own inline styles. The record pen's own
-   rules (app.css, the Sheet-styled .batch-margin--pen etc.) are not
-   touched; this scope reaches only the reading state's own markup. */
+   rules (app.css, the Sheet-styled .batch-margin--pen etc.) keep their
+   sizes; their colour, corners and rule colour are restyled by scope in
+   the skin section below (261004-ox4). */
 .notebook-log .batch-row {
   display: flex;
   flex-direction: column;
@@ -889,7 +890,8 @@
 
 /* The record pen's own frame, opened in the column (03.5-07 Task 3,
    Task 2 answer — option A, decisions_recorded 4): the battery keeps
-   sketch 007/008's grammar unchanged; only its frame moves. The narrow
+   sketch 007/008's sizes; only its frame moves (its colour and corners
+   take the App skin below, 261004-ox4). The narrow
    arrangement app.css already draws for touch/narrow widths (the stop
    track, field-row label widths) applies here from (min-width: 1366px)
    on — where the log genuinely IS a 350px column (1366 = 224 + 3 x 32 +
@@ -926,6 +928,74 @@
 .notebook-log .save-ceremony,
 .notebook-log .pen-foot__controls {
   flex-wrap: wrap;
+}
+
+/* The record pen's App skin (sketch 011 decision 29, approved 2026-10-02, on
+   decision 38's one 10px radius, --app-radius-control; built per decision 40,
+   Mark, 2026-10-04, answer 2). It changes colour, corner radius and rule
+   colour only: no size, gap or face moves. The picked state is the filled
+   action's app blue, because pen blue in the App is the maker's own words.
+   The Sheet's foot ceremony (PenFoot, outside .notebook-log) keeps the
+   Sheet's square grammar (decision 29 flag 2). The 1.4:1 field hairline
+   stands: Mark looked at it and did not change it (flag 1). The board is
+   record-pen-app.html. */
+.notebook-log * {
+  border-color: var(--app-divider);
+}
+
+.notebook-log .pen-caption {
+  color: var(--app-text-secondary);
+}
+
+.notebook-log .ink-field {
+  border-radius: var(--app-radius-control);
+  color: var(--app-text);
+}
+
+.notebook-log .axis-mark__stop,
+.notebook-log .segmented__option {
+  border-color: var(--app-text-secondary);
+}
+
+.notebook-log .axis-mark__stop:first-child,
+.notebook-log .segmented__option:first-child {
+  border-top-left-radius: var(--app-radius-control);
+  border-bottom-left-radius: var(--app-radius-control);
+}
+
+.notebook-log .axis-mark__stop:last-child,
+.notebook-log .segmented__option:last-child {
+  border-top-right-radius: var(--app-radius-control);
+  border-bottom-right-radius: var(--app-radius-control);
+}
+
+.notebook-log .axis-mark__stop:has(input[type='radio']:checked),
+.notebook-log .segmented__option:has(input[type='radio']:checked) {
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+  color: var(--app-background);
+}
+
+.notebook-log .chip-toggle::before {
+  border-color: var(--app-text-secondary);
+  border-radius: var(--app-radius-rail);
+}
+
+.notebook-log .chip-toggle[aria-pressed='true']::before {
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+}
+
+.notebook-log .save-ceremony button {
+  border-color: var(--app-blue-text);
+  border-radius: var(--app-radius-control);
+  color: var(--app-blue-text);
+  background: none;
+}
+
+.notebook-log .save-ceremony button:last-of-type {
+  background: var(--app-blue-text);
+  color: var(--app-background);
 }
 
 /* The band's rhythm moves with the folds (sketch 011 decision 18, Mark,
@@ -1094,5 +1164,20 @@
   .notebook-field input,
   .notebook-field textarea {
     font-size: var(--sheet-type-note);
+  }
+}
+
+/* Forced colours (the brief's item 2, measured in Chrome): the skin's picked
+   rule outranks app.css's forced-colours fill, which left the picked stop,
+   segment and pressed defect square in app blue. The system Highlight is
+   restated here, later and at equal specificity. */
+@media (forced-colors: active) {
+  .notebook-log .axis-mark__stop:has(input[type='radio']:checked),
+  .notebook-log .segmented__option:has(input[type='radio']:checked),
+  .notebook-log .chip-toggle[aria-pressed='true']::before {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
   }
 }

@@ -12,6 +12,7 @@
 //                                          record-pen-app.html; the cue gaps; the 1024 wide grid; forced colours)
 //   node 261004-ox4-probe.mjs clear      (Clear's word level with its axis name at 393 as at 1366; nothing else moved)
 //   groups combine with commas: cues,clear
+//   DUMP=pid,pid node 261004-ox4-probe.mjs skin   (also prints every mismatch of those panels, e.g. DUMP=read-393)
 //
 // Serves the build through the 03.5 harness's own ephemeral 127.0.0.1 servers; never requests
 // Mark's :4173 preview, the dev server on :5173 or the sketch server on :8011, and starts no
@@ -98,7 +99,8 @@ async function readLog(spec) {
       tag: e.tagName.toLowerCase(),
       cls: e.getAttribute('class') || '',
       active: e === active,
-      box: [r1(b.x - lr.x), r1(b.y - lr.y), r1(b.width), r1(b.height)],
+      // an element with no rendered box (display: none: a closed fold's content) has no position; its 0,0 rect minus the log's page position would only measure where the log sits
+      box: e.getClientRects().length === 0 ? null : [r1(b.x - lr.x), r1(b.y - lr.y), r1(b.width), r1(b.height)],
       border: [cs.borderTopColor, cs.borderRightColor, cs.borderBottomColor, cs.borderLeftColor],
       radii: [cs.borderTopLeftRadius, cs.borderTopRightRadius, cs.borderBottomRightRadius, cs.borderBottomLeftRadius],
       bg: cs.backgroundColor,
@@ -168,9 +170,13 @@ function compare(app, board) {
     const b = board.els[i];
     const who = `#${i} <${a.tag}.${a.cls}>`;
     if (a.tag !== b.tag) mism.push(`${who} tag ${a.tag} against ${b.tag}`);
-    a.box.forEach((v, k) => {
-      if (!near(v, b.box[k])) mism.push(`${who} box[${'xywh'[k]}] ${v} against ${b.box[k]}`);
-    });
+    if (!a.box || !b.box) {
+      if (a.box || b.box) mism.push(`${who} rendered in one and not the other (${JSON.stringify(a.box)} against ${JSON.stringify(b.box)})`);
+    } else {
+      a.box.forEach((v, k) => {
+        if (!near(v, b.box[k])) mism.push(`${who} box[${'xywh'[k]}] ${v} against ${b.box[k]}`);
+      });
+    }
     if (a.active) continue; // the focused field's own style is left out of the comparison; its box is compared above
     const sides = ['top', 'right', 'bottom', 'left'];
     a.border.forEach((v, k) => {
@@ -211,6 +217,10 @@ async function readApp(browser, engine, width, state) {
 
 async function readBoard(browser, file, pids) {
   const { context, page } = await openBoard(browser, servers.repoUrl, file, { coarse: false });
+  // The boards link Caveat from Google Fonts, which the harness blocks (only 127.0.0.1 is reachable): the hand would
+  // fall back to a system face on the board only. Give the board the app's own Caveat, the one file the app serves.
+  await page.addStyleTag({ content: `@font-face{font-family:'Caveat';src:url('${servers.repoUrl}/app/public/fonts/caveat-regular.woff2') format('woff2');font-weight:400;font-style:normal}` });
+  await page.evaluate(() => document.fonts.load("400 16px 'Caveat'"));
   const out = {};
   for (const pid of pids) out[pid] = await page.evaluate(readLog, { sel: `.fp-win.fp-${pid} .notebook-log` });
   await context.close();
@@ -422,6 +432,7 @@ if (groups.has('clear')) {
   report('clear', 1024, 'filled', r1024, baseH('filled-1024'), null);
 }
 
+if (process.env.DUMP) { const mm = await boardMismatches(wk, 'webkit', process.env.DUMP.split(','), boardReadings); for (const [k, v] of Object.entries(mm)) { console.log(k, v.length); v.forEach((m) => console.log('  ' + m)); } }
 console.log('| Group | Width | State | Height (baseline -> now) | Board mismatches (before -> now) | Cue gaps (item/group/head/chips) | Clear d_bottom |');
 console.log('|---|---|---|---|---|---|---|');
 for (const row of rows) console.log(row);

@@ -1,0 +1,229 @@
+{
+ "engine": "webkit coarse",
+ "states": {
+  "read-1366": {
+   "count": 76,
+   "h": 898.7,
+   "over": 0,
+   "gaps": null,
+   "clear": [],
+   "defectsMargin": null
+  },
+  "blank-1366": {
+   "count": 67,
+   "h": 767.3,
+   "over": 0,
+   "gaps": null,
+   "clear": [],
+   "defectsMargin": null
+  },
+  "filled-1366": {
+   "count": 277,
+   "h": 2483.4,
+   "over": 0,
+   "gaps": {
+    "cue_item": 59.8,
+    "group_cue": 33,
+    "head_cue": 26,
+    "cue_chips": 6,
+    "region": 1177.7
+   },
+   "clear": [
+    {
+     "name": "Exit consistency",
+     "d_bottom": 0.2,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Airiness (estimated)",
+     "d_bottom": 0.2,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Hardness",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Scoopability",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Smoothness",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Sweetness",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Melt style",
+     "d_bottom": 0.2,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    }
+   ],
+   "defectsMargin": "6px"
+  },
+  "read-393": {
+   "count": 76,
+   "h": 556.2,
+   "over": 0,
+   "gaps": null,
+   "clear": [],
+   "defectsMargin": null
+  },
+  "blank-393": {
+   "count": 67,
+   "h": 789.7,
+   "over": 0,
+   "gaps": null,
+   "clear": [],
+   "defectsMargin": null
+  },
+  "filled-393": {
+   "count": 277,
+   "h": 2612.2,
+   "over": 0,
+   "gaps": {
+    "cue_item": 75,
+    "group_cue": 33,
+    "head_cue": 26,
+    "cue_chips": 6,
+    "region": 1268.9
+   },
+   "clear": [
+    {
+     "name": "Exit consistency",
+     "d_bottom": -12.7,
+     "head_h": 44,
+     "clear_h": 44
+    },
+    {
+     "name": "Airiness (estimated)",
+     "d_bottom": -12.7,
+     "head_h": 44,
+     "clear_h": 44
+    },
+    {
+     "name": "Hardness",
+     "d_bottom": -13.3,
+     "head_h": 44,
+     "clear_h": 44
+    },
+    {
+     "name": "Scoopability",
+     "d_bottom": -13.3,
+     "head_h": 44,
+     "clear_h": 44
+    },
+    {
+     "name": "Smoothness",
+     "d_bottom": -13.3,
+     "head_h": 44,
+     "clear_h": 44
+    },
+    {
+     "name": "Sweetness",
+     "d_bottom": -13.3,
+     "head_h": 44,
+     "clear_h": 44
+    },
+    {
+     "name": "Melt style",
+     "d_bottom": -12.7,
+     "head_h": 44,
+     "clear_h": 44
+    }
+   ],
+   "defectsMargin": "6px"
+  },
+  "filled-1024": {
+   "count": 276,
+   "h": 1477.4,
+   "over": 0,
+   "gaps": null,
+   "clear": [
+    {
+     "name": "Exit consistency",
+     "d_bottom": 0.2,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Airiness (estimated)",
+     "d_bottom": 0.2,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Hardness",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Scoopability",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Body",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Smoothness",
+     "d_bottom": -0.4,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    },
+    {
+     "name": "Melt style",
+     "d_bottom": 0.2,
+     "head_h": 28.8,
+     "clear_h": 18.2
+    }
+   ],
+   "defectsMargin": "6px"
+  }
+ },
+ "boardMismatchesBefore": {
+  "read-1366": 303,
+  "blank-1366": 307,
+  "filled-1366": 1218,
+  "read-393": 362,
+  "blank-393": 307,
+  "filled-393": 1218,
+  "cues-built-1366": 1218,
+  "cues-built-393": 1218
+ },
+ "forced": {
+  "ref": {
+   "bg": "rgba(5, 0, 73, 0.8)",
+   "color": "rgb(255, 255, 255)"
+  },
+  "stop": {
+   "bg": "rgba(5, 0, 73, 0.8)",
+   "color": "rgb(255, 255, 255)"
+  },
+  "seg": {
+   "bg": "rgba(5, 0, 73, 0.8)",
+   "color": "rgb(255, 255, 255)"
+  },
+  "chip": {
+   "bg": "rgba(5, 0, 73, 0.8)"
+  }
+ }
+}

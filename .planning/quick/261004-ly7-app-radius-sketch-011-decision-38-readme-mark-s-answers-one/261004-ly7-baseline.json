@@ -1,0 +1,6284 @@
+{
+ "webkit|393|home": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 78.59375,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 157.1875,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 235.78125,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 314.375,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 20,
+    "y": 196,
+    "w": 353,
+    "h": 162
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 33,
+     "y": 301,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 202.5,
+     "y": 301,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 33,
+     "y": 301,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 202.5,
+     "y": 301,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 493,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 637,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 769,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 913,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 1045,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 1177,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 1309,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 1441,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "webkit|393|mex3": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 78.59375,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 157.1875,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 235.78125,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 314.375,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [
+   {
+    "rect": {
+     "x": 20,
+     "y": 271.1875,
+     "w": 154.4375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 20,
+      "y": 228.1875,
+      "w": 290.203125,
+      "h": 44
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 20,
+      "y": 343.1875,
+      "w": 290.203125,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 20,
+      "y": 474.1875,
+      "w": 88.3125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 118.3125,
+      "y": 474.1875,
+      "w": 191.890625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": null
+ },
+ "webkit|744|home": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 148.796875,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 297.59375,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 446.390625,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 595.1875,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 48,
+    "y": 184,
+    "w": 648,
+    "h": 162
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 61,
+     "y": 289,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 378,
+     "y": 289,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 61,
+     "y": 289,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 378,
+     "y": 289,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 481,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 613,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 745,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 877,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 1009,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 1141,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 1273,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 1405,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "webkit|744|mex3": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 148.796875,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 297.59375,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 446.390625,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 595.1875,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [
+   {
+    "rect": {
+     "x": 430.25,
+     "y": 167,
+     "w": 128.15625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 430.25,
+      "y": 124,
+      "w": 281.75,
+      "h": 44
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 430.25,
+      "y": 239,
+      "w": 281.75,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 430.25,
+      "y": 370,
+      "w": 88.3125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 430.25,
+      "y": 424,
+      "w": 191.890625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": null
+ },
+ "webkit|1024|home": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 608.484375,
+     "y": 12,
+     "w": 110.953125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 739.4375,
+     "y": 12,
+     "w": 108.40625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 867.84375,
+     "y": 12,
+     "w": 108.15625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 272,
+    "y": 190,
+    "w": 704,
+    "h": 178
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 293,
+     "y": 303,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 457.0625,
+     "y": 303,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 293,
+     "y": 303,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 457.0625,
+     "y": 303,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 540,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 464.0625,
+     "y": 540,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 717,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 438.25,
+     "y": 717,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 894,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 438.25,
+     "y": 894,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1061,
+     "w": 143.46875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1238,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 464.0625,
+     "y": 1238,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1415,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 464.0625,
+     "y": 1415,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1582,
+     "w": 143.46875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1759,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 438.25,
+     "y": 1759,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "webkit|1024|mex3": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 608.484375,
+     "y": 12,
+     "w": 110.953125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 739.4375,
+     "y": 12,
+     "w": 108.40625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 867.84375,
+     "y": 12,
+     "w": 108.15625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [
+   {
+    "rect": {
+     "x": 685.90625,
+     "y": 173,
+     "w": 128.15625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 685.90625,
+      "y": 130,
+      "w": 306.09375,
+      "h": 44
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 685.90625,
+      "y": 245,
+      "w": 306.09375,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 685.90625,
+      "y": 376,
+      "w": 88.3125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 784.21875,
+      "y": 376,
+      "w": 191.890625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": {
+   "left": 20,
+   "top": 175,
+   "outlineStyle": "solid",
+   "outlineWidth": "2px",
+   "outlineOffset": "2px",
+   "pixel": {
+    "rgb": [
+     20,
+     20,
+     20
+    ],
+    "class": "ring"
+   }
+  }
+ },
+ "webkit|1366|home": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 950.484375,
+     "y": 12,
+     "w": 110.953125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1081.4375,
+     "y": 12,
+     "w": 108.40625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1209.84375,
+     "y": 12,
+     "w": 108.15625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 272,
+    "y": 190,
+    "w": 1046,
+    "h": 122
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 979.296875,
+     "y": 229,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1143.359375,
+     "y": 229,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 979.296875,
+     "y": 229,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1143.359375,
+     "y": 229,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1000.296875,
+     "y": 400.5,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1164.359375,
+     "y": 400.5,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1097.46875,
+     "y": 502.5,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1235.71875,
+     "y": 502.5,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1097.46875,
+     "y": 604.5,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1235.71875,
+     "y": 604.5,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1174.53125,
+     "y": 706.5,
+     "w": 143.46875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1000.296875,
+     "y": 808.5,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1164.359375,
+     "y": 808.5,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1000.296875,
+     "y": 910.5,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1164.359375,
+     "y": 910.5,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1174.53125,
+     "y": 1012.5,
+     "w": 143.46875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1097.46875,
+     "y": 1114.5,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1235.71875,
+     "y": 1114.5,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "webkit|1366|mex3": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 950.484375,
+     "y": 12,
+     "w": 110.953125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1081.4375,
+     "y": 12,
+     "w": 108.40625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1209.84375,
+     "y": 12,
+     "w": 108.15625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [
+   {
+    "rect": {
+     "x": 882.6875,
+     "y": 344.5,
+     "w": 128.15625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 882.6875,
+      "y": 134,
+      "w": 451.3125,
+      "h": 44
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 882.6875,
+      "y": 249,
+      "w": 451.3125,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 882.6875,
+      "y": 380,
+      "w": 88.3125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 981,
+      "y": 380,
+      "w": 191.890625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": {
+   "left": 20,
+   "top": 175,
+   "outlineStyle": "solid",
+   "outlineWidth": "2px",
+   "outlineOffset": "2px",
+   "pixel": {
+    "rgb": [
+     20,
+     20,
+     20
+    ],
+    "class": "ring"
+   }
+  }
+ },
+ "webkit|1600|home": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 1184.484375,
+     "y": 12,
+     "w": 110.953125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1315.4375,
+     "y": 12,
+     "w": 108.40625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1443.84375,
+     "y": 12,
+     "w": 108.15625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 272,
+    "y": 190,
+    "w": 1280,
+    "h": 111
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 1213.296875,
+     "y": 223.5,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1377.359375,
+     "y": 223.5,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 1213.296875,
+     "y": 223.5,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1377.359375,
+     "y": 223.5,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1234.296875,
+     "y": 387,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1398.359375,
+     "y": 387,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1331.46875,
+     "y": 484,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1469.71875,
+     "y": 484,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1331.46875,
+     "y": 581,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1469.71875,
+     "y": 581,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1408.53125,
+     "y": 678,
+     "w": 143.46875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1234.296875,
+     "y": 775,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1398.359375,
+     "y": 775,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1234.296875,
+     "y": 872,
+     "w": 152.0625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1398.359375,
+     "y": 872,
+     "w": 153.640625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1408.53125,
+     "y": 969,
+     "w": 143.46875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1331.46875,
+     "y": 1066,
+     "w": 126.25,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1469.71875,
+     "y": 1066,
+     "w": 82.28125,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "webkit|1600|mex3": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 1184.484375,
+     "y": 12,
+     "w": 110.953125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1315.4375,
+     "y": 12,
+     "w": 108.40625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1443.84375,
+     "y": 12,
+     "w": 108.15625,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [
+   {
+    "rect": {
+     "x": 1014.953125,
+     "y": 344.5,
+     "w": 128.15625,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 1014.953125,
+      "y": 134,
+      "w": 553.046875,
+      "h": 38.25
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 1014.953125,
+      "y": 243.25,
+      "w": 553.046875,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 1014.953125,
+      "y": 374.25,
+      "w": 88.3125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 1113.265625,
+      "y": 374.25,
+      "w": 191.890625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": {
+   "left": 20,
+   "top": 175,
+   "outlineStyle": "solid",
+   "outlineWidth": "2px",
+   "outlineOffset": "2px",
+   "pixel": {
+    "rgb": [
+     20,
+     20,
+     20
+    ],
+    "class": "ring"
+   }
+  }
+ },
+ "chrome|393|home": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 78.59375,
+     "y": 945,
+     "w": 78.609375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 157.203125,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 235.796875,
+     "y": 945,
+     "w": 78.609375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 314.40625,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 20,
+    "y": 199,
+    "w": 353,
+    "h": 151
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 33,
+     "y": 293,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 202.5,
+     "y": 293,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 33,
+     "y": 293,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 202.5,
+     "y": 293,
+     "w": 157.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 470,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 616,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 733,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 879,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 996,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 1113,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 1230,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 20,
+     "y": 1347,
+     "w": 353,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "chrome|393|mex3": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 78.59375,
+     "y": 945,
+     "w": 78.609375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 157.203125,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 235.796875,
+     "y": 945,
+     "w": 78.609375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 314.40625,
+     "y": 945,
+     "w": 78.59375,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [
+   {
+    "rect": {
+     "x": 20,
+     "y": 247.1875,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 20,
+      "y": 202.1875,
+      "w": 288.484375,
+      "h": 38.25
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 20,
+      "y": 309.4375,
+      "w": 288.484375,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 20,
+      "y": 439.4375,
+      "w": 88.40625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 118.40625,
+      "y": 439.4375,
+      "w": 190.078125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": null
+ },
+ "chrome|744|home": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 148.796875,
+     "y": 945,
+     "w": 148.8125,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 297.609375,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 446.40625,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 595.203125,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 48,
+    "y": 186,
+    "w": 648,
+    "h": 151
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 61,
+     "y": 280,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 378,
+     "y": 280,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 61,
+     "y": 280,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 378,
+     "y": 280,
+     "w": 305,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 457,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 574,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 691,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 808,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 925,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 1042,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 1159,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 48,
+     "y": 1276,
+     "w": 648,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "chrome|744|mex3": {
+  "rail": [],
+  "tabs": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 0,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 148.796875,
+     "y": 945,
+     "w": 148.8125,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 297.609375,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 446.40625,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "more",
+    "text": "More",
+    "rect": {
+     "x": 595.203125,
+     "y": 945,
+     "w": 148.796875,
+     "h": 55
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tools": [],
+  "actions": [
+   {
+    "rect": {
+     "x": 430.25,
+     "y": 170,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 430.25,
+      "y": 125,
+      "w": 281.75,
+      "h": 38.25
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 430.25,
+      "y": 232.25,
+      "w": 281.75,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 430.25,
+      "y": 362.25,
+      "w": 88.40625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 430.25,
+      "y": 416.25,
+      "w": 190.078125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": null
+ },
+ "chrome|1024|home": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 611.96875,
+     "y": 12,
+     "w": 109.828125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 741.796875,
+     "y": 12,
+     "w": 106.984375,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 868.78125,
+     "y": 12,
+     "w": 107.21875,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 272,
+    "y": 191,
+    "w": 704,
+    "h": 167
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 293,
+     "y": 293,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 457.1875,
+     "y": 293,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 293,
+     "y": 293,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 457.1875,
+     "y": 293,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 514,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 464.1875,
+     "y": 514,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 675,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 437.5,
+     "y": 675,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 836,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 437.5,
+     "y": 836,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 987,
+     "w": 144.171875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1148,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 464.1875,
+     "y": 1148,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1309,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 464.1875,
+     "y": 1309,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1460,
+     "w": 144.171875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 300,
+     "y": 1621,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 437.5,
+     "y": 1621,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "chrome|1024|mex3": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 611.96875,
+     "y": 12,
+     "w": 109.828125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 741.796875,
+     "y": 12,
+     "w": 106.984375,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 868.78125,
+     "y": 12,
+     "w": 107.21875,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [
+   {
+    "rect": {
+     "x": 685.90625,
+     "y": 175,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 685.90625,
+      "y": 130,
+      "w": 306.09375,
+      "h": 38.25
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 685.90625,
+      "y": 237.25,
+      "w": 306.09375,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 685.90625,
+      "y": 367.25,
+      "w": 88.40625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 784.3125,
+      "y": 367.25,
+      "w": 190.078125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": {
+   "left": 20,
+   "top": 175,
+   "outlineStyle": "solid",
+   "outlineWidth": "2px",
+   "outlineOffset": "2px",
+   "pixel": {
+    "rgb": [
+     20,
+     20,
+     20
+    ],
+    "class": "ring"
+   }
+  }
+ },
+ "chrome|1366|home": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 953.96875,
+     "y": 12,
+     "w": 109.828125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1083.796875,
+     "y": 12,
+     "w": 106.984375,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1210.78125,
+     "y": 12,
+     "w": 107.21875,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 272,
+    "y": 191,
+    "w": 1046,
+    "h": 111
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 979.078125,
+     "y": 224.5,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1143.265625,
+     "y": 224.5,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 979.078125,
+     "y": 224.5,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1143.265625,
+     "y": 224.5,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1000.078125,
+     "y": 388,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1164.265625,
+     "y": 388,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1098.828125,
+     "y": 485,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1236.328125,
+     "y": 485,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1098.828125,
+     "y": 582,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1236.328125,
+     "y": 582,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1173.828125,
+     "y": 679,
+     "w": 144.171875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1000.078125,
+     "y": 776,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1164.265625,
+     "y": 776,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1000.078125,
+     "y": 873,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1164.265625,
+     "y": 873,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1173.828125,
+     "y": 970,
+     "w": 144.171875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1098.828125,
+     "y": 1067,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1236.328125,
+     "y": 1067,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "chrome|1366|mex3": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 953.96875,
+     "y": 12,
+     "w": 109.828125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1083.796875,
+     "y": 12,
+     "w": 106.984375,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1210.78125,
+     "y": 12,
+     "w": 107.21875,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [
+   {
+    "rect": {
+     "x": 882.6875,
+     "y": 345.5,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 882.6875,
+      "y": 134,
+      "w": 451.296875,
+      "h": 38.25
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 882.6875,
+      "y": 241.25,
+      "w": 451.296875,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 882.6875,
+      "y": 371.25,
+      "w": 88.40625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 981.09375,
+      "y": 371.25,
+      "w": 190.078125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": {
+   "left": 20,
+   "top": 175,
+   "outlineStyle": "solid",
+   "outlineWidth": "2px",
+   "outlineOffset": "2px",
+   "pixel": {
+    "rgb": [
+     20,
+     20,
+     20
+    ],
+    "class": "ring"
+   }
+  }
+ },
+ "chrome|1600|home": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 1187.96875,
+     "y": 12,
+     "w": 109.828125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1317.796875,
+     "y": 12,
+     "w": 106.984375,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1444.78125,
+     "y": 12,
+     "w": 107.21875,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [],
+  "lead": {
+   "rect": {
+    "x": 272,
+    "y": 191,
+    "w": 1280,
+    "h": 111
+   },
+   "radii": [
+    "10px",
+    "10px",
+    "10px",
+    "10px"
+   ]
+  },
+  "leadActions": [
+   {
+    "rect": {
+     "x": 1213.078125,
+     "y": 224.5,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1377.265625,
+     "y": 224.5,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "homeActions": [
+   {
+    "rect": {
+     "x": 1213.078125,
+     "y": 224.5,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1377.265625,
+     "y": 224.5,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1234.078125,
+     "y": 388,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1398.265625,
+     "y": 388,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1332.828125,
+     "y": 485,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1470.328125,
+     "y": 485,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1332.828125,
+     "y": 582,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1470.328125,
+     "y": 582,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1407.828125,
+     "y": 679,
+     "w": 144.171875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1234.078125,
+     "y": 776,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1398.265625,
+     "y": 776,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1234.078125,
+     "y": 873,
+     "w": 152.1875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1398.265625,
+     "y": 873,
+     "w": 153.734375,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1407.828125,
+     "y": 970,
+     "w": 144.171875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1332.828125,
+     "y": 1067,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   },
+   {
+    "rect": {
+     "x": 1470.328125,
+     "y": 1067,
+     "w": 81.671875,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "ceremony": null,
+  "overflow": 0,
+  "focus": null
+ },
+ "chrome|1600|mex3": {
+  "rail": [
+   {
+    "slug": "home",
+    "text": "Home",
+    "rect": {
+     "x": 20,
+     "y": 74,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "notebook",
+    "text": "Notebook",
+    "rect": {
+     "x": 20,
+     "y": 131,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgb(243, 244, 242)",
+    "current": "page"
+   },
+   {
+    "slug": "recipe-book",
+    "text": "Recipe book",
+    "rect": {
+     "x": 20,
+     "y": 175,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "idea-log",
+    "text": "Idea log",
+    "rect": {
+     "x": 20,
+     "y": 219,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "ingredients",
+    "text": "Ingredients",
+    "rect": {
+     "x": 20,
+     "y": 276,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "kitchen",
+    "text": "Kitchen",
+    "rect": {
+     "x": 20,
+     "y": 320,
+     "w": 183,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "tabs": [],
+  "tools": [
+   {
+    "slug": "search",
+    "text": "Search",
+    "rect": {
+     "x": 1187.96875,
+     "y": 12,
+     "w": 109.828125,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "import",
+    "text": "Import",
+    "rect": {
+     "x": 1317.796875,
+     "y": 12,
+     "w": 106.984375,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   },
+   {
+    "slug": "export",
+    "text": "Export",
+    "rect": {
+     "x": 1444.78125,
+     "y": 12,
+     "w": 107.21875,
+     "h": 44
+    },
+    "radii": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "fontWeight": "400",
+    "background": "rgba(0, 0, 0, 0)",
+    "current": null
+   }
+  ],
+  "actions": [
+   {
+    "rect": {
+     "x": 1014.953125,
+     "y": 345.5,
+     "w": 125.5,
+     "h": 44
+    },
+    "radii": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ]
+   }
+  ],
+  "lead": null,
+  "leadActions": [],
+  "homeActions": [],
+  "ceremony": {
+   "fields": [
+    {
+     "tag": "input",
+     "rect": {
+      "x": 1014.953125,
+      "y": 134,
+      "w": 553.046875,
+      "h": 38.25
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    },
+    {
+     "tag": "textarea",
+     "rect": {
+      "x": 1014.953125,
+      "y": 241.25,
+      "w": 553.046875,
+      "h": 42
+     },
+     "radii": [
+      "8px",
+      "8px",
+      "8px",
+      "8px"
+     ]
+    }
+   ],
+   "acts": [
+    {
+     "rect": {
+      "x": 1014.953125,
+      "y": 371.25,
+      "w": 88.40625,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    },
+    {
+     "rect": {
+      "x": 1113.359375,
+      "y": 371.25,
+      "w": 190.078125,
+      "h": 44
+     },
+     "radii": [
+      "10px",
+      "10px",
+      "10px",
+      "10px"
+     ]
+    }
+   ]
+  },
+  "overflow": 0,
+  "focus": {
+   "left": 20,
+   "top": 175,
+   "outlineStyle": "solid",
+   "outlineWidth": "2px",
+   "outlineOffset": "2px",
+   "pixel": {
+    "rgb": [
+     20,
+     20,
+     20
+    ],
+    "class": "ring"
+   }
+  }
+ }
+}

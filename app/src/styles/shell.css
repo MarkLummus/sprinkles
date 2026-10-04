@@ -168,11 +168,15 @@
   color: var(--app-text-secondary);
 }
 
+/* The radius sits on every place, not only the active one, so the focus ring
+   (.shell__place:focus) is one shape down the rail and across the tab row
+   (sketch 011 decision 38 B, Mark's answer 3). */
 .shell__place {
   display: flex;
   align-items: center;
   gap: var(--gap-xs);
   padding: var(--gap-s) var(--gap-m);
+  border-radius: var(--app-radius-control);
   font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
   text-decoration: none;
@@ -186,11 +190,20 @@
   height: var(--app-size-icon);
 }
 
-/* The active place sits on the subtle surface (D-09) — no colour bar, and
-   no underline: colour says which place, the surface and aria-current
-   (set by NavLink from the router's own match) say which is current. */
+/* The active place sits on the subtle surface (D-09) with the shared
+   radius — still no colour bar and no underline: colour says which place,
+   the surface and aria-current (set by NavLink from the router's own match)
+   say which is current. On the rail it also takes weight 600 (Mark's answer
+   2), because the surface is 1.10:1 against white and colour alone should
+   not carry the current place. The tab row keeps the shipped surface block
+   at its shipped weight, with the radius (Mark's answer 3), so the weight is
+   scoped to .shell__rail as the board's own rule is. */
 .shell__place[aria-current='page'] {
   background: var(--app-surface-subtle);
+}
+
+.shell__rail .shell__place[aria-current='page'] {
+  font-weight: 600;
 }
 
 /* A focus ring for when focus does arrive — it does nothing to bring

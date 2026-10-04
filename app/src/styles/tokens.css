@@ -358,6 +358,7 @@
   --app-size-rail-w: 8px;
   --app-size-rail-h: 56px;
   --app-radius-rail: 4px;
+  --app-radius-control: 10px; /* the one App-context radius (sketch 011 decision 38 B, Mark 2026-10-04): the rail and tab-row places, the pen's fields and actions, Home's actions and the lead block. The marks keep their own radii (sprinkle, row mark, History's circles) and the Sheet stays square. */
   --app-rule-tally: 2px; /* the hollow sprinkle's own edge (D-11) */
   --app-col-standing: 120px; /* the row's standing-word column (board 170 line 93's flex basis) */
   --app-col-tally: 132px; /* the row's tally column — marks over the count (board 170 line 94's flex basis) */

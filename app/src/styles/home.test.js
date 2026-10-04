@@ -195,7 +195,13 @@ describe('home.css — no visual literal, every value a var() read (GUARD-05)', 
     const leadRule = rules.find((rule) => rule.selector === '.home__lead' && rule.media === undefined);
     expect(leadRule, 'expected a top-level .home__lead rule').toBeTruthy();
     expect(leadRule.declarations).toMatch(/border:\s*var\(--app-rule-row\)\s*solid\s*var\(--app-text\)/);
-    expect(leadRule.declarations).toMatch(/border-radius:\s*var\(--app-radius-lead\)/);
+    expect(leadRule.declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
+  });
+
+  test('.home__action reads the one App control radius (sketch 011 decision 38 B; quick 261004-ly7)', () => {
+    const actionRule = rules.find((rule) => rule.selector === '.home__action' && rule.media === undefined);
+    expect(actionRule, 'expected a top-level .home__action rule').toBeTruthy();
+    expect(actionRule.declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
   });
 
   test('a .home__lead-caption rule declares the App label role in the secondary text colour, and .home__lead-next-time declares no font-family (gap 5)', () => {

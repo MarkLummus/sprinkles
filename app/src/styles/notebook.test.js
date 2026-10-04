@@ -541,3 +541,13 @@ describe('band buttons keep their resting box on hover and press (quick 261004-l
     expect(rules.filter((rule) => rule.media !== undefined && /:hover/.test(rule.selector) && /notebook-(action|link)/.test(rule.selector))).toEqual([]);
   });
 });
+
+describe('the ceremony fields and actions share the App control radius (sketch 011 decision 38 B; quick 261004-ly7)', () => {
+  const FIELD_SELECTOR = '.notebook-field .ink-field, .notebook-field input, .notebook-field textarea';
+
+  test.each([FIELD_SELECTOR, '.notebook-action', '.notebook-action--outline'])('the top-level "%s" rule declares border-radius: var(--app-radius-control)', (selector) => {
+    const rule = rules.find((r) => r.selector === selector && r.media === undefined);
+    expect(rule, `expected a top-level ${selector} rule`).toBeTruthy();
+    expect(rule.declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
+  });
+});

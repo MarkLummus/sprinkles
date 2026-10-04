@@ -10,7 +10,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { describe, test, expect } from 'vitest';
-import { readCustomProperties, stripCssComments } from './css-source.js';
+import { readAllRules, readCustomProperties, stripCssComments } from './css-source.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const UI_DIR = path.join(STYLES_DIR, '..', 'ui');
@@ -174,5 +174,30 @@ describe('tokens.test.js — the prefix-discipline gate (03.4-01 Task 3)', () =>
       (name) => !name.startsWith('--sheet-') && !name.startsWith('--app-') && !allowed.has(name),
     );
     expect(violations).toEqual([]);
+  });
+});
+
+describe('one App control radius (sketch 011 decision 38 B, Mark 2026-10-04; quick 261004-ly7)', () => {
+  const declaredInTokens = readCustomProperties(readFileSync(path.join(STYLES_DIR, 'tokens.css'), 'utf8'));
+  const RETIRED = ['--app-radius-action', '--app-radius-lead', '--app-notebook-field-radius'];
+
+  test('tokens.css declares --app-radius-control at 10px and none of the three tokens it replaces, and nothing reads them', () => {
+    expect(declaredInTokens['--app-radius-control']).toBe('10px');
+    for (const name of RETIRED) {
+      expect(declaredInTokens[name], `${name} is retired`).toBeUndefined();
+      expect(allRefs.filter((ref) => ref.name === name), `no read of ${name}`).toEqual([]);
+    }
+  });
+
+  test('every border-radius in app.css, home.css, notebook.css and shell.css reads the control radius, the row-mark radius, the sprinkle radius, 0 or 50%', () => {
+    const allowed = ['var(--app-radius-control)', 'var(--app-radius-rail)', 'var(--app-radius-sprinkle)', '0', '50%'];
+    for (const name of ['app.css', 'home.css', 'notebook.css', 'shell.css']) {
+      const { src } = cssSourceFiles.find((file) => file.label === name);
+      for (const rule of readAllRules(src)) {
+        for (const match of rule.declarations.matchAll(/(?:^|[\s;])border-radius\s*:\s*([^;]+);/g)) {
+          expect(allowed, `${name}: "${rule.selector}" declares border-radius: ${match[1].trim()}`).toContain(match[1].trim());
+        }
+      }
+    }
   });
 });

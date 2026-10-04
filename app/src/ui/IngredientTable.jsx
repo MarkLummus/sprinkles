@@ -645,9 +645,13 @@ export function IngredientTable({
             onToggle={() => onTogglePenRowRemoved(row.id)}
             lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Unallocated'}` : undefined}
           />
+          {/* A removed row is outside the live batch, so its portion line reads its
+              share of the batch the pen opened on, the same basis as the struck
+              % of batch cell (sketch 011 decision 44 finding 1; Mark's answer
+              2026-10-04). */}
           {isSplit && (
             <span className="ingredient-table__portion-note">
-              {formatPortionLine(livePortionGrams, rowGrams(row), currentMass)}
+              {formatPortionLine(livePortionGrams, rowGrams(row), removed ? baselineMass : currentMass)}
             </span>
           )}
         </td>

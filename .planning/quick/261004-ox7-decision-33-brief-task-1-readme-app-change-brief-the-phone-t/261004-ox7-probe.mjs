@@ -571,7 +571,7 @@ async function boards(browser, servers, engine) {
   {
     // Panels 4 and 5: constructed rows no seeded version shows. Report only.
     const mex = await readState(browser, servers, 'mex4-show', win393);
-    log({ case: 'panels 4 and 5 (report only)', appUnchangedRows: mex.rows.filter((r) => !hasStruck(r) && !r.tfoot).map((r) => [r.name, r2(r.height), r2(r.amount.current.y)]), panel4: panels[3].rows.map((r) => [r.name, r2(r.height), r.amount.current && r2(r.amount.current.y)]), panel5: panels[4].rows.map((r) => [r.name, r2(r.height), r.amount.current && r2(r.amount.current.y)]) });
+    log({ case: 'panels 4 and 5 (report only)', appShowChangesRows: mex.rows.map((r) => [r.name, r2(r.height), r.amount.current && r2(r.amount.current.y)]), panel4: panels[3].rows.map((r) => [r.name, r2(r.height), r.amount.current && r2(r.amount.current.y)]), panel5: panels[4].rows.map((r) => [r.name, r2(r.height), r.amount.current && r2(r.amount.current.y)]) });
   }
 }
 
@@ -717,9 +717,11 @@ if (requested.includes('baseline')) {
 }
 
 const total = failures.length;
-if (total > 40) {
-  failures.splice(40);
-  failures.push(`FAIL ... ${total - 40} more not shown`);
+// Prints the first 40 failures; PROBE_FAIL_CAP=100000 prints them all.
+const cap = Number(process.env.PROBE_FAIL_CAP ?? 40);
+if (total > cap) {
+  failures.splice(cap);
+  failures.push(`FAIL ... ${total - cap} more not shown`);
 }
 finish(failures, count, `261004-ox7 probe (${total} failed)`);
 if (total > 0) process.exitCode = 1;

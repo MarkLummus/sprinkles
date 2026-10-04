@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-04T15:00:18.000Z",
-  "phase": "04",
-  "phase_name": "Prepare the next version for making",
+  "timestamp": "2026-10-04T23:22:23.303Z",
+  "phase": "03.5",
+  "phase_name": "Separate the recipe from the sheet (follow-up work after completion)",
   "phase_dir": null,
   "plan": null,
   "task": null,
@@ -10,152 +10,124 @@
   "status": "paused",
   "completed_tasks": [
     {
-      "id": "q-keep-developing",
-      "name": "Keep developing label (Home)",
+      "id": "ly2",
+      "name": "Quick batch 261004-ly2: amendment date, Details link (already aligned), band buttons, Why row, App radius, sticky header/fly-out/rail",
       "status": "done",
-      "commit": "b5972d5",
-      "device": "confirmed by Mark"
+      "commit": "eb106cb"
     },
     {
-      "id": "q-overscroll",
-      "name": "overscroll canvas white on every route",
+      "id": "ox1",
+      "name": "Quick batch 261004-ox1: tab weight, details rhythm, record pen look, phone labels, remove link, phone table P3, table grid D3, Go to batch from 724, Balance/Watch open from 984",
       "status": "done",
-      "commit": "3d9f9ce",
-      "device": "confirmed by Mark"
-    },
-    {
-      "id": "q-vh5",
-      "name": "record pen cut moved 760 to 724 (decision 28)",
-      "status": "done",
-      "commit": "27fbf6e",
-      "device": "724-759 looks good per Mark"
-    },
-    {
-      "id": "q-wdn",
-      "name": "hide a lone Unallocated step head",
-      "status": "done",
-      "commit": "37ed3c1",
-      "device": "confirmed (no Unallocated)"
-    },
-    {
-      "id": "batch-wmx",
-      "name": "phone logging option C: Go to batch row, filled action rule, Record a tasting opens Add tasting, Show changes at the Ingredients head below 724",
-      "status": "done",
-      "commit": "73309a7, 0caaefa, b403acc, fb024fc",
-      "device": "Mark checked on iPhone: ok"
-    },
-    {
-      "id": "q-9bz",
-      "name": "hide empty Instructions section outside the pen",
-      "status": "done",
-      "commit": "79a62ce, 9cf4ba4",
-      "device": "confirmed"
-    },
-    {
-      "id": "q-by3",
-      "name": "iPhone date inputs: one date focus on Record a tasting, Reset clears",
-      "status": "done",
-      "commit": "ea5a95c, 36b92a2",
-      "device": "Mark: all 4 tests pass"
-    },
-    {
-      "id": "q-eoi",
-      "name": "split row remove link onto the name's line (decision 33 task 7)",
-      "status": "done",
-      "commit": "d9d1a72, 1303ba9",
-      "device": "NOT yet device-checked"
-    },
-    {
-      "id": "sketch-decisions",
-      "name": "sketch 011 decisions 27-35 recorded/drawn by Sid; Mark's answers recorded in README by the orchestrator",
-      "status": "done",
-      "commit": "README commits through be5e976, d536f12, a5f4830, eb517bb; Sid's through 67b9863"
+      "commit": "efd8ba0"
     }
   ],
   "remaining_tasks": [
     {
-      "id": "sid-decision-35",
-      "name": "Sid FINISHED decision 35 (Sheet title in the pen): board sheet-title-pen.html, README decision 35 and brief task 10 committed (672a730, ff6dcee, a28b89a; canvas v295). Awaiting Mark: A (one field replaces the heading, Sid recommends) or B (heading plus Edit title); box at rest or not; keep the caption",
-      "status": "done_awaiting_mark"
+      "id": "sid-print-break",
+      "name": "Sid: print break by steps with repeated header; redraw other boards with dots and 10px radius (agent a539f7dbc9921a8d1 was still running at pause)",
+      "status": "in_progress"
     },
     {
-      "id": "mark-decisions",
-      "name": "Mark answers decisions 32-35 one at a time (see human_actions_pending)",
+      "id": "phase-insert",
+      "name": "Run /gsd-phase --insert 03.5 Before you start as its own Sheet section, then plan and execute (Run row on Mark's List)",
       "status": "not_started"
     },
     {
-      "id": "app-change-decision-33",
-      "name": "Plan decision 33's ordered quick tasks (phone P3, D3 grid from 724 with As made first, Go to batch above 724, Balance open from 984, sticky header from 724, fly-out below 1590 and rail from 1590, remove link [DONE], small info labels if adopted, Sheet title field if adopted, documents, conformance) only for what Mark has approved",
+      "id": "impeccable-document",
+      "name": "Run /impeccable document for decision 38 and the Why change, and the three follow-ups (Run rows on Mark's List)",
       "status": "not_started"
     },
     {
-      "id": "todos",
-      "name": "close the 'remove the Sprinkles home link' todo when the header task lands; sticky-side-nav todo is revived for 1590+; 14 todos pending",
+      "id": "tidy",
+      "name": "Tidy leftovers: stale probe regexes, Sid generators using retired radius tokens, stale shell comments, Import error list growing the header bar",
       "status": "not_started"
     },
     {
-      "id": "phase-04",
-      "name": "/gsd-plan-phase 04 (Prepare the next version for making) and print work (writing column first, 72px/19mm) once the layout decisions settle",
+      "id": "mark-device-checks",
+      "name": "Mark: ten device checks and several decide rows on the list",
       "status": "not_started"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "description": "Sid agent (sketch/print/boards) had not reported when paused; its files are uncommitted",
+      "type": "technical",
+      "workaround": "run /marks-list; check .planning/sketches/011-recipe-route-c README decisions 45+ and look rows"
+    }
+  ],
   "async_jobs": [],
   "human_actions_pending": [
     {
-      "action": "Device-check the remove-link fix: Next version pen on Olive Oil v1, Whole milk and Sucrose, iPhone 393 and iPad; the link sits on the name's line, portion line under; at 393 a removed Whole milk row is a little taller (height floor)",
-      "context": "quick 261004-eoi, build served at http://192.168.1.133:4173",
-      "blocking": false
-    },
-    {
-      "action": "Answer decision 34 (small info labels at wide widths): A start-aligned from 724 (Sid recommends), B capped row, C leader; dot or none; Correct/Record another follow the date or stay at the end; from 724 or every width; draw a separate decision for the band's title-to-Version gap at 1366+?",
-      "context": "boards info-labels-bands.html and info-labels-log.html, canvas v294",
-      "blocking": false
-    },
-    {
-      "action": "Answer decision 35 (Sheet title in the pen): A one field replaces the heading (Sid recommends), or B heading plus Edit title; with A: no box at rest like the description (as drawn) or a hairline box on both fields; keep the 'Sheet title' caption?",
-      "context": "board sheet-title-pen.html, canvas v295; the hand-drawn 1600-pen of 2026-09-24 drew the field alone with a box on both fields",
-      "blocking": false
-    },
-    {
-      "action": "Decision 33 / 32 open items: approve the final-design boards as drawn; rail returns at 1590 (the Sheet dips from 1100 to 920 there) or 1770; keep the sticky header at 1590+ without the menu button; Go to batch row as the band's third child or inside the Version section",
-      "context": "README decisions 32 and 33; Mark said he will answer these one at a time",
-      "blocking": false
-    },
-    {
-      "action": "Print preview and print brief: Mark will pick up in Phase 04 (the printed sheet's As made writing column first, at least 72px / 19mm, blank)",
-      "context": "route-print-recipe-sheet.md is not yet edited",
-      "blocking": false
-    },
-    {
-      "action": "Push main on request: about 32 commits ahead of origin (last push 475acc3)",
-      "context": "push only when Mark says push",
+      "action": "All human actions are rows on Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC): device checks, decide rows (two-line table head, pen share drop, rail height answered), Run rows (/gsd-phase insert, /impeccable document x2), look rows",
+      "context": "CLAUDE.md: each human action is a row on the list",
       "blocking": false
     }
   ],
   "decisions": [
     {
-      "decision": "Nav: g, the fly-out, from 724 to 1589 (Rule A), sticky header (57px) with menu button, wordmark link to Home, Search, Import, Export; rail returns at 1590+; tab row only below 724",
-      "rationale": "Mark 2026-10-03/04: G, Rule A, sticky header, rail at 1600/1920",
-      "phase": "sketch-011"
+      "decision": "Mark's List kinds: decide, check, look, todo, note. Skill /marks-list runs decided quick tasks, starts Sid for sketch work, writes todo files, never leaves a follow-up only in a reply",
+      "rationale": "follow-ups were being lost in closed rows' replies",
+      "phase": "03.5"
     },
     {
-      "decision": "Table: D3 from 724 up (struck figure under the plan amount, As made first column, absent with no batch, 56px screen / 72px paper writing column); phone boards approved with order plan / As made / struck",
-      "rationale": "Mark: D3 favourite, phone follows, keep things static when Show changes toggles",
-      "phase": "sketch-011"
-    },
-    {
-      "decision": "Go to batch row extends above 724 wherever the log is below; Balance folds open wherever the Balance column is beside; Show changes at the Ingredients head below 724 and in the band from 724 up",
-      "rationale": "Mark answers recorded in README decision 32",
-      "phase": "sketch-011"
-    },
-    {
-      "decision": "Remove-link fix approved (decision 33 task 7) and built; keep the pen's empty Instructions heading until creating adds add-step; leave the iOS keyboard bar skipping axis stops",
-      "rationale": "Mark 2026-10-03/04",
-      "phase": "sketch-011"
+      "decision": "Quick batches run sequentially on the main tree (force isolation none before each Agent dispatch; never call dispatch-isolation without --force-isolation in between)",
+      "rationale": "the guard hook reads a sentinel that a plain read-back overwrites",
+      "phase": "03.5"
     }
   ],
-  "uncommitted_files": [],
-  "next_action": "Re-read .planning/.continue-here.md. Ask Mark which open decision to take first (34 info labels, 35 Sheet title, or the 32/33 items); record each answer in README decision 32 yourself the moment he gives it. Sid's decision 35 run is finished and committed; no re-dispatch needed. Only plan app quick tasks for what Mark has approved. Device-check items for Mark are listed; the remove-link fix is unverified on device.",
-  "context_notes": "Mark tests on iPhone and iPad (WebKit, coarse). Loop: Sid (designer, never edits app/) measures the built app and draws boards from .planning/canvas-generators, Mark approves in conversation, the orchestrator records the approval in the sketch README, then GSD quick tasks (planner opus, executor sonnet) build it and Mark checks the device. Executors cannot make approval claims; the orchestrator records Mark's words. Servers: vite preview on 4173 serves app/dist (rebuilt by each executor), python http.server on 8011 serves .planning/sketches (LAN 192.168.1.133); never start another Vite."
+  "uncommitted_files": [
+    " M .planning/canvas-generators/cssscope.py",
+    " M .planning/canvas-generators/final-board-measure.json",
+    " M .planning/canvas-generators/final-calibrate.mjs",
+    " M .planning/canvas-generators/final-capture.json",
+    " M .planning/canvas-generators/final-capture.mjs",
+    " M .planning/canvas-generators/final-heights.json",
+    " M .planning/canvas-generators/final.py",
+    " M .planning/canvas-generators/nav-candidates.css",
+    " M .planning/canvas-generators/pen.py",
+    " M .planning/canvas-generators/snapshot.py",
+    " M .planning/sketches/011-recipe-route-c/724-1365-go-to-batch.html",
+    " M .planning/sketches/011-recipe-route-c/README.md",
+    "?? .planning/canvas-generators/breaks-capture.json",
+    "?? .planning/canvas-generators/breaks-capture.mjs",
+    "?? .planning/canvas-generators/breaks-measure.json",
+    "?? .planning/canvas-generators/breaks-measure.mjs",
+    "?? .planning/canvas-generators/breaks-pdf-check.py",
+    "?? .planning/canvas-generators/breaks.py",
+    "?? .planning/canvas-generators/labels-capture.json",
+    "?? .planning/canvas-generators/labels-capture.mjs",
+    "?? .planning/canvas-generators/labels-measure.json",
+    "?? .planning/canvas-generators/labels-measure.mjs",
+    "?? .planning/canvas-generators/labels.py",
+    "?? .planning/canvas-generators/pdf-pages.swift",
+    "?? .planning/canvas-generators/phone-capture.json",
+    "?? .planning/canvas-generators/phone-capture.mjs",
+    "?? .planning/canvas-generators/phone-geo.json",
+    "?? .planning/canvas-generators/phone-measure.json",
+    "?? .planning/canvas-generators/phone-measure.mjs",
+    "?? .planning/canvas-generators/phone.py",
+    "?? .planning/canvas-generators/recordpen-capture.json",
+    "?? .planning/canvas-generators/recordpen-capture.mjs",
+    "?? .planning/canvas-generators/recordpen-measure.json",
+    "?? .planning/canvas-generators/recordpen-measure.mjs",
+    "?? .planning/canvas-generators/recordpen.py",
+    "?? .planning/canvas-generators/redraw-all.sh",
+    "?? .planning/canvas-generators/redraw-conform-open.mjs",
+    "?? .planning/canvas-generators/redraw-conform.mjs",
+    "?? .planning/canvas-generators/redraw-gen.sh",
+    "?? .planning/canvas-generators/redraw-specs.json",
+    "?? .planning/canvas-generators/redraw.sh",
+    "?? .planning/canvas-generators/rhythm-capture.json",
+    "?? .planning/canvas-generators/rhythm-capture.mjs",
+    "?? .planning/canvas-generators/rhythm-measure.json",
+    "?? .planning/canvas-generators/rhythm-measure.mjs",
+    "?? .planning/canvas-generators/rhythm.py",
+    "?? .planning/canvas-generators/splitlink-capture.json",
+    "?? .planning/canvas-generators/splitlink-capture.mjs",
+    "?? .planning/canvas-generators/splitlink-measure.json",
+    "?? .planning/canvas-generators/splitlink-measure.mjs"
+  ],
+  "next_action": "Run /marks-list to react to Mark's answers and Sid's report, then check git status: commit Sid's boards, generators and the README by explicit path when Mark says so; push when Mark says so (main is ahead of origin).",
+  "context_notes": "Session ran two quick batches (15 tasks) plus Sid design jobs. Memory: commit by explicit path only; Mark approves each commit and push. 60 uncommitted files at pause (README answers, Sid boards/generators, new todo files). Executors do not write list rows; the orchestrator does."
 }

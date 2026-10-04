@@ -6,6 +6,8 @@
 // a component of its own to render standalone under Vitest's node
 // environment.
 import { describe, it, expect } from 'vitest';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
@@ -16,6 +18,8 @@ import {
   useBelowRail,
   useBelowDesktop,
   useFold,
+  SHEET_TWO_COLUMNS_QUERY,
+  useSheetTwoColumns,
   LOG_BESIDE_SHEET_QUERY,
   useLogBesideSheet,
 } from './useBelowDesktop.js';
@@ -68,5 +72,21 @@ describe('useBelowDesktop.js — the rail\'s cut (decision 33)', () => {
   it('exports BELOW_RAIL_QUERY at the 1589.98px rung and useBelowRail as a function', () => {
     expect(BELOW_RAIL_QUERY).toBe('(max-width: 1589.98px)');
     expect(typeof useBelowRail).toBe('function');
+  });
+});
+
+// Sketch 011 decision 33, brief task 4 (quick 261004-oxa): Balance and Watch
+// for open wherever the Sheet is two columns, from 984 = 2 x 32 + 920.
+describe('useBelowDesktop.js — the Sheet\'s two-column cut (decision 33, brief task 4)', () => {
+  it('S1: exports SHEET_TWO_COLUMNS_QUERY at the 984px rung and useSheetTwoColumns as a function', () => {
+    expect(SHEET_TWO_COLUMNS_QUERY).toBe('(min-width: 984px)');
+    expect(typeof useSheetTwoColumns).toBe('function');
+  });
+
+  it('S2: with no window (static render under node) the hook answers true, the two-column arrangement', () => {
+    function Probe() {
+      return String(useSheetTwoColumns());
+    }
+    expect(renderToStaticMarkup(createElement(Probe))).toBe('true');
   });
 });

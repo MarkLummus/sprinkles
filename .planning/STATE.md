@@ -384,6 +384,12 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 81 | Patch the /marks-list skill to handle the built-in Other answer | 2026-10-04 | 54f4ce3 | — |
 | 82 | Teach /marks-list to schedule a todo marked Done with a work-asking note | 2026-10-04 | f4d7455 | — |
 | 261004-igr | Sketch 011 brief tasks 9 and 10: start-aligned info labels from 724, Sheet title as one field in the pen | 2026-10-04 | 975160e | [261004-igr-sketch-011-brief-tasks-9-and-10-readme-m](./quick/261004-igr-sketch-011-brief-tasks-9-and-10-readme-m/) |
+| 261004-ly3 | Amendment save confirmation announces the amendment date, not the batch's original recording date: fix batchSavedStatus in app/src/ui/RecipePage.jsx, test first (todo .planning/todos/pending/2026-09-1 | 2026-10-04 | 04b4ebb | .planning/quick/261004-ly3-amendment-save-confirmation-announces-the-amendment-date-not |
+| 261004-ly4 | Align the version section's Details link (app/src/ui/VersionRow.jsx, notebook.css): measure the rendered position against the sketch 011 boards at 1366, 1024, 983, 723 and 393 first, then align it to | 2026-10-04 | f802429 | .planning/quick/261004-ly4-align-the-version-section-s-details-link-app-src-ui-versionr |
+| 261004-ly5 | Recipe band buttons (Rename, Next version and neighbours) keep their resting width on hover, :active and :focus-visible: measure each state, find the one that narrows it, fix it (todo .planning/todos/ | 2026-10-04 | abd833c | .planning/quick/261004-ly5-recipe-band-buttons-rename-next-version-and-neighbours-keep |
+| 261004-ly6 | Why row, sketch 011 decision 37 (README, Mark's answers): the Why value on its own line flush with the label (margin-inline-start: 0 on .version-row__reason), and the saved Why in the hand (the hand's | 2026-10-04 | 100d82f | .planning/quick/261004-ly6-why-row-sketch-011-decision-37-readme-mark-s-answers-the-why |
+| 261004-ly7 | App radius, sketch 011 decision 38 (README, Mark's answers): one 10px App-context radius (a single --app-radius-control token) on every rail place so the focus ring follows it, the pen field and actio | 2026-10-04 | 3692270 | .planning/quick/261004-ly7-app-radius-sketch-011-decision-38-readme-mark-s-answers-one |
+| 261004-ly8 | Sticky header, then fly-out and rail, sketch 011 decision 33 app change brief tasks 5 and 6 (README): sticky header from 724, fly-out below 1590, rail from 1590; the boards are the spec. Touches shell | 2026-10-04 | 099653e | .planning/quick/261004-ly8-sticky-header-then-fly-out-and-rail-sketch-011-decision-33-a |
 
 ### Roadmap Evolution
 

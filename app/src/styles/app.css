@@ -623,8 +623,11 @@ textarea {
 }
 
 /* Why is authored rationale, not a compact fact. It stays inside the
-   definition list for its label relationship, but spans both tracks and
-   reads with the same note role as the prose field that creates it. */
+   definition list for its label relationship, and spans both tracks on its
+   own line, flush with its label (sketch 011 decision 37 B, Mark 2026-10-04):
+   the margin-inline-start reset undoes the user agent's start margin on a dd.
+   A saved Why reads in the hand (the .app-hand role, decision 17); the
+   absence stays in type. */
 .version-row__reason-label,
 .version-row__reason {
   grid-column: 1 / -1;
@@ -636,7 +639,8 @@ textarea {
 
 .version-row__reason {
   max-width: var(--measure-prose);
-  font-size: var(--sheet-type-note);
+  margin-inline-start: 0;
+  overflow-wrap: anywhere;
 }
 
 /* An absence belongs to the printed system, not the maker's pen. */

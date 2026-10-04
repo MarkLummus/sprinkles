@@ -363,7 +363,7 @@ export function VersionRow({
           <dt className="versions__lineage-label version-row__reason-label">Why</dt>
           <dd
             className={version.reason
-              ? 'version-row__reason prose-text'
+              ? 'version-row__reason app-hand'
               : 'version-row__reason version-row__reason--empty'}
           >
             {version.reason ? version.reason : 'no reason recorded'}

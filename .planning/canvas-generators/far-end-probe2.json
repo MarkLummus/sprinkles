@@ -1,0 +1,110 @@
+[
+ {
+  "W": 393,
+  "showChanges": {
+   "left": "Ingredients",
+   "right": "Show changes",
+   "gap": 165,
+   "rowW": 353
+  },
+  "tastingHead": {
+   "left": "Tasting",
+   "right": "Remove tasting",
+   "gap": 189,
+   "rowW": 353
+  },
+  "penFoot": {
+   "rowW": 353,
+   "firstButtonLeftFromRowLeft": 186
+  }
+ },
+ {
+  "W": 723,
+  "showChanges": {
+   "left": "Ingredients",
+   "right": "Show changes",
+   "gap": 495,
+   "rowW": 683
+  },
+  "tastingHead": {
+   "left": "Tasting",
+   "right": "Remove tasting",
+   "gap": 476,
+   "rowW": 640
+  },
+  "penFoot": {
+   "rowW": 683,
+   "firstButtonLeftFromRowLeft": 516
+  }
+ },
+ {
+  "W": 744,
+  "showChanges": null,
+  "tastingHead": {
+   "left": "Tasting",
+   "right": "Remove tasting",
+   "gap": 476,
+   "rowW": 640
+  },
+  "penFoot": {
+   "rowW": 584,
+   "firstButtonLeftFromRowLeft": 417
+  }
+ },
+ {
+  "W": 984,
+  "showChanges": null,
+  "tastingHead": {
+   "left": "Tasting",
+   "right": "Remove tasting",
+   "gap": 476,
+   "rowW": 640
+  },
+  "penFoot": {
+   "rowW": 600,
+   "firstButtonLeftFromRowLeft": 433
+  }
+ },
+ {
+  "W": 1366,
+  "showChanges": null,
+  "tastingHead": {
+   "left": "Tasting",
+   "right": "Remove tasting",
+   "gap": 186,
+   "rowW": 350
+  },
+  "penFoot": {
+   "rowW": 600,
+   "firstButtonLeftFromRowLeft": 433
+  }
+ },
+ {
+  "W": 1600,
+  "showChanges": null,
+  "tastingHead": {
+   "left": "Tasting",
+   "right": "Remove tasting",
+   "gap": 186,
+   "rowW": 350
+  },
+  "penFoot": {
+   "rowW": 834,
+   "firstButtonLeftFromRowLeft": 667
+  }
+ },
+ {
+  "W": 1920,
+  "showChanges": null,
+  "tastingHead": {
+   "left": "Tasting",
+   "right": "Remove tasting",
+   "gap": 186,
+   "rowW": 350
+  },
+  "penFoot": {
+   "rowW": 1004,
+   "firstButtonLeftFromRowLeft": 837
+  }
+ }
+]

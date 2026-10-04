@@ -1,0 +1,1448 @@
+[
+ {
+  "file": "393-batch",
+  "title": "",
+  "items": [
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milk estimated",
+    "rightText": "15.0%",
+    "gap": 76,
+    "rowW": 353,
+    "kind": "figure"
+   }
+  ]
+ },
+ {
+  "file": "723-batch",
+  "title": "",
+  "items": [
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milk estimated",
+    "rightText": "15.0%",
+    "gap": 406,
+    "rowW": 683,
+    "kind": "figure"
+   }
+  ]
+ },
+ {
+  "file": "744-batch",
+  "title": "Mexican Chocolate v3 · 744 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 282,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Show",
+    "rightText": "4 versions",
+    "gap": 514,
+    "stacked": false,
+    "rowW": 680,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 584,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 584,
+    "kind": "none"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Awaiting tasting",
+    "gap": 121,
+    "stacked": false,
+    "rowW": 282,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": 274,
+    "stacked": false,
+    "rowW": 664,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 140,
+    "stacked": false,
+    "rowW": 744,
+    "kind": "actions"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 193,
+    "rowW": 584,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 117,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "744-batch",
+  "title": "Olive Oil v1 · 744 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 282,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 584,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 584,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Show",
+    "rightText": "tasted date unknown",
+    "gap": 439,
+    "stacked": false,
+    "rowW": 664,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Tasted",
+    "gap": 173,
+    "stacked": false,
+    "rowW": 282,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": 289,
+    "stacked": false,
+    "rowW": 664,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 140,
+    "stacked": false,
+    "rowW": 744,
+    "kind": "actions"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 233,
+    "rowW": 584,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 117,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "834-batch",
+  "title": "Mexican Chocolate v3 · 834 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 321,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Show",
+    "rightText": "4 versions",
+    "gap": 604,
+    "stacked": false,
+    "rowW": 770,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 674,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 674,
+    "kind": "none"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Awaiting tasting",
+    "gap": 160,
+    "stacked": false,
+    "rowW": 321,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": 364,
+    "stacked": false,
+    "rowW": 754,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 230,
+    "stacked": false,
+    "rowW": 834,
+    "kind": "actions"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 283,
+    "rowW": 674,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 135,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "834-batch",
+  "title": "Olive Oil v1 · 834 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 321,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 674,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 674,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Show",
+    "rightText": "tasted date unknown",
+    "gap": 529,
+    "stacked": false,
+    "rowW": 754,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Tasted",
+    "gap": 212,
+    "stacked": false,
+    "rowW": 321,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": 379,
+    "stacked": false,
+    "rowW": 754,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 230,
+    "stacked": false,
+    "rowW": 834,
+    "kind": "actions"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 323,
+    "rowW": 674,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 135,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "983-batch",
+  "title": "Mexican Chocolate v3 · 983 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 386,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Show",
+    "rightText": "4 versions",
+    "gap": 753,
+    "stacked": false,
+    "rowW": 919,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 823,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 823,
+    "kind": "none"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Awaiting tasting",
+    "gap": 225,
+    "stacked": false,
+    "rowW": 386,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": 513,
+    "stacked": false,
+    "rowW": 903,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 379,
+    "stacked": false,
+    "rowW": 983,
+    "kind": "actions"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 432,
+    "rowW": 823,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "983-batch",
+  "title": "Olive Oil v1 · 983 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 386,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 823,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 823,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Show",
+    "rightText": "tasted date unknown",
+    "gap": 678,
+    "stacked": false,
+    "rowW": 903,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Tasted",
+    "gap": 277,
+    "stacked": false,
+    "rowW": 386,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": 528,
+    "stacked": false,
+    "rowW": 903,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 379,
+    "stacked": false,
+    "rowW": 983,
+    "kind": "actions"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 472,
+    "rowW": 823,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "984-batch",
+  "title": "Mexican Chocolate v3 · 984 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 386,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Show",
+    "rightText": "4 versions",
+    "gap": 754,
+    "stacked": false,
+    "rowW": 920,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Awaiting tasting",
+    "gap": 225,
+    "stacked": false,
+    "rowW": 386,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": 514,
+    "stacked": false,
+    "rowW": 904,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 380,
+    "stacked": false,
+    "rowW": 984,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "28.530.4",
+    "gap": 80,
+    "stacked": false,
+    "rowW": 264,
+    "kind": "value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 137,
+    "rowW": 528,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "984-batch",
+  "title": "Olive Oil v1 · 984 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 386,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Show",
+    "rightText": "tasted date unknown",
+    "gap": 679,
+    "stacked": false,
+    "rowW": 904,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Tasted",
+    "gap": 277,
+    "stacked": false,
+    "rowW": 386,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": 529,
+    "stacked": false,
+    "rowW": 904,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 380,
+    "stacked": false,
+    "rowW": 984,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "24.1",
+    "gap": 127,
+    "stacked": false,
+    "rowW": 264,
+    "kind": "value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 177,
+    "rowW": 528,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1024-batch",
+  "title": "Mexican Chocolate v3 · 1024 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 403,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Show",
+    "rightText": "4 versions",
+    "gap": 794,
+    "stacked": false,
+    "rowW": 960,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 277,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 277,
+    "kind": "none"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Awaiting tasting",
+    "gap": 243,
+    "stacked": false,
+    "rowW": 403,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": 554,
+    "stacked": false,
+    "rowW": 944,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 420,
+    "stacked": false,
+    "rowW": 1024,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "28.530.4",
+    "gap": 93,
+    "stacked": false,
+    "rowW": 277,
+    "kind": "value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 164,
+    "rowW": 555,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 173,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1024-batch",
+  "title": "Olive Oil v1 · 1024 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 403,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 277,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 277,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Show",
+    "rightText": "tasted date unknown",
+    "gap": 719,
+    "stacked": false,
+    "rowW": 944,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Go to batch row",
+    "leftText": "Go to batch",
+    "rightText": "Tasted",
+    "gap": 295,
+    "stacked": false,
+    "rowW": 403,
+    "kind": "state"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": 569,
+    "stacked": false,
+    "rowW": 944,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 420,
+    "stacked": false,
+    "rowW": 1024,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "24.1",
+    "gap": 140,
+    "stacked": false,
+    "rowW": 277,
+    "kind": "value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 204,
+    "rowW": 555,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 173,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1366-batch",
+  "title": "Mexican Chocolate v3 · 1366 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 549,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Hide",
+    "rightText": "4 versions",
+    "gap": 1141,
+    "stacked": false,
+    "rowW": 1302,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": null,
+    "stacked": true,
+    "rowW": 350,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 762,
+    "stacked": false,
+    "rowW": 1366,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "28.530.4",
+    "gap": 80,
+    "stacked": false,
+    "rowW": 264,
+    "kind": "value"
+   },
+   {
+    "kase": "Version details: Written to its date",
+    "leftText": "Written",
+    "rightText": "13 Jan 2026",
+    "gap": 53,
+    "stacked": false,
+    "rowW": 549,
+    "kind": "label/value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 137,
+    "rowW": 528,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1366-batch",
+  "title": "Olive Oil v1 · 1366 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 549,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 264,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Hide",
+    "rightText": "tasted date unknown",
+    "gap": 130,
+    "stacked": false,
+    "rowW": 350,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": null,
+    "stacked": true,
+    "rowW": 350,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 762,
+    "stacked": false,
+    "rowW": 1366,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "24.1",
+    "gap": 127,
+    "stacked": false,
+    "rowW": 264,
+    "kind": "value"
+   },
+   {
+    "kase": "Version details: Written to its date",
+    "leftText": "Written",
+    "rightText": "1 Jul 2026",
+    "gap": 14,
+    "stacked": false,
+    "rowW": 549,
+    "kind": "label/value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 177,
+    "rowW": 528,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1600-batch",
+  "title": "Mexican Chocolate v3 · 1600 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 553,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Hide",
+    "rightText": "4 versions",
+    "gap": 1151,
+    "stacked": false,
+    "rowW": 1312,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 267,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 267,
+    "kind": "none"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": null,
+    "stacked": true,
+    "rowW": 350,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 1040,
+    "stacked": false,
+    "rowW": 1600,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "28.530.4",
+    "gap": 83,
+    "stacked": false,
+    "rowW": 267,
+    "kind": "value"
+   },
+   {
+    "kase": "Version details: Written to its date",
+    "leftText": "Written",
+    "rightText": "13 Jan 2026",
+    "gap": 53,
+    "stacked": false,
+    "rowW": 553,
+    "kind": "label/value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 144,
+    "rowW": 535,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1600-batch",
+  "title": "Olive Oil v1 · 1600 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 553,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 267,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 267,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Hide",
+    "rightText": "tasted date unknown",
+    "gap": 130,
+    "stacked": false,
+    "rowW": 350,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": null,
+    "stacked": true,
+    "rowW": 350,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 1040,
+    "stacked": false,
+    "rowW": 1600,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "24.1",
+    "gap": 130,
+    "stacked": false,
+    "rowW": 267,
+    "kind": "value"
+   },
+   {
+    "kase": "Version details: Written to its date",
+    "leftText": "Written",
+    "rightText": "1 Jul 2026",
+    "gap": 14,
+    "stacked": false,
+    "rowW": 553,
+    "kind": "label/value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 184,
+    "rowW": 535,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1920-batch",
+  "title": "Mexican Chocolate v3 · 1920 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 627,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: History",
+    "leftText": "Hide",
+    "rightText": "4 versions",
+    "gap": 1321,
+    "stacked": false,
+    "rowW": 1482,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 324,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 324,
+    "kind": "none"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned date unknown",
+    "rightText": "CorrectRecord another",
+    "gap": null,
+    "stacked": true,
+    "rowW": 350,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 1360,
+    "stacked": false,
+    "rowW": 1920,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "28.530.4",
+    "gap": 136,
+    "stacked": false,
+    "rowW": 320,
+    "kind": "value"
+   },
+   {
+    "kase": "Version details: Written to its date",
+    "leftText": "Written",
+    "rightText": "13 Jan 2026",
+    "gap": 53,
+    "stacked": false,
+    "rowW": 627,
+    "kind": "label/value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole Milk 3.3%estim",
+    "rightText": "54.1%64.8%",
+    "gap": 257,
+    "rowW": 648,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "not measured",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ },
+ {
+  "file": "1920-batch",
+  "title": "Olive Oil v1 · 1920 wide",
+  "items": [
+   {
+    "kase": "Fold row: Version (no far text)",
+    "leftText": "Version",
+    "rightText": "",
+    "gap": null,
+    "rowW": 627,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Balance (no far text)",
+    "leftText": "Balance",
+    "rightText": "",
+    "gap": null,
+    "rowW": 324,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Watch for (no far text)",
+    "leftText": "Watch for",
+    "rightText": "",
+    "gap": null,
+    "rowW": 324,
+    "kind": "none"
+   },
+   {
+    "kase": "Fold row: Tasting",
+    "leftText": "Hide",
+    "rightText": "tasted date unknown",
+    "gap": 130,
+    "stacked": false,
+    "rowW": 350,
+    "kind": "count/date"
+   },
+   {
+    "kase": "Batch log head: date to Correct / Record another",
+    "leftText": "churned 2 Aug 2026",
+    "rightText": "CorrectRecord another",
+    "gap": null,
+    "stacked": true,
+    "rowW": 350,
+    "kind": "date to actions"
+   },
+   {
+    "kase": "Header: wordmark to Search / Import / Export",
+    "leftText": "Sprinkles",
+    "rightText": "SearchImportExport",
+    "gap": 1360,
+    "stacked": false,
+    "rowW": 1920,
+    "kind": "actions"
+   },
+   {
+    "kase": "Balance rule head: Freezing · PAC",
+    "leftText": "Freezing · PAC",
+    "rightText": "24.1",
+    "gap": 183,
+    "stacked": false,
+    "rowW": 320,
+    "kind": "value"
+   },
+   {
+    "kase": "Version details: Written to its date",
+    "leftText": "Written",
+    "rightText": "1 Jul 2026",
+    "gap": 14,
+    "stacked": false,
+    "rowW": 627,
+    "kind": "label/value"
+   },
+   {
+    "kase": "Ingredient row: name (and tag) to % of batch",
+    "leftText": "Whole milkestimated1",
+    "rightText": "15.0%",
+    "gap": 297,
+    "rowW": 648,
+    "kind": "figure"
+   },
+   {
+    "kase": "Log churn cell: label to value",
+    "leftText": "Time to draw temp.",
+    "rightText": "min",
+    "gap": null,
+    "stacked": true,
+    "rowW": 165,
+    "kind": "label/value"
+   }
+  ]
+ }
+]

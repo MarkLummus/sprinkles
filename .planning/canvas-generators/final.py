@@ -238,5 +238,55 @@ def sticky_rail_board(key, snap, title, W, vh, scroll, state):
     fn = write_board(key, title + STAMP, bw, bh, main, css + '[hidden]{display:none !important}')
     ENTRIES[fn] = dict(w=bw, h=bh, page='page-13', title=title + STAMP, snap=snap)
 sticky_rail_board('R35C_1600StickyRail', '1600-sticky-rail', 'C · 1600 · the window 640px down a long page · the rail pinned under the sticky header (decision 27 revived at 1590 and up)', 1600, 900, 640, 'olive1')
+
+# ---- decision 34: small info labels at wide widths (Mark, 2026-10-04): one rule moved per row of panels, the built app's own markup, cropped to the rows ----
+INFO = json.load(open(HERE + '/info-crops.json')) if os.path.exists(HERE + '/info-crops.json') else {}
+INFO_M = json.load(open(HERE + '/info-measure.json')) if os.path.exists(HERE + '/info-measure.json') else {}
+INFO_OPTS = [
+ ('today', 'As drawn (decision 33)', '', 'Row labels at the left, the count, state or date at the far end of the row.'),
+ ('A', 'Option A: start-aligned', """
+.notebook .fold-row{justify-content:flex-start}
+.fold-row__count::before{content:"\\00b7";margin-right:var(--app-notebook-recipe-rail-gap)}
+.notebook-jump{justify-content:flex-start}
+.notebook-jump__status::before{content:"\\00b7";margin-right:var(--app-notebook-recipe-rail-gap)}
+.notebook-log .batch-row__head{justify-content:flex-start;gap:var(--gap-l)}
+""", 'Everything reads from the left: label, control word, a dot, then the count, state or date; the batch head runs date then actions 32px apart. The row is still the whole tap target.'),
+ ('B', 'Option B: capped row', """
+.notebook .fold-row,.notebook-jump,.notebook-log .batch-row__head{max-width:var(--app-notebook-log-w)}
+""", 'The far end stays the far end, but no head or fold row is wider than the log column (350). Left-aligned, the rest of the line is empty.'),
+ ('C', 'Option C: leader', """
+.fold-row:has(.fold-row__count) .fold-row__head{flex:1}
+.fold-row:has(.fold-row__count) .fold-row__head::after{content:"";flex:1;align-self:center;margin:0 var(--gap-s);border-bottom:var(--rule-baseline) dotted var(--app-text-secondary)}
+.notebook-jump__control{flex:1;display:flex;align-items:center}
+.notebook-jump__control::after{content:"";flex:1;margin:0 var(--gap-s);border-bottom:var(--rule-baseline) dotted var(--app-text-secondary)}
+""", 'The far end stays the far end and a dotted leader runs from the control word to the count, state or date. The batch head is as drawn.'),
+]
+def info_board(key, snap, title, wins, sub):
+    css_parts = [LABEL_CSS]; body = ''; y = GAP; seenW = set(); bw = 0
+    for oi, (oid, oname, ocss, odesc) in enumerate(INFO_OPTS):
+        x = GAP; rowh = 0
+        for wi, (W, st, y0, h, x0, ww, what, kinds) in enumerate(wins):
+            vid = f'fp-info-{key}-{oid}-{wi}'
+            if W not in seenW: css_parts.append(resolve_media(TOK, W, True)); seenW.add(W)
+            css_parts.append(final_css(W, vid, extra=ocss))
+            html = unique_ids(panel_html(st, W), vid)
+            gaps = '; '.join(f"{k} {INFO_M[f'{oid}_{W}_{k}']}px" for k in kinds if f'{oid}_{W}_{k}' in INFO_M)
+            body += (f'<div style="position:absolute;left:{x}px;top:{y}px;width:{ww}px;"><div style="height:{CAP_H}px;"><p class="fp-title">{oname} · {W} · {what}</p><p class="fp-sub">{odesc if wi == 0 else ""} {("Gap, label to info: " + gaps + ".") if gaps else ""}</p></div>'
+                     f'<div class="fp-win {vid}" style="width:{ww}px;height:{h}px;"><div style="width:{W}px;transform:translate(-{x0}px,-{y0}px);">{html}</div></div></div>\n')
+            x += ww + GAP; rowh = max(rowh, h)
+        bw = max(bw, x); y += CAP_H + 8 + rowh + GAP
+    main = f'<div style="position:relative;width:{bw}px;height:{y}px;background:#ffffff;">{body}</div>'
+    fn = write_board(key, title + STAMP2, bw, y, main, ''.join(css_parts) + '[hidden]{display:none !important}')
+    ENTRIES[fn] = dict(w=bw, h=y, page='page-13', title=title + STAMP2, snap=snap)
+STAMP2 = " (decision 34, options for Mark; drawn 2026-10-04, awaiting Mark's look; nothing approved)"
+def crop_y(W, st, k):
+    p = {'mex3': 0, 'olive1': 1}[st]; return INFO[str(W)][p][k] if INFO else 0
+if INFO:
+    bands = [(W, 'mex3', 0, crop_y(W, 'mex3', 'folds')['History'] + 60, 0, W, 'the band', ['History', 'Go to batch']) for W in (744, 1024, 1366, 1600, 1920)]
+    info_board('R35C_InfoBands', 'info-labels-bands', 'C · small info labels in the band, by option: History count, Go to batch state (744, 1024, 1366, 1600, 1920)', bands, '')
+    logs = [(744, 'olive1', crop_y(744, 'olive1', 'head') - 30, 330, 0, 744, 'the log', ['Batch head', 'Tasting']), (1024, 'olive1', crop_y(1024, 'olive1', 'head') - 30, 330, 0, 1024, 'the log', ['Batch head', 'Tasting']),
+            (1366, 'olive1', crop_y(1366, 'olive1', 'head') - 30, 490, 1366 - 390, 390, 'the log column', ['Tasting'])]
+    info_board('R35C_InfoLog', 'info-labels-log', 'C · small info labels in the log, by option: the batch head and the Tasting row (744, 1024, 1366 and up)', logs, '')
+
 json.dump({'boards': ENTRIES}, open(OUT + '/final-canvas-entries.json', 'w'), indent=2)
 print('ok final', {fn: (e['w'], e['h']) for fn, e in ENTRIES.items()})

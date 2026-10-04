@@ -1,0 +1,152 @@
+{
+ "744": [
+  {
+   "title": "fp-win fp-mex3-744",
+   "folds": {
+    "Version": 73,
+    "History": 302,
+    "Balance": 1314,
+    "Watch for": 1396
+   },
+   "jump": 238,
+   "head": 1775,
+   "headH": 44,
+   "band": 57,
+   "shellH": 2098
+  },
+  {
+   "title": "fp-win fp-olive1-744",
+   "folds": {
+    "Version": 73,
+    "Balance": 1455,
+    "Watch for": 1537,
+    "Tasting": 3213
+   },
+   "jump": 319,
+   "head": 2957,
+   "headH": 44,
+   "band": 57,
+   "shellH": 3436
+  }
+ ],
+ "1024": [
+  {
+   "title": "fp-win fp-mex3-1024",
+   "folds": {
+    "Version": 73,
+    "History": 302,
+    "Balance": 540,
+    "Watch for": 1536
+   },
+   "jump": 238,
+   "head": 2051,
+   "headH": 44,
+   "band": 57,
+   "shellH": 2359
+  },
+  {
+   "title": "fp-win fp-olive1-1024",
+   "folds": {
+    "Version": 73,
+    "Balance": 622,
+    "Watch for": 1479,
+    "Tasting": 3047
+   },
+   "jump": 265,
+   "head": 2806,
+   "headH": 44,
+   "band": 57,
+   "shellH": 3270
+  }
+ ],
+ "1366": [
+  {
+   "title": "fp-win fp-mex3-1366",
+   "folds": {
+    "Version": 77,
+    "History": 391,
+    "Balance": 749,
+    "Watch for": 1760
+   },
+   "jump": -190,
+   "head": 608,
+   "headH": 78,
+   "band": 57,
+   "shellH": 2310
+  },
+  {
+   "title": "fp-win fp-olive1-1366",
+   "folds": {
+    "Version": 77,
+    "Balance": 617,
+    "Watch for": 1489,
+    "Tasting": 800
+   },
+   "jump": -190,
+   "head": 419,
+   "headH": 78,
+   "band": 57,
+   "shellH": 2822
+  }
+ ],
+ "1600": [
+  {
+   "title": "fp-win fp-mex3-1600",
+   "folds": {
+    "Version": 77,
+    "History": 391,
+    "Balance": 749,
+    "Watch for": 1745
+   },
+   "jump": -190,
+   "head": 608,
+   "headH": 78,
+   "band": 57,
+   "shellH": 2295
+  },
+  {
+   "title": "fp-win fp-olive1-1600",
+   "folds": {
+    "Version": 77,
+    "Balance": 617,
+    "Watch for": 1489,
+    "Tasting": 800
+   },
+   "jump": -190,
+   "head": 419,
+   "headH": 78,
+   "band": 57,
+   "shellH": 2822
+  }
+ ],
+ "1920": [
+  {
+   "title": "fp-win fp-mex3-1920",
+   "folds": {
+    "Version": 77,
+    "History": 367,
+    "Balance": 725,
+    "Watch for": 1691
+   },
+   "jump": -190,
+   "head": 584,
+   "headH": 78,
+   "band": 57,
+   "shellH": 2166
+  },
+  {
+   "title": "fp-win fp-olive1-1920",
+   "folds": {
+    "Version": 77,
+    "Balance": 617,
+    "Watch for": 1444,
+    "Tasting": 800
+   },
+   "jump": -190,
+   "head": 419,
+   "headH": 78,
+   "band": 57,
+   "shellH": 2783
+  }
+ ]
+}

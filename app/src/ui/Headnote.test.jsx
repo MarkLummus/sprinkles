@@ -78,9 +78,58 @@ describe('Headnote — the Sheet title and Sheet description fields, while the p
     expect(markup).toContain('What the sheet is served under. Prints as the title. Copies into the next version.');
   });
 
-  it('renders a Sheet title text field bound to the pen draft', () => {
+  // Sketch 011 decision 35 A (Mark, 2026-10-04; brief task 10; quick 261004-igr):
+  // in the pen the Sheet title is one field that replaces the heading, so the
+  // title shows once. The reading view and print keep the h1 (tests above).
+  it('renders the pen with no h1 and no input: the title field is the first thing in the header', () => {
     const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft });
-    expect(markup).toMatch(/<label class="headnote__sheet-title-field"><span class="pen-caption">Sheet title<\/span><input[^>]*aria-label="Sheet title"[^>]*value="[^"]*"/);
+    expect(markup).not.toContain('<h1');
+    expect(markup).not.toContain('<input');
+    expect(markup.startsWith('<header class="headnote"><label class="headnote__sheet-title-field"><span class="pen-caption">Sheet title</span><textarea')).toBe(true);
+  });
+
+  it('renders a Sheet title textarea bound to the pen draft, in the prose-field role', () => {
+    const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft });
+    expect(markup).toContain(
+      `<label class="headnote__sheet-title-field"><span class="pen-caption">Sheet title</span><textarea class="prose-field" rows="1" aria-label="Sheet title">${oliveOilVersion.sheetTitle}</textarea></label>`,
+    );
+  });
+
+  // Walks the element tree a hook-free component returns, through fragments
+  // and children arrays, to the element carrying the aria-label.
+  function findByAriaLabel(node, label) {
+    if (node === null || typeof node !== 'object') return null;
+    if (Array.isArray(node)) {
+      for (const child of node) {
+        const found = findByAriaLabel(child, label);
+        if (found) return found;
+      }
+      return null;
+    }
+    if (node.props?.['aria-label'] === label) return node;
+    return findByAriaLabel(node.props?.children, label);
+  }
+
+  it('keeps Enter out of the title (one line, no hard break) and turns a pasted newline into a space', () => {
+    const calls = [];
+    const tree = Headnote({
+      version: oliveOilVersion,
+      mode: 'developing',
+      penDraft: developingDraft,
+      onChangePenField: (...args) => calls.push(args),
+    });
+    const field = findByAriaLabel(tree, 'Sheet title');
+    expect(field, 'expected an element labelled Sheet title').toBeTruthy();
+    let prevented = 0;
+    const preventDefault = () => {
+      prevented += 1;
+    };
+    field.props.onKeyDown({ key: 'Enter', preventDefault });
+    expect(prevented).toBe(1);
+    field.props.onKeyDown({ key: 'a', preventDefault });
+    expect(prevented).toBe(1);
+    field.props.onChange({ target: { value: 'Line one\r\nLine two\nend' } });
+    expect(calls).toEqual([['sheetTitle', 'Line one Line two end']]);
   });
 
   it('renders a Sheet description text field bound to the pen draft', () => {
@@ -164,7 +213,6 @@ describe('Headnote — the Sheet title and Sheet description fields, while the p
 
   it('freezes the identity fields while a version save is in flight', () => {
     const markup = renderHeadnote({ mode: 'developing', penDraft: developingDraft, isSaving: true });
-    expect(markup).toMatch(/<input[^>]*disabled=""/);
-    expect(markup).toMatch(/<textarea[^>]*disabled=""/);
+    expect(markup.match(/<textarea[^>]*disabled=""/g)).toHaveLength(2);
   });
 });

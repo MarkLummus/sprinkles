@@ -937,3 +937,32 @@ describe('the Ingredients heading row that carries Show changes below 724 (26100
     expect(inMedia).toEqual([]);
   });
 });
+
+// Sketch 011 decision 35 A (Mark, 2026-10-04; brief task 10; quick 261004-igr):
+// in the pen the Sheet title is one field set as the Sheet heading, no box at
+// rest, grown with its lines. Row A of sheet-title-pen.html.
+describe('the Sheet title field in the pen (sketch 011 decision 35 A; quick 261004-igr)', () => {
+  test('the field wears the heading face, size and weight, a 1.15 leading through a token, and never scrolls or resizes', () => {
+    const rule = ruleFor('.headnote__sheet-title-field .prose-field');
+    expect(rule, 'expected a .headnote__sheet-title-field .prose-field rule').toBeTruthy();
+    const d = rule.declarations;
+    expect(d).toMatch(/display:\s*block/);
+    expect(d).toMatch(/font-family:\s*var\(--face-text\)/);
+    expect(d).toMatch(/font-size:\s*var\(--sheet-size-recipe-name\)/);
+    expect(d).toMatch(/font-weight:\s*700/);
+    expect(d).toMatch(/line-height:\s*var\(--sheet-leading-title\)/);
+    expect(d).toMatch(/resize:\s*none/);
+    expect(d).toMatch(/overflow:\s*hidden/);
+  });
+
+  test('the old input rule is gone and the label no longer carries a top margin', () => {
+    expect(rules.some((r) => r.selector === '.headnote__sheet-title-field .ink-field')).toBe(false);
+    const label = ruleFor('.headnote__sheet-title-field');
+    expect(label, 'expected the .headnote__sheet-title-field rule').toBeTruthy();
+    expect(label.declarations).not.toMatch(/margin-top/);
+  });
+
+  test('--sheet-leading-title is 1.15', () => {
+    expect(tokensSource).toMatch(/--sheet-leading-title:\s*1\.15\s*;/);
+  });
+});

@@ -861,10 +861,12 @@ textarea {
 }
 
 /* The Strike Rule's below-placed form (route-recipe-version.md § 7): the
-   one place the strike sits beneath rather than beside, because a
+   one place a struck value is a paragraph of its own, because a
    paragraph has no room beside — a changed step's prose (03-02) and the
    changed headnote prose (03-02) both use this, sharing --rule-strike
-   with .struck-value so no builder adds a fourth meaning. */
+   with .struck-value so no builder adds a fourth meaning. (Below 724
+   every struck figure also stands beneath its current one: sketch 011
+   decision 31; brief item 7.) */
 .prose-struck-beneath {
   font-family: var(--face-text);
   font-size: var(--sheet-size-headnote-prose);
@@ -2592,7 +2594,7 @@ textarea {
     display: grid;
     grid-template-columns: var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
     column-gap: var(--sheet-narrow-name-gap);
-    row-gap: var(--gap-hair);
+    row-gap: 0;
     width: 100%;
     padding: var(--sheet-narrow-row-pad-y) 0;
     border-bottom: var(--rule-graduation) solid var(--sheet-ink);
@@ -2617,20 +2619,20 @@ textarea {
   }
 
   .ingredient-table td.ingredient-table__col-grams {
-    grid-column: 1;
-    grid-row: 1;
+    display: contents;
     text-align: right;
-    padding-right: 0;
   }
 
   .ingredient-table td.ingredient-table__col-name {
     grid-column: 2;
-    grid-row: 1 / 3;
+    grid-row: 1 / 4;
+    text-align: left;
   }
 
   .ingredient-table td.ingredient-table__col-numeric:nth-last-child(2) {
     grid-column: 1;
     grid-row: 2;
+    margin-top: var(--gap-hair);
     text-align: right;
   }
 
@@ -2644,23 +2646,57 @@ textarea {
     display: none;
   }
 
-  /* Below 724 the struck old figure stands above the current one,
-     right-aligned in the same track (sketch 011 decisions 24 and 25;
-     393-show-changes.html, 393-pen-changes.html). From 724 the base
-     .struck-value rule keeps the two figures side by side. */
-  .ingredient-table__plan-grams > .struck-value {
-    display: block;
-    margin-right: 0;
+  /* Below 724 the phone reads plan / As made / struck: sketch 011 decision
+     31 (D3, amending decisions 24 and 25); the phone boards approved by Mark
+     2026-10-03 (decision 32): 393-show-changes, 723-show-changes,
+     393-show-changes-cases, 393-pen-changes, 723-pen-changes; decision 33
+     brief task 1; spec ingredient-options.css section P3.
+     The amount's cell, and its slot when the slot holds a struck figure, give
+     up their boxes, so the struck figure takes the row grid's third line with
+     As made between. The share is a reversed flex column. It spans the three
+     lines when the amount has a struck figure, so the two struck figures share
+     the last line. A removed row's lone struck amount stands on the first
+     line. The pen's struck parent stays last, under the field. The row gap is
+     0 and each lower figure carries its own hair, so an empty line adds
+     nothing. The DOM order is unchanged, struck first, so a reader still
+     hears "was, now". From 724 the base .struck-value rule keeps the figures
+     side by side. */
+  /* An anonymous box (the plan amount's text, once its cell and slot give up
+     their boxes) takes its alignment from the row, not from the cell. */
+  .ingredient-table tr:not(.ingredient-table__step-head) {
+    text-align: right;
   }
 
-  .ingredient-table td.ingredient-table__col-numeric > .struck-value {
-    display: block;
-    margin-right: 0;
+  .ingredient-table__plan-grams:has(> .struck-value) {
+    display: contents;
   }
 
-  .ingredient-table td.ingredient-table__col-grams > .struck-value {
+  .ingredient-table td.ingredient-table__col-grams .struck-value {
     display: block;
-    margin-right: 0;
+    grid-column: 1;
+    grid-row: 3;
+    margin: var(--gap-hair) 0 0;
+    text-align: right;
+  }
+
+  .ingredient-table tr:has(.ingredient-table__col-name > .struck-value) .ingredient-table__plan-grams > .struck-value {
+    grid-row: 1;
+    margin-top: 0;
+  }
+
+  .ingredient-table td.ingredient-table__col-numeric:last-child:has(> .struck-value) {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+
+  .ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:last-child:has(> .struck-value) {
+    grid-row: 1 / 4;
+    justify-content: space-between;
+  }
+
+  .ingredient-table td.ingredient-table__col-numeric:last-child > .struck-value {
+    margin: 0;
   }
 }
 

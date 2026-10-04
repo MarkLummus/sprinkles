@@ -1105,6 +1105,8 @@ describe('IngredientTable — the remove controls carry an explicit tabindex (qu
 // orphan flag when present, and before the portion line, which is a block
 // that starts its own line under both. Only the order of the name cell's
 // children is pinned here; every class, label and tabindex stays as it was.
+// Decision 44 (261004-ox6) puts a link on every split line, each removing the
+// ingredient; a split line's link also carries an aria-label naming its line.
 describe("IngredientTable — a split row's remove link sits on the name's line, before its portion line (261004-eoi; sketch 011 decision 26, decision 33 addendum)", () => {
   const PORTION_LINE = '120 g of 370.4 g · 46.3% in all';
   const CHIP = '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>';
@@ -1154,47 +1156,55 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
     return markup.match(/<td class="ingredient-table__col-name">(?:<span class="struck-value">)?Whole milk[\s\S]*?<\/td>/g) ?? [];
   }
 
-  it('Test A: the first portion\'s name cell runs name, estimated tag, gap, remove link, then the portion line; the second portion has no link', () => {
+  it('Test A: every portion line runs name, estimated tag, gap, remove link, then the portion line, the link naming its line (sketch 011 decision 44)', () => {
     const markup = renderPen(splitFixture());
     const cells = wholeMilkCells(markup);
+    const link = (step) => `<button type="button" class="text-control" tabindex="0" aria-label="remove Whole milk, Step ${step}">remove</button>`;
 
     expect(cells).toHaveLength(2);
     expect(cells[0]).toBe(
       '<td class="ingredient-table__col-name">Whole milk' +
         CHIP +
         GAP +
-        '<button type="button" class="text-control" tabindex="0">remove</button>' +
+        link(2) +
         `<span class="ingredient-table__portion-note">${PORTION_LINE}</span></td>`,
     );
-    expect(cells[1]).toMatch(
-      /^<td class="ingredient-table__col-name">Whole milk<span class="target-chip ingredient-table__flag">.*<\/span><span class="ingredient-table__portion-note">[^<]*<\/span><\/td>$/,
+    expect(cells[1]).toBe(
+      '<td class="ingredient-table__col-name">Whole milk' +
+        CHIP +
+        GAP +
+        link(3) +
+        '<span class="ingredient-table__portion-note">250.4 g of 370.4 g · 46.3% in all</span></td>',
     );
-    expect(cells[1]).not.toContain('<button');
-    expect(cells[1]).not.toContain('remove-gap');
-    expect(markup.match(/>remove<\/button>/g) ?? []).toHaveLength(2);
-    expect(markup.match(/class="ingredient-table__remove-gap"/g) ?? []).toHaveLength(2);
+    // Two for Whole milk, one for Heavy cream; the one-portion row keeps its bare button.
+    expect(markup.match(/>remove<\/button>/g) ?? []).toHaveLength(3);
+    expect(markup.match(/class="ingredient-table__remove-gap"/g) ?? []).toHaveLength(3);
+    const cream = markup.match(/<td class="ingredient-table__col-name">Heavy cream[\s\S]*?<\/td>/)[0];
+    expect(cream).toBe(`<td class="ingredient-table__col-name">Heavy cream${GAP}<button type="button" class="text-control" tabindex="0">remove</button></td>`);
+    expect(cream).not.toContain('aria-label');
   });
 
-  it('Test B: a removed split row runs struck name, tag, gap, restore link, then the portion line', () => {
+  it('Test B: a removed split row runs struck name, tag, gap, restore link, then the portion line, on every line (sketch 011 decision 44)', () => {
     const fixture = splitFixture();
     fixture.draftVersion.rows[0].removed = true;
     fixture.penDraft.rows.a.removed = true;
     const cells = wholeMilkCells(renderPen(fixture));
 
-    expect(cells[0]).toMatch(
-      new RegExp(
-        '^<td class="ingredient-table__col-name"><span class="struck-value">Whole milk</span>' +
-          CHIP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
-          GAP +
-          '<button type="button" class="text-control" tabindex="0">restore</button>' +
-          '<span class="ingredient-table__portion-note">[^<]*</span></td>$',
-      ),
-    );
-    // The share in the portion line moves with the removed row; the grams do not.
-    expect(cells[0]).toContain('120 g of 370.4 g');
+    expect(cells).toHaveLength(2);
+    [2, 3].forEach((step, i) => {
+      expect(cells[i]).toMatch(
+        new RegExp(
+          '^<td class="ingredient-table__col-name"><span class="struck-value">Whole milk</span>' +
+            CHIP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
+            GAP +
+            `<button type="button" class="text-control" tabindex="0" aria-label="restore Whole milk, Step ${step}">restore</button>` +
+            '<span class="ingredient-table__portion-note">[^<]*</span></td>$',
+        ),
+      );
+    });
   });
 
-  it('Test C: an orphaned split row runs name, tag, orphan flag, gap, remove link, then the portion line', () => {
+  it('Test C: an orphaned split row runs name, tag, orphan flag, gap, remove link, then the portion line on its first line only (sketch 011 decision 44)', () => {
     const fixture = splitFixture();
     fixture.version.method[0].uses = ['a'];
     fixture.draftVersion = structuredClone(fixture.version);
@@ -1206,7 +1216,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
       chip: cell.indexOf('target-chip'),
       flag: cell.indexOf('<p class="ingredient-table__flag">'),
       gap: cell.indexOf('class="ingredient-table__remove-gap"'),
-      link: cell.indexOf('class="text-control" tabindex="0">remove</button>'),
+      link: cell.indexOf('class="text-control" tabindex="0" aria-label="remove Whole milk, Step 1">remove</button>'),
       note: cell.indexOf('<span class="ingredient-table__portion-note">'),
     };
     for (const [part, index] of Object.entries(at)) expect(index, part).toBeGreaterThan(-1);
@@ -1216,6 +1226,13 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
     expect(at.gap).toBeLessThan(at.link);
     expect(at.link).toBeLessThan(at.note);
     expect(cell.endsWith(`${PORTION_LINE}</span></td>`)).toBe(true);
+
+    // The orphan flag stays on the first line; the second line has the gap and its own link.
+    const second = wholeMilkCells(renderPen(fixture))[1];
+    expect(second).not.toContain('<p class="ingredient-table__flag">');
+    expect(second).toContain('class="ingredient-table__remove-gap"');
+    expect(second.indexOf('aria-label="remove Whole milk, Step 2"')).toBeGreaterThan(-1);
+    expect(second.indexOf('aria-label="remove Whole milk, Step 2"')).toBeLessThan(second.indexOf('<span class="ingredient-table__portion-note">'));
   });
 
   // A guard, not a change detector: a row with one portion has no portion

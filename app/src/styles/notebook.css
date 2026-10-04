@@ -158,7 +158,9 @@
    history-disclosure — so neither the log's/version column's blue
    .text-control scope nor the touch union's own .text-control rule
    (app.css) reaches it; its own rule below carries fold_row's inline
-   resets and the 44px touch floor at every pointer. */
+   resets and the 44px touch floor at every pointer. Label, control word, a
+   dot, then the count or date, from the left at every width (sketch 011
+   decisions 34 A and 41). */
 .notebook .fold-row {
   appearance: none;
   border: none;
@@ -174,7 +176,7 @@
   width: 100%;
   min-height: var(--touch-min);
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--app-notebook-recipe-rail-gap);
   text-decoration: none;
 }
@@ -207,10 +209,22 @@
   color: var(--app-text-secondary);
 }
 
+/* The dot is CSS, so FoldRow and GoToBatch keep their markup and their
+   accessible names. The gap from the control word to the info reads 32px
+   (the 14px row gap, the dot, and its 14px margin). */
+.notebook .fold-row__count::before,
+.notebook .notebook-jump__status::before {
+  content: "\00b7";
+  margin-right: var(--app-notebook-recipe-rail-gap);
+}
+
 /* The band's Go to batch row: below 724 only (sketch 011 decision 30); from
-   724 up the band is as built. The 723.98px block below gives it its box. */
+   724 up the band is as built. It reads from the left wherever a rule shows
+   it (sketch 011 decisions 41 and 43). The 723.98px block below gives it its
+   box. */
 .notebook-jump {
   display: none;
+  justify-content: flex-start;
 }
 
 .notebook-field {
@@ -741,12 +755,17 @@
 
 /* The batch head's own two groups (393-batch.html/723-batch.html, the
    batch-head todo, 03.5-17 Task 2): a lead group (Batch + the churned
-   date) and an acts group (Correct + Record another), space-between with
-   wrap — .batch-row__head's own display: flex/flex-wrap: wrap (app.css)
-   stays; only justify-content and the gap are the App reading view's own. */
+   date) and an acts group (Correct + Record another), wrapping —
+   .batch-row__head's own display: flex/flex-wrap: wrap (app.css) stays; only
+   justify-content and the two gaps are the App reading view's own. The date,
+   then Correct and Record another 32px later where they share a line
+   (decisions 34 A and 41); where they wrap (the phone, the 350px log
+   column) the head's own 16px stays between the lines, so the head keeps its
+   height (decision 42, Mark 2026-10-04). */
 .notebook-log .batch-row__head {
-  justify-content: space-between;
-  gap: var(--app-notebook-log-head-outer-gap);
+  justify-content: flex-start;
+  row-gap: var(--app-notebook-log-head-outer-gap);
+  column-gap: var(--gap-l);
 }
 
 .notebook-log .batch-row__head-lead {
@@ -1125,7 +1144,6 @@
     width: 100%;
     min-height: var(--touch-min);
     align-items: center;
-    justify-content: space-between;
     gap: var(--app-notebook-recipe-rail-gap);
     text-decoration: none;
     color: inherit;
@@ -1145,41 +1163,6 @@
      two-class rule above, so two columns are restated for them here. */
   .notebook-log .tasting-reading .batch-row__cells {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* The small info labels read from the left from 724 up (sketch 011 decision
-   34 A, Mark 2026-10-04; brief task 9; quick 261004-igr): label, control
-   word, a dot, then the count, state or date, instead of the count drifting
-   to the far end of a row that is hundreds of px wide. Row A of the boards
-   info-labels-bands.html and info-labels-log.html, declaration for
-   declaration; the gap from the control word to the count reads 32px (the
-   14px row gap, the dot, and its 14px margin). The row stays one 44px
-   button, full width. The dot is CSS, so FoldRow and GoToBatch keep their
-   markup and their accessible names. The jump rule waits for brief task 3,
-   which shows the Go to batch row from 724; until then it is hidden here.
-   The batch head runs the date, then Correct and Record another 32px
-   later; in the 350px log column the wrapped actions sit 32px under the
-   date, as the board draws (the head is 16px taller than before). Below
-   724 nothing changes (the orchestrator's reading of Mark's answer 4). */
-@media (min-width: 724px) {
-  .notebook .fold-row {
-    justify-content: flex-start;
-  }
-
-  .notebook .fold-row__count::before,
-  .notebook .notebook-jump__status::before {
-    content: "\00b7";
-    margin-right: var(--app-notebook-recipe-rail-gap);
-  }
-
-  .notebook-jump {
-    justify-content: flex-start;
-  }
-
-  .notebook-log .batch-row__head {
-    justify-content: flex-start;
-    gap: var(--gap-l);
   }
 }
 

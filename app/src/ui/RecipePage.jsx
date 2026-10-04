@@ -34,7 +34,7 @@ import { RecipeHistory } from './RecipeHistory.jsx';
 import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 import { FoldRow } from './FoldRow.jsx';
-import { useBelow724, useBelowDesktop, useFold } from './useBelowDesktop.js';
+import { useBelow724, useBelowDesktop, useFold, useSheetTwoColumns } from './useBelowDesktop.js';
 
 // The record pen's blocked-date sentence (D-05) — one constant, read from
 // both handleSaveBatch (via validateRecordDraft) and the ceremony's own
@@ -933,22 +933,26 @@ export function RecipePage({ onPageStatus = () => {} }) {
     };
   }, [mode, amendingBatchId, penDraft, version, draft, amendBaseline]);
 
-  // The folds at every width (sketch 011 decisions 18/19, 03.5-15/16): one
-  // media read, cut at 1366 (BELOW_DESKTOP_QUERY), passed down as each
-  // region's own foldsOpen prop (the negation of belowDesktop) — open by
-  // default from 1366, closed below, and back to that default on every
-  // visit or width crossing (useFold, decisions_recorded 2). Balance and
-  // Watch for fold separately (decision 18): Balance's own fold state is
-  // local to this component, since its region renders here; Watch for's
-  // lives inside DerivedAdvisories and Tasting's inside TastingReading,
-  // both reading this same foldsOpen prop. Both hooks below must sit above
-  // the early returns.
+  // The folds at every width (sketch 011 decisions 18/19 and 33, 03.5-15/16):
+  // two media reads, two cuts. Balance and Watch for read sheetTwoColumns
+  // (SHEET_TWO_COLUMNS_QUERY, 984): open by default wherever the Sheet is two
+  // columns (decision 33, brief task 4). Version details, History, Tasting and
+  // the batch list read belowDesktop (BELOW_DESKTOP_QUERY, 1366), passed down
+  // as each region's own foldsOpen prop (its negation): open by default from
+  // 1366, closed below (decision 18, unchanged). Each fold returns to its own
+  // width's default on every visit or crossing of its own cut (useFold,
+  // decisions_recorded 2), so a Hide on Balance at 1024 survives a rotation to
+  // 1366. Balance's own fold state is local to this component, since its
+  // region renders here; Watch for's lives inside DerivedAdvisories and
+  // Tasting's inside TastingReading. Both hooks below must sit above the
+  // early returns.
   const belowDesktop = useBelowDesktop();
   // The recipe band's record act (sketch 011 decision 30): below 724 its
   // first control is the filled record act. Above the early returns, like
   // every hook here.
   const below724 = useBelow724();
-  const [balanceOpen, toggleBalance] = useFold(!belowDesktop);
+  const sheetTwoColumns = useSheetTwoColumns();
+  const [balanceOpen, toggleBalance] = useFold(sheetTwoColumns);
 
   if (version === undefined) return null;
   // The running head — the way home in every state, including this one
@@ -2113,10 +2117,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   full-row control inside its own h2 (decision 18): this
                   region's own control lives here, since the region itself
                   renders here; Watch for's own control lives inside
-                  DerivedAdvisories, reading the same foldsOpen. One branch
-                  at every width — the fold wrapper and its hidden attribute
-                  always exist; they simply never hide anything from 1366
-                  up (useFold's own default). */}
+                  DerivedAdvisories, reading the same sheetTwoColumns. One
+                  branch at every width — the fold wrapper and its hidden
+                  attribute always exist; they simply never hide anything from
+                  984 up, where both panels are open by default (decision 33,
+                  useFold's own default). */}
               <section className="formulation-note-region" aria-label="Balance">
                 <h2 className="region-name">
                   <FoldRow label="Balance" open={balanceOpen} onToggle={toggleBalance} controls="fold-balance" />
@@ -2135,7 +2140,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
               </section>
 
               <div className="margin-region">
-                <DerivedAdvisories version={liveVersion} foldsOpen={!belowDesktop} />
+                <DerivedAdvisories version={liveVersion} foldsOpen={sheetTwoColumns} />
               </div>
             </div>
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
-// Every below-desktop fold's own query (sketch 011 decision 18, 03.5-15):
-// the log's own cut, 1366 = 3 x 32 (gutters) + 920 (the Sheet's minimum)
+// Every below-desktop fold's own query (sketch 011 decision 18, 03.5-15),
+// except Balance and Watch for, which read SHEET_TWO_COLUMNS_QUERY below
+// (decision 33): the log's own cut, 1366 = 3 x 32 (gutters) + 920 (the Sheet's minimum)
 // + 350 (the log); the side nav is in none of the sums from 724 to 1589
 // (decision 33: it is the fly-out there) — the complement of
 // LOG_BESIDE_SHEET_QUERY below. Node-guarded (BatchRow.jsx's
@@ -69,6 +70,31 @@ export function useBelowRail() {
     return () => mediaQuery.removeEventListener('change', onChange);
   }, [hasMatchMedia]);
   return below;
+}
+
+// Balance and Watch for open by default wherever the Sheet is two columns
+// (sketch 011 decision 33, brief (b), Mark: "Balance folds open"): from 984 =
+// 2 x 32 gutters + the Sheet's 920, the complement of app.css's one-column
+// block, (max-width: 983.98px). Version details, History, Tasting and the
+// batch list keep the 1366 cut above (decision 18). Node-guarded, the same
+// critical note as useBelowDesktop: with no window, or no window.matchMedia,
+// it answers true (two columns, the desktop arrangement) and builds no
+// listener, so every static render keeps Balance and Watch for open.
+export const SHEET_TWO_COLUMNS_QUERY = '(min-width: 984px)';
+
+export function useSheetTwoColumns() {
+  const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+  const [twoColumns, setTwoColumns] = useState(() =>
+    hasMatchMedia ? window.matchMedia(SHEET_TWO_COLUMNS_QUERY).matches : true,
+  );
+  useEffect(() => {
+    if (!hasMatchMedia) return undefined;
+    const mediaQuery = window.matchMedia(SHEET_TWO_COLUMNS_QUERY);
+    const onChange = (event) => setTwoColumns(event.matches);
+    mediaQuery.addEventListener('change', onChange);
+    return () => mediaQuery.removeEventListener('change', onChange);
+  }, [hasMatchMedia]);
+  return twoColumns;
 }
 
 // useFold(openByDefault): a fold's own open/closed state (decisions_recorded

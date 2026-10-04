@@ -13,9 +13,10 @@ import { useFold } from './useBelowDesktop.js';
 // Watch for owns its own fold (sketch 011 decisions 18/19, 03.5-16
 // decisions_recorded 1): the block already returns null when there is
 // nothing to say, so an empty block shows no control either. `foldsOpen`
-// (default true, the 1366-up answer) is the same negated-belowDesktop
-// value RecipePage passes to every other fold; useFold resets to it on
-// every width crossing (03.5-15), with no state stored. The old
+// (default true, the two-column answer) is RecipePage's 984 read
+// (useSheetTwoColumns, decision 33), not the 1366 one the band's and log's
+// folds take; useFold resets to it on every crossing of that cut (03.5-15),
+// with no state stored. The old
 // "Things to check"/"derived" legend paragraph is retired — the section
 // now wears its own region-name heading, "Watch for" (decision 18), with
 // no "derived" label anywhere.

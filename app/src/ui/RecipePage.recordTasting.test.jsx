@@ -244,7 +244,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     expect(saved.tasting.temperingMinutes).toBe(10);
     expect(saved.churn.churnDate).toBe('2026-08-02');
     expect(pageStatus).toHaveBeenCalled();
-    expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('recorded '))).toBe(true);
+    expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('changed ') && !message.includes('against'))).toBe(true);
     expect(pen()).toBeNull();
     expect(document.activeElement).toBe(current.container.querySelector('h2#batch'));
     expect(band().textContent).toBe('Record another');

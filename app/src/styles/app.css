@@ -12,9 +12,9 @@
    included (Mark, 03.4 UAT round three, 2026-09-22). The two paper frames
    (.recipe-page and .not-found) paint their own Sheet ground through their
    own background declarations, so neither one needs the canvas.
-   No `html` selector may be added anywhere in this project: giving the
-   root element a background stops body's background reaching the canvas
-   at all (debug session variant B). */
+   No rule may give the root element a background: that stops body's
+   background reaching the canvas at all (debug session variant B).
+   shell.css's one html rule declares scroll-padding-top only. */
 body {
   margin: 0;
   background: var(--app-background);
@@ -317,7 +317,7 @@ textarea {
    plus one --gap-m of breathing room on the right, tokens only. */
 .page-status {
   position: absolute;
-  z-index: 10;
+  z-index: var(--app-z-notice);
   inset-block-start: 0;
   inset-inline-start: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));

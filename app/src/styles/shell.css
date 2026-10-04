@@ -30,12 +30,33 @@
   color: var(--app-text);
 }
 
+/* The sticky bar (sketch 011 decision 33, brief task 5; Mark, 2026-10-03:
+   "so that the search, import and export stay on screen"). Its height is its
+   tallest control, 44, plus the padding and the hairline: 57, which
+   --app-size-header-h names once, so nothing here sets a height. It paints
+   above the page notice (--app-z-header over --app-z-notice) and takes the
+   opaque App ground, so a scrolled page never shows through. It does not wrap
+   from here up; the phone block restores the scrolling header. */
 .shell__head {
+  position: sticky;
+  top: 0;
+  z-index: var(--app-z-header);
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  padding: var(--gap-s) var(--gap-page);
+  padding: var(--gap-xs) var(--gap-page);
+  background: var(--app-background);
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+
+/* The shell file's one root rule: it keeps a start-aligned scroll and the
+   browser's own Tab scroll clear of the bar (sketch 011 decision 33, anchors
+   and focus). It never takes a background: giving the root element one stops
+   body's background reaching the iOS overscroll canvas (G-03.4-9, app.css's
+   canvas note), and shell.test.js fails if any html rule here declares one. */
+html {
+  scroll-padding-top: var(--app-size-header-h);
 }
 
 .shell__brand {
@@ -43,6 +64,13 @@
   font-family: var(--face-grotesk);
   font-weight: 700;
   font-size: var(--app-size-brand);
+}
+
+/* The wordmark is a link to Home at every width (decision 33): the App text
+   colour and no underline, over the global link rules in app.css. */
+.shell__brand a {
+  color: inherit;
+  text-decoration: none;
 }
 
 /* The brand mark (D-09): five sprinkles, one per destination, in
@@ -133,8 +161,8 @@
   border-right: var(--app-rule-row) solid var(--app-divider);
 }
 
-/* The routed page. No transform, filter, perspective, will-change or
-   contain here or on .shell/.shell__body (shell.test.js): any of those
+/* The routed page. No transform, filter, perspective, will-change, contain or
+   overflow here or on .shell/.shell__body (shell.test.js): any of those
    would make this element a new containing block, and the recipe route's
    .page-status anchors to .page-status-anchor (app.css) by position
    alone — it must keep finding that ancestor, not this one, once nested
@@ -314,6 +342,19 @@
 @media (max-width: 983.98px) {
   .shell__rail {
     display: none;
+  }
+
+  /* The bar is not sticky below the cut: the header scrolls away as built,
+     and nothing sits over the page's top for an anchor to clear. */
+  .shell__head {
+    position: static;
+    flex-wrap: wrap;
+    padding: var(--gap-s) var(--gap-page);
+    border-bottom: none;
+  }
+
+  html {
+    scroll-padding-top: 0;
   }
 
   .shell__tabs {

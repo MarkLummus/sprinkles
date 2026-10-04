@@ -1,0 +1,3872 @@
+{
+  "capturedAt": "2026-10-04T20:37:53.142Z",
+  "cells": {
+    "webkit-coarse-393-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 393,
+          "h": 62
+        },
+        "position": "static",
+        "padding": "12px 20px 12px 20px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 20,
+          "y": 12.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 20,
+          "y": 12,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 20,
+        "y": 44,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 393,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 62,
+          "w": 393,
+          "h": 4000.42
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 0,
+        "y": 616.38,
+        "w": 393,
+        "h": 2765.83
+      },
+      "docH": 4062,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 250.23,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-723-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 723,
+          "h": 62
+        },
+        "position": "static",
+        "padding": "12px 20px 12px 20px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 20,
+          "y": 12.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 20,
+          "y": 12,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 20,
+        "y": 44,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 723,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 62,
+          "w": 723,
+          "h": 3595.02
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 0,
+        "y": 539.19,
+        "w": 723,
+        "h": 2471.83
+      },
+      "docH": 3657,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 296.67,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-744-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 744,
+          "h": 62
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 12.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 12,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 44,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 744,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 62,
+          "w": 744,
+          "h": 3347.39
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 32,
+        "y": 399.38,
+        "w": 680,
+        "h": 2447.02
+      },
+      "docH": 3409,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 380.05,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-834-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 834,
+          "h": 62
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 12.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 12,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 44,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 834,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 62,
+          "w": 834,
+          "h": 3254.7
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 32,
+        "y": 344.69,
+        "w": 770,
+        "h": 2409.02
+      },
+      "docH": 3317,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 379.36,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-983-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 983,
+          "h": 62
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 12.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 12,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 44,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 983,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 62,
+          "w": 983,
+          "h": 3239.7
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 32,
+        "y": 344.69,
+        "w": 919,
+        "h": 2409.02
+      },
+      "docH": 3302,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 394.36,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-984-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 984,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 568.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 699.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 827.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 3458.08
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "3458.078125px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 3458,
+        "scrollHeight": 3458,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 760,
+          "h": 3458.08
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 405.38,
+        "w": 696,
+        "h": 2613.7
+      },
+      "docH": 3526,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 435.73,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-1024-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1024,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 608.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 739.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 867.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 3325.89
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "3325.890625px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 3326,
+        "scrollHeight": 3326,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 800,
+          "h": 3325.89
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 382.88,
+        "w": 736,
+        "h": 2504.02
+      },
+      "docH": 3394,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 435.55,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-1366-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1366,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 950.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1081.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1209.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 3015.89
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "3015.890625px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 3016,
+        "scrollHeight": 3016,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1142,
+          "h": 3015.89
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 422.19,
+        "w": 696,
+        "h": 2613.7
+      },
+      "docH": 3084,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.22,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-fine-1366-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1366,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 950.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1081.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1209.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 3015.89
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "3015.890625px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 3016,
+        "scrollHeight": 3016,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1142,
+          "h": 3015.89
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 422.19,
+        "w": 696,
+        "h": 2613.7
+      },
+      "docH": 3084,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.22,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-fine-1589-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1589,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 1173.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1304.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1432.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 2753.2
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "2753.203125px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 2753,
+        "scrollHeight": 2753,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1365,
+          "h": 2753.2
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 422.19,
+        "w": 919,
+        "h": 2351.02
+      },
+      "docH": 2821,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.22,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-fine-1590-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1590,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 1174.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1305.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1433.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 2753.2
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "2753.203125px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 2753,
+        "scrollHeight": 2753,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1366,
+          "h": 2753.2
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 422.19,
+        "w": 920,
+        "h": 2351.02
+      },
+      "docH": 2821,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.22,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-fine-1600-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1600,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 1184.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1315.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1443.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 2753.2
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "2753.203125px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 2753,
+        "scrollHeight": 2753,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1376,
+          "h": 2753.2
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 422.19,
+        "w": 930,
+        "h": 2351.02
+      },
+      "docH": 2821,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.22,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-fine-1920-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 1504.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1635.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1763.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 2714.2
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "2714.203125px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 2714,
+        "scrollHeight": 2714,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1696,
+          "h": 2714.2
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 331,
+        "y": 422.19,
+        "w": 1100,
+        "h": 2312.02
+      },
+      "docH": 2782,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.22,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "chrome-fine-393-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 393,
+          "h": 63
+        },
+        "position": "static",
+        "padding": "12px 20px 12px 20px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 20,
+          "y": 12,
+          "w": 97.75,
+          "h": 26
+        },
+        "pBox": {
+          "x": 20,
+          "y": 12,
+          "w": 114,
+          "h": 27
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 20,
+        "y": 45,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 393,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 63,
+          "w": 393,
+          "h": 3943.39
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 0,
+        "y": 591.38,
+        "w": 393,
+        "h": 2753.83
+      },
+      "docH": 4006,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 269.2,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "chrome-fine-744-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 744,
+          "h": 63
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 12,
+          "w": 97.75,
+          "h": 26
+        },
+        "pBox": {
+          "x": 48,
+          "y": 12,
+          "w": 114,
+          "h": 27
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 45,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 744,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 63,
+          "w": 744,
+          "h": 3286.02
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 32,
+        "y": 372.38,
+        "w": 680,
+        "h": 2433.64
+      },
+      "docH": 3349,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 389.92,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "chrome-fine-984-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 984,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 14.5,
+          "w": 97.75,
+          "h": 26
+        },
+        "pBox": {
+          "x": 48,
+          "y": 14.5,
+          "w": 114,
+          "h": 27
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47.5,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 571.97,
+            "y": 12,
+            "w": 109.83,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 701.8,
+            "y": 12,
+            "w": 106.98,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 828.78,
+            "y": 12,
+            "w": 107.22,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 3317.02
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "3317.02px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 3317,
+        "scrollHeight": 3317,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 760,
+          "h": 3317.02
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 377.38,
+        "w": 696,
+        "h": 2520.64
+      },
+      "docH": 3385,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 445.92,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "chrome-fine-1366-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1366,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 14.5,
+          "w": 97.75,
+          "h": 26
+        },
+        "pBox": {
+          "x": 48,
+          "y": 14.5,
+          "w": 114,
+          "h": 27
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47.5,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 953.97,
+            "y": 12,
+            "w": 109.83,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1083.8,
+            "y": 12,
+            "w": 106.98,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1210.78,
+            "y": 12,
+            "w": 107.22,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 2922.83
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "2922.83px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 2923,
+        "scrollHeight": 2923,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1142,
+          "h": 2922.83
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 422.19,
+        "w": 696,
+        "h": 2520.64
+      },
+      "docH": 2991,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.19,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "chrome-fine-1600-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1600,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 14.5,
+          "w": 97.75,
+          "h": 26
+        },
+        "pBox": {
+          "x": 48,
+          "y": 14.5,
+          "w": 114,
+          "h": 27
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47.5,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 1187.97,
+            "y": 12,
+            "w": 109.83,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1317.8,
+            "y": 12,
+            "w": 106.98,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1444.78,
+            "y": 12,
+            "w": 107.22,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 2739.83
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "2739.83px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 2740,
+        "scrollHeight": 2740,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1376,
+          "h": 2739.83
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 256,
+        "y": 422.19,
+        "w": 930,
+        "h": 2337.64
+      },
+      "docH": 2808,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.19,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "chrome-fine-1920-batch": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1920,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 14.5,
+          "w": 97.75,
+          "h": 26
+        },
+        "pBox": {
+          "x": 48,
+          "y": 14.5,
+          "w": 114,
+          "h": 27
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47.5,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 1507.97,
+            "y": 12,
+            "w": 109.83,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1637.8,
+            "y": 12,
+            "w": 106.98,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1764.78,
+            "y": 12,
+            "w": 107.22,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 2700.83
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "2700.83px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 2701,
+        "scrollHeight": 2701,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1696,
+          "h": 2700.83
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": {
+        "x": 331,
+        "y": 422.19,
+        "w": 1100,
+        "h": 2298.64
+      },
+      "docH": 2769,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": "10",
+      "pathname": "/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89",
+      "s1": -1500,
+      "s2": 0.19,
+      "s3": {
+        "overlap": false,
+        "hitInHead": false,
+        "scrollY": 26
+      }
+    },
+    "webkit-coarse-393-home": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 393,
+          "h": 62
+        },
+        "position": "static",
+        "padding": "12px 20px 12px 20px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 20,
+          "y": 12.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 20,
+          "y": 12,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 20,
+        "y": 44,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          "display": "none"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none",
+        "position": "static",
+        "top": "auto",
+        "height": "auto",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 0,
+        "scrollHeight": 0,
+        "places": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          },
+          {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 844,
+          "w": 393,
+          "h": 56
+        },
+        "display": "flex"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 0,
+          "y": 62,
+          "w": 393,
+          "h": 1511
+        },
+        "paddingBottom": "56px",
+        "inert": false
+      },
+      "sheet": null,
+      "docH": 1573,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": null,
+      "pathname": "/",
+      "s1": -673,
+      "s2": null,
+      "s3": null
+    },
+    "webkit-coarse-1024-home": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1024,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 608.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 739.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 867.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 1803
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "1803px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 1803,
+        "scrollHeight": 1803,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 800,
+          "h": 1803
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": null,
+      "docH": 1871,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": null,
+      "pathname": "/",
+      "s1": -971,
+      "s2": null,
+      "s3": null
+    },
+    "webkit-fine-1600-home": {
+      "head": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1600,
+          "h": 68
+        },
+        "position": "static",
+        "padding": "12px 48px 12px 48px",
+        "borderBottomWidth": "0px",
+        "borderBottomColor": "rgb(20, 20, 20)",
+        "zIndex": "auto",
+        "flexWrap": "wrap",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+      },
+      "brand": {
+        "box": {
+          "x": 48,
+          "y": 15.04,
+          "w": 96.27,
+          "h": 25.91
+        },
+        "pBox": {
+          "x": 48,
+          "y": 15,
+          "w": 114,
+          "h": 26
+        },
+        "hasLink": false,
+        "href": null,
+        "tabindex": null,
+        "classList": null,
+        "color": null,
+        "textDecorationLine": null
+      },
+      "sprinkles": {
+        "x": 48,
+        "y": 47,
+        "w": 114,
+        "h": 6
+      },
+      "menu": null,
+      "tools": [
+        {
+          "text": "Search",
+          "box": {
+            "x": 1184.48,
+            "y": 12,
+            "w": 110.95,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Import",
+          "box": {
+            "x": 1315.44,
+            "y": 12,
+            "w": 108.41,
+            "h": 44
+          },
+          "display": "flex"
+        },
+        {
+          "text": "Export",
+          "box": {
+            "x": 1443.84,
+            "y": 12,
+            "w": 108.16,
+            "h": 44
+          },
+          "display": "flex"
+        }
+      ],
+      "rail": {
+        "box": {
+          "x": 0,
+          "y": 68,
+          "w": 224,
+          "h": 1116
+        },
+        "display": "flex",
+        "position": "static",
+        "top": "auto",
+        "height": "1116px",
+        "overflowY": "visible",
+        "boxShadow": "none",
+        "zIndex": "auto",
+        "borderRight": "1px solid rgb(214, 218, 215)",
+        "padding": "6px 20px 32px 20px",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "open": false,
+        "id": "",
+        "clientHeight": 1116,
+        "scrollHeight": 1116,
+        "places": [
+          {
+            "x": 20,
+            "y": 74,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 131,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 175,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 219,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 276,
+            "w": 183,
+            "h": 44
+          },
+          {
+            "x": 20,
+            "y": 320,
+            "w": 183,
+            "h": 44
+          }
+        ]
+      },
+      "tabs": {
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0
+        },
+        "display": "none"
+      },
+      "scrim": null,
+      "main": {
+        "box": {
+          "x": 224,
+          "y": 68,
+          "w": 1376,
+          "h": 1116
+        },
+        "paddingBottom": "0px",
+        "inert": false
+      },
+      "sheet": null,
+      "docH": 1184,
+      "innerHeight": 900,
+      "scrollY": 0,
+      "overflow": 0,
+      "scrollPadding": "auto",
+      "blockedBy": [],
+      "pageStatusZ": null,
+      "pathname": "/",
+      "s1": -284,
+      "s2": null,
+      "s3": null
+    }
+  }
+}

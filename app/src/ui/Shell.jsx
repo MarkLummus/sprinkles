@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router';
+import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { repository } from '../store/repository.js';
 import { exportStore, importStore } from '../store/transfer.js';
 
@@ -134,7 +134,8 @@ function RailPlace({ place }) {
   );
 }
 
-// The shell every route renders inside (D-09): a header with the wordmark,
+// The shell every route renders inside (D-09): a header with the wordmark
+// (a link to Home at every width, sketch 011 decision 33),
 // the brand's five sprinkles, and a tools row (Search, Import, Export);
 // a 224px rail of destinations — Home, a divider, Notebook / Recipe book /
 // Idea log, a divider, Ingredients / Kitchen — beside the routed page in
@@ -216,7 +217,11 @@ export function Shell() {
     <div className="shell">
       <header className="shell__head">
         <div>
-          <p className="shell__brand">Sprinkles</p>
+          <p className="shell__brand">
+            <Link to="/" tabIndex={0}>
+              Sprinkles
+            </Link>
+          </p>
           <div className="shell__sprinkles" aria-hidden="true">
             {PLACES.map((place) => (
               <span key={place.slug} className={`shell__sprinkle shell__sprinkle--${place.slug}`} />

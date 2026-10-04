@@ -514,4 +514,13 @@ describe('the rail is pinned under the sticky bar from 1590 (decision 33; quick 
     expect(open, 'expected the open panel rule in the fly-out block').toBeTruthy();
     expect(open.declarations).toMatch(/(^|[\s;])height:\s*auto/);
   });
+
+  // The pinned rail's align-self: flex-start is not "normal": on a fixed box with
+  // both insets set, a non-normal align-self makes the engine fit the box to its
+  // content (WebKit and Chrome read 328 tall, not the window less the bar), so
+  // the open panel puts it back to stretch.
+  test('the open fly-out panel stretches between its insets whatever the pinned rail\'s align-self says', () => {
+    const open = rules.find((r) => r.selector === '.shell__rail--open' && r.media === FLYOUT_MEDIA);
+    expect(open.declarations).toMatch(/align-self:\s*stretch/);
+  });
 });

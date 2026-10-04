@@ -98,7 +98,7 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
     expect(rule.declarations).toMatch(/width:\s*var\(--sheet-track-stop-narrow\)/);
   });
 
-  test('the touch union carries the six sizing rules, and the width-only block keeps the axis-mark track geometry (Mark, 2026-09-15: touch is a mode, track geometry is a width decision; .recipe-band__row-version moved to notebook.css, 03.5-04 Task 1)', () => {
+  test('the touch union carries the seven sizing rules, and the width-only block keeps the axis-mark track geometry (Mark, 2026-09-15: touch is a mode, track geometry is a width decision; .recipe-band__row-version moved to notebook.css, 03.5-04 Task 1)', () => {
     const touchRules = rules.filter((r) => r.media === '(pointer: coarse)');
     expect(touchRules.map((r) => r.selector)).toEqual([
       // .prose-field joined this rule in 260916-vv1 — it takes the shared
@@ -113,6 +113,8 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
       // this at a wide touch viewport, in its own block — it cannot live here,
       // because the union matches every coarse pointer, phones included.
       '.axis-mark__head, .segmented-field__head',
+      // Clear's word at the bottom of its 44px box (sketch 011 decision 40 finding 1; quick 261004-ox4).
+      '.axis-mark__head .text-control, .segmented-field__head .text-control',
       // Sketch 008 line 166, approved 2026-09-15.
       '.ink-field, .prose-field',
       // Decision C: HEIGHT only. The width and the track stay width-keyed below.
@@ -132,6 +134,15 @@ describe('touch targets under a coarse pointer — 44px, stops 44x44 (sketch fin
       '.axis-mark__stops, .axis-mark__anchors',
       '.axis-mark__stop',
     ]);
+  });
+
+  test("Clear's word sits at the bottom of its 44px box, level with the axis name, at a coarse pointer (sketch 011 decision 40 finding 1; quick 261004-ox4)", () => {
+    const rule = rules.find((r) => r.selector === '.axis-mark__head .text-control, .segmented-field__head .text-control' && r.media === '(pointer: coarse)');
+    expect(rule, 'expected the touch-union Clear rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/display:\s*inline-flex/);
+    expect(rule.declarations).toMatch(/align-items:\s*flex-end/);
+    // The 44px target and the head's 44px reserve stand: no size, spacing or height here.
+    expect(rule.declarations).not.toMatch(/(?:^|[\s;])(?:min-height|height|padding|margin)/);
   });
 
   test("decision C: the touch union grows the stop's HEIGHT only — the width and the track stay width-keyed (sketch 009, Mark 2026-09-15)", () => {

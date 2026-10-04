@@ -305,22 +305,69 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       '.ingredient-table td.ingredient-table__col-numeric:nth-last-child(2)',
       '.ingredient-table td.ingredient-table__col-numeric:last-child',
       '.ingredient-table td.ingredient-table__col-numeric:empty',
-      '.ingredient-table__plan-grams > .struck-value',
-      '.ingredient-table td.ingredient-table__col-numeric > .struck-value',
-      '.ingredient-table td.ingredient-table__col-grams > .struck-value',
+      '.ingredient-table tr:not(.ingredient-table__step-head)',
+      '.ingredient-table__plan-grams:has(> .struck-value)',
+      '.ingredient-table td.ingredient-table__col-grams .struck-value',
+      '.ingredient-table tr:has(.ingredient-table__col-name > .struck-value) .ingredient-table__plan-grams > .struck-value',
+      '.ingredient-table td.ingredient-table__col-numeric:last-child:has(> .struck-value)',
+      '.ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:last-child:has(> .struck-value)',
+      '.ingredient-table td.ingredient-table__col-numeric:last-child > .struck-value',
     ]);
   });
 
-  test('below 724 the struck old figure is a block with no right margin, in the amount, the share and the pen (decisions 24 and 25, sketch 011)', () => {
+  test('below 724 the phone reads plan / As made / struck: the amount gives up its box and the struck figure takes the last line, in the amount, the share, the Total and the pen (sketch 011 decision 31, D3, phone boards approved 2026-10-03 under decision 32; decision 33 brief task 1; supersedes decisions 24 and 25)', () => {
+    const phone = (selector) => rules.find((r) => r.selector === selector && r.media === '(max-width: 723.98px)');
+    const declarationsOf = (selector) => {
+      const rule = phone(selector);
+      expect(rule, `expected a media-scoped rule for ${selector}`).toBeTruthy();
+      return rule.declarations;
+    };
+
+    // The amount's cell, and its slot when the slot holds a struck figure, give up
+    // their boxes: the slot's contents and the pen's struck parent become the row
+    // grid's items.
+    expect(declarationsOf('.ingredient-table td.ingredient-table__col-grams')).toMatch(/display:\s*contents/);
+    expect(declarationsOf('.ingredient-table__plan-grams:has(> .struck-value)')).toMatch(/display:\s*contents/);
+    // An anonymous box takes its alignment from the row, not from the cell.
+    expect(declarationsOf('.ingredient-table tr:not(.ingredient-table__step-head)')).toMatch(/text-align:\s*right/);
+
+    // The name spans the three lines, left-aligned; As made carries its own hair.
+    const name = declarationsOf('.ingredient-table td.ingredient-table__col-name');
+    expect(name).toMatch(/grid-row:\s*1 \/ 4/);
+    expect(name).toMatch(/text-align:\s*left/);
+    expect(declarationsOf('.ingredient-table td.ingredient-table__col-numeric:nth-last-child(2)')).toMatch(/margin-top:\s*var\(--gap-hair\)/);
+
+    // The struck amount: the grid's third line, one hair under As made, right-aligned.
+    const struck = declarationsOf('.ingredient-table td.ingredient-table__col-grams .struck-value');
+    expect(struck).toMatch(/display:\s*block/);
+    expect(struck).toMatch(/grid-column:\s*1\s*;/);
+    expect(struck).toMatch(/grid-row:\s*3\s*;/);
+    expect(struck).toMatch(/margin:\s*var\(--gap-hair\) 0 0/);
+    expect(struck).toMatch(/text-align:\s*right/);
+
+    // A removed row's lone struck amount stands on the first line.
+    const removed = declarationsOf('.ingredient-table tr:has(.ingredient-table__col-name > .struck-value) .ingredient-table__plan-grams > .struck-value');
+    expect(removed).toMatch(/grid-row:\s*1\s*;/);
+    expect(removed).toMatch(/margin-top:\s*0/);
+
+    // The share is a reversed flex column; it spans the three lines when the amount
+    // has a struck figure, so the two struck figures share the last line.
+    const share = declarationsOf('.ingredient-table td.ingredient-table__col-numeric:last-child:has(> .struck-value)');
+    expect(share).toMatch(/display:\s*flex/);
+    expect(share).toMatch(/flex-direction:\s*column-reverse/);
+    expect(share).toMatch(/align-items:\s*flex-end/);
+    const shareSpan = declarationsOf('.ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:last-child:has(> .struck-value)');
+    expect(shareSpan).toMatch(/grid-row:\s*1 \/ 4/);
+    expect(shareSpan).toMatch(/justify-content:\s*space-between/);
+    expect(declarationsOf('.ingredient-table td.ingredient-table__col-numeric:last-child > .struck-value')).toMatch(/margin:\s*0/);
+
+    // The three stacking rules decision 31 retires have no rule left in the block.
     for (const selector of [
       '.ingredient-table__plan-grams > .struck-value',
       '.ingredient-table td.ingredient-table__col-numeric > .struck-value',
       '.ingredient-table td.ingredient-table__col-grams > .struck-value',
     ]) {
-      const rule = rules.find((r) => r.selector === selector && r.media === '(max-width: 723.98px)');
-      expect(rule, `expected a media-scoped rule for ${selector}`).toBeTruthy();
-      expect(rule.declarations).toMatch(/display:\s*block/);
-      expect(rule.declarations).toMatch(/margin-right:\s*0/);
+      expect(phone(selector), `${selector} should have no rule in the phone-forms block`).toBeUndefined();
     }
   });
 
@@ -331,7 +378,7 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       /grid-template-columns:\s*var\(--sheet-plan-grams-w\) minmax\(0,\s*1fr\) max-content/,
     );
     expect(trRule.declarations).toMatch(/column-gap:\s*var\(--sheet-narrow-name-gap\)/);
-    expect(trRule.declarations).toMatch(/row-gap:\s*var\(--gap-hair\)/);
+    expect(trRule.declarations).toMatch(/row-gap:\s*0\b/);
     expect(trRule.declarations).toMatch(/padding:\s*var\(--sheet-narrow-row-pad-y\)\s+0/);
     expect(trRule.declarations).toMatch(/border-bottom:\s*var\(--rule-graduation\)\s+solid\s+var\(--sheet-ink\)/);
 

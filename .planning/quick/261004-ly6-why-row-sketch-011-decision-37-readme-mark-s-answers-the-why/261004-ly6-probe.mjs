@@ -7,6 +7,9 @@
 //   node 261004-ly6-probe.mjs premise   (build of the unchanged source: the cause)
 //   node 261004-ly6-probe.mjs after     (build of the changed source: vs the B panels)
 //
+// The board's Caveat: its Google Fonts link is blocked by the harness, so the probe
+// declares the app's own caveat-regular.woff2 on the board page (see the comment below).
+//
 // Serves the build through the 03.5 harness's own ephemeral 127.0.0.1 servers; never
 // requests Mark's :4173 preview, the dev server on :5173 or the sketch server on :8011,
 // and starts no Vite process. The stress check rewrites a dd's text only in a throwaway
@@ -133,7 +136,16 @@ async function run(group) {
       try {
         // The board, once per engine, every panel the probe compares against.
         const { context: bctx, page: bpage } = await openBoard(browser, servers.repoUrl, 'why-row.html');
+        // The board reaches Caveat through a Google Fonts link, which the harness blocks
+        // (every non-127.0.0.1 request), so unaided the board's hand falls back to Georgia
+        // and wraps wider than Sid's readings (110 tall at 393, not 137.5). Give the board the
+        // same Caveat file the app serves, declared the way the app's fonts.css declares it.
+        await bpage.addStyleTag({
+          content: `@font-face{font-family:'Caveat';src:url('${servers.repoUrl}/app/public/fonts/caveat-regular.woff2') format('woff2');font-weight:400;font-style:normal}`,
+        });
+        await bpage.evaluate(() => document.fonts.load("22px 'Caveat'"));
         await bpage.waitForTimeout(500);
+        countedCheck(await bpage.evaluate(() => [...document.fonts].some((f) => f.family.includes('Caveat') && f.status === 'loaded')), `${engine} board: Caveat loaded`);
         const board = {};
         try {
           for (const W of WIDTHS) {

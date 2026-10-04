@@ -389,7 +389,7 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
     }
   });
 
-  test('app.css carries exactly seven top-level @media blocks, at six named conditions, the record pen\'s width-only block sharing the phone forms\' 723.98px since sketch 011 decision 28 (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print)', () => {
+  test('app.css carries exactly eight top-level @media blocks, at seven named conditions, the record pen\'s width-only block sharing the phone forms\' 723.98px since sketch 011 decision 28 (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print; 261004-ox8 the screen-only D3 table grid)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
@@ -398,6 +398,7 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       '(min-width: 724px) and (pointer: coarse)',
       '(pointer: coarse)',
       'print',
+      'screen and (min-width: 724px)',
     ]);
   });
 });

@@ -163,7 +163,7 @@ describe('task 1 style 6 (decision 15) — three column identities: content-size
     expect(decl).toMatch(/padding-right:\s*var\(--sheet-plan-grams-gap\)/);
   });
 
-  test('td.ingredient-table__col-numeric never wraps, but the heads keep wrapping', () => {
+  test('td.ingredient-table__col-numeric never wraps, and the column form\'s heads keep wrapping', () => {
     const rules = readAllRules(appCssSource);
     const tdNumeric = rules.find(
       (r) => r.selector === '.ingredient-table td.ingredient-table__col-numeric' && r.media === undefined,
@@ -171,9 +171,22 @@ describe('task 1 style 6 (decision 15) — three column identities: content-size
     expect(tdNumeric, 'expected a td-scoped nowrap rule for the numeric column').toBeTruthy();
     expect(tdNumeric.declarations).toMatch(/white-space:\s*nowrap/);
     const thForcesNowrap = rules.some(
-      (r) => /\bth\.ingredient-table__col-numeric\b/.test(r.selector) && /white-space:\s*nowrap/.test(r.declarations),
+      (r) =>
+        r.media === undefined &&
+        /\bth\.ingredient-table__col-numeric\b/.test(r.selector) &&
+        /white-space:\s*nowrap/.test(r.declarations),
     );
     expect(thForcesNowrap).toBe(false);
+  });
+
+  test('from 724 exactly one th rule declares nowrap, the % of batch head, so the As made head keeps wrapping (261004-ox8)', () => {
+    const rules = readAllRules(appCssSource);
+    const thNowrap = rules.filter(
+      (r) => /\bth\.ingredient-table__col-numeric\b/.test(r.selector) && /white-space:\s*nowrap/.test(r.declarations),
+    );
+    expect(thNowrap.map((r) => [r.media, r.selector])).toEqual([
+      ['screen and (min-width: 724px)', '.ingredient-table thead th.ingredient-table__col-numeric:last-child'],
+    ]);
   });
 
   test('no ingredient-table rule declares a clipping or a stacking property', () => {
@@ -205,5 +218,75 @@ describe("decision 15's own literal tokens (sketch 011) — the amount span, its
     expect(resolveTokenPx(tokens, '--sheet-plan-grams-gap')).toBe(18);
     expect(resolveTokenPx(tokens, '--sheet-flag-gap')).toBe(8);
     expect(resolveTokenPx(tokens, '--sheet-remove-gap')).toBe(10);
+  });
+});
+
+// 261004-ox8 (sketch 011 decision 31 D3, decision 32 answers 2, 4 and 5, decision 33 brief (c)):
+// from 724 up, on screen, each ingredient-table row is a grid. As made stands first in a
+// 56px track (only when the table carries ingredient-table--as-made), then the 64px plan
+// amount, the name, and the share; a struck figure stands under the current one. Like the rest
+// of this file the suite reads the stylesheet as text: it proves the contract, not a pixel.
+describe('D3 grid from 724 (sketch 011 decisions 31, 32 (5), 33 brief (c))', () => {
+  const d3 = readAllRules(appCssSource).filter((r) => r.media === 'screen and (min-width: 724px)');
+  const rule = (selector) => {
+    const found = d3.find((r) => r.selector === selector);
+    expect(found, `expected a D3 rule for ${selector}`).toBeTruthy();
+    return found.declarations;
+  };
+
+  test('the block is a screen-only media block, so print is untouched (brief (g))', () => {
+    expect(d3.length).toBeGreaterThan(0);
+    expect(d3.every((r) => r.media.startsWith('screen and '))).toBe(true);
+  });
+
+  test('a row is a grid of three tracks (plan, name, share) with the board\'s gap, padding and rule', () => {
+    const decl = rule('.ingredient-table tr:not(.ingredient-table__step-head)');
+    expect(decl).toMatch(/display:\s*grid/);
+    expect(decl).toMatch(/grid-template-columns:\s*var\(--sheet-plan-grams-w\) minmax\(0, 1fr\) max-content/);
+    expect(decl).toMatch(/grid-template-areas:\s*'plan name share'/);
+    expect(decl).toMatch(/column-gap:\s*var\(--sheet-narrow-name-gap\)/);
+    expect(decl).toMatch(/padding:\s*var\(--gap-xs\) var\(--sheet-table-cell-pad-x\)/);
+    expect(decl).toMatch(/border-bottom:\s*var\(--rule-baseline\) solid var\(--sheet-ink\)/);
+  });
+
+  test('with the As made layer the row has four tracks, As made first', () => {
+    const decl = rule('.ingredient-table--as-made tr:not(.ingredient-table__step-head)');
+    expect(decl).toMatch(/grid-template-columns:\s*var\(--sheet-field-w-figure\) var\(--sheet-plan-grams-w\) minmax\(0, 1fr\) max-content/);
+    expect(decl).toMatch(/grid-template-areas:\s*'asm plan name share'/);
+  });
+
+  test('the amount, As made and share cells take their areas; the amount has no right padding', () => {
+    expect(rule('.ingredient-table td.ingredient-table__col-grams')).toMatch(/grid-area:\s*plan/);
+    expect(rule('.ingredient-table td.ingredient-table__col-grams')).toMatch(/padding-right:\s*0/);
+    expect(rule('.ingredient-table td.ingredient-table__col-name')).toMatch(/grid-area:\s*name/);
+    expect(rule('.ingredient-table td.ingredient-table__col-numeric:nth-last-child(2)')).toMatch(/grid-area:\s*asm/);
+    expect(rule('.ingredient-table td.ingredient-table__col-numeric:last-child')).toMatch(/grid-area:\s*share/);
+  });
+
+  test('the struck figure stands under the current one: column-reverse on the three cells that hold one (decision 31, D3)', () => {
+    const struckBlock = rule(
+      '.ingredient-table__plan-grams > .struck-value, .ingredient-table td.ingredient-table__col-numeric > .struck-value, .ingredient-table td.ingredient-table__col-grams > .struck-value',
+    );
+    expect(struckBlock).toMatch(/display:\s*block/);
+    expect(struckBlock).toMatch(/margin-right:\s*0/);
+    const under = d3.find((r) => /column-reverse/.test(r.declarations));
+    expect(under, 'expected a column-reverse rule').toBeTruthy();
+    for (const part of [
+      '.ingredient-table td.ingredient-table__col-grams:has(.struck-value)',
+      '.ingredient-table__plan-grams:has(> .struck-value)',
+      '.ingredient-table td.ingredient-table__col-numeric:has(> .struck-value)',
+    ]) {
+      expect(under.selector.split(', ')).toContain(part);
+    }
+    expect(under.declarations).toMatch(/display:\s*flex/);
+    expect(under.declarations).toMatch(/align-items:\s*flex-end/);
+  });
+
+  test('the writing column costs the name 66px: the As made track (56) and one column gap (10), decision 32 answer 4', () => {
+    expect(resolveTokenPx(tokens, '--sheet-field-w-figure') + resolveTokenPx(tokens, '--sheet-narrow-name-gap')).toBe(66);
+  });
+
+  test('no rule in the block carries !important', () => {
+    for (const r of d3) expect(r.declarations).not.toMatch(/!important/);
   });
 });

@@ -1668,3 +1668,41 @@ describe('IngredientsHead — the Ingredients heading, with Show changes below 7
     expect(button.props.onClick).toBe(onToggleShowChanges);
   });
 });
+
+// 261004-ox8 (sketch 011 decisions 31, 32 and 33 brief (c)): the table's class says whether the
+// As made layer is in view, so the D3 grid from 724 up can pick its four tracks (As made first)
+// or its three. The class is set exactly when hasAsMadeLayer is, and the pen with no batch in
+// view keeps its own class alone.
+describe('IngredientTable — the table class carries ingredient-table--as-made exactly when the As made layer is in view (261004-ox8)', () => {
+  const tableClass = (markup) => markup.match(/<table class="([^"]*)"/)[1];
+
+  it('reading with no batch in view: the plain class', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={null} />);
+    expect(tableClass(markup)).toBe('ingredient-table');
+  });
+
+  it('reading with a saved batch in view: the modifier follows the base class', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={makeBatch()} />);
+    expect(tableClass(markup)).toBe('ingredient-table ingredient-table--as-made');
+  });
+
+  it('recording a batch: the modifier is present', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="recording" draft={{ asMade: {} }} openBatch={null} />,
+    );
+    expect(tableClass(markup)).toContain('ingredient-table--as-made');
+  });
+
+  it('the Next version pen with no batch in view: is-developing alone (guard, passes before and after)', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const draftVersion = makeVersion([makeRow('a', 'Row A', 40, 1)]);
+    const penDraft = { rows: { a: onePortionDraftRow(1, '40') }, asMade: {} };
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
+    );
+    expect(tableClass(markup)).toBe('ingredient-table is-developing');
+  });
+});

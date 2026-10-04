@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-04T17:37:34.920Z"
+last_updated: "2026-10-04T17:40:17.613Z"
 last_activity: 2026-10-04
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: f4d745513e7fed88a8f0d2f3b3eca6779077f146
+state_head: 975160e2eefc2483ab2a48b7f5c1c639727d7162
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-04 - Completed quick task 261004-fwx: Wire Mark's List into the repo: read-first rule in CLAUDE.md and the /marks-list skill
+Last activity: 2026-10-04 - Completed quick task 261004-igr: sketch 011 brief tasks 9 and 10
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -383,6 +383,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 80 | Name the canvas page and board in Mark's List rows (CLAUDE.md) | 2026-10-04 | f685066 | — |
 | 81 | Patch the /marks-list skill to handle the built-in Other answer | 2026-10-04 | 54f4ce3 | — |
 | 82 | Teach /marks-list to schedule a todo marked Done with a work-asking note | 2026-10-04 | f4d7455 | — |
+| 261004-igr | Sketch 011 brief tasks 9 and 10: start-aligned info labels from 724, Sheet title as one field in the pen | 2026-10-04 | 975160e | [261004-igr-sketch-011-brief-tasks-9-and-10-readme-m](./quick/261004-igr-sketch-011-brief-tasks-9-and-10-readme-m/) |
 
 ### Roadmap Evolution
 

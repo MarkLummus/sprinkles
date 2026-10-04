@@ -2436,6 +2436,21 @@ textarea {
     min-height: var(--sheet-caption-line-h-touch);
   }
 
+  /* Clear fills its 44px box at the phone and the head's flex-end alignment
+     puts the axis name at the head's bottom, so Clear's word, centred in its
+     box, sat about 14px above the name on every axis and segmented field
+     (sketch 011 decision 40 finding 1, Mark 2026-10-04). The word now sits at
+     the box's bottom, on the name's line, as at the 350 column, while the
+     box, the target and the head's reserve do not move. From 724 up the
+     wide-touch block's min-height 0 makes the box its word, so this rule
+     changes nothing there. M4 at the phone was rejected: it would shrink the
+     44px head the approved 393 board and sketch 007/008 draw. */
+  .axis-mark__head .text-control,
+  .segmented-field__head .text-control {
+    display: inline-flex;
+    align-items: flex-end;
+  }
+
   /* Sketch 008 line 166, approved by Mark 2026-09-15, retiring the app's
      pre-declared 13px departure. Besides matching the sketch, 16px is the
      threshold below which iOS Safari zooms the page on field focus — so this

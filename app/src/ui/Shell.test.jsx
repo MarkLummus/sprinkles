@@ -156,14 +156,27 @@ describe('Shell — the bottom tab row and More (D-16, 03.4-03 Task 3)', () => {
   });
 });
 
-describe("Shell — More's hairline between places and actions (sketch 011 decision 55, Mark 2026-10-05)", () => {
-  it('puts the separator item right after Search and right before Import, with the board\'s exact markup', () => {
+describe("Shell — More's hairline between the places and Search, Import, Export (sketch 011 decision 55, Mark 2026-10-05)", () => {
+  it("puts the separator item right after Kitchen and right before Search, with the board's exact markup (decision 55, Mark: Search below the hairline)", () => {
     const markup = renderAt('/');
     const detailsMatch = markup.match(/<details class="shell__more">([\s\S]*?)<\/details>/);
     expect(detailsMatch, 'expected a details.shell__more element').toBeTruthy();
-    expect(detailsMatch[1]).toContain(
-      'Search</a></li><li class="shell__more-sep" aria-hidden="true"><hr class="shell__divider"/></li><li><button',
+    const more = detailsMatch[1];
+    expect(more).toContain(
+      'Kitchen</a></li><li class="shell__more-sep" aria-hidden="true"><hr class="shell__divider"/></li><li><a ',
     );
+    const afterSep = more.slice(more.indexOf('shell__more-sep'));
+    expect(afterSep.match(/<a\b[^>]*>/)[0]).toContain('href="/search"');
+    expect(more).not.toContain('Search</a></li><li class="shell__more-sep"');
+  });
+
+  it('lists Ingredients, Kitchen, the separator, Search, Import, Export in that order', () => {
+    const markup = renderAt('/');
+    const more = markup.match(/<details class="shell__more">([\s\S]*?)<\/details>/)[1];
+    const at = (needle) => more.indexOf(needle);
+    const order = ['Ingredients', 'Kitchen', 'shell__more-sep', 'Search', 'Import', 'Export'].map(at);
+    expect(order.every((index) => index >= 0)).toBe(true);
+    expect([...order].sort((x, y) => x - y)).toEqual(order);
   });
 
   it("renders the separator once, and the rail's two dividers keep their aria-hidden", () => {

@@ -200,9 +200,11 @@ export function parseGramsDraft(value) {
 }
 
 /**
- * findBlockedRow(penFields, version) -> { row, message } for the first
+ * findBlockedRow(penFields, version) -> { row, index, message } for the first
  * row (in the version's own authored order) with a line in whose grams
- * field blocks the save, or `null` when no row does. A line the draft
+ * field blocks the save, or `null` when no row does. `index` is the stored
+ * position of the blocked line within the row: the first blocked line that is
+ * in. A line the draft
  * marks removed, or whose step `penFields.method` holds as removed (a step
  * flag exactly true, found by its `n`; an absent method removes nothing), is
  * skipped, so a row with every line out blocks nothing and a split row with
@@ -211,9 +213,9 @@ export function parseGramsDraft(value) {
  * before non-numeric within each portion, so within a single row the maker is
  * told about one thing at a time; the first blocking portion of the
  * first blocking row wins, and the walk then moves to the next row. The
- * one traversal both blockedSaveMessage and blockedSaveRowId read, so
- * the sentence on screen and the row it names can never disagree
- * (T-03.1-21).
+ * one traversal blockedSaveMessage, blockedSaveRowId and blockedSaveLineIndex
+ * all read, so the sentence on screen and the row and line it names can never
+ * disagree (T-03.1-21).
  */
 function findBlockedRow(penFields, version) {
   const method = penFields.method ?? [];
@@ -224,10 +226,10 @@ function findBlockedRow(penFields, version) {
       const storedPortion = row.portions[index];
       if (storedPortion && isStepRemoved(method, storedPortion.step)) continue;
       if (draftPortion.grams === undefined || draftPortion.grams === '') {
-        return { row, message: `${row.ingredientName} needs an amount, or remove the row` };
+        return { row, index, message: `${row.ingredientName} needs an amount, or remove it` };
       }
       if (parseGramsDraft(draftPortion.grams) === null) {
-        return { row, message: `${row.ingredientName}'s amount is not a number` };
+        return { row, index, message: `${row.ingredientName}'s amount is not a number` };
       }
     }
   }
@@ -277,4 +279,19 @@ export function blockedSaveRowId(penFields, version, versions) {
   if (!versionLineUnique(versions, penFields.versionLabel, null)) return null;
   const blocked = findBlockedRow(penFields, version);
   return blocked ? blocked.row.id : null;
+}
+
+/**
+ * blockedSaveLineIndex(penFields, version, versions) -> the stored position of
+ * the line blockedSaveMessage's own sentence names within the row
+ * blockedSaveRowId names, or `null` when nothing blocks or when the block is the
+ * version line's own. Reads the same findBlockedRow traversal the sentence and
+ * the row do, so the sentence, the row and the line it names cannot disagree
+ * (T-03.1-21).
+ */
+export function blockedSaveLineIndex(penFields, version, versions) {
+  if (penFields.versionLabel.trim() === '') return null;
+  if (!versionLineUnique(versions, penFields.versionLabel, null)) return null;
+  const blocked = findBlockedRow(penFields, version);
+  return blocked ? blocked.index : null;
 }

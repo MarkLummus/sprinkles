@@ -58,6 +58,8 @@ export function isRowRemoved(row, method) {
  * the stored portions, so a reader of that array uses `portion.index ?? i`
  * rather than the position in the shorter array. A row returned as the same
  * object already has every position equal to its index and is not tagged.
+ * A row with no portions array is kept as the same object, as isRowRemoved reads it
+ * as not removed.
  * Never mutates or reorders the array it is given.
  */
 export function activeRows(version) {
@@ -66,10 +68,11 @@ export function activeRows(version) {
   for (const row of version.rows) {
     if (row.removed === true) continue;
     const kept = [];
-    row.portions.forEach((portion, index) => {
+    const portions = row.portions ?? [];
+    portions.forEach((portion, index) => {
       if (!isLineRemoved(row, portion, method)) kept.push({ ...portion, index });
     });
-    if (kept.length === row.portions.length) result.push(row);
+    if (kept.length === portions.length) result.push(row);
     else if (kept.length > 0) result.push({ ...row, portions: kept });
   }
   return result;

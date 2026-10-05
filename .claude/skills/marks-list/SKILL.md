@@ -31,8 +31,9 @@ so the next run skips it.
 3. React to the rows Mark has answered or written on since the last reply (never a `note` kind
    row; see step 4): the row has an
    `answer` or a non-empty `note`, or is a todo with status `scheduled` or `done` (a note is
-   optional there), or is a todo Mark added (`addedBy` is `mark`) that has no `where` yet, and
-   `handledAt` is missing or earlier than `updatedAt`.
+   optional there), or is a `check` with status `done` (a note is optional there too), or is a
+   todo Mark added (`addedBy` is `mark`) that has no `where` yet, and `handledAt` is missing or
+   earlier than `updatedAt`.
 4. For each such row, say in one or two sentences what Mark decided or wrote (for an answer, give
    the chosen option's label). The answer `other` is the page's built-in choice and is not in
    `options`: the `note` is the answer, so read it as written text and look up no label. An `other`
@@ -46,9 +47,19 @@ so the next run skips it.
      nothing is left open), run it: invoke `/gsd-quick` (or `/gsd-quick-batch` for several) with
      the task text, one run at a time, and report its commits. When the spec is not decided,
      propose the command and make it a "Run:" row (step 5).
-   - A device check that passed: close it (step 5 only).
-   - A failed check, or a note describing a defect: propose a `/gsd-quick` or `/gsd-debug` task
-     with its text.
+   - A device check that passed: close it (step 5). A `check` may carry `closes`, an array of todo
+     doc ids: the todos its work verifies. A `check` with status `done` passed when its note is
+     empty or says it passed (pass, ok, works, looks good, nothing off). For each todo id in a
+     passed `done` check's `closes`, read the todo; if it is already `done`, leave it. If every
+     other `check` naming that todo in `closes` is also `done` and passed, update the todo with
+     `if_version`: `status: "done"`, `resolvedAt` now, and step 5's fields, with the reply
+     `Closed with its passed check (<check doc id>).` Then move its file as the done-todo bullet
+     below does, when its `where` names a file in `.planning/todos/pending/`. If another linked
+     check is still open or failed, leave the todo `scheduled` and say so in the check's reply.
+   - A failed check, or a note describing a defect: close the check with the defect in its
+     reply, leave the todos in its `closes` `scheduled`, and propose a `/gsd-quick` or
+     `/gsd-debug` task with its text as a "Fix: ..." row (step 5). A check note that is unclear
+     goes to the unclear list (step 5's decide row); its todos stay `scheduled`.
    - A todo (kind `todo`) with status `scheduled`: Mark wants the work done, and the note says
      when or why. Name the whole path by size, then start its first step. A small change is a
      `/gsd-quick` with its text: run it. A change that needs a sketch first, or that sits before
@@ -86,8 +97,11 @@ so the next run skips it.
    Sid redraw, a build, a command) gets its own open row at the moment you handle the row, with
    the real clock for its timestamps: a todo titled "Draw: ..." for Sid work (status
    `scheduled`, and start `sid` for it, queued behind a running Sid, never two at once on the
-   README or canvas), a todo titled "Build: ..." for a decided `app/` change you run now, or a
-   "Run: ..." todo for the commands below. A closed row's reply is a note, not a plan. Do the
+   README or canvas), a todo titled "Build: ..." for a decided `app/` change you run now, a todo
+   titled "Fix: ..." for a failed check's proposed `/gsd-quick` or `/gsd-debug` task (status
+   `open`, the task text in `detail`), or a "Run: ..." todo for the commands below. A closed
+   row's reply is a note, not a plan. Every `check` row you add carries `closes` naming the
+   Build, Fix or Draw todo the check verifies; leave it out only when no such todo exists. Do the
    same for every command Mark must run himself (`/gsd-phase`,
    `/gsd-plan-phase`, `/impeccable ...`): add a new open todo row titled "Run: " plus the
    command's purpose, with `detail` holding the exact command and what it needs, `source` the
@@ -105,4 +119,8 @@ command and no `/impeccable` command yourself. Create no new files except a todo
 page, in `.planning/todos/pending/`. The only agent you may start is `sid`, for a scheduled
 todo's sketch step or a decided sketch redraw (one Sid at a time). The one move allowed is a done todo's file, `pending/` to `completed/`
 under `.planning/todos/`.
+You set a todo's `status` to `done` only through a passed linked check (step 4); everywhere else
+Done stays Mark's.
+Only `check` rows carry `closes`; a `look` row never closes a todo (looking at a board is not
+finishing the work).
 </process>

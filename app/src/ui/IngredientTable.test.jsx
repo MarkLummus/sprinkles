@@ -2237,3 +2237,129 @@ describe('IngredientTable — a split ingredient with one line left reads like a
     expect(markup).toContain('aria-label="Whole milk, as made, grams, portion 2"');
   });
 });
+
+// Mark's List row per-step-open-pen-with-line-out, Mark's answer fix (2026-10-05);
+// 03.6-REVIEW.md WR-02 and WR-03; 03.6-VERIFICATION.md advisory. A line already out when
+// the pen opened has no share in the version the pen opened on, so it reads the parent's
+// figures; a line pressed out in this session was in at open and reads the version the pen
+// opened on, as before.
+describe('IngredientTable — a pen opened on a version with a line already out reads the parent\'s figures (Mark\'s List per-step-open-pen-with-line-out)', () => {
+  // The pen over a version that `opened` edits, with the draft seeded from the stored
+  // flags the way the page seeds it. `parent` is the baselineVersion the page gives.
+  function pen({ opened = () => {}, parent, edit = () => {} }) {
+    const version = structuredClone(oliveOilVersion);
+    opened(version);
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: {}, asMade: {} };
+    for (const row of draftVersion.rows) {
+      row.portions.forEach((portion) => {
+        portion.removed = portion.removed === true;
+      });
+      penDraft.rows[row.id] = {
+        portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams), removed: portion.removed })),
+      };
+    }
+    edit({ draftVersion, penDraft });
+    return renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        steps={version.method}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineVersion={parent}
+      />,
+    );
+  }
+
+  const takeOut = (rowId, ...indexes) => (version) => {
+    for (const index of indexes) version.rows.find((row) => row.id === rowId).portions[index].removed = true;
+  };
+
+  // Each <tr> of the body that names the ingredient, in table order.
+  function linesOf(markup, name) {
+    const body = markup.split('<tbody>')[1].split('</tbody>')[0];
+    return body.split('<tr').filter((tr) => tr.includes(`aria-label="${name}`));
+  }
+
+  const note = (tr) => tr.match(/ingredient-table__portion-note">([^<]*)</)?.[1];
+  const lastCell = (tr) => tr.split('<td class="ingredient-table__col-numeric">').pop().split('</td>')[0];
+  const gramsCell = (tr) => tr.split('<td class="ingredient-table__col-grams">')[1].split('</td>')[0];
+
+  it('H1, one line out at open: the struck Step 2 line reads the parent, and the sibling\'s name announces no change', () => {
+    const markup = pen({ opened: takeOut('row-01', 0), parent: structuredClone(oliveOilVersion) });
+    const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+    expect(note(stepTwo)).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(lastCell(stepTwo)).toBe('<span class="struck-value">15.0%</span>');
+    expect(note(stepThree)).toBe('250.4 g of 250.4 g · 36.8% in all');
+    expect(markup).toContain('aria-label="Whole milk, 250.4 g, estimated"');
+    expect(markup).not.toContain('120 g of 250.4 g');
+    expect(markup).not.toContain('17.7%');
+    expect(markup).not.toContain('54.5%');
+  });
+
+  it('H2, both milk lines out at open: each reads the parent\'s figures, and the wrong shares print nowhere', () => {
+    const markup = pen({ opened: takeOut('row-01', 0, 1), parent: structuredClone(oliveOilVersion) });
+    const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+    expect(note(stepTwo)).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(note(stepThree)).toBe('250.4 g of 370.4 g · 46.3% in all');
+    expect(lastCell(stepTwo)).toBe('<span class="struck-value">15.0%</span>');
+    expect(lastCell(stepThree)).toBe('<span class="struck-value">31.3%</span>');
+    expect(markup).not.toContain('86.3%');
+    expect(markup).not.toContain('28.0%');
+    expect(markup).not.toContain('58.3%');
+  });
+
+  it('H3, a one-line row (Heavy cream) out at open: its struck share is the parent\'s', () => {
+    const markup = pen({ opened: takeOut('row-02', 0), parent: structuredClone(oliveOilVersion) });
+    const [cream] = linesOf(markup, 'Heavy cream');
+
+    expect(lastCell(cream)).toBe('<span class="struck-value">31.6%</span>');
+    expect(markup).not.toContain('46.2%');
+  });
+
+  it('H4, neither the version the pen opened on nor its parent has the line in: no portion line, no share, the amount stays', () => {
+    const parentWithoutLine = structuredClone(oliveOilVersion);
+    takeOut('row-01', 0)(parentWithoutLine);
+    for (const parent of [null, parentWithoutLine]) {
+      const markup = pen({ opened: takeOut('row-01', 0), parent });
+      const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+      expect(stepTwo).not.toContain('ingredient-table__portion-note');
+      expect(lastCell(stepTwo)).toBe('');
+      expect(gramsCell(stepTwo)).toContain('<span class="struck-value">120 g</span>');
+      expect(stepTwo).toContain('restore');
+      expect(note(stepThree)).toBe('250.4 g of 250.4 g · 36.8% in all');
+    }
+  });
+
+  it('H5, a line pressed out in this session still reads the version the pen opened on, even with a parent given', () => {
+    const parent = structuredClone(oliveOilVersion);
+    parent.rows.find((row) => row.id === 'row-01').portions[0].grams = 100;
+    const markup = pen({
+      parent,
+      edit: ({ draftVersion, penDraft }) => setLineRemoved({ draftVersion, penDraft }, 'row-01', 0),
+    });
+    const [stepTwo] = linesOf(markup, 'Whole milk');
+
+    expect(note(stepTwo)).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(lastCell(stepTwo)).toBe('<span class="struck-value">15.0%</span>');
+  });
+
+  it('H6, with Step 3 typed over a line out at open, the name reads the row as it stood at open', () => {
+    const markup = pen({
+      opened: takeOut('row-01', 0),
+      parent: structuredClone(oliveOilVersion),
+      edit: ({ draftVersion, penDraft }) => {
+        penDraft.rows['row-01'].portions[1].grams = '260';
+        draftVersion.rows.find((row) => row.id === 'row-01').portions[1].grams = 260;
+      },
+    });
+
+    expect(markup).toContain('aria-label="Whole milk, was 250.4 g, now 260 g, was 36.8%, now 37.7%, estimated"');
+  });
+});

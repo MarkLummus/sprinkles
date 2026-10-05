@@ -493,3 +493,63 @@ describe('Show changes strikes a removed step with its lines (decision 51, plan 
     expect(totalCell().textContent.endsWith('666.0 g')).toBe(true);
   });
 });
+
+// Mark's List row per-step-open-pen-with-line-out, Mark's answer fix (2026-10-05);
+// 03.6-REVIEW.md WR-02 and WR-03; 03.6-VERIFICATION.md advisory. Next version on a saved
+// version that already has a line out: the struck line reads the parent's figures (the
+// version the pen opened on has no share for it), and the untouched sibling line announces
+// no change that did not happen.
+//
+// Mounts v1, takes Whole milk's Step 2 line out, saves 'less milk', waits for the saved
+// child's Show changes button (proof that the parent read landed), then presses Next
+// version on the child.
+async function openPenOnChildWithStepTwoMilkOut() {
+  installMatchMedia();
+  const container = await mountAt(VERSION_PATH);
+  await click(buttonByText(container, 'Next version'));
+  await click(buttonByLabel('remove Whole milk, Step 2'));
+  await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+  await click(buttonByText(container, 'Save as a new version'));
+  await flush(() => store.saveVersion.mock.calls.length > 0);
+  await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
+  await click(buttonByText(current.container, 'Next version'));
+  await flush(() => buttonByLabel('restore Whole milk, Step 2') !== null);
+  return container;
+}
+
+describe('Next version on a saved version with a line out (Mark\'s List per-step-open-pen-with-line-out: fix)', () => {
+  it('reads the struck Step 2 line against the parent, and names the untouched Step 3 line without a false change', async () => {
+    await openPenOnChildWithStepTwoMilkOut();
+
+    expect(totalCell().textContent.endsWith('679.7 g')).toBe(true);
+    expect(totalCell().querySelector('.struck-value')).toBeNull();
+    expect(noteOf('restore Whole milk, Step 2')).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(struck(shareCellOf(rowOf('restore Whole milk, Step 2')))).toEqual(['15.0%']);
+    expect(noteOf('remove Whole milk, Step 3')).toBe('250.4 g of 250.4 g · 36.8% in all');
+    expect(shareCellOf(rowOf('remove Whole milk, Step 3')).textContent).toBe('36.8%');
+    expect(struck(shareCellOf(rowOf('remove Whole milk, Step 3')))).toEqual([]);
+    expect(rowOf('remove Whole milk, Step 3').getAttribute('aria-label')).toBe('Whole milk, 250.4 g, estimated');
+    expect(rowOf('restore Whole milk, Step 2').getAttribute('aria-label')).toBe('Whole milk, 250.4 g, estimated, removed');
+    const markup = current.container.querySelector('.ingredient-table').outerHTML;
+    expect(markup).not.toContain('120 g of 250.4 g');
+    expect(markup).not.toContain('17.7%');
+    expect(markup).not.toContain('54.5%');
+  });
+
+  it('restoring the line that was out moves the total, and the restored line has no share to strike', async () => {
+    await openPenOnChildWithStepTwoMilkOut();
+    await click(buttonByLabel('restore Whole milk, Step 2'));
+
+    expect(struck(totalCell())).toEqual(['679.7']);
+    expect(totalCell().textContent.endsWith('799.7 g')).toBe(true);
+    const stepTwoShare = shareCellOf(rowOf('remove Whole milk, Step 2'));
+    expect(stepTwoShare.textContent).toBe('15.0%');
+    expect(struck(stepTwoShare)).toEqual([]);
+    expect(noteOf('remove Whole milk, Step 2')).toBe('120 g of 370.4 g · 46.3% in all');
+    const stepThreeShare = shareCellOf(rowOf('remove Whole milk, Step 3'));
+    expect(struck(stepThreeShare)).toEqual(['36.8%']);
+    expect(stepThreeShare.textContent).toBe('36.8%31.3%');
+    expect(noteOf('remove Whole milk, Step 3')).toBe('250.4 g of 370.4 g · 46.3% in all');
+    expect(rowOf('remove Whole milk, Step 3').getAttribute('aria-label')).toBe('Whole milk, 250.4 g, was 36.8%, now 46.3%, estimated');
+  });
+});

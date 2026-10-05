@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-05T00:56:39.211Z"
+last_updated: "2026-10-05T01:17:58.730Z"
 last_activity: 2026-10-04
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 91e474aac1047b804701ce53b03b4382aea59fcf
+state_head: 56dd7434b6704360fb51ac77415781a3e6deff63
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-04 - Completed quick task 261004-szl: drop the "against <version>" suffix from the batch read view Recorded line
+Last activity: 2026-10-05 - Completed quick task 261004-ta2: tidy leftovers (probe regex, stale nav comments, menu button and wordmark focus ring)
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -400,6 +400,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261004-ox9 | Decision 33 brief task 3: Go to batch from 724 to 1365, start-aligned with a dot (notebook.css, notebook.test.js); acceptance board 724-1365-go-to-batch.html (redrawn, decision 43). | 2026-10-04 | 62b2ebd | .planning/quick/261004-ox9-decision-33-brief-task-3-go-to-batch-from-724-to-1365-start |
 | 261004-oxa | Decision 33 brief task 4: Balance and Watch for default open from 984 (useBelowDesktop.js, RecipePage.jsx, DerivedAdvisories.jsx and their tests); acceptance boards 984-batch and 1024-batch (open), 98 | 2026-10-04 | 0fcc2c3 | .planning/quick/261004-oxa-decision-33-brief-task-4-balance-and-watch-for-default-open |
 | 261004-szl | Drop the "against <version>" suffix from the batch read view Recorded line | 2026-10-05 | 91e474a | [261004-szl-drop-the-against-version-suffix-from-the](./quick/261004-szl-drop-the-against-version-suffix-from-the/) |
+| 261004-ta2 | Tidy leftovers: probe regex, stale nav comments, menu button and wordmark focus ring | 2026-10-05 | 56dd743 | [261004-ta2-tidy-leftovers-probe-regex-stale-nav-com](./quick/261004-ta2-tidy-leftovers-probe-regex-stale-nav-com/) |
 
 ### Roadmap Evolution
 

@@ -764,7 +764,8 @@
    then Correct and Record another 32px later where they share a line
    (decisions 34 A and 41); where they wrap (the phone, the 350px log
    column) the head's own 16px stays between the lines, so the head keeps its
-   height (decision 42, Mark 2026-10-04). */
+   height (decision 42, Mark 2026-10-04). With no pen open and a batch in
+   view, the head is the fold row below (decision 50). */
 .notebook-log .batch-row__head {
   justify-content: flex-start;
   row-gap: var(--app-notebook-log-head-outer-gap);
@@ -781,6 +782,24 @@
   display: flex;
   align-items: baseline;
   gap: var(--app-notebook-log-head-gap);
+}
+
+/* Sketch 011 decision 50 A (Mark, 2026-10-05): the Batch head is the Tasting
+   head's fold row. Correct and Record another follow the date 32px later, on
+   the row's line. :has(.fold-row) keeps the pen and no-batch heads on
+   decision 42's rule above. */
+.notebook-log .batch-row__head:has(.fold-row) {
+  row-gap: 0;
+  align-items: center;
+}
+
+.notebook-log .batch-row__head:has(.fold-row) .region-name {
+  margin: 0;
+  flex: 0 1 auto;
+}
+
+.notebook-log .batch-row__head:has(.fold-row) .fold-row {
+  width: auto;
 }
 
 .notebook-log .batch-row .region-name,
@@ -945,6 +964,24 @@
 
   .notebook-log .field-row__label {
     max-width: 100%;
+  }
+
+  /* Decision 50 A. In the 350px log column and on the phone, the actions
+     would wrap. So the fold row takes the whole row, a 44px control like the
+     other folds, and they stand under it with no gap. The head is 88px. The
+     brief drew this as a container query (log under 447px); these two
+     existing breakpoints stand in, so from about 487 to 723 the actions also
+     stand under the fold row. */
+  .notebook-log .batch-row__head:has(.fold-row) .batch-row__head-lead {
+    flex: 0 0 100%;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .region-name {
+    flex: 1 1 auto;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .fold-row {
+    width: 100%;
   }
 }
 
@@ -1185,6 +1222,24 @@
      two-class rule above, so two columns are restated for them here. */
   .notebook-log .tasting-reading .batch-row__cells {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Decision 50 A. In the 350px log column and on the phone, the actions
+     would wrap. So the fold row takes the whole row, a 44px control like the
+     other folds, and they stand under it with no gap. The head is 88px. The
+     brief drew this as a container query (log under 447px); these two
+     existing breakpoints stand in, so from about 487 to 723 the actions also
+     stand under the fold row. */
+  .notebook-log .batch-row__head:has(.fold-row) .batch-row__head-lead {
+    flex: 0 0 100%;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .region-name {
+    flex: 1 1 auto;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .fold-row {
+    width: 100%;
   }
 }
 

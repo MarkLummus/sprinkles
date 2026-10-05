@@ -312,11 +312,12 @@ describe('the unbuilt place reads in the App\'s own voice (D-10, gap 2, CR-01)',
 });
 
 describe('a focus ring that paints where :focus-visible never fires (G-03.4-4, .planning/debug/ipad-keyboard-no-focus-ring.md)', () => {
-  test('exactly one rule in shell.css has a selector containing :focus, and it is .shell__place:focus, top-level', () => {
+  test("the places' plain :focus fallback and the menu button's own :focus-visible ring are the only two focus rules in shell.css, both top-level", () => {
     const focusRules = rules.filter((r) => r.selector.includes(':focus'));
-    expect(focusRules).toHaveLength(1);
-    expect(focusRules[0].selector).toBe('.shell__place:focus');
-    expect(focusRules[0].media).toBeUndefined();
+    expect(focusRules.map((r) => r.selector).sort()).toEqual(['.shell__menu:focus-visible', '.shell__place:focus']);
+    for (const rule of focusRules) {
+      expect(rule.media).toBeUndefined();
+    }
   });
 
   test('.shell__place:focus declares both focus tokens', () => {
@@ -353,9 +354,11 @@ describe('one App radius on every place, the active rail place in weight 600 (sk
     expect(rule.declarations).not.toMatch(/font-weight/);
   });
 
-  test("only .shell__sprinkle and .shell__place declare a border-radius, nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
+  test("only .shell__sprinkle, .shell__place, the menu button and the wordmark link declare a border-radius (the last two on the App control radius so their focus rings follow it, decision 47 (8)), nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
     const radiused = rules.filter((r) => /(^|[\s;])border-radius\s*:/.test(r.declarations));
-    expect(radiused.map((r) => r.selector).sort()).toEqual(['.shell__place', '.shell__sprinkle']);
+    expect(radiused.map((r) => r.selector).sort()).toEqual(['.shell__brand a', '.shell__menu', '.shell__place', '.shell__sprinkle']);
+    expect(radiused.find((r) => r.selector === '.shell__brand a').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
+    expect(radiused.find((r) => r.selector === '.shell__menu').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__sprinkle').declarations).toMatch(/border-radius:\s*var\(--app-radius-sprinkle\)/);
     expect(radiused.find((r) => r.selector === '.shell__place').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     for (const rule of rules.filter((r) => r.media === PHONE_MEDIA)) {
@@ -477,6 +480,13 @@ describe('the menu button, the scrim and the z order (decision 33, quick 261004-
     expect(rule.declarations).toMatch(/width:\s*var\(--app-size-icon\)/);
     expect(rule.declarations).toMatch(/height:\s*var\(--app-size-icon\)/);
     expect(rule.declarations).toMatch(/transform:\s*rotate\(var\(--app-tilt-menu\)\)/);
+  });
+
+  test("the menu button draws its own :focus-visible ring in the App text colour (quick 261004-ly8 finding 4, sketch 011 decision 47 (8))", () => {
+    const rule = top('.shell__menu:focus-visible');
+    expect(rule, 'expected a top-level .shell__menu:focus-visible rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/outline:\s*var\(--focus-outline-width\)\s+solid\s+var\(--app-text\)/);
+    expect(rule.declarations).toMatch(/outline-offset:\s*var\(--focus-outline-offset\)/);
   });
 
   test('.shell__scrim runs from the bar\'s foot to the window\'s foot and dims the page', () => {

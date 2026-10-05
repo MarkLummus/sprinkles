@@ -245,4 +245,24 @@ describe('The Batch fold opens open at every width (sketch 011 decision 50, C1)'
     expect(document.activeElement).toBe(current.container.querySelector('h2#batch'));
     expect(isOpen('fold-batch')).toBe(true);
   });
+
+  // Decision 50, Mark 2026-10-05: the body must be shown when focus lands, so
+  // the browser scrolls on the open page that 261004-uyd G7 measured.
+  it.each([393, 1024])('Go to batch opens a closed Batch fold, then lands on h2#batch (decision 50, Mark 2026-10-05) at %i', async (at) => {
+    await mountAt(at);
+    await click(row('fold-batch'));
+    expect(isOpen('fold-batch')).toBe(false);
+    const heading = current.container.querySelector('h2#batch');
+    const hiddenAtFocus = [];
+    heading.focus = function focusRecorder(...args) {
+      hiddenAtFocus.push(panel('fold-batch').hidden);
+      return HTMLElement.prototype.focus.apply(this, args);
+    };
+    await click(current.container.querySelector('.notebook-jump'));
+    expect(isOpen('fold-batch')).toBe(true);
+    expect(row('fold-batch').textContent).toContain('Hide');
+    expect(document.activeElement).toBe(heading);
+    expect(heading.classList.contains('is-landing-focus')).toBe(true);
+    expect(hiddenAtFocus).toEqual([false]);
+  });
 });

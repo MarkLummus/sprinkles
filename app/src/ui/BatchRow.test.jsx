@@ -1779,6 +1779,23 @@ describe('BatchRow — the Batch fold head (sketch 011 decision 50 A, C1; Mark 2
     expect(markup).toContain('<div id="fold-batch"><div class="batch-margin">');
   });
 
+  it('folds by the batchOpen RecipePage gives it, and a pen shows the body regardless (as built)', () => {
+    const closed = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], batchOpen: false });
+    expect(closed).toContain('aria-expanded="false" aria-controls="fold-batch"');
+    expect(closed).toContain('<div id="fold-batch" hidden=""><div class="batch-margin">');
+    expect(closed).toContain('<span class="fold-row__control">Show</span>');
+    const amend = renderBatchRow({
+      openPen: 'amend',
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, churnDate: '2026-08-02' },
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      batchOpen: false,
+    });
+    expect(amend).toContain('<div id="fold-batch"><div class="batch-margin');
+    expect(amend).not.toContain('<div id="fold-batch" hidden');
+  });
+
   it('still reads the Tasting row closed at foldsOpen false', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], foldsOpen: false });
     expect(markup).toContain('aria-expanded="false" aria-controls="fold-tasting"');

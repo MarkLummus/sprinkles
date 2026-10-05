@@ -85,7 +85,6 @@ function mount(draft) {
           onStartAmending={noop}
           onCancelRecording={noop}
           onSaveBatch={noop}
-          versionName="Version 1 · 50 g oil · 800 g"
           onStartRecording={noop}
         />
       </MemoryRouter>,

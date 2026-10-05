@@ -75,7 +75,6 @@ function rowElement(props) {
     <MemoryRouter>
       <BatchRow
         version={oliveOilVersion}
-        versionName="Version 1 · 50 g oil · 800 g"
         openBatch={untastedBatch}
         batches={[untastedBatch]}
         mode="reading"

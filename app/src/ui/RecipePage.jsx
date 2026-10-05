@@ -11,8 +11,6 @@ import {
   createChildVersion,
   saveOverVersion,
   versionsForRecipe,
-  sortedVersions,
-  versionIdentity,
   blockedSaveMessage,
   blockedSaveRowId,
   parseGramsDraft,
@@ -1965,12 +1963,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
     return repository.saveRecipe(next).then(() => setRecipe(next));
   }
 
-  // The batch log's own Recorded line names the version by identity
-  // (03.5-07 decisions_recorded 2) — the same versionIdentity(ordered,
-  // version) call VersionRow.jsx makes for its own identity heading, over
-  // the recipe's own sorted versions.
-  const versionName = versionIdentity(sortedVersions(versionsForRecipe(versions, version.recipeId)), version);
-
   // The two values Method receives, held once so the guard below and the
   // component never read different ones (261003-9bz).
   const methodSteps = mode === 'developing' || showingChanges ? version.method : readingVersion.method;
@@ -2159,7 +2151,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
         <aside className="notebook-log" aria-label="Batch">
           <BatchRow
             version={version}
-            versionName={versionName}
             batches={batches}
             openBatch={openBatch}
             mode={mode}

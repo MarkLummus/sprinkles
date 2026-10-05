@@ -530,10 +530,15 @@ export function IngredientTable({
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
-    const isSplit = row.portions.length > 1;
     // The lines still in, over the live batch: the stored row itself when every
     // line is in.
     const liveRow = baselineActiveById.get(row.id) ?? row;
+    // In the reading Sheet, and so in print, a split ingredient with one line still in
+    // reads like a one-line row, with no portion line (Mark's List row
+    // per-step-one-line-left, Mark's answer drop, 2026-10-05; sketch 011 decision 51).
+    // Recording shares this branch and keeps the stored count as built, because as made
+    // with a line out is still open for Mark (03.6-CONFORMANCE.md "Open for Mark" item 2).
+    const isSplit = (mode === 'recording' ? row : liveRow).portions.length > 1;
     const ariaLabel = rowAccessibleLabel(liveRow, dataFlag, isMarked, markedFigureLabel, asMadeValue);
 
     return (

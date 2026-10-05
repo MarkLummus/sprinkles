@@ -569,6 +569,39 @@ Plans:
 
 - [x] 03.5-30-PLAN.md — The round's conformance records corrected (counts, the 723 touch floor, the forms, Home's standing), the readings regenerated, and the full regression on the final build (G-03.5-R2-1, G-03.5-R2-2, G-03.5-R2-3, G-03.5-R2-4, G-03.5-R2-5)
 
+### Phase 03.6: Per-step shared ingredients (INSERTED)
+
+**Goal:** Shared ingredients act per step (sketch 011 README decision 51): each remove link removes its own line, a removed step takes its lines with it (struck, restored with the step), and the pen's portion line and Show changes' percentages follow the lines still in, the 86.3% fix included.
+**Requirements**: TBD
+**Depends on:** Phase 03.5
+**Plans:** 6 plans
+
+Plans:
+
+**Wave 1**
+
+- [ ] 03.6-01-PLAN.md — One press on one line in the pen (tracer over Olive Oil v1): the line is the unit, a row is removed when every line is out, and the uses and diff readers follow (decision 51, Mark's answers 1 and 3)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 03.6-02-PLAN.md — The pen's draft, dirty check, save and blocked-save check carry removal on the lines alone, and the pen's five states are pinned to decision 51's measured figures
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 03.6-03-PLAN.md — A saved version keeps its lines out: the import validator accepts `portions[].removed`, the reading Sheet and recording skip them, and as-made values stay aligned by stored position
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 03.6-04-PLAN.md — Show changes compares a split ingredient line by line, and a line that is out reads the parent's figures (the 86.3% fix)
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 03.6-05-PLAN.md — Removing a step takes its lines with it, struck under a "Removed" head in the step's place and restored with the step (decision 51, Mark's answer 2)
+
+**Wave 6** *(blocked on Wave 5)*
+
+- [ ] 03.6-06-PLAN.md — Conformance probe against the board on the real DOM (WebKit and Chromium, 1366 and 393), full regression, and the open items and device check put on Mark's List
+
 ### Phase 4: Prepare the next version for making
 
 **Status:** Paused 2026-09-23 until Phase 03.5 separates the recipe from the sheet. Context gathered (`04-CONTEXT.md`); its print decisions carry over, but the canvas starting point must be re-captured from the separated Sheet.

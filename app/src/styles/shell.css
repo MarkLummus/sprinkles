@@ -538,6 +538,18 @@ html {
     min-height: var(--touch-min);
   }
 
+  /* The hairline between More's places and actions (sketch 011 decision 55):
+     its item is not a 44px target, and its rule runs the tiles' full width,
+     because the rail's 20px side margins would leave a short dash in a 75px
+     column. */
+  .shell__more li.shell__more-sep {
+    min-height: 0;
+  }
+
+  .shell__more li.shell__more-sep .shell__divider {
+    margin-inline: 0;
+  }
+
   /* More opens as a panel above the bar, not inline in the fixed row
      (D-16, gap 1): the disclosure anchors its own list, which — once
      open — pins to the bar's top edge and trailing edge, sized to its

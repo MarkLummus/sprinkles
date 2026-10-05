@@ -409,6 +409,13 @@ export function Shell() {
                 Search
               </NavLink>
             </li>
+            {/* The hairline between the places (Ingredients, Kitchen, Search) and
+                the actions (Import, Export), sketch 011 decision 55. It is the
+                rail's own divider, hidden from assistive tech. A tap on it closes
+                More like any tap in the list. */}
+            <li className="shell__more-sep" aria-hidden="true">
+              <hr className="shell__divider" />
+            </li>
             <li>
               <button type="button" className="shell__place" tabIndex={0} onClick={() => fileInputRef.current?.click()}>
                 <ImportIcon />

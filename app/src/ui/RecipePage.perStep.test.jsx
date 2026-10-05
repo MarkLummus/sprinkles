@@ -17,7 +17,7 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, useParams } from 'react-router';
 
-const store = vi.hoisted(() => ({ versions: [], saveVersion: null }));
+const store = vi.hoisted(() => ({ versions: [], batches: [], saveVersion: null, saveBatch: null }));
 
 vi.mock('../store/repository.js', async () => {
   const { oliveOilRecipe } = await import('../data/olive-oil.js');
@@ -26,6 +26,11 @@ vi.mock('../store/repository.js', async () => {
     if (at >= 0) store.versions[at] = structuredClone(record);
     else store.versions.push(structuredClone(record));
   });
+  store.saveBatch = vi.fn(async (record) => {
+    const at = store.batches.findIndex((batch) => batch.id === record.id);
+    if (at >= 0) store.batches[at] = structuredClone(record);
+    else store.batches.push(structuredClone(record));
+  });
   return {
     repository: {
       getVersion: async (id) => {
@@ -33,11 +38,15 @@ vi.mock('../store/repository.js', async () => {
         return found ? structuredClone(found) : undefined;
       },
       listVersions: async () => store.versions.map((version) => structuredClone(version)),
-      listBatchesForVersion: async () => [],
-      getAllBatches: async () => [],
-      getBatch: async () => undefined,
+      listBatchesForVersion: async (versionId) =>
+        store.batches.filter((batch) => batch.versionId === versionId).map((batch) => structuredClone(batch)),
+      getAllBatches: async () => store.batches.map((batch) => structuredClone(batch)),
+      getBatch: async (id) => {
+        const found = store.batches.find((batch) => batch.id === id);
+        return found ? structuredClone(found) : undefined;
+      },
       getRecipe: async () => oliveOilRecipe,
-      saveBatch: vi.fn(async () => {}),
+      saveBatch: store.saveBatch,
       saveVersion: store.saveVersion,
       saveRecipe: vi.fn(async () => {}),
     },
@@ -89,7 +98,9 @@ async function flush(until) {
 
 async function mountAt(path) {
   store.versions = [structuredClone(oliveOilVersion)];
+  store.batches = [];
   store.saveVersion.mockClear();
+  store.saveBatch.mockClear();
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -99,6 +110,7 @@ async function mountAt(path) {
       <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/notebook/:recipeId/:versionId" element={<Keyed />} />
+          <Route path="/notebook/:recipeId/:versionId/batch/:batchId" element={<Keyed />} />
         </Routes>
       </MemoryRouter>,
     );
@@ -581,5 +593,73 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
     expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 1');
     expect(rowOf('remove Whole milk, Step 2').classList.contains('is-marked')).toBe(true);
     expect(rowOf('remove Whole milk, Step 3').classList.contains('is-marked')).toBe(false);
+  });
+});
+
+// Sketch 011 README decision 56, Mark's answer "A recommended" (2026-10-05): recording, and
+// Correct, read a split ingredient with one line left like the Sheet; each value stays at
+// its stored index, so nothing stored changes.
+describe('Recording reads like the Sheet when one line is left (sketch 011 decision 56: A recommended)', () => {
+  const band = () => current.container.querySelector('.notebook-version__acts .notebook-action');
+  const tbody = () => current.container.querySelector('.ingredient-table tbody');
+  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+  const rowsNamed = (name) => [...tbody().querySelectorAll('tr[aria-label]')].filter((tr) => tr.getAttribute('aria-label').startsWith(name));
+  const asMadeFieldsOf = (name) =>
+    [...tbody().querySelectorAll('input')].map((input) => input.getAttribute('aria-label')).filter((label) => label.startsWith(`${name}, as made`));
+  const totalRowLabel = () => current.container.querySelector('tfoot tr').getAttribute('aria-label');
+
+  async function reachV2() {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('remove Whole milk, Step 2'));
+    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+    await click(buttonByText(container, 'Save as a new version'));
+    await flush(() => store.saveVersion.mock.calls.length > 0);
+    const savedId = store.saveVersion.mock.calls[0][0].id;
+    await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByLabel('remove Whole milk, Step 2') === null);
+    return savedId;
+  }
+
+  it('records, saves and corrects Whole milk as one line with its one field at stored index 1', async () => {
+    const childId = await reachV2();
+    expect(band().textContent).toBe('Record a batch');
+    await click(band());
+    await flush(() => current.container.querySelector('input[type="date"]') !== null);
+
+    const milk = rowsNamed('Whole milk');
+    expect(milk).toHaveLength(1);
+    expect(milk[0].querySelector('.ingredient-table__portion-note')).toBeNull();
+    expect(asMadeFieldsOf('Whole milk')).toEqual(['Whole milk, as made, grams']);
+    expect(rowsNamed('Sucrose').map((tr) => tr.querySelector('.ingredient-table__portion-note').textContent)).toEqual([
+      '12 g of 76.0 g · 11.2% in all',
+      '64 g of 76.0 g · 11.2% in all',
+    ]);
+    expect(asMadeFieldsOf('Sucrose')).toEqual(['Sucrose, as made, grams, portion 1', 'Sucrose, as made, grams, portion 2']);
+
+    await setValue(field('Whole milk, as made, grams'), '245');
+    await setValue(field('Sucrose, as made, grams, portion 1'), '12.5');
+    await setValue(field('Sucrose, as made, grams, portion 2'), '63');
+    expect(totalRowLabel()).toBe('Total, plan 679.7 grams, as made 673.8 grams');
+
+    await setValue(current.container.querySelector('input[type="date"]'), '2026-10-01');
+    await click(buttonByText(current.container, 'Save batch'));
+    await flush(() => store.saveBatch.mock.calls.length > 0);
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    const record = store.saveBatch.mock.calls[0][0];
+    expect(record.versionId).toBe(childId);
+    expect(record.churn.asMade['row-01']).toEqual([null, 245]);
+    expect(record.churn.asMade['row-05']).toEqual([12.5, 63]);
+
+    await flush(() => current.container.querySelector('.batch-row__correct') !== null);
+    expect(rowsNamed('Whole milk')[0].getAttribute('aria-label')).toBe('Whole milk, 250.4 g, estimated, as made 245 g');
+
+    await click(current.container.querySelector('.batch-row__correct'));
+    await flush(() => field('Whole milk, as made, grams') !== null);
+    expect(field('Whole milk, as made, grams').value).toBe('245');
+    expect(field('Sucrose, as made, grams, portion 1').value).toBe('12.5');
+    expect(field('Sucrose, as made, grams, portion 2').value).toBe('63');
+    expect(asMadeFieldsOf('Whole milk')).toEqual(['Whole milk, as made, grams']);
+    expect(totalRowLabel()).toBe('Total, plan 679.7 grams, as made 673.8 grams');
   });
 });

@@ -2049,7 +2049,8 @@ describe('IngredientTable — as made stays on its own line when a line is out (
     const version = versionWithMilkStepTwoOut();
     const markup = table('recording', version, { draft: { asMade: { 'row-01': ['', '250'] } }, openBatch: null });
 
-    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams, portion 2" value="250"\/>/);
+    // Decision 56 (A recommended, 2026-10-05): one line left, so the field has no portion in its name.
+    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams" value="250"\/>/);
     expect(markup).toContain('aria-label="Total, plan 679.7 grams, as made 679.3 grams"');
     expect(markup).toContain('<span class="sheet-hand">679.3 g</span>');
     // Sucrose is untouched: both of its fields are still named by their own portion.
@@ -2227,15 +2228,23 @@ describe('IngredientTable — a split ingredient with one line left reads like a
     ]);
   });
 
-  // This pins only that the quick leaves recording as built. Open for Mark item 2 (as made
-  // while recording, with a line out) is undecided, so this pin may change when Mark decides it.
-  it('guard, recording, milk\'s Step 2 line out: the portion line and the as-made field name stay as built', () => {
+  // Sketch 011 README decision 56, Mark's answer "A recommended" (2026-10-05): recording reads
+  // like the Sheet. A split ingredient with one line left draws once, with no portion line,
+  // and its one as-made field is named without a portion. Sucrose, with both lines in, keeps both.
+  it('recording, milk\'s Step 2 line out: reads like the Sheet, no portion line, the field named without a portion', () => {
     const markup = table('recording', milkStepTwoOut(), { draft: { asMade: {} }, openBatch: null });
     const milk = linesOf(markup, 'Whole milk');
 
     expect(milk).toHaveLength(1);
-    expect(note(milk[0])).toBe('250.4 g of 250.4 g · 36.8% in all');
-    expect(markup).toContain('aria-label="Whole milk, as made, grams, portion 2"');
+    expect(milk[0]).not.toContain('ingredient-table__portion-note');
+    expect(markup).toContain('aria-label="Whole milk, as made, grams"');
+    expect(markup).not.toContain('Whole milk, as made, grams, portion');
+    expect(linesOf(markup, 'Sucrose').map(note)).toEqual([
+      '12 g of 76.0 g · 11.2% in all',
+      '64 g of 76.0 g · 11.2% in all',
+    ]);
+    expect(markup).toContain('aria-label="Sucrose, as made, grams, portion 1"');
+    expect(markup).toContain('aria-label="Sucrose, as made, grams, portion 2"');
   });
 });
 
@@ -2362,5 +2371,29 @@ describe('IngredientTable — a pen opened on a version with a line already out 
     });
 
     expect(markup).toContain('aria-label="Whole milk, was 250.4 g, now 260 g, was 36.8%, now 37.7%, estimated"');
+  });
+});
+
+// Sketch 011 README decision 56, Mark's answer "A recommended" (2026-10-05): a split row
+// with two of its three lines in numbers its as-made fields by the lines drawn, while each
+// value stays at its stored position.
+describe('IngredientTable — recording numbers a split row\'s fields by the lines drawn (sketch 011 decision 56: A recommended)', () => {
+  const version = makeVersion([
+    makeRow('a', 'Whole milk', null, null, {
+      portions: [{ step: 1, grams: 100 }, { step: 2, grams: 120, removed: true }, { step: 3, grams: 250 }],
+    }),
+  ]);
+
+  it('draws two fields named portion 1 and portion 2, never portion 3, over stored indexes 0 and 2', () => {
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="recording" draft={{ asMade: { a: ['101', '', '249'] } }} openBatch={null} />,
+    );
+
+    const fields = markup.match(/<input[^>]*aria-label="Whole milk, as made, grams[^"]*"[^>]*>/g);
+    expect(fields).toHaveLength(2);
+    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams, portion 1" value="101"\/>/);
+    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams, portion 2" value="249"\/>/);
+    expect(markup).not.toContain('portion 3');
+    expect(markup.match(/ingredient-table__portion-note/g)).toHaveLength(2);
   });
 });

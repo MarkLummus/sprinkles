@@ -113,9 +113,10 @@ describe('IngredientTable — every remove link removes its own line (decision 5
 
 // Plan 03.6-03 (T-03.6-06): an as-made field keeps its stored position when another line of
 // its row is out. A change event, not typed keys, since the field is controlled. Asserts the
-// position only; whether a line that is out has a field is Mark's open item (decision 7).
+// position only. Decision 56, A recommended (2026-10-05): a line that is out has no field and
+// the one field left is named without a portion.
 describe('IngredientTable — recording with a line out keeps the as-made field at its stored position', () => {
-  it("changing Whole milk's portion 2 field calls onChangeAsMade with ('row-01', 1, '260')", () => {
+  it("changing Whole milk's one field calls onChangeAsMade with ('row-01', 1, '260')", () => {
     const version = structuredClone(oliveOilVersion);
     version.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
     const onChangeAsMade = vi.fn();
@@ -137,7 +138,7 @@ describe('IngredientTable — recording with a line out keeps the as-made field 
       );
     });
 
-    const field = container.querySelector('input[aria-label="Whole milk, as made, grams, portion 2"]');
+    const field = container.querySelector('input[aria-label="Whole milk, as made, grams"]');
     expect(field.value).toBe('250');
     const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
     act(() => {
@@ -146,5 +147,50 @@ describe('IngredientTable — recording with a line out keeps the as-made field 
     });
     expect(onChangeAsMade).toHaveBeenCalledTimes(1);
     expect(onChangeAsMade).toHaveBeenCalledWith('row-01', 1, '260');
+  });
+
+  // Decision 56 (A recommended, 2026-10-05): two of three lines in, so the fields read
+  // portion 1 and portion 2 and write stored indexes 0 and 2.
+  it("a row with two of three lines left: 'portion 2' writes stored index 2, 'portion 1' stored index 0", () => {
+    const rows = [
+      {
+        id: 'a',
+        ingredientName: 'Whole milk',
+        portions: [{ step: 1, grams: 100 }, { step: 2, grams: 120, removed: true }, { step: 3, grams: 250 }],
+        removed: false,
+        ingredient: { composition: {}, basis: {} },
+      },
+    ];
+    const onChangeAsMade = vi.fn();
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    current = { container, root };
+    act(() => {
+      root.render(
+        <IngredientTable
+          rows={rows}
+          steps={[]}
+          mode="recording"
+          draft={{ asMade: { a: ['101', '', '249'] } }}
+          openBatch={null}
+          onChangeAsMade={onChangeAsMade}
+        />,
+      );
+    });
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    const type = (field, value) =>
+      act(() => {
+        setter.call(field, value);
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+    const second = container.querySelector('input[aria-label="Whole milk, as made, grams, portion 2"]');
+    const first = container.querySelector('input[aria-label="Whole milk, as made, grams, portion 1"]');
+    expect(second.value).toBe('249');
+    type(second, '250');
+    expect(onChangeAsMade).toHaveBeenLastCalledWith('a', 2, '250');
+    type(first, '100');
+    expect(onChangeAsMade).toHaveBeenLastCalledWith('a', 0, '100');
   });
 });

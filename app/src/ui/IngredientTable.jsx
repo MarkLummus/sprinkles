@@ -420,6 +420,10 @@ export function IngredientTable({
   // since React's dependency comparison sees no change — this attempt
   // counter differs on every press even when blockedRowId repeats.
   blockedRowAttempt = null,
+  // The stored position of the blocked line within the blocked row, from
+  // blockedSaveLineIndex: removal is per line, so a blocked save marks and
+  // focuses that line alone.
+  blockedLineIndex = null,
   mode = 'reading',
   draft = null,
   penDraft = null,
@@ -451,15 +455,16 @@ export function IngredientTable({
   // discipline), filled through each grams input's own ref callback.
   // Moving focus is a real DOM effect, so it lives here rather than being
   // asserted by a render test (RESEARCH.md Pitfall 4).
+  // Keyed by row id and line index together, one string per line.
   const gramsInputsRef = useRef(new Map());
   useEffect(() => {
     if (blockedRowAttempt == null || !blockedRowId) return;
-    gramsInputsRef.current.get(blockedRowId)?.focus();
+    gramsInputsRef.current.get(`${blockedRowId}:${blockedLineIndex}`)?.focus();
   }, [blockedRowAttempt]);
 
-  function registerGramsInput(rowId, element) {
-    if (element) gramsInputsRef.current.set(rowId, element);
-    else gramsInputsRef.current.delete(rowId);
+  function registerGramsInput(rowId, lineIndex, element) {
+    if (element) gramsInputsRef.current.set(`${rowId}:${lineIndex}`, element);
+    else gramsInputsRef.current.delete(`${rowId}:${lineIndex}`);
   }
 
   const activeRowsOnly = activeRows({ rows, method: steps });
@@ -685,12 +690,11 @@ export function IngredientTable({
     // orphanedRows never names an already-removed row (uses.js), so this
     // flag only ever applies to an active row here.
     const flagged = orphanedRowIds.has(row.id);
-    // A blocked save's own row (critique P1 #3, D-21): the same
+    // A blocked save's own line (critique P1 #3, D-21): the same
     // weight-and-outline the focus trace's is-marked class already draws,
-    // never a second class for the same meaning. Applies to every portion
-    // line of the blocked row — the row itself is what is blocked, not
-    // one portion of it.
-    const isBlocked = row.id === blockedRowId;
+    // never a second class for the same meaning. Removal is per line, so only
+    // the blocked line is marked, not every line of its row.
+    const isBlocked = row.id === blockedRowId && portionIndex === blockedLineIndex;
 
     // This portion's own current/baseline values, for the portion-scoped
     // % of batch cell and the split-ingredient sub-line — the pen's own
@@ -712,7 +716,7 @@ export function IngredientTable({
             mode={mode}
             penDraft={penDraft}
             onChangePenGrams={onChangePenGrams}
-            inputRef={portionIndex === 0 ? (element) => registerGramsInput(row.id, element) : undefined}
+            inputRef={(element) => registerGramsInput(row.id, portionIndex, element)}
             out={lineOut}
           />
         </td>

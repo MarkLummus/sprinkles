@@ -13,6 +13,7 @@ import {
   versionsForRecipe,
   blockedSaveMessage,
   blockedSaveRowId,
+  blockedSaveLineIndex,
   parseGramsDraft,
 } from '../domain/lineage.js';
 import { buildDiff } from '../domain/diff.js';
@@ -1905,8 +1906,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
       const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
       if (!rowId) announce(VERSION_BLOCKED_STATUS);
       blockedAttemptRef.current += 1;
+      const lineIndex = rowId ? blockedSaveLineIndex(penDraft, version, scopedVersions) : null;
       setBlockedTarget(
-        rowId ? { kind: 'row', rowId, attempt: blockedAttemptRef.current } : { kind: 'versionLine', attempt: blockedAttemptRef.current },
+        rowId ? { kind: 'row', rowId, index: lineIndex, attempt: blockedAttemptRef.current } : { kind: 'versionLine', attempt: blockedAttemptRef.current },
       );
       return null;
     }
@@ -2116,6 +2118,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   baselineVersion={mode === 'developing' || (showingChanges && changeDiff) ? parentVersion : null}
                   blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
                   blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
+                  blockedLineIndex={blockedTarget?.kind === 'row' ? blockedTarget.index : null}
                   markedRowIds={markedRowIds}
                   markedFigureLabel={markedFigureLabel}
                   mode={mode}

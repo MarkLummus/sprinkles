@@ -440,3 +440,38 @@ describe('a removed step takes its lines with it, struck in its own place (decis
     expect(buttonByLabel('remove Whole milk, Step 3')).not.toBeNull();
   });
 });
+
+describe('Show changes strikes a removed step with its lines (decision 51, plan 06)', () => {
+  it("removes 'Gum slurry', saves, and draws its five lines struck under Removed, with the total 799.7 then 666.0 g", async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(
+      [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Step 2, remove'),
+    );
+    await setValue(container.querySelector('input[aria-label="Version name"]'), 'no slurry');
+    await click(buttonByText(container, 'Save as a new version'));
+    await flush(() => store.saveVersion.mock.calls.length > 0);
+    await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
+    await click(buttonByText(current.container, 'Show changes'));
+
+    expect(headTexts()[0]).toBe('RemovedGum slurry — the only high-heat step');
+    const removed = linesUnder('Removed');
+    const nameOf = (tr) => tr.getAttribute('aria-label');
+    expect(removed.map((tr) => ['Whole milk', 'Sucrose', 'Locust bean gum', 'Guar gum', 'Lambda carrageenan'].find((name) => nameOf(tr).startsWith(name)))).toEqual([
+      'Whole milk',
+      'Sucrose',
+      'Locust bean gum',
+      'Guar gum',
+      'Lambda carrageenan',
+    ]);
+    for (const tr of removed) expect(nameCell(tr).querySelector('.struck-value')).not.toBeNull();
+
+    for (const name of ['Whole milk', 'Sucrose']) {
+      const [, later] = linesOf(name);
+      expect(nameCell(later).querySelector('.struck-value')).toBeNull();
+    }
+    expect(struck(totalCell())).toEqual(['799.7']);
+    expect(totalCell().textContent.endsWith('666.0 g')).toBe(true);
+  });
+});

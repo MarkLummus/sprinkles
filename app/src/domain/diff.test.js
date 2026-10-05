@@ -684,3 +684,70 @@ describe('buildDiff — per-line descriptors (03.6, decision 51 brief item d)', 
     }
   });
 });
+
+describe('buildDiff — a removed step takes its lines with it (03.6, decision 51 answer 2)', () => {
+  it("reads the gums as removed rows and Whole milk's Step 2 line, but not its row, as removed", () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 2).removed = true;
+
+    const diff = buildDiff(current, baseline);
+    const gum = diff.rows.find((row) => row.id === 'row-10');
+    expect(gum.removed).toBe(true);
+    expect(gum.removedChanged).toBe(true);
+    expect(gum.lines[0].removed).toBe(true);
+    expect(gum.lines[0].removedChanged).toBe(true);
+    for (const id of ['row-11', 'row-12']) {
+      expect(diff.rows.find((row) => row.id === id).removed).toBe(true);
+    }
+
+    const milk = diff.rows.find((row) => row.id === 'row-01');
+    expect(milk.removed).toBe(false);
+    expect(milk.lines[0].removed).toBe(true);
+    expect(milk.lines[0].removedChanged).toBe(true);
+    expect(milk.lines[1].removed).toBe(false);
+    expect(milk.lines[1].removedChanged).toBe(false);
+    const sucrose = diff.rows.find((row) => row.id === 'row-05');
+    expect(sucrose.removed).toBe(false);
+    expect(sucrose.lines.map((line) => line.removed)).toEqual([true, false]);
+
+    expect(diff.total.from).toBe('799.7 g');
+    expect(diff.total.to).toBe('666.0 g');
+  });
+
+  it('reports removedChanged false on every row and line when the step is removed on both sides', () => {
+    const baseline = clone();
+    findStep(baseline, 2).removed = true;
+    const current = clone();
+    findStep(current, 2).removed = true;
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.rows.find((row) => row.id === 'row-10').removed).toBe(true);
+    for (const row of diff.rows) {
+      expect(row.removedChanged).toBe(false);
+      for (const line of row.lines) expect(line.removedChanged).toBe(false);
+    }
+  });
+
+  it('reads a step flag that is not exactly true as nothing removed', () => {
+    const baseline = clone();
+    const current = clone();
+    findStep(current, 2).removed = 'true';
+
+    const diff = buildDiff(current, baseline);
+    expect(diff.rows.some((row) => row.removed)).toBe(false);
+    expect(diff.total.to).toBe('799.7 g');
+  });
+
+  it('reads each side through its own method: a step removed only in the baseline restores the lines', () => {
+    const baseline = clone();
+    findStep(baseline, 2).removed = true;
+    const current = clone();
+
+    const diff = buildDiff(current, baseline);
+    const gum = diff.rows.find((row) => row.id === 'row-10');
+    expect(gum.removed).toBe(false);
+    expect(gum.removedChanged).toBe(true);
+    expect(gum.lines[0].removedChanged).toBe(true);
+  });
+});

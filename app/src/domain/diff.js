@@ -60,9 +60,9 @@ function stepsDiffer(a, b) {
 // portions, gives the null-from, changed-true shape and never throws
 // (T-03.6-07). Each line's share is its own grams over the active mass of its
 // own side, through formatShareOfBatch, as the row-level shares are.
-function buildLineDiffs(row, baseRow, currentMass, baselineMass) {
+function buildLineDiffs(row, baseRow, currentMass, baselineMass, method, baseMethod) {
   return row.portions.map((portion, index) => {
-    const removed = isLineRemoved(row, portion);
+    const removed = isLineRemoved(row, portion, method);
     const basePortion = baseRow ? baseRow.portions[index] : undefined;
     const shareTo = formatShareOfBatch(portion.grams, currentMass);
     if (!basePortion) {
@@ -80,7 +80,7 @@ function buildLineDiffs(row, baseRow, currentMass, baselineMass) {
       };
     }
     const shareFrom = formatShareOfBatch(basePortion.grams, baselineMass);
-    const baseRemoved = isLineRemoved(baseRow, basePortion);
+    const baseRemoved = isLineRemoved(baseRow, basePortion, baseMethod);
     return {
       index,
       step: portion.step,
@@ -96,8 +96,8 @@ function buildLineDiffs(row, baseRow, currentMass, baselineMass) {
   });
 }
 
-function buildRowDiff(row, baseRow, currentMass, baselineMass) {
-  const lines = buildLineDiffs(row, baseRow, currentMass, baselineMass);
+function buildRowDiff(row, baseRow, currentMass, baselineMass, method, baseMethod) {
+  const lines = buildLineDiffs(row, baseRow, currentMass, baselineMass, method, baseMethod);
   if (!baseRow) {
     return {
       id: row.id,
@@ -111,7 +111,7 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass) {
       stepsFrom: null,
       stepsTo: stepsOf(row),
       stepsChanged: true,
-      removed: isRowRemoved(row),
+      removed: isRowRemoved(row, method),
       removedChanged: true,
       lines,
     };
@@ -120,8 +120,8 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass) {
   const baseRowTotal = rowGrams(baseRow);
   const shareFrom = formatShareOfBatch(baseRowTotal, baselineMass);
   const shareTo = formatShareOfBatch(rowTotal, currentMass);
-  const removed = isRowRemoved(row);
-  const baseRemoved = isRowRemoved(baseRow);
+  const removed = isRowRemoved(row, method);
+  const baseRemoved = isRowRemoved(baseRow, baseMethod);
   return {
     id: row.id,
     ingredientName: row.ingredientName,
@@ -229,7 +229,11 @@ function buildStepDiff(step, baseStep) {
  * baseline row or no baseline portion reports null from-values and changed
  * true. `shareFrom` is the line's own grams over the baseline's active mass
  * and `shareTo` its own grams over the current active mass; `removed` is
- * isLineRemoved for the current line.
+ * isLineRemoved for the current line, read against `current.method`, and a
+ * line under a removed step reads as removed on the side whose method removes
+ * the step; a row's `removed` is isRowRemoved through the same method, and the
+ * baseline's `removed` is read through the baseline's own method, so
+ * `removedChanged` is true only where the two versions differ.
  * `steps` is one descriptor per step of `current`, in
  * `current.method`'s own order (already ascending n); each step descriptor
  * carries `leadInChanged`/`instructionChanged`/`purposeChanged`/
@@ -258,7 +262,7 @@ export function buildDiff(current, baseline) {
   const baselineMass = activeMass(baseline);
 
   const baselineRowById = new Map(baseline.rows.map((row) => [row.id, row]));
-  const rows = current.rows.map((row) => buildRowDiff(row, baselineRowById.get(row.id), currentMass, baselineMass));
+  const rows = current.rows.map((row) => buildRowDiff(row, baselineRowById.get(row.id), currentMass, baselineMass, current.method, baseline.method));
 
   const baselineStepByN = new Map(baseline.method.map((step) => [step.n, step]));
   const steps = current.method.map((step) => buildStepDiff(step, baselineStepByN.get(step.n)));

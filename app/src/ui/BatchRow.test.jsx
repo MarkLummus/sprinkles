@@ -1316,9 +1316,9 @@ describe("BatchRow — the record's reading state, measured values as cells (con
     });
   });
 
-  it('renders the recorded-against fact as supporting provenance, naming the version by identity — the versionName prop, not the bare snapshot label (decisions_recorded 2)', () => {
+  it('renders the Recorded fact as supporting provenance: the record date alone, since the page already shows the version (261004-szl)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(/<dl class="batch-row__provenance"><div><dt>Recorded<\/dt><dd>4 Aug 2026 against Version 1 · 50 g oil · 800 g<\/dd>/);
+    expect(markup).toMatch(/<dl class="batch-row__provenance"><div><dt>Recorded<\/dt><dd>4 Aug 2026<\/dd>/);
     const measuredEnd = markup.indexOf('</div>', markup.indexOf('class="batch-row__cells"'));
     expect(markup.indexOf('<dt>Recorded</dt>')).toBeGreaterThan(measuredEnd);
   });

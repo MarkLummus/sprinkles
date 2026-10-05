@@ -558,3 +558,31 @@ describe('the rail is pinned under the sticky bar from 1590 (decision 33; quick 
     expect(open.declarations).toMatch(/align-self:\s*stretch/);
   });
 });
+
+describe("More's tiles and the hairline (sketch 011 decision 55; Mark 2026-10-05)", () => {
+  const declarationsOf = (rule) => rule.declarations.split(';').map((d) => d.trim()).filter(Boolean);
+
+  // The hairline's item is no 44px target, and its rule runs the tiles' full width:
+  // the rail's 20px side margins would leave a short dash in a 75px column.
+  test("the hairline's item is not a 44px target, and its rule has no side margin, in the phone block only", () => {
+    const item = '.shell__more li.shell__more-sep';
+    const rule = '.shell__more li.shell__more-sep .shell__divider';
+    const itemRule = rules.find((r) => r.selector === item && r.media === PHONE_MEDIA);
+    const dividerRule = rules.find((r) => r.selector === rule && r.media === PHONE_MEDIA);
+    expect(itemRule, `expected a phone-block ${item} rule`).toBeTruthy();
+    expect(dividerRule, `expected a phone-block ${rule} rule`).toBeTruthy();
+    expect(declarationsOf(itemRule)).toEqual(['min-height: 0']);
+    expect(declarationsOf(dividerRule)).toEqual(['margin-inline: 0']);
+    expect(rules.filter((r) => (r.selector === item || r.selector === rule) && r.media === undefined)).toEqual([]);
+  });
+
+  test("the rail's .shell__divider is unchanged, so the rail keeps its 20px side margins", () => {
+    const rule = rules.find((r) => r.selector === '.shell__divider' && r.media === undefined);
+    expect(rule, 'expected a top-level .shell__divider rule').toBeTruthy();
+    expect(declarationsOf(rule)).toEqual([
+      'border: none',
+      'border-top: var(--app-rule-row) solid var(--app-divider)',
+      'margin: var(--gap-xs) var(--gap-m)',
+    ]);
+  });
+});

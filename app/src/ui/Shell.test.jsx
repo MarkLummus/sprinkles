@@ -156,6 +156,24 @@ describe('Shell — the bottom tab row and More (D-16, 03.4-03 Task 3)', () => {
   });
 });
 
+describe("Shell — More's hairline between places and actions (sketch 011 decision 55, Mark 2026-10-05)", () => {
+  it('puts the separator item right after Search and right before Import, with the board\'s exact markup', () => {
+    const markup = renderAt('/');
+    const detailsMatch = markup.match(/<details class="shell__more">([\s\S]*?)<\/details>/);
+    expect(detailsMatch, 'expected a details.shell__more element').toBeTruthy();
+    expect(detailsMatch[1]).toContain(
+      'Search</a></li><li class="shell__more-sep" aria-hidden="true"><hr class="shell__divider"/></li><li><button',
+    );
+  });
+
+  it("renders the separator once, and the rail's two dividers keep their aria-hidden", () => {
+    const markup = renderAt('/');
+    expect(markup.match(/shell__more-sep/g)).toHaveLength(1);
+    expect(markup.match(/class="shell__divider"/g)).toHaveLength(3);
+    expect(markup.match(/<hr class="shell__divider" aria-hidden="true"\/>/g)).toHaveLength(2);
+  });
+});
+
 // G-03.4-3 half A (.planning/debug/more-panel-stays-open-import-no-home.md):
 // this suite is renderToStaticMarkup in vitest's node environment, so it
 // cannot click, toggle a <details>, navigate, or run an effect — 1119

@@ -6,7 +6,8 @@
 // cross while it is open. A sibling jsdom file, for the reason
 // RecipePage.recordTasting.test.jsx gives: the behaviour is click, focus and
 // key events, which renderToStaticMarkup cannot show, and Shell.test.jsx must
-// keep running with no window in scope.
+// keep running with no window in scope. It also holds More's hairline tap below
+// 724 (decision 55).
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -274,5 +275,27 @@ describe('where there is no fly-out (I9, I10)', () => {
     await mountAt(700);
     expect(menu()).toBeNull();
     expect(scrim()).toBeNull();
+  });
+});
+
+describe("More's hairline below 724 (sketch 011 decision 55)", () => {
+  const nextTick = () =>
+    act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+  it('a tap on the rule closes More and returns focus to its summary', async () => {
+    await mountAt(393);
+    const details = current.container.querySelector('details.shell__more');
+    const summary = details.querySelector('summary');
+    await click(summary);
+    await nextTick();
+    expect(details.open).toBe(true);
+    const hr = details.querySelector('li.shell__more-sep > hr.shell__divider');
+    expect(hr).toBeTruthy();
+    await click(hr);
+    await nextTick();
+    expect(details.open).toBe(false);
+    expect(document.activeElement).toBe(summary);
   });
 });

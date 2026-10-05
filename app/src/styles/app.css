@@ -2922,7 +2922,6 @@ textarea {
   }
 
   .ingredient-table thead th.ingredient-table__col-numeric:last-child {
-    white-space: nowrap;
     text-align: right;
     grid-column: -2 / -1;
   }
@@ -2950,6 +2949,21 @@ textarea {
   .ingredient-table thead th.ingredient-table__col-numeric:not(:last-child) {
     grid-column: 1;
     text-align: right;
+  }
+
+  /* Sketch 011 decision 48 A, "one head line" (Mark 2026-10-05). The three head cells take
+     row 1 and their words' width. width: auto undoes the old table layout's width: 1%, which
+     squeezed As made to 0.55px and wrapped it onto a second row. "AS MADE" is 59.45px in a
+     56px column, so it stands on the column's right edge, the figures' edge. Ingredient
+     stays where it stands (A, not B). */
+  .ingredient-table thead th {
+    grid-row: 1;
+    white-space: nowrap;
+    width: auto;
+  }
+
+  .ingredient-table--as-made thead th.ingredient-table__col-numeric:not(:last-child) {
+    justify-self: end;
   }
 
   .ingredient-table td.ingredient-table__col-grams:has(.struck-value),

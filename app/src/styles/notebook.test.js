@@ -612,6 +612,15 @@ describe("the record pen's App skin (sketch 011 decision 29 on decision 38's one
     declares(find('.notebook-log .ink-field'), 'color', 'var(--app-text)');
   });
 
+  // app.css's stacked rule has two classes and outranked the skin's one-class .notebook-log *, so this hairline stayed Sheet ink on the iPhone and iPad.
+  test("the declared defect group's hairline reads the divider like every other record pen hairline (quick 261004-uo6)", () => {
+    const SELECTOR = '.notebook-log .axes-grid--stacked > .defect-group--declared';
+    const rule = find(SELECTOR);
+    declares(rule, 'border-top-color', 'var(--app-divider)');
+    expect(rule.declarations.split(';').map((d) => d.trim()).filter(Boolean)).toHaveLength(1);
+    expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(find('.notebook-log *')));
+  });
+
   test("the stops and segments take the one control radius on their outer corners only, and a secondary rule colour", () => {
     declares(find('.notebook-log .axis-mark__stop, .notebook-log .segmented__option'), 'border-color', 'var(--app-text-secondary)');
     const first = find('.notebook-log .axis-mark__stop:first-child, .notebook-log .segmented__option:first-child');

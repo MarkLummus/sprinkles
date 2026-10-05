@@ -4,10 +4,10 @@ current_phase: "03.6"
 current_phase_name: Per-step shared ingredients (INSERTED)
 status: verifying
 stopped_at: Completed 03.6-07-PLAN.md
-last_updated: "2026-10-05T13:23:44.907Z"
+last_updated: "2026-10-05T13:45:01.360Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 execution started
-state_head: f2d6b4d090e15d764f55ee634aba5bd1873cad65
+state_head: f267b7eeb8b6cd0ad66f1a03b2d59ff85139448d
 progress:
   total_phases: 13
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 03.6 (Per-step shared ingredients (INSERTED)) — EXECUTING
 Plan: 7 of 7
 Status: Phase complete — ready for verification
-Last activity: 2026-10-05 - Completed quick task 261005-cm6: fix Next version on a saved version that already has a line out
+Last activity: 2026-10-05 - Completed quick task 261005-db4: recording reads like the reading Sheet when a split ingredient has one line left
 
 Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -429,6 +429,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261005-06q | Opening More closes the Import error panel | 2026-10-05 | a9bdc20 | [261005-06q-opening-more-closes-the-import-error-pan](./quick/261005-06q-opening-more-closes-the-import-error-pan/) |
 | 261005-cgb | Drop the portion line on the reading Sheet and print when a split ingredient has one line left | 2026-10-05 | 949cf3f | [261005-cgb-drop-the-portion-line-on-the-reading-she](./quick/261005-cgb-drop-the-portion-line-on-the-reading-she/) |
 | 261005-cm6 | Fix Next version on a saved version that already has a line out shows wrong figures | 2026-10-05 | f2d6b4d | [261005-cm6-fix-next-version-on-a-saved-version-that](./quick/261005-cm6-fix-next-version-on-a-saved-version-that/) |
+| 261005-db4 | Recording reads like the reading Sheet when a split ingredient has one line left | 2026-10-05 | f267b7e | [261005-db4-recording-reads-like-the-reading-sheet-w](./quick/261005-db4-recording-reads-like-the-reading-sheet-w/) |
 
 ### Roadmap Evolution
 

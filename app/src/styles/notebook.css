@@ -966,6 +966,16 @@
   border-color: var(--app-divider);
 }
 
+/* The stacked declared defect group's hairline comes from app.css's
+   two-class rule, which outranks the skin's one-class rule above. So it
+   stayed Sheet ink in the log while every other hairline took the divider
+   (Mark, iPhone and iPad, 2026-10-04; quick 261004-uo6). Three classes give
+   it the divider. Colour only. The axes' declared group needs no rule of its
+   own: its one-class rule loses to the skin by load order. */
+.notebook-log .axes-grid--stacked > .defect-group--declared {
+  border-top-color: var(--app-divider);
+}
+
 .notebook-log .pen-caption {
   color: var(--app-text-secondary);
 }

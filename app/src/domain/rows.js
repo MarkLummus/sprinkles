@@ -6,12 +6,41 @@
 // thin wrapper the way Method.jsx already builds batchLike.
 
 /**
- * activeRows(version) -> version.rows with every removed row filtered
- * out. A row with no `removed` key is active. Never mutates or reorders
- * the array it is given.
+ * isLineRemoved(row, portion) -> true when one line (a portion) of a row is
+ * out: its own `removed` is exactly true, or the row's older whole-row flag
+ * is exactly true, which reads as every line out. Strict on purpose — an
+ * absent, string or numeric flag reads as in (T-03.6-01).
+ */
+export function isLineRemoved(row, portion) {
+  return portion.removed === true || row.removed === true;
+}
+
+/**
+ * isRowRemoved(row) -> true when the row's older whole-row flag is exactly
+ * true or every one of its lines is out. A row with no portions is not
+ * removed by this rule. A split row with one line out is not removed.
+ */
+export function isRowRemoved(row) {
+  if (row.removed === true) return true;
+  return row.portions.length > 0 && row.portions.every((portion) => portion.removed === true);
+}
+
+/**
+ * activeRows(version) -> version.rows reduced to the lines still in, in the
+ * row's own order. A row with every line in comes back as the very same
+ * object; a row with some lines out comes back as a copy with a shorter
+ * `portions` array; a row with no line in is dropped.
+ * Never mutates or reorders the array it is given.
  */
 export function activeRows(version) {
-  return version.rows.filter((row) => !row.removed);
+  const result = [];
+  for (const row of version.rows) {
+    if (row.removed === true) continue;
+    const kept = row.portions.filter((portion) => !isLineRemoved(row, portion));
+    if (kept.length === row.portions.length) result.push(row);
+    else if (kept.length > 0) result.push({ ...row, portions: kept });
+  }
+  return result;
 }
 
 /**

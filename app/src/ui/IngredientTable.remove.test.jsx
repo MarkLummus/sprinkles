@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 //
-// Quick task 261004-ox6 (sketch 011 decision 44, option B, Mark 2026-10-04): every line
-// of a split ingredient has its own remove link, and each one removes the whole
-// ingredient. renderToStaticMarkup drops handlers, so the clicks need a real render
+// Phase 03.6 (sketch 011 decision 51, Mark 2026-10-05; replaces quick task 261004-ox6's
+// decision 44 B): every line of a split ingredient has its own remove link, and each
+// one removes its own line. renderToStaticMarkup drops handlers, so the clicks need a real render
 // cycle: jsdom, per file, in a sibling of IngredientTable.test.jsx so that file keeps
 // running with no window (see Shell.flyout.test.jsx).
 import { describe, it, expect, vi, afterEach } from 'vitest';
@@ -15,7 +15,7 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 let current = null;
 
-function mount(onTogglePenRowRemoved) {
+function mount(onTogglePenLineRemoved, onTogglePenRowRemoved = () => {}) {
   const version = {
     versionLabel: 'v',
     sheetTitle: '',
@@ -64,6 +64,7 @@ function mount(onTogglePenRowRemoved) {
         openBatch={null}
         currentStepNumbers={displayNumbers(draftVersion.method)}
         onTogglePenRowRemoved={onTogglePenRowRemoved}
+        onTogglePenLineRemoved={onTogglePenLineRemoved}
       />,
     );
   });
@@ -81,27 +82,30 @@ afterEach(() => {
   current = null;
 });
 
-describe('IngredientTable — every line of a split ingredient removes the whole ingredient (261004-ox6; sketch 011 decision 44, Test E)', () => {
-  it("both of Whole milk's links call onTogglePenRowRemoved with its row id, and Heavy cream's with its own", () => {
-    const onToggle = vi.fn();
-    mount(onToggle);
+describe('IngredientTable — every remove link removes its own line (decision 51)', () => {
+  it("Whole milk's two links call onTogglePenLineRemoved with its row id and their own portion index, and Heavy cream's with ('b', 0)", () => {
+    const onLine = vi.fn();
+    const onRow = vi.fn();
+    mount(onLine, onRow);
 
     const links = buttonsLabelled('remove Whole milk');
     expect(links.map((button) => button.getAttribute('aria-label'))).toEqual(['remove Whole milk, Step 2', 'remove Whole milk, Step 3']);
 
     act(() => links[1].click());
-    expect(onToggle).toHaveBeenCalledTimes(1);
-    expect(onToggle).toHaveBeenLastCalledWith('a');
+    expect(onLine).toHaveBeenCalledTimes(1);
+    expect(onLine).toHaveBeenLastCalledWith('a', 1);
 
     act(() => links[0].click());
-    expect(onToggle).toHaveBeenCalledTimes(2);
-    expect(onToggle).toHaveBeenLastCalledWith('a');
+    expect(onLine).toHaveBeenCalledTimes(2);
+    expect(onLine).toHaveBeenLastCalledWith('a', 0);
 
     const cream = [...current.container.querySelectorAll('tbody tr')]
       .find((tr) => tr.textContent.includes('Heavy cream'))
       .querySelector('button');
     act(() => cream.click());
-    expect(onToggle).toHaveBeenCalledTimes(3);
-    expect(onToggle).toHaveBeenLastCalledWith('b');
+    expect(onLine).toHaveBeenCalledTimes(3);
+    expect(onLine).toHaveBeenLastCalledWith('b', 0);
+
+    expect(onRow).not.toHaveBeenCalled();
   });
 });

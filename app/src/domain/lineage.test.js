@@ -450,6 +450,13 @@ describe('blockedSaveMessage', () => {
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
   });
 
+  it('a blank line that is out blocks nothing, while its sibling line in still does (decision 51)', () => {
+    const rows = (second) => validRows({ 'row-01': { portions: [{ grams: '', removed: true }, { grams: second }], removed: false } });
+    const base = { versionLabel: '60 g oil · 800 g', reason: '' };
+    expect(blockedSaveMessage({ ...base, rows: rows('250.4') }, oliveOilVersion, noVersions)).toBeNull();
+    expect(blockedSaveMessage({ ...base, rows: rows('') }, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+  });
+
   it('checks blank before non-numeric, one thing at a time: an earlier blank row wins over a later row holding a letter', () => {
     const penFields = {
       versionLabel: '60 g oil · 800 g',

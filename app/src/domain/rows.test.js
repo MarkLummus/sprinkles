@@ -2,13 +2,15 @@
 // Runs under Vitest's default node environment — imports no store, no
 // component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { activeRows, activeSteps, rowGrams, targetValueFor } from './rows.js';
+import { activeRows, activeSteps, isLineRemoved, isRowRemoved, rowGrams, targetValueFor } from './rows.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+
+const one = (grams = 1) => [{ step: 1, grams }];
 
 describe('activeRows', () => {
   it('filters out a row carrying removed: true, keeping a row with no removed key', () => {
-    const version = { rows: [{ id: 'a' }, { id: 'b', removed: true }] };
-    expect(activeRows(version)).toEqual([{ id: 'a' }]);
+    const version = { rows: [{ id: 'a', portions: one() }, { id: 'b', portions: one(), removed: true }] };
+    expect(activeRows(version)).toEqual([{ id: 'a', portions: one() }]);
   });
 
   it('returns [] for an empty rows array', () => {
@@ -16,11 +18,69 @@ describe('activeRows', () => {
   });
 
   it('never mutates or reorders the array it is given', () => {
-    const rows = [{ id: 'a' }, { id: 'b', removed: true }, { id: 'c' }];
-    const before = [...rows];
+    const rows = [
+      { id: 'a', portions: one() },
+      { id: 'b', portions: one(), removed: true },
+      { id: 'c', portions: [{ step: 2, grams: 5, removed: true }, { step: 3, grams: 6 }] },
+    ];
+    const before = structuredClone(rows);
     activeRows({ rows });
-    expect(rows).toHaveLength(before.length);
     expect(rows).toEqual(before);
+  });
+
+  it('keeps a split row\'s other line and loses the line that is out', () => {
+    const milk = { id: 'a', portions: [{ step: 2, grams: 120, removed: true }, { step: 3, grams: 250.4 }] };
+    expect(activeRows({ rows: [milk] })).toEqual([{ id: 'a', portions: [{ step: 3, grams: 250.4 }] }]);
+  });
+
+  it('drops a row with every line out', () => {
+    const milk = { id: 'a', portions: [{ step: 2, grams: 120, removed: true }, { step: 3, grams: 250.4, removed: true }] };
+    expect(activeRows({ rows: [milk, { id: 'b', portions: one() }] }).map((row) => row.id)).toEqual(['b']);
+  });
+
+  it('reads the older whole-row flag as every line out', () => {
+    const milk = { id: 'a', removed: true, portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }] };
+    expect(activeRows({ rows: [milk] })).toEqual([]);
+  });
+
+  it('never drops anything for a truthy value that is not true (T-03.6-01)', () => {
+    const rows = [
+      { id: 'a', removed: 'true', portions: [{ step: 2, grams: 120, removed: 'true' }, { step: 3, grams: 250.4, removed: 1 }] },
+    ];
+    expect(activeRows({ rows })).toEqual(rows);
+  });
+
+  it('returns the very same row object when every line is in', () => {
+    const row = { id: 'a', portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4, removed: false }] };
+    const [kept] = activeRows({ rows: [row] });
+    expect(kept).toBe(row);
+  });
+});
+
+describe('isLineRemoved and isRowRemoved', () => {
+  const milk = (first, second, rowFlag) => ({
+    id: 'a',
+    ...(rowFlag === undefined ? {} : { removed: rowFlag }),
+    portions: [{ step: 2, grams: 120, ...first }, { step: 3, grams: 250.4, ...second }],
+  });
+
+  it('a line is out when its own flag or the row flag is exactly true', () => {
+    const row = milk({ removed: true }, {});
+    expect(isLineRemoved(row, row.portions[0])).toBe(true);
+    expect(isLineRemoved(row, row.portions[1])).toBe(false);
+    const flagged = milk({}, {}, true);
+    expect(isLineRemoved(flagged, flagged.portions[1])).toBe(true);
+  });
+
+  it('a row is removed when every line is out or the row flag is true, not when one line is', () => {
+    expect(isRowRemoved(milk({ removed: true }, {}))).toBe(false);
+    expect(isRowRemoved(milk({ removed: true }, { removed: true }))).toBe(true);
+    expect(isRowRemoved(milk({}, {}, true))).toBe(true);
+    expect(isRowRemoved({ id: 'x', portions: [] })).toBe(false);
+  });
+
+  it('a truthy value that is not true removes nothing (T-03.6-01)', () => {
+    expect(isRowRemoved(milk({ removed: 'true' }, { removed: 1 }, 'true'))).toBe(false);
   });
 });
 

@@ -285,7 +285,11 @@ export function isPenDraftDirty(mode, penDraft, version) {
     if (draftRow.removed !== (row.removed ?? false)) return true;
     return row.portions.some((portion, i) => {
       const draftPortion = draftRow.portions[i];
-      return draftPortion.grams !== String(portion.grams) || draftPortion.step !== portion.step;
+      return (
+        draftPortion.grams !== String(portion.grams) ||
+        draftPortion.step !== portion.step ||
+        Boolean(draftPortion.removed) !== (portion.removed === true)
+      );
     });
   });
   if (rowsDirty) return true;
@@ -1018,7 +1022,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
               ...row,
               portions: row.portions.map((portion, i) => {
                 const draftPortion = draftRow.portions[i];
-                return { step: draftPortion.step, grams: parseGramsDraft(draftPortion.grams) ?? portion.grams };
+                return {
+                  step: draftPortion.step,
+                  grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
+                  removed: draftPortion.removed,
+                };
               }),
               removed: draftRow.removed,
             };
@@ -1634,7 +1642,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
     const rows = {};
     for (const row of version.rows) {
       rows[row.id] = {
-        portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams) })),
+        portions: row.portions.map((portion) => ({
+          step: portion.step,
+          grams: String(portion.grams),
+          removed: portion.removed === true,
+        })),
         removed: row.removed ?? false,
       };
     }
@@ -1727,6 +1739,27 @@ export function RecipePage({ onPageStatus = () => {} }) {
     setPenDraft((prev) => ({
       ...prev,
       rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], removed: !prev.rows[rowId].removed } },
+    }));
+  }
+
+  // Removing a line sets only that portion's removed flag — every other
+  // portion and the row-level flag stay as they are, so Step 3's milk is
+  // Step 3's (sketch 011 decision 51, Mark's answer 1). The same handler
+  // restores; it is always the maker's own tap.
+  function handleTogglePenLineRemoved(rowId, portionIndex) {
+    setBlockedMessage(null);
+    setBlockedTarget(null);
+    setPenDraft((prev) => ({
+      ...prev,
+      rows: {
+        ...prev.rows,
+        [rowId]: {
+          ...prev.rows[rowId],
+          portions: prev.rows[rowId].portions.map((portion, i) =>
+            i === portionIndex ? { ...portion, removed: !portion.removed } : portion,
+          ),
+        },
+      },
     }));
   }
 
@@ -1869,7 +1902,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
         ...row,
         portions: row.portions.map((portion, i) => {
           const draftPortion = draftRow.portions[i];
-          return { step: draftPortion.step, grams: parseGramsDraft(draftPortion.grams) ?? portion.grams };
+          return {
+            step: draftPortion.step,
+            grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
+            removed: Boolean(draftPortion.removed),
+          };
         }),
         removed: draftRow.removed,
       };
@@ -2074,6 +2111,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   onChangeAsMade={handleChangeAsMade}
                   onChangePenGrams={handleChangePenGrams}
                   onTogglePenRowRemoved={handleTogglePenRowRemoved}
+                  onTogglePenLineRemoved={handleTogglePenLineRemoved}
                 />
               ) : (
                 <p>This version has no ingredient rows.</p>

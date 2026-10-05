@@ -103,18 +103,19 @@ function rowAccessibleLabel(
 // struck-then-current pair, which instead nests both INSIDE the slot
 // (route-recipe-version.md § 3's "Grams field sits in the plan-grams slot,
 // a changed value's parent amount is struck before it").
-function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef }) {
+function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef, out = false }) {
   if (mode !== 'developing') {
     return <span className="ingredient-table__plan-grams">{`${row.portions[portionIndex].grams} g`}</span>;
   }
   const draftRow = penDraft.rows[row.id];
   const portion = row.portions[portionIndex];
   const draftPortion = draftRow.portions[portionIndex];
-  // Forced struck even when the number itself is unchanged once the row is
-  // removed — "the whole row strikes in place" (route-recipe-version.md
-  // § 3) — while the field stays present and editable, since removing does
-  // not clear the amount and a restore should keep whatever was typed.
-  const changed = draftRow.removed || draftPortion.grams !== String(portion.grams);
+  // Forced struck even when the number itself is unchanged once the line is
+  // out (`out`: its own flag or the row's) — "the whole row strikes in
+  // place" (route-recipe-version.md § 3) — while the field stays present
+  // and editable, since removing does not clear the amount and a restore
+  // should keep whatever was typed.
+  const changed = out || draftPortion.grams !== String(portion.grams);
   // Accessible name, stated once (T-03.2-13): a one-portion row keeps
   // today's unqualified name unchanged; a row with more than one portion
   // names each field by its own portion index, since two fields sharing
@@ -157,9 +158,9 @@ function ShareCell({ baselineShare, currentShare }) {
 }
 
 // The remove/restore control: a text button, never an icon and never a
-// colour. Every line of a split row has the control, and each one toggles the
-// whole ingredient (sketch 011 decision 44, option B, Mark 2026-10-04); a
-// split line's accessible name says which line it is (`lineName`). The span
+// colour. Every line of a split row has the control, and each one toggles its
+// own line (sketch 011 decision 51, Mark 2026-10-05, replacing decision 44's
+// option B); a split line's accessible name says which line it is (`lineName`). The span
 // before the button carries the gap (sketch 011 decision 26): a collapsible
 // word space widened by --sheet-remove-gap, so a link on the name's line
 // stands 14px clear and a wrapped link stays flush.
@@ -397,6 +398,7 @@ export function IngredientTable({
   onChangeAsMade = () => {},
   onChangePenGrams = () => {},
   onTogglePenRowRemoved = () => {},
+  onTogglePenLineRemoved = () => {},
 }) {
   // The share denominator and the totals are computed from activeRows, so
   // a removed row contributes nothing to either while still rendering,
@@ -422,6 +424,9 @@ export function IngredientTable({
   const activeRowsOnly = activeRows({ rows });
   const baselineBalance = computeBalance(activeRowsOnly);
   const baselineMass = baselineBalance ? baselineBalance.mass : 0;
+  // Keyed by row id in a Map, never a bare object read against a stored id
+  // (T-03.6-02): the row as it stood when the pen opened, lines still in.
+  const baselineActiveById = new Map(activeRowsOnly.map((row) => [row.id, row]));
 
   const isDeveloping = mode === 'developing' && draftVersion != null;
   // The show-changes state (route-recipe-version.md § 3, § 6; D-02, 03-04):
@@ -432,6 +437,7 @@ export function IngredientTable({
   const currentActiveRows = isDeveloping ? activeRows(draftVersion) : activeRowsOnly;
   const currentBalance = isDeveloping ? computeBalance(currentActiveRows) : baselineBalance;
   const currentMass = currentBalance ? currentBalance.mass : 0;
+  const currentActiveById = new Map(currentActiveRows.map((row) => [row.id, row]));
   const orphanedRowIds = isDeveloping ? new Set(orphanedRows(draftVersion).map((row) => row.id)) : new Set();
 
   // The as-made total appears only while an as-made layer is showing —
@@ -560,34 +566,32 @@ export function IngredientTable({
 
   function renderDevelopingEntry(row, portion, portionIndex, displayNumber) {
     const draftRow = penDraft.rows[row.id];
-    const removed = draftRow.removed;
+    const draftPortion = draftRow.portions[portionIndex];
+    // This line is out when the draft row's own flag or this portion's flag
+    // is set (sketch 011 decision 51); a sibling line is never affected.
+    const lineOut = Boolean(draftRow.removed || draftPortion.removed);
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
     const isSplit = row.portions.length > 1;
 
     // Row-level current grams/share (route-recipe-version.md § 3): the
-    // same values every portion-line of this row's own sub-line and
-    // accessible name report, since removing/restoring and the row's own
-    // total are whole-row facts, unchanged by which portion a given <tr>
-    // is naming. The current grams value: the sum over the draft's
-    // portions of the parsed raw string, falling back to that portion's
-    // own stored amount when the string is blank or does not parse — a
-    // blank or unparseable keystroke keeps the portion's own number rather
-    // than becoming 0 or NaN, applied per portion.
+    // lines still in, summed — the draft's parsed raw strings, falling back
+    // to a portion's own stored amount when the string is blank or does not
+    // parse (a blank or unparseable keystroke keeps the portion's own
+    // number rather than becoming 0 or NaN), which is what the draft
+    // version's rows already hold. A row with no line in sums to 0.
+    const liveRow = currentActiveById.get(row.id);
     const baselineShare = formatShareOfBatch(rowGrams(row), baselineMass);
-    const currentGramsValue = draftRow.portions.reduce(
-      (total, draftPortion, i) => total + (parseGramsDraft(draftPortion.grams) ?? row.portions[i].grams),
-      0,
-    );
-    const currentShare = removed ? null : formatShareOfBatch(currentGramsValue, currentMass);
+    const currentGramsValue = liveRow ? rowGrams(liveRow) : 0;
+    const currentShare = lineOut ? null : formatShareOfBatch(currentGramsValue, currentMass);
     const gramsDirty = draftRow.portions.some((draftPortion, i) => draftPortion.grams !== String(row.portions[i].grams));
     const changedGrams = gramsDirty
       ? draftRow.portions
           .map((draftPortion, i) => (draftPortion.grams.trim() === '' ? String(row.portions[i].grams) : draftPortion.grams))
           .join(' + ')
       : null;
-    const changedShare = !removed && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
+    const changedShare = !lineOut && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
     // orphanedRows never names an already-removed row (uses.js), so this
     // flag only ever applies to an active row here.
     const flagged = orphanedRowIds.has(row.id);
@@ -601,16 +605,15 @@ export function IngredientTable({
     // This portion's own current/baseline values, for the portion-scoped
     // % of batch cell and the split-ingredient sub-line — the pen's own
     // live values (Task 2's action text), not the row-level ones above.
-    const draftPortion = draftRow.portions[portionIndex];
     const livePortionGrams = parseGramsDraft(draftPortion.grams) ?? portion.grams;
     const portionBaselineShare = formatShareOfBatch(portion.grams, baselineMass);
-    const portionCurrentShare = removed ? null : formatShareOfBatch(livePortionGrams, currentMass);
+    const portionCurrentShare = lineOut ? null : formatShareOfBatch(livePortionGrams, currentMass);
 
     return (
       <tr
         key={`${row.id}:${portionIndex}`}
         className={isMarked || isBlocked ? 'is-marked' : undefined}
-        aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams, changedShare, removed)}
+        aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams, changedShare, lineOut)}
       >
         <td className="ingredient-table__col-grams">
           <GramsCell
@@ -620,10 +623,11 @@ export function IngredientTable({
             penDraft={penDraft}
             onChangePenGrams={onChangePenGrams}
             inputRef={portionIndex === 0 ? (element) => registerGramsInput(row.id, element) : undefined}
+            out={lineOut}
           />
         </td>
         <td className="ingredient-table__col-name">
-          {removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+          {lineOut ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
           {dataFlag && (
             <span className="target-chip ingredient-table__flag">
               <span className="target-chip__value">{dataFlag}</span>
@@ -638,20 +642,24 @@ export function IngredientTable({
               before a split row's portion line, which is a block that
               starts its own line under the link (sketch 011 decision 26;
               decision 33 addendum, Mark 2026-10-04). On every portion line
-              of a split row (decision 44, option B), each toggling the whole
-              row, named for its line as its step head reads it. */}
+              of a split row, each toggling its own line (decision 51), named
+              for its line as its step head reads it. */}
           <RemoveRowControl
-            removed={removed}
-            onToggle={() => onTogglePenRowRemoved(row.id)}
+            removed={lineOut}
+            onToggle={() => onTogglePenLineRemoved(row.id, portionIndex)}
             lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Unallocated'}` : undefined}
           />
-          {/* A removed row is outside the live batch, so its portion line reads its
-              share of the batch the pen opened on, the same basis as the struck
-              % of batch cell (sketch 011 decision 44 finding 1; Mark's answer
-              2026-10-04). */}
+          {/* A line that is out is outside the live batch, so its portion line reads
+              the opening figures (the row's lines in when the pen opened, over the
+              opening batch), the same basis as the struck % of batch cell; a line
+              that is in reads the lines still in over the live batch (sketch 011
+              decision 44 finding 1 and decision 51 finding 4 (a); Mark's answers
+              2026-10-04 and 2026-10-05). */}
           {isSplit && (
             <span className="ingredient-table__portion-note">
-              {formatPortionLine(livePortionGrams, rowGrams(row), removed ? baselineMass : currentMass)}
+              {lineOut
+                ? formatPortionLine(livePortionGrams, rowGrams(baselineActiveById.get(row.id) ?? row), baselineMass)
+                : formatPortionLine(livePortionGrams, rowGrams(liveRow), currentMass)}
             </span>
           )}
         </td>
@@ -661,7 +669,7 @@ export function IngredientTable({
           </td>
         )}
         <td className="ingredient-table__col-numeric">
-          {removed ? (
+          {lineOut ? (
             <span className="struck-value">{portionBaselineShare}</span>
           ) : (
             <ShareCell baselineShare={portionBaselineShare} currentShare={portionCurrentShare} />

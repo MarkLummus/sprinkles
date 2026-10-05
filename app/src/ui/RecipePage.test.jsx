@@ -222,6 +222,15 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('developing', makeCleanPenDraft(version), version)).toBe(false);
   });
 
+  it('is dirty when one line is pressed out, and clean again when pressed back (decision 51)', () => {
+    const draft = makeCleanPenDraft(version);
+    const rowId = version.rows[0].id;
+    draft.rows[rowId].portions[0].removed = true;
+    expect(isPenDraftDirty('developing', draft, version)).toBe(true);
+    draft.rows[rowId].portions[0].removed = false;
+    expect(isPenDraftDirty('developing', draft, version)).toBe(false);
+  });
+
   it('is dirty when a step lead-in changes, and clean again typed back', () => {
     const draft = makeCleanPenDraft(version);
     draft.method[0].leadIn = 'Changed lead-in';

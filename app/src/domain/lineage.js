@@ -215,6 +215,7 @@ function findBlockedRow(penFields, version) {
     const draftRow = penFields.rows[row.id];
     if (draftRow.removed) continue;
     for (const draftPortion of draftRow.portions) {
+      if (draftPortion.removed) continue;
       if (draftPortion.grams === undefined || draftPortion.grams === '') {
         return { row, message: `${row.ingredientName} needs an amount, or remove the row` };
       }

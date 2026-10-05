@@ -1948,3 +1948,90 @@ describe('IngredientTable — as made stays on its own line when a line is out (
     expect(markup).toContain('aria-label="Total, plan 679.7 grams, as made 679.3 grams"');
   });
 });
+
+// Show changes over a saved child with a line out (sketch 011 decision 51,
+// brief item d; Mark's answer 3): a line that is out reads the figures of the
+// parent it was compared with, never the new batch it was not in.
+describe('IngredientTable — show changes reads a line that is out against the parent (03.6-04)', () => {
+  function showChanges(edit) {
+    const parent = structuredClone(oliveOilVersion);
+    const child = structuredClone(oliveOilVersion);
+    edit(child);
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={child.rows}
+        diff={buildDiff(child, parent)}
+        baselineVersion={parent}
+        showingChanges
+        mode="reading"
+        steps={child.method}
+        currentStepNumbers={displayNumbers(child.method)}
+      />,
+    );
+    return markup;
+  }
+
+  // Each <tr> of the body that names the ingredient, in table order.
+  function linesOf(markup, name) {
+    const body = markup.split('<tbody>')[1].split('</tbody>')[0];
+    return body.split('<tr').filter((tr) => tr.includes(`aria-label="${name}`));
+  }
+
+  const note = (tr) => tr.match(/ingredient-table__portion-note">([^<]*)</)[1];
+  const lastCell = (tr) => tr.split('<td class="ingredient-table__col-numeric">').pop().split('</td>')[0];
+  const gramsCell = (tr) => tr.split('<td class="ingredient-table__col-grams">')[1].split('</td>')[0];
+  const nameCell = (tr) => tr.split('<td class="ingredient-table__col-name">')[1].split('</td>')[0];
+  const totalCell = (markup) => markup.split('<tfoot>')[1].split('</td>')[0];
+
+  it('one line out: the Step 2 milk line strikes its name, amount and share against the parent, and the line left reads over the new batch', () => {
+    const markup = showChanges((child) => {
+      child.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
+    });
+    const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+    expect(nameCell(stepTwo)).toContain('<span class="struck-value">Whole milk</span>');
+    expect(gramsCell(stepTwo)).toBe('<span class="ingredient-table__plan-grams"><span class="struck-value">120 g</span></span>');
+    expect(lastCell(stepTwo)).toBe('<span class="struck-value">15.0%</span>');
+    expect(note(stepTwo)).toBe('120 g of 370.4 g · 46.3% in all');
+
+    expect(nameCell(stepThree)).not.toContain('struck-value');
+    expect(note(stepThree)).toBe('250.4 g of 250.4 g · 36.8% in all');
+    expect(lastCell(stepThree)).toBe('<span class="struck-value">31.3%</span>36.8%');
+
+    for (const tr of linesOf(markup, 'Sucrose')) expect(note(tr)).toMatch(/ of 76\.0 g · 11\.2% in all$/);
+    expect(totalCell(markup)).toContain('<span class="struck-value">799.7</span>679.7 g');
+  });
+
+  it('both lines out: each reads the parent, the shares strike alone, and the build print\'s wrong figures never appear', () => {
+    const markup = showChanges((child) => {
+      const milk = child.rows.find((row) => row.id === 'row-01');
+      milk.portions[0].removed = true;
+      milk.portions[1].removed = true;
+    });
+    const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+    expect(note(stepTwo)).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(note(stepThree)).toBe('250.4 g of 370.4 g · 46.3% in all');
+    expect(lastCell(stepTwo)).toBe('<span class="struck-value">15.0%</span>');
+    expect(lastCell(stepThree)).toBe('<span class="struck-value">31.3%</span>');
+    expect(markup).not.toContain('86.3%');
+    expect(markup).not.toContain('28.0%');
+    expect(markup).not.toContain('58.3%');
+  });
+
+  it('names the edited line with its own was and now, and the removed line with its from-amount and "removed" last', () => {
+    const edited = showChanges((child) => {
+      child.rows.find((row) => row.id === 'row-01').portions[0].grams = 100;
+    });
+    const [editedLine] = linesOf(edited, 'Whole milk');
+    expect(editedLine).toContain('aria-label="Whole milk, was 120 g, now 100 g, was 15.0%, now 12.8%, estimated"');
+
+    const removed = showChanges((child) => {
+      child.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
+    });
+    const [removedLine] = linesOf(removed, 'Whole milk');
+    const label = removedLine.match(/aria-label="([^"]*)"/)[1];
+    expect(label).toContain('was 120 g');
+    expect(label.endsWith('removed')).toBe(true);
+  });
+});

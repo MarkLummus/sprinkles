@@ -310,3 +310,26 @@ describe('Show changes compares a split ingredient line by line (decision 51, pl
     expect(totalCell().textContent).toBe('799.7779.7 g');
   });
 });
+
+describe('Show changes reads a line that is out against the parent (decision 51, plan 04)', () => {
+  it("strikes the removed Step 2 milk line, reads it against the parent, and moves the line left to the new batch", async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('remove Whole milk, Step 2'));
+    await saveChildAndShowChanges(container);
+
+    const [stepTwo, stepThree] = linesOf('Whole milk');
+    expect(nameCell(stepTwo).querySelector('.struck-value')).not.toBeNull();
+    expect(nameCell(stepThree).querySelector('.struck-value')).toBeNull();
+    expect(stepTwo.querySelector('.ingredient-table__portion-note').textContent).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(stepThree.querySelector('.ingredient-table__portion-note').textContent).toBe('250.4 g of 250.4 g · 36.8% in all');
+    expect(struck(gramsCellOf(stepTwo))).toEqual(['120 g']);
+    expect(gramsCellOf(stepTwo).textContent).toBe('120 g');
+    expect(shareCellOf(stepTwo).textContent).toBe('15.0%');
+    expect(shareCellOf(stepThree).textContent).toBe('31.3%36.8%');
+    expect(struck(totalCell())).toEqual(['799.7']);
+    expect(totalCell().textContent).toBe('799.7679.7 g');
+    expect(current.container.querySelector('.ingredient-table').textContent).not.toContain('86.3%');
+  });
+});

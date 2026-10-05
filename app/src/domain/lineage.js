@@ -7,6 +7,7 @@
 // saved).
 
 import { sortedBatches } from './batch.js';
+import { isStepRemoved } from './rows.js';
 
 /**
  * sortedVersions(versions) -> a new array ordered by createdAt, most
@@ -202,8 +203,10 @@ export function parseGramsDraft(value) {
  * findBlockedRow(penFields, version) -> { row, message } for the first
  * row (in the version's own authored order) with a line in whose grams
  * field blocks the save, or `null` when no row does. A line the draft
- * marks removed is skipped, so a row with every line out blocks nothing
- * and a split row with one line out is judged on its other line. Checked
+ * marks removed, or whose step `penFields.method` holds as removed (a step
+ * flag exactly true, found by its `n`; an absent method removes nothing), is
+ * skipped, so a row with every line out blocks nothing and a split row with
+ * one line out is judged on its other line. Checked
  * one row at a time, walking the row's own portions in order, blank
  * before non-numeric within each portion, so within a single row the maker is
  * told about one thing at a time; the first blocking portion of the
@@ -213,10 +216,13 @@ export function parseGramsDraft(value) {
  * (T-03.1-21).
  */
 function findBlockedRow(penFields, version) {
+  const method = penFields.method ?? [];
   for (const row of version.rows) {
     const draftRow = penFields.rows[row.id];
-    for (const draftPortion of draftRow.portions) {
+    for (const [index, draftPortion] of draftRow.portions.entries()) {
       if (draftPortion.removed) continue;
+      const storedPortion = row.portions[index];
+      if (storedPortion && isStepRemoved(method, storedPortion.step)) continue;
       if (draftPortion.grams === undefined || draftPortion.grams === '') {
         return { row, message: `${row.ingredientName} needs an amount, or remove the row` };
       }
@@ -241,7 +247,8 @@ function findBlockedRow(penFields, version) {
  * string) and `rows` (a map keyed by row id holding { portions } — the
  * pen draft's own shape, `portions` an array of { grams, removed }
  * parallel to the stored row's own portions); a line the draft marks
- * removed needs no amount. `versions` is the list to check uniqueness against, already
+ * removed, or sits in a step the draft's `method` removes, needs no amount.
+ * `versions` is the list to check uniqueness against, already
  * scoped by the caller to the recipe and to exclude the version being
  * saved over when that applies, so this function never takes an
  * excludeId of its own. Never looks at a band, a deviation or an

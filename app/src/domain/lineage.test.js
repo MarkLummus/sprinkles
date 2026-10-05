@@ -467,6 +467,52 @@ describe('blockedSaveMessage', () => {
     expect(blockedSaveMessage({ ...base, rows: rows('') }, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
   });
 
+  describe('a line whose step the draft removes (03.6, decision 51 answer 2)', () => {
+    const base = { versionLabel: '60 g oil · 800 g', reason: '' };
+    const stepTwo = (removed) => [{ n: 2, removed }, { n: 3, removed: false }];
+    // row-01 is Whole milk: its lines sit in step 2 and step 3.
+    const milk = (first, second) => validRows({ 'row-01': { portions: [{ grams: first, removed: false }, { grams: second, removed: false }] } });
+
+    it('does not block on a blank Step 2 line while step 2 is removed and Step 3 holds a number', () => {
+      const penFields = { ...base, method: stepTwo(true), rows: milk('', '250.4') };
+      expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBeNull();
+    });
+
+    it('still blocks on a blank Step 3 line and names Whole milk, in the message and the row id', () => {
+      const penFields = { ...base, method: stepTwo(true), rows: milk('', '') };
+      expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-01');
+    });
+
+    it('blocks on a blank Step 2 line when step 2 is not removed', () => {
+      const penFields = { ...base, method: stepTwo(false), rows: milk('', '250.4') };
+      expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-01');
+    });
+
+    it('reads a penFields without a method as no step removed', () => {
+      const penFields = { ...base, rows: milk('', '250.4') };
+      expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+    });
+
+    it("removes nothing for a step flag that is not exactly true (the string 'true')", () => {
+      const penFields = { ...base, method: stepTwo('true'), rows: milk('', '250.4') };
+      expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-01');
+    });
+
+    it("skips a removed step's non-numeric line too, and a later row's blank still blocks", () => {
+      const rows = validRows({
+        'row-01': { portions: [{ grams: '4o', removed: false }, { grams: '250.4', removed: false }] },
+        'row-04': { portions: [{ grams: '', removed: false }] },
+      });
+      const penFields = { ...base, method: stepTwo(true), rows };
+      expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe(`${oliveOilVersion.rows.find((r) => r.id === 'row-04').ingredientName} needs an amount, or remove the row`);
+      expect(blockedSaveRowId(penFields, oliveOilVersion, noVersions)).toBe('row-04');
+    });
+  });
+
   it('checks blank before non-numeric, one thing at a time: an earlier blank row wins over a later row holding a letter', () => {
     const penFields = {
       versionLabel: '60 g oil · 800 g',

@@ -73,10 +73,13 @@ html {
 }
 
 /* The wordmark is a link to Home at every width (decision 33): the App text
-   colour and no underline, over the global link rules in app.css. */
+   colour and no underline, over the global link rules in app.css. The control
+   radius makes its focus ring follow the App control radius (decision 38;
+   decision 47 (8)). */
 .shell__brand a {
   color: inherit;
   text-decoration: none;
+  border-radius: var(--app-radius-control);
 }
 
 /* The bar's left end: the menu button (only from 724 to 1589, where the nav
@@ -103,6 +106,7 @@ html {
   background: none;
   color: var(--app-text);
   cursor: pointer;
+  border-radius: var(--app-radius-control);
 }
 
 /* The app's own three dots, stood upright (decision 33). */
@@ -110,6 +114,17 @@ html {
   width: var(--app-size-icon);
   height: var(--app-size-icon);
   transform: rotate(var(--app-tilt-menu));
+}
+
+/* The menu button's own ring, in the App's text colour like the places' ring
+   (quick 261004-ly8 finding 4). It sits at the :focus-visible boundary, not
+   plain :focus: Mark's iPad already draws the global :focus-visible ring on
+   this button (decision 47 (8)), and a plain :focus rule would add a ring each
+   time closePlaces hands focus back after a tap. The radius on .shell__menu
+   makes the ring follow 10px. */
+.shell__menu:focus-visible {
+  outline: var(--focus-outline-width) solid var(--app-text);
+  outline-offset: var(--focus-outline-offset);
 }
 
 /* The fly-out's scrim: from the bar's foot to the window's foot, over the

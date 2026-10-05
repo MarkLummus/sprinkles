@@ -448,6 +448,7 @@ describe('IngredientTable — a blocked save marks the offending row (critique P
         penDraft={penDraft}
         openBatch={null}
         blockedRowId="b"
+        blockedLineIndex={0}
       />,
     );
 

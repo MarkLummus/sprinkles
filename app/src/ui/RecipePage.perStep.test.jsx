@@ -553,3 +553,33 @@ describe('Next version on a saved version with a line out (Mark\'s List per-step
     expect(rowOf('remove Whole milk, Step 3').getAttribute('aria-label')).toBe('Whole milk, 250.4 g, was 36.8%, now 46.3%, estimated');
   });
 });
+
+// A blocked save names the first blocked line that is in: focus lands on its field and only
+// that line is marked (Mark's List row per-step-open-pen-with-line-out; 03.6-REVIEW.md WR-04).
+describe('A blocked save focuses and marks the blocked line (Mark\'s List per-step-open-pen-with-line-out: fix)', () => {
+  it('on the saved child, a blank Step 3 amount focuses the Step 3 field and marks the Step 3 line alone', async () => {
+    const container = await openPenOnChildWithStepTwoMilkOut();
+    store.saveVersion.mockClear();
+    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk again');
+    await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 2"]'), '');
+    await click(buttonByText(container, 'Save as a new version'));
+
+    expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 2');
+    expect(rowOf('remove Whole milk, Step 3').classList.contains('is-marked')).toBe(true);
+    expect(rowOf('restore Whole milk, Step 2').classList.contains('is-marked')).toBe(false);
+    expect(store.saveVersion).not.toHaveBeenCalled();
+  });
+
+  it('on v1, a blank Step 2 amount focuses the Step 2 field and marks the Step 2 line alone', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+    await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 1"]'), '');
+    await click(buttonByText(container, 'Save as a new version'));
+
+    expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 1');
+    expect(rowOf('remove Whole milk, Step 2').classList.contains('is-marked')).toBe(true);
+    expect(rowOf('remove Whole milk, Step 3').classList.contains('is-marked')).toBe(false);
+  });
+});

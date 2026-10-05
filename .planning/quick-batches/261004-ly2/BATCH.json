@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "batch_id": "261004-ly2",
+  "created_at": "2026-10-04T19:48:05.361Z",
+  "options": {},
+  "base_revision": "1a58afa2d57059d45af406fa167daf9ed0192bed",
+  "items": [
+    {
+      "quick_id": "261004-ly3",
+      "client_id": null,
+      "description": "Amendment save confirmation announces the amendment date, not the batch's original recording date: fix batchSavedStatus in app/src/ui/RecipePage.jsx, test first (todo .planning/todos/pending/2026-09-17-an-amendment-announces-its-original-recording-date.md).",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/RecipePage.jsx",
+        "app/src/ui/RecipePage.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "04b4ebb",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261004-ly4",
+      "client_id": null,
+      "description": "Align the version section's Details link (app/src/ui/VersionRow.jsx, notebook.css): measure the rendered position against the sketch 011 boards at 1366, 1024, 983, 723 and 393 first, then align it to the edge or field the board draws (todo .planning/todos/pending/2026-09-27-align-the-version-details-link.md).",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "f802429",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261004-ly5",
+      "client_id": null,
+      "description": "Recipe band buttons (Rename, Next version and neighbours) keep their resting width on hover, :active and :focus-visible: measure each state, find the one that narrows it, fix it (todo .planning/todos/pending/2026-09-27-band-buttons-narrow-on-hover-or-click.md).",
+      "status": "complete",
+      "depends_on": [
+        "261004-ly4"
+      ],
+      "planned_files": [
+        "app/src/styles/notebook.css",
+        "app/src/styles/notebook.test.js"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "abd833c",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261004-ly6",
+      "client_id": null,
+      "description": "Why row, sketch 011 decision 37 (README, Mark's answers): the Why value on its own line flush with the label (margin-inline-start: 0 on .version-row__reason), and the saved Why in the hand (the hand's font-size rule needs its own override); spec is .planning/sketches/011-recipe-route-c/why-row.html option B.",
+      "status": "complete",
+      "depends_on": [
+        "261004-ly4",
+        "261004-ly5"
+      ],
+      "planned_files": [
+        "app/src/ui/VersionRow.jsx",
+        "app/src/ui/VersionRow.test.jsx",
+        "app/src/styles/app.css",
+        "app/src/styles/cross-cutting.test.js"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 2,
+      "commit": "100d82f",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261004-ly7",
+      "client_id": null,
+      "description": "App radius, sketch 011 decision 38 (README, Mark's answers): one 10px App-context radius (a single --app-radius-control token) on every rail place so the focus ring follows it, the pen field and actions, and the lead block; the active rail place in weight 600; the phone tab row follows the shipped surface block with the radius; spec is .planning/sketches/011-recipe-route-c/app-radius.html option B. Do NOT edit DESIGN.md.",
+      "status": "complete",
+      "depends_on": [
+        "261004-ly4",
+        "261004-ly5",
+        "261004-ly6"
+      ],
+      "planned_files": [
+        "app/src/styles/tokens.css",
+        "app/src/styles/shell.css",
+        "app/src/styles/shell.test.js",
+        "app/src/styles/home.css",
+        "app/src/styles/home.test.js",
+        "app/src/styles/notebook.css",
+        "app/src/styles/notebook.test.js",
+        "app/src/styles/tokens.test.js"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 3,
+      "commit": "3692270",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261004-ly8",
+      "client_id": null,
+      "description": "Sticky header, then fly-out and rail, sketch 011 decision 33 app change brief tasks 5 and 6 (README): sticky header from 724, fly-out below 1590, rail from 1590; the boards are the spec. Touches shell.css and Shell.jsx.",
+      "status": "complete",
+      "depends_on": [
+        "261004-ly6",
+        "261004-ly7"
+      ],
+      "planned_files": [
+        "app/src/ui/Shell.jsx",
+        "app/src/ui/Shell.test.jsx",
+        "app/src/ui/Shell.flyout.test.jsx",
+        "app/src/ui/useBelowDesktop.js",
+        "app/src/ui/useBelowDesktop.test.js",
+        "app/src/styles/shell.css",
+        "app/src/styles/shell.test.js",
+        "app/src/styles/tokens.css",
+        "app/src/styles/app.css"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 4,
+      "commit": "099653e",
+      "failure_reason": null
+    }
+  ]
+}

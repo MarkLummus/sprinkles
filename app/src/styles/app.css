@@ -2974,3 +2974,20 @@ textarea {
     align-items: flex-end;
   }
 }
+
+/* Sketch 011 decision 49 A (Mark 2026-10-05: the surplus goes to the Instructions' row, not
+   AB, not leave). From 984 the side column spans the ingredients and method rows. With every
+   row auto the grid shared the side column's surplus between the two rows, which left about
+   367px empty under Mexican Chocolate v3's table. With 1fr on the method row (on the
+   ingredients row when there are no Instructions) the Instructions follow the table and the
+   empty space moves to the foot of the left column. Screen only: Phase 04 owns print. Below
+   984 the one-column areas of the 983.98px block apply and this block does not. */
+@media screen and (min-width: 984px) {
+  .recipe-page {
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .recipe-page--no-method {
+    grid-template-rows: auto 1fr auto;
+  }
+}

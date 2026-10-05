@@ -2150,3 +2150,86 @@ describe('IngredientTable — show changes reads a line that is out against the 
     expect(label.endsWith('removed')).toBe(true);
   });
 });
+
+// Mark's List row per-step-one-line-left, Mark's answer drop (2026-10-05); sketch 011
+// README decision 51's "Not drawn" paragraph; 03.6-CONFORMANCE.md "Open for Mark" item 1.
+// In the reading Sheet (and so in print), a split ingredient with exactly one line still
+// in reads like a one-line row: no portion line, plain accessible name.
+describe('IngredientTable — a split ingredient with one line left reads like a one-line row (Mark\'s List per-step-one-line-left: drop)', () => {
+  function table(mode, version, extra) {
+    return renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        steps={version.method}
+        currentStepNumbers={displayNumbers(version.method)}
+        mode={mode}
+        {...extra}
+      />,
+    );
+  }
+
+  // Each <tr> of the body that names the ingredient, in table order.
+  function linesOf(markup, name) {
+    const body = markup.split('<tbody>')[1].split('</tbody>')[0];
+    return body.split('<tr').filter((tr) => tr.includes(`aria-label="${name}`));
+  }
+
+  const note = (tr) => tr.match(/ingredient-table__portion-note">([^<]*)</)[1];
+
+  function milkStepTwoOut() {
+    const version = structuredClone(oliveOilVersion);
+    version.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
+    return version;
+  }
+
+  it('reading, milk\'s Step 2 line out: Whole milk draws once with its name and chip only, and Sucrose keeps both portion lines', () => {
+    const markup = table('reading', milkStepTwoOut());
+    const milk = linesOf(markup, 'Whole milk');
+
+    expect(milk).toHaveLength(1);
+    expect(milk[0]).toContain('aria-label="Whole milk, 250.4 g, estimated"');
+    expect(milk[0]).toContain(
+      '<td class="ingredient-table__col-name">Whole milk<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span></td>',
+    );
+    expect(markup).not.toContain('250.4 g of 250.4 g');
+    expect(linesOf(markup, 'Sucrose').map(note)).toEqual([
+      '12 g of 76.0 g · 11.2% in all',
+      '64 g of 76.0 g · 11.2% in all',
+    ]);
+  });
+
+  it('reading, Gum slurry (step 2) removed: Whole milk and Sucrose each read as one line with no portion line', () => {
+    const version = structuredClone(oliveOilVersion);
+    version.method.find((step) => step.n === 2).removed = true;
+    const markup = table('reading', version);
+    const milk = linesOf(markup, 'Whole milk');
+    const sucrose = linesOf(markup, 'Sucrose');
+
+    expect(milk).toHaveLength(1);
+    expect(sucrose).toHaveLength(1);
+    expect(milk[0]).not.toContain('ingredient-table__portion-note');
+    expect(sucrose[0]).not.toContain('ingredient-table__portion-note');
+    expect(markup).not.toContain('250.4 g of 250.4 g');
+    expect(markup).not.toContain('64 g of 64.0 g');
+  });
+
+  it('guard, reading, every line in: both Whole milk lines keep their portion lines', () => {
+    const markup = table('reading', structuredClone(oliveOilVersion));
+
+    expect(linesOf(markup, 'Whole milk').map(note)).toEqual([
+      '120 g of 370.4 g · 46.3% in all',
+      '250.4 g of 370.4 g · 46.3% in all',
+    ]);
+  });
+
+  // This pins only that the quick leaves recording as built. Open for Mark item 2 (as made
+  // while recording, with a line out) is undecided, so this pin may change when Mark decides it.
+  it('guard, recording, milk\'s Step 2 line out: the portion line and the as-made field name stay as built', () => {
+    const markup = table('recording', milkStepTwoOut(), { draft: { asMade: {} }, openBatch: null });
+    const milk = linesOf(markup, 'Whole milk');
+
+    expect(milk).toHaveLength(1);
+    expect(note(milk[0])).toBe('250.4 g of 250.4 g · 36.8% in all');
+    expect(markup).toContain('aria-label="Whole milk, as made, grams, portion 2"');
+  });
+});

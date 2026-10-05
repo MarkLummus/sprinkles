@@ -237,7 +237,10 @@ describe('a saved version with a line out reads without it (decision 51, plan 03
     expect(totalCell().querySelector('.struck-value')).toBeNull();
     const milkRows = [...table.querySelectorAll('tbody tr[aria-label]')].filter((tr) => tr.getAttribute('aria-label').startsWith('Whole milk'));
     expect(milkRows).toHaveLength(1);
-    expect(milkRows[0].querySelector('.ingredient-table__portion-note').textContent).toBe('250.4 g of 250.4 g · 36.8% in all');
+    // Mark's List row per-step-one-line-left, Mark's answer drop (2026-10-05); sketch 011 README
+    // decision 51's "Not drawn" paragraph; 03.6-CONFORMANCE.md "Open for Mark" item 1.
+    expect(milkRows[0].querySelector('.ingredient-table__portion-note')).toBeNull();
+    expect(milkRows[0].getAttribute('aria-label')).toBe('Whole milk, 250.4 g, estimated');
     const cells = milkRows[0].querySelectorAll('td');
     expect(cells[cells.length - 1].textContent).toBe('36.8%');
     const sucroseRows = [...table.querySelectorAll('tbody tr[aria-label]')].filter((tr) => tr.getAttribute('aria-label').startsWith('Sucrose'));
@@ -249,6 +252,21 @@ describe('a saved version with a line out reads without it (decision 51, plan 03
     expect(controls).toHaveLength(0);
     const heads = [...table.querySelectorAll('.ingredient-table__step-head')].map((tr) => tr.textContent);
     expect(heads.some((text) => text.startsWith('Step 2'))).toBe(true);
+  });
+});
+
+describe('a saved version with every line in keeps its portion lines (per-step-one-line-left guard)', () => {
+  it('reads both Whole milk portion lines on v1 at rest', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH);
+    await flush(() => current.container.querySelector('.ingredient-table') !== null);
+
+    const lines = linesOf('Whole milk');
+    expect(lines).toHaveLength(2);
+    expect(lines.map((tr) => tr.querySelector('.ingredient-table__portion-note').textContent)).toEqual([
+      '120 g of 370.4 g · 46.3% in all',
+      '250.4 g of 370.4 g · 46.3% in all',
+    ]);
   });
 });
 

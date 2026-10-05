@@ -148,8 +148,9 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
             selector.startsWith('.shell__tools') ||
             selector === '.shell__main' ||
             selector === '.shell__head' ||
+            selector === '.shell__import-errors' ||
             selector === 'html',
-          `expected "${selector}" to be the rail's hiding rule, the folded tools row, the scrolling header, the root's scroll padding or a tab-row rule`,
+          `expected "${selector}" to be the rail's hiding rule, the folded tools row, the Import error panel's phone place, the scrolling header, the root's scroll padding or a tab-row rule`,
         ).toBe(true);
       }
     }
@@ -228,7 +229,7 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
     expect(rule.declarations).toMatch(/inset-block-end:\s*100%/);
   });
 
-  test('the header\'s Search/Import/Export controls fold away below the side-nav cut, and the tools row, the file input and the errors list keep no media-scoped hiding rule of their own (decision 3)', () => {
+  test('the header\'s Search/Import/Export controls fold away below the side-nav cut, and the tools row and the file input keep no media-scoped rule of their own; the Import error panel\'s phone rule places it above the tab row and hides nothing (decision 3; decision 52 B)', () => {
     const rule = rules.find((r) => r.media === PHONE_MEDIA && r.selector === '.shell__tools > .shell__place');
     expect(rule, 'expected a media-scoped .shell__tools > .shell__place rule').toBeTruthy();
     expect(rule.declarations).toMatch(/display:\s*none/);
@@ -236,7 +237,10 @@ describe('the bottom tab row (D-16, 03.4-03 Task 3)', () => {
     const mediaSelectors = rules.filter((r) => r.media === PHONE_MEDIA).map((r) => r.selector);
     expect(mediaSelectors).not.toContain('.shell__tools');
     expect(mediaSelectors).not.toContain('.shell__file-input');
-    expect(mediaSelectors).not.toContain('.shell__import-errors');
+    const panelRule = rules.find((r) => r.media === PHONE_MEDIA && r.selector === '.shell__import-errors');
+    expect(panelRule, 'expected a phone-block .shell__import-errors rule').toBeTruthy();
+    expect(panelRule.declarations).toMatch(/inset-block-end:\s*calc\(var\(--app-size-tab-h\) \+ var\(--gap-xs\)\)/);
+    expect(panelRule.declarations).not.toMatch(/display:\s*none/);
   });
 });
 
@@ -375,7 +379,8 @@ describe('one App radius on every place, the active rail place in weight 600 (sk
 
   test("only .shell__sprinkle, .shell__place, the menu button and the wordmark link declare a border-radius (the last two on the App control radius so their focus rings follow it, decision 47 (8)), nothing in the phone block declares a radius, and the phone block's one weight is the active tab's", () => {
     const radiused = rules.filter((r) => /(^|[\s;])border-radius\s*:/.test(r.declarations));
-    expect(radiused.map((r) => r.selector).sort()).toEqual(['.shell__brand a', '.shell__menu', '.shell__place', '.shell__sprinkle']);
+    expect(radiused.map((r) => r.selector).sort()).toEqual(['.shell__brand a', '.shell__import-errors', '.shell__menu', '.shell__place', '.shell__sprinkle']);
+    expect(radiused.find((r) => r.selector === '.shell__import-errors').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__brand a').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__menu').declarations).toMatch(/border-radius:\s*var\(--app-radius-control\)/);
     expect(radiused.find((r) => r.selector === '.shell__sprinkle').declarations).toMatch(/border-radius:\s*var\(--app-radius-sprinkle\)/);
@@ -452,8 +457,8 @@ describe('the sticky App header and the wordmark link (decision 33, brief task 5
     expect(tokens['--app-size-header-h']).toBe('calc(var(--touch-min) + 2 * var(--gap-xs) + var(--app-rule-row))');
   });
 
-  test('the bar paints above the page notice, which reads a token', () => {
-    expect(tokens['--app-z-notice']).toBe('10');
+  test('the bar paints above the page notice, which reads a token (3, under the scrim: decision 53)', () => {
+    expect(tokens['--app-z-notice']).toBe('3');
     const status = appRules.find((r) => r.selector === '.page-status');
     expect(status, 'expected app.css to carry .page-status').toBeTruthy();
     expect(status.declarations).toMatch(/z-index:\s*var\(--app-z-notice\)/);
@@ -519,17 +524,20 @@ describe('the menu button, the scrim and the z order (decision 33, quick 261004-
     expect(rule.declarations).toMatch(/background:\s*var\(--app-scrim\)/);
   });
 
-  test('the z order: every literal z-index in app.css < scrim < fly-out < notice < bar', () => {
+  test('the z order (decision 53): every literal z-index in app.css < notice < scrim < fly-out < Import error panel < bar', () => {
     const literals = [];
     for (const rule of appRules) {
       const match = rule.declarations.match(/z-index:\s*(-?\d+)\s*;/);
       if (match) literals.push(Number(match[1]));
     }
     expect(literals.length).toBeGreaterThan(0);
-    expect(Math.max(...literals)).toBeLessThan(Number(tokens['--app-z-scrim']));
+    expect(Math.max(...literals)).toBeLessThan(Number(tokens['--app-z-notice']));
+    expect(Number(tokens['--app-z-notice'])).toBeLessThan(Number(tokens['--app-z-scrim']));
     expect(Number(tokens['--app-z-scrim'])).toBeLessThan(Number(tokens['--app-z-flyout']));
-    expect(Number(tokens['--app-z-flyout'])).toBeLessThan(Number(tokens['--app-z-notice']));
-    expect(Number(tokens['--app-z-notice'])).toBeLessThan(Number(tokens['--app-z-header']));
+    expect(Number(tokens['--app-z-flyout'])).toBeLessThan(Number(tokens['--app-z-import-errors']));
+    expect(Number(tokens['--app-z-import-errors'])).toBeLessThan(Number(tokens['--app-z-header']));
+    expect(tokens['--app-z-notice']).toBe('3');
+    expect(tokens['--app-z-import-errors']).toBe('6');
   });
 });
 
@@ -623,5 +631,98 @@ describe("More's tiles and the hairline (sketch 011 decision 55; Mark 2026-10-05
       'border-top: var(--app-rule-row) solid var(--app-divider)',
       'margin: var(--gap-xs) var(--gap-m)',
     ]);
+  });
+});
+
+describe('The Import error panel (sketch 011 decision 52 B; Mark 2026-10-05)', () => {
+  const declarationsOf = (rule) => rule.declarations.split(';').map((d) => d.trim()).filter(Boolean);
+  const topRule = (selector) => {
+    const rule = rules.find((r) => r.selector === selector && r.media === undefined);
+    expect(rule, `expected a top-level ${selector} rule`).toBeTruthy();
+    return rule;
+  };
+
+  test('the panel is fixed under the bar at the right gutter, over the page, on tokens only', () => {
+    expect(declarationsOf(topRule('.shell__import-errors')).sort()).toEqual(
+      [
+        'position: fixed',
+        'z-index: var(--app-z-import-errors)',
+        'inset-block-start: var(--app-size-header-h)',
+        'inset-inline-end: var(--gap-page)',
+        'width: var(--app-size-import-errors-w)',
+        'margin-block-start: var(--gap-xs)',
+        'box-sizing: border-box',
+        'display: flex',
+        'flex-direction: column',
+        'gap: var(--gap-xs)',
+        'padding: var(--gap-s) var(--gap-s) var(--gap-s) var(--gap-m)',
+        'background: var(--app-background)',
+        'border: var(--app-rule-row) solid var(--app-divider)',
+        'border-radius: var(--app-radius-control)',
+        'font-family: var(--face-grotesk)',
+        'color: var(--app-text)',
+      ].sort(),
+    );
+  });
+
+  test('below 724 the panel is fixed above the tab row at the page gutters', () => {
+    const rule = rules.find((r) => r.selector === '.shell__import-errors' && r.media === PHONE_MEDIA);
+    expect(rule, 'expected a phone-block .shell__import-errors rule').toBeTruthy();
+    expect(declarationsOf(rule).sort()).toEqual(
+      [
+        'inset-block-start: auto',
+        'inset-block-end: calc(var(--app-size-tab-h) + var(--gap-xs))',
+        'inset-inline: var(--gap-page)',
+        'width: auto',
+        'margin-block-start: 0',
+      ].sort(),
+    );
+  });
+
+  test("the head, title, count and list carry the board's values", () => {
+    expect(declarationsOf(topRule('.shell__import-errors-head')).sort()).toEqual(
+      ['display: flex', 'align-items: center', 'justify-content: space-between', 'gap: var(--gap-s)'].sort(),
+    );
+    expect(declarationsOf(topRule('.shell__import-errors-title')).sort()).toEqual(
+      [
+        'margin: 0',
+        'font-size: var(--app-size-meta)',
+        'font-weight: 600',
+        'line-height: var(--app-import-errors-title-leading)',
+      ].sort(),
+    );
+    expect(declarationsOf(topRule('.shell__import-errors-count')).sort()).toEqual(
+      [
+        'margin: 0',
+        'color: var(--app-text-secondary)',
+        'font-size: var(--app-size-label)',
+        'line-height: var(--app-import-errors-leading)',
+      ].sort(),
+    );
+    expect(declarationsOf(topRule('.shell__import-errors-list')).sort()).toEqual(
+      [
+        'margin: 0',
+        'padding-left: var(--gap-s)',
+        'font-size: var(--app-size-label)',
+        'line-height: var(--app-import-errors-leading)',
+        'max-height: calc(6 * var(--app-import-errors-leading) * 1em)',
+        'overflow-y: auto',
+        'overflow-wrap: anywhere',
+      ].sort(),
+    );
+  });
+
+  test('no panel rule declares flex-basis, and none targets the Close by itself', () => {
+    const panelRules = rules.filter((r) => r.selector.includes('.shell__import-errors'));
+    for (const rule of panelRules) expect(rule.declarations).not.toMatch(/flex-basis/);
+    for (const rule of panelRules) {
+      expect(rule.selector).not.toMatch(/button|\.shell__place/);
+    }
+  });
+
+  test('the width and the two leadings are tokens', () => {
+    expect(tokens['--app-size-import-errors-w']).toBe('480px');
+    expect(tokens['--app-import-errors-title-leading']).toBe('1.3');
+    expect(tokens['--app-import-errors-leading']).toBe('1.5');
   });
 });

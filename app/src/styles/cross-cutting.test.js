@@ -841,7 +841,7 @@ describe('the page notice anchors above the keyed page, out of flow (260917-ewf;
 
   test('every other visual declaration on .page-status survives (margin-block-start added, 260917-ewf Task 4), and .page-status:empty still collapses', () => {
     const rule = ruleFor('.page-status');
-    // Reads --app-z-notice (10), so the sticky bar's --app-z-header can sit above it; shell.test.js pins the 10.
+    // Reads --app-z-notice (3), a layer of the page under the scrim and the fly-out (sketch 011 decision 53); shell.test.js pins the 3 and the order.
     expect(rule.declarations).toMatch(/z-index:\s*var\(--app-z-notice\)/);
     expect(rule.declarations).toMatch(/max-width:\s*min\(var\(--measure-prose\), calc\(100vw - var\(--gap-page\) - var\(--gap-m\)\)\)/);
     expect(rule.declarations).toMatch(/margin:\s*0/);

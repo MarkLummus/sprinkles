@@ -7,13 +7,21 @@
 // RecipePage.recordTasting.test.jsx gives: the behaviour is click, focus and
 // key events, which renderToStaticMarkup cannot show, and Shell.test.jsx must
 // keep running with no window in scope. It also holds More's hairline tap below
-// 724 (decision 55).
+// 724 (decision 55). It also holds the Import error panel's behaviour (sketch
+// 011 decision 52 B, Mark 2026-10-05).
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route } from 'react-router';
 
 vi.mock('../store/repository.js', () => ({ repository: {} }));
+// importStore calls through by default; the panel's tests set a result with
+// mockResolvedValueOnce. The fly-out tests never import.
+vi.mock('../store/transfer.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, importStore: vi.fn(actual.importStore) };
+});
+import { importStore, validateStoreFile } from '../store/transfer.js';
 import { Shell } from './Shell.jsx';
 
 // A mutable window width behind window.matchMedia: every list keeps its
@@ -297,5 +305,144 @@ describe("More's hairline below 724 (sketch 011 decision 55)", () => {
     await nextTick();
     expect(details.open).toBe(false);
     expect(document.activeElement).toBe(summary);
+  });
+});
+
+const OLDER_EXPORT = '{"schemaVersion": 3, "recipes": [], "versions": [], "batches": []}';
+
+// Drives the shared hidden file input as a chosen file: one object whose async
+// text() returns the content, then a bubbling change and a flushed tick.
+async function chooseFile(content) {
+  const input = current.container.querySelector('input.shell__file-input');
+  Object.defineProperty(input, 'files', { value: [{ text: async () => content }], configurable: true });
+  await act(async () => {
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+}
+
+const panel = () => current.container.querySelector('.shell__import-errors');
+const panelClose = () => panel().querySelector('button');
+const lineTexts = () => [...panel().querySelectorAll('ul.shell__import-errors-list > li')].map((li) => li.textContent);
+
+describe('The Import error panel (sketch 011 decision 52 B; Mark 2026-10-05)', () => {
+  it('is not there at rest', async () => {
+    await mountAt(1024);
+    expect(panel()).toBeNull();
+  });
+
+  it('a file that is not JSON shows the panel after the bar, with the title, the count, the line and a Close', async () => {
+    await mountAt(1024);
+    await chooseFile('not json');
+    expect(panel()).toBeTruthy();
+    expect(panel().getAttribute('role')).toBe('alert');
+    expect(header().nextElementSibling).toBe(panel());
+    expect(header().querySelector('.shell__import-errors')).toBeNull();
+    expect(header().querySelector('ul')).toBeNull();
+    expect(panel().querySelector('p.shell__import-errors-title').textContent).toBe('This file can’t be imported');
+    expect(panel().querySelector('p.shell__import-errors-count').textContent).toBe('1 problem found');
+    expect(lineTexts()).toEqual(['$: the file is not valid JSON']);
+    const close = panelClose();
+    expect(close.tagName).toBe('BUTTON');
+    expect(close.classList.contains('shell__place')).toBe(true);
+    expect(close.getAttribute('type')).toBe('button');
+    expect(close.getAttribute('tabindex')).toBe('0');
+    expect(close.textContent).toBe('Close');
+    expect(panel().querySelectorAll('[style]')).toHaveLength(0);
+  });
+
+  it("an older export shows three lines, exactly as the validator words them", async () => {
+    await mountAt(1024);
+    await chooseFile(OLDER_EXPORT);
+    const expected = validateStoreFile(JSON.parse(OLDER_EXPORT)).errors;
+    expect(expected).toHaveLength(3);
+    expect(panel().querySelector('p.shell__import-errors-count').textContent).toBe('3 problems found');
+    expect(lineTexts()).toEqual(expected);
+  });
+
+  it('repeated lines and markup text stay safe: three items, text only, no duplicate-key warning', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      await mountAt(1024);
+      vi.mocked(importStore).mockResolvedValueOnce({ ok: false, errors: ['Same line', 'Same line', '<b>tag</b>'] });
+      await chooseFile('{}');
+      expect(lineTexts()).toHaveLength(3);
+      expect(lineTexts()[2]).toBe('<b>tag</b>');
+      expect(panel().querySelector('b')).toBeNull();
+      expect(spy.mock.calls.filter((call) => String(call[0]).includes('same key'))).toHaveLength(0);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('Close removes the panel and returns focus to the header Import button when focus was on Close (1024)', async () => {
+    await mountAt(1024);
+    await chooseFile('not json');
+    panelClose().focus();
+    await click(panelClose());
+    expect(panel()).toBeNull();
+    const importButton = [...header().querySelectorAll('button')].find((button) => button.textContent === 'Import');
+    expect(document.activeElement).toBe(importButton);
+  });
+
+  it("Close returns focus to More's summary below 724 when focus was on Close (393)", async () => {
+    await mountAt(393);
+    await chooseFile('not json');
+    panelClose().focus();
+    await click(panelClose());
+    expect(panel()).toBeNull();
+    expect(document.activeElement).toBe(current.container.querySelector('details.shell__more > summary'));
+  });
+
+  it('Close leaves focus alone when focus was not on the panel', async () => {
+    await mountAt(1024);
+    await chooseFile('not json');
+    document.activeElement.blur();
+    await click(panelClose());
+    expect(panel()).toBeNull();
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it('Escape with the fly-out closed closes the panel and never reaches a page listener', async () => {
+    await mountAt(1024);
+    await chooseFile('not json');
+    await press(document.body, { key: 'Escape' });
+    expect(panel()).toBeNull();
+    expect(escapeCount).toBe(0);
+    await press(document.body, { key: 'Escape' });
+    expect(escapeCount).toBe(1);
+  });
+
+  it('Escape with the fly-out open closes only the fly-out, the next closes the panel, the third reaches the page', async () => {
+    await mountAt(1024);
+    await chooseFile('not json');
+    await openFlyout();
+    await press(document.activeElement, { key: 'Escape' });
+    expect(menu().getAttribute('aria-expanded')).toBe('false');
+    expect(panel()).toBeTruthy();
+    expect(document.activeElement).toBe(menu());
+    await press(document.activeElement, { key: 'Escape' });
+    expect(panel()).toBeNull();
+    expect(escapeCount).toBe(0);
+    await press(document.activeElement, { key: 'Escape' });
+    expect(escapeCount).toBe(1);
+  });
+
+  it('a page change closes the panel', async () => {
+    await mountAt(1024, '/notebook');
+    await chooseFile('not json');
+    expect(panel()).toBeTruthy();
+    await click(current.container.querySelector('.shell__brand a'));
+    expect(current.container.textContent).toContain('Escape probe');
+    expect(panel()).toBeNull();
+  });
+
+  it('a good import after a failure closes the panel', async () => {
+    await mountAt(1024);
+    await chooseFile('not json');
+    expect(header().nextElementSibling).toBe(panel());
+    vi.mocked(importStore).mockResolvedValueOnce({ ok: true });
+    await chooseFile('{}');
+    expect(panel()).toBeNull();
   });
 });

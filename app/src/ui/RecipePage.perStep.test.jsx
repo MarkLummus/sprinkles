@@ -400,6 +400,16 @@ describe('a removed step takes its lines with it, struck in its own place (decis
     expect(struck(shareCellOf(removed[0]))).toEqual(['15.0%']);
     expect(shareCellOf(removed[1]).textContent).toBe('1.5%');
 
+    // The gums' orphan flags are gone, because each gum row is out with its only
+    // line; the removed step's cue names Whole milk and Sucrose as still used.
+    expect(current.container.querySelector('.ingredient-table').textContent).not.toContain('used by');
+    const cue = current.container.querySelector('.method-step__flag');
+    expect(cue).not.toBeNull();
+    expect(cue.textContent).toContain('Whole milk');
+    expect(cue.textContent).toContain('Sucrose');
+    expect(cue.textContent).toContain('still used by step 2');
+    expect(cue.textContent).not.toContain('Locust bean gum');
+
     await click(
       [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Removed step 2, restore'),
     );

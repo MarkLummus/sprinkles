@@ -409,6 +409,7 @@ describe('Method — developing mode', () => {
       removed: false,
       uses: ['row-a'], // shares row-a with step 1
     });
+    baselineVersion.rows[0].portions[0].step = 2; // row-a's line sits in the step that covers it
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[0].removed = true; // step 1, uses row-a; step 2 still uses it
 
@@ -1037,6 +1038,7 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
         { n: 3, leadIn: 'Lead three', instruction: 'Do three.', uses: ['row-a'] },
       ],
     };
+    baselineVersion.rows[0].portions[0].step = 3; // row-a's line sits in the step that covers it
     const draftVersion = structuredClone(baselineVersion);
     draftVersion.method[0].removed = true; // step 1 removed; step 3 (now position 2) still covers row-a
 

@@ -1,10 +1,13 @@
 // Pure. No framework, no DOM, no store import. The uses cross-flags and the
 // stale-amount flag — see 03-CONTEXT.md D-08 (the seed's authored uses
-// lists) and D-10 (removal never cascades). Removal never cascades: every
+// lists) and D-10 (removal never cascades). Removal never writes: every
 // function here reports; none of them writes a `removed` flag, and no
 // caller may set one on the maker's behalf. A maker may keep step 1 and
 // put something else in the oil, so the second removal is always the
-// maker's own tap.
+// maker's own tap. A removed step takes its own lines out (03.6, decision
+// 51), derived and never stored; a row is out here when every one of its
+// lines is, through its own flag or through its step, so the readers below
+// call isRowRemoved(row, version.method).
 //
 // Every look-up here is an array scan or a Map/Set built from one, never a
 // bare bracket read against a maker-influenced key (the discipline T-02-32
@@ -36,7 +39,7 @@ export function stepsUsingRow(version, rowId) {
 export function removedRowsUsedBy(version, step) {
   if (step.removed) return [];
   const uses = usesOf(step);
-  return version.rows.filter((row) => isRowRemoved(row) && uses.includes(row.id));
+  return version.rows.filter((row) => isRowRemoved(row, version.method) && uses.includes(row.id));
 }
 
 /**
@@ -55,7 +58,7 @@ export function coveredRowsFor(version, step) {
   const uses = usesOf(step);
   const entries = [];
   for (const row of version.rows) {
-    if (isRowRemoved(row) || !uses.includes(row.id)) continue;
+    if (isRowRemoved(row, version.method) || !uses.includes(row.id)) continue;
     const coveringSteps = stepsUsingRow(version, row.id);
     if (coveringSteps.length > 0) {
       entries.push({ id: row.id, ingredientName: row.ingredientName, coveringSteps });
@@ -79,7 +82,7 @@ export function orphanedRows(version) {
     for (const rowId of usesOf(step)) target.add(rowId);
   }
   return version.rows.filter(
-    (row) => !isRowRemoved(row) && usedByRemovedStep.has(row.id) && !usedByActiveStep.has(row.id),
+    (row) => !isRowRemoved(row, version.method) && usedByRemovedStep.has(row.id) && !usedByActiveStep.has(row.id),
   );
 }
 

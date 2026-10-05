@@ -5,6 +5,7 @@
 // test; the version already carries D-08's authored `uses` lists.
 import { describe, it, expect } from 'vitest';
 import { stepsUsingRow, removedRowsUsedBy, orphanedRows, stepsWithStaleAmounts, coveredRowsFor } from './uses.js';
+import { isRowRemoved } from './rows.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 function clone() {
@@ -84,7 +85,7 @@ describe('coveredRowsFor (03-09, D-UAT-3)', () => {
     }
   });
 
-  it('partitions a removed step\'s rows with orphanedRows: every row step 2 used is in exactly one of the two answers', () => {
+  it("partitions a removed step's rows: every row step 2 used is covered, orphaned or out, exactly one (03.6-05)", () => {
     const version = clone();
     findStep(version, 2).removed = true;
 
@@ -95,7 +96,14 @@ describe('coveredRowsFor (03-09, D-UAT-3)', () => {
     for (const rowId of step2Rows) {
       const inCovered = covered.some((entry) => entry.id === rowId);
       const inOrphaned = orphaned.some((row) => row.id === rowId);
-      expect(inCovered !== inOrphaned).toBe(true); // exactly one, never both, never neither
+      const isOut = isRowRemoved(findRow(version, rowId), version.method);
+      // exactly one, never two, never none
+      expect([inCovered, inOrphaned, isOut].filter(Boolean)).toHaveLength(1);
+    }
+    // The three gums have their only line in step 2, so they are out, never orphaned.
+    for (const gum of ['row-10', 'row-11', 'row-12']) {
+      expect(isRowRemoved(findRow(version, gum), version.method)).toBe(true);
+      expect(orphaned.map((row) => row.id)).not.toContain(gum);
     }
   });
 
@@ -108,14 +116,17 @@ describe('coveredRowsFor (03-09, D-UAT-3)', () => {
     expect(covered.map((entry) => entry.id)).not.toContain('row-09');
   });
 
-  it("returns an empty coverage answer when both step 1 and step 8 are removed, and both of step 1's rows appear in orphanedRows", () => {
+  it("returns an empty coverage answer when both step 1 and step 8 are removed, and both of step 1's rows are out, neither covered nor orphaned (03.6-05)", () => {
     const version = clone();
     findStep(version, 1).removed = true;
     findStep(version, 8).removed = true;
 
+    // The olive oil and lecithin rows have their only line in step 8.
     expect(coveredRowsFor(version, findStep(version, 1))).toEqual([]);
-    const orphaned = orphanedRows(version).map((row) => row.id);
-    expect(orphaned).toEqual(expect.arrayContaining(['row-03', 'row-09']));
+    for (const id of ['row-03', 'row-09']) {
+      expect(isRowRemoved(findRow(version, id), version.method)).toBe(true);
+      expect(orphanedRows(version).map((row) => row.id)).not.toContain(id);
+    }
   });
 
   it('yields an empty coverage answer rather than throwing for a step with no uses key at all', () => {
@@ -136,12 +147,12 @@ describe('orphanedRows', () => {
     expect(orphanedRows(version)).toEqual([]);
   });
 
-  it('returns the lecithin row when steps 1 and 8 are both removed', () => {
+  it('reports the lecithin row as out, never as orphaned, when steps 1 and 8 are both removed (03.6-05)', () => {
     const version = clone();
     findStep(version, 1).removed = true;
     findStep(version, 8).removed = true;
-    const ids = orphanedRows(version).map((row) => row.id);
-    expect(ids).toContain('row-09');
+    expect(orphanedRows(version).map((row) => row.id)).not.toContain('row-09');
+    expect(isRowRemoved(findRow(version, 'row-09'), version.method)).toBe(true);
   });
 
   it('never returns a row that is itself already removed', () => {
@@ -252,6 +263,51 @@ describe('removal through a line (03.6, decision 51: a row is removed when every
     const version = clone();
     lineOut(version, 'row-01', 0);
     findStep(version, 2).removed = true;
+    const before = structuredClone(version);
+    for (const step of version.method) {
+      removedRowsUsedBy(version, step);
+      coveredRowsFor(version, step);
+    }
+    orphanedRows(version);
+    expect(version).toEqual(before);
+  });
+});
+
+describe('a removed step takes its own lines out (03.6-05, decision 51)', () => {
+  const stepTwoRemoved = () => {
+    const version = clone();
+    findStep(version, 2).removed = true;
+    return version;
+  };
+
+  it('orphans none of the three gums, because each is out with its only line', () => {
+    const version = stepTwoRemoved();
+    const ids = orphanedRows(version).map((row) => row.id);
+    for (const gum of ['row-10', 'row-11', 'row-12']) expect(ids).not.toContain(gum);
+  });
+
+  it("names Whole milk and Sucrose, and not the gums, as covered by the removed step's cue", () => {
+    const version = stepTwoRemoved();
+    const covered = coveredRowsFor(version, findStep(version, 2)).map((entry) => entry.id);
+    expect(covered).toEqual(['row-01', 'row-05']);
+  });
+
+  it('raises no cross-flag on any active step', () => {
+    const version = stepTwoRemoved();
+    for (const step of version.method.filter((candidate) => !candidate.removed)) {
+      expect(removedRowsUsedBy(version, step)).toEqual([]);
+    }
+  });
+
+  it('still orphans a row used only by the removed step whose line sits in an active step', () => {
+    const version = stepTwoRemoved();
+    findStep(version, 2).uses = [...findStep(version, 2).uses, 'row-04'];
+    findStep(version, 3).uses = findStep(version, 3).uses.filter((id) => id !== 'row-04');
+    expect(orphanedRows(version).map((row) => row.id)).toEqual(['row-04']);
+  });
+
+  it('writes no flag: the version is deep-equal to a clone taken before every call', () => {
+    const version = stepTwoRemoved();
     const before = structuredClone(version);
     for (const step of version.method) {
       removedRowsUsedBy(version, step);

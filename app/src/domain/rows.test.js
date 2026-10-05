@@ -2,8 +2,9 @@
 // Runs under Vitest's default node environment — imports no store, no
 // component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { activeRows, activeSteps, isLineRemoved, isRowRemoved, rowGrams, targetValueFor } from './rows.js';
+import { activeRows, activeSteps, isLineRemoved, isRowRemoved, isStepRemoved, rowGrams, targetValueFor } from './rows.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { computeBalance } from './composition.js';
 
 const one = (grams = 1) => [{ step: 1, grams }];
 
@@ -188,5 +189,69 @@ describe('the derived-total invariant (D-01, companion to the 03.2-01 assumption
       expect('grams' in row).toBe(false);
       expect('step' in row).toBe(false);
     }
+  });
+});
+
+// Plan 03.6-05 (sketch 011 decision 51, Mark's answer 2): a removed step takes
+// its lines out. Derived from the method, never stored on a line.
+describe('a removed step takes its lines out (03.6-05)', () => {
+  const stepTwoRemoved = () => {
+    const version = structuredClone(oliveOilVersion);
+    version.method.find((step) => step.n === 2).removed = true;
+    return version;
+  };
+  const rowOf = (version, id) => version.rows.find((row) => row.id === id);
+  const mass = (version) => computeBalance(activeRows(version)).mass;
+
+  it('reads a line out when its step is removed, and only with the method given', () => {
+    const version = stepTwoRemoved();
+    const milk = rowOf(version, 'row-01');
+    expect(isLineRemoved(milk, milk.portions[0], version.method)).toBe(true);
+    expect(isLineRemoved(milk, milk.portions[1], version.method)).toBe(false);
+    expect(isLineRemoved(milk, milk.portions[0])).toBe(false);
+    expect(isLineRemoved(milk, milk.portions[1])).toBe(false);
+  });
+
+  it('reads a row out when every line is out through its step, and a split row with a line in as in', () => {
+    const version = stepTwoRemoved();
+    for (const id of ['row-10', 'row-11', 'row-12']) {
+      expect(isRowRemoved(rowOf(version, id), version.method)).toBe(true);
+      expect(isRowRemoved(rowOf(version, id))).toBe(false);
+    }
+    expect(isRowRemoved(rowOf(version, 'row-01'), version.method)).toBe(false);
+    expect(isRowRemoved(rowOf(version, 'row-05'), version.method)).toBe(false);
+  });
+
+  it('takes the five lines out of the total: 799.7 g with the step in, 666.0 g with it removed, 799.7 g restored', () => {
+    const version = stepTwoRemoved();
+    expect(mass(version).toFixed(1)).toBe('666.0');
+    version.method.find((step) => step.n === 2).removed = false;
+    expect(mass(version).toFixed(1)).toBe('799.7');
+  });
+
+  it('keeps a line the maker removed on its own out after the step is restored', () => {
+    const version = stepTwoRemoved();
+    rowOf(version, 'row-01').portions[0].removed = true;
+    version.method.find((step) => step.n === 2).removed = false;
+    expect(mass(version).toFixed(1)).toBe('679.7');
+  });
+
+  it('writes no flag on a line, and tags the kept portion of a copied row with its stored index', () => {
+    const version = stepTwoRemoved();
+    const before = structuredClone(version);
+    const kept = activeRows(version);
+    expect(version).toEqual(before);
+    expect(kept.find((row) => row.id === 'row-01').portions).toEqual([{ step: 3, grams: 250.4, index: 1 }]);
+    expect(kept.map((row) => row.id)).not.toContain('row-10');
+  });
+
+  it('reads only a step whose removed is exactly true, found by n (T-03.6-09)', () => {
+    const method = [{ n: 1, removed: 'true' }, { n: 2, removed: 1 }, { n: 3 }, { n: 4, removed: true }];
+    expect([1, 2, 3, 4, 9].map((n) => isStepRemoved(method, n))).toEqual([false, false, false, true, false]);
+  });
+
+  it('reads a version with no method as having no step removed', () => {
+    const version = { rows: [{ id: 'a', portions: [{ step: 1, grams: 5 }] }] };
+    expect(activeRows(version)).toEqual(version.rows);
   });
 });

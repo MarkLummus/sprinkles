@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-05T03:50:03.807Z"
+last_updated: "2026-10-05T04:13:07.033Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: a7fc97215b3d76503652ee4ab29b13593bc68a04
+state_head: a9bdc20020b292b11c8b4a58370bf7123c542a97
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-05 - Completed quick task 261004-wib: Import error panel, notice under the scrim, Search below the hairline
+Last activity: 2026-10-05 - Completed quick task 261005-06q: opening More closes the Import error panel
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -408,6 +408,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261004-vpr | Build decision 55: More's tiles with the hairline between places and actions | 2026-10-05 | 42f5b88 | [261004-vpr-build-decision-55-more-s-tiles-with-the-](./quick/261004-vpr-build-decision-55-more-s-tiles-with-the-/) |
 | 261004-wc0 | Mark's List skill: a check closes the todos it covers | 2026-10-05 | 002e35b | [261004-wc0-mark-s-list-skill-a-check-closes-the-tod](./quick/261004-wc0-mark-s-list-skill-a-check-closes-the-tod/) |
 | 261004-wib | Build decisions 52, 53 and the Search move of 55: Import error panel, notice under the scrim, Search below the hairline | 2026-10-05 | a7fc972 | [261004-wib-build-decisions-52-53-and-the-search-mov](./quick/261004-wib-build-decisions-52-53-and-the-search-mov/) |
+| 261005-06q | Opening More closes the Import error panel | 2026-10-05 | a9bdc20 | [261005-06q-opening-more-closes-the-import-error-pan](./quick/261005-06q-opening-more-closes-the-import-error-pan/) |
 
 ### Roadmap Evolution
 

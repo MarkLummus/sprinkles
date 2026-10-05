@@ -169,6 +169,8 @@ export function Shell() {
   const [importErrors, setImportErrors] = useState([]);
   const [storeRevision, setStoreRevision] = useState(0);
   const fileInputRef = useRef(null);
+  const importRef = useRef(null);
+  const importErrorsRef = useRef(null);
 
   const [moreOpen, setMoreOpen] = useState(false);
   const moreSummaryRef = useRef(null);
@@ -186,6 +188,7 @@ export function Shell() {
   useEffect(() => {
     setMoreOpen(false);
     setPlacesOpen(false);
+    setImportErrors([]);
   }, [pathname]);
 
   useEffect(() => {
@@ -236,6 +239,30 @@ export function Shell() {
     moreSummaryRef.current?.focus();
   }
 
+  // Close on the Import error panel: when focus was inside the panel, it goes
+  // back to the opener, More's summary below 724 or the bar's Import from there.
+  function closeImportErrors() {
+    const focusWasInside = importErrorsRef.current?.contains(document.activeElement);
+    setImportErrors([]);
+    if (focusWasInside) (below724 ? moreSummaryRef : importRef).current?.focus();
+  }
+
+  // Escape closes the panel and stops there. The listener exists only while
+  // errors show and the fly-out is closed: the fly-out's own capture listener
+  // is also on document, and stopPropagation would not stop a second one on the
+  // same node, so one Escape would close both.
+  const importErrorsShowing = importErrors.length > 0;
+  useEffect(() => {
+    if (!importErrorsShowing || open) return undefined;
+    function handleKeyDown(event) {
+      if (event.key !== 'Escape') return;
+      event.stopPropagation();
+      closeImportErrors();
+    }
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => document.removeEventListener('keydown', handleKeyDown, true);
+  }, [importErrorsShowing, open, below724]);
+
   // Export hands the maker a file, using the browser's own object URL and
   // an anchor click — no upload, no network, no external service (D-15).
   // Moved from RecipeList.jsx unchanged in behaviour so it keeps working
@@ -254,7 +281,7 @@ export function Shell() {
   }
 
   // Import reads a file the maker chose, using the browser's local file
-  // reading. On rejection the errors render as text; nothing is replaced
+  // reading. On rejection the errors render as text in the Import error panel; nothing is replaced
   // or cleared. On success storeRevision increments, which every routed
   // page reads through the Outlet context, so Home can reload its own
   // data without a page reload and without the shell reaching into any
@@ -317,7 +344,13 @@ export function Shell() {
             <SearchIcon />
             Search
           </NavLink>
-          <button type="button" className="shell__place" tabIndex={0} onClick={() => fileInputRef.current?.click()}>
+          <button
+            type="button"
+            className="shell__place"
+            tabIndex={0}
+            ref={importRef}
+            onClick={() => fileInputRef.current?.click()}
+          >
             <ImportIcon />
             Import
           </button>
@@ -334,15 +367,32 @@ export function Shell() {
             tabIndex={-1}
             aria-hidden="true"
           />
-          {importErrors.length > 0 && (
-            <ul className="shell__import-errors">
-              {importErrors.map((error) => (
-                <li key={error}>{error}</li>
-              ))}
-            </ul>
-          )}
         </div>
       </header>
+      {/* The Import error panel (sketch 011 decision 52 B, Mark 2026-10-05):
+          fixed under Import from 724 and above the tab row below it, over the
+          page, so the bar never grows. It stays until Close, Escape, a good
+          import or a page change. Its place in the stack is in tokens.css. */}
+      {importErrorsShowing && (
+        <div className="shell__import-errors" role="alert" ref={importErrorsRef}>
+          <div className="shell__import-errors-head">
+            <div>
+              <p className="shell__import-errors-title">This file can’t be imported</p>
+              <p className="shell__import-errors-count">
+                {importErrors.length === 1 ? '1 problem found' : `${importErrors.length} problems found`}
+              </p>
+            </div>
+            <button type="button" className="shell__place" tabIndex={0} onClick={closeImportErrors}>
+              Close
+            </button>
+          </div>
+          <ul className="shell__import-errors-list">
+            {importErrors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="shell__body">
         <nav
           id="places"

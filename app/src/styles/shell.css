@@ -201,12 +201,59 @@ button.shell__place {
   display: none;
 }
 
+/* The Import error panel (sketch 011 decision 52 B, Mark 2026-10-05; the board
+   import-errors-placement.html B): fixed 6px under the bar at the right gutter,
+   under Import, over the page, so the bar stays 57px with one line or forty-nine.
+   Its place in the stack is in tokens.css. */
 .shell__import-errors {
-  flex-basis: 100%;
-  margin: var(--gap-xs) 0 0;
-  padding-left: var(--gap-m);
+  position: fixed;
+  z-index: var(--app-z-import-errors);
+  inset-block-start: var(--app-size-header-h);
+  inset-inline-end: var(--gap-page);
+  width: var(--app-size-import-errors-w);
+  margin-block-start: var(--gap-xs);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  padding: var(--gap-s) var(--gap-s) var(--gap-s) var(--gap-m);
+  background: var(--app-background);
+  border: var(--app-rule-row) solid var(--app-divider);
+  border-radius: var(--app-radius-control);
   font-family: var(--face-grotesk);
+  color: var(--app-text);
+}
+
+.shell__import-errors-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+}
+
+.shell__import-errors-title {
+  margin: 0;
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  line-height: var(--app-import-errors-title-leading);
+}
+
+.shell__import-errors-count {
+  margin: 0;
+  color: var(--app-text-secondary);
   font-size: var(--app-size-label);
+  line-height: var(--app-import-errors-leading);
+}
+
+/* Six lines at the list's own leading, then it scrolls. */
+.shell__import-errors-list {
+  margin: 0;
+  padding-left: var(--gap-s);
+  font-size: var(--app-size-label);
+  line-height: var(--app-import-errors-leading);
+  max-height: calc(6 * var(--app-import-errors-leading) * 1em);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
 }
 
 .shell__body {
@@ -589,11 +636,19 @@ button.shell__place {
     padding: var(--gap-s);
   }
 
+  /* Below 724 the Import error panel is fixed above the tab row at the page
+     gutters, so it shows wherever the page is scrolled. */
+  .shell__import-errors {
+    inset-block-start: auto;
+    inset-block-end: calc(var(--app-size-tab-h) + var(--gap-xs));
+    inset-inline: var(--gap-page);
+    width: auto;
+    margin-block-start: 0;
+  }
+
   /* The header's Search/Import/Export controls fold away at this step
      (D-16, decision 3): all three are duplicated inside More. The tools
-     row itself stays — the shared hidden file input and the import-errors
-     list live inside it, and hiding the row would leave an import failure
-     with nothing to report itself through. */
+     row itself stays, because the shared hidden file input lives inside it. */
   .shell__tools > .shell__place {
     display: none;
   }

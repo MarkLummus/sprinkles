@@ -377,10 +377,18 @@
   --app-tilt-sprinkle: -8deg; /* the brand mark's five sprinkles, each a tilted rounded rod */
   --app-size-tab-h: 56px; /* the bottom tab row's own height below the phone step (D-16); .shell__main's bottom padding matches it so the fixed row never covers the end of a page */
   --app-size-header-h: calc(var(--touch-min) + 2 * var(--gap-xs) + var(--app-rule-row)); /* the sticky bar from 724 (sketch 011 decision 33): the 44px controls, 6px above and below, the 1px hairline = 57; read by the panel's and the rail's top and by html's scroll padding */
-  --app-z-notice: 10; /* the page notice, as built (.page-status) */
-  --app-z-header: 11; /* the sticky bar (decision 33), above the notice, which would otherwise paint over it when the page is scrolled a little */
-  --app-z-scrim: 4; /* the fly-out's scrim (decision 33, nav-candidates.css GO): above every z-index the page itself uses (1 and 2 in app.css), below the panel */
-  --app-z-flyout: 5; /* the fly-out panel: above the scrim, below the notice and the bar, so the bar's controls stay live while it is open */
+  /* The stacking order, lowest first, stated once (sketch 011 decisions 33, 52
+     and 53; Mark, 2026-10-05): the page's own literals 1 and 2 (app.css), the
+     page notice 3, the fly-out's scrim 4, the fly-out 5, the Import error panel
+     6, the sticky bar 11. shell.test.js pins the order. */
+  --app-z-notice: 3; /* the page notice (.page-status): a layer of the page */
+  --app-z-scrim: 4; /* the fly-out's scrim */
+  --app-z-flyout: 5; /* the fly-out panel */
+  --app-z-import-errors: 6; /* the Import error panel */
+  --app-z-header: 11; /* the sticky bar */
+  --app-size-import-errors-w: 480px; /* the Import error panel's width from 724 (board import-errors-placement.html B) */
+  --app-import-errors-title-leading: 1.3; /* the panel's title line height (board import-errors-placement.html B) */
+  --app-import-errors-leading: 1.5; /* the panel's count and lines (board import-errors-placement.html B); six lines of it set the list's height */
   --app-scrim: rgba(20, 20, 20, 0.28); /* the scrim: the App text #141414 at 28% (decision 33, GO) */
   --app-shadow-flyout: 4px 0 16px rgba(20, 20, 20, 0.18); /* the panel's edge shadow (decision 33, GO) */
   --app-tilt-menu: 90deg; /* the menu button's three dots stand upright, as --app-tilt-sprinkle turns the brand's rods (decision 33) */

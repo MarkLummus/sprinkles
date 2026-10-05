@@ -10,6 +10,7 @@
 // bare bracket read against a maker-influenced key (the discipline T-02-32
 // named).
 import { buildDiff } from './diff.js';
+import { isRowRemoved } from './rows.js';
 
 // A step with no `uses` key reads as [] — absence is a fact, not an error,
 // the doctrine domain/batch.js already applies to a step's `stepChanges`.
@@ -35,7 +36,7 @@ export function stepsUsingRow(version, rowId) {
 export function removedRowsUsedBy(version, step) {
   if (step.removed) return [];
   const uses = usesOf(step);
-  return version.rows.filter((row) => row.removed && uses.includes(row.id));
+  return version.rows.filter((row) => isRowRemoved(row) && uses.includes(row.id));
 }
 
 /**
@@ -54,7 +55,7 @@ export function coveredRowsFor(version, step) {
   const uses = usesOf(step);
   const entries = [];
   for (const row of version.rows) {
-    if (row.removed || !uses.includes(row.id)) continue;
+    if (isRowRemoved(row) || !uses.includes(row.id)) continue;
     const coveringSteps = stepsUsingRow(version, row.id);
     if (coveringSteps.length > 0) {
       entries.push({ id: row.id, ingredientName: row.ingredientName, coveringSteps });
@@ -78,7 +79,7 @@ export function orphanedRows(version) {
     for (const rowId of usesOf(step)) target.add(rowId);
   }
   return version.rows.filter(
-    (row) => !row.removed && usedByRemovedStep.has(row.id) && !usedByActiveStep.has(row.id),
+    (row) => !isRowRemoved(row) && usedByRemovedStep.has(row.id) && !usedByActiveStep.has(row.id),
   );
 }
 

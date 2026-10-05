@@ -212,3 +212,52 @@ describe('stepsWithStaleAmounts', () => {
     expect(stepsWithStaleAmounts(current, baseline)).toEqual([]);
   });
 });
+
+describe('removal through a line (03.6, decision 51: a row is removed when every line is out)', () => {
+  const lineOut = (version, id, index) => {
+    findRow(version, id).portions[index].removed = true;
+  };
+
+  it("reads a one-line row removed through its line as removed, exactly as the older row flag does", () => {
+    const version = clone();
+    lineOut(version, 'row-09', 0);
+    expect(removedRowsUsedBy(version, findStep(version, 1)).map((row) => row.id)).toEqual(['row-09']);
+  });
+
+  it("does not read a split row with one line out as removed, for any step", () => {
+    const version = clone();
+    lineOut(version, 'row-01', 0);
+    for (const step of version.method) expect(removedRowsUsedBy(version, step)).toEqual([]);
+  });
+
+  it("still names Whole milk as covered by step 3 when step 2 is removed and only its Step 2 line is out, and orphans nothing for it", () => {
+    const version = clone();
+    lineOut(version, 'row-01', 0);
+    findStep(version, 2).removed = true;
+    const covered = coveredRowsFor(version, findStep(version, 2));
+    expect(covered.map((entry) => entry.id)).toContain('row-01');
+    expect(orphanedRows(version).map((row) => row.id)).not.toContain('row-01');
+  });
+
+  it('covers nothing and orphans nothing for a row with every line out', () => {
+    const version = clone();
+    lineOut(version, 'row-01', 0);
+    lineOut(version, 'row-01', 1);
+    findStep(version, 2).removed = true;
+    expect(coveredRowsFor(version, findStep(version, 2)).map((entry) => entry.id)).not.toContain('row-01');
+    expect(orphanedRows(version).map((row) => row.id)).not.toContain('row-01');
+  });
+
+  it('writes no flag: the version passed in is unchanged by every function here', () => {
+    const version = clone();
+    lineOut(version, 'row-01', 0);
+    findStep(version, 2).removed = true;
+    const before = structuredClone(version);
+    for (const step of version.method) {
+      removedRowsUsedBy(version, step);
+      coveredRowsFor(version, step);
+    }
+    orphanedRows(version);
+    expect(version).toEqual(before);
+  });
+});

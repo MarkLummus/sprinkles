@@ -9,7 +9,7 @@
 // order (already ascending n).
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
 import { buildFigures } from './figures.js';
-import { activeRows, activeSteps, rowGrams } from './rows.js';
+import { activeRows, activeSteps, isRowRemoved, rowGrams } from './rows.js';
 
 function activeMass(version) {
   const balance = computeBalance(activeRows(version));
@@ -67,7 +67,7 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass) {
       stepsFrom: null,
       stepsTo: stepsOf(row),
       stepsChanged: true,
-      removed: row.removed ?? false,
+      removed: isRowRemoved(row),
       removedChanged: true,
     };
   }
@@ -75,8 +75,8 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass) {
   const baseRowTotal = rowGrams(baseRow);
   const shareFrom = formatShareOfBatch(baseRowTotal, baselineMass);
   const shareTo = formatShareOfBatch(rowTotal, currentMass);
-  const removed = row.removed ?? false;
-  const baseRemoved = baseRow.removed ?? false;
+  const removed = isRowRemoved(row);
+  const baseRemoved = isRowRemoved(baseRow);
   return {
     id: row.id,
     ingredientName: row.ingredientName,

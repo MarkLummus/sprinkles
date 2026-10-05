@@ -4,6 +4,8 @@
 // seeded olive oil version, edited per test.
 import { describe, it, expect } from 'vitest';
 import { buildDiff } from './diff.js';
+import { buildFigures } from './figures.js';
+import { activeRows, activeSteps } from './rows.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 function clone() {
@@ -517,5 +519,54 @@ describe('buildDiff — empty', () => {
     expect(diff.rows).toEqual([]);
     expect(diff.figures).toEqual([]);
     expect(diff.total).toEqual({ from: '0.0 g', to: '0.0 g', fromValue: '0.0', toValue: '0.0', changed: false });
+  });
+});
+
+describe('buildDiff — removal through a line (03.6, decision 51)', () => {
+  it('reports a one-line row with its line out in current and not in baseline as removed and changed', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-09').portions[0].removed = true;
+
+    const lecithinDiff = buildDiff(current, baseline).rows.find((row) => row.id === 'row-09');
+    expect(lecithinDiff.removed).toBe(true);
+    expect(lecithinDiff.removedChanged).toBe(true);
+  });
+
+  it('reports it as removed and not changed when its line is out on both sides', () => {
+    const baseline = clone();
+    findRow(baseline, 'row-09').portions[0].removed = true;
+    const current = clone();
+    findRow(current, 'row-09').portions[0].removed = true;
+
+    const lecithinDiff = buildDiff(current, baseline).rows.find((row) => row.id === 'row-09');
+    expect(lecithinDiff.removed).toBe(true);
+    expect(lecithinDiff.removedChanged).toBe(false);
+  });
+
+  it('still reports the older row flag the same way', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-09').removed = true;
+
+    const lecithinDiff = buildDiff(current, baseline).rows.find((row) => row.id === 'row-09');
+    expect(lecithinDiff.removed).toBe(true);
+    expect(lecithinDiff.removedChanged).toBe(true);
+  });
+
+  it("does not report a split row with only its Step 2 line out as removed, and takes that line out of the total and the figures", () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-01').portions[0].removed = true;
+
+    const diff = buildDiff(current, baseline);
+    const milkDiff = diff.rows.find((row) => row.id === 'row-01');
+    expect(milkDiff.removed).toBe(false);
+    expect(diff.total.from).toBe('799.7 g');
+    expect(diff.total.to).toBe('679.7 g');
+
+    const lines = { ...current, rows: activeRows(current), method: activeSteps(current) };
+    const expected = buildFigures(lines);
+    expect(diff.figures.map((figure) => figure.to)).toEqual(expected.map((figure) => figure.value));
   });
 });

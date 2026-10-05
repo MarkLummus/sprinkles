@@ -17,12 +17,14 @@ export function isLineRemoved(row, portion) {
 
 /**
  * isRowRemoved(row) -> true when the row's older whole-row flag is exactly
- * true or every one of its lines is out. A row with no portions is not
- * removed by this rule. A split row with one line out is not removed.
+ * true or every one of its lines is out. A row with no portions (or no
+ * portions array) is not removed by this rule. A split row with one line
+ * out is not removed.
  */
 export function isRowRemoved(row) {
   if (row.removed === true) return true;
-  return row.portions.length > 0 && row.portions.every((portion) => portion.removed === true);
+  const portions = row.portions ?? [];
+  return portions.length > 0 && portions.every((portion) => portion.removed === true);
 }
 
 /**

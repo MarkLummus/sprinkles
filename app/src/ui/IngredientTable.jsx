@@ -328,10 +328,14 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
 // now (Task 2), replacing the row-level formatAsMadeReading join entirely:
 // each portion is its own <tr>, so there is no cell left that would ever
 // join two portions' readings together.
-function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade }) {
+function AsMadeCell({ row, drawnRow = row, portionIndex, mode, draft, openBatch, onChangeAsMade }) {
   if (mode === 'recording') {
     const draftValues = Object.prototype.hasOwnProperty.call(draft.asMade, row.id) ? draft.asMade[row.id] : null;
-    const multiPortion = row.portions.length > 1;
+    // The name counts the lines drawn (sketch 011 decision 56, Mark's answer A recommended,
+    // 2026-10-05); the value stays at the stored position, so nothing stored changes and
+    // Correct reopens the same values.
+    const multiPortion = drawnRow.portions.length > 1;
+    const drawnNumber = drawnRow.portions.findIndex((line, i) => (line.index ?? i) === portionIndex) + 1;
     return (
       <input
         type="text"
@@ -340,7 +344,7 @@ function AsMadeCell({ row, portionIndex, mode, draft, openBatch, onChangeAsMade 
         value={draftValues ? draftValues[portionIndex] : ''}
         aria-label={
           multiPortion
-            ? `${row.ingredientName}, as made, grams, portion ${portionIndex + 1}`
+            ? `${row.ingredientName}, as made, grams, portion ${drawnNumber}`
             : `${row.ingredientName}, as made, grams`
         }
         onChange={(event) => onChangeAsMade(row.id, portionIndex, event.target.value)}
@@ -549,12 +553,11 @@ export function IngredientTable({
     // The lines still in, over the live batch: the stored row itself when every
     // line is in.
     const liveRow = baselineActiveById.get(row.id) ?? row;
-    // In the reading Sheet, and so in print, a split ingredient with one line still in
-    // reads like a one-line row, with no portion line (Mark's List row
-    // per-step-one-line-left, Mark's answer drop, 2026-10-05; sketch 011 decision 51).
-    // Recording shares this branch and keeps the stored count as built, because as made
-    // with a line out is still open for Mark (03.6-CONFORMANCE.md "Open for Mark" item 2).
-    const isSplit = (mode === 'recording' ? row : liveRow).portions.length > 1;
+    // In the reading Sheet, in print and while recording, a split ingredient with one line
+    // still in reads like a one-line row, with no portion line (Mark's List row
+    // per-step-one-line-left, Mark's answer drop, 2026-10-05; sketch 011 decision 56,
+    // Mark's answer A recommended, 2026-10-05).
+    const isSplit = liveRow.portions.length > 1;
     const ariaLabel = rowAccessibleLabel(liveRow, dataFlag, isMarked, markedFigureLabel, asMadeValue);
 
     return (
@@ -577,7 +580,7 @@ export function IngredientTable({
         </td>
         {hasAsMadeLayer && (
           <td className="ingredient-table__col-numeric">
-            <AsMadeCell row={row} portionIndex={portionIndex} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
+            <AsMadeCell row={row} drawnRow={liveRow} portionIndex={portionIndex} mode={mode} draft={draft} openBatch={openBatch} onChangeAsMade={onChangeAsMade} />
           </td>
         )}
         <td className="ingredient-table__col-numeric">{formatShareOfBatch(portion.grams, baselineMass)}</td>

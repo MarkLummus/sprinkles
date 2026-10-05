@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef } from 'react';
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, formatPortionLine } from '../domain/composition.js';
 import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
-import { activeRows, rowGrams } from '../domain/rows.js';
+import { activeRows, isLineRemoved, rowGrams } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { parseGramsDraft } from '../domain/lineage.js';
@@ -17,11 +17,16 @@ import { parseGramsDraft } from '../domain/lineage.js';
 // entries within a group keep `rows`' own iteration order, then portion
 // order — never re-sorted, matching the sketch's own ING.forEach
 // iteration (index.html:390-406).
-function groupPortionsByStep(rows, steps, stepNumberMap) {
+//
+// `rows` are the stored rows. A line that is out is skipped before any group is
+// created for it, so no empty step head prints, unless `keepOutLines` is set:
+// the pen and Show changes draw a line that is out, struck.
+function groupPortionsByStep(rows, steps, stepNumberMap, keepOutLines) {
   const numbered = new Map();
   const unallocated = [];
   for (const row of rows) {
     row.portions.forEach((portion, portionIndex) => {
+      if (!keepOutLines && isLineRemoved(row, portion)) return;
       const displayNumber = stepNumberMap ? displayNumberOf(stepNumberMap, portion.step) : null;
       const entry = { row, portion, portionIndex, displayNumber };
       if (displayNumber == null) {
@@ -477,7 +482,7 @@ export function IngredientTable({
   // pen's own live draftVersion.method while developing (its own comment
   // above states why), the `steps` prop everywhere else.
   const stepsForGrouping = isDeveloping ? draftVersion.method : steps;
-  const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers);
+  const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers, isDeveloping || isShowingChanges);
   const showStepHeads = !(groups.length === 1 && groups[0].displayNumber == null);
 
   // Style 6's reading row (sketch 011 decisions 2, 3; D-19; 03.5-06 Task
@@ -491,7 +496,10 @@ export function IngredientTable({
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
     const isSplit = row.portions.length > 1;
-    const ariaLabel = rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue);
+    // The lines still in, over the live batch: the stored row itself when every
+    // line is in.
+    const liveRow = baselineActiveById.get(row.id) ?? row;
+    const ariaLabel = rowAccessibleLabel(liveRow, dataFlag, isMarked, markedFigureLabel, asMadeValue);
 
     return (
       <tr key={`${row.id}:${portionIndex}`} className={isMarked ? 'is-marked' : undefined} aria-label={ariaLabel}>
@@ -507,7 +515,7 @@ export function IngredientTable({
           )}
           {isSplit && (
             <span className="ingredient-table__portion-note">
-              {formatPortionLine(portion.grams, rowGrams(row), baselineMass)}
+              {formatPortionLine(portion.grams, rowGrams(liveRow), baselineMass)}
             </span>
           )}
         </td>

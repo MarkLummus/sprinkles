@@ -918,3 +918,72 @@ describe('validateVersion, the fields', () => {
     expect({}.polluted).toBeUndefined();
   });
 });
+
+// Phase 03.6 (sketch 011 decision 51): a portion may carry an optional boolean
+// `removed`, in a version's rows and in a batch's snapshot rows. Absent or a
+// boolean is accepted; anything else is refused by path (T-03.6-05).
+describe('a portion\'s optional removed flag (T-03.6-05)', () => {
+  const versionPath = '$.versions[0].rows[0].portions[0].removed';
+  const snapshotPath = '$.batches[0].snapshot.rows[0].portions[0].removed';
+
+  function versionWithFlag(value) {
+    const version = makeVersion();
+    version.rows[0].portions[0].removed = value;
+    return version;
+  }
+
+  function batchWithFlag(value) {
+    const batch = makeBatch();
+    batch.snapshot.rows[0].portions[0].removed = value;
+    return batch;
+  }
+
+  it('accepts true, false and an absent key in a version\'s rows', () => {
+    expect(validateStoreFile(makeStoreFile([versionWithFlag(true)])).ok).toBe(true);
+    expect(validateStoreFile(makeStoreFile([versionWithFlag(false)])).ok).toBe(true);
+    expect(validateStoreFile(makeStoreFile([makeVersion()])).ok).toBe(true);
+  });
+
+  it('accepts a boolean in a batch\'s snapshot rows', () => {
+    expect(validateStoreFile(makeStoreFile([makeVersion()], [batchWithFlag(true)])).ok).toBe(true);
+  });
+
+  it.each([
+    ['the string "true"', 'true'],
+    ['the number 1', 1],
+    ['null', null],
+  ])('refuses %s in a version\'s rows, naming the path', (_label, value) => {
+    const result = validateStoreFile(makeStoreFile([versionWithFlag(value)]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith(versionPath))).toBe(true);
+  });
+
+  it.each([
+    ['the string "true"', 'true'],
+    ['the number 1', 1],
+    ['null', null],
+  ])('refuses %s in a batch\'s snapshot rows, naming the path', (_label, value) => {
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batchWithFlag(value)]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.startsWith(snapshotPath))).toBe(true);
+  });
+
+  it('refuses a file carrying a bad flag whole, and writes nothing', async () => {
+    const repository = createInMemoryRepository([], [], []);
+    const result = await importStore(repository, makeStoreFile([versionWithFlag('true')]));
+    expect(result.ok).toBe(false);
+    expect(repository.putAllCalls).toBe(0);
+    expect(repository.putAllBatchesCalls).toBe(0);
+    expect(repository.putAllRecipesCalls).toBe(0);
+    expect(repository.versions).toEqual([]);
+  });
+
+  it('keeps a line that is out through exportStore then importStore', async () => {
+    const source = createInMemoryRepository([versionWithFlag(true)], [], [makeRecipe()]);
+    const exported = JSON.parse(JSON.stringify(await exportStore(source)));
+    const target = createInMemoryRepository([], [], []);
+    const result = await importStore(target, exported);
+    expect(result.ok).toBe(true);
+    expect(target.versions[0].rows[0].portions[0].removed).toBe(true);
+  });
+});

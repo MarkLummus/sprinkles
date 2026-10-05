@@ -2107,7 +2107,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
               />
               {hasRows ? (
                 <IngredientTable
-                  rows={mode === 'developing' || showingChanges ? version.rows : readingVersion.rows}
+                  rows={version.rows}
                   draftVersion={draftVersion}
                   diff={changeDiff}
                   showingChanges={showingChanges}
@@ -2120,7 +2120,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   penDraft={penDraft}
                   openBatch={evidenceBatch}
                   comparisonBatchLabel={comparisonBatchLabel}
-                  steps={mode === 'developing' || showingChanges ? version.method : readingVersion.method}
+                  steps={version.method}
                   currentStepNumbers={currentStepNumbers}
                   onChangeAsMade={handleChangeAsMade}
                   onChangePenGrams={handleChangePenGrams}

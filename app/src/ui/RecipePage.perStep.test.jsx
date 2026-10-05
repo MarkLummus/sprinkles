@@ -217,3 +217,37 @@ describe('a press survives Save as a boolean on the line alone (decision 51, pla
     expect(store.versions.find((version) => version.id === VERSION)).toEqual(parentBefore);
   });
 });
+
+describe('a saved version with a line out reads without it (decision 51, plan 03)', () => {
+  it('opens the saved child in the reading state at the figures the board measured', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('remove Whole milk, Step 2'));
+    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+    await click(buttonByText(container, 'Save as a new version'));
+    await flush(() => store.saveVersion.mock.calls.length > 0);
+    const savedId = store.saveVersion.mock.calls[0][0].id;
+    // The MemoryRouter lands on the saved child's route; wait for the reading state.
+    await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByLabel('remove Whole milk, Step 2') === null);
+
+    expect(savedId).not.toBe(VERSION);
+    const table = current.container.querySelector('.ingredient-table');
+    expect(totalCell().textContent.endsWith('679.7 g')).toBe(true);
+    expect(totalCell().querySelector('.struck-value')).toBeNull();
+    const milkRows = [...table.querySelectorAll('tbody tr[aria-label]')].filter((tr) => tr.getAttribute('aria-label').startsWith('Whole milk'));
+    expect(milkRows).toHaveLength(1);
+    expect(milkRows[0].querySelector('.ingredient-table__portion-note').textContent).toBe('250.4 g of 250.4 g · 36.8% in all');
+    const cells = milkRows[0].querySelectorAll('td');
+    expect(cells[cells.length - 1].textContent).toBe('36.8%');
+    const sucroseRows = [...table.querySelectorAll('tbody tr[aria-label]')].filter((tr) => tr.getAttribute('aria-label').startsWith('Sucrose'));
+    expect(sucroseRows.map((tr) => tr.querySelector('.ingredient-table__portion-note').textContent)).toEqual([
+      '12 g of 76.0 g · 11.2% in all',
+      '64 g of 76.0 g · 11.2% in all',
+    ]);
+    const controls = [...table.querySelectorAll('button')].filter((button) => /^(remove|restore)/.test(button.getAttribute('aria-label') ?? ''));
+    expect(controls).toHaveLength(0);
+    const heads = [...table.querySelectorAll('.ingredient-table__step-head')].map((tr) => tr.textContent);
+    expect(heads.some((text) => text.startsWith('Step 2'))).toBe(true);
+  });
+});

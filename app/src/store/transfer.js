@@ -67,7 +67,8 @@ function scanForUnsafeKeys(value, path, errors) {
  * validatePortion(portion, path, errors) -> void, in the same
  * collect-all-errors, name-the-path style as validateRow. A portion is an
  * amount at a step, never a stored total (D-01): grams must be a finite
- * number of at least zero, and step must be a finite number.
+ * number of at least zero, and step must be a finite number. `removed` is
+ * optional: absent or a boolean (a line taken out, sketch 011 decision 51).
  */
 function validatePortion(portion, path, errors) {
   if (!isPlainObject(portion)) {
@@ -79,6 +80,10 @@ function validatePortion(portion, path, errors) {
   }
   if (!isFiniteNumber(portion.step)) {
     errors.push(`${path}.step: expected a finite number, got ${JSON.stringify(portion.step)}`);
+  }
+  // Optional: absent or a boolean, never null or any third spelling (T-03.6-05).
+  if (portion.removed !== undefined && typeof portion.removed !== 'boolean') {
+    errors.push(`${path}.removed: expected a boolean when present, got ${JSON.stringify(portion.removed)}`);
   }
 }
 

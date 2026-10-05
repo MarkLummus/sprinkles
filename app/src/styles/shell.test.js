@@ -312,12 +312,25 @@ describe('the unbuilt place reads in the App\'s own voice (D-10, gap 2, CR-01)',
 });
 
 describe('a focus ring that paints where :focus-visible never fires (G-03.4-4, .planning/debug/ipad-keyboard-no-focus-ring.md)', () => {
-  test("the places' plain :focus fallback and the menu button's own :focus-visible ring are the only two focus rules in shell.css, both top-level", () => {
+  const TAB_RING = '.shell__tabs > .shell__place:focus, .shell__tabs > .shell__more > .shell__place:focus';
+
+  test("the places' plain :focus fallback, the menu button's own :focus-visible ring and the tab row's inset ring are the only focus rules in shell.css", () => {
     const focusRules = rules.filter((r) => r.selector.includes(':focus'));
-    expect(focusRules.map((r) => r.selector).sort()).toEqual(['.shell__menu:focus-visible', '.shell__place:focus']);
-    for (const rule of focusRules) {
-      expect(rule.media).toBeUndefined();
-    }
+    expect(focusRules.map((r) => r.selector).sort()).toEqual(['.shell__menu:focus-visible', '.shell__place:focus', TAB_RING]);
+    const mediaOf = (selector) => focusRules.find((r) => r.selector === selector).media;
+    expect(mediaOf('.shell__menu:focus-visible')).toBeUndefined();
+    expect(mediaOf('.shell__place:focus')).toBeUndefined();
+    expect(mediaOf(TAB_RING)).toBe(PHONE_MEDIA);
+  });
+
+  // The fixed row's stops run to the window's bottom edge, Home's to its left and More's to its
+  // right. A ring drawn outside the box was cut on the iPhone. An offset of minus the ring's
+  // width puts its outer edge on the box's own edge, with the 10px radius.
+  test("the tab row's five stops draw the ring inside their own box, so the window's edge cannot cut it and its outer edge follows the 10px radius (quick 261004-uo6, sketch 011 decision 38)", () => {
+    const rule = rules.find((r) => r.selector === TAB_RING && r.media === PHONE_MEDIA);
+    expect(rule, 'expected a phone-block tab-row focus rule').toBeTruthy();
+    const declarations = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean);
+    expect(declarations).toEqual(['outline-offset: calc(-1 * var(--focus-outline-width))']);
   });
 
   test('.shell__place:focus declares both focus tokens', () => {

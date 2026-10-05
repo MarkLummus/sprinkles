@@ -200,10 +200,12 @@ export function parseGramsDraft(value) {
 
 /**
  * findBlockedRow(penFields, version) -> { row, message } for the first
- * active row (in the version's own authored order) whose grams field
- * blocks the save, or `null` when no row does. Checked one row at a
- * time, walking the row's own portions in order, blank before
- * non-numeric within each portion, so within a single row the maker is
+ * row (in the version's own authored order) with a line in whose grams
+ * field blocks the save, or `null` when no row does. A line the draft
+ * marks removed is skipped, so a row with every line out blocks nothing
+ * and a split row with one line out is judged on its other line. Checked
+ * one row at a time, walking the row's own portions in order, blank
+ * before non-numeric within each portion, so within a single row the maker is
  * told about one thing at a time; the first blocking portion of the
  * first blocking row wins, and the walk then moves to the next row. The
  * one traversal both blockedSaveMessage and blockedSaveRowId read, so
@@ -213,7 +215,6 @@ export function parseGramsDraft(value) {
 function findBlockedRow(penFields, version) {
   for (const row of version.rows) {
     const draftRow = penFields.rows[row.id];
-    if (draftRow.removed) continue;
     for (const draftPortion of draftRow.portions) {
       if (draftPortion.removed) continue;
       if (draftPortion.grams === undefined || draftPortion.grams === '') {
@@ -233,14 +234,14 @@ function findBlockedRow(penFields, version) {
  * order so the maker is told about one thing at a time
  * (route-recipe-version.md § 3, § 6, D-04, D-21): a blank or
  * whitespace-only version line; a line that collides through
- * versionLineUnique; then, for the first active row (in the version's own
+ * versionLineUnique; then, for the first row (in the version's own
  * authored order) that blocks — a blank grams field, or a grams field
  * holding anything that is not a non-negative number with up to two
  * decimals (critique P1 #3). `penFields` carries `versionLabel` (a
- * string) and `rows` (a map keyed by row id holding { portions, removed }
- * — the pen draft's own shape, `portions` an array of { grams } parallel
- * to the stored row's own portions); a row the draft marks removed needs
- * no amount. `versions` is the list to check uniqueness against, already
+ * string) and `rows` (a map keyed by row id holding { portions } — the
+ * pen draft's own shape, `portions` an array of { grams, removed }
+ * parallel to the stored row's own portions); a line the draft marks
+ * removed needs no amount. `versions` is the list to check uniqueness against, already
  * scoped by the caller to the recipe and to exclude the version being
  * saved over when that applies, so this function never takes an
  * excludeId of its own. Never looks at a band, a deviation or an

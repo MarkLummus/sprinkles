@@ -348,22 +348,22 @@ describe('citableBatches', () => {
 });
 
 describe('blockedSaveMessage', () => {
-  // A full, valid rows map: every row of oliveOilVersion, unremoved, with
+  // A full, valid rows map: every row of oliveOilVersion, every line in, with
   // its own portions' grams each as a string — the shape penDraft.rows
-  // takes. An override supplies its own `portions` array (a single-entry
+  // takes (removal rides on the lines, plan 03.6-02). An override supplies its own `portions` array (a single-entry
   // one is enough for a test that only cares about one blocking amount);
   // findBlockedRow walks whatever portions array the draft carries, so an
   // override need not match the row's own real portion count.
   function validRows(overrides = {}) {
     const rows = {};
     for (const row of oliveOilVersion.rows) {
-      rows[row.id] = { portions: row.portions.map((portion) => ({ grams: String(portion.grams) })), removed: false };
+      rows[row.id] = { portions: row.portions.map((portion) => ({ grams: String(portion.grams), removed: false })) };
     }
     return { ...rows, ...overrides };
   }
 
   function onePortionOverride(grams, removed = false) {
-    return { portions: [{ grams }], removed };
+    return { portions: [{ grams, removed }] };
   }
 
   const noVersions = [];
@@ -398,9 +398,19 @@ describe('blockedSaveMessage', () => {
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
   });
 
-  it('a row the draft marks removed needs no amount', () => {
+  it('a line the draft marks removed needs no amount', () => {
     const penFields = { versionLabel: '60 g oil · 800 g', reason: '', rows: validRows({ 'row-01': onePortionOverride('', true) }) };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBeNull();
+  });
+
+  it('a split row with one line out and the other blank still blocks and names the row; with every line out it blocks nothing', () => {
+    const oneOut = { 'row-01': { portions: [{ grams: '', removed: true }, { grams: '', removed: false }] } };
+    const bothOut = { 'row-01': { portions: [{ grams: '', removed: true }, { grams: '', removed: true }] } };
+    const base = { versionLabel: '60 g oil · 800 g', reason: '' };
+    expect(blockedSaveMessage({ ...base, rows: validRows(oneOut) }, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
+    expect(blockedSaveRowId({ ...base, rows: validRows(oneOut) }, oliveOilVersion, noVersions)).toBe('row-01');
+    expect(blockedSaveMessage({ ...base, rows: validRows(bothOut) }, oliveOilVersion, noVersions)).toBeNull();
+    expect(blockedSaveRowId({ ...base, rows: validRows(bothOut) }, oliveOilVersion, noVersions)).toBeNull();
   });
 
   it('never blocks on a whitespace-only reason — a reason of nothing but whitespace is treated exactly as a blank one', () => {
@@ -445,13 +455,13 @@ describe('blockedSaveMessage', () => {
     const penFields = {
       versionLabel: '60 g oil · 800 g',
       reason: '',
-      rows: validRows({ 'row-01': { portions: [{ grams: '120' }, { grams: '' }], removed: false } }),
+      rows: validRows({ 'row-01': { portions: [{ grams: '120' }, { grams: '' }] } }),
     };
     expect(blockedSaveMessage(penFields, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');
   });
 
   it('a blank line that is out blocks nothing, while its sibling line in still does (decision 51)', () => {
-    const rows = (second) => validRows({ 'row-01': { portions: [{ grams: '', removed: true }, { grams: second }], removed: false } });
+    const rows = (second) => validRows({ 'row-01': { portions: [{ grams: '', removed: true }, { grams: second }] } });
     const base = { versionLabel: '60 g oil · 800 g', reason: '' };
     expect(blockedSaveMessage({ ...base, rows: rows('250.4') }, oliveOilVersion, noVersions)).toBeNull();
     expect(blockedSaveMessage({ ...base, rows: rows('') }, oliveOilVersion, noVersions)).toBe('Whole milk needs an amount, or remove the row');

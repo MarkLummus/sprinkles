@@ -5,7 +5,7 @@ import { buildFigures, figureLabelText } from '../domain/figures.js';
 import { createBatch, completeRecord, formatRecordDate, sortedBatches } from '../domain/batch.js';
 import { BATTERY_FIELDS, parseMeasuredDraft } from '../domain/battery.js';
 import { setMark } from '../domain/axes.js';
-import { activeRows, activeSteps } from '../domain/rows.js';
+import { activeRows, activeSteps, isLineRemoved } from '../domain/rows.js';
 import { freshId } from '../domain/id.js';
 import {
   createChildVersion,
@@ -265,9 +265,11 @@ function isAuthoredListDirty(draftList, baseList) {
 // "unsaved ink" principle carried to the plan's pen): every field tested
 // against '' / null / the version's own values, never truthiness, so a
 // grams field typed back to the version's own value counts as clean again.
-// A row's draft entry is { portions: [{ step, grams }], removed } (D-01,
-// D-02) — dirty if the removed flag differs, or if any portion's raw
-// string or step differs from that portion's own value, in order.
+// A row's draft entry is { portions: [{ step, grams, removed }] } (D-01,
+// D-02; removal rides on the lines alone, sketch 011 decision 51) — dirty
+// if any portion's raw string, step or removed flag differs from that
+// portion's own value, in order. A stored older whole-row flag reads as
+// every line out (isLineRemoved), the same rule the draft is seeded by.
 //
 // Extended (03-07, T-03-42) to the three fields the pen spends most of its
 // time editing — method, the Sheet title/description, authored — which
@@ -282,13 +284,12 @@ export function isPenDraftDirty(mode, penDraft, version) {
   if (penDraft.sheetDescription !== version.sheetDescription) return true;
   const rowsDirty = version.rows.some((row) => {
     const draftRow = penDraft.rows[row.id];
-    if (draftRow.removed !== (row.removed ?? false)) return true;
     return row.portions.some((portion, i) => {
       const draftPortion = draftRow.portions[i];
       return (
         draftPortion.grams !== String(portion.grams) ||
         draftPortion.step !== portion.step ||
-        Boolean(draftPortion.removed) !== (portion.removed === true)
+        Boolean(draftPortion.removed) !== isLineRemoved(row, portion)
       );
     });
   });
@@ -300,6 +301,18 @@ export function isPenDraftDirty(mode, penDraft, version) {
   if (methodDirty) return true;
   if (isAuthoredListDirty(penDraft.authored.beforeYouStart, version.authored.beforeYouStart)) return true;
   return false;
+}
+
+// The orphaned-row flag's "remove this row" acts on every line of the
+// row (plan 03.6-02 decision 4): if every line is out it puts every line
+// back in, otherwise it takes every line out. Pure — returns a new draft
+// row and touches nothing but the lines' removed flags.
+export function toggleDraftRowLines(draftRow) {
+  const everyOut = draftRow.portions.every((portion) => portion.removed === true);
+  return {
+    ...draftRow,
+    portions: draftRow.portions.map((portion) => ({ ...portion, removed: !everyOut })),
+  };
 }
 
 // "A pen is open" used to live in two unrelated states — `mode`
@@ -1025,10 +1038,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
                 return {
                   step: draftPortion.step,
                   grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
-                  removed: draftPortion.removed,
+                  removed: Boolean(draftPortion.removed),
                 };
               }),
-              removed: draftRow.removed,
+              removed: false,
             };
           }),
           method: penDraft.method,
@@ -1632,8 +1645,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
   }
 
   // Seeds penDraft from the version the pen opened on — a row's own
-  // portions mapped to { step, grams }, each grams a string (Pitfall 5),
-  // everything else the maker's own to write, never defaulted from the
+  // portions mapped to { step, grams, removed }, each grams a string
+  // (Pitfall 5) and each removed read through isLineRemoved so a stored
+  // older whole-row flag opens as every line out and never resurrects a
+  // row the maker restored (plan 03.6-02 decision 1); the draft row holds
+  // no flag of its own. Everything else the maker's own to write, never defaulted from the
   // parent (D-10: no default reason, citation, or version line). Never
   // touches draft or amendingBatchId — mode alone still decides which of
   // developing/recording is live; derivePenState above is what now
@@ -1645,9 +1661,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
         portions: row.portions.map((portion) => ({
           step: portion.step,
           grams: String(portion.grams),
-          removed: portion.removed === true,
+          removed: isLineRemoved(row, portion),
         })),
-        removed: row.removed ?? false,
       };
     }
     setPenDraft({
@@ -1728,17 +1743,16 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }));
   }
 
-  // Removing sets only the draft row's removed flag — it does not clear
-  // the grams and does not touch any step (route-recipe-version.md § 3).
-  // The same handler restores: removal never cascades, so this is always
-  // the maker's own tap, whether flipping a row's own control or the
-  // orphaned-row flag's "remove this row" control.
+  // Serves the orphaned-row flag's "remove this row" control only: it acts
+  // on every line of the row through toggleDraftRowLines, does not clear
+  // any grams and does not touch any step (route-recipe-version.md § 3).
+  // Removal never cascades, so this is always the maker's own tap.
   function handleTogglePenRowRemoved(rowId) {
     setBlockedMessage(null);
     setBlockedTarget(null);
     setPenDraft((prev) => ({
       ...prev,
-      rows: { ...prev.rows, [rowId]: { ...prev.rows[rowId], removed: !prev.rows[rowId].removed } },
+      rows: { ...prev.rows, [rowId]: toggleDraftRowLines(prev.rows[rowId]) },
     }));
   }
 
@@ -1908,7 +1922,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             removed: Boolean(draftPortion.removed),
           };
         }),
-        removed: draftRow.removed,
+        removed: false,
       };
     });
     return {

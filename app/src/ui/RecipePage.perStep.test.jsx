@@ -138,6 +138,14 @@ async function click(element) {
   });
 }
 
+async function setValue(element, value) {
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+  await act(async () => {
+    setter.call(element, value);
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+}
+
 afterEach(async () => {
   if (current) {
     await act(async () => current.root.unmount());
@@ -177,5 +185,35 @@ describe('one press on a split ingredient removes its own line (decision 51, Oli
     expect(totalCell().textContent.endsWith('799.7 g')).toBe(true);
     expect(totalCell().querySelector('.struck-value')).toBeNull();
     expect(noteOf('remove Whole milk, Step 2')).toBe('120 g of 370.4 g · 46.3% in all');
+  });
+});
+
+describe('a press survives Save as a boolean on the line alone (decision 51, plan 02)', () => {
+  it("hands the repository a child whose Whole milk Step 2 line is out and Step 3 line is in, and leaves the parent alone", async () => {
+    installMatchMedia();
+    const parentBefore = structuredClone(oliveOilVersion);
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('remove Whole milk, Step 2'));
+    await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+    await click(buttonByText(container, 'Save as a new version'));
+    await flush(() => store.saveVersion.mock.calls.length > 0);
+
+    expect(store.saveVersion).toHaveBeenCalledTimes(1);
+    const saved = store.saveVersion.mock.calls[0][0];
+    const milk = saved.rows.find((row) => row.id === 'row-01');
+    expect(milk.portions[0].removed).toBe(true);
+    expect(milk.portions[1].removed).toBe(false);
+    expect(milk.removed).toBe(false);
+    for (const row of saved.rows) {
+      expect(row.removed).toBe(false);
+      row.portions.forEach((portion, i) => {
+        expect(typeof portion.removed).toBe('boolean');
+        expect(portion.grams).toBe(parentBefore.rows.find((r) => r.id === row.id).portions[i].grams);
+        expect(portion.step).toBe(parentBefore.rows.find((r) => r.id === row.id).portions[i].step);
+        if (!(row.id === 'row-01' && i === 0)) expect(portion.removed).toBe(false);
+      });
+    }
+    expect(store.versions.find((version) => version.id === VERSION)).toEqual(parentBefore);
   });
 });

@@ -46,7 +46,9 @@ import {
   TASTING_REMOVED_DATA_STATUS,
   TASTING_RESTORED_STATUS,
   restoreStepFromVersion,
+  toggleDraftRowLines,
 } from './RecipePage.jsx';
+import { isLineRemoved } from '../domain/rows.js';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
@@ -192,15 +194,19 @@ function makeBaselineVersion(overrides = {}) {
 }
 
 // Mirrors handleStartDeveloping's own seeding exactly — a row's own
-// portions mapped to { step, grams } with grams a string, method/authored
-// a structuredClone — so "nothing touched" is genuinely the shape the pen
-// opens with.
+// portions mapped to { step, grams, removed } with grams a string and
+// removed read through isLineRemoved (so an older whole-row flag opens
+// as every line out), method/authored a structuredClone — so "nothing
+// touched" is genuinely the shape the pen opens with. No row-level flag.
 function makeCleanPenDraft(version) {
   const rows = {};
   for (const row of version.rows) {
     rows[row.id] = {
-      portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams) })),
-      removed: row.removed ?? false,
+      portions: row.portions.map((portion) => ({
+        step: portion.step,
+        grams: String(portion.grams),
+        removed: isLineRemoved(row, portion),
+      })),
     };
   }
   return {
@@ -229,6 +235,21 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('developing', draft, version)).toBe(true);
     draft.rows[rowId].portions[0].removed = false;
     expect(isPenDraftDirty('developing', draft, version)).toBe(false);
+  });
+
+  it('a version carrying the older whole-row flag opens with every line out and is clean until something changes', () => {
+    const older = makeBaselineVersion({
+      rows: [
+        { id: 'row-1', portions: [{ step: 1, grams: 60 }, { step: 2, grams: 40 }], removed: true },
+        { id: 'row-2', portions: [{ step: 2, grams: 50 }], removed: false },
+      ],
+    });
+    const draft = makeCleanPenDraft(older);
+    expect(draft.rows['row-1'].portions.map((portion) => portion.removed)).toEqual([true, true]);
+    expect(draft.rows['row-1']).not.toHaveProperty('removed');
+    expect(isPenDraftDirty('developing', draft, older)).toBe(false);
+    draft.rows['row-1'].portions[1].removed = false;
+    expect(isPenDraftDirty('developing', draft, older)).toBe(true);
   });
 
   it('is dirty when a step lead-in changes, and clean again typed back', () => {
@@ -265,7 +286,7 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('developing', stepDraft, version)).toBe(true);
 
     const removedDraft = makeCleanPenDraft(version);
-    removedDraft.rows['row-1'].removed = true;
+    removedDraft.rows['row-1'].portions[0].removed = true;
     expect(isPenDraftDirty('developing', removedDraft, version)).toBe(true);
   });
 
@@ -275,6 +296,37 @@ describe('isPenDraftDirty — the pen check, over what it actually edits (T-03-4
     expect(isPenDraftDirty('reading', draft, version)).toBe(false);
     expect(isPenDraftDirty('developing', null, version)).toBe(false);
     expect(isPenDraftDirty('developing', draft, null)).toBe(false);
+  });
+});
+
+// The orphaned-row flag's "remove this row" acts on every line of the row
+// (plan 03.6-02 decision 4): one pure function, nothing else touched.
+describe('toggleDraftRowLines — the orphan flag takes every line of a row out, or puts every line back', () => {
+  const lines = (...flags) => ({ portions: flags.map((removed, i) => ({ step: i + 1, grams: String(10 * (i + 1)), removed })) });
+
+  it('takes every line out when any line is in', () => {
+    expect(toggleDraftRowLines(lines(false, false)).portions.map((p) => p.removed)).toEqual([true, true]);
+    expect(toggleDraftRowLines(lines(true, false)).portions.map((p) => p.removed)).toEqual([true, true]);
+  });
+
+  it('puts every line back when every line is out', () => {
+    expect(toggleDraftRowLines(lines(true, true)).portions.map((p) => p.removed)).toEqual([false, false]);
+  });
+
+  it('flips a one-line row', () => {
+    expect(toggleDraftRowLines(lines(false)).portions[0].removed).toBe(true);
+    expect(toggleDraftRowLines(lines(true)).portions[0].removed).toBe(false);
+  });
+
+  it('does not mutate its input and touches only the flags', () => {
+    const input = lines(true, false);
+    const before = structuredClone(input);
+    const output = toggleDraftRowLines(input);
+    expect(input).toEqual(before);
+    expect(output).not.toBe(input);
+    expect(output.portions.map(({ step, grams }) => ({ step, grams }))).toEqual(
+      input.portions.map(({ step, grams }) => ({ step, grams })),
+    );
   });
 });
 

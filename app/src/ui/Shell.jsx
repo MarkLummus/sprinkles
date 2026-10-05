@@ -453,18 +453,19 @@ export function Shell() {
             <li>
               <RailPlace place={PLACES[4]} />
             </li>
+            {/* The hairline between the places (Ingredients, Kitchen) and Search,
+                Import and Export, grouped as the header groups them (sketch 011
+                decision 55; Mark 2026-10-05, Search below the hairline). It is
+                the rail's own divider, hidden from assistive tech. A tap on it
+                closes More like any tap in the list. */}
+            <li className="shell__more-sep" aria-hidden="true">
+              <hr className="shell__divider" />
+            </li>
             <li>
               <NavLink to="/search" className="shell__place" tabIndex={0}>
                 <SearchIcon />
                 Search
               </NavLink>
-            </li>
-            {/* The hairline between the places (Ingredients, Kitchen, Search) and
-                the actions (Import, Export), sketch 011 decision 55. It is the
-                rail's own divider, hidden from assistive tech. A tap on it closes
-                More like any tap in the list. */}
-            <li className="shell__more-sep" aria-hidden="true">
-              <hr className="shell__divider" />
             </li>
             <li>
               <button type="button" className="shell__place" tabIndex={0} onClick={() => fileInputRef.current?.click()}>

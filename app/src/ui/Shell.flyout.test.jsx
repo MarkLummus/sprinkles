@@ -446,3 +446,49 @@ describe('The Import error panel (sketch 011 decision 52 B; Mark 2026-10-05)', (
     expect(panel()).toBeNull();
   });
 });
+
+describe('Opening More closes the Import error panel (sketch 011 decision 52; Mark 2026-10-05)', () => {
+  const nextTick = () =>
+    act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+  it('opening More with the panel showing closes the panel, keeps More open, and leaves focus where it was', async () => {
+    await mountAt(393);
+    await chooseFile('not json');
+    expect(panel()).toBeTruthy();
+    document.activeElement.blur();
+    const details = current.container.querySelector('details.shell__more');
+    await click(details.querySelector('summary'));
+    await nextTick();
+    expect(details.open).toBe(true);
+    expect(panel()).toBeNull();
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("opening More with focus on Close closes the panel and moves focus to More's summary", async () => {
+    await mountAt(393);
+    await chooseFile('not json');
+    panelClose().focus();
+    const details = current.container.querySelector('details.shell__more');
+    const summary = details.querySelector('summary');
+    await click(summary);
+    await nextTick();
+    expect(details.open).toBe(true);
+    expect(panel()).toBeNull();
+    expect(document.activeElement).toBe(summary);
+  });
+
+  it('opening More with no panel only opens More and leaves focus alone', async () => {
+    await mountAt(393);
+    expect(panel()).toBeNull();
+    const details = current.container.querySelector('details.shell__more');
+    const summary = details.querySelector('summary');
+    summary.focus();
+    await click(summary);
+    await nextTick();
+    expect(details.open).toBe(true);
+    expect(panel()).toBeNull();
+    expect(document.activeElement).toBe(summary);
+  });
+});

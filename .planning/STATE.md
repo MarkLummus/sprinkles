@@ -276,7 +276,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-22] [ui] Remove the Sprinkles home link from the recipe route — [todo file](.planning/todos/pending/2026-09-22-remove-the-sprinkles-home-link-from-the-recipe-route.md)
 - [2026-09-22] [design] Settle the App-context radius in DESIGN.md, then revisit the rail's active item — [todo file](.planning/todos/pending/2026-09-22-settle-app-context-radius-then-revisit-rail-active-item.md)
 - [2026-09-22] [ui] A shared Button component that always carries tabindex, so every button, checkbox and radio Tabs on iPadOS Safari … — [todo file](.planning/todos/pending/2026-09-22-shared-button-component-carries-tabindex-for-webkit.md)
-- [2026-09-22] [design] Three /impeccable document follow-ups this phase hands to Impeccable, not code — [todo file](.planning/todos/pending/2026-09-22-three-impeccable-document-jobs-this-phase-hands-off.md)
+- [2026-09-22] [design] Confirm the app text companions and the filled action in DESIGN.md (/impeccable document) — [todo file](.planning/todos/pending/2026-09-22-three-impeccable-document-jobs-this-phase-hands-off.md)
 - [2026-09-23] [ui] Build the Recipe book print format (one page, the recipe only, for making a finished recipe) — [todo file](.planning/todos/pending/2026-09-23-build-the-recipe-book-print-format.md)
 - [2026-09-24] [design] Decide whether the batch and tasting log is entered on the phone, or only transcribed at the desk — [todo file](.planning/todos/pending/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md)
 - [2026-09-24] [design] Write a product brief for phone-based jobs — [todo file](.planning/todos/pending/2026-09-24-write-a-product-brief-for-phone-based-jobs.md)

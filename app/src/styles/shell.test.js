@@ -52,14 +52,20 @@ describe('shell.css — no visual literal, every value a var() read', () => {
   // Two documented roots: .shell (the shell's own chrome — head, rail,
   // routed-page column) and .place (the unbuilt-place page Placeholder.jsx
   // renders inside .shell__main). Every selector in this file starts with
-  // one or the other, bar the one root rule (html, scroll-padding-top only;
-  // pinned below).
+  // one or the other, bar two named exceptions: the one root rule (html,
+  // scroll-padding-top only; pinned below) and the one element-qualified
+  // reset button.shell__place (sketch 011 decision 55). That reset is
+  // qualified by what it is, wherever it sits, and its (0,1,1) weight ties
+  // app.css's button:hover, which the file's later load order then wins.
   test('every rule is scoped under the .shell or .place root', () => {
     expect(rules.length).toBeGreaterThan(0);
     for (const rule of rules) {
       expect(
-        rule.selector.startsWith('.shell') || rule.selector.startsWith('.place') || rule.selector === 'html',
-        `expected "${rule.selector}" to be scoped under .shell or .place`,
+        rule.selector.startsWith('.shell') ||
+          rule.selector.startsWith('.place') ||
+          rule.selector === 'html' ||
+          rule.selector === 'button.shell__place',
+        `expected "${rule.selector}" to be scoped under .shell or .place (or be html, or button.shell__place)`,
       ).toBe(true);
     }
   });
@@ -574,6 +580,39 @@ describe("More's tiles and the hairline (sketch 011 decision 55; Mark 2026-10-05
     expect(declarationsOf(itemRule)).toEqual(['min-height: 0']);
     expect(declarationsOf(dividerRule)).toEqual(['margin-inline: 0']);
     expect(rules.filter((r) => (r.selector === item || r.selector === rule) && r.media === undefined)).toEqual([]);
+  });
+
+  // A place that is a button carries no border wherever it sits. Its (0,1,1)
+  // ties app.css's button and button:hover; this file loads after app.css.
+  test('exactly one top-level button.shell__place rule resets the button, and it declares no padding', () => {
+    const matches = rules.filter((r) => r.selector === 'button.shell__place');
+    expect(matches).toHaveLength(1);
+    expect(matches[0].media).toBeUndefined();
+    expect(declarationsOf(matches[0]).sort()).toEqual([
+      'appearance: none',
+      'background: none',
+      'border: none',
+      'color: inherit',
+      'cursor: pointer',
+    ]);
+  });
+
+  test("the tools row's own button reset is gone", () => {
+    expect(rules.filter((r) => r.selector.includes('.shell__tools button'))).toEqual([]);
+  });
+
+  test("below 724 More's buttons are as wide as their list items", () => {
+    const rule = rules.find((r) => r.selector === '.shell__more li > button' && r.media === PHONE_MEDIA);
+    expect(rule, 'expected a phone-block .shell__more li > button rule').toBeTruthy();
+    expect(declarationsOf(rule)).toEqual(['width: 100%']);
+  });
+
+  test("below 724 every item in More's list has 6px side padding, and the tab row's own tiles are not reached", () => {
+    const selector = '.shell__tabs .shell__more li .shell__place';
+    const rule = rules.find((r) => r.selector === selector && r.media === PHONE_MEDIA);
+    expect(rule, `expected a phone-block ${selector} rule`).toBeTruthy();
+    expect(declarationsOf(rule)).toEqual(['padding-inline: var(--gap-xs)']);
+    expect(rules.filter((r) => r.selector === selector && r.media === undefined)).toEqual([]);
   });
 
   test("the rail's .shell__divider is unchanged, so the rail keeps its 20px side margins", () => {

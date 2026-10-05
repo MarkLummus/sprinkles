@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-04T17:40:17.613Z"
+last_updated: "2026-10-05T00:56:39.211Z"
 last_activity: 2026-10-04
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 975160e2eefc2483ab2a48b7f5c1c639727d7162
+state_head: 91e474aac1047b804701ce53b03b4382aea59fcf
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-04 - Completed quick task 261004-igr: sketch 011 brief tasks 9 and 10
+Last activity: 2026-10-04 - Completed quick task 261004-szl: drop the "against <version>" suffix from the batch read view Recorded line
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -399,6 +399,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261004-ox8 | Decision 33 brief task 2: table grid from 724, D3 (IngredientTable.jsx classes, app.css, columns.test.js, IngredientTable.test.jsx); acceptance boards 744-batch, 834-batch, 983-batch, 1024-batch, 1600 | 2026-10-04 | 69a4848 | .planning/quick/261004-ox8-decision-33-brief-task-2-table-grid-from-724-d3-ingredientta |
 | 261004-ox9 | Decision 33 brief task 3: Go to batch from 724 to 1365, start-aligned with a dot (notebook.css, notebook.test.js); acceptance board 724-1365-go-to-batch.html (redrawn, decision 43). | 2026-10-04 | 62b2ebd | .planning/quick/261004-ox9-decision-33-brief-task-3-go-to-batch-from-724-to-1365-start |
 | 261004-oxa | Decision 33 brief task 4: Balance and Watch for default open from 984 (useBelowDesktop.js, RecipePage.jsx, DerivedAdvisories.jsx and their tests); acceptance boards 984-batch and 1024-batch (open), 98 | 2026-10-04 | 0fcc2c3 | .planning/quick/261004-oxa-decision-33-brief-task-4-balance-and-watch-for-default-open |
+| 261004-szl | Drop the "against <version>" suffix from the batch read view Recorded line | 2026-10-05 | 91e474a | [261004-szl-drop-the-against-version-suffix-from-the](./quick/261004-szl-drop-the-against-version-suffix-from-the/) |
 
 ### Roadmap Evolution
 
@@ -422,6 +423,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-01T11:46:55.799Z
-Stopped at: Phase 03.5 complete, ready to plan Phase 04
-Resume file: None
+Last session: 2026-10-04
+Stopped at: Session resumed from HANDOFF.json (03.5 follow-up work paused after quick batches ly2 and ox1); Phase 04 not yet planned
+Resume file: .planning/HANDOFF.json

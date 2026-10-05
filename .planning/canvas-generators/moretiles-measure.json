@@ -1,0 +1,2906 @@
+{
+ "A_393_notebook": {
+  "ul": {
+   "x": 291.5,
+   "y": 513,
+   "w": 101.5,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 314.4,
+   "y": 797,
+   "w": 78.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 304.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 304.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 304.5,
+     "y": 624,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 304.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 304.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 624,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 304.5,
+     "y": 679,
+     "w": 75.5,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 304.5,
+    "y": 679,
+    "w": 75.5,
+    "h": 1
+   },
+   "hr": {
+    "x": 304.5,
+    "y": 679,
+    "w": 75.5,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 393,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 300.5,
+   "ringRight": 384,
+   "panelInnerLeft": 292.5,
+   "panelInnerRight": 392,
+   "clearOfRule": 2,
+   "prevBottomToRing": 2,
+   "prev": "rule"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 304.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 304.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   }
+  },
+  "surface": null,
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "color"
+   ],
+   "hover": [
+    "color"
+   ],
+   "focus": [
+    "color"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": -59,
+   "clearOfRuleAbove": -60,
+   "toNextTile": 2,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": ""
+  }
+ },
+ "A_393_ingredients": {
+  "ul": {
+   "x": 287.8,
+   "y": 513,
+   "w": 105.2,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 314.4,
+   "y": 797,
+   "w": 78.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 300.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 600",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 300.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 300.8,
+     "y": 624,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 300.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 300.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 624,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 300.8,
+     "y": 679,
+     "w": 79.2,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 300.8,
+    "y": 679,
+    "w": 79.2,
+    "h": 1
+   },
+   "hr": {
+    "x": 300.8,
+    "y": 679,
+    "w": 79.2,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 393,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 296.8,
+   "ringRight": 384,
+   "panelInnerLeft": 288.8,
+   "panelInnerRight": 392,
+   "clearOfRule": 2,
+   "prevBottomToRing": 2,
+   "prev": "rule"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 300.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 300.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 79.2,
+   "h": 49,
+   "weight": "600",
+   "textLeft": 6,
+   "textRight": 6
+  },
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "hover": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "focus": [
+    "bg",
+    "color",
+    "font"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": -59,
+   "clearOfRuleAbove": -60,
+   "toNextTile": 2,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": ""
+  }
+ },
+ "T_393_notebook": {
+  "ul": {
+   "x": 291.5,
+   "y": 513,
+   "w": 101.5,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 314.4,
+   "y": 797,
+   "w": 78.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 304.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 304.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 304.5,
+     "y": 637,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 304.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 304.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 304.5,
+     "y": 630,
+     "w": 75.5,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 637,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 304.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 304.5,
+    "y": 630,
+    "w": 75.5,
+    "h": 1
+   },
+   "hr": {
+    "x": 304.5,
+    "y": 630,
+    "w": 75.5,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 393,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 300.5,
+   "ringRight": 384,
+   "panelInnerLeft": 292.5,
+   "panelInnerRight": 392,
+   "clearOfRule": 51,
+   "prevBottomToRing": -4,
+   "prev": "Search"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 304.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 304.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   }
+  },
+  "surface": null,
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "color"
+   ],
+   "hover": [
+    "color"
+   ],
+   "focus": [
+    "color"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": 2,
+   "clearOfRuleAbove": 2,
+   "toNextTile": -4,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": "shell__more-sep"
+  },
+  "tapSep": {
+   "moreOpenAfter": false
+  },
+  "tapSearch": {
+   "path": "/search",
+   "moreOpenAfter": false
+  }
+ },
+ "T_393_ingredients": {
+  "ul": {
+   "x": 287.8,
+   "y": 513,
+   "w": 105.2,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 314.4,
+   "y": 797,
+   "w": 78.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 300.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 600",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 300.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 300.8,
+     "y": 637,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 300.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 300.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 300.8,
+     "y": 630,
+     "w": 79.2,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 637,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 300.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 300.8,
+    "y": 630,
+    "w": 79.2,
+    "h": 1
+   },
+   "hr": {
+    "x": 300.8,
+    "y": 630,
+    "w": 79.2,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 393,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 296.8,
+   "ringRight": 384,
+   "panelInnerLeft": 288.8,
+   "panelInnerRight": 392,
+   "clearOfRule": 51,
+   "prevBottomToRing": -4,
+   "prev": "Search"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 300.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 300.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 79.2,
+   "h": 49,
+   "weight": "600",
+   "textLeft": 6,
+   "textRight": 6
+  },
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "hover": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "focus": [
+    "bg",
+    "color",
+    "font"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": 2,
+   "clearOfRuleAbove": 2,
+   "toNextTile": -4,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": "shell__more-sep"
+  },
+  "tapSep": {
+   "moreOpenAfter": false
+  },
+  "tapSearch": {
+   "path": "/search",
+   "moreOpenAfter": false
+  }
+ },
+ "A_723_notebook": {
+  "ul": {
+   "x": 621.5,
+   "y": 513,
+   "w": 101.5,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 578.4,
+   "y": 797,
+   "w": 144.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 634.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 634.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 634.5,
+     "y": 624,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 634.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 634.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 624,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 634.5,
+     "y": 679,
+     "w": 75.5,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 634.5,
+    "y": 679,
+    "w": 75.5,
+    "h": 1
+   },
+   "hr": {
+    "x": 634.5,
+    "y": 679,
+    "w": 75.5,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 723,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 630.5,
+   "ringRight": 714,
+   "panelInnerLeft": 622.5,
+   "panelInnerRight": 722,
+   "clearOfRule": 2,
+   "prevBottomToRing": 2,
+   "prev": "rule"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 634.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 634.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   }
+  },
+  "surface": null,
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "color"
+   ],
+   "hover": [
+    "color"
+   ],
+   "focus": [
+    "color"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": -59,
+   "clearOfRuleAbove": -60,
+   "toNextTile": 2,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": ""
+  }
+ },
+ "A_723_ingredients": {
+  "ul": {
+   "x": 617.8,
+   "y": 513,
+   "w": 105.2,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 578.4,
+   "y": 797,
+   "w": 144.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 630.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 600",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 630.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 630.8,
+     "y": 624,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 630.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 630.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 624,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 630.8,
+     "y": 679,
+     "w": 79.2,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 630.8,
+    "y": 679,
+    "w": 79.2,
+    "h": 1
+   },
+   "hr": {
+    "x": 630.8,
+    "y": 679,
+    "w": 79.2,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 723,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 626.8,
+   "ringRight": 714,
+   "panelInnerLeft": 618.8,
+   "panelInnerRight": 722,
+   "clearOfRule": 2,
+   "prevBottomToRing": 2,
+   "prev": "rule"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 630.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 630.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 79.2,
+   "h": 49,
+   "weight": "600",
+   "textLeft": 6,
+   "textRight": 6
+  },
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "hover": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "focus": [
+    "bg",
+    "color",
+    "font"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": -59,
+   "clearOfRuleAbove": -60,
+   "toNextTile": 2,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": ""
+  }
+ },
+ "T_723_notebook": {
+  "ul": {
+   "x": 621.5,
+   "y": 513,
+   "w": 101.5,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 578.4,
+   "y": 797,
+   "w": 144.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 634.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 634.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 634.5,
+     "y": 637,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 634.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 634.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 526,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 575,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 634.5,
+     "y": 630,
+     "w": 75.5,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 637,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 686,
+     "w": 75.5,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 634.5,
+     "y": 735,
+     "w": 75.5,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 634.5,
+    "y": 630,
+    "w": 75.5,
+    "h": 1
+   },
+   "hr": {
+    "x": 634.5,
+    "y": 630,
+    "w": 75.5,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 723,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 630.5,
+   "ringRight": 714,
+   "panelInnerLeft": 622.5,
+   "panelInnerRight": 722,
+   "clearOfRule": 51,
+   "prevBottomToRing": -4,
+   "prev": "Search"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 634.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 634.46875,
+    "y": 686,
+    "width": 75.5,
+    "height": 49
+   }
+  },
+  "surface": null,
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "75.5x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "color"
+   ],
+   "hover": [
+    "color"
+   ],
+   "focus": [
+    "color"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": 2,
+   "clearOfRuleAbove": 2,
+   "toNextTile": -4,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": "shell__more-sep"
+  },
+  "tapSep": {
+   "moreOpenAfter": false
+  },
+  "tapSearch": {
+   "path": "/search",
+   "moreOpenAfter": false
+  }
+ },
+ "T_723_ingredients": {
+  "ul": {
+   "x": 617.8,
+   "y": 513,
+   "w": 105.2,
+   "h": 284,
+   "border": "1px solid rgb(214, 218, 215)",
+   "padding": "12px",
+   "bottomGap": -1,
+   "rightGap": 0
+  },
+  "more": {
+   "x": 578.4,
+   "y": 797,
+   "w": 144.6,
+   "h": 55
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 630.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 600",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 630.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 630.8,
+     "y": 637,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 630.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 630.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "padding": "6px",
+    "radius": "10px"
+   }
+  ],
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 526,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 575,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 630.8,
+     "y": 630,
+     "w": 79.2,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 637,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 686,
+     "w": 79.2,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 630.8,
+     "y": 735,
+     "w": 79.2,
+     "h": 49
+    }
+   }
+  ],
+  "sep": {
+   "li": {
+    "x": 630.8,
+    "y": 630,
+    "w": 79.2,
+    "h": 1
+   },
+   "hr": {
+    "x": 630.8,
+    "y": 630,
+    "w": 79.2,
+    "h": 1
+   },
+   "hrBorder": "1px solid rgb(214, 218, 215)",
+   "hrMargin": "6px 0px",
+   "hrHeightBox": "0px"
+  },
+  "vw": 723,
+  "focus": {
+   "text": "Import",
+   "outline": "2px solid rgb(20, 20, 20)",
+   "offset": "2px",
+   "ringTop": 682,
+   "ringBottom": 739,
+   "ringLeft": 626.8,
+   "ringRight": 714,
+   "panelInnerLeft": 618.8,
+   "panelInnerRight": 722,
+   "clearOfRule": 51,
+   "prevBottomToRing": -4,
+   "prev": "Search"
+  },
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 630.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   },
+   "boxAfter": {
+    "x": 630.75,
+    "y": 686,
+    "width": 79.21875,
+    "height": 49
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 79.2,
+   "h": 49,
+   "weight": "600",
+   "textLeft": 6,
+   "textRight": 6
+  },
+  "search": {
+   "search": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   },
+   "ingredients": {
+    "rest": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "focus": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    },
+    "hover": {
+     "tag": "a",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgb(243, 244, 242)",
+     "color": "rgb(53, 132, 82)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 600 -apple-system"
+    }
+   },
+   "import": {
+    "rest": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "focus": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "2px solid 2px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    },
+    "hover": {
+     "tag": "button",
+     "box": "79.2x49",
+     "border": "0px none",
+     "padding": "6px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(20, 20, 20)",
+     "deco": "none",
+     "outline": "3px none 0px",
+     "cursor": "pointer",
+     "radius": "10px",
+     "font": "12px 400 -apple-system"
+    }
+   }
+  },
+  "searchVsIngredients": {
+   "rest": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "hover": [
+    "bg",
+    "color",
+    "font"
+   ],
+   "focus": [
+    "bg",
+    "color",
+    "font"
+   ]
+  },
+  "searchHoverMoved": [],
+  "searchRing": {
+   "outline": "2px solid rgb(20, 20, 20)",
+   "clearOfRule": 2,
+   "clearOfRuleAbove": 2,
+   "toNextTile": -4,
+   "ringLeftInPanel": 8,
+   "ringRightInPanel": 8,
+   "prev": "shell__more-sep"
+  },
+  "tapSep": {
+   "moreOpenAfter": false
+  },
+  "tapSearch": {
+   "path": "/search",
+   "moreOpenAfter": false
+  }
+ },
+ "header1366": {
+  "before": "0px",
+  "after": "0px",
+  "boxBefore": {
+   "x": 1081.4375,
+   "y": 6,
+   "width": 108.40625,
+   "height": 44
+  },
+  "boxAfter": {
+   "x": 1109.4375,
+   "y": 12,
+   "width": 80.40625,
+   "height": 32
+  }
+ }
+}

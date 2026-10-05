@@ -8,3 +8,11 @@
 .shell__tabs .shell__more li .shell__place{flex-direction:row;justify-content:flex-start;gap:var(--gap-xs);padding:var(--gap-s) var(--gap-m);font-size:var(--app-size-meta);text-align:start;width:100%}
 /* === SEP === the divider's li is not a 44px target */
 .shell__more li.shell__more-sep{min-height:0}
+/* === TILESRESET === Sid, 2026-10-05 (decision 54, Mark's answer: "they should look like Tiles from the Tab Bar, as in B, but I like the hairline to separate places and actions"): B's tiles and a hairline between the places and the actions. The sections from here on are new; the ones above are untouched, so more.py still draws A to D as it did. moretiles-measure.mjs and moretiles.py read them, and they are the rules the brief would write. This one is top level in shell.css, in place of `.shell__tools button`: a place that is a button carries no border wherever it sits (More's Import and Export, the header's tools, decision 52's Close) */
+button.shell__place{appearance:none;border:none;background:none;color:inherit;cursor:pointer}
+/* === TILESPHONE === phone block: a button as wide as its list item like the links, and B's 6px side padding */
+.shell__more li > button{width:100%}
+.shell__tabs .shell__more li .shell__place{padding-inline:var(--gap-xs)}
+/* === HAIR === phone block: the hairline's li is not a 44px target, and the rule spans the tiles' width (the rail's own 20px side margins leave a 35px stub in a 75px column) */
+.shell__more li.shell__more-sep{min-height:0}
+.shell__more li.shell__more-sep .shell__divider{margin-inline:0}

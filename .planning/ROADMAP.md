@@ -574,7 +574,7 @@ Plans:
 **Goal:** Shared ingredients act per step (sketch 011 README decision 51): each remove link removes its own line, a removed step takes its lines with it (struck, restored with the step), and the pen's portion line and Show changes' percentages follow the lines still in, the 86.3% fix included.
 **Requirements**: TBD
 **Depends on:** Phase 03.5
-**Plans:** 3/7 plans executed
+**Plans:** 4/7 plans executed
 
 Plans:
 
@@ -592,7 +592,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3)*
 
-- [ ] 03.6-04-PLAN.md — Show changes compares a split ingredient line by line, and a line that is out reads the parent's figures (the 86.3% fix)
+- [x] 03.6-04-PLAN.md — Show changes compares a split ingredient line by line, and a line that is out reads the parent's figures (the 86.3% fix)
 
 **Wave 5** *(blocked on Wave 4)*
 

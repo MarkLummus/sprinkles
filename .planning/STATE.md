@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.6"
 current_phase_name: Per-step shared ingredients (INSERTED)
 status: executing
-stopped_at: Completed 03.6-03-PLAN.md
-last_updated: "2026-10-05T10:27:28.110Z"
+stopped_at: Completed 03.6-04-PLAN.md
+last_updated: "2026-10-05T10:30:40.571Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 execution started
-state_head: 78c4f61559a04030ef8b98fcf2cb33d66800aece
+state_head: d81dacb286d9fff8f6b7fa98beab7517f0dfef84
 progress:
   total_phases: 13
   completed_phases: 8
   total_plans: 104
-  completed_plans: 100
+  completed_plans: 101
   percent: 62
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.6 (Per-step shared ingredients (INSERTED)) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-10-05 — Phase 03.6 execution started
 
@@ -130,6 +130,7 @@ Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed
 | Phase 03.6 P01 | 3 min | 2 tasks | 13 files |
 | Phase 03.6 P02 | 3 min | 2 tasks | 7 files |
 | Phase 03.6 P03 | 6 min | 2 tasks | 11 files |
+| Phase 03.6 P04 | 6 min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -259,6 +260,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.6]: The orphaned-row flag prints on the first line still in and its button takes every line of the row out (toggleDraftRowLines)
 - [Phase 03.6]: 03.6-03: removed on a portion is absent or boolean; null, string and number are refused by path
 - [Phase 03.6]: 03.6-03: a copied row's kept portions carry their stored index and asMadeTotals reads at portion.index ?? i
+- [Phase 03.6]: diff.js lines sit beside the row-level fields; lines match their baseline by index with a null-from, changed-true shape for a missing baseline line (T-03.6-07)
+- [Phase 03.6]: Show changes reads every row per line; a line that is out reads the parent's figures through baselineVersion (openingActiveById, openingMass)
 
 ### Pending Todos
 
@@ -441,6 +444,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T10:27:28.015Z
-Stopped at: Completed 03.6-03-PLAN.md
+Last session: 2026-10-05T10:30:40.472Z
+Stopped at: Completed 03.6-04-PLAN.md
 Resume file: None

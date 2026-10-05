@@ -2328,10 +2328,10 @@ textarea {
    sketch 003 @ d89b758 line 48's 1100px call; D-15; UAT items 15, 16):
    below 984px the page stacks to one column — band, ingredients, side,
    method, foot, side BEFORE method — and the column gap narrows to
-   --gap-m. 984 = the side nav's 224 + 2 x 32 gutters + the Sheet's
-   two-column minimum 696, the same sum shell.css's rail cut reads: the
-   side nav and the Sheet's second column go together, so a viewport
-   never shows one without the other. This block changes columns and gap
+   --gap-m. 984 = 2 x 32 gutters + the Sheet's
+   two-column minimum 920: the side nav is in none of the sum from 724 to
+   1589 (decision 33: it is the fly-out there, shell.css), so the Sheet's
+   second column goes here on its own. This block changes columns and gap
    ONLY: the paper's page padding reads the shared --gap-page
    (260917-gjo), which the phone-forms block below steps for the whole
    page shell at once (003 line 178) — no padding declaration lives

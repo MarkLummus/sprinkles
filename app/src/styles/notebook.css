@@ -10,10 +10,12 @@
    The ladder (sketch 011 decision 16, derived from measured content
    limits, superseding this file's earlier rung-based reading): from 1366
    up the log sits beside the Sheet at 350, with 32 gutters (page margin,
-   Sheet to log, page margin) and the content capped at 1482, centred from
-   a 1770px window (.notebook's own rule, below). Below 1366 the log moves
-   below the Sheet first — (max-width: 1365.98px) — before the side nav
-   and the Sheet's second column go together at 984 (shell.css, app.css).
+   Sheet to log, page margin) and the content capped at 1482, centred once
+   the main area reaches 1546 (.notebook's own rule, below). Below 1366 the
+   log moves below the Sheet first — (max-width: 1365.98px) — before the
+   Sheet's second column goes at 984 (app.css). The side nav is in none of
+   these sums from 724 to 1589 (shell.css, decision 33: it is the fly-out
+   there); from 1590 the 224 rail sits beside the main area.
    The interim desktop rung at (max-width: 1499.98px) is retired (sketch
    011 decision 18, 03.5-15): the folds and the band's own rhythm now
    switch at the same 1365.98px cut as the log. The phone step at
@@ -21,8 +23,10 @@
    prelude literal stays for the same reason 600 stays in app.css:
    media-query conditions cannot read custom properties. */
 
-/* The content cap (sketch 011 decision 16): from a 1770px window the
-   content stops growing at 1482 and centres in the main area — 1482 = the
+/* The content cap (sketch 011 decision 16): once the main area reaches 1546
+   (1482 + 2 x 32) the content stops growing at 1482 and centres in it: from
+   a 1546px window while the nav is the fly-out (1546 to 1589, shell.css) and
+   from a 1770px window with the 224 rail (1770 = 224 + 1546) — 1482 = the
    Sheet's two-column minimum (696) + the gutter (32) + the log (350). A
    max-width with auto margins, not a media query — the cap has no rung of
    its own. */
@@ -912,8 +916,9 @@
    take the App skin below, 261004-ox4). The narrow
    arrangement app.css already draws for touch/narrow widths (the stop
    track, field-row label widths) applies here from (min-width: 1366px)
-   on — where the log genuinely IS a 350px column (1366 = 224 + 3 x 32 +
-   696 + 350, the complement of the log-below-the-Sheet block below) —
+   on — where the log genuinely IS a 350px column (1366 = 3 x 32 + 920 + 350,
+   the main area being the whole window below 1590, shell.css; the
+   complement of the log-below-the-Sheet block below) —
    the ceremony's own wrap rule is left on permanently, since wrapping
    only engages when content does not fit. 03.5-13 Task 1 removes the
    hand-back that used to apply these same rules unconditionally and
@@ -1053,9 +1058,10 @@
    2026-09-27: "Move with the folds"; 03.5-15 Task 2): roomy from 1366 —
    the folds' own default (03.5-15 Task 1) — and tight below it, at the
    same cut where the log moves below the Sheet first (sketch 011
-   decision 16's precedence): 1366 = the side nav's 224 + 3 x 32 gutters +
-   the Sheet's two-column minimum 696 + the log's own 350. Below this cut
-   the Sheet still keeps two columns — that rung is 984, shell.css/app.css. */
+   decision 16's precedence): 1366 = 3 x 32 gutters + the Sheet's minimum 920 + the log's own 350; the
+   side nav is in none of the sum below 1590 (decision 33: it is the fly-out
+   there, shell.css). Below this cut the Sheet still keeps two columns — that
+   rung is 984, app.css. */
 @media (max-width: 1365.98px) {
   .notebook {
     gap: var(--app-notebook-band-rhythm);

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.6"
 current_phase_name: Per-step shared ingredients (INSERTED)
 status: executing
-stopped_at: Completed 03.6-04-PLAN.md
-last_updated: "2026-10-05T10:30:40.571Z"
+stopped_at: Completed 03.6-05-PLAN.md
+last_updated: "2026-10-05T10:36:23.058Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 execution started
-state_head: d81dacb286d9fff8f6b7fa98beab7517f0dfef84
+state_head: 8c55eab74fd5b3e167990a1ab1e05eecd6704af2
 progress:
   total_phases: 13
   completed_phases: 8
   total_plans: 104
-  completed_plans: 101
+  completed_plans: 102
   percent: 62
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.6 (Per-step shared ingredients (INSERTED)) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-10-05 — Phase 03.6 execution started
 
@@ -131,6 +131,7 @@ Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed
 | Phase 03.6 P02 | 3 min | 2 tasks | 7 files |
 | Phase 03.6 P03 | 6 min | 2 tasks | 11 files |
 | Phase 03.6 P04 | 6 min | 2 tasks | 6 files |
+| Phase 03.6 P05 | 6 min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -262,6 +263,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.6]: 03.6-03: a copied row's kept portions carry their stored index and asMadeTotals reads at portion.index ?? i
 - [Phase 03.6]: diff.js lines sit beside the row-level fields; lines match their baseline by index with a null-from, changed-true shape for a missing baseline line (T-03.6-07)
 - [Phase 03.6]: Show changes reads every row per line; a line that is out reads the parent's figures through baselineVersion (openingActiveById, openingMass)
+- [Phase 03.6]: 03.6-05: a removed step's removal is read from the method (isLineRemoved/isRowRemoved/activeRows take the method), never stored on a line; a lone Removed group keeps its head
 
 ### Pending Todos
 
@@ -444,6 +446,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T10:30:40.472Z
-Stopped at: Completed 03.6-04-PLAN.md
+Last session: 2026-10-05T10:36:22.959Z
+Stopped at: Completed 03.6-05-PLAN.md
 Resume file: None

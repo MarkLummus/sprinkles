@@ -574,7 +574,7 @@ Plans:
 **Goal:** Shared ingredients act per step (sketch 011 README decision 51): each remove link removes its own line, a removed step takes its lines with it (struck, restored with the step), and the pen's portion line and Show changes' percentages follow the lines still in, the 86.3% fix included.
 **Requirements**: TBD
 **Depends on:** Phase 03.5
-**Plans:** 4/7 plans executed
+**Plans:** 5/7 plans executed
 
 Plans:
 
@@ -596,7 +596,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 03.6-05-PLAN.md — Removing a step takes its lines with it, struck under a "Removed" head in the step's place and restored with the step (decision 51, Mark's answer 2)
+- [x] 03.6-05-PLAN.md — Removing a step takes its lines with it, struck under a "Removed" head in the step's place and restored with the step (decision 51, Mark's answer 2)
 
 **Wave 6** *(blocked on Wave 5)*
 

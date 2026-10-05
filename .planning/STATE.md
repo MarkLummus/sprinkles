@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-05T01:17:58.730Z"
-last_activity: 2026-10-04
+last_updated: "2026-10-05T02:04:44.680Z"
+last_activity: 2026-10-05
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: 56dd7434b6704360fb51ac77415781a3e6deff63
+state_head: c5e09fce9dfa0a38d1d13b5557be047a82acad4a
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-05 - Completed quick task 261004-ta2: tidy leftovers (probe regex, stale nav comments, menu button and wordmark focus ring)
+Last activity: 2026-10-05 - Completed quick task 261004-ubg: one-line table head and empty space fix (decisions 48 A and 49 A)
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -401,6 +401,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261004-oxa | Decision 33 brief task 4: Balance and Watch for default open from 984 (useBelowDesktop.js, RecipePage.jsx, DerivedAdvisories.jsx and their tests); acceptance boards 984-batch and 1024-batch (open), 98 | 2026-10-04 | 0fcc2c3 | .planning/quick/261004-oxa-decision-33-brief-task-4-balance-and-watch-for-default-open |
 | 261004-szl | Drop the "against <version>" suffix from the batch read view Recorded line | 2026-10-05 | 91e474a | [261004-szl-drop-the-against-version-suffix-from-the](./quick/261004-szl-drop-the-against-version-suffix-from-the/) |
 | 261004-ta2 | Tidy leftovers: probe regex, stale nav comments, menu button and wordmark focus ring | 2026-10-05 | 56dd743 | [261004-ta2-tidy-leftovers-probe-regex-stale-nav-com](./quick/261004-ta2-tidy-leftovers-probe-regex-stale-nav-com/) |
+| 261004-ubg | Build decisions 48 A and 49 A: one-line table head and empty space fix | 2026-10-05 | c5e09fc | [261004-ubg-build-decisions-48-a-and-49-a-one-line-t](./quick/261004-ubg-build-decisions-48-a-and-49-a-one-line-t/) |
 
 ### Roadmap Evolution
 

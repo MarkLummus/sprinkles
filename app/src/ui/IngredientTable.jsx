@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef } from 'react';
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, formatPortionLine } from '../domain/composition.js';
 import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
-import { activeRows, isLineRemoved, rowGrams } from '../domain/rows.js';
+import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/rows.js';
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { parseGramsDraft } from '../domain/lineage.js';
@@ -10,39 +10,63 @@ import { parseGramsDraft } from '../domain/lineage.js';
 // every portion's step through the active stepNumberMap via
 // displayNumberOf alone — never a hand-rolled filter mentioning `removed`
 // (domain/rows.js's own discipline, extended here from rows to portions).
-// A portion whose step does not resolve (a null map, or a step this map
-// has no entry for — its step was removed) is never dropped: it joins one
-// trailing "Unallocated" group instead (RESEARCH.md Pitfall 4). Groups
-// sort by display number, with Unallocated (when non-empty) always last;
-// entries within a group keep `rows`' own iteration order, then portion
-// order — never re-sorted, matching the sketch's own ING.forEach
-// iteration (index.html:390-406).
+// A portion whose step is removed in `steps` forms one group of kind
+// 'removed' for that step, headed 'Removed' with the step's lead-in, sorted
+// at the step's own place in the method (after every active step that
+// precedes it, before the next one), its entries flagged `stepRemoved`
+// (sketch 011 decision 51, Mark's answer 2). A portion whose step does not
+// resolve (a null map, or a step this map has no entry for) is never
+// dropped: it joins one trailing "Unallocated" group instead (RESEARCH.md
+// Pitfall 4). Active groups sort by display number, with Unallocated (when
+// non-empty) always last; entries within a group keep `rows`' own iteration
+// order, then portion order — never re-sorted, matching the sketch's own
+// ING.forEach iteration (index.html:390-406).
 //
-// `rows` are the stored rows. A line that is out is skipped before any group is
-// created for it, so no empty step head prints, unless `keepOutLines` is set:
-// the pen and Show changes draw a line that is out, struck.
+// `rows` are the stored rows. A line that is out (its own flag, or its step
+// removed) is skipped before any group is created for it, so no empty step
+// head prints, unless `keepOutLines` is set: the pen and Show changes draw a
+// line that is out, struck.
 function groupPortionsByStep(rows, steps, stepNumberMap, keepOutLines) {
   const numbered = new Map();
+  const removedSteps = new Map();
   const unallocated = [];
   for (const row of rows) {
     row.portions.forEach((portion, portionIndex) => {
-      if (!keepOutLines && isLineRemoved(row, portion)) return;
+      if (!keepOutLines && isLineRemoved(row, portion, steps)) return;
+      const step = steps.find((candidate) => candidate.n === portion.step);
+      if (isStepRemoved(steps, portion.step)) {
+        if (!removedSteps.has(portion.step)) {
+          removedSteps.set(portion.step, { kind: 'removed', n: portion.step, displayNumber: null, leadIn: step.leadIn, entries: [] });
+        }
+        removedSteps.get(portion.step).entries.push({ row, portion, portionIndex, displayNumber: null, stepRemoved: true });
+        return;
+      }
       const displayNumber = stepNumberMap ? displayNumberOf(stepNumberMap, portion.step) : null;
-      const entry = { row, portion, portionIndex, displayNumber };
+      const entry = { row, portion, portionIndex, displayNumber, stepRemoved: false };
       if (displayNumber == null) {
         unallocated.push(entry);
         return;
       }
       if (!numbered.has(displayNumber)) {
-        const step = steps.find((candidate) => candidate.n === portion.step);
-        numbered.set(displayNumber, { displayNumber, leadIn: step ? step.leadIn : '', entries: [] });
+        numbered.set(displayNumber, { kind: 'numbered', n: portion.step, displayNumber, leadIn: step ? step.leadIn : '', entries: [] });
       }
       numbered.get(displayNumber).entries.push(entry);
     });
   }
-  const groups = [...numbered.values()].sort((a, b) => a.displayNumber - b.displayNumber);
+  const methodIndex = (n) => steps.findIndex((candidate) => candidate.n === n);
+  const removedGroups = [...removedSteps.values()].sort((a, b) => methodIndex(a.n) - methodIndex(b.n));
+  const groups = [];
+  let nextRemoved = 0;
+  for (const group of [...numbered.values()].sort((a, b) => a.displayNumber - b.displayNumber)) {
+    while (nextRemoved < removedGroups.length && methodIndex(removedGroups[nextRemoved].n) < methodIndex(group.n)) {
+      groups.push(removedGroups[nextRemoved]);
+      nextRemoved += 1;
+    }
+    groups.push(group);
+  }
+  groups.push(...removedGroups.slice(nextRemoved));
   if (unallocated.length > 0) {
-    groups.push({ displayNumber: null, leadIn: null, entries: unallocated });
+    groups.push({ kind: 'unallocated', n: null, displayNumber: null, leadIn: null, entries: unallocated });
   }
   return groups;
 }
@@ -108,7 +132,7 @@ function rowAccessibleLabel(
 // struck-then-current pair, which instead nests both INSIDE the slot
 // (route-recipe-version.md § 3's "Grams field sits in the plan-grams slot,
 // a changed value's parent amount is struck before it").
-function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef }) {
+function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef, out = false }) {
   if (mode !== 'developing') {
     return <span className="ingredient-table__plan-grams">{`${row.portions[portionIndex].grams} g`}</span>;
   }
@@ -116,11 +140,12 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
   const portion = row.portions[portionIndex];
   const draftPortion = draftRow.portions[portionIndex];
   // Forced struck even when the number itself is unchanged once the line is
-  // out (the draft portion's own flag, nothing at the row level) — a removed
+  // out (the draft portion's own flag, or its step removed; nothing at the row
+  // level) — a removed
   // line strikes in place (route-recipe-version.md § 3) — while the field
   // stays present and editable, since removing does not clear the amount and
   // a restore should keep whatever was typed.
-  const changed = Boolean(draftPortion.removed) || draftPortion.grams !== String(portion.grams);
+  const changed = out || Boolean(draftPortion.removed) || draftPortion.grams !== String(portion.grams);
   // Accessible name, stated once (T-03.2-13): a one-portion row keeps
   // today's unqualified name unchanged; a row with more than one portion
   // names each field by its own portion index, since two fields sharing
@@ -426,7 +451,7 @@ export function IngredientTable({
     else gramsInputsRef.current.delete(rowId);
   }
 
-  const activeRowsOnly = activeRows({ rows });
+  const activeRowsOnly = activeRows({ rows, method: steps });
   const baselineBalance = computeBalance(activeRowsOnly);
   const baselineMass = baselineBalance ? baselineBalance.mass : 0;
   // Keyed by row id in a Map, never a bare object read against a stored id
@@ -493,7 +518,7 @@ export function IngredientTable({
   // above states why), the `steps` prop everywhere else.
   const stepsForGrouping = isDeveloping ? draftVersion.method : steps;
   const groups = groupPortionsByStep(rows, stepsForGrouping, currentStepNumbers, isDeveloping || isShowingChanges);
-  const showStepHeads = !(groups.length === 1 && groups[0].displayNumber == null);
+  const showStepHeads = !(groups.length === 1 && groups[0].kind === 'unallocated');
 
   // Style 6's reading row (sketch 011 decisions 2, 3; D-19; 03.5-06 Task
   // 1) — also the recording state's row (Task 2): GramsCell's own
@@ -587,16 +612,19 @@ export function IngredientTable({
     );
   }
 
-  function renderDevelopingEntry(row, portion, portionIndex, displayNumber) {
+  function renderDevelopingEntry(row, portion, portionIndex, displayNumber, stepRemoved) {
     const draftRow = penDraft.rows[row.id];
     const draftPortion = draftRow.portions[portionIndex];
-    // This line is out when this portion's own draft flag is set (sketch 011
-    // decision 51); a sibling line is never affected, and the draft row holds
-    // no flag of its own.
-    const lineOut = Boolean(draftPortion.removed);
-    // The orphaned-row flag prints on the first line still in, so it never
-    // lands on a struck line; a row with a line in always has one.
-    const firstLineIn = draftRow.portions.findIndex((candidate) => !candidate.removed);
+    // This line is out when this portion's own draft flag is set or its step
+    // is removed (sketch 011 decision 51); a sibling line is never affected by
+    // the flag, and the draft row holds no flag of its own.
+    const lineOut = Boolean(draftPortion.removed) || stepRemoved;
+    // The orphaned-row flag prints on the first line still in (not struck by
+    // the maker's own flag and not under a removed step), so it never lands on
+    // a struck line; a row flagged orphaned always has one.
+    const firstLineIn = draftRow.portions.findIndex(
+      (candidate, i) => !candidate.removed && !isStepRemoved(stepsForGrouping, row.portions[i].step),
+    );
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
@@ -650,6 +678,7 @@ export function IngredientTable({
             penDraft={penDraft}
             onChangePenGrams={onChangePenGrams}
             inputRef={portionIndex === 0 ? (element) => registerGramsInput(row.id, element) : undefined}
+            out={lineOut}
           />
         </td>
         <td className="ingredient-table__col-name">
@@ -670,11 +699,13 @@ export function IngredientTable({
               decision 33 addendum, Mark 2026-10-04). On every portion line
               of a split row, each toggling its own line (decision 51), named
               for its line as its step head reads it. */}
-          <RemoveRowControl
-            removed={lineOut}
-            onToggle={() => onTogglePenLineRemoved(row.id, portionIndex)}
-            lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Unallocated'}` : undefined}
-          />
+          {!stepRemoved && (
+            <RemoveRowControl
+              removed={lineOut}
+              onToggle={() => onTogglePenLineRemoved(row.id, portionIndex)}
+              lineName={isSplit ? `${row.ingredientName}, ${displayNumber != null ? `Step ${displayNumber}` : 'Unallocated'}` : undefined}
+            />
+          )}
           {/* A line that is out is outside the live batch, so its portion line reads
               the opening figures (the row's lines in when the pen opened, over the
               opening batch), the same basis as the struck % of batch cell; a line
@@ -705,9 +736,9 @@ export function IngredientTable({
     );
   }
 
-  function renderEntry({ row, portion, portionIndex, displayNumber }) {
+  function renderEntry({ row, portion, portionIndex, displayNumber, stepRemoved }) {
     if (isShowingChanges) return renderShowChangesEntry(row, portion, portionIndex);
-    if (isDeveloping) return renderDevelopingEntry(row, portion, portionIndex, displayNumber);
+    if (isDeveloping) return renderDevelopingEntry(row, portion, portionIndex, displayNumber, stepRemoved);
     return renderReadingEntry(row, portion, portionIndex);
   }
 
@@ -736,17 +767,17 @@ export function IngredientTable({
         </thead>
         <tbody>
           {groups.map((group) => (
-            <Fragment key={group.displayNumber ?? 'unallocated'}>
+            <Fragment key={group.kind === 'removed' ? `removed:${group.n}` : (group.displayNumber ?? 'unallocated')}>
               {showStepHeads && (
                 <tr className="ingredient-table__step-head">
                   <td colSpan={columnCount}>
-                    {group.displayNumber != null ? (
+                    {group.kind === 'unallocated' ? (
+                      'Unallocated'
+                    ) : (
                       <>
-                        {`Step ${group.displayNumber}`}
+                        {group.kind === 'removed' ? 'Removed' : `Step ${group.displayNumber}`}
                         <span className="ingredient-table__step-head-lead">{group.leadIn}</span>
                       </>
-                    ) : (
-                      'Unallocated'
                     )}
                   </td>
                 </tr>

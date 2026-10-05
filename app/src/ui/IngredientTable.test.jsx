@@ -757,15 +757,12 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
     expect(heavyCreamCell).not.toContain('ingredient-table__portion-note');
   });
 
-  it('groups a portion whose step was removed under a trailing "Unallocated" head, positioned after every numbered group, never dropped', () => {
+  it('groups a portion whose step is not in the method under a trailing "Unallocated" head, positioned after every numbered group, never dropped', () => {
     const version = makeVersion([
-      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] }),
+      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 9, grams: 5 }] }),
     ]);
-    version.method = [
-      { n: 1, leadIn: 'One', instruction: 'Do one.' },
-      { n: 2, leadIn: 'Two', instruction: 'Do two.', removed: true },
-    ];
-    const currentStepNumbers = displayNumbers(version.method); // 1->1; step 2 absent
+    version.method = [{ n: 1, leadIn: 'One', instruction: 'Do one.' }];
+    const currentStepNumbers = displayNumbers(version.method); // 1->1; step 9 is in no method
 
     const markup = renderToStaticMarkup(
       <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={currentStepNumbers} />,
@@ -775,11 +772,28 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
     const unallocatedIndex = markup.indexOf('>Unallocated<');
     expect(step1Index).toBeGreaterThan(-1);
     expect(unallocatedIndex).toBeGreaterThan(step1Index);
-    // The removed-step portion still renders, under Unallocated — never
-    // silently dropped (RESEARCH.md Pitfall 4, extended from rows to
-    // portions).
+    // The portion still renders, under Unallocated — never silently dropped
+    // (RESEARCH.md Pitfall 4, extended from rows to portions).
     const unallocatedSection = markup.slice(unallocatedIndex);
     expect(unallocatedSection).toContain('5 g of 10.0 g · 100.0% in all');
+  });
+
+  it('draws no line of a removed step in the reading state, and no Unallocated head for it (plan 03.6-05)', () => {
+    const version = makeVersion([
+      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] }),
+    ]);
+    version.method = [
+      { n: 1, leadIn: 'One', instruction: 'Do one.' },
+      { n: 2, leadIn: 'Two', instruction: 'Do two.', removed: true },
+    ];
+    const markup = renderToStaticMarkup(
+      <IngredientTable rows={version.rows} mode="reading" steps={version.method} currentStepNumbers={displayNumbers(version.method)} />,
+    );
+
+    expect(markup).not.toContain('Unallocated');
+    expect(markup).not.toContain('>Two<');
+    expect(markup).toContain('5 g of 5.0 g · 100.0% in all');
+    expect(sectionMarkup(markup, 'tfoot')).toContain('5.0 g');
   });
 });
 
@@ -1548,9 +1562,9 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     expect(countTrs(sectionMarkup(markup, 'tbody'))).toBe(2);
   });
 
-  it('C: the pen with its only step removed renders no step head, and one grams field per portion', () => {
+  it('C: the pen with every portion on a step that is not in the method renders no step head, and one grams field per portion', () => {
     const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1)]);
-    version.method = [{ n: 1, leadIn: 'One', instruction: 'Do one.', removed: true }];
+    version.method = [{ n: 2, leadIn: 'Two', instruction: 'Do two.' }];
     const draftVersion = structuredClone(version);
     const penDraft = { rows: { a: onePortionDraftRow(1, '10'), b: onePortionDraftRow(1, '20') }, asMade: {} };
 
@@ -1572,14 +1586,39 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     expect((sectionMarkup(markup, 'tbody').match(/<input /g) || []).length).toBe(2);
   });
 
+  it('C2: a lone Removed group keeps its head, because it says what the struck lines are (plan 03.6-05)', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1)]);
+    version.method = [{ n: 1, leadIn: 'One', instruction: 'Do one.', removed: true }];
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: { a: onePortionDraftRow(1, '10'), b: onePortionDraftRow(1, '20') }, asMade: {} };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+      />,
+    );
+
+    expect(countStepHeads(markup)).toBe(1);
+    expect(markup).toContain('Removed<span class="ingredient-table__step-head-lead">One</span>');
+    expect(markup).not.toContain('Unallocated');
+    // Struck, with the grams field still present and no remove or restore control.
+    const tbody = sectionMarkup(markup, 'tbody');
+    expect(tbody).toContain('<span class="struck-value">Row A</span>');
+    expect(tbody).toContain('<span class="struck-value">Row B</span>');
+    expect(tbody).not.toContain('<button');
+    expect((tbody.match(/<input /g) || []).length).toBe(2);
+  });
+
   it('D (guard): a table mixing a numbered group and Unallocated keeps both heads, in reading and in the pen', () => {
     const version = makeVersion([
-      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] }),
+      makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 9, grams: 5 }] }),
     ]);
-    version.method = [
-      { n: 1, leadIn: 'One', instruction: 'Do one.' },
-      { n: 2, leadIn: 'Two', instruction: 'Do two.', removed: true },
-    ];
+    version.method = [{ n: 1, leadIn: 'One', instruction: 'Do one.' }];
     const currentStepNumbers = displayNumbers(version.method);
 
     const reading = renderToStaticMarkup(
@@ -1591,7 +1630,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
 
     const draftVersion = structuredClone(version);
     const penDraft = {
-      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }] } },
+      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 9, grams: '5' }] } },
       asMade: {},
     };
     const pen = renderToStaticMarkup(
@@ -1623,6 +1662,82 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
     expect(markup).toContain('Step 1<span class="ingredient-table__step-head-lead">One</span>');
     expect(markup).toContain('Step 2<span class="ingredient-table__step-head-lead">Two</span>');
     expect(markup).not.toContain('Unallocated');
+  });
+});
+
+// Plan 03.6-05 (sketch 011 decision 51, Mark's answer 2, 2026-10-05): a removed
+// step's lines form a 'Removed' group headed with the step's lead-in, in the
+// step's own place, struck, with no remove or restore control.
+describe('IngredientTable — a removed step\'s lines sit under a Removed head in the step\'s place (plan 03.6-05)', () => {
+  function penFor(method, row) {
+    const version = makeVersion([row]);
+    version.method = method;
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: { [row.id]: { portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams), removed: false })) } },
+      asMade: {},
+    };
+    return renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        steps={version.method}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+      />,
+    );
+  }
+  const headLine = (markup) => [...markup.matchAll(/<tr class="ingredient-table__step-head"><td colSpan="\d+">(.*?)<\/td>/g)].map((match) => match[1].replace(/<[^>]*>/g, '|').replace(/\|+/g, '|'));
+
+  it('sorts two removed steps in method order, each at its own place', () => {
+    const row = makeRow('a', 'Row A', 20, 1, {
+      portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }, { step: 3, grams: 5 }, { step: 4, grams: 5 }],
+    });
+    const markup = penFor(
+      [
+        { n: 1, leadIn: 'One', instruction: '.' },
+        { n: 2, leadIn: 'Two', instruction: '.', removed: true },
+        { n: 3, leadIn: 'Three', instruction: '.' },
+        { n: 4, leadIn: 'Four', instruction: '.', removed: true },
+      ],
+      row,
+    );
+
+    expect(headLine(markup)).toEqual(['Step 1|One|', 'Removed|Two|', 'Step 2|Three|', 'Removed|Four|']);
+  });
+
+  it('prints a removed step\'s lead-in as text, never as markup', () => {
+    const row = makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] });
+    const markup = penFor(
+      [
+        { n: 1, leadIn: 'One', instruction: '.' },
+        { n: 2, leadIn: '<b>x</b>', instruction: '.', removed: true },
+      ],
+      row,
+    );
+
+    expect(markup).toContain('&lt;b&gt;x&lt;/b&gt;');
+    expect(markup).not.toContain('<b>x</b>');
+  });
+
+  it('draws the line under a removed step struck with no control, and its sibling in an active step with one', () => {
+    const row = makeRow('a', 'Row A', 10, 1, { portions: [{ step: 1, grams: 5 }, { step: 2, grams: 5 }] });
+    const markup = penFor(
+      [
+        { n: 1, leadIn: 'One', instruction: '.' },
+        { n: 2, leadIn: 'Two', instruction: '.', removed: true },
+      ],
+      row,
+    );
+
+    const tbody = sectionMarkup(markup, 'tbody');
+    expect((tbody.match(/<button/g) || []).length).toBe(1);
+    expect(tbody).toContain('aria-label="remove Row A, Step 1"');
+    expect(tbody).not.toContain('Row A, Step 2');
+    expect(tbody).toContain('<span class="struck-value">Row A</span>');
+    expect(tbody).toContain('5 g of 5.0 g · 100.0% in all');
   });
 });
 

@@ -333,3 +333,100 @@ describe('Show changes reads a line that is out against the parent (decision 51,
     expect(current.container.querySelector('.ingredient-table').textContent).not.toContain('86.3%');
   });
 });
+
+// The table's body in order: a head row's text, or a line's row.
+function bodyEntries() {
+  const table = current.container.querySelector('.ingredient-table');
+  return [...table.querySelectorAll('tbody tr')].map((tr) =>
+    tr.classList.contains('ingredient-table__step-head') ? { head: tr.textContent } : { line: tr },
+  );
+}
+
+function headTexts() {
+  return bodyEntries().filter((entry) => entry.head !== undefined).map((entry) => entry.head);
+}
+
+// The lines between a head that starts with `headStart` and the next head.
+function linesUnder(headStart) {
+  const entries = bodyEntries();
+  const at = entries.findIndex((entry) => entry.head !== undefined && entry.head.startsWith(headStart));
+  const lines = [];
+  for (let i = at + 1; i < entries.length && entries[i].head === undefined; i += 1) lines.push(entries[i].line);
+  return lines;
+}
+
+describe('a removed step takes its lines with it, struck in its own place (decision 51, plan 05)', () => {
+  it("strikes the five lines of 'Gum slurry' under Removed, reads 666.0 g, and restores them with the step", async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(
+      [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Step 2, remove'),
+    );
+
+    expect(headTexts()).toEqual([
+      'RemovedGum slurry — the only high-heat step',
+      'Step 2Build the base',
+      'Step 5Allulose in, then crash-cool',
+      'Step 7Emulsify the oil, cold',
+    ]);
+    const removed = linesUnder('Removed');
+    expect(removed.map((tr) => nameCell(tr).textContent.replace(/estimated|unreviewed|\d.*$/g, '').trim())).toEqual([
+      'Whole milk',
+      'Sucrose',
+      'Locust bean gum',
+      'Guar gum',
+      'Lambda carrageenan',
+    ]);
+    for (const tr of removed) {
+      expect(nameCell(tr).querySelector('.struck-value')).not.toBeNull();
+      expect(nameCell(tr).querySelector('button')).toBeNull();
+    }
+    expect(totalCell().textContent.endsWith('666.0 g')).toBe(true);
+    expect(struck(totalCell())).toEqual(['799.7']);
+
+    const noteIn = (tr) => nameCell(tr).querySelector('.ingredient-table__portion-note').textContent;
+    expect(noteIn(removed[0])).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(noteIn(removed[1])).toBe('12 g of 76.0 g · 9.5% in all');
+    const stepTwo = linesUnder('Step 2');
+    const milk = stepTwo.find((tr) => tr.getAttribute('aria-label').startsWith('Whole milk'));
+    const sucrose = stepTwo.find((tr) => tr.getAttribute('aria-label').startsWith('Sucrose'));
+    expect(noteIn(milk)).toBe('250.4 g of 250.4 g · 37.6% in all');
+    expect(struck(shareCellOf(milk))).toEqual(['31.3%']);
+    expect(shareCellOf(milk).textContent).toBe('31.3%37.6%');
+    expect(noteIn(sucrose)).toBe('64 g of 64.0 g · 9.6% in all');
+    expect(shareCellOf(sucrose).textContent).toBe('8.0%9.6%');
+    expect(shareCellOf(removed[0]).textContent).toBe('15.0%');
+    expect(struck(shareCellOf(removed[0]))).toEqual(['15.0%']);
+    expect(shareCellOf(removed[1]).textContent).toBe('1.5%');
+
+    await click(
+      [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Removed step 2, restore'),
+    );
+
+    expect(headTexts().map((text) => text.slice(0, 6))).toEqual(['Step 2', 'Step 3', 'Step 6', 'Step 8']);
+    expect(headTexts()[0]).toBe('Step 2Gum slurry — the only high-heat step');
+    expect(totalCell().textContent.endsWith('799.7 g')).toBe(true);
+    expect(totalCell().querySelector('.struck-value')).toBeNull();
+    expect(noteOf('remove Whole milk, Step 2')).toBe('120 g of 370.4 g · 46.3% in all');
+    expect(noteOf('remove Whole milk, Step 3')).toBe('250.4 g of 370.4 g · 46.3% in all');
+  });
+
+  it("restores exactly the lines the step took: a line the maker removed on its own stays out", async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await click(buttonByLabel('remove Whole milk, Step 2'));
+    await click(
+      [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Step 2, remove'),
+    );
+    expect(totalCell().textContent.endsWith('666.0 g')).toBe(true);
+    await click(
+      [...container.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Removed step 2, restore'),
+    );
+
+    expect(totalCell().textContent.endsWith('679.7 g')).toBe(true);
+    expect(nameCell(rowOf('restore Whole milk, Step 2')).querySelector('.struck-value')).not.toBeNull();
+    expect(buttonByLabel('remove Whole milk, Step 3')).not.toBeNull();
+  });
+});

@@ -6,32 +6,53 @@
 // thin wrapper the way Method.jsx already builds batchLike.
 
 /**
- * isLineRemoved(row, portion) -> true when one line (a portion) of a row is
- * out: its own `removed` is exactly true, or the row's older whole-row flag
- * is exactly true, which reads as every line out. Strict on purpose — an
- * absent, string or numeric flag reads as in (T-03.6-01).
+ * isStepRemoved(method, n) -> true when `method` holds a step whose `n` equals
+ * `n` and whose `removed` is exactly true. An array scan that compares `n`,
+ * never a property read with a stored key, and strict on purpose: a malformed
+ * flag removes nothing (T-03.6-09).
  */
-export function isLineRemoved(row, portion) {
-  return portion.removed === true || row.removed === true;
+export function isStepRemoved(method, n) {
+  for (const step of method) {
+    if (step.n === n) return step.removed === true;
+  }
+  return false;
 }
 
 /**
- * isRowRemoved(row) -> true when the row's older whole-row flag is exactly
- * true or every one of its lines is out. A row with no portions (or no
- * portions array) is not removed by this rule. A split row with one line
- * out is not removed.
+ * isLineRemoved(row, portion, method) -> true when one line (a portion) of a
+ * row is out: its own `removed` is exactly true, the row's older whole-row flag
+ * is exactly true (which reads as every line out), or, when `method` is given,
+ * the step the line sits in is removed. The step's removal is read here and
+ * never stored on the line, so restoring the step restores exactly the lines
+ * it took. Called without `method` it reads only the line's own state, which
+ * is how the pen's seed and dirty check read it. Strict on purpose — an
+ * absent, string or numeric flag reads as in (T-03.6-01).
  */
-export function isRowRemoved(row) {
+export function isLineRemoved(row, portion, method) {
+  if (portion.removed === true || row.removed === true) return true;
+  return Array.isArray(method) && isStepRemoved(method, portion.step);
+}
+
+/**
+ * isRowRemoved(row, method) -> true when the row's older whole-row flag is
+ * exactly true or every one of its lines is out, a line being out as
+ * isLineRemoved reads it (with the same optional `method`). A row with no
+ * portions (or no portions array) is not removed by this rule. A split row
+ * with one line out is not removed.
+ */
+export function isRowRemoved(row, method) {
   if (row.removed === true) return true;
   const portions = row.portions ?? [];
-  return portions.length > 0 && portions.every((portion) => portion.removed === true);
+  return portions.length > 0 && portions.every((portion) => isLineRemoved(row, portion, method));
 }
 
 /**
  * activeRows(version) -> version.rows reduced to the lines still in, in the
- * row's own order. A row with every line in comes back as the very same
- * object; a row with some lines out comes back as a copy with a shorter
- * `portions` array; a row with no line in is dropped.
+ * row's own order, a line being out as isLineRemoved reads it against
+ * `version.method` (a version with no method reads as []). A row with every
+ * line in comes back as the very same object; a row with some lines out comes
+ * back as a copy with a shorter `portions` array; a row with no line in is
+ * dropped.
  * Each kept portion of a copied row carries its stored `index`, its position
  * in the stored row's portions: a batch's as-made array is index-aligned with
  * the stored portions, so a reader of that array uses `portion.index ?? i`
@@ -40,12 +61,13 @@ export function isRowRemoved(row) {
  * Never mutates or reorders the array it is given.
  */
 export function activeRows(version) {
+  const method = version.method ?? [];
   const result = [];
   for (const row of version.rows) {
     if (row.removed === true) continue;
     const kept = [];
     row.portions.forEach((portion, index) => {
-      if (!isLineRemoved(row, portion)) kept.push({ ...portion, index });
+      if (!isLineRemoved(row, portion, method)) kept.push({ ...portion, index });
     });
     if (kept.length === row.portions.length) result.push(row);
     else if (kept.length > 0) result.push({ ...row, portions: kept });

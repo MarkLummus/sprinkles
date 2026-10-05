@@ -293,6 +293,11 @@ export function readMeasured(value, options = {}) {
  * written from one that is the plan alone. It is decided by the same
  * element test as the total, never by a difference from the plan: a
  * written value equal to the plan, or a written 0, counts.
+ *
+ * A batch's as-made array is index-aligned with the stored row's portions. A
+ * row copied by activeRows because a line is out carries each kept portion's
+ * stored position as `portion.index`, so a value is read at `portion.index ?? i`
+ * and never against another line.
  */
 export function asMadeTotals(rows, asMade) {
   let planTotal = 0;
@@ -305,7 +310,7 @@ export function asMadeTotals(rows, asMade) {
     for (const [i, portion] of row.portions.entries()) {
       let contribution = portion.grams;
       if (hasRow) {
-        const raw = values[i];
+        const raw = values[portion.index ?? i];
         if (raw !== null && raw !== undefined && raw !== '') {
           const value = Number(raw);
           if (Number.isFinite(value)) {

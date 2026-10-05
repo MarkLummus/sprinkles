@@ -30,7 +30,24 @@ describe('activeRows', () => {
 
   it('keeps a split row\'s other line and loses the line that is out', () => {
     const milk = { id: 'a', portions: [{ step: 2, grams: 120, removed: true }, { step: 3, grams: 250.4 }] };
-    expect(activeRows({ rows: [milk] })).toEqual([{ id: 'a', portions: [{ step: 3, grams: 250.4 }] }]);
+    expect(activeRows({ rows: [milk] })).toEqual([{ id: 'a', portions: [{ step: 3, grams: 250.4, index: 1 }] }]);
+  });
+
+  it('tags each kept portion of a copied row with its stored index', () => {
+    const row = {
+      id: 'a',
+      portions: [{ step: 2, grams: 1 }, { step: 3, grams: 2, removed: true }, { step: 4, grams: 3 }],
+    };
+    const [copy] = activeRows({ rows: [row] });
+    expect(copy.portions.map((portion) => portion.index)).toEqual([0, 2]);
+    expect(row.portions.every((portion) => !('index' in portion))).toBe(true);
+  });
+
+  it('leaves a row with every line in untagged, as the same object', () => {
+    const row = { id: 'a', portions: [{ step: 2, grams: 1 }, { step: 3, grams: 2 }] };
+    const [kept] = activeRows({ rows: [row] });
+    expect(kept).toBe(row);
+    expect(kept.portions.every((portion) => !('index' in portion))).toBe(true);
   });
 
   it('drops a row with every line out', () => {

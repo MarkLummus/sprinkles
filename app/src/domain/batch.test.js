@@ -25,7 +25,7 @@ import {
 } from './batch.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
-import { rowGrams } from './rows.js';
+import { activeRows, rowGrams } from './rows.js';
 
 // A plain in-memory double for the repository seam's batch methods — the
 // domain suite must not import store/repository.js, which touches idb.
@@ -682,5 +682,37 @@ describe('augustSecondBatch (the 2 Aug 2026 working case, on the battery)', () =
     expect(augustSecondBatch.id).toBe('b8cc3566-48a4-4b23-b6e5-749a332afe89');
     expect(augustSecondBatch.recordedAt).toBe('2026-08-04T00:00:00.000Z');
     expect(formatRecordDate(augustSecondBatch.recordedAt)).toBe('4 Aug 2026');
+  });
+});
+
+// Phase 03.6 (T-03.6-06): a batch's as-made array is index-aligned with the
+// stored row's portions, so a line that is out must not shift the positions the
+// array is read at.
+describe('asMadeTotals with a line out (alignment by stored position)', () => {
+  function versionWithMilkStepTwoOut() {
+    const version = structuredClone(oliveOilVersion);
+    version.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
+    return version;
+  }
+
+  it('reads a value typed against the line still in at its stored position: 679.7 g becomes 679.3 g', () => {
+    const version = versionWithMilkStepTwoOut();
+    const { planTotal, asMadeTotal, anyWritten } = asMadeTotals(activeRows(version), { 'row-01': ['', '250'] });
+    expect(planTotal.toFixed(1)).toBe('679.7');
+    expect(asMadeTotal.toFixed(1)).toBe('679.3');
+    expect(anyWritten).toBe(true);
+  });
+
+  it('never reads a value stored at the position of the line that is out against the line still in', () => {
+    const version = versionWithMilkStepTwoOut();
+    const { planTotal, asMadeTotal, anyWritten } = asMadeTotals(activeRows(version), { 'row-01': ['120', ''] });
+    expect(asMadeTotal).toBe(planTotal);
+    expect(anyWritten).toBe(false);
+  });
+
+  it('a version with nothing out reads at the position in the array, as before', () => {
+    const { asMadeTotal, anyWritten } = asMadeTotals(activeRows(oliveOilVersion), { 'row-01': ['', '250'] });
+    expect(asMadeTotal.toFixed(1)).toBe('799.3');
+    expect(anyWritten).toBe(true);
   });
 });

@@ -10,6 +10,7 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { IngredientTable } from './IngredientTable.jsx';
 import { displayNumbers } from '../domain/stepNumbers.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -107,5 +108,43 @@ describe('IngredientTable — every remove link removes its own line (decision 5
     expect(onLine).toHaveBeenLastCalledWith('b', 0);
 
     expect(onRow).not.toHaveBeenCalled();
+  });
+});
+
+// Plan 03.6-03 (T-03.6-06): an as-made field keeps its stored position when another line of
+// its row is out. A change event, not typed keys, since the field is controlled. Asserts the
+// position only; whether a line that is out has a field is Mark's open item (decision 7).
+describe('IngredientTable — recording with a line out keeps the as-made field at its stored position', () => {
+  it("changing Whole milk's portion 2 field calls onChangeAsMade with ('row-01', 1, '260')", () => {
+    const version = structuredClone(oliveOilVersion);
+    version.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
+    const onChangeAsMade = vi.fn();
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    current = { container, root };
+    act(() => {
+      root.render(
+        <IngredientTable
+          rows={version.rows}
+          steps={version.method}
+          currentStepNumbers={displayNumbers(version.method)}
+          mode="recording"
+          draft={{ asMade: { 'row-01': ['', '250'] } }}
+          openBatch={null}
+          onChangeAsMade={onChangeAsMade}
+        />,
+      );
+    });
+
+    const field = container.querySelector('input[aria-label="Whole milk, as made, grams, portion 2"]');
+    expect(field.value).toBe('250');
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+    act(() => {
+      setter.call(field, '260');
+      field.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    expect(onChangeAsMade).toHaveBeenCalledTimes(1);
+    expect(onChangeAsMade).toHaveBeenCalledWith('row-01', 1, '260');
   });
 });

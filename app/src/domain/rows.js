@@ -32,13 +32,21 @@ export function isRowRemoved(row) {
  * row's own order. A row with every line in comes back as the very same
  * object; a row with some lines out comes back as a copy with a shorter
  * `portions` array; a row with no line in is dropped.
+ * Each kept portion of a copied row carries its stored `index`, its position
+ * in the stored row's portions: a batch's as-made array is index-aligned with
+ * the stored portions, so a reader of that array uses `portion.index ?? i`
+ * rather than the position in the shorter array. A row returned as the same
+ * object already has every position equal to its index and is not tagged.
  * Never mutates or reorders the array it is given.
  */
 export function activeRows(version) {
   const result = [];
   for (const row of version.rows) {
     if (row.removed === true) continue;
-    const kept = row.portions.filter((portion) => !isLineRemoved(row, portion));
+    const kept = [];
+    row.portions.forEach((portion, index) => {
+      if (!isLineRemoved(row, portion)) kept.push({ ...portion, index });
+    });
     if (kept.length === row.portions.length) result.push(row);
     else if (kept.length > 0) result.push({ ...row, portions: kept });
   }

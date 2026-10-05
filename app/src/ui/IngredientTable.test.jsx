@@ -1901,3 +1901,50 @@ describe('IngredientTable — each pen line reads on its own, to the figures dec
     expect(cells[1]).toContain('<p class="ingredient-table__flag">');
   });
 });
+
+// Phase 03.6 plan 03 (T-03.6-06, decision 7): recording and a saved batch's reading
+// receive the stored rows, and an as-made value stays on the line it was typed
+// against by stored position when another line of the row is out. Alignment only:
+// nothing here counts a row's as-made fields or says whether a line that is out has one.
+describe('IngredientTable — as made stays on its own line when a line is out (plan 03.6-03)', () => {
+  function versionWithMilkStepTwoOut() {
+    const version = structuredClone(oliveOilVersion);
+    version.rows.find((row) => row.id === 'row-01').portions[0].removed = true;
+    return version;
+  }
+
+  function table(mode, version, extra) {
+    return renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        steps={version.method}
+        currentStepNumbers={displayNumbers(version.method)}
+        mode={mode}
+        {...extra}
+      />,
+    );
+  }
+
+  it('recording: the value typed against Whole milk\'s Step 3 line sits in its field by stored position, and the as-made total reads it', () => {
+    const version = versionWithMilkStepTwoOut();
+    const markup = table('recording', version, { draft: { asMade: { 'row-01': ['', '250'] } }, openBatch: null });
+
+    expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams, portion 2" value="250"\/>/);
+    expect(markup).toContain('aria-label="Total, plan 679.7 grams, as made 679.3 grams"');
+    expect(markup).toContain('<span class="sheet-hand">679.3 g</span>');
+    // Sucrose is untouched: both of its fields are still named by their own portion.
+    expect(markup).toContain('aria-label="Sucrose, as made, grams, portion 1"');
+    expect(markup).toContain('aria-label="Sucrose, as made, grams, portion 2"');
+  });
+
+  it('reading a saved batch: the value stored at index 1 reads on the line stored at index 1', () => {
+    const version = versionWithMilkStepTwoOut();
+    const markup = table('reading', version, { openBatch: makeBatch({ 'row-01': ['', 250] }) });
+
+    const milk = markup.match(/<tr[^>]*aria-label="Whole milk[^"]*"[^>]*>[\s\S]*?<\/tr>/g);
+    expect(milk).toHaveLength(1);
+    expect(milk[0]).toContain('<span class="sheet-hand">250 g</span>');
+    expect(milk[0]).toContain('aria-label="Whole milk, 250.4 g, estimated, as made 250 g"');
+    expect(markup).toContain('aria-label="Total, plan 679.7 grams, as made 679.3 grams"');
+  });
+});

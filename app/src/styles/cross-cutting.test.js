@@ -389,7 +389,7 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
     }
   });
 
-  test('app.css carries exactly eight top-level @media blocks, at seven named conditions, the record pen\'s width-only block sharing the phone forms\' 723.98px since sketch 011 decision 28 (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print; 261004-ox8 the screen-only D3 table grid)', () => {
+  test('app.css carries exactly nine top-level @media blocks, at eight named conditions, the record pen\'s width-only block sharing the phone forms\' 723.98px since sketch 011 decision 28 (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print; 261004-ox8 the screen-only D3 table grid; 261004-ubg the Sheet\'s rows from 984, decision 49 A)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
@@ -399,6 +399,7 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       '(pointer: coarse)',
       'print',
       'screen and (min-width: 724px)',
+      'screen and (min-width: 984px)',
     ]);
   });
 });
@@ -439,6 +440,49 @@ describe('the 983.98px block — the side nav and the Sheet\'s second column go 
     expect(rule.declarations).not.toMatch(/padding/);
   });
 
+});
+
+// 261004-ubg (sketch 011 decision 49 A, Mark 2026-10-05): from 984 the side column spans the
+// ingredients and method rows. With every row auto the grid shared the side column's surplus
+// between the two rows, leaving about 367px empty under Mexican Chocolate v3's table. The method
+// row (the ingredients row with no Instructions) takes the surplus instead.
+describe("the Sheet's rows from 984: the side column's surplus goes under the Instructions (sketch 011 decision 49 A)", () => {
+  const R984 = 'screen and (min-width: 984px)';
+  const rowRules = rules.filter((r) => r.media === R984);
+  const tracks = (declarations) => declarations.match(/grid-template-rows:\s*([^;]+);?/)[1].trim().split(/\s+/);
+  const areaRows = (declarations) => declarations.match(/'[^']+'/g);
+
+  test('the block carries exactly .recipe-page and .recipe-page--no-method, in that order', () => {
+    expect(rowRules.map((r) => r.selector)).toEqual(['.recipe-page', '.recipe-page--no-method']);
+  });
+
+  test('.recipe-page declares the rows and nothing else, so the 983.98px block and the gutter tests stay the owners of the rest', () => {
+    const decl = rowRules[0].declarations;
+    expect(decl).toMatch(/^\s*grid-template-rows:\s*auto auto 1fr auto;\s*$/);
+  });
+
+  test('.recipe-page--no-method declares its three rows and nothing else, after the block\'s .recipe-page rule', () => {
+    const decl = rowRules[1].declarations;
+    expect(decl).toMatch(/^\s*grid-template-rows:\s*auto 1fr auto;\s*$/);
+    expect(rules.indexOf(rowRules[1])).toBeGreaterThan(rules.indexOf(rowRules[0]));
+  });
+
+  test('the 1fr sits on the Instructions\' row: the index of the method row in the base areas, the ingredients row with no Instructions', () => {
+    const base = areaRows(ruleFor('.recipe-page').declarations);
+    expect(base).toHaveLength(4);
+    expect(tracks(rowRules[0].declarations)).toHaveLength(4);
+    expect(tracks(rowRules[0].declarations).indexOf('1fr')).toBe(base.indexOf("'method side'"));
+
+    const noMethod = areaRows(ruleFor('.recipe-page--no-method').declarations);
+    expect(noMethod).toHaveLength(3);
+    expect(tracks(rowRules[1].declarations)).toHaveLength(3);
+    expect(tracks(rowRules[1].declarations).indexOf('1fr')).toBe(noMethod.indexOf("'ingredients side'"));
+  });
+
+  test('the condition is screen-only, so print is untouched (Phase 04 owns print)', () => {
+    expect(rowRules.length).toBeGreaterThan(0);
+    expect(rowRules.every((r) => r.media.startsWith('screen and '))).toBe(true);
+  });
 });
 
 describe('the foot band and its ceremony — one column, labels never broken (G-03.5-8b, 03.5-22)', () => {

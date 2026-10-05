@@ -521,6 +521,18 @@ html {
     font-weight: 600;
   }
 
+  /* The ring follows the 10px control radius (sketch 011 decision 38; Mark's
+     iPhone, 2026-10-04; quick 261004-uo6). The fixed row has no room around
+     its stops, so a ring 4px outside the box (2px offset plus 2px width) was
+     drawn past the window: under every tab, and past More's right side. More
+     is where focus returns when its list closes. Inset by its own width, the
+     ring's outer edge is the stop's edge and follows its 10px radius. The box
+     does not move. The items in More's open list keep the outset ring, because
+     their panel has room. */
+  .shell__tabs > .shell__place:focus, .shell__tabs > .shell__more > .shell__place:focus {
+    outline-offset: calc(-1 * var(--focus-outline-width));
+  }
+
   .shell__tabs .shell__place,
   .shell__more li {
     min-height: var(--touch-min);

@@ -36,6 +36,8 @@ const intended = (W, s, k) =>
   (UNBUILT.has('jump') && W >= 724 && W <= 1365 && s === '.notebook-jump');
 const A_SEL = /^(\.fold-row|\.notebook-jump|\.batch-row__head|\.notebook-log)/;
 const introduced = (W, s, k) => UNBUILT.has('dots') && W < 724 && A_SEL.test(s) && ['x', 'w', 'h', 'justifyContent', 'columnGap', 'rowGap', 'before'].includes(k);
+// INJECT (env, a section name of ingredient-options.css, e.g. onehead): the build is measured with that section's rules added to its page from 724 up, so a board that draws a design the build does not have yet is held to the build plus exactly that design, strictly (Sid, 2026-10-05, decision 48).
+const INJECT = process.env.INJECT ? (await readFile(path.join(path.dirname(new URL(import.meta.url).pathname), 'ingredient-options.css'), 'utf8')).match(new RegExp('/\\* === ' + process.env.INJECT + ' ===[^*]*\\*/([\\s\\S]*?)(?=/\\* === |$)', 'i'))[1] : '';
 const SPECS = JSON.parse(await readFile(path.join(path.dirname(new URL(import.meta.url).pathname), 'redraw-specs.json'), 'utf8'));
 const br = await webkit.launch(); let n = 0, bad = 0; const seen = {};
 for (const spec of SPECS) {
@@ -51,6 +53,7 @@ for (const spec of SPECS) {
       if (state === 'mex3pen') for (const [l, v] of [['Whole Milk 3.3%', '540'], ['Sucrose', '44'], ['Cocoa Powder', '18']]) await page.getByLabel(l + ', grams', { exact: true }).fill(v);
       const edit = page.getByRole('button', { name: /edit this step/ }).nth(state === 'olive1pen' ? 2 : 0); if (await edit.count()) await edit.click(); await page.waitForTimeout(150); }
     if (W >= 984 && W < 1366) for (const label of ['Balance', 'Watch for']) { const b = page.locator('button[aria-expanded="false"]', { hasText: label }).first(); if (await b.count()) await b.click(); }
+    if (INJECT && W >= 724) await page.addStyleTag({ content: INJECT });
     await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(250);
     const app = await page.evaluate(measure, [SEL, PROPS, '.shell']); await ctx.close();
     // the board

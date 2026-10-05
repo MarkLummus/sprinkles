@@ -1,0 +1,4599 @@
+{
+ "mex3batch_724": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 564,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 564,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 564,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 319.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 552.89,
+     "w": 393.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "393.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 569.28,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 555.84,
+     "y": 569.28,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 555.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 639.66,
+   "w": 564,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 356.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 645.66,
+   "w": 356.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 592.48,
+    "y": 645.66,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 645.66,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 564,
+   "h": 548.81
+  }
+ },
+ "olive1batch_724": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 664.38,
+   "w": 564,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 689.27,
+   "w": 564,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 80,
+   "y": 689.27,
+   "w": 564,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 319.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 689.27,
+     "w": 393.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "393.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 705.66,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 555.84,
+     "y": 705.66,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 555.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 776.03,
+   "w": 564,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 356.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 782.03,
+   "w": 356.48,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 86,
+    "y": 782.03,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 592.48,
+    "y": 782.03,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 782.03,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 664.38,
+   "w": 564,
+   "h": 770.63
+  }
+ },
+ "under2_724": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 564,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 564,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 564,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 385.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 552.89,
+     "w": 459.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "459.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 555.84,
+     "y": 552.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 555.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 574.28,
+   "w": 564,
+   "h": 32.91
+  },
+  "rowGrid": "64px 422.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 580.28,
+   "w": 422.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 592.48,
+    "y": 580.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 580.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 564,
+   "h": 425.91
+  }
+ },
+ "base2_724": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 564,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 564,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 564,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 385.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 552.89,
+     "w": 459.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "459.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 555.84,
+     "y": 552.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 555.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 574.28,
+   "w": 564,
+   "h": 32.91
+  },
+  "rowGrid": "64px 422.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 580.28,
+   "w": 422.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 592.48,
+    "y": 580.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 580.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 564,
+   "h": 267.09
+  }
+ },
+ "mex3batch_744": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 584,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 584,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 584,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 339.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 552.89,
+     "w": 413.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "413.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 569.28,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 575.84,
+     "y": 569.28,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 575.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 639.66,
+   "w": 584,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 376.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 645.66,
+   "w": 376.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 612.48,
+    "y": 645.66,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 645.66,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 584,
+   "h": 548.81
+  }
+ },
+ "olive1batch_744": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 664.38,
+   "w": 584,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 689.27,
+   "w": 584,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 80,
+   "y": 689.27,
+   "w": 584,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 339.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 689.27,
+     "w": 413.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "413.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 705.66,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 575.84,
+     "y": 705.66,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 575.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 776.03,
+   "w": 584,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 376.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 782.03,
+   "w": 376.48,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 86,
+    "y": 782.03,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 612.48,
+    "y": 782.03,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 782.03,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 664.38,
+   "w": 584,
+   "h": 770.63
+  }
+ },
+ "under2_744": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 584,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 584,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 584,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 405.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 552.89,
+     "w": 479.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "479.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 575.84,
+     "y": 552.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 575.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 574.28,
+   "w": 584,
+   "h": 32.91
+  },
+  "rowGrid": "64px 442.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 580.28,
+   "w": 442.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 612.48,
+    "y": 580.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 580.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 584,
+   "h": 425.91
+  }
+ },
+ "base2_744": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 584,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 584,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 584,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 405.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 552.89,
+     "w": 479.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "479.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 575.84,
+     "y": 552.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 575.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 574.28,
+   "w": 584,
+   "h": 32.91
+  },
+  "rowGrid": "64px 442.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 580.28,
+   "w": 442.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 612.48,
+    "y": 580.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 580.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 584,
+   "h": 267.09
+  }
+ },
+ "mex3batch_834": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 674,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 674,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 674,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 429.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 552.89,
+     "w": 503.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "503.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 569.28,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 665.84,
+     "y": 569.28,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 665.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 639.66,
+   "w": 674,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 466.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 645.66,
+   "w": 466.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 702.48,
+    "y": 645.66,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 645.66,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 674,
+   "h": 548.81
+  }
+ },
+ "olive1batch_834": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 609.69,
+   "w": 674,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 634.58,
+   "w": 674,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 80,
+   "y": 634.58,
+   "w": 674,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 429.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 634.58,
+     "w": 503.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "503.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 650.97,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 665.84,
+     "y": 650.97,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 665.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 721.34,
+   "w": 674,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 466.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 727.34,
+   "w": 466.48,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 86,
+    "y": 727.34,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 702.48,
+    "y": 727.34,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 727.34,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 609.69,
+   "w": 674,
+   "h": 770.63
+  }
+ },
+ "under2_834": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 674,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 674,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 674,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 495.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 552.89,
+     "w": 569.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "569.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 665.84,
+     "y": 552.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 665.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 574.28,
+   "w": 674,
+   "h": 32.91
+  },
+  "rowGrid": "64px 532.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 580.28,
+   "w": 532.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 702.48,
+    "y": 580.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 580.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 674,
+   "h": 425.91
+  }
+ },
+ "base2_834": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 528,
+   "w": 674,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 552.89,
+   "w": 674,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 80,
+   "y": 552.89,
+   "w": 674,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 495.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 552.89,
+     "w": 569.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "569.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 665.84,
+     "y": 552.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 665.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 574.28,
+   "w": 674,
+   "h": 32.91
+  },
+  "rowGrid": "64px 532.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 580.28,
+   "w": 532.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 702.48,
+    "y": 580.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 580.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 528,
+   "w": 674,
+   "h": 267.09
+  }
+ },
+ "mex3batch_984": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 540,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 564.89,
+   "w": 528,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 80,
+   "y": 564.89,
+   "w": 528,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 283.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 564.89,
+     "w": 357.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "357.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 581.28,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 581.28,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 651.66,
+   "w": 528,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 320.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 657.66,
+   "w": 320.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 556.48,
+    "y": 657.66,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 657.66,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 540,
+   "w": 528,
+   "h": 899
+  }
+ },
+ "olive1batch_984": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 621.69,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 646.58,
+   "w": 528,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 80,
+   "y": 646.58,
+   "w": 528,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 283.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 646.58,
+     "w": 357.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "357.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 662.97,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 662.97,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 733.34,
+   "w": 528,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 320.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 739.34,
+   "w": 320.48,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 86,
+    "y": 739.34,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 556.48,
+    "y": 739.34,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 739.34,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 621.69,
+   "w": 528,
+   "h": 770.63
+  }
+ },
+ "under2_984": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 540,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 564.89,
+   "w": 528,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 80,
+   "y": 564.89,
+   "w": 528,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 349.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 564.89,
+     "w": 423.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "423.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 564.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 586.28,
+   "w": 528,
+   "h": 32.91
+  },
+  "rowGrid": "64px 386.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 592.28,
+   "w": 386.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 556.48,
+    "y": 592.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 592.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 540,
+   "w": 528,
+   "h": 1327.97
+  }
+ },
+ "base2_984": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 540,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 564.89,
+   "w": 528,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 80,
+   "y": 564.89,
+   "w": 528,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 349.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 564.89,
+     "w": 423.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "423.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 564.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 586.28,
+   "w": 528,
+   "h": 32.91
+  },
+  "rowGrid": "64px 386.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 592.28,
+   "w": 386.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 556.48,
+    "y": 592.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 592.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 540,
+   "w": 528,
+   "h": 1154.97
+  }
+ },
+ "mex3batch_1024": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 540,
+   "w": 554.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 564.89,
+   "w": 554.66,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 80,
+   "y": 564.89,
+   "w": 554.66,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 310.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 564.89,
+     "w": 384.5,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "384.5px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 581.28,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 546.5,
+     "y": 581.28,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 546.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 651.66,
+   "w": 554.66,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 347.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 657.66,
+   "w": 347.14,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 583.14,
+    "y": 657.66,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 657.66,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 540,
+   "w": 554.66,
+   "h": 884
+  }
+ },
+ "olive1batch_1024": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 621.69,
+   "w": 554.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 646.58,
+   "w": 554.66,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 80,
+   "y": 646.58,
+   "w": 554.66,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 310.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 646.58,
+     "w": 384.5,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "384.5px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 662.97,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 546.5,
+     "y": 662.97,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 546.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 733.34,
+   "w": 554.66,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 347.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 739.34,
+   "w": 347.14,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 86,
+    "y": 739.34,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 583.14,
+    "y": 739.34,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 739.34,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 621.69,
+   "w": 554.66,
+   "h": 770.63
+  }
+ },
+ "under2_1024": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 540,
+   "w": 554.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 564.89,
+   "w": 554.66,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 80,
+   "y": 564.89,
+   "w": 554.66,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 376.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 564.89,
+     "w": 450.5,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "450.5px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 546.5,
+     "y": 564.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 546.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 586.28,
+   "w": 554.66,
+   "h": 32.91
+  },
+  "rowGrid": "64px 413.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 592.28,
+   "w": 413.14,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 583.14,
+    "y": 592.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 592.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 540,
+   "w": 554.66,
+   "h": 1282.97
+  }
+ },
+ "base2_1024": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 540,
+   "w": 554.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 564.89,
+   "w": 554.66,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 80,
+   "y": 564.89,
+   "w": 554.66,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 376.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 564.89,
+     "w": 450.5,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "450.5px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 546.5,
+     "y": 564.89,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 546.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 586.28,
+   "w": 554.66,
+   "h": 32.91
+  },
+  "rowGrid": "64px 413.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 592.28,
+   "w": 413.14,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 583.14,
+    "y": 592.28,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 592.28,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 540,
+   "w": 554.66,
+   "h": 1064.97
+  }
+ },
+ "mex3batch_1366": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 755.5,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 780.39,
+   "w": 528,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 80,
+   "y": 780.39,
+   "w": 528,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 283.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 780.39,
+     "w": 357.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "357.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 796.78,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 796.78,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 867.16,
+   "w": 528,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 320.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 873.16,
+   "w": 320.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 556.48,
+    "y": 873.16,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 873.16,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 755.5,
+   "w": 528,
+   "h": 899
+  }
+ },
+ "olive1batch_1366": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 609.19,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 634.08,
+   "w": 528,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 80,
+   "y": 634.08,
+   "w": 528,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 283.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 152,
+     "y": 634.08,
+     "w": 357.84,
+     "h": 14.39
+    },
+    "textLeft": 152,
+    "lines": 1,
+    "width": "357.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 86,
+     "y": 650.47,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 86,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 650.47,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 720.84,
+   "w": 528,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 320.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 226,
+  "nameBox": {
+   "x": 226,
+   "y": 726.84,
+   "w": 320.48,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 86,
+    "y": 726.84,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 556.48,
+    "y": 726.84,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 152,
+   "y": 726.84,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 609.19,
+   "w": 528,
+   "h": 770.63
+  }
+ },
+ "under2_1366": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 691.19,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 716.08,
+   "w": 528,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 80,
+   "y": 716.08,
+   "w": 528,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 349.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 716.08,
+     "w": 423.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "423.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 716.08,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 737.47,
+   "w": 528,
+   "h": 32.91
+  },
+  "rowGrid": "64px 386.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 743.47,
+   "w": 386.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 556.48,
+    "y": 743.47,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 743.47,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 691.19,
+   "w": 528,
+   "h": 1327.97
+  }
+ },
+ "base2_1366": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 691.19,
+   "w": 528,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 716.08,
+   "w": 528,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 80,
+   "y": 716.08,
+   "w": 528,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 349.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 716.08,
+     "w": 423.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "423.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 519.84,
+     "y": 716.08,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 519.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 737.47,
+   "w": 528,
+   "h": 32.91
+  },
+  "rowGrid": "64px 386.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 743.47,
+   "w": 386.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 556.48,
+    "y": 743.47,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 743.47,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 691.19,
+   "w": 528,
+   "h": 1154.97
+  }
+ },
+ "mex3batch_1600": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 304,
+  "headingFs": "14px",
+  "headingChars": [
+   304,
+   308,
+   319,
+   330,
+   340,
+   349,
+   360,
+   364,
+   373,
+   385,
+   394
+  ],
+  "headingBox": {
+   "x": 304,
+   "y": 755.5,
+   "w": 534.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 304,
+   "y": 780.39,
+   "w": 534.66,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 304,
+   "y": 780.39,
+   "w": 534.66,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 290.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 376,
+     "y": 780.39,
+     "w": 364.5,
+     "h": 14.39
+    },
+    "textLeft": 376,
+    "lines": 1,
+    "width": "364.5px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 310,
+     "y": 796.78,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 310,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 750.5,
+     "y": 796.78,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 750.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 304,
+   "y": 867.16,
+   "w": 534.66,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 327.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 450,
+  "nameBox": {
+   "x": 450,
+   "y": 873.16,
+   "w": 327.14,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 787.14,
+    "y": 873.16,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 376,
+   "y": 873.16,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 304,
+   "y": 755.5,
+   "w": 534.66,
+   "h": 891.5
+  }
+ },
+ "olive1batch_1600": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 304,
+  "headingFs": "14px",
+  "headingChars": [
+   304,
+   308,
+   319,
+   330,
+   340,
+   349,
+   360,
+   364,
+   373,
+   385,
+   394
+  ],
+  "headingBox": {
+   "x": 304,
+   "y": 609.19,
+   "w": 534.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 304,
+   "y": 634.08,
+   "w": 534.66,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 304,
+   "y": 634.08,
+   "w": 534.66,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 290.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 376,
+     "y": 634.08,
+     "w": 364.5,
+     "h": 14.39
+    },
+    "textLeft": 376,
+    "lines": 1,
+    "width": "364.5px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 310,
+     "y": 650.47,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 310,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 750.5,
+     "y": 650.47,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 750.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 304,
+   "y": 720.84,
+   "w": 534.66,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 327.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 450,
+  "nameBox": {
+   "x": 450,
+   "y": 726.84,
+   "w": 327.14,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 310,
+    "y": 726.84,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 787.14,
+    "y": 726.84,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 376,
+   "y": 726.84,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 304,
+   "y": 609.19,
+   "w": 534.66,
+   "h": 770.63
+  }
+ },
+ "under2_1600": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 304,
+  "headingFs": "14px",
+  "headingChars": [
+   304,
+   308,
+   319,
+   330,
+   340,
+   349,
+   360,
+   364,
+   373,
+   385,
+   394
+  ],
+  "headingBox": {
+   "x": 304,
+   "y": 691.19,
+   "w": 534.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 304,
+   "y": 716.08,
+   "w": 534.66,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 304,
+   "y": 716.08,
+   "w": 534.66,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 356.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 310,
+     "y": 716.08,
+     "w": 430.5,
+     "h": 14.39
+    },
+    "textLeft": 310,
+    "lines": 1,
+    "width": "430.5px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 750.5,
+     "y": 716.08,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 750.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 304,
+   "y": 737.47,
+   "w": 534.66,
+   "h": 32.91
+  },
+  "rowGrid": "64px 393.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 384,
+  "nameBox": {
+   "x": 384,
+   "y": 743.47,
+   "w": 393.14,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 787.14,
+    "y": 743.47,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 310,
+   "y": 743.47,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 304,
+   "y": 691.19,
+   "w": 534.66,
+   "h": 1297.97
+  }
+ },
+ "base2_1600": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 304,
+  "headingFs": "14px",
+  "headingChars": [
+   304,
+   308,
+   319,
+   330,
+   340,
+   349,
+   360,
+   364,
+   373,
+   385,
+   394
+  ],
+  "headingBox": {
+   "x": 304,
+   "y": 691.19,
+   "w": 534.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 304,
+   "y": 716.08,
+   "w": 534.66,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 304,
+   "y": 716.08,
+   "w": 534.66,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 356.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 310,
+     "y": 716.08,
+     "w": 430.5,
+     "h": 14.39
+    },
+    "textLeft": 310,
+    "lines": 1,
+    "width": "430.5px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 750.5,
+     "y": 716.08,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 750.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 304,
+   "y": 737.47,
+   "w": 534.66,
+   "h": 32.91
+  },
+  "rowGrid": "64px 393.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 384,
+  "nameBox": {
+   "x": 384,
+   "y": 743.47,
+   "w": 393.14,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 787.14,
+    "y": 743.47,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 310,
+   "y": 743.47,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 304,
+   "y": 691.19,
+   "w": 534.66,
+   "h": 1064.97
+  }
+ },
+ "mex3batch_1920": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 379,
+  "headingFs": "14px",
+  "headingChars": [
+   379,
+   383,
+   394,
+   405,
+   415,
+   424,
+   435,
+   439,
+   448,
+   460,
+   469
+  ],
+  "headingBox": {
+   "x": 379,
+   "y": 728,
+   "w": 648,
+   "h": 18.89
+  },
+  "table": {
+   "x": 379,
+   "y": 752.89,
+   "w": 648,
+   "h": 506.92
+  },
+  "tr": {
+   "x": 379,
+   "y": 752.89,
+   "w": 648,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 403.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 451,
+     "y": 752.89,
+     "w": 477.84,
+     "h": 14.39
+    },
+    "textLeft": 451,
+    "lines": 1,
+    "width": "477.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 385,
+     "y": 769.28,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 385,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 938.84,
+     "y": 769.28,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 938.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 379,
+   "y": 839.66,
+   "w": 648,
+   "h": 32.91
+  },
+  "rowGrid": "56px 64px 440.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 525,
+  "nameBox": {
+   "x": 525,
+   "y": 845.66,
+   "w": 440.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   {
+    "x": 975.48,
+    "y": 845.66,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 451,
+   "y": 845.66,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 379,
+   "y": 728,
+   "w": 648,
+   "h": 839
+  }
+ },
+ "olive1batch_1920": {
+  "asMade": true,
+  "headingText": "Ingredients",
+  "headingLeft": 379,
+  "headingFs": "14px",
+  "headingChars": [
+   379,
+   383,
+   394,
+   405,
+   415,
+   424,
+   435,
+   439,
+   448,
+   460,
+   469
+  ],
+  "headingBox": {
+   "x": 379,
+   "y": 609.19,
+   "w": 648,
+   "h": 18.89
+  },
+  "table": {
+   "x": 379,
+   "y": 634.08,
+   "w": 648,
+   "h": 728.73
+  },
+  "tr": {
+   "x": 379,
+   "y": 634.08,
+   "w": 648,
+   "h": 52.17
+  },
+  "trPad": "6px",
+  "trGrid": "56px 64px 403.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 451,
+     "y": 634.08,
+     "w": 477.84,
+     "h": 14.39
+    },
+    "textLeft": 451,
+    "lines": 1,
+    "width": "477.84375px",
+    "gridColumn": "2 / 4",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 59.45,
+    "text": "As made",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 385,
+     "y": 650.47,
+     "w": 0.55,
+     "h": 28.78
+    },
+    "textLeft": 385,
+    "lines": 2,
+    "width": "0.546875px",
+    "gridColumn": "1",
+    "ta": "right",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 938.84,
+     "y": 650.47,
+     "w": 0.81,
+     "h": 28.78
+    },
+    "textLeft": 938.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 379,
+   "y": 720.84,
+   "w": 648,
+   "h": 47.3
+  },
+  "rowGrid": "56px 64px 440.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 525,
+  "nameBox": {
+   "x": 525,
+   "y": 726.84,
+   "w": 440.48,
+   "h": 34.3
+  },
+  "asmCells": [
+   {
+    "x": 385,
+    "y": 726.84,
+    "w": 56,
+    "h": 20
+   },
+   {
+    "x": 975.48,
+    "y": 726.84,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 451,
+   "y": 726.84,
+   "w": 64,
+   "h": 34.3
+  },
+  "regionBox": {
+   "x": 379,
+   "y": 609.19,
+   "w": 648,
+   "h": 770.63
+  }
+ },
+ "under2_1920": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 379,
+  "headingFs": "14px",
+  "headingChars": [
+   379,
+   383,
+   394,
+   405,
+   415,
+   424,
+   435,
+   439,
+   448,
+   460,
+   469
+  ],
+  "headingBox": {
+   "x": 379,
+   "y": 691.19,
+   "w": 648,
+   "h": 18.89
+  },
+  "table": {
+   "x": 379,
+   "y": 716.08,
+   "w": 648,
+   "h": 401.02
+  },
+  "tr": {
+   "x": 379,
+   "y": 716.08,
+   "w": 648,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 469.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 385,
+     "y": 716.08,
+     "w": 543.84,
+     "h": 14.39
+    },
+    "textLeft": 385,
+    "lines": 1,
+    "width": "543.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 938.84,
+     "y": 716.08,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 938.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 379,
+   "y": 737.47,
+   "w": 648,
+   "h": 32.91
+  },
+  "rowGrid": "64px 506.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 459,
+  "nameBox": {
+   "x": 459,
+   "y": 743.47,
+   "w": 506.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 975.48,
+    "y": 743.47,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 385,
+   "y": 743.47,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 379,
+   "y": 691.19,
+   "w": 648,
+   "h": 1207.97
+  }
+ },
+ "base2_1920": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 379,
+  "headingFs": "14px",
+  "headingChars": [
+   379,
+   383,
+   394,
+   405,
+   415,
+   424,
+   435,
+   439,
+   448,
+   460,
+   469
+  ],
+  "headingBox": {
+   "x": 379,
+   "y": 691.19,
+   "w": 648,
+   "h": 18.89
+  },
+  "table": {
+   "x": 379,
+   "y": 716.08,
+   "w": 648,
+   "h": 242.2
+  },
+  "tr": {
+   "x": 379,
+   "y": 716.08,
+   "w": 648,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 469.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 385,
+     "y": 716.08,
+     "w": 543.84,
+     "h": 14.39
+    },
+    "textLeft": 385,
+    "lines": 1,
+    "width": "543.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 938.84,
+     "y": 716.08,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 938.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 379,
+   "y": 737.47,
+   "w": 648,
+   "h": 32.91
+  },
+  "rowGrid": "64px 506.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 459,
+  "nameBox": {
+   "x": 459,
+   "y": 743.47,
+   "w": 506.48,
+   "h": 19.91
+  },
+  "asmCells": [
+   {
+    "x": 975.48,
+    "y": 743.47,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 385,
+   "y": 743.47,
+   "w": 64,
+   "h": 19.91
+  },
+  "regionBox": {
+   "x": 379,
+   "y": 691.19,
+   "w": 648,
+   "h": 1019.97
+  }
+ },
+ "olive1pen_1600": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 304,
+  "headingFs": "14px",
+  "headingChars": [
+   304,
+   308,
+   319,
+   330,
+   340,
+   349,
+   360,
+   364,
+   373,
+   385,
+   394
+  ],
+  "headingBox": {
+   "x": 304,
+   "y": 958.89,
+   "w": 534.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 304,
+   "y": 983.78,
+   "w": 534.66,
+   "h": 1046.33
+  },
+  "tr": {
+   "x": 304,
+   "y": 983.78,
+   "w": 534.66,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 356.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 310,
+     "y": 983.78,
+     "w": 430.5,
+     "h": 14.39
+    },
+    "textLeft": 310,
+    "lines": 1,
+    "width": "430.5px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 750.5,
+     "y": 983.78,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 750.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 304,
+   "y": 1039.77,
+   "w": 534.66,
+   "h": 71.39
+  },
+  "rowGrid": "64px 393.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 384,
+  "nameBox": {
+   "x": 384,
+   "y": 1045.77,
+   "w": 393.14,
+   "h": 58.39
+  },
+  "asmCells": [
+   {
+    "x": 787.14,
+    "y": 1045.77,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 310,
+   "y": 1045.77,
+   "w": 64,
+   "h": 58.39
+  },
+  "regionBox": {
+   "x": 304,
+   "y": 958.89,
+   "w": 534.66,
+   "h": 1071.22
+  }
+ },
+ "olive1pen_744": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 948.89,
+   "w": 584,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 973.78,
+   "w": 584,
+   "h": 1046.33
+  },
+  "tr": {
+   "x": 80,
+   "y": 973.78,
+   "w": 584,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 405.84375px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 973.78,
+     "w": 479.84,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "479.84375px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 575.84,
+     "y": 973.78,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 575.84,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 1029.77,
+   "w": 584,
+   "h": 71.39
+  },
+  "rowGrid": "64px 442.484375px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 1035.77,
+   "w": 442.48,
+   "h": 58.39
+  },
+  "asmCells": [
+   {
+    "x": 612.48,
+    "y": 1035.77,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 1035.77,
+   "w": 64,
+   "h": 58.39
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 948.89,
+   "w": 584,
+   "h": 1071.22
+  }
+ },
+ "olive1pen_1024": {
+  "asMade": false,
+  "headingText": "Ingredients",
+  "headingLeft": 80,
+  "headingFs": "14px",
+  "headingChars": [
+   80,
+   84,
+   95,
+   106,
+   116,
+   125,
+   136,
+   140,
+   149,
+   161,
+   170
+  ],
+  "headingBox": {
+   "x": 80,
+   "y": 906.89,
+   "w": 554.66,
+   "h": 18.89
+  },
+  "table": {
+   "x": 80,
+   "y": 931.78,
+   "w": 554.66,
+   "h": 1046.33
+  },
+  "tr": {
+   "x": 80,
+   "y": 931.78,
+   "w": 554.66,
+   "h": 21.39
+  },
+  "trPad": "6px",
+  "trGrid": "64px 376.5px 82.15625px",
+  "trRowGap": "2px",
+  "ths": [
+   {
+    "nat": 80.16,
+    "text": "Ingredient",
+    "cls": "ingredient-table__col-name",
+    "box": {
+     "x": 86,
+     "y": 931.78,
+     "w": 450.5,
+     "h": 14.39
+    },
+    "textLeft": 86,
+    "lines": 1,
+    "width": "450.5px",
+    "gridColumn": "1 / 3",
+    "ta": "left",
+    "whiteSpace": "normal",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   },
+   {
+    "nat": 82.16,
+    "text": "% of batch",
+    "cls": "ingredient-table__col-numeric",
+    "box": {
+     "x": 546.5,
+     "y": 931.78,
+     "w": 0.81,
+     "h": 14.39
+    },
+    "textLeft": 546.5,
+    "lines": 1,
+    "width": "0.8125px",
+    "gridColumn": "-2 / -1",
+    "ta": "right",
+    "whiteSpace": "nowrap",
+    "fs": "12px",
+    "ls": "0.48px",
+    "tt": "uppercase",
+    "lh": "14.400001px"
+   }
+  ],
+  "rowBox": {
+   "x": 80,
+   "y": 987.77,
+   "w": 554.66,
+   "h": 71.39
+  },
+  "rowGrid": "64px 413.140625px 45.515625px",
+  "rowPad": "6px",
+  "nameTextLeft": 160,
+  "nameBox": {
+   "x": 160,
+   "y": 993.77,
+   "w": 413.14,
+   "h": 58.39
+  },
+  "asmCells": [
+   {
+    "x": 583.14,
+    "y": 993.77,
+    "w": 45.52,
+    "h": 18
+   }
+  ],
+  "planCell": {
+   "x": 86,
+   "y": 993.77,
+   "w": 64,
+   "h": 58.39
+  },
+  "regionBox": {
+   "x": 80,
+   "y": 906.89,
+   "w": 554.66,
+   "h": 1071.22
+  }
+ }
+}

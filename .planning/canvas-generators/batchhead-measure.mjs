@@ -1,0 +1,28 @@
+// Sid, 2026-10-05 (decision 50): reads the Batch head and the Tasting head in the build: boxes, ink starts and the computed type of each part, at 393, 723, 744, 1024 and 1366.
+//   node batchhead-measure.mjs [chromium]  -> batchhead-measure[-chromium].json    (Olive Oil v1 with its tasted batch; the build on 127.0.0.1:4173; WebKit coarse by default)
+import { writeFile } from 'node:fs/promises'; import { fileURLToPath } from 'node:url'; import path from 'node:path';
+import { webkit, chromium } from '/Users/mark/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core/index.mjs';
+const HERE = path.dirname(fileURLToPath(import.meta.url)); const eng = process.argv[2] === 'chromium' ? chromium : webkit;
+const URL_ = '/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89';
+const br = await eng.launch(eng === chromium ? { channel: 'chrome' } : {}); const out = {};
+for (const W of [393, 723, 744, 1024, 1366]) {
+  const ctx = await br.newContext({ viewport: { width: W, height: 1000 }, hasTouch: eng === webkit, deviceScaleFactor: 1 }); const p = await ctx.newPage();
+  await p.goto('http://127.0.0.1:4173' + URL_, { waitUntil: 'networkidle' }); await p.waitForSelector('.batch-row__head'); await p.evaluate(() => document.fonts.ready);
+  out[W] = await p.evaluate(() => {
+    const log = document.querySelector('.notebook-log'); const lb = log.getBoundingClientRect(); const r = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { x: +(b.x - lb.x).toFixed(2), y: +(b.y + scrollY).toFixed(2), w: +b.width.toFixed(2), h: +b.height.toFixed(2) }; };
+    const ink = (el) => { if (!el) return null; const g = document.createRange(); g.selectNodeContents(el); const rs = [...g.getClientRects()]; return rs.length ? [+(Math.min(...rs.map((q) => q.left)) - lb.x).toFixed(2), +(Math.max(...rs.map((q) => q.right)) - lb.x).toFixed(2)] : null; };
+    const ty = (el, pseudo) => { if (!el) return null; const c = getComputedStyle(el, pseudo || null); return { fs: c.fontSize, fw: c.fontWeight, ff: c.fontFamily.slice(0, 30), color: c.color, ls: c.letterSpacing, tt: c.textTransform, lh: c.lineHeight, ...(pseudo ? { content: c.content, mr: c.marginRight, ml: c.marginLeft } : {}) }; };
+    const head = document.querySelector('.batch-row__head'); const tast = document.querySelector('.tasting-reading .fold-row'); const hist = document.querySelector('.notebook-history .fold-row, .history-disclosure');
+    const q = (root, s) => root && root.querySelector(s);
+    return { head: r(head), headCss: (() => { const c = getComputedStyle(head); return { display: c.display, jc: c.justifyContent, gap: c.gap, rowGap: c.rowGap, columnGap: c.columnGap, ai: c.alignItems, fw: c.flexWrap }; })(),
+      lead: r(q(head, '.batch-row__head-lead')), leadCss: (() => { const c = getComputedStyle(q(head, '.batch-row__head-lead')); return { display: c.display, gap: c.gap, ai: c.alignItems, fw: c.flexWrap }; })(), h2: r(q(head, 'h2')), h2ink: ink(q(head, 'h2')), h2css: ty(q(head, 'h2')), date: r(q(head, '.batch-row__date')), dateInk: ink(q(head, '.batch-row__date')), dateText: q(head, '.batch-row__date') && q(head, '.batch-row__date').textContent, dateCss: ty(q(head, '.batch-row__date')), dateBefore: ty(q(head, '.batch-row__date'), '::before'),
+      acts: r(q(head, '.batch-row__head-acts')), correct: r(q(head, '.batch-row__correct')), correctInk: ink(q(head, '.batch-row__correct')), record: r(q(head, '.batch-row__record')), recordInk: ink(q(head, '.batch-row__record')),
+      tastingRow: r(tast), tastingH2: r(tast && tast.closest('h2')), tastingLabelInk: ink(q(tast, '.fold-row__head')), tastingControl: r(q(tast, '.fold-row__control')), tastingControlInk: ink(q(tast, '.fold-row__control')), tastingControlCss: ty(q(tast, '.fold-row__control')), tastingH2css: ty(tast && tast.closest('h2')), tastingHead: ty(q(tast, '.fold-row__head')),
+      tastingCount: r(q(tast, '.fold-row__count')), tastingCountInk: ink(q(tast, '.fold-row__count')), tastingCountText: q(tast, '.fold-row__count') && q(tast, '.fold-row__count').textContent, tastingCountCss: ty(q(tast, '.fold-row__count')), tastingCountBefore: ty(q(tast, '.fold-row__count'), '::before'), tastingRowCss: (() => { const c = getComputedStyle(tast); return { display: c.display, jc: c.justifyContent, h: c.height, gap: c.columnGap, ai: c.alignItems }; })(),
+      tastingOpen: tast && tast.getAttribute('aria-expanded'), batchFold: !!document.querySelector('.batch-row > .fold-row, .batch-row__head .fold-row'), logBox: r(log), batchMargin: r(document.querySelector('.batch-margin')), tastingBodyHidden: (document.querySelector('#fold-tasting') || {}).hidden };
+  });
+  await ctx.close();
+}
+await br.close(); await writeFile(path.join(HERE, process.argv[2] === 'chromium' ? 'batchhead-measure-chromium.json' : 'batchhead-measure.json'), JSON.stringify(out, null, 1));
+for (const [W, v] of Object.entries(out)) { console.log('==', W, 'head', JSON.stringify(v.head), v.headCss.jc, 'gap', v.headCss.gap); console.log('  Batch h2 ink', v.h2ink, JSON.stringify(v.h2css)); console.log('  date', v.dateText, JSON.stringify(v.dateInk), JSON.stringify(v.dateCss), 'before', JSON.stringify(v.dateBefore)); console.log('  acts', JSON.stringify(v.acts), 'correct ink', v.correctInk, 'record ink', v.recordInk);
+  console.log('  tasting row', JSON.stringify(v.tastingRow), 'label ink', v.tastingLabelInk, 'control ink', v.tastingControlInk, JSON.stringify(v.tastingControlCss)); console.log('  count', v.tastingCountText, JSON.stringify(v.tastingCountInk), JSON.stringify(v.tastingCountCss), 'before', JSON.stringify(v.tastingCountBefore), 'row css', JSON.stringify(v.tastingRowCss), 'open', v.tastingOpen); }

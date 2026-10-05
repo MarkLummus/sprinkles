@@ -71,3 +71,9 @@
 .ingredient-table td.ingredient-table__col-numeric:last-child:has(>.struck-value){display:flex;flex-direction:column-reverse;align-items:flex-end}
 .ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:last-child:has(>.struck-value){grid-row:1 / 4;justify-content:space-between}
 .ingredient-table td.ingredient-table__col-numeric:last-child>.struck-value{margin:0}
+/* === ONEHEAD === the table's head on one line from 724 (decision 48; Mark, 2026-10-05, decision ox8: "one head line"). The head row is a grid of the same columns as the rows, and its three cells sat in DOM order (Ingredient first), so As made, which belongs to the first column, was auto-placed on a second row, and its 1% width (a rule for the old table layout) made its box 0.55px wide, so its words wrapped. All three take row 1, take their words' width and do not wrap; As made's words (59.45px) are 3.45px wider than its 56px column, so they stand right-aligned on the column's right edge and run 3.45px into the row's 6px padding. */
+.ingredient-table thead th{grid-row:1;white-space:nowrap;width:auto}
+.ingredient-table--as-made thead th.ingredient-table__col-numeric:not(:last-child){justify-self:end}
+/* === ONEHEADB === the option to ONEHEAD (decision 48): Ingredient stands over the names, not over the amount and the names. The amount column then has no word over it. */
+.ingredient-table--as-made thead th.ingredient-table__col-name{grid-column:3 / 4}
+.ingredient-table:not(.ingredient-table--as-made) thead th.ingredient-table__col-name{grid-column:2 / 3}

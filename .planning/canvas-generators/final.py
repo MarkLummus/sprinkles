@@ -25,7 +25,7 @@ CAP = {k: drop_hidden(v) for k, v in CAP.items()}
 OPT = open(HERE + '/ingredient-options.css').read(); NCSS = open(HERE + '/nav-candidates.css').read()
 def sec(css, name):
     m = re.search(r'/\* === ' + name + r' ===[^*]*\*/([\s\S]*?)(?=/\* === |$)', css); assert m, name; return m.group(1)
-D3 = sec(OPT, 'D') + sec(OPT, 'D2') + sec(OPT, 'D3')
+D3 = sec(OPT, 'D') + sec(OPT, 'D2') + sec(OPT, 'D3'); ONEHEAD = sec(OPT, 'ONEHEAD')
 G = sec(NCSS, 'G'); GO = sec(NCSS, 'GO'); JUMP = sec(NCSS, 'JUMP'); HDR = sec(NCSS, 'HDR'); HDR724 = sec(NCSS, 'HDR724')
 BAR_FROM = 724     # Mark, 2026-10-03, Rule A: the sticky header and the fly-out are the shell from 724 up; the bottom tab row stays only below 724
 RAIL_FROM = 1590   # Mark, 2026-10-03: the rail returns where four columns fit (224 + 3 x 32 + 350 + 920 = 1590); the header and the fly-out apply from 724 to 1589
@@ -56,11 +56,13 @@ def built_d3(W): return 'ingredient-table--as-made' in resolve_media(APPC, W, Tr
 def built_jump(W): return re.search(r'\.notebook-jump\s*\{[^}]*display:\s*flex', resolve_media(NBC, W, True)) is not None   # brief task 3 (quick 261004-ox9): the Go to batch row shown from 724 to 1365
 def built_p3(W): return 'display: contents' in _norm(resolve_media(APPC, W, True))                                     # brief task 1 (quick 261004-ox7): the phone table's struck figure under the plan amount
 def built_dots(W): return '.fold-row__count::before' in resolve_media(NBC, W, True)                                     # decision 41 (quick 261004-ox5): the dots at every width
-def final_css(W, vid, extra=''):
+def built_onehead(W): return re.search(r'thead th[^{}]*\{[^}]*grid-row', _norm(resolve_media(APPC, W, True))) is not None   # decision 48: the head's three cells on one row from 724 (not built at the reading of 2026-10-05)
+def final_css(W, vid, extra='', onehead=True):
     """The build's own rules, resolved at the window, and, only where the build does not have them yet, the final design's: D3 (task 2), the Go to batch row (task 3). The check (redraw-conform.mjs) names what is still overlaid."""
     css = resolve_media(APPC, W, True) + resolve_media(SHELLC, W, True) + resolve_media(NBC, W, True) + FIX
     if W >= BAR_FROM and not built_d3(W):
         css += D3     # the table's grid from 724 (brief task 2) is the one part of the final design not built yet; the sticky header, the fly-out and the rail are the build's own shell.css, resolved above (Sid, 2026-10-04: the candidate rules HDR, G and HDR724 are retired)
+    if W >= BAR_FROM and onehead and not built_onehead(W): css += ONEHEAD     # decision 48: the head on one line (drawn ahead of the build)
     if BAR_FROM <= W <= 1365 and not built_jump(W): css += JUMP
     css = re.sub(r'(^|\})(\s*):root\s*\{', r'\1\2body{', css)      # the phone's --gap-page rule: on the panel itself
     return scope_css(css + extra, '.' + vid)

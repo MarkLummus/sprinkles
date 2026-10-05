@@ -87,6 +87,15 @@ function renderBatchRow(props) {
   );
 }
 
+// The head's own markup: from the head's opening class to its acts group.
+function headOf(markup) {
+  const start = markup.indexOf('class="batch-row__head');
+  const end = markup.indexOf('class="batch-row__head-acts"');
+  expect(start).toBeGreaterThan(-1);
+  expect(end).toBeGreaterThan(start);
+  return markup.slice(start, end);
+}
+
 describe('BatchRow — the Batch region-name head line (sketch 003 variant B, G-03.3-4)', () => {
   it('renders the section with an aria-label of Batch and a visible "Batch" region-name heading', () => {
     const markup = renderBatchRow({});
@@ -94,17 +103,17 @@ describe('BatchRow — the Batch region-name head line (sketch 003 variant B, G-
     expect(markup).toContain('class="region-name">Batch<');
   });
 
-  it('prints the "Batch" region-name heading exactly once', () => {
+  it('prints the "Batch" heading exactly once — with a batch in view it is the fold row\'s label (sketch 011 decision 50 A)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    const occurrences = markup.split('class="region-name">Batch<').length - 1;
-    expect(occurrences).toBe(1);
+    expect(markup.split('<span class="fold-row__head">Batch<').length - 1).toBe(1);
+    expect(markup).not.toContain('class="region-name">Batch<');
   });
 });
 
 describe("BatchRow — the Batch heading is the Go to batch row's target (quick 261002-wmy)", () => {
-  it('carries id="batch" with a batch in view, exactly once', () => {
+  it('carries id="batch" with a batch in view, exactly once — the h2 holds the fold row (sketch 011 decision 50 A)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    expect(markup).toMatch(/<h2 id="batch" class="region-name"[^>]*>Batch<\/h2>/);
+    expect(markup).toMatch(/<h2 id="batch" class="region-name"[^>]*><button type="button" class="fold-row"/);
     expect(markup.split('id="batch"').length - 1).toBe(1);
   });
 
@@ -116,9 +125,10 @@ describe("BatchRow — the Batch heading is the Go to batch row's target (quick 
 });
 
 describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
-  it('renders "churned <date>" beside the Batch heading when a batch is in view', () => {
+  it('renders "churned <date>" as the Batch fold row\'s count when a batch is in view, and no batch-row__date span (sketch 011 decision 50 A)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
+    expect(markup).toContain('<span class="fold-row__count">churned 2 Aug 2026</span>');
+    expect(markup).not.toContain('batch-row__date');
   });
 
   it('renders no churned-date span when no batch is in view', () => {
@@ -140,6 +150,7 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
     expect(markup).not.toContain('batch-row__date');
     expect(markup).not.toContain('fold-batches');
     expect(markup).not.toMatch(/Batches \(/);
+    expect(headOf(markup)).not.toContain('fold-row');
   });
 
   it('keeps the churned-date span and shows the batch list while amending the batch in view (decision 19 — only the record pen withholds it)', () => {
@@ -155,6 +166,7 @@ describe('BatchRow — the head line (sketch 003 variant B, G-03.3-4)', () => {
     });
     expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
     expect(markup).toContain('id="fold-batches"');
+    expect(headOf(markup)).not.toContain('fold-row');
   });
 });
 
@@ -194,12 +206,12 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(recordButton).toBeTruthy();
   });
 
-  it('reads Batch, the churned date, Correct, then Record another with exactly one batch — no Batches control at 0 or 1 (decision 19, the batch-head todo)', () => {
+  it('reads Batch, the churned date (the fold row\'s count, decision 50 A), Correct, then Record another with exactly one batch — no Batches control at 0 or 1 (decision 19, the batch-head todo)', () => {
     const markup = renderBatchRow({ openPen: null, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
     expect(markup).not.toContain('fold-batches');
     expect(markup).not.toMatch(/Batches \(/);
-    const headingIndex = markup.indexOf('class="region-name">Batch<');
-    const dateIndex = markup.indexOf('class="batch-row__date">churned 2 Aug 2026<');
+    const headingIndex = markup.indexOf('<span class="fold-row__head">Batch<');
+    const dateIndex = markup.indexOf('<span class="fold-row__count">churned 2 Aug 2026</span>');
     const correctIndex = markup.indexOf('>Correct<');
     const recordIndex = markup.indexOf('Record another');
     expect(headingIndex).toBeGreaterThan(-1);
@@ -215,6 +227,7 @@ describe('BatchRow — the openers, present only with no pen open (D-05)', () =>
     expect(markup).not.toContain('Record another');
     expect(markup).not.toContain('>Correct<');
     expect(markup).not.toContain('Add tasting');
+    expect(headOf(markup)).not.toContain('fold-row');
   });
 });
 
@@ -412,7 +425,7 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       batches: [augustSecondBatch],
       focusBatchOnMount: true,
     });
-    expect(markup).toMatch(/<h2[^>]*tabindex="-1"[^>]*aria-label="Batch churned 2 Aug 2026"[^>]*>Batch<\/h2>/);
+    expect(markup).toMatch(/<h2 id="batch"[^>]*tabindex="-1"[^>]*aria-label="Batch churned 2 Aug 2026"[^>]*><button type="button" class="fold-row"/);
   });
 });
 
@@ -1749,5 +1762,72 @@ describe('BatchRow — every button and radio carries an explicit tabindex (quic
     });
     expectAllTagged(buttonTags(markup), 8);
     expectAllTagged(radioTags(markup), 39);
+  });
+});
+
+// The Batch fold head (sketch 011 decision 50 A, default C1; Mark 2026-10-05):
+// with no pen open and a batch in view, the head is the Tasting head's fold
+// row, the churned date its count, folding the whole batch body. The pen heads
+// and the no-batch head stay as built.
+describe('BatchRow — the Batch fold head (sketch 011 decision 50 A, C1; Mark 2026-10-05)', () => {
+  const foldHead =
+    '<h2 id="batch" class="region-name"><button type="button" class="fold-row" aria-expanded="true" aria-controls="fold-batch" aria-label="Batch, Hide, churned 2 Aug 2026" tabindex="0"><span class="fold-row__head">Batch<span class="fold-row__control">Hide</span></span><span class="fold-row__count">churned 2 Aug 2026</span></button></h2>';
+
+  it.each([true, false])('is exactly the board\'s fold row, open, at foldsOpen %s (C1: the Batch fold never reads foldsOpen)', (foldsOpen) => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], foldsOpen });
+    expect(markup).toContain(foldHead);
+    expect(markup).toContain('<div id="fold-batch"><div class="batch-margin">');
+  });
+
+  it('still reads the Tasting row closed at foldsOpen false', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], foldsOpen: false });
+    expect(markup).toContain('aria-expanded="false" aria-controls="fold-tasting"');
+  });
+
+  it('keeps the head\'s class exactly batch-row__head, and adds --after-list only from two batches', () => {
+    const one = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(one).toContain('<div class="batch-row__head">');
+    const two = renderBatchRow({
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch, { ...augustSecondBatch, id: 'other-batch', churn: { ...augustSecondBatch.churn, churnDate: '2026-08-09' } }],
+    });
+    expect(two).toContain('<div class="batch-row__head batch-row__head--after-list">');
+  });
+
+  it('puts Correct and Record another before the fold and the whole body after it', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    const foldIndex = markup.indexOf('id="fold-batch"');
+    expect(foldIndex).toBeGreaterThan(-1);
+    expect(markup.indexOf('>Correct<')).toBeLessThan(foldIndex);
+    expect(markup.indexOf('Record another')).toBeLessThan(foldIndex);
+    expect(markup.indexOf('batch-row__cells')).toBeGreaterThan(foldIndex);
+    expect(markup.indexOf('id="fold-tasting"')).toBeGreaterThan(foldIndex);
+    expect(markup.indexOf('Next time')).toBeGreaterThan(foldIndex);
+    expect(markup.indexOf('Recorded')).toBeGreaterThan(foldIndex);
+  });
+
+  it('keeps the pens\' and the no-batch head as built: the heading alone, or with the date span, and no fold row', () => {
+    const record = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft, openBatch: augustSecondBatch, batches: [augustSecondBatch] });
+    expect(record).toMatch(/<h2 id="batch" class="region-name"[^>]*>Batch<\/h2>/);
+    expect(headOf(record)).not.toContain('fold-row');
+    expect(record).toContain('<div id="fold-batch"><div class="batch-margin');
+    expect(record).not.toContain('<div id="fold-batch" hidden');
+    for (const openPen of ['amend', 'plan']) {
+      const markup = renderBatchRow({
+        openPen,
+        mode: openPen === 'amend' ? 'recording' : 'reading',
+        draft: openPen === 'amend' ? { ...emptyRecordDraft, churnDate: '2026-08-02' } : null,
+        openBatch: augustSecondBatch,
+        batches: [augustSecondBatch],
+      });
+      expect(markup).toMatch(/<h2 id="batch" class="region-name"[^>]*>Batch<\/h2>/);
+      expect(markup).toContain('class="batch-row__date">churned 2 Aug 2026<');
+      expect(headOf(markup)).not.toContain('fold-row');
+      expect(markup).toContain('<div id="fold-batch"><div class="batch-margin');
+    }
+    const none = renderBatchRow({ openBatch: null, batches: [] });
+    expect(none).toMatch(/<h2 id="batch" class="region-name"[^>]*>Batch<\/h2>/);
+    expect(none).not.toContain('batch-row__date');
+    expect(headOf(none)).not.toContain('fold-row');
   });
 });

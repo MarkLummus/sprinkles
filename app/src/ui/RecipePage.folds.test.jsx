@@ -203,3 +203,46 @@ describe('Balance and Watch for open from 984, the rest from 1366 (decision 33, 
     expect(states()).toEqual({ balance: false, check: true, version: false, tasting: false });
   });
 });
+
+// Sketch 011 decision 50 A, default C1 (Mark 2026-10-05): the Batch head is a
+// fold row, open on first load at every width, and its default never changes,
+// so a width crossing neither opens nor closes it. Hide hides the whole batch
+// body and keeps the head with Correct and Record another.
+describe('The Batch fold opens open at every width (sketch 011 decision 50, C1)', () => {
+  it.each([393, 744, 1024, 1366])('is open at %i', async (at) => {
+    await mountAt(at);
+    expect(isOpen('fold-batch')).toBe(true);
+  });
+
+  it('Hide hides the whole body and keeps the head; crossing 1366 either way leaves it closed', async () => {
+    await mountAt(1024);
+    await click(row('fold-batch'));
+    expect(isOpen('fold-batch')).toBe(false);
+    expect(panel('fold-batch').hidden).toBe(true);
+    expect(panel('fold-batch').querySelector('.batch-margin')).not.toBeNull();
+    const heading = current.container.querySelector('h2#batch');
+    expect(heading).not.toBeNull();
+    expect(panel('fold-batch').contains(heading)).toBe(false);
+    for (const selector of ['.batch-row__correct', '.batch-row__record']) {
+      const control = current.container.querySelector(selector);
+      expect(control).not.toBeNull();
+      expect(panel('fold-batch').contains(control)).toBe(false);
+    }
+    expect(row('fold-batch').textContent).toContain('Show');
+    await setWidth(1366);
+    expect(isOpen('fold-batch')).toBe(false);
+    await setWidth(1024);
+    expect(isOpen('fold-batch')).toBe(false);
+    await click(row('fold-batch'));
+    expect(isOpen('fold-batch')).toBe(true);
+  });
+
+  it('Go to batch lands on h2#batch with the Batch fold open', async () => {
+    await mountAt(1024);
+    const jump = current.container.querySelector('.notebook-jump');
+    expect(jump).not.toBeNull();
+    await click(jump);
+    expect(document.activeElement).toBe(current.container.querySelector('h2#batch'));
+    expect(isOpen('fold-batch')).toBe(true);
+  });
+});

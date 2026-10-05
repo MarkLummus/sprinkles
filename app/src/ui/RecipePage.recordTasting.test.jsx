@@ -283,7 +283,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     };
     const olderPath = `${VERSION_PATH}/batch/${augustSecondBatch.id}`;
     await mountAt(olderPath, [augustSecondBatch, newer]);
-    expect(current.container.querySelector('.batch-row__date').textContent).toBe('churned 2 Aug 2026');
+    expect(current.container.querySelector('.batch-row__head .fold-row__count').textContent).toBe('churned 2 Aug 2026');
     expect(band().textContent).toBe('Record a tasting');
 
     await click(band());

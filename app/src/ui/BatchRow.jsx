@@ -419,11 +419,6 @@ export function BatchRow({
   onStartAmending,
   onCancelRecording,
   onSaveBatch,
-  // The Recorded line's own version identity (03.5-07, decisions_recorded
-  // 2): RecipePage passes versionIdentity(...) over the recipe's sorted
-  // versions; falls back to the batch's own stored snapshot label when
-  // absent (a caller that has not computed it yet).
-  versionName = null,
   // The Record opener, moved here from VersionRow.jsx (03.5-07 Task 1,
   // decisions_recorded 1) — the same reference RecipePage.jsx already
   // passes to VersionRow's own Next version/Develop opener.
@@ -1115,7 +1110,7 @@ export function BatchRow({
             <dl className="batch-row__provenance">
               <div>
                 <dt>Recorded</dt>
-                <dd>{`${recordDateWords(openBatch.recordedAt)} against ${versionName ?? openBatch.snapshot.versionLabel}`}</dd>
+                <dd>{recordDateWords(openBatch.recordedAt)}</dd>
               </div>
               {/* D-04: churned, tasted, changed — only the latest change
                   ever shows, since every save after the first replaces

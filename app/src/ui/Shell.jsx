@@ -263,6 +263,16 @@ export function Shell() {
     return () => document.removeEventListener('keydown', handleKeyDown, true);
   }, [importErrorsShowing, open, below724]);
 
+  // More's open state follows the details' own toggle. Opening More also closes
+  // the Import error panel (sketch 011 decision 52, Mark 2026-10-05), because at
+  // the phone the panel would cover More's list. It uses Close's own path, so
+  // focus moves only when it was inside the panel.
+  function toggleMore(event) {
+    const nowOpen = event.currentTarget.open;
+    setMoreOpen(nowOpen);
+    if (nowOpen && importErrorsShowing) closeImportErrors();
+  }
+
   // Export hands the maker a file, using the browser's own object URL and
   // an anchor click — no upload, no network, no external service (D-15).
   // Moved from RecipeList.jsx unchanged in behaviour so it keeps working
@@ -372,7 +382,7 @@ export function Shell() {
       {/* The Import error panel (sketch 011 decision 52 B, Mark 2026-10-05):
           fixed under Import from 724 and above the tab row below it, over the
           page, so the bar never grows. It stays until Close, Escape, a good
-          import or a page change. Its place in the stack is in tokens.css. */}
+          import, a page change or More opening. Its place in the stack is in tokens.css. */}
       {importErrorsShowing && (
         <div className="shell__import-errors" role="alert" ref={importErrorsRef}>
           <div className="shell__import-errors-head">
@@ -441,7 +451,7 @@ export function Shell() {
         {PLACES.slice(0, 3).map((place) => (
           <RailPlace key={place.slug} place={place} />
         ))}
-        <details className="shell__more" open={moreOpen} onToggle={(event) => setMoreOpen(event.currentTarget.open)}>
+        <details className="shell__more" open={moreOpen} onToggle={toggleMore}>
           <summary className="shell__place" ref={moreSummaryRef} tabIndex={0}>
             <MoreIcon />
             More

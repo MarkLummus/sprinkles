@@ -574,7 +574,7 @@ Plans:
 **Goal:** Shared ingredients act per step (sketch 011 README decision 51): each remove link removes its own line, a removed step takes its lines with it (struck, restored with the step), and the pen's portion line and Show changes' percentages follow the lines still in, the 86.3% fix included.
 **Requirements**: TBD
 **Depends on:** Phase 03.5
-**Plans:** 2/7 plans executed
+**Plans:** 3/7 plans executed
 
 Plans:
 
@@ -588,7 +588,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 03.6-03-PLAN.md — A saved version keeps its lines out: the import validator accepts `portions[].removed`, the reading Sheet and recording skip them, and as-made values stay aligned by stored position
+- [x] 03.6-03-PLAN.md — A saved version keeps its lines out: the import validator accepts `portions[].removed`, the reading Sheet and recording skip them, and as-made values stay aligned by stored position
 
 **Wave 4** *(blocked on Wave 3)*
 

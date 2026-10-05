@@ -10,7 +10,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # set below), with ONE added stylesheet block, SKIN. The skin changes colour, corner radius and rule colour only: no width, height,
 # gap or font size moves, so the pen's measured limits (decision 28: the stacked arrangement needs a 216px frame, the wide one 594)
 # hold for the drawn pen exactly as for the built one. Every value is one the App already carries: the divider and neutral tokens, the
-# 8px field radius and 10px action radius of 1600-pen.html, and the filled action's colour (app blue text companion, white label).
+# one 10px App radius (decision 38, Mark 2026-10-04: --app-radius-control; the 8px field radius and 10px action radius of 1600-pen.html are retired), and the filled action's colour (app blue text companion, white label).
 CAP = json.load(open(HERE + '/pen-capture.json'))
 
 # Typed values the capture could not carry (a date input's value is a property, not an attribute)
@@ -27,14 +27,14 @@ SKIN = '''
 /* App-context skin for the record pen: colour, radius and rule colour only; no size moves (decision 29) */
 .notebook-log *{border-color:var(--app-divider)}
 .notebook-log .pen-caption{color:var(--app-text-secondary)}
-.notebook-log .ink-field{border-radius:var(--app-notebook-field-radius);color:var(--app-text)}
+.notebook-log .ink-field{border-radius:var(--app-radius-control);color:var(--app-text)}
 .notebook-log .axis-mark__stop,.notebook-log .segmented__option{border-color:var(--app-text-secondary)}
-.notebook-log .axis-mark__stop:first-child,.notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-notebook-field-radius);border-bottom-left-radius:var(--app-notebook-field-radius)}
-.notebook-log .axis-mark__stop:last-child,.notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-notebook-field-radius);border-bottom-right-radius:var(--app-notebook-field-radius)}
+.notebook-log .axis-mark__stop:first-child,.notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-radius-control);border-bottom-left-radius:var(--app-radius-control)}
+.notebook-log .axis-mark__stop:last-child,.notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-radius-control);border-bottom-right-radius:var(--app-radius-control)}
 .notebook-log .axis-mark__stop:has(input[type='radio']:checked),.notebook-log .segmented__option:has(input[type='radio']:checked){background:var(--app-blue-text);border-color:var(--app-blue-text);color:var(--app-background)}
 .notebook-log .chip-toggle::before{border-color:var(--app-text-secondary);border-radius:var(--app-radius-rail)}
 .notebook-log .chip-toggle[aria-pressed='true']::before{background:var(--app-blue-text);border-color:var(--app-blue-text)}
-.notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-action);color:var(--app-blue-text);background:none}
+.notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-control);color:var(--app-blue-text);background:none}
 .notebook-log .save-ceremony button:last-of-type{background:var(--app-blue-text);color:var(--app-background)}
 '''
 
@@ -56,15 +56,15 @@ def column(w, pad):
 # 350: the log column beside the Sheet from 1366 (decision 16); 393: the phone's full-width log with the 20px margin
 H350, H393 = 2280, 2720
 NO_PAD = '.notebook-log{padding:8px 0 0}\n'
-dc('R35C_PenApp350.dc.html', 'C · 350 · the record pen in the log column · App context (drawn 2026-10-02, awaiting Mark\'s look)', 350, H350, column(350, 0), APP_CSS + NO_PAD + SKIN)
-dc('R35C_PenApp393.dc.html', 'C · 393 · the record pen at the phone · App context (drawn 2026-10-02, awaiting Mark\'s look)', 393, H393, column(393, 20), APP_CSS + FORCED + NO_PAD + SKIN)
+dc('R35C_PenApp350.dc.html', 'C · 350 · the record pen in the log column · App context (drawn 2026-10-02; redrawn 2026-10-04 on the one 10px radius, decision 38; awaiting Mark\'s look)', 350, H350, column(350, 0), APP_CSS + NO_PAD + SKIN)
+dc('R35C_PenApp393.dc.html', 'C · 393 · the record pen at the phone · App context (drawn 2026-10-02; redrawn 2026-10-04 on the one 10px radius, decision 38; awaiting Mark\'s look)', 393, H393, column(393, 20), APP_CSS + FORCED + NO_PAD + SKIN)
 dc('R35C_PenAsBuilt350.dc.html', 'C · 350 · the record pen as built · Sheet grammar in the log column (reference)', 350, H350, column(350, 0), APP_CSS + NO_PAD)
 
 Y = 40300
 ENTRIES = {
   'R35C_PenAsBuilt350.dc.html': dict(x=0, y=Y, w=350, h=H350, page='page-13', title='C · 350 · the record pen as built · Sheet grammar in the log column (reference)'),
-  'R35C_PenApp350.dc.html': dict(x=430, y=Y, w=350, h=H350, page='page-13', title='C · 350 · the record pen in the log column · App context (drawn 2026-10-02, awaiting Mark\'s look)'),
-  'R35C_PenApp393.dc.html': dict(x=860, y=Y, w=393, h=H393, page='page-13', title='C · 393 · the record pen at the phone · App context (drawn 2026-10-02, awaiting Mark\'s look)'),
+  'R35C_PenApp350.dc.html': dict(x=430, y=Y, w=350, h=H350, page='page-13', title='C · 350 · the record pen in the log column · App context (drawn 2026-10-02; redrawn 2026-10-04 on the one 10px radius, decision 38; awaiting Mark\'s look)'),
+  'R35C_PenApp393.dc.html': dict(x=860, y=Y, w=393, h=H393, page='page-13', title='C · 393 · the record pen at the phone · App context (drawn 2026-10-02; redrawn 2026-10-04 on the one 10px radius, decision 38; awaiting Mark\'s look)'),
 }
 NOTES = {
   'r35-penapp-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': Y - 240, 'maxW': 1253, 'text': 'The record pen in App context (drawn 2026-10-02, awaiting Mark\'s look)'},
@@ -202,9 +202,9 @@ def range_board(W):
     main = '<div style="position:relative;width:%dpx;height:%dpx;background:#ffffff;">%s</div>' % (bw, bh, body)
     return bw, bh, main, ''.join(css_parts) + '[hidden]{display:none !important}'
 
-RNG_TITLES = {724: 'C · 724 · the record pen at the narrowest window of the range · today (cut at 760) beside the cut at 724 (drawn 2026-10-02, decision 28 still proposed)',
-              740: 'C · 740 · the record pen in the middle of the range · today (cut at 760) beside the cut at 724 (drawn, decision 28 still proposed)',
-              759: 'C · 759 · the record pen at the widest window of the range · today (cut at 760) beside the cut at 724 (drawn, decision 28 still proposed)'}
+RNG_TITLES = {724: 'C · 724 · the record pen at the narrowest window of the range · today (cut at 760) beside the cut at 724 (drawn 2026-10-02; redrawn 2026-10-04 on the one 10px radius, decision 38; decision 28 approved 2026-10-02)',
+              740: 'C · 740 · the record pen in the middle of the range · today (cut at 760) beside the cut at 724 (drawn; redrawn 2026-10-04 on the one 10px radius, decision 38; decision 28 approved 2026-10-02)',
+              759: 'C · 759 · the record pen at the widest window of the range · today (cut at 760) beside the cut at 724 (drawn; redrawn 2026-10-04 on the one 10px radius, decision 38; decision 28 approved 2026-10-02)'}
 RNG_ENTRIES = {}; RX = 0; RY = 43300
 for RW in (724, 740, 759):
     bw, bh, main, css = range_board(RW)
@@ -216,7 +216,7 @@ for RW in (724, 740, 759):
     RNG_ENTRIES[fn] = dict(x=RX, y=RY, w=bw, h=bh, page='page-13', title=RNG_TITLES[RW])
     RX += bw + 80
 RNG_NOTES = {
-  'r35-penrange-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': RY - 240, 'maxW': RX - 80, 'text': 'The record pen between 724 and 759 (drawn 2026-10-02, decision 28 still proposed)'},
+  'r35-penrange-title': {'kind': 'title1', 'page': 'page-13', 'x': 0, 'y': RY - 240, 'maxW': RX - 80, 'text': 'The record pen between 724 and 759 (drawn 2026-10-02; redrawn 2026-10-04 on the one 10px radius, decision 38; decision 28 approved 2026-10-02)'},
   'r35-penrange-note': {'fill': 'gray', 'page': 'page-13', 'x': RX, 'y': RY, 'w': 400, 'text': 'Decision 28 proposes moving the pen\'s wide-to-stacked cut from 760 down to 724. Each board is one window width (724, 740, 759); left is what the app does today, right is what the cut at 724 would give; the top row is a mouse, the bottom row touch. The pen is the built app\'s own markup in the App skin of decision 29, captured from two builds of the app at a 740 window. The pen\'s frame is 640 at all three widths, so the boards differ only in the margin around it. Today the pen stacks (216 track, 44 x 44 stops); with the cut it reads in three columns (186 track, 38 x 32 stops, 38 x 44 on touch) and is shorter. Nothing overflows in either.'},
 }
 json.dump({'boards': RNG_ENTRIES, 'notes': RNG_NOTES}, open(OUT + '/penrange-canvas-entries.json', 'w'), indent=2)

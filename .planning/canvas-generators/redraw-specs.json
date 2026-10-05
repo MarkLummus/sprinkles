@@ -1,0 +1,210 @@
+[
+ {
+  "board": "744-batch",
+  "panels": [
+   [
+    "mex3",
+    744
+   ],
+   [
+    "olive1",
+    744
+   ]
+  ]
+ },
+ {
+  "board": "834-batch",
+  "panels": [
+   [
+    "mex3",
+    834
+   ],
+   [
+    "olive1",
+    834
+   ]
+  ]
+ },
+ {
+  "board": "983-batch",
+  "panels": [
+   [
+    "mex3",
+    983
+   ],
+   [
+    "olive1",
+    983
+   ]
+  ]
+ },
+ {
+  "board": "984-batch",
+  "panels": [
+   [
+    "mex3",
+    984
+   ],
+   [
+    "olive1",
+    984
+   ]
+  ]
+ },
+ {
+  "board": "1024-batch",
+  "panels": [
+   [
+    "mex3",
+    1024
+   ],
+   [
+    "olive1",
+    1024
+   ]
+  ]
+ },
+ {
+  "board": "1366-batch",
+  "panels": [
+   [
+    "mex3",
+    1366
+   ],
+   [
+    "olive1",
+    1366
+   ]
+  ]
+ },
+ {
+  "board": "1600-batch",
+  "panels": [
+   [
+    "mex3",
+    1600
+   ],
+   [
+    "olive1",
+    1600
+   ]
+  ]
+ },
+ {
+  "board": "1920-batch",
+  "panels": [
+   [
+    "mex3",
+    1920
+   ],
+   [
+    "olive1",
+    1920
+   ]
+  ]
+ },
+ {
+  "board": "1600-no-batch",
+  "panels": [
+   [
+    "under2",
+    1600
+   ],
+   [
+    "base2",
+    1600
+   ]
+  ]
+ },
+ {
+  "board": "1600-pen",
+  "panels": [
+   [
+    "olive1pen",
+    1600
+   ],
+   [
+    "mex3pen",
+    1600
+   ]
+  ]
+ },
+ {
+  "board": "724-1365-go-to-batch",
+  "panels": [
+   [
+    "mex3",
+    744
+   ],
+   [
+    "mex3",
+    1024
+   ],
+   [
+    "olive1",
+    1194
+   ]
+  ],
+  "suffix": "-x"
+ },
+ {
+  "board": "393-batch",
+  "panels": [
+   [
+    "mex3",
+    393
+   ],
+   [
+    "olive1",
+    393
+   ]
+  ]
+ },
+ {
+  "board": "723-batch",
+  "panels": [
+   [
+    "mex3",
+    723
+   ],
+   [
+    "olive1",
+    723
+   ]
+  ]
+ },
+ {
+  "board": "393-phone-log",
+  "panels": [
+   [
+    "olive1",
+    393
+   ],
+   [
+    "mex3",
+    393
+   ],
+   [
+    "under2",
+    393
+   ]
+  ]
+ },
+ {
+  "board": "723-phone-log",
+  "panels": [
+   [
+    "olive1",
+    723
+   ],
+   [
+    "mex3",
+    723
+   ],
+   [
+    "under2",
+    723
+   ]
+  ]
+ }
+]

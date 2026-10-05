@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>C · 393 · exploration · every section folded, to see the page height</title>
-
-<style>:root{--sheet-ground:#f7f7f4;--sheet-ink:#141414;--sheet-pen-blue:#1f3d7a;--sheet-bookcloth:#33513b;--face-text:Georgia, "Iowan Old Style", "Times New Roman", serif;--face-grotesk:-apple-system, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;--sheet-size-running-head:.75rem;--sheet-size-recipe-name:2rem;--sheet-size-version-line:1.125rem;--sheet-size-headnote-prose:1rem;--sheet-size-table-body:.9375rem;--sheet-size-figure-value:1.25rem;--sheet-size-deviation-words:.8125rem;--sheet-size-small-print:.75rem;--sheet-type-section:.875rem;--sheet-leading-section:1.35;--sheet-type-label:.75rem;--sheet-type-control:.8125rem;--sheet-leading-control:1.3;--sheet-leading-helper:1.4;--sheet-leading-figure:1.1;--sheet-text-control-min:24px;--sheet-type-note:1rem;--sheet-leading-note:1.5;--gap-hair:2px;--gap-xs:6px;--gap-s:12px;--gap-m:20px;--gap-l:32px;--gap-xl:48px;--gap-page:var(--gap-xl);--rule-baseline:1.5px;--rule-hover:2px;--rule-graduation:1px;--rule-band-edge:1px;--rule-tick:2.5px;--rule-width:320px;--measure-prose:65ch;--sheet-leading-field:1.35;--sheet-field-min-h:26px;--sheet-leading-table:1.2;--sheet-hatch-pitch:4px;--sheet-hatch-stroke:1.2px;--focus-outline-width:var(--rule-hover);--focus-outline-offset:2px;--offset-link-underline:2px;--sheet-size-select-chevron:5px;--sheet-inset-select-chevron-x:14px;--sheet-inset-select-chevron-y:3px;--gap-select-chevron-room:var(--gap-m);--rule-ink-field:1px;--sheet-size-ink-field:.9375rem;--sheet-field-w-date:128px;--sheet-field-w-figure:56px;--gap-field-unit:4px;--sheet-caption-two-lines:2.4em;--sheet-caption-two-lines-abs:calc(2.4 * var(--sheet-type-label));--sheet-table-cell-pad-x:var(--gap-xs);--sheet-col-numeric:94px;--sheet-col-data:86px;--sheet-col-remove:78px;--gap-mark-stop:var(--gap-xs);--sheet-size-mark-stop:.8125rem;--rule-strike:1.2px;--gap-strike:var(--gap-hair);--sheet-size-cross-flag:var(--sheet-size-small-print);--gap-uses-chip:var(--gap-xs);--rule-tick-hollow:1px;--rule-foot-band:var(--rule-ink-field);--sheet-col-batch-cell-min:96px;--sheet-vmeta-min:300px;--sheet-rhist-vname-min:22rem;--sheet-rhist-bname-min:16rem;--touch-min:44px;--touch-stop-width:44px;--sheet-pen-w:640px;--sheet-track-stop:186px;--sheet-track-stop-narrow:216px;--sheet-stop-w:38px;--sheet-stop-h:32px;--sheet-control-h:var(--sheet-stop-h);--sheet-touch-stop-height:var(--touch-min);--sheet-caption-line-h:var(--sheet-text-control-min);--sheet-caption-line-h-touch:var(--touch-min);--sheet-seg-pad-y:5px;--sheet-seg-pad-x:8px;--sheet-size-lead-mark:var(--sheet-size-mark-stop);--gap-defect-col:var(--gap-m);--sheet-axes-cols-clearance:12px;--app-notebook:#fd5b57;--app-notebook-text:#ee0803;--app-recipe-book:#f18a36;--app-recipe-book-text:#bc5b0d;--app-idea-log:#fdc632;--app-idea-log-text:#976f01;--app-pantry:#76bd78;--app-ingredients:#388b57;--app-ingredients-text:#358452;--app-kitchen:#505db5;--app-blue:#2081ea;--app-blue-text:#1576de;--app-background:#fff;--app-surface-subtle:#f3f4f2;--app-text:#141414;--app-text-secondary:#595959;--app-divider:#d6dad7;--face-hand:"Caveat", var(--face-text);--size-hand:1.375rem;--leading-hand:1.25;--size-hand-min:1.25rem;--app-size-brand:1.375rem;--app-size-brand-rule:6px;--app-size-title:2.125rem;--app-size-recipe-name:1.5rem;--app-size-lead-name:1.75rem;--app-size-meta:.875rem;--app-size-label:.75rem;--app-tracking-label:.08em;--app-size-sprinkle-w:18px;--app-size-sprinkle-h:6px;--app-radius-sprinkle:3px;--app-size-rail-w:8px;--app-size-rail-h:56px;--app-radius-rail:4px;--app-rule-tally:2px;--app-col-standing:120px;--app-col-tally:132px;--app-radius-action:10px;--app-radius-lead:10px;--app-rule-nav-active:3px;--app-rule-row:var(--rule-graduation);--app-duration:.12s;--app-size-nav-w:224px;--app-size-icon:20px;--app-tilt-sprinkle:-8deg;--app-size-tab-h:56px}@font-face{font-family:Caveat;src:url(../../../app/public/fonts/caveat-regular.woff2)format("woff2");font-weight:400;font-style:normal;font-display:swap}body{background:var(--app-background);color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);margin:0}body:has(.recipe-page,.page-head,.not-found){background:var(--sheet-ground)}.app-boot{font-family:var(--face-grotesk);font-size:var(--app-size-meta);color:var(--app-text-secondary);padding:var(--gap-page)}:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}button,select{appearance:none;border:var(--rule-ink-field) solid var(--sheet-ink);color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);box-sizing:border-box;cursor:pointer;padding:calc(var(--gap-xs) + var(--rule-hover) - var(--rule-ink-field));background:0 0;border-radius:0}button:hover,select:hover{border-width:var(--rule-hover);padding:var(--gap-xs)}button:disabled,select:disabled{color:inherit;cursor:default;background:0 0;border-style:dashed}.text-control{appearance:none;color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);min-height:var(--sheet-text-control-min);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline);background:0 0;border:none;border-radius:0;padding:0}.text-control:hover{text-decoration-thickness:var(--rule-baseline);padding:0}.text-control:disabled{color:inherit;cursor:default;border:none;padding:0;text-decoration-style:dashed}.text-toggle{min-height:var(--sheet-control-h)}.text-toggle:before{content:"";width:var(--sheet-size-lead-mark);height:var(--sheet-size-lead-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--sheet-ink);margin-right:var(--gap-xs);vertical-align:baseline;display:inline-block}.text-toggle[aria-pressed=true]:before{background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue)}.text-toggle[aria-pressed=true],.text-toggle[aria-pressed=true]:hover{text-decoration-thickness:var(--rule-ink-field)}.text-toggle:hover:before{border-width:var(--rule-hover)}select.ink-field{padding:var(--gap-xs)}a{color:var(--sheet-ink);text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline);cursor:pointer}:where(a:visited){color:var(--sheet-ink)}select,select.ink-field{background-image:linear-gradient(45deg, transparent 50%, var(--sheet-ink) 50%), linear-gradient(135deg, var(--sheet-ink) 50%, transparent 50%);background-position:calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)), calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron)) calc(50% - var(--sheet-inset-select-chevron-y));background-size:var(--sheet-size-select-chevron) var(--sheet-size-select-chevron), var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);padding-right:var(--gap-select-chevron-room);background-repeat:no-repeat}input[type=checkbox]{appearance:none;width:var(--sheet-size-mark-stop);height:var(--sheet-size-mark-stop);border:var(--rule-graduation) solid var(--sheet-ink);box-sizing:border-box;cursor:pointer;background:0 0;border-radius:0;flex:none;margin:0}input[type=checkbox]:hover{border-width:var(--rule-hover)}input[type=checkbox]:checked{background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue)}input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}input[type=date]::-webkit-calendar-picker-indicator{-webkit-appearance:none;display:none}input[type=date].ink-field{appearance:none}textarea{field-sizing:content;resize:none}.page-status{z-index:10;max-width:min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));margin:0;padding:var(--gap-xs) var(--gap-s);border:var(--rule-baseline) solid var(--sheet-ink);background:var(--sheet-ground);color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);margin-block-start:var(--gap-xs);position:absolute;inset-block-start:100%;inset-inline-start:var(--gap-page)}.page-status:empty{border:0;padding:0}.headnote,.vmeta{min-width:0}.headnote h1,.headnote__prose,.versions__lineage{overflow-wrap:anywhere}::placeholder{color:var(--sheet-ink);font-size:var(--sheet-size-small-print);opacity:1;font-style:italic}.page-head{background:var(--sheet-ground);position:relative}.running-head{font-family:var(--face-grotesk);font-size:var(--sheet-size-running-head);text-transform:uppercase;letter-spacing:.04em;padding:var(--gap-m) var(--gap-page) 0;margin:0}.running-head a{color:inherit}.not-found{padding:var(--gap-m) var(--gap-page);background:var(--sheet-ground);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body)}.not-found a{color:inherit}.list-page{padding:var(--gap-page)}.app-hand{font-family:var(--face-hand);font-size:max(var(--size-hand), var(--size-hand-min));line-height:var(--leading-hand);color:var(--sheet-pen-blue)}.recipe-page{gap:var(--gap-l);padding:var(--gap-page);background:var(--sheet-ground);grid-template-columns:2fr 1fr;grid-template-areas:"band band""ingredients side""method side""foot foot";display:grid}.recipe-band{gap:var(--gap-m);border-bottom:var(--rule-baseline) solid var(--sheet-ink);padding-bottom:var(--gap-m);flex-direction:column;grid-area:band;min-width:0;display:flex}.recipe-band__row-version{grid-template-columns:minmax(0, 1.6fr) minmax(var(--sheet-vmeta-min), 1fr);gap:var(--gap-l);padding-bottom:var(--gap-m);border-bottom:var(--rule-graduation) solid var(--sheet-ink);align-items:start;display:grid}.recipe-band__row-version:only-child{border-bottom:0;padding-bottom:0}.headnote h1{font-family:var(--face-text);font-size:var(--sheet-size-recipe-name);margin:0}.headnote__prose{font-family:var(--face-text);font-size:var(--sheet-size-headnote-prose);max-width:var(--measure-prose);margin:var(--gap-s) 0 0}.headnote__version-field{font-family:var(--face-text);font-size:var(--sheet-size-version-line);margin:var(--gap-xs) 0 0;display:block}.headnote__version-field>.pen-caption{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;margin-bottom:var(--gap-xs);font-weight:500;display:block}.headnote__version-field .ink-field{max-width:var(--measure-prose)}.headnote__reason-field{margin-top:var(--gap-s);display:block}.headnote__show-changes{margin-left:var(--gap-xs)}.headnote__citation{font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);margin-top:var(--gap-s);display:block}.headnote__citation span:first-child{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;margin-bottom:var(--gap-xs);font-weight:500;display:block}.headnote__citation select.ink-field{max-width:var(--measure-prose)}.headnote__ceremony{gap:var(--gap-s);margin-top:var(--gap-m);flex-wrap:wrap;display:flex}.headnote__prose-field{margin-top:var(--gap-m);display:block}.versions__openers{gap:var(--gap-m);margin-top:var(--gap-m);flex-direction:column;display:flex}.versions__opener-group{gap:var(--gap-s);flex-wrap:wrap;align-items:center;display:flex}.is-landing-focus:focus{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.versions__ceremony{margin-top:var(--gap-xs)}.versions__ceremony-field{font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);display:block}.versions__ceremony-field .ink-field[type=date]{width:var(--sheet-field-w-date)}.versions__ceremony-field span{font-size:var(--sheet-type-label);margin-bottom:var(--gap-xs);font-weight:500;display:block}.versions__ceremony-shortcut{margin-top:var(--gap-s);display:block}.versions__lineage{font-family:var(--face-text);font-size:var(--sheet-size-deviation-words);max-width:var(--measure-prose);margin:var(--gap-hair) 0 0}.versions__lineage a{color:inherit}.versions__lineage-label{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;font-weight:500;display:block}.version-row__meta-list{gap:var(--gap-hair) var(--gap-s);grid-template-columns:max-content 1fr;margin:0;display:grid}.version-row__meta-list dd{margin:0}.version-row__identity{font-family:var(--face-text);font-size:var(--sheet-size-version-line);margin:0 0 var(--gap-xs);font-weight:400}.version-row__parent-name{font-family:var(--face-text);font-size:var(--sheet-size-deviation-words)}.version-row__written,.version-row__batch-provenance{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);font-variant-numeric:tabular-nums}.version-row__reason-label,.version-row__reason{grid-column:1/-1}.version-row__reason-label{margin-top:var(--gap-s)}.version-row__reason{max-width:var(--measure-prose);font-size:var(--sheet-type-note)}.version-row__reason--empty{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-helper);color:var(--sheet-ink)}.version-row__history{margin-top:var(--gap-s)}.vmeta--developing .version-row__meta-list{margin-bottom:var(--gap-s)}.recipe-band__full-row{margin-top:var(--gap-m);padding-top:var(--gap-s);border-top:var(--rule-graduation) solid var(--sheet-bookcloth);grid-column:1/-1}.versions__batch-amended{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);display:block}.ingredient-table-region{grid-area:ingredients;min-width:0}.method-region{grid-area:method;min-width:0}.side-region{gap:var(--gap-l);flex-direction:column;grid-area:side;min-width:0;display:flex}.pen-foot{gap:var(--gap-l);grid-area:foot;grid-template-columns:2fr 1fr;display:grid}.pen-foot__rule{border:0;border-top:var(--rule-foot-band) solid var(--sheet-ink);grid-column:1/-1;margin:0}.pen-foot__controls{justify-content:flex-end;align-items:baseline;gap:var(--gap-s);margin-top:var(--gap-m);flex-wrap:wrap;grid-column:2;display:flex}.ingredient-table{border-collapse:collapse;table-layout:fixed;width:100%;font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);font-variant-numeric:tabular-nums}.ingredient-table th,.ingredient-table td{box-sizing:border-box;text-align:left;padding:var(--gap-xs) var(--sheet-table-cell-pad-x);line-height:var(--sheet-leading-table);border-bottom:var(--rule-baseline) solid var(--sheet-ink)}.ingredient-table__col-name{width:auto}.ingredient-table__col-numeric{width:var(--sheet-col-numeric);text-align:right}.ingredient-table__col-data{width:var(--sheet-col-data)}.ingredient-table__col-remove{width:var(--sheet-col-remove)}.ingredient-table .ink-field{text-align:right}.ingredient-table__grams-cell{justify-content:flex-end;align-items:center;gap:var(--gap-strike);display:flex}.ingredient-table__grams-cell .ink-field{flex:auto;width:auto;min-width:0}.struck-value{text-decoration:line-through;text-decoration-thickness:var(--rule-strike);margin-right:var(--gap-strike)}.prose-struck-beneath{font-family:var(--face-text);font-size:var(--sheet-size-headnote-prose);max-width:var(--measure-prose);text-decoration:line-through;text-decoration-thickness:var(--rule-strike);margin:var(--gap-strike) 0 0}.ingredient-table__flag{font-family:var(--face-grotesk);font-size:var(--sheet-size-cross-flag);margin:var(--gap-hair) 0 0}.ingredient-table__step-head td{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);text-transform:uppercase;letter-spacing:.04em;padding-top:var(--gap-s);border-bottom-width:var(--rule-baseline)}.ingredient-table__step-head-lead{text-transform:none;letter-spacing:0;font-family:var(--face-text);font-size:var(--sheet-size-deviation-words);margin-left:var(--gap-s)}.ingredient-table__portion-note{font-size:var(--sheet-size-small-print);display:block}.ingredient-table th{font-family:var(--face-grotesk);font-size:var(--sheet-size-running-head);text-transform:uppercase;letter-spacing:.04em}.ingredient-table tfoot td{border-bottom:none;border-top:var(--rule-baseline) solid var(--sheet-ink);font-weight:700}.ingredient-table tfoot .ingredient-table__col-numeric{white-space:nowrap}.table-small-print{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);margin:var(--gap-hair) 0 0}.ingredient-table__comparison{caption-side:top;color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);letter-spacing:.04em;text-align:left;text-transform:uppercase;margin-bottom:var(--gap-xs);font-weight:500}.ingredient-table tbody tr.is-marked{outline:var(--rule-graduation) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset);font-weight:700}.region-name{font-family:var(--face-grotesk);font-size:var(--sheet-type-section);font-weight:600;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:.04em;color:var(--sheet-bookcloth);margin:0 0 var(--gap-xs)}.method__before{max-width:var(--measure-prose);padding-bottom:var(--gap-m);margin-bottom:var(--gap-m);border-bottom:var(--rule-graduation) solid var(--sheet-ink)}.method-steps{margin:0;padding:0;list-style:none}.method-step{gap:var(--gap-s);grid-template-columns:auto 1fr;display:grid}.method-step+.method-step{margin-top:var(--gap-m)}.method-step__n{font-family:var(--face-grotesk);font-size:var(--sheet-size-figure-value);font-variant-numeric:tabular-nums}.method-step__n--struck{text-decoration:line-through;text-decoration-thickness:var(--rule-strike)}.method-step__lead{font-family:var(--face-text);font-size:var(--sheet-size-headnote-prose);max-width:var(--measure-prose);margin:0}.method-step__targets{gap:var(--gap-xs);margin:var(--gap-xs) 0 0;flex-wrap:wrap;display:flex}.target-chip{gap:var(--gap-hair);border:var(--rule-graduation) solid var(--sheet-ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);font-variant-numeric:tabular-nums;display:inline-flex}.method-step__purpose,.method-step__aside{font-family:var(--face-text);font-style:italic;font-size:var(--sheet-size-deviation-words);max-width:var(--measure-prose);margin:var(--gap-xs) 0 0}.method-step__prose--struck{text-decoration:line-through}.method-step__skipped-label{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;font-weight:500}.method-step__changed{font-family:var(--face-text);font-size:var(--sheet-size-deviation-words);max-width:var(--measure-prose);margin:var(--gap-xs) 0 0}.method-step__recording{gap:var(--gap-xs);margin-top:var(--gap-xs);flex-direction:column;display:flex}.method-step__field{margin-top:var(--gap-xs);display:block}.target-chip__label-field,.target-chip__value-field{width:auto}.method-step__uses{margin:var(--gap-xs) 0 0;gap:var(--gap-uses-chip);font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);border:none;flex-wrap:wrap;padding:0;display:flex}.method-step__uses legend{width:100%;font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;margin-bottom:var(--gap-xs);padding:0;font-weight:500}.method-step__uses-item{align-items:center;gap:var(--gap-hair);display:inline-flex}.method-step__uses-line{font-family:var(--face-grotesk);font-size:var(--sheet-size-cross-flag);margin:var(--gap-xs) 0 0}.method-step__uses-line button{margin-left:var(--gap-xs)}.method-step__on-demand,.method-step__edit{margin-top:var(--gap-xs);align-self:flex-start;display:block}.method-step__flag,.method-step__stale-flag{font-family:var(--face-grotesk);font-size:var(--sheet-size-cross-flag);margin:var(--gap-hair) 0 0}.method-step__strike-control{align-items:center;gap:var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);display:flex}.method-step__line-control{gap:var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);flex-direction:column;display:flex}.derived-advisories__legend{font-family:var(--face-grotesk);font-size:var(--sheet-type-section);font-weight:600;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:.04em;margin:var(--gap-m) 0 0;justify-content:space-between;display:flex}.derived-advisories__item{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);margin:var(--gap-xs) 0 0}.authored__legend{font-family:var(--face-grotesk);font-size:var(--sheet-type-section);font-weight:600;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:.04em;margin:var(--gap-m) 0 0;justify-content:space-between;display:flex}.authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--sheet-type-note);line-height:var(--sheet-leading-note)}.authored__note-field{align-items:flex-start;gap:var(--gap-xs);display:flex}.authored__note-field textarea.prose-field{flex:auto}.authored__inherited{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print)}.formulation-note__rule+.formulation-note__rule{margin-top:var(--gap-m)}.formulation-note__fat-breakdown{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);font-variant-numeric:tabular-nums;margin:var(--gap-xs) 0 0}.graduated-rule{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;max-width:var(--rule-width);background:0 0;border:none;padding:0;display:block}.graduated-rule__head{font-family:var(--face-grotesk);font-variant-numeric:tabular-nums;justify-content:space-between;align-items:baseline;display:flex}.graduated-rule__label{font-size:var(--sheet-size-table-body)}.graduated-rule__label-term{font-size:var(--sheet-size-small-print)}.graduated-rule__value{font-size:var(--sheet-size-figure-value);font-weight:700}.graduated-rule__anchors{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);font-variant-numeric:tabular-nums;margin-top:var(--gap-hair);justify-content:space-between;display:flex}.graduated-rule__deviation{font-size:var(--sheet-size-deviation-words)}.graduated-rule__basis{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);margin:var(--gap-hair) 0 0}.basis-note{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);max-width:var(--measure-prose);margin:var(--gap-m) 0 0}.prose-field{font-family:var(--face-text);font-size:inherit;line-height:var(--sheet-leading-note);color:var(--sheet-pen-blue);padding:var(--gap-hair) 0;min-height:calc(var(--sheet-leading-note) * 1em);width:100%;max-width:var(--measure-prose);box-sizing:border-box;background:0 0;border:none;margin:0}.prose-field--empty{border-bottom:var(--rule-graduation) solid var(--sheet-ink)}.prose-field--lead-in{font-weight:700}.prose-text{font-family:var(--face-text);line-height:var(--sheet-leading-note);color:var(--sheet-pen-blue);overflow-wrap:anywhere}.ink-field{font-family:var(--face-grotesk);font-size:var(--sheet-size-ink-field);font-variant-numeric:tabular-nums;color:var(--sheet-pen-blue);border:var(--rule-ink-field) solid var(--sheet-ink);padding:var(--gap-hair) var(--gap-xs);line-height:var(--sheet-leading-field);min-height:var(--sheet-field-min-h);box-sizing:border-box;background:0 0;border-radius:0;width:100%}.headnote__churn-field{width:auto;display:inline-block}.ink-text{color:var(--sheet-pen-blue)}.batch-margin__legend{font-family:var(--face-grotesk);font-size:var(--sheet-type-section);font-weight:600;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:.04em;margin:0 0 var(--gap-xs)}.batch-margin__field{gap:var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);margin-top:var(--gap-xs);flex-direction:column;display:flex}.batch-margin__field--next-time{margin-top:var(--gap-l)}.batch-row__cells{grid-template-columns:repeat(auto-fit, minmax(var(--sheet-col-batch-cell-min), max-content));gap:var(--gap-s) var(--gap-l);margin:var(--gap-s) 0 0;display:grid}.tasting-reading{margin-top:var(--gap-m);padding-top:var(--gap-s);border-top:var(--rule-graduation) solid var(--sheet-ink)}.tasting-reading__head{align-items:baseline;gap:var(--gap-s);flex-wrap:wrap;display:flex}.tasting-reading__head .region-name,.tasting-reading__head .batch-row__date{margin:0}.tasting-reading__note{max-width:var(--measure-prose);margin:var(--gap-m) 0 0}.tasting-reading__group,.batch-row__conclusion{margin-top:var(--gap-l)}.batch-row__group-label{margin:0 0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;font-weight:500}.tasting-reading__group .batch-row__cells{margin-top:0}.tasting-reading__problems,.batch-row__conclusion .prose-text{margin:var(--gap-s) 0 0}.batch-row__provenance{gap:var(--gap-xs) var(--gap-l);margin:var(--gap-l) 0 0;padding-top:var(--gap-s);border-top:var(--rule-graduation) solid var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);flex-wrap:wrap;display:flex}.batch-row__provenance>div{gap:var(--gap-xs);display:flex}.batch-row__provenance dt{text-transform:uppercase;letter-spacing:.04em;font-weight:500}.batch-row__provenance dd{color:var(--sheet-pen-blue);overflow-wrap:anywhere;margin:0}.batch-row__cell{gap:var(--gap-xs);flex-direction:column;display:flex}.batch-row__cell-label{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;font-weight:500}.batch-row__cell-value{font-family:var(--face-grotesk);font-size:var(--sheet-type-note);font-weight:400;line-height:var(--sheet-leading-figure);color:var(--sheet-pen-blue);font-variant-numeric:tabular-nums}.batch-row__head{align-items:baseline;gap:var(--gap-s);flex-wrap:wrap;display:flex}.batch-row__head .region-name{margin:0}.batch-row__date{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-variant-numeric:tabular-nums;color:var(--sheet-pen-blue)}.batch-row__unit{font-size:var(--sheet-size-deviation-words);font-weight:400}.batch-row__unit--absent{color:var(--sheet-ink)}.batch-row__plan{font-size:var(--sheet-size-small-print);margin-top:var(--gap-hair);display:block}.batch-row__tasting-meta{text-transform:none;letter-spacing:0;color:var(--sheet-pen-blue)}.batch-row__correct{margin-left:auto}.batch-row__batches{margin-top:var(--gap-m);padding-top:var(--gap-s);border-top:var(--rule-graduation) solid var(--sheet-ink)}.batch-margin button{margin-top:var(--gap-s)}.batch-margin--pen{max-width:var(--sheet-pen-w)}.batch-margin__list{margin:var(--gap-xs) 0 0;font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);padding:0;list-style:none}.batch-margin__list li+li{margin-top:var(--gap-hair)}.batch-margin__list li.is-open{outline:var(--rule-graduation) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset);font-weight:700}.tasting{margin-top:var(--gap-m);padding-top:var(--gap-s);border-top:var(--rule-graduation) solid var(--sheet-ink)}.pen-caption{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);font-weight:500;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:.04em;margin:0 0 var(--gap-xs);display:block}.pen-helper{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-helper);text-transform:none;letter-spacing:0;color:var(--sheet-ink);margin:0;font-style:normal;font-weight:400}.tasting-head{align-items:baseline;gap:var(--gap-s);margin-bottom:var(--gap-xs);flex-wrap:wrap;display:flex}.tasting-head .region-name{margin:0}.tasting-head__remove{margin-left:auto}.field-row{gap:var(--gap-s);flex-wrap:wrap;align-items:flex-start;display:flex}.field-row__label{margin:0 0 var(--gap-s);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);flex:none;display:block}.field-row__label--date{width:var(--sheet-field-w-date)}.field-row .pen-caption:not(.segmented-field__caption){line-height:var(--sheet-leading-table);min-height:var(--sheet-caption-two-lines);align-items:flex-end;display:flex}.field-unit{align-items:baseline;gap:var(--gap-field-unit);display:flex}.field-unit .ink-field{width:var(--sheet-field-w-figure);text-align:right;flex:none}.field-unit__unit{font-size:var(--sheet-size-deviation-words);white-space:nowrap;line-height:var(--sheet-leading-control)}.field-row--start{align-items:flex-start}.axis-mark{margin:var(--gap-m) 0 0;border:none;padding:0}.axis-mark__head,.segmented-field__head{align-items:flex-end;gap:var(--gap-xs);margin-bottom:var(--gap-xs);min-height:var(--sheet-caption-line-h);flex-wrap:wrap;display:flex}.segmented-field{min-width:0;max-width:100%}.segmented-field__caption{margin-bottom:0}.axis-mark__name{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);text-transform:uppercase;letter-spacing:.04em;font-weight:500}.axis-mark__state{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-style:italic}.axis-mark__state:has(~.axis-mark__clear){color:var(--sheet-pen-blue);font-style:normal}.axis-mark__stops{width:var(--sheet-track-stop);display:flex}.axis-mark__stop{flex:0 0 var(--sheet-stop-w);height:var(--sheet-stop-h);margin-right:calc(-1 * var(--rule-ink-field));border:var(--rule-ink-field) solid var(--sheet-ink);font-family:var(--face-grotesk);font-variant-numeric:tabular-nums;cursor:pointer;box-sizing:border-box;border-radius:0;justify-content:center;align-items:center;display:inline-flex;position:relative}.axis-mark__stop:last-child{margin-right:0}.axis-mark__stop input[type=radio]{appearance:none;opacity:0;cursor:pointer;width:100%;height:100%;margin:0;position:absolute;inset:0}:is(.axis-mark__stop:has(input[type=radio]:checked),.segmented__option:has(input[type=radio]:checked)){background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue);color:var(--sheet-ground);z-index:1}:is(.axis-mark__stop:has(input[type=radio]:focus-visible),.segmented__option:has(input[type=radio]:focus-visible)){outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.axis-mark__stop:hover{border-width:var(--rule-hover);z-index:2}.axis-mark__anchors{width:var(--sheet-track-stop);margin-top:var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);white-space:nowrap;justify-content:space-between;font-style:italic;display:flex}.batch-margin .axis-mark__clear,.batch-margin .segmented-field__clear{font-family:var(--face-grotesk);font-size:var(--sheet-size-mark-stop);margin-top:0;margin-left:auto}.segmented{row-gap:var(--gap-xs);flex-wrap:wrap;display:flex}.segmented__option{border:var(--rule-ink-field) solid var(--sheet-ink);margin-right:calc(-1 * var(--rule-ink-field));padding:var(--sheet-seg-pad-y) var(--sheet-seg-pad-x);box-sizing:border-box;min-height:var(--sheet-stop-h);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);color:var(--sheet-ink);cursor:pointer;border-radius:0;justify-content:center;align-items:center;display:flex;position:relative}.segmented__option:last-child{margin-right:0}.segmented__option:hover{border-width:var(--rule-hover);padding:calc(var(--sheet-seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field))) calc(var(--sheet-seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));z-index:2}.segmented__option input[type=radio]{appearance:none;opacity:0;cursor:pointer;width:100%;height:100%;margin:0;position:absolute;inset:0}.defects-row__chips{align-items:center;gap:var(--gap-xs) var(--gap-defect-col);flex-wrap:wrap;margin-top:0;display:flex}.batch-margin .chip-toggle{align-items:center;gap:var(--gap-xs);box-sizing:border-box;min-height:var(--sheet-stop-h);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);letter-spacing:0;color:var(--sheet-ink);cursor:pointer;background:0 0;border:0;border-radius:0;margin-top:0;padding:0;display:inline-flex}.batch-margin .chip-toggle:hover{border:0;padding:0}.chip-toggle:before{content:"";width:var(--sheet-size-lead-mark);height:var(--sheet-size-lead-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--sheet-ink);flex:none;display:inline-block}.chip-toggle:hover:before{border-width:var(--rule-hover)}.chip-toggle[aria-pressed=true]:before{background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue)}.save-ceremony{align-items:baseline;gap:var(--gap-s);margin-top:var(--gap-m);justify-content:flex-end;display:flex}.save-ceremony__hint{font-family:var(--face-grotesk);font-size:var(--sheet-type-control)}.save-ceremony__status{margin-right:auto}.form-status{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);margin:var(--gap-m) 0 0;max-width:var(--measure-prose);line-height:var(--sheet-leading-note)}.field-requirement,.field-error{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);margin-top:var(--gap-hair);display:block}.axes-grid{column-gap:0;row-gap:var(--gap-m);grid-template-columns:repeat(3,minmax(0,1fr));display:grid;position:relative}.axes-grid:not(.axes-grid--stacked)>.axis-mark--core{padding-right:var(--gap-m)}.axes-grid:not(.axes-grid--stacked)>.axis-mark--declared{padding-left:var(--sheet-axes-cols-clearance)}.axes-rule{border-left:var(--rule-graduation) solid var(--sheet-ink);pointer-events:none;position:absolute;top:0;bottom:0;left:66.6667%}.axes-grid__group>.axes-cue{grid-column:1/-1}.axes-grid:not(.axes-grid--stacked)>.axes-cue--core,.axes-grid:not(.axes-grid--stacked)>.defects-head,.axes-grid:not(.axes-grid--stacked)>.defect-group--core{grid-column:1/3}.axes-grid:not(.axes-grid--stacked)>.defect-group--core{padding-right:var(--gap-m)}.axes-grid:not(.axes-grid--stacked)>.axes-cue--declared,.axes-grid:not(.axes-grid--stacked)>.defect-group--declared{padding-left:var(--sheet-axes-cols-clearance);grid-column:3}.defects-head{align-items:baseline;gap:var(--gap-s);margin-bottom:var(--gap-xs);flex-wrap:wrap;display:flex}.defects-head>.pen-caption,.defects-head>.pen-helper{margin:0}.axes-grid--stacked{gap:var(--gap-m);flex-direction:column;display:flex}.axes-grid__group{gap:var(--gap-m);grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));display:grid}.axes-grid__group--declared{padding-top:var(--gap-s);border-top:var(--rule-graduation) solid var(--sheet-ink)}.axes-grid--stacked>.defect-group--declared{border-top:var(--rule-graduation) solid var(--sheet-ink);padding-top:var(--gap-s)}@media (width<=1099.98px){.recipe-page{gap:var(--gap-m);grid-template-columns:1fr;grid-template-areas:"band""ingredients""side""method""foot"}.pen-foot{grid-template-columns:1fr}.pen-foot__controls{grid-column:1}}@media (pointer:coarse){button,select,.ink-field,.prose-field,.segmented__option,.batch-margin .chip-toggle,.text-control,.method-step__uses-item,.method-step__strike-control{min-height:var(--touch-min)}.axis-mark__head,.segmented-field__head{min-height:var(--sheet-caption-line-h-touch)}.ink-field,.prose-field{font-size:var(--sheet-type-note)}.axis-mark__stop{height:var(--sheet-touch-stop-height)}}@media (width<=759.98px){.recipe-band__row-version{grid-template-columns:1fr}.axis-mark__stops,.axis-mark__anchors{width:var(--sheet-track-stop-narrow)}.axis-mark__stop{width:var(--touch-stop-width);height:var(--sheet-touch-stop-height);flex-basis:var(--touch-stop-width)}}@media (width<=600px){:root{--gap-page:var(--gap-m)}.field-row__label{max-width:100%}.batch-margin__field{font-size:var(--sheet-type-control)}.save-ceremony,.pen-foot__controls{flex-wrap:wrap}.ingredient-table-region{overflow-x:auto}}@media (width>=760px) and (pointer:coarse){.axis-mark__head,.segmented-field__head{min-height:var(--sheet-caption-two-lines-abs)}.axis-mark__head .text-control,.segmented-field__head .text-control{min-height:0;position:relative}.axis-mark__head .text-control:after,.segmented-field__head .text-control:after{content:"";left:calc(-1 * var(--gap-xs));right:calc(-1 * var(--gap-xs));height:var(--touch-min);position:absolute;top:50%;transform:translateY(-50%)}}@media (forced-colors:active){.chip-toggle[aria-pressed=true]:before,.text-toggle[aria-pressed=true]:before,input[type=checkbox]:checked{forced-color-adjust:none;color:highlighttext;background:highlight;border-color:highlight}.axis-mark__stop:has(input[type=radio]:checked){forced-color-adjust:none;color:highlighttext;background:highlight;border-color:highlight}.segmented__option:has(input[type=radio]:checked){forced-color-adjust:none;color:highlighttext;background:highlight;border-color:highlight}:is(.axis-mark__stop:has(input[type=radio]:checked):has(input[type=radio]:focus-visible),.segmented__option:has(input[type=radio]:checked):has(input[type=radio]:focus-visible)){outline-color:canvastext}.app-hand{font-family:var(--face-text);font-style:italic}}@media print{.page-status{display:none}.app-hand{font-family:var(--face-text);font-style:italic}}.shell{background:var(--app-background);min-height:100vh;color:var(--app-text);flex-direction:column;display:flex}.shell__head{padding:var(--gap-s) var(--gap-page);flex-wrap:wrap;justify-content:space-between;align-items:center;display:flex}.shell__brand{font-family:var(--face-grotesk);font-weight:700;font-size:var(--app-size-brand);margin:0}.shell__sprinkles{gap:var(--gap-xs);margin-top:var(--gap-xs);display:flex}.shell__sprinkle{width:var(--app-size-sprinkle-w);height:var(--app-size-sprinkle-h);border-radius:var(--app-radius-sprinkle);transform:rotate(var(--app-tilt-sprinkle));display:inline-block}.shell__sprinkle--notebook{background:var(--app-notebook)}.shell__sprinkle--recipe-book{background:var(--app-recipe-book)}.shell__sprinkle--idea-log{background:var(--app-idea-log)}.shell__sprinkle--ingredients{background:var(--app-ingredients)}.shell__sprinkle--kitchen{background:var(--app-kitchen)}.shell__tools{align-items:center;gap:var(--gap-m);display:flex}.shell__tools button{appearance:none;color:inherit;cursor:pointer;background:0 0;border:none}.shell__file-input{display:none}.shell__import-errors{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-grotesk);font-size:var(--app-size-label);flex-basis:100%}.shell__body{flex:auto;display:flex}.shell__rail{flex:0 0 var(--app-size-nav-w);width:var(--app-size-nav-w);box-sizing:border-box;padding:var(--gap-xs) var(--gap-m) var(--gap-l);border-right:var(--app-rule-row) solid var(--app-divider);flex-direction:column;display:flex}.shell__main{flex:auto;min-width:0}.place{color:var(--app-text);font-family:var(--face-grotesk)}.place__title{margin:var(--gap-l) 0 var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--app-size-title);letter-spacing:-.02em;font-weight:800}.place__note{max-width:var(--measure-prose);font-size:var(--app-size-meta);color:var(--app-text-secondary)}.shell__place{align-items:center;gap:var(--gap-xs);padding:var(--gap-s) var(--gap-m);font-family:var(--face-grotesk);font-size:var(--app-size-meta);text-decoration:none;display:flex}.shell__place svg{width:var(--app-size-icon);height:var(--app-size-icon)}.shell__place[aria-current=page]{background:var(--app-surface-subtle)}.shell__place:focus{outline:var(--focus-outline-width) solid var(--app-text);outline-offset:var(--focus-outline-offset)}.shell__divider{border:none;border-top:var(--app-rule-row) solid var(--app-divider);margin:var(--gap-xs) var(--gap-m)}.shell__place--home{color:var(--app-blue-text)}.shell__place--home svg{stroke:var(--app-blue)}.shell__place--notebook{color:var(--app-notebook-text)}.shell__place--notebook svg{stroke:var(--app-notebook)}.shell__place--recipe-book{color:var(--app-recipe-book-text)}.shell__place--recipe-book svg{stroke:var(--app-recipe-book)}.shell__place--idea-log{color:var(--app-idea-log-text)}.shell__place--idea-log svg{stroke:var(--app-idea-log)}.shell__place--ingredients{color:var(--app-ingredients-text)}.shell__place--ingredients svg{stroke:var(--app-ingredients)}.shell__place--kitchen{color:var(--app-kitchen)}.shell__place--kitchen svg{stroke:var(--app-kitchen)}.shell__tabs{display:none}.shell__more>ul{margin:0;padding:0;list-style:none}@media (width<=759.98px){.shell__rail{display:none}.shell__tabs{height:var(--app-size-tab-h);box-sizing:border-box;background:var(--app-background);border-top:var(--app-rule-row) solid var(--app-divider);align-items:stretch;display:flex;position:fixed;inset-block-end:0;inset-inline:0}.shell__tabs>.shell__place,.shell__tabs>.shell__more{flex:1 1 0;min-width:0}.shell__tabs .shell__place{box-sizing:border-box;justify-content:center;align-items:center;gap:var(--gap-hair);height:100%;padding:var(--gap-xs) 0;text-align:center;font-size:var(--app-size-label);flex-direction:column;display:flex}.shell__tabs .shell__place,.shell__more li{min-height:var(--touch-min)}.shell__more{position:relative}.shell__more[open]>ul{background:var(--app-background);border:var(--app-rule-row) solid var(--app-divider);width:max-content;padding:var(--gap-s);position:absolute;inset-block-end:100%;inset-inline-end:0}.shell__tools>.shell__place{display:none}.shell__main{padding-bottom:var(--app-size-tab-h)}}.history-list{min-width:0;max-width:var(--measure-prose);margin:0;padding:0;list-style:none}.history-item{min-width:0;padding:var(--gap-s) 0;border-top:var(--rule-baseline) solid var(--sheet-ink);overflow-wrap:anywhere}.history-item.is-current{outline:var(--rule-graduation) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.history-item.is-current>.history-register__identity>.history-register__name,.history-item.is-current>.recipe-history__version-head>.recipe-history__version-name,.history-item.is-current>.recipe-history__batch-head>.recipe-history__batch-name{font-weight:700}.history-item a{color:inherit}.history-register__identity,.recipe-history__version{min-width:0}.recipe-history__version-head,.recipe-history__batch-head{align-items:baseline;gap:var(--gap-xs) var(--gap-m);flex-wrap:wrap;display:flex}.history-register__name,.recipe-history__batch-name{flex:1 1 var(--sheet-rhist-bname-min);min-width:0;font-family:var(--face-grotesk);font-size:var(--sheet-type-control);overflow-wrap:anywhere;margin:0}.recipe-history__version-name{flex:1 1 var(--sheet-rhist-vname-min);min-width:0;font-family:var(--face-text);font-size:var(--sheet-size-version-line);overflow-wrap:anywhere;margin:0;font-weight:400}.history-register__marker,.history-provenance,.recipe-history__empty,.recipe-history__outcome:not(.prose-text){font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);font-weight:400}.history-provenance{overflow-wrap:anywhere;font-variant-numeric:tabular-nums;margin:0}.recipe-history{max-width:var(--measure-prose)}.recipe-history__written,.recipe-history__batch-state{margin-inline-start:auto}.recipe-history__cause{margin-top:var(--gap-xs)}.recipe-history__reason{gap:var(--gap-xs) var(--gap-m);margin-top:var(--gap-s);grid-template-columns:max-content minmax(0,1fr);display:grid}.recipe-history__reason p{margin:0}.recipe-history__reason .prose-text{font-size:var(--sheet-type-note)}.history-list--records{margin-top:var(--gap-s);margin-inline-start:var(--gap-l);margin-inline-end:var(--gap-xs)}.history-list--records>.history-item{border-top:var(--rule-graduation) solid var(--sheet-bookcloth)}.history-list--branches{border-inline-start:var(--rule-graduation) solid var(--sheet-bookcloth);margin-inline-start:var(--gap-l);padding-inline-start:var(--gap-m)}.recipe-history__outcome,.recipe-history__next{margin-block:var(--gap-hair) 0;margin-inline:var(--gap-l) 0;overflow-wrap:anywhere}.recipe-history__outcome.prose-text{font-size:var(--sheet-type-note)}.recipe-history__next{font-family:var(--face-text);font-size:var(--sheet-type-note);line-height:var(--sheet-leading-note);color:var(--sheet-pen-blue)}.recipe-history__next span{font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);color:var(--sheet-ink);font-weight:500}.recipe-history__empty{margin-block:var(--gap-s) 0;margin-inline:var(--gap-l) 0}@media (width<=759.98px){.history-list--records{margin-inline-start:var(--gap-m)}.history-list--branches{margin-inline-start:var(--gap-s);padding-inline-start:var(--gap-s)}.recipe-history__reason{grid-template-columns:1fr}.recipe-history__outcome,.recipe-history__next,.recipe-history__empty{margin-inline-start:var(--gap-s)}}.home{background:var(--app-background);color:var(--app-text);font-family:var(--face-grotesk)}.home__title{margin:var(--gap-l) 0 var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--app-size-title);letter-spacing:-.02em;font-weight:800}.home__empty{margin-top:var(--gap-m)}.home__empty p{margin:0 0 var(--gap-s)}.home__empty-lead{font-weight:700}.home__empty-lead:first-of-type{color:var(--app-recipe-book-text)}.home__empty-lead:last-of-type{color:var(--app-idea-log-text)}.home__loading{margin-top:var(--gap-m);font-size:var(--app-size-meta);color:var(--app-text-secondary)}.home__lead{align-items:center;column-gap:var(--gap-m);padding:var(--gap-m);margin:0 0 var(--gap-l);border:var(--app-rule-row) solid var(--app-text);border-radius:var(--app-radius-lead);display:flex}.home__lead .home__rail{flex-shrink:0}.home__lead-identity,.home__lead-next{flex:1 1 0;min-width:0}.home__lead .home__actions{flex:none}.home__lead-caption{margin:0 0 var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--app-size-label);text-transform:uppercase;letter-spacing:var(--app-tracking-label);color:var(--app-text-secondary);font-weight:500}.home__lead-place{margin:0 0 var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--app-size-label);text-transform:uppercase;letter-spacing:var(--app-tracking-label);color:var(--app-notebook-text);font-weight:500}.home__lead-name{font-family:var(--face-grotesk);font-size:var(--app-size-lead-name);letter-spacing:-.02em;overflow-wrap:anywhere;margin:0;font-weight:700}.home__lead-name a{color:inherit}.home__lead-meta{margin:var(--gap-hair) 0 0;font-family:var(--face-grotesk);font-size:var(--app-size-meta);color:var(--app-text-secondary);font-variant-numeric:tabular-nums}.home__lead-next-time{margin:var(--gap-s) 0 0;max-width:var(--measure-prose)}.home__section{margin:0 0 var(--gap-s);font-family:var(--face-grotesk);font-size:var(--app-size-label);text-transform:uppercase;letter-spacing:var(--app-tracking-label);color:var(--app-text-secondary);font-weight:600}.home__list{margin:0;padding:0;list-style:none}.home__row{grid-template-columns:auto 1fr var(--app-col-standing) var(--app-col-tally) auto;align-items:center;column-gap:var(--gap-m);row-gap:var(--gap-hair);padding:var(--gap-m) 0;border-top:var(--app-rule-row) solid var(--app-divider);grid-template-areas:"rail place standing tally actions""rail name standing tally actions";display:grid}.home__standing{font-family:var(--face-grotesk);font-size:var(--app-size-meta);grid-area:standing;font-weight:600}.home__rail{width:var(--app-size-rail-w);height:var(--app-size-rail-h);border-radius:var(--app-radius-rail);background:var(--app-notebook);grid-area:rail}.home__place{font-family:var(--face-grotesk);font-size:var(--app-size-label);text-transform:uppercase;letter-spacing:var(--app-tracking-label);color:var(--app-notebook-text);grid-area:place;margin:0;font-weight:500}.home__name{font-family:var(--face-grotesk);font-size:var(--app-size-recipe-name);letter-spacing:-.02em;overflow-wrap:anywhere;grid-area:name;margin:0;font-weight:700}.home__name a{color:inherit}.home__meta{gap:var(--gap-hair);flex-direction:column;grid-area:tally;display:flex}.home__tally{gap:var(--gap-xs);flex-wrap:wrap;align-items:center;display:flex}.home__tally-mark{width:var(--app-size-sprinkle-w);height:var(--app-size-sprinkle-h);border-radius:var(--app-radius-sprinkle);border:var(--app-rule-tally) solid var(--app-notebook);display:inline-block}.home__count{font-family:var(--face-grotesk);font-size:var(--app-size-label);color:var(--app-text-secondary);font-variant-numeric:tabular-nums}.home__actions{align-items:center;gap:var(--gap-s);flex-wrap:wrap;grid-area:actions;display:flex}.home__action{box-sizing:border-box;min-height:var(--touch-min);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-action);border:var(--app-rule-row) solid var(--app-blue-text);background:var(--app-blue-text);color:var(--app-background);font-family:var(--face-grotesk);font-size:var(--app-size-meta);justify-content:center;align-items:center;font-weight:600;text-decoration:none;display:inline-flex}.home__action--secondary{background:var(--app-background);color:var(--app-blue-text)}@media (width<=1099.98px){.home__lead{align-items:stretch;row-gap:var(--gap-s);flex-direction:column}.home__lead .home__rail{display:none}.home__row{grid-template-columns:auto 1fr auto;grid-template-areas:"rail place standing""rail name standing""rail tally tally""rail actions actions"}}@media (width<=759.98px){.home__row{padding:var(--gap-s) 0;grid-template-columns:1fr auto;grid-template-areas:"place standing""name standing""actions actions"}.home__row .home__rail,.home__row .home__meta,.home__row .home__action--secondary{display:none}.home__actions{width:100%}.home__action{flex:1 1 0}.home__lead{align-items:stretch;row-gap:var(--gap-s);padding:var(--gap-s);flex-direction:column}.home__lead .home__rail{display:none}}
-</style>
+<title>C · 393 · exploration · every section folded, to see the page height (redrawn 2026-10-04 from the build with decision 41's dots and decision 38's radius; drawn, awaiting Mark's look; nothing approved)</title>
 </head>
 <body>
 <x-dc>
@@ -15,17 +12,2027 @@
 body{margin:0;background:#ffffff}
 .shell{min-height:0}
 
-.ingredient-table{table-layout:auto !important}
-.ingredient-table td.ingredient-table__col-grams{width:1%;white-space:nowrap}
-.ingredient-table .ingredient-table__col-numeric{width:1% !important}
-.ingredient-table td.ingredient-table__col-numeric{white-space:nowrap}
-.ingredient-table th.ingredient-table__col-numeric{white-space:normal}
-/* app/src/styles/shell.css @media (max-width: 759.98px) */
-.shell__rail {
+:root {
+  
+  --sheet-ground: #f7f7f4;
+  --sheet-ink: #141414;
+  --sheet-pen-blue: #1f3d7a; 
+  --sheet-bookcloth: #33513b;
+
+  
+  --face-text: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --face-grotesk: -apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --sheet-size-running-head: 0.75rem;
+  --sheet-size-recipe-name: 2rem;
+  --sheet-size-headnote-prose: 1rem;
+  --sheet-size-table-body: 0.9375rem;
+  --sheet-size-figure-value: 1.25rem;
+  --sheet-size-deviation-words: 0.8125rem;
+  --sheet-size-small-print: 0.75rem;
+
+  
+  --sheet-type-section: 0.875rem; 
+  --sheet-leading-section: 1.35;
+  --sheet-type-label: 0.75rem; 
+  --sheet-type-control: 0.8125rem; 
+  --sheet-leading-control: 1.3; 
+  --sheet-leading-helper: 1.4; 
+  --sheet-leading-figure: 1.1; 
+  --sheet-text-control-min: 24px; 
+  --sheet-type-note: 1rem; 
+  --sheet-leading-note: 1.5;
+  --sheet-leading-title: 1.15; 
+
+  
+  --gap-hair: 2px;
+  --gap-xs: 6px;
+  --gap-s: 12px;
+  --gap-m: 20px;
+  --gap-l: 32px;
+  --gap-xl: 48px;
+  
+  --gap-page: var(--gap-xl);
+
+  
+  --rule-baseline: 1.5px;
+  
+  --rule-hover: 2px;
+  --rule-graduation: 1px;
+  --rule-band-edge: 1px;
+  --rule-tick: 2.5px;
+  --rule-width: 320px; 
+  --measure-prose: 65ch; 
+  
+  --sheet-leading-field: 1.35;
+  --sheet-field-min-h: 26px;
+  --sheet-leading-table: 1.2; 
+  
+  --sheet-hatch-pitch: 4px;
+  --sheet-hatch-stroke: 1.2px;
+
+  
+  --focus-outline-width: var(--rule-hover);
+  --focus-outline-offset: 2px;
+
+  
+  --offset-link-underline: 2px;
+
+  
+  --sheet-size-select-chevron: 5px;
+  --sheet-inset-select-chevron-x: 14px;
+  --sheet-inset-select-chevron-y: 3px;
+  --gap-select-chevron-room: var(--gap-m);
+
+  
+  --rule-ink-field: 1px;
+  --sheet-size-ink-field: 0.9375rem;
+
+  
+  --sheet-field-w-date: 128px;
+  --sheet-field-w-figure: 56px;
+  
+  --gap-field-unit: 4px;
+  
+  --sheet-caption-two-lines: 2.4em;
+  
+  --sheet-caption-two-lines-abs: calc(2.4 * var(--sheet-type-label));
+
+  
+  --sheet-table-cell-pad-x: var(--gap-xs);
+
+  
+
+  
+  --gap-mark-stop: var(--gap-xs);
+  --sheet-size-mark-stop: 0.8125rem;
+
+  
+  --rule-strike: 1.2px;
+  --gap-strike: var(--gap-hair);
+
+  
+  --sheet-size-cross-flag: var(--sheet-size-small-print);
+
+  
+  --gap-uses-chip: var(--gap-xs);
+
+  
+  --rule-tick-hollow: 1px;
+
+  
+  --rule-foot-band: var(--rule-ink-field);
+
+  
+  --sheet-col-batch-cell-min: 96px;
+
+
+  
+  --touch-min: 44px;
+  --touch-stop-width: 44px;
+
+  
+  --sheet-pen-w: 640px;
+  --sheet-track-stop: 186px;
+  --sheet-track-stop-narrow: 216px;
+  --sheet-stop-w: 38px;
+  --sheet-stop-h: 32px;
+  
+  --sheet-control-h: var(--sheet-stop-h);
+  
+  --sheet-touch-stop-height: var(--touch-min);
+  
+  --sheet-caption-line-h: var(--sheet-text-control-min);
+  --sheet-caption-line-h-touch: var(--touch-min);
+  
+  --sheet-seg-pad-y: 5px;
+  --sheet-seg-pad-x: 8px;
+  
+  --sheet-size-lead-mark: var(--sheet-size-mark-stop);
+  
+  --gap-defect-col: var(--gap-m);
+  
+  --sheet-axes-cols-clearance: 12px;
+
+  
+  --app-notebook: #fd5b57;
+  --app-notebook-text: #ee0803;
+  --app-recipe-book: #f18a36;
+  --app-recipe-book-text: #bc5b0d;
+  --app-idea-log: #fdc632;
+  --app-idea-log-text: #976f01;
+  --app-pantry: #76bd78;
+  --app-ingredients: #388b57;
+  --app-ingredients-text: #358452;
+  --app-kitchen: #505db5;
+  --app-blue: #2081ea;
+  --app-blue-text: #1576de;
+  --app-background: #ffffff;
+  --app-surface-subtle: #f3f4f2;
+  --app-text: #141414;
+  --app-text-secondary: #595959;
+  --app-divider: #d6dad7;
+
+  
+  --face-hand: 'Caveat', var(--face-text);
+  --size-hand: 1.375rem;
+  --leading-hand: 1.25;
+  --size-hand-min: 1.25rem;
+
+  
+  --app-size-brand: 1.375rem; 
+  --app-size-brand-rule: 6px; 
+  --app-size-title: 2.125rem; 
+  --app-size-recipe-name: 1.5rem; 
+  --app-size-lead-name: 1.75rem; 
+  --app-size-meta: 0.875rem; 
+  --app-size-label: 0.75rem; 
+  --app-tracking-label: 0.08em;
+  --app-size-sprinkle-w: 18px;
+  --app-size-sprinkle-h: 6px;
+  --app-radius-sprinkle: 3px;
+  --app-size-rail-w: 8px;
+  --app-size-rail-h: 56px;
+  --app-radius-rail: 4px;
+  --app-radius-control: 10px; 
+  --app-rule-tally: 2px; 
+  --app-col-standing: 120px; 
+  --app-col-tally: 132px; 
+  --app-rule-nav-active: 3px;
+  --app-rule-row: var(--rule-graduation); 
+  --app-duration: 120ms; 
+
+  
+  --app-size-nav-w: 224px;
+  --app-size-icon: 20px;
+  --app-tilt-sprinkle: -8deg; 
+  --app-size-tab-h: 56px; 
+  --app-size-header-h: calc(var(--touch-min) + 2 * var(--gap-xs) + var(--app-rule-row)); 
+  --app-z-notice: 10; 
+  --app-z-header: 11; 
+  --app-z-scrim: 4; 
+  --app-z-flyout: 5; 
+  --app-scrim: rgba(20, 20, 20, 0.28); 
+  --app-shadow-flyout: 4px 0 16px rgba(20, 20, 20, 0.18); 
+  --app-tilt-menu: 90deg; 
+
+  
+  --app-notebook-gutter: var(--gap-l); 
+  --app-notebook-content-max: 1482px; 
+  --app-notebook-frame-gap: 28px; 
+  --app-notebook-band-rhythm: 24px; 
+  --app-notebook-grid-gap: 40px; 
+  --app-notebook-log-w: 350px; 
+  --app-notebook-gap-tight: 8px; 
+  --app-notebook-band-pad-t-narrow: 16px; 
+  --app-notebook-frame-pad-b-phone: 40px; 
+  --app-notebook-rail-min-h: 32px; 
+  --app-notebook-recipe-rail-gap: 14px; 
+  --app-notebook-name-leading: 1.15; 
+  --app-notebook-size-body: 15px; 
+  --app-notebook-desc-leading: 1.5; 
+  --app-notebook-link-underline-offset: 3px; 
+  --app-notebook-field-pad-x: 10px; 
+  --app-notebook-gap-hairline: 4px; 
+  --app-notebook-details-gap-row: 8px; 
+  --app-notebook-checkbox-size: 16px; 
+  --app-notebook-acts-gap: 10px; 
+  --app-notebook-identity-size: 18px; 
+
+  
+  --app-notebook-log-value-size: 20px; 
+  --app-notebook-log-cell-gap-row: 16px; 
+  --app-notebook-log-head-gap: 18px; 
+  --app-notebook-log-head-outer-gap: 16px; 
+  --app-notebook-log-group-gap: 18px; 
+  --app-notebook-pen-cue-line-h: 20px; 
+
+  
+  --app-notebook-history-head-gap: 10px; 
+  --app-notebook-history-track-top: 27px; 
+  --app-notebook-history-node-w: 168px; 
+  --app-notebook-history-node-gap: 24px; 
+  --app-notebook-history-row-label-h: 16px; 
+  --app-notebook-history-row-mark-h: 12px; 
+  --app-notebook-history-row-name-h: 40px; 
+  --app-notebook-history-name-line-h: 20px; 
+  --app-notebook-history-mark-size: 12px; 
+  --app-notebook-history-ring-inset: 2px; 
+  --app-notebook-history-ring-w: 3.5px; 
+  --app-notebook-history-fade-w: 96px; 
+
+  
+  --sheet-plan-grams-w: 64px; 
+  --sheet-plan-grams-gap: 18px; 
+  --sheet-flag-gap: 8px; 
+  --sheet-remove-gap: 10px; 
+  --sheet-leading-hand: 1; 
+  --sheet-grams-field-w: 52px; 
+
+  
+  --sheet-narrow-row-pad-y: 8px; 
+  --sheet-narrow-step-pad-t: 14px; 
+  --sheet-narrow-step-pad-b: 4px; 
+  --sheet-narrow-name-gap: 10px; 
+
+  
+  --sheet-step-acts-gap: 8px; 
+  --sheet-done-cancel-gap-t: 10px; 
+  --sheet-done-cancel-gap: 16px; 
+  --sheet-open-fields-offset: 4px; 
+  --sheet-changed-line-gap-t: 4px; 
+}
+
+
+.fp-title{font-family:var(--face-grotesk);color:var(--app-text);font-size:20px;line-height:26px;font-weight:600;margin:0}
+.fp-sub{font-family:var(--face-grotesk);color:var(--app-text-secondary);font-size:15px;line-height:21px;margin:4px 0 0}
+.fp-win{box-sizing:border-box;position:relative;background:var(--app-background);outline:1px solid var(--app-divider);overflow:hidden}
+.fp-mex3-393-folded{
+  margin: 0;
+  background: var(--app-background);
+  color: var(--sheet-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .app-boot{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+  padding: var(--gap-page);
+}
+.fp-mex3-393-folded :focus-visible{
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+.fp-mex3-393-folded button, .fp-mex3-393-folded select{
+  appearance: none;
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+  border-radius: 0;
+  background: none;
+  color: var(--sheet-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+  box-sizing: border-box;
+  cursor: pointer;
+  
+  padding: calc(var(--gap-xs) + var(--rule-hover) - var(--rule-ink-field));
+}
+.fp-mex3-393-folded button:hover, .fp-mex3-393-folded select:hover{
+  border-width: var(--rule-hover);
+  padding: var(--gap-xs);
+}
+.fp-mex3-393-folded button:disabled, .fp-mex3-393-folded select:disabled{
+  border-style: dashed;
+  color: inherit;
+  background: none;
+  cursor: default;
+}
+.fp-mex3-393-folded .text-control{
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  color: var(--sheet-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
+  min-height: var(--sheet-text-control-min);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+.fp-mex3-393-folded .text-control:hover{
+  text-decoration-thickness: var(--rule-baseline);
+  padding: 0;
+}
+.fp-mex3-393-folded .text-control:disabled{
+  text-decoration-style: dashed;
+  color: inherit;
+  cursor: default;
+  border: none;
+  padding: 0;
+}
+.fp-mex3-393-folded .text-toggle{
+  min-height: var(--sheet-control-h);
+}
+.fp-mex3-393-folded .text-toggle::before{
+  content: '';
+  display: inline-block;
+  width: var(--sheet-size-lead-mark);
+  height: var(--sheet-size-lead-mark);
+  box-sizing: border-box;
+  border: var(--rule-graduation) solid var(--sheet-ink);
+  margin-right: var(--gap-xs);
+  vertical-align: baseline;
+}
+.fp-mex3-393-folded .text-toggle[aria-pressed='true']::before{
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded .text-toggle[aria-pressed='true'], .fp-mex3-393-folded .text-toggle[aria-pressed='true']:hover{
+  text-decoration-thickness: var(--rule-ink-field);
+}
+.fp-mex3-393-folded .text-toggle:hover::before{
+  border-width: var(--rule-hover);
+}
+.fp-mex3-393-folded select.ink-field{
+  padding: var(--gap-xs);
+}
+.fp-mex3-393-folded a{
+  color: var(--sheet-ink);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+  cursor: pointer;
+}
+.fp-mex3-393-folded :where(a:visited){
+  color: var(--sheet-ink);
+}
+.fp-mex3-393-folded select, .fp-mex3-393-folded select.ink-field{
+  background-image: linear-gradient(45deg, transparent 50%, var(--sheet-ink) 50%),
+    linear-gradient(135deg, var(--sheet-ink) 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--sheet-inset-select-chevron-x)) calc(50% - var(--sheet-inset-select-chevron-y)),
+    calc(100% - var(--sheet-inset-select-chevron-x) + var(--sheet-size-select-chevron))
+      calc(50% - var(--sheet-inset-select-chevron-y));
+  background-size:
+    var(--sheet-size-select-chevron) var(--sheet-size-select-chevron),
+    var(--sheet-size-select-chevron) var(--sheet-size-select-chevron);
+  background-repeat: no-repeat;
+  padding-right: var(--gap-select-chevron-room);
+}
+.fp-mex3-393-folded input[type='checkbox']{
+  appearance: none;
+  width: var(--sheet-size-mark-stop);
+  height: var(--sheet-size-mark-stop);
+  margin: 0;
+  border: var(--rule-graduation) solid var(--sheet-ink);
+  border-radius: 0;
+  background: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.fp-mex3-393-folded input[type='checkbox']:hover{
+  border-width: var(--rule-hover);
+}
+.fp-mex3-393-folded input[type='checkbox']:checked{
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded input[type='number']::-webkit-inner-spin-button, .fp-mex3-393-folded input[type='number']::-webkit-outer-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+.fp-mex3-393-folded input[type='number']{
+  -moz-appearance: textfield;
+}
+.fp-mex3-393-folded input[type='date']::-webkit-calendar-picker-indicator{
+  display: none;
+  -webkit-appearance: none;
+}
+.fp-mex3-393-folded input[type='date'].ink-field{
+  -webkit-appearance: none;
+  appearance: none;
+}
+.fp-mex3-393-folded textarea{
+  field-sizing: content;
+  resize: none;
+}
+.fp-mex3-393-folded .page-status{
+  position: absolute;
+  z-index: var(--app-z-notice);
+  inset-block-start: 0;
+  inset-inline-start: var(--gap-page);
+  max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
+  margin: 0;
+  margin-block-start: var(--gap-xs);
+  padding: var(--gap-xs) var(--gap-s);
+  border: var(--rule-baseline) solid var(--sheet-ink);
+  background: var(--sheet-ground);
+  color: var(--sheet-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+}
+.fp-mex3-393-folded .page-status:empty{
+  padding: 0;
+  border: 0;
+}
+.fp-mex3-393-folded .headnote{
+  min-width: 0;
+}
+.fp-mex3-393-folded .headnote h1, .fp-mex3-393-folded .headnote__prose, .fp-mex3-393-folded .versions__lineage{
+  overflow-wrap: anywhere;
+}
+.fp-mex3-393-folded ::placeholder{
+  color: var(--sheet-ink);
+  font-size: var(--sheet-size-small-print);
+  font-style: italic;
+  opacity: 1;
+}
+.fp-mex3-393-folded .page-status-anchor{
+  position: relative;
+}
+.fp-mex3-393-folded .not-found{
+  padding: var(--gap-m) var(--gap-page);
+  background: var(--sheet-ground);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .not-found a{
+  color: inherit;
+}
+.fp-mex3-393-folded .list-page{
+  padding: var(--gap-page);
+}
+.fp-mex3-393-folded .app-hand{
+  font-family: var(--face-hand);
+  font-size: max(var(--size-hand), var(--size-hand-min));
+  line-height: var(--leading-hand);
+  color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded .sheet-hand{
+  font-family: var(--face-hand);
+  font-size: var(--size-hand-min);
+  line-height: var(--sheet-leading-hand);
+  color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded .recipe-page{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'method side'
+    'foot foot';
+  gap: var(--gap-l);
+  padding: var(--gap-page);
+  background: var(--sheet-ground);
+}
+.fp-mex3-393-folded .recipe-page--no-method{
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'foot foot';
+}
+.fp-mex3-393-folded .recipe-band{
+  grid-area: band;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+  border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+  padding-bottom: var(--gap-m);
+  min-width: 0; 
+}
+.fp-mex3-393-folded .headnote h1{
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-recipe-name);
+  margin: 0;
+}
+.fp-mex3-393-folded .headnote__prose{
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-headnote-prose);
+  max-width: var(--measure-prose);
+  margin: var(--gap-s) 0 0;
+}
+.fp-mex3-393-folded .headnote__sheet-title-field{
+  display: block;
+}
+.fp-mex3-393-folded .headnote__sheet-title-field .prose-field{
+  display: block;
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-recipe-name);
+  font-weight: 700;
+  line-height: var(--sheet-leading-title);
+  resize: none;
+  overflow: hidden;
+}
+.fp-mex3-393-folded .headnote__prose-field{
+  display: block;
+  margin-top: var(--gap-m);
+}
+.fp-mex3-393-folded .headnote__prose-field .prose-field{
+  font-size: var(--sheet-type-note);
+}
+.fp-mex3-393-folded .headnote__field-helper{
+  margin: var(--gap-xs) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-deviation-words);
+  line-height: var(--sheet-leading-helper);
+}
+.fp-mex3-393-folded .is-landing-focus:focus{
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+.fp-mex3-393-folded .versions__ceremony{
+  margin-top: var(--gap-xs);
+}
+.fp-mex3-393-folded .versions__ceremony-field{
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .versions__ceremony-field .ink-field[type='date']{
+  width: var(--sheet-field-w-date);
+}
+.fp-mex3-393-folded .versions__ceremony-field span{
+  display: block;
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  margin-bottom: var(--gap-xs);
+}
+.fp-mex3-393-folded .versions__ceremony-shortcut{
+  display: block;
+  margin-top: var(--gap-s);
+}
+.fp-mex3-393-folded .versions__lineage{
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-hair) 0 0;
+}
+.fp-mex3-393-folded .versions__lineage a{
+  color: inherit;
+}
+.fp-mex3-393-folded .versions__lineage-label{
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fp-mex3-393-folded .version-row__parent-name{
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-deviation-words);
+}
+.fp-mex3-393-folded .version-row__written, .fp-mex3-393-folded .version-row__batch-provenance{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded .version-row__reason-label, .fp-mex3-393-folded .version-row__reason{
+  grid-column: 1 / -1;
+}
+.fp-mex3-393-folded .version-row__reason-label{
+  margin-bottom: calc(-1 * var(--app-notebook-gap-hairline));
+}
+.fp-mex3-393-folded .version-row__reason{
+  max-width: var(--measure-prose);
+  margin-inline-start: 0;
+  overflow-wrap: anywhere;
+}
+.fp-mex3-393-folded .version-row__reason--empty{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-helper);
+  color: var(--sheet-ink);
+}
+.fp-mex3-393-folded .version-row__history{
+  margin-top: var(--gap-s);
+}
+.fp-mex3-393-folded .recipe-band__full-row{
+  grid-column: 1 / -1;
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--sheet-bookcloth);
+}
+.fp-mex3-393-folded .versions__batch-amended{
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+}
+.fp-mex3-393-folded .ingredient-table-region{
+  grid-area: ingredients;
+  min-width: 0; 
+}
+.fp-mex3-393-folded .method-region{
+  grid-area: method;
+  min-width: 0; 
+}
+.fp-mex3-393-folded .side-region{
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+  min-width: 0; 
+}
+.fp-mex3-393-folded .pen-foot{
+  grid-area: foot;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-l);
+}
+.fp-mex3-393-folded .pen-foot__rule{
+  grid-column: 1 / -1;
+  border: 0;
+  border-top: var(--rule-foot-band) solid var(--sheet-ink);
+  margin: 0;
+}
+.fp-mex3-393-folded .pen-foot__controls{
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: var(--gap-s);
+  margin-top: var(--gap-m);
+}
+.fp-mex3-393-folded .ingredient-table{
+  border-collapse: collapse;
+  
+  table-layout: auto;
+  width: 100%;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded :where(.ingredient-table th, .ingredient-table td){
+  
+  box-sizing: border-box;
+  text-align: left;
+  padding: var(--gap-xs) var(--sheet-table-cell-pad-x);
+  line-height: var(--sheet-leading-table);
+  border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+}
+.fp-mex3-393-folded .ingredient-table__col-name{
+  width: auto;
+}
+.fp-mex3-393-folded .ingredient-table__col-grams{
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+  padding-right: var(--sheet-plan-grams-gap);
+}
+.fp-mex3-393-folded .ingredient-table__col-numeric{
+  width: 1%;
+  text-align: right;
+}
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-numeric{
+  white-space: nowrap;
+}
+.fp-mex3-393-folded .ingredient-table .ink-field{
+  text-align: right;
+}
+.fp-mex3-393-folded .ingredient-table .ingredient-table__as-made-field{
+  width: var(--sheet-field-w-figure);
+}
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__live-total .sheet-hand{
+  display: flex;
+  justify-content: flex-end;
+  contain: inline-size;
+}
+.fp-mex3-393-folded .struck-value{
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+  margin-right: var(--gap-strike);
+}
+.fp-mex3-393-folded .prose-struck-beneath{
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-headnote-prose);
+  max-width: var(--measure-prose);
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+  margin: var(--gap-strike) 0 0;
+}
+.fp-mex3-393-folded .ingredient-table__flag{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-cross-flag);
+  margin: var(--gap-hair) 0 0 var(--sheet-flag-gap);
+  vertical-align: middle;
+}
+.fp-mex3-393-folded .ingredient-table__remove-gap{
+  word-spacing: var(--sheet-remove-gap);
+}
+.fp-mex3-393-folded .ingredient-table__plan-grams{
+  white-space: nowrap;
+}
+.fp-mex3-393-folded .ingredient-table__plan-grams .ink-field{
+  width: var(--sheet-grams-field-w);
+  flex: none;
+}
+.fp-mex3-393-folded .ingredient-table__step-head td{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-top: var(--gap-s);
+  border-bottom-width: var(--rule-baseline);
+}
+.fp-mex3-393-folded .ingredient-table__step-head-lead{
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-deviation-words);
+  margin-left: var(--gap-s);
+}
+.fp-mex3-393-folded .ingredient-table__portion-note{
+  display: block;
+  font-size: var(--sheet-size-small-print);
+}
+.fp-mex3-393-folded .ingredient-table th{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-running-head);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fp-mex3-393-folded .ingredient-table tfoot td{
+  border-bottom: none;
+  border-top: var(--rule-baseline) solid var(--sheet-ink);
+  font-weight: 700;
+}
+.fp-mex3-393-folded .ingredient-table tfoot .ingredient-table__col-numeric{
+  white-space: nowrap;
+}
+.fp-mex3-393-folded .table-small-print{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+.fp-mex3-393-folded .ingredient-table__comparison{
+  caption-side: top;
+  color: var(--sheet-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  margin-bottom: var(--gap-xs);
+}
+.fp-mex3-393-folded .ingredient-table tbody tr.is-marked{
+  outline: var(--rule-graduation) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+  font-weight: 700;
+}
+.fp-mex3-393-folded .region-name{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-section);
+  font-weight: 600;
+  line-height: var(--sheet-leading-section);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--sheet-bookcloth);
+  margin: 0 0 var(--gap-xs);
+}
+.fp-mex3-393-folded .ingredient-table-region__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  margin: 0 0 var(--gap-xs);
+}
+.fp-mex3-393-folded .ingredient-table-region__head .region-name{
+  margin: 0;
+}
+.fp-mex3-393-folded .ingredient-table-region__head .text-control{
+  flex: none;
+  font-weight: 400;
+}
+.fp-mex3-393-folded .method__before{
+  max-width: var(--measure-prose);
+  padding-bottom: var(--gap-m);
+  margin-bottom: var(--gap-m);
+  border-bottom: var(--rule-graduation) solid var(--sheet-ink);
+}
+.fp-mex3-393-folded .method-steps{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.fp-mex3-393-folded .method-step{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--gap-s);
+}
+.fp-mex3-393-folded .method-step + .method-step{
+  margin-top: var(--gap-m);
+}
+.fp-mex3-393-folded .method-step__n{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-figure-value);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded .method-step__n--struck{
+  text-decoration: line-through;
+  text-decoration-thickness: var(--rule-strike);
+}
+.fp-mex3-393-folded .method-step__lead{
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-headnote-prose);
+  max-width: var(--measure-prose);
+  margin: 0;
+}
+.fp-mex3-393-folded .method-step__targets{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  margin: var(--gap-xs) 0 0;
+}
+.fp-mex3-393-folded .target-chip{
+  display: inline-flex;
+  gap: var(--gap-hair);
+  border: var(--rule-graduation) solid var(--sheet-ink);
+  padding: 0 var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded .method-step__purpose, .fp-mex3-393-folded .method-step__aside{
+  font-family: var(--face-text);
+  font-style: italic;
+  font-size: var(--sheet-size-deviation-words);
+  max-width: var(--measure-prose);
+  margin: var(--gap-xs) 0 0;
+}
+.fp-mex3-393-folded .method-step__prose--struck{
+  text-decoration: line-through;
+}
+.fp-mex3-393-folded .method-step__skipped-label{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fp-mex3-393-folded .method-step__changed{
+  max-width: var(--measure-prose);
+  margin: var(--sheet-changed-line-gap-t) 0 0;
+}
+.fp-mex3-393-folded .method-step__recording{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-xs);
+}
+.fp-mex3-393-folded .method-step__field{
+  display: block;
+  margin-top: var(--gap-xs);
+}
+.fp-mex3-393-folded .target-chip__label-field, .fp-mex3-393-folded .target-chip__value-field{
+  width: auto;
+}
+.fp-mex3-393-folded .method-step__uses{
+  border: none;
+  padding: 0;
+  margin: var(--gap-xs) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-uses-chip);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+}
+.fp-mex3-393-folded .method-step__uses legend{
+  width: 100%;
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--gap-xs);
+  padding: 0;
+}
+.fp-mex3-393-folded .method-step__uses-item{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-hair);
+}
+.fp-mex3-393-folded .method-step__uses-line{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-cross-flag);
+  margin: var(--gap-xs) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sheet-step-acts-gap);
+}
+.fp-mex3-393-folded .method-step__on-demand{
+  display: block;
+  
+  align-self: flex-start;
+  margin-top: var(--gap-xs);
+}
+.fp-mex3-393-folded .method-step__acts{
+  display: flex;
+  align-items: baseline;
+  gap: var(--sheet-step-acts-gap);
+  margin-top: var(--gap-xs);
+}
+.fp-mex3-393-folded .method-step__open-fields{
+  outline: var(--rule-graduation) solid var(--sheet-ink);
+  outline-offset: var(--sheet-open-fields-offset);
+}
+.fp-mex3-393-folded .method-step__done-cancel{
+  display: flex;
+  align-items: center;
+  gap: var(--sheet-done-cancel-gap);
+  margin-top: var(--sheet-done-cancel-gap-t);
+}
+.fp-mex3-393-folded .method-step__flag, .fp-mex3-393-folded .method-step__stale-flag{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-cross-flag);
+  margin: var(--gap-hair) 0 0;
+}
+.fp-mex3-393-folded .method-step__strike-control{
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .method-step__line-control{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .derived-advisories__item{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  margin: var(--gap-xs) 0 0;
+}
+.fp-mex3-393-folded .authored__legend{
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-section);
+  font-weight: 600;
+  line-height: var(--sheet-leading-section);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: var(--gap-m) 0 0;
+}
+.fp-mex3-393-folded .authored__notes{
+  margin: var(--gap-xs) 0 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-text);
+  font-size: var(--sheet-type-note);
+  line-height: var(--sheet-leading-note);
+}
+.fp-mex3-393-folded .authored__note-field{
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+}
+.fp-mex3-393-folded .authored__note-field textarea.prose-field{
+  flex: 1 1 auto;
+}
+.fp-mex3-393-folded .authored__inherited{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+}
+.fp-mex3-393-folded .formulation-note__rule + .formulation-note__rule{
+  margin-top: var(--gap-m);
+}
+.fp-mex3-393-folded .formulation-note__fat-breakdown{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  font-variant-numeric: tabular-nums;
+  margin: var(--gap-xs) 0 0;
+}
+.fp-mex3-393-folded .graduated-rule{
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  
+  max-width: var(--rule-width);
+}
+.fp-mex3-393-folded .graduated-rule__head{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--face-grotesk);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded .graduated-rule__label{
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .graduated-rule__label-term{
+  font-size: var(--sheet-size-small-print);
+}
+.fp-mex3-393-folded .graduated-rule__value{
+  font-size: var(--sheet-size-figure-value);
+  font-weight: 700;
+}
+.fp-mex3-393-folded .graduated-rule__anchors{
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--gap-hair);
+}
+.fp-mex3-393-folded .graduated-rule__deviation{
+  font-size: var(--sheet-size-deviation-words);
+}
+.fp-mex3-393-folded .graduated-rule__basis{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  margin: var(--gap-hair) 0 0;
+}
+.fp-mex3-393-folded .basis-note{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  max-width: var(--measure-prose);
+  margin: var(--gap-m) 0 0;
+}
+.fp-mex3-393-folded .prose-field{
+  font-family: var(--face-text);
+  font-size: inherit;
+  line-height: var(--sheet-leading-note);
+  color: var(--sheet-pen-blue);
+  border: none;
+  background: none;
+  padding: var(--gap-hair) 0;
+  margin: 0;
+  min-height: calc(var(--sheet-leading-note) * 1em);
+  width: 100%;
+  max-width: var(--measure-prose);
+  box-sizing: border-box;
+}
+.fp-mex3-393-folded .prose-field--empty{
+  border-bottom: var(--rule-graduation) solid var(--sheet-ink);
+}
+.fp-mex3-393-folded .prose-field--lead-in{
+  font-weight: 700;
+}
+.fp-mex3-393-folded .prose-text{
+  font-family: var(--face-text);
+  line-height: var(--sheet-leading-note);
+  color: var(--sheet-pen-blue);
+  overflow-wrap: anywhere;
+}
+.fp-mex3-393-folded .ink-field{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-ink-field);
+  font-variant-numeric: tabular-nums;
+  color: var(--sheet-pen-blue);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+  border-radius: 0;
+  background: none;
+  padding: var(--gap-hair) var(--gap-xs);
+  line-height: var(--sheet-leading-field);
+  min-height: var(--sheet-field-min-h);
+  width: 100%;
+  box-sizing: border-box;
+}
+.fp-mex3-393-folded .headnote__churn-field{
+  width: auto;
+  display: inline-block;
+}
+.fp-mex3-393-folded .ink-text{
+  color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded .batch-margin__legend{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-section);
+  font-weight: 600;
+  line-height: var(--sheet-leading-section);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--gap-xs);
+}
+.fp-mex3-393-folded .batch-margin__field{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+  margin-top: var(--gap-xs);
+}
+.fp-mex3-393-folded .batch-margin__field--next-time{
+  margin-top: var(--gap-l);
+}
+.fp-mex3-393-folded .batch-row__cells{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--sheet-col-batch-cell-min), max-content));
+  gap: var(--gap-s) var(--gap-l);
+  margin: var(--gap-s) 0 0;
+}
+.fp-mex3-393-folded .tasting-reading{
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
+}
+.fp-mex3-393-folded .tasting-reading__note{
+  max-width: var(--measure-prose);
+  margin: var(--gap-m) 0 0;
+}
+.fp-mex3-393-folded .tasting-reading__group, .fp-mex3-393-folded .batch-row__conclusion{
+  margin-top: var(--gap-l);
+}
+.fp-mex3-393-folded .batch-row__group-label{
+  margin: 0 0 var(--gap-xs);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fp-mex3-393-folded .tasting-reading__group .batch-row__cells{
+  margin-top: 0;
+}
+.fp-mex3-393-folded .tasting-reading__problems, .fp-mex3-393-folded .batch-row__conclusion .prose-text{
+  margin: var(--gap-s) 0 0;
+}
+.fp-mex3-393-folded .batch-row__provenance{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs) var(--gap-l);
+  margin: var(--gap-l) 0 0;
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+}
+.fp-mex3-393-folded .batch-row__provenance > div{
+  display: flex;
+  gap: var(--gap-xs);
+}
+.fp-mex3-393-folded .batch-row__provenance dt{
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fp-mex3-393-folded .batch-row__provenance dd{
+  margin: 0;
+  color: var(--sheet-pen-blue);
+  overflow-wrap: anywhere;
+}
+.fp-mex3-393-folded .batch-row__cell{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+.fp-mex3-393-folded .batch-row__cell-label{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fp-mex3-393-folded .batch-row__cell-value{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-note);
+  font-weight: 400;
+  line-height: var(--sheet-leading-figure);
+  color: var(--sheet-pen-blue);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded .batch-row__head{
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+.fp-mex3-393-folded .batch-row__head .region-name{
+  margin: 0;
+}
+.fp-mex3-393-folded .batch-row__date{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  font-variant-numeric: tabular-nums;
+  color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded .batch-row__unit{
+  font-size: var(--sheet-size-deviation-words);
+  font-weight: 400;
+}
+.fp-mex3-393-folded .batch-row__unit--absent{
+  color: var(--sheet-ink);
+}
+.fp-mex3-393-folded .batch-row__plan{
+  display: block;
+  font-size: var(--sheet-size-small-print);
+  margin-top: var(--gap-hair);
+}
+.fp-mex3-393-folded .batch-row__tasting-meta{
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded .batch-margin button{
+  margin-top: var(--gap-s);
+}
+.fp-mex3-393-folded .batch-margin--pen{
+  max-width: var(--sheet-pen-w);
+}
+.fp-mex3-393-folded .batch-margin__list{
+  list-style: none;
+  margin: var(--gap-xs) 0 0;
+  padding: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .batch-margin__list li + li{
+  margin-top: var(--gap-hair);
+}
+.fp-mex3-393-folded .batch-margin__list li.is-open{
+  font-weight: 700;
+  outline: var(--rule-graduation) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+.fp-mex3-393-folded .tasting{
+  margin-top: var(--gap-m);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
+}
+.fp-mex3-393-folded .pen-caption{
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  line-height: var(--sheet-leading-section);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 var(--gap-xs);
+}
+.fp-mex3-393-folded .pen-helper{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-helper);
+  font-weight: 400;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--sheet-ink);
+  margin: 0;
+}
+.fp-mex3-393-folded .tasting-head{
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  margin-bottom: var(--gap-xs);
+}
+.fp-mex3-393-folded .tasting-head .region-name{
+  margin: 0;
+}
+.fp-mex3-393-folded .tasting-head__remove{
+  margin-left: auto;
+}
+.fp-mex3-393-folded .field-row{
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  
+  align-items: flex-start;
+}
+.fp-mex3-393-folded .field-row__label{
+  display: block;
+  flex: 0 0 auto;
+  margin: 0 0 var(--gap-s);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+}
+.fp-mex3-393-folded .field-row__label--date{
+  width: var(--sheet-field-w-date);
+}
+.fp-mex3-393-folded .field-row .pen-caption:not(.segmented-field__caption){
+  display: flex;
+  align-items: flex-end;
+  line-height: var(--sheet-leading-table);
+  min-height: var(--sheet-caption-two-lines);
+}
+.fp-mex3-393-folded .field-unit{
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-field-unit);
+}
+.fp-mex3-393-folded .field-unit .ink-field{
+  width: var(--sheet-field-w-figure);
+  flex: 0 0 auto;
+  text-align: right;
+}
+.fp-mex3-393-folded .field-unit__unit{
+  font-size: var(--sheet-size-deviation-words);
+  white-space: nowrap;
+  line-height: var(--sheet-leading-control);
+}
+.fp-mex3-393-folded .field-row--start{
+  align-items: flex-start;
+}
+.fp-mex3-393-folded .axis-mark{
+  border: none;
+  padding: 0;
+  margin: var(--gap-m) 0 0;
+}
+.fp-mex3-393-folded .axis-mark__head, .fp-mex3-393-folded .segmented-field__head{
+  display: flex;
+  align-items: flex-end;
+  gap: var(--gap-xs);
+  margin-bottom: var(--gap-xs);
+  min-height: var(--sheet-caption-line-h);
+  flex-wrap: wrap;
+}
+.fp-mex3-393-folded .segmented-field{
+  min-width: 0;
+  max-width: 100%;
+}
+.fp-mex3-393-folded .segmented-field__caption{
+  margin-bottom: 0;
+}
+.fp-mex3-393-folded .axis-mark__name{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.fp-mex3-393-folded .axis-mark__state{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  font-style: italic;
+}
+.fp-mex3-393-folded .axis-mark__state:has(~ .axis-mark__clear){
+  color: var(--sheet-pen-blue);
+  font-style: normal;
+}
+.fp-mex3-393-folded .axis-mark__stops{
+  display: flex;
+  width: var(--sheet-track-stop);
+}
+.fp-mex3-393-folded .axis-mark__stop{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 var(--sheet-stop-w);
+  height: var(--sheet-stop-h);
+  margin-right: calc(-1 * var(--rule-ink-field));
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+  border-radius: 0;
+  font-family: var(--face-grotesk);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  
+  box-sizing: border-box;
+}
+.fp-mex3-393-folded .axis-mark__stop:last-child{
+  margin-right: 0;
+}
+.fp-mex3-393-folded .axis-mark__stop input[type='radio']{
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.fp-mex3-393-folded .axis-mark__stop:has(input[type='radio']:checked), .fp-mex3-393-folded .segmented__option:has(input[type='radio']:checked){
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
+  color: var(--sheet-ground);
+  z-index: 1;
+}
+.fp-mex3-393-folded .axis-mark__stop:has(input[type='radio']:focus-visible), .fp-mex3-393-folded .segmented__option:has(input[type='radio']:focus-visible){
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+.fp-mex3-393-folded .axis-mark__stop:hover{
+  border-width: var(--rule-hover);
+  z-index: 2;
+}
+.fp-mex3-393-folded .axis-mark__anchors{
+  display: flex;
+  justify-content: space-between;
+  width: var(--sheet-track-stop);
+  margin-top: var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  font-style: italic;
+  white-space: nowrap;
+}
+.fp-mex3-393-folded .batch-margin .axis-mark__clear, .fp-mex3-393-folded .batch-margin .segmented-field__clear{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-mark-stop);
+  margin-top: 0;
+  margin-left: auto;
+}
+.fp-mex3-393-folded .segmented{
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--gap-xs);
+}
+.fp-mex3-393-folded .segmented__option{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+  border-radius: 0;
+  margin-right: calc(-1 * var(--rule-ink-field));
+  padding: var(--sheet-seg-pad-y) var(--sheet-seg-pad-x);
+  box-sizing: border-box;
+  min-height: var(--sheet-stop-h);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
+  color: var(--sheet-ink);
+  cursor: pointer;
+}
+.fp-mex3-393-folded .segmented__option:last-child{
+  margin-right: 0;
+}
+.fp-mex3-393-folded .segmented__option:hover{
+  border-width: var(--rule-hover);
+  padding: calc(var(--sheet-seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field)))
+    calc(var(--sheet-seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));
+  z-index: 2;
+}
+.fp-mex3-393-folded .segmented__option input[type='radio']{
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.fp-mex3-393-folded .defects-row__chips{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-xs) var(--gap-defect-col);
+  margin-top: 0;
+}
+.fp-mex3-393-folded .batch-margin .chip-toggle{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  box-sizing: border-box;
+  min-height: var(--sheet-stop-h);
+  margin-top: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
+  letter-spacing: 0;
+  color: var(--sheet-ink);
+  cursor: pointer;
+}
+.fp-mex3-393-folded .batch-margin .chip-toggle:hover{
+  border: 0;
+  padding: 0;
+}
+.fp-mex3-393-folded .chip-toggle::before{
+  content: '';
+  display: inline-block;
+  width: var(--sheet-size-lead-mark);
+  height: var(--sheet-size-lead-mark);
+  box-sizing: border-box;
+  border: var(--rule-graduation) solid var(--sheet-ink);
+  flex: 0 0 auto;
+}
+.fp-mex3-393-folded .chip-toggle:hover::before{
+  border-width: var(--rule-hover);
+}
+.fp-mex3-393-folded .chip-toggle[aria-pressed='true']::before{
+  background: var(--sheet-pen-blue);
+  border-color: var(--sheet-pen-blue);
+}
+.fp-mex3-393-folded .save-ceremony{
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  margin-top: var(--gap-m);
+  justify-content: flex-end;
+}
+.fp-mex3-393-folded .save-ceremony button{
+  flex: none;
+  white-space: nowrap;
+}
+.fp-mex3-393-folded .save-ceremony__hint{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+}
+.fp-mex3-393-folded .save-ceremony__status{
+  margin-right: auto;
+}
+.fp-mex3-393-folded .form-status{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  margin: var(--gap-m) 0 0;
+  max-width: var(--measure-prose);
+  line-height: var(--sheet-leading-note);
+}
+.fp-mex3-393-folded .field-requirement, .fp-mex3-393-folded .field-error{
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  margin-top: var(--gap-hair);
+}
+.fp-mex3-393-folded .note-block{
+  padding-bottom: var(--gap-s);
+  margin-bottom: var(--gap-m);
+}
+.fp-mex3-393-folded .axes-grid{
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 0;
+  row-gap: var(--gap-m);
+}
+.fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .axis-mark--core{
+  padding-right: var(--gap-m);
+}
+.fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .axis-mark--declared{
+  padding-left: var(--sheet-axes-cols-clearance);
+}
+.fp-mex3-393-folded .axes-rule{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(200% / 3);
+  border-left: var(--rule-graduation) solid var(--sheet-ink);
+  pointer-events: none;
+}
+.fp-mex3-393-folded .axes-grid__group > .axes-cue{
+  grid-column: 1 / -1;
+}
+.fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .axes-cue--core, .fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .defects-head, .fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .defect-group--core{
+  grid-column: 1 / 3;
+}
+.fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .defect-group--core{
+  padding-right: var(--gap-m);
+}
+.fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .axes-cue--declared, .fp-mex3-393-folded .axes-grid:not(.axes-grid--stacked) > .defect-group--declared{
+  grid-column: 3;
+  padding-left: var(--sheet-axes-cols-clearance);
+}
+.fp-mex3-393-folded .defects-head{
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+  margin-bottom: var(--gap-xs);
+}
+.fp-mex3-393-folded .defects-head > .pen-caption, .fp-mex3-393-folded .defects-head > .pen-helper{
+  margin: 0;
+}
+.fp-mex3-393-folded .axes-grid--stacked{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-m);
+}
+.fp-mex3-393-folded .axes-grid__group{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: var(--gap-m);
+}
+.fp-mex3-393-folded .axes-grid__group--declared{
+  padding-top: var(--gap-s);
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
+}
+.fp-mex3-393-folded .axes-grid--stacked > .defect-group--declared{
+  border-top: var(--rule-graduation) solid var(--sheet-ink);
+  padding-top: var(--gap-s);
+}
+.fp-mex3-393-folded .recipe-page{
+    grid-template-columns: 1fr;
+    gap: var(--gap-m);
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'method'
+      'foot';
+  }
+.fp-mex3-393-folded .recipe-page--no-method{
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'foot';
+  }
+.fp-mex3-393-folded button, .fp-mex3-393-folded select, .fp-mex3-393-folded .ink-field, .fp-mex3-393-folded .prose-field, .fp-mex3-393-folded .segmented__option, .fp-mex3-393-folded .batch-margin .chip-toggle{
+    min-height: var(--touch-min);
+  }
+.fp-mex3-393-folded .text-control{
+    min-height: var(--touch-min);
+  }
+.fp-mex3-393-folded .method-step__uses-item, .fp-mex3-393-folded .method-step__strike-control{
+    min-height: var(--touch-min);
+  }
+.fp-mex3-393-folded .axis-mark__head, .fp-mex3-393-folded .segmented-field__head{
+    min-height: var(--sheet-caption-line-h-touch);
+  }
+.fp-mex3-393-folded .axis-mark__head .text-control, .fp-mex3-393-folded .segmented-field__head .text-control{
+    display: inline-flex;
+    align-items: flex-end;
+  }
+.fp-mex3-393-folded .ink-field, .fp-mex3-393-folded .prose-field{
+    font-size: var(--sheet-type-note);
+  }
+.fp-mex3-393-folded .axis-mark__stop{
+    height: var(--sheet-touch-stop-height);
+  }
+.fp-mex3-393-folded .axis-mark__stops, .fp-mex3-393-folded .axis-mark__anchors{
+    width: var(--sheet-track-stop-narrow);
+  }
+.fp-mex3-393-folded .axis-mark__stop{
+    width: var(--touch-stop-width);
+    height: var(--sheet-touch-stop-height);
+    flex-basis: var(--touch-stop-width);
+  }
+.fp-mex3-393-folded{
+    --gap-page: var(--gap-m);
+  }
+.fp-mex3-393-folded .field-row__label{
+    max-width: 100%;
+  }
+.fp-mex3-393-folded .batch-margin__field{
+    font-size: var(--sheet-type-control);
+  }
+.fp-mex3-393-folded .save-ceremony, .fp-mex3-393-folded .pen-foot__controls{
+    flex-wrap: wrap;
+  }
+.fp-mex3-393-folded .ingredient-table-region{
+    overflow-x: auto;
+  }
+.fp-mex3-393-folded .ingredient-table thead{
     display: none;
   }
-
-  .shell__tabs {
+.fp-mex3-393-folded .ingredient-table, .fp-mex3-393-folded .ingredient-table tbody, .fp-mex3-393-folded .ingredient-table tfoot{
+    display: block;
+    width: 100%;
+  }
+.fp-mex3-393-folded .ingredient-table tr{
+    display: grid;
+    grid-template-columns: var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    column-gap: var(--sheet-narrow-name-gap);
+    row-gap: 0;
+    width: 100%;
+    padding: var(--sheet-narrow-row-pad-y) 0;
+    border-bottom: var(--rule-graduation) solid var(--sheet-ink);
+  }
+.fp-mex3-393-folded .ingredient-table tr.ingredient-table__step-head{
+    display: block;
+    border-bottom: 0;
+    padding: var(--sheet-narrow-step-pad-t) 0 var(--sheet-narrow-step-pad-b);
+  }
+.fp-mex3-393-folded .ingredient-table td{
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-grams, .fp-mex3-393-folded .ingredient-table td.ingredient-table__col-name, .fp-mex3-393-folded .ingredient-table td.ingredient-table__col-numeric{
+    width: auto;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-grams{
+    display: contents;
+    text-align: right;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-name{
+    grid-column: 2;
+    grid-row: 1 / 4;
+    text-align: left;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: var(--gap-hair);
+    text-align: right;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-numeric:last-child{
+    grid-column: 3;
+    grid-row: 1;
+    text-align: right;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-numeric:empty{
+    display: none;
+  }
+.fp-mex3-393-folded .ingredient-table tr:not(.ingredient-table__step-head){
+    text-align: right;
+  }
+.fp-mex3-393-folded .ingredient-table__plan-grams:has(> .struck-value){
+    display: contents;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-grams .struck-value{
+    display: block;
+    grid-column: 1;
+    grid-row: 3;
+    margin: var(--gap-hair) 0 0;
+    text-align: right;
+  }
+.fp-mex3-393-folded .ingredient-table tr:has(.ingredient-table__col-name > .struck-value) .ingredient-table__plan-grams > .struck-value{
+    grid-row: 1;
+    margin-top: 0;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-numeric:last-child:has(> .struck-value){
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+.fp-mex3-393-folded .ingredient-table tr:has(.ingredient-table__col-grams .struck-value) td.ingredient-table__col-numeric:last-child:has(> .struck-value){
+    grid-row: 1 / 4;
+    justify-content: space-between;
+  }
+.fp-mex3-393-folded .ingredient-table td.ingredient-table__col-numeric:last-child > .struck-value{
+    margin: 0;
+  }
+.fp-mex3-393-folded .shell{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--app-background);
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .shell__head{
+  position: sticky;
+  top: 0;
+  z-index: var(--app-z-header);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gap-xs) var(--gap-page);
+  background: var(--app-background);
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+.fp-mex3-393-folded .shell__brand{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-weight: 700;
+  font-size: var(--app-size-brand);
+}
+.fp-mex3-393-folded .shell__brand a{
+  color: inherit;
+  text-decoration: none;
+}
+.fp-mex3-393-folded .shell__lead{
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+.fp-mex3-393-folded .shell__menu{
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  margin: 0;
+  margin-inline-start: calc(-1 * var(--gap-xs));
+  border: none;
+  background: none;
+  color: var(--app-text);
+  cursor: pointer;
+}
+.fp-mex3-393-folded .shell__menu svg{
+  width: var(--app-size-icon);
+  height: var(--app-size-icon);
+  transform: rotate(var(--app-tilt-menu));
+}
+.fp-mex3-393-folded .shell__scrim{
+  position: fixed;
+  inset-block-start: var(--app-size-header-h);
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: var(--app-z-scrim);
+  background: var(--app-scrim);
+}
+.fp-mex3-393-folded .shell__sprinkles{
+  display: flex;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-xs);
+}
+.fp-mex3-393-folded .shell__sprinkle{
+  display: inline-block;
+  width: var(--app-size-sprinkle-w);
+  height: var(--app-size-sprinkle-h);
+  border-radius: var(--app-radius-sprinkle);
+  transform: rotate(var(--app-tilt-sprinkle));
+}
+.fp-mex3-393-folded .shell__sprinkle--notebook{
+  background: var(--app-notebook);
+}
+.fp-mex3-393-folded .shell__sprinkle--recipe-book{
+  background: var(--app-recipe-book);
+}
+.fp-mex3-393-folded .shell__sprinkle--idea-log{
+  background: var(--app-idea-log);
+}
+.fp-mex3-393-folded .shell__sprinkle--ingredients{
+  background: var(--app-ingredients);
+}
+.fp-mex3-393-folded .shell__sprinkle--kitchen{
+  background: var(--app-kitchen);
+}
+.fp-mex3-393-folded .shell__tools{
+  display: flex;
+  align-items: center;
+  gap: var(--gap-m);
+}
+.fp-mex3-393-folded .shell__tools button{
+  appearance: none;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.fp-mex3-393-folded .shell__file-input{
+  display: none;
+}
+.fp-mex3-393-folded .shell__import-errors{
+  flex-basis: 100%;
+  margin: var(--gap-xs) 0 0;
+  padding-left: var(--gap-m);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+}
+.fp-mex3-393-folded .shell__body{
+  display: flex;
+  flex: 1 1 auto;
+}
+.fp-mex3-393-folded .shell__rail{
+  flex: 0 0 var(--app-size-nav-w);
+  width: var(--app-size-nav-w);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: var(--app-size-header-h);
+  align-self: flex-start;
+  height: calc(100vh - var(--app-size-header-h));
+  overflow-y: auto;
+  padding: var(--gap-xs) var(--gap-m) var(--gap-l);
+  border-right: var(--app-rule-row) solid var(--app-divider);
+}
+.fp-mex3-393-folded .shell__main{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.fp-mex3-393-folded .place{
+  color: var(--app-text);
+  font-family: var(--face-grotesk);
+}
+.fp-mex3-393-folded .place__title{
+  margin: var(--gap-l) 0 var(--gap-hair);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-title);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.fp-mex3-393-folded .place__note{
+  max-width: var(--measure-prose);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .shell__place{
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: var(--gap-s) var(--gap-m);
+  border-radius: var(--app-radius-control);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  text-decoration: none;
+}
+.fp-mex3-393-folded .shell__place svg{
+  width: var(--app-size-icon);
+  height: var(--app-size-icon);
+}
+.fp-mex3-393-folded .shell__place[aria-current='page']{
+  background: var(--app-surface-subtle);
+}
+.fp-mex3-393-folded .shell__rail .shell__place[aria-current='page']{
+  font-weight: 600;
+}
+.fp-mex3-393-folded .shell__place:focus{
+  outline: var(--focus-outline-width) solid var(--app-text);
+  outline-offset: var(--focus-outline-offset);
+}
+.fp-mex3-393-folded .shell__divider{
+  border: none;
+  border-top: var(--app-rule-row) solid var(--app-divider);
+  margin: var(--gap-xs) var(--gap-m);
+}
+.fp-mex3-393-folded .shell__place--home{
+  color: var(--app-blue-text);
+}
+.fp-mex3-393-folded .shell__place--home svg{
+  stroke: var(--app-blue);
+}
+.fp-mex3-393-folded .shell__place--notebook{
+  color: var(--app-notebook-text);
+}
+.fp-mex3-393-folded .shell__place--notebook svg{
+  stroke: var(--app-notebook);
+}
+.fp-mex3-393-folded .shell__place--recipe-book{
+  color: var(--app-recipe-book-text);
+}
+.fp-mex3-393-folded .shell__place--recipe-book svg{
+  stroke: var(--app-recipe-book);
+}
+.fp-mex3-393-folded .shell__place--idea-log{
+  color: var(--app-idea-log-text);
+}
+.fp-mex3-393-folded .shell__place--idea-log svg{
+  stroke: var(--app-idea-log);
+}
+.fp-mex3-393-folded .shell__place--ingredients{
+  color: var(--app-ingredients-text);
+}
+.fp-mex3-393-folded .shell__place--ingredients svg{
+  stroke: var(--app-ingredients);
+}
+.fp-mex3-393-folded .shell__place--kitchen{
+  color: var(--app-kitchen);
+}
+.fp-mex3-393-folded .shell__place--kitchen svg{
+  stroke: var(--app-kitchen);
+}
+.fp-mex3-393-folded .shell__tabs{
+  display: none;
+}
+.fp-mex3-393-folded .shell__more > ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.fp-mex3-393-folded .shell__rail{
+    display: none;
+  }
+.fp-mex3-393-folded .shell__rail--open{
+    display: flex;
+    position: fixed;
+    inset-block-start: var(--app-size-header-h);
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    z-index: var(--app-z-flyout);
+    background: var(--app-background);
+    box-shadow: var(--app-shadow-flyout);
+    overflow-y: auto;
+    height: auto;
+    align-self: stretch;
+  }
+.fp-mex3-393-folded .shell__rail{
+    display: none;
+  }
+.fp-mex3-393-folded .shell__head{
+    position: static;
+    flex-wrap: wrap;
+    padding: var(--gap-s) var(--gap-page);
+    border-bottom: none;
+  }
+.fp-mex3-393-folded .shell__tabs{
     display: flex;
     align-items: stretch;
     height: var(--app-size-tab-h);
@@ -36,23 +2043,11 @@ body{margin:0;background:#ffffff}
     background: var(--app-background);
     border-top: var(--app-rule-row) solid var(--app-divider);
   }
-
-  /* The tab row's five flex children: the four destination links and the
-     More disclosure itself — not the summary inside it. Direct-child
-     selectors, so each of the five gets an equal share of the viewport
-     instead of the intrinsic content width the board measured at 532px
-     (03.4-UI-REVIEW.md finding 1). */
-  .shell__tabs > .shell__place,
-  .shell__tabs > .shell__more {
+.fp-mex3-393-folded .shell__tabs > .shell__place, .fp-mex3-393-folded .shell__tabs > .shell__more{
     flex: 1 1 0;
     min-width: 0;
   }
-
-  /* Icon over label (board 171, Mark 2026-09-22), not beside it: this
-     descendant rule reaches both the four links and More's own summary
-     (which also carries .shell__place), overriding the rail's horizontal
-     padding and gap with a small vertical pad and the hairline gap. */
-  .shell__tabs .shell__place {
+.fp-mex3-393-folded .shell__tabs .shell__place{
     box-sizing: border-box;
     display: flex;
     height: 100%;
@@ -64,23 +2059,16 @@ body{margin:0;background:#ffffff}
     text-align: center;
     font-size: var(--app-size-label);
   }
-
-  .shell__tabs .shell__place,
-  .shell__more li {
+.fp-mex3-393-folded .shell__tabs .shell__place[aria-current='page']{
+    font-weight: 600;
+  }
+.fp-mex3-393-folded .shell__tabs .shell__place, .fp-mex3-393-folded .shell__more li{
     min-height: var(--touch-min);
   }
-
-  /* More opens as a panel above the bar, not inline in the fixed row
-     (D-16, gap 1): the disclosure anchors its own list, which — once
-     open — pins to the bar's top edge and trailing edge, sized to its
-     content, on the App background with a hairline divider border. No
-     radius: board 171 never draws the open panel, so nothing about it is
-     copied from a drawing (decision 5). */
-  .shell__more {
+.fp-mex3-393-folded .shell__more{
     position: relative;
   }
-
-  .shell__more[open] > ul {
+.fp-mex3-393-folded .shell__more[open] > ul{
     position: absolute;
     inset-block-end: 100%;
     inset-inline-end: 0;
@@ -89,208 +2077,746 @@ body{margin:0;background:#ffffff}
     border: var(--app-rule-row) solid var(--app-divider);
     padding: var(--gap-s);
   }
-
-  /* The header's Search/Import/Export controls fold away at this step
-     (D-16, decision 3): all three are duplicated inside More. The tools
-     row itself stays — the shared hidden file input and the import-errors
-     list live inside it, and hiding the row would leave an import failure
-     with nothing to report itself through. */
-  .shell__tools > .shell__place {
+.fp-mex3-393-folded .shell__tools > .shell__place{
     display: none;
   }
-
-  .shell__main {
+.fp-mex3-393-folded .shell__main{
     padding-bottom: var(--app-size-tab-h);
   }
-/* app/src/styles/app.css @media (max-width: 1099.98px) */
-.recipe-page {
-    grid-template-columns: 1fr;
+.fp-mex3-393-folded .notebook{
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--app-notebook-content-max) + 2 * var(--app-notebook-gutter));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-frame-gap);
+  padding: 0 var(--app-notebook-gutter) var(--gap-xl);
+}
+.fp-mex3-393-folded .notebook-band{
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-band-rhythm);
+  padding: var(--gap-m) 0 var(--app-notebook-band-rhythm);
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+.fp-mex3-393-folded .notebook-band__grid{
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: var(--app-notebook-grid-gap);
+  align-items: start;
+}
+.fp-mex3-393-folded .notebook-body{
+  display: flex;
+  gap: var(--app-notebook-gutter);
+  align-items: flex-start;
+}
+.fp-mex3-393-folded .notebook-body__sheet{
+  flex: 1 1 0;
+  min-width: 0;
+}
+.fp-mex3-393-folded .notebook-log{
+  flex: 0 0 var(--app-notebook-log-w);
+  min-width: 0;
+  padding-top: var(--app-notebook-gap-tight);
+}
+.fp-mex3-393-folded .notebook-recipe{
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-tight);
+}
+.fp-mex3-393-folded .notebook-recipe__identity{
+  display: flex;
+  align-items: stretch;
+  gap: var(--app-notebook-recipe-rail-gap);
+}
+.fp-mex3-393-folded .notebook-recipe__rail{
+  flex: 0 0 var(--app-size-rail-w);
+  width: var(--app-size-rail-w);
+  align-self: stretch;
+  min-height: var(--app-notebook-rail-min-h);
+  border-radius: var(--app-radius-rail);
+  background: var(--app-notebook);
+}
+.fp-mex3-393-folded .notebook-recipe__name{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-lead-name);
+  line-height: var(--app-notebook-name-leading);
+  font-weight: 700;
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-recipe__description{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  line-height: var(--app-notebook-desc-leading);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-recipe__form{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+.fp-mex3-393-folded .notebook-recipe__form-actions{
+  display: flex;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+.fp-mex3-393-folded .notebook-caption{
+  display: block;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook .fold-row{
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  display: flex;
+  width: 100%;
+  min-height: var(--touch-min);
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--app-notebook-recipe-rail-gap);
+  text-decoration: none;
+}
+.fp-mex3-393-folded .notebook .fold-row__head{
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-notebook-recipe-rail-gap);
+}
+.fp-mex3-393-folded .notebook .fold-row__control, .fp-mex3-393-folded .notebook .notebook-jump__control{
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-control);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--sheet-ink);
+  text-decoration: underline;
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+.fp-mex3-393-folded .notebook .fold-row__count, .fp-mex3-393-folded .notebook .notebook-jump__status{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook .fold-row__count::before, .fp-mex3-393-folded .notebook .notebook-jump__status::before{
+  content: "\00b7";
+  margin-right: var(--app-notebook-recipe-rail-gap);
+}
+.fp-mex3-393-folded .notebook-jump{
+  display: none;
+  justify-content: flex-start;
+}
+.fp-mex3-393-folded .notebook-field{
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-hairline);
+}
+.fp-mex3-393-folded .notebook-field .ink-field, .fp-mex3-393-folded .notebook-field input, .fp-mex3-393-folded .notebook-field textarea{
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);
+  border: var(--app-rule-row) solid var(--app-divider);
+  border-radius: var(--app-radius-control);
+  background: var(--app-background);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-helper{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-action{
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--gap-s) var(--gap-m);
+  border-radius: var(--app-radius-control);
+  border: var(--app-rule-row) solid var(--app-blue-text);
+  background: var(--app-blue-text);
+  color: var(--app-background);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 700;
+  cursor: pointer;
+}
+.fp-mex3-393-folded .notebook-action--outline{
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--gap-s) var(--gap-m);
+  border-radius: var(--app-radius-control);
+  border: var(--app-rule-row) solid var(--app-blue-text);
+  background: var(--app-background);
+  color: var(--app-blue-text);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  cursor: pointer;
+}
+.fp-mex3-393-folded .notebook-link{
+  appearance: none;
+  border: none;
+  padding: 0;
+  background: none;
+  color: var(--app-blue-text);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+.fp-mex3-393-folded .notebook-recipe > .notebook-link{
+  align-self: flex-start;
+}
+.fp-mex3-393-folded .notebook-action:hover, .fp-mex3-393-folded .notebook-action--outline:hover{
+  border-width: var(--rule-hover);
+  padding: calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover));
+}
+.fp-mex3-393-folded .notebook-link:hover{
+  padding: 0;
+}
+.fp-mex3-393-folded .notebook-ceremony{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+.fp-mex3-393-folded .notebook-ceremony__batch-fieldset{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-hairline);
+}
+.fp-mex3-393-folded .notebook-ceremony__batch-option{
+  display: flex;
+  align-items: center;
+  gap: var(--app-notebook-gap-tight);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-ceremony__batch-option input{
+  margin: 0;
+  width: var(--app-notebook-checkbox-size);
+  height: var(--app-notebook-checkbox-size);
+}
+.fp-mex3-393-folded .notebook-field .notebook-ceremony__why{
+  font-family: var(--face-text);
+  font-size: var(--sheet-type-note);
+  line-height: var(--sheet-leading-note);
+  color: var(--sheet-pen-blue);
+  resize: vertical;
+}
+.fp-mex3-393-folded .notebook-ceremony__actions{
+  display: flex;
+  gap: var(--app-notebook-acts-gap);
+  flex-wrap: wrap;
+}
+.fp-mex3-393-folded .notebook-version__latest{
+  font-weight: 400;
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-version{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+.fp-mex3-393-folded .notebook-version__identity{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-identity-size);
+  font-weight: 600;
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-version__details{
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--app-notebook-recipe-rail-gap);
+  row-gap: var(--app-notebook-details-gap-row);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-version__details[hidden]{
+  display: none;
+}
+.fp-mex3-393-folded .notebook-version__details dt{
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-version__acts{
+  display: flex;
+  gap: var(--app-notebook-acts-gap);
+  flex-wrap: wrap;
+}
+.fp-mex3-393-folded .notebook-history{
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-history-head-gap);
+}
+.fp-mex3-393-folded .notebook-history__only{
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-history__rail{
+  position: relative;
+  overflow-x: auto;
+}
+.fp-mex3-393-folded .notebook-history__strip{
+  position: relative;
+  width: max-content;
+}
+.fp-mex3-393-folded .notebook-history__track{
+  position: absolute;
+  left: calc(var(--gap-xs) + var(--app-notebook-history-mark-size) / 2);
+  width: calc((var(--app-notebook-history-count) - 1) * (var(--app-notebook-history-node-w) + var(--app-notebook-history-node-gap)));
+  top: var(--app-notebook-history-track-top);
+  height: var(--app-rule-row);
+  background: var(--app-divider);
+}
+.fp-mex3-393-folded .notebook-history__fade{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--app-notebook-history-fade-w);
+  background: linear-gradient(to left, transparent, var(--app-background));
+  pointer-events: none;
+}
+.fp-mex3-393-folded .notebook-history__nodes{
+  position: relative;
+  display: flex;
+  gap: var(--app-notebook-history-node-gap);
+  min-width: max-content;
+  margin: 0;
+  padding: 0 var(--gap-xs);
+  list-style: none;
+}
+.fp-mex3-393-folded .notebook-history__node{
+  flex: 0 0 var(--app-notebook-history-node-w);
+  min-width: 0;
+}
+.fp-mex3-393-folded .notebook-history__node-inner{
+  display: grid;
+  grid-template-rows:
+    var(--app-notebook-history-row-label-h)
+    var(--app-notebook-history-row-mark-h)
+    var(--app-notebook-history-row-name-h)
+    var(--app-notebook-history-row-label-h);
+  row-gap: var(--gap-xs);
+  min-width: 0;
+  text-decoration: none;
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-history__date{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  line-height: var(--app-notebook-history-row-label-h);
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded .notebook-history__mark{
+  box-sizing: border-box;
+  width: var(--app-notebook-history-mark-size);
+  height: var(--app-notebook-history-mark-size);
+  border-radius: 50%;
+  background: var(--app-background);
+  border: var(--rule-baseline) solid var(--app-notebook);
+}
+.fp-mex3-393-folded .notebook-history__mark--churned{
+  background: var(--app-notebook);
+  border: none;
+}
+.fp-mex3-393-folded .notebook-history__mark--in-view{
+  box-shadow:
+    0 0 0 var(--app-notebook-history-ring-inset) var(--app-background),
+    0 0 0 var(--app-notebook-history-ring-w) var(--app-notebook);
+}
+.fp-mex3-393-folded .notebook-history__name{
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  line-height: var(--app-notebook-history-name-line-h);
+}
+.fp-mex3-393-folded .notebook-history__name--in-view{
+  font-weight: 700;
+}
+.fp-mex3-393-folded .notebook-history__state{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  line-height: var(--app-notebook-history-row-label-h);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-upright{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+}
+.fp-mex3-393-folded .notebook-upright[hidden]{
+  display: none;
+}
+.fp-mex3-393-folded .notebook-upright__row{
+  position: relative;
+}
+.fp-mex3-393-folded .notebook-upright__row:not(:last-child)::before{
+  content: '';
+  position: absolute;
+  left: calc(var(--app-notebook-history-mark-size) / 2 - var(--app-rule-row) / 2);
+  top: calc(
+    var(--app-notebook-history-name-line-h) / 2 + var(--app-notebook-history-mark-size) / 2 + var(--gap-hair)
+  );
+  bottom: calc(-1 * var(--gap-s));
+  width: var(--app-rule-row);
+  background: var(--app-divider);
+}
+.fp-mex3-393-folded .notebook-upright__link{
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--app-notebook-history-mark-size) minmax(0, 1fr);
+  column-gap: var(--app-notebook-recipe-rail-gap);
+  align-items: start;
+  min-height: var(--touch-min);
+  text-decoration: none;
+  color: inherit;
+}
+.fp-mex3-393-folded .notebook-upright__mark-box{
+  display: flex;
+  align-items: center;
+  height: var(--app-notebook-history-name-line-h);
+}
+.fp-mex3-393-folded .notebook-upright__text{
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hair);
+  min-width: 0;
+}
+.fp-mex3-393-folded .notebook-upright__mark{
+  box-sizing: border-box;
+  width: var(--app-notebook-history-mark-size);
+  height: var(--app-notebook-history-mark-size);
+  border-radius: 50%;
+  background: var(--app-background);
+  border: var(--rule-baseline) solid var(--app-notebook);
+}
+.fp-mex3-393-folded .notebook-upright__mark--filled{
+  background: var(--app-notebook);
+  border: none;
+}
+.fp-mex3-393-folded .notebook-upright__mark--in-view{
+  box-shadow:
+    0 0 0 var(--app-notebook-history-ring-inset) var(--app-background),
+    0 0 0 var(--app-notebook-history-ring-w) var(--app-notebook);
+}
+.fp-mex3-393-folded .notebook-upright__title{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-blue-text);
+  text-decoration: underline;
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+.fp-mex3-393-folded .notebook-upright__link[aria-current='page'] .notebook-upright__title{
+  font-weight: 700;
+  color: var(--app-text);
+  text-decoration: none;
+}
+.fp-mex3-393-folded .notebook-upright__meta{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .batch-row{
+  display: flex;
+  flex-direction: column;
+  
+  gap: var(--app-notebook-log-group-gap);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__batch-list{
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-history-head-gap);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__head--after-list{
+  padding-top: var(--app-notebook-recipe-rail-gap);
+  border-top: var(--app-rule-row) solid var(--app-divider);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__head{
+  justify-content: flex-start;
+  row-gap: var(--app-notebook-log-head-outer-gap);
+  column-gap: var(--gap-l);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__head-lead{
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-notebook-recipe-rail-gap);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__head-acts{
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-notebook-log-head-gap);
+}
+.fp-mex3-393-folded .notebook-log .batch-row .region-name, .fp-mex3-393-folded .notebook-log .tasting-reading .region-name, .fp-mex3-393-folded .notebook-log .batch-row__group-label{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .tasting-reading > .region-name{
+  margin: 0;
+}
+.fp-mex3-393-folded .notebook-log .batch-row__date{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-log .text-control{
+  color: var(--app-blue-text);
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+}
+.fp-mex3-393-folded .notebook-log .batch-row__cells{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--app-notebook-log-cell-gap-row) var(--gap-m);
+}
+.fp-mex3-393-folded .notebook-log .batch-margin > .batch-row__cells{
+  margin-top: 0;
+}
+.fp-mex3-393-folded .notebook-log .batch-row__cell{
+  gap: var(--gap-hair);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__cell-label{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__cell-value{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-log-value-size);
+  font-weight: 600;
+  
+  line-height: normal;
+  color: var(--app-text);
+  font-variant-numeric: tabular-nums;
+}
+.fp-mex3-393-folded .notebook-log .batch-row__unit{
+  font-size: var(--app-size-meta);
+  font-weight: 400;
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__unit--absent{
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__plan{
+  font-size: var(--app-size-label);
+  
+  margin-top: 0;
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__notes{
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-notebook-gap-hairline);
+  margin-top: var(--app-notebook-log-group-gap);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__note{
+  margin: 0;
+}
+.fp-mex3-393-folded .notebook-log .batch-row__provenance, .fp-mex3-393-folded .notebook-log .batch-row__provenance dt{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-label);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .batch-row__provenance dd{
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .prose-text{
+  font-family: var(--face-grotesk);
+  font-size: var(--app-notebook-size-body);
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .save-ceremony, .fp-mex3-393-folded .notebook-log .pen-foot__controls{
+  flex-wrap: wrap;
+}
+.fp-mex3-393-folded .notebook-log *{
+  border-color: var(--app-divider);
+}
+.fp-mex3-393-folded .notebook-log .pen-caption{
+  color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .ink-field{
+  border-radius: var(--app-radius-control);
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-log .axis-mark__stop, .fp-mex3-393-folded .notebook-log .segmented__option{
+  border-color: var(--app-text-secondary);
+}
+.fp-mex3-393-folded .notebook-log .axis-mark__stop:first-child, .fp-mex3-393-folded .notebook-log .segmented__option:first-child{
+  border-top-left-radius: var(--app-radius-control);
+  border-bottom-left-radius: var(--app-radius-control);
+}
+.fp-mex3-393-folded .notebook-log .axis-mark__stop:last-child, .fp-mex3-393-folded .notebook-log .segmented__option:last-child{
+  border-top-right-radius: var(--app-radius-control);
+  border-bottom-right-radius: var(--app-radius-control);
+}
+.fp-mex3-393-folded .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .fp-mex3-393-folded .notebook-log .segmented__option:has(input[type='radio']:checked){
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+  color: var(--app-background);
+}
+.fp-mex3-393-folded .notebook-log .chip-toggle::before{
+  border-color: var(--app-text-secondary);
+  border-radius: var(--app-radius-rail);
+}
+.fp-mex3-393-folded .notebook-log .chip-toggle[aria-pressed='true']::before{
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+}
+.fp-mex3-393-folded .notebook-log .save-ceremony button{
+  border-color: var(--app-blue-text);
+  border-radius: var(--app-radius-control);
+  color: var(--app-blue-text);
+  background: none;
+}
+.fp-mex3-393-folded .notebook-log .save-ceremony button:last-of-type{
+  background: var(--app-blue-text);
+  color: var(--app-background);
+}
+.fp-mex3-393-folded .notebook-log .axes-cue{
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+.fp-mex3-393-folded .notebook-log .axes-grid--stacked{
+  gap: var(--gap-l);
+}
+.fp-mex3-393-folded .notebook-log .axes-grid__group > .axis-mark:first-of-type{
+  margin-top: 0;
+}
+.fp-mex3-393-folded .notebook-log .axes-grid__group > .axes-cue{
+  margin-bottom: calc(var(--gap-s) - var(--gap-m));
+}
+.fp-mex3-393-folded .notebook-log .axes-grid--stacked > .defects-head{
+  margin-bottom: calc(var(--gap-s) - var(--gap-l));
+}
+.fp-mex3-393-folded .notebook{
+    gap: var(--app-notebook-band-rhythm);
+  }
+.fp-mex3-393-folded .notebook-band{
     gap: var(--gap-m);
-    grid-template-areas:
-      'band'
-      'ingredients'
-      'side'
-      'method'
-      'foot';
+    padding: var(--app-notebook-band-pad-t-narrow) 0 var(--gap-m);
   }
-
-  .pen-foot {
-    grid-template-columns: 1fr;
+.fp-mex3-393-folded .notebook-band__grid{
+    gap: var(--gap-l);
   }
-
-  .pen-foot__controls {
-    grid-column: 1;
-  }
-/* app/src/styles/app.css @media (max-width: 759.98px), (pointer: coarse) */
-/* .prose-field joins this floor (260916-vv1, Impeccable critique issue 4,
-     Mark approved 2026-09-16): the four record prose fields measured 560 x 19
-     at every coarse pointer, under UX1-01. It takes the SHARED --touch-min
-     declaration rather than a private rule — one value stays app-wide, and
-     neither a narrow window nor a wide iPad is a named exception. Sketches
-     007 and 008 now carry the same floor, closing the original departure. */
-  button,
-  select,
-  .ink-field,
-  .prose-field,
-  .segmented__option,
-  .batch-margin .chip-toggle {
+.fp-mex3-393-folded .notebook-jump{
+    display: flex;
+    grid-column: 2;
+    width: 100%;
     min-height: var(--touch-min);
+    align-items: center;
+    gap: var(--app-notebook-recipe-rail-gap);
+    text-decoration: none;
+    color: inherit;
   }
-
-  .text-control {
-    min-height: var(--touch-min);
+.fp-mex3-393-folded .notebook-body{
+    
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--app-notebook-frame-gap);
   }
-
-  /* Sketch 008 line 260 grows the checkbox LABEL, not the square — the
-     two flex labels that hold the Skipped and Uses checkboxes. */
-  .method-step__uses-item,
-  .method-step__strike-control {
-    min-height: var(--touch-min);
+.fp-mex3-393-folded .notebook-log{
+    flex-basis: auto;
+    padding: 0 var(--app-notebook-gap-tight);
   }
-
-  /* The NARROW drawing's caption line (sketch 007 line 180, 008 line 167:
-     "Clear is 44px here, so the head reserves 44px marked or not"). Sketch 009
-     replaces this at a WIDE touch viewport — see the wide-touch block below —
-     but 009 never drew narrow, so 007/008 still govern here. */
-  .axis-mark__head,
-  .segmented-field__head {
-    min-height: var(--sheet-caption-line-h-touch);
+.fp-mex3-393-folded .notebook-log .batch-row__cells{
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
-
-  /* Sketch 008 line 166, approved by Mark 2026-09-15, retiring the app's
-     pre-declared 13px departure. Besides matching the sketch, 16px is the
-     threshold below which iOS Safari zooms the page on field focus — so this
-     also stops the record jumping under the maker's thumb on the iPad. */
-  .ink-field,
-  .prose-field {
+.fp-mex3-393-folded .notebook-log .tasting-reading .batch-row__cells{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+.fp-mex3-393-folded .notebook{
+    padding: 0 0 var(--app-notebook-frame-pad-b-phone);
+  }
+.fp-mex3-393-folded .notebook-band{
+    padding: var(--app-notebook-band-pad-t-narrow) var(--gap-m) var(--gap-m);
+  }
+.fp-mex3-393-folded .notebook-band__grid{
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-m);
+  }
+.fp-mex3-393-folded .notebook-version{
+    align-self: stretch;
+  }
+.fp-mex3-393-folded .notebook-log{
+    padding: 0 var(--gap-m);
+  }
+.fp-mex3-393-folded .notebook-log .batch-row__cells{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+.fp-mex3-393-folded .notebook-log .tasting-reading .batch-row__cells{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+.fp-mex3-393-folded .notebook-field .ink-field, .fp-mex3-393-folded .notebook-field input, .fp-mex3-393-folded .notebook-field textarea{
     font-size: var(--sheet-type-note);
   }
-
-  /* Decision C (sketch 009, settled by Mark 2026-09-15): at touch the stop
-     grows in HEIGHT only. The width and --sheet-track-stop are deliberately absent
-     here and stay in the width-keyed block below, so the 186px track still
-     fits the 213.3px column a wide touch screen gives it. A 38x44 target,
-     not the 32px one a wide touch viewport got before. */
-  .axis-mark__stop {
-    height: var(--sheet-touch-stop-height);
+.fp-mex3-393-folded .notebook-log .axes-grid__group > .axes-cue{
+    margin-bottom: calc(var(--gap-s) - var(--gap-m) - (var(--sheet-caption-line-h-touch) - var(--sheet-caption-two-lines-abs)));
   }
-/* app/src/styles/app.css @media (max-width: 759.98px) */
-.recipe-band__row-version {
-    grid-template-columns: 1fr;
-  }
-
-  .axis-mark__stops,
-  .axis-mark__anchors {
-    width: var(--sheet-track-stop-narrow);
-  }
-
-  .axis-mark__stop {
-    width: var(--touch-stop-width);
-    height: var(--sheet-touch-stop-height);
-    flex-basis: var(--touch-stop-width);
-  }
-/* app/src/styles/app.css @media block,
-   sibling to the one above — never nested inside it (css-source.js's
-   one-level contract, WR-02). The sketch's own "field-row label widths"
-   tweak (007 line 139) now has a real side-by-side label to narrow —
-   .field-row__label — once Task 1's field-row family lands; the prose
-   fields keep their own .batch-margin__field, label-above-input shape,
-   untouched by this rule. */
-@media (max-width: 600px) */
-/* The one place the page's phone gutter is stated (260917-gjo): four
-     boxes step together below 600px because they all read one name,
-     --gap-page (tokens.css) — the page itself, the running head, the
-     "no recipe found" page, and the notice. The literal 600 stays here,
-     in app.css's own prelude, where the touch block above already put
-     it; it is deliberately not in tokens.css (see that file's comment
-     on --gap-page for why). No other declaration belongs in this rule. */
-  :root {
-    --gap-page: var(--gap-m);
-  }
-
-  .field-row__label {
-    max-width: 100%;
-  }
-
-  /* .ink-field is deliberately NOT here. The 600px step used to drop it to
-     --sheet-type-control (13px), which is the pre-declared departure sketch 008 line
-     166 retires — and below 600 is exactly where a phone's auto-zoom bites, so
-     the touch union's 16px must survive this step. The margin's own prose
-     field keeps the smaller size; 008 speaks for .ink-field and .prose-field,
-     not for it. */
-  .batch-margin__field {
-    font-size: var(--sheet-type-control);
-  }
-
-  .save-ceremony,
-  .pen-foot__controls {
-    flex-wrap: wrap;
-  }
-
-  /* At 393px the ingredient table's sized columns (--sheet-col-numeric x3 +
-     --sheet-col-data, tokens.css) sum past the content width the region has
-     left after the page's own padding, and table-layout: fixed cannot
-     shrink a sized column (RESEARCH.md Pitfall 7). The sketch draws no
-     rule for this width (003 was tested at 834/1024), so the table
-     scrolls inside its own region and the page itself never overflows —
-     D-15's acceptance criterion is zero PAGE overflow, not zero table
-     overflow (planner's call on RESEARCH Open Question 4, recorded for
-     Mark's acknowledgement). */
-  .ingredient-table-region {
-    overflow-x: auto;
-  }
-/* app/src/styles/history.css @media (max-width: 759.98px) */
-.history-list--records {
-    margin-inline-start: var(--gap-m);
-  }
-
-  .history-list--branches {
-    margin-inline-start: var(--gap-s);
-    padding-inline-start: var(--gap-s);
-  }
-
-  .recipe-history__reason {
-    grid-template-columns: 1fr;
-  }
-
-  .recipe-history__outcome,
-  .recipe-history__next,
-  .recipe-history__empty {
-    margin-inline-start: var(--gap-s);
-  }/* the phone gutter, stated once more with the specificity the canvas needs */
-html, :root, .shell, .recipe-page, .page-head { --gap-page: var(--gap-m); }
-.recipe-page { padding: var(--gap-m) !important; }
+.fp-mex3-393-folded .shell{min-height:0;position:relative}
+.fp-mex3-393-folded .shell__tabs{position:absolute !important;inset-inline:0;inset-block-end:0}
+.fp-mex3-393-folded .shell__main{min-width:0}
+.fp-mex3-393-folded .shell__brand a{color:inherit;text-decoration:none}
 [hidden]{display:none !important}
 </style>
 </helmet>
-<div style="width: 393px; height: 1300px; overflow: hidden; box-sizing: border-box; background: #ffffff;">
-<div class="shell"><header class="shell__head"><div><p class="shell__brand">Sprinkles</p><div class="shell__sprinkles" aria-hidden="true"><span class="shell__sprinkle shell__sprinkle--notebook"></span><span class="shell__sprinkle shell__sprinkle--recipe-book"></span><span class="shell__sprinkle shell__sprinkle--idea-log"></span><span class="shell__sprinkle shell__sprinkle--ingredients"></span><span class="shell__sprinkle shell__sprinkle--kitchen"></span></div></div><div class="shell__tools"><a tabindex="0" class="shell__place" href="/search" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><line x1="15" y1="15" x2="21" y2="21"></line></svg>Search</a><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>Import</button><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M4 19h16"></path></svg>Export</button><input accept="application/json" class="shell__file-input" tabindex="-1" aria-hidden="true" type="file"></div></header><div class="shell__body"><nav class="shell__rail" aria-label="Places"><a tabindex="0" class="shell__place shell__place--home" href="/" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 11 12 4l8 7"></path><path d="M6 10v9h12v-9"></path></svg>Home</a><hr class="shell__divider" aria-hidden="true"><a tabindex="0" class="shell__place shell__place--notebook" aria-current="page" href="/notebook" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>Notebook</a><a tabindex="0" class="shell__place shell__place--recipe-book" href="/recipe-book" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5c-2-1.5-5-2-8-1v14c3-1 6-.5 8 1 2-1.5 5-2 8-1V4c-3-1-6-.5-8 1Z"></path><line x1="12" y1="5" x2="12" y2="19"></line></svg>Recipe book</a><a tabindex="0" class="shell__place shell__place--idea-log" href="/idea-log" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 21h4"></path><path d="M12 3a6 6 0 0 0-3 11c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a6 6 0 0 0-3-11Z"></path></svg>Idea log</a><hr class="shell__divider" aria-hidden="true"><a tabindex="0" class="shell__place shell__place--ingredients" href="/ingredients" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 4c-8 0-14 5-14 12 0 2 1.5 3.5 3.5 3.5 7 0 12-6 12-14 0-.5 0-1-.1-1.5Z"></path><path d="M6 20 17 9"></path></svg>Ingredients</a><a tabindex="0" class="shell__place shell__place--kitchen" href="/kitchen" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10a8 8 0 0 1 16 0Z"></path><line x1="2" y1="10" x2="22" y2="10"></line><line x1="12" y1="2" x2="12" y2="5"></line></svg>Kitchen</a></nav><main class="shell__main" style="display:flex;flex-direction:column;min-width:0;"><div style="display:flex;flex-direction:column;gap:24px;padding-bottom:40px;"><div style="padding:0 20px;"><header style="display:flex;flex-direction:column;gap:20px;padding:16px 0 20px;border-bottom:1px solid #d6dad7;">
-  <div style="display:flex;flex-direction:column;gap:20px;">
-<div style="display:flex;flex-direction:column;gap:8px;">
-  <div style="display:flex;align-items:stretch;gap:14px;">
-    <span aria-hidden="true" style="flex:0 0 8px;width:8px;align-self:stretch;min-height:32px;border-radius:4px;background:#fd5b57;"></span>
-    <div style="min-width:0;display:flex;align-items:center;">
-      <h1 style="margin:0;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:28px;line-height:1.15;font-weight:700;color:#141414;">Olive Oil Ice Cream, circulator</h1>
-    </div>
-  </div>
-  <p style="margin:0;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:#595959;">Scaled 0.8× from the 1 kg formula. All ratios unchanged — PAC, POD, fat, MSNF and total solids are identical to the full batch. Sized to two 16 oz Ball jars in a circulator bath.</p>
-  <p style="margin:0;"><button type="button" style="appearance:none;border:none;padding:0;background:none;color:#1576de;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px;">Rename</button></p>
-</div>
-<div style="display:flex;flex-direction:column;gap:12px;">
-  <button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="fold-version" style="appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;display:flex;width:100%;min-height:44px;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;"><span style="display:flex;align-items:baseline;gap:14px;"><span style="display:block;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#595959;">Version</span><span style="font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-weight:400;letter-spacing:normal;text-transform:none;color:var(--sheet-ink);text-decoration:underline;text-underline-offset:3px;">Show details</span></span></button>
-  <div style="display:flex;flex-direction:column;gap:4px;">
-    <p style="margin:0;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:18px;font-weight:600;color:#141414;">Version 1 · 50 g oil · 800 g <span style="font-weight:400;color:#595959;">· Latest</span></p>
-    <p style="margin:0;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:#595959;">Draft: <a href="#" tabindex="0" style="color:#1576de;text-underline-offset:3px;">Version 2 · less oil</a></p>
-    
-  </div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;"><button type="button" style="appearance:none;border:none;border-radius:10px;padding:12px 20px;background:#1576de;color:#ffffff;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Next version</button></div>
-</div></div>
-  <div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><span style="display:block;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#595959;">History</span><button type="button" class="text-control history-disclosure" aria-expanded="false">Show</button></div>
-</header></div><article class="recipe-page" style="box-sizing:border-box;"><div class="recipe-band"><header class="headnote"><h1>Olive Oil Ice Cream</h1><p class="headnote__prose">Silky and quietly savoury. Fresh olive oil adds a gentle fruitiness without overwhelming the cream, and a little more salt than you would think carries it. Serve it soft, with flaky salt.</p></header></div><section class="ingredient-table-region" aria-label="Ingredients"><div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Ingredients</h2><button type="button" class="text-control history-disclosure" aria-expanded="false">Show</button></div></section><section class="method-region" aria-label="Method"><div style="display:flex;align-items:baseline;gap:14px;margin:0 0 var(--gap-xs);"><h2 class="region-name" style="margin:0;">Instructions</h2><button type="button" class="text-control history-disclosure" aria-expanded="false">Show</button></div></section><div class="side-region"><section class="formulation-note-region" aria-label="Balance"><h2 class="region-name" style="margin:0 0 var(--gap-xs);"><button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="fold-balance" style="appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;display:flex;width:100%;min-height:44px;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;"><span style="display:flex;align-items:baseline;gap:14px;">Balance<span style="font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-weight:400;letter-spacing:normal;text-transform:none;color:var(--sheet-ink);text-decoration:underline;text-underline-offset:3px;">Show</span></span></button></h2></section><div class="margin-region"><div class="derived-advisories"><h2 class="region-name" style="margin:0 0 var(--gap-xs);"><button type="button" class="text-control history-disclosure" aria-expanded="false" aria-controls="fold-check" style="appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;display:flex;width:100%;min-height:44px;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;"><span style="display:flex;align-items:baseline;gap:14px;">Watch for<span style="font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-weight:400;letter-spacing:normal;text-transform:none;color:var(--sheet-ink);text-decoration:underline;text-underline-offset:3px;">Show</span></span></button></h2></div></div></div></article><div style="padding:0 20px;">
-<section aria-label="Batch" style="display:flex;flex-direction:column;gap:18px;"><div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;"><span style="display:block;font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#595959;">Batch</span><button type="button" class="text-control history-disclosure" aria-expanded="false">Show</button><span style="font-family:-apple-system,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;color:#141414;font-variant-numeric:tabular-nums;">churned 2 Aug 2026</span></div></section></div></div></main></div><nav class="shell__tabs" aria-label="Places"><a tabindex="0" class="shell__place shell__place--home" href="/" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 11 12 4l8 7"></path><path d="M6 10v9h12v-9"></path></svg>Home</a><a tabindex="0" class="shell__place shell__place--notebook" href="/notebook" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>Notebook</a><a tabindex="0" class="shell__place shell__place--recipe-book" href="/recipe-book" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5c-2-1.5-5-2-8-1v14c3-1 6-.5 8 1 2-1.5 5-2 8-1V4c-3-1-6-.5-8 1Z"></path><line x1="12" y1="5" x2="12" y2="19"></line></svg>Recipe book</a><a tabindex="0" class="shell__place shell__place--idea-log" href="/idea-log" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 21h4"></path><path d="M12 3a6 6 0 0 0-3 11c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a6 6 0 0 0-3-11Z"></path></svg>Idea log</a><details class="shell__more"><summary class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="12" r="1.2"></circle><circle cx="12" cy="12" r="1.2"></circle><circle cx="19" cy="12" r="1.2"></circle></svg>More</summary><ul><li><a tabindex="0" class="shell__place shell__place--ingredients" href="/ingredients" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 4c-8 0-14 5-14 12 0 2 1.5 3.5 3.5 3.5 7 0 12-6 12-14 0-.5 0-1-.1-1.5Z"></path><path d="M6 20 17 9"></path></svg>Ingredients</a></li><li><a tabindex="0" class="shell__place shell__place--kitchen" href="/kitchen" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10a8 8 0 0 1 16 0Z"></path><line x1="2" y1="10" x2="22" y2="10"></line><line x1="12" y1="2" x2="12" y2="5"></line></svg>Kitchen</a></li><li><a tabindex="0" class="shell__place" href="/search" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><line x1="15" y1="15" x2="21" y2="21"></line></svg>Search</a></li><li><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>Import</button></li><li><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M4 19h16"></path></svg>Export</button></li></ul></details></nav></div>
+<div style="width: 473px; height: 1360px; overflow: hidden; box-sizing: border-box; background: #ffffff;">
+<div style="position:relative;width:473px;height:1360px;background:#ffffff;"><div style="position:absolute;left:40px;top:40px;width:393px;"><div style="height:190px;"><p class="fp-title">Mexican Chocolate v3 · 393 wide · all folded</p><p class="fp-sub">Every section closed to its label and a Show control, to see the page height. The build folds Version, History, Balance and Watch for; Ingredients, Instructions and the Batch are closed here with the same fold row (they do not fold in the build). The Batch row reads "Batch · Show · churned date unknown" with the dot like the Tasting row.</p></div><div class="fp-win fp-mex3-393-folded" style="width:393px;height:1082px;"><div style="width:393px;"><div class="shell"><header class="shell__head"><div class="shell__lead"><div><p class="shell__brand"><a tabindex="0" href="/" data-discover="true">Sprinkles</a></p><div class="shell__sprinkles" aria-hidden="true"><span class="shell__sprinkle shell__sprinkle--notebook"></span><span class="shell__sprinkle shell__sprinkle--recipe-book"></span><span class="shell__sprinkle shell__sprinkle--idea-log"></span><span class="shell__sprinkle shell__sprinkle--ingredients"></span><span class="shell__sprinkle shell__sprinkle--kitchen"></span></div></div></div><div class="shell__tools"><a tabindex="0" class="shell__place" href="/search" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><line x1="15" y1="15" x2="21" y2="21"></line></svg>Search</a><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>Import</button><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M4 19h16"></path></svg>Export</button><input accept="application/json" class="shell__file-input" tabindex="-1" aria-hidden="true" type="file"></div></header><div class="shell__body"><nav id="places-fp-mex3-393-folded" class="shell__rail" aria-label="Places"><a tabindex="0" class="shell__place shell__place--home" href="/" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 11 12 4l8 7"></path><path d="M6 10v9h12v-9"></path></svg>Home</a><hr class="shell__divider" aria-hidden="true"><a tabindex="0" aria-current="page" class="shell__place shell__place--notebook active" href="/notebook" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>Notebook</a><a tabindex="0" class="shell__place shell__place--recipe-book" href="/recipe-book" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5c-2-1.5-5-2-8-1v14c3-1 6-.5 8 1 2-1.5 5-2 8-1V4c-3-1-6-.5-8 1Z"></path><line x1="12" y1="5" x2="12" y2="19"></line></svg>Recipe book</a><a tabindex="0" class="shell__place shell__place--idea-log" href="/idea-log" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 21h4"></path><path d="M12 3a6 6 0 0 0-3 11c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a6 6 0 0 0-3-11Z"></path></svg>Idea log</a><hr class="shell__divider" aria-hidden="true"><a tabindex="0" class="shell__place shell__place--ingredients" href="/ingredients" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 4c-8 0-14 5-14 12 0 2 1.5 3.5 3.5 3.5 7 0 12-6 12-14 0-.5 0-1-.1-1.5Z"></path><path d="M6 20 17 9"></path></svg>Ingredients</a><a tabindex="0" class="shell__place shell__place--kitchen" href="/kitchen" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10a8 8 0 0 1 16 0Z"></path><line x1="2" y1="10" x2="22" y2="10"></line><line x1="12" y1="2" x2="12" y2="5"></line></svg>Kitchen</a></nav><main class="shell__main"><div class="page-status-anchor"><p class="page-status" role="status" aria-live="polite"></p></div><div class="notebook"><header class="notebook-band"><div class="notebook-band__grid"><section class="notebook-recipe" aria-label="Recipe"><div class="notebook-recipe__identity"><span aria-hidden="true" class="notebook-recipe__rail"></span><h1 class="notebook-recipe__name">Mexican Chocolate</h1></div><button type="button" class="notebook-link" tabindex="0">Rename</button></section><section class="notebook-version" aria-label="Version"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-version-fp-mex3-393-folded" aria-label="Version, Show details" tabindex="0"><span class="fold-row__head"><span class="notebook-caption">Version</span><span class="fold-row__control">Show details</span></span></button><h2 class="notebook-version__identity">Version 3 · v3</h2><div class="notebook-version__acts"><button type="button" class="notebook-action" tabindex="0">Record a tasting</button><button type="button" class="notebook-link" tabindex="0">Next version</button></div></section><a class="notebook-jump" href="#batch" tabindex="0" aria-label="Go to batch, Awaiting tasting"><span class="notebook-jump__control">Go to batch</span><span class="notebook-jump__status">Awaiting tasting</span></a></div><section class="notebook-history" aria-label="History"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-history-fp-mex3-393-folded" aria-label="History, Show, 4 versions" tabindex="0"><span class="fold-row__head"><span class="notebook-caption">History</span><span class="fold-row__control">Show</span></span><span class="fold-row__count">4 versions</span></button></section></header><div class="notebook-body"><div class="notebook-body__sheet"><article class="recipe-page"><div class="recipe-band"><header class="headnote"><h1>Mexican Chocolate</h1><p class="headnote__prose"></p></header></div><section class="ingredient-table-region" aria-label="Ingredients"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-label="Ingredients, Show" tabindex="0"><span class="fold-row__head">Ingredients<span class="fold-row__control">Show</span></span></button></h2></section><section class="method-region" aria-label="Instructions"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-label="Instructions, Show" tabindex="0"><span class="fold-row__head">Instructions<span class="fold-row__control">Show</span></span></button></h2></section><div class="side-region"><section class="formulation-note-region" aria-label="Balance"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-balance-fp-mex3-393-folded" aria-label="Balance, Show" tabindex="0"><span class="fold-row__head">Balance<span class="fold-row__control">Show</span></span></button></h2></section><div class="margin-region"><div class="derived-advisories"><h2 class="region-name"><button type="button" class="fold-row" aria-expanded="false" aria-controls="fold-check-fp-mex3-393-folded" aria-label="Watch for, Show" tabindex="0"><span class="fold-row__head">Watch for<span class="fold-row__control">Show</span></span></button></h2></div></div></div></article></div><aside class="notebook-log" aria-label="Batch"><section class="batch-row" aria-label="Batch"><button type="button" class="fold-row" aria-expanded="false" aria-label="Batch, Show" tabindex="0"><span class="fold-row__head">Batch<span class="fold-row__control">Show</span></span><span class="fold-row__count">churned date unknown</span></button></section></aside></div></div></main></div><nav class="shell__tabs" aria-label="Places"><a tabindex="0" class="shell__place shell__place--home" href="/" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 11 12 4l8 7"></path><path d="M6 10v9h12v-9"></path></svg>Home</a><a tabindex="0" aria-current="page" class="shell__place shell__place--notebook active" href="/notebook" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>Notebook</a><a tabindex="0" class="shell__place shell__place--recipe-book" href="/recipe-book" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 5c-2-1.5-5-2-8-1v14c3-1 6-.5 8 1 2-1.5 5-2 8-1V4c-3-1-6-.5-8 1Z"></path><line x1="12" y1="5" x2="12" y2="19"></line></svg>Recipe book</a><a tabindex="0" class="shell__place shell__place--idea-log" href="/idea-log" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 21h4"></path><path d="M12 3a6 6 0 0 0-3 11c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a6 6 0 0 0-3-11Z"></path></svg>Idea log</a><details class="shell__more"><summary class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="12" r="1.2"></circle><circle cx="12" cy="12" r="1.2"></circle><circle cx="19" cy="12" r="1.2"></circle></svg>More</summary><ul><li><a tabindex="0" class="shell__place shell__place--ingredients" href="/ingredients" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 4c-8 0-14 5-14 12 0 2 1.5 3.5 3.5 3.5 7 0 12-6 12-14 0-.5 0-1-.1-1.5Z"></path><path d="M6 20 17 9"></path></svg>Ingredients</a></li><li><a tabindex="0" class="shell__place shell__place--kitchen" href="/kitchen" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10a8 8 0 0 1 16 0Z"></path><line x1="2" y1="10" x2="22" y2="10"></line><line x1="12" y1="2" x2="12" y2="5"></line></svg>Kitchen</a></li><li><a tabindex="0" class="shell__place" href="/search" data-discover="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle><line x1="15" y1="15" x2="21" y2="21"></line></svg>Search</a></li><li><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>Import</button></li><li><button type="button" class="shell__place" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 15V3"></path><path d="M7 8l5-5 5 5"></path><path d="M4 19h16"></path></svg>Export</button></li></ul></details></nav></div></div></div></div></div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":393,"height":1300}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":473,"height":1360}}'>
 class Component extends DCLogic {
   renderVals() { return {}; }
 }

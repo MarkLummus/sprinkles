@@ -14,8 +14,9 @@ def _block_end(css, k):
         depth += (css[m] == '{') - (css[m] == '}'); m += 1
     return m
 
-def _media_true(cond, width, coarse):
+def _media_true(cond, width, coarse, screen=True):
     for alt in cond.split(','):
+        if not screen and re.match(r'\s*(only\s+)?screen\b', alt): continue    # a print page: the screen-only blocks (the table's D3 grid from 724) do not apply (Sid, 2026-10-04)
         terms = re.findall(r'\(([^)]*)\)', alt); ok = bool(terms)
         for term in terms:
             t = term.replace(' ', '')
@@ -26,14 +27,14 @@ def _media_true(cond, width, coarse):
         if ok: return True
     return False
 
-def resolve_media(css, width, coarse):
+def resolve_media(css, width, coarse, screen=True):
     """Unwrap the top-level @media blocks that hold at this window width and pointer; drop the rest (forced colours, print)."""
     css = _strip_comments(css); out = []; i = 0
     while True:
         j = css.find('@media', i)
         if j < 0: out.append(css[i:]); break
         out.append(css[i:j]); k = css.index('{', j); m = _block_end(css, k)
-        if _media_true(css[j + 6:k].strip(), width, coarse): out.append(css[k + 1:m - 1])
+        if _media_true(css[j + 6:k].strip(), width, coarse, screen): out.append(css[k + 1:m - 1])
         i = m
     return ''.join(out)
 
@@ -54,6 +55,7 @@ def scope_css(css, scope):
         sel = css[i:k].strip(); m = _block_end(css, k)
         assert not sel.startswith('@'), sel
         new = []
+        if sel == 'html': i = m; continue   # shell.css's one root rule (scroll-padding-top, decision 33) means nothing inside a panel: dropped (Sid, 2026-10-04)
         for p in _top_commas(sel):
             p = p.strip()
             assert not p.startswith(':root') and not p.startswith('html'), p

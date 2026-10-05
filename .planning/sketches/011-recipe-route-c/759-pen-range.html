@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>C · 759 · the record pen at the widest window of the range · today (cut at 760) beside the cut at 724 (drawn, decision 28 still proposed)</title>
+<title>C · 759 · the record pen at the widest window of the range · today (cut at 760) beside the cut at 724 (drawn; redrawn 2026-10-04 on the one 10px radius, decision 38; decision 28 approved 2026-10-02)</title>
 </head>
 <body>
 <x-dc>
@@ -48,6 +48,7 @@ body{margin:0;background:#ffffff}
   --sheet-text-control-min: 24px; 
   --sheet-type-note: 1rem; 
   --sheet-leading-note: 1.5;
+  --sheet-leading-title: 1.15; 
 
   
   --gap-hair: 2px;
@@ -199,11 +200,10 @@ body{margin:0;background:#ffffff}
   --app-size-rail-w: 8px;
   --app-size-rail-h: 56px;
   --app-radius-rail: 4px;
+  --app-radius-control: 10px; 
   --app-rule-tally: 2px; 
   --app-col-standing: 120px; 
   --app-col-tally: 132px; 
-  --app-radius-action: 10px; 
-  --app-radius-lead: 10px; 
   --app-rule-nav-active: 3px;
   --app-rule-row: var(--rule-graduation); 
   --app-duration: 120ms; 
@@ -213,6 +213,14 @@ body{margin:0;background:#ffffff}
   --app-size-icon: 20px;
   --app-tilt-sprinkle: -8deg; 
   --app-size-tab-h: 56px; 
+  --app-size-header-h: calc(var(--touch-min) + 2 * var(--gap-xs) + var(--app-rule-row)); 
+  --app-z-notice: 10; 
+  --app-z-header: 11; 
+  --app-z-scrim: 4; 
+  --app-z-flyout: 5; 
+  --app-scrim: rgba(20, 20, 20, 0.28); 
+  --app-shadow-flyout: 4px 0 16px rgba(20, 20, 20, 0.18); 
+  --app-tilt-menu: 90deg; 
 
   
   --app-notebook-gutter: var(--gap-l); 
@@ -231,8 +239,8 @@ body{margin:0;background:#ffffff}
   --app-notebook-desc-leading: 1.5; 
   --app-notebook-link-underline-offset: 3px; 
   --app-notebook-field-pad-x: 10px; 
-  --app-notebook-field-radius: 8px; 
   --app-notebook-gap-hairline: 4px; 
+  --app-notebook-details-gap-row: 8px; 
   --app-notebook-checkbox-size: 16px; 
   --app-notebook-acts-gap: 10px; 
   --app-notebook-identity-size: 18px; 
@@ -243,6 +251,7 @@ body{margin:0;background:#ffffff}
   --app-notebook-log-head-gap: 18px; 
   --app-notebook-log-head-outer-gap: 16px; 
   --app-notebook-log-group-gap: 18px; 
+  --app-notebook-pen-cue-line-h: 20px; 
 
   
   --app-notebook-history-head-gap: 10px; 
@@ -440,7 +449,7 @@ body{margin:0;background:#ffffff}
 }
 .v-today-mouse .page-status{
   position: absolute;
-  z-index: 10;
+  z-index: var(--app-z-notice);
   inset-block-start: 0;
   inset-inline-start: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
@@ -508,6 +517,12 @@ body{margin:0;background:#ffffff}
   padding: var(--gap-page);
   background: var(--sheet-ground);
 }
+.v-today-mouse .recipe-page--no-method{
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'foot foot';
+}
 .v-today-mouse .recipe-band{
   grid-area: band;
   display: flex;
@@ -530,12 +545,15 @@ body{margin:0;background:#ffffff}
 }
 .v-today-mouse .headnote__sheet-title-field{
   display: block;
-  margin-top: var(--gap-m);
 }
-.v-today-mouse .headnote__sheet-title-field .ink-field{
+.v-today-mouse .headnote__sheet-title-field .prose-field{
+  display: block;
   font-family: var(--face-text);
   font-size: var(--sheet-size-recipe-name);
   font-weight: 700;
+  line-height: var(--sheet-leading-title);
+  resize: none;
+  overflow: hidden;
 }
 .v-today-mouse .headnote__prose-field{
   display: block;
@@ -605,11 +623,12 @@ body{margin:0;background:#ffffff}
   grid-column: 1 / -1;
 }
 .v-today-mouse .version-row__reason-label{
-  margin-top: var(--gap-s);
+  margin-bottom: calc(-1 * var(--app-notebook-gap-hairline));
 }
 .v-today-mouse .version-row__reason{
   max-width: var(--measure-prose);
-  font-size: var(--sheet-type-note);
+  margin-inline-start: 0;
+  overflow-wrap: anywhere;
 }
 .v-today-mouse .version-row__reason--empty{
   font-family: var(--face-grotesk);
@@ -803,6 +822,20 @@ body{margin:0;background:#ffffff}
   letter-spacing: 0.04em;
   color: var(--sheet-bookcloth);
   margin: 0 0 var(--gap-xs);
+}
+.v-today-mouse .ingredient-table-region__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  margin: 0 0 var(--gap-xs);
+}
+.v-today-mouse .ingredient-table-region__head .region-name{
+  margin: 0;
+}
+.v-today-mouse .ingredient-table-region__head .text-control{
+  flex: none;
+  font-weight: 400;
 }
 .v-today-mouse .method__before{
   max-width: var(--measure-prose);
@@ -1625,6 +1658,13 @@ body{margin:0;background:#ffffff}
       'method'
       'foot';
   }
+.v-today-mouse .recipe-page--no-method{
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'foot';
+  }
 .v-today-mouse .axis-mark__stops, .v-today-mouse .axis-mark__anchors{
     width: var(--sheet-track-stop-narrow);
   }
@@ -1632,6 +1672,88 @@ body{margin:0;background:#ffffff}
     width: var(--touch-stop-width);
     height: var(--sheet-touch-stop-height);
     flex-basis: var(--touch-stop-width);
+  }
+.v-today-mouse .ingredient-table, .v-today-mouse .ingredient-table thead, .v-today-mouse .ingredient-table tbody, .v-today-mouse .ingredient-table tfoot{
+    display: block;
+    width: 100%;
+  }
+.v-today-mouse .ingredient-table tr:not(.ingredient-table__step-head){
+    display: grid;
+    grid-template-columns: var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'plan name share';
+    column-gap: var(--sheet-narrow-name-gap);
+    row-gap: var(--gap-hair);
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--gap-xs) var(--sheet-table-cell-pad-x);
+    border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-today-mouse .ingredient-table thead tr:not(.ingredient-table__step-head){
+    padding-top: 0;
+  }
+.v-today-mouse .ingredient-table tfoot tr{
+    border-bottom: 0;
+    border-top: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-today-mouse .ingredient-table tbody tr:last-child{
+    border-bottom: 0;
+  }
+.v-today-mouse .ingredient-table tr:not(.ingredient-table__step-head) > th, .v-today-mouse .ingredient-table tr:not(.ingredient-table__step-head) > td{
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+.v-today-mouse .ingredient-table td.ingredient-table__col-grams, .v-today-mouse .ingredient-table td.ingredient-table__col-name, .v-today-mouse .ingredient-table td.ingredient-table__col-numeric{
+    width: auto;
+  }
+.v-today-mouse .ingredient-table td.ingredient-table__col-grams{
+    grid-area: plan;
+    text-align: right;
+    padding-right: 0;
+  }
+.v-today-mouse .ingredient-table td.ingredient-table__col-name{
+    grid-area: name;
+  }
+.v-today-mouse .ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){
+    grid-area: asm;
+    text-align: right;
+    align-self: start;
+  }
+.v-today-mouse .ingredient-table td.ingredient-table__col-numeric:last-child{
+    grid-area: share;
+    text-align: right;
+    align-self: start;
+  }
+.v-today-mouse .ingredient-table td.ingredient-table__col-numeric:empty{
+    display: none;
+  }
+.v-today-mouse .ingredient-table thead th.ingredient-table__col-numeric:last-child{
+    white-space: nowrap;
+    text-align: right;
+    grid-column: -2 / -1;
+  }
+.v-today-mouse .ingredient-table__plan-grams > .struck-value, .v-today-mouse .ingredient-table td.ingredient-table__col-numeric > .struck-value, .v-today-mouse .ingredient-table td.ingredient-table__col-grams > .struck-value{
+    display: block;
+    margin-right: 0;
+  }
+.v-today-mouse .ingredient-table--as-made tr:not(.ingredient-table__step-head){
+    grid-template-columns: var(--sheet-field-w-figure) var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'asm plan name share';
+  }
+.v-today-mouse .ingredient-table thead th.ingredient-table__col-name{
+    grid-column: 1 / 3;
+  }
+.v-today-mouse .ingredient-table--as-made thead th.ingredient-table__col-name{
+    grid-column: 2 / 4;
+  }
+.v-today-mouse .ingredient-table thead th.ingredient-table__col-numeric:not(:last-child){
+    grid-column: 1;
+    text-align: right;
+  }
+.v-today-mouse .ingredient-table td.ingredient-table__col-grams:has(.struck-value), .v-today-mouse .ingredient-table__plan-grams:has(> .struck-value), .v-today-mouse .ingredient-table td.ingredient-table__col-numeric:has(> .struck-value){
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
   }
 .v-today-mouse .notebook{
   box-sizing: border-box;
@@ -1737,7 +1859,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   min-height: var(--touch-min);
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--app-notebook-recipe-rail-gap);
   text-decoration: none;
 }
@@ -1746,7 +1868,7 @@ body{margin:0;background:#ffffff}
   align-items: baseline;
   gap: var(--app-notebook-recipe-rail-gap);
 }
-.v-today-mouse .notebook .fold-row__control{
+.v-today-mouse .notebook .fold-row__control, .v-today-mouse .notebook .notebook-jump__control{
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-control);
   font-weight: 400;
@@ -1756,13 +1878,21 @@ body{margin:0;background:#ffffff}
   text-decoration: underline;
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
-.v-today-mouse .notebook .fold-row__count{
+.v-today-mouse .notebook .fold-row__count, .v-today-mouse .notebook .notebook-jump__status{
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
   font-weight: 400;
   letter-spacing: normal;
   text-transform: none;
   color: var(--app-text-secondary);
+}
+.v-today-mouse .notebook .fold-row__count::before, .v-today-mouse .notebook .notebook-jump__status::before{
+  content: "\00b7";
+  margin-right: var(--app-notebook-recipe-rail-gap);
+}
+.v-today-mouse .notebook-jump{
+  display: none;
+  justify-content: flex-start;
 }
 .v-today-mouse .notebook-field{
   display: flex;
@@ -1774,7 +1904,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   padding: var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);
   border: var(--app-rule-row) solid var(--app-divider);
-  border-radius: var(--app-notebook-field-radius);
+  border-radius: var(--app-radius-control);
   background: var(--app-background);
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-size-body);
@@ -1794,7 +1924,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-blue-text);
   color: var(--app-background);
@@ -1811,7 +1941,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-background);
   color: var(--app-blue-text);
@@ -1835,6 +1965,13 @@ body{margin:0;background:#ffffff}
 }
 .v-today-mouse .notebook-recipe > .notebook-link{
   align-self: flex-start;
+}
+.v-today-mouse .notebook-action:hover, .v-today-mouse .notebook-action--outline:hover{
+  border-width: var(--rule-hover);
+  padding: calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover));
+}
+.v-today-mouse .notebook-link:hover{
+  padding: 0;
 }
 .v-today-mouse .notebook-ceremony{
   display: flex;
@@ -1895,7 +2032,7 @@ body{margin:0;background:#ffffff}
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: var(--app-notebook-recipe-rail-gap);
-  row-gap: var(--app-notebook-gap-hairline);
+  row-gap: var(--app-notebook-details-gap-row);
   font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
   color: var(--app-text);
@@ -2109,8 +2246,9 @@ body{margin:0;background:#ffffff}
   border-top: var(--app-rule-row) solid var(--app-divider);
 }
 .v-today-mouse .notebook-log .batch-row__head{
-  justify-content: space-between;
-  gap: var(--app-notebook-log-head-outer-gap);
+  justify-content: flex-start;
+  row-gap: var(--app-notebook-log-head-outer-gap);
+  column-gap: var(--gap-l);
 }
 .v-today-mouse .notebook-log .batch-row__head-lead{
   display: flex;
@@ -2210,6 +2348,70 @@ body{margin:0;background:#ffffff}
 .v-today-mouse .notebook-log .save-ceremony, .v-today-mouse .notebook-log .pen-foot__controls{
   flex-wrap: wrap;
 }
+.v-today-mouse .notebook-log *{
+  border-color: var(--app-divider);
+}
+.v-today-mouse .notebook-log .pen-caption{
+  color: var(--app-text-secondary);
+}
+.v-today-mouse .notebook-log .ink-field{
+  border-radius: var(--app-radius-control);
+  color: var(--app-text);
+}
+.v-today-mouse .notebook-log .axis-mark__stop, .v-today-mouse .notebook-log .segmented__option{
+  border-color: var(--app-text-secondary);
+}
+.v-today-mouse .notebook-log .axis-mark__stop:first-child, .v-today-mouse .notebook-log .segmented__option:first-child{
+  border-top-left-radius: var(--app-radius-control);
+  border-bottom-left-radius: var(--app-radius-control);
+}
+.v-today-mouse .notebook-log .axis-mark__stop:last-child, .v-today-mouse .notebook-log .segmented__option:last-child{
+  border-top-right-radius: var(--app-radius-control);
+  border-bottom-right-radius: var(--app-radius-control);
+}
+.v-today-mouse .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-today-mouse .notebook-log .segmented__option:has(input[type='radio']:checked){
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-today-mouse .notebook-log .chip-toggle::before{
+  border-color: var(--app-text-secondary);
+  border-radius: var(--app-radius-rail);
+}
+.v-today-mouse .notebook-log .chip-toggle[aria-pressed='true']::before{
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+}
+.v-today-mouse .notebook-log .save-ceremony button{
+  border-color: var(--app-blue-text);
+  border-radius: var(--app-radius-control);
+  color: var(--app-blue-text);
+  background: none;
+}
+.v-today-mouse .notebook-log .save-ceremony button:last-of-type{
+  background: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-today-mouse .notebook-log .axes-cue{
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+.v-today-mouse .notebook-log .axes-grid--stacked{
+  gap: var(--gap-l);
+}
+.v-today-mouse .notebook-log .axes-grid__group > .axis-mark:first-of-type{
+  margin-top: 0;
+}
+.v-today-mouse .notebook-log .axes-grid__group > .axes-cue{
+  margin-bottom: calc(var(--gap-s) - var(--gap-m));
+}
+.v-today-mouse .notebook-log .axes-grid--stacked > .defects-head{
+  margin-bottom: calc(var(--gap-s) - var(--gap-l));
+}
 .v-today-mouse .notebook{
     gap: var(--app-notebook-band-rhythm);
   }
@@ -2219,6 +2421,16 @@ body{margin:0;background:#ffffff}
   }
 .v-today-mouse .notebook-band__grid{
     gap: var(--gap-l);
+  }
+.v-today-mouse .notebook-jump{
+    display: flex;
+    grid-column: 2;
+    width: 100%;
+    min-height: var(--touch-min);
+    align-items: center;
+    gap: var(--app-notebook-recipe-rail-gap);
+    text-decoration: none;
+    color: inherit;
   }
 .v-today-mouse .notebook-body{
     
@@ -2239,14 +2451,14 @@ body{margin:0;background:#ffffff}
 .v-today-mouse /* App-context skin for the record pen: colour, .v-today-mouse radius and rule colour only; no size moves (decision 29) */
 .notebook-log *{border-color:var(--app-divider)}
 .v-today-mouse .notebook-log .pen-caption{color:var(--app-text-secondary)}
-.v-today-mouse .notebook-log .ink-field{border-radius:var(--app-notebook-field-radius);color:var(--app-text)}
+.v-today-mouse .notebook-log .ink-field{border-radius:var(--app-radius-control);color:var(--app-text)}
 .v-today-mouse .notebook-log .axis-mark__stop, .v-today-mouse .notebook-log .segmented__option{border-color:var(--app-text-secondary)}
-.v-today-mouse .notebook-log .axis-mark__stop:first-child, .v-today-mouse .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-notebook-field-radius);border-bottom-left-radius:var(--app-notebook-field-radius)}
-.v-today-mouse .notebook-log .axis-mark__stop:last-child, .v-today-mouse .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-notebook-field-radius);border-bottom-right-radius:var(--app-notebook-field-radius)}
+.v-today-mouse .notebook-log .axis-mark__stop:first-child, .v-today-mouse .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-radius-control);border-bottom-left-radius:var(--app-radius-control)}
+.v-today-mouse .notebook-log .axis-mark__stop:last-child, .v-today-mouse .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-radius-control);border-bottom-right-radius:var(--app-radius-control)}
 .v-today-mouse .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-today-mouse .notebook-log .segmented__option:has(input[type='radio']:checked){background:var(--app-blue-text);border-color:var(--app-blue-text);color:var(--app-background)}
 .v-today-mouse .notebook-log .chip-toggle::before{border-color:var(--app-text-secondary);border-radius:var(--app-radius-rail)}
 .v-today-mouse .notebook-log .chip-toggle[aria-pressed='true']::before{background:var(--app-blue-text);border-color:var(--app-blue-text)}
-.v-today-mouse .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-action);color:var(--app-blue-text);background:none}
+.v-today-mouse .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-control);color:var(--app-blue-text);background:none}
 .v-today-mouse .notebook-log .save-ceremony button:last-of-type{background:var(--app-blue-text);color:var(--app-background)}
 .v-cut724-mouse{
   margin: 0;
@@ -2404,7 +2616,7 @@ body{margin:0;background:#ffffff}
 }
 .v-cut724-mouse .page-status{
   position: absolute;
-  z-index: 10;
+  z-index: var(--app-z-notice);
   inset-block-start: 0;
   inset-inline-start: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
@@ -2472,6 +2684,12 @@ body{margin:0;background:#ffffff}
   padding: var(--gap-page);
   background: var(--sheet-ground);
 }
+.v-cut724-mouse .recipe-page--no-method{
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'foot foot';
+}
 .v-cut724-mouse .recipe-band{
   grid-area: band;
   display: flex;
@@ -2494,12 +2712,15 @@ body{margin:0;background:#ffffff}
 }
 .v-cut724-mouse .headnote__sheet-title-field{
   display: block;
-  margin-top: var(--gap-m);
 }
-.v-cut724-mouse .headnote__sheet-title-field .ink-field{
+.v-cut724-mouse .headnote__sheet-title-field .prose-field{
+  display: block;
   font-family: var(--face-text);
   font-size: var(--sheet-size-recipe-name);
   font-weight: 700;
+  line-height: var(--sheet-leading-title);
+  resize: none;
+  overflow: hidden;
 }
 .v-cut724-mouse .headnote__prose-field{
   display: block;
@@ -2569,11 +2790,12 @@ body{margin:0;background:#ffffff}
   grid-column: 1 / -1;
 }
 .v-cut724-mouse .version-row__reason-label{
-  margin-top: var(--gap-s);
+  margin-bottom: calc(-1 * var(--app-notebook-gap-hairline));
 }
 .v-cut724-mouse .version-row__reason{
   max-width: var(--measure-prose);
-  font-size: var(--sheet-type-note);
+  margin-inline-start: 0;
+  overflow-wrap: anywhere;
 }
 .v-cut724-mouse .version-row__reason--empty{
   font-family: var(--face-grotesk);
@@ -2767,6 +2989,20 @@ body{margin:0;background:#ffffff}
   letter-spacing: 0.04em;
   color: var(--sheet-bookcloth);
   margin: 0 0 var(--gap-xs);
+}
+.v-cut724-mouse .ingredient-table-region__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  margin: 0 0 var(--gap-xs);
+}
+.v-cut724-mouse .ingredient-table-region__head .region-name{
+  margin: 0;
+}
+.v-cut724-mouse .ingredient-table-region__head .text-control{
+  flex: none;
+  font-weight: 400;
 }
 .v-cut724-mouse .method__before{
   max-width: var(--measure-prose);
@@ -3589,6 +3825,95 @@ body{margin:0;background:#ffffff}
       'method'
       'foot';
   }
+.v-cut724-mouse .recipe-page--no-method{
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'foot';
+  }
+.v-cut724-mouse .ingredient-table, .v-cut724-mouse .ingredient-table thead, .v-cut724-mouse .ingredient-table tbody, .v-cut724-mouse .ingredient-table tfoot{
+    display: block;
+    width: 100%;
+  }
+.v-cut724-mouse .ingredient-table tr:not(.ingredient-table__step-head){
+    display: grid;
+    grid-template-columns: var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'plan name share';
+    column-gap: var(--sheet-narrow-name-gap);
+    row-gap: var(--gap-hair);
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--gap-xs) var(--sheet-table-cell-pad-x);
+    border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-cut724-mouse .ingredient-table thead tr:not(.ingredient-table__step-head){
+    padding-top: 0;
+  }
+.v-cut724-mouse .ingredient-table tfoot tr{
+    border-bottom: 0;
+    border-top: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-cut724-mouse .ingredient-table tbody tr:last-child{
+    border-bottom: 0;
+  }
+.v-cut724-mouse .ingredient-table tr:not(.ingredient-table__step-head) > th, .v-cut724-mouse .ingredient-table tr:not(.ingredient-table__step-head) > td{
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+.v-cut724-mouse .ingredient-table td.ingredient-table__col-grams, .v-cut724-mouse .ingredient-table td.ingredient-table__col-name, .v-cut724-mouse .ingredient-table td.ingredient-table__col-numeric{
+    width: auto;
+  }
+.v-cut724-mouse .ingredient-table td.ingredient-table__col-grams{
+    grid-area: plan;
+    text-align: right;
+    padding-right: 0;
+  }
+.v-cut724-mouse .ingredient-table td.ingredient-table__col-name{
+    grid-area: name;
+  }
+.v-cut724-mouse .ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){
+    grid-area: asm;
+    text-align: right;
+    align-self: start;
+  }
+.v-cut724-mouse .ingredient-table td.ingredient-table__col-numeric:last-child{
+    grid-area: share;
+    text-align: right;
+    align-self: start;
+  }
+.v-cut724-mouse .ingredient-table td.ingredient-table__col-numeric:empty{
+    display: none;
+  }
+.v-cut724-mouse .ingredient-table thead th.ingredient-table__col-numeric:last-child{
+    white-space: nowrap;
+    text-align: right;
+    grid-column: -2 / -1;
+  }
+.v-cut724-mouse .ingredient-table__plan-grams > .struck-value, .v-cut724-mouse .ingredient-table td.ingredient-table__col-numeric > .struck-value, .v-cut724-mouse .ingredient-table td.ingredient-table__col-grams > .struck-value{
+    display: block;
+    margin-right: 0;
+  }
+.v-cut724-mouse .ingredient-table--as-made tr:not(.ingredient-table__step-head){
+    grid-template-columns: var(--sheet-field-w-figure) var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'asm plan name share';
+  }
+.v-cut724-mouse .ingredient-table thead th.ingredient-table__col-name{
+    grid-column: 1 / 3;
+  }
+.v-cut724-mouse .ingredient-table--as-made thead th.ingredient-table__col-name{
+    grid-column: 2 / 4;
+  }
+.v-cut724-mouse .ingredient-table thead th.ingredient-table__col-numeric:not(:last-child){
+    grid-column: 1;
+    text-align: right;
+  }
+.v-cut724-mouse .ingredient-table td.ingredient-table__col-grams:has(.struck-value), .v-cut724-mouse .ingredient-table__plan-grams:has(> .struck-value), .v-cut724-mouse .ingredient-table td.ingredient-table__col-numeric:has(> .struck-value){
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
 .v-cut724-mouse .notebook{
   box-sizing: border-box;
   width: 100%;
@@ -3693,7 +4018,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   min-height: var(--touch-min);
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--app-notebook-recipe-rail-gap);
   text-decoration: none;
 }
@@ -3702,7 +4027,7 @@ body{margin:0;background:#ffffff}
   align-items: baseline;
   gap: var(--app-notebook-recipe-rail-gap);
 }
-.v-cut724-mouse .notebook .fold-row__control{
+.v-cut724-mouse .notebook .fold-row__control, .v-cut724-mouse .notebook .notebook-jump__control{
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-control);
   font-weight: 400;
@@ -3712,13 +4037,21 @@ body{margin:0;background:#ffffff}
   text-decoration: underline;
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
-.v-cut724-mouse .notebook .fold-row__count{
+.v-cut724-mouse .notebook .fold-row__count, .v-cut724-mouse .notebook .notebook-jump__status{
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
   font-weight: 400;
   letter-spacing: normal;
   text-transform: none;
   color: var(--app-text-secondary);
+}
+.v-cut724-mouse .notebook .fold-row__count::before, .v-cut724-mouse .notebook .notebook-jump__status::before{
+  content: "\00b7";
+  margin-right: var(--app-notebook-recipe-rail-gap);
+}
+.v-cut724-mouse .notebook-jump{
+  display: none;
+  justify-content: flex-start;
 }
 .v-cut724-mouse .notebook-field{
   display: flex;
@@ -3730,7 +4063,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   padding: var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);
   border: var(--app-rule-row) solid var(--app-divider);
-  border-radius: var(--app-notebook-field-radius);
+  border-radius: var(--app-radius-control);
   background: var(--app-background);
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-size-body);
@@ -3750,7 +4083,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-blue-text);
   color: var(--app-background);
@@ -3767,7 +4100,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-background);
   color: var(--app-blue-text);
@@ -3791,6 +4124,13 @@ body{margin:0;background:#ffffff}
 }
 .v-cut724-mouse .notebook-recipe > .notebook-link{
   align-self: flex-start;
+}
+.v-cut724-mouse .notebook-action:hover, .v-cut724-mouse .notebook-action--outline:hover{
+  border-width: var(--rule-hover);
+  padding: calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover));
+}
+.v-cut724-mouse .notebook-link:hover{
+  padding: 0;
 }
 .v-cut724-mouse .notebook-ceremony{
   display: flex;
@@ -3851,7 +4191,7 @@ body{margin:0;background:#ffffff}
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: var(--app-notebook-recipe-rail-gap);
-  row-gap: var(--app-notebook-gap-hairline);
+  row-gap: var(--app-notebook-details-gap-row);
   font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
   color: var(--app-text);
@@ -4065,8 +4405,9 @@ body{margin:0;background:#ffffff}
   border-top: var(--app-rule-row) solid var(--app-divider);
 }
 .v-cut724-mouse .notebook-log .batch-row__head{
-  justify-content: space-between;
-  gap: var(--app-notebook-log-head-outer-gap);
+  justify-content: flex-start;
+  row-gap: var(--app-notebook-log-head-outer-gap);
+  column-gap: var(--gap-l);
 }
 .v-cut724-mouse .notebook-log .batch-row__head-lead{
   display: flex;
@@ -4166,6 +4507,70 @@ body{margin:0;background:#ffffff}
 .v-cut724-mouse .notebook-log .save-ceremony, .v-cut724-mouse .notebook-log .pen-foot__controls{
   flex-wrap: wrap;
 }
+.v-cut724-mouse .notebook-log *{
+  border-color: var(--app-divider);
+}
+.v-cut724-mouse .notebook-log .pen-caption{
+  color: var(--app-text-secondary);
+}
+.v-cut724-mouse .notebook-log .ink-field{
+  border-radius: var(--app-radius-control);
+  color: var(--app-text);
+}
+.v-cut724-mouse .notebook-log .axis-mark__stop, .v-cut724-mouse .notebook-log .segmented__option{
+  border-color: var(--app-text-secondary);
+}
+.v-cut724-mouse .notebook-log .axis-mark__stop:first-child, .v-cut724-mouse .notebook-log .segmented__option:first-child{
+  border-top-left-radius: var(--app-radius-control);
+  border-bottom-left-radius: var(--app-radius-control);
+}
+.v-cut724-mouse .notebook-log .axis-mark__stop:last-child, .v-cut724-mouse .notebook-log .segmented__option:last-child{
+  border-top-right-radius: var(--app-radius-control);
+  border-bottom-right-radius: var(--app-radius-control);
+}
+.v-cut724-mouse .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-cut724-mouse .notebook-log .segmented__option:has(input[type='radio']:checked){
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-cut724-mouse .notebook-log .chip-toggle::before{
+  border-color: var(--app-text-secondary);
+  border-radius: var(--app-radius-rail);
+}
+.v-cut724-mouse .notebook-log .chip-toggle[aria-pressed='true']::before{
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+}
+.v-cut724-mouse .notebook-log .save-ceremony button{
+  border-color: var(--app-blue-text);
+  border-radius: var(--app-radius-control);
+  color: var(--app-blue-text);
+  background: none;
+}
+.v-cut724-mouse .notebook-log .save-ceremony button:last-of-type{
+  background: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-cut724-mouse .notebook-log .axes-cue{
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+.v-cut724-mouse .notebook-log .axes-grid--stacked{
+  gap: var(--gap-l);
+}
+.v-cut724-mouse .notebook-log .axes-grid__group > .axis-mark:first-of-type{
+  margin-top: 0;
+}
+.v-cut724-mouse .notebook-log .axes-grid__group > .axes-cue{
+  margin-bottom: calc(var(--gap-s) - var(--gap-m));
+}
+.v-cut724-mouse .notebook-log .axes-grid--stacked > .defects-head{
+  margin-bottom: calc(var(--gap-s) - var(--gap-l));
+}
 .v-cut724-mouse .notebook{
     gap: var(--app-notebook-band-rhythm);
   }
@@ -4175,6 +4580,16 @@ body{margin:0;background:#ffffff}
   }
 .v-cut724-mouse .notebook-band__grid{
     gap: var(--gap-l);
+  }
+.v-cut724-mouse .notebook-jump{
+    display: flex;
+    grid-column: 2;
+    width: 100%;
+    min-height: var(--touch-min);
+    align-items: center;
+    gap: var(--app-notebook-recipe-rail-gap);
+    text-decoration: none;
+    color: inherit;
   }
 .v-cut724-mouse .notebook-body{
     
@@ -4195,14 +4610,14 @@ body{margin:0;background:#ffffff}
 .v-cut724-mouse /* App-context skin for the record pen: colour, .v-cut724-mouse radius and rule colour only; no size moves (decision 29) */
 .notebook-log *{border-color:var(--app-divider)}
 .v-cut724-mouse .notebook-log .pen-caption{color:var(--app-text-secondary)}
-.v-cut724-mouse .notebook-log .ink-field{border-radius:var(--app-notebook-field-radius);color:var(--app-text)}
+.v-cut724-mouse .notebook-log .ink-field{border-radius:var(--app-radius-control);color:var(--app-text)}
 .v-cut724-mouse .notebook-log .axis-mark__stop, .v-cut724-mouse .notebook-log .segmented__option{border-color:var(--app-text-secondary)}
-.v-cut724-mouse .notebook-log .axis-mark__stop:first-child, .v-cut724-mouse .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-notebook-field-radius);border-bottom-left-radius:var(--app-notebook-field-radius)}
-.v-cut724-mouse .notebook-log .axis-mark__stop:last-child, .v-cut724-mouse .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-notebook-field-radius);border-bottom-right-radius:var(--app-notebook-field-radius)}
+.v-cut724-mouse .notebook-log .axis-mark__stop:first-child, .v-cut724-mouse .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-radius-control);border-bottom-left-radius:var(--app-radius-control)}
+.v-cut724-mouse .notebook-log .axis-mark__stop:last-child, .v-cut724-mouse .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-radius-control);border-bottom-right-radius:var(--app-radius-control)}
 .v-cut724-mouse .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-cut724-mouse .notebook-log .segmented__option:has(input[type='radio']:checked){background:var(--app-blue-text);border-color:var(--app-blue-text);color:var(--app-background)}
 .v-cut724-mouse .notebook-log .chip-toggle::before{border-color:var(--app-text-secondary);border-radius:var(--app-radius-rail)}
 .v-cut724-mouse .notebook-log .chip-toggle[aria-pressed='true']::before{background:var(--app-blue-text);border-color:var(--app-blue-text)}
-.v-cut724-mouse .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-action);color:var(--app-blue-text);background:none}
+.v-cut724-mouse .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-control);color:var(--app-blue-text);background:none}
 .v-cut724-mouse .notebook-log .save-ceremony button:last-of-type{background:var(--app-blue-text);color:var(--app-background)}
 .v-today-touch{
   margin: 0;
@@ -4360,7 +4775,7 @@ body{margin:0;background:#ffffff}
 }
 .v-today-touch .page-status{
   position: absolute;
-  z-index: 10;
+  z-index: var(--app-z-notice);
   inset-block-start: 0;
   inset-inline-start: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
@@ -4428,6 +4843,12 @@ body{margin:0;background:#ffffff}
   padding: var(--gap-page);
   background: var(--sheet-ground);
 }
+.v-today-touch .recipe-page--no-method{
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'foot foot';
+}
 .v-today-touch .recipe-band{
   grid-area: band;
   display: flex;
@@ -4450,12 +4871,15 @@ body{margin:0;background:#ffffff}
 }
 .v-today-touch .headnote__sheet-title-field{
   display: block;
-  margin-top: var(--gap-m);
 }
-.v-today-touch .headnote__sheet-title-field .ink-field{
+.v-today-touch .headnote__sheet-title-field .prose-field{
+  display: block;
   font-family: var(--face-text);
   font-size: var(--sheet-size-recipe-name);
   font-weight: 700;
+  line-height: var(--sheet-leading-title);
+  resize: none;
+  overflow: hidden;
 }
 .v-today-touch .headnote__prose-field{
   display: block;
@@ -4525,11 +4949,12 @@ body{margin:0;background:#ffffff}
   grid-column: 1 / -1;
 }
 .v-today-touch .version-row__reason-label{
-  margin-top: var(--gap-s);
+  margin-bottom: calc(-1 * var(--app-notebook-gap-hairline));
 }
 .v-today-touch .version-row__reason{
   max-width: var(--measure-prose);
-  font-size: var(--sheet-type-note);
+  margin-inline-start: 0;
+  overflow-wrap: anywhere;
 }
 .v-today-touch .version-row__reason--empty{
   font-family: var(--face-grotesk);
@@ -4723,6 +5148,20 @@ body{margin:0;background:#ffffff}
   letter-spacing: 0.04em;
   color: var(--sheet-bookcloth);
   margin: 0 0 var(--gap-xs);
+}
+.v-today-touch .ingredient-table-region__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  margin: 0 0 var(--gap-xs);
+}
+.v-today-touch .ingredient-table-region__head .region-name{
+  margin: 0;
+}
+.v-today-touch .ingredient-table-region__head .text-control{
+  flex: none;
+  font-weight: 400;
 }
 .v-today-touch .method__before{
   max-width: var(--measure-prose);
@@ -5545,6 +5984,13 @@ body{margin:0;background:#ffffff}
       'method'
       'foot';
   }
+.v-today-touch .recipe-page--no-method{
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'foot';
+  }
 .v-today-touch button, .v-today-touch select, .v-today-touch .ink-field, .v-today-touch .prose-field, .v-today-touch .segmented__option, .v-today-touch .batch-margin .chip-toggle{
     min-height: var(--touch-min);
   }
@@ -5556,6 +6002,10 @@ body{margin:0;background:#ffffff}
   }
 .v-today-touch .axis-mark__head, .v-today-touch .segmented-field__head{
     min-height: var(--sheet-caption-line-h-touch);
+  }
+.v-today-touch .axis-mark__head .text-control, .v-today-touch .segmented-field__head .text-control{
+    display: inline-flex;
+    align-items: flex-end;
   }
 .v-today-touch .ink-field, .v-today-touch .prose-field{
     font-size: var(--sheet-type-note);
@@ -5570,6 +6020,88 @@ body{margin:0;background:#ffffff}
     width: var(--touch-stop-width);
     height: var(--sheet-touch-stop-height);
     flex-basis: var(--touch-stop-width);
+  }
+.v-today-touch .ingredient-table, .v-today-touch .ingredient-table thead, .v-today-touch .ingredient-table tbody, .v-today-touch .ingredient-table tfoot{
+    display: block;
+    width: 100%;
+  }
+.v-today-touch .ingredient-table tr:not(.ingredient-table__step-head){
+    display: grid;
+    grid-template-columns: var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'plan name share';
+    column-gap: var(--sheet-narrow-name-gap);
+    row-gap: var(--gap-hair);
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--gap-xs) var(--sheet-table-cell-pad-x);
+    border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-today-touch .ingredient-table thead tr:not(.ingredient-table__step-head){
+    padding-top: 0;
+  }
+.v-today-touch .ingredient-table tfoot tr{
+    border-bottom: 0;
+    border-top: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-today-touch .ingredient-table tbody tr:last-child{
+    border-bottom: 0;
+  }
+.v-today-touch .ingredient-table tr:not(.ingredient-table__step-head) > th, .v-today-touch .ingredient-table tr:not(.ingredient-table__step-head) > td{
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+.v-today-touch .ingredient-table td.ingredient-table__col-grams, .v-today-touch .ingredient-table td.ingredient-table__col-name, .v-today-touch .ingredient-table td.ingredient-table__col-numeric{
+    width: auto;
+  }
+.v-today-touch .ingredient-table td.ingredient-table__col-grams{
+    grid-area: plan;
+    text-align: right;
+    padding-right: 0;
+  }
+.v-today-touch .ingredient-table td.ingredient-table__col-name{
+    grid-area: name;
+  }
+.v-today-touch .ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){
+    grid-area: asm;
+    text-align: right;
+    align-self: start;
+  }
+.v-today-touch .ingredient-table td.ingredient-table__col-numeric:last-child{
+    grid-area: share;
+    text-align: right;
+    align-self: start;
+  }
+.v-today-touch .ingredient-table td.ingredient-table__col-numeric:empty{
+    display: none;
+  }
+.v-today-touch .ingredient-table thead th.ingredient-table__col-numeric:last-child{
+    white-space: nowrap;
+    text-align: right;
+    grid-column: -2 / -1;
+  }
+.v-today-touch .ingredient-table__plan-grams > .struck-value, .v-today-touch .ingredient-table td.ingredient-table__col-numeric > .struck-value, .v-today-touch .ingredient-table td.ingredient-table__col-grams > .struck-value{
+    display: block;
+    margin-right: 0;
+  }
+.v-today-touch .ingredient-table--as-made tr:not(.ingredient-table__step-head){
+    grid-template-columns: var(--sheet-field-w-figure) var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'asm plan name share';
+  }
+.v-today-touch .ingredient-table thead th.ingredient-table__col-name{
+    grid-column: 1 / 3;
+  }
+.v-today-touch .ingredient-table--as-made thead th.ingredient-table__col-name{
+    grid-column: 2 / 4;
+  }
+.v-today-touch .ingredient-table thead th.ingredient-table__col-numeric:not(:last-child){
+    grid-column: 1;
+    text-align: right;
+  }
+.v-today-touch .ingredient-table td.ingredient-table__col-grams:has(.struck-value), .v-today-touch .ingredient-table__plan-grams:has(> .struck-value), .v-today-touch .ingredient-table td.ingredient-table__col-numeric:has(> .struck-value){
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
   }
 .v-today-touch .notebook{
   box-sizing: border-box;
@@ -5675,7 +6207,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   min-height: var(--touch-min);
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--app-notebook-recipe-rail-gap);
   text-decoration: none;
 }
@@ -5684,7 +6216,7 @@ body{margin:0;background:#ffffff}
   align-items: baseline;
   gap: var(--app-notebook-recipe-rail-gap);
 }
-.v-today-touch .notebook .fold-row__control{
+.v-today-touch .notebook .fold-row__control, .v-today-touch .notebook .notebook-jump__control{
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-control);
   font-weight: 400;
@@ -5694,13 +6226,21 @@ body{margin:0;background:#ffffff}
   text-decoration: underline;
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
-.v-today-touch .notebook .fold-row__count{
+.v-today-touch .notebook .fold-row__count, .v-today-touch .notebook .notebook-jump__status{
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
   font-weight: 400;
   letter-spacing: normal;
   text-transform: none;
   color: var(--app-text-secondary);
+}
+.v-today-touch .notebook .fold-row__count::before, .v-today-touch .notebook .notebook-jump__status::before{
+  content: "\00b7";
+  margin-right: var(--app-notebook-recipe-rail-gap);
+}
+.v-today-touch .notebook-jump{
+  display: none;
+  justify-content: flex-start;
 }
 .v-today-touch .notebook-field{
   display: flex;
@@ -5712,7 +6252,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   padding: var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);
   border: var(--app-rule-row) solid var(--app-divider);
-  border-radius: var(--app-notebook-field-radius);
+  border-radius: var(--app-radius-control);
   background: var(--app-background);
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-size-body);
@@ -5732,7 +6272,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-blue-text);
   color: var(--app-background);
@@ -5749,7 +6289,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-background);
   color: var(--app-blue-text);
@@ -5773,6 +6313,13 @@ body{margin:0;background:#ffffff}
 }
 .v-today-touch .notebook-recipe > .notebook-link{
   align-self: flex-start;
+}
+.v-today-touch .notebook-action:hover, .v-today-touch .notebook-action--outline:hover{
+  border-width: var(--rule-hover);
+  padding: calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover));
+}
+.v-today-touch .notebook-link:hover{
+  padding: 0;
 }
 .v-today-touch .notebook-ceremony{
   display: flex;
@@ -5833,7 +6380,7 @@ body{margin:0;background:#ffffff}
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: var(--app-notebook-recipe-rail-gap);
-  row-gap: var(--app-notebook-gap-hairline);
+  row-gap: var(--app-notebook-details-gap-row);
   font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
   color: var(--app-text);
@@ -6047,8 +6594,9 @@ body{margin:0;background:#ffffff}
   border-top: var(--app-rule-row) solid var(--app-divider);
 }
 .v-today-touch .notebook-log .batch-row__head{
-  justify-content: space-between;
-  gap: var(--app-notebook-log-head-outer-gap);
+  justify-content: flex-start;
+  row-gap: var(--app-notebook-log-head-outer-gap);
+  column-gap: var(--gap-l);
 }
 .v-today-touch .notebook-log .batch-row__head-lead{
   display: flex;
@@ -6148,6 +6696,70 @@ body{margin:0;background:#ffffff}
 .v-today-touch .notebook-log .save-ceremony, .v-today-touch .notebook-log .pen-foot__controls{
   flex-wrap: wrap;
 }
+.v-today-touch .notebook-log *{
+  border-color: var(--app-divider);
+}
+.v-today-touch .notebook-log .pen-caption{
+  color: var(--app-text-secondary);
+}
+.v-today-touch .notebook-log .ink-field{
+  border-radius: var(--app-radius-control);
+  color: var(--app-text);
+}
+.v-today-touch .notebook-log .axis-mark__stop, .v-today-touch .notebook-log .segmented__option{
+  border-color: var(--app-text-secondary);
+}
+.v-today-touch .notebook-log .axis-mark__stop:first-child, .v-today-touch .notebook-log .segmented__option:first-child{
+  border-top-left-radius: var(--app-radius-control);
+  border-bottom-left-radius: var(--app-radius-control);
+}
+.v-today-touch .notebook-log .axis-mark__stop:last-child, .v-today-touch .notebook-log .segmented__option:last-child{
+  border-top-right-radius: var(--app-radius-control);
+  border-bottom-right-radius: var(--app-radius-control);
+}
+.v-today-touch .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-today-touch .notebook-log .segmented__option:has(input[type='radio']:checked){
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-today-touch .notebook-log .chip-toggle::before{
+  border-color: var(--app-text-secondary);
+  border-radius: var(--app-radius-rail);
+}
+.v-today-touch .notebook-log .chip-toggle[aria-pressed='true']::before{
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+}
+.v-today-touch .notebook-log .save-ceremony button{
+  border-color: var(--app-blue-text);
+  border-radius: var(--app-radius-control);
+  color: var(--app-blue-text);
+  background: none;
+}
+.v-today-touch .notebook-log .save-ceremony button:last-of-type{
+  background: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-today-touch .notebook-log .axes-cue{
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+.v-today-touch .notebook-log .axes-grid--stacked{
+  gap: var(--gap-l);
+}
+.v-today-touch .notebook-log .axes-grid__group > .axis-mark:first-of-type{
+  margin-top: 0;
+}
+.v-today-touch .notebook-log .axes-grid__group > .axes-cue{
+  margin-bottom: calc(var(--gap-s) - var(--gap-m));
+}
+.v-today-touch .notebook-log .axes-grid--stacked > .defects-head{
+  margin-bottom: calc(var(--gap-s) - var(--gap-l));
+}
 .v-today-touch .notebook{
     gap: var(--app-notebook-band-rhythm);
   }
@@ -6157,6 +6769,16 @@ body{margin:0;background:#ffffff}
   }
 .v-today-touch .notebook-band__grid{
     gap: var(--gap-l);
+  }
+.v-today-touch .notebook-jump{
+    display: flex;
+    grid-column: 2;
+    width: 100%;
+    min-height: var(--touch-min);
+    align-items: center;
+    gap: var(--app-notebook-recipe-rail-gap);
+    text-decoration: none;
+    color: inherit;
   }
 .v-today-touch .notebook-body{
     
@@ -6180,14 +6802,14 @@ body{margin:0;background:#ffffff}
 .v-today-touch /* App-context skin for the record pen: colour, .v-today-touch radius and rule colour only; no size moves (decision 29) */
 .notebook-log *{border-color:var(--app-divider)}
 .v-today-touch .notebook-log .pen-caption{color:var(--app-text-secondary)}
-.v-today-touch .notebook-log .ink-field{border-radius:var(--app-notebook-field-radius);color:var(--app-text)}
+.v-today-touch .notebook-log .ink-field{border-radius:var(--app-radius-control);color:var(--app-text)}
 .v-today-touch .notebook-log .axis-mark__stop, .v-today-touch .notebook-log .segmented__option{border-color:var(--app-text-secondary)}
-.v-today-touch .notebook-log .axis-mark__stop:first-child, .v-today-touch .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-notebook-field-radius);border-bottom-left-radius:var(--app-notebook-field-radius)}
-.v-today-touch .notebook-log .axis-mark__stop:last-child, .v-today-touch .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-notebook-field-radius);border-bottom-right-radius:var(--app-notebook-field-radius)}
+.v-today-touch .notebook-log .axis-mark__stop:first-child, .v-today-touch .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-radius-control);border-bottom-left-radius:var(--app-radius-control)}
+.v-today-touch .notebook-log .axis-mark__stop:last-child, .v-today-touch .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-radius-control);border-bottom-right-radius:var(--app-radius-control)}
 .v-today-touch .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-today-touch .notebook-log .segmented__option:has(input[type='radio']:checked){background:var(--app-blue-text);border-color:var(--app-blue-text);color:var(--app-background)}
 .v-today-touch .notebook-log .chip-toggle::before{border-color:var(--app-text-secondary);border-radius:var(--app-radius-rail)}
 .v-today-touch .notebook-log .chip-toggle[aria-pressed='true']::before{background:var(--app-blue-text);border-color:var(--app-blue-text)}
-.v-today-touch .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-action);color:var(--app-blue-text);background:none}
+.v-today-touch .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-control);color:var(--app-blue-text);background:none}
 .v-today-touch .notebook-log .save-ceremony button:last-of-type{background:var(--app-blue-text);color:var(--app-background)}
 .v-cut724-touch{
   margin: 0;
@@ -6345,7 +6967,7 @@ body{margin:0;background:#ffffff}
 }
 .v-cut724-touch .page-status{
   position: absolute;
-  z-index: 10;
+  z-index: var(--app-z-notice);
   inset-block-start: 0;
   inset-inline-start: var(--gap-page);
   max-width: min(var(--measure-prose), calc(100vw - var(--gap-page) - var(--gap-m)));
@@ -6413,6 +7035,12 @@ body{margin:0;background:#ffffff}
   padding: var(--gap-page);
   background: var(--sheet-ground);
 }
+.v-cut724-touch .recipe-page--no-method{
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'foot foot';
+}
 .v-cut724-touch .recipe-band{
   grid-area: band;
   display: flex;
@@ -6435,12 +7063,15 @@ body{margin:0;background:#ffffff}
 }
 .v-cut724-touch .headnote__sheet-title-field{
   display: block;
-  margin-top: var(--gap-m);
 }
-.v-cut724-touch .headnote__sheet-title-field .ink-field{
+.v-cut724-touch .headnote__sheet-title-field .prose-field{
+  display: block;
   font-family: var(--face-text);
   font-size: var(--sheet-size-recipe-name);
   font-weight: 700;
+  line-height: var(--sheet-leading-title);
+  resize: none;
+  overflow: hidden;
 }
 .v-cut724-touch .headnote__prose-field{
   display: block;
@@ -6510,11 +7141,12 @@ body{margin:0;background:#ffffff}
   grid-column: 1 / -1;
 }
 .v-cut724-touch .version-row__reason-label{
-  margin-top: var(--gap-s);
+  margin-bottom: calc(-1 * var(--app-notebook-gap-hairline));
 }
 .v-cut724-touch .version-row__reason{
   max-width: var(--measure-prose);
-  font-size: var(--sheet-type-note);
+  margin-inline-start: 0;
+  overflow-wrap: anywhere;
 }
 .v-cut724-touch .version-row__reason--empty{
   font-family: var(--face-grotesk);
@@ -6708,6 +7340,20 @@ body{margin:0;background:#ffffff}
   letter-spacing: 0.04em;
   color: var(--sheet-bookcloth);
   margin: 0 0 var(--gap-xs);
+}
+.v-cut724-touch .ingredient-table-region__head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  margin: 0 0 var(--gap-xs);
+}
+.v-cut724-touch .ingredient-table-region__head .region-name{
+  margin: 0;
+}
+.v-cut724-touch .ingredient-table-region__head .text-control{
+  flex: none;
+  font-weight: 400;
 }
 .v-cut724-touch .method__before{
   max-width: var(--measure-prose);
@@ -7530,6 +8176,13 @@ body{margin:0;background:#ffffff}
       'method'
       'foot';
   }
+.v-cut724-touch .recipe-page--no-method{
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'foot';
+  }
 .v-cut724-touch button, .v-cut724-touch select, .v-cut724-touch .ink-field, .v-cut724-touch .prose-field, .v-cut724-touch .segmented__option, .v-cut724-touch .batch-margin .chip-toggle{
     min-height: var(--touch-min);
   }
@@ -7541,6 +8194,10 @@ body{margin:0;background:#ffffff}
   }
 .v-cut724-touch .axis-mark__head, .v-cut724-touch .segmented-field__head{
     min-height: var(--sheet-caption-line-h-touch);
+  }
+.v-cut724-touch .axis-mark__head .text-control, .v-cut724-touch .segmented-field__head .text-control{
+    display: inline-flex;
+    align-items: flex-end;
   }
 .v-cut724-touch .ink-field, .v-cut724-touch .prose-field{
     font-size: var(--sheet-type-note);
@@ -7563,6 +8220,88 @@ body{margin:0;background:#ffffff}
     top: 50%;
     transform: translateY(-50%);
     height: var(--touch-min);
+  }
+.v-cut724-touch .ingredient-table, .v-cut724-touch .ingredient-table thead, .v-cut724-touch .ingredient-table tbody, .v-cut724-touch .ingredient-table tfoot{
+    display: block;
+    width: 100%;
+  }
+.v-cut724-touch .ingredient-table tr:not(.ingredient-table__step-head){
+    display: grid;
+    grid-template-columns: var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'plan name share';
+    column-gap: var(--sheet-narrow-name-gap);
+    row-gap: var(--gap-hair);
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--gap-xs) var(--sheet-table-cell-pad-x);
+    border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-cut724-touch .ingredient-table thead tr:not(.ingredient-table__step-head){
+    padding-top: 0;
+  }
+.v-cut724-touch .ingredient-table tfoot tr{
+    border-bottom: 0;
+    border-top: var(--rule-baseline) solid var(--sheet-ink);
+  }
+.v-cut724-touch .ingredient-table tbody tr:last-child{
+    border-bottom: 0;
+  }
+.v-cut724-touch .ingredient-table tr:not(.ingredient-table__step-head) > th, .v-cut724-touch .ingredient-table tr:not(.ingredient-table__step-head) > td{
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+.v-cut724-touch .ingredient-table td.ingredient-table__col-grams, .v-cut724-touch .ingredient-table td.ingredient-table__col-name, .v-cut724-touch .ingredient-table td.ingredient-table__col-numeric{
+    width: auto;
+  }
+.v-cut724-touch .ingredient-table td.ingredient-table__col-grams{
+    grid-area: plan;
+    text-align: right;
+    padding-right: 0;
+  }
+.v-cut724-touch .ingredient-table td.ingredient-table__col-name{
+    grid-area: name;
+  }
+.v-cut724-touch .ingredient-table td.ingredient-table__col-numeric:nth-last-child(2){
+    grid-area: asm;
+    text-align: right;
+    align-self: start;
+  }
+.v-cut724-touch .ingredient-table td.ingredient-table__col-numeric:last-child{
+    grid-area: share;
+    text-align: right;
+    align-self: start;
+  }
+.v-cut724-touch .ingredient-table td.ingredient-table__col-numeric:empty{
+    display: none;
+  }
+.v-cut724-touch .ingredient-table thead th.ingredient-table__col-numeric:last-child{
+    white-space: nowrap;
+    text-align: right;
+    grid-column: -2 / -1;
+  }
+.v-cut724-touch .ingredient-table__plan-grams > .struck-value, .v-cut724-touch .ingredient-table td.ingredient-table__col-numeric > .struck-value, .v-cut724-touch .ingredient-table td.ingredient-table__col-grams > .struck-value{
+    display: block;
+    margin-right: 0;
+  }
+.v-cut724-touch .ingredient-table--as-made tr:not(.ingredient-table__step-head){
+    grid-template-columns: var(--sheet-field-w-figure) var(--sheet-plan-grams-w) minmax(0, 1fr) max-content;
+    grid-template-areas: 'asm plan name share';
+  }
+.v-cut724-touch .ingredient-table thead th.ingredient-table__col-name{
+    grid-column: 1 / 3;
+  }
+.v-cut724-touch .ingredient-table--as-made thead th.ingredient-table__col-name{
+    grid-column: 2 / 4;
+  }
+.v-cut724-touch .ingredient-table thead th.ingredient-table__col-numeric:not(:last-child){
+    grid-column: 1;
+    text-align: right;
+  }
+.v-cut724-touch .ingredient-table td.ingredient-table__col-grams:has(.struck-value), .v-cut724-touch .ingredient-table__plan-grams:has(> .struck-value), .v-cut724-touch .ingredient-table td.ingredient-table__col-numeric:has(> .struck-value){
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
   }
 .v-cut724-touch .notebook{
   box-sizing: border-box;
@@ -7668,7 +8407,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   min-height: var(--touch-min);
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--app-notebook-recipe-rail-gap);
   text-decoration: none;
 }
@@ -7677,7 +8416,7 @@ body{margin:0;background:#ffffff}
   align-items: baseline;
   gap: var(--app-notebook-recipe-rail-gap);
 }
-.v-cut724-touch .notebook .fold-row__control{
+.v-cut724-touch .notebook .fold-row__control, .v-cut724-touch .notebook .notebook-jump__control{
   font-family: var(--face-grotesk);
   font-size: var(--sheet-type-control);
   font-weight: 400;
@@ -7687,13 +8426,21 @@ body{margin:0;background:#ffffff}
   text-decoration: underline;
   text-underline-offset: var(--app-notebook-link-underline-offset);
 }
-.v-cut724-touch .notebook .fold-row__count{
+.v-cut724-touch .notebook .fold-row__count, .v-cut724-touch .notebook .notebook-jump__status{
   font-family: var(--face-grotesk);
   font-size: var(--app-size-label);
   font-weight: 400;
   letter-spacing: normal;
   text-transform: none;
   color: var(--app-text-secondary);
+}
+.v-cut724-touch .notebook .fold-row__count::before, .v-cut724-touch .notebook .notebook-jump__status::before{
+  content: "\00b7";
+  margin-right: var(--app-notebook-recipe-rail-gap);
+}
+.v-cut724-touch .notebook-jump{
+  display: none;
+  justify-content: flex-start;
 }
 .v-cut724-touch .notebook-field{
   display: flex;
@@ -7705,7 +8452,7 @@ body{margin:0;background:#ffffff}
   width: 100%;
   padding: var(--app-notebook-gap-tight) var(--app-notebook-field-pad-x);
   border: var(--app-rule-row) solid var(--app-divider);
-  border-radius: var(--app-notebook-field-radius);
+  border-radius: var(--app-radius-control);
   background: var(--app-background);
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-size-body);
@@ -7725,7 +8472,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-blue-text);
   color: var(--app-background);
@@ -7742,7 +8489,7 @@ body{margin:0;background:#ffffff}
   justify-content: center;
   min-height: var(--touch-min);
   padding: var(--gap-s) var(--gap-m);
-  border-radius: var(--app-radius-action);
+  border-radius: var(--app-radius-control);
   border: var(--app-rule-row) solid var(--app-blue-text);
   background: var(--app-background);
   color: var(--app-blue-text);
@@ -7766,6 +8513,13 @@ body{margin:0;background:#ffffff}
 }
 .v-cut724-touch .notebook-recipe > .notebook-link{
   align-self: flex-start;
+}
+.v-cut724-touch .notebook-action:hover, .v-cut724-touch .notebook-action--outline:hover{
+  border-width: var(--rule-hover);
+  padding: calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover));
+}
+.v-cut724-touch .notebook-link:hover{
+  padding: 0;
 }
 .v-cut724-touch .notebook-ceremony{
   display: flex;
@@ -7826,7 +8580,7 @@ body{margin:0;background:#ffffff}
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   column-gap: var(--app-notebook-recipe-rail-gap);
-  row-gap: var(--app-notebook-gap-hairline);
+  row-gap: var(--app-notebook-details-gap-row);
   font-family: var(--face-grotesk);
   font-size: var(--app-size-meta);
   color: var(--app-text);
@@ -8040,8 +8794,9 @@ body{margin:0;background:#ffffff}
   border-top: var(--app-rule-row) solid var(--app-divider);
 }
 .v-cut724-touch .notebook-log .batch-row__head{
-  justify-content: space-between;
-  gap: var(--app-notebook-log-head-outer-gap);
+  justify-content: flex-start;
+  row-gap: var(--app-notebook-log-head-outer-gap);
+  column-gap: var(--gap-l);
 }
 .v-cut724-touch .notebook-log .batch-row__head-lead{
   display: flex;
@@ -8141,6 +8896,70 @@ body{margin:0;background:#ffffff}
 .v-cut724-touch .notebook-log .save-ceremony, .v-cut724-touch .notebook-log .pen-foot__controls{
   flex-wrap: wrap;
 }
+.v-cut724-touch .notebook-log *{
+  border-color: var(--app-divider);
+}
+.v-cut724-touch .notebook-log .pen-caption{
+  color: var(--app-text-secondary);
+}
+.v-cut724-touch .notebook-log .ink-field{
+  border-radius: var(--app-radius-control);
+  color: var(--app-text);
+}
+.v-cut724-touch .notebook-log .axis-mark__stop, .v-cut724-touch .notebook-log .segmented__option{
+  border-color: var(--app-text-secondary);
+}
+.v-cut724-touch .notebook-log .axis-mark__stop:first-child, .v-cut724-touch .notebook-log .segmented__option:first-child{
+  border-top-left-radius: var(--app-radius-control);
+  border-bottom-left-radius: var(--app-radius-control);
+}
+.v-cut724-touch .notebook-log .axis-mark__stop:last-child, .v-cut724-touch .notebook-log .segmented__option:last-child{
+  border-top-right-radius: var(--app-radius-control);
+  border-bottom-right-radius: var(--app-radius-control);
+}
+.v-cut724-touch .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-cut724-touch .notebook-log .segmented__option:has(input[type='radio']:checked){
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-cut724-touch .notebook-log .chip-toggle::before{
+  border-color: var(--app-text-secondary);
+  border-radius: var(--app-radius-rail);
+}
+.v-cut724-touch .notebook-log .chip-toggle[aria-pressed='true']::before{
+  background: var(--app-blue-text);
+  border-color: var(--app-blue-text);
+}
+.v-cut724-touch .notebook-log .save-ceremony button{
+  border-color: var(--app-blue-text);
+  border-radius: var(--app-radius-control);
+  color: var(--app-blue-text);
+  background: none;
+}
+.v-cut724-touch .notebook-log .save-ceremony button:last-of-type{
+  background: var(--app-blue-text);
+  color: var(--app-background);
+}
+.v-cut724-touch .notebook-log .axes-cue{
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+.v-cut724-touch .notebook-log .axes-grid--stacked{
+  gap: var(--gap-l);
+}
+.v-cut724-touch .notebook-log .axes-grid__group > .axis-mark:first-of-type{
+  margin-top: 0;
+}
+.v-cut724-touch .notebook-log .axes-grid__group > .axes-cue{
+  margin-bottom: calc(var(--gap-s) - var(--gap-m));
+}
+.v-cut724-touch .notebook-log .axes-grid--stacked > .defects-head{
+  margin-bottom: calc(var(--gap-s) - var(--gap-l));
+}
 .v-cut724-touch .notebook{
     gap: var(--app-notebook-band-rhythm);
   }
@@ -8150,6 +8969,16 @@ body{margin:0;background:#ffffff}
   }
 .v-cut724-touch .notebook-band__grid{
     gap: var(--gap-l);
+  }
+.v-cut724-touch .notebook-jump{
+    display: flex;
+    grid-column: 2;
+    width: 100%;
+    min-height: var(--touch-min);
+    align-items: center;
+    gap: var(--app-notebook-recipe-rail-gap);
+    text-decoration: none;
+    color: inherit;
   }
 .v-cut724-touch .notebook-body{
     
@@ -8173,14 +9002,14 @@ body{margin:0;background:#ffffff}
 .v-cut724-touch /* App-context skin for the record pen: colour, .v-cut724-touch radius and rule colour only; no size moves (decision 29) */
 .notebook-log *{border-color:var(--app-divider)}
 .v-cut724-touch .notebook-log .pen-caption{color:var(--app-text-secondary)}
-.v-cut724-touch .notebook-log .ink-field{border-radius:var(--app-notebook-field-radius);color:var(--app-text)}
+.v-cut724-touch .notebook-log .ink-field{border-radius:var(--app-radius-control);color:var(--app-text)}
 .v-cut724-touch .notebook-log .axis-mark__stop, .v-cut724-touch .notebook-log .segmented__option{border-color:var(--app-text-secondary)}
-.v-cut724-touch .notebook-log .axis-mark__stop:first-child, .v-cut724-touch .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-notebook-field-radius);border-bottom-left-radius:var(--app-notebook-field-radius)}
-.v-cut724-touch .notebook-log .axis-mark__stop:last-child, .v-cut724-touch .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-notebook-field-radius);border-bottom-right-radius:var(--app-notebook-field-radius)}
+.v-cut724-touch .notebook-log .axis-mark__stop:first-child, .v-cut724-touch .notebook-log .segmented__option:first-child{border-top-left-radius:var(--app-radius-control);border-bottom-left-radius:var(--app-radius-control)}
+.v-cut724-touch .notebook-log .axis-mark__stop:last-child, .v-cut724-touch .notebook-log .segmented__option:last-child{border-top-right-radius:var(--app-radius-control);border-bottom-right-radius:var(--app-radius-control)}
 .v-cut724-touch .notebook-log .axis-mark__stop:has(input[type='radio']:checked), .v-cut724-touch .notebook-log .segmented__option:has(input[type='radio']:checked){background:var(--app-blue-text);border-color:var(--app-blue-text);color:var(--app-background)}
 .v-cut724-touch .notebook-log .chip-toggle::before{border-color:var(--app-text-secondary);border-radius:var(--app-radius-rail)}
 .v-cut724-touch .notebook-log .chip-toggle[aria-pressed='true']::before{background:var(--app-blue-text);border-color:var(--app-blue-text)}
-.v-cut724-touch .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-action);color:var(--app-blue-text);background:none}
+.v-cut724-touch .notebook-log .save-ceremony button{border-color:var(--app-blue-text);border-radius:var(--app-radius-control);color:var(--app-blue-text);background:none}
 .v-cut724-touch .notebook-log .save-ceremony button:last-of-type{background:var(--app-blue-text);color:var(--app-background)}
 [hidden]{display:none !important}
 </style>

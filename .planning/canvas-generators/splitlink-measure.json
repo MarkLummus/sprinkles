@@ -1,0 +1,236 @@
+{
+ "A-rest-1600": {
+  "region": {
+   "x": 304,
+   "y": 958.9,
+   "w": 534.7,
+   "h": 1042.4
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 610.9
+  },
+  "links": "12 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, no, no"
+ },
+ "A-removed-1600": {
+  "region": {
+   "x": 304,
+   "y": 958.9,
+   "w": 534.7,
+   "h": 1082
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 632.6
+  },
+  "links": "12 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, no, no"
+ },
+ "B-rest-1600": {
+  "region": {
+   "x": 304,
+   "y": 958.9,
+   "w": 534.7,
+   "h": 1071.2
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 639.7
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "B-removed-1600": {
+  "region": {
+   "x": 304,
+   "y": 958.9,
+   "w": 534.7,
+   "h": 1096.4
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 647
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "C-rest-1600": {
+  "region": {
+   "x": 304,
+   "y": 958.9,
+   "w": 534.7,
+   "h": 1071.2
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 639.7
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "C-removed-1600": {
+  "region": {
+   "x": 304,
+   "y": 958.9,
+   "w": 534.7,
+   "h": 1074.8
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 643.3
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "A-rest-1366": {
+  "region": {
+   "x": 80,
+   "y": 958.9,
+   "w": 528,
+   "h": 1042.4
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 610.9
+  },
+  "links": "12 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, no, no"
+ },
+ "A-removed-1366": {
+  "region": {
+   "x": 80,
+   "y": 958.9,
+   "w": 528,
+   "h": 1082
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 632.6
+  },
+  "links": "12 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, no, no"
+ },
+ "B-rest-1366": {
+  "region": {
+   "x": 80,
+   "y": 958.9,
+   "w": 528,
+   "h": 1071.2
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 639.7
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "B-removed-1366": {
+  "region": {
+   "x": 80,
+   "y": 958.9,
+   "w": 528,
+   "h": 1096.4
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 647
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "C-rest-1366": {
+  "region": {
+   "x": 80,
+   "y": 958.9,
+   "w": 528,
+   "h": 1071.2
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 639.7
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "C-removed-1366": {
+  "region": {
+   "x": 80,
+   "y": 958.9,
+   "w": 528,
+   "h": 1074.8
+  },
+  "crop": {
+   "y": 1005.2,
+   "h": 643.3
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "A-rest-393": {
+  "region": {
+   "x": 20,
+   "y": 1136.5,
+   "w": 353,
+   "h": 1122
+  },
+  "crop": {
+   "y": 1161.3,
+   "h": 676.9
+  },
+  "links": "12 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, no, no"
+ },
+ "A-removed-393": {
+  "region": {
+   "x": 20,
+   "y": 1136.5,
+   "w": 353,
+   "h": 1163.6
+  },
+  "crop": {
+   "y": 1161.3,
+   "h": 700.5
+  },
+  "links": "12 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, no, no"
+ },
+ "B-rest-393": {
+  "region": {
+   "x": 20,
+   "y": 1136.5,
+   "w": 353,
+   "h": 1146.7
+  },
+  "crop": {
+   "y": 1161.3,
+   "h": 701.7
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "B-removed-393": {
+  "region": {
+   "x": 20,
+   "y": 1136.5,
+   "w": 353,
+   "h": 1176
+  },
+  "crop": {
+   "y": 1161.3,
+   "h": 712.9
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "C-rest-393": {
+  "region": {
+   "x": 20,
+   "y": 1136.5,
+   "w": 353,
+   "h": 1146.7
+  },
+  "crop": {
+   "y": 1161.3,
+   "h": 701.7
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ },
+ "C-removed-393": {
+  "region": {
+   "x": 20,
+   "y": 1136.5,
+   "w": 353,
+   "h": 1152.3
+  },
+  "crop": {
+   "y": 1161.3,
+   "h": 707.3
+  },
+  "links": "14 in the table; on the split lines (Whole milk step 2, Sucrose step 2, Whole milk step 3, Sucrose step 3): yes, yes, yes, yes"
+ }
+}

@@ -1,18 +1,18 @@
 // Sid, 2026-10-03 (decision 33): measures every panel of the final-design page boards (as served from the snapshot) so the generator can size the windows and write the captions from numbers.
-//   node final-calibrate.mjs   -> final-heights.json, final-board-measure.json
+//   node final-calibrate.mjs '["744-batch", ...]' [dir]   -> final-heights.json, final-board-measure.json
+// Sid, 2026-10-04: reads the snapshot files from a directory (default: the sketch folder) over file:// with Caveat from the app's own file; no server is started.
 import { writeFile, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { webkit } from '/Users/mark/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core/index.mjs';
-import { startServers } from '../phases/03.5-separate-the-recipe-from-the-sheet/03.5-probe-harness.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const FILES = JSON.parse(process.argv[2] || "[]"); console.log(FILES.length);
-const s = await startServers(); const b = await webkit.launch(); const heights = {}, facts = {};
+const DIRF = process.argv[3] || '/Users/mark/Documents/projects/sprinkles/.planning/sketches/011-recipe-route-c'; const b = await webkit.launch(); const heights = {}, facts = {};
 for (const f of FILES) {
   const ctx = await b.newContext({ viewport: { width: 1600, height: 1000 }, hasTouch: true });
-  await ctx.route('**/*', async (r) => { const u = new URL(r.request().url()); if (u.hostname === '127.0.0.1') return r.continue(); if (u.hostname === 'fonts.googleapis.com') return r.fulfill({ contentType: 'text/css', body: `@font-face{font-family:Caveat;src:url(${s.repoUrl}/app/public/fonts/caveat-regular.woff2) format("woff2");font-weight:400}` }); return r.abort(); });
+  await ctx.route(/fonts\.googleapis/, (r) => r.fulfill({ contentType: 'text/css', body: '@font-face{font-family:Caveat;src:url(file:///Users/mark/Documents/projects/sprinkles/app/public/fonts/caveat-regular.woff2) format("woff2");font-weight:400}' })); await ctx.route(/fonts\.gstatic/, (r) => r.abort());
   const p = await ctx.newPage();
-  await p.goto(`${s.repoUrl}/.planning/sketches/011-recipe-route-c/${f}.html`, { waitUntil: 'networkidle' }); await p.evaluate(() => document.fonts.ready);
+  await p.goto(`file://${DIRF}/${f}.html`); await p.waitForTimeout(900); await p.evaluate(() => document.fonts.ready);
   const res = await p.evaluate(() => [...document.querySelectorAll('.fp-win')].map((w) => {
     const cls = [...w.classList].find((c) => c.startsWith('fp-') && c !== 'fp-win');
     const sh = w.querySelector('.shell'); const top = sh.getBoundingClientRect().top;
@@ -30,7 +30,7 @@ for (const f of FILES) {
   for (const r of res) { const key = r.cls.replace(/^fp-/, '').replace(/-(\d+)$/, '_$1'); heights[key] = r.h + 4; facts[key] = r; }
   await ctx.close();
 }
-await b.close(); await s.close();
+await b.close();
 const prevH = JSON.parse(await readFile(path.join(HERE, 'final-heights.json'), 'utf8').catch(() => '{}')); const prevF = JSON.parse(await readFile(path.join(HERE, 'final-board-measure.json'), 'utf8').catch(() => '{}'));
 await writeFile(path.join(HERE, 'final-heights.json'), JSON.stringify({ ...prevH, ...heights })); await writeFile(path.join(HERE, 'final-board-measure.json'), JSON.stringify({ ...prevF, ...facts }));
 console.log('ok', Object.keys(facts).length);

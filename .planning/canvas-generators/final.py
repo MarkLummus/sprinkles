@@ -38,7 +38,11 @@ LABEL_CSS = '''
 .fp-win{box-sizing:border-box;position:relative;background:var(--app-background);outline:1px solid var(--app-divider);overflow:hidden}
 '''
 def with_menu(html, W):
-    """Below 724 and from 1590 the wordmark is a link to Home and nothing more (the tab row, or the rail, is the nav); from 724 to 1589 the rail is the fly-out and a menu button stands beside the wordmark (closed)."""
+    """Since quick 261004-ly8 the build's own header carries the wordmark as a link and, from 724 to 1589, the menu button (and the nav is `nav#places`): a capture taken from the build is the markup, nothing is injected
+    (Sid, 2026-10-04). A capture older than that (title-capture.json, info-crops, the option boards of decisions 34 and 35, which are not redrawn) still gets the 2026-10-03 injection."""
+    if '<p class="shell__brand"><a ' in html:
+        assert ('class="shell__menu"' in html) == (BAR_FROM <= W < RAIL_FROM), 'the header is not the one the build draws at %d' % W
+        return html
     if W < BAR_FROM or W >= RAIL_FROM:
         w = '<p class="shell__brand">Sprinkles</p>'; assert html.count(w) == 1
         return html.replace(w, '<p class="shell__brand"><a href="/" tabindex="0">Sprinkles</a></p>', 1)
@@ -47,14 +51,17 @@ def with_menu(html, W):
     assert html.count(a) == 1 and html.count(b) == 1, 'header markup changed'
     html = html.replace(a, '<header class="shell__head"><div class="shell__lead"><button type="button" class="shell__menu" aria-label="Places" aria-expanded="false" aria-controls="places" tabindex="0">' + KEBAB + '</button><div><p class="shell__brand"><a href="/" tabindex="0">Sprinkles</a></p>', 1)
     return html.replace(b, '</div></div></div><div class="shell__tools">', 1)
+def _norm(css): return re.sub(r'\s+', ' ', css)
+def built_d3(W): return 'ingredient-table--as-made' in resolve_media(APPC, W, True)                                    # brief task 2 (quick 261004-ox8): the table's grid from 724
+def built_jump(W): return re.search(r'\.notebook-jump\s*\{[^}]*display:\s*flex', resolve_media(NBC, W, True)) is not None   # brief task 3 (quick 261004-ox9): the Go to batch row shown from 724 to 1365
+def built_p3(W): return 'display: contents' in _norm(resolve_media(APPC, W, True))                                     # brief task 1 (quick 261004-ox7): the phone table's struck figure under the plan amount
+def built_dots(W): return '.fold-row__count::before' in resolve_media(NBC, W, True)                                     # decision 41 (quick 261004-ox5): the dots at every width
 def final_css(W, vid, extra=''):
+    """The build's own rules, resolved at the window, and, only where the build does not have them yet, the final design's: D3 (task 2), the Go to batch row (task 3). The check (redraw-conform.mjs) names what is still overlaid."""
     css = resolve_media(APPC, W, True) + resolve_media(SHELLC, W, True) + resolve_media(NBC, W, True) + FIX
-    if W >= BAR_FROM:
-        css += HDR.replace('html{scroll-padding-top:57px}', '')      # the sticky header (scroll-padding is on html, which a panel cannot scope)
-        if W < RAIL_FROM: css += G                                    # 724 to 1589: the rail is the fly-out, opened from the header's menu button
-        if W < 984: css += HDR724                                     # 724 to 983: the header's tools show and the tab row goes
-        css += D3
-    if BAR_FROM <= W <= 1365: css += JUMP
+    if W >= BAR_FROM and not built_d3(W):
+        css += D3     # the table's grid from 724 (brief task 2) is the one part of the final design not built yet; the sticky header, the fly-out and the rail are the build's own shell.css, resolved above (Sid, 2026-10-04: the candidate rules HDR, G and HDR724 are retired)
+    if BAR_FROM <= W <= 1365 and not built_jump(W): css += JUMP
     css = re.sub(r'(^|\})(\s*):root\s*\{', r'\1\2body{', css)      # the phone's --gap-page rule: on the panel itself
     return scope_css(css + extra, '.' + vid)
 HEIGHTS = json.load(open(HERE + '/final-heights.json')) if os.path.exists(HERE + '/final-heights.json') else {}
@@ -125,7 +132,7 @@ def write_board(key, W_title, bw, bh, main, css):
     html = re.sub(r'<div class="shell">.*?</div>\n</div>\n</x-dc>', lambda m: main + '\n</div>\n</x-dc>', html, count=1, flags=re.S)
     open(OUT + '/' + fn, 'w').write(html)
     return fn
-STAMP = " (redrawn 2026-10-03 to the final design, decision 33; drawn, awaiting Mark's look)"
+STAMP = " (redrawn 2026-10-03 to the final design, decision 33; redrawn 2026-10-04 from the build with decision 41's dots and decision 38's radius; drawn, awaiting Mark's look)"
 BOARDS = [  # canvas key, snapshot name, width, states, short title
   ('R35C_744', '744-batch', 744, ['mex3', 'olive1'], 'C · 744 · iPad mini portrait · the sticky header and the fly-out (no tab row; Rule A), the Sheet in one column, the log below, the Go to batch row, D3'),
   ('R35C_834', '834-batch', 834, ['mex3', 'olive1'], 'C · 834 · 11in iPad Pro portrait · the sticky header and the fly-out (no tab row; Rule A), the Sheet in one column, the log below, the Go to batch row, D3'),
@@ -162,7 +169,7 @@ def crop_board(key, snap, title, panels, h):
     main = f'<div style="position:relative;width:{bw}px;height:{bh}px;background:#ffffff;">{body}</div>'
     fn = write_board(key, title + STAMP, bw, bh, main, ''.join(css_parts) + '[hidden]{display:none !important}')
     ENTRIES[fn] = dict(w=bw, h=bh, page='page-13', title=title + STAMP, snap=snap)
-GO_CAP = "The band's Go to batch row (decision 30 drew it below 724; Mark, 2026-10-03: it extends wherever the log sits below the Sheet, so up to 1365): in the Version column under Next version and Show changes, History's row grammar, the control word and the batch's status, the whole row one 44px target; it jumps to the log. The row is the app's own and the app hides it above 723; the drawing shows it displayed."
+GO_CAP = "The band's Go to batch row (decision 30 drew it below 724; Mark, 2026-10-03: it extends wherever the log sits below the Sheet, so up to 1365): in the Version column under Next version and Show changes, History's row grammar, start-aligned like decision 34's A (Mark, 2026-10-04: 'yes, dots like decision 34'): the control word, a dot, then the batch's status, the whole row one 44px target; it jumps to the log. The row is the app's own and the app hides it above 723; the drawing shows it displayed."
 crop_board('R35C_GoToBatchWide', '724-1365-go-to-batch', 'C · 744, 1024 and 1194 · the band with the Go to batch row, where the log sits below the Sheet; and an option with the row inside the Version section',
            [('mex3', 744, GO_CAP + ' Batch awaiting its tasting. As built: the band grid\'s third child.'), ('mex3', 1024, GO_CAP + ' As built: the band grid\'s third child.'), ('olive1', 1194, GO_CAP + ' A tasted batch (Olive Oil v1). As built.'),
             ('mex3', 1024, 'OPTION (Mark has not answered): the row inside the Version section, directly under Next version and Hide changes, 12px below them, so it reads as part of the version\'s acts; a DOM move in the band.', 'jumpin'),
@@ -170,27 +177,32 @@ crop_board('R35C_GoToBatchWide', '724-1365-go-to-batch', 'C · 744, 1024 and 119
 
 # ---- the split row's remove link: as built, and where Mark wants it (decision 26, amended 2026-10-03) ----
 def rows_board(key, snap, title, W, state, panels, x0, y0, ww, hh):
-    css_parts = [resolve_media(TOK, W, True), LABEL_CSS]; body = ''; x = GAP
-    for i, (cap, asbuilt) in enumerate(panels):
+    """panels = (caption, asbuilt[, y0, hh]): each panel is a window of the pen's table; a panel may carry its own top and height (decision 44's board draws two stretches of one table)."""
+    css_parts = [resolve_media(TOK, W, True), LABEL_CSS]; body = ''; x = GAP; H = 0
+    for i, pn in enumerate(panels):
+        cap, asbuilt = pn[0], pn[1]; py0 = pn[2] if len(pn) > 2 else y0; phh = pn[3] if len(pn) > 3 else hh; H = max(H, phh)
         vid = f'fp-rows{i}-{W}'
         css_parts.append(final_css(W, vid))
         html = unique_ids(panel_html(state, W, asbuilt=asbuilt), vid)
-        body += (f'<div style="position:absolute;left:{x}px;top:{GAP}px;width:{ww}px;"><div style="height:{CAP_H}px;"><p class="fp-title">{"As built" if asbuilt else "Proposed"} · {W} wide, the pen open</p><p class="fp-sub">{cap}</p></div>'
-                 f'<div class="fp-win {vid}" style="width:{ww}px;height:{hh}px;"><div style="width:{W}px;transform:translate(-{x0}px,-{y0}px);">{html}</div></div></div>\n')
+        body += (f'<div style="position:absolute;left:{x}px;top:{GAP}px;width:{ww}px;"><div style="height:{CAP_H}px;"><p class="fp-title">{"As built" if asbuilt else "The build"} · {W} wide, the pen open</p><p class="fp-sub">{cap}</p></div>'
+                 f'<div class="fp-win {vid}" style="width:{ww}px;height:{phh}px;"><div style="width:{W}px;transform:translate(-{x0}px,-{py0}px);">{html}</div></div></div>\n')
         x += ww + GAP
-    bw, bh = x, GAP + CAP_H + 8 + hh + GAP
+    bw, bh = x, GAP + CAP_H + 8 + H + GAP
     main = f'<div style="position:relative;width:{bw}px;height:{bh}px;background:#ffffff;">{body}</div>'
     fn = write_board(key, title + STAMP, bw, bh, main, ''.join(css_parts) + '[hidden]{display:none !important}')
     ENTRIES[fn] = dict(w=bw, h=bh, page='page-13', title=title + STAMP, snap=snap)
-rows_board('R35C_RemoveLink', '1600-remove-link', 'C · 1600 · the split row\'s remove link: as built, and on the name\'s line', 1600, 'olive1pen',
-           [('The app today, and what the wide authority showed before this redraw: the portion line ("120 g of 370.4 g · 46.3% in all") is a block that comes before the link in the cell, so the link falls under it, away from the name and the estimated tag.', True),
-            ('PROPOSED (Mark, 2026-10-03: the link should be next to estimated): the link follows the name and the tag on the name\'s line, with the same 14px gap, and the portion line goes under both. Only the DOM order of the cell changes: name, tag, link, then the line.', False)], 294, 1050, 580, 330)
+rows_board('R35C_RemoveLink', '1600-remove-link', 'C · 1600 · the split row\'s remove link on the name\'s line, on every line of a split ingredient (decisions 26 and 44, built by quicks 261004-eoi and 261004-ox6)', 1600, 'olive1pen',
+           [('Step 2, the first lines of Whole milk and Sucrose: the link follows the name and the estimated tag on the name\'s line, 14px clear (decision 26), and the portion line goes under both. Approved by Mark 2026-10-04, built by quick 261004-eoi.', False, 1000, 345),
+            ('Step 3, the second lines of Whole milk and Sucrose: each carries the link too, and each removes the whole ingredient (decision 44, option B; Mark, 2026-10-04), so a maker looking at Step 3 has the control where the eye is. Built by quick 261004-ox6; this is the build\'s own markup.', False, 1348, 380)], 294, 1000, 580, 345)
 
 # ---- the pinned menu button and the fly-out, where decision 27 drew the pinned rail options ----
 KEBAB_STYLED = KEBAB.replace('<svg ', '<svg style="width:20px;height:20px;transform:rotate(90deg)" ')
 def rail_nav(html):
-    m = re.search(r'<nav class="shell__rail".*?</nav>', html, flags=re.S); assert m
+    m = re.search(r'<nav [^>]*class="shell__rail".*?</nav>', html, flags=re.S); assert m
     return m.group(0)
+def rail_style(nav, extra_class, style):
+    """The build's own nav element with the drawing's placement laid on it (a drawing has no viewport: the panel and the pinned rail are placed by hand, the markup and the classes are the build's)."""
+    return re.sub(r'<nav ([^>]*)class="shell__rail"', lambda m: '<nav %sclass="shell__rail%s" style="%s"' % (m.group(1), extra_class, style), nav, count=1)
 def sticky_board(key, snap, title, W, vh, scroll, state):
     css_parts = [resolve_media(TOK, W, True), LABEL_CSS]
     body = ''; x = GAP
@@ -202,12 +214,12 @@ def sticky_board(key, snap, title, W, vh, scroll, state):
         html = unique_ids(base, vid); nav = unique_ids(nav, vid)
         # the sticky header, drawn where it stands when the page is scrolled: at the window's top, over the page (a sticky element has no scroll container in a drawing)
         hdr = re.search(r'<header class="shell__head">.*?</header>', html, flags=re.S).group(0)
-        bar = hdr.replace('<header class="shell__head">', '<header class="shell__head" style="position:absolute;top:0;left:0;right:0;z-index:7">', 1)
+        bar = hdr.replace('<header class="shell__head">', '<header class="shell__head" style="position:absolute;top:0;left:0;right:0">', 1)
         if opened: bar = bar.replace('aria-expanded="false"', 'aria-expanded="true"', 1)
         flyout = ''
         if opened:
-            nav = nav.replace('<nav class="shell__rail"', f'<nav class="shell__rail" style="display:flex !important;position:absolute;left:0;top:{HEAD_H}px;bottom:0;width:224px;z-index:5;background:var(--app-background);box-shadow:4px 0 16px rgba(20,20,20,.18);flex:none"', 1)
-            flyout = f'<div style="position:absolute;left:0;right:0;top:{HEAD_H}px;bottom:0;z-index:4;background:rgba(20,20,20,.28);"></div>{nav}'
+            nav = rail_style(nav, ' shell__rail--open', f'position:absolute;left:0;top:{HEAD_H}px;bottom:0;width:224px;flex:none')
+            flyout = f'<div class="shell__scrim" aria-hidden="true" style="position:absolute;left:0;right:0;top:{HEAD_H}px;bottom:0"></div>{nav}'
         cap = (f'Closed, the window {scroll}px down the page: the bar has stayed at the top, {HEAD_H}px tall (44px targets, 6px of padding, a hairline): the menu button, the wordmark, Search, Import and Export are all on screen. Nothing of the page is covered but the bar\'s own {HEAD_H}px.' if not opened else
                f'Open, the same window: the full 224 nav slides over the page, above it in z-order, from the foot of the bar to the window\'s foot, with a scrim; the bar stays above both, so the menu button still closes it and Search, Import and Export still work; the page beneath has not moved ({scroll}px down, the same rows). A tap on the scrim, Escape, the menu button and choosing a place all close it.')
         body += (f'<div style="position:absolute;left:{x}px;top:{GAP}px;width:{W}px;"><div style="height:{CAP_H}px;"><p class="fp-title">{"Open" if opened else "Closed"} · {W} x {vh}</p><p class="fp-sub">{cap}</p></div>'
@@ -228,8 +240,8 @@ def sticky_rail_board(key, snap, title, W, vh, scroll, state):
     base = panel_html(state, W); nav = rail_nav(CAP[f'{state}_{W}'])
     html = unique_ids(base, vid); nav = unique_ids(nav, vid)
     hdr = re.search(r'<header class="shell__head">.*?</header>', html, flags=re.S).group(0)
-    bar = hdr.replace('<header class="shell__head">', '<header class="shell__head" style="position:absolute;top:0;left:0;right:0;z-index:7">', 1)
-    pinned = nav.replace('<nav class="shell__rail"', f'<nav class="shell__rail" style="position:absolute;left:0;top:{HEAD_H}px;bottom:0;width:224px;z-index:5;box-sizing:border-box;background:var(--app-background);"', 1)
+    bar = hdr.replace('<header class="shell__head">', '<header class="shell__head" style="position:absolute;top:0;left:0;right:0">', 1)
+    pinned = rail_style(nav, '', f'position:absolute;left:0;top:{HEAD_H}px;bottom:0;width:224px;box-sizing:border-box;background:var(--app-background);')
     cap = (f'The window {scroll}px down a long page at {W}: the header has stayed at the top ({HEAD_H}px: the wordmark, Search, Import, Export; no menu button, because the rail is there), and the rail has stayed under it, all six places on screen, its top at y {HEAD_H}, as tall as the window less the bar ({vh - HEAD_H}px). '
            'In the app: the rail is sticky with top = the header\'s height and a height of the window less the header, scrolling itself if the window is shorter than its six places. Decision 27\'s pinned options, returned at 1590 and up.')
     body = (f'<div style="position:absolute;left:{GAP}px;top:{GAP}px;width:{W}px;"><div style="height:{CAP_H}px;"><p class="fp-title">Pinned rail · {W} x {vh}</p><p class="fp-sub">{cap}</p></div>'

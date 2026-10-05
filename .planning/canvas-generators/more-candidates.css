@@ -1,0 +1,10 @@
+/* Sid, 2026-10-05 (decision 54): More's items on the iPhone. One rule set per option, applied to the app's own markup below 724 (the drawing wraps nothing: more.py scopes it to the window; more-candidates.mjs injects it in a @media (max-width:723.98px) block on the preview).
+   Tokens only: no new value. D also needs one element, <li class="shell__more-sep" aria-hidden="true"><hr class="shell__divider"></li> before Import's item (more.py, more-candidates.mjs). */
+/* === RESET === the tools row's own button reset (shell.css .shell__tools button) also on More's buttons, and a button as wide as its list item like the links */
+.shell__more li > button{appearance:none;border:none;background:none;color:inherit;cursor:pointer;width:100%}
+/* === B === side padding, so the current place's surface has room around the word */
+.shell__tabs .shell__more li .shell__place{padding-inline:var(--gap-xs)}
+/* === ROWS === the rail place's own values (shell.css .shell__place) undoing the tab row's icon-over-label rule inside the panel */
+.shell__tabs .shell__more li .shell__place{flex-direction:row;justify-content:flex-start;gap:var(--gap-xs);padding:var(--gap-s) var(--gap-m);font-size:var(--app-size-meta);text-align:start;width:100%}
+/* === SEP === the divider's li is not a 44px target */
+.shell__more li.shell__more-sep{min-height:0}

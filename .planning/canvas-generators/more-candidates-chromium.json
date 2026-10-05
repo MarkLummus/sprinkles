@@ -1,0 +1,1522 @@
+{
+ "A_notebook": {
+  "ul": {
+   "x": 307.4,
+   "y": 527,
+   "w": 85.6,
+   "h": 270,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 320.4,
+     "y": 540,
+     "w": 59.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 320.4,
+     "y": 588,
+     "w": 59.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 320.4,
+     "y": 636,
+     "w": 59.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 320.4,
+     "y": 684,
+     "w": 37.1,
+     "h": 50
+    },
+    "border": "1px solid",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -31.5
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 320.4,
+     "y": 734,
+     "w": 37.3,
+     "h": 50
+    },
+    "border": "1px solid",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -31.3
+    }
+   }
+  ],
+  "sep": null,
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 320.4,
+     "y": 540,
+     "w": 59.6,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 320.4,
+     "y": 588,
+     "w": 59.6,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 320.4,
+     "y": 636,
+     "w": 59.6,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 320.4,
+     "y": 684,
+     "w": 59.6,
+     "h": 50
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 320.4,
+     "y": 734,
+     "w": 59.6,
+     "h": 50
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "1px",
+   "after": "2px",
+   "boxBefore": {
+    "x": 320.421875,
+    "y": 684,
+    "width": 37.125,
+    "height": 50
+   },
+   "boxAfter": {
+    "x": 320.421875,
+    "y": 682,
+    "width": 39.125,
+    "height": 52
+   }
+  },
+  "surface": null
+ },
+ "A_ingredients": {
+  "ul": {
+   "x": 302.6,
+   "y": 526,
+   "w": 90.4,
+   "h": 271,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 315.6,
+     "y": 539,
+     "w": 64.4,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 600",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 315.6,
+     "y": 588,
+     "w": 64.4,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 315.6,
+     "y": 636,
+     "w": 64.4,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 315.6,
+     "y": 684,
+     "w": 37.1,
+     "h": 50
+    },
+    "border": "1px solid",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -36.3
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 315.6,
+     "y": 734,
+     "w": 37.3,
+     "h": 50
+    },
+    "border": "1px solid",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px 0px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -36.1
+    }
+   }
+  ],
+  "sep": null,
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 315.6,
+     "y": 539,
+     "w": 64.4,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 315.6,
+     "y": 588,
+     "w": 64.4,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 315.6,
+     "y": 636,
+     "w": 64.4,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 315.6,
+     "y": 684,
+     "w": 64.4,
+     "h": 50
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 315.6,
+     "y": 734,
+     "w": 64.4,
+     "h": 50
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "1px",
+   "after": "2px",
+   "boxBefore": {
+    "x": 315.5625,
+    "y": 684,
+    "width": 37.125,
+    "height": 50
+   },
+   "boxAfter": {
+    "x": 315.5625,
+    "y": 682,
+    "width": 39.125,
+    "height": 52
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 64.4,
+   "h": 49,
+   "weight": "600",
+   "textLeft": 0,
+   "textRight": 0
+  }
+ },
+ "B_notebook": {
+  "ul": {
+   "x": 295.4,
+   "y": 531,
+   "w": 97.6,
+   "h": 266,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 308.4,
+     "y": 544,
+     "w": 71.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 308.4,
+     "y": 592,
+     "w": 71.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 308.4,
+     "y": 640,
+     "w": 71.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 308.4,
+     "y": 688,
+     "w": 71.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 308.4,
+     "y": 736,
+     "w": 71.6,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   }
+  ],
+  "sep": null,
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 308.4,
+     "y": 544,
+     "w": 71.6,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 308.4,
+     "y": 592,
+     "w": 71.6,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 308.4,
+     "y": 640,
+     "w": 71.6,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 308.4,
+     "y": 688,
+     "w": 71.6,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 308.4,
+     "y": 736,
+     "w": 71.6,
+     "h": 48
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 308.421875,
+    "y": 688,
+    "width": 71.578125,
+    "height": 48
+   },
+   "boxAfter": {
+    "x": 308.421875,
+    "y": 688,
+    "width": 71.578125,
+    "height": 48
+   }
+  },
+  "surface": null
+ },
+ "B_ingredients": {
+  "ul": {
+   "x": 290.6,
+   "y": 530,
+   "w": 102.4,
+   "h": 267,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 303.6,
+     "y": 543,
+     "w": 76.4,
+     "h": 49
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "12px 600",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 303.6,
+     "y": 592,
+     "w": 76.4,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 303.6,
+     "y": 640,
+     "w": 76.4,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 303.6,
+     "y": 688,
+     "w": 76.4,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 303.6,
+     "y": 736,
+     "w": 76.4,
+     "h": 48
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "12px 400",
+    "dir": "column",
+    "padding": "6px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   }
+  ],
+  "sep": null,
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 303.6,
+     "y": 543,
+     "w": 76.4,
+     "h": 49
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 303.6,
+     "y": 592,
+     "w": 76.4,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 303.6,
+     "y": 640,
+     "w": 76.4,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 303.6,
+     "y": 688,
+     "w": 76.4,
+     "h": 48
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 303.6,
+     "y": 736,
+     "w": 76.4,
+     "h": 48
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 303.5625,
+    "y": 688,
+    "width": 76.4375,
+    "height": 48
+   },
+   "boxAfter": {
+    "x": 303.5625,
+    "y": 688,
+    "width": 76.4375,
+    "height": 48
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 76.4,
+   "h": 49,
+   "weight": "600",
+   "textLeft": 6,
+   "textRight": 6
+  }
+ },
+ "C_notebook": {
+  "ul": {
+   "x": 231.5,
+   "y": 551,
+   "w": 161.5,
+   "h": 246,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 244.5,
+     "y": 564,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 244.5,
+     "y": 608,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 244.5,
+     "y": 652,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 244.5,
+     "y": 696,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 244.5,
+     "y": 740,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   }
+  ],
+  "sep": null,
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 564,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 608,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 652,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 696,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 740,
+     "w": 135.5,
+     "h": 44
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 244.5,
+    "y": 696,
+    "width": 135.5,
+    "height": 44
+   },
+   "boxAfter": {
+    "x": 244.5,
+    "y": 696,
+    "width": 135.5,
+    "height": 44
+   }
+  },
+  "surface": null
+ },
+ "C_ingredients": {
+  "ul": {
+   "x": 225.8,
+   "y": 551,
+   "w": 167.2,
+   "h": 246,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 238.8,
+     "y": 564,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "14px 600",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 238.8,
+     "y": 608,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 238.8,
+     "y": 652,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 238.8,
+     "y": 696,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 238.8,
+     "y": 740,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   }
+  ],
+  "sep": null,
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 564,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 608,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 652,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 696,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 740,
+     "w": 141.2,
+     "h": 44
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 238.828125,
+    "y": 696,
+    "width": 141.171875,
+    "height": 44
+   },
+   "boxAfter": {
+    "x": 238.828125,
+    "y": 696,
+    "width": 141.171875,
+    "height": 44
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 141.2,
+   "h": 44,
+   "weight": "600",
+   "textLeft": 46,
+   "textRight": 20
+  }
+ },
+ "D_notebook": {
+  "ul": {
+   "x": 231.5,
+   "y": 538,
+   "w": 161.5,
+   "h": 259,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 244.5,
+     "y": 551,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(53, 132, 82)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 244.5,
+     "y": 595,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 244.5,
+     "y": 639,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 244.5,
+     "y": 696,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 244.5,
+     "y": 740,
+     "w": 135.5,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   }
+  ],
+  "sep": {
+   "x": 244.5,
+   "y": 689,
+   "w": 135.5,
+   "h": 1
+  },
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 551,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 595,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 639,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 244.5,
+     "y": 689,
+     "w": 135.5,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 696,
+     "w": 135.5,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 244.5,
+     "y": 740,
+     "w": 135.5,
+     "h": 44
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 244.5,
+    "y": 696,
+    "width": 135.5,
+    "height": 44
+   },
+   "boxAfter": {
+    "x": 244.5,
+    "y": 696,
+    "width": 135.5,
+    "height": 44
+   }
+  },
+  "surface": null
+ },
+ "D_ingredients": {
+  "ul": {
+   "x": 225.8,
+   "y": 538,
+   "w": 167.2,
+   "h": 259,
+   "border": "1px solid rgb(214, 218, 215)",
+   "bottomGap": -1
+  },
+  "items": [
+   {
+    "tag": "a",
+    "text": "Ingredients",
+    "box": {
+     "x": 238.8,
+     "y": 551,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgb(243, 244, 242)",
+    "color": "rgb(53, 132, 82)",
+    "font": "14px 600",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Kitchen",
+    "box": {
+     "x": 238.8,
+     "y": 595,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(80, 93, 181)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "a",
+    "text": "Search",
+    "box": {
+     "x": 238.8,
+     "y": 639,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Import",
+    "box": {
+     "x": 238.8,
+     "y": 696,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   },
+   {
+    "tag": "button",
+    "text": "Export",
+    "box": {
+     "x": 238.8,
+     "y": 740,
+     "w": 141.2,
+     "h": 44
+    },
+    "border": "0px none",
+    "bg": "rgba(0, 0, 0, 0)",
+    "color": "rgb(20, 20, 20)",
+    "font": "14px 400",
+    "dir": "row",
+    "padding": "12px 20px",
+    "radius": "10px",
+    "ringBeyond": {
+     "left": -9,
+     "right": -9
+    }
+   }
+  ],
+  "sep": {
+   "x": 238.8,
+   "y": 689,
+   "w": 141.2,
+   "h": 1
+  },
+  "lis": [
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 551,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 595,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 639,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "shell__more-sep",
+    "box": {
+     "x": 238.8,
+     "y": 689,
+     "w": 141.2,
+     "h": 1
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 696,
+     "w": 141.2,
+     "h": 44
+    }
+   },
+   {
+    "cls": "",
+    "box": {
+     "x": 238.8,
+     "y": 740,
+     "w": 141.2,
+     "h": 44
+    }
+   }
+  ],
+  "vw": 393,
+  "hover": {
+   "before": "0px",
+   "after": "0px",
+   "boxBefore": {
+    "x": 238.828125,
+    "y": 696,
+    "width": 141.171875,
+    "height": 44
+   },
+   "boxAfter": {
+    "x": 238.828125,
+    "y": 696,
+    "width": 141.171875,
+    "height": 44
+   }
+  },
+  "surface": {
+   "bg": "rgb(243, 244, 242)",
+   "w": 141.2,
+   "h": 44,
+   "weight": "600",
+   "textLeft": 46,
+   "textRight": 20
+  }
+ }
+}

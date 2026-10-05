@@ -1,0 +1,458 @@
+{
+ "fp-more-A-rest": {
+  "ul": {
+   "w": 89.5,
+   "h": 275
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 63.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 63.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 63.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 39.1,
+    "h": 51,
+    "border": "1px"
+   },
+   {
+    "text": "Export",
+    "w": 38.9,
+    "h": 51,
+    "border": "1px"
+   }
+  ]
+ },
+ "fp-more-A-cur": {
+  "ul": {
+   "w": 93.2,
+   "h": 275
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 67.2,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 67.2,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 67.2,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 39.1,
+    "h": 51,
+    "border": "1px"
+   },
+   {
+    "text": "Export",
+    "w": 38.9,
+    "h": 51,
+    "border": "1px"
+   }
+  ]
+ },
+ "fp-more-A-ring": {
+  "ul": {
+   "w": 89.5,
+   "h": 275
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 63.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 63.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 63.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 39.1,
+    "h": 51,
+    "border": "1px"
+   },
+   {
+    "text": "Export",
+    "w": 38.9,
+    "h": 51,
+    "border": "1px"
+   }
+  ]
+ },
+ "fp-more-B-rest": {
+  "ul": {
+   "w": 101.5,
+   "h": 271
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-B-cur": {
+  "ul": {
+   "w": 105.2,
+   "h": 271
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 79.2,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 79.2,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 79.2,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 79.2,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 79.2,
+    "h": 49,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-B-ring": {
+  "ul": {
+   "w": 101.5,
+   "h": 271
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 75.5,
+    "h": 49,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-C-rest": {
+  "ul": {
+   "w": 164.4,
+   "h": 246
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-C-cur": {
+  "ul": {
+   "w": 168.8,
+   "h": 246
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-C-ring": {
+  "ul": {
+   "w": 164.4,
+   "h": 246
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-D-rest": {
+  "ul": {
+   "w": 164.4,
+   "h": 259
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-D-cur": {
+  "ul": {
+   "w": 168.8,
+   "h": 259
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 142.8,
+    "h": 44,
+    "border": "0px"
+   }
+  ]
+ },
+ "fp-more-D-ring": {
+  "ul": {
+   "w": 164.4,
+   "h": 259
+  },
+  "items": [
+   {
+    "text": "Ingredients",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Kitchen",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Search",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Import",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   },
+   {
+    "text": "Export",
+    "w": 138.4,
+    "h": 44,
+    "border": "0px"
+   }
+  ]
+ }
+}

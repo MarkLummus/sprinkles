@@ -301,7 +301,9 @@ async function matrixA(browser, servers, engine) {
     countedCheck(landed?.inViewport === true, `${label}: the Batch heading is in view`);
     countedCheck((await page.getByText('This batch has not been tasted yet.').count()) === 0, `${label}: the read view no longer says the batch awaits tasting`);
     const status = await page.locator('.page-status').first().innerText().catch(() => '');
-    countedCheck(/^recorded .* against /.test(status.trim()), `${label}: page status reads "${status.trim()}"`);
+    // Case (a) is an amend save: prepareAwaiting saved the batch, so completeRecord stamps `changed`.
+    // Since quick 261004-ly3 the status reads "changed <D Mon YYYY>" with no version suffix; a first save would read "recorded <D Mon YYYY>".
+    countedCheck(/^changed \d{1,2} [A-Z][a-z]{2} \d{4}$/.test(status.trim()), `${label}: page status reads "${status.trim()}"`);
     countedCheck((await page.locator('.notebook-band').getByRole('button', { name: 'Record another', exact: true }).count()) === 1, `${label}: the band's filled action reads Record another`);
     const stored = await readStoredBatch(page, id);
     countedCheck(stored?.tasting?.tastedDate === '2026-08-04' && stored?.tasting?.tastingTempC === -12 && stored?.churn?.churnDate === '2026-08-02', `${label}: the stored batch holds the tasting and the same churn date`);

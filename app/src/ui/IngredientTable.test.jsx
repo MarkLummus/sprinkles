@@ -10,6 +10,7 @@ import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { formatShareOfBatch } from '../domain/composition.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
 
 // The row fixture factory (D-01, D-02): a row is built with portions, an
 // amount and a step for the common one-portion case, with an `overrides`
@@ -31,11 +32,19 @@ function makeVersion(rows) {
   return { versionLabel: 'v', sheetTitle: '', sheetDescription: '', targets: {}, rows, method: [] };
 }
 
-// The pen draft's row shape (D-01, D-02): { portions: [{ step, grams }],
-// removed }, each portion's grams the raw typed string. For the common
-// one-portion case, mirroring makeRow's own single-field ergonomics.
+// The pen draft's row shape (D-01, D-02; removal on the lines, plan 03.6-02):
+// { portions: [{ step, grams, removed }] }, each portion's grams the raw typed
+// string. For the common one-portion case, mirroring makeRow's own
+// single-field ergonomics.
 function onePortionDraftRow(step, grams, removed = false) {
-  return { portions: [{ step, grams }], removed };
+  return { portions: [{ step, grams, removed }] };
+}
+
+// Takes one line out in a fixture the way the pen does: the draft portion's
+// flag in both the pen draft and the draft version's own row (plan 03.6-02).
+function setLineRemoved({ draftVersion, penDraft }, rowId, portionIndex, removed = true) {
+  penDraft.rows[rowId].portions[portionIndex].removed = removed;
+  draftVersion.rows.find((row) => row.id === rowId).portions[portionIndex].removed = removed;
 }
 
 describe('IngredientTable — the show-changes state', () => {
@@ -375,7 +384,7 @@ describe('IngredientTable — the As made column reads and records per portion (
     ]);
     const draftVersion = structuredClone(version);
     const penDraft = {
-      rows: { a: { portions: [{ step: 2, grams: '120' }, { step: 3, grams: '' }], removed: false } },
+      rows: { a: { portions: [{ step: 2, grams: '120' }, { step: 3, grams: '' }] } },
       asMade: {},
     };
 
@@ -648,7 +657,7 @@ describe("IngredientTable — the pen's grams cell carries one field per portion
     ];
     const draftVersion = structuredClone(version);
     const penDraft = {
-      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '10' }], removed: false } },
+      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '10' }] } },
       asMade: {},
     };
     const currentStepNumbers = displayNumbers(draftVersion.method);
@@ -907,7 +916,7 @@ describe('IngredientTable — the pen renders no step-choice control anywhere (L
     const draftVersion = structuredClone(version);
     const penDraft = {
       rows: {
-        a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }], removed: false },
+        a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }] },
         b: onePortionDraftRow(2, '20'),
       },
       asMade: {},
@@ -956,7 +965,7 @@ describe('IngredientTable — the pen\'s remove/restore control carries .text-co
       makeRow('b', 'Row B', 20, 1, chipless),
     ]);
     const draftVersion = structuredClone(version);
-    draftVersion.rows[1].removed = true;
+    draftVersion.rows[1].portions[0].removed = true;
     const penDraft = { rows: { a: onePortionDraftRow(1, '10'), b: onePortionDraftRow(1, '20', true) }, asMade: {} };
 
     const markup = renderToStaticMarkup(
@@ -1106,8 +1115,8 @@ describe('IngredientTable — the remove controls carry an explicit tabindex (qu
 // orphan flag when present, and before the portion line, which is a block
 // that starts its own line under both. Only the order of the name cell's
 // children is pinned here; every class, label and tabindex stays as it was.
-// Decision 44 (261004-ox6) puts a link on every split line, each removing the
-// ingredient; a split line's link also carries an aria-label naming its line.
+// Decision 51 (03.6) keeps a link on every split line, each acting on its own
+// line; a split line's link also carries an aria-label naming its line.
 describe("IngredientTable — a split row's remove link sits on the name's line, before its portion line (261004-eoi; sketch 011 decision 26, decision 33 addendum)", () => {
   const PORTION_LINE = '120 g of 370.4 g · 46.3% in all';
   const CHIP = '<span class="target-chip ingredient-table__flag"><span class="target-chip__value">estimated</span></span>';
@@ -1129,7 +1138,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
     const draftVersion = structuredClone(version);
     const penDraft = {
       rows: {
-        a: { portions: [{ step: 2, grams: '120' }, { step: 3, grams: '250.4' }], removed: false },
+        a: { portions: [{ step: 2, grams: '120', removed: false }, { step: 3, grams: '250.4', removed: false }] },
         b: onePortionDraftRow(3, '429.28'),
       },
       asMade: {},
@@ -1187,8 +1196,8 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
 
   it('Test B: a removed split row runs struck name, tag, gap, restore link, then the portion line, on every line (sketch 011 decision 44)', () => {
     const fixture = splitFixture();
-    fixture.draftVersion.rows[0].removed = true;
-    fixture.penDraft.rows.a.removed = true;
+    setLineRemoved(fixture, 'a', 0);
+    setLineRemoved(fixture, 'a', 1);
     const cells = wholeMilkCells(renderPen(fixture));
     // Against the batch the pen opened on (799.68 g), the same basis as the struck share.
     const PORTION_LINES = ['120 g of 370.4 g · 46.3% in all', '250.4 g of 370.4 g · 46.3% in all'];
@@ -1285,7 +1294,7 @@ describe("IngredientTable — a removed split row's portion line keeps the share
     const draftVersion = structuredClone(version);
     const penDraft = {
       rows: {
-        a: { portions: [{ step: 2, grams: '120' }, { step: 3, grams: '250.4' }], removed: false },
+        a: { portions: [{ step: 2, grams: '120', removed: false }, { step: 3, grams: '250.4', removed: false }] },
         b: onePortionDraftRow(3, '429.28'),
       },
       asMade: {},
@@ -1321,8 +1330,8 @@ describe("IngredientTable — a removed split row's portion line keeps the share
   it('Test F: another row changes, then Whole milk is removed: both notes keep the share of the batch the pen opened on', () => {
     const fixture = splitFixture();
     heavyCreamAt500(fixture);
-    fixture.draftVersion.rows[0].removed = true;
-    fixture.penDraft.rows.a.removed = true;
+    setLineRemoved(fixture, 'a', 0);
+    setLineRemoved(fixture, 'a', 1);
 
     // 74.1% would be the live batch without the row (500 g); 46.3% is the batch it opened on.
     expect(notes(renderPen(fixture))).toEqual(['120 g of 370.4 g · 46.3% in all', '250.4 g of 370.4 g · 46.3% in all']);
@@ -1582,7 +1591,7 @@ describe('IngredientTable — a lone Unallocated group renders no step head (261
 
     const draftVersion = structuredClone(version);
     const penDraft = {
-      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }], removed: false } },
+      rows: { a: { portions: [{ step: 1, grams: '5' }, { step: 2, grams: '5' }] } },
       asMade: {},
     };
     const pen = renderToStaticMarkup(
@@ -1704,5 +1713,191 @@ describe('IngredientTable — the table class carries ingredient-table--as-made 
       <IngredientTable rows={version.rows} draftVersion={draftVersion} mode="developing" penDraft={penDraft} openBatch={null} />,
     );
     expect(tableClass(markup)).toBe('ingredient-table is-developing');
+  });
+});
+
+// Phase 03.6 plan 02 (sketch 011 decision 51, Mark's answer 1 of 2026-10-05): in
+// the pen each line of a split ingredient reads on its own, through the draft
+// portion's flag alone. The five pen states of the decision 51 board, against
+// the Olive Oil seed, quoting the figures .planning/canvas-generators/
+// perstep-capture.json measured on the board.
+describe('IngredientTable — each pen line reads on its own, to the figures decision 51 measured (03.6-02)', () => {
+  function oliveFixture() {
+    const version = structuredClone(oliveOilVersion);
+    const draftVersion = structuredClone(version);
+    const penDraft = { rows: {}, asMade: {} };
+    for (const row of draftVersion.rows) {
+      row.portions.forEach((portion) => {
+        portion.removed = false;
+      });
+      penDraft.rows[row.id] = {
+        portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams), removed: false })),
+      };
+    }
+    return { version, draftVersion, penDraft };
+  }
+
+  // The pen's own handler writes the typed string to the draft and its parsed
+  // number to the draft version; this does the same for one line.
+  function setLineGrams({ draftVersion, penDraft }, rowId, portionIndex, grams) {
+    penDraft.rows[rowId].portions[portionIndex].grams = String(grams);
+    draftVersion.rows.find((row) => row.id === rowId).portions[portionIndex].grams = grams;
+  }
+
+  function renderPen({ version, draftVersion, penDraft }) {
+    return renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        currentStepNumbers={displayNumbers(draftVersion.method)}
+        baselineStepNumbers={displayNumbers(version.method)}
+      />,
+    );
+  }
+
+  // One entry per body line of an ingredient, read off the markup: whether its
+  // name is struck, its control's label, its portion note, and its share cell.
+  function linesOf(markup, name) {
+    const body = markup.slice(markup.indexOf('<tbody>'), markup.indexOf('</tbody>'));
+    const lines = [];
+    for (const [tr] of body.matchAll(/<tr\b[^>]*>(?:(?!<\/tr>)[\s\S])*<\/tr>/g)) {
+      const nameCell = tr.match(/<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/)?.[1];
+      if (!nameCell || !(nameCell.startsWith(name) || nameCell.startsWith(`<span class="struck-value">${name}</span>`))) continue;
+      const cells = [...tr.matchAll(/<td class="ingredient-table__col-numeric">([\s\S]*?)<\/td>/g)];
+      lines.push({
+        struck: nameCell.startsWith('<span class="struck-value">'),
+        control: nameCell.match(/aria-label="([^"]*)"/)?.[1],
+        note: nameCell.match(/<span class="ingredient-table__portion-note">([^<]*)<\/span>/)?.[1],
+        share: cells[cells.length - 1][1],
+      });
+    }
+    return lines;
+  }
+
+  function totalOf(markup) {
+    const tfoot = markup.slice(markup.indexOf('<tfoot>'));
+    return tfoot.match(/<span class="ingredient-table__plan-grams">([\s\S]*?)<\/span><\/td>/)[1];
+  }
+
+  const struck = (text) => `<span class="struck-value">${text}</span>`;
+
+  it('resting: nothing struck, the total and every line read against the whole batch', () => {
+    const markup = renderPen(oliveFixture());
+
+    expect(totalOf(markup)).toBe('799.7 g');
+    expect(linesOf(markup, 'Whole milk').map((line) => line.note)).toEqual([
+      '120 g of 370.4 g · 46.3% in all',
+      '250.4 g of 370.4 g · 46.3% in all',
+    ]);
+    expect(linesOf(markup, 'Sucrose').map((line) => line.note)).toEqual([
+      '12 g of 76.0 g · 9.5% in all',
+      '64 g of 76.0 g · 9.5% in all',
+    ]);
+    expect(linesOf(markup, 'Whole milk').map((line) => line.struck)).toEqual([false, false]);
+  });
+
+  it('Step 2 milk line out: that line strikes alone, the Step 3 line reads the lines still in', () => {
+    const fixture = oliveFixture();
+    setLineRemoved(fixture, 'row-01', 0);
+    const markup = renderPen(fixture);
+    const [two, three] = linesOf(markup, 'Whole milk');
+
+    expect(totalOf(markup)).toBe(`${struck('799.7')}679.7 g`);
+    expect(two).toEqual({
+      struck: true,
+      control: 'restore Whole milk, Step 2',
+      note: '120 g of 370.4 g · 46.3% in all',
+      share: struck('15.0%'),
+    });
+    expect(three).toEqual({
+      struck: false,
+      control: 'remove Whole milk, Step 3',
+      note: '250.4 g of 250.4 g · 36.8% in all',
+      share: `${struck('31.3%')}36.8%`,
+    });
+    expect(linesOf(markup, 'Sucrose').map((line) => line.note)).toEqual([
+      '12 g of 76.0 g · 11.2% in all',
+      '64 g of 76.0 g · 11.2% in all',
+    ]);
+  });
+
+  it('both milk lines out: both strike and offer restore, and read the batch the pen opened on', () => {
+    const fixture = oliveFixture();
+    setLineRemoved(fixture, 'row-01', 0);
+    setLineRemoved(fixture, 'row-01', 1);
+    const markup = renderPen(fixture);
+    const lines = linesOf(markup, 'Whole milk');
+
+    expect(totalOf(markup)).toBe(`${struck('799.7')}429.3 g`);
+    expect(lines.map((line) => line.struck)).toEqual([true, true]);
+    expect(lines.map((line) => line.control)).toEqual(['restore Whole milk, Step 2', 'restore Whole milk, Step 3']);
+    expect(lines.map((line) => line.note)).toEqual([
+      '120 g of 370.4 g · 46.3% in all',
+      '250.4 g of 370.4 g · 46.3% in all',
+    ]);
+    expect(linesOf(markup, 'Sucrose').map((line) => line.note)).toEqual([
+      '12 g of 76.0 g · 17.7% in all',
+      '64 g of 76.0 g · 17.7% in all',
+    ]);
+  });
+
+  it('only the Step 3 milk line out: the Step 2 line reads itself alone and its share moves', () => {
+    const fixture = oliveFixture();
+    setLineRemoved(fixture, 'row-01', 1);
+    const markup = renderPen(fixture);
+    const [two, three] = linesOf(markup, 'Whole milk');
+
+    expect(totalOf(markup)).toBe(`${struck('799.7')}549.3 g`);
+    expect(two.note).toBe('120 g of 120.0 g · 21.8% in all');
+    expect(two.share).toBe(`${struck('15.0%')}21.8%`);
+    expect(two.struck).toBe(false);
+    expect(three.note).toBe('250.4 g of 370.4 g · 46.3% in all');
+    expect(three.struck).toBe(true);
+  });
+
+  it("Step 2's milk amount 120 to 100 with nothing removed: both lines read the new 350.4 g, no stale figure prints", () => {
+    const fixture = oliveFixture();
+    setLineGrams(fixture, 'row-01', 0, 100);
+    const markup = renderPen(fixture);
+
+    expect(totalOf(markup)).toBe(`${struck('799.7')}779.7 g`);
+    expect(linesOf(markup, 'Whole milk').map((line) => line.note)).toEqual([
+      '100 g of 350.4 g · 44.9% in all',
+      '250.4 g of 350.4 g · 44.9% in all',
+    ]);
+    expect(markup).not.toContain('370.4 g · 47.5%');
+    expect(markup).not.toContain('47.5% in all');
+  });
+
+  it('a split row whose first line is out and which an orphan flag names prints the flag once, on the second line', () => {
+    const version = makeVersion([
+      makeRow('a', 'Whole milk', null, null, {
+        portions: [{ step: 2, grams: 120 }, { step: 3, grams: 250.4 }],
+        ingredient: { composition: { fat: 1 }, basis: { fat: 'estimated' } },
+      }),
+    ]);
+    version.method = [
+      { n: 1, leadIn: 'Gum slurry.', instruction: 'x', uses: ['a'] },
+      { n: 2, leadIn: 'Warm the milk.', instruction: 'x' },
+      { n: 3, leadIn: 'Build the base.', instruction: 'x' },
+    ];
+    const draftVersion = structuredClone(version);
+    draftVersion.method[0].removed = true;
+    const penDraft = {
+      rows: { a: { portions: [{ step: 2, grams: '120', removed: false }, { step: 3, grams: '250.4', removed: false }] } },
+      asMade: {},
+    };
+    const fixture = { version, draftVersion, penDraft };
+    setLineRemoved(fixture, 'a', 0);
+    const markup = renderPen(fixture);
+    const cells = markup.match(/<td class="ingredient-table__col-name">(?:<span class="struck-value">)?Whole milk[\s\S]*?<\/td>/g);
+
+    expect(cells).toHaveLength(2);
+    expect(markup.match(/<p class="ingredient-table__flag">/g) ?? []).toHaveLength(1);
+    expect(cells[0]).not.toContain('<p class="ingredient-table__flag">');
+    expect(cells[1]).toContain('<p class="ingredient-table__flag">');
   });
 });

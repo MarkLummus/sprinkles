@@ -103,7 +103,7 @@ function rowAccessibleLabel(
 // struck-then-current pair, which instead nests both INSIDE the slot
 // (route-recipe-version.md § 3's "Grams field sits in the plan-grams slot,
 // a changed value's parent amount is struck before it").
-function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef, out = false }) {
+function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef }) {
   if (mode !== 'developing') {
     return <span className="ingredient-table__plan-grams">{`${row.portions[portionIndex].grams} g`}</span>;
   }
@@ -111,11 +111,11 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
   const portion = row.portions[portionIndex];
   const draftPortion = draftRow.portions[portionIndex];
   // Forced struck even when the number itself is unchanged once the line is
-  // out (`out`: its own flag or the row's) — "the whole row strikes in
-  // place" (route-recipe-version.md § 3) — while the field stays present
-  // and editable, since removing does not clear the amount and a restore
-  // should keep whatever was typed.
-  const changed = out || draftPortion.grams !== String(portion.grams);
+  // out (the draft portion's own flag, nothing at the row level) — a removed
+  // line strikes in place (route-recipe-version.md § 3) — while the field
+  // stays present and editable, since removing does not clear the amount and
+  // a restore should keep whatever was typed.
+  const changed = Boolean(draftPortion.removed) || draftPortion.grams !== String(portion.grams);
   // Accessible name, stated once (T-03.2-13): a one-portion row keeps
   // today's unqualified name unchanged; a row with more than one portion
   // names each field by its own portion index, since two fields sharing
@@ -262,10 +262,11 @@ function removedStepsUsing(draftVersion, rowId) {
 // alone, with one "remove this row" control (G-03-14, D-UAT-5) — every
 // causing step here is removed by construction (removedStepsUsing filters
 // on step.removed), so the number it once had would read as though it
-// were live; this flag never presents one. Tapping it removes the row —
-// one tap, nothing else. It clears the moment the step that caused it is
-// restored, because it is derived, not stored. Rendered once per row
-// (Task 2: only on the row's first portion line), never once per portion.
+// were live; this flag never presents one. Tapping it takes every line of
+// the row out — one tap, nothing else. It clears the moment the step that
+// caused it is restored, because it is derived, not stored. Rendered once
+// per row, on the row's first line still in (plan 03.6-02), never once per
+// portion and never on a struck line.
 function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
   const causingSteps = removedStepsUsing(draftVersion, row.id);
   if (causingSteps.length === 0) return null;
@@ -567,9 +568,13 @@ export function IngredientTable({
   function renderDevelopingEntry(row, portion, portionIndex, displayNumber) {
     const draftRow = penDraft.rows[row.id];
     const draftPortion = draftRow.portions[portionIndex];
-    // This line is out when the draft row's own flag or this portion's flag
-    // is set (sketch 011 decision 51); a sibling line is never affected.
-    const lineOut = Boolean(draftRow.removed || draftPortion.removed);
+    // This line is out when this portion's own draft flag is set (sketch 011
+    // decision 51); a sibling line is never affected, and the draft row holds
+    // no flag of its own.
+    const lineOut = Boolean(draftPortion.removed);
+    // The orphaned-row flag prints on the first line still in, so it never
+    // lands on a struck line; a row with a line in always has one.
+    const firstLineIn = draftRow.portions.findIndex((candidate) => !candidate.removed);
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
@@ -623,7 +628,6 @@ export function IngredientTable({
             penDraft={penDraft}
             onChangePenGrams={onChangePenGrams}
             inputRef={portionIndex === 0 ? (element) => registerGramsInput(row.id, element) : undefined}
-            out={lineOut}
           />
         </td>
         <td className="ingredient-table__col-name">
@@ -633,7 +637,7 @@ export function IngredientTable({
               <span className="target-chip__value">{dataFlag}</span>
             </span>
           )}
-          {portionIndex === 0 && flagged && (
+          {portionIndex === firstLineIn && flagged && (
             <OrphanedRowFlag row={row} draftVersion={draftVersion} onTogglePenRowRemoved={onTogglePenRowRemoved} />
           )}
           {/* Remove/restore, in the name cell now (sketch 011 Task 2) —

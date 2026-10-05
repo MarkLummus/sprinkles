@@ -179,13 +179,13 @@ describe('task 1 style 6 (decision 15) — three column identities: content-size
     expect(thForcesNowrap).toBe(false);
   });
 
-  test('from 724 exactly one th rule declares nowrap, the % of batch head, so the As made head keeps wrapping (261004-ox8)', () => {
+  test('from 724 exactly one head rule declares nowrap, the one for every head cell (sketch 011 decision 48 A replaces 261004-ox8, "As made keeps wrapping")', () => {
     const rules = readAllRules(appCssSource);
-    const thNowrap = rules.filter(
-      (r) => /\bth\.ingredient-table__col-numeric\b/.test(r.selector) && /white-space:\s*nowrap/.test(r.declarations),
+    const headNowrap = rules.filter(
+      (r) => /\bthead th\b/.test(r.selector) && /white-space:\s*nowrap/.test(r.declarations),
     );
-    expect(thNowrap.map((r) => [r.media, r.selector])).toEqual([
-      ['screen and (min-width: 724px)', '.ingredient-table thead th.ingredient-table__col-numeric:last-child'],
+    expect(headNowrap.map((r) => [r.media, r.selector])).toEqual([
+      ['screen and (min-width: 724px)', '.ingredient-table thead th'],
     ]);
   });
 
@@ -280,6 +280,20 @@ describe('D3 grid from 724 (sketch 011 decisions 31, 32 (5), 33 brief (c))', () 
     }
     expect(under.declarations).toMatch(/display:\s*flex/);
     expect(under.declarations).toMatch(/align-items:\s*flex-end/);
+  });
+
+  test('sketch 011 decision 48 A, one head line: the three head cells take row 1 and their words\' width, and As made stands on its column\'s right edge', () => {
+    const cell = rule('.ingredient-table thead th');
+    expect(cell).toMatch(/grid-row:\s*1\b/);
+    expect(cell).toMatch(/white-space:\s*nowrap/);
+    expect(cell).toMatch(/width:\s*auto/);
+    expect(rule('.ingredient-table--as-made thead th.ingredient-table__col-numeric:not(:last-child)')).toMatch(/justify-self:\s*end/);
+  });
+
+  test('the % of batch head keeps its right alignment and its last-column line', () => {
+    const decl = rule('.ingredient-table thead th.ingredient-table__col-numeric:last-child');
+    expect(decl).toMatch(/text-align:\s*right/);
+    expect(decl).toMatch(/grid-column:\s*-2 \/ -1/);
   });
 
   test('the writing column costs the name 66px: the As made track (56) and one column gap (10), decision 32 answer 4', () => {

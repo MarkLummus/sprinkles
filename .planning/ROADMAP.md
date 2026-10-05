@@ -574,7 +574,7 @@ Plans:
 **Goal:** Shared ingredients act per step (sketch 011 README decision 51): each remove link removes its own line, a removed step takes its lines with it (struck, restored with the step), and the pen's portion line and Show changes' percentages follow the lines still in, the 86.3% fix included.
 **Requirements**: TBD
 **Depends on:** Phase 03.5
-**Plans:** 6 plans
+**Plans:** 7 plans
 
 Plans:
 
@@ -600,7 +600,11 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5)*
 
-- [ ] 03.6-06-PLAN.md — Conformance probe against the board on the real DOM (WebKit and Chromium, 1366 and 393), full regression, and the open items and device check put on Mark's List
+- [ ] 03.6-06-PLAN.md — Show changes strikes a removed step's lines, and a line whose step is removed needs no amount to save (the diff and the blocked-save check read the step's removal, pinned end to end on Olive Oil v1)
+
+**Wave 7** *(blocked on Wave 6)*
+
+- [ ] 03.6-07-PLAN.md — Conformance probe against the board on the real DOM (WebKit and Chromium, 1366 and 393), full regression, and the open items and device check worded for Mark's List
 
 ### Phase 4: Prepare the next version for making
 

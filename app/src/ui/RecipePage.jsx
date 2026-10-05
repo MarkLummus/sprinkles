@@ -951,6 +951,13 @@ export function RecipePage({ onPageStatus = () => {} }) {
   const below724 = useBelow724();
   const sheetTwoColumns = useSheetTwoColumns();
   const [balanceOpen, toggleBalance] = useFold(sheetTwoColumns);
+  // The Batch fold (sketch 011 decision 50 C1, Mark 2026-10-05) is open on
+  // first load at every width. Its default never changes, so no width
+  // crossing resets it, and nothing is stored. It lives here beside Balance's
+  // so Go to batch can open it in the same update that fires the landing.
+  // RecipePage is keyed by recipe, version and batch, so moving to another
+  // batch still opens it again.
+  const [batchOpen, toggleBatch] = useFold(true);
 
   if (version === undefined) return null;
   // The running head — the way home in every state, including this one
@@ -1136,10 +1143,13 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }
   }
 
-  // The band's Go to batch row (sketch 011 decision 30): the same two lines an
-  // amendment save runs, so BatchRow's existing landing focuses its Batch
-  // heading and draws the ring. The URL and history are not touched.
+  // The band's Go to batch row (sketch 011 decision 30). It opens the Batch
+  // fold if the maker closed it (decision 50, Mark 2026-10-05), then runs the
+  // same two lines an amendment save runs, so the body is shown before
+  // BatchRow's landing focuses its Batch heading and draws the ring. The URL
+  // and history are not touched.
   function handleGoToBatch() {
+    if (!batchOpen) toggleBatch();
     focusBatchAttemptRef.current += 1;
     setFocusBatchAttempt(focusBatchAttemptRef.current);
   }
@@ -2187,6 +2197,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onSaveBatch={handleSaveBatch}
             onStartRecording={handleStartRecording}
             foldsOpen={!belowDesktop}
+            batchOpen={batchOpen}
+            onToggleBatch={toggleBatch}
           />
         </aside>
       </div>

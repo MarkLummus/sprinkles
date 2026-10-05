@@ -427,6 +427,9 @@ export function BatchRow({
   // through to TastingReading's own useFold — open by default (the
   // 1366-up answer), closed below, per RecipePage's foldsOpen={!belowDesktop}.
   foldsOpen = true,
+  // The Batch fold's state, owned by RecipePage (decision 50); open by default for the component tests.
+  batchOpen = true,
+  onToggleBatch,
 }) {
   // Focus-return for the Correct opener this row owns — closing the pen
   // returns focus to the control that opened it. Must sit above the
@@ -571,10 +574,6 @@ export function BatchRow({
   // there is nothing to disclose (the batch-head todo).
   const [batchListOpen, toggleBatchList] = useFold(foldsOpen);
   const showBatchList = batches.length >= 2 && openPen !== 'record';
-  // The Batch fold (sketch 011 decision 50 C1, Mark 2026-10-05): open on
-  // first load at every width. Its default never changes, so no width
-  // crossing resets it, and nothing is stored. It does not read foldsOpen.
-  const [batchOpen, toggleBatch] = useFold(true);
   const batchFold = openPen === null && Boolean(openBatch);
 
   return (
@@ -634,7 +633,7 @@ export function BatchRow({
               <FoldRow
                 label="Batch"
                 open={batchOpen}
-                onToggle={toggleBatch}
+                onToggle={onToggleBatch}
                 controls="fold-batch"
                 count={`churned ${recordDateWords(openBatch.churn.churnDate)}`}
               />

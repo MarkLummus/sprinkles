@@ -2,17 +2,17 @@
 gsd_state_version: "1.0"
 current_phase: "03.6"
 current_phase_name: Per-step shared ingredients (INSERTED)
-status: executing
-stopped_at: Completed 03.6-06-PLAN.md
-last_updated: "2026-10-05T10:38:40.465Z"
+status: verifying
+stopped_at: Completed 03.6-07-PLAN.md
+last_updated: "2026-10-05T10:46:37.394Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 execution started
-state_head: 4f7fcdf23ec42c49a7b18815b6ed242623b4ecfe
+state_head: cbede693e1efedd0413100202d1118a47a457178
 progress:
   total_phases: 13
   completed_phases: 8
   total_plans: 104
-  completed_plans: 103
+  completed_plans: 104
   percent: 62
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 
 Phase: 03.6 (Per-step shared ingredients (INSERTED)) — EXECUTING
 Plan: 7 of 7
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-10-05 — Phase 03.6 execution started
 
 Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed through Phase 03.4)
@@ -133,6 +133,7 @@ Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed
 | Phase 03.6 P04 | 6 min | 2 tasks | 6 files |
 | Phase 03.6 P05 | 6 min | 2 tasks | 8 files |
 | Phase 03.6 P06 | 6 min | 2 tasks | 5 files |
+| Phase 03.6 P07 | 25 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -267,6 +268,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.6]: 03.6-05: a removed step's removal is read from the method (isLineRemoved/isRowRemoved/activeRows take the method), never stored on a line; a lone Removed group keeps its head
 - [Phase 03.6]: buildDiff reads each side's removal through its own version's method (row and line removed, baseRemoved), so Show changes strikes a removed step's lines and removedChanged is true only where the versions differ
 - [Phase 03.6]: findBlockedRow matches draft portions to stored portions by index and skips a line whose step penFields.method removes (flag exactly true)
+- [Phase 03.6]: 03.6-07: both milk lines out is reached with two presses and compared with the capture file's b_wm2 (the old one-press page, same page per decision 51)
 
 ### Pending Todos
 
@@ -449,6 +451,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T10:38:40.364Z
-Stopped at: Completed 03.6-06-PLAN.md
+Last session: 2026-10-05T10:46:37.292Z
+Stopped at: Completed 03.6-07-PLAN.md
 Resume file: None

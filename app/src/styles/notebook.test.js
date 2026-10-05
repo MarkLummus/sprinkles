@@ -495,6 +495,67 @@ describe('small info labels start-aligned at every width (sketch 011 decisions 3
   });
 });
 
+// :has(.fold-row) scopes these to the head that renders the fold row; the pen
+// and no-batch heads keep decision 42's rule above.
+describe('the Batch fold head reads like the Tasting head (sketch 011 decision 50 A; Mark 2026-10-05)', () => {
+  const HEAD = '.notebook-log .batch-row__head:has(.fold-row)';
+  const top = (selector) => rules.find((r) => r.selector === selector && r.media === undefined);
+  const inMedia = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  // Declarations as a normalised list, so the test pins "and nothing else".
+  const decls = (rule) =>
+    rule.declarations
+      .split(';')
+      .map((d) => d.trim().replace(/\s+/g, ' '))
+      .filter(Boolean);
+
+  const topLevel = [
+    [HEAD, ['row-gap: 0', 'align-items: center']],
+    [`${HEAD} .region-name`, ['margin: 0', 'flex: 0 1 auto']],
+    [`${HEAD} .fold-row`, ['width: auto']],
+  ];
+  const narrow = [
+    [`${HEAD} .batch-row__head-lead`, ['flex: 0 0 100%']],
+    [`${HEAD} .region-name`, ['flex: 1 1 auto']],
+    [`${HEAD} .fold-row`, ['width: 100%']],
+  ];
+
+  test.each(topLevel)('top-level rule %s declares exactly %j', (selector, expected) => {
+    const rule = top(selector);
+    expect(rule, `expected a top-level ${selector} rule`).toBeTruthy();
+    expect(decls(rule)).toEqual(expected);
+  });
+
+  test.each(['(max-width: 723.98px)', '(min-width: 1366px)'])('the three narrow rules sit in %s with identical declarations', (media) => {
+    for (const [selector, expected] of narrow) {
+      const rule = inMedia(selector, media);
+      expect(rule, `expected ${selector} under ${media}`).toBeTruthy();
+      expect(decls(rule)).toEqual(expected);
+    }
+  });
+
+  test('each narrow rule comes after its top-level twin, so it wins at equal specificity', () => {
+    for (const [selector] of narrow) {
+      const twin = top(selector);
+      // The lead rule has no top-level twin: it is only ever narrow.
+      if (!twin) continue;
+      for (const media of ['(max-width: 723.98px)', '(min-width: 1366px)']) {
+        expect(rules.indexOf(inMedia(selector, media))).toBeGreaterThan(rules.indexOf(twin));
+      }
+    }
+  });
+
+  test('no :has(.fold-row) rule sits under (max-width: 1365.98px): from 724 to 1365 the top-level form holds', () => {
+    const under = rules.filter((r) => r.media === '(max-width: 1365.98px)' && r.selector.includes(':has(.fold-row)'));
+    expect(under).toEqual([]);
+  });
+
+  test("the pen and no-batch heads keep decision 42's rule, with no media twin", () => {
+    const base = top('.notebook-log .batch-row__head');
+    expect(base.declarations).toMatch(/row-gap:\s*var\(--app-notebook-log-head-outer-gap\)/);
+    expect(rules.filter((r) => r.selector === '.notebook-log .batch-row__head' && r.media !== undefined)).toEqual([]);
+  });
+});
+
 // Mark, 2026-09-27: Rename, Next version and the buttons beside them get narrower
 // when hovered or clicked. Measured on the build (quick 261004-ly5): app.css's
 // `button:hover, select:hover` (0,1,1) outranks these single-class rest rules

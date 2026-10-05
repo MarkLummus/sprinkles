@@ -251,3 +251,62 @@ describe('a saved version with a line out reads without it (decision 51, plan 03
     expect(heads.some((text) => text.startsWith('Step 2'))).toBe(true);
   });
 });
+
+// Rows of the table by ingredient name, in table order; one entry per line.
+function linesOf(name) {
+  const table = current.container.querySelector('.ingredient-table');
+  return [...table.querySelectorAll('tbody tr[aria-label]')].filter((tr) => tr.getAttribute('aria-label').startsWith(name));
+}
+
+function gramsCellOf(tr) {
+  return tr.querySelector('.ingredient-table__col-grams');
+}
+
+function shareCellOf(tr) {
+  const cells = tr.querySelectorAll('td');
+  return cells[cells.length - 1];
+}
+
+function struck(cell) {
+  return [...cell.querySelectorAll('.struck-value')].map((node) => node.textContent);
+}
+
+async function saveChildAndShowChanges(container) {
+  await setValue(container.querySelector('input[aria-label="Version name"]'), 'less milk');
+  await click(buttonByText(container, 'Save as a new version'));
+  await flush(() => store.saveVersion.mock.calls.length > 0);
+  await flush(() => current.container.querySelector('.ingredient-table') !== null && buttonByText(current.container, 'Show changes') !== null);
+  await click(buttonByText(current.container, 'Show changes'));
+}
+
+describe('Show changes compares a split ingredient line by line (decision 51, plan 04)', () => {
+  it("strikes Whole milk's Step 2 amount and share, and the shares that moved, and nothing that did not", async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(container.querySelector('input[aria-label="Whole milk, grams, portion 1"]'), '100');
+    await saveChildAndShowChanges(container);
+
+    const [stepTwo, stepThree] = linesOf('Whole milk');
+    expect(struck(gramsCellOf(stepTwo))).toEqual(['120 g']);
+    expect(gramsCellOf(stepTwo).textContent).toBe('120 g100 g');
+    expect(struck(shareCellOf(stepTwo))).toEqual(['15.0%']);
+    expect(shareCellOf(stepTwo).textContent).toBe('15.0%12.8%');
+    expect(struck(gramsCellOf(stepThree))).toEqual([]);
+    expect(gramsCellOf(stepThree).textContent).toBe('250.4 g');
+    expect(struck(shareCellOf(stepThree))).toEqual(['31.3%']);
+    expect(shareCellOf(stepThree).textContent).toBe('31.3%32.1%');
+    // Each note reads its own line's grams over the row's lines still in, as the
+    // board's measured p_show_edit_1366 does.
+    expect(stepTwo.querySelector('.ingredient-table__portion-note').textContent).toBe('100 g of 350.4 g · 44.9% in all');
+    expect(stepThree.querySelector('.ingredient-table__portion-note').textContent).toBe('250.4 g of 350.4 g · 44.9% in all');
+
+    const [sucroseTwo, sucroseThree] = linesOf('Sucrose');
+    expect(struck(shareCellOf(sucroseTwo))).toEqual([]);
+    expect(struck(shareCellOf(sucroseThree))).toEqual(['8.0%']);
+    expect(shareCellOf(sucroseThree).textContent).toBe('8.0%8.2%');
+
+    expect(struck(totalCell())).toEqual(['799.7']);
+    expect(totalCell().textContent).toBe('799.7779.7 g');
+  });
+});

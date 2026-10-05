@@ -187,65 +187,59 @@ function RemoveRowControl({ removed, onToggle, lineName }) {
 // marks are never still being typed, so nothing here reads through
 // .ink-field or .ink-text — nested INSIDE the slot, mirroring the total
 // row's own struck-then-current pair (both values are static text here,
-// never a field beside them). Driven entirely by the row's own buildDiff
-// descriptor; a removed row forces the strike even when the number itself
-// did not move, the same forced-strike discipline GramsCell already
-// applies in the pen. A removed row prints its struck old amount alone,
-// with no current amount after it (sketch 011 decision 24). Only valid for a single-portion row — diff.js's
-// rowDiff carries ROW-level totals alone, so it cannot attribute a struck
-// comparison to one portion of a split row (the show-changes branch below
-// renders a split row's grams plainly instead, with no strike).
-function DiffGramsCell({ rowDiff }) {
-  const changed = rowDiff.removed || rowDiff.gramsChanged;
+// never a field beside it). Driven entirely by the line's own buildDiff
+// descriptor (rowDiff.lines[portionIndex]); a line that is out forces the
+// strike even when the number itself did not move, the same forced-strike
+// discipline GramsCell already applies in the pen. A line that is out prints
+// its struck old amount alone, with no current amount after it (sketch 011
+// decision 24). A one-line row has one line whose figures equal its row's.
+function DiffGramsCell({ line }) {
+  const changed = line.removed || line.gramsChanged;
   return (
     <span className="ingredient-table__plan-grams">
-      {changed && rowDiff.gramsFrom != null && <span className="struck-value">{`${rowDiff.gramsFrom} g`}</span>}
-      {!rowDiff.removed && `${rowDiff.gramsTo} g`}
+      {changed && line.gramsFrom != null && <span className="struck-value">{`${line.gramsFrom} g`}</span>}
+      {!line.removed && `${line.gramsTo} g`}
     </span>
   );
 }
 
-// A removed row has no current share at all — the mirror of the name
+// A line that is out has no current share at all — the mirror of the name
 // cell's forced strike — so only the struck baseline renders, exactly as
-// the pen's own removed-row share cell does. Single-portion only — see
-// DiffGramsCell's own comment.
-function DiffShareCell({ rowDiff }) {
-  if (rowDiff.removed) {
-    return <span className="struck-value">{rowDiff.shareFrom}</span>;
+// the pen's own removed-line share cell does.
+function DiffShareCell({ line }) {
+  if (line.removed) {
+    return <span className="struck-value">{line.shareFrom}</span>;
   }
   return (
     <>
-      {rowDiff.shareChanged && rowDiff.shareFrom != null && <span className="struck-value">{rowDiff.shareFrom}</span>}
-      {rowDiff.shareTo}
+      {line.shareChanged && line.shareFrom != null && <span className="struck-value">{line.shareFrom}</span>}
+      {line.shareTo}
     </>
   );
 }
 
 // The show-changes state's accessible name (route-recipe-version.md § 6):
 // the strike is never the only carrier, so a changed cell's row still
-// reads "was 40 g, now 48 g" even with no pen field to attach it to. Unlike
-// rowAccessibleLabel above, `row` here is the CURRENT (child) version's own
-// row — its own grams already equals rowDiff's "to" value for a
-// single-portion row — so the phrasing reads directly off the diff
-// descriptor, never off `row` itself. `isSplit` selects the same fork the
-// visible cell takes: a struck "was/now" comparison for a single-portion
-// row, or that portion's own plain current value for a split row (diff.js
-// carries no per-portion comparison to strike against). Per LD-02, no step
-// phrase is ever produced here.
-function rowDiffAccessibleLabel(row, portion, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue, isSplit) {
-  const gramsPhrase = isSplit
-    ? `${portion.grams} g`
-    : (rowDiff.removed || rowDiff.gramsChanged) && rowDiff.gramsFrom != null
-      ? `was ${rowDiff.gramsFrom} g, now ${rowDiff.gramsTo} g`
-      : `${rowDiff.gramsTo} g`;
+// reads "was 40 g, now 48 g" even with no pen field to attach it to. `row` is
+// the CURRENT (child) version's own row; the phrasing reads off the line's
+// own diff descriptor, one line at a time, never off `row` itself: a "was X g,
+// now Y g" phrase when the line's amount changed or the line is out and has a
+// baseline amount, a "was A, now B" share phrase when the line is in and its
+// share changed, and "removed" last when it is out. Per LD-02, no step phrase
+// is ever produced here.
+function rowDiffAccessibleLabel(row, line, dataFlag, isMarked, markedFigureLabel, asMadeValue) {
+  const gramsPhrase =
+    (line.removed || line.gramsChanged) && line.gramsFrom != null
+      ? `was ${line.gramsFrom} g, now ${line.gramsTo} g`
+      : `${line.gramsTo} g`;
   const parts = [row.ingredientName, gramsPhrase];
-  if (!isSplit && !rowDiff.removed && rowDiff.shareChanged && rowDiff.shareFrom != null) {
-    parts.push(`was ${rowDiff.shareFrom}, now ${rowDiff.shareTo}`);
+  if (!line.removed && line.shareChanged && line.shareFrom != null) {
+    parts.push(`was ${line.shareFrom}, now ${line.shareTo}`);
   }
   if (dataFlag) parts.push(dataFlag);
   if (isMarked) parts.push(`contributing to ${markedFigureLabel}`);
   if (asMadeValue !== null) parts.push(`as made ${asMadeValue} g`);
-  if (rowDiff.removed) parts.push('removed');
+  if (line.removed) parts.push('removed');
   return parts.join(', ');
 }
 
@@ -368,6 +362,11 @@ export function IngredientTable({
   draftVersion = null,
   diff = null,
   showingChanges = false,
+  // The version Show changes compares against (the parent), when the page
+  // gives one: a line that is out reads the figures it had there, never the
+  // new batch it was not in. Null elsewhere, where the version the pen opened
+  // on (`rows`) is the opening version.
+  baselineVersion = null,
   markedRowIds = [],
   markedFigureLabel = '',
   // The row a blocked save names (critique P1 #3, D-21): the id
@@ -433,6 +432,17 @@ export function IngredientTable({
   // Keyed by row id in a Map, never a bare object read against a stored id
   // (T-03.6-02): the row as it stood when the pen opened, lines still in.
   const baselineActiveById = new Map(activeRowsOnly.map((row) => [row.id, row]));
+  // The figures a struck line reads: the version the comparison opened on.
+  // The page's parent while Show changes is on, otherwise the version the pen
+  // opened on (the table's own rows), so one rule serves both states.
+  let openingActiveById = baselineActiveById;
+  let openingMass = baselineMass;
+  if (baselineVersion) {
+    const openingActive = activeRows(baselineVersion);
+    const openingBalance = computeBalance(openingActive);
+    openingActiveById = new Map(openingActive.map((row) => [row.id, row]));
+    openingMass = openingBalance ? openingBalance.mass : 0;
+  }
 
   const isDeveloping = mode === 'developing' && draftVersion != null;
   // The show-changes state (route-recipe-version.md § 3, § 6; D-02, 03-04):
@@ -531,25 +541,27 @@ export function IngredientTable({
 
   function renderShowChangesEntry(row, portion, portionIndex) {
     const rowDiff = diff.rows.find((entry) => entry.id === row.id);
+    const line = rowDiff.lines[portionIndex];
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
     const isSplit = row.portions.length > 1;
+    // A line that is in reads the lines still in over the current batch; a
+    // line that is out reads the opening figures (the parent's row over the
+    // parent's batch), since the new batch it was not in has no share for it.
+    const liveRow = baselineActiveById.get(row.id) ?? row;
+    const openingRow = openingActiveById.get(row.id) ?? row;
     return (
       <tr
         key={`${row.id}:${portionIndex}`}
         className={isMarked ? 'is-marked' : undefined}
-        aria-label={rowDiffAccessibleLabel(row, portion, rowDiff, dataFlag, isMarked, markedFigureLabel, asMadeValue, isSplit)}
+        aria-label={rowDiffAccessibleLabel(row, line, dataFlag, isMarked, markedFigureLabel, asMadeValue)}
       >
         <td className="ingredient-table__col-grams">
-          {isSplit ? (
-            <span className="ingredient-table__plan-grams">{`${portion.grams} g`}</span>
-          ) : (
-            <DiffGramsCell rowDiff={rowDiff} />
-          )}
+          <DiffGramsCell line={line} />
         </td>
         <td className="ingredient-table__col-name">
-          {rowDiff.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
+          {line.removed ? <span className="struck-value">{row.ingredientName}</span> : row.ingredientName}
           {dataFlag && (
             <span className="target-chip ingredient-table__flag">
               <span className="target-chip__value">{dataFlag}</span>
@@ -557,7 +569,9 @@ export function IngredientTable({
           )}
           {isSplit && (
             <span className="ingredient-table__portion-note">
-              {formatPortionLine(portion.grams, rowGrams(row), baselineMass)}
+              {line.removed
+                ? formatPortionLine(portion.grams, rowGrams(openingRow), openingMass)
+                : formatPortionLine(line.gramsTo, rowGrams(liveRow), baselineMass)}
             </span>
           )}
         </td>
@@ -567,7 +581,7 @@ export function IngredientTable({
           </td>
         )}
         <td className="ingredient-table__col-numeric">
-          {isSplit ? formatShareOfBatch(portion.grams, baselineMass) : <DiffShareCell rowDiff={rowDiff} />}
+          <DiffShareCell line={line} />
         </td>
       </tr>
     );
@@ -670,7 +684,7 @@ export function IngredientTable({
           {isSplit && (
             <span className="ingredient-table__portion-note">
               {lineOut
-                ? formatPortionLine(livePortionGrams, rowGrams(baselineActiveById.get(row.id) ?? row), baselineMass)
+                ? formatPortionLine(livePortionGrams, rowGrams(openingActiveById.get(row.id) ?? row), openingMass)
                 : formatPortionLine(livePortionGrams, rowGrams(liveRow), currentMass)}
             </span>
           )}

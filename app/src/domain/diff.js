@@ -9,7 +9,7 @@
 // order (already ascending n).
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue } from './composition.js';
 import { buildFigures } from './figures.js';
-import { activeRows, activeSteps, isRowRemoved, rowGrams } from './rows.js';
+import { activeRows, activeSteps, isLineRemoved, isRowRemoved, rowGrams } from './rows.js';
 
 function activeMass(version) {
   const balance = computeBalance(activeRows(version));
@@ -53,7 +53,51 @@ function stepsDiffer(a, b) {
   return a.some((step, index) => step !== b[index]);
 }
 
+// One descriptor per stored line of the current row, in index order, matched
+// to the baseline row's portion at the same index (the pen never changes a
+// line's step or adds or removes a portion, so a child's lines align with its
+// parent's by index). A missing baseline row, or a baseline row with fewer
+// portions, gives the null-from, changed-true shape and never throws
+// (T-03.6-07). Each line's share is its own grams over the active mass of its
+// own side, through formatShareOfBatch, as the row-level shares are.
+function buildLineDiffs(row, baseRow, currentMass, baselineMass) {
+  return row.portions.map((portion, index) => {
+    const removed = isLineRemoved(row, portion);
+    const basePortion = baseRow ? baseRow.portions[index] : undefined;
+    const shareTo = formatShareOfBatch(portion.grams, currentMass);
+    if (!basePortion) {
+      return {
+        index,
+        step: portion.step,
+        gramsFrom: null,
+        gramsTo: portion.grams,
+        gramsChanged: true,
+        shareFrom: null,
+        shareTo,
+        shareChanged: true,
+        removed,
+        removedChanged: true,
+      };
+    }
+    const shareFrom = formatShareOfBatch(basePortion.grams, baselineMass);
+    const baseRemoved = isLineRemoved(baseRow, basePortion);
+    return {
+      index,
+      step: portion.step,
+      gramsFrom: basePortion.grams,
+      gramsTo: portion.grams,
+      gramsChanged: portion.grams !== basePortion.grams,
+      shareFrom,
+      shareTo,
+      shareChanged: shareTo !== shareFrom,
+      removed,
+      removedChanged: removed !== baseRemoved,
+    };
+  });
+}
+
 function buildRowDiff(row, baseRow, currentMass, baselineMass) {
+  const lines = buildLineDiffs(row, baseRow, currentMass, baselineMass);
   if (!baseRow) {
     return {
       id: row.id,
@@ -69,6 +113,7 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass) {
       stepsChanged: true,
       removed: isRowRemoved(row),
       removedChanged: true,
+      lines,
     };
   }
   const rowTotal = rowGrams(row);
@@ -91,6 +136,7 @@ function buildRowDiff(row, baseRow, currentMass, baselineMass) {
     stepsChanged: stepsDiffer(stepsOf(row), stepsOf(baseRow)),
     removed,
     removedChanged: removed !== baseRemoved,
+    lines,
   };
 }
 
@@ -175,7 +221,15 @@ function buildStepDiff(step, baseStep) {
  * `stepsFrom`/`stepsTo` are each row's portions' step references, as
  * arrays in portion order, and `stepsChanged` is an order-sensitive
  * comparison of those two arrays — a reallocation between the same two
- * steps is a real change, since portions are stored in step order.
+ * steps is a real change, since portions are stored in step order. `lines`
+ * is beside those row-level fields, one descriptor per stored line of the
+ * row in index order: `{ index, step, gramsFrom, gramsTo, gramsChanged,
+ * shareFrom, shareTo, shareChanged, removed, removedChanged }`. The baseline
+ * line is the baseline row's portion at the same index; a line with no
+ * baseline row or no baseline portion reports null from-values and changed
+ * true. `shareFrom` is the line's own grams over the baseline's active mass
+ * and `shareTo` its own grams over the current active mass; `removed` is
+ * isLineRemoved for the current line.
  * `steps` is one descriptor per step of `current`, in
  * `current.method`'s own order (already ascending n); each step descriptor
  * carries `leadInChanged`/`instructionChanged`/`purposeChanged`/

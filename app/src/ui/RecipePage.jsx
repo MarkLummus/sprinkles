@@ -2111,6 +2111,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   draftVersion={draftVersion}
                   diff={changeDiff}
                   showingChanges={showingChanges}
+                  baselineVersion={showingChanges && changeDiff ? parentVersion : null}
                   blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
                   blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
                   markedRowIds={markedRowIds}

@@ -570,3 +570,117 @@ describe('buildDiff — removal through a line (03.6, decision 51)', () => {
     expect(diff.figures.map((figure) => figure.to)).toEqual(expected.map((figure) => figure.value));
   });
 });
+
+describe('buildDiff — per-line descriptors (03.6, decision 51 brief item d)', () => {
+  it("compares each line of a split row on its own: Whole milk's Step 2 amount 120 to 100", () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-01').portions[0].grams = 100;
+
+    const diff = buildDiff(current, baseline);
+    const milk = diff.rows.find((row) => row.id === 'row-01');
+    expect(milk.lines).toHaveLength(2);
+    expect(milk.lines[0]).toMatchObject({
+      index: 0,
+      step: 2,
+      gramsFrom: 120,
+      gramsTo: 100,
+      gramsChanged: true,
+      shareFrom: '15.0%',
+      shareTo: '12.8%',
+      shareChanged: true,
+      removed: false,
+      removedChanged: false,
+    });
+    expect(milk.lines[1]).toMatchObject({
+      index: 1,
+      step: 3,
+      gramsFrom: 250.4,
+      gramsTo: 250.4,
+      gramsChanged: false,
+      shareFrom: '31.3%',
+      shareTo: '32.1%',
+      shareChanged: true,
+      removed: false,
+    });
+
+    const sucrose = diff.rows.find((row) => row.id === 'row-05');
+    expect(sucrose.lines[0]).toMatchObject({ shareFrom: '1.5%', shareTo: '1.5%', shareChanged: false });
+    expect(sucrose.lines[1]).toMatchObject({ shareFrom: '8.0%', shareTo: '8.2%', shareChanged: true });
+  });
+
+  it("leaves the row-level fields as they were beside the lines", () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-01').portions[0].grams = 100;
+
+    const milk = buildDiff(current, baseline).rows.find((row) => row.id === 'row-01');
+    expect(milk.gramsFrom).toBe(370.4);
+    expect(milk.gramsTo).toBe(350.4);
+    expect(milk.gramsChanged).toBe(true);
+    expect(milk.stepsFrom).toEqual([2, 3]);
+    expect(milk.stepsTo).toEqual([2, 3]);
+    expect(milk.stepsChanged).toBe(false);
+  });
+
+  it("gives a one-line row one line whose figures equal its row's", () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-02').portions[0].grams = 260;
+
+    const cream = buildDiff(current, baseline).rows.find((row) => row.id === 'row-02');
+    expect(cream.lines).toHaveLength(1);
+    expect(cream.lines[0].gramsFrom).toBe(cream.gramsFrom);
+    expect(cream.lines[0].gramsTo).toBe(cream.gramsTo);
+    expect(cream.lines[0].gramsChanged).toBe(cream.gramsChanged);
+    expect(cream.lines[0].shareFrom).toBe(cream.shareFrom);
+    expect(cream.lines[0].shareTo).toBe(cream.shareTo);
+    expect(cream.lines[0].shareChanged).toBe(cream.shareChanged);
+    expect(cream.lines[0].removed).toBe(cream.removed);
+    expect(cream.lines[0].removedChanged).toBe(cream.removedChanged);
+  });
+
+  it('reports a line that is out as removed and changed, with the parent figures still in the from side', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(current, 'row-01').portions[0].removed = true;
+
+    const milk = buildDiff(current, baseline).rows.find((row) => row.id === 'row-01');
+    expect(milk.lines[0]).toMatchObject({ removed: true, removedChanged: true, gramsFrom: 120, shareFrom: '15.0%' });
+    expect(milk.lines[1]).toMatchObject({ removed: false, removedChanged: false, shareFrom: '31.3%', shareTo: '36.8%' });
+  });
+
+  it('gives a current line with no baseline line null from-values and changed true, and does not throw', () => {
+    const baseline = clone();
+    const current = clone();
+    findRow(baseline, 'row-01').portions.pop();
+
+    const diff = buildDiff(current, baseline);
+    const milk = diff.rows.find((row) => row.id === 'row-01');
+    expect(milk.lines[1]).toMatchObject({
+      gramsFrom: null,
+      gramsTo: 250.4,
+      gramsChanged: true,
+      shareFrom: null,
+      shareChanged: true,
+      removedChanged: true,
+    });
+    expect(milk.lines[0].gramsFrom).toBe(120);
+  });
+
+  it('gives every line of a row absent from the baseline the null-from shape', () => {
+    const baseline = clone();
+    const current = clone();
+    baseline.rows = baseline.rows.filter((row) => row.id !== 'row-01');
+
+    const milk = buildDiff(current, baseline).rows.find((row) => row.id === 'row-01');
+    expect(milk.lines).toHaveLength(2);
+    for (const line of milk.lines) {
+      expect(line.gramsFrom).toBeNull();
+      expect(line.shareFrom).toBeNull();
+      expect(line.gramsChanged).toBe(true);
+      expect(line.shareChanged).toBe(true);
+      expect(line.removedChanged).toBe(true);
+    }
+  });
+});

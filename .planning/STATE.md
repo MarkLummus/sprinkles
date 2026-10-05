@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.5 complete, ready to plan Phase 04
-last_updated: "2026-10-05T02:17:01.432Z"
+last_updated: "2026-10-05T02:36:14.753Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.5 complete, transitioned to Phase 04
-state_head: eaff655e79398e7b7856f6aa203b0c7c3c9cf957
+state_head: a328282646ebdca824d7b27f40bb9d94c74c3d97
 progress:
   total_phases: 12
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-05 - Completed quick task 261004-uo6: record pen black hairline and the tab row focus ring
+Last activity: 2026-10-05 - Completed quick task 261004-uyd: the Batch fold (decision 50 A with C1)
 
 Progress: [████████░░] 80% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -403,6 +403,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261004-ta2 | Tidy leftovers: probe regex, stale nav comments, menu button and wordmark focus ring | 2026-10-05 | 56dd743 | [261004-ta2-tidy-leftovers-probe-regex-stale-nav-com](./quick/261004-ta2-tidy-leftovers-probe-regex-stale-nav-com/) |
 | 261004-ubg | Build decisions 48 A and 49 A: one-line table head and empty space fix | 2026-10-05 | c5e09fc | [261004-ubg-build-decisions-48-a-and-49-a-one-line-t](./quick/261004-ubg-build-decisions-48-a-and-49-a-one-line-t/) |
 | 261004-uo6 | Fix the record pen black hairline and the clipped More tab focus ring | 2026-10-05 | eaff655 | [261004-uo6-fix-the-record-pen-black-hairline-and-th](./quick/261004-uo6-fix-the-record-pen-black-hairline-and-th/) |
+| 261004-uyd | Build decision 50: the Batch fold (form A, open at every width) | 2026-10-05 | a328282 | [261004-uyd-build-decision-50-the-batch-fold-form-a-](./quick/261004-uyd-build-decision-50-the-batch-fold-form-a-/) |
 
 ### Roadmap Evolution
 

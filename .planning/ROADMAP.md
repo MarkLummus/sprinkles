@@ -574,7 +574,7 @@ Plans:
 **Goal:** Shared ingredients act per step (sketch 011 README decision 51): each remove link removes its own line, a removed step takes its lines with it (struck, restored with the step), and the pen's portion line and Show changes' percentages follow the lines still in, the 86.3% fix included.
 **Requirements**: TBD
 **Depends on:** Phase 03.5
-**Plans:** 1/7 plans executed
+**Plans:** 2/7 plans executed
 
 Plans:
 
@@ -584,7 +584,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 03.6-02-PLAN.md — The pen's draft, dirty check, save and blocked-save check carry removal on the lines alone, and the pen's five states are pinned to decision 51's measured figures
+- [x] 03.6-02-PLAN.md — The pen's draft, dirty check, save and blocked-save check carry removal on the lines alone, and the pen's five states are pinned to decision 51's measured figures
 
 **Wave 3** *(blocked on Wave 2)*
 

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.6"
 current_phase_name: Per-step shared ingredients (INSERTED)
 status: executing
-stopped_at: Completed 03.6-01-PLAN.md
-last_updated: "2026-10-05T10:19:19.880Z"
+stopped_at: Completed 03.6-02-PLAN.md
+last_updated: "2026-10-05T10:24:15.376Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 execution started
-state_head: 172e13a3f4d37273b614b9379eca31204791158c
+state_head: cacc19877a0d3088c975f1f4b1e427fe9beea828
 progress:
   total_phases: 13
   completed_phases: 8
   total_plans: 104
-  completed_plans: 98
+  completed_plans: 99
   percent: 62
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.6 (Per-step shared ingredients (INSERTED)) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
 Last activity: 2026-10-05 — Phase 03.6 execution started
 
@@ -128,6 +128,7 @@ Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed
 | Phase 03.5 P31 | 4min | 3 tasks | 8 files |
 | Phase 03.5 P30 | 9 min | 1 tasks | 9 files |
 | Phase 03.6 P01 | 3 min | 2 tasks | 13 files |
+| Phase 03.6 P02 | 3 min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -253,6 +254,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.5]: Plan 30: the 1920 History head row stays scenario; only its quoted text changed, since it was never match, exact
 - [Phase 03.5]: Plan 30: differing-field counts reported for the final run only; the earlier table predates plans 23 to 25
 - [Phase 03.6]: [03.6-01] A portion's optional removed boolean is the stored truth for per-line removal; the old row flag stays and reads as every line out; every reader compares === true
+- [Phase 03.6]: Pen draft rows carry removal on lines alone; a stored older row flag folds into the lines at open through isLineRemoved, and the saved row flag is written false
+- [Phase 03.6]: The orphaned-row flag prints on the first line still in and its button takes every line of the row out (toggleDraftRowLines)
 
 ### Pending Todos
 
@@ -435,6 +438,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T10:19:19.780Z
-Stopped at: Completed 03.6-01-PLAN.md
+Last session: 2026-10-05T10:24:15.276Z
+Stopped at: Completed 03.6-02-PLAN.md
 Resume file: None

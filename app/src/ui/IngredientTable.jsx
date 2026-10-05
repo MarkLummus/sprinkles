@@ -178,7 +178,7 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
 // shows the share strike alone — the whole reason share is compared
 // separately from grams.
 function ShareCell({ baselineShare, currentShare }) {
-  const changed = currentShare !== baselineShare;
+  const changed = baselineShare !== null && currentShare !== baselineShare;
   return (
     <>
       {changed && <span className="struck-value">{baselineShare}</span>}
@@ -279,6 +279,16 @@ function removedStepsUsing(draftVersion, rowId) {
     if (step.removed && (step.uses ?? []).includes(rowId)) steps.push(step);
   }
   return steps;
+}
+
+// The row of `activeById` (activeRows keyed by row id) when it holds the line at
+// stored position `portionIndex`, otherwise null. A row kept whole holds every
+// position; a copied row holds the positions its portions carry in `index`
+// (domain/rows.js). A plain loop over `.some`, never a filter over removal.
+function rowHoldingLine(activeById, rowId, portionIndex) {
+  const row = activeById.get(rowId);
+  if (!row) return null;
+  return row.portions.some((portion, i) => (portion.index ?? i) === portionIndex) ? row : null;
 }
 
 // The orphaned-row flag (route-recipe-version.md § 3): beside the row's
@@ -387,10 +397,11 @@ export function IngredientTable({
   draftVersion = null,
   diff = null,
   showingChanges = false,
-  // The version Show changes compares against (the parent), when the page
-  // gives one: a line that is out reads the figures it had there, never the
-  // new batch it was not in. Null elsewhere, where the version the pen opened
-  // on (`rows`) is the opening version.
+  // The parent when the page gives one. In Show changes it is the version
+  // compared against: a line that is out reads the figures it had there, never
+  // the new batch it was not in. In the pen it is the parent of the version the
+  // pen opened on, read only for a line that was already out when the pen opened
+  // (Mark's List row per-step-open-pen-with-line-out). Null elsewhere.
   baselineVersion = null,
   markedRowIds = [],
   markedFigureLabel = '',
@@ -624,16 +635,31 @@ export function IngredientTable({
     // is removed (sketch 011 decision 51); a sibling line is never affected by
     // the flag, and the draft row holds no flag of its own.
     const lineOut = Boolean(draftPortion.removed) || stepRemoved;
+    // A line is in now when its own draft flag is clear and its step is not
+    // removed in the draft's method.
+    const lineInNow = (candidate, i) => !candidate.removed && !isStepRemoved(stepsForGrouping, row.portions[i].step);
     // The orphaned-row flag prints on the first line still in (not struck by
     // the maker's own flag and not under a removed step), so it never lands on
     // a struck line; a row flagged orphaned always has one.
-    const firstLineIn = draftRow.portions.findIndex(
-      (candidate, i) => !candidate.removed && !isStepRemoved(stepsForGrouping, row.portions[i].step),
-    );
+    const firstLineIn = draftRow.portions.findIndex(lineInNow);
     const dataFlag = dataFlagFor(row);
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = mode !== 'recording' && openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
     const isSplit = row.portions.length > 1;
+
+    // The row as it stood when the pen opened, lines in (undefined when every
+    // line was out). A line the version the pen opened on holds reads that
+    // version; a line it does not hold was already out at open, so it reads the
+    // parent's figures, and when the parent does not hold it either it has none
+    // (Mark's List row per-step-open-pen-with-line-out; its D-B).
+    const openingRow = baselineActiveById.get(row.id);
+    let lineFigures = null;
+    if (rowHoldingLine(baselineActiveById, row.id, portionIndex)) {
+      lineFigures = { row: openingRow, mass: baselineMass };
+    } else if (baselineVersion) {
+      const parentRow = rowHoldingLine(openingActiveById, row.id, portionIndex);
+      if (parentRow) lineFigures = { row: parentRow, mass: openingMass };
+    }
 
     // Row-level current grams/share (route-recipe-version.md § 3): the
     // lines still in, summed — the draft's parsed raw strings, falling back
@@ -642,16 +668,20 @@ export function IngredientTable({
     // number rather than becoming 0 or NaN), which is what the draft
     // version's rows already hold. A row with no line in sums to 0.
     const liveRow = currentActiveById.get(row.id);
-    const baselineShare = formatShareOfBatch(rowGrams(row), baselineMass);
+    const baselineShare = openingRow ? formatShareOfBatch(rowGrams(openingRow), baselineMass) : null;
     const currentGramsValue = liveRow ? rowGrams(liveRow) : 0;
     const currentShare = lineOut ? null : formatShareOfBatch(currentGramsValue, currentMass);
-    const gramsDirty = draftRow.portions.some((draftPortion, i) => draftPortion.grams !== String(row.portions[i].grams));
-    const changedGrams = gramsDirty
-      ? draftRow.portions
-          .map((draftPortion, i) => (draftPortion.grams.trim() === '' ? String(row.portions[i].grams) : draftPortion.grams))
-          .join(' + ')
-      : null;
-    const changedShare = !lineOut && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
+    // Only the lines in now count toward the row's changed amount.
+    const gramsDirty = draftRow.portions.some((draftPortion, i) => lineInNow(draftPortion, i) && draftPortion.grams !== String(row.portions[i].grams));
+    let changedGrams = null;
+    if (gramsDirty) {
+      const parts = [];
+      draftRow.portions.forEach((draftPortion, i) => {
+        if (lineInNow(draftPortion, i)) parts.push(draftPortion.grams.trim() === '' ? String(row.portions[i].grams) : draftPortion.grams);
+      });
+      changedGrams = parts.join(' + ');
+    }
+    const changedShare = !lineOut && baselineShare !== null && currentShare !== baselineShare ? { from: baselineShare, to: currentShare } : null;
     // orphanedRows never names an already-removed row (uses.js), so this
     // flag only ever applies to an active row here.
     const flagged = orphanedRowIds.has(row.id);
@@ -666,14 +696,14 @@ export function IngredientTable({
     // % of batch cell and the split-ingredient sub-line — the pen's own
     // live values (Task 2's action text), not the row-level ones above.
     const livePortionGrams = parseGramsDraft(draftPortion.grams) ?? portion.grams;
-    const portionBaselineShare = formatShareOfBatch(portion.grams, baselineMass);
+    const portionBaselineShare = rowHoldingLine(baselineActiveById, row.id, portionIndex) ? formatShareOfBatch(portion.grams, baselineMass) : null;
     const portionCurrentShare = lineOut ? null : formatShareOfBatch(livePortionGrams, currentMass);
 
     return (
       <tr
         key={`${row.id}:${portionIndex}`}
         className={isMarked || isBlocked ? 'is-marked' : undefined}
-        aria-label={rowAccessibleLabel(row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams, changedShare, lineOut)}
+        aria-label={rowAccessibleLabel(openingRow ?? row, dataFlag, isMarked, markedFigureLabel, asMadeValue, changedGrams, changedShare, lineOut)}
       >
         <td className="ingredient-table__col-grams">
           <GramsCell
@@ -712,15 +742,17 @@ export function IngredientTable({
             />
           )}
           {/* A line that is out is outside the live batch, so its portion line reads
-              the opening figures (the row's lines in when the pen opened, over the
-              opening batch), the same basis as the struck % of batch cell; a line
-              that is in reads the lines still in over the live batch (sketch 011
-              decision 44 finding 1 and decision 51 finding 4 (a); Mark's answers
-              2026-10-04 and 2026-10-05). */}
-          {isSplit && (
+              the figures it had: the row's lines in when the pen opened over that
+              batch, or, for a line already out at open, the parent's row over the
+              parent's batch (the same basis as the struck % of batch cell), and none
+              at all when neither held it. A line that is in reads the lines still in
+              over the live batch (sketch 011 decision 44 finding 1 and decision 51
+              finding 4 (a); Mark's answers 2026-10-04 and 2026-10-05; Mark's List row
+              per-step-open-pen-with-line-out). */}
+          {isSplit && (!lineOut || lineFigures) && (
             <span className="ingredient-table__portion-note">
               {lineOut
-                ? formatPortionLine(livePortionGrams, rowGrams(openingActiveById.get(row.id) ?? row), openingMass)
+                ? formatPortionLine(livePortionGrams, rowGrams(lineFigures.row), lineFigures.mass)
                 : formatPortionLine(livePortionGrams, rowGrams(liveRow), currentMass)}
             </span>
           )}
@@ -732,7 +764,7 @@ export function IngredientTable({
         )}
         <td className="ingredient-table__col-numeric">
           {lineOut ? (
-            <span className="struck-value">{portionBaselineShare}</span>
+            lineFigures && <span className="struck-value">{formatShareOfBatch(portion.grams, lineFigures.mass)}</span>
           ) : (
             <ShareCell baselineShare={portionBaselineShare} currentShare={portionCurrentShare} />
           )}

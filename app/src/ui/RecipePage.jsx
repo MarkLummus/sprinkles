@@ -2111,7 +2111,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   draftVersion={draftVersion}
                   diff={changeDiff}
                   showingChanges={showingChanges}
-                  baselineVersion={showingChanges && changeDiff ? parentVersion : null}
+                  // The parent: what Show changes compares against, and, while the pen is open, what a line already
+                  // out at open reads (Mark's List row per-step-open-pen-with-line-out, D-A).
+                  baselineVersion={mode === 'developing' || (showingChanges && changeDiff) ? parentVersion : null}
                   blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
                   blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
                   markedRowIds={markedRowIds}

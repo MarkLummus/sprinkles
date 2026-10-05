@@ -16,8 +16,8 @@
 
    Two root classes only: .shell (the shell's own chrome) and .place (the
    unbuilt-place page Placeholder.jsx renders inside .shell__main) —
-   shell.test.js pins every selector here to one of the two, bar the one
-   html rule.
+   shell.test.js pins every selector here to one of the two, bar two named
+   exceptions: the one html rule and the one button.shell__place reset.
 
    The shell owns the App ground for every route it wraps (gap 3, route.md
    § 1): .shell paints --app-background once, here, rather than each route
@@ -183,7 +183,13 @@ html {
   gap: var(--gap-m);
 }
 
-.shell__tools button {
+/* A place that is a button carries no border wherever it sits: the header's
+   Import and Export, More's, and the Import error panel's Close when it lands
+   (sketch 011 decisions 54 and 55; Mark 2026-10-05). Its weight (0,1,1) ties
+   app.css's button and button:hover, and this file loads after app.css, so
+   border none wins at rest and under hover. It sets no padding, so the
+   header's hover shrink, an open todo, is unchanged here. */
+button.shell__place {
   appearance: none;
   border: none;
   background: none;
@@ -509,6 +515,19 @@ html {
     padding: var(--gap-xs) 0;
     text-align: center;
     font-size: var(--app-size-label);
+  }
+
+  /* More's items are the tab row's tiles (sketch 011 decision 55, Mark: "as in
+     B"). A button is as wide as its list item, as a link already is. The 6px
+     side padding gives the current place's surface room around its word. The
+     tab row's own tiles are untouched, because these selectors reach only
+     More's list. */
+  .shell__more li > button {
+    width: 100%;
+  }
+
+  .shell__tabs .shell__more li .shell__place {
+    padding-inline: var(--gap-xs);
   }
 
   /* The current tab takes weight 600 like the rail's current place (sketch

@@ -149,6 +149,14 @@ afterEach(async () => {
 const row = (id) => current.container.querySelector(`.fold-row[aria-controls="${id}"]`);
 const panel = (id) => current.container.querySelector(`#${id}`);
 
+function buttonByText(scope, text) {
+  return [...scope.querySelectorAll('button')].find((button) => button.textContent.trim() === text) ?? null;
+}
+
+function pen() {
+  return current.container.querySelector('.batch-margin--pen');
+}
+
 // A fold is open when its row says so and its panel is shown: the two must agree.
 function isOpen(id) {
   const expanded = row(id).getAttribute('aria-expanded') === 'true';
@@ -264,5 +272,22 @@ describe('The Batch fold opens open at every width (sketch 011 decision 50, C1)'
     expect(document.activeElement).toBe(heading);
     expect(heading.classList.contains('is-landing-focus')).toBe(true);
     expect(hiddenAtFocus).toEqual([false]);
+  });
+
+  // A guard, not a RED. It shows that only Go to batch opens the fold, not the
+  // amendment save's shared landing. The closed return is undecided (261004-uyd
+  // SUMMARY question 1). Change the test when Mark decides.
+  it('a Correct started from a closed Batch fold still returns closed after Save (left as built, undecided)', async () => {
+    await mountAt(1024);
+    await click(row('fold-batch'));
+    expect(isOpen('fold-batch')).toBe(false);
+    await click(current.container.querySelector('.batch-row__correct'));
+    expect(pen()).not.toBeNull();
+    expect(panel('fold-batch').hidden).toBe(false);
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => pen() === null);
+    expect(pen()).toBeNull();
+    expect(isOpen('fold-batch')).toBe(false);
+    expect(document.activeElement).toBe(current.container.querySelector('h2#batch'));
   });
 });

@@ -571,6 +571,11 @@ export function BatchRow({
   // there is nothing to disclose (the batch-head todo).
   const [batchListOpen, toggleBatchList] = useFold(foldsOpen);
   const showBatchList = batches.length >= 2 && openPen !== 'record';
+  // The Batch fold (sketch 011 decision 50 C1, Mark 2026-10-05): open on
+  // first load at every width. Its default never changes, so no width
+  // crossing resets it, and nothing is stored. It does not read foldsOpen.
+  const [batchOpen, toggleBatch] = useFold(true);
+  const batchFold = openPen === null && Boolean(openBatch);
 
   return (
     <section className="batch-row" aria-label="Batch">
@@ -606,7 +611,11 @@ export function BatchRow({
           the one being recorded while openPen === 'record', Mark,
           2026-09-10 live review, G-03.3-4) and an acts group (Correct,
           Record another), space-between with wrap. Amending keeps both
-          groups' content, since amend corrects the very batch in view. */}
+          groups' content, since amend corrects the very batch in view.
+          With no pen open and a batch in view, the lead is the Batch fold
+          row, with the churned date as its count (sketch 011 decision 50
+          A); it folds the whole body below. With a pen open or no batch in
+          view, the head is as built. */}
       <div className={`batch-row__head${showBatchList ? ' batch-row__head--after-list' : ''}`}>
         <div className="batch-row__head-lead">
           <h2
@@ -621,9 +630,19 @@ export function BatchRow({
             }
             onBlur={() => setLandingFocusVisible(false)}
           >
-            Batch
+            {batchFold ? (
+              <FoldRow
+                label="Batch"
+                open={batchOpen}
+                onToggle={toggleBatch}
+                controls="fold-batch"
+                count={`churned ${recordDateWords(openBatch.churn.churnDate)}`}
+              />
+            ) : (
+              'Batch'
+            )}
           </h2>
-          {openPen !== 'record' && openBatch && (
+          {!batchFold && openPen !== 'record' && openBatch && (
             <span className="batch-row__date">
               {`churned ${recordDateWords(openBatch.churn.churnDate)}`}
             </span>
@@ -670,6 +689,7 @@ export function BatchRow({
           container and must keep its own already-shipped full width, so
           the cap is conditional on mode rather than the class's own rule
           (VERIFICATION.md gap, 03.3.1). */}
+      <div id="fold-batch" hidden={batchFold && !batchOpen}>
       <div className={mode === 'recording' ? 'batch-margin batch-margin--pen' : 'batch-margin'}>
         {mode === 'recording' ? (
           <>
@@ -1141,6 +1161,7 @@ export function BatchRow({
             )}
           </>
         )}
+      </div>
       </div>
 
       {/* The no-batch state's own list (D-09): with zero batches there is

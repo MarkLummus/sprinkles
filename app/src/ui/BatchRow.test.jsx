@@ -287,7 +287,7 @@ describe('BatchRow — the upright batch list at two or more batches (decision 1
     expect(anchors).toHaveLength(2);
     for (const tag of anchors) expect(tag).toContain('tabindex="0"');
     const listIndex = markup.indexOf('id="fold-batches"');
-    const headingIndex = markup.indexOf('class="region-name">Batch<');
+    const headingIndex = markup.indexOf('<span class="fold-row__head">Batch<');
     expect(listIndex).toBeGreaterThan(-1);
     expect(headingIndex).toBeGreaterThan(listIndex);
   });
@@ -1730,9 +1730,9 @@ describe('BatchRow — every button and radio carries an explicit tabindex (quic
     }
   };
 
-  it('reading a batch: Correct, Record another and the Tasting fold row — 3 buttons, no radio', () => {
+  it('reading a batch: the Batch fold row, Correct, Record another and the Tasting fold row — 4 buttons, no radio (sketch 011 decision 50 A)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch] });
-    expectAllTagged(buttonTags(markup), 3);
+    expectAllTagged(buttonTags(markup), 4);
     expect(radioTags(markup)).toHaveLength(0);
   });
 

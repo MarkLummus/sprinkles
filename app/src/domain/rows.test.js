@@ -18,6 +18,15 @@ describe('activeRows', () => {
     expect(activeRows({ rows: [] })).toEqual([]);
   });
 
+  // 03.6-REVIEW.md IN-01: isRowRemoved already reads a row with no portions array as not removed.
+  it('keeps a row with no portions array as the same object and does not throw', () => {
+    const bare = { id: 'x' };
+    const result = activeRows({ rows: [bare] });
+    expect(result).toHaveLength(1);
+    expect(result[0]).toBe(bare);
+    expect(isRowRemoved(bare)).toBe(false);
+  });
+
   it('never mutates or reorders the array it is given', () => {
     const rows = [
       { id: 'a', portions: one() },

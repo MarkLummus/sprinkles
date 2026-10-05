@@ -792,7 +792,11 @@ describe('IngredientTable — the reading state groups portions by step (LD-01, 
 
     expect(markup).not.toContain('Unallocated');
     expect(markup).not.toContain('>Two<');
-    expect(markup).toContain('5 g of 5.0 g · 100.0% in all');
+    // One line left reads like a one-line row, with no portion line (Mark's List row
+    // per-step-one-line-left, Mark's answer drop, 2026-10-05). This case used to pin
+    // '5 g of 5.0 g · 100.0% in all'.
+    expect(markup).not.toContain('ingredient-table__portion-note');
+    expect(markup).toContain('aria-label="Row A, 5 g"');
     expect(sectionMarkup(markup, 'tfoot')).toContain('5.0 g');
   });
 });

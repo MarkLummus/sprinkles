@@ -1449,17 +1449,6 @@ textarea {
   font-weight: 700;
 }
 
-/* The record's own prose, read-only (route-recipe-batch.md § 6, revised
-   2026-09-08): the same text face as the prose fields above, so a
-   tasting's words or a churn note does not change face between the
-   margin and the method. Counted values keep .ink-text's grotesk. */
-.prose-text {
-  font-family: var(--face-text);
-  line-height: var(--sheet-leading-note);
-  color: var(--sheet-pen-blue);
-  overflow-wrap: anywhere;
-}
-
 /* The pen layer (route-recipe-batch.md § 3): everything the maker types,
    and the saved record's own text, reads pen blue against the black plan.
    Saving never changes colour (No-Verdict Rule) — only the field's
@@ -1543,7 +1532,7 @@ textarea {
    decision 17; Mark, 2026-10-05, D-02; quick 261005-wgz). Face, size,
    leading and colour come from the .app-hand role and never from this
    rule; overflow-wrap keeps a long word wrapping, as .version-row__reason
-   does, now that prose-text no longer supplies it. */
+   does. */
 .tasting-reading__note {
   max-width: var(--measure-prose);
   margin: var(--gap-m) 0 0;
@@ -1568,8 +1557,7 @@ textarea {
   margin-top: 0;
 }
 
-.tasting-reading__problems,
-.batch-row__conclusion .prose-text {
+.tasting-reading__problems {
   margin: var(--gap-s) 0 0;
 }
 

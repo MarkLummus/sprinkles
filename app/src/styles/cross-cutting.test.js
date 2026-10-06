@@ -17,7 +17,7 @@
 // tokens are asserted by their value string, never resolveTokenPx, which
 // parses px literals only.
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { describe, test, expect } from 'vitest';
@@ -633,12 +633,6 @@ describe('type roles — the four validated sizes mapped onto tokens', () => {
     expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
   });
 
-  test('.prose-text reads the note leading and keeps its deliberate size inherit (no font-size of its own)', () => {
-    const rule = ruleFor('.prose-text');
-    expect(rule.declarations).toMatch(/line-height:\s*var\(--sheet-leading-note\)/);
-    expect(rule.declarations).not.toMatch(/font-size:/);
-  });
-
   test('.prose-field inherits its contextual size but keeps a readable one-line base extent', () => {
     const rule = ruleFor('.prose-field');
     expect(rule.declarations).toMatch(/font-size:\s*inherit/);
@@ -710,11 +704,9 @@ describe('placeholders italic, entered prose roman pen-blue', () => {
     expect(rule.declarations).toMatch(/font-style:\s*italic/);
   });
 
-  test('entered prose carries no italic of its own — .prose-field and .prose-text stay roman pen-blue', () => {
+  test('entered prose carries no italic of its own — .prose-field stays roman pen-blue', () => {
     expect(ruleFor('.prose-field').declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
     expect(ruleFor('.prose-field').declarations).not.toMatch(/font-style/);
-    expect(ruleFor('.prose-text').declarations).toMatch(/color:\s*var\(--sheet-pen-blue\)/);
-    expect(ruleFor('.prose-text').declarations).not.toMatch(/font-style/);
   });
 
   test('the purpose/aside display italic stays its own separate ratified register (text face, italic, untouched here)', () => {
@@ -1041,6 +1033,43 @@ describe('the saved tasting note reads in the hand (D-02; Mark 2026-10-05; quick
     for (const r of own) {
       expect(r.declarations, r.selector).not.toMatch(/(?:^|[\s;])(font-family|font-size|line-height|color):/);
     }
+  });
+});
+
+describe('the unused read-only prose class is retired and stays retired (D-03; Mark 2026-10-06, decide-retire-prose-text-rules; quick 261005-x0j)', () => {
+  const RETIRED = 'prose-text';
+  const UI_DIR = path.join(STYLES_DIR, '..', 'ui');
+
+  // Raw text, comments included, so a rule, a selector or a comment that names
+  // the class fails. Test files under ui are not scanned: BatchRow.test.jsx and
+  // VersionRow.test.jsx assert the class is absent from the markup, and must
+  // be able to name it to do so.
+  const sources = [
+    ...readdirSync(STYLES_DIR)
+      .filter((name) => name.endsWith('.css'))
+      .map((name) => path.join(STYLES_DIR, name)),
+    ...readdirSync(UI_DIR)
+      .filter((name) => /\.(js|jsx)$/.test(name) && !name.includes('.test.'))
+      .map((name) => path.join(UI_DIR, name)),
+  ];
+
+  test('no stylesheet and no non-test ui source names the retired class', () => {
+    const found = [];
+    for (const file of sources) {
+      const occurrences = readFileSync(file, 'utf8').split(RETIRED).length - 1;
+      if (occurrences > 0) found.push(`${path.relative(STYLES_DIR, file)}: ${occurrences}`);
+    }
+    expect(found, `files that still name ${RETIRED}`).toEqual([]);
+  });
+
+  test('the shared margin rule still serves .tasting-reading__problems with its margin', () => {
+    const rule = rules.find(
+      (r) =>
+        r.media === undefined &&
+        r.selector.split(',').some((part) => part.trim() === '.tasting-reading__problems') &&
+        /(?:^|[\s;])margin:\s*var\(--gap-s\) 0 0\s*(?:;|$)/.test(r.declarations),
+    );
+    expect(rule, 'a top-level rule naming .tasting-reading__problems with margin: var(--gap-s) 0 0').toBeDefined();
   });
 });
 

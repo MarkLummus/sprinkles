@@ -947,12 +947,6 @@
   color: var(--app-text-secondary);
 }
 
-.notebook-log .prose-text {
-  font-family: var(--face-grotesk);
-  font-size: var(--app-notebook-size-body);
-  color: var(--app-text-secondary);
-}
-
 /* The record pen's own frame, opened in the column (03.5-07 Task 3,
    Task 2 answer — option A, decisions_recorded 4): the battery keeps
    sketch 007/008's sizes; only its frame moves (its colour and corners

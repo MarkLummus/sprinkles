@@ -4,10 +4,10 @@ current_phase: "03.6"
 current_phase_name: Per-step shared ingredients (INSERTED)
 status: verifying
 stopped_at: Completed 03.6-07-PLAN.md
-last_updated: "2026-10-06T01:04:22.215Z"
+last_updated: "2026-10-06T01:45:45.277Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 execution started
-state_head: d477a917b2c8a88e32e99c25f48874158f36f932
+state_head: 643923cce6f17ed6ddc00451b0fc073d77988157
 progress:
   total_phases: 13
   completed_phases: 8
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 03.6 (Per-step shared ingredients (INSERTED)) — EXECUTING
 Plan: 7 of 7
 Status: Phase complete — ready for verification
-Last activity: 2026-10-05 - Completed quick task 261005-t32: the blocked-save sentence prints in the blocked ingredient line
+Last activity: 2026-10-06 - Completed quick task 261005-txg: the reading's tasting groups under the pen's names
 
 Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -431,6 +431,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261005-cm6 | Fix Next version on a saved version that already has a line out shows wrong figures | 2026-10-05 | f2d6b4d | [261005-cm6-fix-next-version-on-a-saved-version-that](./quick/261005-cm6-fix-next-version-on-a-saved-version-that/) |
 | 261005-db4 | Recording reads like the reading Sheet when a split ingredient has one line left | 2026-10-05 | f267b7e | [261005-db4-recording-reads-like-the-reading-sheet-w](./quick/261005-db4-recording-reads-like-the-reading-sheet-w/) |
 | 261005-t32 | Build: the blocked-save sentence in the blocked ingredient line (README decision 57, A recommended) | 2026-10-06 | d477a91 | [261005-t32-build-the-blocked-save-sentence-in-the-b](./quick/261005-t32-build-the-blocked-save-sentence-in-the-b/) |
+| 261005-txg | Build: the reading tasting groups (README decision 58, Melt B, names B2) | 2026-10-06 | 643923c | [261005-txg-build-the-reading-tasting-groups-readme-](./quick/261005-txg-build-the-reading-tasting-groups-readme-/) |
 
 ### Roadmap Evolution
 

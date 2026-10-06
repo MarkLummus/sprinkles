@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: "03.6"
-current_phase_name: Per-step shared ingredients (INSERTED)
-status: verifying
-stopped_at: Completed 03.6-07-PLAN.md
-last_updated: "2026-10-06T01:45:45.277Z"
+current_phase: 04
+current_phase_name: Prepare the next version for making
+status: planning
+stopped_at: Phase 03.6 complete, ready to plan Phase 04
+last_updated: "2026-10-06T02:42:51.903Z"
 last_activity: 2026-10-05
-last_activity_desc: Phase 03.6 execution started
-state_head: 643923cce6f17ed6ddc00451b0fc073d77988157
+last_activity_desc: Phase 03.6 complete, transitioned to Phase 04
+state_head: a9cbaeda53b644a75b009c899953a5b33fb5dd4f
 progress:
   total_phases: 13
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 104
   completed_plans: 104
-  percent: 62
+  percent: 83
 ---
 
 # Project State
@@ -27,18 +27,18 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 
 ## Current Position
 
-Phase: 03.6 (Per-step shared ingredients (INSERTED)) — EXECUTING
-Plan: 7 of 7
-Status: Phase complete — ready for verification
-Last activity: 2026-10-06 - Completed quick task 261005-txg: the reading's tasting groups under the pen's names
+Phase: 04 — Prepare the next version for making
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-10-05 — Phase 03.6 complete, transitioned to Phase 04
 
-Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed through Phase 03.4)
+Progress: [████████░░] 83% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 97
+- Total plans completed: 104
 - Average duration: —
 - Total execution time: —
 
@@ -56,6 +56,7 @@ Progress: [██████░░░░] 62% (3/4 phases; 66/66 plans executed
 | 03.3.1.1 | 6 | - | - |
 | 03.4 | 15 | - | - |
 | 03.5 | 31 | - | - |
+| 03.6 | 7 | - | - |
 
 **Recent Trend:**
 
@@ -457,5 +458,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-10-05T10:46:37.292Z
-Stopped at: Completed 03.6-07-PLAN.md
+Stopped at: Phase 03.6 complete, ready to plan Phase 04
 Resume file: None

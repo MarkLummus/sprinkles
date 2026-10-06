@@ -910,7 +910,7 @@ describe('the page notice anchors above the keyed page, out of flow (260917-ewf;
 });
 
 describe('the print layer suppresses the page notice and falls the hand back to the text face (260917-ewf Task 3; 03.4-02 Task 2, D-17)', () => {
-  test('the print block carries exactly seven rules: .page-status goes display: none, .app-hand falls back to the text face in italic, so does .sheet-hand (sketch 011 Task 1), the Ingredients-row Show changes goes display: none (261002-wn1), and the table\'s head repeats, its foot prints once and its step groups stay whole (sketch 011 decision 45, 03.7-02)', () => {
+  test('the print block carries exactly nine rules: .page-status goes display: none, .app-hand falls back to the text face in italic, so does .sheet-hand (sketch 011 Task 1), the Ingredients-row Show changes goes display: none (261002-wn1), and the table\'s head repeats, its foot prints once its step groups stay whole, a region heading keeps with what follows and the Instructions break between steps (sketch 011 decision 45, 03.7-02)', () => {
     // Resolved explicitly on r.media === 'print', never through
     // mediaRuleFor, which returns the first match across ALL media
     // blocks (the file's own precedent at ~206). The print block's
@@ -918,7 +918,7 @@ describe('the print layer suppresses the page notice and falls the hand back to 
     // that adds the hand's fallback rule (RESEARCH.md Pitfall 2) — not
     // discovered later as a surprise red test.
     const printRules = rules.filter((r) => r.media === 'print');
-    expect(printRules).toHaveLength(7);
+    expect(printRules).toHaveLength(9);
 
     const pageStatusRule = printRules.find((r) => r.selector === '.page-status');
     expect(pageStatusRule, 'expected .page-status among the print rules').toBeTruthy();
@@ -950,10 +950,19 @@ describe('the print layer suppresses the page notice and falls the hand back to 
     const tfootRule = printRules.find((r) => r.selector === '.ingredient-table tfoot');
     expect(tfootRule, 'expected the table foot among the print rules').toBeTruthy();
     expect(tfootRule.declarations).toMatch(/display:\s*table-row-group/);
+    expect(tfootRule.declarations).toMatch(/break-before:\s*avoid/);
 
     const groupRule = printRules.find((r) => r.selector === '.ingredient-table tbody:not(:only-of-type)');
     expect(groupRule, 'expected the step group rule among the print rules').toBeTruthy();
     expect(groupRule.declarations).toMatch(/break-inside:\s*avoid/);
+
+    const headingRule = printRules.find((r) => r.selector === '.region-name');
+    expect(headingRule, 'expected the region heading among the print rules').toBeTruthy();
+    expect(headingRule.declarations).toMatch(/break-after:\s*avoid/);
+
+    const stepRule = printRules.find((r) => r.selector === '.method-step');
+    expect(stepRule, 'expected the Instructions step among the print rules').toBeTruthy();
+    expect(stepRule.declarations).toMatch(/break-inside:\s*avoid/);
   });
 });
 

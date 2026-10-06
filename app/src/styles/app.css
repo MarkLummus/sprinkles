@@ -2878,9 +2878,11 @@ textarea {
 
   /* The Total prints once, after the last group. Chrome repeats a table-footer-group on
      every page (measured: the Total at the foot of page 1, above the break), so the foot is
-     a plain row group (decision 45 brief item 1). */
+     a plain row group (decision 45 brief item 1), and it keeps with the last group
+     (brief item 3) so it never stands alone under a repeated header. */
   .ingredient-table tfoot {
     display: table-row-group;
+    break-before: avoid;
   }
 
   /* A table with two or more step groups breaks only between groups (decision 45, Mark's
@@ -2888,6 +2890,19 @@ textarea {
      same page"). A lone group is left out so a one-step table that does not fit splits
      between rows; a group taller than a page splits whatever this says. */
   .ingredient-table tbody:not(:only-of-type) {
+    break-inside: avoid;
+  }
+
+  /* A region heading keeps with what follows (decision 45 brief item 2; measured in Chrome:
+     without it the Ingredients heading stays alone at the foot of a page and the table starts
+     the next). */
+  .region-name {
+    break-after: avoid;
+  }
+
+  /* The Instructions follow the table's tail on the same page, in whole steps only (Mark's
+     answer 1, K1: no step is cut at a page foot, so the steps break between steps). */
+  .method-step {
     break-inside: avoid;
   }
 }

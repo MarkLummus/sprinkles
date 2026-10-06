@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 04
-current_phase_name: Prepare the next version for making
+current_phase: 03.7
+current_phase_name: Before you start as its own Sheet section
 status: planning
-stopped_at: Phase 03.6 complete, ready to plan Phase 04
-last_updated: "2026-10-06T04:06:56.855Z"
-last_activity: 2026-10-05
-last_activity_desc: Phase 03.6 complete, transitioned to Phase 04
-state_head: 309b16276f87eaf2ac725f5fd283f0a4cda533e7
+stopped_at: Phase 03.7 inserted before Phase 04, ready to plan
+last_updated: "2026-10-06T04:22:08.580Z"
+last_activity: 2026-10-06
+last_activity_desc: Phase 03.7 inserted (Before you start as its own Sheet section)
+state_head: 7a4addbc9dac9be040f596544b3e873d50b1c815
 progress:
-  total_phases: 13
+  total_phases: 14
   completed_phases: 11
   total_plans: 104
   completed_plans: 104
-  percent: 83
+  percent: 79
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-22)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.6 — Per-step shared ingredients (INSERTED)
+**Current focus:** Phase 03.7 — Before you start as its own Sheet section (INSERTED)
 
 ## Current Position
 
-Phase: 04 — Prepare the next version for making
+Phase: 03.7 — Before you start as its own Sheet section
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-06 - Completed fast task 261006-05e: pen outline Cancel at weight 600
+Last activity: 2026-10-06 — Phase 03.7 inserted before Phase 04
 
-Progress: [████████░░] 83% (3/4 phases; 66/66 plans executed through Phase 03.4)
+Progress: [████████░░] 79% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
 ## Performance Metrics
 
@@ -450,6 +450,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 5 added: Version evolution — reordered and new Method steps in a batch, and step-structure evolution in a version (deferred from 03.5 by Mark, 2026-09-23)
 - Phase 03.4.1 renumbered to 03.5 (Mark, 2026-09-23); title, goal and position unchanged
 - Phase 03.6 inserted after Phase 3: Per-step shared ingredients (URGENT)
+- Phase 03.7 inserted after Phase 03.6: Before you start as its own Sheet section (URGENT)
 
 ## Deferred Items
 

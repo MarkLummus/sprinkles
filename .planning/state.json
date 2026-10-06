@@ -54,6 +54,11 @@
       "status": "complete"
     },
     {
+      "number": "3.6",
+      "name": "Per-step shared ingredients",
+      "status": "complete"
+    },
+    {
       "number": "4",
       "name": "Prepare the next version for making",
       "status": "pending"
@@ -69,5 +74,5 @@
     "label": "Advance to the next step (plan phase 04)",
     "reason": "Phase 04 of 13 — needs a plan"
   },
-  "updated_at": "2026-10-06T02:42:51.920Z"
+  "updated_at": "2026-10-06T04:22:01.225Z"
 }

@@ -611,6 +611,16 @@ Plans:
 
 - [x] 03.6-07-PLAN.md — Conformance probe against the board on the real DOM (WebKit and Chromium, 1366 and 393), full regression, and the open items and device check worded for Mark's List
 
+### Phase 03.7: Before you start as its own Sheet section (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Requirements**: TBD
+**Depends on:** Phase 03.6
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 03.7 to break down)
+
 ### Phase 4: Prepare the next version for making
 
 **Status:** Paused 2026-09-23 until Phase 03.5 separates the recipe from the sheet. Context gathered (`04-CONTEXT.md`); its print decisions carry over, but the canvas starting point must be re-captured from the separated Sheet.

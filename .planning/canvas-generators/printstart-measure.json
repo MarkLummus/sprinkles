@@ -585,29 +585,29 @@
  },
  "webkit_BatchLogForm": {
   "scrollH": 1056,
-  "contentBottom": 948,
+  "contentBottom": 953,
   "footTop": 994,
   "footBottom": 1016,
-  "spare": 46,
+  "spare": 41,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
-  "lines": 16,
+  "lines": 14,
   "boxes": 6,
   "stops": 0
  },
  "webkit_TastingLogForm": {
   "scrollH": 1056,
-  "contentBottom": 972,
+  "contentBottom": 963,
   "footTop": 994,
   "footBottom": 1016,
-  "spare": 22,
+  "spare": 31,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
-  "lines": 6,
+  "lines": 7,
   "boxes": 8,
   "stops": 30
  },
@@ -1197,29 +1197,29 @@
  },
  "chromium_BatchLogForm": {
   "scrollH": 1056,
-  "contentBottom": 948,
+  "contentBottom": 953,
   "footTop": 995,
   "footBottom": 1016,
-  "spare": 47,
+  "spare": 42,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
-  "lines": 16,
+  "lines": 14,
   "boxes": 6,
   "stops": 0
  },
  "chromium_TastingLogForm": {
   "scrollH": 1056,
-  "contentBottom": 972,
+  "contentBottom": 963,
   "footTop": 995,
   "footBottom": 1016,
-  "spare": 23,
+  "spare": 32,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
-  "lines": 6,
+  "lines": 7,
   "boxes": 8,
   "stops": 30
  },

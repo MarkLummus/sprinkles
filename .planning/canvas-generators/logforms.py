@@ -5,12 +5,18 @@
 # Field names, units, option words, axis names, anchors, group captions and the defects are the built record pens' own (app/src/domain/battery.js, axes.js; BatchRow.jsx's captions, read from the
 # live pens in WebKit on the dist of 2026-10-06; 03.3.1-06-SUMMARY.md's field list for Phase 4). Where the built pen and the brief differ, the built version is drawn:
 #   - side 2 carries "Tasted" (the tasting's date): the built tasting pen has it, the brief's side 2 does not list it;
-#   - "Airiness (estimated)", the built caption, not the brief's "Airiness";
 #   - the axes stand under "Every recipe" and "This recipe only" (both), and the defects under "Any problems?" with "select all that apply" and the same two group captions, as the built pen draws them;
 #   - each stop carries its number 1 to 5 above the box (the built stop shows its number), and the anchors are the built three: low, "right", high, under stops 1, 3 and 5.
 # Order within a side follows the brief's list (§ 3 item 3); the built tasting pen orders them Tasted, Tempering, Tasting temperature, How did it turn out?, axes, Any problems?, Melt test, Melt style, Next time.
 # Numeric fields are ruled fields carrying their units (brief § 3 item 3), not boxes. Black only. Placeholders in the foot: the short code and the page count, which Phase 4 derives (brief § 7: not invented here).
 # Declared axes and the declared flaw are Olive Oil v1's own (Body, Oil; Bitter). Nothing here edits app/.
+# Decided by Mark, 2026-10-06 (answers to the open log-page questions; they amend brief § 3 item 3, which goes to Impeccable with the other brief changes, not edited here):
+#   D1 numeric fields stay ruled lines carrying their units (not boxes).
+#   D2 both pages carry a date: page 1 Churn date, page 2 Tasted (brief side 2 gains the date).
+#   D3 the printed Airiness caption drops "(estimated)": "Airiness" (the pen keeps its own caption).
+#   D4 the defects keep the built caption, "Any problems?" with "select all that apply" (checked in Chrome's PDF and WebKit's print).
+#   D5 Next time is about the recipe, not the batch or the tasting, and may sit on either page: it moves to page 1, where there was room, under its own heading in the side-title face,
+#      set apart from the batch fields. Line counts (LINES below) are what the pages hold at the same type, measured by printstart-measure.mjs.
 from cssscope import TOK, APPC, resolve_media
 
 AXES_CORE = [('Hardness', 'soft', 'hard'), ('Scoopability', 'crumbly', 'gummy'), ('Smoothness', 'grainy', 'smooth'), ('Sweetness', 'less', 'more')]
@@ -50,6 +56,7 @@ CSS = '''
 .lf-defects{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:var(--gap-l)}
 .lf-defects>:first-child{grid-column:span 2}
 .lf-defects .lf-mark{flex-direction:column;gap:var(--gap-xs)}
+.lf-next{margin:var(--gap-s) 0 var(--gap-m)}
 .lf-foot{margin-top:auto;padding-top:var(--gap-xs);border-top:var(--rule-ink-field) solid var(--sheet-ink);font-size:var(--sheet-size-small-print);letter-spacing:0.02em}
 '''
 
@@ -66,15 +73,16 @@ def scale(name, low, high):
     anchors = f'<span class="lf-anchor">{low}</span><span></span><span class="lf-anchor">right</span><span></span><span class="lf-anchor">{high}</span>'
     return f'<div class="lf-axis"><span class="axis-mark__name">{name}</span><div class="lf-stops">{nums}{boxes}{anchors}</div></div>'
 
-def side1(n_machine, n_notes):
+def side1(n_machine, n_notes, n_next):
     body = ('<h2 class="region-name">At the machine</h2>'
             f'<div class="lf-sec">{ruled("Churn date", kind="date")}</div>'
             '<div class="lf-sec lf-row">' + ruled('Time to draw temp.', 'min') + ruled('Out of machine', '°C') + ruled('Churn duration', 'min') + '</div>'
-            + mark_one('Exit consistency', EXIT) + mark_one('Airiness (estimated)', AIR)
-            + prose('At the machine', n_machine) + prose('Ingredient notes', n_notes))
+            + mark_one('Exit consistency', EXIT) + mark_one('Airiness', AIR)
+            + prose('At the machine', n_machine) + prose('Ingredient notes', n_notes)
+            + f'<div class="lf-next"><h2 class="region-name">Next time</h2>{lines(n_next)}</div>')   # D5: the recipe's own section, the built label as its heading
     return f'<div class="lf">{body}<div class="lf-foot">{FOOT.format(n=1)}</div></div>'
 
-def side2(n_how, n_next):
+def side2(n_how):
     axes = ('<div class="lf-sec lf-axes"><p class="pen-caption lf-cue">Every recipe</p><p class="pen-caption lf-cue lf-cue--declared">This recipe only</p>'
             + scale(*AXES_CORE[0]) + scale(*AXES_CORE[1]) + scale(*AXES_DECLARED[0]) + scale(*AXES_CORE[2]) + scale(*AXES_CORE[3]) + scale(*AXES_DECLARED[1]) + '</div>')
     dfx = ''.join(f'<span class="lf-opt"><span class="lf-box"></span>{w}</span>' for w in DEFECTS)
@@ -84,11 +92,11 @@ def side2(n_how, n_next):
     body = ('<h2 class="region-name">When you taste it</h2>'
             f'<div class="lf-sec">{ruled("Tasted", kind="date")}</div>'
             '<div class="lf-sec lf-row">' + ruled('Tempering', 'min') + ruled('Tasting temperature', '°C') + ruled('Melt test', 'g lost at 20 min') + '</div>'
-            + mark_one('Melt style', MELT) + axes + defects + prose('How did it turn out?', n_how) + prose('Next time', n_next))
+            + mark_one('Melt style', MELT) + axes + defects + prose('How did it turn out?', n_how))
     return f'<div class="lf">{body}<div class="lf-foot">{FOOT.format(n=2)}</div></div>'
 
 def css():
     return resolve_media(TOK, 816, False, screen=False) + resolve_media(APPC, 816, False, screen=False) + CSS
 
 # line counts: as many writing lines as the page holds above the foot (measured, printstart-measure.mjs forms), split as the brief lists the prose fields
-LINES = {'side1': (8, 8), 'side2': (3, 3)}
+LINES = {'side1': (5, 5, 4), 'side2': (7,)}

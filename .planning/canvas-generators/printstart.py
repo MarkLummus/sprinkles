@@ -63,8 +63,8 @@ return {{}};
 '''
 
 T_A = 'As built · the recipe page at 1280, no batch (production build, 2026-10-06, after Phase 03.7)'
-T_B = 'Not chosen · Print starting point without Balance (kept for comparison; carries the same table edits)'
-T_C = 'Chosen by Mark 2026-10-06 · Print starting point with Balance in column 2 beside the Ingredients (overrides the print brief § 4 anti-goal; nothing approved yet)'
+T_B = 'Not chosen · Print starting point without Balance (kept for comparison)'
+T_C = 'Chosen by Mark 2026-10-06 · Print starting point, Balance in column 2 (nothing approved yet)'   # the canvas cuts titles at 120 characters
 NOTE_C = ("Chosen by Mark 2026-10-06: Balance in a second column beside the Ingredients table, no Hide control. "
           "This overrides the print brief's § 4 anti-goal (\"no Balance ... from column two\"); that brief change, with the tick box's retirement, goes to Impeccable later. "
           "No rules between ingredient rows: the heavier step rule carries the grouping. Nothing approved yet; no sketch 010.")
@@ -76,7 +76,10 @@ NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today (on
         "the build's own no-batch markup, so no As made column, no logged figures and no skipped step. The app has no print design yet, so this is the starting point, not a proposal.\n\n"
         "Change the Print starting point board to design the print. What you change is what Phase 4 builds; what you leave is what the app already does.\n\n"
         "Left: the blank batch log, which prints first, front and back of one sheet (D-07a). Fields from the built record pens, sides and geometry from the print brief. "
-        "The short code and the page count in the foot are placeholders.\n\n"
+        "The short code and the page count in the foot are placeholders. "
+        "Decided by you 2026-10-06: numeric fields stay ruled lines with units; both pages carry a date (Churn date, Tasted); the printed caption is Airiness, without (estimated); "
+        "the defects keep Any problems? with select all that apply; Next time is about the recipe, so it sits on page 1 under its own heading, where there was room. "
+        "These amend the print brief's § 3 item 3, which goes to Impeccable with the other brief changes.\n\n"
         "The first capture (2026-09-23) is on the page Print formats superseded.")
 NOTE_OLD = ("Superseded 2026-10-06. These two boards were captured 2026-09-23, before Phase 03.7 moved Before you start above the Ingredients table. "
             "Kept in case anything was drawn on them; the boards on Print formats replace them as the print starting point. Not a target.")

@@ -616,7 +616,7 @@ Plans:
 **Goal:** "Before you start" is its own Sheet section, as sketch 011 decisions 36 and 45 draw it (Mark, 2026-10-04 and 2026-10-05): it stands above the Ingredients under the Sheet description (placement B) with its own region heading and no closing rule (H1), is drawn only when the version has notes and keeps its heading alone in the Next version pen (E2), and the Instructions section is drawn only when there are steps; in print it opens the formula page above the table (PC), and a table that does not fit breaks only between step groups (a one-step table between rows), its header repeating on the next page, the Total staying with the last group and the steps printing whole.
 **Requirements**: TBD
 **Depends on:** Phase 03.6
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 
@@ -626,7 +626,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 03.7-02-PLAN.md — The ingredients table prints by step groups: one tbody per group, the header repeats, the Total prints once with the last group, a one-step table splits between rows, the steps print whole, proved in Chrome's print to PDF with the screen measured unchanged (decision 45, Mark's answers 1 to 3)
+- [x] 03.7-02-PLAN.md — The ingredients table prints by step groups: one tbody per group, the header repeats, the Total prints once with the last group, a one-step table splits between rows, the steps print whole, proved in Chrome's print to PDF with the screen measured unchanged (decision 45, Mark's answers 1 to 3)
 
 **Wave 3** *(blocked on Wave 2)*
 

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.7"
 current_phase_name: Before you start as its own Sheet section
 status: executing
-stopped_at: Completed 03.7-01-PLAN.md
-last_updated: "2026-10-06T11:09:39.294Z"
+stopped_at: Completed 03.7-02-PLAN.md
+last_updated: "2026-10-06T11:21:49.216Z"
 last_activity: 2026-10-06
 last_activity_desc: Phase 03.7 execution started
-state_head: fab06c9b76adfafd4e3709a09c9216391b88ff22
+state_head: a7bf5b9bb91e5ed69a1a65e7e9b375de13fbf04a
 progress:
   total_phases: 14
   completed_phases: 11
   total_plans: 108
-  completed_plans: 105
+  completed_plans: 106
   percent: 79
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.7 (Before you start as its own Sheet section) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-10-06 — Phase 03.7 execution started
 
@@ -136,6 +136,7 @@ Progress: [████████░░] 79% (3/4 phases; 66/66 plans executed
 | Phase 03.6 P06 | 6 min | 2 tasks | 5 files |
 | Phase 03.6 P07 | 25 min | 2 tasks | 2 files |
 | Phase 03.7 P01 | 7 min | 2 tasks | 8 files |
+| Phase 03.7 P02 | 35 min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -272,6 +273,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.6]: findBlockedRow matches draft portions to stored portions by index and skips a line whose step penFields.method removes (flag exactly true)
 - [Phase 03.6]: 03.6-07: both milk lines out is reached with two presses and compared with the capture file's b_wm2 (the old one-press page, same page per decision 51)
 - [Phase 03.7]: 03.7-01: Before you start renders between the band and the Ingredients so reading, Tab and print order match the page; the pen draws its heading alone with no notes (E2)
+- [Phase 03.7]: 03.7-02: the list-form table rules are screen-only so print always draws the column form and the table's head repeats (a letter page with 56px margins is 704px wide, below the 723.98px cut)
+- [Phase 03.7]: 03.7-02: the printed Total keeps break-before: avoid on its tfoot; measured in Chrome, it keeps the Total with the last group
 
 ### Pending Todos
 
@@ -465,6 +468,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-06T11:09:27.131Z
-Stopped at: Completed 03.7-01-PLAN.md
+Last session: 2026-10-06T11:21:49.099Z
+Stopped at: Completed 03.7-02-PLAN.md
 Resume file: None

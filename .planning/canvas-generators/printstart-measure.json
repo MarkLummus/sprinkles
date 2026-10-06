@@ -209,7 +209,7 @@
   "board": {
    "article": [
     816,
-    2235
+    2239
    ],
    "sections": {
     "recipe-band": [
@@ -228,11 +228,11 @@
      48,
      359,
      720,
-     786
+     790
     ],
     "method-region": [
      48,
-     1185,
+     1189,
      720,
      982
     ]
@@ -252,7 +252,7 @@
     ],
     [
      "Instructions",
-     1185
+     1189
     ]
    ],
    "beforeAboveTable": true,
@@ -260,37 +260,36 @@
    "thead": true,
    "theadCells": [
     "As made",
-    "",
     "Ingredient"
    ],
    "tbodies": 4,
    "tfoot": true,
    "rows": [
-    410,
-    445,
-    492,
-    537,
-    575,
-    613,
-    651,
-    686,
-    733,
-    771,
-    809,
-    855,
-    893,
-    931,
-    965,
-    1003,
-    1038,
-    1076
+    411,
+    446,
+    493,
+    538,
+    576,
+    614,
+    653,
+    688,
+    735,
+    773,
+    811,
+    857,
+    895,
+    934,
+    968,
+    1007,
+    1042,
+    1080
    ],
    "steps": 10,
    "hiddenAttr": 0,
    "handFace": null
   },
   "boardDoc": {
-   "docH": 2235
+   "docH": 2239
   },
   "live": {
    "article": [
@@ -393,7 +392,6 @@
    "width": 720,
    "head": [
     "As made",
-    "",
     "Ingredient"
    ],
    "cols": [
@@ -402,16 +400,12 @@
      90
     ],
     [
-     "ps-col-tick",
-     32
+     "ps-col-grams",
+     81
     ],
     [
      "ingredient-table__col-name",
-     517
-    ],
-    [
-     "ps-col-grams",
-     81
+     549
     ]
    ],
    "rowHeights": [
@@ -419,14 +413,14 @@
     45,
     38,
     38,
-    38,
+    39,
     47,
     38,
     38,
     45,
     38,
-    38,
-    38,
+    39,
+    39,
     38,
     38
    ],
@@ -434,7 +428,7 @@
    "minFont": 12,
    "shareCells": 0,
    "asMadeCells": 14,
-   "ticks": 14,
+   "ticks": 0,
    "watchFor": false,
    "balance": false
   }
@@ -504,30 +498,29 @@
    "thead": true,
    "theadCells": [
     "As made",
-    "",
     "Ingredient"
    ],
    "tbodies": 4,
    "tfoot": true,
    "rows": [
-    410,
-    445,
-    492,
-    537,
-    575,
-    613,
-    651,
-    686,
-    733,
-    771,
-    809,
-    855,
-    893,
-    931,
-    965,
-    1003,
-    1038,
-    1076
+    411,
+    446,
+    493,
+    538,
+    576,
+    614,
+    653,
+    688,
+    735,
+    773,
+    811,
+    857,
+    895,
+    934,
+    968,
+    1007,
+    1042,
+    1080
    ],
    "steps": 10,
    "hiddenAttr": 0,
@@ -541,7 +534,6 @@
    "width": 436,
    "head": [
     "As made",
-    "",
     "Ingredient"
    ],
    "cols": [
@@ -550,16 +542,12 @@
      90
     ],
     [
-     "ps-col-tick",
-     32
+     "ps-col-grams",
+     81
     ],
     [
      "ingredient-table__col-name",
-     232
-    ],
-    [
-     "ps-col-grams",
-     81
+     264
     ]
    ],
    "rowHeights": [
@@ -567,14 +555,14 @@
     45,
     38,
     38,
-    38,
+    39,
     47,
     38,
     38,
     45,
     38,
-    38,
-    38,
+    39,
+    39,
     38,
     38
    ],
@@ -582,7 +570,7 @@
    "minFont": 12,
    "shareCells": 0,
    "asMadeCells": 14,
-   "ticks": 14,
+   "ticks": 0,
    "watchFor": false,
    "balance": true
   },
@@ -833,7 +821,7 @@
   "board": {
    "article": [
     816,
-    2224
+    2228
    ],
    "sections": {
     "recipe-band": [
@@ -852,11 +840,11 @@
      48,
      359,
      720,
-     785
+     789
     ],
     "method-region": [
      48,
-     1184,
+     1188,
      720,
      972
     ]
@@ -876,7 +864,7 @@
     ],
     [
      "Instructions",
-     1184
+     1188
     ]
    ],
    "beforeAboveTable": true,
@@ -884,37 +872,36 @@
    "thead": true,
    "theadCells": [
     "As made",
-    "",
     "Ingredient"
    ],
    "tbodies": 4,
    "tfoot": true,
    "rows": [
     411,
-    445,
-    492,
-    537,
-    575,
-    613,
-    651,
-    686,
-    733,
-    771,
-    809,
-    854,
-    892,
-    930,
-    965,
-    1003,
-    1037,
-    1075
+    446,
+    493,
+    538,
+    576,
+    614,
+    653,
+    688,
+    735,
+    773,
+    811,
+    856,
+    894,
+    933,
+    968,
+    1006,
+    1041,
+    1079
    ],
    "steps": 10,
    "hiddenAttr": 0,
    "handFace": null
   },
   "boardDoc": {
-   "docH": 2224
+   "docH": 2228
   },
   "live": {
    "article": [
@@ -1017,7 +1004,6 @@
    "width": 720,
    "head": [
     "As made",
-    "",
     "Ingredient"
    ],
    "cols": [
@@ -1026,16 +1012,12 @@
      90
     ],
     [
-     "ps-col-tick",
-     32
+     "ps-col-grams",
+     75
     ],
     [
      "ingredient-table__col-name",
-     523
-    ],
-    [
-     "ps-col-grams",
-     75
+     555
     ]
    ],
    "rowHeights": [
@@ -1043,14 +1025,14 @@
     45,
     38,
     38,
-    38,
+    39,
     47,
     38,
     38,
     45,
     38,
-    38,
-    38,
+    39,
+    39,
     38,
     38
    ],
@@ -1058,7 +1040,7 @@
    "minFont": 12,
    "shareCells": 0,
    "asMadeCells": 14,
-   "ticks": 14,
+   "ticks": 0,
    "watchFor": false,
    "balance": false
   }
@@ -1128,30 +1110,29 @@
    "thead": true,
    "theadCells": [
     "As made",
-    "",
     "Ingredient"
    ],
    "tbodies": 4,
    "tfoot": true,
    "rows": [
     411,
-    445,
-    492,
-    537,
-    575,
-    613,
-    651,
-    686,
-    733,
-    771,
-    809,
-    854,
-    892,
-    930,
-    965,
-    1003,
-    1037,
-    1075
+    446,
+    493,
+    538,
+    576,
+    614,
+    653,
+    688,
+    735,
+    773,
+    811,
+    856,
+    894,
+    933,
+    968,
+    1006,
+    1041,
+    1079
    ],
    "steps": 10,
    "hiddenAttr": 0,
@@ -1165,7 +1146,6 @@
    "width": 436,
    "head": [
     "As made",
-    "",
     "Ingredient"
    ],
    "cols": [
@@ -1174,16 +1154,12 @@
      90
     ],
     [
-     "ps-col-tick",
-     32
+     "ps-col-grams",
+     75
     ],
     [
      "ingredient-table__col-name",
-     239
-    ],
-    [
-     "ps-col-grams",
-     75
+     271
     ]
    ],
    "rowHeights": [
@@ -1191,14 +1167,14 @@
     45,
     38,
     38,
-    38,
+    39,
     47,
     38,
     38,
     45,
     38,
-    38,
-    38,
+    39,
+    39,
     38,
     38
    ],
@@ -1206,7 +1182,7 @@
    "minFont": 12,
    "shareCells": 0,
    "asMadeCells": 14,
-   "ticks": 14,
+   "ticks": 0,
    "watchFor": false,
    "balance": true
   },

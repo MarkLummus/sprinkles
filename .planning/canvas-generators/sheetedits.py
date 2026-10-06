@@ -1,9 +1,14 @@
 # Sid, 2026-10-06: Mark's edits to the captured print starting point (the Sheet as the build renders it, printstart-capture.json). Each is a delta on the capture, so the gap between what the
 # app prints today and what the canvas draws stays readable. These are Mark's design changes for Phase 4 to build, not as built.
-#   E1 (Mark, 2026-10-06): the As made entry field is the FIRST column of the printed Ingredients table: As made | tick box | Ingredient | Grams. A blank ruled cell per line, one per portion
-#      line (brief § 3: a split row prints one line per portion, each with its own tick box and its own as-made blank), empty, under the header "As made". The tick box is the brief's
-#      mise-en-place box (§ 3 item 1, § 6: an unfilled ink square). The capture's order was Grams | Ingredient | % of batch, with no As made column (no batch) and no tick box.
-#      The Total row keeps its plan grams in the Grams column; its As made and tick cells are left empty (Mark named one field per portion line, not one for the Total).
+#   E1 (Mark, 2026-10-06; revised the same day): the As made entry field is the FIRST column of the printed Ingredients table. A blank ruled cell per line, one per portion line
+#      (brief § 3: a split row prints one line per portion, each with its own as-made blank), empty, under the header "As made". The capture's order was Grams | Ingredient | % of batch,
+#      with no As made column (no batch). The Total row keeps its plan grams; its As made cell is left empty (Mark named one field per portion line, not one for the Total).
+#      Revised: the tick box is RETIRED by Mark ("the As made line and the tick box duplicate each other"). That supersedes the brief's mise-en-place tick box (§ 3 item 1 and § 6);
+#      the brief is to be revised through Impeccable, not here.
+#   E6 (Mark, 2026-10-06): the plan amount sits between the As made line and the name: As made | Grams | Ingredient. The header stays as built: "Ingredient" over the grams and the name
+#      (colspan 2, the build's own head), "As made" over the new column. Every printed figure keeps its unit (the build's "120 g").
+#   E7 (Mark, 2026-10-06: more emphasis on the step separators; Sid's pick of one treatment): a heavier rule above each step group, the step head's top border at --rule-tick (2.5px, ink).
+#      As built the step head has no top rule of its own (the row above's 1px hairline) and a --rule-baseline bottom; its type, size and spacing are unchanged.
 #   E2 (Mark): no "% of batch" on paper: the header cell and every row's share cell are dropped (the Total row's share cell was empty in the capture).
 #   E3 (Mark): no Watch for on paper (the capture's .margin-region).
 #   E4 (Mark): PrintStartingPoint has no Balance either (the brief's § 4 anti-goal); the alternate board PrintStartingPointBalanceCol2 keeps Balance, in a second column beside the
@@ -23,22 +28,20 @@ def _drop_element(html, start_pat):
     raise AssertionError('unbalanced: ' + start_pat)
 
 ASMADE = '<td class="ps-col-asmade"><span class="ps-asmade"></span></td>'
-TICK = '<td class="ps-col-tick"><span class="ps-tick"></span></td>'
 
 def table_edits(sheet):
-    """E1 and E2 on the captured table."""
+    """E1, E2 and E6 on the captured table."""
     head_old = '<thead><tr><th scope="col" class="ingredient-table__col-name" colspan="2">Ingredient</th><th scope="col" class="ingredient-table__col-numeric">% of batch</th></tr></thead>'
     assert head_old in sheet
-    sheet = sheet.replace(head_old, '<thead><tr><th scope="col" class="ps-col-asmade">As made</th><th scope="col" class="ps-col-tick"></th>'
+    sheet = sheet.replace(head_old, '<thead><tr><th scope="col" class="ps-col-asmade">As made</th>'
                                     '<th scope="col" class="ingredient-table__col-name" colspan="2">Ingredient</th></tr></thead>')
-    sheet = sheet.replace('<tr class="ingredient-table__step-head"><td colspan="3">', '<tr class="ingredient-table__step-head"><td colspan="4">')
     def row(m):
         tds = re.findall(r'<td[^>]*>.*?</td>', m.group(2), re.S)
         assert len(tds) == 3, m.group(0)[:200]
         grams, name, share = tds
         grams = grams.replace('class="ingredient-table__col-grams"', 'class="ingredient-table__col-grams ps-col-grams"')
-        first = '<td class="ps-col-asmade"></td><td class="ps-col-tick"></td>' if m.group(3) == 'tfoot' else ASMADE + TICK
-        return m.group(1) + first + name + grams + '</tr>'
+        first = '<td class="ps-col-asmade"></td>' if m.group(3) == 'tfoot' else ASMADE
+        return m.group(1) + first + grams + name + '</tr>'
     sheet, n = re.subn(r'(<tr aria-label="[^"]*">)(.*?)</tr>(?=(?:<tr|</tbody>|</(tfoot)>))', row, sheet, flags=re.S)
     assert n == 15, n   # 14 portion lines and the Total
     return sheet
@@ -52,10 +55,9 @@ def balance_without_control(sheet):                                             
 CSS = '''
 .recipe-page .region-name{color:var(--sheet-ink)}
 .ingredient-table .ps-col-asmade{width:84px;padding-right:var(--gap-s);text-align:left}
-.ingredient-table .ps-col-tick{width:14px;padding-right:var(--gap-s)}
 .ingredient-table .ps-col-grams{text-align:right;white-space:nowrap}
 .ps-asmade{display:block;width:72px;height:24px;border-bottom:var(--rule-ink-field) solid var(--sheet-ink)}
-.ps-tick{display:block;width:14px;height:14px;border:var(--rule-ink-field) solid var(--sheet-ink);box-sizing:border-box}
+.ingredient-table__step-head td{border-top:var(--rule-tick) solid var(--sheet-ink)}
 '''
 # the alternate: two columns at 816, Ingredients in column 1 and Balance in column 2 (the Instructions and everything else full width, as the one-column print has them)
 CSS_COL2 = '''

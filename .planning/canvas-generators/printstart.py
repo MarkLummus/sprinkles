@@ -63,14 +63,14 @@ return {{}};
 '''
 
 T_A = 'As built · the recipe page at 1280, no batch (production build, 2026-10-06, after Phase 03.7)'
-T_B = 'Print starting point · the Sheet, no batch, at letter width, with your edits of 2026-10-06 (As made first, no % of batch, no Watch for, no Balance)'
+T_B = 'Print starting point · the Sheet, no batch, at letter width, with your edits of 2026-10-06 (As made | Grams | Ingredient, no tick box, heavier step rules, no % of batch, no Watch for, no Balance)'
 T_C = 'Print starting point, alternate · Balance in column 2 beside the Ingredients (departs from the print brief § 4 anti-goal, no Balance; for Mark to decide)'
 NOTE_C = ("Alternate to the Print starting point: the same printed page, with Balance in a second column beside the Ingredients table and no Hide control. "
           "It departs from the print brief's § 4 anti-goal (no Balance on the sheet). Yours to decide; nothing approved.")
 T_F1 = 'Page 1 · Batch log, front: At the machine (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
 T_F2 = 'Page 2 · Batch log, back: When you taste it (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
 NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today (one column, the app's own print rules, a white page), with your edits of 2026-10-06 laid on: "
-        "As made is the first column with a tick box, no % of batch, no Watch for, no Balance. Beside it, the alternate with Balance in column 2. Right: the recipe page at 1280, as built. "
+        "As made is the first column, then the grams, then the ingredient; no tick box (retired by you, superseding the print brief's mise-en-place box, § 3 item 1 and § 6); a heavier rule above each step group; no % of batch, no Watch for, no Balance; headings in ink. Beside it, the alternate with Balance in column 2. Right: the recipe page at 1280, as built. "
         "Both are captured from the production build of 2026-10-06 (real markup, the app's own stylesheets) with Olive Oil v1 as a version with no batch yet: "
         "the build's own no-batch markup, so no As made column, no logged figures and no skipped step. The app has no print design yet, so this is the starting point, not a proposal.\n\n"
         "Change the Print starting point board to design the print. What you change is what Phase 4 builds; what you leave is what the app already does.\n\n"

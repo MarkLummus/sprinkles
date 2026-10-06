@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-06T03:11:55Z",
+  "generatedAt": "2026-10-06T12:00:00Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -78,6 +78,12 @@
         "canonical": "oklch(59.6% 0.242 29)",
         "note": "Approved 2026-09-21; one step darker 2026-10-05 (#ED0702, 4.534:1 on the app background). Never a fill. Watch against the No-Verdict Rule: a pure red."
       },
+      "app-notebook-text-on-subtle": {
+        "displayName": "Notebook text on the subtle surface",
+        "role": "accent-text",
+        "canonical": "oklch(56.9% 0.231 29)",
+        "note": "Approved 2026-10-06, as built (#DF0702, 4.566:1 on app-surface-subtle). The plain companion scaled by the smallest whole percent that clears 4.5:1 there. Read only by the current place's word (shell.css .shell__place--notebook[aria-current='page']). Never a fill."
+      },
       "app-recipe-book": {
         "displayName": "Recipe Book orange",
         "role": "accent",
@@ -87,6 +93,12 @@
         "displayName": "Recipe Book text companion",
         "role": "accent-text",
         "canonical": "oklch(58.0% 0.147 51)"
+      },
+      "app-recipe-book-text-on-subtle": {
+        "displayName": "Recipe Book text on the subtle surface",
+        "role": "accent-text",
+        "canonical": "oklch(55.6% 0.140 51)",
+        "note": "Approved 2026-10-06, as built (#B1560C, 4.525:1 on app-surface-subtle). The plain companion scaled by the smallest whole percent that clears 4.5:1 there. Read only by the current place's word (shell.css .shell__place--recipe-book[aria-current='page']). Never a fill."
       },
       "app-idea-log": {
         "displayName": "Idea Log yellow",
@@ -98,6 +110,12 @@
         "role": "accent-text",
         "canonical": "oklch(56.7% 0.116 83)",
         "note": "Approved 2026-10-05, as built. An olive that no longer reads as the yellow. Never a fill."
+      },
+      "app-idea-log-text-on-subtle": {
+        "displayName": "Idea Log text on the subtle surface",
+        "role": "accent-text",
+        "canonical": "oklch(54.5% 0.112 83)",
+        "note": "Approved 2026-10-06, as built (#8F6901, 4.544:1 on app-surface-subtle). The plain companion scaled by the smallest whole percent that clears 4.5:1 there. Read only by the current place's word (shell.css .shell__place--idea-log[aria-current='page']). Never a fill."
       },
       "app-pantry": {
         "displayName": "Pantry light green (reserved)",
@@ -114,10 +132,17 @@
         "role": "accent-text",
         "canonical": "oklch(55.1% 0.110 153)"
       },
+      "app-ingredients-text-on-subtle": {
+        "displayName": "Ingredients text on the subtle surface",
+        "role": "accent-text",
+        "canonical": "oklch(53.0% 0.105 153)",
+        "note": "Approved 2026-10-06, as built (#327D4E, 4.554:1 on app-surface-subtle). The plain companion scaled by the smallest whole percent that clears 4.5:1 there. Read only by the current place's word (shell.css .shell__place--ingredients[aria-current='page']). Never a fill."
+      },
       "app-kitchen": {
         "displayName": "Kitchen indigo",
         "role": "accent",
-        "canonical": "oklch(51.3% 0.138 274)"
+        "canonical": "oklch(51.3% 0.138 274)",
+        "note": "Reads 5.33:1 on app-surface-subtle, so it needs no on-subtle value."
       },
       "app-blue": {
         "displayName": "App blue",
@@ -129,7 +154,13 @@
         "displayName": "App blue text companion",
         "role": "accent-text",
         "canonical": "oklch(56.9% 0.179 255)",
-        "note": "The filled action fill (white label) and the secondary action outline and label. Approved 2026-10-05; one step darker the same day (#1475DD, 4.547:1 on the app background and under the white label). App blue is the link colour (approved 2026-10-05). Known unresolved: every companion reads about 4.1:1 on app-surface-subtle, a pairing never decided."
+        "note": "The filled action fill (white label) and the secondary action outline and label. Approved 2026-10-05; one step darker the same day (#1475DD, 4.547:1 on the app background and under the white label). App blue is the link colour (approved 2026-10-05). On the subtle surface the current place's word takes app-blue-text-on-subtle (approved 2026-10-06)."
+      },
+      "app-blue-text-on-subtle": {
+        "displayName": "App blue text on the subtle surface",
+        "role": "accent-text",
+        "canonical": "oklch(54.4% 0.171 255)",
+        "note": "Approved 2026-10-06, as built (#136ED0, 4.566:1 on app-surface-subtle). The plain companion scaled by the smallest whole percent that clears 4.5:1 there. Read only by the current place's word (shell.css .shell__place--blue[aria-current='page']). Never a fill."
       },
       "app-background": {
         "displayName": "App background",
@@ -274,7 +305,7 @@
     "focus": {
       "outlineWidth": "2px",
       "outlineOffset": "2px",
-      "color": "var(--sheet-ink) on the Sheet and var(--app-text) in the shell (the same value)",
+      "color": "var(--sheet-ink) on the Sheet and var(--app-text) in the shell (the same value); the ink ring is approved as the App's focus colour too (Mark, 2026-10-06)",
       "boundary": ":focus-visible",
       "exception": ".is-landing-focus:focus — a plain :focus rule for the fork’s landing focus after a mouse-driven Save, which Chrome’s modality tracking would otherwise leave ringless. The one documented exception.",
       "purpose": "The one focus treatment, provably heavier than the 1px outline pointed-at content carries and a different sign from a picked control's fill. Never colour, never position. The shell's places and menu button read the App text colour; a bottom tab's ring is inset by its own width so it is not drawn off the window."
@@ -394,7 +425,7 @@
     },
     "scope": {
       "implementedCatalogue": "Two contexts, both built. Sheet: Recipe Sheet, ingredient table, Instructions, graduated rules, pen foot, the Sheet's Notebook-form hand (as-made grams, Instructions changes) and the printed log. App: the shell, Home, the Notebook band and version column, History and the upright list, the batch log and its record pen skin.",
-      "approvedAppDirection": "Option B destination palette with the revised Ingredients green and the preview neutrals (2026-09-21), the five text companions and the filled action (Mark, 2026-10-05, as built), one 10px control radius and active place weight 600 (sketch 011 decision 38, 2026-10-04), the hand. No recipe-specific colors. Unresolved: feedback treatments, pale tints, pressed and disabled states, whether the ink ring is the App's focus colour (app blue is the link colour, approved 2026-10-05), the companions on the subtle surface (about 4.1:1, never decided), the pen's Save weight, motion.",
+      "approvedAppDirection": "Option B destination palette with the revised Ingredients green and the preview neutrals (2026-09-21), the five text companions and the filled action (Mark, 2026-10-05, as built), one 10px control radius and active place weight 600 (sketch 011 decision 38, 2026-10-04), the hand. No recipe-specific colors. The ink focus ring as the App's focus colour (Mark, 2026-10-06; app blue is the link colour, approved 2026-10-05), the five companions on the subtle surface (Mark, 2026-10-06, as built) and the pen's Save and Cancel at weight 600 (Mark, 2026-10-06) are approved. Unresolved: feedback treatments, pale tints, pressed and disabled states, motion.",
       "tonalRamps": "The Sheet colours carry preview ramps; the App colours carry none. Ramps are preview metadata only; not approved UI colors.",
       "emptyShadowsAndMotion": "Motion is empty because none is built (--app-duration is declared and no rule reads it). Shadows lists the App's one shadow, the fly-out's, and its scrim.",
       "appRadius": "One App radius, 10px (--app-radius-control), on the App's interactive elements and the surfaces they sit on; marks keep 3px (sprinkle) and 4px (row mark, defect square), History's marks are circles. The Sheet is square and has no radius token."
@@ -533,7 +564,7 @@
       "name": "App filled action",
       "kind": "button",
       "refersTo": "app-action",
-      "description": "Approved 2026-10-05, as built (Home .home__action and Notebook .notebook-action, both weight 600 since 2026-10-05). The App's primary action: app blue's text companion as the fill, the App ground as the label, 10px radius, 44px floor. An accent is never a fill under a white label (app blue reads 3.90:1 there; the companion reads 4.55:1). The pen's filled Save declares no weight and computes 400, an open question for Mark. Hover thickens the border to a whole 2px and the padding gives up the same, so the box never changes size.",
+      "description": "Approved 2026-10-05, as built (Home .home__action and Notebook .notebook-action, both weight 600 since 2026-10-05). The App's primary action: app blue's text companion as the fill, the App ground as the label, 10px radius, 44px floor. An accent is never a fill under a white label (app blue reads 3.90:1 there; the companion reads 4.55:1). The pen's filled Save (.notebook-log .save-ceremony button:last-of-type) and outline Cancel (.notebook-log .save-ceremony button) are weight 600 too (Mark, 2026-10-06). Hover thickens the border to a whole 2px and the padding gives up the same, so the box never changes size.",
       "html": "<button type=\"button\" class=\"ds-app-action\">Next version</button>",
       "css": ".ds-app-action{box-sizing:border-box;appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-control);border:var(--app-rule-row) solid var(--app-blue-text);background:var(--app-blue-text);color:var(--app-background);font-family:var(--face-grotesk);font-size:var(--app-size-meta);font-weight:600;cursor:pointer}.ds-app-action:hover{border-width:var(--rule-hover);padding:calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover))}.ds-app-action:focus-visible{outline:var(--focus-outline-width) solid var(--app-text);outline-offset:var(--focus-outline-offset)}"
     },
@@ -549,7 +580,7 @@
       "name": "Navigation place",
       "kind": "nav",
       "refersTo": "app-place",
-      "description": "Built in the shell (shell.css .shell__place), as the rail, the fly-out and the bottom tab row. A line icon in the destination's accent and a word in its text companion, 10px radius on every place so the focus ring is one shape. The current place sits on the subtle surface and takes weight 600; there is no underline and no colour bar.",
+      "description": "Built in the shell (shell.css .shell__place), as the rail, the fly-out and the bottom tab row. A line icon in the destination's accent and a word in its text companion, 10px radius on every place so the focus ring is one shape. The current place sits on the subtle surface, its word in the destination's on-subtle companion (4.5:1 there), and takes weight 600; there is no underline and no colour bar.",
       "html": "<nav class=\"ds-nav\" aria-label=\"Places\"><a class=\"ds-place ds-place--notebook\" href=\"#\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"1\"/><line x1=\"9\" y1=\"3\" x2=\"9\" y2=\"21\"/></svg>Notebook</a><a class=\"ds-place ds-place--idea\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M9 18h6\"/><path d=\"M10 21h4\"/><path d=\"M12 3a6 6 0 0 0-3 11c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a6 6 0 0 0-3-11Z\"/></svg>Idea log</a></nav>",
       "css": ".ds-nav{display:flex;flex-direction:column;width:var(--app-size-nav-w);padding:var(--gap-xs) var(--gap-m)}.ds-place{display:flex;align-items:center;gap:var(--gap-xs);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-control);font-family:var(--face-grotesk);font-size:var(--app-size-meta);text-decoration:none}.ds-place svg{width:var(--app-size-icon);height:var(--app-size-icon)}.ds-place[aria-current=\"page\"]{background:var(--app-surface-subtle);font-weight:600}.ds-place--notebook{color:var(--app-notebook-text)}.ds-place--notebook svg{stroke:var(--app-notebook)}.ds-place--idea{color:var(--app-idea-log-text)}.ds-place--idea svg{stroke:var(--app-idea-log)}.ds-place:focus-visible{outline:var(--focus-outline-width) solid var(--app-text);outline-offset:var(--focus-outline-offset)}"
     },
@@ -707,7 +738,7 @@
       "**Do** distinguish approved direction, observed implementation, and unresolved design choices.",
       "**Do** keep page composition in surface briefs and reusable visual rules in this document.",
       "**Do** set the maker's saved observations in the hand and sheet pen blue in the App (typed in the prose-field role, never in the hand), at or above the hand's minimum size, with the text-face fallback in place for forced colours and print.",
-      "**Do** set a destination's name, count or link in its text companion and its mark in its accent, and fill a primary App action with app blue's companion under a white label.",
+      "**Do** set a destination's name, count or link in its text companion (the on-subtle companion when the current place's surface sits under it) and its mark in its accent, and fill a primary App action with app blue's companion under a white label.",
       "**Do** give every App control the one 10px radius, every App action a 44px floor, and let hover change a border's weight, never the box's size."
     ],
     "donts": [

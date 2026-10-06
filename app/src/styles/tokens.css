@@ -325,6 +325,18 @@
   --app-text-secondary: #595959;
   --app-divider: #d6dad7;
 
+  /* The companions as they read where a place word sits on
+     --app-surface-subtle: the current place in the rail, the tab row and
+     More. Each is its plain companion scaled by one common factor, the
+     smallest whole percent that clears 4.5:1 on that surface; the plain
+     companions are unchanged on the app background (Mark, 2026-10-06,
+     decide-companions-on-subtle-surface, D-01; quick 261005-x0j). */
+  --app-blue-text-on-subtle: #136ed0;
+  --app-notebook-text-on-subtle: #df0702;
+  --app-recipe-book-text-on-subtle: #b1560c;
+  --app-idea-log-text-on-subtle: #8f6901;
+  --app-ingredients-text-on-subtle: #327d4e;
+
   /* The hand (DESIGN.md, Typography > Hierarchy, "Hand"; D-17): the
      maker's own words in the App — a tasting, a Next time, a version's
      Why, a batch's note, an idea in the log. Caveat's face stack ends at

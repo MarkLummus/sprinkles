@@ -467,6 +467,30 @@ button.shell__place {
   stroke: var(--app-kitchen);
 }
 
+/* The current place's word takes its on-subtle companion, because the
+   subtle surface sits under it (D-09, D-01; quick 261005-x0j). One class
+   and one attribute outrank the plain word rule above; Kitchen's indigo
+   needs none. */
+.shell__place--home[aria-current='page'] {
+  color: var(--app-blue-text-on-subtle);
+}
+
+.shell__place--notebook[aria-current='page'] {
+  color: var(--app-notebook-text-on-subtle);
+}
+
+.shell__place--recipe-book[aria-current='page'] {
+  color: var(--app-recipe-book-text-on-subtle);
+}
+
+.shell__place--idea-log[aria-current='page'] {
+  color: var(--app-idea-log-text-on-subtle);
+}
+
+.shell__place--ingredients[aria-current='page'] {
+  color: var(--app-ingredients-text-on-subtle);
+}
+
 /* The bottom tab row (D-16): rendered at every width, hidden from 724 up
    (Rule A). Below it (the phone block, the last media block this file
    carries) this shows instead — a hidden element leaves the accessibility

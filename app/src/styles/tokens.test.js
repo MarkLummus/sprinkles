@@ -284,4 +284,97 @@ describe('the text companions clear 4.5:1 on the app background (WCAG 2.2 AA; Ma
     }
     expect(found).toEqual([]);
   });
+
+  describe("the companions on the current place's surface clear 4.5:1 (Mark 2026-10-06, decide-companions-on-subtle-surface; quick 261005-x0j)", () => {
+    // Where a place's word is the current place it sits on --app-surface-subtle
+    // (shell.css), not on --app-background, and the plain companions read about
+    // 4.1:1 there. Each companion therefore has an on-subtle token: the plain
+    // companion with every channel scaled by one common factor, the smallest
+    // whole percent that clears 4.5:1 on that surface. Scaling, not a uniform
+    // hex step per channel: the Notebook red would need twelve steps and its
+    // green and blue channels would clamp at zero after two, changing the hue.
+    // Kitchen's indigo needs no companion (5.325:1 on subtle already).
+    const subtle = declaredInTokens['--app-surface-subtle'];
+    const shellSrc = cssSourceFiles.find((entry) => entry.label === 'shell.css').src;
+    const shellRules = readAllRules(shellSrc).filter((rule) => rule.media === undefined);
+
+    const PLACES = [
+      ['home', '--app-blue-text', '--app-blue-text-on-subtle'],
+      ['notebook', '--app-notebook-text', '--app-notebook-text-on-subtle'],
+      ['recipe-book', '--app-recipe-book-text', '--app-recipe-book-text-on-subtle'],
+      ['idea-log', '--app-idea-log-text', '--app-idea-log-text-on-subtle'],
+      ['ingredients', '--app-ingredients-text', '--app-ingredients-text-on-subtle'],
+    ];
+
+    function scaled(hex, k) {
+      const factor = 1 - k / 100;
+      return `#${channels(hex)
+        .map((value) => Math.round(value * factor).toString(16).padStart(2, '0'))
+        .join('')}`;
+    }
+    function smallestStep(hex) {
+      for (let k = 1; k <= 40; k += 1) {
+        if (ratio(scaled(hex, k), subtle) >= 4.5) return k;
+      }
+      throw new Error(`no whole-percent step up to 40 clears 4.5:1 for ${hex} on ${subtle}`);
+    }
+
+    test.each([...PLACES.map(([slug, plain]) => [slug, plain]), ['kitchen', '--app-kitchen']])(
+      'the %s word, when current, reads at least 4.5:1 on --app-surface-subtle',
+      (slug, plainToken) => {
+        const current = shellRules.find((rule) => rule.selector === `.shell__place--${slug}[aria-current='page']`);
+        const plain = shellRules.find((rule) => rule.selector === `.shell__place--${slug}`);
+        const source = current || plain;
+        expect(source, `shell.css has a top-level rule that sets the ${slug} word's colour`).toBeDefined();
+        const read = /(?:^|[\s;])color:\s*var\((--[\w-]+)\)/.exec(source.declarations);
+        expect(read, `the ${slug} word's rule reads its colour from a token`).not.toBeNull();
+        const token = read[1];
+        if (!current) expect(token, `${slug} reads its plain token`).toBe(plainToken);
+        const measured = ratio(declaredInTokens[token], subtle);
+        expect(
+          measured >= 4.5,
+          `${slug} reads ${token} ${declaredInTokens[token]} on ${subtle}: ${measured.toFixed(3)}:1`,
+        ).toBe(true);
+      },
+    );
+
+    test.each(PLACES)(
+      'the %s on-subtle token is its plain companion scaled by the smallest whole percent that clears 4.5:1',
+      (slug, plainToken, onSubtleToken) => {
+        const expected = scaled(declaredInTokens[plainToken], smallestStep(declaredInTokens[plainToken]));
+        expect(
+          declaredInTokens[onSubtleToken],
+          `${onSubtleToken} is ${declaredInTokens[onSubtleToken] || 'not declared'}, expected ${expected}`,
+        ).toBe(expected);
+      },
+    );
+
+    test('the five plain companions are unchanged, so nothing moves on the app background', () => {
+      expect(declaredInTokens['--app-blue-text']).toBe('#1475dd');
+      expect(declaredInTokens['--app-notebook-text']).toBe('#ed0702');
+      expect(declaredInTokens['--app-recipe-book-text']).toBe('#bc5b0d');
+      expect(declaredInTokens['--app-idea-log-text']).toBe('#976f01');
+      expect(declaredInTokens['--app-ingredients-text']).toBe('#358452');
+    });
+
+    test("each on-subtle token is read once, by its own current-place rule in shell.css, and that rule declares nothing else", () => {
+      const problems = [];
+      for (const [slug, , onSubtleToken] of PLACES) {
+        const reads = allRefs.filter((ref) => ref.name === onSubtleToken);
+        if (reads.length !== 1 || reads[0].file !== 'shell.css') {
+          problems.push(`${onSubtleToken} is read ${reads.length} time(s): ${reads.map((ref) => ref.file).join(', ') || 'nowhere'}`);
+        }
+        const rule = shellRules.find((entry) => entry.selector === `.shell__place--${slug}[aria-current='page']`);
+        if (!rule) {
+          problems.push(`shell.css has no top-level .shell__place--${slug}[aria-current='page'] rule`);
+          continue;
+        }
+        const declarations = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean);
+        if (declarations.length !== 1 || declarations[0].replace(/\s+/g, ' ') !== `color: var(${onSubtleToken})`) {
+          problems.push(`${slug} rule declares: ${declarations.join('; ')}`);
+        }
+      }
+      expect(problems).toEqual([]);
+    });
+  });
 });

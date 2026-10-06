@@ -1,0 +1,1228 @@
+{
+ "webkit_A": {
+  "board": {
+   "article": [
+    1216,
+    2194
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     1120,
+     126
+    ],
+    "before-region": [
+     48,
+     206,
+     599,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     383,
+     725,
+     717
+    ],
+    "method-region": [
+     48,
+     1132,
+     725,
+     982
+    ],
+    "side-region": [
+     805,
+     206,
+     363,
+     1908
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     206
+    ],
+    [
+     "Ingredients",
+     383
+    ],
+    [
+     "Instructions",
+     1132
+    ],
+    [
+     "Balance",
+     206
+    ],
+    [
+     "Watch for",
+     1033
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "Ingredient",
+    "% of batch"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    429,
+    464,
+    511,
+    556,
+    587,
+    618,
+    649,
+    684,
+    731,
+    764,
+    795,
+    841,
+    872,
+    905,
+    939,
+    972,
+    1007,
+    1038
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2839,
+   "shellH": 2839,
+   "fonts": [
+    "Caveat:unloaded"
+   ]
+  },
+  "live": {
+   "article": [
+    1216,
+    2194
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     1120,
+     126
+    ],
+    "before-region": [
+     48,
+     206,
+     599,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     383,
+     725,
+     717
+    ],
+    "method-region": [
+     48,
+     1132,
+     725,
+     982
+    ],
+    "side-region": [
+     805,
+     206,
+     363,
+     1908
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     206
+    ],
+    [
+     "Ingredients",
+     383
+    ],
+    [
+     "Instructions",
+     1132
+    ],
+    [
+     "Balance",
+     206
+    ],
+    [
+     "Watch for",
+     1033
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "Ingredient",
+    "% of batch"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    429,
+    464,
+    511,
+    556,
+    587,
+    618,
+    649,
+    684,
+    731,
+    764,
+    795,
+    841,
+    872,
+    905,
+    939,
+    972,
+    1007,
+    1038
+   ],
+   "steps": 10,
+   "hiddenAttr": 1,
+   "handFace": null
+  },
+  "liveDoc": {
+   "docH": 2839,
+   "shellH": 2839
+  },
+  "diff": []
+ },
+ "webkit_B": {
+  "board": {
+   "article": [
+    816,
+    2229
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     599,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     720,
+     780
+    ],
+    "method-region": [
+     48,
+     1179,
+     720,
+     982
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     1179
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "As made",
+    "Ingredient"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    411,
+    446,
+    493,
+    537,
+    574,
+    611,
+    649,
+    684,
+    731,
+    768,
+    805,
+    850,
+    887,
+    925,
+    959,
+    998,
+    1033,
+    1071
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2229
+  },
+  "live": {
+   "article": [
+    816,
+    3215
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     599,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     720,
+     736
+    ],
+    "method-region": [
+     48,
+     2165,
+     720,
+     982
+    ],
+    "side-region": [
+     48,
+     1115,
+     720,
+     1030
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     2165
+    ],
+    [
+     "Balance",
+     1115
+    ],
+    [
+     "Watch for",
+     1927
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "Ingredient",
+    "% of batch"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    425,
+    459,
+    506,
+    552,
+    583,
+    614,
+    645,
+    679,
+    727,
+    760,
+    791,
+    836,
+    867,
+    900,
+    935,
+    967,
+    1002,
+    1033
+   ],
+   "steps": 10,
+   "hiddenAttr": 1,
+   "handFace": null
+  },
+  "diff": [],
+  "table": {
+   "width": 720,
+   "head": [
+    "As made",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-grams",
+     81
+    ],
+    [
+     "ingredient-table__col-name",
+     549
+    ]
+   ],
+   "rowHeights": [
+    47,
+    44,
+    37,
+    37,
+    38,
+    47,
+    37,
+    37,
+    44,
+    37,
+    38,
+    39,
+    38,
+    37
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 0,
+   "watchFor": false,
+   "balance": false
+  }
+ },
+ "webkit_C": {
+  "board": {
+   "article": [
+    816,
+    2244
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     599,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     436,
+     815
+    ],
+    "method-region": [
+     48,
+     1194,
+     720,
+     982
+    ],
+    "side-region": [
+     504,
+     359,
+     264,
+     815
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     1194
+    ],
+    [
+     "Balance",
+     359
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "As made",
+    "Ingredient"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    411,
+    446,
+    493,
+    537,
+    574,
+    611,
+    649,
+    684,
+    731,
+    768,
+    805,
+    850,
+    887,
+    925,
+    959,
+    998,
+    1033,
+    1071
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2244
+  },
+  "diff": [],
+  "table": {
+   "width": 436,
+   "head": [
+    "As made",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-grams",
+     81
+    ],
+    [
+     "ingredient-table__col-name",
+     264
+    ]
+   ],
+   "rowHeights": [
+    47,
+    44,
+    37,
+    37,
+    38,
+    47,
+    37,
+    37,
+    44,
+    37,
+    38,
+    39,
+    38,
+    37
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 0,
+   "watchFor": false,
+   "balance": true
+  },
+  "cols": {
+   "grid": "435.84375px 264.140625px",
+   "table": 436,
+   "side": 264,
+   "rule": 264,
+   "balanceButtons": 0,
+   "watchFor": false
+  }
+ },
+ "webkit_BatchLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 953,
+  "footTop": 994,
+  "footBottom": 1016,
+  "spare": 41,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 14,
+  "boxes": 6,
+  "stops": 0
+ },
+ "webkit_TastingLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 963,
+  "footTop": 994,
+  "footBottom": 1016,
+  "spare": 31,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 7,
+  "boxes": 8,
+  "stops": 30
+ },
+ "chromium_A": {
+  "board": {
+   "article": [
+    1216,
+    2181
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     1120,
+     126
+    ],
+    "before-region": [
+     48,
+     206,
+     542,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     383,
+     725,
+     714
+    ],
+    "method-region": [
+     48,
+     1129,
+     725,
+     972
+    ],
+    "side-region": [
+     805,
+     206,
+     363,
+     1895
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     206
+    ],
+    [
+     "Ingredients",
+     383
+    ],
+    [
+     "Instructions",
+     1129
+    ],
+    [
+     "Balance",
+     206
+    ],
+    [
+     "Watch for",
+     1026
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "Ingredient",
+    "% of batch"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    429,
+    464,
+    510,
+    556,
+    587,
+    618,
+    649,
+    683,
+    730,
+    762,
+    793,
+    839,
+    870,
+    902,
+    937,
+    969,
+    1004,
+    1035
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2839,
+   "shellH": 2825,
+   "fonts": [
+    "Caveat:unloaded"
+   ]
+  },
+  "live": {
+   "article": [
+    1216,
+    2181
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     1120,
+     126
+    ],
+    "before-region": [
+     48,
+     206,
+     542,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     383,
+     725,
+     714
+    ],
+    "method-region": [
+     48,
+     1129,
+     725,
+     972
+    ],
+    "side-region": [
+     805,
+     206,
+     363,
+     1895
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     206
+    ],
+    [
+     "Ingredients",
+     383
+    ],
+    [
+     "Instructions",
+     1129
+    ],
+    [
+     "Balance",
+     206
+    ],
+    [
+     "Watch for",
+     1026
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "Ingredient",
+    "% of batch"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    429,
+    464,
+    510,
+    556,
+    587,
+    618,
+    649,
+    683,
+    730,
+    762,
+    793,
+    839,
+    870,
+    902,
+    937,
+    969,
+    1004,
+    1035
+   ],
+   "steps": 10,
+   "hiddenAttr": 1,
+   "handFace": null
+  },
+  "liveDoc": {
+   "docH": 2825,
+   "shellH": 2825
+  },
+  "diff": []
+ },
+ "chromium_B": {
+  "board": {
+   "article": [
+    816,
+    2218
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     542,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     720,
+     779
+    ],
+    "method-region": [
+     48,
+     1178,
+     720,
+     972
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     1178
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "As made",
+    "Ingredient"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    411,
+    446,
+    492,
+    537,
+    574,
+    611,
+    649,
+    684,
+    730,
+    767,
+    804,
+    849,
+    886,
+    924,
+    959,
+    997,
+    1032,
+    1070
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2218
+  },
+  "live": {
+   "article": [
+    816,
+    3186
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     542,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     720,
+     733
+    ],
+    "method-region": [
+     48,
+     2146,
+     720,
+     972
+    ],
+    "side-region": [
+     48,
+     1112,
+     720,
+     1014
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     2146
+    ],
+    [
+     "Balance",
+     1112
+    ],
+    [
+     "Watch for",
+     1918
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "Ingredient",
+    "% of batch"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    425,
+    460,
+    506,
+    552,
+    583,
+    614,
+    645,
+    679,
+    726,
+    758,
+    789,
+    835,
+    866,
+    898,
+    933,
+    965,
+    1000,
+    1031
+   ],
+   "steps": 10,
+   "hiddenAttr": 1,
+   "handFace": null
+  },
+  "diff": [],
+  "table": {
+   "width": 720,
+   "head": [
+    "As made",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-grams",
+     75
+    ],
+    [
+     "ingredient-table__col-name",
+     555
+    ]
+   ],
+   "rowHeights": [
+    46,
+    44,
+    37,
+    37,
+    38,
+    46,
+    37,
+    37,
+    44,
+    37,
+    38,
+    39,
+    38,
+    38
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 0,
+   "watchFor": false,
+   "balance": false
+  }
+ },
+ "chromium_C": {
+  "board": {
+   "article": [
+    816,
+    2210
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     542,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     436,
+     791
+    ],
+    "method-region": [
+     48,
+     1170,
+     720,
+     972
+    ],
+    "side-region": [
+     504,
+     359,
+     264,
+     791
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     1170
+    ],
+    [
+     "Balance",
+     359
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "As made",
+    "Ingredient"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    411,
+    446,
+    492,
+    537,
+    574,
+    611,
+    649,
+    684,
+    730,
+    767,
+    804,
+    849,
+    886,
+    924,
+    959,
+    997,
+    1032,
+    1070
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2210
+  },
+  "diff": [],
+  "table": {
+   "width": 436,
+   "head": [
+    "As made",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-grams",
+     75
+    ],
+    [
+     "ingredient-table__col-name",
+     271
+    ]
+   ],
+   "rowHeights": [
+    46,
+    44,
+    37,
+    37,
+    38,
+    46,
+    37,
+    37,
+    44,
+    37,
+    38,
+    39,
+    38,
+    38
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 0,
+   "watchFor": false,
+   "balance": true
+  },
+  "cols": {
+   "grid": "435.844px 264.141px",
+   "table": 436,
+   "side": 264,
+   "rule": 264,
+   "balanceButtons": 0,
+   "watchFor": false
+  }
+ },
+ "chromium_BatchLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 953,
+  "footTop": 995,
+  "footBottom": 1016,
+  "spare": 42,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 14,
+  "boxes": 6,
+  "stops": 0
+ },
+ "chromium_TastingLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 963,
+  "footTop": 995,
+  "footBottom": 1016,
+  "spare": 32,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 7,
+  "boxes": 8,
+  "stops": 30
+ },
+ "boardH": 2240,
+ "boardH_col2": 2260
+}

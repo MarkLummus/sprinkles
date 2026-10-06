@@ -75,8 +75,8 @@
       "app-notebook-text": {
         "displayName": "Notebook text companion",
         "role": "accent-text",
-        "canonical": "oklch(59.8% 0.243 29)",
-        "note": "Approved 2026-09-21; confirmed in the real app at 03.4 UAT round two. Never a fill. Watch against the No-Verdict Rule: a pure red."
+        "canonical": "oklch(59.6% 0.242 29)",
+        "note": "Approved 2026-09-21; one step darker 2026-10-05 (#ED0702, 4.534:1 on the app background). Never a fill. Watch against the No-Verdict Rule: a pure red."
       },
       "app-recipe-book": {
         "displayName": "Recipe Book orange",
@@ -128,8 +128,8 @@
       "app-blue-text": {
         "displayName": "App blue text companion",
         "role": "accent-text",
-        "canonical": "oklch(57.2% 0.179 255)",
-        "note": "The filled action fill (white label) and the secondary action outline and label. Approved 2026-10-05, as built."
+        "canonical": "oklch(56.9% 0.179 255)",
+        "note": "The filled action fill (white label) and the secondary action outline and label. Approved 2026-10-05; one step darker the same day (#1475DD, 4.547:1 on the app background and under the white label). App blue is the link colour (approved 2026-10-05). Known unresolved: every companion reads about 4.1:1 on app-surface-subtle, a pairing never decided."
       },
       "app-background": {
         "displayName": "App background",
@@ -212,7 +212,7 @@
       },
       "hand": {
         "displayName": "The hand",
-        "purpose": "The maker's own saved words in the App: a tasting's problems, a Next time, a version's Why, a batch's notes, an idea. Caveat in sheet pen blue, display only; entry uses the prose-field role. Falls back to the text face in italic under forced colours and in print. The Sheet's own hand (.sheet-hand) is Caveat at the hand's minimum with leading 1, for batch edits only."
+        "purpose": "The maker's own saved words in the App: a tasting's note and problems, a Next time, a version's Why, a batch's notes, an idea. Caveat in sheet pen blue, display only; entry uses the prose-field role. Falls back to the text face in italic under forced colours and in print. The Sheet's own hand (.sheet-hand) is Caveat at the hand's minimum with leading 1, for batch edits only."
       },
       "app-brand": {
         "displayName": "App brand",
@@ -394,7 +394,7 @@
     },
     "scope": {
       "implementedCatalogue": "Two contexts, both built. Sheet: Recipe Sheet, ingredient table, Instructions, graduated rules, pen foot, the Sheet's Notebook-form hand (as-made grams, Instructions changes) and the printed log. App: the shell, Home, the Notebook band and version column, History and the upright list, the batch log and its record pen skin.",
-      "approvedAppDirection": "Option B destination palette with the revised Ingredients green and the preview neutrals (2026-09-21), the five text companions and the filled action (Mark, 2026-10-05, as built), one 10px control radius and active place weight 600 (sketch 011 decision 38, 2026-10-04), the hand. No recipe-specific colors. Unresolved: feedback treatments, pale tints, pressed and disabled states, whether app blue is the ratified link and focus colour, motion.",
+      "approvedAppDirection": "Option B destination palette with the revised Ingredients green and the preview neutrals (2026-09-21), the five text companions and the filled action (Mark, 2026-10-05, as built), one 10px control radius and active place weight 600 (sketch 011 decision 38, 2026-10-04), the hand. No recipe-specific colors. Unresolved: feedback treatments, pale tints, pressed and disabled states, whether the ink ring is the App's focus colour (app blue is the link colour, approved 2026-10-05), the companions on the subtle surface (about 4.1:1, never decided), the pen's Save weight, motion.",
       "tonalRamps": "The Sheet colours carry preview ramps; the App colours carry none. Ramps are preview metadata only; not approved UI colors.",
       "emptyShadowsAndMotion": "Motion is empty because none is built (--app-duration is declared and no rule reads it). Shadows lists the App's one shadow, the fly-out's, and its scrim.",
       "appRadius": "One App radius, 10px (--app-radius-control), on the App's interactive elements and the surfaces they sit on; marks keep 3px (sprinkle) and 4px (row mark, defect square), History's marks are circles. The Sheet is square and has no radius token."
@@ -533,7 +533,7 @@
       "name": "App filled action",
       "kind": "button",
       "refersTo": "app-action",
-      "description": "Approved 2026-10-05, as built (Home .home__action, Notebook .notebook-action). The App's primary action: app blue's text companion as the fill, the App ground as the label, 10px radius, 44px floor. An accent is never a fill under a white label (app blue reads 3.90:1 there). Hover thickens the border to a whole 2px and the padding gives up the same, so the box never changes size.",
+      "description": "Approved 2026-10-05, as built (Home .home__action and Notebook .notebook-action, both weight 600 since 2026-10-05). The App's primary action: app blue's text companion as the fill, the App ground as the label, 10px radius, 44px floor. An accent is never a fill under a white label (app blue reads 3.90:1 there; the companion reads 4.55:1). The pen's filled Save declares no weight and computes 400, an open question for Mark. Hover thickens the border to a whole 2px and the padding gives up the same, so the box never changes size.",
       "html": "<button type=\"button\" class=\"ds-app-action\">Next version</button>",
       "css": ".ds-app-action{box-sizing:border-box;appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-control);border:var(--app-rule-row) solid var(--app-blue-text);background:var(--app-blue-text);color:var(--app-background);font-family:var(--face-grotesk);font-size:var(--app-size-meta);font-weight:600;cursor:pointer}.ds-app-action:hover{border-width:var(--rule-hover);padding:calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover))}.ds-app-action:focus-visible{outline:var(--focus-outline-width) solid var(--app-text);outline-offset:var(--focus-outline-offset)}"
     },
@@ -627,7 +627,7 @@
       },
       {
         "name": "The Hand Rule",
-        "body": "In the App, what the maker observed is written in the hand, in sheet pen blue: a tasting, a Next time, a Why, a note on a batch, an idea. What the maker specified (ingredients, method, quantities, dates, names) is set in type, because a specification is not an observation. What the app writes is set in type, always, so the hand never speaks in the app's voice and a machine suggestion is never mistaken for the maker's judgement. A question the maker typed to an expert is set in type; it is the maker's, but it is not an observation. The hand is a face, not a colour rule: it is always pen blue, but pen blue is not always the hand. The hand is for display, never entry (sketch 011 decision 17, Mark, 2026-09-27: \"type in the prose and show in the hand\"): the maker types an observation in the prose-field role — the text face in sheet pen blue, 16px under a coarse pointer — and the saved words show in the hand. No field, textarea or select is ever set in the hand.",
+        "body": "In the App, what the maker observed is written in the hand, in sheet pen blue: a tasting's note and problems, a Next time, a Why, a note on a batch, an idea. What the maker specified (ingredients, method, quantities, dates, names) is set in type, because a specification is not an observation. What the app writes is set in type, always, so the hand never speaks in the app's voice and a machine suggestion is never mistaken for the maker's judgement. A question the maker typed to an expert is set in type; it is the maker's, but it is not an observation. The hand is a face, not a colour rule: it is always pen blue, but pen blue is not always the hand. The hand is for display, never entry (sketch 011 decision 17, Mark, 2026-09-27: \"type in the prose and show in the hand\"): the maker types an observation in the prose-field role — the text face in sheet pen blue, 16px under a coarse pointer — and the saved words show in the hand. No field, textarea or select is ever set in the hand.",
         "section": "typography"
       },
       {

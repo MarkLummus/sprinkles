@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-28T12:00:00Z",
+  "generatedAt": "2026-10-06T02:57:23Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -263,7 +263,8 @@
       "implementedCatalogue": "Paper Recipe Sheets and batch/tasting logs; legacy app reuse is transitional.",
       "approvedAppDirection": "Option B destination palette with revised Ingredients green and preview neutrals approved 2026-09-21 in DESIGN.md frontmatter. Not yet implemented. No recipe-specific colors. Interaction, feedback, and derived state treatments unresolved.",
       "tonalRamps": "Preview metadata only; not approved UI colors.",
-      "emptyShadowsAndMotion": "No implemented entries in this catalogue; empty arrays are not global prohibitions."
+      "emptyShadowsAndMotion": "No implemented entries in this catalogue; empty arrays are not global prohibitions.",
+      "appRadius": "One App radius, 10px (--app-radius-control; sketch 011 decision 38 B, Mark 2026-10-04, built in quick 261004-ly7), on the App's interactive elements and the surfaces they sit on; marks keep 3px (sprinkle) and 4px (row mark), History's nodes are circles. The Sheet is square and has no radius token. The active place on the rail and the bottom tab row sits on the subtle surface in weight 600; no underline."
     }
   },
   "components": [

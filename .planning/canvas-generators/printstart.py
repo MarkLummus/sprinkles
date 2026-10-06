@@ -28,8 +28,9 @@ def drop_hidden(html):
 def print_block():
     css = _strip_comments(APPC); i = css.index('@media print'); k = css.index('{', i); m = _block_end(css, k); return css[k + 1:m - 1]
 
-def board(title, body, w, h, css, flow=False):
+def board(title, body, w, h, css, flow=False, paper=False):
     hs = '' if flow else f' height: {h}px; overflow: hidden;'
+    if paper: hs += ' background: #ffffff;'
     props = json.dumps({"$preview": {"width": w, "height": h}})
     return f'''<!doctype html>
 <html lang="en">
@@ -86,14 +87,17 @@ def build(canvas_in, out):
     # the Sheet sits in the ancestors the build gives it (.notebook > .notebook-body > .notebook-body__sheet), because notebook.css scopes some of its rules (the fold rows) under .notebook;
     # the one line of CSS added is the frame's own side gutter and width cap taken off, so the Sheet is 816 wide, the page, as the first capture had it
     css_b = FONT + resolve_media(TOK, 816, False, screen=False) + resolve_media(APPC, 816, False, screen=False) + resolve_media(NBC, 816, False, screen=False) + print_block() + '\n.notebook{padding:0;max-width:none;margin:0}'
+    # the page is white, as the real print renders it (Mark, 2026-10-06: printed pages are white). Measured 2026-10-06 on the dist of that day: Chrome's PDF (Background graphics off, the
+    # dialog's default) and WebKit's print (wkprint.swift) both drop the Sheet's ground (#f7f7f4), and the app sets no print-color-adjust; the board showed the screen tint before. As built, not a change.
+    css_b += '\n.recipe-page{background:#ffffff}'
     sheet = '<div class="notebook"><div class="notebook-body"><div class="notebook-body__sheet">' + sheet + '</div></div></div>'
     h_a = max(CAP['facts'][k]['docH'] for k in CAP['facts'] if k.endswith('_1280_screen'))
     h_b = MEASURE.get('boardH', 4600)
     open(out + '/project/AsBuiltRecipePage.dc.html', 'w').write(board(T_A, shell, 1280, h_a, css_a))
-    open(out + '/project/PrintStartingPoint.dc.html', 'w').write(board(T_B, sheet, 816, h_b, css_b, flow=True))
+    open(out + '/project/PrintStartingPoint.dc.html', 'w').write(board(T_B, sheet, 816, h_b, css_b, flow=True, paper=True))
     fcss = logforms.css()
-    open(out + '/project/BatchLogForm.dc.html', 'w').write(board(T_F1, logforms.side1(*logforms.LINES['side1']), 816, 1056, fcss))
-    open(out + '/project/TastingLogForm.dc.html', 'w').write(board(T_F2, logforms.side2(*logforms.LINES['side2']), 816, 1056, fcss))
+    open(out + '/project/BatchLogForm.dc.html', 'w').write(board(T_F1, logforms.side1(*logforms.LINES['side1']), 816, 1056, fcss, paper=True))
+    open(out + '/project/TastingLogForm.dc.html', 'w').write(board(T_F2, logforms.side2(*logforms.LINES['side2']), 816, 1056, fcss, paper=True))
     # canvas.json: Print formats reads left to right in print order: the log's two sides, the Sheet, then the recipe page as built; the superseded boards and their note go to their own page
     B = c['boards']; N = c['notes']
     if not any(p['id'] == SUP_PAGE[0] for p in c['pages']):

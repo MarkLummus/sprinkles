@@ -29,3 +29,7 @@ Things it would settle:
 - The notes' inherited-note marker and staleness reading (route-recipe-version.md line 63) are unaffected but must be rechecked.
 
 Not part of the add-step work that arrives with creating: Mark keeps the pen's empty Instructions heading until then (2026-10-03).
+
+## Resolved
+
+Decision 36 (placement B, heading H1, pen E2, print PC) and decision 45 (the print break by step groups) were built in Phase 03.7, plans 01 and 02. The documents that still put Before you start inside the Instructions were brought into line in plan 04.

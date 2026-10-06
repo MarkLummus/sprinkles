@@ -15,6 +15,11 @@
 #      Ingredients table, without its Hide control (paper has no controls). That board departs from § 4 for Mark to decide.
 #   E5 (Mark, 2026-10-06, "black-only"; brief § 3 and § 4: no colour anywhere on the sheet): the section headings print in ink. As built they print bookcloth green (#33513b), the one colour
 #      measured on the printed Sheet; Chrome and WebKit print text colour, so this is a change Phase 4 builds. (The page itself is white as built: browsers drop the Sheet's ground.)
+#   E8 (Mark, 2026-10-06: "either lighten the lines between ingredients or drop the line"; dropped, Sarge's call for black-only paper): no rule between ingredient rows. As built every cell
+#      carries a --rule-baseline bottom rule; here the portion lines' cells carry none, so the step-group rule (E7) carries the grouping alone. Kept: the As made writing line in each row,
+#      the header row's rule, the step head's own rules (E7's above, the built one beneath), and the Total's top rule.
+# Mark chose the Balance alternative (PrintStartingPointBalanceCol2) on 2026-10-06; PrintStartingPoint is kept, not chosen. Balance in column 2 overrides the brief's § 4 anti-goal
+# ("no Balance ... from column two"); with the tick box's retirement (E1) that brief change goes to Impeccable, not here.
 import re
 
 def _drop_element(html, start_pat):
@@ -58,6 +63,7 @@ CSS = '''
 .ingredient-table .ps-col-grams{text-align:right;white-space:nowrap}
 .ps-asmade{display:block;width:72px;height:24px;border-bottom:var(--rule-ink-field) solid var(--sheet-ink)}
 .ingredient-table__step-head td{border-top:var(--rule-tick) solid var(--sheet-ink)}
+.ingredient-table tbody tr:not(.ingredient-table__step-head) td{border-bottom:0}
 '''
 # the alternate: two columns at 816, Ingredients in column 1 and Balance in column 2 (the Instructions and everything else full width, as the one-column print has them)
 CSS_COL2 = '''

@@ -590,9 +590,13 @@ describe("More's tiles and the hairline (sketch 011 decision 55; Mark 2026-10-05
     expect(rules.filter((r) => (r.selector === item || r.selector === rule) && r.media === undefined)).toEqual([]);
   });
 
-  // A place that is a button carries no border wherever it sits. Its (0,1,1)
-  // ties app.css's button and button:hover; this file loads after app.css.
-  test('exactly one top-level button.shell__place rule resets the button, and it declares no padding', () => {
+  // A place that is a button carries no border wherever it sits, and it states
+  // the place's own padding. Its (0,1,1) ties app.css's button and button:hover;
+  // this file loads after app.css. app.css's button:hover sets 6px, which would
+  // otherwise outrank .shell__place's single-class padding and shrink the
+  // header's Import and Export under a pointer (sketch 011 decision 54;
+  // quick 261005-w3j).
+  test("exactly one top-level button.shell__place rule resets the button and states the place's padding", () => {
     const matches = rules.filter((r) => r.selector === 'button.shell__place');
     expect(matches).toHaveLength(1);
     expect(matches[0].media).toBeUndefined();
@@ -602,6 +606,7 @@ describe("More's tiles and the hairline (sketch 011 decision 55; Mark 2026-10-05
       'border: none',
       'color: inherit',
       'cursor: pointer',
+      'padding: var(--gap-s) var(--gap-m)',
     ]);
   });
 
@@ -631,6 +636,21 @@ describe("More's tiles and the hairline (sketch 011 decision 55; Mark 2026-10-05
       'border-top: var(--app-rule-row) solid var(--app-divider)',
       'margin: var(--gap-xs) var(--gap-m)',
     ]);
+  });
+});
+
+describe('a button place keeps its box under a pointer (sketch 011 decision 54; Mark\'s List fix-header-import-export-hover-shrink; quick 261005-w3j)', () => {
+  const paddingOf = (selector) => {
+    const rule = rules.find((r) => r.selector === selector && r.media === undefined);
+    expect(rule, `expected a top-level ${selector} rule`).toBeTruthy();
+    const decl = rule.declarations.split(';').map((d) => d.trim()).find((d) => d.startsWith('padding:'));
+    return decl ? decl.slice('padding:'.length).trim() : '';
+  };
+
+  test("button.shell__place states the same padding as .shell__place, so button:hover's 6px cannot shrink it", () => {
+    const buttonPadding = paddingOf('button.shell__place');
+    expect(buttonPadding, 'expected button.shell__place to state a padding').not.toBe('');
+    expect(buttonPadding).toBe(paddingOf('.shell__place'));
   });
 });
 

@@ -1,97 +1,99 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-06T05:09:50.293Z",
+  "timestamp": "2026-10-06T11:01:33.112Z",
   "phase": "03.7",
   "phase_name": "Before you start as its own Sheet section",
   "phase_dir": ".planning/phases/03.7-before-you-start-as-its-own-sheet-section",
   "plan": 0,
   "task": 0,
-  "total_tasks": 8,
+  "total_tasks": 5,
   "status": "paused",
   "completed_tasks": [
     {
       "id": 1,
-      "name": "Phase 03.7 planned: 4 plans in 3 waves (01 screen placement B + H1 + pen E2; 02 print break by steps; 03 side-by-side conformance; 04 documents with an Impeccable checkpoint). Planner ran as Opus 5.5 (its own report); checker (sonnet) passed with 0 blockers, 0 warnings, 2 info",
+      "name": "Phase 03.7 planned: 4 plans in 3 waves (01 screen: placement B, H1, pen E2; 02 print: break by steps, header repeats; 03 side-by-side conformance; 04 documents with a blocking Impeccable checkpoint). Checker (sonnet) passed, 0 blockers, 0 warnings, 2 info",
       "status": "done",
       "commit": "4f6d95a"
     },
     {
       "id": 2,
-      "name": "STATE.md records 'Ready to execute', 108 plans total; .planning/config.json model_profile_overrides.claude.opus set to claude-opus-5-5 (was claude-opus-5[1m])",
+      "name": "STATE.md 'Ready to execute'; .planning/config.json opus tier = claude-opus-5-5 (the Agent tool only takes the alias opus; whether it resolves to 5.5 is unverified)",
       "status": "done",
       "commit": "05c715c"
     },
     {
       "id": 3,
-      "name": "Mark's List: run-plan-phase-03-7 closed; decide-bys-instructions-own-page answered Phase 4 (D-06b); decide-bys-redraw-placement-b answered Redraw first; option ids fixed (rows without option ids showed every radio selected); draw-bys-placement-b-boards added for Sid (owner claude)",
+      "name": "Sid redrew the Before you start states, heading and pen boards in placement B (canvas version 327; boards R35C_BysStatesB, R35C_BysHeadingB, R35C_BysPenB; generator canvas-generators/bysb.py; measurements bysb-measure.json; README addendum 'Decision 36 in placement B')",
+      "status": "done",
+      "commit": "f721f1b"
+    },
+    {
+      "id": 4,
+      "name": "Quick task 261006-1ys: plans 03.7-03 and 03.7-01 now cite the placement B boards and panel classes (fp-bs-*, fp-bh-h1-*, fp-bp-*); both gsd-tools probes ok with 0 flagged; no leftover A-board references",
+      "status": "done",
+      "commit": "8d05edb"
+    },
+    {
+      "id": 5,
+      "name": "Mark's List: closed the rows run-plan-phase-03-7, the Impeccable run rows, draw-bys-placement-b-boards and todo-before-you-start-own-section (its todo file moved to .planning/todos/completed/, 1d9b1d7 and 92d998b). Mark pressed Done on look-bys-placement-b-boards and look-recipe-route-canvas-split (no notes)",
       "status": "done"
     }
   ],
   "remaining_tasks": [
     {
-      "id": 4,
-      "name": "Sid: redraw the decision 36 states, heading and pen boards in placement B on the canvas, snapshot approved HTML into .planning/sketches/011-recipe-route-c (Mark's List row draw-bys-placement-b-boards)",
-      "status": "not_started"
-    },
-    {
-      "id": 5,
-      "name": "Update plan 03.7-03's case map for the new panel classes (route through GSD: /gsd-quick or a plan revision), then re-check",
-      "status": "not_started"
-    },
-    {
       "id": 6,
-      "name": "/gsd-execute-phase 03.7 (waves: 01, then 02, then 03 and 04; 04 stops at a blocking Impeccable checkpoint). Before dispatching an executor run `gsd-tools query dispatch-isolation --raw --force-isolation none` or push main",
+      "name": "/marks-list: react to the two look rows Mark pressed Done on. look-recipe-route-canvas-split had two calls (BysBreak and CountUpright393: keep on the built page or move to concepts) and was closed with no note, so treat both as unanswered unless Mark says otherwise",
       "status": "not_started"
     },
     {
       "id": 7,
-      "name": "After execution: add Mark's List rows for the device checks (iPad 1366 and 1024, iPhone 393, built and served with preview --host) and the Safari print check (Olive Oil v1 from Safari on the iPad and the Mac)",
+      "name": "/gsd-execute-phase 03.7 (waves: 01, then 02, then 03 and 04). Before dispatching an executor: push main, or run `gsd-tools query dispatch-isolation --raw --force-isolation none` and dispatch at once WITHOUT reading it back (a plain read re-resolves it to harness-worktree and the guard refuses the dispatch). Plan 04 stops at a blocking Impeccable checkpoint (route-recipe.md, route-print-recipe-sheet.md, DESIGN.md)",
       "status": "not_started"
     },
     {
       "id": 8,
-      "name": "/gsd-plan-phase 04 after 03.7; raise the Phase 04 rows: As made column, phone-jobs brief, Recipe book print format, shared Button/tabindex (UX-01); Phase 04 also owns the Instructions' own page when the table fits (D-06b)",
+      "name": "After execution: add Mark's List rows for the device checks (iPad 1366 and 1024, iPhone 393, built and served with preview --host) and the Safari print check (Olive Oil v1 from Safari on the iPad and the Mac); plan 03 writes them into its record",
+      "status": "not_started"
+    },
+    {
+      "id": 9,
+      "name": "/gsd-plan-phase 04 after 03.7; raise the Phase 04 rows: As made column, phone-jobs brief, Recipe book print format, shared Button/tabindex (UX-01; may already be covered by tabindex-scan.test.js); Phase 04 also owns the Instructions' own page when the table fits (D-06b)",
       "status": "not_started"
     }
   ],
   "blockers": [],
   "human_actions_pending": [
     {
-      "action": "Answer BysBreak and CountUpright393 (look-recipe-route-canvas-split)",
-      "context": "Two boards stayed on Recipe route 03.5 as unclear",
+      "action": "Mise en place todo (8bpsgz9zvck5jciqafy9)",
+      "context": "Mark's List; not scheduled",
       "blocking": false
     },
     {
-      "action": "Mise en place todo (8bpsgz9zvck5jciqafy9) and shared Button/tabindex todo (todo-shared-button-tabindex)",
-      "context": "Mark's List",
+      "action": "tidy-stale-test-helpers is open on Mark's List",
+      "context": "Not read this session; check it in /marks-list",
       "blocking": false
     }
   ],
   "decisions": [
     {
-      "decision": "Plan 03.7 from sketch 011 decisions 36 and 45 with no CONTEXT.md and no research; no stored-data change (the section keeps reading version.authored.beforeYouStart, no DB_VERSION bump)",
+      "decision": "Plan 03.7 from sketch 011 decisions 36 and 45 with no CONTEXT.md and no research; no stored-data change (the section keeps reading version.authored.beforeYouStart; no DB_VERSION bump)",
       "rationale": "Mark chose 'Plan from the sketch' and 'Skip research' at the context gate, 2026-10-06",
       "phase": "03.7"
     },
     {
-      "decision": "When the formula table fits one page, the Instructions' own page is built in Phase 4, not in 03.7; 03.7 builds the table's own break rule only",
-      "rationale": "Mark answered Phase 4 on Mark's List (decide-bys-instructions-own-page), 2026-10-06; needs a fixed page height only Phase 4's print route has",
+      "decision": "The Instructions' own page when the formula table fits goes to Phase 4; 03.7 builds only the table's own break rule",
+      "rationale": "Mark answered Phase 4 on Mark's List (decide-bys-instructions-own-page); needs a fixed page height only Phase 4's print route has; recorded as D-06b by plan 03.7-04",
       "phase": "03.7"
     },
     {
-      "decision": "Sid redraws the Before you start states, heading and pen boards in placement B before 03.7 executes",
-      "rationale": "Mark answered Redraw first on Mark's List (decide-bys-redraw-placement-b), 2026-10-06; single-authority rule",
-      "phase": "03.7"
-    },
-    {
-      "decision": "The opus tier resolves to claude-opus-5-5 in .planning/config.json",
-      "rationale": "Mark: the planner should use Opus 5.5. The Agent tool accepts only the aliases sonnet/opus/haiku/fable, so spawns pass model opus; whether the alias resolves to 5.5 is unverified",
+      "decision": "Redraw the Before you start boards in placement B before executing",
+      "rationale": "Mark chose Redraw first (decide-bys-redraw-placement-b); done by Sid, f721f1b",
       "phase": "03.7"
     }
   ],
   "uncommitted_files": [
     "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"
   ],
-  "next_action": "Run /gsd-resume-work, then /marks-list. Then have Sid redraw the placement B boards (row draw-bys-placement-b-boards), update plan 03.7-03's case map, and run /gsd-execute-phase 03.7.",
-  "context_notes": "Phase 03.7 is planned (4 plans, 3 waves, checker passed) and waits on Sid's placement B redraw, which changes plan 03.7-03's case map. Local main is two commits ahead of origin (4f6d95a, 05c715c), not pushed: push main or run `gsd-tools query dispatch-isolation --raw --force-isolation none` before dispatching an executor. Mark's vite preview is on :4173 (pid 43217, never kill it); sketch server on 8077 (pid 86435). Plan 02's tracer needs system Chrome, swiftc and the absolute-path playwright-core the 03.5 harness uses; probes never touch :4173 or 8077. Plan 04 stops at a blocking checkpoint:human-action for Impeccable (surface briefs route-recipe.md, route-print-recipe-sheet.md and DESIGN.md). Mark's List decide rows need an `id` on every option or every radio shows selected and clicks do nothing (fixed 2026-10-06). Sid cannot write to existing Mark's List rows; the orchestrator closes rows. Executors commit by explicit pathspec, never `git add -A`. The untracked 03.6 .gitkeep is unrelated and left alone."
+  "next_action": "Run /gsd-resume-work, then /marks-list (two look rows were closed with no reaction yet). Then /gsd-execute-phase 03.7.",
+  "context_notes": "Phase 03.7 is planned and its plans point at Sid's placement B boards; nothing is built. Local main is 6 commits ahead of origin (pushed through e7de81a earlier; not pushed since: 1d9b1d7, 92d998b, f721f1b, ff0f591, ed8136d, 8d05edb). Mark's vite preview is on :4173 (pid 43217, never kill it); sketch server on 8077 (pid 86435). Plan 02's tracer needs system Chrome, swiftc and the absolute-path playwright-core the 03.5 harness uses; probes never touch :4173 or 8077. Mark's List decide rows need an `id` on every option or every radio shows selected and clicks do nothing. Sid cannot write to existing rows; the orchestrator closes rows. The marks-list skill writes handledAt/updatedAt from the real clock (`date -u`), never invented times. Executors commit by explicit pathspec, never `git add -A`. The untracked 03.6 .gitkeep is unrelated and left alone. Quick-task planner runs on the opus alias; the plan-checker is sonnet by config override."
 }

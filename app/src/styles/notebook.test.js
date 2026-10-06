@@ -14,6 +14,7 @@ const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const NOTEBOOK_CSS_PATH = path.join(STYLES_DIR, 'notebook.css');
 const MAIN_JSX_PATH = path.join(STYLES_DIR, '..', 'main.jsx');
 const TOKENS_CSS_PATH = path.join(STYLES_DIR, 'tokens.css');
+const HOME_CSS_PATH = path.join(STYLES_DIR, 'home.css');
 
 const notebookCssSource = readFileSync(NOTEBOOK_CSS_PATH, 'utf8');
 const mainJsxSource = readFileSync(MAIN_JSX_PATH, 'utf8');
@@ -802,5 +803,27 @@ describe("the reading's four group names take the pen's cue face (sketch 011 dec
     const base = baseLabel();
     declares(base, 'text-transform', 'uppercase');
     declares(base, 'color', 'var(--app-text-secondary)');
+  });
+});
+
+describe('the filled action reads weight 600 on Home and in the Notebook (Mark 2026-10-05, decide-filled-action-weight; quick 261005-wgz)', () => {
+  const homeRules = readAllRules(readFileSync(HOME_CSS_PATH, 'utf8'));
+  const topLevel = (ruleList, selector) => ruleList.find((r) => r.selector === selector && r.media === undefined);
+  const weightOf = (rule, selector) => {
+    expect(rule, `a top-level ${selector} rule`).toBeDefined();
+    const found = rule.declarations.split(';').map((d) => d.trim()).find((d) => d.startsWith('font-weight:'));
+    expect(found, `${selector} declares font-weight`).toBeDefined();
+    return found.slice('font-weight:'.length).trim();
+  };
+
+  test('.notebook-action declares font-weight 600', () => {
+    expect(weightOf(topLevel(rules, '.notebook-action'), '.notebook-action'), '.notebook-action font-weight').toBe('600');
+  });
+
+  test('.notebook-action and .home__action declare the same font-weight, 600, so the filled action cannot drift between them', () => {
+    const notebookWeight = weightOf(topLevel(rules, '.notebook-action'), '.notebook-action');
+    const homeWeight = weightOf(topLevel(homeRules, '.home__action'), '.home__action');
+    expect(notebookWeight, `.notebook-action (${notebookWeight}) against .home__action (${homeWeight})`).toBe(homeWeight);
+    expect(homeWeight, '.home__action font-weight').toBe('600');
   });
 });

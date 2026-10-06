@@ -1,10 +1,10 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-06T02:57:23Z",
+  "generatedAt": "2026-10-06T03:11:55Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
-      "ink": {
+      "sheet-ink": {
         "role": "primary",
         "displayName": "Print Ink",
         "canonical": "oklch(19.1% 0 90)",
@@ -20,7 +20,7 @@
           "oklch(85% 0 90)"
         ]
       },
-      "pen-blue": {
+      "sheet-pen-blue": {
         "role": "secondary",
         "displayName": "Pen Blue",
         "canonical": "oklch(37.3% 0.110 263)",
@@ -36,7 +36,7 @@
           "oklch(85% 0.110 263)"
         ]
       },
-      "bookcloth": {
+      "sheet-bookcloth": {
         "role": "tertiary",
         "displayName": "Bookcloth",
         "canonical": "oklch(40.4% 0.052 152)",
@@ -52,7 +52,7 @@
           "oklch(85% 0.052 152)"
         ]
       },
-      "ground": {
+      "sheet-ground": {
         "role": "neutral",
         "displayName": "Text Paper",
         "canonical": "oklch(97.5% 0.004 106)",
@@ -68,52 +68,93 @@
         ]
       },
       "app-notebook": {
-        "displayName": "Notebook",
-        "role": "accent"
+        "displayName": "Notebook red",
+        "role": "accent",
+        "canonical": "oklch(68.6% 0.198 25)"
+      },
+      "app-notebook-text": {
+        "displayName": "Notebook text companion",
+        "role": "accent-text",
+        "canonical": "oklch(59.8% 0.243 29)",
+        "note": "Approved 2026-09-21; confirmed in the real app at 03.4 UAT round two. Never a fill. Watch against the No-Verdict Rule: a pure red."
       },
       "app-recipe-book": {
-        "displayName": "Recipe Book",
-        "role": "accent"
+        "displayName": "Recipe Book orange",
+        "role": "accent",
+        "canonical": "oklch(73.1% 0.156 56)"
+      },
+      "app-recipe-book-text": {
+        "displayName": "Recipe Book text companion",
+        "role": "accent-text",
+        "canonical": "oklch(58.0% 0.147 51)"
       },
       "app-idea-log": {
-        "displayName": "Idea Log",
-        "role": "accent"
+        "displayName": "Idea Log yellow",
+        "role": "accent",
+        "canonical": "oklch(85.3% 0.162 86)"
+      },
+      "app-idea-log-text": {
+        "displayName": "Idea Log text companion",
+        "role": "accent-text",
+        "canonical": "oklch(56.7% 0.116 83)",
+        "note": "Approved 2026-10-05, as built. An olive that no longer reads as the yellow. Never a fill."
       },
       "app-pantry": {
-        "displayName": "Pantry",
-        "role": "accent"
+        "displayName": "Pantry light green (reserved)",
+        "role": "accent",
+        "canonical": "oklch(73.4% 0.121 145)"
       },
       "app-ingredients": {
-        "displayName": "Ingredients",
-        "role": "accent"
+        "displayName": "Ingredients leaf green",
+        "role": "accent",
+        "canonical": "oklch(57.2% 0.114 153)"
+      },
+      "app-ingredients-text": {
+        "displayName": "Ingredients text companion",
+        "role": "accent-text",
+        "canonical": "oklch(55.1% 0.110 153)"
       },
       "app-kitchen": {
-        "displayName": "Kitchen",
-        "role": "accent"
+        "displayName": "Kitchen indigo",
+        "role": "accent",
+        "canonical": "oklch(51.3% 0.138 274)"
       },
       "app-blue": {
-        "displayName": "Blue",
-        "role": "accent"
+        "displayName": "App blue",
+        "role": "accent",
+        "canonical": "oklch(60.6% 0.180 255)",
+        "note": "Icon stroke of Home and the brand mark only; reads 3.90:1 under a white label, so never a fill."
+      },
+      "app-blue-text": {
+        "displayName": "App blue text companion",
+        "role": "accent-text",
+        "canonical": "oklch(57.2% 0.179 255)",
+        "note": "The filled action fill (white label) and the secondary action outline and label. Approved 2026-10-05, as built."
       },
       "app-background": {
-        "displayName": "Background",
-        "role": "neutral"
+        "displayName": "App background",
+        "role": "neutral",
+        "canonical": "oklch(100.0% 0.000 90)"
       },
       "app-surface-subtle": {
-        "displayName": "Surface Subtle",
-        "role": "neutral"
+        "displayName": "Subtle surface",
+        "role": "neutral",
+        "canonical": "oklch(96.6% 0.003 128)"
       },
       "app-text": {
-        "displayName": "Text",
-        "role": "neutral"
+        "displayName": "App text",
+        "role": "neutral",
+        "canonical": "oklch(19.1% 0.000 90)"
       },
       "app-text-secondary": {
-        "displayName": "Text Secondary",
-        "role": "neutral"
+        "displayName": "Secondary text",
+        "role": "neutral",
+        "canonical": "oklch(46.4% 0.000 90)"
       },
       "app-divider": {
         "displayName": "Divider",
-        "role": "neutral"
+        "role": "neutral",
+        "canonical": "oklch(88.4% 0.006 154)"
       }
     },
     "typographyMeta": {
@@ -135,11 +176,11 @@
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Table headers and the running head. The plain, unweighted sibling of Caption."
+        "purpose": "Table headers and the Sheet's running head. The plain, unweighted sibling of Caption."
       },
       "caption": {
         "displayName": "Caption",
-        "purpose": "Every caption that labels an input: field captions, batch cell labels, axis names, segmented captions, the two group cues. Uppercase by text-transform so the source stays sentence case."
+        "purpose": "Every caption that labels an input: field captions, batch cell labels (on the Sheet and print), axis names, segmented captions. Uppercase by text-transform so the source stays sentence case. The group cues are no longer captions (see app-cue)."
       },
       "control": {
         "displayName": "Control",
@@ -167,7 +208,51 @@
       },
       "small-print": {
         "displayName": "Small print",
-        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, plan sub-lines, cross-flags, version-strip meta, import errors."
+        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, plan sub-lines, cross-flags, import errors."
+      },
+      "hand": {
+        "displayName": "The hand",
+        "purpose": "The maker's own saved words in the App: a tasting's problems, a Next time, a version's Why, a batch's notes, an idea. Caveat in sheet pen blue, display only; entry uses the prose-field role. Falls back to the text face in italic under forced colours and in print. The Sheet's own hand (.sheet-hand) is Caveat at the hand's minimum with leading 1, for batch edits only."
+      },
+      "app-brand": {
+        "displayName": "App brand",
+        "purpose": "The wordmark, a link to Home at every width."
+      },
+      "app-title": {
+        "displayName": "App title",
+        "purpose": "A list page's title (Home, an unbuilt place)."
+      },
+      "app-lead-name": {
+        "displayName": "App lead name",
+        "purpose": "The Home lead block's recipe name and the Notebook band's recipe name."
+      },
+      "app-name": {
+        "displayName": "App name",
+        "purpose": "A recipe's name on a Home row."
+      },
+      "app-identity": {
+        "displayName": "App identity",
+        "purpose": "The version identity heading in the Notebook version column."
+      },
+      "app-body": {
+        "displayName": "App body",
+        "purpose": "The recipe description, the Notebook's fields, the log's date and notes."
+      },
+      "app-meta": {
+        "displayName": "App meta",
+        "purpose": "Version and mass line, nav words, standing words and actions (600), the upright list's titles, History's names."
+      },
+      "app-cue": {
+        "displayName": "App group cue",
+        "purpose": "The record pen's and reading view's group headings (Every recipe, This recipe only): a face of their own so a group never reads as one more item (sketch 011 decisions 40 C and 58 B2)."
+      },
+      "app-label": {
+        "displayName": "App label",
+        "purpose": "A row's place name, the micro-labels, a field's caption, fold captions, cell labels (600 there), counts (not uppercase)."
+      },
+      "app-log-value": {
+        "displayName": "App log value",
+        "purpose": "A measured cell's figure in the batch log, in the App text colour."
       }
     },
     "rules": {
@@ -182,65 +267,104 @@
       "hatchPitch": "4px",
       "hatchStroke": "1.2px",
       "hatchAngle": "45deg",
-      "purpose": "Paper catalogue: Stroke weights for the graduated rule, the table, the strike, and the drawn controls. Depth is rule weight; nothing else conveys it. Hover and focus carry their own 2px weight because 1.5px renders as 1px at DPR 1."
+      "purpose": "Stroke weights for the graduated rule, the table, the strike and the drawn controls, and the App's hairline. Depth is rule weight; nothing else conveys it on the Sheet. Hover and focus carry their own 2px weight because 1.5px renders as 1px at DPR 1. The App's hairline (--app-rule-row) is 1px; the History mark's hollow border and the tally's edge are 1.5px and 2px.",
+      "appRow": "1px",
+      "appTally": "2px"
     },
     "focus": {
       "outlineWidth": "2px",
       "outlineOffset": "2px",
-      "color": "var(--ink)",
+      "color": "var(--sheet-ink) on the Sheet and var(--app-text) in the shell (the same value)",
       "boundary": ":focus-visible",
       "exception": ".is-landing-focus:focus — a plain :focus rule for the fork’s landing focus after a mouse-driven Save, which Chrome’s modality tracking would otherwise leave ringless. The one documented exception.",
-      "purpose": "Implemented paper focus treatment; app treatment remains to be specified. The one focus treatment, provably heavier than the 1px outline pointed-at content carries and a different sign from a picked control’s fill. Never colour, never position."
+      "purpose": "The one focus treatment, provably heavier than the 1px outline pointed-at content carries and a different sign from a picked control's fill. Never colour, never position. The shell's places and menu button read the App text colour; a bottom tab's ring is inset by its own width so it is not drawn off the window."
     },
     "state": {
-      "picked": "A picked or pressed CONTROL fills pen blue edge to edge, border and all, with paper-coloured text. No bold, no underline, no outline of its own. An independent on/off is a square and a word — only the 13px square fills.",
+      "picked": "On the Sheet a picked or pressed CONTROL fills pen blue edge to edge, border and all, with paper-coloured text; an independent on/off is a square and a word and only the 13px square fills. In the App's batch log the same fills read app blue's text companion with a white label, because pen blue in the App is the maker's own words.",
       "pointedAt": "Content the page is pointing at — a marked table row, the open batch, the current version — reads bold plus a 1px ink outline offset 2px, in place.",
-      "recorded": "Anything the maker typed or saved reads pen blue and keeps it after saving. An absence (“not measured”) is ink.",
+      "recorded": "On the Sheet anything the maker typed or saved reads pen blue and keeps it after saving; an absence (“not measured”) is ink. In the App the maker's saved observations read in the hand in sheet pen blue; measured values and dates read in the App text colour, and an absence reads secondary text.",
       "notInForce": "One ink strike at 1.2px — a skipped step, a superseded value, a removed row or step. Beside the replacement where there is room, beneath it for a paragraph.",
-      "forcedColors": "The picked fill survives as a fill, repainted in the system Highlight with HighlightText, so state and focus never collapse into the same outline. A focused picked control switches its ring to CanvasText."
+      "forcedColors": "The picked fill survives as a fill, repainted in the system Highlight with HighlightText, so state and focus never collapse into the same outline. A focused picked control switches its ring to CanvasText.",
+      "current": "The current place sits on the subtle surface (1.10:1 against white) and takes weight 600 on the rail and the tab row; the current row in the upright list is bold ink with aria-current, not a link."
     },
-    "shadows": [],
+    "shadows": [
+      {
+        "name": "flyout",
+        "value": "4px 0 16px rgba(20, 20, 20, 0.18)",
+        "purpose": "The fly-out nav panel's edge (--app-shadow-flyout; sketch 011 decision 33), from 724 to 1589. The only shadow the App draws."
+      },
+      {
+        "name": "scrim",
+        "value": "rgba(20, 20, 20, 0.28)",
+        "purpose": "The veil under the fly-out, over the page (--app-scrim): the App text colour at 28%. Not a shadow, a layer."
+      },
+      {
+        "name": "history-in-view-ring",
+        "value": "0 0 0 2px #fff, 0 0 0 3.5px var(--app-notebook)",
+        "purpose": "The History mark's in-view ring, drawn as two box-shadow rings. A mark's drawing, not depth."
+      }
+    ],
     "motion": [],
     "breakpoints": [
       {
-        "name": "recipe-log-beside",
-        "value": "min-width: 1366px",
-        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5 (sketch 011 decision 16). The log sits beside the two-column Sheet at 350. 1366 = side nav 224 + three 32px gutters + Sheet minimum 696 + log 350. Also the folds' cut (decision 18): every fold is open by default from here and closed below, with no stored state, and the band's rhythm switches here."
+        "name": "nav-rail",
+        "value": "min-width: 1590px",
+        "purpose": "The 224px rail stands beside the page (224 + 3 x 32 + 920 + 350). Below it the nav is the fly-out, opened from the bar's menu button (sketch 011 decision 33, Mark 2026-10-03)."
       },
       {
-        "name": "recipe-side-nav",
+        "name": "recipe-log-beside",
+        "value": "min-width: 1366px",
+        "purpose": "Recipe route (decision 16). The log sits beside the two-column Sheet at 350 (3 x 32 + 920 + 350). Also the folds' cut (decision 18): open by default from here, closed below, no stored state; the band's rhythm and the axes' stacked arrangement switch here."
+      },
+      {
+        "name": "recipe-sheet-two-columns",
         "value": "min-width: 984px",
-        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5. The side nav and the Sheet's second column hold together from here up (224 + 64 + 696); below it the bottom tab row and a one-column Sheet arrive at the same cut, and the log is below the Sheet."
+        "purpose": "Recipe route. The Sheet's second column holds from here up (2 x 32 + 920); below it one column. From 984 the side column spans the ingredients and Instructions rows and the Instructions row takes the surplus (decision 49 A)."
       },
       {
         "name": "recipe-phone-forms",
         "value": "max-width: 723.98px",
-        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5. The list-form ingredient table, the 20px page margin and the stacked band arrive together (band side-by-side minimum 660 + 64)."
+        "purpose": "Recipe route (decision 16). The list-form ingredient table, the 20px page margin, the stacked band, the bottom tab row and the scrolling header arrive together (band side-by-side minimum 660 + 64). The record pen's width-only block and BatchRow's useBelow724 share this cut (decision 28)."
+      },
+      {
+        "name": "ingredient-grid-form",
+        "value": "screen and min-width: 724px",
+        "purpose": "The ingredient table's D3 grid form on screen (decision 31, carried to 724 by decision 32). The column form draws only in print."
       },
       {
         "name": "recipe-content-cap",
-        "value": "min-width: 1770px",
-        "purpose": "Recipe route, approved 2026-09-26 and built in Phase 03.5. Content stops growing at 1482 (Sheet 1100 + 32 + log 350) and centres in the main area."
+        "value": "min-width: 1546px main area (a 1546px window with the fly-out, 1770px with the rail)",
+        "purpose": "Content stops growing at 1482 (Sheet 1100 + 32 + log 350) and centres in the main area."
       },
       {
         "name": "touch",
         "value": "pointer: coarse",
-        "purpose": "Touch sizes follow the pointer only (width arm retired, Mark 2026-09-26; built in 03.5-13). Buttons, selects, ink fields, segmented options, defect toggles and text controls take a 44px minimum height; an axis stop grows in HEIGHT only, to 38x44; .ink-field and .prose-field read 16px. A narrow mouse window keeps mouse sizes; a real touch device is caught however wide it is."
-      },
-      {
-        "name": "record-pen-narrow",
-        "value": "max-width: 759.98px",
-        "purpose": "The record pen's own width cut, width only: the tasting battery takes its stacked arrangement and the axis track its 216px geometry with 44x44 stops. Kept at 760 by Mark's 2026-09-27 answer until the record pen is measured (todo 2026-09-26-measure-the-record-pen-width-limits); the route's one cut not yet derived. Track geometry is deliberately NOT in the touch block: at 1366 the axes sit in three 213.3px columns, where a 216px track overflows into its neighbour."
+        "purpose": "Touch sizes follow the pointer only. Buttons, selects, ink fields, prose fields, segmented options, defect toggles and text controls take a 44px minimum height; an axis stop grows in HEIGHT only, to 38x44; .ink-field and .prose-field read 16px. A narrow mouse window keeps mouse sizes; a real touch device is caught however wide it is."
       },
       {
         "name": "wide-touch",
-        "value": "min-width: 760px and (pointer: coarse)",
-        "purpose": "A tablet held in the hand at a desktop width (sketch 009). Axis and segmented caption lines reserve two lines of caption height so they sit level with the field captions beside them, and Clear takes its 44px target as an overflowing ::after hit area so the line box never grows. Kept at 760 with the record pen's width cut (Mark, 2026-09-27)."
+        "value": "min-width: 724px and (pointer: coarse)",
+        "purpose": "A tablet held in the hand at a desktop width (sketch 009). Axis and segmented caption lines reserve two lines of caption height so they sit level with the field captions beside them, and Clear takes its 44px target as an overflowing ::after hit area so the line box never grows."
+      },
+      {
+        "name": "home-lead-stack",
+        "value": "max-width: 1099.98px",
+        "purpose": "Home's own cut: the lead block stacks and the rows drop to three columns."
+      },
+      {
+        "name": "home-phone",
+        "value": "max-width: 759.98px",
+        "purpose": "Home's own cut: the row stacks; the rail, the tally and the secondary action go; the filled action fills the row. Home is not on the recipe route's derived ladder yet."
       },
       {
         "name": "forced-colors",
         "value": "forced-colors: active",
-        "purpose": "Repaints the picked fill in the system Highlight rather than removing it."
+        "purpose": "Repaints the picked fill in the system Highlight rather than removing it, and sets the hand back to the text face in italic."
+      },
+      {
+        "name": "print",
+        "value": "print",
+        "purpose": "The page notice is hidden, the hand falls back to the text face in italic, and the Show changes control on the Ingredients row is hidden. Phase 04 owns the rest of the print layer."
       }
     ],
     "table": {
@@ -249,22 +373,31 @@
       "layout": "auto",
       "boxSizing": "border-box",
       "cellPadX": "6px",
-      "purpose": "The ingredient table sizes to its content (sketch 011 decision 15, built in 03.5-11): the amount, As made and % of batch take their figures' width and the name takes the rest, wrapping in its own column. Below 724 it reads as a list with no header row. Its leading stays constant so a marked row's bold weight moves nothing; rows read in step order under step-group heads."
+      "purpose": "The ingredient table sizes to its content (sketch 011 decision 15). From 724 on screen each row is a grid with named areas (As made, plan amount, name, share), so the plan amount never moves when Show changes toggles (decision 31, D3); below 724 it reads as a list with no header row, plan / As made / struck. Its leading stays constant so a marked row's bold weight moves nothing; rows read in step order under step-group heads."
     },
     "battery": {
-      "penWidth": "640px",
-      "track": "186px desktop / 216px below 760px",
-      "stop": "38x32 desktop, 38x44 at coarse pointer, 44x44 below 760px",
-      "captionLine": "Reserves Clear’s height marked or not (24px desktop, 44px narrow touch, two caption lines at wide touch) so picking moves nothing.",
-      "clearance": "12px between a desktop axis stop and the core/declared hairline, carried as the declared column’s own padding-left rather than a column gap.",
-      "purpose": "The record pen’s own instrument: six axes in one grid with the defects, a 1px hairline at the two-thirds line, two cue rows heading the columns. A genuinely different DOM shape below 760px, not a media-scoped layout."
+      "penWidth": "640px on the Sheet's foot; the 350px log column from 1366",
+      "track": "186px desktop / 216px below 724px and in the log column",
+      "stop": "38x32 desktop, 38x44 at coarse pointer, 44x44 below 724px",
+      "captionLine": "Reserves Clear's height marked or not (24px desktop, 44px narrow touch, two caption lines at wide touch) so picking moves nothing.",
+      "clearance": "12px between a desktop axis stop and the core/declared hairline, carried as the declared column's own padding-left rather than a column gap.",
+      "appSkin": "In .notebook-log the battery takes the App skin (sketch 011 decision 29, 2026-10-02): colour, radius and rule colour only. Picked fills are app blue's text companion; joined stops and segments take the 10px radius at their outer ends; fields and rules read the divider colour.",
+      "purpose": "The record pen's own instrument: six axes in one grid with the defects, a 1px hairline at the two-thirds line, two group cues heading the columns in the cue face. A genuinely different DOM shape below 724px and from 1366 (stacked groups), not a media-scoped layout."
+    },
+    "shell": {
+      "barHeight": "57px (44px controls, 6px above and below, 1px hairline), sticky from 724",
+      "railWidth": "224px",
+      "tabRowHeight": "56px, below 724",
+      "flyout": "Fixed from the bar's foot to the window's foot at 224px, 724 to 1589, over a scrim; Escape, scrim, menu button, a chosen place or a width cut close it.",
+      "stacking": "page, page notice (3), scrim (4), fly-out (5), Import error panel (6), bar (11); pinned by shell.test.js",
+      "purpose": "Every route renders inside one shell that paints the App ground once; the two Sheet frames paint their own paper over it."
     },
     "scope": {
-      "implementedCatalogue": "Paper Recipe Sheets and batch/tasting logs; legacy app reuse is transitional.",
-      "approvedAppDirection": "Option B destination palette with revised Ingredients green and preview neutrals approved 2026-09-21 in DESIGN.md frontmatter. Not yet implemented. No recipe-specific colors. Interaction, feedback, and derived state treatments unresolved.",
-      "tonalRamps": "Preview metadata only; not approved UI colors.",
-      "emptyShadowsAndMotion": "No implemented entries in this catalogue; empty arrays are not global prohibitions.",
-      "appRadius": "One App radius, 10px (--app-radius-control; sketch 011 decision 38 B, Mark 2026-10-04, built in quick 261004-ly7), on the App's interactive elements and the surfaces they sit on; marks keep 3px (sprinkle) and 4px (row mark), History's nodes are circles. The Sheet is square and has no radius token. The active place on the rail and the bottom tab row sits on the subtle surface in weight 600; no underline."
+      "implementedCatalogue": "Two contexts, both built. Sheet: Recipe Sheet, ingredient table, Instructions, graduated rules, pen foot, the Sheet's Notebook-form hand (as-made grams, Instructions changes) and the printed log. App: the shell, Home, the Notebook band and version column, History and the upright list, the batch log and its record pen skin.",
+      "approvedAppDirection": "Option B destination palette with the revised Ingredients green and the preview neutrals (2026-09-21), the five text companions and the filled action (Mark, 2026-10-05, as built), one 10px control radius and active place weight 600 (sketch 011 decision 38, 2026-10-04), the hand. No recipe-specific colors. Unresolved: feedback treatments, pale tints, pressed and disabled states, whether app blue is the ratified link and focus colour, motion.",
+      "tonalRamps": "The Sheet colours carry preview ramps; the App colours carry none. Ramps are preview metadata only; not approved UI colors.",
+      "emptyShadowsAndMotion": "Motion is empty because none is built (--app-duration is declared and no rule reads it). Shadows lists the App's one shadow, the fly-out's, and its scrim.",
+      "appRadius": "One App radius, 10px (--app-radius-control), on the App's interactive elements and the surfaces they sit on; marks keep 3px (sprinkle) and 4px (row mark, defect square), History's marks are circles. The Sheet is square and has no radius token."
     }
   },
   "components": [
@@ -272,159 +405,199 @@
       "name": "Region name",
       "kind": "custom",
       "refersTo": "region-name",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). The plain-language running head every region wears; the only place bookcloth appears. Section role since 260912-ti1.",
+      "description": "Sheet catalogue. The plain-language running head every region wears; the only place bookcloth appears. Section role since 260912-ti1.",
       "html": "<h2 class=\"ds-region-name\">Formulation note</h2>",
-      "css": ".ds-region-name{font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;color:var(--bookcloth);margin:0 0 var(--gap-xs)}"
+      "css": ".ds-region-name{font-family:var(--face-grotesk);font-size:var(--sheet-type-section);font-weight:600;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:0.04em;color:var(--sheet-bookcloth);margin:0 0 var(--gap-xs)}"
     },
     {
       "name": "Binder button",
       "kind": "button",
       "refersTo": "button",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). Every control drawn by the page: square, hairline ink border, no fill, no icon. Hover thickens the border to a whole 2px with compensating padding so the box never changes size. A disabled control is dashed and states its reason in words beside it. An underlined word (.ds-text-control) acts on what is already on the page.",
+      "description": "Sheet catalogue. Every control drawn by the page: square, hairline ink border, no fill, no icon. Hover thickens the border to a whole 2px with compensating padding so the box never changes size. A disabled control is dashed and states its reason in words beside it. An underlined word (.ds-text-control) acts on what is already on the page.",
       "html": "<button type=\"button\" class=\"ds-btn\">Save batch</button> <button type=\"button\" class=\"ds-btn\" disabled>Save batch</button> <button type=\"button\" class=\"ds-text-control\">Remove tasting</button>",
-      "css": ".ds-btn{appearance:none;border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--size-table-body);box-sizing:border-box;cursor:pointer;padding:calc(var(--gap-xs) + var(--rule-hover) - var(--rule-ink-field))}.ds-btn:hover{border-width:var(--rule-hover);padding:var(--gap-xs)}.ds-btn:disabled{border-style:dashed;color:inherit;background:none;cursor:default}.ds-btn:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-text-control{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);min-height:var(--text-control-min);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-control:hover{text-decoration-thickness:var(--rule-baseline)}.ds-text-control:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-btn,.ds-text-control{min-height:var(--touch-min)}}"
+      "css": ".ds-btn{appearance:none;border:var(--rule-ink-field) solid var(--sheet-ink);border-radius:0;background:none;color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);box-sizing:border-box;cursor:pointer;padding:calc(var(--gap-xs) + var(--rule-hover) - var(--rule-ink-field))}.ds-btn:hover{border-width:var(--rule-hover);padding:var(--gap-xs)}.ds-btn:disabled{border-style:dashed;color:inherit;background:none;cursor:default}.ds-btn:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.ds-text-control{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);min-height:var(--sheet-text-control-min);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-control:hover{text-decoration-thickness:var(--rule-baseline)}.ds-text-control:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}@media (pointer:coarse){.ds-btn,.ds-text-control{min-height:var(--touch-min)}}"
     },
     {
       "name": "Ink field",
       "kind": "input",
       "refersTo": "ink-field",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). Anything counted that the maker types: hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, its own 1.35 leading and a 26px floor so an empty date input cannot collapse on WebKit. Sized to what it holds — a date at 128px, a short figure at 56px with its unit word beside the box as a sibling. 16px and 44px wherever the pointer is coarse.",
+      "description": "Sheet catalogue. Anything counted that the maker types: hairline ink border, no fill, pen blue text in the grotesk with tabular numerals, its own 1.35 leading and a 26px floor so an empty date input cannot collapse on WebKit. Sized to what it holds — a date at 128px, a short figure at 56px with its unit word beside the box as a sibling. 16px and 44px wherever the pointer is coarse.",
       "html": "<span class=\"ds-field-unit\"><input class=\"ds-ink-field ds-ink-field--figure\" value=\"383\" aria-label=\"As made, grams\"/><span class=\"ds-field-unit__u\">g</span></span> <input class=\"ds-ink-field ds-ink-field--date\" type=\"date\" value=\"2026-08-02\" aria-label=\"Churn date\"/>",
-      "css": ".ds-ink-field{font-family:var(--face-grotesk);font-size:var(--size-ink-field);font-variant-numeric:tabular-nums;color:var(--pen-blue);border:var(--rule-ink-field) solid var(--ink);border-radius:0;background:none;padding:var(--gap-hair) var(--gap-xs);line-height:var(--leading-field);min-height:var(--field-min-h);box-sizing:border-box}.ds-ink-field--figure{width:var(--field-w-figure);text-align:right}.ds-ink-field--date{width:var(--field-w-date);-webkit-appearance:none;appearance:none}.ds-ink-field::-webkit-calendar-picker-indicator{display:none;-webkit-appearance:none}.ds-ink-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-field-unit{display:inline-flex;align-items:baseline;gap:var(--gap-field-unit)}.ds-field-unit__u{font-family:var(--face-grotesk);font-size:var(--size-deviation-words);color:var(--ink);white-space:nowrap}@media (max-width:759.98px),(pointer:coarse){.ds-ink-field{min-height:var(--touch-min);font-size:var(--type-note)}}"
+      "css": ".ds-ink-field{font-family:var(--face-grotesk);font-size:var(--sheet-size-ink-field);font-variant-numeric:tabular-nums;color:var(--sheet-pen-blue);border:var(--rule-ink-field) solid var(--sheet-ink);border-radius:0;background:none;padding:var(--gap-hair) var(--gap-xs);line-height:var(--sheet-leading-field);min-height:var(--sheet-field-min-h);box-sizing:border-box}.ds-ink-field--figure{width:var(--sheet-field-w-figure);text-align:right}.ds-ink-field--date{width:var(--sheet-field-w-date);-webkit-appearance:none;appearance:none}.ds-ink-field::-webkit-calendar-picker-indicator{display:none;-webkit-appearance:none}.ds-ink-field:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.ds-field-unit{display:inline-flex;align-items:baseline;gap:var(--gap-field-unit)}.ds-field-unit__u{font-family:var(--face-grotesk);font-size:var(--sheet-size-deviation-words);color:var(--sheet-ink);white-space:nowrap}@media (pointer:coarse){.ds-ink-field{min-height:var(--touch-min);font-size:var(--sheet-type-note)}}"
     },
     {
       "name": "Prose field",
       "kind": "input",
       "refersTo": "prose-field",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). The maker's words editing in place as the printed paragraph: no border at rest, pen blue text face, note leading, a hairline vertical inset and a one-line minimum extent, growing with its text. A blank named field carries a hairline baseline. Narrow and coarse-pointer contexts raise it to the shared 44px touch floor and 16px text.",
+      "description": "Sheet catalogue. The maker's words editing in place as the printed paragraph: no border at rest, pen blue text face, note leading, a hairline vertical inset and a one-line minimum extent, growing with its text. A blank named field carries a hairline baseline. Narrow and coarse-pointer contexts raise it to the shared 44px touch floor and 16px text.",
       "html": "<textarea class=\"ds-prose-field\" rows=\"2\">Soft, not greasy.</textarea>",
-      "css": ".ds-prose-field{font-family:var(--face-text);font-size:inherit;line-height:var(--leading-note);color:var(--pen-blue);border:none;background:none;padding:var(--gap-hair) 0;margin:0;min-height:calc(var(--leading-note) * 1em);width:100%;max-width:var(--measure-prose);box-sizing:border-box;field-sizing:content;resize:none}.ds-prose-field:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-prose-field{min-height:var(--touch-min);font-size:var(--type-note)}}"
+      "css": ".ds-prose-field{font-family:var(--face-text);font-size:inherit;line-height:var(--sheet-leading-note);color:var(--sheet-pen-blue);border:none;background:none;padding:var(--gap-hair) 0;margin:0;min-height:calc(var(--sheet-leading-note) * 1em);width:100%;max-width:var(--measure-prose);box-sizing:border-box;field-sizing:content;resize:none}.ds-prose-field:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}@media (pointer:coarse){.ds-prose-field{min-height:var(--touch-min);font-size:var(--sheet-type-note)}}"
     },
     {
       "name": "Field feedback",
       "kind": "custom",
       "refersTo": "field-feedback",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). One field-owned line beneath an editable field. Quiet Required guidance yields to the actionable error after invalid submission. Native required semantics own the requirement; aria-describedby connects the input to the error.",
+      "description": "Sheet catalogue. One field-owned line beneath an editable field. Quiet Required guidance yields to the actionable error after invalid submission. Native required semantics own the requirement; aria-describedby connects the input to the error.",
       "html": "<label><span class=\"ds-pen-caption\">Version</span><input class=\"ds-ink-field\" required aria-invalid=\"true\" aria-describedby=\"ds-field-error\"/><span id=\"ds-field-error\" class=\"ds-field-error\">Enter a version.</span></label>",
-      "css": ".ds-field-error,.ds-field-requirement{display:block;max-width:24ch;font-family:var(--face-grotesk);font-size:var(--type-control);font-weight:400;line-height:var(--leading-helper);color:var(--ink);margin-top:var(--gap-xs);text-transform:none;letter-spacing:0}"
+      "css": ".ds-field-error,.ds-field-requirement{display:block;max-width:24ch;font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-weight:400;line-height:var(--sheet-leading-helper);color:var(--sheet-ink);margin-top:var(--gap-xs);text-transform:none;letter-spacing:0}"
     },
     {
       "name": "Ingredient table",
       "kind": "custom",
       "refersTo": "table-cell",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). Rows in step order under step-group heads, ink rules under each, an exception-only Data column, a marked state for rows a focused figure rests on. Fixed layout and leading so marking moves nothing.",
+      "description": "Sheet catalogue. Rows in step order under step-group heads, ink rules under each, a marked state for rows a focused figure rests on. Content-sized columns and a constant leading so marking moves nothing. From 724 on screen each row is a grid (As made, plan amount, name, share) so nothing moves when Show changes toggles; below 724 it reads as a list with no header row.",
       "html": "<table class=\"ds-ingredient-table\"><thead><tr><th>Ingredient</th><th>Grams</th><th>% of batch</th><th>Data</th></tr></thead><tbody><tr><td colspan=\"4\" class=\"ds-ingredient-table__step-head\">Step 3 — <span>Gum slurry</span></td></tr><tr><td>Whole milk</td><td>370.4 g</td><td>46.3%</td><td>estimated</td></tr><tr class=\"is-marked\"><td>Heavy cream</td><td>252.8 g</td><td>31.6%</td><td>estimated</td></tr></tbody><tfoot><tr><td>Total</td><td>800 g</td><td>100%</td><td></td></tr></tfoot></table>",
-      "css": ".ds-ingredient-table{border-collapse:collapse;table-layout:fixed;width:100%;font-family:var(--face-grotesk);font-size:var(--size-table-body);font-variant-numeric:tabular-nums;color:var(--ink)}.ds-ingredient-table th,.ds-ingredient-table td{text-align:left;box-sizing:border-box;padding:var(--gap-xs) var(--table-cell-pad-x);line-height:var(--leading-table,1.2);border-bottom:var(--rule-baseline) solid var(--ink)}.ds-ingredient-table th{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em;font-weight:400}.ds-ingredient-table__step-head{font-size:var(--size-running-head);text-transform:uppercase;letter-spacing:0.04em}.ds-ingredient-table__step-head span{text-transform:none;letter-spacing:0;font-size:var(--size-small-print)}.ds-ingredient-table tfoot td{border-bottom:none;border-top:var(--rule-baseline) solid var(--ink);font-weight:700}.ds-ingredient-table tr.is-marked{outline:var(--rule-graduation) solid var(--ink);outline-offset:var(--focus-outline-offset);font-weight:700}"
+      "css": ".ds-ingredient-table{border-collapse:collapse;table-layout:auto;width:100%;font-family:var(--face-grotesk);font-size:var(--sheet-size-table-body);font-variant-numeric:tabular-nums;color:var(--sheet-ink)}.ds-ingredient-table th,.ds-ingredient-table td{text-align:left;box-sizing:border-box;padding:var(--gap-xs) var(--sheet-table-cell-pad-x);line-height:var(--sheet-leading-table,1.2);border-bottom:var(--rule-baseline) solid var(--sheet-ink)}.ds-ingredient-table th{font-size:var(--sheet-size-running-head);text-transform:uppercase;letter-spacing:0.04em;font-weight:400}.ds-ingredient-table__step-head{font-size:var(--sheet-size-running-head);text-transform:uppercase;letter-spacing:0.04em}.ds-ingredient-table__step-head span{text-transform:none;letter-spacing:0;font-size:var(--sheet-size-small-print)}.ds-ingredient-table tfoot td{border-bottom:none;border-top:var(--rule-baseline) solid var(--sheet-ink);font-weight:700}.ds-ingredient-table tr.is-marked{outline:var(--rule-graduation) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset);font-weight:700}"
     },
     {
       "name": "Graduated rule",
       "kind": "custom",
       "refersTo": "figure-value",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). One figure as a printed scale: hatched target band, tick at the value, deviation in words. A focusable button; focus outlines it and marks contributing rows.",
+      "description": "Sheet catalogue. One figure as a printed scale: hatched target band, tick at the value, deviation in words. A focusable button; focus outlines it and marks contributing rows.",
       "html": "<button type=\"button\" class=\"ds-graduated-rule\" aria-label=\"PAC, 24.1, target 22–26, estimated: Whole milk, Heavy cream\"><div class=\"ds-graduated-rule__head\" aria-hidden=\"true\"><span>PAC</span><span class=\"ds-graduated-rule__value\">24.1</span></div><p class=\"ds-graduated-rule__basis\" aria-hidden=\"true\">estimated: Whole milk, Heavy cream</p><svg viewBox=\"0 0 320 30\" width=\"100%\" height=\"30\" aria-hidden=\"true\"><defs><pattern id=\"ds-hatch\" width=\"4\" height=\"4\" patternTransform=\"rotate(45)\" patternUnits=\"userSpaceOnUse\"><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"4\" stroke=\"var(--ink)\" stroke-width=\"1.2\"/></pattern></defs><rect x=\"176\" y=\"4\" width=\"32\" height=\"14\" fill=\"url(#ds-hatch)\"/><line x1=\"176\" y1=\"2\" x2=\"176\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"208\" y1=\"2\" x2=\"208\" y2=\"20\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"0\" y1=\"18\" x2=\"320\" y2=\"18\" stroke=\"var(--ink)\" stroke-width=\"1.5\"/><line x1=\"0\" y1=\"18\" x2=\"0\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"160\" y1=\"18\" x2=\"160\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"320\" y1=\"18\" x2=\"320\" y2=\"24\" stroke=\"var(--ink)\" stroke-width=\"1\"/><line x1=\"193\" y1=\"0\" x2=\"193\" y2=\"22\" stroke=\"var(--ink)\" stroke-width=\"2.5\"/></svg><div class=\"ds-graduated-rule__anchors\" aria-hidden=\"true\"><span>0</span><span class=\"ds-graduated-rule__deviation\">inside 22–26</span><span>40</span></div></button>",
-      "css": ".ds-graduated-rule{display:block;width:100%;max-width:320px;padding:0;border:none;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-graduated-rule:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-graduated-rule__head{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--size-table-body)}.ds-graduated-rule__value{font-size:var(--size-figure-value);font-weight:700}.ds-graduated-rule__basis{font-size:var(--size-small-print);margin:var(--gap-hair) 0 0}.ds-graduated-rule__anchors{display:flex;justify-content:space-between;font-size:var(--size-small-print);margin-top:var(--gap-hair)}.ds-graduated-rule__deviation{font-size:var(--size-deviation-words)}"
+      "css": ".ds-graduated-rule{display:block;width:100%;max-width:320px;padding:0;border:none;background:none;font:inherit;color:var(--sheet-ink);text-align:left;cursor:pointer;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-graduated-rule:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.ds-graduated-rule__head{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--sheet-size-table-body)}.ds-graduated-rule__value{font-size:var(--sheet-size-figure-value);font-weight:700}.ds-graduated-rule__basis{font-size:var(--sheet-size-small-print);margin:var(--gap-hair) 0 0}.ds-graduated-rule__anchors{display:flex;justify-content:space-between;font-size:var(--sheet-size-small-print);margin-top:var(--gap-hair)}.ds-graduated-rule__deviation{font-size:var(--sheet-size-deviation-words)}"
     },
     {
       "name": "Target chip",
       "kind": "chip",
       "refersTo": "target-chip",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). A typed target on a method step. Hairline ink border, no fill, never a control.",
+      "description": "Sheet catalogue. A typed target on a method step. Hairline ink border, no fill, never a control.",
       "html": "<span class=\"ds-target-chip\"><span>temp</span><span>85 °C</span></span> <span class=\"ds-target-chip\"><span>hold</span><span>2 min</span></span>",
-      "css": ".ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--size-small-print);font-variant-numeric:tabular-nums;color:var(--ink)}"
+      "css": ".ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--sheet-ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);font-variant-numeric:tabular-nums;color:var(--sheet-ink)}"
     },
     {
       "name": "Instructions step",
       "kind": "custom",
       "refersTo": "step-number",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). Step number in a fixed margin column; bold lead-in and prose in the text face; targets as chips; purpose and aside in italic.",
+      "description": "Sheet catalogue. Step number in a fixed margin column; bold lead-in and prose in the text face; targets as chips; purpose and aside in italic.",
       "html": "<ol class=\"ds-method-steps\"><li class=\"ds-method-step\"><span class=\"ds-method-step__n\" aria-hidden=\"true\">2</span><div><p class=\"ds-method-step__lead\"><b>Gum slurry — the only high-heat step.</b> Toss 1.68 g of the gum blend with ~12 g of the sucrose. Whisk into 120 g of the milk in a small saucepan. Heat, whisking constantly, then pull off.</p><p class=\"ds-method-step__targets\"><span class=\"ds-target-chip\"><span>temp</span><span>85 °C</span></span><span class=\"ds-target-chip\"><span>hold</span><span>2 min</span></span></p><p class=\"ds-method-step__aside\">At 120 g this is a thin layer in the pan. It scorches and evaporates faster than a larger volume would.</p></div></li></ol>",
-      "css": ".ds-method-steps{list-style:none;margin:0;padding:0;color:var(--ink)}.ds-method-step{display:grid;grid-template-columns:auto 1fr;gap:var(--gap-s)}.ds-method-step+.ds-method-step{margin-top:var(--gap-m)}.ds-method-step__n{font-family:var(--face-grotesk);font-size:var(--size-figure-value);font-variant-numeric:tabular-nums}.ds-method-step__lead{font-family:var(--face-text);font-size:var(--size-headnote-prose);max-width:var(--measure-prose);margin:0}.ds-method-step__targets{display:flex;flex-wrap:wrap;gap:var(--gap-xs);margin:var(--gap-xs) 0 0}.ds-method-step__aside{font-family:var(--face-text);font-style:italic;font-size:var(--size-deviation-words);margin:var(--gap-xs) 0 0}.ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--size-small-print);font-variant-numeric:tabular-nums}"
+      "css": ".ds-method-steps{list-style:none;margin:0;padding:0;color:var(--sheet-ink)}.ds-method-step{display:grid;grid-template-columns:auto 1fr;gap:var(--gap-s)}.ds-method-step+.ds-method-step{margin-top:var(--gap-m)}.ds-method-step__n{font-family:var(--face-grotesk);font-size:var(--sheet-size-figure-value);font-variant-numeric:tabular-nums}.ds-method-step__lead{font-family:var(--face-text);font-size:var(--sheet-size-headnote-prose);max-width:var(--measure-prose);margin:0}.ds-method-step__targets{display:flex;flex-wrap:wrap;gap:var(--gap-xs);margin:var(--gap-xs) 0 0}.ds-method-step__aside{font-family:var(--face-text);font-style:italic;font-size:var(--sheet-size-deviation-words);margin:var(--gap-xs) 0 0}.ds-target-chip{display:inline-flex;gap:var(--gap-hair);border:var(--rule-graduation) solid var(--sheet-ink);padding:0 var(--gap-xs);font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);font-variant-numeric:tabular-nums}"
     },
     {
       "name": "Axis mark",
       "kind": "custom",
       "refersTo": "axis-stop",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). The tasting battery’s per-axis control: a caption line (axis name, inline state, right-aligned Clear), five joined stops on a 186px track, three anchor words in italic. The drawn box is a label with an invisible native radio stretched over it, so the browser’s grouped-radio keyboard semantics do all the work. A picked stop fills pen blue; adjacent stops share one hairline through a negative margin and the picked cell lifts above its neighbours. The caption line reserves Clear’s height marked or not, so picking moves nothing.",
+      "description": "Sheet catalogue. The tasting battery’s per-axis control: a caption line (axis name, inline state, right-aligned Clear), five joined stops on a 186px track, three anchor words in italic. The drawn box is a label with an invisible native radio stretched over it, so the browser’s grouped-radio keyboard semantics do all the work. A picked stop fills pen blue; adjacent stops share one hairline through a negative margin and the picked cell lifts above its neighbours. The caption line reserves Clear’s height marked or not, so picking moves nothing.",
       "html": "<fieldset class=\"ds-axis\"><div class=\"ds-axis__head\"><span class=\"ds-axis__name\">Hardness</span><span class=\"ds-axis__state\">(3)</span><button type=\"button\" class=\"ds-text-control ds-axis__clear\">Clear</button></div><div class=\"ds-axis__stops\"><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"1\"/><span>1</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"2\"/><span>2</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"3\" checked/><span>3</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"4\"/><span>4</span></label><label class=\"ds-axis__stop\"><input type=\"radio\" name=\"ds-hardness\" value=\"5\"/><span>5</span></label></div><div class=\"ds-axis__anchors\"><span>Soft</span><span>Just right</span><span>Hard</span></div></fieldset>",
-      "css": ".ds-axis{border:none;padding:0;margin:0;color:var(--ink)}.ds-axis__head{display:flex;align-items:flex-end;gap:var(--gap-xs);margin-bottom:var(--gap-xs);min-height:var(--caption-line-h);flex-wrap:wrap}.ds-axis__name{font-family:var(--face-grotesk);font-size:var(--type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em}.ds-axis__state{font-family:var(--face-grotesk);font-size:var(--type-control);color:var(--pen-blue)}.ds-axis__clear{margin-left:auto;font-family:var(--face-grotesk);font-size:var(--size-mark-stop);appearance:none;border:none;background:none;padding:0;color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-axis__stops{display:flex;width:var(--track-stop)}.ds-axis__stop{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 var(--stop-w);height:var(--stop-h);margin-right:calc(-1 * var(--rule-ink-field));border:var(--rule-ink-field) solid var(--ink);border-radius:0;box-sizing:border-box;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums;cursor:pointer}.ds-axis__stop:last-child{margin-right:0}.ds-axis__stop input[type=\"radio\"]{appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.ds-axis__stop:has(input:checked){background:var(--pen-blue);border-color:var(--pen-blue);color:var(--ground);z-index:1}.ds-axis__stop:hover{border-width:var(--rule-hover);z-index:2}.ds-axis__stop:has(input:focus-visible){outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-axis__anchors{display:flex;justify-content:space-between;width:var(--track-stop);margin-top:var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--type-control);font-style:italic;white-space:nowrap}@media (max-width:759.98px),(pointer:coarse){.ds-axis__head{min-height:var(--caption-line-h-touch)}.ds-axis__stop{height:var(--touch-stop-height)}}@media (max-width:759.98px){.ds-axis__stops,.ds-axis__anchors{width:var(--track-stop-narrow)}.ds-axis__stop{width:var(--touch-stop-width);flex-basis:var(--touch-stop-width)}}@media (forced-colors:active){.ds-axis__stop:has(input:checked){forced-color-adjust:none;background:Highlight;border-color:Highlight;color:HighlightText}}"
+      "css": ".ds-axis{border:none;padding:0;margin:0;color:var(--sheet-ink)}.ds-axis__head{display:flex;align-items:flex-end;gap:var(--gap-xs);margin-bottom:var(--gap-xs);min-height:var(--sheet-caption-line-h);flex-wrap:wrap}.ds-axis__name{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em}.ds-axis__state{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);color:var(--sheet-pen-blue)}.ds-axis__clear{margin-left:auto;font-family:var(--face-grotesk);font-size:var(--sheet-size-mark-stop);appearance:none;border:none;background:none;padding:0;color:var(--sheet-ink);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-axis__stops{display:flex;width:var(--sheet-track-stop)}.ds-axis__stop{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 var(--sheet-stop-w);height:var(--sheet-stop-h);margin-right:calc(-1 * var(--rule-ink-field));border:var(--rule-ink-field) solid var(--sheet-ink);border-radius:0;box-sizing:border-box;font-family:var(--face-grotesk);font-variant-numeric:tabular-nums;cursor:pointer}.ds-axis__stop:last-child{margin-right:0}.ds-axis__stop input[type=\"radio\"]{appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.ds-axis__stop:has(input:checked){background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue);color:var(--sheet-ground);z-index:1}.ds-axis__stop:hover{border-width:var(--rule-hover);z-index:2}.ds-axis__stop:has(input:focus-visible){outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.ds-axis__anchors{display:flex;justify-content:space-between;width:var(--sheet-track-stop);margin-top:var(--gap-hair);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);font-style:italic;white-space:nowrap}@media (pointer:coarse){.ds-axis__head{min-height:var(--caption-line-h-touch)}.ds-axis__stop{height:var(--touch-stop-height)}}@media (max-width:759.98px){.ds-axis__stops,.ds-axis__anchors{width:var(--track-stop-narrow)}.ds-axis__stop{width:var(--touch-stop-width);flex-basis:var(--touch-stop-width)}}@media (forced-colors:active){.ds-axis__stop:has(input:checked){forced-color-adjust:none;background:Highlight;border-color:Highlight;color:HighlightText}}"
     },
     {
       "name": "Segmented control",
       "kind": "custom",
       "refersTo": "segmented-option",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). The battery’s three-way control: a role=\"radiogroup\" of native radios restyled, adjacent options sharing one hairline. Its caption line is the component’s own head, with Clear as the last child. Picking is final — a joined group is a radio, and Clear is the only way back. The picked option fills pen blue; never bold, never underlined.",
+      "description": "Sheet catalogue. The battery’s three-way control: a role=\"radiogroup\" of native radios restyled, adjacent options sharing one hairline. Its caption line is the component’s own head, with Clear as the last child. Picking is final — a joined group is a radio, and Clear is the only way back. The picked option fills pen blue; never bold, never underlined.",
       "html": "<div class=\"ds-seg-field\"><div class=\"ds-seg-field__head\"><span class=\"ds-seg-field__caption\">Melt style</span><button type=\"button\" class=\"ds-seg-field__clear\">Clear</button></div><div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Melt style\"><label class=\"ds-seg__option\"><input type=\"radio\" name=\"ds-melt\" value=\"Creamy\"/><span>Creamy</span></label><label class=\"ds-seg__option\"><input type=\"radio\" name=\"ds-melt\" value=\"Foamy\" checked/><span>Foamy</span></label><label class=\"ds-seg__option\"><input type=\"radio\" name=\"ds-melt\" value=\"Watery\"/><span>Watery</span></label></div></div>",
-      "css": ".ds-seg-field{min-width:0;max-width:100%;color:var(--ink)}.ds-seg-field__head{display:flex;align-items:flex-end;gap:var(--gap-xs);margin-bottom:var(--gap-xs);min-height:var(--caption-line-h);flex-wrap:wrap}.ds-seg-field__caption{font-family:var(--face-grotesk);font-size:var(--type-label);font-weight:500;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em}.ds-seg-field__clear{margin-left:auto;appearance:none;border:none;background:none;padding:0;font-family:var(--face-grotesk);font-size:var(--size-mark-stop);color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-seg{display:flex;flex-wrap:wrap;row-gap:var(--gap-xs)}.ds-seg__option{position:relative;display:flex;align-items:center;justify-content:center;border:var(--rule-ink-field) solid var(--ink);border-radius:0;margin-right:calc(-1 * var(--rule-ink-field));padding:var(--seg-pad-y) var(--seg-pad-x);box-sizing:border-box;min-height:var(--stop-h);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);color:var(--ink);cursor:pointer}.ds-seg__option:last-child{margin-right:0}.ds-seg__option:hover{border-width:var(--rule-hover);padding:calc(var(--seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field))) calc(var(--seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));z-index:2}.ds-seg__option input[type=\"radio\"]{appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.ds-seg__option:has(input:checked){background:var(--pen-blue);border-color:var(--pen-blue);color:var(--ground);z-index:1}.ds-seg__option:has(input:focus-visible){outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-seg__option{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-seg__option:has(input:checked){forced-color-adjust:none;background:Highlight;border-color:Highlight;color:HighlightText}}"
+      "css": ".ds-seg-field{min-width:0;max-width:100%;color:var(--sheet-ink)}.ds-seg-field__head{display:flex;align-items:flex-end;gap:var(--gap-xs);margin-bottom:var(--gap-xs);min-height:var(--sheet-caption-line-h);flex-wrap:wrap}.ds-seg-field__caption{font-family:var(--face-grotesk);font-size:var(--sheet-type-label);font-weight:500;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:0.04em}.ds-seg-field__clear{margin-left:auto;appearance:none;border:none;background:none;padding:0;font-family:var(--face-grotesk);font-size:var(--sheet-size-mark-stop);color:var(--sheet-ink);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-seg{display:flex;flex-wrap:wrap;row-gap:var(--gap-xs)}.ds-seg__option{position:relative;display:flex;align-items:center;justify-content:center;border:var(--rule-ink-field) solid var(--sheet-ink);border-radius:0;margin-right:calc(-1 * var(--rule-ink-field));padding:var(--sheet-seg-pad-y) var(--sheet-seg-pad-x);box-sizing:border-box;min-height:var(--sheet-stop-h);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);color:var(--sheet-ink);cursor:pointer}.ds-seg__option:last-child{margin-right:0}.ds-seg__option:hover{border-width:var(--rule-hover);padding:calc(var(--sheet-seg-pad-y) - (var(--rule-hover) - var(--rule-ink-field))) calc(var(--sheet-seg-pad-x) - (var(--rule-hover) - var(--rule-ink-field)));z-index:2}.ds-seg__option input[type=\"radio\"]{appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}.ds-seg__option:has(input:checked){background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue);color:var(--sheet-ground);z-index:1}.ds-seg__option:has(input:focus-visible){outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}@media (pointer:coarse){.ds-seg__option{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-seg__option:has(input:checked){forced-color-adjust:none;background:Highlight;border-color:Highlight;color:HighlightText}}"
     },
     {
       "name": "Defect toggle",
       "kind": "chip",
       "refersTo": "chip-toggle",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). An independent on/off, so it is a square and a word rather than a filled box: a 13px ink square before the word, filled pen blue when pressed, aria-pressed carrying the fact. The button itself never changes colour. Defects are grid items of the axes’ own grid, in two labelled groups, so the vertical hairline spans them too.",
+      "description": "Sheet catalogue. An independent on/off, so it is a square and a word rather than a filled box: a 13px ink square before the word, filled pen blue when pressed, aria-pressed carrying the fact. The button itself never changes colour. Defects are grid items of the axes’ own grid, in two labelled groups, so the vertical hairline spans them too.",
       "html": "<div class=\"ds-defects\"><button type=\"button\" class=\"ds-chip-toggle\" aria-pressed=\"true\">Icy</button><button type=\"button\" class=\"ds-chip-toggle\" aria-pressed=\"false\">Gummy</button><button type=\"button\" class=\"ds-chip-toggle\" aria-pressed=\"false\">Sandy</button></div>",
-      "css": ".ds-defects{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap-xs) var(--gap-defect-col)}.ds-chip-toggle{display:inline-flex;align-items:center;gap:var(--gap-xs);border:0;border-radius:0;padding:0;background:none;box-sizing:border-box;min-height:var(--stop-h);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);color:var(--ink);cursor:pointer}.ds-chip-toggle::before{content:\"\";display:inline-block;width:var(--size-lead-mark);height:var(--size-lead-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--ink);flex:0 0 auto}.ds-chip-toggle:hover::before{border-width:var(--rule-hover)}.ds-chip-toggle[aria-pressed=\"true\"]::before{background:var(--pen-blue);border-color:var(--pen-blue)}.ds-chip-toggle:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-chip-toggle{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-chip-toggle[aria-pressed=\"true\"]::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}}"
+      "css": ".ds-defects{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap-xs) var(--gap-defect-col)}.ds-chip-toggle{display:inline-flex;align-items:center;gap:var(--gap-xs);border:0;border-radius:0;padding:0;background:none;box-sizing:border-box;min-height:var(--sheet-stop-h);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);color:var(--sheet-ink);cursor:pointer}.ds-chip-toggle::before{content:\"\";display:inline-block;width:var(--sheet-size-lead-mark);height:var(--sheet-size-lead-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--sheet-ink);flex:0 0 auto}.ds-chip-toggle:hover::before{border-width:var(--rule-hover)}.ds-chip-toggle[aria-pressed=\"true\"]::before{background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue)}.ds-chip-toggle:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}@media (pointer:coarse){.ds-chip-toggle{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-chip-toggle[aria-pressed=\"true\"]::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}}"
     },
     {
       "name": "Text toggle",
       "kind": "chip",
       "refersTo": "text-toggle",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). An independent on/off recorded in prose, so it is a square and a word like the defect: a 13px leading square before the word, hollow at rest, filled pen blue when on, aria-pressed carrying the fact. The underline stays hairline whether on or off — the square carries the state, the word never bolds and never gains an outline (one fill for every on state, 2026-09-16). Show changes no longer uses it: since 03.5-15 it is an underlined word that names its state, Hide changes while shown, with no aria-pressed.",
+      "description": "Sheet catalogue. An independent on/off recorded in prose, so it is a square and a word like the defect: a 13px leading square before the word, hollow at rest, filled pen blue when on, aria-pressed carrying the fact. The underline stays hairline whether on or off — the square carries the state, the word never bolds and never gains an outline (one fill for every on state, 2026-09-16). Show changes no longer uses it: since 03.5-15 it is an underlined word that names its state, Hide changes while shown, with no aria-pressed.",
       "html": "<button type=\"button\" class=\"ds-text-toggle\" aria-pressed=\"true\">Step 3, skipped</button>",
-      "css": ".ds-text-toggle{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--ink);font-family:var(--face-grotesk);font-size:var(--type-control);line-height:var(--leading-control);min-height:var(--control-h);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-toggle::before{content:\"\";display:inline-block;width:var(--size-lead-mark);height:var(--size-lead-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--ink);margin-right:var(--gap-xs);vertical-align:baseline}.ds-text-toggle[aria-pressed=\"true\"]::before{background:var(--pen-blue);border-color:var(--pen-blue)}.ds-text-toggle[aria-pressed=\"true\"],.ds-text-toggle[aria-pressed=\"true\"]:hover{text-decoration-thickness:var(--rule-ink-field)}.ds-text-toggle:hover::before{border-width:var(--rule-hover)}.ds-text-toggle:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}@media (max-width:759.98px),(pointer:coarse){.ds-text-toggle{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-text-toggle[aria-pressed=\"true\"]::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}}"
+      "css": ".ds-text-toggle{appearance:none;border:none;border-radius:0;background:none;padding:0;color:var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);min-height:var(--sheet-control-h);cursor:pointer;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline)}.ds-text-toggle::before{content:\"\";display:inline-block;width:var(--sheet-size-lead-mark);height:var(--sheet-size-lead-mark);box-sizing:border-box;border:var(--rule-graduation) solid var(--sheet-ink);margin-right:var(--gap-xs);vertical-align:baseline}.ds-text-toggle[aria-pressed=\"true\"]::before{background:var(--sheet-pen-blue);border-color:var(--sheet-pen-blue)}.ds-text-toggle[aria-pressed=\"true\"],.ds-text-toggle[aria-pressed=\"true\"]:hover{text-decoration-thickness:var(--rule-ink-field)}.ds-text-toggle:hover::before{border-width:var(--rule-hover)}.ds-text-toggle:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}@media (pointer:coarse){.ds-text-toggle{min-height:var(--touch-min)}}@media (forced-colors:active){.ds-text-toggle[aria-pressed=\"true\"]::before{forced-color-adjust:none;background:Highlight;border-color:Highlight}}"
     },
     {
-      "name": "Batch row measured cell",
+      "name": "Batch measured cell (Sheet and print)",
       "kind": "custom",
       "refersTo": "recorded-value",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). The batch row’s read view of a measured field: caption label, then the figure in pen blue at the NOTE size and the prose weight — a recorded value reads at the weight of the maker’s words, not the balance figure’s 1.25rem/700. Lighter unit, plan sub-line in small print. An absent value reads \"not measured\" in ink: an absence is not a record.",
+      "description": "Sheet catalogue and the printed log. A measured field's read view: caption label, then the figure in pen blue at the NOTE size and the prose weight. On screen the batch log is App context and draws this differently (see Log measured cell); the print keeps this paper form.",
       "html": "<div class=\"ds-batch-cells\"><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Out of the machine</span><span class=\"ds-batch-cell__value\">−6 <span class=\"ds-batch-cell__unit\">°C</span></span><span class=\"ds-batch-cell__plan\">plan −5 to −7 °C</span></div><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Air</span><span class=\"ds-batch-cell__unit ds-batch-cell__unit--absent\">not measured</span></div></div>",
-      "css": ".ds-batch-cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--col-batch-cell-min),max-content));gap:var(--gap-s) var(--gap-l)}.ds-batch-cell{display:flex;flex-direction:column;gap:var(--gap-xs);font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-batch-cell__label{font-size:var(--type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink)}.ds-batch-cell__value{font-size:var(--type-note);font-weight:400;line-height:var(--leading-figure);color:var(--pen-blue)}.ds-batch-cell__unit{font-size:var(--size-deviation-words);font-weight:400}.ds-batch-cell__unit--absent{color:var(--ink)}.ds-batch-cell__plan{font-size:var(--size-small-print);margin-top:var(--gap-hair);color:var(--ink)}"
+      "css": ".ds-batch-cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--sheet-col-batch-cell-min),max-content));gap:var(--gap-s) var(--gap-l)}.ds-batch-cell{display:flex;flex-direction:column;gap:var(--gap-xs);font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-batch-cell__label{font-size:var(--sheet-type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--sheet-ink)}.ds-batch-cell__value{font-size:var(--sheet-type-note);font-weight:400;line-height:var(--sheet-leading-figure);color:var(--sheet-pen-blue)}.ds-batch-cell__unit{font-size:var(--sheet-size-deviation-words);font-weight:400}.ds-batch-cell__unit--absent{color:var(--sheet-ink)}.ds-batch-cell__plan{font-size:var(--sheet-size-small-print);margin-top:var(--gap-hair);color:var(--sheet-ink)}"
     },
     {
       "name": "Authored block",
       "kind": "custom",
       "refersTo": "region-name",
-      "description": "Implemented paper catalogue. The maker's own notes that head the Instructions under a Before you start region name, closed off from the steps by a graduation rule (03.5, D-06).",
+      "description": "Sheet catalogue. The maker's own notes that head the Instructions under a Before you start region name, closed off from the steps by a graduation rule (03.5, D-06).",
       "html": "<div class=\"ds-authored\"><p class=\"ds-authored__legend\">Before you start</p><ul class=\"ds-authored__notes\"><li>Taste the Graza straight. Polyphenols degrade with light and oxygen, and the squeeze bottle offers less protection than dark glass. An old bottle at 40 g will disappear entirely.</li><li>Check the cream’s actual butterfat. The carton states a 36% minimum, which is a floor.</li></ul></div>",
-      "css": ".ds-authored{color:var(--ink);max-width:var(--measure-prose);padding-bottom:var(--gap-m);border-bottom:var(--rule-graduation) solid var(--ink)}.ds-authored__legend{font-family:var(--face-grotesk);font-size:var(--type-section);font-weight:600;line-height:var(--leading-section);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--type-note);line-height:var(--leading-note)}"
-    },
-    {
-      "name": "Recipe list link",
-      "kind": "nav",
-      "refersTo": "table-cell",
-      "description": "Implemented paper catalogue (legacy app reuse is transitional). The only navigation: name in the text face, version and mass in the grotesk, inheriting ink, the hairline underline every link carries.",
-      "html": "<ul class=\"ds-recipe-list\"><li><a href=\"#\"><span class=\"ds-recipe-list__name\">Olive Oil Ice Cream</span><span>50 g oil · 800 g</span><span>799.7 g</span></a></li></ul>",
-      "css": ".ds-recipe-list{list-style:none;margin:0;padding:0;font-family:var(--face-grotesk);font-size:var(--size-table-body);color:var(--ink)}.ds-recipe-list li+li{margin-top:var(--gap-s)}.ds-recipe-list a{display:flex;gap:var(--gap-m);color:inherit;text-decoration:underline;text-decoration-thickness:var(--rule-ink-field);text-underline-offset:var(--offset-link-underline);font-variant-numeric:tabular-nums}.ds-recipe-list a:focus-visible{outline:var(--focus-outline-width) solid var(--ink);outline-offset:var(--focus-outline-offset)}.ds-recipe-list__name{font-family:var(--face-text)}"
+      "css": ".ds-authored{color:var(--sheet-ink);max-width:var(--measure-prose);padding-bottom:var(--gap-m);border-bottom:var(--rule-graduation) solid var(--sheet-ink)}.ds-authored__legend{font-family:var(--face-grotesk);font-size:var(--sheet-type-section);font-weight:600;line-height:var(--sheet-leading-section);text-transform:uppercase;letter-spacing:0.04em;margin:0}.ds-authored__notes{margin:var(--gap-xs) 0 0;padding-left:var(--gap-m);font-family:var(--face-text);font-size:var(--sheet-type-note);line-height:var(--sheet-leading-note)}"
     },
     {
       "name": "Fold head",
       "kind": "custom",
       "refersTo": "fold-row",
-      "description": "Sketch 011 decisions 18 and 19, built in Phase 03.5 (FoldRow.jsx). One full-row button per fold on the recipe route: label, then Show or Hide as an underlined word, and an optional count or date at the row's end. aria-expanded carries the state; 44px floor at every pointer. Every fold head is this component; a Show/Hide is never hand-built.",
+      "description": "Sketch 011 decisions 18, 19, 34 A and 41, built in Phase 03.5 (FoldRow.jsx). One full-row button per fold on the recipe route, laid out from the left: the label, Show or Hide as an underlined word, then a dot and an optional count or date. aria-expanded carries the state; 44px floor at every pointer. Every fold head is this component; a Show/Hide is never hand-built.",
       "html": "<button type=\"button\" class=\"ds-fold-row\" aria-expanded=\"false\"><span class=\"ds-fold-row__head\"><span class=\"ds-fold-row__label\">History</span><span class=\"ds-fold-row__control\">Show</span></span><span class=\"ds-fold-row__count\">3 versions</span></button>",
-      "css": ".ds-fold-row{appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;display:flex;width:100%;min-height:var(--touch-min);align-items:center;justify-content:space-between;gap:var(--app-notebook-recipe-rail-gap)}.ds-fold-row__head{display:flex;align-items:baseline;gap:var(--app-notebook-recipe-rail-gap)}.ds-fold-row__label{font-family:var(--face-grotesk);font-size:var(--app-size-label);font-weight:600;letter-spacing:var(--app-tracking-label);text-transform:uppercase;color:var(--app-text-secondary)}.ds-fold-row__control{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);color:var(--sheet-ink);text-decoration:underline;text-underline-offset:var(--app-notebook-link-underline-offset)}.ds-fold-row:hover .ds-fold-row__control{text-decoration-thickness:1.5px}.ds-fold-row:focus-visible{outline:2px solid var(--sheet-ink);outline-offset:2px}.ds-fold-row__count{font-family:var(--face-grotesk);font-size:var(--app-size-label);color:var(--app-text-secondary)}"
+      "css": ".ds-fold-row{appearance:none;border:none;border-radius:0;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;display:flex;width:100%;min-height:var(--touch-min);align-items:center;justify-content:flex-start;gap:var(--app-notebook-recipe-rail-gap)}.ds-fold-row__head{display:flex;align-items:baseline;gap:var(--app-notebook-recipe-rail-gap)}.ds-fold-row__label{font-family:var(--face-grotesk);font-size:var(--app-size-label);font-weight:600;letter-spacing:var(--app-tracking-label);text-transform:uppercase;color:var(--app-text-secondary)}.ds-fold-row__control{font-family:var(--face-grotesk);font-size:var(--sheet-type-control);color:var(--sheet-ink);text-decoration:underline;text-underline-offset:var(--app-notebook-link-underline-offset)}.ds-fold-row:hover .ds-fold-row__control{text-decoration-thickness:var(--rule-baseline)}.ds-fold-row:focus-visible{outline:var(--focus-outline-width) solid var(--sheet-ink);outline-offset:var(--focus-outline-offset)}.ds-fold-row__count{font-family:var(--face-grotesk);font-size:var(--app-size-label);color:var(--app-text-secondary)}.ds-fold-row__count::before{content:\"\\00b7\";margin-right:var(--app-notebook-recipe-rail-gap)}"
+    },
+    {
+      "name": "App filled action",
+      "kind": "button",
+      "refersTo": "app-action",
+      "description": "Approved 2026-10-05, as built (Home .home__action, Notebook .notebook-action). The App's primary action: app blue's text companion as the fill, the App ground as the label, 10px radius, 44px floor. An accent is never a fill under a white label (app blue reads 3.90:1 there). Hover thickens the border to a whole 2px and the padding gives up the same, so the box never changes size.",
+      "html": "<button type=\"button\" class=\"ds-app-action\">Next version</button>",
+      "css": ".ds-app-action{box-sizing:border-box;appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-control);border:var(--app-rule-row) solid var(--app-blue-text);background:var(--app-blue-text);color:var(--app-background);font-family:var(--face-grotesk);font-size:var(--app-size-meta);font-weight:600;cursor:pointer}.ds-app-action:hover{border-width:var(--rule-hover);padding:calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover))}.ds-app-action:focus-visible{outline:var(--focus-outline-width) solid var(--app-text);outline-offset:var(--focus-outline-offset)}"
+    },
+    {
+      "name": "App outline action",
+      "kind": "button",
+      "refersTo": "app-action-outline",
+      "description": "The App's secondary action, built in the Notebook (.notebook-action--outline) and Home (.home__action--secondary): the same blue as outline and label on the App ground. Cancel stands first, as an outline.",
+      "html": "<button type=\"button\" class=\"ds-app-action ds-app-action--outline\">Cancel</button> <button type=\"button\" class=\"ds-app-action\">Save</button>",
+      "css": ".ds-app-action{box-sizing:border-box;appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-control);border:var(--app-rule-row) solid var(--app-blue-text);background:var(--app-blue-text);color:var(--app-background);font-family:var(--face-grotesk);font-size:var(--app-size-meta);font-weight:600;cursor:pointer}.ds-app-action:hover{border-width:var(--rule-hover);padding:calc(var(--gap-s) + var(--app-rule-row) - var(--rule-hover)) calc(var(--gap-m) + var(--app-rule-row) - var(--rule-hover))}.ds-app-action:focus-visible{outline:var(--focus-outline-width) solid var(--app-text);outline-offset:var(--focus-outline-offset)}.ds-app-action--outline{background:var(--app-background);color:var(--app-blue-text)}"
+    },
+    {
+      "name": "Navigation place",
+      "kind": "nav",
+      "refersTo": "app-place",
+      "description": "Built in the shell (shell.css .shell__place), as the rail, the fly-out and the bottom tab row. A line icon in the destination's accent and a word in its text companion, 10px radius on every place so the focus ring is one shape. The current place sits on the subtle surface and takes weight 600; there is no underline and no colour bar.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Places\"><a class=\"ds-place ds-place--notebook\" href=\"#\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"1\"/><line x1=\"9\" y1=\"3\" x2=\"9\" y2=\"21\"/></svg>Notebook</a><a class=\"ds-place ds-place--idea\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M9 18h6\"/><path d=\"M10 21h4\"/><path d=\"M12 3a6 6 0 0 0-3 11c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a6 6 0 0 0-3-11Z\"/></svg>Idea log</a></nav>",
+      "css": ".ds-nav{display:flex;flex-direction:column;width:var(--app-size-nav-w);padding:var(--gap-xs) var(--gap-m)}.ds-place{display:flex;align-items:center;gap:var(--gap-xs);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-control);font-family:var(--face-grotesk);font-size:var(--app-size-meta);text-decoration:none}.ds-place svg{width:var(--app-size-icon);height:var(--app-size-icon)}.ds-place[aria-current=\"page\"]{background:var(--app-surface-subtle);font-weight:600}.ds-place--notebook{color:var(--app-notebook-text)}.ds-place--notebook svg{stroke:var(--app-notebook)}.ds-place--idea{color:var(--app-idea-log-text)}.ds-place--idea svg{stroke:var(--app-idea-log)}.ds-place:focus-visible{outline:var(--focus-outline-width) solid var(--app-text);outline-offset:var(--focus-outline-offset)}"
+    },
+    {
+      "name": "Home recipe row",
+      "kind": "custom",
+      "refersTo": "app-name",
+      "description": "Built on Home (home.css .home__row). A grid of rail mark in the destination's accent, place name over recipe name, standing word, batch tally (an open sprinkle per batch, always beside the count in words) and actions. The recipe has no colour of its own.",
+      "html": "<ul class=\"ds-home-list\"><li class=\"ds-home-row\"><span class=\"ds-home-row__rail\" aria-hidden=\"true\"></span><p class=\"ds-home-row__place\">Notebook</p><h2 class=\"ds-home-row__name\"><a href=\"#\">Olive Oil Ice Cream</a></h2><span class=\"ds-home-row__standing\">Tasted</span><span class=\"ds-home-row__meta\"><span class=\"ds-home-row__tally\" aria-hidden=\"true\"><span class=\"ds-home-row__mark\"></span><span class=\"ds-home-row__mark\"></span></span><span class=\"ds-home-row__count\">2 batches</span></span><span class=\"ds-home-row__actions\"><a class=\"ds-app-action\" href=\"#\">Next version</a></span></li></ul>",
+      "css": ".ds-home-list{list-style:none;margin:0;padding:0;font-family:var(--face-grotesk);color:var(--app-text)}.ds-home-row{display:grid;grid-template-columns:auto 1fr var(--app-col-standing) var(--app-col-tally) auto;grid-template-areas:'rail place standing tally actions' 'rail name standing tally actions';align-items:center;column-gap:var(--gap-m);row-gap:var(--gap-hair);padding:var(--gap-m) 0;border-top:var(--app-rule-row) solid var(--app-divider)}.ds-home-row__rail{grid-area:rail;width:var(--app-size-rail-w);height:var(--app-size-rail-h);border-radius:var(--app-radius-rail);background:var(--app-notebook)}.ds-home-row__place{grid-area:place;margin:0;font-size:var(--app-size-label);font-weight:500;text-transform:uppercase;letter-spacing:var(--app-tracking-label);color:var(--app-notebook-text)}.ds-home-row__name{grid-area:name;margin:0;font-size:var(--app-size-recipe-name);font-weight:700;letter-spacing:-0.02em}.ds-home-row__name a{color:inherit}.ds-home-row__standing{grid-area:standing;font-size:var(--app-size-meta);font-weight:600}.ds-home-row__meta{grid-area:tally;display:flex;flex-direction:column;gap:var(--gap-hair)}.ds-home-row__tally{display:flex;flex-wrap:wrap;gap:var(--gap-xs);align-items:center}.ds-home-row__mark{display:inline-block;width:var(--app-size-sprinkle-w);height:var(--app-size-sprinkle-h);border-radius:var(--app-radius-sprinkle);border:var(--app-rule-tally) solid var(--app-notebook)}.ds-home-row__count{font-size:var(--app-size-label);color:var(--app-text-secondary);font-variant-numeric:tabular-nums}.ds-home-row__actions{grid-area:actions}.ds-app-action{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:var(--touch-min);padding:var(--gap-s) var(--gap-m);border-radius:var(--app-radius-control);border:var(--app-rule-row) solid var(--app-blue-text);background:var(--app-blue-text);color:var(--app-background);font-size:var(--app-size-meta);font-weight:600;text-decoration:none}"
+    },
+    {
+      "name": "Upright list row",
+      "kind": "custom",
+      "refersTo": "app-body",
+      "description": "Built in the Notebook (UprightRail.jsx; sketch 011 decision 19). The vertical list History uses below 1366 and the batch list uses at every width: a 12px round mark (filled where done, hollow where not, ringed where in view), a blue underlined title over a label-size meta line, rows at least 44px tall, and a 1px connector that runs only between marks. The row in view is bold ink, not a link.",
+      "html": "<ol class=\"ds-upright\"><li class=\"ds-upright__row\"><a class=\"ds-upright__link\" href=\"#\"><span class=\"ds-upright__mark-box\"><span class=\"ds-upright__mark ds-upright__mark--filled\"></span></span><span class=\"ds-upright__text\"><span class=\"ds-upright__title\">Version 1 · 50 g oil</span><span class=\"ds-upright__meta\">2 Aug 2026 · churned</span></span></a></li><li class=\"ds-upright__row\"><a class=\"ds-upright__link\" href=\"#\" aria-current=\"page\"><span class=\"ds-upright__mark-box\"><span class=\"ds-upright__mark ds-upright__mark--in-view\"></span></span><span class=\"ds-upright__text\"><span class=\"ds-upright__title\">Version 2 · 55 g oil</span><span class=\"ds-upright__meta\">not yet churned</span></span></a></li></ol>",
+      "css": ".ds-upright{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--gap-s);font-family:var(--face-grotesk)}.ds-upright__row{position:relative}.ds-upright__row:not(:last-child)::before{content:'';position:absolute;left:calc(var(--app-notebook-history-mark-size) / 2 - var(--app-rule-row) / 2);top:calc(var(--app-notebook-history-name-line-h) / 2 + var(--app-notebook-history-mark-size) / 2 + var(--gap-hair));bottom:calc(-1 * var(--gap-s));width:var(--app-rule-row);background:var(--app-divider)}.ds-upright__link{position:relative;display:grid;grid-template-columns:var(--app-notebook-history-mark-size) minmax(0,1fr);column-gap:var(--app-notebook-recipe-rail-gap);align-items:start;min-height:var(--touch-min);text-decoration:none;color:inherit}.ds-upright__mark-box{display:flex;align-items:center;height:var(--app-notebook-history-name-line-h)}.ds-upright__text{display:flex;flex-direction:column;gap:var(--gap-hair);min-width:0}.ds-upright__mark{box-sizing:border-box;width:var(--app-notebook-history-mark-size);height:var(--app-notebook-history-mark-size);border-radius:50%;background:var(--app-background);border:var(--rule-baseline) solid var(--app-notebook)}.ds-upright__mark--filled{background:var(--app-notebook);border:none}.ds-upright__mark--in-view{box-shadow:0 0 0 var(--app-notebook-history-ring-inset) var(--app-background),0 0 0 var(--app-notebook-history-ring-w) var(--app-notebook)}.ds-upright__title{font-size:var(--app-size-meta);color:var(--app-blue-text);text-decoration:underline;text-underline-offset:var(--app-notebook-link-underline-offset)}.ds-upright__link[aria-current=\"page\"] .ds-upright__title{font-weight:700;color:var(--app-text);text-decoration:none}.ds-upright__meta{font-size:var(--app-size-label);color:var(--app-text-secondary)}"
+    },
+    {
+      "name": "Log measured cell (App)",
+      "kind": "custom",
+      "refersTo": "app-log-value",
+      "description": "Built in the batch log (.notebook-log .batch-row__cell, App context). A caption in the label role, the figure at the log value role in the App text colour, a unit at meta size in secondary text, a plan sub-line at label size. An absent value reads \"not measured\" in secondary text: an absence is not a record.",
+      "html": "<div class=\"ds-log-cells\"><div class=\"ds-log-cell\"><span class=\"ds-log-cell__label\">Out of the machine</span><span class=\"ds-log-cell__value\">−6 <span class=\"ds-log-cell__unit\">°C</span></span><span class=\"ds-log-cell__plan\">plan −5 to −7 °C</span></div><div class=\"ds-log-cell\"><span class=\"ds-log-cell__label\">Air</span><span class=\"ds-log-cell__unit\">not measured</span></div></div>",
+      "css": ".ds-log-cells{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--app-notebook-log-cell-gap-row) var(--gap-m);font-family:var(--face-grotesk)}.ds-log-cell{display:flex;flex-direction:column;gap:var(--gap-hair)}.ds-log-cell__label{font-size:var(--app-size-label);font-weight:600;letter-spacing:var(--app-tracking-label);text-transform:uppercase;color:var(--app-text-secondary)}.ds-log-cell__value{font-size:var(--app-notebook-log-value-size);font-weight:600;line-height:normal;color:var(--app-text);font-variant-numeric:tabular-nums}.ds-log-cell__unit{font-size:var(--app-size-meta);font-weight:400;color:var(--app-text-secondary)}.ds-log-cell__plan{font-size:var(--app-size-label);color:var(--app-text-secondary)}"
     }
   ],
   "narrative": {
     "northStar": "The Formulation Cookbook",
-    "overview": "The cookbook remains the material reference for Recipe Sheets and batch/tasting logs. Around those paper surfaces, Sprinkles has a colorful app interface for navigation, recipe context, history, and supporting tools. The two contexts belong to one product: paper supports reading, making, and recording; the app interface supports finding, choosing, and continuing work. The retired name “Sprinkles Jar” is not an interface label.\n\n**The Context Boundary Rule.** Apply paper rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Instructions, and Notes belong to the version's Recipe Sheet. Batch records keep the paper and pen treatment. A shared route does not imply a shared visual context.\n\n| Context | Approved direction | Implementation status |\n|---|---|---|\n| App interface | Bright, colorful, approachable; the approved Option B destination palette and neutral set. Color identifies and guides, never judges a result. | Base palette and neutrals approved; interaction and feedback colors, derived states, type roles, shapes, depth, motion, and components remain unresolved. Existing paper-styled shell/history controls are transitional. |\n| Recipe Sheet and batch/tasting log | Paper, ink, pen blue, restrained rules, readable prose and precise quantities. | Existing tokens and component catalogue below. Proposed highlighter role remains unresolved. |\n| Print | Black on white, with room for handwritten records and a stable reference to the version. | Print behavior is owned by the print surface brief; screen paper color is not a requirement to print a background. |\n\nHome composition belongs in its surface brief. Mockups are exploration evidence, not token specifications: photographs, handwriting, slogans, and exact component geometry are not approved merely because they appear in a preferred concept.",
+    "overview": "The cookbook remains the material reference for Recipe Sheets and batch/tasting logs. Around those Sheet surfaces, Sprinkles has a colorful app interface for navigation, recipe context, history, and supporting tools. The two contexts belong to one product: the Sheet supports reading, making, and recording; the app interface supports finding, choosing, and continuing work. The retired name “Sprinkles Jar” is not an interface label.\n\n**The two contexts are named.** The **Sheet** is the Recipe Sheet, the batch and tasting log, and the print sheet. The **App** is Home, Notebook, Recipe Book, Idea log, Ingredients, and Kitchen. Every colour token carries its context as a prefix: `sheet-*` for the Sheet, `app-*` for the App. Earlier drafts of this document named the Sheet after its material.\n\n**The Context Boundary Rule.** Apply Sheet rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Before you start, and Instructions belong to the version's Recipe Sheet. On screen, the batch and tasting record is App context (Mark, 2026-09-23); the Sheet in its Notebook form carries only the batch in view's as-made grams and Instructions changes in the hand, and the printed batch log keeps the paper and pen treatment. The Sheet has two forms — Notebook (as-made and log) and Recipe Book (neither) — per `.impeccable/surfaces/route-recipe.md` § \"03.5 revision\". A shared route does not imply a shared visual context.\n\nHome composition belongs in its surface brief. Mockups are exploration evidence, not token specifications: photographs, handwriting, slogans, and exact component geometry are not approved merely because they appear in a preferred concept.",
     "keyCharacteristics": [
-      "Two explicit visual contexts: colorful app interface and paper Recipe Sheets/records.",
-      "Four implemented paper color roles, plus approved app destination colors and neutrals; no recipe-specific colors.",
-      "Paper prose uses the text face; measured quantities use the grotesk with tabular numerals.",
-      "Paper controls preserve the binder's ink outlines, pen-blue selection, and distinct focus indication.",
+      "Two explicit visual contexts: the colorful app interface, and the Sheet (Recipe Sheets and records).",
+      "Four implemented Sheet color roles, plus the App's destination colors, text companions and neutrals, all implemented; no recipe-specific colors.",
+      "Sheet prose uses the text face; measured quantities use the grotesk with tabular numerals. The App is one grotesk, with the hand for the maker's words.",
+      "Sheet controls preserve the binder's ink outlines, pen-blue selection, and distinct focus indication.",
       "Across both contexts, color never carries a verdict; meaning and interaction state remain legible without color.",
       "Approved direction is distinct from shipped components and unresolved visual choices."
     ],
     "rules": [
       {
         "name": "The Context Boundary Rule",
-        "body": "Apply paper rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Instructions, and Notes belong to the version's Recipe Sheet. Batch records keep the paper and pen treatment. A shared route does not imply a shared visual context.",
+        "body": "Apply Sheet rules to Recipe Sheets, batch/tasting logs, and print, not to every element on a recipe route. Recipe-level name and description, History, provenance, version selection, and navigation belong to app context. Sheet title, Sheet description, ingredients, Before you start, and Instructions belong to the version's Recipe Sheet. On screen, the batch and tasting record is App context (Mark, 2026-09-23); the Sheet in its Notebook form carries only the batch in view's as-made grams and Instructions changes in the hand, and the printed batch log keeps the paper and pen treatment. The Sheet has two forms — Notebook (as-made and log) and Recipe Book (neither) — per `.impeccable/surfaces/route-recipe.md` § \"03.5 revision\". A shared route does not imply a shared visual context.",
         "section": "overview"
       },
       {
         "name": "The Two-Ink Rule",
-        "body": "Within the paper contexts, printed matter is ink black; recorded matter is pen blue; the two never mix on one element. A value that is half plan and half record is two values. The record keeps its blue after saving — it is the maker's, and saving changes form, not ink.",
+        "body": "Within the Sheet, printed matter is ink black; recorded matter is pen blue; the two never mix on one element. A value that is half plan and half record is two values.",
         "section": "colors"
       },
       {
@@ -434,12 +607,12 @@
       },
       {
         "name": "The Bookcloth Rule",
-        "body": "In paper contexts, bookcloth names regions or draws the existing band-sub-row hairline. This role does not constrain green or other identity colors in the app interface.",
+        "body": "In the Sheet, bookcloth names regions or draws the existing band-sub-row hairline. This role does not constrain green or other identity colors in the app interface.",
         "section": "colors"
       },
       {
         "name": "The Counted-in-Grotesk Rule",
-        "body": "Any value that can be weighed, measured, or compared sits in the grotesk with tabular numerals. Prose sits in the text face. The step number is a figure, so it is grotesk.",
+        "body": "Any value that can be weighed, measured, or compared sits in the grotesk with tabular numerals. Prose sits in the text face.",
         "section": "typography"
       },
       {
@@ -453,6 +626,16 @@
         "section": "typography"
       },
       {
+        "name": "The Hand Rule",
+        "body": "In the App, what the maker observed is written in the hand, in sheet pen blue: a tasting, a Next time, a Why, a note on a batch, an idea. What the maker specified (ingredients, method, quantities, dates, names) is set in type, because a specification is not an observation. What the app writes is set in type, always, so the hand never speaks in the app's voice and a machine suggestion is never mistaken for the maker's judgement. A question the maker typed to an expert is set in type; it is the maker's, but it is not an observation. The hand is a face, not a colour rule: it is always pen blue, but pen blue is not always the hand. The hand is for display, never entry (sketch 011 decision 17, Mark, 2026-09-27: \"type in the prose and show in the hand\"): the maker types an observation in the prose-field role — the text face in sheet pen blue, 16px under a coarse pointer — and the saved words show in the hand. No field, textarea or select is ever set in the hand.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hand Rule on the Sheet",
+        "body": "(bent per D-19, Mark, 2026-09-24). The Sheet's one exception: batch edits written on the Sheet in its Notebook form — the batch in view's weighed as-made grams and its Instructions changes — are written in the hand, where the rule above would set a weighed figure in type. They are what the maker did at the bench, entered against the printed plan, so they take the pen's voice once recorded; like every entry, they are typed in the field's own type (the display-only rule above). The Sheet's hand is its own rule (`.sheet-hand`): Caveat at `--size-hand-min` with `--sheet-leading-hand` (1), in sheet pen blue, falling back to the text face in italic under forced colours and in print. The plan beside it stays in type and ink; the Two-Ink Rule still holds. Nothing else on the Sheet moves into the hand.",
+        "section": "typography"
+      },
+      {
         "name": "The Caption-and-Helper Rule",
         "body": "A caption is uppercase and labels exactly one input. A sentence that explains rather than labels is a *helper*, sentence-cased, and it sits beside the caption as a sibling — never folded into it, where `text-transform` would shout it.",
         "section": "typography"
@@ -463,13 +646,23 @@
         "section": "typography"
       },
       {
+        "name": "The Derived-Cut Rule",
+        "body": "A cut is never picked: measure each part's content limits, set a value for each, set which part gives way first, and the cut falls out as a sum. When a new part joins the route, it gets measured and ranked, and the sums are redone.",
+        "section": "layout"
+      },
+      {
+        "name": "The Grouping Rule",
+        "body": "Layout changes share a cut wherever the set values allow, so the page changes a few times, all at once, rather than one part at a time (Mark, 2026-09-26): at 724 the list-form table, the 20px margin, the stacked band, the bottom tab row and the scrolling header move together; the Sheet's second column, the log's place and the folds' default have a cut each. Touch sizes follow the pointer only — a narrow mouse window keeps mouse sizes — which retired the width arm of the touch union below.",
+        "section": "layout"
+      },
+      {
         "name": "The Caption Rule",
-        "body": "Every caption that sits atop its own content — field captions, axis names, segmented captions, group cues — carries one 6px gap (`--gap-xs`) to it, whatever it captions. One rule for every caption site.",
+        "body": "Every caption that sits atop its own content — field captions, axis names, segmented captions — carries one 6px gap (`--gap-xs`) to it, whatever it captions. One rule for every caption site.",
         "section": "layout"
       },
       {
         "name": "The Drawn-For Rule",
-        "body": "A rule governs only the case it was drawn for. The touch union also matches every narrow width, where a 44px caption line was drawn and verified; applying the wide-touch reserve across the union silently overwrote that drawing at 680, 580, 480 and 393. When a new case appears, it gets its own condition — never a widened old one.",
+        "body": "A rule governs only the case it was drawn for. The old touch union also matched every narrow width, where a 44px caption line was drawn and verified; applying the wide-touch reserve across the union silently overwrote that drawing at 680, 580, 480 and 393. When a new case appears, it gets its own condition — never a widened old one.",
         "section": "layout"
       },
       {
@@ -478,41 +671,57 @@
         "section": "layout"
       },
       {
-        "name": "The Paper-Is-Flat Rule",
-        "body": "Within a Recipe Sheet or batch/tasting log, nothing floats above the paper. If an element needs to stand apart, it gets a heavier rule, an ink outline, or the pen's fill — never a shadow.",
-        "section": "elevation & depth"
+        "name": "The Sheet-Is-Flat Rule",
+        "body": "Within a Recipe Sheet or the printed batch log, nothing floats above the paper (on screen the log is App context, which is built flat apart from the fly-out). If an element needs to stand apart, it gets a heavier rule, an ink outline, or the pen's fill — never a shadow.",
+        "section": "elevation"
       },
       {
         "name": "The Focus-Heavier-than-State Rule",
         "body": "One focus rule at the browser's own `:focus-visible` boundary draws a 2px ink outline offset 2px — heavier than the 1px outline any pointed-at content carries, and a different sign from a pressed control's fill. A focused element that is also stateful reads both. There is exactly one documented exception: `.is-landing-focus:focus`, a plain `:focus` rule that makes the fork's landing focus visible after a mouse-driven Save, which Chrome's modality tracking would otherwise leave ringless.",
-        "section": "elevation & depth"
+        "section": "elevation"
+      },
+      {
+        "name": "The Strike Rule",
+        "body": "A strike means not in force, and what sits beside it says why: beside a skipped step, the word \"skipped\" (the batch layer); beside a superseded value, its replacement; beside a removed row or step, the word \"removed\". The stroke is one weight, 1.2px in ink (`--rule-strike`), the same in all three, and it is never the only carrier. Beside means adjacent: next to the replacement, or directly under it, as the ingredient table's struck figure stands under the current one from 724 and in the phone's list (sketch 011 decision 31); a struck paragraph (a changed step's prose, the headnote) stands below its replacement. A struck step's strike is scoped to its prose span so the label beside it stays legible. No builder adds a fourth meaning. (Recorded here from `.impeccable/surfaces/route-recipe-version.md` § 7 and the built `.struck-value`, `.prose-struck-beneath` and `.method-step__prose--struck`, as that brief asked.)",
+        "section": "elevation"
       },
       {
         "name": "The Hover-Is-Weight Rule",
         "body": "Hover thickens a border from 1px to a whole 2px and removes exactly that much padding, so the box never changes size — 1.5px renders as 1px at DPR 1, which is why hover needs its own token rather than borrowing the baseline. A joined control thickens in place and stacks above its neighbours. Weight, never position or hue.",
-        "section": "elevation & depth"
+        "section": "elevation"
+      },
+      {
+        "name": "The One Head Rule",
+        "body": "A Show/Hide is never hand-built; two drawings of one control contradict each other. - **Upright list** (`UprightRail.jsx`): the vertical row both History (below 1366) and the batch list use — a 12px round mark, a title (meta size, a blue underlined link; bold ink and no underline on the row in view) over a label-size meta line in secondary text, a row at least 44px tall, and a 1px connector that runs only between marks, from just below one mark to the top of the next row and never across a circle (G-03.5-5).",
+        "section": "components"
       }
     ],
     "dos": [
-      "Do establish whether an element belongs to app context, a Recipe Sheet, a batch/tasting log, or print before applying visual rules.",
-      "Do preserve the implemented paper tokens and distinguish approved app tokens from shipped implementation.",
-      "Do keep destination accents distinct from ink that communicates plan and actual records; do not assign recipe-specific colors.",
-      "Do keep keyboard focus discernible from selected state, preserve semantic controls, and make touch targets usable.",
-      "Do state balance, uncertainty, errors, and provenance in words; color never supplies a verdict.",
-      "Do keep units correctly cased, quantities legible, and required/error feedback attached to its control.",
-      "Do use the paper catalogue for paper typography, outlines, pen selection, step order, and print behavior.",
-      "Do distinguish approved direction, observed implementation, and unresolved design choices.",
-      "Do keep page composition in surface briefs and reusable visual rules in this document."
+      "**Do** establish whether an element belongs to app context, a Recipe Sheet, a batch/tasting log, or print before applying visual rules.",
+      "**Do** preserve the implemented Sheet tokens; add app tokens only when their roles and values have been specified and implemented.",
+      "**Do** keep recipe identity and app accents distinct from ink that communicates plan and actual records.",
+      "**Do** keep keyboard focus discernible from selected state, preserve semantic controls, and make touch targets usable.",
+      "**Do** state balance, uncertainty, errors, and provenance in words; color never supplies a verdict.",
+      "**Do** keep units correctly cased, quantities legible, and required/error feedback attached to its control.",
+      "**Do** use the Sheet catalogue for Sheet typography, outlines, pen selection, step order, and print behavior.",
+      "**Do** distinguish approved direction, observed implementation, and unresolved design choices.",
+      "**Do** keep page composition in surface briefs and reusable visual rules in this document.",
+      "**Do** set the maker's saved observations in the hand and sheet pen blue in the App (typed in the prose-field role, never in the hand), at or above the hand's minimum size, with the text-face fallback in place for forced colours and print.",
+      "**Do** set a destination's name, count or link in its text companion and its mark in its accent, and fill a primary App action with app blue's companion under a white label.",
+      "**Do** give every App control the one 10px radius, every App action a 44px floor, and let hover change a border's weight, never the box's size."
     ],
     "donts": [
-      "Don't impose the paper palette's four colors on Home, navigation, recipe context, History, Ingredients, Kitchen, or consultations.",
-      "Don't extend paper's flatness, square corners, no-motion treatment, or image restrictions into app-wide bans.",
-      "Don't add shadows, gradients, rounded cards, or animation inside paper contexts merely because the surrounding app can use a different treatment.",
-      "Don't introduce app palette values, fonts, shadows, radii, or motion timings from exploratory mocks without a design decision.",
-      "Don't treat sidecar tonal-ramp previews as approved additional colors.",
-      "Don't use color to encode success, failure, warning, or uncertainty, or make interaction state depend on color alone.",
-      "Don't paint recipe-level metadata as recorded pen content merely because it shares a route with the Sheet.",
-      "Don't call the surrounding interface “Sprinkles Jar.” Use the approved section names and vocabulary."
+      "**Don't** impose the Sheet palette's four colors on Home, navigation, recipe context, History, Ingredients, Kitchen, or consultations.",
+      "**Don't** extend the Sheet's flatness, square corners, no-motion treatment, or image restrictions into app-wide bans.",
+      "**Don't** add shadows, gradients, rounded cards, or animation inside the Sheet merely because the surrounding app can use a different treatment.",
+      "**Don't** introduce app palette values, fonts, shadows, radii, or motion timings from exploratory mocks without a design decision.",
+      "**Don't** treat sidecar tonal-ramp previews as approved additional colors.",
+      "**Don't** use color to encode success, failure, warning, or uncertainty, or make interaction state depend on color alone.",
+      "**Don't** paint recipe-level metadata as recorded pen content merely because it shares a route with the Sheet.",
+      "**Don't** call the surrounding interface “Sprinkles Jar.” Use the approved section names and vocabulary.",
+      "**Don't** put a specification, a label, a date, a heading, or anything the app wrote in the hand, and don't load the hand's file from a network.",
+      "**Don't** give a recipe a colour of its own, and don't let a rail, a sprinkle, or an underline mean anything but the place a thing lives or the place you are.",
+      "**Don't** use an accent as text or as a fill under a white label (app blue reads 3.90:1 there), and don't fill a picked App control in pen blue: pen blue in the App is the maker's own words."
     ]
   }
 }

@@ -241,8 +241,11 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
 // battery); the tasting's own measured cells (temperature signed, melt
 // test with its own unit, melt style as its picked words); the defects as
 // a line of the picked words, including the recipe-specific flaw by its
-// plain name (Bitter is stored separately, but the read view does not
-// repeat the entry form's "This recipe only" classification);
+// plain name; the reading heads the marks and the picked words with the
+// pen's own two names, Every recipe and This recipe only (sketch 011 README
+// decision 58, Mark's answers B and B2, 2026-10-06); Any problems? heads the
+// picked words in Next time's caption face, and melt test and melt style
+// stand with the measured cells at the top;
 // and the note as prose. No aggregate, average, or overall figure is ever
 // derived (D12) — an unmarked axis is dropped entirely, never a blank
 // judgment. The caller renders this only while `batch.tasting` exists; a
@@ -252,10 +255,31 @@ function TastingReading({ batch, foldsOpen = true }) {
   const axes = axesForBatch(batch);
   const marks = batch.tasting.marks;
   const markedAxes = axes.filter((axis) => marks[axis.key] != null);
-  const defectWords = [
-    ...(batch.tasting.defects ?? []),
-    ...(batch.tasting.bitterDeclared ? [DECLARED_FLAW] : []),
-  ];
+  const coreAxes = markedAxes.filter((axis) => axis.group === 'core');
+  const declaredAxes = markedAxes.filter((axis) => axis.group === 'declared');
+  const coreProblems = batch.tasting.defects ?? [];
+  const declaredProblems = batch.tasting.bitterDeclared ? [DECLARED_FLAW] : [];
+  const markGroup = (name, groupAxes) =>
+    groupAxes.length > 0 && (
+      <div className="tasting-reading__group">
+        <h4 className="batch-row__group-label batch-row__group-label--cue">{name}</h4>
+        <div className="batch-row__cells tasting-reading__axes">
+          {groupAxes.map((axis) => (
+            <div className="batch-row__cell" key={axis.key}>
+              <span className="batch-row__cell-label">{axis.name}</span>
+              <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  const problemBlock = (name, words) =>
+    words.length > 0 && (
+      <div className="tasting-reading__subgroup">
+        <h5 className="batch-row__group-label batch-row__group-label--cue">{name}</h5>
+        <span className="app-hand tasting-reading__problems">{words.join(' · ')}</span>
+      </div>
+    );
   // The Tasting fold (decisions_recorded 2/3, 03.5-16): its own full-row
   // head at every width, reading the same foldsOpen prop (the negation of
   // belowDesktop) every other fold reads, and resetting to that default on
@@ -294,54 +318,39 @@ function TastingReading({ batch, foldsOpen = true }) {
             <span className="batch-row__unit batch-row__unit--absent">not measured</span>
           )}
         </div>
+        <div className="batch-row__cell">
+          <span className="batch-row__cell-label">Melt test</span>
+          {batch.tasting.meltTestG != null ? (
+            <span className="batch-row__cell-value">
+              {churnMeasured(batch.tasting.meltTestG)}
+              <span className="batch-row__unit"> g lost at 20 min</span>
+            </span>
+          ) : (
+            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+          )}
+        </div>
+        <div className="batch-row__cell">
+          <span className="batch-row__cell-label">Melt style</span>
+          {batch.tasting.meltStyle != null ? (
+            <span className="batch-row__cell-value">{batch.tasting.meltStyle}</span>
+          ) : (
+            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+          )}
+        </div>
       </div>
       {batch.tasting.note && <p className="prose-text tasting-reading__note">{batch.tasting.note}</p>}
-      {markedAxes.length > 0 && (
+      {markGroup('Every recipe', coreAxes)}
+      {markGroup('This recipe only', declaredAxes)}
+      {/* Any problems? (sketch 011 README decision 58, Mark's answers B and
+          B2): the maker's own words, in the hand, split the pen's two ways;
+          the heading keeps Next time's caption face. */}
+      {(coreProblems.length > 0 || declaredProblems.length > 0) && (
         <div className="tasting-reading__group">
-          <h4 className="batch-row__group-label">Observations</h4>
-          <div className="batch-row__cells tasting-reading__axes">
-            {markedAxes.map((axis) => (
-              <div className="batch-row__cell" key={axis.key}>
-                <span className="batch-row__cell-label">{axis.name}</span>
-                <span className="batch-row__cell-value">{`${readMarkWord(axis, marks[axis.key])} (${marks[axis.key]})`}</span>
-              </div>
-            ))}
-          </div>
+          <h4 className="batch-row__group-label">Any problems?</h4>
+          {problemBlock('Every recipe', coreProblems)}
+          {problemBlock('This recipe only', declaredProblems)}
         </div>
       )}
-      {/* Problems (1600-batch.html): the maker's own words, in the hand —
-          a separate caption from Observations' measured axis marks
-          (03.5-07 decisions_recorded 1-3). */}
-      {defectWords.length > 0 && (
-        <div className="tasting-reading__group">
-          <h4 className="batch-row__group-label">Problems</h4>
-          <span className="app-hand tasting-reading__problems">{defectWords.join(' · ')}</span>
-        </div>
-      )}
-      <div className="tasting-reading__group">
-        <h4 className="batch-row__group-label">Melt</h4>
-        <div className="batch-row__cells tasting-reading__melt">
-          <div className="batch-row__cell">
-            <span className="batch-row__cell-label">Melt test</span>
-            {batch.tasting.meltTestG != null ? (
-              <span className="batch-row__cell-value">
-                {churnMeasured(batch.tasting.meltTestG)}
-                <span className="batch-row__unit"> g lost at 20 min</span>
-              </span>
-            ) : (
-              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-            )}
-          </div>
-          <div className="batch-row__cell">
-            <span className="batch-row__cell-label">Melt style</span>
-            {batch.tasting.meltStyle != null ? (
-              <span className="batch-row__cell-value">{batch.tasting.meltStyle}</span>
-            ) : (
-              <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-            )}
-          </div>
-        </div>
-      </div>
     </>
   );
   return (

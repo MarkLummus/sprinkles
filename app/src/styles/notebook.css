@@ -820,6 +820,29 @@
   margin: 0;
 }
 
+/* The reading's four group names (the two h4s over the marks, the two h5s
+   over the problems) take the pen's cue face (sketch 011 decision 58 B2,
+   board tasting-group-names.html): decision 40's .axes-cue face. Same
+   two-class specificity as the base label rule above, so its place after
+   that rule is what makes it win; Any problems? and Next time keep the
+   caps grey face. */
+.notebook-log .batch-row__group-label--cue {
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+
+.notebook-log .tasting-reading__subgroup + .tasting-reading__subgroup {
+  margin-top: var(--gap-l);
+}
+
+.notebook-log .tasting-reading__subgroup > .tasting-reading__problems {
+  margin-top: 0;
+}
+
 .notebook-log .batch-row__date {
   font-family: var(--face-grotesk);
   font-size: var(--app-notebook-size-body);

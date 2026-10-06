@@ -209,7 +209,7 @@
   "board": {
    "article": [
     816,
-    3215
+    2235
    ],
    "sections": {
     "recipe-band": [
@@ -228,19 +228,13 @@
      48,
      359,
      720,
-     736
+     786
     ],
     "method-region": [
      48,
-     2165,
+     1185,
      720,
      982
-    ],
-    "side-region": [
-     48,
-     1115,
-     720,
-     1030
     ]
    },
    "headings": [
@@ -258,53 +252,45 @@
     ],
     [
      "Instructions",
-     2165
-    ],
-    [
-     "Balance",
-     1115
-    ],
-    [
-     "Watch for",
-     1927
+     1185
     ]
    ],
    "beforeAboveTable": true,
    "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
    "thead": true,
    "theadCells": [
-    "Ingredient",
-    "% of batch"
+    "As made",
+    "",
+    "Ingredient"
    ],
    "tbodies": 4,
    "tfoot": true,
    "rows": [
-    425,
-    459,
-    506,
-    552,
-    583,
-    614,
-    645,
-    679,
-    727,
-    760,
-    791,
-    836,
-    867,
-    900,
-    935,
-    967,
-    1002,
-    1033
+    410,
+    445,
+    492,
+    537,
+    575,
+    613,
+    651,
+    686,
+    733,
+    771,
+    809,
+    855,
+    893,
+    931,
+    965,
+    1003,
+    1038,
+    1076
    ],
    "steps": 10,
    "hiddenAttr": 0,
    "handFace": null
   },
   "boardDoc": {
-   "docH": 3215,
-   "bodyH": 3214.890625
+   "docH": 2235
   },
   "live": {
    "article": [
@@ -402,7 +388,212 @@
    "hiddenAttr": 1,
    "handFace": null
   },
-  "diff": []
+  "diff": [],
+  "table": {
+   "width": 720,
+   "head": [
+    "As made",
+    "",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-tick",
+     32
+    ],
+    [
+     "ingredient-table__col-name",
+     517
+    ],
+    [
+     "ps-col-grams",
+     81
+    ]
+   ],
+   "rowHeights": [
+    47,
+    45,
+    38,
+    38,
+    38,
+    47,
+    38,
+    38,
+    45,
+    38,
+    38,
+    38,
+    38,
+    38
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 14,
+   "watchFor": false,
+   "balance": false
+  }
+ },
+ "webkit_C": {
+  "board": {
+   "article": [
+    816,
+    2244
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     599,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     436,
+     815
+    ],
+    "method-region": [
+     48,
+     1194,
+     720,
+     982
+    ],
+    "side-region": [
+     504,
+     359,
+     264,
+     815
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     1194
+    ],
+    [
+     "Balance",
+     359
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "As made",
+    "",
+    "Ingredient"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    410,
+    445,
+    492,
+    537,
+    575,
+    613,
+    651,
+    686,
+    733,
+    771,
+    809,
+    855,
+    893,
+    931,
+    965,
+    1003,
+    1038,
+    1076
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2244
+  },
+  "diff": [],
+  "table": {
+   "width": 436,
+   "head": [
+    "As made",
+    "",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-tick",
+     32
+    ],
+    [
+     "ingredient-table__col-name",
+     232
+    ],
+    [
+     "ps-col-grams",
+     81
+    ]
+   ],
+   "rowHeights": [
+    47,
+    45,
+    38,
+    38,
+    38,
+    47,
+    38,
+    38,
+    45,
+    38,
+    38,
+    38,
+    38,
+    38
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 14,
+   "watchFor": false,
+   "balance": true
+  },
+  "cols": {
+   "grid": "435.84375px 264.140625px",
+   "table": 436,
+   "side": 264,
+   "rule": 264,
+   "balanceButtons": 0,
+   "watchFor": false
+  }
  },
  "webkit_BatchLogForm": {
   "scrollH": 1056,
@@ -642,7 +833,7 @@
   "board": {
    "article": [
     816,
-    3186
+    2224
    ],
    "sections": {
     "recipe-band": [
@@ -661,19 +852,13 @@
      48,
      359,
      720,
-     733
+     785
     ],
     "method-region": [
      48,
-     2146,
+     1184,
      720,
      972
-    ],
-    "side-region": [
-     48,
-     1112,
-     720,
-     1014
     ]
    },
    "headings": [
@@ -691,53 +876,45 @@
     ],
     [
      "Instructions",
-     2146
-    ],
-    [
-     "Balance",
-     1112
-    ],
-    [
-     "Watch for",
-     1918
+     1184
     ]
    ],
    "beforeAboveTable": true,
    "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
    "thead": true,
    "theadCells": [
-    "Ingredient",
-    "% of batch"
+    "As made",
+    "",
+    "Ingredient"
    ],
    "tbodies": 4,
    "tfoot": true,
    "rows": [
-    425,
-    460,
-    506,
-    552,
-    583,
-    614,
-    645,
-    679,
-    726,
-    758,
-    789,
-    835,
-    866,
-    898,
-    933,
+    411,
+    445,
+    492,
+    537,
+    575,
+    613,
+    651,
+    686,
+    733,
+    771,
+    809,
+    854,
+    892,
+    930,
     965,
-    1000,
-    1031
+    1003,
+    1037,
+    1075
    ],
    "steps": 10,
    "hiddenAttr": 0,
    "handFace": null
   },
   "boardDoc": {
-   "docH": 3186,
-   "bodyH": 3185.953125
+   "docH": 2224
   },
   "live": {
    "article": [
@@ -835,7 +1012,212 @@
    "hiddenAttr": 1,
    "handFace": null
   },
-  "diff": []
+  "diff": [],
+  "table": {
+   "width": 720,
+   "head": [
+    "As made",
+    "",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-tick",
+     32
+    ],
+    [
+     "ingredient-table__col-name",
+     523
+    ],
+    [
+     "ps-col-grams",
+     75
+    ]
+   ],
+   "rowHeights": [
+    47,
+    45,
+    38,
+    38,
+    38,
+    47,
+    38,
+    38,
+    45,
+    38,
+    38,
+    38,
+    38,
+    38
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 14,
+   "watchFor": false,
+   "balance": false
+  }
+ },
+ "chromium_C": {
+  "board": {
+   "article": [
+    816,
+    2210
+   ],
+   "sections": {
+    "recipe-band": [
+     48,
+     48,
+     720,
+     126
+    ],
+    "before-region": [
+     48,
+     194,
+     542,
+     145
+    ],
+    "ingredient-table-region": [
+     48,
+     359,
+     436,
+     791
+    ],
+    "method-region": [
+     48,
+     1170,
+     720,
+     972
+    ],
+    "side-region": [
+     504,
+     359,
+     264,
+     791
+    ]
+   },
+   "headings": [
+    [
+     "Olive Oil Ice Cream",
+     48
+    ],
+    [
+     "Before you start",
+     194
+    ],
+    [
+     "Ingredients",
+     359
+    ],
+    [
+     "Instructions",
+     1170
+    ],
+    [
+     "Balance",
+     359
+    ]
+   ],
+   "beforeAboveTable": true,
+   "beforeTextFirst": "Before you startTaste the Graza straight. Polyphenols degrad",
+   "thead": true,
+   "theadCells": [
+    "As made",
+    "",
+    "Ingredient"
+   ],
+   "tbodies": 4,
+   "tfoot": true,
+   "rows": [
+    411,
+    445,
+    492,
+    537,
+    575,
+    613,
+    651,
+    686,
+    733,
+    771,
+    809,
+    854,
+    892,
+    930,
+    965,
+    1003,
+    1037,
+    1075
+   ],
+   "steps": 10,
+   "hiddenAttr": 0,
+   "handFace": null
+  },
+  "boardDoc": {
+   "docH": 2210
+  },
+  "diff": [],
+  "table": {
+   "width": 436,
+   "head": [
+    "As made",
+    "",
+    "Ingredient"
+   ],
+   "cols": [
+    [
+     "ps-col-asmade",
+     90
+    ],
+    [
+     "ps-col-tick",
+     32
+    ],
+    [
+     "ingredient-table__col-name",
+     239
+    ],
+    [
+     "ps-col-grams",
+     75
+    ]
+   ],
+   "rowHeights": [
+    47,
+    45,
+    38,
+    38,
+    38,
+    47,
+    38,
+    38,
+    45,
+    38,
+    38,
+    38,
+    38,
+    38
+   ],
+   "nameWraps": [],
+   "minFont": 12,
+   "shareCells": 0,
+   "asMadeCells": 14,
+   "ticks": 14,
+   "watchFor": false,
+   "balance": true
+  },
+  "cols": {
+   "grid": "435.844px 264.141px",
+   "table": 436,
+   "side": 264,
+   "rule": 264,
+   "balanceButtons": 0,
+   "watchFor": false
+  }
  },
  "chromium_BatchLogForm": {
   "scrollH": 1056,
@@ -865,5 +1247,6 @@
   "boxes": 8,
   "stops": 30
  },
- "boardH": 3230
+ "boardH": 2250,
+ "boardH_col2": 2260
 }

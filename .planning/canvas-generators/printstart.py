@@ -63,10 +63,14 @@ return {{}};
 '''
 
 T_A = 'As built · the recipe page at 1280, no batch (production build, 2026-10-06, after Phase 03.7)'
-T_B = 'Print starting point · the Sheet as built, no batch, at letter width, no print design yet (2026-10-06, after Phase 03.7)'
+T_B = 'Print starting point · the Sheet, no batch, at letter width, with your edits of 2026-10-06 (As made first, no % of batch, no Watch for, no Balance)'
+T_C = 'Print starting point, alternate · Balance in column 2 beside the Ingredients (departs from the print brief § 4 anti-goal, no Balance; for Mark to decide)'
+NOTE_C = ("Alternate to the Print starting point: the same printed page, with Balance in a second column beside the Ingredients table and no Hide control. "
+          "It departs from the print brief's § 4 anti-goal (no Balance on the sheet). Yours to decide; nothing approved.")
 T_F1 = 'Page 1 · Batch log, front: At the machine (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
 T_F2 = 'Page 2 · Batch log, back: When you taste it (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
-NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today: one column, with the app's own print rules on. Right: the recipe page at 1280. "
+NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today (one column, the app's own print rules, a white page), with your edits of 2026-10-06 laid on: "
+        "As made is the first column with a tick box, no % of batch, no Watch for, no Balance. Beside it, the alternate with Balance in column 2. Right: the recipe page at 1280, as built. "
         "Both are captured from the production build of 2026-10-06 (real markup, the app's own stylesheets) with Olive Oil v1 as a version with no batch yet: "
         "the build's own no-batch markup, so no As made column, no logged figures and no skipped step. The app has no print design yet, so this is the starting point, not a proposal.\n\n"
         "Change the Print starting point board to design the print. What you change is what Phase 4 builds; what you leave is what the app already does.\n\n"
@@ -90,11 +94,17 @@ def build(canvas_in, out):
     # the page is white, as the real print renders it (Mark, 2026-10-06: printed pages are white). Measured 2026-10-06 on the dist of that day: Chrome's PDF (Background graphics off, the
     # dialog's default) and WebKit's print (wkprint.swift) both drop the Sheet's ground (#f7f7f4), and the app sets no print-color-adjust; the board showed the screen tint before. As built, not a change.
     css_b += '\n.recipe-page{background:#ffffff}'
-    sheet = '<div class="notebook"><div class="notebook-body"><div class="notebook-body__sheet">' + sheet + '</div></div></div>'
+    # Mark's edits on the capture (sheetedits.py: E1 As made first with a tick box, E2 no % of batch, E3 no Watch for, E4 no Balance here, Balance in column 2 on the alternate)
+    import sheetedits
+    wrap = lambda x: '<div class="notebook"><div class="notebook-body"><div class="notebook-body__sheet">' + x + '</div></div></div>'
+    sheet_col2 = wrap(sheetedits.col2_board(sheet)); sheet = wrap(sheetedits.main_board(sheet))
+    css_b += sheetedits.CSS
     h_a = max(CAP['facts'][k]['docH'] for k in CAP['facts'] if k.endswith('_1280_screen'))
     h_b = MEASURE.get('boardH', 4600)
     open(out + '/project/AsBuiltRecipePage.dc.html', 'w').write(board(T_A, shell, 1280, h_a, css_a))
     open(out + '/project/PrintStartingPoint.dc.html', 'w').write(board(T_B, sheet, 816, h_b, css_b, flow=True, paper=True))
+    h_c = MEASURE.get('boardH_col2', 4000)
+    open(out + '/project/PrintStartingPointBalanceCol2.dc.html', 'w').write(board(T_C, sheet_col2, 816, h_c, css_b + sheetedits.CSS_COL2, flow=True, paper=True))
     fcss = logforms.css()
     open(out + '/project/BatchLogForm.dc.html', 'w').write(board(T_F1, logforms.side1(*logforms.LINES['side1']), 816, 1056, fcss, paper=True))
     open(out + '/project/TastingLogForm.dc.html', 'w').write(board(T_F2, logforms.side2(*logforms.LINES['side2']), 816, 1056, fcss, paper=True))
@@ -108,10 +118,12 @@ def build(canvas_in, out):
     B['BatchLogForm.dc.html'] = dict(x=0, y=0, w=816, h=1056, page='page-11', paper='letter', title=T_F1)
     B['TastingLogForm.dc.html'] = dict(x=896, y=0, w=816, h=1056, page='page-11', paper='letter', title=T_F2)
     B['PrintStartingPoint.dc.html'].update(x=1792, y=0, w=816, h=h_b, title=T_B, paper='letter', print='flow')
-    B['AsBuiltRecipePage.dc.html'].update(x=2688, y=0, w=1280, h=h_a, title=T_A)
-    N['asbuilt-note'].update(x=4048, y=0, text=NOTE)
-    N['asbuilt-title'].update(maxW=3968)
-    for k in ('BatchLogForm.dc.html', 'TastingLogForm.dc.html'):
+    B['PrintStartingPointBalanceCol2.dc.html'] = dict(B.get('PrintStartingPointBalanceCol2.dc.html', {}), x=2688, y=0, w=816, h=h_c, page='page-11', paper='letter', print='flow', title=T_C)
+    B['AsBuiltRecipePage.dc.html'].update(x=3584, y=0, w=1280, h=h_a, title=T_A)
+    N['asbuilt-note'].update(x=4944, y=0, text=NOTE)
+    N['balance-col2-note'] = dict(N.get('balance-col2-note', {}), fill='gray', page='page-11', w=400, x=2688, y=h_c + 80, text=NOTE_C)
+    N['asbuilt-title'].update(maxW=4864)
+    for k in ('BatchLogForm.dc.html', 'TastingLogForm.dc.html', 'PrintStartingPointBalanceCol2.dc.html'):
         if k not in c['order']: c['order'].append(k)
     json.dump(c, open(out + '/project/canvas.json', 'w'), indent=1, ensure_ascii=False)
     return h_a, h_b

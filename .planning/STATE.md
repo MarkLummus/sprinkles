@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.6 complete, ready to plan Phase 04
-last_updated: "2026-10-06T02:42:51.903Z"
+last_updated: "2026-10-06T03:15:06.290Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 complete, transitioned to Phase 04
-state_head: a9cbaeda53b644a75b009c899953a5b33fb5dd4f
+state_head: dbc1a86ff402bfd3d7fb882707c73de61592de45
 progress:
   total_phases: 13
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-05 — Phase 03.6 complete, transitioned to Phase 04
+Last activity: 2026-10-05 - Completed quick task 261005-w3j: header Import/Export no longer shrink on hover
 
 Progress: [████████░░] 83% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -433,6 +433,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261005-db4 | Recording reads like the reading Sheet when a split ingredient has one line left | 2026-10-05 | f267b7e | [261005-db4-recording-reads-like-the-reading-sheet-w](./quick/261005-db4-recording-reads-like-the-reading-sheet-w/) |
 | 261005-t32 | Build: the blocked-save sentence in the blocked ingredient line (README decision 57, A recommended) | 2026-10-06 | d477a91 | [261005-t32-build-the-blocked-save-sentence-in-the-b](./quick/261005-t32-build-the-blocked-save-sentence-in-the-b/) |
 | 261005-txg | Build: the reading tasting groups (README decision 58, Melt B, names B2) | 2026-10-06 | 643923c | [261005-txg-build-the-reading-tasting-groups-readme-](./quick/261005-txg-build-the-reading-tasting-groups-readme-/) |
+| 261005-w3j | Fix: hovering the header's Import or Export no longer shrinks it (button.shell__place padding) | 2026-10-05 | dbc1a86 | [261005-w3j-fix-hovering-the-header-import-or-export](./quick/261005-w3j-fix-hovering-the-header-import-or-export/) |
 
 ### Roadmap Evolution
 
@@ -457,6 +458,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-05T10:46:37.292Z
-Stopped at: Phase 03.6 complete, ready to plan Phase 04
-Resume file: None
+Last session: 2026-10-05T11:00:00.000Z
+Stopped at: Session resumed from HANDOFF.json; Phase 04 ready to plan
+Resume file: .planning/HANDOFF.json

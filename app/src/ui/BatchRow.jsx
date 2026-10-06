@@ -338,7 +338,7 @@ function TastingReading({ batch, foldsOpen = true }) {
           )}
         </div>
       </div>
-      {batch.tasting.note && <p className="prose-text tasting-reading__note">{batch.tasting.note}</p>}
+      {batch.tasting.note && <p className="app-hand tasting-reading__note">{batch.tasting.note}</p>}
       {markGroup('Every recipe', coreAxes)}
       {markGroup('This recipe only', declaredAxes)}
       {/* Any problems? (sketch 011 README decision 58, Mark's answers B and

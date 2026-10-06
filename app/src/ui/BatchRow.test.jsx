@@ -496,6 +496,21 @@ describe('BatchRow — the tasting section, hidden until added (D-01, contract "
     expect(noteTextarea).toContain('placeholder="e.g. flavor, texture, what stood out"');
   });
 
+  // The hand is for display, not entry (DESIGN.md Hand Rule, sketch 011
+  // decision 17; quick 261005-wgz): the pen's note field keeps the prose-field
+  // role, blank or filled.
+  it('keeps the pen\'s note textarea at the prose-field role and never the hand, blank or filled (quick 261005-wgz)', () => {
+    const noteClass = (note) => {
+      const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true, note } });
+      const tag = markup.match(/<textarea[^>]*aria-label="How did it turn out\?"[^>]*>/)[0];
+      return tag.match(/class="([^"]*)"/)[1];
+    };
+    expect(noteClass('')).toBe('prose-field prose-field--empty');
+    expect(noteClass('Soft set')).toBe('prose-field');
+    expect(noteClass('')).not.toContain('app-hand');
+    expect(noteClass('Soft set')).not.toContain('app-hand');
+  });
+
   it('renders the Tasted date input, and Tempering/Tasting temperature as measured fields with their own units', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expect(markup).toMatch(
@@ -1562,10 +1577,15 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     expect(readingMarkup).not.toContain('tasting-reading__problems');
   });
 
-  it('renders the note as prose when written, and nothing when blank', () => {
+  // Mark 2026-10-05 (decide-tasting-note-in-the-hand; quick 261005-wgz): the
+  // saved note is the maker's own words, so it reads in the hand like Why and
+  // Next time (sketch 011 decision 17). The class prose-text, which the log
+  // restyles to the grotesk, leaves the paragraph.
+  it('renders the saved note in the hand when written, and nothing when blank (quick 261005-wgz)', () => {
     const notedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, note: 'Soft set, clean finish' } };
     const markup = renderBatchRow({ openBatch: notedBatch, batches: [notedBatch], mode: 'reading' });
-    expect(markup).toMatch(/<p class="prose-text tasting-reading__note">Soft set, clean finish<\/p>/);
+    expect(markup).toMatch(/<p class="app-hand tasting-reading__note">Soft set, clean finish<\/p>/);
+    expect(markup).not.toContain('prose-text');
 
     const noNoteMarkup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(noNoteMarkup).not.toContain(augustSecondBatch.tasting.note ?? '__none__');

@@ -1016,6 +1016,34 @@ describe('the Why row (sketch 011 decision 37 B, Mark 2026-10-04; quick 261004-l
   });
 });
 
+// Sketch 011 decision 17 (the hand is for display, not entry) and Mark's
+// 2026-10-05 decision (decide-tasting-note-in-the-hand; quick 261005-wgz): a
+// saved tasting note reads in the hand like a saved Why. Dropping the
+// prose-text class from the paragraph is the change; the .tasting-reading__note
+// rule keeps the measure and now carries the long-word guard prose-text used to
+// give, and no rule on the class sets a face, size, leading or colour, so the
+// .app-hand role reaches it.
+describe('the saved tasting note reads in the hand (D-02; Mark 2026-10-05; quick 261005-wgz)', () => {
+  const notebookRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'notebook.css'), 'utf8'));
+  const namesNote = (r) =>
+    r.selector.split(',').some((s) => s.trim().split(/(?=\.)/).includes('.tasting-reading__note'));
+
+  test('.tasting-reading__note keeps the prose measure and a long word wrapping', () => {
+    const rule = ruleFor('.tasting-reading__note');
+    expect(rule, 'expected a top-level .tasting-reading__note rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/max-width:\s*var\(--measure-prose\)/);
+    expect(rule.declarations).toMatch(/overflow-wrap:\s*anywhere/);
+  });
+
+  test('no rule in app.css or notebook.css naming .tasting-reading__note sets font-family, font-size, line-height or color', () => {
+    const own = [...rules, ...notebookRules].filter(namesNote);
+    expect(own.length).toBeGreaterThan(0);
+    for (const r of own) {
+      expect(r.declarations, r.selector).not.toMatch(/(?:^|[\s;])(font-family|font-size|line-height|color):/);
+    }
+  });
+});
+
 describe('the WHY label tucked to its words (sketch 011 decision 39 B, Mark 2026-10-04; quick 261004-ox3)', () => {
   test('.version-row__reason-label has no top margin and a bottom margin of a negative 4px token, and no rule on it sets margin-top', () => {
     const rule = ruleFor('.version-row__reason-label');

@@ -1539,9 +1539,15 @@ textarea {
   border-top: var(--rule-graduation) solid var(--sheet-ink);
 }
 
+/* The saved note reads in the hand like Why and Next time (sketch 011
+   decision 17; Mark, 2026-10-05, D-02; quick 261005-wgz). Face, size,
+   leading and colour come from the .app-hand role and never from this
+   rule; overflow-wrap keeps a long word wrapping, as .version-row__reason
+   does, now that prose-text no longer supplies it. */
 .tasting-reading__note {
   max-width: var(--measure-prose);
   margin: var(--gap-m) 0 0;
+  overflow-wrap: anywhere;
 }
 
 .tasting-reading__group,

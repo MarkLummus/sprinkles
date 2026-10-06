@@ -1,0 +1,113 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-10-06T02:46:21.410Z",
+  "phase": "04",
+  "phase_name": "Prepare the next version for making",
+  "phase_dir": ".planning/phases/04-prepare-the-next-version-for-making",
+  "plan": 0,
+  "task": 0,
+  "total_tasks": 0,
+  "status": "paused",
+  "completed_tasks": [
+    {
+      "id": 1,
+      "name": "Phase 03.4 re-verified and marked complete",
+      "status": "done",
+      "commit": "9a82326"
+    },
+    {
+      "id": 2,
+      "name": "Phase 03.5 re-verified and marked complete",
+      "status": "done",
+      "commit": "28794f2"
+    },
+    {
+      "id": 3,
+      "name": "Phase 03.6 UAT, re-verification, SECURITY.md, marked complete",
+      "status": "done",
+      "commit": "bb3c115"
+    },
+    {
+      "id": 4,
+      "name": "quick 261005-t32 blocked-save sentence in the line (decision 57)",
+      "status": "done",
+      "commit": "d477a91"
+    },
+    {
+      "id": 5,
+      "name": "quick 261005-txg reading's tasting groups (decision 58, Melt B, names B2)",
+      "status": "done",
+      "commit": "643923c"
+    },
+    {
+      "id": 6,
+      "name": "Sid: boards retaken after txg; canvas page split into Recipe route 03.5 (38 boards) and Recipe route 03.5 concepts (47)",
+      "status": "done",
+      "commit": "52d45e3"
+    }
+  ],
+  "remaining_tasks": [
+    {
+      "id": 7,
+      "name": "/marks-list: react to Mark's answers on look-recipe-route-canvas-split (and any new rows)",
+      "status": "not_started"
+    },
+    {
+      "id": 8,
+      "name": "Decide the order: insert the 'Before you start' phase before Phase 04 (/gsd-phase --insert 03.6; Mark runs it), then /gsd-plan-phase",
+      "status": "not_started"
+    },
+    {
+      "id": 9,
+      "name": "Phase 04: /gsd-plan-phase 04 (CONTEXT.md and DISCUSSION-LOG.md exist)",
+      "status": "not_started"
+    },
+    {
+      "id": 10,
+      "name": "Optional: /gsd-secure-phase for 03.1, 03.3, 03.3.1.1 (no SECURITY.md)",
+      "status": "not_started"
+    }
+  ],
+  "blockers": [],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {
+      "action": "Run /impeccable document jobs: app text companions and filled action (run-impeccable-document-followups), surface-removal brief incl. decisions 57 and 58 (run-impeccable-surface-removal), radius row (run-impeccable-document-radius)",
+      "context": "DESIGN.md and the surface briefs still disagree with built behaviour; all are rows on Mark's List",
+      "blocking": false
+    },
+    {
+      "action": "Look at the canvas split and answer the two unclear boards (look-recipe-route-canvas-split)",
+      "context": "R35C_BysBreak and R35C_CountUpright393 stayed on the built page as unclear",
+      "blocking": false
+    },
+    {
+      "action": "Decide whether the 'Before you start' section gets its own phase before Phase 04 (run-phase-insert-before-you-start, todo-before-you-start-own-section)",
+      "context": "It changes the printed page, so Mark wants it before Phase 04; no phase for it exists in ROADMAP yet",
+      "blocking": false
+    },
+    {
+      "action": "Other Mark's List rows: mise en place todo, 'How did it turn out?' hand-vs-pen todo (ambiguous, ask which way round), shared Button/tabindex todo",
+      "context": "Mark's List",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Phases 03.4, 03.5, 03.6 re-verified (stale digests) and marked complete; phase.complete moves STATE position, so STATE was restored by hand for 03.4 and 03.5",
+      "rationale": "03.6 was the last inserted phase, so its advance to Phase 04 is correct",
+      "phase": "03.6"
+    },
+    {
+      "decision": "Decision 57 A (blocked-row sentence in the line) and decision 58 (Melt B, names B2) built; the 18 older option boards stay as dated drawings",
+      "rationale": "Mark's answers on Mark's List",
+      "phase": "03.6"
+    }
+  ],
+  "uncommitted_files": [
+    "?? .impeccable/critique/ (6 files, untracked before this session)",
+    "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"
+  ],
+  "next_action": "Run /gsd-resume-work, then /marks-list to react to Mark's answers (look-recipe-route-canvas-split first). Then settle whether the 'Before you start' phase goes before Phase 04 and run /gsd-plan-phase 04.",
+  "context_notes": "All inserted phases through 03.6 are complete and pushed (main at 52d45e3 plus this handoff commit). main and origin are in sync. Sketch server runs on 0.0.0.0:8077 (PID 86435); :4173 is Mark's vite preview, never touch it. Ten of thirteen phases are complete; Phase 04 has CONTEXT.md only."
+}

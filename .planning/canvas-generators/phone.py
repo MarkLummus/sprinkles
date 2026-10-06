@@ -108,7 +108,7 @@ def all_folded(html):
         i = html.index(tag_open); j = balanced(html, i, 'section')
         html = html[:i] + tag_open + f'<h2 class="region-name">{fold_btn(label)}</h2></section>' + html[j:]
     i = html.index('<aside class="notebook-log" aria-label="Batch">'); j = balanced(html, i, 'aside')
-    date = re.search(r'<span class="batch-row__date">([^<]*)</span>', html[i:j]).group(1)
+    date = re.search(r'<span class="fold-row__count">([^<]*)</span>', html[i:j]).group(1)   # Sid, 2026-10-06: the build's Batch head is a fold row since 261004-uyd (decision 50); its count carries the churned date, not the old batch-row__date span
     html = html[:i] + '<aside class="notebook-log" aria-label="Batch"><section class="batch-row" aria-label="Batch">' + fold_btn('Batch', 'Show', date) + '</section></aside>' + html[j:]
     return html
 def folded_board():

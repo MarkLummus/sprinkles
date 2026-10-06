@@ -399,10 +399,18 @@ body{margin:0;background:#ffffff}
   --app-tilt-sprinkle: -8deg; /* the brand mark's five sprinkles, each a tilted rounded rod */
   --app-size-tab-h: 56px; /* the bottom tab row's own height below the phone step (D-16); .shell__main's bottom padding matches it so the fixed row never covers the end of a page */
   --app-size-header-h: calc(var(--touch-min) + 2 * var(--gap-xs) + var(--app-rule-row)); /* the sticky bar from 724 (sketch 011 decision 33): the 44px controls, 6px above and below, the 1px hairline = 57; read by the panel's and the rail's top and by html's scroll padding */
-  --app-z-notice: 10; /* the page notice, as built (.page-status) */
-  --app-z-header: 11; /* the sticky bar (decision 33), above the notice, which would otherwise paint over it when the page is scrolled a little */
-  --app-z-scrim: 4; /* the fly-out's scrim (decision 33, nav-candidates.css GO): above every z-index the page itself uses (1 and 2 in app.css), below the panel */
-  --app-z-flyout: 5; /* the fly-out panel: above the scrim, below the notice and the bar, so the bar's controls stay live while it is open */
+  /* The stacking order, lowest first, stated once (sketch 011 decisions 33, 52
+     and 53; Mark, 2026-10-05): the page's own literals 1 and 2 (app.css), the
+     page notice 3, the fly-out's scrim 4, the fly-out 5, the Import error panel
+     6, the sticky bar 11. shell.test.js pins the order. */
+  --app-z-notice: 3; /* the page notice (.page-status): a layer of the page */
+  --app-z-scrim: 4; /* the fly-out's scrim */
+  --app-z-flyout: 5; /* the fly-out panel */
+  --app-z-import-errors: 6; /* the Import error panel */
+  --app-z-header: 11; /* the sticky bar */
+  --app-size-import-errors-w: 480px; /* the Import error panel's width from 724 (board import-errors-placement.html B) */
+  --app-import-errors-title-leading: 1.3; /* the panel's title line height (board import-errors-placement.html B) */
+  --app-import-errors-leading: 1.5; /* the panel's count and lines (board import-errors-placement.html B); six lines of it set the list's height */
   --app-scrim: rgba(20, 20, 20, 0.28); /* the scrim: the App text #141414 at 28% (decision 33, GO) */
   --app-shadow-flyout: 4px 0 16px rgba(20, 20, 20, 0.18); /* the panel's edge shadow (decision 33, GO) */
   --app-tilt-menu: 90deg; /* the menu button's three dots stand upright, as --app-tilt-sprinkle turns the brand's rods (decision 33) */
@@ -2838,10 +2846,10 @@ textarea {
    sketch 003 @ d89b758 line 48's 1100px call; D-15; UAT items 15, 16):
    below 984px the page stacks to one column — band, ingredients, side,
    method, foot, side BEFORE method — and the column gap narrows to
-   --gap-m. 984 = the side nav's 224 + 2 x 32 gutters + the Sheet's
-   two-column minimum 696, the same sum shell.css's rail cut reads: the
-   side nav and the Sheet's second column go together, so a viewport
-   never shows one without the other. This block changes columns and gap
+   --gap-m. 984 = 2 x 32 gutters + the Sheet's
+   two-column minimum 920: the side nav is in none of the sum from 724 to
+   1589 (decision 33: it is the fly-out there, shell.css), so the Sheet's
+   second column goes here on its own. This block changes columns and gap
    ONLY: the paper's page padding reads the shared --gap-page
    (260917-gjo), which the phone-forms block below steps for the whole
    page shell at once (003 line 178) — no padding declaration lives
@@ -3432,7 +3440,6 @@ textarea {
   }
 
   .ingredient-table thead th.ingredient-table__col-numeric:last-child {
-    white-space: nowrap;
     text-align: right;
     grid-column: -2 / -1;
   }
@@ -3462,12 +3469,44 @@ textarea {
     text-align: right;
   }
 
+  /* Sketch 011 decision 48 A, "one head line" (Mark 2026-10-05). The three head cells take
+     row 1 and their words' width. width: auto undoes the old table layout's width: 1%, which
+     squeezed As made to 0.55px and wrapped it onto a second row. "AS MADE" is 59.45px in a
+     56px column, so it stands on the column's right edge, the figures' edge. Ingredient
+     stays where it stands (A, not B). */
+  .ingredient-table thead th {
+    grid-row: 1;
+    white-space: nowrap;
+    width: auto;
+  }
+
+  .ingredient-table--as-made thead th.ingredient-table__col-numeric:not(:last-child) {
+    justify-self: end;
+  }
+
   .ingredient-table td.ingredient-table__col-grams:has(.struck-value),
   .ingredient-table__plan-grams:has(> .struck-value),
   .ingredient-table td.ingredient-table__col-numeric:has(> .struck-value) {
     display: flex;
     flex-direction: column-reverse;
     align-items: flex-end;
+  }
+}
+
+/* Sketch 011 decision 49 A (Mark 2026-10-05: the surplus goes to the Instructions' row, not
+   AB, not leave). From 984 the side column spans the ingredients and method rows. With every
+   row auto the grid shared the side column's surplus between the two rows, which left about
+   367px empty under Mexican Chocolate v3's table. With 1fr on the method row (on the
+   ingredients row when there are no Instructions) the Instructions follow the table and the
+   empty space moves to the foot of the left column. Screen only: Phase 04 owns print. Below
+   984 the one-column areas of the 983.98px block apply and this block does not. */
+@media screen and (min-width: 984px) {
+  .recipe-page {
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .recipe-page--no-method {
+    grid-template-rows: auto 1fr auto;
   }
 }
 
@@ -3483,10 +3522,12 @@ textarea {
    The ladder (sketch 011 decision 16, derived from measured content
    limits, superseding this file's earlier rung-based reading): from 1366
    up the log sits beside the Sheet at 350, with 32 gutters (page margin,
-   Sheet to log, page margin) and the content capped at 1482, centred from
-   a 1770px window (.notebook's own rule, below). Below 1366 the log moves
-   below the Sheet first — (max-width: 1365.98px) — before the side nav
-   and the Sheet's second column go together at 984 (shell.css, app.css).
+   Sheet to log, page margin) and the content capped at 1482, centred once
+   the main area reaches 1546 (.notebook's own rule, below). Below 1366 the
+   log moves below the Sheet first — (max-width: 1365.98px) — before the
+   Sheet's second column goes at 984 (app.css). The side nav is in none of
+   these sums from 724 to 1589 (shell.css, decision 33: it is the fly-out
+   there); from 1590 the 224 rail sits beside the main area.
    The interim desktop rung at (max-width: 1499.98px) is retired (sketch
    011 decision 18, 03.5-15): the folds and the band's own rhythm now
    switch at the same 1365.98px cut as the log. The phone step at
@@ -3494,8 +3535,10 @@ textarea {
    prelude literal stays for the same reason 600 stays in app.css:
    media-query conditions cannot read custom properties. */
 
-/* The content cap (sketch 011 decision 16): from a 1770px window the
-   content stops growing at 1482 and centres in the main area — 1482 = the
+/* The content cap (sketch 011 decision 16): once the main area reaches 1546
+   (1482 + 2 x 32) the content stops growing at 1482 and centres in it: from
+   a 1546px window while the nav is the fly-out (1546 to 1589, shell.css) and
+   from a 1770px window with the 224 rail (1770 = 224 + 1546) — 1482 = the
    Sheet's two-column minimum (696) + the gutter (32) + the log (350). A
    max-width with auto margins, not a media query — the cap has no rung of
    its own. */
@@ -4233,7 +4276,8 @@ textarea {
    then Correct and Record another 32px later where they share a line
    (decisions 34 A and 41); where they wrap (the phone, the 350px log
    column) the head's own 16px stays between the lines, so the head keeps its
-   height (decision 42, Mark 2026-10-04). */
+   height (decision 42, Mark 2026-10-04). With no pen open and a batch in
+   view, the head is the fold row below (decision 50). */
 .notebook-log .batch-row__head {
   justify-content: flex-start;
   row-gap: var(--app-notebook-log-head-outer-gap);
@@ -4252,6 +4296,24 @@ textarea {
   gap: var(--app-notebook-log-head-gap);
 }
 
+/* Sketch 011 decision 50 A (Mark, 2026-10-05): the Batch head is the Tasting
+   head's fold row. Correct and Record another follow the date 32px later, on
+   the row's line. :has(.fold-row) keeps the pen and no-batch heads on
+   decision 42's rule above. */
+.notebook-log .batch-row__head:has(.fold-row) {
+  row-gap: 0;
+  align-items: center;
+}
+
+.notebook-log .batch-row__head:has(.fold-row) .region-name {
+  margin: 0;
+  flex: 0 1 auto;
+}
+
+.notebook-log .batch-row__head:has(.fold-row) .fold-row {
+  width: auto;
+}
+
 .notebook-log .batch-row .region-name,
 .notebook-log .tasting-reading .region-name,
 .notebook-log .batch-row__group-label {
@@ -4268,6 +4330,29 @@ textarea {
    otherwise sit between the heading and the fold below it. */
 .notebook-log .tasting-reading > .region-name {
   margin: 0;
+}
+
+/* The reading's four group names (the two h4s over the marks, the two h5s
+   over the problems) take the pen's cue face (sketch 011 decision 58 B2,
+   board tasting-group-names.html): decision 40's .axes-cue face. Same
+   two-class specificity as the base label rule above, so its place after
+   that rule is what makes it win; Any problems? and Next time keep the
+   caps grey face. */
+.notebook-log .batch-row__group-label--cue {
+  font-size: var(--app-size-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--app-notebook-pen-cue-line-h);
+  color: var(--app-text);
+}
+
+.notebook-log .tasting-reading__subgroup + .tasting-reading__subgroup {
+  margin-top: var(--gap-l);
+}
+
+.notebook-log .tasting-reading__subgroup > .tasting-reading__problems {
+  margin-top: 0;
 }
 
 .notebook-log .batch-row__date {
@@ -4385,8 +4470,9 @@ textarea {
    take the App skin below, 261004-ox4). The narrow
    arrangement app.css already draws for touch/narrow widths (the stop
    track, field-row label widths) applies here from (min-width: 1366px)
-   on — where the log genuinely IS a 350px column (1366 = 224 + 3 x 32 +
-   696 + 350, the complement of the log-below-the-Sheet block below) —
+   on — where the log genuinely IS a 350px column (1366 = 3 x 32 + 920 + 350,
+   the main area being the whole window below 1590, shell.css; the
+   complement of the log-below-the-Sheet block below) —
    the ceremony's own wrap rule is left on permanently, since wrapping
    only engages when content does not fit. 03.5-13 Task 1 removes the
    hand-back that used to apply these same rules unconditionally and
@@ -4414,6 +4500,24 @@ textarea {
   .notebook-log .field-row__label {
     max-width: 100%;
   }
+
+  /* Decision 50 A. In the 350px log column and on the phone, the actions
+     would wrap. So the fold row takes the whole row, a 44px control like the
+     other folds, and they stand under it with no gap. The head is 88px. The
+     brief drew this as a container query (log under 447px); these two
+     existing breakpoints stand in, so from about 487 to 723 the actions also
+     stand under the fold row. */
+  .notebook-log .batch-row__head:has(.fold-row) .batch-row__head-lead {
+    flex: 0 0 100%;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .region-name {
+    flex: 1 1 auto;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .fold-row {
+    width: 100%;
+  }
 }
 
 .notebook-log .save-ceremony,
@@ -4432,6 +4536,16 @@ textarea {
    record-pen-app.html. */
 .notebook-log * {
   border-color: var(--app-divider);
+}
+
+/* The stacked declared defect group's hairline comes from app.css's
+   two-class rule, which outranks the skin's one-class rule above. So it
+   stayed Sheet ink in the log while every other hairline took the divider
+   (Mark, iPhone and iPad, 2026-10-04; quick 261004-uo6). Three classes give
+   it the divider. Colour only. The axes' declared group needs no rule of its
+   own: its one-class rule loses to the skin by load order. */
+.notebook-log .axes-grid--stacked > .defect-group--declared {
+  border-top-color: var(--app-divider);
 }
 
 .notebook-log .pen-caption {
@@ -4526,9 +4640,10 @@ textarea {
    2026-09-27: "Move with the folds"; 03.5-15 Task 2): roomy from 1366 —
    the folds' own default (03.5-15 Task 1) — and tight below it, at the
    same cut where the log moves below the Sheet first (sketch 011
-   decision 16's precedence): 1366 = the side nav's 224 + 3 x 32 gutters +
-   the Sheet's two-column minimum 696 + the log's own 350. Below this cut
-   the Sheet still keeps two columns — that rung is 984, shell.css/app.css. */
+   decision 16's precedence): 1366 = 3 x 32 gutters + the Sheet's minimum 920 + the log's own 350; the
+   side nav is in none of the sum below 1590 (decision 33: it is the fly-out
+   there, shell.css). Below this cut the Sheet still keeps two columns — that
+   rung is 984, app.css. */
 @media (max-width: 1365.98px) {
   .notebook {
     gap: var(--app-notebook-band-rhythm);
@@ -4642,6 +4757,24 @@ textarea {
      two-class rule above, so two columns are restated for them here. */
   .notebook-log .tasting-reading .batch-row__cells {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Decision 50 A. In the 350px log column and on the phone, the actions
+     would wrap. So the fold row takes the whole row, a 44px control like the
+     other folds, and they stand under it with no gap. The head is 88px. The
+     brief drew this as a container query (log under 447px); these two
+     existing breakpoints stand in, so from about 487 to 723 the actions also
+     stand under the fold row. */
+  .notebook-log .batch-row__head:has(.fold-row) .batch-row__head-lead {
+    flex: 0 0 100%;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .region-name {
+    flex: 1 1 auto;
+  }
+
+  .notebook-log .batch-row__head:has(.fold-row) .fold-row {
+    width: 100%;
   }
 }
 

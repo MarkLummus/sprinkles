@@ -2119,6 +2119,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   blockedRowId={blockedTarget?.kind === 'row' ? blockedTarget.rowId : null}
                   blockedRowAttempt={blockedTarget?.kind === 'row' ? blockedTarget.attempt : null}
                   blockedLineIndex={blockedTarget?.kind === 'row' ? blockedTarget.index : null}
+                  blockedRowMessage={blockedTarget?.kind === 'row' ? blockedMessage : null}
                   markedRowIds={markedRowIds}
                   markedFigureLabel={markedFigureLabel}
                   mode={mode}

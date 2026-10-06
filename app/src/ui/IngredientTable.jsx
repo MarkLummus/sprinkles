@@ -5,6 +5,11 @@ import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/ro
 import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { parseGramsDraft } from '../domain/lineage.js';
+import { FieldFeedback } from './FieldFeedback.jsx';
+
+// The id of the blocked line's sentence: one blocked line at a time, as the version
+// line has one 'version-field-error'.
+const BLOCKED_ROW_ERROR_ID = 'ingredient-field-error';
 
 // The table's step-grouping (LD-01, ROADMAP Scope bullet 3): resolves
 // every portion's step through the active stepNumberMap via
@@ -132,7 +137,7 @@ function rowAccessibleLabel(
 // struck-then-current pair, which instead nests both INSIDE the slot
 // (route-recipe-version.md § 3's "Grams field sits in the plan-grams slot,
 // a changed value's parent amount is struck before it").
-function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef, out = false }) {
+function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputRef, out = false, errorId = null }) {
   if (mode !== 'developing') {
     return <span className="ingredient-table__plan-grams">{`${row.portions[portionIndex].grams} g`}</span>;
   }
@@ -165,6 +170,8 @@ function GramsCell({ row, portionIndex, mode, penDraft, onChangePenGrams, inputR
           aria-label={
             multiPortion ? `${row.ingredientName}, grams, portion ${portionIndex + 1}` : `${row.ingredientName}, grams`
           }
+          aria-invalid={errorId ? 'true' : undefined}
+          aria-describedby={errorId ?? undefined}
           onChange={(event) => onChangePenGrams(row.id, portionIndex, event.target.value)}
         />
         {' g'}
@@ -428,6 +435,10 @@ export function IngredientTable({
   // blockedSaveLineIndex: removal is per line, so a blocked save marks and
   // focuses that line alone.
   blockedLineIndex = null,
+  // The sentence blockedSaveMessage computed for the blocked line, printed in that
+  // line's own name cell (sketch 011 README decision 57, Mark's answer A recommended,
+  // 2026-10-05).
+  blockedRowMessage = null,
   mode = 'reading',
   draft = null,
   penDraft = null,
@@ -698,6 +709,7 @@ export function IngredientTable({
     // never a second class for the same meaning. Removal is per line, so only
     // the blocked line is marked, not every line of its row.
     const isBlocked = row.id === blockedRowId && portionIndex === blockedLineIndex;
+    const blockedSentence = isBlocked ? blockedRowMessage : null;
 
     // This portion's own current/baseline values, for the portion-scoped
     // % of batch cell and the split-ingredient sub-line — the pen's own
@@ -721,6 +733,7 @@ export function IngredientTable({
             onChangePenGrams={onChangePenGrams}
             inputRef={(element) => registerGramsInput(row.id, portionIndex, element)}
             out={lineOut}
+            errorId={blockedSentence ? BLOCKED_ROW_ERROR_ID : null}
           />
         </td>
         <td className="ingredient-table__col-name">
@@ -763,6 +776,10 @@ export function IngredientTable({
                 : formatPortionLine(livePortionGrams, rowGrams(liveRow), currentMass)}
             </span>
           )}
+          {/* The sentence sits in the line it names, so the cursor and the sentence are
+              together and two lines of one ingredient are told apart; the ceremony's
+              status line stays empty for a line (sketch 011 decision 57). */}
+          <FieldFeedback error={blockedSentence} errorId={BLOCKED_ROW_ERROR_ID} />
         </td>
         {hasAsMadeLayer && (
           <td className="ingredient-table__col-numeric">

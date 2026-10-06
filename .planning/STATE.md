@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.6 complete, ready to plan Phase 04
-last_updated: "2026-10-06T03:34:47.234Z"
+last_updated: "2026-10-06T03:59:43.808Z"
 last_activity: 2026-10-05
 last_activity_desc: Phase 03.6 complete, transitioned to Phase 04
-state_head: 6f89f628f7411afea3f8f7a7a03b3034d0067b03
+state_head: 2fb72394ea08299bfd61759dd82e5bdcf0ead344
 progress:
   total_phases: 13
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 — Prepare the next version for making
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-10-05 - Completed quick task 261005-wgz: companion contrast, tasting note in the hand, filled action 600
+Last activity: 2026-10-05 - Completed quick task 261005-x0j: companions on current place, pen Save 600, prose-text retired
 
 Progress: [████████░░] 83% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -435,6 +435,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261005-txg | Build: the reading tasting groups (README decision 58, Melt B, names B2) | 2026-10-06 | 643923c | [261005-txg-build-the-reading-tasting-groups-readme-](./quick/261005-txg-build-the-reading-tasting-groups-readme-/) |
 | 261005-w3j | Fix: hovering the header's Import or Export no longer shrinks it (button.shell__place padding) | 2026-10-05 | dbc1a86 | [261005-w3j-fix-hovering-the-header-import-or-export](./quick/261005-w3j-fix-hovering-the-header-import-or-export/) |
 | 261005-wgz | Three decided app fixes: one-step darken app-blue-text and app-notebook-text to clear 4.5:1; saved tasting note in the hand; Notebook filled action weight 600 | 2026-10-05 | 6f89f62 | [261005-wgz-three-decided-app-fixes-one-step-darken-](./quick/261005-wgz-three-decided-app-fixes-one-step-darken-/) |
+| 261005-x0j | Companions clear 4.5:1 on the current place surface; pen Save weight 600; retire unused prose-text rules | 2026-10-05 | 2fb7239 | [261005-x0j-mark-s-answers-darken-the-text-companion](./quick/261005-x0j-mark-s-answers-darken-the-text-companion/) |
 
 ### Roadmap Evolution
 

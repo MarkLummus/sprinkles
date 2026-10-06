@@ -98,7 +98,7 @@
   "response_language": "en",
   "model_profile_overrides": {
     "claude": {
-      "opus": "claude-opus-5[1m]"
+      "opus": "claude-opus-5-5"
     }
   },
   "model_overrides": {

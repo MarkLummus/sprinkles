@@ -22,6 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 03.3.1: The full battery: the record pen rebuilt from sketch 007** (INSERTED) - The record pen carries the full tasting battery as sketch 007 draws it (completed 2026-09-13)
 - [x] **Phase 03.3.1.1: Record pen conformance polish** (INSERTED) - The 18 untriaged conformance gaps between the shipped record pen and the structural contract are closed (completed 2026-09-16)
 - [x] **Phase 03.4: The design layer in code** (INSERTED) - The App palette, Sheet-prefixed tokens, the hand and Home land in code (completed 2026-09-22)
+- [x] **Phase 03.5: Separate the recipe from the sheet** (INSERTED) - The recipe record and the version's Recipe Sheet are separate in the store, the routes and the page (completed 2026-10-02)
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
 - [ ] **Phase 5: Version evolution** - A batch records reordered and new Instructions steps, and a version can evolve its step structure
 
@@ -671,6 +672,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 7/7 | Complete    | 2026-09-13 |
 | 3.3.1.1. Record pen conformance polish | 6/6 | Complete    | 2026-09-16 |
 | 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
+| 3.5. Separate the recipe from the sheet | 31/31 | Complete    | 2026-10-02 |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 | 5. Version evolution | 0/TBD | Not started | - |
 

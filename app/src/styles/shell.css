@@ -183,18 +183,24 @@ html {
   gap: var(--gap-m);
 }
 
-/* A place that is a button carries no border wherever it sits: the header's
-   Import and Export, More's, and the Import error panel's Close when it lands
-   (sketch 011 decisions 54 and 55; Mark 2026-10-05). Its weight (0,1,1) ties
-   app.css's button and button:hover, and this file loads after app.css, so
-   border none wins at rest and under hover. It sets no padding, so the
-   header's hover shrink, an open todo, is unchanged here. */
+/* A place that is a button carries no border wherever it sits, and it states
+   the place's own padding: the header's Import and Export, More's, and the
+   Import error panel's Close (sketch 011 decisions 54 and 55; Mark
+   2026-10-05). app.css's button:hover (0,1,1) sets padding 6px on every
+   button and outranks .shell__place's single-class padding (0,1,0), so the
+   header's Import and Export shrank under a pointer, from 108.4 x 44 to
+   80.4 x 32 in WebKit and 107.0 x 44 to 79.0 x 32 in Chromium (quick
+   261005-w3j). Stated here at (0,1,1) the padding ties button:hover and wins
+   by this file's later load order, at rest and under hover. The phone block's
+   tile rules (0,2,0) and (0,3,0) outrank it, so More's tiles keep their own
+   padding. */
 button.shell__place {
   appearance: none;
   border: none;
   background: none;
   color: inherit;
   cursor: pointer;
+  padding: var(--gap-s) var(--gap-m);
 }
 
 .shell__file-input {

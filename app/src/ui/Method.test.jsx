@@ -1197,56 +1197,16 @@ describe('Method — step display numbers (03-10, G-03-6, D-UAT-4)', () => {
   });
 });
 
-// "Before you start" (03.3-01): moved out of Authored.jsx to head the
-// Method, before step 1 — NoteList's own shape (Authored.test.jsx keeps
-// that shared component's own coverage).
-describe('Method — "Before you start" heads the Method (03.3-01, 03.1 Overrides Accepted Gap)', () => {
-  it('renders between the Instructions heading and the step list', () => {
-    const markup = renderToStaticMarkup(
-      <Method
-        steps={[unstruckStep]}
-        beforeYouStart={[{ text: 'Taste the oil straight.', inheritedFrom: null }]}
-        mode="reading"
-      />,
-    );
-    const headingIndex = markup.indexOf('Instructions</h2>');
-    const beforeIndex = markup.indexOf('Before you start');
-    const stepsIndex = markup.indexOf('method-steps');
-    expect(headingIndex).toBeGreaterThanOrEqual(0);
-    expect(beforeIndex).toBeGreaterThan(headingIndex);
-    expect(stepsIndex).toBeGreaterThan(beforeIndex);
-    expect(markup).toContain('Taste the oil straight.');
-  });
-
-  it('renders the note as plain prose while reading', () => {
-    const markup = renderToStaticMarkup(
-      <Method
-        steps={[unstruckStep]}
-        beforeYouStart={[{ text: 'Taste the oil straight.', inheritedFrom: null }]}
-        mode="reading"
-      />,
-    );
-    expect(markup).not.toContain('<textarea');
-  });
-
-  it('renders the note as an editable field, with a remove control, while developing', () => {
-    const markup = renderToStaticMarkup(
-      <Method
-        steps={[unstruckStep]}
-        beforeYouStart={[{ text: 'Taste the oil straight.', inheritedFrom: null }]}
-        mode="developing"
-        onChangeNoteText={() => {}}
-        onRemoveNote={() => {}}
-      />,
-    );
-    expect(markup).toMatch(/<textarea[^>]*class="prose-field"[^>]*aria-label="beforeYouStart note 1"/);
-    expect(markup).toMatch(/<button[^>]*>remove<\/button>/);
-  });
-
-  it('renders no method__before block content when the list is empty', () => {
-    const markup = renderToStaticMarkup(<Method steps={[unstruckStep]} mode="reading" />);
-    expect(markup).toContain('method__before');
-    expect(markup).toContain('Before you start');
+// "Before you start" left the Method (sketch 011 decision 36, 2026-10-04): it is a section of
+// RecipePage's own above the Ingredients, and RecipePage.beforeYouStart.test.jsx pins it end to
+// end. Method holds the Instructions heading and the steps alone.
+describe('Method — "Before you start" is not the Method\'s any more (sketch 011 decision 36)', () => {
+  it('renders neither the words nor a notes list, in reading or in developing', () => {
+    for (const mode of ['reading', 'developing']) {
+      const markup = renderToStaticMarkup(<Method steps={[unstruckStep]} mode={mode} />);
+      expect(markup).not.toContain('Before you start');
+      expect(markup).not.toContain('authored__notes');
+    }
   });
 });
 
@@ -1525,40 +1485,38 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
   });
 });
 
-describe('showsMethodRegion: the Instructions section renders only when it has something to show (261003-9bz)', () => {
-  const oneNote = [{ text: 'Taste the oil straight.', inheritedFrom: null }];
-
-  it('A: reading with no step and no note is false', () => {
-    expect(showsMethodRegion({ mode: 'reading', steps: [], beforeYouStart: [] })).toBe(false);
+describe('showsMethodRegion: the Instructions section renders only when it has a step, or the pen is open (261003-9bz; decision 36, Mark\'s answer 5)', () => {
+  it('A: reading with no step is false', () => {
+    expect(showsMethodRegion({ mode: 'reading', steps: [] })).toBe(false);
   });
 
-  it('B: reading with a step and no note is true', () => {
-    expect(showsMethodRegion({ mode: 'reading', steps: [unstruckStep], beforeYouStart: [] })).toBe(true);
+  it('B: reading with a step is true', () => {
+    expect(showsMethodRegion({ mode: 'reading', steps: [unstruckStep] })).toBe(true);
   });
 
-  it('C: a notes-only version keeps the section, in reading and in recording', () => {
-    expect(showsMethodRegion({ mode: 'reading', steps: [], beforeYouStart: oneNote })).toBe(true);
-    expect(showsMethodRegion({ mode: 'recording', steps: [], beforeYouStart: oneNote })).toBe(true);
+  it('C: a notes-only version (no steps) is false, in reading and in recording: Before you start no longer keeps the section open', () => {
+    expect(showsMethodRegion({ mode: 'reading', steps: [] })).toBe(false);
+    expect(showsMethodRegion({ mode: 'recording', steps: [] })).toBe(false);
   });
 
   it('D: the pen keeps the empty section', () => {
-    expect(showsMethodRegion({ mode: 'developing', steps: [], beforeYouStart: [] })).toBe(true);
+    expect(showsMethodRegion({ mode: 'developing', steps: [] })).toBe(true);
   });
 
-  it('E: recording with no step and no note is false (the strike and line controls hang on a step); with a step it is true', () => {
-    expect(showsMethodRegion({ mode: 'recording', steps: [], beforeYouStart: [] })).toBe(false);
-    expect(showsMethodRegion({ mode: 'recording', steps: [unstruckStep], beforeYouStart: [] })).toBe(true);
+  it('E: recording with no step is false (the strike and line controls hang on a step); with a step it is true', () => {
+    expect(showsMethodRegion({ mode: 'recording', steps: [] })).toBe(false);
+    expect(showsMethodRegion({ mode: 'recording', steps: [unstruckStep] })).toBe(true);
   });
 
   it('F: Show changes passes the unfiltered method, so a version with only removed steps keeps the section', () => {
-    expect(showsMethodRegion({ mode: 'reading', steps: [{ ...unstruckStep, removed: true }], beforeYouStart: [] })).toBe(true);
-    expect(showsMethodRegion({ mode: 'reading', steps: [], beforeYouStart: [] })).toBe(false);
+    expect(showsMethodRegion({ mode: 'reading', steps: [{ ...unstruckStep, removed: true }] })).toBe(true);
+    expect(showsMethodRegion({ mode: 'reading', steps: [] })).toBe(false);
   });
 
-  it('G: over the seed, exactly the nine versions with no step and no note hide the section in reading; every version keeps it in the pen', () => {
+  it('G: over the seed, exactly the nine versions with no step hide the section in reading (only Olive Oil v1 has notes, and it has steps); every version keeps it in the pen', () => {
     const versions = transcribedRecipeGroups.flatMap(({ versions: vs }) => vs);
     const hidden = versions
-      .filter((v) => !showsMethodRegion({ mode: 'reading', steps: activeSteps(v), beforeYouStart: v.authored.beforeYouStart }))
+      .filter((v) => !showsMethodRegion({ mode: 'reading', steps: activeSteps(v) }))
       .map((v) => v.id)
       .sort();
     expect(hidden).toEqual(
@@ -1575,7 +1533,7 @@ describe('showsMethodRegion: the Instructions section renders only when it has s
       ].sort(),
     );
     for (const v of versions) {
-      expect(showsMethodRegion({ mode: 'developing', steps: v.method, beforeYouStart: v.authored.beforeYouStart })).toBe(true);
+      expect(showsMethodRegion({ mode: 'developing', steps: v.method })).toBe(true);
     }
   });
 });

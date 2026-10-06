@@ -426,6 +426,7 @@ textarea {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     'band band'
+    'before side'
     'ingredients side'
     'method side'
     'foot foot';
@@ -436,10 +437,28 @@ textarea {
 
 /* An explicit grid row with no item still keeps its gutters, so leaving the
    Instructions section out alone kept one extra row gap (261003-9bz: 20px
-   measured at 393). This modifier drops the method row. Both modifier rules
-   and their .recipe-page rules are (0,1,0), so source order decides: this
-   one follows the base rule. */
+   measured at 393). Each absent section therefore drops its row: one modifier
+   for Before you start, one for the Instructions, and both together, the four
+   area sets sketch 011 decision 36 (placement B) draws. The single modifiers
+   and the .recipe-page rule are (0,1,0), so source order decides: they follow
+   the base rule. The double modifier is (0,2,0) and wins over both. */
+.recipe-page--no-before {
+  grid-template-areas:
+    'band band'
+    'ingredients side'
+    'method side'
+    'foot foot';
+}
+
 .recipe-page--no-method {
+  grid-template-areas:
+    'band band'
+    'before side'
+    'ingredients side'
+    'foot foot';
+}
+
+.recipe-page--no-before.recipe-page--no-method {
   grid-template-areas:
     'band band'
     'ingredients side'
@@ -676,6 +695,12 @@ textarea {
   display: block;
   font-family: var(--face-grotesk);
   font-size: var(--sheet-size-small-print);
+}
+
+.before-region {
+  grid-area: before;
+  min-width: 0; /* sketch 003 @ d89b758 lines 49-53 (D-15) */
+  max-width: var(--measure-prose);
 }
 
 .ingredient-table-region {
@@ -1040,16 +1065,6 @@ textarea {
 .ingredient-table-region__head .text-control {
   flex: none;
   font-weight: 400;
-}
-
-/* "Before you start" (03.3-01, moved out of Authored.jsx to head the
-   Method, before step 1): the same prose measure as the recipe block,
-   closed by a graduation-weight rule before the step list. */
-.method__before {
-  max-width: var(--measure-prose);
-  padding-bottom: var(--gap-m);
-  margin-bottom: var(--gap-m);
-  border-bottom: var(--rule-graduation) solid var(--sheet-ink);
 }
 
 .method-steps {
@@ -2342,15 +2357,34 @@ textarea {
     gap: var(--gap-m);
     grid-template-areas:
       'band'
+      'before'
       'ingredients'
       'side'
       'method'
       'foot';
   }
 
-  /* The narrow form of the modifier above: same cause, same drop. It must
+  /* The narrow forms of the modifiers above: same cause, same drops. They must
      follow the media-scoped .recipe-page rule, which sets the narrow areas. */
+  .recipe-page--no-before {
+    grid-template-areas:
+      'band'
+      'ingredients'
+      'side'
+      'method'
+      'foot';
+  }
+
   .recipe-page--no-method {
+    grid-template-areas:
+      'band'
+      'before'
+      'ingredients'
+      'side'
+      'foot';
+  }
+
+  .recipe-page--no-before.recipe-page--no-method {
     grid-template-areas:
       'band'
       'ingredients'
@@ -2974,14 +3008,25 @@ textarea {
    row auto the grid shared the side column's surplus between the two rows, which left about
    367px empty under Mexican Chocolate v3's table. With 1fr on the method row (on the
    ingredients row when there are no Instructions) the Instructions follow the table and the
-   empty space moves to the foot of the left column. Screen only: Phase 04 owns print. Below
-   984 the one-column areas of the 983.98px block apply and this block does not. */
+   empty space moves to the foot of the left column. Decision 36 (placement B) puts Before
+   you start above the Ingredients: the 1fr stays on the Instructions' row, or on the
+   Ingredients' row when there are none, with the before row auto above it. Screen only:
+   Phase 04 owns print. Below 984 the one-column areas of the 983.98px block apply and this
+   block does not. */
 @media screen and (min-width: 984px) {
   .recipe-page {
+    grid-template-rows: auto auto auto 1fr auto;
+  }
+
+  .recipe-page--no-before {
     grid-template-rows: auto auto 1fr auto;
   }
 
   .recipe-page--no-method {
+    grid-template-rows: auto auto 1fr auto;
+  }
+
+  .recipe-page--no-before.recipe-page--no-method {
     grid-template-rows: auto 1fr auto;
   }
 }

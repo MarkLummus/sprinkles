@@ -1060,23 +1060,32 @@ describe('the empty Instructions section is left out (261003-9bz)', () => {
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '');
 
-  // The first three are regression guards: Task 1 already made them true.
-  it('calls showsMethodRegion once, imported from ./Method.jsx', () => {
+  it('calls showsMethodRegion once, imported from ./Method.jsx, with the steps and no notes argument (decision 36, answer 5)', () => {
     expect(source.match(/showsMethodRegion\(/g) ?? []).toHaveLength(1);
     expect(source).toMatch(/import \{[^}]*\bshowsMethodRegion\b[^}]*\} from '\.\/Method\.jsx'/);
+    expect(source).toContain('showsMethodRegion({ mode, steps: methodSteps })');
   });
 
   it('renders the method-region section only when methodRegionShown', () => {
     expect(source).toMatch(/\{methodRegionShown && \(\s*<section className="method-region"/);
   });
 
-  it('hands Method the same two values the guard read', () => {
-    expect(source).toContain('steps={methodSteps}');
-    expect(source).toContain('beforeYouStart={methodNotes}');
+  it('renders the before-region section only when beforeRegionShown, and opens it before the ingredient-table-region section (decision 36, placement B)', () => {
+    expect(source).toMatch(/\{beforeRegionShown && \(\s*<section className="before-region" aria-label="Before you start"/);
+    expect(source.indexOf('<section className="before-region"')).toBeGreaterThan(-1);
+    expect(source.indexOf('<section className="before-region"')).toBeLessThan(source.indexOf('<section className="ingredient-table-region"'));
   });
 
-  it('marks the article recipe-page--no-method exactly when the section is not rendered', () => {
-    expect(source).toContain("className={methodRegionShown ? 'recipe-page' : 'recipe-page recipe-page--no-method'}");
+  it('hands Method the steps the guard read, and no Before you start prop', () => {
+    expect(source).toContain('steps={methodSteps}');
+    expect(source).not.toContain('beforeYouStart={');
+  });
+
+  it('gives the article sheetClassName, which marks recipe-page--no-before and recipe-page--no-method exactly when each section is not rendered', () => {
+    expect(source).toContain('<article className={sheetClassName}');
+    expect(source).toContain(
+      "'recipe-page' + (beforeRegionShown ? '' : ' recipe-page--no-before') + (methodRegionShown ? '' : ' recipe-page--no-method')",
+    );
   });
 });
 

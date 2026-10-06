@@ -1,8 +1,9 @@
 // The maker's own judgement, kept visibly apart from anything the app
 // derives. Each note is { text, inheritedFrom } (D-06): keyed by index
 // rather than by the note string, since two notes may carry the same
-// text. Method.jsx is NoteList's one caller now — it heads the Method
-// with "Before you start" (03.3-01). The Authored wrapper and its
+// text. RecipePage.jsx is NoteList's one caller now — it heads its own
+// "Before you start" section above the Ingredients (sketch 011 decision 36;
+// it headed the Method before, 03.3-01). The Authored wrapper and its
 // Carried forward legend that used to render a second list in column two
 // are gone: the list itself is gone from the store, seed and every test
 // (03.5-CONTEXT.md decision 10, D-06 of the 03.5 revision) — dropped, not

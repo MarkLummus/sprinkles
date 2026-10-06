@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { isStruck, changedLineFor, stepChangeFor } from '../domain/batch.js';
 import { removedRowsUsedBy, coveredRowsFor } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
-import { NoteList } from './Authored.jsx';
 
 function joinWithAnd(items) {
   if (items.length <= 1) return items[0] ?? '';
@@ -523,14 +522,16 @@ function StepRecordingControls({ step, entry, onChangeStepChange, fieldLabel }) 
 
 // Whether the Instructions section renders at all (261003-9bz; Mark,
 // 2026-10-03, option 1: hide the whole section rather than show a heading over
-// nothing). It renders when there is at least one step or one "Before you
-// start" note. Recording and Show changes need no exception: their only
-// controls and marks (the strike, the line, the changed-line mark, the removed
-// strike) hang on a step, so a method with no step has none to lose. The pen
-// keeps the empty section, as asked, although it has no add-step or add-note
-// control today.
-export function showsMethodRegion({ mode, steps, beforeYouStart }) {
-  return mode === 'developing' || steps.length > 0 || beforeYouStart.length > 0;
+// nothing). It renders when there is at least one step. "Before you start" is a
+// section of its own now and no longer keeps this one open (sketch 011 decision
+// 36, Mark's answer 5, 2026-10-04: the Instructions heading leaves the reading
+// view when there are no steps). Recording and Show changes need no exception:
+// their only controls and marks (the strike, the line, the changed-line mark,
+// the removed strike) hang on a step, so a method with no step has none to
+// lose. The pen keeps the empty section, as asked (Mark, 2026-10-03), although
+// it has no add-step control today.
+export function showsMethodRegion({ mode, steps }) {
+  return mode === 'developing' || steps.length > 0;
 }
 
 // The numbered method, in the sheet's order. The step number sits in a
@@ -568,12 +569,6 @@ export function Method({
   mode = 'reading',
   onChangeStepChange = () => {},
   rows = [],
-  // "Before you start" (03.3-01, moved out of Authored.jsx): NoteList's
-  // own shape (Authored.jsx), headed at the top of the Method rather
-  // than in column two.
-  beforeYouStart = [],
-  onChangeNoteText = () => {},
-  onRemoveNote = () => {},
   draftVersion = null,
   baselineVersion = null,
   staleFlagVisible = false,
@@ -670,16 +665,6 @@ export function Method({
   return (
     <>
       <h2 className="region-name">Instructions</h2>
-      <div className="method__before">
-        <p className="region-name">Before you start</p>
-        <NoteList
-          listKey="beforeYouStart"
-          notes={beforeYouStart}
-          mode={mode}
-          onChangeNoteText={onChangeNoteText}
-          onRemoveNote={onRemoveNote}
-        />
-      </div>
       <ol className="method-steps">
         {steps.map((step) => {
           if (isDeveloping) {

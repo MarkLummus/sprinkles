@@ -22,6 +22,7 @@ import { displayNumbers } from '../domain/stepNumbers.js';
 import { notebookPath } from './notebookPaths.js';
 import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
 import { Method, showsMethodRegion } from './Method.jsx';
+import { NoteList } from './Authored.jsx';
 import { FormulationNote } from './FormulationNote.jsx';
 import { BasisNote } from './BasisNote.jsx';
 import { BatchRow } from './BatchRow.jsx';
@@ -2026,11 +2027,19 @@ export function RecipePage({ onPageStatus = () => {} }) {
     return repository.saveRecipe(next).then(() => setRecipe(next));
   }
 
-  // The two values Method receives, held once so the guard below and the
-  // component never read different ones (261003-9bz).
+  // The values the two sections read, held once so each guard and its section
+  // never read different ones (261003-9bz). Before you start is a section of its
+  // own above the Ingredients, drawn when it has notes; the Instructions are
+  // drawn when the version shows a step, or in the pen (sketch 011 decision 36,
+  // Mark's answers 1 and 5, 2026-10-04).
   const methodSteps = mode === 'developing' || showingChanges ? version.method : readingVersion.method;
-  const methodNotes = mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart;
-  const methodRegionShown = showsMethodRegion({ mode, steps: methodSteps, beforeYouStart: methodNotes });
+  const beforeNotes = mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart;
+  const beforeRegionShown = beforeNotes.length > 0;
+  const methodRegionShown = showsMethodRegion({ mode, steps: methodSteps });
+  // An explicit grid row with no item keeps its gutters, so each absent section
+  // drops its row through a modifier (app.css).
+  const sheetClassName =
+    'recipe-page' + (beforeRegionShown ? '' : ' recipe-page--no-before') + (methodRegionShown ? '' : ' recipe-page--no-method');
 
   return (
     <div className="notebook">
@@ -2088,7 +2097,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
       <div className="notebook-body">
         <div className="notebook-body__sheet">
-          <article className={methodRegionShown ? 'recipe-page' : 'recipe-page recipe-page--no-method'} aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
+          <article className={sheetClassName} aria-busy={versionSaveAction || batchSaveAction ? 'true' : undefined}>
             <div className="recipe-band">
               <Headnote
                 version={version}
@@ -2098,6 +2107,22 @@ export function RecipePage({ onPageStatus = () => {} }) {
                 isSaving={versionSaveAction !== null}
               />
             </div>
+
+            {/* Before you start, its own section above the Ingredients: the
+                order of the cook's day, and the order the screen reader, the
+                Tab key and the printer meet (sketch 011 decision 36). */}
+            {beforeRegionShown && (
+              <section className="before-region" aria-label="Before you start">
+                <h2 className="region-name">Before you start</h2>
+                <NoteList
+                  listKey="beforeYouStart"
+                  notes={beforeNotes}
+                  mode={mode}
+                  onChangeNoteText={handleChangePenNoteText}
+                  onRemoveNote={handleRemovePenNote}
+                />
+              </section>
+            )}
 
             <section className="ingredient-table-region" aria-label="Ingredients">
               <IngredientsHead
@@ -2139,7 +2164,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
               )}
             </section>
 
-            {/* No Instructions section when there is nothing to show (261003-9bz). */}
+            {/* No Instructions section when there is no step to show (261003-9bz;
+                decision 36, Mark's answer 5). */}
             {methodRegionShown && (
               <section className="method-region" aria-label="Instructions">
                 <Method
@@ -2163,9 +2189,6 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   onTogglePenStepUses={handleTogglePenStepUses}
                   onTogglePenStepRemoved={handleTogglePenStepRemoved}
                   onRestorePenStep={handleRestorePenStep}
-                  beforeYouStart={methodNotes}
-                  onChangeNoteText={handleChangePenNoteText}
-                  onRemoveNote={handleRemovePenNote}
                 />
               </section>
             )}

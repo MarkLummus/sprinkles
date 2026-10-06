@@ -412,31 +412,64 @@ describe('the 983.98px block — the side nav and the Sheet\'s second column go 
   // Sheet's two columns only to seat the ceremony beneath the second one, which
   // is 189px at 984 against the ceremony's 245px.
   // 261003-9bz adds .recipe-page--no-method: an Instructions-less Sheet drops the empty method row.
-  test('carries exactly .recipe-page and .recipe-page--no-method (the foot band is one column at every width, so it needs no rule here)', () => {
-    expect(stackRules.map((r) => r.selector)).toEqual(['.recipe-page', '.recipe-page--no-method']);
+  // Sketch 011 decision 36 (placement B) adds .recipe-page--no-before and the double modifier.
+  test('carries exactly .recipe-page, .recipe-page--no-before, .recipe-page--no-method and the double modifier (the foot band is one column at every width, so it needs no rule here)', () => {
+    expect(stackRules.map((r) => r.selector)).toEqual([
+      '.recipe-page',
+      '.recipe-page--no-before',
+      '.recipe-page--no-method',
+      '.recipe-page--no-before.recipe-page--no-method',
+    ]);
   });
 
-  test('261003-9bz: the narrow .recipe-page--no-method rule declares the four areas without method, after the narrow .recipe-page rule', () => {
-    const rule = stackRules.find((r) => r.selector === '.recipe-page--no-method');
-    expect(rule, 'expected the media-scoped .recipe-page--no-method rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/grid-template-areas:\s*'band'\s*'ingredients'\s*'side'\s*'foot'\s*;?\s*$/);
-    expect(rule.declarations).not.toMatch(/method/);
-    expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(stackRules.find((r) => r.selector === '.recipe-page')));
+  const areaStrings = (declarations) => (declarations.match(/'[^']+'/g) ?? []).map((a) => a.slice(1, -1));
+
+  test('decision 36: each narrow modifier declares only its areas, after the narrow .recipe-page rule, and the double modifier follows both', () => {
+    const base = stackRules.find((r) => r.selector === '.recipe-page');
+    const noBefore = stackRules.find((r) => r.selector === '.recipe-page--no-before');
+    const noMethod = stackRules.find((r) => r.selector === '.recipe-page--no-method');
+    const both = stackRules.find((r) => r.selector === '.recipe-page--no-before.recipe-page--no-method');
+    expect(areaStrings(noBefore.declarations)).toEqual(['band', 'ingredients', 'side', 'method', 'foot']);
+    expect(areaStrings(noMethod.declarations)).toEqual(['band', 'before', 'ingredients', 'side', 'foot']);
+    expect(areaStrings(both.declarations)).toEqual(['band', 'ingredients', 'side', 'foot']);
+    for (const rule of [noBefore, noMethod, both]) {
+      expect(rule.declarations.replace(/grid-template-areas:[^;]+;/, '').trim()).toBe('');
+      expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(base));
+    }
+    expect(rules.indexOf(both)).toBeGreaterThan(rules.indexOf(noBefore));
+    expect(rules.indexOf(both)).toBeGreaterThan(rules.indexOf(noMethod));
   });
 
-  test('261003-9bz: the base .recipe-page--no-method rule declares only the three two-column areas, after the base .recipe-page rule', () => {
-    const rule = ruleFor('.recipe-page--no-method');
-    expect(rule, 'expected the top-level .recipe-page--no-method rule').toBeTruthy();
-    expect(rule.declarations).toMatch(/grid-template-areas:\s*'band band'\s*'ingredients side'\s*'foot foot'\s*;?\s*$/);
-    expect(rule.declarations).not.toMatch(/grid-template-columns|gap|padding/);
-    expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(ruleFor('.recipe-page')));
+  test('decision 36: the base modifiers declare only their areas, after the base .recipe-page rule, and the double modifier follows both', () => {
+    const base = ruleFor('.recipe-page');
+    const noBefore = ruleFor('.recipe-page--no-before');
+    const noMethod = ruleFor('.recipe-page--no-method');
+    const both = ruleFor('.recipe-page--no-before.recipe-page--no-method');
+    expect(areaStrings(base.declarations)).toEqual(['band band', 'before side', 'ingredients side', 'method side', 'foot foot']);
+    expect(areaStrings(noBefore.declarations)).toEqual(['band band', 'ingredients side', 'method side', 'foot foot']);
+    expect(areaStrings(noMethod.declarations)).toEqual(['band band', 'before side', 'ingredients side', 'foot foot']);
+    expect(areaStrings(both.declarations)).toEqual(['band band', 'ingredients side', 'foot foot']);
+    for (const rule of [noBefore, noMethod, both]) {
+      expect(rule.declarations).not.toMatch(/grid-template-columns|gap|padding/);
+      expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(base));
+    }
+    expect(rules.indexOf(both)).toBeGreaterThan(rules.indexOf(noBefore));
+    expect(rules.indexOf(both)).toBeGreaterThan(rules.indexOf(noMethod));
   });
 
-  test('.recipe-page stacks to one column in the band/ingredients/side/method/foot order, with no padding declaration', () => {
+  test('.before-region sits in the before area, shrinks (D-15) and keeps the prose measure', () => {
+    const rule = ruleFor('.before-region');
+    expect(rule, 'expected the top-level .before-region rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/grid-area:\s*before\s*;/);
+    expect(rule.declarations).toMatch(/min-width:\s*0\s*;/);
+    expect(rule.declarations).toMatch(/max-width:\s*var\(--measure-prose\)\s*;/);
+  });
+
+  test('.recipe-page stacks to one column in the band/before/ingredients/side/method/foot order, with no padding declaration', () => {
     const rule = stackRules.find((r) => r.selector === '.recipe-page');
     expect(rule, 'expected the media-scoped .recipe-page rule').toBeTruthy();
     expect(rule.declarations).toMatch(/grid-template-columns:\s*1fr/);
-    expect(rule.declarations).toMatch(/'band'\s*'ingredients'\s*'side'\s*'method'\s*'foot'/);
+    expect(rule.declarations).toMatch(/'band'\s*'before'\s*'ingredients'\s*'side'\s*'method'\s*'foot'/);
     expect(rule.declarations).not.toMatch(/padding/);
   });
 
@@ -445,38 +478,51 @@ describe('the 983.98px block — the side nav and the Sheet\'s second column go 
 // 261004-ubg (sketch 011 decision 49 A, Mark 2026-10-05): from 984 the side column spans the
 // ingredients and method rows. With every row auto the grid shared the side column's surplus
 // between the two rows, leaving about 367px empty under Mexican Chocolate v3's table. The method
-// row (the ingredients row with no Instructions) takes the surplus instead.
-describe("the Sheet's rows from 984: the side column's surplus goes under the Instructions (sketch 011 decision 49 A)", () => {
+// row (the ingredients row with no Instructions) takes the surplus instead. Decision 36
+// (placement B) adds the before row above them and the two modifiers' four row sets.
+describe("the Sheet's rows from 984: the side column's surplus goes under the Instructions (sketch 011 decisions 49 A and 36)", () => {
   const R984 = 'screen and (min-width: 984px)';
   const rowRules = rules.filter((r) => r.media === R984);
   const tracks = (declarations) => declarations.match(/grid-template-rows:\s*([^;]+);?/)[1].trim().split(/\s+/);
   const areaRows = (declarations) => declarations.match(/'[^']+'/g);
+  const rowRule = (selector) => rowRules.find((r) => r.selector === selector);
 
-  test('the block carries exactly .recipe-page and .recipe-page--no-method, in that order', () => {
-    expect(rowRules.map((r) => r.selector)).toEqual(['.recipe-page', '.recipe-page--no-method']);
+  test('the block carries exactly the four Sheet rules, in order: .recipe-page, the two single modifiers, the double modifier', () => {
+    expect(rowRules.map((r) => r.selector)).toEqual([
+      '.recipe-page',
+      '.recipe-page--no-before',
+      '.recipe-page--no-method',
+      '.recipe-page--no-before.recipe-page--no-method',
+    ]);
   });
 
   test('.recipe-page declares the rows and nothing else, so the 983.98px block and the gutter tests stay the owners of the rest', () => {
-    const decl = rowRules[0].declarations;
-    expect(decl).toMatch(/^\s*grid-template-rows:\s*auto auto 1fr auto;\s*$/);
+    expect(rowRules[0].declarations).toMatch(/^\s*grid-template-rows:\s*auto auto auto 1fr auto;\s*$/);
   });
 
-  test('.recipe-page--no-method declares its three rows and nothing else, after the block\'s .recipe-page rule', () => {
-    const decl = rowRules[1].declarations;
-    expect(decl).toMatch(/^\s*grid-template-rows:\s*auto 1fr auto;\s*$/);
-    expect(rules.indexOf(rowRules[1])).toBeGreaterThan(rules.indexOf(rowRules[0]));
+  test('each modifier declares its rows and nothing else, after the block\'s .recipe-page rule; the double modifier follows both single ones', () => {
+    expect(rowRule('.recipe-page--no-before').declarations).toMatch(/^\s*grid-template-rows:\s*auto auto 1fr auto;\s*$/);
+    expect(rowRule('.recipe-page--no-method').declarations).toMatch(/^\s*grid-template-rows:\s*auto auto 1fr auto;\s*$/);
+    expect(rowRule('.recipe-page--no-before.recipe-page--no-method').declarations).toMatch(/^\s*grid-template-rows:\s*auto 1fr auto;\s*$/);
+    for (const rule of rowRules.slice(1)) expect(rules.indexOf(rule)).toBeGreaterThan(rules.indexOf(rowRules[0]));
+    const both = rowRule('.recipe-page--no-before.recipe-page--no-method');
+    expect(rules.indexOf(both)).toBeGreaterThan(rules.indexOf(rowRule('.recipe-page--no-before')));
+    expect(rules.indexOf(both)).toBeGreaterThan(rules.indexOf(rowRule('.recipe-page--no-method')));
   });
 
-  test('the 1fr sits on the Instructions\' row: the index of the method row in the base areas, the ingredients row with no Instructions', () => {
-    const base = areaRows(ruleFor('.recipe-page').declarations);
-    expect(base).toHaveLength(4);
-    expect(tracks(rowRules[0].declarations)).toHaveLength(4);
-    expect(tracks(rowRules[0].declarations).indexOf('1fr')).toBe(base.indexOf("'method side'"));
-
-    const noMethod = areaRows(ruleFor('.recipe-page--no-method').declarations);
-    expect(noMethod).toHaveLength(3);
-    expect(tracks(rowRules[1].declarations)).toHaveLength(3);
-    expect(tracks(rowRules[1].declarations).indexOf('1fr')).toBe(noMethod.indexOf("'ingredients side'"));
+  test('the 1fr sits on the Instructions\' row: the index of the method row in the matching base areas, the ingredients row with no Instructions', () => {
+    const cases = [
+      ['.recipe-page', "'method side'"],
+      ['.recipe-page--no-before', "'method side'"],
+      ['.recipe-page--no-method', "'ingredients side'"],
+      ['.recipe-page--no-before.recipe-page--no-method', "'ingredients side'"],
+    ];
+    for (const [selector, row] of cases) {
+      const areas = areaRows(ruleFor(selector).declarations);
+      const rowsHere = tracks(rowRule(selector).declarations);
+      expect(rowsHere, selector).toHaveLength(areas.length);
+      expect(rowsHere.indexOf('1fr'), selector).toBe(areas.indexOf(row));
+    }
   });
 
   test('the condition is screen-only, so print is untouched (Phase 04 owns print)', () => {

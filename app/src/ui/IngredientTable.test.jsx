@@ -476,6 +476,57 @@ describe('IngredientTable — a blocked save marks the offending row (critique P
     );
 
     expect(markup).not.toContain('class="is-marked"');
+    // Sketch 011 README decision 57, Mark's answer "A recommended" (2026-10-05): with
+    // nothing blocked there is no sentence and no invalid field.
+    expect(markup).not.toContain('field-error');
+    expect(markup).not.toContain('aria-invalid');
+  });
+
+  // Sketch 011 README decision 57, Mark's answer "A recommended" (2026-10-05): the blocked
+  // line prints its own sentence in its name cell, and its field is described by it.
+  it('prints the sentence in the blocked row alone and describes the blocked field by it (decision 57)', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, 1), makeRow('b', 'Row B', 20, 1), makeRow('c', 'Row C', 5, 1)]);
+    const draftVersion = structuredClone(version);
+    const penDraft = {
+      rows: {
+        a: onePortionDraftRow(1, '10'),
+        b: onePortionDraftRow(1, '4o'),
+        c: onePortionDraftRow(1, '5'),
+      },
+      asMade: {},
+    };
+
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={version.rows}
+        draftVersion={draftVersion}
+        mode="developing"
+        penDraft={penDraft}
+        openBatch={null}
+        blockedRowId="b"
+        blockedLineIndex={0}
+        blockedRowMessage="Row B needs an amount, or remove it"
+      />,
+    );
+
+    function trContaining(text) {
+      const trRegex = /<tr[^>]*>[\s\S]*?<\/tr>/g;
+      let match;
+      while ((match = trRegex.exec(markup))) {
+        if (match[0].includes(text)) return match[0];
+      }
+      return null;
+    }
+
+    expect(markup.match(/class="field-error"/g)).toHaveLength(1);
+    const rowB = trContaining('Row B');
+    expect(rowB).toContain('<span id="ingredient-field-error" class="field-error">Row B needs an amount, or remove it</span>');
+    expect(rowB).toContain('aria-invalid="true"');
+    expect(rowB).toContain('aria-describedby="ingredient-field-error"');
+    for (const other of [trContaining('Row A'), trContaining('Row C')]) {
+      expect(other).not.toContain('aria-invalid');
+      expect(other).not.toContain('field-error');
+    }
   });
 });
 

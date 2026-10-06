@@ -53,7 +53,7 @@ vi.mock('../store/repository.js', async () => {
   };
 });
 
-import { RecipePage } from './RecipePage.jsx';
+import { RecipePage, VERSION_BLOCKED_STATUS } from './RecipePage.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -593,6 +593,96 @@ describe('A blocked save focuses and marks the blocked line (Mark\'s List per-st
     expect(document.activeElement.getAttribute('aria-label')).toBe('Whole milk, grams, portion 1');
     expect(rowOf('remove Whole milk, Step 2').classList.contains('is-marked')).toBe(true);
     expect(rowOf('remove Whole milk, Step 3').classList.contains('is-marked')).toBe(false);
+  });
+});
+
+// Sketch 011 README decision 57, Mark's answer "A recommended" (2026-10-05): when Save is
+// blocked on an ingredient line, the sentence prints last in that line's own name cell, the
+// field is invalid and described by it, and typing clears it with the outline.
+describe('A blocked save prints its sentence in the blocked line (sketch 011 decision 57: A recommended)', () => {
+  const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
+  const sentences = () => [...current.container.querySelectorAll('.field-error')];
+  const statusText = () =>
+    [...current.container.querySelectorAll('.form-status, .save-ceremony__status')].map((el) => el.textContent).join('');
+
+  async function blockOn(label, value) {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(container.querySelector('input[aria-label="Version name"]'), 'v2');
+    await setValue(field(label), value);
+    await click(buttonByText(container, 'Save as a new version'));
+    return container;
+  }
+
+  it('on a split line, prints under the Step 3 portion line and nowhere else', async () => {
+    const container = await blockOn('Whole milk, grams, portion 2', '');
+
+    const found = sentences();
+    expect(found).toHaveLength(1);
+    expect(found[0].textContent).toBe('Whole milk needs an amount, or remove it');
+    const cell = nameCell(rowOf('remove Whole milk, Step 3'));
+    expect(found[0].closest('td')).toBe(cell);
+    expect(cell.lastElementChild).toBe(found[0]);
+    expect(found[0].previousElementSibling.classList.contains('ingredient-table__portion-note')).toBe(true);
+    expect(found[0].id).not.toBe('');
+    expect(field('Whole milk, grams, portion 2').getAttribute('aria-invalid')).toBe('true');
+    expect(field('Whole milk, grams, portion 2').getAttribute('aria-describedby')).toBe(found[0].id);
+    expect(field('Whole milk, grams, portion 1').hasAttribute('aria-invalid')).toBe(false);
+    expect(field('Whole milk, grams, portion 1').hasAttribute('aria-describedby')).toBe(false);
+    expect(statusText()).toBe('');
+    expect(container.querySelector('#version-field-error')).toBeNull();
+    expect(store.saveVersion).not.toHaveBeenCalled();
+  });
+
+  it('on a one-line row, prints last in that row\'s name cell', async () => {
+    await blockOn('Heavy cream, grams', '');
+
+    const found = sentences();
+    expect(found).toHaveLength(1);
+    expect(found[0].textContent).toBe('Heavy cream needs an amount, or remove it');
+    const cell = nameCell(field('Heavy cream, grams').closest('tr'));
+    expect(cell.lastElementChild).toBe(found[0]);
+    expect(field('Heavy cream, grams').getAttribute('aria-invalid')).toBe('true');
+    expect(field('Heavy cream, grams').getAttribute('aria-describedby')).toBe(found[0].id);
+  });
+
+  it('for a value that is not a number, says so in the same line', async () => {
+    await blockOn('Whole milk, grams, portion 2', '4o');
+
+    const found = sentences();
+    expect(found).toHaveLength(1);
+    expect(found[0].textContent).toBe("Whole milk's amount is not a number");
+    expect(found[0].closest('td')).toBe(nameCell(rowOf('remove Whole milk, Step 3')));
+    expect(field('Whole milk, grams, portion 2').getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('typing one character in the blocked field removes the sentence, the attributes and the outline', async () => {
+    await blockOn('Whole milk, grams, portion 2', '');
+    expect(sentences()).toHaveLength(1);
+
+    await setValue(field('Whole milk, grams, portion 2'), '2');
+
+    expect(sentences()).toHaveLength(0);
+    expect(field('Whole milk, grams, portion 2').hasAttribute('aria-invalid')).toBe(false);
+    expect(field('Whole milk, grams, portion 2').hasAttribute('aria-describedby')).toBe(false);
+    expect(rowOf('remove Whole milk, Step 3').classList.contains('is-marked')).toBe(false);
+  });
+
+  it('leaves the version line as built: first blocked wins, nothing in the table', async () => {
+    installMatchMedia();
+    const container = await mountAt(VERSION_PATH);
+    await click(buttonByText(container, 'Next version'));
+    await setValue(field('Heavy cream, grams'), '');
+    await click(buttonByText(container, 'Save as a new version'));
+
+    expect(container.querySelector('#version-field-error').textContent).toBe('Enter a version.');
+    expect(field('Version name').getAttribute('aria-invalid')).toBe('true');
+    expect(field('Version name').getAttribute('aria-describedby')).toBe('version-field-error');
+    expect(statusText()).toContain(VERSION_BLOCKED_STATUS);
+    expect(sentences()).toHaveLength(1);
+    expect(container.querySelector('.ingredient-table .field-error')).toBeNull();
+    expect(container.querySelector('.ingredient-table input[aria-invalid]')).toBeNull();
   });
 });
 

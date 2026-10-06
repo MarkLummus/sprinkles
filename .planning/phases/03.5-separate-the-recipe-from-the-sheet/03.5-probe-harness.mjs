@@ -85,8 +85,11 @@ function listen(server) {
 // the build (REPO_ROOT/app/dist, SPA fallback for client-side routes),
 // `repo` serves the whole repo tree (for the sketch 011 boards under
 // .planning/sketches/). Neither binds --host or 0.0.0.0 (T-03.5-69).
-export async function startServers() {
-  const appServer = createStaticServer(path.join(REPO_ROOT, 'app', 'dist'), { spaFallback: true });
+// `appRoot` (03.7-02) lets a later probe serve a build written elsewhere (a
+// scratch --outDir), so measuring never needs a write to app/dist, which
+// Mark's own `vite preview` serves. The default is unchanged.
+export async function startServers({ appRoot = path.join(REPO_ROOT, 'app', 'dist') } = {}) {
+  const appServer = createStaticServer(appRoot, { spaFallback: true });
   const repoServer = createStaticServer(REPO_ROOT);
 
   const appUrl = await listen(appServer);

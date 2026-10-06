@@ -691,11 +691,12 @@ describe('A blocked save prints its sentence in the blocked line (sketch 011 dec
 // its stored index, so nothing stored changes.
 describe('Recording reads like the Sheet when one line is left (sketch 011 decision 56: A recommended)', () => {
   const band = () => current.container.querySelector('.notebook-version__acts .notebook-action');
-  const tbody = () => current.container.querySelector('.ingredient-table tbody');
+  // One tbody per step group (sketch 011 decision 45): every group's rows, in table order.
+  const bodyRows = (selector) => [...current.container.querySelectorAll('.ingredient-table tbody')].flatMap((body) => [...body.querySelectorAll(selector)]);
   const field = (label) => current.container.querySelector(`input[aria-label="${label}"]`);
-  const rowsNamed = (name) => [...tbody().querySelectorAll('tr[aria-label]')].filter((tr) => tr.getAttribute('aria-label').startsWith(name));
+  const rowsNamed = (name) => bodyRows('tr[aria-label]').filter((tr) => tr.getAttribute('aria-label').startsWith(name));
   const asMadeFieldsOf = (name) =>
-    [...tbody().querySelectorAll('input')].map((input) => input.getAttribute('aria-label')).filter((label) => label.startsWith(`${name}, as made`));
+    bodyRows('input').map((input) => input.getAttribute('aria-label')).filter((label) => label.startsWith(`${name}, as made`));
   const totalRowLabel = () => current.container.querySelector('tfoot tr').getAttribute('aria-label');
 
   async function reachV2() {

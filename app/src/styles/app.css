@@ -2551,11 +2551,8 @@ textarea {
    side-by-side label to narrow — .field-row__label — once Task 1's
    field-row family lands; the prose fields keep their own
    .batch-margin__field, label-above-input shape, untouched by this rule.
-   The list-form ingredient table rules (decision 15, sketch 011, 03.5-11
-   Task 1) are appended at the end of this block, in the board's own rule
-   order (723-batch.html) — moved here from the width-only 759.98px block
-   above. That block has sat at this same 723.98px cut since sketch 011
-   decision 28, but stays its own block. */
+   The list-form ingredient table rules follow in their own screen-only block
+   (decision 45, 03.7-02). */
 @media (max-width: 723.98px) {
   /* The one place the page's phone gutter is stated (260917-gjo; the
      running head retired 03.5-02 Task 3): three boxes step together
@@ -2587,7 +2584,19 @@ textarea {
   .pen-foot__controls {
     flex-wrap: wrap;
   }
+}
 
+/* The list form of the ingredient table, on screen only (sketch 011 decision 15,
+   03.5-11 Task 1; decision 45, 03.7-02). These rules sat in the phone-forms block above,
+   which a printed page also meets: a letter page with 56px side margins is 704px wide,
+   below the 723.98px cut, so the list form hid the table's head in Chrome's print
+   (measured in planning: INGREDIENT and % OF BATCH absent from the PDF text). The print
+   boards draw the column form, with the head repeated over a table that breaks, so these
+   rules are `screen` here, the D3 grid block's own precedent ("`screen` keeps print as it
+   was"), and print always draws the column form. On screen nothing changes: the same
+   rules, in the same order, under the same width. A top-level block, sibling of the
+   phone-forms block and never nested in it (css-source.js's one-level contract, WR-02). */
+@media screen and (max-width: 723.98px) {
   /* Decision 15 (sketch 011, 03.5-11) redraws the table below 724 as a
      list with a content-sized amount column and a name column that
      shrinks (its grid track is minmax(0, 1fr)) rather than a fixed-layout
@@ -2824,13 +2833,16 @@ textarea {
   }
 }
 
-/* The start of the print layer (260917-ewf), the seventh top-level
-   @media block, sibling to the six above — never nested. .page-status
-   is screen furniture: a fixed or floating notice repeats on every
-   printed page in Chrome, and the printed bench sheet is this
-   product's core-value artifact (PRODUCT.md, "Paper works the
-   kitchen"). Nothing else is styled here — Phase 4 owns the print
-   route and its geometry, and this must not pre-empt it. */
+/* The print layer (260917-ewf; the table's break rule, decision 45, 03.7-02), the
+   seventh top-level @media block, sibling to the six above — never nested.
+   .page-status is screen furniture: a fixed or floating notice repeats on every
+   printed page in Chrome, and the printed bench sheet is this product's
+   core-value artifact (PRODUCT.md, "Paper works the kitchen"). The hand's
+   fallback, the Show changes control and the ingredient table's break rule
+   live here (sketch 011 decision 45, Mark's answers 2026-10-05). The page
+   sequence, the fixed page, the footer and everything else in print stay
+   Phase 4's: Phase 4 owns the print route and its geometry, and this must not
+   pre-empt it. */
 @media print {
   .page-status {
     display: none;
@@ -2856,6 +2868,27 @@ textarea {
      screen-only (decision 30 addendum, "Print must hide the control"). */
   .ingredient-table-region__head .text-control {
     display: none;
+  }
+
+  /* The table's header repeats over the rows that run on to the next page (decision 45,
+     Mark's answer 2: the header alone, no "Ingredients, continued"). */
+  .ingredient-table thead {
+    display: table-header-group;
+  }
+
+  /* The Total prints once, after the last group. Chrome repeats a table-footer-group on
+     every page (measured: the Total at the foot of page 1, above the break), so the foot is
+     a plain row group (decision 45 brief item 1). */
+  .ingredient-table tfoot {
+    display: table-row-group;
+  }
+
+  /* A table with two or more step groups breaks only between groups (decision 45, Mark's
+     answer 3 and decision 36's PC: "all of the ingredients grouped into a step print on the
+     same page"). A lone group is left out so a one-step table that does not fit splits
+     between rows; a group taller than a page splits whatever this says. */
+  .ingredient-table tbody:not(:only-of-type) {
+    break-inside: avoid;
   }
 }
 
@@ -2906,7 +2939,9 @@ textarea {
     border-top: var(--rule-baseline) solid var(--sheet-ink);
   }
 
-  .ingredient-table tbody tr:last-child {
+  /* The groups are row groups now (one tbody each, sketch 011 decision 45), so only
+     the table's last body row gives its rule up to the Total's. */
+  .ingredient-table tbody:last-of-type tr:last-child {
     border-bottom: 0;
   }
 

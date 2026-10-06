@@ -134,9 +134,11 @@ function makeBatch(asMade = {}) {
   return { churn: { asMade } };
 }
 
+// From the first `<tag` to the last `</tag>`: the table renders one tbody per
+// step group (sketch 011 decision 45), so for tbody this spans all of them.
 function sectionMarkup(markup, tag) {
   const start = markup.indexOf(`<${tag}`);
-  const end = markup.indexOf(`</${tag}>`) + `</${tag}>`.length;
+  const end = markup.lastIndexOf(`</${tag}>`) + `</${tag}>`.length;
   return markup.slice(start, end);
 }
 
@@ -1932,7 +1934,7 @@ describe('IngredientTable — each pen line reads on its own, to the figures dec
   // One entry per body line of an ingredient, read off the markup: whether its
   // name is struck, its control's label, its portion note, and its share cell.
   function linesOf(markup, name) {
-    const body = markup.slice(markup.indexOf('<tbody>'), markup.indexOf('</tbody>'));
+    const body = sectionMarkup(markup, 'tbody');
     const lines = [];
     for (const [tr] of body.matchAll(/<tr\b[^>]*>(?:(?!<\/tr>)[\s\S])*<\/tr>/g)) {
       const nameCell = tr.match(/<td class="ingredient-table__col-name">([\s\S]*?)<\/td>/)?.[1];
@@ -2145,7 +2147,7 @@ describe('IngredientTable — show changes reads a line that is out against the 
 
   // Each <tr> of the body that names the ingredient, in table order.
   function linesOf(markup, name) {
-    const body = markup.split('<tbody>')[1].split('</tbody>')[0];
+    const body = sectionMarkup(markup, 'tbody');
     return body.split('<tr').filter((tr) => tr.includes(`aria-label="${name}`));
   }
 
@@ -2227,7 +2229,7 @@ describe('IngredientTable — a split ingredient with one line left reads like a
 
   // Each <tr> of the body that names the ingredient, in table order.
   function linesOf(markup, name) {
-    const body = markup.split('<tbody>')[1].split('</tbody>')[0];
+    const body = sectionMarkup(markup, 'tbody');
     return body.split('<tr').filter((tr) => tr.includes(`aria-label="${name}`));
   }
 
@@ -2341,7 +2343,7 @@ describe('IngredientTable — a pen opened on a version with a line already out 
 
   // Each <tr> of the body that names the ingredient, in table order.
   function linesOf(markup, name) {
-    const body = markup.split('<tbody>')[1].split('</tbody>')[0];
+    const body = sectionMarkup(markup, 'tbody');
     return body.split('<tr').filter((tr) => tr.includes(`aria-label="${name}`));
   }
 
@@ -2446,5 +2448,47 @@ describe('IngredientTable — recording numbers a split row\'s fields by the lin
     expect(markup).toMatch(/<input[^>]*aria-label="Whole milk, as made, grams, portion 2" value="249"\/>/);
     expect(markup).not.toContain('portion 3');
     expect(markup.match(/ingredient-table__portion-note/g)).toHaveLength(2);
+  });
+});
+
+// Sketch 011 decision 45 (03.7-02): the printed table breaks between step groups, which only a
+// row group per step can ask for, so each group is its own tbody and the step head its first row.
+describe('IngredientTable — one tbody per step group (sketch 011 decision 45)', () => {
+  it('Olive Oil v1 reads as four tbodies, Steps 2, 3, 6 and 8, each opening with its step head', () => {
+    const markup = renderToStaticMarkup(
+      <IngredientTable
+        rows={oliveOilVersion.rows}
+        steps={oliveOilVersion.method}
+        currentStepNumbers={displayNumbers(oliveOilVersion.method)}
+        mode="reading"
+        openBatch={null}
+      />,
+    );
+
+    const tbodies = markup.match(/<tbody>[\s\S]*?<\/tbody>/g);
+    expect(tbodies).toHaveLength(4);
+    expect(markup.match(/<tr class="ingredient-table__step-head">/g)).toHaveLength(4);
+    const heads = tbodies.map((tbody) => {
+      expect(tbody.startsWith('<tbody><tr class="ingredient-table__step-head">')).toBe(true);
+      return tbody.match(/>(Step \d+)</)[1];
+    });
+    expect(heads).toEqual(['Step 2', 'Step 3', 'Step 6', 'Step 8']);
+  });
+
+  it('a flat table, every row under no step, is one tbody with no step head', () => {
+    const version = makeVersion([makeRow('a', 'Row A', 10, null), makeRow('b', 'Row B', 20, null)]);
+
+    const markup = renderToStaticMarkup(<IngredientTable rows={version.rows} mode="reading" openBatch={null} />);
+
+    expect(markup.match(/<tbody>/g)).toHaveLength(1);
+    expect(markup).not.toContain('ingredient-table__step-head');
+    expect(markup).toContain('Row A');
+  });
+
+  it('a table with no rows keeps today\'s single empty tbody', () => {
+    const markup = renderToStaticMarkup(<IngredientTable rows={[]} mode="reading" openBatch={null} />);
+
+    expect(markup).toContain('<tbody></tbody>');
+    expect(markup.match(/<tbody/g)).toHaveLength(1);
   });
 });

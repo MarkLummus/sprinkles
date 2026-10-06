@@ -273,18 +273,18 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
 
   test('the ingredient table region scrolls inside itself at 723.98px and below (RESEARCH Pitfall 7, D-15)', () => {
     const rule = rules.find(
-      (r) => r.selector === '.ingredient-table-region' && r.media === '(max-width: 723.98px)',
+      (r) => r.selector === '.ingredient-table-region' && r.media === 'screen and (max-width: 723.98px)',
     );
     expect(rule, 'expected a media-scoped .ingredient-table-region rule').toBeTruthy();
     expect(rule.declarations).toMatch(/overflow-x:\s*auto/);
   });
 
   // Decision 15 (sketch 011, 03.5-11 Task 1): below 724 the table reads as
-  // the drawn list — no head row, one grid row per portion — moved here
-  // from the width-only (max-width: 759.98px) block wholesale, in the
-  // board's own rule order (723-batch.html), appended after this block's
-  // pre-existing content.
-  test('the phone-forms block appends the list-form rules, in the board\'s own order, after its pre-existing content (decision 15, sketch 011, 03.5-11)', () => {
+  // the drawn list — no head row, one grid row per portion — in the board's own
+  // rule order (723-batch.html). Since decision 45 (03.7-02) the list form is a
+  // screen-only block of its own, directly after this one, so print always draws
+  // the column form, whose head repeats over a table that breaks.
+  test('the phone-forms block keeps its four rules; the list form is not among them (decision 45, 03.7-02)', () => {
     // The record pen's own width-only block shares this condition (decision
     // 28) and is pinned above.
     const phoneFormsRules = rules.filter((r) => r.media === '(max-width: 723.98px)' && !r.selector.startsWith('.axis-mark'));
@@ -293,6 +293,12 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       '.field-row__label',
       '.batch-margin__field',
       '.save-ceremony, .pen-foot__controls',
+    ]);
+  });
+
+  test('the screen-only block holds the list-form rules, in the board\'s own order (decision 15, sketch 011, 03.5-11; decision 45, 03.7-02)', () => {
+    const listFormRules = rules.filter((r) => r.media === 'screen and (max-width: 723.98px)');
+    expect(listFormRules.map((r) => r.selector)).toEqual([
       '.ingredient-table-region',
       '.ingredient-table thead',
       '.ingredient-table, .ingredient-table tbody, .ingredient-table tfoot',
@@ -316,7 +322,7 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
   });
 
   test('below 724 the phone reads plan / As made / struck: the amount gives up its box and the struck figure takes the last line, in the amount, the share, the Total and the pen (sketch 011 decision 31, D3, phone boards approved 2026-10-03 under decision 32; decision 33 brief task 1; supersedes decisions 24 and 25)', () => {
-    const phone = (selector) => rules.find((r) => r.selector === selector && r.media === '(max-width: 723.98px)');
+    const phone = (selector) => rules.find((r) => r.selector === selector && r.media === 'screen and (max-width: 723.98px)');
     const declarationsOf = (selector) => {
       const rule = phone(selector);
       expect(rule, `expected a media-scoped rule for ${selector}`).toBeTruthy();
@@ -367,12 +373,12 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       '.ingredient-table td.ingredient-table__col-numeric > .struck-value',
       '.ingredient-table td.ingredient-table__col-grams > .struck-value',
     ]) {
-      expect(phone(selector), `${selector} should have no rule in the phone-forms block`).toBeUndefined();
+      expect(phone(selector), `${selector} should have no rule in the list-form block`).toBeUndefined();
     }
   });
 
   test("the list row's grid reads --sheet-plan-grams-w for its first track, and no list-form rule carries !important (the boards need !important only to beat their own inlined stale stylesheet; app.css has no such conflict to out-rank)", () => {
-    const trRule = rules.find((r) => r.selector === '.ingredient-table tr' && r.media === '(max-width: 723.98px)');
+    const trRule = rules.find((r) => r.selector === '.ingredient-table tr' && r.media === 'screen and (max-width: 723.98px)');
     expect(trRule, 'expected the media-scoped list-row grid rule').toBeTruthy();
     expect(trRule.declarations).toMatch(
       /grid-template-columns:\s*var\(--sheet-plan-grams-w\) minmax\(0,\s*1fr\) max-content/,
@@ -382,14 +388,14 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
     expect(trRule.declarations).toMatch(/padding:\s*var\(--sheet-narrow-row-pad-y\)\s+0/);
     expect(trRule.declarations).toMatch(/border-bottom:\s*var\(--rule-graduation\)\s+solid\s+var\(--sheet-ink\)/);
 
-    const listRules = rules.filter((r) => r.media === '(max-width: 723.98px)' && r.selector.includes('ingredient-table'));
+    const listRules = rules.filter((r) => r.media === 'screen and (max-width: 723.98px)' && r.selector.includes('ingredient-table'));
     expect(listRules.length).toBeGreaterThan(0);
     for (const rule of listRules) {
       expect(rule.declarations).not.toMatch(/!important/);
     }
   });
 
-  test('app.css carries exactly nine top-level @media blocks, at eight named conditions, the record pen\'s width-only block sharing the phone forms\' 723.98px since sketch 011 decision 28 (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print; 261004-ox8 the screen-only D3 table grid; 261004-ubg the Sheet\'s rows from 984, decision 49 A)', () => {
+  test('app.css carries exactly ten top-level @media blocks, at nine named conditions, the record pen\'s width-only block sharing the phone forms\' 723.98px since sketch 011 decision 28 (03.3.1.1-01 Task 1; 03.3.1.1-03 Task 1; touch union 2026-09-15, pointer-only since 03.5-13; 260915-x6n touch font; 260917-ewf print; 261004-ox8 the screen-only D3 table grid; 261004-ubg the Sheet\'s rows from 984, decision 49 A; 03.7-02 the list form, screen only)', () => {
     const mediaConditions = [...new Set(rules.filter((r) => r.media !== undefined).map((r) => r.media))];
     expect(mediaConditions.sort()).toEqual([
       '(forced-colors: active)',
@@ -398,6 +404,7 @@ describe('the 723.98px block — the phone forms (sketch 011 decision 16)', () =
       '(min-width: 724px) and (pointer: coarse)',
       '(pointer: coarse)',
       'print',
+      'screen and (max-width: 723.98px)',
       'screen and (min-width: 724px)',
       'screen and (min-width: 984px)',
     ]);
@@ -903,7 +910,7 @@ describe('the page notice anchors above the keyed page, out of flow (260917-ewf;
 });
 
 describe('the print layer suppresses the page notice and falls the hand back to the text face (260917-ewf Task 3; 03.4-02 Task 2, D-17)', () => {
-  test('the print block carries exactly four rules: .page-status goes display: none, .app-hand falls back to the text face in italic, so does .sheet-hand (sketch 011 Task 1), and the Ingredients-row Show changes goes display: none (261002-wn1)', () => {
+  test('the print block carries exactly seven rules: .page-status goes display: none, .app-hand falls back to the text face in italic, so does .sheet-hand (sketch 011 Task 1), the Ingredients-row Show changes goes display: none (261002-wn1), and the table\'s head repeats, its foot prints once and its step groups stay whole (sketch 011 decision 45, 03.7-02)', () => {
     // Resolved explicitly on r.media === 'print', never through
     // mediaRuleFor, which returns the first match across ALL media
     // blocks (the file's own precedent at ~206). The print block's
@@ -911,7 +918,7 @@ describe('the print layer suppresses the page notice and falls the hand back to 
     // that adds the hand's fallback rule (RESEARCH.md Pitfall 2) — not
     // discovered later as a surprise red test.
     const printRules = rules.filter((r) => r.media === 'print');
-    expect(printRules).toHaveLength(4);
+    expect(printRules).toHaveLength(7);
 
     const pageStatusRule = printRules.find((r) => r.selector === '.page-status');
     expect(pageStatusRule, 'expected .page-status among the print rules').toBeTruthy();
@@ -932,6 +939,30 @@ describe('the print layer suppresses the page notice and falls the hand back to 
     const headControlRule = printRules.find((r) => r.selector === '.ingredient-table-region__head .text-control');
     expect(headControlRule, 'expected the Ingredients-row Show changes among the print rules').toBeTruthy();
     expect(headControlRule.declarations).toMatch(/display:\s*none/);
+
+    // Decision 45 (Mark's answers 2026-10-05): the header alone repeats over the rows that run
+    // on; the Total is a plain row group, so Chrome prints it once instead of at every page foot;
+    // a group is kept whole when the table has two or more, and a lone group may split.
+    const theadRule = printRules.find((r) => r.selector === '.ingredient-table thead');
+    expect(theadRule, 'expected the table head among the print rules').toBeTruthy();
+    expect(theadRule.declarations).toMatch(/display:\s*table-header-group/);
+
+    const tfootRule = printRules.find((r) => r.selector === '.ingredient-table tfoot');
+    expect(tfootRule, 'expected the table foot among the print rules').toBeTruthy();
+    expect(tfootRule.declarations).toMatch(/display:\s*table-row-group/);
+
+    const groupRule = printRules.find((r) => r.selector === '.ingredient-table tbody:not(:only-of-type)');
+    expect(groupRule, 'expected the step group rule among the print rules').toBeTruthy();
+    expect(groupRule.declarations).toMatch(/break-inside:\s*avoid/);
+  });
+});
+
+describe('the D3 table grid gives the last row\'s rule up to the Total once, not once per step group (sketch 011 decision 45, 03.7-02)', () => {
+  test('only the last tbody\'s last row loses its bottom rule', () => {
+    const rule = rules.find((r) => r.media === 'screen and (min-width: 724px)' && r.selector === '.ingredient-table tbody:last-of-type tr:last-child');
+    expect(rule, 'expected the last-body last-row rule').toBeTruthy();
+    expect(rule.declarations).toMatch(/border-bottom:\s*0/);
+    expect(rules.find((r) => r.media === 'screen and (min-width: 724px)' && r.selector === '.ingredient-table tbody tr:last-child')).toBeUndefined();
   });
 });
 

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { computeBalance, formatShareOfBatch, formatGrams, formatGramsValue, formatPortionLine } from '../domain/composition.js';
 import { asMadeForPortion, asMadeTotals } from '../domain/batch.js';
 import { activeRows, isLineRemoved, isStepRemoved, rowGrams } from '../domain/rows.js';
@@ -388,9 +388,11 @@ export function IngredientsHead({ parentVersion, openPen, below724, showingChang
 }
 
 // The table now groups by step (LD-01, ROADMAP Scope bullet 3) rather than
-// rendering one <tr> per ingredient in the version's authored order — a
-// step-head <tr> per group (its lead-in text looked up from `steps`, or
-// the pen's own live `draftVersion.method`), then one <tr> per portion
+// rendering one <tr> per ingredient in the version's authored order — one
+// <tbody> per group (one group, one row group, so print can keep it whole:
+// sketch 011 decision 45), each opening with a step-head <tr> (its lead-in
+// text looked up from `steps`, or the pen's own live
+// `draftVersion.method`), then one <tr> per portion
 // under its resolved step, a split ingredient's name repeated once per
 // step it participates in with a sub-line naming its share of the row
 // (formatPortionLine, domain/composition.js). A portion whose step cannot
@@ -826,27 +828,30 @@ export function IngredientTable({
             <th scope="col" className="ingredient-table__col-numeric">% of batch</th>
           </tr>
         </thead>
-        <tbody>
-          {groups.map((group) => (
-            <Fragment key={group.kind === 'removed' ? `removed:${group.n}` : (group.displayNumber ?? 'unallocated')}>
-              {showStepHeads && (
-                <tr className="ingredient-table__step-head">
-                  <td colSpan={columnCount}>
-                    {group.kind === 'unallocated' ? (
-                      'Unallocated'
-                    ) : (
-                      <>
-                        {group.kind === 'removed' ? 'Removed' : `Step ${group.displayNumber}`}
-                        <span className="ingredient-table__step-head-lead">{group.leadIn}</span>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              )}
-              {group.entries.map((entry) => renderEntry(entry))}
-            </Fragment>
-          ))}
-        </tbody>
+        {/* One tbody per step group, the step head its first row, so print can keep a
+            group whole: a row group never splits where a table's rows may (sketch 011
+            decision 45). A flat table is one group, one tbody; no group at all keeps
+            today's single empty tbody. */}
+        {groups.length === 0 && <tbody />}
+        {groups.map((group) => (
+          <tbody key={group.kind === 'removed' ? `removed:${group.n}` : (group.displayNumber ?? 'unallocated')}>
+            {showStepHeads && (
+              <tr className="ingredient-table__step-head">
+                <td colSpan={columnCount}>
+                  {group.kind === 'unallocated' ? (
+                    'Unallocated'
+                  ) : (
+                    <>
+                      {group.kind === 'removed' ? 'Removed' : `Step ${group.displayNumber}`}
+                      <span className="ingredient-table__step-head-lead">{group.leadIn}</span>
+                    </>
+                  )}
+                </td>
+              </tr>
+            )}
+            {group.entries.map((entry) => renderEntry(entry))}
+          </tbody>
+        ))}
         <tfoot>
           <tr aria-label={totalAriaLabel}>
             <td className="ingredient-table__col-grams">

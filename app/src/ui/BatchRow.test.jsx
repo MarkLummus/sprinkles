@@ -23,6 +23,10 @@ import { axesForBatch } from '../domain/axes.js';
 
 const noop = () => {};
 
+// The class string of a reading's group name in the pen's cue face (sketch 011
+// README decision 58, B2).
+const CUE = 'batch-row__group-label batch-row__group-label--cue';
+
 // The olive oil version's own declared pair (Body, Oil) resolved into the
 // six-axis list AxesGrid renders — the same reuse-of-axesForBatch trick
 // BatchRow.jsx itself takes for a version that has not been snapshotted
@@ -1488,8 +1492,10 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     expect(markup).toMatch(
       /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C<\/span><\/span>/,
     );
+    // Sketch 011 README decision 58, Mark's answer B (2026-10-06): the melt
+    // test cell follows the Tasting temperature cell in the conditions grid.
     expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min<\/span><\/span>/,
+      /<span class="batch-row__cell-label">Tasting temperature<\/span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C<\/span><\/span><\/div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt test<\/span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min<\/span><\/span><\/div>/,
     );
   });
 
@@ -1522,22 +1528,27 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     );
   });
 
-  it('reads the recipe-specific flaw by its plain name, under its own "Problems" caption, in the hand — no other defects picked (the seeded case)', () => {
+  // Sketch 011 README decision 58, Mark's answers B and B2 (2026-10-06): the
+  // seeded batch's Bitter stands in the This recipe only block under Any problems?.
+  it('reads the recipe-specific flaw by its plain name, under "Any problems?" in the This recipe only block, in the hand — no other defects picked (the seeded case)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    expect(markup).toMatch(
-      /<h4 class="batch-row__group-label">Problems<\/h4><span class="app-hand tasting-reading__problems">Bitter<\/span>/,
+    expect(markup).toContain(
+      `<div class="tasting-reading__group"><h4 class="batch-row__group-label">Any problems?</h4><div class="tasting-reading__subgroup"><h5 class="${CUE}">This recipe only</h5><span class="app-hand tasting-reading__problems">Bitter</span></div></div>`,
     );
+    expect(markup).not.toContain('>Problems</h4>');
   });
 
-  it('joins picked defect words with the declared flaw, comma-worded, in the hand, when both are present', () => {
+  // Decision 58 B2 (R3): picked words and the declared flaw in two blocks.
+  it('puts picked defect words under Every recipe and the declared flaw under This recipe only, in two blocks, when both are present', () => {
     const flawedBatch = {
       ...augustSecondBatch,
       tasting: { ...augustSecondBatch.tasting, defects: ['Sandy, gritty', 'Greasy film'] },
     };
     const markup = renderBatchRow({ openBatch: flawedBatch, batches: [flawedBatch], mode: 'reading' });
-    expect(markup).toMatch(
-      /<span class="app-hand tasting-reading__problems">Sandy, gritty · Greasy film · Bitter<\/span>/,
+    expect(markup).toContain(
+      `<h4 class="batch-row__group-label">Any problems?</h4><div class="tasting-reading__subgroup"><h5 class="${CUE}">Every recipe</h5><span class="app-hand tasting-reading__problems">Sandy, gritty · Greasy film</span></div><div class="tasting-reading__subgroup"><h5 class="${CUE}">This recipe only</h5><span class="app-hand tasting-reading__problems">Bitter</span></div></div>`,
     );
+    expect(markup).not.toContain('Greasy film · Bitter');
   });
 
   it('renders no defects line at all with no defects picked and no flaw declared', () => {
@@ -1545,6 +1556,10 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     const markup = renderBatchRow({ openBatch: cleanBatch, batches: [cleanBatch], mode: 'reading' });
     const readingMarkup = markup.slice(markup.indexOf('tasting-reading'));
     expect(readingMarkup).not.toContain('declared');
+    // Decision 58 (R4): with nothing picked, the Any problems? group is left out.
+    expect(readingMarkup).not.toContain('Any problems?');
+    expect(readingMarkup).not.toContain('tasting-reading__subgroup');
+    expect(readingMarkup).not.toContain('tasting-reading__problems');
   });
 
   it('renders the note as prose when written, and nothing when blank', () => {
@@ -1556,16 +1571,22 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
     expect(noNoteMarkup).not.toContain(augustSecondBatch.tasting.note ?? '__none__');
   });
 
-  it('reads conditions, then own words, then observations, then melt', () => {
+  // Decision 58 (R5): conditions with the melt cells, the note, then the marks'
+  // two groups, then Any problems?; the Melt group is gone.
+  it('reads conditions with the melt cells, then own words, then Every recipe, This recipe only, Any problems?', () => {
     const notedBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, note: 'Soft set, clean finish' } };
     const markup = renderBatchRow({ openBatch: notedBatch, batches: [notedBatch], mode: 'reading' });
-    const conditionsIndex = markup.indexOf('tasting-reading__conditions');
-    const noteIndex = markup.indexOf('tasting-reading__note');
-    const observationsIndex = markup.indexOf('>Observations<');
-    const meltIndex = markup.indexOf('>Melt<');
-    expect(noteIndex).toBeGreaterThan(conditionsIndex);
-    expect(observationsIndex).toBeGreaterThan(noteIndex);
-    expect(meltIndex).toBeGreaterThan(observationsIndex);
+    const order = [
+      'tasting-reading__conditions',
+      '>Melt test<',
+      'tasting-reading__note',
+      '>Every recipe</h4>',
+      '>This recipe only</h4>',
+      '>Any problems?</h4>',
+    ].map((needle) => markup.indexOf(needle));
+    for (const index of order) expect(index).toBeGreaterThan(-1);
+    for (let i = 1; i < order.length; i += 1) expect(order[i]).toBeGreaterThan(order[i - 1]);
+    expect(markup).not.toContain('>Melt</h4>');
   });
 
   it('reads no code reference to the retired plural-tasting wording (Pitfall 7): never "once", "twice", or "times"', () => {
@@ -1846,5 +1867,88 @@ describe('BatchRow — the Batch fold head (sketch 011 decision 50 A, C1; Mark 2
     expect(none).toMatch(/<h2 id="batch" class="region-name"[^>]*>Batch<\/h2>/);
     expect(none).not.toContain('batch-row__date');
     expect(headOf(none)).not.toContain('fold-row');
+  });
+});
+
+// Sketch 011 README decision 58, Mark's answers B (melt cells join the measured
+// grid) and B2 (the four names in the pen's cue face), 2026-10-06; quick 261005-txg.
+describe("BatchRow — the reading's tasting groups under the pen's names (sketch 011 README decision 58: Melt B, names B2)", () => {
+  const withTasting = (tasting) => {
+    const batch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, ...tasting } };
+    return renderBatchRow({ openBatch: batch, batches: [batch], mode: 'reading' });
+  };
+  const cellLabels = (markup) => [...markup.matchAll(/<span class="batch-row__cell-label">([^<]*)<\/span>/g)].map((m) => m[1]);
+  const sectionOf = (markup) => {
+    const start = markup.indexOf('<section class="tasting-reading"');
+    return markup.slice(start, markup.indexOf('</section>', start));
+  };
+  const allSix = { hardness: 4, scoopability: 3, smoothness: 2, sweetness: 4, body: 4, oil: 5 };
+
+  it('G1: draws the marks under Every recipe then This recipe only, each its own group, and no Observations heading', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toContain(
+      `<div class="tasting-reading__group"><h4 class="${CUE}">Every recipe</h4><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Sweetness</span><span class="batch-row__cell-value">more (4)</span></div></div></div><div class="tasting-reading__group"><h4 class="${CUE}">This recipe only</h4><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Oil</span><span class="batch-row__cell-value">strong (4)</span></div></div></div>`,
+    );
+    expect(markup).not.toContain('>Observations<');
+  });
+
+  it('G2: with all six marked, the core four stand under Every recipe and Body, Oil under This recipe only', () => {
+    const section = sectionOf(withTasting({ marks: allSix, defects: null, bitterDeclared: null }));
+    const every = section.indexOf('>Every recipe</h4>');
+    const only = section.indexOf('>This recipe only</h4>');
+    expect(every).toBeGreaterThan(-1);
+    expect(only).toBeGreaterThan(every);
+    expect(cellLabels(section.slice(every, only))).toEqual(['Hardness', 'Scoopability', 'Smoothness', 'Sweetness']);
+    expect(cellLabels(section.slice(only))).toEqual(['Body', 'Oil']);
+  });
+
+  it('G3: with core marks only, Every recipe is drawn over the marks and no This recipe only h4 follows (the problems block is an h5)', () => {
+    const markup = withTasting({ marks: { hardness: 3, smoothness: 4 }, bitterDeclared: true });
+    expect(markup).toContain(`<h4 class="${CUE}">Every recipe</h4>`);
+    expect(markup).toContain('>Hardness</span>');
+    expect(markup).toContain('>Smoothness</span>');
+    expect(markup).not.toContain(`<h4 class="${CUE}">This recipe only</h4>`);
+    expect(markup).toContain(`<h5 class="${CUE}">This recipe only</h5>`);
+  });
+
+  it('G4: with declared marks only, This recipe only is drawn over Oil and Every recipe is not', () => {
+    const markup = withTasting({ marks: { oil: 4 } });
+    expect(markup).not.toContain(`<h4 class="${CUE}">Every recipe</h4>`);
+    expect(markup).toMatch(
+      new RegExp(`<h4 class="${CUE}">This recipe only</h4><div class="batch-row__cells tasting-reading__axes"><div class="batch-row__cell"><span class="batch-row__cell-label">Oil</span>`),
+    );
+  });
+
+  it('G5: with nothing marked, neither mark name and no axes grid is drawn', () => {
+    const markup = withTasting({ marks: {} });
+    expect(markup).not.toContain(`<h4 class="${CUE}">`);
+    expect(markup).not.toContain('tasting-reading__axes');
+  });
+
+  it('G6: with only core defects picked, Any problems? holds the Every recipe block alone', () => {
+    const markup = withTasting({ defects: ['Coarse, icy'], bitterDeclared: null });
+    expect(markup).toContain(
+      `<div class="tasting-reading__group"><h4 class="batch-row__group-label">Any problems?</h4><div class="tasting-reading__subgroup"><h5 class="${CUE}">Every recipe</h5><span class="app-hand tasting-reading__problems">Coarse, icy</span></div></div>`,
+    );
+    expect(markup).not.toContain(`<h5 class="${CUE}">This recipe only</h5>`);
+  });
+
+  it('G7: the conditions grid holds Tempering, Tasting temperature, Melt test, Melt style in that order', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).toContain(
+      '<div class="batch-row__cells tasting-reading__conditions"><div class="batch-row__cell"><span class="batch-row__cell-label">Tempering</span><span class="batch-row__unit batch-row__unit--absent">not measured</span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Tasting temperature</span><span class="batch-row__cell-value">−12<span class="batch-row__unit"> °C</span></span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt test</span><span class="batch-row__cell-value">3<span class="batch-row__unit"> g lost at 20 min</span></span></div><div class="batch-row__cell"><span class="batch-row__cell-label">Melt style</span><span class="batch-row__unit batch-row__unit--absent">not measured</span></div></div>',
+    );
+  });
+
+  it('G8: no Melt group or its grid class is drawn', () => {
+    const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
+    expect(markup).not.toContain('>Melt</h4>');
+    expect(markup).not.toContain('tasting-reading__melt');
+  });
+
+  it('G9: a tasting with no marks and no problems draws no group, and the conditions grid still holds the four cells', () => {
+    const section = sectionOf(withTasting({ marks: {}, defects: null, bitterDeclared: null }));
+    expect(section).not.toContain('tasting-reading__group');
+    expect(cellLabels(section)).toEqual(['Tempering', 'Tasting temperature', 'Melt test', 'Melt style']);
   });
 });

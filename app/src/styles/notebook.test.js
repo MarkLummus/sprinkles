@@ -770,3 +770,37 @@ describe('the group cues take their own face and their own space (sketch 011 dec
     );
   });
 });
+
+describe("the reading's four group names take the pen's cue face (sketch 011 decision 58 B2, Mark 2026-10-06; quick 261005-txg)", () => {
+  const find = (selector, media) => rules.find((r) => r.selector === selector && r.media === media);
+  const declares = (rule, property, value) => {
+    expect(rule, `a rule for the declaration ${property}`).toBeDefined();
+    const found = rule.declarations.split(';').map((d) => d.trim()).filter(Boolean).find((d) => d.startsWith(`${property}:`));
+    expect(found, `${rule.selector} declares ${property}`).toBeDefined();
+    expect(found.slice(property.length + 1).trim(), `${rule.selector} ${property}`).toBe(value);
+  };
+  const baseLabel = () =>
+    rules.find((r) => !r.media && r.selector.split(',').map((x) => x.trim()).includes('.notebook-log .batch-row__group-label'));
+
+  test('N1: the modifier carries the cue face and comes after the base label rule so it wins at equal specificity', () => {
+    const cue = find('.notebook-log .batch-row__group-label--cue');
+    declares(cue, 'font-size', 'var(--app-size-meta)');
+    declares(cue, 'font-weight', '600');
+    declares(cue, 'text-transform', 'none');
+    declares(cue, 'letter-spacing', '0');
+    declares(cue, 'line-height', 'var(--app-notebook-pen-cue-line-h)');
+    declares(cue, 'color', 'var(--app-text)');
+    expect(rules.indexOf(cue)).toBeGreaterThan(rules.indexOf(baseLabel()));
+  });
+
+  test('N2: the second problems block stands a large gap below the first, and the problems line takes no top margin inside a block', () => {
+    declares(find('.notebook-log .tasting-reading__subgroup + .tasting-reading__subgroup'), 'margin-top', 'var(--gap-l)');
+    declares(find('.notebook-log .tasting-reading__subgroup > .tasting-reading__problems'), 'margin-top', '0');
+  });
+
+  test('N3: the base label rule keeps the caps grey face, so Any problems? and Next time keep theirs', () => {
+    const base = baseLabel();
+    declares(base, 'text-transform', 'uppercase');
+    declares(base, 'color', 'var(--app-text-secondary)');
+  });
+});

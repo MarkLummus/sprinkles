@@ -228,3 +228,95 @@ describe('reading: Before you start is its own section above the Ingredients (de
     expect(item.lastElementChild).toBe(marker);
   });
 });
+
+async function setField(element, value) {
+  const proto = element.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+  const setter = Object.getOwnPropertyDescriptor(proto, 'value').set;
+  await act(async () => {
+    setter.call(element, value);
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+}
+
+describe('the Next version pen: the section is always drawn, and its notes are edited from there (decision 36, pen E2)', () => {
+  it('Olive Oil v1: both notes are fields with a remove control inside the section, none inside the Instructions', async () => {
+    const article = await mountVersion(oliveOilVersion);
+    await click(buttonByText(current.container, 'Next version'));
+
+    const before = article.querySelector('section.before-region');
+    const fields = [...before.querySelectorAll('textarea.prose-field')];
+    expect(fields.map((field) => field.getAttribute('aria-label'))).toEqual(['beforeYouStart note 1', 'beforeYouStart note 2']);
+    const removes = [...before.querySelectorAll('button')].filter((button) => button.textContent.trim() === 'remove');
+    expect(removes).toHaveLength(2);
+    for (const button of removes) expect(button.tabIndex).toBe(0);
+    expect(article.querySelector('section.method-region').querySelector('textarea[aria-label^="beforeYouStart"]')).toBeNull();
+  });
+
+  it('Olive Oil v1: an edited note reaches saveVersion, and a removed note leaves one field', async () => {
+    await mountVersion(oliveOilVersion);
+    const container = current.container;
+    const article = () => container.querySelector('article.recipe-page');
+    await click(buttonByText(current.container, 'Next version'));
+
+    await setField(article().querySelector('textarea[aria-label="beforeYouStart note 1"]'), 'Taste the Graza first.');
+    await setField(container.querySelector('input[aria-label="Version name"]'), 'taste first');
+    await click(buttonByText(container, 'Save as a new version'));
+    await flush(() => store.saveVersion.mock.calls.length > 0);
+
+    expect(store.saveVersion).toHaveBeenCalledTimes(1);
+    const saved = store.saveVersion.mock.calls[0][0];
+    expect(saved.authored.beforeYouStart[0].text).toBe('Taste the Graza first.');
+  });
+
+  it('Olive Oil v1: pressing the second note\'s remove leaves one field in the section', async () => {
+    const article = await mountVersion(oliveOilVersion);
+    await click(buttonByText(current.container, 'Next version'));
+    const before = article.querySelector('section.before-region');
+    const removes = [...before.querySelectorAll('button')].filter((button) => button.textContent.trim() === 'remove');
+    await click(removes[1]);
+    expect(before.querySelectorAll('textarea.prose-field')).toHaveLength(1);
+  });
+
+  it('Olive Oil v1: Tab order by document order puts the notes after the Sheet title and description and before the first ingredient input', async () => {
+    const article = await mountVersion(oliveOilVersion);
+    await click(buttonByText(current.container, 'Next version'));
+    const follows = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const title = article.querySelector('[aria-label="Sheet title"]');
+    const description = article.querySelector('[aria-label="Sheet description"]');
+    const notes = [...article.querySelectorAll('section.before-region textarea')];
+    const firstIngredientInput = article.querySelector('.ingredient-table input');
+    expect(notes).toHaveLength(2);
+    expect(firstIngredientInput).not.toBeNull();
+    for (const note of notes) {
+      expect(follows(title, note)).toBe(true);
+      expect(follows(description, note)).toBe(true);
+      expect(follows(note, firstIngredientInput)).toBe(true);
+    }
+  });
+
+  it('Mexican Chocolate v3 (no notes, E2): the heading stands alone, the Instructions heading stays, and Cancel returns to reading without the section', async () => {
+    const article = await mountVersion(mexicanChocolateV3);
+    await click(buttonByText(current.container, 'Next version'));
+
+    const before = article.querySelector('section.before-region');
+    expect(before).not.toBeNull();
+    expect([...before.children].map((child) => child.tagName)).toEqual(['H2']);
+    expect(before.firstElementChild.textContent).toBe('Before you start');
+    expect(before.querySelector('ul')).toBeNull();
+    expect(article.querySelector('section.method-region h2').textContent).toBe('Instructions');
+    expect(article.className).toBe('recipe-page');
+
+    await click(buttonByText(current.container, 'Cancel'));
+    expect(article.querySelector('section.before-region')).toBeNull();
+    expect(article.className).toBe('recipe-page recipe-page--no-before');
+  });
+
+  it('Standard Base v2 (no notes, no steps): Before you start precedes Instructions in the pen', async () => {
+    const article = await mountVersion(standardBaseV2);
+    await click(buttonByText(current.container, 'Next version'));
+    const headings = [...article.querySelectorAll('h2.region-name')].map((heading) => heading.textContent);
+    expect(headings.indexOf('Before you start')).toBeGreaterThan(-1);
+    expect(headings.indexOf('Instructions')).toBeGreaterThan(headings.indexOf('Before you start'));
+    expect(article.className).toBe('recipe-page');
+  });
+});

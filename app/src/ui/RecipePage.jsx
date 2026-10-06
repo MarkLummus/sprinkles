@@ -2029,12 +2029,13 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
   // The values the two sections read, held once so each guard and its section
   // never read different ones (261003-9bz). Before you start is a section of its
-  // own above the Ingredients, drawn when it has notes; the Instructions are
-  // drawn when the version shows a step, or in the pen (sketch 011 decision 36,
-  // Mark's answers 1 and 5, 2026-10-04).
+  // own above the Ingredients, drawn when it has notes, and in the pen always,
+  // with no notes as its heading alone (pen E2); the Instructions are drawn when
+  // the version shows a step, or in the pen (sketch 011 decision 36, Mark's
+  // answers 1, 3 and 5, 2026-10-04).
   const methodSteps = mode === 'developing' || showingChanges ? version.method : readingVersion.method;
   const beforeNotes = mode === 'developing' && penDraft ? penDraft.authored.beforeYouStart : version.authored.beforeYouStart;
-  const beforeRegionShown = beforeNotes.length > 0;
+  const beforeRegionShown = mode === 'developing' || beforeNotes.length > 0;
   const methodRegionShown = showsMethodRegion({ mode, steps: methodSteps });
   // An explicit grid row with no item keeps its gutters, so each absent section
   // drops its row through a modifier (app.css).
@@ -2114,13 +2115,15 @@ export function RecipePage({ onPageStatus = () => {} }) {
             {beforeRegionShown && (
               <section className="before-region" aria-label="Before you start">
                 <h2 className="region-name">Before you start</h2>
-                <NoteList
-                  listKey="beforeYouStart"
-                  notes={beforeNotes}
-                  mode={mode}
-                  onChangeNoteText={handleChangePenNoteText}
-                  onRemoveNote={handleRemovePenNote}
-                />
+                {beforeNotes.length > 0 && (
+                  <NoteList
+                    listKey="beforeYouStart"
+                    notes={beforeNotes}
+                    mode={mode}
+                    onChangeNoteText={handleChangePenNoteText}
+                    onRemoveNote={handleRemovePenNote}
+                  />
+                )}
               </section>
             )}
 

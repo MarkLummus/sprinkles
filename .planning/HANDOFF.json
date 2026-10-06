@@ -1,47 +1,143 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-05T04:32:19.573Z",
-  "phase": "03.5",
-  "phase_name": "Separate the recipe from the sheet (follow-up work after completion)",
-  "phase_dir": null,
-  "plan": null,
-  "task": null,
-  "total_tasks": null,
+  "timestamp": "2026-10-06T00:51:17.979Z",
+  "phase": "03.6",
+  "phase_name": "Per-step shared ingredients (INSERTED)",
+  "phase_dir": ".planning/phases/03.6-per-step-shared-ingredients",
+  "plan": 7,
+  "task": 2,
+  "total_tasks": 2,
   "status": "paused",
   "completed_tasks": [
-    {"id": "sid-boards", "name": "Sid boards and README decisions 39 to 55 (print break, redraws, rhythm, record pen, labels, one-line head, empty space, Batch fold, shared ingredients per step, Import errors, notice, More tiles)", "status": "done", "commit": "f281024..531f244"},
-    {"id": "quicks", "name": "Quicks shipped and committed this session: szl (Recorded line), ta2 (tidy, menu ring), ubg (one-line head, empty space), uo6 (hairline, tab ring), uyd (Batch fold), vj2 (Go to batch opens fold), vpr (More tiles), wib (Import panel, notice, Search below hairline), 06q (More closes the panel), wc0 (marks-list skill: checks close todos)", "status": "done", "commit": "d7ee6ce"},
-    {"id": "skill", "name": "/marks-list skill: a check carries `closes`; a passed Done check closes its todos (commit 002e35b)", "status": "done", "commit": "002e35b"}
+    {
+      "id": 1,
+      "name": "03.6-01 plan",
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "name": "03.6-02 plan",
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "name": "03.6-03 plan",
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "name": "03.6-04 plan",
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "name": "03.6-05 plan",
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "name": "03.6-06 plan",
+      "status": "done"
+    },
+    {
+      "id": 7,
+      "name": "03.6-07 plan",
+      "status": "done"
+    },
+    {
+      "id": 8,
+      "name": "quick 261005-cgb one line left",
+      "status": "done",
+      "commit": "949cf3f"
+    },
+    {
+      "id": 9,
+      "name": "quick 261005-cm6 pen opened with a line out",
+      "status": "done",
+      "commit": "f2d6b4d"
+    },
+    {
+      "id": 10,
+      "name": "quick 261005-db4 recording reads like the Sheet",
+      "status": "done",
+      "commit": "f267b7e"
+    }
   ],
   "remaining_tasks": [
-    {"id": "run-phase-per-step", "name": "Mark runs /gsd-phase --insert for per-step shared ingredients, then plan and execute (Run row run-phase-per-step-shared-ingredients; README decision 51 holds the behaviour)", "status": "not_started"},
-    {"id": "run-phase-bys", "name": "Mark runs /gsd-phase --insert for Before you start as its own Sheet section (Run row run-phase-insert-before-you-start; README decisions 36, 45)", "status": "not_started"},
-    {"id": "impeccable", "name": "Mark runs /impeccable document (radius and Why in DESIGN.md; three follow-ups; surface brief 'removal never cascades' amendment): Run rows on the list", "status": "not_started"},
-    {"id": "fix-hover-shrink", "name": "Fix row fix-header-import-export-hover-shrink: header Import/Export shrink on pointer hover (Close in the Import error panel too); a plain /gsd-quick when Mark says", "status": "not_started"},
-    {"id": "open-ideas", "name": "Open, not started: phone jobs brief, Recipe book print format, Phase 04 As made column, sugar-removal decide row (decision-remove-which), tasting group names decide, Mise en Place idea, Impeccable 4.2.0 to 4.5.0 update at Phase 04 planning", "status": "not_started"}
+    {
+      "id": 11,
+      "name": "/marks-list: react to look-blocked-row-sentence-board (A recommended) and look-tasting-groups-names-board (critique note, Sid redraw)",
+      "status": "not_started"
+    },
+    {
+      "id": 12,
+      "name": "/gsd-verify-work 03.6 (walk 03.6-UAT.md, complete the phase)",
+      "status": "not_started"
+    }
   ],
   "blockers": [],
   "async_jobs": [],
   "human_actions_pending": [
     {
-      "action": "All human actions are rows on Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC): Run rows, open Fix and decide rows, remaining todos. Every device check Mark did passed or is closed",
-      "context": "CLAUDE.md: each human action is a row on the list. The preview on :4173 is stale: rebuild with npm --prefix app run build && npm --prefix app run preview -- --host",
+      "action": "Look at the app companions and filled action, then run /impeccable document (Mark's List row run-impeccable-document-followups)",
+      "context": "DESIGN.md still marks four text companions and the filled action tentative",
+      "blocking": false
+    },
+    {
+      "action": "Answer or schedule the rest of the Mark's List 'You do something' and 'You answer' rows (mise en place todo; draw-tasting-group-names)",
+      "context": "Mark's List lanes",
       "blocking": false
     }
   ],
   "decisions": [
-    {"decision": "A check row carries `closes: [todo ids]`; when Mark marks it Done with no defect note, /marks-list sets the linked todos to done and moves their files. Only check rows close todos; a look never does", "rationale": "Mark asked on 2026-10-05 that passing a check close both", "phase": "03.5"},
-    {"decision": "Shared ingredients act per step (README decision 51): each remove link removes its own line (44 C), a removed step takes its lines with it, struck; the 86.3% figures fix goes with that build", "rationale": "Mark's answers on decision 51, 2026-10-05", "phase": "03.5"},
-    {"decision": "Quicks run one at a time on the main tree: force the isolation sentinel to none right before each executor dispatch, then dispatch in the very next tool call; commit by explicit path; docs commit (PLAN, SUMMARY, probe, STATE row) by the orchestrator after each quick; push only when Mark says", "rationale": "the guard hook reads a sentinel; Mark approves each commit and push", "phase": "03.5"}
+    {
+      "decision": "Run phase work sequentially on main; force isolation none before each dispatch",
+      "rationale": "main is 42 commits ahead of origin",
+      "phase": "03.6"
+    },
+    {
+      "decision": "Commit by pathspec in a tree shared with Sid's uncommitted files",
+      "rationale": "Sid and the orchestrator leave uncommitted files",
+      "phase": "03.6"
+    },
+    {
+      "decision": "Decision 56 A recommended; struck line with no figures prints nothing; decision 57 A (sentence in the line)",
+      "rationale": "Mark's answers on Mark's List",
+      "phase": "03.6"
+    }
   ],
   "uncommitted_files": [
+    " M .planning/canvas-generators/snapshot.py",
+    " M .planning/sketches/011-recipe-route-c/README.md",
+    " M .planning/state.json",
+    " M CLAUDE.md",
     "?? .impeccable/critique/2026-09-27T12-14-47Z__app-src-ui-shell-jsx.md",
     "?? .impeccable/critique/2026-09-27T16-09-31Z__g-sketches-011-options-counts-batches-0-and-1-html.md",
     "?? .impeccable/critique/2026-09-27T16-09-31Z__ketches-011-options-counts-versions-1-vs-many-html.md",
     "?? .impeccable/critique/2026-09-27T16-09-31Z__ning-sketches-011-options-counts-batches-many-html.md",
     "?? .impeccable/critique/2026-09-27T18-26-51Z__lanning-sketches-011-recipe-route-c-393-batch-html.md",
-    "?? .impeccable/critique/2026-09-27T18-26-51Z__nning-sketches-011-options-counts-upright-393-html.md"
+    "?? .impeccable/critique/2026-09-27T18-26-51Z__nning-sketches-011-options-counts-upright-393-html.md",
+    "?? .planning/canvas-generators/asmade-capture.json",
+    "?? .planning/canvas-generators/asmade-capture.mjs",
+    "?? .planning/canvas-generators/asmade-conform.mjs",
+    "?? .planning/canvas-generators/asmade-measure.json",
+    "?? .planning/canvas-generators/asmade-measure.mjs",
+    "?? .planning/canvas-generators/asmade.py",
+    "?? .planning/canvas-generators/blocked-capture.json",
+    "?? .planning/canvas-generators/blocked-capture.mjs",
+    "?? .planning/canvas-generators/blocked-conform.mjs",
+    "?? .planning/canvas-generators/blocked.py",
+    "?? .planning/canvas-generators/tgroups-capture.json",
+    "?? .planning/canvas-generators/tgroups-capture.mjs",
+    "?? .planning/canvas-generators/tgroups-conform.mjs",
+    "?? .planning/canvas-generators/tgroups-page.mjs",
+    "?? .planning/canvas-generators/tgroups.py",
+    "?? .planning/phases/03.6-per-step-shared-ingredients/.continue-here.md",
+    "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep",
+    "?? .planning/sketches/011-recipe-route-c/as-made-line-out.html",
+    "?? .planning/sketches/011-recipe-route-c/blocked-row-sentence.html",
+    "?? .planning/sketches/011-recipe-route-c/tasting-group-names.html"
   ],
-  "next_action": "Run /marks-list to react to any answers Mark left on the list. Then, when Mark says: run the hover-shrink fix as a /gsd-quick; the two /gsd-phase --insert commands and the /impeccable document runs are Mark's (Run rows). main is at d7ee6ce and level with origin.",
-  "context_notes": "Session 2026-10-04 to 05: shipped ten quicks and Sid's decisions 39 to 55 against Mark's List, then added the closes link to the /marks-list skill. Workflow overview page: https://claude.ai/artifact/77dTjXBVkkZdH7LWA7ehze. Memory: executors and agents do not write list rows (the orchestrator does); Sid one at a time; /gsd-phase, /gsd-plan-phase and /impeccable are never run by Claude; the six .impeccable/critique files stay untracked."
+  "next_action": "Run /marks-list: look-blocked-row-sentence-board is answered A recommended (record in README decision 57, run the build as a /gsd-quick, add a Run row for the brief amendment); look-tasting-groups-names-board holds a critique note (Any problems? styles like Next time; Every recipe and This recipe only split axes and failures into two groups): send it to Sid for a redraw, do not build; check-as-made-reads-like-sheet passed (reply only). Then /gsd-verify-work 03.6.",
+  "context_notes": "Sketch server runs on 0.0.0.0:8077 (PID 86435) for LAN viewing; :4173 is Mark's. See .planning/phases/03.6-per-step-shared-ingredients/.continue-here.md."
 }

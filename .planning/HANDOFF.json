@@ -1,9 +1,9 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-06T04:17:17.482Z",
-  "phase": "04",
-  "phase_name": "Prepare the next version for making",
-  "phase_dir": ".planning/phases/04-prepare-the-next-version-for-making",
+  "timestamp": "2026-10-06T04:23:48.458Z",
+  "phase": "03.7",
+  "phase_name": "Before you start as its own Sheet section",
+  "phase_dir": ".planning/phases/03.7-before-you-start-as-its-own-sheet-section",
   "plan": 0,
   "task": 0,
   "total_tasks": 0,
@@ -50,26 +50,37 @@
       "name": "DESIGN.md records ink focus ring, pen weights, on-subtle companions (doctor: no drift); .impeccable/config.json buildPath code",
       "status": "done",
       "commit": "a1579f1"
+    },
+    {
+      "id": 8,
+      "name": "Phase 03.7 inserted before Phase 04 (the tool numbered it 03.6.1; renamed to 03.7), STATE.md points at it",
+      "status": "done",
+      "commit": "bc9bf81"
     }
   ],
   "remaining_tasks": [
     {
-      "id": 8,
-      "name": "Mark: run /gsd-phase --insert for 'Before you start' (row run-phase-insert-before-you-start; the row says 03.5 but 03.6 exists), then /gsd-plan-phase",
-      "status": "not_started"
-    },
-    {
       "id": 9,
-      "name": "Mark: npx impeccable update (row run-impeccable-update) before Phase 04 planning",
+      "name": "Mark: /gsd-plan-phase 03.7 (row run-plan-phase-03-7); brief ready in sketch 011 README decisions 36 and 45",
       "status": "not_started"
     },
     {
       "id": 10,
-      "name": "/gsd-plan-phase 04 (CONTEXT.md and DISCUSSION-LOG.md exist); raise the Phase 04 rows: As made column, phone-jobs brief, Recipe book print format, shared Button/tabindex (UX-01)",
+      "name": "/gsd-execute-phase 03.7, then device UAT",
       "status": "not_started"
     },
     {
       "id": 11,
+      "name": "Mark: npx impeccable update (row run-impeccable-update) before Phase 04 planning",
+      "status": "not_started"
+    },
+    {
+      "id": 12,
+      "name": "/gsd-plan-phase 04 after 03.7; raise the Phase 04 rows: As made column, phone-jobs brief, Recipe book print format, shared Button/tabindex (UX-01)",
+      "status": "not_started"
+    },
+    {
+      "id": 13,
       "name": "Optional: /gsd-secure-phase for 03.1, 03.3, 03.3.1.1 (no SECURITY.md)",
       "status": "not_started"
     }
@@ -77,22 +88,22 @@
   "blockers": [],
   "human_actions_pending": [
     {
-      "action": "Run /gsd-phase --insert for 'Before you start' (Mark's List: run-phase-insert-before-you-start)",
-      "context": "Changes the printed page, so wanted before Phase 04",
+      "action": "Run /gsd-plan-phase 03.7 (Mark's List: run-plan-phase-03-7)",
+      "context": "Before you start as its own Sheet section; changes the printed page, so it goes before Phase 04",
       "blocking": false
     },
     {
       "action": "Run npx impeccable update (Mark's List: run-impeccable-update)",
-      "context": "Installed 4.2.0; target version unconfirmed; run one critique before and after",
+      "context": "Installed 4.2.0; target unconfirmed; run one critique before and after",
       "blocking": false
     },
     {
-      "action": "Look at the canvas split and answer BysBreak and CountUpright393 (look-recipe-route-canvas-split)",
+      "action": "Answer BysBreak and CountUpright393 (look-recipe-route-canvas-split)",
       "context": "Two boards stayed on Recipe route 03.5 as unclear",
       "blocking": false
     },
     {
-      "action": "Mise en place todo (8bpsgz9zvck5jciqafy9) and shared Button/tabindex todo (todo-shared-button-tabindex; may be covered by tabindex-scan.test.js)",
+      "action": "Mise en place todo (8bpsgz9zvck5jciqafy9) and shared Button/tabindex todo (todo-shared-button-tabindex)",
       "context": "Mark's List",
       "blocking": false
     }
@@ -105,14 +116,8 @@
     }
   ],
   "uncommitted_files": [
-    "?? .impeccable/critique/2026-09-27T12-14-47Z__app-src-ui-shell-jsx.md",
-    "?? .impeccable/critique/2026-09-27T16-09-31Z__g-sketches-011-options-counts-batches-0-and-1-html.md",
-    "?? .impeccable/critique/2026-09-27T16-09-31Z__ketches-011-options-counts-versions-1-vs-many-html.md",
-    "?? .impeccable/critique/2026-09-27T16-09-31Z__ning-sketches-011-options-counts-batches-many-html.md",
-    "?? .impeccable/critique/2026-09-27T18-26-51Z__lanning-sketches-011-recipe-route-c-393-batch-html.md",
-    "?? .impeccable/critique/2026-09-27T18-26-51Z__nning-sketches-011-options-counts-upright-393-html.md",
     "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"
   ],
-  "next_action": "Run /gsd-resume-work. Mark's List holds everything waiting on Mark. Then, after the 'Before you start' phase insert and the Impeccable update, run /gsd-plan-phase 04.",
-  "context_notes": "All inserted phases through 03.6 are complete. main and origin are in sync at a1579f1 (plus this handoff commit). 1910 tests pass; app/dist is freshly built. Mark's vite preview is on :4173 (pid 43217; never kill it, rebuild with npm --prefix app run build and hard refresh). Sketch server on 8077 (pid 86435). Dispatch isolation: when local main is ahead of origin, run `gsd-tools query dispatch-isolation --raw --force-isolation none` before dispatching an executor, or the isolation guard blocks it. Subagents (Sid) cannot write to Mark's List rows other than adding their own; the orchestrator closes rows."
+  "next_action": "Run /gsd-resume-work, then /marks-list. Then /gsd-plan-phase 03.7 (Mark's List row run-plan-phase-03-7); Phase 04 follows.",
+  "context_notes": "Phase 03.7 (INSERTED) sits between 03.6 and 04; handoff text for the rest is unchanged from the Phase 04 pause: main and origin in sync before the handoff commit, 1910 tests pass, app/dist fresh. Mark's vite preview on :4173 (pid 43217, never kill it); sketch server on 8077. When local main is ahead of origin, run `gsd-tools query dispatch-isolation --raw --force-isolation none` before dispatching an executor. gsd-phase --insert 03.6 numbered the phase 03.6.1; Mark wanted 03.7, so the directory and ROADMAP entry were renamed by hand. Sid cannot write to existing Mark's List rows; the orchestrator closes rows."
 }

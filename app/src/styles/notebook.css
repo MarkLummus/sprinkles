@@ -1087,9 +1087,12 @@
   background: none;
 }
 
+/* The pen's filled Save reads weight 600 like the other filled actions
+   (Mark, 2026-10-06, D-02; quick 261005-x0j). */
 .notebook-log .save-ceremony button:last-of-type {
   background: var(--app-blue-text);
   color: var(--app-background);
+  font-weight: 600;
 }
 
 /* The group cues take their own face and their own space (sketch 011

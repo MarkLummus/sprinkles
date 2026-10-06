@@ -826,4 +826,22 @@ describe('the filled action reads weight 600 on Home and in the Notebook (Mark 2
     expect(notebookWeight, `.notebook-action (${notebookWeight}) against .home__action (${homeWeight})`).toBe(homeWeight);
     expect(homeWeight, '.home__action font-weight').toBe('600');
   });
+
+  describe("the pen's filled Save reads weight 600 too (Mark 2026-10-06, decide-pen-save-weight; quick 261005-x0j)", () => {
+    const SAVE = '.notebook-log .save-ceremony button:last-of-type';
+
+    test(`${SAVE} declares font-weight 600`, () => {
+      expect(weightOf(topLevel(rules, SAVE), SAVE), `${SAVE} font-weight`).toBe('600');
+    });
+
+    test("the pen's Save, .notebook-action and .home__action declare the same font-weight, 600, so they cannot drift apart", () => {
+      const saveWeight = weightOf(topLevel(rules, SAVE), SAVE);
+      const notebookWeight = weightOf(topLevel(rules, '.notebook-action'), '.notebook-action');
+      const homeWeight = weightOf(topLevel(homeRules, '.home__action'), '.home__action');
+      expect(
+        [saveWeight, notebookWeight, homeWeight],
+        `${SAVE} (${saveWeight}), .notebook-action (${notebookWeight}), .home__action (${homeWeight})`,
+      ).toEqual(['600', '600', '600']);
+    });
+  });
 });

@@ -6,7 +6,10 @@
 //     computed background of the same element (--app-surface-subtle), in the rail at 1600 wide and in
 //     the tab row (and More, for Ingredients) at 393 wide; the colour must equal that place's computed
 //     --app-{x}-text-on-subtle token and the ratio must be 4.5 or more;
-//   - a scope check at 1600 on '/': the places that are not current still read their plain companion.
+//   - a scope check at 1600 on '/': the places that are not current still read their plain companion;
+//   - (D-02, decide-pen-save-weight) the computed font-weight of the pen's filled Save, which must be 600,
+//     at 1600, 1366 and 393 wide; at 1366 only, INFO lines with the weights of Home's filled action, the
+//     Notebook's filled action and the pen's outline Cancel.
 // Run it from the checkout root after `npm --prefix app run build`:
 //
 //   node .planning/quick/261005-x0j-mark-s-answers-darken-the-text-companion/261005-x0j-probe.mjs
@@ -146,6 +149,77 @@ async function scopeCase(browser, servers, engine) {
   }
 }
 
+const PEN_NOTE = 'textarea[aria-label="How did it turn out?"]';
+const SAVE = '.notebook-log .save-ceremony button:last-of-type';
+const CANCEL = '.notebook-log .save-ceremony button:first-of-type';
+
+async function weightOf(page, selector) {
+  try {
+    return await page.evaluate((sel) => {
+      const el = document.querySelector(sel);
+      return el ? getComputedStyle(el).fontWeight : 'not found';
+    }, selector);
+  } catch (error) {
+    return 'not found';
+  }
+}
+
+// Opens the pen with Correct, then exposes the tasting note field (Add tasting as the fallback).
+async function openPen(page) {
+  await page.locator('button.batch-row__correct').first().click();
+  await page.waitForSelector(PEN_NOTE, { state: 'attached', timeout: 5000 }).catch(() => {});
+  if ((await page.locator(PEN_NOTE).count()) === 0) {
+    await page.getByRole('button', { name: 'Add tasting' }).first().click();
+    await page.waitForSelector(PEN_NOTE, { state: 'attached', timeout: 5000 });
+  }
+}
+
+async function penCase(browser, servers, engine, width) {
+  const tag = `${engine}@${width} pen Save`;
+  const height = width === 393 ? 852 : 1100;
+  const { context, page } = await openApp(browser, servers.appUrl, APP_ROUTE, { width, height, coarse: false });
+  try {
+    page.setDefaultTimeout(10000);
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(300);
+    let problem = '';
+    try {
+      await openPen(page);
+    } catch (error) {
+      problem = `; pen did not open: ${String(error.message).split('\n')[0]}`;
+    }
+    const weight = await weightOf(page, SAVE);
+    console.log(`  ${tag}: font-weight ${weight}${problem}`);
+    if (width === 1366) {
+      console.log(`INFO weight ${engine} pen's outline Cancel: ${await weightOf(page, CANCEL)}`);
+    }
+    ck(weight === '600', `${tag}: font-weight ${weight}, expected 600${problem}`);
+  } finally {
+    await context.close();
+  }
+}
+
+async function infoWeights(browser, servers, engine) {
+  const home = await openApp(browser, servers.appUrl, '/', { width: 1366, height: 1100, coarse: false });
+  try {
+    home.page.setDefaultTimeout(10000);
+    await home.page.evaluate(() => document.fonts.ready);
+    await home.page.waitForTimeout(300);
+    console.log(`INFO weight ${engine} Home's filled action: ${await weightOf(home.page, '.home__action')}`);
+  } finally {
+    await home.context.close();
+  }
+  const batch = await openApp(browser, servers.appUrl, APP_ROUTE, { width: 1366, height: 1100, coarse: false });
+  try {
+    batch.page.setDefaultTimeout(10000);
+    await batch.page.evaluate(() => document.fonts.ready);
+    await batch.page.waitForTimeout(300);
+    console.log(`INFO weight ${engine} Notebook's filled action: ${await weightOf(batch.page, '.notebook-version__acts .notebook-action')}`);
+  } finally {
+    await batch.context.close();
+  }
+}
+
 const servers = await startServers();
 try {
   for (const [engine, launcher] of [
@@ -169,6 +243,20 @@ try {
         await scopeCase(browser, servers, engine);
       } catch (error) {
         ck(false, `${engine}@1600 scope: stopped: ${String(error.message).split('\n')[0]}`);
+      }
+      for (const width of [1600, 1366, 393]) {
+        try {
+          await penCase(browser, servers, engine, width);
+        } catch (error) {
+          const message = String(error.message).split('\n')[0];
+          console.log(`  ${engine}@${width} pen Save: stopped: ${message}`);
+          ck(false, `${engine}@${width} pen Save: stopped: ${message}`);
+        }
+      }
+      try {
+        await infoWeights(browser, servers, engine);
+      } catch (error) {
+        console.log(`INFO weight ${engine}: stopped: ${String(error.message).split('\n')[0]}`);
       }
     } finally {
       await browser.close();

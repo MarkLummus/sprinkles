@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-06T02:46:21.410Z",
+  "timestamp": "2026-10-06T04:17:17.482Z",
   "phase": "04",
   "phase_name": "Prepare the next version for making",
   "phase_dir": ".planning/phases/04-prepare-the-next-version-for-making",
@@ -11,103 +11,108 @@
   "completed_tasks": [
     {
       "id": 1,
-      "name": "Phase 03.4 re-verified and marked complete",
+      "name": "/impeccable document jobs: decision 38 + Why (87ac043), surface briefs for decisions 51/57/58 (7144115), text companions and filled action approved (547ecc3)",
       "status": "done",
-      "commit": "9a82326"
+      "commit": "547ecc3"
     },
     {
       "id": 2,
-      "name": "Phase 03.5 re-verified and marked complete",
+      "name": "Full DESIGN.md + sidecar regeneration from the shipped app (design-md-drift cleared)",
       "status": "done",
-      "commit": "28794f2"
+      "commit": "9db2127"
     },
     {
       "id": 3,
-      "name": "Phase 03.6 UAT, re-verification, SECURITY.md, marked complete",
+      "name": "quick 261005-w3j header Import/Export no longer shrink on hover",
       "status": "done",
-      "commit": "bb3c115"
+      "commit": "dbc1a86"
     },
     {
       "id": 4,
-      "name": "quick 261005-t32 blocked-save sentence in the line (decision 57)",
+      "name": "quick 261005-wgz companions one step darker, tasting note in the hand, Notebook filled action 600",
       "status": "done",
-      "commit": "d477a91"
+      "commit": "6f89f62"
     },
     {
       "id": 5,
-      "name": "quick 261005-txg reading's tasting groups (decision 58, Melt B, names B2)",
+      "name": "quick 261005-x0j companions clear 4.5:1 on the current place, pen Save 600, .prose-text retired",
       "status": "done",
-      "commit": "643923c"
+      "commit": "2fb7239"
     },
     {
       "id": 6,
-      "name": "Sid: boards retaken after txg; canvas page split into Recipe route 03.5 (38 boards) and Recipe route 03.5 concepts (47)",
+      "name": "fast 261006-05e pen outline Cancel 600",
       "status": "done",
-      "commit": "52d45e3"
+      "commit": "309b162"
+    },
+    {
+      "id": 7,
+      "name": "DESIGN.md records ink focus ring, pen weights, on-subtle companions (doctor: no drift); .impeccable/config.json buildPath code",
+      "status": "done",
+      "commit": "a1579f1"
     }
   ],
   "remaining_tasks": [
     {
-      "id": 7,
-      "name": "/marks-list: react to Mark's answers on look-recipe-route-canvas-split (and any new rows)",
-      "status": "not_started"
-    },
-    {
       "id": 8,
-      "name": "Decide the order: insert the 'Before you start' phase before Phase 04 (/gsd-phase --insert 03.6; Mark runs it), then /gsd-plan-phase",
+      "name": "Mark: run /gsd-phase --insert for 'Before you start' (row run-phase-insert-before-you-start; the row says 03.5 but 03.6 exists), then /gsd-plan-phase",
       "status": "not_started"
     },
     {
       "id": 9,
-      "name": "Phase 04: /gsd-plan-phase 04 (CONTEXT.md and DISCUSSION-LOG.md exist)",
+      "name": "Mark: npx impeccable update (row run-impeccable-update) before Phase 04 planning",
       "status": "not_started"
     },
     {
       "id": 10,
+      "name": "/gsd-plan-phase 04 (CONTEXT.md and DISCUSSION-LOG.md exist); raise the Phase 04 rows: As made column, phone-jobs brief, Recipe book print format, shared Button/tabindex (UX-01)",
+      "status": "not_started"
+    },
+    {
+      "id": 11,
       "name": "Optional: /gsd-secure-phase for 03.1, 03.3, 03.3.1.1 (no SECURITY.md)",
       "status": "not_started"
     }
   ],
   "blockers": [],
-  "async_jobs": [],
   "human_actions_pending": [
     {
-      "action": "Run /impeccable document jobs: app text companions and filled action (run-impeccable-document-followups), surface-removal brief incl. decisions 57 and 58 (run-impeccable-surface-removal), radius row (run-impeccable-document-radius)",
-      "context": "DESIGN.md and the surface briefs still disagree with built behaviour; all are rows on Mark's List",
+      "action": "Run /gsd-phase --insert for 'Before you start' (Mark's List: run-phase-insert-before-you-start)",
+      "context": "Changes the printed page, so wanted before Phase 04",
       "blocking": false
     },
     {
-      "action": "Look at the canvas split and answer the two unclear boards (look-recipe-route-canvas-split)",
-      "context": "R35C_BysBreak and R35C_CountUpright393 stayed on the built page as unclear",
+      "action": "Run npx impeccable update (Mark's List: run-impeccable-update)",
+      "context": "Installed 4.2.0; target version unconfirmed; run one critique before and after",
       "blocking": false
     },
     {
-      "action": "Decide whether the 'Before you start' section gets its own phase before Phase 04 (run-phase-insert-before-you-start, todo-before-you-start-own-section)",
-      "context": "It changes the printed page, so Mark wants it before Phase 04; no phase for it exists in ROADMAP yet",
+      "action": "Look at the canvas split and answer BysBreak and CountUpright393 (look-recipe-route-canvas-split)",
+      "context": "Two boards stayed on Recipe route 03.5 as unclear",
       "blocking": false
     },
     {
-      "action": "Other Mark's List rows: mise en place todo, 'How did it turn out?' hand-vs-pen todo (ambiguous, ask which way round), shared Button/tabindex todo",
+      "action": "Mise en place todo (8bpsgz9zvck5jciqafy9) and shared Button/tabindex todo (todo-shared-button-tabindex; may be covered by tabindex-scan.test.js)",
       "context": "Mark's List",
       "blocking": false
     }
   ],
   "decisions": [
     {
-      "decision": "Phases 03.4, 03.5, 03.6 re-verified (stale digests) and marked complete; phase.complete moves STATE position, so STATE was restored by hand for 03.4 and 03.5",
-      "rationale": "03.6 was the last inserted phase, so its advance to Phase 04 is correct",
-      "phase": "03.6"
-    },
-    {
-      "decision": "Decision 57 A (blocked-row sentence in the line) and decision 58 (Melt B, names B2) built; the 18 older option boards stay as dated drawings",
-      "rationale": "Mark's answers on Mark's List",
-      "phase": "03.6"
+      "decision": "Companions: one-step darken on the app background (#1475DD, #ED0702) and surface-scoped on-subtle tokens for the current place; filled actions and the pen's Save and Cancel all weight 600; tasting note renders in the hand; app blue ratified as link colour and ink as focus ring; Impeccable buildPath code-first",
+      "rationale": "Mark's answers on Mark's List, 2026-10-05 and 06",
+      "phase": "04"
     }
   ],
   "uncommitted_files": [
-    "?? .impeccable/critique/ (6 files, untracked before this session)",
+    "?? .impeccable/critique/2026-09-27T12-14-47Z__app-src-ui-shell-jsx.md",
+    "?? .impeccable/critique/2026-09-27T16-09-31Z__g-sketches-011-options-counts-batches-0-and-1-html.md",
+    "?? .impeccable/critique/2026-09-27T16-09-31Z__ketches-011-options-counts-versions-1-vs-many-html.md",
+    "?? .impeccable/critique/2026-09-27T16-09-31Z__ning-sketches-011-options-counts-batches-many-html.md",
+    "?? .impeccable/critique/2026-09-27T18-26-51Z__lanning-sketches-011-recipe-route-c-393-batch-html.md",
+    "?? .impeccable/critique/2026-09-27T18-26-51Z__nning-sketches-011-options-counts-upright-393-html.md",
     "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"
   ],
-  "next_action": "Run /gsd-resume-work, then /marks-list to react to Mark's answers (look-recipe-route-canvas-split first). Then settle whether the 'Before you start' phase goes before Phase 04 and run /gsd-plan-phase 04.",
-  "context_notes": "All inserted phases through 03.6 are complete and pushed (main at 52d45e3 plus this handoff commit). main and origin are in sync. Sketch server runs on 0.0.0.0:8077 (PID 86435); :4173 is Mark's vite preview, never touch it. Ten of thirteen phases are complete; Phase 04 has CONTEXT.md only."
+  "next_action": "Run /gsd-resume-work. Mark's List holds everything waiting on Mark. Then, after the 'Before you start' phase insert and the Impeccable update, run /gsd-plan-phase 04.",
+  "context_notes": "All inserted phases through 03.6 are complete. main and origin are in sync at a1579f1 (plus this handoff commit). 1910 tests pass; app/dist is freshly built. Mark's vite preview is on :4173 (pid 43217; never kill it, rebuild with npm --prefix app run build and hard refresh). Sketch server on 8077 (pid 86435). Dispatch isolation: when local main is ahead of origin, run `gsd-tools query dispatch-isolation --raw --force-isolation none` before dispatching an executor, or the isolation guard blocks it. Subagents (Sid) cannot write to Mark's List rows other than adding their own; the orchestrator closes rows."
 }

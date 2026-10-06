@@ -1074,11 +1074,14 @@
   border-color: var(--app-blue-text);
 }
 
+/* The pen's outline Cancel reads weight 600 like the Notebook's outline action
+   (Mark, 2026-10-06, decide-pen-cancel-weight; quick 261006-05e). */
 .notebook-log .save-ceremony button {
   border-color: var(--app-blue-text);
   border-radius: var(--app-radius-control);
   color: var(--app-blue-text);
   background: none;
+  font-weight: 600;
 }
 
 /* The pen's filled Save reads weight 600 like the other filled actions

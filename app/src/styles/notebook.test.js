@@ -844,4 +844,12 @@ describe('the filled action reads weight 600 on Home and in the Notebook (Mark 2
       ).toEqual(['600', '600', '600']);
     });
   });
+
+  describe("the pen's outline Cancel reads weight 600 too (Mark 2026-10-06, decide-pen-cancel-weight; quick 261006-05e)", () => {
+    const PEN_BUTTON = '.notebook-log .save-ceremony button';
+
+    test(`${PEN_BUTTON} (the outline Cancel, which the filled Save overrides) declares font-weight 600`, () => {
+      expect(weightOf(topLevel(rules, PEN_BUTTON), PEN_BUTTON), `${PEN_BUTTON} font-weight`).toBe('600');
+    });
+  });
 });

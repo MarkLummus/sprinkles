@@ -13,3 +13,7 @@ design/
 
 # GSD session locks — per-machine claims, never shared
 .planning/*.lock
+
+# graphify build output — regenerable
+graphify-out/
+.planning/graphs/

@@ -201,3 +201,87 @@ describe('one App control radius (sketch 011 decision 38 B, Mark 2026-10-04; qui
     }
   });
 });
+
+describe('the text companions clear 4.5:1 on the app background (WCAG 2.2 AA; Mark 2026-10-05, decide-companion-contrast-under-4-5; quick 261005-wgz)', () => {
+  const declaredInTokens = readCustomProperties(readFileSync(path.join(STYLES_DIR, 'tokens.css'), 'utf8'));
+
+  // WCAG 2 relative luminance and contrast ratio, computed here so the
+  // test is the authority and no ratio is copied from a note: a channel
+  // c/255 is linear when c <= 0.03928 (divided by 12.92), otherwise
+  // ((c + 0.055) / 1.055) ^ 2.4; L = 0.2126 R + 0.7152 G + 0.0722 B; the
+  // ratio is (Lhigh + 0.05) / (Llow + 0.05).
+  function channels(hex) {
+    const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
+    if (!match) throw new Error(`not a six-digit hex: ${hex}`);
+    return [match[1], match[2], match[3]].map((pair) => parseInt(pair, 16));
+  }
+  function luminance(hex) {
+    const [r, g, b] = channels(hex).map((value) => {
+      const c = value / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+  function ratio(hexA, hexB) {
+    const [high, low] = [luminance(hexA), luminance(hexB)].sort((a, b) => b - a);
+    return (high + 0.05) / (low + 0.05);
+  }
+
+  const background = declaredInTokens['--app-background'];
+  const COMPANIONS = [
+    '--app-notebook-text',
+    '--app-recipe-book-text',
+    '--app-idea-log-text',
+    '--app-ingredients-text',
+    '--app-blue-text',
+  ];
+
+  test.each(COMPANIONS)('%s has a contrast ratio of at least 4.5 on --app-background', (name) => {
+    const measured = ratio(declaredInTokens[name], background);
+    expect(measured >= 4.5, `${name} ${declaredInTokens[name]} measures ${measured.toFixed(3)}:1 on ${background}`).toBe(true);
+  });
+
+  test('the white label on the blue fill clears 4.5:1: the filled action fills with --app-blue-text and labels with --app-background', () => {
+    const measured = ratio(declaredInTokens['--app-background'], declaredInTokens['--app-blue-text']);
+    expect(measured >= 4.5, `label on fill measures ${measured.toFixed(3)}:1`).toBe(true);
+    for (const [file, selector] of [['home.css', '.home__action'], ['notebook.css', '.notebook-action']]) {
+      const { src } = cssSourceFiles.find((entry) => entry.label === file);
+      const rule = readAllRules(src).find((entry) => entry.selector === selector && entry.media === undefined);
+      expect(rule, `${file} has a top-level ${selector} rule`).toBeDefined();
+      expect(rule.declarations, `${selector} fills with --app-blue-text`).toMatch(/background:\s*var\(--app-blue-text\)/);
+      expect(rule.declarations, `${selector} labels with --app-background`).toMatch(/(?:^|[\s;])color:\s*var\(--app-background\)/);
+    }
+  });
+
+  test('each darkened token is the approved hex less at most one step per channel, never lighter', () => {
+    const APPROVED = { '--app-blue-text': '#1576de', '--app-notebook-text': '#ee0803' };
+    for (const [name, approved] of Object.entries(APPROVED)) {
+      const now = channels(declaredInTokens[name]);
+      channels(approved).forEach((was, index) => {
+        const step = was - now[index];
+        expect(step >= 0 && step <= 1, `${name} channel ${index} moved ${step} from ${approved}`).toBe(true);
+      });
+    }
+  });
+
+  test('the other three companions stay byte-identical', () => {
+    expect(declaredInTokens['--app-recipe-book-text']).toBe('#bc5b0d');
+    expect(declaredInTokens['--app-idea-log-text']).toBe('#976f01');
+    expect(declaredInTokens['--app-ingredients-text']).toBe('#358452');
+  });
+
+  test('no stylesheet or ui source carries a literal copy of either companion, approved or darkened', () => {
+    const literals = ['#1576de', '#1475dd', '#ee0803', '#ed0702'];
+    const files = [
+      ...cssSourceFiles.filter((entry) => entry.label !== 'tokens.css'),
+      ...jsFiles,
+    ];
+    const found = [];
+    for (const { label, src } of files) {
+      for (const literal of literals) {
+        if (src.toLowerCase().includes(literal)) found.push(`${label} carries ${literal}`);
+      }
+    }
+    expect(found).toEqual([]);
+  });
+});

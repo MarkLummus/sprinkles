@@ -302,9 +302,13 @@
      2026-09-21 and wait on Mark's confirmation once seen in the real app
      (D-19); Pantry and Kitchen carry no companion of their own — Kitchen's
      indigo already reads 5.88:1 (D-09). --home-ground/ink/mute/rule
-     retire into --app-background/text/text-secondary/divider (D-03). */
+     retire into --app-background/text/text-secondary/divider (D-03).
+     --app-notebook-text and --app-blue-text each stand one hex step per
+     channel darker than the approved #ee0803 and #1576de, because those
+     measured 4.495:1 and 4.489:1 on --app-background; they now measure
+     4.534:1 and 4.547:1 (Mark, 2026-10-05, quick 261005-wgz). */
   --app-notebook: #fd5b57;
-  --app-notebook-text: #ee0803;
+  --app-notebook-text: #ed0702;
   --app-recipe-book: #f18a36;
   --app-recipe-book-text: #bc5b0d;
   --app-idea-log: #fdc632;
@@ -314,7 +318,7 @@
   --app-ingredients-text: #358452;
   --app-kitchen: #505db5;
   --app-blue: #2081ea;
-  --app-blue-text: #1576de;
+  --app-blue-text: #1475dd;
   --app-background: #ffffff;
   --app-surface-subtle: #f3f4f2;
   --app-text: #141414;

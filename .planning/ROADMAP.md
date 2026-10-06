@@ -19,6 +19,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 03.1: The imprint and the binder** (INSERTED) - The recipe page gains its front-matter band and every control leaves the printed spread; the pen reads as the page; the binder replaces browser chrome (completed 2026-09-09)
 - [x] **Phase 03.2: The portion and the reset** (INSERTED) - Portions become the authored amount and the total derives; `step`/`splitStep` retire; the store resets to the new shape and the seed is rewritten, rather than migrating (completed 2026-09-10)
 - [x] **Phase 03.3: The front-matter rows and the page in step order** (INSERTED) - The imprint and the tray retire into two front-matter rows; the table reads in step order; the pen's method opens read-only (completed 2026-09-10)
+- [x] **Phase 03.3.1: The full battery: the record pen rebuilt from sketch 007** (INSERTED) - The record pen carries the full tasting battery as sketch 007 draws it (completed 2026-09-13)
+- [x] **Phase 03.3.1.1: Record pen conformance polish** (INSERTED) - The 18 untriaged conformance gaps between the shipped record pen and the structural contract are closed (completed 2026-09-16)
+- [x] **Phase 03.4: The design layer in code** (INSERTED) - The App palette, Sheet-prefixed tokens, the hand and Home land in code (completed 2026-09-22)
 - [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
 - [ ] **Phase 5: Version evolution** - A batch records reordered and new Instructions steps, and a version can evolve its step structure
 
@@ -655,7 +658,7 @@ These govern every phase and are not re-litigated during planning:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 3.4 → 3.5 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1 → 3.3.1.1 → 3.4 → 3.5 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -667,6 +670,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.3. The front-matter rows and the page in step order | 7/7 | Complete    | 2026-09-10 |
 | 3.3.1. The full battery: the record pen rebuilt from sketch 007 | 7/7 | Complete    | 2026-09-13 |
 | 3.3.1.1. Record pen conformance polish | 6/6 | Complete    | 2026-09-16 |
+| 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
 | 4. Prepare the next version for making | 0/TBD | Not started | - |
 | 5. Version evolution | 0/TBD | Not started | - |
 

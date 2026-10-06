@@ -3,7 +3,7 @@
   "board": {
    "article": [
     1216,
-    2265
+    2194
    ],
    "sections": {
     "recipe-band": [
@@ -22,19 +22,19 @@
      48,
      383,
      725,
-     740
+     717
     ],
     "method-region": [
      48,
-     1155,
+     1132,
      725,
-     1030
+     982
     ],
     "side-region": [
      805,
      206,
      363,
-     1979
+     1908
     ]
    },
    "headings": [
@@ -52,7 +52,7 @@
     ],
     [
      "Instructions",
-     1155
+     1132
     ],
     [
      "Balance",
@@ -68,7 +68,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -91,23 +90,23 @@
     939,
     972,
     1007,
-    1040
+    1038
    ],
    "steps": 10,
    "hiddenAttr": 0,
-   "handFace": "normal"
+   "handFace": null
   },
   "boardDoc": {
-   "docH": 3146,
-   "shellH": 3146,
+   "docH": 2839,
+   "shellH": 2839,
    "fonts": [
-    "Caveat:loaded"
+    "Caveat:unloaded"
    ]
   },
   "live": {
    "article": [
     1216,
-    2265
+    2194
    ],
    "sections": {
     "recipe-band": [
@@ -126,19 +125,19 @@
      48,
      383,
      725,
-     740
+     717
     ],
     "method-region": [
      48,
-     1155,
+     1132,
      725,
-     1030
+     982
     ],
     "side-region": [
      805,
      206,
      363,
-     1979
+     1908
     ]
    },
    "headings": [
@@ -156,7 +155,7 @@
     ],
     [
      "Instructions",
-     1155
+     1132
     ],
     [
      "Balance",
@@ -172,7 +171,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -195,15 +193,15 @@
     939,
     972,
     1007,
-    1040
+    1038
    ],
    "steps": 10,
-   "hiddenAttr": 2,
-   "handFace": "normal"
+   "hiddenAttr": 1,
+   "handFace": null
   },
   "liveDoc": {
-   "docH": 3146,
-   "shellH": 3146
+   "docH": 2839,
+   "shellH": 2839
   },
   "diff": []
  },
@@ -211,7 +209,7 @@
   "board": {
    "article": [
     816,
-    3287
+    3215
    ],
    "sections": {
     "recipe-band": [
@@ -230,17 +228,17 @@
      48,
      359,
      720,
-     760
+     736
     ],
     "method-region": [
      48,
-     2189,
+     2165,
      720,
-     1030
+     982
     ],
     "side-region": [
      48,
-     1139,
+     1115,
      720,
      1030
     ]
@@ -260,15 +258,15 @@
     ],
     [
      "Instructions",
-     2189
+     2165
     ],
     [
      "Balance",
-     1139
+     1115
     ],
     [
      "Watch for",
-     1951
+     1927
     ]
    ],
    "beforeAboveTable": true,
@@ -276,7 +274,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -297,22 +294,22 @@
     867,
     900,
     935,
-    968,
+    967,
     1002,
-    1036
+    1033
    ],
    "steps": 10,
    "hiddenAttr": 0,
-   "handFace": "italic"
+   "handFace": null
   },
   "boardDoc": {
-   "docH": 3287,
-   "bodyH": 3287.171875
+   "docH": 3215,
+   "bodyH": 3214.890625
   },
   "live": {
    "article": [
     816,
-    3287
+    3215
    ],
    "sections": {
     "recipe-band": [
@@ -331,17 +328,17 @@
      48,
      359,
      720,
-     760
+     736
     ],
     "method-region": [
      48,
-     2189,
+     2165,
      720,
-     1030
+     982
     ],
     "side-region": [
      48,
-     1139,
+     1115,
      720,
      1030
     ]
@@ -361,15 +358,15 @@
     ],
     [
      "Instructions",
-     2189
+     2165
     ],
     [
      "Balance",
-     1139
+     1115
     ],
     [
      "Watch for",
-     1951
+     1927
     ]
    ],
    "beforeAboveTable": true,
@@ -377,7 +374,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -398,21 +394,49 @@
     867,
     900,
     935,
-    968,
+    967,
     1002,
-    1036
+    1033
    ],
    "steps": 10,
-   "hiddenAttr": 2,
-   "handFace": "italic"
+   "hiddenAttr": 1,
+   "handFace": null
   },
   "diff": []
+ },
+ "webkit_BatchLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 948,
+  "footTop": 994,
+  "footBottom": 1016,
+  "spare": 46,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 16,
+  "boxes": 6,
+  "stops": 0
+ },
+ "webkit_TastingLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 972,
+  "footTop": 994,
+  "footBottom": 1016,
+  "spare": 22,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 6,
+  "boxes": 8,
+  "stops": 30
  },
  "chromium_A": {
   "board": {
    "article": [
     1216,
-    2251
+    2181
    ],
    "sections": {
     "recipe-band": [
@@ -431,19 +455,19 @@
      48,
      383,
      725,
-     736
+     714
     ],
     "method-region": [
      48,
-     1151,
+     1129,
      725,
-     1020
+     972
     ],
     "side-region": [
      805,
      206,
      363,
-     1965
+     1895
     ]
    },
    "headings": [
@@ -461,7 +485,7 @@
     ],
     [
      "Instructions",
-     1151
+     1129
     ],
     [
      "Balance",
@@ -477,7 +501,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -492,31 +515,31 @@
     649,
     683,
     730,
-    763,
-    794,
-    840,
-    871,
-    903,
+    762,
+    793,
+    839,
+    870,
+    902,
     937,
-    970,
+    969,
     1004,
-    1037
+    1035
    ],
    "steps": 10,
    "hiddenAttr": 0,
-   "handFace": "normal"
+   "handFace": null
   },
   "boardDoc": {
-   "docH": 3146,
-   "shellH": 3134,
+   "docH": 2839,
+   "shellH": 2825,
    "fonts": [
-    "Caveat:loaded"
+    "Caveat:unloaded"
    ]
   },
   "live": {
    "article": [
     1216,
-    2251
+    2181
    ],
    "sections": {
     "recipe-band": [
@@ -535,19 +558,19 @@
      48,
      383,
      725,
-     736
+     714
     ],
     "method-region": [
      48,
-     1151,
+     1129,
      725,
-     1020
+     972
     ],
     "side-region": [
      805,
      206,
      363,
-     1965
+     1895
     ]
    },
    "headings": [
@@ -565,7 +588,7 @@
     ],
     [
      "Instructions",
-     1151
+     1129
     ],
     [
      "Balance",
@@ -581,7 +604,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -596,23 +618,23 @@
     649,
     683,
     730,
-    763,
-    794,
-    840,
-    871,
-    903,
+    762,
+    793,
+    839,
+    870,
+    902,
     937,
-    970,
+    969,
     1004,
-    1037
+    1035
    ],
    "steps": 10,
-   "hiddenAttr": 2,
-   "handFace": "normal"
+   "hiddenAttr": 1,
+   "handFace": null
   },
   "liveDoc": {
-   "docH": 3133,
-   "shellH": 3134
+   "docH": 2825,
+   "shellH": 2825
   },
   "diff": []
  },
@@ -620,7 +642,7 @@
   "board": {
    "article": [
     816,
-    3260
+    3186
    ],
    "sections": {
     "recipe-band": [
@@ -639,17 +661,17 @@
      48,
      359,
      720,
-     759
+     733
     ],
     "method-region": [
      48,
-     2172,
+     2146,
      720,
-     1020
+     972
     ],
     "side-region": [
      48,
-     1138,
+     1112,
      720,
      1014
     ]
@@ -669,15 +691,15 @@
     ],
     [
      "Instructions",
-     2172
+     2146
     ],
     [
      "Balance",
-     1138
+     1112
     ],
     [
      "Watch for",
-     1944
+     1918
     ]
    ],
    "beforeAboveTable": true,
@@ -685,7 +707,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -700,28 +721,28 @@
     645,
     679,
     726,
-    760,
-    791,
-    836,
-    867,
-    900,
-    934,
-    967,
-    1001,
-    1035
+    758,
+    789,
+    835,
+    866,
+    898,
+    933,
+    965,
+    1000,
+    1031
    ],
    "steps": 10,
    "hiddenAttr": 0,
-   "handFace": "italic"
+   "handFace": null
   },
   "boardDoc": {
-   "docH": 3260,
-   "bodyH": 3259.640625
+   "docH": 3186,
+   "bodyH": 3185.953125
   },
   "live": {
    "article": [
     816,
-    3260
+    3186
    ],
    "sections": {
     "recipe-band": [
@@ -740,17 +761,17 @@
      48,
      359,
      720,
-     759
+     733
     ],
     "method-region": [
      48,
-     2172,
+     2146,
      720,
-     1020
+     972
     ],
     "side-region": [
      48,
-     1138,
+     1112,
      720,
      1014
     ]
@@ -770,15 +791,15 @@
     ],
     [
      "Instructions",
-     2172
+     2146
     ],
     [
      "Balance",
-     1138
+     1112
     ],
     [
      "Watch for",
-     1944
+     1918
     ]
    ],
    "beforeAboveTable": true,
@@ -786,7 +807,6 @@
    "thead": true,
    "theadCells": [
     "Ingredient",
-    "As made",
     "% of batch"
    ],
    "tbodies": 4,
@@ -801,21 +821,49 @@
     645,
     679,
     726,
-    760,
-    791,
-    836,
-    867,
-    900,
-    934,
-    967,
-    1001,
-    1035
+    758,
+    789,
+    835,
+    866,
+    898,
+    933,
+    965,
+    1000,
+    1031
    ],
    "steps": 10,
-   "hiddenAttr": 2,
-   "handFace": "italic"
+   "hiddenAttr": 1,
+   "handFace": null
   },
   "diff": []
  },
- "boardH": 3300
+ "chromium_BatchLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 948,
+  "footTop": 995,
+  "footBottom": 1016,
+  "spare": 47,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 16,
+  "boxes": 6,
+  "stops": 0
+ },
+ "chromium_TastingLogForm": {
+  "scrollH": 1056,
+  "contentBottom": 972,
+  "footTop": 995,
+  "footBottom": 1016,
+  "spare": 23,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "lines": 6,
+  "boxes": 8,
+  "stops": 30
+ },
+ "boardH": 3230
 }

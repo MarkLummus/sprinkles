@@ -6,7 +6,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # Stylesheet: the app's own source files, inlined with their media blocks resolved, because a canvas artboard does not get a viewport of its own width (memory: design-canvas-artboards-do-not-get-a-narrow-viewport).
 #   AsBuiltRecipePage.dc.html     1280, screen, desktop pointer: tokens.css, app.css, shell.css, notebook.css
 #   PrintStartingPoint.dc.html    816 (letter), print: tokens.css, app.css and notebook.css resolved at 816 with the screen-only blocks dropped, and app.css's own @media print block laid on; the Sheet inside the build's .notebook frame with its gutter off. No Phase 4 geometry: no foot, no tick boxes, no ruled As made column.
-# The two boards of 2026-09-23 are kept under new file names and marked superseded; Mark's edits, if any, travel with them.
+# The two boards of 2026-09-23 are kept under new file names (AsBuiltRecipePageBefore037, PrintStartingPointBefore037), byte for byte, on their own page, Print formats superseded.
+# 2026-10-06 (Mark via Sarge): Olive Oil v1 is captured with no batch (printstart-capture.mjs says how), and the blank batch log's two sides (logforms.py) open the page, in print order.
 #   python3 printstart.py <canvas.json read from the artifact root> <out dir>     writes <out>/project/*.dc.html and <out>/project/canvas.json
 #   Before the first run: node printstart-capture.mjs ; after the first run: node printstart-measure.mjs <out>/project/PrintStartingPoint.dc.html  (writes printstart-measure.json) and run again.
 FONT = "@font-face{font-family:'Caveat';src:url('/_blob/37ac467ba5558024f5fb5a2e5c22a7bc') format('woff2');font-weight:400;font-style:normal;font-display:swap}\n"   # app/public/fonts/caveat-regular.woff2, sha256 d0b7b931..., uploaded 2026-09-23
@@ -60,18 +61,23 @@ return {{}};
 </html>
 '''
 
-T_A = 'As built · the recipe page at 1280 (production build, 2026-10-06, after Phase 03.7)'
-T_B = 'Print starting point · the Sheet as built, at letter width, no print design yet (2026-10-06, after Phase 03.7)'
-NOTE = ("Left: the recipe page as the app renders it today, at 1280, captured from the production build of 2026-10-06 (real markup, the app's own stylesheets). "
-        "Right: the Sheet alone at letter width, as the app prints it today: one column, with the app's own print rules on (the save notice hidden, the hand in italic text). "
-        "The app has no print design yet, so this is the starting point, not a proposal.\n\n"
-        "Change the right-hand artboard here to design the print. What you change is what Phase 4 builds; what you leave is what the app already does.\n\n"
-        "Captured again 2026-10-06: Before you start now sits above the Ingredients table, and the table has its header row and one group per step. "
-        "The first capture (2026-09-23) is kept at the far right, marked superseded.")
+T_A = 'As built · the recipe page at 1280, no batch (production build, 2026-10-06, after Phase 03.7)'
+T_B = 'Print starting point · the Sheet as built, no batch, at letter width, no print design yet (2026-10-06, after Phase 03.7)'
+T_F1 = 'Page 1 · Batch log, front: At the machine (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
+T_F2 = 'Page 2 · Batch log, back: When you taste it (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
+NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today: one column, with the app's own print rules on. Right: the recipe page at 1280. "
+        "Both are captured from the production build of 2026-10-06 (real markup, the app's own stylesheets) with Olive Oil v1 as a version with no batch yet: "
+        "the build's own no-batch markup, so no As made column, no logged figures and no skipped step. The app has no print design yet, so this is the starting point, not a proposal.\n\n"
+        "Change the Print starting point board to design the print. What you change is what Phase 4 builds; what you leave is what the app already does.\n\n"
+        "Left: the blank batch log, which prints first, front and back of one sheet (D-07a). Fields from the built record pens, sides and geometry from the print brief. "
+        "The short code and the page count in the foot are placeholders.\n\n"
+        "The first capture (2026-09-23) is on the page Print formats superseded.")
 NOTE_OLD = ("Superseded 2026-10-06. These two boards were captured 2026-09-23, before Phase 03.7 moved Before you start above the Ingredients table. "
-            "Kept in case anything was drawn on them; the boards at the left replace them as the print starting point. Not a target.")
+            "Kept in case anything was drawn on them; the boards on Print formats replace them as the print starting point. Not a target.")
+SUP_PAGE = ('page-15', 'Print formats superseded')
 
 def build(canvas_in, out):
+    import logforms
     os.makedirs(out + '/project', exist_ok=True)
     c = json.load(open(canvas_in))
     # the boards
@@ -83,26 +89,26 @@ def build(canvas_in, out):
     sheet = '<div class="notebook"><div class="notebook-body"><div class="notebook-body__sheet">' + sheet + '</div></div></div>'
     h_a = max(CAP['facts'][k]['docH'] for k in CAP['facts'] if k.endswith('_1280_screen'))
     h_b = MEASURE.get('boardH', 4600)
-    # the superseded copies carry the files exactly as read from the artifact root, under new names
-    root = os.path.dirname(canvas_in)
-    for new, old in (('AsBuiltRecipePageBefore037.dc.html', 'AsBuiltRecipePage.dc.html'), ('PrintStartingPointBefore037.dc.html', 'PrintStartingPoint.dc.html')):
-        src = os.path.join(root, old)
-        if not os.path.exists(os.path.join(root, new)):    # a re-run never copies the new capture over the superseded one
-            open(os.path.join(out, 'project', new), 'w').write(open(src).read())
     open(out + '/project/AsBuiltRecipePage.dc.html', 'w').write(board(T_A, shell, 1280, h_a, css_a))
     open(out + '/project/PrintStartingPoint.dc.html', 'w').write(board(T_B, sheet, 816, h_b, css_b, flow=True))
-    # canvas.json: new boards keep the x and y Mark has them at; the old ones move right and are marked
+    fcss = logforms.css()
+    open(out + '/project/BatchLogForm.dc.html', 'w').write(board(T_F1, logforms.side1(*logforms.LINES['side1']), 816, 1056, fcss))
+    open(out + '/project/TastingLogForm.dc.html', 'w').write(board(T_F2, logforms.side2(*logforms.LINES['side2']), 816, 1056, fcss))
+    # canvas.json: Print formats reads left to right in print order: the log's two sides, the Sheet, then the recipe page as built; the superseded boards and their note go to their own page
     B = c['boards']; N = c['notes']
-    oa, ob = B['AsBuiltRecipePage.dc.html'], B['PrintStartingPoint.dc.html']
-    if 'AsBuiltRecipePageBefore037.dc.html' not in B:
-        B['AsBuiltRecipePageBefore037.dc.html'] = dict(oa, x=2800, y=0, title='Superseded 2026-10-06 · ' + oa['title'] + ' · captured before Phase 03.7')
-        B['PrintStartingPointBefore037.dc.html'] = dict(ob, x=4160, y=0, title='Superseded 2026-10-06 · ' + ob['title'] + ' · captured before Phase 03.7')
-    B['AsBuiltRecipePage.dc.html'] = dict(oa, w=1280, h=h_a, title=T_A)
-    B['PrintStartingPoint.dc.html'] = dict(ob, w=816, h=h_b, title=T_B, paper='letter', print='flow')
-    for k in ('AsBuiltRecipePageBefore037.dc.html', 'PrintStartingPointBefore037.dc.html'):
+    if not any(p['id'] == SUP_PAGE[0] for p in c['pages']):
+        i = [p['id'] for p in c['pages']].index('page-12'); c['pages'].insert(i, {'id': SUP_PAGE[0], 'name': SUP_PAGE[1]})
+    B['AsBuiltRecipePageBefore037.dc.html'].update(page=SUP_PAGE[0], x=0, y=0)
+    B['PrintStartingPointBefore037.dc.html'].update(page=SUP_PAGE[0], x=1360, y=0)
+    N['asbuilt-superseded-note'].update(page=SUP_PAGE[0], x=2256, y=0, text=NOTE_OLD)
+    B['BatchLogForm.dc.html'] = dict(x=0, y=0, w=816, h=1056, page='page-11', paper='letter', title=T_F1)
+    B['TastingLogForm.dc.html'] = dict(x=896, y=0, w=816, h=1056, page='page-11', paper='letter', title=T_F2)
+    B['PrintStartingPoint.dc.html'].update(x=1792, y=0, w=816, h=h_b, title=T_B, paper='letter', print='flow')
+    B['AsBuiltRecipePage.dc.html'].update(x=2688, y=0, w=1280, h=h_a, title=T_A)
+    N['asbuilt-note'].update(x=4048, y=0, text=NOTE)
+    N['asbuilt-title'].update(maxW=3968)
+    for k in ('BatchLogForm.dc.html', 'TastingLogForm.dc.html'):
         if k not in c['order']: c['order'].append(k)
-    N['asbuilt-note']['text'] = NOTE
-    N.setdefault('asbuilt-superseded-note', dict(fill='gray', page='page-11', w=400, x=2800, y=-300))['text'] = NOTE_OLD
     json.dump(c, open(out + '/project/canvas.json', 'w'), indent=1, ensure_ascii=False)
     return h_a, h_b
 

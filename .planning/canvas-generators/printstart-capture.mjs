@@ -3,7 +3,10 @@
 //     page1280  the whole shell at 1280, desktop (fine pointer), as the app opens its folds there      -> AsBuiltRecipePage.dc.html
 //     sheet     the Sheet alone (article.recipe-page) from that same 1280 page: a desktop user prints from that window, so the markup carries the desktop fold states -> PrintStartingPoint.dc.html
 //     facts     measurements of the real DOM: at 1280 screen, and at the letter page with the print block on (816 wide, print media emulated), WebKit and Chromium
-// Olive Oil v1, the seeded recipe, as the build renders it (a batch in view, so the As made column carries that batch). Nothing is edited: the markup is the build's own, left untouched.
+// Olive Oil v1, the seeded recipe, with no batch (Mark, 2026-10-06: the starting point reads as the version alone, as for a next version that has no batch yet). The build has no route that shows a
+// version with its batch out of view, so after the app seeds its store the version's one seeded batch is deleted from IndexedDB (store 'batches', index 'by-version') and the page is loaded again: what
+// is captured is the build's own no-batch markup, not a hand edit. That removes the As made column and its hand figures, the as-made Total, the struck SKIPPED step 1, the hand notes on steps 8 and 9,
+// the "Go to batch · Tasted" link in the band and the batch log. The markup is otherwise the build's own, left untouched.
 // Served from app/dist on a throwaway 127.0.0.1 port by the 03.5 probe harness; Mark's preview on :4173 is never contacted and nothing is built here.
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +16,9 @@ import { startServers } from '../phases/03.5-separate-the-recipe-from-the-sheet/
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROUTE = '/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const VERSION_ID = 'olive-oil-ice-cream-v1';
+// the version's batches out of the store, so the build renders the version with no batch (this context's own throwaway IndexedDB; nothing else is touched)
+const dropBatches = (vid = 'olive-oil-ice-cream-v1') => new Promise((res, rej) => { const o = indexedDB.open('sprinkles'); o.onerror = () => rej(o.error); o.onsuccess = () => { const db = o.result; const tx = db.transaction('batches', 'readwrite'); const st = tx.objectStore('batches'); const ids = []; const q = st.index('by-version').getAllKeys(vid); q.onsuccess = () => { for (const k of q.result) { ids.push(k); st.delete(k); } }; tx.oncomplete = () => { db.close(); res(ids); }; tx.onerror = () => rej(tx.error); }; });
 const servers = await startServers();
 const wk = await webkit.launch(); const cr = await chromium.launch({ executablePath: CHROME, headless: true });
 
@@ -21,7 +27,9 @@ async function open(browser, W, media) {
   await ctx.route('**/*', (r) => (new URL(r.request().url()).hostname === '127.0.0.1' ? r.continue() : r.abort()));
   const page = await ctx.newPage(); page.setDefaultTimeout(10000);
   await page.goto(servers.appUrl + ROUTE, { waitUntil: 'networkidle' }); await page.waitForSelector('article.recipe-page .ingredient-table');
-  await page.waitForTimeout(300); await page.evaluate(() => document.fonts.ready);
+  const removed = await page.evaluate(dropBatches);
+  await page.reload({ waitUntil: 'networkidle' }); await page.waitForSelector('article.recipe-page .ingredient-table');
+  await page.waitForTimeout(300); await page.evaluate(() => document.fonts.ready); page.removedBatches = removed;
   if (media) await page.emulateMedia({ media });
   return { ctx, page };
 }
@@ -52,6 +60,7 @@ for (const [name, browser] of [['webkit', wk], ['chromium', cr]]) {
   const { ctx, page } = await open(browser, 1280);
   const html = await page.evaluate(() => ({ shell: document.querySelector('.shell').outerHTML, sheet: document.querySelector('article.recipe-page').outerHTML, shellH: Math.ceil(document.querySelector('.shell').getBoundingClientRect().height) }));
   out.facts[name + '_1280_screen'] = await page.evaluate(measure);
+  out.facts[name + '_removedBatches'] = page.removedBatches;
   if (name === 'webkit') { out.page1280 = html.shell; out.sheet = html.sheet; out.shellH = html.shellH; } else out.facts.chromiumMarkupEqualsWebkit = { shell: html.shell === out.page1280, sheet: html.sheet === out.sheet };
   await ctx.close();
   // the Sheet at the letter page's width with the print block on: the same 1280 markup (desktop fold state), laid out by the viewport that print gives it

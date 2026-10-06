@@ -2,6 +2,7 @@
 // the page-side helpers, installed once per page
 export const install = () => {
   const CORE = ['Hardness', 'Scoopability', 'Smoothness', 'Sweetness'];
+  const DECL_DEF = ['Bitter'];   // the pen's This recipe only chips for Olive Oil v1
   const CUE = 'font-size:var(--app-size-meta);font-weight:600;text-transform:none;letter-spacing:0;line-height:var(--app-notebook-pen-cue-line-h);color:var(--app-text)';   // decision 40 C's cue face, the build's own tokens
   window.__orig = null;
   window.__restore = () => { const s = document.querySelector('.tasting-reading'); if (window.__orig === null) window.__orig = s.outerHTML; else { const t = document.createElement('div'); t.innerHTML = window.__orig; s.replaceWith(t.firstElementChild); } };
@@ -15,10 +16,16 @@ export const install = () => {
       const frag = []; if (core.length) frag.push(mk('Every recipe', core)); if (decl.length) frag.push(mk('This recipe only', decl));
       obs.replaceWith(...frag);
     }
-    if (prob) prob.querySelector('.batch-row__group-label').textContent = 'Any problems?';
+    if (prob) {   // 2026-10-06 (Mark's note): Any problems? keeps the built Problems face (the face Next time has) and the failures split into Every recipe / This recipe only, as the pen's problems do
+      prob.querySelector('.batch-row__group-label').textContent = 'Any problems?';
+      const span = prob.querySelector('.tasting-reading__problems'); const words = span.textContent.split(' · ');
+      const sub = (title, ws) => { const d = document.createElement('div'); d.className = 'tasting-reading__subgroup'; const h = document.createElement('h5'); h.className = 'batch-row__group-label'; h.textContent = title; const w = span.cloneNode(false); w.textContent = ws.join(' · '); w.style.marginTop = '0'; d.append(h, w); return d; };   // the words sit under their name as cells sit under theirs (the label's own margin), and a second block stands a group gap (--gap-l) below the first, as the marks' groups do
+      const decl = words.filter((w) => DECL_DEF.includes(w)), core = words.filter((w) => !DECL_DEF.includes(w)); span.remove();
+      if (core.length) prob.appendChild(sub('Every recipe', core)); if (decl.length) { const d2 = sub('This recipe only', decl); if (core.length) d2.style.marginTop = 'var(--gap-l)'; prob.appendChild(d2); }
+    }
     if (melt && name === 'A') melt.querySelector('.batch-row__group-label').remove();
     if (melt && (name === 'B' || name === 'B2')) { const top = sec.querySelector('.tasting-reading__conditions'); [...melt.querySelectorAll('.batch-row__cell')].forEach((c) => top.appendChild(c)); melt.remove(); }
-    if (name === 'B2') sec.querySelectorAll('.tasting-reading__group > .batch-row__group-label').forEach((h) => h.setAttribute('style', CUE));
+    if (name === 'B2') sec.querySelectorAll('.tasting-reading__group > .batch-row__group-label:not(:only-child), .tasting-reading__subgroup > .batch-row__group-label').forEach((h) => { if (h.textContent !== 'Any problems?') h.setAttribute('style', CUE); });
   };
 };
 export const grab = () => {

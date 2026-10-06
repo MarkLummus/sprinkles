@@ -3,6 +3,7 @@ sys.argv = ['x']
 from final import *   # runs gen.py and final.py first (their boards land in OUT as before); this file adds decision 58's board
 import json, re, os
 HERE = os.path.dirname(os.path.abspath(__file__))
+# Sid, 2026-10-06: redrawn with Mark's note on look-tasting-groups-names-board (Any problems? takes Next time's face; the axes and the failures each split into Every recipe / This recipe only, as the pen's do).
 # Sid, 2026-10-05 (decision 58): the reading state's tasting groups under the record pen's three names. Mark, on his List (draw-tasting-group-names): "They should all be 'Every recipe / This recipe only / Any problems?'".
 # Every panel is the built app's own shell markup (tgroups-capture.json: WebKit, coarse pointer, Olive Oil v1; real clicks and fills on a COPY of app/dist served on a throwaway port) with the app's own stylesheets
 # resolved at the width. The panels marked built are the build untouched. The others are the same page after the browser's edit of the live DOM (tgroups-capture.mjs says what each edit is: the groups renamed and
@@ -11,7 +12,7 @@ PC = json.load(open(HERE + '/tgroups-capture.json'))
 BRAND = '<p class="shell__brand"><a tabindex="0" href="/" data-discover="true">Sprinkles</a></p>'
 HTML = {k: drop_hidden(v['html']).replace(BRAND, '<p class="shell__brand">Sprinkles</p>', 1) for k, v in PC.items()}
 FACT = {k: v['facts'] for k, v in PC.items()}
-STAMP_A = " (decision 58, options for Mark; drawn 2026-10-05, awaiting Mark's look; nothing approved)"
+STAMP_A = " (decision 58, redrawn 2026-10-06 with Mark's note; options for Mark, awaiting his look; nothing approved)"
 def n(x): return ('%.1f' % x).rstrip('0').rstrip('.')
 def F(W, s, o): return FACT['%s_%s_%d' % (s, o, W)]
 def crop_read(f):
@@ -58,30 +59,30 @@ def build_board():
         fa, fb, fc, fb2 = F(W, 'full', 'A'), F(W, 'full', 'B'), F(W, 'full', 'C'), F(W, 'full', 'B2')
         sa, sp, spa = F(W, 'seed', 'B2'), F(W, 'sparse', 'none'), F(W, 'sparse', 'B2')
         d = lambda a, b: ('+' if a['section']['h'] - b['section']['h'] >= 0 else '-') + n(abs(a['section']['h'] - b['section']['h']))
-        rows.append((f'{ctx} · what the build does today', 'Olive Oil v1. The reading state names its tasting groups Observations, Problems and Melt. The record pen names the same fields Every recipe, This recipe only and Any problems?, and has no name for the melt fields.', lab, [
+        rows.append((f'{ctx} · what the build does today', 'Olive Oil v1. The reading state names its tasting groups Observations, Problems and Melt. The record pen names the same fields Every recipe and This recipe only, twice: over the marks and, under the caption Any problems? (the caption face Next time has), over the problem chips. It has no name for the melt fields.', lab, [
             panel(f'seed-built-{W}', W, 'seed', 'none', 'read', 'Built · reading, the seeded batch',
                   f'Observations (Sweetness, Oil), Problems (Bitter), Melt (Melt test, Melt style). The group names are 12px 600 caps in grey, the same face as the cell labels under them: the names do not stand out from the items.'),
             panel(f'full-built-{W}', W, 'full', 'none', 'read', 'Built · reading, all six axes and five problems',
                   f'A batch recorded with every field. Observations hold all six marks in one group, so the core and declared marks read as one list. Section {n(fu["section"]["h"])}px.'),
             panel(f'pen-built-{W}', W, 'pen', 'none', 'pen', 'Built · the record pen, the same fields typed',
-                  f'Cues {", ".join(pe["cues"][:3])}, then the same two again over the problem chips. Cue face 14px/20px 600, sentence case, ink. The melt fields have no name; each carries its own label ({", ".join(pe["captions"])}).')]))
-        rows.append((f'{ctx} · the reading state in the pen\'s names', 'Every option uses the three names for the marks and the problems and differs in where the melt fields go (A, B, C). B2 is B with the three names in the pen\'s cue face. Spacing is as built in all four.', lab, [
+                  f'Every recipe and This recipe only over the marks (14px/20px 600, sentence case, ink); Any problems? as a caption (12px 600 caps grey, the face of Next time); then Every recipe and This recipe only again over the chips. The melt fields have no name; each carries its own label ({", ".join(pe["captions"])}).')]))
+        rows.append((f'{ctx} · the reading state in the pen\'s names', 'Every option follows Mark\'s note: Every recipe and This recipe only split the marks and, under Any problems?, the problems; Any problems? keeps the face the built Problems group and Next time share. A, B and C differ in where the melt fields go; in those three the two names stay in the reading\'s own face. B2 is B with the two names in the pen\'s cue face. Spacing is as built in all four.', lab, [
             panel(f'a-{W}', W, 'full', 'A', 'read', 'A · the melt fields stay at the foot, with no name',
-                  f'Observations split into Every recipe ({", ".join(c for g in fa["groups"] if g["head"] == "Every recipe" for c in g["cells"])}) and This recipe only (Body, Oil); Problems reads Any problems?; the Melt name goes and the two melt cells keep their own labels, as in the pen. The melt cells follow the problems after the same gap the groups have. Section {n(fa["section"]["h"])}px ({d(fa, fu)}).'),
+                  f'The marks in Every recipe ({", ".join(c for g in fa["groups"] if g["head"] == "Every recipe" for c in g["cells"])}) and This recipe only (Body, Oil); Any problems? over the words, split the same two ways (the Every recipe four, then Bitter); the Melt name goes and the two melt cells keep their own labels, as in the pen, after the problems. The two names are in the reading\'s own face, caps grey, so they look like the labels beside them. Section {n(fa["section"]["h"])}px ({d(fa, fu)}).'),
             panel(f'b-{W}', W, 'full', 'B', 'read', 'B · the melt fields join the measured values at the top',
-                  f'Melt test and Melt style stand with Tempering and Tasting temperature (two rows of two), as the printed sheet lists them. The three names are then the only group names. Section {n(fb["section"]["h"])}px ({d(fb, fu)}).'),
+                  f'Melt test and Melt style stand with Tempering and Tasting temperature (two rows of two), as the printed sheet lists them. Every recipe and This recipe only are then the only group names besides Any problems?; they stay in the reading\'s own face, caps grey. Section {n(fb["section"]["h"])}px ({d(fb, fu)}).'),
             panel(f'c-{W}', W, 'full', 'C', 'read', 'C · Melt stays as a fourth name',
-                  f'The three names for marks and problems, and Melt kept as the one name the pen does not have. Section {n(fc["section"]["h"])}px ({d(fc, fu)}).'),
-            panel(f'b2-{W}', W, 'full', 'B2', 'read', 'B2 · B, the three names in the pen\'s cue face (recommended)',
-                  f'B, and the names at 14px/20px 600 sentence case in ink (decision 40\'s cue face, built in the pen) instead of 12px 600 grey caps, the face the cell labels have. Section {n(fb2["section"]["h"])}px ({d(fb2, fu)}).')]))
+                  f'The same split, and Melt kept as a group of its own, the one name the pen does not have, between Any problems? and Next time. Section {n(fc["section"]["h"])}px ({d(fc, fu)}).'),
+            panel(f'b2-{W}', W, 'full', 'B2', 'read', 'B2 · B, Every recipe and This recipe only in the pen\'s cue face (recommended)',
+                  f'B, and the two names at 14px/20px 600 sentence case in ink (decision 40\'s cue face, as the pen has them, over the marks and over the problems) instead of 12px 600 grey caps. Any problems? and Next time keep the caps grey face they share in the build and the pen; the two names then read as groups of what stands under them, and the other two as headings, as in the pen. A second block under Any problems? stands one group gap (32px) below the first; each name sits its label margin above its words. Section {n(fb2["section"]["h"])}px ({d(fb2, fu)}).')]))
         rows.append((f'{ctx} · B2 on the other two tastings', 'A group with nothing marked is left out, as the build leaves out Problems today and as the printed sheet leaves out This recipe only for a recipe that declares none.', lab, [
             panel(f'seed-b2-{W}', W, 'seed', 'B2', 'read', 'B2 · the seeded batch',
-                  f'One mark in each group: Every recipe (Sweetness) and This recipe only (Oil), two rows where the build has one; the melt cells move up beside Tempering and Tasting temperature. Section {n(sn["section"]["h"])} to {n(sa["section"]["h"])}px ({d(sa, sn)}); Bitter reads under Any problems?.'),
+                  f'One mark in each group: Every recipe (Sweetness) and This recipe only (Oil), two rows where the build has one; the melt cells move up beside Tempering and Tasting temperature; Bitter reads under Any problems? and This recipe only, three names over one word. Section {n(sn["section"]["h"])} to {n(sa["section"]["h"])}px ({d(sa, sn)}).'),
             panel(f'sparse-built-{W}', W, 'sparse', 'none', 'read', 'Built · a batch with Hardness and Smoothness only',
                   f'No declared mark, no problem, no melt value. Section {n(sp["section"]["h"])}px. Observations, Melt; no Problems group.'),
             panel(f'sparse-b2-{W}', W, 'sparse', 'B2', 'read', 'B2 · the same batch',
                   f'Every recipe (Hardness, Smoothness); This recipe only and Any problems? are not drawn; the melt cells read "not measured" at the top. Section {n(spa["section"]["h"])}px ({d(spa, sp)}).')]))
-    board('R35C_TastingGroups', 'tasting-group-names', 'C · the reading state\'s tasting groups in the record pen\'s names: as built, A (the melt fields stay at the foot, unnamed), B (melt with the measured values), C (Melt kept) and B2 (B in the pen\'s cue face, recommended) (Olive Oil v1; 1366 and 393)', rows)
+    board('R35C_TastingGroups', 'tasting-group-names', 'C · the reading state\'s tasting groups as the pen has them (Mark\'s note, 2026-10-06): Every recipe and This recipe only over the marks and over the problems, Any problems? in the face Next time has. As built, then A (melt at the foot, unnamed), B (melt with the measured values), C (Melt kept) and B2 (B with the two names in the pen\'s cue face, recommended) (Olive Oil v1; 1366 and 393)', rows)
 build_board()
 json.dump({'boards': ENTRIES_A}, open(OUT + '/tgroups-canvas-entries.json', 'w'), indent=2)
 print('ok tgroups', {fn: (e['w'], e['h']) for fn, e in ENTRIES_A.items()})

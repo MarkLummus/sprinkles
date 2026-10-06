@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: "03.7"
 current_phase_name: Before you start as its own Sheet section
 status: executing
-stopped_at: Completed 03.7-02-PLAN.md
-last_updated: "2026-10-06T11:21:49.216Z"
+stopped_at: Completed 03.7-03-PLAN.md
+last_updated: "2026-10-06T11:37:05.959Z"
 last_activity: 2026-10-06
 last_activity_desc: Phase 03.7 execution started
-state_head: a7bf5b9bb91e5ed69a1a65e7e9b375de13fbf04a
+state_head: 0066fc9c75d173428b4e41e1e845c2fb379d06be
 progress:
   total_phases: 14
   completed_phases: 11
   total_plans: 108
-  completed_plans: 106
+  completed_plans: 107
   percent: 79
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 03.7 (Before you start as its own Sheet section) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-10-06 — Phase 03.7 execution started
 
@@ -137,6 +137,7 @@ Progress: [████████░░] 79% (3/4 phases; 66/66 plans executed
 | Phase 03.6 P07 | 25 min | 2 tasks | 2 files |
 | Phase 03.7 P01 | 7 min | 2 tasks | 8 files |
 | Phase 03.7 P02 | 35 min | 2 tasks | 10 files |
+| Phase 03.7 P03 | 14 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -275,6 +276,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.7]: 03.7-01: Before you start renders between the band and the Ingredients so reading, Tab and print order match the page; the pen draws its heading alone with no notes (E2)
 - [Phase 03.7]: 03.7-02: the list-form table rules are screen-only so print always draws the column form and the table's head repeats (a letter page with 56px margins is 704px wide, below the 723.98px cut)
 - [Phase 03.7]: 03.7-02: the printed Total keeps break-before: avoid on its tfoot; measured in Chrome, it keeps the Total with the last group
+- [Phase 03.7]: 03.7-03: no app/src change; the probe found no gap in the section's place, insides, states, pen or focus order against decision 36's boards in WebKit and Chrome at 1366 and 393
+- [Phase 03.7]: 03.7-03: the boards' Caveat is served to the board page from the repo's own woff2 because the harness aborts Google Fonts; otherwise the hand's fallback shaves 0.3px off four table rows
+- [Phase 03.7]: 03.7-03: the 'Notes, no steps' board panel is OPEN below the section only (it keeps four step heads a version with no steps cannot draw); whole-route print splits Instructions step 1 (the page's print grid), found and not fixed for Phase 4
 
 ### Pending Todos
 
@@ -468,6 +472,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-06T11:21:49.099Z
-Stopped at: Completed 03.7-02-PLAN.md
+Last session: 2026-10-06T11:37:05.839Z
+Stopped at: Completed 03.7-03-PLAN.md
 Resume file: None

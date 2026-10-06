@@ -616,7 +616,7 @@ Plans:
 **Goal:** "Before you start" is its own Sheet section, as sketch 011 decisions 36 and 45 draw it (Mark, 2026-10-04 and 2026-10-05): it stands above the Ingredients under the Sheet description (placement B) with its own region heading and no closing rule (H1), is drawn only when the version has notes and keeps its heading alone in the Next version pen (E2), and the Instructions section is drawn only when there are steps; in print it opens the formula page above the table (PC), and a table that does not fit breaks only between step groups (a one-step table between rows), its header repeating on the next page, the Total staying with the last group and the steps printing whole.
 **Requirements**: TBD
 **Depends on:** Phase 03.6
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 
@@ -630,7 +630,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 03.7-03-PLAN.md — Conformance against the decision 36 boards on the real DOM (WebKit and Chrome, 1366 and 393), the full regression with the print probe, and the device and Safari-print checks worded for Mark's List
+- [x] 03.7-03-PLAN.md — Conformance against the decision 36 boards on the real DOM (WebKit and Chrome, 1366 and 393), the full regression with the print probe, and the device and Safari-print checks worded for Mark's List
 - [ ] 03.7-04-PLAN.md — The documents follow: Phase 4's context amended (D-06, the break rule, a fresh print starting point), the todo closed, and the surface briefs and DESIGN.md revised through Impeccable (checkpoint)
 
 ### Phase 4: Prepare the next version for making

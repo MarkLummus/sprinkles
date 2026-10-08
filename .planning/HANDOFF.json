@@ -15,7 +15,7 @@
     {"id": 4, "name": "Graphify installed and built; .gitignore ignores graphify-out/ and .planning/graphs/", "status": "done", "commit": "2ad8723"}
   ],
   "remaining_tasks": [
-    {"id": 5, "name": "Sid snapshot of sketch 010 and CONTRACT.md update (Mark's List row draw-snapshot-sketch-010; Sid was running when this handoff was written, check its look row and .planning/sketches/010-bench-sheet/)", "status": "in_progress"},
+    {"id": 5, "name": "Sid snapshot of sketch 010 and CONTRACT.md (157 lines, D1-D28) finished and uncommitted (12 MB folder, 18 target boards); Mark still has to look at look-sketch-010-snapshot-contract and answer decide-pen-cue-mixed-declared; Sid left draw-snapshot-sketch-010 open for Mark's Done. Decide whether to commit the snapshot (12 MB of boards)", "status": "done"},
     {"id": 6, "name": "Mark runs /gsd-phase insert for the cleanup phase (row run-phase-insert-hide-draw-temp-and-labels): hide Time to draw temp. everywhere and rename the logs; step 2 (remove the data element) rides Phase 4's reseed (row build-remove-draw-temp-data-element)", "status": "not_started"},
     {"id": 7, "name": "Mark runs Impeccable to update the print and record briefs from sketch 010 (row run-impeccable-briefs-from-010)", "status": "not_started"},
     {"id": 8, "name": "/gsd-plan-phase 4 (row run-plan-phase-4-after-design); 04-RESEARCH.md exists", "status": "not_started"}

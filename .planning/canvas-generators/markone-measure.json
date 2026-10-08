@@ -1,0 +1,1616 @@
+{
+ "draw-blank-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "draw-nothing-1366": {
+  "h": 2505,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 576,
+  "tasteTop": 520,
+  "tasteCrop": 1527.2,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1162.8,
+   "bottom": 1241.6,
+   "headH": 29,
+   "segTop": 1197.6,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 877.1,
+  "axesTop": 1261.6,
+  "exitTop": 979.9,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 775.5,
+  "nextTop": 1090.7,
+  "headTop": 520,
+  "meltBottom": 1058.7,
+  "nextBottom": 1162.8,
+  "saveTop": 2428.6,
+  "saveBottom": 2484.6
+ },
+ "draw-notnote-1366": {
+  "h": 2505,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 576,
+  "tasteTop": 520,
+  "tasteCrop": 1527.2,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated [on]"
+   ],
+   "clear": true,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1162.8,
+   "bottom": 1241.6,
+   "headH": 29,
+   "segTop": 1197.6,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 877.1,
+  "axesTop": 1261.6,
+  "exitTop": 979.9,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 775.5,
+  "nextTop": 1090.7,
+  "headTop": 520,
+  "meltBottom": 1058.7,
+  "nextBottom": 1162.8,
+  "saveTop": 2428.6,
+  "saveBottom": 2484.6
+ },
+ "draw-marked-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "draw-noted-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "taste-blank-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "taste-nothing-1366": {
+  "h": 1496,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1475.2,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": null,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 1419.2,
+  "saveBottom": 1475.2
+ },
+ "taste-notnote-1366": {
+  "h": 1496,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1475.2,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated [on]"
+   ],
+   "clear": true,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": null,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 1419.2,
+  "saveBottom": 1475.2
+ },
+ "taste-marked-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "taste-noted-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "draw-blank-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "draw-nothing-393": {
+  "h": 2610,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 583.2,
+  "tasteTop": 527.2,
+  "tasteCrop": 1583.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1185.3,
+   "bottom": 1279.3,
+   "headH": 44,
+   "segTop": 1235.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 884.3,
+  "axesTop": 1299.3,
+  "exitTop": 987.1,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 782.8,
+  "nextTop": 1113.1,
+  "headTop": 527.2,
+  "meltBottom": 1081.1,
+  "nextBottom": 1185.3,
+  "saveTop": 2533.4,
+  "saveBottom": 2589.4
+ },
+ "draw-notnote-393": {
+  "h": 2610,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 583.2,
+  "tasteTop": 527.2,
+  "tasteCrop": 1583.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated [on]"
+   ],
+   "clear": true,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1185.3,
+   "bottom": 1279.3,
+   "headH": 44,
+   "segTop": 1235.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 884.3,
+  "axesTop": 1299.3,
+  "exitTop": 987.1,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 782.8,
+  "nextTop": 1113.1,
+  "headTop": 527.2,
+  "meltBottom": 1081.1,
+  "nextBottom": 1185.3,
+  "saveTop": 2533.4,
+  "saveBottom": 2589.4
+ },
+ "draw-marked-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "draw-noted-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "taste-blank-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "taste-nothing-393": {
+  "h": 1564,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1543.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": null,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 1487.3,
+  "saveBottom": 1543.3
+ },
+ "taste-notnote-393": {
+  "h": 1564,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1543.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated [on]"
+   ],
+   "clear": true,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": null,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 1487.3,
+  "saveBottom": 1543.3
+ },
+ "taste-marked-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "taste-noted-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "fullblank-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "fullpick-1366": {
+  "h": 1338,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 576,
+  "tasteTop": 520,
+  "tasteCrop": 1317.6,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated [on]"
+   ],
+   "clear": true,
+   "top": 1162.8,
+   "bottom": 1241.6,
+   "headH": 29,
+   "segTop": 1197.6,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 877.1,
+  "axesTop": null,
+  "exitTop": 979.9,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 775.5,
+  "nextTop": 1090.7,
+  "headTop": 520,
+  "meltBottom": 1058.7,
+  "nextBottom": 1162.8,
+  "saveTop": 1261.6,
+  "saveBottom": 1317.6
+ },
+ "fullmix-1366": {
+  "h": 2505,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 576,
+  "tasteTop": 520,
+  "tasteCrop": 1527.2,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 1162.8,
+   "bottom": 1241.6,
+   "headH": 29,
+   "segTop": 1197.6,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "meltTop": 877.1,
+  "axesTop": 1261.6,
+  "exitTop": 979.9,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 775.5,
+  "nextTop": 1090.7,
+  "headTop": 520,
+  "meltBottom": 1058.7,
+  "nextBottom": 1162.8,
+  "saveTop": 2428.6,
+  "saveBottom": 2484.6
+ },
+ "full-1366": {
+  "h": 2663,
+  "w": 350,
+  "overflowX": 6,
+  "drawEnd": 733.5,
+  "tasteTop": 677.5,
+  "tasteCrop": 1684.8,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 409.2,
+   "bottom": 488,
+   "headH": 29,
+   "segTop": 444,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 1320.4,
+   "bottom": 1399.2,
+   "headH": 29,
+   "segTop": 1355.2,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "meltTop": 1034.7,
+  "axesTop": 1419.2,
+  "exitTop": 488,
+  "noteTop": 258.8,
+  "ingTop": 337,
+  "howTop": 933.1,
+  "nextTop": 1248.3,
+  "headTop": 677.5,
+  "meltBottom": 1216.3,
+  "nextBottom": 1320.4,
+  "saveTop": 2586.2,
+  "saveBottom": 2642.2
+ },
+ "fullblank-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "fullpick-393": {
+  "h": 1376,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 583.2,
+  "tasteTop": 527.2,
+  "tasteCrop": 1355.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note",
+    "Not evaluated [on]"
+   ],
+   "clear": true,
+   "top": 1185.3,
+   "bottom": 1279.3,
+   "headH": 44,
+   "segTop": 1235.3,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "meltTop": 884.3,
+  "axesTop": null,
+  "exitTop": 987.1,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 782.8,
+  "nextTop": 1113.1,
+  "headTop": 527.2,
+  "meltBottom": 1081.1,
+  "nextBottom": 1185.3,
+  "saveTop": 1299.3,
+  "saveBottom": 1355.3
+ },
+ "fullmix-393": {
+  "h": 2610,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 583.2,
+  "tasteTop": 527.2,
+  "tasteCrop": 1583.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [on]",
+    "Not evaluated"
+   ],
+   "clear": true,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": null,
+   "dashed": "solid/solid"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 1185.3,
+   "bottom": 1279.3,
+   "headH": 44,
+   "segTop": 1235.3,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "meltTop": 884.3,
+  "axesTop": 1299.3,
+  "exitTop": 987.1,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 782.8,
+  "nextTop": 1113.1,
+  "headTop": 527.2,
+  "meltBottom": 1081.1,
+  "nextBottom": 1185.3,
+  "saveTop": 2533.4,
+  "saveBottom": 2589.4
+ },
+ "full-393": {
+  "h": 2798,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": 771.2,
+  "tasteTop": 715.2,
+  "tasteCrop": 1771.3,
+  "atdraw": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 401.2,
+   "bottom": 495.2,
+   "headH": 44,
+   "segTop": 451.2,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "fromfreezer": {
+   "opts": [
+    "Nothing to note [off]",
+    "Not evaluated [off]"
+   ],
+   "clear": false,
+   "top": 1373.3,
+   "bottom": 1467.3,
+   "headH": 44,
+   "segTop": 1423.3,
+   "segH": 44,
+   "hint": {
+    "h": 17,
+    "right": 0,
+    "sameLine": true,
+    "text": "Clear marks below to choose."
+   },
+   "dashed": "dashed/dashed"
+  },
+  "meltTop": 1072.3,
+  "axesTop": 1487.3,
+  "exitTop": 495.2,
+  "noteTop": 250.8,
+  "ingTop": 329,
+  "howTop": 970.8,
+  "nextTop": 1301.1,
+  "headTop": 715.2,
+  "meltBottom": 1269.1,
+  "nextBottom": 1373.3,
+  "saveTop": 2721.4,
+  "saveBottom": 2777.4
+ },
+ "r1-1366": {
+  "h": 594,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r2-1366": {
+  "h": 594,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r3-1366": {
+  "h": 715,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r4-1366": {
+  "h": 955,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r5-1366": {
+  "h": 636,
+  "w": 350,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r1-393": {
+  "h": 586,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r2-393": {
+  "h": 586,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r3-393": {
+  "h": 707,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r4-393": {
+  "h": 947,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ },
+ "r5-393": {
+  "h": 628,
+  "w": 393,
+  "overflowX": 0,
+  "drawEnd": null,
+  "tasteTop": null,
+  "tasteCrop": null,
+  "atdraw": null,
+  "fromfreezer": null,
+  "meltTop": null,
+  "axesTop": null,
+  "exitTop": null,
+  "noteTop": null,
+  "ingTop": null,
+  "howTop": null,
+  "nextTop": null,
+  "headTop": null,
+  "meltBottom": null,
+  "nextBottom": null,
+  "saveTop": null,
+  "saveBottom": null
+ }
+}

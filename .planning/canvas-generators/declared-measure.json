@@ -1,0 +1,780 @@
+{
+ "pen00-1366": {
+  "w": 350,
+  "h": 2237,
+  "cropTop": 1411,
+  "cropH": 738,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1419.2,
+    "h": 539.2,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1990.4,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2020.6,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film"
+  ]
+ },
+ "pen11-1366": {
+  "w": 350,
+  "h": 2526,
+  "cropTop": 1411,
+  "cropH": 1027,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1419.2,
+    "h": 539.2,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body",
+    "top": 1990.4,
+    "h": 141.8,
+    "text": "This recipe onlyBody(Not recorded)12345thinrightheavy"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2164.2,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2194.4,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter",
+    "top": 2346.4,
+    "h": 83,
+    "text": "This recipe onlyBitter"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film",
+   "This recipe only",
+   "Bitter"
+  ]
+ },
+ "pen21-1366": {
+  "w": 350,
+  "h": 2663,
+  "cropTop": 1411,
+  "cropH": 1163,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1419.2,
+    "h": 539.2,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body, Oil",
+    "top": 1990.4,
+    "h": 278.6,
+    "text": "This recipe onlyBody(Not recorded)12345thinrightheavyOil(Not"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2301,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2331.2,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter",
+    "top": 2483.2,
+    "h": 83,
+    "text": "This recipe onlyBitter"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Oil",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film",
+   "This recipe only",
+   "Bitter"
+  ]
+ },
+ "pen22-1366": {
+  "w": 350,
+  "h": 2663,
+  "cropTop": 1411,
+  "cropH": 1163,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1419.2,
+    "h": 539.2,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body, Oil",
+    "top": 1990.4,
+    "h": 278.6,
+    "text": "This recipe onlyBody(Not recorded)12345thinrightheavyOil(Not"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2301,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2331.2,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter, Waxy",
+    "top": 2483.2,
+    "h": 83,
+    "text": "This recipe onlyBitterWaxy"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Oil",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film",
+   "This recipe only",
+   "Bitter",
+   "Waxy"
+  ]
+ },
+ "read00-1366": {
+  "w": 350,
+  "h": 991,
+  "cropTop": 369,
+  "cropH": 406,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 458.5,
+    "h": 34,
+    "text": "Temperingnot measuredTasting temperaturenot measured"
+   },
+   {
+    "kind": "core",
+    "label": "",
+    "top": 579.5,
+    "h": 34,
+    "text": "Melt testnot measuredMelt stylenot measured"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 645.5,
+    "h": 122,
+    "text": "Every recipeHardnesshard (5)Scoopabilityright (3)Sweetnessri"
+   }
+  ],
+  "words": [
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness",
+   "Tempering",
+   "Tasting temperature",
+   "Melt test",
+   "Melt style",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Sweetness",
+   "Next time"
+  ]
+ },
+ "read11-1366": {
+  "w": 350,
+  "h": 912,
+  "cropTop": 293,
+  "cropH": 496,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 382,
+    "h": 96,
+    "text": "Temperingnot measuredTasting temperature−12 °CMelt test3 g l"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 510,
+    "h": 66,
+    "text": "Every recipeSweetnessmore (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Oil",
+    "top": 608,
+    "h": 66,
+    "text": "This recipe onlyOilstrong (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter",
+    "top": 727,
+    "h": 53.5,
+    "text": "This recipe onlyBitter"
+   }
+  ],
+  "words": [
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness",
+   "Tempering",
+   "Tasting temperature",
+   "Melt test",
+   "Melt style",
+   "Every recipe",
+   "Sweetness",
+   "This recipe only",
+   "Oil",
+   "Any problems?",
+   "This recipe only",
+   "Bitter",
+   "Next time"
+  ]
+ },
+ "read22-1366": {
+  "w": 350,
+  "h": 912,
+  "cropTop": 293,
+  "cropH": 496,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 382,
+    "h": 96,
+    "text": "Temperingnot measuredTasting temperature−12 °CMelt test3 g l"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 510,
+    "h": 66,
+    "text": "Every recipeSweetnessmore (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body, Oil",
+    "top": 608,
+    "h": 66,
+    "text": "This recipe onlyBodyheavy (4)Oilstrong (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter, Waxy",
+    "top": 727,
+    "h": 53.5,
+    "text": "This recipe onlyBitter · Waxy"
+   }
+  ],
+  "words": [
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness",
+   "Tempering",
+   "Tasting temperature",
+   "Melt test",
+   "Melt style",
+   "Every recipe",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Oil",
+   "Any problems?",
+   "This recipe only",
+   "Bitter · Waxy",
+   "Next time"
+  ]
+ },
+ "pen00-393": {
+  "w": 393,
+  "h": 2354,
+  "cropTop": 1479,
+  "cropH": 787,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1487.3,
+    "h": 588,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2107.3,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2137.4,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film"
+  ]
+ },
+ "pen11-393": {
+  "w": 393,
+  "h": 2646,
+  "cropTop": 1479,
+  "cropH": 1079,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1487.3,
+    "h": 588,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body",
+    "top": 2107.3,
+    "h": 145,
+    "text": "This recipe onlyBody(Not recorded)12345thinrightheavy"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2284.3,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2314.4,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter",
+    "top": 2466.4,
+    "h": 83,
+    "text": "This recipe onlyBitter"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film",
+   "This recipe only",
+   "Bitter"
+  ]
+ },
+ "pen21-393": {
+  "w": 393,
+  "h": 2798,
+  "cropTop": 1479,
+  "cropH": 1231,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1487.3,
+    "h": 588,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body, Oil",
+    "top": 2107.3,
+    "h": 297,
+    "text": "This recipe onlyBody(Not recorded)12345thinrightheavyOil(Not"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2436.3,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2466.4,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter",
+    "top": 2618.4,
+    "h": 83,
+    "text": "This recipe onlyBitter"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Oil",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film",
+   "This recipe only",
+   "Bitter"
+  ]
+ },
+ "pen22-393": {
+  "w": 393,
+  "h": 2798,
+  "cropTop": 1479,
+  "cropH": 1231,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 1487.3,
+    "h": 588,
+    "text": "Every recipeHardness(Not recorded)12345softrighthardScoopabi"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body, Oil",
+    "top": 2107.3,
+    "h": 297,
+    "text": "This recipe onlyBody(Not recorded)12345thinrightheavyOil(Not"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2436.3,
+    "h": 18.2,
+    "text": "Any problems?select all that apply"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 2466.4,
+    "h": 120,
+    "text": "Every recipeCoarse, icySandy, grittyGummy, elasticGreasy fil"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter, Waxy",
+    "top": 2618.4,
+    "h": 83,
+    "text": "This recipe onlyBitterWaxy"
+   }
+  ],
+  "words": [
+   "At draw",
+   "From freezer",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Smoothness",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Oil",
+   "Every recipe",
+   "Coarse, icy",
+   "Sandy, gritty",
+   "Gummy, elastic",
+   "Greasy film",
+   "This recipe only",
+   "Bitter",
+   "Waxy"
+  ]
+ },
+ "read00-393": {
+  "w": 393,
+  "h": 955,
+  "cropTop": 361,
+  "cropH": 406,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 450.5,
+    "h": 34,
+    "text": "Temperingnot measuredTasting temperaturenot measured"
+   },
+   {
+    "kind": "core",
+    "label": "",
+    "top": 571.5,
+    "h": 34,
+    "text": "Melt testnot measuredMelt stylenot measured"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 637.5,
+    "h": 122,
+    "text": "Every recipeHardnesshard (5)Scoopabilityright (3)Sweetnessri"
+   }
+  ],
+  "words": [
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness",
+   "Tempering",
+   "Tasting temperature",
+   "Melt test",
+   "Melt style",
+   "Every recipe",
+   "Hardness",
+   "Scoopability",
+   "Sweetness",
+   "Next time"
+  ]
+ },
+ "read11-393": {
+  "w": 393,
+  "h": 904,
+  "cropTop": 285,
+  "cropH": 496,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 374,
+    "h": 96,
+    "text": "Temperingnot measuredTasting temperature−12 °CMelt test3 g l"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 502,
+    "h": 66,
+    "text": "Every recipeSweetnessmore (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Oil",
+    "top": 600,
+    "h": 66,
+    "text": "This recipe onlyOilstrong (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter",
+    "top": 719,
+    "h": 53.5,
+    "text": "This recipe onlyBitter"
+   }
+  ],
+  "words": [
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness",
+   "Tempering",
+   "Tasting temperature",
+   "Melt test",
+   "Melt style",
+   "Every recipe",
+   "Sweetness",
+   "This recipe only",
+   "Oil",
+   "Any problems?",
+   "This recipe only",
+   "Bitter",
+   "Next time"
+  ]
+ },
+ "read22-393": {
+  "w": 393,
+  "h": 904,
+  "cropTop": 285,
+  "cropH": 496,
+  "overflowX": 0,
+  "tags": [
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 374,
+    "h": 96,
+    "text": "Temperingnot measuredTasting temperature−12 °CMelt test3 g l"
+   },
+   {
+    "kind": "core",
+    "label": "core",
+    "top": 502,
+    "h": 66,
+    "text": "Every recipeSweetnessmore (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Body, Oil",
+    "top": 600,
+    "h": 66,
+    "text": "This recipe onlyBodyheavy (4)Oilstrong (4)"
+   },
+   {
+    "kind": "decl",
+    "label": "declared: Bitter, Waxy",
+    "top": 719,
+    "h": 53.5,
+    "text": "This recipe onlyBitter · Waxy"
+   }
+  ],
+  "words": [
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness",
+   "Tempering",
+   "Tasting temperature",
+   "Melt test",
+   "Melt style",
+   "Every recipe",
+   "Sweetness",
+   "This recipe only",
+   "Body",
+   "Oil",
+   "Any problems?",
+   "This recipe only",
+   "Bitter · Waxy",
+   "Next time"
+  ]
+ }
+}

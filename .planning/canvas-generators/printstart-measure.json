@@ -437,38 +437,38 @@
   "board": {
    "article": [
     816,
-    2244
+    2259
    ],
    "sections": {
     "recipe-band": [
+     72,
      48,
-     48,
-     720,
+     696,
      126
     ],
     "before-region": [
-     48,
+     72,
      194,
      599,
      145
     ],
     "ingredient-table-region": [
-     48,
+     72,
      359,
-     436,
-     815
+     421,
+     830
     ],
     "method-region": [
-     48,
-     1194,
-     720,
+     72,
+     1209,
+     696,
      982
     ],
     "side-region": [
-     504,
+     513,
      359,
-     264,
-     815
+     255,
+     830
     ]
    },
    "headings": [
@@ -486,7 +486,7 @@
     ],
     [
      "Instructions",
-     1194
+     1209
     ],
     [
      "Balance",
@@ -527,11 +527,11 @@
    "handFace": null
   },
   "boardDoc": {
-   "docH": 2244
+   "docH": 2259
   },
   "diff": [],
   "table": {
-   "width": 436,
+   "width": 421,
    "head": [
     "As made",
     "Ingredient"
@@ -547,7 +547,7 @@
     ],
     [
      "ingredient-table__col-name",
-     264
+     249
     ]
    ],
    "rowHeights": [
@@ -575,40 +575,40 @@
    "balance": true
   },
   "cols": {
-   "grid": "435.84375px 264.140625px",
-   "table": 436,
-   "side": 264,
-   "rule": 264,
+   "grid": "420.890625px 255.09375px",
+   "table": 421,
+   "side": 255,
+   "rule": 255,
    "balanceButtons": 0,
    "watchFor": false
   }
  },
  "webkit_BatchLogForm": {
   "scrollH": 1056,
-  "contentBottom": 953,
-  "footTop": 994,
-  "footBottom": 1016,
-  "spare": 41,
+  "contentBottom": 834,
+  "footTop": 986,
+  "footBottom": 1008,
+  "spare": 152,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
   "lines": 14,
-  "boxes": 6,
+  "boxes": 9,
   "stops": 0
  },
  "webkit_TastingLogForm": {
   "scrollH": 1056,
-  "contentBottom": 963,
-  "footTop": 994,
-  "footBottom": 1016,
-  "spare": 31,
+  "contentBottom": 835,
+  "footTop": 986,
+  "footBottom": 1008,
+  "spare": 151,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
   "lines": 7,
-  "boxes": 8,
+  "boxes": 11,
   "stops": 30
  },
  "chromium_A": {
@@ -1049,38 +1049,38 @@
   "board": {
    "article": [
     816,
-    2210
+    2224
    ],
    "sections": {
     "recipe-band": [
+     72,
      48,
-     48,
-     720,
+     696,
      126
     ],
     "before-region": [
-     48,
+     72,
      194,
      542,
      145
     ],
     "ingredient-table-region": [
-     48,
+     72,
      359,
-     436,
-     791
+     421,
+     805
     ],
     "method-region": [
-     48,
-     1170,
-     720,
+     72,
+     1184,
+     696,
      972
     ],
     "side-region": [
-     504,
+     513,
      359,
-     264,
-     791
+     255,
+     805
     ]
    },
    "headings": [
@@ -1098,7 +1098,7 @@
     ],
     [
      "Instructions",
-     1170
+     1184
     ],
     [
      "Balance",
@@ -1139,11 +1139,11 @@
    "handFace": null
   },
   "boardDoc": {
-   "docH": 2210
+   "docH": 2224
   },
   "diff": [],
   "table": {
-   "width": 436,
+   "width": 421,
    "head": [
     "As made",
     "Ingredient"
@@ -1159,7 +1159,7 @@
     ],
     [
      "ingredient-table__col-name",
-     271
+     256
     ]
    ],
    "rowHeights": [
@@ -1187,42 +1187,42 @@
    "balance": true
   },
   "cols": {
-   "grid": "435.844px 264.141px",
-   "table": 436,
-   "side": 264,
-   "rule": 264,
+   "grid": "420.891px 255.094px",
+   "table": 421,
+   "side": 255,
+   "rule": 255,
    "balanceButtons": 0,
    "watchFor": false
   }
  },
  "chromium_BatchLogForm": {
   "scrollH": 1056,
-  "contentBottom": 953,
-  "footTop": 995,
-  "footBottom": 1016,
-  "spare": 42,
+  "contentBottom": 836,
+  "footTop": 987,
+  "footBottom": 1008,
+  "spare": 151,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
   "lines": 14,
-  "boxes": 6,
+  "boxes": 9,
   "stops": 0
  },
  "chromium_TastingLogForm": {
   "scrollH": 1056,
-  "contentBottom": 963,
-  "footTop": 995,
-  "footBottom": 1016,
-  "spare": 32,
+  "contentBottom": 838,
+  "footTop": 987,
+  "footBottom": 1008,
+  "spare": 149,
   "minFont": 12,
   "colours": [
    "rgb(20, 20, 20)"
   ],
   "lines": 7,
-  "boxes": 8,
+  "boxes": 11,
   "stops": 30
  },
  "boardH": 2240,
- "boardH_col2": 2260
+ "boardH_col2": 2270
 }

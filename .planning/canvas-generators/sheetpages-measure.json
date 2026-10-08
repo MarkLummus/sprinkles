@@ -1,0 +1,366 @@
+{
+ "webkit_safari630": {
+  "box": [
+   630,
+   900
+  ],
+  "groupsOnPage1": 2,
+  "groupNames": [
+   "Step 2Gum slurry — the only high-heat st",
+   "Step 3Build the base",
+   "Step 6Allulose in, then crash-cool",
+   "Step 8Emulsify the oil, cold"
+  ],
+  "gaugesOnPage1": 4,
+  "page1UsedLeft": 876.73,
+  "page1UsedRight": 810.09,
+  "page1Used": 876.73,
+  "page1Spare": 23.3,
+  "nextGroupBottom": 950.33,
+  "nextGaugeBottom": 904.42,
+  "tail": {
+   "left": 241.6,
+   "right": 325.7,
+   "row": 325.7,
+   "stepsStart": 370.5
+  },
+  "stepPages": [
+   "1-4",
+   "5-10"
+  ],
+  "tailUsed": 873,
+  "tailSpare": 27,
+  "nextStepH": 155.34,
+  "lastPageUsed": 576.3,
+  "footH": 22,
+  "footEnd": 598.3,
+  "lastSpare": 301.7,
+  "units": {
+   "groupsB": [
+    601.45,
+    876.73,
+    950.33,
+    1059.92
+   ],
+   "groupsH": [
+    238.28,
+    275.28,
+    73.59,
+    109.59
+   ],
+   "gaugesB": [
+    442.11,
+    568.44,
+    698.77,
+    810.09,
+    904.42,
+    1015.75
+   ],
+   "gaugesH": [
+    106.33,
+    106.33,
+    110.33,
+    91.33,
+    74.33,
+    91.33
+   ],
+   "thead": 27.39,
+   "tfoot": 31,
+   "basis": 120,
+   "balHead": 18.89,
+   "bandB": 126,
+   "beforeB": 290.89,
+   "head": {
+    "t": 310.89,
+    "b": 329.78,
+    "h": 18.89
+   },
+   "steps": [
+    88.78,
+    133.77,
+    85.39,
+    134.55,
+    155.34,
+    94.78,
+    43.8,
+    94.78,
+    43.8,
+    43.8
+   ],
+   "mHead": 24.89
+  }
+ },
+ "webkit_chrome672": {
+  "box": [
+   672,
+   960
+  ],
+  "groupsOnPage1": 3,
+  "groupNames": [
+   "Step 2Gum slurry — the only high-heat st",
+   "Step 3Build the base",
+   "Step 6Allulose in, then crash-cool",
+   "Step 8Emulsify the oil, cold"
+  ],
+  "gaugesOnPage1": 5,
+  "page1UsedLeft": 950.33,
+  "page1UsedRight": 904.42,
+  "page1Used": 950.33,
+  "page1Spare": 9.7,
+  "nextGroupBottom": 1059.92,
+  "nextGaugeBottom": 1015.75,
+  "tail": {
+   "left": 168,
+   "right": 216.3,
+   "row": 216.3,
+   "stepsStart": 261.2
+  },
+  "stepPages": [
+   "1-5",
+   "6-10"
+  ],
+  "tailUsed": 897.5,
+  "tailSpare": 62.5,
+  "nextStepH": 94.78,
+  "lastPageUsed": 401,
+  "footH": 22,
+  "footEnd": 423,
+  "lastSpare": 537,
+  "units": {
+   "groupsB": [
+    601.45,
+    876.73,
+    950.33,
+    1059.92
+   ],
+   "groupsH": [
+    238.28,
+    275.28,
+    73.59,
+    109.59
+   ],
+   "gaugesB": [
+    442.11,
+    568.44,
+    698.77,
+    810.09,
+    904.42,
+    1015.75
+   ],
+   "gaugesH": [
+    106.33,
+    106.33,
+    110.33,
+    91.33,
+    74.33,
+    91.33
+   ],
+   "thead": 27.39,
+   "tfoot": 31,
+   "basis": 105,
+   "balHead": 18.89,
+   "bandB": 126,
+   "beforeB": 290.89,
+   "head": {
+    "t": 310.89,
+    "b": 329.78,
+    "h": 18.89
+   },
+   "steps": [
+    88.78,
+    112.97,
+    85.39,
+    134.55,
+    134.55,
+    94.78,
+    43.8,
+    94.78,
+    43.8,
+    43.8
+   ],
+   "mHead": 24.89
+  }
+ },
+ "chromium_safari630": {
+  "box": [
+   630,
+   900
+  ],
+  "groupsOnPage1": 2,
+  "groupNames": [
+   "Step 2Gum slurry — the only high-heat st",
+   "Step 3Build the base",
+   "Step 6Allulose in, then crash-cool",
+   "Step 8Emulsify the oil, cold"
+  ],
+  "gaugesOnPage1": 4,
+  "page1UsedLeft": 875.55,
+  "page1UsedRight": 805.78,
+  "page1Used": 875.55,
+  "page1Spare": 24.5,
+  "nextGroupBottom": 949.14,
+  "nextGaugeBottom": 900.78,
+  "tail": {
+   "left": 241.6,
+   "right": 304,
+   "row": 304,
+   "stepsStart": 348.9
+  },
+  "stepPages": [
+   "1-4",
+   "5-10"
+  ],
+  "tailUsed": 851.4,
+  "tailSpare": 48.6,
+  "nextStepH": 155.34,
+  "lastPageUsed": 576.3,
+  "footH": 21,
+  "footEnd": 597.3,
+  "lastSpare": 302.7,
+  "units": {
+   "groupsB": [
+    600.86,
+    875.55,
+    949.14,
+    1059.23
+   ],
+   "groupsH": [
+    237.69,
+    274.69,
+    73.59,
+    110.09
+   ],
+   "gaugesB": [
+    440.78,
+    565.78,
+    694.78,
+    805.78,
+    900.78,
+    1011.78
+   ],
+   "gaugesH": [
+    105,
+    105,
+    109,
+    91,
+    75,
+    91
+   ],
+   "thead": 27.39,
+   "tfoot": 30.5,
+   "basis": 98,
+   "balHead": 18.89,
+   "bandB": 126,
+   "beforeB": 290.89,
+   "head": {
+    "t": 310.89,
+    "b": 329.78,
+    "h": 18.89
+   },
+   "steps": [
+    88.78,
+    133.77,
+    85.39,
+    134.55,
+    155.34,
+    94.78,
+    43.8,
+    94.78,
+    43.8,
+    43.8
+   ],
+   "mHead": 24.89
+  }
+ },
+ "chromium_chrome672": {
+  "box": [
+   672,
+   960
+  ],
+  "groupsOnPage1": 3,
+  "groupNames": [
+   "Step 2Gum slurry — the only high-heat st",
+   "Step 3Build the base",
+   "Step 6Allulose in, then crash-cool",
+   "Step 8Emulsify the oil, cold"
+  ],
+  "gaugesOnPage1": 5,
+  "page1UsedLeft": 949.14,
+  "page1UsedRight": 900.78,
+  "page1Used": 949.14,
+  "page1Spare": 10.9,
+  "nextGroupBottom": 1059.23,
+  "nextGaugeBottom": 1011.78,
+  "tail": {
+   "left": 168,
+   "right": 195,
+   "row": 195,
+   "stepsStart": 239.9
+  },
+  "stepPages": [
+   "1-5",
+   "6-10"
+  ],
+  "tailUsed": 876.1,
+  "tailSpare": 83.9,
+  "nextStepH": 94.78,
+  "lastPageUsed": 401,
+  "footH": 21,
+  "footEnd": 422,
+  "lastSpare": 538,
+  "units": {
+   "groupsB": [
+    600.86,
+    875.55,
+    949.14,
+    1059.23
+   ],
+   "groupsH": [
+    237.69,
+    274.69,
+    73.59,
+    110.09
+   ],
+   "gaugesB": [
+    440.78,
+    565.78,
+    694.78,
+    805.78,
+    900.78,
+    1011.78
+   ],
+   "gaugesH": [
+    105,
+    105,
+    109,
+    91,
+    75,
+    91
+   ],
+   "thead": 27.39,
+   "tfoot": 30.5,
+   "basis": 84,
+   "balHead": 18.89,
+   "bandB": 126,
+   "beforeB": 290.89,
+   "head": {
+    "t": 310.89,
+    "b": 329.78,
+    "h": 18.89
+   },
+   "steps": [
+    88.78,
+    112.97,
+    85.39,
+    134.55,
+    134.55,
+    94.78,
+    43.8,
+    94.78,
+    43.8,
+    43.8
+   ],
+   "mHead": 24.89
+  }
+ }
+}

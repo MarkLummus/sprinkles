@@ -1,0 +1,1679 @@
+{
+ "webkit_1280": {
+  "pointerCoarse": false,
+  "homeBefore": {
+   "docH": 1173,
+   "leadH": 111,
+   "sectionY": 322
+  },
+  "home": {
+   "docH": 1198,
+   "scrollW": 1280,
+   "lead": {
+    "x": 48,
+    "y": 179,
+    "w": 1184,
+    "h": 134
+   },
+   "draft": {
+    "x": 97,
+    "y": 275,
+    "w": 776.3,
+    "h": 17
+   },
+   "draftLines": 1,
+   "draftlink": {
+    "x": 275.1,
+    "y": 275.3,
+    "w": 70,
+    "h": 16.5
+   },
+   "codelink": {
+    "x": 1120.8,
+    "y": 345,
+    "w": 111.2,
+    "h": 17
+   },
+   "label": {
+    "x": 48,
+    "y": 346,
+    "w": 57.9,
+    "h": 15
+   },
+   "row": {
+    "x": 48,
+    "y": 345,
+    "w": 1184,
+    "h": 17
+   },
+   "sameLine": true,
+   "linkColor": "rgb(20, 117, 221)",
+   "draftFont": "14px",
+   "actions": {
+    "x": 893.3,
+    "y": 224,
+    "w": 317.7,
+    "h": 44
+   }
+  },
+  "homeLead": {
+   "docH": 1198,
+   "scrollW": 1280,
+   "lead": {
+    "x": 48,
+    "y": 179,
+    "w": 1184,
+    "h": 134
+   },
+   "name": "Olive Oil Ice Cream, circulator",
+   "draft": {
+    "x": 97,
+    "y": 275,
+    "w": 873.5,
+    "h": 17
+   },
+   "draftLines": 1,
+   "draftlink": {
+    "x": 275.1,
+    "y": 275.3,
+    "w": 70,
+    "h": 16.5
+   },
+   "actions": {
+    "x": 990.5,
+    "y": 224,
+    "w": 220.5,
+    "h": 44
+   }
+  },
+  "route": {
+   "docH": 5607,
+   "scrollW": 1280,
+   "shellH": 5607,
+   "head": {
+    "x": 32,
+    "y": 89,
+    "w": 1216,
+    "h": 66
+   },
+   "headH": 155,
+   "name": {
+    "x": 32,
+    "y": 105.9,
+    "w": 200.8,
+    "h": 28.3
+   },
+   "version": {
+    "x": 244.3,
+    "y": 115.5,
+    "w": 170,
+    "h": 16.5
+   },
+   "saved": {
+    "x": 425.9,
+    "y": 115.5,
+    "w": 293.3,
+    "h": 16.5
+   },
+   "code": {
+    "x": 627.7,
+    "y": 115.5,
+    "w": 91.5,
+    "h": 16.5
+   },
+   "print": {
+    "x": 1173.7,
+    "y": 89.5,
+    "w": 74.3,
+    "h": 44
+   },
+   "caption": {
+    "x": 32,
+    "y": 89,
+    "w": 687.3,
+    "h": 15
+   },
+   "oneLine": true,
+   "lineH": 28,
+   "pages": {
+    "x": 32,
+    "y": 199,
+    "w": 1216,
+    "h": 5360
+   },
+   "log1": {
+    "x": 32,
+    "y": 199,
+    "w": 816,
+    "h": 1056
+   },
+   "log2": {
+    "x": 32,
+    "y": 1275,
+    "w": 816,
+    "h": 1056
+   },
+   "sheet": {
+    "x": 32,
+    "y": 2351,
+    "w": 816,
+    "h": 1056
+   },
+   "pan": null,
+   "panScrollW": null,
+   "pageScale": 1,
+   "printBg": "rgb(20, 117, 221)"
+  },
+  "notice": {
+   "C": {
+    "text": "Draft kept. Cancel discards it.",
+    "box": {
+     "x": 48,
+     "y": 63,
+     "w": 206,
+     "h": 30
+    },
+    "title": {
+     "x": 54,
+     "y": 73,
+     "w": 382,
+     "h": 32
+    },
+    "coversTitlePx2": 3996,
+    "coversRailPx2": 0,
+    "titleAreaShare": 32,
+    "headerBottom": 57
+   }
+  }
+ },
+ "webkit_393": {
+  "pointerCoarse": true,
+  "homeBefore": {
+   "docH": 1573,
+   "leadH": 162,
+   "sectionY": 390
+  },
+  "home": {
+   "docH": 1652,
+   "scrollW": 393,
+   "lead": {
+    "x": 20,
+    "y": 196,
+    "w": 353,
+    "h": 212
+   },
+   "draft": {
+    "x": 33,
+    "y": 295,
+    "w": 327,
+    "h": 44
+   },
+   "draftLines": 3,
+   "draftlink": {
+    "x": 211.1,
+    "y": 295,
+    "w": 70,
+    "h": 44
+   },
+   "codelink": {
+    "x": 261.8,
+    "y": 440,
+    "w": 111.2,
+    "h": 44
+   },
+   "label": {
+    "x": 20,
+    "y": 454.5,
+    "w": 57.9,
+    "h": 15
+   },
+   "row": {
+    "x": 20,
+    "y": 440,
+    "w": 353,
+    "h": 44
+   },
+   "sameLine": true,
+   "linkColor": "rgb(20, 117, 221)",
+   "draftFont": "14px",
+   "actions": {
+    "x": 33,
+    "y": 351,
+    "w": 327,
+    "h": 44
+   }
+  },
+  "homeLead": {
+   "docH": 1674,
+   "scrollW": 393,
+   "lead": {
+    "x": 20,
+    "y": 196,
+    "w": 353,
+    "h": 234
+   },
+   "name": "Olive Oil Ice Cream, circulator",
+   "draft": {
+    "x": 33,
+    "y": 317,
+    "w": 327,
+    "h": 44
+   },
+   "draftLines": 3,
+   "draftlink": {
+    "x": 211.1,
+    "y": 317,
+    "w": 70,
+    "h": 44
+   },
+   "actions": {
+    "x": 33,
+    "y": 373,
+    "w": 327,
+    "h": 44
+   }
+  },
+  "route": {
+   "docH": 2770,
+   "scrollW": 393,
+   "shellH": 2770,
+   "head": {
+    "x": 20,
+    "y": 94,
+    "w": 353,
+    "h": 172
+   },
+   "headH": 266,
+   "name": {
+    "x": 20,
+    "y": 111,
+    "w": 353,
+    "h": 44
+   },
+   "version": {
+    "x": 20,
+    "y": 155,
+    "w": 353,
+    "h": 17
+   },
+   "saved": {
+    "x": 20,
+    "y": 172,
+    "w": 353,
+    "h": 17
+   },
+   "code": {
+    "x": 221.8,
+    "y": 172.3,
+    "w": 91.5,
+    "h": 16.5
+   },
+   "print": {
+    "x": 20,
+    "y": 201,
+    "w": 353,
+    "h": 44
+   },
+   "caption": {
+    "x": 20,
+    "y": 94,
+    "w": 353,
+    "h": 15
+   },
+   "oneLine": false,
+   "lineH": 78,
+   "pages": {
+    "x": 20,
+    "y": 310,
+    "w": 353,
+    "h": 2364.1
+   },
+   "log1": {
+    "x": 20,
+    "y": 310,
+    "w": 353,
+    "h": 456.8
+   },
+   "log2": {
+    "x": 20,
+    "y": 786.8,
+    "w": 353,
+    "h": 456.8
+   },
+   "sheet": {
+    "x": 20,
+    "y": 1263.6,
+    "w": 353,
+    "h": 456.8
+   },
+   "pan": null,
+   "panScrollW": null,
+   "pageScale": 0.433,
+   "printBg": "rgb(20, 117, 221)"
+  },
+  "notice": {
+   "C": {
+    "text": "Draft kept. Cancel discards it.",
+    "box": {
+     "x": 20,
+     "y": 68,
+     "w": 206,
+     "h": 30
+    },
+    "title": {
+     "x": 42,
+     "y": 78,
+     "w": 331,
+     "h": 64
+    },
+    "coversTitlePx2": 3676,
+    "coversRailPx2": 160,
+    "titleAreaShare": 17,
+    "headerBottom": 62
+   }
+  }
+ },
+ "chromium_1280": {
+  "pointerCoarse": false,
+  "homeBefore": {
+   "docH": 1174,
+   "leadH": 111,
+   "sectionY": 323
+  },
+  "home": {
+   "docH": 1197,
+   "scrollW": 1280,
+   "lead": {
+    "x": 48,
+    "y": 180,
+    "w": 1184,
+    "h": 133
+   },
+   "draft": {
+    "x": 97,
+    "y": 276,
+    "w": 776.1,
+    "h": 16
+   },
+   "draftLines": 1,
+   "draftlink": {
+    "x": 269.7,
+    "y": 276,
+    "w": 67.9,
+    "h": 16
+   },
+   "codelink": {
+    "x": 1123.6,
+    "y": 345,
+    "w": 108.4,
+    "h": 16
+   },
+   "label": {
+    "x": 48,
+    "y": 345.5,
+    "w": 59.2,
+    "h": 15
+   },
+   "row": {
+    "x": 48,
+    "y": 345,
+    "w": 1184,
+    "h": 16
+   },
+   "sameLine": true,
+   "linkColor": "rgb(20, 117, 221)",
+   "draftFont": "14px",
+   "actions": {
+    "x": 893.1,
+    "y": 224.5,
+    "w": 317.9,
+    "h": 44
+   }
+  },
+  "homeLead": {
+   "docH": 1197,
+   "scrollW": 1280,
+   "lead": {
+    "x": 48,
+    "y": 180,
+    "w": 1184,
+    "h": 133
+   },
+   "name": "Olive Oil Ice Cream, circulator",
+   "draft": {
+    "x": 97,
+    "y": 276,
+    "w": 874.8,
+    "h": 16
+   },
+   "draftLines": 1,
+   "draftlink": {
+    "x": 269.7,
+    "y": 276,
+    "w": 67.9,
+    "h": 16
+   },
+   "actions": {
+    "x": 991.8,
+    "y": 224.5,
+    "w": 219.2,
+    "h": 44
+   }
+  },
+  "route": {
+   "docH": 5608,
+   "scrollW": 1280,
+   "shellH": 5608,
+   "head": {
+    "x": 32,
+    "y": 89,
+    "w": 1216,
+    "h": 67
+   },
+   "headH": 156,
+   "name": {
+    "x": 32,
+    "y": 106,
+    "w": 209.9,
+    "h": 28
+   },
+   "version": {
+    "x": 253.6,
+    "y": 116,
+    "w": 161.8,
+    "h": 16
+   },
+   "saved": {
+    "x": 427.2,
+    "y": 116,
+    "w": 282.8,
+    "h": 16
+   },
+   "code": {
+    "x": 622.5,
+    "y": 115,
+    "w": 87.5,
+    "h": 17
+   },
+   "print": {
+    "x": 1174.4,
+    "y": 90,
+    "w": 73.6,
+    "h": 44
+   },
+   "caption": {
+    "x": 32,
+    "y": 89,
+    "w": 678,
+    "h": 15
+   },
+   "oneLine": true,
+   "lineH": 29,
+   "pages": {
+    "x": 32,
+    "y": 200,
+    "w": 1216,
+    "h": 5360
+   },
+   "log1": {
+    "x": 32,
+    "y": 200,
+    "w": 816,
+    "h": 1056
+   },
+   "log2": {
+    "x": 32,
+    "y": 1276,
+    "w": 816,
+    "h": 1056
+   },
+   "sheet": {
+    "x": 32,
+    "y": 2352,
+    "w": 816,
+    "h": 1056
+   },
+   "pan": null,
+   "panScrollW": null,
+   "pageScale": 1,
+   "printBg": "rgb(20, 117, 221)"
+  },
+  "notice": {
+   "C": {
+    "text": "Draft kept. Cancel discards it.",
+    "box": {
+     "x": 48,
+     "y": 63,
+     "w": 198,
+     "h": 29
+    },
+    "title": {
+     "x": 54,
+     "y": 73,
+     "w": 399,
+     "h": 32
+    },
+    "coversTitlePx2": 3656,
+    "coversRailPx2": 0,
+    "titleAreaShare": 28,
+    "headerBottom": 57
+   }
+  }
+ },
+ "chromium_393": {
+  "pointerCoarse": true,
+  "homeBefore": {
+   "docH": 1579,
+   "leadH": 161,
+   "sectionY": 392
+  },
+  "home": {
+   "docH": 1658,
+   "scrollW": 393,
+   "lead": {
+    "x": 20,
+    "y": 199,
+    "w": 353,
+    "h": 211
+   },
+   "draft": {
+    "x": 33,
+    "y": 297,
+    "w": 327,
+    "h": 44
+   },
+   "draftLines": 3,
+   "draftlink": {
+    "x": 205.7,
+    "y": 297,
+    "w": 67.9,
+    "h": 44
+   },
+   "codelink": {
+    "x": 264.6,
+    "y": 442,
+    "w": 108.4,
+    "h": 44
+   },
+   "label": {
+    "x": 20,
+    "y": 456.5,
+    "w": 59.2,
+    "h": 15
+   },
+   "row": {
+    "x": 20,
+    "y": 442,
+    "w": 353,
+    "h": 44
+   },
+   "sameLine": true,
+   "linkColor": "rgb(20, 117, 221)",
+   "draftFont": "14px",
+   "actions": {
+    "x": 33,
+    "y": 353,
+    "w": 327,
+    "h": 44
+   }
+  },
+  "homeLead": {
+   "docH": 1682,
+   "scrollW": 393,
+   "lead": {
+    "x": 20,
+    "y": 199,
+    "w": 353,
+    "h": 235
+   },
+   "name": "Olive Oil Ice Cream, circulator",
+   "draft": {
+    "x": 33,
+    "y": 321,
+    "w": 327,
+    "h": 44
+   },
+   "draftLines": 3,
+   "draftlink": {
+    "x": 205.7,
+    "y": 321,
+    "w": 67.9,
+    "h": 44
+   },
+   "actions": {
+    "x": 33,
+    "y": 377,
+    "w": 327,
+    "h": 44
+   }
+  },
+  "route": {
+   "docH": 2770,
+   "scrollW": 393,
+   "shellH": 2770,
+   "head": {
+    "x": 20,
+    "y": 95,
+    "w": 353,
+    "h": 171
+   },
+   "headH": 266,
+   "name": {
+    "x": 20,
+    "y": 112,
+    "w": 353,
+    "h": 44
+   },
+   "version": {
+    "x": 20,
+    "y": 156,
+    "w": 353,
+    "h": 16
+   },
+   "saved": {
+    "x": 20,
+    "y": 172,
+    "w": 353,
+    "h": 17
+   },
+   "code": {
+    "x": 215.3,
+    "y": 172,
+    "w": 87.5,
+    "h": 17
+   },
+   "print": {
+    "x": 20,
+    "y": 201,
+    "w": 353,
+    "h": 44
+   },
+   "caption": {
+    "x": 20,
+    "y": 95,
+    "w": 353,
+    "h": 15
+   },
+   "oneLine": false,
+   "lineH": 77,
+   "pages": {
+    "x": 20,
+    "y": 310,
+    "w": 353,
+    "h": 2364.1
+   },
+   "log1": {
+    "x": 20,
+    "y": 310,
+    "w": 353,
+    "h": 456.8
+   },
+   "log2": {
+    "x": 20,
+    "y": 786.8,
+    "w": 353,
+    "h": 456.8
+   },
+   "sheet": {
+    "x": 20,
+    "y": 1263.6,
+    "w": 353,
+    "h": 456.8
+   },
+   "pan": null,
+   "panScrollW": null,
+   "pageScale": 0.433,
+   "printBg": "rgb(20, 117, 221)"
+  },
+  "notice": {
+   "C": {
+    "text": "Draft kept. Cancel discards it.",
+    "box": {
+     "x": 20,
+     "y": 69,
+     "w": 198,
+     "h": 29
+    },
+    "title": {
+     "x": 42,
+     "y": 79,
+     "w": 331,
+     "h": 64
+    },
+    "coversTitlePx2": 3352,
+    "coversRailPx2": 152,
+    "titleAreaShare": 16,
+    "headerBottom": 63
+   }
+  }
+ },
+ "board_webkit_P4_PrintRoute1280": [
+  {
+   "vid": "p4r1",
+   "win": {
+    "w": 1280,
+    "h": 5607
+   },
+   "shellH": 5607,
+   "head": {
+    "x": 32,
+    "y": 89,
+    "w": 1216,
+    "h": 66
+   },
+   "name": {
+    "x": 32,
+    "y": 106,
+    "w": 201,
+    "h": 28
+   },
+   "print": {
+    "x": 1174,
+    "y": 90,
+    "w": 74,
+    "h": 44
+   },
+   "log1": {
+    "x": 32,
+    "y": 199,
+    "w": 816,
+    "h": 1056
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": 57,
+    "w": 1280,
+    "h": 5550
+   }
+  }
+ ],
+ "board_webkit_P4_PrintRoute393": [
+  {
+   "vid": "p4r3a",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": {
+    "x": 20,
+    "y": 94,
+    "w": 353,
+    "h": 172
+   },
+   "name": {
+    "x": 20,
+    "y": 111,
+    "w": 353,
+    "h": 44
+   },
+   "print": {
+    "x": 20,
+    "y": 201,
+    "w": 353,
+    "h": 44
+   },
+   "log1": {
+    "x": 20,
+    "y": 310,
+    "w": 353,
+    "h": 457
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": 62,
+    "w": 393,
+    "h": 2652
+   }
+  },
+  {
+   "vid": "p4r3b",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": {
+    "x": 20,
+    "y": -232,
+    "w": 353,
+    "h": 172
+   },
+   "name": {
+    "x": 20,
+    "y": -215,
+    "w": 353,
+    "h": 44
+   },
+   "print": {
+    "x": 20,
+    "y": -125,
+    "w": 353,
+    "h": 44
+   },
+   "log1": {
+    "x": 20,
+    "y": -16,
+    "w": 353,
+    "h": 457
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": -264,
+    "w": 393,
+    "h": 2652
+   }
+  },
+  {
+   "vid": "p4r3c",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": {
+    "x": 20,
+    "y": -1824,
+    "w": 353,
+    "h": 172
+   },
+   "name": {
+    "x": 20,
+    "y": -1807,
+    "w": 353,
+    "h": 44
+   },
+   "print": {
+    "x": 20,
+    "y": -1717,
+    "w": 353,
+    "h": 44
+   },
+   "log1": {
+    "x": 20,
+    "y": -1608,
+    "w": 353,
+    "h": 457
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": -1856,
+    "w": 393,
+    "h": 2652
+   }
+  }
+ ],
+ "board_webkit_P4_Home": [
+  {
+   "vid": "p4h1",
+   "win": {
+    "w": 1280,
+    "h": 1198
+   },
+   "shellH": 1198,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 97,
+    "y": 275,
+    "w": 776,
+    "h": 17
+   },
+   "codelink": {
+    "x": 1121,
+    "y": 345,
+    "w": 111,
+    "h": 17
+   },
+   "draftlink": {
+    "x": 275,
+    "y": 275,
+    "w": 70,
+    "h": 16
+   },
+   "notice": null,
+   "route": null
+  },
+  {
+   "vid": "p4h2",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 33,
+    "y": 295,
+    "w": 327,
+    "h": 44
+   },
+   "codelink": {
+    "x": 262,
+    "y": 440,
+    "w": 111,
+    "h": 44
+   },
+   "draftlink": {
+    "x": 211,
+    "y": 295,
+    "w": 70,
+    "h": 44
+   },
+   "notice": null,
+   "route": null
+  },
+  {
+   "vid": "p4h3",
+   "win": {
+    "w": 1280,
+    "h": 1198
+   },
+   "shellH": 1198,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 97,
+    "y": 275,
+    "w": 873,
+    "h": 17
+   },
+   "codelink": {
+    "x": 1121,
+    "y": 345,
+    "w": 111,
+    "h": 17
+   },
+   "draftlink": {
+    "x": 275,
+    "y": 275,
+    "w": 70,
+    "h": 16
+   },
+   "notice": null,
+   "route": null
+  },
+  {
+   "vid": "p4h4",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 33,
+    "y": 317,
+    "w": 327,
+    "h": 44
+   },
+   "codelink": {
+    "x": 262,
+    "y": 462,
+    "w": 111,
+    "h": 44
+   },
+   "draftlink": {
+    "x": 211,
+    "y": 317,
+    "w": 70,
+    "h": 44
+   },
+   "notice": null,
+   "route": null
+  }
+ ],
+ "board_webkit_P4_DraftKept": [
+  {
+   "vid": "p4d1",
+   "win": {
+    "w": 1280,
+    "h": 1560
+   },
+   "shellH": 3991,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 48,
+    "y": 63,
+    "w": 206,
+    "h": 30
+   },
+   "route": null
+  },
+  {
+   "vid": "p4d2",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": 68,
+    "w": 206,
+    "h": 30
+   },
+   "route": null
+  },
+  {
+   "vid": "p4d3",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": -1154,
+    "w": 0,
+    "h": 0
+   },
+   "route": null
+  }
+ ],
+ "board_webkit_P4_DraftKeptWords": [
+  {
+   "vid": "p4w1a",
+   "win": {
+    "w": 640,
+    "h": 170
+   },
+   "shellH": 3991,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 48,
+    "y": 63,
+    "w": 206,
+    "h": 30
+   },
+   "route": null
+  },
+  {
+   "vid": "p4w1b",
+   "win": {
+    "w": 640,
+    "h": 170
+   },
+   "shellH": 3991,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 48,
+    "y": 63,
+    "w": 0,
+    "h": 0
+   },
+   "route": null
+  },
+  {
+   "vid": "p4w3a",
+   "win": {
+    "w": 393,
+    "h": 200
+   },
+   "shellH": 5271,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": 68,
+    "w": 206,
+    "h": 30
+   },
+   "route": null
+  },
+  {
+   "vid": "p4w3b",
+   "win": {
+    "w": 393,
+    "h": 200
+   },
+   "shellH": 5271,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": 68,
+    "w": 0,
+    "h": 0
+   },
+   "route": null
+  }
+ ],
+ "board_chromium_P4_PrintRoute1280": [
+  {
+   "vid": "p4r1",
+   "win": {
+    "w": 1280,
+    "h": 5607
+   },
+   "shellH": 5608,
+   "head": {
+    "x": 32,
+    "y": 89,
+    "w": 1216,
+    "h": 67
+   },
+   "name": {
+    "x": 32,
+    "y": 106,
+    "w": 210,
+    "h": 28
+   },
+   "print": {
+    "x": 1174,
+    "y": 90,
+    "w": 74,
+    "h": 44
+   },
+   "log1": {
+    "x": 32,
+    "y": 200,
+    "w": 816,
+    "h": 1056
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": 57,
+    "w": 1280,
+    "h": 5551
+   }
+  }
+ ],
+ "board_chromium_P4_PrintRoute393": [
+  {
+   "vid": "p4r3a",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": {
+    "x": 20,
+    "y": 95,
+    "w": 353,
+    "h": 171
+   },
+   "name": {
+    "x": 20,
+    "y": 112,
+    "w": 353,
+    "h": 44
+   },
+   "print": {
+    "x": 20,
+    "y": 201,
+    "w": 353,
+    "h": 44
+   },
+   "log1": {
+    "x": 20,
+    "y": 310,
+    "w": 353,
+    "h": 457
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": 63,
+    "w": 393,
+    "h": 2651
+   }
+  },
+  {
+   "vid": "p4r3b",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": {
+    "x": 20,
+    "y": -231,
+    "w": 353,
+    "h": 171
+   },
+   "name": {
+    "x": 20,
+    "y": -214,
+    "w": 353,
+    "h": 44
+   },
+   "print": {
+    "x": 20,
+    "y": -125,
+    "w": 353,
+    "h": 44
+   },
+   "log1": {
+    "x": 20,
+    "y": -16,
+    "w": 353,
+    "h": 457
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": -263,
+    "w": 393,
+    "h": 2651
+   }
+  },
+  {
+   "vid": "p4r3c",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": {
+    "x": 20,
+    "y": -1823,
+    "w": 353,
+    "h": 171
+   },
+   "name": {
+    "x": 20,
+    "y": -1806,
+    "w": 353,
+    "h": 44
+   },
+   "print": {
+    "x": 20,
+    "y": -1717,
+    "w": 353,
+    "h": 44
+   },
+   "log1": {
+    "x": 20,
+    "y": -1608,
+    "w": 353,
+    "h": 457
+   },
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": null,
+   "route": {
+    "x": 0,
+    "y": -1855,
+    "w": 393,
+    "h": 2651
+   }
+  }
+ ],
+ "board_chromium_P4_Home": [
+  {
+   "vid": "p4h1",
+   "win": {
+    "w": 1280,
+    "h": 1198
+   },
+   "shellH": 1197,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 97,
+    "y": 276,
+    "w": 776,
+    "h": 16
+   },
+   "codelink": {
+    "x": 1124,
+    "y": 345,
+    "w": 108,
+    "h": 16
+   },
+   "draftlink": {
+    "x": 270,
+    "y": 276,
+    "w": 68,
+    "h": 16
+   },
+   "notice": null,
+   "route": null
+  },
+  {
+   "vid": "p4h2",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 33,
+    "y": 297,
+    "w": 327,
+    "h": 44
+   },
+   "codelink": {
+    "x": 265,
+    "y": 442,
+    "w": 108,
+    "h": 44
+   },
+   "draftlink": {
+    "x": 206,
+    "y": 297,
+    "w": 68,
+    "h": 44
+   },
+   "notice": null,
+   "route": null
+  },
+  {
+   "vid": "p4h3",
+   "win": {
+    "w": 1280,
+    "h": 1198
+   },
+   "shellH": 1197,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 97,
+    "y": 276,
+    "w": 875,
+    "h": 16
+   },
+   "codelink": {
+    "x": 1124,
+    "y": 345,
+    "w": 108,
+    "h": 16
+   },
+   "draftlink": {
+    "x": 270,
+    "y": 276,
+    "w": 68,
+    "h": 16
+   },
+   "notice": null,
+   "route": null
+  },
+  {
+   "vid": "p4h4",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": {
+    "x": 33,
+    "y": 321,
+    "w": 327,
+    "h": 44
+   },
+   "codelink": {
+    "x": 265,
+    "y": 466,
+    "w": 108,
+    "h": 44
+   },
+   "draftlink": {
+    "x": 206,
+    "y": 321,
+    "w": 68,
+    "h": 44
+   },
+   "notice": null,
+   "route": null
+  }
+ ],
+ "board_chromium_P4_DraftKept": [
+  {
+   "vid": "p4d1",
+   "win": {
+    "w": 1280,
+    "h": 1560
+   },
+   "shellH": 3976,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 48,
+    "y": 63,
+    "w": 198,
+    "h": 29
+   },
+   "route": null
+  },
+  {
+   "vid": "p4d2",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": 69,
+    "w": 198,
+    "h": 29
+   },
+   "route": null
+  },
+  {
+   "vid": "p4d3",
+   "win": {
+    "w": 393,
+    "h": 852
+   },
+   "shellH": 852,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": -1153,
+    "w": 0,
+    "h": 0
+   },
+   "route": null
+  }
+ ],
+ "board_chromium_P4_DraftKeptWords": [
+  {
+   "vid": "p4w1a",
+   "win": {
+    "w": 640,
+    "h": 170
+   },
+   "shellH": 3976,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 48,
+    "y": 63,
+    "w": 198,
+    "h": 29
+   },
+   "route": null
+  },
+  {
+   "vid": "p4w1b",
+   "win": {
+    "w": 640,
+    "h": 170
+   },
+   "shellH": 3976,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 48,
+    "y": 63,
+    "w": 0,
+    "h": 0
+   },
+   "route": null
+  },
+  {
+   "vid": "p4w3a",
+   "win": {
+    "w": 393,
+    "h": 200
+   },
+   "shellH": 5238,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": 69,
+    "w": 198,
+    "h": 29
+   },
+   "route": null
+  },
+  {
+   "vid": "p4w3b",
+   "win": {
+    "w": 393,
+    "h": 200
+   },
+   "shellH": 5238,
+   "head": null,
+   "name": null,
+   "print": null,
+   "log1": null,
+   "draft": null,
+   "codelink": null,
+   "draftlink": null,
+   "notice": {
+    "x": 20,
+    "y": 69,
+    "w": 0,
+    "h": 0
+   },
+   "route": null
+  }
+ ],
+ "route1280": {
+  "docH": 5607
+ },
+ "route393": {
+  "headH": 266
+ },
+ "home1280": {
+  "docH": 1198
+ }
+}

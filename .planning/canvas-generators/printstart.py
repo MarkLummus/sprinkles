@@ -13,6 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FONT = "@font-face{font-family:'Caveat';src:url('/_blob/37ac467ba5558024f5fb5a2e5c22a7bc') format('woff2');font-weight:400;font-style:normal;font-display:swap}\n"   # app/public/fonts/caveat-regular.woff2, sha256 d0b7b931..., uploaded 2026-09-23
 CAP = json.load(open(HERE + '/printstart-capture.json'))
 MEASURE = json.load(open(HERE + '/printstart-measure.json')) if os.path.exists(HERE + '/printstart-measure.json') else {}
+if os.path.exists(HERE + '/sheetmethod-measure.json'): MEASURE.update(json.load(open(HERE + '/sheetmethod-measure.json')))   # 2026-10-08: the Sheet board's height with the method treatment in its Instructions (sheetmethod-measure.mjs), over printstart-measure.json's
 
 def drop_hidden(html):
     """The canvas does not honour the hidden attribute, so a closed fold's content is left out of the markup."""
@@ -64,12 +65,12 @@ return {{}};
 
 T_A = 'As built · the recipe page at 1280, no batch (production build, 2026-10-06, after Phase 03.7)'
 T_B = 'Not chosen · Print starting point without Balance (kept for comparison)'
-T_C = 'Chosen by Mark 2026-10-06 · Print starting point, Balance in column 2 (nothing approved yet)'   # the canvas cuts titles at 120 characters
+T_C = 'The Sheet, Balance in column 2 · Instructions with Why, aside and tags (D18 on the Sheet; awaiting Mark)'   # the canvas cuts titles at 120 characters
 NOTE_C = ("Chosen by Mark 2026-10-06: Balance in a second column beside the Ingredients table, no Hide control. "
           "This overrides the print brief's § 4 anti-goal (\"no Balance ... from column two\"); that brief change, with the tick box's retirement, goes to Impeccable later. "
           "No rules between ingredient rows: the heavier step rule carries the grouping. Nothing approved yet; no sketch 010.")
-T_F1 = 'Page 1 · Batch log, front: At the machine (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
-T_F2 = 'Page 2 · Batch log, back: When you taste it (blank, drawn 2026-10-06; awaiting Mark; nothing approved)'
+T_F1 = 'Page 1 · front: Batch log (D22 rhythm review: heads 14 px, 32 px above each section; D21, D20, D19, D17; awaiting Mark)'
+T_F2 = 'Page 2 · back: Tasting log (D24: 5 lines; D23: no Every recipe / This recipe only; D22, D21, D20, D19; awaiting Mark)'
 NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today (one column, the app's own print rules, a white page), with your edits of 2026-10-06 laid on: "
         "As made is the first column, then the grams, then the ingredient; no tick box (retired by you, superseding the print brief's mise-en-place box, § 3 item 1 and § 6); a heavier rule above each step group and none between ingredient rows; no % of batch, no Watch for, no Balance; headings in ink. Beside it, the alternate with Balance in column 2. Right: the recipe page at 1280, as built. "
         "Both are captured from the production build of 2026-10-06 (real markup, the app's own stylesheets) with Olive Oil v1 as a version with no batch yet: "
@@ -84,6 +85,9 @@ NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today (on
 NOTE_OLD = ("Superseded 2026-10-06. These two boards were captured 2026-09-23, before Phase 03.7 moved Before you start above the Ingredients table. "
             "Kept in case anything was drawn on them; the boards on Print formats replace them as the print starting point. Not a target.")
 SUP_PAGE = ('page-15', 'Print formats superseded')
+# D16 (Mark, 2026-10-07, row draw-hole-punch-left-margin): the chosen Sheet board's page margin at the left is 0.75 in (72 px) so the ink clears a standard 3-hole punch; the other three edges stay 0.5 in (the article's own
+# 48 px padding stands for the page margin on the board). The reference board without Balance (PrintStartingPoint) is not a target and keeps the margins it was approved with.
+HOLE_CSS = '\n.recipe-page{padding-left:72px;padding-right:72px}'   # D20 (Mark, 2026-10-07): 0.75 in at the right as well, so a duplex print's second side clears the punch
 
 def build(canvas_in, out):
     import logforms
@@ -108,7 +112,7 @@ def build(canvas_in, out):
     open(out + '/project/AsBuiltRecipePage.dc.html', 'w').write(board(T_A, shell, 1280, h_a, css_a))
     open(out + '/project/PrintStartingPoint.dc.html', 'w').write(board(T_B, sheet, 816, h_b, css_b, flow=True, paper=True))
     h_c = MEASURE.get('boardH_col2', 4000)
-    open(out + '/project/PrintStartingPointBalanceCol2.dc.html', 'w').write(board(T_C, sheet_col2, 816, h_c, css_b + sheetedits.CSS_COL2, flow=True, paper=True))
+    open(out + '/project/PrintStartingPointBalanceCol2.dc.html', 'w').write(board(T_C, sheet_col2, 816, h_c, css_b + sheetedits.CSS_COL2 + sheetedits.CSS_METHOD + HOLE_CSS, flow=True, paper=True))
     fcss = logforms.css()
     open(out + '/project/BatchLogForm.dc.html', 'w').write(board(T_F1, logforms.side1(*logforms.LINES['side1']), 816, 1056, fcss, paper=True))
     open(out + '/project/TastingLogForm.dc.html', 'w').write(board(T_F2, logforms.side2(*logforms.LINES['side2']), 816, 1056, fcss, paper=True))

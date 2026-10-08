@@ -61,10 +61,13 @@ final class Runner: NSObject, WKNavigationDelegate {
       NSPrintInfo.AttributeKey.jobSavingURL: URL(fileURLWithPath: outPath),
     ])
     info.paperSize = NSSize(width: 612, height: 792)
-    info.topMargin = 36
-    info.bottomMargin = 50
-    info.leftMargin = 36
-    info.rightMargin = 36
+    // margins in points: top, bottom, left, right; default 36, 50, 36, 36. WKP_MARGINS="36,36,54,54" is 0.5 in above and below and 0.75 in at both sides (D20, 2026-10-07).
+    var m: [CGFloat] = [36, 50, 36, 36]
+    if let e = ProcessInfo.processInfo.environment["WKP_MARGINS"] { let v = e.split(separator: ",").compactMap { Double($0) }; if v.count == 4 { m = v.map { CGFloat($0) } } }
+    info.topMargin = m[0]
+    info.bottomMargin = m[1]
+    info.leftMargin = m[2]
+    info.rightMargin = m[3]
     info.horizontalPagination = .automatic
     info.verticalPagination = .automatic
     info.isHorizontallyCentered = false

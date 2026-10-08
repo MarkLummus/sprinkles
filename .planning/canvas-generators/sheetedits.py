@@ -21,6 +21,7 @@
 # Mark chose the Balance alternative (PrintStartingPointBalanceCol2) on 2026-10-06; PrintStartingPoint is kept, not chosen. Balance in column 2 overrides the brief's § 4 anti-goal
 # ("no Balance ... from column two"); with the tick box's retirement (E1) that brief change goes to Impeccable, not here.
 import re
+import method
 
 def _drop_element(html, start_pat):
     """Remove the element whose opening tag matches start_pat, with its balanced content."""
@@ -70,5 +71,10 @@ CSS_COL2 = '''
 .recipe-page{grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);grid-template-areas:'band band' 'before before' 'ingredients side' 'method method' 'foot foot'}
 '''
 
+CSS_METHOD = method.sheet_css()
 def main_board(sheet): return drop_balance(drop_watch_for(table_edits(sheet)))
-def col2_board(sheet): return balance_without_control(drop_watch_for(table_edits(sheet)))
+def method_treatment(sheet):                                                                               # D18 on the Sheet itself (2026-10-08): the Instructions carry the method treatment, Why and the aside upright
+    old = re.search(r'<ol class="method-steps">.*?</ol>', sheet, re.S).group(0)
+    assert old.count('<ol') == 1
+    return sheet.replace(old, method.sheet_steps())
+def col2_board(sheet): return method_treatment(balance_without_control(drop_watch_for(table_edits(sheet))))

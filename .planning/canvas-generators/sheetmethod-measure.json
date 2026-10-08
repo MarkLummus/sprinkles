@@ -1,0 +1,321 @@
+{
+ "webkit_board816": {
+  "sheetH": 2359,
+  "docH": 2359,
+  "methodTop": 1209,
+  "methodH": 1082,
+  "methodW": 672,
+  "stepHeights": [
+   88.8,
+   113,
+   85.4,
+   134.5,
+   134.5,
+   94.8,
+   43.8,
+   94.8,
+   43.8,
+   43.8
+  ],
+  "headH": 19,
+  "over": 0,
+  "ox": 0,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "why": 3,
+  "aside": 5,
+  "tags": 16,
+  "whyStyle": [
+   "normal"
+  ],
+  "asideStyle": [
+   "normal"
+  ],
+  "whyLabel": [
+   "why|uppercase",
+   "why|uppercase",
+   "why|uppercase"
+  ],
+  "asideRule": [
+   "2px solid"
+  ],
+  "tagValue": [
+   "700 underline"
+  ],
+  "numX": 0,
+  "textX": 32,
+  "text": [
+   1840
+  ],
+  "italicAny": 0,
+  "chips": 0
+ },
+ "webkit_chrome672": {
+  "sheetH": 2359,
+  "docH": 2359,
+  "methodTop": 1209,
+  "methodH": 1082,
+  "methodW": 672,
+  "stepHeights": [
+   88.8,
+   113,
+   85.4,
+   134.5,
+   134.5,
+   94.8,
+   43.8,
+   94.8,
+   43.8,
+   43.8
+  ],
+  "headH": 19,
+  "over": 0,
+  "ox": 0,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "why": 3,
+  "aside": 5,
+  "tags": 16,
+  "whyStyle": [
+   "normal"
+  ],
+  "asideStyle": [
+   "normal"
+  ],
+  "whyLabel": [
+   "why|uppercase",
+   "why|uppercase",
+   "why|uppercase"
+  ],
+  "asideRule": [
+   "2px solid"
+  ],
+  "tagValue": [
+   "700 underline"
+  ],
+  "numX": 0,
+  "textX": 32,
+  "text": [
+   1840
+  ],
+  "italicAny": 0,
+  "chips": 0
+ },
+ "webkit_safari630": {
+  "sheetH": 2415,
+  "docH": 2415,
+  "methodTop": 1224,
+  "methodH": 1124,
+  "methodW": 630,
+  "stepHeights": [
+   88.8,
+   133.8,
+   85.4,
+   134.5,
+   155.3,
+   94.8,
+   43.8,
+   94.8,
+   43.8,
+   43.8
+  ],
+  "headH": 19,
+  "over": 0,
+  "ox": 0,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "why": 3,
+  "aside": 5,
+  "tags": 16,
+  "whyStyle": [
+   "normal"
+  ],
+  "asideStyle": [
+   "normal"
+  ],
+  "whyLabel": [
+   "why|uppercase",
+   "why|uppercase",
+   "why|uppercase"
+  ],
+  "asideRule": [
+   "2px solid"
+  ],
+  "tagValue": [
+   "700 underline"
+  ],
+  "numX": 0,
+  "textX": 32,
+  "text": [
+   1840
+  ],
+  "italicAny": 0,
+  "chips": 0
+ },
+ "chromium_board816": {
+  "sheetH": 2334,
+  "docH": 2334,
+  "methodTop": 1184,
+  "methodH": 1082,
+  "methodW": 672,
+  "stepHeights": [
+   88.8,
+   113,
+   85.4,
+   134.5,
+   134.5,
+   94.8,
+   43.8,
+   94.8,
+   43.8,
+   43.8
+  ],
+  "headH": 19,
+  "over": 0,
+  "ox": 0,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "why": 3,
+  "aside": 5,
+  "tags": 16,
+  "whyStyle": [
+   "normal"
+  ],
+  "asideStyle": [
+   "normal"
+  ],
+  "whyLabel": [
+   "why|uppercase",
+   "why|uppercase",
+   "why|uppercase"
+  ],
+  "asideRule": [
+   "2px solid"
+  ],
+  "tagValue": [
+   "700 underline"
+  ],
+  "numX": 0,
+  "textX": 32,
+  "text": [
+   1840
+  ],
+  "italicAny": 0,
+  "chips": 0
+ },
+ "chromium_chrome672": {
+  "sheetH": 2334,
+  "docH": 2334,
+  "methodTop": 1184,
+  "methodH": 1082,
+  "methodW": 672,
+  "stepHeights": [
+   88.8,
+   113,
+   85.4,
+   134.5,
+   134.5,
+   94.8,
+   43.8,
+   94.8,
+   43.8,
+   43.8
+  ],
+  "headH": 19,
+  "over": 0,
+  "ox": 0,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "why": 3,
+  "aside": 5,
+  "tags": 16,
+  "whyStyle": [
+   "normal"
+  ],
+  "asideStyle": [
+   "normal"
+  ],
+  "whyLabel": [
+   "why|uppercase",
+   "why|uppercase",
+   "why|uppercase"
+  ],
+  "asideRule": [
+   "2px solid"
+  ],
+  "tagValue": [
+   "700 underline"
+  ],
+  "numX": 0,
+  "textX": 32,
+  "text": [
+   1840
+  ],
+  "italicAny": 0,
+  "chips": 0
+ },
+ "chromium_safari630": {
+  "sheetH": 2389,
+  "docH": 2389,
+  "methodTop": 1198,
+  "methodH": 1124,
+  "methodW": 630,
+  "stepHeights": [
+   88.8,
+   133.8,
+   85.4,
+   134.5,
+   155.3,
+   94.8,
+   43.8,
+   94.8,
+   43.8,
+   43.8
+  ],
+  "headH": 19,
+  "over": 0,
+  "ox": 0,
+  "minFont": 12,
+  "colours": [
+   "rgb(20, 20, 20)"
+  ],
+  "why": 3,
+  "aside": 5,
+  "tags": 16,
+  "whyStyle": [
+   "normal"
+  ],
+  "asideStyle": [
+   "normal"
+  ],
+  "whyLabel": [
+   "why|uppercase",
+   "why|uppercase",
+   "why|uppercase"
+  ],
+  "asideRule": [
+   "2px solid"
+  ],
+  "tagValue": [
+   "700 underline"
+  ],
+  "numX": 0,
+  "textX": 32,
+  "text": [
+   1840
+  ],
+  "italicAny": 0,
+  "chips": 0
+ },
+ "boardH_col2": 2370
+}

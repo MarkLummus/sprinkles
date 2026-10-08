@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-06T21:17:26.854Z",
+  "timestamp": "2026-10-08T01:07:03.114Z",
   "phase": "04",
   "phase_name": "Prepare the next version for making",
   "phase_dir": ".planning/phases/04-prepare-the-next-version-for-making",
@@ -9,29 +9,32 @@
   "total_tasks": 0,
   "status": "paused",
   "completed_tasks": [
-    {"id": 1, "name": "Print starting point re-captured from the built Sheet after 03.7 (D-00 amended); stale boards moved to canvas page 'Print formats superseded'", "status": "done", "commit": "8967d82"},
-    {"id": 2, "name": "No-batch capture (seeded batch deleted before capture); blank BatchLogForm and TastingLogForm letter pages", "status": "done", "commit": "7e7ce57"},
-    {"id": 3, "name": "Mark's canvas edits E1-E8 on the printed Sheet (As made | Grams | Ingredient, no tick box, no % of batch, no Watch for, Balance in column 2 chosen, heavier step rule, no row rules, ink headings, white page)", "status": "done", "commit": "aab16e7"},
-    {"id": 4, "name": "Mark's log-page answers D1-D5 (ruled numeric fields, date on both pages, 'Airiness' without '(estimated)', 'Any problems? / select all that apply' prints, Next time on page 1)", "status": "done", "commit": "2f48e61"},
-    {"id": 5, "name": "Mark approved; sketch 010 snapshotted to .planning/sketches/010-bench-sheet/ (D-02)", "status": "done", "commit": "339408e"},
-    {"id": 6, "name": "Bench-sheet brief revised through Impeccable from sketch 010", "status": "done", "commit": "793b6e2"},
-    {"id": 7, "name": "Pushed main to origin", "status": "done", "commit": "793b6e2"}
+    {"id": 1, "name": "Phase 4 research (04-RESEARCH.md)", "status": "done", "commit": "2845104"},
+    {"id": 2, "name": "Design of the printed set, pens, readings, recipe-declared notation and Phase 4 screens on the Claude Design canvas; sketch 010 README D1-D28 on line 54 (uncommitted)", "status": "done"},
+    {"id": 3, "name": "Mark approved the design on Mark's List (decide-design-done-snapshot-2 = done-snapshot, 2026-10-08)", "status": "done"},
+    {"id": 4, "name": "Graphify installed and built; .gitignore ignores graphify-out/ and .planning/graphs/", "status": "done", "commit": "2ad8723"}
   ],
   "remaining_tasks": [
-    {"id": 8, "name": "/gsd-plan-phase 4 against sketch 010 (CONTRACT.md + README.md) and the revised brief", "status": "not_started"}
+    {"id": 5, "name": "Sid snapshot of sketch 010 and CONTRACT.md update (Mark's List row draw-snapshot-sketch-010; Sid was running when this handoff was written, check its look row and .planning/sketches/010-bench-sheet/)", "status": "in_progress"},
+    {"id": 6, "name": "Mark runs /gsd-phase insert for the cleanup phase (row run-phase-insert-hide-draw-temp-and-labels): hide Time to draw temp. everywhere and rename the logs; step 2 (remove the data element) rides Phase 4's reseed (row build-remove-draw-temp-data-element)", "status": "not_started"},
+    {"id": 7, "name": "Mark runs Impeccable to update the print and record briefs from sketch 010 (row run-impeccable-briefs-from-010)", "status": "not_started"},
+    {"id": 8, "name": "/gsd-plan-phase 4 (row run-plan-phase-4-after-design); 04-RESEARCH.md exists", "status": "not_started"}
   ],
   "blockers": [],
   "async_jobs": [],
   "human_actions_pending": [
-    {"action": "Decide whether DESIGN.md names sketch 010 now or after Phase 4 builds it (Mark's List row decide-design-md-print-010)", "context": "DESIGN.md print entries describe the built print", "blocking": false},
-    {"action": "Choose the Safari print approach A-D at Phase 4 planning (Mark's List row phase-04-safari-print-approach)", "context": "WebKit cuts rows and never repeats thead; the .recipe-page print grid is Phase 4's", "blocking": false}
+    {"action": "Run /gsd-phase insert for the small cleanup phase before Phase 04 (Mark's List row run-phase-insert-hide-draw-temp-and-labels)", "context": "Mark's sequencing: step 1 hides Time to draw temp. and renames Batch log / Tasting log on every screen; step 2 removes the field as data later", "blocking": true},
+    {"action": "Run Impeccable to revise the print and record briefs from the sketch 010 snapshot (row run-impeccable-briefs-from-010)", "context": "Impeccable owns .impeccable/ and DESIGN.md; app/ edits go through GSD", "blocking": true},
+    {"action": "Run /gsd-plan-phase 4 after the three steps above (row run-plan-phase-4-after-design)", "context": "Planning started only on Mark's say-so; he held it until the design was done", "blocking": true},
+    {"action": "Press Done on the finished Draw rows still open (draw-declared-two-slots-each, draw-phase-4-screens-refresh, draw-route-sheet-end-foot, draw-recipe-declared-notation, draw-phase-04-print-route-home-draft-notice, draw-duplex-margin-page2-and-chosen-screens)", "context": "Done is Mark's; the screens look rows are approved", "blocking": false}
   ],
   "decisions": [
-    {"decision": "Printed Sheet follows sketch 010: Balance in column 2 (overrides brief section 4's old 'no Balance'), mise-en-place tick box retired, As made first", "rationale": "Mark on the canvas, approved 2026-10-06", "phase": "04"},
-    {"decision": "Next time prints on page 1 under its own heading", "rationale": "Mark: it evaluates the recipe, not the batch or the tasting", "phase": "04"},
-    {"decision": "Printed pages are white; the app already prints white in Chrome and WebKit", "rationale": "Mark; measured, no print-color-adjust in the app", "phase": "04"}
+    {"decision": "Printed pages: letter, 0.75 in left and right (3-hole punch, duplex), 0.5 in top and bottom; in-flow foot with the Sheet code, no page n of m (Safari cannot); Batch log and Tasting log titles at 32 px 700; combined notes; At draw / From freezer mark-one control (Nothing to note, Not evaluated; print also See below); page 2 at 5 lines; problems in one row of up to six; the method with Why, aside callout and tag fields", "rationale": "Mark on the canvas and Mark's List, 2026-10-06 to 08; sketch 010 README D1-D28", "phase": "04"},
+    {"decision": "Recipe-declared items: up to two declared scales and two declared problems per recipe; core asserted for every recipe, declared slots only against the recipe's own list, tests parameterised by recipe (D25/D26)", "rationale": "Mark; Olive Oil declares Body, Oil and Bitter, Mexican Chocolate none", "phase": "04"},
+    {"decision": "Safari print option C (grid out of print, Safari-only table rule); DB version bump resets and reseeds (no live data); Phase 4 screens: 393 option A, Print in the line only, draft recipe leads on Home, notice clears after 5 s with 'Draft kept. Cancel discards it.'", "rationale": "Mark's List answers", "phase": "04"},
+    {"decision": "Choices on Mark's List are decide rows with options; look rows only approve or change (memory: decisions-are-decide-rows-not-look-rows). Use the real clock (date -u) for every row timestamp", "rationale": "Invented timestamps hid Mark's edits for a while", "phase": "04"}
   ],
-  "uncommitted_files": ["?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"],
-  "next_action": "/gsd-plan-phase 4; raise phase-04-safari-print-approach at planning start",
-  "context_notes": "The D-02 prerequisite is met. Open for Phase 4 (sketch 010 README): foot short code and page count are placeholders; @page margin must be pinned against the 724px phone rule; Safari/iPad unverified; D-06b Instructions-own-page by measurement. Mark's vite preview --host runs on :4173 (fresh build)."
+  "uncommitted_files": ["46 entries, mostly .planning/canvas-generators/* (new and modified generators), .planning/sketches/010-bench-sheet/README.md (D1-D28), plus .planning/phases/03.6-per-step-shared-ingredients/.gitkeep; run git status --porcelain for the list. Sid's snapshot adds more under .planning/sketches/010-bench-sheet/"],
+  "next_action": "Read Mark's List for new answers (/marks-list). Check Sid's snapshot result (look row from draw-snapshot-sketch-010). Then Mark runs the three Run rows in order: /gsd-phase insert, the Impeccable brief update, /gsd-plan-phase 4.",
+  "context_notes": "Mark's List https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC now has search and shows each row's id. Canvas https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq (pages Print formats, Print method, Phase 4 screens, Recipe-declared items). Sid generators in .planning/canvas-generators/ are uncommitted. No app/ edit was made this session. Open design rows are closed; the graph is built (.planning/graphs/, ignored)."
 }

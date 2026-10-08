@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Page 2 · Batch log, back: When you taste it (blank, drawn 2026-10-06; awaiting Mark; nothing approved)</title>
+<title>Page 2 · back: Tasting log (D24: 5 lines; D23: no Every recipe / This recipe only; D22, D21, D20, D19; awaiting Mark)</title>
 </head>
 <body>
 <x-dc>
@@ -2123,20 +2123,29 @@ textarea {
 
 
 
-.lf{width:816px;height:1056px;box-sizing:border-box;padding:48px 56px 40px;display:flex;flex-direction:column;background:#ffffff;color:var(--sheet-ink);font-family:var(--face-grotesk)}
+.lf{width:816px;height:1056px;box-sizing:border-box;padding:48px 74px 48px 72px;display:flex;flex-direction:column;background:#ffffff;color:var(--sheet-ink);font-family:var(--face-grotesk)}
 .lf *{color:var(--sheet-ink)}
-.lf .region-name{font-size:var(--sheet-type-section);margin:0 0 var(--gap-m)}
+.lf-body{flex:none;margin-bottom:16px}   /* D22: at least 16 px between the last line and the foot rule (was 20) */
+.lf .region-name{font-size:var(--sheet-type-section);margin:0}
+.lf-datebox{float:right;box-sizing:border-box;width:168px;height:52px;margin:0 0 0 var(--gap-l);border:var(--rule-ink-field) solid var(--sheet-ink);padding:var(--gap-xs) var(--gap-s)}
+.lf .lf-title{margin:0 0 var(--gap-s);font-size:var(--sheet-size-recipe-name);font-weight:700;line-height:1.1;letter-spacing:-0.01em;text-transform:none}   /* D21: the page title at the Sheet title's own size (2rem, 32px), weight 700, sentence case; it was 14px 600 uppercase, 2 px over the group names */
+.lf-datebox .pen-caption{margin:0}
 .lf-sec{margin:0 0 var(--gap-m)}
-.lf-row{display:flex;gap:var(--gap-l);flex-wrap:wrap}
+.lf-row{display:flex;column-gap:var(--gap-m);row-gap:var(--gap-l);flex-wrap:wrap;align-items:flex-start}
 .lf-field .pen-caption{margin:0 0 var(--gap-xs)}
 .lf-rule{display:flex;align-items:flex-end;gap:var(--gap-field-unit)}
 .lf-base{display:block;height:32px;border-bottom:var(--rule-ink-field) solid var(--sheet-ink)}
-.lf-base--date{width:var(--sheet-field-w-date)}
 .lf-base--figure{width:96px}
 .lf-unit{font-size:var(--sheet-type-control);line-height:1;padding-bottom:2px}
+.lf-field--under .lf-rule{flex-direction:column;align-items:flex-start;gap:var(--gap-xs)}
+.lf-field--under .lf-unit{padding-bottom:0}
 .lf-mark{display:flex;gap:var(--gap-m);flex-wrap:wrap;font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control)}
 .lf-opt{display:inline-flex;align-items:center;gap:var(--gap-xs)}
 .lf-box{display:inline-block;width:14px;height:14px;border:var(--rule-ink-field) solid var(--sheet-ink);box-sizing:border-box}
+.lf-mrow{display:grid;grid-template-columns:150px 1fr;column-gap:var(--gap-s);align-items:baseline;margin:0 0 var(--gap-s)}
+.lf-mrow .pen-caption,.lf-mrow p{margin:0}
+.lf-mrow--plain{display:block}   /* D23: a row with no caption column */
+.lf-mrow + .lf-sec{margin-top:var(--gap-m)}
 .lf-lines{display:flex;flex-direction:column}
 .lf-line{height:32px;border-bottom:var(--rule-ink-field) solid var(--sheet-ink)}
 .lf-axes{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:var(--gap-l);row-gap:var(--gap-m)}
@@ -2145,18 +2154,44 @@ textarea {
 .lf-axis .axis-mark__name{display:block;margin:0 0 var(--gap-xs)}
 .lf-stops{display:grid;grid-template-columns:repeat(5,var(--sheet-stop-w));justify-items:center;row-gap:var(--gap-hair)}
 .lf-num{font-size:var(--sheet-size-mark-stop);line-height:1}
-.lf-stop{width:22px;height:22px;border:var(--rule-ink-field) solid var(--sheet-ink);box-sizing:border-box}
 .lf-anchor{font-family:var(--face-text);font-style:italic;font-size:var(--sheet-type-control);line-height:1.2;white-space:nowrap}
-.lf-defects{display:grid;grid-template-columns:1fr 1fr 1fr;column-gap:var(--gap-l)}
-.lf-defects>:first-child{grid-column:span 2}
-.lf-defects .lf-mark{flex-direction:column;gap:var(--gap-xs)}
-.lf-next{margin:var(--gap-s) 0 var(--gap-m)}
+.lf-dhead .pen-helper{margin:0}
+.lf-dhead.lf-sub{display:flex;align-items:baseline;gap:var(--gap-s)}
+.lf-group{margin:var(--gap-l) 0 0}
+.lf-group--last{margin-bottom:0}
+.lf-ghead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:var(--rule-tick) solid var(--sheet-ink);padding:0 0 var(--gap-xs);margin:0 0 var(--gap-s)}
+.lf-gname,.lf-gcue{font-family:var(--face-grotesk);font-weight:600;text-transform:uppercase;line-height:var(--sheet-leading-section)}
+.lf-gname{font-size:var(--sheet-type-section);letter-spacing:0.04em}   /* D22: the section head is the Sheet's own (14px, 600, caps, 0.04em); D19 had 12px at 0.06em */
+.lf-gcue{font-size:var(--sheet-type-label);font-weight:500;letter-spacing:0.04em}   /* D22: the cue at the right is the caption face (12px, 500, 0.04em) */
+.lf-sub{display:block;margin:var(--gap-s) 0 0;font-family:var(--face-grotesk);font-size:var(--sheet-type-section);font-weight:600;line-height:var(--sheet-leading-section);text-transform:none;letter-spacing:0}   /* D22: a sub-group cue takes the app's group-cue face (D23: only Any problems? is left; Every recipe and This recipe only are not printed) (sketch 011 decision 40: sentence case, 600), not the item caption's */
+.lf-verdict{display:flex;gap:var(--gap-l);font-size:var(--sheet-type-control);line-height:var(--sheet-leading-control);margin:0 0 var(--gap-xs)}
+.lf-group .lf-mrow{border-bottom:var(--rule-ink-field) solid var(--sheet-ink);padding:var(--gap-xs) 0 var(--gap-hair);margin:0}
+.lf-srow{display:grid;grid-template-columns:150px 1fr;column-gap:var(--gap-s);align-items:start;border-bottom:var(--rule-ink-field) solid var(--sheet-ink);padding:var(--gap-hair) 0 var(--gap-field-unit)}   /* D22: 4 px under 'right' (was 6), to pay for the cues' own space */
+.lf-srow .axis-mark__name{padding-top:3px}
+.lf-sc{display:grid;grid-template-columns:76px 14px repeat(5,var(--sheet-stop-w)) 14px 76px;justify-items:center;align-items:end}
+.lf-sc .lf-anchor{padding:0}
+.lf-sc .lf-num{font-size:var(--sheet-size-mark-stop);line-height:1}
+.lf-sc .lf-lo{grid-column:1;grid-row:1;justify-self:end}
+.lf-sc .lf-n1{grid-column:2;grid-row:1;justify-self:end}
+.lf-sc .lf-n5{grid-column:8;grid-row:1;justify-self:start}
+.lf-sc .lf-hi{grid-column:9;grid-row:1;justify-self:start}
+.lf-sc .lf-mid{grid-column:5;grid-row:2;justify-self:center;margin-top:0;font-size:var(--sheet-size-small-print);line-height:1}
+.lf-track{grid-column:3 / 8;grid-row:1;justify-self:stretch;align-self:end;box-sizing:content-box;margin:0 calc(var(--sheet-stop-w) / 2);height:16px;border-bottom:var(--rule-ink-field) solid var(--sheet-ink);position:relative}   /* D21: ONE rule from tick 1 to tick 5 (the margin is half a stop, so the rule starts and ends at the end ticks' centres) and the five ticks stand on it */
+.lf-tick{position:absolute;bottom:0;width:0;height:8px;border-left:var(--rule-ink-field) solid var(--sheet-ink)}
+.lf-tick--end{height:16px}
+.lf-tick--1{left:0}
+.lf-tick--2{left:25%}
+.lf-tick--3{left:50%}
+.lf-tick--4{left:75%}
+.lf-tick--5{right:0}
+.lf-notes{margin:var(--gap-l) 0 0}   /* D22: the same 32 px above Notes as above every group (was 20) */
+.lf-notes .lf-lines{margin-top:var(--gap-xs)}
 .lf-foot{margin-top:auto;padding-top:var(--gap-xs);border-top:var(--rule-ink-field) solid var(--sheet-ink);font-size:var(--sheet-size-small-print);letter-spacing:0.02em}
 
 </style>
 </helmet>
 <div style="width: 816px; height: 1056px; overflow: hidden; background: #ffffff; box-sizing: border-box;">
-<div class="lf"><h2 class="region-name">When you taste it</h2><div class="lf-sec"><div class="lf-field"><span class="pen-caption">Tasted</span><div class="lf-rule"><span class="lf-base lf-base--date"></span></div></div></div><div class="lf-sec lf-row"><div class="lf-field"><span class="pen-caption">Tempering</span><div class="lf-rule"><span class="lf-base lf-base--figure"></span><span class="lf-unit">min</span></div></div><div class="lf-field"><span class="pen-caption">Tasting temperature</span><div class="lf-rule"><span class="lf-base lf-base--figure"></span><span class="lf-unit">°C</span></div></div><div class="lf-field"><span class="pen-caption">Melt test</span><div class="lf-rule"><span class="lf-base lf-base--figure"></span><span class="lf-unit">g lost at 20 min</span></div></div></div><div class="lf-sec"><span class="pen-caption">Melt style</span><div class="lf-mark"><span class="lf-opt"><span class="lf-box"></span>Watery, weeping</span><span class="lf-opt"><span class="lf-box"></span>Creamy puddle</span><span class="lf-opt"><span class="lf-box"></span>Stable foam</span></div></div><div class="lf-sec lf-axes"><p class="pen-caption lf-cue">Every recipe</p><p class="pen-caption lf-cue lf-cue--declared">This recipe only</p><div class="lf-axis"><span class="axis-mark__name">Hardness</span><div class="lf-stops"><span class="lf-num">1</span><span class="lf-num">2</span><span class="lf-num">3</span><span class="lf-num">4</span><span class="lf-num">5</span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-anchor">soft</span><span></span><span class="lf-anchor">right</span><span></span><span class="lf-anchor">hard</span></div></div><div class="lf-axis"><span class="axis-mark__name">Scoopability</span><div class="lf-stops"><span class="lf-num">1</span><span class="lf-num">2</span><span class="lf-num">3</span><span class="lf-num">4</span><span class="lf-num">5</span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-anchor">crumbly</span><span></span><span class="lf-anchor">right</span><span></span><span class="lf-anchor">gummy</span></div></div><div class="lf-axis"><span class="axis-mark__name">Body</span><div class="lf-stops"><span class="lf-num">1</span><span class="lf-num">2</span><span class="lf-num">3</span><span class="lf-num">4</span><span class="lf-num">5</span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-anchor">thin</span><span></span><span class="lf-anchor">right</span><span></span><span class="lf-anchor">heavy</span></div></div><div class="lf-axis"><span class="axis-mark__name">Smoothness</span><div class="lf-stops"><span class="lf-num">1</span><span class="lf-num">2</span><span class="lf-num">3</span><span class="lf-num">4</span><span class="lf-num">5</span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-anchor">grainy</span><span></span><span class="lf-anchor">right</span><span></span><span class="lf-anchor">smooth</span></div></div><div class="lf-axis"><span class="axis-mark__name">Sweetness</span><div class="lf-stops"><span class="lf-num">1</span><span class="lf-num">2</span><span class="lf-num">3</span><span class="lf-num">4</span><span class="lf-num">5</span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-anchor">less</span><span></span><span class="lf-anchor">right</span><span></span><span class="lf-anchor">more</span></div></div><div class="lf-axis"><span class="axis-mark__name">Oil</span><div class="lf-stops"><span class="lf-num">1</span><span class="lf-num">2</span><span class="lf-num">3</span><span class="lf-num">4</span><span class="lf-num">5</span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-stop"></span><span class="lf-anchor">faint</span><span></span><span class="lf-anchor">right</span><span></span><span class="lf-anchor">strong</span></div></div></div><div class="lf-sec"><p class="pen-caption">Any problems?</p><p class="pen-helper" style="margin:0 0 var(--gap-s)">select all that apply</p><div class="lf-defects"><div><p class="pen-caption">Every recipe</p><div class="lf-mark"><span class="lf-opt"><span class="lf-box"></span>Coarse, icy</span><span class="lf-opt"><span class="lf-box"></span>Sandy, gritty</span><span class="lf-opt"><span class="lf-box"></span>Gummy, elastic</span><span class="lf-opt"><span class="lf-box"></span>Greasy film</span></div></div><div><p class="pen-caption">This recipe only</p><div class="lf-mark"><span class="lf-opt"><span class="lf-box"></span>Bitter</span></div></div></div></div><div class="lf-sec"><span class="pen-caption">How did it turn out?</span><div class="lf-lines"><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div></div></div><div class="lf-foot">Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · [short code] · Page 2 of [m]</div></div>
+<div class="lf"><div class="lf-body"><div class="lf-datebox"><span class="pen-caption">Tasted</span></div><h2 class="region-name lf-title">Tasting log</h2><div class="lf-sec lf-row"><div class="lf-field"><span class="pen-caption">Tempering</span><div class="lf-rule"><span class="lf-base lf-base--figure"></span><span class="lf-unit">min</span></div></div><div class="lf-field"><span class="pen-caption">Tasting temperature</span><div class="lf-rule"><span class="lf-base lf-base--figure"></span><span class="lf-unit">°C</span></div></div><div class="lf-field lf-field--under"><span class="pen-caption">Melt test</span><div class="lf-rule"><span class="lf-base lf-base--figure"></span><span class="lf-unit">g lost at 20 min</span></div></div></div><div class="lf-mrow"><span class="pen-caption">Melt style</span><div class="lf-mark"><span class="lf-opt"><span class="lf-box"></span>Watery, weeping</span><span class="lf-opt"><span class="lf-box"></span>Creamy puddle</span><span class="lf-opt"><span class="lf-box"></span>Stable foam</span></div></div><div class="lf-group"><div class="lf-ghead"><span class="lf-gname">From freezer</span><span class="lf-gcue">mark one</span></div><div class="lf-verdict"><span class="lf-opt"><span class="lf-box"></span>Nothing to note</span><span class="lf-opt"><span class="lf-box"></span>Not evaluated</span><span class="lf-opt"><span class="lf-box"></span>See below</span></div><div class="lf-srow"><span class="axis-mark__name">Hardness</span><div class="lf-sc"><span class="lf-track"><span class="lf-tick lf-tick--1 lf-tick--end"></span><span class="lf-tick lf-tick--2"></span><span class="lf-tick lf-tick--3"></span><span class="lf-tick lf-tick--4"></span><span class="lf-tick lf-tick--5 lf-tick--end"></span></span><span class="lf-anchor lf-lo">soft</span><span class="lf-num lf-n1">1</span><span class="lf-num lf-n5">5</span><span class="lf-anchor lf-hi">hard</span><span class="lf-anchor lf-mid">right</span></div></div><div class="lf-srow"><span class="axis-mark__name">Scoopability</span><div class="lf-sc"><span class="lf-track"><span class="lf-tick lf-tick--1 lf-tick--end"></span><span class="lf-tick lf-tick--2"></span><span class="lf-tick lf-tick--3"></span><span class="lf-tick lf-tick--4"></span><span class="lf-tick lf-tick--5 lf-tick--end"></span></span><span class="lf-anchor lf-lo">crumbly</span><span class="lf-num lf-n1">1</span><span class="lf-num lf-n5">5</span><span class="lf-anchor lf-hi">gummy</span><span class="lf-anchor lf-mid">right</span></div></div><div class="lf-srow"><span class="axis-mark__name">Smoothness</span><div class="lf-sc"><span class="lf-track"><span class="lf-tick lf-tick--1 lf-tick--end"></span><span class="lf-tick lf-tick--2"></span><span class="lf-tick lf-tick--3"></span><span class="lf-tick lf-tick--4"></span><span class="lf-tick lf-tick--5 lf-tick--end"></span></span><span class="lf-anchor lf-lo">grainy</span><span class="lf-num lf-n1">1</span><span class="lf-num lf-n5">5</span><span class="lf-anchor lf-hi">smooth</span><span class="lf-anchor lf-mid">right</span></div></div><div class="lf-srow"><span class="axis-mark__name">Sweetness</span><div class="lf-sc"><span class="lf-track"><span class="lf-tick lf-tick--1 lf-tick--end"></span><span class="lf-tick lf-tick--2"></span><span class="lf-tick lf-tick--3"></span><span class="lf-tick lf-tick--4"></span><span class="lf-tick lf-tick--5 lf-tick--end"></span></span><span class="lf-anchor lf-lo">less</span><span class="lf-num lf-n1">1</span><span class="lf-num lf-n5">5</span><span class="lf-anchor lf-hi">more</span><span class="lf-anchor lf-mid">right</span></div></div><div class="lf-srow"><span class="axis-mark__name">Body</span><div class="lf-sc"><span class="lf-track"><span class="lf-tick lf-tick--1 lf-tick--end"></span><span class="lf-tick lf-tick--2"></span><span class="lf-tick lf-tick--3"></span><span class="lf-tick lf-tick--4"></span><span class="lf-tick lf-tick--5 lf-tick--end"></span></span><span class="lf-anchor lf-lo">thin</span><span class="lf-num lf-n1">1</span><span class="lf-num lf-n5">5</span><span class="lf-anchor lf-hi">heavy</span><span class="lf-anchor lf-mid">right</span></div></div><div class="lf-srow"><span class="axis-mark__name">Oil</span><div class="lf-sc"><span class="lf-track"><span class="lf-tick lf-tick--1 lf-tick--end"></span><span class="lf-tick lf-tick--2"></span><span class="lf-tick lf-tick--3"></span><span class="lf-tick lf-tick--4"></span><span class="lf-tick lf-tick--5 lf-tick--end"></span></span><span class="lf-anchor lf-lo">faint</span><span class="lf-num lf-n1">1</span><span class="lf-num lf-n5">5</span><span class="lf-anchor lf-hi">strong</span><span class="lf-anchor lf-mid">right</span></div></div><p class="lf-dhead lf-sub"><span class="lf-subname">Any problems?</span><span class="pen-helper">select all that apply</span></p><div class="lf-mrow lf-mrow--plain"><div class="lf-mark"><span class="lf-opt"><span class="lf-box"></span>Coarse, icy</span><span class="lf-opt"><span class="lf-box"></span>Sandy, gritty</span><span class="lf-opt"><span class="lf-box"></span>Gummy, elastic</span><span class="lf-opt"><span class="lf-box"></span>Greasy film</span><span class="lf-opt"><span class="lf-box"></span>Bitter</span></div></div></div><div class="lf-notes"><div class="lf-ghead"><span class="lf-gname">Notes</span><span class="lf-gcue">How did it turn out?</span></div><div class="lf-lines"><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div><div class="lf-line"></div></div></div></div><div class="lf-foot">Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · [short code] · Side 2 of 2</div></div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 816, "height": 1056}}'>

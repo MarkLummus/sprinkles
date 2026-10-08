@@ -19,7 +19,7 @@ import declared_variants as V
 CAP = json.load(open(HERE + '/declared-capture.json'))
 MEAS = json.load(open(HERE + '/declared-measure.json')) if os.path.exists(HERE + '/declared-measure.json') else {}
 FIT = json.load(open(HERE + '/declared-fit.json')) if os.path.exists(HERE + '/declared-fit.json') else {}   # declared-fit.py: the page 2 fit of every variant, WebKit and Chromium
-STAMP = ' (2026-10-07; awaiting Mark)'
+STAMP = ' (2026-10-07; approved)'
 MX_FOOT = 'Mexican Chocolate · Version 4 · v4 · [short code] · Side {n} of 2'   # the app's own version line for Mexican Chocolate v4 reads "Version 4 · v4" (the version's name is v4)
 GREY, PURPLE = '#595959', '#7a2e8e'
 COL = {'core': GREY, 'decl': PURPLE}   # D26: the red flag (the built pen drawing what the version does not declare) is gone: Mark decided the pen follows the rule, so the sketch draws the rule
@@ -50,7 +50,7 @@ def legend():
 
 # ---- the log pages --------------------------------------------------------------------------------------------------------------------------------------------------------------
 GUT = 300   # the gutter right of each page, for the labels
-STAMP2 = ' (2026-10-07; awaiting Mark)'
+STAMP2 = ' (2026-10-07; approved)'
 LOG = {   # board key -> (scales, problems, title, caption 1, caption 2)
     'DeclaredLogPages': (2, 1, 'Core and declared · the log pages for two scales and one problem (Olive Oil v1)'),
     'DeclaredLogPagesNone': (0, 0, 'Core and declared · the log pages for a recipe that declares nothing (Mexican Chocolate v4)'),

@@ -65,12 +65,12 @@ return {{}};
 
 T_A = 'As built · the recipe page at 1280, no batch (production build, 2026-10-06, after Phase 03.7)'
 T_B = 'Not chosen · Print starting point without Balance (kept for comparison)'
-T_C = 'The Sheet, Balance in column 2 · Instructions with Why, aside and tags (D18 on the Sheet; awaiting Mark)'   # the canvas cuts titles at 120 characters
+T_C = 'The Sheet, Balance in column 2 · Instructions with Why, aside and tags (D18 on the Sheet; approved)'   # the canvas cuts titles at 120 characters
 NOTE_C = ("Chosen by Mark 2026-10-06: Balance in a second column beside the Ingredients table, no Hide control. "
           "This overrides the print brief's § 4 anti-goal (\"no Balance ... from column two\"); that brief change, with the tick box's retirement, goes to Impeccable later. "
           "No rules between ingredient rows: the heavier step rule carries the grouping. Nothing approved yet; no sketch 010.")
-T_F1 = 'Page 1 · front: Batch log (D22 rhythm review: heads 14 px, 32 px above each section; D21, D20, D19, D17; awaiting Mark)'
-T_F2 = 'Page 2 · back: Tasting log (D24: 5 lines; D23: no Every recipe / This recipe only; D22, D21, D20, D19; awaiting Mark)'
+T_F1 = 'Page 1 · front: Batch log (D22 rhythm review: heads 14 px, 32 px above each section; D21, D20, D19, D17; approved)'
+T_F2 = 'Page 2 · back: Tasting log (D23: 5 lines, no Every recipe / This recipe only; D22, D21, D20, D19; approved)'
 NOTE = ("Middle: the Sheet alone at letter width, as the app prints it today (one column, the app's own print rules, a white page), with your edits of 2026-10-06 laid on: "
         "As made is the first column, then the grams, then the ingredient; no tick box (retired by you, superseding the print brief's mise-en-place box, § 3 item 1 and § 6); a heavier rule above each step group and none between ingredient rows; no % of batch, no Watch for, no Balance; headings in ink. Beside it, the alternate with Balance in column 2. Right: the recipe page at 1280, as built. "
         "Both are captured from the production build of 2026-10-06 (real markup, the app's own stylesheets) with Olive Oil v1 as a version with no batch yet: "

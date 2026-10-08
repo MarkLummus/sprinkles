@@ -54,8 +54,8 @@ OPTS = ['Nothing to note', 'Not evaluated']
 MARKS = ('marked', 'both'); NOTES = ('noted', 'both', 'nothingnote', 'notnote'); PICKS = ('nothing', 'not', 'nothingnote', 'notnote')
 NOTE_DRAW = 'Bowl frozen overnight. Mix looked a little thin.'
 NOTE_TASTE = 'Soft, not greasy. The oil is strong.'
-STAMP = ' (redrawn 2026-10-07, no Time to draw temp.; awaiting Mark)'
-STAMP_READ = ' (redrawn 2026-10-07, no Time to draw temp.; awaiting Mark)'
+STAMP = ' (redrawn 2026-10-07, no Time to draw temp.; approved)'
+STAMP_READ = ' (redrawn 2026-10-07, no Time to draw temp.; approved)'
 
 DRAWN = '''
 .notebook-log .mo-group{border-top:var(--rule-graduation) solid var(--app-divider);padding-top:var(--gap-s);margin-top:var(--gap-l)}

@@ -93,9 +93,9 @@ CSS = '''
 .sp-p3 .recipe-page{grid-template-areas:'method method'}
 .sp .mp-foot{margin-top:var(--gap-l);padding-top:var(--gap-xs);border-top:var(--rule-ink-field) solid var(--sheet-ink);font-family:var(--face-grotesk);font-size:var(--sheet-size-small-print);letter-spacing:0.02em;color:var(--sheet-ink)}
 '''
-T1 = 'Sheet page 1 · formula: Before you start, Ingredients to Step 3, Balance (Olive Oil v1 as Safari prints it; awaiting Mark)'
-T2 = 'Sheet page 2 · the table\'s tail, Balance\'s end, Instructions 1 to 4 (as Safari prints it; awaiting Mark)'
-T3 = 'Sheet page 3 · Instructions 5 to 10 and the closing foot (as Safari prints it; awaiting Mark)'
+T1 = 'Sheet page 1 · formula: Before you start, Ingredients to Step 3, Balance (Olive Oil v1 as Safari prints it; approved)'
+T2 = 'Sheet page 2 · the table\'s tail, Balance\'s end, Instructions 1 to 4 (as Safari prints it; approved)'
+T3 = 'Sheet page 3 · Instructions 5 to 10 and the closing foot (as Safari prints it; approved)'
 
 def plan():
     """Where the pages break, from the WebKit-at-Safari-width measurement."""

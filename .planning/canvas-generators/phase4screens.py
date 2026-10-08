@@ -53,7 +53,7 @@ COARSE_CSS = '''
 /* NEW at a coarse pointer: the touch floor, as the app's own Home name links meet it (home.css, pointer: coarse) */
 .home__code-link,.home__lead-draft a,.print-route__name{display:inline-flex;align-items:center;min-height:var(--touch-min)}
 '''
-STAMP = ' (drawn 2026-10-07, awaiting Mark\'s look; nothing approved)'
+STAMP = ' (drawn 2026-10-07; approved)'
 
 def css_for(W, coarse, vid, extra=''):
     css = resolve_media(TOK, W, coarse) + resolve_media(APPC, W, coarse) + resolve_media(SHELLC, W, coarse) + resolve_media(HOME, W, coarse) + resolve_media(NBC, W, coarse)
@@ -186,7 +186,7 @@ def build(canvas_in, out):
         if not right: N[key]['y'] = by + sizes[fn][1] + 80
     r1, r3 = w1.get('route', {}), w3.get('route', {})
     note('p4-route-note', 'P4_PrintRoute1280', (
-        "Drawn 2026-10-07 on the built Shell for your look; nothing approved (D-04, the print route on screen). The route is /notebook/:recipeId/:versionId/print. "
+        "Drawn 2026-10-07 on the built Shell for your look; approved by Mark 2026-10-08 (D-04, the print route on screen). The route is /notebook/:recipeId/:versionId/print. "
         "New: the caption Print sheet; one line (the Sheet title, a link back to the version, then the version line, the saved date and the Sheet code); the Print control, the app's filled action; then the pages as they print, as pictures: the Batch log and the Tasting log (side 1 and side 2 of the one sheet, the pages as they now stand after your margin, title, notes, rhythm, problems-row and five-line answers), and the Sheet's three real pages (README D29, redrawn 2026-10-08: Olive Oil v1's table does not fit, so the table breaks between step groups and the Instructions follow its tail, as Safari prints it; the boards are on the page Print method). The code is an example; the pages' foot carries the same code as the line. D7's foot is on every page that has one: the two log pages carry it with their side (Side 1 of 2, Side 2 of 2), and the Sheet's end, under step 10 on the Sheet's page 3, carries it without a side label (Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · K7QM-2X9D), in flow after the last step, as real markup on that board. The Sheet's pages 1 and 2 are not the end, so they have none.\n\n"
         f"Measured in the build with the markup injected, WebKit (Chromium within 1 px): at 1280 the line holds on one line ({r1.get('lineH')} px of line height), the head is {r1['head']['h']:g} px tall, Print is {r1['print']['w']:g} x {r1['print']['h']:g} at the right edge, the pages sit at the page gutter at their real 816 px, and the page reads {r1['docH']} px. "
         "Nothing overflows sideways.\n\nYour answers (2026-10-07): Print stays in the line only; the line does not say when a draft is open (it prints the saved version); the label is Print."))
@@ -197,7 +197,7 @@ def build(canvas_in, out):
         "Measured in WebKit with a coarse pointer (Chromium within 1 px): no horizontal overflow; Print and the name link meet the 44 px floor. Not measured on the iPhone."))
     hb, ha = w1.get('homeBefore', {}), w1.get('home', {}); hb3, ha3 = w3.get('homeBefore', {}), w3.get('home', {}); Z = {'lead': {'h': 0}, 'docH': 0, 'draftlink': {'w': 0, 'h': 0}}; hl, hl3 = w1.get('homeLead', Z), w3.get('homeLead', Z)   # Z: the first pass, before the measurement has the key
     note('p4-home-note', 'P4_Home', (
-        "Drawn 2026-10-07 on the built Home (the seeded store: the lead is Mexican Chocolate, version 4); nothing approved. Two new parts. (1) D-10: Enter Sheet code, a link at the right of the Recipes row, to the Search page where the field lives. "
+        "Drawn 2026-10-07 on the built Home (the seeded store: the lead is Mexican Chocolate, version 4); approved by Mark 2026-10-08. Two new parts. (1) D-10: Enter Sheet code, a link at the right of the Recipes row, to the Search page where the field lives. "
         "(2) D-18: under the lead's version line, Draft open on this version · Go to draft, the link to that version's page, where the draft is restored. Nothing else on Home changes.\n\n"
         f"Measured, WebKit (Chromium within 1 px): at 1280 the lead grows from {hb['leadH']:g} to {ha['lead']['h']:g} px, the draft line is one line, the code link is {ha['codelink']['w']:g} x {ha['codelink']['h']:g} on the Recipes label's line; "
         f"at 393 with a coarse pointer the lead grows from {hb3['leadH']:g} to {ha3['lead']['h']:g} px (the link meets the 44 px floor), the code link is {ha3['codelink']['w']:g} x {ha3['codelink']['h']:g}, still on the label's line, and nothing overflows (scroll width {ha3['scrollW']}).\n\n"
@@ -206,7 +206,7 @@ def build(canvas_in, out):
         "The list below keeps its order, so Mexican Chocolate stays the first row and Olive Oil is the second: the lead is chosen, not the list. The build's ordering is activeWork(); drawing here does not decide how it picks."))
     ZN = {'box': {'w': 0, 'h': 0}}; mC1 = w1.get('notice', {}).get('C', ZN); mC3 = w3.get('notice', {}).get('C', ZN)
     note('p4-draft-note', 'P4_DraftKept', (
-        "Drawn 2026-10-07 on the built Next version pen; nothing approved (D-15). The notice is the app's own PageStatus, unchanged, with the words you chose, Draft kept. Cancel discards it. The pen is open with its ink: Version name, Why and Whole milk 110 g (was 120). Cancel is where it always is, and discards with no dialog.\n\n"
+        "Drawn 2026-10-07 on the built Next version pen; approved by Mark 2026-10-08 (D-15). The notice is the app's own PageStatus, unchanged, with the words you chose, Draft kept. Cancel discards it. The pen is open with its ink: Version name, Why and Whole milk 110 g (was 120). Cancel is where it always is, and discards with no dialog.\n\n"
         f"What the build does, measured (WebKit, coarse pointer at 393; Chromium within 2 px): the running head D-15 names is gone (03.5-02), so the notice floats over the top left of the page at {mC1['box']['w']} x {mC1['box']['h']} px (1280) and covers the start of the recipe name ({mC1.get('titleAreaShare', 0)}% of the name's area), which is why it clears after 5 s, as you chose; at 393 it is {mC3['box']['w']} x {mC3['box']['h']} px and covers {mC3.get('titleAreaShare', 0)}% of the name. "
         "The third panel is the page scrolled to the ink, with the notice gone."))
     note('p4-words-note', 'P4_DraftKeptWords', (

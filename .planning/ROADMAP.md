@@ -633,15 +633,16 @@ Plans:
 - [x] 03.7-03-PLAN.md — Conformance against the decision 36 boards on the real DOM (WebKit and Chrome, 1366 and 393), the full regression with the print probe, and the device and Safari-print checks worded for Mark's List
 - [x] 03.7-04-PLAN.md — The documents follow: Phase 4's context amended (D-06, the break rule, a fresh print starting point), the todo closed, and the surface briefs and DESIGN.md revised through Impeccable (checkpoint)
 
-### Phase 03.7.1: Hide draw temperature and rename the logs (INSERTED)
+### Phase 03.7.1: Hide draw temperature (INSERTED)
 
-**Goal:** Time to draw temp. no longer shows on any screen (record pen, reading, print), and the batch log and tasting log carry their new names; the stored field stays until Phase 4's reseed removes it
+**Goal:** Time to draw temp. no longer shows on any screen (record pen, reading, print); the stored field stays until Phase 4's reseed removes it. The Batch log and Tasting log titles exist only on the printed pages and ride Phase 4's print (the pen's At the machine note keeps its name)
 **Requirements**: TBD
 **Depends on:** Phase 03.7
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 03.7.1 to break down)
+- [ ] 03.7.1-01-PLAN.md — The pen and the reading lose the field on the real built app (tracer, with the before numbers); the record draft stops carrying it while a correction keeps the stored value; the stored value pinned through IndexedDB, export and import; the orphaned helper retired
+- [ ] 03.7.1-02-PLAN.md — Side by side with sketch 010's pen and reading boards in WebKit and Chrome with before and after numbers; the plan line's CSS retired; regression and the rows for Mark's List
 
 ### Phase 4: Prepare the next version for making
 

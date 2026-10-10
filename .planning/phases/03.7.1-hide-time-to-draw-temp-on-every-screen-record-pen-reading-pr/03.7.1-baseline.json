@@ -1,0 +1,826 @@
+{
+ "webkit|1366c|reading": {
+  "blockHeight": 870.5,
+  "gridHeight": 163,
+  "gridWidth": 350,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "webkit|1366c|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "webkit|1366c|record": {
+  "blockHeight": 705.125,
+  "blockWidth": 350,
+  "fieldRowHeight": 210.59375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 95.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 119.796875,
+    "width": 111.515625,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 123.515625,
+    "y": 119.796875,
+    "width": 116.28125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "webkit|1366c|amend": {
+  "blockHeight": 2390.421875,
+  "blockWidth": 350,
+  "fieldRowHeight": 210.59375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 95.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 119.796875,
+    "width": 111.515625,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 123.515625,
+    "y": 119.796875,
+    "width": 116.28125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "webkit|1366c|home": {
+  "fieldText": 0
+ },
+ "webkit|1366f|reading": {
+  "blockHeight": 870.5,
+  "gridHeight": 163,
+  "gridWidth": 350,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "webkit|1366f|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "webkit|1366f|record": {
+  "blockHeight": 580.15625,
+  "blockWidth": 350,
+  "fieldRowHeight": 179.09375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 82.046875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 61.046875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 106.046875,
+    "width": 111.515625,
+    "height": 61.046875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 123.515625,
+    "y": 106.046875,
+    "width": 116.28125,
+    "height": 61.046875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "webkit|1366f|amend": {
+  "blockHeight": 2096.5,
+  "blockWidth": 350,
+  "fieldRowHeight": 179.09375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 82.046875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 61.046875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 106.046875,
+    "width": 111.515625,
+    "height": 61.046875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 123.515625,
+    "y": 106.046875,
+    "width": 116.28125,
+    "height": 61.046875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "webkit|1366f|home": {
+  "fieldText": 0
+ },
+ "webkit|1024c|reading": {
+  "blockHeight": 354,
+  "gridHeight": 57,
+  "gridWidth": 944,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 1024,
+  "windowWidth": 1024
+ },
+ "webkit|1024c|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "webkit|1024c|record": {
+  "blockHeight": 602.328125,
+  "blockWidth": 640,
+  "fieldRowHeight": 107.796875,
+  "fieldRowWidth": 640,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 95.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 288.296875,
+    "y": 0,
+    "width": 111.515625,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 411.8125,
+    "y": 0,
+    "width": 116.28125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1024,
+  "windowWidth": 1024
+ },
+ "webkit|1024c|amend": {
+  "blockHeight": 1430.84375,
+  "blockWidth": 640,
+  "fieldRowHeight": 107.796875,
+  "fieldRowWidth": 640,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 95.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 288.296875,
+    "y": 0,
+    "width": 111.515625,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 411.8125,
+    "y": 0,
+    "width": 116.28125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1024,
+  "windowWidth": 1024
+ },
+ "webkit|1024c|home": {
+  "fieldText": 0
+ },
+ "webkit|393c|reading": {
+  "blockHeight": 460,
+  "gridHeight": 163,
+  "gridWidth": 353,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 393,
+  "windowWidth": 393
+ },
+ "webkit|393c|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "webkit|393c|record": {
+  "blockHeight": 735.53125,
+  "blockWidth": 353,
+  "fieldRowHeight": 210.59375,
+  "fieldRowWidth": 353,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 95.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 119.796875,
+    "width": 111.515625,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 123.515625,
+    "y": 119.796875,
+    "width": 116.28125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 393,
+  "windowWidth": 393
+ },
+ "webkit|393c|amend": {
+  "blockHeight": 2503.25,
+  "blockWidth": 353,
+  "fieldRowHeight": 210.59375,
+  "fieldRowWidth": 353,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 95.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 136.296875,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 119.796875,
+    "width": 111.515625,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 123.515625,
+    "y": 119.796875,
+    "width": 116.28125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 393,
+  "windowWidth": 393
+ },
+ "webkit|393c|home": {
+  "fieldText": 0
+ },
+ "chrome|1366c|reading": {
+  "blockHeight": 879.5,
+  "gridHeight": 165,
+  "gridWidth": 350,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "chrome|1366c|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "chrome|1366c|record": {
+  "blockHeight": 704.84375,
+  "blockWidth": 350,
+  "fieldRowHeight": 209.59375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 94.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 118.796875,
+    "width": 110.09375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 122.09375,
+    "y": 118.796875,
+    "width": 114.078125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "chrome|1366c|amend": {
+  "blockHeight": 2383.09375,
+  "blockWidth": 350,
+  "fieldRowHeight": 209.59375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 94.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 118.796875,
+    "width": 110.09375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 122.09375,
+    "y": 118.796875,
+    "width": 114.078125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "chrome|1366c|home": {
+  "fieldText": 0
+ },
+ "chrome|1366f|reading": {
+  "blockHeight": 879.5,
+  "gridHeight": 165,
+  "gridWidth": 350,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "chrome|1366f|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "chrome|1366f|record": {
+  "blockHeight": 577.15625,
+  "blockWidth": 350,
+  "fieldRowHeight": 176.09375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 79.046875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 61.046875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 103.046875,
+    "width": 110.09375,
+    "height": 61.046875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 122.09375,
+    "y": 103.046875,
+    "width": 114.078125,
+    "height": 61.046875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "chrome|1366f|amend": {
+  "blockHeight": 2085.171875,
+  "blockWidth": 350,
+  "fieldRowHeight": 176.09375,
+  "fieldRowWidth": 350,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 79.046875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 61.046875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 103.046875,
+    "width": 110.09375,
+    "height": 61.046875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 122.09375,
+    "y": 103.046875,
+    "width": 114.078125,
+    "height": 61.046875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1366,
+  "windowWidth": 1366
+ },
+ "chrome|1366f|home": {
+  "fieldText": 0
+ },
+ "chrome|1024c|reading": {
+  "blockHeight": 354,
+  "gridHeight": 58,
+  "gridWidth": 944,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 1024,
+  "windowWidth": 1024
+ },
+ "chrome|1024c|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "chrome|1024c|record": {
+  "blockHeight": 602.046875,
+  "blockWidth": 640,
+  "fieldRowHeight": 106.796875,
+  "fieldRowWidth": 640,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 94.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 286.375,
+    "y": 0,
+    "width": 110.09375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 408.46875,
+    "y": 0,
+    "width": 114.078125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1024,
+  "windowWidth": 1024
+ },
+ "chrome|1024c|amend": {
+  "blockHeight": 1427.515625,
+  "blockWidth": 640,
+  "fieldRowHeight": 106.796875,
+  "fieldRowWidth": 640,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 94.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 286.375,
+    "y": 0,
+    "width": 110.09375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 408.46875,
+    "y": 0,
+    "width": 114.078125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 1024,
+  "windowWidth": 1024
+ },
+ "chrome|1024c|home": {
+  "fieldText": 0
+ },
+ "chrome|393c|reading": {
+  "blockHeight": 461,
+  "gridHeight": 165,
+  "gridWidth": 353,
+  "labels": [
+   "Time to draw temp.",
+   "Out of machine",
+   "Churn duration",
+   "Exit consistency",
+   "Airiness"
+  ],
+  "planLines": 1,
+  "fieldText": 1,
+  "scrollWidth": 393,
+  "windowWidth": 393
+ },
+ "chrome|393c|print": {
+  "fieldText": 1,
+  "planText": 1
+ },
+ "chrome|393c|record": {
+  "blockHeight": 735.25,
+  "blockWidth": 353,
+  "fieldRowHeight": 209.59375,
+  "fieldRowWidth": 353,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 94.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 118.796875,
+    "width": 110.09375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 122.09375,
+    "y": 118.796875,
+    "width": 114.078125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 393,
+  "windowWidth": 393
+ },
+ "chrome|393c|amend": {
+  "blockHeight": 2495.921875,
+  "blockWidth": 353,
+  "fieldRowHeight": 209.59375,
+  "fieldRowWidth": 353,
+  "labels": [
+   {
+    "caption": "Churn date",
+    "x": 0,
+    "y": 0,
+    "width": 128,
+    "height": 94.796875
+   },
+   {
+    "caption": "Time to draw temp.",
+    "x": 140,
+    "y": 0,
+    "width": 134.375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Out of machine",
+    "x": 0,
+    "y": 118.796875,
+    "width": 110.09375,
+    "height": 78.796875
+   },
+   {
+    "caption": "Churn duration",
+    "x": 122.09375,
+    "y": 118.796875,
+    "width": 114.078125,
+    "height": 78.796875
+   }
+  ],
+  "fieldText": 1,
+  "fieldInputs": 1,
+  "scrollWidth": 393,
+  "windowWidth": 393
+ },
+ "chrome|393c|home": {
+  "fieldText": 0
+ }
+}

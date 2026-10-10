@@ -195,7 +195,8 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     );
     expect(ownTexts).not.toContain('Correct');
     expect(current.container.querySelector('.batch-row__date').textContent).toBe('churned 2 Aug 2026');
-    expect(pen().querySelector('input[aria-label^="Time to draw temp"]').value).toBe('20');
+    expect(pen().querySelector('input[aria-label^="Time to draw temp"]')).toBeNull();
+    expect(pen().textContent).not.toContain('Time to draw temp.');
   });
 
   it('T2: Cancel closes the pen, writes nothing and returns focus to the band', async () => {

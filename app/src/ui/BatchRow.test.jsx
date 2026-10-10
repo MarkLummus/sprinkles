@@ -37,7 +37,6 @@ const emptyRecordDraft = {
   churnDate: '',
   asMade: {},
   stepChanges: {},
-  timeToDrawTempMinutes: '',
   outOfMachineTempC: '',
   churnDurationMinutes: '',
   exitConsistency: '',
@@ -333,7 +332,7 @@ describe('BatchRow — the upright batch list at two or more batches (decision 1
 });
 
 describe('BatchRow — the record and amend ceremony, the battery\'s churn section (D-01, contract "DOM order inventory")', () => {
-  it('renders the churn-date field first, then the three measured fields, the two segmented controls, the two textareas, then the shared Next time, then ceremony A, in that DOM order', () => {
+  it('renders the churn-date field first, then the two measured fields, the two segmented controls, the two textareas, then the shared Next time, then ceremony A, in that DOM order', () => {
     const markup = renderBatchRow({
       openPen: 'record',
       mode: 'recording',
@@ -343,7 +342,6 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       /<label class="field-row__label field-row__label--date"><span class="pen-caption">Churn date<\/span><input[^>]*type="date"[^>]*class="ink-field"[^>]*value="2026-08-09"/,
     );
     const churnDateIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
-    const timeToDrawIndex = markup.indexOf('Time to draw temp.');
     const outOfMachineIndex = markup.indexOf('Out of machine');
     const churnDurationIndex = markup.indexOf('Churn duration');
     const exitConsistencyIndex = markup.indexOf('Exit consistency');
@@ -353,8 +351,8 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     const ceremonyIndex = markup.indexOf('class="save-ceremony"');
     const nextTimeIndex = markup.indexOf('aria-label="Next time"');
     expect(churnDateIndex).toBeGreaterThanOrEqual(0);
-    expect(timeToDrawIndex).toBeGreaterThan(churnDateIndex);
-    expect(outOfMachineIndex).toBeGreaterThan(timeToDrawIndex);
+    expect(markup).not.toContain('Time to draw temp.');
+    expect(outOfMachineIndex).toBeGreaterThan(churnDateIndex);
     expect(churnDurationIndex).toBeGreaterThan(outOfMachineIndex);
     expect(exitConsistencyIndex).toBeGreaterThan(churnDurationIndex);
     expect(airinessIndex).toBeGreaterThan(exitConsistencyIndex);
@@ -385,12 +383,12 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
       draft: emptyRecordDraft,
     });
     expect(markup).toMatch(
-      /<span class="pen-caption">Time to draw temp\.<\/span><span class="field-unit"><input[^>]*aria-label="Time to draw temp\., minutes"[^>]*\/><span class="field-unit__unit">min<\/span><\/span>/,
+      /<span class="pen-caption">Churn duration<\/span><span class="field-unit"><input[^>]*aria-label="Churn duration, minutes"[^>]*\/><span class="field-unit__unit">min<\/span><\/span>/,
     );
-    expect(markup).not.toContain('Time to draw temp., min<');
+    expect(markup).not.toContain('Churn duration, min<');
   });
 
-  it('renders the churn row as one field row holding the date label and the three measured labels (sketch 007 lines 210-216)', () => {
+  it('renders the churn row as one field row holding the date label and the two measured labels (sketch 007 lines 210-216)', () => {
     const markup = renderBatchRow({
       openPen: 'record',
       mode: 'recording',
@@ -403,7 +401,7 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     expect(fieldRowIndex).toBeLessThan(churnDateCaptionIndex);
     const churnRowSlice = markup.slice(fieldRowIndex, exitConsistencyIndex);
     const labelCount = churnRowSlice.split('class="field-row__label').length - 1;
-    expect(labelCount).toBe(4);
+    expect(labelCount).toBe(3);
   });
 
   it('renders the same field-grid-then-ceremony placement while amending', () => {
@@ -931,15 +929,16 @@ describe('BatchRow — no interface-policy hint while the pen is open', () => {
 });
 
 describe('BatchRow — the numeric battery fields (contract "Controls spec")', () => {
-  it('renders all three churn measured fields; the unsigned ones are text-mode with inputMode="decimal"', () => {
+  it('renders the two churn measured fields; the unsigned one is text-mode with inputMode="decimal", and no input is named for Time to draw temp. (03.7.1, D-01)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: emptyRecordDraft });
-    for (const label of ['Time to draw temp.', 'Out of machine', 'Churn duration']) {
+    for (const label of ['Out of machine', 'Churn duration']) {
       expect(markup).toContain(label);
     }
-    const timeToDrawInput = markup.match(/<input[^>]*aria-label="Time to draw temp\., minutes"[^>]*\/>/)[0];
-    expect(timeToDrawInput).toContain('type="text"');
-    expect(timeToDrawInput).toContain('inputMode="decimal"');
-    expect(timeToDrawInput).toContain('class="ink-field"');
+    const churnDurationInput = markup.match(/<input[^>]*aria-label="Churn duration, minutes"[^>]*\/>/)[0];
+    expect(churnDurationInput).toContain('type="text"');
+    expect(churnDurationInput).toContain('inputMode="decimal"');
+    expect(churnDurationInput).toContain('class="ink-field"');
+    expect(markup).not.toMatch(/<input[^>]*aria-label="Time to draw temp/);
   });
 
   it('renders only the two °C fields as number inputs; no other input in the markup is type="number" (G-03.5-R2-2, reversing the 03.3.1 rule for these two)', () => {
@@ -962,7 +961,6 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
   it('keeps the decimal pad on every unsigned battery field, with no autocorrect attribute (G-03.5-5b)', () => {
     const markup = renderBatchRow({ mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     for (const name of [
-      'Time to draw temp\\., minutes',
       'Churn duration, minutes',
       'Tempering, minutes',
       'Melt test, g lost at 20 min',
@@ -1006,8 +1004,8 @@ describe('BatchRow — the numeric battery fields (contract "Controls spec")', (
       draft: { ...emptyRecordDraft, outOfMachineTempC: '4o' },
       fieldErrors: { outOfMachineTempC: 'Enter a temperature, such as −6, or leave blank.' },
     });
-    const timeToDrawInput = markup.match(/<input[^>]*aria-label="Time to draw temp\., minutes"[^>]*\/>/)[0];
-    expect(timeToDrawInput).not.toContain('aria-invalid');
+    const churnDurationInput = markup.match(/<input[^>]*aria-label="Churn duration, minutes"[^>]*\/>/)[0];
+    expect(churnDurationInput).not.toContain('aria-invalid');
   });
 });
 
@@ -1291,12 +1289,13 @@ describe('BatchRow — the textareas (contract "Textareas")', () => {
 });
 
 describe("BatchRow — the record's reading state, measured values as cells (contract's own battery labels)", () => {
-  it('renders the churn triple with plain-word labels and units beside the figures', () => {
+  it('renders the churn pair with plain-word labels and units beside the figures, opening on Out of machine with no Time to draw temp. cell and no plan line (03.7.1, D-01, D-05)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
     expect(markup).toContain('batch-row__cells');
-    expect(markup).toMatch(
-      /<span class="batch-row__cell-label">Time to draw temp\.<\/span><span class="batch-row__cell-value">20<span class="batch-row__unit"> min<\/span><\/span><span class="batch-row__plan">plan 10–12 min<\/span>/,
-    );
+    expect(markup).not.toContain('Time to draw temp.');
+    expect(markup).not.toContain('plan 10–12 min');
+    expect(markup).not.toContain('batch-row__plan');
+    expect(markup).toMatch(/<div class="batch-row__cells"><div class="batch-row__cell"><span class="batch-row__cell-label">Out of machine/);
     expect(markup).toMatch(
       /<span class="batch-row__cell-label">Out of machine<\/span><span class="batch-row__cell-value">−6<span class="batch-row__unit"> °C<\/span><\/span><\/div>/,
     );

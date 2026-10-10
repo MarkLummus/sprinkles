@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, tastingProvenance } from '../domain/batch.js';
-import { targetValueFor } from '../domain/rows.js';
 import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
 import { axesForBatch, readMarkWord } from '../domain/axes.js';
 import { SaveCeremony } from './PenFoot.jsx';
@@ -21,12 +20,16 @@ function churnMeasured(value, options) {
   return result === 'unknown' ? 'not measured' : result;
 }
 
-// The three churn-section battery fields, in the contract's own DOM order
-// — BATTERY_FIELDS lists the churn numerics before the tasting ones
+// The two churn-section battery fields the pen draws, in the contract's own
+// DOM order — BATTERY_FIELDS lists the churn numerics before the tasting ones
 // (domain/battery.js), so a straight filter preserves that order without
-// hard-coding index positions.
+// hard-coding index positions. Time to draw temp. stays in the domain's
+// BATTERY_FIELDS and in stored batches but is not shown (Mark, 2026-10-07,
+// sketch 010 D17: it came from an instruction for immersion heaters in small
+// jars and does not apply to his machine); Phase 4's reseed removes it, row
+// build-remove-draw-temp-data-element.
 const CHURN_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
-  ['timeToDrawTempMinutes', 'outOfMachineTempC', 'churnDurationMinutes'].includes(field.key),
+  ['outOfMachineTempC', 'churnDurationMinutes'].includes(field.key),
 );
 
 // The tasting field-row's two measured fields (contract "DOM order
@@ -114,7 +117,7 @@ export function shownSignedValue(value) {
 // the field's accessible name. The .field-error line renders inside the
 // label and is wired by aria-describedby exactly as the contract
 // specifies; aria-invalid tracks the same fact. Shared by both sections —
-// the three churn measurements and the tasting field-row's own two
+// the two churn measurements and the tasting field-row's own two
 // (03.3.1-03 Task 1) — since the contract's rule is identical either
 // side of the churn/tasting line.
 function MeasuredField({ field, value, error, onChange, inputRef }) {
@@ -704,7 +707,7 @@ export function BatchRow({
             {/* The churn row (sketch 007 @ 2a212be lines 210-216; D-12
                 "Churn date" replaces "churned"): a .field-row holding the
                 128px Churn date field, this event's identifying field
-                (D-05), then the three numeric churn measurements beside
+                (D-05), then the two numeric churn measurements beside
                 it (contract "DOM order inventory"). .batch-row__cells
                 stays only for the read view below — the pen no longer
                 uses it. Mark's 2026-09-16 ruling: the batch's name is not
@@ -1047,20 +1050,6 @@ export function BatchRow({
         ) : openBatch ? (
           <>
             <div className="batch-row__cells">
-              <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Time to draw temp.</span>
-                {openBatch.churn.timeToDrawTempMinutes != null ? (
-                  <span className="batch-row__cell-value">
-                    {churnMeasured(openBatch.churn.timeToDrawTempMinutes)}
-                    <span className="batch-row__unit"> min</span>
-                  </span>
-                ) : (
-                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-                )}
-                {targetValueFor(version, 'come-up') && (
-                  <span className="batch-row__plan">{`plan ${targetValueFor(version, 'come-up')}`}</span>
-                )}
-              </div>
               <div className="batch-row__cell">
                 <span className="batch-row__cell-label">Out of machine</span>
                 {openBatch.churn.outOfMachineTempC != null ? (

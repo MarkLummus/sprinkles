@@ -17,6 +17,9 @@ import printstart, markone
 # The paper pages in the print route are the canvas's pages as they stand after D16 to D26 (README D27), as pictures (phase4screens-pages.json, made by phase4screens-pages.mjs from the artifact root): Batch log, Tasting log, and the Sheet's three real pages (2026-10-08, README D29). The foot's code reads the route line's example code.
 #   node phase4screens-capture.mjs ; node phase4screens-pages.mjs ; python3 phase4screens.py <canvas.json read from the artifact root> <out dir> ; node phase4screens-measure.mjs <out dir>/project   (writes phase4screens-measure.json; run this file again)
 CAP = json.load(open(HERE + '/phase4screens-capture.json')); PG = json.load(open(HERE + '/phase4screens-pages.json'))
+# 2026-10-10 (Mark's List row draw-restore-p4-print-route-393-board): the 393 board carries each page picture THREE times; as data: URIs it was 5.6 MB, over the 2 MiB the canvas editor syncs per board, and the editor dropped it from the outline.
+#   The five pictures are uploaded to the canvas as assets (phase4screens-assets.json: page key -> /_blob url) and the 393 board references them (290 KB, the same pixels). The 1280 board (1.9 MB) and the measuring snippets keep the data: URIs.
+ASSETS = json.load(open(HERE + '/phase4screens-assets.json'))
 MEAS = json.load(open(HERE + '/phase4screens-measure.json')) if os.path.exists(HERE + '/phase4screens-measure.json') else {}
 HOME = open(os.path.join(APP_ROOT, 'home.css')).read() + '\n'
 FIX = '.shell{min-height:0;position:relative}.shell__tabs{position:absolute !important;inset-inline:0;inset-block-end:0}.shell__main{min-width:0}\n'
@@ -83,18 +86,18 @@ def home(W, olive=False):
     return unique_ids(h.replace('<h2 class="home__section">Recipes</h2>', SECTION, 1), 'p4')
 
 # ---- the print route (D-04)
-def route_main(W):
+def route_main(W, assets=False):
     stack = W < 760
     sep = '' if stack else ' <span aria-hidden="true">·</span> '
     line = (f'<h1 class="print-route__line"><a class="print-route__name" href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1" tabindex="0" data-m="name">Olive Oil Ice Cream</a>{sep}'
             f'<span class="print-route__part" data-m="version">Version 1 · 50 g oil · 800 g</span>{sep}'
             f'<span class="print-route__part" data-m="saved">Saved {SAVED} · Sheet code <span class="print-route__code" data-m="code">{CODE}</span></span></h1>')
-    pages = ''.join(f'<img class="print-route__page" data-m="{k}" src="{PG[k]}" width="816" height="1056" alt="{a}">' for k, a in
+    pages = ''.join(f'<img class="print-route__page" data-m="{k}" src="{ASSETS[k] if assets and W == 393 else PG[k]}" width="816" height="1056" alt="{a}">' for k, a in
                     (('log1', 'Batch log, side 1 of 2'), ('log2', 'Tasting log, side 2 of 2'), ('sheet1', 'The Sheet, page 1: Ingredients with Balance beside them'), ('sheet2', 'The Sheet, page 2: the end of the table, then Instructions, steps 1 to 4'), ('sheet3', 'The Sheet, page 3: Instructions, steps 5 to 10')))
     return (f'<div class="notebook print-route{" print-route__stack" if stack else ""}" data-m="route"><header class="print-route__head" data-m="head"><div class="print-route__id"><span class="notebook-caption">Print sheet</span>{line}</div>'
             f'<button type="button" class="notebook-action" tabindex="0" data-m="print">Print</button></header><div class="print-route__pages" data-m="pages">{pages}</div></div>')
 def route(W):
-    return unique_ids(clean(CAP['chrome_%d' % W]).replace('@@MAIN@@', route_main(W)), 'p4')
+    return unique_ids(clean(CAP['chrome_%d' % W]).replace('@@MAIN@@', route_main(W, assets=True)), 'p4')
 
 # ---- the draft-kept notice (D-15)
 WORDS = (('C', 'Draft kept. Cancel discards it.', 'chosen'),)   # Mark's answer (decide-p4-draft-kept-words): C; it clears after 5 s (decide-p4-draft-kept-lifetime)

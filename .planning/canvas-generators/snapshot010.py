@@ -12,8 +12,12 @@ import printstart
 SRC, DEST = sys.argv[1], sys.argv[2]
 FONT_BLOB = '/_blob/37ac467ba5558024f5fb5a2e5c22a7bc'
 FONT_LOCAL = '../../../app/public/fonts/caveat-regular.woff2'
+# 2026-10-10: the 393 print route board references its five page pictures as canvas assets (phase4screens-assets.json), not data: URIs, so the served board is 290 KB, not 5.6 MB (the editor drops a board over 2 MiB).
+# The snapshot opens on its own, so those urls go back to the same pictures as data: URIs (phase4screens-pages.json).
+PAGES = json.load(open(HERE + '/phase4screens-pages.json')); PAGE_ASSETS = json.load(open(HERE + '/phase4screens-assets.json'))
 def standalone(s):
     s = s.replace('<script src="./support.js"></script>\n', '', 1).replace('<script src="./support.js"></script>', '', 1)
+    for k, blob in PAGE_ASSETS.items(): s = s.replace('src="%s"' % blob, 'src="%s"' % PAGES[k])
     return s.replace(FONT_BLOB, FONT_LOCAL)
 os.makedirs(DEST, exist_ok=True)
 SERVED = {  # canvas board -> snapshot file

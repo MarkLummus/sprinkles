@@ -168,7 +168,6 @@ export function isDraftDirty(mode, draft, baseline = null) {
       draft.churnDate !== '' ||
       Object.keys(draft.asMade).length > 0 ||
       Object.keys(draft.stepChanges).length > 0 ||
-      draft.timeToDrawTempMinutes !== '' ||
       draft.outOfMachineTempC !== '' ||
       draft.churnDurationMinutes !== '' ||
       draft.exitConsistency !== '' ||
@@ -190,7 +189,6 @@ export function isDraftDirty(mode, draft, baseline = null) {
   }
   return (
     draft.churnDate !== baseline.churnDate ||
-    draft.timeToDrawTempMinutes !== baseline.timeToDrawTempMinutes ||
     draft.outOfMachineTempC !== baseline.outOfMachineTempC ||
     draft.churnDurationMinutes !== baseline.churnDurationMinutes ||
     draft.exitConsistency !== baseline.exitConsistency ||
@@ -371,7 +369,6 @@ function blankRecordDraft() {
     churnDate: '',
     asMade: {},
     stepChanges: {},
-    timeToDrawTempMinutes: '',
     outOfMachineTempC: '',
     churnDurationMinutes: '',
     exitConsistency: '',
@@ -405,7 +402,6 @@ export function draftFromBatch(batch) {
     churnDate: churn.churnDate ?? '',
     asMade,
     stepChanges: structuredClone(churn.stepChanges),
-    timeToDrawTempMinutes: toDraftString(churn.timeToDrawTempMinutes),
     outOfMachineTempC: toDraftString(churn.outOfMachineTempC),
     churnDurationMinutes: toDraftString(churn.churnDurationMinutes),
     exitConsistency: churn.exitConsistency ?? '',
@@ -501,6 +497,8 @@ export function restoreDraftFromUndo(draft, pendingUndo) {
 // storing the errors and aborting is enough." The full field-level UI
 // wiring (aria-invalid/describedby, the field-error line, focus-on-first-
 // invalid) and the churn-date press-to-block (D-05) are Task 2's build.
+// The draft holds no Time to draw temp. (03.7.1, D-03), so that field reads
+// blank here and never raises its error.
 export function parseAllMeasuredFields(draft) {
   const fieldErrors = {};
   const parsed = {};
@@ -559,7 +557,6 @@ export function buildChurnFieldsFromDraft(draft, parsed) {
     churnDate: draft.churnDate === '' ? null : draft.churnDate,
     asMade,
     stepChanges: draft.stepChanges,
-    timeToDrawTempMinutes: parsed.timeToDrawTempMinutes.value,
     outOfMachineTempC: parsed.outOfMachineTempC.value,
     churnDurationMinutes: parsed.churnDurationMinutes.value,
     exitConsistency: draft.exitConsistency === '' ? null : draft.exitConsistency,
@@ -1561,7 +1558,16 @@ export function RecipePage({ onPageStatus = () => {} }) {
       let record;
       try {
         const batchBeingAmended = batches.find((batch) => batch.id === amendingBatchId);
-        record = completeRecord(batchBeingAmended, churnFields, tasting, { now });
+        // The pen neither shows nor edits Time to draw temp. (Mark, 2026-10-07,
+        // sketch 010 D17), so a correction carries the stored value through
+        // untouched until Phase 4's reseed removes the field (row
+        // build-remove-draw-temp-data-element).
+        record = completeRecord(
+          batchBeingAmended,
+          { ...churnFields, timeToDrawTempMinutes: batchBeingAmended.churn.timeToDrawTempMinutes },
+          tasting,
+          { now },
+        );
       } catch {
         batchSaveLockRef.current = false;
         setBatchSaveAction(null);

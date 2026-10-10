@@ -641,7 +641,10 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
+**Wave 1**
 - [ ] 03.7.1-01-PLAN.md — The pen and the reading lose the field on the real built app (tracer, with the before numbers); the record draft stops carrying it while a correction keeps the stored value; the stored value pinned through IndexedDB, export and import; the orphaned helper retired
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 03.7.1-02-PLAN.md — Side by side with sketch 010's pen and reading boards in WebKit and Chrome with before and after numbers; the plan line's CSS retired; regression and the rows for Mark's List
 
 ### Phase 4: Prepare the next version for making

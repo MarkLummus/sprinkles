@@ -633,6 +633,16 @@ Plans:
 - [x] 03.7-03-PLAN.md — Conformance against the decision 36 boards on the real DOM (WebKit and Chrome, 1366 and 393), the full regression with the print probe, and the device and Safari-print checks worded for Mark's List
 - [x] 03.7-04-PLAN.md — The documents follow: Phase 4's context amended (D-06, the break rule, a fresh print starting point), the todo closed, and the surface briefs and DESIGN.md revised through Impeccable (checkpoint)
 
+### Phase 03.7.1: Hide draw temperature and rename the logs (INSERTED)
+
+**Goal:** Time to draw temp. no longer shows on any screen (record pen, reading, print), and the batch log and tasting log carry their new names; the stored field stays until Phase 4's reseed removes it
+**Requirements**: TBD
+**Depends on:** Phase 03.7
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 03.7.1 to break down)
+
 ### Phase 4: Prepare the next version for making
 
 **Status:** Paused 2026-09-23 until Phase 03.5 separates the recipe from the sheet. Context gathered (`04-CONTEXT.md`); its print decisions carry over, but the canvas starting point must be re-captured from the separated Sheet.

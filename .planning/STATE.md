@@ -4,16 +4,16 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: planning
 stopped_at: Phase 03.7 complete, ready to plan Phase 04
-last_updated: "2026-10-06T16:06:51.958Z"
+last_updated: "2026-10-10T23:25:59.466Z"
 last_activity: 2026-10-06
 last_activity_desc: Phase 03.7 complete, transitioned to Phase 04
-state_head: d6a006822c1da063e24db6c4b6517b94755350ca
+state_head: 7a0035ab219470a72c81fcd791b7cb5fc9807faf
 progress:
-  total_phases: 14
+  total_phases: 15
   completed_phases: 11
   total_plans: 108
   completed_plans: 108
-  percent: 85
+  percent: 73
 ---
 
 # Project State
@@ -32,7 +32,7 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-10-06 — Phase 03.7 complete, transitioned to Phase 04
 
-Progress: [█████████░] 85% (3/4 phases; 66/66 plans executed through Phase 03.4)
+Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
 ## Performance Metrics
 
@@ -462,6 +462,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - Phase 03.4.1 renumbered to 03.5 (Mark, 2026-09-23); title, goal and position unchanged
 - Phase 03.6 inserted after Phase 3: Per-step shared ingredients (URGENT)
 - Phase 03.7 inserted after Phase 03.6: Before you start as its own Sheet section (URGENT)
+- Phase 03.7.1 inserted after Phase 03.7: Hide Time to draw temp. on every screen and rename the batch log and tasting log; the stored field stays for now (URGENT)
 
 ## Deferred Items
 

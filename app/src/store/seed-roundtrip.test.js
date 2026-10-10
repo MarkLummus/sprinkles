@@ -12,6 +12,8 @@ import { describe, it, beforeEach, expect } from 'vitest';
 import { createRepository } from './repository.js';
 import { seedIfEmpty } from './seed.js';
 import { sortedBatches } from '../domain/batch.js';
+import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { exportStore, validateStoreFile, importStore } from './transfer.js';
 import { activeWork, AWAITING_TASTING, NOT_YET_CHURNED, TASTED } from '../domain/lastEvent.js';
 
 beforeEach(() => {
@@ -61,5 +63,40 @@ describe('seeded batches read back from the store', () => {
     const { versions, batches, recipes } = await seededFromStore();
     const standings = new Set(activeWork(versions, batches, recipes).map((e) => e.standing));
     expect(standings).toEqual(new Set([NOT_YET_CHURNED, AWAITING_TASTING, TASTED]));
+  });
+});
+
+// Time to draw temp. is hidden on every screen (03.7.1, D-01) but stays in the
+// stored shape until Phase 4's reseed (D-02): the value a batch already holds
+// must come back from the store, out through an export and into a fresh store
+// untouched. A guard on behaviour this phase does not change, so it passes
+// before and after.
+describe('a stored Time to draw temp. survives (03.7.1, D-02)', () => {
+  it('reads back from the real store as the seeded 20', async () => {
+    const { batches } = await seededFromStore();
+    expect(batches.find((b) => b.id === augustSecondBatch.id).churn.timeToDrawTempMinutes).toBe(20);
+  });
+
+  it('survives export, validation and import into a fresh store, for every seeded batch', async () => {
+    const first = createRepository();
+    await seedIfEmpty(first);
+    const exported = JSON.parse(JSON.stringify(await exportStore(first)));
+
+    expect(validateStoreFile(exported)).toEqual({ ok: true, errors: [] });
+
+    globalThis.indexedDB = new IDBFactory();
+    const second = createRepository();
+    expect(await importStore(second, exported)).toEqual({ ok: true, errors: [] });
+
+    const before = await first.getAllBatches();
+    const after = await second.getAllBatches();
+    expect(after).toHaveLength(before.length);
+    for (const batch of before) {
+      const imported = after.find((b) => b.id === batch.id);
+      expect(imported.churn.timeToDrawTempMinutes).toBe(batch.churn.timeToDrawTempMinutes);
+    }
+    const imported = await second.getBatch(augustSecondBatch.id);
+    expect(imported.churn.timeToDrawTempMinutes).toBe(20);
+    expect(imported).toEqual(await first.getBatch(augustSecondBatch.id));
   });
 });

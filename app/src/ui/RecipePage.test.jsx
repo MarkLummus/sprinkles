@@ -383,7 +383,6 @@ function makeBlankRecordDraft() {
     churnDate: '',
     asMade: {},
     stepChanges: {},
-    timeToDrawTempMinutes: '',
     outOfMachineTempC: '',
     churnDurationMinutes: '',
     exitConsistency: '',
@@ -407,6 +406,16 @@ function makeBlankRecordDraft() {
 describe('isDraftDirty — the record pen\'s check, extended to every battery field (03.3.1-02 Task 1)', () => {
   it('a fresh recording draft with nothing typed is not dirty', () => {
     expect(isDraftDirty('recording', makeBlankRecordDraft())).toBe(false);
+  });
+
+  it('the check reads no Time to draw temp. (03.7.1, D-03): a blank draft carrying a stray value is not dirty', () => {
+    expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), timeToDrawTempMinutes: '20' })).toBe(false);
+  });
+
+  it('the check reads no Time to draw temp. against a baseline either: a Correct draft differing only by a stray value is not dirty', () => {
+    const baseline = draftFromBatch(augustSecondBatch);
+    const draft = { ...structuredClone(baseline), timeToDrawTempMinutes: '99' };
+    expect(isDraftDirty('recording', draft, baseline)).toBe(false);
   });
 
   it('a fresh recording draft is dirty the instant any one churn field is typed', () => {
@@ -492,7 +501,7 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
   it('pre-fills every churn field and tastingOpen from the seeded batch\'s own values', () => {
     const draft = draftFromBatch(augustSecondBatch);
     expect(draft.churnDate).toBe('2026-08-02');
-    expect(draft.timeToDrawTempMinutes).toBe('20');
+    expect(draft).not.toHaveProperty('timeToDrawTempMinutes');
     expect(draft.outOfMachineTempC).toBe('-6');
     expect(draft.churnDurationMinutes).toBe('30');
     expect(draft.atTheMachine).toBe('Soft, not greasy');
@@ -521,7 +530,7 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
       { id: 'blank-1', now: '2026-09-01T00:00:00.000Z' },
     );
     const draft = draftFromBatch(blankChurnBatch);
-    expect(draft.timeToDrawTempMinutes).toBe('');
+    expect(draft).not.toHaveProperty('timeToDrawTempMinutes');
     expect(draft.outOfMachineTempC).toBe('');
     expect(draft.exitConsistency).toBe('');
     expect(draft.airiness).toBe('');
@@ -620,7 +629,6 @@ describe('isTastingBodyField — the retirement scope\'s own boundary (Task 2, c
   it('reports false for every churn field and the shared Next time — a churn edit never retires a pending undo', () => {
     for (const field of [
       'churnDate',
-      'timeToDrawTempMinutes',
       'outOfMachineTempC',
       'churnDurationMinutes',
       'exitConsistency',
@@ -727,12 +735,19 @@ describe('parseAllMeasuredFields — 03.3.1-02 Task 1\'s own minimum: record per
   });
 
   it('the two error strings are character-identical to BATTERY_FIELDS\' own contract sentences', () => {
-    const timeField = BATTERY_FIELDS.find((f) => f.key === 'timeToDrawTempMinutes');
+    const durationField = BATTERY_FIELDS.find((f) => f.key === 'churnDurationMinutes');
     const tempField = BATTERY_FIELDS.find((f) => f.key === 'outOfMachineTempC');
-    const unsigned = parseAllMeasuredFields({ ...makeBlankRecordDraft(), timeToDrawTempMinutes: 'x' });
+    const unsigned = parseAllMeasuredFields({ ...makeBlankRecordDraft(), churnDurationMinutes: 'x' });
     const signed = parseAllMeasuredFields({ ...makeBlankRecordDraft(), outOfMachineTempC: 'x' });
-    expect(unsigned.fieldErrors.timeToDrawTempMinutes).toBe(timeField.error);
+    expect(unsigned.fieldErrors.churnDurationMinutes).toBe(durationField.error);
     expect(signed.fieldErrors.outOfMachineTempC).toBe(tempField.error);
+  });
+
+  it('reads Time to draw temp. as blank, since the draft holds no such key (03.7.1, D-03): it parses as null and can never block a save', () => {
+    const result = parseAllMeasuredFields(makeBlankRecordDraft());
+    expect(result.hasErrors).toBe(false);
+    expect(result.fieldErrors).not.toHaveProperty('timeToDrawTempMinutes');
+    expect(result.parsed.timeToDrawTempMinutes).toEqual({ ok: true, value: null });
   });
 });
 
@@ -956,11 +971,16 @@ describe('the not-found link carries an explicit tabindex (G-03.4-r4-1)', () => 
 
 describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save assembly (D-02, D-10)', () => {
   it('assembles the churn fields from a valid draft, blank-is-absent on every optional field', () => {
-    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', timeToDrawTempMinutes: '20' };
+    const draft = { ...makeBlankRecordDraft(), churnDate: '2026-08-09', churnDurationMinutes: '30' };
     const { parsed } = parseAllMeasuredFields(draft);
     const churnFields = buildChurnFieldsFromDraft(draft, parsed);
     expect(churnFields.churnDate).toBe('2026-08-09');
-    expect(churnFields.timeToDrawTempMinutes).toBe(20);
+    expect(churnFields.churnDurationMinutes).toBe(30);
+    // The churn fields no longer name Time to draw temp. (03.7.1, D-03): a new
+    // batch gets none, and the domain stores null, as an untouched field always did.
+    expect(churnFields).not.toHaveProperty('timeToDrawTempMinutes');
+    const newBatch = createBatch(oliveOilVersion, churnFields, null, { id: 'new-1', now: '2026-08-09T00:00:00.000Z' });
+    expect(newBatch.churn.timeToDrawTempMinutes).toBe(null);
     expect(churnFields.outOfMachineTempC).toBe(null);
     expect(churnFields.exitConsistency).toBe(null);
     expect(churnFields.atTheMachine).toBe(null);
@@ -1036,7 +1056,10 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
     const record = completeRecord(augustSecondBatch, churnFields, tasting, { now: '2026-08-10T00:00:00.000Z' });
     expect(record.changed).toBe('2026-08-10T00:00:00.000Z');
     expect(record.recordedAt).toBe(augustSecondBatch.recordedAt);
-    expect(record.churn.timeToDrawTempMinutes).toBe(20);
+    // Time to draw temp. is not in the draft (03.7.1, D-03); the stored value rides
+    // through handleSaveBatch's own pass-through, pinned end to end in
+    // RecipePage.recordTasting.test.jsx.
+    expect(record.churn.churnDurationMinutes).toBe(30);
     expect(record.tasting.tastingTempC).toBe(-12);
   });
 });

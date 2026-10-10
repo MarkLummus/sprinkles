@@ -11,6 +11,9 @@
 // running with no window in scope. RecipePage is mounted whole, over an
 // in-memory stand-in for the repository seam (the only path to the store),
 // inside a MemoryRouter that carries the two Notebook paths.
+//
+// The last block pins that a stored Time to draw temp. rides through the
+// real save untouched now the pen no longer draws or drafts it (03.7.1).
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -244,6 +247,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     expect(saved.tasting.note).toBe('Soft, not greasy.');
     expect(saved.tasting.temperingMinutes).toBe(10);
     expect(saved.churn.churnDate).toBe('2026-08-02');
+    expect(saved.churn.timeToDrawTempMinutes).toBe(20);
     expect(pageStatus).toHaveBeenCalled();
     expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('changed ') && !message.includes('against'))).toBe(true);
     expect(pen()).toBeNull();
@@ -309,5 +313,62 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     current = null;
     await mountAt(entry, [augustSecondBatch, newer]);
     expect(pen()).toBeNull();
+  });
+});
+
+describe('the stored Time to draw temp. through the real save (03.7.1, D-02, D-03)', () => {
+  const FIELD_INPUT = 'input[aria-label^="Time to draw temp"]';
+
+  it('Correct keeps the stored 20 and saves a Next time note beside it; the pen never drew the field', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [augustSecondBatch]);
+    await click(current.container.querySelector('.batch-row__correct'));
+    expect(pen().querySelector(FIELD_INPUT)).toBeNull();
+
+    await setValue(pen().querySelector('textarea[aria-label="Next time"]'), 'Less oil');
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => pen() === null);
+
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    const saved = store.saveBatch.mock.calls[0][0];
+    expect(saved.id).toBe(augustSecondBatch.id);
+    expect(saved.churn.timeToDrawTempMinutes).toBe(20);
+    expect(saved.churn.nextTimeNote).toBe('Less oil');
+    expect(pen()).toBeNull();
+  });
+
+  it('Correct on a batch storing -5, a value transfer.js accepts, saves with no field error and keeps -5', async () => {
+    installMatchMedia();
+    const stored = structuredClone(augustSecondBatch);
+    stored.churn.timeToDrawTempMinutes = -5;
+    await mountAt(VERSION_PATH, [stored]);
+    await click(current.container.querySelector('.batch-row__correct'));
+
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => pen() === null);
+
+    expect(pen()).toBeNull();
+    expect(current.container.querySelector('.field-error')).toBeNull();
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    expect(store.saveBatch.mock.calls[0][0].churn.timeToDrawTempMinutes).toBe(-5);
+    expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('changed '))).toBe(true);
+  });
+
+  it('Record another stores the field as null on the new batch, and the 2 Aug batch still holds 20', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [augustSecondBatch]);
+    await click(current.container.querySelector('.batch-row__record'));
+    expect(pen().querySelector(FIELD_INPUT)).toBeNull();
+
+    await setValue(pen().querySelector('input[type="date"]'), '2026-10-10');
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => store.saveBatch.mock.calls.length > 0);
+
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    const saved = store.saveBatch.mock.calls[0][0];
+    expect(saved.id).not.toBe(augustSecondBatch.id);
+    expect(saved.churn.churnDate).toBe('2026-10-10');
+    expect(saved.churn.timeToDrawTempMinutes).toBe(null);
+    expect(store.batches.find((batch) => batch.id === augustSecondBatch.id).churn.timeToDrawTempMinutes).toBe(20);
   });
 });

@@ -25,7 +25,6 @@ const emptyRecordDraft = {
   churnDate: '',
   asMade: {},
   stepChanges: {},
-  timeToDrawTempMinutes: '',
   outOfMachineTempC: '',
   churnDurationMinutes: '',
   exitConsistency: '',

@@ -147,7 +147,8 @@ describe('VersionRow — the identity heading (route-recipe.md § 6, 2026-09-18)
   });
 
   it('carries no anti-goal form for the ordinal — no v1, #1, 1st, or zero-padding', () => {
-    const markup = renderVersionRow({});
+    // The id the Print sheet link carries ends -v1; only visible text counts.
+    const markup = renderVersionRow({}).replace(/ href="[^"]*"/g, '');
     expect(markup).not.toContain('v1');
     expect(markup).not.toContain('#1');
     expect(markup).not.toContain('1st');
@@ -618,7 +619,7 @@ describe('VersionRow — the plan pen\'s own form-status live region', () => {
 // explicit tabindex. The History panel starts closed, so its own links
 // are pinned in RecipeHistory.test.jsx, not here.
 describe('VersionRow — every link carries an explicit tabindex (G-03.4-r4-1)', () => {
-  it('renders exactly 2 <a> opening tags — From version, From batch — each carrying tabindex="0"', () => {
+  it('renders exactly 3 <a> opening tags — From version, From batch, Print sheet — each carrying tabindex="0"', () => {
     const markup = renderVersionRow({
       version: childVersion,
       versions: [oliveOilVersion, childVersion],
@@ -626,7 +627,7 @@ describe('VersionRow — every link carries an explicit tabindex (G-03.4-r4-1)',
       parentVersion: oliveOilVersion,
     });
     const tags = markup.match(/<a\b[^>]*>/g) ?? [];
-    expect(tags).toHaveLength(2);
+    expect(tags).toHaveLength(3);
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }
@@ -823,5 +824,38 @@ describe('VersionRow — the band\'s Show changes is gated off below 724 (261002
     const omitted = renderVersionRow(withParent);
     expect(renderVersionRow({ ...withParent, below724: false })).toBe(omitted);
     expect(omitted).toContain('Show changes');
+  });
+});
+
+// D-05: the version row's Print sheet, an underlined text control after Next
+// version and Show changes, leading to the print route (04-06 Task 1).
+describe('VersionRow — Print sheet (D-05)', () => {
+  it('renders a Print sheet link to the print route, a notebook-link with tabindex 0', () => {
+    const markup = renderVersionRow({ openPen: null });
+    const tag = markup.match(/<a\b[^>]*>Print sheet<\/a>/)?.[0];
+    expect(tag).toBeDefined();
+    expect(tag).toContain('href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/print"');
+    expect(tag).toContain('class="notebook-link"');
+    expect(tag).toContain('tabindex="0"');
+  });
+
+  it('sits in the acts group after Next version and Show changes', () => {
+    const markup = renderVersionRow({
+      version: childVersion,
+      versions: [oliveOilVersion, childVersion],
+      parentVersion: oliveOilVersion,
+      openPen: null,
+    });
+    const acts = markup.slice(markup.indexOf('notebook-version__acts'));
+    expect(acts.indexOf('Next version')).toBeGreaterThan(-1);
+    expect(acts.indexOf('Show changes')).toBeGreaterThan(acts.indexOf('Next version'));
+    expect(acts.indexOf('Print sheet')).toBeGreaterThan(acts.indexOf('Show changes'));
+  });
+
+  it('is absent while a pen is open', () => {
+    for (const openPen of ['plan', 'record']) {
+      const markup = renderVersionRow({ openPen, mode: openPen === 'plan' ? 'developing' : 'recording', penDraft: emptyPenDraft() });
+      expect(markup).not.toContain('Print sheet');
+    }
   });
 });

@@ -6,6 +6,7 @@ import { RecipePage } from './ui/RecipePage.jsx';
 import { Shell } from './ui/Shell.jsx';
 import { Placeholder } from './ui/Placeholder.jsx';
 import { SheetCodeSearch } from './ui/SheetCodeSearch.jsx';
+import { PrintSheetForRoute } from './ui/PrintSheet.jsx';
 import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 
 // A different version, or a different batch of the same version, must be a
@@ -101,6 +102,10 @@ export const router = createBrowserRouter([
       { path: '/notebook/:recipeId', Component: NotebookLatestRedirect },
       { path: '/notebook/:recipeId/:versionId', Component: RecipePageForRoute },
       { path: '/notebook/:recipeId/:versionId/batch/:batchId', Component: RecipePageForRoute },
+      // D-04: the print route under the Notebook form. It renders the saved
+      // version only (PrintSheet.jsx), so it prints a version and never
+      // creates a batch (PRINT-05).
+      { path: '/notebook/:recipeId/:versionId/print', Component: PrintSheetForRoute },
       // D-16: kept indefinitely, not deleted — the old id is a version id.
       { path: '/recipe/:id', Component: LegacyRecipeRedirect },
       { path: '/recipe/:id/batch/:batchId', Component: LegacyRecipeRedirect },

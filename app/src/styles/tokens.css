@@ -508,4 +508,33 @@
   --sheet-done-cancel-gap: 16px; /* the Done/Cancel paragraph's own gap */
   --sheet-open-fields-offset: 4px; /* the open step's field block's own outline-offset */
   --sheet-changed-line-gap-t: 4px; /* .method-step__changed's own top margin (corrects the previous --gap-xs reuse, which read 6px against the board's 4px) */
+
+  --app-tracking-name: -0.02em; /* the print route's Sheet title link (screen-print-route-1280.html), the place title's own tracking */
+
+  /* The print route and the log pages (Phase 4, plan 04-06; sketch 010
+     CONTRACT.md §§ 3, 4, 10 and the print-route boards). Every value is a
+     literal the boards state directly, turned into a token so print.css
+     reads no literal of its own (D-03). Only the @page size and margin
+     descriptors in print.css stay literal: they cannot read a custom
+     property. */
+  --sheet-print-page-w: 816px; /* a letter page as a picture, and the log page's own width (D16) */
+  --sheet-print-page-h: 1056px; /* the same page's height */
+  --sheet-print-margin-x: 72px; /* 0.75 in at the left and the right (D20); the log page's left padding on screen */
+  --sheet-print-margin-y: 48px; /* 0.5 in above and below (D20); the log page's top and bottom padding on screen */
+  --sheet-print-guard: 2px; /* D22: the ink stops this short of the content box's right edge, because WebKit's print clips the date box's right border otherwise */
+  --sheet-print-foot-gap: 16px; /* D22: at least this much white above the foot rule */
+  --sheet-print-line-h: 32px; /* a writing line, and a ruled figure line's own height */
+  --sheet-print-figure-w: 96px; /* a ruled figure line's width (D1) */
+  --sheet-print-box: 14px; /* an option's ink box */
+  --sheet-print-datebox-w: 168px; /* the date box (D8) */
+  --sheet-print-datebox-h: 52px;
+  --sheet-print-caption-col: 150px; /* a mark row's and a scale row's caption column */
+  --sheet-print-weight-title: 700; /* the page title: the Sheet title's own weight (D21) */
+  --sheet-print-weight-head: 600; /* a group's name */
+  --sheet-print-weight-cue: 500; /* a group's cue at the right, the caption face */
+  --sheet-print-tracking-caps: 0.04em; /* a group's name and cue */
+  --sheet-print-tracking-foot: 0.02em; /* the foot */
+  --sheet-print-tracking-title: -0.01em; /* the page title */
+  --sheet-print-leading-title: 1.1; /* the page title's own leading */
+  --sheet-print-leading-solid: 1; /* a unit or a number set solid on its line */
 }

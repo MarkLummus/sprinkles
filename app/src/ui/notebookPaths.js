@@ -1,6 +1,6 @@
 // Pure. No framework, no DOM, no store import. The one place every
 // Notebook address is built (03.5-CONTEXT.md D-14 to D-17) — every in-app
-// link and redirect target reads through these three functions rather than
+// link and redirect target reads through these functions rather than
 // composing a template literal of its own, so the /notebook/… form can
 // never drift between call sites.
 import { sortedVersions, versionsForRecipe } from '../domain/lineage.js';
@@ -14,6 +14,17 @@ import { sortedVersions, versionsForRecipe } from '../domain/lineage.js';
 export function notebookPath(recipeId, versionId, batchId = null) {
   const base = `/notebook/${encodeURIComponent(recipeId)}/${encodeURIComponent(versionId)}`;
   return batchId === null ? base : `${base}/batch/${encodeURIComponent(batchId)}`;
+}
+
+/**
+ * printPath(recipeId, versionId) -> '/notebook/:recipeId/:versionId/print',
+ * the print route under the Notebook form (04-RESEARCH.md C8; the print
+ * brief's Assets and processes amendment). Built on notebookPath, so every
+ * segment runs through encodeURIComponent and a stored id holding '/' or
+ * '..' can never change the path's shape.
+ */
+export function printPath(recipeId, versionId) {
+  return `${notebookPath(recipeId, versionId)}/print`;
 }
 
 /**

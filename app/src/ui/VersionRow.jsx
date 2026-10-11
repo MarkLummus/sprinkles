@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { recordDateWords, sortedBatches } from '../domain/batch.js';
 import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domain/lastEvent.js';
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
-import { notebookPath } from './notebookPaths.js';
+import { notebookPath, printPath } from './notebookPaths.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { Button } from './Button.jsx';
 import { Checkbox } from './Checkbox.jsx';
@@ -426,6 +426,14 @@ export function VersionRow({
                 {showingChanges ? 'Hide changes' : 'Show changes'}
               </Button>
             )}
+            {/* D-05: Print sheet, an underlined text control after Show
+                changes (the same grammar). Sketch 010 decides its label and
+                row (brief § 4) but draws no placement; Mark looks at this
+                place. It leads to the print route, which reads the saved
+                version only. */}
+            <Link className="notebook-link" to={printPath(version.recipeId, version.id)} tabIndex={0}>
+              Print sheet
+            </Link>
           </div>
         )}
         </section>

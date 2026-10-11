@@ -1,0 +1,375 @@
+/* The print route and the blank log pages (Phase 4, plan 04-06; D-03, D-04,
+   D-07, D-07a). Sketch 010 is the acceptance target, read as a structural
+   contract: screen-print-route-1280.html and -393.html for the route,
+   page-1-batch-log.html and page-2-tasting-log.html for the pages, and
+   CONTRACT.md §§ 1 to 4 and 8 to 10.
+
+   Why a file of its own: css-source.js's readAllRules throws on @page and
+   @supports, and cross-cutting.test.js pins app.css's media blocks and print
+   rules. print.test.js reads this file with an at-rule-aware reader of its
+   own. Imported in main.jsx after notebook.css.
+
+   Every colour, size, spacing, rule weight, weight, leading and tracking
+   below reads a custom property from tokens.css. The only literals are the
+   @page size and margin descriptors, which cannot read a custom property.
+
+   The pages do not read the window: nothing in the page rules sits in a
+   non-print @media block, and the screen pictures scale as a whole by one
+   locally set property (--sheet-print-picture-scale), so a page measures the
+   same at every width and pointer (CONTRACT § 1).
+
+   WebKit prints one CSS px as 0.8 pt, so the content box is 630 x 900 CSS px
+   in Safari and 672 x 960 in Chrome. WebKit ignores @page margin boxes and
+   named pages and prints a position:fixed element once, so every foot is
+   in-flow markup inside its page. 100vh in WebKit print is the window, never
+   the page: the page boxes take height: 100%, and html, body and every
+   wrapper down to the page are given height: 100% (RESEARCH Pattern 2). */
+
+/* The route, on screen (D-04; the p4r1 block of screen-print-route-1280.html). */
+.print-route {
+  padding-top: var(--gap-l);
+}
+
+.print-route__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  padding-bottom: var(--gap-m);
+  margin-bottom: var(--gap-m);
+  border-bottom: var(--app-rule-row) solid var(--app-divider);
+}
+
+.print-route__id {
+  min-width: 0;
+}
+
+.print-route__line {
+  margin: var(--gap-hair) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  font-weight: normal;
+  color: var(--app-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.print-route__name {
+  font-size: var(--app-size-recipe-name);
+  font-weight: var(--sheet-print-weight-title);
+  letter-spacing: var(--app-tracking-name);
+  color: var(--app-text);
+}
+
+.print-route__code {
+  font-weight: var(--sheet-print-weight-head);
+  letter-spacing: var(--sheet-print-tracking-caps);
+  color: var(--app-text);
+}
+
+.print-route__pages {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--gap-m);
+}
+
+/* One page as a picture: a white sheet with a one-pixel divider drawn inside
+   its edge, so the picture is exactly the page's box. */
+.print-route__picture {
+  box-sizing: border-box;
+  width: var(--sheet-print-page-w);
+  max-width: 100%;
+  background: var(--app-background);
+  outline: var(--app-rule-row) solid var(--app-divider);
+  outline-offset: calc(-1 * var(--app-rule-row));
+}
+
+/* The page box (CONTRACT §§ 1, 3): a letter page, white, ink only. */
+.print-page {
+  box-sizing: border-box;
+  width: var(--sheet-print-page-w);
+  height: var(--sheet-print-page-h);
+  overflow: hidden;
+  background: var(--app-background);
+  color: var(--sheet-ink);
+  font-family: var(--face-grotesk);
+}
+
+/* The log pages' padding (D20, D22): 48 above and below, 72 at the left and
+   72 plus the 2 px guard at the right. */
+.print-page--log {
+  padding: var(--sheet-print-margin-y) calc(var(--sheet-print-margin-x) + var(--sheet-print-guard))
+    var(--sheet-print-margin-y) var(--sheet-print-margin-x);
+}
+
+/* The log pages' own rules (page-1-batch-log.html and page-2-tasting-log.html,
+   the lf-* family), transcribed. */
+.lf {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--sheet-ink);
+  font-family: var(--face-grotesk);
+}
+
+.lf * {
+  color: var(--sheet-ink);
+}
+
+/* D22: at least 16 px between the last line and the foot rule. */
+.lf-body {
+  flex: none;
+  margin-bottom: var(--sheet-print-foot-gap);
+}
+
+.lf .region-name {
+  font-size: var(--sheet-type-section);
+  margin: 0;
+}
+
+.lf-datebox {
+  float: right;
+  box-sizing: border-box;
+  width: var(--sheet-print-datebox-w);
+  height: var(--sheet-print-datebox-h);
+  margin: 0 0 0 var(--gap-l);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+  padding: var(--gap-xs) var(--gap-s);
+}
+
+/* D21: the page title at the Sheet title's own size and weight, sentence case. */
+.lf .lf-title {
+  margin: 0 0 var(--gap-s);
+  font-size: var(--sheet-size-recipe-name);
+  font-weight: var(--sheet-print-weight-title);
+  line-height: var(--sheet-print-leading-title);
+  letter-spacing: var(--sheet-print-tracking-title);
+  text-transform: none;
+}
+
+.lf-datebox .pen-caption {
+  margin: 0;
+}
+
+.lf-sec {
+  margin: 0 0 var(--gap-m);
+}
+
+.lf-row {
+  display: flex;
+  column-gap: var(--gap-m);
+  row-gap: var(--gap-l);
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.lf-field .pen-caption {
+  margin: 0 0 var(--gap-xs);
+}
+
+.lf-rule {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--gap-field-unit);
+}
+
+.lf-base {
+  display: block;
+  height: var(--sheet-print-line-h);
+  border-bottom: var(--rule-ink-field) solid var(--sheet-ink);
+}
+
+.lf-base--figure {
+  width: var(--sheet-print-figure-w);
+}
+
+.lf-unit {
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-print-leading-solid);
+  padding-bottom: var(--gap-hair);
+}
+
+.lf-mark {
+  display: flex;
+  gap: var(--gap-m);
+  flex-wrap: wrap;
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
+}
+
+.lf-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.lf-box {
+  display: inline-block;
+  width: var(--sheet-print-box);
+  height: var(--sheet-print-box);
+  border: var(--rule-ink-field) solid var(--sheet-ink);
+  box-sizing: border-box;
+}
+
+.lf-mrow {
+  display: grid;
+  grid-template-columns: var(--sheet-print-caption-col) 1fr;
+  column-gap: var(--gap-s);
+  align-items: baseline;
+  margin: 0 0 var(--gap-s);
+}
+
+.lf-mrow .pen-caption,
+.lf-mrow p {
+  margin: 0;
+}
+
+.lf-mrow + .lf-sec {
+  margin-top: var(--gap-m);
+}
+
+.lf-lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.lf-line {
+  height: var(--sheet-print-line-h);
+  border-bottom: var(--rule-ink-field) solid var(--sheet-ink);
+}
+
+.lf-group {
+  margin: var(--gap-l) 0 0;
+}
+
+/* D22: a group's head, the Sheet's own section head (14 px, 600, caps) over a
+   2.5 px ink rule; the cue at the right is the caption face (12 px, 500). */
+.lf-ghead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: var(--rule-tick) solid var(--sheet-ink);
+  padding: 0 0 var(--gap-xs);
+  margin: 0 0 var(--gap-s);
+}
+
+.lf-gname,
+.lf-gcue {
+  font-family: var(--face-grotesk);
+  font-weight: var(--sheet-print-weight-head);
+  text-transform: uppercase;
+  line-height: var(--sheet-leading-section);
+}
+
+.lf-gname {
+  font-size: var(--sheet-type-section);
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+.lf-gcue {
+  font-size: var(--sheet-type-label);
+  font-weight: var(--sheet-print-weight-cue);
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+.lf-verdict {
+  display: flex;
+  gap: var(--gap-l);
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-leading-control);
+  margin: 0 0 var(--gap-xs);
+}
+
+.lf-group .lf-mrow {
+  border-bottom: var(--rule-ink-field) solid var(--sheet-ink);
+  padding: var(--gap-xs) 0 var(--gap-hair);
+  margin: 0;
+}
+
+/* D22: the same 32 px above Notes as above every group. */
+.lf-notes {
+  margin: var(--gap-l) 0 0;
+}
+
+.lf-notes .lf-lines {
+  margin-top: var(--gap-xs);
+}
+
+/* D7: the foot is in flow, at the page's foot, under a 1 px ink rule. */
+.lf-foot {
+  margin-top: auto;
+  padding-top: var(--gap-xs);
+  border-top: var(--rule-ink-field) solid var(--sheet-ink);
+  font-size: var(--sheet-size-small-print);
+  letter-spacing: var(--sheet-print-tracking-foot);
+}
+
+/* Paper (D-07, sketch 010 D16, D20): letter portrait only, the margins 0.5 in
+   above and below and 0.75 in at the sides. The two descriptors below are the
+   file's only literals. */
+@page {
+  size: letter;
+  margin: 0.5in 0.75in;
+}
+
+@media print {
+  /* Only while the print route is present, so every other route's print is
+     untouched: the shell's chrome goes, and the wrappers down to the page
+     become a plain block chain of definite heights. */
+  .shell:has(.print-route) .shell__head,
+  .shell:has(.print-route) .shell__rail,
+  .shell:has(.print-route) .shell__tabs,
+  .shell:has(.print-route) .shell__scrim,
+  .shell:has(.print-route) .shell__import-errors,
+  .print-route__head {
+    display: none;
+  }
+
+  html:has(.print-route),
+  html:has(.print-route) body,
+  html:has(.print-route) #root,
+  .shell:has(.print-route),
+  .shell:has(.print-route) .shell__body,
+  .shell:has(.print-route) .shell__main,
+  .print-route,
+  .print-route__pages {
+    display: block;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+
+  .print-route__pages {
+    row-gap: 0;
+  }
+
+  /* The picture and the page lose their screen frame and fill the content box. */
+  .print-route__picture {
+    width: auto;
+    max-width: none;
+    height: 100%;
+    outline: none;
+    overflow: visible;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .print-route__picture:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .print-page {
+    width: auto;
+    height: 100%;
+    overflow: visible;
+    transform: none;
+  }
+
+  /* No left or top padding: the page margins are the paper's own. The guard
+     stays (D22). */
+  .print-page--log {
+    padding: 0 var(--sheet-print-guard) 0 0;
+  }
+}

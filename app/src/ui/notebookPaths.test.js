@@ -3,7 +3,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { notebookPath, legacyRecipePath, latestVersionPath } from './notebookPaths.js';
+import { notebookPath, printPath, legacyRecipePath, latestVersionPath } from './notebookPaths.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 
 describe('notebookPath — the one address builder every recipe link uses (D-17)', () => {
@@ -21,6 +21,24 @@ describe('notebookPath — the one address builder every recipe link uses (D-17)
 
   it('encodes each segment with encodeURIComponent, never trusting a stored id as a literal path segment (T-03.5-06)', () => {
     expect(notebookPath('a b/c', 'x')).toBe('/notebook/a%20b%2Fc/x');
+  });
+});
+
+describe('printPath — the print route address (D-04; research C8)', () => {
+  it('builds /notebook/:recipeId/:versionId/print', () => {
+    expect(printPath('olive-oil-ice-cream', 'olive-oil-ice-cream-v1')).toBe(
+      '/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/print',
+    );
+  });
+
+  it('encodes each segment, so a stored id holding / cannot change the path shape (T-04-15)', () => {
+    expect(printPath('a b/c', 'x')).toBe('/notebook/a%20b%2Fc/x/print');
+    expect(printPath('a/b', 'c/d').split('/')).toEqual(['', 'notebook', 'a%2Fb', 'c%2Fd', 'print']);
+  });
+
+  it('keeps a .. segment a single segment: it adds no separator of its own', () => {
+    expect(printPath('..', 'v').split('/')).toEqual(['', 'notebook', '..', 'v', 'print']);
+    expect(printPath('r', '../x').split('/')).toEqual(['', 'notebook', 'r', '..%2Fx', 'print']);
   });
 });
 

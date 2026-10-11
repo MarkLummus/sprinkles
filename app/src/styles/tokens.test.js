@@ -16,7 +16,7 @@ const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
 const UI_DIR = path.join(STYLES_DIR, '..', 'ui');
 const DOMAIN_DIR = path.join(STYLES_DIR, '..', 'domain');
 
-const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'home.css', 'shell.css', 'notebook.css'];
+const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'home.css', 'shell.css', 'notebook.css', 'print.css'];
 
 // One custom property is set inline via React's style prop: RecipeHistory.jsx
 // puts the entry count on the History strip, a layout count read by
@@ -112,7 +112,6 @@ describe('tokens.test.js — the unresolved-token gate (03.4-01)', () => {
     // being a single link (D-11: the row is a block, not a link).
     const expectedUnread = [
       '--rule-band-edge',
-      '--rule-tick',
       '--sheet-hatch-pitch',
       '--sheet-hatch-stroke',
       '--gap-mark-stop',

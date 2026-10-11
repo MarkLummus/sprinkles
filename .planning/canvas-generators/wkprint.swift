@@ -2,6 +2,9 @@
 // wait for the Sheet's table, optionally inject CSS, then print through NSPrintOperation
 // to a PDF on a Letter page with iPad-like margins (36pt sides/top, 50pt foot).
 // usage: wkprint <url> <out.pdf> [css-file] [js-to-eval-before-print]
+// WKP_READY (04-06): a JavaScript boolean expression polled in place of the default
+// ready check (the Sheet's table and loaded fonts), so a route that has no table, such as
+// the print route, can wait on its own ready mark. Unset, the old check runs unchanged.
 import AppKit
 import WebKit
 
@@ -36,7 +39,7 @@ final class Runner: NSObject, WKNavigationDelegate {
 
   func poll() {
     tries += 1
-    let check = "!!document.querySelector('.ingredient-table') && document.fonts.status === 'loaded'"
+    let check = ProcessInfo.processInfo.environment["WKP_READY"] ?? "!!document.querySelector('.ingredient-table') && document.fonts.status === 'loaded'"
     web.evaluateJavaScript(check) { result, _ in
       if (result as? Bool) == true || self.tries > 60 {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { self.prePrint() }

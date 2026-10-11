@@ -341,11 +341,10 @@ describe("the log's vertical rhythm and the tasting grids (G-03.5-6, 03.5-25)", 
     expect(topLevel('.notebook-log .batch-row').declarations).toMatch(/gap:\s*var\(--app-notebook-log-group-gap\)/);
   });
 
-  test("the cell's label-to-value gap is the hairline, the value line is normal leading, and the plan line has no top margin", () => {
+  test("the cell's label-to-value gap is the hairline and the value line is normal leading", () => {
     expect(topLevel('.notebook-log .batch-row__cell'), 'expected a top-level .notebook-log .batch-row__cell rule').toBeTruthy();
     expect(topLevel('.notebook-log .batch-row__cell').declarations).toMatch(/gap:\s*var\(--gap-hair\)/);
     expect(topLevel('.notebook-log .batch-row__cell-value').declarations).toMatch(/line-height:\s*normal/);
-    expect(topLevel('.notebook-log .batch-row__plan').declarations).toMatch(/margin-top:\s*0/);
   });
 
   test("the churn cells' own grid, a direct child of .batch-margin, has no top margin; the tasting grids keep the Sheet's", () => {

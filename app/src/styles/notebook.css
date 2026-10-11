@@ -914,13 +914,6 @@
   color: var(--app-text-secondary);
 }
 
-.notebook-log .batch-row__plan {
-  font-size: var(--app-size-label);
-  /* G-03.5-6: the cell's own gap spaces the plan line, as on the boards. */
-  margin-top: 0;
-  color: var(--app-text-secondary);
-}
-
 /* The notes group (sketch 011, every batch board's <div> beneath the
    measured cells): a flex column with the hairline gap between the two
    notes, and the log's own group gap above, separating each note onto

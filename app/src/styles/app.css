@@ -1671,14 +1671,6 @@ textarea {
   color: var(--sheet-ink);
 }
 
-/* A measured cell's plan/technical-term sub-line (sketch 003 variant B,
-   index.html:90, 03.3-07). */
-.batch-row__plan {
-  display: block;
-  font-size: var(--sheet-size-small-print);
-  margin-top: var(--gap-hair);
-}
-
 /* The Tasting head line's inline meta span (sketch 003 variant B,
    index.html:246, 03.3-07): undoes .region-name's own uppercase/
    letter-spacing for this one inline span. */

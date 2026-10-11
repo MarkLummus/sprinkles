@@ -855,7 +855,6 @@ describe('exclusion guards — registers the finding deliberately leaves in plac
   });
 
   test("the batch row's measured-cell small print keeps its ratified registers", () => {
-    expect(ruleFor('.batch-row__plan').declarations).toMatch(/font-size:\s*var\(--sheet-size-small-print\)/);
     expect(ruleFor('.batch-row__unit').declarations).toMatch(/font-size:\s*var\(--sheet-size-deviation-words\)/);
   });
 });

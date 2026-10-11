@@ -11,6 +11,7 @@ import {
 } from './draft.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
+import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
 
 const NOW = '2026-10-11T09:00:00.000Z';
 
@@ -205,7 +206,7 @@ describe('draftMatchesVersion: a record draft', () => {
     expect(draftMatchesVersion(recordRecord(), oliveOilVersion, [])).toBe(true);
   });
 
-  it('accepts as-made values and marks that name the version’s own rows and the six axes', () => {
+  it('accepts as-made values and marks that name the version’s own rows and the version’s axes', () => {
     const record = recordRecord({ asMade: { 'row-01': ['120', ''] }, marks: { hardness: 3, oil: 4 } });
     expect(draftMatchesVersion(record, oliveOilVersion, [])).toBe(true);
   });
@@ -256,6 +257,101 @@ describe('draftMatchesVersion: an amend draft', () => {
     expect(draftMatchesVersion(amendRecord({ amendBaseline: null }), oliveOilVersion, batches)).toBe(false);
     expect(draftMatchesVersion(amendRecord({ amendBaseline: { churnDate: '' } }), oliveOilVersion, batches)).toBe(false);
     expect(draftMatchesVersion(amendRecord({ amendOpener: 'somewhere' }), oliveOilVersion, batches)).toBe(false);
+  });
+});
+
+// WR-04: the draft's values must be ones the pen offers and Save could store,
+// so a restored pen can never write a batch the import check refuses.
+describe('draftMatchesVersion: values Save could store (WR-04)', () => {
+  // Olive oil declares Body and Oil and the problem Bitter; this clone declares none.
+  const bareVersion = { ...structuredClone(oliveOilVersion), declaredAxes: [], declaredFlaws: [] };
+
+  it('accepts each word the pen offers, a declared problem and marks on declared axes', () => {
+    for (const [field, options] of Object.entries(SEGMENT_OPTIONS)) {
+      for (const word of options) {
+        expect(draftMatchesVersion(recordRecord({ [field]: word }), oliveOilVersion, [])).toBe(true);
+      }
+    }
+    for (const word of MARK_ONE_OPTIONS) {
+      expect(draftMatchesVersion(recordRecord({ atDraw: word }), oliveOilVersion, [])).toBe(true);
+      expect(draftMatchesVersion(recordRecord({ fromFreezer: word }), oliveOilVersion, [])).toBe(true);
+    }
+    expect(draftMatchesVersion(recordRecord({ defects: [DEFECTS[0]] }), oliveOilVersion, [])).toBe(true);
+    expect(draftMatchesVersion(recordRecord({ declaredDefects: ['Bitter'] }), oliveOilVersion, [])).toBe(true);
+    expect(draftMatchesVersion(recordRecord({ marks: { body: 2, oil: 4 } }), oliveOilVersion, [])).toBe(true);
+  });
+
+  it('refuses a word the pen does not offer in any of the five choice fields', () => {
+    const refused = [
+      { exitConsistency: 'garbage' },
+      { airiness: 'fluffy' },
+      { meltStyle: 'runny' },
+      { atDraw: 'See below' },
+      { fromFreezer: 'maybe' },
+    ];
+    for (const overrides of refused) {
+      expect(draftMatchesVersion(recordRecord(overrides), oliveOilVersion, [])).toBe(false);
+    }
+  });
+
+  it('refuses a defect chip that is not one of the four, an undeclared problem, or a problem twice', () => {
+    expect(draftMatchesVersion(recordRecord({ defects: ['whatever'] }), oliveOilVersion, [])).toBe(false);
+    expect(draftMatchesVersion(recordRecord({ declaredDefects: ['NotDeclared'] }), oliveOilVersion, [])).toBe(false);
+    expect(draftMatchesVersion(recordRecord({ declaredDefects: ['Bitter', 'Bitter'] }), oliveOilVersion, [])).toBe(false);
+  });
+
+  it('refuses the review’s reproduction on a version that declares no axis and no problem', () => {
+    const record = buildDraftRecord({
+      versionId: bareVersion.id,
+      kind: 'record',
+      payload: {
+        ...blankRecord(),
+        declaredDefects: ['NotDeclared'],
+        marks: { oil: 3 },
+        exitConsistency: 'garbage',
+        defects: ['whatever'],
+      },
+      now: NOW,
+    });
+    expect(draftMatchesVersion(record, bareVersion, [])).toBe(false);
+  });
+
+  it('refuses a mark on an axis the version does not declare, and keeps a core axis', () => {
+    const oilOnly = (version) =>
+      buildDraftRecord({ versionId: version.id, kind: 'record', payload: { ...blankRecord(), marks: { oil: 3 } }, now: NOW });
+    const hardnessOnly = buildDraftRecord({
+      versionId: bareVersion.id,
+      kind: 'record',
+      payload: { ...blankRecord(), marks: { hardness: 3 } },
+      now: NOW,
+    });
+    expect(draftMatchesVersion(oilOnly(bareVersion), bareVersion, [])).toBe(false);
+    expect(draftMatchesVersion(hardnessOnly, bareVersion, [])).toBe(true);
+  });
+
+  it('reads a Correct draft against the corrected batch’s snapshot, not the live version', () => {
+    const values = { declaredDefects: ['Bitter'], marks: { oil: 3 } };
+    const correct = amendRecord({
+      versionId: bareVersion.id,
+      payload: { ...blankRecord(), churnDate: '2026-08-02', ...values },
+    });
+    expect(draftMatchesVersion(correct, bareVersion, batches)).toBe(true);
+
+    const asRecord = buildDraftRecord({
+      versionId: bareVersion.id,
+      kind: 'record',
+      payload: { ...blankRecord(), ...values },
+      now: NOW,
+    });
+    expect(draftMatchesVersion(asRecord, bareVersion, [])).toBe(false);
+  });
+
+  it('does not throw, and refuses, a Correct draft ticking a problem on a batch with no snapshot', () => {
+    const noSnapshot = { ...augustSecondBatch };
+    delete noSnapshot.snapshot;
+    const correct = amendRecord({ payload: { ...blankRecord(), churnDate: '2026-08-02', declaredDefects: ['Bitter'] } });
+    expect(() => draftMatchesVersion(correct, oliveOilVersion, [noSnapshot])).not.toThrow();
+    expect(draftMatchesVersion(correct, oliveOilVersion, [noSnapshot])).toBe(false);
   });
 });
 

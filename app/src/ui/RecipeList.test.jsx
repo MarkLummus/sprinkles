@@ -20,6 +20,7 @@ import { RecipeList, RecipeRows, HomeLead, HomeBody } from './RecipeList.jsx';
 import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { versionIdentity } from '../domain/lineage.js';
+import { buildDraftRecord } from '../domain/draft.js';
 
 function makeVersion(overrides = {}) {
   return {
@@ -347,8 +348,82 @@ function renderBodyWithDrafts(versions, batches, drafts) {
   );
 }
 
+// What handleStartDeveloping builds, over a version's own rows and steps, so the
+// draft fits the version it names (Home names only a draft that would reopen).
+function planPayloadFor(version) {
+  return {
+    versionLabel: 'less oil',
+    reason: '',
+    citedBatchId: null,
+    sheetTitle: version.sheetTitle,
+    sheetDescription: version.sheetDescription,
+    rows: Object.fromEntries(
+      version.rows.map((row) => [
+        row.id,
+        { portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams), removed: false })) },
+      ]),
+    ),
+    method: structuredClone(version.method),
+    authored: structuredClone(version.authored),
+  };
+}
+
+// The blank record draft's own values, written out as draft.test.js does.
+function blankRecordPayload() {
+  return {
+    churnDate: '',
+    asMade: {},
+    stepChanges: {},
+    outOfMachineTempC: '',
+    churnDurationMinutes: '',
+    exitConsistency: '',
+    airiness: '',
+    atDraw: '',
+    atTheMachine: '',
+    ingredientNotes: '',
+    nextTimeNote: '',
+    tastingOpen: false,
+    tastedDate: '',
+    temperingMinutes: '',
+    tastingTempC: '',
+    marks: {},
+    note: '',
+    defects: [],
+    declaredDefects: [],
+    fromFreezer: '',
+    meltTestG: '',
+    meltStyle: '',
+  };
+}
+
+// A stored plan draft on the version, built the way the page builds it; the
+// version must be one the test's `versions` holds (every makeVersion keeps the
+// olive oil rows, method and authored text).
 function draftOn(versionId, overrides = {}) {
-  return { versionId, kind: 'plan', updatedAt: '2026-03-01T00:00:00.000Z', amendingBatchId: null, ...overrides };
+  return {
+    ...buildDraftRecord({
+      versionId,
+      kind: 'plan',
+      payload: planPayloadFor(oliveOilVersion),
+      now: '2026-03-01T00:00:00.000Z',
+    }),
+    ...overrides,
+  };
+}
+
+// A Correct draft on the version, naming a batch, with a blank record payload
+// and an identical baseline.
+function correctDraftOn(versionId, batchId, payloadOverrides = {}) {
+  const payload = { ...blankRecordPayload(), ...payloadOverrides };
+  return buildDraftRecord({
+    versionId,
+    kind: 'amend',
+    payload,
+    amendingBatchId: batchId,
+    amendBaseline: blankRecordPayload(),
+    amendOpener: 'correct',
+    now: '2026-03-01T00:00:00.000Z',
+  });
 }
 
 function leadOf(markup) {
@@ -425,11 +500,42 @@ describe('HomeBody — an open draft takes the lead (D-18, 04-09)', () => {
     expect(draftHref(markup)).toBe('/notebook/r2/v2');
   });
 
-  it('a Correct draft links to its batch’s address while the batch is stored, and to the version when it is not', () => {
+  it('a Correct draft links to its batch’s address while the batch is stored, and is not named when it is not', () => {
     const batch = makeBatch({ id: 'b9', versionId: 'v2' });
-    const amend = draftOn('v2', { kind: 'amend', amendingBatchId: 'b9' });
+    const amend = correctDraftOn('v2', 'b9');
     expect(draftHref(renderBodyWithDrafts(versions, [batch], [amend]))).toBe('/notebook/r2/v2/batch/b9');
-    expect(draftHref(renderBodyWithDrafts(versions, [], [amend]))).toBe('/notebook/r2/v2');
+    expect(draftLine(renderBodyWithDrafts(versions, [], [amend]))).toBeNull();
+    expect(leadOf(renderBodyWithDrafts(versions, [], [amend]))).toContain('href="/notebook/r1/v1"');
+  });
+
+  it('a stale draft is not named: a wrong shape version, or a plan missing one of the version’s rows', () => {
+    const wrongShape = draftOn('v2', { shapeVersion: 2 });
+    const missingRow = draftOn('v2');
+    delete missingRow.payload.rows[Object.keys(missingRow.payload.rows)[0]];
+    for (const stale of [wrongShape, missingRow]) {
+      const markup = renderBodyWithDrafts(versions, [], [stale]);
+      expect(draftLine(markup)).toBeNull();
+      expect(leadOf(markup)).toContain('href="/notebook/r1/v1"');
+    }
+  });
+
+  it('when the newest draft is stale and an older one fits, the older one is named', () => {
+    const staleNewest = draftOn('v1', { updatedAt: '2026-03-02T00:00:00.000Z', shapeVersion: 2 });
+    const fittingOlder = draftOn('v2', { updatedAt: '2026-03-01T00:00:00.000Z' });
+    const markup = renderBodyWithDrafts(versions, [], [staleNewest, fittingOlder]);
+    expect(draftHref(markup)).toBe('/notebook/r2/v2');
+  });
+
+  it('a record draft whose declared problems are outside its version’s declared problems is not named', () => {
+    const record = buildDraftRecord({
+      versionId: 'v2',
+      kind: 'record',
+      payload: { ...blankRecordPayload(), declaredDefects: ['NotDeclared'] },
+      now: '2026-03-01T00:00:00.000Z',
+    });
+    expect(draftLine(renderBodyWithDrafts(versions, [], [record]))).toBeNull();
+    const declared = { ...record, payload: { ...record.payload, declaredDefects: ['Bitter'] } };
+    expect(draftHref(renderBodyWithDrafts(versions, [], [declared]))).toBe('/notebook/r2/v2');
   });
 
   it('a draft whose version is not in the store is not named', () => {

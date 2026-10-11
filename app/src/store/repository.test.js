@@ -5,7 +5,7 @@
 // opens the store on import), so it must be the first import.
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
-import { describe, it, beforeEach, expect } from 'vitest';
+import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { createRepository } from './repository.js';
 
 beforeEach(() => {
@@ -110,5 +110,44 @@ describe('importAll, through the repository seam', () => {
     ).rejects.toThrow();
 
     expect(await everything(repository)).toEqual(before);
+  });
+});
+
+describe('onBlocked, through the repository seam (WR-08)', () => {
+  function holdOpen(version) {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('sprinkles', version);
+      request.onupgradeneeded = () => {
+        request.result.createObjectStore('versions', { keyPath: 'id' });
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function until(condition) {
+    for (let i = 0; i < 200 && !condition(); i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+    expect(condition()).toBe(true);
+  }
+
+  it('tells the listener while an older connection is held, calls a late listener at once, and opens when it closes', async () => {
+    const held = await holdOpen(7);
+    const repository = createRepository();
+
+    const early = vi.fn();
+    repository.onBlocked(early);
+    await until(() => early.mock.calls.length > 0);
+    expect(early).toHaveBeenCalledTimes(1);
+
+    // Registration is sticky: the event already fired.
+    const late = vi.fn();
+    repository.onBlocked(late);
+    expect(late).toHaveBeenCalledTimes(1);
+
+    held.close();
+    expect(await repository.listVersions()).toEqual([]);
   });
 });

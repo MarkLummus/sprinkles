@@ -502,8 +502,8 @@ describe('the boot line paints before the store opens (G-03.4-1)', () => {
     expect(rule.declarations).toMatch(/padding:\s*var\(--gap-page\)/);
   });
 
-  test('main.jsx carries the app-boot class exactly twice — the boot line and the store-open failure message', () => {
+  test('main.jsx carries the app-boot class exactly three times — the boot line, the blocked-upgrade line and the store-open failure message', () => {
     const matches = mainJsxSource.match(/app-boot/g) || [];
-    expect(matches).toHaveLength(2);
+    expect(matches).toHaveLength(3);
   });
 });

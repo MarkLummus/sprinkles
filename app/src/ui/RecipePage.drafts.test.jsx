@@ -81,9 +81,11 @@ vi.mock('../store/repository.js', async () => {
   };
 });
 
+import { repository } from '../store/repository.js';
 import {
   RecipePage,
   DRAFT_KEPT_STATUS,
+  PAGE_LOAD_ERROR,
   blankRecordDraft,
   draftFromBatch,
 } from './RecipePage.jsx';
@@ -755,5 +757,78 @@ describe('the version band names a draft kept on another version (04-09, Task 3)
     storeDraft({ ...record, versionId: 'olive-oil-ice-cream-v2' });
     await mountAt(VERSION_PATH);
     expect(bandDraft()).toBeNull();
+  });
+});
+
+describe('the band and the rail name only a draft that would reopen (WR-09)', () => {
+  it('names no draft kept on another version once it no longer fits that version', async () => {
+    store.withSibling = true;
+    const missingRow = siblingPlanDraft('40 g oil');
+    delete missingRow.payload.rows[Object.keys(missingRow.payload.rows)[0]];
+    storeDraft(missingRow);
+    await mountAt(VERSION_PATH);
+    expect(bandDraft()).toBeNull();
+    expect(current.container.querySelector('.notebook-history').textContent).not.toContain('40 g oil');
+  });
+
+  it('names no draft whose version name is not text', async () => {
+    store.withSibling = true;
+    const numeric = siblingPlanDraft('40 g oil');
+    numeric.payload.versionLabel = 42;
+    storeDraft(numeric);
+    await mountAt(VERSION_PATH);
+    expect(bandDraft()).toBeNull();
+    expect(current.container.querySelector('.notebook-history').textContent).not.toContain('Version 3');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// WR-05: a failed store read says so, and never turns draft keeping off quietly.
+// ---------------------------------------------------------------------------
+function loadError() {
+  return current.container.querySelector('.not-found');
+}
+
+describe('a failed read on the recipe page (WR-05)', () => {
+  it('shows the one line, opens no pen and leaves the kept draft alone when the version’s batches cannot be read', async () => {
+    storeDraft(planDraftRecord());
+    vi.spyOn(repository, 'listBatchesForVersion').mockRejectedValue(new Error('read failed'));
+    await mountAt(VERSION_PATH);
+    await flush(() => loadError() !== null);
+
+    expect(loadError().textContent).toBe(PAGE_LOAD_ERROR);
+    expect(nextVersionPen()).toBeNull();
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+    expect(store.drafts.has(VERSION)).toBe(true);
+    expect(pageStatus.mock.calls.some(([message]) => message === DRAFT_KEPT_STATUS)).toBe(false);
+  });
+
+  it('shows the one line, not an empty page, when the version cannot be read', async () => {
+    vi.spyOn(repository, 'getVersion').mockRejectedValue(new Error('read failed'));
+    await mountAt(VERSION_PATH);
+    await flush(() => loadError() !== null);
+    expect(loadError().textContent).toBe(PAGE_LOAD_ERROR);
+  });
+
+  it.each(['listVersions', 'listDrafts', 'getAllBatches'])('shows the one line when %s fails', async (method) => {
+    vi.spyOn(repository, method).mockRejectedValue(new Error('read failed'));
+    await mountAt(VERSION_PATH);
+    await flush(() => loadError() !== null);
+    expect(loadError().textContent).toBe(PAGE_LOAD_ERROR);
+    expect(nextVersionPen()).toBeNull();
+  });
+
+  it('survives a failed delete of a stale draft: the page opens in reading with no pen', async () => {
+    const stale = planDraftRecord();
+    delete stale.payload.rows['row-01'];
+    storeDraft(stale);
+    store.deleteDraft.mockRejectedValueOnce(new Error('delete failed'));
+    await mountAt(VERSION_PATH);
+    await flush(() => store.deleteDraft.mock.calls.length > 0);
+    await flush(() => false);
+
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(nextVersionPen()).toBeNull();
+    expect(current.container.querySelector('.notebook-version__acts')).not.toBeNull();
   });
 });

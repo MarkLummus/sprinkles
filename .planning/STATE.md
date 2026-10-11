@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-11T11:12:05.028Z"
+last_updated: "2026-10-11T11:47:17.168Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: a302908388f1a0921c65237b237fdfe51bb1d999
+state_head: 1fbefe2a99b661fb9799cf9e84dc202140c7888a
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — EXECUTING
 Plan: 10 of 10
 Status: Phase complete — ready for verification
-Last activity: 2026-10-11 — Phase 04 execution started
+Last activity: 2026-10-11 - Completed quick task 261011-al8: Fix the print-timing and Sheet-code-search warnings (WR-06, WR-07)
 
 Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -485,6 +485,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261005-x0j | Companions clear 4.5:1 on the current place surface; pen Save weight 600; retire unused prose-text rules | 2026-10-05 | 2fb7239 | [261005-x0j-mark-s-answers-darken-the-text-companion](./quick/261005-x0j-mark-s-answers-darken-the-text-companion/) |
 | 117 | Pen outline Cancel at weight 600 (decide-pen-cancel-weight) | 2026-10-06 | 309b162 | — |
 | 261006-1ys | 03.7 plans: point board references at the placement B boards | 2026-10-06 | ed8136d | [261006-1ys-03-7-plans-point-board-references-at-the](./quick/261006-1ys-03-7-plans-point-board-references-at-the/) |
+| 261011-al8 | Fix the print-timing and Sheet-code-search warnings (WR-06, WR-07) | 2026-10-11 | 1fbefe2 | [261011-al8-fix-the-print-timing-and-sheet-code-sear](./quick/261011-al8-fix-the-print-timing-and-sheet-code-sear/) |
 
 ### Roadmap Evolution
 

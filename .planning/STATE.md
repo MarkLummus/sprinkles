@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Prepare the next version for making
 status: executing
-stopped_at: Completed 04-09-PLAN.md
-last_updated: "2026-10-11T08:10:22.451Z"
+stopped_at: Completed 04-08-PLAN.md
+last_updated: "2026-10-11T11:01:21.811Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 42bf9b087c4c963456bd1a16b9868751235240b1
+state_head: 646d1525e7676b2f4c6f4bc48fded75cf907addd
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 118
+  completed_plans: 119
   percent: 73
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 04 (Prepare the next version for making) — EXECUTING
-Plan: 9 of 10
+Plan: 10 of 10
 Status: Ready to execute
 Last activity: 2026-10-11 — Phase 04 execution started
 
@@ -150,6 +150,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 04 P06 | 30 min | 3 tasks | 19 files |
 | Phase 04 P07 | 45 min | 3 tasks | 15 files |
 | Phase 04 P09 | 17 min | 3 tasks | 18 files |
+| Phase 04 P08 | 1h40m | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -312,6 +313,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: [Phase 4, Plan 09] A Correct draft reopens only beside its own batch: opened on any other address of the version, the address is replaced (not pushed) with the batch's and the next page instance restores it (planner's settlement of research Pitfall 6; recorded for Mark).
 - [Phase 04]: [Phase 4, Plan 09] Home names a draft by presence (its version is in the store), not by fit; a stale draft is deleted quietly when the page opens it. A failed draft write is swallowed so a draft never interrupts the maker.
 - [Phase 04]: [Phase 4, Plan 09] The restore guards Pitfall 5 with a ref and no cancelled flag (StrictMode), and a restore that navigates away never marks itself done, so the leaving instance cannot delete the draft the next one reads.
+- [Phase 04]: 04-08: The Instructions follow the page row's tail wherever the row ends and open their own page only when both columns end on the formula page (Mark, option-a); rule lives in instructionsFollowRow
 
 ### Pending Todos
 
@@ -506,6 +508,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T08:10:22.322Z
-Stopped at: Completed 04-09-PLAN.md
+Last session: 2026-10-11T11:01:21.586Z
+Stopped at: Completed 04-08-PLAN.md
 Resume file: None

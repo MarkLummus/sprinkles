@@ -138,7 +138,6 @@ const strawberryV1ChurnFields = {
   churnDate: null,
   asMade: {},
   stepChanges: {},
-  timeToDrawTempMinutes: null,
   outOfMachineTempC: null,
   churnDurationMinutes: null,
   exitConsistency: null,
@@ -224,7 +223,6 @@ const strawberryV2ChurnFields = {
   churnDate: null,
   asMade: {},
   stepChanges: {},
-  timeToDrawTempMinutes: null,
   outOfMachineTempC: null,
   churnDurationMinutes: null,
   exitConsistency: null,
@@ -298,7 +296,6 @@ const strawberryV2_1ChurnFields = {
   // flagged.
   asMade: { 'row-01': [449] },
   stepChanges: {},
-  timeToDrawTempMinutes: null,
   outOfMachineTempC: null,
   churnDurationMinutes: null,
   exitConsistency: null,

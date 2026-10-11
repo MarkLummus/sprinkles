@@ -92,7 +92,6 @@ const pineappleV1ChurnFields = {
   churnDate: null,
   asMade: { 'row-03': [61] },
   stepChanges: {},
-  timeToDrawTempMinutes: null,
   outOfMachineTempC: null,
   churnDurationMinutes: null,
   exitConsistency: null,

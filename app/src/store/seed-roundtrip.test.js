@@ -67,15 +67,24 @@ describe('seeded batches read back from the store', () => {
   });
 });
 
-// Time to draw temp. is hidden on every screen (03.7.1, D-01) but stays in the
-// stored shape until Phase 4's reseed (D-02): the value a batch already holds
-// must come back from the store, out through an export and into a fresh store
-// untouched. A guard on behaviour this phase does not change, so it passes
-// before and after.
-describe('a stored Time to draw temp. survives (03.7.1, D-02)', () => {
-  it('reads back from the real store as the seeded 20', async () => {
+// Time to draw temp. left the data in 04-03 (sketch 010 D17; Mark's List row
+// build-remove-draw-temp-data-element): no seeded batch carries the key, and
+// the 2 Aug batch's old 20 is dropped by his decision. At draw and From freezer
+// reseed present and null on every seeded batch.
+describe('the reseeded record shape (04-03)', () => {
+  it('reads back from the real store with no draw temperature on any batch', async () => {
     const { batches } = await seededFromStore();
-    expect(batches.find((b) => b.id === augustSecondBatch.id).churn.timeToDrawTempMinutes).toBe(20);
+    expect(batches.length).toBeGreaterThan(0);
+    for (const batch of batches) expect(batch.churn).not.toHaveProperty('timeToDrawTempMinutes');
+    expect(batches.find((b) => b.id === augustSecondBatch.id).churn).not.toHaveProperty('timeToDrawTempMinutes');
+  });
+
+  it('reads back At draw and From freezer present and null on every seeded batch', async () => {
+    const { batches } = await seededFromStore();
+    for (const batch of batches) {
+      expect(batch.churn).toHaveProperty('atDraw', null);
+      if (batch.tasting) expect(batch.tasting).toHaveProperty('fromFreezer', null);
+    }
   });
 
   it('survives export, validation and import into a fresh store, for every seeded batch', async () => {
@@ -93,12 +102,8 @@ describe('a stored Time to draw temp. survives (03.7.1, D-02)', () => {
     const after = await second.getAllBatches();
     expect(after).toHaveLength(before.length);
     for (const batch of before) {
-      const imported = after.find((b) => b.id === batch.id);
-      expect(imported.churn.timeToDrawTempMinutes).toBe(batch.churn.timeToDrawTempMinutes);
+      expect(after.find((b) => b.id === batch.id)).toEqual(batch);
     }
-    const imported = await second.getBatch(augustSecondBatch.id);
-    expect(imported.churn.timeToDrawTempMinutes).toBe(20);
-    expect(imported).toEqual(await first.getBatch(augustSecondBatch.id));
   });
 });
 

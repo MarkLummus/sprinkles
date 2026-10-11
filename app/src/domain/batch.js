@@ -15,6 +15,7 @@
 // is the table's decision, made once, at the point of presentation, not
 // here.
 import { rowGrams } from './rows.js';
+import { MARK_ONE_OPTIONS } from './battery.js';
 
 export const BATCH_SCHEMA_VERSION = 4;
 
@@ -77,6 +78,17 @@ export function tastingProvenance(batch) {
 }
 
 /**
+ * markOneFor(pick, groupHasMark) -> the At draw / From freezer pick as it is
+ * stored: the given word when it is one of MARK_ONE_OPTIONS and its group
+ * holds no mark, else null (sketch 010 D6, D6b, D10). A pick never sits
+ * beside a mark in the same group, so the record can never say both "nothing
+ * to note" and a note.
+ */
+function markOneFor(pick, groupHasMark) {
+  return !groupHasMark && MARK_ONE_OPTIONS.includes(pick) ? pick : null;
+}
+
+/**
  * buildChurn(churnFields) -> the churn object both createBatch and
  * completeRecord write, replaced wholesale on every save (D-02). Every
  * numeric field uses an explicit `!= null` check (never `||`/truthiness)
@@ -108,11 +120,11 @@ function buildChurn(churnFields) {
     churnDate: churnFields.churnDate ? churnFields.churnDate : null,
     asMade,
     stepChanges,
-    timeToDrawTempMinutes: churnFields.timeToDrawTempMinutes != null ? churnFields.timeToDrawTempMinutes : null,
     outOfMachineTempC: churnFields.outOfMachineTempC != null ? churnFields.outOfMachineTempC : null,
     churnDurationMinutes: churnFields.churnDurationMinutes != null ? churnFields.churnDurationMinutes : null,
     exitConsistency: churnFields.exitConsistency != null ? churnFields.exitConsistency : null,
     airiness: churnFields.airiness != null ? churnFields.airiness : null,
+    atDraw: markOneFor(churnFields.atDraw, churnFields.exitConsistency != null || churnFields.airiness != null),
     atTheMachine: churnFields.atTheMachine ? churnFields.atTheMachine : null,
     ingredientNotes: churnFields.ingredientNotes ? churnFields.ingredientNotes : null,
     nextTimeNote: churnFields.nextTimeNote ? churnFields.nextTimeNote : null,
@@ -128,9 +140,15 @@ function buildChurn(churnFields) {
  * the supplied array, or null when none was supplied. declaredDefects is
  * the ticked declared problems, a copy of a non-empty array or null —
  * never an empty array: no tick and an empty list are the same fact.
+ * fromFreezer is the From freezer pick, stored only while no scale mark,
+ * defect or declared defect is set (markOneFor).
  */
 function buildTasting(tastingFields) {
   if (tastingFields == null) return null;
+  const hasMark =
+    (tastingFields.marks != null && Object.keys(tastingFields.marks).length > 0) ||
+    (Array.isArray(tastingFields.defects) && tastingFields.defects.length > 0) ||
+    (Array.isArray(tastingFields.declaredDefects) && tastingFields.declaredDefects.length > 0);
   return {
     tastedDate: tastingFields.tastedDate != null ? tastingFields.tastedDate : null,
     temperingMinutes: tastingFields.temperingMinutes != null ? tastingFields.temperingMinutes : null,
@@ -144,6 +162,7 @@ function buildTasting(tastingFields) {
         : null,
     meltTestG: tastingFields.meltTestG != null ? tastingFields.meltTestG : null,
     meltStyle: tastingFields.meltStyle != null ? tastingFields.meltStyle : null,
+    fromFreezer: markOneFor(tastingFields.fromFreezer, hasMark),
   };
 }
 

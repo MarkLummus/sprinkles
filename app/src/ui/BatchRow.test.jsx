@@ -50,6 +50,7 @@ const emptyRecordDraft = {
   churnDurationMinutes: '',
   exitConsistency: '',
   airiness: '',
+  atDraw: '',
   atTheMachine: '',
   ingredientNotes: '',
   nextTimeNote: '',
@@ -61,6 +62,7 @@ const emptyRecordDraft = {
   note: '',
   defects: [],
   declaredDefects: [],
+  fromFreezer: '',
   meltTestG: '',
   meltStyle: '',
 };
@@ -586,7 +588,7 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], fromFreezer: '', meltTestG: '', meltStyle: '' },
     });
     expect(markup).toContain('Restore tasting');
     const undoIndex = markup.indexOf('Restore tasting');
@@ -1118,7 +1120,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: false },
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], fromFreezer: '', meltTestG: '', meltStyle: '' },
     });
     const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
     const restoreIndex = markup.indexOf('Restore tasting', ceremonyIndex);
@@ -1133,7 +1135,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], fromFreezer: '', meltTestG: '', meltStyle: '' },
     });
     const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
     const ceremonyMarkup = markup.slice(ceremonyIndex);
@@ -1146,7 +1148,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: false },
       recordStatus: 'Tasting removed. You can restore it.',
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], fromFreezer: '', meltTestG: '', meltStyle: '' },
     });
     expect(markup).toMatch(
       /<div class="save-ceremony"><p class="save-ceremony__status pen-helper" role="status" aria-live="polite">Tasting removed\. You can restore it\.<\/p>/,

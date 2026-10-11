@@ -5,7 +5,7 @@
 // See 03.3.1-CONTEXT.md D-07, D-09, D-10.
 
 /**
- * BATTERY_FIELDS: the six numeric fields the battery carries, one entry
+ * BATTERY_FIELDS: the five numeric fields the battery carries, one entry
  * per field: key (the stored field name), label (visible), unit, signed
  * (true only for the two °C fields — Out of machine, Tasting
  * temperature), and error (the contract's verbatim sentence for a
@@ -15,7 +15,6 @@ const TEMPERATURE_ERROR = 'Enter a temperature, such as −6, or leave blank.';
 const NON_NEGATIVE_ERROR = 'Enter zero or a positive number, or leave blank.';
 
 export const BATTERY_FIELDS = [
-  { key: 'timeToDrawTempMinutes', label: 'Time to draw temp.', unit: 'min', signed: false, error: NON_NEGATIVE_ERROR },
   { key: 'outOfMachineTempC', label: 'Out of machine', unit: '°C', signed: true, error: TEMPERATURE_ERROR },
   { key: 'churnDurationMinutes', label: 'Churn duration', unit: 'min', signed: false, error: NON_NEGATIVE_ERROR },
   { key: 'temperingMinutes', label: 'Tempering', unit: 'min', signed: false, error: NON_NEGATIVE_ERROR },
@@ -32,6 +31,16 @@ export const SEGMENT_OPTIONS = {
   airiness: ['Low, dense', 'Medium, standard', 'High, airy'],
   meltStyle: ['Watery, weeping', 'Creamy puddle', 'Stable foam'],
 };
+
+/**
+ * MARK_ONE_OPTIONS: the two words the pen offers for At draw and From
+ * freezer, the "mark one" of a group that holds no other mark (sketch 010
+ * D6b). PRINTED_MARK_ONE_OPTIONS: the printed log's three, which keeps
+ * See below beside them — the pen has no See below, since the pen's own
+ * marks are what that word points to on paper.
+ */
+export const MARK_ONE_OPTIONS = ['Nothing to note', 'Not evaluated'];
+export const PRINTED_MARK_ONE_OPTIONS = ['Nothing to note', 'Not evaluated', 'See below'];
 
 /** DEFECTS: the four defect chips, verbatim (comma-worded per the contract). */
 export const DEFECTS = ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film'];

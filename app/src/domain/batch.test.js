@@ -203,11 +203,12 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
       id: 'b-1',
       now: '2026-08-04T09:00:00.000Z',
     });
-    expect(batch.churn.timeToDrawTempMinutes).toBe(null);
+    expect(batch.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(batch.churn.outOfMachineTempC).toBe(null);
     expect(batch.churn.churnDurationMinutes).toBe(null);
     expect(batch.churn.exitConsistency).toBe(null);
     expect(batch.churn.airiness).toBe(null);
+    expect(batch.churn.atDraw).toBe(null);
     expect(batch.churn.atTheMachine).toBe(null);
   });
 
@@ -394,7 +395,7 @@ describe('the churn section round trip: unrounded, and blank battery fields stay
       null,
       { id: 'b-1', now: '2026-08-04T09:00:00.000Z' },
     );
-    expect(batch.churn.timeToDrawTempMinutes).toBe(20);
+    expect(batch.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(batch.churn.outOfMachineTempC).toBe(-6);
     expect(batch.churn.churnDurationMinutes).toBe(null);
     expect(batch.churn.atTheMachine).toBe('Soft, not greasy');
@@ -659,7 +660,7 @@ describe('augustSecondBatch (the 2 Aug 2026 working case, on the battery)', () =
   });
 
   it('carries the confirmed measured churn values', () => {
-    expect(augustSecondBatch.churn.timeToDrawTempMinutes).toBe(20);
+    expect(augustSecondBatch.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(augustSecondBatch.churn.outOfMachineTempC).toBe(-6);
     expect(augustSecondBatch.churn.churnDurationMinutes).toBe(30);
     expect(augustSecondBatch.churn.exitConsistency).toBe(null);
@@ -733,5 +734,74 @@ describe('asMadeTotals with a line out (alignment by stored position)', () => {
     const { asMadeTotal, anyWritten } = asMadeTotals(activeRows(oliveOilVersion), { 'row-01': ['', '250'] });
     expect(asMadeTotal.toFixed(1)).toBe('799.3');
     expect(anyWritten).toBe(true);
+  });
+});
+
+// At draw and From freezer (sketch 010 D6, D6b, D10): the pick is stored only
+// while its group holds no mark.
+describe('atDraw: a mark-one pick stored only while Exit consistency and Airiness are unset', () => {
+  const make = (churnFields) =>
+    createBatch(oliveOilVersion, { churnDate: '2026-10-01', ...churnFields }, null, { id: 'b-1', now: 'x' });
+
+  it.each(['Nothing to note', 'Not evaluated'])('stores %s when the group holds no mark', (pick) => {
+    expect(make({ atDraw: pick }).churn.atDraw).toBe(pick);
+  });
+
+  it('is stored as null when exitConsistency is set', () => {
+    expect(make({ atDraw: 'Nothing to note', exitConsistency: 'Smooth ribbon' }).churn.atDraw).toBe(null);
+  });
+
+  it('is stored as null when airiness is set', () => {
+    expect(make({ atDraw: 'Not evaluated', airiness: 'Low, dense' }).churn.atDraw).toBe(null);
+  });
+
+  it('is stored as null for a word outside MARK_ONE_OPTIONS, See below included', () => {
+    expect(make({ atDraw: 'See below' }).churn.atDraw).toBe(null);
+    expect(make({ atDraw: 'whatever' }).churn.atDraw).toBe(null);
+  });
+
+  it('is null when not supplied, and a correction replaces it wholesale', () => {
+    const batch = make({ atDraw: 'Not evaluated' });
+    expect(make({}).churn.atDraw).toBe(null);
+    const corrected = completeRecord(batch, { churnDate: '2026-10-01', exitConsistency: 'Wet, soupy', atDraw: 'Not evaluated' }, null, { now: 'y' });
+    expect(corrected.churn.atDraw).toBe(null);
+    expect(corrected.churn.exitConsistency).toBe('Wet, soupy');
+  });
+});
+
+describe('fromFreezer: a mark-one pick stored only while the tasting holds no mark, defect or declared defect', () => {
+  const make = (tastingFields) =>
+    createBatch(oliveOilVersion, { churnDate: '2026-10-01' }, { marks: {}, ...tastingFields }, { id: 'b-1', now: 'x' });
+
+  it.each(['Nothing to note', 'Not evaluated'])('stores %s on a bare tasting', (pick) => {
+    expect(make({ fromFreezer: pick }).tasting.fromFreezer).toBe(pick);
+  });
+
+  it('is stored as null beside a scale mark', () => {
+    expect(make({ fromFreezer: 'Nothing to note', marks: { sweetness: 4 } }).tasting.fromFreezer).toBe(null);
+  });
+
+  it('is stored as null beside a defect', () => {
+    expect(make({ fromFreezer: 'Nothing to note', defects: ['Greasy film'] }).tasting.fromFreezer).toBe(null);
+  });
+
+  it('is stored as null beside a declared defect', () => {
+    expect(make({ fromFreezer: 'Not evaluated', declaredDefects: ['Bitter'] }).tasting.fromFreezer).toBe(null);
+  });
+
+  it('is stored with an empty defects list, an empty declared list and no marks', () => {
+    expect(make({ fromFreezer: 'Not evaluated', defects: [], declaredDefects: [] }).tasting.fromFreezer).toBe('Not evaluated');
+  });
+
+  it('is stored as null for a word outside MARK_ONE_OPTIONS, and when not supplied', () => {
+    expect(make({ fromFreezer: 'See below' }).tasting.fromFreezer).toBe(null);
+    expect(make({}).tasting.fromFreezer).toBe(null);
+  });
+});
+
+describe('the seeded 2 Aug batch carries both mark-one picks as null', () => {
+  it('stores atDraw and fromFreezer present and null', () => {
+    expect(augustSecondBatch.churn).toHaveProperty('atDraw', null);
+    expect(augustSecondBatch.tasting).toHaveProperty('fromFreezer', null);
   });
 });

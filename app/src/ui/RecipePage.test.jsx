@@ -387,6 +387,7 @@ function makeBlankRecordDraft() {
     churnDurationMinutes: '',
     exitConsistency: '',
     airiness: '',
+    atDraw: '',
     atTheMachine: '',
     ingredientNotes: '',
     nextTimeNote: '',
@@ -398,6 +399,7 @@ function makeBlankRecordDraft() {
     note: '',
     defects: [],
     declaredDefects: [],
+    fromFreezer: '',
     meltTestG: '',
     meltStyle: '',
   };
@@ -408,7 +410,7 @@ describe('isDraftDirty — the record pen\'s check, extended to every battery fi
     expect(isDraftDirty('recording', makeBlankRecordDraft())).toBe(false);
   });
 
-  it('the check reads no Time to draw temp. (03.7.1, D-03): a blank draft carrying a stray value is not dirty', () => {
+  it('the draft holds no Time to draw temp. (sketch 010 D17): a blank draft carrying a stray value is not dirty', () => {
     expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), timeToDrawTempMinutes: '20' })).toBe(false);
   });
 
@@ -416,6 +418,15 @@ describe('isDraftDirty — the record pen\'s check, extended to every battery fi
     const baseline = draftFromBatch(augustSecondBatch);
     const draft = { ...structuredClone(baseline), timeToDrawTempMinutes: '99' };
     expect(isDraftDirty('recording', draft, baseline)).toBe(false);
+  });
+
+  it('a picked At draw or From freezer is ink, and compares against the baseline', () => {
+    expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), atDraw: 'Nothing to note' })).toBe(true);
+    expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), fromFreezer: 'Not evaluated' })).toBe(true);
+    const baseline = { ...makeBlankRecordDraft(), atDraw: 'Not evaluated', fromFreezer: 'Not evaluated' };
+    expect(isDraftDirty('recording', { ...baseline }, baseline)).toBe(false);
+    expect(isDraftDirty('recording', { ...baseline, atDraw: '' }, baseline)).toBe(true);
+    expect(isDraftDirty('recording', { ...baseline, fromFreezer: 'Nothing to note' }, baseline)).toBe(true);
   });
 
   it('a ticked declared problem is ink, and a tick compares as a set against the baseline', () => {
@@ -516,6 +527,8 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
     expect(draft.tastingTempC).toBe('-12');
     expect(draft.marks).toEqual({ sweetness: 4, oil: 4 });
     expect(draft.declaredDefects).toEqual(['Bitter']);
+    expect(draft.atDraw).toBe('');
+    expect(draft.fromFreezer).toBe('');
     expect(draft.meltTestG).toBe('3');
   });
 
@@ -527,6 +540,18 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
     expect(draft.marks).toEqual({});
     expect(draft.declaredDefects).toEqual([]);
     expect(draft.defects).toEqual([]);
+  });
+
+  it('pre-fills a stored At draw and From freezer pick', () => {
+    const batch = createBatch(
+      oliveOilVersion,
+      { churnDate: '2026-09-01', atDraw: 'Nothing to note' },
+      { marks: {}, fromFreezer: 'Not evaluated' },
+      { id: 'pick-1', now: '2026-09-01T00:00:00.000Z' },
+    );
+    const draft = draftFromBatch(batch);
+    expect(draft.atDraw).toBe('Nothing to note');
+    expect(draft.fromFreezer).toBe('Not evaluated');
   });
 
   it('reads blank churn measurements as the empty string, never the literal "null"', () => {
@@ -555,6 +580,10 @@ describe('tastingHasInk — D-02: a save with the section open but empty persist
 
   it('reads ink from a defect alone', () => {
     expect(tastingHasInk({ ...makeBlankRecordDraft(), defects: ['Coarse, icy'] })).toBe(true);
+  });
+
+  it('reads ink from a From freezer pick alone', () => {
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), fromFreezer: 'Nothing to note' })).toBe(true);
   });
 
   it('reads ink from a ticked declared problem alone', () => {
@@ -591,6 +620,7 @@ describe('tastingPayloadFromDraft — the undo payload, a plain-object copy (Tas
       note: 'Grainy at first',
       defects: ['Coarse, icy'],
       declaredDefects: ['Bitter'],
+      fromFreezer: 'Not evaluated',
       meltTestG: '4',
       meltStyle: 'Creamy puddle',
     };
@@ -603,6 +633,7 @@ describe('tastingPayloadFromDraft — the undo payload, a plain-object copy (Tas
       note: 'Grainy at first',
       defects: ['Coarse, icy'],
       declaredDefects: ['Bitter'],
+      fromFreezer: 'Not evaluated',
       meltTestG: '4',
       meltStyle: 'Creamy puddle',
     });
@@ -660,6 +691,7 @@ describe('restoreDraftFromUndo — the restore sequence\'s field write-back (Tas
       note: 'Grainy',
       defects: ['Coarse, icy'],
       declaredDefects: ['Bitter'],
+      fromFreezer: 'Nothing to note',
       meltTestG: '4',
       meltStyle: 'Creamy puddle',
     };
@@ -672,6 +704,7 @@ describe('restoreDraftFromUndo — the restore sequence\'s field write-back (Tas
     expect(restored.note).toBe('Grainy');
     expect(restored.defects).toEqual(['Coarse, icy']);
     expect(restored.declaredDefects).toEqual(['Bitter']);
+    expect(restored.fromFreezer).toBe('Nothing to note');
     expect(restored.meltTestG).toBe('4');
     expect(restored.meltStyle).toBe('Creamy puddle');
     expect(restored.churnDate).toBe('2026-08-09');
@@ -688,6 +721,7 @@ describe('restoreDraftFromUndo — the restore sequence\'s field write-back (Tas
       note: '',
       defects: [],
       declaredDefects: [],
+      fromFreezer: '',
       meltTestG: '',
       meltStyle: '',
     };
@@ -750,11 +784,11 @@ describe('parseAllMeasuredFields — 03.3.1-02 Task 1\'s own minimum: record per
     expect(signed.fieldErrors.outOfMachineTempC).toBe(tempField.error);
   });
 
-  it('reads Time to draw temp. as blank, since the draft holds no such key (03.7.1, D-03): it parses as null and can never block a save', () => {
+  it('parses no Time to draw temp. at all: the field table no longer holds it, so it can never block a save (sketch 010 D17)', () => {
     const result = parseAllMeasuredFields(makeBlankRecordDraft());
     expect(result.hasErrors).toBe(false);
     expect(result.fieldErrors).not.toHaveProperty('timeToDrawTempMinutes');
-    expect(result.parsed.timeToDrawTempMinutes).toEqual({ ok: true, value: null });
+    expect(result.parsed).not.toHaveProperty('timeToDrawTempMinutes');
   });
 });
 
@@ -983,11 +1017,12 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
     const churnFields = buildChurnFieldsFromDraft(draft, parsed);
     expect(churnFields.churnDate).toBe('2026-08-09');
     expect(churnFields.churnDurationMinutes).toBe(30);
-    // The churn fields no longer name Time to draw temp. (03.7.1, D-03): a new
-    // batch gets none, and the domain stores null, as an untouched field always did.
+    // The churn fields name no Time to draw temp. (sketch 010 D17): a new
+    // batch stores none.
     expect(churnFields).not.toHaveProperty('timeToDrawTempMinutes');
     const newBatch = createBatch(oliveOilVersion, churnFields, null, { id: 'new-1', now: '2026-08-09T00:00:00.000Z' });
-    expect(newBatch.churn.timeToDrawTempMinutes).toBe(null);
+    expect(newBatch.churn).not.toHaveProperty('timeToDrawTempMinutes');
+    expect(churnFields.atDraw).toBe(null);
     expect(churnFields.outOfMachineTempC).toBe(null);
     expect(churnFields.exitConsistency).toBe(null);
     expect(churnFields.atTheMachine).toBe(null);
@@ -1014,6 +1049,36 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
     expect(tastingFields.declaredDefects).toEqual(['Bitter']);
     expect(tastingFields.meltTestG).toBe(3);
     expect(tastingFields.defects).toBe(null);
+  });
+
+  it('carries the picks through the save assembly, and the domain keeps each only beside no mark', () => {
+    const draft = {
+      ...makeBlankRecordDraft(),
+      churnDate: '2026-10-01',
+      atDraw: 'Nothing to note',
+      tastingOpen: true,
+      fromFreezer: 'Not evaluated',
+    };
+    const { parsed } = parseAllMeasuredFields(draft);
+    const churnFields = buildChurnFieldsFromDraft(draft, parsed);
+    const tastingFields = buildTastingFieldsFromDraft(draft, parsed);
+    expect(churnFields.atDraw).toBe('Nothing to note');
+    expect(tastingFields.fromFreezer).toBe('Not evaluated');
+    const stored = createBatch(oliveOilVersion, churnFields, tastingFields, { id: 'p-1', now: 'x' });
+    expect(stored.churn.atDraw).toBe('Nothing to note');
+    expect(stored.tasting.fromFreezer).toBe('Not evaluated');
+
+    const marked = { ...draft, exitConsistency: 'Smooth ribbon', marks: { sweetness: 4 } };
+    const markedStored = createBatch(
+      oliveOilVersion,
+      buildChurnFieldsFromDraft(marked, parsed),
+      buildTastingFieldsFromDraft(marked, parsed),
+      { id: 'p-2', now: 'x' },
+    );
+    expect(markedStored.churn.atDraw).toBe(null);
+    expect(markedStored.tasting.fromFreezer).toBe(null);
+    expect(buildChurnFieldsFromDraft(makeBlankRecordDraft(), parsed).atDraw).toBe(null);
+    expect(buildTastingFieldsFromDraft(makeBlankRecordDraft(), parsed).fromFreezer).toBe(null);
   });
 
   it('feeds createBatch a null tasting when the section holds no ink, and a real one when it does (D-02)', () => {
@@ -1063,9 +1128,9 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
     const record = completeRecord(augustSecondBatch, churnFields, tasting, { now: '2026-08-10T00:00:00.000Z' });
     expect(record.changed).toBe('2026-08-10T00:00:00.000Z');
     expect(record.recordedAt).toBe(augustSecondBatch.recordedAt);
-    // Time to draw temp. is not in the draft (03.7.1, D-03); the stored value rides
-    // through handleSaveBatch's own pass-through, pinned end to end in
-    // RecipePage.recordTasting.test.jsx.
+    // Time to draw temp. is gone from the record (sketch 010 D17), pinned end
+    // to end in RecipePage.recordTasting.test.jsx.
+    expect(record.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(record.churn.churnDurationMinutes).toBe(30);
     expect(record.tasting.tastingTempC).toBe(-12);
   });

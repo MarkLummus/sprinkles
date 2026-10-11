@@ -3,11 +3,21 @@
 // D-09; the structural contract's "Controls spec"). Runs under Vitest's
 // default node environment — battery.js imports nothing at all.
 import { describe, it, expect } from 'vitest';
-import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, declaredProblemsForBatch, parseMeasuredDraft } from './battery.js';
+import {
+  BATTERY_FIELDS,
+  SEGMENT_OPTIONS,
+  DEFECTS,
+  MARK_ONE_OPTIONS,
+  PRINTED_MARK_ONE_OPTIONS,
+  declaredProblemsForBatch,
+  parseMeasuredDraft,
+} from './battery.js';
 
 describe('BATTERY_FIELDS', () => {
-  it('has exactly six entries', () => {
-    expect(BATTERY_FIELDS).toHaveLength(6);
+  it('has exactly five entries, none of them the retired Time to draw temp. (sketch 010 D17)', () => {
+    expect(BATTERY_FIELDS).toHaveLength(5);
+    expect(BATTERY_FIELDS.map((field) => field.key)).not.toContain('timeToDrawTempMinutes');
+    expect(BATTERY_FIELDS.map((field) => field.label)).not.toContain('Time to draw temp.');
   });
 
   it('every entry carries key, label, unit, signed and error', () => {
@@ -32,9 +42,8 @@ describe('BATTERY_FIELDS', () => {
     expect(unsignedField.error).toBe('Enter zero or a positive number, or leave blank.');
   });
 
-  it('carries the six fields the churn and tasting sections need, each with its stated unit', () => {
+  it('carries the five fields the churn and tasting sections need, each with its stated unit', () => {
     const byKey = Object.fromEntries(BATTERY_FIELDS.map((field) => [field.key, field]));
-    expect(byKey.timeToDrawTempMinutes.unit).toBe('min');
     expect(byKey.outOfMachineTempC.unit).toBe('°C');
     expect(byKey.churnDurationMinutes.unit).toBe('min');
     expect(byKey.temperingMinutes.unit).toBe('min');
@@ -54,6 +63,16 @@ describe('SEGMENT_OPTIONS', () => {
 describe('DEFECTS', () => {
   it('is the four comma-worded chips verbatim', () => {
     expect(DEFECTS).toEqual(['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film']);
+  });
+});
+
+describe('MARK_ONE_OPTIONS and PRINTED_MARK_ONE_OPTIONS (sketch 010 D6b)', () => {
+  it('the pen offers Nothing to note and Not evaluated', () => {
+    expect(MARK_ONE_OPTIONS).toEqual(['Nothing to note', 'Not evaluated']);
+  });
+
+  it('the print keeps See below as a third word', () => {
+    expect(PRINTED_MARK_ONE_OPTIONS).toEqual(['Nothing to note', 'Not evaluated', 'See below']);
   });
 });
 

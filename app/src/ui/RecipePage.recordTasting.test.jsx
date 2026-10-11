@@ -12,8 +12,9 @@
 // in-memory stand-in for the repository seam (the only path to the store),
 // inside a MemoryRouter that carries the two Notebook paths.
 //
-// The last block pins that a stored Time to draw temp. rides through the
-// real save untouched now the pen no longer draws or drafts it (03.7.1).
+// The last block pins that Time to draw temp. is gone from the stored churn
+// object through every real save (sketch 010 D17; 04-03): the pen never drew
+// it, and now the record holds no key for it either.
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -247,7 +248,7 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
     expect(saved.tasting.note).toBe('Soft, not greasy.');
     expect(saved.tasting.temperingMinutes).toBe(10);
     expect(saved.churn.churnDate).toBe('2026-08-02');
-    expect(saved.churn.timeToDrawTempMinutes).toBe(20);
+    expect(saved.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(pageStatus).toHaveBeenCalled();
     expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('changed ') && !message.includes('against'))).toBe(true);
     expect(pen()).toBeNull();
@@ -316,10 +317,10 @@ describe('Record a tasting opens the amend pen on Add tasting (261002-wn0)', () 
   });
 });
 
-describe('the stored Time to draw temp. through the real save (03.7.1, D-02, D-03)', () => {
+describe('no Time to draw temp. in any churn object the real save writes (sketch 010 D17; 04-03)', () => {
   const FIELD_INPUT = 'input[aria-label^="Time to draw temp"]';
 
-  it('Correct keeps the stored 20 and saves a Next time note beside it; the pen never drew the field', async () => {
+  it('Correct of the seeded 2 Aug batch saves a Next time note and a churn object with no draw-temperature key; the pen never drew the field', async () => {
     installMatchMedia();
     await mountAt(VERSION_PATH, [augustSecondBatch]);
     await click(current.container.querySelector('.batch-row__correct'));
@@ -332,12 +333,12 @@ describe('the stored Time to draw temp. through the real save (03.7.1, D-02, D-0
     expect(store.saveBatch).toHaveBeenCalledTimes(1);
     const saved = store.saveBatch.mock.calls[0][0];
     expect(saved.id).toBe(augustSecondBatch.id);
-    expect(saved.churn.timeToDrawTempMinutes).toBe(20);
+    expect(saved.churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(saved.churn.nextTimeNote).toBe('Less oil');
     expect(pen()).toBeNull();
   });
 
-  it('Correct on a batch storing -5, a value transfer.js accepts, saves with no field error and keeps -5', async () => {
+  it('Correct on a record still holding an old draw-temperature value saves with no field error and drops the key', async () => {
     installMatchMedia();
     const stored = structuredClone(augustSecondBatch);
     stored.churn.timeToDrawTempMinutes = -5;
@@ -350,11 +351,11 @@ describe('the stored Time to draw temp. through the real save (03.7.1, D-02, D-0
     expect(pen()).toBeNull();
     expect(current.container.querySelector('.field-error')).toBeNull();
     expect(store.saveBatch).toHaveBeenCalledTimes(1);
-    expect(store.saveBatch.mock.calls[0][0].churn.timeToDrawTempMinutes).toBe(-5);
+    expect(store.saveBatch.mock.calls[0][0].churn).not.toHaveProperty('timeToDrawTempMinutes');
     expect(pageStatus.mock.calls.some(([message]) => typeof message === 'string' && message.startsWith('changed '))).toBe(true);
   });
 
-  it('Record another stores the field as null on the new batch, and the 2 Aug batch still holds 20', async () => {
+  it('Record another writes a new batch with no draw-temperature key', async () => {
     installMatchMedia();
     await mountAt(VERSION_PATH, [augustSecondBatch]);
     await click(current.container.querySelector('.batch-row__record'));
@@ -368,7 +369,7 @@ describe('the stored Time to draw temp. through the real save (03.7.1, D-02, D-0
     const saved = store.saveBatch.mock.calls[0][0];
     expect(saved.id).not.toBe(augustSecondBatch.id);
     expect(saved.churn.churnDate).toBe('2026-10-10');
-    expect(saved.churn.timeToDrawTempMinutes).toBe(null);
-    expect(store.batches.find((batch) => batch.id === augustSecondBatch.id).churn.timeToDrawTempMinutes).toBe(20);
+    expect(saved.churn).not.toHaveProperty('timeToDrawTempMinutes');
+    expect(saved.churn).toHaveProperty('atDraw', null);
   });
 });

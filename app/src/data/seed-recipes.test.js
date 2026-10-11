@@ -281,12 +281,22 @@ describe('Mexican Chocolate v1/v2/v3 batches (D-02, D-06)', () => {
     for (const batch of batches) {
       const version = versionsById.get(batch.versionId);
       expect(batch.snapshot.rows).toEqual(version.rows);
-      for (const field of ['timeToDrawTempMinutes', 'outOfMachineTempC', 'churnDurationMinutes']) {
+      for (const field of ['outOfMachineTempC', 'churnDurationMinutes']) {
         if (batch.churn[field] === null) {
           expect(batch.churn[field]).toBeNull();
         }
       }
     }
+  });
+});
+
+describe('every seeded batch carries the record shape the printed log asks for (04-03)', () => {
+  const batches = seedRecipeGroups.flatMap((group) => group.batches);
+
+  it.each(batches.map((batch) => [batch.id, batch]))('%s: no draw temperature, At draw and From freezer present and null', (_id, batch) => {
+    expect(batch.churn).not.toHaveProperty('timeToDrawTempMinutes');
+    expect(batch.churn).toHaveProperty('atDraw', null);
+    if (batch.tasting) expect(batch.tasting).toHaveProperty('fromFreezer', null);
   });
 });
 

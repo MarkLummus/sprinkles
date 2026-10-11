@@ -34,7 +34,6 @@ const churnFields = {
     // Step 3 carries nothing: its amounts changed only because the table
     // did, and the as-made column already says so (D-13).
   },
-  timeToDrawTempMinutes: 20,
   outOfMachineTempC: -6,
   churnDurationMinutes: 30,
   // Neither was a number on the sheet — the overrun "?" was never

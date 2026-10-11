@@ -29,6 +29,7 @@ const emptyRecordDraft = {
   churnDurationMinutes: '',
   exitConsistency: '',
   airiness: '',
+  atDraw: '',
   atTheMachine: '',
   ingredientNotes: '',
   nextTimeNote: '',
@@ -40,6 +41,7 @@ const emptyRecordDraft = {
   note: '',
   defects: [],
   declaredDefects: [],
+  fromFreezer: '',
   meltTestG: '',
   meltStyle: '',
 };

@@ -24,11 +24,9 @@ function churnMeasured(value, options) {
 // The two churn-section battery fields the pen draws, in the contract's own
 // DOM order — BATTERY_FIELDS lists the churn numerics before the tasting ones
 // (domain/battery.js), so a straight filter preserves that order without
-// hard-coding index positions. Time to draw temp. stays in the domain's
-// BATTERY_FIELDS and in stored batches but is not shown (Mark, 2026-10-07,
-// sketch 010 D17: it came from an instruction for immersion heaters in small
-// jars and does not apply to his machine); Phase 4's reseed removes it, row
-// build-remove-draw-temp-data-element.
+// hard-coding index positions. (Time to draw temp. is gone from the data
+// altogether: Mark, 2026-10-07, sketch 010 D17 — it came from an instruction
+// for immersion heaters in small jars and does not apply to his machine.)
 const CHURN_MEASURED_FIELDS = BATTERY_FIELDS.filter((field) =>
   ['outOfMachineTempC', 'churnDurationMinutes'].includes(field.key),
 );

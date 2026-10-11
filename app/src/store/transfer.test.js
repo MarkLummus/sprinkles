@@ -156,11 +156,11 @@ function makeBatch(overrides = {}) {
       churnDate: '2026-08-02',
       asMade: {},
       stepChanges: {},
-      timeToDrawTempMinutes: null,
       outOfMachineTempC: null,
       churnDurationMinutes: null,
       exitConsistency: null,
       airiness: null,
+      atDraw: null,
       atTheMachine: null,
       ingredientNotes: null,
       nextTimeNote: null,
@@ -179,6 +179,7 @@ function makeTasting(overrides = {}) {
     note: null,
     defects: null,
     declaredDefects: null,
+    fromFreezer: null,
     meltTestG: null,
     meltStyle: null,
     ...overrides,
@@ -457,11 +458,53 @@ describe('validateStoreFile', () => {
 
   // The battery's new churn fields (03.3.1-CONTEXT.md D-09, D-10).
   describe('validateBatch, the battery\'s churn fields', () => {
-    it('rejects a non-numeric value under the new churn field names — the retired numeric fields are no longer checked at all', () => {
-      const batch = makeBatch({ churn: { ...makeBatch().churn, timeToDrawTempMinutes: 'cold' } });
+    describe('atDraw (sketch 010 D6, D6b, D10; T-04-08)', () => {
+      const withChurn = (patch) => makeBatch({ churn: { ...makeBatch().churn, ...patch } });
+      const check = (batch) => validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+
+      it.each(['Nothing to note', 'Not evaluated'])('accepts %s on a group with no mark, and exports then imports it unchanged', async (pick) => {
+        const batch = withChurn({ atDraw: pick });
+        expect(check(batch)).toEqual({ ok: true, errors: [] });
+        const source = createInMemoryRepository([makeVersion()], [batch], [makeRecipe()]);
+        const file = JSON.parse(JSON.stringify(await exportStore(source)));
+        const target = createInMemoryRepository([], [], []);
+        expect(await importStore(target, file)).toEqual({ ok: true, errors: [] });
+        expect(target.batches[0].churn.atDraw).toBe(pick);
+      });
+
+      it('accepts null and an absent value', () => {
+        expect(check(withChurn({ atDraw: null }))).toEqual({ ok: true, errors: [] });
+        const { atDraw, ...bare } = makeBatch().churn;
+        expect(check(makeBatch({ churn: bare }))).toEqual({ ok: true, errors: [] });
+      });
+
+      it('refuses an unknown word, naming the path, See below included (the print\'s word, not the pen\'s)', () => {
+        for (const bad of ['See below', 'Fine', 3, true]) {
+          const result = check(withChurn({ atDraw: bad }));
+          expect(result.ok).toBe(false);
+          expect(result.errors.some((error) => error.includes('churn.atDraw'))).toBe(true);
+        }
+      });
+
+      it('refuses a pick stored beside Exit consistency or Airiness', () => {
+        for (const mark of [{ exitConsistency: 'Smooth ribbon' }, { airiness: 'Low, dense' }]) {
+          const result = check(withChurn({ atDraw: 'Nothing to note', ...mark }));
+          expect(result.ok).toBe(false);
+          expect(result.errors.some((error) => error.includes('churn.atDraw'))).toBe(true);
+        }
+      });
+    });
+
+    it('rejects a non-numeric value under a churn numeric field, naming the path', () => {
+      const batch = makeBatch({ churn: { ...makeBatch().churn, outOfMachineTempC: 'cold' } });
       const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
       expect(result.ok).toBe(false);
-      expect(result.errors.some((error) => error.includes('churn.timeToDrawTempMinutes'))).toBe(true);
+      expect(result.errors.some((error) => error.includes('churn.outOfMachineTempC'))).toBe(true);
+    });
+
+    it('no longer checks the retired draw-temperature key: the shape forgets it (sketch 010 D17)', () => {
+      const batch = makeBatch({ churn: { ...makeBatch().churn, timeToDrawTempMinutes: 'cold' } });
+      expect(validateStoreFile(makeStoreFile([makeVersion()], [batch]))).toEqual({ ok: true, errors: [] });
     });
 
     it('accepts a written 0 churnDurationMinutes — a truthiness test would wrongly reject it', () => {
@@ -483,6 +526,53 @@ describe('validateStoreFile', () => {
 
   // The single zero-or-one tasting (D-03) and its own fields.
   describe('validateBatch, the tasting object', () => {
+    describe('fromFreezer (sketch 010 D6, D6b, D10; T-04-08)', () => {
+      const check = (tasting) => validateStoreFile(makeStoreFile([makeVersion()], [makeBatch({ tasting })]));
+
+      it.each(['Nothing to note', 'Not evaluated'])('accepts %s on a bare tasting, and exports then imports it unchanged', async (pick) => {
+        const batch = makeBatch({ tasting: makeTasting({ fromFreezer: pick }) });
+        expect(validateStoreFile(makeStoreFile([makeVersion()], [batch]))).toEqual({ ok: true, errors: [] });
+        const source = createInMemoryRepository([makeVersion()], [batch], [makeRecipe()]);
+        const file = JSON.parse(JSON.stringify(await exportStore(source)));
+        const target = createInMemoryRepository([], [], []);
+        expect(await importStore(target, file)).toEqual({ ok: true, errors: [] });
+        expect(target.batches[0].tasting.fromFreezer).toBe(pick);
+      });
+
+      it('accepts null and an absent value', () => {
+        expect(check(makeTasting({ fromFreezer: null }))).toEqual({ ok: true, errors: [] });
+        const { fromFreezer, ...bare } = makeTasting();
+        expect(check(bare)).toEqual({ ok: true, errors: [] });
+      });
+
+      it('refuses an unknown word, naming the path', () => {
+        for (const bad of ['See below', 'Fine', 3]) {
+          const result = check(makeTasting({ fromFreezer: bad }));
+          expect(result.ok).toBe(false);
+          expect(result.errors.some((error) => error.includes('tasting.fromFreezer'))).toBe(true);
+        }
+      });
+
+      it('refuses a pick stored beside a scale mark, a defect or a declared defect', () => {
+        for (const beside of [
+          { marks: { sweetness: 4 } },
+          { defects: ['Greasy film'] },
+          { declaredDefects: ['Bitter'] },
+        ]) {
+          const result = check(makeTasting({ fromFreezer: 'Nothing to note', ...beside }));
+          expect(result.ok).toBe(false);
+          expect(result.errors.some((error) => error.includes('tasting.fromFreezer'))).toBe(true);
+        }
+      });
+
+      it('accepts a pick beside an empty marks object, empty defects and null declaredDefects', () => {
+        expect(check(makeTasting({ fromFreezer: 'Not evaluated', marks: {}, defects: [], declaredDefects: null }))).toEqual({
+          ok: true,
+          errors: [],
+        });
+      });
+    });
+
     it('accepts a batch whose tasting is null', () => {
       expect(validateStoreFile(makeStoreFile([makeVersion()], [makeBatch({ tasting: null })]))).toEqual({
         ok: true,

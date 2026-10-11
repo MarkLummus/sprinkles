@@ -172,6 +172,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
       draft.churnDurationMinutes !== '' ||
       draft.exitConsistency !== '' ||
       draft.airiness !== '' ||
+      draft.atDraw !== '' ||
       draft.atTheMachine !== '' ||
       draft.ingredientNotes !== '' ||
       draft.nextTimeNote !== '' ||
@@ -183,6 +184,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
       draft.note !== '' ||
       draft.defects.length > 0 ||
       draft.declaredDefects.length > 0 ||
+      draft.fromFreezer !== '' ||
       draft.meltTestG !== '' ||
       draft.meltStyle !== ''
     );
@@ -193,6 +195,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
     draft.churnDurationMinutes !== baseline.churnDurationMinutes ||
     draft.exitConsistency !== baseline.exitConsistency ||
     draft.airiness !== baseline.airiness ||
+    draft.atDraw !== baseline.atDraw ||
     draft.atTheMachine !== baseline.atTheMachine ||
     draft.ingredientNotes !== baseline.ingredientNotes ||
     draft.nextTimeNote !== baseline.nextTimeNote ||
@@ -202,6 +205,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
     draft.tastingTempC !== baseline.tastingTempC ||
     draft.note !== baseline.note ||
     usesListsDiffer(draft.declaredDefects, baseline.declaredDefects) ||
+    draft.fromFreezer !== baseline.fromFreezer ||
     draft.meltTestG !== baseline.meltTestG ||
     draft.meltStyle !== baseline.meltStyle ||
     marksDiffer(draft.marks, baseline.marks) ||
@@ -353,6 +357,7 @@ function blankTastingFields() {
     note: '',
     defects: [],
     declaredDefects: [],
+    fromFreezer: '',
     meltTestG: '',
     meltStyle: '',
   };
@@ -373,6 +378,7 @@ function blankRecordDraft() {
     churnDurationMinutes: '',
     exitConsistency: '',
     airiness: '',
+    atDraw: '',
     atTheMachine: '',
     ingredientNotes: '',
     nextTimeNote: '',
@@ -406,6 +412,7 @@ export function draftFromBatch(batch) {
     churnDurationMinutes: toDraftString(churn.churnDurationMinutes),
     exitConsistency: churn.exitConsistency ?? '',
     airiness: churn.airiness ?? '',
+    atDraw: churn.atDraw ?? '',
     atTheMachine: churn.atTheMachine ?? '',
     ingredientNotes: churn.ingredientNotes ?? '',
     nextTimeNote: churn.nextTimeNote ?? '',
@@ -417,6 +424,7 @@ export function draftFromBatch(batch) {
     note: tasting ? (tasting.note ?? '') : '',
     defects: tasting && tasting.defects ? [...tasting.defects] : [],
     declaredDefects: tasting && tasting.declaredDefects ? [...tasting.declaredDefects] : [],
+    fromFreezer: tasting ? (tasting.fromFreezer ?? '') : '',
     meltTestG: tasting ? toDraftString(tasting.meltTestG) : '',
     meltStyle: tasting ? (tasting.meltStyle ?? '') : '',
   };
@@ -432,6 +440,7 @@ export function tastingHasInk(draft) {
     Object.keys(draft.marks).length > 0 ||
     draft.defects.length > 0 ||
     draft.declaredDefects.length > 0 ||
+    draft.fromFreezer !== '' ||
     draft.tastedDate !== '' ||
     draft.temperingMinutes !== '' ||
     draft.tastingTempC !== '' ||
@@ -458,6 +467,7 @@ export function tastingPayloadFromDraft(draft) {
     note: draft.note,
     defects: [...draft.defects],
     declaredDefects: [...draft.declaredDefects],
+    fromFreezer: draft.fromFreezer,
     meltTestG: draft.meltTestG,
     meltStyle: draft.meltStyle,
   };
@@ -482,6 +492,7 @@ export function restoreDraftFromUndo(draft, pendingUndo) {
     note: pendingUndo.note,
     defects: [...pendingUndo.defects],
     declaredDefects: [...pendingUndo.declaredDefects],
+    fromFreezer: pendingUndo.fromFreezer,
     meltTestG: pendingUndo.meltTestG,
     meltStyle: pendingUndo.meltStyle,
   };
@@ -497,8 +508,6 @@ export function restoreDraftFromUndo(draft, pendingUndo) {
 // storing the errors and aborting is enough." The full field-level UI
 // wiring (aria-invalid/describedby, the field-error line, focus-on-first-
 // invalid) and the churn-date press-to-block (D-05) are Task 2's build.
-// The draft holds no Time to draw temp. (03.7.1, D-03), so that field reads
-// blank here and never raises its error.
 export function parseAllMeasuredFields(draft) {
   const fieldErrors = {};
   const parsed = {};
@@ -561,6 +570,7 @@ export function buildChurnFieldsFromDraft(draft, parsed) {
     churnDurationMinutes: parsed.churnDurationMinutes.value,
     exitConsistency: draft.exitConsistency === '' ? null : draft.exitConsistency,
     airiness: draft.airiness === '' ? null : draft.airiness,
+    atDraw: draft.atDraw === '' ? null : draft.atDraw,
     atTheMachine: toTextOrNull(draft.atTheMachine),
     ingredientNotes: toTextOrNull(draft.ingredientNotes),
     nextTimeNote: toTextOrNull(draft.nextTimeNote),
@@ -579,6 +589,7 @@ export function buildTastingFieldsFromDraft(draft, parsed) {
     note: toTextOrNull(draft.note),
     defects: draft.defects.length > 0 ? draft.defects : null,
     declaredDefects: draft.declaredDefects.length > 0 ? draft.declaredDefects : null,
+    fromFreezer: draft.fromFreezer === '' ? null : draft.fromFreezer,
     meltTestG: parsed.meltTestG.value,
     meltStyle: draft.meltStyle === '' ? null : draft.meltStyle,
   };
@@ -1564,16 +1575,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
       let record;
       try {
         const batchBeingAmended = batches.find((batch) => batch.id === amendingBatchId);
-        // The pen neither shows nor edits Time to draw temp. (Mark, 2026-10-07,
-        // sketch 010 D17), so a correction carries the stored value through
-        // untouched until Phase 4's reseed removes the field (row
-        // build-remove-draw-temp-data-element).
-        record = completeRecord(
-          batchBeingAmended,
-          { ...churnFields, timeToDrawTempMinutes: batchBeingAmended.churn.timeToDrawTempMinutes },
-          tasting,
-          { now },
-        );
+        record = completeRecord(batchBeingAmended, churnFields, tasting, { now });
       } catch {
         batchSaveLockRef.current = false;
         setBatchSaveAction(null);

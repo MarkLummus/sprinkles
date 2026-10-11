@@ -8,7 +8,7 @@
 // (03.5-CONTEXT.md D-10, D-11) — and refuses everything older rather than
 // lifting it; there is no ladder here.
 import { AXES } from '../domain/axes.js';
-import { SEGMENT_OPTIONS, DEFECTS } from '../domain/battery.js';
+import { SEGMENT_OPTIONS, DEFECTS, MARK_ONE_OPTIONS } from '../domain/battery.js';
 
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const DECLARED_AXIS_NAMES = AXES.filter((axis) => axis.group === 'declared').map((axis) => axis.name);
@@ -260,6 +260,26 @@ function validateTasting(tasting, snapshot, path, errors) {
       errors.push(`${path}.declaredDefects: expected unique words, got ${JSON.stringify(ticks)}`);
     }
   }
+  // From freezer (sketch 010 D6, D6b): absent, null, or one of the pen's two
+  // words, and never stored beside a scale mark, a defect or a declared
+  // defect (T-04-08).
+  if (!isAbsentOrNull(tasting.fromFreezer)) {
+    if (!MARK_ONE_OPTIONS.includes(tasting.fromFreezer)) {
+      errors.push(
+        `${path}.fromFreezer: expected one of ${JSON.stringify(MARK_ONE_OPTIONS)} or null, got ${JSON.stringify(tasting.fromFreezer)}`,
+      );
+    } else {
+      const hasMark =
+        (isPlainObject(tasting.marks) && Object.keys(tasting.marks).length > 0) ||
+        (Array.isArray(tasting.defects) && tasting.defects.length > 0) ||
+        (Array.isArray(tasting.declaredDefects) && tasting.declaredDefects.length > 0);
+      if (hasMark) {
+        errors.push(
+          `${path}.fromFreezer: expected null while a scale mark, a defect or a declared defect is set, got ${JSON.stringify(tasting.fromFreezer)}`,
+        );
+      }
+    }
+  }
   if (!isEnumOrNull(tasting.meltStyle, SEGMENT_OPTIONS.meltStyle)) {
     errors.push(
       `${path}.meltStyle: expected one of ${JSON.stringify(SEGMENT_OPTIONS.meltStyle)} or null, got ${JSON.stringify(tasting.meltStyle)}`,
@@ -382,7 +402,7 @@ function validateBatch(batch, path, errors) {
     if (!isPlainObject(churn.stepChanges)) {
       errors.push(`${path}.churn.stepChanges: expected an object`);
     }
-    for (const field of ['timeToDrawTempMinutes', 'outOfMachineTempC', 'churnDurationMinutes']) {
+    for (const field of ['outOfMachineTempC', 'churnDurationMinutes']) {
       const value = churn[field];
       if (!isAbsentOrNull(value) && !isFiniteNumber(value)) {
         errors.push(`${path}.churn.${field}: expected a finite number or null, got ${JSON.stringify(value)}`);
@@ -397,6 +417,17 @@ function validateBatch(batch, path, errors) {
       errors.push(
         `${path}.churn.airiness: expected one of ${JSON.stringify(SEGMENT_OPTIONS.airiness)} or null, got ${JSON.stringify(churn.airiness)}`,
       );
+    }
+    // At draw (sketch 010 D6, D6b): absent, null, or one of the pen's two
+    // words, and never stored beside a mark in its own group (T-04-08).
+    if (!isAbsentOrNull(churn.atDraw)) {
+      if (!MARK_ONE_OPTIONS.includes(churn.atDraw)) {
+        errors.push(
+          `${path}.churn.atDraw: expected one of ${JSON.stringify(MARK_ONE_OPTIONS)} or null, got ${JSON.stringify(churn.atDraw)}`,
+        );
+      } else if (!isAbsentOrNull(churn.exitConsistency) || !isAbsentOrNull(churn.airiness)) {
+        errors.push(`${path}.churn.atDraw: expected null while Exit consistency or Airiness is set, got ${JSON.stringify(churn.atDraw)}`);
+      }
     }
     for (const field of ['churnDate', 'atTheMachine', 'ingredientNotes', 'nextTimeNote']) {
       const value = churn[field];

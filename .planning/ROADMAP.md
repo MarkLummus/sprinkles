@@ -662,11 +662,11 @@ Plans:
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
 
-**Plans:** 10 plans
+**Plans:** 1/10 plans executed
 
 Plans:
 **Wave 1**
-- [ ] 04-01-PLAN.md — Shared Button, Checkbox and Radio carry the tab stop; 43 buttons, 3 checkboxes and 2 radios migrated; the scan keeps raw controls inside them (D-19)
+- [x] 04-01-PLAN.md — Shared Button, Checkbox and Radio carry the tab stop; 43 buttons, 3 checkboxes and 2 radios migrated; the scan keeps raw controls inside them (D-19)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 04-02-PLAN.md — The Sheet code: one pure derivation with a golden vector; Search's Sheet code field lands on the version; Home's Enter Sheet code link (D-08 to D-13) — checkpoint: the Search page's submit control
@@ -735,7 +735,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
 | 3.5. Separate the recipe from the sheet | 31/31 | Complete    | 2026-10-02 |
 | 3.6. Per-step shared ingredients | 7/7 | Complete    | 2026-10-06 |
-| 4. Prepare the next version for making | 0/TBD | Not started | - |
+| 4. Prepare the next version for making | 1/10 | In Progress | - |
 | 5. Version evolution | 0/TBD | Not started | - |
 
 ## Coverage

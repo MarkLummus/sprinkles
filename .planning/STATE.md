@@ -1,18 +1,18 @@
 ---
 gsd_state_version: "1.0"
 current_phase: 04
-current_phase_name: prepare-the-next-version-for-making
+current_phase_name: Prepare the next version for making
 status: executing
-stopped_at: Phase 03.7.1 complete, ready to plan Phase 04
-last_updated: "2026-10-11T05:14:29.623Z"
-last_activity: 2026-10-10
-last_activity_desc: Phase 03.7.1 complete, transitioned to Phase 04
-state_head: c2886b56cd02ff843efbd0fe2738e95cfb277882
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-10-11T06:10:24.682Z"
+last_activity: 2026-10-11
+last_activity_desc: Phase 04 execution started
+state_head: 4f3298432eb505e3c9204830bd2617cf2c4a4645
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 110
+  completed_plans: 111
   percent: 73
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-22)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.7.1 — Hide draw temperature (INSERTED)
+**Current focus:** Phase 04 — Prepare the next version for making
 
 ## Current Position
 
-Phase: 04 (prepare-the-next-version-for-making) — READY TO EXECUTE
-Plan: Not started
+Phase: 04 (Prepare the next version for making) — EXECUTING
+Plan: 2 of 10
 Status: Ready to execute
-Last activity: 2026-10-10 — Phase 03.7.1 complete, transitioned to Phase 04
+Last activity: 2026-10-11 — Phase 04 execution started
 
 Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -142,6 +142,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 03.7 P03 | 14 min | 2 tasks | 2 files |
 | Phase 03.7.1 P01 | 6 min | 3 tasks | 13 files |
 | Phase 03.7.1 P02 | 10 min | 2 tasks | 6 files |
+| Phase 04 P01 | 8 min | 3 tasks | 21 files |
 
 ## Accumulated Context
 
@@ -285,6 +286,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.7]: 03.7-03: the 'Notes, no steps' board panel is OPEN below the section only (it keeps four step heads a version with no steps cannot draw); whole-route print splits Instructions step 1 (the page's print grid), found and not fixed for Phase 4
 - [Phase 03.7.1]: 03.7.1-01 D-03: the record draft carries no Time to draw temp.; the amend save passes the stored value to completeRecord, a new batch stores null
 - [Phase 03.7.1]: 03.7.1-02: no app behaviour changed; the pen and reading match sketch 010 in WebKit and Chrome (198 MATCH, 0 DIFF); the 724 to 1365 five-track reading grid is a decide row for Mark (recommended: keep five until Phase 4)
+- [Phase 04]: Shared Button, Checkbox and Radio place tabIndex={0} after the prop spread so no caller can drop a Tab stop (D-19); type stays before the spread to keep attribute order
+- [Phase 04]: A disabled Radio still carries tabIndex={0}; the browser removes a disabled input from the Tab order natively (sketch 010 CONTRACT section 11 open item 2 settled)
 
 ### Pending Todos
 
@@ -479,6 +482,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T00:11:29.575Z
-Stopped at: Phase 03.7.1 complete, ready to plan Phase 04
+Last session: 2026-10-11T06:10:24.550Z
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None

@@ -52,7 +52,7 @@ key-decisions:
 patterns-established:
   - "Printed step text is React text in mp-* elements: no em or i, no target chip class, the word why the only addition"
 
-requirements-completed: [PRINT-01, PRINT-02, PRINT-04]
+requirements-completed: [PRINT-02, PRINT-04]
 
 coverage:
   - id: D1

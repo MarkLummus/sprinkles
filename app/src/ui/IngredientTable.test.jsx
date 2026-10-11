@@ -7,6 +7,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Children } from 'react';
 import { IngredientTable, IngredientsHead } from './IngredientTable.jsx';
+import { Button } from './Button.jsx';
 import { buildDiff } from '../domain/diff.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { formatShareOfBatch } from '../domain/composition.js';
@@ -1241,7 +1242,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
   it('Test A: every portion line runs name, estimated tag, gap, remove link, then the portion line, the link naming its line (sketch 011 decision 44)', () => {
     const markup = renderPen(splitFixture());
     const cells = wholeMilkCells(markup);
-    const link = (step) => `<button type="button" class="text-control" tabindex="0" aria-label="remove Whole milk, Step ${step}">remove</button>`;
+    const link = (step) => `<button type="button" class="text-control" aria-label="remove Whole milk, Step ${step}" tabindex="0">remove</button>`;
 
     expect(cells).toHaveLength(2);
     expect(cells[0]).toBe(
@@ -1281,7 +1282,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
           '^<td class="ingredient-table__col-name"><span class="struck-value">Whole milk</span>' +
             CHIP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
             GAP +
-            `<button type="button" class="text-control" tabindex="0" aria-label="restore Whole milk, Step ${step}">restore</button>` +
+            `<button type="button" class="text-control" aria-label="restore Whole milk, Step ${step}" tabindex="0">restore</button>` +
             `<span class="ingredient-table__portion-note">${PORTION_LINES[i]}</span></td>$`,
         ),
       );
@@ -1304,7 +1305,7 @@ describe("IngredientTable — a split row's remove link sits on the name's line,
       chip: cell.indexOf('target-chip'),
       flag: cell.indexOf('<p class="ingredient-table__flag">'),
       gap: cell.indexOf('class="ingredient-table__remove-gap"'),
-      link: cell.indexOf('class="text-control" tabindex="0" aria-label="remove Whole milk, Step 1">remove</button>'),
+      link: cell.indexOf('class="text-control" aria-label="remove Whole milk, Step 1" tabindex="0">remove</button>'),
       note: cell.indexOf('<span class="ingredient-table__portion-note">'),
     };
     for (const [part, index] of Object.entries(at)) expect(index, part).toBeGreaterThan(-1);
@@ -1846,7 +1847,7 @@ describe('IngredientsHead — the Ingredients heading, with Show changes below 7
   it('hands its button the very handler it was given (Test F)', () => {
     const onToggleShowChanges = () => {};
     const element = IngredientsHead(props({ onToggleShowChanges }));
-    const button = Children.toArray(element.props.children).find((child) => child.type === 'button');
+    const button = Children.toArray(element.props.children).find((child) => child.type === Button);
     expect(button.props.onClick).toBe(onToggleShowChanges);
   });
 });

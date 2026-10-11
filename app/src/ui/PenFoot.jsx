@@ -1,3 +1,5 @@
+import { Button } from './Button.jsx';
+
 // The one save ceremony (D-01, 03.3.1-02; the ninth round, D-14 — the
 // contract's footer order reversed): both mounts — the record pen's foot
 // (this file's own PenFoot below) and the end of the record (BatchRow,
@@ -36,17 +38,17 @@ export function SaveCeremony({
       )}
       {hint && <p className="save-ceremony__hint">{hint}</p>}
       {onRestore && (
-        <button type="button" disabled={saveAction !== null} className="text-control undo-control" ref={restoreRef} tabIndex={0} onClick={onRestore}>Restore tasting</button>
+        <Button disabled={saveAction !== null} className="text-control undo-control" ref={restoreRef} onClick={onRestore}>Restore tasting</Button>
       )}
       {onAddTasting && (
-        <button type="button" disabled={saveAction !== null} className="text-control save-ceremony__add-tasting" ref={addTastingRef} tabIndex={0} onClick={onAddTasting}>Add tasting</button>
+        <Button disabled={saveAction !== null} className="text-control save-ceremony__add-tasting" ref={addTastingRef} onClick={onAddTasting}>Add tasting</Button>
       )}
-      <button type="button" disabled={saveAction !== null} tabIndex={0} onClick={onCancel}>
+      <Button disabled={saveAction !== null} onClick={onCancel}>
         Cancel
-      </button>
-      <button type="button" disabled={saveAction !== null} tabIndex={0} onClick={onSave}>
+      </Button>
+      <Button disabled={saveAction !== null} onClick={onSave}>
         {saveAction === 'amend' ? 'Saving changes…' : saveAction === 'new' ? 'Saving batch…' : 'Save batch'}
-      </button>
+      </Button>
     </div>
   );
 }

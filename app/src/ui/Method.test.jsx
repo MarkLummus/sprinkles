@@ -1471,17 +1471,15 @@ describe('Method — every button and checkbox carries an explicit tabindex (qui
     expect(tags[0]).toContain('tabindex="0"');
   });
 
-  it('Method.jsx holds exactly 2 checkbox input tags and 9 button tags, each containing tabIndex={0} (source text, for the uses list the harness cannot render)', () => {
+  it('Method.jsx holds exactly 9 Button tags and 2 Checkbox tags and no raw button or checkbox input (source text, for the uses list the harness cannot render; the shared components carry tabIndex={0})', () => {
     const source = readFileSync(fileURLToPath(new URL('./Method.jsx', import.meta.url)), 'utf8')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/\/\/.*$/gm, '');
-    const checkboxes = (source.match(/<input\b(?:[^>{]|\{[^}]*\})*>/g) ?? []).filter((tag) => /type="checkbox"/.test(tag));
-    const buttons = source.match(/<button\b(?:[^>{]|\{[^}]*\})*>/g) ?? [];
-    expect(checkboxes).toHaveLength(2);
-    expect(buttons).toHaveLength(9);
-    for (const tag of [...checkboxes, ...buttons]) {
-      expect(tag).toContain('tabIndex={0}');
-    }
+    expect(source.match(/<Checkbox\b/g) ?? []).toHaveLength(2);
+    expect(source.match(/<Button\b/g) ?? []).toHaveLength(9);
+    expect(source.match(/<button\b/g) ?? []).toHaveLength(0);
+    const rawCheckboxes = (source.match(/<input\b(?:[^>{]|\{[^}]*\})*>/g) ?? []).filter((tag) => /type="checkbox"/.test(tag));
+    expect(rawCheckboxes).toHaveLength(0);
   });
 });
 

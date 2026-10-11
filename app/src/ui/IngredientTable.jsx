@@ -6,6 +6,7 @@ import { orphanedRows } from '../domain/uses.js';
 import { displayNumberOf } from '../domain/stepNumbers.js';
 import { parseGramsDraft } from '../domain/lineage.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
+import { Button } from './Button.jsx';
 
 // The id of the blocked line's sentence: one blocked line at a time, as the version
 // line has one 'version-field-error'.
@@ -206,9 +207,9 @@ function RemoveRowControl({ removed, onToggle, lineName }) {
   return (
     <>
       <span className="ingredient-table__remove-gap">{' '}</span>
-      <button type="button" className="text-control" tabIndex={0} aria-label={lineName ? `${word} ${lineName}` : undefined} onClick={onToggle}>
+      <Button className="text-control" aria-label={lineName ? `${word} ${lineName}` : undefined} onClick={onToggle}>
         {removed ? 'restore' : 'remove'}
-      </button>
+      </Button>
     </>
   );
 }
@@ -320,9 +321,9 @@ function OrphanedRowFlag({ row, draftVersion, onTogglePenRowRemoved }) {
   return (
     <p className="ingredient-table__flag">
       {`used by ${joined}, which ${verb} removed`}{' '}
-      <button type="button" tabIndex={0} onClick={() => onTogglePenRowRemoved(row.id)}>
+      <Button onClick={() => onTogglePenRowRemoved(row.id)}>
         remove this row
-      </button>
+      </Button>
     </p>
   );
 }
@@ -380,9 +381,9 @@ export function IngredientsHead({ parentVersion, openPen, below724, showingChang
   return (
     <div className="ingredient-table-region__head">
       {heading}
-      <button type="button" className="text-control" tabIndex={0} onClick={onToggleShowChanges}>
+      <Button className="text-control" onClick={onToggleShowChanges}>
         {showingChanges ? 'Hide changes' : 'Show changes'}
-      </button>
+      </Button>
     </div>
   );
 }

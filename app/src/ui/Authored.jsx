@@ -1,3 +1,5 @@
+import { Button } from './Button.jsx';
+
 // The maker's own judgement, kept visibly apart from anything the app
 // derives. Each note is { text, inheritedFrom } (D-06): keyed by index
 // rather than by the note string, since two notes may carry the same
@@ -32,9 +34,9 @@ export function NoteList({ listKey, notes, mode, onChangeNoteText, onRemoveNote 
                 aria-label={`${listKey} note ${index + 1}`}
                 onChange={(event) => onChangeNoteText(listKey, index, event.target.value)}
               />
-              <button type="button" tabIndex={0} onClick={() => onRemoveNote(listKey, index)}>
+              <Button onClick={() => onRemoveNote(listKey, index)}>
                 remove
-              </button>
+              </Button>
             </span>
           ) : (
             note.text

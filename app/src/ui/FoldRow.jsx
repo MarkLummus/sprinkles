@@ -1,3 +1,5 @@
+import { Button } from './Button.jsx';
+
 // The one fold head every below-desktop fold in the recipe route uses
 // (sketch 011 decisions 18/19, gen.py's own fold_row; 03.5-15 Task 1): a
 // full-row button holding the label, then Show or Hide (plus an optional
@@ -25,13 +27,11 @@ export function FoldRow({ label, labelText, open, onToggle, controls, what, coun
   }
   const accessibleName = `${name}, ${controlWord}${count ? `, ${count}` : ''}`;
   return (
-    <button
-      type="button"
+    <Button
       className="fold-row"
       aria-expanded={open}
       aria-controls={controls}
       aria-label={accessibleName}
-      tabIndex={0}
       onClick={onToggle}
     >
       <span className="fold-row__head">
@@ -39,6 +39,6 @@ export function FoldRow({ label, labelText, open, onToggle, controls, what, coun
         <span className="fold-row__control">{controlWord}</span>
       </span>
       {count ? <span className="fold-row__count">{count}</span> : null}
-    </button>
+    </Button>
   );
 }

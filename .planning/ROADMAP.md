@@ -638,7 +638,7 @@ Plans:
 **Goal:** Time to draw temp. no longer shows on any screen (record pen, reading, print); the stored field stays until Phase 4's reseed removes it. The Batch log and Tasting log titles exist only on the printed pages and ride Phase 4's print (the pen's At the machine note keeps its name)
 **Requirements**: TBD
 **Depends on:** Phase 03.7
-**Plans:** 2/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 **Wave 1**

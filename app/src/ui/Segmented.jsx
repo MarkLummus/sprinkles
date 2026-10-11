@@ -1,4 +1,6 @@
 import { useRef } from 'react';
+import { Button } from './Button.jsx';
+import { Radio } from './Radio.jsx';
 
 // The battery's one 3-way segmented control (contract "Controls spec"): a
 // role="radiogroup" of native radio inputs, restyled — the codebase's own
@@ -41,27 +43,23 @@ export function Segmented({ groupLabel, options, value, onChange, onClear }) {
           {groupLabel}
         </span>
         {picked && (
-          <button
-            type="button"
+          <Button
             className="text-control segmented-field__clear"
             aria-label={`Clear ${groupLabel}`}
-            tabIndex={0}
             onClick={handleClear}
           >
             Clear
-          </button>
+          </Button>
         )}
       </div>
       <div className="segmented" role="radiogroup" aria-label={groupLabel}>
         {options.map((option, index) => (
           <label key={option} className="segmented__option">
-            <input
-              type="radio"
+            <Radio
               name={groupName}
               value={option}
               checked={value === option}
               ref={index === 0 ? firstOptionRef : undefined}
-              tabIndex={0}
               onChange={() => {}}
               onClick={() => onChange(option)}
             />

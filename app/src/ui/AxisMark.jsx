@@ -1,5 +1,7 @@
 import { useRef } from 'react';
 import { STOPS, stopWordsFor } from '../domain/axes.js';
+import { Button } from './Button.jsx';
+import { Radio } from './Radio.jsx';
 
 // The five-stop goldilocks track (D-16, contract "Axes spec"; rebuilt in
 // 03.3.1-03 Task 2 from the nine half-stop behavioural-anchor shape to the
@@ -73,15 +75,13 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
         </span>
         <span className="axis-mark__state">{isMarked ? `(${value})` : '(Not recorded)'}</span>
         {isMarked && (
-          <button
-            type="button"
+          <Button
             className="text-control axis-mark__clear"
             aria-label={`Clear ${axis.name}`}
-            tabIndex={0}
             onClick={handleClear}
           >
             Clear
-          </button>
+          </Button>
         )}
       </div>
       <div
@@ -92,8 +92,7 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
       >
         {STOPS.map((stop, index) => (
           <label key={stop} className="axis-mark__stop">
-            <input
-              type="radio"
+            <Radio
               name={groupName}
               value={stop}
               checked={value === stop}
@@ -102,7 +101,6 @@ export function AxisMark({ axis, value, onChange, onClear, cueId }) {
                 if (index === 0) firstStopRef.current = el;
               }}
               aria-label={`${stop}: ${words[index]}`}
-              tabIndex={0}
               onChange={() => {}}
               onClick={() => handleStopClick(stop)}
             />

@@ -5,6 +5,8 @@ import { standingFor, NOT_YET_CHURNED, AWAITING_TASTING, TASTED } from '../domai
 import { citableBatches, versionsForRecipe, sortedVersions, versionIdentity } from '../domain/lineage.js';
 import { notebookPath } from './notebookPaths.js';
 import { FieldFeedback } from './FieldFeedback.jsx';
+import { Button } from './Button.jsx';
+import { Checkbox } from './Checkbox.jsx';
 import { FoldRow } from './FoldRow.jsx';
 import { useFold } from './useBelowDesktop.js';
 
@@ -230,11 +232,9 @@ export function VersionRow({
               <span className="ink-text">no batch</span>
             ) : citable.length === 1 ? (
               <label className="notebook-ceremony__batch-option">
-                <input
-                  type="checkbox"
+                <Checkbox
                   disabled={saveAction !== null}
                   checked={penDraft.citedBatchId === citable[0].id}
-                  tabIndex={0}
                   onChange={() =>
                     onChangePenField('citedBatchId', penDraft.citedBatchId === citable[0].id ? null : citable[0].id)
                   }
@@ -271,16 +271,16 @@ export function VersionRow({
           </p>
 
           <div className="notebook-ceremony__actions">
-            <button type="button" className="notebook-action--outline" disabled={saveAction !== null} tabIndex={0} onClick={onCancelDeveloping}>
+            <Button className="notebook-action--outline" disabled={saveAction !== null} onClick={onCancelDeveloping}>
               Cancel
-            </button>
-            <button type="button" className="notebook-action" disabled={saveAction !== null} tabIndex={0} onClick={onSaveAsNewVersion}>
+            </Button>
+            <Button className="notebook-action" disabled={saveAction !== null} onClick={onSaveAsNewVersion}>
               {saveAction === 'new' ? 'Saving new version…' : 'Save as a new version'}
-            </button>
+            </Button>
             {canSaveOver && (
-              <button type="button" className="notebook-action--outline" disabled={saveAction !== null} tabIndex={0} onClick={onSaveOverVersion}>
+              <Button className="notebook-action--outline" disabled={saveAction !== null} onClick={onSaveOverVersion}>
                 {saveAction === 'over' ? 'Saving this version…' : 'Save over this version'}
-              </button>
+              </Button>
             )}
           </div>
         </form>
@@ -398,39 +398,33 @@ export function VersionRow({
         {openPen === null && (
           <div className="notebook-version__acts">
             {below724 && (
-              <button
-                type="button"
+              <Button
                 ref={standing === AWAITING_TASTING ? recordTastingButtonRef : undefined}
                 className="notebook-action"
-                tabIndex={0}
                 onClick={() => (standing === AWAITING_TASTING ? onStartTasting(latestBatch) : onStartRecording())}
               >
                 {RECORD_ACT_WORDS[standing]}
-              </button>
+              </Button>
             )}
-            <button
-              type="button"
+            <Button
               ref={developButtonRef}
               className={below724 ? 'notebook-link' : 'notebook-action'}
-              tabIndex={0}
               onClick={onStartDeveloping}
             >
               Next version
-            </button>
+            </Button>
             {parentVersion && !below724 && (
               // 03.5-15 Task 2, decisions_recorded 5: names the action by
               // its own state instead of carrying aria-pressed — a toggle
               // that renames itself must not also announce a pressed
               // state (WAI-ARIA APG button pattern), or it doubles the
               // state in the accessible name.
-              <button
-                type="button"
+              <Button
                 className="notebook-link"
-                tabIndex={0}
                 onClick={onToggleShowChanges}
               >
                 {showingChanges ? 'Hide changes' : 'Show changes'}
-              </button>
+              </Button>
             )}
           </div>
         )}

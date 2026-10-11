@@ -9,13 +9,13 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, useParams } from 'react-router';
 
-const store = vi.hoisted(() => ({ versions: [] }));
+const store = vi.hoisted(() => ({ versions: [], load: null }));
 
 vi.mock('../store/repository.js', () => ({
-  repository: { listVersions: async () => store.versions },
+  repository: { listVersions: async () => (store.load ? store.load() : store.versions) },
 }));
 
-import { SheetCodeSearch, SHEET_CODE_NO_MATCH } from './SheetCodeSearch.jsx';
+import { SheetCodeSearch, SHEET_CODE_NO_MATCH, SHEET_CODE_STORE_ERROR } from './SheetCodeSearch.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { sheetCode } from '../domain/sheetCode.js';
 
@@ -61,6 +61,7 @@ async function typeAndSubmit(text) {
 }
 
 afterEach(async () => {
+  store.load = null;
   await act(async () => root?.unmount());
   host?.remove();
   host = null;
@@ -145,5 +146,41 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
       expect(document.activeElement).toBe(host.querySelector('input'));
     }
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
+  });
+});
+
+describe('SheetCodeSearch — the versions load first (WR-07)', () => {
+  it('holds Find, and answers nothing, until the versions are in; then the same code lands', async () => {
+    let release;
+    const pending = new Promise((resolve) => {
+      release = resolve;
+    });
+    store.load = () => pending;
+    await mount([]);
+    const find = host.querySelector('button');
+    expect(find.disabled).toBe(true);
+    await typeAndSubmit(sheetCode(oliveOilVersion));
+    expect(host.querySelector('[role="status"]').textContent).toBe('');
+    expect(host.querySelector('[data-testid="landed"]')).toBeNull();
+
+    await act(async () => {
+      release([oliveOilVersion]);
+      await pending;
+    });
+    expect(host.querySelector('button').disabled).toBe(false);
+    await typeAndSubmit(sheetCode(oliveOilVersion));
+    expect(host.querySelector('[data-testid="landed"]').textContent).toBe(
+      'olive-oil-ice-cream/olive-oil-ice-cream-v1',
+    );
+  });
+
+  it('says in words that the store could not be read when the load fails, and leaves Find off', async () => {
+    store.load = () => Promise.reject(new Error('store down'));
+    await mount([]);
+    const status = host.querySelector('[role="status"]');
+    expect(status.textContent).toBe('Could not open the local store. Try reloading.');
+    expect(SHEET_CODE_STORE_ERROR).toBe('Could not open the local store. Try reloading.');
+    expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
+    expect(host.querySelector('button').disabled).toBe(true);
   });
 });

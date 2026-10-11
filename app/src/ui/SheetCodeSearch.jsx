@@ -8,6 +8,11 @@ import { Button } from './Button.jsx';
 // D-13, UX1-03: one line, words only, no second line.
 export const SHEET_CODE_NO_MATCH = 'No version has this code.';
 
+// WR-07: the boot line's words (main.jsx), the app's one sentence for a store
+// it cannot read, reused so no new words reach the screen. Find stays off, so
+// reloading is the way on.
+export const SHEET_CODE_STORE_ERROR = 'Could not open the local store. Try reloading.';
+
 const RESULT_ID = 'sheet-code-result';
 
 // The Search route's body (D-09 to D-13): the Sheet code field, and the
@@ -28,9 +33,14 @@ export function SheetCodeSearch() {
 
   useEffect(() => {
     let cancelled = false;
-    repository.listVersions().then((loaded) => {
-      if (!cancelled) setVersions(loaded);
-    });
+    repository
+      .listVersions()
+      .then((loaded) => {
+        if (!cancelled) setVersions(loaded);
+      })
+      .catch(() => {
+        if (!cancelled) setResult(SHEET_CODE_STORE_ERROR);
+      });
     return () => {
       cancelled = true;
     };
@@ -38,7 +48,8 @@ export function SheetCodeSearch() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const [match] = findVersionsByCode(versions ?? [], code);
+    if (versions === null) return;
+    const [match] = findVersionsByCode(versions, code);
     if (match) {
       navigate(notebookPath(match.recipeId, match.id));
       return;
@@ -66,7 +77,7 @@ export function SheetCodeSearch() {
             aria-describedby={RESULT_ID}
           />
         </label>
-        <Button type="submit" className="notebook-action">Find</Button>
+        <Button type="submit" className="notebook-action" disabled={versions === null}>Find</Button>
       </form>
       <p id={RESULT_ID} className="place__note" role="status" aria-live="polite">
         {result}

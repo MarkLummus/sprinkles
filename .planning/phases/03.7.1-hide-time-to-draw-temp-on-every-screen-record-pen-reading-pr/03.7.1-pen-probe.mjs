@@ -435,7 +435,9 @@ async function runBoard() {
           const penPanels = panels.filter((p) => p.caps);
           const wrong = penPanels.filter((p) => JSON.stringify(p.caps) !== JSON.stringify(PEN_CAPTIONS)).map((p) => p.name);
           cmp(dirty.length === 0, `authority ${engine} ${file} no panel holds the field or a plan line (${panels.length} panels)`, dirty.length ? dirty.join(', ') : 'none');
-          cmp(penPanels.length > 0 && wrong.length === 0, `authority ${engine} ${file} every pen panel's first field row reads ${PEN_CAPTIONS.join(', ')} (${penPanels.length} pen panels)`, wrong.length ? wrong.join(', ') : 'all');
+          // pen-reading.html draws readings only, so it holds no pen panel; the other three must.
+          const wantPens = file !== 'pen-reading.html';
+          cmp((wantPens ? penPanels.length > 0 : penPanels.length === 0) && wrong.length === 0, `authority ${engine} ${file} every pen panel's first field row reads ${PEN_CAPTIONS.join(', ')} (${penPanels.length} pen panels)`, wrong.length ? wrong.join(', ') : 'all');
         }
       }
 

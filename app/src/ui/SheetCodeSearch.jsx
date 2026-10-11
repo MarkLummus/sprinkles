@@ -8,10 +8,9 @@ import { Button } from './Button.jsx';
 // D-13, UX1-03: one line, words only, no second line.
 export const SHEET_CODE_NO_MATCH = 'No version has this code.';
 
-// WR-07: the boot line's words (main.jsx), the app's one sentence for a store
-// it cannot read, reused so no new words reach the screen. Find stays off, so
-// reloading is the way on.
-export const SHEET_CODE_STORE_ERROR = 'Could not open the local store. Try reloading.';
+// WR-07: the sentence for a store it cannot read. No storage words (Mark chose
+// "look up"). Find stays off, so trying again is the way on.
+export const SHEET_CODE_STORE_ERROR = 'Couldn’t look up that code. Try again.';
 
 // WR-07: a code that cannot be a code is told apart from a sheet nothing has.
 // New words, awaiting Mark's approval.

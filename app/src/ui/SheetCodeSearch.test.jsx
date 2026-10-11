@@ -219,8 +219,8 @@ describe('SheetCodeSearch — the versions load first (WR-07)', () => {
     store.load = () => Promise.reject(new Error('store down'));
     await mount([]);
     const status = host.querySelector('[role="status"]');
-    expect(status.textContent).toBe('Could not open the local store. Try reloading.');
-    expect(SHEET_CODE_STORE_ERROR).toBe('Could not open the local store. Try reloading.');
+    expect(status.textContent).toBe('Couldn’t look up that code. Try again.');
+    expect(SHEET_CODE_STORE_ERROR).toBe('Couldn’t look up that code. Try again.');
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
     expect(host.querySelector('button').disabled).toBe(true);
   });

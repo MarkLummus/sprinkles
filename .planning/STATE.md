@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-11T14:44:22.411Z"
+last_updated: "2026-10-11T15:08:49.056Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 0c1b259d5d5efab98b452bc9b06cc5ca90c63900
+state_head: 480f1987a037954ec1d8b6aaf895a2b14a6f0e5d
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — EXECUTING
 Plan: 10 of 10
 Status: Phase complete — ready for verification
-Last activity: 2026-10-11 - Completed quick task 261011-enm: marks-list skill reads open rows and touched rows only
+Last activity: 2026-10-11 - Completed quick task 261011-fgb: Search store-failure sentence says look up, not storage
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -490,6 +490,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261011-dkf | marks-list skill claims a row first, sets owner and needs, closes finished rows (Codex review of Mark's List) | 2026-10-11 | baa592e | [261011-dkf-update-marks-list-skill-claim-first-owne](./quick/261011-dkf-update-marks-list-skill-claim-first-owne/) |
 | 261011-dz2 | Import is blocked while a pen is open; Print off with a too-long line (decided builds) | 2026-10-11 | d0d9af7 | [261011-dz2-block-import-while-a-pen-is-open-print-o](./quick/261011-dz2-block-import-while-a-pen-is-open-print-o/) |
 | 261011-enm | marks-list skill reads open rows and touched rows only, never the whole list | 2026-10-11 | 0c1b259 | [261011-enm-marks-list-skill-reads-open-rows-and-rec](./quick/261011-enm-marks-list-skill-reads-open-rows-and-rec/) |
+| 261011-fgb | Search store-failure sentence says look up, not storage | 2026-10-11 | 480f198 | [261011-fgb-search-store-failure-sentence-couldn-t-l](./quick/261011-fgb-search-store-failure-sentence-couldn-t-l/) |
 
 ### Roadmap Evolution
 

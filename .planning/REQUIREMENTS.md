@@ -35,7 +35,7 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 
 ### Review and print — from REC-01 (review/print capability)
 
-- [ ] **PRINT-01**: Maker can print the new version as a bench sheet from the browser. The formula page shows each ingredient line under its step: a blank As made line first, the planned grams, then the ingredient, with Balance beside the table; every printed value carries a unit. (Sketch 010 E1, E2, E4, E6, Mark 2026-10-06: the % of batch column and the mise-en-place tick box are retired.)
+- [x] **PRINT-01**: Maker can print the new version as a bench sheet from the browser. The formula page shows each ingredient line under its step: a blank As made line first, the planned grams, then the ingredient, with Balance beside the table; every printed value carries a unit. (Sketch 010 E1, E2, E4, E6, Mark 2026-10-06: the % of batch column and the mise-en-place tick box are retired.)
 - [x] **PRINT-02**: The sheet includes the Instructions, each step's typed targets (temperature, time, amount) in a tag row beside its prose. (Sketch 010 D18.)
 - [x] **PRINT-03**: The sheet includes a blank batch-log page (churn date, measured fields, result, dimensions, next-time lines) so the next batch's notes have a home.
 - [x] **PRINT-04**: The sheet carries a human-readable short code identifying the printed version, and the app can match that code back to the version. No QR code.
@@ -110,7 +110,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BATCH2-01 | Phase 2 | Complete |
 | BATCH2-02 | Phase 2 | Complete |
 | OBS1-01 | Phase 2 | Complete |
-| PRINT-01 | Phase 4 | Pending |
+| PRINT-01 | Phase 4 | Complete |
 | PRINT-02 | Phase 4 | Complete |
 | PRINT-03 | Phase 4 | Complete |
 | PRINT-04 | Phase 4 | Complete |

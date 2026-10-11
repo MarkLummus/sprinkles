@@ -2,17 +2,17 @@
 gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Prepare the next version for making
-status: executing
-stopped_at: Completed 04-08-PLAN.md
-last_updated: "2026-10-11T11:01:21.811Z"
+status: verifying
+stopped_at: Completed 04-10-PLAN.md
+last_updated: "2026-10-11T11:12:05.028Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 646d1525e7676b2f4c6f4bc48fded75cf907addd
+state_head: a302908388f1a0921c65237b237fdfe51bb1d999
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 119
+  completed_plans: 120
   percent: 73
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 
 Phase: 04 (Prepare the next version for making) — EXECUTING
 Plan: 10 of 10
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-10-11 — Phase 04 execution started
 
 Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed through Phase 03.4)
@@ -151,6 +151,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 04 P07 | 45 min | 3 tasks | 15 files |
 | Phase 04 P09 | 17 min | 3 tasks | 18 files |
 | Phase 04 P08 | 1h40m | 3 tasks | 10 files |
+| Phase 04 P10 | 14 min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -314,6 +315,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: [Phase 4, Plan 09] Home names a draft by presence (its version is in the store), not by fit; a stale draft is deleted quietly when the page opens it. A failed draft write is swallowed so a draft never interrupts the maker.
 - [Phase 04]: [Phase 4, Plan 09] The restore guards Pitfall 5 with a ref and no cancelled flag (StrictMode), and a restore that navigates away never marks itself done, so the leaving instance cannot delete the draft the next one reads.
 - [Phase 04]: 04-08: The Instructions follow the page row's tail wherever the row ends and open their own page only when both columns end on the formula page (Mark, option-a); rule lives in instructionsFollowRow
+- [Phase 04]: A date input draws its focus ring on :focus, because WebKit never matches :focus-visible on it
+- [Phase 04]: The keyboard walk starts at the page's first stop, not its first link: the fly-out Places button precedes it from 724 to 1589
 
 ### Pending Todos
 
@@ -508,6 +511,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T11:01:21.586Z
-Stopped at: Completed 04-08-PLAN.md
+Last session: 2026-10-11T11:12:04.890Z
+Stopped at: Completed 04-10-PLAN.md
 Resume file: None

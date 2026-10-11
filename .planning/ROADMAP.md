@@ -662,7 +662,7 @@ Plans:
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
 
-**Plans:** 9/10 plans executed
+**Plans:** 10/10 plans executed
 
 Plans:
 **Wave 1**
@@ -685,7 +685,7 @@ Plans:
 - [x] 04-08-PLAN.md — The Instructions in the method treatment follow the table's tail, the closing foot, every seed version printed whole in both engines (PRINT-02, D18, D28, D29) — checkpoint: the Instructions' start when the table fits but Balance continues
 
 **Wave 6** *(blocked on Wave 5 completion)*
-- [ ] 04-10-PLAN.md — Screen-reader close-out (D-20), the WebKit keyboard, focus, contrast and colour walk of the whole loop (D-21's automated half), PRINT-01/02 wording brought to the approved sheet
+- [x] 04-10-PLAN.md — Screen-reader close-out (D-20), the WebKit keyboard, focus, contrast and colour walk of the whole loop (D-21's automated half), PRINT-01/02 wording brought to the approved sheet
 
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the bench sheet (print) surface
@@ -735,7 +735,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
 | 3.5. Separate the recipe from the sheet | 31/31 | Complete    | 2026-10-02 |
 | 3.6. Per-step shared ingredients | 7/7 | Complete    | 2026-10-06 |
-| 4. Prepare the next version for making | 9/10 | In Progress | - |
+| 4. Prepare the next version for making | 10/10 | In Progress | - |
 | 5. Version evolution | 0/TBD | Not started | - |
 
 ## Coverage

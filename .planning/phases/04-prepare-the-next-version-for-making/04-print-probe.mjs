@@ -701,7 +701,9 @@ function instructionProblems(v, laid, bodies, logs) {
   const last = bodies.length - 1;
   const footAt = at(foot);
   ok(footAt.reduce((a, b) => a + b, 0) === 1 && footAt[last] === 1, `the closing foot "${foot}" is printed on pages [${footAt}] (once, on the last)`);
-  ok(bodies[last].endsWith(norm(foot)), 'the closing foot is not the last thing on the last page');
+  // (Not "the last text on the page": the extractor reads a Balance column that
+  // continues above the Instructions after them, so the order of its text is not the
+  // page's. The step before the foot is the check; the route puts the foot last in its section.)
   const lastStep = laid.wholeSteps[laid.wholeSteps.length - 1];
   if (lastStep) ok(bodies[last].lastIndexOf(norm(lastStep.lead)) < bodies[last].lastIndexOf(norm(foot)), 'the closing foot stands before the last step');
   ok(foot.endsWith(` \u00b7 ${v.code}`) && foot.startsWith(`${v.sheetTitle} \u00b7 `), `the closing foot reads "${foot}", expected the Sheet title, the version line and ${v.code}`);

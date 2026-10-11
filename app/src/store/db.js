@@ -5,7 +5,8 @@ export const DB_VERSION = 8;
 
 // The only module under app/src that touches the store library — every
 // other module reaches the store through repository.js's seam (D-06).
-export function openStore() {
+// `onBlocked` is told when this open has to wait for another tab (WR-08).
+export function openStore({ onBlocked = () => {} } = {}) {
   return openDB(DB_NAME, DB_VERSION, {
     upgrade(db, oldVersion, newVersion, transaction) {
       // D-05, D-10: a returning profile below 8 resets rather than lifts:
@@ -50,6 +51,22 @@ export function openStore() {
       // createObjectStore are synchronous, which is strictly stronger than
       // the previous IDB-native-only rule for what this callback could pause
       // on — nothing here can auto-commit the versionchange transaction early.
+    },
+    // Another tab holds an older version open, so this open waits until that
+    // tab closes (WR-08). The caller says what to do; the open then finishes
+    // on its own.
+    blocked() {
+      onBlocked();
+    },
+    // A newer version wants the database (WR-08): this tab is the old one.
+    // The connection closes first, so the other tab is never left waiting,
+    // then the tab reloads onto the new build. The reload's pagehide flush can
+    // no longer write once the connection is closed, so up to the last 250 ms
+    // of typing can be lost, the same bound RecipePage's pagehide comment
+    // already accepts. `location` is absent under the node test environment.
+    blocking(currentVersion, blockedVersion, event) {
+      event.target.close();
+      globalThis.location?.reload();
     },
   });
 }

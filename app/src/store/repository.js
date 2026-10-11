@@ -4,9 +4,23 @@ import { openStore } from './db.js';
 // versions, batches, recipes, and the drafts of unsaved pens.
 // No component, no domain module, and no seed check may reach past it.
 export function createRepository() {
-  const dbPromise = openStore();
+  // Boot waits on the open, and an older tab can hold the open up (WR-08):
+  // the flag and the single listener slot let main.jsx say so, whichever of
+  // the event and the registration comes first.
+  let blocked = false;
+  let blockedListener = null;
+  const dbPromise = openStore({
+    onBlocked() {
+      blocked = true;
+      if (blockedListener) blockedListener();
+    },
+  });
 
   return {
+    onBlocked(listener) {
+      blockedListener = listener;
+      if (blocked) listener();
+    },
     async listVersions() {
       const db = await dbPromise;
       return db.getAll('versions');

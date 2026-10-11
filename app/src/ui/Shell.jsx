@@ -17,9 +17,9 @@ export const PLACES = [
   { path: '/kitchen', name: 'Kitchen', slug: 'kitchen' },
 ];
 
-// The page notice 'Close the open pen before importing.' (proposed copy awaiting
-// Mark's approval; quick 261011-dz2, decide-import-refreshes-open-recipe-pens
-// = refuse). The one home of the sentence.
+// The page notice 'Close the open pen before importing.' (quick 261011-dz2,
+// decide-import-refreshes-open-recipe-pens = refuse). The one home of the sentence.
+// Wording approved by Mark (2026-10-11): decide-new-lines-import-block-and-too-long.
 export const IMPORT_BLOCKED_STATUS = 'Close the open pen before importing.';
 
 // A routed page with a pen open registers its page-notice function here

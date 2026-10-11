@@ -10,8 +10,8 @@ import { SheetPage, useSheetPages } from './PrintSheetPages.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { RecipeNotFound } from './RecipePage.jsx';
 
-// Proposed copy awaiting Mark's approval (decide-print-oversized-text-policy =
-// visible state). The one home of the sentence.
+// Wording approved by Mark (2026-10-11): decide-new-lines-import-block-and-too-long
+// (decide-print-oversized-text-policy = visible state). The one home of the sentence.
 export const PRINT_TOO_LONG_LINE = 'This is too long to print on one page.';
 
 // The print route, /notebook/:recipeId/:versionId/print (D-04; sketch 010

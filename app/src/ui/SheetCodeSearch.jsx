@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
-import { findVersionsByCode } from '../domain/sheetCode.js';
+import { findVersionsByCode, normaliseCode } from '../domain/sheetCode.js';
 import { notebookPath } from './notebookPaths.js';
 import { Button } from './Button.jsx';
 
@@ -12,6 +12,10 @@ export const SHEET_CODE_NO_MATCH = 'No version has this code.';
 // it cannot read, reused so no new words reach the screen. Find stays off, so
 // reloading is the way on.
 export const SHEET_CODE_STORE_ERROR = 'Could not open the local store. Try reloading.';
+
+// WR-07: a code that cannot be a code is told apart from a sheet nothing has.
+// New words, awaiting Mark's approval.
+export const SHEET_CODE_MALFORMED = 'Check the code: it has eight letters and numbers.';
 
 const RESULT_ID = 'sheet-code-result';
 
@@ -49,13 +53,25 @@ export function SheetCodeSearch() {
   function handleSubmit(event) {
     event.preventDefault();
     if (versions === null) return;
-    const [match] = findVersionsByCode(versions, code);
-    if (match) {
-      navigate(notebookPath(match.recipeId, match.id));
-      return;
+    // An identical line set twice is no change, so a polite live region stays
+    // silent. Emptying it first and writing the line on the next frame makes a
+    // repeat a change. A microtask is too soon: it runs before the page
+    // renders, so the empty region is never seen.
+    setResult('');
+    let line = SHEET_CODE_NO_MATCH;
+    if (code.trim() !== '') {
+      if (normaliseCode(code) === null) {
+        line = SHEET_CODE_MALFORMED;
+      } else {
+        const [match] = findVersionsByCode(versions, code);
+        if (match) {
+          navigate(notebookPath(match.recipeId, match.id));
+          return;
+        }
+      }
     }
-    setResult(SHEET_CODE_NO_MATCH);
     fieldRef.current?.focus();
+    requestAnimationFrame(() => setResult(line));
   }
 
   return (

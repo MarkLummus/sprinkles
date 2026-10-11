@@ -15,7 +15,7 @@ vi.mock('../store/repository.js', () => ({
   repository: { listVersions: async () => (store.load ? store.load() : store.versions) },
 }));
 
-import { SheetCodeSearch, SHEET_CODE_NO_MATCH, SHEET_CODE_STORE_ERROR } from './SheetCodeSearch.jsx';
+import { SheetCodeSearch, SHEET_CODE_NO_MATCH, SHEET_CODE_MALFORMED, SHEET_CODE_STORE_ERROR } from './SheetCodeSearch.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { sheetCode } from '../domain/sheetCode.js';
 
@@ -47,17 +47,33 @@ async function mount(versions) {
 }
 
 // Type into the field the way React hears it, then submit the form the way
-// Enter or the keyboard's Go does.
-async function typeAndSubmit(text) {
+// Enter or the keyboard's Go does. The line is set on the next frame (so a
+// repeat is read again), and typeAndSubmit waits for it.
+async function type(text) {
   const field = host.querySelector('input');
   await act(async () => {
     const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
     setter.call(field, text);
     field.dispatchEvent(new Event('input', { bubbles: true }));
   });
+}
+
+async function submit() {
   await act(async () => {
     host.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   });
+}
+
+async function nextFrame() {
+  await act(async () => {
+    await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+  });
+}
+
+async function typeAndSubmit(text) {
+  await type(text);
+  await submit();
+  await nextFrame();
 }
 
 afterEach(async () => {
@@ -138,13 +154,38 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(document.activeElement).toBe(host.querySelector('input'));
   });
 
-  it('reads the same line for an empty and a blank submit, and for text that is not a code', async () => {
+  it('reads the same line for an empty and a blank submit', async () => {
     await mount([oliveOilVersion]);
-    for (const text of ['', '   ', 'hello']) {
+    for (const text of ['', '   ']) {
       await typeAndSubmit(text);
       expect(host.querySelector('[role="status"]').textContent).toBe('No version has this code.');
       expect(document.activeElement).toBe(host.querySelector('input'));
     }
+    expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
+  });
+
+  it('empties the status on a repeat submit and writes the line again on the next frame, so it is read again (WR-07)', async () => {
+    await mount([oliveOilVersion]);
+    await typeAndSubmit('0000-0000');
+    const status = host.querySelector('[role="status"]');
+    expect(status.textContent).toBe('No version has this code.');
+    await submit();
+    expect(status.textContent).toBe('');
+    expect(document.activeElement).toBe(host.querySelector('input'));
+    await nextFrame();
+    expect(status.textContent).toBe('No version has this code.');
+    expect(document.activeElement).toBe(host.querySelector('input'));
+  });
+
+  it('tells a malformed code from a missing sheet, and keeps focus in the field (WR-07)', async () => {
+    await mount([oliveOilVersion]);
+    for (const text of ['K7QM-2X9U', 'K7QM-2X9', 'K7QM-2X9DD', 'hello']) {
+      await typeAndSubmit(text);
+      expect(host.querySelector('[role="status"]').textContent).toBe('Check the code: it has eight letters and numbers.');
+      expect(host.querySelector('[data-testid="landed"]')).toBeNull();
+      expect(document.activeElement).toBe(host.querySelector('input'));
+    }
+    expect(SHEET_CODE_MALFORMED).toBe('Check the code: it has eight letters and numbers.');
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
   });
 });

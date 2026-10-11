@@ -980,6 +980,17 @@ export function RecipePage({ onPageStatus = () => {} }) {
           setDraftRestoreDone(true);
           return;
         }
+        // A Correct draft belongs to its own batch's address: the head, the
+        // axes snapshot and the amend save all name the batch the URL shows,
+        // so this page never edits a batch it is not showing. Opened on any
+        // other address of the version, the address is replaced with the
+        // batch's own and nothing is restored here. The persist effect stays
+        // off on this instance (draftRestoreDone is not set), so it cannot
+        // delete the draft the next instance, keyed by that batch, reads.
+        if (record.kind === 'amend' && batchId !== record.amendingBatchId) {
+          navigate(notebookPath(version.recipeId, version.id, record.amendingBatchId), { replace: true });
+          return;
+        }
         draftStoredRef.current = true;
         if (record.kind === 'plan') {
           setPenDraft(record.payload);
@@ -989,6 +1000,18 @@ export function RecipePage({ onPageStatus = () => {} }) {
           setVersionSaveAction(null);
           versionSaveLockRef.current = false;
           setMode('developing');
+        } else if (record.kind === 'record') {
+          // A new batch's record: on any of the version's addresses.
+          setDraft(record.payload);
+          setAmendingBatchId(null);
+          setAmendBaseline(null);
+          setMode('recording');
+        } else {
+          setDraft(record.payload);
+          setAmendBaseline(record.amendBaseline);
+          setAmendingBatchId(record.amendingBatchId);
+          setAmendOpener(record.amendOpener);
+          setMode('recording');
         }
         onPageStatus(DRAFT_KEPT_STATUS);
         setDraftRestoreDone(true);
@@ -1010,6 +1033,16 @@ export function RecipePage({ onPageStatus = () => {} }) {
         kind: 'plan',
         payload: penDraft,
         penOpenedAt: penOpenedAtRef.current,
+        now: new Date().toISOString(),
+      });
+    } else if ((persistedPen === 'record' || persistedPen === 'amend') && isDraftDirty(mode, draft, amendBaseline)) {
+      record = buildDraftRecord({
+        versionId,
+        kind: persistedPen,
+        payload: draft,
+        amendingBatchId,
+        amendBaseline,
+        amendOpener,
         now: new Date().toISOString(),
       });
     }

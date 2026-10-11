@@ -17,7 +17,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter, Routes, Route, useParams, useLocation } from 'react-router';
+import { MemoryRouter, Routes, Route, useParams, useLocation, useNavigationType } from 'react-router';
 
 const store = vi.hoisted(() => ({
   drafts: new Map(),
@@ -89,6 +89,7 @@ const WRITTEN_AT = '2026-10-10T08:05:00.000Z';
 let current = null;
 let pageStatus = null;
 let locationNow = null;
+let navigationType = null;
 let originalMatchMedia = null;
 
 // router.jsx keys RecipePage by its three route parameters, so a different
@@ -100,6 +101,7 @@ function Keyed({ onPageStatus }) {
 
 function Where() {
   locationNow = useLocation();
+  navigationType = useNavigationType();
   return null;
 }
 
@@ -413,4 +415,253 @@ describe('the record draft’s fields', () => {
   });
 });
 
-export { BATCH_PATH, locationNow };
+
+// ---------------------------------------------------------------------------
+// Task 2: the record and Correct pens.
+// ---------------------------------------------------------------------------
+function pen() {
+  return current.container.querySelector('.batch-margin--pen');
+}
+
+function churnDateField() {
+  return pen().querySelector('.field-row__label--date input');
+}
+
+function measuredField(labelStart) {
+  return pen().querySelector(`input[aria-label^="${labelStart}"]`);
+}
+
+function markedStop(axisName) {
+  const axis = [...pen().querySelectorAll('.axis-mark')].find(
+    (node) => node.querySelector('.axis-mark__name')?.textContent === axisName,
+  );
+  return axis?.querySelector('input[type="radio"]:checked')?.value ?? null;
+}
+
+function recordDraftRecord(overrides = {}) {
+  return buildDraftRecord({
+    versionId: VERSION,
+    kind: 'record',
+    payload: {
+      ...blankRecordDraft(),
+      churnDate: '2026-10-09',
+      outOfMachineTempC: '-6',
+      tastingOpen: true,
+      marks: { hardness: 3 },
+      ...overrides,
+    },
+    now: WRITTEN_AT,
+  });
+}
+
+// The Correct pen on the 2 Aug batch: payload is the baseline with one edit.
+function amendDraftRecord({ edit = { note: 'a little firmer than I wrote' }, ...overrides } = {}) {
+  const baseline = draftFromBatch(augustSecondBatch);
+  return buildDraftRecord({
+    versionId: VERSION,
+    kind: 'amend',
+    payload: { ...structuredClone(baseline), ...edit },
+    amendingBatchId: augustSecondBatch.id,
+    amendBaseline: baseline,
+    amendOpener: 'correct',
+    now: WRITTEN_AT,
+    ...overrides,
+  });
+}
+
+describe('the record pen keeps its draft, its tasting section included (04-09, Task 2)', () => {
+  it('reopens the churn date, a measured value, the open tasting and its mark, and says the words once', async () => {
+    storeDraft(recordDraftRecord());
+    const confirm = vi.spyOn(window, 'confirm');
+    await mountAt(VERSION_PATH);
+    await flush(() => pen() !== null);
+
+    expect(pen()).not.toBeNull();
+    expect(churnDateField().value).toBe('2026-10-09');
+    expect(measuredField('Out of machine').value).toBe('-6');
+    expect([...pen().querySelectorAll('h3, h2')].some((node) => node.textContent === 'Tasting')).toBe(true);
+    expect(markedStop('Hardness')).toBe('3');
+    expect(pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS)).toHaveLength(1);
+    expect(store.saveBatch).not.toHaveBeenCalled();
+    expect(store.saveVersion).not.toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it('opens on any address of the version, a batch address included', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(recordDraftRecord());
+    await mountAt(BATCH_PATH);
+    await flush(() => pen() !== null);
+    expect(churnDateField().value).toBe('2026-10-09');
+    expect(locationNow.pathname).toBe(BATCH_PATH);
+  });
+
+  it('Save batch writes the batch once and deletes the draft, and nothing writes it back', async () => {
+    storeDraft(recordDraftRecord());
+    await mountAt(VERSION_PATH);
+    await flush(() => pen() !== null);
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
+    await click(buttonByText('Save batch'));
+    await flush(() => store.saveBatch.mock.calls.length > 0);
+    await flush(() => store.deleteDraft.mock.calls.length > 0);
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    expect(store.saveBatch.mock.calls[0][0].churn.churnDate).toBe('2026-10-09');
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.drafts.has(VERSION)).toBe(false);
+
+    await elapse(1000);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+    expect(store.drafts.has(VERSION)).toBe(false);
+  });
+
+  it('Cancel deletes the draft', async () => {
+    storeDraft(recordDraftRecord());
+    await mountAt(VERSION_PATH);
+    await flush(() => pen() !== null);
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
+    await click(buttonByText('Cancel'));
+    await elapse(1000);
+    expect(pen()).toBeNull();
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.drafts.has(VERSION)).toBe(false);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+    expect(store.saveBatch).not.toHaveBeenCalled();
+  });
+
+  it('typing in a fresh record pen writes a record draft after the debounce', async () => {
+    await mountAt(VERSION_PATH);
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await click(buttonByText('Record a batch'));
+    await flush(() => pen() !== null);
+    await elapse(400);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+
+    await setValue(churnDateField(), '2026-10-09');
+    await elapse(300);
+    expect(store.saveDraft).toHaveBeenCalledTimes(1);
+    const record = store.saveDraft.mock.calls[0][0];
+    expect(record.kind).toBe('record');
+    expect(record.amendingBatchId).toBeNull();
+    expect(record.amendBaseline).toBeNull();
+    expect(record.payload.churnDate).toBe('2026-10-09');
+    expect(Object.keys(record.payload).sort()).toEqual([...RECORD_DRAFT_KEYS].sort());
+  });
+});
+
+describe('the Correct pen keeps its draft and reopens beside its own batch (04-09, Task 2)', () => {
+  it('reopens on the batch’s address with its baseline, so an untouched field is not dirty', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(amendDraftRecord());
+    await mountAt(BATCH_PATH);
+    await flush(() => pen() !== null);
+
+    expect(pen()).not.toBeNull();
+    expect(churnDateField().value).toBe('2026-08-02');
+    expect(pen().querySelector('textarea[aria-label="Tasting note"], textarea')).not.toBeNull();
+    expect(pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS)).toHaveLength(1);
+    expect(store.saveBatch).not.toHaveBeenCalled();
+    // Dirty against its baseline, so Escape does not close it.
+    await pressEscape();
+    expect(pen()).not.toBeNull();
+  });
+
+  it('a Correct draft equal to its baseline is clean: the baseline came back, not a blank', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(amendDraftRecord({ edit: {} }));
+    await mountAt(BATCH_PATH);
+    await flush(() => pen() !== null);
+    expect(pen()).not.toBeNull();
+    await pressEscape();
+    expect(pen()).toBeNull();
+  });
+
+  it('the same draft opened on the version’s bare address replaces the address with the batch’s and keeps the draft for it', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(amendDraftRecord());
+    await mountAt(VERSION_PATH);
+    await flush(() => locationNow.pathname === BATCH_PATH);
+    await flush(() => pen() !== null);
+
+    expect(locationNow.pathname).toBe(BATCH_PATH);
+    // Replaced, not pushed: Back never returns to the bare address.
+    expect(navigationType).toBe('REPLACE');
+    expect(pen()).not.toBeNull();
+    expect(churnDateField().value).toBe('2026-08-02');
+    // The instance the address left deleted nothing, and the one beside the
+    // batch announced once.
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+    expect(store.drafts.has(VERSION)).toBe(true);
+    expect(pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS)).toHaveLength(1);
+  });
+
+  it('Save batch on a restored Correct draft writes the corrected batch once and deletes the draft', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(amendDraftRecord());
+    await mountAt(BATCH_PATH);
+    await flush(() => pen() !== null);
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
+    await click(buttonByText('Save batch'));
+    await flush(() => store.saveBatch.mock.calls.length > 0);
+    await flush(() => store.deleteDraft.mock.calls.length > 0);
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    expect(store.saveBatch.mock.calls[0][0].id).toBe(augustSecondBatch.id);
+    expect(store.saveBatch.mock.calls[0][0].tasting.note).toBe('a little firmer than I wrote');
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    await elapse(1000);
+    expect(store.drafts.has(VERSION)).toBe(false);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+  });
+
+  it('Cancel deletes a restored Correct draft', async () => {
+    store.batches = [structuredClone(augustSecondBatch)];
+    storeDraft(amendDraftRecord());
+    await mountAt(BATCH_PATH);
+    await flush(() => pen() !== null);
+    await click(buttonByText('Cancel'));
+    await flush(() => false);
+    expect(pen()).toBeNull();
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.drafts.has(VERSION)).toBe(false);
+    expect(store.saveBatch).not.toHaveBeenCalled();
+  });
+
+  it('a Correct draft naming a batch no longer in the store is deleted and the page reads', async () => {
+    store.batches = [];
+    storeDraft(amendDraftRecord());
+    await mountAt(VERSION_PATH);
+    await flush(() => store.deleteDraft.mock.calls.length > 0);
+    expect(store.deleteDraft).toHaveBeenCalledWith(VERSION);
+    expect(store.drafts.has(VERSION)).toBe(false);
+    expect(pen()).toBeNull();
+    expect(locationNow.pathname).toBe(VERSION_PATH);
+    expect(pageStatus.mock.calls.some(([message]) => message === DRAFT_KEPT_STATUS)).toBe(false);
+  });
+
+  it('a restored draft consumes the band’s pending Record a tasting without opening a second pen', async () => {
+    const awaiting = { ...structuredClone(augustSecondBatch), tasting: null };
+    store.batches = [awaiting];
+    const baseline = { ...draftFromBatch(awaiting), tastingOpen: true };
+    storeDraft(
+      buildDraftRecord({
+        versionId: VERSION,
+        kind: 'amend',
+        payload: { ...structuredClone(baseline), tastedDate: '2026-08-05' },
+        amendingBatchId: awaiting.id,
+        amendBaseline: baseline,
+        amendOpener: 'record-a-tasting',
+        now: WRITTEN_AT,
+      }),
+    );
+    await mountAt({ pathname: BATCH_PATH, state: { startTasting: true } });
+    await flush(() => pen() !== null);
+    await flush(() => locationNow.state === null);
+
+    expect(current.container.querySelectorAll('.batch-margin--pen')).toHaveLength(1);
+    expect(locationNow.state).toBeNull();
+    expect(pen().querySelector('input[type="date"]:not([required])').value).toBe('2026-08-05');
+    expect(pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS)).toHaveLength(1);
+  });
+});

@@ -464,3 +464,62 @@ describe('At draw through the real pen and the real save (sketch 010 D6 to D10; 
     expect(saved.churn.exitConsistency).toBe('Wet, soupy');
   });
 });
+
+describe('From freezer through the real pen and the real save (sketch 010 D6 to D10; 04-05)', () => {
+  const fromFreezer = () => pen().querySelector('[data-mo="fromfreezer"]');
+  const radioFor = (group, word) => [...group.querySelectorAll('input[type="radio"]')].find((input) => input.value === word);
+
+  it('Record a tasting still opens the amend pen with the Tasted date focused, and the group stands under Next time', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [awaiting]);
+    await click(band());
+    expect(document.activeElement).toBe(tastedInput());
+    const labels = [...pen().querySelectorAll('.pen-caption, .segmented-field__caption')].map((el) => el.textContent);
+    expect(labels.indexOf('From freezer')).toBeGreaterThan(labels.indexOf('Next time'));
+    expect(labels.indexOf('Next time')).toBeGreaterThan(labels.indexOf('Melt style'));
+  });
+
+  it('a tap hides the scales and Any problems?; Clear brings them back blank; a scale mark turns the options off with the reason', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [awaiting]);
+    await click(band());
+    expect(pen().querySelector('.axis-mark')).not.toBeNull();
+
+    await click(radioFor(fromFreezer(), 'Nothing to note'));
+    expect(pen().querySelector('.axis-mark')).toBeNull();
+    expect(pen().querySelector('.defects-head')).toBeNull();
+    await click(buttonByText(fromFreezer(), 'Clear'));
+    expect(pen().querySelector('.axis-mark')).not.toBeNull();
+    expect(radioFor(fromFreezer(), 'Nothing to note').checked).toBe(false);
+
+    const stop = pen().querySelector('.axis-mark__stop input[type="radio"][value="4"]');
+    await click(stop);
+    for (const input of fromFreezer().querySelectorAll('input[type="radio"]')) {
+      expect(input.disabled).toBe(true);
+      expect(input.checked).toBe(false);
+    }
+    expect(fromFreezer().querySelector('.mo-hint').textContent).toBe('Clear marks below to choose.');
+  });
+
+  it('a pick saved through the real save is stored as the word, beside no mark, and the reading says the one word', async () => {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [awaiting]);
+    await click(band());
+    await click(radioFor(fromFreezer(), 'Not evaluated'));
+    await setValue(pen().querySelector('textarea[aria-label="How did it turn out?"]'), 'Soft, not greasy.');
+
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => pen() === null);
+
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    const saved = store.saveBatch.mock.calls[0][0];
+    expect(saved.tasting.fromFreezer).toBe('Not evaluated');
+    expect(saved.tasting.marks).toEqual({});
+    expect(saved.tasting.note).toBe('Soft, not greasy.');
+
+    const lead = [...current.container.querySelectorAll('.mo-lead')].find((el) => el.textContent.startsWith('From freezer'));
+    expect(lead).toBeDefined();
+    expect(lead.textContent).toBe('From freezerNot evaluated');
+    expect(current.container.querySelector('.tasting-reading__axes')).toBeNull();
+  });
+});

@@ -307,63 +307,103 @@ function TastingReading({ batch, foldsOpen = true }) {
   // head wrapper, so it is a block and the button's width: 100% reaches the
   // log's content box with the tasted date at the row's end (G-03.5-4).
   const [open, toggle] = useFold(foldsOpen);
+  // The conditions and the melt fields (sketch 010 D14; pen-reading.html):
+  // Tempering and Tasting temperature, then the tasting note in the hand, then
+  // Melt test and Melt style, as the pen runs. With no note written the four
+  // stand in one row.
+  const tempering = (
+    <div className="batch-row__cell">
+      <span className="batch-row__cell-label">Tempering</span>
+      {batch.tasting.temperingMinutes != null ? (
+        <span className="batch-row__cell-value">
+          {churnMeasured(batch.tasting.temperingMinutes)}
+          <span className="batch-row__unit"> min</span>
+        </span>
+      ) : (
+        <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+      )}
+    </div>
+  );
+  const tastingTemperature = (
+    <div className="batch-row__cell">
+      <span className="batch-row__cell-label">Tasting temperature</span>
+      {batch.tasting.tastingTempC != null ? (
+        <span className="batch-row__cell-value">
+          {churnMeasured(batch.tasting.tastingTempC, { signed: true })}
+          <span className="batch-row__unit"> °C</span>
+        </span>
+      ) : (
+        <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+      )}
+    </div>
+  );
+  const meltFields = (
+    <>
+      <div className="batch-row__cell">
+        <span className="batch-row__cell-label">Melt test</span>
+        {batch.tasting.meltTestG != null ? (
+          <span className="batch-row__cell-value">
+            {churnMeasured(batch.tasting.meltTestG)}
+            <span className="batch-row__unit"> g lost at 20 min</span>
+          </span>
+        ) : (
+          <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+        )}
+      </div>
+      <div className="batch-row__cell">
+        <span className="batch-row__cell-label">Melt style</span>
+        {batch.tasting.meltStyle != null ? (
+          <span className="batch-row__cell-value">{batch.tasting.meltStyle}</span>
+        ) : (
+          <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+        )}
+      </div>
+    </>
+  );
   const body = (
     <>
-      <div className="batch-row__cells tasting-reading__conditions">
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Tempering</span>
-          {batch.tasting.temperingMinutes != null ? (
-            <span className="batch-row__cell-value">
-              {churnMeasured(batch.tasting.temperingMinutes)}
-              <span className="batch-row__unit"> min</span>
-            </span>
-          ) : (
-            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+      {batch.tasting.note ? (
+        <>
+          <div className="batch-row__cells tasting-reading__conditions">
+            {tempering}
+            {tastingTemperature}
+          </div>
+          <p className="app-hand tasting-reading__note">{batch.tasting.note}</p>
+          <div className="batch-row__cells tasting-reading__conditions">{meltFields}</div>
+        </>
+      ) : (
+        <div className="batch-row__cells tasting-reading__conditions">
+          {tempering}
+          {tastingTemperature}
+          {meltFields}
+        </div>
+      )}
+      {/* From freezer (sketch 010 D6a, D6b, D14): a stored word reads as one
+          full-width cell in place of the scales and Any problems?; with no
+          word those read as they always have. The record never reads the
+          word beside marks. */}
+      {batch.tasting.fromFreezer ? (
+        <div className="batch-row__cells mo-readgroup">
+          <div className="batch-row__cell mo-lead">
+            <span className="batch-row__cell-label">From freezer</span>
+            <span className="batch-row__cell-value">{batch.tasting.fromFreezer}</span>
+          </div>
+        </div>
+      ) : (
+        <>
+          {markGroup('Every recipe', coreAxes)}
+          {markGroup('This recipe only', declaredAxes)}
+          {/* Any problems? (sketch 011 README decision 58, Mark's answers B
+              and B2): the maker's own words, in the hand, split the pen's two
+              ways; the heading keeps Next time's caption face. */}
+          {(coreProblems.length > 0 || declaredProblems.length > 0) && (
+            <div className="tasting-reading__group">
+              <h4 className="batch-row__group-label">Any problems?</h4>
+              {problemBlock('Every recipe', coreProblems)}
+              {problemBlock('This recipe only', declaredProblems)}
+            </div>
           )}
-        </div>
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Tasting temperature</span>
-          {batch.tasting.tastingTempC != null ? (
-            <span className="batch-row__cell-value">
-              {churnMeasured(batch.tasting.tastingTempC, { signed: true })}
-              <span className="batch-row__unit"> °C</span>
-            </span>
-          ) : (
-            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-          )}
-        </div>
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Melt test</span>
-          {batch.tasting.meltTestG != null ? (
-            <span className="batch-row__cell-value">
-              {churnMeasured(batch.tasting.meltTestG)}
-              <span className="batch-row__unit"> g lost at 20 min</span>
-            </span>
-          ) : (
-            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-          )}
-        </div>
-        <div className="batch-row__cell">
-          <span className="batch-row__cell-label">Melt style</span>
-          {batch.tasting.meltStyle != null ? (
-            <span className="batch-row__cell-value">{batch.tasting.meltStyle}</span>
-          ) : (
-            <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-          )}
-        </div>
-      </div>
-      {batch.tasting.note && <p className="app-hand tasting-reading__note">{batch.tasting.note}</p>}
-      {markGroup('Every recipe', coreAxes)}
-      {markGroup('This recipe only', declaredAxes)}
-      {/* Any problems? (sketch 011 README decision 58, Mark's answers B and
-          B2): the maker's own words, in the hand, split the pen's two ways;
-          the heading keeps Next time's caption face. */}
-      {(coreProblems.length > 0 || declaredProblems.length > 0) && (
-        <div className="tasting-reading__group">
-          <h4 className="batch-row__group-label">Any problems?</h4>
-          {problemBlock('Every recipe', coreProblems)}
-          {problemBlock('This recipe only', declaredProblems)}
-        </div>
+        </>
       )}
     </>
   );
@@ -607,6 +647,29 @@ export function BatchRow({
   const [batchListOpen, toggleBatchList] = useFold(foldsOpen);
   const showBatchList = batches.length >= 2 && openPen !== 'record';
   const batchFold = openPen === null && Boolean(openBatch);
+
+  // The pen's Next time field (sketch 007 line 301; UAT item 14; D-12): carries
+  // its own visible caption and the sketch's e.g. placeholder, verbatim. It
+  // stands inside the open Tasting section (so From freezer follows it) and,
+  // with the section closed, after the churn section. Called only while
+  // recording, when the draft exists.
+  function renderNextTime() {
+    return (
+      <label className="batch-margin__field batch-margin__field--next-time">
+        <span className="pen-caption">Next time</span>
+        <textarea
+          className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
+          dir="auto"
+          rows="2"
+          placeholder="e.g. churn 2 min longer"
+          value={draft.nextTimeNote}
+          aria-label="Next time"
+          onChange={(event) => onChangeRecordField('nextTimeNote', event.target.value)}
+          onInput={autoGrow}
+        />
+      </label>
+    );
+  }
 
   return (
     <section className="batch-row" aria-label="Batch">
@@ -922,100 +985,13 @@ export function BatchRow({
                     onInput={autoGrow}
                   />
                 </div>
-                {/* axesForBatch's own contract (domain/axes.js) reads
-                    batch.snapshot.declaredAxes only, never a live version —
-                    the snapshot is what protects a stored mark from a
-                    later change to the recipe's declared pair (WR-04 code
-                    review). Amending an existing batch reads its own
-                    snapshot; a genuinely fresh record has no snapshot yet
-                    (it is written at save time), so the live version is
-                    the only source available and is not the drift the
-                    contract guards against. */}
-                <AxesGrid
-                  axes={axesForBatch(
-                    openPen === 'amend' && openBatch
-                      ? openBatch
-                      : { snapshot: { declaredAxes: version.declaredAxes } },
-                  )}
-                  marks={draft.marks}
-                  below={below}
-                  onChangeMark={onChangeRecordMark}
-                  onClearMark={onClearAxisMark}
-                >
-                  {/* The defects, inside the axes grid as its own two
-                      labelled groups (contract "Controls spec", "DOM
-                      order inventory"; 007 lines 263-281): the head
-                      carries the caption and its lowercase helper on one
-                      row, then "Every recipe" (the four DEFECTS chips
-                      verbatim) and "This recipe only" (Bitter, a plain
-                      defect with no helper and no aria-label — the group
-                      cue carries the meaning through aria-labelledby).
-                      Picked state is aria-pressed, never colour alone
-                      (UX1-03). */}
-                  <div className="defects-head">
-                    <p className="pen-caption" id="defects-caption">
-                      Any problems?
-                    </p>
-                    <p className="pen-helper defects-head__helper">select all that apply</p>
-                  </div>
-                  <div
-                    className="defect-group defect-group--core"
-                    role="group"
-                    aria-labelledby="defects-caption defects-core-cue"
-                  >
-                    <p className="pen-caption axes-cue" id="defects-core-cue">
-                      Every recipe
-                    </p>
-                    <div className="defects-row__chips">
-                      {/* Each of the four DEFECTS chips is a native
-                          toggle button carrying its own aria-pressed — a
-                          picked chip's own boolean, read fresh per chip
-                          from the draft's defects list. */}
-                      {DEFECTS.map((defect) => (
-                        <Button
-                          key={defect}
-                          className="chip-toggle"
-                          aria-pressed={draft.defects.includes(defect)}
-                          onClick={() => onChangeDefect(defect)}
-                        >
-                          {defect}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                  {declaredProblems.length > 0 && (
-                    <div
-                      className="defect-group defect-group--declared"
-                      role="group"
-                      aria-labelledby="defects-caption defects-declared-cue"
-                    >
-                      <p className="pen-caption axes-cue" id="defects-declared-cue">This recipe only</p>
-                      <div className="defects-row__chips">
-                        {/* A declared problem is a plain defect — no helper
-                            span, no aria-label of its own; its pressed
-                            state reads from the draft's declaredDefects
-                            list, one chip per word the recipe declares
-                            (0 to 2; the group is absent for none). */}
-                        {declaredProblems.map((word) => (
-                          <Button
-                            key={word}
-                            className="chip-toggle"
-                            aria-pressed={draft.declaredDefects.includes(word)}
-                            onClick={() => onToggleDeclaredDefect(word)}
-                          >
-                            {word}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </AxesGrid>
-                {/* The melt block, at the tasting body's foot (sketch 007
-                    lines 285-297; UAT item 12; D-12): a .field-row with
-                    top alignment holding Melt test and the Melt style
-                    category — the domain's own "Melt test" label (no
-                    "(optional)" override needed) and "Melt style" with the
-                    suffix dropped, both fields optional. */}
+                {/* The melt block, under the note (sketch 010 CONTRACT section
+                    7 moved it up from the tasting body's foot; sketch 007
+                    lines 285-297; UAT item 12; D-12): a .field-row with top
+                    alignment holding Melt test and the Melt style category
+                    — the domain's own "Melt test" label (no "(optional)"
+                    override needed) and "Melt style" with the suffix
+                    dropped, both fields optional. */}
                 <div className="melt-block">
                   <div className="field-row field-row--start">
                     <MeasuredField
@@ -1036,24 +1012,126 @@ export function BatchRow({
                     />
                   </div>
                 </div>
+                {/* Next time stands inside the open section, under the melt
+                    block, so From freezer and the scales come after it
+                    (sketch 010 D11b, D13). With the section closed it stays
+                    where it was, after the churn section (not drawn). */}
+                {renderNextTime()}
+                {/* From freezer (sketch 010 D6, D6b, D11b, D13): Nothing to
+                    note or Not evaluated says why the scales and Any
+                    problems? are absent. A pick hides them; a mark, a
+                    problem or a declared problem turns the options off with
+                    their reason. Next time's underline above is its rule. */}
+                <MarkOneField
+                  field="fromFreezer"
+                  label="From freezer"
+                  value={draft.fromFreezer}
+                  off={
+                    Object.keys(draft.marks).length > 0 ||
+                    draft.defects.length > 0 ||
+                    draft.declaredDefects.length > 0
+                  }
+                  onChange={(option) => onChangeMarkOne('fromFreezer', option)}
+                  onClear={() => onClearMarkOne('fromFreezer', 'From freezer')}
+                />
+                {/* A From freezer pick hides the scales and Any problems?
+                    (sketch 010 D9); the group's marks are off while it holds
+                    a pick, so the draft never holds both. */}
+                {draft.fromFreezer === '' && (
+                  <>
+                    {/* axesForBatch's own contract (domain/axes.js) reads
+                        batch.snapshot.declaredAxes only, never a live version —
+                        the snapshot is what protects a stored mark from a
+                        later change to the recipe's declared pair (WR-04 code
+                        review). Amending an existing batch reads its own
+                        snapshot; a genuinely fresh record has no snapshot yet
+                        (it is written at save time), so the live version is
+                        the only source available and is not the drift the
+                        contract guards against. */}
+                    <AxesGrid
+                      axes={axesForBatch(
+                        openPen === 'amend' && openBatch
+                          ? openBatch
+                          : { snapshot: { declaredAxes: version.declaredAxes } },
+                      )}
+                      marks={draft.marks}
+                      below={below}
+                      onChangeMark={onChangeRecordMark}
+                      onClearMark={onClearAxisMark}
+                    >
+                      {/* The defects, inside the axes grid as its own two
+                          labelled groups (contract "Controls spec", "DOM
+                          order inventory"; 007 lines 263-281): the head
+                          carries the caption and its lowercase helper on one
+                          row, then "Every recipe" (the four DEFECTS chips
+                          verbatim) and "This recipe only" (Bitter, a plain
+                          defect with no helper and no aria-label — the group
+                          cue carries the meaning through aria-labelledby).
+                          Picked state is aria-pressed, never colour alone
+                          (UX1-03). */}
+                      <div className="defects-head">
+                        <p className="pen-caption" id="defects-caption">
+                          Any problems?
+                        </p>
+                        <p className="pen-helper defects-head__helper">select all that apply</p>
+                      </div>
+                      <div
+                        className="defect-group defect-group--core"
+                        role="group"
+                        aria-labelledby="defects-caption defects-core-cue"
+                      >
+                        <p className="pen-caption axes-cue" id="defects-core-cue">
+                          Every recipe
+                        </p>
+                        <div className="defects-row__chips">
+                          {/* Each of the four DEFECTS chips is a native
+                              toggle button carrying its own aria-pressed — a
+                              picked chip's own boolean, read fresh per chip
+                              from the draft's defects list. */}
+                          {DEFECTS.map((defect) => (
+                            <Button
+                              key={defect}
+                              className="chip-toggle"
+                              aria-pressed={draft.defects.includes(defect)}
+                              onClick={() => onChangeDefect(defect)}
+                            >
+                              {defect}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                      {declaredProblems.length > 0 && (
+                        <div
+                          className="defect-group defect-group--declared"
+                          role="group"
+                          aria-labelledby="defects-caption defects-declared-cue"
+                        >
+                          <p className="pen-caption axes-cue" id="defects-declared-cue">This recipe only</p>
+                          <div className="defects-row__chips">
+                            {/* A declared problem is a plain defect — no helper
+                                span, no aria-label of its own; its pressed
+                                state reads from the draft's declaredDefects
+                                list, one chip per word the recipe declares
+                                (0 to 2; the group is absent for none). */}
+                            {declaredProblems.map((word) => (
+                              <Button
+                                key={word}
+                                className="chip-toggle"
+                                aria-pressed={draft.declaredDefects.includes(word)}
+                                onClick={() => onToggleDeclaredDefect(word)}
+                              >
+                                {word}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </AxesGrid>
+                  </>
+                )}
               </>
             )}
-            {/* Next time (sketch 007 line 301; UAT item 14; D-12): carries
-                its own visible caption and the sketch's e.g. placeholder,
-                verbatim. */}
-            <label className="batch-margin__field batch-margin__field--next-time">
-              <span className="pen-caption">Next time</span>
-              <textarea
-                className={draft.nextTimeNote === '' ? 'prose-field prose-field--empty' : 'prose-field'}
-                dir="auto"
-                rows="2"
-                placeholder="e.g. churn 2 min longer"
-                value={draft.nextTimeNote}
-                aria-label="Next time"
-                onChange={(event) => onChangeRecordField('nextTimeNote', event.target.value)}
-                onInput={autoGrow}
-              />
-            </label>
+            {!draft.tastingOpen && renderNextTime()}
             {/* Ceremony A (D-01): closes the record body after all record
                 content, below the shared Next time, in every state
                 (placement revised 2026-09-16, sketch 007's eleventh

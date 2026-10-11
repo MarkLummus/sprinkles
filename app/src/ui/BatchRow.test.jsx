@@ -5,6 +5,10 @@
 // list renders Link elements. The tasting pen and its ceremony retire
 // with this plan (D-01/D-03) — their own coverage lived here before and
 // is removed, not adapted, since no tasting section renders until plan 03.
+// RecipePage.jsx loads the repository, which opens IndexedDB on import; the
+// fake must be installed before it (the invariant test below imports the
+// pen's own draft builders).
+import 'fake-indexeddb/auto';
 import { describe, it, expect, afterEach } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router';
@@ -20,6 +24,11 @@ import {
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { axesForBatch } from '../domain/axes.js';
+import { createBatch } from '../domain/batch.js';
+import { seedRecipeGroups } from '../data/seed-recipes.js';
+import { oliveOilRecipe } from '../data/olive-oil.js';
+import { exportStore, importStore } from '../store/transfer.js';
+import { buildChurnFieldsFromDraft, buildTastingFieldsFromDraft } from './RecipePage.jsx';
 
 const noop = () => {};
 
@@ -51,7 +60,7 @@ const emptyRecordDraft = {
   marks: {},
   note: '',
   defects: [],
-  bitterDeclared: false,
+  declaredDefects: [],
   meltTestG: '',
   meltStyle: '',
 };
@@ -74,7 +83,7 @@ function renderBatchRow(props) {
         onChangeRecordMark={noop}
         onClearAxisMark={noop}
         onChangeDefect={noop}
-        onToggleBitter={noop}
+        onToggleDeclaredDefect={noop}
         onRemoveTasting={noop}
         onUndoRemove={noop}
         onAddTasting={noop}
@@ -577,7 +586,7 @@ describe('BatchRow — the tasting-status channel and the Remove/undo head slot 
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     expect(markup).toContain('Restore tasting');
     const undoIndex = markup.indexOf('Restore tasting');
@@ -859,10 +868,10 @@ describe('BatchRow — the defects, two labelled groups inside the axes grid (co
     expect(markup).toMatch(/aria-pressed="false"[^>]*>Coarse, icy</);
   });
 
-  it('marks the declared Bitter chip aria-pressed="true" when bitterDeclared is set', () => {
+  it('marks the declared Bitter chip aria-pressed="true" when the draft ticks Bitter', () => {
     const markup = renderBatchRow({
       mode: 'recording',
-      draft: { ...emptyRecordDraft, tastingOpen: true, bitterDeclared: true },
+      draft: { ...emptyRecordDraft, tastingOpen: true, declaredDefects: ['Bitter'] },
     });
     expect(markup).toContain('<button type="button" class="chip-toggle" aria-pressed="true" tabindex="0">Bitter</button>');
   });
@@ -1109,7 +1118,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: false },
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
     const restoreIndex = markup.indexOf('Restore tasting', ceremonyIndex);
@@ -1124,7 +1133,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
     const markup = renderBatchRow({
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     const ceremonyIndex = markup.lastIndexOf('class="save-ceremony"');
     const ceremonyMarkup = markup.slice(ceremonyIndex);
@@ -1137,7 +1146,7 @@ describe('BatchRow — ceremony A carries Add tasting and Restore tasting, the n
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: false },
       recordStatus: 'Tasting removed. You can restore it.',
-      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-03', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     expect(markup).toMatch(
       /<div class="save-ceremony"><p class="save-ceremony__status pen-helper" role="status" aria-live="polite">Tasting removed\. You can restore it\.<\/p>/,
@@ -1484,7 +1493,7 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   });
 
   it('renders no summary line span when nothing is marked and nothing is declared', () => {
-    const bareBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, marks: {}, bitterDeclared: null } };
+    const bareBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, marks: {}, declaredDefects: null } };
     const markup = renderBatchRow({ openBatch: bareBatch, batches: [bareBatch], mode: 'reading' });
     expect(markup).not.toContain('tasting-reading__summary');
     expect(markup).toContain('<span class="fold-row__head">Tasting<span class="fold-row__control">');
@@ -1566,7 +1575,7 @@ describe('BatchRow — the tasting read view, goldilocks words (contract "Axes s
   });
 
   it('renders no defects line at all with no defects picked and no flaw declared', () => {
-    const cleanBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, defects: null, bitterDeclared: null } };
+    const cleanBatch = { ...augustSecondBatch, tasting: { ...augustSecondBatch.tasting, defects: null, declaredDefects: null } };
     const markup = renderBatchRow({ openBatch: cleanBatch, batches: [cleanBatch], mode: 'reading' });
     const readingMarkup = markup.slice(markup.indexOf('tasting-reading'));
     expect(readingMarkup).not.toContain('declared');
@@ -1912,7 +1921,7 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
   });
 
   it('G2: with all six marked, the core four stand under Every recipe and Body, Oil under This recipe only', () => {
-    const section = sectionOf(withTasting({ marks: allSix, defects: null, bitterDeclared: null }));
+    const section = sectionOf(withTasting({ marks: allSix, defects: null, declaredDefects: null }));
     const every = section.indexOf('>Every recipe</h4>');
     const only = section.indexOf('>This recipe only</h4>');
     expect(every).toBeGreaterThan(-1);
@@ -1922,7 +1931,7 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
   });
 
   it('G3: with core marks only, Every recipe is drawn over the marks and no This recipe only h4 follows (the problems block is an h5)', () => {
-    const markup = withTasting({ marks: { hardness: 3, smoothness: 4 }, bitterDeclared: true });
+    const markup = withTasting({ marks: { hardness: 3, smoothness: 4 }, declaredDefects: ['Bitter'] });
     expect(markup).toContain(`<h4 class="${CUE}">Every recipe</h4>`);
     expect(markup).toContain('>Hardness</span>');
     expect(markup).toContain('>Smoothness</span>');
@@ -1945,7 +1954,7 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
   });
 
   it('G6: with only core defects picked, Any problems? holds the Every recipe block alone', () => {
-    const markup = withTasting({ defects: ['Coarse, icy'], bitterDeclared: null });
+    const markup = withTasting({ defects: ['Coarse, icy'], declaredDefects: null });
     expect(markup).toContain(
       `<div class="tasting-reading__group"><h4 class="batch-row__group-label">Any problems?</h4><div class="tasting-reading__subgroup"><h5 class="${CUE}">Every recipe</h5><span class="app-hand tasting-reading__problems">Coarse, icy</span></div></div>`,
     );
@@ -1966,8 +1975,200 @@ describe("BatchRow — the reading's tasting groups under the pen's names (sketc
   });
 
   it('G9: a tasting with no marks and no problems draws no group, and the conditions grid still holds the four cells', () => {
-    const section = sectionOf(withTasting({ marks: {}, defects: null, bitterDeclared: null }));
+    const section = sectionOf(withTasting({ marks: {}, defects: null, declaredDefects: null }));
     expect(section).not.toContain('tasting-reading__group');
     expect(cellLabels(section)).toEqual(['Tempering', 'Tasting temperature', 'Melt test', 'Melt style']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Declared scales and problems are lists of 0 to 2 per recipe (sketch 010 D25,
+// D26; CONTRACT § 2). Every expectation below is taken from the version under
+// test (D25 rule 4): Body, Oil and Bitter appear as literals only in the Olive
+// Oil case.
+// ---------------------------------------------------------------------------
+const seedVersions = seedRecipeGroups.flatMap((group) => group.versions);
+
+// The record pen with the tasting open, for one version.
+function penFor(version, draftPatch = {}) {
+  return renderBatchRow({
+    version,
+    openPen: 'record',
+    mode: 'recording',
+    draft: { ...emptyRecordDraft, tastingOpen: true, ...draftPatch },
+  });
+}
+
+// The scales' This recipe only cue, as the one paragraph carrying its id.
+const scaleCues = (markup) => markup.match(/<p[^>]*id="axes-declared-cue"[^>]*>/g) ?? [];
+
+// The words of the declared problems group, in order, or null when absent.
+function declaredChips(markup) {
+  const start = markup.indexOf('id="defects-declared-cue"');
+  if (start === -1) return null;
+  const group = markup.slice(start, markup.indexOf('</div></div>', start));
+  return [...group.matchAll(/<button[^>]*>([^<]+)<\/button>/g)].map((match) => match[1]);
+}
+
+describe('BatchRow — the record pen draws only what each seeded version declares (D25)', () => {
+  it.each(seedVersions.map((version) => [version.id, version]))('%s', (_id, version) => {
+    const markup = penFor(version);
+    const cues = scaleCues(markup);
+    expect(cues).toHaveLength(version.declaredAxes.length > 0 ? 1 : 0);
+    expect(markup.includes('axes-rule')).toBe(version.declaredAxes.length > 0);
+
+    const chips = declaredChips(markup);
+    if (version.declaredFlaws.length > 0) expect(chips).toEqual(version.declaredFlaws);
+    else expect(chips).toBe(null);
+
+    // The cue over the problems is the only other "This recipe only" in the pen.
+    const expectedCueWords = (version.declaredAxes.length > 0 ? 1 : 0) + (version.declaredFlaws.length > 0 ? 1 : 0);
+    expect(markup.split('>This recipe only<').length - 1).toBe(expectedCueWords);
+
+    // A declared scale appears as a mark control exactly when declared.
+    for (const axis of axesForBatch({ snapshot: { declaredAxes: version.declaredAxes } })) {
+      expect(markup).toContain(`>${axis.name}</span>`);
+    }
+  });
+
+  it('Olive Oil v1 declares Body and Oil and the problem Bitter, and draws all three', () => {
+    const markup = penFor(oliveOilVersion);
+    expect(scaleCues(markup)).toHaveLength(1);
+    expect(markup).toContain('>Body</span>');
+    expect(markup).toContain('>Oil</span>');
+    expect(declaredChips(markup)).toEqual(['Bitter']);
+  });
+
+  it('a recipe that declares nothing draws no This recipe only cue, no hairline and no declared chip, stacked or not', () => {
+    const none = { ...oliveOilVersion, declaredAxes: [], declaredFlaws: [] };
+    for (const below of [false, true]) {
+      const grid = renderToStaticMarkup(
+        <AxesGrid
+          axes={axesForBatch({ snapshot: { declaredAxes: none.declaredAxes } })}
+          marks={{}}
+          below={below}
+          onChangeMark={noop}
+          onClearMark={noop}
+        />,
+      );
+      expect(grid).not.toContain('This recipe only');
+      expect(grid).not.toContain('axes-rule');
+      expect(grid).not.toContain('axes-grid__group--declared');
+    }
+    const markup = penFor(none);
+    expect(markup).not.toContain('This recipe only');
+    expect(declaredChips(markup)).toBe(null);
+  });
+
+  it('with no declared scale the row-major grid keeps the core scales in their two columns by holding the third column empty', () => {
+    const grid = renderToStaticMarkup(
+      <AxesGrid axes={axesForBatch({ snapshot: { declaredAxes: [] } })} marks={{}} below={false} onChangeMark={noop} onClearMark={noop} />,
+    );
+    // Cue slot and the first declared slot: two empty, hidden cells.
+    expect(grid.match(/class="axes-grid__void" aria-hidden="true"/g)).toHaveLength(2);
+    expect(grid).toContain('axes-cue--core');
+  });
+
+  it('two declared problems draw two chips in the declared order', () => {
+    const two = { ...oliveOilVersion, declaredFlaws: ['Bitter', 'Salty'] };
+    expect(declaredChips(penFor(two))).toEqual(['Bitter', 'Salty']);
+  });
+
+  it('a chip is pressed exactly when the draft ticks its word', () => {
+    const two = { ...oliveOilVersion, declaredFlaws: ['Bitter', 'Salty'] };
+    const markup = penFor(two, { declaredDefects: ['Salty'] });
+    expect(markup).toContain('aria-pressed="false" tabindex="0">Bitter</button>');
+    expect(markup).toContain('aria-pressed="true" tabindex="0">Salty</button>');
+  });
+
+  it('amending a batch reads the batch snapshot, not the live version', () => {
+    const batch = createBatch({ ...oliveOilVersion, declaredFlaws: ['Salty'] }, { churnDate: '2026-10-01' }, null, {
+      id: 'snap-1',
+      now: '2026-10-01T09:00:00.000Z',
+    });
+    const markup = renderBatchRow({
+      version: { ...oliveOilVersion, declaredFlaws: [] },
+      openBatch: batch,
+      batches: [batch],
+      openPen: 'amend',
+      mode: 'recording',
+      draft: { ...emptyRecordDraft, tastingOpen: true },
+    });
+    expect(declaredChips(markup)).toEqual(['Salty']);
+  });
+});
+
+describe('BatchRow — a tick made in the pen round-trips through save, the reading, export and import (0, 1 and 2 declared problems)', () => {
+  function memoryRepository() {
+    const state = { versions: [], batches: [], recipes: [] };
+    const merge = (list, items) => {
+      for (const item of items) {
+        const at = list.findIndex((entry) => entry.id === item.id);
+        if (at >= 0) list[at] = item;
+        else list.push(item);
+      }
+    };
+    return {
+      state,
+      getAll: async () => [...state.versions],
+      getAllBatches: async () => [...state.batches],
+      listRecipes: async () => [...state.recipes],
+      putAll: async (items) => merge(state.versions, items),
+      putAllBatches: async (items) => merge(state.batches, items),
+      putAllRecipes: async (items) => merge(state.recipes, items),
+    };
+  }
+
+  // Olive Oil v1 with 0, 1 or 2 declared problems; the second word is test data.
+  it.each([
+    ['none', []],
+    ['one', ['Bitter']],
+    ['two', ['Bitter', 'Salty']],
+  ])('%s declared: the pen ticks, the reading shows, and the store file keeps', async (_label, declaredFlaws) => {
+    const version = { ...oliveOilVersion, id: `inv-${declaredFlaws.length}`, declaredFlaws };
+    // Tick each declared word in turn, then the last one off, as the pen's
+    // toggle does (membership in the draft's list).
+    const ticked = declaredFlaws.length > 0 ? declaredFlaws.slice(0, declaredFlaws.length) : [];
+    const draft = { ...emptyRecordDraft, churnDate: '2026-10-01', tastingOpen: true, note: 'x', declaredDefects: ticked };
+
+    const pen = penFor(version, { declaredDefects: ticked });
+    for (const word of declaredFlaws) {
+      expect(pen).toContain(`aria-pressed="true" tabindex="0">${word}</button>`);
+    }
+
+    // Save.
+    const parsed = {
+      outOfMachineTempC: { ok: true, value: null },
+      churnDurationMinutes: { ok: true, value: null },
+      temperingMinutes: { ok: true, value: null },
+      tastingTempC: { ok: true, value: null },
+      meltTestG: { ok: true, value: null },
+    };
+    const batch = createBatch(version, buildChurnFieldsFromDraft(draft, parsed), buildTastingFieldsFromDraft(draft, parsed), {
+      id: `inv-batch-${declaredFlaws.length}`,
+      now: '2026-10-01T09:00:00.000Z',
+    });
+    expect(batch.snapshot.declaredFlaws).toEqual(declaredFlaws);
+    expect(batch.tasting.declaredDefects).toEqual(declaredFlaws.length > 0 ? ticked : null);
+
+    // The reading shows the ticked words, in the hand, under This recipe only.
+    const reading = renderBatchRow({ version, openBatch: batch, batches: [batch], mode: 'reading' });
+    if (declaredFlaws.length > 0) {
+      expect(reading).toContain(`<span class="app-hand tasting-reading__problems">${ticked.join(' · ')}</span>`);
+    } else {
+      expect(reading).not.toContain('tasting-reading__problems');
+    }
+
+    // Export, then import into an empty store.
+    const source = memoryRepository();
+    source.state.recipes.push(oliveOilRecipe);
+    source.state.versions.push(version);
+    source.state.batches.push(batch);
+    const file = JSON.parse(JSON.stringify(await exportStore(source)));
+    const target = memoryRepository();
+    expect(await importStore(target, file)).toEqual({ ok: true, errors: [] });
+    expect(target.state.batches).toEqual([batch]);
+    expect(target.state.batches[0].snapshot.declaredFlaws).toEqual(declaredFlaws);
+    expect(target.state.batches[0].tasting.declaredDefects).toEqual(batch.tasting.declaredDefects);
   });
 });

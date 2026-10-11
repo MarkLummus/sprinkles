@@ -397,7 +397,7 @@ function makeBlankRecordDraft() {
     marks: {},
     note: '',
     defects: [],
-    bitterDeclared: false,
+    declaredDefects: [],
     meltTestG: '',
     meltStyle: '',
   };
@@ -416,6 +416,13 @@ describe('isDraftDirty — the record pen\'s check, extended to every battery fi
     const baseline = draftFromBatch(augustSecondBatch);
     const draft = { ...structuredClone(baseline), timeToDrawTempMinutes: '99' };
     expect(isDraftDirty('recording', draft, baseline)).toBe(false);
+  });
+
+  it('a ticked declared problem is ink, and a tick compares as a set against the baseline', () => {
+    expect(isDraftDirty('recording', { ...makeBlankRecordDraft(), declaredDefects: ['Bitter'] })).toBe(true);
+    const baseline = { ...makeBlankRecordDraft(), declaredDefects: ['Bitter', 'Salty'] };
+    expect(isDraftDirty('recording', { ...baseline, declaredDefects: ['Salty', 'Bitter'] }, baseline)).toBe(false);
+    expect(isDraftDirty('recording', { ...baseline, declaredDefects: ['Salty'] }, baseline)).toBe(true);
   });
 
   it('a fresh recording draft is dirty the instant any one churn field is typed', () => {
@@ -508,7 +515,7 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
     expect(draft.tastingOpen).toBe(true);
     expect(draft.tastingTempC).toBe('-12');
     expect(draft.marks).toEqual({ sweetness: 4, oil: 4 });
-    expect(draft.bitterDeclared).toBe(true);
+    expect(draft.declaredDefects).toEqual(['Bitter']);
     expect(draft.meltTestG).toBe('3');
   });
 
@@ -518,7 +525,7 @@ describe('draftFromBatch — Correct reopens everything the record holds (D-03, 
     expect(draft.tastingOpen).toBe(false);
     expect(draft.tastingTempC).toBe('');
     expect(draft.marks).toEqual({});
-    expect(draft.bitterDeclared).toBe(false);
+    expect(draft.declaredDefects).toEqual([]);
     expect(draft.defects).toEqual([]);
   });
 
@@ -550,8 +557,8 @@ describe('tastingHasInk — D-02: a save with the section open but empty persist
     expect(tastingHasInk({ ...makeBlankRecordDraft(), defects: ['Coarse, icy'] })).toBe(true);
   });
 
-  it('reads ink from the declared-flaw toggle alone', () => {
-    expect(tastingHasInk({ ...makeBlankRecordDraft(), bitterDeclared: true })).toBe(true);
+  it('reads ink from a ticked declared problem alone', () => {
+    expect(tastingHasInk({ ...makeBlankRecordDraft(), declaredDefects: ['Bitter'] })).toBe(true);
   });
 
   it('reads ink from any single non-empty tasting field', () => {
@@ -583,7 +590,7 @@ describe('tastingPayloadFromDraft — the undo payload, a plain-object copy (Tas
       marks: { hardness: 3, oil: 5 },
       note: 'Grainy at first',
       defects: ['Coarse, icy'],
-      bitterDeclared: true,
+      declaredDefects: ['Bitter'],
       meltTestG: '4',
       meltStyle: 'Creamy puddle',
     };
@@ -595,7 +602,7 @@ describe('tastingPayloadFromDraft — the undo payload, a plain-object copy (Tas
       marks: { hardness: 3, oil: 5 },
       note: 'Grainy at first',
       defects: ['Coarse, icy'],
-      bitterDeclared: true,
+      declaredDefects: ['Bitter'],
       meltTestG: '4',
       meltStyle: 'Creamy puddle',
     });
@@ -652,7 +659,7 @@ describe('restoreDraftFromUndo — the restore sequence\'s field write-back (Tas
       marks: { hardness: 3 },
       note: 'Grainy',
       defects: ['Coarse, icy'],
-      bitterDeclared: true,
+      declaredDefects: ['Bitter'],
       meltTestG: '4',
       meltStyle: 'Creamy puddle',
     };
@@ -664,7 +671,7 @@ describe('restoreDraftFromUndo — the restore sequence\'s field write-back (Tas
     expect(restored.marks).toEqual({ hardness: 3 });
     expect(restored.note).toBe('Grainy');
     expect(restored.defects).toEqual(['Coarse, icy']);
-    expect(restored.bitterDeclared).toBe(true);
+    expect(restored.declaredDefects).toEqual(['Bitter']);
     expect(restored.meltTestG).toBe('4');
     expect(restored.meltStyle).toBe('Creamy puddle');
     expect(restored.churnDate).toBe('2026-08-09');
@@ -680,7 +687,7 @@ describe('restoreDraftFromUndo — the restore sequence\'s field write-back (Tas
       marks: { hardness: 3 },
       note: '',
       defects: [],
-      bitterDeclared: false,
+      declaredDefects: [],
       meltTestG: '',
       meltStyle: '',
     };
@@ -999,12 +1006,12 @@ describe('buildChurnFieldsFromDraft / buildTastingFieldsFromDraft — the save a
   });
 
   it('assembles the tasting fields from a valid draft', () => {
-    const draft = { ...makeBlankRecordDraft(), tastingTempC: '-12', marks: { oil: 4 }, bitterDeclared: true, meltTestG: '3' };
+    const draft = { ...makeBlankRecordDraft(), tastingTempC: '-12', marks: { oil: 4 }, declaredDefects: ['Bitter'], meltTestG: '3' };
     const { parsed } = parseAllMeasuredFields(draft);
     const tastingFields = buildTastingFieldsFromDraft(draft, parsed);
     expect(tastingFields.tastingTempC).toBe(-12);
     expect(tastingFields.marks).toEqual({ oil: 4 });
-    expect(tastingFields.bitterDeclared).toBe(true);
+    expect(tastingFields.declaredDefects).toEqual(['Bitter']);
     expect(tastingFields.meltTestG).toBe(3);
     expect(tastingFields.defects).toBe(null);
   });

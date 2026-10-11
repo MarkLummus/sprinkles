@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { formatRecordDate, readMeasured, recordDateWords, sortedBatches, tastingProvenance } from '../domain/batch.js';
-import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW } from '../domain/battery.js';
+import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, declaredProblemsForBatch } from '../domain/battery.js';
 import { axesForBatch, readMarkWord } from '../domain/axes.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
@@ -187,6 +187,11 @@ const AXES_DECLARED_CUE_ID = 'axes-declared-cue';
 export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, children }) {
   const core = axes.filter((axis) => axis.group === 'core');
   const declared = axes.filter((axis) => axis.group === 'declared');
+  // A recipe that declares no scale shows no This recipe only cue and no
+  // hairline (sketch 010 D25 rule 3); the third column stays in the grid as
+  // an empty cell, so the core scales keep the width they have beside a
+  // declared one.
+  const hasDeclared = declared.length > 0;
 
   function renderAxis(axis) {
     if (!axis) return null;
@@ -209,10 +214,12 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
           <p className="pen-caption axes-cue" id={AXES_CORE_CUE_ID}>Every recipe</p>
           {core.map((axis) => renderAxis(axis))}
         </div>
-        <div className="axes-grid__group axes-grid__group--declared">
-          <p className="pen-caption axes-cue" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
-          {declared.map((axis) => renderAxis(axis))}
-        </div>
+        {hasDeclared && (
+          <div className="axes-grid__group axes-grid__group--declared">
+            <p className="pen-caption axes-cue" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
+            {declared.map((axis) => renderAxis(axis))}
+          </div>
+        )}
         {children}
       </div>
     );
@@ -224,12 +231,16 @@ export function AxesGrid({ axes, marks, below, onChangeMark, onClearMark, childr
   // 419).
   return (
     <div className="axes-grid">
-      <div className="axes-rule" aria-hidden="true" />
+      {hasDeclared && <div className="axes-rule" aria-hidden="true" />}
       <p className="pen-caption axes-cue axes-cue--core" id={AXES_CORE_CUE_ID}>Every recipe</p>
-      <p className="pen-caption axes-cue axes-cue--declared" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
+      {hasDeclared ? (
+        <p className="pen-caption axes-cue axes-cue--declared" id={AXES_DECLARED_CUE_ID}>This recipe only</p>
+      ) : (
+        <div className="axes-grid__void" aria-hidden="true" />
+      )}
       {renderAxis(core[0])}
       {renderAxis(core[1])}
-      {renderAxis(declared[0])}
+      {hasDeclared ? renderAxis(declared[0]) : <div className="axes-grid__void" aria-hidden="true" />}
       {renderAxis(core[2])}
       {renderAxis(core[3])}
       {renderAxis(declared[1])}
@@ -262,7 +273,7 @@ function TastingReading({ batch, foldsOpen = true }) {
   const coreAxes = markedAxes.filter((axis) => axis.group === 'core');
   const declaredAxes = markedAxes.filter((axis) => axis.group === 'declared');
   const coreProblems = batch.tasting.defects ?? [];
-  const declaredProblems = batch.tasting.bitterDeclared ? [DECLARED_FLAW] : [];
+  const declaredProblems = batch.tasting.declaredDefects ?? [];
   const markGroup = (name, groupAxes) =>
     groupAxes.length > 0 && (
       <div className="tasting-reading__group">
@@ -423,7 +434,7 @@ export function BatchRow({
   onChangeRecordMark,
   onClearAxisMark,
   onChangeDefect,
-  onToggleBitter,
+  onToggleDeclaredDefect,
   onRemoveTasting,
   onUndoRemove,
   onAddTasting,
@@ -565,6 +576,13 @@ export function BatchRow({
   // only below 724px.
   const logBesideSheet = useLogBesideSheet();
   const below = below724 || logBesideSheet;
+
+  // The declared problems the pen draws (0 to 2 words). Amending a batch
+  // reads its own snapshot, as axesForBatch does for the scales; a fresh
+  // record has no snapshot yet, so the live version is the only source.
+  const declaredProblems = declaredProblemsForBatch(
+    openPen === 'amend' && openBatch ? openBatch : { snapshot: { declaredFlaws: version.declaredFlaws } },
+  );
 
   // The first-invalid-measurement focus (contract "Controls spec"): a ref
   // per battery field key, keyed by the constants in BATTERY_FIELDS —
@@ -947,22 +965,32 @@ export function BatchRow({
                       ))}
                     </div>
                   </div>
-                  <div
-                    className="defect-group defect-group--declared"
-                    role="group"
-                    aria-labelledby="defects-caption defects-declared-cue"
-                  >
-                    <p className="pen-caption axes-cue" id="defects-declared-cue">This recipe only</p>
-                    <div className="defects-row__chips">
-                      {/* Bitter is a plain defect — no helper span, no
-                          aria-label of its own; its own boolean reads
-                          from bitterDeclared rather than the defects
-                          list. */}
-                      <Button className="chip-toggle" aria-pressed={draft.bitterDeclared} onClick={onToggleBitter}>
-                        {DECLARED_FLAW}
-                      </Button>
+                  {declaredProblems.length > 0 && (
+                    <div
+                      className="defect-group defect-group--declared"
+                      role="group"
+                      aria-labelledby="defects-caption defects-declared-cue"
+                    >
+                      <p className="pen-caption axes-cue" id="defects-declared-cue">This recipe only</p>
+                      <div className="defects-row__chips">
+                        {/* A declared problem is a plain defect — no helper
+                            span, no aria-label of its own; its pressed
+                            state reads from the draft's declaredDefects
+                            list, one chip per word the recipe declares
+                            (0 to 2; the group is absent for none). */}
+                        {declaredProblems.map((word) => (
+                          <Button
+                            key={word}
+                            className="chip-toggle"
+                            aria-pressed={draft.declaredDefects.includes(word)}
+                            onClick={() => onToggleDeclaredDefect(word)}
+                          >
+                            {word}
+                          </Button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </AxesGrid>
                 {/* The melt block, at the tasting body's foot (sketch 007
                     lines 285-297; UAT item 12; D-12): a .field-row with

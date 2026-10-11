@@ -48,7 +48,7 @@ const emptyRecordDraft = {
   marks: {},
   note: '',
   defects: [],
-  bitterDeclared: false,
+  declaredDefects: [],
   meltTestG: '',
   meltStyle: '',
 };
@@ -75,7 +75,7 @@ function mount(draft) {
           onChangeRecordMark={noop}
           onClearAxisMark={noop}
           onChangeDefect={noop}
-          onToggleBitter={noop}
+          onToggleDeclaredDefect={noop}
           onRemoveTasting={noop}
           onUndoRemove={noop}
           onAddTasting={noop}

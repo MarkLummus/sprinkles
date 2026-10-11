@@ -182,7 +182,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
       Object.keys(draft.marks).length > 0 ||
       draft.note !== '' ||
       draft.defects.length > 0 ||
-      draft.bitterDeclared !== false ||
+      draft.declaredDefects.length > 0 ||
       draft.meltTestG !== '' ||
       draft.meltStyle !== ''
     );
@@ -201,7 +201,7 @@ export function isDraftDirty(mode, draft, baseline = null) {
     draft.temperingMinutes !== baseline.temperingMinutes ||
     draft.tastingTempC !== baseline.tastingTempC ||
     draft.note !== baseline.note ||
-    draft.bitterDeclared !== baseline.bitterDeclared ||
+    usesListsDiffer(draft.declaredDefects, baseline.declaredDefects) ||
     draft.meltTestG !== baseline.meltTestG ||
     draft.meltStyle !== baseline.meltStyle ||
     marksDiffer(draft.marks, baseline.marks) ||
@@ -352,7 +352,7 @@ function blankTastingFields() {
     marks: {},
     note: '',
     defects: [],
-    bitterDeclared: false,
+    declaredDefects: [],
     meltTestG: '',
     meltStyle: '',
   };
@@ -416,7 +416,7 @@ export function draftFromBatch(batch) {
     marks: tasting ? { ...tasting.marks } : {},
     note: tasting ? (tasting.note ?? '') : '',
     defects: tasting && tasting.defects ? [...tasting.defects] : [],
-    bitterDeclared: tasting ? tasting.bitterDeclared === true : false,
+    declaredDefects: tasting && tasting.declaredDefects ? [...tasting.declaredDefects] : [],
     meltTestG: tasting ? toDraftString(tasting.meltTestG) : '',
     meltStyle: tasting ? (tasting.meltStyle ?? '') : '',
   };
@@ -425,13 +425,13 @@ export function draftFromBatch(batch) {
 // tastingHasInk(draft) -> whether the tasting side of the draft holds
 // anything the maker wrote (D-02: "what a save persists is everything the
 // record currently holds" — a tasting section open but empty persists no
-// tasting at all). Any own-key mark, any picked chip, the declared toggle,
+// tasting at all). Any own-key mark, any picked chip, any ticked declared problem,
 // or any non-empty tasting field counts.
 export function tastingHasInk(draft) {
   return (
     Object.keys(draft.marks).length > 0 ||
     draft.defects.length > 0 ||
-    draft.bitterDeclared === true ||
+    draft.declaredDefects.length > 0 ||
     draft.tastedDate !== '' ||
     draft.temperingMinutes !== '' ||
     draft.tastingTempC !== '' ||
@@ -457,7 +457,7 @@ export function tastingPayloadFromDraft(draft) {
     marks: { ...draft.marks },
     note: draft.note,
     defects: [...draft.defects],
-    bitterDeclared: draft.bitterDeclared,
+    declaredDefects: [...draft.declaredDefects],
     meltTestG: draft.meltTestG,
     meltStyle: draft.meltStyle,
   };
@@ -481,7 +481,7 @@ export function restoreDraftFromUndo(draft, pendingUndo) {
     marks: { ...pendingUndo.marks },
     note: pendingUndo.note,
     defects: [...pendingUndo.defects],
-    bitterDeclared: pendingUndo.bitterDeclared,
+    declaredDefects: [...pendingUndo.declaredDefects],
     meltTestG: pendingUndo.meltTestG,
     meltStyle: pendingUndo.meltStyle,
   };
@@ -578,7 +578,7 @@ export function buildTastingFieldsFromDraft(draft, parsed) {
     marks: draft.marks,
     note: toTextOrNull(draft.note),
     defects: draft.defects.length > 0 ? draft.defects : null,
-    bitterDeclared: draft.bitterDeclared === true ? true : null,
+    declaredDefects: draft.declaredDefects.length > 0 ? draft.declaredDefects : null,
     meltTestG: parsed.meltTestG.value,
     meltStyle: draft.meltStyle === '' ? null : draft.meltStyle,
   };
@@ -1309,15 +1309,21 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }));
   }
 
-  // The declared-flaw toggle (contract "Controls spec"): Bitter is a
-  // presence/severity toggle, not a goldilocks axis — a plain boolean
-  // flip, same as every other declared control. Inside the tasting body,
-  // so it always retires a pending undo (Task 2).
-  function handleToggleBitter() {
+  // A declared problem's toggle (contract "Controls spec"; sketch 010 D26):
+  // a recipe's own problem word is a presence toggle, not a goldilocks
+  // axis — membership in the draft's declaredDefects list, flipped the way
+  // handleChangeDefect flips a defect chip. Inside the tasting body, so it
+  // always retires a pending undo (Task 2).
+  function handleToggleDeclaredDefect(word) {
     setBlockedDateMessage(null);
     setFormStatus('');
     setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, bitterDeclared: !prev.bitterDeclared }));
+    setDraft((prev) => ({
+      ...prev,
+      declaredDefects: prev.declaredDefects.includes(word)
+        ? prev.declaredDefects.filter((candidate) => candidate !== word)
+        : [...prev.declaredDefects, word],
+    }));
   }
 
   // Clearing both the strike and the line for a step removes that step's
@@ -2277,7 +2283,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onChangeRecordMark={handleChangeRecordMark}
             onClearAxisMark={handleClearAxisMark}
             onChangeDefect={handleChangeDefect}
-            onToggleBitter={handleToggleBitter}
+            onToggleDeclaredDefect={handleToggleDeclaredDefect}
             onRemoveTasting={handleRemoveTasting}
             onUndoRemove={handleUndoRemove}
             onAddTasting={handleAddTasting}

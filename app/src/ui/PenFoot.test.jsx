@@ -107,7 +107,7 @@ describe('PenFoot — Add tasting beside the foot ceremony while the section is 
     const markup = renderPenFoot({
       openPen: 'record',
       tastingOpen: false,
-      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     expect(markup).not.toContain('Add tasting');
   });
@@ -130,7 +130,7 @@ describe('PenFoot — the foot ceremony carries no restore control in any state 
     const markup = renderPenFoot({
       openPen: 'record',
       tastingOpen: false,
-      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     expect(markup).not.toContain('Restore tasting');
     expect(markup).not.toContain('undo-control');
@@ -141,7 +141,7 @@ describe('PenFoot — the foot ceremony carries no restore control in any state 
     const markup = renderPenFoot({
       openPen: 'amend',
       tastingOpen: false,
-      pendingUndo: { tastedDate: '', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     expect(markup).not.toContain('Restore tasting');
   });
@@ -150,7 +150,7 @@ describe('PenFoot — the foot ceremony carries no restore control in any state 
     const markup = renderPenFoot({
       openPen: 'record',
       tastingOpen: true,
-      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     expect(markup).not.toContain('Restore tasting');
     expect(markup).not.toContain('undo-control');
@@ -159,7 +159,7 @@ describe('PenFoot — the foot ceremony carries no restore control in any state 
   it('renders no restore control for the plan pen even with a pendingUndo value', () => {
     const markup = renderPenFoot({
       openPen: 'plan',
-      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], bitterDeclared: false, meltTestG: '', meltStyle: '' },
+      pendingUndo: { tastedDate: '2026-08-11', temperingMinutes: '', tastingTempC: '', marks: {}, note: '', defects: [], declaredDefects: [], meltTestG: '', meltStyle: '' },
     });
     expect(markup).not.toContain('Restore tasting');
   });

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Prepare the next version for making
 status: executing
-stopped_at: Completed 04-04-PLAN.md
-last_updated: "2026-10-11T06:28:39.516Z"
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-10-11T06:44:29.811Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 6f8063eb439b34cc6a8725a0ef2c651c0fe05edd
+state_head: 0dfbcc2798bc4008dd81a2d61fefd81d9e9d5925
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 114
+  completed_plans: 115
   percent: 73
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 04 (Prepare the next version for making) — EXECUTING
-Plan: 5 of 10
+Plan: 6 of 10
 Status: Ready to execute
 Last activity: 2026-10-11 — Phase 04 execution started
 
@@ -146,6 +146,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 04 P02 | 6 min | 3 tasks | 9 files |
 | Phase 04 P03 | 15 min | 3 tasks | 27 files |
 | Phase 04 P04 | 3 min | 2 tasks | 8 files |
+| Phase 04 P05 | 15 min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -297,6 +298,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: 04-03: At draw and From freezer are two enumerated string fields (Nothing to note, Not evaluated), null when absent, stored only while their group holds no mark; seeded batches store both as null; the 2 Aug batch's draw temp 20 is dropped (D17)
 - [Phase 04]: 04-04: DB reset bounded to profiles below 8 (literal oldVersion < 8); drafts store keyed by versionId, never exported
 - [Phase 04]: 04-04: importAll aborts its transaction by hand on a failed put; importStore returns IMPORT_STORAGE_ERROR instead of throwing
+- [Phase 04]: 04-05: fromFreezer joins the tasting-body field set so a From freezer pick or Clear retires a pending Restore tasting; atDraw is a churn field and does not
+- [Phase 04]: 04-05: the Tasting head carries the board's mo-end class (12 px above it); the plan's selector list omitted it but pen-states.html draws it
+- [Phase 04]: 04-05: with the Tasting section closed, Next time keeps its place after the churn section (not drawn in sketch 010; flagged for Mark's look)
 
 ### Pending Todos
 
@@ -491,6 +495,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T06:28:39.381Z
-Stopped at: Completed 04-04-PLAN.md
+Last session: 2026-10-11T06:44:29.686Z
+Stopped at: Completed 04-05-PLAN.md
 Resume file: None

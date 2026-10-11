@@ -662,7 +662,7 @@ Plans:
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
 
-**Plans:** 4/10 plans executed
+**Plans:** 5/10 plans executed
 
 Plans:
 **Wave 1**
@@ -674,7 +674,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [x] 04-04-PLAN.md — One store bump to 8: the drafts store behind the seam, a bounded reset, the import as one transaction with its storage failure in words (D-16)
-- [ ] 04-05-PLAN.md — The record pen and its reading carry At draw and From freezer in the approved order (sketch 010 D6 to D14)
+- [x] 04-05-PLAN.md — The record pen and its reading carry At draw and From freezer in the approved order (sketch 010 D6 to D14)
 - [ ] 04-06-PLAN.md — The print route end to end with the blank Batch log and Tasting log, the Sheet code in each foot, at 1280 and 393 (PRINT-03, PRINT-05; D-05, D-07, D-07a)
 
 **Wave 4** *(blocked on Wave 3 completion)*
@@ -735,7 +735,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
 | 3.5. Separate the recipe from the sheet | 31/31 | Complete    | 2026-10-02 |
 | 3.6. Per-step shared ingredients | 7/7 | Complete    | 2026-10-06 |
-| 4. Prepare the next version for making | 4/10 | In Progress | - |
+| 4. Prepare the next version for making | 5/10 | In Progress | - |
 | 5. Version evolution | 0/TBD | Not started | - |
 
 ## Coverage

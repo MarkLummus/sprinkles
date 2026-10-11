@@ -40,6 +40,12 @@ export function printEngine() {
 export function sheetBlocks(version, identity) {
   const steps = version.method;
   const active = activeRows(version);
+  // The clean reading the recipe page's own Balance reads (RecipePage.jsx
+  // readingVersion): every removed row, line and step absent, so the gauges and
+  // the basis note describe the formula the table tells the maker to weigh. The
+  // stored version stays for the band, the groups (the full method numbers the
+  // steps) and the Sheet code.
+  const readingVersion = { ...version, rows: active, method: activeSteps(version) };
   const balance = computeBalance(active);
   const mass = balance ? balance.mass : 0;
   const activeById = new Map(active.map((row) => [row.id, row]));
@@ -48,6 +54,7 @@ export function sheetBlocks(version, identity) {
   const showHeads = !(groups.length === 1 && groups[0].kind === 'unallocated');
   return {
     version,
+    readingVersion,
     notes: version.authored.beforeYouStart,
     groups: groups.map((group) => ({
       key: group.kind === 'removed' ? `removed:${group.n}` : String(group.displayNumber ?? 'unallocated'),
@@ -71,7 +78,7 @@ export function sheetBlocks(version, identity) {
       }),
     })),
     totalText: formatGrams(mass),
-    figures: buildFigures(version),
+    figures: buildFigures(readingVersion),
     steps: activeSteps(version),
     numbers: displayNumbers(steps),
     footText: [version.sheetTitle, identity, sheetCode(version)].join(' · '),
@@ -152,7 +159,8 @@ export function PrintIngredientTable({ groups, showHeader, showTotal, totalText,
 // Balance in column 2 (sketch 010 E3, E4, D29): the plain heading, no Hide
 // control and no Watch for; the gauges it holds, each whole, drawn static (paper
 // has no controls) by the same RuleDrawing the screen button wraps; the basis
-// note last. A page that continues Balance carries no heading again. The fat
+// note last (`version` is the active reading, so the note reads the same rows
+// as the gauges). A page that continues Balance carries no heading again. The fat
 // gauge's breakdown line is FormulationNote's own sentence.
 export function PrintBalance({ figures, gaugeIndexes, showHeading, showBasis, version }) {
   return (
@@ -287,7 +295,7 @@ export function SheetPage({ plan, blocks, columns = null }) {
                 gaugeIndexes={balance.gauges}
                 showHeading={balance.heading}
                 showBasis={balance.basis}
-                version={blocks.version}
+                version={blocks.readingVersion}
               />
             )}
           </div>

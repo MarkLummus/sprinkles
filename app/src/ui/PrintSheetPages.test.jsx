@@ -17,6 +17,8 @@ import { oliveOilVersion } from '../data/olive-oil.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
 import { sheetCode } from '../domain/sheetCode.js';
+import { buildFigures } from '../domain/figures.js';
+import { BasisNote } from './BasisNote.jsx';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -473,5 +475,88 @@ describe('useSheetPages — measures after render, then lays', () => {
   it('lays the whole Sheet on one page where nothing can be measured (a height of 0)', async () => {
     const output = await mount(oliveOilVersion, undefined);
     expect(output.dataset.pages).toBe('1');
+  });
+});
+
+// Review 2026-10-11 P1: the printed Balance (six gauges and the basis note) read
+// the stored rows, removed lines included, while the table beside it lists and
+// totals the active ones. The Sheet's figures now read the same active reading
+// the recipe page's own Balance reads; the band, the groups and the Sheet code
+// stay on the stored version.
+describe('sheetBlocks — Balance reads the active formula (review 2026-10-11 P1)', () => {
+  const portionsOut = (row) => ({ ...row, portions: row.portions.map((portion) => ({ ...portion, removed: true })) });
+  const fixtures = [
+    {
+      name: 'a removed only-line (every portion of Graza Drizzle removed)',
+      version: { ...oliveOilVersion, rows: oliveOilVersion.rows.map((row) => (row.id === 'row-03' ? portionsOut(row) : row)) },
+    },
+    {
+      name: 'a removed whole row (row-03 removed true)',
+      version: { ...oliveOilVersion, rows: oliveOilVersion.rows.map((row) => (row.id === 'row-03' ? { ...row, removed: true } : row)) },
+    },
+    {
+      name: 'one removed line of a split row (Whole milk step 2)',
+      version: {
+        ...oliveOilVersion,
+        rows: oliveOilVersion.rows.map((row) =>
+          row.id === 'row-01' ? { ...row, portions: row.portions.map((portion, i) => (i === 0 ? { ...portion, removed: true } : portion)) } : row,
+        ),
+      },
+    },
+    {
+      name: 'a removed method step (step 6, Allulose)',
+      version: { ...oliveOilVersion, method: oliveOilVersion.method.map((step) => (step.n === 6 ? { ...step, removed: true } : step)) },
+    },
+  ];
+
+  const reading = (version) => ({ ...version, rows: activeRows(version), method: activeSteps(version) });
+  const everyGauge = (figures) => figures.map((_, i) => i);
+  const balanceOnly = (figures) => ({
+    band: false,
+    before: false,
+    table: null,
+    balance: { heading: true, gauges: everyGauge(figures), basis: true },
+    instructions: null,
+    foot: false,
+  });
+  const printedBalance = (version) => {
+    const forBlocks = sheetBlocks(version, 'Version 1');
+    return fragment(<SheetPage plan={balanceOnly(forBlocks.figures)} blocks={forBlocks} />).querySelector('.ps-balance');
+  };
+  const drawnBalance = (figures, version) =>
+    fragment(<PrintBalance figures={figures} version={version} gaugeIndexes={everyGauge(figures)} showHeading showBasis />).querySelector('.ps-balance');
+  const values = (figures) => figures.map((figure) => figure.value);
+
+  for (const { name, version } of fixtures) {
+    it(`${name}: the figures are the active reading's, and not the stored rows'`, () => {
+      const forBlocks = sheetBlocks(version);
+      expect(forBlocks.figures).toEqual(buildFigures(reading(version)));
+      expect(values(forBlocks.figures)).not.toEqual(values(buildFigures(version)));
+    });
+
+    it(`${name}: the printed Balance, gauges and basis note, is the active one and not the stored one`, () => {
+      const printed = printedBalance(version).outerHTML;
+      expect(printed).toBe(drawnBalance(buildFigures(reading(version)), reading(version)).outerHTML);
+      expect(printed).not.toBe(drawnBalance(buildFigures(version), version).outerHTML);
+    });
+
+    it(`${name}: the band, the groups and the Sheet code still read the stored version`, () => {
+      const forBlocks = sheetBlocks(version, 'Version 1');
+      expect(forBlocks.version).toBe(version);
+      expect(forBlocks.footText).toBe([version.sheetTitle, 'Version 1', sheetCode(version)].join(' · '));
+    });
+  }
+
+  it('prints the review’s numbers for Graza Drizzle removed: PAC 25.3, POD 13.7, fat 13.7, MSNF 8.9, sugar 14.2, solids 37.7', () => {
+    const { version } = fixtures[0];
+    const read = (figures) => figures.map((figure) => figure.value.toFixed(figure.decimals));
+    expect(read(sheetBlocks(version).figures)).toEqual(['25.3', '13.7', '13.7', '8.9', '14.2', '37.7']);
+    expect(read(buildFigures(version))).toEqual(['24.1', '13.0', '18.0', '8.5', '13.5', '40.8']);
+  });
+
+  it('does not name Allulose in the printed basis note once its only step is removed', () => {
+    const { version } = fixtures[3];
+    expect(printedBalance(version).querySelector('.basis-note').textContent).not.toContain('Allulose');
+    expect(fragment(<BasisNote version={version} />).querySelector('.basis-note').textContent).toContain('Allulose');
   });
 });

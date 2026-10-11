@@ -36,6 +36,18 @@ body {
   padding: var(--gap-page);
 }
 
+/* Heard, not seen (D-20): text a screen reader announces and the eye never
+   needs, e.g. the marked-rows live region in the Balance section. Top level,
+   outside every @media block, so it holds at every width. */
+.visually-hidden {
+  position: absolute;
+  width: var(--app-size-visually-hidden);
+  height: var(--app-size-visually-hidden);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* The binder (route-recipe.md § 6, D-13): every control drawn by the page,
    not the browser — ink at hairline weight, no fill, no radius, no icon.
    Written as bare element rules so every control, including the list

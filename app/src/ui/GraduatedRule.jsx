@@ -38,7 +38,7 @@ function joinNames(names) {
 // The words a figure says about itself, shared by the button's accessible name
 // and the drawing's basis line so the two never read different ones.
 function figureWords(figure, figureDelta) {
-  const { label, value, unit, decimals, band, basis, estimatedRowNames } = figure;
+  const { label, value, unit, decimals, band, basis, estimatedRowNames, deviation } = figure;
   const targetText = band ? `target ${band[0]}–${band[1]}${unit}` : 'no target set';
   // A figure resting on estimated or unreviewed data says so beside itself
   // (D-04), naming the rows it rests on — never as a colour, only as text,
@@ -53,13 +53,17 @@ function figureWords(figure, figureDelta) {
   const changed = Boolean(figureDelta?.changed);
   const changePhrase = changed ? `was ${figureDelta.from.toFixed(decimals)}${unit}, now ${value.toFixed(decimals)}${unit}` : null;
   const valuePhrase = changePhrase ?? `${value.toFixed(decimals)}${unit}`;
-  return { label, targetText, basisText, changed, valuePhrase };
+  // The deviation words the eye reads under the rule, said in the name too
+  // (D-20). With no band the target text already says no target set, so
+  // nothing is added.
+  const deviationText = band ? deviation.words : null;
+  return { label, targetText, deviationText, basisText, changed, valuePhrase };
 }
 
 export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFigure, onBlurFigure }) {
   const { key } = figure;
-  const { label, targetText, basisText, valuePhrase } = figureWords(figure, figureDelta);
-  const accessibleName = [figureLabelText(label), valuePhrase, targetText, basisText].filter(Boolean).join(', ');
+  const { label, targetText, deviationText, basisText, valuePhrase } = figureWords(figure, figureDelta);
+  const accessibleName = [figureLabelText(label), valuePhrase, targetText, deviationText, basisText].filter(Boolean).join(', ');
 
   return (
     // A focusable control, not a decoration: focusing it (keyboard or

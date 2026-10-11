@@ -126,3 +126,31 @@ describe('RuleDrawing — the drawing without the button', () => {
     expect(button).toContain(drawing);
   });
 });
+
+// D-20 (04-10): the deviation words the eye reads under the rule sit in its
+// accessible name too, right after the target and before the basis.
+describe('GraduatedRule — the deviation words in the accessible name', () => {
+  const nameOf = (f) => renderToStaticMarkup(<GraduatedRule figure={f} />).match(/aria-label="([^"]*)"/)[1];
+
+  it('names an inside figure after its target', () => {
+    const inside = { ...figure, value: 17, deviation: { kind: 'inside', amount: 0, words: 'inside 16–18%' } };
+    expect(nameOf(inside)).toBe('Fat, 17.0%, target 16–18%, inside 16–18%');
+  });
+
+  it('names a figure below its band after its target', () => {
+    const below = { ...figure, value: 15, deviation: { kind: 'below', amount: 1, words: '1.0% below 16%' } };
+    expect(nameOf(below)).toBe('Fat, 15.0%, target 16–18%, 1.0% below 16%');
+  });
+
+  it('says no target set once for a figure with no band, and adds nothing after it', () => {
+    const none = { ...figure, band: null, deviation: { kind: 'none', amount: null, words: 'no target set' } };
+    const name = nameOf(none);
+    expect(name).toBe('Fat, 18.8%, no target set');
+    expect(name.match(/no target set/g)).toHaveLength(1);
+  });
+
+  it('keeps the basis last, after the deviation words', () => {
+    const est = { ...figure, deviation: { kind: 'above', amount: 0.8, words: '0.8% above 18%' }, basis: 'estimated', estimatedRowNames: ['Whole milk', 'Heavy cream'] };
+    expect(nameOf(est)).toBe('Fat, 18.8%, target 16–18%, 0.8% above 18%, estimated: Whole milk, and Heavy cream');
+  });
+});

@@ -37,6 +37,14 @@ import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 import { FoldRow } from './FoldRow.jsx';
 import { useBelow724, useBelowDesktop, useFold, useSheetTwoColumns } from './useBelowDesktop.js';
 
+// "a, b, and c" — the joining GraduatedRule and BasisNote each keep their own
+// copy of; this is the third, for the marked-rows announcement.
+function joinNames(names) {
+  if (names.length === 0) return '';
+  if (names.length === 1) return names[0];
+  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+}
+
 // The record pen's blocked-date sentence (D-05) — one constant, read from
 // both handleSaveBatch (via validateRecordDraft) and the ceremony's own
 // hint prop, so the "one state, two renderings" grep (03.3.1-02 Task 2
@@ -858,6 +866,17 @@ export function RecipePage({ onPageStatus = () => {} }) {
     };
   }, [version]);
 
+  // D-20: the tab title leads with the recipe name while the page is mounted
+  // (a plain string, never markup, T-04-27); the print route sets its own.
+  const recipeName = recipe ? recipe.name : null;
+  useEffect(() => {
+    if (recipeName === null) return undefined;
+    document.title = `${recipeName} · Sprinkles`;
+    return () => {
+      document.title = 'Sprinkles';
+    };
+  }, [recipeName]);
+
   // The cited batch this version's lineage line names (route-recipe-version.md
   // § 3): citedBatchId is an id only — the batch itself lives on the
   // parent, never copied onto the child — so its churn date is read once
@@ -1273,6 +1292,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
   const focusedFigure = figures.find((figure) => figure.key === focusedFigureKey) ?? null;
   const markedRowIds = focusedFigure?.contributorRowIds ?? [];
   const markedFigureLabel = focusedFigure ? figureLabelText(focusedFigure.label) : '';
+  // What a screen reader hears when a rule takes focus (D-20): the rows it
+  // marks, in table order, in the words the rows already carry. Empty when no
+  // rule is focused or the focused one marks nothing.
+  const markedRowNames = [
+    ...new Set(liveVersion.rows.filter((row) => markedRowIds.includes(row.id)).map((row) => row.ingredientName)),
+  ];
+  const markedAnnouncement =
+    markedRowNames.length > 0 ? `Contributing to ${markedFigureLabel}: ${joinNames(markedRowNames)}` : '';
 
   // The show-changes diff (route-recipe-version.md § 3, § 6; D-02, T-03-23):
   // one buildDiff of the version against its live parent — the same
@@ -2476,6 +2503,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
                   />
                   <BasisNote version={liveVersion} />
                 </div>
+                <p className="visually-hidden" role="status" aria-live="polite">
+                  {markedAnnouncement}
+                </p>
               </section>
 
               <div className="margin-region">

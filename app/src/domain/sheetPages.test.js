@@ -11,6 +11,10 @@ const groupsOn = (page) => (page.table ? page.table.slices.map((slice) => [slice
 // The gauges a page's Balance column holds, by index.
 const gaugesOn = (page) => (page.balance ? page.balance.gauges : []);
 
+// The formula part alone: Olive Oil v1's measure without its Instructions and foot
+// (04-08 lays those; the tests below pin them apart).
+const formulaPart = ({ measure, box }) => layPages({ ...measure, steps: [], foot: 0 }, box);
+
 // A measure with round numbers, so a boundary can be hit exactly.
 function constructed(overrides = {}) {
   return {
@@ -38,7 +42,7 @@ describe('layPages — the guard', () => {
 
 describe('layPages — Olive Oil v1 as sketch 010 D29 draws it', () => {
   it('Safari (630 x 900): Steps 2 and 3 on the formula page; the header row, Steps 6 and 8 and the Total on the next', () => {
-    const pages = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    const pages = formulaPart(OLIVE_OIL_V1_SAFARI);
     expect(pages).toHaveLength(2);
     expect(pages[0]).toMatchObject({ band: true, before: true });
     expect(pages[0].table).toMatchObject({ heading: true, header: true, total: false });
@@ -55,7 +59,7 @@ describe('layPages — Olive Oil v1 as sketch 010 D29 draws it', () => {
   });
 
   it('Chrome (672 x 960): Steps 2, 3 and 6 on the formula page; the header row, Step 8 and the Total on the next', () => {
-    const pages = layPages(OLIVE_OIL_V1_CHROME.measure, OLIVE_OIL_V1_CHROME.box);
+    const pages = formulaPart(OLIVE_OIL_V1_CHROME);
     expect(pages).toHaveLength(2);
     expect(groupsOn(pages[0])).toEqual([
       [0, 0, 5],
@@ -76,7 +80,7 @@ describe('layPages — Olive Oil v1 as sketch 010 D29 draws it', () => {
 
   it('puts the Ingredients heading on the first table page only and no word beyond the table', () => {
     for (const { box, measure } of [OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME]) {
-      const pages = layPages(measure, box);
+      const pages = formulaPart({ measure, box });
       expect(pages.map((page) => page.table.heading)).toEqual([true, false]);
       expect(pages.map((page) => page.table.header)).toEqual([true, true]);
     }
@@ -167,7 +171,7 @@ describe('layPages — [edge PRINT-01/empty] no notes, one group, a group taller
 
 describe('layPages — [edge PRINT-01/ordering] the Total', () => {
   it('prints once, on the page that holds the last line', () => {
-    const pages = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    const pages = formulaPart(OLIVE_OIL_V1_SAFARI);
     expect(pages.filter((page) => page.table && page.table.total)).toHaveLength(1);
   });
 
@@ -226,21 +230,21 @@ describe('layPages — a heading and header never stand with nothing under them'
 
 describe('layPages — Balance in column 2 (sketch 010 D29; decide-balance-break = continue)', () => {
   it('Safari: Freezing, Sweetness, Fat and Milk solids with the table; Sugar, Solids and the basis note on the next page', () => {
-    const pages = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    const pages = formulaPart(OLIVE_OIL_V1_SAFARI);
     expect(pages).toHaveLength(2);
     expect(pages[0].balance).toEqual({ heading: true, gauges: [0, 1, 2, 3], basis: false });
     expect(pages[1].balance).toEqual({ heading: false, gauges: [4, 5], basis: true });
   });
 
   it('Chrome: five gauges with the table; Solids and the basis note on the next page', () => {
-    const pages = layPages(OLIVE_OIL_V1_CHROME.measure, OLIVE_OIL_V1_CHROME.box);
+    const pages = formulaPart(OLIVE_OIL_V1_CHROME);
     expect(pages).toHaveLength(2);
     expect(pages[0].balance).toEqual({ heading: true, gauges: [0, 1, 2, 3, 4], basis: false });
     expect(pages[1].balance).toEqual({ heading: false, gauges: [5], basis: true });
   });
 
   it('makes the page row as tall as the taller column, and ends Balance beside the table’s tail', () => {
-    const [first, second] = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    const [first, second] = formulaPart(OLIVE_OIL_V1_SAFARI);
     const m = OLIVE_OIL_V1_SAFARI.measure;
     const rowTop = m.band + m.gap + m.before + m.gap;
     const sum = (list) => list.reduce((a, b) => a + b, 0);
@@ -387,6 +391,171 @@ describe('layPages — every line stands exactly once, in order, within the page
       }
       // Page 1 carries the band; none after does.
       expect(pages.map((page) => page.band), where).toEqual(pages.map((_, i) => i === 0));
+    }
+  });
+});
+
+// The steps a page's Instructions hold, by index.
+const stepsOn = (page) => (page.instructions ? page.instructions.steps : []);
+
+describe('layPages — the Instructions as sketch 010 D29 draws them (04-08)', () => {
+  it('Safari (630 x 900): steps 1 to 4 under the table’s tail, steps 5 to 10 and the foot on the last page', () => {
+    const pages = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    expect(pages).toHaveLength(3);
+    expect(pages.map(stepsOn)).toEqual([[], [0, 1, 2, 3], [4, 5, 6, 7, 8, 9]]);
+    expect(pages.map((page) => page.instructions && page.instructions.heading)).toEqual([null, true, false]);
+    expect(pages.map((page) => page.foot)).toEqual([false, false, true]);
+    // The heading sits 20 px under the row's 325.7 (D29: 345.7) and steps 1 to 4 end at 873.0.
+    expect(pages[1].bottom).toBeCloseTo(873.0, 0);
+    expect(pages[1].bottom).toBeLessThanOrEqual(900 - PAGE_GUARD_PX);
+    // Page 3: the steps (576.3) and the foot under 32 px of margin.
+    expect(pages[2]).toMatchObject({ band: false, table: null, balance: null });
+    expect(pages[2].bottom).toBeCloseTo(576.3 + 32 + 22, 1);
+  });
+
+  it('Chrome (672 x 960): steps 1 to 5 under the tail, steps 6 to 10 and the foot on the last page', () => {
+    const pages = layPages(OLIVE_OIL_V1_CHROME.measure, OLIVE_OIL_V1_CHROME.box);
+    expect(pages).toHaveLength(3);
+    expect(pages.map(stepsOn)).toEqual([[], [0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]);
+    expect(pages.map((page) => page.instructions && page.instructions.heading)).toEqual([null, true, false]);
+    expect(pages.map((page) => page.foot)).toEqual([false, false, true]);
+    // D29 draws steps 1 to 5 ending at 897.5 of 960 under the 216.3 px row WebKit
+    // measures; Chrome's own row is 195 px (its basis note is 84), so they end at 876.1.
+    expect(pages[1].bottom).toBeCloseTo(876.1, 0);
+  });
+
+  it('prints no word of the Instructions on the formula page', () => {
+    for (const { box, measure } of [OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME]) {
+      expect(layPages(measure, box)[0]).toMatchObject({ instructions: null, foot: false });
+    }
+  });
+
+  it('lays nothing of the Instructions when the measure carries none', () => {
+    const { steps, foot, ...formulaOnly } = OLIVE_OIL_V1_SAFARI.measure;
+    const pages = layPages(formulaOnly, OLIVE_OIL_V1_SAFARI.box);
+    expect(pages).toHaveLength(2);
+    expect(pages.every((page) => page.instructions === null && page.foot === false)).toBe(true);
+  });
+});
+
+describe('layPages — the Instructions’ heading, steps and foot (04-08)', () => {
+  // Two groups of 440 on a 1000 box: the second moves to page 2 whole, where the
+  // table (header 30, group 440, Total 30) ends at 500, so the Instructions follow
+  // it at 520. The usable height is 992, which leaves 472 under the row.
+  const box = { height: 1000 };
+  const tail = (extra) =>
+    constructed({
+      groups: [
+        { head: 40, rows: [400] },
+        { head: 40, rows: [400] },
+      ],
+      instructionsHeading: 20,
+      stepGap: 20,
+      footGap: 32,
+      foot: 22,
+      ...extra,
+    });
+
+  it('follows the row’s tail 20 px under it on the page where the row ends', () => {
+    const pages = layPages(tail({ steps: [100, 100] }), box);
+    expect(pages).toHaveLength(2);
+    expect(pages[1].table).not.toBeNull();
+    expect(pages[1].instructions).toEqual({ heading: true, steps: [0, 1] });
+    // 500 + 20 + heading 20 + 100 + 20 + 100 = 760, then the foot 32 + 22.
+    expect(pages[1].bottom).toBe(500 + 20 + 20 + 100 + 20 + 100 + 32 + 22);
+  });
+
+  it('keeps the heading with the first step: both stay when the step ends on the usable height, both move one pixel past', () => {
+    // (No foot here: the foot's own rule is tested apart, below.)
+    const stays = layPages(tail({ steps: [452], foot: 0 }), box);
+    expect(stays).toHaveLength(2);
+    expect(stays[1].instructions).toEqual({ heading: true, steps: [0] });
+    const moves = layPages(tail({ steps: [453], foot: 0 }), box);
+    expect(moves).toHaveLength(3);
+    expect(moves[1].instructions).toBeNull();
+    expect(moves[2].instructions).toEqual({ heading: true, steps: [0] });
+    expect(moves[2].table).toBeNull();
+  });
+
+  it('opens the next page with no heading for the step that does not fit', () => {
+    const pages = layPages(tail({ steps: [200, 300, 100] }), box);
+    // 540 + 200 = 740; 20 + 300 = 1060 > 992: the second step moves, whole.
+    expect(pages.map(stepsOn)).toEqual([[], [0], [1, 2]]);
+    expect(pages.map((page) => page.instructions && page.instructions.heading)).toEqual([null, true, false]);
+  });
+
+  it('keeps the foot with the last step: when it does not fit, the last step moves with it', () => {
+    // 520 + 20 + 200 + 20 + 200 = 960; the foot needs 54 more and 992 - 960 = 32.
+    const pages = layPages(tail({ steps: [200, 200] }), box);
+    expect(pages.map(stepsOn)).toEqual([[], [0], [1]]);
+    expect(pages.map((page) => page.foot)).toEqual([false, false, true]);
+    expect(pages[2].instructions.heading).toBe(false);
+  });
+
+  it('keeps the foot on the page when it ends exactly on the usable height', () => {
+    const pages = layPages(tail({ steps: [200, 178] }), box);
+    expect(pages.map(stepsOn)).toEqual([[], [0, 1]]);
+    expect(pages[1].foot).toBe(true);
+    expect(pages[1].bottom).toBe(box.height - PAGE_GUARD_PX);
+    const over = layPages(tail({ steps: [200, 179] }), box);
+    expect(over.map(stepsOn)).toEqual([[], [0], [1]]);
+  });
+
+  it('moves the heading with the only step when the foot sends that step to the next page', () => {
+    // One step of 413: 540 + 413 = 953; the foot needs 54 and 39 is left. The
+    // table's page keeps the row alone; the heading, the step and the foot open the next.
+    const pages = layPages(tail({ steps: [413] }), box);
+    expect(pages.map(stepsOn)).toEqual([[], [], [0]]);
+    expect(pages[1].instructions).toBeNull();
+    expect(pages[2].instructions).toEqual({ heading: true, steps: [0] });
+    expect(pages[2].foot).toBe(true);
+  });
+
+  it('closes a version with no steps with its foot under the row', () => {
+    const pages = layPages(tail({ steps: [] }), box);
+    expect(pages).toHaveLength(2);
+    expect(pages[1].instructions).toBeNull();
+    expect(pages[1].foot).toBe(true);
+    expect(pages[1].bottom).toBe(500 + 20 + 32 + 22);
+  });
+});
+
+describe('layPages — [edge PRINT-02/ordering] every step stands once, the heading once, the foot once and last', () => {
+  it('holds for 300 constructed Sheets of every size', () => {
+    const next = stream(11);
+    const between = (lo, hi) => lo + Math.floor(next() * (hi - lo + 1));
+    for (let n = 0; n < 300; n += 1) {
+      const groups = Array.from({ length: between(1, 4) }, () => ({
+        head: between(20, 45),
+        rows: Array.from({ length: between(1, 6) }, () => between(25, 70)),
+      }));
+      const steps = Array.from({ length: between(0, 12) }, () => between(30, 400));
+      const measure = constructed({
+        band: between(80, 140),
+        before: next() < 0.4 ? 0 : between(60, 220),
+        groups,
+        gauges: Array.from({ length: between(0, 6) }, () => between(60, 140)),
+        basis: next() < 0.5 ? 0 : between(40, 120),
+        instructionsHeading: between(15, 30),
+        steps,
+        stepGap: between(10, 30),
+        footGap: between(20, 40),
+        foot: between(15, 30),
+      });
+      const box = { height: between(500, 1000) };
+      const pages = layPages(measure, box);
+      const where = `case ${n}`;
+
+      expect(pages.flatMap(stepsOn), where).toEqual(steps.map((_, i) => i));
+      const withInstructions = pages.filter((page) => page.instructions);
+      expect(withInstructions.map((page) => page.instructions.heading), where).toEqual(withInstructions.map((_, i) => i === 0));
+      // The foot once, on the Sheet's last page, with the last step.
+      expect(pages.filter((page) => page.foot), where).toHaveLength(1);
+      const last = pages[pages.length - 1];
+      expect(last.foot, where).toBe(true);
+      if (steps.length > 0) expect(stepsOn(last), where).toContain(steps.length - 1);
+      // Nothing past the usable height: every part here is shorter than a page.
+      for (const page of pages) expect(page.bottom, where).toBeLessThanOrEqual(box.height - PAGE_GUARD_PX);
     }
   });
 });

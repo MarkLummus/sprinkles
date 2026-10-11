@@ -18,7 +18,8 @@
 //       PDF, and on screen against sheet-page-1-formula.html and
 //       sheet-page-2-table-tail.html
 //   node .planning/phases/04-.../04-print-probe.mjs sweep
-//       (04-07) every seed version's formula pages in both engines
+//       (04-07) every seed version's formula pages in both engines; (04-08) and
+//       its Instructions and closing foot
 //
 // Prints MATCH / DIFF / FAIL lines and exits 1 on any DIFF or FAIL.
 //
@@ -504,6 +505,16 @@ async function readLaidSheet(page) {
         lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
       };
     };
+    // A step: its number, its lead-in and instruction, its tags (label and value
+    // apart), the why sentence and the aside, as the page draws them.
+    const step = (li) => ({
+      n: text(li.querySelector('.mp-n')),
+      lead: text(li.querySelector('.mp-lead b')),
+      instruction: text(li.querySelector('.mp-lead')).slice(text(li.querySelector('.mp-lead b')).length).trim(),
+      tags: [...li.querySelectorAll('.mp-tag')].map((tag) => ({ label: text(tag.querySelector('.mp-tag__label')), value: text(tag.querySelector('.mp-tag__value')) })),
+      why: li.querySelector('.mp-why') ? text(li.querySelector('.mp-why .mp-why__label').nextSibling ?? li.querySelector('.mp-why')).replace(/^— ?/, '') : null,
+      aside: li.querySelector('.mp-aside') ? text(li.querySelector('.mp-aside')) : null,
+    });
     const pages = [...document.querySelectorAll('.print-page--sheet')].map((pageEl) => ({
       band: Boolean(pageEl.querySelector('.ps-band')),
       before: Boolean(pageEl.querySelector('.ps-before')),
@@ -517,13 +528,29 @@ async function readLaidSheet(page) {
       basis: Boolean(pageEl.querySelector('.basis-note')),
       buttons: pageEl.querySelectorAll('button').length,
       groups: [...pageEl.querySelectorAll('.ps-group')].map(group),
+      instructions: {
+        heading: Boolean(pageEl.querySelector('.ps-instructions > .region-name')),
+        steps: [...pageEl.querySelectorAll('.mp-step')].map(step),
+      },
+      foot: pageEl.querySelector('.mp-foot') ? text(pageEl.querySelector('.mp-foot')) : null,
     }));
     const whole = [...document.querySelectorAll('.ps-box .ps-group')].map(group);
     const wholeGauges = [...document.querySelectorAll('.ps-box .formulation-note__rule')].map((rule) => ({
       word: text(rule.querySelector('.graduated-rule__label-word')),
       head: text(rule.querySelector('.graduated-rule__label')) + ' ' + text(rule.querySelector('.graduated-rule__value')),
     }));
-    return { pages, whole, wholeGauges, total: text(document.querySelector('.ps-box tfoot .ps-col-grams')), hasNotes: Boolean(document.querySelector('.ps-box .ps-before')) };
+    const wholeSteps = [...document.querySelectorAll('.ps-box .mp-step')].map(step);
+    const wholeFoot = document.querySelector('.ps-box .mp-foot');
+    return {
+      pages,
+      whole,
+      wholeGauges,
+      wholeSteps,
+      wholeFoot: wholeFoot ? text(wholeFoot) : null,
+      lineCode: document.querySelector('.print-route__code') ? text(document.querySelector('.print-route__code')) : null,
+      total: text(document.querySelector('.ps-box tfoot .ps-col-grams')),
+      hasNotes: Boolean(document.querySelector('.ps-box .ps-before')),
+    };
   });
 }
 
@@ -588,30 +615,100 @@ const OLIVE_GAUGE_BREAKS = {
   chrome: [['Freezing', 'Sweetness', 'Fat', 'Milk solids', 'Sugar'], ['Solids']],
 };
 
+// And the Instructions under the table's tail (D29): Safari puts steps 1 to 4 on
+// the page that holds the tail and 5 to 10 with the closing foot on the next;
+// Chrome puts 1 to 5, then 6 to 10. The formula page holds none.
+const OLIVE_INSTRUCTION_BREAKS = {
+  webkit: [[], [1, 2, 3, 4], [5, 6, 7, 8, 9, 10]],
+  chrome: [[], [1, 2, 3, 4, 5], [6, 7, 8, 9, 10]],
+};
+
 const stepOf = (group) => Number(group.head.match(/^Step (\d+)/)[1]);
 
 // The laid pages the route drew (the DOM), against D29.
 function checkLaid(engine, v, laid) {
   const label = `${engine} ${v.id} laid`;
   const breaks = OLIVE_SHEET_BREAKS[engine];
-  check(laid.pages.length === breaks.length, label, `the route lays ${laid.pages.length} Sheet page(s) (D29: ${breaks.length})`);
+  const instructionBreaks = OLIVE_INSTRUCTION_BREAKS[engine];
+  check(laid.pages.length === instructionBreaks.length, label, `the route lays ${laid.pages.length} Sheet page(s) (D29: ${instructionBreaks.length})`);
+  // The pages after the table's last hold the Instructions alone.
+  laid.pages.slice(breaks.length).forEach((p, k) => {
+    const i = breaks.length + k;
+    check(!p.header && !p.total && p.groups.length === 0 && p.gauges.length === 0 && !p.basis, label, `Sheet page ${i + 1} holds no table and no Balance`);
+  });
   laid.pages.forEach((p, i) => {
+    const steps = p.instructions.steps.map((entry) => Number(entry.n));
+    check(JSON.stringify(steps) === JSON.stringify(instructionBreaks[i]), label, `Sheet page ${i + 1} holds Instructions ${steps.join(', ') || 'none'} (D29: ${instructionBreaks[i].join(', ') || 'none'})`);
+    check(p.instructions.heading === (i === 1), label, `Sheet page ${i + 1} ${p.instructions.heading ? 'carries' : 'does not carry'} the Instructions heading (once, on page 2)`);
+    check((p.foot !== null) === (i === laid.pages.length - 1), label, `Sheet page ${i + 1} ${p.foot !== null ? 'holds' : 'does not hold'} the closing foot`);
+    check(p.buttons === 0, label, `Sheet page ${i + 1} has no button on it (${p.buttons})`);
+    if (i >= breaks.length) return;
     const got = p.groups.map(stepOf);
     check(JSON.stringify(got) === JSON.stringify(breaks[i]), label, `Sheet page ${i + 1} holds Steps ${got.join(', ')} (D29: ${breaks[i].join(', ')})`);
     check(p.header, label, `Sheet page ${i + 1} opens with the header row`);
     check(i === 0 ? p.heading.includes('Ingredients') : !p.heading.includes('Ingredients'), label, `Sheet page ${i + 1} ${i === 0 ? 'carries' : 'does not carry'} the Ingredients heading`);
-    check(p.total === (i === laid.pages.length - 1), label, `Sheet page ${i + 1} ${p.total ? 'holds' : 'does not hold'} the Total`);
+    check(p.total === (i === breaks.length - 1), label, `Sheet page ${i + 1} ${p.total ? 'holds' : 'does not hold'} the Total`);
     const words = p.gauges.map((g) => g.word);
     check(JSON.stringify(words) === JSON.stringify(OLIVE_GAUGE_BREAKS[engine][i]), label, `Sheet page ${i + 1} holds the gauges ${words.join(', ')} (D29: ${OLIVE_GAUGE_BREAKS[engine][i].join(', ')})`);
     check(p.heading.includes('Balance') === (i === 0), label, `Sheet page ${i + 1} ${i === 0 ? 'carries' : 'does not carry'} the Balance heading`);
-    check(p.basis === (i === laid.pages.length - 1), label, `Sheet page ${i + 1} ${p.basis ? 'holds' : 'does not hold'} the basis note`);
-    check(p.buttons === 0, label, `Sheet page ${i + 1} has no button on it (${p.buttons})`);
+    check(p.basis === (i === breaks.length - 1), label, `Sheet page ${i + 1} ${p.basis ? 'holds' : 'does not hold'} the basis note`);
   });
   const gaugeWords = laid.pages.flatMap((p) => p.gauges.map((g) => g.word));
   check(JSON.stringify(gaugeWords) === JSON.stringify(laid.wholeGauges.map((g) => g.word)), label, `every gauge stands once, in order (${gaugeWords.join(', ')})`);
   const lines = laid.pages.flatMap((p) => p.groups.flatMap((g) => g.lines));
   const expected = laid.whole.flatMap((g) => g.lines);
   check(JSON.stringify(lines) === JSON.stringify(expected), label, `every line stands once, in order (${lines.length} of ${expected.length})`);
+  const laidSteps = laid.pages.flatMap((p) => p.instructions.steps);
+  check(JSON.stringify(laidSteps) === JSON.stringify(laid.wholeSteps), label, `every step stands once, in order (${laidSteps.length} of ${laid.wholeSteps.length})`);
+}
+
+// The Instructions and the closing foot, as printed, against what the route laid
+// (04-08; PRINT-02, PRINT-04; T-04-21). `bodies` are the Sheet pages' comparable
+// text in paper order; `logs` the two log pages'. Returns the problems found.
+function instructionProblems(v, laid, bodies, logs) {
+  const problems = [];
+  const ok = (cond, what) => {
+    if (!cond) problems.push(what);
+  };
+  const at = (run) => bodies.map((body) => countIn(body, norm(run)));
+  laid.pages.forEach((p, i) => {
+    const texts = [];
+    for (const st of p.instructions.steps) {
+      // Each part of a step stands on its page, and on no other: a step is never split.
+      const parts = [
+        ['its lead-in and instruction', `${st.lead} ${st.instruction}`],
+        ...st.tags.flatMap((tag) => [[`target label "${tag.label}"`, tag.label], [`target value "${tag.value}"`, tag.value]]),
+        ...(st.why ? [['its why sentence', st.why]] : []),
+        ...(st.aside ? [['its aside', st.aside]] : []),
+      ];
+      for (const [what, run] of parts) {
+        texts.push(run);
+        const found = at(run);
+        const elsewhere = found.reduce((sum, n, j) => sum + (j === i ? 0 : n), 0);
+        // A target's label or value may repeat in another step on another page; the
+        // prose parts may not.
+        const prose = !what.startsWith('target');
+        ok(found[i] >= 1, `Step ${st.n}: ${what} is not on page ${i + 1} (found on [${found}])`);
+        if (prose) ok(elsewhere === 0, `Step ${st.n}: ${what} is also printed on another page ([${found}])`);
+      }
+    }
+    // The heading: the word once on the page that carries it, apart from the steps' own words.
+    const own = countIn(norm(texts.join(' ')), 'instructions');
+    ok(countIn(bodies[i], 'instructions') === (p.instructions.heading ? 1 : 0) + own, `page ${i + 1}: the word "instructions" is printed ${countIn(bodies[i], 'instructions')} times, laid ${p.instructions.heading ? 1 : 0} + ${own} in the steps`);
+  });
+  // The closing foot: once, last, after the last step, carrying the code the route's line and the log feet carry.
+  const foot = laid.wholeFoot;
+  const last = bodies.length - 1;
+  const footAt = at(foot);
+  ok(footAt.reduce((a, b) => a + b, 0) === 1 && footAt[last] === 1, `the closing foot "${foot}" is printed on pages [${footAt}] (once, on the last)`);
+  ok(bodies[last].endsWith(norm(foot)), 'the closing foot is not the last thing on the last page');
+  const lastStep = laid.wholeSteps[laid.wholeSteps.length - 1];
+  if (lastStep) ok(bodies[last].lastIndexOf(norm(lastStep.lead)) < bodies[last].lastIndexOf(norm(foot)), 'the closing foot stands before the last step');
+  ok(foot.endsWith(` \u00b7 ${v.code}`) && foot.startsWith(`${v.sheetTitle} \u00b7 `), `the closing foot reads "${foot}", expected the Sheet title, the version line and ${v.code}`);
+  ok(laid.lineCode === v.code, `the route's line reads ${laid.lineCode}, expected ${v.code}`);
+  logs.forEach((body, i) => ok(body.includes(norm(v.code)), `log page ${i + 1}'s foot lacks ${v.code}`));
+  ok(!/side \d of \d/.test(norm(foot)) && !/page \d+ of \d+/.test(bodies.join(' ')), 'a Sheet page carries a side label or "page n of m"');
+  return problems;
 }
 
 // A printed PDF against the plan: pages, text, ink.
@@ -620,7 +717,8 @@ function checkSheetPaper(engine, v, file, laid) {
   const pages = pdfText(tools['pdf-pages'], file);
   const ink = pdfInk(tools['pdf-pages'], file);
   const breaks = OLIVE_SHEET_BREAKS[engine];
-  check(pages.length === LOG_PAGES.length + breaks.length, label, `prints ${LOG_PAGES.length + breaks.length} pages, the two logs then ${breaks.length} of the Sheet (got ${pages.length})`);
+  const sheetPages = OLIVE_INSTRUCTION_BREAKS[engine].length;
+  check(pages.length === LOG_PAGES.length + sheetPages, label, `prints ${LOG_PAGES.length + sheetPages} pages, the two logs then ${sheetPages} of the Sheet (got ${pages.length})`);
   breaks.forEach((steps, i) => {
     const index = LOG_PAGES.length + i;
     const text = pages[index] ?? '';
@@ -663,28 +761,50 @@ function checkSheetPaper(engine, v, file, laid) {
       check(b.y0 >= CONTENT_PT.y0 - INK_TOL_PT && b.y1 <= CONTENT_PT.y1 + INK_TOL_PT, plabel, `ink stays inside the content box's height (y ${b.y0.toFixed(1)} to ${b.y1.toFixed(1)}, box ${CONTENT_PT.y0} to ${CONTENT_PT.y1})`);
     }
   });
+  // The pages after the table's last hold the Instructions alone (and the foot).
+  for (let i = breaks.length; i < sheetPages; i += 1) {
+    const b = ink[LOG_PAGES.length + i];
+    const plabel = `${label} page ${LOG_PAGES.length + i + 1}`;
+    if (check(b !== null && b !== undefined, plabel, 'has ink')) {
+      check(b.x0 >= CONTENT_PT.x0 - INK_TOL_PT && b.x1 <= CONTENT_PT.x1 + INK_TOL_PT, plabel, `ink stays between the side margins (x ${b.x0.toFixed(1)} to ${b.x1.toFixed(1)}, box ${CONTENT_PT.x0} to ${CONTENT_PT.x1})`);
+      check(b.y0 >= CONTENT_PT.y0 - INK_TOL_PT && b.y1 <= CONTENT_PT.y1 + INK_TOL_PT, plabel, `ink stays inside the content box's height (y ${b.y0.toFixed(1)} to ${b.y1.toFixed(1)}, box ${CONTENT_PT.y0} to ${CONTENT_PT.y1})`);
+    }
+  }
+  const sheetBodies = pages.slice(LOG_PAGES.length).map(norm);
+  const found = instructionProblems(v, laid, sheetBodies, pages.slice(0, LOG_PAGES.length).map(norm));
+  check(found.length === 0, label, `the Instructions and the closing foot print as laid: ${laid.wholeSteps.length} steps, each whole on its page, the heading once, the foot once and last with ${v.code}`);
+  for (const problem of found) report('DIFF', label, problem);
 }
 
 // On screen in WebKit at 1280 (fine pointer): the Sheet page pictures' boxes
 // against sheet-page-1-formula.html and sheet-page-2-table-tail.html. The
 // boards lay the Sheet in Safari's 630 x 900 and enlarge it 16/15; so does the
 // route in WebKit, and both are compared in the Sheet's own coordinates, within
-// SCREEN_TOL px. The Instructions on the boards are 04-08's, so anything inside
-// .method-region is left out.
-const SHEET_BOARDS = ['sheet-page-1-formula.html', 'sheet-page-2-table-tail.html'];
+// SCREEN_TOL px. The formula part and the Instructions are compared apart (04-08):
+// the 'formula' scope leaves out whatever sits inside .method-region (the board)
+// or .ps-instructions (the route), the 'method' scope takes only that.
+const SHEET_BOARDS = [
+  { file: 'sheet-page-1-formula.html', scopes: ['formula'] },
+  { file: 'sheet-page-2-table-tail.html', scopes: ['formula', 'method'] },
+  { file: 'sheet-page-3-instructions-end.html', scopes: ['method'] },
+];
+const METHOD_BOX_SELECTORS = {
+  app: { 'Instructions heading': '.ps-instructions > .region-name', steps: '.mp-step', numbers: '.mp-n', leads: '.mp-lead', 'tag rows': '.mp-tags', tags: '.mp-tag', 'tag labels': '.mp-tag__label', 'tag values': '.mp-tag__value', why: '.mp-why', asides: '.mp-aside', 'closing foot': '.mp-foot' },
+  board: { 'Instructions heading': '.method-region > .region-name', steps: '.mp-step', numbers: '.mp-n', leads: '.mp-lead', 'tag rows': '.mp-tags', tags: '.mp-tag', 'tag labels': '.mp-tag__label', 'tag values': '.mp-tag__value', why: '.mp-why', asides: '.mp-aside', 'closing foot': '.mp-foot' },
+};
 const SHEET_BOX_SELECTORS = {
   app: { band: '.ps-band', title: '.headnote h1', prose: '.headnote__prose', before: '.ps-before', notes: '.authored__notes', headings: '.region-name', 'header row': 'thead tr', 'table rows': 'tbody tr', 'Total row': 'tfoot tr', gauges: '.formulation-note__rule', 'basis note': '.basis-note' },
   board: { band: '.recipe-band', title: '.headnote h1', prose: '.headnote__prose', before: '.before-region', notes: '.authored__notes', headings: '.region-name', 'header row': 'thead tr', 'table rows': 'tbody tr', 'Total row': 'tfoot tr', gauges: '.formulation-note__rule', 'basis note': '.basis-note' },
 };
 
-function readFitBoxes({ side, index, selectors }) {
+function readFitBoxes({ side, index, selectors, scope }) {
   const root = side === 'app' ? document.querySelectorAll('.print-page--sheet .ps-fit')[index] : document.querySelector('.sp-fit');
   const r0 = root.getBoundingClientRect();
   const k = r0.width / root.offsetWidth;
   const out = {};
   for (const [key, selector] of Object.entries(selectors)) {
     out[key] = [...root.querySelectorAll(selector)]
-      .filter((el) => !el.closest('.method-region'))
+      .filter((el) => Boolean(el.closest('.method-region, .ps-instructions')) === (scope === 'method'))
       .map((el) => {
         const r = el.getBoundingClientRect();
         return [(r.left - r0.left) / k, (r.top - r0.top) / k, r.width / k, r.height / k];
@@ -697,24 +817,28 @@ async function compareSheetToBoards(browser, appUrl, repoUrl) {
   const label = 'webkit 1280 screen';
   const { context, page } = await openRoute(browser, appUrl, OLIVE.route, { width: 1280 });
   for (let index = 0; index < SHEET_BOARDS.length; index += 1) {
-    const { context: bc, page: bp } = await openBoardPage(browser, repoUrl, SHEET_BOARDS[index], { width: 1280, coarse: false });
-    const board = await bp.evaluate(readFitBoxes, { side: 'board', index: 0, selectors: SHEET_BOX_SELECTORS.board });
-    await bc.close();
-    const app = await page.evaluate(readFitBoxes, { side: 'app', index, selectors: SHEET_BOX_SELECTORS.app });
-    for (const key of Object.keys(SHEET_BOX_SELECTORS.app)) {
-      const a = app[key];
-      const b = board[key];
-      let worst = 0;
-      let first = '';
-      if (a.length === b.length) {
-        a.forEach((box, i) => {
-          const d = Math.max(...box.map((n, k) => Math.abs(n - b[i][k])));
-          worst = Math.max(worst, d);
-          if (d > SCREEN_TOL && !first) first = `#${i} app ${box.map((n) => n.toFixed(1)).join(',')} board ${b[i].map((n) => n.toFixed(1)).join(',')}`;
-        });
+    const { file, scopes } = SHEET_BOARDS[index];
+    const { context: bc, page: bp } = await openBoardPage(browser, repoUrl, file, { width: 1280, coarse: false });
+    for (const scope of scopes) {
+      const selectors = scope === 'method' ? METHOD_BOX_SELECTORS : SHEET_BOX_SELECTORS;
+      const board = await bp.evaluate(readFitBoxes, { side: 'board', index: 0, selectors: selectors.board, scope });
+      const app = await page.evaluate(readFitBoxes, { side: 'app', index, selectors: selectors.app, scope });
+      for (const key of Object.keys(selectors.app)) {
+        const a = app[key];
+        const b = board[key];
+        let worst = 0;
+        let first = '';
+        if (a.length === b.length) {
+          a.forEach((box, i) => {
+            const d = Math.max(...box.map((n, k) => Math.abs(n - b[i][k])));
+            worst = Math.max(worst, d);
+            if (d > SCREEN_TOL && !first) first = `#${i} app ${box.map((n) => n.toFixed(1)).join(',')} board ${b[i].map((n) => n.toFixed(1)).join(',')}`;
+          });
+        }
+        check(a.length === b.length && worst <= SCREEN_TOL, `${label} ${file}`, `${key}: ${a.length} box(es) against the board's ${b.length}, worst ${worst.toFixed(2)} px (\u00b1${SCREEN_TOL})${first ? `; first off ${first}` : ''}`);
       }
-      check(a.length === b.length && worst <= SCREEN_TOL, `${label} ${SHEET_BOARDS[index]}`, `${key}: ${a.length} box(es) against the board's ${b.length}, worst ${worst.toFixed(2)} px (\u00b1${SCREEN_TOL})${first ? `; first off ${first}` : ''}`);
     }
+    await bc.close();
   }
   await context.close();
 }
@@ -846,6 +970,9 @@ function sweepProblems(v, file, laid) {
     ok(!bodies[i].includes('continued'), `page ${i + 1} carries the word "continued"`);
   });
 
+  // The Instructions and the closing foot (04-08).
+  problems.push(...instructionProblems(v, laid, bodies, pdf.slice(0, LOG_PAGES.length).map(norm)));
+
   // No ink past the content box.
   laid.pages.forEach((_, i) => {
     const b = ink[LOG_PAGES.length + i];
@@ -928,7 +1055,12 @@ async function runSweep(ids) {
         const gauges = laid.wholeGauges.length;
         const lines = laid.whole.reduce((n, g) => n + g.lines.length, 0);
         if (problems.length === 0) {
-          report('MATCH', `${engine} ${v.id}`, `${laid.pages.length} Sheet page(s) print as laid: ${laid.whole.length} step group(s), ${lines} line(s), ${gauges} gauge(s), the Total once, ${laid.hasNotes ? 'Before you start on the formula page' : 'no Before you start'}, the same at 1280 and 393`);
+          // Where the Instructions begin: under the row's tail, or (both columns ended on
+          // the formula page, D-06b) on a page of their own.
+          const first = laid.pages.findIndex((p) => p.instructions.steps.length > 0);
+          const own = first >= 0 && laid.pages[first].groups.length === 0 && laid.pages[first].gauges.length === 0 && !laid.pages[first].basis;
+          const where = first < 0 ? 'no steps' : own ? `their own page ${first + 1} (the table fits)` : `page ${first + 1} under the row`;
+          report('MATCH', `${engine} ${v.id}`, `${laid.pages.length} Sheet page(s) print as laid: ${laid.whole.length} step group(s), ${lines} line(s), ${gauges} gauge(s), the Total once, ${laid.hasNotes ? 'Before you start on the formula page' : 'no Before you start'}, ${laid.wholeSteps.length} step(s) whole with the Instructions on ${where}, the closing foot once and last, the same at 1280 and 393`);
         } else for (const problem of problems) report('DIFF', `${engine} ${v.id}`, problem);
       }
     }

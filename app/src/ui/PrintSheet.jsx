@@ -70,10 +70,13 @@ export function PrintSheet({ recipeId, versionId }) {
   }, [versionId]);
 
   const loaded = Boolean(version) && Boolean(recipe) && versions !== undefined && version.recipeId === recipeId;
+  const identity = loaded ? versionIdentity(sortedVersions(versionsForRecipe(versions, version.recipeId)), version) : '';
 
-  // The Sheet's formula pages, laid by measurement in the printing engine's own
-  // content box (PRINT-01, sketch 010 D29): null until the blocks are measured.
-  const sheet = useSheetPages(loaded ? version : null);
+  // The Sheet's pages (the formula part, the Instructions and the closing foot),
+  // laid by measurement in the printing engine's own content box (PRINT-01,
+  // PRINT-02, sketch 010 D29): null until the blocks are measured. The closing
+  // foot's version line is the route's own.
+  const sheet = useSheetPages(loaded ? version : null, undefined, identity);
 
   // D-20: the tab title leads with the recipe name while the route is mounted.
   const recipeName = loaded ? recipe.name : null;
@@ -111,7 +114,6 @@ export function PrintSheet({ recipeId, versionId }) {
   if (recipe === null) return <RecipeNotFound />;
 
   const code = sheetCode(version);
-  const identity = versionIdentity(sortedVersions(versionsForRecipe(versions, version.recipeId)), version);
   const saved = formatRecordDate(version.createdAt);
   const footFor = (side) => logFootText({ sheetTitle: version.sheetTitle, identity, code, side });
 

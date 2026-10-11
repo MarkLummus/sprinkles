@@ -557,4 +557,10 @@
   --sheet-print-asmade-col: 84px; /* the As made cell (E1; CONTRACT § 5) */
   --sheet-print-asmade-w: 72px; /* the blank line the maker writes the weighed amount on */
   --sheet-print-asmade-h: 24px;
+
+  /* The Sheet's Instructions (Phase 4, plan 04-08; sketch 010 D18, CONTRACT
+     §§ 5, 6, 10): the step number's column at the content's left edge, and how
+     far a typed target's value hangs its underline below the text. */
+  --sheet-print-step-n-col: 32px;
+  --sheet-print-tag-underline-offset: 3px;
 }

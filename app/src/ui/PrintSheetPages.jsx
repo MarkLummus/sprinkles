@@ -1,7 +1,8 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { computeBalance, formatGrams, formatPortionLine } from '../domain/composition.js';
-import { activeRows, rowGrams } from '../domain/rows.js';
-import { displayNumbers } from '../domain/stepNumbers.js';
+import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
+import { displayNumberOf, displayNumbers } from '../domain/stepNumbers.js';
+import { sheetCode } from '../domain/sheetCode.js';
 import { buildFigures } from '../domain/figures.js';
 import { layPages } from '../domain/sheetPages.js';
 import { groupPortionsByStep, dataFlagFor } from './IngredientTable.jsx';
@@ -32,8 +33,11 @@ export function printEngine() {
 
 // What the Sheet prints, read once from the saved version: the table's groups
 // and lines through the very same groupPortionsByStep the screen table uses (so
-// the order is the screen's), the Before you start notes, and the Total.
-export function sheetBlocks(version) {
+// the order is the screen's), the Before you start notes, the Total, the
+// Instructions' steps with their display numbers, and the closing foot's words:
+// the Sheet title, the version line (`identity`, which the route reads from the
+// recipe's versions) and the Sheet code, joined by " · " (D7, D28; no side).
+export function sheetBlocks(version, identity) {
   const steps = version.method;
   const active = activeRows(version);
   const balance = computeBalance(active);
@@ -68,6 +72,9 @@ export function sheetBlocks(version) {
     })),
     totalText: formatGrams(mass),
     figures: buildFigures(version),
+    steps: activeSteps(version),
+    numbers: displayNumbers(steps),
+    footText: [version.sheetTitle, identity, sheetCode(version)].join(' · '),
   };
 }
 
@@ -176,6 +183,58 @@ export function PrintBalance({ figures, gaugeIndexes, showHeading, showBasis, ve
   );
 }
 
+// The Instructions in their print form (sketch 010 D18, the method treatment;
+// CONTRACT §§ 5, 6): a number column, the bold lead-in and the instruction, the
+// typed targets as a tag row (a caps label and a bold underlined value, no box),
+// Why as the caps word "why", an em dash and the sentence, and the aside as a
+// callout. Upright: never the screen's italic Purpose and Aside or its boxed
+// chips. The words are the step's own; "why" is the only word added. `steps`
+// are the steps this page holds; `numbers` maps a step's stored key to its
+// display number. The closing foot rides inside the section, after the last
+// step, when `children` gives it.
+export function PrintInstructions({ steps, numbers, showHeading, children }) {
+  return (
+    <section className="ps-instructions" aria-label="Instructions">
+      {showHeading && <h2 className="region-name">Instructions</h2>}
+      <ol className="mp-steps">
+        {steps.map((step) => (
+          <li key={step.n} className="mp-step">
+            <span className="mp-n">{displayNumberOf(numbers, step.n)}</span>
+            <div className="mp-body">
+              <p className="mp-lead">
+                <b>{step.leadIn}.</b> {step.instruction}
+              </p>
+              {step.targets?.length > 0 && (
+                <p className="mp-tags">
+                  {step.targets.map((target, index) => (
+                    <span className="mp-tag" key={index}>
+                      <span className="mp-tag__label">{target.label}</span>
+                      <span className="mp-tag__value">{target.value}</span>
+                    </span>
+                  ))}
+                </p>
+              )}
+              {step.purpose && (
+                <p className="mp-why">
+                  <span className="mp-why__label">why</span> — {step.purpose}
+                </p>
+              )}
+              {step.aside && <p className="mp-aside">{step.aside}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+      {children}
+    </section>
+  );
+}
+
+// The Sheet's closing foot (D7, D28): one line after the last step, in flow, not
+// at the page's foot. No side label and no page n of m.
+export function PrintClosingFoot({ footText }) {
+  return <div className="mp-foot">{footText}</div>;
+}
+
 // The groups a page's table holds: each slice names a group and the lines of
 // it that stand here, and whether the step head stands with them (a group that
 // splits between rows keeps its head with its first line only).
@@ -186,7 +245,8 @@ function slicedGroups(blocks, slices) {
   });
 }
 
-// One page of the Sheet from its plan: the band, Before you start and the row.
+// One page of the Sheet from its plan: the band, Before you start, the row, the
+// Instructions and the closing foot.
 // The words are the built page's own (D-00, D-00a): the band is Headnote in
 // its reading mode, Before you start is the same NoteList.
 export function SheetPage({ plan, blocks, columns = null }) {
@@ -233,6 +293,16 @@ export function SheetPage({ plan, blocks, columns = null }) {
           </div>
         </div>
       )}
+      {plan.instructions && (
+        <PrintInstructions
+          steps={plan.instructions.steps.map((index) => blocks.steps[index])}
+          numbers={blocks.numbers}
+          showHeading={plan.instructions.heading}
+        >
+          {plan.foot && <PrintClosingFoot footText={blocks.footText} />}
+        </PrintInstructions>
+      )}
+      {!plan.instructions && plan.foot && <PrintClosingFoot footText={blocks.footText} />}
     </div>
   );
 }
@@ -249,6 +319,8 @@ function wholePlan(blocks) {
       total: true,
     },
     balance: blocks.figures.length > 0 ? { heading: true, gauges: blocks.figures.map((_, i) => i), basis: true } : null,
+    instructions: blocks.steps.length > 0 ? { heading: true, steps: blocks.steps.map((_, i) => i) } : null,
+    foot: true,
     bottom: 0,
   };
 }
@@ -269,6 +341,8 @@ export function readSheet(root) {
   const balance = box.querySelector('.ps-balance');
   const rules = balance ? [...balance.querySelectorAll('.formulation-note__rule')] : [];
   const basis = balance ? balance.querySelector('.basis-note') : null;
+  const stepEls = [...box.querySelectorAll('.mp-step')];
+  const foot = box.querySelector('.mp-foot');
   const measure = {
     band: height(box.querySelector('.ps-band')),
     before: height(box.querySelector('.ps-before')),
@@ -288,6 +362,13 @@ export function readSheet(root) {
     gaugeGap: rules.length > 1 ? top(rules[1]) - (top(rules[0]) + height(rules[0])) : 0,
     basis: height(basis),
     basisGap: basis ? number(getComputedStyle(basis).marginTop) : 0,
+    // The heading and its margin sit above the first step; the steps stand a gap
+    // apart; the foot has its own margin above it.
+    instructionsHeading: stepEls.length > 0 ? top(stepEls[0]) - top(box.querySelector('.ps-instructions')) : 0,
+    steps: stepEls.map(height),
+    stepGap: stepEls.length > 1 ? top(stepEls[1]) - (top(stepEls[0]) + height(stepEls[0])) : 0,
+    footGap: foot ? number(getComputedStyle(foot).marginTop) : 0,
+    foot: height(foot),
   };
   const boxWidth = box.getBoundingClientRect().width;
   const probeWidth = root.querySelector('.ps-probe').getBoundingClientRect().width;
@@ -309,9 +390,9 @@ export function readSheet(root) {
 // would move every height); `measureElement` is the hidden box to render once
 // in the page, AFTER the pictures, so a hatch pattern id a picture draws is
 // the first one the document knows.
-export function useSheetPages(version, read = readSheet) {
+export function useSheetPages(version, read = readSheet, identity = '') {
   const engine = useMemo(printEngine, []);
-  const blocks = useMemo(() => (version ? sheetBlocks(version) : null), [version]);
+  const blocks = useMemo(() => (version ? sheetBlocks(version, identity) : null), [version, identity]);
   const rootRef = useRef(null);
   const [laid, setLaid] = useState(null);
 

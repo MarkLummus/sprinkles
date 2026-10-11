@@ -678,6 +678,112 @@
   margin-top: 0;
 }
 
+/* The Instructions (plan 04-08; sketch 010 D18, D29; CONTRACT §§ 5, 6;
+   sheet-page-3-instructions-end.html, whose resolved rules are transcribed
+   below): the method treatment on every step, one rule wherever the steps
+   print. Upright: no italic Purpose or Aside, no boxed chip. */
+.ps-instructions {
+  min-width: 0;
+}
+
+.mp-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--face-text);
+}
+
+.mp-step {
+  display: grid;
+  grid-template-columns: var(--sheet-print-step-n-col) 1fr;
+  align-items: baseline;
+  break-inside: avoid;
+}
+
+.mp-step + .mp-step {
+  margin-top: var(--gap-m);
+}
+
+.mp-n {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-section);
+  font-weight: var(--sheet-print-weight-head);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--sheet-leading-control);
+}
+
+.mp-lead {
+  margin: 0;
+  font-size: var(--sheet-size-headnote-prose);
+  line-height: var(--sheet-leading-control);
+  max-width: var(--measure-prose);
+}
+
+/* The typed targets: a caps label and a bold underlined value, no box. */
+.mp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--gap-l);
+  row-gap: var(--gap-xs);
+  margin: var(--gap-xs) 0 0;
+}
+
+.mp-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--gap-xs);
+}
+
+.mp-tag__label {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: var(--sheet-print-weight-cue);
+  text-transform: uppercase;
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+.mp-tag__value {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-section);
+  font-weight: var(--sheet-print-weight-title);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--sheet-print-tag-underline-offset);
+}
+
+.mp-why,
+.mp-aside {
+  margin: var(--gap-xs) 0 0;
+  font-size: var(--sheet-size-deviation-words);
+  line-height: var(--sheet-leading-helper);
+  max-width: var(--measure-prose);
+}
+
+.mp-why__label {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-label);
+  font-weight: var(--sheet-print-weight-cue);
+  text-transform: uppercase;
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+/* The aside is a callout behind a 2.5 px ink rule. */
+.mp-aside {
+  border-left: var(--rule-tick) solid var(--sheet-ink);
+  padding-left: var(--gap-s);
+  margin-top: var(--gap-s);
+}
+
+/* D7, D28: the closing foot, after the last step in flow. */
+.mp-foot {
+  margin-top: var(--gap-l);
+  padding-top: var(--gap-xs);
+  border-top: var(--rule-ink-field) solid var(--sheet-ink);
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-small-print);
+  letter-spacing: var(--sheet-print-tracking-foot);
+}
+
 /* The touch floor at a coarse pointer, as the app's own Home name links meet it
    (home.css, pointer: coarse): the Sheet title link is a 44 px target. It
    reads the pointer alone and sits before the stack rule below, so under 724 the

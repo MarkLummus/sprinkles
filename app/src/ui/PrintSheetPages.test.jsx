@@ -8,14 +8,15 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { PrintBalance, PrintIngredientTable, SheetPage, sheetBlocks, useSheetPages } from './PrintSheetPages.jsx';
+import { PrintBalance, PrintClosingFoot, PrintIngredientTable, PrintInstructions, SheetPage, sheetBlocks, useSheetPages } from './PrintSheetPages.jsx';
 import { groupPortionsByStep } from './IngredientTable.jsx';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { layPages } from '../domain/sheetPages.js';
 import { OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME } from '../domain/sheetPages.fixtures.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
-import { activeRows, rowGrams } from '../domain/rows.js';
+import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
+import { sheetCode } from '../domain/sheetCode.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -196,7 +197,9 @@ describe('SheetPage — one laid page of the Sheet', () => {
     const page = fragment(<SheetPage plan={safari[1]} blocks={blocks} />);
     expect(page.querySelector('.ps-band')).toBeNull();
     expect(page.querySelector('.ps-before')).toBeNull();
-    expect(page.querySelector('.region-name')).toBeNull();
+    // The Instructions' heading is the page's only heading (04-08).
+    expect([...page.querySelectorAll('.region-name')].map((node) => node.textContent)).toEqual(['Instructions']);
+    expect(page.querySelector('.ps-ingredients .region-name')).toBeNull();
     expect(page.querySelector('thead')).not.toBeNull();
     expect(page.textContent.toLowerCase()).not.toContain('continued');
     expect([...page.querySelectorAll('.ps-step-head')].map((head) => head.textContent.slice(0, 6))).toEqual(['Step 6', 'Step 8']);
@@ -210,7 +213,7 @@ describe('SheetPage — one laid page of the Sheet', () => {
 
   it('prints only the built page’s own headings: no “Formula” and no other word the app does not have', () => {
     const words = [...safari, ...chrome].flatMap((plan) => [...fragment(<SheetPage plan={plan} blocks={blocks} />).querySelectorAll('.region-name')].map((node) => node.textContent));
-    expect(new Set(words)).toEqual(new Set(['Before you start', 'Ingredients', 'Balance']));
+    expect(new Set(words)).toEqual(new Set(['Before you start', 'Ingredients', 'Balance', 'Instructions']));
   });
 
   it('renders every stored string as text', () => {
@@ -218,6 +221,130 @@ describe('SheetPage — one laid page of the Sheet', () => {
     const page = fragment(<SheetPage plan={safari[0]} blocks={sheetBlocks(hostile)} />);
     expect(page.querySelector('img')).toBeNull();
     expect(page.querySelector('h1').textContent).toBe('<img src=x onerror=alert(1)>');
+  });
+});
+
+describe('PrintInstructions — the method treatment on paper (04-08; PRINT-02; sketch 010 D18)', () => {
+  const identity = 'Version 1';
+  const real = sheetBlocks(oliveOilVersion, identity);
+  const render = (steps = real.steps, numbers = real.numbers, showHeading = true) =>
+    fragment(<PrintInstructions steps={steps} numbers={numbers} showHeading={showHeading} />);
+  const step = (overrides) => ({ n: 1, leadIn: 'Stir', instruction: 'Stir it well.', purpose: '', aside: '', targets: [], removed: false, ...overrides });
+
+  it('reads the version’s active steps, in order, each with its display number in the number column', () => {
+    const list = render();
+    const items = [...list.querySelectorAll('ol.mp-steps > li.mp-step')];
+    expect(items).toHaveLength(activeSteps(oliveOilVersion).length);
+    expect(items.map((item) => item.querySelector('.mp-n').textContent)).toEqual(items.map((_, i) => String(i + 1)));
+    const first = activeSteps(oliveOilVersion)[0];
+    expect(items[0].querySelector('.mp-lead b').textContent).toBe(`${first.leadIn}.`);
+    expect(items[0].querySelector('.mp-lead').textContent).toBe(`${first.leadIn}. ${first.instruction}`);
+  });
+
+  it('numbers by position among the active steps: a removed step has no number and is not printed', () => {
+    const removed = { ...oliveOilVersion, method: oliveOilVersion.method.map((entry, i) => (i === 0 ? { ...entry, removed: true } : entry)) };
+    const forBlocks = sheetBlocks(removed, identity);
+    expect(forBlocks.steps).toHaveLength(oliveOilVersion.method.length - 1);
+    const numbers = [...render(forBlocks.steps, forBlocks.numbers).querySelectorAll('.mp-n')].map((node) => node.textContent);
+    expect(numbers[0]).toBe('1');
+    expect(numbers).toHaveLength(forBlocks.steps.length);
+  });
+
+  it('prints the typed targets as a tag row: a caps label and a value, verbatim, no box', () => {
+    const tags = [...render().querySelectorAll('.mp-tags .mp-tag')].map((tag) => [tag.querySelector('.mp-tag__label').textContent, tag.querySelector('.mp-tag__value').textContent]);
+    const stored = activeSteps(oliveOilVersion).flatMap((entry) => (entry.targets ?? []).map((target) => [target.label, target.value]));
+    expect(tags).toEqual(stored);
+    // [edge PRINT-02/precision] the stored strings, not a reformatting of them.
+    const values = tags.map(([, value]) => value);
+    for (const want of ['69 °C', '10–12 min', '−20 °C, 4+ h']) expect(values).toContain(want);
+  });
+
+  it('prints Why as the word why, an em dash and the sentence', () => {
+    const why = [...render().querySelectorAll('.mp-why')];
+    expect(why).toHaveLength(activeSteps(oliveOilVersion).filter((entry) => entry.purpose).length);
+    const stored = activeSteps(oliveOilVersion).find((entry) => entry.purpose);
+    expect(why[0].querySelector('.mp-why__label').textContent).toBe('why');
+    expect(why[0].textContent).toBe(`why — ${stored.purpose}`);
+  });
+
+  it('prints the aside as a callout, and adds no word but why', () => {
+    const asides = [...render().querySelectorAll('.mp-aside')].map((node) => node.textContent);
+    expect(asides).toEqual(activeSteps(oliveOilVersion).filter((entry) => entry.aside).map((entry) => entry.aside));
+    // Each step prints its number, its own words in order, and "why — " before the purpose: nothing else.
+    const items = [...render().querySelectorAll('.mp-step')];
+    const wanted = activeSteps(oliveOilVersion).map(
+      (entry, i) =>
+        `${i + 1}${entry.leadIn}. ${entry.instruction}${(entry.targets ?? []).map((target) => `${target.label}${target.value}`).join('')}${entry.purpose ? `why — ${entry.purpose}` : ''}${entry.aside ?? ''}`,
+    );
+    expect(items.map((item) => item.textContent)).toEqual(wanted);
+  });
+
+  it('is upright: no em or i element, no target chip, no italic Purpose or Aside class', () => {
+    const markup = renderToStaticMarkup(<PrintInstructions steps={real.steps} numbers={real.numbers} showHeading />);
+    expect(markup).not.toMatch(/<em[\s>]|<i[\s>]/);
+    expect(markup).not.toContain('target-chip');
+    expect(markup).not.toContain('method-step');
+  });
+
+  it('[edge PRINT-02/empty] a step with no targets prints no tag row, none without a purpose no why line, none without an aside no callout', () => {
+    const bare = render([step()], new Map([[1, 1]]));
+    expect(bare.querySelector('.mp-tags')).toBeNull();
+    expect(bare.querySelector('.mp-why')).toBeNull();
+    expect(bare.querySelector('.mp-aside')).toBeNull();
+    expect(bare.querySelector('.mp-lead')).not.toBeNull();
+    const full = render([step({ targets: [{ label: 'temp', value: '4 °C' }], purpose: 'Because.', aside: 'Careful.' })], new Map([[1, 1]]));
+    expect(full.querySelectorAll('.mp-tag')).toHaveLength(1);
+    expect(full.querySelector('.mp-why')).not.toBeNull();
+    expect(full.querySelector('.mp-aside')).not.toBeNull();
+  });
+
+  it('draws the Instructions heading only when told to', () => {
+    expect(render(real.steps, real.numbers, true).querySelector('h2.region-name').textContent).toBe('Instructions');
+    expect(render(real.steps, real.numbers, false).querySelector('.region-name')).toBeNull();
+  });
+
+  it('renders every stored string as text', () => {
+    const hostile = [step({ leadIn: '<b>x</b>', instruction: '<img src=x onerror=alert(1)>', purpose: '<i>y</i>', aside: '<u>z</u>', targets: [{ label: '<s>l</s>', value: '<s>v</s>' }] })];
+    const list = render(hostile, new Map([[1, 1]]));
+    expect(list.querySelector('img')).toBeNull();
+    expect(list.querySelector('i, u, s')).toBeNull();
+    expect(list.querySelector('.mp-tag__value').textContent).toBe('<s>v</s>');
+  });
+});
+
+describe('PrintClosingFoot and the Sheet’s foot text (04-08; D7, D28; PRINT-04)', () => {
+  it('draws one line of the words it is given, with no side label and no page n of m', () => {
+    const foot = fragment(<PrintClosingFoot footText="Olive Oil Ice Cream · Version 1 · K7QM-2X9D" />).querySelector('.mp-foot');
+    expect(foot.textContent).toBe('Olive Oil Ice Cream · Version 1 · K7QM-2X9D');
+    expect(foot.textContent.toLowerCase()).not.toMatch(/side|page \d/);
+  });
+
+  it('reads the Sheet title, the version line and the version’s Sheet code, joined by a middle dot', () => {
+    const forBlocks = sheetBlocks(oliveOilVersion, 'Version 1');
+    expect(forBlocks.footText).toBe(`${oliveOilVersion.sheetTitle} · Version 1 · ${sheetCode(oliveOilVersion)}`);
+  });
+
+  it('stands on the page the plan names, after the last step and inside the Instructions', () => {
+    const plans = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    const forBlocks = sheetBlocks(oliveOilVersion, 'Version 1');
+    const marked = plans.map((plan) => fragment(<SheetPage plan={plan} blocks={forBlocks} />));
+    expect(marked.map((page) => page.querySelectorAll('.mp-foot').length)).toEqual([0, 0, 1]);
+    const last = marked[2];
+    expect(last.querySelector('.ps-instructions > .mp-foot')).not.toBeNull();
+    expect(last.querySelector('.ps-instructions').lastElementChild.className).toBe('mp-foot');
+    expect(last.querySelector('.mp-foot').textContent).toBe(forBlocks.footText);
+  });
+
+  it('draws the Instructions heading on the first Instructions page only: steps 1 to 4, then 5 to 10 (Safari)', () => {
+    const plans = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    const forBlocks = sheetBlocks(oliveOilVersion, 'Version 1');
+    const pages = plans.map((plan) => fragment(<SheetPage plan={plan} blocks={forBlocks} />));
+    expect(pages.map((page) => page.querySelectorAll('.ps-instructions > .region-name').length)).toEqual([0, 1, 0]);
+    expect(pages.map((page) => [...page.querySelectorAll('.mp-n')].map((node) => node.textContent))).toEqual([
+      [],
+      ['1', '2', '3', '4'],
+      ['5', '6', '7', '8', '9', '10'],
+    ]);
   });
 });
 
@@ -327,7 +454,7 @@ describe('useSheetPages — measures after render, then lays', () => {
   it('lays the measurement the injected reader answers, with the columns and fit it gives', async () => {
     const read = () => ({ ...OLIVE_OIL_V1_SAFARI, height: OLIVE_OIL_V1_SAFARI.box.height, columns: [90, 80, 200], fit: 1.06667 });
     const output = await mount(oliveOilVersion, read);
-    expect(output.dataset.pages).toBe('2');
+    expect(output.dataset.pages).toBe('3');
     expect(output.dataset.columns).toBe('90,80,200');
     expect(output.dataset.fit).toBe('1.06667');
     expect(host.querySelector('.ps-measure[aria-hidden="true"] .ps-box .ps-table')).not.toBeNull();

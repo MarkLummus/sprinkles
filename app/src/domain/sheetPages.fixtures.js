@@ -6,7 +6,11 @@
 // table is 755 px tall (755.1 here), the header row 27.4, the Step 6 group 73.6
 // and the Step 8 group 109.6 in WebKit, the Total 31, the band 126, Before you
 // start 144.9, the Ingredients heading 24.9 above the table, the gauges Sugar
-// 74.3, Solids 91.3 and the basis note 120, all 20 apart.
+// 74.3, Solids 91.3 and the basis note 120, all 20 apart. The Instructions'
+// ten steps are CONTRACT § 5's (88.8, 113, 85.4, 134.5, 134.5, 94.8, 43.8, 94.8,
+// 43.8, 43.8 at 672; step 2 133.8 and step 5 155.3 at 630), the heading 24.9
+// above the first, 20 between steps, and the closing foot 22 tall under 32 of
+// margin (04-08).
 //
 // Pure data. The fixtures are the one place the measured numbers live; the
 // tests read them and nothing else does.
@@ -34,6 +38,11 @@ export const OLIVE_OIL_V1_SAFARI = {
     gaugeGap: 20,
     basis: 120,
     basisGap: 20,
+    instructionsHeading: 24.9,
+    steps: [88.8, 133.8, 85.4, 134.5, 155.3, 94.8, 43.8, 94.8, 43.8, 43.8],
+    stepGap: 20,
+    footGap: 32,
+    foot: 22,
   },
 };
 
@@ -58,5 +67,10 @@ export const OLIVE_OIL_V1_CHROME = {
     gaugeGap: 20,
     basis: 84,
     basisGap: 20,
+    instructionsHeading: 24.9,
+    steps: [88.8, 113, 85.4, 134.5, 134.5, 94.8, 43.8, 94.8, 43.8, 43.8],
+    stepGap: 20,
+    footGap: 32,
+    foot: 21,
   },
 };

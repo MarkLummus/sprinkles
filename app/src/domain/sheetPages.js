@@ -18,19 +18,37 @@
 //   groups: [{ head (the step head row, 0 when none is drawn), rows: [heights] }],
 //   balanceHeading (the heading and its margin: the first gauge's top under the region's),
 //   gauges: [heights], gaugeGap, basis (the basis note), basisGap (its margin above),
+//   instructionsHeading (the heading and its margin: the first step's top under the region's),
+//   steps: [heights], stepGap (between two steps),
+//   footGap (the closing foot's margin above), foot (its height),
 // }
+// The Instructions and the closing foot (plan 04-08) are optional: a measure
+// without `steps` and `foot` lays the formula part alone.
 //
 // Each returned page plan is
 //   { band, before,
 //     table: null | { heading, header: true, slices: [{ group, from, to, head }], total },
 //     balance: null | { heading, gauges: [indexes], basis },
+//     instructions: null | { heading, steps: [indexes] },
+//     foot,
 //     bottom }
-// where `bottom` is the height the page's content reaches (the row's foot when
-// there is a row), so a later block can follow it.
+// where `bottom` is the height the page's content reaches (the foot's when the
+// page holds it, else the Instructions' or the row's foot), so a later block
+// can follow it.
 
 // Every drawn break leaves this much of the content box unused: a block whose
 // foot lands on the box's last pixel is one rounding away from the next page.
 export const PAGE_GUARD_PX = 8;
+
+// D-06b, sketch 010 D29: where the Instructions begin. Under the page row's
+// tail, on the page where the row ends, when the row runs past the formula
+// page (the table broke, or Balance continues beside its tail); on a page of
+// their own when both columns end on the formula page (method-page-1.html).
+// The one place the rule for "the table fits but Balance continues" lives
+// (04-08 Task 2 decides it; either answer changes this function alone).
+function instructionsFollowRow(pages) {
+  return pages.length > 1;
+}
 
 function sum(list, from = 0) {
   let total = 0;
@@ -178,9 +196,110 @@ export function layPages(measure, box) {
       before: n === 0 && before > 0,
       table: table && { heading: table.heading, header: table.header, slices: table.slices, total: table.total },
       balance: balance && { heading: balance.heading, gauges: balance.gauges, basis: balance.basis },
+      instructions: null,
+      foot: false,
       bottom: table || balance ? y + rowUsed : n === 0 ? top : 0,
     });
     if (tableDone() && balanceDone()) break;
   }
+  layInstructions(pages, measure, usable);
   return pages;
+}
+
+// The Instructions and the closing foot, laid after the page row (plan 04-08;
+// D-06a, D-06b, D7, D28; sketch 010 D29). Steps stand whole, a step gap apart,
+// the heading once with the first step; a step that does not fit opens the
+// next page with no heading. The foot follows the last step in flow and keeps
+// with it: when it does not fit, the last step moves with it. Adds
+// `instructions`, `foot` and `bottom` to the pages that hold them, and appends
+// the pages that hold nothing else.
+function layInstructions(pages, measure, usable) {
+  const steps = measure.steps ?? [];
+  const footHeight = measure.foot ?? 0;
+  if (steps.length === 0 && footHeight === 0) return;
+  const headingHeight = measure.instructionsHeading ?? 0;
+  const stepGap = measure.stepGap ?? 0;
+  const footGap = measure.footGap ?? 0;
+  const gap = measure.gap ?? 0;
+  const lastPage = pages.length - 1;
+
+  // A chunk is what one page holds of this part. `existing` is the formula
+  // page it shares with the row (null for a page of its own); `top` is where it
+  // begins on that page.
+  const chunks = [];
+  const open = (existing, top) => {
+    const chunk = { existing, top, heading: false, steps: [], foot: false };
+    chunks.push(chunk);
+    return chunk;
+  };
+  const reach = (chunk) => {
+    let y = chunk.top + (chunk.heading ? headingHeight : 0);
+    chunk.steps.forEach((index, k) => {
+      y += (k > 0 ? stepGap : 0) + steps[index];
+    });
+    return chunk.foot ? y + footGap + footHeight : y;
+  };
+
+  // A version with no steps still closes with its foot, under the row.
+  const follow = steps.length === 0 || instructionsFollowRow(pages);
+  let chunk = follow ? open(lastPage, pages[lastPage].bottom + gap) : open(null, 0);
+
+  let next = 0;
+  let headingPending = steps.length > 0;
+  while (next < steps.length) {
+    const apart = chunk.steps.length > 0 ? stepGap : 0;
+    const base = reach(chunk) + (headingPending ? headingHeight : 0);
+    const fresh = chunk.existing === null;
+    if (base + apart + steps[next] <= usable || (fresh && chunk.steps.length === 0)) {
+      if (headingPending) {
+        chunk.heading = true;
+        headingPending = false;
+      }
+      chunk.steps.push(next);
+      next += 1;
+    } else {
+      // Nothing placed under the row: the Instructions open the next page, the
+      // heading with their first step.
+      if (chunk.steps.length === 0) chunks.pop();
+      chunk = open(null, 0);
+    }
+  }
+
+  const placeFoot = () => {
+    if (reach(chunk) + footGap + footHeight <= usable) {
+      chunk.foot = true;
+      return;
+    }
+    const alone = chunk.existing === null;
+    if (chunk.steps.length === 0 || (chunk.steps.length === 1 && alone)) {
+      // Nothing to move with it: the foot takes a page of its own rather than lose ink.
+      if (chunk.steps.length === 0) chunks.pop();
+      chunk = open(null, 0);
+      chunk.foot = true;
+      return;
+    }
+    // The foot keeps with the last step: the step goes to the next page with it,
+    // and the heading with it when it was the only step under the row.
+    const moved = chunk.steps.pop();
+    let heading = false;
+    if (chunk.steps.length === 0) {
+      heading = chunk.heading;
+      chunks.pop();
+    }
+    chunk = open(null, 0);
+    chunk.heading = heading;
+    chunk.steps.push(moved);
+    placeFoot();
+  };
+  if (footHeight > 0) placeFoot();
+
+  for (const done of chunks) {
+    const plan = {
+      instructions: done.steps.length > 0 ? { heading: done.heading, steps: done.steps } : null,
+      foot: done.foot,
+      bottom: reach(done),
+    };
+    if (done.existing !== null) Object.assign(pages[done.existing], plan);
+    else pages.push({ band: false, before: false, table: null, balance: null, ...plan });
+  }
 }

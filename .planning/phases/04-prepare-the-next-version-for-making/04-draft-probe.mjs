@@ -275,7 +275,121 @@ async function amendMode({ browser, engine, appUrl }) {
 }
 
 // ---------------------------------------------------------------------------
-const RUNNERS = { plan: planMode, record: recordMode, amend: amendMode };
+// Mode home: Home names an open draft, and the band names one on another
+// version. Run at 1280 fine and at 393 coarse (the way the boards were drawn).
+// ---------------------------------------------------------------------------
+const MEXICAN = { recipe: 'mexican-chocolate', oldest: 'mexican-chocolate-v1', latest: 'mexican-chocolate-v4' };
+const DRAFT_LINE = 'Draft open on this version · Go to draft';
+
+async function leaveNextVersionDraft(page, route, name, origin) {
+  await page.goto(`${origin}${route}`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('.notebook');
+  await openNextVersionPen(page);
+  await page.fill(NAME_FIELD, name);
+  await page.waitForTimeout(400);
+}
+
+async function cancelNextVersionPen(page) {
+  await page.locator('form[aria-label="Next version"]').getByRole('button', { name: 'Cancel' }).click();
+  await page.waitForSelector('form[aria-label="Next version"]', { state: 'detached' });
+  await page.waitForTimeout(400);
+}
+
+async function homeMode({ browser, engine, appUrl }) {
+  for (const { width, coarse } of [{ width: 1280, coarse: false }, { width: 393, coarse: true }]) {
+    const label = (what) => `home ${engine} ${width}${coarse ? 'c' : ''} ${what}`;
+    const { context, page } = await openApp(browser, appUrl, VERSION_ROUTE, { width, coarse });
+    try {
+      const origin = new URL(page.url()).origin;
+      const leadName = () => page.evaluate(() => document.querySelector('.home__lead-name')?.textContent ?? null);
+
+      // A Next version draft left on Olive Oil v1; Home's lead names it.
+      await openNextVersionPen(page);
+      await page.fill(NAME_FIELD, PLAN_NAME);
+      await page.fill(MILK_FIELD, '100');
+      await page.waitForTimeout(400);
+      await page.goto(`${origin}/`, { waitUntil: 'networkidle' });
+      await page.waitForSelector('.home__lead');
+      ok((await leadName()) === 'Olive Oil Ice Cream, circulator', label('the lead is Olive Oil, the recipe holding the draft'));
+      const line = await page.evaluate(() => document.querySelector('.home__lead-draft')?.textContent ?? null);
+      ok(line === DRAFT_LINE, label(`the lead says "${DRAFT_LINE}"`));
+      const meta = await page.evaluate(() => document.querySelector('.home__lead-meta')?.textContent ?? null);
+      ok(meta === 'Version 1 · 50 g oil · 800 g', label('the version line names the draft’s version'));
+      const order = await page.evaluate(() => {
+        const lead = document.querySelector('.home__lead');
+        const nodes = [...lead.querySelectorAll('.home__lead-meta, .home__lead-draft, .home__actions')];
+        return nodes.map((node) => node.className);
+      });
+      ok(order.join(',') === 'home__lead-meta,home__lead-draft,home__actions', label('the draft line sits beneath the version line'));
+      const link = await page.evaluate(() => {
+        const a = document.querySelector('.home__lead-draft a');
+        const r = a.getBoundingClientRect();
+        return { tabindex: a.getAttribute('tabindex'), href: a.getAttribute('href'), width: r.width, height: r.height };
+      });
+      ok(link.tabindex === '0', label('Go to draft carries tabindex 0'));
+      ok(link.href === VERSION_ROUTE, label('Go to draft links to the draft’s address'));
+      // The contract's 70 x 44 is the WebKit measure (the plan's engine); the
+      // system face sets 14 px text about 2 px narrower in Chrome, so Chrome's
+      // width is held to 4 px and its height to the touch floor alone.
+      const widthTol = engine === 'webkit' ? 2 : 4;
+      ok(Math.abs(link.width - 70) <= widthTol, label(`Go to draft is 70 wide (±${widthTol}): ${link.width.toFixed(1)}`));
+      if (coarse) ok(Math.abs(link.height - 44) <= 2, label(`Go to draft is 44 tall under a coarse pointer (±2): ${link.height.toFixed(1)}`));
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+      ok(overflow, label('no sideways overflow'));
+
+      // One tap reopens the pen with its ink and the notice.
+      await clickUntil(page, () => page.locator('.home__lead-draft a'), 'form[aria-label="Next version"]', 'Go to draft');
+      ok(page.url().endsWith(VERSION_ROUTE), label('Go to draft opens the draft’s address'));
+      ok((await page.inputValue(NAME_FIELD)) === PLAN_NAME, label('the version name is in its field'));
+      ok((await page.inputValue(MILK_FIELD)) === '100', label('Whole milk’s first line is in its field'));
+      ok(await waitForNotice(page), label(`the notice reads exactly "${KEPT}"`));
+
+      // Cancel: Home names no draft.
+      await cancelNextVersionPen(page);
+      await page.goto(`${origin}/`, { waitUntil: 'networkidle' });
+      await page.waitForSelector('.home__lead');
+      ok((await page.locator('.home__lead-draft').count()) === 0, label('after Cancel Home names no draft'));
+
+      // A draft on an older version of another recipe: Home leads with that
+      // recipe and names the draft's version; the band on the latest version
+      // names the draft and links to it.
+      await leaveNextVersionDraft(page, `/notebook/${MEXICAN.recipe}/${MEXICAN.oldest}`, 'warmer base', origin);
+      await page.goto(`${origin}/`, { waitUntil: 'networkidle' });
+      await page.waitForSelector('.home__lead');
+      ok((await leadName()) === 'Mexican Chocolate', label('a draft on another recipe takes the lead'));
+      const olderMeta = await page.evaluate(() => document.querySelector('.home__lead-meta')?.textContent ?? null);
+      ok(/^Version 1 · /.test(olderMeta ?? ''), label(`the version line names the older version (${olderMeta})`));
+      ok(
+        (await page.evaluate(() => document.querySelector('.home__lead-draft a')?.getAttribute('href'))) === `/notebook/${MEXICAN.recipe}/${MEXICAN.oldest}`,
+        label('Go to draft links to the older version'),
+      );
+
+      await page.goto(`${origin}/notebook/${MEXICAN.recipe}/${MEXICAN.latest}`, { waitUntil: 'networkidle' });
+      await page.waitForSelector('.notebook-version__draft');
+      const band = await page.evaluate(() => {
+        const p = document.querySelector('.notebook-version__draft');
+        const a = p.querySelector('a');
+        return { text: p.textContent, href: a.getAttribute('href'), tabindex: a.getAttribute('tabindex') };
+      });
+      ok(band.text === 'Draft: Version 5 · warmer base', label(`the band says "${band.text}"`));
+      ok(band.href === `/notebook/${MEXICAN.recipe}/${MEXICAN.oldest}`, label('the band line links to the version the draft was opened on'));
+      ok(band.tabindex === '0', label('the band link carries tabindex 0'));
+      const rail = await page.evaluate(() => document.querySelector('.notebook-history')?.textContent ?? '');
+      ok(rail.includes('Version 5 · warmer base') && rail.includes('5 versions'), label('the History rail stands the draft as its node'));
+      ok((await page.locator('form[aria-label="Next version"]').count()) === 0, label('no pen opens on the version that only names the draft'));
+
+      await clickUntil(page, () => page.locator('.notebook-version__draft a'), 'form[aria-label="Next version"]', 'the band link');
+      ok(page.url().endsWith(`/notebook/${MEXICAN.recipe}/${MEXICAN.oldest}`), label('the band link opens the version the draft was kept on'));
+      ok((await page.inputValue(NAME_FIELD)) === 'warmer base', label('the pen is open with its ink'));
+      await cancelNextVersionPen(page);
+    } finally {
+      await context.close();
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+const RUNNERS = { plan: planMode, record: recordMode, amend: amendMode, home: homeMode };
 
 async function run(modes) {
   const { appUrl, close } = await startServers({ appRoot: DIST });

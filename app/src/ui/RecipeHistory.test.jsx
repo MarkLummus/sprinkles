@@ -162,6 +162,53 @@ describe('RecipeHistory — two or more versions fold (03.5-18 Task 1, decision 
     expect(markup).toContain('draft');
   });
 
+  // 04-09 (sketch 011 decision 19's band line): a Next version draft kept on
+  // another version of this recipe stands on the rail as its draft node,
+  // whether or not a pen is open here.
+  it('draws a waiting draft as the rail’s draft node with no pen open: no link, and the count includes it', () => {
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [],
+      openPen: null,
+      waitingDraft: { label: '40 g oil', createdAt: '2026-10-09T10:00:00.000Z' },
+    });
+    expect(markup).toContain('3 versions');
+    expect(markup).toContain('Version 3 · 40 g oil');
+    expect(markup).toContain('9 Oct');
+    expect(markup).toContain('>draft<');
+    expect(markup).not.toContain('Version 3 · 40 g oil</a>');
+  });
+
+  it('draws it beside an open record pen too, and in the upright list', () => {
+    for (const belowDesktop of [false, true]) {
+      const markup = renderHistory({
+        versions: [root, successor],
+        currentVersionId: 'v2',
+        allBatches: [],
+        openPen: 'record',
+        belowDesktop,
+        waitingDraft: { label: '40 g oil', createdAt: '2026-10-09T10:00:00.000Z' },
+      });
+      expect(markup).toContain('Version 3 · 40 g oil');
+      expect(markup).toContain('3 versions');
+    }
+  });
+
+  it('the page’s own plan pen draws its own draft node, not the waiting one', () => {
+    const markup = renderHistory({
+      versions: [root, successor],
+      currentVersionId: 'v2',
+      allBatches: [],
+      openPen: 'plan',
+      draft: { label: 'less milk', createdAt: '2026-10-10T10:00:00.000Z' },
+      waitingDraft: { label: '40 g oil', createdAt: '2026-10-09T10:00:00.000Z' },
+    });
+    expect(markup).toContain('Version 3 · less milk');
+    expect(markup).not.toContain('40 g oil');
+    expect(markup).toContain('3 versions');
+  });
+
   it('renders no draft node when openPen is null, even with a draft object passed', () => {
     const draft = { label: 'less oil', createdAt: '2026-09-20T10:00:00.000Z' };
     const markup = renderHistory({

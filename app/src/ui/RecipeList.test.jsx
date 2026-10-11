@@ -335,6 +335,115 @@ describe('HomeBody — Enter Sheet code (D-10)', () => {
   });
 });
 
+// D-18 (04-09, sketch 010 screen-home.html): Home names an open draft. The
+// recipe holding the newest draft takes the lead, whose version line names the
+// draft's version, with "Draft open on this version · Go to draft" beneath it;
+// the list below keeps its order.
+function renderBodyWithDrafts(versions, batches, drafts) {
+  return renderToStaticMarkup(
+    <MemoryRouter>
+      <HomeBody versions={versions} batches={batches} recipes={[]} drafts={drafts} />
+    </MemoryRouter>,
+  );
+}
+
+function draftOn(versionId, overrides = {}) {
+  return { versionId, kind: 'plan', updatedAt: '2026-03-01T00:00:00.000Z', amendingBatchId: null, ...overrides };
+}
+
+function leadOf(markup) {
+  return markup.match(/<section class="home__lead">[\s\S]*?<\/section>/)[0];
+}
+
+// The one draft line, as rendered: its text and its link's href.
+function draftLine(markup) {
+  const line = markup.match(/<p class="home__lead-draft">[\s\S]*?<\/p>/);
+  return line ? line[0] : null;
+}
+
+function draftHref(markup) {
+  return draftLine(markup)?.match(/href="([^"]+)"/)?.[1] ?? null;
+}
+
+function rowHrefs(markup) {
+  const list = markup.match(/<ul class="home__list">[\s\S]*<\/ul>/)[0];
+  return [...list.matchAll(/<h2 class="home__name"><a [^>]*href="([^"]+)"/g)].map((match) => match[1]);
+}
+
+describe('HomeBody — an open draft takes the lead (D-18, 04-09)', () => {
+  // r1 was touched last (newer version), r2 earlier; the draft is on r2.
+  const versions = [
+    makeVersion({ id: 'v1', recipeId: 'r1', versionLabel: 'newest work', createdAt: '2026-02-01T00:00:00.000Z' }),
+    makeVersion({ id: 'v2', recipeId: 'r2', versionLabel: 'older work', createdAt: '2026-01-01T00:00:00.000Z' }),
+  ];
+
+  it('with no draft there is no draft line and the most recently touched recipe leads', () => {
+    const markup = renderBodyWithDrafts(versions, [], []);
+    expect(markup).not.toContain('home__lead-draft');
+    expect(leadOf(markup)).toContain('href="/notebook/r1/v1"');
+  });
+
+  it('a draft on another recipe moves that recipe to the lead, with the line and Go to draft linking to the draft’s address', () => {
+    const markup = renderBodyWithDrafts(versions, [], [draftOn('v2')]);
+    const lead = leadOf(markup);
+    expect(lead).toMatch(/<h2 class="home__lead-name"><a [^>]*href="\/notebook\/r2\/v2"[^>]*>r2<\/a><\/h2>/);
+    expect(lead).toContain('<p class="home__lead-meta">Version 1 · older work</p>');
+    expect(draftLine(markup)).toMatch(/^<p class="home__lead-draft">Draft open on this version · <a [^>]*>Go to draft<\/a><\/p>$/);
+    expect(draftHref(markup)).toBe('/notebook/r2/v2');
+    expect(markup.match(/home__lead-draft/g)).toHaveLength(1);
+    // Beneath the version line, inside the identity column.
+    expect(lead.indexOf('home__lead-meta')).toBeLessThan(lead.indexOf('home__lead-draft'));
+    expect(lead.indexOf('home__lead-draft')).toBeLessThan(lead.indexOf('home__actions'));
+  });
+
+  it('the list below keeps its order, the lead recipe included', () => {
+    const withDraft = renderBodyWithDrafts(versions, [], [draftOn('v2')]);
+    const without = renderBodyWithDrafts(versions, [], []);
+    expect(rowHrefs(withDraft)).toEqual(['/notebook/r1/v1', '/notebook/r2/v2']);
+    expect(rowHrefs(withDraft)).toEqual(rowHrefs(without));
+  });
+
+  it('on a recipe’s older version, the version line names that version and the link goes to it', () => {
+    const two = [
+      makeVersion({ id: 'a', recipeId: 'r1', versionLabel: 'first', createdAt: '2026-01-01T00:00:00.000Z' }),
+      makeVersion({ id: 'b', recipeId: 'r1', versionLabel: 'second', createdAt: '2026-02-01T00:00:00.000Z' }),
+    ];
+    const markup = renderBodyWithDrafts(two, [], [draftOn('a')]);
+    const lead = leadOf(markup);
+    expect(lead).toContain('<p class="home__lead-meta">Version 1 · first</p>');
+    expect(draftHref(markup)).toBe('/notebook/r1/a');
+    // The lead's own name link and actions still open the latest version.
+    expect(lead).toMatch(/<h2 class="home__lead-name"><a [^>]*href="\/notebook\/r1\/b"/);
+  });
+
+  it('the newest draft wins when several are kept', () => {
+    const markup = renderBodyWithDrafts(
+      versions,
+      [],
+      [draftOn('v1', { updatedAt: '2026-03-01T00:00:00.000Z' }), draftOn('v2', { updatedAt: '2026-03-02T00:00:00.000Z' })],
+    );
+    expect(draftHref(markup)).toBe('/notebook/r2/v2');
+  });
+
+  it('a Correct draft links to its batch’s address while the batch is stored, and to the version when it is not', () => {
+    const batch = makeBatch({ id: 'b9', versionId: 'v2' });
+    const amend = draftOn('v2', { kind: 'amend', amendingBatchId: 'b9' });
+    expect(draftHref(renderBodyWithDrafts(versions, [batch], [amend]))).toBe('/notebook/r2/v2/batch/b9');
+    expect(draftHref(renderBodyWithDrafts(versions, [], [amend]))).toBe('/notebook/r2/v2');
+  });
+
+  it('a draft whose version is not in the store is not named', () => {
+    const markup = renderBodyWithDrafts(versions, [], [draftOn('gone')]);
+    expect(markup).not.toContain('home__lead-draft');
+  });
+
+  it('Go to draft carries an explicit tabindex of 0', () => {
+    const markup = renderBodyWithDrafts(versions, [], [draftOn('v2')]);
+    const tag = markup.match(/<a\b[^>]*>Go to draft<\/a>/)[0];
+    expect(tag).toContain('tabindex="0"');
+  });
+});
+
 describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
   it('renders the sentence and the two leading links, and no row, for an empty store', () => {
     const markup = renderBody([]);

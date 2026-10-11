@@ -17,7 +17,7 @@ import {
   parseGramsDraft,
 } from '../domain/lineage.js';
 import { buildDiff } from '../domain/diff.js';
-import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
+import { buildDraftRecord, draftMatchesVersion, newestDraft } from '../domain/draft.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { notebookPath } from './notebookPaths.js';
@@ -670,6 +670,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // Whether this version's batches have been read: the draft restore waits for
   // them, since an amend draft is checked against its batch (04-09).
   const [batchesLoaded, setBatchesLoaded] = useState(false);
+  // Every kept draft, read once: the band names a Next version draft waiting on
+  // another version of this recipe (04-09).
+  const [drafts, setDrafts] = useState([]);
   // The signature trace (route-recipe.md § 3, § 5): focusing a balance
   // figure marks the ingredient rows it rests on. This page is the shared
   // parent of the figures and the table, so it is the one place the
@@ -804,6 +807,16 @@ export function RecipePage({ onPageStatus = () => {} }) {
         setBatches(result);
         setBatchesLoaded(true);
       }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [versionId]);
+
+  useEffect(() => {
+    let cancelled = false;
+    repository.listDrafts().then((result) => {
+      if (!cancelled) setDrafts(result);
     });
     return () => {
       cancelled = true;
@@ -1198,6 +1211,14 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // and passed to both Versions' ceremony and PenFoot's repeated pair —
   // never twice (RESEARCH.md Pattern 2).
   const canSaveOver = batches.length === 0;
+
+  // The Next version draft waiting on another version of this recipe, if any
+  // (the newest, when several): the band names it while no pen is open, and
+  // the History rail draws it as its draft node.
+  const recipeVersionIds = new Set(versionsForRecipe(versions, version.recipeId).map((candidate) => candidate.id));
+  const waitingPlanDraft = newestDraft(
+    drafts.filter((record) => record.kind === 'plan' && record.versionId !== version.id && recipeVersionIds.has(record.versionId)),
+  );
 
   const hasRows = version.rows.length > 0;
   // The clean reading: every reader that is not the pen's own table takes
@@ -2301,6 +2322,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onStartRecording={handleStartRecording}
             onStartTasting={handleStartTasting}
             amendOpener={amendOpener}
+            draft={openPen === null ? waitingPlanDraft : null}
           />
 
           <GoToBatch batches={batches} onGo={handleGoToBatch} />
@@ -2315,6 +2337,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
           draft={
             mode === 'developing' && penDraft
               ? { label: penDraft.versionLabel, createdAt: penOpenedAtRef.current }
+              : null
+          }
+          waitingDraft={
+            waitingPlanDraft
+              ? { label: waitingPlanDraft.payload?.versionLabel ?? '', createdAt: waitingPlanDraft.penOpenedAt }
               : null
           }
           belowDesktop={belowDesktop}

@@ -24,6 +24,10 @@ export function RecipeHistory({
   allBatches = [],
   openPen = null,
   draft = null,
+  // A Next version draft kept on another version of this recipe, as
+  // { label, createdAt } (04-09): the rail shows it as its draft node while
+  // this page's own plan pen is not the one drawing a draft.
+  waitingDraft = null,
   belowDesktop = false,
 }) {
   const railRef = useRef(null);
@@ -31,7 +35,7 @@ export function RecipeHistory({
   const recipeVersions = versionsForRecipe(versions, recipeId);
   const entries = railEntries(recipeVersions, allBatches, {
     currentVersionId,
-    draft: openPen === 'plan' ? draft : null,
+    draft: openPen === 'plan' ? draft : waitingDraft,
   });
   const [open, toggle] = useFold(!belowDesktop);
 

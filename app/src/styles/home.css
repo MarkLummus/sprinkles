@@ -147,6 +147,23 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The open-draft line under the lead's version line (D-18; sketch 010
+   screen-home.html): the recipe holding a draft leads, and this says so and
+   links to it. The link reads as the page's other App links do. */
+.home__lead-draft {
+  margin: var(--gap-xs) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text);
+}
+
+.home__lead-draft a {
+  color: var(--app-blue-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+
 /* The maker's own Next time (D-18): the hand's face, colour, size and
    leading all come from the .app-hand role class in app.css (plan 02) —
    this rule sets spacing and measure only and declares no font-family. */
@@ -468,10 +485,12 @@
    fine pointer keeps the line-box height, because this block reads the
    pointer alone. The third top-level media step this file carries. The
    Enter Sheet code link meets the same floor (sketch 010 measures it
-   111 x 44 at 393 under a coarse pointer). */
+   111 x 44 at 393 under a coarse pointer), and so does Go to draft (70 x 44
+   at 393). */
 @media (pointer: coarse) {
   .home__name a,
   .home__lead-name a,
+  .home__lead-draft a,
   .home__code-link {
     display: inline-flex;
     align-items: center;

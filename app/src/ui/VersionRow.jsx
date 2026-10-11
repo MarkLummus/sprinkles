@@ -75,6 +75,10 @@ export function VersionRow({
   onStartRecording = () => {},
   onStartTasting = () => {},
   amendOpener = 'correct',
+  // The Next version draft kept on another version of this recipe (04-09,
+  // sketch 011 decision 19's band line): the stored record, or null. Named
+  // under the identity line only while no pen is open here.
+  draft = null,
 }) {
   const [detailsOpen, toggleDetailsOpen] = useFold(foldsOpen);
   // Focus-return for the Develop opener: closing the plan's pen returns
@@ -154,6 +158,16 @@ export function VersionRow({
   // own position in the same ordered array versionIdentity reads — absent
   // during the pre-load paint, the same edge case versionIdentity itself
   // already handles by falling back to no guessed number.
+  // The waiting draft's own name (the rail's rule, railEntries): the next
+  // ordinal, the recipe's version count plus one, then the version name the
+  // maker has typed so far, with its middot left out while that is blank.
+  const waitingLabel = draft?.payload?.versionLabel ?? '';
+  const waitingName = draft
+    ? waitingLabel
+      ? `Version ${ordered.length + 1} · ${waitingLabel}`
+      : `Version ${ordered.length + 1}`
+    : null;
+
   const versionOrdinalIndex = ordered.findIndex((candidate) => candidate.id === version.id);
   const ceremonyCaption =
     versionOrdinalIndex >= 0
@@ -322,6 +336,17 @@ export function VersionRow({
           {versionIdentity(ordered, version)}
           {isLatest && <span className="notebook-version__latest"> · Latest</span>}
         </h2>
+
+        {/* The waiting draft (sketch 011 decision 19, deferred to Phase 4 by
+            Mark 2026-09-28; 011-options-counts/upright-393.html): a Next
+            version draft kept on another version of this recipe, named under
+            the identity line as a link to the version it was opened on. Only
+            while no pen is open: an open pen has its own draft node. */}
+        {openPen === null && waitingName && (
+          <p className="notebook-version__draft">
+            Draft: <Link to={notebookPath(version.recipeId, draft.versionId)} tabIndex={0}>{waitingName}</Link>
+          </p>
+        )}
 
         {/* The version's own right-hand stack (D-08, sketch 003 variant B,
             G-03.3-4): a Written line carrying this version's own date, a

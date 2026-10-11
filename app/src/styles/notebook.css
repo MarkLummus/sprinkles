@@ -449,6 +449,21 @@
   color: var(--app-text-secondary);
 }
 
+/* The waiting draft under the identity line (04-09; sketch 011
+   upright-393.html): meta size, secondary text, the link in the App's blue
+   text. The section's own flex gap spaces it from the lines around it. */
+.notebook-version__draft {
+  margin: 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-text-secondary);
+}
+
+.notebook-version__draft a {
+  color: var(--app-blue-text);
+  text-underline-offset: var(--app-notebook-link-underline-offset);
+}
+
 .notebook-version__acts {
   display: flex;
   gap: var(--app-notebook-acts-gap);

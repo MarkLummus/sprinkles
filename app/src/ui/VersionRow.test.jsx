@@ -859,3 +859,46 @@ describe('VersionRow — Print sheet (D-05)', () => {
     }
   });
 });
+
+// 04-09 (sketch 011 decision 19's band line, deferred to Phase 4 by Mark on
+// 2026-09-28; 011-options-counts/upright-393.html): a Next version draft kept
+// on another version of this recipe is named under the identity line, as a
+// link to the version it was opened on, while no pen is open here.
+describe('VersionRow — the waiting draft line (04-09)', () => {
+  const waiting = { versionId: childVersion.id, kind: 'plan', payload: { versionLabel: '40 g oil' } };
+  const props = { versions: [oliveOilVersion, childVersion], draft: waiting };
+
+  it('names the draft as "Draft: Version N · name", N the recipe’s version count plus one, linking to the version it was opened on', () => {
+    const markup = renderVersionRow(props);
+    const line = markup.match(/<p class="notebook-version__draft">[\s\S]*?<\/p>/)?.[0];
+    expect(line).toBeDefined();
+    expect(line).toMatch(/^<p class="notebook-version__draft">Draft: <a [^>]*>Version 3 · 40 g oil<\/a><\/p>$/);
+    const tag = line.match(/<a\b[^>]*>/)[0];
+    expect(tag).toContain('href="/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v2"');
+    expect(tag).toContain('tabindex="0"');
+  });
+
+  it('leaves the middot out while the draft has no version name yet', () => {
+    const markup = renderVersionRow({ ...props, draft: { ...waiting, payload: { versionLabel: '' } } });
+    expect(markup).toMatch(/Draft: <a [^>]*>Version 3<\/a>/);
+    expect(markup).not.toContain('Version 3 ·');
+  });
+
+  it('sits under the identity line and above the details', () => {
+    const markup = renderVersionRow(props);
+    expect(markup.indexOf('notebook-version__identity')).toBeLessThan(markup.indexOf('notebook-version__draft'));
+    expect(markup.indexOf('notebook-version__draft')).toBeLessThan(markup.indexOf('notebook-version__details'));
+  });
+
+  it('is absent with no draft', () => {
+    expect(renderVersionRow({ versions: [oliveOilVersion, childVersion] })).not.toContain('notebook-version__draft');
+  });
+
+  it('is absent while any pen is open', () => {
+    for (const [openPen, mode] of [['plan', 'developing'], ['record', 'recording'], ['amend', 'recording']]) {
+      const markup = renderVersionRow({ ...props, openPen, mode, penDraft: emptyPenDraft() });
+      expect(markup).not.toContain('notebook-version__draft');
+      expect(markup).not.toContain('Draft: ');
+    }
+  });
+});

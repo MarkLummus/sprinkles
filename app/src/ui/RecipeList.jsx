@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { versionIdentity } from '../domain/lineage.js';
+import { newestDraft } from '../domain/draft.js';
 import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED, STANDING_WORDS } from '../domain/lastEvent.js';
 import { notebookPath } from './notebookPaths.js';
 
@@ -23,18 +24,23 @@ export function RecipeList() {
   const [versions, setVersions] = useState(null);
   const [batches, setBatches] = useState([]);
   const [recipes, setRecipes] = useState([]);
+  const [drafts, setDrafts] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([repository.listVersions(), repository.getAllBatches(), repository.listRecipes()]).then(
-      ([loadedVersions, loadedBatches, loadedRecipes]) => {
-        if (!cancelled) {
-          setVersions(loadedVersions);
-          setBatches(loadedBatches);
-          setRecipes(loadedRecipes);
-        }
-      },
-    );
+    Promise.all([
+      repository.listVersions(),
+      repository.getAllBatches(),
+      repository.listRecipes(),
+      repository.listDrafts(),
+    ]).then(([loadedVersions, loadedBatches, loadedRecipes, loadedDrafts]) => {
+      if (!cancelled) {
+        setVersions(loadedVersions);
+        setBatches(loadedBatches);
+        setRecipes(loadedRecipes);
+        setDrafts(loadedDrafts);
+      }
+    });
     return () => {
       cancelled = true;
     };
@@ -47,7 +53,7 @@ export function RecipeList() {
         {versions === null ? (
           <p className="home__loading">Loading your recipes…</p>
         ) : (
-          <HomeBody versions={versions} batches={batches} recipes={recipes} />
+          <HomeBody versions={versions} batches={batches} recipes={recipes} drafts={drafts} />
         )}
       </div>
     </div>
@@ -59,7 +65,7 @@ export function RecipeList() {
 // separate presentational component, over plain versions/batches props,
 // so it is testable without driving RecipeList's own fetch effect — the
 // same convention HomeLead and RecipeRows already establish.
-export function HomeBody({ versions, batches, recipes = [] }) {
+export function HomeBody({ versions, batches, recipes = [], drafts = [] }) {
   if (versions.length === 0) {
     return (
       <div className="home__empty">
@@ -78,9 +84,24 @@ export function HomeBody({ versions, batches, recipes = [] }) {
     );
   }
   const work = activeWork(versions, batches, recipes);
+  // D-18: an open draft keeps every other opener disabled on its recipe, so
+  // the recipe holding the newest draft takes the lead (whatever its place in
+  // the list below, which keeps its order) and names it. Only a draft whose
+  // version is in the store is named.
+  const draft = newestDraft(drafts.filter((record) => versions.some((version) => version.id === record.versionId)));
+  const draftVersion = draft ? versions.find((version) => version.id === draft.versionId) : null;
+  const lead = (draftVersion && work.find((entry) => entry.id === draftVersion.recipeId)) || work[0] || null;
+  // A Correct draft opens beside the batch it corrects, so that is where the
+  // link goes; the other two kinds open on the version.
+  const draftBatchId =
+    draft?.kind === 'amend' && batches.some((batch) => batch.id === draft.amendingBatchId) ? draft.amendingBatchId : null;
   return (
     <>
-      <HomeLead entry={work[0] ?? null} />
+      <HomeLead
+        entry={lead}
+        draftVersion={lead && draftVersion ? draftVersion : null}
+        draftPath={draftVersion ? notebookPath(draftVersion.recipeId, draftVersion.id, draftBatchId) : null}
+      />
       <div className="home__section-row">
         <h2 className="home__section">Recipes</h2>
         <Link className="home__code-link" to="/search" tabIndex={0}>Enter Sheet code</Link>
@@ -106,7 +127,7 @@ export function HomeBody({ versions, batches, recipes = [] }) {
 // convention RecipeRows already establishes. Every recipe lives in the
 // Notebook this phase (03.4-CONTEXT.md), so the place name reads the
 // Notebook's own text companion.
-export function HomeLead({ entry }) {
+export function HomeLead({ entry, draftVersion = null, draftPath = null }) {
   if (!entry) return null;
   const nextTime = entry.batches[0]?.churn?.nextTimeNote ?? null;
   return (
@@ -117,7 +138,13 @@ export function HomeLead({ entry }) {
         <h2 className="home__lead-name">
           <Link to={notebookPath(entry.id, entry.latestVersion.id)} tabIndex={0}>{entry.name}</Link>
         </h2>
-        <p className="home__lead-meta">{versionIdentity(entry.versions, entry.latestVersion)}</p>
+        <p className="home__lead-meta">{versionIdentity(entry.versions, draftVersion ?? entry.latestVersion)}</p>
+        {draftVersion && (
+          <p className="home__lead-draft">
+            Draft open on this version ·{' '}
+            <Link to={draftPath} tabIndex={0}>Go to draft</Link>
+          </p>
+        )}
       </div>
       {/* Notes render as text, never as markup — no dangerouslySetInnerHTML
           (T-03.4-12). The caption is the app's own label, not the

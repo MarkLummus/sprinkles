@@ -22,6 +22,9 @@ import { MemoryRouter, Routes, Route, useParams, useLocation, useNavigationType 
 const store = vi.hoisted(() => ({
   drafts: new Map(),
   batches: [],
+  // A second version of the recipe, served only while a test sets withSibling.
+  sibling: null,
+  withSibling: false,
   saveDraft: null,
   deleteDraft: null,
   saveVersion: null,
@@ -36,6 +39,12 @@ vi.mock('../store/repository.js', async () => {
   store.deleteDraft = vi.fn(async (versionId) => {
     store.drafts.delete(versionId);
   });
+  store.sibling = {
+    ...structuredClone(oliveOilVersion),
+    id: 'olive-oil-ice-cream-v2',
+    versionLabel: 'second',
+    createdAt: '2026-09-01T00:00:00.000Z',
+  };
   store.saveVersion = vi.fn(async () => {});
   store.saveBatch = vi.fn(async (record) => {
     const at = store.batches.findIndex((batch) => batch.id === record.id);
@@ -44,8 +53,13 @@ vi.mock('../store/repository.js', async () => {
   });
   return {
     repository: {
-      getVersion: async (id) => (id === oliveOilVersion.id ? structuredClone(oliveOilVersion) : undefined),
-      listVersions: async () => [structuredClone(oliveOilVersion)],
+      getVersion: async (id) => {
+        if (id === oliveOilVersion.id) return structuredClone(oliveOilVersion);
+        if (store.withSibling && id === store.sibling.id) return structuredClone(store.sibling);
+        return undefined;
+      },
+      listVersions: async () =>
+        store.withSibling ? [structuredClone(oliveOilVersion), structuredClone(store.sibling)] : [structuredClone(oliveOilVersion)],
       listBatchesForVersion: async () => store.batches.map((batch) => structuredClone(batch)),
       getAllBatches: async () => store.batches.map((batch) => structuredClone(batch)),
       getBatch: async (id) => {
@@ -174,6 +188,7 @@ afterEach(async () => {
   if (current) await unmountPage();
   store.drafts.clear();
   store.batches = [];
+  store.withSibling = false;
 });
 
 function nextVersionPen() {
@@ -663,5 +678,82 @@ describe('the Correct pen keeps its draft and reopens beside its own batch (04-0
     expect(locationNow.state).toBeNull();
     expect(pen().querySelector('input[type="date"]:not([required])').value).toBe('2026-08-05');
     expect(pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS)).toHaveLength(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Task 3: the band names a draft waiting on another version of this recipe.
+// ---------------------------------------------------------------------------
+function siblingPlanDraft(versionLabel) {
+  const sibling = store.sibling;
+  const rows = Object.fromEntries(
+    sibling.rows.map((row) => [
+      row.id,
+      { portions: row.portions.map((portion) => ({ step: portion.step, grams: String(portion.grams), removed: false })) },
+    ]),
+  );
+  return buildDraftRecord({
+    versionId: sibling.id,
+    kind: 'plan',
+    payload: {
+      versionLabel,
+      reason: '',
+      citedBatchId: null,
+      sheetTitle: sibling.sheetTitle,
+      sheetDescription: sibling.sheetDescription,
+      rows,
+      method: structuredClone(sibling.method),
+      authored: structuredClone(sibling.authored),
+    },
+    penOpenedAt: OPENED_AT,
+    now: WRITTEN_AT,
+  });
+}
+
+function bandDraft() {
+  return current.container.querySelector('.notebook-version__draft');
+}
+
+describe('the version band names a draft kept on another version (04-09, Task 3)', () => {
+  it('shows "Draft: Version N · name" as a link to the version the draft was opened on, and the rail’s draft node', async () => {
+    store.withSibling = true;
+    storeDraft(siblingPlanDraft('40 g oil'));
+    await mountAt(VERSION_PATH);
+    await flush(() => bandDraft() !== null);
+
+    expect(bandDraft().textContent).toBe('Draft: Version 3 · 40 g oil');
+    const link = bandDraft().querySelector('a');
+    expect(link.getAttribute('href')).toBe(`/notebook/${RECIPE}/olive-oil-ice-cream-v2`);
+    expect(link.getAttribute('tabindex')).toBe('0');
+    // On the History rail as its draft node, beside the two saved versions.
+    expect(current.container.querySelector('.notebook-history').textContent).toContain('3 versions');
+    expect(current.container.querySelector('.notebook-history').textContent).toContain('Version 3 · 40 g oil');
+    // This page has no draft of its own: no pen, no notice.
+    expect(nextVersionPen()).toBeNull();
+    expect(pageStatus.mock.calls.some(([message]) => message === DRAFT_KEPT_STATUS)).toBe(false);
+  });
+
+  it('goes while a pen is open here, and the page asks nothing', async () => {
+    store.withSibling = true;
+    storeDraft(siblingPlanDraft('40 g oil'));
+    await mountAt(VERSION_PATH);
+    await flush(() => bandDraft() !== null);
+    await click(buttonByText('Next version'));
+    expect(nextVersionPen()).not.toBeNull();
+    expect(bandDraft()).toBeNull();
+    // The other version’s draft is untouched by opening this one's pen.
+    expect(store.drafts.has('olive-oil-ice-cream-v2')).toBe(true);
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+  });
+
+  it('names no draft when none is waiting, and none for a record draft', async () => {
+    store.withSibling = true;
+    await mountAt(VERSION_PATH);
+    expect(bandDraft()).toBeNull();
+    await unmountPage();
+    const record = recordDraftRecord();
+    storeDraft({ ...record, versionId: 'olive-oil-ice-cream-v2' });
+    await mountAt(VERSION_PATH);
+    expect(bandDraft()).toBeNull();
   });
 });

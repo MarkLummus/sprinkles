@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Prepare the next version for making
 status: executing
-stopped_at: Completed 04-05-PLAN.md
-last_updated: "2026-10-11T06:44:29.811Z"
+stopped_at: Completed 04-06-PLAN.md
+last_updated: "2026-10-11T07:09:10.635Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 0dfbcc2798bc4008dd81a2d61fefd81d9e9d5925
+state_head: afe1a19f666f2a90db045077ca129f0611bb8e27
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 115
+  completed_plans: 116
   percent: 73
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 04 (Prepare the next version for making) — EXECUTING
-Plan: 6 of 10
+Plan: 7 of 10
 Status: Ready to execute
 Last activity: 2026-10-11 — Phase 04 execution started
 
@@ -147,6 +147,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 04 P03 | 15 min | 3 tasks | 27 files |
 | Phase 04 P04 | 3 min | 2 tasks | 8 files |
 | Phase 04 P05 | 15 min | 2 tasks | 8 files |
+| Phase 04 P06 | 30 min | 3 tasks | 19 files |
 
 ## Accumulated Context
 
@@ -301,6 +302,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: 04-05: fromFreezer joins the tasting-body field set so a From freezer pick or Clear retires a pending Restore tasting; atDraw is a churn field and does not
 - [Phase 04]: 04-05: the Tasting head carries the board's mo-end class (12 px above it); the plan's selector list omitted it but pen-states.html draws it
 - [Phase 04]: 04-05: with the Tasting section closed, Next time keeps its place after the churn section (not drawn in sketch 010; flagged for Mark's look)
+- [Phase 04]: 04-06: Print sheet is an underlined text control in the version row's acts after Next version and Show changes; the print route sets the tab title to recipe name · Print sheet · Sprinkles
+- [Phase 04]: 04-06: print page positions are compared at one device pixel ratio; WebKit snaps text metrics to device pixels (up to 0.7 page px between 1x and 3x), which no CSS can read
 
 ### Pending Todos
 
@@ -495,6 +498,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T06:44:29.686Z
-Stopped at: Completed 04-05-PLAN.md
+Last session: 2026-10-11T07:09:10.507Z
+Stopped at: Completed 04-06-PLAN.md
 Resume file: None

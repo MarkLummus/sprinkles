@@ -35,8 +35,8 @@ Working case: the olive oil recipe, 50 g oil, 800 g, churned 2 Aug 2026, with it
 
 ### Review and print — from REC-01 (review/print capability)
 
-- [ ] **PRINT-01**: Maker can print the new version as a bench sheet from the browser. The formula page shows ingredient, grams, % of batch, step allocation, a mise-en-place box, and a blank as-made column, and every printed value carries a unit.
-- [x] **PRINT-02**: The sheet includes the method with typed targets (temperature, time, amount) beside the prose instruction.
+- [ ] **PRINT-01**: Maker can print the new version as a bench sheet from the browser. The formula page shows each ingredient line under its step: a blank As made line first, the planned grams, then the ingredient, with Balance beside the table; every printed value carries a unit. (Sketch 010 E1, E2, E4, E6, Mark 2026-10-06: the % of batch column and the mise-en-place tick box are retired.)
+- [x] **PRINT-02**: The sheet includes the Instructions, each step's typed targets (temperature, time, amount) in a tag row beside its prose. (Sketch 010 D18.)
 - [x] **PRINT-03**: The sheet includes a blank batch-log page (churn date, measured fields, result, dimensions, next-time lines) so the next batch's notes have a home.
 - [x] **PRINT-04**: The sheet carries a human-readable short code identifying the printed version, and the app can match that code back to the version. No QR code.
 - [x] **PRINT-05**: The sheet prints a saved version, never unsaved edits, and printing does not create a batch record.

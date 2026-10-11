@@ -656,8 +656,8 @@ Plans:
 **Requirements**: PRINT-01, PRINT-02, PRINT-03, PRINT-04, PRINT-05, UX1-01, UX1-02, UX1-03
 **Success Criteria** (what must be TRUE):
 
-  1. Maker prints the new version from the browser as a formula page showing ingredient, grams, % of batch, step allocation, a mise-en-place box, and a blank as-made column, with a unit on every printed value.
-  2. The printed sheet carries the method with typed targets (temperature, time, amount) beside each prose instruction, plus a blank batch-log page with churn date, measured fields, result, dimensions, and next-time lines.
+  1. Maker prints the new version from the browser as a formula page showing each ingredient line under its step: a blank As made line first, the planned grams, then the ingredient, with Balance beside the table, and a unit on every printed value.
+  2. The printed sheet carries the Instructions with each step's typed targets (temperature, time, amount) in a tag row beside its prose, plus a blank batch log of two sides, the Batch log and the Tasting log (churn date, measured fields, result, dimensions, and next-time lines), one sheet front and back.
   3. The sheet carries a human-readable short code for the printed version and the maker can use that code in the app to reach the same version; printing captures a saved version only, never unsaved edits, and never creates a batch record.
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.

@@ -40,6 +40,10 @@ vi.mock('../store/repository.js', async () => {
       saveBatch: store.saveBatch,
       saveVersion: vi.fn(async () => {}),
       saveRecipe: vi.fn(async () => {}),
+      getDraft: async () => undefined,
+      saveDraft: vi.fn(async () => {}),
+      deleteDraft: vi.fn(async () => {}),
+      listDrafts: async () => [],
     },
   };
 });

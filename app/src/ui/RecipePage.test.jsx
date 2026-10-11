@@ -499,7 +499,7 @@ describe('isDraftDirty — the record pen\'s check, extended to every battery fi
 
   // Task 3: removing the tasting section from an amend draft that started
   // with one is a real edit — dirty against the baseline, so Escape does
-  // NOT close the pen and the beforeunload guard fires. This is the
+  // NOT close the pen and the kept draft is written. This is the
   // opposite case from the "open-but-empty on a fresh draft" test above:
   // there, tastingOpen alone never differed from a null baseline (no
   // baseline exists yet); here, the amend baseline already has

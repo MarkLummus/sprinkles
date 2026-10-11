@@ -17,6 +17,7 @@ import {
   parseGramsDraft,
 } from '../domain/lineage.js';
 import { buildDiff } from '../domain/diff.js';
+import { buildDraftRecord, draftMatchesVersion } from '../domain/draft.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { notebookPath } from './notebookPaths.js';
@@ -57,6 +58,11 @@ export const BATCH_SAVE_ERROR = 'Couldn’t save the batch. Try again.';
 export const VERSION_SAVED_STATUS = 'Version saved.';
 export const VERSION_SAVE_ERROR = 'Couldn’t save the version. Try again.';
 export const VERSION_BLOCKED_STATUS = 'Check the version. Your changes have been kept.';
+
+// The page notice a restored draft announces (D-15; sketch 010 decide-p4-draft-kept-words
+// C, screen-draft-kept-words.html). Sent with no options, so the router's
+// PageStatus clears it after its own five seconds and nothing persists it.
+export const DRAFT_KEPT_STATUS = 'Draft kept. Cancel discards it.';
 
 // The contract's verbatim record-status sentences for the record pen's own
 // two hidden-mode removal paths (contract "Feedback and undo lifecycle",
@@ -370,7 +376,7 @@ function blankTastingFields() {
 // for them yet (plan 03 opens the tasting section) — so the draft's shape
 // never has to change again when that section arrives, and the dirty
 // check and the save assembly below already know every field's name.
-function blankRecordDraft() {
+export function blankRecordDraft() {
   return {
     churnDate: '',
     asMade: {},
@@ -661,6 +667,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
   const [version, setVersion] = useState(undefined);
   const [versions, setVersions] = useState([]);
   const [batches, setBatches] = useState([]);
+  // Whether this version's batches have been read: the draft restore waits for
+  // them, since an amend draft is checked against its batch (04-09).
+  const [batchesLoaded, setBatchesLoaded] = useState(false);
   // The signature trace (route-recipe.md § 3, § 5): focusing a balance
   // figure marks the ingredient rows it rests on. This page is the shared
   // parent of the figures and the table, so it is the one place the
@@ -791,7 +800,10 @@ export function RecipePage({ onPageStatus = () => {} }) {
   useEffect(() => {
     let cancelled = false;
     repository.listBatchesForVersion(versionId).then((result) => {
-      if (!cancelled) setBatches(result);
+      if (!cancelled) {
+        setBatches(result);
+        setBatchesLoaded(true);
+      }
     });
     return () => {
       cancelled = true;
@@ -891,50 +903,184 @@ export function RecipePage({ onPageStatus = () => {} }) {
     };
   }, [versionId]);
 
+  // Kept drafts (04-09, D-14 to D-17). A pen's draft lives in the drafts store,
+  // through the repository seam, from its first keystroke until Save or
+  // Cancel: a reload, a closed tab, a crash or the next day brings the pen
+  // back with its ink. The refs below hold what the effects share; each is
+  // read at the moment it fires, so none of them is a dependency.
+  //  - draftRestoreStartedRef: the restore runs once per page instance. A ref,
+  //    not state, and no cancelled flag: StrictMode runs the effect twice in
+  //    development, and a flag set by the first cleanup would drop the read the
+  //    guard let through.
+  //  - draftRestoreDone: the persist effect below waits for it (research
+  //    Pitfall 5): on first render mode is 'reading' and both drafts are null,
+  //    which reads as clean and would delete the draft the restore is about to
+  //    read.
+  //  - draftStoredRef: whether a record may be sitting in the store for this
+  //    version, so a pen that goes clean deletes it and a pen that was never
+  //    dirty writes nothing at all.
+  //  - pendingDraftRef / draftTimerRef: the record waiting out the 250 ms
+  //    debounce, and its timer.
+  const [draftRestoreDone, setDraftRestoreDone] = useState(false);
+  const draftRestoreStartedRef = useRef(false);
+  const draftStoredRef = useRef(false);
+  const pendingDraftRef = useRef(null);
+  const draftTimerRef = useRef(null);
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
+
+  // Writes the record waiting out the debounce at once. Reads refs only, so
+  // the listener below can hold the first render's copy for the page's life.
+  function flushPendingDraft() {
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = null;
+    const record = pendingDraftRef.current;
+    if (!record) return;
+    pendingDraftRef.current = null;
+    draftStoredRef.current = true;
+    Promise.resolve().then(() => repository.saveDraft(record)).catch(() => {});
+  }
+
+  // Save and Cancel end a draft: drop whatever is waiting to be written, so a
+  // keystroke typed just before Save cannot write the draft back after it
+  // was deleted, then delete the stored record.
+  function discardDraft() {
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = null;
+    pendingDraftRef.current = null;
+    draftStoredRef.current = false;
+    Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
+  }
+
+  // Restore (D-15): once the version and its batches are read, look for this
+  // version's draft. A record that no longer fits (an import replaced the
+  // version, the batch it corrects is gone) is deleted quietly and the page
+  // opens in reading; one that fits reopens its pen with the ink and the page
+  // notice. Restoring sets state only: nothing is written to versions or
+  // batches until the maker presses Save, and nothing is asked (no dialog).
+  useEffect(() => {
+    if (draftRestoreStartedRef.current) return;
+    if (!version || version.recipeId !== recipeId || !batchesLoaded) return;
+    draftRestoreStartedRef.current = true;
+    Promise.resolve()
+      .then(() => repository.getDraft(versionId))
+      .then((record) => {
+        if (!record) {
+          setDraftRestoreDone(true);
+          return;
+        }
+        if (!draftMatchesVersion(record, version, batches)) {
+          repository.deleteDraft(versionId);
+          setDraftRestoreDone(true);
+          return;
+        }
+        // A pen the maker opened while the read was out wins over the stored
+        // one; the persist effect then keeps whichever is open.
+        if (modeRef.current !== 'reading') {
+          setDraftRestoreDone(true);
+          return;
+        }
+        draftStoredRef.current = true;
+        if (record.kind === 'plan') {
+          setPenDraft(record.payload);
+          penOpenedAtRef.current = record.penOpenedAt;
+          setBlockedMessage(null);
+          setBlockedTarget(null);
+          setVersionSaveAction(null);
+          versionSaveLockRef.current = false;
+          setMode('developing');
+        }
+        onPageStatus(DRAFT_KEPT_STATUS);
+        setDraftRestoreDone(true);
+      })
+      .catch(() => setDraftRestoreDone(true));
+  }, [version, batchesLoaded]);
+
+  // Persist: while a pen is open and holds ink, its draft is written 250 ms
+  // after the last change; when no pen is open, or the open pen is clean
+  // again, the stored draft is deleted. Dirtiness is the two checks the Escape
+  // effect below reads (isPenDraftDirty, isDraftDirty), never a third.
+  useEffect(() => {
+    if (!draftRestoreDone) return undefined;
+    const { openPen: persistedPen } = derivePenState({ mode, amendingBatchId });
+    let record = null;
+    if (persistedPen === 'plan' && isPenDraftDirty(mode, penDraft, version)) {
+      record = buildDraftRecord({
+        versionId,
+        kind: 'plan',
+        payload: penDraft,
+        penOpenedAt: penOpenedAtRef.current,
+        now: new Date().toISOString(),
+      });
+    }
+    if (!record) {
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+      draftTimerRef.current = null;
+      pendingDraftRef.current = null;
+      if (draftStoredRef.current) {
+        draftStoredRef.current = false;
+        Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
+      }
+      return undefined;
+    }
+    pendingDraftRef.current = record;
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = setTimeout(flushPendingDraft, 250);
+    return () => {
+      if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    };
+  }, [draftRestoreDone, mode, amendingBatchId, penDraft, draft, amendBaseline, amendOpener, version]);
+
+  // A page going away inside the debounce window must not lose the last
+  // keystrokes: pagehide and a tab going hidden write the waiting record at
+  // once, and so does unmounting (best effort at pagehide; IndexedDB may not
+  // finish before the page is gone, so up to the last 250 ms of typing can be
+  // lost to a hard kill).
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') flushPendingDraft();
+    }
+    window.addEventListener('pagehide', flushPendingDraft);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('pagehide', flushPendingDraft);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      flushPendingDraft();
+    };
+  }, []);
+
   // Opens the pen the band's Record a tasting asked for across a remount
   // (route state, the focusBatch pattern: the router keys RecipePage by
   // address, so state is all that crosses). Consumed once: the entry's
   // state is replaced with null, so Back or a reload never reopens a pen.
+  // It waits for the draft restore: a draft kept on this page reopens its own
+  // pen and consumes the request without opening a second one.
   // handleStartAmending is a function declaration, hoisted, and reads only
   // refs, setters and module functions, so calling it from here, above the
   // early returns, is safe.
   const startTastingConsumedRef = useRef(false);
   useEffect(() => {
-    if (!startTastingOnMount || startTastingConsumedRef.current) return;
-    if (mode !== 'reading' || !batchId) return;
+    if (!startTastingOnMount || startTastingConsumedRef.current || !draftRestoreDone) return;
+    if (!batchId) return;
+    if (mode !== 'reading') {
+      startTastingConsumedRef.current = true;
+      navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
+      return;
+    }
     const target = batches.find((batch) => batch.id === batchId);
     if (!target || target.tasting) return;
     startTastingConsumedRef.current = true;
     navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
     handleStartAmending(target, { opener: 'record-a-tasting' });
-  }, [startTastingOnMount, mode, batchId, batches]);
-
-  // D-24: leaving the page with unsaved ink uses the browser's own leave
-  // warning only, registered while recording or the plan's pen holds a
-  // dirty draft, and removed as soon as neither does — no invented dialog,
-  // no draft persistence across a reload (that is UX1-02, Phase 4). The
-  // tasting pen's own dirty check folded into isDraftDirty above with the
-  // tasting pen's retirement (03.3.1-02).
-  useEffect(() => {
-    if (!isDraftDirty(mode, draft, amendBaseline) && !isPenDraftDirty(mode, penDraft, version)) {
-      return undefined;
-    }
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-    };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [mode, draft, amendBaseline, penDraft, version]);
+  }, [startTastingOnMount, mode, batchId, batches, draftRestoreDone]);
 
   // Escape (D-27): closes only an untouched pen, and does nothing at all
   // once the pen holds ink — Cancel is the one exit, so a stray key can
   // never discard a sheet of transcription. Registered on `document`, not
   // the article, so an Escape pressed while focus rests on `body` (the
   // state the critique found batch Cancel leaving behind) still closes
-  // the pen. Reads the same two dirty checks the beforeunload guard above
-  // already reads — introducing no third notion of dirtiness. An open but
+  // the pen. Reads the same two dirty checks the draft persistence above
+  // reads — introducing no third notion of dirtiness. An open but
   // empty tasting section (tastingOpen true, nothing else touched) counts
   // as no ink under isDraftDirty's own baseline/blank comparisons above,
   // so Escape closes it exactly as it closes any other untouched pen
@@ -1604,6 +1750,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
         return;
       }
       Promise.resolve().then(() => repository.saveBatch(record)).then(() => {
+        discardDraft();
         setBatches((prev) => prev.map((batch) => (batch.id === record.id ? record : batch)));
         setMode('reading');
         setDraft(null);
@@ -1634,6 +1781,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
     }
 
     Promise.resolve().then(() => repository.saveBatch(record)).then(() => {
+      discardDraft();
       setBatches((prev) => [...prev, record]);
       setMode('reading');
       setDraft(null);
@@ -1652,14 +1800,13 @@ export function RecipePage({ onPageStatus = () => {} }) {
 
   // The deliberate, in-app abandonment path (A-1): returns to reading,
   // drops the draft, and clears the amend target and every blocked/error
-  // state, writing nothing. This is distinct from D-24's beforeunload
-  // warning, which only guards accidental loss on document unload — the
-  // brief conflated the two, but they are different requirements (see
-  // pen-layer-no-cancel-save-hard-to-find.md). Nothing needs to navigate:
+  // state, writing nothing, and deletes the kept draft (D-16). Nothing needs
+  // to navigate:
   // the batch on screen is derived from the URL and the loaded batch list,
   // never from the draft, so the page already shows the right thing once
   // mode returns to reading.
   function handleCancelRecording() {
+    discardDraft();
     batchSaveLockRef.current = false;
     setBatchSaveAction(null);
     setFocusBatchAttempt(null);
@@ -1692,16 +1839,21 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // developing/recording is live; derivePenState above is what now
   // decides availability everywhere else (RESEARCH.md Pattern 4).
   function handleStartDeveloping() {
-    const rows = {};
-    for (const row of version.rows) {
-      rows[row.id] = {
-        portions: row.portions.map((portion) => ({
-          step: portion.step,
-          grams: String(portion.grams),
-          removed: isLineRemoved(row, portion),
-        })),
-      };
-    }
+    // Object.fromEntries, not a bracket write against a stored row id: an id
+    // such as __proto__ becomes an own key instead of reaching the prototype
+    // (T-03-10, T-04-23).
+    const rows = Object.fromEntries(
+      version.rows.map((row) => [
+        row.id,
+        {
+          portions: row.portions.map((portion) => ({
+            step: portion.step,
+            grams: String(portion.grams),
+            removed: isLineRemoved(row, portion),
+          })),
+        },
+      ]),
+    );
     setPenDraft({
       versionLabel: '',
       reason: '',
@@ -1741,6 +1893,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
   // Discards with no dialog of the app's own (D-10) — mirrors
   // handleCancelRecording exactly.
   function handleCancelDeveloping() {
+    discardDraft();
     setMode('reading');
     setPenDraft(null);
     setBlockedMessage(null);
@@ -1996,6 +2149,9 @@ export function RecipePage({ onPageStatus = () => {} }) {
       return;
     }
     Promise.resolve().then(() => repository.saveVersion(child)).then(() => {
+      // The parent's draft: this page's own version id, deleted before the
+      // navigation that unmounts the page.
+      discardDraft();
       setVersions((prev) => [...prev, child]);
       setMode('reading');
       setPenDraft(null);
@@ -2035,6 +2191,7 @@ export function RecipePage({ onPageStatus = () => {} }) {
       return;
     }
     Promise.resolve().then(() => repository.saveVersion(updated)).then(() => {
+      discardDraft();
       setVersion(updated);
       setVersions((prev) => prev.map((existing) => (existing.id === updated.id ? updated : existing)));
       setMode('reading');

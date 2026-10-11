@@ -28,9 +28,11 @@ so the next run skips it.
    rows still open, `query.where: [["status", "ne", "done"]]`: every open, scheduled and parked
    row, for the report (step 6) and for context. (b) The rows Mark has touched,
    `query.where: [["touched", "eq", true]]`, with no status filter and no date window: the rows
-   that may need a reaction, whatever their status or age. Page each read with `query.limit` 100
+   that may need a reaction, whatever their status or age. (c) The rows a run claimed and has not
+   finished, `query.where: [["inProgress", "eq", true]]`: normally none; step 6 reports them. Page
+   each read with `query.limit` 100
    and `cursor` until no cursor comes back, and leave out `order_by` (a query with `order_by`
-   returns one page only). The two reads overlap: dedupe by doc id. A row without a `touched`
+   returns one page only). The reads overlap: dedupe by doc id. A row without a `touched`
    field predates the flag and counts as handled (every row stored before the flag has been
    handled). When a step needs one specific row outside these reads (a todo in a check's
    `closes`, a row a `source` names), read it by id with `get`; step 4 adds one more `query` only
@@ -50,7 +52,9 @@ so the next run skips it.
    as read plus `touched: false`, with `updatedAt` left as read; write nothing else on it and leave
    it out of the report, so it stops coming back in query (b). If that version check fails, re-read
    the row and test it again. An `other` answer still waiting for its note is not such a row: step 4
-   skips it and leaves `touched` alone.
+   skips it and leaves `touched` alone. A row whose status is `parked` is not reacted to either:
+   leave its `touched` alone, list it as parked in step 6, and react once Mark unparks it (his
+   answer is still there).
 4. For each such row, sort out the answer first. The answer `other` is the page's built-in choice
    and is not in `options`: the `note` is the answer, so read it as written text and look up no
    label. An `other` answer with an empty note on a row that is still `open` (Mark has not pressed
@@ -58,7 +62,8 @@ so the next run skips it.
    waiting. An `other` answer whose note is non-empty but unclear, or whose note is empty on a row
    Mark has marked done, goes to the unclear list: step 5 turns it into a decide row. Then claim
    the row before any route below acts on it: an `update` with `if_version` from the read,
-   carrying every field as read plus `handledAt` (ISO now) and `touched: false`, with `updatedAt`
+   carrying every field as read plus `handledAt` (ISO now), `touched: false` and
+   `inProgress: true`, with `updatedAt`
    left as read. If Mark changes the row while the work runs, the page sets `touched` back to
    true, so the next run sees it. If the version check fails, another run or Mark changed the
    row: re-read it and start again from step 3. Once it is claimed, say in one or two sentences
@@ -86,6 +91,8 @@ so the next run skips it.
      `Closed with its passed check (<check doc id>).` Then move its file as the done-todo bullet
      below does, when its `where` names a file in `.planning/todos/pending/`. If another linked
      check is still open or failed, leave the todo `scheduled` and say so in the check's reply.
+     A todo that is itself `touched: true` (Mark wrote on it since the reads) is left `scheduled`
+     the same way, to be handled as its own reaction first.
    - A failed check, or a note describing a defect: write the defect in the check's reply, leave
      the todos in its `closes` `scheduled`, and propose a `/gsd-quick` or `/gsd-debug` task with
      its text as a "Fix: ..." row (step 5). A check Mark already pressed Done on is closed by him,
@@ -122,18 +129,21 @@ so the next run skips it.
      or is not found, say so in the reply and move nothing.
 5. Write the reply on the row once its work is done. Re-read the row for its current version (the
    claim moved it), then write an `update` with `if_version` from that read, carrying every field
-   as read plus `reply` (one short sentence naming what was done or proposed) and any closing
+   as read plus `reply` (one short sentence naming what was done or proposed), `repliedAt`
+   (ISO now), `inProgress: false` and any closing
    fields (Boundaries). The claim already set `handledAt` and cleared `touched`: keep
    `handledAt`, and carry `touched` as this re-read shows it, never setting it yourself here, so
    a change Mark made while the work ran (the page set `touched` back to true) still reads as new
    next run. A row you update without a claim (a todo a passed check closes) also gets
-   `handledAt` (ISO now) and `touched: false`. Leave `updatedAt` as read. If the version check
+   `handledAt` and `repliedAt` (ISO now), and never `touched`: leave the flag as read. Leave
+   `updatedAt` as read. If the version check
    fails, re-read the row and write the reply again; never start its work a second time. Every
    row you add gets `kind` and an id prefix by CLAUDE.md's "Kinds and names" rule (by what Mark
    does; a device or paper check is kind `check`, never `look` or `todo`), and `owner`, as
    CLAUDE.md says: `owner: "mark"`
    with `needs: "answer"` for a decide row or anything Mark only replies to on the page;
-   `owner: "mark"` with `needs: "hands"` for a check or look he does outside the page, and for a
+   `owner: "mark"` with `needs: "hands"` for a check he does outside the page (a look is `answer`
+   unless he must do something outside the page), and for a
    "Run:" row; `owner: "claude"`, with no `needs`, for Draw, Build and Fix rows (queued agent or
    GSD work). For an unclear answer, also add a new open decide row so the question stays on the
    list: a `set` with a short slug as doc id, `kind: "decide"`, a title that is the question,
@@ -162,7 +172,11 @@ so the next run skips it.
    grouped by kind (decide, check, look, todo; title plus each row's `links` URLs, so Mark can
    click through), and any answer that is unclear, with the decide row now holding its question.
    The question lives on the list, so do not stop to ask it in the session. Never ask about
-   clear answers.
+   clear answers. List parked rows from query (a) as parked (count and titles) without reacting
+   to them. List every row query (c) returned whose `handledAt` is more than 30 minutes old as
+   stranded (a run claimed it and never replied), and tell Mark to say "retry <id>": then clear
+   its `inProgress` and set `touched: true`, so the next step 3 sees it. A row claimed under 30
+   minutes ago is another run's work: leave it alone.
 7. If nothing needs a reaction, say so in one line and list what is open from query (a).
 
 Boundaries: Never edit anything under `app/` yourself (every app change goes through

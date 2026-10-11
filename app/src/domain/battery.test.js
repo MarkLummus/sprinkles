@@ -3,7 +3,7 @@
 // D-09; the structural contract's "Controls spec"). Runs under Vitest's
 // default node environment — battery.js imports nothing at all.
 import { describe, it, expect } from 'vitest';
-import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, DECLARED_FLAW, parseMeasuredDraft } from './battery.js';
+import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, declaredProblemsForBatch, parseMeasuredDraft } from './battery.js';
 
 describe('BATTERY_FIELDS', () => {
   it('has exactly six entries', () => {
@@ -57,9 +57,21 @@ describe('DEFECTS', () => {
   });
 });
 
-describe('DECLARED_FLAW', () => {
-  it('is Bitter', () => {
-    expect(DECLARED_FLAW).toBe('Bitter');
+describe('declaredProblemsForBatch', () => {
+  it('reads the batch snapshot only: 0, 1 and 2 words come back in order', () => {
+    for (const declaredFlaws of [[], ['Bitter'], ['Bitter', 'Salty']]) {
+      expect(declaredProblemsForBatch({ snapshot: { declaredFlaws } })).toEqual(declaredFlaws);
+    }
+  });
+
+  it('returns a copy, so a caller cannot move the stored snapshot', () => {
+    const batch = { snapshot: { declaredFlaws: ['Bitter'] } };
+    declaredProblemsForBatch(batch).push('Salty');
+    expect(batch.snapshot.declaredFlaws).toEqual(['Bitter']);
+  });
+
+  it('reads an absent list as no declared problems', () => {
+    expect(declaredProblemsForBatch({ snapshot: {} })).toEqual([]);
   });
 });
 

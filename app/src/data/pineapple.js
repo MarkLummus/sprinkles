@@ -61,7 +61,7 @@ export const pineappleV1 = {
   process: {},
   iceEd: { style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.1 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   // The two process lines on the page ("Cooked Pineapple in SousVide
   // separate from Cream" and the crushed-pineapple mix-in) become this one
   // step's instruction; all 12 rows allocate to it as the base step (the
@@ -112,7 +112,7 @@ const pineappleV1TastingFields = {
   marks: { sweetness: 3 },
   note: 'Good Texture\nGood Sweetness\nCould have more PA in Sweet Cream.\nLess Stabilizer, getting Chewy.',
   defects: null,
-  bitterDeclared: null,
+  declaredDefects: null,
   meltTestG: null,
   meltStyle: null,
 };

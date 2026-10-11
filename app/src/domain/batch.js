@@ -16,7 +16,7 @@
 // here.
 import { rowGrams } from './rows.js';
 
-export const BATCH_SCHEMA_VERSION = 3;
+export const BATCH_SCHEMA_VERSION = 4;
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -125,8 +125,9 @@ function buildChurn(churnFields) {
  * the single tasting object. marks is copied with a shallow own-key spread
  * (setMark's own discipline — axes.js), so an unmarked axis stays absent
  * rather than becoming a manufactured zero (D-10). defects is a copy of
- * the supplied array, or null when none was supplied. bitterDeclared is
- * true-or-null, never false — the toggle is either declared or absent.
+ * the supplied array, or null when none was supplied. declaredDefects is
+ * the ticked declared problems, a copy of a non-empty array or null —
+ * never an empty array: no tick and an empty list are the same fact.
  */
 function buildTasting(tastingFields) {
   if (tastingFields == null) return null;
@@ -137,7 +138,10 @@ function buildTasting(tastingFields) {
     marks: tastingFields.marks ? { ...tastingFields.marks } : {},
     note: tastingFields.note ? tastingFields.note : null,
     defects: tastingFields.defects ? [...tastingFields.defects] : null,
-    bitterDeclared: tastingFields.bitterDeclared === true ? true : null,
+    declaredDefects:
+      Array.isArray(tastingFields.declaredDefects) && tastingFields.declaredDefects.length > 0
+        ? [...tastingFields.declaredDefects]
+        : null,
     meltTestG: tastingFields.meltTestG != null ? tastingFields.meltTestG : null,
     meltStyle: tastingFields.meltStyle != null ? tastingFields.meltStyle : null,
   };
@@ -149,7 +153,7 @@ function buildTasting(tastingFields) {
  * function never reaches for crypto.randomUUID() or new Date() itself
  * (that impurity lives in the one save handler that calls this). The
  * snapshot is a structuredClone of the version's rows, declaredAxes and
- * declaredFlaw, taken once here and never retaken by any later function
+ * declaredFlaws, taken once here and never retaken by any later function
  * (BATCH2-01). tastingFields is zero-or-one: pass null for a fresh
  * churn-only record.
  */
@@ -165,7 +169,7 @@ export function createBatch(version, churnFields, tastingFields, { id, now }) {
       versionLabel: version.versionLabel,
       rows: structuredClone(version.rows),
       declaredAxes: structuredClone(version.declaredAxes),
-      declaredFlaw: version.declaredFlaw != null ? version.declaredFlaw : null,
+      declaredFlaws: structuredClone(version.declaredFlaws ?? []),
     },
     churn: buildChurn(churnFields),
     tasting: buildTasting(tastingFields),

@@ -42,6 +42,26 @@ describe('seedRecipeGroups (plan 09): olive oil first, then transcribedRecipeGro
   });
 });
 
+describe('every seeded version declares at most two scales and two problems (sketch 010 D25, D26)', () => {
+  const versions = seedRecipeGroups.flatMap((group) => group.versions);
+
+  it.each(versions.map((version) => [version.id, version]))('%s holds lists of 0 to 2', (_id, version) => {
+    expect(Array.isArray(version.declaredAxes)).toBe(true);
+    expect(Array.isArray(version.declaredFlaws)).toBe(true);
+    expect(version.declaredAxes.length).toBeLessThanOrEqual(2);
+    expect(version.declaredFlaws.length).toBeLessThanOrEqual(2);
+    expect(version).not.toHaveProperty('declaredFlaw');
+  });
+
+  it('every seeded tasting ticks only words its own snapshot declares', () => {
+    for (const batch of seedRecipeGroups.flatMap((group) => group.batches)) {
+      for (const word of batch.tasting?.declaredDefects ?? []) {
+        expect(batch.snapshot.declaredFlaws).toContain(word);
+      }
+    }
+  });
+});
+
 describe('transcribedRecipeGroups validates as a store file (D-07 gate: not wired into seed.js)', () => {
   it('passes validateStoreFile at the current schema version with no errors', () => {
     const { recipes, versions, batches } = flatten(transcribedRecipeGroups);

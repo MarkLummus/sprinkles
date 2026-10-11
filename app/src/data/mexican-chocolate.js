@@ -97,7 +97,7 @@ export const mexicanChocolateV4 = {
   // home here (decisions_recorded 3).
   iceEd: { style: 'Gelato', servingTemperatureC: -17, hardness: 0.75, overrunPercent: 0.2017 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   // The Notes field mixes a process line with observations and next-version
   // deltas (decisions_recorded, "Specific Ideas"). Only the process line has
   // a home on this version — the "Observations:"/"To fix" text is v1's own
@@ -172,7 +172,7 @@ export const mexicanChocolateV1 = {
   process: { pasteuriseC: 75, holdMinutes: 45 },
   iceEd: { style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.2993 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [
     {
       n: 1,
@@ -239,7 +239,7 @@ const mexicanChocolateV1TastingFields = {
   marks: { sweetness: 3, hardness: 5, scoopability: 3 },
   note: 'Sweetness Good\nHard straight from Freezer\nBut scoopable',
   defects: null,
-  bitterDeclared: null,
+  declaredDefects: null,
   meltTestG: null,
   meltStyle: null,
 };
@@ -303,7 +303,7 @@ export const mexicanChocolateV2 = {
   // Recipe.Overrun 0.2992666666666666 rounded to 4 decimals, as v1 and v4.
   iceEd: { style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2993 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   // Written out literally (not shared by reference with v4) — the v4
   // precedent, since the carried-forward Notes give the same process and
   // the same two steps v4 has, step 2's aside included (Mark 2026-09-25).
@@ -383,7 +383,7 @@ export const mexicanChocolateV3 = {
   process: { pasteuriseC: 75, holdMinutes: 60 },
   iceEd: { style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [
     {
       n: 1,

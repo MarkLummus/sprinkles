@@ -1,6 +1,6 @@
 // Pure. No imports at all — not even from axes.js or batch.js. The
 // battery's measured-field table, its segmented-control options, its
-// defect chips, the declared flaw, and the numeric draft parser, all
+// defect chips, the declared problems, and the numeric draft parser, all
 // verbatim from the structural contract's "Controls spec" (sketch 007).
 // See 03.3.1-CONTEXT.md D-07, D-09, D-10.
 
@@ -36,8 +36,15 @@ export const SEGMENT_OPTIONS = {
 /** DEFECTS: the four defect chips, verbatim (comma-worded per the contract). */
 export const DEFECTS = ['Coarse, icy', 'Sandy, gritty', 'Gummy, elastic', 'Greasy film'];
 
-/** DECLARED_FLAW: the one declared-flaw chip this battery carries. */
-export const DECLARED_FLAW = 'Bitter';
+/**
+ * declaredProblemsForBatch(batch) -> the declared problems (0 to 2 words)
+ * the batch's own snapshot holds, a copy. The declared-problem twin of
+ * axesForBatch (axes.js): it reads batch.snapshot.declaredFlaws only, so a
+ * later change to the recipe's declared problems never moves a stored batch.
+ */
+export function declaredProblemsForBatch(batch) {
+  return [...(batch.snapshot.declaredFlaws ?? [])];
+}
 
 /**
  * parseMeasuredDraft(raw, { signed }) -> { ok, value }. Per the contract's

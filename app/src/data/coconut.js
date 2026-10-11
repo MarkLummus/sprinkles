@@ -61,7 +61,7 @@ export const coconutV1 = {
   process: {},
   iceEd: { style: 'Super-Premium', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.3 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   // No process text on this page — an empty method, not an invented step.
   method: [],
   authored: { beforeYouStart: [] },
@@ -95,7 +95,7 @@ const coconutV1TastingFields = {
   marks: {},
   note: 'EPIC FAIL.\nCoconut fat congealed and froze into hard blobs.\nyeah!! ☺',
   defects: null,
-  bitterDeclared: null,
+  declaredDefects: null,
   meltTestG: null,
   meltStyle: null,
 };
@@ -151,7 +151,7 @@ export const coconutV2 = {
   process: {},
   iceEd: { style: 'Super-Premium', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.3 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };

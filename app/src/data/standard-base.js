@@ -56,7 +56,7 @@ export const standardBaseV1 = {
   process: {},
   iceEd: { style: 'Standard', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.1014 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };
@@ -91,7 +91,7 @@ export const standardBaseV2 = {
   process: {},
   iceEd: { style: 'Standard', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.1014 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };

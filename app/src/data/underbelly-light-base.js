@@ -72,7 +72,7 @@ export const underbellyLightBaseV1 = {
   // calculator inputs, sent to the sidecar, not this field.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };
@@ -115,7 +115,7 @@ export const underbellyLightBaseV2 = {
   process: {},
   iceEd: { style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.1014 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };

@@ -74,12 +74,12 @@ describe('createBatch', () => {
     expect(batch.tasting).toBe(null);
   });
 
-  it("snapshots twelve rows, the version's coefficient set id, declared axes, and declared flaw", () => {
+  it("snapshots twelve rows, the version's coefficient set id, declared axes, and declared problems", () => {
     const batch = createBatch(oliveOilVersion, CHURN_ONLY, null, { id: 'b-1', now: '2026-08-04T09:00:00.000Z' });
     expect(batch.snapshot.rows).toHaveLength(12);
     expect(batch.snapshot.coefficientSetId).toBe('2026.1-slice-transcription');
     expect(batch.snapshot.declaredAxes).toEqual(['Body', 'Oil']);
-    expect(batch.snapshot.declaredFlaw).toBe('Bitter');
+    expect(batch.snapshot.declaredFlaws).toEqual(['Bitter']);
   });
 
   it('the snapshot does not move when the version is edited afterwards (BATCH2-01)', () => {
@@ -91,12 +91,13 @@ describe('createBatch', () => {
     version.rows[0].portions[0].grams = 999;
     version.rows[0].ingredient.composition.fat = 999;
     version.declaredAxes = [];
-    version.declaredFlaw = null;
+    version.declaredFlaws.push('Salty');
+    version.declaredFlaws[0] = 'Changed';
 
     expect(batch.snapshot.rows[0].portions[0].grams).toBe(originalGrams);
     expect(batch.snapshot.rows[0].ingredient.composition.fat).toBe(originalFat);
     expect(batch.snapshot.declaredAxes).toEqual(['Body', 'Oil']);
-    expect(batch.snapshot.declaredFlaw).toBe('Bitter');
+    expect(batch.snapshot.declaredFlaws).toEqual(['Bitter']);
   });
 
   it('a zero-or-one tasting: passing tastingFields builds the single tasting object', () => {
@@ -231,11 +232,29 @@ describe('the blank/zero/plan-never-leaks discipline', () => {
     expect(Object.keys(batch.tasting.marks)).toEqual(['sweetness']);
   });
 
-  it('bitterDeclared is true-or-null, never false', () => {
-    const declared = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {}, bitterDeclared: true }, { id: 'b-1', now: 'x' });
+  it('declaredDefects is a copy of a non-empty tick list, or null — never an empty array', () => {
+    const ticks = ['Bitter'];
+    const declared = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {}, declaredDefects: ticks }, { id: 'b-1', now: 'x' });
     const undeclared = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {} }, { id: 'b-2', now: 'x' });
-    expect(declared.tasting.bitterDeclared).toBe(true);
-    expect(undeclared.tasting.bitterDeclared).toBe(null);
+    const emptied = createBatch(oliveOilVersion, CHURN_ONLY, { marks: {}, declaredDefects: [] }, { id: 'b-3', now: 'x' });
+    expect(declared.tasting.declaredDefects).toEqual(['Bitter']);
+    expect(declared.tasting.declaredDefects).not.toBe(ticks);
+    expect(undeclared.tasting.declaredDefects).toBe(null);
+    expect(emptied.tasting.declaredDefects).toBe(null);
+  });
+
+  it('the snapshot carries 0, 1 and 2 declared problems from the version, as a copy', () => {
+    for (const declaredFlaws of [[], ['Bitter'], ['Bitter', 'Salty']]) {
+      const version = { ...oliveOilVersion, declaredFlaws };
+      const batch = createBatch(version, CHURN_ONLY, null, { id: 'b-1', now: 'x' });
+      expect(batch.snapshot.declaredFlaws).toEqual(declaredFlaws);
+      expect(batch.snapshot.declaredFlaws).not.toBe(declaredFlaws);
+    }
+  });
+
+  it('a version with no declaredFlaws list snapshots an empty list', () => {
+    const { declaredFlaws, ...bare } = oliveOilVersion;
+    expect(createBatch(bare, CHURN_ONLY, null, { id: 'b-1', now: 'x' }).snapshot.declaredFlaws).toEqual([]);
   });
 
   it('defects is a copy of the supplied array, or null when none', () => {
@@ -668,7 +687,7 @@ describe('augustSecondBatch (the 2 Aug 2026 working case, on the battery)', () =
     expect(tasting.meltStyle).toBe(null);
     expect(tasting.note).toBe(null);
     expect(tasting.defects).toBe(null);
-    expect(tasting.bitterDeclared).toBe(true);
+    expect(tasting.declaredDefects).toEqual(['Bitter']);
     expect(Object.keys(tasting.marks)).toHaveLength(2);
     expect(tasting.marks.sweetness).toBe(4);
     expect(tasting.marks.oil).toBe(4);

@@ -90,7 +90,7 @@ export const mochaV0 = {
   process: {},
   iceEd: { style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.2993 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };
@@ -132,7 +132,7 @@ const mochaV0TastingFields = {
   note:
     'Base is Potent! maybe too much cocoa + coffee\nReally strong cocoa.\nVery smooth.\nNot Hard.',
   defects: null,
-  bitterDeclared: null,
+  declaredDefects: null,
   meltTestG: null,
   meltStyle: null,
 };
@@ -197,7 +197,7 @@ export const mochaV1 = {
   process: { pasteuriseC: 75, holdMinutes: 45 },
   iceEd: { style: 'Gelato', servingTemperatureC: -14, hardness: 0.75, overrunPercent: 0.2993 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [MOCHA_SOUS_VIDE_STEP(MOCHA_ROW_IDS)],
   authored: { beforeYouStart: [] },
 };
@@ -253,7 +253,7 @@ export const mochaV2 = {
   // four versions do not show a spurious overrun change.
   iceEd: { style: 'Gelato', servingTemperatureC: -16, hardness: 0.75, overrunPercent: 0.2993 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [MOCHA_SOUS_VIDE_STEP(MOCHA_ROW_IDS)],
   authored: { beforeYouStart: [] },
 };
@@ -331,7 +331,7 @@ export const mochaV3 = {
   process: { pasteuriseC: 75, holdMinutes: 45 },
   iceEd: { style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.2993 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [MOCHA_SOUS_VIDE_STEP(MOCHA_ROW_IDS)],
   authored: { beforeYouStart: [] },
 };

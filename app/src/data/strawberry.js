@@ -112,7 +112,7 @@ export const strawberryV1 = {
   process: { pasteuriseC: 77, holdMinutes: 45 },
   iceEd: { style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.1014 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   // V1's other typed lines (stabilizer-mix reference, gellan note, the two
   // targets) are not transcribed onto the version — they go to the sidecar
   // (Task 3).
@@ -161,7 +161,7 @@ const strawberryV1TastingFields = {
   note:
     'Not very sweet. Could be sweeter.\nStrawberry flavor is good. Could use more.\nFlaky, not creamy, Dry. (maybe cooked too much water?)\nComing out of Fridge/Freezer Temp = -18°C\nToo hard to scoop',
   defects: null,
-  bitterDeclared: null,
+  declaredDefects: null,
   meltTestG: null,
   meltStyle: null,
 };
@@ -213,7 +213,7 @@ export const strawberryV2 = {
   process: {},
   iceEd: { style: 'Gelato', servingTemperatureC: -15, hardness: 0.75, overrunPercent: 0.1014 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };
@@ -285,7 +285,7 @@ export const strawberryV2_1 = {
   process: {},
   iceEd: { style: 'Gelato', servingTemperatureC: -17, hardness: 0.7, overrunPercent: 0.1014 },
   declaredAxes: [],
-  declaredFlaw: null,
+  declaredFlaws: [],
   method: [],
   authored: { beforeYouStart: [] },
 };
@@ -318,7 +318,7 @@ const strawberryV2_1TastingFields = {
   marks: { hardness: 4 },
   note: 'Medium Hard,\nDry.\nNot as Hard as Strawberry V2\nNot as Soft as Mocha',
   defects: null,
-  bitterDeclared: null,
+  declaredDefects: null,
   meltTestG: null,
   meltStyle: null,
 };

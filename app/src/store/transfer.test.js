@@ -70,7 +70,7 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
   };
 }
 
-// Schema 6-shaped by default (D-10, D-11, 03.5-CONTEXT.md): every version
+// Schema 7-shaped by default (D-10, D-11, 03.5-CONTEXT.md; 04-03): every version
 // validateStoreFile sees in production is authored fresh (createChildVersion,
 // or the seed) — there is no lift branch left to fill these in on the way
 // in, so a well-formed fixture carries them from the start.
@@ -97,7 +97,7 @@ function makeVersion(overrides = {}) {
     method: [],
     authored: { beforeYouStart: [] },
     declaredAxes: ['Body', 'Oil'],
-    declaredFlaw: 'Bitter',
+    declaredFlaws: ['Bitter'],
     versionLabel: 'v1 label',
     sheetTitle: '',
     sheetDescription: '',
@@ -150,7 +150,7 @@ function makeBatch(overrides = {}) {
         },
       ],
       declaredAxes: ['Body', 'Oil'],
-      declaredFlaw: 'Bitter',
+      declaredFlaws: ['Bitter'],
     },
     churn: {
       churnDate: '2026-08-02',
@@ -178,21 +178,21 @@ function makeTasting(overrides = {}) {
     marks: {},
     note: null,
     defects: null,
-    bitterDeclared: null,
+    declaredDefects: null,
     meltTestG: null,
     meltStyle: null,
     ...overrides,
   };
 }
 
-// The one accepted shape (D-10, D-11): schemaVersion 6, batches and
+// The one accepted shape (D-10, D-11): schemaVersion 7, batches and
 // recipes always present (arrays, never absent).
 function makeStoreFile(versions = [makeVersion()], batches = [], recipes = [makeRecipe()]) {
-  return { app: 'sprinkles', schemaVersion: 6, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches, recipes };
+  return { app: 'sprinkles', schemaVersion: STORE_SCHEMA_VERSION, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches, recipes };
 }
 
 describe('exportStore', () => {
-  it('returns app sprinkles, schemaVersion 6, and every version, batch and recipe the repository held', async () => {
+  it('returns app sprinkles, schemaVersion 7, and every version, batch and recipe the repository held', async () => {
     const repository = createInMemoryRepository(
       [makeVersion(), makeVersion({ id: 'v2' })],
       [makeBatch()],
@@ -200,7 +200,7 @@ describe('exportStore', () => {
     );
     const exported = await exportStore(repository);
     expect(exported.app).toBe('sprinkles');
-    expect(exported.schemaVersion).toBe(6);
+    expect(exported.schemaVersion).toBe(7);
     expect(exported.schemaVersion).toBe(STORE_SCHEMA_VERSION);
     expect(exported.versions).toHaveLength(2);
     expect(exported.batches).toHaveLength(1);
@@ -254,25 +254,25 @@ describe('validateStoreFile', () => {
     expect(result.errors.some((error) => error.includes('app'))).toBe(true);
   });
 
-  it('accepts a payload whose schemaVersion is 6 — the schema number flips from refused to accepted (D-10, D-11)', () => {
+  it('accepts a payload whose schemaVersion is 7 — the schema number flips from refused to accepted (D-10, D-11)', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors.some((error) => error.includes('schemaVersion'))).toBe(false);
   });
 
-  it.each([1, 2, 3, 4, 5])(
+  it.each([1, 2, 3, 4, 5, 6])(
     'rejects a payload whose schemaVersion is %i, naming the path and both the expected and received value',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
       expect(result.ok).toBe(false);
       const error = result.errors.find((message) => message.includes('$.schemaVersion'));
-      expect(error).toContain('expected 6');
+      expect(error).toContain('expected 7');
       expect(error).toContain(String(oldSchemaVersion));
     },
   );
 
   // D-10: a plain sentence goes first, before the path-named error, so an
   // older export's own maker sees words before a technical path.
-  it.each([1, 2, 3, 4, 5])(
+  it.each([1, 2, 3, 4, 5, 6])(
     'reports OLDER_EXPORT_MESSAGE as the first error for a payload whose schemaVersion is %i',
     (oldSchemaVersion) => {
       const result = validateStoreFile({ ...makeStoreFile(), schemaVersion: oldSchemaVersion });
@@ -281,7 +281,7 @@ describe('validateStoreFile', () => {
     },
   );
 
-  it('does not report OLDER_EXPORT_MESSAGE for a well-formed schemaVersion 6 payload', () => {
+  it('does not report OLDER_EXPORT_MESSAGE for a well-formed schemaVersion 7 payload', () => {
     const result = validateStoreFile(makeStoreFile());
     expect(result.errors).not.toContain(OLDER_EXPORT_MESSAGE);
   });
@@ -491,7 +491,7 @@ describe('validateStoreFile', () => {
     });
 
     it('accepts a well-formed tasting object', () => {
-      const batch = makeBatch({ tasting: makeTasting({ marks: { sweetness: 4, oil: 4 }, bitterDeclared: true, meltTestG: 3 }) });
+      const batch = makeBatch({ tasting: makeTasting({ marks: { sweetness: 4, oil: 4 }, declaredDefects: ['Bitter'], meltTestG: 3 }) });
       expect(validateStoreFile(makeStoreFile([makeVersion()], [batch]))).toEqual({ ok: true, errors: [] });
     });
 
@@ -528,11 +528,48 @@ describe('validateStoreFile', () => {
       expect(validateStoreFile(makeStoreFile([makeVersion()], [withoutDefects]))).toEqual({ ok: true, errors: [] });
     });
 
-    it('rejects bitterDeclared: false, naming the path — the toggle is true or null, never a stored false', () => {
-      const batch = makeBatch({ tasting: makeTasting({ bitterDeclared: false }) });
+    it('rejects a declaredDefects value that is not null or an array, naming the path', () => {
+      for (const bad of [true, false, 'Bitter']) {
+        const batch = makeBatch({ tasting: makeTasting({ declaredDefects: bad }) });
+        const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+        expect(result.ok).toBe(false);
+        expect(result.errors.some((error) => error.includes('tasting.declaredDefects'))).toBe(true);
+      }
+    });
+
+    it("rejects a tick naming a word the batch's own snapshot lacks, naming the path (T-04-07)", () => {
+      const batch = makeBatch({ tasting: makeTasting({ declaredDefects: ['Salty'] }) });
       const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
       expect(result.ok).toBe(false);
-      expect(result.errors.some((error) => error.includes('tasting.bitterDeclared'))).toBe(true);
+      expect(result.errors.some((error) => error.includes('$.batches[0].tasting.declaredDefects'))).toBe(true);
+    });
+
+    it('rejects a tick on a batch whose snapshot declares no problem', () => {
+      const batch = makeBatch({
+        snapshot: { ...makeBatch().snapshot, declaredFlaws: [] },
+        tasting: makeTasting({ declaredDefects: ['Bitter'] }),
+      });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('tasting.declaredDefects'))).toBe(true);
+    });
+
+    it('rejects a repeated tick, naming the path', () => {
+      const batch = makeBatch({
+        snapshot: { ...makeBatch().snapshot, declaredFlaws: ['Bitter', 'Salty'] },
+        tasting: makeTasting({ declaredDefects: ['Bitter', 'Bitter'] }),
+      });
+      const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('tasting.declaredDefects'))).toBe(true);
+    });
+
+    it('accepts one and two ticks naming words the snapshot holds', () => {
+      const snapshot = { ...makeBatch().snapshot, declaredFlaws: ['Bitter', 'Salty'] };
+      for (const ticks of [['Bitter'], ['Salty'], ['Bitter', 'Salty']]) {
+        const batch = makeBatch({ snapshot, tasting: makeTasting({ declaredDefects: ticks }) });
+        expect(validateStoreFile(makeStoreFile([makeVersion()], [batch]))).toEqual({ ok: true, errors: [] });
+      }
     });
 
     it('rejects an unknown meltStyle, naming the path', () => {
@@ -606,7 +643,7 @@ describe('validateRecipe / $.recipes', () => {
 
   it('rejects a recipe carrying an own __proto__ key via the existing unsafe-key scanner, and leaves a fresh object unpolluted', () => {
     const malicious = JSON.parse(
-      '{"app":"sprinkles","schemaVersion":6,"versions":[],"batches":[],' +
+      '{"app":"sprinkles","schemaVersion":7,"versions":[],"batches":[],' +
         '"recipes":[{"id":"r1","name":"x","description":"x","__proto__":{"polluted":true}}]}',
     );
     const result = validateStoreFile(malicious);
@@ -628,7 +665,7 @@ describe('importStore', () => {
     expect(repository.versions).toEqual(before);
   });
 
-  it('imports a well-formed schemaVersion 6 file with a batch and a recipe, round-tripping through putAllRecipes, putAll and putAllBatches', async () => {
+  it('imports a well-formed schemaVersion 7 file with a batch and a recipe, round-tripping through putAllRecipes, putAll and putAllBatches', async () => {
     const repository = createInMemoryRepository([], [], []);
     const result = await importStore(repository, makeStoreFile([makeVersion()], [makeBatch()], [makeRecipe()]));
     expect(result.ok).toBe(true);
@@ -824,14 +861,63 @@ describe('validateVersion, the fields', () => {
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
-  it('accepts the battery\'s declared pair and declared flaw', () => {
-    const version = makeVersion({ declaredAxes: ['Body', 'Oil'], declaredFlaw: 'Bitter' });
+  it('accepts the battery\'s declared pair and declared problem', () => {
+    const version = makeVersion({ declaredAxes: ['Body', 'Oil'], declaredFlaws: ['Bitter'] });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
   });
 
-  it('accepts a null declaredFlaw and an empty declaredAxes array', () => {
-    const version = makeVersion({ declaredAxes: [], declaredFlaw: null });
+  it('accepts empty declaredFlaws and an empty declaredAxes array', () => {
+    const version = makeVersion({ declaredAxes: [], declaredFlaws: [] });
     expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('accepts two declared scales and two declared problems', () => {
+    const version = makeVersion({ declaredAxes: ['Body', 'Oil'], declaredFlaws: ['Bitter', 'Salty'] });
+    expect(validateStoreFile(makeStoreFile([version]))).toEqual({ ok: true, errors: [] });
+  });
+
+  it('rejects a third declared problem, naming the path', () => {
+    const version = makeVersion({ declaredFlaws: ['Bitter', 'Salty', 'Burnt'] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.versions[0].declaredFlaws') && error.includes('at most 2'))).toBe(true);
+  });
+
+  it('rejects a repeated declared problem, naming the path', () => {
+    const version = makeVersion({ declaredFlaws: ['Bitter', 'Bitter'] });
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.versions[0].declaredFlaws'))).toBe(true);
+  });
+
+  it('rejects an empty or non-string declared problem, naming the path', () => {
+    for (const bad of ['', 42, null]) {
+      const result = validateStoreFile(makeStoreFile([makeVersion({ declaredFlaws: [bad] })]));
+      expect(result.ok).toBe(false);
+      expect(result.errors.some((error) => error.includes('$.versions[0].declaredFlaws[0]'))).toBe(true);
+    }
+  });
+
+  it('rejects a third declared scale and a repeated declared scale, naming the path', () => {
+    const third = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: ['Body', 'Oil', 'Sweetness'] })]));
+    expect(third.ok).toBe(false);
+    expect(third.errors.some((error) => error.includes('$.versions[0].declaredAxes') && error.includes('at most 2'))).toBe(true);
+    const repeat = validateStoreFile(makeStoreFile([makeVersion({ declaredAxes: ['Body', 'Body'] })]));
+    expect(repeat.ok).toBe(false);
+    expect(repeat.errors.some((error) => error.includes('$.versions[0].declaredAxes'))).toBe(true);
+  });
+
+  it('rejects the pre-04 single declaredFlaw string left in place of the list, naming the path', () => {
+    const result = validateStoreFile(makeStoreFile([makeVersion({ declaredFlaws: 'Bitter' })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.versions[0].declaredFlaws'))).toBe(true);
+  });
+
+  it("applies the same bounds to a batch snapshot's declaredFlaws", () => {
+    const snapshot = { ...makeBatch().snapshot, declaredFlaws: ['A', 'B', 'C'] };
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [makeBatch({ snapshot })]));
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((error) => error.includes('$.batches[0].snapshot.declaredFlaws'))).toBe(true);
   });
 
   // WR-01 (code review): versionLabel, sheetTitle and sheetDescription are
@@ -896,18 +982,11 @@ describe('validateVersion, the fields', () => {
     expect(result.errors.some((error) => error.includes('.declaredAxes[0]'))).toBe(true);
   });
 
-  it('rejects a non-string, non-null declaredFlaw, naming the path', () => {
-    const version = makeVersion({ declaredFlaw: 42 });
-    const result = validateStoreFile(makeStoreFile([version]));
-    expect(result.ok).toBe(false);
-    expect(result.errors.some((error) => error.includes('.declaredFlaw'))).toBe(true);
-  });
-
   it("rejects a file carrying __proto__ on a method step — the uses array's containing object — via the existing scanner", () => {
     const malicious = JSON.parse(
-      '{"app":"sprinkles","schemaVersion":6,"versions":[{"id":"v1","schemaVersion":5,"recipeId":"r1","coefficientSetId":"c",' +
+      '{"app":"sprinkles","schemaVersion":7,"versions":[{"id":"v1","schemaVersion":6,"recipeId":"r1","coefficientSetId":"c",' +
         '"parentVersionId":null,"parentVersionLabel":null,"reason":null,"citedBatchId":null,"createdAt":"2026-01-01T00:00:00.000Z",' +
-        '"declaredAxes":["Body","Oil"],"declaredFlaw":"Bitter","versionLabel":"v","sheetTitle":"","sheetDescription":"",' +
+        '"declaredAxes":["Body","Oil"],"declaredFlaws":["Bitter"],"versionLabel":"v","sheetTitle":"","sheetDescription":"",' +
         '"rows":[{"id":"r1","ingredientName":"x","portions":[{"step":1,"grams":1}],"ingredient":{"composition":{"fat":1}},"removed":false}],' +
         '"method":[{"n":1,"leadIn":"x","instruction":"x","removed":false,"uses":[],"__proto__":{"polluted":true}}],' +
         '"authored":{"beforeYouStart":[]}}],"batches":[],"recipes":[]}',

@@ -58,7 +58,7 @@ const tastingFields = {
   marks: { sweetness: 4, oil: 4 },
   note: null,
   defects: null,
-  bitterDeclared: true,
+  declaredDefects: ['Bitter'],
   meltTestG: 3,
   meltStyle: null,
 };

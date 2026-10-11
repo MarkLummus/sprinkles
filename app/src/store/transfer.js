@@ -4,7 +4,7 @@
 // write: a malformed file is refused with every error found, never
 // half-applied (T-04-01) and never used to reach past an object's own
 // properties into its prototype chain (T-04-02). It now knows exactly one
-// shape — schemaVersion 6, carrying recipes beside versions and batches
+// shape — schemaVersion 7, carrying recipes beside versions and batches
 // (03.5-CONTEXT.md D-10, D-11) — and refuses everything older rather than
 // lifting it; there is no ladder here.
 import { AXES } from '../domain/axes.js';
@@ -12,13 +12,17 @@ import { SEGMENT_OPTIONS, DEFECTS } from '../domain/battery.js';
 
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 const DECLARED_AXIS_NAMES = AXES.filter((axis) => axis.group === 'declared').map((axis) => axis.name);
+// A version declares up to two scales and up to two problems (sketch 010 D25, D26).
+const MAX_DECLARED = 2;
 
 // The store file's own bookkeeping number (D-10) — distinct from
 // DB_VERSION (db.js) and VERSION_SCHEMA_VERSION (olive-oil.js): three
 // separate counters, each incrementing only its own prior value. Bumped
-// to 6 this phase because the file gained a `recipes` array and the
-// version shape lost `recipeName`/`headnote` (D-11).
-export const STORE_SCHEMA_VERSION = 6;
+// to 6 in phase 03.5 because the file gained a `recipes` array and the
+// version shape lost `recipeName`/`headnote` (D-11). Bumped to 7 in phase
+// 04 because declared problems became lists of 0 to 2 (`declaredFlaws`,
+// `declaredDefects`) and a batch gained At draw / From freezer picks.
+export const STORE_SCHEMA_VERSION = 7;
 
 // D-10: a plain sentence a maker can read, pushed first — before the
 // path-named `$.schemaVersion` error — whenever the file is from a
@@ -220,7 +224,7 @@ function validateMarks(marks, path, errors) {
  * carries zero or one tasting (D-03); this validates the one object a
  * batch may hold at $.tasting.
  */
-function validateTasting(tasting, path, errors) {
+function validateTasting(tasting, snapshot, path, errors) {
   if (!isPlainObject(tasting)) {
     errors.push(`${path}: expected an object`);
     return;
@@ -245,8 +249,16 @@ function validateTasting(tasting, path, errors) {
   if (!isAbsentOrNull(tasting.defects) && (!Array.isArray(tasting.defects) || !tasting.defects.every((chip) => DEFECTS.includes(chip)))) {
     errors.push(`${path}.defects: expected an array of known defect chips or null, got ${JSON.stringify(tasting.defects)}`);
   }
-  if (tasting.bitterDeclared !== true && tasting.bitterDeclared !== null) {
-    errors.push(`${path}.bitterDeclared: expected true or null, got ${JSON.stringify(tasting.bitterDeclared)}`);
+  if (!isAbsentOrNull(tasting.declaredDefects)) {
+    const declared = isPlainObject(snapshot) && Array.isArray(snapshot.declaredFlaws) ? snapshot.declaredFlaws : [];
+    const ticks = tasting.declaredDefects;
+    if (!Array.isArray(ticks) || !ticks.every((word) => isNonEmptyString(word) && declared.includes(word))) {
+      errors.push(
+        `${path}.declaredDefects: expected null or an array of words from this batch's snapshot.declaredFlaws ${JSON.stringify(declared)}, got ${JSON.stringify(ticks)}`,
+      );
+    } else if (new Set(ticks).size !== ticks.length) {
+      errors.push(`${path}.declaredDefects: expected unique words, got ${JSON.stringify(ticks)}`);
+    }
   }
   if (!isEnumOrNull(tasting.meltStyle, SEGMENT_OPTIONS.meltStyle)) {
     errors.push(
@@ -261,7 +273,8 @@ function validateTasting(tasting, path, errors) {
  * non-empty string naming one of the battery's declared-pair axes
  * (domain/axes.js's AXES, group 'declared') — refuses the pre-reset
  * `{ name, low, high }` object shape, which would otherwise reach
- * axesForBatch as a name that resolves to nothing.
+ * axesForBatch as a name that resolves to nothing. A recipe declares at
+ * most two scales (sketch 010 D25), each name once.
  */
 function validateDeclaredAxes(declaredAxes, path, errors) {
   if (!Array.isArray(declaredAxes)) {
@@ -273,6 +286,36 @@ function validateDeclaredAxes(declaredAxes, path, errors) {
       errors.push(`${path}[${index}]: expected one of ${JSON.stringify(DECLARED_AXIS_NAMES)}, got ${JSON.stringify(name)}`);
     }
   });
+  if (declaredAxes.length > MAX_DECLARED) {
+    errors.push(`${path}: expected at most ${MAX_DECLARED} declared scales, got ${declaredAxes.length}`);
+  }
+  if (new Set(declaredAxes).size !== declaredAxes.length) {
+    errors.push(`${path}: expected each declared scale once, got ${JSON.stringify(declaredAxes)}`);
+  }
+}
+
+/**
+ * validateDeclaredFlaws(declaredFlaws, path, errors) -> void. The declared
+ * problems a version (or a batch's snapshot) names: an array of at most two
+ * unique non-empty words (sketch 010 D26). T-04-07: a bounded list of plain
+ * strings, nothing a later tick can widen.
+ */
+function validateDeclaredFlaws(declaredFlaws, path, errors) {
+  if (!Array.isArray(declaredFlaws)) {
+    errors.push(`${path}: expected an array`);
+    return;
+  }
+  declaredFlaws.forEach((word, index) => {
+    if (!isNonEmptyString(word)) {
+      errors.push(`${path}[${index}]: expected a non-empty string, got ${JSON.stringify(word)}`);
+    }
+  });
+  if (declaredFlaws.length > MAX_DECLARED) {
+    errors.push(`${path}: expected at most ${MAX_DECLARED} declared problems, got ${declaredFlaws.length}`);
+  }
+  if (new Set(declaredFlaws).size !== declaredFlaws.length) {
+    errors.push(`${path}: expected each declared problem once, got ${JSON.stringify(declaredFlaws)}`);
+  }
 }
 
 /**
@@ -308,9 +351,7 @@ function validateBatch(batch, path, errors) {
       errors.push(`${path}.snapshot.coefficientSetId: expected a string`);
     }
     validateDeclaredAxes(batch.snapshot.declaredAxes, `${path}.snapshot.declaredAxes`, errors);
-    if (!isAbsentOrNull(batch.snapshot.declaredFlaw) && typeof batch.snapshot.declaredFlaw !== 'string') {
-      errors.push(`${path}.snapshot.declaredFlaw: expected a string or null, got ${JSON.stringify(batch.snapshot.declaredFlaw)}`);
-    }
+    validateDeclaredFlaws(batch.snapshot.declaredFlaws, `${path}.snapshot.declaredFlaws`, errors);
   }
 
   if (!isPlainObject(batch.churn)) {
@@ -366,7 +407,7 @@ function validateBatch(batch, path, errors) {
   }
 
   if (!isAbsentOrNull(batch.tasting)) {
-    validateTasting(batch.tasting, `${path}.tasting`, errors);
+    validateTasting(batch.tasting, batch.snapshot, `${path}.tasting`, errors);
   }
 }
 
@@ -408,9 +449,7 @@ function validateVersion(version, path, errors) {
     errors.push(`${path}.createdAt: expected a non-empty string, got ${JSON.stringify(version.createdAt)}`);
   }
   validateDeclaredAxes(version.declaredAxes, `${path}.declaredAxes`, errors);
-  if (!isAbsentOrNull(version.declaredFlaw) && typeof version.declaredFlaw !== 'string') {
-    errors.push(`${path}.declaredFlaw: expected a string or null, got ${JSON.stringify(version.declaredFlaw)}`);
-  }
+  validateDeclaredFlaws(version.declaredFlaws, `${path}.declaredFlaws`, errors);
   // WR-01 (code review): all three fields are read directly by the UI
   // (the version-line uniqueness check, the Sheet title/description's own
   // rendering) but were never checked here. versionLabel must be
@@ -439,7 +478,7 @@ function validateVersion(version, path, errors) {
  * this gate and before any write.
  *
  * D-10, D-11 (03.5-CONTEXT.md): the accepted schema is the single value
- * STORE_SCHEMA_VERSION (6), carrying a `recipes` array beside versions
+ * STORE_SCHEMA_VERSION (7), carrying a `recipes` array beside versions
  * and batches. A store exported after this change imports after it; a
  * store exported before it is refused as old — with OLDER_EXPORT_MESSAGE
  * first, a plain sentence a maker can read — rather than silently read as

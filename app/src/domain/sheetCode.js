@@ -24,7 +24,7 @@
 //     and its targets as label/value pairs
 //
 // WHAT DOES NOT (paper-neutral, so the code survives it): reason, citedBatchId,
-// createdAt, parentVersionId, parentVersionLabel, declaredAxes, declaredFlaw
+// createdAt, parentVersionId, parentVersionLabel, declaredAxes, declaredFlaws
 // and any declared problems, Balance figures and the embedded coefficients
 // (an import can change those without the paper changing), the targets bands,
 // equipment, process, and every removed row, line or step. Layout and log

@@ -117,17 +117,17 @@ describe('oliveOilVersion.method uses (D-08)', () => {
   });
 });
 
-describe('oliveOilVersion.declaredAxes and declaredFlaw (03.3.1-CONTEXT.md D-07)', () => {
+describe('oliveOilVersion.declaredAxes and declaredFlaws (03.3.1-CONTEXT.md D-07; 04-03)', () => {
   it('declares the battery\'s Body and Oil pair by name', () => {
     expect(oliveOilVersion.declaredAxes).toEqual(['Body', 'Oil']);
   });
 
-  it('declares Bitter as the recipe\'s declared flaw', () => {
-    expect(oliveOilVersion.declaredFlaw).toBe('Bitter');
+  it('declares Bitter as the recipe\'s one declared problem', () => {
+    expect(oliveOilVersion.declaredFlaws).toEqual(['Bitter']);
   });
 
-  it('carries VERSION_SCHEMA_VERSION 5', () => {
-    expect(oliveOilVersion.schemaVersion).toBe(5);
+  it('carries VERSION_SCHEMA_VERSION 6', () => {
+    expect(oliveOilVersion.schemaVersion).toBe(6);
   });
 });
 

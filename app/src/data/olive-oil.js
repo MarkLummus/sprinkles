@@ -8,8 +8,10 @@ import { library } from './library.js';
 // (db.js) and from the store file's schemaVersion (transfer.js). Bumped to
 // 5 this phase because the recipe's own identity left the version: the
 // recipe name is gone (the recipes store carries it now, D-11) and the
-// headnote field split into sheetTitle/sheetDescription (D-09).
-export const VERSION_SCHEMA_VERSION = 5;
+// headnote field split into sheetTitle/sheetDescription (D-09). Bumped to
+// 6 in phase 04 because the single declaredFlaw became declaredFlaws, a
+// list of 0 to 2 problems (sketch 010 D25, D26).
+export const VERSION_SCHEMA_VERSION = 6;
 
 // A fixed constant, not a live timestamp: two machines seeding this
 // version on different days must agree on its createdAt, so it is never
@@ -111,12 +113,12 @@ export const oliveOilVersion = {
   // than being filled with an invented midpoint.
   iceEd: { style: null, servingTemperatureC: null, hardness: null, overrunPercent: null },
   // The declared pair this recipe names from the battery's fixed AXES
-  // table (domain/axes.js), plus the one declared flaw. D-07: this
-  // recipe declares Body and Oil, and Bitter as the flaw the maker can
+  // table (domain/axes.js), plus the declared problems (a list of 0 to 2). D-07: this
+  // recipe declares Body and Oil, and Bitter as the problem the maker can
   // toggle on a tasting. No anchors are authored here anymore — the six
   // axes' anchor words are fixed on the battery, not on the version.
   declaredAxes: ['Body', 'Oil'],
-  declaredFlaw: 'Bitter',
+  declaredFlaws: ['Bitter'],
   // Prose instruction with typed targets beside it. Purpose is why the step
   // exists — diagnostic input. Aside is what to watch while doing it. They
   // are different fields, omitted (not blank) when the sheet has neither.

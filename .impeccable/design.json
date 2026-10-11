@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-06T12:00:00Z",
+  "generatedAt": "2026-10-11T04:11:09Z",
   "title": "Design System: Sprinkles",
   "extensions": {
     "colorMeta": {
@@ -239,7 +239,7 @@
       },
       "small-print": {
         "displayName": "Small print",
-        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, plan sub-lines, cross-flags, import errors."
+        "purpose": "Target chips, basis notes, rule anchors, fat breakdown, cross-flags, import errors."
       },
       "hand": {
         "displayName": "The hand",
@@ -404,7 +404,7 @@
       "layout": "auto",
       "boxSizing": "border-box",
       "cellPadX": "6px",
-      "purpose": "The ingredient table sizes to its content (sketch 011 decision 15). From 724 on screen each row is a grid with named areas (As made, plan amount, name, share), so the plan amount never moves when Show changes toggles (decision 31, D3); below 724 it reads as a list with no header row, plan / As made / struck. Its leading stays constant so a marked row's bold weight moves nothing; rows read in step order under step-group heads."
+      "purpose": "The ingredient table sizes to its content (sketch 011 decision 15). From 724 on screen each row is a grid with named areas (As made, plan amount, name, share), so the plan amount never moves when Show changes toggles (decision 31, D3); below 724 it reads as a list with no header row, plan / As made / struck. Its leading stays constant so a marked row's bold weight moves nothing; rows read in step order under step-group heads. Print, approved direction (sketch 010, not yet built): As made | Grams | Ingredient with a blank ruled As made line (72x24px), no tick box, no share column, a heavy ink rule opening each step group, Balance beside the table without Hide, breaks between step groups only."
     },
     "battery": {
       "penWidth": "640px on the Sheet's foot; the 350px log column from 1366",
@@ -413,7 +413,7 @@
       "captionLine": "Reserves Clear's height marked or not (24px desktop, 44px narrow touch, two caption lines at wide touch) so picking moves nothing.",
       "clearance": "12px between a desktop axis stop and the core/declared hairline, carried as the declared column's own padding-left rather than a column gap.",
       "appSkin": "In .notebook-log the battery takes the App skin (sketch 011 decision 29, 2026-10-02): colour, radius and rule colour only. Picked fills are app blue's text companion; joined stops and segments take the 10px radius at their outer ends; fields and rules read the divider colour.",
-      "purpose": "The record pen's own instrument: six axes in one grid with the defects, a 1px hairline at the two-thirds line, two group cues heading the columns in the cue face. A genuinely different DOM shape below 724px and from 1366 (stacked groups), not a media-scoped layout."
+      "purpose": "The record pen's own instrument: six axes in one grid with the defects, a 1px hairline at the two-thirds line, two group cues heading the columns in the cue face. A genuinely different DOM shape below 724px and from 1366 (stacked groups), not a media-scoped layout. Declared axes are none, one or two per version (sketch 010 D26). At draw and From freezer (approved direction, not yet built): a two-option radio group, Nothing to note and Not evaluated, that hides its group's fields when picked and turns both options off beside a mark."
     },
     "shell": {
       "barHeight": "57px (44px controls, 6px above and below, 1px hairline), sticky from 724",
@@ -540,9 +540,9 @@
       "name": "Batch measured cell (Sheet and print)",
       "kind": "custom",
       "refersTo": "recorded-value",
-      "description": "Sheet catalogue and the printed log. A measured field's read view: caption label, then the figure in pen blue at the NOTE size and the prose weight. On screen the batch log is App context and draws this differently (see Log measured cell); the print keeps this paper form.",
-      "html": "<div class=\"ds-batch-cells\"><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Out of the machine</span><span class=\"ds-batch-cell__value\">−6 <span class=\"ds-batch-cell__unit\">°C</span></span><span class=\"ds-batch-cell__plan\">plan −5 to −7 °C</span></div><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Air</span><span class=\"ds-batch-cell__unit ds-batch-cell__unit--absent\">not measured</span></div></div>",
-      "css": ".ds-batch-cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--sheet-col-batch-cell-min),max-content));gap:var(--gap-s) var(--gap-l)}.ds-batch-cell{display:flex;flex-direction:column;gap:var(--gap-xs);font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-batch-cell__label{font-size:var(--sheet-type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--sheet-ink)}.ds-batch-cell__value{font-size:var(--sheet-type-note);font-weight:400;line-height:var(--sheet-leading-figure);color:var(--sheet-pen-blue)}.ds-batch-cell__unit{font-size:var(--sheet-size-deviation-words);font-weight:400}.ds-batch-cell__unit--absent{color:var(--sheet-ink)}.ds-batch-cell__plan{font-size:var(--sheet-size-small-print);margin-top:var(--gap-hair);color:var(--sheet-ink)}"
+      "description": "Sheet catalogue and the printed log. A measured field's read view: caption label, then the figure in pen blue at the NOTE size and the prose weight. On screen the batch log is App context and draws this differently (see Log measured cell); the print keeps this paper form. The printed log pages are redrawn in sketch 010 (ruled lines, small-caps group heads, ticks on one rule): approved direction, not yet built, see the Layout section of DESIGN.md.",
+      "html": "<div class=\"ds-batch-cells\"><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Out of the machine</span><span class=\"ds-batch-cell__value\">−6 <span class=\"ds-batch-cell__unit\">°C</span></span></div><div class=\"ds-batch-cell\"><span class=\"ds-batch-cell__label\">Airiness</span><span class=\"ds-batch-cell__unit ds-batch-cell__unit--absent\">not measured</span></div></div>",
+      "css": ".ds-batch-cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--sheet-col-batch-cell-min),max-content));gap:var(--gap-s) var(--gap-l)}.ds-batch-cell{display:flex;flex-direction:column;gap:var(--gap-xs);font-family:var(--face-grotesk);font-variant-numeric:tabular-nums}.ds-batch-cell__label{font-size:var(--sheet-type-label);font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--sheet-ink)}.ds-batch-cell__value{font-size:var(--sheet-type-note);font-weight:400;line-height:var(--sheet-leading-figure);color:var(--sheet-pen-blue)}.ds-batch-cell__unit{font-size:var(--sheet-size-deviation-words);font-weight:400}.ds-batch-cell__unit--absent{color:var(--sheet-ink)}"
     },
     {
       "name": "Authored block",
@@ -604,9 +604,9 @@
       "name": "Log measured cell (App)",
       "kind": "custom",
       "refersTo": "app-log-value",
-      "description": "Built in the batch log (.notebook-log .batch-row__cell, App context). A caption in the label role, the figure at the log value role in the App text colour, a unit at meta size in secondary text, a plan sub-line at label size. An absent value reads \"not measured\" in secondary text: an absence is not a record.",
-      "html": "<div class=\"ds-log-cells\"><div class=\"ds-log-cell\"><span class=\"ds-log-cell__label\">Out of the machine</span><span class=\"ds-log-cell__value\">−6 <span class=\"ds-log-cell__unit\">°C</span></span><span class=\"ds-log-cell__plan\">plan −5 to −7 °C</span></div><div class=\"ds-log-cell\"><span class=\"ds-log-cell__label\">Air</span><span class=\"ds-log-cell__unit\">not measured</span></div></div>",
-      "css": ".ds-log-cells{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--app-notebook-log-cell-gap-row) var(--gap-m);font-family:var(--face-grotesk)}.ds-log-cell{display:flex;flex-direction:column;gap:var(--gap-hair)}.ds-log-cell__label{font-size:var(--app-size-label);font-weight:600;letter-spacing:var(--app-tracking-label);text-transform:uppercase;color:var(--app-text-secondary)}.ds-log-cell__value{font-size:var(--app-notebook-log-value-size);font-weight:600;line-height:normal;color:var(--app-text);font-variant-numeric:tabular-nums}.ds-log-cell__unit{font-size:var(--app-size-meta);font-weight:400;color:var(--app-text-secondary)}.ds-log-cell__plan{font-size:var(--app-size-label);color:var(--app-text-secondary)}"
+      "description": "Built in the batch log (.notebook-log .batch-row__cell, App context). A caption in the label role, the figure at the log value role in the App text colour, a unit at meta size in secondary text. An absent value reads \"not measured\" in secondary text: an absence is not a record. No plan sub-line (removed in Phase 03.7.1).",
+      "html": "<div class=\"ds-log-cells\"><div class=\"ds-log-cell\"><span class=\"ds-log-cell__label\">Out of the machine</span><span class=\"ds-log-cell__value\">−6 <span class=\"ds-log-cell__unit\">°C</span></span></div><div class=\"ds-log-cell\"><span class=\"ds-log-cell__label\">Airiness</span><span class=\"ds-log-cell__unit\">not measured</span></div></div>",
+      "css": ".ds-log-cells{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--app-notebook-log-cell-gap-row) var(--gap-m);font-family:var(--face-grotesk)}.ds-log-cell{display:flex;flex-direction:column;gap:var(--gap-hair)}.ds-log-cell__label{font-size:var(--app-size-label);font-weight:600;letter-spacing:var(--app-tracking-label);text-transform:uppercase;color:var(--app-text-secondary)}.ds-log-cell__value{font-size:var(--app-notebook-log-value-size);font-weight:600;line-height:normal;color:var(--app-text);font-variant-numeric:tabular-nums}.ds-log-cell__unit{font-size:var(--app-size-meta);font-weight:400;color:var(--app-text-secondary)}"
     }
   ],
   "narrative": {
@@ -725,6 +725,16 @@
         "name": "The One Head Rule",
         "body": "A Show/Hide is never hand-built; two drawings of one control contradict each other. - **Upright list** (`UprightRail.jsx`): the vertical row both History (below 1366) and the batch list use — a 12px round mark, a title (meta size, a blue underlined link; bold ink and no underline on the row in view) over a label-size meta line in secondary text, a row at least 44px tall, and a 1px connector that runs only between marks, from just below one mark to the top of the next row and never across a circle (G-03.5-5).",
         "section": "components"
+      },
+      {
+        "name": "The Foot-In-Flow Rule",
+        "body": "A printed page carries its own foot inside the page, after its content, and nothing depends on the browser to place or number it.",
+        "section": "layout"
+      },
+      {
+        "name": "The Core-and-Declared Rule",
+        "body": "A page, a pen and a reading carry the items every recipe has, and add only what the version itself declares: none to two scales and none to two problems. A recipe that declares none draws none, with no empty cue or row; a test takes the expected declared list from the version, never from Olive Oil's.",
+        "section": "layout"
       }
     ],
     "dos": [
@@ -739,7 +749,9 @@
       "**Do** keep page composition in surface briefs and reusable visual rules in this document.",
       "**Do** set the maker's saved observations in the hand and sheet pen blue in the App (typed in the prose-field role, never in the hand), at or above the hand's minimum size, with the text-face fallback in place for forced colours and print.",
       "**Do** set a destination's name, count or link in its text companion (the on-subtle companion when the current place's surface sits under it) and its mark in its accent, and fill a primary App action with app blue's companion under a white label.",
-      "**Do** give every App control the one 10px radius, every App action a 44px floor, and let hover change a border's weight, never the box's size."
+      "**Do** give every App control the one 10px radius, every App action a 44px floor, and let hover change a border's weight, never the box's size.",
+      "**Do** (approved direction, sketch 010) print in ink alone on a white letter page with 0.75 in at the left and right, nothing under 12px, a foot in the flow of each page, and room to write wherever the maker will: a rule, a box or a scale, never a printed value.",
+      "**Do** (approved direction, sketch 010) draw a recipe's declared scales and problems from its own version, none to two of each, and draw none for a recipe that declares none."
     ],
     "donts": [
       "**Don't** impose the Sheet palette's four colors on Home, navigation, recipe context, History, Ingredients, Kitchen, or consultations.",
@@ -752,7 +764,8 @@
       "**Don't** call the surrounding interface “Sprinkles Jar.” Use the approved section names and vocabulary.",
       "**Don't** put a specification, a label, a date, a heading, or anything the app wrote in the hand, and don't load the hand's file from a network.",
       "**Don't** give a recipe a colour of its own, and don't let a rail, a sprinkle, or an underline mean anything but the place a thing lives or the place you are.",
-      "**Don't** use an accent as text or as a fill under a white label (app blue reads 3.90:1 there), and don't fill a picked App control in pen blue: pen blue in the App is the maker's own words."
+      "**Don't** use an accent as text or as a fill under a white label (app blue reads 3.90:1 there), and don't fill a picked App control in pen blue: pen blue in the App is the maker's own words.",
+      "**Don't** (approved direction, sketch 010) print a running foot, \"Page n of m\", colour, a tick box beside the As made line, \"% of batch\", Watch for, a screen control, or \"Time to draw temp.\" (retired as a field 2026-10-07); and don't print the \"Every recipe\" or \"This recipe only\" cues, which are design-time notions."
     ]
   }
 }

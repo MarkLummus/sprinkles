@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { versionIdentity } from '../domain/lineage.js';
-import { newestDraft } from '../domain/draft.js';
+import { newestDraft, draftMatchesVersion } from '../domain/draft.js';
 import { activeWork, NOT_YET_CHURNED, AWAITING_TASTING, TASTED, STANDING_WORDS } from '../domain/lastEvent.js';
 import { notebookPath } from './notebookPaths.js';
 
@@ -86,15 +86,25 @@ export function HomeBody({ versions, batches, recipes = [], drafts = [] }) {
   const work = activeWork(versions, batches, recipes);
   // D-18: an open draft keeps every other opener disabled on its recipe, so
   // the recipe holding the newest draft takes the lead (whatever its place in
-  // the list below, which keeps its order) and names it. Only a draft whose
-  // version is in the store is named.
-  const draft = newestDraft(drafts.filter((record) => versions.some((version) => version.id === record.versionId)));
+  // the list below, which keeps its order) and names it. Only a draft that
+  // will reopen on its version is named: the same draftMatchesVersion check
+  // the recipe page's restore runs, so "Go to draft" never opens a page that
+  // deletes the draft (WR-09).
+  const draft = newestDraft(
+    drafts.filter((record) => {
+      const version = versions.find((candidate) => candidate.id === record.versionId);
+      return (
+        version !== undefined &&
+        draftMatchesVersion(record, version, batches.filter((batch) => batch.versionId === version.id))
+      );
+    }),
+  );
   const draftVersion = draft ? versions.find((version) => version.id === draft.versionId) : null;
   const lead = (draftVersion && work.find((entry) => entry.id === draftVersion.recipeId)) || work[0] || null;
   // A Correct draft opens beside the batch it corrects, so that is where the
-  // link goes; the other two kinds open on the version.
-  const draftBatchId =
-    draft?.kind === 'amend' && batches.some((batch) => batch.id === draft.amendingBatchId) ? draft.amendingBatchId : null;
+  // link goes (a fitting one always has that batch); the other two kinds open
+  // on the version.
+  const draftBatchId = draft?.kind === 'amend' ? draft.amendingBatchId : null;
   return (
     <>
       <HomeLead

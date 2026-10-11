@@ -9,7 +9,8 @@
 // (a new batch's record draft) or `amend` (Correct: a stored batch's draft
 // plus the baseline it was filled from). Tasting is a section of the record
 // draft, not a pen of its own (03.3.1-02).
-import { AXES, STOPS } from './axes.js';
+import { AXES, STOPS, axesForVersion } from './axes.js';
+import { SEGMENT_OPTIONS, MARK_ONE_OPTIONS, DEFECTS } from './battery.js';
 
 export const DRAFT_SHAPE_VERSION = 1;
 
@@ -149,6 +150,32 @@ function fitsRecordShape(candidate, version) {
   return ownKeys(candidate.stepChanges).every((stepKey) => isPlainObject(candidate.stepChanges[stepKey]));
 }
 
+// The values Save would write must be ones the pen offers and the import
+// check (validateTasting, validateBatch in store/transfer.js) accepts: the
+// choice words, the defect chips, declared problems the recipe declares (each
+// once), and marks only on axes the pen shows. A blank string fits every
+// choice field. `declared` is { flaws, axisKeys }.
+function fitsRecordValues(candidate, declared) {
+  for (const [field, options] of Object.entries(SEGMENT_OPTIONS)) {
+    if (candidate[field] !== '' && !options.includes(candidate[field])) return false;
+  }
+  for (const field of ['atDraw', 'fromFreezer']) {
+    if (candidate[field] !== '' && !MARK_ONE_OPTIONS.includes(candidate[field])) return false;
+  }
+  if (!candidate.defects.every((chip) => DEFECTS.includes(chip))) return false;
+  if (!candidate.declaredDefects.every((word) => declared.flaws.includes(word))) return false;
+  if (new Set(candidate.declaredDefects).size !== candidate.declaredDefects.length) return false;
+  return ownKeys(candidate.marks).every((axisKey) => declared.axisKeys.includes(axisKey));
+}
+
+// The declared problems and axis keys of `source`, a version or a batch's
+// snapshot, read without throwing when either list is absent or not a list.
+function declaredOf(source) {
+  const flaws = Array.isArray(source?.declaredFlaws) ? source.declaredFlaws : [];
+  const declaredAxes = Array.isArray(source?.declaredAxes) ? source.declaredAxes : [];
+  return { flaws, axisKeys: axesForVersion({ declaredAxes }).map((axis) => axis.key) };
+}
+
 function fitsMethodStep(step) {
   if (!isPlainObject(step)) return false;
   if (typeof step.leadIn !== 'string' || typeof step.instruction !== 'string') return false;
@@ -200,6 +227,9 @@ function fitsPlanShape(payload, version) {
  * version's rows and steps; a record or amend payload holds exactly the
  * record draft's fields and keys only the version's rows and axes; an amend
  * draft also names one of `batches` and carries a baseline of the same shape.
+ * The payload's values must also be ones the pen offers and Save could store
+ * (WR-04): a record payload is read against the version's declared problems
+ * and axes, a Correct payload against the corrected batch's own snapshot.
  * A draft saved before an import replaced its version fails here, and the page
  * deletes it quietly instead of throwing in isPenDraftDirty.
  */
@@ -215,10 +245,17 @@ export function draftMatchesVersion(record, version, batches) {
   if (record.kind === 'plan') return fitsPlanShape(record.payload, version);
 
   if (!fitsRecordShape(record.payload, version)) return false;
-  if (record.kind === 'record') return record.amendingBatchId === null && record.amendBaseline === null;
+  if (record.kind === 'record') {
+    if (record.amendingBatchId !== null || record.amendBaseline !== null) return false;
+    return fitsRecordValues(record.payload, declaredOf(version));
+  }
 
   if (!AMEND_OPENERS.includes(record.amendOpener)) return false;
   if (typeof record.amendingBatchId !== 'string') return false;
-  if (!batches.some((batch) => batch.id === record.amendingBatchId)) return false;
-  return fitsRecordShape(record.amendBaseline, version);
+  const amended = batches.find((batch) => batch.id === record.amendingBatchId);
+  if (!amended) return false;
+  // The baseline keeps the shape-only check: it is the comparison the dirty
+  // check reads and is never written, while WR-04 is about what Save writes.
+  if (!fitsRecordShape(record.amendBaseline, version)) return false;
+  return fitsRecordValues(record.payload, declaredOf(amended.snapshot));
 }

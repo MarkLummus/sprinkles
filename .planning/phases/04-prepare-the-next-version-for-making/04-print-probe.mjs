@@ -29,13 +29,15 @@
 // installed.
 import { webkit } from '/Users/mark/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core/index.mjs';
 import { startServers, launch, REPO_ROOT } from '../03.5-separate-the-recipe-from-the-sheet/03.5-probe-harness.mjs';
-import { writeFile, mkdtemp } from 'node:fs/promises';
+import { writeFile, mkdtemp, mkdir } from 'node:fs/promises';
 import { execFile, execFileSync } from 'node:child_process';
 import { promisify } from 'node:util';
 import os from 'node:os';
 import path from 'node:path';
 import { seedRecipeGroups } from '../../../app/src/data/seed-recipes.js';
 import { sheetCode } from '../../../app/src/domain/sheetCode.js';
+import { AXES } from '../../../app/src/domain/axes.js';
+import { DEFECTS } from '../../../app/src/domain/battery.js';
 
 const execFileAsync = promisify(execFile);
 const DIST = process.env.PROBE_DIST ?? path.join(REPO_ROOT, 'app', 'dist');
@@ -55,8 +57,12 @@ const ALL_VERSIONS = seedRecipeGroups.flatMap((group) =>
   })),
 );
 
-// Each printed page, in paper order: its title, and what the foot's side reads.
-const LOG_PAGES = [{ title: 'Batch log' }];
+// Each printed page, in paper order: its title (the foot's side is its place).
+const LOG_PAGES = [{ title: 'Batch log' }, { title: 'Tasting log' }];
+
+// Every problem word any seed version declares, so one version's page can be
+// checked for the words it must NOT carry.
+const ALL_DECLARED_FLAWS = [...new Set(ALL_VERSIONS.flatMap((v) => v.declaredFlaws))];
 
 // The paper (D20): letter, 0.5 in above and below, 0.75 in at the sides. WebKit
 // is printed with the same margins in points: top, bottom, left, right.
@@ -68,7 +74,7 @@ const CONTENT_PT = {
   y0: MARGINS_PT.bottom, // PDF origin is the bottom left
   y1: PAGE_PT.height - MARGINS_PT.top,
 };
-const GLYPH_BOX_PT = 4;
+const INK_TOL_PT = 0.5; // pdf-pages ink mode draws at 2 pixels per point
 const READY = "!!document.querySelector('[data-print-ready]') && document.fonts.status === 'loaded'";
 
 // ---------------------------------------------------------------------------
@@ -80,6 +86,7 @@ async function tool(name) {
   if (tools[name]) return tools[name];
   // PROBE_WORK keeps the PDFs in a directory of the caller's choosing, to look at.
   workDir ??= process.env.PROBE_WORK ?? (await mkdtemp(path.join(os.tmpdir(), '04-print-')));
+  await mkdir(workDir, { recursive: true });
   const bin = path.join(workDir, name);
   execFileSync('swiftc', ['-O', path.join(REPO_ROOT, '.planning', 'canvas-generators', `${name}.swift`), '-o', bin], { stdio: 'pipe' });
   tools[name] = bin;
@@ -91,9 +98,12 @@ function pdfText(bin, file) {
   return out.split(/^--- page \d+ : ?/m).slice(1).map((t) => t.replace(/\n$/, ''));
 }
 
-function pdfBounds(bin, file) {
-  const out = execFileSync(bin, [file, 'bounds'], { encoding: 'utf8', maxBuffer: 1 << 26 });
-  return [...out.matchAll(/^--- bounds page \d+ : (.*)$/gm)].map((m) => {
+// Per page, the box of every non-white pixel (rules and borders included), in
+// PDF points with the origin at the bottom left. Visible ink only: text a
+// clip hides does not count (the 'bounds' mode counts it).
+function pdfInk(bin, file) {
+  const out = execFileSync(bin, [file, 'ink'], { encoding: 'utf8', maxBuffer: 1 << 26 });
+  return [...out.matchAll(/^--- ink page \d+ : (.*)$/gm)].map((m) => {
     if (m[1] === 'none') return null;
     const [x0, y0, x1, y1] = m[1].split(' ').map(Number);
     return { x0, y0, x1, y1 };
@@ -169,10 +179,30 @@ async function printWebKit(appUrl, v) {
   return file;
 }
 
+// Page 2 names exactly this version's scales and problems (CONTRACT § 2): the
+// core ones and its own declared ones, and no other version's. The foot, which
+// holds the Sheet title, is cut off first so a title cannot read as a scale.
+function checkDeclared(label, v, text) {
+  const body = norm(text);
+  const cut = body.lastIndexOf(norm(v.sheetTitle));
+  const page = cut > 0 ? body.slice(0, cut) : body;
+  const inPage = (word) => new RegExp(`(^| )${norm(word)}( |$)`).test(page);
+  const coreAxes = AXES.filter((axis) => axis.group === 'core').map((axis) => axis.name);
+  const wantAxes = [...coreAxes, ...v.declaredAxes];
+  const otherAxes = AXES.map((axis) => axis.name).filter((name) => !wantAxes.includes(name));
+  check(wantAxes.every(inPage), label, `names its scales: ${wantAxes.join(', ')}`);
+  check(!otherAxes.some(inPage), label, `names no other scale (none of ${otherAxes.join(', ') || 'no others'})`);
+  const wantFlaws = [...DEFECTS, ...v.declaredFlaws];
+  const otherFlaws = ALL_DECLARED_FLAWS.filter((word) => !v.declaredFlaws.includes(word));
+  check(wantFlaws.every(inPage), label, `names its problems: ${wantFlaws.join(' / ')}`);
+  check(!otherFlaws.some(inPage), label, `names no other version's declared problem (none of ${otherFlaws.join(', ') || 'no others'})`);
+  check(!page.includes('every recipe') && !page.includes('this recipe only'), label, 'prints no "Every recipe" or "This recipe only" cue');
+}
+
 function checkPaper(engine, v, file, lineCode) {
   const label = `${engine} ${v.id}`;
   const pages = pdfText(tools['pdf-pages'], file);
-  const bounds = pdfBounds(tools['pdf-pages'], file);
+  const bounds = pdfInk(tools['pdf-pages'], file);
   check(lineCode === v.code, label, `the route line reads the saved version's code (${lineCode}, expected ${v.code})`);
   check(pages.length === LOG_PAGES.length, label, `prints exactly ${LOG_PAGES.length} page(s) (got ${pages.length})`);
   LOG_PAGES.forEach((expected, i) => {
@@ -184,11 +214,11 @@ function checkPaper(engine, v, file, lineCode) {
     check(!/page \d+ of \d+/.test(norm(text)), plabel, 'carries no "page n of m"');
     const shellWords = ['search', 'import', 'export'].filter((word) => hasWord(text, word));
     check(shellWords.length === 0 && !norm(text).includes('print sheet'), plabel, `holds none of the shell's words or "Print sheet" (found: ${shellWords.join(', ') || 'none'})`);
+    if (i === 1) checkDeclared(plabel, v, text);
     const b = bounds[i];
-    if (check(b !== null && b !== undefined, plabel, 'has text bounds')) {
-      check(b.x0 >= CONTENT_PT.x0 - 0.5 && b.x1 <= CONTENT_PT.x1 + 0.5, plabel, `text stays between the side margins (x ${b.x0.toFixed(1)} to ${b.x1.toFixed(1)}, box ${CONTENT_PT.x0} to ${CONTENT_PT.x1})`);
-      // PDFKit's line boxes carry the font's ascent, so the top edge gets a few points; the bottom is exact.
-      check(b.y0 >= CONTENT_PT.y0 - 0.5 && b.y1 <= CONTENT_PT.y1 + GLYPH_BOX_PT, plabel, `text ends at or above the content box's bottom (y ${b.y0.toFixed(1)} to ${b.y1.toFixed(1)}, box ${CONTENT_PT.y0} to ${CONTENT_PT.y1})`);
+    if (check(b !== null && b !== undefined, plabel, 'has ink')) {
+      check(b.x0 >= CONTENT_PT.x0 - INK_TOL_PT && b.x1 <= CONTENT_PT.x1 + INK_TOL_PT, plabel, `ink stays between the side margins (x ${b.x0.toFixed(1)} to ${b.x1.toFixed(1)}, box ${CONTENT_PT.x0} to ${CONTENT_PT.x1})`);
+      check(b.y0 >= CONTENT_PT.y0 - INK_TOL_PT && b.y1 <= CONTENT_PT.y1 + INK_TOL_PT, plabel, `ink ends at or above the content box's bottom and starts under its top (y ${b.y0.toFixed(1)} to ${b.y1.toFixed(1)}, box ${CONTENT_PT.y0} to ${CONTENT_PT.y1})`);
     }
   });
 }
@@ -220,8 +250,8 @@ async function runLogs(ids) {
   }
 }
 
-// Task 1 prints Olive Oil v1 alone; Task 2 widens this to every seed version.
-const LOGS_DEFAULT = ['olive-oil-ice-cream-v1'];
+// Every seed version, unless ids are named on the command line.
+const LOGS_DEFAULT = ALL_VERSIONS.map((v) => v.id);
 
 // ---------------------------------------------------------------------------
 const [mode, ...rest] = process.argv.slice(2);

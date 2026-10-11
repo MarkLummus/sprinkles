@@ -5,7 +5,7 @@ import { formatRecordDate } from '../domain/batch.js';
 import { sortedVersions, versionIdentity, versionsForRecipe } from '../domain/lineage.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { Button } from './Button.jsx';
-import { BatchLogPage, logFootText } from './PrintLogPages.jsx';
+import { BatchLogPage, TastingLogPage, logFootText } from './PrintLogPages.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { RecipeNotFound } from './RecipePage.jsx';
 
@@ -99,6 +99,11 @@ export function PrintSheet({ recipeId, versionId }) {
         <div className="print-route__picture" role="img" aria-label="Batch log">
           <div className="print-page print-page--log">
             <BatchLogPage footText={footFor(1)} />
+          </div>
+        </div>
+        <div className="print-route__picture" role="img" aria-label="Tasting log">
+          <div className="print-page print-page--log">
+            <TastingLogPage version={version} footText={footFor(2)} />
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 // the structural contract's "Axes spec"). Runs under Vitest's default
 // node environment — imports no store, no component, and no framework.
 import { describe, it, expect } from 'vitest';
-import { AXES, STOPS, CORE_AXIS_COUNT, stopWordsFor, axesForBatch, markKeyFor, setMark, readMarkWord } from './axes.js';
+import { AXES, STOPS, CORE_AXIS_COUNT, stopWordsFor, axesForBatch, axesForVersion, markKeyFor, setMark, readMarkWord } from './axes.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
@@ -107,6 +107,39 @@ describe('axesForBatch', () => {
     const axes = axesForBatch(batch);
     expect(axes).toHaveLength(4);
     expect(axes.map((axis) => axis.key)).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness']);
+  });
+});
+
+// The version-side twin: the blank Tasting log prints before any batch exists.
+describe('axesForVersion', () => {
+  it('returns Olive Oil v1\'s six: the four core, then Body and Oil in the version\'s order', () => {
+    expect(axesForVersion(oliveOilVersion).map((axis) => axis.name)).toEqual([
+      'Hardness',
+      'Scoopability',
+      'Smoothness',
+      'Sweetness',
+      'Body',
+      'Oil',
+    ]);
+  });
+
+  it('returns the four core axes for a version that declares none', () => {
+    const axes = axesForVersion({ ...oliveOilVersion, declaredAxes: [] });
+    expect(axes.map((axis) => axis.key)).toEqual(['hardness', 'scoopability', 'smoothness', 'sweetness']);
+    expect(axes).toHaveLength(CORE_AXIS_COUNT);
+  });
+
+  it('keeps the declared names in the version\'s own order and drops a name that is no axis', () => {
+    const axes = axesForVersion({ declaredAxes: ['Oil', 'Mystery', 'Body'] });
+    expect(axes.slice(CORE_AXIS_COUNT).map((axis) => axis.name)).toEqual(['Oil', 'Body']);
+  });
+
+  it('agrees with axesForBatch for a batch snapshotting the same version', () => {
+    expect(axesForVersion(oliveOilVersion)).toEqual(axesForBatch(augustSecondBatch));
+  });
+
+  it('reads a version with no declaredAxes field as declaring none', () => {
+    expect(axesForVersion({})).toHaveLength(CORE_AXIS_COUNT);
   });
 });
 

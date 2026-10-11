@@ -285,6 +285,163 @@
   margin: 0;
 }
 
+/* Page 2 (page-2-tasting-log.html): Melt test's unit stands under its line. */
+.lf-field--under .lf-rule {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+}
+
+.lf-field--under .lf-unit {
+  padding-bottom: 0;
+}
+
+/* D23: a row with no caption column (the problems). */
+.lf-mrow--plain {
+  display: block;
+}
+
+/* D19, D21, D23: a scale row, 36 px tall: the name in the caption column, then
+   one rule from tick 1 to tick 5 with its numbers and words. */
+.lf-srow {
+  display: grid;
+  grid-template-columns: var(--sheet-print-caption-col) 1fr;
+  column-gap: var(--gap-s);
+  align-items: start;
+  border-bottom: var(--rule-ink-field) solid var(--sheet-ink);
+  padding: var(--gap-hair) 0 var(--gap-field-unit);
+}
+
+.lf-srow .axis-mark__name {
+  padding-top: var(--sheet-print-name-pad);
+}
+
+.lf-sc {
+  display: grid;
+  grid-template-columns:
+    var(--sheet-print-scale-word-col) var(--sheet-print-scale-num-col) repeat(5, var(--sheet-stop-w))
+    var(--sheet-print-scale-num-col) var(--sheet-print-scale-word-col);
+  justify-items: center;
+  align-items: end;
+}
+
+.lf-anchor {
+  font-family: var(--face-text);
+  font-style: italic;
+  font-size: var(--sheet-type-control);
+  line-height: var(--sheet-print-leading-anchor);
+  white-space: nowrap;
+  padding: 0;
+}
+
+.lf-sc .lf-num {
+  font-size: var(--sheet-size-mark-stop);
+  line-height: var(--sheet-print-leading-solid);
+}
+
+.lf-sc .lf-lo {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.lf-sc .lf-n1 {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.lf-sc .lf-n5 {
+  grid-column: 8;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.lf-sc .lf-hi {
+  grid-column: 9;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.lf-sc .lf-mid {
+  grid-column: 5;
+  grid-row: 2;
+  justify-self: center;
+  margin-top: 0;
+  font-size: var(--sheet-size-small-print);
+  line-height: var(--sheet-print-leading-solid);
+}
+
+/* D21: ONE rule from tick 1 to tick 5 (the margin is half a stop, so the rule
+   starts and ends at the end ticks' centres) and the five ticks stand on it,
+   rising above it only. */
+.lf-track {
+  grid-column: 3 / 8;
+  grid-row: 1;
+  justify-self: stretch;
+  align-self: end;
+  box-sizing: content-box;
+  margin: 0 calc(var(--sheet-stop-w) / 2);
+  height: var(--sheet-print-tick-end-h);
+  border-bottom: var(--rule-ink-field) solid var(--sheet-ink);
+  position: relative;
+}
+
+.lf-tick {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: var(--sheet-print-tick-h);
+  border-left: var(--rule-ink-field) solid var(--sheet-ink);
+}
+
+.lf-tick--end {
+  height: var(--sheet-print-tick-end-h);
+}
+
+.lf-tick--1 {
+  left: 0;
+}
+
+.lf-tick--2 {
+  left: 25%;
+}
+
+.lf-tick--3 {
+  left: 50%;
+}
+
+.lf-tick--4 {
+  left: 75%;
+}
+
+.lf-tick--5 {
+  right: 0;
+}
+
+/* D22: a sub-group cue takes the app's group-cue face (sketch 011 decision
+   40: sentence case, 600), 12 px above and none below. */
+.lf-sub {
+  display: block;
+  margin: var(--gap-s) 0 0;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-type-section);
+  font-weight: var(--sheet-print-weight-head);
+  line-height: var(--sheet-leading-section);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.lf-dhead .pen-helper {
+  margin: 0;
+}
+
+.lf-dhead.lf-sub {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+}
+
 /* D22: the same 32 px above Notes as above every group. */
 .lf-notes {
   margin: var(--gap-l) 0 0;

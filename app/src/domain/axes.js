@@ -54,6 +54,22 @@ export function axesForBatch(batch) {
   return [...core, ...declared];
 }
 
+/**
+ * axesForVersion(version) -> the four core axes followed by the version's
+ * declared axes, resolved by name against AXES, in the version's own order;
+ * a name that is no AXES row is dropped. The version-side twin of
+ * axesForBatch: the blank Tasting log prints this list before any batch
+ * exists, so it reads version.declaredAxes (the pen reads the same list to
+ * open a new batch, and the batch then freezes it into its own snapshot).
+ */
+export function axesForVersion(version) {
+  const core = AXES.slice(0, CORE_AXIS_COUNT);
+  const declared = (version.declaredAxes ?? [])
+    .map((name) => AXES.find((axis) => axis.name === name))
+    .filter((axis) => axis != null);
+  return [...core, ...declared];
+}
+
 /** markKeyFor(axis) -> the axis's fixed key. Every axis is fixed now (D-07). */
 export function markKeyFor(axis) {
   return axis.key;

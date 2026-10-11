@@ -119,10 +119,19 @@ describe('PrintSheet — the pages as pictures', () => {
     expect(picture.querySelector('.lf-title').textContent).toBe('Batch log');
   });
 
-  it('carries the foot with the Sheet title, the version line, the code and the side', () => {
-    const foot = host.querySelector('.lf-foot').textContent;
-    expect(foot).toBe(`Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · ${sheetCode(oliveOilVersion)} · Side 1 of 2`);
-    expect(foot).not.toMatch(/page \d+ of/i);
+  it('shows the Tasting log second, as a picture named Tasting log, after the Batch log (D-07a)', () => {
+    const pictures = [...host.querySelectorAll('.print-route__picture')];
+    expect(pictures.map((picture) => picture.getAttribute('aria-label'))).toEqual(['Batch log', 'Tasting log']);
+    expect(pictures[1].getAttribute('role')).toBe('img');
+    expect(pictures[1].querySelector('.lf-title').textContent).toBe('Tasting log');
+    expect(pictures[1].querySelectorAll('.lf-srow')).toHaveLength(oliveOilVersion.declaredAxes.length + 4);
+  });
+
+  it('carries a foot on each page with the Sheet title, the version line, the code and the side', () => {
+    const feet = [...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent);
+    const line = `Olive Oil Ice Cream · Version 1 · 50 g oil · 800 g · ${sheetCode(oliveOilVersion)}`;
+    expect(feet).toEqual([`${line} · Side 1 of 2`, `${line} · Side 2 of 2`]);
+    for (const foot of feet) expect(foot).not.toMatch(/page \d+ of/i);
   });
 });
 

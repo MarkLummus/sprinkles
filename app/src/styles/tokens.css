@@ -537,4 +537,10 @@
   --sheet-print-tracking-title: -0.01em; /* the page title */
   --sheet-print-leading-title: 1.1; /* the page title's own leading */
   --sheet-print-leading-solid: 1; /* a unit or a number set solid on its line */
+  --sheet-print-leading-anchor: 1.2; /* a scale's low and high words */
+  --sheet-print-scale-word-col: 76px; /* a scale row's low and high word columns (CONTRACT § 4) */
+  --sheet-print-scale-num-col: 14px; /* its 1 and 5 columns */
+  --sheet-print-tick-h: 8px; /* a scale's three middle ticks, rising above the rule only */
+  --sheet-print-tick-end-h: 16px; /* its two end ticks, and the track's own height */
+  --sheet-print-name-pad: 3px; /* a scale name's drop, to sit on the rule's line (CONTRACT § 4) */
 }

@@ -1,4 +1,5 @@
-import { BATTERY_FIELDS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
+import { axesForVersion, stopWordsFor } from '../domain/axes.js';
+import { BATTERY_FIELDS, DEFECTS, PRINTED_MARK_ONE_OPTIONS, SEGMENT_OPTIONS } from '../domain/battery.js';
 
 // The two blank log pages the print route lays ahead of the Sheet (D-07a):
 // the Batch log on side 1 and the Tasting log on side 2 of one sheet. Their
@@ -129,6 +130,75 @@ export function BatchLogPage({ footText }) {
           <LogMarkRow caption="Airiness" words={SEGMENT_OPTIONS.airiness} />
         </div>
         <LogNotes cue="At the machine · Ingredient notes · Next time" lines={14} />
+      </div>
+      <LogFoot footText={footText} />
+    </div>
+  );
+}
+
+// The five ticks stand on one rule, the ends tall (D21): the maker circles or
+// ticks a place on the line. Only 1 and 5 are numbered; the middle is "right".
+const TICKS = [1, 2, 3, 4, 5];
+
+// One scale row (D19, D21, D23): the name, the low word, 1, the rule with
+// five ticks, 5, the high word, and the fixed middle word "right" under the
+// middle tick. No boxes (decide-page-2-scales-boxes-or-rule).
+function LogScaleRow({ axis }) {
+  const [, , middleWord] = stopWordsFor(axis);
+  return (
+    <div className="lf-srow">
+      <span className="axis-mark__name">{axis.name}</span>
+      <div className="lf-sc">
+        <span className="lf-track">
+          {TICKS.map((tick) => (
+            <span key={tick} className={`lf-tick lf-tick--${tick}${tick === 1 || tick === 5 ? ' lf-tick--end' : ''}`} />
+          ))}
+        </span>
+        <span className="lf-anchor lf-lo">{axis.low}</span>
+        <span className="lf-num lf-n1">1</span>
+        <span className="lf-num lf-n5">5</span>
+        <span className="lf-anchor lf-hi">{axis.high}</span>
+        <span className="lf-anchor lf-mid">{middleWord}</span>
+      </div>
+    </div>
+  );
+}
+
+// Page 2, the Tasting log (CONTRACT § 4): the four core scales then the
+// version's own declared ones (0 to 2), the four core problems then its own
+// declared ones in one row (0 to 2), five writing lines. Both lists come
+// from the version, read through axes.js and DEFECTS, never from a literal
+// here; no "Every recipe" or "This recipe only" cue is printed (D23).
+export function TastingLogPage({ version, footText }) {
+  return (
+    <div className="lf">
+      <div className="lf-body">
+        <LogHead dateCaption="Tasted" title="Tasting log" />
+        <div className="lf-sec lf-row">
+          <LogFigure field={FIGURE_FIELDS.temperingMinutes} />
+          <LogFigure field={FIGURE_FIELDS.tastingTempC} />
+          <LogFigure field={FIGURE_FIELDS.meltTestG} under />
+        </div>
+        <LogMarkRow caption="Melt style" words={SEGMENT_OPTIONS.meltStyle} />
+        <div className="lf-group">
+          <LogGroupHead name="From freezer" cue="mark one" />
+          <LogVerdict />
+          {axesForVersion(version).map((axis) => (
+            <LogScaleRow key={axis.key} axis={axis} />
+          ))}
+          <p className="lf-dhead lf-sub">
+            <span className="lf-subname">Any problems?</span>
+            <span className="pen-helper">select all that apply</span>
+          </p>
+          <div className="lf-mrow lf-mrow--plain">
+            <div className="lf-mark">
+              {[...DEFECTS, ...(version.declaredFlaws ?? [])].map((word) => (
+                <LogOption key={word} word={word} />
+              ))}
+            </div>
+          </div>
+        </div>
+        <LogNotes cue="How did it turn out?" lines={5} />
       </div>
       <LogFoot footText={footText} />
     </div>

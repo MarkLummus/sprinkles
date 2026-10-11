@@ -317,6 +317,24 @@ describe('HomeBody — the recipe record is the name\'s source (D-11)', () => {
   });
 });
 
+// D-10: the short link to the Search page's Sheet code field sits at the
+// right of the Recipes row (sketch 010 screen-home.html).
+describe('HomeBody — Enter Sheet code (D-10)', () => {
+  it('renders the link to /search with tabindex 0 inside the Recipes section row', () => {
+    const markup = renderBody([makeVersion()]);
+    const row = markup.match(/<div class="home__section-row">[\s\S]*?<\/div>/)[0];
+    expect(row).toMatch(/^<div class="home__section-row"><h2 class="home__section">Recipes<\/h2><a /);
+    const link = row.match(/<a\b[^>]*class="home__code-link"[^>]*>([^<]*)<\/a>/);
+    expect(link[0]).toContain('href="/search"');
+    expect(link[0]).toContain('tabindex="0"');
+    expect(link[1]).toBe('Enter Sheet code');
+  });
+
+  it('is not on the empty shelf, which has no recipes to row', () => {
+    expect(renderBody([])).not.toContain('home__code-link');
+  });
+});
+
 describe('HomeBody — the empty shelf (D-08, 03.4-04 Task 3)', () => {
   it('renders the sentence and the two leading links, and no row, for an empty store', () => {
     const markup = renderBody([]);
@@ -354,7 +372,7 @@ describe('HomeBody — every link carries an explicit tabindex (G-03.4-r4-1, .pl
     }
   });
 
-  it('renders exactly 11 <a> opening tags for three recipes, one per standing, the tasted one leading (lead 3: name, Next version, Adapt; rows 8: not-yet-churned 2, awaiting-tasting 3, tasted 3), each carrying tabindex="0"', () => {
+  it('renders exactly 12 <a> opening tags for three recipes, one per standing, the tasted one leading (Enter Sheet code 1; lead 3: name, Next version, Adapt; rows 8: not-yet-churned 2, awaiting-tasting 3, tasted 3), each carrying tabindex="0"', () => {
     const versions = [
       makeVersion({ id: 'v1', recipeId: 'r1', createdAt: '2026-01-01T00:00:00.000Z' }),
       makeVersion({ id: 'v2', recipeId: 'r2', createdAt: '2026-01-02T00:00:00.000Z' }),
@@ -366,7 +384,7 @@ describe('HomeBody — every link carries an explicit tabindex (G-03.4-r4-1, .pl
     ];
     const markup = renderBody(versions, batches);
     const tags = markup.match(/<a\b[^>]*>/g) ?? [];
-    expect(tags).toHaveLength(11);
+    expect(tags).toHaveLength(12);
     for (const tag of tags) {
       expect(tag).toContain('tabindex="0"');
     }

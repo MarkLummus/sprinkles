@@ -81,7 +81,10 @@ export function HomeBody({ versions, batches, recipes = [] }) {
   return (
     <>
       <HomeLead entry={work[0] ?? null} />
-      <h2 className="home__section">Recipes</h2>
+      <div className="home__section-row">
+        <h2 className="home__section">Recipes</h2>
+        <Link className="home__code-link" to="/search" tabIndex={0}>Enter Sheet code</Link>
+      </div>
       <RecipeRows versions={versions} batches={batches} recipes={recipes} />
     </>
   );

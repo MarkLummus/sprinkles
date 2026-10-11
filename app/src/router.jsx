@@ -5,6 +5,7 @@ import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
 import { Shell } from './ui/Shell.jsx';
 import { Placeholder } from './ui/Placeholder.jsx';
+import { SheetCodeSearch } from './ui/SheetCodeSearch.jsx';
 import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedirects.jsx';
 
 // A different version, or a different batch of the same version, must be a
@@ -108,7 +109,7 @@ export const router = createBrowserRouter([
       { path: '/idea-log', element: <Placeholder name="Idea log" /> },
       { path: '/ingredients', element: <Placeholder name="Ingredients" /> },
       { path: '/kitchen', element: <Placeholder name="Kitchen" /> },
-      { path: '/search', element: <Placeholder name="Search" /> },
+      { path: '/search', Component: SheetCodeSearch },
     ],
   },
 ]);

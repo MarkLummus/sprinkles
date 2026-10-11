@@ -166,6 +166,30 @@
   color: var(--app-text-secondary);
 }
 
+/* The row that holds the heading and the short link to the Search page's
+   Sheet code field at its right (D-10; sketch 010 screen-home.html). The
+   heading's own bottom margin moves to the row. */
+.home__section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--gap-m);
+  margin: 0 0 var(--gap-s);
+}
+
+.home__section-row .home__section {
+  margin: 0;
+}
+
+.home__code-link {
+  font-family: var(--face-grotesk);
+  font-size: var(--app-size-meta);
+  color: var(--app-blue-text);
+  text-decoration: underline;
+  text-decoration-thickness: var(--rule-ink-field);
+  text-underline-offset: var(--offset-link-underline);
+}
+
 .home__list {
   list-style: none;
   margin: 0;
@@ -442,10 +466,13 @@
    min-height does nothing on an inline box (measured: 28 stays 28), so the
    floor needs inline-flex beside it. The row grows about 15px per name; the
    fine pointer keeps the line-box height, because this block reads the
-   pointer alone. The third top-level media step this file carries. */
+   pointer alone. The third top-level media step this file carries. The
+   Enter Sheet code link meets the same floor (sketch 010 measures it
+   111 x 44 at 393 under a coarse pointer). */
 @media (pointer: coarse) {
   .home__name a,
-  .home__lead-name a {
+  .home__lead-name a,
+  .home__code-link {
     display: inline-flex;
     align-items: center;
     min-height: var(--touch-min);

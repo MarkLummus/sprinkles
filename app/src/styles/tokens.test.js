@@ -25,7 +25,10 @@ const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'home.css', 'shell.css', 'noteb
 // per-row dealt-hue property, along with the rest of the Sprinkles Jar. A
 // further inline custom property gets a named place here, documented, rather
 // than silently widening the unresolved-token gate.
-const LOCALLY_SET_CUSTOM_PROPERTIES = new Set(['--app-notebook-history-count']);
+// PrintSheet.jsx sets --sheet-print-picture-scale the same way (04-06 Task 3):
+// the room over the page's own measured width, a ratio only the browser can
+// measure, read by print.css to scale each page picture as a whole.
+const LOCALLY_SET_CUSTOM_PROPERTIES = new Set(['--app-notebook-history-count', '--sheet-print-picture-scale']);
 
 function stripJsComments(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');

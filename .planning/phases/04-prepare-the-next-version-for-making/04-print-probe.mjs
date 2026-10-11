@@ -132,12 +132,12 @@ const hasWord = (t, word) => new RegExp(`(^| )${word}( |$)`).test(norm(t));
 // A browser context that counts every request to another host and aborts it.
 // ---------------------------------------------------------------------------
 const offHost = [];
-async function openRoute(browser, appUrl, route, { width = 1280, height = 1100, coarse = false } = {}) {
+async function openRoute(browser, appUrl, route, { width = 1280, height = 1100, coarse = false, dpr = coarse ? 3 : 1 } = {}) {
   const context = await browser.newContext({
     viewport: { width, height },
     hasTouch: coarse,
     isMobile: coarse,
-    deviceScaleFactor: coarse ? 3 : 1,
+    deviceScaleFactor: dpr,
   });
   context.on('request', (request) => {
     const url = new URL(request.url());
@@ -250,6 +250,207 @@ async function runLogs(ids) {
   }
 }
 
+
+// ---------------------------------------------------------------------------
+// screen: the route on screen, at 1280 fine and 393 coarse, in WebKit and
+// Chrome, against screen-print-route-1280.html and -393.html and the log
+// pages' own boards.
+// ---------------------------------------------------------------------------
+const BOARD_DIR = '.planning/sketches/010-bench-sheet';
+const OLIVE = ALL_VERSIONS.find((v) => v.id === 'olive-oil-ice-cream-v1');
+const WIDTHS = [
+  { width: 1280, coarse: false, board: 'screen-print-route-1280.html', head: 66, print: [74.3, 44], picture: [816, 1056] },
+  { width: 393, coarse: true, board: 'screen-print-route-393.html', head: 172, print: [353, 44], picture: [353, 457] },
+];
+const SCREEN_TOL = 2;
+const POSITION_TOL = 0.5;
+
+// Runs in the page: the route's own boxes.
+function readRoute() {
+  const rect = (el) => {
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return { x: r.left, y: r.top, w: r.width, h: r.height, right: r.right };
+  };
+  const pages = [...document.querySelectorAll('.print-route__picture')].map(rect);
+  const page = document.querySelector('.print-page');
+  const pageRect = page.getBoundingClientRect();
+  const scale = pageRect.width / page.offsetWidth;
+  // Every element inside the first page, at its place within the page as the
+  // page itself is drawn (divided by the picture's scale).
+  const inside = [...page.querySelectorAll('*')].map((el) => {
+    const r = el.getBoundingClientRect();
+    return [String(el.className), (r.left - pageRect.left) / scale, (r.top - pageRect.top) / scale, r.width / scale, r.height / scale];
+  });
+  return {
+    route: rect(document.querySelector('.print-route')),
+    head: rect(document.querySelector('.print-route__head')),
+    name: rect(document.querySelector('.print-route__name')),
+    version: rect(document.querySelectorAll('.print-route__part')[0]),
+    saved: rect(document.querySelectorAll('.print-route__part')[1]),
+    print: rect(document.querySelector('.notebook-action')),
+    pages,
+    scale,
+    inside,
+    overflowX: document.documentElement.scrollWidth - window.innerWidth,
+    title: document.title,
+  };
+}
+
+// Runs in a board page: the same boxes by the board's own data-m marks.
+function readBoard() {
+  const rect = (m) => {
+    const el = document.querySelector(`[data-m="${m}"]`);
+    if (!el) return null;
+    const r = el.getBoundingClientRect();
+    return { x: r.left, y: r.top, w: r.width, h: r.height, right: r.right };
+  };
+  return { head: rect('head'), name: rect('name'), version: rect('version'), saved: rect('saved'), print: rect('print'), log1: rect('log1') };
+}
+
+const near = (a, b, tol = SCREEN_TOL) => Math.abs(a - b) <= tol;
+
+async function openBoardPage(browser, repoUrl, file, { width, coarse }) {
+  const context = await browser.newContext({ viewport: { width, height: 1100 }, hasTouch: coarse, deviceScaleFactor: coarse ? 3 : 1 });
+  context.on('request', (request) => {
+    const url = new URL(request.url());
+    if (url.hostname !== '127.0.0.1' && url.protocol.startsWith('http')) offHost.push(request.url());
+  });
+  await context.route('**/*', (r) => (new URL(r.request().url()).hostname === '127.0.0.1' ? r.continue() : r.abort()));
+  const page = await context.newPage();
+  await page.goto(`${repoUrl}/${BOARD_DIR}/${file}`, { waitUntil: 'networkidle' });
+  return { context, page };
+}
+
+async function runScreen() {
+  const { appUrl, repoUrl, close } = await startServers({ appRoot: DIST });
+  const engines = [
+    ['webkit', await webkit.launch()],
+    ['chrome', await launch()],
+  ];
+  try {
+    for (const [engine, browser] of engines) {
+      const byWidth = {};
+      for (const spec of WIDTHS) {
+        const label = `${engine} ${spec.width}${spec.coarse ? ' coarse' : ''}`;
+        const { context, page } = await openRoute(browser, appUrl, OLIVE.route, { width: spec.width, coarse: spec.coarse });
+        const pointerCoarse = await page.evaluate(() => matchMedia('(pointer: coarse)').matches);
+        check(pointerCoarse === spec.coarse, label, `the pointer is ${spec.coarse ? 'coarse' : 'fine'}`, 'FAIL');
+        const got = await page.evaluate(readRoute);
+        byWidth[spec.width] = got;
+        const { context: bc, page: bp } = await openBoardPage(browser, repoUrl, spec.board, spec);
+        const board = await bp.evaluate(readBoard);
+        await bc.close();
+
+        check(near(got.head.h, spec.head), label, `the head is ${got.head.h.toFixed(1)} px tall (the plan's ${spec.head} \u00b1${SCREEN_TOL}; the board ${board.head?.h?.toFixed(1)})`);
+        check(board.head && near(got.head.h, board.head.h), label, 'the head matches the board\'s own head height');
+        check(near(got.print.w, spec.print[0]) && near(got.print.h, spec.print[1]), label, `Print is ${got.print.w.toFixed(1)} x ${got.print.h.toFixed(1)} (${spec.print.join(' x ')}; the board ${board.print?.w?.toFixed(1)} x ${board.print?.h?.toFixed(1)})`);
+        if (spec.width === 1280) check(near(got.print.right, got.head.right, 1), label, `Print sits at the head's right edge (${got.print.right.toFixed(1)} against ${got.head.right.toFixed(1)})`);
+        else check(near(got.print.x, got.head.x, 1) && near(got.print.right, got.head.right, 1), label, 'Print fills the head\'s width');
+        if (spec.width === 393) {
+          check(got.name.y < got.version.y && got.version.y < got.saved.y, label, 'the line stacks in three: the Sheet title, the version line, then the saved date and the code');
+          check(near(got.name.h, 44, 4), label, `the Sheet title link is ${got.name.h.toFixed(1)} px tall (the board's 44 px link)`);
+        } else {
+          check(near(got.name.y + got.name.h / 2, got.saved.y + got.saved.h / 2, 12), label, 'the line reads on one row');
+        }
+        check(got.pages.length === LOG_PAGES.length, label, `shows ${LOG_PAGES.length} page pictures (got ${got.pages.length})`);
+        got.pages.forEach((box, i) => {
+          check(near(box.w, spec.picture[0]) && near(box.h, spec.picture[1]), label, `picture ${i + 1} is ${box.w.toFixed(1)} x ${box.h.toFixed(1)} (${spec.picture.join(' x ')}; the board ${board.log1?.w?.toFixed(1)} x ${board.log1?.h?.toFixed(1)})`);
+        });
+        if (got.pages.length > 1) {
+          const gap = got.pages[1].y - (got.pages[0].y + got.pages[0].h);
+          check(near(gap, 20, 1), label, `the pictures are ${gap.toFixed(1)} px apart (20)`);
+        }
+        check(got.overflowX <= 0, label, `no horizontal overflow (${got.overflowX} px)`);
+        check(got.title === 'Olive Oil Ice Cream, circulator \u00b7 Print sheet \u00b7 Sprinkles', label, `the tab title leads with the recipe name (${got.title})`);
+
+        // Tab from the Sheet title link reaches Print next (WebKit's own Tab
+        // order is the one that matters; Chrome is read the same way).
+        await page.locator('.print-route__name').focus();
+        await page.keyboard.press('Tab');
+        const next = await page.evaluate(() => document.activeElement?.textContent?.trim());
+        check(next === 'Print', label, `Tab from the Sheet title link reaches Print next (${next})`);
+        await context.close();
+      }
+
+      // The Batch log page's elements sit at the same place within the page at
+      // 1280 fine and 393 coarse: the page does not read the window or the
+      // pointer. Both are read at one device pixel ratio, because WebKit snaps
+      // text metrics to device pixels (a 1x and a 3x screen differ by up to 0.7
+      // page px in the same page at the same width, measured below); the ratio
+      // is the device's, not anything the page's CSS can read.
+      const readAt = async (spec) => {
+        const { context, page } = await openRoute(browser, appUrl, OLIVE.route, { width: spec.width, coarse: spec.coarse, dpr: 1 });
+        const got = await page.evaluate(readRoute);
+        await context.close();
+        return got.inside;
+      };
+      const wide = await readAt(WIDTHS[0]);
+      const narrow = await readAt(WIDTHS[1]);
+      let moved = 0;
+      let worst = 0;
+      if (wide.length !== narrow.length) moved = Infinity;
+      else {
+        wide.forEach((a, i) => {
+          const b = narrow[i];
+          const d = Math.max(Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2]), Math.abs(a[3] - b[3]), Math.abs(a[4] - b[4]));
+          worst = Math.max(worst, d);
+          if (a[0] !== b[0] || d > POSITION_TOL) {
+            moved += 1;
+            console.log(`  moved ${a[0] || '(no class)'}: ${[1, 2, 3, 4].map((k) => (b[k] - a[k]).toFixed(2)).join(', ')}`);
+          }
+        });
+      }
+      check(moved === 0, `${engine} page 1`, `all ${wide.length} elements sit at the same place within the page at 1280 fine and 393 coarse, both at 1x (worst ${worst.toFixed(2)} px, tolerance ${POSITION_TOL})`);
+      const dprWide = byWidth[393].inside;
+      let dprWorst = 0;
+      dprWide.forEach((a, i) => {
+        const b = narrow[i];
+        if (b) dprWorst = Math.max(dprWorst, Math.abs(a[2] - b[2]), Math.abs(a[4] - b[4]));
+      });
+      console.log(`INFO ${engine} page 1: the same page at 393 coarse on a 3x screen differs from 1x by at most ${dprWorst.toFixed(2)} px (text metrics snap to device pixels; not read by any rule)`);
+
+      // Each log page against its own board, element by element (the sketch is
+      // the authority): same classes in the same order, same boxes within the page.
+      for (const [file, index] of [['page-1-batch-log.html', 0], ['page-2-tasting-log.html', 1]]) {
+        const { context: bc, page: bp } = await openBoardPage(browser, repoUrl, file, { width: 1280, coarse: false });
+        const board = await bp.evaluate(() => {
+          const root = document.querySelector('.lf');
+          const r0 = root.getBoundingClientRect();
+          return [...root.querySelectorAll('*')].map((el) => {
+            const r = el.getBoundingClientRect();
+            return [String(el.className), r.left - r0.left, r.top - r0.top, r.width, r.height];
+          });
+        });
+        await bc.close();
+        const { context, page } = await openRoute(browser, appUrl, OLIVE.route, { width: 1280 });
+        const app = await page.evaluate((i) => {
+          const root = document.querySelectorAll('.lf')[i];
+          const r0 = root.parentElement.getBoundingClientRect();
+          return [...root.querySelectorAll('*')].map((el) => {
+            const r = el.getBoundingClientRect();
+            return [String(el.className), r.left - r0.left, r.top - r0.top, r.width, r.height];
+          });
+        }, index);
+        await context.close();
+        let off = 0;
+        let first = '';
+        board.forEach((a, i) => {
+          const b = app[i];
+          if (!b || a[0] !== b[0] || [1, 2, 3, 4].some((k) => Math.abs(a[k] - b[k]) > 0.6)) {
+            off += 1;
+            first ||= `${a[0]} board ${a.slice(1).map((n) => n.toFixed(1)).join(',')} app ${b ? b.slice(1).map((n) => n.toFixed(1)).join(',') : 'missing'}`;
+          }
+        });
+        check(board.length === app.length && off === 0, `${engine} ${file}`, `all ${board.length} elements match the board's boxes${off ? ` (${off} differ; first ${first})` : ''}`);
+      }
+    }
+  } finally {
+    for (const [, browser] of engines) await browser.close();
+    await close();
+  }
+}
+
 // Every seed version, unless ids are named on the command line.
 const LOGS_DEFAULT = ALL_VERSIONS.map((v) => v.id);
 
@@ -257,8 +458,9 @@ const LOGS_DEFAULT = ALL_VERSIONS.map((v) => v.id);
 const [mode, ...rest] = process.argv.slice(2);
 try {
   if (mode === 'logs') await runLogs(rest);
+  else if (mode === 'screen') await runScreen();
   else {
-    console.log('usage: 04-print-probe.mjs logs [version-id ...]');
+    console.log('usage: 04-print-probe.mjs logs [version-id ...] | screen');
     process.exit(2);
   }
 } finally {

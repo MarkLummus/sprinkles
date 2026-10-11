@@ -10,7 +10,7 @@ import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route } from 'react-router';
 
-const store = vi.hoisted(() => ({ versions: [], recipes: [], calls: [] }));
+const store = vi.hoisted(() => ({ versions: [], recipes: [], drafts: [], batches: [], calls: [] }));
 
 vi.mock('../store/repository.js', () => ({
   repository: new Proxy(
@@ -21,6 +21,13 @@ vi.mock('../store/repository.js', () => ({
         if (name === 'getVersion') return store.versions.find((version) => version.id === args[0]);
         if (name === 'getRecipe') return store.recipes.find((recipe) => recipe.id === args[0]);
         if (name === 'listVersions') return store.versions;
+        // Reachable only so a test can prove the route never asks for them: a
+        // stored draft and the batches. Calling saveBatch would add a batch.
+        if (name === 'getDraft') return store.drafts.find((draft) => draft.versionId === args[0]);
+        if (name === 'saveBatch') {
+          store.batches.push(args[0]);
+          return undefined;
+        }
         throw new Error(`the print route called repository.${String(name)}`);
       },
     },
@@ -37,9 +44,11 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 let host = null;
 let root = null;
 
-async function mount(path, { versions = [oliveOilVersion], recipes = [oliveOilRecipe] } = {}) {
+async function mount(path, { versions = [oliveOilVersion], recipes = [oliveOilRecipe], drafts = [] } = {}) {
   store.versions = versions;
   store.recipes = recipes;
+  store.drafts = drafts;
+  store.batches = [];
   store.calls = [];
   host = document.createElement('div');
   document.body.appendChild(host);
@@ -157,5 +166,101 @@ describe('PrintSheet — reads the saved record and writes nothing (PRINT-05, T-
   it('calls only those three on a not-found route too', async () => {
     await mount(printPath('another-recipe', oliveOilVersion.id));
     for (const name of store.calls) expect(['getVersion', 'getRecipe', 'listVersions']).toContain(name);
+  });
+});
+
+describe('PrintSheet — the tab title (D-20)', () => {
+  it('leads with the recipe name while mounted and goes back to Sprinkles when unmounted', async () => {
+    document.title = 'Sprinkles';
+    await mount(OLIVE_PATH);
+    expect(document.title).toBe(`${oliveOilRecipe.name} · Print sheet · Sprinkles`);
+    await unmount();
+    expect(document.title).toBe('Sprinkles');
+  });
+
+  it('leaves the title alone on a not-found route', async () => {
+    document.title = 'Sprinkles';
+    await mount(printPath('another-recipe', oliveOilVersion.id));
+    expect(document.title).toBe('Sprinkles');
+  });
+});
+
+describe('PrintSheet — the pictures take the scale the room allows', () => {
+  it('sets --sheet-print-picture-scale on the pages container, 1 where nothing can be measured', async () => {
+    await mount(OLIVE_PATH);
+    expect(host.querySelector('.print-route__pages').style.getPropertyValue('--sheet-print-picture-scale')).toBe('1');
+  });
+
+  it('measures the container over the page and sets the ratio, never above 1', async () => {
+    const observed = [];
+    class FakeObserver {
+      constructor(callback) {
+        this.callback = callback;
+      }
+      observe(element) {
+        observed.push(element);
+      }
+      disconnect() {}
+    }
+    const widths = { page: 816, room: 353 };
+    vi.stubGlobal('ResizeObserver', FakeObserver);
+    const pageWidth = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(() => widths.page);
+    const roomWidth = vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => widths.room);
+    try {
+      await mount(OLIVE_PATH);
+      const pages = host.querySelector('.print-route__pages');
+      expect(observed).toEqual([pages]);
+      expect(pages.style.getPropertyValue('--sheet-print-picture-scale')).toBe(String(Math.round((353 / 816) * 10000) / 10000));
+      await unmount();
+      widths.room = 1200;
+      await mount(OLIVE_PATH);
+      expect(host.querySelector('.print-route__pages').style.getPropertyValue('--sheet-print-picture-scale')).toBe('1');
+    } finally {
+      pageWidth.mockRestore();
+      roomWidth.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+});
+
+// PRINT-05 edges: opening the route prints a saved version and never makes a
+// batch, and nothing unsaved reaches the page.
+describe('PrintSheet — [edge PRINT-05/idempotency] the same version twice', () => {
+  it('shows the same Sheet code both times and the store gains no batch', async () => {
+    await mount(OLIVE_PATH);
+    const first = host.querySelector('.print-route__code').textContent;
+    const firstFeet = [...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent);
+    expect(store.batches).toHaveLength(0);
+    await unmount();
+    await mount(OLIVE_PATH);
+    const second = host.querySelector('.print-route__code').textContent;
+    expect(second).toBe(first);
+    expect(second).toBe(sheetCode(oliveOilVersion));
+    expect([...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent)).toEqual(firstFeet);
+    expect(store.batches).toHaveLength(0);
+    expect(store.calls).not.toContain('saveBatch');
+  });
+});
+
+describe('PrintSheet — [edge PRINT-05/concurrency] a draft that changes the Sheet title', () => {
+  it('shows the saved Sheet title and the saved content\'s code on the line and both feet, and never reads the draft', async () => {
+    const draft = {
+      versionId: oliveOilVersion.id,
+      kind: 'plan',
+      payload: { sheetTitle: 'A Draft Title That Is Not Saved', versionLabel: 'x' },
+    };
+    await mount(OLIVE_PATH, { drafts: [draft] });
+    expect(host.querySelector('.print-route__name').textContent).toBe(oliveOilVersion.sheetTitle);
+    expect(host.querySelector('.print-route__code').textContent).toBe(sheetCode(oliveOilVersion));
+    const feet = [...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent);
+    expect(feet).toHaveLength(2);
+    for (const foot of feet) {
+      expect(foot.startsWith(`${oliveOilVersion.sheetTitle} · `)).toBe(true);
+      expect(foot).toContain(sheetCode(oliveOilVersion));
+      expect(foot).not.toContain('Draft Title');
+    }
+    expect(host.textContent).not.toContain('A Draft Title That Is Not Saved');
+    expect(store.calls).not.toContain('getDraft');
+    expect(store.calls).not.toContain('listDrafts');
   });
 });

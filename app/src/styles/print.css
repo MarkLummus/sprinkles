@@ -73,11 +73,16 @@
 }
 
 /* One page as a picture: a white sheet with a one-pixel divider drawn inside
-   its edge, so the picture is exactly the page's box. */
+   its edge. Its box is the page's own, scaled as a whole by
+   --sheet-print-picture-scale, which PrintSheet.jsx measures (the room over
+   the page's width, never above 1) and sets inline on the pages container. So
+   a page is never reflowed to the window: it only shrinks (D-04; sketch 010
+   D20 option A, 393 wide: each picture 353 x 457, no sideways pan). */
 .print-route__picture {
   box-sizing: border-box;
-  width: var(--sheet-print-page-w);
-  max-width: 100%;
+  width: calc(var(--sheet-print-page-w) * var(--sheet-print-picture-scale));
+  height: calc(var(--sheet-print-page-h) * var(--sheet-print-picture-scale));
+  overflow: hidden;
   background: var(--app-background);
   outline: var(--app-rule-row) solid var(--app-divider);
   outline-offset: calc(-1 * var(--app-rule-row));
@@ -92,6 +97,8 @@
   background: var(--app-background);
   color: var(--sheet-ink);
   font-family: var(--face-grotesk);
+  transform: scale(var(--sheet-print-picture-scale));
+  transform-origin: 0 0;
 }
 
 /* The log pages' padding (D20, D22): 48 above and below, 72 at the left and
@@ -460,6 +467,53 @@
   letter-spacing: var(--sheet-print-tracking-foot);
 }
 
+/* The touch floor at a coarse pointer, as the app's own Home name links meet it
+   (home.css, pointer: coarse): the Sheet title link is a 44 px target. It
+   reads the pointer alone and sits before the stack rule below, so under 724 the
+   stack's block display wins and the floor stays. */
+@media (pointer: coarse) {
+  .print-route__name {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+  }
+}
+
+/* The route below 724, on screen only (sketch 010 D20 option A,
+   screen-print-route-393.html; the board's print-route__stack): the line
+   stacks in three (the Sheet title as a 44 px link, the version line, then the
+   saved date and the code), Print fills the width, the route is padded by the
+   page gutter. The pictures need no rule here: they scale with the room. The
+   pages themselves read no width. */
+@media screen and (max-width: 723.98px) {
+  .print-route {
+    padding-inline: var(--gap-page);
+  }
+
+  .print-route__dot {
+    display: none;
+  }
+
+  .print-route__name,
+  .print-route__part {
+    display: block;
+  }
+
+  .print-route__name {
+    font-size: var(--app-size-lead-name);
+  }
+
+  .print-route__head {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: var(--gap-s);
+  }
+
+  .print-route .notebook-action {
+    width: 100%;
+  }
+}
+
 /* Paper (D-07, sketch 010 D16, D20): letter portrait only, the margins 0.5 in
    above and below and 0.75 in at the sides. The two descriptors below are the
    file's only literals. */
@@ -504,7 +558,6 @@
   /* The picture and the page lose their screen frame and fill the content box. */
   .print-route__picture {
     width: auto;
-    max-width: none;
     height: 100%;
     outline: none;
     overflow: visible;

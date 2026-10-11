@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { formatRecordDate } from '../domain/batch.js';
@@ -27,6 +27,12 @@ export function PrintSheet({ recipeId, versionId }) {
   const [version, setVersion] = useState(undefined);
   const [recipe, setRecipe] = useState(undefined);
   const [versions, setVersions] = useState(undefined);
+  // The pictures' scale to the room there is (below 724 the pages are drawn
+  // smaller as a whole, never reflowed): measured here, set as one inline
+  // custom property, read by print.css. 1 while nothing is measured.
+  const [scale, setScale] = useState(1);
+  const pagesRef = useRef(null);
+  const pageRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -62,6 +68,36 @@ export function PrintSheet({ recipeId, versionId }) {
     };
   }, [versionId]);
 
+  const loaded = Boolean(version) && Boolean(recipe) && versions !== undefined && version.recipeId === recipeId;
+
+  // D-20: the tab title leads with the recipe name while the route is mounted.
+  const recipeName = loaded ? recipe.name : null;
+  useEffect(() => {
+    if (recipeName === null) return undefined;
+    document.title = `${recipeName} · Print sheet · Sprinkles`;
+    return () => {
+      document.title = 'Sprinkles';
+    };
+  }, [recipeName]);
+
+  // The container's content width over the page's own measured width, never
+  // above 1: no literal, and no sideways pan at 393. The container does not
+  // depend on the pictures, so the observer cannot feed itself.
+  useLayoutEffect(() => {
+    if (!loaded || typeof ResizeObserver === 'undefined') return undefined;
+    const pages = pagesRef.current;
+    const page = pageRef.current;
+    const measure = () => {
+      const own = page.offsetWidth;
+      const room = pages.clientWidth;
+      setScale(own > 0 && room > 0 ? Math.round(Math.min(1, room / own) * 10000) / 10000 : 1);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(pages);
+    return () => observer.disconnect();
+  }, [loaded]);
+
   if (version === undefined) return null;
   // A mistyped id, or a version under another recipe's address, is the same
   // not-found page the recipe route shows (T-04-15).
@@ -95,9 +131,9 @@ export function PrintSheet({ recipeId, versionId }) {
           Print
         </Button>
       </header>
-      <div className="print-route__pages">
+      <div className="print-route__pages" ref={pagesRef} style={{ '--sheet-print-picture-scale': scale }}>
         <div className="print-route__picture" role="img" aria-label="Batch log">
-          <div className="print-page print-page--log">
+          <div className="print-page print-page--log" ref={pageRef}>
             <BatchLogPage footText={footFor(1)} />
           </div>
         </div>

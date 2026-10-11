@@ -130,7 +130,9 @@ describe('PrintSheet — the pages as pictures', () => {
 
   it('shows the Tasting log second, as a picture named Tasting log, after the Batch log (D-07a)', () => {
     const pictures = [...host.querySelectorAll('.print-route__picture')];
-    expect(pictures.map((picture) => picture.getAttribute('aria-label'))).toEqual(['Batch log', 'Tasting log']);
+    // The Sheet's pages follow the two log pages (04-07); jsdom measures
+    // nothing, so it lays the whole Sheet on one page.
+    expect(pictures.map((picture) => picture.getAttribute('aria-label'))).toEqual(['Batch log', 'Tasting log', 'Sheet, page 1']);
     expect(pictures[1].getAttribute('role')).toBe('img');
     expect(pictures[1].querySelector('.lf-title').textContent).toBe('Tasting log');
     expect(pictures[1].querySelectorAll('.lf-srow')).toHaveLength(oliveOilVersion.declaredAxes.length + 4);

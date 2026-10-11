@@ -9,6 +9,16 @@
 //   node .planning/phases/04-.../04-print-probe.mjs screen
 //       the route on screen at 1280 fine and 393 coarse in WebKit and Chrome
 //       against screen-print-route-1280.html and -393.html (added in Task 3)
+//   node .planning/phases/04-.../04-print-probe.mjs measure
+//       (04-07) Olive Oil v1's Sheet blocks as the route measures them, in CSS
+//       px, at Safari's 630 x 900 content box and at 672 x 960, in WebKit and
+//       Chrome: the inputs sheetPages.fixtures.js holds
+//   node .planning/phases/04-.../04-print-probe.mjs sheet
+//       (04-07) Olive Oil v1's formula pages through WebKit's print and Chrome's
+//       PDF, and on screen against sheet-page-1-formula.html and
+//       sheet-page-2-table-tail.html
+//   node .planning/phases/04-.../04-print-probe.mjs sweep
+//       (04-07) every seed version's formula pages in both engines
 //
 // Prints MATCH / DIFF / FAIL lines and exits 1 on any DIFF or FAIL.
 //
@@ -132,7 +142,7 @@ const hasWord = (t, word) => new RegExp(`(^| )${word}( |$)`).test(norm(t));
 // A browser context that counts every request to another host and aborts it.
 // ---------------------------------------------------------------------------
 const offHost = [];
-async function openRoute(browser, appUrl, route, { width = 1280, height = 1100, coarse = false, dpr = coarse ? 3 : 1 } = {}) {
+async function openRoute(browser, appUrl, route, { width = 1280, height = 1100, coarse = false, dpr = coarse ? 3 : 1, box = null } = {}) {
   const context = await browser.newContext({
     viewport: { width, height },
     hasTouch: coarse,
@@ -147,6 +157,17 @@ async function openRoute(browser, appUrl, route, { width = 1280, height = 1100, 
     const url = new URL(r.request().url());
     return url.hostname === '127.0.0.1' ? r.continue() : r.abort();
   });
+  // `box` sets the content box the Sheet is laid in, whatever the engine, by
+  // appending the four tokens to the built stylesheet (the engine would choose
+  // 630 x 900 in WebKit and 672 x 960 elsewhere on its own).
+  if (box) {
+    await context.route('**/*.css', async (r) => {
+      const response = await r.fetch();
+      const css = await response.text();
+      const tokens = `:root{--sheet-print-content-w-webkit:${box.w}px !important;--sheet-print-content-h-webkit:${box.h}px !important;--sheet-print-content-w:${box.w}px !important;--sheet-print-content-h:${box.h}px !important}`;
+      await r.fulfill({ response, body: `${css}\n${tokens}` });
+    });
+  }
   const page = await context.newPage();
   await page.goto(`${appUrl}${route}`, { waitUntil: 'networkidle' });
   await page.waitForSelector('[data-print-ready]');
@@ -455,12 +476,147 @@ async function runScreen() {
 const LOGS_DEFAULT = ALL_VERSIONS.map((v) => v.id);
 
 // ---------------------------------------------------------------------------
+// sheet (04-07): the Sheet's formula pages on paper.
+// ---------------------------------------------------------------------------
+// The Sheet pages follow the two log pages. How many there are is the plan's
+// to say: the route leaves the laid pages in the DOM, one picture each.
+async function readLaidSheet(page) {
+  return page.evaluate(() => {
+    const text = (el) => el.textContent.replace(/\s+/g, ' ').trim();
+    const pages = [...document.querySelectorAll('.print-page--sheet')].map((pageEl) => ({
+      band: Boolean(pageEl.querySelector('.ps-band')),
+      before: Boolean(pageEl.querySelector('.ps-before')),
+      heading: [...pageEl.querySelectorAll('.region-name')].map(text),
+      header: Boolean(pageEl.querySelector('thead')),
+      total: Boolean(pageEl.querySelector('tfoot')),
+      groups: [...pageEl.querySelectorAll('.ps-group')].map((tbody) => ({
+        head: tbody.querySelector('.ps-step-head') ? text(tbody.querySelector('.ps-step-head')) : null,
+        lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
+      })),
+    }));
+    const whole = [...document.querySelectorAll('.ps-box .ps-group')].map((tbody) => ({
+      head: tbody.querySelector('.ps-step-head') ? text(tbody.querySelector('.ps-step-head')) : null,
+      lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
+    }));
+    return { pages, whole, total: text(document.querySelector('.ps-box tfoot .ps-col-grams')) };
+  });
+}
+
+// Where sketch 010 D29 breaks Olive Oil v1's table: by the step numbers each
+// Sheet page holds. Safari (630 x 900) puts Steps 2 and 3 on the formula page;
+// Chrome (672 x 960) also takes Step 6.
+const OLIVE_SHEET_BREAKS = {
+  webkit: [[2, 3], [6, 8]],
+  chrome: [[2, 3, 6], [8]],
+};
+
+const stepOf = (group) => Number(group.head.match(/^Step (\d+)/)[1]);
+
+// The laid pages the route drew (the DOM), against D29.
+function checkLaid(engine, v, laid) {
+  const label = `${engine} ${v.id} laid`;
+  const breaks = OLIVE_SHEET_BREAKS[engine];
+  check(laid.pages.length === breaks.length, label, `the route lays ${laid.pages.length} Sheet page(s) (D29: ${breaks.length})`);
+  laid.pages.forEach((p, i) => {
+    const got = p.groups.map(stepOf);
+    check(JSON.stringify(got) === JSON.stringify(breaks[i]), label, `Sheet page ${i + 1} holds Steps ${got.join(', ')} (D29: ${breaks[i].join(', ')})`);
+    check(p.header, label, `Sheet page ${i + 1} opens with the header row`);
+    check(i === 0 ? p.heading.includes('Ingredients') : !p.heading.includes('Ingredients'), label, `Sheet page ${i + 1} ${i === 0 ? 'carries' : 'does not carry'} the Ingredients heading`);
+    check(p.total === (i === laid.pages.length - 1), label, `Sheet page ${i + 1} ${p.total ? 'holds' : 'does not hold'} the Total`);
+  });
+  const lines = laid.pages.flatMap((p) => p.groups.flatMap((g) => g.lines));
+  const expected = laid.whole.flatMap((g) => g.lines);
+  check(JSON.stringify(lines) === JSON.stringify(expected), label, `every line stands once, in order (${lines.length} of ${expected.length})`);
+}
+
+// A printed PDF against the plan: pages, text, ink.
+function checkSheetPaper(engine, v, file, laid) {
+  const label = `${engine} ${v.id}`;
+  const pages = pdfText(tools['pdf-pages'], file);
+  const ink = pdfInk(tools['pdf-pages'], file);
+  const breaks = OLIVE_SHEET_BREAKS[engine];
+  check(pages.length === LOG_PAGES.length + breaks.length, label, `prints ${LOG_PAGES.length + breaks.length} pages, the two logs then ${breaks.length} of the Sheet (got ${pages.length})`);
+  breaks.forEach((steps, i) => {
+    const index = LOG_PAGES.length + i;
+    const text = pages[index] ?? '';
+    const plabel = `${label} page ${index + 1}`;
+    const body = norm(text);
+    if (i === 0) {
+      check(body.startsWith(norm(v.sheetTitle)), plabel, 'opens with the Sheet title');
+      check(body.includes('before you start'), plabel, 'holds Before you start');
+      check(body.includes('ingredients as made ingredient') || /ingredients as made ingredient/.test(body), plabel, 'holds the Ingredients heading over the header row');
+    } else {
+      check(body.startsWith('as made ingredient'), plabel, 'opens with the header row, As made then Ingredient');
+      check(!/(^| )ingredients( |$)/.test(body), plabel, 'carries no Ingredients heading again');
+      check(!body.includes('before you start'), plabel, 'does not print Before you start again');
+    }
+    check(!body.includes('continued'), plabel, 'carries no "continued"');
+    for (const group of laid.whole) {
+      const n = stepOf(group);
+      const here = steps.includes(n);
+      const head = new RegExp(`(^| )step ${n}( |$)`).test(body);
+      check(head === here, plabel, `Step ${n}'s head is ${here ? '' : 'not '}on this page`);
+      if (here) {
+        const missing = group.lines.filter((line) => !body.includes(norm(line)));
+        check(missing.length === 0, plabel, `Step ${n}'s ${group.lines.length} lines are all here${missing.length ? ` (missing ${missing.join('; ')})` : ''}`);
+      }
+    }
+    const totals = (body.match(/(^| )total( |$)/g) ?? []).length;
+    const last = i === breaks.length - 1;
+    check(totals === (last ? 1 : 0), plabel, `the Total is printed ${totals} time(s) here (${last ? 1 : 0})`);
+    const b = ink[index];
+    if (check(b !== null && b !== undefined, plabel, 'has ink')) {
+      check(b.x0 >= CONTENT_PT.x0 - INK_TOL_PT && b.x1 <= CONTENT_PT.x1 + INK_TOL_PT, plabel, `ink stays between the side margins (x ${b.x0.toFixed(1)} to ${b.x1.toFixed(1)}, box ${CONTENT_PT.x0} to ${CONTENT_PT.x1})`);
+      check(b.y0 >= CONTENT_PT.y0 - INK_TOL_PT && b.y1 <= CONTENT_PT.y1 + INK_TOL_PT, plabel, `ink stays inside the content box's height (y ${b.y0.toFixed(1)} to ${b.y1.toFixed(1)}, box ${CONTENT_PT.y0} to ${CONTENT_PT.y1})`);
+    }
+  });
+}
+
+async function runSheet() {
+  await tool('wkprint');
+  await tool('pdf-pages');
+  const { appUrl, close } = await startServers({ appRoot: DIST });
+  const engines = [
+    ['webkit', await webkit.launch()],
+    ['chrome', await launch()],
+  ];
+  try {
+    const v = OLIVE;
+    for (const [engine, browser] of engines) {
+      // The browser's own engine lays the pages; the DOM says where.
+      const { context, page } = await openRoute(browser, appUrl, v.route);
+      const laid = await readLaidSheet(page);
+      checkLaid(engine, v, laid);
+      if (engine === 'chrome') {
+        const pdf = await page.pdf({ preferCSSPageSize: true, printBackground: true });
+        const file = path.join(workDir, `chrome-sheet-${v.id}.pdf`);
+        await writeFile(file, pdf);
+        if (process.env.PROBE_DUMP) pdfText(tools['pdf-pages'], file).forEach((t, i) => console.log(`--- chrome page ${i + 1}\n${t}`));
+        checkSheetPaper('chrome', v, file, laid);
+      }
+      await context.close();
+      if (engine === 'webkit') {
+        // WebKit's own print is the one that matters for Safari.
+        const file = await printWebKit(appUrl, v);
+        if (process.env.PROBE_DUMP) pdfText(tools['pdf-pages'], file).forEach((t, i) => console.log(`--- webkit page ${i + 1}\n${t}`));
+        checkSheetPaper('webkit', v, file, laid);
+      }
+    }
+  } finally {
+    for (const [, browser] of engines) await browser.close();
+    await close();
+  }
+}
+
+// ---------------------------------------------------------------------------
 const [mode, ...rest] = process.argv.slice(2);
 try {
   if (mode === 'logs') await runLogs(rest);
   else if (mode === 'screen') await runScreen();
+  else if (mode === 'measure') await runMeasure();
+  else if (mode === 'sheet') await runSheet();
   else {
-    console.log('usage: 04-print-probe.mjs logs [version-id ...] | screen');
+    console.log('usage: 04-print-probe.mjs logs [version-id ...] | screen | measure | sheet | sweep');
     process.exit(2);
   }
 } finally {

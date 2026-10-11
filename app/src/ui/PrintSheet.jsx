@@ -6,6 +6,7 @@ import { sortedVersions, versionIdentity, versionsForRecipe } from '../domain/li
 import { sheetCode } from '../domain/sheetCode.js';
 import { Button } from './Button.jsx';
 import { BatchLogPage, TastingLogPage, logFootText } from './PrintLogPages.jsx';
+import { SheetPage, useSheetPages } from './PrintSheetPages.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { RecipeNotFound } from './RecipePage.jsx';
 
@@ -70,6 +71,10 @@ export function PrintSheet({ recipeId, versionId }) {
 
   const loaded = Boolean(version) && Boolean(recipe) && versions !== undefined && version.recipeId === recipeId;
 
+  // The Sheet's formula pages, laid by measurement in the printing engine's own
+  // content box (PRINT-01, sketch 010 D29): null until the blocks are measured.
+  const sheet = useSheetPages(loaded ? version : null);
+
   // D-20: the tab title leads with the recipe name while the route is mounted.
   const recipeName = loaded ? recipe.name : null;
   useEffect(() => {
@@ -111,7 +116,10 @@ export function PrintSheet({ recipeId, versionId }) {
   const footFor = (side) => logFootText({ sheetTitle: version.sheetTitle, identity, code, side });
 
   return (
-    <div className="notebook print-route" data-print-ready="true">
+    <div
+      className={sheet.engine === 'webkit' ? 'notebook print-route print-pages--webkit' : 'notebook print-route print-pages--other'}
+      data-print-ready={sheet.pages ? 'true' : undefined}
+    >
       <header className="print-route__head">
         <div className="print-route__id">
           <span className="notebook-caption">Print sheet</span>
@@ -142,7 +150,18 @@ export function PrintSheet({ recipeId, versionId }) {
             <TastingLogPage version={version} footText={footFor(2)} />
           </div>
         </div>
+        {sheet.pages &&
+          sheet.pages.map((plan, i) => (
+            <div key={i} className="print-route__picture" role="img" aria-label={`Sheet, page ${i + 1}`}>
+              <div className="print-page print-page--sheet">
+                <div className="ps-fit ps-frame" style={{ '--sheet-print-fit-scale': sheet.fit }}>
+                  <SheetPage plan={plan} blocks={sheet.blocks} columns={sheet.columns} />
+                </div>
+              </div>
+            </div>
+          ))}
       </div>
+      {sheet.measureElement}
     </div>
   );
 }

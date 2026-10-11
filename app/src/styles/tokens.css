@@ -543,4 +543,18 @@
   --sheet-print-tick-h: 8px; /* a scale's three middle ticks, rising above the rule only */
   --sheet-print-tick-end-h: 16px; /* its two end ticks, and the track's own height */
   --sheet-print-name-pad: 3px; /* a scale name's drop, to sit on the rule's line (CONTRACT § 4) */
+
+  /* The Sheet's formula pages (Phase 4, plan 04-07; sketch 010 D29, E1, E2, E6
+     to E8, CONTRACT §§ 1, 5, 10). Each page is laid by measurement in the
+     printing engine's own content box: WebKit prints one CSS px as 0.8 pt, so
+     its box is 630 x 900 and every other engine's 672 x 960 (CONTRACT § 1).
+     print.css picks the pair by the route's print-pages--webkit or
+     print-pages--other class; the layout never reads the window. */
+  --sheet-print-content-w-webkit: 630px; /* Safari's content box, letter less the margins at 0.8 pt per CSS px */
+  --sheet-print-content-h-webkit: 900px;
+  --sheet-print-content-w: 672px; /* every other engine's content box */
+  --sheet-print-content-h: 960px;
+  --sheet-print-asmade-col: 84px; /* the As made cell (E1; CONTRACT § 5) */
+  --sheet-print-asmade-w: 72px; /* the blank line the maker writes the weighed amount on */
+  --sheet-print-asmade-h: 24px;
 }

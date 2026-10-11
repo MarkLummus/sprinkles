@@ -32,7 +32,7 @@ const BLOCKED_ROW_ERROR_ID = 'ingredient-field-error';
 // removed) is skipped before any group is created for it, so no empty step
 // head prints, unless `keepOutLines` is set: the pen and Show changes draw a
 // line that is out, struck.
-function groupPortionsByStep(rows, steps, stepNumberMap, keepOutLines) {
+export function groupPortionsByStep(rows, steps, stepNumberMap, keepOutLines) {
   const numbered = new Map();
   const removedSteps = new Map();
   const unallocated = [];
@@ -93,7 +93,7 @@ function weakestRowBasis(row) {
   return worst;
 }
 
-function dataFlagFor(row) {
+export function dataFlagFor(row) {
   const basis = weakestRowBasis(row);
   if (basis === 'estimated') return 'estimated';
   if (basis === 'inherited') return 'unreviewed';

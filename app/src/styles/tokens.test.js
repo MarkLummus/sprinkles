@@ -28,7 +28,15 @@ const CSS_FILE_NAMES = ['tokens.css', 'app.css', 'home.css', 'shell.css', 'noteb
 // PrintSheet.jsx sets --sheet-print-picture-scale the same way (04-06 Task 3):
 // the room over the page's own measured width, a ratio only the browser can
 // measure, read by print.css to scale each page picture as a whole.
-const LOCALLY_SET_CUSTOM_PROPERTIES = new Set(['--app-notebook-history-count', '--sheet-print-picture-scale']);
+// PrintSheet.jsx sets --sheet-print-fit-scale on each Sheet page's fit box (04-07):
+// the page picture's content width over the box's own measured width (16/15 in
+// WebKit's 630, 1 in the 672 of every other engine), read by print.css to scale
+// the box on screen.
+const LOCALLY_SET_CUSTOM_PROPERTIES = new Set([
+  '--app-notebook-history-count',
+  '--sheet-print-picture-scale',
+  '--sheet-print-fit-scale',
+]);
 
 function stripJsComments(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');

@@ -467,6 +467,198 @@
   letter-spacing: var(--sheet-print-tracking-foot);
 }
 
+/* The Sheet's formula pages (plan 04-07; PRINT-01; sketch 010 E1 to E8, D29;
+   sheet-page-1-formula.html and sheet-page-2-table-tail.html, whose resolved
+   rules for the band, Before you start, the table and the headings are
+   transcribed below). Each page is its own box laid by measurement
+   (domain/sheetPages.js), so the printer never splits a table or a grid. The
+   pages use their own frame and table classes (ps-*): the app's .recipe-page
+   and .ingredient-table carry width-dependent @media rules a printed page must
+   not read. Only classes no non-print @media rule can reach inside a page are
+   reused: headnote, headnote__prose, region-name, authored__notes,
+   formulation-note__rule, graduated-rule__*, formulation-note__fat-breakdown,
+   basis-note, target-chip (print.test.js checks it). Every heading and rule
+   prints in ink, one colour (E5). */
+
+/* The engine's content box: Safari's 630 x 900 or every other engine's 672 x
+   960. The page picture's fit box and the hidden measuring box take the same
+   one, so what is measured is what is laid. */
+.print-pages--webkit .ps-fit,
+.print-pages--webkit .ps-box {
+  width: var(--sheet-print-content-w-webkit);
+  height: var(--sheet-print-content-h-webkit);
+}
+
+.print-pages--other .ps-fit,
+.print-pages--other .ps-box {
+  width: var(--sheet-print-content-w);
+  height: var(--sheet-print-content-h);
+}
+
+/* On screen the fit box is the engine's box scaled to the picture's content
+   width (--sheet-print-fit-scale, set inline by PrintSheet.jsx: 16/15 in
+   Safari's 630, 1 elsewhere); on paper it is not scaled. */
+.print-page--sheet {
+  padding: var(--sheet-print-margin-y) var(--sheet-print-margin-x);
+}
+
+.ps-fit {
+  transform: scale(var(--sheet-print-fit-scale));
+  transform-origin: 0 0;
+}
+
+.ps-frame {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+  color: var(--sheet-ink);
+}
+
+/* The measuring box: laid out, never seen or felt. A zero box that clips, so
+   the page does not grow; the box inside keeps its token size. */
+.ps-measure {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* The picture's content width, for the fit ratio. */
+.ps-probe {
+  width: calc(var(--sheet-print-page-w) - 2 * var(--sheet-print-margin-x));
+  height: 0;
+}
+
+.ps-page {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--gap-m);
+}
+
+.ps-frame .region-name {
+  color: var(--sheet-ink);
+}
+
+.ps-band {
+  min-width: 0;
+  border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+  padding-bottom: var(--gap-m);
+}
+
+.ps-before {
+  min-width: 0;
+  max-width: var(--measure-prose);
+}
+
+/* E4: the table in column 1 and Balance in column 2, 20 px apart. */
+.ps-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  column-gap: var(--gap-m);
+  align-items: start;
+}
+
+.ps-col1,
+.ps-col2 {
+  min-width: 0;
+}
+
+/* The table (E1, E2, E6, E7, E8). */
+.ps-table {
+  border-collapse: collapse;
+  table-layout: auto;
+  width: 100%;
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-table-body);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A slice of the table takes the column widths measured on the whole one. */
+.ps-table--pinned {
+  table-layout: fixed;
+}
+
+.ps-table th,
+.ps-table td {
+  box-sizing: border-box;
+  text-align: left;
+  padding: var(--gap-xs) var(--sheet-table-cell-pad-x);
+  line-height: var(--sheet-leading-table);
+  border-bottom: var(--rule-baseline) solid var(--sheet-ink);
+}
+
+.ps-table th {
+  font-size: var(--sheet-size-running-head);
+  text-transform: uppercase;
+  letter-spacing: var(--sheet-print-tracking-caps);
+}
+
+.ps-table .ps-col-asmade {
+  width: var(--sheet-print-asmade-col);
+  padding-right: var(--gap-s);
+  text-align: left;
+}
+
+.ps-table .ps-col-grams {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+  padding-right: var(--sheet-plan-grams-gap);
+}
+
+.ps-table .ps-col-name {
+  width: auto;
+}
+
+/* E1: the blank line the weighed amount is written on. */
+.ps-asmade {
+  display: block;
+  width: var(--sheet-print-asmade-w);
+  height: var(--sheet-print-asmade-h);
+  border-bottom: var(--rule-ink-field) solid var(--sheet-ink);
+}
+
+/* E7: each step group opens with its head under an ink tick rule. */
+.ps-step-head td {
+  font-size: var(--sheet-size-small-print);
+  text-transform: uppercase;
+  letter-spacing: var(--sheet-print-tracking-caps);
+  padding-top: var(--gap-s);
+  border-top: var(--rule-tick) solid var(--sheet-ink);
+}
+
+.ps-step-lead {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--face-text);
+  font-size: var(--sheet-size-deviation-words);
+  margin-left: var(--gap-s);
+}
+
+/* E8: no rule between lines. */
+.ps-table tbody tr:not(.ps-step-head) td {
+  border-bottom: 0;
+}
+
+.ps-flag {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-cross-flag);
+  margin: var(--gap-hair) 0 0 var(--sheet-flag-gap);
+  vertical-align: middle;
+}
+
+.ps-note {
+  display: block;
+  font-size: var(--sheet-size-small-print);
+}
+
+.ps-table tfoot td {
+  border-bottom: none;
+  border-top: var(--rule-baseline) solid var(--sheet-ink);
+  font-weight: bold;
+}
+
 /* The touch floor at a coarse pointer, as the app's own Home name links meet it
    (home.css, pointer: coarse): the Sheet title link is a 44 px target. It
    reads the pointer alone and sits before the stack rule below, so under 724 the
@@ -581,5 +773,15 @@
      stays (D22). */
   .print-page--log {
     padding: 0 var(--sheet-print-guard) 0 0;
+  }
+
+  /* The Sheet's pages: the paper's margins are the page's own, and the fit box
+     is not scaled. */
+  .print-page--sheet {
+    padding: 0;
+  }
+
+  .ps-fit {
+    transform: none;
   }
 }

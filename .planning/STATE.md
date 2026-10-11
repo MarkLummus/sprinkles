@@ -1,18 +1,18 @@
 ---
 gsd_state_version: "1.0"
 current_phase: 03.7.1
-current_phase_name: Hide draw temperature
+current_phase_name: Hide draw temperature (INSERTED)
 status: executing
-stopped_at: Phase 03.7 complete, ready to plan Phase 04
-last_updated: "2026-10-10T23:50:36.879Z"
-last_activity: 2026-10-06
-last_activity_desc: Phase 03.7 complete, transitioned to Phase 04
-state_head: 6d5092f7adb4857b4d0c80576e05133e0780fe79
+stopped_at: Completed 03.7.1-01-PLAN.md
+last_updated: "2026-10-11T00:00:31.016Z"
+last_activity: 2026-10-10
+last_activity_desc: Phase 03.7.1 execution started
+state_head: ef88dd9f35b72d2bec68de0bb059d7cd3db92cd3
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 110
-  completed_plans: 108
+  completed_plans: 109
   percent: 73
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-22)
 
 **Core value:** Make something you like, understand how it turned out, and know what to keep or change next time.
-**Current focus:** Phase 03.7 — Before you start as its own Sheet section
+**Current focus:** Phase 03.7.1 — Hide draw temperature (INSERTED)
 
 ## Current Position
 
-Phase: 03.7.1 (Hide draw temperature) — READY TO EXECUTE
-Plan: Not started
+Phase: 03.7.1 (Hide draw temperature (INSERTED)) — EXECUTING
+Plan: 2 of 2
 Status: Ready to execute
-Last activity: 2026-10-06 — Phase 03.7 complete, transitioned to Phase 04
+Last activity: 2026-10-10 — Phase 03.7.1 execution started
 
 Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed through Phase 03.4)
 
@@ -139,6 +139,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 03.7 P01 | 7 min | 2 tasks | 8 files |
 | Phase 03.7 P02 | 35 min | 2 tasks | 10 files |
 | Phase 03.7 P03 | 14 min | 2 tasks | 2 files |
+| Phase 03.7.1 P01 | 6 min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -280,6 +281,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.7]: 03.7-03: no app/src change; the probe found no gap in the section's place, insides, states, pen or focus order against decision 36's boards in WebKit and Chrome at 1366 and 393
 - [Phase 03.7]: 03.7-03: the boards' Caveat is served to the board page from the repo's own woff2 because the harness aborts Google Fonts; otherwise the hand's fallback shaves 0.3px off four table rows
 - [Phase 03.7]: 03.7-03: the 'Notes, no steps' board panel is OPEN below the section only (it keeps four step heads a version with no steps cannot draw); whole-route print splits Instructions step 1 (the page's print grid), found and not fixed for Phase 4
+- [Phase 03.7.1]: 03.7.1-01 D-03: the record draft carries no Time to draw temp.; the amend save passes the stored value to completeRecord, a new batch stores null
 
 ### Pending Todos
 
@@ -474,6 +476,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-06T11:37:05.839Z
-Stopped at: Phase 03.7 complete, ready to plan Phase 04
+Last session: 2026-10-11T00:00:30.880Z
+Stopped at: Completed 03.7.1-01-PLAN.md
 Resume file: None

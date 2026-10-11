@@ -11,6 +11,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { readAllRules, stripCssComments } from './css-source.js';
 import { BatchLogPage, TastingLogPage } from '../ui/PrintLogPages.jsx';
+import { SheetPage, sheetBlocks } from '../ui/PrintSheetPages.jsx';
+import { layPages } from '../domain/sheetPages.js';
 import { seedRecipeGroups } from '../data/seed-recipes.js';
 
 const STYLES_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -139,14 +141,50 @@ describe('the pages read no width and no pointer (CONTRACT § 1)', () => {
 
   const classesIn = (markup) => [...markup.matchAll(/class="([^"]*)"/g)].flatMap((match) => match[1].split(/\s+/)).filter(Boolean);
 
+  // Fixed heights stand in for the measuring a browser does (jsdom, and this node
+  // environment, have no layout): one height per kind of block, enough to spread a
+  // version's Sheet over several pages so every page kind (the first, with the band
+  // and the notes, and the ones that continue) is rendered.
+  function sheetPagesOf(version) {
+    const blocks = sheetBlocks(version);
+    const measure = {
+      band: 126,
+      before: blocks.notes.length > 0 ? 145 : 0,
+      gap: 20,
+      ingredientsHeading: 25,
+      header: 27,
+      total: 31,
+      groups: blocks.groups.map((group) => ({ head: group.head ? 35 : 0, rows: group.lines.map(() => 40) })),
+      balanceHeading: 25,
+      gauges: blocks.figures.map(() => 100),
+      gaugeGap: 20,
+      basis: 120,
+      basisGap: 20,
+    };
+    return { blocks, pages: layPages(measure, { height: 900 }) };
+  }
+
+  const sheetClassesOf = (version) => {
+    const { blocks, pages } = sheetPagesOf(version);
+    return pages.flatMap((plan) => classesIn(renderToStaticMarkup(createElement(SheetPage, { plan, blocks, columns: [90, 80, 200] }))));
+  };
+
   // What a page picture renders: the page boxes and every class the two log
-  // pages render for every seed version.
+  // pages and the Sheet's pages render for every seed version. Rendering counts
+  // the classes of the components drawn inside a page (the Headnote, the note
+  // list, the gauge drawing, the basis note) and leaves out the editing-only
+  // classes those modules also hold (Authored.jsx's prose-field, which app.css
+  // targets under a coarse pointer): a class never rendered cannot be matched.
   const PAGE_CLASSES = new Set([
     'print-page',
     'print-page--log',
+    'print-page--sheet',
+    'ps-fit',
+    'ps-frame',
     ...VERSIONS.flatMap((version) => [
       ...classesIn(renderToStaticMarkup(createElement(BatchLogPage, { footText: 'foot' }))),
       ...classesIn(renderToStaticMarkup(createElement(TastingLogPage, { version, footText: 'foot' }))),
+      ...sheetClassesOf(version),
     ]),
   ]);
 
@@ -230,6 +268,9 @@ describe('the pages read no width and no pointer (CONTRACT § 1)', () => {
 
   test('the set the gate reads is real: the pages render the classes the gate names, and the route its own', () => {
     for (const name of ['lf', 'lf-foot', 'region-name', 'pen-caption', 'axis-mark__name', 'pen-helper']) expect(PAGE_CLASSES.has(name), name).toBe(true);
+    for (const name of ['print-page--sheet', 'ps-fit', 'ps-page', 'ps-table', 'ps-group', 'ps-gauge', 'headnote', 'headnote__prose', 'authored__notes', 'formulation-note__rule', 'graduated-rule__head', 'basis-note', 'target-chip']) expect(PAGE_CLASSES.has(name), name).toBe(true);
+    // The editing-only classes of the modules a page draws are not rendered by a page.
+    for (const name of ['prose-field', 'authored__note-field', 'headnote__sheet-title-field']) expect(PAGE_CLASSES.has(name), name).toBe(false);
     for (const name of ['notebook', 'print-route', 'shell', 'shell__main']) expect(ROUTE_CLASSES.has(name), name).toBe(true);
     expect(ROUTE_CLASSES.has('notebook-log')).toBe(false);
     expect(ROUTE_CLASSES.has('batch-row__head')).toBe(false);
@@ -245,5 +286,13 @@ describe('the pages read no width and no pointer (CONTRACT § 1)', () => {
     expect(pointer.offenders).toHaveLength(1);
     const printOnly = judge('inline', '@media print { .notebook .region-name { margin: 0 } }');
     expect(printOnly.offenders).toEqual([]);
+    // A Sheet page's own classes are guarded the same way; the screen table's are not
+    // classes a Sheet page renders, so a width rule on them is not a Sheet page's.
+    const onSheet = judge('inline', '@media (pointer: coarse) { .ps-table td { padding: 0 } }');
+    expect(onSheet.offenders).toHaveLength(1);
+    const onGauge = judge('inline', '@media (max-width: 723.98px) { .ps-gauge .graduated-rule__head { display: block } }');
+    expect(onGauge.offenders).toHaveLength(1);
+    const onScreenTable = judge('inline', '@media (max-width: 723.98px) { .ingredient-table td { padding: 0 } }');
+    expect(onScreenTable.offenders).toEqual([]);
   });
 });

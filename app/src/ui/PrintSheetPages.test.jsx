@@ -14,6 +14,8 @@ import { displayNumbers } from '../domain/stepNumbers.js';
 import { layPages } from '../domain/sheetPages.js';
 import { OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME } from '../domain/sheetPages.fixtures.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
+import { seedRecipeGroups } from '../data/seed-recipes.js';
+import { activeRows, rowGrams } from '../domain/rows.js';
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -217,6 +219,72 @@ describe('SheetPage — one laid page of the Sheet', () => {
     expect(page.querySelector('img')).toBeNull();
     expect(page.querySelector('h1').textContent).toBe('<img src=x onerror=alert(1)>');
   });
+});
+
+// 04-07 Task 3: every seed version, not only Olive Oil v1. Fixed heights stand in
+// for the measuring jsdom cannot do, one kind of height per kind of block, so a
+// version is spread over several pages and every page kind is rendered.
+describe('every seed version — the table lists exactly its active lines, in the screen table’s order', () => {
+  const versions = seedRecipeGroups.flatMap((group) => group.versions);
+
+  function fixedMeasure(forBlocks) {
+    return {
+      band: 126,
+      before: forBlocks.notes.length > 0 ? 145 : 0,
+      gap: 20,
+      ingredientsHeading: 25,
+      header: 27,
+      total: 31,
+      groups: forBlocks.groups.map((group) => ({ head: group.head ? 35 : 0, rows: group.lines.map(() => 40) })),
+      balanceHeading: 25,
+      gauges: forBlocks.figures.map(() => 100),
+      gaugeGap: 20,
+      basis: 120,
+      basisGap: 20,
+    };
+  }
+
+  it('covers every seed version', () => {
+    expect(versions.length).toBeGreaterThanOrEqual(19);
+  });
+
+  for (const version of versions) {
+    it(`${version.id}: its lines, once each and in order; no removed line; the Total once`, () => {
+      const forBlocks = sheetBlocks(version);
+      const grouped = groupPortionsByStep(version.rows, version.method, displayNumbers(version.method), false);
+      const want = grouped.flatMap((group) => group.entries.map((entry) => `${entry.row.id}:${entry.portionIndex}`));
+      // The lines of the active rows only: a line that is out never reaches a group.
+      const activePortions = activeRows(version).reduce((count, row) => count + row.portions.length, 0);
+      expect(want).toHaveLength(activePortions);
+
+      const pages = layPages(fixedMeasure(forBlocks), { height: 900 });
+      const host = document.createElement('div');
+      host.innerHTML = pages.map((plan) => renderToStaticMarkup(<SheetPage plan={plan} blocks={forBlocks} />)).join('');
+      const rendered = [...host.querySelectorAll('tbody.ps-group tr:not(.ps-step-head)')];
+      expect(rendered).toHaveLength(want.length);
+
+      const names = grouped.flatMap((group) => group.entries.map((entry) => entry.row.ingredientName));
+      expect(rendered.map((row) => row.querySelector('.ps-col-name').firstChild.textContent)).toEqual(names);
+      const grams = grouped.flatMap((group) => group.entries.map((entry) => `${entry.portion.grams} g`));
+      expect(rendered.map((row) => row.querySelector('.ps-col-grams').textContent)).toEqual(grams);
+
+      // A removed row or line is not printed: every printed name is an active row's.
+      const activeNames = new Set(activeRows(version).map((row) => row.ingredientName));
+      for (const name of names) expect(activeNames.has(name), name).toBe(true);
+      // The Total is the active rows' sum, printed once.
+      const total = activeRows(version).reduce((sum, row) => sum + rowGrams(row), 0);
+      expect(host.querySelectorAll('tfoot')).toHaveLength(1);
+      expect(host.querySelector('tfoot .ps-col-grams').textContent).toBe(`${total.toFixed(1)} g`);
+      // Before you start is printed once, and only when the version has notes.
+      expect(host.querySelectorAll('.ps-before')).toHaveLength(version.authored.beforeYouStart.length > 0 ? 1 : 0);
+      // The header row opens every table page; the heading only the first.
+      const tables = [...host.querySelectorAll('.ps-ingredients')];
+      expect(tables.every((table) => table.querySelector('thead'))).toBe(true);
+      expect(host.querySelectorAll('.ps-ingredients > .region-name')).toHaveLength(1);
+      expect(host.textContent.toLowerCase()).not.toContain('continued');
+      expect(host.querySelector('button')).toBeNull();
+    });
+  }
 });
 
 describe('useSheetPages — measures after render, then lays', () => {

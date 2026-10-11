@@ -44,10 +44,17 @@ import { execFile, execFileSync } from 'node:child_process';
 import { promisify } from 'node:util';
 import os from 'node:os';
 import path from 'node:path';
-import { seedRecipeGroups } from '../../../app/src/data/seed-recipes.js';
+import { pathToFileURL } from 'node:url';
 import { sheetCode } from '../../../app/src/domain/sheetCode.js';
 import { AXES } from '../../../app/src/domain/axes.js';
 import { DEFECTS } from '../../../app/src/domain/battery.js';
+
+// The seed the app was built with. PROBE_SEED names another seed module (a
+// scratch copy of the app whose seed also holds stress versions, built into
+// PROBE_DIST) for a run that needs a table longer than any real recipe's.
+const { seedRecipeGroups } = await import(
+  process.env.PROBE_SEED ? pathToFileURL(process.env.PROBE_SEED).href : new URL('../../../app/src/data/seed-recipes.js', import.meta.url).href
+);
 
 const execFileAsync = promisify(execFile);
 const DIST = process.env.PROBE_DIST ?? path.join(REPO_ROOT, 'app', 'dist');
@@ -135,7 +142,8 @@ function check(cond, label, what, kind = 'DIFF') {
 
 // Comparable text: the reader's separators and punctuation become single
 // spaces, lower case.
-const norm = (t) => t.replace(/[|\n]/g, ' ').toLowerCase().replace(/[^a-z0-9%]+/g, ' ').trim();
+// NFKC first: Chrome's PDF text carries the f-ligatures (U+FB00, U+FB03) as single characters.
+const norm = (t) => t.normalize('NFKC').replace(/[|\n]/g, ' ').toLowerCase().replace(/[^a-z0-9%]+/g, ' ').trim();
 const hasWord = (t, word) => new RegExp(`(^| )${word}( |$)`).test(norm(t));
 
 // ---------------------------------------------------------------------------
@@ -225,7 +233,9 @@ function checkPaper(engine, v, file, lineCode) {
   const pages = pdfText(tools['pdf-pages'], file);
   const bounds = pdfInk(tools['pdf-pages'], file);
   check(lineCode === v.code, label, `the route line reads the saved version's code (${lineCode}, expected ${v.code})`);
-  check(pages.length === LOG_PAGES.length, label, `prints exactly ${LOG_PAGES.length} page(s) (got ${pages.length})`);
+  // The two log pages come first, front and back of one sheet; the Sheet's own
+  // pages follow them (04-07) and are checked by the sheet and sweep modes.
+  check(pages.length >= LOG_PAGES.length, label, `prints the ${LOG_PAGES.length} log pages first (got ${pages.length} page(s) in all)`);
   LOG_PAGES.forEach((expected, i) => {
     const text = pages[i] ?? '';
     const plabel = `${label} page ${i + 1}`;
@@ -374,14 +384,15 @@ async function runScreen() {
         } else {
           check(near(got.name.y + got.name.h / 2, got.saved.y + got.saved.h / 2, 12), label, 'the line reads on one row');
         }
-        check(got.pages.length === LOG_PAGES.length, label, `shows ${LOG_PAGES.length} page pictures (got ${got.pages.length})`);
+        // The two log pictures, then the Sheet's (04-07): every picture is a letter page.
+        check(got.pages.length >= LOG_PAGES.length, label, `shows the ${LOG_PAGES.length} log page pictures first (got ${got.pages.length} pictures in all)`);
         got.pages.forEach((box, i) => {
           check(near(box.w, spec.picture[0]) && near(box.h, spec.picture[1]), label, `picture ${i + 1} is ${box.w.toFixed(1)} x ${box.h.toFixed(1)} (${spec.picture.join(' x ')}; the board ${board.log1?.w?.toFixed(1)} x ${board.log1?.h?.toFixed(1)})`);
         });
-        if (got.pages.length > 1) {
-          const gap = got.pages[1].y - (got.pages[0].y + got.pages[0].h);
-          check(near(gap, 20, 1), label, `the pictures are ${gap.toFixed(1)} px apart (20)`);
-        }
+        got.pages.slice(1).forEach((box, i) => {
+          const gap = box.y - (got.pages[i].y + got.pages[i].h);
+          check(near(gap, 20, 1), label, `pictures ${i + 1} and ${i + 2} are ${gap.toFixed(1)} px apart (20)`);
+        });
         check(got.overflowX <= 0, label, `no horizontal overflow (${got.overflowX} px)`);
         check(got.title === 'Olive Oil Ice Cream, circulator \u00b7 Print sheet \u00b7 Sprinkles', label, `the tab title leads with the recipe name (${got.title})`);
 
@@ -483,6 +494,16 @@ const LOGS_DEFAULT = ALL_VERSIONS.map((v) => v.id);
 async function readLaidSheet(page) {
   return page.evaluate(() => {
     const text = (el) => el.textContent.replace(/\s+/g, ' ').trim();
+    // A step group: its head (the step and its lead-in, apart), its lines.
+    const group = (tbody) => {
+      const head = tbody.querySelector('.ps-step-head');
+      return {
+        head: head ? text(head) : null,
+        label: head ? head.querySelector('td').firstChild.textContent : null,
+        lead: head && head.querySelector('.ps-step-lead') ? head.querySelector('.ps-step-lead').textContent : '',
+        lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
+      };
+    };
     const pages = [...document.querySelectorAll('.print-page--sheet')].map((pageEl) => ({
       band: Boolean(pageEl.querySelector('.ps-band')),
       before: Boolean(pageEl.querySelector('.ps-before')),
@@ -495,20 +516,14 @@ async function readLaidSheet(page) {
       })),
       basis: Boolean(pageEl.querySelector('.basis-note')),
       buttons: pageEl.querySelectorAll('button').length,
-      groups: [...pageEl.querySelectorAll('.ps-group')].map((tbody) => ({
-        head: tbody.querySelector('.ps-step-head') ? text(tbody.querySelector('.ps-step-head')) : null,
-        lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
-      })),
+      groups: [...pageEl.querySelectorAll('.ps-group')].map(group),
     }));
-    const whole = [...document.querySelectorAll('.ps-box .ps-group')].map((tbody) => ({
-      head: tbody.querySelector('.ps-step-head') ? text(tbody.querySelector('.ps-step-head')) : null,
-      lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
-    }));
+    const whole = [...document.querySelectorAll('.ps-box .ps-group')].map(group);
     const wholeGauges = [...document.querySelectorAll('.ps-box .formulation-note__rule')].map((rule) => ({
       word: text(rule.querySelector('.graduated-rule__label-word')),
       head: text(rule.querySelector('.graduated-rule__label')) + ' ' + text(rule.querySelector('.graduated-rule__value')),
     }));
-    return { pages, whole, wholeGauges, total: text(document.querySelector('.ps-box tfoot .ps-col-grams')) };
+    return { pages, whole, wholeGauges, total: text(document.querySelector('.ps-box tfoot .ps-col-grams')), hasNotes: Boolean(document.querySelector('.ps-box .ps-before')) };
   });
 }
 
@@ -742,12 +757,195 @@ async function runSheet() {
 }
 
 // ---------------------------------------------------------------------------
+// sweep (04-07 Task 3): every seed version's formula pages, in both engines.
+// One line per version and engine: the route lays the pages, the engine prints
+// them, and what the engine printed is checked against what was laid.
+// ---------------------------------------------------------------------------
+// How many times a word run stands in a page's comparable text.
+const countIn = (body, run) => {
+  if (!run) return 0;
+  const escaped = run.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return (body.match(new RegExp(`(?<= |^)${escaped}(?= |$)`, 'g')) ?? []).length;
+};
+
+// The printed PDF against the laid pages. Returns a list of problems, empty
+// when the paper is the plan.
+function sweepProblems(v, file, laid) {
+  const problems = [];
+  const ok = (cond, what) => {
+    if (!cond) problems.push(what);
+  };
+  const pdf = pdfText(tools['pdf-pages'], file);
+  const ink = pdfInk(tools['pdf-pages'], file);
+  const count = laid.pages.length;
+  ok(pdf.length === LOG_PAGES.length + count, `prints ${pdf.length} pages, the plan lays ${LOG_PAGES.length} + ${count}`);
+  const bodies = laid.pages.map((_, i) => norm(pdf[LOG_PAGES.length + i] ?? ''));
+
+  // Before you start: on the formula page, and only when the version has notes.
+  ok(laid.hasNotes === laid.pages[0].before, `Before you start is laid ${laid.pages[0].before} but the version has notes ${laid.hasNotes}`);
+  bodies.forEach((body, i) => ok(body.includes('before you start') === (i === 0 && laid.hasNotes), `page ${i + 1} ${body.includes('before you start') ? 'prints' : 'lacks'} Before you start (formula page with notes only)`));
+
+  // The Total: once, on the page that holds it.
+  const total = norm(`${laid.total} Total`);
+  const totals = bodies.map((body) => countIn(body, total));
+  ok(totals.reduce((a, b) => a + b, 0) === 1, `the Total is printed ${totals.reduce((a, b) => a + b, 0)} times (${totals.join(', ')})`);
+  laid.pages.forEach((p, i) => ok(totals[i] === (p.total ? 1 : 0), `page ${i + 1}: Total printed ${totals[i]} times, laid ${p.total ? 1 : 0}`));
+
+  // The gauges: each once, on its page.
+  for (const gauge of laid.wholeGauges) {
+    const at = bodies.map((body) => countIn(body, norm(gauge.head)));
+    const laidAt = laid.pages.map((p) => p.gauges.filter((g) => g.head === gauge.head).length);
+    ok(JSON.stringify(at) === JSON.stringify(laidAt), `gauge "${gauge.head}" printed on pages [${at}] but laid on [${laidAt}]`);
+  }
+  laid.pages.forEach((p, i) => ok(countIn(bodies[i], 'computed from') === (p.basis ? 1 : 0), `page ${i + 1}: basis note printed ${countIn(bodies[i], 'computed from')} times, laid ${p.basis ? 1 : 0}`));
+
+  // The step groups: a group the plan did not split keeps its head and every
+  // line on its page; one it split keeps the head with its first line.
+  const wholeByHead = new Map(laid.whole.filter((g) => g.head).map((g) => [g.head, g]));
+  laid.pages.forEach((p, i) => {
+    const wanted = new Map();
+    for (const g of p.groups) for (const line of g.lines) wanted.set(line, (wanted.get(line) ?? 0) + 1);
+    // A line is its grams then its name. A name that wraps beside a centred amount
+    // is read out of the PDF the other way round, or with the amount far from it
+    // (the text extractor orders by baseline), so the order is not asked of a line
+    // that did not come out adjacent: then the amount and the name must each stand
+    // on the page as often as the laid lines on it call for.
+    const printed = (body, line, n) => {
+      const cut = line.indexOf(' g ') + 2;
+      const grams = line.slice(0, cut);
+      const name = line.slice(cut + 1);
+      const adjacent = countIn(body, norm(line)) + countIn(body, norm(`${name} ${grams}`));
+      if (adjacent > 0) return adjacent;
+      const sameGrams = p.groups.flatMap((g) => g.lines).filter((other) => other.startsWith(`${grams} `)).length;
+      const sameName = p.groups.flatMap((g) => g.lines).filter((other) => other.endsWith(` ${name}`)).length;
+      return countIn(body, norm(grams)) >= sameGrams && countIn(body, norm(name)) >= sameName ? n : 0;
+    };
+    for (const [line, n] of wanted) ok(printed(bodies[i], line, n) >= n, `page ${i + 1}: line "${line}" printed ${printed(bodies[i], line, n)} times, laid ${n}`);
+    for (const g of p.groups) {
+      if (!g.head) continue;
+      const whole = wholeByHead.get(g.head);
+      // The step and its lead-in are two runs of text the extractor may read apart
+      // (two heads on neighbouring baselines come out interleaved), so each is
+      // asked for on its own: the step once on its page and nowhere else, the
+      // lead-in on its page.
+      const here = countIn(bodies[i], norm(g.label));
+      const elsewhere = bodies.reduce((sum, body, j) => sum + (j === i ? 0 : countIn(body, norm(g.label))), 0);
+      ok(here === 1 && elsewhere === 0, `${g.label}'s head printed ${here} times here and ${elsewhere} elsewhere`);
+      ok(countIn(bodies[i], norm(g.lead)) >= 1, `${g.label}'s lead-in "${g.lead}" is not on its page`);
+      ok(g.lines.length > 0, `${g.label}'s head stands with no line (${g.lines.length} of ${whole.lines.length})`);
+    }
+    // The header row opens every table page; the Ingredients heading only the
+    // first one (the formula page, or the next when Before you start leaves the
+    // table no room), and no page says "continued".
+    const firstTable = laid.pages.findIndex((q) => q.header);
+    if (p.header) {
+      const opens = i === firstTable ? bodies[i].includes('ingredients as made ingredient') : bodies[i].startsWith('as made ingredient');
+      ok(opens, `page ${i + 1}: the ${i === firstTable ? 'Ingredients heading and ' : ''}header row does not open the table`);
+      ok((i === firstTable) === p.heading.includes('Ingredients'), `page ${i + 1}: the Ingredients heading is laid ${p.heading.includes('Ingredients')}, the first table page is ${firstTable + 1}`);
+    }
+    ok(!bodies[i].includes('continued'), `page ${i + 1} carries the word "continued"`);
+  });
+
+  // No ink past the content box.
+  laid.pages.forEach((_, i) => {
+    const b = ink[LOG_PAGES.length + i];
+    if (!b) return problems.push(`page ${i + 1} has no ink`);
+    ok(b.x0 >= CONTENT_PT.x0 - INK_TOL_PT && b.x1 <= CONTENT_PT.x1 + INK_TOL_PT, `page ${i + 1}: ink x ${b.x0.toFixed(1)} to ${b.x1.toFixed(1)} leaves the box ${CONTENT_PT.x0} to ${CONTENT_PT.x1}`);
+    ok(b.y0 >= CONTENT_PT.y0 - INK_TOL_PT && b.y1 <= CONTENT_PT.y1 + INK_TOL_PT, `page ${i + 1}: ink y ${b.y0.toFixed(1)} to ${b.y1.toFixed(1)} leaves the box ${CONTENT_PT.y0} to ${CONTENT_PT.y1}`);
+  });
+  return problems;
+}
+
+// Runs in the page: the Sheet pictures' content boxes and every element's box
+// within its fit box, as the Sheet is drawn (divided by the picture's scale).
+function readSheetInside() {
+  return [...document.querySelectorAll('.print-page--sheet .ps-fit')].map((fit) => {
+    const r0 = fit.getBoundingClientRect();
+    const k = r0.width / fit.offsetWidth;
+    return {
+      box: [fit.offsetWidth, fit.offsetHeight],
+      // A pattern's definition is not drawn: it has no box to compare.
+      inside: [...fit.querySelectorAll('*')].filter((el) => !el.closest('defs')).map((el) => {
+        const r = el.getBoundingClientRect();
+        return [String(el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className), (r.left - r0.left) / k, (r.top - r0.top) / k, r.width / k, r.height / k];
+      }),
+    };
+  });
+}
+
+// The pages do not read the window: the same pages, the same boxes, at 1280
+// with a fine pointer and 393 with a coarse one (both at 1x, because WebKit
+// snaps text metrics to device pixels; see the screen mode).
+async function widthProblems(browser, appUrl, v) {
+  const problems = [];
+  const read = async (spec) => {
+    const { context, page } = await openRoute(browser, appUrl, v.route, { width: spec.width, coarse: spec.coarse, dpr: 1 });
+    const pages = await page.evaluate(readSheetInside);
+    await context.close();
+    return pages;
+  };
+  const wide = await read(WIDTHS[0]);
+  const narrow = await read(WIDTHS[1]);
+  if (wide.length !== narrow.length) return [`${wide.length} Sheet page(s) at 1280 fine, ${narrow.length} at 393 coarse`];
+  wide.forEach((a, i) => {
+    const b = narrow[i];
+    if (a.box[0] !== b.box[0] || a.box[1] !== b.box[1]) problems.push(`page ${i + 1}: the content box is ${a.box.join(' x ')} at 1280 and ${b.box.join(' x ')} at 393`);
+    if (a.inside.length !== b.inside.length) return problems.push(`page ${i + 1}: ${a.inside.length} elements at 1280, ${b.inside.length} at 393`);
+    let worst = 0;
+    a.inside.forEach((x, j) => {
+      const y = b.inside[j];
+      if (x[0] !== y[0]) return problems.push(`page ${i + 1}: element ${j} is ${x[0]} at 1280 and ${y[0]} at 393`);
+      worst = Math.max(worst, ...[1, 2, 3, 4].map((k) => Math.abs(x[k] - y[k])));
+    });
+    if (worst > POSITION_TOL) problems.push(`page ${i + 1}: an element moves ${worst.toFixed(2)} px between 1280 fine and 393 coarse (\u00b1${POSITION_TOL})`);
+  });
+  return problems;
+}
+
+async function runSweep(ids) {
+  const versions = ids.length ? ALL_VERSIONS.filter((v) => ids.includes(v.id)) : ALL_VERSIONS;
+  if (versions.length === 0) throw new Error(`no version matches ${ids.join(', ')}`);
+  await tool('wkprint');
+  await tool('pdf-pages');
+  const { appUrl, close } = await startServers({ appRoot: DIST });
+  const engines = [
+    ['chrome', await launch()],
+    ['webkit', await webkit.launch()],
+  ];
+  try {
+    for (const v of versions) {
+      for (const [engine, browser] of engines) {
+        const { context, page } = await openRoute(browser, appUrl, v.route);
+        const laid = await readLaidSheet(page);
+        let file;
+        if (engine === 'chrome') {
+          file = path.join(workDir, `chrome-sweep-${v.id}.pdf`);
+          await writeFile(file, await page.pdf({ preferCSSPageSize: true, printBackground: true }));
+        }
+        await context.close();
+        if (engine === 'webkit') file = await printWebKit(appUrl, v);
+        const problems = [...sweepProblems(v, file, laid), ...(await widthProblems(browser, appUrl, v))];
+        const gauges = laid.wholeGauges.length;
+        const lines = laid.whole.reduce((n, g) => n + g.lines.length, 0);
+        if (problems.length === 0) {
+          report('MATCH', `${engine} ${v.id}`, `${laid.pages.length} Sheet page(s) print as laid: ${laid.whole.length} step group(s), ${lines} line(s), ${gauges} gauge(s), the Total once, ${laid.hasNotes ? 'Before you start on the formula page' : 'no Before you start'}, the same at 1280 and 393`);
+        } else for (const problem of problems) report('DIFF', `${engine} ${v.id}`, problem);
+      }
+    }
+  } finally {
+    for (const [, browser] of engines) await browser.close();
+    await close();
+  }
+}
+
+// ---------------------------------------------------------------------------
 const [mode, ...rest] = process.argv.slice(2);
 try {
   if (mode === 'logs') await runLogs(rest);
   else if (mode === 'screen') await runScreen();
   else if (mode === 'measure') await runMeasure();
   else if (mode === 'sheet') await runSheet();
+  else if (mode === 'sweep') await runSweep(rest);
   else {
     console.log('usage: 04-print-probe.mjs logs [version-id ...] | screen | measure | sheet | sweep');
     process.exit(2);

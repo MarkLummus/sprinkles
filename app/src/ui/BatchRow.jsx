@@ -10,6 +10,7 @@ import { notebookPath } from './notebookPaths.js';
 import { FoldRow } from './FoldRow.jsx';
 import { UprightRail } from './UprightRail.jsx';
 import { useBelow724, useLogBesideSheet, useFold } from './useBelowDesktop.js';
+import { Button } from './Button.jsx';
 
 // A display-only override of readMeasured's own "unknown" wording (D-18),
 // scoped to this row's own measured cells (03.3-07, G-03.3-4): reads "not
@@ -666,15 +667,13 @@ export function BatchRow({
               has no foot acts and no read-view Add tasting (003 line
               256): the pen is the one door (03.3.1 D-01/D-03). */}
           {openPen === null && openBatch && (
-            <button
-              type="button"
+            <Button
               ref={amendButtonRef}
               className="text-control batch-row__correct"
-              tabIndex={0}
               onClick={() => onStartAmending(openBatch)}
             >
               Correct
-            </button>
+            </Button>
           )}
           {/* Record another: moved from VersionRow.jsx (03.5-07 Task 1,
               decisions_recorded 1), last in the acts group. Present only
@@ -682,15 +681,13 @@ export function BatchRow({
               own "Record a batch" (below) is the same handler, offered
               where the sketch draws it instead. */}
           {openPen === null && openBatch && (
-            <button
-              type="button"
+            <Button
               ref={recordButtonRef}
               className="text-control batch-row__record"
-              tabIndex={0}
               onClick={onStartRecording}
             >
               Record another
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -835,17 +832,15 @@ export function BatchRow({
                     {tastingStatus}
                   </p>
                   {pendingUndo && (
-                    <button type="button" className="text-control undo-control" tabIndex={0} onClick={onUndoRemove}>Restore tasting</button>
+                    <Button className="text-control undo-control" onClick={onUndoRemove}>Restore tasting</Button>
                   )}
-                  <button
-                    type="button"
+                  <Button
                     className="text-control tasting-head__remove"
                     ref={removeTastingButtonRef}
-                    tabIndex={0}
                     onClick={onRemoveTasting}
                   >
                     Remove tasting
-                  </button>
+                  </Button>
                 </div>
                 {/* The tasting field row (sketch 007 lines 249-253; UAT
                     items 7, 8): a .field-row holding the 128px Tasted date
@@ -941,16 +936,14 @@ export function BatchRow({
                           picked chip's own boolean, read fresh per chip
                           from the draft's defects list. */}
                       {DEFECTS.map((defect) => (
-                        <button
+                        <Button
                           key={defect}
-                          type="button"
                           className="chip-toggle"
                           aria-pressed={draft.defects.includes(defect)}
-                          tabIndex={0}
                           onClick={() => onChangeDefect(defect)}
                         >
                           {defect}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -965,9 +958,9 @@ export function BatchRow({
                           aria-label of its own; its own boolean reads
                           from bitterDeclared rather than the defects
                           list. */}
-                      <button type="button" className="chip-toggle" aria-pressed={draft.bitterDeclared} tabIndex={0} onClick={onToggleBitter}>
+                      <Button className="chip-toggle" aria-pressed={draft.bitterDeclared} onClick={onToggleBitter}>
                         {DECLARED_FLAW}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </AxesGrid>
@@ -1152,9 +1145,9 @@ export function BatchRow({
                 there is Phase 4's, out of scope here. */}
             <p>{NO_BATCH_PROSE}</p>
             {openPen === null && (
-              <button type="button" ref={recordButtonRef} className="notebook-action" tabIndex={0} onClick={onStartRecording}>
+              <Button ref={recordButtonRef} className="notebook-action" onClick={onStartRecording}>
                 Record a batch
-              </button>
+              </Button>
             )}
           </>
         )}

@@ -1,5 +1,9 @@
-// Guards one rule: every link, button, radio and checkbox the app renders is
-// an explicit Tab stop, a literal tabIndex={0} on the tag. WebKit without the
+// Guards two rules. First: every link, button, radio and checkbox the app
+// renders is an explicit Tab stop, a literal tabIndex={0} on the tag. Second
+// (D-19): raw buttons, checkboxes and radios live only in the three shared
+// components (Button.jsx, Checkbox.jsx, Radio.jsx), which carry the first
+// rule for every caller; the one allowlisted button below is the exemption.
+// WebKit without the
 // tab-to-highlight preference (every browser on the iPad) Tabs only into text
 // entry and into controls that carry an explicit tabindex; Chromium Tabs to
 // every native control, so a Chromium run cannot prove the rule. The
@@ -14,8 +18,11 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-// The one exemption. A stale entry fails the real-tree test, so it cannot
-// outlive its tag.
+// The three components that may hold a raw button, checkbox or radio (D-19).
+const SHARED_CONTROL_FILES = ['ui/Button.jsx', 'ui/Checkbox.jsx', 'ui/Radio.jsx'];
+
+// The one exemption, to both rules. A stale entry fails the real-tree test,
+// so it cannot outlive its tag.
 const ALLOWLIST = [
   {
     file: 'ui/GraduatedRule.jsx',
@@ -71,6 +78,14 @@ function inScopeTags(file, source) {
 
 function scanSource(file, source) {
   return inScopeTags(file, source).filter((tag) => !tag.text.includes('tabIndex={0}'));
+}
+
+// The second rule: any in-scope button, or radio/checkbox input, found in a
+// file that is not one of the shared components. A tabIndex={0} does not save
+// it; the call site should render the shared component instead.
+function rawControlsOutsideShared(file, source) {
+  if (SHARED_CONTROL_FILES.includes(file)) return [];
+  return inScopeTags(file, source).filter((tag) => tag.name === 'button' || tag.name === 'input');
 }
 
 function applyAllowlist(found, allowlist) {
@@ -155,6 +170,35 @@ describe('the scan can fail: in-memory fixtures, no component read', () => {
     expect(found[0]).toMatchObject({ line: 2, name: 'a' });
   });
 
+  it('a raw button outside the shared components is reported by the second rule even with tabIndex={0}; inside Button.jsx it is not', () => {
+    const raw = '<button type="button" tabIndex={0}>go</button>';
+    const found = rawControlsOutsideShared('ui/Fixture.jsx', `const a = 1;\n${raw}\n`);
+    expect(found).toHaveLength(1);
+    expect(found[0]).toMatchObject({ file: 'ui/Fixture.jsx', line: 2, name: 'button' });
+    expect(rawControlsOutsideShared('ui/Button.jsx', raw)).toEqual([]);
+  });
+
+  it('a raw radio or checkbox input outside the shared components is reported by the second rule; Checkbox.jsx and Radio.jsx hold theirs', () => {
+    const radio = '<input type="radio" name="g" tabIndex={0} />';
+    const checkbox = '<input type="checkbox" tabIndex={0} />';
+    expect(rawControlsOutsideShared('ui/Fixture.jsx', radio)).toHaveLength(1);
+    expect(rawControlsOutsideShared('ui/Fixture.jsx', checkbox)).toHaveLength(1);
+    expect(rawControlsOutsideShared('ui/Radio.jsx', radio)).toEqual([]);
+    expect(rawControlsOutsideShared('ui/Checkbox.jsx', checkbox)).toEqual([]);
+  });
+
+  it('the shared components, links and text inputs are not reported by the second rule', () => {
+    const source = [
+      '<Button>go</Button>',
+      '<Checkbox />',
+      '<Radio />',
+      '<a href="/x" tabIndex={0}>go</a>',
+      '<Link to="/x" tabIndex={0}>go</Link>',
+      '<input type="text" />',
+    ].join('\n');
+    expect(rawControlsOutsideShared('ui/Fixture.jsx', source)).toEqual([]);
+  });
+
   it('comment stripping keeps the length and every newline', () => {
     const source = 'a /* one\ntwo */ b\n// three\nc';
     const stripped = stripComments(source);
@@ -215,5 +259,28 @@ describe('the real tree: every link, button, radio and checkbox under app/src is
   it('leaves no stale allowlist entry', () => {
     const lines = outcome().stale.map((e) => `${e.file} <${e.name}> ${e.contains}`);
     expect(lines).toEqual([]);
+  });
+});
+
+describe('the real tree: raw controls stay inside the shared components', () => {
+  const srcDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const labels = readdirSync(srcDir, { recursive: true })
+    .map((p) => p.split(path.sep).join('/'))
+    .filter((p) => p.endsWith('.jsx') && !p.includes('.test.'))
+    .sort();
+  const read = (label) => readFileSync(path.join(srcDir, label), 'utf8');
+
+  it('reads the three shared components', () => {
+    expect(labels).toEqual(expect.arrayContaining(SHARED_CONTROL_FILES));
+  });
+
+  it('raw buttons, checkboxes and radios appear only in Button.jsx, Checkbox.jsx, Radio.jsx and the one allowlisted rule', () => {
+    const outcome = applyAllowlist(
+      labels.flatMap((label) => rawControlsOutsideShared(label, read(label))),
+      ALLOWLIST,
+    );
+    const lines = outcome.violations.map((v) => `${v.file}:${v.line} raw <${v.name}> outside the shared controls`);
+    expect(lines).toEqual([]);
+    expect(outcome.stale.map((e) => `${e.file} <${e.name}> ${e.contains}`)).toEqual([]);
   });
 });

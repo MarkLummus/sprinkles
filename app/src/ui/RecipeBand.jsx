@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { recipeNameMessage, renamedRecipe, RECIPE_SAVE_ERROR } from '../domain/recipe.js';
+import { Button } from './Button.jsx';
 
 // RecipeBand (03.5-04 Task 1, D-12): the band's recipe column — the recipe
 // record's own name and description, and Rename edited inline, Cancel
@@ -101,12 +102,12 @@ export function RecipeBand({ recipe, onSave, initiallyRenaming = false, initialE
             {status}
           </p>
           <div className="notebook-recipe__form-actions">
-            <button type="button" className="notebook-action--outline" disabled={saving} tabIndex={0} onClick={handleCancel}>
+            <Button className="notebook-action--outline" disabled={saving} onClick={handleCancel}>
               Cancel
-            </button>
-            <button type="button" className="notebook-action" disabled={saving} tabIndex={0} onClick={handleSave}>
+            </Button>
+            <Button className="notebook-action" disabled={saving} onClick={handleSave}>
               {saving ? 'Saving…' : 'Save'}
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
@@ -116,9 +117,9 @@ export function RecipeBand({ recipe, onSave, initiallyRenaming = false, initialE
             <h1 className="notebook-recipe__name">{recipe.name}</h1>
           </div>
           {recipe.description !== '' && <p className="notebook-recipe__description">{recipe.description}</p>}
-          <button type="button" ref={renameButtonRef} className="notebook-link" tabIndex={0} onClick={handleOpen}>
+          <Button ref={renameButtonRef} className="notebook-link" onClick={handleOpen}>
             Rename
-          </button>
+          </Button>
         </>
       )}
     </section>

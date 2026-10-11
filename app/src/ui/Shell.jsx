@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { repository } from '../store/repository.js';
 import { exportStore, importStore } from '../store/transfer.js';
 import { useBelow724, useBelowRail } from './useBelowDesktop.js';
+import { Button } from './Button.jsx';
 
 // One source of truth for the App's five destinations (DESIGN.md "App
 // marks", D-09, D-10, D-16): the rail, the bottom tab row, and router.jsx's
@@ -323,18 +324,16 @@ export function Shell() {
       <header className="shell__head" ref={headRef}>
         <div className="shell__lead">
           {flyout && (
-            <button
-              type="button"
+            <Button
               className="shell__menu"
               aria-label="Places"
               aria-expanded={open}
               aria-controls="places"
-              tabIndex={0}
               ref={menuRef}
               onClick={() => (open ? closePlaces() : setPlacesOpen(true))}
             >
               <MoreIcon />
-            </button>
+            </Button>
           )}
           <div>
             <p className="shell__brand">
@@ -354,20 +353,18 @@ export function Shell() {
             <SearchIcon />
             Search
           </NavLink>
-          <button
-            type="button"
+          <Button
             className="shell__place"
-            tabIndex={0}
             ref={importRef}
             onClick={() => fileInputRef.current?.click()}
           >
             <ImportIcon />
             Import
-          </button>
-          <button type="button" className="shell__place" tabIndex={0} onClick={handleExport}>
+          </Button>
+          <Button className="shell__place" onClick={handleExport}>
             <ExportIcon />
             Export
-          </button>
+          </Button>
           <input
             ref={fileInputRef}
             type="file"
@@ -392,9 +389,9 @@ export function Shell() {
                 {importErrors.length === 1 ? '1 problem found' : `${importErrors.length} problems found`}
               </p>
             </div>
-            <button type="button" className="shell__place" tabIndex={0} onClick={closeImportErrors}>
+            <Button className="shell__place" onClick={closeImportErrors}>
               Close
-            </button>
+            </Button>
           </div>
           <ul className="shell__import-errors-list">
             {importErrors.map((error, index) => (
@@ -478,16 +475,16 @@ export function Shell() {
               </NavLink>
             </li>
             <li>
-              <button type="button" className="shell__place" tabIndex={0} onClick={() => fileInputRef.current?.click()}>
+              <Button className="shell__place" onClick={() => fileInputRef.current?.click()}>
                 <ImportIcon />
                 Import
-              </button>
+              </Button>
             </li>
             <li>
-              <button type="button" className="shell__place" tabIndex={0} onClick={handleExport}>
+              <Button className="shell__place" onClick={handleExport}>
                 <ExportIcon />
                 Export
-              </button>
+              </Button>
             </li>
           </ul>
         </details>

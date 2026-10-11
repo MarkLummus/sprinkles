@@ -46,7 +46,7 @@ The workspace lives in `app/`. Commands: `npm --prefix app run dev`, `npm --pref
 - Agent-facing prose, git commit messages, and browser-test input values are English — pinned against language drift in agent runs.
 - Device UAT (iPad or iPhone over the LAN) is served from `npm --prefix app run build && npm --prefix app run preview -- --host`, never the dev server; why in `.planning/notes/2026-10-01-engineering-notes.md`.
 - Only one Vite process per workspace; kill the duplicate before measuring anything; why in `.planning/notes/2026-10-01-engineering-notes.md`.
-- Every link, button, radio and checkbox under `app/src` carries an explicit `tabIndex={0}` (iPad WebKit skips untagged ones); enforced by `app/src/ui/tabindex-scan.test.js`, why in `.planning/notes/2026-10-01-engineering-notes.md`.
+- Every link (`a`, `Link`, `NavLink`) under `app/src` carries a literal `tabIndex={0}`, and every button, checkbox and radio renders through `app/src/ui/Button.jsx, Checkbox.jsx or Radio.jsx`, which carry it (D-19; iPad WebKit skips untagged ones); both enforced by `app/src/ui/tabindex-scan.test.js`, why in `.planning/notes/2026-10-01-engineering-notes.md`.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->

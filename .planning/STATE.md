@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Prepare the next version for making
 status: executing
-stopped_at: Completed 04-07-PLAN.md
-last_updated: "2026-10-11T07:50:55.667Z"
+stopped_at: Completed 04-09-PLAN.md
+last_updated: "2026-10-11T08:10:22.451Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 0854f47ec11f823c9354f7cc0c7faf37fa78391e
+state_head: 42bf9b087c4c963456bd1a16b9868751235240b1
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 117
+  completed_plans: 118
   percent: 73
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 04 (Prepare the next version for making) — EXECUTING
-Plan: 8 of 10
+Plan: 9 of 10
 Status: Ready to execute
 Last activity: 2026-10-11 — Phase 04 execution started
 
@@ -149,6 +149,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 04 P05 | 15 min | 2 tasks | 8 files |
 | Phase 04 P06 | 30 min | 3 tasks | 19 files |
 | Phase 04 P07 | 45 min | 3 tasks | 15 files |
+| Phase 04 P09 | 17 min | 3 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -308,6 +309,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: The Sheet is laid by measurement in every engine, so Safari keeps the repeated header row as Chrome does (sketch 010 D29); supersedes option C's accepted 'no repeated header in Safari'
 - [Phase 04]: A group split between rows keeps its step head with its first line and prints none on the continuation page; the row begins on the next page, Balance with it, when the formula page has no room for a first line
 - [Phase 04]: A slice of the Sheet's table takes the column widths measured on the whole table (table-layout fixed over a colgroup), so a page lays exactly as it was measured
+- [Phase 04]: [Phase 4, Plan 09] A Correct draft reopens only beside its own batch: opened on any other address of the version, the address is replaced (not pushed) with the batch's and the next page instance restores it (planner's settlement of research Pitfall 6; recorded for Mark).
+- [Phase 04]: [Phase 4, Plan 09] Home names a draft by presence (its version is in the store), not by fit; a stale draft is deleted quietly when the page opens it. A failed draft write is swallowed so a draft never interrupts the maker.
+- [Phase 04]: [Phase 4, Plan 09] The restore guards Pitfall 5 with a ref and no cancelled flag (StrictMode), and a restore that navigates away never marks itself done, so the leaving instance cannot delete the draft the next one reads.
 
 ### Pending Todos
 
@@ -502,6 +506,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T07:50:55.540Z
-Stopped at: Completed 04-07-PLAN.md
+Last session: 2026-10-11T08:10:22.322Z
+Stopped at: Completed 04-09-PLAN.md
 Resume file: None

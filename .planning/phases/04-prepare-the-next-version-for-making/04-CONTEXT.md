@@ -48,7 +48,7 @@ Out, and named by the brief: QR codes, the print-log nudge, any mode picker, pub
 - **D-13:** No match reads, fact only: **"No version has this code."** No second line.
 
 ### Draft recovery (UX1-02)
-- **D-14:** **All four pens** keep their draft through a reload: developing, recording, amending, tasting.
+- **D-14:** **Three pens** keep their draft through a reload: developing, recording (the tasting section included), amending. (The tasting is a section of the record pen and shares its draft; Mark decided three, 2026-10-11, decide-three-pens-keep-drafts.)
 - **D-15:** On return, **the pen reopens with the ink** in pen blue, and a page notice beneath the running head (the existing `PageStatus`) says the draft was kept. Cancel still discards with no dialog.
 - **D-16:** A draft lasts **until Save or Cancel**, stored through the repository seam (not `localStorage`/`sessionStorage`), so it survives a closed tab, a crash, or the next day. — **Reversibility:** costly — adds a store object and a `DB_VERSION` bump (currently 5); additive, no existing record reshaped.
 - **D-17:** The browser's **leave warning is dropped** once drafts persist (it no longer protects anything, and it fires on reload).

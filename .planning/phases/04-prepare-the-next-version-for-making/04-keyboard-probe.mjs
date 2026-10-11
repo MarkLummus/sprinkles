@@ -7,7 +7,7 @@
 //
 //   rules    a balance rule's accessible name holds its deviation words, and
 //            focusing it announces the rows it marks in the polite live region
-//   walk     Tab from the page's first link reaches every enabled link, button,
+//   walk     Tab from the page's first stop reaches every enabled link, button,
 //            radio group and checkbox on Home, the recipe page, the Next version
 //            pen, the record pen (tasting open), the Correct pen, the print
 //            route and Search, each showing a visible focus outline; every
@@ -160,28 +160,52 @@ const INTERACTIVE = 'a[href], button, input:not([type="hidden"]), select, textar
 async function tabWalk(page) {
   await page.evaluate(() => {
     for (const el of document.querySelectorAll('[data-kw-seen]')) el.removeAttribute('data-kw-seen');
-    const first = document.querySelector('a[href]');
+    // The page's first stop: the first visible, enabled control in document
+    // order that is not taken off the Tab path. On the pages with the fly-out
+    // menu button (724 to 1589) that button precedes the first link.
+    const first = [...document.querySelectorAll('a[href], button, input:not([type="hidden"]), select, textarea')].find(
+      (el) =>
+        !el.disabled &&
+        el.getAttribute('tabindex') !== '-1' &&
+        !el.closest('[hidden], [inert], .visually-hidden') &&
+        el.getBoundingClientRect().width > 0,
+    );
     first.focus();
     first.setAttribute('data-kw-seen', '1');
   });
   const stops = [];
   let ended = 'limit';
+  let repeats = 0;
   for (let i = 0; i < 600; i += 1) {
     await page.keyboard.press('Tab');
     const info = await page.evaluate(() => {
       const el = document.activeElement;
       if (!el || el === document.body || el === document.documentElement) return { left: true };
       const seen = el.hasAttribute('data-kw-seen');
+      const justNow = el.hasAttribute('data-kw-last');
+      for (const old of document.querySelectorAll('[data-kw-last]')) old.removeAttribute('data-kw-last');
+      el.setAttribute('data-kw-last', '1');
       el.setAttribute('data-kw-seen', '1');
       const cs = getComputedStyle(el);
       const outline = cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0;
       const describe = `${el.tagName.toLowerCase()}${el.type ? `[${el.type}]` : ''} "${(el.getAttribute('aria-label') ?? el.textContent ?? el.value ?? '').trim().slice(0, 40)}"`;
-      return { seen, outline, describe };
+      return { seen, justNow, outline, describe };
     });
     if (info.left) {
       ended = 'left the document';
       break;
     }
+    // A date input holds several Tab stops inside one element (month, day,
+    // year): the same element again is the next segment, not a return.
+    if (info.justNow) {
+      repeats += 1;
+      if (repeats > 6) {
+        ended = 'stuck on one element';
+        break;
+      }
+      continue;
+    }
+    repeats = 0;
     if (info.seen) {
       ended = 'returned to a seen element';
       break;
@@ -369,7 +393,8 @@ async function walkMode(browser, appUrl) {
         for (const f of failures) {
           ok(false, `${label}: contrast ${f.ratio}:1 under ${f.need}:1, ${f.key}, ${f.count} text(s), e.g. "${f.sample}"`);
         }
-        ok(failures.length > 0 ? false : true, `${label}: all ${measured} texts meet AA contrast`);
+        ok(failures.length === 0 && measured > 0, `${label}: all ${measured} texts meet AA contrast`);
+        note(`${label}: ${stops.length} stops (${ended}), ${measured} texts measured`);
       } finally {
         await context.close();
       }
@@ -409,7 +434,11 @@ async function colourMode(browser, appUrl) {
               }
             }
             if (el instanceof SVGElement) {
-              for (const prop of ['stroke', 'fill']) {
+              // Only a shape that paints an area has a fill that shows; a
+              // line, a defs or the root svg carry the default black unpainted.
+              const painted = ['stroke'];
+              if (['rect', 'circle', 'ellipse', 'path', 'polygon'].includes(el.tagName.toLowerCase())) painted.push('fill');
+              for (const prop of painted) {
                 const v = cs[prop];
                 if (v && v !== 'none' && !v.startsWith('url(') && v !== ink) seen(prop, el, v);
               }
@@ -465,8 +494,14 @@ async function colourMode(browser, appUrl) {
     const { context, page } = await open(browser, appUrl, VERSION_ROUTE, VIEWPORTS[0], '.notebook');
     try {
       await openRecordPen(page);
-      await page.fill('input[aria-label^="Out of machine"]', '-6');
-      await page.waitForTimeout(250);
+      // A mark on Exit consistency turns the At draw options off. A first
+      // click after a navigation can miss, so click until the reason shows.
+      const option = page.locator('label.segmented__option', { hasText: 'Wet, soupy' }).first();
+      for (let i = 0; i < 4; i += 1) {
+        await option.click();
+        if ((await page.locator('.mo-group[data-mo="atdraw"] .mo-hint').count()) > 0) break;
+        await page.waitForTimeout(300);
+      }
       const off = await page.evaluate(() => {
         const group = document.querySelector('.mo-group[data-mo="atdraw"]');
         const option = group?.querySelector('.segmented__option');

@@ -301,6 +301,16 @@ input[type='date'].ink-field {
   appearance: none;
 }
 
+/* WebKit never matches :focus-visible on a date input (measured 2026-10-11,
+   Playwright WebKit, Tab arriving by keyboard: :focus true, :focus-visible
+   false, outline none), because focus lives in the input's inner segments.
+   So the one focus rule above draws nothing there and the field showed no
+   ring (UX1-01). The same ring on :focus, as a text field gets it. */
+input[type='date']:focus {
+  outline: var(--focus-outline-width) solid var(--sheet-ink);
+  outline-offset: var(--focus-outline-offset);
+}
+
 /* Prose fields (D-13 § 8): grow with their typed text and carry no
    resize grip. field-sizing degrades to the rows attribute already on
    every textarea where an engine does not yet support it, so no feature

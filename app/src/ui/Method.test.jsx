@@ -1535,3 +1535,13 @@ describe('showsMethodRegion: the Instructions section renders only when it has a
     }
   });
 });
+
+// D-20 (04-10; research C6): app.css sets list-style none on the steps, and
+// Safari then drops the list's semantics, so the role is stated on the markup.
+describe('Method — the steps list keeps its list semantics', () => {
+  it('carries role="list" on ol.method-steps, with the Instructions heading an h2 above it', () => {
+    const markup = renderToStaticMarkup(<Method steps={[unstruckStep]} stepChanges={{}} />);
+    expect(markup).toMatch(/<ol class="method-steps" role="list">/);
+    expect(markup).toMatch(/<h2 class="region-name">Instructions<\/h2>/);
+  });
+});

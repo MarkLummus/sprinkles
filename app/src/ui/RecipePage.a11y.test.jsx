@@ -131,6 +131,24 @@ describe('RecipePage — a balance rule speaks its deviation and the rows it mar
   });
 });
 
+describe('RecipePage — the region names are headings in reading (D-20, research C6)', () => {
+  it('stands Before you start, Ingredients, Instructions, Balance and Watch for as h2 elements', async () => {
+    const container = await mount();
+    const h2s = [...container.querySelectorAll('h2')].map((h) => h.textContent.trim());
+    // A folding region's h2 also holds its Hide or Show word.
+    for (const name of ['Before you start', 'Ingredients', 'Instructions', 'Balance', 'Watch for']) {
+      expect(
+        h2s.some((text) => text.startsWith(name)),
+        `${name} is an h2`,
+      ).toBe(true);
+    }
+    // Each region's own section is named by that same word.
+    for (const name of ['Before you start', 'Ingredients', 'Instructions', 'Balance']) {
+      expect(container.querySelector(`section[aria-label="${name}"] > h2`)?.textContent.trim().startsWith(name)).toBe(true);
+    }
+  });
+});
+
 describe('RecipePage — the tab title leads with the recipe (D-20)', () => {
   it('reads "{recipe name} · Sprinkles" once the recipe loads and returns to Sprinkles on unmount', async () => {
     document.title = 'Sprinkles';

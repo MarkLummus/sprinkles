@@ -651,7 +651,9 @@ export function Method({
   return (
     <>
       <h2 className="region-name">Instructions</h2>
-      <ol className="method-steps">
+      {/* role="list": Safari drops list semantics from a list-style none list
+          (D-20; research C6), so the role is stated. */}
+      <ol className="method-steps" role="list">
         {steps.map((step) => {
           if (isDeveloping) {
             const draftStep = draftVersion.method.find((candidate) => candidate.n === step.n);

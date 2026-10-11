@@ -42,17 +42,20 @@ function ruleFor(selector) {
 }
 
 describe('the outline split — focus reads heavier than state (D-14, 03.3.1.1 tenth round)', () => {
-  test('exactly three rules declare outline through --focus-outline-width: the global :focus-visible rule, the landing-focus exception, and the battery\'s focus-on-box rule (D-14, D-07, 03.3-06, G-03.3-1)', () => {
+  test('exactly four rules declare outline through --focus-outline-width: the global :focus-visible rule, the date input\'s :focus rule, the landing-focus exception, and the battery\'s focus-on-box rule (D-14, D-07, 03.3-06, G-03.3-1, 04-10)', () => {
     // `.is-landing-focus:focus` is a documented, self-clearing exception
     // (VersionRow.jsx): the fork's landing .focus() call follows a
     // mouse-driven Save click, so Chrome's :focus-visible heuristic draws
     // no ring for it. The third is the ring drawn on a label-wrapped
     // radio's visible box (D-07, 007 line 24): a stop or a segmented
     // option is a <label>, so the ring reads through :has() on the
-    // opacity-0 radio's own :focus-visible, never on the input itself.
+    // opacity-0 radio's own :focus-visible, never on the input itself. The
+    // date input's :focus rule (04-10) stands because WebKit never matches
+    // :focus-visible on it: focus lives in its inner segments.
     const matches = rules.filter((r) => /outline:\s*var\(--focus-outline-width\)/.test(r.declarations));
     expect(matches.map((r) => r.selector)).toEqual([
       ':focus-visible',
+      "input[type='date']:focus",
       '.is-landing-focus:focus',
       ".axis-mark__stop:has(input[type='radio']:focus-visible), .segmented__option:has(input[type='radio']:focus-visible)",
     ]);

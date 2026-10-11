@@ -34,7 +34,8 @@
 //     bottom }
 // where `bottom` is the height the page's content reaches (the foot's when the
 // page holds it, else the Instructions' or the row's foot), so a later block
-// can follow it.
+// can follow it. pagesOverflow(pages, box) reports a page whose content reaches
+// past the usable height: a block too tall for one printed page.
 
 // Every drawn break leaves this much of the content box unused: a block whose
 // foot lands on the box's last pixel is one rounding away from the next page.
@@ -302,4 +303,18 @@ function layInstructions(pages, measure, usable) {
     if (done.existing !== null) Object.assign(pages[done.existing], plan);
     else pages.push({ band: false, before: false, table: null, balance: null, ...plan });
   }
+}
+
+// True when any laid page's content reaches past the content box less the guard
+// (review 2026-10-11 P2, decide-print-oversized-text-policy). The paginator
+// forces a block onto a page only when no page can hold it with what keeps with
+// it: the front matter as a whole on page 1, one ingredient line under the
+// header row, its step head or the Total, one step with its heading, the
+// closing foot. So a page whose content reaches past the usable height holds
+// exactly such a block, and its picture would clip. It is read off the pages'
+// own bottom, the same in-page invariant the tests assert, so there is no
+// second sum of heights.
+export function pagesOverflow(pages, box) {
+  const usable = box.height - PAGE_GUARD_PX;
+  return pages.some((page) => page.bottom > usable);
 }

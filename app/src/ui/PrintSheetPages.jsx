@@ -4,7 +4,7 @@ import { activeRows, activeSteps, rowGrams } from '../domain/rows.js';
 import { displayNumberOf, displayNumbers } from '../domain/stepNumbers.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { buildFigures } from '../domain/figures.js';
-import { layPages } from '../domain/sheetPages.js';
+import { layPages, pagesOverflow } from '../domain/sheetPages.js';
 import { groupPortionsByStep, dataFlagFor } from './IngredientTable.jsx';
 import { Headnote } from './Headnote.jsx';
 import { NoteList } from './Authored.jsx';
@@ -393,9 +393,10 @@ export function readSheet(root) {
 // Lays the saved version's Sheet into pages. `version` is null until the
 // route has loaded it. `read` is the measuring step (readSheet), a parameter
 // so a test can answer fixed heights where jsdom measures nothing. Returns
-// { pages, blocks, columns, fit, engine, measureElement }: `pages` is null
+// { pages, oversize, blocks, columns, fit, engine, measureElement }: `pages` is null
 // until the heights are read (after the fonts are ready, since a late font
-// would move every height); `measureElement` is the hidden box to render once
+// would move every height), and stays null when `oversize` is true, a block too
+// tall for one printed page; `measureElement` is the hidden box to render once
 // in the page, AFTER the pictures, so a hatch pattern id a picture draws is
 // the first one the document knows.
 export function useSheetPages(version, read = readSheet, identity = '') {
@@ -417,8 +418,11 @@ export function useSheetPages(version, read = readSheet, identity = '') {
       // No layout engine (height 0): there is nothing to lay by, so one page
       // holds everything.
       const pages = height > 0 ? layPages(measure, { height }) : [wholePlan(blocks)];
+      // A block too tall for one printed page (decide-print-oversized-text-
+      // policy): nothing is laid, so no clipped picture is drawn.
+      const oversize = height > 0 && pagesOverflow(pages, { height });
       root.setAttribute('data-ps-measure', JSON.stringify({ measure, height, columns, fit }));
-      setLaid({ pages, columns, fit });
+      setLaid({ pages: oversize ? null : pages, oversize, columns, fit });
     };
     if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) document.fonts.ready.then(lay);
     else lay();
@@ -438,6 +442,7 @@ export function useSheetPages(version, read = readSheet, identity = '') {
 
   return {
     pages: laid ? laid.pages : null,
+    oversize: laid ? laid.oversize : false,
     blocks,
     columns: laid ? laid.columns : null,
     fit: laid ? laid.fit : 1,

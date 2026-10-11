@@ -34,7 +34,7 @@ vi.mock('../store/repository.js', () => ({
   ),
 }));
 
-import { PrintSheetForRoute } from './PrintSheet.jsx';
+import { PrintSheetForRoute, PRINT_TOO_LONG_LINE } from './PrintSheet.jsx';
 import { oliveOilRecipe, oliveOilVersion } from '../data/olive-oil.js';
 import { sheetCode } from '../domain/sheetCode.js';
 import { printPath } from './notebookPaths.js';
@@ -377,5 +377,64 @@ describe('PrintSheet — an import re-reads the open route (review 2026-10-11 P2
       delete document.fonts;
       print.mockRestore();
     }
+  });
+});
+
+// Review 2026-10-11 P2, decide-print-oversized-text-policy = visible state: a
+// block too tall for one printed page turns Print off and says so in one short
+// line; no Sheet page picture is drawn (it would clip). jsdom has no layout, so
+// getBoundingClientRect answers by class: the measuring box is the Chrome
+// content box (672 x 960) and Before you start is 24 px for every 80 characters
+// of its note, so the height follows the note's length.
+describe('PrintSheet — a block too tall for one page (review 2026-10-11 P2)', () => {
+  const SENTENCE = 'Before starting, check the ingredients and equipment. ';
+  const oversizeVersion = () => {
+    const clone = structuredClone(oliveOilVersion);
+    clone.authored.beforeYouStart = [{ text: SENTENCE.repeat(150), inheritedFrom: null }];
+    return clone;
+  };
+  let originalRect = null;
+  const rect = (width, height) => ({ top: 0, left: 0, bottom: height, right: width, x: 0, y: 0, width, height });
+
+  beforeEach(() => {
+    originalRect = Element.prototype.getBoundingClientRect;
+    Element.prototype.getBoundingClientRect = function answer() {
+      if (this.classList.contains('ps-box')) return rect(672, 960);
+      if (this.classList.contains('ps-before')) return rect(0, Math.ceil(this.textContent.length / 80) * 24);
+      return rect(0, 0);
+    };
+  });
+
+  afterEach(() => {
+    Element.prototype.getBoundingClientRect = originalRect;
+  });
+
+  const printButton = () => [...host.querySelectorAll('button')].find((candidate) => candidate.textContent === 'Print');
+
+  it('turns Print off, shows the line under the route line, draws no Sheet picture and prints nothing', async () => {
+    const print = vi.spyOn(window, 'print').mockImplementation(() => {});
+    try {
+      await mount(OLIVE_PATH, { versions: [oversizeVersion()] });
+      const line = host.querySelector('.print-route__id p.print-route__line');
+      expect(line).not.toBeNull();
+      expect(line.textContent).toBe(PRINT_TOO_LONG_LINE);
+      expect(printButton().disabled).toBe(true);
+      expect(host.querySelector('.print-route').hasAttribute('data-print-ready')).toBe(false);
+      expect(host.querySelector('[aria-label="Sheet, page 1"]')).toBeNull();
+      expect(host.querySelector('[aria-label="Batch log"]')).not.toBeNull();
+      expect(host.querySelector('[aria-label="Tasting log"]')).not.toBeNull();
+      await act(async () => printButton().click());
+      expect(print).not.toHaveBeenCalled();
+    } finally {
+      print.mockRestore();
+    }
+  });
+
+  it('leaves Olive Oil v1 ready, with Print on and no line', async () => {
+    await mount(OLIVE_PATH);
+    expect(host.querySelector('.print-route').getAttribute('data-print-ready')).toBe('true');
+    expect(printButton().disabled).toBe(false);
+    expect(host.querySelector('[aria-label="Sheet, page 1"]')).not.toBeNull();
+    expect(host.textContent).not.toContain(PRINT_TOO_LONG_LINE);
   });
 });

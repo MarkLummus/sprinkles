@@ -10,6 +10,10 @@ import { SheetPage, useSheetPages } from './PrintSheetPages.jsx';
 import { notebookPath } from './notebookPaths.js';
 import { RecipeNotFound } from './RecipePage.jsx';
 
+// Proposed copy awaiting Mark's approval (decide-print-oversized-text-policy =
+// visible state). The one home of the sentence.
+export const PRINT_TOO_LONG_LINE = 'This is too long to print on one page.';
+
 // The print route, /notebook/:recipeId/:versionId/print (D-04; sketch 010
 // screen-print-route-1280.html and -393.html). Keyed by both ids, the
 // RecipePageForRoute pattern (router.jsx): a different version is a
@@ -141,8 +145,10 @@ export function PrintSheet({ recipeId, versionId }) {
               Saved {saved} · Sheet code <span className="print-route__code">{code}</span>
             </span>
           </h1>
+          {sheet.oversize && <p className="print-route__line">{PRINT_TOO_LONG_LINE}</p>}
         </div>
-        {/* Until the Sheet's pages are laid (data-print-ready) a print would carry the two log pages only (WR-06). */}
+        {/* Until the Sheet's pages are laid (data-print-ready) a print would carry the two log pages only (WR-06).
+            They are never laid for a block too tall for a page (sheet.oversize). */}
         <Button className="notebook-action" disabled={!sheet.pages} onClick={() => window.print()}>
           Print
         </Button>

@@ -2,7 +2,7 @@
 // printed page, from the measured heights alone. Pure, so it runs under the node
 // environment; the browser proof is the print probe.
 import { describe, it, expect } from 'vitest';
-import { layPages, PAGE_GUARD_PX } from './sheetPages.js';
+import { layPages, pagesOverflow, PAGE_GUARD_PX } from './sheetPages.js';
 import { OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME } from './sheetPages.fixtures.js';
 
 // The groups a page's table holds, as [group, from, to] triples.
@@ -637,5 +637,47 @@ describe('layPages — where the Instructions start (04-08 Task 2: they follow t
     expect(pages.map((page) => page.foot)).toEqual([false, false, true]);
     expect(pages[1]).toMatchObject({ table: null, balance: null });
     expect(pages[1].bottom).toBeLessThanOrEqual(960 - PAGE_GUARD_PX);
+  });
+});
+
+// Review 2026-10-11 P2, decide-print-oversized-text-policy = visible state: a
+// block that cannot fit one printed page is forced onto a page and its bottom
+// reaches past the usable height; pagesOverflow reports that. Each case is on a
+// 960 box (usable 952).
+describe('pagesOverflow — a block too tall for one printed page', () => {
+  const box = { height: 960 };
+  const usable = 960 - PAGE_GUARD_PX;
+  const oneGroup = [{ head: 40, rows: [50] }];
+  const overflows = (measure) => pagesOverflow(layPages(measure, box), box);
+
+  it('is true when the front matter alone is too tall (the review measured 2736.89 px of notes)', () => {
+    expect(overflows(constructed({ before: 2737, groups: oneGroup }))).toBe(true);
+  });
+
+  it('is false with the front matter exactly at the usable height, true one pixel over', () => {
+    // band 100 + gap 20 + before = 952
+    expect(100 + 20 + 832).toBe(usable);
+    expect(overflows(constructed({ before: 832, groups: oneGroup }))).toBe(false);
+    expect(overflows(constructed({ before: 833, groups: oneGroup }))).toBe(true);
+  });
+
+  it('is false for a step that fills its own page exactly, true one pixel over', () => {
+    const tail = { instructionsHeading: 20, stepGap: 20, footGap: 32, foot: 22 };
+    expect(overflows(constructed({ groups: oneGroup, ...tail, steps: [932] }))).toBe(false);
+    expect(overflows(constructed({ groups: oneGroup, ...tail, steps: [933] }))).toBe(true);
+  });
+
+  it('is true for one ingredient line taller than a page', () => {
+    expect(overflows(constructed({ groups: [{ head: 40, rows: [50, 2000] }] }))).toBe(true);
+  });
+
+  it('is true for a closing foot taller than a page', () => {
+    expect(overflows(constructed({ steps: [100], instructionsHeading: 20, footGap: 32, foot: 1000 }))).toBe(true);
+  });
+
+  it('is false for Olive Oil v1 in both engines', () => {
+    for (const { box: fixtureBox, measure } of [OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME]) {
+      expect(pagesOverflow(layPages(measure, fixtureBox), fixtureBox)).toBe(false);
+    }
   });
 });

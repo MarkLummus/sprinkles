@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
 import { findVersionsByCode } from '../domain/sheetCode.js';
 import { notebookPath } from './notebookPaths.js';
+import { Button } from './Button.jsx';
 
 // D-13, UX1-03: one line, words only, no second line.
 export const SHEET_CODE_NO_MATCH = 'No version has this code.';
@@ -49,7 +50,7 @@ export function SheetCodeSearch() {
   return (
     <div className="list-page place">
       <h1 className="place__title">Search</h1>
-      <form onSubmit={handleSubmit} noValidate>
+      <form className="search__form" onSubmit={handleSubmit} noValidate>
         <label className="notebook-field">
           <span className="notebook-caption">Sheet code</span>
           <input
@@ -65,6 +66,7 @@ export function SheetCodeSearch() {
             aria-describedby={RESULT_ID}
           />
         </label>
+        <Button type="submit" className="notebook-action">Find</Button>
       </form>
       <p id={RESULT_ID} className="place__note" role="status" aria-live="polite">
         {result}

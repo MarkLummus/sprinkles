@@ -87,9 +87,15 @@ describe('SheetCodeSearch — the field', () => {
     expect(status.textContent).toBe('');
   });
 
-  it('renders no raw button: the form submits on Enter or Go', async () => {
+  it('carries one Find submit button, born on the shared Button, a Tab stop beside the field', async () => {
     await mount([oliveOilVersion]);
-    expect(host.querySelectorAll('button')).toHaveLength(0);
+    const buttons = host.querySelectorAll('button');
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].textContent).toBe('Find');
+    expect(buttons[0].type).toBe('submit');
+    expect(buttons[0].getAttribute('tabindex')).toBe('0');
+    expect(buttons[0].className).toBe('notebook-action');
+    expect(host.querySelector('input').closest('form')).toBe(buttons[0].closest('form'));
   });
 });
 

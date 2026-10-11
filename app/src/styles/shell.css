@@ -336,6 +336,23 @@ button.shell__place {
   color: var(--app-text-secondary);
 }
 
+/* The Search page's Sheet code field and its Find button (SheetCodeSearch.jsx):
+   one row, the button on the field's bottom edge; the field takes the row's
+   spare width up to the prose measure, and the row wraps only if a window is
+   too narrow to hold both. */
+.place .search__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--gap-s);
+  max-width: var(--measure-prose);
+}
+
+.place .search__form .notebook-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* The radius sits on every place, not only the active one, so the focus ring
    (.shell__place:focus) is one shape down the rail and across the tab row
    (sketch 011 decision 38 B, Mark's answer 3). */

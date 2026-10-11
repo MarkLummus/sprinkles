@@ -72,6 +72,10 @@ export const VERSION_BLOCKED_STATUS = 'Check the version. Your changes have been
 // PageStatus clears it after its own five seconds and nothing persists it.
 export const DRAFT_KEPT_STATUS = 'Draft kept. Cancel discards it.';
 
+// The one line the page shows when a store read fails (WR-05). Word for word
+// the boot failure line in main.jsx, so it adds no new words.
+export const PAGE_LOAD_ERROR = 'Could not open the local store. Try reloading.';
+
 // The contract's verbatim record-status sentences for the record pen's own
 // two hidden-mode removal paths (contract "Feedback and undo lifecycle",
 // the removal path matrix — Pitfall 6: the always-visible mode's two rows
@@ -648,6 +652,17 @@ export function RecipeNotFound() {
   );
 }
 
+// What the page shows in place of itself when a store read fails (WR-05): the
+// not-found container, which already paints the Sheet ground, holding the one
+// line. No link: the running head above leads home.
+function PageLoadFailed() {
+  return (
+    <div className="not-found">
+      <p>{PAGE_LOAD_ERROR}</p>
+    </div>
+  );
+}
+
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The margin's derived-advisories block (FORM2-02)
 // renders nothing visible when the version has none — no placeholder text.
@@ -681,6 +696,10 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // Every kept draft, read once: the band names a Next version draft waiting on
   // another version of this recipe (04-09).
   const [drafts, setDrafts] = useState([]);
+  // Set when any store read below fails (WR-05): the page then says so instead
+  // of rendering without data, and the draft restore never starts, so a kept
+  // draft is never judged against reads that did not happen.
+  const [loadFailed, setLoadFailed] = useState(false);
   // The signature trace (route-recipe.md § 3, § 5): focusing a balance
   // figure marks the ingredient rows it rests on. This page is the shared
   // parent of the figures and the table, so it is the one place the
@@ -800,9 +819,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
 
   useEffect(() => {
     let cancelled = false;
-    repository.getVersion(versionId).then((result) => {
-      if (!cancelled) setVersion(result ?? null);
-    });
+    repository
+      .getVersion(versionId)
+      .then((result) => {
+        if (!cancelled) setVersion(result ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -810,12 +834,17 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
 
   useEffect(() => {
     let cancelled = false;
-    repository.listBatchesForVersion(versionId).then((result) => {
-      if (!cancelled) {
-        setBatches(result);
-        setBatchesLoaded(true);
-      }
-    });
+    repository
+      .listBatchesForVersion(versionId)
+      .then((result) => {
+        if (!cancelled) {
+          setBatches(result);
+          setBatchesLoaded(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -823,9 +852,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
 
   useEffect(() => {
     let cancelled = false;
-    repository.listDrafts().then((result) => {
-      if (!cancelled) setDrafts(result);
-    });
+    repository
+      .listDrafts()
+      .then((result) => {
+        if (!cancelled) setDrafts(result);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -836,9 +870,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // this list.
   useEffect(() => {
     let cancelled = false;
-    repository.listVersions().then((result) => {
-      if (!cancelled) setVersions(result);
-    });
+    repository
+      .listVersions()
+      .then((result) => {
+        if (!cancelled) setVersions(result);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -858,9 +897,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       setRecipe(undefined);
       return undefined;
     }
-    repository.getRecipe(version.recipeId).then((result) => {
-      if (!cancelled) setRecipe(result ?? null);
-    });
+    repository
+      .getRecipe(version.recipeId)
+      .then((result) => {
+        if (!cancelled) setRecipe(result ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -889,9 +933,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       setCitedBatch(null);
       return undefined;
     }
-    repository.getBatch(version.citedBatchId).then((result) => {
-      if (!cancelled) setCitedBatch(result ?? null);
-    });
+    repository
+      .getBatch(version.citedBatchId)
+      .then((result) => {
+        if (!cancelled) setCitedBatch(result ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -911,9 +960,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       setParentVersion(null);
       return undefined;
     }
-    repository.getVersion(version.parentVersionId).then((result) => {
-      if (!cancelled) setParentVersion(result ?? null);
-    });
+    repository
+      .getVersion(version.parentVersionId)
+      .then((result) => {
+        if (!cancelled) setParentVersion(result ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -927,9 +981,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const [allBatches, setAllBatches] = useState([]);
   useEffect(() => {
     let cancelled = false;
-    repository.getAllBatches().then((result) => {
-      if (!cancelled) setAllBatches(result);
-    });
+    repository
+      .getAllBatches()
+      .then((result) => {
+        if (!cancelled) setAllBatches(result);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -992,7 +1051,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // batches until the maker presses Save, and nothing is asked (no dialog).
   useEffect(() => {
     if (draftRestoreStartedRef.current) return;
-    if (!version || version.recipeId !== recipeId || !batchesLoaded) return;
+    if (!version || version.recipeId !== recipeId || !batchesLoaded || loadFailed) return;
     draftRestoreStartedRef.current = true;
     Promise.resolve()
       .then(() => repository.getDraft(versionId))
@@ -1002,7 +1061,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
           return;
         }
         if (!draftMatchesVersion(record, version, batches)) {
-          repository.deleteDraft(versionId);
+          Promise.resolve().then(() => repository.deleteDraft(versionId)).catch(() => {});
           setDraftRestoreDone(true);
           return;
         }
@@ -1049,7 +1108,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
         setDraftRestoreDone(true);
       })
       .catch(() => setDraftRestoreDone(true));
-  }, [version, batchesLoaded]);
+  }, [version, batchesLoaded, loadFailed]);
 
   // Persist: while a pen is open and holds ink, its draft is written 250 ms
   // after the last change; when no pen is open, or the open pen is clean
@@ -1203,6 +1262,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // batch still opens it again.
   const [batchOpen, toggleBatch] = useFold(true);
 
+  if (loadFailed) return <PageLoadFailed />;
   if (version === undefined) return null;
   // The running head — the way home in every state, including this one
   // (route-recipe-version.md § 4) — is now drawn by the routed shell
@@ -1240,8 +1300,18 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // (the newest, when several): the band names it while no pen is open, and
   // the History rail draws it as its draft node.
   const recipeVersionIds = new Set(versionsForRecipe(versions, version.recipeId).map((candidate) => candidate.id));
+  // A draft that would not reopen on its own version is not named (WR-09); the
+  // same check also validates the versionLabel the band prints.
   const waitingPlanDraft = newestDraft(
-    drafts.filter((record) => record.kind === 'plan' && record.versionId !== version.id && recipeVersionIds.has(record.versionId)),
+    drafts.filter((record) => {
+      if (record.kind !== 'plan' || record.versionId === version.id || !recipeVersionIds.has(record.versionId)) return false;
+      const draftVersion = versions.find((candidate) => candidate.id === record.versionId);
+      return draftMatchesVersion(
+        record,
+        draftVersion,
+        allBatches.filter((batch) => batch.versionId === record.versionId),
+      );
+    }),
   );
 
   const hasRows = version.rows.length > 0;

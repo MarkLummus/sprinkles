@@ -137,7 +137,8 @@ export function PrintSheet({ recipeId, versionId }) {
             </span>
           </h1>
         </div>
-        <Button className="notebook-action" onClick={() => window.print()}>
+        {/* Until the Sheet's pages are laid (data-print-ready) a print would carry the two log pages only (WR-06). */}
+        <Button className="notebook-action" disabled={!sheet.pages} onClick={() => window.print()}>
           Print
         </Button>
       </header>

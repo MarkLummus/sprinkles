@@ -266,3 +266,41 @@ describe('PrintSheet — [edge PRINT-05/concurrency] a draft that changes the Sh
     expect(store.calls).not.toContain('listDrafts');
   });
 });
+
+// WR-06: Print before the Sheet's pages are laid would carry the two log pages
+// only. jsdom has no document.fonts, so the test gives document one whose
+// ready it holds, the way a slow font load holds useSheetPages.
+describe("PrintSheet — Print waits for the Sheet's pages (WR-06)", () => {
+  it('is off, and prints nothing, until the pages are laid; then one press prints once', async () => {
+    let release;
+    const ready = new Promise((resolve) => {
+      release = resolve;
+    });
+    Object.defineProperty(document, 'fonts', { value: { ready }, configurable: true });
+    const print = vi.spyOn(window, 'print').mockImplementation(() => {});
+    try {
+      await mount(OLIVE_PATH);
+      const printButton = () => [...host.querySelectorAll('button')].find((candidate) => candidate.textContent === 'Print');
+      expect(host.querySelector('.print-route').hasAttribute('data-print-ready')).toBe(false);
+      expect(host.querySelector('[aria-label="Sheet, page 1"]')).toBeNull();
+      expect(printButton().disabled).toBe(true);
+      expect(printButton().getAttribute('tabindex')).toBe('0');
+      expect(printButton().className).toBe('notebook-action');
+      await act(async () => printButton().click());
+      expect(print).not.toHaveBeenCalled();
+
+      await act(async () => {
+        release();
+        await ready;
+      });
+      expect(host.querySelector('.print-route').getAttribute('data-print-ready')).toBe('true');
+      expect(host.querySelector('[aria-label="Sheet, page 1"]')).not.toBeNull();
+      expect(printButton().disabled).toBe(false);
+      await act(async () => printButton().click());
+      expect(print).toHaveBeenCalledTimes(1);
+    } finally {
+      delete document.fonts;
+      print.mockRestore();
+    }
+  });
+});

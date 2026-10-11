@@ -1303,3 +1303,74 @@
     color: HighlightText;
   }
 }
+
+/* The two mark-one groups, At draw and From freezer (sketch 010 D6 to D14;
+   pen-states.html, pen-whole.html, pen-reading.html, transcribed with the
+   boards' panel scope replaced by .notebook-log). Every value is an existing
+   token. The group carries a hairline above it and a 12px gap under it, except
+   directly under a note, whose underline is the rule (D13). */
+.notebook-log .mo-group {
+  border-top: var(--rule-graduation) solid var(--app-divider);
+  padding-top: var(--gap-s);
+  margin-top: var(--gap-l);
+}
+
+.notebook-log .mo-group .segmented-field__head {
+  margin-bottom: var(--gap-xs);
+}
+
+/* The Tasting head after At draw and Exit consistency, Airiness. */
+.notebook-log .mo-end {
+  margin-top: var(--gap-l);
+}
+
+.notebook-log .note-block + .mo-group,
+.notebook-log .batch-margin__field + .mo-group {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.notebook-log .mo-group + .axes-grid {
+  margin-top: var(--gap-m);
+}
+
+/* The off state (D10): dashed and secondary, never colour alone (UX1-03). */
+.notebook-log .mo-group .segmented__option.is-off {
+  border-style: dashed;
+  color: var(--app-text-secondary);
+  cursor: default;
+}
+
+.notebook-log .mo-group .segmented__option.is-off:hover {
+  border-width: var(--rule-ink-field);
+  padding: var(--sheet-seg-pad-y) var(--sheet-seg-pad-x);
+}
+
+.notebook-log .mo-group .segmented__option.is-off input {
+  cursor: default;
+}
+
+.notebook-log .mo-group .mo-hint {
+  font-family: var(--face-grotesk);
+  font-size: var(--sheet-size-mark-stop);
+  line-height: var(--sheet-leading-control);
+  color: var(--app-text-secondary);
+  margin-left: auto;
+  text-align: right;
+}
+
+/* The reading (D12, D14): a group's word stands in one full-width cell. The
+   churn cells grid is a direct child of .batch-margin and takes no top margin
+   (rule above); a group's cells row takes the row gap back. */
+.notebook-log .batch-row__cells.mo-readgroup {
+  margin-top: var(--app-notebook-log-cell-gap-row);
+}
+
+.notebook-log .mo-readgroup .mo-lead {
+  grid-column: 1 / -1;
+}
+
+.notebook-log .batch-row__conclusion + .batch-row__cells.mo-readgroup {
+  margin-top: var(--gap-l);
+}

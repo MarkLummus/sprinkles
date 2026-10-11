@@ -4,6 +4,7 @@ import { BATTERY_FIELDS, SEGMENT_OPTIONS, DEFECTS, declaredProblemsForBatch } fr
 import { axesForBatch, readMarkWord } from '../domain/axes.js';
 import { SaveCeremony } from './PenFoot.jsx';
 import { Segmented } from './Segmented.jsx';
+import { MarkOneField } from './MarkOneField.jsx';
 import { AxisMark } from './AxisMark.jsx';
 import { FieldFeedback } from './FieldFeedback.jsx';
 import { notebookPath } from './notebookPaths.js';
@@ -429,6 +430,8 @@ export function BatchRow({
   onChangeRecordField,
   onChangeSegment,
   onClearSegment,
+  onChangeMarkOne,
+  onClearMarkOne,
   onChangeRecordMark,
   onClearAxisMark,
   onChangeDefect,
@@ -772,20 +775,6 @@ export function BatchRow({
                 />
               ))}
             </div>
-            <Segmented
-              groupLabel="Exit consistency"
-              options={SEGMENT_OPTIONS.exitConsistency}
-              value={draft.exitConsistency}
-              onChange={(option) => onChangeSegment('exitConsistency', option)}
-              onClear={() => onClearSegment('exitConsistency', 'Exit consistency')}
-            />
-            <Segmented
-              groupLabel="Airiness (estimated)"
-              options={SEGMENT_OPTIONS.airiness}
-              value={draft.airiness}
-              onChange={(option) => onChangeSegment('airiness', option)}
-              onClear={() => onClearSegment('airiness', 'Airiness (estimated)')}
-            />
             {/* At the machine and Ingredient notes (sketch 007 lines 237-238):
                 each carries its own visible caption, as Next time does (I-14).
                 This supersedes the 03.1 Gap 2 override's "no visible label
@@ -817,6 +806,37 @@ export function BatchRow({
                 onInput={autoGrow}
               />
             </label>
+            {/* At draw (sketch 010 D6, D6b, D11, D13): Nothing to note or Not
+                evaluated says why Exit consistency and Airiness are absent.
+                A pick hides the two fields; a mark in either turns the
+                options off with their reason. The Ingredient notes underline
+                above is the group's rule. */}
+            <MarkOneField
+              field="atDraw"
+              label="At draw"
+              value={draft.atDraw}
+              off={draft.exitConsistency !== '' || draft.airiness !== ''}
+              onChange={(option) => onChangeMarkOne('atDraw', option)}
+              onClear={() => onClearMarkOne('atDraw', 'At draw')}
+            />
+            {draft.atDraw === '' && (
+              <>
+                <Segmented
+                  groupLabel="Exit consistency"
+                  options={SEGMENT_OPTIONS.exitConsistency}
+                  value={draft.exitConsistency}
+                  onChange={(option) => onChangeSegment('exitConsistency', option)}
+                  onClear={() => onClearSegment('exitConsistency', 'Exit consistency')}
+                />
+                <Segmented
+                  groupLabel="Airiness (estimated)"
+                  options={SEGMENT_OPTIONS.airiness}
+                  value={draft.airiness}
+                  onChange={(option) => onChangeSegment('airiness', option)}
+                  onClear={() => onClearSegment('airiness', 'Airiness (estimated)')}
+                />
+              </>
+            )}
             {/* The tasting section (D-01, contract "Settled defaults"):
                 hidden until Add tasting opens it (SaveCeremony renders
                 that control, both mounts) — the record opens with no
@@ -842,7 +862,7 @@ export function BatchRow({
                     mode (Pitfall 6: the always-visible mode's "Clear
                     tasting" label is never built), right-aligned (007 line
                     246, `margin-left: auto`). */}
-                <div className="tasting-head">
+                <div className="mo-end tasting-head">
                   <h3 className="region-name">Tasting</h3>
                   <p className="tasting-status pen-helper" role="status" aria-live="polite">
                     {tastingStatus}
@@ -1091,22 +1111,6 @@ export function BatchRow({
                   <span className="batch-row__unit batch-row__unit--absent">not measured</span>
                 )}
               </div>
-              <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Exit consistency</span>
-                {openBatch.churn.exitConsistency != null ? (
-                  <span className="batch-row__cell-value">{openBatch.churn.exitConsistency}</span>
-                ) : (
-                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-                )}
-              </div>
-              <div className="batch-row__cell">
-                <span className="batch-row__cell-label">Airiness</span>
-                {openBatch.churn.airiness != null ? (
-                  <span className="batch-row__cell-value">{openBatch.churn.airiness}</span>
-                ) : (
-                  <span className="batch-row__unit batch-row__unit--absent">not measured</span>
-                )}
-              </div>
             </div>
             {/* At the machine / Ingredient notes: the maker's own words,
                 in the hand (03.5-07, decisions_recorded 1). Each note is
@@ -1119,6 +1123,37 @@ export function BatchRow({
                 {openBatch.churn.ingredientNotes && (
                   <p className="batch-row__note app-hand">{openBatch.churn.ingredientNotes}</p>
                 )}
+              </div>
+            )}
+            {/* At draw (sketch 010 D6a, D6b, D12): a stored word reads as one
+                full-width cell and none of the group's fields; with no word
+                the two fields read as they always have ("not measured" when
+                absent). The record never reads the word beside marks. */}
+            {openBatch.churn.atDraw ? (
+              <div className="batch-row__cells mo-readgroup">
+                <div className="batch-row__cell mo-lead">
+                  <span className="batch-row__cell-label">At draw</span>
+                  <span className="batch-row__cell-value">{openBatch.churn.atDraw}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="batch-row__cells mo-readgroup">
+                <div className="batch-row__cell">
+                  <span className="batch-row__cell-label">Exit consistency</span>
+                  {openBatch.churn.exitConsistency != null ? (
+                    <span className="batch-row__cell-value">{openBatch.churn.exitConsistency}</span>
+                  ) : (
+                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+                  )}
+                </div>
+                <div className="batch-row__cell">
+                  <span className="batch-row__cell-label">Airiness</span>
+                  {openBatch.churn.airiness != null ? (
+                    <span className="batch-row__cell-value">{openBatch.churn.airiness}</span>
+                  ) : (
+                    <span className="batch-row__unit batch-row__unit--absent">not measured</span>
+                  )}
+                </div>
               </div>
             )}
 

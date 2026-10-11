@@ -373,3 +373,94 @@ describe('no Time to draw temp. in any churn object the real save writes (sketch
     expect(saved.churn).toHaveProperty('atDraw', null);
   });
 });
+
+describe('At draw through the real pen and the real save (sketch 010 D6 to D10; 04-05)', () => {
+  const atDraw = () => pen().querySelector('[data-mo="atdraw"]');
+  const radioFor = (group, word) => [...group.querySelectorAll('input[type="radio"]')].find((input) => input.value === word);
+  const groupLabelled = (label) => pen().querySelector(`[role="radiogroup"][aria-label="${label}"]`);
+
+  async function openRecordAnother() {
+    installMatchMedia();
+    await mountAt(VERSION_PATH, [augustSecondBatch]);
+    await click(current.container.querySelector('.batch-row__record'));
+    await setValue(pen().querySelector('input[type="date"]'), '2026-10-10');
+  }
+
+  it('a tap on Nothing to note hides Exit consistency and Airiness and shows Clear; Clear brings them back blank', async () => {
+    await openRecordAnother();
+    expect(groupLabelled('Exit consistency')).not.toBeNull();
+
+    await click(radioFor(atDraw(), 'Nothing to note'));
+    expect(radioFor(atDraw(), 'Nothing to note').checked).toBe(true);
+    expect(groupLabelled('Exit consistency')).toBeNull();
+    expect(groupLabelled('Airiness (estimated)')).toBeNull();
+    const clear = buttonByText(atDraw(), 'Clear');
+    expect(clear).not.toBeNull();
+
+    await click(clear);
+    expect(radioFor(atDraw(), 'Nothing to note').checked).toBe(false);
+    expect(buttonByText(atDraw(), 'Clear')).toBeNull();
+    const exit = groupLabelled('Exit consistency');
+    expect(exit).not.toBeNull();
+    expect([...exit.querySelectorAll('input[type="radio"]')].some((input) => input.checked)).toBe(false);
+  });
+
+  it('the other option moves the pick, and tapping the picked option again changes nothing', async () => {
+    await openRecordAnother();
+    await click(radioFor(atDraw(), 'Nothing to note'));
+    await click(radioFor(atDraw(), 'Not evaluated'));
+    expect(radioFor(atDraw(), 'Not evaluated').checked).toBe(true);
+    expect(radioFor(atDraw(), 'Nothing to note').checked).toBe(false);
+    await click(radioFor(atDraw(), 'Not evaluated'));
+    expect(radioFor(atDraw(), 'Not evaluated').checked).toBe(true);
+  });
+
+  it('a mark in Exit consistency turns both options off with the reason; clearing it turns them back on, blank', async () => {
+    await openRecordAnother();
+    const exit = groupLabelled('Exit consistency');
+    await click([...exit.querySelectorAll('input[type="radio"]')].find((input) => input.value === 'Wet, soupy'));
+    for (const input of atDraw().querySelectorAll('input[type="radio"]')) {
+      expect(input.disabled).toBe(true);
+      expect(input.checked).toBe(false);
+    }
+    expect(atDraw().querySelector('.mo-hint').textContent).toBe('Clear marks below to choose.');
+
+    await click(buttonByText(pen().querySelector('[role="radiogroup"][aria-label="Exit consistency"]').closest('.segmented-field'), 'Clear'));
+    for (const input of atDraw().querySelectorAll('input[type="radio"]')) {
+      expect(input.disabled).toBe(false);
+      expect(input.checked).toBe(false);
+    }
+    expect(atDraw().querySelector('.mo-hint')).toBeNull();
+  });
+
+  it('a pick saved through the real save is stored as the word beside no mark, and the reading says the one word', async () => {
+    await openRecordAnother();
+    await click(radioFor(atDraw(), 'Not evaluated'));
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => store.saveBatch.mock.calls.length > 0);
+
+    expect(store.saveBatch).toHaveBeenCalledTimes(1);
+    const saved = store.saveBatch.mock.calls[0][0];
+    expect(saved.churn.atDraw).toBe('Not evaluated');
+    expect(saved.churn.exitConsistency).toBeNull();
+    expect(saved.churn.airiness).toBeNull();
+
+    await flush(() => pen() === null && current.container.querySelector('.mo-lead') !== null);
+    const lead = current.container.querySelector('.mo-lead');
+    expect(lead).not.toBeNull();
+    expect(lead.textContent).toBe('At drawNot evaluated');
+    const reading = current.container.querySelector('#fold-batch');
+    expect(reading.textContent).not.toContain('Exit consistency');
+  });
+
+  it('a mark saved with no pick stores no word', async () => {
+    await openRecordAnother();
+    const exit = groupLabelled('Exit consistency');
+    await click([...exit.querySelectorAll('input[type="radio"]')].find((input) => input.value === 'Wet, soupy'));
+    await click(buttonByText(pen(), 'Save batch'));
+    await flush(() => store.saveBatch.mock.calls.length > 0);
+    const saved = store.saveBatch.mock.calls[0][0];
+    expect(saved.churn.atDraw).toBeNull();
+    expect(saved.churn.exitConsistency).toBe('Wet, soupy');
+  });
+});

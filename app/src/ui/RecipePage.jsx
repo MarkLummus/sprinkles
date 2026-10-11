@@ -92,6 +92,7 @@ const TASTING_BODY_FIELD_KEYS = new Set([
   'note',
   'meltTestG',
   'meltStyle',
+  'fromFreezer',
 ]);
 
 export function isTastingBodyField(field) {
@@ -1302,6 +1303,26 @@ export function RecipePage({ onPageStatus = () => {} }) {
     announce(`${label} cleared.`);
   }
 
+  // The two mark-one controls (At draw on the batch, From freezer on the
+  // tasting; sketch 010 D6 to D14) share one pair of handlers, the shape of
+  // handleChangeSegment and handleClearSegment above. A pick is final until
+  // Clear (a radio), and BatchRow only offers a pick while its group holds no
+  // mark, so the draft never holds a pick beside a mark. From freezer is a
+  // tasting-body field (it retires a pending undo); At draw is a churn field.
+  function handleChangeMarkOne(field, value) {
+    setBlockedDateMessage(null);
+    setFormStatus('');
+    if (isTastingBodyField(field)) setPendingUndo(null);
+    setDraft((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function handleClearMarkOne(field, label) {
+    setBlockedDateMessage(null);
+    if (isTastingBodyField(field)) setPendingUndo(null);
+    setDraft((prev) => ({ ...prev, [field]: '' }));
+    announce(`${label} cleared.`);
+  }
+
   // A defect chip's own toggle (contract "Controls spec"): a picked chip
   // joins the draft's defects list, an unpicked one leaves it — no
   // default ever; a defect is an independent on/off (007 line 428), so a
@@ -2282,6 +2303,8 @@ export function RecipePage({ onPageStatus = () => {} }) {
             onChangeRecordField={handleChangeRecordField}
             onChangeSegment={handleChangeSegment}
             onClearSegment={handleClearSegment}
+            onChangeMarkOne={handleChangeMarkOne}
+            onClearMarkOne={handleClearMarkOne}
             onChangeRecordMark={handleChangeRecordMark}
             onClearAxisMark={handleClearAxisMark}
             onChangeDefect={handleChangeDefect}

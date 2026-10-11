@@ -343,7 +343,7 @@ describe('BatchRow — the upright batch list at two or more batches (decision 1
 });
 
 describe('BatchRow — the record and amend ceremony, the battery\'s churn section (D-01, contract "DOM order inventory")', () => {
-  it('renders the churn-date field first, then the two measured fields, the two segmented controls, the two textareas, then the shared Next time, then ceremony A, in that DOM order', () => {
+  it('renders the churn section in the pen order: Churn date, Out of machine, Churn duration, At the machine, Ingredient notes, At draw, Exit consistency, Airiness (estimated), then the shared Next time, then ceremony A (sketch 010 CONTRACT section 7)', () => {
     const markup = renderBatchRow({
       openPen: 'record',
       mode: 'recording',
@@ -355,21 +355,23 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     const churnDateIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
     const outOfMachineIndex = markup.indexOf('Out of machine');
     const churnDurationIndex = markup.indexOf('Churn duration');
-    const exitConsistencyIndex = markup.indexOf('Exit consistency');
-    const airinessIndex = markup.indexOf('Airiness (estimated)');
     const atTheMachineIndex = markup.indexOf('aria-label="At the machine"');
     const ingredientNotesIndex = markup.indexOf('aria-label="Ingredient notes"');
+    const atDrawIndex = markup.indexOf('data-mo="atdraw"');
+    const exitConsistencyIndex = markup.indexOf('Exit consistency');
+    const airinessIndex = markup.indexOf('Airiness (estimated)');
     const ceremonyIndex = markup.indexOf('class="save-ceremony"');
     const nextTimeIndex = markup.indexOf('aria-label="Next time"');
     expect(churnDateIndex).toBeGreaterThanOrEqual(0);
     expect(markup).not.toContain('Time to draw temp.');
     expect(outOfMachineIndex).toBeGreaterThan(churnDateIndex);
     expect(churnDurationIndex).toBeGreaterThan(outOfMachineIndex);
-    expect(exitConsistencyIndex).toBeGreaterThan(churnDurationIndex);
-    expect(airinessIndex).toBeGreaterThan(exitConsistencyIndex);
-    expect(atTheMachineIndex).toBeGreaterThan(airinessIndex);
+    expect(atTheMachineIndex).toBeGreaterThan(churnDurationIndex);
     expect(ingredientNotesIndex).toBeGreaterThan(atTheMachineIndex);
-    expect(nextTimeIndex).toBeGreaterThan(ingredientNotesIndex);
+    expect(atDrawIndex).toBeGreaterThan(ingredientNotesIndex);
+    expect(exitConsistencyIndex).toBeGreaterThan(atDrawIndex);
+    expect(airinessIndex).toBeGreaterThan(exitConsistencyIndex);
+    expect(nextTimeIndex).toBeGreaterThan(airinessIndex);
     expect(ceremonyIndex).toBeGreaterThan(nextTimeIndex);
   });
 
@@ -407,10 +409,10 @@ describe('BatchRow — the record and amend ceremony, the battery\'s churn secti
     });
     const fieldRowIndex = markup.indexOf('<div class="field-row">');
     const churnDateCaptionIndex = markup.indexOf('<span class="pen-caption">Churn date</span>');
-    const exitConsistencyIndex = markup.indexOf('Exit consistency');
+    const atTheMachineIndex = markup.indexOf('<span class="pen-caption">At the machine</span>');
     expect(fieldRowIndex).toBeGreaterThanOrEqual(0);
     expect(fieldRowIndex).toBeLessThan(churnDateCaptionIndex);
-    const churnRowSlice = markup.slice(fieldRowIndex, exitConsistencyIndex);
+    const churnRowSlice = markup.slice(fieldRowIndex, atTheMachineIndex);
     const labelCount = churnRowSlice.split('class="field-row__label').length - 1;
     expect(labelCount).toBe(3);
   });
@@ -1226,8 +1228,11 @@ describe('BatchRow — the two segmented controls (contract "Controls spec")', (
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
+    // Four heads: the three Segmented controls and the At draw group's own
+    // (MarkOneField, in the group-cue face, which the caption pattern below
+    // does not match).
     const headOccurrences = markup.split('class="segmented-field__head"').length - 1;
-    expect(headOccurrences).toBe(3);
+    expect(headOccurrences).toBe(4);
     const captionSpans = markup.match(
       /<span class="segmented-field__caption pen-caption" id="[^"]+">([^<]*)<\/span>/g,
     ) ?? [];
@@ -1407,14 +1412,18 @@ describe("BatchRow — the record's reading state, measured values as cells (con
     expect(markup.split('class="batch-row__note app-hand"').length - 1).toBe(2);
   });
 
-  it('places the notes block after the Airiness cell and before the tasting reading', () => {
+  it('places the notes block after the churn cells and before the Exit consistency and Airiness cells and the tasting reading (sketch 010 D12)', () => {
     const markup = renderBatchRow({ openBatch: augustSecondBatch, batches: [augustSecondBatch], mode: 'reading' });
-    const airinessIndex = markup.indexOf('Airiness');
+    const durationIndex = markup.indexOf('Churn duration');
     const notesIndex = markup.indexOf('class="batch-row__notes"');
+    const exitIndex = markup.indexOf('Exit consistency');
+    const airinessIndex = markup.indexOf('Airiness');
     const tastingIndex = markup.indexOf('class="tasting-reading"');
-    expect(airinessIndex).toBeGreaterThan(-1);
-    expect(notesIndex).toBeGreaterThan(airinessIndex);
-    expect(tastingIndex).toBeGreaterThan(notesIndex);
+    expect(durationIndex).toBeGreaterThan(-1);
+    expect(notesIndex).toBeGreaterThan(durationIndex);
+    expect(exitIndex).toBeGreaterThan(notesIndex);
+    expect(airinessIndex).toBeGreaterThan(exitIndex);
+    expect(tastingIndex).toBeGreaterThan(airinessIndex);
   });
 
   it('renders one note paragraph when only the at-the-machine note is present', () => {
@@ -1678,7 +1687,7 @@ describe('BatchRow — the Tasting fold head, every width (sketch 011 decisions 
       mode: 'recording',
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
-    expect(markup).toMatch(/<div class="tasting-head"><h3 class="region-name">Tasting<\/h3>/);
+    expect(markup).toMatch(/<div class="mo-end tasting-head"><h3 class="region-name">Tasting<\/h3>/);
   });
 });
 
@@ -1767,10 +1776,11 @@ describe('batchListMeta — the batch list\'s meta small print (decisions_record
 // expected count is the sum of the controls that state renders, from
 // BatchRow.jsx: reading is Correct, Record another and the Tasting fold row;
 // the no-batch state is Record a batch; the pen with the tasting closed is
-// two Segmented groups (6 radios) and the ceremony's Add tasting, Cancel,
-// Save batch; the pen with the tasting open is Remove tasting, the four
-// defect chips, Bitter, Cancel and Save batch (8 buttons), and three
-// Segmented groups (9 radios) with six axes of five stops (30 radios).
+// two Segmented groups (6 radios), the At draw group (2 radios, disabled or
+// not) and the ceremony's Add tasting, Cancel, Save batch; the pen with the
+// tasting open is Remove tasting, the four defect chips, Bitter, Cancel and
+// Save batch (8 buttons), and three Segmented groups (9 radios), the At draw
+// group (2 radios) with six axes of five stops (30 radios).
 describe('BatchRow — every button and radio carries an explicit tabindex (quick task 261001-doi)', () => {
   const buttonTags = (markup) => markup.match(/<button\b[^>]*>/g) ?? [];
   const radioTags = (markup) => (markup.match(/<input\b[^>]*>/g) ?? []).filter((tag) => /type="radio"/.test(tag));
@@ -1791,19 +1801,19 @@ describe('BatchRow — every button and radio carries an explicit tabindex (quic
     expectAllTagged(buttonTags(renderBatchRow({})), 1);
   });
 
-  it('recording with the tasting closed: Add tasting, Cancel, Save batch and 6 radios', () => {
+  it('recording with the tasting closed: Add tasting, Cancel, Save batch and 8 radios', () => {
     const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: emptyRecordDraft });
     expectAllTagged(buttonTags(markup), 3);
-    expectAllTagged(radioTags(markup), 6);
+    expectAllTagged(radioTags(markup), 8);
   });
 
-  it('recording with the tasting open: 8 buttons and 39 radios', () => {
+  it('recording with the tasting open: 8 buttons and 41 radios', () => {
     const markup = renderBatchRow({ openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, tastingOpen: true } });
     expectAllTagged(buttonTags(markup), 8);
-    expectAllTagged(radioTags(markup), 39);
+    expectAllTagged(radioTags(markup), 41);
   });
 
-  it('amending with the tasting open: the same 8 buttons and 39 radios', () => {
+  it('amending with the tasting open: the same 8 buttons and 41 radios', () => {
     const markup = renderBatchRow({
       openPen: 'amend',
       mode: 'recording',
@@ -1812,7 +1822,7 @@ describe('BatchRow — every button and radio carries an explicit tabindex (quic
       draft: { ...emptyRecordDraft, tastingOpen: true },
     });
     expectAllTagged(buttonTags(markup), 8);
-    expectAllTagged(radioTags(markup), 39);
+    expectAllTagged(radioTags(markup), 41);
   });
 });
 
@@ -2174,5 +2184,107 @@ describe('BatchRow — a tick made in the pen round-trips through save, the read
     expect(target.state.batches).toEqual([batch]);
     expect(target.state.batches[0].snapshot.declaredFlaws).toEqual(declaredFlaws);
     expect(target.state.batches[0].tasting.declaredDefects).toEqual(batch.tasting.declaredDefects);
+  });
+});
+
+// At draw (sketch 010 D6 to D14; CONTRACT section 7): the pen's first
+// mark-one group, and the reading's one word for it.
+describe('BatchRow — At draw in the pen (sketch 010 D6, D9, D10, D11)', () => {
+  const penMarkup = (draft) =>
+    renderBatchRow({ openPen: 'record', mode: 'recording', draft: { ...emptyRecordDraft, ...draft } });
+  const atDrawGroup = (markup) => {
+    const start = markup.indexOf('data-mo="atdraw"');
+    expect(start).toBeGreaterThan(-1);
+    return markup.slice(start, markup.indexOf('</div></div>', start));
+  };
+
+  it('blank: the At draw group sits after Ingredient notes with both options on and no Clear, and Exit consistency and Airiness show', () => {
+    const markup = penMarkup({});
+    const group = atDrawGroup(markup);
+    expect(group).toContain('Nothing to note');
+    expect(group).toContain('Not evaluated');
+    expect(group).not.toContain('disabled');
+    expect(group).not.toContain('checked');
+    expect(group).not.toContain('Clear');
+    expect(markup).toContain('aria-label="Exit consistency"');
+    expect(markup).toContain('aria-label="Airiness (estimated)"');
+  });
+
+  it('a pick: the option is checked, Clear shows, and the pen holds no Exit consistency or Airiness group', () => {
+    const markup = penMarkup({ atDraw: 'Nothing to note' });
+    const group = atDrawGroup(markup);
+    expect(group).toMatch(/value="Nothing to note"[^>]*checked=""|checked=""[^>]*value="Nothing to note"/);
+    expect(markup).toContain('aria-label="Clear At draw"');
+    expect(markup).not.toContain('aria-label="Exit consistency"');
+    expect(markup).not.toContain('aria-label="Airiness (estimated)"');
+    expect(markup).not.toContain('Exit consistency');
+    expect(markup).not.toContain('Airiness (estimated)');
+  });
+
+  it('a mark in Exit consistency: the options are disabled and dashed with the reason, nothing checked, and the field stays', () => {
+    const markup = penMarkup({ exitConsistency: 'Wet, soupy' });
+    const group = atDrawGroup(markup);
+    expect(group.split('segmented__option is-off').length - 1).toBe(2);
+    expect(group.match(/disabled=""/g)).toHaveLength(2);
+    expect(group).not.toContain('checked');
+    expect(group).toContain('<span class="mo-hint">Clear marks below to choose.</span>');
+    expect(group).not.toContain('Clear At draw');
+    expect(markup).toContain('aria-label="Exit consistency"');
+  });
+
+  it('a mark in Airiness alone also turns the options off', () => {
+    const group = atDrawGroup(penMarkup({ airiness: 'High, airy' }));
+    expect(group.match(/disabled=""/g)).toHaveLength(2);
+    expect(group).toContain('Clear marks below to choose.');
+  });
+
+  it('a written note changes nothing: the options stay on, blank', () => {
+    const group = atDrawGroup(penMarkup({ atTheMachine: 'Bowl was frozen overnight', ingredientNotes: 'New bottle' }));
+    expect(group).not.toContain('disabled');
+    expect(group).not.toContain('Clear marks below');
+  });
+
+  it('amending reads the same: a stored pick hides the two fields', () => {
+    const markup = renderBatchRow({
+      openPen: 'amend',
+      mode: 'recording',
+      openBatch: augustSecondBatch,
+      batches: [augustSecondBatch],
+      draft: { ...emptyRecordDraft, atDraw: 'Not evaluated' },
+    });
+    expect(markup).not.toContain('aria-label="Exit consistency"');
+    expect(markup).toContain('aria-label="Clear At draw"');
+  });
+});
+
+describe('BatchRow — the reading says the At draw word, or the fields, never both (sketch 010 D6a, D12; T-04-14)', () => {
+  const withChurn = (patch) => {
+    const batch = { ...augustSecondBatch, churn: { ...augustSecondBatch.churn, ...patch } };
+    return renderBatchRow({ openBatch: batch, batches: [batch], mode: 'reading' });
+  };
+
+  it('a stored pick reads as one full-width cell and neither field', () => {
+    const markup = withChurn({ atDraw: 'Nothing to note', exitConsistency: null, airiness: null });
+    expect(markup).toContain('<div class="batch-row__cell mo-lead">');
+    expect(markup).toMatch(/batch-row__cell-label">At draw<\/span><span class="batch-row__cell-value">Nothing to note</);
+    expect(markup).not.toContain('Exit consistency');
+    expect(markup).not.toContain('>Airiness<');
+  });
+
+  it('with no pick the two fields read as they always have, and no At draw cell', () => {
+    const markup = withChurn({ atDraw: null, exitConsistency: 'Wet, soupy', airiness: null });
+    expect(markup).not.toContain('At draw');
+    expect(markup).not.toContain('mo-lead');
+    expect(markup).toMatch(/Exit consistency<\/span><span class="batch-row__cell-value">Wet, soupy</);
+    expect(markup).toMatch(/>Airiness<\/span><span class="batch-row__unit batch-row__unit--absent">not measured</);
+  });
+
+  it('the churn cells hold Out of machine and Churn duration only; the At draw or fields row follows the notes', () => {
+    const markup = withChurn({ atDraw: null });
+    const firstGrid = markup.slice(markup.indexOf('class="batch-row__cells"'), markup.indexOf('class="batch-row__notes"'));
+    expect(firstGrid).toContain('Out of machine');
+    expect(firstGrid).toContain('Churn duration');
+    expect(firstGrid).not.toContain('Exit consistency');
+    expect(markup.indexOf('mo-readgroup')).toBeGreaterThan(markup.indexOf('class="batch-row__notes"'));
   });
 });

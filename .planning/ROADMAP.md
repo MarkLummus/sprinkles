@@ -638,14 +638,14 @@ Plans:
 **Goal:** Time to draw temp. no longer shows on any screen (record pen, reading, print); the stored field stays until Phase 4's reseed removes it. The Batch log and Tasting log titles exist only on the printed pages and ride Phase 4's print (the pen's At the machine note keeps its name)
 **Requirements**: TBD
 **Depends on:** Phase 03.7
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans executed
 
 Plans:
 **Wave 1**
 - [x] 03.7.1-01-PLAN.md — The pen and the reading lose the field on the real built app (tracer, with the before numbers); the record draft stops carrying it while a correction keeps the stored value; the stored value pinned through IndexedDB, export and import; the orphaned helper retired
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 03.7.1-02-PLAN.md — Side by side with sketch 010's pen and reading boards in WebKit and Chrome with before and after numbers; the plan line's CSS retired; regression and the rows for Mark's List
+- [x] 03.7.1-02-PLAN.md — Side by side with sketch 010's pen and reading boards in WebKit and Chrome with before and after numbers; the plan line's CSS retired; regression and the rows for Mark's List
 
 ### Phase 4: Prepare the next version for making
 

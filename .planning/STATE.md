@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-11T15:53:30.823Z"
+last_updated: "2026-10-11T16:17:19.521Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 2595964d7774b21751447d75ae5e40f53b4a6ae6
+state_head: 6253b4d11e28c278f1b99e6e5f3ed634f47b5ea6
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — EXECUTING
 Plan: 10 of 10
 Status: Phase complete — ready for verification
-Last activity: 2026-10-11 - Completed quick task 261011-gko: Fix the four review warnings that could trip the device UAT
+Last activity: 2026-10-11 - Completed quick task 261011-h0d: Boot-line comment records Mark's approval
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -493,6 +493,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261011-fgb | Search store-failure sentence says look up, not storage | 2026-10-11 | 480f198 | [261011-fgb-search-store-failure-sentence-couldn-t-l](./quick/261011-fgb-search-store-failure-sentence-couldn-t-l/) |
 | 261011-g4g | Trim Mark's List per decide-trim-marks-list: skill and CLAUDE.md section drop Claude-owned rows, scheduling, stranded timer and closes chains | 2026-10-11 | 2595964 | [261011-g4g-trim-mark-s-list-per-decide-trim-marks-l](./quick/261011-g4g-trim-mark-s-list-per-decide-trim-marks-l/) |
 | 261011-gko | Fix the four review warnings that could trip the device UAT (WR-09, WR-04, WR-05, WR-08) | 2026-10-11 | 416501b | .planning/quick/261011-gko-build-pre-uat-review-warnings-fix-wr-09-home-and-the-band-na |
+| 261011-h0d | Boot-line comment in main.jsx records Mark's approval | 2026-10-11 | 6253b4d | [261011-h0d-in-app-src-main-jsx-line-16-change-the-c](./quick/261011-h0d-in-app-src-main-jsx-line-16-change-the-c/) |
 
 ### Roadmap Evolution
 

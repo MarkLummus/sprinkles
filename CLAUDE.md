@@ -93,7 +93,11 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
   may already have answered. Use `query` with `where: [["status", "ne", "done"]]` (the open,
   scheduled and parked rows, about 30), paged with `query.limit` 100 and `cursor`. Never `list`
   the whole collection: the Done history is about 140,000 tokens. Read one old row by id with
-  `get`. Load `ArtifactData` with ToolSearch if it is deferred.
+  `get`. Also `query` with `where: [["touched", "eq", true]]`: those are rows Mark changed
+  (answered, noted, pressed Done or Schedule on) that `/marks-list` has not handled yet, whatever
+  their status. If any come back, say in the first message of the session that N rows are waiting
+  for `/marks-list`, naming their titles. Do not handle them yourself or run the skill unprompted.
+  Load `ArtifactData` with ToolSearch if it is deferred.
 - When a task leaves Mark a decision, a device check or a board to look at, add a row: short slug
   as doc id, `kind`, `title`, `where`, `addedBy: "claude"`, status `open`, ISO `createdAt` and
   `updatedAt`, and on decide rows `options` with one marked `recommended`. Set `owner` on every

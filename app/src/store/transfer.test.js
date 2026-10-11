@@ -1,4 +1,9 @@
-import { describe, it, expect } from 'vitest';
+// fake-indexeddb/auto installs indexedDB before repository.js loads (its
+// module-level singleton opens the store on import), so it comes first.
+import 'fake-indexeddb/auto';
+import { IDBFactory } from 'fake-indexeddb';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { createRepository } from './repository.js';
 import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION, OLDER_EXPORT_MESSAGE } from './transfer.js';
 import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
@@ -191,6 +196,29 @@ function makeTasting(overrides = {}) {
 function makeStoreFile(versions = [makeVersion()], batches = [], recipes = [makeRecipe()]) {
   return { app: 'sprinkles', schemaVersion: STORE_SCHEMA_VERSION, exportedAt: '2026-01-01T00:00:00.000Z', versions, batches, recipes };
 }
+
+// A fresh database per test for the tests that use a real repository.
+beforeEach(() => {
+  globalThis.indexedDB = new IDBFactory();
+});
+
+describe('exportStore, drafts stay on the device (T-04-12)', () => {
+  it('writes exactly the file keys and no draft anywhere in the result', async () => {
+    const repository = createRepository();
+    await repository.saveRecipe(makeRecipe());
+    await repository.saveVersion(makeVersion());
+    await repository.saveBatch(makeBatch());
+    await repository.saveDraft({ versionId: 'v1', note: 'DRAFT-MARKER-unsaved-words' });
+    expect(await repository.listDrafts()).toHaveLength(1);
+
+    const exported = await exportStore(repository);
+
+    expect(Object.keys(exported).sort()).toEqual(['app', 'batches', 'exportedAt', 'recipes', 'schemaVersion', 'versions']);
+    expect(exported.schemaVersion).toBe(7);
+    expect(JSON.stringify(exported)).not.toContain('DRAFT-MARKER');
+    expect(JSON.stringify(exported)).not.toContain('drafts');
+  });
+});
 
 describe('exportStore', () => {
   it('returns app sprinkles, schemaVersion 7, and every version, batch and recipe the repository held', async () => {

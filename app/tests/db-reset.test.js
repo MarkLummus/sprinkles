@@ -95,10 +95,13 @@ describe('the D-05 reset, against a real IndexedDB', () => {
     preResetDb.close();
 
     const db = await openStore();
+    expect(db.version).toBe(8);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
+    expect(db.objectStoreNames.contains('drafts')).toBe(true);
     expect(await db.getAll('versions')).toEqual([]);
     expect(await db.getAll('batches')).toEqual([]);
+    expect(await db.getAll('drafts')).toEqual([]);
     db.close();
   });
 
@@ -161,8 +164,10 @@ describe('the D-05 reset, against a real IndexedDB', () => {
     expect(axes[5].name).toBe('Oil');
   });
 
-  it('a brand-new profile (no prior database) opens at version 5 with both stores present and empty, and nothing was dropped', async () => {
+  it('a brand-new profile (no prior database) opens at version 8 with every store present and empty, and nothing was dropped', async () => {
     const db = await openStore();
+    expect(db.version).toBe(8);
+    expect(db.objectStoreNames.contains('drafts')).toBe(true);
     expect(db.objectStoreNames.contains('versions')).toBe(true);
     expect(db.objectStoreNames.contains('batches')).toBe(true);
     expect(await db.getAll('versions')).toEqual([]);

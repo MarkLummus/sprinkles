@@ -1,6 +1,7 @@
 import { openStore } from './db.js';
 
-// The repository seam D-06 and D-16 depend on — the only path to the store.
+// The repository seam D-06 and D-16 depend on — the only path to the store:
+// versions, batches, recipes, and the drafts of unsaved pens.
 // No component, no domain module, and no seed check may reach past it.
 export function createRepository() {
   const dbPromise = openStore();
@@ -67,6 +68,23 @@ export function createRepository() {
       const tx = db.transaction('recipes', 'readwrite');
       await Promise.all(recipes.map((recipe) => tx.store.put(recipe)));
       return tx.done;
+    },
+    // D-16: a draft is one unsaved pen, keyed by its version id.
+    async getDraft(versionId) {
+      const db = await dbPromise;
+      return db.get('drafts', versionId);
+    },
+    async saveDraft(record) {
+      const db = await dbPromise;
+      return db.put('drafts', record);
+    },
+    async deleteDraft(versionId) {
+      const db = await dbPromise;
+      return db.delete('drafts', versionId);
+    },
+    async listDrafts() {
+      const db = await dbPromise;
+      return db.getAll('drafts');
     },
   };
 }

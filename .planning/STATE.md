@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Prepare the next version for making
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-10-11T06:10:24.682Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-10-11T06:15:26.288Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 4f3298432eb505e3c9204830bd2617cf2c4a4645
+state_head: 3ebdc9bdaf3f823edaf984d41837b883a4d19154
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 111
+  completed_plans: 112
   percent: 73
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 04 (Prepare the next version for making) — EXECUTING
-Plan: 2 of 10
+Plan: 3 of 10
 Status: Ready to execute
 Last activity: 2026-10-11 — Phase 04 execution started
 
@@ -143,6 +143,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 03.7.1 P01 | 6 min | 3 tasks | 13 files |
 | Phase 03.7.1 P02 | 10 min | 2 tasks | 6 files |
 | Phase 04 P01 | 8 min | 3 tasks | 21 files |
+| Phase 04 P02 | 6 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -288,6 +289,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 03.7.1]: 03.7.1-02: no app behaviour changed; the pen and reading match sketch 010 in WebKit and Chrome (198 MATCH, 0 DIFF); the 724 to 1365 five-track reading grid is a decide row for Mark (recommended: keep five until Phase 4)
 - [Phase 04]: Shared Button, Checkbox and Radio place tabIndex={0} after the prop spread so no caller can drop a Tab stop (D-19); type stays before the spread to keep attribute order
 - [Phase 04]: A disabled Radio still carries tabIndex={0}; the browser removes a disabled input from the Tab order natively (sketch 010 CONTRACT section 11 open item 2 settled)
+- [Phase 04]: Olive Oil v1 Sheet code pinned as 64JH-G408 (derivation tag sprinkles-sheet-code:1); changing the canonical form or hash needs a new tag
+- [Phase 04]: Search page submit control auto-selected option-a (filled Find button) while Mark away; reversible, decide row pending on Mark's List
 
 ### Pending Todos
 
@@ -482,6 +485,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T06:10:24.550Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-10-11T06:15:26.149Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

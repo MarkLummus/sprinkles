@@ -20,6 +20,8 @@
 //   node .planning/phases/04-.../04-print-probe.mjs sweep
 //       (04-07) every seed version's formula pages in both engines; (04-08) and
 //       its Instructions and closing foot
+//   node .planning/phases/04-.../04-print-probe.mjs check
+//       (04-08) logs, screen, sheet and sweep in one run, against a fresh build
 //
 // Prints MATCH / DIFF / FAIL lines and exits 1 on any DIFF or FAIL.
 //
@@ -1080,8 +1082,15 @@ try {
   else if (mode === 'measure') await runMeasure();
   else if (mode === 'sheet') await runSheet();
   else if (mode === 'sweep') await runSweep(rest);
-  else {
-    console.log('usage: 04-print-probe.mjs logs [version-id ...] | screen | measure | sheet | sweep');
+  else if (mode === 'check') {
+    // The whole print proof against a fresh build: the log sides, the screen
+    // pictures, Olive Oil v1's Sheet, and every seed version swept (04-08).
+    await runLogs([]);
+    await runScreen();
+    await runSheet();
+    await runSweep([]);
+  } else {
+    console.log('usage: 04-print-probe.mjs logs [version-id ...] | screen | measure | sheet | sweep [version-id ...] | check');
     process.exit(2);
   }
 } finally {

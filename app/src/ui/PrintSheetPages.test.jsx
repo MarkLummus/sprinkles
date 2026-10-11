@@ -105,6 +105,16 @@ describe('PrintIngredientTable — the print form of the table (E1, E2, E6, E7, 
   });
 });
 
+describe('PrintIngredientTable — [edge PRINT-02/precision] grams as stored (04-08)', () => {
+  it('prints the small portions as stored (1.04 g, 0.16 g) and the Total through formatGrams’ one decimal (799.7 g)', () => {
+    const grams = [...tableOf().querySelectorAll('tbody.ps-group tr:not(.ps-step-head) .ps-col-grams')].map((cell) => cell.textContent);
+    expect(grams).toContain('1.04 g');
+    expect(grams).toContain('0.16 g');
+    const totalCells = [...tableOf().querySelectorAll('tfoot td')].map((cell) => cell.textContent);
+    expect(totalCells).toContain('799.7 g');
+  });
+});
+
 describe('sheetBlocks — the lines come from the screen table’s own grouping', () => {
   it('lists the groups and lines in groupPortionsByStep’s order', () => {
     const grouped = groupPortionsByStep(oliveOilVersion.rows, oliveOilVersion.method, displayNumbers(oliveOilVersion.method), false);

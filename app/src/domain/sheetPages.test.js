@@ -559,3 +559,83 @@ describe('layPages — [edge PRINT-02/ordering] every step stands once, the head
     }
   });
 });
+
+// Olive Oil v1's measured heights with a shorter formula part, so the cases D29
+// does not draw can be laid from the numbers it does measure (04-08 Task 3).
+const shortened = ({ measure, box }, { groups, gauges, basis = measure.basis }) => ({
+  box,
+  measure: {
+    ...measure,
+    groups: groups.map((index) => measure.groups[index]),
+    gauges: gauges.map((index) => measure.gauges[index]),
+    basis,
+  },
+});
+
+describe('layPages — where the Instructions start (04-08 Task 2: they follow the row, option-a)', () => {
+  // The table fits the formula page (the Step 2 and Step 6 groups, Total 31) but
+  // all six gauges do not: Sugar, Solids and the basis note continue on page 2.
+  const balanceContinues = (fixture) => shortened(fixture, { groups: [0, 2], gauges: [0, 1, 2, 3, 4, 5] });
+
+  it('Safari: the table ends on the formula page, Balance continues, and the Instructions follow Balance’s tail on page 2', () => {
+    const { measure, box } = balanceContinues(OLIVE_OIL_V1_SAFARI);
+    const pages = layPages(measure, box);
+    expect(pages[0].table).toMatchObject({ total: true });
+    expect(pages[0].instructions).toBeNull();
+    expect(gaugesOn(pages[1])).toEqual([4, 5]);
+    expect(pages[1].table).toBeNull();
+    expect(pages[1].balance.basis).toBe(true);
+    // Balance's tail on page 2 is Sugar 74.3, Solids 91.3 and the basis note 120, 20 apart;
+    // the Instructions begin 20 px under it, the heading 24.9 tall, the steps 20 apart.
+    const balanceEnd = 74.3 + 20 + 91.3 + 20 + 120;
+    expect(pages[1].instructions.heading).toBe(true);
+    const stepsEnd = pages[1].instructions.steps.reduce((y, index, k) => y + (k > 0 ? 20 : 0) + measure.steps[index], balanceEnd + 20 + 24.9);
+    expect(pages[1].bottom).toBeCloseTo(stepsEnd + (pages[1].foot ? 32 + 22 : 0), 1);
+    expect(pages[1].bottom).toBeLessThanOrEqual(900 - PAGE_GUARD_PX);
+    expect(pages.flatMap(stepsOn)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    expect(pages[pages.length - 1].foot).toBe(true);
+  });
+
+  it('Chrome: the same rule at 672 x 960', () => {
+    const { measure, box } = balanceContinues(OLIVE_OIL_V1_CHROME);
+    const pages = layPages(measure, box);
+    expect(pages[0].table).toMatchObject({ total: true });
+    expect(pages[0].instructions).toBeNull();
+    const first = pages.findIndex((page) => page.instructions);
+    expect(first).toBeGreaterThan(0);
+    // They start 20 px under the row's tail on the page where Balance ends.
+    expect(pages[first].balance).not.toBeNull();
+    expect(pages[first].instructions.heading).toBe(true);
+    expect(pages.flatMap(stepsOn)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+
+  // Both columns end on the formula page: three gauges and the basis note beside
+  // the short table.
+  const bothEnd = (fixture) => shortened(fixture, { groups: [0, 2], gauges: [0, 1, 2] });
+
+  it('Safari (630 x 900): both columns end on the formula page, the Instructions open page 2 — steps 1 to 7, then 8 to 10 and the foot, the heading once', () => {
+    const { measure, box } = bothEnd(OLIVE_OIL_V1_SAFARI);
+    const pages = layPages(measure, box);
+    expect(pages).toHaveLength(3);
+    expect(pages[0]).toMatchObject({ band: true, instructions: null, foot: false });
+    expect(pages[0].table).toMatchObject({ total: true });
+    expect(pages[0].balance).toMatchObject({ basis: true });
+    expect(pages.map(stepsOn)).toEqual([[], [0, 1, 2, 3, 4, 5, 6], [7, 8, 9]]);
+    expect(pages.map((page) => page.instructions && page.instructions.heading)).toEqual([null, true, false]);
+    expect(pages.map((page) => page.foot)).toEqual([false, false, true]);
+    // Their own page: no table, no Balance, the heading at the content box's top.
+    expect(pages[1]).toMatchObject({ band: false, before: false, table: null, balance: null });
+    expect(pages[1].bottom).toBeLessThanOrEqual(900 - PAGE_GUARD_PX);
+  });
+
+  it('Chrome (672 x 960): the same split, steps 1 to 7 then 8 to 10', () => {
+    const { measure, box } = bothEnd(OLIVE_OIL_V1_CHROME);
+    const pages = layPages(measure, box);
+    expect(pages).toHaveLength(3);
+    expect(pages.map(stepsOn)).toEqual([[], [0, 1, 2, 3, 4, 5, 6], [7, 8, 9]]);
+    expect(pages.map((page) => page.instructions && page.instructions.heading)).toEqual([null, true, false]);
+    expect(pages.map((page) => page.foot)).toEqual([false, false, true]);
+    expect(pages[1]).toMatchObject({ table: null, balance: null });
+    expect(pages[1].bottom).toBeLessThanOrEqual(960 - PAGE_GUARD_PX);
+  });
+});

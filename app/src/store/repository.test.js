@@ -59,3 +59,56 @@ describe('drafts, through the repository seam', () => {
     expect(await repository.listDrafts()).toEqual([makeDraft('v2')]);
   });
 });
+
+describe('importAll, through the repository seam', () => {
+  const recipe = { id: 'r1', name: 'Recipe', description: '' };
+  const version = { id: 'v1', recipeId: 'r1' };
+  const batch = { id: 'b1', versionId: 'v1' };
+
+  async function everything(repository) {
+    return {
+      recipes: await repository.listRecipes(),
+      versions: await repository.listVersions(),
+      batches: await repository.getAllBatches(),
+    };
+  }
+
+  it('writes recipes, versions and batches together', async () => {
+    const repository = createRepository();
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch] });
+    expect(await everything(repository)).toEqual({ recipes: [recipe], versions: [version], batches: [batch] });
+    expect(await repository.listBatchesForVersion('v1')).toEqual([batch]);
+  });
+
+  it('upserts by id and leaves records the file does not name', async () => {
+    const repository = createRepository();
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch] });
+    await repository.importAll({
+      recipes: [{ ...recipe, name: 'Renamed' }],
+      versions: [],
+      batches: [{ id: 'b2', versionId: 'v1' }],
+    });
+    const held = await everything(repository);
+    expect(held.recipes).toEqual([{ ...recipe, name: 'Renamed' }]);
+    expect(held.versions).toEqual([version]);
+    expect(held.batches.map((entry) => entry.id).sort()).toEqual(['b1', 'b2']);
+  });
+
+  it('rejects when a batch cannot be cloned, and all three stores hold exactly what they held before', async () => {
+    const repository = createRepository();
+    await repository.importAll({ recipes: [recipe], versions: [version], batches: [batch] });
+    const before = await everything(repository);
+
+    // A function value cannot be structured-cloned: the batch put throws a
+    // DataCloneError after the recipe and version puts were already queued.
+    await expect(
+      repository.importAll({
+        recipes: [{ id: 'r2', name: 'New', description: '' }],
+        versions: [{ id: 'v2', recipeId: 'r2' }],
+        batches: [{ id: 'b2', versionId: 'v2', notClonable: () => {} }],
+      }),
+    ).rejects.toThrow();
+
+    expect(await everything(repository)).toEqual(before);
+  });
+});

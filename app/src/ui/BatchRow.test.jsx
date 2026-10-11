@@ -2115,9 +2115,11 @@ describe('BatchRow — a tick made in the pen round-trips through save, the read
       getAll: async () => [...state.versions],
       getAllBatches: async () => [...state.batches],
       listRecipes: async () => [...state.recipes],
-      putAll: async (items) => merge(state.versions, items),
-      putAllBatches: async (items) => merge(state.batches, items),
-      putAllRecipes: async (items) => merge(state.recipes, items),
+      importAll: async ({ recipes, versions, batches }) => {
+        merge(state.recipes, recipes);
+        merge(state.versions, versions);
+        merge(state.batches, batches);
+      },
     };
   }
 

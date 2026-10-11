@@ -555,6 +555,11 @@ export function validateStoreFile(parsed) {
   return { ok: errors.length === 0, errors };
 }
 
+// The one sentence a storage failure during an import shows in the import
+// panel (the app's own save-failure voice, as RecipePage's BATCH_SAVE_ERROR
+// and VERSION_SAVE_ERROR). Shell renders it as it renders every refusal.
+export const IMPORT_STORAGE_ERROR = 'Couldn’t save this file. Nothing was changed.';
+
 /** exportStore(repository) -> the whole store as one JSON-serialisable object. */
 export async function exportStore(repository) {
   const versions = await repository.getAll();
@@ -574,7 +579,9 @@ export async function exportStore(repository) {
  * importStore(repository, parsed) -> { ok, errors }. Validates parsed
  * directly — STORE_SCHEMA_VERSION is the only shape this function ever
  * sees, so there is no lift to run first. Writes nothing on failure — a
- * partially applied import is worse than a refused one (T-04-01, T-02-08).
+ * partially applied import is worse than a refused one (T-04-01, T-02-08):
+ * the write is one repository.importAll transaction, and a storage failure
+ * on any store call returns IMPORT_STORAGE_ERROR instead of throwing.
  * The D-09 parent-resolves gate and the D-11 recipe-resolves gate run
  * after validation and before any write, in the same two-step "validate
  * then write" shape: a version whose parentVersionId does not resolve to
@@ -586,8 +593,17 @@ export async function importStore(repository, parsed) {
   const { ok, errors } = validateStoreFile(parsed);
   if (!ok) return { ok: false, errors };
 
+  // A storage failure on any store call returns the one sentence rather
+  // than throwing, so the import panel always has something to show.
+  const storageFailure = { ok: false, errors: [IMPORT_STORAGE_ERROR] };
+
   const fileIds = new Set(parsed.versions.map((version) => version.id));
-  const storeVersions = await repository.getAll();
+  let storeVersions;
+  try {
+    storeVersions = await repository.getAll();
+  } catch {
+    return storageFailure;
+  }
   const storeIds = new Set(storeVersions.map((version) => version.id));
   const parentErrors = [];
   parsed.versions.forEach((version, index) => {
@@ -603,7 +619,12 @@ export async function importStore(repository, parsed) {
   // already in the store, refuses the whole import — the same shape as
   // the parent-resolves gate above.
   const fileRecipeIds = new Set(parsed.recipes.map((recipe) => recipe.id));
-  const storeRecipes = await repository.listRecipes();
+  let storeRecipes;
+  try {
+    storeRecipes = await repository.listRecipes();
+  } catch {
+    return storageFailure;
+  }
   const storeRecipeIds = new Set(storeRecipes.map((recipe) => recipe.id));
   const recipeErrors = [];
   parsed.versions.forEach((version, index) => {
@@ -615,8 +636,12 @@ export async function importStore(repository, parsed) {
   });
   if (recipeErrors.length > 0) return { ok: false, errors: recipeErrors };
 
-  await repository.putAllRecipes(parsed.recipes);
-  await repository.putAll(parsed.versions);
-  await repository.putAllBatches(parsed.batches);
+  // One transaction over recipes, versions and batches: all three land or
+  // none does (Mark, 2026-10-11).
+  try {
+    await repository.importAll({ recipes: parsed.recipes, versions: parsed.versions, batches: parsed.batches });
+  } catch {
+    return storageFailure;
+  }
   return { ok: true, errors: [] };
 }

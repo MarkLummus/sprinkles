@@ -69,6 +69,33 @@ export function createRepository() {
       await Promise.all(recipes.map((recipe) => tx.store.put(recipe)));
       return tx.done;
     },
+    // An import is one readwrite transaction over the three stores it
+    // writes: a failed put aborts it, so a storage failure part-way leaves
+    // every store exactly as it was. A put the store cannot clone throws
+    // before it queues and leaves the transaction open, so the catch aborts
+    // it by hand or the puts already queued would commit.
+    async importAll({ recipes, versions, batches }) {
+      const db = await dbPromise;
+      const tx = db.transaction(['recipes', 'versions', 'batches'], 'readwrite');
+      const done = tx.done;
+      // Every queued put is kept so a failure can quiet the ones the abort
+      // rejects behind it.
+      const queued = [];
+      try {
+        for (const recipe of recipes) queued.push(tx.objectStore('recipes').put(recipe));
+        for (const version of versions) queued.push(tx.objectStore('versions').put(version));
+        for (const batch of batches) queued.push(tx.objectStore('batches').put(batch));
+        await Promise.all([...queued, done]);
+      } catch (error) {
+        try {
+          tx.abort();
+        } catch {
+          // The transaction already finished or aborted itself.
+        }
+        for (const request of [...queued, done]) request.catch(() => {});
+        throw error;
+      }
+    },
     // D-16: a draft is one unsaved pen, keyed by its version id.
     async getDraft(versionId) {
       const db = await dbPromise;

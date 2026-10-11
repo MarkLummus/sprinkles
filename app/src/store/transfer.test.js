@@ -4,22 +4,20 @@ import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createRepository } from './repository.js';
-import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION, OLDER_EXPORT_MESSAGE } from './transfer.js';
+import { exportStore, importStore, validateStoreFile, STORE_SCHEMA_VERSION, OLDER_EXPORT_MESSAGE, IMPORT_STORAGE_ERROR } from './transfer.js';
+import { seedIfEmpty } from './seed.js';
 import { oliveOilVersion, oliveOilRecipe } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 
 // A plain in-memory object implementing the repository seam's contract —
-// no store library, no browser. Mirrors createRepository's putAll/putAllBatches/
-// putAllRecipes: upsert by id, never a wholesale replace. Tracks call counts
-// so a test can assert a write method was never invoked (the refuse-whole-file
-// gate).
+// no store library, no browser. Mirrors createRepository's importAll: upsert
+// by id, never a wholesale replace. Counts importAll calls so a test can
+// assert the write was never invoked (the refuse-whole-file gate).
 function createInMemoryRepository(initialVersions = [], initialBatches = [], initialRecipes = []) {
   const versions = [...initialVersions];
   const batches = [...initialBatches];
   const recipes = [...initialRecipes];
-  let putAllCalls = 0;
-  let putAllBatchesCalls = 0;
-  let putAllRecipesCalls = 0;
+  let importAllCalls = 0;
   return {
     get versions() {
       return versions;
@@ -30,47 +28,30 @@ function createInMemoryRepository(initialVersions = [], initialBatches = [], ini
     get recipes() {
       return recipes;
     },
-    get putAllCalls() {
-      return putAllCalls;
-    },
-    get putAllBatchesCalls() {
-      return putAllBatchesCalls;
-    },
-    get putAllRecipesCalls() {
-      return putAllRecipesCalls;
+    get importAllCalls() {
+      return importAllCalls;
     },
     async getAll() {
       return [...versions];
     },
-    async putAll(newVersions) {
-      putAllCalls += 1;
-      for (const version of newVersions) {
-        const i = versions.findIndex((v) => v.id === version.id);
-        if (i >= 0) versions[i] = version;
-        else versions.push(version);
-      }
-    },
     async getAllBatches() {
       return [...batches];
-    },
-    async putAllBatches(newBatches) {
-      putAllBatchesCalls += 1;
-      for (const batch of newBatches) {
-        const i = batches.findIndex((b) => b.id === batch.id);
-        if (i >= 0) batches[i] = batch;
-        else batches.push(batch);
-      }
     },
     async listRecipes() {
       return [...recipes];
     },
-    async putAllRecipes(newRecipes) {
-      putAllRecipesCalls += 1;
-      for (const recipe of newRecipes) {
-        const i = recipes.findIndex((r) => r.id === recipe.id);
-        if (i >= 0) recipes[i] = recipe;
-        else recipes.push(recipe);
-      }
+    async importAll({ recipes: newRecipes, versions: newVersions, batches: newBatches }) {
+      importAllCalls += 1;
+      const upsert = (list, items) => {
+        for (const item of items) {
+          const i = list.findIndex((entry) => entry.id === item.id);
+          if (i >= 0) list[i] = item;
+          else list.push(item);
+        }
+      };
+      upsert(recipes, newRecipes);
+      upsert(versions, newVersions);
+      upsert(batches, newBatches);
     },
   };
 }
@@ -771,6 +752,44 @@ describe('validateRecipe / $.recipes', () => {
   });
 });
 
+describe('importStore, a storage failure reads in words', () => {
+  it('has the one sentence the import panel shows', () => {
+    expect(IMPORT_STORAGE_ERROR).toBe('Couldn’t save this file. Nothing was changed.');
+  });
+
+  it('resolves to ok false with that sentence when importAll rejects, rather than throwing', async () => {
+    const repository = createInMemoryRepository([], [], []);
+    repository.importAll = async () => {
+      throw new Error('quota exceeded');
+    };
+    const result = await importStore(repository, makeStoreFile([makeVersion()], [], [makeRecipe()]));
+    expect(result).toEqual({ ok: false, errors: [IMPORT_STORAGE_ERROR] });
+  });
+
+  it.each(['getAll', 'listRecipes'])('resolves to the same result when %s rejects', async (method) => {
+    const repository = createInMemoryRepository([], [], []);
+    repository[method] = async () => {
+      throw new Error('store unavailable');
+    };
+    const result = await importStore(repository, makeStoreFile([makeVersion()], [], [makeRecipe()]));
+    expect(result).toEqual({ ok: false, errors: [IMPORT_STORAGE_ERROR] });
+    expect(repository.importAllCalls).toBe(0);
+  });
+
+  it("still round-trips the seeded store's export through importStore and a real repository", async () => {
+    const source = createRepository();
+    await seedIfEmpty(source);
+    const file = JSON.parse(JSON.stringify(await exportStore(source)));
+
+    globalThis.indexedDB = new IDBFactory();
+    const target = createRepository();
+    expect(await importStore(target, file)).toEqual({ ok: true, errors: [] });
+    expect(await target.listRecipes()).toEqual(file.recipes);
+    expect(await target.listVersions()).toEqual(file.versions);
+    expect(await target.getAllBatches()).toEqual(file.batches);
+  });
+});
+
 describe('importStore', () => {
   it('writes nothing on an invalid payload and reports every error found', async () => {
     const repository = createInMemoryRepository([makeVersion({ id: 'existing' })]);
@@ -783,14 +802,14 @@ describe('importStore', () => {
     expect(repository.versions).toEqual(before);
   });
 
-  it('imports a well-formed schemaVersion 7 file with a batch and a recipe, round-tripping through putAllRecipes, putAll and putAllBatches', async () => {
+  it('imports a well-formed schemaVersion 7 file with a batch and a recipe, through one importAll call', async () => {
     const repository = createInMemoryRepository([], [], []);
     const result = await importStore(repository, makeStoreFile([makeVersion()], [makeBatch()], [makeRecipe()]));
     expect(result.ok).toBe(true);
     expect(repository.recipes).toEqual([makeRecipe()]);
     expect(repository.versions).toEqual([makeVersion()]);
     expect(repository.batches).toEqual([makeBatch()]);
-    expect(repository.putAllRecipesCalls).toBe(1);
+    expect(repository.importAllCalls).toBe(1);
   });
 
   it('refuses the whole file: one bad batch beside a good one writes nothing at all', async () => {
@@ -801,9 +820,7 @@ describe('importStore', () => {
     const result = await importStore(repository, makeStoreFile([makeVersion()], [goodBatch, badBatch]));
 
     expect(result.ok).toBe(false);
-    expect(repository.putAllCalls).toBe(0);
-    expect(repository.putAllBatchesCalls).toBe(0);
-    expect(repository.putAllRecipesCalls).toBe(0);
+    expect(repository.importAllCalls).toBe(0);
     expect(repository.versions).toEqual([]);
     expect(repository.batches).toEqual([]);
   });
@@ -834,8 +851,8 @@ describe('the parent-resolves gate', () => {
     const result = await importStore(repository, makeStoreFile([child]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('parentVersionId'))).toBe(true);
-    expect(repository.putAllCalls).toBe(0);
     expect(repository.versions).toEqual([]);
+    expect(repository.importAllCalls).toBe(0);
   });
 
   it('validateStoreFile stays pure: it accepts the same unresolvable-parent file with no error, since the gate lives in importStore', () => {
@@ -869,10 +886,9 @@ describe('the recipe-resolves gate', () => {
     const result = await importStore(repository, makeStoreFile([version], [], [makeRecipe({ id: 'r1' })]));
     expect(result.ok).toBe(false);
     expect(result.errors.some((error) => error.includes('recipeId'))).toBe(true);
-    expect(repository.putAllCalls).toBe(0);
-    expect(repository.putAllRecipesCalls).toBe(0);
     expect(repository.versions).toEqual([]);
     expect(repository.recipes).toEqual([]);
+    expect(repository.importAllCalls).toBe(0);
   });
 
   it('validateStoreFile stays pure: it accepts the same unresolvable-recipe file with no error, since the gate lives in importStore', () => {
@@ -1169,9 +1185,7 @@ describe('a portion\'s optional removed flag (T-03.6-05)', () => {
     const repository = createInMemoryRepository([], [], []);
     const result = await importStore(repository, makeStoreFile([versionWithFlag('true')]));
     expect(result.ok).toBe(false);
-    expect(repository.putAllCalls).toBe(0);
-    expect(repository.putAllBatchesCalls).toBe(0);
-    expect(repository.putAllRecipesCalls).toBe(0);
+    expect(repository.importAllCalls).toBe(0);
     expect(repository.versions).toEqual([]);
   });
 

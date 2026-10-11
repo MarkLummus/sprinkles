@@ -662,7 +662,7 @@ Plans:
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
 
-**Plans:** 2/10 plans executed
+**Plans:** 3/10 plans executed
 
 Plans:
 **Wave 1**
@@ -670,7 +670,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [x] 04-02-PLAN.md — The Sheet code: one pure derivation with a golden vector; Search's Sheet code field lands on the version; Home's Enter Sheet code link (D-08 to D-13) — checkpoint: the Search page's submit control
-- [ ] 04-03-PLAN.md — The record's shape: declared scales and problems as lists of 0 to 2 shown only where declared; Time to draw temp. leaves the data; At draw and From freezer get their stored home (sketch 010 D6, D17, D25, D26)
+- [x] 04-03-PLAN.md — The record's shape: declared scales and problems as lists of 0 to 2 shown only where declared; Time to draw temp. leaves the data; At draw and From freezer get their stored home (sketch 010 D6, D17, D25, D26)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 04-04-PLAN.md — One store bump to 8: the drafts store behind the seam, a bounded reset, the import as one transaction with its storage failure in words (D-16)
@@ -735,7 +735,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
 | 3.5. Separate the recipe from the sheet | 31/31 | Complete    | 2026-10-02 |
 | 3.6. Per-step shared ingredients | 7/7 | Complete    | 2026-10-06 |
-| 4. Prepare the next version for making | 2/10 | In Progress | - |
+| 4. Prepare the next version for making | 3/10 | In Progress | - |
 | 5. Version evolution | 0/TBD | Not started | - |
 
 ## Coverage

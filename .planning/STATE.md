@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 04
 current_phase_name: Prepare the next version for making
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-10-11T06:15:26.288Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-10-11T06:24:40.800Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 3ebdc9bdaf3f823edaf984d41837b883a4d19154
+state_head: 99f9de78fb721e3decf2a222939727ca0cde0886
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 120
-  completed_plans: 112
+  completed_plans: 113
   percent: 73
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 ## Current Position
 
 Phase: 04 (Prepare the next version for making) — EXECUTING
-Plan: 3 of 10
+Plan: 4 of 10
 Status: Ready to execute
 Last activity: 2026-10-11 — Phase 04 execution started
 
@@ -144,6 +144,7 @@ Progress: [███████░░░] 73% (3/4 phases; 66/66 plans executed
 | Phase 03.7.1 P02 | 10 min | 2 tasks | 6 files |
 | Phase 04 P01 | 8 min | 3 tasks | 21 files |
 | Phase 04 P02 | 6 min | 3 tasks | 9 files |
+| Phase 04 P03 | 15 min | 3 tasks | 27 files |
 
 ## Accumulated Context
 
@@ -291,6 +292,8 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [Phase 04]: A disabled Radio still carries tabIndex={0}; the browser removes a disabled input from the Tab order natively (sketch 010 CONTRACT section 11 open item 2 settled)
 - [Phase 04]: Olive Oil v1 Sheet code pinned as 64JH-G408 (derivation tag sprinkles-sheet-code:1); changing the canonical form or hash needs a new tag
 - [Phase 04]: Search page submit control auto-selected option-a (filled Find button) while Mark away; reversible, decide row pending on Mark's List
+- [Phase 04]: 04-03: with no declared scale AxesGrid keeps its three columns and fills the cue slot and first declared slot with empty aria-hidden cells so the core scales keep their width
+- [Phase 04]: 04-03: At draw and From freezer are two enumerated string fields (Nothing to note, Not evaluated), null when absent, stored only while their group holds no mark; seeded batches store both as null; the 2 Aug batch's draw temp 20 is dropped (D17)
 
 ### Pending Todos
 
@@ -485,6 +488,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-11T06:15:26.149Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-10-11T06:24:40.670Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None

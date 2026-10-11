@@ -106,7 +106,9 @@ so the next run skips it.
    (ISO now), `inProgress: false` and any closing fields (Boundaries). The claim already set
    `handledAt` and cleared `touched`: keep `handledAt`, and carry `touched` as this re-read shows
    it, never setting it yourself here, so a change Mark made while the work ran (the page set
-   `touched` back to true) still reads as new next run. Leave `updatedAt` as read. If the version
+   `touched` back to true) still reads as new next run. Leave `updatedAt` as read. Read every
+   timestamp you write (`createdAt`, `handledAt`, `repliedAt`, `resolvedAt`) from the clock with
+   `date -u +%Y-%m-%dT%H:%M:%S.000Z` just before the write; never type one. If the version
    check fails, re-read the row and write the reply again; never start its work a second time.
    Every row you add gets `kind` and an id prefix by CLAUDE.md's "Kinds and names" rule (by what
    Mark does; a device or paper check is kind `check`, never `look` or `todo`), and `owner`, as

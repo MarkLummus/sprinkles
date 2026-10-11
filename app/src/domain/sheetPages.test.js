@@ -8,6 +8,9 @@ import { OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME } from './sheetPages.fixtures.
 // The groups a page's table holds, as [group, from, to] triples.
 const groupsOn = (page) => (page.table ? page.table.slices.map((slice) => [slice.group, slice.from, slice.to]) : []);
 
+// The gauges a page's Balance column holds, by index.
+const gaugesOn = (page) => (page.balance ? page.balance.gauges : []);
+
 // A measure with round numbers, so a boundary can be hit exactly.
 function constructed(overrides = {}) {
   return {
@@ -18,6 +21,11 @@ function constructed(overrides = {}) {
     header: 30,
     total: 30,
     groups: [],
+    balanceHeading: 20,
+    gauges: [],
+    gaugeGap: 20,
+    basis: 0,
+    basisGap: 20,
     ...overrides,
   };
 }
@@ -216,6 +224,89 @@ describe('layPages — a heading and header never stand with nothing under them'
   });
 });
 
+describe('layPages — Balance in column 2 (sketch 010 D29; decide-balance-break = continue)', () => {
+  it('Safari: Freezing, Sweetness, Fat and Milk solids with the table; Sugar, Solids and the basis note on the next page', () => {
+    const pages = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    expect(pages).toHaveLength(2);
+    expect(pages[0].balance).toEqual({ heading: true, gauges: [0, 1, 2, 3], basis: false });
+    expect(pages[1].balance).toEqual({ heading: false, gauges: [4, 5], basis: true });
+  });
+
+  it('Chrome: five gauges with the table; Solids and the basis note on the next page', () => {
+    const pages = layPages(OLIVE_OIL_V1_CHROME.measure, OLIVE_OIL_V1_CHROME.box);
+    expect(pages).toHaveLength(2);
+    expect(pages[0].balance).toEqual({ heading: true, gauges: [0, 1, 2, 3, 4], basis: false });
+    expect(pages[1].balance).toEqual({ heading: false, gauges: [5], basis: true });
+  });
+
+  it('makes the page row as tall as the taller column, and ends Balance beside the table’s tail', () => {
+    const [first, second] = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
+    const m = OLIVE_OIL_V1_SAFARI.measure;
+    const rowTop = m.band + m.gap + m.before + m.gap;
+    const sum = (list) => list.reduce((a, b) => a + b, 0);
+    const group = (g) => m.groups[g].head + sum(m.groups[g].rows);
+    const table1 = m.ingredientsHeading + m.header + group(0) + group(1);
+    const balance1 = m.balanceHeading + sum(m.gauges.slice(0, 4)) + 3 * m.gaugeGap;
+    expect(first.bottom).toBeCloseTo(rowTop + Math.max(table1, balance1), 6);
+    // Page 2: the table is 241.6 tall, Balance (two gauges and the basis) 325.6: the row is the taller.
+    const table2 = m.header + group(2) + group(3) + m.total;
+    const balance2 = sum(m.gauges.slice(4)) + m.gaugeGap + m.basisGap + m.basis;
+    expect(balance2).toBeGreaterThan(table2);
+    expect(second.bottom).toBeCloseTo(balance2, 6);
+  });
+
+  it('never prints the basis note before a gauge, nor a heading without a gauge under it', () => {
+    for (const { measure, box } of [OLIVE_OIL_V1_SAFARI, OLIVE_OIL_V1_CHROME]) {
+      const pages = layPages(measure, box);
+      for (const page of pages) {
+        if (page.balance && page.balance.heading) expect(page.balance.gauges.length).toBeGreaterThan(0);
+      }
+      const basisPage = pages.findIndex((page) => page.balance && page.balance.basis);
+      const lastGaugePage = pages.map((page) => gaugesOn(page).length > 0).lastIndexOf(true);
+      expect(basisPage).toBeGreaterThanOrEqual(lastGaugePage);
+    }
+  });
+
+  it('keeps Balance with the row: it does not begin on a page the table has not reached', () => {
+    // The notes leave no room for a table line, so the row begins on page 2, Balance with it.
+    const pages = layPages(
+      constructed({
+        band: 500,
+        before: 340,
+        groups: [{ head: 40, rows: [50, 50] }],
+        gauges: [60, 60],
+        basis: 40,
+      }),
+      { height: 1000 },
+    );
+    expect(pages[0].table).toBeNull();
+    expect(pages[0].balance).toBeNull();
+    expect(pages[1].table).not.toBeNull();
+    expect(pages[1].balance).toMatchObject({ heading: true, gauges: [0, 1], basis: true });
+  });
+
+  it('opens a continuing page with the basis note alone when every gauge stood on the pages before', () => {
+    const pages = layPages(
+      constructed({
+        groups: [{ head: 40, rows: [100, 100, 100] }],
+        gauges: [300, 300],
+        basis: 400,
+      }),
+      { height: 900 },
+    );
+    expect(pages.flatMap(gaugesOn)).toEqual([0, 1]);
+    const last = pages[pages.length - 1];
+    expect(last.balance.basis).toBe(true);
+    expect(pages.filter((page) => page.balance && page.balance.basis)).toHaveLength(1);
+  });
+
+  it('takes a gauge taller than a page alone rather than loop', () => {
+    const pages = layPages(constructed({ groups: [{ head: 40, rows: [50] }], gauges: [2000, 50], basis: 40 }), { height: 900 });
+    expect(pages.flatMap(gaugesOn)).toEqual([0, 1]);
+    expect(pages.length).toBeLessThan(10);
+  });
+});
+
 // A seeded stream of numbers, so the sweep below is the same on every run.
 function stream(seed) {
   let state = seed;
@@ -234,6 +325,7 @@ describe('layPages — every line stands exactly once, in order, within the page
         head: next() < 0.1 ? 0 : between(20, 45),
         rows: Array.from({ length: between(1, 9) }, () => between(25, 70)),
       }));
+      const gauges = Array.from({ length: between(0, 7) }, () => between(60, 140));
       const measure = constructed({
         band: between(80, 140),
         before: next() < 0.4 ? 0 : between(60, 220),
@@ -241,6 +333,9 @@ describe('layPages — every line stands exactly once, in order, within the page
         header: between(20, 35),
         total: between(20, 40),
         groups,
+        balanceHeading: between(15, 30),
+        gauges,
+        basis: gauges.length === 0 || next() < 0.2 ? 0 : between(40, 160),
       });
       const box = { height: between(500, 1000) };
       const usable = box.height - PAGE_GUARD_PX;
@@ -261,18 +356,33 @@ describe('layPages — every line stands exactly once, in order, within the page
       // The Total once, with the last line (or alone under the header when there is no group).
       const withTotal = pages.filter((page) => page.table && page.table.total);
       expect(withTotal, where).toHaveLength(1);
-      expect(pages.indexOf(withTotal[0]), where).toBe(pages.length - 1);
+      expect(pages.indexOf(withTotal[0]), where).toBe(pages.map((page) => Boolean(page.table)).lastIndexOf(true));
 
       // The heading once, on the first page that has a table; the header on each.
       const tables = pages.filter((page) => page.table);
       expect(tables.map((page) => page.table.heading), where).toEqual(tables.map((_, i) => i === 0));
       expect(tables.every((page) => page.table.header), where).toBe(true);
 
-      // A page keeps within the usable height unless it holds one line alone: a page
-      // always takes its first line, however tall.
+      // Balance: every gauge once, in order; the heading on its first page only; the
+      // basis note once, after the last gauge; none before the table's first page.
+      expect(pages.flatMap(gaugesOn), where).toEqual(gauges.map((_, i) => i));
+      const balances = pages.filter((page) => page.balance);
+      expect(balances.map((page) => page.balance.heading), where).toEqual(balances.map((_, i) => gauges.length > 0 && i === 0));
+      expect(pages.filter((page) => page.balance && page.balance.basis), where).toHaveLength(measure.basis > 0 ? 1 : 0);
+      if (measure.basis > 0) {
+        const basisPage = pages.findIndex((page) => page.balance && page.balance.basis);
+        const lastGaugePage = pages.map((page) => gaugesOn(page).length > 0).lastIndexOf(true);
+        expect(basisPage, where).toBeGreaterThanOrEqual(lastGaugePage);
+      }
+      const firstTable = pages.findIndex((page) => page.table);
+      const firstBalance = pages.findIndex((page) => page.balance);
+      if (firstBalance !== -1) expect(firstBalance, where).toBeGreaterThanOrEqual(firstTable);
+
+      // A page keeps within the usable height unless it holds one line, or one gauge,
+      // alone: a page always takes its first item, however tall.
       for (const page of pages) {
         const lines = page.table ? page.table.slices.reduce((count, slice) => count + (slice.to - slice.from), 0) : 0;
-        if (lines === 1) continue;
+        if (lines === 1 || gaugesOn(page).length === 1) continue;
         expect(page.bottom, where).toBeLessThanOrEqual(usable);
       }
       // Page 1 carries the band; none after does.

@@ -5,7 +5,8 @@
 // They agree with CONTRACT § 5 of sketch 010 where it states a number: the
 // table is 755 px tall (755.1 here), the header row 27.4, the Step 6 group 73.6
 // and the Step 8 group 109.6 in WebKit, the Total 31, the band 126, Before you
-// start 144.9, the Ingredients heading 24.9 above the table.
+// start 144.9, the Ingredients heading 24.9 above the table, the gauges Sugar
+// 74.3, Solids 91.3 and the basis note 120, all 20 apart.
 //
 // Pure data. The fixtures are the one place the measured numbers live; the
 // tests read them and nothing else does.
@@ -26,6 +27,13 @@ export const OLIVE_OIL_V1_SAFARI = {
       { head: 34.6, rows: [39] },
       { head: 34.6, rows: [38, 37] },
     ],
+    // Balance's six gauges, in the order buildFigures gives them: Freezing,
+    // Sweetness, Fat (with its breakdown line), Milk solids, Sugar, Solids.
+    balanceHeading: 24.9,
+    gauges: [106.3, 106.3, 110.3, 91.3, 74.3, 91.3],
+    gaugeGap: 20,
+    basis: 120,
+    basisGap: 20,
   },
 };
 
@@ -45,5 +53,10 @@ export const OLIVE_OIL_V1_CHROME = {
       { head: 35.1, rows: [38.5] },
       { head: 35.1, rows: [37.5, 37.5] },
     ],
+    balanceHeading: 24.9,
+    gauges: [105, 105, 109, 91, 75, 91],
+    gaugeGap: 20,
+    basis: 84,
+    basisGap: 20,
   },
 };

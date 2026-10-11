@@ -659,6 +659,25 @@
   font-weight: bold;
 }
 
+/* Balance (E3, E4, D29): the gauges stand static in the column, capped at the
+   drawing's native width as the screen button is; the rule-to-rule gap is
+   app.css's own (.formulation-note__rule + .formulation-note__rule). A basis
+   note that opens a column, because the gauges above it stand on the page
+   before, has nothing to be apart from. */
+.ps-balance {
+  min-width: 0;
+}
+
+.ps-gauge {
+  display: block;
+  width: 100%;
+  max-width: var(--rule-width);
+}
+
+.ps-balance > .basis-note:first-child {
+  margin-top: 0;
+}
+
 /* The touch floor at a coarse pointer, as the app's own Home name links meet it
    (home.css, pointer: coarse): the Sheet title link is a 44 px target. It
    reads the pointer alone and sits before the stack rule below, so under 724 the

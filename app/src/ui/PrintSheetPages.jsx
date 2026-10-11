@@ -2,10 +2,13 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { computeBalance, formatGrams, formatPortionLine } from '../domain/composition.js';
 import { activeRows, rowGrams } from '../domain/rows.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
+import { buildFigures } from '../domain/figures.js';
 import { layPages } from '../domain/sheetPages.js';
 import { groupPortionsByStep, dataFlagFor } from './IngredientTable.jsx';
 import { Headnote } from './Headnote.jsx';
 import { NoteList } from './Authored.jsx';
+import { RuleDrawing } from './GraduatedRule.jsx';
+import { BasisNote } from './BasisNote.jsx';
 
 // The Sheet's formula pages on paper (Phase 4, plan 04-07; PRINT-01, D-06,
 // D-06a, D-06b; sketch 010 D29, E1 to E8). The Sheet is laid into pages by
@@ -64,6 +67,7 @@ export function sheetBlocks(version) {
       }),
     })),
     totalText: formatGrams(mass),
+    figures: buildFigures(version),
   };
 }
 
@@ -138,6 +142,40 @@ export function PrintIngredientTable({ groups, showHeader, showTotal, totalText,
   );
 }
 
+// Balance in column 2 (sketch 010 E3, E4, D29): the plain heading, no Hide
+// control and no Watch for; the gauges it holds, each whole, drawn static (paper
+// has no controls) by the same RuleDrawing the screen button wraps; the basis
+// note last. A page that continues Balance carries no heading again. The fat
+// gauge's breakdown line is FormulationNote's own sentence.
+export function PrintBalance({ figures, gaugeIndexes, showHeading, showBasis, version }) {
+  return (
+    <section className="ps-balance" aria-label="Balance">
+      {showHeading && <h2 className="region-name">Balance</h2>}
+      {gaugeIndexes.length > 0 && (
+        <div className="formulation-note">
+          {gaugeIndexes.map((index) => {
+            const figure = figures[index];
+            return (
+              <div key={figure.key} className="formulation-note__rule">
+                <div className="ps-gauge">
+                  <RuleDrawing figure={figure} />
+                </div>
+                {figure.key === 'fat' && (
+                  <p className="formulation-note__fat-breakdown">
+                    Milkfat {figure.milkfat.toFixed(1)}% and added fat {figure.addedFat.toFixed(1)}% —{' '}
+                    {Math.round(figure.addedFatShareOfFat)}% of fat.
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {showBasis && <BasisNote version={version} />}
+    </section>
+  );
+}
+
 // The groups a page's table holds: each slice names a group and the lines of
 // it that stand here, and whether the step head stands with them (a group that
 // splits between rows keeps its head with its first line only).
@@ -152,7 +190,7 @@ function slicedGroups(blocks, slices) {
 // The words are the built page's own (D-00, D-00a): the band is Headnote in
 // its reading mode, Before you start is the same NoteList.
 export function SheetPage({ plan, blocks, columns = null }) {
-  const { table } = plan;
+  const { table, balance } = plan;
   return (
     <div className="ps-page">
       {plan.band && (
@@ -166,21 +204,33 @@ export function SheetPage({ plan, blocks, columns = null }) {
           <NoteList listKey="beforeYouStart" notes={blocks.notes} mode="reading" />
         </section>
       )}
-      {table && (
+      {(table || balance) && (
         <div className="ps-row">
           <div className="ps-col1">
-            <section className="ps-ingredients" aria-label="Ingredients">
-              {table.heading && <h2 className="region-name">Ingredients</h2>}
-              <PrintIngredientTable
-                groups={slicedGroups(blocks, table.slices)}
-                showHeader={table.header}
-                showTotal={table.total}
-                totalText={blocks.totalText}
-                columns={columns}
-              />
-            </section>
+            {table && (
+              <section className="ps-ingredients" aria-label="Ingredients">
+                {table.heading && <h2 className="region-name">Ingredients</h2>}
+                <PrintIngredientTable
+                  groups={slicedGroups(blocks, table.slices)}
+                  showHeader={table.header}
+                  showTotal={table.total}
+                  totalText={blocks.totalText}
+                  columns={columns}
+                />
+              </section>
+            )}
           </div>
-          <div className="ps-col2" />
+          <div className="ps-col2">
+            {balance && (
+              <PrintBalance
+                figures={blocks.figures}
+                gaugeIndexes={balance.gauges}
+                showHeading={balance.heading}
+                showBasis={balance.basis}
+                version={blocks.version}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -198,7 +248,7 @@ function wholePlan(blocks) {
       slices: blocks.groups.map((group, i) => ({ group: i, from: 0, to: group.lines.length, head: true })),
       total: true,
     },
-    balance: null,
+    balance: blocks.figures.length > 0 ? { heading: true, gauges: blocks.figures.map((_, i) => i), basis: true } : null,
     bottom: 0,
   };
 }
@@ -216,6 +266,9 @@ export function readSheet(root) {
   const region = box.querySelector('.ps-ingredients');
   const table = box.querySelector('.ps-table');
   const lineRow = table.querySelector('tbody tr:not(.ps-step-head)');
+  const balance = box.querySelector('.ps-balance');
+  const rules = balance ? [...balance.querySelectorAll('.formulation-note__rule')] : [];
+  const basis = balance ? balance.querySelector('.basis-note') : null;
   const measure = {
     band: height(box.querySelector('.ps-band')),
     before: height(box.querySelector('.ps-before')),
@@ -228,11 +281,13 @@ export function readSheet(root) {
       const hasHead = rows.length > 0 && rows[0].classList.contains('ps-step-head');
       return { head: hasHead ? height(rows[0]) : 0, rows: rows.slice(hasHead ? 1 : 0).map(height) };
     }),
-    balanceHeading: 0,
-    gauges: [],
-    gaugeGap: 0,
-    basis: 0,
-    basisGap: 0,
+    // The heading and its margin sit above the first gauge; the gauges stand a
+    // gap apart; the basis note has its own margin above it.
+    balanceHeading: rules.length > 0 ? top(rules[0]) - top(balance) : 0,
+    gauges: rules.map(height),
+    gaugeGap: rules.length > 1 ? top(rules[1]) - (top(rules[0]) + height(rules[0])) : 0,
+    basis: height(basis),
+    basisGap: basis ? number(getComputedStyle(basis).marginTop) : 0,
   };
   const boxWidth = box.getBoundingClientRect().width;
   const probeWidth = root.querySelector('.ps-probe').getBoundingClientRect().width;

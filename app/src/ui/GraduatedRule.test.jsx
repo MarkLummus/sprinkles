@@ -5,7 +5,7 @@
 // context is needed.
 import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { GraduatedRule } from './GraduatedRule.jsx';
+import { GraduatedRule, RuleDrawing } from './GraduatedRule.jsx';
 
 const figure = {
   key: 'fat',
@@ -110,5 +110,19 @@ describe('GraduatedRule — tabindex 0 unless the caller keeps the rule off the 
     expect(buttons).toHaveLength(1);
     expect(buttons[0]).toContain('tabindex="-1"');
     expect(markup).not.toContain('tabindex="0"');
+  });
+});
+
+// The printed gauge (04-07) draws the rule's inner drawing alone, inside a
+// static div: paper has no controls. The button wraps the very same drawing.
+describe('RuleDrawing — the drawing without the button', () => {
+  it('renders the same head text and the same SVG as the button holds, and no button', () => {
+    const drawing = renderToStaticMarkup(<RuleDrawing figure={figure} />);
+    const button = renderToStaticMarkup(<GraduatedRule figure={figure} />);
+    expect(drawing).not.toContain('<button');
+    expect(drawing).toContain('graduated-rule__label-word">Fat<');
+    expect(drawing).toContain('graduated-rule__value">18.8%<');
+    expect(drawing.match(/<svg[\s\S]*<\/svg>/)[0]).toBe(button.match(/<svg[\s\S]*<\/svg>/)[0]);
+    expect(button).toContain(drawing);
   });
 });

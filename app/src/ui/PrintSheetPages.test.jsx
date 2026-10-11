@@ -8,7 +8,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { PrintIngredientTable, SheetPage, sheetBlocks, useSheetPages } from './PrintSheetPages.jsx';
+import { PrintBalance, PrintIngredientTable, SheetPage, sheetBlocks, useSheetPages } from './PrintSheetPages.jsx';
 import { groupPortionsByStep } from './IngredientTable.jsx';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { layPages } from '../domain/sheetPages.js';
@@ -112,6 +112,51 @@ describe('sheetBlocks — the lines come from the screen table’s own grouping'
   });
 });
 
+describe('PrintBalance — Balance in column 2 (E3, E4)', () => {
+  const all = blocks.figures.map((_, i) => i);
+  const balance = (props) => fragment(<PrintBalance figures={blocks.figures} version={oliveOilVersion} gaugeIndexes={all} showHeading showBasis {...props} />);
+
+  it('is headed by the plain word Balance in the ink heading, with no Hide control and no Watch for', () => {
+    const column = balance();
+    expect(column.querySelector('.region-name').textContent).toBe('Balance');
+    expect(column.textContent).not.toMatch(/hide|watch for/i);
+    expect(column.querySelector('button, a, input')).toBeNull();
+  });
+
+  it('draws one static gauge per figure it is given, whole, in the order given', () => {
+    const column = balance({ gaugeIndexes: [4, 5], showHeading: false, showBasis: false });
+    const gauges = [...column.querySelectorAll('.formulation-note__rule .ps-gauge')];
+    expect(gauges).toHaveLength(2);
+    expect(gauges.map((gauge) => gauge.querySelector('.graduated-rule__label-word').textContent)).toEqual(
+      [blocks.figures[4], blocks.figures[5]].map((figure) => figure.label.word),
+    );
+    expect(column.querySelector('.region-name')).toBeNull();
+    expect(column.querySelector('.basis-note')).toBeNull();
+    for (const gauge of gauges) expect(gauge.querySelector('svg')).not.toBeNull();
+  });
+
+  it('puts the basis note last, and prints the fat breakdown under the fat gauge only', () => {
+    const column = balance();
+    const note = column.querySelector('.ps-balance').lastElementChild;
+    expect(note.className).toBe('basis-note');
+    const breakdowns = column.querySelectorAll('.formulation-note__fat-breakdown');
+    expect(breakdowns).toHaveLength(1);
+    expect(breakdowns[0].textContent).toMatch(/^Milkfat 13\.0% and added fat 5\.0% — 28% of fat\.$/);
+    expect(breakdowns[0].parentElement.querySelector('.graduated-rule__label-word').textContent).toBe('Fat');
+  });
+
+  it('draws the basis note alone on a page that has only it to continue', () => {
+    const column = balance({ gaugeIndexes: [], showHeading: false });
+    expect(column.querySelector('.formulation-note')).toBeNull();
+    expect(column.querySelector('.ps-balance').firstElementChild.className).toBe('basis-note');
+  });
+
+  it('says estimated and unreviewed as words in the gauge’s basis line', () => {
+    const column = balance();
+    expect(column.textContent).toContain('estimated: Whole milk, Heavy cream');
+  });
+});
+
 describe('SheetPage — one laid page of the Sheet', () => {
   const safari = layPages(OLIVE_OIL_V1_SAFARI.measure, OLIVE_OIL_V1_SAFARI.box);
   const chrome = layPages(OLIVE_OIL_V1_CHROME.measure, OLIVE_OIL_V1_CHROME.box);
@@ -125,6 +170,24 @@ describe('SheetPage — one laid page of the Sheet', () => {
     expect(page.querySelector('.ps-ingredients .region-name').textContent).toBe('Ingredients');
     expect([...page.querySelectorAll('.ps-step-head')].map((head) => head.textContent.slice(0, 6))).toEqual(['Step 2', 'Step 3']);
     expect(page.querySelector('tfoot')).toBeNull();
+  });
+
+  it('page 1 holds Balance beside the table: its heading and the first four gauges, no basis note yet', () => {
+    const page = fragment(<SheetPage plan={safari[0]} blocks={blocks} />);
+    expect(page.querySelector('.ps-row > .ps-col2 .region-name').textContent).toBe('Balance');
+    expect(page.querySelectorAll('.ps-col2 .formulation-note__rule')).toHaveLength(4);
+    expect(page.querySelector('.ps-col2 .basis-note')).toBeNull();
+  });
+
+  it('page 2 continues Balance: the last two gauges and the basis note, with no heading again', () => {
+    const page = fragment(<SheetPage plan={safari[1]} blocks={blocks} />);
+    expect(page.querySelectorAll('.ps-col2 .formulation-note__rule')).toHaveLength(2);
+    expect(page.querySelector('.ps-col2 .region-name')).toBeNull();
+    expect(page.querySelector('.ps-col2 .basis-note')).not.toBeNull();
+  });
+
+  it('draws no button anywhere on a Sheet page (paper has no controls)', () => {
+    for (const plan of [...safari, ...chrome]) expect(fragment(<SheetPage plan={plan} blocks={blocks} />).querySelector('button')).toBeNull();
   });
 
   it('page 2 opens with the header row alone: no band, no notes, no Ingredients heading, no word “continued”', () => {
@@ -145,7 +208,7 @@ describe('SheetPage — one laid page of the Sheet', () => {
 
   it('prints only the built page’s own headings: no “Formula” and no other word the app does not have', () => {
     const words = [...safari, ...chrome].flatMap((plan) => [...fragment(<SheetPage plan={plan} blocks={blocks} />).querySelectorAll('.region-name')].map((node) => node.textContent));
-    expect(new Set(words)).toEqual(new Set(['Before you start', 'Ingredients']));
+    expect(new Set(words)).toEqual(new Set(['Before you start', 'Ingredients', 'Balance']));
   });
 
   it('renders every stored string as text', () => {

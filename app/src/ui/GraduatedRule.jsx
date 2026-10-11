@@ -35,27 +35,10 @@ function joinNames(names) {
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
 
-export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFigure, onBlurFigure }) {
-  const { key, label, value, unit, decimals, domain, band, deviation, basis, estimatedRowNames } = figure;
-  const [lo, hi] = domain;
-  const toX = (v) => ((clamp(v, lo, hi) - lo) / (hi - lo)) * WIDTH;
-
-  const graduations = [];
-  for (let i = 0; i <= GRADUATION_COUNT; i += 1) {
-    const gx = (i / GRADUATION_COUNT) * WIDTH;
-    graduations.push(
-      <line
-        key={i}
-        x1={gx}
-        y1={18}
-        x2={gx}
-        y2={i % 5 === 0 ? 24 : 21}
-        stroke="var(--sheet-ink)"
-        strokeWidth={RULE_GRADUATION}
-      />,
-    );
-  }
-
+// The words a figure says about itself, shared by the button's accessible name
+// and the drawing's basis line so the two never read different ones.
+function figureWords(figure, figureDelta) {
+  const { label, value, unit, decimals, band, basis, estimatedRowNames } = figure;
   const targetText = band ? `target ${band[0]}–${band[1]}${unit}` : 'no target set';
   // A figure resting on estimated or unreviewed data says so beside itself
   // (D-04), naming the rows it rests on — never as a colour, only as text,
@@ -70,8 +53,13 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
   const changed = Boolean(figureDelta?.changed);
   const changePhrase = changed ? `was ${figureDelta.from.toFixed(decimals)}${unit}, now ${value.toFixed(decimals)}${unit}` : null;
   const valuePhrase = changePhrase ?? `${value.toFixed(decimals)}${unit}`;
+  return { label, targetText, basisText, changed, valuePhrase };
+}
+
+export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFigure, onBlurFigure }) {
+  const { key } = figure;
+  const { label, targetText, basisText, valuePhrase } = figureWords(figure, figureDelta);
   const accessibleName = [figureLabelText(label), valuePhrase, targetText, basisText].filter(Boolean).join(', ');
-  const hatchId = `hatch-${key}`;
 
   return (
     // A focusable control, not a decoration: focusing it (keyboard or
@@ -93,6 +81,41 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
       onFocus={() => onFocusFigure?.(key)}
       onBlur={() => onBlurFigure?.()}
     >
+      <RuleDrawing figure={figure} figureDelta={figureDelta} />
+    </button>
+  );
+}
+
+// The rule's inner drawing: the head, the basis line, the scale with its
+// graduations, band, hatch and tick, and the anchors with the deviation in
+// words. The button above wraps it unchanged; paper has no controls, so the
+// printed gauge (PrintSheetPages.jsx) draws it inside a static div.
+export function RuleDrawing({ figure, figureDelta = null }) {
+  const { key, value, unit, decimals, domain, band, deviation } = figure;
+  const [lo, hi] = domain;
+  const toX = (v) => ((clamp(v, lo, hi) - lo) / (hi - lo)) * WIDTH;
+
+  const graduations = [];
+  for (let i = 0; i <= GRADUATION_COUNT; i += 1) {
+    const gx = (i / GRADUATION_COUNT) * WIDTH;
+    graduations.push(
+      <line
+        key={i}
+        x1={gx}
+        y1={18}
+        x2={gx}
+        y2={i % 5 === 0 ? 24 : 21}
+        stroke="var(--sheet-ink)"
+        strokeWidth={RULE_GRADUATION}
+      />,
+    );
+  }
+
+  const { label, basisText, changed } = figureWords(figure, figureDelta);
+  const hatchId = `hatch-${key}`;
+
+  return (
+    <>
       <div className="graduated-rule__head" aria-hidden="true">
         <span className="graduated-rule__label">
           <span className="graduated-rule__label-word">{label.word}</span>
@@ -153,6 +176,6 @@ export function GraduatedRule({ figure, figureDelta = null, tabIndex, onFocusFig
         <span className="graduated-rule__deviation">{deviation.words}</span>
         <span>{hi}</span>
       </div>
-    </button>
+    </>
   );
 }

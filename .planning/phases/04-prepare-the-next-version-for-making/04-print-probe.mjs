@@ -489,6 +489,12 @@ async function readLaidSheet(page) {
       heading: [...pageEl.querySelectorAll('.region-name')].map(text),
       header: Boolean(pageEl.querySelector('thead')),
       total: Boolean(pageEl.querySelector('tfoot')),
+      gauges: [...pageEl.querySelectorAll('.formulation-note__rule')].map((rule) => ({
+        word: text(rule.querySelector('.graduated-rule__label-word')),
+        head: text(rule.querySelector('.graduated-rule__label')) + ' ' + text(rule.querySelector('.graduated-rule__value')),
+      })),
+      basis: Boolean(pageEl.querySelector('.basis-note')),
+      buttons: pageEl.querySelectorAll('button').length,
       groups: [...pageEl.querySelectorAll('.ps-group')].map((tbody) => ({
         head: tbody.querySelector('.ps-step-head') ? text(tbody.querySelector('.ps-step-head')) : null,
         lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
@@ -498,8 +504,57 @@ async function readLaidSheet(page) {
       head: tbody.querySelector('.ps-step-head') ? text(tbody.querySelector('.ps-step-head')) : null,
       lines: [...tbody.querySelectorAll('tr:not(.ps-step-head)')].map((tr) => text(tr.querySelector('.ps-col-grams')) + ' ' + text(tr.querySelector('.ps-col-name').firstChild)),
     }));
-    return { pages, whole, total: text(document.querySelector('.ps-box tfoot .ps-col-grams')) };
+    const wholeGauges = [...document.querySelectorAll('.ps-box .formulation-note__rule')].map((rule) => ({
+      word: text(rule.querySelector('.graduated-rule__label-word')),
+      head: text(rule.querySelector('.graduated-rule__label')) + ' ' + text(rule.querySelector('.graduated-rule__value')),
+    }));
+    return { pages, whole, wholeGauges, total: text(document.querySelector('.ps-box tfoot .ps-col-grams')) };
   });
+}
+
+// ---------------------------------------------------------------------------
+// measure (04-07): the Sheet's blocks as the route reads them. The route leaves
+// its measurement on the hidden box as data-ps-measure, so this reads what
+// layPages was given, not a second reading of the same page. Each content box
+// is forced in each engine, so the fixtures hold all four.
+// ---------------------------------------------------------------------------
+const SHEET_BOXES = [
+  { w: 630, h: 900 },
+  { w: 672, h: 960 },
+];
+const round1 = (n) => Math.round(n * 10) / 10;
+
+async function readSheetMeasure(page) {
+  const raw = await page.getAttribute('[data-ps-measure]', 'data-ps-measure');
+  return JSON.parse(raw);
+}
+
+async function runMeasure() {
+  const { appUrl, close } = await startServers({ appRoot: DIST });
+  const engines = [
+    ['webkit', await webkit.launch()],
+    ['chrome', await launch()],
+  ];
+  try {
+    for (const [engine, browser] of engines) {
+      for (const box of SHEET_BOXES) {
+        const label = `${engine} ${box.w}x${box.h}`;
+        const { context, page } = await openRoute(browser, appUrl, OLIVE.route, { box });
+        const got = await readSheetMeasure(page);
+        const m = got.measure;
+        check(near(got.height, box.h, 0.5), label, `the measuring box is ${got.height} px tall (${box.h})`);
+        // The table's blocks add up to the table as the page lays it.
+        const tableHeight = await page.evaluate(() => document.querySelector('.ps-box .ps-table').getBoundingClientRect().height);
+        const summed = m.header + m.groups.reduce((t, g) => t + g.head + g.rows.reduce((a, b) => a + b, 0), 0) + m.total;
+        check(near(summed, tableHeight, 0.5), label, `header, groups and Total add up to the table (${summed.toFixed(2)} against ${tableHeight.toFixed(2)})`);
+        console.log(`MEASURE ${label} ${JSON.stringify({ measure: m, height: got.height, columns: got.columns, fit: got.fit }, (k, v) => (typeof v === 'number' && k !== 'fit' ? round1(v) : v))}`);
+        await context.close();
+      }
+    }
+  } finally {
+    for (const [, browser] of engines) await browser.close();
+    await close();
+  }
 }
 
 // Where sketch 010 D29 breaks Olive Oil v1's table: by the step numbers each
@@ -508,6 +563,14 @@ async function readLaidSheet(page) {
 const OLIVE_SHEET_BREAKS = {
   webkit: [[2, 3], [6, 8]],
   chrome: [[2, 3, 6], [8]],
+};
+
+// And Balance's gauges beside it (D29; decide-balance-break = continue): Safari
+// takes four with the table and carries Sugar, Solids and the basis note over;
+// Chrome takes five.
+const OLIVE_GAUGE_BREAKS = {
+  webkit: [['Freezing', 'Sweetness', 'Fat', 'Milk solids'], ['Sugar', 'Solids']],
+  chrome: [['Freezing', 'Sweetness', 'Fat', 'Milk solids', 'Sugar'], ['Solids']],
 };
 
 const stepOf = (group) => Number(group.head.match(/^Step (\d+)/)[1]);
@@ -523,7 +586,14 @@ function checkLaid(engine, v, laid) {
     check(p.header, label, `Sheet page ${i + 1} opens with the header row`);
     check(i === 0 ? p.heading.includes('Ingredients') : !p.heading.includes('Ingredients'), label, `Sheet page ${i + 1} ${i === 0 ? 'carries' : 'does not carry'} the Ingredients heading`);
     check(p.total === (i === laid.pages.length - 1), label, `Sheet page ${i + 1} ${p.total ? 'holds' : 'does not hold'} the Total`);
+    const words = p.gauges.map((g) => g.word);
+    check(JSON.stringify(words) === JSON.stringify(OLIVE_GAUGE_BREAKS[engine][i]), label, `Sheet page ${i + 1} holds the gauges ${words.join(', ')} (D29: ${OLIVE_GAUGE_BREAKS[engine][i].join(', ')})`);
+    check(p.heading.includes('Balance') === (i === 0), label, `Sheet page ${i + 1} ${i === 0 ? 'carries' : 'does not carry'} the Balance heading`);
+    check(p.basis === (i === laid.pages.length - 1), label, `Sheet page ${i + 1} ${p.basis ? 'holds' : 'does not hold'} the basis note`);
+    check(p.buttons === 0, label, `Sheet page ${i + 1} has no button on it (${p.buttons})`);
   });
+  const gaugeWords = laid.pages.flatMap((p) => p.gauges.map((g) => g.word));
+  check(JSON.stringify(gaugeWords) === JSON.stringify(laid.wholeGauges.map((g) => g.word)), label, `every gauge stands once, in order (${gaugeWords.join(', ')})`);
   const lines = laid.pages.flatMap((p) => p.groups.flatMap((g) => g.lines));
   const expected = laid.whole.flatMap((g) => g.lines);
   check(JSON.stringify(lines) === JSON.stringify(expected), label, `every line stands once, in order (${lines.length} of ${expected.length})`);
@@ -564,6 +634,14 @@ function checkSheetPaper(engine, v, file, laid) {
     const totals = (body.match(/(^| )total( |$)/g) ?? []).length;
     const last = i === breaks.length - 1;
     check(totals === (last ? 1 : 0), plabel, `the Total is printed ${totals} time(s) here (${last ? 1 : 0})`);
+    // Balance: the heading on the first page only, each gauge on the page D29
+    // names and no other, the basis note last.
+    check(/(^| )balance( |$)/.test(body) === (i === 0), plabel, `the word Balance is ${i === 0 ? '' : 'not '}on this page`);
+    for (const gauge of laid.wholeGauges) {
+      const here = OLIVE_GAUGE_BREAKS[engine][i].includes(gauge.word);
+      check(body.includes(norm(gauge.head)) === here, plabel, `the ${gauge.word} gauge (${gauge.head}) is ${here ? '' : 'not '}on this page`);
+    }
+    check(body.includes('computed from') === last, plabel, `the basis note is ${last ? '' : 'not '}on this page`);
     const b = ink[index];
     if (check(b !== null && b !== undefined, plabel, 'has ink')) {
       check(b.x0 >= CONTENT_PT.x0 - INK_TOL_PT && b.x1 <= CONTENT_PT.x1 + INK_TOL_PT, plabel, `ink stays between the side margins (x ${b.x0.toFixed(1)} to ${b.x1.toFixed(1)}, box ${CONTENT_PT.x0} to ${CONTENT_PT.x1})`);
@@ -572,10 +650,64 @@ function checkSheetPaper(engine, v, file, laid) {
   });
 }
 
+// On screen in WebKit at 1280 (fine pointer): the Sheet page pictures' boxes
+// against sheet-page-1-formula.html and sheet-page-2-table-tail.html. The
+// boards lay the Sheet in Safari's 630 x 900 and enlarge it 16/15; so does the
+// route in WebKit, and both are compared in the Sheet's own coordinates, within
+// SCREEN_TOL px. The Instructions on the boards are 04-08's, so anything inside
+// .method-region is left out.
+const SHEET_BOARDS = ['sheet-page-1-formula.html', 'sheet-page-2-table-tail.html'];
+const SHEET_BOX_SELECTORS = {
+  app: { band: '.ps-band', title: '.headnote h1', prose: '.headnote__prose', before: '.ps-before', notes: '.authored__notes', headings: '.region-name', 'header row': 'thead tr', 'table rows': 'tbody tr', 'Total row': 'tfoot tr', gauges: '.formulation-note__rule', 'basis note': '.basis-note' },
+  board: { band: '.recipe-band', title: '.headnote h1', prose: '.headnote__prose', before: '.before-region', notes: '.authored__notes', headings: '.region-name', 'header row': 'thead tr', 'table rows': 'tbody tr', 'Total row': 'tfoot tr', gauges: '.formulation-note__rule', 'basis note': '.basis-note' },
+};
+
+function readFitBoxes({ side, index, selectors }) {
+  const root = side === 'app' ? document.querySelectorAll('.print-page--sheet .ps-fit')[index] : document.querySelector('.sp-fit');
+  const r0 = root.getBoundingClientRect();
+  const k = r0.width / root.offsetWidth;
+  const out = {};
+  for (const [key, selector] of Object.entries(selectors)) {
+    out[key] = [...root.querySelectorAll(selector)]
+      .filter((el) => !el.closest('.method-region'))
+      .map((el) => {
+        const r = el.getBoundingClientRect();
+        return [(r.left - r0.left) / k, (r.top - r0.top) / k, r.width / k, r.height / k];
+      });
+  }
+  return out;
+}
+
+async function compareSheetToBoards(browser, appUrl, repoUrl) {
+  const label = 'webkit 1280 screen';
+  const { context, page } = await openRoute(browser, appUrl, OLIVE.route, { width: 1280 });
+  for (let index = 0; index < SHEET_BOARDS.length; index += 1) {
+    const { context: bc, page: bp } = await openBoardPage(browser, repoUrl, SHEET_BOARDS[index], { width: 1280, coarse: false });
+    const board = await bp.evaluate(readFitBoxes, { side: 'board', index: 0, selectors: SHEET_BOX_SELECTORS.board });
+    await bc.close();
+    const app = await page.evaluate(readFitBoxes, { side: 'app', index, selectors: SHEET_BOX_SELECTORS.app });
+    for (const key of Object.keys(SHEET_BOX_SELECTORS.app)) {
+      const a = app[key];
+      const b = board[key];
+      let worst = 0;
+      let first = '';
+      if (a.length === b.length) {
+        a.forEach((box, i) => {
+          const d = Math.max(...box.map((n, k) => Math.abs(n - b[i][k])));
+          worst = Math.max(worst, d);
+          if (d > SCREEN_TOL && !first) first = `#${i} app ${box.map((n) => n.toFixed(1)).join(',')} board ${b[i].map((n) => n.toFixed(1)).join(',')}`;
+        });
+      }
+      check(a.length === b.length && worst <= SCREEN_TOL, `${label} ${SHEET_BOARDS[index]}`, `${key}: ${a.length} box(es) against the board's ${b.length}, worst ${worst.toFixed(2)} px (\u00b1${SCREEN_TOL})${first ? `; first off ${first}` : ''}`);
+    }
+  }
+  await context.close();
+}
+
 async function runSheet() {
   await tool('wkprint');
   await tool('pdf-pages');
-  const { appUrl, close } = await startServers({ appRoot: DIST });
+  const { appUrl, repoUrl, close } = await startServers({ appRoot: DIST });
   const engines = [
     ['webkit', await webkit.launch()],
     ['chrome', await launch()],
@@ -596,6 +728,7 @@ async function runSheet() {
       }
       await context.close();
       if (engine === 'webkit') {
+        await compareSheetToBoards(browser, appUrl, repoUrl);
         // WebKit's own print is the one that matters for Safari.
         const file = await printWebKit(appUrl, v);
         if (process.env.PROBE_DUMP) pdfText(tools['pdf-pages'], file).forEach((t, i) => console.log(`--- webkit page ${i + 1}\n${t}`));

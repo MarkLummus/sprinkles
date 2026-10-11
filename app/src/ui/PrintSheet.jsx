@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useOutletContext, useParams } from 'react-router';
 import { repository } from '../store/repository.js';
 import { formatRecordDate } from '../domain/batch.js';
 import { sortedVersions, versionIdentity, versionsForRecipe } from '../domain/lineage.js';
@@ -14,10 +14,15 @@ import { RecipeNotFound } from './RecipePage.jsx';
 // screen-print-route-1280.html and -393.html). Keyed by both ids, the
 // RecipePageForRoute pattern (router.jsx): a different version is a
 // different page instance, so nothing carries over from the last one. The
-// wrapper does nothing else: no state, no fetch.
+// wrapper does nothing else: no state, no fetch. The key also carries the
+// shell's storeRevision (Shell.jsx increments it after a successful import), so
+// an import remounts the route: it re-reads the saved version, lays the
+// replacement's pages again, and Print stays off until they are laid (WR-06),
+// with nothing of the old version carried over.
 export function PrintSheetForRoute() {
   const { recipeId, versionId } = useParams();
-  return <PrintSheet key={`${recipeId}::${versionId}`} recipeId={recipeId} versionId={versionId} />;
+  const storeRevision = useOutletContext();
+  return <PrintSheet key={`${recipeId}::${versionId}::${storeRevision}`} recipeId={recipeId} versionId={versionId} />;
 }
 
 // The route reads the SAVED version record only: getVersion, getRecipe and

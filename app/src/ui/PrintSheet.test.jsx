@@ -6,9 +6,9 @@
 // the route calls, so "reads the saved version only" is a fact the tests
 // read, not a promise.
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
-import { act } from 'react';
+import { act, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import { MemoryRouter, Routes, Route, Outlet } from 'react-router';
 
 const store = vi.hoisted(() => ({ versions: [], recipes: [], drafts: [], batches: [], calls: [] }));
 
@@ -43,6 +43,16 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 let host = null;
 let root = null;
+let bumpRevision = null;
+
+// The print route is a child of the Shell layout route in the real router, and
+// Shell hands its storeRevision down through the Outlet's context. This stands
+// in for it: a revision from 0 that a test can bump, as a successful import does.
+function RevisionOutlet() {
+  const [revision, setRevision] = useState(0);
+  bumpRevision = () => setRevision((current) => current + 1);
+  return <Outlet context={revision} />;
+}
 
 async function mount(path, { versions = [oliveOilVersion], recipes = [oliveOilRecipe], drafts = [] } = {}) {
   store.versions = versions;
@@ -57,8 +67,10 @@ async function mount(path, { versions = [oliveOilVersion], recipes = [oliveOilRe
     root.render(
       <MemoryRouter initialEntries={[path]}>
         <Routes>
-          <Route path="/notebook/:recipeId/:versionId/print" element={<PrintSheetForRoute />} />
-          <Route path="/notebook/:recipeId/:versionId" element={<p>the version</p>} />
+          <Route element={<RevisionOutlet />}>
+            <Route path="/notebook/:recipeId/:versionId/print" element={<PrintSheetForRoute />} />
+            <Route path="/notebook/:recipeId/:versionId" element={<p>the version</p>} />
+          </Route>
         </Routes>
       </MemoryRouter>,
     );
@@ -70,6 +82,7 @@ async function unmount() {
   host?.remove();
   host = null;
   root = null;
+  bumpRevision = null;
 }
 
 const OLIVE_PATH = printPath(oliveOilVersion.recipeId, oliveOilVersion.id);
@@ -295,6 +308,68 @@ describe("PrintSheet — Print waits for the Sheet's pages (WR-06)", () => {
       });
       expect(host.querySelector('.print-route').getAttribute('data-print-ready')).toBe('true');
       expect(host.querySelector('[aria-label="Sheet, page 1"]')).not.toBeNull();
+      expect(printButton().disabled).toBe(false);
+      await act(async () => printButton().click());
+      expect(print).toHaveBeenCalledTimes(1);
+    } finally {
+      delete document.fonts;
+      print.mockRestore();
+    }
+  });
+});
+
+// Review 2026-10-11 P2, print part: a successful import increments the shell's
+// storeRevision (Shell.jsx, through the Outlet context). The open print route
+// used to keep the old version, Sheet code and laid pages, with Print on.
+describe('PrintSheet — an import re-reads the open route (review 2026-10-11 P2)', () => {
+  it('shows the imported title and code at once, keeps Print off until the new pages are laid, then prints once', async () => {
+    const print = vi.spyOn(window, 'print').mockImplementation(() => {});
+    try {
+      await mount(OLIVE_PATH);
+      const printButton = () => [...host.querySelectorAll('button')].find((candidate) => candidate.textContent === 'Print');
+      expect(host.querySelector('.print-route__name').textContent).toBe('Olive Oil Ice Cream');
+      expect(host.querySelector('.print-route__code').textContent).toBe(sheetCode(oliveOilVersion));
+      expect(printButton().disabled).toBe(false);
+
+      // What a successful import does: the stored version now carries another
+      // Sheet title, then the shell's revision moves. The fonts are held so the
+      // replacement's pages cannot be laid yet.
+      const imported = { ...oliveOilVersion, sheetTitle: 'IMPORTED REVIEW TITLE' };
+      const importedCode = sheetCode(imported);
+      expect(importedCode).not.toBe(sheetCode(oliveOilVersion));
+      store.versions = [imported];
+      let release;
+      const ready = new Promise((resolve) => {
+        release = resolve;
+      });
+      Object.defineProperty(document, 'fonts', { value: { ready }, configurable: true });
+      store.calls = [];
+      await act(async () => bumpRevision());
+
+      expect(host.querySelector('.print-route__name').textContent).toBe('IMPORTED REVIEW TITLE');
+      expect(host.querySelector('.print-route__code').textContent).toBe(importedCode);
+      const feet = [...host.querySelectorAll('.lf-foot')].map((foot) => foot.textContent);
+      expect(feet).toHaveLength(2);
+      for (const foot of feet) {
+        expect(foot.startsWith('IMPORTED REVIEW TITLE · ')).toBe(true);
+        expect(foot).toContain(importedCode);
+      }
+      expect(host.querySelector('.print-route').hasAttribute('data-print-ready')).toBe(false);
+      expect(host.querySelector('[aria-label="Sheet, page 1"]')).toBeNull();
+      expect(printButton().disabled).toBe(true);
+      expect(printButton().getAttribute('tabindex')).toBe('0');
+      await act(async () => printButton().click());
+      expect(print).not.toHaveBeenCalled();
+      expect(new Set(store.calls)).toEqual(new Set(['getVersion', 'getRecipe', 'listVersions']));
+
+      await act(async () => {
+        release();
+        await ready;
+      });
+      expect(host.querySelector('.print-route').getAttribute('data-print-ready')).toBe('true');
+      const sheetFoot = host.querySelector('[aria-label="Sheet, page 1"] .mp-foot').textContent;
+      expect(sheetFoot.startsWith('IMPORTED REVIEW TITLE · ')).toBe(true);
+      expect(sheetFoot.endsWith(importedCode)).toBe(true);
       expect(printButton().disabled).toBe(false);
       await act(async () => printButton().click());
       expect(print).toHaveBeenCalledTimes(1);

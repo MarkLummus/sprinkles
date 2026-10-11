@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { repository } from '../store/repository.js';
 import { exportStore, importStore } from '../store/transfer.js';
@@ -16,6 +16,17 @@ export const PLACES = [
   { path: '/ingredients', name: 'Ingredients', slug: 'ingredients' },
   { path: '/kitchen', name: 'Kitchen', slug: 'kitchen' },
 ];
+
+// The page notice 'Close the open pen before importing.' (proposed copy awaiting
+// Mark's approval; quick 261011-dz2, decide-import-refreshes-open-recipe-pens
+// = refuse). The one home of the sentence.
+export const IMPORT_BLOCKED_STATUS = 'Close the open pen before importing.';
+
+// A routed page with a pen open registers its page-notice function here
+// through guardImport(announce) and gets back a release function. The Shell
+// consults the registration at the Import click. Default: a no-op registrar,
+// so a page rendered outside a Shell registers nothing.
+export const ImportGuardContext = createContext(() => undefined);
 
 // Line icons, one per place — inline SVG with stroke="currentColor" and
 // plain numeric geometry (the GraduatedRule.jsx precedent: SVG
@@ -170,6 +181,7 @@ export function Shell() {
   const [importErrors, setImportErrors] = useState([]);
   const [storeRevision, setStoreRevision] = useState(0);
   const fileInputRef = useRef(null);
+  const importGuardRef = useRef(null);
   const importRef = useRef(null);
   const importErrorsRef = useRef(null);
 
@@ -291,8 +303,30 @@ export function Shell() {
     setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
+  // The routed page's registrar: while a pen is open it hands over its own
+  // page-notice function; the release it gets back clears the registration
+  // only if it still holds that same function.
+  const guardImport = useCallback((announce) => {
+    importGuardRef.current = announce;
+    return () => {
+      if (importGuardRef.current === announce) importGuardRef.current = null;
+    };
+  }, []);
+
+  // Both Import buttons open the one hidden file input through here. A pen
+  // open on the routed page refuses the click (decide-import-refreshes-open-
+  // recipe-pens = refuse): no chooser, no file read, a notice instead.
+  function chooseImportFile() {
+    if (importGuardRef.current) {
+      importGuardRef.current(IMPORT_BLOCKED_STATUS);
+      return;
+    }
+    fileInputRef.current?.click();
+  }
+
   // Import reads a file the maker chose, using the browser's local file
-  // reading. On rejection the errors render as text in the Import error panel; nothing is replaced
+  // reading. A pen open on the routed page refuses the click before it gets
+  // here (decide-import-refreshes-open-recipe-pens = refuse). On rejection the errors render as text in the Import error panel; nothing is replaced
   // or cleared. On success storeRevision increments, which every routed
   // page reads through the Outlet context, so Home can reload its own
   // data without a page reload and without the shell reaching into any
@@ -356,7 +390,7 @@ export function Shell() {
           <Button
             className="shell__place"
             ref={importRef}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={chooseImportFile}
           >
             <ImportIcon />
             Import
@@ -423,7 +457,9 @@ export function Shell() {
         </nav>
         {open && <div className="shell__scrim" aria-hidden="true" onClick={closePlaces} />}
         <main className="shell__main" inert={open}>
-          <Outlet context={storeRevision} />
+          <ImportGuardContext value={guardImport}>
+            <Outlet context={storeRevision} />
+          </ImportGuardContext>
         </main>
       </div>
       {/* D-16: below the phone step the rail becomes a bottom tab row of
@@ -475,7 +511,7 @@ export function Shell() {
               </NavLink>
             </li>
             <li>
-              <Button className="shell__place" onClick={() => fileInputRef.current?.click()}>
+              <Button className="shell__place" onClick={chooseImportFile}>
                 <ImportIcon />
                 Import
               </Button>

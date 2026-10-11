@@ -651,7 +651,7 @@ export function RecipeNotFound() {
 // The brief's book spread, in semantic regions, each wearing its
 // plain-language name. The margin's derived-advisories block (FORM2-02)
 // renders nothing visible when the version has none — no placeholder text.
-export function RecipePage({ onPageStatus = () => {} }) {
+export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {} }) {
   const { recipeId, versionId, batchId } = useParams();
   const navigate = useNavigate();
   // The fork's landing focus signal: read once here so the saved child
@@ -1169,6 +1169,11 @@ export function RecipePage({ onPageStatus = () => {} }) {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [mode, amendingBatchId, penDraft, version, draft, amendBaseline]);
+
+  // The Shell refuses Import while this is true.
+  useEffect(() => {
+    onPenOpenChange(derivePenState({ mode, amendingBatchId }).openPen !== null);
+  }, [mode, amendingBatchId, onPenOpenChange]);
 
   // The folds at every width (sketch 011 decisions 18/19 and 33, 03.5-15/16):
   // two media reads, two cuts. Balance and Watch for read sheetTwoColumns

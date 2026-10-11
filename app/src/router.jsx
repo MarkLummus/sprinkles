@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { createBrowserRouter, useParams } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 import { RecipeList } from './ui/RecipeList.jsx';
 import { RecipePage } from './ui/RecipePage.jsx';
-import { Shell } from './ui/Shell.jsx';
+import { Shell, ImportGuardContext } from './ui/Shell.jsx';
 import { Placeholder } from './ui/Placeholder.jsx';
 import { SheetCodeSearch } from './ui/SheetCodeSearch.jsx';
 import { PrintSheetForRoute } from './ui/PrintSheet.jsx';
@@ -30,10 +30,12 @@ import { NotebookLatestRedirect, LegacyRecipeRedirect } from './ui/NotebookRedir
 // reset backstop, not its in-app navigation policy (that is 03-07's
 // scope). The wrapper does nothing else: no state, no fetch, just the
 // parameters and the key.
-function RecipePageForRoute() {
+export function RecipePageForRoute() {
   const { recipeId, versionId, batchId } = useParams();
   const [pageStatus, setPageStatus] = useState('');
   const pageStatusTimerRef = useRef(null);
+  const [penOpen, setPenOpen] = useState(false);
+  const guardImport = useContext(ImportGuardContext);
 
   useEffect(
     () => () => {
@@ -55,6 +57,15 @@ function RecipePageForRoute() {
     }
   }, []);
 
+  // While a pen is open the Shell refuses Import (decide-import-refreshes-
+  // open-recipe-pens = refuse) and says so through this same page notice
+  // 'Version saved.' uses, so it clears after 5 s. The cleanup releases the
+  // guard when the pen closes or the page unmounts.
+  useEffect(() => {
+    if (!penOpen) return undefined;
+    return guardImport(announcePageStatus);
+  }, [penOpen, guardImport, announcePageStatus]);
+
   return (
     <>
       {/* The running head is gone (folded todo, 03.5-02 Task 3) — the App
@@ -66,7 +77,7 @@ function RecipePageForRoute() {
       <div className="page-status-anchor">
         <PageStatus message={pageStatus} />
       </div>
-      <RecipePage key={`${recipeId}::${versionId}::${batchId ?? ''}`} onPageStatus={announcePageStatus} />
+      <RecipePage key={`${recipeId}::${versionId}::${batchId ?? ''}`} onPageStatus={announcePageStatus} onPenOpenChange={setPenOpen} />
     </>
   );
 }

@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — EXECUTING
 Plan: 10 of 10
 Status: Phase complete — ready for verification
-Last activity: 2026-10-11 - Completed quick task 261011-g4g: Trim Mark's List skill and CLAUDE.md section
+Last activity: 2026-10-11 - Completed quick task 261011-gko: Fix the four review warnings that could trip the device UAT
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -492,6 +492,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261011-enm | marks-list skill reads open rows and touched rows only, never the whole list | 2026-10-11 | 0c1b259 | [261011-enm-marks-list-skill-reads-open-rows-and-rec](./quick/261011-enm-marks-list-skill-reads-open-rows-and-rec/) |
 | 261011-fgb | Search store-failure sentence says look up, not storage | 2026-10-11 | 480f198 | [261011-fgb-search-store-failure-sentence-couldn-t-l](./quick/261011-fgb-search-store-failure-sentence-couldn-t-l/) |
 | 261011-g4g | Trim Mark's List per decide-trim-marks-list: skill and CLAUDE.md section drop Claude-owned rows, scheduling, stranded timer and closes chains | 2026-10-11 | 2595964 | [261011-g4g-trim-mark-s-list-per-decide-trim-marks-l](./quick/261011-g4g-trim-mark-s-list-per-decide-trim-marks-l/) |
+| 261011-gko | Fix the four review warnings that could trip the device UAT (WR-09, WR-04, WR-05, WR-08) | 2026-10-11 | 416501b | .planning/quick/261011-gko-build-pre-uat-review-warnings-fix-wr-09-home-and-the-band-na |
 
 ### Roadmap Evolution
 

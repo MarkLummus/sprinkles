@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "batch_id": "261011-gkl",
+  "created_at": "2026-10-11T15:55:55.154Z",
+  "options": {},
+  "base_revision": "db4457b91086cbef0d70a74821c75e4a89232aa1",
+  "items": [
+    {
+      "quick_id": "261011-gkm",
+      "client_id": null,
+      "description": "build-import-blocked-while-pen-open: while a Next version, record or Correct pen is open, Import does nothing to the store and a short notice reads exactly 'Close the open pen before importing.' (app/src/ui/Shell.jsx import, app/src/ui/RecipePage.jsx open pens); also amend D-14 in .planning/phases/04-prepare-the-next-version-for-making/04-CONTEXT.md to three pens.",
+      "status": "pending",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": null,
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261011-gkn",
+      "client_id": null,
+      "description": "build-print-too-long-state: when the Before you start note or any single block (a step, an ingredient line, the closing title) is taller than the printed page, Print stays off and a short line on the print route reads exactly 'This is too long to print on one page.'; placement sits with the route's existing line (app/src/domain/sheetPages.js, app/src/ui/PrintSheet.jsx, app/src/ui/PrintSheetPages.jsx); include a browser layout check using the 150-sentence reproduction from .planning/phases/04-prepare-the-next-version-for-making/04-PROJECT-REVIEW-2026-10-11.md (third finding).",
+      "status": "pending",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": null,
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261011-gko",
+      "client_id": null,
+      "description": "build-pre-uat-review-warnings: fix WR-09 (Home and the band name a draft that then vanishes on click), WR-04 (a restored draft can save a batch the import check rejects), WR-05 (a failed load silently stops draft restore), WR-08 (a second tab on the old database version hangs boot), per .planning/phases/04-prepare-the-next-version-for-making/04-REVIEW.md and 04-REVIEW-DISPOSITION.md; WR-01 and WR-02 are out of scope.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "416501b",
+      "failure_reason": null
+    }
+  ]
+}

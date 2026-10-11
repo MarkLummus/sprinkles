@@ -662,7 +662,31 @@ Plans:
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
 
-**Plans**: TBD
+**Plans:** 10 plans
+
+Plans:
+**Wave 1**
+- [ ] 04-01-PLAN.md — Shared Button, Checkbox and Radio carry the tab stop; 43 buttons, 3 checkboxes and 2 radios migrated; the scan keeps raw controls inside them (D-19)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 04-02-PLAN.md — The Sheet code: one pure derivation with a golden vector; Search's Sheet code field lands on the version; Home's Enter Sheet code link (D-08 to D-13) — checkpoint: the Search page's submit control
+- [ ] 04-03-PLAN.md — The record's shape: declared scales and problems as lists of 0 to 2 shown only where declared; Time to draw temp. leaves the data; At draw and From freezer get their stored home (sketch 010 D6, D17, D25, D26)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 04-04-PLAN.md — One store bump to 8: the drafts store behind the seam, a bounded reset, the import as one transaction with its storage failure in words (D-16)
+- [ ] 04-05-PLAN.md — The record pen and its reading carry At draw and From freezer in the approved order (sketch 010 D6 to D14)
+- [ ] 04-06-PLAN.md — The print route end to end with the blank Batch log and Tasting log, the Sheet code in each foot, at 1280 and 393 (PRINT-03, PRINT-05; D-05, D-07, D-07a)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 04-07-PLAN.md — The Sheet's formula pages laid by measurement: the print table (As made first) and Balance in column 2, groups whole and the header row repeated in Safari and Chrome (D-06a, sketch 010 E1 to E8, D29)
+- [ ] 04-09-PLAN.md — Drafts survive a reload for all three pens with the approved notice; Home and the band name a waiting draft; the leave warning retires (D-14 to D-18)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 04-08-PLAN.md — The Instructions in the method treatment follow the table's tail, the closing foot, every seed version printed whole in both engines (PRINT-02, D18, D28, D29) — checkpoint: the Instructions' start when the table fits but Balance continues
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 04-10-PLAN.md — Screen-reader close-out (D-20), the WebKit keyboard, focus, contrast and colour walk of the whole loop (D-21's automated half), PRINT-01/02 wording brought to the approved sheet
+
 **UI hint**: yes
 **Prerequisite**: Impeccable brief approved for the bench sheet (print) surface
 **Phase notes**: No QR codes — a human-readable short code only (PRINT-04), and no print-log "did you churn it?" nudge; both prior designs depend on the open storage decision. UX1-01–UX1-03 are verified end-to-end here because this is the first point where the whole loop exists, but they are build constraints in every phase: each phase's plans apply keyboard operation, visible labels and focus, AA contrast, non-colour-only signalling, and edit recovery to the surfaces it creates.

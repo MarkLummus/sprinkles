@@ -90,7 +90,10 @@ choice rather than assuming one.
 Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `items`) holds what waits on Mark.
 
 - Read it with the `ArtifactData` tool at the start of work and before asking Mark a question he
-  may already have answered. Load it with ToolSearch if it is deferred.
+  may already have answered. Use `query` with `where: [["status", "ne", "done"]]` (the open,
+  scheduled and parked rows, about 30), paged with `query.limit` 100 and `cursor`. Never `list`
+  the whole collection: the Done history is about 140,000 tokens. Read one old row by id with
+  `get`. Load `ArtifactData` with ToolSearch if it is deferred.
 - When a task leaves Mark a decision, a device check or a board to look at, add a row: short slug
   as doc id, `kind`, `title`, `where`, `addedBy: "claude"`, status `open`, ISO `createdAt` and
   `updatedAt`, and on decide rows `options` with one marked `recommended`. Set `owner` on every
@@ -101,6 +104,21 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
   ([{label, url}]) for an HTML view. A canvas board cannot be deep-linked (the canvas ignores
   the URL hash and query): link the canvas root and put the page and board in `where.label`,
   e.g. "On the canvas, page Recipe route 03.5: board R35C_SheetTitle". Name the row in the final message.
+- Kinds and names. Choose `kind` by what Mark does:
+  - `decide`: he picks an option or writes the answer. `needs: "answer"`, with `options` and one
+    marked `recommended`.
+  - `look`: he views something that exists (a board, a PDF, wording) and approves it or asks for
+    a change. Usually `needs: "answer"`.
+  - `check`: he does something on a device or on paper and reports pass or fail. `needs: "hands"`.
+    It may carry `closes`, the todos it verifies. The title says what he will see, with no
+    "Check:" prefix.
+  - `todo`: work to do. `owner: "claude"` for queued agent or GSD work, titled "Build:", "Fix:" or
+    "Draw:". `owner: "mark"` with `needs: "hands"`, titled "Run:", for a command he runs.
+  - `note`: his own reminder. The skill never reacts to it.
+  The doc id starts with the kind word (`decide-`, `look-`, `check-`, `todo-`, `note-`) and a short
+  slug; Build, Fix, Draw and Run rows may start `build-`, `fix-`, `draw-` or `run-` instead. Put
+  the phase in the `phase` field, not in the id. The lane comes from `owner` and `needs`, not from
+  `kind`. Never rename an existing id: other rows refer to it.
 - Deferred human checks (HANDOFF.json `human_actions_pending`, or a SUMMARY's
   "Deferred Human Verification") go to the list as rows; those files may still mention them.
 - `/gsd-pause-work`: before writing HANDOFF.json, make each human action a row on the list.

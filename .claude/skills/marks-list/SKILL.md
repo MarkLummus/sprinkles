@@ -129,7 +129,9 @@ so the next run skips it.
    next run. A row you update without a claim (a todo a passed check closes) also gets
    `handledAt` (ISO now) and `touched: false`. Leave `updatedAt` as read. If the version check
    fails, re-read the row and write the reply again; never start its work a second time. Every
-   row you add gets `owner`, as CLAUDE.md says: `owner: "mark"`
+   row you add gets `kind` and an id prefix by CLAUDE.md's "Kinds and names" rule (by what Mark
+   does; a device or paper check is kind `check`, never `look` or `todo`), and `owner`, as
+   CLAUDE.md says: `owner: "mark"`
    with `needs: "answer"` for a decide row or anything Mark only replies to on the page;
    `owner: "mark"` with `needs: "hands"` for a check or look he does outside the page, and for a
    "Run:" row; `owner: "claude"`, with no `needs`, for Draw, Build and Fix rows (queued agent or

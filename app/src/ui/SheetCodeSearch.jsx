@@ -13,8 +13,8 @@ export const SHEET_CODE_NO_MATCH = 'No version has this code.';
 export const SHEET_CODE_STORE_ERROR = 'Couldn’t look up that code. Try again.';
 
 // WR-07: a code that cannot be a code says why, told apart from a sheet
-// nothing has. Mark approved these lines on 2026-10-12.
-export const SHEET_CODE_BLANK = 'Type a Sheet code.';
+// nothing has. Mark approved these lines on 2026-10-12. The same day he put
+// length first and folded an empty field into it, so it reads 0.
 export const SHEET_CODE_WRONG_LENGTH = (count) =>
   `A Sheet code has eight letters and numbers. This one has ${count}.`;
 export const SHEET_CODE_LETTER_U = 'Sheet codes never use the letter U.';
@@ -22,8 +22,6 @@ export const SHEET_CODE_OTHER_CHARACTER = 'Sheet codes use only letters and numb
 
 function problemLine(problem) {
   switch (problem.reason) {
-    case 'blank':
-      return SHEET_CODE_BLANK;
     case 'other-character':
       return SHEET_CODE_OTHER_CHARACTER;
     case 'letter-u':

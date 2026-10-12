@@ -138,16 +138,46 @@ export function sheetCode(version) {
  */
 export function normaliseCode(input) {
   if (typeof input !== 'string') return null;
-  const symbols = input
-    .toUpperCase()
-    .replace(/[\s-]+/g, '')
-    .replace(/[IL]/g, '1')
-    .replace(/O/g, '0');
+  const symbols = codeSymbols(input);
   if (symbols.length !== CODE_SYMBOLS) return null;
   for (const symbol of symbols) {
     if (!CROCKFORD_ALPHABET.includes(symbol)) return null;
   }
   return `${symbols.slice(0, 4)}-${symbols.slice(4)}`;
+}
+
+// The symbols a typed code is read as: upper-cased, spaces and hyphens
+// dropped, I and L read as 1 and O as 0. normaliseCode and codeProblem both
+// read through it, so a count of symbols means the same in each.
+function codeSymbols(input) {
+  return input
+    .toUpperCase()
+    .replace(/[\s-]+/g, '')
+    .replace(/[IL]/g, '1')
+    .replace(/O/g, '0');
+}
+
+/**
+ * codeProblem(input) -> null when normaliseCode would accept `input`; otherwise
+ * why it would not, as { reason }:
+ *   'blank'           not a string, or empty or only whitespace
+ *   'other-character' a symbol outside the alphabet that is not U
+ *   'letter-u'        a U, and nothing else outside the alphabet
+ *   'length'          well-formed symbols but not eight; { reason, count } with
+ *                     the symbol count normaliseCode reads
+ * Checked in that order: another character beats U, and U beats length.
+ */
+export function codeProblem(input) {
+  if (typeof input !== 'string' || input.trim() === '') return { reason: 'blank' };
+  const symbols = codeSymbols(input);
+  let hasU = false;
+  for (const symbol of symbols) {
+    if (symbol === 'U') hasU = true;
+    else if (!CROCKFORD_ALPHABET.includes(symbol)) return { reason: 'other-character' };
+  }
+  if (hasU) return { reason: 'letter-u' };
+  if (symbols.length !== CODE_SYMBOLS) return { reason: 'length', count: symbols.length };
+  return null;
 }
 
 /**

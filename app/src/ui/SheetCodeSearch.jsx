@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router';
 import { repository } from '../store/repository.js';
-import { findVersionsByCode, normaliseCode } from '../domain/sheetCode.js';
+import { codeProblem, findVersionsByCode } from '../domain/sheetCode.js';
 import { notebookPath } from './notebookPaths.js';
 import { Button } from './Button.jsx';
 
@@ -12,9 +12,26 @@ export const SHEET_CODE_NO_MATCH = 'No version has this code.';
 // "look up"). Find stays off, so trying again is the way on.
 export const SHEET_CODE_STORE_ERROR = 'Couldn’t look up that code. Try again.';
 
-// WR-07: a code that cannot be a code is told apart from a sheet nothing has.
-// New words, awaiting Mark's approval.
-export const SHEET_CODE_MALFORMED = 'Check the code: it has eight letters and numbers.';
+// WR-07: a code that cannot be a code says why, told apart from a sheet
+// nothing has. Mark approved these lines on 2026-10-12.
+export const SHEET_CODE_BLANK = 'Type a Sheet code.';
+export const SHEET_CODE_WRONG_LENGTH = (count) =>
+  `A Sheet code has eight letters and numbers. This one has ${count}.`;
+export const SHEET_CODE_LETTER_U = 'Sheet codes never use the letter U.';
+export const SHEET_CODE_OTHER_CHARACTER = 'Sheet codes use only letters and numbers.';
+
+function problemLine(problem) {
+  switch (problem.reason) {
+    case 'blank':
+      return SHEET_CODE_BLANK;
+    case 'other-character':
+      return SHEET_CODE_OTHER_CHARACTER;
+    case 'letter-u':
+      return SHEET_CODE_LETTER_U;
+    default:
+      return SHEET_CODE_WRONG_LENGTH(problem.count);
+  }
+}
 
 const RESULT_ID = 'sheet-code-result';
 
@@ -58,15 +75,14 @@ export function SheetCodeSearch() {
     // renders, so the empty region is never seen.
     setResult('');
     let line = SHEET_CODE_NO_MATCH;
-    if (code.trim() !== '') {
-      if (normaliseCode(code) === null) {
-        line = SHEET_CODE_MALFORMED;
-      } else {
-        const [match] = findVersionsByCode(versions, code);
-        if (match) {
-          navigate(notebookPath(match.recipeId, match.id));
-          return;
-        }
+    const problem = codeProblem(code);
+    if (problem !== null) {
+      line = problemLine(problem);
+    } else {
+      const [match] = findVersionsByCode(versions, code);
+      if (match) {
+        navigate(notebookPath(match.recipeId, match.id));
+        return;
       }
     }
     fieldRef.current?.focus();

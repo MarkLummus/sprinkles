@@ -9,6 +9,7 @@ import {
   canonicalPrintedContent,
   sheetCode,
   normaliseCode,
+  codeProblem,
   findVersionsByCode,
 } from './sheetCode.js';
 import { oliveOilVersion } from '../data/olive-oil.js';
@@ -157,6 +158,63 @@ describe('normaliseCode', () => {
     expect(normaliseCode('   ')).toBeNull();
     expect(normaliseCode(null)).toBeNull();
     expect(normaliseCode(undefined)).toBeNull();
+  });
+});
+
+describe('codeProblem', () => {
+  it('is null for a well-formed code', () => {
+    for (const input of ['K7QM-2X9D', ' k7qm 2x9d ', 'IIII-LLLL', 'ILOILOIL']) {
+      expect(codeProblem(input)).toBeNull();
+    }
+  });
+
+  it('reads an empty, whitespace-only or non-string input as blank', () => {
+    for (const input of ['', '   ', '\t\n ', null, undefined]) {
+      expect(codeProblem(input)).toEqual({ reason: 'blank' });
+    }
+  });
+
+  it('counts the symbols normaliseCode reads, with I, L and O each as one', () => {
+    expect(codeProblem('K7QM2X')).toEqual({ reason: 'length', count: 6 });
+    expect(codeProblem('ILOILO')).toEqual({ reason: 'length', count: 6 });
+    expect(codeProblem('K7QM-2X9D-AB')).toEqual({ reason: 'length', count: 10 });
+    expect(codeProblem('K7QM 2X9D OO')).toEqual({ reason: 'length', count: 10 });
+    expect(codeProblem('hello')).toEqual({ reason: 'length', count: 5 });
+  });
+
+  it('reads a hyphens-only field as length 0, not blank', () => {
+    expect(codeProblem('----')).toEqual({ reason: 'length', count: 0 });
+  });
+
+  it('names the letter U, in either case', () => {
+    for (const input of ['K7QM-2X9U', 'k7qm-2x9u', 'UUUU-UUUU']) {
+      expect(codeProblem(input)).toEqual({ reason: 'letter-u' });
+    }
+  });
+
+  it('names any other character outside the alphabet', () => {
+    for (const input of ['K7QM-2X9!', 'K7QM-2X9É', 'K7QM-2X9é', 'K7QM-2X9🍦', 'K7QM_2X9D']) {
+      expect(codeProblem(input)).toEqual({ reason: 'other-character' });
+    }
+  });
+
+  it('puts another character before U, and U before length', () => {
+    expect(codeProblem('U!')).toEqual({ reason: 'other-character' });
+    expect(codeProblem('K7QM-2X9U!')).toEqual({ reason: 'other-character' });
+    expect(codeProblem('K7QM-2XU')).toEqual({ reason: 'letter-u' });
+    expect(codeProblem('UU')).toEqual({ reason: 'letter-u' });
+  });
+
+  it('is null exactly when normaliseCode accepts', () => {
+    const inputs = [
+      'K7QM-2X9D', ' k7qm 2x9d ', 'IIII-LLLL', 'ILOILOIL', '', '   ', '\t\n ', null, undefined,
+      'K7QM2X', 'ILOILO', 'K7QM-2X9D-AB', 'K7QM 2X9D OO', 'hello', '----', 'K7QM-2X9U', 'k7qm-2x9u',
+      'UUUU-UUUU', 'K7QM-2X9!', 'K7QM-2X9É', 'K7QM-2X9é', 'K7QM-2X9🍦', 'K7QM_2X9D', 'U!',
+      'K7QM-2X9U!', 'K7QM-2XU', 'UU',
+    ];
+    for (const input of inputs) {
+      expect(codeProblem(input) === null).toBe(normaliseCode(input) !== null);
+    }
   });
 });
 

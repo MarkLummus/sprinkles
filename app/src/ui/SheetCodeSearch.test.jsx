@@ -15,7 +15,15 @@ vi.mock('../store/repository.js', () => ({
   repository: { listVersions: async () => (store.load ? store.load() : store.versions) },
 }));
 
-import { SheetCodeSearch, SHEET_CODE_NO_MATCH, SHEET_CODE_MALFORMED, SHEET_CODE_STORE_ERROR } from './SheetCodeSearch.jsx';
+import {
+  SheetCodeSearch,
+  SHEET_CODE_NO_MATCH,
+  SHEET_CODE_STORE_ERROR,
+  SHEET_CODE_BLANK,
+  SHEET_CODE_WRONG_LENGTH,
+  SHEET_CODE_LETTER_U,
+  SHEET_CODE_OTHER_CHARACTER,
+} from './SheetCodeSearch.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { sheetCode } from '../domain/sheetCode.js';
 
@@ -154,11 +162,11 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(document.activeElement).toBe(host.querySelector('input'));
   });
 
-  it('reads the same line for an empty and a blank submit', async () => {
+  it('reads the same blank line for an empty and a blank submit', async () => {
     await mount([oliveOilVersion]);
     for (const text of ['', '   ']) {
       await typeAndSubmit(text);
-      expect(host.querySelector('[role="status"]').textContent).toBe('No version has this code.');
+      expect(host.querySelector('[role="status"]').textContent).toBe('Type a Sheet code.');
       expect(document.activeElement).toBe(host.querySelector('input'));
     }
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
@@ -177,16 +185,22 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(document.activeElement).toBe(host.querySelector('input'));
   });
 
-  it('tells a malformed code from a missing sheet, and keeps focus in the field (WR-07)', async () => {
+  it('tells a malformed code from a missing sheet, and says why, with focus kept in the field (WR-07)', async () => {
     await mount([oliveOilVersion]);
-    for (const text of ['K7QM-2X9U', 'K7QM-2X9', 'K7QM-2X9DD', 'hello']) {
+    const cases = [
+      ['K7QM-2X9U', 'Sheet codes never use the letter U.'],
+      ['K7QM-2X9!', 'Sheet codes use only letters and numbers.'],
+      ['K7QM-2X9', 'A Sheet code has eight letters and numbers. This one has 7.'],
+      ['K7QM-2X9DD', 'A Sheet code has eight letters and numbers. This one has 9.'],
+      ['hello', 'A Sheet code has eight letters and numbers. This one has 5.'],
+    ];
+    for (const [text, line] of cases) {
       await typeAndSubmit(text);
-      expect(host.querySelector('[role="status"]').textContent).toBe('Check the code: it has eight letters and numbers.');
+      expect(host.querySelector('[role="status"]').textContent).toBe(line);
       expect(host.querySelector('[data-testid="landed"]')).toBeNull();
       expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
     }
-    expect(SHEET_CODE_MALFORMED).toBe('Check the code: it has eight letters and numbers.');
-    expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
   });
 });
 

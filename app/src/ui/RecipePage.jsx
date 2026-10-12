@@ -678,6 +678,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // to the awaiting batch's own address and sets this (handleStartTasting);
   // the effect below opens the pen once that page instance has its batches.
   const startTastingOnMount = Boolean(location.state?.startTasting);
+  // Home's Next version sets this; the effect below opens the Next version pen
+  // once this page has decided its kept draft.
+  const startNextVersionOnMount = Boolean(location.state?.startNextVersion);
   // The show-changes state (D-02): on when the `changes` key is present in
   // the URL's search parameters at all — its value is never consulted, so
   // presence is the whole signal. Composes with both /recipe/:id and
@@ -1197,6 +1200,21 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
     handleStartAmending(target, { opener: 'record-a-tasting' });
   }, [startTastingOnMount, mode, batchId, batches, draftRestoreDone]);
+
+  // Opens the Next version pen Home's Next version asked for, the startTasting
+  // effect's pattern: used once, the entry's state replaced with null before
+  // the pen opens, so Back, Forward or a reload never reopens it. A kept draft
+  // wins: it waits for the draft restore, and a pen already open (a restored
+  // one included) means nothing more is opened. The pen itself is the button's
+  // own, through handleStartDeveloping.
+  const startNextVersionConsumedRef = useRef(false);
+  useEffect(() => {
+    if (!startNextVersionOnMount || startNextVersionConsumedRef.current || !draftRestoreDone) return;
+    startNextVersionConsumedRef.current = true;
+    navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
+    if (mode !== 'reading') return;
+    handleStartDeveloping();
+  }, [startNextVersionOnMount, mode, draftRestoreDone]);
 
   // Escape (D-27): closes only an untouched pen, and does nothing at all
   // once the pen holds ink — Cancel is the one exit, so a stray key can

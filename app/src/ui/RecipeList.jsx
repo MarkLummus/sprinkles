@@ -192,7 +192,9 @@ function batchCountWords(count) {
 // The row's next action(s) (D-07, D-11): one filled action, and at most
 // one outline secondary, chosen by the recipe's own standing. Record a
 // tasting is the one action that opens the newest batch's own path;
-// every other action opens the recipe at its latest version.
+// every other action opens the recipe at its latest version. Next version
+// also asks the recipe page to open its Next version pen, through route state
+// that RecipePage uses once.
 function RowActions({ entry }) {
   const latestPath = notebookPath(entry.id, entry.latestVersion.id);
   if (entry.standing === NOT_YET_CHURNED) {
@@ -220,7 +222,7 @@ function RowActions({ entry }) {
   if (entry.standing === TASTED) {
     return (
       <span className="home__actions">
-        <Link to={latestPath} className="home__action" tabIndex={0}>
+        <Link to={latestPath} state={{ startNextVersion: true }} className="home__action" tabIndex={0}>
           Next version
         </Link>
         <Link to={latestPath} className="home__action home__action--secondary" tabIndex={0}>

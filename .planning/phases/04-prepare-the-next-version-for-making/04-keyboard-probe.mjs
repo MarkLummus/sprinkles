@@ -479,7 +479,7 @@ async function colourMode(browser, appUrl) {
   {
     const { context, page } = await open(browser, appUrl, '/search', VIEWPORTS[0], '.shell');
     try {
-      await page.fill('input.ink-field', 'ZZZ-NOPE');
+      await page.fill('input.ink-field', '0000-0000');
       await page.getByRole('button', { name: 'Find' }).click();
       await page.waitForFunction((w) => document.getElementById('sheet-code-result')?.textContent === w, NO_MATCH, { timeout: 5000 }).catch(() => {});
       const words = await page.evaluate(() => document.getElementById('sheet-code-result')?.textContent ?? null);

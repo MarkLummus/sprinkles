@@ -1,0 +1,1871 @@
+[
+  {
+    "id": "decision-32-measures-table",
+    "addedBy": "claude",
+    "before": {
+      "detail": "You asked for a table of measures with all folds open at the iPad portrait and landscape widths, giving screen height, using the same recipe for each. It is drawn and awaiting your look; nothing is approved.",
+      "title": "Decision 32 addendum: look at the measures table"
+    },
+    "createdAt": "2026-10-04T16:20:00.000Z",
+    "detail": "Context: You asked for a table of measures. All folds are open. The table covers the iPad portrait and landscape widths. It gives the screen height. Every row uses the same recipe.\n\nStatus: The table is drawn. Nothing is approved.\n\nAction: Open the table and look at it.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Measures table (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/measures-table.html"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-04T16:56:10.108Z",
+    "source": "Sid, decision 32",
+    "status": "done",
+    "steStyle": true,
+    "title": "Decision 32: look at the measures table",
+    "updatedAt": "2026-10-04T16:56:10.108Z",
+    "where": {
+      "label": "Local file measures-table.html in sketch 011 (not on the canvas)"
+    }
+  },
+  {
+    "id": "decision-33-build-before-look",
+    "addedBy": "claude",
+    "answer": "build",
+    "createdAt": "2026-10-04T20:07:32.000Z",
+    "detail": "Context: Only the 1600 boards and 1920 were approved. The 744, 834, 983, 984, 1024 and 1366 boards and the four sticky-nav boards are still awaiting your look. The design itself is yours: fly-out nav g, the rail from 1590, the sticky header without the menu button at 1590 and up. The plan builds to the boards as drawn.\n\nEffect: The sticky header task (261004-ly8) is the last of six and holds until you answer. The other five run first.\n\nRisk: if a board you haven't seen is wrong, the build needs rework.",
+    "handledAt": "2026-10-04T20:32:03.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "1600 sticky rail (approved)",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-sticky-rail.html"
+      },
+      {
+        "label": "1366 sticky nav",
+        "url": "http://localhost:8077/011-recipe-route-c/1366-sticky-nav.html"
+      },
+      {
+        "label": "984 sticky nav",
+        "url": "http://localhost:8077/011-recipe-route-c/984-sticky-nav.html"
+      },
+      {
+        "label": "744 sticky nav",
+        "url": "http://localhost:8077/011-recipe-route-c/744-sticky-nav.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "build",
+        "label": "Build now to the boards as drawn; I will look on the device",
+        "recommended": true
+      },
+      {
+        "id": "look",
+        "label": "Hold: I will look at the boards first"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Build now. Task 261004-ly8 (sticky header, fly-out, rail) runs after the radius task finishes; look on the device afterward.",
+    "resolvedAt": "2026-10-04T20:26:45.780Z",
+    "source": "quick 261004-ly2, task ly8",
+    "status": "done",
+    "title": "Decision 33: build the sticky header, fly-out and rail now, before you have looked at their boards?",
+    "updatedAt": "2026-10-04T20:26:45.780Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: sticky and fly-out boards 744 to 1366"
+    }
+  },
+  {
+    "id": "decision-33-final-boards",
+    "addedBy": "claude",
+    "answer": "approve",
+    "before": {
+      "detail": "The boards were redrawn to the final design (fly-out nav g, sticky header, D3 table from 724). They are drawn and awaiting your look; nothing is approved. This card covers everything on them except three questions that have their own cards: where the rail returns (1590 or 1770), the sticky header without the menu button at 1590 and up, and where the Go to batch row sits. Approving here does not answer those three. Boards: 1600 batch, pen, no batch and long history, plus 1920.",
+      "title": "Decision 33: approve the final-design boards, apart from the three questions below"
+    },
+    "createdAt": "2026-10-04T16:20:00.000Z",
+    "detail": "Question: Do you approve the final-design boards?\n\nScope: This card covers all of the boards except three points. Each point has its own card: the width at which the rail returns (1590 or 1770), the menu button in the header at 1590 and up, and the position of the Go to batch row. Your answer here does not answer those cards.\n\nStatus: Sid redrew the boards to the final design. The design has the fly-out nav (g), the sticky header and the D3 table from 724. Nothing is approved.\n\nBoards: 1600 batch, pen, no batch, long history, and 1920.",
+    "handledAt": "2026-10-04T17:30:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "1600 batch",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-batch.html"
+      },
+      {
+        "label": "1600 pen",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-pen.html"
+      },
+      {
+        "label": "1600 no batch",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-no-batch.html"
+      },
+      {
+        "label": "1600 long history",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-long-history.html"
+      },
+      {
+        "label": "1920 batch",
+        "url": "http://localhost:8077/011-recipe-route-c/1920-batch.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "approve",
+        "label": "Approve the rest as drawn"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded the approval in sketch 011 README decision 33; app work goes through /gsd-quick.",
+    "resolvedAt": "2026-10-04T17:08:19.025Z",
+    "source": "Sid, decision 33",
+    "status": "done",
+    "steStyle": true,
+    "title": "Decision 33: approve the final-design boards, except the rail, the header and the Go to batch row",
+    "updatedAt": "2026-10-04T17:08:19.025Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: boards R35C_Batch, R35C_Pen, R35C_NoBatch, R35C_LongHistory, R35C_1920"
+    }
+  },
+  {
+    "id": "decision-33-go-to-batch-row",
+    "addedBy": "claude",
+    "answer": "other",
+    "createdAt": "2026-10-04T16:20:00.000Z",
+    "detail": "The app renders it as the band grid's third child. Drawn in the second column under the Version section it sits 40 to 70px under the acts and the first column beside it is empty, so it looks detached on the wide band. It still works, as a 44px target. The alternative puts the row inside the Version section.",
+    "handledAt": "2026-10-04T17:40:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Go to batch, 724 to 1365 (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/724-1365-go-to-batch.html"
+      }
+    ],
+    "note": "should this get resolved similarly to Decision 34 (start-aligned with a dot separator)? Seems like the same issue to me.",
+    "options": [
+      {
+        "id": "third",
+        "label": "Band's third child (as built)"
+      },
+      {
+        "id": "inside",
+        "label": "Inside the Version section"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in README decision 33: dots like decision 34; Sid draws it, then /gsd-quick folds it into task 9.",
+    "resolvedAt": "2026-10-04T16:31:58.168Z",
+    "source": "Sid, decision 33",
+    "status": "done",
+    "title": "Decision 33: where the Go to batch row sits on the wide band",
+    "updatedAt": "2026-10-04T16:31:58.168Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_GoToBatchWide"
+    }
+  },
+  {
+    "id": "decision-33-rail-height",
+    "addedBy": "claude",
+    "answer": "window",
+    "createdAt": "2026-10-04T20:53:57.000Z",
+    "detail": "Context: The brief says max-height. The sticky-rail board (1600-sticky-rail) draws the rail window-tall, 843 in a 900 window. The 1600-batch and 1920-batch boards draw it page-tall. The build follows the sticky-rail board. The two boards disagree.\n\nQuestion: Which is right?",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "1600 sticky rail",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-sticky-rail.html"
+      },
+      {
+        "label": "1600 batch",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-batch.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "window",
+        "label": "Window-tall (as built, the sticky-rail board)",
+        "recommended": true
+      },
+      {
+        "id": "page",
+        "label": "Page-tall (the 1600-batch and 1920-batch boards)"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in sketch 011 README decision 33: window-tall, as built. No change.",
+    "resolvedAt": "2026-10-04T21:52:12.728Z",
+    "source": "quick 261004-ly8",
+    "status": "done",
+    "title": "Decision 33: how tall is the pinned rail from 1590?",
+    "updatedAt": "2026-10-04T21:52:12.728Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: boards R35C_1600StickyRail and R35C_1600Batch"
+    }
+  },
+  {
+    "id": "decision-33-rail-return",
+    "addedBy": "claude",
+    "answer": "1590",
+    "createdAt": "2026-10-04T16:20:00.000Z",
+    "detail": "You asked for 1590 and it is drawn that way. At 1590 the rail takes 256 and the Sheet dips from 1100 to 920 (table 648 to 528), then grows back to 1100 at 1770. The alternative is the rail from 1770.",
+    "handledAt": "2026-10-04T17:30:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "1600 sticky rail (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-sticky-rail.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "1590",
+        "label": "Rail from 1590 (as drawn)",
+        "recommended": true
+      },
+      {
+        "id": "1770",
+        "label": "Rail from 1770"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded rail from 1590 in sketch 011 README decision 33.",
+    "resolvedAt": "2026-10-04T16:33:48.478Z",
+    "source": "Sid, decision 33",
+    "status": "done",
+    "title": "Decision 33: the rail returns at 1590 or at 1770",
+    "updatedAt": "2026-10-04T16:33:48.478Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_1600StickyRail"
+    }
+  },
+  {
+    "id": "decision-33-sticky-header-1590",
+    "addedBy": "claude",
+    "answer": "keep",
+    "createdAt": "2026-10-04T16:20:00.000Z",
+    "detail": "With the rail pinned there is no fly-out to open, so the header is drawn without the menu button: wordmark, Search, Import, Export.",
+    "handledAt": "2026-10-04T17:30:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "1600 sticky rail (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-sticky-rail.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep it without the menu button (as drawn)",
+        "recommended": true
+      },
+      {
+        "id": "button",
+        "label": "Show the menu button at 1590 and up"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded header without menu button at 1590 and up in sketch 011 README decision 33.",
+    "resolvedAt": "2026-10-04T16:34:11.280Z",
+    "source": "Sid, decision 33",
+    "status": "done",
+    "title": "Decision 33: keep the sticky header at 1590 and up without the menu button",
+    "updatedAt": "2026-10-04T16:34:11.280Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_1600StickyRail"
+    }
+  },
+  {
+    "id": "decision-34-batch-head-height",
+    "addedBy": "claude",
+    "answer": "row",
+    "createdAt": "2026-10-04T18:10:00.000Z",
+    "detail": "Context: Row A's gap puts the wrapped Correct and Record another 32px under the date in the 350px log column, not 16. The head grows from 78 to 94px. The board and the app agree. Decision 34 says heights do not change.\nEffect: Everything under the head shifts 16px.",
+    "handledAt": "2026-10-04T18:02:21.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Info labels, log (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/info-labels-log.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep it as drawn (16px taller)"
+      },
+      {
+        "id": "row",
+        "label": "Keep the head's height: Sid redraws row A with a 16px gap between lines",
+        "recommended": true
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in sketch 011 README decision 34: Sid redraws row A to keep the head height; then /gsd-quick adjusts notebook.css.",
+    "resolvedAt": "2026-10-04T17:45:32.505Z",
+    "source": "quick 261004-igr, decision 34",
+    "status": "done",
+    "title": "Decision 34: the batch head is 16px taller at 1366 and up",
+    "updatedAt": "2026-10-04T17:45:32.505Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_InfoLog (row A)"
+    }
+  },
+  {
+    "id": "decision-34-info-labels",
+    "addedBy": "claude",
+    "answer": "A",
+    "createdAt": "2026-10-04T15:40:00.000Z",
+    "detail": "Also answer: dot or none; Correct/Record another follow the date or stay at the end; from 724 or every width; and whether to draw a separate decision for the band's title-to-Version gap at 1366 and up.",
+    "handledAt": "2026-10-04T17:30:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Info labels, bands (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/info-labels-bands.html"
+      },
+      {
+        "label": "Info labels, log (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/info-labels-log.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "note": "use dots to separate.\nCorrect/Record another follow the date\nevery width\ndraw a separate decision for the band's title-to-Version gap at 1366 and up\n",
+    "options": [
+      {
+        "id": "A",
+        "label": "A. Start-aligned from 724",
+        "recommended": true
+      },
+      {
+        "id": "B",
+        "label": "B. Capped row"
+      },
+      {
+        "id": "C",
+        "label": "C. Leader"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded A with dots, actions after the date, every width in README decision 34; proposed /gsd-quick for task 9 and a new decision for the title-to-Version gap.",
+    "resolvedAt": "2026-10-04T16:14:01.575Z",
+    "source": "Sid",
+    "status": "done",
+    "title": "Decision 34: small info labels at wide widths",
+    "updatedAt": "2026-10-04T16:14:01.575Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: boards R35C_InfoBands (band) and R35C_InfoLog (log)"
+    }
+  },
+  {
+    "id": "decision-34-phone-width",
+    "addedBy": "claude",
+    "answer": "phone",
+    "createdAt": "2026-10-04T18:10:00.000Z",
+    "detail": "Context: You answered \"every width\". The sketch has no board that draws option A at 393 or 723, and the sketch must be drawn before the app changes. The build changed only 724 and up. Below 724 is as before.\nQuestion: Did you mean the phone too?",
+    "handledAt": "2026-10-04T18:02:21.000Z",
+    "kind": "decide",
+    "options": [
+      {
+        "id": "from724",
+        "label": "From 724 only (as built)",
+        "recommended": true
+      },
+      {
+        "id": "phone",
+        "label": "The phone too: Sid draws 393 and 723 first"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in sketch 011 README decision 34: Sid draws 393 and 723 first, then /gsd-quick extends the dot labels below 724.",
+    "resolvedAt": "2026-10-04T17:42:25.875Z",
+    "source": "quick 261004-igr, decision 34",
+    "status": "done",
+    "title": "Decision 34: do the dot-separated info labels apply on the phone too?",
+    "updatedAt": "2026-10-04T17:42:25.875Z",
+    "where": {
+      "label": "Sketch 011 README, decision 34 (no board yet at 393 or 723)"
+    }
+  },
+  {
+    "id": "decision-35-fine-pointer-title-height",
+    "addedBy": "claude",
+    "answer": "floor",
+    "createdAt": "2026-10-04T18:10:00.000Z",
+    "detail": "Context: With a mouse the one-line title field is 48px tall (the prose field's existing floor at 32px). The board draws 44 because it forces the touch size everywhere. The iPad and iPhone are the same as the board.\nQuestion: Match the board on a desktop mouse, or keep the existing floor?",
+    "handledAt": "2026-10-04T18:02:21.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Sheet title in the pen (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/sheet-title-pen.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "floor",
+        "label": "Keep the existing floor (48 with a mouse)",
+        "recommended": true
+      },
+      {
+        "id": "board",
+        "label": "Match the board with a title-specific minimum height (44)"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in sketch 011 README decision 35: keep the existing 48px floor; no app change.",
+    "resolvedAt": "2026-10-04T17:46:01.159Z",
+    "source": "quick 261004-igr, decision 35",
+    "status": "done",
+    "title": "Decision 35: the title field is 4px taller than the board with a mouse",
+    "updatedAt": "2026-10-04T17:46:01.159Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_SheetTitle (row A)"
+    }
+  },
+  {
+    "id": "decision-35-sheet-title-pen",
+    "addedBy": "claude",
+    "answer": "A",
+    "createdAt": "2026-10-04T15:40:00.000Z",
+    "detail": "If A: no box at rest, like the description (as drawn), or a hairline box on both fields? Keep the 'Sheet title' caption? The hand-drawn 1600-pen of 2026-09-24 drew the field alone with a box on both fields.",
+    "handledAt": "2026-10-04T17:30:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Sheet title in the pen (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/sheet-title-pen.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "note": "No box at rest\nKeep the sheet title caption",
+    "options": [
+      {
+        "id": "A",
+        "label": "A. One field replaces the heading",
+        "recommended": true
+      },
+      {
+        "id": "B",
+        "label": "B. Heading plus an Edit title control"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded A, no box at rest, caption kept in README decision 35; proposed /gsd-quick for task 10.",
+    "resolvedAt": "2026-10-04T16:14:57.045Z",
+    "source": "Sid",
+    "status": "done",
+    "title": "Decision 35: the Sheet title in the pen",
+    "updatedAt": "2026-10-04T16:14:57.045Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_SheetTitle",
+      "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+    }
+  },
+  {
+    "id": "decision-37-why-face",
+    "addedBy": "claude",
+    "answer": "hand",
+    "createdAt": "2026-10-04T19:23:31.000Z",
+    "detail": "Context: Decision 17 says the saved Why stays in the hand. The built app and the 1366 and 1600 boards draw it in the text face (Georgia, 16px). The hand was never built for the Why. Observations and ideas only are in the hand.",
+    "handledAt": "2026-10-04T19:43:30.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Why row board",
+        "url": "http://localhost:8077/011-recipe-route-c/why-row.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "hand",
+        "label": "The hand (as decision 17 says; the build changes)",
+        "recommended": true
+      },
+      {
+        "id": "text",
+        "label": "The text face (as built; decision 17 is amended)"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in sketch 011 README decision 37: saved Why in the hand; the build changes. Run /gsd-quick with layout B.",
+    "resolvedAt": "2026-10-04T19:29:07.088Z",
+    "source": "todo 2026-09-27, decision 37",
+    "status": "done",
+    "title": "Decision 37: is the saved Why in the hand or the text face?",
+    "updatedAt": "2026-10-04T19:29:07.088Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_WhyRow"
+    }
+  },
+  {
+    "id": "decision-37-why-row-layout",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-04T19:23:31.000Z",
+    "detail": "Context: The Why value sits 40px right of its label on the next line, because of a default margin the Why value never reset. A puts it inline like Written: about 31px shorter with no Why, but the hand Why runs to 6 lines (165px) at 393. B puts it on its own line flush with the label: 4 lines (110px) at 393.",
+    "handledAt": "2026-10-04T19:43:30.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Why row board",
+        "url": "http://localhost:8077/011-recipe-route-c/why-row.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "B",
+        "label": "B. Its own line, flush with the label",
+        "recommended": true
+      },
+      {
+        "id": "A",
+        "label": "A. Inline, like Written"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded B in README decision 37. Run /gsd-quick: Why value on its own line flush with the label (margin-inline-start: 0) and in the hand, with the hand's font-size override.",
+    "resolvedAt": "2026-10-04T19:29:35.348Z",
+    "source": "todo 2026-09-27, decision 37",
+    "status": "done",
+    "title": "Decision 37: where the Why value sits in the version details",
+    "updatedAt": "2026-10-04T19:29:35.348Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_WhyRow"
+    }
+  },
+  {
+    "id": "decision-38-active-weight",
+    "addedBy": "claude",
+    "answer": "600",
+    "createdAt": "2026-10-04T19:23:31.000Z",
+    "detail": "Context: Today the active place is a subtle surface at 1.10:1 against white, weight 400. Board 170 draws it at weight 600. DESIGN.md asks for state without relying on colour.",
+    "handledAt": "2026-10-04T19:43:30.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "App radius board",
+        "url": "http://localhost:8077/011-recipe-route-c/app-radius.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "600",
+        "label": "Yes, weight 600",
+        "recommended": true
+      },
+      {
+        "id": "400",
+        "label": "No, keep weight 400"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded weight 600 in README decision 38; goes in the same /gsd-quick as the radius.",
+    "resolvedAt": "2026-10-04T19:31:45.250Z",
+    "source": "todo 2026-09-22, decision 38",
+    "status": "done",
+    "title": "Decision 38: does the active rail place take weight 600?",
+    "updatedAt": "2026-10-04T19:31:45.250Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_AppRadius"
+    }
+  },
+  {
+    "id": "decision-38-radius",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-04T19:23:31.000Z",
+    "detail": "Context: App radii already exist as 3 and 4 (marks), 8 (ceremony field) and 10 (actions, lead block). The rail places are square. A is one 8px radius and moves 4 built rules. B is one 10px radius and moves 1. C keeps 8 and 10 as drawn, moves nothing, and needs a named exception under your one-value rule. Sid recommends B, with the radius on every rail place so the focus ring follows it.",
+    "handledAt": "2026-10-04T19:43:30.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "App radius board",
+        "url": "http://localhost:8077/011-recipe-route-c/app-radius.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "B",
+        "label": "B. One 10px radius",
+        "recommended": true
+      },
+      {
+        "id": "A",
+        "label": "A. One 8px radius"
+      },
+      {
+        "id": "C",
+        "label": "C. 8px and 10px as drawn"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded B (one 10px radius) in README decision 38. Next: /impeccable document for DESIGN.md, then /gsd-quick for the build.",
+    "resolvedAt": "2026-10-04T19:31:50.692Z",
+    "source": "todo 2026-09-22, decision 38",
+    "status": "done",
+    "title": "Decision 38: the App-context radius",
+    "updatedAt": "2026-10-04T19:31:50.692Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_AppRadius"
+    }
+  },
+  {
+    "id": "decision-38-tab-row",
+    "addedBy": "claude",
+    "answer": "block",
+    "createdAt": "2026-10-04T19:23:31.000Z",
+    "detail": "Context: The shipped active tab is a 79 x 55 block. Board 171 draws it bold with no surface. The radius decision can follow one of them.",
+    "handledAt": "2026-10-04T19:43:30.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "App radius board",
+        "url": "http://localhost:8077/011-recipe-route-c/app-radius.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "block",
+        "label": "Follow the shipped surface block, with the radius"
+      },
+      {
+        "id": "bold",
+        "label": "Follow board 171: bold, no surface"
+      },
+      {
+        "id": "none",
+        "label": "Leave the tab row alone"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded: tab row follows the shipped surface block with the radius, in README decision 38; same /gsd-quick as the radius.",
+    "resolvedAt": "2026-10-04T19:36:00.810Z",
+    "source": "todo 2026-09-22, decision 38",
+    "status": "done",
+    "title": "Decision 38: does the phone tab row follow the radius, and which drawing?",
+    "updatedAt": "2026-10-04T19:36:00.810Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_AppRadius"
+    }
+  },
+  {
+    "id": "decision-38-tab-weight",
+    "addedBy": "claude",
+    "answer": "600",
+    "createdAt": "2026-10-04T20:40:44.000Z",
+    "detail": "Context: Your answer put weight 600 on the active rail place only, and the tab row follows the shipped surface block with the radius. So the active tab keeps weight 400 with its subtle surface block. The build did exactly that.\n\nQuestion: Keep 400, or set 600 on the tab as well?",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "App radius board",
+        "url": "http://localhost:8077/011-recipe-route-c/app-radius.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "400",
+        "label": "Keep 400 (as built)",
+        "recommended": true
+      },
+      {
+        "id": "600",
+        "label": "Weight 600 on the active tab too"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded weight 600 on the active tab in README decision 38. Row \"Build: the phone tab row's active tab takes weight 600\" is in the next batch.",
+    "resolvedAt": "2026-10-04T21:53:59.810Z",
+    "source": "quick 261004-ly7, decision 38",
+    "status": "done",
+    "title": "Decision 38: does the phone tab row's active tab take weight 600 like the rail?",
+    "updatedAt": "2026-10-04T21:53:59.810Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_AppRadius"
+    }
+  },
+  {
+    "id": "decision-39-details-gap-token",
+    "addedBy": "claude",
+    "answer": "new",
+    "createdAt": "2026-10-04T20:43:04.000Z",
+    "detail": "Context: B's 8px row gap is not on the spacing scale (2, 4, 6, 12, 20). The pen's own label gap reads the 4px token, which stays.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Version details rhythm board",
+        "url": "http://localhost:8077/011-recipe-route-c/version-details-rhythm.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "new",
+        "label": "A new App token for the details' row gap",
+        "recommended": true
+      },
+      {
+        "id": "twice",
+        "label": "Twice the existing 4px token"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded a new App token in README decision 39; built in the Version details rhythm row.",
+    "resolvedAt": "2026-10-04T20:51:16.488Z",
+    "source": "todo 2026-10-04, decision 39",
+    "status": "done",
+    "title": "Decision 39: the 8px gap needs a token (only if B)",
+    "updatedAt": "2026-10-04T20:51:16.488Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_Rhythm"
+    }
+  },
+  {
+    "id": "decision-39-details-rhythm",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-04T20:43:04.000Z",
+    "detail": "Context: Written to From version is 4px, From version to Why is 16px. B makes it 8, 8 and 4 (label to its words), seen as 13.5, 11.5 and 13px. A makes it 4px everywhere, but the Why label then hugs From version. C leaves the facts and sets the Why label on its words, which reads cramped.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Version details rhythm board",
+        "url": "http://localhost:8077/011-recipe-route-c/version-details-rhythm.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "B",
+        "label": "B. One 8px gap, the Why label tucked to its words",
+        "recommended": true
+      },
+      {
+        "id": "A",
+        "label": "A. One 4px gap"
+      },
+      {
+        "id": "C",
+        "label": "C. Facts untouched, Why label on its words"
+      },
+      {
+        "id": "leave",
+        "label": "Leave as built"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded B in README decision 39. Row \"Build: even the rhythm in the Version details\" is in the next batch.",
+    "resolvedAt": "2026-10-04T20:51:45.846Z",
+    "source": "todo 2026-10-04, decision 39",
+    "status": "done",
+    "title": "Decision 39: the spacing in the Version details",
+    "updatedAt": "2026-10-04T20:51:45.846Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_Rhythm"
+    }
+  },
+  {
+    "id": "decision-40-record-pen-cues",
+    "addedBy": "claude",
+    "answer": "C",
+    "createdAt": "2026-10-04T20:53:30.000Z",
+    "detail": "Context: Every recipe and This recipe only read in the same face as the labels they head, and sit nearer the group before than their own items. C sets them as 14px bold sentence case and puts 26px under the cue, 45px above it.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Record pen: group cues",
+        "url": "http://localhost:8077/011-recipe-route-c/record-pen-cues.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "C",
+        "label": "C. Their own face and their own space",
+        "recommended": true
+      },
+      {
+        "id": "A",
+        "label": "A. Their own face only"
+      },
+      {
+        "id": "B",
+        "label": "B. Their own space only"
+      },
+      {
+        "id": "leave",
+        "label": "Leave as built"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded C in README decision 40; built with the record pen's approved look.",
+    "resolvedAt": "2026-10-04T21:00:21.404Z",
+    "source": "todo 2026-09-25, decision 40",
+    "status": "done",
+    "title": "Decision 40: the group cues in the record pen",
+    "updatedAt": "2026-10-04T21:00:21.404Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_RecordPenCues"
+    }
+  },
+  {
+    "id": "decision-40-record-pen-skin-build",
+    "addedBy": "claude",
+    "answer": "build",
+    "createdAt": "2026-10-04T20:53:30.000Z",
+    "detail": "Context: The rounded stops, app-blue picks and filled Save batch were approved in decision 29 and never built. The board now draws them on the one 10px radius.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Record pen: reading and recording",
+        "url": "http://localhost:8077/011-recipe-route-c/record-pen-app.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "build",
+        "label": "Build it now, as its own quick or plan",
+        "recommended": true
+      },
+      {
+        "id": "wait",
+        "label": "Wait until the cues are chosen, then build both"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in README decision 40. Row \"Build: the record pen's approved look...\" is in the next batch, with the Clear-at-393 defect.",
+    "resolvedAt": "2026-10-04T21:54:24.785Z",
+    "source": "todo 2026-09-25, decision 40",
+    "status": "done",
+    "title": "Decision 40: build the approved record pen look now",
+    "updatedAt": "2026-10-04T21:54:24.785Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_RecordPenApp"
+    }
+  },
+  {
+    "id": "decision-41-phone-gap",
+    "addedBy": "claude",
+    "answer": "32",
+    "createdAt": "2026-10-04T21:00:20.000Z",
+    "detail": "Context: At the wide widths the info sits 32px after the control word. At 393 and 723 the same 32px fits every row with room to spare.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Info labels at the phone",
+        "url": "http://localhost:8077/011-recipe-route-c/info-labels-phone.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "32",
+        "label": "32px, as at the wide widths",
+        "recommended": true
+      },
+      {
+        "id": "20",
+        "label": "20px at the phone"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded 32px in README decision 41. Row \"Build: the dot-separated labels at the phone...\" is in the next batch.",
+    "resolvedAt": "2026-10-04T21:47:23.221Z",
+    "source": "decision 34 answer: the phone too, decision 41",
+    "status": "done",
+    "title": "Decision 41: the gap at the phone",
+    "updatedAt": "2026-10-04T21:47:23.221Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_InfoPhone"
+    }
+  },
+  {
+    "id": "decision-41-redraw-other-boards",
+    "addedBy": "claude",
+    "answer": "now",
+    "createdAt": "2026-10-04T21:00:20.000Z",
+    "detail": "Context: The wide boards (744 to 1920, the pen, long history, sticky nav) and the phone boards still draw the count at the far end of the row. The build already shows the dots from 724.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "options": [
+      {
+        "id": "now",
+        "label": "Redraw them now so they match the build",
+        "recommended": true
+      },
+      {
+        "id": "later",
+        "label": "Only when you ask"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in README decision 41. Row \"Draw: redraw the other boards...\" is with Sid.",
+    "resolvedAt": "2026-10-04T21:47:41.964Z",
+    "source": "decision 34 answer: the phone too, decision 41",
+    "status": "done",
+    "title": "Decision 41: redraw the other boards with the dots",
+    "updatedAt": "2026-10-04T21:47:41.964Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5"
+    }
+  },
+  {
+    "id": "decision-44-removed-share-fix",
+    "addedBy": "claude",
+    "answer": "same",
+    "createdAt": "2026-10-04T21:04:39.000Z",
+    "detail": "Context: After remove on Whole milk, its portion lines read 86.3% in all instead of 46.3%. That is the milk against the batch without it, which is not a share of anything. The struck percentage on the right is correct.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "options": [
+      {
+        "id": "same",
+        "label": "Fix it in the same quick as the link",
+        "recommended": true
+      },
+      {
+        "id": "own",
+        "label": "Its own quick"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in README decision 44: the 86.3% fix goes in the same quick as the link.",
+    "resolvedAt": "2026-10-04T21:06:03.519Z",
+    "source": "Mark's report, decision 44",
+    "status": "done",
+    "title": "Decision 44: the 86.3% on a removed split row",
+    "updatedAt": "2026-10-04T21:06:03.519Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_SplitRemove"
+    }
+  },
+  {
+    "id": "decision-44-split-remove-link",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-04T21:04:39.000Z",
+    "detail": "Context: Remove strikes both lines of Whole milk, but only the Step 2 line has the link. B puts the link on every line with the same effect. C puts it on every line but removes only that line, which is a new behaviour.",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Split row remove link board",
+        "url": "http://localhost:8077/011-recipe-route-c/split-remove-link.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "B",
+        "label": "B. A link on every line, each removes the ingredient",
+        "recommended": true
+      },
+      {
+        "id": "A",
+        "label": "A. As built: the first line only"
+      },
+      {
+        "id": "C",
+        "label": "C. A link on every line, each removes its own line"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded B in README decision 44. Row \"Build: a remove link on every line of a split ingredient...\" is in the next batch.",
+    "resolvedAt": "2026-10-04T21:43:45.623Z",
+    "source": "Mark's report, decision 44",
+    "status": "done",
+    "title": "Decision 44: the remove link on a split ingredient's later lines",
+    "updatedAt": "2026-10-04T21:43:45.623Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_SplitRemove"
+    }
+  },
+  {
+    "id": "decision-46-count-boards",
+    "addedBy": "claude",
+    "answer": "leave",
+    "createdAt": "2026-10-04T23:34:20.000Z",
+    "detail": "Context: The count boards (1 vs many versions, 0 and 1 and many batches, upright 393) compare options for decision 22, which is decided. They are drawn from old hand markup and constructed states (no seeded recipe has one version with a History row, or two batches), and they still show the counts at the far end of the row. Redrawing them is a drawing, not a capture, and the redrawn 393 and 723 boards already show the decided result.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Counts: 1 vs many versions",
+        "url": "http://localhost:8077/011-options-counts/versions-1-vs-many.html"
+      },
+      {
+        "label": "Counts: upright 393",
+        "url": "http://localhost:8077/011-options-counts/upright-393.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "leave",
+        "label": "Leave them as the record of the options",
+        "recommended": true
+      },
+      {
+        "id": "redraw",
+        "label": "Redraw them with constructed states and the dots"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in README decision 46: the five count boards stay as the record; no redraw.",
+    "resolvedAt": "2026-10-05T00:38:50.172Z",
+    "source": "decision 41 answer: redraw the other boards now (README decision 46)",
+    "status": "done",
+    "title": "Decision 46: redraw the five count boards, or leave them as the record?",
+    "updatedAt": "2026-10-05T00:38:50.172Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: boards R35C_CountVersions, R35C_CountBatches01, R35C_CountBatchesMany, R35C_CountBatchesMany393, R35C_CountUpright393"
+    }
+  },
+  {
+    "id": "decision-48-ingredient-start",
+    "addedBy": "claude",
+    "answer": "A",
+    "createdAt": "2026-10-05T01:24:00.000Z",
+    "detail": "Context: With a batch in view Ingredient starts 72px after the heading's first letter, over the amount column, because As made comes first and the head covers the amount and the names (decision 15). A keeps that, so the head reads As made, then Ingredient, 10px apart. B starts Ingredient where the names start, 146px after the heading's first letter, 84px after As made; the amount column then has no word over it.\n\nEffect: The 17 page boards draw A. If you choose B they are redrawn, then a quick builds it.",
+    "handledAt": "2026-10-05T02:30:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Table head, one line",
+        "url": "http://localhost:8077/011-recipe-route-c/table-head-one-line.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "A",
+        "label": "A. Where it stands, over the amount and the names",
+        "recommended": true
+      },
+      {
+        "id": "B",
+        "label": "B. Over the names"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded A (Ingredient where it stands) in README decision 48. Row \"Build: the one-line table head and the empty space fix\" is running as a quick.",
+    "resolvedAt": "2026-10-05T01:27:40.168Z",
+    "source": "draw-one-line-head-and-indent, decision 48",
+    "status": "done",
+    "title": "Decision 48: where does Ingredient start in the one-line table head?",
+    "updatedAt": "2026-10-05T01:27:40.168Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_OneHead"
+    }
+  },
+  {
+    "id": "decision-49-empty-space",
+    "addedBy": "claude",
+    "answer": "A",
+    "createdAt": "2026-10-05T01:50:00.000Z",
+    "detail": "Context: A keeps Balance and Watch for open and needs one style rule. The left column then ends where the Instructions end, with a large empty area under it beside Watch for (702px at 1024). AB closes Watch for at the start, so the page is about 357px shorter at 1024 and the foot's empty area is 345px; it changes your decision 33 (open where beside).\n\nEffect: After you choose, a quick builds it. Olive Oil v1 and recipes with no Instructions do not change.",
+    "handledAt": "2026-10-05T02:30:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Empty space under the table",
+        "url": "http://localhost:8077/011-recipe-route-c/empty-space-under-table.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "A",
+        "label": "A. The Instructions' row takes the surplus; Balance and Watch for stay open",
+        "recommended": true
+      },
+      {
+        "id": "AB",
+        "label": "AB. A, and Watch for closed at the start"
+      },
+      {
+        "id": "leave",
+        "label": "Leave as built"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded A (the surplus goes to the Instructions' row) in README decision 49. Row \"Build: the one-line table head and the empty space fix\" is running as a quick.",
+    "resolvedAt": "2026-10-05T01:39:47.401Z",
+    "source": "draw-fix-empty-space-mex3, decision 49",
+    "status": "done",
+    "title": "Decision 49: how to remove the empty space under the table on Mexican Chocolate v3",
+    "updatedAt": "2026-10-05T01:39:47.401Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_EmptySpace"
+    }
+  },
+  {
+    "id": "decision-50-batch-fold-default",
+    "addedBy": "claude",
+    "answer": "C1",
+    "createdAt": "2026-10-05T01:40:00.000Z",
+    "detail": "Context: History and Tasting open closed below 1366 and open from 1366. A batch page names its batch in the address, and Go to batch lands on it. C1 keeps the batch showing at every width, with Hide to fold it. C2 follows the others: closed below 1366, so at 393 and 1024 the page opens with the Batch as a head and Go to batch has to open it.\n\nEffect: After you choose, a quick builds the fold. It also needs your yes on A, the fold row as drawn.",
+    "handledAt": "2026-10-05T03:10:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Batch head and Show/Hide",
+        "url": "http://localhost:8077/011-recipe-route-c/batch-head-show-hide.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "C1",
+        "label": "C1. Open at every width",
+        "recommended": true
+      },
+      {
+        "id": "C2",
+        "label": "C2. Closed below 1366, like History and Tasting"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Chose C1: the Batch fold opens at every width. The build also needs your yes on form A; that is the decide row \"Decision 50: build the Batch fold as drawn (A)?\". I record C1 in README decision 50 once Sid is done with the README.",
+    "resolvedAt": "2026-10-05T01:50:53.893Z",
+    "source": "draw-batch-head-and-show-hide, decision 50",
+    "status": "done",
+    "title": "Decision 50: is the Batch fold open or closed when the page opens?",
+    "updatedAt": "2026-10-05T01:50:53.893Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BatchHead"
+    }
+  },
+  {
+    "id": "decision-51-fix-figures-first",
+    "addedBy": "claude",
+    "answer": "with",
+    "createdAt": "2026-10-05T02:10:30.000Z",
+    "detail": "Context: Two figures are wrong whatever you choose. (a) After an edit the pen's portion line reads the opening total: 100 g of 370.4 g, 47.5% in all, where the lines still in are 350.4 g and 44.9%. (b) The 86.3% fix covered the pen only: in Show changes, after saving a version that removed Whole milk, both lines still read 86.3% in all and shares of 28.0% and 58.3% (15.0% and 31.3% of the parent's batch), with the amounts not struck.\n\nEffect: Now means its own small quick, before the per-step plan.",
+    "handledAt": "2026-10-05T07:00:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Per-step shared ingredient board",
+        "url": "http://localhost:8077/011-recipe-route-c/per-step-shared-ingredient.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "now",
+        "label": "Fix them now in their own quick",
+        "recommended": true
+      },
+      {
+        "id": "with",
+        "label": "Fix them with the per-step change"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "With the per-step change, not their own quick. Recorded in README decision 51; the figures fix goes in the phase on the Run row.",
+    "resolvedAt": "2026-10-05T02:12:32.377Z",
+    "source": "draw-shared-ingredient-per-step, decision 51",
+    "status": "done",
+    "title": "Decision 51: fix the wrong portion and percentage figures now, or with the per-step change?",
+    "updatedAt": "2026-10-05T02:12:32.377Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_PerStep, row 3"
+    }
+  },
+  {
+    "id": "decision-51-remove-link-per-line",
+    "addedBy": "claude",
+    "answer": "C",
+    "createdAt": "2026-10-05T02:10:30.000Z",
+    "detail": "Context: Today (decision 44 B, which you chose) the link on any line strikes the whole ingredient: Whole milk 120 g and 250.4 g both go, 370.4 g out of 799.7 g. Your note says an action on one step must not affect the other. With C, the link removes only its own line, restore likewise, and the ingredient is out when its last line is out.\n\nEffect: C changes the data: a removed flag per line instead of per ingredient. That is a plan, not a quick. B stays as built if you keep it.",
+    "handledAt": "2026-10-05T07:00:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Per-step shared ingredient board",
+        "url": "http://localhost:8077/011-recipe-route-c/per-step-shared-ingredient.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "C",
+        "label": "C. Each link removes its own line",
+        "recommended": true
+      },
+      {
+        "id": "B",
+        "label": "B. Each link removes the whole ingredient, as built"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "C: each link removes its own line; decision 44 C replaces B. Recorded in README decision 51. The build is a plan: see the Run row \"Run: insert a phase for per-step shared ingredients\".",
+    "resolvedAt": "2026-10-05T02:19:35.639Z",
+    "source": "draw-shared-ingredient-per-step, decision 51",
+    "status": "done",
+    "title": "Decision 51: does the remove link on a shared ingredient's line remove only that line?",
+    "updatedAt": "2026-10-05T02:19:35.639Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_PerStep, row 1"
+    }
+  },
+  {
+    "id": "decision-51-step-removal",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-05T02:10:30.000Z",
+    "detail": "Context: Today removing Step 2 strikes nothing. Its lines (milk 120 g, sucrose 12 g, the gums) move to Unallocated at the foot at full amounts and stay in the 799.7 g. B takes the step's lines with it, struck in the step's place, and restoring the step brings them back (799.7 to 666.0 g). C keeps them under the removed step, untouched, and you remove each. Your todo says only the impacted step's sugar goes, which reads as B.\n\nEffect: B reverses the confirmed brief's 'removal never cascades' for lines (not for whole ingredients another step uses). Sid amends the brief after you choose.",
+    "handledAt": "2026-10-05T07:00:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Per-step shared ingredient board",
+        "url": "http://localhost:8077/011-recipe-route-c/per-step-shared-ingredient.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "B",
+        "label": "B. The step's lines go with it, struck",
+        "recommended": true
+      },
+      {
+        "id": "C",
+        "label": "C. The lines stay under the removed step, untouched"
+      },
+      {
+        "id": "A",
+        "label": "A. As built: the lines drop to Unallocated"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "B: a removed step's lines go with it, struck; restoring the step brings them back. Recorded in README decision 51; built in the phase on the Run row.",
+    "resolvedAt": "2026-10-05T02:18:42.191Z",
+    "source": "draw-shared-ingredient-per-step, decision 51",
+    "status": "done",
+    "title": "Decision 51: what does removing a step do to its lines?",
+    "updatedAt": "2026-10-05T02:18:42.191Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_PerStep, row 2"
+    }
+  },
+  {
+    "id": "decision-52-import-errors-lifetime",
+    "addedBy": "claude",
+    "answer": "page",
+    "createdAt": "2026-10-05T02:15:30.000Z",
+    "detail": "Context: Today the list stays across a route change and goes only on a good import or a reload; nothing in it closes it. With a Close button, the panel can also close when the maker changes page, which is where it is stale, like the fly-out. Answer this if you choose B or C.",
+    "handledAt": "2026-10-05T07:00:00.000Z",
+    "kind": "decide",
+    "options": [
+      {
+        "id": "page",
+        "label": "It also closes when you change page",
+        "recommended": true
+      },
+      {
+        "id": "stay",
+        "label": "It stays until Close or a good import, as the list does now"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "The panel also closes when you change page. Recorded in README decision 52; row \"Build: the Import error panel and the notice under the scrim\" is a quick.",
+    "resolvedAt": "2026-10-05T02:22:07.305Z",
+    "source": "draw-import-errors-placement, decision 52",
+    "status": "done",
+    "title": "Decision 52: does the error panel close when you change page?",
+    "updatedAt": "2026-10-05T02:22:07.305Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_ImportErrors"
+    }
+  },
+  {
+    "id": "decision-52-import-errors-place",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-05T02:15:30.000Z",
+    "detail": "Context: B is a panel fixed under the bar at its right end, below Import, over the page: the bar stays 57px and nothing moves. It shows 6 lines, then scrolls, and has a Close. Below 724 it sits above the tab row. C is a dialog in the middle of the window under a scrim; the app has no dialog today. A leaves the list in the bar.\n\nEffect: After you choose, a quick builds it (a small new component).",
+    "handledAt": "2026-10-05T07:00:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Import error placement board",
+        "url": "http://localhost:8077/011-recipe-route-c/import-errors-placement.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "B",
+        "label": "B. A panel under Import, over the page",
+        "recommended": true
+      },
+      {
+        "id": "C",
+        "label": "C. A dialog under a scrim"
+      },
+      {
+        "id": "A",
+        "label": "A. Leave it in the bar, which grows"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "B: a panel under Import, over the page. Recorded in README decision 52; row \"Build: the Import error panel and the notice under the scrim\" is a quick, next in line.",
+    "resolvedAt": "2026-10-05T02:21:43.668Z",
+    "source": "draw-import-errors-placement, decision 52",
+    "status": "done",
+    "title": "Decision 52: where does the Import error list go?",
+    "updatedAt": "2026-10-05T02:21:43.668Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_ImportErrors"
+    }
+  },
+  {
+    "id": "decision-53-notice-stack",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-05T02:17:30.000Z",
+    "detail": "Context: B makes the notice part of the page, so it sits under the scrim and under the panel: one token value changes (10 to 3). The short notice is then fully hidden by the panel and the longer one shows dimmed beside it; Home and its focus ring are clear. C clears the notice when the menu opens. A keeps the decision 33 brief's order, with the notice over the panel.\n\nEffect: B is a one-line token change and a test line in a quick.",
+    "handledAt": "2026-10-05T07:00:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Notice and fly-out board",
+        "url": "http://localhost:8077/011-recipe-route-c/notice-over-flyout.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "B",
+        "label": "B. The notice goes under the scrim and the panel",
+        "recommended": true
+      },
+      {
+        "id": "C",
+        "label": "C. Opening the menu clears the notice"
+      },
+      {
+        "id": "A",
+        "label": "A. Keep the brief's order: the notice over the panel"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "B: the notice goes under the scrim and the panel. Recorded in README decision 53; built in the same quick as the Import error panel.",
+    "resolvedAt": "2026-10-05T02:22:20.478Z",
+    "source": "draw-notice-over-flyout, decision 53",
+    "status": "done",
+    "title": "Decision 53: how does the page notice stack with the open fly-out?",
+    "updatedAt": "2026-10-05T02:22:20.478Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_NoticeFlyout"
+    }
+  },
+  {
+    "id": "decision-54-more-items",
+    "addedBy": "claude",
+    "answer": "other",
+    "createdAt": "2026-10-05T02:28:34.000Z",
+    "detail": "Context: C makes all five items rows like the rail and the header's tools: icon beside a 14px word, 44px high, as wide as the panel (164 x 246px against 89 x 275px today). Import and Export lose the stray border and the 39px width. B keeps the narrow tiles (101 x 271px) and only removes the border. D is C with the rail's hairline between Search and Import. The panel is wider in C and covers more of the page while it is open.\n\nEffect: C is one reset on button places plus one row rule in a quick; D adds one list element; B is the reset and a width. The same reset also fixes the Close button planned for the Import error panel (decision 52), which would otherwise draw the same border. Sid also found that hovering the header's Import or Export with a mouse shrinks it from 108 x 44px to 80 x 32px (a separate defect, not drawn).",
+    "handledAt": "2026-10-05T07:00:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "More items board",
+        "url": "http://localhost:8077/011-recipe-route-c/more-items-iphone.html"
+      }
+    ],
+    "note": "they should look like Tiles from the Tab Bar, as in B, but I like the hairline to separate places and actions.",
+    "options": [
+      {
+        "id": "C",
+        "label": "C. Rows like the rail and the header's tools",
+        "recommended": true
+      },
+      {
+        "id": "D",
+        "label": "D. Rows, with a hairline between places and actions"
+      },
+      {
+        "id": "B",
+        "label": "B. Tiles, border gone, buttons as wide as the links"
+      },
+      {
+        "id": "A",
+        "label": "A. As built"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Your note is the answer: tiles as in B, with the hairline between places and actions. That combination is not drawn, so row \"Draw: More's tiles with the hairline between places and actions\" is with Sid, then a quick. Recorded in README decision 54.",
+    "resolvedAt": "2026-10-05T02:34:50.180Z",
+    "source": "draw-more-items-iphone, decision 54",
+    "status": "done",
+    "title": "Decision 54: what do More's items look like on the iPhone?",
+    "updatedAt": "2026-10-05T02:34:50.180Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_MoreItems"
+    }
+  },
+  {
+    "id": "decision-ox7-pen-share-drop",
+    "addedBy": "claude",
+    "answer": "leave",
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Context: On a coarse pointer at every width 320 to 723, Cream, Dried Skimmed Milk Powder, Dextrose, Allulose and Stabilizer Mix 4421 drop their current share 8px when a pen edit changes it. The approved 393-pen-changes board draws it. Chrome with a mouse and the Show changes states do not move.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "decide",
+    "options": [
+      {
+        "id": "leave",
+        "label": "Leave it, as the board draws it",
+        "recommended": true
+      },
+      {
+        "id": "pin",
+        "label": "Pin the share to the top line; redraw the board"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in README decision 47: leave it, as the board draws it. No change.",
+    "resolvedAt": "2026-10-05T00:39:12.342Z",
+    "source": "quick 261004-ox7",
+    "status": "done",
+    "title": "Phone pen: share-only rows drop their share 8px when edited. Leave it?",
+    "updatedAt": "2026-10-05T00:39:12.342Z",
+    "where": {
+      "label": "Quick 261004-ox7 SUMMARY, finding 1"
+    }
+  },
+  {
+    "id": "decision-ox8-two-line-head",
+    "addedBy": "claude",
+    "answer": "oneline",
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Context: On every board the head reads INGREDIENT on top, then AS MADE and % OF BATCH below. It came from the board's CSS by accident, since the As made head's box is 0.55px wide. The build matches the board. A one-line head is about 16px shorter, and Sid would redraw first.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "decide",
+    "options": [
+      {
+        "id": "oneline",
+        "label": "One head line: Sid redraws, then a quick",
+        "recommended": true
+      },
+      {
+        "id": "keep",
+        "label": "Keep the two-line head as drawn"
+      }
+    ],
+    "phase": "sketch-011",
+    "reply": "Recorded in README decision 47: one head line. Row \"Draw: the ingredients table head on one line...\" is with Sid; then a quick.",
+    "resolvedAt": "2026-10-05T00:43:07.376Z",
+    "source": "quick 261004-ox8",
+    "status": "done",
+    "title": "The table head reads on two lines from 724: keep it or redraw as one line?",
+    "updatedAt": "2026-10-05T00:43:07.376Z",
+    "where": {
+      "label": "Quick 261004-ox8 SUMMARY, finding 1; boards 744-batch to 1600-batch"
+    }
+  },
+  {
+    "id": "look-batch-head-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T01:40:00.000Z",
+    "detail": "Context: Measured in the build, the Batch date is 15px ink with no dot, 14px after the heading. The Tasting date is 12px grey after a dot, 32px after Show or Hide, and the Batch head has no Show or Hide. A makes the Batch head the same fold row: Batch, Hide, a dot, the date. Correct and Record another follow the date; where they would wrap (393 and the 350px log column at 1366) the fold row takes the whole row. The head is 88px at 393 and 1366 (78.22 now) and 44px from 723 to 1365 (unchanged). Show hides the batch's whole body and keeps the head. The wide widths change too, because it is one component.\n\nStatus: Drawn in WebKit on a Mac from the built page with its DOM edited; the board agrees with that edit (36 checks, 0 off). Nothing is verified on the iPhone or iPad. Nothing is approved.\n\nAction: Open the board and look at the Batch head against the Tasting head under it, then answer the decide row.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Batch head and Show/Hide",
+        "url": "http://localhost:8077/011-recipe-route-c/batch-head-show-hide.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T01:42:39.438Z",
+    "source": "draw-batch-head-and-show-hide, decision 50",
+    "status": "done",
+    "title": "Look at the Batch head board (the build, and A open and closed, at 393, 723, 1024 and 1366)",
+    "updatedAt": "2026-10-05T01:42:39.438Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BatchHead"
+    }
+  },
+  {
+    "id": "look-empty-space-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T01:50:00.000Z",
+    "detail": "Context: On Mexican Chocolate v3 the Instructions start 399px under the table's last line, 367px of it empty, at 984 and at 1366 (352px at 1024). It is every width from 984 up, not only 984 to 1365. The side column (Balance 979px, Watch for 422px) is taller than the table and the Instructions together, and the grid shares the difference equally between their two rows. A (a style rule) gives all of it to the Instructions' row: the Instructions then start 49px under the table, the same as Olive Oil v1, and the empty space moves to the foot of the left column (702px at 1024). AB also closes Watch for at the start, which reverses part of decision 33.\n\nCorrection: the row \"Look at the wide boards with the table head on one line\" says the empty space grows by the same 31px when the head goes to one line. It grows by about 15px (the two rows share the 31px).\n\nStatus: Drawn in WebKit on a Mac, measured against the build with each option added: 288 checks, 0 off. Nothing is verified on the iPad. Nothing is approved.\n\nAction: Open the board, then answer the decide row.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Empty space under the table",
+        "url": "http://localhost:8077/011-recipe-route-c/empty-space-under-table.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T01:42:27.405Z",
+    "source": "draw-fix-empty-space-mex3, decision 49",
+    "status": "done",
+    "title": "Look at the empty space board (the build, A and AB, at 1024 and 1366)",
+    "updatedAt": "2026-10-05T01:42:27.405Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_EmptySpace"
+    }
+  },
+  {
+    "id": "look-import-errors-placement-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T02:15:30.000Z",
+    "detail": "Context: When Import fails the error list sits inside the 57px sticky bar and grows it. Sid measured: 64px with 3 lines and 754px with 49 lines at 1366 (84% of a 900px window), 169px and 1384px at 724. Nothing closes it, and below 724 it is off screen once the page is scrolled.\n\nStatus: Drawn in WebKit on a Mac, numbers checked in Chrome. Nothing is verified on the iPad or iPhone. Nothing is approved. A is as built, B is a panel under Import (Sid recommends it), C is a dialog.\n\nAction: Open the board. Compare A, B and C for a short and a long list at 1366, 724 and 393. Then answer the decide rows.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Import error placement board",
+        "url": "http://localhost:8077/011-recipe-route-c/import-errors-placement.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T02:35:16.235Z",
+    "source": "draw-import-errors-placement, decision 52",
+    "status": "done",
+    "title": "Look at the Import error list board: where it goes from 724",
+    "updatedAt": "2026-10-05T02:35:16.235Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_ImportErrors"
+    }
+  },
+  {
+    "id": "look-more-items-iphone-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T02:28:34.000Z",
+    "detail": "Context: Your radius check said More's Import and Export look like very small buttons each with a dark rounded border. Sid measured at 393: they are buttons the Sheet's button rule still reaches, so each has a 1px ink border on the 10px radius and is 39px wide (under the 44px minimum). The header's Import and Export have a reset for that; More's list does not. Ingredients, Kitchen and Search are links with no border, 63.5 x 49.\n\nStatus: Drawn in WebKit on a Mac and measured in WebKit and Chrome. Nothing is verified on the iPhone. Nothing is approved. A is as built, B is tiles with the border gone, C is rows like the rail and the header's tools (Sid recommends it), D is C with a hairline between places and actions.\n\nAction: Open the board. Compare A, B, C and D at rest, on the current place and with focus. Then answer the decide row.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "More items board",
+        "url": "http://localhost:8077/011-recipe-route-c/more-items-iphone.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T02:35:04.640Z",
+    "source": "draw-more-items-iphone, decision 54",
+    "status": "done",
+    "title": "Look at the More items board: Import and Export on the iPhone",
+    "updatedAt": "2026-10-05T02:35:04.640Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_MoreItems"
+    }
+  },
+  {
+    "id": "look-more-tiles-hairline",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T02:49:15.000Z",
+    "detail": "Context: You asked for tiles like the tab bar's, as in B, with a hairline between places and actions. Drawn at 393 and 723, at rest, on Ingredients and with Import focused.\n\nWhat it is: B's tiles (no border on Import and Export, each as wide as its tile, 6px side padding) and the rail's hairline between Search and Import, as wide as the tiles, 6px above and below. The panel is 101.5 x 284px (105.2 wide on Ingredients), against 89.5 x 275 today; the rule adds 13px to B's 271. Tiles are 75.5 x 49. The rail's own 20px side margins on the rule left a 35px stub, so the rule has no side margin here.\n\nStatus: Drawn, awaiting your look; nothing approved. Measured in the built app with the rules injected (WebKit and Chrome on a Mac). The iPhone is not checked. The README has the app change brief for a /gsd-quick.\n\nAction: Open the board and look at the rule, the tiles and the focus ring on Import (it clears the rule by 2px).",
+    "handledAt": "2026-10-05T10:00:00.000Z",
+    "kind": "look",
+    "links": [
+      {
+        "label": "More tiles with hairline (local HTML)",
+        "url": "http://localhost:8077/011-recipe-route-c/more-tiles-hairline.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "note": "is Search a place or an action? I would have put it with actions...",
+    "phase": "sketch-011",
+    "reply": "Looked. Your question about Search is the decide row \"More: does Search sit with the places or the actions?\".",
+    "resolvedAt": "2026-10-05T02:58:27.597Z",
+    "source": "draw-more-tiles-with-hairline, README decision 55",
+    "status": "done",
+    "title": "Decision 54: look at More's tiles with the hairline (393 and 723)",
+    "updatedAt": "2026-10-05T02:58:27.597Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_MoreTiles"
+    }
+  },
+  {
+    "id": "look-notice-over-flyout-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T02:17:30.000Z",
+    "detail": "Context: With the fly-out open, the page notice (for example 'Version saved.') paints over Home, the panel's first place, and over the dimmed page. Sid measured it: the notice is 114 x 30px at x 48, y 63; Home's row is 63 to 107; the longer notice covers 155px of Home and ends 67px past the panel. It lasts 5 seconds and shows only with the page at its top.\n\nStatus: Drawn in WebKit on a Mac, checked in Chrome. Nothing is verified on the iPad. Nothing is approved. A is as built, B puts the notice under the scrim and panel (Sid recommends it), C clears the notice when the menu opens.\n\nAction: Open the board. Compare A, B and C at 1366 and 724. Then answer the decide row.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Notice and fly-out board",
+        "url": "http://localhost:8077/011-recipe-route-c/notice-over-flyout.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T02:35:13.373Z",
+    "source": "draw-notice-over-flyout, decision 53",
+    "status": "done",
+    "title": "Look at the notice and fly-out board: how they stack",
+    "updatedAt": "2026-10-05T02:35:13.373Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_NoticeFlyout"
+    }
+  },
+  {
+    "id": "look-one-line-head-boards",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T01:24:00.000Z",
+    "detail": "Context: You decided one head line from 724. Sid redrew the 17 wide boards with it. With a batch in view the head is 21.39px tall, 30.78px shorter than the 52.17px it had, and everything under it moves up 30.78px. Page heights: Olive Oil v1 31px shorter at every width; Mexican Chocolate v3 31px shorter at 744 to 983 and unchanged from 984, where the empty space under its table grows by about 15px (the two grid rows share the 31px). The Next version pen and the remove-link board have no As made column, so their head does not change.\n\nYour iPad and Mac check: the head's Ingredient starts 72px after the heading's first letter (under the last n of Ingredients) because the head sits over the amount and the names and As made comes first. As made wrapped because its head cell was 0.55px wide. Both were in the boards as drawn, not defects in the build.\n\nStatus: Drawn in WebKit on a Mac, measured against the build with the rule added: 11 boards, 33,106 checks, 0 off. Nothing is verified on the iPad or the Mac's Safari. Nothing else is approved.\n\nAction: Open 1366 and 1024 (the iPad's widths) and look at the head.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "1366",
+        "url": "http://localhost:8077/011-recipe-route-c/1366-batch.html"
+      },
+      {
+        "label": "1024",
+        "url": "http://localhost:8077/011-recipe-route-c/1024-batch.html"
+      },
+      {
+        "label": "984",
+        "url": "http://localhost:8077/011-recipe-route-c/984-batch.html"
+      },
+      {
+        "label": "983",
+        "url": "http://localhost:8077/011-recipe-route-c/983-batch.html"
+      },
+      {
+        "label": "834",
+        "url": "http://localhost:8077/011-recipe-route-c/834-batch.html"
+      },
+      {
+        "label": "744",
+        "url": "http://localhost:8077/011-recipe-route-c/744-batch.html"
+      },
+      {
+        "label": "1600",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-batch.html"
+      },
+      {
+        "label": "1920",
+        "url": "http://localhost:8077/011-recipe-route-c/1920-batch.html"
+      },
+      {
+        "label": "1600 pen",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-pen.html"
+      },
+      {
+        "label": "Go to batch, 724 to 1365",
+        "url": "http://localhost:8077/011-recipe-route-c/724-1365-go-to-batch.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T01:44:30.539Z",
+    "source": "draw-one-line-head-and-indent, decision 48",
+    "status": "done",
+    "title": "Look at the wide boards with the table head on one line (744 to 1920)",
+    "updatedAt": "2026-10-05T01:44:30.539Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: boards R35C_744 to R35C_1920, R35C_Batch, R35C_1600StickyRail, R35C_LongHistory, R35C_GoToBatchWide"
+    }
+  },
+  {
+    "id": "look-per-step-shared-ingredient-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T02:10:30.000Z",
+    "detail": "Context: You asked that an action on one step must not change the other step that shares an ingredient. Sid measured the build on Olive Oil v1 (Whole milk 120 g in Step 2 and 250.4 g in Step 3; Sucrose 12 g and 64 g): the remove link on either line strikes both; removing a step strikes nothing and drops its lines to Unallocated at full amounts; an amount is already per line; the portion line reads the opening total after an edit; Show changes still reads 86.3%.\n\nStatus: Drawn in WebKit on a Mac, checked in Chrome. Nothing is verified on the iPad or iPhone. Nothing is approved. Decision 44 B is reopened. The removed-line panels are the build's removed-row look laid on a line by a browser edit, not a build.\n\nAction: Open the board. Row 1 is the remove link, row 2 is removing Step 2 (A as built, C lines stay, B lines go with the step), row 3 is an amount and Show changes, rows 4 and 5 are the phone. Then answer the decide rows.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Per-step shared ingredient board",
+        "url": "http://localhost:8077/011-recipe-route-c/per-step-shared-ingredient.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T02:35:21.396Z",
+    "source": "draw-shared-ingredient-per-step, decision 51",
+    "status": "done",
+    "title": "Look at the shared-ingredient board: what each action does per step",
+    "updatedAt": "2026-10-05T02:35:21.396Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_PerStep"
+    }
+  },
+  {
+    "id": "look-redrawn-boards-dots-radius",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T23:34:20.000Z",
+    "detail": "Context: You said redraw the other boards now so they match the build. Sid redrew 17 wide boards, 7 phone boards and 5 record-pen boards from the build's own markup: the dot-separated labels, the 10px radius, the sticky header, fly-out and rail, the Why in the hand, the table grid from 724, the phone table, the Go to batch row. The 1600 remove-link board now draws the build, with a link on every line of a split ingredient.\n\nStatus: Measured board against build in WebKit: 33 panels on 15 boards, 46,336 checks, 0 off (the previous snapshots showed 748 differences in 28,231). The open fly-out matches too. Not checked on the iPad or iPhone. Nothing is approved. The five count boards are not redrawn (decide row).\n\nAction: Open a few at the widths you use (1366, 1024, 744, 393), side by side with the app.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "1366",
+        "url": "http://localhost:8077/011-recipe-route-c/1366-batch.html"
+      },
+      {
+        "label": "1024",
+        "url": "http://localhost:8077/011-recipe-route-c/1024-batch.html"
+      },
+      {
+        "label": "984",
+        "url": "http://localhost:8077/011-recipe-route-c/984-batch.html"
+      },
+      {
+        "label": "983",
+        "url": "http://localhost:8077/011-recipe-route-c/983-batch.html"
+      },
+      {
+        "label": "834",
+        "url": "http://localhost:8077/011-recipe-route-c/834-batch.html"
+      },
+      {
+        "label": "744",
+        "url": "http://localhost:8077/011-recipe-route-c/744-batch.html"
+      },
+      {
+        "label": "1600",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-batch.html"
+      },
+      {
+        "label": "1600 no batch",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-no-batch.html"
+      },
+      {
+        "label": "1600 pen",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-pen.html"
+      },
+      {
+        "label": "1600 long history",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-long-history.html"
+      },
+      {
+        "label": "1600 remove link",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-remove-link.html"
+      },
+      {
+        "label": "1600 sticky rail",
+        "url": "http://localhost:8077/011-recipe-route-c/1600-sticky-rail.html"
+      },
+      {
+        "label": "1920",
+        "url": "http://localhost:8077/011-recipe-route-c/1920-batch.html"
+      },
+      {
+        "label": "Go to batch, 724 to 1365",
+        "url": "http://localhost:8077/011-recipe-route-c/724-1365-go-to-batch.html"
+      },
+      {
+        "label": "744 fly-out open",
+        "url": "http://localhost:8077/011-recipe-route-c/744-sticky-nav.html"
+      },
+      {
+        "label": "984 fly-out open",
+        "url": "http://localhost:8077/011-recipe-route-c/984-sticky-nav.html"
+      },
+      {
+        "label": "1366 fly-out open",
+        "url": "http://localhost:8077/011-recipe-route-c/1366-sticky-nav.html"
+      },
+      {
+        "label": "393",
+        "url": "http://localhost:8077/011-recipe-route-c/393-batch.html"
+      },
+      {
+        "label": "723",
+        "url": "http://localhost:8077/011-recipe-route-c/723-batch.html"
+      },
+      {
+        "label": "393 phone log",
+        "url": "http://localhost:8077/011-recipe-route-c/393-phone-log.html"
+      },
+      {
+        "label": "723 phone log",
+        "url": "http://localhost:8077/011-recipe-route-c/723-phone-log.html"
+      },
+      {
+        "label": "393 show changes head",
+        "url": "http://localhost:8077/011-recipe-route-c/393-show-changes-head.html"
+      },
+      {
+        "label": "723 show changes head",
+        "url": "http://localhost:8077/011-recipe-route-c/723-show-changes-head.html"
+      },
+      {
+        "label": "393 all folded",
+        "url": "http://localhost:8077/011-recipe-route-c/393-all-folded.html"
+      },
+      {
+        "label": "Record pen 350",
+        "url": "http://localhost:8077/011-recipe-route-c/350-pen-app.html"
+      },
+      {
+        "label": "Record pen 393",
+        "url": "http://localhost:8077/011-recipe-route-c/393-pen-app.html"
+      },
+      {
+        "label": "Record pen 724 range",
+        "url": "http://localhost:8077/011-recipe-route-c/724-pen-range.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T00:44:37.633Z",
+    "source": "decision 41 answer: redraw the other boards now (README decision 46)",
+    "status": "done",
+    "title": "Look at the redrawn wide and phone boards (dots, 10px radius, the build as of 19:16)",
+    "updatedAt": "2026-10-05T00:44:37.633Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: boards R35C_744 to R35C_1920, R35C_Batch, R35C_NoBatch, R35C_Pen, R35C_LongHistory, R35C_GoToBatchWide, R35C_RemoveLink, the sticky boards, R35C_393, R35C_723, the phone-log boards, R35C_393AllFolded and the record pen boards"
+    }
+  },
+  {
+    "id": "look-table-head-options",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T01:24:00.000Z",
+    "detail": "Context: Olive Oil v1 with its batch at 1366, and Standard Base v2 with none at 1600. Rows: the build's head on two lines, A (one line, Ingredient where it stands) and B (one line, Ingredient over the names). Each panel gives its head height and how far Ingredient and As made start from the heading's first letter.\n\nStatus: Drawn in WebKit on a Mac. Nothing is verified on the iPad. Nothing is approved.\n\nAction: Open the board, then answer the decide row on where Ingredient starts.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Table head, one line",
+        "url": "http://localhost:8077/011-recipe-route-c/table-head-one-line.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "sketch-011",
+    "resolvedAt": "2026-10-05T01:45:06.781Z",
+    "source": "draw-one-line-head-and-indent, decision 48",
+    "status": "done",
+    "title": "Look at the table head board (the build's two lines, A and B)",
+    "updatedAt": "2026-10-05T01:45:06.781Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_OneHead"
+    }
+  }
+]

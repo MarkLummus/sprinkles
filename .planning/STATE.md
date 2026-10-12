@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T14:29:37.798Z"
+last_updated: "2026-10-12T14:30:02.916Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: d3dd7fa95be5f5f39bbe96f0de78aa2c01cd89b1
+state_head: 2bd60df5e188c7a35fb5d0d9f8c690f5f3ce9a6f
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-12 - Completed quick task 261012-e8l: Home Next version link opens the Next version pen
+Last activity: 2026-10-12 - Completed fast task: Search field drops aria-describedby on its live region
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -508,6 +508,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 139 | Keyboard probe types 0000-0000 (a well-formed absent code) for the Search no-match check; colour mode passes 6/6 | 2026-10-12 | dd78c4f | — |
 | 140 | CLAUDE.md: every decide option carries a unique id | 2026-10-12 | 77c2bbd | — |
 | 261012-e8l | Home's Next version link opens the Next version pen (one tap) | 2026-10-12 | d3dd7fa | [261012-e8l-home-next-version-link-opens-the-next-ve](./quick/261012-e8l-home-next-version-link-opens-the-next-ve/) |
+| 142 | Search field drops aria-describedby on its live region; VoiceOver read the line twice per Find | 2026-10-12 | 2bd60df | — |
 
 ### Roadmap Evolution
 

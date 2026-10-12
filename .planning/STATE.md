@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T01:32:09.922Z"
+last_updated: "2026-10-12T01:47:30.304Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 898e0d0d5839297b6299b0e87ad7550b7711586c
+state_head: 44129fc97b43e2f6ac6ead69ca56a53f39e55b7e
 progress:
   total_phases: 15
   completed_phases: 11
@@ -496,6 +496,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261011-h0d | Boot-line comment in main.jsx records Mark's approval | 2026-10-11 | 6253b4d | [261011-h0d-in-app-src-main-jsx-line-16-change-the-c](./quick/261011-h0d-in-app-src-main-jsx-line-16-change-the-c/) |
 | 261011-h5g | Timestamp sentence added to CLAUDE.md and the marks-list skill | 2026-10-11 | 6dcd3b7 | [261011-h5g-add-one-sentence-about-timestamps-to-two](./quick/261011-h5g-add-one-sentence-about-timestamps-to-two/) |
 | 129 | STATE.md Current Position matches Phase 4 verification (human_needed) | 2026-10-11 | 898e0d0 | — |
+| 130 | 04-REVIEW-DISPOSITION.md records the four review warnings fixed in 261011-gko | 2026-10-11 | 44129fc | — |
 
 ### Roadmap Evolution
 

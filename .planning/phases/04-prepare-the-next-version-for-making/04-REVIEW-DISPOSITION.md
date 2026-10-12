@@ -1,18 +1,18 @@
 # Phase 04 code review disposition
 
-Recorded by the execute-phase orchestrator on 2026-10-11. Source: 04-REVIEW.md (0 critical, 9 warning, 5 info). Every finding started `open`; WR-06 and WR-07 were fixed by quick task 261011-al8.
+Recorded by the execute-phase orchestrator on 2026-10-11. Source: 04-REVIEW.md (0 critical, 9 warning, 5 info). Every finding started `open`; WR-06 and WR-07 were fixed by quick task 261011-al8; WR-04, WR-05, WR-08 and WR-09 by quick task 261011-gko (merged 617dac8). WR-01 and WR-02 were left out of scope.
 
 | ID | Severity | Disposition | Reason |
 |----|----------|-------------|--------|
 | WR-01 | warning | open | Import validator accepts shapes the app never writes (orphan batches, duplicate ids, undeclared mark axes, any date format) |
 | WR-02 | warning | open | Deeply nested JSON throws RangeError in validateStoreFile; Shell import/export do not catch it |
 | WR-03 | warning | open | Import overwrites by id with no confirmation; an open page can revert imported records on Save |
-| WR-04 | warning | open | draftMatchesVersion checks shape, not values; a restored draft can save a batch the import validator rejects |
-| WR-05 | warning | open | RecipePage loads have no .catch; a failed listBatchesForVersion silently stops draft restore and persistence |
+| WR-04 | warning | fixed (5583e07) | draftMatchesVersion checks shape, not values; a restored draft can save a batch the import validator rejects |
+| WR-05 | warning | fixed (9b661db) | RecipePage loads have no .catch; a failed listBatchesForVersion silently stops draft restore and persistence |
 | WR-06 | warning | fixed (d087031) | Print button can call window.print() before sheet.pages is laid out |
 | WR-07 | warning | fixed (aab4027, 1fbefe2) | SheetCodeSearch: submit before load, no failure path, repeated message not re-announced, malformed code reads as missing |
-| WR-08 | warning | open | openStore has no blocked/blocking handlers; a second tab on the old version hangs boot |
-| WR-09 | warning | open | Home lead and band name drafts that fail draftMatchesVersion; the link then deletes the draft quietly |
+| WR-08 | warning | fixed (416501b) | openStore has no blocked/blocking handlers; a second tab on the old version hangs boot |
+| WR-09 | warning | fixed (5583e07, 9b661db) | Home lead and band name drafts that fail draftMatchesVersion; the link then deletes the draft quietly |
 | IN-01 | info | open | MarkOneField off-state reason not tied to the disabled radiogroup |
 | IN-02 | info | open | Blank Sheet title leaves an unnamed link on the print route and a leading separator in the feet |
 | IN-03 | info | open | Restore overwrites a kept draft if a pen opens during the read |

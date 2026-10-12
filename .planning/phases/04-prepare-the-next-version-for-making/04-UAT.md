@@ -10,21 +10,21 @@ The pending device checks are tracked on Mark's List (https://claude.ai/artifact
 
 ## Current Test
 
-number: 1
-name: Keyboard walk of the whole loop on desktop and the iPad
+number: 3
+name: iPad Safari print of Olive Oil v1
 expected: |
-  Every control reachable, focus always visible, labels visible; Tab past the last link hands focus to Safari's chrome (expected). Include the date fields' new ink ring. Mark's List row: check-keyboard-walk-loop.
+  Five pages (Batch log, Tasting log, formula page, table tail with steps, rest with the closing foot); groups whole, header row repeated, Sheet code in every foot. Rows: check-ipad-pdf-bench-sheet-olive-oil, look-print-sheet-route-device, check-whole-loop-on-paper-after-phase-4.
 awaiting: user response
 
 ## Tests
 
 ### 1. Keyboard walk of the whole loop on desktop and the iPad
 expected: Safari 1366 landscape, tap then Tab, Full Keyboard Access OFF, built preview: review, Next version and save, record with a tasting and save, Correct, Print sheet then Print, a Sheet code on Search. Every control reachable, focus visible.
-result: [pending]
+result: pass (Mark, iPad, 2026-10-12: every stop shows a ring; the recipe-name links and Enter Sheet code had square rings, fixed in fca5b26; the churn date field shows its ring. Mark's List row check-keyboard-walk-loop closed.)
 
 ### 2. VoiceOver on a balance rule
 expected: The rule's name carries its deviation words after the target; the live region says "Contributing to {figure}: {row names}". Folded into check-keyboard-walk-loop.
-result: [pending]
+result: pass (Mark, iPad VoiceOver, 2026-10-12)
 
 ### 3. iPad Safari print of Olive Oil v1
 expected: Five pages (Batch log, Tasting log, formula page, table tail with steps, rest with the closing foot); groups whole, header row repeated, Sheet code in every foot. Rows: check-ipad-pdf-bench-sheet-olive-oil, look-print-sheet-route-device, check-whole-loop-on-paper-after-phase-4.
@@ -41,9 +41,9 @@ result: pass (orchestrator read the list: all three open at version 1, the fourt
 ## Summary
 
 total: 5
-passed: 1
+passed: 3
 issues: 0
-pending: 4
+pending: 2
 skipped: 0
 blocked: 0
 

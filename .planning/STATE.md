@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T03:32:54.672Z"
+last_updated: "2026-10-12T03:46:39.471Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 4e31b96325fd611f7c03eb374db33b72fa3af2c0
+state_head: b1ec4ac72fe444b21c5044ea7afbb0217d463b76
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-11 - Completed quick task 261011-h5g: Timestamp sentence in CLAUDE.md and the marks-list skill
+Last activity: 2026-10-11 - Completed quick task 261011-wqn: Align the action row on a recipe's version details (Print sheet on the same line as Next version and Show changes)
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -499,6 +499,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 130 | 04-REVIEW-DISPOSITION.md records the four review warnings fixed in 261011-gko | 2026-10-11 | 44129fc | — |
 | 131 | CLAUDE.md names which GSD command runs which change | 2026-10-11 | 3718f75 | — |
 | 132 | 04-UAT.md points to Mark's List for the pending device checks | 2026-10-11 | 4e31b96 | — |
+| 261011-wqn | Align the action row on a recipe's version details: Print sheet floats above the baseline of Next version and Show changes and sits against the right edge; line it up with them. | 2026-10-11 | b1ec4ac | [261011-wqn-align-the-action-row-on-a-recipe-s-versi](./quick/261011-wqn-align-the-action-row-on-a-recipe-s-versi/) |
 
 ### Roadmap Evolution
 

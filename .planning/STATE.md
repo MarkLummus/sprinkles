@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T13:20:45.654Z"
+last_updated: "2026-10-12T13:36:06.409Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: a27cedc94ae0b300c8810cffb543f1ca3c765b52
+state_head: dd78c4f619fd7a16248d2286187e21eb26aad2ce
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-12 - Completed quick task 261012-ct0: Search failure lines check length first; blank reads as length 0
+Last activity: 2026-10-12 - Completed fast task: keyboard probe Search no-match check types 0000-0000
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -505,6 +505,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 136 | marks-list runs /gsd-fast, /gsd-quick and /gsd-quick-batch for decided changes; Run rows only for interactive commands | 2026-10-12 | b4aeab0 | — |
 | 261012-ck1 | Search by Sheet code names why a code is wrong (blank, length, U, other symbol) | 2026-10-12 | ca39493 | [261012-ck1-search-by-sheet-code-names-why-a-code-is](./quick/261012-ck1-search-by-sheet-code-names-why-a-code-is/) |
 | 261012-ct0 | Search failure lines check length first; blank reads as length 0 | 2026-10-12 | a27cedc | [261012-ct0-search-failure-lines-length-first-blank-](./quick/261012-ct0-search-failure-lines-length-first-blank-/) |
+| 139 | Keyboard probe types 0000-0000 (a well-formed absent code) for the Search no-match check; colour mode passes 6/6 | 2026-10-12 | dd78c4f | — |
 
 ### Roadmap Evolution
 

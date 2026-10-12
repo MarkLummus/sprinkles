@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T01:47:30.304Z"
+last_updated: "2026-10-12T03:32:10.464Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 44129fc97b43e2f6ac6ead69ca56a53f39e55b7e
+state_head: 3718f75a60d76e69fdc7302647f26c46bf164914
 progress:
   total_phases: 15
   completed_phases: 11
@@ -497,6 +497,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261011-h5g | Timestamp sentence added to CLAUDE.md and the marks-list skill | 2026-10-11 | 6dcd3b7 | [261011-h5g-add-one-sentence-about-timestamps-to-two](./quick/261011-h5g-add-one-sentence-about-timestamps-to-two/) |
 | 129 | STATE.md Current Position matches Phase 4 verification (human_needed) | 2026-10-11 | 898e0d0 | — |
 | 130 | 04-REVIEW-DISPOSITION.md records the four review warnings fixed in 261011-gko | 2026-10-11 | 44129fc | — |
+| 131 | CLAUDE.md names which GSD command runs which change | 2026-10-11 | 3718f75 | — |
 
 ### Roadmap Evolution
 

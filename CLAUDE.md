@@ -85,6 +85,11 @@ scaffolds generated up front. When a step would commit the project to a structur
 direction (routing, state management, build tooling, testing framework), surface the
 choice rather than assuming one.
 
+## Which GSD command
+
+`/gsd-fast` for settled copy, token and doc edits; `/gsd-quick` for behaviour changes;
+`/gsd-quick-batch` for related fixes.
+
 ## Mark's List
 
 Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `items`) holds what waits on Mark.

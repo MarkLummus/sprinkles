@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T14:36:47.161Z"
+last_updated: "2026-10-12T14:44:12.914Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: fca5b26fbf0a5595de18855910a049ba8ae06f07
+state_head: fe375069dfc4837b184c028edb0c7aa697fcf295
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-12 - Completed fast task: Home text links carry the App radius for rounded focus rings
+Last activity: 2026-10-12 - Completed fast task: 04-UAT.md tests 1 and 2 recorded as passed
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -510,6 +510,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261012-e8l | Home's Next version link opens the Next version pen (one tap) | 2026-10-12 | d3dd7fa | [261012-e8l-home-next-version-link-opens-the-next-ve](./quick/261012-e8l-home-next-version-link-opens-the-next-ve/) |
 | 142 | Search field drops aria-describedby on its live region; VoiceOver read the line twice per Find | 2026-10-12 | 2bd60df | — |
 | 143 | Home text links carry the App radius so their focus rings are rounded | 2026-10-12 | fca5b26 | — |
+| 144 | 04-UAT.md: tests 1 and 2 recorded as passed on the iPad | 2026-10-12 | fe37506 | — |
 
 ### Roadmap Evolution
 

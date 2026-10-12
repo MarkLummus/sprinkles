@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T03:46:39.471Z"
+last_updated: "2026-10-12T04:07:26.681Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: b1ec4ac72fe444b21c5044ea7afbb0217d463b76
+state_head: 7beb6f222072718addbe40e4f74e52c1287354e5
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-11 - Completed quick task 261011-wqn: Align the action row on a recipe's version details (Print sheet on the same line as Next version and Show changes)
+Last activity: 2026-10-12 - Completed quick task 261011-x97: A wrapped Print sheet link in the version details row takes the 44px touch floor on a coarse pointer
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -500,6 +500,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 131 | CLAUDE.md names which GSD command runs which change | 2026-10-11 | 3718f75 | — |
 | 132 | 04-UAT.md points to Mark's List for the pending device checks | 2026-10-11 | 4e31b96 | — |
 | 261011-wqn | Align the action row on a recipe's version details: Print sheet floats above the baseline of Next version and Show changes and sits against the right edge; line it up with them. | 2026-10-11 | b1ec4ac | [261011-wqn-align-the-action-row-on-a-recipe-s-versi](./quick/261011-wqn-align-the-action-row-on-a-recipe-s-versi/) |
+| 261011-x97 | Give a wrapped Print sheet link in the version details row a 44px touch target on a coarse pointer: at 724 wide it wraps onto its own line and is only 17px tall because an anchor has no min-height floor (only buttons get it). | 2026-10-12 | 7beb6f2 | [261011-x97-give-a-wrapped-print-sheet-link-in-the-v](./quick/261011-x97-give-a-wrapped-print-sheet-link-in-the-v/) |
 
 ### Roadmap Evolution
 

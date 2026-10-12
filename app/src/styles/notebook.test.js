@@ -662,6 +662,45 @@ describe("the version acts row sets Print sheet on its neighbours' baseline (qui
   });
 });
 
+// At 724 Print sheet wraps onto a line of its own and measured 17px tall (WebKit 724
+// coarse, quick 261011-x97's baseline). app.css's coarse floor reaches buttons, not
+// anchors. Mark's 04-09 rule: a text link in a row of controls meets the 44px floor
+// on a coarse pointer.
+describe("the version acts row's Print sheet meets the touch floor under a coarse pointer (quick 261011-x97; Mark's 04-09 rule)", () => {
+  const LINK = '.notebook-version__acts > a.notebook-link';
+  const COARSE = '(pointer: coarse)';
+  const appRules = readAllRules(readFileSync(path.join(STYLES_DIR, 'app.css'), 'utf8'));
+  const declarationList = (rule) =>
+    rule.declarations
+      .split(';')
+      .map((d) => d.trim().replace(/\s+/g, ' '))
+      .filter(Boolean);
+
+  test('a (pointer: coarse) rule on the Print sheet link declares only min-height: var(--touch-min)', () => {
+    const rule = rules.find((r) => r.selector === LINK && r.media === COARSE);
+    expect(rule, `expected a ${COARSE} ${LINK} rule`).toBeTruthy();
+    expect(declarationList(rule)).toEqual(['min-height: var(--touch-min)']);
+  });
+
+  // The condition string above is the one app.css's own button floor uses, so the link's
+  // floor and the buttons' floor switch on together and read one shared token.
+  test("guard: app.css's own coarse button floor reads the same condition and the same token", () => {
+    const floor = appRules.find((r) => r.media !== undefined && r.selector.split(', ').includes('button') && /min-height:/.test(r.declarations));
+    expect(floor, "expected app.css's media-scoped button min-height rule").toBeTruthy();
+    expect(floor.media).toBe(COARSE);
+    expect(declarationList(floor)).toContain('min-height: var(--touch-min)');
+  });
+
+  test('the Print sheet link has the top-level rule, then the coarse rule, and no width-keyed step', () => {
+    expect(rules.filter((r) => r.selector === LINK).map((r) => r.media)).toEqual([undefined, COARSE]);
+  });
+
+  test('exactly one notebook-link rule declares min-height, the coarse Print sheet rule', () => {
+    const sizing = rules.filter((r) => r.selector.includes('notebook-link') && /(?:^|[\s;])min-height:/.test(r.declarations));
+    expect(sizing.map((r) => `${r.selector} @ ${r.media}`)).toEqual([`${LINK} @ ${COARSE}`]);
+  });
+});
+
 describe('the ceremony fields and actions share the App control radius (sketch 011 decision 38 B; quick 261004-ly7)', () => {
   const FIELD_SELECTOR = '.notebook-field .ink-field, .notebook-field input, .notebook-field textarea';
 

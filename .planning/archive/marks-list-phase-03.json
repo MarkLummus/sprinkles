@@ -1,0 +1,1817 @@
+[
+  {
+    "id": "todo-align-version-details-link",
+    "addedBy": "claude",
+    "createdAt": "2026-09-27T11:55:25.183Z",
+    "detail": "Problem: The Details link sits near the centre of its line, not aligned to an edge or field.\nNext: Measure against the sketch 011 boards at 1366, 1024, 983, 723 and 393, then align. Cosmetic.",
+    "handledAt": "2026-10-05T01:15:00.000Z",
+    "kind": "todo",
+    "phase": "03.5",
+    "reply": "Done: the todo file was already in .planning/todos/completed/ (quick ly4 found it aligned); nothing to move.",
+    "resolvedAt": "2026-10-05T01:04:48.809Z",
+    "source": "todo 2026-09-27",
+    "status": "done",
+    "title": "Align the version section's Details link",
+    "updatedAt": "2026-10-05T01:04:48.809Z",
+    "where": {
+      "label": ".planning/todos/pending/2026-09-27-align-the-version-details-link.md"
+    }
+  },
+  {
+    "id": "decision-amendment-confirmation-wording",
+    "addedBy": "claude",
+    "answer": "other",
+    "createdAt": "2026-10-04T19:53:44.000Z",
+    "detail": "Context: Today it says \"recorded 4 Aug 2026 against 50 g oil · 800 g\", the original date, so nothing confirms the amendment saved. The todo leaves the exact sentence to you.\n\nEffect: The amendment date task (261004-ly3) waits on this. The other five tasks in the batch continue. A new batch record keeps \"recorded ...\".",
+    "handledAt": "2026-10-04T19:57:00.000Z",
+    "kind": "decide",
+    "note": "I don't understand why the \"against 50 g oil · 800 g\" is part of the message. why not just \"changed 17 Sep 2026\"?",
+    "options": [
+      {
+        "id": "changed",
+        "label": "changed 17 Sep 2026 against 50 g oil · 800 g",
+        "recommended": true
+      },
+      {
+        "id": "amended",
+        "label": "amended 17 Sep 2026 against 50 g oil · 800 g"
+      },
+      {
+        "id": "updated",
+        "label": "updated 17 Sep 2026 against 50 g oil · 800 g"
+      }
+    ],
+    "phase": "03.5 follow-up",
+    "reply": "Decided: neither message carries the version suffix, since the page shows that version. A new record says \"recorded 4 Aug 2026\"; an amendment says \"changed 17 Sep 2026\". Task 261004-ly3 builds both.",
+    "resolvedAt": "2026-10-04T19:55:32.954Z",
+    "source": "todo-amendment-recording-date",
+    "status": "done",
+    "title": "What should the save confirmation say after you amend a batch?",
+    "updatedAt": "2026-10-04T19:55:32.954Z",
+    "where": {
+      "label": "app/src/ui/RecipePage.jsx, batchSavedStatus; todo 2026-09-17-an-amendment-announces-its-original-recording-date.md"
+    }
+  },
+  {
+    "id": "device-check-app-radius",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T20:40:44.000Z",
+    "detail": "Steps:\n1. Build and serve: npm --prefix app run build && npm --prefix app run preview -- --host. Hard reload.\n2. iPad at 1366 and 1024: look at the rail. Tap a place, then press Tab and look at the focus ring. Open the Next version pen and the Rename form and look at the fields and actions. Look at the Home lead block.\n3. iPhone at 393: look at the tab block, and More's items with their focus rings.\n\nExpected:\n- Every place, tab and tools button has a 10px radius.\n- The active rail place is weight 600. The other places stay 400. The active tab keeps its surface block at 400.\n- The focus ring follows the rounded corners.\n- The pen's fields went from 8 to 10px.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "More's items on iPhone don't look right: Import and Export look like very small buttons with each having a dark rounded rectangle border\nthe More tab focus ring is clipped\niPad looks mostly good. the Menu button (upper left) has a square focus ring and the Sprinkles word mark has a rectangular focus ring.",
+    "phase": "03.5 follow-up",
+    "reply": "Defects recorded in README decision 47. Row \"Fix: focus rings and More's items...\" is on the list; the menu button's missing focus rule is also in the Tidy row, which runs first.",
+    "resolvedAt": "2026-10-04T22:04:25.118Z",
+    "source": "quick 261004-ly7",
+    "status": "done",
+    "title": "Check the 10px radius on the rail, tab row, pen and home",
+    "updatedAt": "2026-10-04T22:04:25.118Z",
+    "where": {
+      "label": "Quick 261004-ly7, commits be2ab8f, d07c96c, 9b66ea1 and 3692270. Readings are from Playwright WebKit and Chrome only."
+    }
+  },
+  {
+    "id": "device-check-band-buttons",
+    "addedBy": "claude",
+    "closes": [
+      "todo-band-buttons-narrow"
+    ],
+    "createdAt": "2026-10-04T20:40:44.000Z",
+    "detail": "Steps:\n1. Build and serve: npm --prefix app run build && npm --prefix app run preview -- --host. Hard reload.\n2. On the Mac with a mouse: hover and press Rename, Next version and Show changes. Do the same for Cancel and Save in the Rename form and the Next version pen.\n3. On the iPad at 1366 and the iPhone at 393: tap Rename, then Cancel. Tap Next version, then Cancel.\n\nExpected:\n- No button changes width or nudges its neighbour.\n- The outline Cancel still thickens a little on hover.\n- After Cancel the buttons are back at their own width.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T12:00:00.000Z",
+    "kind": "check",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed, and \"Recipe band buttons narrow on hover or click\" is closed with it (file moved to completed).",
+    "resolvedAt": "2026-10-04T22:05:34.420Z",
+    "source": "quick 261004-ly5",
+    "status": "done",
+    "title": "Check the band buttons keep their width on hover and tap",
+    "updatedAt": "2026-10-04T22:05:34.420Z",
+    "where": {
+      "label": "Quick 261004-ly5, commits d4a6aa6 and abd833c. Save in the Rename form was not measured."
+    }
+  },
+  {
+    "id": "device-check-details-link",
+    "addedBy": "claude",
+    "closes": [
+      "todo-align-version-details-link"
+    ],
+    "createdAt": "2026-10-04T20:53:57.000Z",
+    "detail": "Context: Quick 261004-ly4 measured the control already aligned and changed nothing. It sits at the row's left edge, 14px after the VERSION caption. Its todo is closed. This is the device look.\n\nSteps:\n1. Build and serve: npm --prefix app run build && npm --prefix app run preview -- --host. Hard reload.\n2. iPad at 1366 landscape on Mexican Chocolate v3: look at the Version section.\n3. iPad at 1024 portrait and iPhone at 393: same.\n\nExpected:\n- 1366: \"VERSION  Hide details\". 1024 and 393: \"VERSION  Show details\".\n- One tap flips the word and it does not move.\n- It is not centred.\n\nIf it still looks centred, tell me and the todo reopens.",
+    "handledAt": "2026-10-05T12:00:00.000Z",
+    "kind": "check",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed. The Details link todo was already done.",
+    "resolvedAt": "2026-10-04T21:57:26.319Z",
+    "source": "quick 261004-ly4",
+    "status": "done",
+    "title": "Check the Version details control on iPad and iPhone",
+    "updatedAt": "2026-10-04T21:57:26.319Z",
+    "where": {
+      "label": "Quick 261004-ly4, commits f6395a2 and f802429"
+    }
+  },
+  {
+    "id": "device-check-info-labels-title",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T18:10:00.000Z",
+    "detail": "Steps:\n1. Build and serve: npm --prefix app run build && npm --prefix app run preview -- --host.\n2. iPad at 1366 and 1024: look at History and Tasting rows and the batch head.\n3. iPhone at 393: look at the same rows.\n4. Open Next version on either device and look at the Sheet title.\n\nExpected:\n- History and Tasting read label, Show or Hide, a dot, then the count or date, from the left. Each row is still one tap.\n- The batch head runs the date, then Correct and Record another.\n- On the iPhone nothing changed.\n- The Sheet title is one field under its Sheet title caption. A long title wraps and is not clipped. Enter adds no line.\n\nNote: field-sizing in Mobile Safari is unverified.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-04T18:02:21.000Z",
+    "kind": "check",
+    "note": "iPad: History and Tasting look right at portrait and landscape.\niPhone: nothing changed.\nSheet title changes work on iPad and iPhone as expected.",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed on iPad and iPhone; closed.",
+    "resolvedAt": "2026-10-04T17:59:16.826Z",
+    "source": "quick 261004-igr",
+    "status": "done",
+    "title": "Check the info labels and the one-field Sheet title on iPad and iPhone",
+    "updatedAt": "2026-10-04T17:59:16.826Z",
+    "where": {
+      "label": "Quick 261004-igr. Commits 94ec0ab and 490adfc."
+    }
+  },
+  {
+    "id": "device-check-ox-balance-open",
+    "addedBy": "claude",
+    "closes": [
+      "build-decision-33-brief-tasks-1-4"
+    ],
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. iPad at 1024 portrait: Balance and Watch for are open, beside the ingredients. Press Hide on Balance. Rotate to 1366 landscape.\n\nExpected:\n- Balance stays hidden after the rotation; Version details, History and Tasting reset to open. Rotating back resets nothing you did not touch.\n- Below 984 (744) both are closed.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "that works. pass.",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed.",
+    "resolvedAt": "2026-10-05T00:03:04.970Z",
+    "source": "quick 261004-oxa",
+    "status": "done",
+    "title": "Check Balance and Watch for open from 984 on the iPad",
+    "updatedAt": "2026-10-05T00:04:24.128Z",
+    "where": {
+      "label": "Quick 261004-oxa, commits 8307785 and 0fcc2c3"
+    }
+  },
+  {
+    "id": "device-check-ox-details-rhythm",
+    "addedBy": "claude",
+    "closes": [
+      "build-details-rhythm",
+      "llhl1ziagz2zxvnzb67r"
+    ],
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. iPad at 1366 landscape and iPhone at 393: open the version details on Mexican Chocolate v3 (saved Why), v2 and Olive Oil v1 (no Why).\n\nExpected:\n- Written, From version and Why look evenly spaced (8px), the WHY label close to its words in the hand. v2 and Olive Oil v1 read the same, with \"no reason recorded\" under the label.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "iPad is good.\niPhone is good.",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed on iPad and iPhone; closed.",
+    "resolvedAt": "2026-10-05T00:07:34.102Z",
+    "source": "quick 261004-ox3",
+    "status": "done",
+    "title": "Check the Version details rhythm on iPad and iPhone",
+    "updatedAt": "2026-10-05T00:07:34.102Z",
+    "where": {
+      "label": "Quick 261004-ox3, commits fc4404e and 81fe551"
+    }
+  },
+  {
+    "id": "device-check-ox-go-to-batch",
+    "addedBy": "claude",
+    "closes": [
+      "build-decision-33-brief-tasks-1-4",
+      "draw-decision-33-34-redraws"
+    ],
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. iPad at 1024 portrait: look under the Version section; tap the row. Rotate to 1366. iPhone at 393: as before.\n\nExpected:\n- 1024: \"Go to batch · Awaiting tasting\" (or \"Tasted\") reads from the left; one tap lands on the Batch heading below the sticky bar.\n- 1366: no row. 393: unchanged.\n\nNote for Phase 04: from 724 to 1365 this row now prints too.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "not sure what the iPad behavior should be. in portrait, clicking shows the batch section. there is no row in landscape. that's all good. when I rotate, should the screen scroll the Batch section into view?\n",
+    "phase": "03.5 follow-up",
+    "reply": "Everything else passed. Your rotate question is the decide row \"Go to batch: should rotating scroll the Batch section into view?\".",
+    "resolvedAt": "2026-10-05T00:14:56.409Z",
+    "source": "quick 261004-ox9",
+    "status": "done",
+    "title": "Check the Go to batch row from 724 to 1365 on the iPad",
+    "updatedAt": "2026-10-05T00:14:56.409Z",
+    "where": {
+      "label": "Quick 261004-ox9, commits 595a5b8 and 62b2ebd"
+    }
+  },
+  {
+    "id": "device-check-ox-phone-labels",
+    "addedBy": "claude",
+    "closes": [
+      "build-phone-labels-batch-head",
+      "draw-decision-33-34-redraws"
+    ],
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. iPhone at 393, Mexican Chocolate v3: History, Go to batch. Olive Oil v1: Tasting, and the batch head. Tap each row near its blank right end.\n3. iPad at 1366: the batch head.\n\nExpected:\n- \"History  Show · 4 versions\", \"Go to batch · Awaiting tasting\", \"Tasting  Show · tasted date unknown\": the info starts about 32px after the control word.\n- A tap near the right end still opens or jumps.\n- At 1366 the head's actions sit 16px under the date, and the head is no taller than before.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "iphone: works. but the Batch head timestamp looks different from Tasting head timestamp, and there is no show/hide on Batch section (we need to add this capability to be consistent).\niPad is fine.",
+    "phase": "03.5 follow-up",
+    "reply": "Labels work. The Batch head timestamp and the missing Show/Hide on Batch are the row \"Draw: the Batch head and a Show/Hide on the Batch section\", with Sid.",
+    "resolvedAt": "2026-10-05T00:18:01.798Z",
+    "source": "quick 261004-ox5",
+    "status": "done",
+    "title": "Check the dot-separated labels at the phone and the batch head height",
+    "updatedAt": "2026-10-05T00:18:01.798Z",
+    "where": {
+      "label": "Quick 261004-ox5, commits bfec66c and f84fd79"
+    }
+  },
+  {
+    "id": "device-check-ox-phone-table",
+    "addedBy": "claude",
+    "closes": [
+      "build-decision-33-brief-tasks-1-4"
+    ],
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. iPhone at 393: Mexican Chocolate v4 with Show changes on, the Strawberry v2.1 batch view, and the Next version pen.\n\nExpected:\n- Plan amount and As made stay still when Show changes toggles; the struck figure sits last.\n- Rows with nothing below the amount are about 2px shorter than before.\n- In the pen, a row whose share changes drops its current share about 8px (as the 393 board draws it).\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "pass.",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed.",
+    "resolvedAt": "2026-10-05T00:20:39.357Z",
+    "source": "quick 261004-ox7",
+    "status": "done",
+    "title": "Check the phone table: plan, As made and struck figures",
+    "updatedAt": "2026-10-05T00:20:39.357Z",
+    "where": {
+      "label": "Quick 261004-ox7, commits dbf72c6 to a8ba6fd"
+    }
+  },
+  {
+    "id": "device-check-ox-record-pen",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. Olive Oil v1: Record another, Add tasting. iPhone at 393, iPad at 1366 and 1024.\n\nExpected:\n- Rounded fields and joined stops, the picked fill in app blue with a white number.\n- The cues (Every recipe, This recipe only, Any problems?) read as headings about 26px above their first axis.\n- At 393, Clear sits level with each axis name.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "iPHone: This recipe only in hairline in Any problems? is black; all other hairlines are gray.\niPad: same as iPHone.\nClear sits level on both.\nCues look good.",
+    "phase": "03.5 follow-up",
+    "reply": "Clear and the cues pass. The black hairline is the row \"Fix: the black hairline above Any problems?\".",
+    "resolvedAt": "2026-10-05T00:26:09.986Z",
+    "source": "quick 261004-ox4",
+    "status": "done",
+    "title": "Check the record pen's App look on iPhone and iPad",
+    "updatedAt": "2026-10-05T00:26:09.986Z",
+    "where": {
+      "label": "Quick 261004-ox4, commits d601457 to 276e04d"
+    }
+  },
+  {
+    "id": "device-check-ox-remove-link",
+    "addedBy": "claude",
+    "closes": [
+      "build-split-remove-link-b",
+      "draw-remove-link-split-rows"
+    ],
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. Open Olive Oil v1, Next version. Look at Whole milk and Sucrose: press the link on the Step 3 line, then restore it from the Step 2 line.\n\nExpected:\n- Every line has a remove link. Pressing any line's link strikes the whole ingredient.\n- After remove, the portion lines read 46.3%, not 86.3%.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "pass.",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed.",
+    "resolvedAt": "2026-10-05T00:27:51.628Z",
+    "source": "quick 261004-ox6",
+    "status": "done",
+    "title": "Check the remove link on every line of a split ingredient, on iPhone and iPad",
+    "updatedAt": "2026-10-05T00:27:51.628Z",
+    "where": {
+      "label": "Quick 261004-ox6, commits aa59f37 to edb9224"
+    }
+  },
+  {
+    "id": "device-check-ox-tab-weight",
+    "addedBy": "claude",
+    "closes": [
+      "build-tab-weight-600"
+    ],
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve: npm --prefix app run build && npm --prefix app run preview -- --host. Hard reload.\n2. iPhone at 393: open Home, a recipe, Recipe book and Idea log. Open More and go to Ingredients.\n\nExpected:\n- The current tab reads bold on each of the first four. On Ingredients with More open, Ingredients reads bold.\n- Every other tab reads regular. The tab boxes and labels do not move or wrap.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "pass.",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed.",
+    "resolvedAt": "2026-10-05T00:28:42.898Z",
+    "source": "quick 261004-ox2",
+    "status": "done",
+    "title": "Check the active tab's weight 600 on the iPhone",
+    "updatedAt": "2026-10-05T00:28:42.898Z",
+    "where": {
+      "label": "Quick 261004-ox2, commits 8d8d601 to 6e377ee"
+    }
+  },
+  {
+    "id": "device-check-ox-table-grid",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Steps:\n1. Build and serve, hard reload.\n2. iPad at 1366 landscape and 1024 portrait (and 744 or 834 on an iPad mini or 11in if you have one), and Mac Safari at 1600: Mexican Chocolate v3 with its batch. Toggle Show changes. Open Next version and change an amount. Open Olive Oil v1 and Record another.\n\nExpected:\n- As made is the first column; plan amounts do not move when Show changes toggles; the struck figure sits under the amount.\n- No ingredient name wraps. The table head reads on two lines (see the decide row).\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "check",
+    "note": "iPad: table header (Ingredient) is indented (I starts at about N in ingredients); As Made is wrapped and starts at left edge of the table.\nSame on Mac.\n",
+    "phase": "03.5 follow-up",
+    "reply": "The indented Ingredient head and the wrapping As made are in the row \"Draw: the ingredients table head on one line...\", with Sid; the one-line head decision may remove the wrap.",
+    "resolvedAt": "2026-10-05T00:34:27.401Z",
+    "source": "quick 261004-ox8",
+    "status": "done",
+    "title": "Check the ingredients table grid from 724 on the iPad and Mac",
+    "updatedAt": "2026-10-05T00:34:27.401Z",
+    "where": {
+      "label": "Quick 261004-ox8, commits 59ad7ee and 69a4848. VoiceOver table navigation is device-unverified."
+    }
+  },
+  {
+    "id": "device-check-remove-link",
+    "addedBy": "claude",
+    "before": {
+      "detail": "Olive Oil v1, the Whole milk and Sucrose rows, on iPhone 393 and iPad. The link should sit on the name's line with the portion line under it. At 393 a removed Whole milk row is a little taller (the height floor).",
+      "title": "Device-check the remove-link fix in the Next version pen"
+    },
+    "createdAt": "2026-10-04T15:40:00.000Z",
+    "detail": "Steps:\n1. Open the build. Use the link below.\n2. Open the Next version pen on Olive Oil v1.\n3. Look at the Whole milk row and the Sucrose row.\n4. Do steps 1 to 3 on an iPhone (393 wide) and on an iPad.\n\nExpected:\n- The remove link is on the name line.\n- The portion line is under the name line.\n- On the iPhone, a removed Whole milk row is a little taller. This is the height floor.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-04T17:30:00.000Z",
+    "kind": "check",
+    "links": [
+      {
+        "label": "Open the build (LAN)",
+        "url": "http://192.168.1.133:4173/"
+      }
+    ],
+    "note": "I'm not sure that we discussed this. the remove link is visible on the first shared ingredient, but not on the others. \nWhole milk in Step 2 has remove link. \nWhole milk in Step 3 does not have remove link.\nSeems like something Sid needs to review and suggest options.",
+    "phase": "03.5 follow-up",
+    "reply": "Failed check: remove link missing on later split rows; Sid to review and propose options, then /gsd-quick for the fix.",
+    "resolvedAt": "2026-10-04T16:55:56.381Z",
+    "source": "quick 261004-eoi",
+    "status": "done",
+    "steStyle": true,
+    "title": "Check the remove link on a split row, on iPhone and iPad",
+    "updatedAt": "2026-10-04T16:55:56.381Z",
+    "where": {
+      "label": "Quick 261004-eoi. The link works while the preview server is running."
+    }
+  },
+  {
+    "id": "device-check-sticky-header-flyout-rail",
+    "addedBy": "claude",
+    "closes": [
+      "todo-sticky-side-nav"
+    ],
+    "createdAt": "2026-10-04T20:53:57.000Z",
+    "detail": "Steps:\n1. Build and serve: npm --prefix app run build && npm --prefix app run preview -- --host. Hard reload.\n2. iPad at 1366, 1024 and 744: scroll a long recipe page; the 57px header stays on top. Tap the menu button: the nav opens as a fly-out. Press Tab to move through it. Close it with Escape, the scrim, a place, or the menu button.\n3. iPhone at 393: the header scrolls as before; the wordmark is now a link to Home.\n4. Mac at 1600 and 1920: the rail is pinned under the header with no menu button.\n\nExpected:\n- From 724 the header is sticky: menu button (724 to 1589 only), wordmark link, Search, Import, Export.\n- Below 1590 the nav is a fly-out; from 1590 it is the pinned rail.\n- The open fly-out is as tall as the window less the header, the page behind it does not scroll, and an open pen survives Escape.\n- Below 724 nothing else changed.\n\nNote: you chose to build this before looking at the 744 to 1366 boards, so this is also your first look at them. Every reading so far is from Playwright WebKit and Chrome on the Mac.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T12:00:00.000Z",
+    "kind": "check",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed, and \"Keep the side nav's options on screen while the page scrolls\" is closed with it (file moved to completed).",
+    "resolvedAt": "2026-10-04T22:00:21.517Z",
+    "source": "quick 261004-ly8",
+    "status": "done",
+    "title": "Check the sticky header, fly-out and rail on iPad, iPhone and the Mac",
+    "updatedAt": "2026-10-04T22:00:21.517Z",
+    "where": {
+      "label": "Quick 261004-ly8, commits bdac0f3 to 099653e. Decision 33 brief tasks 5 and 6."
+    }
+  },
+  {
+    "id": "device-check-why-row",
+    "addedBy": "claude",
+    "closes": [
+      "todo-why-row-version-details"
+    ],
+    "createdAt": "2026-10-04T20:40:44.000Z",
+    "detail": "Steps:\n1. Build and serve: npm --prefix app run build && npm --prefix app run preview -- --host. Hard reload.\n2. iPad at 1366 landscape and iPhone at 393: open the version details.\n3. Mexican Chocolate v3 has a saved Why. v2 and Olive Oil v1 have none.\n\nExpected:\n- The saved Why starts right under the W of WHY, on its own line, in the hand in pen blue.\n- On v2 and Olive Oil v1, \"no reason recorded\" starts at the same edge, in small type.\n\nIf not: write what you see in the note.",
+    "handledAt": "2026-10-05T12:00:00.000Z",
+    "kind": "check",
+    "phase": "03.5 follow-up",
+    "reply": "Check passed; closed, and \"Look into the Why row in the version details\" is closed with it (file moved to completed).",
+    "resolvedAt": "2026-10-04T22:06:15.803Z",
+    "source": "quick 261004-ly6",
+    "status": "done",
+    "title": "Check the Why row on iPad and iPhone",
+    "updatedAt": "2026-10-04T22:06:15.803Z",
+    "where": {
+      "label": "Quick 261004-ly6, commits 63e9c54 and 100d82f. Readings are from Playwright WebKit and Chrome only."
+    }
+  },
+  {
+    "id": "look-oxa-empty-space-mex3",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T23:20:33.000Z",
+    "detail": "Context: With Balance and Watch for open from 984, the side column spans the ingredients and method rows and is 1433px tall. The grid gives the surplus to the ingredients row, so Mexican Chocolate v3 shows 325px of empty space under its table at 984 and 1024. The boards draw the same effect. Olive Oil v1 is unaffected.\n\nAction: Look at it on the iPad at 1024. Tell me if it bothers you; a fix would be a design change for Sid, not a quick.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "look",
+    "note": "it bothers me. ask Sid to fix.",
+    "phase": "03.5 follow-up",
+    "reply": "Row \"Draw: a fix for the empty space under the ingredient table...\" is with Sid.",
+    "resolvedAt": "2026-10-05T00:46:46.362Z",
+    "source": "quick 261004-oxa",
+    "status": "done",
+    "title": "Look: 325px of empty space under the ingredient table on Mexican Chocolate v3 at 984 to 1365",
+    "updatedAt": "2026-10-05T00:46:46.362Z",
+    "where": {
+      "label": "Quick 261004-oxa SUMMARY, finding 4"
+    }
+  },
+  {
+    "id": "impeccable-update-window",
+    "addedBy": "claude",
+    "answer": "other",
+    "before": {
+      "detail": "Phase 03.5 is complete and Phase 04 has not started, so the window you asked for is open now. 4.4.0 changed detector measurements and the audit, adapt and harden checks, so critique results may shift. Before updating: confirm .impeccable/ and the critique loop work. After: re-run one critique and compare.",
+      "title": "Update Impeccable from 4.2.0 to 4.5.0 before Phase 04 planning"
+    },
+    "createdAt": "2026-10-04T15:40:00.000Z",
+    "detail": "Context: Phase 03.5 is complete. Phase 04 has not started. The update window is open now.\n\nRisk: Version 4.4.0 changes how the detector measures. It also changes how audit, adapt and harden test. Critique results can change.\n\nBefore the update: confirm that .impeccable/ and the critique loop work.\n\nAfter the update: run one critique. Compare the result with the earlier one.",
+    "handledAt": "2026-10-04T17:30:00.000Z",
+    "kind": "decide",
+    "note": "I want to resolve all of these open decisions AND I have some open critiques that I need to process. Let's change the criteria to \"do this when we start Phase 04 planning\"",
+    "options": [
+      {
+        "id": "now",
+        "label": "Update now"
+      },
+      {
+        "id": "later",
+        "label": "Wait"
+      }
+    ],
+    "phase": "03.5 to 04",
+    "reply": "Update moves to when Phase 04 planning starts; I will raise it then.",
+    "resolvedAt": "2026-10-04T16:51:16.062Z",
+    "source": "todo 2026-10-04",
+    "status": "done",
+    "steStyle": true,
+    "title": "Update Impeccable from 4.2.0 to 4.5.0 before Phase 04 planning",
+    "updatedAt": "2026-10-04T16:51:16.062Z",
+    "where": {
+      "label": ".planning/todos/pending/2026-10-04-update-impeccable-between-phase-03-5-and-phase-04.md"
+    }
+  },
+  {
+    "id": "blocked-row-sentence-not-shown",
+    "addedBy": "claude",
+    "answer": "draw",
+    "createdAt": "2026-10-05T13:45:00.000Z",
+    "detail": "Observation: when a line's amount is blank and you press Save, the cursor lands on the blocked line and it is outlined, but the sentence ('Whole milk needs an amount, or remove it') is never printed for a row. It is only shown for the version-line field. No board draws a row-level message.\n\nQuestion: leave it as the outline and cursor, or have Sid draw where the sentence goes?",
+    "handledAt": "2026-10-05T13:34:30.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "id": "leave",
+        "label": "Leave as built: outline and cursor only",
+        "recommended": true
+      },
+      {
+        "id": "draw",
+        "label": "Ask Sid to draw where the sentence goes"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "You chose to have Sid draw where the sentence goes. Sid is started (row: Draw: where the blocked-row sentence goes); a look row follows when the board is ready.",
+    "resolvedAt": "2026-10-05T13:32:12.412Z",
+    "source": "quick 261005-cm6",
+    "status": "done",
+    "title": "A blocked save on an ingredient row shows no sentence, only the outline and the cursor. Draw one?",
+    "updatedAt": "2026-10-05T13:32:12.412Z",
+    "where": {
+      "label": "Next version pen, ingredient table; app/src/domain/lineage.js blockedSaveMessage"
+    }
+  },
+  {
+    "id": "build-as-made-reads-like-sheet",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T13:34:30.000Z",
+    "detail": "Context: you chose A recommended (sketch 011 README decision 56). In recording, a split ingredient with one line left draws no portion line, as the reading Sheet does, and the as-made field is named 'portion N' only when the row draws two or more lines, N counting the lines drawn. The value is still written at the stored index, so nothing stored changes.\n\nRuns as a /gsd-quick.",
+    "handledAt": "2026-10-05T14:00:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Built as /gsd-quick 261005-db4 (commits b3293f6, f267b7e): recording draws no portion line when one line is left, and the as-made field is named 'portion N' only when two or more lines are drawn. The value is still written at the stored index (Whole milk [null, 245], Sucrose [12.5, 63]). 1860 tests and the build pass.",
+    "resolvedAt": "2026-10-05T14:00:00.000Z",
+    "source": "look-as-made-line-out-board",
+    "status": "done",
+    "title": "Build: recording reads like the Sheet when one line is left",
+    "updatedAt": "2026-10-05T13:34:30.000Z",
+    "where": {
+      "label": "app/src/ui/IngredientTable.jsx renderReadingEntry and AsMadeCell; README decision 56 app change brief"
+    }
+  },
+  {
+    "id": "build-blocked-row-sentence-in-line",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T00:56:00.000Z",
+    "detail": "Context: you chose A recommended (sketch 011 README decision 57). When a save is blocked on an ingredient line, the sentence prints in that line's own name cell, in the version line's sentence face, wording as built ('Whole milk needs an amount, or remove it'). The field is aria-invalid and described by it; typing clears it. No CSS change.\n\nRuns as a /gsd-quick.",
+    "handledAt": "2026-10-06T01:20:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Built as /gsd-quick 261005-t32 (commits fc173fb, d477a91, docs 374dda1): a blocked save prints the sentence last in the blocked line's name cell; the field is aria-invalid and described by it; typing clears both. 1866 tests and the build pass; devices not checked.",
+    "resolvedAt": "2026-10-06T01:20:00.000Z",
+    "source": "look-blocked-row-sentence-board",
+    "status": "done",
+    "title": "Build: the blocked-save sentence in the blocked ingredient line",
+    "updatedAt": "2026-10-06T00:56:00.000Z",
+    "where": {
+      "label": "app/src/ui/RecipePage.jsx and IngredientTable.jsx (blockedRowId, GramsCell); README decision 57 app change brief"
+    }
+  },
+  {
+    "id": "build-one-line-left-drop",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T12:57:00.000Z",
+    "detail": "Context: You chose drop (Sid's stated preference in decision 51). After Whole milk's Step 2 line is removed and the version saved, the reading state shows 'Whole milk 250.4 g of 250.4 g · 36.8% in all' for the one line left.\n\nChange: a split row with a single line still in prints like a one-line row on the reading Sheet and in print (no portion line). The pen, Show changes and a row with two or more lines in are unchanged.\n\nRuns as a /gsd-quick.",
+    "handledAt": "2026-10-05T13:20:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Built as /gsd-quick 261005-cgb (commits 07b01c7, 96a31f7, 949cf3f): the reading Sheet and print no longer draw a portion line when a split ingredient has one line left. Recording still draws it, pending the as-made drawing. Not checked on the devices; add it to your next device pass.",
+    "resolvedAt": "2026-10-05T13:20:00.000Z",
+    "source": "per-step-one-line-left",
+    "status": "done",
+    "title": "Build: drop the portion line on the reading Sheet and print when a split ingredient has one line left",
+    "updatedAt": "2026-10-05T12:57:00.000Z",
+    "where": {
+      "label": "app/src/ui/IngredientTable.jsx (reading state and print); 03.6-CONFORMANCE.md Open for Mark"
+    }
+  },
+  {
+    "id": "build-reading-tasting-groups",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T01:40:00.000Z",
+    "detail": "Context: you chose B (Melt test and Melt style join the measured values at the top, the Melt group goes) and B2 (the four names take the pen's cue face; Any problems? keeps Next time's face) on sketch 011 README decision 58.\n\nRuns as a /gsd-quick from the README's app change brief (BatchRow.jsx TastingReading, notebook.css, BatchRow.test.jsx).",
+    "handledAt": "2026-10-06T02:10:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Built as /gsd-quick 261005-txg (commits 9cb65a1, 643923c): Melt test and Melt style join the measured values, the Melt group is gone, the four names take the pen's cue face, Any problems? keeps Next time's face. 1878 tests and the build pass; board against build 122 checks, 0 off; devices not checked.",
+    "resolvedAt": "2026-10-06T02:10:00.000Z",
+    "source": "look-tasting-groups-names-board-2",
+    "status": "done",
+    "title": "Build: the reading's tasting groups (Every recipe / This recipe only, Any problems?, Melt with the measured values)",
+    "updatedAt": "2026-10-06T01:40:00.000Z",
+    "where": {
+      "label": "app/src/ui/BatchRow.jsx TastingReading and notebook.css; README decision 58 app change brief"
+    }
+  },
+  {
+    "id": "check-as-made-reads-like-sheet",
+    "addedBy": "claude",
+    "closes": [
+      "build-as-made-reads-like-sheet"
+    ],
+    "createdAt": "2026-10-05T14:00:00.000Z",
+    "detail": "Steps: serve with `npm --prefix app run build && npm --prefix app run preview -- --host` (never the dev server). On the iPad (1366) and iPhone (393): open Olive Oil v1, press Next version, remove Whole milk's Step 2 line, save as v2, then Record a batch. Whole milk reads 'Whole milk' with no portion line, and its field is named without 'portion'. Type 245 in Whole milk and 12.5 and 63 in Sucrose: the as-made total reads 673.8 g against plan 679.7 g. Save, then Correct: the same values come back.\n\nAll of this passes in the tests (1860) and the build; the devices are not checked.",
+    "handledAt": "2026-10-06T00:56:00.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "pass.",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Passed. Its build row build-as-made-reads-like-sheet is already closed.",
+    "resolvedAt": "2026-10-06T00:40:31.296Z",
+    "source": "quick 261005-db4",
+    "status": "done",
+    "title": "Check recording on a version with a line out, on the iPad and iPhone",
+    "updatedAt": "2026-10-06T00:40:31.296Z",
+    "where": {
+      "label": "Record a batch on Olive Oil v2; quick 261005-db4 SUMMARY; sketch 011 README decision 56"
+    }
+  },
+  {
+    "id": "check-blocked-row-sentence",
+    "addedBy": "claude",
+    "closes": [
+      "build-blocked-row-sentence-in-line"
+    ],
+    "createdAt": "2026-10-06T01:20:00.000Z",
+    "detail": "Steps: serve with `npm --prefix app run build && npm --prefix app run preview -- --host` (never the dev server). On the iPad (1366) and iPhone (393): open Olive Oil v1, press Next version, type v2 in Version name, clear Whole milk's Step 3 amount, press Save as a new version. The page scrolls to the Step 3 line; under its portion line, in bold small print, it reads 'Whole milk needs an amount, or remove it'; the Step 2 line has nothing. With VoiceOver on, the field is read with that sentence. Type a digit: the sentence and the outline go. Repeat with Heavy cream cleared: one line at 1366, two at 393.\n\nAll of this passes in the tests (1866) and the build; the devices are not checked.",
+    "handledAt": "2026-10-06T01:40:00.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "pass.",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Passed on the devices. Its build row build-blocked-row-sentence-in-line is already closed.",
+    "resolvedAt": "2026-10-06T01:24:23.889Z",
+    "source": "quick 261005-t32",
+    "status": "done",
+    "title": "Check the blocked-save sentence in the line, on the iPad and iPhone",
+    "updatedAt": "2026-10-06T01:24:23.889Z",
+    "where": {
+      "label": "Next version pen on Olive Oil v1; quick 261005-t32 SUMMARY; sketch 011 README decision 57"
+    }
+  },
+  {
+    "id": "check-reading-tasting-groups",
+    "addedBy": "claude",
+    "closes": [
+      "build-reading-tasting-groups"
+    ],
+    "createdAt": "2026-10-06T02:10:00.000Z",
+    "detail": "Steps: serve with `npm --prefix app run build && npm --prefix app run preview -- --host` (never the dev server). On the iPad (1366) and iPhone (393): open a batch with a tasting that has marks and picked problems (the seeded olive oil batch, and one you record with every field). The measured values at the top read Tempering, Tasting temperature, Melt test, Melt style; there is no Melt group. Under the marks, Every recipe and This recipe only are bold names, each drawn only when it holds a mark. Any problems? is a small caps grey caption like Next time, with the picked words under Every recipe and This recipe only. A tasting with no marks and no problems draws none of these groups.\n\nAll of this passes in the tests (1878), the build and a board comparison (122 checks, 0 off, WebKit and Chrome); the devices are not checked. Widths 724 to 1365 with the tasting open are not checked either.",
+    "handledAt": "2026-10-06T02:30:00.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "pass.",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Passed on the devices. Its build row build-reading-tasting-groups is already closed.",
+    "resolvedAt": "2026-10-06T01:51:37.188Z",
+    "source": "quick 261005-txg",
+    "status": "done",
+    "title": "Check the reading's tasting groups on the iPad and iPhone",
+    "updatedAt": "2026-10-06T01:51:37.188Z",
+    "where": {
+      "label": "Batch reading, Tasting section; quick 261005-txg SUMMARY; sketch 011 README decision 58"
+    }
+  },
+  {
+    "id": "decide-retake-18-option-boards",
+    "addedBy": "claude",
+    "answer": "leave",
+    "createdAt": "2026-10-06T02:45:00.000Z",
+    "detail": "Context: after the tasting-groups build, Sid retook the 30 boards that redraw.sh makes (21 changed, on the canvas v323). Eighteen other boards each draw an option or decision at its own date from its own generator, and still show the old group names (Observations, Problems, Melt) in their reading: 1366-ladder, 1366-nav, batch-head-show-hide, before-you-start-heading, -pen, -position, -states, blocked-row-sentence, import-errors-placement, info-labels-batch-head, info-labels-log, per-step-shared-ingredient, record-pen-app, sheet-title-pen, split-remove-link, table-head-one-line, version-details-rhythm, why-row.\n\nSid's read: retaking them would redraw old options on today's build, so they would stop showing what was decided on. The decisions they belong to are already answered.",
+    "handledAt": "2026-10-06T02:20:00.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "id": "leave",
+        "label": "Leave them as dated drawings",
+        "recommended": true
+      },
+      {
+        "id": "retake",
+        "label": "Retake all 18 on today's build"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Leave them as dated drawings, recorded in README decision 58. Nothing to retake.",
+    "resolvedAt": "2026-10-06T02:16:12.814Z",
+    "source": "draw-retake-reading-boards-after-tasting-groups",
+    "status": "done",
+    "title": "Retake the 18 option boards that still draw the old tasting names?",
+    "updatedAt": "2026-10-06T02:16:12.814Z",
+    "where": {
+      "label": "Sketch 011 boards on the canvas, page Recipe route 03.5; README decision 58"
+    }
+  },
+  {
+    "id": "draw-as-made-with-line-out",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T12:57:00.000Z",
+    "detail": "Context: As built, recording shows an as-made field only for the lines still in; a line that is out has none, and each typed value stays on its own line by stored position. No board draws it.\n\nYour note: ask Sid to draw this and recommend the solution or approach.\n\nSid draws the options, recommends one and says what stays as built. Sid adds a look row when the board is ready. Nothing under app/ changes until you decide.",
+    "handledAt": "2026-10-05T13:34:30.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Done. Sid drew it (decision 56, board R35C_AsMade) and you chose A recommended. No todo file to move (the row names a README decision).",
+    "resolvedAt": "2026-10-05T13:12:49.000Z",
+    "source": "per-step-as-made-line-out",
+    "status": "done",
+    "title": "Draw: as made while recording a batch on a version with a line out",
+    "updatedAt": "2026-10-05T13:12:49.000Z",
+    "where": {
+      "label": "Record a batch on a saved version with a line out, Olive Oil v1; sketch 011 README decision 51"
+    }
+  },
+  {
+    "id": "draw-blocked-row-sentence",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T13:34:30.000Z",
+    "detail": "Context: you asked Sid to draw where the sentence goes when a save is blocked on an ingredient line with no amount (today only the outline and the cursor show). The wording as built is 'Whole milk needs an amount, or remove it'.\n\nSid draws the options, recommends one and adds a look row when the board is ready. Nothing under app/ changes until you decide.",
+    "handledAt": "2026-10-06T00:56:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Closed: Sid drew it and you chose A recommended (decision 57). Build row: Build: the blocked-save sentence in the blocked ingredient line.",
+    "resolvedAt": "2026-10-05T13:47:02.000Z",
+    "source": "blocked-row-sentence-not-shown",
+    "status": "done",
+    "title": "Draw: where the blocked-row sentence goes",
+    "updatedAt": "2026-10-05T13:47:02.000Z",
+    "where": {
+      "label": "Next version pen, ingredient table; app/src/domain/lineage.js blockedSaveMessage; sketch 011 README"
+    }
+  },
+  {
+    "id": "draw-retake-reading-boards-after-tasting-groups",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T01:40:00.000Z",
+    "detail": "Context: about 25 boards in sketch 011 draw the reading with the old group names (Observations, Problems, Melt). They read the build as it stands, so they are retaken after Build: the reading's tasting groups, not edited. Sid runs redraw.sh and compares side by side in WebKit and Chrome.",
+    "handledAt": "2026-10-06T02:45:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Done for the 30 boards redraw.sh makes: 21 changed and are on the canvas (v323), 0 off against the build in WebKit and Chrome; committed c390018. The 18 option boards that still draw the old names are a separate decide row.",
+    "resolvedAt": "2026-10-06T02:45:00.000Z",
+    "source": "look-tasting-groups-names-board-2",
+    "status": "done",
+    "title": "Draw: retake the boards that carry the reading after the tasting-groups build",
+    "updatedAt": "2026-10-06T02:20:00.000Z",
+    "where": {
+      "label": ".planning/sketches/011-recipe-route-c/ (redraw.sh); README decision 58"
+    }
+  },
+  {
+    "id": "draw-split-recipe-route-canvas-page",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T03:10:00.000Z",
+    "detail": "Your request: the Recipe route 03.5 page has many boards, some selected and some not. The page should show what is selected and built, and the concepts (options, alternatives, drawn-but-not-chosen) move to another page. Nothing is deleted.\n\nSid sorts every board by the sketch 011 README decisions and the built app: selected and built stay; options, alternatives and unchosen drawings move to a new page. A board whose status is unclear stays on the current page and is listed on a look row for you. Sid adds a look row listing what moved and what stayed.",
+    "handledAt": "2026-10-06T03:00:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Closed: the split is done on the canvas (38 stay, 47 moved); the two boards I could not call are on look-recipe-route-canvas-split, waiting on you.",
+    "resolvedAt": "2026-10-06T02:44:30.000Z",
+    "source": "Mark's request in session, 2026-10-06",
+    "status": "done",
+    "title": "Draw: split the canvas page Recipe route 03.5 into what is selected and built, and a page for concepts",
+    "updatedAt": "2026-10-06T02:44:30.000Z",
+    "where": {
+      "label": "Canvas page Recipe route 03.5 (https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq); sketch 011 README decisions"
+    }
+  },
+  {
+    "id": "draw-tasting-groups-next-time-style",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T00:56:00.000Z",
+    "detail": "Context: your note on the tasting-groups board: Any problems? is more like Next time than like Every recipe and This recipe only, and Every recipe / This recipe only split the axes and the failures into two groups.\n\nSid redraws decision 58 with that grouping and adds a look row when the board is ready. Where Melt goes and the names' face were not answered; the redraw carries them as questions. Nothing under app/ changes until you decide.",
+    "handledAt": "2026-10-06T01:40:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Closed: Sid redrew it and you answered B and B2 on the look row. Build row: Build: the reading's tasting groups.",
+    "resolvedAt": "2026-10-06T01:04:30.000Z",
+    "source": "look-tasting-groups-names-board",
+    "status": "done",
+    "title": "Draw: tasting groups with Any problems? in Next time's style, axes and failures in two groups",
+    "updatedAt": "2026-10-06T01:04:30.000Z",
+    "where": {
+      "label": "Sketch 011 README decision 58; canvas page Recipe route 03.5, board R35C_TastingGroups"
+    }
+  },
+  {
+    "id": "draw-tasting-groups-reading-names",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T13:34:30.000Z",
+    "detail": "Context: your note on the tasting-group names: they should all be 'Every recipe / This recipe only / Any problems?'. The reading state (BatchRow.jsx) has three groups named Observations, Problems and Melt; the record pen uses Every recipe, This recipe only and Any problems? as cues over the same fields. The three do not line up one to one (Melt holds the melt test and melt style fields, which the pen's names do not name).\n\nSid draws how the reading state groups and names its fields under the pen's three names, says where Melt goes, checks it against the plain-words rule, and adds a look row when the board is ready. Nothing under app/ changes until you decide.",
+    "handledAt": "2026-10-06T00:56:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Closed: Sid drew it (decision 58); your note on the board is a critique, handled on that row. Redraw row: Draw: tasting groups with Any problems? in Next time's style.",
+    "resolvedAt": "2026-10-05T14:05:46.000Z",
+    "source": "draw-tasting-group-names",
+    "status": "done",
+    "title": "Draw: the reading state's tasting groups in the pen's names",
+    "updatedAt": "2026-10-05T14:05:46.000Z",
+    "where": {
+      "label": "app/src/ui/BatchRow.jsx lines 301 to 336 (reading groups) and 205 to 225 (pen cues); sketch 011 README decision 40"
+    }
+  },
+  {
+    "id": "fix-pen-open-with-line-out",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T12:57:00.000Z",
+    "detail": "Context: You chose fix. Code review WR-02, WR-03 and WR-04 (03.6-REVIEW.md), reproduced by the verifier (03.6-VERIFICATION.md).\n\nWhat is wrong: with Whole milk's Step 2 line out in the saved version, Next version opens with the struck line's note reading '120 g of 250.4 g · 36.8% in all', the sibling line's screen-reader name announcing 'was 54.5%, now 36.8%' though nothing changed, and a blank amount on a struck line moving focus to the struck field.\n\nRuns as a /gsd-quick, test first.",
+    "handledAt": "2026-10-05T13:45:00.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.6",
+    "reply": "Fixed as /gsd-quick 261005-cm6 (six commits, 6f0ef15 to f2d6b4d): a struck line already out at open reads the parent's figures (120 g of 370.4 g, 46.3%), the sibling's accessible name no longer announces a false change, and a blocked save focuses the first blocked line that is in. Two follow-ups are on the list as decide rows. Device check is on the list.",
+    "resolvedAt": "2026-10-05T13:45:00.000Z",
+    "source": "per-step-open-pen-with-line-out",
+    "status": "done",
+    "title": "Fix: Next version on a saved version that already has a line out shows wrong figures",
+    "updatedAt": "2026-10-05T12:57:00.000Z",
+    "where": {
+      "label": "app/src/ui/IngredientTable.jsx lines 598 to 718; app/src/domain/lineage.js findBlockedRow; .planning/phases/03.6-per-step-shared-ingredients/03.6-REVIEW.md"
+    }
+  },
+  {
+    "id": "look-as-made-line-out-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T13:12:49.000Z",
+    "detail": "Context: You asked Sid to draw this and recommend. Measured in the build (Olive Oil v1, Whole milk's Step 2 line out, saved as v2; WebKit and Chrome, 1366 and 393): the reading Sheet does not draw the line, recording shares that table, so the line has no row and no field (13 fields, plan 679.7 g; typing 245, 12.5 and 63 gives an as-made total of 673.8 g, each value on its own line by stored position).\n\nStatus: Drawn; nothing approved. A as built; A recommended (recording reads like the Sheet when one line is drawn: no portion line, and the field named without 'portion 2', which today a screen reader says with no portion 1); B (the line stays in recording, struck, with its own field: 14 fields, 57px taller at 1366, 81px at 393, and five more fields when a step is removed). B's panels are the build's markup edited in a browser, not a build. The board agrees with the build (1296 checks, 0 off). The iPad and iPhone are not checked.\n\nSid recommends A recommended: the Sheet you write on has no row for a line that is out, B must also cover removed steps and ingredients to be one rule, and A needs no data change. A can't hold one case: adding a removed line back while churning (the step's 'Done differently' line is the place).\n\nAction: open the canvas, find the board, and tell Sarge: A recommended, A as built, or B.",
+    "handledAt": "2026-10-05T13:34:30.000Z",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "needs": "hands",
+    "note": "A recommended",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "You chose A recommended. Recorded in sketch 011 README decision 56. Started as a /gsd-quick (row: Build: recording reads like the Sheet when one line is left).",
+    "resolvedAt": "2026-10-05T13:20:23.662Z",
+    "source": "draw-as-made-with-line-out, sketch 011 README decision 56",
+    "status": "done",
+    "title": "Look at the as-made board: recording with a line out (A as built, A recommended, B)",
+    "updatedAt": "2026-10-05T13:20:23.662Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_AsMade"
+    }
+  },
+  {
+    "id": "look-blocked-row-sentence-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T13:47:02.000Z",
+    "detail": "Context: you asked Sid to draw where the sentence goes when a save is blocked on an ingredient line. Measured in the build (Olive Oil v1, Next version, Whole milk's Step 3 amount cleared, Save pressed; WebKit and Chrome, 1366 and 393): the page scrolls to the line, the cursor lands in its field and the line is outlined, but no sentence is printed, and Save sits 508 to 664px above the top of the view. A screen reader hears nothing: the field has no aria-invalid and the status line is empty.\n\nStatus: Drawn; nothing approved. As built: outline and cursor only. A (recommended): the sentence in the line, under its own name, in the version line's sentence face; a row grows 12.8px at 1366 and two lines at 393. B: the sentence in the ceremony's status line above the buttons, printed and out of view. Wording stays as built. The sentence panels are the build's markup edited in a browser, not a build. The board agrees with the build (1024 checks, 0 off). The iPad and iPhone are not checked. One thing does not hold together: the brief (route-recipe-version.md, Fields) says the sentence renders at the ceremony; the build prints none there, and A would amend the brief.\n\nAction: open the canvas, find the board, and pick: A recommended, B, or as built.",
+    "handledAt": "2026-10-06T00:56:00.000Z",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Blocked-row sentence board",
+        "url": "http://localhost:8077/011-recipe-route-c/blocked-row-sentence.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "needs": "answer",
+    "note": "A recommended",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "A recommended, recorded in README decision 57. Build row added and run as a /gsd-quick; the brief amendment is folded into the row Run: amend the recipe surface brief's removal never cascades.",
+    "resolvedAt": "2026-10-05T17:14:10.617Z",
+    "source": "draw-blocked-row-sentence, sketch 011 README decision 57",
+    "status": "done",
+    "title": "Look at the blocked-save board: where the sentence goes (as built, A in the line, B at the ceremony)",
+    "updatedAt": "2026-10-05T17:14:10.617Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BlockedRow"
+    }
+  },
+  {
+    "id": "look-recipe-route-canvas-split",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T02:43:37.000Z",
+    "detail": "Context: the page Recipe route 03.5 had 85 boards, some chosen and built, some options. It now holds the chosen and built ones (38 boards); the other 47 are on a new page, Recipe route 03.5 concepts, next to it. Nothing was deleted, regenerated or renamed; every board keeps its name, title, size and content, and only its page and place changed. Boards in the canvas: 139 before, 139 after, each once.\n\nStatus: done on the canvas (version 325). Not viewed on screen after the move; the layout is checked by numbers only (no new overlaps; the gaps on the old page are closed to 300px; the concepts page stacks each group at the left in the old order). Mark's comments on the boards moved with their boards.\n\nTwo boards I could not call, so they stay on Recipe route 03.5:\n(1) BysBreak, the print page break by steps: you answered decision 45, and it is a redraw.sh board, but the app does not build the print break (Phase 04). Keep it with what is built, or move it to concepts?\n(2) CountUpright393, the upright counts at 393 (decision 19): the app builds it, but the board is drawn from hand markup and constructed states, and the other four count boards moved to concepts. Keep it, or move it?\n\nOne more call to check: PenAsBuilt350 (the old Sheet-grammar record pen) went to concepts as superseded by decision 40's build; the pen note beside the record pen boards still says \"Left: as built\". The 2026-09-26 ladder title and note moved to concepts too, since decision 33 replaced that ladder.\n\nSorting, by board name: bucket, then the decision or build it rests on (sketch 011 README decisions; build commits are quick task numbers). All 18 dated option boards you left as they are (decision 58) are on concepts. The same table is in the sketch 011 README, paragraph \"Canvas pages split 2026-10-06\".\n\n[stays] 393, 393AllFolded, 723 -- build capture (redraw.sh phone.py; decisions 41 and 46, redrawn from the build)\n[stays] DetailsFold -- decision 18 (folds), built 03.5-15; fold states of the build\n[stays] 393ShowChanges, 723ShowChanges, 393ShowChangesCases, 393PenChanges, 723PenChanges -- decisions 24, 25, 26, 31 (D3 chosen), built 261002-axn, 261004-ox7/ox8; older grammar, README \"not redrawn\" (2)\n[stays] PenApp350, PenApp393, PenRange724, PenRange740, PenRange759 -- build capture (redraw.sh pen.py; decisions 28, 29, 40, built 261002-vh5, 261004-ox4)\n[stays] 393PhoneLog, 723PhoneLog, 393ShowChangesHead, 723ShowChangesHead -- build capture (redraw.sh phone.py; decisions 30 and 30 addendum, built 261002-wmy..wn1)\n[stays] 744, 834, 983, 984, 1024, 1366, 1366Sticky, 984Sticky, GoToBatchWide, 744Sticky, RemoveLink, Batch, 1920, 1600StickyRail, NoBatch, Pen, LongHistory -- build capture (redraw.sh final.py; width boards, decisions 16, 33, 43, 44, built 261004-ly8, ox9, eoi)\n[stays] MoreTiles -- decision 55, Mark chose it (tiles plus hairline, Search below), built 261004-vpr, wib; passes on the iPhone\n[unclear] CountUpright393 -- decision 19 (built 03.5-17, 03.5-18); hand markup and constructed states, not the build, and its group moves\n[unclear] BysBreak -- decision 45, Mark answered; a redraw.sh board, but the print break is not built (Phase 04)\n[concept] A_NoBatch, A_Batch, A_Pen, B_NoBatch, B_Batch, B_Pen -- decision 1: layout C chosen; A and B not chosen\n[concept] PenFocus, PenStep -- README \"What is authority here\": not-chosen pen alternatives\n[concept] RecipeBookForm -- README: reference only, Recipe Book form not built (route reserved)\n[concept] CountVersions, CountBatches01, CountBatchesMany, CountBatchesMany393 -- decision 19/22: option boards (count options; D chosen), hand markup, titles say \"options\"\n[concept] ShowChangesOptions -- decision 24: list-form options; 1b replaced by D3 (decision 32)\n[concept] PenAsBuilt350 -- superseded: the Sheet-grammar record pen; decision 40 built the App skin (261004-ox4)\n[concept] 1366IngredientOptions, 1024IngredientOptions -- decision 31: seven forms A to D3; D3 chosen (decision 32)\n[concept] 1366Ladder, 1194Ladder, 1366Nav, 1194Nav -- decision 32: candidates a to g; g chosen, replaced by decision 33; 1366-ladder and 1366-nav are among the 18 dated boards\n[concept] InfoBands, InfoPhone -- decisions 34 and 41: options A to C beside as built; A built 261004-igr\n[concept] InfoLog, InfoHead -- decisions 34 and 42: option boards (info-labels-log and info-labels-batch-head, among the 18 dated boards)\n[concept] SheetTitle -- decision 35: options; A built 261004-igr (sheet-title-pen, one of the 18)\n[concept] BysPosition, BysStates, BysHeading, BysPen -- decision 36: options; chosen placement not yet built (Phase insert); four of the 18 dated boards\n[concept] BysPrint -- decision 36: print options PA, PB, PC; PC chosen, print is Phase 04, not built\n[concept] WhyRow -- decision 37: options; B built 261004-ly6 (why-row, one of the 18)\n[concept] AppRadius -- decision 38: options A, B, C; B built 261004-ly7\n[concept] Rhythm -- decision 39: options; B built 261004-ox3 (version-details-rhythm, one of the 18)\n[concept] RecordPenApp -- decision 40: reading and recording drawings (record-pen-app, one of the 18)\n[concept] RecordPenCues -- decision 40: options as built, A, B, C; C built 261004-ox4\n[concept] SplitRemove -- decision 44: options; B built, replaced by C (decision 51) (split-remove-link, one of the 18)\n[concept] OneHead -- decision 48: options A, B; A built 261004-ubg (table-head-one-line, one of the 18)\n[concept] EmptySpace -- decision 49: options; A built 261004-ubg\n[concept] BatchHead -- decision 50: options; A built 261004-uyd (batch-head-show-hide, one of the 18)\n[concept] PerStep -- decision 51: options; C and B built in 03.6 (per-step-shared-ingredient, one of the 18)\n[concept] ImportErrors -- decision 52: options A, B, C; B built 261004-wib (import-errors-placement, one of the 18)\n[concept] NoticeFlyout -- decision 53: options A, B; B built 261004-wib\n[concept] MoreItems -- decision 54: options A to D; none as drawn, replaced by decision 55\n[concept] AsMade -- decision 56: options A, B; A built 261005-db4\n[concept] BlockedRow -- decision 57: options; A built 261005-t32 (blocked-row-sentence, one of the 18)\n[concept] TastingGroups -- decision 58: README says it keeps A and C as options; B and B2 built 261005-txg\n\nFor Sid note (section rhythm, 2026-10-01): its boards Rhythm, RecordPenCues and TastingGroups are on the concepts page now; I did not act on the note.\n\nAction: open the canvas, look at both pages, and tell me the two calls above (BysBreak, CountUpright393) or any board that is on the wrong page. Moving a board back is one change.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Canvas: pages Recipe route 03.5 and Recipe route 03.5 concepts",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "needs": "answer",
+    "owner": "mark",
+    "phase": "03.6",
+    "resolvedAt": "2026-10-06T10:59:50.985Z",
+    "source": "draw-split-recipe-route-canvas-page, sketch 011 README (Canvas pages split 2026-10-06)",
+    "status": "done",
+    "title": "Look at the split canvas: Recipe route 03.5 (built) and Recipe route 03.5 concepts, and two boards I could not call",
+    "updatedAt": "2026-10-06T10:59:50.985Z",
+    "where": {
+      "label": "On the canvas, pages Recipe route 03.5 and Recipe route 03.5 concepts; boards R35C_BysBreak and R35C_CountUpright393 are the two to decide"
+    }
+  },
+  {
+    "id": "look-tasting-groups-names-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T14:05:46.000Z",
+    "detail": "Context: your note was that the tasting groups should all be Every recipe / This recipe only / Any problems?. Measured in the build (Olive Oil v1; WebKit and Chrome, 1366 and 393): the reading names its groups Observations, Problems and Melt, in the same face as the cell labels under them; the pen names the same fields Every recipe, This recipe only and Any problems? and gives the melt fields no name. The pen's three names pass the plain-words rule; Observations arguably does not.\n\nStatus: Drawn; nothing approved. The reading splits Observations into Every recipe and This recipe only, and Problems reads Any problems?. Where Melt test and Melt style go is open: A at the foot, unnamed (+16px); B with the measured values at the top, as the printed sheet has them (+0px); C Melt kept as a fourth name (+37px). B2 is B with the three names in the pen's cue face (+15px). Sid recommends B2. The option panels are the build's markup edited in a browser, not a build. The board agrees with the build (382 checks, 0 off). The iPad and iPhone are not checked. One thing does not hold together: the batch brief and the code comment say the reading does not repeat the pen's This recipe only; a choice amends both. Twenty-five boards that draw the reading with the old names are retaken after a build.\n\nAction: open the canvas, find the board, and answer two things: where Melt goes (B recommended, A, or C), and whether the names take the pen's cue face (B2 recommended) or stay in the reading's face (B).",
+    "handledAt": "2026-10-06T00:56:00.000Z",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Tasting-groups board",
+        "url": "http://localhost:8077/011-recipe-route-c/tasting-group-names.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "needs": "answer",
+    "note": "why is \"Any problems?\" in a different style from \"Next time\"? that doesn't look right. Any problems is more like Next time than it is Every recipe and This recipe only. ER and TRO allow us to separate the axes and failures into 2 groups.",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Noted as a critique, not a pick, in README decision 58: Any problems? goes with Next time's style, and the axes and failures split into two groups. Nothing built. Sid redraws; row: Draw: tasting groups with Any problems? in Next time's style.",
+    "resolvedAt": "2026-10-06T00:48:45.531Z",
+    "source": "draw-tasting-groups-reading-names, sketch 011 README decision 58",
+    "status": "done",
+    "title": "Look at the tasting-groups board: the reading state in the pen's names (where Melt goes; the names' face)",
+    "updatedAt": "2026-10-06T00:48:45.531Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_TastingGroups"
+    }
+  },
+  {
+    "id": "look-tasting-groups-names-board-2",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T01:04:30.000Z",
+    "detail": "Context: your note: Any problems? is more like Next time than like Every recipe and This recipe only, and those two split the axes and the failures into two groups. The pen already has this structure (its Any problems? is a caption like its other captions, its two names are bold over the marks and over the chips). The reading now follows it.\n\nStatus: Drawn; nothing approved. Any problems? and Next time share one face in every option (12px caps grey, measured the same in WebKit and Chrome). Under Any problems? the picked problems read Every recipe (Coarse, icy; Sandy, gritty; Gummy, elastic; Greasy film) then This recipe only (Bitter). Full batch, WebKit: built 569.5px; A +117.5, B +101.5, C +138.5, B2 +121.5. Seeded batch 387.5 to 479.5 (Bitter now sits under three names for one word). The option panels are the build's markup edited in a browser, not a build; board and build agree (382 checks, 0 off, WebKit and Chrome). The iPad and iPhone are not checked. The spacing under Any problems? is new and my choice: 6px from a name to its words, 32px between the two blocks.\n\nAction: open the canvas, find the board, and answer two things. (1) Where do Melt test and Melt style go: B with the measured values at the top (recommended), A at the foot unnamed, or C kept as a fourth name? (2) Do Every recipe and This recipe only take the pen's bold face (B2, recommended) or stay in the reading's own small caps grey (B)?",
+    "handledAt": "2026-10-06T01:40:00.000Z",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Tasting-groups board",
+        "url": "http://localhost:8077/011-recipe-route-c/tasting-group-names.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "needs": "answer",
+    "note": "(1) B\n(2) B2",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Melt B, names B2, recorded in README decision 58. Build row added and run as a /gsd-quick; the batch brief amendment is folded into the row Run: amend the recipe surface brief's removal never cascades; boards retaken after the build (Draw row).",
+    "resolvedAt": "2026-10-06T01:31:33.236Z",
+    "source": "look-tasting-groups-names-board, sketch 011 README decision 58",
+    "status": "done",
+    "title": "Look at the redrawn tasting-groups board: Any problems? in Next time's face, axes and problems in two groups each (where Melt goes; the names' face)",
+    "updatedAt": "2026-10-06T01:31:33.237Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_TastingGroups"
+    }
+  },
+  {
+    "id": "pen-struck-line-no-figures",
+    "addedBy": "claude",
+    "answer": "drop",
+    "createdAt": "2026-10-05T13:45:00.000Z",
+    "detail": "Observation: the fix reads a struck line's figures from the version the pen opened on, else its parent. In a third version whose parent also has the line out, a version with no parent, or the moment before the parent loads, there are no figures to read. As built the pen prints no portion line and no share for that line (it matches your drop answer on one line left). The code review had suggested printing the bare amount instead. No board draws this case.\n\nQuestion: keep as built, or print the bare amount?",
+    "handledAt": "2026-10-05T13:34:30.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "id": "drop",
+        "label": "Print no portion line and no share (as built)",
+        "recommended": true
+      },
+      {
+        "id": "amount",
+        "label": "Print the bare amount, for example 120 g"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "You chose to print no portion line and no share, which is how it was built in quick 261005-cm6. Nothing to change.",
+    "resolvedAt": "2026-10-05T13:32:49.194Z",
+    "source": "quick 261005-cm6",
+    "status": "done",
+    "title": "What should a struck line show when neither the opened version nor its parent has it in?",
+    "updatedAt": "2026-10-05T13:32:49.194Z",
+    "where": {
+      "label": ".planning/quick/261005-cm6-fix-next-version-on-a-saved-version-that/261005-cm6-SUMMARY.md"
+    }
+  },
+  {
+    "id": "per-step-as-made-line-out",
+    "addedBy": "claude",
+    "answer": "other",
+    "createdAt": "2026-10-05T07:30:00.000Z",
+    "detail": "Observation: recording shares the reading table, so only the lines still in get an as-made field. Whole milk's remaining field stays 'portion 2', and the total reads 679.7 g. Stored position keeps each typed value on its own line. No board draws this and no test pins it either way.\n\nQuestion: confirm this, or have a line that is out keep an as-made field?",
+    "handledAt": "2026-10-05T12:57:00.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "note": "ask Sid to draw this and recommend the solution/approach",
+    "options": [
+      {
+        "id": "keep",
+        "label": "Keep as built: lines that are out get no field",
+        "recommended": true
+      },
+      {
+        "id": "field",
+        "label": "Redraw: a line that is out keeps its as-made field"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "You asked Sid to draw it and recommend an approach. Sid started (row: Draw: as made while recording on a version with a line out); a look row follows when the board is ready.",
+    "resolvedAt": "2026-10-05T11:33:35.818Z",
+    "source": "execute-phase 03.6, plan 03 and 07",
+    "status": "done",
+    "title": "As made while recording a batch on a version with a line out: keep as built?",
+    "updatedAt": "2026-10-05T11:33:35.818Z",
+    "where": {
+      "label": "Record a batch on a saved version with a line out, Olive Oil v1"
+    }
+  },
+  {
+    "id": "per-step-device-check",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T07:30:00.000Z",
+    "detail": "Context: Phase 03.6 is built and matches decision 51's board in WebKit and Chrome on the Mac (3088 checks, 0 failed). The devices themselves are not verified.\n\nSteps: serve the build with `npm --prefix app run build && npm --prefix app run preview -- --host` (never the dev server). On the iPad (1366 coarse) and iPhone (393) open Olive Oil v1, press Next version, remove each Whole milk line in turn (Step 2, then Step 3), remove and restore the step 'Gum slurry', save a version, press Show changes. Figures and link sizes should read as the board draws them.\n\nNot drawn on any board, so do not expect a match: as made while recording with a line out, and the 1600 fine pointer (a mouse at 1600).",
+    "handledAt": "2026-10-05T12:57:00.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "pass",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Passed on the iPad and iPhone. 03.6-UAT.md test 1 still reads pending; /gsd-verify-work will record it when you walk the rest of the phase.",
+    "resolvedAt": "2026-10-05T12:54:11.847Z",
+    "source": "execute-phase 03.6, plan 07",
+    "status": "done",
+    "title": "Check removing a line, a step and Show changes on the iPad and iPhone",
+    "updatedAt": "2026-10-05T12:54:11.847Z",
+    "where": {
+      "label": "Recipe route, Olive Oil v1: /notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1; .planning/phases/03.6-per-step-shared-ingredients/03.6-CONFORMANCE.md"
+    }
+  },
+  {
+    "id": "per-step-device-check-2",
+    "addedBy": "claude",
+    "createdAt": "2026-10-05T13:45:00.000Z",
+    "detail": "Steps: serve with `npm --prefix app run build && npm --prefix app run preview -- --host` (never the dev server). On the iPad (1366) and iPhone (393): open Olive Oil v1, press Next version, remove Whole milk's Step 2 line, save. (1) The reading Sheet shows Whole milk with no portion line. (2) Press Next version on the saved version: the struck line reads '120 g of 370.4 g · 46.3% in all' and 15.0%. (3) Clear Step 3's amount and press Save: the cursor lands in Step 3's field and only that line is outlined. Print preview of the reading Sheet also shows no portion line.\n\nNot verified on the devices: all of the above passed in the tests (1857) and the build.",
+    "handledAt": "2026-10-05T13:34:30.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "pass.",
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "Passed on the iPad and iPhone: the one-line-left reading, Next version on a version with a line out, and the blocked-save focus.",
+    "resolvedAt": "2026-10-05T13:31:30.970Z",
+    "source": "quick 261005-cgb and 261005-cm6",
+    "status": "done",
+    "title": "Check the one-line-left reading and Next version on a version with a line out, on the iPad and iPhone",
+    "updatedAt": "2026-10-05T13:31:30.970Z",
+    "where": {
+      "label": "Recipe route, Olive Oil v1; quick 261005-cgb and 261005-cm6 SUMMARYs"
+    }
+  },
+  {
+    "id": "per-step-one-line-left",
+    "addedBy": "claude",
+    "answer": "drop",
+    "createdAt": "2026-10-05T07:30:00.000Z",
+    "detail": "Observation: after Whole milk's Step 2 line is removed and the version saved, the reading state shows 'Whole milk 250.4 g of 250.4 g · 36.8% in all'. No board draws this, so it is built as it fell out.\n\nQuestion: keep the portion line when one line is left, or drop it?\n\nSid's stated preference (README decision 51) is drop. You have not seen either.",
+    "handledAt": "2026-10-05T12:57:00.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "id": "drop",
+        "label": "Drop the portion line when one line is left",
+        "recommended": true
+      },
+      {
+        "id": "keep",
+        "label": "Keep it as built"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "You chose drop. Started as a /gsd-quick (row: Build: drop the portion line when a split ingredient has one line left).",
+    "resolvedAt": "2026-10-05T11:31:47.367Z",
+    "source": "execute-phase 03.6, plan 03 and 07",
+    "status": "done",
+    "title": "Show the portion line on the reading Sheet and print when a split ingredient has one line left?",
+    "updatedAt": "2026-10-05T11:31:47.367Z",
+    "where": {
+      "label": "Saved version's reading state and print, Olive Oil v1 after the Step 2 milk line is removed and saved"
+    }
+  },
+  {
+    "id": "per-step-open-pen-with-line-out",
+    "addedBy": "claude",
+    "answer": "fix",
+    "createdAt": "2026-10-05T07:30:00.000Z",
+    "detail": "Observation: save a version with Whole milk's Step 2 line out, then press Next version on it. The struck line's note reads '120 g of 250.4 g · 36.8% in all' (more than the whole), and the sibling line's screen-reader name announces 'was 54.5%, now 36.8%' though nothing changed. A blank amount on a struck line also moves focus to the struck field. Reproduced by the verifier. No board draws it; plans 01 and 02 flagged the case. No seed stores a line out today, but saving one makes it reachable.\n\nQuestion: fix it in a /gsd-quick before you use it, or accept it for now?",
+    "handledAt": "2026-10-05T12:57:00.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "id": "fix",
+        "label": "Fix in a /gsd-quick (WR-02, WR-03, WR-04)",
+        "recommended": true
+      },
+      {
+        "id": "accept",
+        "label": "Accept for now"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.6",
+    "reply": "You chose fix. Started as a /gsd-quick for WR-02, WR-03 and WR-04 (row: Fix: Next version on a saved version that already has a line out).",
+    "resolvedAt": "2026-10-05T11:31:26.936Z",
+    "source": "execute-phase 03.6, code review WR-02 to WR-04",
+    "status": "done",
+    "title": "Fix or accept: Next version on a saved version that already has a line out shows wrong figures",
+    "updatedAt": "2026-10-05T11:31:26.936Z",
+    "where": {
+      "label": ".planning/phases/03.6-per-step-shared-ingredients/03.6-REVIEW.md, WR-02 to WR-04; 03.6-VERIFICATION.md"
+    }
+  },
+  {
+    "id": "decision-36-bys-heading",
+    "addedBy": "claude",
+    "answer": "H1",
+    "createdAt": "2026-10-04T18:30:16.000Z",
+    "detail": "Context: Today the label is a paragraph styled like a second heading under Instructions. H1 makes it a heading like Ingredients and Instructions. H2 adds the old closing hairline and is 21px taller at both widths.",
+    "handledAt": "2026-10-04T19:08:43.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Heading board",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-heading.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "H1",
+        "label": "H1. The heading alone",
+        "recommended": true
+      },
+      {
+        "id": "H2",
+        "label": "H2. The heading plus the closing hairline"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded H1 in sketch 011 README decision 36; build goes in the phase for this todo.",
+    "resolvedAt": "2026-10-04T18:54:28.281Z",
+    "source": "todo-before-you-start-own-section, decision 36",
+    "status": "done",
+    "title": "Decision 36: the heading treatment for Before you start",
+    "updatedAt": "2026-10-04T18:54:28.281Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysHeading"
+    }
+  },
+  {
+    "id": "decision-36-bys-instructions-heading",
+    "addedBy": "claude",
+    "answer": "yes",
+    "createdAt": "2026-10-04T18:30:16.000Z",
+    "detail": "Context: Your todo says Before you start moves outside Instructions. The Instructions section already hides with no steps, since quick 261003-9bz. The boards draw it that way. This card confirms it is meant to stay.",
+    "handledAt": "2026-10-04T19:08:43.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "States board",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-states.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "yes",
+        "label": "Yes, it leaves when there are no steps (as built and drawn)",
+        "recommended": true
+      },
+      {
+        "id": "no",
+        "label": "No, keep the Instructions heading"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded yes in sketch 011 README decision 36; already built, no change.",
+    "resolvedAt": "2026-10-04T18:37:34.701Z",
+    "source": "todo-before-you-start-own-section, decision 36",
+    "status": "done",
+    "title": "Decision 36: does the Instructions heading leave the reading view when there are no steps?",
+    "updatedAt": "2026-10-04T18:37:34.701Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysStates"
+    }
+  },
+  {
+    "id": "decision-36-bys-pen-empty",
+    "addedBy": "claude",
+    "answer": "E2",
+    "createdAt": "2026-10-04T18:30:16.000Z",
+    "detail": "Context: The pen has no add-note control today, and none is drawn. E2 keeps the heading alone, like the empty Instructions heading you chose to keep in the pen on 2026-10-03. E1 leaves the section out until an add-note control exists.",
+    "handledAt": "2026-10-04T19:08:43.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Pen board",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-pen.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "E2",
+        "label": "E2. Keep the heading alone",
+        "recommended": true
+      },
+      {
+        "id": "E1",
+        "label": "E1. Leave the section out"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded E2 (heading kept) in sketch 011 README decision 36.",
+    "resolvedAt": "2026-10-04T18:37:58.836Z",
+    "source": "todo-before-you-start-own-section, decision 36",
+    "status": "done",
+    "title": "Decision 36: Before you start in the pen when there are no notes",
+    "updatedAt": "2026-10-04T18:37:58.836Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysPen"
+    }
+  },
+  {
+    "id": "decision-36-bys-placement",
+    "addedBy": "claude",
+    "answer": "B",
+    "createdAt": "2026-10-04T18:30:16.000Z",
+    "detail": "Context: A puts it in its own row directly above Instructions: under the Ingredients on the Sheet column, after Balance and Watch for at 393. B puts it above the Ingredients, which moves the table top 189px lower at 393. A1 puts it under the Ingredients at 393 only, ahead of Balance and Watch for.",
+    "handledAt": "2026-10-04T19:08:43.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Position board",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-position.html"
+      }
+    ],
+    "note": "Structuring a recipe as Before You Start ➔ Ingredients ➔ Instructions creates a logical timeline for the cook.\nHere is why this specific order works so well:\n• Before You Start (The \"Mindset\"): This alerts the cook to things they need to do hours or minutes before cooking (e.g., marinating, bringing butter to room temperature, or preheating the oven). It prevents the frustrating realization of reading step 4 of a recipe only to find out the meat needed to marinate overnight.\n• Ingredients (The \"Shopping & Gathering\"): This lists everything the cook needs to pull out of the pantry and fridge. Because the \"Before You Start\" section already addressed temperatures or specific prep rules, the cook knows exactly how to handle these items.\n• Instructions (The \"Execution\"): This is the step-by-step roadmap. Because the first two sections set the stage, the instructions can focus purely on active cooking without clunky disruptions.\n",
+    "options": [
+      {
+        "id": "A",
+        "label": "A. Directly above Instructions",
+        "recommended": true
+      },
+      {
+        "id": "A1",
+        "label": "A1. At 393 only, under the Ingredients ahead of Balance and Watch for"
+      },
+      {
+        "id": "B",
+        "label": "B. Above the Ingredients, under the description"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded B (above the Ingredients) with your reasoning in README decision 36. B moves the table 189px lower at 393.",
+    "resolvedAt": "2026-10-04T18:43:53.477Z",
+    "source": "todo-before-you-start-own-section, decision 36",
+    "status": "done",
+    "title": "Decision 36: where Before you start sits on the Sheet",
+    "updatedAt": "2026-10-04T18:43:53.477Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysPosition"
+    }
+  },
+  {
+    "id": "decision-36-bys-print",
+    "addedBy": "claude",
+    "answer": "PC",
+    "createdAt": "2026-10-04T18:30:16.000Z",
+    "detail": "Context: Best-case numbers on the built page; Phase 04's footer and tick boxes will take more room. For Olive Oil v1 only PA holds on one page. PB falls off the formula page by 82px, and under PC the table's last row crosses the foot.",
+    "handledAt": "2026-10-04T19:08:43.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Print board",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-print.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "PA",
+        "label": "PA. Opens the Instructions page, above its heading",
+        "recommended": true
+      },
+      {
+        "id": "PB",
+        "label": "PB. Closes the formula page, falling back to PA if it doesn't fit"
+      },
+      {
+        "id": "PC",
+        "label": "PC. Opens the formula page, above the table"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded PC in README decision 36. Caution: PC does not fit one page for Olive Oil v1; it needs a fit rule before the build.",
+    "resolvedAt": "2026-10-04T18:56:42.517Z",
+    "source": "todo-before-you-start-own-section, decision 36",
+    "status": "done",
+    "title": "Decision 36: where Before you start prints",
+    "updatedAt": "2026-10-04T18:56:42.517Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysPrint"
+    }
+  },
+  {
+    "id": "decision-36-print-overflow",
+    "addedBy": "claude",
+    "answer": "other",
+    "createdAt": "2026-10-04T20:39:04.000Z",
+    "detail": "Context: You chose PC, the section opening the formula page above the table. For Olive Oil v1 it needs 177px and the page has 95px spare, so the table's last row crosses the page foot. That is the best case, before Phase 04's footer and tick boxes take room. The other recipes with notes may fit.\n\nQuestion: What should the page do when it does not fit?",
+    "handledAt": "2026-10-04T21:55:34.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Print board",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-print.html"
+      }
+    ],
+    "note": "Always PC; if the ingredients table doesn't fit on one page, then break the table by Steps, so that when the ingredients are grouped into steps, all of the ingredients print on the same page. Also, the Ingredients table header should repeat on the next page.",
+    "options": [
+      {
+        "id": "fallback",
+        "label": "PC when it fits; otherwise it opens the Instructions page (PA)",
+        "recommended": true
+      },
+      {
+        "id": "split",
+        "label": "Always PC; let the table's last rows continue on the next page"
+      },
+      {
+        "id": "always-pa",
+        "label": "Always PA: it opens the Instructions page for every recipe"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded in README decision 36: always PC, break the table by steps, repeat the header. Row \"Draw: the print page break...\" is with Sid; the phase insert row is updated.",
+    "resolvedAt": "2026-10-04T21:54:13.460Z",
+    "source": "todo-before-you-start-own-section, decision 36",
+    "status": "done",
+    "title": "Decision 36: what happens when Before you start does not fit above the table in print?",
+    "updatedAt": "2026-10-04T21:54:13.460Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysPrint"
+    }
+  },
+  {
+    "id": "decision-45-print-after-tail",
+    "addedBy": "claude",
+    "answer": "k1",
+    "createdAt": "2026-10-04T23:34:20.000Z",
+    "detail": "Context: When the table breaks, its last step group and the Total land on a second page. For Olive Oil v1 that tail is 17% of a page. Either the Instructions follow it on the same page (K1: steps 1 to 7 fit, 2 pages after the formula page in all), or the tail has a page of its own and the Instructions open the next page as they do when the table fits (K2: 3 pages after the formula page).",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Print page break, by steps",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-print-break.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "k1",
+        "label": "K1: the Instructions follow the tail on the same page (saves a page)",
+        "recommended": true
+      },
+      {
+        "id": "k2",
+        "label": "K2: the tail has its own page; the Instructions open the next page"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded K1 in README decision 45: the Instructions follow the table's tail on the same page.",
+    "resolvedAt": "2026-10-05T00:37:00.657Z",
+    "source": "decision 36 answer, README decision 45",
+    "status": "done",
+    "title": "Decision 45: after the table's tail, do the Instructions follow on the same page?",
+    "updatedAt": "2026-10-05T00:37:00.657Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysBreak"
+    }
+  },
+  {
+    "id": "decision-45-print-heading",
+    "addedBy": "claude",
+    "answer": "header-only",
+    "createdAt": "2026-10-04T23:34:20.000Z",
+    "detail": "Context: You asked for the table header to repeat. The header row (Ingredient, % of batch) is drawn alone at the top of the second page. The alternative adds the words \"Ingredients, continued\" above it. The foot Phase 04 draws already names the recipe and the page.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Print page break, by steps",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-print-break.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "header-only",
+        "label": "The header row alone, as you asked",
+        "recommended": true
+      },
+      {
+        "id": "continued",
+        "label": "\"Ingredients, continued\" above the header row"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded in README decision 45: the repeated header alone.",
+    "resolvedAt": "2026-10-05T00:37:28.752Z",
+    "source": "decision 36 answer, README decision 45",
+    "status": "done",
+    "title": "Decision 45: what sits above the repeated table header on the next page?",
+    "updatedAt": "2026-10-05T00:37:28.752Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysBreak"
+    }
+  },
+  {
+    "id": "decision-45-print-one-step",
+    "addedBy": "claude",
+    "answer": "split",
+    "createdAt": "2026-10-04T23:34:20.000Z",
+    "detail": "Context: Many versions put every ingredient under one step (Mexican Chocolate v3, 12 rows). If page 3 is too full for that group, the rule moves the whole table, with its heading, to the next page and page 3 ends after Before you start, half empty. The alternative splits the group between rows, as a browser does with no rule; the last rows then sit on the next page under no step head. No seeded one-step version has notes, so the board constructs this case.",
+    "handledAt": "2026-10-05T01:05:00.000Z",
+    "kind": "decide",
+    "links": [
+      {
+        "label": "Print page break, by steps",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-print-break.html"
+      }
+    ],
+    "options": [
+      {
+        "id": "whole",
+        "label": "Move the whole table to the next page (your rule, as stated)",
+        "recommended": true
+      },
+      {
+        "id": "split",
+        "label": "Split the group between rows when it is the whole table"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "reply": "Recorded in README decision 45: a one-step table that does not fit splits between rows. The print rule is now complete for the Before you start phase.",
+    "resolvedAt": "2026-10-05T00:38:23.186Z",
+    "source": "decision 36 answer, README decision 45",
+    "status": "done",
+    "title": "Decision 45: one step holds every ingredient and does not fit. Move the table or split it?",
+    "updatedAt": "2026-10-05T00:38:23.186Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysBreak"
+    }
+  },
+  {
+    "id": "look-before-you-start-boards",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T18:30:16.000Z",
+    "detail": "Context: Sid drew Before you start as its own Sheet section, outside Instructions. Five boards cover reading, the Next version pen and print. Nothing is approved. The decide cards below ask the open questions.\n\nStatus: Drawn in WebKit on a Mac. Nothing is verified on the iPad. The print boards show the built page, not a print design: footer, tick boxes and the As made column belong to Phase 04.\n\nAction: Open the boards. Then answer the five decide cards.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Position (1366 and 393)",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-position.html"
+      },
+      {
+        "label": "States (notes, steps, neither)",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-states.html"
+      },
+      {
+        "label": "Heading",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-heading.html"
+      },
+      {
+        "label": "Next version pen",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-pen.html"
+      },
+      {
+        "label": "Print",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-print.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "resolvedAt": "2026-10-04T19:01:14.198Z",
+    "source": "todo-before-you-start-own-section, decision 36",
+    "status": "done",
+    "title": "Look at the Before you start boards (position, states, heading, pen, print)",
+    "updatedAt": "2026-10-04T19:01:14.198Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: boards R35C_BysPosition, R35C_BysStates, R35C_BysHeading, R35C_BysPen, R35C_BysPrint"
+    }
+  },
+  {
+    "id": "look-print-break-board",
+    "addedBy": "claude",
+    "createdAt": "2026-10-04T23:34:20.000Z",
+    "detail": "Context: You said always PC (Before you start opens the formula page), and if the table does not fit, break it by steps so a step's ingredients print on one page, with the table header repeated on the next page. Sid drew Olive Oil v1, which does not fit, and a recipe that fits. Olive Oil v1: page 3 ends after Step 6 with 46px spare; Step 8 (97px) starts the next page whole, under the repeated header, with the Total.\n\nStatus: Drawn at letter width from the built app's markup in WebKit, and the breaks were checked in a real Chrome print. Not checked in Safari on the iPad. Footer, tick boxes and the ruled As made column are Phase 04's and are not drawn, so the real page fills sooner. Nothing is approved. Three decide rows ask the open questions.\n\nAction: Open the board, then answer the three decide cards.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Print page break, by steps",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-print-break.html"
+      },
+      {
+        "label": "Canvas: page Recipe route 03.5",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      }
+    ],
+    "phase": "03.6 candidate",
+    "resolvedAt": "2026-10-05T00:44:34.484Z",
+    "source": "decision 36 answer: always PC, break by steps (README decision 45)",
+    "status": "done",
+    "title": "Look at the print page break for the ingredients table (by steps, header repeated)",
+    "updatedAt": "2026-10-05T00:44:34.484Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5: board R35C_BysBreak"
+    }
+  },
+  {
+    "id": "before-you-start-device-check",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T11:40:00.000Z",
+    "detail": "Steps: serve with `npm --prefix app run build && npm --prefix app run preview -- --host` (never the dev server). Open Olive Oil v1 (/notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1) on the iPad at 1366 and 1024 and the iPhone at 393.\n\nExpect: Olive Oil v1 shows Before you start above the Ingredients, headed like Ingredients, with no rule under it. Mexican Chocolate v3 has no Before you start. Mexican Chocolate v3's Next version pen shows the heading alone.\n\nAll of this matches the placement B boards in WebKit and Chrome (2728 lines match, 0 differ) and the tests pass; the devices are not checked.",
+    "handledAt": "2026-10-06T12:25:00.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "Pass",
+    "owner": "mark",
+    "phase": "03.7",
+    "reply": "Passed on the devices. Before you start as its own section is checked.",
+    "resolvedAt": "2026-10-06T11:50:07.385Z",
+    "source": "phase 03.7 plan 03",
+    "status": "done",
+    "title": "Check Before you start as its own section on the iPad and iPhone",
+    "updatedAt": "2026-10-06T11:50:07.385Z",
+    "where": {
+      "label": "The built app, recipe route; .planning/phases/03.7-before-you-start-as-its-own-sheet-section/03.7-CONFORMANCE.md"
+    }
+  },
+  {
+    "id": "before-you-start-safari-print",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T11:40:00.000Z",
+    "detail": "Steps: serve from the build (`npm --prefix app run build && npm --prefix app run preview -- --host`), open Olive Oil v1, and print from Safari.\n\nExpect: Before you start above the table; the table's step groups whole (Step 8 and the Total together); the header row repeated over Step 8 where the table runs onto a second page; the Total once.\n\nThis is Safari's first reading of break-inside on a row group and of a repeating header; Playwright WebKit cannot print, so only Chrome was checked. Do not expect every Instructions step whole yet: on the full route Chrome itself splits step 1, and Phase 4's print route owns that.",
+    "handledAt": "2026-10-06T12:25:00.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "Doesn't look right on iPad. And it's difficult to test with the band and frontmatter in the printed page",
+    "owner": "mark",
+    "phase": "03.7",
+    "reply": "Not clear what looked wrong on the iPad; the question is now the decide row bys-safari-print-what-looked-wrong.",
+    "resolvedAt": "2026-10-06T12:23:22.004Z",
+    "source": "phase 03.7 plan 02",
+    "status": "done",
+    "title": "Print Olive Oil v1 from Safari on the iPad and on the Mac",
+    "updatedAt": "2026-10-06T12:23:22.004Z",
+    "where": {
+      "label": "Safari Print on Olive Oil v1; 03.7-02-SUMMARY.md, 03.7-CONFORMANCE.md Print section"
+    }
+  },
+  {
+    "id": "bys-safari-print-what-looked-wrong",
+    "addedBy": "claude",
+    "answer": "table-break",
+    "createdAt": "2026-10-06T12:25:00.000Z",
+    "detail": "Your note on 'Print Olive Oil v1 from Safari on the iPad and on the Mac' says it doesn't look right on the iPad, and that the band and frontmatter in the printed page make it hard to test. The note doesn't say which part looked wrong. The band and the frontmatter are the rest of the route printing around the Sheet; the print page that leaves them out is Phase 4's print route.\n\nIf it is one of the first three, say which in the note.",
+    "handledAt": "2026-10-06T12:30:00.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "id": "around-the-sheet",
+        "label": "Only the band and frontmatter around the Sheet: Phase 4's print route",
+        "recommended": true
+      },
+      {
+        "id": "table-break",
+        "label": "The table: step groups split, header not repeated, or Total repeated or alone"
+      },
+      {
+        "id": "bys-place",
+        "label": "Before you start: not above the table, or printed twice"
+      },
+      {
+        "id": "something-else",
+        "label": "Something else (write it in the note)"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.7",
+    "reply": "The problem is in the table's print in Safari; added the open row 'Fix: Safari prints the ingredient table wrongly on the iPad' with a /gsd-debug task.",
+    "resolvedAt": "2026-10-06T12:29:26.060Z",
+    "source": "before-you-start-safari-print",
+    "status": "done",
+    "title": "What looked wrong in Safari's print of Olive Oil v1 on the iPad?",
+    "updatedAt": "2026-10-06T12:29:26.060Z"
+  },
+  {
+    "id": "decide-bys-instructions-own-page",
+    "addedBy": "claude",
+    "answer": "phase-4",
+    "createdAt": "2026-10-06T08:10:00.000Z",
+    "detail": "Sketch 011 board fp-m-p4 draws the Instructions starting their own page when the table fits. Telling that case from a table that breaks needs a fixed page height and pages laid out by measurement, which only Phase 4's print route has. Phase 03.7 builds the table's own break rule (break by steps, header repeats, Total with the last group). Until Phase 4, a table that fits is followed by the Instructions on the same page. Recorded as D-06b in 04-CONTEXT.md by plan 03.7-04.",
+    "handledAt": "2026-10-06T05:12:29.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "note": "Phase 4 as recommended.",
+    "options": [
+      {
+        "detail": "Build it with the print route, where page height is known.",
+        "id": "phase-4",
+        "label": "Phase 4",
+        "recommended": true
+      },
+      {
+        "detail": "Needs a fixed print page height first; widens this phase.",
+        "id": "now",
+        "label": "Now in 03.7"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.7",
+    "reply": "Phase 4, as you noted. Recorded as D-06b in 04-CONTEXT.md by plan 03.7-04.",
+    "resolvedAt": "2026-10-06T05:04:08.003Z",
+    "status": "done",
+    "title": "When the formula table fits on one page, do the Instructions get their own page now or in Phase 4?",
+    "updatedAt": "2026-10-06T05:12:29.000Z",
+    "where": {
+      "label": ".planning/phases/03.7-before-you-start-as-its-own-sheet-section/03.7-02-PLAN.md decisions_recorded 2; sketch 011 board fp-m-p4"
+    }
+  },
+  {
+    "id": "decide-bys-redraw-placement-b",
+    "addedBy": "claude",
+    "answer": "redraw-first",
+    "createdAt": "2026-10-06T08:10:00.000Z",
+    "detail": "Only the reading-with-notes boards are drawn in placement B. The states, heading and pen boards (decision 36) are drawn in placement A. Plan 03.7-03 checks placement against the B panels and the section's insides against the A boards, accepting differences from decisions 48 and 49 by name. The single-authority rule says to draw app-side decisions back into the sketch; a redraw means plan 03.7-03's case map needs the new panel classes.",
+    "handledAt": "2026-10-06T05:12:29.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "detail": "Sid redraws in placement B, then execute; plan 03 case map updated.",
+        "id": "redraw-first",
+        "label": "Redraw first",
+        "recommended": true
+      },
+      {
+        "detail": "Check against the A boards with the named accepted differences.",
+        "id": "execute-now",
+        "label": "Execute now"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.7",
+    "reply": "Redraw first: Sid is redrawing the decision 36 boards in placement B (row draw-bys-placement-b-boards); plan 03.7-03's case map is updated before 03.7 executes.",
+    "resolvedAt": "2026-10-06T05:07:18.050Z",
+    "status": "done",
+    "title": "Should Sid redraw the Before you start states, heading and pen boards in placement B before 03.7 executes?",
+    "updatedAt": "2026-10-06T05:07:18.050Z",
+    "where": {
+      "label": "Sketch 011 README decision 36; plan 03.7-03"
+    }
+  },
+  {
+    "id": "draw-bys-placement-b-boards",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T09:10:00.000Z",
+    "detail": "You chose Redraw first (decide-bys-redraw-placement-b). Only the reading-with-notes boards are drawn in placement B; the states, heading and pen boards (sketch 011 decision 36) are drawn in placement A. Sid redraws them in placement B on the canvas and snapshots the approved HTML into .planning/sketches/011-recipe-route-c; then plan 03.7-03's case map is updated for the new panel classes. After that, /gsd-execute-phase 03.7.",
+    "handledAt": "2026-10-06T05:24:33.000Z",
+    "kind": "todo",
+    "owner": "claude",
+    "phase": "03.7",
+    "reply": "Sid drew three placement B boards (states, heading, pen) on the canvas, version 327, commit f721f1b. Look row: look-bys-placement-b-boards. Plan 03.7-03's case map is being updated through /gsd-quick.",
+    "resolvedAt": "2026-10-06T05:24:33.000Z",
+    "source": "decide-bys-redraw-placement-b",
+    "status": "done",
+    "title": "Sid: redraw the Before you start states, heading and pen boards in placement B, then update plan 03.7-03's case map",
+    "updatedAt": "2026-10-06T05:24:33.000Z",
+    "where": {
+      "label": "Sketch 011 README decision 36; .planning/phases/03.7-before-you-start-as-its-own-sheet-section/03.7-03-PLAN.md"
+    }
+  },
+  {
+    "id": "look-bys-placement-b-boards",
+    "addedBy": "claude",
+    "createdAt": "2026-10-06T05:23:30.000Z",
+    "detail": "Context: You chose placement B for Before you start (above the Ingredients), the heading alone, and the pen keeping the heading when there are no notes. Only the reading-with-notes panels were drawn in B. Sid drew the states, heading and Next version pen again in B, from the build as it is today (with decisions 48 and 49).\n\nStatus: Each board shows the app as built next to B, at 1366 and 393. Drawn in WebKit on a Mac; nothing is verified on the iPad or iPhone. The older A boards stay as the dated record. Nothing new is asked.\n\nAction: Open the three boards and look. Phase 03.7 executes against these panels.",
+    "kind": "look",
+    "links": [
+      {
+        "label": "Canvas root (page Recipe route 03.5 concepts)",
+        "url": "https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq"
+      },
+      {
+        "label": "States (local)",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-states-b.html"
+      },
+      {
+        "label": "Heading (local)",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-heading-b.html"
+      },
+      {
+        "label": "Next version pen (local)",
+        "url": "http://localhost:8077/011-recipe-route-c/before-you-start-pen-b.html"
+      }
+    ],
+    "needs": "hands",
+    "owner": "mark",
+    "phase": "03.7",
+    "resolvedAt": "2026-10-06T10:56:55.470Z",
+    "source": "decision 36, redrawn in placement B (decide-bys-redraw-placement-b: Redraw first)",
+    "status": "done",
+    "title": "Look at the Before you start boards in placement B (states, heading, pen)",
+    "updatedAt": "2026-10-06T10:56:55.470Z",
+    "where": {
+      "label": "On the canvas, page Recipe route 03.5 concepts, right of the older Before you start boards: R35C_BysStatesB, R35C_BysHeadingB, R35C_BysPenB"
+    }
+  },
+  {
+    "id": "check-draw-temp-gone-on-device",
+    "addedBy": "claude",
+    "createdAt": "2026-10-11T00:30:00.000Z",
+    "detail": "Serve with `npm --prefix app run build && npm --prefix app run preview -- --host` (never the dev server). Route: /notebook/olive-oil-ice-cream/olive-oil-ice-cream-v1/batch/b8cc3566-48a4-4b23-b6e5-749a332afe89 on the iPad at 1366 and 1024 and the iPhone at 393.\n\nExpect: Olive Oil v1's 2 Aug batch reading starts with Out of machine and Churn duration, with no Time to draw temp. and no 'plan 10-12 min'. Correct and Record another open the pen with Churn date, Out of machine and Churn duration. Correct then Save leaves the batch as it was. Safari's print of the route shows no Time to draw temp. (the iPad PDF is the evidence).\n\nMeasured so far in WebKit and Chrome with a coarse pointer (198 match, 0 differ against sketch 010); the devices are not checked.",
+    "handledAt": "2026-10-11T00:50:00.000Z",
+    "kind": "check",
+    "needs": "hands",
+    "note": "Approve",
+    "owner": "mark",
+    "phase": "03.7.1",
+    "reply": "Passed on the devices. Time to draw temp. is gone from the reading and the pen; nothing further to do.",
+    "resolvedAt": "2026-10-11T00:39:56.907Z",
+    "source": "phase 03.7.1 plan 02",
+    "status": "done",
+    "title": "Check the batch reading and the pen on the iPad and the iPhone",
+    "updatedAt": "2026-10-11T00:39:56.907Z",
+    "where": {
+      "label": "The built app, batch route; .planning/phases/03.7.1-hide-time-to-draw-temp-on-every-screen-record-pen-reading-pr/03.7.1-CONFORMANCE.md"
+    }
+  },
+  {
+    "id": "decide-reading-grid-724-to-1365",
+    "addedBy": "claude",
+    "answer": "keep-five",
+    "createdAt": "2026-10-11T00:30:00.000Z",
+    "detail": "Observation: with Time to draw temp. gone, the reading's grid at 1024 (the iPad upright) still has five equal 172.8 px tracks, with the four cells in the first four and the fifth empty (cells end at 751 of the grid's 864). No board draws four cells in this range.\n\nQuestion: keep five columns until Phase 4 regroups the reading under At draw (that change moves this grid anyway), or set four columns now?",
+    "handledAt": "2026-10-11T00:50:00.000Z",
+    "kind": "decide",
+    "needs": "answer",
+    "options": [
+      {
+        "id": "keep-five",
+        "label": "Keep five until Phase 4 regroups the reading",
+        "recommended": true
+      },
+      {
+        "id": "four-across",
+        "label": "Set four columns now (a /gsd-quick)"
+      }
+    ],
+    "owner": "mark",
+    "phase": "03.7.1",
+    "reply": "You chose to keep five columns until Phase 4 regroups the reading under At draw. Nothing to build; Phase 4 owns the grid.",
+    "resolvedAt": "2026-10-11T00:40:21.028Z",
+    "source": "phase 03.7.1 plan 02",
+    "status": "done",
+    "title": "Four churn cells in five columns between 724 and 1365. Keep five?",
+    "updatedAt": "2026-10-11T00:40:21.028Z",
+    "where": {
+      "label": "Olive Oil v1's 2 Aug batch reading at 1024; 03.7.1-CONFORMANCE.md"
+    }
+  },
+  {
+    "id": "run-execute-phase-03-7-1",
+    "addedBy": "claude",
+    "createdAt": "2026-10-10T23:50:42.000Z",
+    "detail": "Command: /gsd-execute-phase 03.7.1. Two plans, two waves: plan 01 removes the field from the pen, the reading and the draft (stored value untouched, round-trip pinned by a test); plan 02 checks the app against the sketch 010 pen and reading boards in WebKit and Chromium and writes 03.7.1-CONFORMANCE.md. Execution touches app/ through GSD. Afterwards the CONFORMANCE.md \"Open for Mark\" section lists the rows to add (iPad and iPhone check, a decide row on the reading's 724-1365 column count, an Impeccable todo for the two briefs that still name the field). Then run run-impeccable-briefs-from-010 and run-plan-phase-4-after-design.",
+    "handledAt": "2026-10-11T00:50:00.000Z",
+    "kind": "todo",
+    "needs": "hands",
+    "owner": "mark",
+    "phase": "03.7.1",
+    "reply": "Phase 03.7.1 executed and verified (7/7): Time to draw temp. is off the pen, the reading and the draft, the stored value is untouched, 1931 tests pass. Three rows added: the device check, the 724-1365 column decide, the brief edits.",
+    "resolvedAt": "2026-10-11T00:45:00.000Z",
+    "source": "run-plan-phase-03-7-1",
+    "status": "done",
+    "title": "Run: /gsd-execute-phase 03.7.1 (hide Time to draw temp.), before Phase 4",
+    "updatedAt": "2026-10-11T00:45:00.000Z",
+    "where": {
+      "label": ".planning/phases/03.7.1-hide-time-to-draw-temp-on-every-screen-record-pen-reading-pr/03.7.1-01-PLAN.md and 03.7.1-02-PLAN.md"
+    }
+  },
+  {
+    "id": "run-plan-phase-03-7-1",
+    "addedBy": "claude",
+    "createdAt": "2026-10-10T23:26:40.000Z",
+    "detail": "Command: /gsd-plan-phase 03.7.1. Phase 03.7.1, \"Hide draw temperature and rename the logs\", was inserted after 03.7 and before Phase 04. Its roadmap goal is set: Time to draw temp. no longer shows on any screen (record pen, reading, print), and the batch log and tasting log carry their new names; the stored field stays until Phase 4's reseed removes it. Scope for the planner: BatchRow.jsx stops rendering the field and its caption and unit, the reading and any batch summary stop showing it, the tests that pin it change, and the two titles (Batch log, Tasting log) change wherever the app shows them. No schema, seed or transfer change (that rides Phase 4's reseed, build-remove-draw-temp-data-element). Sketch 010 is approved and committed. Then execute it, then run run-plan-phase-4-after-design.",
+    "handledAt": "2026-10-10T23:50:42.000Z",
+    "kind": "todo",
+    "needs": "hands",
+    "owner": "mark",
+    "phase": "03.7.1",
+    "reply": "Done: /gsd-plan-phase 03.7.1 wrote 2 plans (checker: 0 blockers, 0 warnings), committed 6d5092f and 55f04ad. Next is /gsd-execute-phase 03.7.1.",
+    "resolvedAt": "2026-10-10T23:50:42.000Z",
+    "source": "run-phase-insert-hide-draw-temp-and-labels",
+    "status": "done",
+    "title": "Run: /gsd-plan-phase 03.7.1 (hide Time to draw temp. and rename the logs), before Phase 4",
+    "updatedAt": "2026-10-10T23:26:40.000Z",
+    "where": {
+      "label": ".planning/ROADMAP.md, Phase 03.7.1; .planning/phases/03.7.1-hide-time-to-draw-temp-on-every-screen-record-pen-reading-pr"
+    }
+  }
+]

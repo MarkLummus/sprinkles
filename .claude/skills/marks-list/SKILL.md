@@ -157,9 +157,9 @@ so the next run skips it.
 
 Boundaries: Never edit anything under `app/` yourself (every app change goes through
 `/gsd-fast`, `/gsd-quick` or `/gsd-quick-batch`, which you invoke for a decided change). Run no
-other GSD command and no `/impeccable` command yourself. Create no new files except a todo file for a todo
-Mark added on the page, in `.planning/todos/pending/`. The only agent you may start is `sid`, for
-a decided sketch redraw (one Sid at a time). The one move allowed is a done todo's file,
+other GSD command and no `/impeccable` command yourself. Create no new files except a todo file
+for a todo Mark added on the page, in `.planning/todos/pending/`. The only agent you may start is
+`sid`, for a decided sketch redraw (one Sid at a time). The one move allowed is a done todo's file,
 `pending/` to `completed/` under `.planning/todos/`.
 When a command or task finishes the work a row asked for (a Run row, or a todo whose quick has
 landed), close that row: `status: "done"`, `resolvedAt` (ISO now) and a one-line `reply`, and name

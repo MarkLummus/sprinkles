@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T04:09:03.452Z"
+last_updated: "2026-10-12T13:09:50.562Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: b4aeab0745eece32d1af1d8b7901ac94a964a00b
+state_head: ca39493db6aea67dfa0837a869082acefff4dcc5
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-12 - Completed quick task 261011-x97: A wrapped Print sheet link in the version details row takes the 44px touch floor on a coarse pointer
+Last activity: 2026-10-12 - Completed quick task 261012-ck1: Search by Sheet code names why a code is wrong (blank, length, U, other symbol)
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -503,6 +503,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261011-x97 | Give a wrapped Print sheet link in the version details row a 44px touch target on a coarse pointer: at 724 wide it wraps onto its own line and is only 17px tall because an anchor has no min-height floor (only buttons get it). | 2026-10-12 | 7beb6f2 | [261011-x97-give-a-wrapped-print-sheet-link-in-the-v](./quick/261011-x97-give-a-wrapped-print-sheet-link-in-the-v/) |
 | 135 | CLAUDE.md says where layout fixes go | 2026-10-12 | 7db79fe | — |
 | 136 | marks-list runs /gsd-fast, /gsd-quick and /gsd-quick-batch for decided changes; Run rows only for interactive commands | 2026-10-12 | b4aeab0 | — |
+| 261012-ck1 | Search by Sheet code names why a code is wrong (blank, length, U, other symbol) | 2026-10-12 | ca39493 | [261012-ck1-search-by-sheet-code-names-why-a-code-is](./quick/261012-ck1-search-by-sheet-code-names-why-a-code-is/) |
 
 ### Roadmap Evolution
 

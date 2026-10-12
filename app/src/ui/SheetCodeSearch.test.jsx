@@ -201,6 +201,7 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(SHEET_CODE_WRONG_LENGTH(0)).toBe('A Sheet code has eight letters and numbers. This one has 0.');
     expect(SHEET_CODE_LETTER_U).toBe('Sheet codes never use the letter U.');
     expect(SHEET_CODE_OTHER_CHARACTER).toBe('Sheet codes use only letters and numbers.');
+    expect(SHEET_CODE_WRONG_LENGTH(1)).toBe('A Sheet code has eight letters and numbers. This one has 1.');
     expect(SHEET_CODE_WRONG_LENGTH(6)).toBe('A Sheet code has eight letters and numbers. This one has 6.');
     expect(SHEET_CODE_WRONG_LENGTH(10)).toBe('A Sheet code has eight letters and numbers. This one has 10.');
   });
@@ -229,6 +230,20 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     for (const [text, line] of cases) {
       await typeAndSubmit(text);
       expect(host.querySelector('[role="status"]').textContent).toBe(line);
+    }
+  });
+
+  it('counts an emoji as one symbol through the field', async () => {
+    await mount([oliveOilVersion]);
+    const cases = [
+      ['🍦', SHEET_CODE_WRONG_LENGTH(1)],
+      ['K7QM2X9🍦D', SHEET_CODE_WRONG_LENGTH(9)],
+    ];
+    for (const [text, line] of cases) {
+      await typeAndSubmit(text);
+      expect(host.querySelector('[role="status"]').textContent).toBe(line);
+      expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
     }
   });
 

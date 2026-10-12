@@ -470,6 +470,17 @@
   flex-wrap: wrap;
 }
 
+/* Mark reported (2026-10-11, quick 261011-wqn) Print sheet riding above Next
+   version and Show changes. Measured: the row stretches every control to its
+   44px line; a stretched button centres its text, but the Print sheet link,
+   a block, set its text at its top. This gives the link the button's own
+   centring (the inline-flex grammar of .notebook-action) while the stretched
+   box, which is also its touch target, stays as it was. */
+.notebook-version__acts > a.notebook-link {
+  display: inline-flex;
+  align-items: center;
+}
+
 /* The History rail (Task 1, 1600-batch.html; decisions_recorded 4): a
    dated rail of the recipe's own versions, oldest left, drawn beneath
    the band's two columns. The nested version/batch tree it replaces

@@ -1,0 +1,1404 @@
+{
+  "prediction": true,
+  "predictedGrowth": 27,
+  "departures": [],
+  "cells": {
+    "webkit|393|coarse": {
+      "row": {
+        "rect": {
+          "x": 20,
+          "y": 271.1875,
+          "w": 353,
+          "h": 44
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 20,
+        "y": 182.1875,
+        "w": 353,
+        "h": 133
+      },
+      "bandRect": {
+        "x": 0,
+        "y": 62,
+        "w": 393,
+        "h": 402.1875
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Record a batch",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 20,
+            "y": 271.1875,
+            "w": 143.46875,
+            "h": 44
+          },
+          "textTop": 284.943359375,
+          "textBottom": 301.431640625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 173.46875,
+            "y": 271.1875,
+            "w": 84.25,
+            "h": 44
+          },
+          "textTop": 284.943359375,
+          "textBottom": 301.431640625,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 267.71875,
+            "y": 271.1875,
+            "w": 73.578125,
+            "h": 44
+          },
+          "textTop": 284.943359375,
+          "textBottom": 301.431640625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 20,
+          "y": 118.1875,
+          "w": 54.375,
+          "h": 44
+        },
+        "Version, Show details|fold-row": {
+          "x": 20,
+          "y": 182.1875,
+          "w": 353,
+          "h": 44
+        },
+        "Record a batch|notebook-action": {
+          "x": 20,
+          "y": 271.1875,
+          "w": 143.46875,
+          "h": 44
+        },
+        "Next version|notebook-link": {
+          "x": 173.46875,
+          "y": 271.1875,
+          "w": 84.25,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 267.71875,
+          "y": 271.1875,
+          "w": 73.578125,
+          "h": 44
+        },
+        "Go to batch, Not yet churned|notebook-jump": {
+          "x": 20,
+          "y": 335.1875,
+          "w": 353,
+          "h": 44
+        },
+        "History, Show, 4 versions|fold-row": {
+          "x": 20,
+          "y": 399.1875,
+          "w": 353,
+          "h": 44
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-webkit-393-coarse.png"
+    },
+    "webkit|724|coarse": {
+      "row": {
+        "rect": {
+          "x": 418.953125,
+          "y": 162,
+          "w": 273.046875,
+          "h": 71
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 418.953125,
+        "y": 73,
+        "w": 273.046875,
+        "h": 160
+      },
+      "bandRect": {
+        "x": 32,
+        "y": 57,
+        "w": 660,
+        "h": 337
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 418.953125,
+            "y": 162,
+            "w": 126.25,
+            "h": 44
+          },
+          "textTop": 175.755859375,
+          "textBottom": 192.244140625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show changes",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 555.203125,
+            "y": 162,
+            "w": 97.875,
+            "h": 44
+          },
+          "textTop": 175.755859375,
+          "textBottom": 192.244140625,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 418.953125,
+            "y": 216,
+            "w": 73.578125,
+            "h": 17
+          },
+          "textTop": 216.255859375,
+          "textBottom": 232.744140625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 32,
+          "y": 113.1875,
+          "w": 54.375,
+          "h": 44
+        },
+        "Version, Show details|fold-row": {
+          "x": 418.953125,
+          "y": 73,
+          "w": 273.046875,
+          "h": 44
+        },
+        "Next version|notebook-action": {
+          "x": 418.953125,
+          "y": 162,
+          "w": 126.25,
+          "h": 44
+        },
+        "Show changes|notebook-link": {
+          "x": 555.203125,
+          "y": 162,
+          "w": 97.875,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 418.953125,
+          "y": 216,
+          "w": 73.578125,
+          "h": 17
+        },
+        "Go to batch, Not yet churned|notebook-jump": {
+          "x": 418.953125,
+          "y": 265,
+          "w": 273.046875,
+          "h": 44
+        },
+        "History, Show, 4 versions|fold-row": {
+          "x": 32,
+          "y": 329,
+          "w": 660,
+          "h": 44
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-webkit-724-coarse.png",
+      "q2": "Print sheet h 17 alone on its line; previous line's tallest 44; --touch-min 44"
+    },
+    "webkit|1024|coarse": {
+      "row": {
+        "rect": {
+          "x": 588.515625,
+          "y": 162,
+          "w": 403.484375,
+          "h": 44
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 588.515625,
+        "y": 73,
+        "w": 403.484375,
+        "h": 133
+      },
+      "bandRect": {
+        "x": 32,
+        "y": 57,
+        "w": 960,
+        "h": 310
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 588.515625,
+            "y": 162,
+            "w": 126.25,
+            "h": 44
+          },
+          "textTop": 175.755859375,
+          "textBottom": 192.244140625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show changes",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 724.765625,
+            "y": 162,
+            "w": 97.875,
+            "h": 44
+          },
+          "textTop": 175.755859375,
+          "textBottom": 192.244140625,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 832.640625,
+            "y": 162,
+            "w": 73.578125,
+            "h": 44
+          },
+          "textTop": 175.755859375,
+          "textBottom": 192.244140625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 32,
+          "y": 113.1875,
+          "w": 54.375,
+          "h": 44
+        },
+        "Version, Show details|fold-row": {
+          "x": 588.515625,
+          "y": 73,
+          "w": 403.484375,
+          "h": 44
+        },
+        "Next version|notebook-action": {
+          "x": 588.515625,
+          "y": 162,
+          "w": 126.25,
+          "h": 44
+        },
+        "Show changes|notebook-link": {
+          "x": 724.765625,
+          "y": 162,
+          "w": 97.875,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 832.640625,
+          "y": 162,
+          "w": 73.578125,
+          "h": 44
+        },
+        "Go to batch, Not yet churned|notebook-jump": {
+          "x": 588.515625,
+          "y": 238,
+          "w": 403.484375,
+          "h": 44
+        },
+        "History, Show, 4 versions|fold-row": {
+          "x": 32,
+          "y": 302,
+          "w": 960,
+          "h": 44
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-webkit-1024-coarse.png"
+    },
+    "webkit|1366|coarse": {
+      "row": {
+        "rect": {
+          "x": 785.296875,
+          "y": 265.1875,
+          "w": 548.703125,
+          "h": 44
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 785.296875,
+        "y": 77,
+        "w": 548.703125,
+        "h": 232.1875
+      },
+      "bandRect": {
+        "x": 32,
+        "y": 57,
+        "w": 1302,
+        "h": 457.1875
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 785.296875,
+            "y": 265.1875,
+            "w": 126.25,
+            "h": 44
+          },
+          "textTop": 278.943359375,
+          "textBottom": 295.431640625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show changes",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 921.546875,
+            "y": 265.1875,
+            "w": 97.875,
+            "h": 44
+          },
+          "textTop": 278.943359375,
+          "textBottom": 295.431640625,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 1029.421875,
+            "y": 265.1875,
+            "w": 73.578125,
+            "h": 44
+          },
+          "textTop": 278.943359375,
+          "textBottom": 295.431640625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 32,
+          "y": 117.1875,
+          "w": 54.375,
+          "h": 44
+        },
+        "Version, Hide details|fold-row": {
+          "x": 785.296875,
+          "y": 77,
+          "w": 548.703125,
+          "h": 44
+        },
+        "v3|": {
+          "x": 896.328125,
+          "y": 193.114501953125,
+          "w": 13.62841796875,
+          "h": 14.77099609375
+        },
+        "Next version|notebook-action": {
+          "x": 785.296875,
+          "y": 265.1875,
+          "w": 126.25,
+          "h": 44
+        },
+        "Show changes|notebook-link": {
+          "x": 921.546875,
+          "y": 265.1875,
+          "w": 97.875,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 1029.421875,
+          "y": 265.1875,
+          "w": 73.578125,
+          "h": 44
+        },
+        "History, Hide, 4 versions|fold-row": {
+          "x": 32,
+          "y": 333.1875,
+          "w": 1302,
+          "h": 44
+        },
+        "12 DecVersion 1 · v1churned 13 Dec|notebook-history__node-inner": {
+          "x": 38,
+          "y": 387.1875,
+          "w": 168,
+          "h": 102
+        },
+        "11 JanVersion 2 · v2not churned|notebook-history__node-inner": {
+          "x": 230,
+          "y": 387.1875,
+          "w": 168,
+          "h": 102
+        },
+        "13 JanVersion 3 · v3churned date unknown|notebook-history__node-inner": {
+          "x": 422,
+          "y": 387.1875,
+          "w": 168,
+          "h": 102
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-webkit-1366-coarse.png"
+    },
+    "webkit|1366|fine": {
+      "row": {
+        "rect": {
+          "x": 785.296875,
+          "y": 265.1875,
+          "w": 548.703125,
+          "h": 44
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 785.296875,
+        "y": 77,
+        "w": 548.703125,
+        "h": 232.1875
+      },
+      "bandRect": {
+        "x": 32,
+        "y": 57,
+        "w": 1302,
+        "h": 457.1875
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 785.296875,
+            "y": 265.1875,
+            "w": 126.25,
+            "h": 44
+          },
+          "textTop": 278.943359375,
+          "textBottom": 295.431640625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show changes",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 921.546875,
+            "y": 265.1875,
+            "w": 97.875,
+            "h": 44
+          },
+          "textTop": 278.943359375,
+          "textBottom": 295.431640625,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 1029.421875,
+            "y": 265.1875,
+            "w": 73.578125,
+            "h": 44
+          },
+          "textTop": 278.943359375,
+          "textBottom": 295.431640625,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, Segoe UI, Helvetica Neue, Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 32,
+          "y": 117.1875,
+          "w": 54.375,
+          "h": 17
+        },
+        "Version, Hide details|fold-row": {
+          "x": 785.296875,
+          "y": 77,
+          "w": 548.703125,
+          "h": 44
+        },
+        "v3|": {
+          "x": 896.328125,
+          "y": 193.114501953125,
+          "w": 13.62841796875,
+          "h": 14.77099609375
+        },
+        "Next version|notebook-action": {
+          "x": 785.296875,
+          "y": 265.1875,
+          "w": 126.25,
+          "h": 44
+        },
+        "Show changes|notebook-link": {
+          "x": 921.546875,
+          "y": 265.1875,
+          "w": 97.875,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 1029.421875,
+          "y": 265.1875,
+          "w": 73.578125,
+          "h": 44
+        },
+        "History, Hide, 4 versions|fold-row": {
+          "x": 32,
+          "y": 333.1875,
+          "w": 1302,
+          "h": 44
+        },
+        "12 DecVersion 1 · v1churned 13 Dec|notebook-history__node-inner": {
+          "x": 38,
+          "y": 387.1875,
+          "w": 168,
+          "h": 102
+        },
+        "11 JanVersion 2 · v2not churned|notebook-history__node-inner": {
+          "x": 230,
+          "y": 387.1875,
+          "w": 168,
+          "h": 102
+        },
+        "13 JanVersion 3 · v3churned date unknown|notebook-history__node-inner": {
+          "x": 422,
+          "y": 387.1875,
+          "w": 168,
+          "h": 102
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-webkit-1366-fine.png"
+    },
+    "chrome|393|fine": {
+      "row": {
+        "rect": {
+          "x": 20,
+          "y": 247.1875,
+          "w": 353,
+          "h": 44
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 20,
+        "y": 156.1875,
+        "w": 353,
+        "h": 135
+      },
+      "bandRect": {
+        "x": 0,
+        "y": 63,
+        "w": 393,
+        "h": 377.1875
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Record a batch",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 20,
+            "y": 247.1875,
+            "w": 144.171875,
+            "h": 44
+          },
+          "textTop": 260.6875,
+          "textBottom": 277.6875,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 174.171875,
+            "y": 247.1875,
+            "w": 83.5,
+            "h": 44
+          },
+          "textTop": 260.6875,
+          "textBottom": 277.6875,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 267.671875,
+            "y": 247.1875,
+            "w": 72.34375,
+            "h": 44
+          },
+          "textTop": 260.6875,
+          "textBottom": 277.6875,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 20,
+          "y": 119.1875,
+          "w": 55.203125,
+          "h": 17
+        },
+        "Version, Show details|fold-row": {
+          "x": 20,
+          "y": 156.1875,
+          "w": 353,
+          "h": 44
+        },
+        "Record a batch|notebook-action": {
+          "x": 20,
+          "y": 247.1875,
+          "w": 144.171875,
+          "h": 44
+        },
+        "Next version|notebook-link": {
+          "x": 174.171875,
+          "y": 247.1875,
+          "w": 83.5,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 267.671875,
+          "y": 247.1875,
+          "w": 72.34375,
+          "h": 44
+        },
+        "Go to batch, Not yet churned|notebook-jump": {
+          "x": 20,
+          "y": 311.1875,
+          "w": 353,
+          "h": 44
+        },
+        "History, Show, 4 versions|fold-row": {
+          "x": 20,
+          "y": 375.1875,
+          "w": 353,
+          "h": 44
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-chrome-393-fine.png"
+    },
+    "chrome|724|fine": {
+      "row": {
+        "rect": {
+          "x": 418.953125,
+          "y": 164,
+          "w": 273.046875,
+          "h": 71
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 418.953125,
+        "y": 73,
+        "w": 273.046875,
+        "h": 162
+      },
+      "bandRect": {
+        "x": 32,
+        "y": 57,
+        "w": 660,
+        "h": 339
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 418.953125,
+            "y": 164,
+            "w": 125.5,
+            "h": 44
+          },
+          "textTop": 177.5,
+          "textBottom": 194.5,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show changes",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 554.453125,
+            "y": 164,
+            "w": 98.015625,
+            "h": 44
+          },
+          "textTop": 177.5,
+          "textBottom": 194.5,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 418.953125,
+            "y": 218,
+            "w": 72.34375,
+            "h": 17
+          },
+          "textTop": 218,
+          "textBottom": 235,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 32,
+          "y": 113.1875,
+          "w": 55.203125,
+          "h": 17
+        },
+        "Version, Show details|fold-row": {
+          "x": 418.953125,
+          "y": 73,
+          "w": 273.046875,
+          "h": 44
+        },
+        "Next version|notebook-action": {
+          "x": 418.953125,
+          "y": 164,
+          "w": 125.5,
+          "h": 44
+        },
+        "Show changes|notebook-link": {
+          "x": 554.453125,
+          "y": 164,
+          "w": 98.015625,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 418.953125,
+          "y": 218,
+          "w": 72.34375,
+          "h": 17
+        },
+        "Go to batch, Not yet churned|notebook-jump": {
+          "x": 418.953125,
+          "y": 267,
+          "w": 273.046875,
+          "h": 44
+        },
+        "History, Show, 4 versions|fold-row": {
+          "x": 32,
+          "y": 331,
+          "w": 660,
+          "h": 44
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-chrome-724-fine.png",
+      "q2": "Print sheet h 17 alone on its line; previous line's tallest 44; --touch-min 44"
+    },
+    "chrome|1024|fine": {
+      "row": {
+        "rect": {
+          "x": 588.515625,
+          "y": 164,
+          "w": 403.484375,
+          "h": 44
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 588.515625,
+        "y": 73,
+        "w": 403.484375,
+        "h": 135
+      },
+      "bandRect": {
+        "x": 32,
+        "y": 57,
+        "w": 960,
+        "h": 312
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 588.515625,
+            "y": 164,
+            "w": 125.5,
+            "h": 44
+          },
+          "textTop": 177.5,
+          "textBottom": 194.5,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show changes",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 724.015625,
+            "y": 164,
+            "w": 98.015625,
+            "h": 44
+          },
+          "textTop": 177.5,
+          "textBottom": 194.5,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 832.03125,
+            "y": 164,
+            "w": 72.34375,
+            "h": 44
+          },
+          "textTop": 177.5,
+          "textBottom": 194.5,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 32,
+          "y": 113.1875,
+          "w": 55.203125,
+          "h": 17
+        },
+        "Version, Show details|fold-row": {
+          "x": 588.515625,
+          "y": 73,
+          "w": 403.484375,
+          "h": 44
+        },
+        "Next version|notebook-action": {
+          "x": 588.515625,
+          "y": 164,
+          "w": 125.5,
+          "h": 44
+        },
+        "Show changes|notebook-link": {
+          "x": 724.015625,
+          "y": 164,
+          "w": 98.015625,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 832.03125,
+          "y": 164,
+          "w": 72.34375,
+          "h": 44
+        },
+        "Go to batch, Not yet churned|notebook-jump": {
+          "x": 588.515625,
+          "y": 240,
+          "w": 403.484375,
+          "h": 44
+        },
+        "History, Show, 4 versions|fold-row": {
+          "x": 32,
+          "y": 304,
+          "w": 960,
+          "h": 44
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-chrome-1024-fine.png"
+    },
+    "chrome|1366|fine": {
+      "row": {
+        "rect": {
+          "x": 785.296875,
+          "y": 266.1875,
+          "w": 548.703125,
+          "h": 44
+        },
+        "alignItems": "normal",
+        "flexWrap": "wrap",
+        "columnGap": "10px"
+      },
+      "section": {
+        "x": 785.296875,
+        "y": 77,
+        "w": 548.703125,
+        "h": 233.1875
+      },
+      "bandRect": {
+        "x": 32,
+        "y": 57,
+        "w": 1302,
+        "h": 458.1875
+      },
+      "touchMin": 44,
+      "actsGap": 10,
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "Next version",
+          "classes": [
+            "notebook-action"
+          ],
+          "rect": {
+            "x": 785.296875,
+            "y": 266.1875,
+            "w": 125.5,
+            "h": 44
+          },
+          "textTop": 279.6875,
+          "textBottom": 296.6875,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "44px",
+          "paddingTop": "12px",
+          "paddingBottom": "12px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "none"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show changes",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 920.796875,
+            "y": 266.1875,
+            "w": 98.015625,
+            "h": 44
+          },
+          "textTop": 279.6875,
+          "textBottom": 296.6875,
+          "display": "block",
+          "alignItems": "normal",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        },
+        {
+          "tag": "A",
+          "text": "Print sheet",
+          "classes": [
+            "notebook-link"
+          ],
+          "rect": {
+            "x": 1028.8125,
+            "y": 266.1875,
+            "w": 72.34375,
+            "h": 44
+          },
+          "textTop": 279.6875,
+          "textBottom": 296.6875,
+          "display": "flex",
+          "alignItems": "center",
+          "lineHeight": "normal",
+          "minHeight": "auto",
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "fontFamily": "-apple-system, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "textDecorationLine": "underline"
+        }
+      ],
+      "band": {
+        "Rename|notebook-link": {
+          "x": 32,
+          "y": 117.1875,
+          "w": 55.203125,
+          "h": 17
+        },
+        "Version, Hide details|fold-row": {
+          "x": 785.296875,
+          "y": 77,
+          "w": 548.703125,
+          "h": 44
+        },
+        "v3|": {
+          "x": 895.984375,
+          "y": 194,
+          "w": 13.640625,
+          "h": 15
+        },
+        "Next version|notebook-action": {
+          "x": 785.296875,
+          "y": 266.1875,
+          "w": 125.5,
+          "h": 44
+        },
+        "Show changes|notebook-link": {
+          "x": 920.796875,
+          "y": 266.1875,
+          "w": 98.015625,
+          "h": 44
+        },
+        "Print sheet|notebook-link": {
+          "x": 1028.8125,
+          "y": 266.1875,
+          "w": 72.34375,
+          "h": 44
+        },
+        "History, Hide, 4 versions|fold-row": {
+          "x": 32,
+          "y": 334.1875,
+          "w": 1302,
+          "h": 44
+        },
+        "12 DecVersion 1 · v1churned 13 Dec|notebook-history__node-inner": {
+          "x": 38,
+          "y": 388.1875,
+          "w": 168,
+          "h": 102
+        },
+        "11 JanVersion 2 · v2not churned|notebook-history__node-inner": {
+          "x": 230,
+          "y": 388.1875,
+          "w": 168,
+          "h": 102
+        },
+        "13 JanVersion 3 · v3churned date unknown|notebook-history__node-inner": {
+          "x": 422,
+          "y": 388.1875,
+          "w": 168,
+          "h": 102
+        }
+      },
+      "screenshot": "/var/folders/rs/11f8grj17lz9xdsd6dn_xzpw0000gn/T/x97-shots-B5l1a4/before-chrome-1366-fine.png"
+    }
+  }
+}

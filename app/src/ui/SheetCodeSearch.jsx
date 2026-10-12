@@ -103,7 +103,6 @@ export function SheetCodeSearch() {
             autoCapitalize="characters"
             spellCheck={false}
             enterKeyHint="go"
-            aria-describedby={RESULT_ID}
           />
         </label>
         <Button type="submit" className="notebook-action" disabled={versions === null}>Find</Button>

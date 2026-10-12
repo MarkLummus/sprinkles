@@ -102,12 +102,13 @@ describe('SheetCodeSearch — the field', () => {
     expect(field.getAttribute('enterkeyhint')).toBe('go');
   });
 
-  it('keeps the page title Search and a polite status region the field points at', async () => {
+  it('keeps the page title Search and a polite status region the field does not point at', async () => {
     await mount([oliveOilVersion]);
     expect(host.querySelector('h1').textContent).toBe('Search');
     const status = host.querySelector('[role="status"]');
     expect(status.getAttribute('aria-live')).toBe('polite');
-    expect(host.querySelector('input').getAttribute('aria-describedby')).toBe(status.id);
+    // The field is refocused on every Find; pointing it at the live region made VoiceOver read the line twice.
+    expect(host.querySelector('input').hasAttribute('aria-describedby')).toBe(false);
     expect(status.textContent).toBe('');
   });
 

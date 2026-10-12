@@ -1,40 +1,41 @@
 {
   "version": "1.0",
-  "timestamp": "2026-10-08T01:07:03.114Z",
+  "timestamp": "2026-10-12T14:50:55.035Z",
   "phase": "04",
   "phase_name": "Prepare the next version for making",
   "phase_dir": ".planning/phases/04-prepare-the-next-version-for-making",
-  "plan": 0,
-  "task": 0,
-  "total_tasks": 0,
+  "plan": 10,
+  "task": 10,
+  "total_tasks": 10,
   "status": "paused",
   "completed_tasks": [
-    {"id": 1, "name": "Phase 4 research (04-RESEARCH.md)", "status": "done", "commit": "2845104"},
-    {"id": 2, "name": "Design of the printed set, pens, readings, recipe-declared notation and Phase 4 screens on the Claude Design canvas; sketch 010 README D1-D28 on line 54 (uncommitted)", "status": "done"},
-    {"id": 3, "name": "Mark approved the design on Mark's List (decide-design-done-snapshot-2 = done-snapshot, 2026-10-08)", "status": "done"},
-    {"id": 4, "name": "Graphify installed and built; .gitignore ignores graphify-out/ and .planning/graphs/", "status": "done", "commit": "2ad8723"}
+    {"id": 1, "name": "Phase 4 built, 10 of 10 plans; verification human_needed, 5 of 5 must-haves verified", "status": "done"},
+    {"id": 2, "name": "Search by Sheet code names why a code is wrong, length first (quicks 261012-ck1, 261012-ct0)", "status": "done"},
+    {"id": 3, "name": "Home's Next version link opens the Next version pen in one tap (quick 261012-e8l)", "status": "done", "commit": "d3dd7fa"},
+    {"id": 4, "name": "Search field drops aria-describedby on its live region (VoiceOver reads once)", "status": "done", "commit": "6a6809a"},
+    {"id": 5, "name": "Home text links carry the App radius for rounded focus rings", "status": "done", "commit": "fca5b26"},
+    {"id": 6, "name": "Keyboard probe fixed for Search no-match (0000-0000)", "status": "done", "commit": "dd78c4f"},
+    {"id": 7, "name": "04-UAT.md tests 1 and 2 passed on the iPad (3 of 5)", "status": "done", "commit": "fe37506"},
+    {"id": 8, "name": "Mark's List: 118 done rows archived to .planning/archive/ and deleted from the list; Phase field and decide-option fixes on the page", "status": "done", "commit": "58b951b"}
   ],
   "remaining_tasks": [
-    {"id": 5, "name": "Sid snapshot of sketch 010 and CONTRACT.md (157 lines, D1-D28) finished and uncommitted (12 MB folder, 18 target boards); Mark still has to look at look-sketch-010-snapshot-contract and answer decide-pen-cue-mixed-declared; Sid left draw-snapshot-sketch-010 open for Mark's Done. Decide whether to commit the snapshot (12 MB of boards)", "status": "done"},
-    {"id": 6, "name": "Mark runs /gsd-phase insert for the cleanup phase (row run-phase-insert-hide-draw-temp-and-labels): hide Time to draw temp. everywhere and rename the logs; step 2 (remove the data element) rides Phase 4's reseed (row build-remove-draw-temp-data-element)", "status": "not_started"},
-    {"id": 7, "name": "Mark runs Impeccable to update the print and record briefs from sketch 010 (row run-impeccable-briefs-from-010)", "status": "not_started"},
-    {"id": 8, "name": "/gsd-plan-phase 4 (row run-plan-phase-4-after-design); 04-RESEARCH.md exists", "status": "not_started"}
+    {"id": 9, "name": "04-UAT.md test 3: iPad Safari print of Olive Oil v1 and the whole loop on paper (row check-whole-loop-on-paper-after-phase-4)", "status": "not_started"},
+    {"id": 10, "name": "04-UAT.md test 4: closed-tab draft recovery and the 393 look on the device", "status": "not_started"},
+    {"id": 11, "name": "After Phase 4's checks pass: unpark todo-rebaseline-milestone-before-phase-5 and review milestone scope", "status": "not_started"}
   ],
   "blockers": [],
   "async_jobs": [],
   "human_actions_pending": [
-    {"action": "Run /gsd-phase insert for the small cleanup phase before Phase 04 (Mark's List row run-phase-insert-hide-draw-temp-and-labels)", "context": "Mark's sequencing: step 1 hides Time to draw temp. and renames Batch log / Tasting log on every screen; step 2 removes the field as data later", "blocking": true},
-    {"action": "Run Impeccable to revise the print and record briefs from the sketch 010 snapshot (row run-impeccable-briefs-from-010)", "context": "Impeccable owns .impeccable/ and DESIGN.md; app/ edits go through GSD", "blocking": true},
-    {"action": "Run /gsd-plan-phase 4 after the three steps above (row run-plan-phase-4-after-design)", "context": "Planning started only on Mark's say-so; he held it until the design was done", "blocking": true},
-    {"action": "Press Done on the finished Draw rows still open (draw-declared-two-slots-each, draw-phase-4-screens-refresh, draw-route-sheet-end-foot, draw-recipe-declared-notation, draw-phase-04-print-route-home-draft-notice, draw-duplex-margin-page2-and-chosen-screens)", "context": "Done is Mark's; the screens look rows are approved", "blocking": false}
+    {"action": "Run the whole loop once on the iPad and on paper, including a real printout (Mark's List row check-whole-loop-on-paper-after-phase-4, parked)", "context": "Covers 04-UAT.md test 3; Mark deferred it on 2026-10-12", "blocking": true},
+    {"action": "Closed-tab draft recovery and the 393 look on the device (04-UAT.md test 4; rows p4-draft-ipad-uat, p4-05-ipad-mark-one, look-sheet-code-search-ipad)", "context": "Pending device test; the rows are on or archived from Mark's List", "blocking": true}
   ],
   "decisions": [
-    {"decision": "Printed pages: letter, 0.75 in left and right (3-hole punch, duplex), 0.5 in top and bottom; in-flow foot with the Sheet code, no page n of m (Safari cannot); Batch log and Tasting log titles at 32 px 700; combined notes; At draw / From freezer mark-one control (Nothing to note, Not evaluated; print also See below); page 2 at 5 lines; problems in one row of up to six; the method with Why, aside callout and tag fields", "rationale": "Mark on the canvas and Mark's List, 2026-10-06 to 08; sketch 010 README D1-D28", "phase": "04"},
-    {"decision": "Recipe-declared items: up to two declared scales and two declared problems per recipe; core asserted for every recipe, declared slots only against the recipe's own list, tests parameterised by recipe (D25/D26)", "rationale": "Mark; Olive Oil declares Body, Oil and Bitter, Mexican Chocolate none", "phase": "04"},
-    {"decision": "Safari print option C (grid out of print, Safari-only table rule); DB version bump resets and reseeds (no live data); Phase 4 screens: 393 option A, Print in the line only, draft recipe leads on Home, notice clears after 5 s with 'Draft kept. Cancel discards it.'", "rationale": "Mark's List answers", "phase": "04"},
-    {"decision": "Choices on Mark's List are decide rows with options; look rows only approve or change (memory: decisions-are-decide-rows-not-look-rows). Use the real clock (date -u) for every row timestamp", "rationale": "Invented timestamps hid Mark's edits for a while", "phase": "04"}
+    {"decision": "Single tasks and device checks go in chat one at a time; Mark's List is only for several things at once", "rationale": "Mark: the list is his checklist for batches; the old UAT worked because it was sequential and singular", "phase": "04"},
+    {"decision": "Archive a set of rows by saving them to .planning/archive/*.json, committing, then deleting them from the list", "rationale": "Keeps the list and its queries light; git keeps the history", "phase": "04"},
+    {"decision": "Leave the record pen's date picker opening on mount as it is", "rationale": "Mark's call on 2026-10-12", "phase": "04"},
+    {"decision": "Search checks length first, then another symbol, then a U, then no match; an empty field reads length 0", "rationale": "Mark's call on 2026-10-12", "phase": "04"}
   ],
-  "uncommitted_files": ["46 entries, mostly .planning/canvas-generators/* (new and modified generators), .planning/sketches/010-bench-sheet/README.md (D1-D28), plus .planning/phases/03.6-per-step-shared-ingredients/.gitkeep; run git status --porcelain for the list. Sid's snapshot adds more under .planning/sketches/010-bench-sheet/"],
-  "next_action": "Read Mark's List for new answers (/marks-list). Check Sid's snapshot result (look row from draw-snapshot-sketch-010). Then Mark runs the three Run rows in order: /gsd-phase insert, the Impeccable brief update, /gsd-plan-phase 4.",
-  "context_notes": "Mark's List https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC now has search and shows each row's id. Canvas https://claude.ai/artifact/JHwDoAYHDf9yQ1CcUZyATq (pages Print formats, Print method, Phase 4 screens, Recipe-declared items). Sid generators in .planning/canvas-generators/ are uncommitted. No app/ edit was made this session. Open design rows are closed; the graph is built (.planning/graphs/, ignored)."
+  "uncommitted_files": [" M .planning/state.json", "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"],
+  "next_action": "Ask Mark whether to continue UAT; if yes, walk check-whole-loop-on-paper-after-phase-4 one step at a time in chat (verify each step in WebKit first), record results on the row and in 04-UAT.md, then test 4. Do not change /marks-list or CLAUDE.md for the conversation-first flow unless Mark says so.",
+  "context_notes": "Preview server runs on :4173 (PID 9759) and serves a fresh app/dist; device URL http://192.168.1.133:4173/. The two uncommitted files are intentional leftovers. Mark wants one step at a time in chat, not a checklist; recording results on the list and in 04-UAT.md is my job."
 }

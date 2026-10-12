@@ -72,16 +72,20 @@ so the next run skips it.
      `source` names (that sketch's `README.md` under `.planning/sketches/`) with the Edit tool. A
      design record outside `app/` (a sketch README decision log, DESIGN.md) is edited only when
      the edit is exactly what Mark answered; otherwise propose the edit and leave the file alone.
-   - Anything that changes `app/`: when the spec is decided (Mark's answer is recorded and
-     nothing is left open), run it: invoke `/gsd-quick` (or `/gsd-quick-batch` for several) with
-     the task text, one run at a time, and report its commits. When the spec is not decided,
-     propose the command and make it a "Run:" row (step 5).
+   - Anything that changes `app/`, CLAUDE.md, this skill or the planning files: when the spec is
+     decided (Mark's answer is recorded and nothing is left open), run it yourself, one run at a
+     time, and report its commits. Choose the command by CLAUDE.md's "Which GSD command" rule:
+     `/gsd-fast` for settled copy, token and doc edits and known one-line fixes, `/gsd-quick` for
+     behaviour changes and layout bugs whose cause needs measuring, `/gsd-quick-batch` for several
+     related fixes. When the spec is not decided, add a decide row (step 5), never a "Run:" row.
    - A device check that passed: write its reply (step 5). A check Mark already pressed Done on
      is closed by him, so write only the claim (`handledAt` and `touched: false`) and the `reply`
      on it; an open check stays open, with the reply only. A `check` with status `done` passed
      when its note is empty or says it passed (pass, ok, works, looks good, nothing off).
-   - A failed check, or a note describing a defect: write the defect in the check's reply, and
-     propose a `/gsd-quick` or `/gsd-debug` task with its text as a "Run: ..." row (step 5). A
+   - A failed check, or a note describing a defect: write the defect in the check's reply. When
+     the fix is clear, run it as above and name its commit in the reply; when it needs a choice,
+     add a decide row; when the cause is unknown, make `/gsd-debug` a "Run: ..." row (step 5),
+     since it asks Mark questions. A
      check Mark already pressed Done on is closed by him, so it gets only the claim (`handledAt`
      and `touched: false`) and the reply; a check with a defect note that is still open gets the
      reply only and stays open. A check note that is unclear goes to the unclear list (step 5's
@@ -124,13 +128,16 @@ so the next run skips it.
    **No follow-up lives only in a reply.** Whatever the reply names as a next step for Mark (a
    check, a command) gets its own open row at the moment you handle the row, with the real clock
    for its timestamps: a `check` for something he tries on a device or on paper, or a "Run: ..."
-   todo for the commands below. Work you start yourself needs no row: a `/gsd-quick` reports its
-   commits, and a decided sketch redraw goes to `sid`, started in the background with Mark's
+   todo for the commands below. Work you start yourself needs no row: a `/gsd-fast`, `/gsd-quick`
+   or `/gsd-quick-batch` reports its commits, and a decided sketch redraw goes to `sid`, started
+   in the background with Mark's
    answer and the rule that Sid adds a look row to Mark's List when the board is ready, queued
    behind a running Sid, never two at once on the README or canvas. A closed row's reply is a
    note, not a plan. Every `check` row you add is `owner: "mark"` with `needs: "hands"`. Do the
-   same for every command Mark must run himself (`/gsd-phase`, `/gsd-plan-phase`,
-   `/impeccable ...`): add a new open todo row titled "Run: " plus the command's purpose, with
+   same for every command Mark must run himself, the interactive ones (`/gsd-phase`,
+   `/gsd-plan-phase`, `/gsd-debug`, `/impeccable ...`), and never for a `/gsd-fast`, `/gsd-quick`
+   or `/gsd-quick-batch`, which you run: add a new open todo row titled "Run: " plus the
+   command's purpose, with
    `detail` holding the exact command and what it needs, `source` the original row's doc id,
    `owner: "mark"`, `needs: "hands"`, `addedBy: "claude"`, and ISO `createdAt` and `updatedAt`,
    so the command stays on the list until it has run and its row is closed. Mention it in the
@@ -149,8 +156,8 @@ so the next run skips it.
 7. If nothing needs a reaction, say so in one line and list what is open from query (a).
 
 Boundaries: Never edit anything under `app/` yourself (every app change goes through
-`/gsd-quick` or `/gsd-quick-batch`, which you may invoke for a decided change). Run no other GSD
-command and no `/impeccable` command yourself. Create no new files except a todo file for a todo
+`/gsd-fast`, `/gsd-quick` or `/gsd-quick-batch`, which you invoke for a decided change). Run no
+other GSD command and no `/impeccable` command yourself. Create no new files except a todo file for a todo
 Mark added on the page, in `.planning/todos/pending/`. The only agent you may start is `sid`, for
 a decided sketch redraw (one Sid at a time). The one move allowed is a done todo's file,
 `pending/` to `completed/` under `.planning/todos/`.

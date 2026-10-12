@@ -832,3 +832,106 @@ describe('a failed read on the recipe page (WR-05)', () => {
     expect(current.container.querySelector('.notebook-version__acts')).not.toBeNull();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Quick 261012-e8l (Mark's List decide-home-next-version-link-opens-pen): Home's
+// Next version link opens the Next version pen once. This block pins that the
+// pen is the button's own, the request is used once, and a kept draft wins.
+// ---------------------------------------------------------------------------
+const FROM_HOME = { pathname: VERSION_PATH, state: { startNextVersion: true } };
+
+function sheetTitleField() {
+  return current.container.querySelector('[aria-label="Sheet title"]');
+}
+
+describe('Home’s Next version opens the pen once (quick 261012-e8l)', () => {
+  it('A: opens one pen with the version’s Sheet title and a blank name, replaces the state, and Escape closes it for good', async () => {
+    await mountAt(FROM_HOME);
+    await flush(() => nextVersionPen() !== null && locationNow.state === null);
+
+    expect(current.container.querySelectorAll('form[aria-label="Next version"]')).toHaveLength(1);
+    expect(sheetTitleField().value).toBe(oliveOilVersion.sheetTitle);
+    expect(versionNameField().value).toBe('');
+    expect(locationNow.state).toBeNull();
+    expect(navigationType).toBe('REPLACE');
+    expect(pageStatus.mock.calls.some(([message]) => message === DRAFT_KEPT_STATUS)).toBe(false);
+
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    await pressEscape();
+    expect(nextVersionPen()).toBeNull();
+    await flush(() => false);
+    expect(nextVersionPen()).toBeNull();
+    await elapse(1000);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+  });
+
+  it('B: the opened pen keeps a draft after the 250 ms debounce once the maker types', async () => {
+    await mountAt(FROM_HOME);
+    await flush(() => nextVersionPen() !== null && locationNow.state === null);
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
+    await elapse(400);
+    expect(store.saveDraft).not.toHaveBeenCalled();
+    await setValue(versionNameField(), 'less oil');
+    await elapse(300);
+    expect(store.saveDraft).toHaveBeenCalledTimes(1);
+    const saved = store.saveDraft.mock.calls[0][0];
+    expect(saved.versionId).toBe(VERSION);
+    expect(saved.kind).toBe('plan');
+    expect(saved.payload.versionLabel).toBe('less oil');
+    expect(saved.payload.sheetTitle).toBe(oliveOilVersion.sheetTitle);
+  });
+
+  it('C: without the flag no pen opens and the button is there', async () => {
+    await mountAt(VERSION_PATH);
+    expect(nextVersionPen()).toBeNull();
+    expect(buttonByText('Next version')).not.toBeNull();
+  });
+
+  it('D: a draft kept on this version reopens its own pen and is not overwritten', async () => {
+    storeDraft(planDraftRecord());
+    await mountAt(FROM_HOME);
+    await flush(() => nextVersionPen() !== null && locationNow.state === null);
+
+    expect(current.container.querySelectorAll('form[aria-label="Next version"]')).toHaveLength(1);
+    expect(versionNameField().value).toBe('less milk');
+    expect(pageStatus.mock.calls.filter(([message]) => message === DRAFT_KEPT_STATUS)).toHaveLength(1);
+    expect(locationNow.state).toBeNull();
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+    expect(store.drafts.get(VERSION).payload.versionLabel).toBe('less milk');
+  });
+
+  it('E: a kept record draft wins; no Next version pen opens', async () => {
+    storeDraft(recordDraftRecord());
+    await mountAt(FROM_HOME);
+    await flush(() => pen() !== null && locationNow.state === null);
+
+    expect(pen()).not.toBeNull();
+    expect(nextVersionPen()).toBeNull();
+    expect(locationNow.state).toBeNull();
+  });
+
+  it('F: a draft kept on another version of this recipe opens no pen and stays untouched', async () => {
+    store.withSibling = true;
+    storeDraft(siblingPlanDraft('40 g oil'));
+    await mountAt(FROM_HOME);
+    await flush(() => locationNow.state === null && bandDraft() !== null);
+
+    expect(nextVersionPen()).toBeNull();
+    expect(bandDraft().textContent).toBe('Draft: Version 3 · 40 g oil');
+    expect(locationNow.state).toBeNull();
+    expect(store.drafts.has('olive-oil-ice-cream-v2')).toBe(true);
+    expect(store.deleteDraft).not.toHaveBeenCalled();
+    expect(buttonByText('Next version')).not.toBeNull();
+  });
+
+  it('G: a draft kept on another recipe’s version does not stop the pen', async () => {
+    storeDraft({ ...planDraftRecord(), versionId: 'mocha-v1' });
+    await mountAt(FROM_HOME);
+    await flush(() => nextVersionPen() !== null && locationNow.state === null);
+
+    expect(nextVersionPen()).not.toBeNull();
+    expect(versionNameField().value).toBe('');
+    expect(store.drafts.has('mocha-v1')).toBe(true);
+  });
+});

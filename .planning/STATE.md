@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T14:30:02.916Z"
+last_updated: "2026-10-12T14:36:47.161Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: 2bd60df5e188c7a35fb5d0d9f8c690f5f3ce9a6f
+state_head: fca5b26fbf0a5595de18855910a049ba8ae06f07
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-12 - Completed fast task: Search field drops aria-describedby on its live region
+Last activity: 2026-10-12 - Completed fast task: Home text links carry the App radius for rounded focus rings
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -509,6 +509,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 140 | CLAUDE.md: every decide option carries a unique id | 2026-10-12 | 77c2bbd | — |
 | 261012-e8l | Home's Next version link opens the Next version pen (one tap) | 2026-10-12 | d3dd7fa | [261012-e8l-home-next-version-link-opens-the-next-ve](./quick/261012-e8l-home-next-version-link-opens-the-next-ve/) |
 | 142 | Search field drops aria-describedby on its live region; VoiceOver read the line twice per Find | 2026-10-12 | 2bd60df | — |
+| 143 | Home text links carry the App radius so their focus rings are rounded | 2026-10-12 | fca5b26 | — |
 
 ### Roadmap Evolution
 

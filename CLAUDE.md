@@ -115,7 +115,8 @@ Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC, collection `item
   R35C_SheetTitle". Name the row in the final message.
 - Kinds and names. Choose `kind` by what Mark does:
   - `decide`: he picks an option or writes the answer. `needs: "answer"`, with `options` and one
-    marked `recommended`.
+    marked `recommended`. Every option carries a unique `id` (the page matches his answer to it;
+    an option without one shows as chosen together with the others).
   - `look`: he views something that exists (a board, a PDF, wording) and approves it or asks for
     a change. Usually `needs: "answer"`.
   - `check`: he does something on a device or on paper and reports pass or fail. `needs: "hands"`.

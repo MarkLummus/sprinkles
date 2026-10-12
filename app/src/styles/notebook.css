@@ -1301,6 +1301,17 @@
   .notebook-field textarea {
     font-size: var(--sheet-type-note);
   }
+
+  /* Mark's rule from the 04-09 tap-target look: a text link in a row of
+     controls meets the 44px touch floor on a coarse pointer. Measured cause
+     (quick 261011-x97): at 724 Print sheet wraps onto a line of its own, so
+     nothing stretches it, and app.css's coarse floor reaches buttons only; it
+     was 17px tall. This reads the same shared --touch-min under app.css's own
+     condition, so a fine pointer keeps the line box. Where the link shares a
+     line, the row already stretches it to that height, so nothing there moves. */
+  .notebook-version__acts > a.notebook-link {
+    min-height: var(--touch-min);
+  }
 }
 
 /* The phone's group-cue margin (sketch 011 decision 40 C): the 44px touch

@@ -6,6 +6,8 @@ started: 2026-10-11T11:26:19Z
 updated: 2026-10-11T11:26:19Z
 ---
 
+The pending device checks are tracked on Mark's List (https://claude.ai/artifact/BUn1EoVgfbMQ5dApdtBsBC); results are recorded here once they pass.
+
 ## Current Test
 
 number: 1

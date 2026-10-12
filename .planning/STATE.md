@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T03:32:10.464Z"
+last_updated: "2026-10-12T03:32:54.672Z"
 last_activity: 2026-10-11
 last_activity_desc: Phase 04 execution started
-state_head: 3718f75a60d76e69fdc7302647f26c46bf164914
+state_head: 4e31b96325fd611f7c03eb374db33b72fa3af2c0
 progress:
   total_phases: 15
   completed_phases: 11
@@ -498,6 +498,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 129 | STATE.md Current Position matches Phase 4 verification (human_needed) | 2026-10-11 | 898e0d0 | — |
 | 130 | 04-REVIEW-DISPOSITION.md records the four review warnings fixed in 261011-gko | 2026-10-11 | 44129fc | — |
 | 131 | CLAUDE.md names which GSD command runs which change | 2026-10-11 | 3718f75 | — |
+| 132 | 04-UAT.md points to Mark's List for the pending device checks | 2026-10-11 | 4e31b96 | — |
 
 ### Roadmap Evolution
 

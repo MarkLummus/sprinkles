@@ -699,6 +699,10 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // Every kept draft, read once: the band names a Next version draft waiting on
   // another version of this recipe (04-09).
   const [drafts, setDrafts] = useState([]);
+  // Whether the drafts were read: the Home Next version request waits for it.
+  const [draftsLoaded, setDraftsLoaded] = useState(false);
+  // Whether the versions were read: the Home Next version request waits for it.
+  const [versionsLoaded, setVersionsLoaded] = useState(false);
   // Set when any store read below fails (WR-05): the page then says so instead
   // of rendering without data, and the draft restore never starts, so a kept
   // draft is never judged against reads that did not happen.
@@ -858,7 +862,10 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     repository
       .listDrafts()
       .then((result) => {
-        if (!cancelled) setDrafts(result);
+        if (!cancelled) {
+          setDrafts(result);
+          setDraftsLoaded(true);
+        }
       })
       .catch(() => {
         if (!cancelled) setLoadFailed(true);
@@ -876,7 +883,10 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     repository
       .listVersions()
       .then((result) => {
-        if (!cancelled) setVersions(result);
+        if (!cancelled) {
+          setVersions(result);
+          setVersionsLoaded(true);
+        }
       })
       .catch(() => {
         if (!cancelled) setLoadFailed(true);
@@ -1204,17 +1214,21 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // Opens the Next version pen Home's Next version asked for, the startTasting
   // effect's pattern: used once, the entry's state replaced with null before
   // the pen opens, so Back, Forward or a reload never reopens it. A kept draft
-  // wins: it waits for the draft restore, and a pen already open (a restored
-  // one included) means nothing more is opened. The pen itself is the button's
-  // own, through handleStartDeveloping.
+  // wins, twice over: a pen already open (a restored one included) means
+  // nothing more is opened, and so does a draft kept on another version of
+  // this recipe (this version's own was decided by the restore). The pen
+  // itself is the button's own, through handleStartDeveloping.
   const startNextVersionConsumedRef = useRef(false);
   useEffect(() => {
-    if (!startNextVersionOnMount || startNextVersionConsumedRef.current || !draftRestoreDone) return;
+    if (!startNextVersionOnMount || startNextVersionConsumedRef.current) return;
+    if (!draftRestoreDone || !versionsLoaded || !draftsLoaded) return;
     startNextVersionConsumedRef.current = true;
     navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
     if (mode !== 'reading') return;
+    const recipeVersionIds = new Set(versionsForRecipe(versions, version.recipeId).map((candidate) => candidate.id));
+    if (drafts.some((record) => record.versionId !== version.id && recipeVersionIds.has(record.versionId))) return;
     handleStartDeveloping();
-  }, [startNextVersionOnMount, mode, draftRestoreDone]);
+  }, [startNextVersionOnMount, mode, draftRestoreDone, versionsLoaded, draftsLoaded, versions, drafts, version]);
 
   // Escape (D-27): closes only an untouched pen, and does nothing at all
   // once the pen holds ink — Cancel is the one exit, so a stray key can

@@ -168,9 +168,9 @@ describe('codeProblem', () => {
     }
   });
 
-  it('reads an empty, whitespace-only or non-string input as blank', () => {
-    for (const input of ['', '   ', '\t\n ', null, undefined]) {
-      expect(codeProblem(input)).toEqual({ reason: 'blank' });
+  it('reads an empty, whitespace-only, hyphens-only or non-string input as length 0', () => {
+    for (const input of ['', '   ', '\t\n ', '----', '- -', null, undefined]) {
+      expect(codeProblem(input)).toEqual({ reason: 'length', count: 0 });
     }
   });
 
@@ -182,10 +182,6 @@ describe('codeProblem', () => {
     expect(codeProblem('hello')).toEqual({ reason: 'length', count: 5 });
   });
 
-  it('reads a hyphens-only field as length 0, not blank', () => {
-    expect(codeProblem('----')).toEqual({ reason: 'length', count: 0 });
-  });
-
   it('names the letter U, in either case', () => {
     for (const input of ['K7QM-2X9U', 'k7qm-2x9u', 'UUUU-UUUU']) {
       expect(codeProblem(input)).toEqual({ reason: 'letter-u' });
@@ -193,16 +189,29 @@ describe('codeProblem', () => {
   });
 
   it('names any other character outside the alphabet', () => {
-    for (const input of ['K7QM-2X9!', 'K7QM-2X9É', 'K7QM-2X9é', 'K7QM-2X9🍦', 'K7QM_2X9D']) {
+    for (const input of ['K7QM-2X9!', 'K7QM-2X9É', 'K7QM-2X9é', 'K7QM-2X9🍦', 'K7QM_2X9', 'K7QMU2X!']) {
       expect(codeProblem(input)).toEqual({ reason: 'other-character' });
     }
   });
 
-  it('puts another character before U, and U before length', () => {
-    expect(codeProblem('U!')).toEqual({ reason: 'other-character' });
-    expect(codeProblem('K7QM-2X9U!')).toEqual({ reason: 'other-character' });
-    expect(codeProblem('K7QM-2XU')).toEqual({ reason: 'letter-u' });
-    expect(codeProblem('UU')).toEqual({ reason: 'letter-u' });
+  it('puts length first, then another character, then U', () => {
+    expect(codeProblem('K7QM-2U')).toEqual({ reason: 'length', count: 6 });
+    expect(codeProblem('!')).toEqual({ reason: 'length', count: 1 });
+    expect(codeProblem('U!')).toEqual({ reason: 'length', count: 2 });
+    expect(codeProblem('UU')).toEqual({ reason: 'length', count: 2 });
+    expect(codeProblem('K7QM-2XU')).toEqual({ reason: 'length', count: 7 });
+    expect(codeProblem('K7QM-2X9U!')).toEqual({ reason: 'length', count: 9 });
+    expect(codeProblem('K7QM_2X9D')).toEqual({ reason: 'length', count: 9 });
+    expect(codeProblem('K7QM-2X9!')).toEqual({ reason: 'other-character' });
+    expect(codeProblem('K7QMU2X!')).toEqual({ reason: 'other-character' });
+    expect(codeProblem('K7QM-2X9U')).toEqual({ reason: 'letter-u' });
+  });
+
+  it('counts a character outside the Basic Multilingual Plane as one symbol', () => {
+    expect(codeProblem('🍦')).toEqual({ reason: 'length', count: 1 });
+    expect(codeProblem('🍦🍦')).toEqual({ reason: 'length', count: 2 });
+    expect(codeProblem('K7QM2X9🍦D')).toEqual({ reason: 'length', count: 9 });
+    expect(codeProblem('K7QM-2X9🍦')).toEqual({ reason: 'other-character' });
   });
 
   it('is null exactly when normaliseCode accepts', () => {
@@ -210,7 +219,8 @@ describe('codeProblem', () => {
       'K7QM-2X9D', ' k7qm 2x9d ', 'IIII-LLLL', 'ILOILOIL', '', '   ', '\t\n ', null, undefined,
       'K7QM2X', 'ILOILO', 'K7QM-2X9D-AB', 'K7QM 2X9D OO', 'hello', '----', 'K7QM-2X9U', 'k7qm-2x9u',
       'UUUU-UUUU', 'K7QM-2X9!', 'K7QM-2X9É', 'K7QM-2X9é', 'K7QM-2X9🍦', 'K7QM_2X9D', 'U!',
-      'K7QM-2X9U!', 'K7QM-2XU', 'UU',
+      'K7QM-2X9U!', 'K7QM-2XU', 'UU', '- -', 'K7QM-2U', '!', '🍦', '🍦🍦', 'K7QM2X9🍦D',
+      'K7QM_2X9', 'K7QMU2X!',
     ];
     for (const input of inputs) {
       expect(codeProblem(input) === null).toBe(normaliseCode(input) !== null);

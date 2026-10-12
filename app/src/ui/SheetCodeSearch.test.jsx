@@ -19,7 +19,6 @@ import {
   SheetCodeSearch,
   SHEET_CODE_NO_MATCH,
   SHEET_CODE_STORE_ERROR,
-  SHEET_CODE_BLANK,
   SHEET_CODE_WRONG_LENGTH,
   SHEET_CODE_LETTER_U,
   SHEET_CODE_OTHER_CHARACTER,
@@ -162,11 +161,14 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(document.activeElement).toBe(host.querySelector('input'));
   });
 
-  it('reads the same blank line for an empty and a blank submit', async () => {
+  it('reads the length line with 0 for an empty, a whitespace-only and a hyphens-only submit', async () => {
     await mount([oliveOilVersion]);
-    for (const text of ['', '   ']) {
+    for (const text of ['', '   ', '----']) {
       await typeAndSubmit(text);
-      expect(host.querySelector('[role="status"]').textContent).toBe('Type a Sheet code.');
+      expect(host.querySelector('[role="status"]').textContent).toBe(SHEET_CODE_WRONG_LENGTH(0));
+      expect(host.querySelector('[role="status"]').textContent).toBe(
+        'A Sheet code has eight letters and numbers. This one has 0.',
+      );
       expect(document.activeElement).toBe(host.querySelector('input'));
     }
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
@@ -175,10 +177,10 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
   it('empties the status on a repeat submit and writes the line again on the next frame, for every line, so it is read again (WR-07)', async () => {
     await mount([oliveOilVersion]);
     const pairs = [
-      ['', SHEET_CODE_BLANK],
+      ['', SHEET_CODE_WRONG_LENGTH(0)],
       ['K7QM2X', SHEET_CODE_WRONG_LENGTH(6)],
-      ['K7QM-2X9U', SHEET_CODE_LETTER_U],
       ['K7QM-2X9!', SHEET_CODE_OTHER_CHARACTER],
+      ['K7QM-2X9U', SHEET_CODE_LETTER_U],
       ['0000-0000', SHEET_CODE_NO_MATCH],
     ];
     const status = host.querySelector('[role="status"]');
@@ -196,7 +198,7 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
   });
 
   it('pins the exact copy of every line', () => {
-    expect(SHEET_CODE_BLANK).toBe('Type a Sheet code.');
+    expect(SHEET_CODE_WRONG_LENGTH(0)).toBe('A Sheet code has eight letters and numbers. This one has 0.');
     expect(SHEET_CODE_LETTER_U).toBe('Sheet codes never use the letter U.');
     expect(SHEET_CODE_OTHER_CHARACTER).toBe('Sheet codes use only letters and numbers.');
     expect(SHEET_CODE_WRONG_LENGTH(6)).toBe('A Sheet code has eight letters and numbers. This one has 6.');
@@ -211,14 +213,18 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(host.querySelector('[role="status"]').textContent).toBe(SHEET_CODE_WRONG_LENGTH(10));
   });
 
-  it('puts another character before U, and U before length, through the field', async () => {
+  it('puts length first, then another character, then U, through the field', async () => {
     await mount([oliveOilVersion]);
     const cases = [
-      ['U!', SHEET_CODE_OTHER_CHARACTER],
-      ['K7QM-2X9U!', SHEET_CODE_OTHER_CHARACTER],
-      ['K7QM-2XU', SHEET_CODE_LETTER_U],
+      ['K7QM-2U', SHEET_CODE_WRONG_LENGTH(6)],
+      ['!', SHEET_CODE_WRONG_LENGTH(1)],
+      ['U!', SHEET_CODE_WRONG_LENGTH(2)],
+      ['K7QM-2XU', SHEET_CODE_WRONG_LENGTH(7)],
+      ['K7QM-2X9U!', SHEET_CODE_WRONG_LENGTH(9)],
+      ['K7QM-2X9!', SHEET_CODE_OTHER_CHARACTER],
       ['K7QM-2X9É', SHEET_CODE_OTHER_CHARACTER],
       ['K7QM-2X9🍦', SHEET_CODE_OTHER_CHARACTER],
+      ['K7QM-2X9U', SHEET_CODE_LETTER_U],
     ];
     for (const [text, line] of cases) {
       await typeAndSubmit(text);

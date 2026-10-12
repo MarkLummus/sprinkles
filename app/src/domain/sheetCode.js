@@ -160,23 +160,24 @@ function codeSymbols(input) {
 /**
  * codeProblem(input) -> null when normaliseCode would accept `input`; otherwise
  * why it would not, as { reason }:
- *   'blank'           not a string, or empty or only whitespace
- *   'other-character' a symbol outside the alphabet that is not U
- *   'letter-u'        a U, and nothing else outside the alphabet
- *   'length'          well-formed symbols but not eight; { reason, count } with
- *                     the symbol count normaliseCode reads
- * Checked in that order: another character beats U, and U beats length.
+ *   'length'          not eight symbols; { reason, count } with the number of
+ *                     symbols normaliseCode reads, counted by code point so an
+ *                     emoji is one. Empty, whitespace-only, hyphens-only and
+ *                     non-string input read as count 0
+ *   'other-character' eight symbols, one outside the alphabet and not U
+ *   'letter-u'        eight symbols, a U, and nothing else outside the alphabet
+ * Checked in that order: length beats another character, and another
+ * character beats U.
  */
 export function codeProblem(input) {
-  if (typeof input !== 'string' || input.trim() === '') return { reason: 'blank' };
-  const symbols = codeSymbols(input);
+  const symbols = typeof input === 'string' ? [...codeSymbols(input)] : [];
+  if (symbols.length !== CODE_SYMBOLS) return { reason: 'length', count: symbols.length };
   let hasU = false;
   for (const symbol of symbols) {
     if (symbol === 'U') hasU = true;
     else if (!CROCKFORD_ALPHABET.includes(symbol)) return { reason: 'other-character' };
   }
   if (hasU) return { reason: 'letter-u' };
-  if (symbols.length !== CODE_SYMBOLS) return { reason: 'length', count: symbols.length };
   return null;
 }
 

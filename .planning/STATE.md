@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T13:36:06.409Z"
+last_updated: "2026-10-12T14:14:07.296Z"
 last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: dd78c4f619fd7a16248d2286187e21eb26aad2ce
+state_head: 77c2bbd3b4f9b7717daa5cbb08d5a6ae563c2ddb
 progress:
   total_phases: 15
   completed_phases: 11
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-09-22)
 Phase: 04 (Prepare the next version for making) — VERIFYING
 Plan: 10 of 10
 Status: All 10 plans executed; verification is human_needed (5/5 must-haves verified, device checks pending on Mark's List)
-Last activity: 2026-10-12 - Completed fast task: keyboard probe Search no-match check types 0000-0000
+Last activity: 2026-10-12 - Completed fast task: CLAUDE.md says every decide option carries an id
 
 Progress: [███████░░░] 73% (11/15 phases; 120/120 plans executed)
 
@@ -506,6 +506,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261012-ck1 | Search by Sheet code names why a code is wrong (blank, length, U, other symbol) | 2026-10-12 | ca39493 | [261012-ck1-search-by-sheet-code-names-why-a-code-is](./quick/261012-ck1-search-by-sheet-code-names-why-a-code-is/) |
 | 261012-ct0 | Search failure lines check length first; blank reads as length 0 | 2026-10-12 | a27cedc | [261012-ct0-search-failure-lines-length-first-blank-](./quick/261012-ct0-search-failure-lines-length-first-blank-/) |
 | 139 | Keyboard probe types 0000-0000 (a well-formed absent code) for the Search no-match check; colour mode passes 6/6 | 2026-10-12 | dd78c4f | — |
+| 140 | CLAUDE.md: every decide option carries a unique id | 2026-10-12 | 77c2bbd | — |
 
 ### Roadmap Evolution
 

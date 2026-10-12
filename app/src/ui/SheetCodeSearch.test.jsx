@@ -172,17 +172,58 @@ describe('SheetCodeSearch — no match (D-13, UX1-03)', () => {
     expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
   });
 
-  it('empties the status on a repeat submit and writes the line again on the next frame, so it is read again (WR-07)', async () => {
+  it('empties the status on a repeat submit and writes the line again on the next frame, for every line, so it is read again (WR-07)', async () => {
     await mount([oliveOilVersion]);
-    await typeAndSubmit('0000-0000');
+    const pairs = [
+      ['', SHEET_CODE_BLANK],
+      ['K7QM2X', SHEET_CODE_WRONG_LENGTH(6)],
+      ['K7QM-2X9U', SHEET_CODE_LETTER_U],
+      ['K7QM-2X9!', SHEET_CODE_OTHER_CHARACTER],
+      ['0000-0000', SHEET_CODE_NO_MATCH],
+    ];
     const status = host.querySelector('[role="status"]');
-    expect(status.textContent).toBe('No version has this code.');
-    await submit();
-    expect(status.textContent).toBe('');
-    expect(document.activeElement).toBe(host.querySelector('input'));
-    await nextFrame();
-    expect(status.textContent).toBe('No version has this code.');
-    expect(document.activeElement).toBe(host.querySelector('input'));
+    for (const [text, line] of pairs) {
+      await typeAndSubmit(text);
+      expect(status.textContent).toBe(line);
+      await submit();
+      expect(status.textContent).toBe('');
+      expect(document.activeElement).toBe(host.querySelector('input'));
+      await nextFrame();
+      expect(status.textContent).toBe(line);
+      expect(document.activeElement).toBe(host.querySelector('input'));
+      expect(host.querySelectorAll('[role="status"] *')).toHaveLength(0);
+    }
+  });
+
+  it('pins the exact copy of every line', () => {
+    expect(SHEET_CODE_BLANK).toBe('Type a Sheet code.');
+    expect(SHEET_CODE_LETTER_U).toBe('Sheet codes never use the letter U.');
+    expect(SHEET_CODE_OTHER_CHARACTER).toBe('Sheet codes use only letters and numbers.');
+    expect(SHEET_CODE_WRONG_LENGTH(6)).toBe('A Sheet code has eight letters and numbers. This one has 6.');
+    expect(SHEET_CODE_WRONG_LENGTH(10)).toBe('A Sheet code has eight letters and numbers. This one has 10.');
+  });
+
+  it('counts the symbols through the field: 6 for K7QM2X, 10 for K7QM 2X9D OO', async () => {
+    await mount([oliveOilVersion]);
+    await typeAndSubmit('K7QM2X');
+    expect(host.querySelector('[role="status"]').textContent).toBe(SHEET_CODE_WRONG_LENGTH(6));
+    await typeAndSubmit('K7QM 2X9D OO');
+    expect(host.querySelector('[role="status"]').textContent).toBe(SHEET_CODE_WRONG_LENGTH(10));
+  });
+
+  it('puts another character before U, and U before length, through the field', async () => {
+    await mount([oliveOilVersion]);
+    const cases = [
+      ['U!', SHEET_CODE_OTHER_CHARACTER],
+      ['K7QM-2X9U!', SHEET_CODE_OTHER_CHARACTER],
+      ['K7QM-2XU', SHEET_CODE_LETTER_U],
+      ['K7QM-2X9É', SHEET_CODE_OTHER_CHARACTER],
+      ['K7QM-2X9🍦', SHEET_CODE_OTHER_CHARACTER],
+    ];
+    for (const [text, line] of cases) {
+      await typeAndSubmit(text);
+      expect(host.querySelector('[role="status"]').textContent).toBe(line);
+    }
   });
 
   it('tells a malformed code from a missing sheet, and says why, with focus kept in the field (WR-07)', async () => {

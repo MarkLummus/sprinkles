@@ -88,7 +88,8 @@ choice rather than assuming one.
 ## Which GSD command
 
 `/gsd-fast` for settled copy, token and doc edits; `/gsd-quick` for behaviour changes;
-`/gsd-quick-batch` for related fixes.
+`/gsd-quick-batch` for related fixes. A known one-line CSS fix goes to `/gsd-fast`; a layout
+bug whose cause needs measuring goes to `/gsd-quick`.
 
 ## Mark's List
 

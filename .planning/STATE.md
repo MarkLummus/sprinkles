@@ -4,10 +4,10 @@ current_phase: 04
 current_phase_name: Prepare the next version for making
 status: verifying
 stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-10-12T04:07:26.681Z"
-last_activity: 2026-10-11
+last_updated: "2026-10-12T04:07:39.868Z"
+last_activity: 2026-10-12
 last_activity_desc: Phase 04 execution started
-state_head: 7beb6f222072718addbe40e4f74e52c1287354e5
+state_head: 7db79fea3c523aaf4e0df3907b5412f56e738ce8
 progress:
   total_phases: 15
   completed_phases: 11
@@ -501,6 +501,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 132 | 04-UAT.md points to Mark's List for the pending device checks | 2026-10-11 | 4e31b96 | — |
 | 261011-wqn | Align the action row on a recipe's version details: Print sheet floats above the baseline of Next version and Show changes and sits against the right edge; line it up with them. | 2026-10-11 | b1ec4ac | [261011-wqn-align-the-action-row-on-a-recipe-s-versi](./quick/261011-wqn-align-the-action-row-on-a-recipe-s-versi/) |
 | 261011-x97 | Give a wrapped Print sheet link in the version details row a 44px touch target on a coarse pointer: at 724 wide it wraps onto its own line and is only 17px tall because an anchor has no min-height floor (only buttons get it). | 2026-10-12 | 7beb6f2 | [261011-x97-give-a-wrapped-print-sheet-link-in-the-v](./quick/261011-x97-give-a-wrapped-print-sheet-link-in-the-v/) |
+| 135 | CLAUDE.md says where layout fixes go | 2026-10-12 | 7db79fe | — |
 
 ### Roadmap Evolution
 

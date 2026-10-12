@@ -626,6 +626,42 @@ describe('band buttons keep their resting box on hover and press (quick 261004-l
   });
 });
 
+// Mark, 2026-10-11 (iPad): on Version 4, Print sheet floats above Next version and
+// Show changes. Measured on the build (quick 261011-wqn): the row stretches every
+// control to its 44px line; a stretched button centres its text, but the Print sheet
+// link computes display block and sets its text at the top of its box. WebKit 1366
+// coarse: Print sheet text top 265.44, Next version and Show changes 278.94 (13.5px).
+describe("the version acts row sets Print sheet on its neighbours' baseline (quick 261011-wqn; Mark 2026-10-11)", () => {
+  const top = (selector) => rules.find((rule) => rule.selector === selector && rule.media === undefined);
+  const LINK = '.notebook-version__acts > a.notebook-link';
+  const ROW = '.notebook-version__acts';
+  const declarationList = (rule) =>
+    rule.declarations
+      .split(';')
+      .map((d) => d.trim().replace(/\s+/g, ' '))
+      .filter(Boolean);
+
+  test("the Print sheet link gets the button's own centring and nothing that sizes or moves its box", () => {
+    const rule = top(LINK);
+    expect(rule, `expected a top-level ${LINK} rule`).toBeTruthy();
+    expect(declarationList(rule)).toEqual(['display: inline-flex', 'align-items: center']);
+    expect(rule.declarations).not.toMatch(/padding|margin|min-height|height|line-height/);
+  });
+
+  test('the row declares no align-items, so it keeps flex stretch and every control keeps the 44px line as its hit area', () => {
+    const row = top(ROW);
+    expect(row, `expected a top-level ${ROW} rule`).toBeTruthy();
+    expect(row.declarations).not.toMatch(/align-items/);
+  });
+
+  test('the link rule sits after the row rule', () => {
+    const rowIndex = rules.findIndex((rule) => rule.selector === ROW && rule.media === undefined);
+    const linkIndex = rules.findIndex((rule) => rule.selector === LINK && rule.media === undefined);
+    expect(rowIndex).toBeGreaterThanOrEqual(0);
+    expect(linkIndex).toBeGreaterThan(rowIndex);
+  });
+});
+
 describe('the ceremony fields and actions share the App control radius (sketch 011 decision 38 B; quick 261004-ly7)', () => {
   const FIELD_SELECTOR = '.notebook-field .ink-field, .notebook-field input, .notebook-field textarea';
 

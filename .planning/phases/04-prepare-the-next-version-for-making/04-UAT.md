@@ -10,10 +10,10 @@ The pending device checks are tracked on Mark's List (https://claude.ai/artifact
 
 ## Current Test
 
-number: 3
-name: iPad Safari print of Olive Oil v1
+number: 4
+name: Closed-tab draft recovery and the 393 look on the device
 expected: |
-  Five pages (Batch log, Tasting log, formula page, table tail with steps, rest with the closing foot); groups whole, header row repeated, Sheet code in every foot. Rows: check-ipad-pdf-bench-sheet-olive-oil, look-print-sheet-route-device, check-whole-loop-on-paper-after-phase-4.
+  A pen reopens with its ink and "Draft kept. Cancel discards it."; Home and the band name the waiting draft; the 393 print route and Search stack as drawn. Rows: p4-draft-ipad-uat, p4-05-ipad-mark-one, look-sheet-code-search-ipad.
 awaiting: user response
 
 ## Tests
@@ -28,7 +28,7 @@ result: pass (Mark, iPad VoiceOver, 2026-10-12)
 
 ### 3. iPad Safari print of Olive Oil v1
 expected: Five pages (Batch log, Tasting log, formula page, table tail with steps, rest with the closing foot); groups whole, header row repeated, Sheet code in every foot. Rows: check-ipad-pdf-bench-sheet-olive-oil, look-print-sheet-route-device, check-whole-loop-on-paper-after-phase-4.
-result: [pending]
+result: pass (Mark, iPad, 2026-10-13, walked one step at a time in chat: Next version and save, Print sheet then Print on paper with five pages, groups whole, header row repeated and Sheet code in every foot, record a batch with a tasting, reload mid-edit kept the draft with "Draft kept. Cancel discards it.", Save batch, Sheet code Find landed on the version. Mark's List row check-whole-loop-on-paper-after-phase-4 closed.)
 
 ### 4. Closed-tab draft recovery and the 393 look on the device
 expected: A pen reopens with its ink and "Draft kept. Cancel discards it."; Home and the band name the waiting draft; the 393 print route and Search stack as drawn. Rows: p4-draft-ipad-uat, p4-05-ipad-mark-one, look-sheet-code-search-ipad.
@@ -41,9 +41,9 @@ result: pass (orchestrator read the list: all three open at version 1, the fourt
 ## Summary
 
 total: 5
-passed: 3
+passed: 4
 issues: 0
-pending: 2
+pending: 1
 skipped: 0
 blocked: 0
 

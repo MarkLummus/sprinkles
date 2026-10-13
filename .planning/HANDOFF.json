@@ -19,7 +19,7 @@
     {"id": 8, "name": "Mark's List: 118 done rows archived to .planning/archive/ and deleted from the list; Phase field and decide-option fixes on the page", "status": "done", "commit": "58b951b"}
   ],
   "remaining_tasks": [
-    {"id": 9, "name": "04-UAT.md test 3: iPad Safari print of Olive Oil v1 and the whole loop on paper (row check-whole-loop-on-paper-after-phase-4)", "status": "not_started"},
+    {"id": 9, "name": "04-UAT.md test 3: iPad Safari print of Olive Oil v1 and the whole loop on paper (row check-whole-loop-on-paper-after-phase-4)", "status": "done"},
     {"id": 10, "name": "04-UAT.md test 4: closed-tab draft recovery and the 393 look on the device", "status": "not_started"},
     {"id": 11, "name": "After Phase 4's checks pass: unpark todo-rebaseline-milestone-before-phase-5 and review milestone scope", "status": "not_started"}
   ],
@@ -36,6 +36,6 @@
     {"decision": "Search checks length first, then another symbol, then a U, then no match; an empty field reads length 0", "rationale": "Mark's call on 2026-10-12", "phase": "04"}
   ],
   "uncommitted_files": [" M .planning/state.json", "?? .planning/phases/03.6-per-step-shared-ingredients/.gitkeep"],
-  "next_action": "Ask Mark whether to continue UAT; if yes, walk check-whole-loop-on-paper-after-phase-4 one step at a time in chat (verify each step in WebKit first), record results on the row and in 04-UAT.md, then test 4. Do not change /marks-list or CLAUDE.md for the conversation-first flow unless Mark says so.",
+  "next_action": "Test 3 passed 2026-10-13. Walk test 4 (closed-tab draft recovery, 393 look) one step at a time in chat (verify each step in WebKit first), record results on the row and in 04-UAT.md. Do not change /marks-list or CLAUDE.md for the conversation-first flow unless Mark says so.",
   "context_notes": "Preview server runs on :4173 (PID 9759) and serves a fresh app/dist; device URL http://192.168.1.133:4173/. The two uncommitted files are intentional leftovers. Mark wants one step at a time in chat, not a checklist; recording results on the list and in 04-UAT.md is my job."
 }

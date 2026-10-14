@@ -39,6 +39,7 @@ import {
   isTastingBodyField,
   removeTastingSection,
   restoreDraftFromUndo,
+  setRecordField,
   tastingHasInk,
   tastingPayloadFromDraft,
   validateRecordDraft,
@@ -62,6 +63,7 @@ import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 import { FoldRow } from './FoldRow.jsx';
 import { useBelow724, useBelowDesktop, useFold, useSheetTwoColumns } from './useBelowDesktop.js';
 import { usePenDraft } from './usePenDraft.js';
+import { useRecordDraft } from './useRecordDraft.js';
 
 // "a, b, and c" — the joining GraduatedRule and BasisNote each keep their own
 // copy of; this is the third, for the marked-rows announcement.
@@ -193,46 +195,40 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // recorded into. mode is never derived from the URL — only the margin's
   // own control, and now the headnote's, ask for it (D-19).
   const [mode, setMode] = useState('reading');
-  const [draft, setDraft] = useState(null);
-  // Non-null while `mode === 'recording'` means the pen layer is amending
-  // this existing batch's record, rather than recording a new one
-  // (task 3, D-06). Amending pre-fills the fields from the batch, never
-  // from the version, and saving calls completeRecord, never createBatch.
-  const [amendingBatchId, setAmendingBatchId] = useState(null);
-  // The draft-shaped object handleStartAmending pre-filled `draft` from
-  // (03-07, T-03-43) — the baseline isDraftDirty compares an amend draft
-  // against, instead of blank. Cleared everywhere amendingBatchId is
-  // cleared, for the same class of reason (T-02-24): a stale baseline left
-  // over from a prior amendment would make a fresh recording's own dirty
-  // check compare against the wrong record.
-  const [amendBaseline, setAmendBaseline] = useState(null);
-  // The record pen's own blocked-save state (D-05, contract "Controls
-  // spec"): fieldErrors keys a battery field to its own contract sentence;
-  // invalidFieldTarget names the first invalid field in BATTERY_FIELDS
-  // order plus an attempt counter (WR-01's pattern) so a second
-  // consecutive block on the same field still moves focus; blockedDate*
-  // are the churn-date press-to-block's own message and attempt counter,
-  // read by BOTH ceremonies (D-05: "a sentence beside both save sets");
-  // formStatus is the open pen's own form-status live region text,
-  // whichever pen is open.
-  const [fieldErrors, setFieldErrors] = useState({});
-  const [invalidFieldTarget, setInvalidFieldTarget] = useState(null);
+  // The record pen's draft, its amend target, baseline and opener, its
+  // blocked-save state (field errors, the churn-date block) and the pending
+  // undo (useRecordDraft owns all of them); formStatus below is the open pen's
+  // own form-status live region text, whichever pen is open.
+  const recordPen = useRecordDraft();
+  const {
+    draft,
+    amendingBatchId,
+    amendBaseline,
+    amendOpener,
+    fieldErrors,
+    invalidFieldTarget,
+    blockedDateMessage,
+    blockedDateAttempt,
+    pendingUndo,
+    setDraft,
+    setAmendingBatchId,
+    setAmendBaseline,
+    setAmendOpener,
+    setFieldErrors,
+    setInvalidFieldTarget,
+    setBlockedDateMessage,
+    setBlockedDateAttempt,
+    setPendingUndo,
+  } = recordPen;
+  // The save gate's two attempt counters live in useRecordDraft after Task 3;
+  // until then they stay here.
   const invalidFieldAttemptRef = useRef(0);
-  const [blockedDateMessage, setBlockedDateMessage] = useState(null);
-  const [blockedDateAttempt, setBlockedDateAttempt] = useState(null);
   const dateBlockedAttemptRef = useRef(0);
   // Add tasting's own attempt counter (D-01, contract "Focus landings"):
   // the same WR-01 pattern as blockedDateAttempt above, so BatchRow's own
   // focus effect re-fires even on a second press.
   const [addTastingAttempt, setAddTastingAttempt] = useState(null);
   const addTastingAttemptRef = useRef(0);
-  // Which control opened the amend pen: 'correct' (the log's Correct) or
-  // 'record-a-tasting' (the band's, below 724; sketch 011 decision 30).
-  // Every amend open overwrites it and nothing clears it: the two focus-
-  // return effects (BatchRow's for Correct, VersionRow's for the band) read
-  // it as captured when the pen opened, so the control that opened a pen is
-  // the one that gets focus back when it closes.
-  const [amendOpener, setAmendOpener] = useState('correct');
   const [formStatus, setFormStatus] = useState('');
   const formStatusTimerRef = useRef(null);
   // The tasting-status channel (contract "Feedback and undo lifecycle"):
@@ -252,7 +248,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // 309), whichever pen is open.
   const [recordStatus, setRecordStatus] = useState('');
   const recordStatusTimerRef = useRef(null);
-  const [pendingUndo, setPendingUndo] = useState(null);
   // Remove tasting's own focus landing (D-01, contract "Focus landings";
   // the ninth round, Pitfall 8): both hidden-mode removal paths move
   // focus — the same WR-01 attempt-counter pattern as addTastingAttempt
@@ -993,20 +988,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     // Only this field's own entry clears (WR-03): a Save that reported two
     // malformed measurements must not have fixing one silently un-flag the
     // other, still-invalid one.
-    setFieldErrors((prev) => {
-      if (!(field in prev)) return prev;
-      const next = { ...prev };
-      delete next[field];
-      return next;
-    });
-    setBlockedDateMessage(null);
+    recordPen.clearFieldError(field);
+    recordPen.edit(setRecordField, field, value);
     setFormStatus('');
     // The retirement scope (contract "Feedback and undo lifecycle"): this
     // generic setter serves both churn fields and tasting-body fields, so
     // it only retires a pending undo when the field it was just given is
     // one of the tasting-body's own (isTastingBodyField, Task 2).
-    if (isTastingBodyField(field)) setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, [field]: value }));
+    if (isTastingBodyField(field)) recordPen.retireUndo();
   }
 
   // The three segmented controls (exit consistency, airiness, melt style)

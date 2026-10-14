@@ -422,3 +422,16 @@ export function batchSavedStatus(record) {
     ? `changed ${formatRecordDate(record.changed)}`
     : `recorded ${formatRecordDate(record.recordedAt)}`;
 }
+
+// The record pen's edits, each a pure (draft, ...args) => draft the hook's
+// edit() applies through a functional update (Phase 5, D-06, EDIT-03).
+
+// The one generic setter for every raw-text/date/tasting field the record pen
+// holds (03.3.1-02 artifacts: handleChangeRecordField): stores the raw string
+// the maker typed, exactly as the as-made column already does, so typed
+// precision is never lost to an early Number() coercion — the conversion
+// happens once, at save time (buildChurnFieldsFromDraft/
+// buildTastingFieldsFromDraft).
+export function setRecordField(draft, field, value) {
+  return { ...draft, [field]: value };
+}

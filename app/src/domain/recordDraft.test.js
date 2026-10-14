@@ -14,6 +14,7 @@ import {
   parseAllMeasuredFields,
   removeTastingSection,
   restoreDraftFromUndo,
+  setRecordField,
   tastingHasInk,
   tastingPayloadFromDraft,
   validateRecordDraft,
@@ -265,6 +266,24 @@ describe('batchSavedStatus', () => {
     const first = batchSavedStatus(record);
     expect(first.startsWith('recorded ')).toBe(true);
     expect(batchSavedStatus(record)).toBe(first);
+  });
+});
+
+describe('setRecordField', () => {
+  it('writes the raw string under the field and leaves the other fields', () => {
+    const draft = blankRecordDraft();
+    const next = setRecordField(draft, 'churnDate', '2026-10-09');
+    expect(next.churnDate).toBe('2026-10-09');
+    expect(next.note).toBe('');
+    expect(next).not.toBe(draft);
+  });
+
+  it('leaves its input unchanged and answers the same twice', () => {
+    const draft = blankRecordDraft();
+    const before = structuredClone(draft);
+    const first = setRecordField(draft, 'note', 'smooth');
+    expect(draft).toEqual(before);
+    expect(setRecordField(draft, 'note', 'smooth')).toEqual(first);
   });
 });
 

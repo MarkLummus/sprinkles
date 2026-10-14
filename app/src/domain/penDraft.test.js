@@ -7,6 +7,7 @@ import {
   isPenDraftDirty,
   penDraftRow,
   restoreStepFromVersion,
+  setPenField,
   toggleDraftRowLines,
 } from './penDraft.js';
 
@@ -147,6 +148,26 @@ describe('restoreStepFromVersion identity', () => {
     for (let i = 1; i < restored.method.length; i += 1) {
       expect(restored.method[i]).toBe(penDraft.method[i]);
     }
+  });
+});
+
+describe('setPenField', () => {
+  it('writes the new value and leaves every other key', () => {
+    const draft = cleanDraftFor(clone());
+    const next = setPenField(draft, 'versionLabel', 'v2');
+    expect(next.versionLabel).toBe('v2');
+    expect(next.reason).toBe(draft.reason);
+    expect(next.rows).toBe(draft.rows);
+  });
+
+  it('returns a new draft and leaves its input as it was, and answers the same twice', () => {
+    const draft = cleanDraftFor(clone());
+    const before = structuredClone(draft);
+    const first = setPenField(draft, 'reason', 'Less sugar');
+    const second = setPenField(draft, 'reason', 'Less sugar');
+    expect(first).not.toBe(draft);
+    expect(second).toEqual(first);
+    expect(draft).toEqual(before);
   });
 });
 

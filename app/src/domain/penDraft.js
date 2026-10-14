@@ -157,3 +157,12 @@ export function restoreStepFromVersion(penDraft, version, stepN) {
     method: penDraft.method.map((step) => (step.n === stepN ? structuredClone(parentStep) : step)),
   };
 }
+
+// A version-line or headnote field, written (handleChangePenField's
+// updater). `field` is always a literal name passed by the pen's own
+// components (VersionRow and Headnote), never a key the maker types; an
+// object-literal computed key creates an own property and never reaches the
+// __proto__ setter (T-05-04).
+export function setPenField(draft, field, value) {
+  return { ...draft, [field]: value };
+}

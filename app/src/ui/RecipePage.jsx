@@ -23,6 +23,7 @@ import {
   isPenDraftDirty,
   penDraftRow,
   restoreStepFromVersion,
+  setPenField,
   toggleDraftRowLines,
   usesListsDiffer,
 } from '../domain/penDraft.js';
@@ -44,6 +45,7 @@ import { PenFoot } from './PenFoot.jsx';
 import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 import { FoldRow } from './FoldRow.jsx';
 import { useBelow724, useBelowDesktop, useFold, useSheetTwoColumns } from './useBelowDesktop.js';
+import { usePenDraft } from './usePenDraft.js';
 
 // "a, b, and c" — the joining GraduatedRule and BasisNote each keep their own
 // copy of; this is the third, for the marked-rows announcement.
@@ -661,29 +663,16 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   const batchSaveLockRef = useRef(false);
   const [focusBatchAttempt, setFocusBatchAttempt] = useState(null);
   const focusBatchAttemptRef = useRef(0);
-  // The plan's own pen draft (03-CONTEXT.md D-01 to D-10): version line,
-  // reason and citation start blank/null — never defaulted from the
-  // parent — while sheetTitle/sheetDescription copy the parent's own
-  // (03.5-CONTEXT.md decision "Next version copies Sheet title and Sheet
-  // description"), and rows is a map keyed by row id holding the raw
-  // string the maker typed for grams, the draft.asMade precedent (never
-  // Number() on keystroke, so a value typed finer than the display
-  // survives, RESEARCH.md Pitfall 5).
-  const [penDraft, setPenDraft] = useState(null);
-  const [blockedMessage, setBlockedMessage] = useState(null);
+  // The plan's own pen draft, its blocked-save message and the field that
+  // message names (usePenDraft owns all three).
+  const versionPen = usePenDraft();
+  const { penDraft, blockedMessage, blockedTarget, setPenDraft, setBlockedMessage, setBlockedTarget } = versionPen;
   const [versionSaveAction, setVersionSaveAction] = useState(null);
   const versionSaveLockRef = useRef(false);
   // The History rail's draft node (03.5-05 Task 2, D-13): the day the
   // pen opened, held in memory only — never stored, cleared wherever the
   // pen closes.
   const penOpenedAtRef = useRef(null);
-  // The offending field a blocked save names (critique P1 #3, D-21): the
-  // version-line field, or a row's grams field by id — read by
-  // IngredientTable and Versions to mark and focus exactly the field
-  // blockedSaveMessage's own sentence names, and cleared everywhere
-  // blockedMessage is cleared so the two can never point at different
-  // fields.
-  const [blockedTarget, setBlockedTarget] = useState(null);
   // WR-01's fix (03.1 REVIEW.md, Versions.jsx's half): an incrementing
   // counter, stamped onto blockedTarget on every blocked buildPenFields
   // call, so a second consecutive blocked save on the same field re-fires
@@ -1960,11 +1949,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   }
 
   function handleChangePenField(field, value) {
-    setBlockedMessage(null);
-    setBlockedTarget(null);
     onPageStatus('');
     announce('');
-    setPenDraft((prev) => ({ ...prev, [field]: value }));
+    versionPen.edit(setPenField, field, value);
   }
 
   // Writes exactly one portion's raw typed string, leaving every other

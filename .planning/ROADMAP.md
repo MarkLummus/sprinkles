@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 03.4: The design layer in code** (INSERTED) - The App palette, Sheet-prefixed tokens, the hand and Home land in code (completed 2026-09-22)
 - [x] **Phase 03.5: Separate the recipe from the sheet** (INSERTED) - The recipe record and the version's Recipe Sheet are separate in the store, the routes and the page (completed 2026-10-02)
 - [x] **Phase 03.6: Per-step shared ingredients** (INSERTED) - A shared ingredient's lines and a step can be removed without touching the other steps (completed 2026-10-06)
-- [ ] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable
+- [x] **Phase 4: Prepare the next version for making** - The new version prints as a bench sheet, matches back to its code, and the whole loop is usable and recoverable (completed 2026-10-13)
 - [ ] **Phase 5: Version evolution** - A batch records reordered and new Instructions steps, and a version can evolve its step structure
 
 ## Phase Details
@@ -662,7 +662,7 @@ Plans:
   4. Reviewing a recipe, editing a version, recording a batch, and printing are each operable by keyboard with visible labels and visible focus, and text contrast meets WCAG 2.2 AA.
   5. Entered data survives a recoverable failure such as a reload mid-edit, and uncertainty, estimated data, and errors are never conveyed by colour alone.
 
-**Plans:** 10/10 plans executed
+**Plans:** 10/10 plans complete
 
 Plans:
 **Wave 1**
@@ -735,7 +735,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 3.1 → 3.2 → 3.3 → 3.3.1
 | 3.4. The design layer in code | 15/15 | Complete    | 2026-09-22 |
 | 3.5. Separate the recipe from the sheet | 31/31 | Complete    | 2026-10-02 |
 | 3.6. Per-step shared ingredients | 7/7 | Complete    | 2026-10-06 |
-| 4. Prepare the next version for making | 10/10 | In Progress | - |
+| 4. Prepare the next version for making | 10/10 | Complete    | 2026-10-13 |
 | 5. Version evolution | 0/TBD | Not started | - |
 
 ## Coverage

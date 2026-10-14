@@ -320,21 +320,12 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 
 ### Pending Todos
 
-- [2026-09-17] [ui] An amendment announces the batch's original recording date, not the amendment — [todo file](.planning/todos/pending/2026-09-17-an-amendment-announces-its-original-recording-date.md)
-- [2026-09-22] [ui] Remove the Sprinkles home link from the recipe route — [todo file](.planning/todos/pending/2026-09-22-remove-the-sprinkles-home-link-from-the-recipe-route.md)
-- [2026-09-22] [design] Settle the App-context radius in DESIGN.md, then revisit the rail's active item — [todo file](.planning/todos/pending/2026-09-22-settle-app-context-radius-then-revisit-rail-active-item.md)
-- [2026-09-22] [ui] A shared Button component that always carries tabindex, so every button, checkbox and radio Tabs on iPadOS Safari … — [todo file](.planning/todos/pending/2026-09-22-shared-button-component-carries-tabindex-for-webkit.md)
-- [2026-09-22] [design] Confirm the app text companions and the filled action in DESIGN.md (/impeccable document) — [todo file](.planning/todos/pending/2026-09-22-three-impeccable-document-jobs-this-phase-hands-off.md)
 - [2026-09-23] [ui] Build the Recipe book print format (one page, the recipe only, for making a finished recipe) — [todo file](.planning/todos/pending/2026-09-23-build-the-recipe-book-print-format.md)
 - [2026-09-24] [design] Decide whether the batch and tasting log is entered on the phone, or only transcribed at the desk — [todo file](.planning/todos/pending/2026-09-24-decide-whether-the-batch-and-tasting-log-is-entered-on-the-phone.md)
 - [2026-09-24] [design] Write a product brief for phone-based jobs — [todo file](.planning/todos/pending/2026-09-24-write-a-product-brief-for-phone-based-jobs.md)
-- [2026-09-25] [design] Draw the App-context record pen (route-recipe-batch.md's 2026-09-23 amendment) — [todo file](.planning/todos/pending/2026-09-25-draw-the-record-pen-in-app-context.md)
-- [2026-09-27] [ui] Align the version section's Details link — [todo file](.planning/todos/pending/2026-09-27-align-the-version-details-link.md)
-- [2026-09-27] [ui] Recipe band buttons narrow on hover or click — [todo file](.planning/todos/pending/2026-09-27-band-buttons-narrow-on-hover-or-click.md)
-- [2026-09-27] [ui] Keep the side nav's options on screen while the page scrolls — [todo file](.planning/todos/pending/2026-09-27-sticky-side-nav.md)
-- [2026-09-27] [ui] Look into the Why row in the version details — [todo file](.planning/todos/pending/2026-09-27-why-row-in-version-details.md)
-- [2026-10-03] [design] Promote "Before you start" into its own section outside Instructions — [todo file](.planning/todos/pending/2026-10-03-promote-before-you-start-into-its-own-section-outside-instru.md)
+- [2026-10-04] [general] Consider a "Mise en Place" Auto-Generator — [todo file](.planning/todos/pending/2026-10-04-consider-a-mise-en-place-auto-generator-allow-users-to-tag.md)
 - [2026-10-04] [design] Update Impeccable between Phase 03.5 and Phase 04 — [todo file](.planning/todos/pending/2026-10-04-update-impeccable-between-phase-03-5-and-phase-04.md)
+- [2026-10-14] [ui] Carry declared defects into a new version — [todo file](.planning/todos/pending/2026-10-13-carry-declared-defects-into-a-new-version.md)
 
 ### Blockers/Concerns
 

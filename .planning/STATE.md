@@ -4,10 +4,10 @@ current_phase: 05
 current_phase_name: Version evolution
 status: planning
 stopped_at: Phase 04 complete, ready to plan Phase 05
-last_updated: "2026-10-14T01:36:45.615Z"
+last_updated: "2026-10-14T01:41:33.853Z"
 last_activity: 2026-10-13
 last_activity_desc: Phase 04 complete, transitioned to Phase 05
-state_head: 01ef3f86ac7416d51bd2422a1a1d1700c78ca958
+state_head: 35a8e894493939778e1076207b2af00f9607fbf6
 progress:
   total_phases: 15
   completed_phases: 12
@@ -506,6 +506,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 148 | Add the bug kind to Mark's List in CLAUDE.md | 2026-10-13 | 63dd447 | — |
 | 149 | Fix: a new version keeps the parent's declared problems (Bitter) | 2026-10-13 | 68ea742 | — |
 | 150 | Correct the three-pens decision line in 04-VERIFICATION.md | 2026-10-13 | 01ef3f8 | — |
+| 151 | Remove three stale continue-here handoffs | 2026-10-13 | 35a8e89 | — |
 
 ### Roadmap Evolution
 

@@ -84,3 +84,14 @@
 - Seed top-up on later builds (ING-01).
 - Provenance fields on a library record (ING-01).
 - Accepting version 7 export files.
+
+---
+
+## Codex review follow-up (2026-10-14)
+
+Codex reviewed 06-CONTEXT.md read-only. Findings applied to CONTEXT: D-01 now supersedes REQUIREMENTS lines 30 and 58 and says the below-8 reset remains; D-01a adds the genuine version-8 fixture proof; D-04 is qualified (guards are independent) with a four-combination test; D-08 uses the existing `isPlainObject` check.
+
+| Question | Options | Selected |
+|----------|---------|----------|
+| Refill an imported empty library on the next boot? | Yes, reseed on boot (Recommended) / No, an import is final | Yes, reseed on boot (D-04a) |
+| Export in one consistent snapshot? | Yes, one read transaction (Recommended) / No, atomic import only | Yes, one read transaction (D-07a) |

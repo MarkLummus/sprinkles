@@ -4,10 +4,10 @@ current_phase: 05
 current_phase_name: Version evolution
 status: planning
 stopped_at: Phase 04 complete, ready to plan Phase 05
-last_updated: "2026-10-14T01:28:04.136Z"
+last_updated: "2026-10-14T01:36:45.615Z"
 last_activity: 2026-10-13
 last_activity_desc: Phase 04 complete, transitioned to Phase 05
-state_head: 5588a70ab96a88928fbb0d99773ad5a2f1a66849
+state_head: 01ef3f86ac7416d51bd2422a1a1d1700c78ca958
 progress:
   total_phases: 15
   completed_phases: 12
@@ -505,6 +505,7 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 147 | Add the bug row kind to the marks-list skill | 2026-10-13 | b6c10b4 | — |
 | 148 | Add the bug kind to Mark's List in CLAUDE.md | 2026-10-13 | 63dd447 | — |
 | 149 | Fix: a new version keeps the parent's declared problems (Bitter) | 2026-10-13 | 68ea742 | — |
+| 150 | Correct the three-pens decision line in 04-VERIFICATION.md | 2026-10-13 | 01ef3f8 | — |
 
 ### Roadmap Evolution
 

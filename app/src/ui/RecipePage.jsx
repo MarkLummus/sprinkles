@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'reac
 import { repository } from '../store/repository.js';
 import { buildFigures, figureLabelText } from '../domain/figures.js';
 import { createBatch, completeRecord, formatRecordDate, sortedBatches } from '../domain/batch.js';
-import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
 import { freshId } from '../domain/id.js';
 import {
@@ -31,17 +30,14 @@ import {
 } from '../domain/penDraft.js';
 import {
   batchSavedStatus,
-  blankRecordDraft,
-  buildChurnFieldsFromDraft,
-  buildTastingFieldsFromDraft,
-  draftFromBatch,
   isDraftDirty,
   isTastingBodyField,
-  removeTastingSection,
-  restoreDraftFromUndo,
-  tastingHasInk,
-  tastingPayloadFromDraft,
-  validateRecordDraft,
+  setAsMadePortion,
+  setRecordField,
+  setRecordMark,
+  setStepChange,
+  toggleDeclaredDefect,
+  toggleDefect,
 } from '../domain/recordDraft.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
@@ -62,6 +58,7 @@ import { DerivedAdvisories } from './DerivedAdvisories.jsx';
 import { FoldRow } from './FoldRow.jsx';
 import { useBelow724, useBelowDesktop, useFold, useSheetTwoColumns } from './useBelowDesktop.js';
 import { usePenDraft } from './usePenDraft.js';
+import { useRecordDraft } from './useRecordDraft.js';
 
 // "a, b, and c" — the joining GraduatedRule and BasisNote each keep their own
 // copy of; this is the third, for the marked-rows announcement.
@@ -193,46 +190,27 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // recorded into. mode is never derived from the URL — only the margin's
   // own control, and now the headnote's, ask for it (D-19).
   const [mode, setMode] = useState('reading');
-  const [draft, setDraft] = useState(null);
-  // Non-null while `mode === 'recording'` means the pen layer is amending
-  // this existing batch's record, rather than recording a new one
-  // (task 3, D-06). Amending pre-fills the fields from the batch, never
-  // from the version, and saving calls completeRecord, never createBatch.
-  const [amendingBatchId, setAmendingBatchId] = useState(null);
-  // The draft-shaped object handleStartAmending pre-filled `draft` from
-  // (03-07, T-03-43) — the baseline isDraftDirty compares an amend draft
-  // against, instead of blank. Cleared everywhere amendingBatchId is
-  // cleared, for the same class of reason (T-02-24): a stale baseline left
-  // over from a prior amendment would make a fresh recording's own dirty
-  // check compare against the wrong record.
-  const [amendBaseline, setAmendBaseline] = useState(null);
-  // The record pen's own blocked-save state (D-05, contract "Controls
-  // spec"): fieldErrors keys a battery field to its own contract sentence;
-  // invalidFieldTarget names the first invalid field in BATTERY_FIELDS
-  // order plus an attempt counter (WR-01's pattern) so a second
-  // consecutive block on the same field still moves focus; blockedDate*
-  // are the churn-date press-to-block's own message and attempt counter,
-  // read by BOTH ceremonies (D-05: "a sentence beside both save sets");
-  // formStatus is the open pen's own form-status live region text,
-  // whichever pen is open.
-  const [fieldErrors, setFieldErrors] = useState({});
-  const [invalidFieldTarget, setInvalidFieldTarget] = useState(null);
-  const invalidFieldAttemptRef = useRef(0);
-  const [blockedDateMessage, setBlockedDateMessage] = useState(null);
-  const [blockedDateAttempt, setBlockedDateAttempt] = useState(null);
-  const dateBlockedAttemptRef = useRef(0);
+  // The record pen's draft, its amend target, baseline and opener, its
+  // blocked-save state (field errors, the churn-date block) and the pending
+  // undo (useRecordDraft owns all of them); formStatus below is the open pen's
+  // own form-status live region text, whichever pen is open.
+  const recordPen = useRecordDraft();
+  const {
+    draft,
+    amendingBatchId,
+    amendBaseline,
+    amendOpener,
+    fieldErrors,
+    invalidFieldTarget,
+    blockedDateMessage,
+    blockedDateAttempt,
+    pendingUndo,
+  } = recordPen;
   // Add tasting's own attempt counter (D-01, contract "Focus landings"):
   // the same WR-01 pattern as blockedDateAttempt above, so BatchRow's own
   // focus effect re-fires even on a second press.
   const [addTastingAttempt, setAddTastingAttempt] = useState(null);
   const addTastingAttemptRef = useRef(0);
-  // Which control opened the amend pen: 'correct' (the log's Correct) or
-  // 'record-a-tasting' (the band's, below 724; sketch 011 decision 30).
-  // Every amend open overwrites it and nothing clears it: the two focus-
-  // return effects (BatchRow's for Correct, VersionRow's for the band) read
-  // it as captured when the pen opened, so the control that opened a pen is
-  // the one that gets focus back when it closes.
-  const [amendOpener, setAmendOpener] = useState('correct');
   const [formStatus, setFormStatus] = useState('');
   const formStatusTimerRef = useRef(null);
   // The tasting-status channel (contract "Feedback and undo lifecycle"):
@@ -252,7 +230,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // 309), whichever pen is open.
   const [recordStatus, setRecordStatus] = useState('');
   const recordStatusTimerRef = useRef(null);
-  const [pendingUndo, setPendingUndo] = useState(null);
   // Remove tasting's own focus landing (D-01, contract "Focus landings";
   // the ninth round, Pitfall 8): both hidden-mode removal paths move
   // focus — the same WR-01 attempt-counter pattern as addTastingAttempt
@@ -560,17 +537,11 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
           setVersionSaveAction(null);
           versionSaveLockRef.current = false;
           setMode('developing');
-        } else if (record.kind === 'record') {
-          // A new batch's record: on any of the version's addresses.
-          setDraft(record.payload);
-          setAmendingBatchId(null);
-          setAmendBaseline(null);
-          setMode('recording');
         } else {
-          setDraft(record.payload);
-          setAmendBaseline(record.amendBaseline);
-          setAmendingBatchId(record.amendingBatchId);
-          setAmendOpener(record.amendOpener);
+          // A new batch's record ('record') opens on any of the version's
+          // addresses; a Correct draft ('amend') only on its own batch's,
+          // which the redirect above has already settled.
+          recordPen.restore(record);
           setMode('recording');
         }
         onPageStatus(DRAFT_KEPT_STATUS);
@@ -963,15 +934,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setBatchSaveAction(null);
     setFocusBatchAttempt(null);
     onPageStatus('');
-    setAmendingBatchId(null);
-    setAmendBaseline(null);
-    setDraft(blankRecordDraft());
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
-    setBlockedDateMessage(null);
-    setBlockedDateAttempt(null);
+    recordPen.openNew();
     setAddTastingAttempt(null);
-    setPendingUndo(null);
     setTastingStatus('');
     setRecordStatus('');
     setRemoveTastingAttempt(null);
@@ -993,20 +957,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     // Only this field's own entry clears (WR-03): a Save that reported two
     // malformed measurements must not have fixing one silently un-flag the
     // other, still-invalid one.
-    setFieldErrors((prev) => {
-      if (!(field in prev)) return prev;
-      const next = { ...prev };
-      delete next[field];
-      return next;
-    });
-    setBlockedDateMessage(null);
+    recordPen.clearFieldError(field);
+    recordPen.edit(setRecordField, field, value);
     setFormStatus('');
     // The retirement scope (contract "Feedback and undo lifecycle"): this
     // generic setter serves both churn fields and tasting-body fields, so
     // it only retires a pending undo when the field it was just given is
     // one of the tasting-body's own (isTastingBodyField, Task 2).
-    if (isTastingBodyField(field)) setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, [field]: value }));
+    if (isTastingBodyField(field)) recordPen.retireUndo();
   }
 
   // The three segmented controls (exit consistency, airiness, melt style)
@@ -1019,13 +977,12 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     // No BATTERY_FIELDS entry is ever keyed by a segment field (WR-03) —
     // nothing of this field's own to clear, and clearing the whole map
     // would silently un-flag an unrelated still-invalid measurement.
-    setBlockedDateMessage(null);
+    recordPen.edit(setRecordField, field, value);
     setFormStatus('');
     // Same retirement boundary as handleChangeRecordField above: only
     // Melt style is a tasting-body field among the three this handler
     // shares (Exit consistency and Airiness are churn-section fields).
-    if (isTastingBodyField(field)) setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, [field]: value }));
+    if (isTastingBodyField(field)) recordPen.retireUndo();
   }
 
   // An axis stop click (contract "Axes spec"; 007 line 362): a joined
@@ -1037,10 +994,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   function handleChangeRecordMark(axisKey, stop) {
     // An axis key is never a BATTERY_FIELDS key (WR-03) — nothing of
     // this field's own to clear.
-    setBlockedDateMessage(null);
+    recordPen.edit(setRecordMark, axisKey, stop);
     setFormStatus('');
-    setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, stop) }));
+    recordPen.retireUndo();
   }
 
   // The per-axis Clear control (contract "Axes spec", "Feedback and undo
@@ -1051,9 +1007,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // handler owns only state and the announcement. Retires a pending undo
   // unconditionally, same as every other tasting-body edit (Task 2).
   function handleClearAxisMark(axisKey, axisName) {
-    setBlockedDateMessage(null);
-    setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, marks: setMark(prev.marks, axisKey, null) }));
+    recordPen.edit(setRecordMark, axisKey, null);
+    recordPen.retireUndo();
     announce(`${axisName} cleared.`);
   }
 
@@ -1063,9 +1018,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // retirement boundary as handleChangeSegment (only Melt style is a
   // tasting-body field among the three).
   function handleClearSegment(field, label) {
-    setBlockedDateMessage(null);
-    if (isTastingBodyField(field)) setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, [field]: '' }));
+    recordPen.edit(setRecordField, field, '');
+    if (isTastingBodyField(field)) recordPen.retireUndo();
     announce(`${label} cleared.`);
   }
 
@@ -1076,16 +1030,14 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // mark, so the draft never holds a pick beside a mark. From freezer is a
   // tasting-body field (it retires a pending undo); At draw is a churn field.
   function handleChangeMarkOne(field, value) {
-    setBlockedDateMessage(null);
+    recordPen.edit(setRecordField, field, value);
     setFormStatus('');
-    if (isTastingBodyField(field)) setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, [field]: value }));
+    if (isTastingBodyField(field)) recordPen.retireUndo();
   }
 
   function handleClearMarkOne(field, label) {
-    setBlockedDateMessage(null);
-    if (isTastingBodyField(field)) setPendingUndo(null);
-    setDraft((prev) => ({ ...prev, [field]: '' }));
+    recordPen.edit(setRecordField, field, '');
+    if (isTastingBodyField(field)) recordPen.retireUndo();
     announce(`${label} cleared.`);
   }
 
@@ -1096,15 +1048,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // option. The defects row is inside the tasting body, so a toggle
   // always retires a pending undo (Task 2).
   function handleChangeDefect(defect) {
-    setBlockedDateMessage(null);
+    recordPen.edit(toggleDefect, defect);
     setFormStatus('');
-    setPendingUndo(null);
-    setDraft((prev) => ({
-      ...prev,
-      defects: prev.defects.includes(defect)
-        ? prev.defects.filter((candidate) => candidate !== defect)
-        : [...prev.defects, defect],
-    }));
+    recordPen.retireUndo();
   }
 
   // A declared problem's toggle (contract "Controls spec"; sketch 010 D26):
@@ -1113,15 +1059,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // handleChangeDefect flips a defect chip. Inside the tasting body, so it
   // always retires a pending undo (Task 2).
   function handleToggleDeclaredDefect(word) {
-    setBlockedDateMessage(null);
+    recordPen.edit(toggleDeclaredDefect, word);
     setFormStatus('');
-    setPendingUndo(null);
-    setDraft((prev) => ({
-      ...prev,
-      declaredDefects: prev.declaredDefects.includes(word)
-        ? prev.declaredDefects.filter((candidate) => candidate !== word)
-        : [...prev.declaredDefects, word],
-    }));
+    recordPen.retireUndo();
   }
 
   // Clearing both the strike and the line for a step removes that step's
@@ -1132,18 +1072,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   function handleChangeStepChange(stepNumber, patch) {
     // A step-change key is never a BATTERY_FIELDS key (WR-03) — nothing
     // of this field's own to clear.
-    setBlockedDateMessage(null);
+    recordPen.edit(setStepChange, stepNumber, patch);
     setFormStatus('');
-    setDraft((prev) => {
-      const stepChanges = { ...prev.stepChanges };
-      const key = String(stepNumber);
-      if (!patch.struck && !patch.line) {
-        delete stepChanges[key];
-      } else {
-        stepChanges[key] = { struck: patch.struck, line: patch.line };
-      }
-      return { ...prev, stepChanges };
-    });
   }
 
   // Writes one portion's raw string (D-10). A row with no key yet is
@@ -1156,21 +1086,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   function handleChangeAsMade(rowId, portionIndex, rawValue) {
     // An as-made row key is never a BATTERY_FIELDS key (WR-03) — nothing
     // of this field's own to clear.
-    setBlockedDateMessage(null);
+    recordPen.edit(setAsMadePortion, version, rowId, portionIndex, rawValue);
     setFormStatus('');
-    setDraft((prev) => {
-      const asMade = { ...prev.asMade };
-      const row = version.rows.find((candidate) => candidate.id === rowId);
-      const existing = Object.prototype.hasOwnProperty.call(asMade, rowId) ? asMade[rowId] : null;
-      const next = existing ? [...existing] : new Array(row.portions.length).fill('');
-      next[portionIndex] = rawValue;
-      if (next.every((value) => value === '')) {
-        delete asMade[rowId];
-      } else {
-        asMade[rowId] = next;
-      }
-      return { ...prev, asMade };
-    });
   }
 
   // "Correct" reopens the record pen with everything the record holds in
@@ -1193,29 +1110,13 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setBatchSaveAction(null);
     setFocusBatchAttempt(null);
     onPageStatus('');
-    const filledDraft =
-      opener === 'record-a-tasting'
-        ? { ...draftFromBatch(batch), tastingOpen: true }
-        : draftFromBatch(batch);
-    setDraft(filledDraft);
-    // The baseline isDraftDirty compares against (03-07, T-03-43) — a
-    // separate clone, not the same object setDraft was just given, so a
-    // later edit to draft (always a new object via setDraft's own spread)
-    // can never be mistaken for a mutation of the baseline itself.
-    setAmendBaseline(structuredClone(filledDraft));
-    setAmendingBatchId(batch.id);
-    setAmendOpener(opener);
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
-    setBlockedDateMessage(null);
-    setBlockedDateAttempt(null);
+    recordPen.openAmend(batch, opener);
     if (opener === 'record-a-tasting') {
       addTastingAttemptRef.current += 1;
       setAddTastingAttempt(addTastingAttemptRef.current);
     } else {
       setAddTastingAttempt(null);
     }
-    setPendingUndo(null);
     setTastingStatus('');
     setRecordStatus('');
     setRemoveTastingAttempt(null);
@@ -1254,7 +1155,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setRecordStatus('');
     addTastingAttemptRef.current += 1;
     setAddTastingAttempt(addTastingAttemptRef.current);
-    setDraft((prev) => ({ ...prev, tastingOpen: true }));
+    recordPen.addTasting();
   }
 
   // The two hidden-mode removal paths (contract "Feedback and undo
@@ -1275,9 +1176,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   function handleRemoveTasting() {
     setTastingStatus('');
     setRecordStatus('');
-    const hasInk = tastingHasInk(draft);
-    setPendingUndo(hasInk ? tastingPayloadFromDraft(draft) : null);
-    setDraft((prev) => removeTastingSection(prev));
+    const hasInk = recordPen.removeTasting();
     announce(hasInk ? TASTING_REMOVED_DATA_STATUS : TASTING_REMOVED_EMPTY_STATUS, { selfClear: true, target: 'record' });
     removeTastingAttemptRef.current += 1;
     setRemoveTastingAttempt(removeTastingAttemptRef.current);
@@ -1292,8 +1191,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // built). The restore toast self-clears after five seconds, the same
   // guarded five-second clear the removal toasts already carry.
   function handleUndoRemove() {
-    setDraft((prev) => restoreDraftFromUndo(prev, pendingUndo));
-    setPendingUndo(null);
+    recordPen.undoRemoveTasting();
     announce(TASTING_RESTORED_STATUS, { selfClear: true, target: 'tasting' });
     restoreAttemptRef.current += 1;
     setRestoreAttempt(restoreAttemptRef.current);
@@ -1317,27 +1215,17 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // end-of-phase UAT).
   function handleSaveBatch() {
     if (batchSaveLockRef.current) return;
-    const { fieldErrors: errors, invalidFieldKey, blockedDateMessage: dateMessage, parsed } = validateRecordDraft(draft);
+    const check = recordPen.checkSave();
 
-    if (invalidFieldKey !== null) {
-      setFieldErrors(errors);
-      invalidFieldAttemptRef.current += 1;
-      setInvalidFieldTarget({ key: invalidFieldKey, attempt: invalidFieldAttemptRef.current });
-      setBlockedDateMessage(null);
+    if (check.outcome === 'measurement') {
       announce(MEASURED_INVALID_STATUS);
       return;
     }
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
 
-    if (dateMessage) {
-      dateBlockedAttemptRef.current += 1;
-      setBlockedDateMessage(dateMessage);
-      setBlockedDateAttempt(dateBlockedAttemptRef.current);
+    if (check.outcome === 'churnDate') {
       announce(CHURN_DATE_BLOCKED_STATUS);
       return;
     }
-    setBlockedDateMessage(null);
 
     batchSaveLockRef.current = true;
     const saveAction = amendingBatchId ? 'amend' : 'new';
@@ -1349,8 +1237,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     let tasting;
     try {
       now = new Date().toISOString();
-      churnFields = buildChurnFieldsFromDraft(draft, parsed);
-      tasting = draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null;
+      ({ churnFields, tasting } = recordPen.buildFields(check.parsed));
     } catch {
       batchSaveLockRef.current = false;
       setBatchSaveAction(null);
@@ -1373,9 +1260,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
         discardDraft();
         setBatches((prev) => prev.map((batch) => (batch.id === record.id ? record : batch)));
         setMode('reading');
-        setDraft(null);
-        setAmendingBatchId(null);
-        setAmendBaseline(null);
+        recordPen.close();
         setFormStatus('');
         batchSaveLockRef.current = false;
         setBatchSaveAction(null);
@@ -1404,8 +1289,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       discardDraft();
       setBatches((prev) => [...prev, record]);
       setMode('reading');
-      setDraft(null);
-      setAmendBaseline(null);
+      recordPen.close();
       setFormStatus('');
       batchSaveLockRef.current = false;
       setBatchSaveAction(null);
@@ -1432,15 +1316,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setFocusBatchAttempt(null);
     onPageStatus('');
     setMode('reading');
-    setDraft(null);
-    setAmendingBatchId(null);
-    setAmendBaseline(null);
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
-    setBlockedDateMessage(null);
-    setBlockedDateAttempt(null);
+    recordPen.cancel();
     setAddTastingAttempt(null);
-    setPendingUndo(null);
     setTastingStatus('');
     setRecordStatus('');
     setRemoveTastingAttempt(null);

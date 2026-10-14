@@ -3,6 +3,7 @@
 // checked by pure functions, which RecipePage drives through useRecordDraft
 // (Phase 5, D-01).
 import { BATTERY_FIELDS, parseMeasuredDraft } from './battery.js';
+import { setMark } from './axes.js';
 import { formatRecordDate } from './batch.js';
 import { parseGramsDraft } from './lineage.js';
 import { usesListsDiffer } from './penDraft.js';
@@ -421,4 +422,117 @@ export function batchSavedStatus(record) {
   return record.changed
     ? `changed ${formatRecordDate(record.changed)}`
     : `recorded ${formatRecordDate(record.recordedAt)}`;
+}
+
+// The record pen's edits, each a pure (draft, ...args) => draft the hook's
+// edit() applies through a functional update (Phase 5, D-06, EDIT-03).
+
+// The one generic setter for every raw-text/date/tasting field the record pen
+// holds (03.3.1-02 artifacts: handleChangeRecordField): stores the raw string
+// the maker typed, exactly as the as-made column already does, so typed
+// precision is never lost to an early Number() coercion — the conversion
+// happens once, at save time (buildChurnFieldsFromDraft/
+// buildTastingFieldsFromDraft).
+export function setRecordField(draft, field, value) {
+  return { ...draft, [field]: value };
+}
+
+// An axis stop click or a Clear (contract "Axes spec"; 007 line 362): a joined
+// group is a radio — a stop always stores the clicked stop, and null clears the
+// axis. Every axis lives inside the tasting body.
+export function setRecordMark(draft, axisKey, stop) {
+  return { ...draft, marks: setMark(draft.marks, axisKey, stop) };
+}
+
+// A defect chip's own toggle (contract "Controls spec"): a picked chip
+// joins the draft's defects list, an unpicked one leaves it — no
+// default ever; a defect is an independent on/off (007 line 428), so a
+// second click on the same chip clears it, unlike a stop or segmented
+// option.
+export function toggleDefect(draft, defect) {
+  return {
+    ...draft,
+    defects: draft.defects.includes(defect)
+      ? draft.defects.filter((candidate) => candidate !== defect)
+      : [...draft.defects, defect],
+  };
+}
+
+// A declared problem's toggle (contract "Controls spec"; sketch 010 D26):
+// a recipe's own problem word is a presence toggle, not a goldilocks
+// axis — membership in the draft's declaredDefects list, flipped the way
+// toggleDefect flips a defect chip.
+export function toggleDeclaredDefect(draft, word) {
+  return {
+    ...draft,
+    declaredDefects: draft.declaredDefects.includes(word)
+      ? draft.declaredDefects.filter((candidate) => candidate !== word)
+      : [...draft.declaredDefects, word],
+  };
+}
+
+// Clearing both the strike and the line for a step removes that step's
+// key from the draft entirely (D-13/BATCH1-01): an untouched step must
+// never rest at { struck: false, line: null }, which would be
+// indistinguishable from a step the maker deliberately marked as
+// unchanged — a fact this record never states.
+export function setStepChange(draft, stepNumber, patch) {
+  const stepChanges = { ...draft.stepChanges };
+  const key = String(stepNumber);
+  if (!patch.struck && !patch.line) {
+    delete stepChanges[key];
+  } else {
+    stepChanges[key] = { struck: patch.struck, line: patch.line };
+  }
+  return { ...draft, stepChanges };
+}
+
+// Writes one portion's raw string (D-10). A row with no key yet is
+// seeded with an array of empty strings the length of that row's own
+// portions first, so the array is always aligned with row.portions —
+// the same alignment contract asMadeForPortion reads. Once every
+// portion of a row is back to an empty string, the row's key is deleted
+// entirely — the existing "an empty field means nothing was written"
+// rule (D-13/BATCH1-01), applied at the row level as it is today.
+export function setAsMadePortion(draft, version, rowId, portionIndex, rawValue) {
+  const asMade = { ...draft.asMade };
+  const row = version.rows.find((candidate) => candidate.id === rowId);
+  const existing = Object.prototype.hasOwnProperty.call(asMade, rowId) ? asMade[rowId] : null;
+  const next = existing ? [...existing] : new Array(row.portions.length).fill('');
+  next[portionIndex] = rawValue;
+  if (next.every((value) => value === '')) {
+    delete asMade[rowId];
+  } else {
+    asMade[rowId] = next;
+  }
+  return { ...draft, asMade };
+}
+
+// Add tasting's effect on the draft: the tasting section opens.
+export function openTastingSection(draft) {
+  return { ...draft, tastingOpen: true };
+}
+
+// amendDraftFromBatch(batch, opener) -> the draft handleStartAmending fills
+// from the batch. The band's Record a tasting (below 724) opens the same pen
+// through the 'record-a-tasting' opener (sketch 011 decision 30, Mark
+// 2026-10-02, answer 1; route-recipe-batch.md sections 1 and 6): the Tasting
+// section is already open, as if Add tasting had just been pressed. The
+// pre-filled draft and its baseline both carry tastingOpen true, so an
+// untouched pen is clean until the maker types.
+export function amendDraftFromBatch(batch, opener) {
+  return opener === 'record-a-tasting'
+    ? { ...draftFromBatch(batch), tastingOpen: true }
+    : draftFromBatch(batch);
+}
+
+// recordFieldsFromDraft(draft, parsed) -> { churnFields, tasting }, the two
+// objects createBatch and completeRecord take. A tasting object is assembled
+// only when the section is open and holds ink (D-02); a null tasting on
+// completeRecord removes a stored one (RESEARCH.md Assumption A3).
+export function recordFieldsFromDraft(draft, parsed) {
+  return {
+    churnFields: buildChurnFieldsFromDraft(draft, parsed),
+    tasting: draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null,
+  };
 }

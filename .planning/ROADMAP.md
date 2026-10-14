@@ -32,7 +32,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1-ROADMAP.md`.
 
 **Milestone Goal:** The code is ready for recipe creation, which is the next milestone (v2). No creation UI ships here. Each phase is checked by tests and by the existing screens reading as before.
 
-- [ ] **Phase 5: Split the recipe page** - The recipe page's draft logic moves into pure domain operations behind hooks, leaving `RecipePage` as the route shell; the maker sees no change
+- [x] **Phase 5: Split the recipe page** - The recipe page's draft logic moves into pure domain operations behind hooks, leaving `RecipePage` as the route shell; the maker sees no change (completed 2026-10-14)
 - [ ] **Phase 6: The ingredient library in the store** - The ingredient library becomes an object store behind the repository seam, seeded, exported and imported, and editing it never moves a stored figure
 - [ ] **Phase 7: Creation primitives** - Framework-free functions create a recipe with a root version, hand out step keys that are never reused, and build a row from a library ingredient
 
@@ -50,7 +50,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1-ROADMAP.md`.
   4. `RecipePage.jsx` reads as the route shell: it reads the route, loads its records through the repository seam and composes the regions and the two hooks, holding no draft logic of its own; every existing test passes, and tests that imported moved helpers from `RecipePage.jsx` now import them from `domain/`, none deleted or weakened
   5. In the built app the maker sees no change: opening, editing, saving and cancelling the version pen, the record pen, a correction and a tasting give the same page, the same saved records and the same kept draft after a reload as before the split
 
-**Plans**: 6/6 plans executed
+**Plans**: 6/6 plans complete
 
 Plans:
 **Wave 1**
@@ -96,6 +96,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion and on Phase 5's verification)*
 - [ ] 06-03-PLAN.md — exportAll in one readonly transaction, a four-store importAll, schema 8 with the library validator; LIB-02 through a whole export and import (LIB-03, LIB-02; D-04a, D-06, D-07, D-07a, D-08)
+
 **Notes**: Settle in discussion: `app/src/store/db.js` resets only profiles below 8 and says a later bump writes its own lift (04-04: "records Mark makes from now on are real"), while `REQUIREMENTS.md` says the reset applies as usual on this bump. Adding a store needs neither a reset nor a lift, so check for real stored records before choosing.
 
 ### Phase 7: Creation primitives
@@ -118,7 +119,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 starts after Phase 5 is 
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 5. Split the recipe page | v1.1 | 6/6 | In Progress | - |
+| 5. Split the recipe page | v1.1 | 6/6 | Complete    | 2026-10-14 |
 | 6. The ingredient library in the store | v1.1 | 0/TBD | Not started | - |
 | 7. Creation primitives | v1.1 | 0/TBD | Not started | - |
 

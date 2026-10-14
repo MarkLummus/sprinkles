@@ -10,10 +10,10 @@ Groundwork for recipe creation, which is the next milestone (v2). The groundwork
 
 ### Editor refactor
 
-- [ ] **EDIT-01**: The pure helpers `RecipePage.jsx` exports (`isDraftDirty`, `restoreStepFromVersion`, `blankRecordDraft`, `buildChurnFieldsFromDraft` and the others) live in `domain/`, with no framework, DOM or store import, and their tests run under node.
-- [ ] **EDIT-02**: The pen's changes to a draft are pure operations in `domain/`, driven through a `usePenDraft` hook, so the pen handlers stop repeating the clear-blocked-state lines.
-- [ ] **EDIT-03**: The recording and tasting workflow is extracted the same way (pure operations plus a hook).
-- [ ] **EDIT-04**: `RecipePage` is left as the route shell, and the maker sees no change: the existing suite passes and the pen, record and tasting views read as before.
+- [x] **EDIT-01**: The pure helpers `RecipePage.jsx` exports (`isDraftDirty`, `restoreStepFromVersion`, `blankRecordDraft`, `buildChurnFieldsFromDraft` and the others) live in `domain/`, with no framework, DOM or store import, and their tests run under node.
+- [x] **EDIT-02**: The pen's changes to a draft are pure operations in `domain/`, driven through a `usePenDraft` hook, so the pen handlers stop repeating the clear-blocked-state lines.
+- [x] **EDIT-03**: The recording and tasting workflow is extracted the same way (pure operations plus a hook).
+- [x] **EDIT-04**: `RecipePage` is left as the route shell, and the maker sees no change: the existing suite passes and the pen, record and tasting views read as before.
 
 ### Creation primitives
 
@@ -68,10 +68,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EDIT-01 | Phase 5 | Pending |
-| EDIT-02 | Phase 5 | Pending |
-| EDIT-03 | Phase 5 | Pending |
-| EDIT-04 | Phase 5 | Pending |
+| EDIT-01 | Phase 5 | Complete |
+| EDIT-02 | Phase 5 | Complete |
+| EDIT-03 | Phase 5 | Complete |
+| EDIT-04 | Phase 5 | Complete |
 | MAKE-01 | Phase 7 | Pending |
 | MAKE-02 | Phase 7 | Pending |
 | MAKE-03 | Phase 7 | Pending |

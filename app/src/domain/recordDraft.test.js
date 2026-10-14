@@ -4,6 +4,7 @@ import { augustSecondBatch } from '../data/batch-2026-08-02.js';
 import { BATTERY_FIELDS } from './battery.js';
 import {
   CHURN_DATE_BLOCKED_MESSAGE,
+  amendDraftFromBatch,
   batchSavedStatus,
   blankRecordDraft,
   buildChurnFieldsFromDraft,
@@ -12,6 +13,7 @@ import {
   isDraftDirty,
   isTastingBodyField,
   parseAllMeasuredFields,
+  recordFieldsFromDraft,
   removeTastingSection,
   restoreDraftFromUndo,
   openTastingSection,
@@ -394,6 +396,55 @@ describe('openTastingSection', () => {
     expect(next.churnDate).toBe('2026-10-09');
     expect(draft).toEqual(before);
     expect(openTastingSection(draft)).toEqual(next);
+  });
+});
+
+describe('amendDraftFromBatch', () => {
+  it('is draftFromBatch for the log\'s Correct', () => {
+    const batch = structuredClone(augustSecondBatch);
+    const before = structuredClone(batch);
+    expect(amendDraftFromBatch(batch, 'correct')).toEqual(draftFromBatch(structuredClone(augustSecondBatch)));
+    expect(batch).toEqual(before);
+  });
+
+  it('differs from it only by tastingOpen true for the band\'s Record a tasting', () => {
+    const plain = draftFromBatch(structuredClone(augustSecondBatch));
+    const opened = amendDraftFromBatch(structuredClone(augustSecondBatch), 'record-a-tasting');
+    expect(opened).toEqual({ ...plain, tastingOpen: true });
+    expect(amendDraftFromBatch(structuredClone(augustSecondBatch), 'record-a-tasting')).toEqual(opened);
+  });
+});
+
+describe('recordFieldsFromDraft', () => {
+  function inputs(draft) {
+    return { draft, parsed: parseAllMeasuredFields(draft).parsed };
+  }
+
+  it('gives a null tasting when the section is closed, even with ink', () => {
+    const { draft, parsed } = inputs({ ...inkedDraft(), tastingOpen: false });
+    expect(recordFieldsFromDraft(draft, parsed).tasting).toBe(null);
+  });
+
+  it('gives a null tasting when the section is open but holds no ink', () => {
+    const { draft, parsed } = inputs({ ...blankRecordDraft(), churnDate: '2026-08-09', tastingOpen: true });
+    expect(recordFieldsFromDraft(draft, parsed).tasting).toBe(null);
+  });
+
+  it('gives a built tasting when the section is open with ink, beside the churn fields', () => {
+    const { draft, parsed } = inputs({ ...inkedDraft(), tastingOpen: true });
+    const built = recordFieldsFromDraft(draft, parsed);
+    expect(built.tasting).toEqual(buildTastingFieldsFromDraft(draft, parsed));
+    expect(built.churnFields).toEqual(buildChurnFieldsFromDraft(draft, parsed));
+  });
+
+  it('leaves its inputs unchanged and answers the same twice', () => {
+    const { draft, parsed } = inputs({ ...inkedDraft(), tastingOpen: true });
+    const draftBefore = structuredClone(draft);
+    const parsedBefore = structuredClone(parsed);
+    const first = recordFieldsFromDraft(draft, parsed);
+    expect(draft).toEqual(draftBefore);
+    expect(parsed).toEqual(parsedBefore);
+    expect(recordFieldsFromDraft(draft, parsed)).toEqual(first);
   });
 });
 

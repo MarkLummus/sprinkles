@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
+  amendDraftFromBatch,
+  blankRecordDraft,
   openTastingSection,
+  recordFieldsFromDraft,
   removeTastingSection,
   restoreDraftFromUndo,
   tastingHasInk,
   tastingPayloadFromDraft,
+  validateRecordDraft,
 } from '../domain/recordDraft.js';
 
 // The record pen's draft (Phase 5, EDIT-03): recording a batch, correcting it
@@ -51,10 +55,24 @@ export function useRecordDraft() {
   // null while no removal is pending — "an undo exists" is exactly
   // pendingUndo !== null.
   const [pendingUndo, setPendingUndo] = useState(null);
+  // The save gate's two attempt counters (WR-01's pattern): each grows on every
+  // blocked press and rides with the block it accompanies (D-09).
+  const invalidFieldAttemptRef = useRef(0);
+  const dateBlockedAttemptRef = useRef(0);
 
   // The churn-date block's one reset (D-06).
   function clearDateBlock() {
     setBlockedDateMessage(null);
+  }
+
+  // Every blocked-save state the pen holds, and the pending undo, cleared
+  // together: opening a record, opening a correction and Cancel all start here.
+  function resetBlocks() {
+    setFieldErrors({});
+    setInvalidFieldTarget(null);
+    clearDateBlock();
+    setBlockedDateAttempt(null);
+    setPendingUndo(null);
   }
 
   // Clears the churn-date block, then applies a pure (draft, ...args) => draft
@@ -108,6 +126,103 @@ export function useRecordDraft() {
     setPendingUndo(null);
   }
 
+  // Opening a new record. Clearing the amend target here is load-bearing, not
+  // redundant: without it, a maker who amends and then starts a fresh recording
+  // would leave amendingBatchId set from the earlier amendment, so the save
+  // would take the amend path — overwriting the amended batch's record and
+  // stamping a false changed date on it, while the new batch is never created
+  // (T-02-24). amendOpener is left alone.
+  function openNew() {
+    setAmendingBatchId(null);
+    setAmendBaseline(null);
+    setDraft(blankRecordDraft());
+    resetBlocks();
+  }
+
+  // "Correct" and the band's Record a tasting reopen the record pen with
+  // everything the record holds in the fields — the churn side and, when the
+  // batch carries one, the tasting side too (D-03) — pre-filled from the batch,
+  // never from the version (draftFromBatch). The baseline isDraftDirty compares
+  // against (03-07, T-03-43) is a separate clone, not the same object the
+  // draft was just given, so a later edit to draft (always a new object) can
+  // never be mistaken for a mutation of the baseline itself.
+  function openAmend(batch, opener) {
+    const filledDraft = amendDraftFromBatch(batch, opener);
+    setDraft(filledDraft);
+    setAmendBaseline(structuredClone(filledDraft));
+    setAmendingBatchId(batch.id);
+    setAmendOpener(opener);
+    resetBlocks();
+  }
+
+  // The deliberate abandonment path (A-1): the draft goes, the amend target
+  // with it, and every blocked and error state. amendOpener is left alone (it
+  // is read as captured when the pen opened).
+  function cancel() {
+    setDraft(null);
+    setAmendingBatchId(null);
+    setAmendBaseline(null);
+    resetBlocks();
+  }
+
+  // After a save: the draft and the amend target go. The blocks and the
+  // pending undo stay as they were.
+  function close() {
+    setDraft(null);
+    setAmendingBatchId(null);
+    setAmendBaseline(null);
+  }
+
+  // A kept draft read back from the drafts store. The caller has already
+  // checked it against the version and its batches (draftMatchesVersion,
+  // T-05-09). The blocks are untouched.
+  function restore(record) {
+    setDraft(record.payload);
+    if (record.kind === 'record') {
+      setAmendingBatchId(null);
+      setAmendBaseline(null);
+    } else {
+      setAmendBaseline(record.amendBaseline);
+      setAmendingBatchId(record.amendingBatchId);
+      setAmendOpener(record.amendOpener);
+    }
+  }
+
+  // The one save gate (D-01/D-02/D-03/D-04): every battery measurement
+  // validates first (RESEARCH.md Open Question 3), then the churn date (D-05).
+  // Sets the field errors or the churn-date block, each with its own growing
+  // attempt, and returns which gate fired: 'measurement', 'churnDate' or 'ok'
+  // (with the parsed fields buildFields takes). The caller announces the
+  // matching status and owns the save lock.
+  function checkSave() {
+    const { fieldErrors: errors, invalidFieldKey, blockedDateMessage: dateMessage, parsed } = validateRecordDraft(draft);
+
+    if (invalidFieldKey !== null) {
+      setFieldErrors(errors);
+      invalidFieldAttemptRef.current += 1;
+      setInvalidFieldTarget({ key: invalidFieldKey, attempt: invalidFieldAttemptRef.current });
+      clearDateBlock();
+      return { outcome: 'measurement', parsed: null };
+    }
+    setFieldErrors({});
+    setInvalidFieldTarget(null);
+
+    if (dateMessage) {
+      dateBlockedAttemptRef.current += 1;
+      setBlockedDateMessage(dateMessage);
+      setBlockedDateAttempt(dateBlockedAttemptRef.current);
+      return { outcome: 'churnDate', parsed: null };
+    }
+    clearDateBlock();
+    return { outcome: 'ok', parsed };
+  }
+
+  // The churn fields and the tasting (or null) createBatch and completeRecord
+  // take, built from the draft and the parsed fields checkSave returned.
+  function buildFields(parsed) {
+    return recordFieldsFromDraft(draft, parsed);
+  }
+
   return {
     draft,
     amendingBatchId,
@@ -124,14 +239,12 @@ export function useRecordDraft() {
     addTasting,
     removeTasting,
     undoRemoveTasting,
-    setDraft,
-    setAmendingBatchId,
-    setAmendBaseline,
-    setAmendOpener,
-    setFieldErrors,
-    setInvalidFieldTarget,
-    setBlockedDateMessage,
-    setBlockedDateAttempt,
-    setPendingUndo,
+    openNew,
+    openAmend,
+    cancel,
+    close,
+    restore,
+    checkSave,
+    buildFields,
   };
 }

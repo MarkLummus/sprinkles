@@ -512,3 +512,27 @@ export function setAsMadePortion(draft, version, rowId, portionIndex, rawValue) 
 export function openTastingSection(draft) {
   return { ...draft, tastingOpen: true };
 }
+
+// amendDraftFromBatch(batch, opener) -> the draft handleStartAmending fills
+// from the batch. The band's Record a tasting (below 724) opens the same pen
+// through the 'record-a-tasting' opener (sketch 011 decision 30, Mark
+// 2026-10-02, answer 1; route-recipe-batch.md sections 1 and 6): the Tasting
+// section is already open, as if Add tasting had just been pressed. The
+// pre-filled draft and its baseline both carry tastingOpen true, so an
+// untouched pen is clean until the maker types.
+export function amendDraftFromBatch(batch, opener) {
+  return opener === 'record-a-tasting'
+    ? { ...draftFromBatch(batch), tastingOpen: true }
+    : draftFromBatch(batch);
+}
+
+// recordFieldsFromDraft(draft, parsed) -> { churnFields, tasting }, the two
+// objects createBatch and completeRecord take. A tasting object is assembled
+// only when the section is open and holds ink (D-02); a null tasting on
+// completeRecord removes a stored one (RESEARCH.md Assumption A3).
+export function recordFieldsFromDraft(draft, parsed) {
+  return {
+    churnFields: buildChurnFieldsFromDraft(draft, parsed),
+    tasting: draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null,
+  };
+}

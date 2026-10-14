@@ -30,20 +30,14 @@ import {
 } from '../domain/penDraft.js';
 import {
   batchSavedStatus,
-  blankRecordDraft,
-  buildChurnFieldsFromDraft,
-  buildTastingFieldsFromDraft,
-  draftFromBatch,
   isDraftDirty,
   isTastingBodyField,
   setAsMadePortion,
   setRecordField,
   setRecordMark,
   setStepChange,
-  tastingHasInk,
   toggleDeclaredDefect,
   toggleDefect,
-  validateRecordDraft,
 } from '../domain/recordDraft.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
@@ -211,20 +205,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     blockedDateMessage,
     blockedDateAttempt,
     pendingUndo,
-    setDraft,
-    setAmendingBatchId,
-    setAmendBaseline,
-    setAmendOpener,
-    setFieldErrors,
-    setInvalidFieldTarget,
-    setBlockedDateMessage,
-    setBlockedDateAttempt,
-    setPendingUndo,
   } = recordPen;
-  // The save gate's two attempt counters live in useRecordDraft after Task 3;
-  // until then they stay here.
-  const invalidFieldAttemptRef = useRef(0);
-  const dateBlockedAttemptRef = useRef(0);
   // Add tasting's own attempt counter (D-01, contract "Focus landings"):
   // the same WR-01 pattern as blockedDateAttempt above, so BatchRow's own
   // focus effect re-fires even on a second press.
@@ -556,17 +537,11 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
           setVersionSaveAction(null);
           versionSaveLockRef.current = false;
           setMode('developing');
-        } else if (record.kind === 'record') {
-          // A new batch's record: on any of the version's addresses.
-          setDraft(record.payload);
-          setAmendingBatchId(null);
-          setAmendBaseline(null);
-          setMode('recording');
         } else {
-          setDraft(record.payload);
-          setAmendBaseline(record.amendBaseline);
-          setAmendingBatchId(record.amendingBatchId);
-          setAmendOpener(record.amendOpener);
+          // A new batch's record ('record') opens on any of the version's
+          // addresses; a Correct draft ('amend') only on its own batch's,
+          // which the redirect above has already settled.
+          recordPen.restore(record);
           setMode('recording');
         }
         onPageStatus(DRAFT_KEPT_STATUS);
@@ -959,15 +934,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setBatchSaveAction(null);
     setFocusBatchAttempt(null);
     onPageStatus('');
-    setAmendingBatchId(null);
-    setAmendBaseline(null);
-    setDraft(blankRecordDraft());
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
-    setBlockedDateMessage(null);
-    setBlockedDateAttempt(null);
+    recordPen.openNew();
     setAddTastingAttempt(null);
-    setPendingUndo(null);
     setTastingStatus('');
     setRecordStatus('');
     setRemoveTastingAttempt(null);
@@ -1142,29 +1110,13 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setBatchSaveAction(null);
     setFocusBatchAttempt(null);
     onPageStatus('');
-    const filledDraft =
-      opener === 'record-a-tasting'
-        ? { ...draftFromBatch(batch), tastingOpen: true }
-        : draftFromBatch(batch);
-    setDraft(filledDraft);
-    // The baseline isDraftDirty compares against (03-07, T-03-43) — a
-    // separate clone, not the same object setDraft was just given, so a
-    // later edit to draft (always a new object via setDraft's own spread)
-    // can never be mistaken for a mutation of the baseline itself.
-    setAmendBaseline(structuredClone(filledDraft));
-    setAmendingBatchId(batch.id);
-    setAmendOpener(opener);
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
-    setBlockedDateMessage(null);
-    setBlockedDateAttempt(null);
+    recordPen.openAmend(batch, opener);
     if (opener === 'record-a-tasting') {
       addTastingAttemptRef.current += 1;
       setAddTastingAttempt(addTastingAttemptRef.current);
     } else {
       setAddTastingAttempt(null);
     }
-    setPendingUndo(null);
     setTastingStatus('');
     setRecordStatus('');
     setRemoveTastingAttempt(null);
@@ -1263,27 +1215,17 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // end-of-phase UAT).
   function handleSaveBatch() {
     if (batchSaveLockRef.current) return;
-    const { fieldErrors: errors, invalidFieldKey, blockedDateMessage: dateMessage, parsed } = validateRecordDraft(draft);
+    const check = recordPen.checkSave();
 
-    if (invalidFieldKey !== null) {
-      setFieldErrors(errors);
-      invalidFieldAttemptRef.current += 1;
-      setInvalidFieldTarget({ key: invalidFieldKey, attempt: invalidFieldAttemptRef.current });
-      setBlockedDateMessage(null);
+    if (check.outcome === 'measurement') {
       announce(MEASURED_INVALID_STATUS);
       return;
     }
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
 
-    if (dateMessage) {
-      dateBlockedAttemptRef.current += 1;
-      setBlockedDateMessage(dateMessage);
-      setBlockedDateAttempt(dateBlockedAttemptRef.current);
+    if (check.outcome === 'churnDate') {
       announce(CHURN_DATE_BLOCKED_STATUS);
       return;
     }
-    setBlockedDateMessage(null);
 
     batchSaveLockRef.current = true;
     const saveAction = amendingBatchId ? 'amend' : 'new';
@@ -1295,8 +1237,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     let tasting;
     try {
       now = new Date().toISOString();
-      churnFields = buildChurnFieldsFromDraft(draft, parsed);
-      tasting = draft.tastingOpen && tastingHasInk(draft) ? buildTastingFieldsFromDraft(draft, parsed) : null;
+      ({ churnFields, tasting } = recordPen.buildFields(check.parsed));
     } catch {
       batchSaveLockRef.current = false;
       setBatchSaveAction(null);
@@ -1319,9 +1260,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
         discardDraft();
         setBatches((prev) => prev.map((batch) => (batch.id === record.id ? record : batch)));
         setMode('reading');
-        setDraft(null);
-        setAmendingBatchId(null);
-        setAmendBaseline(null);
+        recordPen.close();
         setFormStatus('');
         batchSaveLockRef.current = false;
         setBatchSaveAction(null);
@@ -1350,8 +1289,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       discardDraft();
       setBatches((prev) => [...prev, record]);
       setMode('reading');
-      setDraft(null);
-      setAmendBaseline(null);
+      recordPen.close();
       setFormStatus('');
       batchSaveLockRef.current = false;
       setBatchSaveAction(null);
@@ -1378,15 +1316,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setFocusBatchAttempt(null);
     onPageStatus('');
     setMode('reading');
-    setDraft(null);
-    setAmendingBatchId(null);
-    setAmendBaseline(null);
-    setFieldErrors({});
-    setInvalidFieldTarget(null);
-    setBlockedDateMessage(null);
-    setBlockedDateAttempt(null);
+    recordPen.cancel();
     setAddTastingAttempt(null);
-    setPendingUndo(null);
     setTastingStatus('');
     setRecordStatus('');
     setRemoveTastingAttempt(null);

@@ -50,14 +50,14 @@ Full phase detail, plans and progress: `.planning/milestones/v1-ROADMAP.md`.
   4. `RecipePage.jsx` reads as the route shell: it reads the route, loads its records through the repository seam and composes the regions and the two hooks, holding no draft logic of its own; every existing test passes, and tests that imported moved helpers from `RecipePage.jsx` now import them from `domain/`, none deleted or weakened
   5. In the built app the maker sees no change: opening, editing, saving and cancelling the version pen, the record pen, a correction and a tasting give the same page, the same saved records and the same kept draft after a reload as before the split
 
-**Plans**: 1/6 plans executed
+**Plans**: 2/6 plans executed
 
 Plans:
 **Wave 1**
 - [x] 05-01-PLAN.md — The before walk: a deterministic WebKit walk of the built app records every D-13 observation, each pen's save and kept draft, and the stores, as 05-walk-before.json (D-11, D-13)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 05-02-PLAN.md — Pen helpers to domain/penDraft.js; penDraftRow serves every draft-row read and closes T-03.6-02 (EDIT-01; D-01, D-02, D-03)
+- [x] 05-02-PLAN.md — Pen helpers to domain/penDraft.js; penDraftRow serves every draft-row read and closes T-03.6-02 (EDIT-01; D-01, D-02, D-03)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 05-03-PLAN.md — usePenDraft: eleven pen edits as pure ops through edit(), open, close, restore and checkSave; the blocked reset in one place (EDIT-02; D-04, D-05, D-07, D-08, D-10, D-12)
@@ -108,7 +108,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 does not need Phase 5 an
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 5. Split the recipe page | v1.1 | 1/6 | In Progress | - |
+| 5. Split the recipe page | v1.1 | 2/6 | In Progress | - |
 | 6. The ingredient library in the store | v1.1 | 0/TBD | Not started | - |
 | 7. Creation primitives | v1.1 | 0/TBD | Not started | - |
 

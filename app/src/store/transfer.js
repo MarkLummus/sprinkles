@@ -97,6 +97,9 @@ function validateRow(row, path, errors) {
     return;
   }
   if (!isNonEmptyString(row.id)) errors.push(`${path}.id: expected a non-empty string`);
+  // A row id is used as an object key downstream (the batch's as-made map, the pens' drafts), so a name the key scan
+  // refuses as a key is refused here as a row id too (WR-01); this covers version rows and batch snapshot rows.
+  if (UNSAFE_KEYS.has(row.id)) errors.push(`${path}.id: prototype-mutating id is not allowed, got ${JSON.stringify(row.id)}`);
   if (typeof row.ingredientName !== 'string') errors.push(`${path}.ingredientName: expected a string`);
   if (!Array.isArray(row.portions) || row.portions.length === 0) {
     errors.push(`${path}.portions: expected a non-empty array, got ${JSON.stringify(row.portions)}`);

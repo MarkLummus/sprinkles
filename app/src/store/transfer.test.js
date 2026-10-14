@@ -1198,3 +1198,43 @@ describe('a portion\'s optional removed flag (T-03.6-05)', () => {
     expect(target.versions[0].rows[0].portions[0].removed).toBe(true);
   });
 });
+
+// WR-01 of the Phase 5 review: a row id is used as an object key downstream
+// (the batch's as-made map, the pens' drafts), so the names the key scan
+// refuses as keys are refused as a row id's value too.
+describe('a reserved row id is refused as a value (WR-01)', () => {
+  const NAMES = ['__proto__', 'constructor', 'prototype'];
+
+  it.each(NAMES)('refuses %s as a version row id, naming the path and the value', (name) => {
+    const version = makeVersion();
+    version.rows[0].id = name;
+    const result = validateStoreFile(makeStoreFile([version]));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual([`$.versions[0].rows[0].id: prototype-mutating id is not allowed, got "${name}"`]);
+  });
+
+  it.each(NAMES)('refuses %s as a batch snapshot row id, naming the path and the value', (name) => {
+    const batch = makeBatch();
+    batch.snapshot.rows[0].id = name;
+    const result = validateStoreFile(makeStoreFile([makeVersion()], [batch]));
+    expect(result.ok).toBe(false);
+    expect(result.errors).toEqual([`$.batches[0].snapshot.rows[0].id: prototype-mutating id is not allowed, got "${name}"`]);
+  });
+
+  it.each(['__proto__x', 'my-constructor', 'prototype-2'])('still accepts the row id %s, which only contains a reserved name', (id) => {
+    const version = makeVersion();
+    version.rows[0].id = id;
+    expect(validateStoreFile(makeStoreFile([version])).ok).toBe(true);
+  });
+
+  it('refuses the whole file and writes nothing', async () => {
+    const version = makeVersion();
+    version.rows[0].id = '__proto__';
+    const file = JSON.parse(JSON.stringify(makeStoreFile([version])));
+    const repository = createInMemoryRepository([], [], []);
+    const result = await importStore(repository, file);
+    expect(result.ok).toBe(false);
+    expect(repository.importAllCalls).toBe(0);
+    expect(repository.versions).toEqual([]);
+  });
+});

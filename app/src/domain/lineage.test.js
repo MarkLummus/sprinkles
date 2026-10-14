@@ -258,6 +258,19 @@ describe('createChildVersion', () => {
     expect(child.sheetDescription).toBe('New description');
   });
 
+  it('carries the parent\'s declared axes and declared problems, so a new version offers the same Bitter toggle', () => {
+    const child = createChildVersion(oliveOilVersion, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(oliveOilVersion.declaredFlaws).toEqual(['Bitter']);
+    expect(child.declaredAxes).toEqual(oliveOilVersion.declaredAxes);
+    expect(child.declaredFlaws).toEqual(['Bitter']);
+  });
+
+  it('a parent that declares no problems gives a child that declares none', () => {
+    const parent = { ...structuredClone(oliveOilVersion), declaredFlaws: [] };
+    const child = createChildVersion(parent, penFields, { id: 'v2', now: '2026-09-07T10:00:00.000Z' });
+    expect(child.declaredFlaws).toEqual([]);
+  });
+
   it('does not mutate the parent', () => {
     const parent = structuredClone(oliveOilVersion);
     const before = structuredClone(parent);

@@ -137,6 +137,7 @@ export function createChildVersion(parent, penFields, { id, now }) {
     process: parent.process,
     iceEd: parent.iceEd,
     declaredAxes: parent.declaredAxes,
+    declaredFlaws: parent.declaredFlaws,
     reason: penFields.reason,
     citedBatchId: penFields.citedBatchId,
     rows: structuredClone(penFields.rows),

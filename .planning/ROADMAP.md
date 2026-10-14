@@ -50,7 +50,7 @@ Full phase detail, plans and progress: `.planning/milestones/v1-ROADMAP.md`.
   4. `RecipePage.jsx` reads as the route shell: it reads the route, loads its records through the repository seam and composes the regions and the two hooks, holding no draft logic of its own; every existing test passes, and tests that imported moved helpers from `RecipePage.jsx` now import them from `domain/`, none deleted or weakened
   5. In the built app the maker sees no change: opening, editing, saving and cancelling the version pen, the record pen, a correction and a tasting give the same page, the same saved records and the same kept draft after a reload as before the split
 
-**Plans**: 3/6 plans executed
+**Plans**: 4/6 plans executed
 
 Plans:
 **Wave 1**
@@ -63,7 +63,7 @@ Plans:
 - [x] 05-03-PLAN.md — usePenDraft: eleven pen edits as pure ops through edit(), open, close, restore and checkSave; the blocked reset in one place (EDIT-02; D-04, D-05, D-07, D-08, D-10, D-12)
 
 **Wave 4** *(blocked on Wave 3 completion)*
-- [ ] 05-04-PLAN.md — Record helpers to domain/recordDraft.js; strings follow their user; three test files repointed (EDIT-01; D-01, D-02)
+- [x] 05-04-PLAN.md — Record helpers to domain/recordDraft.js; strings follow their user; three test files repointed (EDIT-01; D-01, D-02)
 
 **Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 05-05-PLAN.md — useRecordDraft: record, correct and tasting edits as pure ops, lifecycle and the save gate through one hook; the churn-date reset in one place (EDIT-03; D-06, D-07, D-08, D-09, D-10, D-12)
@@ -108,7 +108,7 @@ Phases execute in numeric order: 5 → 6 → 7. Phase 6 does not need Phase 5 an
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 5. Split the recipe page | v1.1 | 3/6 | In Progress | - |
+| 5. Split the recipe page | v1.1 | 4/6 | In Progress | - |
 | 6. The ingredient library in the store | v1.1 | 0/TBD | Not started | - |
 | 7. Creation primitives | v1.1 | 0/TBD | Not started | - |
 

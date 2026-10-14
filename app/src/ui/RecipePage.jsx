@@ -620,8 +620,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // It waits for the draft restore: a draft kept on this page reopens its own
   // pen and consumes the request without opening a second one.
   // handleStartAmending is a function declaration, hoisted, and reads only
-  // refs, setters and module functions, so calling it from here, above the
-  // early returns, is safe.
+  // refs, setters, the onPageStatus prop and the recordPen hook value
+  // (declared above, at the useRecordDraft call), so calling it from here,
+  // above the early returns, is safe.
   const startTastingConsumedRef = useRef(false);
   useEffect(() => {
     if (!startTastingOnMount || startTastingConsumedRef.current || !draftRestoreDone) return;

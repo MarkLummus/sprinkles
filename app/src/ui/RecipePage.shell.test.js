@@ -3,9 +3,12 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 // Source-text proof that RecipePage.jsx stays the route shell (Phase 5, Plan 06).
-// The RecipePage tests render static markup and never run effects, so this is
-// how the split's shape is pinned: no direct draft setter in the page, each
-// reset written once, the domain modules pure, the hooks stopping at the draft.
+// RecipePage.test.jsx renders static markup and never runs effects. The jsdom
+// RecipePage tests (drafts, undoRetire, recordTasting and the others) mount the
+// page and run its effects, but they check what the page does, not which module
+// owns the draft state. So this is how the split's shape is pinned: no direct
+// draft setter in the page, each reset written once, the domain modules pure,
+// the hooks stopping at the draft.
 // Node environment on purpose: no docblock, no DOM.
 
 function raw(relative) {

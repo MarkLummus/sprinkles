@@ -518,6 +518,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 261013-w86 | WR-03 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~718 and ~598) print a portion | 2026-10-13 | fb06388 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w86-wr-03-03-6-review-md-in-app-src-ui-ingredienttable-jsx-718-a |
 | 156 | Retire the nine stale 03.5 probes, keep the shared harness | 2026-10-13 | 70e451f | — |
 | 261014-b25 | Add one jsdom test for RecipePage tasting-body vs churn-field undo retirement (closes Phase 5 behavior_unverified item) | 2026-10-14 | d55ce45 | [261014-b25-add-one-jsdom-test-for-recipepage-tastin](./quick/261014-b25-add-one-jsdom-test-for-recipepage-tastin/) |
+| 261014-e89 | Mark's List bug-record-pen-proto-row-id: a row id of the text "__proto__" (also "constructor", "prototype") must not los | 2026-10-14 | e91ca9b | .planning/quick/261014-e89-mark-s-list-bug-record-pen-proto-row-id |
+| 261014-e8a | Mark's List bug-pen-note-delete-then-edit-provenance: in app/src/domain/penDraft.js setPenNoteText and removePenNote, de | 2026-10-14 | b8e5b83 | .planning/quick/261014-e8a-mark-s-list-bug-pen-note-delete-then-edi |
+| 261014-e8b | Harden app/src/ui/RecipePage.shell.test.js stripComments so it no longer treats // inside a string as a comment (a sette | 2026-10-14 | 43c6871 | .planning/quick/261014-e8b-harden-app-src-ui-recipepage-shell-test |
 
 ### Roadmap Evolution
 

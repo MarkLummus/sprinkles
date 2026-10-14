@@ -3,13 +3,13 @@
   "batch_id": "261014-e88",
   "created_at": "2026-10-14T14:14:40.806Z",
   "options": {},
-  "base_revision": "37f630c50d49cd33478822a19f7e018607c81b1a",
+  "base_revision": "b1f9bbc7c82c8d15fbd057f0caa9277c22f77b5b",
   "items": [
     {
       "quick_id": "261014-e89",
       "client_id": null,
       "description": "Mark's List bug-record-pen-proto-row-id: a row id of the text \"__proto__\" (also \"constructor\", \"prototype\") must not lose as-made grams. Fix the three bare computed-key writes in app/src/domain/recordDraft.js (setAsMadePortion ~497-509, the builder write ~382, draftFromBatch ~260 and its false comment ~248-251) with own-property-safe builds (Object.hasOwn / Object.fromEntries, keep key order where a reader depends on it), and add the matching guard so such ids cannot enter through import: reject reserved row ids as id VALUES in app/src/store/transfer.js validateRow (keep the existing key scan; follow the file's error-message style). Tests: a __proto__ case in recordDraft.test.js mirroring penDraft.test.js, a transfer.test.js case, and a save/reload assertion where practical. app/src/store/transfer.js is also edited by the later Phase 6 plan 06-03; this task lands first and keeps its change minimal.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/domain/recordDraft.js",
@@ -24,14 +24,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "e91ca9b",
       "failure_reason": null
     },
     {
       "quick_id": "261014-e8a",
       "client_id": null,
       "description": "Mark's List bug-pen-note-delete-then-edit-provenance: in app/src/domain/penDraft.js setPenNoteText and removePenNote, deleting a note shifts the draft indexes but setPenNoteText compares against version.authored[listKey][index] by the CURRENT index. Make each draft note carry what it was inherited with (its original text and inheritedFrom marker, or its original position), so deleting another note cannot change what it is compared to. Must not change the saved record shape of a note and must not change any behaviour when no note was deleted. Tests: a delete-then-edit composition in penDraft.test.js (delete note 0 of two inherited notes, edit the survivor, assert its marker kept or cleared by its OWN original), plus a save/reload assertion where practical.",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/domain/penDraft.js",
@@ -44,14 +44,14 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "b8e5b83",
       "failure_reason": null
     },
     {
       "quick_id": "261014-e8b",
       "client_id": null,
       "description": "Harden app/src/ui/RecipePage.shell.test.js stripComments so it no longer treats // inside a string as a comment (a setter after 'http://x' must still be caught), and add a test that exercises the whole stripping pipeline against such a line (WR-02 of the Phase 5 code review).",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "planned_files": [
         "app/src/ui/RecipePage.shell.test.js"
@@ -62,7 +62,7 @@
       "dispatched_branch": null,
       "dispatched_base": null,
       "wave": 0,
-      "commit": null,
+      "commit": "43c6871",
       "failure_reason": null
     },
     {

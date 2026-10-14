@@ -9,7 +9,8 @@ import { describe, it, expect } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { usePenDraft } from './usePenDraft.js';
-import { setPenField } from '../domain/penDraft.js';
+import { oliveOilVersion } from '../data/olive-oil.js';
+import { penDraftFromVersion, setPenField } from '../domain/penDraft.js';
 
 function mount() {
   const state = {};
@@ -32,18 +33,26 @@ function mount() {
   return { state, unmount };
 }
 
-const fixture = { versionLabel: '', reason: '' };
+function version() {
+  return structuredClone(oliveOilVersion);
+}
+
+// A blank version line blocks the save (blockedSaveMessage).
+function blockedPen(state) {
+  act(() => {
+    state.hook.open(version());
+  });
+  act(() => {
+    state.hook.checkSave(version(), []);
+  });
+  expect(state.hook.blockedMessage).toBe('Enter a version.');
+}
 
 describe('usePenDraft', () => {
   it('edit() clears the blocked message and target together, then applies the op', () => {
     const { state, unmount } = mount();
     try {
-      act(() => {
-        state.hook.setPenDraft(fixture);
-        state.hook.setBlockedMessage('Enter a version.');
-        state.hook.setBlockedTarget({ kind: 'versionLine', attempt: 1 });
-      });
-      expect(state.hook.blockedMessage).toBe('Enter a version.');
+      blockedPen(state);
       expect(state.hook.blockedTarget).toEqual({ kind: 'versionLine', attempt: 1 });
 
       act(() => {
@@ -61,7 +70,7 @@ describe('usePenDraft', () => {
     const { state, unmount } = mount();
     try {
       act(() => {
-        state.hook.setPenDraft(fixture);
+        state.hook.open(version());
       });
       act(() => {
         state.hook.edit(setPenField, 'versionLabel', 'x');
@@ -69,6 +78,92 @@ describe('usePenDraft', () => {
       });
       expect(state.hook.penDraft.versionLabel).toBe('x');
       expect(state.hook.penDraft.reason).toBe('y');
+    } finally {
+      unmount();
+    }
+  });
+
+  it('open(version) sets a draft and leaves no block', () => {
+    const { state, unmount } = mount();
+    try {
+      expect(state.hook.penDraft).toBe(null);
+      act(() => {
+        state.hook.open(version());
+      });
+      expect(state.hook.penDraft).toEqual(penDraftFromVersion(version()));
+      expect(state.hook.blockedMessage).toBe(null);
+      expect(state.hook.blockedTarget).toBe(null);
+    } finally {
+      unmount();
+    }
+  });
+
+  it('checkSave() on a blank version line sets the block, and a second blocked press grows the attempt', () => {
+    const { state, unmount } = mount();
+    try {
+      blockedPen(state);
+      expect(state.hook.blockedTarget).toEqual({ kind: 'versionLine', attempt: 1 });
+      let result;
+      act(() => {
+        result = state.hook.checkSave(version(), []);
+      });
+      expect(result).toEqual({ blockedKind: 'versionLine', fields: null });
+      expect(state.hook.blockedTarget).toEqual({ kind: 'versionLine', attempt: 2 });
+    } finally {
+      unmount();
+    }
+  });
+
+  it('checkSave() on a clean draft returns the fields the domain constructors take and sets no block', () => {
+    const { state, unmount } = mount();
+    try {
+      act(() => {
+        state.hook.open(version());
+      });
+      act(() => {
+        state.hook.edit(setPenField, 'versionLabel', 'v-next');
+      });
+      let result;
+      act(() => {
+        result = state.hook.checkSave(version(), []);
+      });
+      expect(result.blockedKind).toBe(null);
+      expect(result.fields.versionLabel).toBe('v-next');
+      expect(result.fields.reason).toBe(null);
+      expect(state.hook.blockedMessage).toBe(null);
+      expect(state.hook.blockedTarget).toBe(null);
+    } finally {
+      unmount();
+    }
+  });
+
+  it('close() clears the draft and the block', () => {
+    const { state, unmount } = mount();
+    try {
+      blockedPen(state);
+      act(() => {
+        state.hook.close();
+      });
+      expect(state.hook.penDraft).toBe(null);
+      expect(state.hook.blockedMessage).toBe(null);
+      expect(state.hook.blockedTarget).toBe(null);
+    } finally {
+      unmount();
+    }
+  });
+
+  it('restore(payload) sets the payload and clears the block', () => {
+    const { state, unmount } = mount();
+    try {
+      blockedPen(state);
+      const payload = penDraftFromVersion(version());
+      payload.versionLabel = 'kept';
+      act(() => {
+        state.hook.restore(payload);
+      });
+      expect(state.hook.penDraft).toBe(payload);
+      expect(state.hook.blockedMessage).toBe(null);
+      expect(state.hook.blockedTarget).toBe(null);
     } finally {
       unmount();
     }

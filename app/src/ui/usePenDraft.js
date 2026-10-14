@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { penDraftFromVersion, penFieldsFromDraft, penSaveBlock } from '../domain/penDraft.js';
 
 // The version pen's draft (Phase 5, EDIT-02).
 //
@@ -25,6 +26,12 @@ export function usePenDraft() {
   // blockedMessage is cleared so the two can never point at different
   // fields.
   const [blockedTarget, setBlockedTarget] = useState(null);
+  // WR-01's fix (03.1 REVIEW.md, Versions.jsx's half): an incrementing
+  // counter, stamped onto blockedTarget on every blocked checkSave call, so a
+  // second consecutive blocked save on the same field re-fires Headnote's
+  // field-focus effect — a value-equal boolean cannot. It belongs to the
+  // block it accompanies, so it lives here (D-09).
+  const blockedAttemptRef = useRef(0);
 
   function clearBlock() {
     setBlockedMessage(null);
@@ -38,7 +45,55 @@ export function usePenDraft() {
     setPenDraft((prev) => op(prev, ...args));
   }
 
-  // Raw setters stay on the return until the other pen handlers have moved
-  // onto edit().
-  return { penDraft, blockedMessage, blockedTarget, edit, setPenDraft, setBlockedMessage, setBlockedTarget };
+  // Seeds the draft from the version the pen opened on. Never touches the
+  // record draft or the mode; the caller does that (D-12).
+  function open(version) {
+    setPenDraft(penDraftFromVersion(version));
+    clearBlock();
+  }
+
+  // Cancel and both saves: the draft goes, and so does any block.
+  function close() {
+    setPenDraft(null);
+    clearBlock();
+  }
+
+  // A kept draft read back from the drafts store. The caller has already
+  // checked it against the version (draftMatchesVersion, T-05-05).
+  function restore(payload) {
+    setPenDraft(payload);
+    clearBlock();
+  }
+
+  // Shared by both save paths. Blocked: sets the message and the target the
+  // block names, stamping an attempt that grows on every blocked press, and
+  // returns which kind of field it names so the caller can announce a
+  // version-line block. Clear: returns the fields the domain constructors
+  // take. scopedVersions is the recipe's versions already scoped by the
+  // caller (null excludeId for a fresh child, the version's own id for a
+  // save-over).
+  function checkSave(version, scopedVersions) {
+    const block = penSaveBlock(penDraft, version, scopedVersions);
+    if (!block) return { blockedKind: null, fields: penFieldsFromDraft(penDraft, version) };
+    setBlockedMessage(block.message);
+    blockedAttemptRef.current += 1;
+    setBlockedTarget({ ...block.target, attempt: blockedAttemptRef.current });
+    return { blockedKind: block.target.kind, fields: null };
+  }
+
+  return {
+    penDraft,
+    blockedMessage,
+    blockedTarget,
+    edit,
+    open,
+    close,
+    restore,
+    checkSave,
+    // Raw setters stay on the return until the other pen handlers have
+    // moved onto edit().
+    setPenDraft,
+    setBlockedMessage,
+    setBlockedTarget,
+  };
 }

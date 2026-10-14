@@ -5,15 +5,12 @@ import { buildFigures, figureLabelText } from '../domain/figures.js';
 import { createBatch, completeRecord, formatRecordDate, sortedBatches } from '../domain/batch.js';
 import { BATTERY_FIELDS, parseMeasuredDraft } from '../domain/battery.js';
 import { setMark } from '../domain/axes.js';
-import { activeRows, activeSteps, isLineRemoved } from '../domain/rows.js';
+import { activeRows, activeSteps } from '../domain/rows.js';
 import { freshId } from '../domain/id.js';
 import {
   createChildVersion,
   saveOverVersion,
   versionsForRecipe,
-  blockedSaveMessage,
-  blockedSaveRowId,
-  blockedSaveLineIndex,
   parseGramsDraft,
 } from '../domain/lineage.js';
 import { buildDiff } from '../domain/diff.js';
@@ -21,7 +18,7 @@ import { buildDraftRecord, draftMatchesVersion, newestDraft } from '../domain/dr
 import {
   derivePenState,
   isPenDraftDirty,
-  penDraftRow,
+  penDraftVersion,
   restoreStepFromVersion,
   setPenField,
   toggleDraftRowLines,
@@ -673,11 +670,6 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // pen opened, held in memory only — never stored, cleared wherever the
   // pen closes.
   const penOpenedAtRef = useRef(null);
-  // WR-01's fix (03.1 REVIEW.md, Versions.jsx's half): an incrementing
-  // counter, stamped onto blockedTarget on every blocked buildPenFields
-  // call, so a second consecutive blocked save on the same field re-fires
-  // Headnote's field-focus effect — a value-equal boolean cannot.
-  const blockedAttemptRef = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -952,10 +944,8 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
         }
         draftStoredRef.current = true;
         if (record.kind === 'plan') {
-          setPenDraft(record.payload);
+          versionPen.restore(record.payload);
           penOpenedAtRef.current = record.penOpenedAt;
-          setBlockedMessage(null);
-          setBlockedTarget(null);
           setVersionSaveAction(null);
           versionSaveLockRef.current = false;
           setMode('developing');
@@ -1217,31 +1207,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // portion. Unfiltered — a removed row or step still appears here,
   // struck, for the pen's own table; readers that want the clean figures
   // filter through activeRows/activeSteps first.
-  const draftVersion =
-    mode === 'developing' && penDraft
-      ? {
-          ...version,
-          rows: version.rows.map((row) => {
-            const draftRow = penDraftRow(penDraft, row.id);
-            return {
-              ...row,
-              portions: row.portions.map((portion, i) => {
-                const draftPortion = draftRow.portions[i];
-                return {
-                  step: draftPortion.step,
-                  grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
-                  removed: Boolean(draftPortion.removed),
-                };
-              }),
-              removed: false,
-            };
-          }),
-          method: penDraft.method,
-          sheetTitle: penDraft.sheetTitle,
-          sheetDescription: penDraft.sheetDescription,
-          authored: penDraft.authored,
-        }
-      : null;
+  const draftVersion = mode === 'developing' && penDraft ? penDraftVersion(version, penDraft) : null;
 
   // While developing, the six rules and the basis note answer live against
   // the maker's typed grams and removed rows (route-recipe-version.md § 3).
@@ -1871,44 +1837,13 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
     setFormStatus('');
   }
 
-  // Seeds penDraft from the version the pen opened on — a row's own
-  // portions mapped to { step, grams, removed }, each grams a string
-  // (Pitfall 5) and each removed read through isLineRemoved so a stored
-  // older whole-row flag opens as every line out and never resurrects a
-  // row the maker restored (plan 03.6-02 decision 1); the draft row holds
-  // no flag of its own. Everything else the maker's own to write, never defaulted from the
-  // parent (D-10: no default reason, citation, or version line). Never
-  // touches draft or amendingBatchId — mode alone still decides which of
-  // developing/recording is live; derivePenState above is what now
-  // decides availability everywhere else (RESEARCH.md Pattern 4).
+  // Seeds penDraft from the version the pen opened on (versionPen.open, which
+  // builds it with penDraftFromVersion). Never touches draft or
+  // amendingBatchId — mode alone still decides which of developing/recording
+  // is live; derivePenState above is what now decides availability everywhere
+  // else (RESEARCH.md Pattern 4).
   function handleStartDeveloping() {
-    // Object.fromEntries, not a bracket write against a stored row id: an id
-    // such as __proto__ becomes an own key instead of reaching the prototype
-    // (T-03-10, T-04-23).
-    const rows = Object.fromEntries(
-      version.rows.map((row) => [
-        row.id,
-        {
-          portions: row.portions.map((portion) => ({
-            step: portion.step,
-            grams: String(portion.grams),
-            removed: isLineRemoved(row, portion),
-          })),
-        },
-      ]),
-    );
-    setPenDraft({
-      versionLabel: '',
-      reason: '',
-      citedBatchId: null,
-      sheetTitle: version.sheetTitle,
-      sheetDescription: version.sheetDescription,
-      rows,
-      method: structuredClone(version.method),
-      authored: structuredClone(version.authored),
-    });
-    setBlockedMessage(null);
-    setBlockedTarget(null);
+    versionPen.open(version);
     setVersionSaveAction(null);
     versionSaveLockRef.current = false;
     penOpenedAtRef.current = new Date().toISOString();
@@ -1938,9 +1873,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   function handleCancelDeveloping() {
     discardDraft();
     setMode('reading');
-    setPenDraft(null);
-    setBlockedMessage(null);
-    setBlockedTarget(null);
+    versionPen.close();
     setVersionSaveAction(null);
     versionSaveLockRef.current = false;
     penOpenedAtRef.current = null;
@@ -2124,49 +2057,9 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
   // stored as null, exactly as an empty reason already was.
   function buildPenFields(excludeId) {
     const scopedVersions = versionsForRecipe(versions, version.recipeId).filter((v) => v.id !== excludeId);
-    const message = blockedSaveMessage(penDraft, version, scopedVersions);
-    if (message) {
-      setBlockedMessage(message);
-      // D-21: the same traversal that named the message also names the
-      // row it blocked on, so the two can never disagree (T-03.1-21) — a
-      // row id marks and focuses that row's grams field; no row id means
-      // the block is the version line's own. blockedAttemptRef increments
-      // on every blocked press (WR-01) so a second consecutive block on
-      // the same field still moves focus.
-      const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
-      if (!rowId) announce(VERSION_BLOCKED_STATUS);
-      blockedAttemptRef.current += 1;
-      const lineIndex = rowId ? blockedSaveLineIndex(penDraft, version, scopedVersions) : null;
-      setBlockedTarget(
-        rowId ? { kind: 'row', rowId, index: lineIndex, attempt: blockedAttemptRef.current } : { kind: 'versionLine', attempt: blockedAttemptRef.current },
-      );
-      return null;
-    }
-    const rows = version.rows.map((row) => {
-      const draftRow = penDraftRow(penDraft, row.id);
-      return {
-        ...row,
-        portions: row.portions.map((portion, i) => {
-          const draftPortion = draftRow.portions[i];
-          return {
-            step: draftPortion.step,
-            grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
-            removed: Boolean(draftPortion.removed),
-          };
-        }),
-        removed: false,
-      };
-    });
-    return {
-      versionLabel: penDraft.versionLabel,
-      reason: penDraft.reason.trim() === '' ? null : penDraft.reason,
-      citedBatchId: penDraft.citedBatchId,
-      rows,
-      method: penDraft.method,
-      sheetTitle: penDraft.sheetTitle,
-      sheetDescription: penDraft.sheetDescription,
-      authored: penDraft.authored,
-    };
+    const { blockedKind, fields } = versionPen.checkSave(version, scopedVersions);
+    if (blockedKind === 'versionLine') announce(VERSION_BLOCKED_STATUS);
+    return fields;
   }
 
   // The two impure calls (a fresh id, the current instant) live here, in
@@ -2195,9 +2088,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       discardDraft();
       setVersions((prev) => [...prev, child]);
       setMode('reading');
-      setPenDraft(null);
-      setBlockedMessage(null);
-      setBlockedTarget(null);
+      versionPen.close();
       penOpenedAtRef.current = null;
       onPageStatus(VERSION_SAVED_STATUS);
       // The child mounts fresh because router.jsx keys RecipePage by its
@@ -2236,9 +2127,7 @@ export function RecipePage({ onPageStatus = () => {}, onPenOpenChange = () => {}
       setVersion(updated);
       setVersions((prev) => prev.map((existing) => (existing.id === updated.id ? updated : existing)));
       setMode('reading');
-      setPenDraft(null);
-      setBlockedMessage(null);
-      setBlockedTarget(null);
+      versionPen.close();
       penOpenedAtRef.current = null;
       versionSaveLockRef.current = false;
       setVersionSaveAction(null);

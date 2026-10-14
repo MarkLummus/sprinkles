@@ -2,6 +2,7 @@
 // The version pen's draft, read and changed by pure functions, which
 // RecipePage drives through usePenDraft (Phase 5, D-01).
 import { isLineRemoved } from './rows.js';
+import { blockedSaveMessage, blockedSaveRowId, blockedSaveLineIndex, parseGramsDraft } from './lineage.js';
 
 // A draft row, found by its row id (D-03; closes T-03.6-02). Row ids come
 // from stored versions, and an imported file can carry any string, so the
@@ -165,4 +166,110 @@ export function restoreStepFromVersion(penDraft, version, stepN) {
 // __proto__ setter (T-05-04).
 export function setPenField(draft, field, value) {
   return { ...draft, [field]: value };
+}
+
+// Seeds the draft from the version the pen opened on — a row's own
+// portions mapped to { step, grams, removed }, each grams a string
+// (Pitfall 5) and each removed read through isLineRemoved so a stored
+// older whole-row flag opens as every line out and never resurrects a
+// row the maker restored (plan 03.6-02 decision 1); the draft row holds
+// no flag of its own. Everything else the maker's own to write, never defaulted from the
+// parent (D-10: no default reason, citation, or version line).
+export function penDraftFromVersion(version) {
+  // Object.fromEntries, not a bracket write against a stored row id: an id
+  // such as __proto__ becomes an own key instead of reaching the prototype
+  // (T-03-10, T-04-23).
+  const rows = Object.fromEntries(
+    version.rows.map((row) => [
+      row.id,
+      {
+        portions: row.portions.map((portion) => ({
+          step: portion.step,
+          grams: String(portion.grams),
+          removed: isLineRemoved(row, portion),
+        })),
+      },
+    ]),
+  );
+  return {
+    versionLabel: '',
+    reason: '',
+    citedBatchId: null,
+    sheetTitle: version.sheetTitle,
+    sheetDescription: version.sheetDescription,
+    rows,
+    method: structuredClone(version.method),
+    authored: structuredClone(version.authored),
+  };
+}
+
+// The version's rows with the draft's portions applied. Each portion's grams
+// string goes through parseGramsDraft, falling back to that portion's own
+// stored amount when the string is blank or does not parse — never 0 or NaN,
+// applied per portion. Shared by the draft version (the pen's live figures)
+// and the fields a save hands the domain constructors.
+function penDraftRows(version, penDraft) {
+  return version.rows.map((row) => {
+    const draftRow = penDraftRow(penDraft, row.id);
+    return {
+      ...row,
+      portions: row.portions.map((portion, i) => {
+        const draftPortion = draftRow.portions[i];
+        return {
+          step: draftPortion.step,
+          grams: parseGramsDraft(draftPortion.grams) ?? portion.grams,
+          removed: Boolean(draftPortion.removed),
+        };
+      }),
+      removed: false,
+    };
+  });
+}
+
+// The draft version (route-recipe-version.md § 3, 03-02): built once,
+// from the version the pen opened on with the draft's values applied, so
+// the pen's own table, the cross-flags (uses.js) and buildDiff all read
+// the same object rather than each reassembling it. Unfiltered — a removed
+// row or step still appears here, struck, for the pen's own table; readers
+// that want the clean figures filter through activeRows/activeSteps first.
+export function penDraftVersion(version, penDraft) {
+  return {
+    ...version,
+    rows: penDraftRows(version, penDraft),
+    method: penDraft.method,
+    sheetTitle: penDraft.sheetTitle,
+    sheetDescription: penDraft.sheetDescription,
+    authored: penDraft.authored,
+  };
+}
+
+// The one message that blocks a save, computed by the tested lineage
+// functions (D-04) so the same sentence can never drift between the two save
+// controls, with the field it names (D-21): the same traversal that named the
+// message also names the row it blocked on, so the two can never disagree
+// (T-03.1-21). A row id marks and focuses that row's grams field; no row id
+// means the block is the version line's own. Null when nothing blocks.
+export function penSaveBlock(penDraft, version, scopedVersions) {
+  const message = blockedSaveMessage(penDraft, version, scopedVersions);
+  if (!message) return null;
+  const rowId = blockedSaveRowId(penDraft, version, scopedVersions);
+  if (!rowId) return { message, target: { kind: 'versionLine' } };
+  return { message, target: { kind: 'row', rowId, index: blockedSaveLineIndex(penDraft, version, scopedVersions) } };
+}
+
+// The pen's fields coerced for the domain constructor (createChildVersion,
+// saveOverVersion): rows' grams strings are parsed here, at save time, never
+// on keystroke (Pitfall 5). A reason of nothing but whitespace is treated as
+// blank and stored as null, exactly as an empty reason already was.
+export function penFieldsFromDraft(penDraft, version) {
+  return {
+    versionLabel: penDraft.versionLabel,
+    reason: penDraft.reason.trim() === '' ? null : penDraft.reason,
+    citedBatchId: penDraft.citedBatchId,
+    rows: penDraftRows(version, penDraft),
+    method: penDraft.method,
+    sheetTitle: penDraft.sheetTitle,
+    sheetDescription: penDraft.sheetDescription,
+    authored: penDraft.authored,
+  };
 }

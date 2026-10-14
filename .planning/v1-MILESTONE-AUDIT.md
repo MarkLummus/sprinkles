@@ -27,8 +27,8 @@ tech_debt:
       - "Code review WR-01, WR-02, IN-01 to IN-04 open"
   - phase: 03.6-per-step-shared-ingredients
     items:
-      - "WR-01 diff.js row-level grams sum every stored line, so stepsWithStaleAmounts does not flag a step when one line of a split row is out"
-      - "WR-02 to WR-04: pen opened on a version with a line out reads '120 g of 250.4 g' and 'was 54.5%, now 36.8%'; accept or fix undecided"
+      - "WR-01 to WR-04 and IN-01 were listed open here from a stale disposition file; all fixed (39ee7cb, 50f91bc, f2d6b4d, fb06388; see 03.6-REVIEW-DISPOSITION.md, corrected 2026-10-14)"
+      - "IN-02 open: lines[].removedChanged has no reader, and the % of batch cell for a line out in both versions prints a struck share of a batch that never held it"
       - "1600 fine-pointer look never drawn or looked at (deferred by Mark, 2026-10-06)"
       - "Amend .impeccable/surfaces/route-recipe-version.md for per-line and per-step removal (Mark's /impeccable job; row run-impeccable-surface-removal)"
   - phase: 04-prepare-the-next-version-for-making

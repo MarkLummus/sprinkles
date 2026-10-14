@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "batch_id": "261013-w83",
+  "created_at": "2026-10-14T03:12:06.492Z",
+  "options": {},
+  "base_revision": "7e2a2fb8d9941d9338b5440288a29c1317d99605",
+  "items": [
+    {
+      "quick_id": "261013-w84",
+      "client_id": null,
+      "description": "WR-01 (03.6-REVIEW.md): in app/src/domain/diff.js buildRowDiff, make the row-level gramsFrom, gramsTo, gramsChanged, shareFrom and shareTo read only the lines still in (the predicate `lines` uses, including the !baseRow branch), so stepsWithStaleAmounts in domain/uses.js flags a step when one line of a split row is taken out; regression test in diff.test.js: a split row with one line taken out gives gramsChanged === true.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/domain/diff.js",
+        "app/src/domain/diff.test.js",
+        "app/src/domain/uses.test.js"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "39ee7cb",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261013-w85",
+      "client_id": null,
+      "description": "WR-02 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~640-671) read baselineShare from the opening row through the existing active map and pass that row to rowAccessibleLabel, so opening the pen on a split row with a line already out announces no false \"was X%, now Y%\" on the sibling line; regression test in the IngredientTable or RecipePage test files.",
+      "status": "complete",
+      "depends_on": [],
+      "planned_files": [
+        "app/src/ui/IngredientTable.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 0,
+      "commit": "db060c6",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261013-w86",
+      "client_id": null,
+      "description": "WR-03 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~718 and ~598) print a portion sub-line only when the line was in at open, otherwise the bare amount (rowDiff.lines[i].removedChanged says whether the out state is new), so a line already out never reads \"N g of M g\" with N > M; regression test. Depends on WR-02 only by sharing the file.",
+      "status": "complete",
+      "depends_on": [
+        "261013-w85"
+      ],
+      "planned_files": [
+        "app/src/ui/IngredientTable.jsx",
+        "app/src/ui/IngredientTable.test.jsx"
+      ],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 1,
+      "commit": "fb06388",
+      "failure_reason": null
+    },
+    {
+      "quick_id": "261013-w87",
+      "client_id": null,
+      "description": "WR-04 (03.6-REVIEW.md): in app/src/domain/lineage.js findBlockedRow return the blocked portion index ({ row, index, message }); in app/src/ui/IngredientTable.jsx (~658 and ~680) key the focus ref by rowId:index and mark only that line as blocked; the blocked-save message becomes \"needs an amount, or remove it\" (Mark to see this exact text in the plan; plain words, short labels); regression tests for a row whose line 0 is out and line 1 is blank. Do not touch IN-01 or IN-02.",
+      "status": "pending",
+      "depends_on": [
+        "261013-w86"
+      ],
+      "planned_files": [],
+      "directory": null,
+      "worktree": null,
+      "dispatched_worktree": null,
+      "dispatched_branch": null,
+      "dispatched_base": null,
+      "wave": 2,
+      "commit": null,
+      "failure_reason": null
+    }
+  ]
+}

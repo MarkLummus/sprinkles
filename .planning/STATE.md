@@ -508,6 +508,9 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 | 150 | Correct the three-pens decision line in 04-VERIFICATION.md | 2026-10-13 | 01ef3f8 | — |
 | 151 | Remove three stale continue-here handoffs | 2026-10-13 | 35a8e89 | — |
 | 152 | Fix the seed-recipes header; stepsUsingRow export and CONFORMANCE leftovers checked, no change | 2026-10-13 | 17738c3 | — |
+| 261013-w84 | WR-01 (03.6-REVIEW.md): in app/src/domain/diff.js buildRowDiff, make the row-level gramsFr | 2026-10-13 | 39ee7cb | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w84-wr-01-03-6-review-md-in-app-src-domain-diff-js-buildrowdiff |
+| 261013-w85 | WR-02 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~640-671) read baselineShare fr | 2026-10-13 | db060c6 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w85-wr-02-03-6-review-md-in-app-src-ui-ingredienttable-jsx-640-6 |
+| 261013-w86 | WR-03 (03.6-REVIEW.md): in app/src/ui/IngredientTable.jsx (~718 and ~598) print a portion | 2026-10-13 | fb06388 | /Users/mark/Documents/projects/sprinkles/.planning/quick/261013-w86-wr-03-03-6-review-md-in-app-src-ui-ingredienttable-jsx-718-a |
 
 ### Roadmap Evolution
 

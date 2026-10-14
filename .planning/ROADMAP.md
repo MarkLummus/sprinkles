@@ -77,7 +77,7 @@ Plans:
 ### Phase 6: The ingredient library in the store
 
 **Goal**: The ingredient library lives in the store behind the repository seam, seeded from `data/library.js`, carried by export and import, and a change to it never moves a stored version's or batch's figures
-**Depends on**: Phase 4 (v1, shipped). Does not need Phase 5: it touches the store, the seed and the transfer file, not the recipe page
+**Depends on**: Phase 4 (v1, shipped). Waits for Phase 5's verification: 06-03 edits two app/src/ui test fixtures (BatchRow.test.jsx, Shell.flyout.test.jsx), and Phase 5's gate forbids changing BatchRow.test.jsx until it has run (Mark, 2026-10-14)
 **Requirements**: LIB-01, LIB-02, LIB-03
 **Success Criteria** (what must be TRUE):
   1. On an empty database the library is its own object store, seeded from `data/library.js` and read through the repository seam; outside the seed path (`store/seed.js` and the seed recipe files in `data/`) no module under `app/src` imports `data/library.js`, tests aside, and `idb` is still imported by `store/db.js` alone
@@ -85,7 +85,17 @@ Plans:
   3. Changing a library entry in the store leaves every stored version's balance figures and every batch's snapshot exactly as they were, proven by a test against a real IndexedDB (fake-indexeddb), as Phase 1 proved it for the in-memory library
   4. An export carries the library beside recipes, versions and batches (drafts stay on the device), and importing that file restores all four in one transaction: an import that fails part-way leaves every store as it was
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+- [ ] 06-01-PLAN.md — The library store at DB_VERSION 9 behind the seam (listLibrary, getLibraryEntry, putAllLibrary); a version-8 profile keeps its records; REQUIREMENTS.md reconciled (LIB-01; D-01, D-01a, D-02, D-03, D-05)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 06-02-PLAN.md — seedIfEmpty's independent library guard; four combinations, interrupted and parallel seeds; the version-8 profile through the seed; LIB-02 proven in a real IndexedDB (LIB-01, LIB-02; D-01a, D-04, D-04a, D-05)
+
+**Wave 3** *(blocked on Wave 2 completion and on Phase 5's verification)*
+- [ ] 06-03-PLAN.md — exportAll in one readonly transaction, a four-store importAll, schema 8 with the library validator; LIB-02 through a whole export and import (LIB-03, LIB-02; D-04a, D-06, D-07, D-07a, D-08)
 **Notes**: Settle in discussion: `app/src/store/db.js` resets only profiles below 8 and says a later bump writes its own lift (04-04: "records Mark makes from now on are real"), while `REQUIREMENTS.md` says the reset applies as usual on this bump. Adding a store needs neither a reset nor a lift, so check for real stored records before choosing.
 
 ### Phase 7: Creation primitives
@@ -104,7 +114,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 5 → 6 → 7. Phase 6 does not need Phase 5 and may run beside it; Phase 7 needs Phase 6.
+Phases execute in numeric order: 5 → 6 → 7. Phase 6 starts after Phase 5 is verified, because 06-03 edits two app/src/ui test fixtures; Phase 7 needs Phase 6.
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|

@@ -30,7 +30,7 @@ tech_debt:
       - "WR-01 to WR-04 and IN-01 were listed open here from a stale disposition file; all fixed (39ee7cb, 50f91bc, f2d6b4d, fb06388; see 03.6-REVIEW-DISPOSITION.md, corrected 2026-10-14)"
       - "IN-02 open: lines[].removedChanged has no reader, and the % of batch cell for a line out in both versions prints a struck share of a batch that never held it"
       - "1600 fine-pointer look never drawn or looked at (deferred by Mark, 2026-10-06)"
-      - "Amend .impeccable/surfaces/route-recipe-version.md for per-line and per-step removal (Mark's /impeccable job; row run-impeccable-surface-removal)"
+      - "The recipe surface brief amendment for per-line and per-step removal is done (7144115); it was listed open here in error"
   - phase: 04-prepare-the-next-version-for-making
     items:
       - "Code review WR-01, WR-02, WR-03 and IN-01 to IN-05 open by decision (import-validator and import-overwrite edge cases)"

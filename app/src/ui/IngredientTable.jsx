@@ -609,11 +609,15 @@ export function IngredientTable({
     const isMarked = markedRowIds.includes(row.id);
     const asMadeValue = openBatch ? asMadeForPortion(openBatch, row.id, portionIndex) : null;
     const isSplit = row.portions.length > 1;
-    // A line that is in reads the lines still in over the current batch; a
-    // line that is out reads the opening figures (the parent's row over the
-    // parent's batch), since the new batch it was not in has no share for it.
+    // A line that is in reads the lines still in over the current batch. A line
+    // that is out reads the parent's row over the parent's batch when the parent
+    // held it, and its bare amount when the parent did not (it was already out at
+    // open), since neither batch has a share for it (WR-03; sketch 011 decision 51).
     const liveRow = baselineActiveById.get(row.id) ?? row;
-    const openingRow = openingActiveById.get(row.id) ?? row;
+    const openingRow = rowHoldingLine(openingActiveById, row.id, portionIndex);
+    const portionNote = line.removed
+      ? (openingRow ? formatPortionLine(portion.grams, rowGrams(openingRow), openingMass) : `${portion.grams} g`)
+      : formatPortionLine(line.gramsTo, rowGrams(liveRow), baselineMass);
     return (
       <tr
         key={`${row.id}:${portionIndex}`}
@@ -631,11 +635,7 @@ export function IngredientTable({
             </span>
           )}
           {isSplit && (
-            <span className="ingredient-table__portion-note">
-              {line.removed
-                ? formatPortionLine(portion.grams, rowGrams(openingRow), openingMass)
-                : formatPortionLine(line.gramsTo, rowGrams(liveRow), baselineMass)}
-            </span>
+            <span className="ingredient-table__portion-note">{portionNote}</span>
           )}
         </td>
         {hasAsMadeLayer && (

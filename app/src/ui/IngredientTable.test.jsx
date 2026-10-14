@@ -2128,9 +2128,10 @@ describe('IngredientTable — as made stays on its own line when a line is out (
 // brief item d; Mark's answer 3): a line that is out reads the figures of the
 // parent it was compared with, never the new batch it was not in.
 describe('IngredientTable — show changes reads a line that is out against the parent (03.6-04)', () => {
-  function showChanges(edit) {
+  function showChanges(edit, editParent = () => {}) {
     const parent = structuredClone(oliveOilVersion);
     const child = structuredClone(oliveOilVersion);
+    editParent(parent);
     edit(child);
     const markup = renderToStaticMarkup(
       <IngredientTable
@@ -2157,6 +2158,12 @@ describe('IngredientTable — show changes reads a line that is out against the 
   const gramsCell = (tr) => tr.split('<td class="ingredient-table__col-grams">')[1].split('</td>')[0];
   const nameCell = (tr) => tr.split('<td class="ingredient-table__col-name">')[1].split('</td>')[0];
   const totalCell = (markup) => markup.split('<tfoot>')[1].split('</td>')[0];
+
+  // An edit that takes the milk row's lines at these stored positions out.
+  const milkLinesOut = (...indexes) => (version) => {
+    const milk = version.rows.find((row) => row.id === 'row-01');
+    for (const i of indexes) milk.portions[i].removed = true;
+  };
 
   it('one line out: the Step 2 milk line strikes its name, amount and share against the parent, and the line left reads over the new batch', () => {
     const markup = showChanges((child) => {
@@ -2192,6 +2199,35 @@ describe('IngredientTable — show changes reads a line that is out against the 
     expect(markup).not.toContain('86.3%');
     expect(markup).not.toContain('28.0%');
     expect(markup).not.toContain('58.3%');
+  });
+
+  it('WR-03, a line out in the parent and the child prints its bare amount, and the line still in reads the new batch', () => {
+    const markup = showChanges(milkLinesOut(0), milkLinesOut(0));
+    const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+    expect(nameCell(stepTwo)).toContain('<span class="struck-value">Whole milk</span>');
+    expect(gramsCell(stepTwo)).toBe('<span class="ingredient-table__plan-grams"><span class="struck-value">120 g</span></span>');
+    expect(note(stepTwo)).toBe('120 g');
+    expect(note(stepThree)).toBe('250.4 g of 250.4 g · 36.8% in all');
+    expect(markup).not.toContain('120 g of');
+  });
+
+  it('WR-03, a row out whole in both versions prints a bare amount on each line and no share of a batch that excludes it', () => {
+    const markup = showChanges(milkLinesOut(0, 1), milkLinesOut(0, 1));
+    const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+    expect(note(stepTwo)).toBe('120 g');
+    expect(note(stepThree)).toBe('250.4 g');
+    expect(markup).not.toContain('86.3%');
+    expect(markup).not.toContain('of 370.4 g');
+  });
+
+  it('WR-03, the check is per line: a line out at open prints its bare amount while a sibling in at open and newly out reads the parent', () => {
+    const markup = showChanges(milkLinesOut(0, 1), milkLinesOut(0));
+    const [stepTwo, stepThree] = linesOf(markup, 'Whole milk');
+
+    expect(note(stepTwo)).toBe('120 g');
+    expect(note(stepThree)).toBe('250.4 g of 250.4 g · 36.8% in all');
   });
 
   it('names the edited line with its own was and now, and the removed line with its from-amount and "removed" last', () => {

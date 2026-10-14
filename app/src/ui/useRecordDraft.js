@@ -14,8 +14,11 @@ import {
 // The record pen's draft (Phase 5, EDIT-03): recording a batch, correcting it
 // and writing its tasting.
 //
-// D-06: the churn-date block's reset is written once, in clearDateBlock, and
-// every way the draft changes reaches it. D-07: the hook stops at the draft.
+// D-06: the churn-date block's reset is written once, in clearDateBlock.
+// Every edit() clears the block, and so do opening a record or a correction
+// and Cancel; the save check sets or clears it. addTasting, removeTasting and
+// undoRemoveTasting deliberately leave it as it is, as do close and restore
+// (a kept draft). D-07: the hook stops at the draft.
 // RecipePage keeps the save lock, the page status, the announcer, the focus
 // landings for its own actions and the repository calls. D-09: the attempt
 // counters that ride with a block live here with that block.

@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'reac
 import { repository } from '../store/repository.js';
 import { buildFigures, figureLabelText } from '../domain/figures.js';
 import { createBatch, completeRecord, formatRecordDate, sortedBatches } from '../domain/batch.js';
-import { BATTERY_FIELDS, parseMeasuredDraft } from '../domain/battery.js';
 import { setMark } from '../domain/axes.js';
 import { activeRows, activeSteps } from '../domain/rows.js';
 import { freshId } from '../domain/id.js';
@@ -32,6 +31,7 @@ import {
   togglePenStepUses,
   usesListsDiffer,
 } from '../domain/penDraft.js';
+import { validateRecordDraft } from '../domain/recordDraft.js';
 import { stepsWithStaleAmounts } from '../domain/uses.js';
 import { displayNumbers } from '../domain/stepNumbers.js';
 import { notebookPath } from './notebookPaths.js';
@@ -59,12 +59,6 @@ function joinNames(names) {
   if (names.length === 1) return names[0];
   return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
 }
-
-// The record pen's blocked-date sentence (D-05) — one constant, read from
-// both handleSaveBatch (via validateRecordDraft) and the ceremony's own
-// hint prop, so the "one state, two renderings" grep (03.3.1-02 Task 2
-// acceptance) can never find it typed out a second time.
-export const CHURN_DATE_BLOCKED_MESSAGE = 'Enter the date you churned.';
 
 // The contract's verbatim form-status sentence for a malformed measurement
 // ("Controls spec"), read from handleSaveBatch's own announce() call.
@@ -402,51 +396,6 @@ export function restoreDraftFromUndo(draft, pendingUndo) {
     meltTestG: pendingUndo.meltTestG,
     meltStyle: pendingUndo.meltStyle,
   };
-}
-
-// parseAllMeasuredFields(draft) -> { fieldErrors, hasErrors, parsed }.
-// Pure: walks BATTERY_FIELDS, parsing each field through
-// parseMeasuredDraft. A malformed value's own contract sentence
-// (BATTERY_FIELDS' own `error` string, verbatim) lands in fieldErrors;
-// `parsed` is every field's own { ok, value }, reused by the save
-// assembly below so a field is never parsed twice. 03.3.1-02 Task 1's own
-// scope: "if any field is malformed, record per-field errors and abort —
-// storing the errors and aborting is enough." The full field-level UI
-// wiring (aria-invalid/describedby, the field-error line, focus-on-first-
-// invalid) and the churn-date press-to-block (D-05) are Task 2's build.
-export function parseAllMeasuredFields(draft) {
-  const fieldErrors = {};
-  const parsed = {};
-  let hasErrors = false;
-  for (const field of BATTERY_FIELDS) {
-    const result = parseMeasuredDraft(draft[field.key], { signed: field.signed });
-    parsed[field.key] = result;
-    if (!result.ok) {
-      fieldErrors[field.key] = field.error;
-      hasErrors = true;
-    }
-  }
-  return { fieldErrors, hasErrors, parsed };
-}
-
-// validateRecordDraft(draft) -> { fieldErrors, invalidFieldKey,
-// blockedDateMessage, parsed }. Pure (03.3.1-02 Task 2): the record pen's
-// one save gate. Every measurement validates first (RESEARCH.md Open
-// Question 3), via parseAllMeasuredFields above; only once every
-// measurement is clean does the churn date get its own press-to-block
-// check (D-05) — the two blocks never fire together, so a sentence and
-// its target can never disagree (one traversal). invalidFieldKey names
-// the first invalid field in BATTERY_FIELDS order — Object.keys on a
-// plain object preserves string-key insertion order, and fieldErrors is
-// built by iterating BATTERY_FIELDS in that same order, so the first key
-// is the first field the traversal found invalid.
-export function validateRecordDraft(draft) {
-  const { fieldErrors, hasErrors, parsed } = parseAllMeasuredFields(draft);
-  if (hasErrors) {
-    return { fieldErrors, invalidFieldKey: Object.keys(fieldErrors)[0], blockedDateMessage: null, parsed };
-  }
-  const blockedDateMessage = draft.churnDate === '' ? CHURN_DATE_BLOCKED_MESSAGE : null;
-  return { fieldErrors: {}, invalidFieldKey: null, blockedDateMessage, parsed };
 }
 
 function toTextOrNull(raw) {

@@ -30,11 +30,8 @@ import {
   tastingPayloadFromDraft,
   restoreDraftFromUndo,
   isTastingBodyField,
-  parseAllMeasuredFields,
-  validateRecordDraft,
   buildChurnFieldsFromDraft,
   buildTastingFieldsFromDraft,
-  CHURN_DATE_BLOCKED_MESSAGE,
   CHURN_DATE_BLOCKED_STATUS,
   BATCH_SAVE_ERROR,
   batchSavedStatus,
@@ -46,6 +43,7 @@ import {
 } from './RecipePage.jsx';
 import { isLineRemoved } from '../domain/rows.js';
 import { derivePenState, isPenDraftDirty, restoreStepFromVersion, toggleDraftRowLines } from '../domain/penDraft.js';
+import { CHURN_DATE_BLOCKED_MESSAGE, parseAllMeasuredFields, validateRecordDraft } from '../domain/recordDraft.js';
 import { VersionRow } from './VersionRow.jsx';
 import { oliveOilVersion } from '../data/olive-oil.js';
 import { augustSecondBatch } from '../data/batch-2026-08-02.js';

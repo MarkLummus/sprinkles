@@ -325,7 +325,6 @@ Decisions are logged in PROJECT.md Key Decisions table; product decisions D01–
 - [2026-09-24] [design] Write a product brief for phone-based jobs — [todo file](.planning/todos/pending/2026-09-24-write-a-product-brief-for-phone-based-jobs.md)
 - [2026-10-04] [general] Consider a "Mise en Place" Auto-Generator — [todo file](.planning/todos/pending/2026-10-04-consider-a-mise-en-place-auto-generator-allow-users-to-tag.md)
 - [2026-10-04] [design] Update Impeccable between Phase 03.5 and Phase 04 — [todo file](.planning/todos/pending/2026-10-04-update-impeccable-between-phase-03-5-and-phase-04.md)
-- [2026-10-14] [ui] Carry declared defects into a new version — [todo file](.planning/todos/pending/2026-10-13-carry-declared-defects-into-a-new-version.md)
 
 ### Blockers/Concerns
 
